@@ -12,7 +12,7 @@ let gm () =
   | Some "FanAst" -> ""
   | Some _ -> "FanAst"
   | None  -> "FanAst"
-let antiquot_expander ~parse_patt  ~parse_expr  =
+let antiquot_expander ~parse_patt  ~parse_exp  =
   object 
     inherit  Objs.map as super
     method! patt (x : patt) =
@@ -60,7 +60,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
            | ("str",_,_) ->
                `App
                  (_loc, (`App (_loc, (`Vrn (_loc, "Str")), (mloc _loc))), e)
-           | ("vrn","expr",_) ->
+           | ("vrn","exp",_) ->
                `App
                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
            | ("vrn","patt",_) ->
@@ -68,11 +68,11 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
            | _ -> super#patt e)
       | e -> super#patt e
-    method! expr (x : expr) =
+    method! exp (x : exp) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = (meta_loc_exp _loc _loc :>expr) in
-          let e = parse_expr _loc code in
+          let mloc _loc = (meta_loc_exp _loc _loc :>exp) in
+          let e = parse_exp _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,__) ->
                `App
@@ -86,7 +86,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                `App
                  (_loc, (`Vrn (_loc, "Seq")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("vrn","expr",_) ->
+           | ("vrn","exp",_) ->
                `App
                  (_loc, (`Vrn (_loc, "Vrn")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
@@ -224,7 +224,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                    (`App
                       (_loc, (`Vrn (_loc, "Id")),
                         (`Id (_loc, (`Lid (_loc, "_loc")))))), x)
-           | ("list","module_expr",_) ->
+           | ("list","module_exp",_) ->
                `App
                  (_loc,
                    (`Id
@@ -249,7 +249,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "dot_of_list")))))), e)
            | ("list",("binding"|"module_binding"|"with_constr"|"class_type"
-                      |"class_expr"|"ctypand"),_)
+                      |"class_exp"|"ctypand"),_)
                ->
                `App
                  (_loc,
@@ -325,7 +325,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "case")))), e)
-           | ("list",("ctyp,"|"patt,"|"expr,"),_) ->
+           | ("list",("ctyp,"|"patt,"|"exp,"),_) ->
                `App
                  (_loc,
                    (`Id
@@ -334,7 +334,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "com_of_list")))))), e)
            | ("list",("binding;"|"stru"|"sig_item"|"class_sig_item"|"cstru"
-                      |"rec_expr"|"ctyp;"|"patt;"|"expr;"),_)
+                      |"rec_exp"|"ctyp;"|"patt;"|"exp;"),_)
                ->
                `App
                  (_loc,
@@ -343,6 +343,6 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "sem_of_list")))))), e)
-           | _ -> super#expr e)
-      | e -> super#expr e
+           | _ -> super#exp e)
+      | e -> super#exp e
   end

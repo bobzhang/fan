@@ -3,7 +3,7 @@ open LibUtil
 open Lib
 open Ast
 open FSig
-let transform: full_id_transform -> ident -> expr =
+let transform: full_id_transform -> ident -> exp =
   let _loc = FanLoc.ghost in
   let open Lib.Ident in
     function

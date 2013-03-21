@@ -47,17 +47,17 @@ module type Syntax =
     val case_quot : case Gram.t
     val binding : binding Gram.t
     val binding_quot : binding Gram.t
-    val rec_expr_quot : rec_expr Gram.t
-    val class_declaration : class_expr Gram.t
+    val rec_exp_quot : rec_exp Gram.t
+    val class_declaration : class_exp Gram.t
     val class_description : class_type Gram.t
-    val class_expr : class_expr Gram.t
-    val class_expr_quot : class_expr Gram.t
-    val class_fun_binding : class_expr Gram.t
-    val class_fun_def : class_expr Gram.t
-    val class_info_for_class_expr : class_expr Gram.t
+    val class_exp : class_exp Gram.t
+    val class_exp_quot : class_exp Gram.t
+    val class_fun_binding : class_exp Gram.t
+    val class_fun_def : class_exp Gram.t
+    val class_info_for_class_exp : class_exp Gram.t
     val class_info_for_class_type : class_type Gram.t
     val class_longident : ident Gram.t
-    val class_longident_and_param : class_expr Gram.t
+    val class_longident_and_param : class_exp Gram.t
     val class_sig_item : class_sig_item Gram.t
     val class_sig_item_quot : class_sig_item Gram.t
     val class_signature : class_sig_item Gram.t
@@ -71,7 +71,7 @@ module type Syntax =
     val class_type_plus : class_type Gram.t
     val class_type_quot : class_type Gram.t
     val comma_ctyp : type_parameters Gram.t
-    val comma_expr : expr Gram.t
+    val comma_exp : exp Gram.t
     val comma_ipatt : patt Gram.t
     val comma_patt : patt Gram.t
     val comma_type_parameter : type_parameters Gram.t
@@ -81,18 +81,18 @@ module type Syntax =
     val constructor_declarations : or_ctyp Gram.t
     val ctyp : ctyp Gram.t
     val ctyp_quot : ctyp Gram.t
-    val cvalue_binding : expr Gram.t
+    val cvalue_binding : exp Gram.t
     val direction_flag : direction_flag Gram.t
     val direction_flag_quot : direction_flag Gram.t
     val dummy : unit Gram.t
-    val eq_expr : (alident -> patt -> patt) Gram.t
-    val expr : expr Gram.t
-    val expr_eoi : expr Gram.t
-    val expr_quot : expr Gram.t
-    val field_expr : rec_expr Gram.t
-    val field_expr_list : rec_expr Gram.t
-    val fun_binding : expr Gram.t
-    val fun_def : expr Gram.t
+    val eq_exp : (alident -> patt -> patt) Gram.t
+    val exp : exp Gram.t
+    val exp_eoi : exp Gram.t
+    val exp_quot : exp Gram.t
+    val field_exp : rec_exp Gram.t
+    val field_exp_list : rec_exp Gram.t
+    val fun_binding : exp Gram.t
+    val fun_def : exp Gram.t
     val ident : ident Gram.t
     val ident_quot : ident Gram.t
     val ipatt : patt Gram.t
@@ -100,8 +100,8 @@ module type Syntax =
     val patt_tcon : patt Gram.t
     val label_declaration : name_ctyp Gram.t
     val label_declaration_list : name_ctyp Gram.t
-    val label_expr : rec_expr Gram.t
-    val label_expr_list : rec_expr Gram.t
+    val label_exp : rec_exp Gram.t
+    val label_exp_list : rec_exp Gram.t
     val label_longident : ident Gram.t
     val label_patt : rec_patt Gram.t
     val label_patt_list : rec_patt Gram.t
@@ -109,11 +109,11 @@ module type Syntax =
     val meth_list : (name_ctyp* row_var_flag) Gram.t
     val meth_decl : name_ctyp Gram.t
     val module_binding : module_binding Gram.t
-    val module_binding0 : module_expr Gram.t
+    val module_binding0 : module_exp Gram.t
     val module_binding_quot : module_binding Gram.t
     val module_declaration : module_type Gram.t
-    val module_expr : module_expr Gram.t
-    val module_expr_quot : module_expr Gram.t
+    val module_exp : module_exp Gram.t
+    val module_exp_quot : module_exp Gram.t
     val module_longident : ident Gram.t
     val module_longident_with_app : ident Gram.t
     val module_rec_declaration : module_binding Gram.t
@@ -140,11 +140,11 @@ module type Syntax =
     val patt_eoi : patt Gram.t
     val patt_quot : patt Gram.t
     val row_field : row_field Gram.t
-    val sem_expr : expr Gram.t
-    val sem_expr_for_list : (expr -> expr) Gram.t
+    val sem_exp : exp Gram.t
+    val sem_exp_for_list : (exp -> exp) Gram.t
     val sem_patt : patt Gram.t
     val sem_patt_for_list : (patt -> patt) Gram.t
-    val sequence : expr Gram.t
+    val sequence : exp Gram.t
     val sig_item : sig_item Gram.t
     val sig_item_quot : sig_item Gram.t
     val sig_items : sig_item Gram.t
@@ -164,18 +164,18 @@ module type Syntax =
     val val_longident : ident Gram.t
     val with_constr : with_constr Gram.t
     val with_constr_quot : with_constr Gram.t
-    val prefixop : expr Gram.t
-    val infixop0 : expr Gram.t
-    val infixop1 : expr Gram.t
-    val infixop2 : expr Gram.t
-    val infixop3 : expr Gram.t
-    val infixop4 : expr Gram.t
+    val prefixop : exp Gram.t
+    val infixop0 : exp Gram.t
+    val infixop1 : exp Gram.t
+    val infixop2 : exp Gram.t
+    val infixop3 : exp Gram.t
+    val infixop4 : exp Gram.t
     val string_list : strings Gram.t
-    val infixop5 : expr Gram.t
-    val infixop6 : expr Gram.t
+    val infixop5 : exp Gram.t
+    val infixop6 : exp Gram.t
     val module_longident_dot_lparen : ident Gram.t
-    val sequence' : (expr -> expr) Gram.t
-    val fun_def : expr Gram.t
+    val sequence' : (exp -> exp) Gram.t
+    val fun_def : exp Gram.t
     val method_opt_override : override_flag Gram.t
     val value_val_opt_override : override_flag Gram.t
     val unquoted_typevars : ctyp Gram.t
@@ -188,13 +188,13 @@ module type Syntax =
     val level_list :
       [ `Group of FanGrammar.level list | `Single of FanGrammar.level] Gram.t
     val entry : FanGrammar.entry Gram.t
-    val extend_body : expr Gram.t
-    val delete_rule_body : expr Gram.t
+    val extend_body : exp Gram.t
+    val delete_rule_body : exp Gram.t
     val dot_lstrings : FanToken.name Gram.t
-    val parse_expr : FanLoc.t -> string -> expr
+    val parse_exp : FanLoc.t -> string -> exp
     val parse_patt : FanLoc.t -> string -> patt
     val parse_ident : FanLoc.t -> string -> ident
-    val expr_filter : ep -> expr
+    val exp_filter : ep -> exp
     val patt_filter : ep -> patt
     val dot_namespace : string list Gram.t
     module Options :

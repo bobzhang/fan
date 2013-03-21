@@ -1,12 +1,12 @@
 open AstLoc
 open Lib
 type spat_comp =  
-  | SpTrm of FanLoc.t* patt* expr option
-  | SpNtr of FanLoc.t* patt* expr
+  | SpTrm of FanLoc.t* patt* exp option
+  | SpNtr of FanLoc.t* patt* exp
   | SpStr of FanLoc.t* patt 
 type sexp_comp =  
-  | SeTrm of FanLoc.t* expr
-  | SeNtr of FanLoc.t* expr 
+  | SeTrm of FanLoc.t* exp
+  | SeNtr of FanLoc.t* exp 
 let grammar_module_name = ref "XStream"
 let gm () = grammar_module_name.contents
 let strm_n = "__strm"
@@ -284,7 +284,7 @@ let stream_patterns_term _loc ekont tspel =
    `Match
      (_loc,
        (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
-       pel) : expr )
+       pel) : exp )
 let rec group_terms =
   function
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->

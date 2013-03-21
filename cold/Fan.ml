@@ -13,9 +13,9 @@ let _ =
     ~filter:(fun s  ->
                let _loc = loc_of s in
                let v = `Struct (_loc, s) in
-               let module_expr = (Typehook.traversal ())#module_expr v in
+               let module_exp = (Typehook.traversal ())#module_exp v in
                let code =
-                 match module_expr with
+                 match module_exp with
                  | `Struct (_loc,item) -> item
                  | _ -> failwith "can not find items back " in
                if Typehook.show_code.contents
@@ -27,13 +27,13 @@ let _ =
                         ("There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to "
                            ^ FanConfig.bug_main_address));
                code)
-let _ = of_expr ~name:(d, "fans") ~entry:Typehook.fan_quots
-let _ = of_expr ~name:(d, "save") ~entry:Typehook.save_quot
+let _ = of_exp ~name:(d, "fans") ~entry:Typehook.fan_quots
+let _ = of_exp ~name:(d, "save") ~entry:Typehook.save_quot
 let _ = of_stru ~name:(d, "include") ~entry:Typehook.include_quot
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
-  of_expr_with_filter ~name:(d, "expr") ~entry:expr
-    ~filter:(AstMacros.macro_expander#expr)
+  of_exp_with_filter ~name:(d, "exp") ~entry:exp
+    ~filter:(AstMacros.macro_expander#exp)
 let _ =
   of_cstru_with_filter ~name:(d, "cstru") ~entry:cstru
     ~filter:(AstMacros.macro_expander#cstru)
@@ -42,92 +42,92 @@ let _ =
     ~filter:(AstMacros.macro_expander#stru)
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 let _ =
-  add_quotation (d, "sig_item") sig_item_quot ~mexpr:(Filters.me#sig_item)
-    ~mpatt:(Filters.mp#sig_item) ~expr_filter ~patt_filter
+  add_quotation (d, "sig_item") sig_item_quot ~mexp:(Filters.me#sig_item)
+    ~mpatt:(Filters.mp#sig_item) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "stru") stru_quot ~mexpr:(Filters.me#stru)
-    ~mpatt:(Filters.mp#stru) ~expr_filter ~patt_filter
+  add_quotation (d, "stru") stru_quot ~mexp:(Filters.me#stru)
+    ~mpatt:(Filters.mp#stru) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "ctyp") ctyp_quot ~mexpr:(Filters.me#ctyp)
-    ~mpatt:(Filters.mp#ctyp) ~expr_filter ~patt_filter
+  add_quotation (d, "ctyp") ctyp_quot ~mexp:(Filters.me#ctyp)
+    ~mpatt:(Filters.mp#ctyp) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "patt") patt_quot ~mexpr:(Filters.me#patt)
-    ~mpatt:(Filters.mp#patt) ~expr_filter ~patt_filter
+  add_quotation (d, "patt") patt_quot ~mexp:(Filters.me#patt)
+    ~mpatt:(Filters.mp#patt) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "expr") expr_quot ~mexpr:(Filters.me#expr)
-    ~mpatt:(Filters.mp#expr) ~expr_filter ~patt_filter
+  add_quotation (d, "exp") exp_quot ~mexp:(Filters.me#exp)
+    ~mpatt:(Filters.mp#exp) ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "module_type") module_type_quot
-    ~mexpr:(Filters.me#module_type) ~mpatt:(Filters.mp#module_type)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#module_type) ~mpatt:(Filters.mp#module_type)
+    ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "module_expr") module_expr_quot
-    ~mexpr:(Filters.me#module_expr) ~mpatt:(Filters.mp#module_expr)
-    ~expr_filter ~patt_filter
+  add_quotation (d, "module_exp") module_exp_quot
+    ~mexp:(Filters.me#module_exp) ~mpatt:(Filters.mp#module_exp)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "class_type") class_type_quot
-    ~mexpr:(Filters.me#class_type) ~mpatt:(Filters.mp#class_type)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#class_type) ~mpatt:(Filters.mp#class_type)
+    ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "class_expr") class_expr_quot
-    ~mexpr:(Filters.me#class_expr) ~mpatt:(Filters.mp#class_expr)
-    ~expr_filter ~patt_filter
+  add_quotation (d, "class_exp") class_exp_quot
+    ~mexp:(Filters.me#class_exp) ~mpatt:(Filters.mp#class_exp)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "class_sig_item") class_sig_item_quot
-    ~mexpr:(Filters.me#class_sig_item) ~mpatt:(Filters.mp#class_sig_item)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#class_sig_item) ~mpatt:(Filters.mp#class_sig_item)
+    ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "cstru") cstru_quot ~mexpr:(Filters.me#cstru)
-    ~mpatt:(Filters.mp#cstru) ~expr_filter ~patt_filter
+  add_quotation (d, "cstru") cstru_quot ~mexp:(Filters.me#cstru)
+    ~mpatt:(Filters.mp#cstru) ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "with_constr") with_constr_quot
-    ~mexpr:(Filters.me#with_constr) ~mpatt:(Filters.mp#with_constr)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#with_constr) ~mpatt:(Filters.mp#with_constr)
+    ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "binding") binding_quot ~mexpr:(Filters.me#binding)
-    ~mpatt:(Filters.mp#binding) ~expr_filter ~patt_filter
+  add_quotation (d, "binding") binding_quot ~mexp:(Filters.me#binding)
+    ~mpatt:(Filters.mp#binding) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "rec_expr") rec_expr_quot ~mexpr:(Filters.me#rec_expr)
-    ~mpatt:(Filters.mp#rec_expr) ~expr_filter ~patt_filter
+  add_quotation (d, "rec_exp") rec_exp_quot ~mexp:(Filters.me#rec_exp)
+    ~mpatt:(Filters.mp#rec_exp) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "case") case_quot ~mexpr:(Filters.me#case)
-    ~mpatt:(Filters.mp#case) ~expr_filter ~patt_filter
+  add_quotation (d, "case") case_quot ~mexp:(Filters.me#case)
+    ~mpatt:(Filters.mp#case) ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "module_binding") module_binding_quot
-    ~mexpr:(Filters.me#module_binding) ~mpatt:(Filters.mp#module_binding)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#module_binding) ~mpatt:(Filters.mp#module_binding)
+    ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "ident") ident_quot ~mexpr:(Filters.me#ident)
-    ~mpatt:(Filters.mp#ident) ~expr_filter ~patt_filter
+  add_quotation (d, "ident") ident_quot ~mexp:(Filters.me#ident)
+    ~mpatt:(Filters.mp#ident) ~exp_filter ~patt_filter
 let _ =
-  add_quotation (d, "rec_flag") rec_flag_quot ~mexpr:(Filters.me#rec_flag)
-    ~mpatt:(Filters.mp#rec_flag) ~expr_filter ~patt_filter
+  add_quotation (d, "rec_flag") rec_flag_quot ~mexp:(Filters.me#rec_flag)
+    ~mpatt:(Filters.mp#rec_flag) ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "private_flag") private_flag_quot
-    ~mexpr:(Filters.me#private_flag) ~mpatt:(Filters.mp#private_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#private_flag) ~mpatt:(Filters.mp#private_flag)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "row_var_flag") row_var_flag_quot
-    ~mexpr:(Filters.me#row_var_flag) ~mpatt:(Filters.mp#row_var_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#row_var_flag) ~mpatt:(Filters.mp#row_var_flag)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "mutable_flag") mutable_flag_quot
-    ~mexpr:(Filters.me#mutable_flag) ~mpatt:(Filters.mp#mutable_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#mutable_flag) ~mpatt:(Filters.mp#mutable_flag)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "virtual_flag") virtual_flag_quot
-    ~mexpr:(Filters.me#virtual_flag) ~mpatt:(Filters.mp#virtual_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#virtual_flag) ~mpatt:(Filters.mp#virtual_flag)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "override_flag") override_flag_quot
-    ~mexpr:(Filters.me#override_flag) ~mpatt:(Filters.mp#override_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#override_flag) ~mpatt:(Filters.mp#override_flag)
+    ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "direction_flag") direction_flag_quot
-    ~mexpr:(Filters.me#direction_flag) ~mpatt:(Filters.mp#direction_flag)
-    ~expr_filter ~patt_filter
+    ~mexp:(Filters.me#direction_flag) ~mpatt:(Filters.mp#direction_flag)
+    ~exp_filter ~patt_filter
 let _ =
-  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.expr_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.stru_tag

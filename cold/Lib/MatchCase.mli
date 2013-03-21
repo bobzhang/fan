@@ -6,5 +6,5 @@ arity:int ->
   annot:ctyp ->
   destination:FSig.destination ->
   Ast.ident ->
-  Ast.expr ->
+  Ast.exp ->
   case

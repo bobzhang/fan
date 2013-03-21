@@ -327,7 +327,7 @@ let gen_definition _loc l =
                      (`Id
                         (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "next")))))),
                      (`Id (_loc, (`Lid (_loc, "lexbuf")))))))), cases) in
-     let ret (body : expr) =
+     let ret (body : exp) =
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, f)))),
            (`Fun

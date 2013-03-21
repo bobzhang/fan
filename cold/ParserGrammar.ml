@@ -22,7 +22,7 @@ let assoc = Gram.mk "assoc"
 let name = Gram.mk "name"
 let string = Gram.mk "string"
 let pattern: action_pattern Gram.t = Gram.mk "pattern"
-let simple_expr = Gram.mk "simple_expr"
+let simple_exp = Gram.mk "simple_exp"
 let delete_rules = Gram.mk "delete_rules"
 let simple_patt: simple_patt Gram.t = Gram.mk "simple_patt"
 let internal_patt = Gram.mk "internal_patt"
@@ -271,7 +271,7 @@ let _ =
              (Gram.mk_action
                 (fun _  (sls : 'e__5 list)  _  _  (n : 'name) 
                    (_loc : FanLoc.t)  ->
-                   (expr_delete_rule _loc n sls : 'delete_rules )))))]));
+                   (exp_delete_rule _loc n sls : 'delete_rules )))))]));
   Gram.extend_single (qualuid : 'qualuid Gram.t )
     (None,
       (None, None,
@@ -542,10 +542,10 @@ let _ =
                (`Skeyword ";"));
           `Sopt
             (Gram.srules
-               [([`Skeyword "->"; `Snterm (Gram.obj (expr : 'expr Gram.t ))],
-                  ("Gram.mk_action (fun (act : 'expr)  _  (_loc : FanLoc.t)  -> (act : 'e__8 ))\n",
+               [([`Skeyword "->"; `Snterm (Gram.obj (exp : 'exp Gram.t ))],
+                  ("Gram.mk_action (fun (act : 'exp)  _  (_loc : FanLoc.t)  -> (act : 'e__8 ))\n",
                     (Gram.mk_action
-                       (fun (act : 'expr)  _  (_loc : FanLoc.t)  ->
+                       (fun (act : 'exp)  _  (_loc : FanLoc.t)  ->
                           (act : 'e__8 )))))])],
            ("Gram.mk_action\n  (fun (action : 'e__8 option)  (psl : 'psymbol list)  (_loc : FanLoc.t)  ->\n     (mk_rule ~prod:psl ~action : 'rule ))\n",
              (Gram.mk_action
@@ -988,24 +988,24 @@ let _ =
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
               (`Normal, "`Ant (\"\",_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant (\"\",s) -> (parse_expr _loc s : 'string )\n     | _ -> failwith \"parse_expr _loc s\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant (\"\",s) -> (parse_exp _loc s : 'string )\n     | _ -> failwith \"parse_exp _loc s\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
-                  | `Ant ("",s) -> (parse_expr _loc s : 'string )
-                  | _ -> failwith "parse_expr _loc s\n"))))]));
+                  | `Ant ("",s) -> (parse_exp _loc s : 'string )
+                  | _ -> failwith "parse_exp _loc s\n"))))]));
   Gram.extend_single (symbol : 'symbol Gram.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
                (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
-          `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-          `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
+          `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
+          `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
           `Sself],
-           ("Gram.mk_action\n  (fun (s : 'symbol)  (e : 'simple_expr)  (f : 'simple_expr) \n     (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"FOLD0\"|\"FOLD1\" as x) -> (sfold _loc [x] f e s : 'symbol )\n     | _ -> failwith \"sfold _loc [x] f e s\n\")\n",
+           ("Gram.mk_action\n  (fun (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) \n     (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"FOLD0\"|\"FOLD1\" as x) -> (sfold _loc [x] f e s : 'symbol )\n     | _ -> failwith \"sfold _loc [x] f e s\n\")\n",
              (Gram.mk_action
-                (fun (s : 'symbol)  (e : 'simple_expr)  (f : 'simple_expr) 
+                (fun (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) 
                    (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Uid ("FOLD0"|"FOLD1" as x) ->
@@ -1014,39 +1014,39 @@ let _ =
         ([`Stoken
             (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
               (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
-         `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
-         `Snterm (Gram.obj (simple_expr : 'simple_expr Gram.t ));
+         `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
+         `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
          `Sself;
          `Stoken
            (((function | `Uid "SEP" -> true | _ -> false)),
              (`Normal, "`Uid \"SEP\""));
          `Sself],
-          ("Gram.mk_action\n  (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t])  (s : 'symbol) \n     (e : 'simple_expr)  (f : 'simple_expr)  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match (__fan_4, __fan_0) with\n     | (`Uid (\"SEP\" as y),`Uid (\"FOLD0\"|\"FOLD1\" as x)) ->\n         (sfold ~sep _loc [x; y] f e s : 'symbol )\n     | _ -> failwith \"sfold ~sep _loc [x; y] f e s\n\")\n",
+          ("Gram.mk_action\n  (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t])  (s : 'symbol) \n     (e : 'simple_exp)  (f : 'simple_exp)  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match (__fan_4, __fan_0) with\n     | (`Uid (\"SEP\" as y),`Uid (\"FOLD0\"|\"FOLD1\" as x)) ->\n         (sfold ~sep _loc [x; y] f e s : 'symbol )\n     | _ -> failwith \"sfold ~sep _loc [x; y] f e s\n\")\n",
             (Gram.mk_action
                (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t]) 
-                  (s : 'symbol)  (e : 'simple_expr)  (f : 'simple_expr) 
+                  (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) 
                   (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match (__fan_4, __fan_0) with
                   | (`Uid ("SEP" as y),`Uid ("FOLD0"|"FOLD1" as x)) ->
                       (sfold ~sep _loc [x; y] f e s : 'symbol )
                   | _ -> failwith "sfold ~sep _loc [x; y] f e s\n"))))]));
-  Gram.extend_single (simple_expr : 'simple_expr Gram.t )
+  Gram.extend_single (simple_exp : 'simple_exp Gram.t )
     (None,
       (None, None,
         [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i :>ident)) : 'simple_expr ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i :>ident)) : 'simple_exp ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
-                   (`Id (_loc, (i :>ident)) : 'simple_expr )))));
+                   (`Id (_loc, (i :>ident)) : 'simple_exp )))));
         ([`Skeyword "(";
-         `Snterm (Gram.obj (expr : 'expr Gram.t ));
+         `Snterm (Gram.obj (exp : 'exp Gram.t ));
          `Skeyword ")"],
-          ("Gram.mk_action\n  (fun _  (e : 'expr)  _  (_loc : FanLoc.t)  -> (e : 'simple_expr ))\n",
+          ("Gram.mk_action\n  (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  -> (e : 'simple_exp ))\n",
             (Gram.mk_action
-               (fun _  (e : 'expr)  _  (_loc : FanLoc.t)  ->
-                  (e : 'simple_expr )))))]))
+               (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  ->
+                  (e : 'simple_exp )))))]))
 let d = `Absolute ["Fan"; "Lang"]
-let _ = AstQuotation.of_expr ~name:(d, "extend") ~entry:extend_body
-let _ = AstQuotation.of_expr ~name:(d, "delete") ~entry:delete_rule_body
-let _ = AstQuotation.of_expr ~name:(d, "clear") ~entry:nonterminalsclear
+let _ = AstQuotation.of_exp ~name:(d, "extend") ~entry:extend_body
+let _ = AstQuotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body
+let _ = AstQuotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear
 let _ = AstQuotation.of_stru ~name:(d, "create") ~entry:nonterminals

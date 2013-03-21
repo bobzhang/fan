@@ -581,7 +581,7 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#patt _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `OptLablExpr (_a0, _a1, _a2, _a3)
+            let _a3 = self#exp _a3 _b3 in `OptLablExpr (_a0, _a1, _a2, _a3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
@@ -625,103 +625,102 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>rec_patt)
         | (_,_) -> invalid_arg "map2 failure"
-    method expr : expr -> expr -> expr=
+    method exp : exp -> exp -> exp=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>expr)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>exp)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `App (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `App (_a0, _a1, _a2)
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#string _a1 _b1 in `Vrn (_a0, _a1)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Com (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `Com (_a0, _a1, _a2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `Tup (_a0, _a1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>expr)
+            let _a1 = self#exp _a1 _b1 in `Tup (_a0, _a1)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>exp)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_expr _a1 _b1 in `Record (_a0, _a1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>expr)
+            let _a1 = self#rec_exp _a1 _b1 in `Record (_a0, _a1)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>exp)
         | ((#literal as _a0),(#literal as _b0)) ->
-            (self#literal _a0 _b0 : literal  :>expr)
+            (self#literal _a0 _b0 : literal  :>exp)
         | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `RecordWith (_a0, _a1, _a2)
+            let _a1 = self#rec_exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `RecordWith (_a0, _a1, _a2)
         | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Dot (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `Dot (_a0, _a1, _a2)
         | (`ArrayDot (_a0,_a1,_a2),`ArrayDot (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `ArrayDot (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `ArrayDot (_a0, _a1, _a2)
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) ->
             let _a0 = self#loc _a0 _b0 in `ArrayEmpty _a0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `Array (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `Array (_a0, _a1)
         | (`ExAsf _a0,`ExAsf _b0) -> let _a0 = self#loc _a0 _b0 in `ExAsf _a0
         | (`ExAsr (_a0,_a1),`ExAsr (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `ExAsr (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `ExAsr (_a0, _a1)
         | (`Assign (_a0,_a1,_a2),`Assign (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Assign (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `Assign (_a0, _a1, _a2)
         | (`For (_a0,_a1,_a2,_a3,_a4,_a5),`For (_b0,_b1,_b2,_b3,_b4,_b5)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in
+            let _a2 = self#exp _a2 _b2 in
+            let _a3 = self#exp _a3 _b3 in
             let _a4 = self#direction_flag _a4 _b4 in
-            let _a5 = self#expr _a5 _b5 in
-            `For (_a0, _a1, _a2, _a3, _a4, _a5)
+            let _a5 = self#exp _a5 _b5 in `For (_a0, _a1, _a2, _a3, _a4, _a5)
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#case _a1 _b1 in `Fun (_a0, _a1)
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `IfThenElse (_a0, _a1, _a2, _a3)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in
+            let _a3 = self#exp _a3 _b3 in `IfThenElse (_a0, _a1, _a2, _a3)
         | (`IfThen (_a0,_a1,_a2),`IfThen (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `IfThen (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `IfThen (_a0, _a1, _a2)
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in `LabelS (_a0, _a1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Label (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `Label (_a0, _a1, _a2)
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `Lazy (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `Lazy (_a0, _a1)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_flag _a1 _b1 in
             let _a2 = self#binding _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
+            let _a3 = self#exp _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
         | (`LetModule (_a0,_a1,_a2,_a3),`LetModule (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
-            let _a2 = self#module_expr _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `LetModule (_a0, _a1, _a2, _a3)
+            let _a2 = self#module_exp _a2 _b2 in
+            let _a3 = self#exp _a3 _b3 in `LetModule (_a0, _a1, _a2, _a3)
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#case _a2 _b2 in `Match (_a0, _a1, _a2)
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -741,74 +740,74 @@ class map2 =
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `OptLabl (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `OptLabl (_a0, _a1, _a2)
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in `OptLablS (_a0, _a1)
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_expr _a1 _b1 in `OvrInst (_a0, _a1)
+            let _a1 = self#rec_exp _a1 _b1 in `OvrInst (_a0, _a1)
         | (`OvrInstEmpty _a0,`OvrInstEmpty _b0) ->
             let _a0 = self#loc _a0 _b0 in `OvrInstEmpty _a0
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `Seq (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `Seq (_a0, _a1)
         | (`Send (_a0,_a1,_a2),`Send (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#alident _a2 _b2 in `Send (_a0, _a1, _a2)
         | (`StringDot (_a0,_a1,_a2),`StringDot (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `StringDot (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `StringDot (_a0, _a1, _a2)
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#case _a2 _b2 in `Try (_a0, _a1, _a2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Constraint (_a0, _a1, _a2)
         | (`Coercion (_a0,_a1,_a2,_a3),`Coercion (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in
             let _a3 = self#ctyp _a3 _b3 in `Coercion (_a0, _a1, _a2, _a3)
         | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
+            let _a1 = self#exp _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Subtype (_a0, _a1, _a2)
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `While (_a0, _a1, _a2)
+            let _a1 = self#exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `While (_a0, _a1, _a2)
         | (`LetOpen (_a0,_a1,_a2),`LetOpen (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `LetOpen (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `LetOpen (_a0, _a1, _a2)
         | (`LocalTypeFun (_a0,_a1,_a2),`LocalTypeFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `LocalTypeFun (_a0, _a1, _a2)
-        | (`Package_expr (_a0,_a1),`Package_expr (_b0,_b1)) ->
+            let _a2 = self#exp _a2 _b2 in `LocalTypeFun (_a0, _a1, _a2)
+        | (`Package_exp (_a0,_a1),`Package_exp (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#module_expr _a1 _b1 in `Package_expr (_a0, _a1)
+            let _a1 = self#module_exp _a1 _b1 in `Package_exp (_a0, _a1)
         | (_,_) -> invalid_arg "map2 failure"
-    method rec_expr : rec_expr -> rec_expr -> rec_expr=
+    method rec_exp : rec_exp -> rec_exp -> rec_exp=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_expr _a1 _b1 in
-            let _a2 = self#rec_expr _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#rec_exp _a1 _b1 in
+            let _a2 = self#rec_exp _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `RecBind (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `RecBind (_a0, _a1, _a2)
         | ((#any as _a0),(#any as _b0)) ->
-            (self#any _a0 _b0 : any  :>rec_expr)
+            (self#any _a0 _b0 : any  :>rec_exp)
         | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>rec_expr)
+            (self#ant _a0 _b0 : ant  :>rec_exp)
         | (_,_) -> invalid_arg "map2 failure"
     method module_type : module_type -> module_type -> module_type=
       fun _a0  _b0  ->
@@ -832,7 +831,7 @@ class map2 =
             let _a2 = self#with_constr _a2 _b2 in `With (_a0, _a1, _a2)
         | (`ModuleTypeOf (_a0,_a1),`ModuleTypeOf (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#module_expr _a1 _b1 in `ModuleTypeOf (_a0, _a1)
+            let _a1 = self#module_exp _a1 _b1 in `ModuleTypeOf (_a0, _a1)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>module_type)
         | (_,_) -> invalid_arg "map2 failure"
@@ -855,7 +854,7 @@ class map2 =
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Directive (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `Directive (_a0, _a1, _a2)
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#of_ctyp _a1 _b1 in `Exception (_a0, _a1)
@@ -934,7 +933,7 @@ class map2 =
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Bind (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `Bind (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>binding)
         | (_,_) -> invalid_arg "map2 failure"
@@ -950,7 +949,7 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
             let _a2 = self#module_type _a2 _b2 in
-            let _a3 = self#module_expr _a3 _b3 in
+            let _a3 = self#module_exp _a3 _b3 in
             `ModuleBind (_a0, _a1, _a2, _a3)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -969,28 +968,28 @@ class map2 =
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Case (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `Case (_a0, _a1, _a2)
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in
-            let _a3 = self#expr _a3 _b3 in `CaseWhen (_a0, _a1, _a2, _a3)
+            let _a2 = self#exp _a2 _b2 in
+            let _a3 = self#exp _a3 _b3 in `CaseWhen (_a0, _a1, _a2, _a3)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>case)
         | (_,_) -> invalid_arg "map2 failure"
-    method module_expr : module_expr -> module_expr -> module_expr=
+    method module_exp : module_exp -> module_exp -> module_exp=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) ->
-            (self#sid _a0 _b0 : sid  :>module_expr)
+            (self#sid _a0 _b0 : sid  :>module_exp)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#module_expr _a1 _b1 in
-            let _a2 = self#module_expr _a2 _b2 in `App (_a0, _a1, _a2)
+            let _a1 = self#module_exp _a1 _b1 in
+            let _a2 = self#module_exp _a2 _b2 in `App (_a0, _a1, _a2)
         | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
             let _a2 = self#module_type _a2 _b2 in
-            let _a3 = self#module_expr _a3 _b3 in
+            let _a3 = self#module_exp _a3 _b3 in
             `Functor (_a0, _a1, _a2, _a3)
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -999,20 +998,20 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in `StructEnd _a0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#module_expr _a1 _b1 in
+            let _a1 = self#module_exp _a1 _b1 in
             let _a2 = self#module_type _a2 _b2 in `Constraint (_a0, _a1, _a2)
         | (`PackageModule (_a0,_a1),`PackageModule (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `PackageModule (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `PackageModule (_a0, _a1)
         | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>module_expr)
+            (self#ant _a0 _b0 : ant  :>module_exp)
         | (_,_) -> invalid_arg "map2 failure"
     method stru : stru -> stru -> stru=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_expr _a1 _b1 in `Class (_a0, _a1)
+            let _a1 = self#class_exp _a1 _b1 in `Class (_a0, _a1)
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_type _a1 _b1 in `ClassType (_a0, _a1)
@@ -1026,13 +1025,13 @@ class map2 =
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `Directive (_a0, _a1, _a2)
+            let _a2 = self#exp _a2 _b2 in `Directive (_a0, _a1, _a2)
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#of_ctyp _a1 _b1 in `Exception (_a0, _a1)
         | (`StExp (_a0,_a1),`StExp (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `StExp (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `StExp (_a0, _a1)
         | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1040,11 +1039,11 @@ class map2 =
             let _a3 = self#strings _a3 _b3 in `External (_a0, _a1, _a2, _a3)
         | (`Include (_a0,_a1),`Include (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#module_expr _a1 _b1 in `Include (_a0, _a1)
+            let _a1 = self#module_exp _a1 _b1 in `Include (_a0, _a1)
         | (`Module (_a0,_a1,_a2),`Module (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in
-            let _a2 = self#module_expr _a2 _b2 in `Module (_a0, _a1, _a2)
+            let _a2 = self#module_exp _a2 _b2 in `Module (_a0, _a1, _a2)
         | (`RecModule (_a0,_a1),`RecModule (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#module_binding _a1 _b1 in `RecModule (_a0, _a1)
@@ -1142,13 +1141,13 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>class_sig_item)
         | (_,_) -> invalid_arg "map2 failure"
-    method class_expr : class_expr -> class_expr -> class_expr=
+    method class_exp : class_exp -> class_exp -> class_exp=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_expr _a1 _b1 in
-            let _a2 = self#expr _a2 _b2 in `CeApp (_a0, _a1, _a2)
+            let _a1 = self#class_exp _a1 _b1 in
+            let _a2 = self#exp _a2 _b2 in `CeApp (_a0, _a1, _a2)
         | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#virtual_flag _a1 _b1 in
@@ -1162,12 +1161,12 @@ class map2 =
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#class_expr _a2 _b2 in `CeFun (_a0, _a1, _a2)
+            let _a2 = self#class_exp _a2 _b2 in `CeFun (_a0, _a1, _a2)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#rec_flag _a1 _b1 in
             let _a2 = self#binding _a2 _b2 in
-            let _a3 = self#class_expr _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
+            let _a3 = self#class_exp _a3 _b3 in `LetIn (_a0, _a1, _a2, _a3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#cstru _a1 _b1 in `Obj (_a0, _a1)
@@ -1182,18 +1181,18 @@ class map2 =
             let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_expr _a1 _b1 in
+            let _a1 = self#class_exp _a1 _b1 in
             let _a2 = self#class_type _a2 _b2 in `Constraint (_a0, _a1, _a2)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_expr _a1 _b1 in
-            let _a2 = self#class_expr _a2 _b2 in `And (_a0, _a1, _a2)
+            let _a1 = self#class_exp _a1 _b1 in
+            let _a2 = self#class_exp _a2 _b2 in `And (_a0, _a1, _a2)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#class_expr _a1 _b1 in
-            let _a2 = self#class_expr _a2 _b2 in `Eq (_a0, _a1, _a2)
+            let _a1 = self#class_exp _a1 _b1 in
+            let _a2 = self#class_exp _a2 _b2 in `Eq (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>class_expr)
+            (self#ant _a0 _b0 : ant  :>class_exp)
         | (_,_) -> invalid_arg "map2 failure"
     method cstru : cstru -> cstru -> cstru=
       fun _a0  _b0  ->
@@ -1209,22 +1208,22 @@ class map2 =
         | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#override_flag _a1 _b1 in
-            let _a2 = self#class_expr _a2 _b2 in `Inherit (_a0, _a1, _a2)
+            let _a2 = self#class_exp _a2 _b2 in `Inherit (_a0, _a1, _a2)
         | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#override_flag _a1 _b1 in
-            let _a2 = self#class_expr _a2 _b2 in
+            let _a2 = self#class_exp _a2 _b2 in
             let _a3 = self#alident _a3 _b3 in `InheritAs (_a0, _a1, _a2, _a3)
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#expr _a1 _b1 in `Initializer (_a0, _a1)
+            let _a1 = self#exp _a1 _b1 in `Initializer (_a0, _a1)
         | (`CrMth (_a0,_a1,_a2,_a3,_a4,_a5),`CrMth (_b0,_b1,_b2,_b3,_b4,_b5))
             ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#override_flag _a2 _b2 in
             let _a3 = self#private_flag _a3 _b3 in
-            let _a4 = self#expr _a4 _b4 in
+            let _a4 = self#exp _a4 _b4 in
             let _a5 = self#ctyp _a5 _b5 in
             `CrMth (_a0, _a1, _a2, _a3, _a4, _a5)
         | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
@@ -1232,13 +1231,13 @@ class map2 =
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#override_flag _a2 _b2 in
             let _a3 = self#private_flag _a3 _b3 in
-            let _a4 = self#expr _a4 _b4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
+            let _a4 = self#exp _a4 _b4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
             let _a2 = self#override_flag _a2 _b2 in
             let _a3 = self#mutable_flag _a3 _b3 in
-            let _a4 = self#expr _a4 _b4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
+            let _a4 = self#exp _a4 _b4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
         | (`CrVir (_a0,_a1,_a2,_a3),`CrVir (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -1757,7 +1756,7 @@ class fold2 =
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
-            let self = self#patt _a2 _b2 in self#expr _a3 _b3
+            let self = self#patt _a2 _b2 in self#exp _a3 _b3
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in self#patt _a2 _b2
@@ -1790,80 +1789,80 @@ class fold2 =
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method expr : expr -> expr -> 'self_type=
+    method exp : exp -> exp -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#string _a1 _b1
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#rec_expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#rec_exp _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'self_type)
         | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#rec_expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#rec_exp _a1 _b1 in self#exp _a2 _b2
         | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`ArrayDot (_a0,_a1,_a2),`ArrayDot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`ExAsf _a0,`ExAsf _b0) -> self#loc _a0 _b0
         | (`ExAsr (_a0,_a1),`ExAsr (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`Assign (_a0,_a1,_a2),`Assign (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`For (_a0,_a1,_a2,_a3,_a4,_a5),`For (_b0,_b1,_b2,_b3,_b4,_b5)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
-            let self = self#expr _a2 _b2 in
-            let self = self#expr _a3 _b3 in
-            let self = self#direction_flag _a4 _b4 in self#expr _a5 _b5
+            let self = self#exp _a2 _b2 in
+            let self = self#exp _a3 _b3 in
+            let self = self#direction_flag _a4 _b4 in self#exp _a5 _b5
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#case _a1 _b1
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in
-            let self = self#expr _a2 _b2 in self#expr _a3 _b3
+            let self = self#exp _a1 _b1 in
+            let self = self#exp _a2 _b2 in self#exp _a3 _b3
         | (`IfThen (_a0,_a1,_a2),`IfThen (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#expr _a2 _b2
+            let self = self#alident _a1 _b1 in self#exp _a2 _b2
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#rec_flag _a1 _b1 in
-            let self = self#binding _a2 _b2 in self#expr _a3 _b3
+            let self = self#binding _a2 _b2 in self#exp _a3 _b3
         | (`LetModule (_a0,_a1,_a2,_a3),`LetModule (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in
-            let self = self#module_expr _a2 _b2 in self#expr _a3 _b3
+            let self = self#module_exp _a2 _b2 in self#exp _a3 _b3
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#case _a2 _b2
+            let self = self#exp _a1 _b1 in self#case _a2 _b2
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
@@ -1876,54 +1875,54 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#expr _a2 _b2
+            let self = self#alident _a1 _b1 in self#exp _a2 _b2
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#rec_expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#rec_exp _a1 _b1
         | (`OvrInstEmpty _a0,`OvrInstEmpty _b0) -> self#loc _a0 _b0
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`Send (_a0,_a1,_a2),`Send (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#alident _a2 _b2
+            let self = self#exp _a1 _b1 in self#alident _a2 _b2
         | (`StringDot (_a0,_a1,_a2),`StringDot (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#case _a2 _b2
+            let self = self#exp _a1 _b1 in self#case _a2 _b2
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#exp _a1 _b1 in self#ctyp _a2 _b2
         | (`Coercion (_a0,_a1,_a2,_a3),`Coercion (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in
+            let self = self#exp _a1 _b1 in
             let self = self#ctyp _a2 _b2 in self#ctyp _a3 _b3
         | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#exp _a1 _b1 in self#ctyp _a2 _b2
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#exp _a1 _b1 in self#exp _a2 _b2
         | (`LetOpen (_a0,_a1,_a2),`LetOpen (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ident _a1 _b1 in self#expr _a2 _b2
+            let self = self#ident _a1 _b1 in self#exp _a2 _b2
         | (`LocalTypeFun (_a0,_a1,_a2),`LocalTypeFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#expr _a2 _b2
-        | (`Package_expr (_a0,_a1),`Package_expr (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#module_expr _a1 _b1
+            let self = self#alident _a1 _b1 in self#exp _a2 _b2
+        | (`Package_exp (_a0,_a1),`Package_exp (_b0,_b1)) ->
+            let self = self#loc _a0 _b0 in self#module_exp _a1 _b1
         | (_,_) -> invalid_arg "fold2 failure"
-    method rec_expr : rec_expr -> rec_expr -> 'self_type=
+    method rec_exp : rec_exp -> rec_exp -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#rec_expr _a1 _b1 in self#rec_expr _a2 _b2
+            let self = self#rec_exp _a1 _b1 in self#rec_exp _a2 _b2
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ident _a1 _b1 in self#expr _a2 _b2
+            let self = self#ident _a1 _b1 in self#exp _a2 _b2
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -1942,7 +1941,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#module_type _a1 _b1 in self#with_constr _a2 _b2
         | (`ModuleTypeOf (_a0,_a1),`ModuleTypeOf (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#module_expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#module_exp _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method sig_item : sig_item -> sig_item -> 'self_type=
@@ -1959,7 +1958,7 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#expr _a2 _b2
+            let self = self#alident _a1 _b1 in self#exp _a2 _b2
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#of_ctyp _a1 _b1
         | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
@@ -2018,7 +2017,7 @@ class fold2 =
             let self = self#binding _a1 _b1 in self#binding _a2 _b2
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#expr _a2 _b2
+            let self = self#patt _a1 _b1 in self#exp _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method module_binding : module_binding -> module_binding -> 'self_type=
@@ -2031,7 +2030,7 @@ class fold2 =
         | (`ModuleBind (_a0,_a1,_a2,_a3),`ModuleBind (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in
-            let self = self#module_type _a2 _b2 in self#module_expr _a3 _b3
+            let self = self#module_type _a2 _b2 in self#module_exp _a3 _b3
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in self#module_type _a2 _b2
@@ -2045,39 +2044,39 @@ class fold2 =
             let self = self#case _a1 _b1 in self#case _a2 _b2
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#expr _a2 _b2
+            let self = self#patt _a1 _b1 in self#exp _a2 _b2
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#patt _a1 _b1 in
-            let self = self#expr _a2 _b2 in self#expr _a3 _b3
+            let self = self#exp _a2 _b2 in self#exp _a3 _b3
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method module_expr : module_expr -> module_expr -> 'self_type=
+    method module_exp : module_exp -> module_exp -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#module_expr _a1 _b1 in self#module_expr _a2 _b2
+            let self = self#module_exp _a1 _b1 in self#module_exp _a2 _b2
         | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in
-            let self = self#module_type _a2 _b2 in self#module_expr _a3 _b3
+            let self = self#module_type _a2 _b2 in self#module_exp _a3 _b3
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#stru _a1 _b1
         | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#module_expr _a1 _b1 in self#module_type _a2 _b2
+            let self = self#module_exp _a1 _b1 in self#module_type _a2 _b2
         | (`PackageModule (_a0,_a1),`PackageModule (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method stru : stru -> stru -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#class_expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#class_exp _a1 _b1
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#class_type _a1 _b1
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -2087,20 +2086,20 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#expr _a2 _b2
+            let self = self#alident _a1 _b1 in self#exp _a2 _b2
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#of_ctyp _a1 _b1
         | (`StExp (_a0,_a1),`StExp (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
             let self = self#ctyp _a2 _b2 in self#strings _a3 _b3
         | (`Include (_a0,_a1),`Include (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#module_expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#module_exp _a1 _b1
         | (`Module (_a0,_a1,_a2),`Module (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#auident _a1 _b1 in self#module_expr _a2 _b2
+            let self = self#auident _a1 _b1 in self#module_exp _a2 _b2
         | (`RecModule (_a0,_a1),`RecModule (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#module_binding _a1 _b1
         | (`ModuleType (_a0,_a1,_a2),`ModuleType (_b0,_b1,_b2)) ->
@@ -2174,12 +2173,12 @@ class fold2 =
             let self = self#private_flag _a2 _b2 in self#ctyp _a3 _b3
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method class_expr : class_expr -> class_expr -> 'self_type=
+    method class_exp : class_exp -> class_exp -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#class_expr _a1 _b1 in self#expr _a2 _b2
+            let self = self#class_exp _a1 _b1 in self#exp _a2 _b2
         | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#virtual_flag _a1 _b1 in
@@ -2189,11 +2188,11 @@ class fold2 =
             let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#class_expr _a2 _b2
+            let self = self#patt _a1 _b1 in self#class_exp _a2 _b2
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#rec_flag _a1 _b1 in
-            let self = self#binding _a2 _b2 in self#class_expr _a3 _b3
+            let self = self#binding _a2 _b2 in self#class_exp _a3 _b3
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#cstru _a1 _b1
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
@@ -2204,13 +2203,13 @@ class fold2 =
             let self = self#loc _a0 _b0 in self#patt _a1 _b1
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#class_expr _a1 _b1 in self#class_type _a2 _b2
+            let self = self#class_exp _a1 _b1 in self#class_type _a2 _b2
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#class_expr _a1 _b1 in self#class_expr _a2 _b2
+            let self = self#class_exp _a1 _b1 in self#class_exp _a2 _b2
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#class_expr _a1 _b1 in self#class_expr _a2 _b2
+            let self = self#class_exp _a1 _b1 in self#class_exp _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method cstru : cstru -> cstru -> 'self_type=
@@ -2224,30 +2223,30 @@ class fold2 =
             let self = self#ctyp _a1 _b1 in self#ctyp _a2 _b2
         | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#override_flag _a1 _b1 in self#class_expr _a2 _b2
+            let self = self#override_flag _a1 _b1 in self#class_exp _a2 _b2
         | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#override_flag _a1 _b1 in
-            let self = self#class_expr _a2 _b2 in self#alident _a3 _b3
+            let self = self#class_exp _a2 _b2 in self#alident _a3 _b3
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#expr _a1 _b1
+            let self = self#loc _a0 _b0 in self#exp _a1 _b1
         | (`CrMth (_a0,_a1,_a2,_a3,_a4,_a5),`CrMth (_b0,_b1,_b2,_b3,_b4,_b5))
             ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
             let self = self#override_flag _a2 _b2 in
             let self = self#private_flag _a3 _b3 in
-            let self = self#expr _a4 _b4 in self#ctyp _a5 _b5
+            let self = self#exp _a4 _b4 in self#ctyp _a5 _b5
         | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
             let self = self#override_flag _a2 _b2 in
-            let self = self#private_flag _a3 _b3 in self#expr _a4 _b4
+            let self = self#private_flag _a3 _b3 in self#exp _a4 _b4
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
             let self = self#override_flag _a2 _b2 in
-            let self = self#mutable_flag _a3 _b3 in self#expr _a4 _b4
+            let self = self#mutable_flag _a3 _b3 in self#exp _a4 _b4
         | (`CrVir (_a0,_a1,_a2,_a3),`CrVir (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
@@ -2567,7 +2566,7 @@ class iter =
           (self#loc _a0; self#alident _a1; self#patt _a2)
       | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#alident _a1; self#patt _a2; self#expr _a3)
+          (self#loc _a0; self#alident _a1; self#patt _a2; self#exp _a3)
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
       | `Constraint (_a0,_a1,_a2) ->
@@ -2585,51 +2584,47 @@ class iter =
           (self#loc _a0; self#rec_patt _a1; self#rec_patt _a2)
       | #any as _a0 -> (self#any _a0 :>'result155)
       | #ant as _a0 -> (self#ant _a0 :>'result155)
-    method expr : expr -> 'result156=
+    method exp : exp -> 'result156=
       function
       | #sid as _a0 -> (self#sid _a0 :>'result156)
-      | `App (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+      | `App (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
       | `Vrn (_a0,_a1) -> (self#loc _a0; self#string _a1)
-      | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
-      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
-      | `Tup (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+      | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
+      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
+      | `Tup (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | #any as _a0 -> (self#any _a0 :>'result156)
-      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_expr _a1)
+      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_exp _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result156)
       | #literal as _a0 -> (self#literal _a0 :>'result156)
       | `RecordWith (_a0,_a1,_a2) ->
-          (self#loc _a0; self#rec_expr _a1; self#expr _a2)
-      | `Dot (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
-      | `ArrayDot (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#expr _a2)
+          (self#loc _a0; self#rec_exp _a1; self#exp _a2)
+      | `Dot (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
+      | `ArrayDot (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
       | `ArrayEmpty _a0 -> self#loc _a0
-      | `Array (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+      | `Array (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | `ExAsf _a0 -> self#loc _a0
-      | `ExAsr (_a0,_a1) -> (self#loc _a0; self#expr _a1)
-      | `Assign (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+      | `ExAsr (_a0,_a1) -> (self#loc _a0; self#exp _a1)
+      | `Assign (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
       | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
           (self#loc _a0;
            self#alident _a1;
-           self#expr _a2;
-           self#expr _a3;
+           self#exp _a2;
+           self#exp _a3;
            self#direction_flag _a4;
-           self#expr _a5)
+           self#exp _a5)
       | `Fun (_a0,_a1) -> (self#loc _a0; self#case _a1)
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#expr _a1; self#expr _a2; self#expr _a3)
-      | `IfThen (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+          (self#loc _a0; self#exp _a1; self#exp _a2; self#exp _a3)
+      | `IfThen (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
       | `LabelS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Label (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#expr _a2)
-      | `Lazy (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+          (self#loc _a0; self#alident _a1; self#exp _a2)
+      | `Lazy (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | `LetIn (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#rec_flag _a1; self#binding _a2; self#expr _a3)
+          (self#loc _a0; self#rec_flag _a1; self#binding _a2; self#exp _a3)
       | `LetModule (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0;
-           self#auident _a1;
-           self#module_expr _a2;
-           self#expr _a3)
-      | `Match (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#case _a2)
+          (self#loc _a0; self#auident _a1; self#module_exp _a2; self#exp _a3)
+      | `Match (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#case _a2)
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
@@ -2637,34 +2632,32 @@ class iter =
           (self#loc _a0; self#patt _a1; self#cstru _a2)
       | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `OptLabl (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#expr _a2)
+          (self#loc _a0; self#alident _a1; self#exp _a2)
       | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
-      | `OvrInst (_a0,_a1) -> (self#loc _a0; self#rec_expr _a1)
+      | `OvrInst (_a0,_a1) -> (self#loc _a0; self#rec_exp _a1)
       | `OvrInstEmpty _a0 -> self#loc _a0
-      | `Seq (_a0,_a1) -> (self#loc _a0; self#expr _a1)
-      | `Send (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#alident _a2)
+      | `Seq (_a0,_a1) -> (self#loc _a0; self#exp _a1)
+      | `Send (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#alident _a2)
       | `StringDot (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#expr _a2)
-      | `Try (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#case _a2)
+          (self#loc _a0; self#exp _a1; self#exp _a2)
+      | `Try (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#case _a2)
       | `Constraint (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#ctyp _a2)
+          (self#loc _a0; self#exp _a1; self#ctyp _a2)
       | `Coercion (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#expr _a1; self#ctyp _a2; self#ctyp _a3)
-      | `Subtype (_a0,_a1,_a2) ->
-          (self#loc _a0; self#expr _a1; self#ctyp _a2)
-      | `While (_a0,_a1,_a2) -> (self#loc _a0; self#expr _a1; self#expr _a2)
+          (self#loc _a0; self#exp _a1; self#ctyp _a2; self#ctyp _a3)
+      | `Subtype (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#ctyp _a2)
+      | `While (_a0,_a1,_a2) -> (self#loc _a0; self#exp _a1; self#exp _a2)
       | `LetOpen (_a0,_a1,_a2) ->
-          (self#loc _a0; self#ident _a1; self#expr _a2)
+          (self#loc _a0; self#ident _a1; self#exp _a2)
       | `LocalTypeFun (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#expr _a2)
-      | `Package_expr (_a0,_a1) -> (self#loc _a0; self#module_expr _a1)
-    method rec_expr : rec_expr -> 'result157=
+          (self#loc _a0; self#alident _a1; self#exp _a2)
+      | `Package_exp (_a0,_a1) -> (self#loc _a0; self#module_exp _a1)
+    method rec_exp : rec_exp -> 'result157=
       function
       | `Sem (_a0,_a1,_a2) ->
-          (self#loc _a0; self#rec_expr _a1; self#rec_expr _a2)
+          (self#loc _a0; self#rec_exp _a1; self#rec_exp _a2)
       | `RecBind (_a0,_a1,_a2) ->
-          (self#loc _a0; self#ident _a1; self#expr _a2)
+          (self#loc _a0; self#ident _a1; self#exp _a2)
       | #any as _a0 -> (self#any _a0 :>'result157)
       | #ant as _a0 -> (self#ant _a0 :>'result157)
     method module_type : module_type -> 'result158=
@@ -2679,7 +2672,7 @@ class iter =
       | `SigEnd _a0 -> self#loc _a0
       | `With (_a0,_a1,_a2) ->
           (self#loc _a0; self#module_type _a1; self#with_constr _a2)
-      | `ModuleTypeOf (_a0,_a1) -> (self#loc _a0; self#module_expr _a1)
+      | `ModuleTypeOf (_a0,_a1) -> (self#loc _a0; self#module_exp _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result158)
     method sig_item : sig_item -> 'result159=
       function
@@ -2689,7 +2682,7 @@ class iter =
           (self#loc _a0; self#sig_item _a1; self#sig_item _a2)
       | `DirectiveSimple (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Directive (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#expr _a2)
+          (self#loc _a0; self#alident _a1; self#exp _a2)
       | `Exception (_a0,_a1) -> (self#loc _a0; self#of_ctyp _a1)
       | `External (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#alident _a1; self#ctyp _a2; self#strings _a3)
@@ -2722,7 +2715,7 @@ class iter =
       function
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#binding _a1; self#binding _a2)
-      | `Bind (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
+      | `Bind (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#exp _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result161)
     method module_binding : module_binding -> 'result162=
       function
@@ -2732,48 +2725,48 @@ class iter =
           (self#loc _a0;
            self#auident _a1;
            self#module_type _a2;
-           self#module_expr _a3)
+           self#module_exp _a3)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#auident _a1; self#module_type _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result162)
     method case : case -> 'result163=
       function
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#case _a1; self#case _a2)
-      | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#expr _a2)
+      | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#exp _a2)
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#patt _a1; self#expr _a2; self#expr _a3)
+          (self#loc _a0; self#patt _a1; self#exp _a2; self#exp _a3)
       | #ant as _a0 -> (self#ant _a0 :>'result163)
-    method module_expr : module_expr -> 'result164=
+    method module_exp : module_exp -> 'result164=
       function
       | #sid as _a0 -> (self#sid _a0 :>'result164)
       | `App (_a0,_a1,_a2) ->
-          (self#loc _a0; self#module_expr _a1; self#module_expr _a2)
+          (self#loc _a0; self#module_exp _a1; self#module_exp _a2)
       | `Functor (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#auident _a1;
            self#module_type _a2;
-           self#module_expr _a3)
+           self#module_exp _a3)
       | `Struct (_a0,_a1) -> (self#loc _a0; self#stru _a1)
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
-          (self#loc _a0; self#module_expr _a1; self#module_type _a2)
-      | `PackageModule (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+          (self#loc _a0; self#module_exp _a1; self#module_type _a2)
+      | `PackageModule (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result164)
     method stru : stru -> 'result165=
       function
-      | `Class (_a0,_a1) -> (self#loc _a0; self#class_expr _a1)
+      | `Class (_a0,_a1) -> (self#loc _a0; self#class_exp _a1)
       | `ClassType (_a0,_a1) -> (self#loc _a0; self#class_type _a1)
       | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#stru _a1; self#stru _a2)
       | `DirectiveSimple (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Directive (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#expr _a2)
+          (self#loc _a0; self#alident _a1; self#exp _a2)
       | `Exception (_a0,_a1) -> (self#loc _a0; self#of_ctyp _a1)
-      | `StExp (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+      | `StExp (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | `External (_a0,_a1,_a2,_a3) ->
           (self#loc _a0; self#alident _a1; self#ctyp _a2; self#strings _a3)
-      | `Include (_a0,_a1) -> (self#loc _a0; self#module_expr _a1)
+      | `Include (_a0,_a1) -> (self#loc _a0; self#module_exp _a1)
       | `Module (_a0,_a1,_a2) ->
-          (self#loc _a0; self#auident _a1; self#module_expr _a2)
+          (self#loc _a0; self#auident _a1; self#module_exp _a2)
       | `RecModule (_a0,_a1) -> (self#loc _a0; self#module_binding _a1)
       | `ModuleType (_a0,_a1,_a2) ->
           (self#loc _a0; self#auident _a1; self#module_type _a2)
@@ -2828,10 +2821,10 @@ class iter =
            self#private_flag _a2;
            self#ctyp _a3)
       | #ant as _a0 -> (self#ant _a0 :>'result167)
-    method class_expr : class_expr -> 'result168=
+    method class_exp : class_exp -> 'result168=
       function
       | `CeApp (_a0,_a1,_a2) ->
-          (self#loc _a0; self#class_expr _a1; self#expr _a2)
+          (self#loc _a0; self#class_exp _a1; self#exp _a2)
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#virtual_flag _a1;
@@ -2840,55 +2833,55 @@ class iter =
       | `ClassConS (_a0,_a1,_a2) ->
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CeFun (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#class_expr _a2)
+          (self#loc _a0; self#patt _a1; self#class_exp _a2)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#rec_flag _a1;
            self#binding _a2;
-           self#class_expr _a3)
+           self#class_exp _a3)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           (self#loc _a0; self#patt _a1; self#cstru _a2)
       | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
       | `Constraint (_a0,_a1,_a2) ->
-          (self#loc _a0; self#class_expr _a1; self#class_type _a2)
+          (self#loc _a0; self#class_exp _a1; self#class_type _a2)
       | `And (_a0,_a1,_a2) ->
-          (self#loc _a0; self#class_expr _a1; self#class_expr _a2)
+          (self#loc _a0; self#class_exp _a1; self#class_exp _a2)
       | `Eq (_a0,_a1,_a2) ->
-          (self#loc _a0; self#class_expr _a1; self#class_expr _a2)
+          (self#loc _a0; self#class_exp _a1; self#class_exp _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result168)
     method cstru : cstru -> 'result169=
       function
       | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#cstru _a1; self#cstru _a2)
       | `Eq (_a0,_a1,_a2) -> (self#loc _a0; self#ctyp _a1; self#ctyp _a2)
       | `Inherit (_a0,_a1,_a2) ->
-          (self#loc _a0; self#override_flag _a1; self#class_expr _a2)
+          (self#loc _a0; self#override_flag _a1; self#class_exp _a2)
       | `InheritAs (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#override_flag _a1;
-           self#class_expr _a2;
+           self#class_exp _a2;
            self#alident _a3)
-      | `Initializer (_a0,_a1) -> (self#loc _a0; self#expr _a1)
+      | `Initializer (_a0,_a1) -> (self#loc _a0; self#exp _a1)
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           (self#loc _a0;
            self#alident _a1;
            self#override_flag _a2;
            self#private_flag _a3;
-           self#expr _a4;
+           self#exp _a4;
            self#ctyp _a5)
       | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
           (self#loc _a0;
            self#alident _a1;
            self#override_flag _a2;
            self#private_flag _a3;
-           self#expr _a4)
+           self#exp _a4)
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           (self#loc _a0;
            self#alident _a1;
            self#override_flag _a2;
            self#mutable_flag _a3;
-           self#expr _a4)
+           self#exp _a4)
       | `CrVir (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#alident _a1;
@@ -3374,7 +3367,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#patt _a2 in
-          let _a3 = self#expr _a3 in `OptLablExpr (_a0, _a1, _a2, _a3)
+          let _a3 = self#exp _a3 in `OptLablExpr (_a0, _a1, _a2, _a3)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
@@ -3412,99 +3405,98 @@ class map =
           let _a2 = self#rec_patt _a2 in `Sem (_a0, _a1, _a2)
       | #any as _a0 -> (self#any _a0 : any  :>rec_patt)
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_patt)
-    method expr : expr -> expr=
+    method exp : exp -> exp=
       function
-      | #sid as _a0 -> (self#sid _a0 : sid  :>expr)
+      | #sid as _a0 -> (self#sid _a0 : sid  :>exp)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `App (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `App (_a0, _a1, _a2)
       | `Vrn (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Vrn (_a0, _a1)
       | `Com (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `Com (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `Com (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `Sem (_a0, _a1, _a2)
       | `Tup (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `Tup (_a0, _a1)
-      | #any as _a0 -> (self#any _a0 : any  :>expr)
+          let _a0 = self#loc _a0 in let _a1 = self#exp _a1 in `Tup (_a0, _a1)
+      | #any as _a0 -> (self#any _a0 : any  :>exp)
       | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_expr _a1 in `Record (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>expr)
-      | #literal as _a0 -> (self#literal _a0 : literal  :>expr)
+          let _a1 = self#rec_exp _a1 in `Record (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>exp)
+      | #literal as _a0 -> (self#literal _a0 : literal  :>exp)
       | `RecordWith (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_expr _a1 in
-          let _a2 = self#expr _a2 in `RecordWith (_a0, _a1, _a2)
+          let _a1 = self#rec_exp _a1 in
+          let _a2 = self#exp _a2 in `RecordWith (_a0, _a1, _a2)
       | `Dot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `Dot (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `Dot (_a0, _a1, _a2)
       | `ArrayDot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `ArrayDot (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `ArrayDot (_a0, _a1, _a2)
       | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `Array (_a0, _a1)
+          let _a1 = self#exp _a1 in `Array (_a0, _a1)
       | `ExAsf _a0 -> let _a0 = self#loc _a0 in `ExAsf _a0
       | `ExAsr (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `ExAsr (_a0, _a1)
+          let _a1 = self#exp _a1 in `ExAsr (_a0, _a1)
       | `Assign (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `Assign (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `Assign (_a0, _a1, _a2)
       | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in
-          let _a3 = self#expr _a3 in
+          let _a2 = self#exp _a2 in
+          let _a3 = self#exp _a3 in
           let _a4 = self#direction_flag _a4 in
-          let _a5 = self#expr _a5 in `For (_a0, _a1, _a2, _a3, _a4, _a5)
+          let _a5 = self#exp _a5 in `For (_a0, _a1, _a2, _a3, _a4, _a5)
       | `Fun (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#case _a1 in `Fun (_a0, _a1)
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in
-          let _a3 = self#expr _a3 in `IfThenElse (_a0, _a1, _a2, _a3)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in
+          let _a3 = self#exp _a3 in `IfThenElse (_a0, _a1, _a2, _a3)
       | `IfThen (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `IfThen (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `IfThen (_a0, _a1, _a2)
       | `LabelS (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `LabelS (_a0, _a1)
       | `Label (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in `Label (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Label (_a0, _a1, _a2)
       | `Lazy (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `Lazy (_a0, _a1)
+          let _a1 = self#exp _a1 in `Lazy (_a0, _a1)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
-          let _a3 = self#expr _a3 in `LetIn (_a0, _a1, _a2, _a3)
+          let _a3 = self#exp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_expr _a2 in
-          let _a3 = self#expr _a3 in `LetModule (_a0, _a1, _a2, _a3)
+          let _a2 = self#module_exp _a2 in
+          let _a3 = self#exp _a3 in `LetModule (_a0, _a1, _a2, _a3)
       | `Match (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#case _a2 in `Match (_a0, _a1, _a2)
       | `New (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -3523,69 +3515,68 @@ class map =
       | `OptLabl (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in `OptLabl (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `OptLabl (_a0, _a1, _a2)
       | `OptLablS (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `OptLablS (_a0, _a1)
       | `OvrInst (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_expr _a1 in `OvrInst (_a0, _a1)
+          let _a1 = self#rec_exp _a1 in `OvrInst (_a0, _a1)
       | `OvrInstEmpty _a0 -> let _a0 = self#loc _a0 in `OvrInstEmpty _a0
       | `Seq (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `Seq (_a0, _a1)
+          let _a0 = self#loc _a0 in let _a1 = self#exp _a1 in `Seq (_a0, _a1)
       | `Send (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#alident _a2 in `Send (_a0, _a1, _a2)
       | `StringDot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `StringDot (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `StringDot (_a0, _a1, _a2)
       | `Try (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#case _a2 in `Try (_a0, _a1, _a2)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#ctyp _a2 in `Constraint (_a0, _a1, _a2)
       | `Coercion (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#ctyp _a2 in
           let _a3 = self#ctyp _a3 in `Coercion (_a0, _a1, _a2, _a3)
       | `Subtype (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
+          let _a1 = self#exp _a1 in
           let _a2 = self#ctyp _a2 in `Subtype (_a0, _a1, _a2)
       | `While (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in
-          let _a2 = self#expr _a2 in `While (_a0, _a1, _a2)
+          let _a1 = self#exp _a1 in
+          let _a2 = self#exp _a2 in `While (_a0, _a1, _a2)
       | `LetOpen (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
-          let _a2 = self#expr _a2 in `LetOpen (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `LetOpen (_a0, _a1, _a2)
       | `LocalTypeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in `LocalTypeFun (_a0, _a1, _a2)
-      | `Package_expr (_a0,_a1) ->
+          let _a2 = self#exp _a2 in `LocalTypeFun (_a0, _a1, _a2)
+      | `Package_exp (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_expr _a1 in `Package_expr (_a0, _a1)
-    method rec_expr : rec_expr -> rec_expr=
+          let _a1 = self#module_exp _a1 in `Package_exp (_a0, _a1)
+    method rec_exp : rec_exp -> rec_exp=
       function
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_expr _a1 in
-          let _a2 = self#rec_expr _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#rec_exp _a1 in
+          let _a2 = self#rec_exp _a2 in `Sem (_a0, _a1, _a2)
       | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
-          let _a2 = self#expr _a2 in `RecBind (_a0, _a1, _a2)
-      | #any as _a0 -> (self#any _a0 : any  :>rec_expr)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>rec_expr)
+          let _a2 = self#exp _a2 in `RecBind (_a0, _a1, _a2)
+      | #any as _a0 -> (self#any _a0 : any  :>rec_exp)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>rec_exp)
     method module_type : module_type -> module_type=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>module_type)
@@ -3604,7 +3595,7 @@ class map =
           let _a2 = self#with_constr _a2 in `With (_a0, _a1, _a2)
       | `ModuleTypeOf (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_expr _a1 in `ModuleTypeOf (_a0, _a1)
+          let _a1 = self#module_exp _a1 in `ModuleTypeOf (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_type)
     method sig_item : sig_item -> sig_item=
       function
@@ -3624,7 +3615,7 @@ class map =
       | `Directive (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in `Directive (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Directive (_a0, _a1, _a2)
       | `Exception (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#of_ctyp _a1 in `Exception (_a0, _a1)
@@ -3697,7 +3688,7 @@ class map =
       | `Bind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#expr _a2 in `Bind (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Bind (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>binding)
     method module_binding : module_binding -> module_binding=
       function
@@ -3709,7 +3700,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#module_type _a2 in
-          let _a3 = self#module_expr _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
+          let _a3 = self#module_exp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
@@ -3724,42 +3715,42 @@ class map =
       | `Case (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#expr _a2 in `Case (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Case (_a0, _a1, _a2)
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#expr _a2 in
-          let _a3 = self#expr _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
+          let _a2 = self#exp _a2 in
+          let _a3 = self#exp _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>case)
-    method module_expr : module_expr -> module_expr=
+    method module_exp : module_exp -> module_exp=
       function
-      | #sid as _a0 -> (self#sid _a0 : sid  :>module_expr)
+      | #sid as _a0 -> (self#sid _a0 : sid  :>module_exp)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_expr _a1 in
-          let _a2 = self#module_expr _a2 in `App (_a0, _a1, _a2)
+          let _a1 = self#module_exp _a1 in
+          let _a2 = self#module_exp _a2 in `App (_a0, _a1, _a2)
       | `Functor (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#module_type _a2 in
-          let _a3 = self#module_expr _a3 in `Functor (_a0, _a1, _a2, _a3)
+          let _a3 = self#module_exp _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `Struct (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#stru _a1 in `Struct (_a0, _a1)
       | `StructEnd _a0 -> let _a0 = self#loc _a0 in `StructEnd _a0
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_expr _a1 in
+          let _a1 = self#module_exp _a1 in
           let _a2 = self#module_type _a2 in `Constraint (_a0, _a1, _a2)
       | `PackageModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `PackageModule (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>module_expr)
+          let _a1 = self#exp _a1 in `PackageModule (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>module_exp)
     method stru : stru -> stru=
       function
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_expr _a1 in `Class (_a0, _a1)
+          let _a1 = self#class_exp _a1 in `Class (_a0, _a1)
       | `ClassType (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_type _a1 in `ClassType (_a0, _a1)
@@ -3773,13 +3764,13 @@ class map =
       | `Directive (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#expr _a2 in `Directive (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Directive (_a0, _a1, _a2)
       | `Exception (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#of_ctyp _a1 in `Exception (_a0, _a1)
       | `StExp (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `StExp (_a0, _a1)
+          let _a1 = self#exp _a1 in `StExp (_a0, _a1)
       | `External (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3787,11 +3778,11 @@ class map =
           let _a3 = self#strings _a3 in `External (_a0, _a1, _a2, _a3)
       | `Include (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_expr _a1 in `Include (_a0, _a1)
+          let _a1 = self#module_exp _a1 in `Include (_a0, _a1)
       | `Module (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_expr _a2 in `Module (_a0, _a1, _a2)
+          let _a2 = self#module_exp _a2 in `Module (_a0, _a1, _a2)
       | `RecModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_binding _a1 in `RecModule (_a0, _a1)
@@ -3880,12 +3871,12 @@ class map =
           let _a2 = self#private_flag _a2 in
           let _a3 = self#ctyp _a3 in `CgVir (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>class_sig_item)
-    method class_expr : class_expr -> class_expr=
+    method class_exp : class_exp -> class_exp=
       function
       | `CeApp (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_expr _a1 in
-          let _a2 = self#expr _a2 in `CeApp (_a0, _a1, _a2)
+          let _a1 = self#class_exp _a1 in
+          let _a2 = self#exp _a2 in `CeApp (_a0, _a1, _a2)
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#virtual_flag _a1 in
@@ -3899,12 +3890,12 @@ class map =
       | `CeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#patt _a1 in
-          let _a2 = self#class_expr _a2 in `CeFun (_a0, _a1, _a2)
+          let _a2 = self#class_exp _a2 in `CeFun (_a0, _a1, _a2)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
-          let _a3 = self#class_expr _a3 in `LetIn (_a0, _a1, _a2, _a3)
+          let _a3 = self#class_exp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
@@ -3918,17 +3909,17 @@ class map =
           let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_expr _a1 in
+          let _a1 = self#class_exp _a1 in
           let _a2 = self#class_type _a2 in `Constraint (_a0, _a1, _a2)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_expr _a1 in
-          let _a2 = self#class_expr _a2 in `And (_a0, _a1, _a2)
+          let _a1 = self#class_exp _a1 in
+          let _a2 = self#class_exp _a2 in `And (_a0, _a1, _a2)
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_expr _a1 in
-          let _a2 = self#class_expr _a2 in `Eq (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>class_expr)
+          let _a1 = self#class_exp _a1 in
+          let _a2 = self#class_exp _a2 in `Eq (_a0, _a1, _a2)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>class_exp)
     method cstru : cstru -> cstru=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3942,34 +3933,34 @@ class map =
       | `Inherit (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
-          let _a2 = self#class_expr _a2 in `Inherit (_a0, _a1, _a2)
+          let _a2 = self#class_exp _a2 in `Inherit (_a0, _a1, _a2)
       | `InheritAs (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
-          let _a2 = self#class_expr _a2 in
+          let _a2 = self#class_exp _a2 in
           let _a3 = self#alident _a3 in `InheritAs (_a0, _a1, _a2, _a3)
       | `Initializer (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#expr _a1 in `Initializer (_a0, _a1)
+          let _a1 = self#exp _a1 in `Initializer (_a0, _a1)
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#override_flag _a2 in
           let _a3 = self#private_flag _a3 in
-          let _a4 = self#expr _a4 in
+          let _a4 = self#exp _a4 in
           let _a5 = self#ctyp _a5 in `CrMth (_a0, _a1, _a2, _a3, _a4, _a5)
       | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#override_flag _a2 in
           let _a3 = self#private_flag _a3 in
-          let _a4 = self#expr _a4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
+          let _a4 = self#exp _a4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#override_flag _a2 in
           let _a3 = self#mutable_flag _a3 in
-          let _a4 = self#expr _a4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
+          let _a4 = self#exp _a4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
       | `CrVir (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -4351,7 +4342,7 @@ class fold =
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
-          let self = self#patt _a2 in self#expr _a3
+          let self = self#patt _a2 in self#exp _a3
       | `Or (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#patt _a1 in self#patt _a2
@@ -4378,70 +4369,61 @@ class fold =
           let self = self#rec_patt _a1 in self#rec_patt _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method expr : expr -> 'self_type=
+    method exp : exp -> 'self_type=
       function
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Vrn (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Com (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Sem (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
+      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
-      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_expr _a1
+      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
       | #literal as _a0 -> (self#literal _a0 :>'self_type)
       | `RecordWith (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#rec_expr _a1 in self#expr _a2
+          let self = self#rec_exp _a1 in self#exp _a2
       | `Dot (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `ArrayDot (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `ArrayEmpty _a0 -> self#loc _a0
-      | `Array (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+      | `Array (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `ExAsf _a0 -> self#loc _a0
-      | `ExAsr (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+      | `ExAsr (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `Assign (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
-          let self = self#expr _a2 in
-          let self = self#expr _a3 in
-          let self = self#direction_flag _a4 in self#expr _a5
+          let self = self#exp _a2 in
+          let self = self#exp _a3 in
+          let self = self#direction_flag _a4 in self#exp _a5
       | `Fun (_a0,_a1) -> let self = self#loc _a0 in self#case _a1
       | `IfThenElse (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
-          let self = self#expr _a1 in
-          let self = self#expr _a2 in self#expr _a3
+          let self = self#exp _a1 in let self = self#exp _a2 in self#exp _a3
       | `IfThen (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `LabelS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#expr _a2
-      | `Lazy (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+          let self = self#alident _a1 in self#exp _a2
+      | `Lazy (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in self#expr _a3
+          let self = self#binding _a2 in self#exp _a3
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_expr _a2 in self#expr _a3
+          let self = self#module_exp _a2 in self#exp _a3
       | `Match (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#case _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
       | `ObjEnd _a0 -> self#loc _a0
@@ -4451,49 +4433,44 @@ class fold =
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#expr _a2
+          let self = self#alident _a1 in self#exp _a2
       | `OptLablS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
-      | `OvrInst (_a0,_a1) -> let self = self#loc _a0 in self#rec_expr _a1
+      | `OvrInst (_a0,_a1) -> let self = self#loc _a0 in self#rec_exp _a1
       | `OvrInstEmpty _a0 -> self#loc _a0
-      | `Seq (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+      | `Seq (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `Send (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#expr _a1 in self#alident _a2
+          let self = self#exp _a1 in self#alident _a2
       | `StringDot (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Try (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#case _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#case _a2
       | `Constraint (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#ctyp _a2
       | `Coercion (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
-          let self = self#expr _a1 in
+          let self = self#exp _a1 in
           let self = self#ctyp _a2 in self#ctyp _a3
       | `Subtype (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#ctyp _a2
       | `While (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#expr _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `LetOpen (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ident _a1 in self#expr _a2
+          let self = self#ident _a1 in self#exp _a2
       | `LocalTypeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#expr _a2
-      | `Package_expr (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_expr _a1
-    method rec_expr : rec_expr -> 'self_type=
+          let self = self#alident _a1 in self#exp _a2
+      | `Package_exp (_a0,_a1) ->
+          let self = self#loc _a0 in self#module_exp _a1
+    method rec_exp : rec_exp -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#rec_expr _a1 in self#rec_expr _a2
+          let self = self#rec_exp _a1 in self#rec_exp _a2
       | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ident _a1 in self#expr _a2
+          let self = self#ident _a1 in self#exp _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_type : module_type -> 'self_type=
@@ -4509,7 +4486,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#module_type _a1 in self#with_constr _a2
       | `ModuleTypeOf (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_expr _a1
+          let self = self#loc _a0 in self#module_exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method sig_item : sig_item -> 'self_type=
       function
@@ -4523,7 +4500,7 @@ class fold =
           let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#expr _a2
+          let self = self#alident _a1 in self#exp _a2
       | `Exception (_a0,_a1) -> let self = self#loc _a0 in self#of_ctyp _a1
       | `External (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -4573,8 +4550,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#binding _a1 in self#binding _a2
       | `Bind (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#patt _a1 in self#exp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_binding : module_binding -> 'self_type=
       function
@@ -4584,7 +4560,7 @@ class fold =
       | `ModuleBind (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_type _a2 in self#module_expr _a3
+          let self = self#module_type _a2 in self#module_exp _a3
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#module_type _a2
@@ -4595,33 +4571,31 @@ class fold =
           let self = self#loc _a0 in
           let self = self#case _a1 in self#case _a2
       | `Case (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#expr _a2
+          let self = self#loc _a0 in let self = self#patt _a1 in self#exp _a2
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in
-          let self = self#expr _a2 in self#expr _a3
+          let self = self#patt _a1 in let self = self#exp _a2 in self#exp _a3
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method module_expr : module_expr -> 'self_type=
+    method module_exp : module_exp -> 'self_type=
       function
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_expr _a1 in self#module_expr _a2
+          let self = self#module_exp _a1 in self#module_exp _a2
       | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_type _a2 in self#module_expr _a3
+          let self = self#module_type _a2 in self#module_exp _a3
       | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#stru _a1
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_expr _a1 in self#module_type _a2
-      | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+          let self = self#module_exp _a1 in self#module_type _a2
+      | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method stru : stru -> 'self_type=
       function
-      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_expr _a1
+      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_exp _a1
       | `ClassType (_a0,_a1) ->
           let self = self#loc _a0 in self#class_type _a1
       | `Sem (_a0,_a1,_a2) ->
@@ -4631,17 +4605,17 @@ class fold =
           let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#expr _a2
+          let self = self#alident _a1 in self#exp _a2
       | `Exception (_a0,_a1) -> let self = self#loc _a0 in self#of_ctyp _a1
-      | `StExp (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+      | `StExp (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `External (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#ctyp _a2 in self#strings _a3
-      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#module_expr _a1
+      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#module_exp _a1
       | `Module (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_expr _a2
+          let self = self#auident _a1 in self#module_exp _a2
       | `RecModule (_a0,_a1) ->
           let self = self#loc _a0 in self#module_binding _a1
       | `ModuleType (_a0,_a1,_a2) ->
@@ -4705,11 +4679,11 @@ class fold =
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method class_expr : class_expr -> 'self_type=
+    method class_exp : class_exp -> 'self_type=
       function
       | `CeApp (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_expr _a1 in self#expr _a2
+          let self = self#class_exp _a1 in self#exp _a2
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
@@ -4719,11 +4693,11 @@ class fold =
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#class_expr _a2
+          let self = self#patt _a1 in self#class_exp _a2
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in self#class_expr _a3
+          let self = self#binding _a2 in self#class_exp _a3
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
@@ -4732,13 +4706,13 @@ class fold =
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_expr _a1 in self#class_type _a2
+          let self = self#class_exp _a1 in self#class_type _a2
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_expr _a1 in self#class_expr _a2
+          let self = self#class_exp _a1 in self#class_exp _a2
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_expr _a1 in self#class_expr _a2
+          let self = self#class_exp _a1 in self#class_exp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method cstru : cstru -> 'self_type=
       function
@@ -4750,28 +4724,28 @@ class fold =
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Inherit (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#override_flag _a1 in self#class_expr _a2
+          let self = self#override_flag _a1 in self#class_exp _a2
       | `InheritAs (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#override_flag _a1 in
-          let self = self#class_expr _a2 in self#alident _a3
-      | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#expr _a1
+          let self = self#class_exp _a2 in self#alident _a3
+      | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#override_flag _a2 in
           let self = self#private_flag _a3 in
-          let self = self#expr _a4 in self#ctyp _a5
+          let self = self#exp _a4 in self#ctyp _a5
       | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#override_flag _a2 in
-          let self = self#private_flag _a3 in self#expr _a4
+          let self = self#private_flag _a3 in self#exp _a4
       | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#override_flag _a2 in
-          let self = self#mutable_flag _a3 in self#expr _a4
+          let self = self#mutable_flag _a3 in self#exp _a4
       | `CrVir (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
@@ -5256,7 +5230,7 @@ class print =
               self#alident _a1
         | `OptLablExpr (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#alident _a1 self#patt _a2 self#expr _a3
+              self#loc _a0 self#alident _a1 self#patt _a2 self#exp _a3
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
               self#patt _a1 self#patt _a2
@@ -5289,84 +5263,83 @@ class print =
               self#rec_patt _a1 self#rec_patt _a2
         | #any as _a0 -> (self#any fmt _a0 :>'result329)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result329)
-    method expr : 'fmt -> expr -> 'result330=
+    method exp : 'fmt -> exp -> 'result330=
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result330)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `Vrn (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | `Com (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#expr
+            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#exp
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>'result330)
         | `Record (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
-              self#rec_expr _a1
+              self#rec_exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result330)
         | #literal as _a0 -> (self#literal fmt _a0 :>'result330)
         | `RecordWith (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" self#loc
-              _a0 self#rec_expr _a1 self#expr _a2
+              _a0 self#rec_exp _a1 self#exp _a2
         | `Dot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `ArrayDot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `ArrayEmpty _a0 ->
             Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+              self#exp _a1
         | `ExAsf _a0 -> Format.fprintf fmt "@[<1>(`ExAsf@ %a)@]" self#loc _a0
         | `ExAsr (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+              self#exp _a1
         | `Assign (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Assign@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
             Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#alident _a1 self#expr _a2 self#expr _a3
-              self#direction_flag _a4 self#expr _a5
+              self#loc _a0 self#alident _a1 self#exp _a2 self#exp _a3
+              self#direction_flag _a4 self#exp _a5
         | `Fun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" self#loc _a0 self#case
               _a1
         | `IfThenElse (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#expr _a1 self#expr _a2 self#expr _a3
+              self#loc _a0 self#exp _a1 self#exp _a2 self#exp _a3
         | `IfThen (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `LabelS (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" self#loc _a0
               self#alident _a1
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#expr _a2
+              self#alident _a1 self#exp _a2
         | `Lazy (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+            Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc _a0 
+              self#exp _a1
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2 self#expr _a3
+              self#rec_flag _a1 self#binding _a2 self#exp _a3
         | `LetModule (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#auident _a1 self#module_expr _a2 self#expr
-              _a3
+              self#loc _a0 self#auident _a1 self#module_exp _a2 self#exp _a3
         | `Match (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#case _a2
+              self#exp _a1 self#case _a2
         | `New (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" self#loc _a0
               self#ident _a1
@@ -5383,57 +5356,57 @@ class print =
               self#patt _a1
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#expr _a2
+              self#alident _a1 self#exp _a2
         | `OptLablS (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" self#loc _a0
               self#alident _a1
         | `OvrInst (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" self#loc _a0
-              self#rec_expr _a1
+              self#rec_exp _a1
         | `OvrInstEmpty _a0 ->
             Format.fprintf fmt "@[<1>(`OvrInstEmpty@ %a)@]" self#loc _a0
         | `Seq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Seq@ %a@ %a)@]" self#loc _a0 self#expr
+            Format.fprintf fmt "@[<1>(`Seq@ %a@ %a)@]" self#loc _a0 self#exp
               _a1
         | `Send (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Send@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#alident _a2
+              self#exp _a1 self#alident _a2
         | `StringDot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`StringDot@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `Try (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#case _a2
+              self#exp _a1 self#case _a2
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#expr _a1 self#ctyp _a2
+              _a0 self#exp _a1 self#ctyp _a2
         | `Coercion (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#expr _a1 self#ctyp _a2 self#ctyp _a3
+              _a0 self#exp _a1 self#ctyp _a2 self#ctyp _a3
         | `Subtype (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Subtype@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#ctyp _a2
+              self#exp _a1 self#ctyp _a2
         | `While (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" self#loc _a0
-              self#expr _a1 self#expr _a2
+              self#exp _a1 self#exp _a2
         | `LetOpen (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#expr _a2
+              self#ident _a1 self#exp _a2
         | `LocalTypeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" self#loc
-              _a0 self#alident _a1 self#expr _a2
-        | `Package_expr (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Package_expr@ %a@ %a)@]" self#loc _a0
-              self#module_expr _a1
-    method rec_expr : 'fmt -> rec_expr -> 'result331=
+              _a0 self#alident _a1 self#exp _a2
+        | `Package_exp (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Package_exp@ %a@ %a)@]" self#loc _a0
+              self#module_exp _a1
+    method rec_exp : 'fmt -> rec_exp -> 'result331=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_expr _a1 self#rec_expr _a2
+              self#rec_exp _a1 self#rec_exp _a2
         | `RecBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#expr _a2
+              self#ident _a1 self#exp _a2
         | #any as _a0 -> (self#any fmt _a0 :>'result331)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result331)
     method module_type : 'fmt -> module_type -> 'result332=
@@ -5453,7 +5426,7 @@ class print =
               self#module_type _a1 self#with_constr _a2
         | `ModuleTypeOf (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc _a0
-              self#module_expr _a1
+              self#module_exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result332)
     method sig_item : 'fmt -> sig_item -> 'result333=
       fun fmt  ->
@@ -5472,7 +5445,7 @@ class print =
               _a0 self#alident _a1
         | `Directive (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#expr _a2
+              self#alident _a1 self#exp _a2
         | `Exception (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" self#loc _a0
               self#of_ctyp _a1
@@ -5534,7 +5507,7 @@ class print =
               self#binding _a1 self#binding _a2
         | `Bind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#expr _a2
+              self#patt _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result335)
     method module_binding : 'fmt -> module_binding -> 'result336=
       fun fmt  ->
@@ -5545,7 +5518,7 @@ class print =
         | `ModuleBind (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#auident _a1 self#module_type _a2
-              self#module_expr _a3
+              self#module_exp _a3
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#module_type _a2
@@ -5558,21 +5531,21 @@ class print =
               self#case _a1 self#case _a2
         | `Case (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#expr _a2
+              self#patt _a1 self#exp _a2
         | `CaseWhen (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#patt _a1 self#expr _a2 self#expr _a3
+              _a0 self#patt _a1 self#exp _a2 self#exp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>'result337)
-    method module_expr : 'fmt -> module_expr -> 'result338=
+    method module_exp : 'fmt -> module_exp -> 'result338=
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result338)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
-              self#module_expr _a1 self#module_expr _a2
+              self#module_exp _a1 self#module_exp _a2
         | `Functor (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2 self#module_expr _a3
+              _a0 self#auident _a1 self#module_type _a2 self#module_exp _a3
         | `Struct (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc _a0
               self#stru _a1
@@ -5580,17 +5553,17 @@ class print =
             Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" self#loc _a0
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#module_expr _a1 self#module_type _a2
+              _a0 self#module_exp _a1 self#module_type _a2
         | `PackageModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+              self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result338)
     method stru : 'fmt -> stru -> 'result339=
       fun fmt  ->
         function
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
-              self#class_expr _a1
+              self#class_exp _a1
         | `ClassType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" self#loc _a0
               self#class_type _a1
@@ -5602,22 +5575,22 @@ class print =
               _a0 self#alident _a1
         | `Directive (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#expr _a2
+              self#alident _a1 self#exp _a2
         | `Exception (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" self#loc _a0
               self#of_ctyp _a1
         | `StExp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`StExp@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+              self#exp _a1
         | `External (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#alident _a1 self#ctyp _a2 self#strings _a3
         | `Include (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" self#loc _a0
-              self#module_expr _a1
+              self#module_exp _a1
         | `Module (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc _a0
-              self#auident _a1 self#module_expr _a2
+              self#auident _a1 self#module_exp _a2
         | `RecModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
               self#module_binding _a1
@@ -5691,12 +5664,12 @@ class print =
             Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#private_flag _a2 self#ctyp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>'result341)
-    method class_expr : 'fmt -> class_expr -> 'result342=
+    method class_exp : 'fmt -> class_exp -> 'result342=
       fun fmt  ->
         function
         | `CeApp (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_expr _a1 self#expr _a2
+              self#class_exp _a1 self#exp _a2
         | `ClassCon (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#virtual_flag _a1 self#ident _a2 self#type_parameters
@@ -5706,10 +5679,10 @@ class print =
               self#virtual_flag _a1 self#ident _a2
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#class_expr _a2
+              self#patt _a1 self#class_exp _a2
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2 self#class_expr _a3
+              self#rec_flag _a1 self#binding _a2 self#class_exp _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#cstru _a1
@@ -5723,13 +5696,13 @@ class print =
               self#patt _a1
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#class_expr _a1 self#class_type _a2
+              _a0 self#class_exp _a1 self#class_type _a2
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_expr _a1 self#class_expr _a2
+              self#class_exp _a1 self#class_exp _a2
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_expr _a1 self#class_expr _a2
+              self#class_exp _a1 self#class_exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result342)
     method cstru : 'fmt -> cstru -> 'result343=
       fun fmt  ->
@@ -5742,26 +5715,26 @@ class print =
               self#ctyp _a1 self#ctyp _a2
         | `Inherit (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" self#loc _a0
-              self#override_flag _a1 self#class_expr _a2
+              self#override_flag _a1 self#class_exp _a2
         | `InheritAs (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#override_flag _a1 self#class_expr _a2
+              self#loc _a0 self#override_flag _a1 self#class_exp _a2
               self#alident _a3
         | `Initializer (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
-              self#expr _a1
+              self#exp _a1
         | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
             Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#override_flag _a2
-              self#private_flag _a3 self#expr _a4 self#ctyp _a5
+              self#private_flag _a3 self#exp _a4 self#ctyp _a5
         | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#override_flag _a2
-              self#private_flag _a3 self#expr _a4
+              self#private_flag _a3 self#exp _a4
         | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#alident _a1 self#override_flag _a2
-              self#mutable_flag _a3 self#expr _a4
+              self#mutable_flag _a3 self#exp _a4
         | `CrVir (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#private_flag _a2 self#ctyp _a3
@@ -6258,7 +6231,7 @@ class eq =
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                (self#patt _a2 _b2))
-              && (self#expr _a3 _b3)
+              && (self#exp _a3 _b3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
               (self#patt _a2 _b2)
@@ -6291,80 +6264,71 @@ class eq =
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result387)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result387)
         | (_,_) -> false
-    method expr : expr -> expr -> 'result388=
+    method exp : exp -> exp -> 'result388=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result388)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#string _a1 _b1)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result388)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#rec_expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#rec_exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result388)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'result388)
         | (`RecordWith (_a0,_a1,_a2),`RecordWith (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#rec_expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#rec_exp _a1 _b1)) &&
+              (self#exp _a2 _b2)
         | (`Dot (_a0,_a1,_a2),`Dot (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`ArrayDot (_a0,_a1,_a2),`ArrayDot (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`ExAsf _a0,`ExAsf _b0) -> self#loc _a0 _b0
         | (`ExAsr (_a0,_a1),`ExAsr (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`Assign (_a0,_a1,_a2),`Assign (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`For (_a0,_a1,_a2,_a3,_a4,_a5),`For (_b0,_b1,_b2,_b3,_b4,_b5)) ->
             (((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-                 (self#expr _a2 _b2))
-                && (self#expr _a3 _b3))
+                 (self#exp _a2 _b2))
+                && (self#exp _a3 _b3))
                && (self#direction_flag _a4 _b4))
-              && (self#expr _a5 _b5)
+              && (self#exp _a5 _b5)
         | (`Fun (_a0,_a1),`Fun (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#case _a1 _b1)
         | (`IfThenElse (_a0,_a1,_a2,_a3),`IfThenElse (_b0,_b1,_b2,_b3)) ->
-            (((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-               (self#expr _a2 _b2))
-              && (self#expr _a3 _b3)
+            (((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2))
+              && (self#exp _a3 _b3)
         | (`IfThen (_a0,_a1,_a2),`IfThen (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#rec_flag _a1 _b1)) &&
                (self#binding _a2 _b2))
-              && (self#expr _a3 _b3)
+              && (self#exp _a3 _b3)
         | (`LetModule (_a0,_a1,_a2,_a3),`LetModule (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
-               (self#module_expr _a2 _b2))
-              && (self#expr _a3 _b3)
+               (self#module_exp _a2 _b2))
+              && (self#exp _a3 _b3)
         | (`Match (_a0,_a1,_a2),`Match (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#case _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#case _a2 _b2)
         | (`New (_a0,_a1),`New (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
@@ -6377,54 +6341,49 @@ class eq =
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`OvrInst (_a0,_a1),`OvrInst (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#rec_expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#rec_exp _a1 _b1)
         | (`OvrInstEmpty _a0,`OvrInstEmpty _b0) -> self#loc _a0 _b0
         | (`Seq (_a0,_a1),`Seq (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`Send (_a0,_a1,_a2),`Send (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) &&
               (self#alident _a2 _b2)
         | (`StringDot (_a0,_a1,_a2),`StringDot (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`Try (_a0,_a1,_a2),`Try (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#case _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#case _a2 _b2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`Coercion (_a0,_a1,_a2,_a3),`Coercion (_b0,_b1,_b2,_b3)) ->
-            (((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
+            (((self#loc _a0 _b0) && (self#exp _a1 _b1)) &&
                (self#ctyp _a2 _b2))
               && (self#ctyp _a3 _b3)
         | (`Subtype (_a0,_a1,_a2),`Subtype (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`While (_a0,_a1,_a2),`While (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | (`LetOpen (_a0,_a1,_a2),`LetOpen (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | (`LocalTypeFun (_a0,_a1,_a2),`LocalTypeFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#expr _a2 _b2)
-        | (`Package_expr (_a0,_a1),`Package_expr (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#module_expr _a1 _b1)
+              (self#exp _a2 _b2)
+        | (`Package_exp (_a0,_a1),`Package_exp (_b0,_b1)) ->
+            (self#loc _a0 _b0) && (self#module_exp _a1 _b1)
         | (_,_) -> false
-    method rec_expr : rec_expr -> rec_expr -> 'result389=
+    method rec_exp : rec_exp -> rec_exp -> 'result389=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#rec_expr _a1 _b1)) &&
-              (self#rec_expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#rec_exp _a1 _b1)) &&
+              (self#rec_exp _a2 _b2)
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result389)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result389)
         | (_,_) -> false
@@ -6443,7 +6402,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#with_constr _a2 _b2)
         | (`ModuleTypeOf (_a0,_a1),`ModuleTypeOf (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#module_expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#module_exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result390)
         | (_,_) -> false
     method sig_item : sig_item -> sig_item -> 'result391=
@@ -6460,7 +6419,7 @@ class eq =
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#of_ctyp _a1 _b1)
         | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
@@ -6518,8 +6477,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#binding _a2 _b2)
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) && (self#exp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result393)
         | (_,_) -> false
     method module_binding : module_binding -> module_binding -> 'result394=
@@ -6531,7 +6489,7 @@ class eq =
         | (`ModuleBind (_a0,_a1,_a2,_a3),`ModuleBind (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
                (self#module_type _a2 _b2))
-              && (self#module_expr _a3 _b3)
+              && (self#module_exp _a3 _b3)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
               (self#module_type _a2 _b2)
@@ -6544,40 +6502,39 @@ class eq =
             ((self#loc _a0 _b0) && (self#case _a1 _b1)) &&
               (self#case _a2 _b2)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) && (self#exp _a2 _b2)
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-               (self#expr _a2 _b2))
-              && (self#expr _a3 _b3)
+               (self#exp _a2 _b2))
+              && (self#exp _a3 _b3)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result395)
         | (_,_) -> false
-    method module_expr : module_expr -> module_expr -> 'result396=
+    method module_exp : module_exp -> module_exp -> 'result396=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result396)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#module_expr _a1 _b1)) &&
-              (self#module_expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#module_exp _a1 _b1)) &&
+              (self#module_exp _a2 _b2)
         | (`Functor (_a0,_a1,_a2,_a3),`Functor (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
                (self#module_type _a2 _b2))
-              && (self#module_expr _a3 _b3)
+              && (self#module_exp _a3 _b3)
         | (`Struct (_a0,_a1),`Struct (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#stru _a1 _b1)
         | (`StructEnd _a0,`StructEnd _b0) -> self#loc _a0 _b0
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#module_expr _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#module_exp _a1 _b1)) &&
               (self#module_type _a2 _b2)
         | (`PackageModule (_a0,_a1),`PackageModule (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result396)
         | (_,_) -> false
     method stru : stru -> stru -> 'result397=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class (_a0,_a1),`Class (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#class_expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#class_exp _a1 _b1)
         | (`ClassType (_a0,_a1),`ClassType (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#class_type _a1 _b1)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
@@ -6587,20 +6544,20 @@ class eq =
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Directive (_a0,_a1,_a2),`Directive (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#expr _a2 _b2)
+              (self#exp _a2 _b2)
         | (`Exception (_a0,_a1),`Exception (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#of_ctyp _a1 _b1)
         | (`StExp (_a0,_a1),`StExp (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`External (_a0,_a1,_a2,_a3),`External (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                (self#ctyp _a2 _b2))
               && (self#strings _a3 _b3)
         | (`Include (_a0,_a1),`Include (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#module_expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#module_exp _a1 _b1)
         | (`Module (_a0,_a1,_a2),`Module (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
-              (self#module_expr _a2 _b2)
+              (self#module_exp _a2 _b2)
         | (`RecModule (_a0,_a1),`RecModule (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#module_binding _a1 _b1)
         | (`ModuleType (_a0,_a1,_a2),`ModuleType (_b0,_b1,_b2)) ->
@@ -6673,12 +6630,12 @@ class eq =
               && (self#ctyp _a3 _b3)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result399)
         | (_,_) -> false
-    method class_expr : class_expr -> class_expr -> 'result400=
+    method class_exp : class_exp -> class_exp -> 'result400=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1,_a2),`CeApp (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
-              (self#expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#class_exp _a1 _b1)) &&
+              (self#exp _a2 _b2)
         | (`ClassCon (_a0,_a1,_a2,_a3),`ClassCon (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
                (self#ident _a2 _b2))
@@ -6688,11 +6645,11 @@ class eq =
               (self#ident _a2 _b2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#class_expr _a2 _b2)
+              (self#class_exp _a2 _b2)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#rec_flag _a1 _b1)) &&
                (self#binding _a2 _b2))
-              && (self#class_expr _a3 _b3)
+              && (self#class_exp _a3 _b3)
         | (`Obj (_a0,_a1),`Obj (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
@@ -6702,14 +6659,14 @@ class eq =
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#patt _a1 _b1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#class_exp _a1 _b1)) &&
               (self#class_type _a2 _b2)
         | (`And (_a0,_a1,_a2),`And (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
-              (self#class_expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#class_exp _a1 _b1)) &&
+              (self#class_exp _a2 _b2)
         | (`Eq (_a0,_a1,_a2),`Eq (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#class_expr _a1 _b1)) &&
-              (self#class_expr _a2 _b2)
+            ((self#loc _a0 _b0) && (self#class_exp _a1 _b1)) &&
+              (self#class_exp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result400)
         | (_,_) -> false
     method cstru : cstru -> cstru -> 'result401=
@@ -6723,30 +6680,30 @@ class eq =
               (self#ctyp _a2 _b2)
         | (`Inherit (_a0,_a1,_a2),`Inherit (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#override_flag _a1 _b1)) &&
-              (self#class_expr _a2 _b2)
+              (self#class_exp _a2 _b2)
         | (`InheritAs (_a0,_a1,_a2,_a3),`InheritAs (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#override_flag _a1 _b1)) &&
-               (self#class_expr _a2 _b2))
+               (self#class_exp _a2 _b2))
               && (self#alident _a3 _b3)
         | (`Initializer (_a0,_a1),`Initializer (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#expr _a1 _b1)
+            (self#loc _a0 _b0) && (self#exp _a1 _b1)
         | (`CrMth (_a0,_a1,_a2,_a3,_a4,_a5),`CrMth (_b0,_b1,_b2,_b3,_b4,_b5))
             ->
             (((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                  (self#override_flag _a2 _b2))
                 && (self#private_flag _a3 _b3))
-               && (self#expr _a4 _b4))
+               && (self#exp _a4 _b4))
               && (self#ctyp _a5 _b5)
         | (`CrMthS (_a0,_a1,_a2,_a3,_a4),`CrMthS (_b0,_b1,_b2,_b3,_b4)) ->
             ((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                 (self#override_flag _a2 _b2))
                && (self#private_flag _a3 _b3))
-              && (self#expr _a4 _b4)
+              && (self#exp _a4 _b4)
         | (`CrVal (_a0,_a1,_a2,_a3,_a4),`CrVal (_b0,_b1,_b2,_b3,_b4)) ->
             ((((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                 (self#override_flag _a2 _b2))
                && (self#mutable_flag _a3 _b3))
-              && (self#expr _a4 _b4)
+              && (self#exp _a4 _b4)
         | (`CrVir (_a0,_a1,_a2,_a3),`CrVir (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
                (self#private_flag _a2 _b2))
@@ -7117,7 +7074,7 @@ and strip_loc_patt =
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_patt _a2 in
-      let _a3 = strip_loc_expr _a3 in `OptLablExpr (_a1, _a2, _a3)
+      let _a3 = strip_loc_exp _a3 in `OptLablExpr (_a1, _a2, _a3)
   | `Or (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
       let _a2 = strip_loc_patt _a2 in `Or (_a1, _a2)
@@ -7144,69 +7101,69 @@ and strip_loc_rec_patt =
       let _a2 = strip_loc_rec_patt _a2 in `Sem (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result441)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result441)
-and strip_loc_expr =
+and strip_loc_exp =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result440)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `App (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `Com (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `Com (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `Sem (_a1, _a2)
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Tup _a1
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `Sem (_a1, _a2)
+  | `Tup (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Tup _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result440)
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_expr _a1 in `Record _a1
+  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `Record _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result440)
   | #literal as _a0 -> (strip_loc_literal _a0 :>'result440)
   | `RecordWith (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `RecordWith (_a1, _a2)
+      let _a1 = strip_loc_rec_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `RecordWith (_a1, _a2)
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `Dot (_a1, _a2)
   | `ArrayDot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `ArrayDot (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `ArrayDot (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
-  | `Array (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Array _a1
+  | `Array (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Array _a1
   | `ExAsf _a0 -> `ExAsf
-  | `ExAsr (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `ExAsr _a1
+  | `ExAsr (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `ExAsr _a1
   | `Assign (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `Assign (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `Assign (_a1, _a2)
   | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in
-      let _a3 = strip_loc_expr _a3 in
+      let _a2 = strip_loc_exp _a2 in
+      let _a3 = strip_loc_exp _a3 in
       let _a4 = strip_loc_direction_flag _a4 in
-      let _a5 = strip_loc_expr _a5 in `For (_a1, _a2, _a3, _a4, _a5)
+      let _a5 = strip_loc_exp _a5 in `For (_a1, _a2, _a3, _a4, _a5)
   | `Fun (_a0,_a1) -> let _a1 = strip_loc_case _a1 in `Fun _a1
   | `IfThenElse (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in
-      let _a3 = strip_loc_expr _a3 in `IfThenElse (_a1, _a2, _a3)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in
+      let _a3 = strip_loc_exp _a3 in `IfThenElse (_a1, _a2, _a3)
   | `IfThen (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `IfThen (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `IfThen (_a1, _a2)
   | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in `Label (_a1, _a2)
-  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Lazy _a1
+      let _a2 = strip_loc_exp _a2 in `Label (_a1, _a2)
+  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Lazy _a1
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
-      let _a3 = strip_loc_expr _a3 in `LetIn (_a1, _a2, _a3)
+      let _a3 = strip_loc_exp _a3 in `LetIn (_a1, _a2, _a3)
   | `LetModule (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_expr _a2 in
-      let _a3 = strip_loc_expr _a3 in `LetModule (_a1, _a2, _a3)
+      let _a2 = strip_loc_module_exp _a2 in
+      let _a3 = strip_loc_exp _a3 in `LetModule (_a1, _a2, _a3)
   | `Match (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
@@ -7217,49 +7174,49 @@ and strip_loc_expr =
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in `OptLabl (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `OptLabl (_a1, _a2)
   | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
-  | `OvrInst (_a0,_a1) -> let _a1 = strip_loc_rec_expr _a1 in `OvrInst _a1
+  | `OvrInst (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `OvrInst _a1
   | `OvrInstEmpty _a0 -> `OvrInstEmpty
-  | `Seq (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `Seq _a1
+  | `Seq (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Seq _a1
   | `Send (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_alident _a2 in `Send (_a1, _a2)
   | `StringDot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `StringDot (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `StringDot (_a1, _a2)
   | `Try (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_case _a2 in `Try (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
   | `Coercion (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_ctyp _a2 in
       let _a3 = strip_loc_ctyp _a3 in `Coercion (_a1, _a2, _a3)
   | `Subtype (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
+      let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Subtype (_a1, _a2)
   | `While (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `While (_a1, _a2)
+      let _a1 = strip_loc_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `While (_a1, _a2)
   | `LetOpen (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_expr _a2 in `LetOpen (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `LetOpen (_a1, _a2)
   | `LocalTypeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in `LocalTypeFun (_a1, _a2)
-  | `Package_expr (_a0,_a1) ->
-      let _a1 = strip_loc_module_expr _a1 in `Package_expr _a1
-and strip_loc_rec_expr =
+      let _a2 = strip_loc_exp _a2 in `LocalTypeFun (_a1, _a2)
+  | `Package_exp (_a0,_a1) ->
+      let _a1 = strip_loc_module_exp _a1 in `Package_exp _a1
+and strip_loc_rec_exp =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_expr _a1 in
-      let _a2 = strip_loc_rec_expr _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_loc_rec_exp _a1 in
+      let _a2 = strip_loc_rec_exp _a2 in `Sem (_a1, _a2)
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_expr _a2 in `RecBind (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `RecBind (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result439)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result439)
 and strip_loc_module_type =
@@ -7275,7 +7232,7 @@ and strip_loc_module_type =
       let _a1 = strip_loc_module_type _a1 in
       let _a2 = strip_loc_with_constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) ->
-      let _a1 = strip_loc_module_expr _a1 in `ModuleTypeOf _a1
+      let _a1 = strip_loc_module_exp _a1 in `ModuleTypeOf _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result438)
 and strip_loc_sig_item =
   function
@@ -7289,7 +7246,7 @@ and strip_loc_sig_item =
       let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in `Directive (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `Directive (_a1, _a2)
   | `Exception (_a0,_a1) -> let _a1 = strip_loc_of_ctyp _a1 in `Exception _a1
   | `External (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
@@ -7340,7 +7297,7 @@ and strip_loc_binding =
       let _a2 = strip_loc_binding _a2 in `And (_a1, _a2)
   | `Bind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_expr _a2 in `Bind (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result435)
 and strip_loc_module_binding =
   function
@@ -7350,7 +7307,7 @@ and strip_loc_module_binding =
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in
-      let _a3 = strip_loc_module_expr _a3 in `ModuleBind (_a1, _a2, _a3)
+      let _a3 = strip_loc_module_exp _a3 in `ModuleBind (_a1, _a2, _a3)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
@@ -7362,33 +7319,33 @@ and strip_loc_case =
       let _a2 = strip_loc_case _a2 in `Or (_a1, _a2)
   | `Case (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_expr _a2 in `Case (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `Case (_a1, _a2)
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_expr _a2 in
-      let _a3 = strip_loc_expr _a3 in `CaseWhen (_a1, _a2, _a3)
+      let _a2 = strip_loc_exp _a2 in
+      let _a3 = strip_loc_exp _a3 in `CaseWhen (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result433)
-and strip_loc_module_expr =
+and strip_loc_module_exp =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result432)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_expr _a1 in
-      let _a2 = strip_loc_module_expr _a2 in `App (_a1, _a2)
+      let _a1 = strip_loc_module_exp _a1 in
+      let _a2 = strip_loc_module_exp _a2 in `App (_a1, _a2)
   | `Functor (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_type _a2 in
-      let _a3 = strip_loc_module_expr _a3 in `Functor (_a1, _a2, _a3)
+      let _a3 = strip_loc_module_exp _a3 in `Functor (_a1, _a2, _a3)
   | `Struct (_a0,_a1) -> let _a1 = strip_loc_stru _a1 in `Struct _a1
   | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_expr _a1 in
+      let _a1 = strip_loc_module_exp _a1 in
       let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) ->
-      let _a1 = strip_loc_expr _a1 in `PackageModule _a1
+      let _a1 = strip_loc_exp _a1 in `PackageModule _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result432)
 and strip_loc_stru =
   function
-  | `Class (_a0,_a1) -> let _a1 = strip_loc_class_expr _a1 in `Class _a1
+  | `Class (_a0,_a1) -> let _a1 = strip_loc_class_exp _a1 in `Class _a1
   | `ClassType (_a0,_a1) ->
       let _a1 = strip_loc_class_type _a1 in `ClassType _a1
   | `Sem (_a0,_a1,_a2) ->
@@ -7398,17 +7355,17 @@ and strip_loc_stru =
       let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_expr _a2 in `Directive (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `Directive (_a1, _a2)
   | `Exception (_a0,_a1) -> let _a1 = strip_loc_of_ctyp _a1 in `Exception _a1
-  | `StExp (_a0,_a1) -> let _a1 = strip_loc_expr _a1 in `StExp _a1
+  | `StExp (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `StExp _a1
   | `External (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in
       let _a3 = strip_loc_strings _a3 in `External (_a1, _a2, _a3)
-  | `Include (_a0,_a1) -> let _a1 = strip_loc_module_expr _a1 in `Include _a1
+  | `Include (_a0,_a1) -> let _a1 = strip_loc_module_exp _a1 in `Include _a1
   | `Module (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_expr _a2 in `Module (_a1, _a2)
+      let _a2 = strip_loc_module_exp _a2 in `Module (_a1, _a2)
   | `RecModule (_a0,_a1) ->
       let _a1 = strip_loc_module_binding _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
@@ -7472,11 +7429,11 @@ and strip_loc_class_sig_item =
       let _a2 = strip_loc_private_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CgVir (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result429)
-and strip_loc_class_expr =
+and strip_loc_class_exp =
   function
   | `CeApp (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_expr _a1 in
-      let _a2 = strip_loc_expr _a2 in `CeApp (_a1, _a2)
+      let _a1 = strip_loc_class_exp _a1 in
+      let _a2 = strip_loc_exp _a2 in `CeApp (_a1, _a2)
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in
@@ -7486,11 +7443,11 @@ and strip_loc_class_expr =
       let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_class_expr _a2 in `CeFun (_a1, _a2)
+      let _a2 = strip_loc_class_exp _a2 in `CeFun (_a1, _a2)
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
-      let _a3 = strip_loc_class_expr _a3 in `LetIn (_a1, _a2, _a3)
+      let _a3 = strip_loc_class_exp _a3 in `LetIn (_a1, _a2, _a3)
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
@@ -7498,14 +7455,14 @@ and strip_loc_class_expr =
       let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_expr _a1 in
+      let _a1 = strip_loc_class_exp _a1 in
       let _a2 = strip_loc_class_type _a2 in `Constraint (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_expr _a1 in
-      let _a2 = strip_loc_class_expr _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_class_exp _a1 in
+      let _a2 = strip_loc_class_exp _a2 in `And (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_expr _a1 in
-      let _a2 = strip_loc_class_expr _a2 in `Eq (_a1, _a2)
+      let _a1 = strip_loc_class_exp _a1 in
+      let _a2 = strip_loc_class_exp _a2 in `Eq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result428)
 and strip_loc_cstru =
   function
@@ -7517,29 +7474,28 @@ and strip_loc_cstru =
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
   | `Inherit (_a0,_a1,_a2) ->
       let _a1 = strip_loc_override_flag _a1 in
-      let _a2 = strip_loc_class_expr _a2 in `Inherit (_a1, _a2)
+      let _a2 = strip_loc_class_exp _a2 in `Inherit (_a1, _a2)
   | `InheritAs (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_override_flag _a1 in
-      let _a2 = strip_loc_class_expr _a2 in
+      let _a2 = strip_loc_class_exp _a2 in
       let _a3 = strip_loc_alident _a3 in `InheritAs (_a1, _a2, _a3)
-  | `Initializer (_a0,_a1) ->
-      let _a1 = strip_loc_expr _a1 in `Initializer _a1
+  | `Initializer (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Initializer _a1
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_override_flag _a2 in
       let _a3 = strip_loc_private_flag _a3 in
-      let _a4 = strip_loc_expr _a4 in
+      let _a4 = strip_loc_exp _a4 in
       let _a5 = strip_loc_ctyp _a5 in `CrMth (_a1, _a2, _a3, _a4, _a5)
   | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_override_flag _a2 in
       let _a3 = strip_loc_private_flag _a3 in
-      let _a4 = strip_loc_expr _a4 in `CrMthS (_a1, _a2, _a3, _a4)
+      let _a4 = strip_loc_exp _a4 in `CrMthS (_a1, _a2, _a3, _a4)
   | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_override_flag _a2 in
       let _a3 = strip_loc_mutable_flag _a3 in
-      let _a4 = strip_loc_expr _a4 in `CrVal (_a1, _a2, _a3, _a4)
+      let _a4 = strip_loc_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
   | `CrVir (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
@@ -7981,7 +7937,7 @@ and pp_print_patt fmt =
         pp_print_alident _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_alident _a1 pp_print_patt _a2 pp_print_expr _a3
+        _a0 pp_print_alident _a1 pp_print_patt _a2 pp_print_exp _a3
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_patt _a1 pp_print_patt _a2
@@ -8013,82 +7969,82 @@ and pp_print_rec_patt fmt =
         pp_print_rec_patt _a1 pp_print_rec_patt _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result497)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result497)
-and pp_print_expr fmt =
+and pp_print_exp fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result496)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `Vrn (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | `Com (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `Tup (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result496)
   | `Record (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_expr _a1
+        pp_print_rec_exp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result496)
   | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result496)
   | `RecordWith (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_expr _a1 pp_print_expr _a2
+        pp_print_rec_exp _a1 pp_print_exp _a2
   | `Dot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `ArrayDot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `ArrayEmpty _a0 ->
       Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `ExAsf _a0 -> Format.fprintf fmt "@[<1>(`ExAsf@ %a)@]" pp_print_loc _a0
   | `ExAsr (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `Assign (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Assign@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
       Format.fprintf fmt "@[<1>(`For@ %a@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_alident _a1 pp_print_expr _a2 pp_print_expr _a3
-        pp_print_direction_flag _a4 pp_print_expr _a5
+        _a0 pp_print_alident _a1 pp_print_exp _a2 pp_print_exp _a3
+        pp_print_direction_flag _a4 pp_print_exp _a5
   | `Fun (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Fun@ %a@ %a)@]" pp_print_loc _a0
         pp_print_case _a1
   | `IfThenElse (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`IfThenElse@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_expr _a1 pp_print_expr _a2 pp_print_expr _a3
+        _a0 pp_print_exp _a1 pp_print_exp _a2 pp_print_exp _a3
   | `IfThen (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`IfThen@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `LabelS (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_expr _a2
+        pp_print_alident _a1 pp_print_exp _a2
   | `Lazy (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_expr _a3
+        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_exp _a3
   | `LetModule (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_module_expr _a2 pp_print_expr _a3
+        _a0 pp_print_auident _a1 pp_print_module_exp _a2 pp_print_exp _a3
   | `Match (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_case _a2
+        pp_print_exp _a1 pp_print_case _a2
   | `New (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`New@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
@@ -8104,56 +8060,56 @@ and pp_print_expr fmt =
         pp_print_patt _a1
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_expr _a2
+        pp_print_alident _a1 pp_print_exp _a2
   | `OptLablS (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
   | `OvrInst (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`OvrInst@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_expr _a1
+        pp_print_rec_exp _a1
   | `OvrInstEmpty _a0 ->
       Format.fprintf fmt "@[<1>(`OvrInstEmpty@ %a)@]" pp_print_loc _a0
   | `Seq (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Seq@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `Send (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Send@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_alident _a2
+        pp_print_exp _a1 pp_print_alident _a2
   | `StringDot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`StringDot@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `Try (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Try@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_case _a2
+        pp_print_exp _a1 pp_print_case _a2
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_ctyp _a2
+        pp_print_exp _a1 pp_print_ctyp _a2
   | `Coercion (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Coercion@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_expr _a1 pp_print_ctyp _a2 pp_print_ctyp _a3
+        _a0 pp_print_exp _a1 pp_print_ctyp _a2 pp_print_ctyp _a3
   | `Subtype (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Subtype@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_ctyp _a2
+        pp_print_exp _a1 pp_print_ctyp _a2
   | `While (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`While@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1 pp_print_expr _a2
+        pp_print_exp _a1 pp_print_exp _a2
   | `LetOpen (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ident _a1 pp_print_expr _a2
+        pp_print_ident _a1 pp_print_exp _a2
   | `LocalTypeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_alident _a1 pp_print_expr _a2
-  | `Package_expr (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Package_expr@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_expr _a1
-and pp_print_rec_expr fmt =
+        _a0 pp_print_alident _a1 pp_print_exp _a2
+  | `Package_exp (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Package_exp@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_module_exp _a1
+and pp_print_rec_exp fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_expr _a1 pp_print_rec_expr _a2
+        pp_print_rec_exp _a1 pp_print_rec_exp _a2
   | `RecBind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ident _a1 pp_print_expr _a2
+        pp_print_ident _a1 pp_print_exp _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result495)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result495)
 and pp_print_module_type fmt =
@@ -8172,7 +8128,7 @@ and pp_print_module_type fmt =
         pp_print_module_type _a1 pp_print_with_constr _a2
   | `ModuleTypeOf (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_expr _a1
+        pp_print_module_exp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result494)
 and pp_print_sig_item fmt =
   function
@@ -8190,7 +8146,7 @@ and pp_print_sig_item fmt =
         pp_print_alident _a1
   | `Directive (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_expr _a2
+        pp_print_alident _a1 pp_print_exp _a2
   | `Exception (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" pp_print_loc _a0
         pp_print_of_ctyp _a1
@@ -8250,7 +8206,7 @@ and pp_print_binding fmt =
         pp_print_binding _a1 pp_print_binding _a2
   | `Bind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_expr _a2
+        pp_print_patt _a1 pp_print_exp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result491)
 and pp_print_module_binding fmt =
   function
@@ -8259,8 +8215,8 @@ and pp_print_module_binding fmt =
         pp_print_module_binding _a1 pp_print_module_binding _a2
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_module_type _a2
-        pp_print_module_expr _a3
+        _a0 pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_exp
+        _a3
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_module_type _a2
@@ -8272,21 +8228,20 @@ and pp_print_case fmt =
         pp_print_case _a1 pp_print_case _a2
   | `Case (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_expr _a2
+        pp_print_patt _a1 pp_print_exp _a2
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_patt _a1 pp_print_expr _a2 pp_print_expr _a3
+        _a0 pp_print_patt _a1 pp_print_exp _a2 pp_print_exp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result489)
-and pp_print_module_expr fmt =
+and pp_print_module_exp fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result488)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_expr _a1 pp_print_module_expr _a2
+        pp_print_module_exp _a1 pp_print_module_exp _a2
   | `Functor (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_expr
-        _a3
+        pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_exp _a3
   | `Struct (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc _a0
         pp_print_stru _a1
@@ -8294,16 +8249,16 @@ and pp_print_module_expr fmt =
       Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" pp_print_loc _a0
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_expr _a1 pp_print_module_type _a2
+        pp_print_module_exp _a1 pp_print_module_type _a2
   | `PackageModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result488)
 and pp_print_stru fmt =
   function
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_expr _a1
+        pp_print_class_exp _a1
   | `ClassType (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_type _a1
@@ -8315,22 +8270,22 @@ and pp_print_stru fmt =
         pp_print_alident _a1
   | `Directive (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Directive@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_expr _a2
+        pp_print_alident _a1 pp_print_exp _a2
   | `Exception (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Exception@ %a@ %a)@]" pp_print_loc _a0
         pp_print_of_ctyp _a1
   | `StExp (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`StExp@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `External (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_ctyp _a2 pp_print_strings _a3
   | `Include (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_expr _a1
+        pp_print_module_exp _a1
   | `Module (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_expr _a2
+        pp_print_auident _a1 pp_print_module_exp _a2
   | `RecModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_binding _a1
@@ -8401,11 +8356,11 @@ and pp_print_class_sig_item fmt =
       Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result485)
-and pp_print_class_expr fmt =
+and pp_print_class_exp fmt =
   function
   | `CeApp (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_expr _a1 pp_print_expr _a2
+        pp_print_class_exp _a1 pp_print_exp _a2
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_virtual_flag _a1 pp_print_ident _a2
@@ -8415,10 +8370,10 @@ and pp_print_class_expr fmt =
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_class_expr _a2
+        pp_print_patt _a1 pp_print_class_exp _a2
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_expr _a3
+        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_exp _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_cstru _a1
@@ -8431,13 +8386,13 @@ and pp_print_class_expr fmt =
         pp_print_patt _a1
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_expr _a1 pp_print_class_type _a2
+        pp_print_class_exp _a1 pp_print_class_type _a2
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_expr _a1 pp_print_class_expr _a2
+        pp_print_class_exp _a1 pp_print_class_exp _a2
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_expr _a1 pp_print_class_expr _a2
+        pp_print_class_exp _a1 pp_print_class_exp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result484)
 and pp_print_cstru fmt =
   function
@@ -8449,26 +8404,26 @@ and pp_print_cstru fmt =
         pp_print_ctyp _a1 pp_print_ctyp _a2
   | `Inherit (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_override_flag _a1 pp_print_class_expr _a2
+        pp_print_override_flag _a1 pp_print_class_exp _a2
   | `InheritAs (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_override_flag _a1 pp_print_class_expr _a2
+        _a0 pp_print_override_flag _a1 pp_print_class_exp _a2
         pp_print_alident _a3
   | `Initializer (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_expr _a1
+        pp_print_exp _a1
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
       Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
         pp_print_loc _a0 pp_print_alident _a1 pp_print_override_flag _a2
-        pp_print_private_flag _a3 pp_print_expr _a4 pp_print_ctyp _a5
+        pp_print_private_flag _a3 pp_print_exp _a4 pp_print_ctyp _a5
   | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
       Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_override_flag _a2
-        pp_print_private_flag _a3 pp_print_expr _a4
+        pp_print_private_flag _a3 pp_print_exp _a4
   | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
       Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_override_flag _a2
-        pp_print_mutable_flag _a3 pp_print_expr _a4
+        pp_print_mutable_flag _a3 pp_print_exp _a4
   | `CrVir (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3

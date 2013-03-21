@@ -1,88 +1,88 @@
 open Ast
   
-(* val sep_dot_expr : *)
-(*   (loc * string list * expr) list -> *)
-(*   expr -> (loc * string list * expr) list *)
+(* val sep_dot_exp : *)
+(*   (loc * string list * exp) list -> *)
+(*   exp -> (loc * string list * exp) list *)
 
-(* val mksequence : ?loc:loc -> expr -> expr *)
+(* val mksequence : ?loc:loc -> exp -> exp *)
 
-(* val mksequence' : ?loc:loc -> expr -> expr *)
+(* val mksequence' : ?loc:loc -> exp -> exp *)
 
-(* val mkassert : loc -> expr -> expr *)
+(* val mkassert : loc -> exp -> exp *)
 
-(* val bigarray_get : loc -> expr -> expr -> expr *)
+(* val bigarray_get : loc -> exp -> exp -> exp *)
 
-(* val bigarray_set : loc -> expr -> expr -> expr option *)
+(* val bigarray_set : loc -> exp -> exp -> exp option *)
 
-val pattern_eq_expression : patt -> expr -> bool
+val pattern_eq_expression : patt -> exp -> bool
 
-val map : loc -> patt -> expr -> expr -> expr
+val map : loc -> patt -> exp -> exp -> exp
 
-val filter : loc -> patt -> expr -> expr -> expr
+val filter : loc -> patt -> exp -> exp -> exp
 
-val concat : loc -> expr -> expr
+val concat : loc -> exp -> exp
 
 val compr :
   loc ->
-  expr ->
-  [> `cond of expr | `gen of patt * expr ] list -> expr
+  exp ->
+  [> `cond of exp | `gen of patt * exp ] list -> exp
 
 val bad_patt : FanLoc.t -> 'a
 
-val substp : loc -> (string * patt) list -> expr -> patt
+val substp : loc -> (string * patt) list -> exp -> patt
 
-class subst: loc -> (string * expr) list -> Objs.map
+class subst: loc -> (string * exp) list -> Objs.map
 
 class type antiquot_filter =object
   inherit Objs.map
-  method get_captured_variables: (expr * expr)list
+  method get_captured_variables: (exp * exp)list
   method clear_captured_variables: unit
 end
 
 val capture_antiquot: antiquot_filter
 
-val filter_patt_with_captured_variables:  patt -> patt * (expr * expr) list
+val filter_patt_with_captured_variables:  patt -> patt * (exp * exp) list
 
-val fun_args : loc -> patt list -> expr -> expr
+val fun_args : loc -> patt list -> exp -> exp
 
 
-(* val mkumin : loc -> string -> expr -> expr *)
-(* val mk_assert : expr -> expr *)
-val mk_record : (string * expr) list -> expr
-val failure : expr
-val ( <+ ) : string list -> expr -> expr
-val ( <+< ) : patt list -> expr -> expr
-val mee_comma : expr -> expr -> expr
-val mee_app : expr -> expr -> expr
-val vee_of_str : string -> expr
+(* val mkumin : loc -> string -> exp -> exp *)
+(* val mk_assert : exp -> exp *)
+val mk_record : (string * exp) list -> exp
+val failure : exp
+val ( <+ ) : string list -> exp -> exp
+val ( <+< ) : patt list -> exp -> exp
+val mee_comma : exp -> exp -> exp
+val mee_app : exp -> exp -> exp
+val vee_of_str : string -> exp
 
-val mee_of_str : string -> expr
+val mee_of_str : string -> exp
 
-val meee_of_str : string -> expr
+val meee_of_str : string -> exp
 
-val mk_tuple_ee : expr list -> expr
+val mk_tuple_ee : exp list -> exp
 
-val mee_record_col : string -> expr -> expr
+val mee_record_col : string -> exp -> exp
 
-val mee_record_semi : expr -> expr -> expr
+val mee_record_semi : exp -> exp -> exp
 
-val mk_record_ee : (string * expr) list -> expr
+val mk_record_ee : (string * exp) list -> exp
 
-val eta_expand : expr -> int -> expr
+val eta_expand : exp -> int -> exp
 
-val gen_curry_n : expr -> arity:int -> string -> int -> expr
+val gen_curry_n : exp -> arity:int -> string -> int -> exp
 
-val currying : case list -> arity:int -> expr
+val currying : case list -> arity:int -> exp
 
-val unknown : int -> expr
+val unknown : int -> exp
 
-(* val of_vstr_number : string -> int  -> expr *)
-(* val of_str : string -> expr *)
-(* val of_ident_number : ident -> int -> expr *)
-(* val ( +> ) : expr -> string list -> expr *)
-(* val gen_tuple_first : number:int -> off:int -> expr *)
-(* val gen_tuple_second : number:int -> off:int -> expr *)
-(* val tuple_of_number : expr -> int -> expr *)
-(* val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> expr *)
+(* val of_vstr_number : string -> int  -> exp *)
+(* val of_str : string -> exp *)
+(* val of_ident_number : ident -> int -> exp *)
+(* val ( +> ) : exp -> string list -> exp *)
+(* val gen_tuple_first : number:int -> off:int -> exp *)
+(* val gen_tuple_second : number:int -> off:int -> exp *)
+(* val tuple_of_number : exp -> int -> exp *)
+(* val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> exp *)
 
 

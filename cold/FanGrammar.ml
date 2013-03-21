@@ -1,6 +1,6 @@
 open Ast
 type name =  {
-  expr: expr;
+  exp: exp;
   tvar: string;
   loc: loc} 
 type styp =
@@ -10,27 +10,27 @@ type styp =
 type attr = string 
 type entry =  {
   name: name;
-  pos: expr option;
+  pos: exp option;
   levels: levels} 
 and levels = [ `Group of level list | `Single of level] 
 and level =  {
   label: string option;
-  assoc: expr option;
+  assoc: exp option;
   rules: rule list} 
 and rule =  {
   prod: symbol list;
-  action: expr option} 
+  action: exp option} 
 and symbol =  {
   text: text;
   styp: styp;
   pattern: patt option} 
 and text =
-  [ `Smeta of (loc* string list* text list* expr* styp)
+  [ `Smeta of (loc* string list* text list* exp* styp)
   | `Slist of (loc* bool* symbol* symbol option)
   | `Snterm of (loc* name* string option) | `Sopt of (loc* text)
   | `Stry of (loc* text) | `Speek of (loc* text)
-  | `Srules of (loc* (text list* expr) list) | `Sself of loc | `Snext of loc
-  | `Skeyword of (loc* string) | `Stok of (loc* expr* attr* string)] 
+  | `Srules of (loc* (text list* exp) list) | `Sself of loc | `Snext of loc
+  | `Skeyword of (loc* string) | `Stok of (loc* exp* attr* string)] 
 type used =  
   | Unused
   | UsedScanned

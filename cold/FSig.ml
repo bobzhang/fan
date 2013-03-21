@@ -14,13 +14,13 @@ type col =  {
   col_ctyp: ctyp} 
 type ty_info = 
   {
-  name_expr: expr;
-  expr: expr;
-  exp0: expr;
+  name_exp: exp;
+  exp: exp;
+  exp0: exp;
   pat0: patt;
-  id_expr: expr;
+  id_exp: exp;
   id_patt: patt;
-  id_exprs: expr list;
+  id_exps: exp list;
   id_patts: patt list;
   ty: ctyp} 
 type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
@@ -32,7 +32,7 @@ type record_col =  {
 type record_info = record_col list 
 type basic_id_transform =
   [ `Pre of string | `Post of string | `Fun of string id] 
-type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> expr] 
+type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
 type full_id_transform =
   [ basic_id_transform | `Idents of ident list -> ident
   | `Ident of ident -> ident | `Last of string -> ident | `Obj of string id] 

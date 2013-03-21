@@ -60,15 +60,15 @@ val dump_file : string option  ref
     
 (* theoretically you can use [mexpr] which lift it into any type you can *)
 val add_quotation:
-    expr_filter:(ep(* 'a *) -> expr) ->
+    exp_filter:(ep -> exp) ->
       patt_filter:(ep(* 'b *) -> patt) ->
-        mexpr:(FanLoc.t -> 'c -> ep(* 'a *)) ->
+        mexp:(FanLoc.t -> 'c -> ep(* 'a *)) ->
           mpatt:(FanLoc.t -> 'c -> ep(* 'b *)) -> FanToken.name -> 'c Gram.t -> unit
 
 
 
 (* BUG, revised parser can not parse name:string -> unit*)
-val of_expr: name:FanToken.name -> entry: expr Gram.t  -> unit
+val of_exp: name:FanToken.name -> entry: exp Gram.t  -> unit
 
 val of_patt: name:FanToken.name -> entry: patt Gram.t  -> unit
 
@@ -95,7 +95,7 @@ val of_case_with_filter :
   name:FanToken.name
   -> entry:case Gram.t -> filter:(case -> case) -> unit
 
-val of_expr_with_filter :
+val of_exp_with_filter :
     name:FanToken.name
-  -> entry:expr Gram.t -> filter:(expr -> expr) -> unit
+  -> entry:exp Gram.t -> filter:(exp -> exp) -> unit
         

@@ -87,7 +87,7 @@ let make_ctyp (styp : styp) tvar =
                             (`Lid (_loc, "t")))))))))
      | `Type t -> t in
    aux styp : ctyp )
-let rec make_expr (tvar : string) (x : text) =
+let rec make_exp (tvar : string) (x : text) =
   let rec aux tvar x =
     match x with
     | `Smeta (_loc,n,tl,e,t) ->
@@ -140,7 +140,7 @@ let rec make_expr (tvar : string) (x : text) =
             (_loc,
               (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))))),
               (`Constraint
-                 (_loc, (n.expr),
+                 (_loc, (n.exp),
                    (`App
                       (_loc,
                         (`Id
@@ -177,14 +177,14 @@ let rec make_expr (tvar : string) (x : text) =
                               (_loc, (`Vrn (_loc, attr)),
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
-and make_expr_rules (_loc : loc) (rl : (text list* expr) list)
+and make_expr_rules (_loc : loc) (rl : (text list* exp) list)
   (tvar : string) =
   (list_of_list _loc
      (List.map
         (fun (sl,action)  ->
-           let action_string = Ast2pt.to_string_expr action in
+           let action_string = Ast2pt.to_string_exp action in
            let sl =
-             list_of_list _loc (List.map (fun t  -> make_expr tvar t) sl) in
+             list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
            `Tup
              (_loc,
                (`Com
@@ -192,9 +192,9 @@ and make_expr_rules (_loc : loc) (rl : (text list* expr) list)
                     (`Tup
                        (_loc,
                          (`Com (_loc, (`Str (_loc, action_string)), action))))))))
-        rl) : expr )
+        rl) : exp )
 let text_of_action (_loc : loc) (psl : symbol list)
-  ?action:(act : expr option)  (rtvar : string) (tvar : string) =
+  ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
    let act =
      match act with
@@ -226,11 +226,11 @@ let text_of_action (_loc : loc) (psl : symbol list)
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "t")))))))), e1)))
      | (e,p) ->
-         let (expr,patt) =
+         let (exp,patt) =
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
-         let action_string = Ast2pt.to_string_expr act in
+         let action_string = Ast2pt.to_string_exp act in
          `Fun
            (_loc,
              (`Case
@@ -243,7 +243,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "t")))))))),
                   (`Match
-                     (_loc, expr,
+                     (_loc, exp,
                        (`Or
                           (_loc, (`Case (_loc, patt, e1)),
                             (`Case
@@ -274,17 +274,17 @@ let text_of_action (_loc : loc) (psl : symbol list)
               `Fun (_loc, (`Case (_loc, p, txt)))) e psl in
    `App
      (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
-       txt) : expr )
+       txt) : exp )
 let mk_srule loc (t : string) (tvar : string) (r : rule) =
   (let sl = List.map (fun s  -> s.text) r.prod in
    let ac = text_of_action loc r.prod t ?action:(r.action) tvar in (sl, ac) : 
-  (text list* expr) )
+  (text list* exp) )
 let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-  (List.map (mk_srule loc t tvar) rl : (text list* expr) list )
-let expr_delete_rule _loc n (symbolss : symbol list list) =
+  (List.map (mk_srule loc t tvar) rl : (text list* exp) list )
+let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
-    let sl = list_of_list _loc (List.map (fun s  -> make_expr "" s.text) sl) in
-    ((n.expr), sl) in
+    let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
+    ((n.exp), sl) in
   let rest =
     List.map
       (fun sl  ->
@@ -301,14 +301,14 @@ let expr_delete_rule _loc n (symbolss : symbol list list) =
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | _ -> seq_sem rest
 let mk_name _loc i =
-  { expr = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
+  { exp = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let text_of_entry (e : entry) =
   (let _loc = (e.name).loc in
    let ent =
      let x = e.name in
      `Constraint
-       (_loc, (x.expr),
+       (_loc, (x.exp),
          (`App
             (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "t")))))),
               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (x.tvar)))))))) in
@@ -347,7 +347,7 @@ let text_of_entry (e : entry) =
            (`App
               (_loc,
                 (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-                ent)), (`Tup (_loc, (`Com (_loc, pos, txt))))) : expr )
+                ent)), (`Tup (_loc, (`Com (_loc, pos, txt))))) : exp )
 let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with
@@ -359,7 +359,7 @@ let let_in_of_extend _loc gram locals default =
     | None  -> `Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
   let local_binding_of_name =
     function
-    | { expr = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
+    | { exp = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
         `Bind
           (_loc, (`Id (_loc, (`Lid (_loc, i)))),
             (`Constraint

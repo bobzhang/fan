@@ -103,7 +103,6 @@ let loc_of =
   | `Constraint (_loc,_,_) -> _loc
   | `Ant (_loc,_) -> _loc
   | `Some (_loc,_) -> _loc
-  | `Package_expr (_loc,_) -> _loc
   | `TypeEqPriv (_loc,_,_) -> _loc
   | `Label (_loc,_,_) -> _loc
   | `TyTypePol (_loc,_,_) -> _loc
@@ -140,6 +139,7 @@ let loc_of =
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc
   | `LocalTypeFun (_loc,_,_) -> _loc
+  | `Package_exp (_loc,_) -> _loc
   | `CaseWhen (_loc,_,_,_) -> _loc
   | `PrNil _loc -> _loc
   | `Int (_loc,_) -> _loc
@@ -256,7 +256,7 @@ let rec list_of_app x acc =
 let rec view_app acc =
   function | `App (_,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 let seq_sem ls = seq (sem_of_list ls)
-let binds bs (e : expr) =
+let binds bs (e : exp) =
   match bs with
   | [] -> e
   | _ ->

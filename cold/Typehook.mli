@@ -39,7 +39,7 @@ val traversal: unit -> traversal
    they should not be mixed with other entries which has
    diffierent gram
  *)
-val fan_quot : expr Gram.t
-val fan_quots : expr Gram.t
+val fan_quot : exp Gram.t
+val fan_quots : exp Gram.t
 val include_quot: stru Gram.t
-val save_quot: expr Gram.t
+val save_quot: exp Gram.t

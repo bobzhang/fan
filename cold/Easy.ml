@@ -33,7 +33,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(trail=
   let open Frame in
     stru_of_module_types ?module_name ?cons_transform ~arity ~names ~trail
       ~mk_variant ~left_type_id ~left_type_variable ~mk_record
-      (normal_simple_expr_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
+      (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
          ~left_type_id ~right_type_variable)
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
   `App
@@ -61,6 +61,6 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
      let open Frame in
        obj_of_module_types ?cons_transform ?module_name ~arity ~names ~trail
          ~left_type_variable ~mk_record ~mk_variant base class_name
-         (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
+         (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
             ~right_type_variable ~names ~arity ~mk_tuple) kind) in
   make

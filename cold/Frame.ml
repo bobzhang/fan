@@ -17,33 +17,33 @@ let check names =
           List.iter (fun s  -> eprintf "%s\n" s) preserve;
           exit 2)
        else check_valid name) names
-let mapi_expr ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> expr)  (i : int)
+let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
-  (let name_expr = f ty in
-   let base = name_expr +> names in
-   let id_exprs =
+  (let name_exp = f ty in
+   let base = name_exp +> names in
+   let id_exps =
      List.init arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
-   let exp0 = List.hd id_exprs in
-   let id_patts = id_exprs in
+   let exp0 = List.hd id_exps in
+   let id_patts = id_exps in
    let pat0 = exp0 in
-   let id_expr = tuple_com id_exprs in
-   let id_patt = id_expr in
-   let expr = appl_of_list (base :: id_exprs) in
-   { name_expr; expr; id_expr; id_exprs; id_patt; id_patts; exp0; pat0; ty } : 
+   let id_exp = tuple_com id_exps in
+   let id_patt = id_exp in
+   let exp = appl_of_list (base :: id_exps) in
+   { name_exp; exp; id_exp; id_exps; id_patt; id_patts; exp0; pat0; ty } : 
   FSig.ty_info )
-let tuple_expr_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
-  simple_expr_of_ctyp (ty : ctyp) =
+let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
+  simple_exp_of_ctyp (ty : ctyp) =
   (match ty with
    | `Tup (_loc,t) ->
        let ls = list_of_star t [] in
        let len = List.length ls in
        let patt = EP.mk_tuple ~arity ~number:len in
        let tys =
-         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) ls in
+         List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
        names <+ (currying [`Case (_loc, patt, (mk_tuple tys))] ~arity)
-   | _ -> FanLoc.errorf _loc "tuple_expr_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
-  expr )
-let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
+   | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
+  exp )
+let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt ty =
   let open Transform in
     let right_trans = transform right_type_id in
@@ -64,14 +64,14 @@ let rec normal_simple_expr_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                (_loc,
                  (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
       | `Tup _ as ty ->
-          tuple_expr_of_ctyp ?arity ?names ~mk_tuple
-            (normal_simple_expr_of_ctyp ?arity ?names ~mk_tuple
+          tuple_exp_of_ctyp ?arity ?names ~mk_tuple
+            (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple
                ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | ty ->
-          FanLoc.errorf (loc_of ty) "normal_simple_expr_of_ctyp : %s"
+          FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
             (FanObjs.dump_ctyp ty) in
     aux ty
-let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable 
+let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
   let open Transform in
     let trans = transform right_type_id in
@@ -99,7 +99,7 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                                      (aux t))))))))
            | _ ->
                FanLoc.errorf (loc_of ty)
-                 "list_of_app in obj_simple_expr_of_ctyp: %s"
+                 "list_of_app in obj_simple_exp_of_ctyp: %s"
                  (FanObjs.dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
@@ -107,22 +107,22 @@ let rec obj_simple_expr_of_ctyp ~right_type_id  ~left_type_variable
                (_loc,
                  (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
       | `Tup _ as ty ->
-          tuple_expr_of_ctyp ?arity ?names ~mk_tuple
-            (obj_simple_expr_of_ctyp ~right_type_id ~left_type_variable
+          tuple_exp_of_ctyp ?arity ?names ~mk_tuple
+            (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
       | ty ->
-          FanLoc.errorf (loc_of ty) "obj_simple_expr_of_ctyp: %s"
+          FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s"
             (FanObjs.dump_ctyp ty) in
     aux ty
-let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
-  ~mk_variant  simple_expr_of_ctyp (ty : or_ctyp) =
+let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
+  ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
      let p: patt = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
      let mk (cons,tyargs) =
-       let exprs =
-         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
-       mk_variant cons exprs in
+       let exps =
+         List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
+       mk_variant cons exps in
      let e = mk (cons, tyargs) in `Case (_loc, p, e) : case ) in
   let info = (Sum, (List.length (list_of_or ty []))) in
   let res: case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
@@ -133,18 +133,18 @@ let expr_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       else res in
     List.rev t in
   currying ~arity res
-let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
-  ~mk_variant  ~destination  simple_expr_of_ctyp result ty =
+let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
+  ~mk_variant  ~destination  simple_exp_of_ctyp result ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
      let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
      let mk (cons,tyargs) =
        let exps =
-         List.mapi (mapi_expr ~arity ~names ~f:simple_expr_of_ctyp) tyargs in
+         List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
        mk_variant cons exps in
      let e = mk (cons, tyargs) in `Case (_loc, p, e) : case ) in
   let simple lid =
-    (let e = (simple_expr_of_ctyp (`Id (_loc, lid))) +> names in
+    (let e = (simple_exp_of_ctyp (`Id (_loc, lid))) +> names in
      let (f,a) = view_app [] result in
      let annot = appl_of_list (f :: (List.map (fun _  -> `Any _loc) a)) in
      MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
@@ -163,7 +163,7 @@ let expr_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
       else res in
     List.rev t in
   currying ~arity res
-let mk_prefix (vars : opt_decl_params) (acc : expr) ?(names= []) 
+let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
   ~left_type_variable  =
   let open Transform in
     let varf = basic_transform left_type_variable in
@@ -181,8 +181,8 @@ let mk_prefix (vars : opt_decl_params) (acc : expr) ?(names= [])
     | `Some (_,xs) ->
         let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
-  ~destination  ~result_type  simple_expr_of_ctyp expr_of_ctyp
-  expr_of_variant tydcl =
+  ~destination  ~result_type  simple_exp_of_ctyp exp_of_ctyp
+  exp_of_variant tydcl =
   (match (tydcl : typedecl ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -198,15 +198,15 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                         | { col_label; col_mutable; col_ctyp } ->
                             {
                               re_info =
-                                (mapi_expr ~arity ~names
-                                   ~f:simple_expr_of_ctyp i col_ctyp);
+                                (mapi_exp ~arity ~names
+                                   ~f:simple_exp_of_ctyp i col_ctyp);
                               re_label = col_label;
                               re_mutable = col_mutable
                             }) cols in
                  mk_prefix ~names ~left_type_variable tyvars
                    (currying ~arity [`Case (_loc, patt, (mk_record info))])
              | `Sum (_,ctyp) ->
-                 let funct = expr_of_ctyp ctyp in
+                 let funct = exp_of_ctyp ctyp in
                  mk_prefix ~names ~left_type_variable tyvars funct
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
@@ -214,12 +214,12 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
         | `TyEq (_,_,ctyp) ->
             (match ctyp with
              | `Id _|`Tup _|`Quote _|`Arrow _|`App _ as x ->
-                 let expr = simple_expr_of_ctyp x in
-                 let funct = eta_expand (expr +> names) arity in
+                 let exp = simple_exp_of_ctyp x in
+                 let funct = eta_expand (exp +> names) arity in
                  mk_prefix ~names ~left_type_variable tyvars funct
              | `PolyEq (_,t)|`PolySup (_,t)|`PolyInf (_,t)
                |`PolyInfSup (_,t,_) ->
-                 let case = expr_of_variant result_type t in
+                 let case = exp_of_variant result_type t in
                  mk_prefix ~names ~left_type_variable tyvars case
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
@@ -229,8 +229,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
               (FanObjs.dump_type_info t))
    | t ->
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
-         (FanObjs.dump_typedecl t) : expr )
-let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1) 
+         (FanObjs.dump_typedecl t) : exp )
+let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
   let open Transform in
@@ -241,14 +241,14 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
         Str_item in
     if not (Ctyp.is_abstract tydcl)
     then
-      let fun_expr =
+      let fun_exp =
         fun_of_tydcl ~destination:Str_item ~names ~arity ~left_type_variable
-          ~mk_record ~result_type simple_expr_of_ctyp
-          (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
-             simple_expr_of_ctyp)
-          (expr_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
-             ~destination:Str_item simple_expr_of_ctyp) tydcl in
-      `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_expr)
+          ~mk_record ~result_type simple_exp_of_ctyp
+          (exp_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
+             simple_exp_of_ctyp)
+          (exp_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
+             ~destination:Str_item simple_exp_of_ctyp) tydcl in
+      `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_exp)
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
          (FanObjs.dump_typedecl tydcl);
@@ -259,12 +259,12 @@ let binding_of_tydcl ?cons_transform  simple_expr_of_ctyp tydcl ?(arity= 1)
                 (`Str (_loc, "Abstract data type not implemented"))))))
 let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
   ~trail  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
-  simple_expr_of_ctyp_with_cxt (lst : module_types) =
+  simple_exp_of_ctyp_with_cxt (lst : module_types) =
   let cxt = Hashset.create 50 in
   let mk_binding =
     binding_of_tydcl ?cons_transform ?arity ?names ~trail ~mk_variant
       ~left_type_id ~left_type_variable ~mk_record
-      (simple_expr_of_ctyp_with_cxt cxt) in
+      (simple_exp_of_ctyp_with_cxt cxt) in
   let fs (ty : types) =
     (match ty with
      | `Mutual named_types ->
@@ -293,16 +293,16 @@ let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names
 let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
   [])  ~trail 
   ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 
-  ~mk_record  ~mk_variant  base class_name simple_expr_of_ctyp (k : kind)
+  ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp (k : kind)
   (lst : module_types) =
   (let tbl = Hashtbl.create 50 in
    let f tydcl result_type =
      fun_of_tydcl ~names ~destination:(Obj k) ~arity ~left_type_variable
-       ~mk_record simple_expr_of_ctyp
-       (expr_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
-          simple_expr_of_ctyp)
-       (expr_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
-          ~trail ~mk_variant simple_expr_of_ctyp) ~result_type tydcl in
+       ~mk_record simple_exp_of_ctyp
+       (exp_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
+          simple_exp_of_ctyp)
+       (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
+          ~trail ~mk_variant simple_exp_of_ctyp) ~result_type tydcl in
    let mk_type tydcl =
      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
      let (ty,result_type) =

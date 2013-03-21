@@ -2,7 +2,7 @@ open Format
 open LibUtil
 open Ast
 exception Unhandled of ctyp
-exception Finished of expr
+exception Finished of exp
 let _loc = FanLoc.ghost
 let unit_literal = `Id (_loc, (`Uid (_loc, "()")))
 let x ?(off= 0)  (i : int) =

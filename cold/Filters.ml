@@ -10,7 +10,7 @@ let _ =
     ("lift",
       (fun ast  ->
          let _loc = loc_of ast in
-         let e = (meta#stru _loc ast : ep  :>expr) in
+         let e = (meta#stru _loc ast : ep  :>exp) in
          `StExp
            (_loc,
              (`LetIn
@@ -22,7 +22,7 @@ let _ =
                             (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "ghost")))))))), e)))))
-let add_debug_expr (e : expr) =
+let add_debug_exp (e : exp) =
   (let _loc = loc_of e in
    let msg = "camlp4-debug: exc: %s at " ^ ((FanLoc.to_string _loc) ^ "@.") in
    `Try
@@ -85,22 +85,22 @@ let add_debug_expr (e : expr) =
                            (`App
                               (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
                                 (`Id (_loc, (`Lid (_loc, "exc"))))))))))))))) : 
-  expr )
+  exp )
 let rec map_case: case -> case =
   function
   | `Or (_loc,m1,m2) -> `Or (_loc, (map_case m1), (map_case m2))
-  | `Case (_loc,p,e) -> `Case (_loc, p, (add_debug_expr e))
-  | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_expr e))
+  | `Case (_loc,p,e) -> `Case (_loc, p, (add_debug_exp e))
+  | `CaseWhen (_loc,p,w,e) -> `CaseWhen (_loc, p, w, (add_debug_exp e))
   | m -> m
 let _ =
   AstFilters.register_stru_filter
     ("exception",
       ((object 
           inherit  Objs.map as super
-          method! expr =
+          method! exp =
             function
             | `Fun (_loc,m) -> `Fun (_loc, (map_case m))
-            | x -> super#expr x
+            | x -> super#exp x
           method! stru =
             function
             | `Module (_loc,`Uid (_,"Debug"),_) as st -> st
@@ -126,14 +126,14 @@ let decorate decorate_fun =
       | `Value (_loc,r,b) ->
           `Value (_loc, r, (decorate_binding decorate_fun b))
       | st -> super#stru st
-    method! expr =
+    method! exp =
       function
       | `LetIn (_loc,r,b,e) ->
-          `LetIn (_loc, r, (decorate_binding decorate_fun b), (o#expr e))
+          `LetIn (_loc, r, (decorate_binding decorate_fun b), (o#exp e))
       | `Fun (_loc,_) as e -> decorate_fun "<fun>" e
-      | e -> super#expr e
+      | e -> super#exp e
   end
-let decorate_this_expr e id =
+let decorate_this_exp e id =
   let buf = Buffer.create 42 in
   let _loc = loc_of e in
   let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
@@ -152,16 +152,16 @@ let decorate_this_expr e id =
                 (`Str (_loc, (String.escaped s))))))), e)
 let rec decorate_fun id =
   let decorate = decorate decorate_fun in
-  let decorate_expr = decorate#expr in
+  let decorate_exp = decorate#exp in
   let decorate_case = decorate#case in
   function
   | `Fun (_loc,`Case (_,p,e)) ->
       `Fun (_loc, (`Case (_loc, p, (decorate_fun id e))))
-  | `Fun (_loc,m) -> decorate_this_expr (`Fun (_loc, (decorate_case m))) id
-  | e -> decorate_this_expr (decorate_expr e) id
+  | `Fun (_loc,m) -> decorate_this_exp (`Fun (_loc, (decorate_case m))) id
+  | e -> decorate_this_exp (decorate_exp e) id
 let _ =
   AstFilters.register_stru_filter ("profile", ((decorate decorate_fun)#stru))
-let map_expr =
+let map_exp =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
     |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),e)) -> e
@@ -210,7 +210,7 @@ let map_expr =
   | e -> e
 let _ =
   AstFilters.register_stru_filter
-    ("trash_nothing", ((FanObjs.map_expr map_expr)#stru))
+    ("trash_nothing", ((FanObjs.map_exp map_exp)#stru))
 let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
@@ -230,7 +230,7 @@ let _ =
     ("serialize",
       (fun x  ->
          let _loc = FanLoc.ghost in
-         let y = (me#stru _loc x : ep  :>expr) in
+         let y = (me#stru _loc x : ep  :>exp) in
          `Sem
            (_loc, x,
              (`Value

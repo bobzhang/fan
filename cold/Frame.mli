@@ -1,77 +1,77 @@
 open Ast
 
 val check : string list -> unit
-val mapi_expr :
+val mapi_exp :
   ?arity:int ->
   ?names:string list ->
-  f:(ctyp -> expr) -> int -> ctyp -> FSig.ty_info
-val tuple_expr_of_ctyp :
+  f:(ctyp -> exp) -> int -> ctyp -> FSig.ty_info
+val tuple_exp_of_ctyp :
   ?arity:int ->
   ?names:string list ->
-  mk_tuple:(FSig.ty_info list -> expr) ->
-  (ctyp -> expr ) ->
-  ctyp -> expr
+  mk_tuple:(FSig.ty_info list -> exp) ->
+  (ctyp -> exp ) ->
+  ctyp -> exp
 
-val expr_of_variant:
+val exp_of_variant:
     ?cons_transform:(string -> string) ->
   ?arity:int ->
   ?names:string list ->
   trail:(FSig.vrn * int -> case option) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) ->
   destination:FSig.destination -> 
-  (ctyp -> expr) -> ctyp -> row_field(* ctyp  *)->  expr
+  (ctyp -> exp) -> ctyp -> row_field(* ctyp  *)->  exp
       
-val normal_simple_expr_of_ctyp :
+val normal_simple_exp_of_ctyp :
   ?arity:int ->
   ?names:string list ->
-  mk_tuple:(FSig.ty_info list -> expr) ->
+  mk_tuple:(FSig.ty_info list -> exp) ->
   right_type_id:FSig.full_id_transform ->
   left_type_id:FSig.basic_id_transform ->
   right_type_variable:FSig.rhs_basic_id_transform ->
-  (string, 'a) Hashtbl.t -> ctyp -> expr 
-val obj_simple_expr_of_ctyp :
+  (string, 'a) Hashtbl.t -> ctyp -> exp 
+val obj_simple_exp_of_ctyp :
   right_type_id:FSig.full_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
   right_type_variable:FSig.rhs_basic_id_transform ->
   ?names:string list ->
   ?arity:int ->
-  mk_tuple:(FSig.ty_info list -> expr) ->
-  ctyp -> expr 
-val expr_of_ctyp :
+  mk_tuple:(FSig.ty_info list -> exp) ->
+  ctyp -> exp 
+val exp_of_ctyp :
   ?cons_transform:(string -> string) ->
   ?arity:int ->
   ?names:string list ->
   trail:(FSig.vrn * int -> case option) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
-  (ctyp -> expr) -> or_ctyp -> expr 
+  mk_variant:(string -> FSig.ty_info list -> exp) ->
+  (ctyp -> exp) -> or_ctyp -> exp 
 val mk_prefix :
   opt_decl_params ->
-  expr ->
+  exp ->
   ?names:string list ->
   left_type_variable:FSig.basic_id_transform ->
-  expr
+  exp
 val fun_of_tydcl :
     ?names:string list ->
     ?arity:int ->
     left_type_variable:FSig.basic_id_transform ->
-    mk_record:(FSig.record_col list -> expr) ->
+    mk_record:(FSig.record_col list -> exp) ->
     destination:FSig.destination ->
       result_type:ctyp -> 
-      (ctyp -> expr ) ->
-        (or_ctyp -> expr ) ->
-          (ctyp -> row_field -> expr) ->  (* labeld as variant *)
-            typedecl -> expr
+      (ctyp -> exp ) ->
+        (or_ctyp -> exp ) ->
+          (ctyp -> row_field -> exp) ->  (* labeld as variant *)
+            typedecl -> exp
 val binding_of_tydcl :
   ?cons_transform:(string -> string) ->
-  (ctyp -> expr ) ->
+  (ctyp -> exp ) ->
   typedecl ->
   ?arity:int ->
   ?names:string list ->
   trail:(FSig.vrn * int -> case option) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
-  mk_record:(FSig.record_col list -> expr) ->
+  mk_record:(FSig.record_col list -> exp) ->
   (* destination:FSig.destination -> *)
     binding
       
@@ -81,12 +81,12 @@ val stru_of_module_types :
   ?arity:int ->
   ?names:string list ->
   trail:(FSig.vrn * int -> case option) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
-  mk_record:(FSig.record_col list -> expr) ->
+  mk_record:(FSig.record_col list -> exp) ->
   (* destination:FSig.destination ->  *)
-  ((string, unit) Hashtbl.t -> ctyp -> expr ) ->
+  ((string, unit) Hashtbl.t -> ctyp -> exp ) ->
   FSig.module_types -> stru
       
 val obj_of_module_types :
@@ -96,9 +96,9 @@ val obj_of_module_types :
   ?names:string list ->
   trail:(FSig.vrn * int -> case option) ->
   left_type_variable:FSig.basic_id_transform ->
-  mk_record:(FSig.record_col list -> expr) ->
-  mk_variant:(string -> FSig.ty_info list -> expr) ->
+  mk_record:(FSig.record_col list -> exp) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) ->
   (* destination:FSig.destination  -> *)
-     string ->  string ->  (ctyp -> expr ) -> 
+     string ->  string ->  (ctyp -> exp ) -> 
   FSig.kind -> FSig.module_types -> stru
   

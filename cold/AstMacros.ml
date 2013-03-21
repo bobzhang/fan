@@ -1,6 +1,6 @@
 open AstLoc
 type key = string 
-type expander = expr -> expr 
+type expander = exp -> exp 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
 let register_macro (k,f) = Hashtbl.replace macro_expanders k f
 let rec fib =
@@ -19,16 +19,16 @@ open LibUtil
 let macro_expander =
   object (self)
     inherit  Objs.map as super
-    method! expr =
+    method! exp =
       function
       | `App (_loc,`Id (_,`Uid (_,a)),y) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
-              fun ()  -> self#expr (f y)
+              fun ()  -> self#exp (f y)
             with
             | Not_found  ->
                 (fun ()  ->
-                   `App (_loc, (`Id (_loc, (`Uid (_loc, a)))), (self#expr y)))))
+                   `App (_loc, (`Id (_loc, (`Uid (_loc, a)))), (self#exp y)))))
             ()
-      | e -> super#expr e
+      | e -> super#exp e
   end

@@ -789,7 +789,7 @@ class meta =
                              (_loc, (`Vrn (_loc, "OptLablExpr")),
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))), (self#patt _loc _a2))),
-                (self#expr _loc _a3))
+                (self#exp _loc _a3))
         | `Or (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -859,7 +859,7 @@ class meta =
                      (self#rec_patt _loc _a1))), (self#rec_patt _loc _a2))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method expr : 'loc -> expr -> ep=
+    method exp : 'loc -> exp -> ep=
       fun _loc  ->
         function
         | #sid as _a0 -> (self#sid _loc _a0 :>ep)
@@ -869,7 +869,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `Vrn (_a0,_a1) ->
             `App
               (_loc,
@@ -881,25 +881,25 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Com")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `Tup (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Tup")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | `Record (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Record")), (self#loc _loc _a0))),
-                (self#rec_expr _loc _a1))
+                (self#rec_exp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
         | #literal as _a0 -> (self#literal _loc _a0 :>ep)
         | `RecordWith (_a0,_a1,_a2) ->
@@ -909,15 +909,15 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "RecordWith")),
-                          (self#loc _loc _a0))), (self#rec_expr _loc _a1))),
-                (self#expr _loc _a2))
+                          (self#loc _loc _a0))), (self#rec_exp _loc _a1))),
+                (self#exp _loc _a2))
         | `Dot (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `ArrayDot (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -925,22 +925,22 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "ArrayDot")),
-                          (self#loc _loc _a0))), (self#expr _loc _a1))),
-                (self#expr _loc _a2))
+                          (self#loc _loc _a0))), (self#exp _loc _a1))),
+                (self#exp _loc _a2))
         | `ArrayEmpty _a0 ->
             `App (_loc, (`Vrn (_loc, "ArrayEmpty")), (self#loc _loc _a0))
         | `Array (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Array")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `ExAsf _a0 ->
             `App (_loc, (`Vrn (_loc, "ExAsf")), (self#loc _loc _a0))
         | `ExAsr (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "ExAsr")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `Assign (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -948,7 +948,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Assign")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
             `App
               (_loc,
@@ -964,8 +964,8 @@ class meta =
                                        (_loc, (`Vrn (_loc, "For")),
                                          (self#loc _loc _a0))),
                                     (self#alident _loc _a1))),
-                               (self#expr _loc _a2))), (self#expr _loc _a3))),
-                     (self#direction_flag _loc _a4))), (self#expr _loc _a5))
+                               (self#exp _loc _a2))), (self#exp _loc _a3))),
+                     (self#direction_flag _loc _a4))), (self#exp _loc _a5))
         | `Fun (_a0,_a1) ->
             `App
               (_loc,
@@ -980,8 +980,8 @@ class meta =
                         (_loc,
                           (`App
                              (_loc, (`Vrn (_loc, "IfThenElse")),
-                               (self#loc _loc _a0))), (self#expr _loc _a1))),
-                     (self#expr _loc _a2))), (self#expr _loc _a3))
+                               (self#loc _loc _a0))), (self#exp _loc _a1))),
+                     (self#exp _loc _a2))), (self#exp _loc _a3))
         | `IfThen (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -989,7 +989,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "IfThen")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `LabelS (_a0,_a1) ->
             `App
               (_loc,
@@ -1002,12 +1002,12 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Label")), (self#loc _loc _a0))),
-                     (self#alident _loc _a1))), (self#expr _loc _a2))
+                     (self#alident _loc _a1))), (self#exp _loc _a2))
         | `Lazy (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Lazy")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `LetIn (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1019,7 +1019,7 @@ class meta =
                              (_loc, (`Vrn (_loc, "LetIn")),
                                (self#loc _loc _a0))),
                           (self#rec_flag _loc _a1))),
-                     (self#binding _loc _a2))), (self#expr _loc _a3))
+                     (self#binding _loc _a2))), (self#exp _loc _a3))
         | `LetModule (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1031,7 +1031,7 @@ class meta =
                              (_loc, (`Vrn (_loc, "LetModule")),
                                (self#loc _loc _a0))),
                           (self#auident _loc _a1))),
-                     (self#module_expr _loc _a2))), (self#expr _loc _a3))
+                     (self#module_exp _loc _a2))), (self#exp _loc _a3))
         | `Match (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1039,7 +1039,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Match")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#case _loc _a2))
+                     (self#exp _loc _a1))), (self#case _loc _a2))
         | `New (_a0,_a1) ->
             `App
               (_loc,
@@ -1072,7 +1072,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "OptLabl")), (self#loc _loc _a0))),
-                     (self#alident _loc _a1))), (self#expr _loc _a2))
+                     (self#alident _loc _a1))), (self#exp _loc _a2))
         | `OptLablS (_a0,_a1) ->
             `App
               (_loc,
@@ -1082,21 +1082,21 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "OvrInst")), (self#loc _loc _a0))),
-                (self#rec_expr _loc _a1))
+                (self#rec_exp _loc _a1))
         | `OvrInstEmpty _a0 ->
             `App (_loc, (`Vrn (_loc, "OvrInstEmpty")), (self#loc _loc _a0))
         | `Seq (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Seq")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `Send (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Send")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#alident _loc _a2))
+                     (self#exp _loc _a1))), (self#alident _loc _a2))
         | `StringDot (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1104,15 +1104,15 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "StringDot")),
-                          (self#loc _loc _a0))), (self#expr _loc _a1))),
-                (self#expr _loc _a2))
+                          (self#loc _loc _a0))), (self#exp _loc _a1))),
+                (self#exp _loc _a2))
         | `Try (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Try")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#case _loc _a2))
+                     (self#exp _loc _a1))), (self#case _loc _a2))
         | `Constraint (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1120,7 +1120,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Constraint")),
-                          (self#loc _loc _a0))), (self#expr _loc _a1))),
+                          (self#loc _loc _a0))), (self#exp _loc _a1))),
                 (self#ctyp _loc _a2))
         | `Coercion (_a0,_a1,_a2,_a3) ->
             `App
@@ -1131,7 +1131,7 @@ class meta =
                         (_loc,
                           (`App
                              (_loc, (`Vrn (_loc, "Coercion")),
-                               (self#loc _loc _a0))), (self#expr _loc _a1))),
+                               (self#loc _loc _a0))), (self#exp _loc _a1))),
                      (self#ctyp _loc _a2))), (self#ctyp _loc _a3))
         | `Subtype (_a0,_a1,_a2) ->
             `App
@@ -1140,7 +1140,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Subtype")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#ctyp _loc _a2))
+                     (self#exp _loc _a1))), (self#ctyp _loc _a2))
         | `While (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1148,7 +1148,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "While")), (self#loc _loc _a0))),
-                     (self#expr _loc _a1))), (self#expr _loc _a2))
+                     (self#exp _loc _a1))), (self#exp _loc _a2))
         | `LetOpen (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1156,7 +1156,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "LetOpen")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#expr _loc _a2))
+                     (self#ident _loc _a1))), (self#exp _loc _a2))
         | `LocalTypeFun (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1165,14 +1165,14 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "LocalTypeFun")),
                           (self#loc _loc _a0))), (self#alident _loc _a1))),
-                (self#expr _loc _a2))
-        | `Package_expr (_a0,_a1) ->
+                (self#exp _loc _a2))
+        | `Package_exp (_a0,_a1) ->
             `App
               (_loc,
                 (`App
-                   (_loc, (`Vrn (_loc, "Package_expr")), (self#loc _loc _a0))),
-                (self#module_expr _loc _a1))
-    method rec_expr : 'loc -> rec_expr -> ep=
+                   (_loc, (`Vrn (_loc, "Package_exp")), (self#loc _loc _a0))),
+                (self#module_exp _loc _a1))
+    method rec_exp : 'loc -> rec_exp -> ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1181,7 +1181,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
-                     (self#rec_expr _loc _a1))), (self#rec_expr _loc _a2))
+                     (self#rec_exp _loc _a1))), (self#rec_exp _loc _a2))
         | `RecBind (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1189,7 +1189,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "RecBind")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#expr _loc _a2))
+                     (self#ident _loc _a1))), (self#exp _loc _a2))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method module_type : 'loc -> module_type -> ep=
@@ -1229,7 +1229,7 @@ class meta =
               (_loc,
                 (`App
                    (_loc, (`Vrn (_loc, "ModuleTypeOf")), (self#loc _loc _a0))),
-                (self#module_expr _loc _a1))
+                (self#module_exp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method sig_item : 'loc -> sig_item -> ep=
       fun _loc  ->
@@ -1265,7 +1265,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Directive")),
                           (self#loc _loc _a0))), (self#alident _loc _a1))),
-                (self#expr _loc _a2))
+                (self#exp _loc _a2))
         | `Exception (_a0,_a1) ->
             `App
               (_loc,
@@ -1406,7 +1406,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Bind")), (self#loc _loc _a0))),
-                     (self#patt _loc _a1))), (self#expr _loc _a2))
+                     (self#patt _loc _a1))), (self#exp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method module_binding : 'loc -> module_binding -> ep=
       fun _loc  ->
@@ -1431,7 +1431,7 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#auident _loc _a1))),
                      (self#module_type _loc _a2))),
-                (self#module_expr _loc _a3))
+                (self#module_exp _loc _a3))
         | `Constraint (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1458,7 +1458,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Case")), (self#loc _loc _a0))),
-                     (self#patt _loc _a1))), (self#expr _loc _a2))
+                     (self#patt _loc _a1))), (self#exp _loc _a2))
         | `CaseWhen (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1469,9 +1469,9 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "CaseWhen")),
                                (self#loc _loc _a0))), (self#patt _loc _a1))),
-                     (self#expr _loc _a2))), (self#expr _loc _a3))
+                     (self#exp _loc _a2))), (self#exp _loc _a3))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method module_expr : 'loc -> module_expr -> ep=
+    method module_exp : 'loc -> module_exp -> ep=
       fun _loc  ->
         function
         | #sid as _a0 -> (self#sid _loc _a0 :>ep)
@@ -1481,8 +1481,8 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
-                     (self#module_expr _loc _a1))),
-                (self#module_expr _loc _a2))
+                     (self#module_exp _loc _a1))),
+                (self#module_exp _loc _a2))
         | `Functor (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1495,7 +1495,7 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#auident _loc _a1))),
                      (self#module_type _loc _a2))),
-                (self#module_expr _loc _a3))
+                (self#module_exp _loc _a3))
         | `Struct (_a0,_a1) ->
             `App
               (_loc,
@@ -1510,14 +1510,14 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Constraint")),
-                          (self#loc _loc _a0))), (self#module_expr _loc _a1))),
+                          (self#loc _loc _a0))), (self#module_exp _loc _a1))),
                 (self#module_type _loc _a2))
         | `PackageModule (_a0,_a1) ->
             `App
               (_loc,
                 (`App
                    (_loc, (`Vrn (_loc, "PackageModule")),
-                     (self#loc _loc _a0))), (self#expr _loc _a1))
+                     (self#loc _loc _a0))), (self#exp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method stru : 'loc -> stru -> ep=
       fun _loc  ->
@@ -1526,7 +1526,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Class")), (self#loc _loc _a0))),
-                (self#class_expr _loc _a1))
+                (self#class_exp _loc _a1))
         | `ClassType (_a0,_a1) ->
             `App
               (_loc,
@@ -1553,7 +1553,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Directive")),
                           (self#loc _loc _a0))), (self#alident _loc _a1))),
-                (self#expr _loc _a2))
+                (self#exp _loc _a2))
         | `Exception (_a0,_a1) ->
             `App
               (_loc,
@@ -1563,7 +1563,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "StExp")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `External (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1580,7 +1580,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Include")), (self#loc _loc _a0))),
-                (self#module_expr _loc _a1))
+                (self#module_exp _loc _a1))
         | `Module (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1588,7 +1588,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Module")), (self#loc _loc _a0))),
-                     (self#auident _loc _a1))), (self#module_expr _loc _a2))
+                     (self#auident _loc _a1))), (self#module_exp _loc _a2))
         | `RecModule (_a0,_a1) ->
             `App
               (_loc,
@@ -1765,7 +1765,7 @@ class meta =
                           (self#alident _loc _a1))),
                      (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method class_expr : 'loc -> class_expr -> ep=
+    method class_exp : 'loc -> class_exp -> ep=
       fun _loc  ->
         function
         | `CeApp (_a0,_a1,_a2) ->
@@ -1775,7 +1775,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "CeApp")), (self#loc _loc _a0))),
-                     (self#class_expr _loc _a1))), (self#expr _loc _a2))
+                     (self#class_exp _loc _a1))), (self#exp _loc _a2))
         | `ClassCon (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1805,7 +1805,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "CeFun")), (self#loc _loc _a0))),
-                     (self#patt _loc _a1))), (self#class_expr _loc _a2))
+                     (self#patt _loc _a1))), (self#class_exp _loc _a2))
         | `LetIn (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1817,7 +1817,7 @@ class meta =
                              (_loc, (`Vrn (_loc, "LetIn")),
                                (self#loc _loc _a0))),
                           (self#rec_flag _loc _a1))),
-                     (self#binding _loc _a2))), (self#class_expr _loc _a3))
+                     (self#binding _loc _a2))), (self#class_exp _loc _a3))
         | `Obj (_a0,_a1) ->
             `App
               (_loc,
@@ -1845,7 +1845,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Constraint")),
-                          (self#loc _loc _a0))), (self#class_expr _loc _a1))),
+                          (self#loc _loc _a0))), (self#class_exp _loc _a1))),
                 (self#class_type _loc _a2))
         | `And (_a0,_a1,_a2) ->
             `App
@@ -1853,16 +1853,14 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
-                     (self#class_expr _loc _a1))),
-                (self#class_expr _loc _a2))
+                     (self#class_exp _loc _a1))), (self#class_exp _loc _a2))
         | `Eq (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
-                     (self#class_expr _loc _a1))),
-                (self#class_expr _loc _a2))
+                     (self#class_exp _loc _a1))), (self#class_exp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method cstru : 'loc -> cstru -> ep=
       fun _loc  ->
@@ -1889,7 +1887,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Inherit")), (self#loc _loc _a0))),
                      (self#override_flag _loc _a1))),
-                (self#class_expr _loc _a2))
+                (self#class_exp _loc _a2))
         | `InheritAs (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1901,13 +1899,13 @@ class meta =
                              (_loc, (`Vrn (_loc, "InheritAs")),
                                (self#loc _loc _a0))),
                           (self#override_flag _loc _a1))),
-                     (self#class_expr _loc _a2))), (self#alident _loc _a3))
+                     (self#class_exp _loc _a2))), (self#alident _loc _a3))
         | `Initializer (_a0,_a1) ->
             `App
               (_loc,
                 (`App
                    (_loc, (`Vrn (_loc, "Initializer")), (self#loc _loc _a0))),
-                (self#expr _loc _a1))
+                (self#exp _loc _a1))
         | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
             `App
               (_loc,
@@ -1925,7 +1923,7 @@ class meta =
                                     (self#alident _loc _a1))),
                                (self#override_flag _loc _a2))),
                           (self#private_flag _loc _a3))),
-                     (self#expr _loc _a4))), (self#ctyp _loc _a5))
+                     (self#exp _loc _a4))), (self#ctyp _loc _a5))
         | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
@@ -1940,7 +1938,7 @@ class meta =
                                     (self#loc _loc _a0))),
                                (self#alident _loc _a1))),
                           (self#override_flag _loc _a2))),
-                     (self#private_flag _loc _a3))), (self#expr _loc _a4))
+                     (self#private_flag _loc _a3))), (self#exp _loc _a4))
         | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
@@ -1955,7 +1953,7 @@ class meta =
                                     (self#loc _loc _a0))),
                                (self#alident _loc _a1))),
                           (self#override_flag _loc _a2))),
-                     (self#mutable_flag _loc _a3))), (self#expr _loc _a4))
+                     (self#mutable_flag _loc _a3))), (self#exp _loc _a4))
         | `CrVir (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,

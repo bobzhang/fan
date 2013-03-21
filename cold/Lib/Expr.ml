@@ -11,7 +11,7 @@ let rec pattern_eq_expression p e =
   | (`App (_loc,p1,p2),`App (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
-let map loc (p : patt) (e : expr) (l : expr) =
+let map loc (p : patt) (e : exp) (l : exp) =
   (match (p, e) with
    | (`Id (_loc,`Lid (_,x)),`Id (_,`Lid (_,y))) when x = y -> l
    | _ ->
@@ -93,7 +93,7 @@ let map loc (p : patt) (e : expr) (l : expr) =
                                               (loc,
                                                 (`Id (loc, (`Lid (loc, "l")))),
                                                 (`Id (loc, (`Lid (loc, "l")))))))))))))))),
-                  l)), (`Id (loc, (`Uid (loc, "[]"))))) : expr )
+                  l)), (`Id (loc, (`Uid (loc, "[]"))))) : exp )
 let filter loc p b l =
   if is_irrefut_patt p
   then
@@ -141,7 +141,7 @@ let bad_patt _loc =
   FanLoc.raise _loc
     (Failure "this macro cannot be used in a pattern (see its definition)")
 let substp loc env =
-  let rec loop (x : expr) =
+  let rec loop (x : exp) =
     match x with
     | `App (_loc,e1,e2) -> `App (loc, (loop e1), (loop e2))
     | `Id (_loc,`Lid (_,x)) ->
@@ -164,10 +164,10 @@ let substp loc env =
 class subst loc env =
   object 
     inherit  (FanObjs.reloc loc) as super
-    method! expr =
+    method! exp =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as e ->
-          (try List.assoc x env with | Not_found  -> super#expr e)
+          (try List.assoc x env with | Not_found  -> super#exp e)
       | `App (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Lid (_,x)))
         |`App (_loc,`Id (_,`Uid (_,"LOCATION_OF")),`Id (_,`Uid (_,x))) as e
           ->
@@ -215,8 +215,8 @@ class subst loc env =
                                 (if h
                                  then `Id (_loc, (`Lid (_loc, "true")))
                                  else `Id (_loc, (`Lid (_loc, "false")))))))))))
-           with | Not_found  -> super#expr e)
-      | e -> super#expr e
+           with | Not_found  -> super#exp e)
+      | e -> super#exp e
     method! patt =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as p ->
@@ -228,7 +228,7 @@ class type antiquot_filter
   =
   object 
     inherit Objs.map
-    method get_captured_variables : (expr* expr) list
+    method get_captured_variables : (exp* exp) list
     method clear_captured_variables : unit
   end
 let capture_antiquot: antiquot_filter =
@@ -264,9 +264,9 @@ let _loc = FanLoc.ghost
 let mk_record label_exprs =
   (let rec_exprs =
      List.map
-       (fun (label,expr)  -> `RecBind (_loc, (`Lid (_loc, label)), expr))
+       (fun (label,exp)  -> `RecBind (_loc, (`Lid (_loc, label)), exp))
        label_exprs in
-   `Record (_loc, (sem_of_list rec_exprs)) : expr )
+   `Record (_loc, (sem_of_list rec_exprs)) : exp )
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -425,7 +425,7 @@ let mk_tuple_ee =
                (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                     (List.reduce_right mee_comma xs))))))
-let mee_record_col label expr =
+let mee_record_col label exp =
   `App
     (_loc,
       (`App
@@ -439,7 +439,7 @@ let mee_record_col label expr =
                    (_loc,
                      (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                          (`Str (_loc, label)))))))))), expr)
+                          (`Str (_loc, label)))))))))), exp)
 let mee_record_semi a b =
   `App
     (_loc,
@@ -449,7 +449,7 @@ let mee_record_semi a b =
               (_loc, (`Vrn (_loc, "Sem")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
 let mk_record_ee label_exprs =
-  (label_exprs |> (List.map (fun (label,expr)  -> mee_record_col label expr)))
+  (label_exprs |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
     |>
     (fun es  ->
        `App
@@ -458,16 +458,16 @@ let mk_record_ee label_exprs =
               (_loc, (`Vrn (_loc, "Record")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (List.reduce_right mee_record_semi es)))
-let eta_expand (expr : expr) number =
+let eta_expand (exp : exp) number =
   (let names = List.init number (fun i  -> x ~off:0 i) in
-   names <+ (expr +> names) : expr )
-let gen_curry_n (acc : expr) ~arity  cons n =
+   names <+ (exp +> names) : exp )
+let gen_curry_n (acc : exp) ~arity  cons n =
   (let args =
      List.init arity
        (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
    let pat = of_str cons in
    List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
-     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : expr )
+     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )
 let currying cases ~arity  =
   let cases = or_of_list cases in
   if arity >= 2

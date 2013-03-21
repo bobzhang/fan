@@ -3,7 +3,7 @@ open Lib
 open LibUtil
 type 'a item_or_def =  
   | Str of 'a
-  | Def of string* (string list* expr) option
+  | Def of string* (string list* exp) option
   | Und of string
   | ITE of bool* 'a item_or_def list* 'a item_or_def list
   | Lazy of 'a Lazy.t 
@@ -14,24 +14,24 @@ let incorrect_number loc l1 l2 =
     (Failure
        (Printf.sprintf "expected %d parameters; found %d" (List.length l2)
           (List.length l1)))
-let define ~expr  ~patt  eo x =
+let define ~exp  ~patt  eo x =
   (match eo with
    | Some ([],e) ->
-       (Gram.extend_single (expr : 'expr Gram.t )
+       (Gram.extend_single (exp : 'exp Gram.t )
           ((Some (`Level "simple")),
             (None, None,
               [([`Stoken
                    (((function
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ -> (((new FanObjs.reloc) _loc)#expr e : 'expr )\n     | _ -> failwith \"((new FanObjs.reloc) _loc)#expr e\n\")\n",
+                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ -> (((new FanObjs.reloc) _loc)#exp e : 'exp )\n     | _ -> failwith \"((new FanObjs.reloc) _loc)#exp e\n\")\n",
                    (Gram.mk_action
                       (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
-                             (((new FanObjs.reloc) _loc)#expr e : 'expr )
+                             (((new FanObjs.reloc) _loc)#exp e : 'exp )
                          | _ ->
-                             failwith "((new FanObjs.reloc) _loc)#expr e\n"))))]));
+                             failwith "((new FanObjs.reloc) _loc)#exp e\n"))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,
@@ -50,7 +50,7 @@ let define ~expr  ~patt  eo x =
                              failwith
                                "let p = Expr.substp _loc [] e in ((new FanObjs.reloc) _loc)#patt p\n"))))])))
    | Some (sl,e) ->
-       (Gram.extend_single (expr : 'expr Gram.t )
+       (Gram.extend_single (exp : 'exp Gram.t )
           ((Some (`Level "apply")),
             (None, None,
               [([`Stoken
@@ -58,9 +58,9 @@ let define ~expr  ~patt  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'expr)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in\n            ((new Expr.subst) _loc env)#expr e\n          else incorrect_number _loc el sl : 'expr )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n\")\n",
+                 ("Gram.mk_action\n  (fun (param : 'exp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in\n            ((new Expr.subst) _loc env)#exp e\n          else incorrect_number _loc el sl : 'exp )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n\")\n",
                    (Gram.mk_action
-                      (fun (param : 'expr)  (__fan_0 : [> FanToken.t]) 
+                      (fun (param : 'exp)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
@@ -71,11 +71,11 @@ let define ~expr  ~patt  eo x =
                               if (List.length el) = (List.length sl)
                               then
                                 let env = List.combine sl el in
-                                ((new Expr.subst) _loc env)#expr e
-                              else incorrect_number _loc el sl : 'expr )
+                                ((new Expr.subst) _loc env)#exp e
+                              else incorrect_number _loc el sl : 'exp )
                          | _ ->
                              failwith
-                               "let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#expr e\nelse incorrect_number _loc el sl\n"))))]));
+                               "let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,
@@ -105,12 +105,12 @@ let define ~expr  ~patt  eo x =
                                "let pl = match param with | `Tup (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Expr.substp _loc env e in ((new FanObjs.reloc) _loc)#patt p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
   defined := ((x, eo) :: (defined.contents))
-let undef ~expr  ~patt  x =
+let undef ~exp  ~patt  x =
   try
     (let eo = List.assoc x defined.contents in
      match eo with
      | Some ([],_) ->
-         (Gram.delete_rule expr
+         (Gram.delete_rule exp
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true
@@ -121,7 +121,7 @@ let undef ~expr  ~patt  x =
                   | `Uid __fan__x when x = __fan__x -> true
                   | _ -> false)), (`Antiquot, "`Uid __fan__x"))])
      | Some (_,_) ->
-         (Gram.delete_rule expr
+         (Gram.delete_rule exp
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true
@@ -136,40 +136,40 @@ let undef ~expr  ~patt  x =
      | None  -> ());
     defined := (List.remove x defined.contents)
   with | Not_found  -> ()
-let parse_def ~expr  ~patt  s =
-  match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
-  | `Id (_loc,`Uid (_,n)) -> define ~expr ~patt None n
+let parse_def ~exp  ~patt  s =
+  match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
+  | `Id (_loc,`Uid (_,n)) -> define ~exp ~patt None n
   | `App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) ->
-      define ~expr ~patt (Some ([], e)) n
+      define ~exp ~patt (Some ([], e)) n
   | _ -> invalid_arg s
-let rec execute_macro ~expr  ~patt  nil cons =
+let rec execute_macro ~exp  ~patt  nil cons =
   function
   | Str i -> i
-  | Def (x,eo) -> (define ~expr ~patt eo x; nil)
-  | Und x -> (undef ~expr ~patt x; nil)
+  | Def (x,eo) -> (define ~exp ~patt eo x; nil)
+  | Und x -> (undef ~exp ~patt x; nil)
   | ITE (b,l1,l2) ->
-      execute_macro_list ~expr ~patt nil cons (if b then l1 else l2)
+      execute_macro_list ~exp ~patt nil cons (if b then l1 else l2)
   | Lazy l -> Lazy.force l
-and execute_macro_list ~expr  ~patt  nil cons =
+and execute_macro_list ~exp  ~patt  nil cons =
   function
   | [] -> nil
   | hd::tl ->
-      let il1 = execute_macro ~expr ~patt nil cons hd in
-      let il2 = execute_macro_list ~expr ~patt nil cons tl in cons il1 il2
+      let il1 = execute_macro ~exp ~patt nil cons hd in
+      let il2 = execute_macro_list ~exp ~patt nil cons tl in cons il1 il2
 let stack = Stack.create ()
 let make_ITE_result st1 st2 =
   let test = Stack.pop stack in ITE (test, st1, st2)
 type branch =  
   | Then
   | Else 
-let execute_macro_if_active_branch ~expr  ~patt  _loc nil cons branch
+let execute_macro_if_active_branch ~exp  ~patt  _loc nil cons branch
   macro_def =
   let _ = Format.eprintf "execute_macro_if_active_branch@." in
   let test = Stack.top stack in
   let item =
     if (test && (branch = Then)) || ((not test) && (branch = Else))
     then
-      let res = execute_macro ~expr ~patt nil cons macro_def in
+      let res = execute_macro ~exp ~patt nil cons macro_def in
       (Format.eprintf "executing branch %s@."
          (if branch = Then then "Then" else "Else");
        res)
