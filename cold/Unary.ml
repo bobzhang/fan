@@ -31,16 +31,16 @@ type dupath = [ `Dot of (loc* dupath* dupath) | auident]
 type dlpath = [ `Dot of (loc* dupath* alident) | alident] 
 type sid = [ `Id of (loc* ident)] 
 type any = [ `Any of loc] 
-type patt =
-  [ nil | sid | `App of (loc* patt* patt) | `Vrn of (loc* string)
-  | `Com of (loc* patt* patt) | `Sem of (loc* patt* patt)
-  | `Tup of (loc* patt) | any | `Record of (loc* rec_patt) | ant | literal
-  | `Alias of (loc* patt* alident) | `Array of (loc* patt)
-  | `Label of (loc* alident* patt)
-  | `PaOlbi of (loc* alident* patt* exp meta_option)
-  | `Or of (loc* patt* patt) | `PaRng of (loc* patt* patt)
-  | `Constraint of (loc* patt* ctyp) | `ClassPath of (loc* ident)
-  | `Lazy of (loc* patt) | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
-and rec_patt =
-  [ nil | `RecBind of (loc* ident* patt) | `Sem of (loc* rec_patt* rec_patt)
+type pat =
+  [ nil | sid | `App of (loc* pat* pat) | `Vrn of (loc* string)
+  | `Com of (loc* pat* pat) | `Sem of (loc* pat* pat) | `Tup of (loc* pat)
+  | any | `Record of (loc* rec_pat) | ant | literal
+  | `Alias of (loc* pat* alident) | `Array of (loc* pat)
+  | `Label of (loc* alident* pat)
+  | `PaOlbi of (loc* alident* pat* exp meta_option) | `Or of (loc* pat* pat)
+  | `PaRng of (loc* pat* pat) | `Constraint of (loc* pat* ctyp)
+  | `ClassPath of (loc* ident) | `Lazy of (loc* pat)
+  | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
+and rec_pat =
+  [ nil | `RecBind of (loc* ident* pat) | `Sem of (loc* rec_pat* rec_pat)
   | any | ant] 

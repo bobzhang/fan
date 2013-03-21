@@ -525,81 +525,81 @@ class map2 =
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>of_ctyp)
         | (_,_) -> invalid_arg "map2 failure"
-    method patt : patt -> patt -> patt=
+    method pat : pat -> pat -> pat=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>patt)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 : sid  :>pat)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `App (_a0, _a1, _a2)
+            let _a1 = self#pat _a1 _b1 in
+            let _a2 = self#pat _a2 _b2 in `App (_a0, _a1, _a2)
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#string _a1 _b1 in `Vrn (_a0, _a1)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `Com (_a0, _a1, _a2)
+            let _a1 = self#pat _a1 _b1 in
+            let _a2 = self#pat _a2 _b2 in `Com (_a0, _a1, _a2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#pat _a1 _b1 in
+            let _a2 = self#pat _a2 _b2 in `Sem (_a0, _a1, _a2)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in `Tup (_a0, _a1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>patt)
+            let _a1 = self#pat _a1 _b1 in `Tup (_a0, _a1)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 : any  :>pat)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_patt _a1 _b1 in `Record (_a0, _a1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>patt)
+            let _a1 = self#rec_pat _a1 _b1 in `Record (_a0, _a1)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>pat)
         | ((#literal as _a0),(#literal as _b0)) ->
-            (self#literal _a0 _b0 : literal  :>patt)
+            (self#literal _a0 _b0 : literal  :>pat)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#alident _a2 _b2 in `Alias (_a0, _a1, _a2)
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) ->
             let _a0 = self#loc _a0 _b0 in `ArrayEmpty _a0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in `Array (_a0, _a1)
+            let _a1 = self#pat _a1 _b1 in `Array (_a0, _a1)
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in `LabelS (_a0, _a1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `Label (_a0, _a1, _a2)
+            let _a2 = self#pat _a2 _b2 in `Label (_a0, _a1, _a2)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `OptLabl (_a0, _a1, _a2)
+            let _a2 = self#pat _a2 _b2 in `OptLabl (_a0, _a1, _a2)
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in `OptLablS (_a0, _a1)
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in
+            let _a2 = self#pat _a2 _b2 in
             let _a3 = self#exp _a3 _b3 in `OptLablExpr (_a0, _a1, _a2, _a3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `Or (_a0, _a1, _a2)
+            let _a1 = self#pat _a1 _b1 in
+            let _a2 = self#pat _a2 _b2 in `Or (_a0, _a1, _a2)
         | (`PaRng (_a0,_a1,_a2),`PaRng (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `PaRng (_a0, _a1, _a2)
+            let _a1 = self#pat _a1 _b1 in
+            let _a2 = self#pat _a2 _b2 in `PaRng (_a0, _a1, _a2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `Constraint (_a0, _a1, _a2)
         | (`ClassPath (_a0,_a1),`ClassPath (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in `ClassPath (_a0, _a1)
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in `Lazy (_a0, _a1)
+            let _a1 = self#pat _a1 _b1 in `Lazy (_a0, _a1)
         | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#auident _a1 _b1 in `ModuleUnpack (_a0, _a1)
@@ -609,21 +609,21 @@ class map2 =
             let _a1 = self#auident _a1 _b1 in
             let _a2 = self#ctyp _a2 _b2 in `ModuleConstraint (_a0, _a1, _a2)
         | (_,_) -> invalid_arg "map2 failure"
-    method rec_patt : rec_patt -> rec_patt -> rec_patt=
+    method rec_pat : rec_pat -> rec_pat -> rec_pat=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#ident _a1 _b1 in
-            let _a2 = self#patt _a2 _b2 in `RecBind (_a0, _a1, _a2)
+            let _a2 = self#pat _a2 _b2 in `RecBind (_a0, _a1, _a2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#rec_patt _a1 _b1 in
-            let _a2 = self#rec_patt _a2 _b2 in `Sem (_a0, _a1, _a2)
+            let _a1 = self#rec_pat _a1 _b1 in
+            let _a2 = self#rec_pat _a2 _b2 in `Sem (_a0, _a1, _a2)
         | ((#any as _a0),(#any as _b0)) ->
-            (self#any _a0 _b0 : any  :>rec_patt)
+            (self#any _a0 _b0 : any  :>rec_pat)
         | ((#ant as _a0),(#ant as _b0)) ->
-            (self#ant _a0 _b0 : ant  :>rec_patt)
+            (self#ant _a0 _b0 : ant  :>rec_pat)
         | (_,_) -> invalid_arg "map2 failure"
     method exp : exp -> exp -> exp=
       fun _a0  _b0  ->
@@ -732,11 +732,11 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#cstru _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
+            let _a1 = self#pat _a1 _b1 in `ObjPatEnd (_a0, _a1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#alident _a1 _b1 in
@@ -932,7 +932,7 @@ class map2 =
             let _a2 = self#binding _a2 _b2 in `And (_a0, _a1, _a2)
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#exp _a2 _b2 in `Bind (_a0, _a1, _a2)
         | ((#ant as _a0),(#ant as _b0)) ->
             (self#ant _a0 _b0 : ant  :>binding)
@@ -967,11 +967,11 @@ class map2 =
             let _a2 = self#case _a2 _b2 in `Or (_a0, _a1, _a2)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#exp _a2 _b2 in `Case (_a0, _a1, _a2)
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#exp _a2 _b2 in
             let _a3 = self#exp _a3 _b3 in `CaseWhen (_a0, _a1, _a2, _a3)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 : ant  :>case)
@@ -1160,7 +1160,7 @@ class map2 =
             let _a2 = self#ident _a2 _b2 in `ClassConS (_a0, _a1, _a2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#class_exp _a2 _b2 in `CeFun (_a0, _a1, _a2)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let _a0 = self#loc _a0 _b0 in
@@ -1174,11 +1174,11 @@ class map2 =
             let _a0 = self#loc _a0 _b0 in `ObjEnd _a0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in
+            let _a1 = self#pat _a1 _b1 in
             let _a2 = self#cstru _a2 _b2 in `ObjPat (_a0, _a1, _a2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
             let _a0 = self#loc _a0 _b0 in
-            let _a1 = self#patt _a1 _b1 in `ObjPatEnd (_a0, _a1)
+            let _a1 = self#pat _a1 _b1 in `ObjPatEnd (_a0, _a1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let _a0 = self#loc _a0 _b0 in
             let _a1 = self#class_exp _a1 _b1 in
@@ -1714,62 +1714,62 @@ class fold2 =
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
-    method patt : patt -> patt -> 'self_type=
+    method pat : pat -> pat -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'self_type)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#patt _a2 _b2
+            let self = self#pat _a1 _b1 in self#pat _a2 _b2
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#string _a1 _b1
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#patt _a2 _b2
+            let self = self#pat _a1 _b1 in self#pat _a2 _b2
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#patt _a2 _b2
+            let self = self#pat _a1 _b1 in self#pat _a2 _b2
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#pat _a1 _b1
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#rec_patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#rec_pat _a1 _b1
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'self_type)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#alident _a2 _b2
+            let self = self#pat _a1 _b1 in self#alident _a2 _b2
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#pat _a1 _b1
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#patt _a2 _b2
+            let self = self#alident _a1 _b1 in self#pat _a2 _b2
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#alident _a1 _b1 in self#patt _a2 _b2
+            let self = self#alident _a1 _b1 in self#pat _a2 _b2
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#alident _a1 _b1
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in
-            let self = self#patt _a2 _b2 in self#exp _a3 _b3
+            let self = self#pat _a2 _b2 in self#exp _a3 _b3
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#patt _a2 _b2
+            let self = self#pat _a1 _b1 in self#pat _a2 _b2
         | (`PaRng (_a0,_a1,_a2),`PaRng (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#patt _a2 _b2
+            let self = self#pat _a1 _b1 in self#pat _a2 _b2
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#ctyp _a2 _b2
+            let self = self#pat _a1 _b1 in self#ctyp _a2 _b2
         | (`ClassPath (_a0,_a1),`ClassPath (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#ident _a1 _b1
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#pat _a1 _b1
         | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
             let self = self#loc _a0 _b0 in self#auident _a1 _b1
         | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2))
@@ -1777,15 +1777,15 @@ class fold2 =
             let self = self#loc _a0 _b0 in
             let self = self#auident _a1 _b1 in self#ctyp _a2 _b2
         | (_,_) -> invalid_arg "fold2 failure"
-    method rec_patt : rec_patt -> rec_patt -> 'self_type=
+    method rec_pat : rec_pat -> rec_pat -> 'self_type=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#ident _a1 _b1 in self#patt _a2 _b2
+            let self = self#ident _a1 _b1 in self#pat _a2 _b2
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#rec_patt _a1 _b1 in self#rec_patt _a2 _b2
+            let self = self#rec_pat _a1 _b1 in self#rec_pat _a2 _b2
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'self_type)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -1870,9 +1870,9 @@ class fold2 =
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#cstru _a2 _b2
+            let self = self#pat _a1 _b1 in self#cstru _a2 _b2
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#pat _a1 _b1
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#alident _a1 _b1 in self#exp _a2 _b2
@@ -2017,7 +2017,7 @@ class fold2 =
             let self = self#binding _a1 _b1 in self#binding _a2 _b2
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#exp _a2 _b2
+            let self = self#pat _a1 _b1 in self#exp _a2 _b2
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
     method module_binding : module_binding -> module_binding -> 'self_type=
@@ -2044,10 +2044,10 @@ class fold2 =
             let self = self#case _a1 _b1 in self#case _a2 _b2
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#exp _a2 _b2
+            let self = self#pat _a1 _b1 in self#exp _a2 _b2
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in
+            let self = self#pat _a1 _b1 in
             let self = self#exp _a2 _b2 in self#exp _a3 _b3
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'self_type)
         | (_,_) -> invalid_arg "fold2 failure"
@@ -2188,7 +2188,7 @@ class fold2 =
             let self = self#virtual_flag _a1 _b1 in self#ident _a2 _b2
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#class_exp _a2 _b2
+            let self = self#pat _a1 _b1 in self#class_exp _a2 _b2
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             let self = self#loc _a0 _b0 in
             let self = self#rec_flag _a1 _b1 in
@@ -2198,9 +2198,9 @@ class fold2 =
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
-            let self = self#patt _a1 _b1 in self#cstru _a2 _b2
+            let self = self#pat _a1 _b1 in self#cstru _a2 _b2
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
-            let self = self#loc _a0 _b0 in self#patt _a1 _b1
+            let self = self#loc _a0 _b0 in self#pat _a1 _b1
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             let self = self#loc _a0 _b0 in
             let self = self#class_exp _a1 _b1 in self#class_type _a2 _b2
@@ -2543,45 +2543,45 @@ class iter =
       | `Of (_a0,_a1,_a2) -> (self#loc _a0; self#sid _a1; self#ctyp _a2)
       | #sid as _a0 -> (self#sid _a0 :>'result153)
       | #ant as _a0 -> (self#ant _a0 :>'result153)
-    method patt : patt -> 'result154=
+    method pat : pat -> 'result154=
       function
       | #sid as _a0 -> (self#sid _a0 :>'result154)
-      | `App (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
+      | `App (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#pat _a2)
       | `Vrn (_a0,_a1) -> (self#loc _a0; self#string _a1)
-      | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
-      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
-      | `Tup (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `Com (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#pat _a2)
+      | `Sem (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#pat _a2)
+      | `Tup (_a0,_a1) -> (self#loc _a0; self#pat _a1)
       | #any as _a0 -> (self#any _a0 :>'result154)
-      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_patt _a1)
+      | `Record (_a0,_a1) -> (self#loc _a0; self#rec_pat _a1)
       | #ant as _a0 -> (self#ant _a0 :>'result154)
       | #literal as _a0 -> (self#literal _a0 :>'result154)
       | `Alias (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#alident _a2)
+          (self#loc _a0; self#pat _a1; self#alident _a2)
       | `ArrayEmpty _a0 -> self#loc _a0
-      | `Array (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `Array (_a0,_a1) -> (self#loc _a0; self#pat _a1)
       | `LabelS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `Label (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#patt _a2)
+          (self#loc _a0; self#alident _a1; self#pat _a2)
       | `OptLabl (_a0,_a1,_a2) ->
-          (self#loc _a0; self#alident _a1; self#patt _a2)
+          (self#loc _a0; self#alident _a1; self#pat _a2)
       | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#alident _a1; self#patt _a2; self#exp _a3)
-      | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
-      | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#patt _a2)
+          (self#loc _a0; self#alident _a1; self#pat _a2; self#exp _a3)
+      | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#pat _a2)
+      | `PaRng (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#pat _a2)
       | `Constraint (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#ctyp _a2)
+          (self#loc _a0; self#pat _a1; self#ctyp _a2)
       | `ClassPath (_a0,_a1) -> (self#loc _a0; self#ident _a1)
-      | `Lazy (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `Lazy (_a0,_a1) -> (self#loc _a0; self#pat _a1)
       | `ModuleUnpack (_a0,_a1) -> (self#loc _a0; self#auident _a1)
       | `ModuleConstraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#auident _a1; self#ctyp _a2)
-    method rec_patt : rec_patt -> 'result155=
+    method rec_pat : rec_pat -> 'result155=
       function
       | `RecBind (_a0,_a1,_a2) ->
-          (self#loc _a0; self#ident _a1; self#patt _a2)
+          (self#loc _a0; self#ident _a1; self#pat _a2)
       | `Sem (_a0,_a1,_a2) ->
-          (self#loc _a0; self#rec_patt _a1; self#rec_patt _a2)
+          (self#loc _a0; self#rec_pat _a1; self#rec_pat _a2)
       | #any as _a0 -> (self#any _a0 :>'result155)
       | #ant as _a0 -> (self#ant _a0 :>'result155)
     method exp : exp -> 'result156=
@@ -2628,9 +2628,8 @@ class iter =
       | `New (_a0,_a1) -> (self#loc _a0; self#ident _a1)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
-      | `ObjPat (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#cstru _a2)
-      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `ObjPat (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#cstru _a2)
+      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#pat _a1)
       | `OptLabl (_a0,_a1,_a2) ->
           (self#loc _a0; self#alident _a1; self#exp _a2)
       | `OptLablS (_a0,_a1) -> (self#loc _a0; self#alident _a1)
@@ -2715,7 +2714,7 @@ class iter =
       function
       | `And (_a0,_a1,_a2) ->
           (self#loc _a0; self#binding _a1; self#binding _a2)
-      | `Bind (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#exp _a2)
+      | `Bind (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#exp _a2)
       | #ant as _a0 -> (self#ant _a0 :>'result161)
     method module_binding : module_binding -> 'result162=
       function
@@ -2732,9 +2731,9 @@ class iter =
     method case : case -> 'result163=
       function
       | `Or (_a0,_a1,_a2) -> (self#loc _a0; self#case _a1; self#case _a2)
-      | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#patt _a1; self#exp _a2)
+      | `Case (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#exp _a2)
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
-          (self#loc _a0; self#patt _a1; self#exp _a2; self#exp _a3)
+          (self#loc _a0; self#pat _a1; self#exp _a2; self#exp _a3)
       | #ant as _a0 -> (self#ant _a0 :>'result163)
     method module_exp : module_exp -> 'result164=
       function
@@ -2833,7 +2832,7 @@ class iter =
       | `ClassConS (_a0,_a1,_a2) ->
           (self#loc _a0; self#virtual_flag _a1; self#ident _a2)
       | `CeFun (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#class_exp _a2)
+          (self#loc _a0; self#pat _a1; self#class_exp _a2)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           (self#loc _a0;
            self#rec_flag _a1;
@@ -2841,9 +2840,8 @@ class iter =
            self#class_exp _a3)
       | `Obj (_a0,_a1) -> (self#loc _a0; self#cstru _a1)
       | `ObjEnd _a0 -> self#loc _a0
-      | `ObjPat (_a0,_a1,_a2) ->
-          (self#loc _a0; self#patt _a1; self#cstru _a2)
-      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#patt _a1)
+      | `ObjPat (_a0,_a1,_a2) -> (self#loc _a0; self#pat _a1; self#cstru _a2)
+      | `ObjPatEnd (_a0,_a1) -> (self#loc _a0; self#pat _a1)
       | `Constraint (_a0,_a1,_a2) ->
           (self#loc _a0; self#class_exp _a1; self#class_type _a2)
       | `And (_a0,_a1,_a2) ->
@@ -3314,78 +3312,77 @@ class map =
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
       | #sid as _a0 -> (self#sid _a0 : sid  :>of_ctyp)
       | #ant as _a0 -> (self#ant _a0 : ant  :>of_ctyp)
-    method patt : patt -> patt=
+    method pat : pat -> pat=
       function
-      | #sid as _a0 -> (self#sid _a0 : sid  :>patt)
+      | #sid as _a0 -> (self#sid _a0 : sid  :>pat)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
-          let _a2 = self#patt _a2 in `App (_a0, _a1, _a2)
+          let _a1 = self#pat _a1 in
+          let _a2 = self#pat _a2 in `App (_a0, _a1, _a2)
       | `Vrn (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Vrn (_a0, _a1)
       | `Com (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
-          let _a2 = self#patt _a2 in `Com (_a0, _a1, _a2)
+          let _a1 = self#pat _a1 in
+          let _a2 = self#pat _a2 in `Com (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
-          let _a2 = self#patt _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#pat _a1 in
+          let _a2 = self#pat _a2 in `Sem (_a0, _a1, _a2)
       | `Tup (_a0,_a1) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in `Tup (_a0, _a1)
-      | #any as _a0 -> (self#any _a0 : any  :>patt)
+          let _a0 = self#loc _a0 in let _a1 = self#pat _a1 in `Tup (_a0, _a1)
+      | #any as _a0 -> (self#any _a0 : any  :>pat)
       | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_patt _a1 in `Record (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>patt)
-      | #literal as _a0 -> (self#literal _a0 : literal  :>patt)
+          let _a1 = self#rec_pat _a1 in `Record (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>pat)
+      | #literal as _a0 -> (self#literal _a0 : literal  :>pat)
       | `Alias (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#alident _a2 in `Alias (_a0, _a1, _a2)
       | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in `Array (_a0, _a1)
+          let _a1 = self#pat _a1 in `Array (_a0, _a1)
       | `LabelS (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `LabelS (_a0, _a1)
       | `Label (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#patt _a2 in `Label (_a0, _a1, _a2)
+          let _a2 = self#pat _a2 in `Label (_a0, _a1, _a2)
       | `OptLabl (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#patt _a2 in `OptLabl (_a0, _a1, _a2)
+          let _a2 = self#pat _a2 in `OptLabl (_a0, _a1, _a2)
       | `OptLablS (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `OptLablS (_a0, _a1)
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
-          let _a2 = self#patt _a2 in
+          let _a2 = self#pat _a2 in
           let _a3 = self#exp _a3 in `OptLablExpr (_a0, _a1, _a2, _a3)
       | `Or (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
-          let _a2 = self#patt _a2 in `Or (_a0, _a1, _a2)
+          let _a1 = self#pat _a1 in
+          let _a2 = self#pat _a2 in `Or (_a0, _a1, _a2)
       | `PaRng (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
-          let _a2 = self#patt _a2 in `PaRng (_a0, _a1, _a2)
+          let _a1 = self#pat _a1 in
+          let _a2 = self#pat _a2 in `PaRng (_a0, _a1, _a2)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#ctyp _a2 in `Constraint (_a0, _a1, _a2)
       | `ClassPath (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `ClassPath (_a0, _a1)
       | `Lazy (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in `Lazy (_a0, _a1)
+          let _a1 = self#pat _a1 in `Lazy (_a0, _a1)
       | `ModuleUnpack (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in `ModuleUnpack (_a0, _a1)
@@ -3393,18 +3390,18 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#ctyp _a2 in `ModuleConstraint (_a0, _a1, _a2)
-    method rec_patt : rec_patt -> rec_patt=
+    method rec_pat : rec_pat -> rec_pat=
       function
       | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in
-          let _a2 = self#patt _a2 in `RecBind (_a0, _a1, _a2)
+          let _a2 = self#pat _a2 in `RecBind (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#rec_patt _a1 in
-          let _a2 = self#rec_patt _a2 in `Sem (_a0, _a1, _a2)
-      | #any as _a0 -> (self#any _a0 : any  :>rec_patt)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>rec_patt)
+          let _a1 = self#rec_pat _a1 in
+          let _a2 = self#rec_pat _a2 in `Sem (_a0, _a1, _a2)
+      | #any as _a0 -> (self#any _a0 : any  :>rec_pat)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>rec_pat)
     method exp : exp -> exp=
       function
       | #sid as _a0 -> (self#sid _a0 : sid  :>exp)
@@ -3507,11 +3504,11 @@ class map =
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
+          let _a1 = self#pat _a1 in `ObjPatEnd (_a0, _a1)
       | `OptLabl (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3687,7 +3684,7 @@ class map =
           let _a2 = self#binding _a2 in `And (_a0, _a1, _a2)
       | `Bind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in `Bind (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>binding)
     method module_binding : module_binding -> module_binding=
@@ -3714,11 +3711,11 @@ class map =
           let _a2 = self#case _a2 in `Or (_a0, _a1, _a2)
       | `Case (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in `Case (_a0, _a1, _a2)
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in
           let _a3 = self#exp _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>case)
@@ -3889,7 +3886,7 @@ class map =
           let _a2 = self#ident _a2 in `ClassConS (_a0, _a1, _a2)
       | `CeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#class_exp _a2 in `CeFun (_a0, _a1, _a2)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
@@ -3902,11 +3899,11 @@ class map =
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in
+          let _a1 = self#pat _a1 in
           let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#patt _a1 in `ObjPatEnd (_a0, _a1)
+          let _a1 = self#pat _a1 in `ObjPatEnd (_a0, _a1)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#class_exp _a1 in
@@ -4308,65 +4305,59 @@ class fold =
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method patt : patt -> 'self_type=
+    method pat : pat -> 'self_type=
       function
       | #sid as _a0 -> (self#sid _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#patt _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Vrn (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Com (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#patt _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Sem (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#patt _a2
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+          let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
+      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
-      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_patt _a1
+      | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_pat _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
       | #literal as _a0 -> (self#literal _a0 :>'self_type)
       | `Alias (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#alident _a2
+          let self = self#pat _a1 in self#alident _a2
       | `ArrayEmpty _a0 -> self#loc _a0
-      | `Array (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+      | `Array (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `LabelS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `Label (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#patt _a2
+          let self = self#alident _a1 in self#pat _a2
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in self#patt _a2
+          let self = self#alident _a1 in self#pat _a2
       | `OptLablS (_a0,_a1) -> let self = self#loc _a0 in self#alident _a1
       | `OptLablExpr (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
-          let self = self#patt _a2 in self#exp _a3
+          let self = self#pat _a2 in self#exp _a3
       | `Or (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#patt _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `PaRng (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#patt _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Constraint (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#patt _a1 in self#ctyp _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#ctyp _a2
       | `ClassPath (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
-      | `Lazy (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+      | `Lazy (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `ModuleUnpack (_a0,_a1) ->
           let self = self#loc _a0 in self#auident _a1
       | `ModuleConstraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#ctyp _a2
-    method rec_patt : rec_patt -> 'self_type=
+    method rec_pat : rec_pat -> 'self_type=
       function
       | `RecBind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ident _a1 in self#patt _a2
+          let self = self#ident _a1 in self#pat _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#rec_patt _a1 in self#rec_patt _a2
+          let self = self#rec_pat _a1 in self#rec_pat _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method exp : exp -> 'self_type=
@@ -4429,8 +4420,8 @@ class fold =
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#cstru _a2
-      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+          let self = self#pat _a1 in self#cstru _a2
+      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#exp _a2
@@ -4550,7 +4541,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#binding _a1 in self#binding _a2
       | `Bind (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#patt _a1 in self#exp _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_binding : module_binding -> 'self_type=
       function
@@ -4571,10 +4562,10 @@ class fold =
           let self = self#loc _a0 in
           let self = self#case _a1 in self#case _a2
       | `Case (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#patt _a1 in self#exp _a2
+          let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
       | `CaseWhen (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in let self = self#exp _a2 in self#exp _a3
+          let self = self#pat _a1 in let self = self#exp _a2 in self#exp _a3
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_exp : module_exp -> 'self_type=
       function
@@ -4693,7 +4684,7 @@ class fold =
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#class_exp _a2
+          let self = self#pat _a1 in self#class_exp _a2
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
@@ -4702,8 +4693,8 @@ class fold =
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#patt _a1 in self#cstru _a2
-      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#patt _a1
+          let self = self#pat _a1 in self#cstru _a2
+      | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#class_exp _a1 in self#class_type _a2
@@ -5183,84 +5174,84 @@ class print =
               self#sid _a1 self#ctyp _a2
         | #sid as _a0 -> (self#sid fmt _a0 :>'result327)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result327)
-    method patt : 'fmt -> patt -> 'result328=
+    method pat : 'fmt -> pat -> 'result328=
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result328)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#patt _a2
+              self#pat _a1 self#pat _a2
         | `Vrn (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | `Com (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#patt _a2
+              self#pat _a1 self#pat _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#patt _a2
+              self#pat _a1 self#pat _a2
         | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#patt
+            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#pat
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>'result328)
         | `Record (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" self#loc _a0
-              self#rec_patt _a1
+              self#rec_pat _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result328)
         | #literal as _a0 -> (self#literal fmt _a0 :>'result328)
         | `Alias (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#alident _a2
+              self#pat _a1 self#alident _a2
         | `ArrayEmpty _a0 ->
             Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" self#loc _a0
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
-              self#patt _a1
+              self#pat _a1
         | `LabelS (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" self#loc _a0
               self#alident _a1
         | `Label (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#patt _a2
+              self#alident _a1 self#pat _a2
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#patt _a2
+              self#alident _a1 self#pat _a2
         | `OptLablS (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" self#loc _a0
               self#alident _a1
         | `OptLablExpr (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#alident _a1 self#patt _a2 self#exp _a3
+              self#loc _a0 self#alident _a1 self#pat _a2 self#exp _a3
         | `Or (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#patt _a2
+              self#pat _a1 self#pat _a2
         | `PaRng (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#patt _a2
+              self#pat _a1 self#pat _a2
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#patt _a1 self#ctyp _a2
+              _a0 self#pat _a1 self#ctyp _a2
         | `ClassPath (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" self#loc _a0
               self#ident _a1
         | `Lazy (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc _a0
-              self#patt _a1
+            Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" self#loc _a0 
+              self#pat _a1
         | `ModuleUnpack (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a)@]" self#loc _a0
               self#auident _a1
         | `ModuleConstraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
               self#loc _a0 self#auident _a1 self#ctyp _a2
-    method rec_patt : 'fmt -> rec_patt -> 'result329=
+    method rec_pat : 'fmt -> rec_pat -> 'result329=
       fun fmt  ->
         function
         | `RecBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#patt _a2
+              self#ident _a1 self#pat _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_patt _a1 self#rec_patt _a2
+              self#rec_pat _a1 self#rec_pat _a2
         | #any as _a0 -> (self#any fmt _a0 :>'result329)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result329)
     method exp : 'fmt -> exp -> 'result330=
@@ -5350,10 +5341,10 @@ class print =
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#cstru _a2
+              self#pat _a1 self#cstru _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
-              self#patt _a1
+              self#pat _a1
         | `OptLabl (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#exp _a2
@@ -5507,7 +5498,7 @@ class print =
               self#binding _a1 self#binding _a2
         | `Bind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#exp _a2
+              self#pat _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result335)
     method module_binding : 'fmt -> module_binding -> 'result336=
       fun fmt  ->
@@ -5531,10 +5522,10 @@ class print =
               self#case _a1 self#case _a2
         | `Case (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#exp _a2
+              self#pat _a1 self#exp _a2
         | `CaseWhen (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#patt _a1 self#exp _a2 self#exp _a3
+              _a0 self#pat _a1 self#exp _a2 self#exp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>'result337)
     method module_exp : 'fmt -> module_exp -> 'result338=
       fun fmt  ->
@@ -5679,7 +5670,7 @@ class print =
               self#virtual_flag _a1 self#ident _a2
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#class_exp _a2
+              self#pat _a1 self#class_exp _a2
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_flag _a1 self#binding _a2 self#class_exp _a3
@@ -5690,10 +5681,10 @@ class print =
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#patt _a1 self#cstru _a2
+              self#pat _a1 self#cstru _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
-              self#patt _a1
+              self#pat _a1
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#class_exp _a1 self#class_type _a2
@@ -6189,62 +6180,56 @@ class eq =
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result385)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result385)
         | (_,_) -> false
-    method patt : patt -> patt -> 'result386=
+    method pat : pat -> pat -> 'result386=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result386)
         | (`App (_a0,_a1,_a2),`App (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#pat _a2 _b2)
         | (`Vrn (_a0,_a1),`Vrn (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#string _a1 _b1)
         | (`Com (_a0,_a1,_a2),`Com (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#pat _a2 _b2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#pat _a2 _b2)
         | (`Tup (_a0,_a1),`Tup (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#pat _a1 _b1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result386)
         | (`Record (_a0,_a1),`Record (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#rec_patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#rec_pat _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result386)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'result386)
         | (`Alias (_a0,_a1,_a2),`Alias (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#alident _a2 _b2)
         | (`ArrayEmpty _a0,`ArrayEmpty _b0) -> self#loc _a0 _b0
         | (`Array (_a0,_a1),`Array (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#pat _a1 _b1)
         | (`LabelS (_a0,_a1),`LabelS (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`Label (_a0,_a1,_a2),`Label (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#patt _a2 _b2)
+              (self#pat _a2 _b2)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-              (self#patt _a2 _b2)
+              (self#pat _a2 _b2)
         | (`OptLablS (_a0,_a1),`OptLablS (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#alident _a1 _b1)
         | (`OptLablExpr (_a0,_a1,_a2,_a3),`OptLablExpr (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
-               (self#patt _a2 _b2))
+               (self#pat _a2 _b2))
               && (self#exp _a3 _b3)
         | (`Or (_a0,_a1,_a2),`Or (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#pat _a2 _b2)
         | (`PaRng (_a0,_a1,_a2),`PaRng (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#pat _a2 _b2)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#ctyp _a2 _b2)
         | (`ClassPath (_a0,_a1),`ClassPath (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#ident _a1 _b1)
         | (`Lazy (_a0,_a1),`Lazy (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#pat _a1 _b1)
         | (`ModuleUnpack (_a0,_a1),`ModuleUnpack (_b0,_b1)) ->
             (self#loc _a0 _b0) && (self#auident _a1 _b1)
         | (`ModuleConstraint (_a0,_a1,_a2),`ModuleConstraint (_b0,_b1,_b2))
@@ -6252,15 +6237,15 @@ class eq =
             ((self#loc _a0 _b0) && (self#auident _a1 _b1)) &&
               (self#ctyp _a2 _b2)
         | (_,_) -> false
-    method rec_patt : rec_patt -> rec_patt -> 'result387=
+    method rec_pat : rec_pat -> rec_pat -> 'result387=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1,_a2),`RecBind (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#ident _a1 _b1)) &&
-              (self#patt _a2 _b2)
+              (self#pat _a2 _b2)
         | (`Sem (_a0,_a1,_a2),`Sem (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#rec_patt _a1 _b1)) &&
-              (self#rec_patt _a2 _b2)
+            ((self#loc _a0 _b0) && (self#rec_pat _a1 _b1)) &&
+              (self#rec_pat _a2 _b2)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result387)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result387)
         | (_,_) -> false
@@ -6335,10 +6320,10 @@ class eq =
             (self#loc _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#cstru _a2 _b2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#pat _a1 _b1)
         | (`OptLabl (_a0,_a1,_a2),`OptLabl (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#alident _a1 _b1)) &&
               (self#exp _a2 _b2)
@@ -6477,7 +6462,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#binding _a2 _b2)
         | (`Bind (_a0,_a1,_a2),`Bind (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) && (self#exp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#exp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result393)
         | (_,_) -> false
     method module_binding : module_binding -> module_binding -> 'result394=
@@ -6502,10 +6487,9 @@ class eq =
             ((self#loc _a0 _b0) && (self#case _a1 _b1)) &&
               (self#case _a2 _b2)
         | (`Case (_a0,_a1,_a2),`Case (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) && (self#exp _a2 _b2)
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#exp _a2 _b2)
         | (`CaseWhen (_a0,_a1,_a2,_a3),`CaseWhen (_b0,_b1,_b2,_b3)) ->
-            (((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
-               (self#exp _a2 _b2))
+            (((self#loc _a0 _b0) && (self#pat _a1 _b1)) && (self#exp _a2 _b2))
               && (self#exp _a3 _b3)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result395)
         | (_,_) -> false
@@ -6644,7 +6628,7 @@ class eq =
             ((self#loc _a0 _b0) && (self#virtual_flag _a1 _b1)) &&
               (self#ident _a2 _b2)
         | (`CeFun (_a0,_a1,_a2),`CeFun (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#class_exp _a2 _b2)
         | (`LetIn (_a0,_a1,_a2,_a3),`LetIn (_b0,_b1,_b2,_b3)) ->
             (((self#loc _a0 _b0) && (self#rec_flag _a1 _b1)) &&
@@ -6654,10 +6638,10 @@ class eq =
             (self#loc _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjEnd _a0,`ObjEnd _b0) -> self#loc _a0 _b0
         | (`ObjPat (_a0,_a1,_a2),`ObjPat (_b0,_b1,_b2)) ->
-            ((self#loc _a0 _b0) && (self#patt _a1 _b1)) &&
+            ((self#loc _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#cstru _a2 _b2)
         | (`ObjPatEnd (_a0,_a1),`ObjPatEnd (_b0,_b1)) ->
-            (self#loc _a0 _b0) && (self#patt _a1 _b1)
+            (self#loc _a0 _b0) && (self#pat _a1 _b1)
         | (`Constraint (_a0,_a1,_a2),`Constraint (_b0,_b1,_b2)) ->
             ((self#loc _a0 _b0) && (self#class_exp _a1 _b1)) &&
               (self#class_type _a2 _b2)
@@ -7040,65 +7024,65 @@ and strip_loc_of_ctyp =
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result443)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result443)
-and strip_loc_patt =
+and strip_loc_pat =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result442)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_patt _a2 in `App (_a1, _a2)
+      let _a1 = strip_loc_pat _a1 in
+      let _a2 = strip_loc_pat _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_patt _a2 in `Com (_a1, _a2)
+      let _a1 = strip_loc_pat _a1 in
+      let _a2 = strip_loc_pat _a2 in `Com (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_patt _a2 in `Sem (_a1, _a2)
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Tup _a1
+      let _a1 = strip_loc_pat _a1 in
+      let _a2 = strip_loc_pat _a2 in `Sem (_a1, _a2)
+  | `Tup (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Tup _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result442)
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_patt _a1 in `Record _a1
+  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_pat _a1 in `Record _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result442)
   | #literal as _a0 -> (strip_loc_literal _a0 :>'result442)
   | `Alias (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
-  | `Array (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Array _a1
+  | `Array (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Array _a1
   | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_patt _a2 in `Label (_a1, _a2)
+      let _a2 = strip_loc_pat _a2 in `Label (_a1, _a2)
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_patt _a2 in `OptLabl (_a1, _a2)
+      let _a2 = strip_loc_pat _a2 in `OptLabl (_a1, _a2)
   | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_patt _a2 in
+      let _a2 = strip_loc_pat _a2 in
       let _a3 = strip_loc_exp _a3 in `OptLablExpr (_a1, _a2, _a3)
   | `Or (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_patt _a2 in `Or (_a1, _a2)
+      let _a1 = strip_loc_pat _a1 in
+      let _a2 = strip_loc_pat _a2 in `Or (_a1, _a2)
   | `PaRng (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
-      let _a2 = strip_loc_patt _a2 in `PaRng (_a1, _a2)
+      let _a1 = strip_loc_pat _a1 in
+      let _a2 = strip_loc_pat _a2 in `PaRng (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
   | `ClassPath (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `ClassPath _a1
-  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `Lazy _a1
+  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Lazy _a1
   | `ModuleUnpack (_a0,_a1) ->
       let _a1 = strip_loc_auident _a1 in `ModuleUnpack _a1
   | `ModuleConstraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `ModuleConstraint (_a1, _a2)
-and strip_loc_rec_patt =
+and strip_loc_rec_pat =
   function
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_patt _a2 in `RecBind (_a1, _a2)
+      let _a2 = strip_loc_pat _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_patt _a1 in
-      let _a2 = strip_loc_rec_patt _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_loc_rec_pat _a1 in
+      let _a2 = strip_loc_rec_pat _a2 in `Sem (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result441)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result441)
 and strip_loc_exp =
@@ -7169,9 +7153,9 @@ and strip_loc_exp =
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
-  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_exp _a2 in `OptLabl (_a1, _a2)
@@ -7296,7 +7280,7 @@ and strip_loc_binding =
       let _a1 = strip_loc_binding _a1 in
       let _a2 = strip_loc_binding _a2 in `And (_a1, _a2)
   | `Bind (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result435)
 and strip_loc_module_binding =
@@ -7318,10 +7302,10 @@ and strip_loc_case =
       let _a1 = strip_loc_case _a1 in
       let _a2 = strip_loc_case _a2 in `Or (_a1, _a2)
   | `Case (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Case (_a1, _a2)
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in
       let _a3 = strip_loc_exp _a3 in `CaseWhen (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result433)
@@ -7442,7 +7426,7 @@ and strip_loc_class_exp =
       let _a1 = strip_loc_virtual_flag _a1 in
       let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_class_exp _a2 in `CeFun (_a1, _a2)
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
@@ -7451,9 +7435,9 @@ and strip_loc_class_exp =
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_patt _a1 in
+      let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
-  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_patt _a1 in `ObjPatEnd _a1
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_class_exp _a1 in
       let _a2 = strip_loc_class_type _a2 in `Constraint (_a1, _a2)
@@ -7891,82 +7875,82 @@ and pp_print_of_ctyp fmt =
         pp_print_sid _a1 pp_print_ctyp _a2
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result499)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result499)
-and pp_print_patt fmt =
+and pp_print_pat fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result498)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_patt _a2
+        pp_print_pat _a1 pp_print_pat _a2
   | `Vrn (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | `Com (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_patt _a2
+        pp_print_pat _a1 pp_print_pat _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_patt _a2
+        pp_print_pat _a1 pp_print_pat _a2
   | `Tup (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1
+        pp_print_pat _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result498)
   | `Record (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_patt _a1
+        pp_print_rec_pat _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result498)
   | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result498)
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_alident _a2
+        pp_print_pat _a1 pp_print_alident _a2
   | `ArrayEmpty _a0 ->
       Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1
+        pp_print_pat _a1
   | `LabelS (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`LabelS@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
   | `Label (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Label@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_patt _a2
+        pp_print_alident _a1 pp_print_pat _a2
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_patt _a2
+        pp_print_alident _a1 pp_print_pat _a2
   | `OptLablS (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`OptLablS@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_alident _a1 pp_print_patt _a2 pp_print_exp _a3
+        _a0 pp_print_alident _a1 pp_print_pat _a2 pp_print_exp _a3
   | `Or (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_patt _a2
+        pp_print_pat _a1 pp_print_pat _a2
   | `PaRng (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_patt _a2
+        pp_print_pat _a1 pp_print_pat _a2
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_ctyp _a2
+        pp_print_pat _a1 pp_print_ctyp _a2
   | `ClassPath (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ClassPath@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
   | `Lazy (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Lazy@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1
+        pp_print_pat _a1
   | `ModuleUnpack (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1
   | `ModuleConstraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a@ %a)@]"
         pp_print_loc _a0 pp_print_auident _a1 pp_print_ctyp _a2
-and pp_print_rec_patt fmt =
+and pp_print_rec_pat fmt =
   function
   | `RecBind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ident _a1 pp_print_patt _a2
+        pp_print_ident _a1 pp_print_pat _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_patt _a1 pp_print_rec_patt _a2
+        pp_print_rec_pat _a1 pp_print_rec_pat _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result497)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result497)
 and pp_print_exp fmt =
@@ -8054,10 +8038,10 @@ and pp_print_exp fmt =
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_cstru _a2
+        pp_print_pat _a1 pp_print_cstru _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1
+        pp_print_pat _a1
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_exp _a2
@@ -8206,7 +8190,7 @@ and pp_print_binding fmt =
         pp_print_binding _a1 pp_print_binding _a2
   | `Bind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_exp _a2
+        pp_print_pat _a1 pp_print_exp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result491)
 and pp_print_module_binding fmt =
   function
@@ -8228,10 +8212,10 @@ and pp_print_case fmt =
         pp_print_case _a1 pp_print_case _a2
   | `Case (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_exp _a2
+        pp_print_pat _a1 pp_print_exp _a2
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_patt _a1 pp_print_exp _a2 pp_print_exp _a3
+        _a0 pp_print_pat _a1 pp_print_exp _a2 pp_print_exp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result489)
 and pp_print_module_exp fmt =
   function
@@ -8370,7 +8354,7 @@ and pp_print_class_exp fmt =
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_class_exp _a2
+        pp_print_pat _a1 pp_print_class_exp _a2
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_exp _a3
@@ -8380,10 +8364,10 @@ and pp_print_class_exp fmt =
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1 pp_print_cstru _a2
+        pp_print_pat _a1 pp_print_cstru _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_patt _a1
+        pp_print_pat _a1
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_class_exp _a1 pp_print_class_type _a2

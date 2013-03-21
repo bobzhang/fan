@@ -6,7 +6,7 @@ open AstLoc;
 (* module MetaLoc = struct *)
 (*    (\* this makes sense here, because, for list operation *)
 (*       you don't care about the location representation here *\) *)
-(*   let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:patt| loc |} *\); *)
+(*   let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:pat| loc |} *\); *)
 (* end; *)
 (* module MetaAst = FanAst.Make MetaLoc; *)
 let meta = object
@@ -126,7 +126,7 @@ let me = object
 end;
 let mp = object
   inherit FanMeta.meta;
-  method! loc _loc _ = {:patt| _ |}; (* we use [subst_first_loc] *)    
+  method! loc _loc _ = {:pat| _ |}; (* we use [subst_first_loc] *)    
 end;
 
 

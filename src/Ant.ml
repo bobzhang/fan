@@ -10,7 +10,7 @@ let meta_loc_exp _loc loc =
   | Some x -> {:exp| $lid:x |} ];;
 
 
-let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
+let meta_loc_pat _loc _ =  {:pat| _ |}; (* we use [subst_first_loc] *)
 
   
   
@@ -21,11 +21,11 @@ let gm () =
   | None ->  ((* eprintf "Compilation unit None@." ;  *)"FanAst")];
 
 (*    
-let ant_patt  ~parse_patt (x:ant) k = with patt 
+let ant_pat  ~parse_pat (x:ant) k = with pat 
   match x with 
   [`Ant(_loc, {cxt;sep;decorations;content=code}) ->
-      let mloc _loc =meta_loc_patt  _loc _loc in
-      let e = parse_patt _loc code in
+      let mloc _loc =meta_loc_pat  _loc _loc in
+      let e = parse_pat _loc code in
       match (decorations,cxt,sep) with
       [("anti",_,_) -> k {| `Ant ($(mloc _loc), $e) |}
       |("uid",_,_) -> k {|`Uid($(mloc _loc), $e)|}
@@ -41,7 +41,7 @@ let ant_patt  ~parse_patt (x:ant) k = with patt
       |("chr",_,_) -> Some {|`Chr($(mloc _loc),$e)|}
       |("str",_,_) -> Some {|`Str($(mloc _loc),$e)|}
       |("vrn","exp",_) -> Some {|`Vrn($(mloc _loc),$e)|}
-      |("vrn","patt",_) -> Some {|`Vrn($(mloc _loc),$e)|}
+      |("vrn","pat",_) -> Some {|`Vrn($(mloc _loc),$e)|}
       | _ -> None ] ];
 let ant_exp ~parse_exp (x:ant) =  with exp 
   match x with 
@@ -53,7 +53,7 @@ let ant_exp ~parse_exp (x:ant) =  with exp
       | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
       | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
-      | ("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
+      | ("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
       | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
       | ("str",_,_) ->  {|`Str($(mloc _loc),$e)|}
@@ -112,27 +112,27 @@ let ant_exp ~parse_exp (x:ant) =  with exp
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->
           {| $(uid:gm()).match_pre#case $e |}
-      |("list",("ctyp,"|"patt,"|"exp,"),_) ->
+      |("list",("ctyp,"|"pat,"|"exp,"),_) ->
           {| $(uid:gm()).com_of_list $e |}
       |("list",
         ("binding;"|"stru"
       |"sig_item"|"class_sig_item"
             |"cstru"|"rec_exp"
-            |"ctyp;"|"patt;"|"exp;"),_) ->
+            |"ctyp;"|"pat;"|"exp;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |} ]];
 *)
 
   
-let antiquot_expander ~parse_patt ~parse_exp = object
+let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
-  method! patt (x:patt)= with patt
+  method! pat (x:pat)= with pat
     match x with 
     [`Ant(_loc, {cxt;sep;decorations;content=code}) ->
       (* when the antiquotation appears in the pattern position,
-         its final context is [patt]
+         its final context is [pat]
        *)
-      let mloc _loc =meta_loc_patt  _loc _loc in
-      let e = parse_patt _loc code in
+      let mloc _loc =meta_loc_pat  _loc _loc in
+      let e = parse_pat _loc code in
       match (decorations,cxt,sep) with
       [("anti",_,_) -> {| `Ant ($(mloc _loc), $e) |}
       |("uid",_,_) -> {|`Uid($(mloc _loc), $e)|}
@@ -148,9 +148,9 @@ let antiquot_expander ~parse_patt ~parse_exp = object
       |("chr",_,_) -> {|`Chr($(mloc _loc),$e)|}
       |("str",_,_) -> {|`Str($(mloc _loc),$e)|}
       |("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
-      |("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
-    | _ -> super#patt e ]
- | e -> super#patt e];
+      |("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}
+    | _ -> super#pat e ]
+ | e -> super#pat e];
   method! exp (x:exp) = with exp
     match x with 
     [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
@@ -161,7 +161,7 @@ let antiquot_expander ~parse_patt ~parse_exp = object
       | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
       | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
-      | ("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
+      | ("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
       | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
       | ("str",_,_) ->  {|`Str($(mloc _loc),$e)|}
@@ -220,13 +220,13 @@ let antiquot_expander ~parse_patt ~parse_exp = object
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->
           {| $(uid:gm()).match_pre#case $e |}
-      |("list",("ctyp,"|"patt,"|"exp,"),_) ->
+      |("list",("ctyp,"|"pat,"|"exp,"),_) ->
           {| $(uid:gm()).com_of_list $e |}
       |("list",
         ("binding;"|"stru"
       |"sig_item"|"class_sig_item"
             |"cstru"|"rec_exp"
-            |"ctyp;"|"patt;"|"exp;"),_) ->
+            |"ctyp;"|"pat;"|"exp;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |}
       | _ -> super#exp e]
       | e -> super#exp e];

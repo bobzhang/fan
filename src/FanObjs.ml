@@ -13,7 +13,7 @@ let dump_name_ctyp = to_string_of_printer dump#name_ctyp;
 let dump_with_constr = to_string_of_printer dump#with_constr;
 let dump_module_type = to_string_of_printer dump#module_type;
 let dump_exp = to_string_of_printer dump#exp;
-let dump_patt = to_string_of_printer dump#patt;
+let dump_pat = to_string_of_printer dump#pat;
 let dump_class_type = to_string_of_printer dump#class_type;
 let dump_class_exp = to_string_of_printer dump#class_exp;
 let dump_ident = to_string_of_printer dump#ident;
@@ -33,9 +33,9 @@ let map_exp f = object
   inherit Objs.map as super;
   method! exp x = f (super#exp x);
 end;
-let map_patt f = object
+let map_pat f = object
   inherit Objs.map as super;
-  method! patt x = f (super#patt x);
+  method! pat x = f (super#pat x);
 end;
 let map_ctyp f = object
   inherit Objs.map as super;
@@ -93,9 +93,9 @@ end;
  *)  
 let wildcarder = object (self)
   inherit Objs.map as super;
-  method! patt = fun
-  [ {:patt| $lid:_ |} -> {:patt| _ |}
-  | {:patt| ($p as $_) |} -> self#patt p
-  | p -> super#patt p ];
+  method! pat = fun
+  [ {:pat| $lid:_ |} -> {:pat| _ |}
+  | {:pat| ($p as $_) |} -> self#pat p
+  | p -> super#pat p ];
 end;
 

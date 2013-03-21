@@ -331,55 +331,55 @@ class eq =
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result37)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result37)
         | (_,_) -> false
-    method patt : patt -> patt -> 'result38=
+    method pat : pat -> pat -> 'result38=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result38)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#patt _a1 _b1)
+            (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Vrn _a0,`Vrn _b0) -> self#string _a0 _b0
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#patt _a1 _b1)
+            (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#patt _a1 _b1)
-        | (`Tup _a0,`Tup _b0) -> self#patt _a0 _b0
+            (self#pat _a0 _b0) && (self#pat _a1 _b1)
+        | (`Tup _a0,`Tup _b0) -> self#pat _a0 _b0
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result38)
-        | (`Record _a0,`Record _b0) -> self#rec_patt _a0 _b0
+        | (`Record _a0,`Record _b0) -> self#rec_pat _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result38)
         | ((#literal as _a0),(#literal as _b0)) ->
             (self#literal _a0 _b0 :>'result38)
         | (`Alias (_a0,_a1),`Alias (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#alident _a1 _b1)
+            (self#pat _a0 _b0) && (self#alident _a1 _b1)
         | (`ArrayEmpty,`ArrayEmpty) -> true
-        | (`Array _a0,`Array _b0) -> self#patt _a0 _b0
+        | (`Array _a0,`Array _b0) -> self#pat _a0 _b0
         | (`LabelS _a0,`LabelS _b0) -> self#alident _a0 _b0
         | (`Label (_a0,_a1),`Label (_b0,_b1)) ->
-            (self#alident _a0 _b0) && (self#patt _a1 _b1)
+            (self#alident _a0 _b0) && (self#pat _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
-            (self#alident _a0 _b0) && (self#patt _a1 _b1)
+            (self#alident _a0 _b0) && (self#pat _a1 _b1)
         | (`OptLablS _a0,`OptLablS _b0) -> self#alident _a0 _b0
         | (`OptLablExpr (_a0,_a1,_a2),`OptLablExpr (_b0,_b1,_b2)) ->
-            ((self#alident _a0 _b0) && (self#patt _a1 _b1)) &&
+            ((self#alident _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#exp _a2 _b2)
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#patt _a1 _b1)
+            (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`PaRng (_a0,_a1),`PaRng (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#patt _a1 _b1)
+            (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#pat _a0 _b0) && (self#ctyp _a1 _b1)
         | (`ClassPath _a0,`ClassPath _b0) -> self#ident _a0 _b0
-        | (`Lazy _a0,`Lazy _b0) -> self#patt _a0 _b0
+        | (`Lazy _a0,`Lazy _b0) -> self#pat _a0 _b0
         | (`ModuleUnpack _a0,`ModuleUnpack _b0) -> self#auident _a0 _b0
         | (`ModuleConstraint (_a0,_a1),`ModuleConstraint (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#ctyp _a1 _b1)
         | (_,_) -> false
-    method rec_patt : rec_patt -> rec_patt -> 'result39=
+    method rec_pat : rec_pat -> rec_pat -> 'result39=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
-            (self#ident _a0 _b0) && (self#patt _a1 _b1)
+            (self#ident _a0 _b0) && (self#pat _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#rec_patt _a0 _b0) && (self#rec_patt _a1 _b1)
+            (self#rec_pat _a0 _b0) && (self#rec_pat _a1 _b1)
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result39)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result39)
         | (_,_) -> false
@@ -438,8 +438,8 @@ class eq =
         | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#cstru _a1 _b1)
-        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
+            (self#pat _a0 _b0) && (self#cstru _a1 _b1)
+        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#pat _a0 _b0
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
         | (`OptLablS _a0,`OptLablS _b0) -> self#alident _a0 _b0
@@ -541,7 +541,7 @@ class eq =
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#binding _a0 _b0) && (self#binding _a1 _b1)
         | (`Bind (_a0,_a1),`Bind (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#exp _a1 _b1)
+            (self#pat _a0 _b0) && (self#exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result45)
         | (_,_) -> false
     method module_binding : module_binding -> module_binding -> 'result46=
@@ -562,9 +562,9 @@ class eq =
         | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
             (self#case _a0 _b0) && (self#case _a1 _b1)
         | (`Case (_a0,_a1),`Case (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#exp _a1 _b1)
+            (self#pat _a0 _b0) && (self#exp _a1 _b1)
         | (`CaseWhen (_a0,_a1,_a2),`CaseWhen (_b0,_b1,_b2)) ->
-            ((self#patt _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
+            ((self#pat _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result47)
         | (_,_) -> false
     method module_exp : module_exp -> module_exp -> 'result48=
@@ -664,15 +664,15 @@ class eq =
         | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
             (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CeFun (_a0,_a1),`CeFun (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#class_exp _a1 _b1)
+            (self#pat _a0 _b0) && (self#class_exp _a1 _b1)
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#class_exp _a2 _b2)
         | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#patt _a0 _b0) && (self#cstru _a1 _b1)
-        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#patt _a0 _b0
+            (self#pat _a0 _b0) && (self#cstru _a1 _b1)
+        | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#pat _a0 _b0
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#class_exp _a0 _b0) && (self#class_type _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
@@ -1096,71 +1096,70 @@ class print =
               _a1
         | #sid as _a0 -> (self#sid fmt _a0 :>'result95)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result95)
-    method patt : 'fmt -> patt -> 'result96=
+    method pat : 'fmt -> pat -> 'result96=
       fun fmt  ->
         function
         | #sid as _a0 -> (self#sid fmt _a0 :>'result96)
         | `App (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#patt _a0
-              self#patt _a1
+            Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#pat _a0 self#pat
+              _a1
         | `Vrn _a0 -> Format.fprintf fmt "@[<1>(`Vrn@ %a)@]" self#string _a0
         | `Com (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#patt _a0
-              self#patt _a1
+            Format.fprintf fmt "@[<1>(`Com@ %a@ %a)@]" self#pat _a0 self#pat
+              _a1
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#patt _a0
-              self#patt _a1
-        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#pat _a0 self#pat
+              _a1
+        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#pat _a0
         | #any as _a0 -> (self#any fmt _a0 :>'result96)
         | `Record _a0 ->
-            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_patt _a0
+            Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_pat _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>'result96)
         | #literal as _a0 -> (self#literal fmt _a0 :>'result96)
         | `Alias (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Alias@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`Alias@ %a@ %a)@]" self#pat _a0
               self#alident _a1
         | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
-        | `Array _a0 ->
-            Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#patt _a0
+        | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#pat _a0
         | `LabelS _a0 ->
             Format.fprintf fmt "@[<1>(`LabelS@ %a)@]" self#alident _a0
         | `Label (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Label@ %a@ %a)@]" self#alident _a0
-              self#patt _a1
+              self#pat _a1
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
-              self#patt _a1
+              self#pat _a1
         | `OptLablS _a0 ->
             Format.fprintf fmt "@[<1>(`OptLablS@ %a)@]" self#alident _a0
         | `OptLablExpr (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a)@]"
-              self#alident _a0 self#patt _a1 self#exp _a2
+              self#alident _a0 self#pat _a1 self#exp _a2
         | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#patt _a0 self#patt
+            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#pat _a0 self#pat
               _a1
         | `PaRng (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a)@]" self#patt _a0
-              self#patt _a1
+            Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a)@]" self#pat _a0
+              self#pat _a1
         | `Constraint (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#pat _a0
               self#ctyp _a1
         | `ClassPath _a0 ->
             Format.fprintf fmt "@[<1>(`ClassPath@ %a)@]" self#ident _a0
-        | `Lazy _a0 -> Format.fprintf fmt "@[<1>(`Lazy@ %a)@]" self#patt _a0
+        | `Lazy _a0 -> Format.fprintf fmt "@[<1>(`Lazy@ %a)@]" self#pat _a0
         | `ModuleUnpack _a0 ->
             Format.fprintf fmt "@[<1>(`ModuleUnpack@ %a)@]" self#auident _a0
         | `ModuleConstraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleConstraint@ %a@ %a)@]"
               self#auident _a0 self#ctyp _a1
-    method rec_patt : 'fmt -> rec_patt -> 'result97=
+    method rec_pat : 'fmt -> rec_pat -> 'result97=
       fun fmt  ->
         function
         | `RecBind (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
-              self#patt _a1
+              self#pat _a1
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_patt _a0
-              self#rec_patt _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_pat _a0
+              self#rec_pat _a1
         | #any as _a0 -> (self#any fmt _a0 :>'result97)
         | #ant as _a0 -> (self#ant fmt _a0 :>'result97)
     method exp : 'fmt -> exp -> 'result98=
@@ -1229,10 +1228,10 @@ class print =
         | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#pat _a0
               self#cstru _a1
         | `ObjPatEnd _a0 ->
-            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#pat _a0
         | `OptLabl (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a)@]" self#alident _a0
               self#exp _a1
@@ -1370,7 +1369,7 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#binding _a0
               self#binding _a1
         | `Bind (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Bind@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`Bind@ %a@ %a)@]" self#pat _a0 
               self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>'result103)
     method module_binding : 'fmt -> module_binding -> 'result104=
@@ -1393,10 +1392,10 @@ class print =
             Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#case _a0 self#case
               _a1
         | `Case (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Case@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`Case@ %a@ %a)@]" self#pat _a0 
               self#exp _a1
         | `CaseWhen (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a)@]" self#pat _a0
               self#exp _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>'result105)
     method module_exp : 'fmt -> module_exp -> 'result106=
@@ -1522,7 +1521,7 @@ class print =
             Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a)@]"
               self#virtual_flag _a0 self#ident _a1
         | `CeFun (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a)@]" self#pat _a0
               self#class_exp _a1
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
@@ -1530,10 +1529,10 @@ class print =
         | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#pat _a0
               self#cstru _a1
         | `ObjPatEnd _a0 ->
-            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#patt _a0
+            Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#pat _a0
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#class_exp
               _a0 self#class_type _a1
@@ -1987,46 +1986,46 @@ and meta_of_ctyp _loc =
           (meta_ctyp _loc _a1))
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result154)
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result154)
-and meta_patt _loc =
+and meta_pat _loc =
   function
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result153)
   | `App (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_patt _loc _a0))),
-          (meta_patt _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_pat _loc _a0))),
+          (meta_pat _loc _a1))
   | `Vrn _a0 -> `App (_loc, (`Vrn (_loc, "Vrn")), (meta_string _loc _a0))
   | `Com (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_patt _loc _a0))),
-          (meta_patt _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_pat _loc _a0))),
+          (meta_pat _loc _a1))
   | `Sem (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_patt _loc _a0))),
-          (meta_patt _loc _a1))
-  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_patt _loc _a0))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_pat _loc _a0))),
+          (meta_pat _loc _a1))
+  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_pat _loc _a0))
   | #any as _a0 -> (meta_any _loc _a0 :>'result153)
   | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_patt _loc _a0))
+      `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_pat _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
   | #literal as _a0 -> (meta_literal _loc _a0 :>'result153)
   | `Alias (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_pat _loc _a0))),
           (meta_alident _loc _a1))
   | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
-  | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_patt _loc _a0))
+  | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_pat _loc _a0))
   | `LabelS _a0 ->
       `App (_loc, (`Vrn (_loc, "LabelS")), (meta_alident _loc _a0))
   | `Label (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
-          (meta_patt _loc _a1))
+          (meta_pat _loc _a1))
   | `OptLabl (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
-          (meta_patt _loc _a1))
+          (meta_pat _loc _a1))
   | `OptLablS _a0 ->
       `App (_loc, (`Vrn (_loc, "OptLablS")), (meta_alident _loc _a0))
   | `OptLablExpr (_a0,_a1,_a2) ->
@@ -2036,24 +2035,24 @@ and meta_patt _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "OptLablExpr")),
-                    (meta_alident _loc _a0))), (meta_patt _loc _a1))),
+                    (meta_alident _loc _a0))), (meta_pat _loc _a1))),
           (meta_exp _loc _a2))
   | `Or (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_patt _loc _a0))),
-          (meta_patt _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_pat _loc _a0))),
+          (meta_pat _loc _a1))
   | `PaRng (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "PaRng")), (meta_patt _loc _a0))),
-          (meta_patt _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "PaRng")), (meta_pat _loc _a0))),
+          (meta_pat _loc _a1))
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
-          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_patt _loc _a0))),
+          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_pat _loc _a0))),
           (meta_ctyp _loc _a1))
   | `ClassPath _a0 ->
       `App (_loc, (`Vrn (_loc, "ClassPath")), (meta_ident _loc _a0))
-  | `Lazy _a0 -> `App (_loc, (`Vrn (_loc, "Lazy")), (meta_patt _loc _a0))
+  | `Lazy _a0 -> `App (_loc, (`Vrn (_loc, "Lazy")), (meta_pat _loc _a0))
   | `ModuleUnpack _a0 ->
       `App (_loc, (`Vrn (_loc, "ModuleUnpack")), (meta_auident _loc _a0))
   | `ModuleConstraint (_a0,_a1) ->
@@ -2062,17 +2061,17 @@ and meta_patt _loc =
           (`App
              (_loc, (`Vrn (_loc, "ModuleConstraint")),
                (meta_auident _loc _a0))), (meta_ctyp _loc _a1))
-and meta_rec_patt _loc =
+and meta_rec_pat _loc =
   function
   | `RecBind (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
-          (meta_patt _loc _a1))
+          (meta_pat _loc _a1))
   | `Sem (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_patt _loc _a0))),
-          (meta_rec_patt _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_pat _loc _a0))),
+          (meta_rec_pat _loc _a1))
   | #any as _a0 -> (meta_any _loc _a0 :>'result152)
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result152)
 and meta_exp _loc =
@@ -2176,10 +2175,10 @@ and meta_exp _loc =
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
           (meta_cstru _loc _a1))
   | `ObjPatEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
   | `OptLabl (_a0,_a1) ->
       `App
         (_loc,
@@ -2361,7 +2360,7 @@ and meta_binding _loc =
           (meta_binding _loc _a1))
   | `Bind (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Bind")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Bind")), (meta_pat _loc _a0))),
           (meta_exp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result146)
 and meta_module_binding _loc =
@@ -2394,14 +2393,14 @@ and meta_case _loc =
           (meta_case _loc _a1))
   | `Case (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Case")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Case")), (meta_pat _loc _a0))),
           (meta_exp _loc _a1))
   | `CaseWhen (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "CaseWhen")), (meta_patt _loc _a0))),
+               (`App (_loc, (`Vrn (_loc, "CaseWhen")), (meta_pat _loc _a0))),
                (meta_exp _loc _a1))), (meta_exp _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result144)
 and meta_module_exp _loc =
@@ -2591,7 +2590,7 @@ and meta_class_exp _loc =
           (meta_ident _loc _a1))
   | `CeFun (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_pat _loc _a0))),
           (meta_class_exp _loc _a1))
   | `LetIn (_a0,_a1,_a2) ->
       `App
@@ -2604,10 +2603,10 @@ and meta_class_exp _loc =
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_patt _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
           (meta_cstru _loc _a1))
   | `ObjPatEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_patt _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,

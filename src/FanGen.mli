@@ -6,9 +6,9 @@ val mk_variant_meta_exp : string -> FSig.ty_info list -> exp
 val mk_record_meta_exp : FSig.record_col list -> exp
 val mk_tuple_meta_exp : FSig.ty_info list -> exp
 val gen_meta_exp : FSig.module_types -> stru
-val mk_variant_meta_patt : string -> FSig.ty_info list -> exp
-val mk_record_meta_patt : FSig.record_col list -> exp
-val mk_tuple_meta_patt : FSig.ty_info list -> exp
+val mk_variant_meta_pat : string -> FSig.ty_info list -> exp
+val mk_record_meta_pat : FSig.record_col list -> exp
+val mk_tuple_meta_pat : FSig.ty_info list -> exp
 
 
 val extract : FSig.ty_info list -> exp list
@@ -31,7 +31,7 @@ val gen_map : FSig.module_types -> stru
 
 val gen_map2 : FSig.module_types -> stru
 
-val gen_meta_patt : FSig.module_types -> stru
+val gen_meta_pat : FSig.module_types -> stru
 
 val gen_print : FSig.module_types -> stru
 

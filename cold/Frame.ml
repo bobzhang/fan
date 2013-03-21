@@ -24,12 +24,12 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
    let id_exps =
      List.init arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
    let exp0 = List.hd id_exps in
-   let id_patts = id_exps in
+   let id_pats = id_exps in
    let pat0 = exp0 in
    let id_exp = tuple_com id_exps in
-   let id_patt = id_exp in
+   let id_pat = id_exp in
    let exp = appl_of_list (base :: id_exps) in
-   { name_exp; exp; id_exp; id_exps; id_patt; id_patts; exp0; pat0; ty } : 
+   { name_exp; exp; id_exp; id_exps; id_pat; id_pats; exp0; pat0; ty } : 
   FSig.ty_info )
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
   simple_exp_of_ctyp (ty : ctyp) =
@@ -37,9 +37,9 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
    | `Tup (_loc,t) ->
        let ls = list_of_star t [] in
        let len = List.length ls in
-       let patt = EP.mk_tuple ~arity ~number:len in
+       let pat = EP.mk_tuple ~arity ~number:len in
        let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
-       names <+ (currying [`Case (_loc, patt, (mk_tuple tys))] ~arity)
+       names <+ (currying [`Case (_loc, pat, (mk_tuple tys))] ~arity)
    | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
   exp )
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
@@ -117,7 +117,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
-     let p: patt = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
+     let p: pat = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -189,7 +189,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match repr with
              | `Record (_loc,t) ->
                  let cols = Ctyp.list_of_record t in
-                 let patt: patt = EP.mk_record ~arity cols in
+                 let pat: pat = EP.mk_record ~arity cols in
                  let info =
                    List.mapi
                      (fun i  x  ->
@@ -203,7 +203,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                               re_mutable = col_mutable
                             }) cols in
                  mk_prefix ~names ~left_type_variable tyvars
-                   (currying ~arity [`Case (_loc, patt, (mk_record info))])
+                   (currying ~arity [`Case (_loc, pat, (mk_record info))])
              | `Sum (_,ctyp) ->
                  let funct = exp_of_ctyp ctyp in
                  mk_prefix ~names ~left_type_variable tyvars funct

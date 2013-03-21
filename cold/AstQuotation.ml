@@ -155,7 +155,7 @@ let parse_quotation_result parse loc quot pos_tag str =
         let ctx = ParsingResult (iloc, (quot.q_contents)) in
         let exc1 = QuotationError ((quot.q_name), pos_tag, ctx, exc) in
         FanLoc.raise iloc exc1
-let add_quotation ~exp_filter  ~patt_filter  ~mexp  ~mpatt  name entry =
+let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
   let entry_eoi = Gram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (FanConfig.antiquotations, true)
@@ -164,12 +164,12 @@ let add_quotation ~exp_filter  ~patt_filter  ~mexp  ~mpatt  name entry =
          ((Gram.parse_string entry_eoi ~loc s) |> (mexp loc)) |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in `StExp (loc, exp_ast) in
-  let expand_patt _loc loc_name_opt s =
+  let expand_pat _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true
       (fun _  ->
          let ast = Gram.parse_string entry_eoi ~loc:_loc s in
-         let meta_ast = mpatt _loc ast in
-         let exp_ast = patt_filter meta_ast in
+         let meta_ast = mpat _loc ast in
+         let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name =
            (function
             | `App (loc,`Vrn (_,u),`Tup (_,`Com (_,_,rest))) ->
@@ -182,13 +182,13 @@ let add_quotation ~exp_filter  ~patt_filter  ~mexp  ~mpatt  name entry =
                 `App
                   (_loc, (`Vrn (_loc, u)), (`Id (_loc, (`Lid (_loc, name)))))
             | `App (_loc,a,b) -> `App (_loc, (subst_first_loc name a), b)
-            | p -> p : patt -> patt ) in
+            | p -> p : pat -> pat ) in
          match loc_name_opt with
          | None  -> subst_first_loc FanLoc.name.contents exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
   add name DynAst.exp_tag expand_exp;
-  add name DynAst.patt_tag expand_patt;
+  add name DynAst.pat_tag expand_pat;
   add name DynAst.stru_tag expand_stru
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
@@ -201,9 +201,9 @@ let of_stru_with_filter ~name  ~entry  ~filter  =
   add name DynAst.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let of_patt ~name  ~entry  = add name DynAst.patt_tag (make_parser entry)
-let of_patt_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.patt_tag
+let of_pat ~name  ~entry  = add name DynAst.pat_tag (make_parser entry)
+let of_pat_with_filter ~name  ~entry  ~filter  =
+  add name DynAst.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 let of_cstru ~name  ~entry  = add name DynAst.cstru_tag (make_parser entry)

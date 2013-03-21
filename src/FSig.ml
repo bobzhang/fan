@@ -29,18 +29,18 @@ type ty_info = {
 
     exp0: exp;
     (* ai *)
-    pat0: patt;
+    pat0: pat;
     (* ai *)
     id_exp: exp ;
     (* (ai,bi) *)
 
-    id_patt: patt;
+    id_pat: pat;
     (* (ai,bi) *)
 
     id_exps: list exp;
     (* [ai;bi;ci] *)
 
-    id_patts: list patt;
+    id_pats: list pat;
     (* [ai;bi;ci]*)
 
     ty: ctyp;

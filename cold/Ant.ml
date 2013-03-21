@@ -6,20 +6,20 @@ let meta_loc_exp _loc loc =
   | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
   | Some "here" -> meta_loc _loc loc
   | Some x -> `Id (_loc, (`Lid (_loc, x)))
-let meta_loc_patt _loc _ = `Any _loc
+let meta_loc_pat _loc _ = `Any _loc
 let gm () =
   match FanConfig.compilation_unit.contents with
   | Some "FanAst" -> ""
   | Some _ -> "FanAst"
   | None  -> "FanAst"
-let antiquot_expander ~parse_patt  ~parse_exp  =
+let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super
-    method! patt (x : patt) =
+    method! pat (x : pat) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = meta_loc_patt _loc _loc in
-          let e = parse_patt _loc code in
+          let mloc _loc = meta_loc_pat _loc _loc in
+          let e = parse_pat _loc code in
           (match (decorations, cxt, sep) with
            | ("anti",_,_) ->
                `App
@@ -63,11 +63,11 @@ let antiquot_expander ~parse_patt  ~parse_exp  =
            | ("vrn","exp",_) ->
                `App
                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
-           | ("vrn","patt",_) ->
+           | ("vrn","pat",_) ->
                `App
                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e)
-           | _ -> super#patt e)
-      | e -> super#patt e
+           | _ -> super#pat e)
+      | e -> super#pat e
     method! exp (x : exp) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
@@ -90,7 +90,7 @@ let antiquot_expander ~parse_patt  ~parse_exp  =
                `App
                  (_loc, (`Vrn (_loc, "Vrn")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
-           | ("vrn","patt",_) ->
+           | ("vrn","pat",_) ->
                `App
                  (_loc, (`Vrn (_loc, "Vrn")),
                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e)))))
@@ -325,7 +325,7 @@ let antiquot_expander ~parse_patt  ~parse_exp  =
                                 (_loc, (`Uid (_loc, (gm ()))),
                                   (`Lid (_loc, "match_pre")))))),
                         (`Lid (_loc, "case")))), e)
-           | ("list",("ctyp,"|"patt,"|"exp,"),_) ->
+           | ("list",("ctyp,"|"pat,"|"exp,"),_) ->
                `App
                  (_loc,
                    (`Id
@@ -334,7 +334,7 @@ let antiquot_expander ~parse_patt  ~parse_exp  =
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Lid (_loc, "com_of_list")))))), e)
            | ("list",("binding;"|"stru"|"sig_item"|"class_sig_item"|"cstru"
-                      |"rec_exp"|"ctyp;"|"patt;"|"exp;"),_)
+                      |"rec_exp"|"ctyp;"|"pat;"|"exp;"),_)
                ->
                `App
                  (_loc,

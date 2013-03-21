@@ -5,7 +5,7 @@ open Basic
 let of_str s =
   let len = String.length s in
   if len = 0
-  then invalid_arg "[exp|patt]_of_str len=0"
+  then invalid_arg "[exp|pat]_of_str len=0"
   else
     (match s.[0] with
      | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))

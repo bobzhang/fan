@@ -49,9 +49,9 @@ open EP;
 (* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:patt| $lid:a |}, {@_| $lid:b |}) 
-  | ({:patt| $uid:a |}, {@_| $uid:b |}) -> a = b
-  | ({:patt| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
+  [ ({:pat| $lid:a |}, {@_| $lid:b |}) 
+  | ({:pat| $uid:a |}, {@_| $uid:b |}) -> a = b
+  | ({:pat| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false ] ;
 
@@ -59,12 +59,12 @@ let rec pattern_eq_expression p e =
 (* +-----------------------------------------------------------------+
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
-(* loc -> patt -> exp -> exp -> exp     *)
-let map loc (p:patt) (e:exp) (l:exp) :exp =
+(* loc -> pat -> exp -> exp -> exp     *)
+let map loc (p:pat) (e:exp) (l:exp) :exp =
   match (p, e) with
-  [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
+  [ ({:pat| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
-      if is_irrefut_patt p then
+      if is_irrefut_pat p then
         {@loc| List.map (fun $p -> $e) $l |}
       else
         {@loc| List.fold_right
@@ -74,7 +74,7 @@ let map loc (p:patt) (e:exp) (l:exp) :exp =
 
 
 let filter loc p b l =
-    if is_irrefut_patt p then
+    if is_irrefut_pat p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
@@ -95,20 +95,20 @@ let rec compr _loc e =  fun
    | Utiliies for macro expansion                                    |
    +-----------------------------------------------------------------+ *)
   
-let bad_patt _loc =
+let bad_pat _loc =
   FanLoc.raise _loc
     (Failure
        "this macro cannot be used in a pattern (see its definition)");
 
-(* Environment is a [string*patt] pair,
+(* Environment is a [string*pat] pair,
 
    Try to convert the 
-   [exp] node into [patt] node.
+   [exp] node into [pat] node.
    when do the conversion, if the exp node has an identifier which
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop (x:exp)= with {patt:exp;exp:patt}
+  let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
     (* | {| |} -> {@loc| |} *)
@@ -123,22 +123,22 @@ let substp loc env =
     | {| $tup:x |} -> {@loc| $(tup:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = with {patt:rec_exp;exp:patt} fun
+        let rec substbi = with {pat:rec_exp;exp:pat} fun
           [ {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
             (* {@loc| $(substbi b1); $(substbi b2) |} *)
           | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
-          | _ -> bad_patt _loc ] in
+          | _ -> bad_pat _loc ] in
         {@loc| { $(substbi bi) } |}
-    | _ -> bad_patt loc ] in loop;
+    | _ -> bad_pat loc ] in loop;
 
 (*
   [env] is a list of [string*exp],
 
   traverse the [exp] node
   when the identifier in pos exp in the exp has a speical meaning, using that instead
-  when the identifier in pos patt in the exp has a special meaning,
-  try to convert the exp meaning into patt and use that instead
+  when the identifier in pos pat in the exp has a special meaning,
+  try to convert the exp meaning into pat and use that instead
  *)  
 class subst loc env = object
   inherit FanObjs.reloc loc as super;
@@ -157,12 +157,12 @@ class subst loc env = object
              $(if h then {| true |} else {| false |} )) |}
         with [ Not_found -> super#exp e ]
     | e -> super#exp e ];
-  method! patt =  fun
-    [ {:patt| $lid:x |} | {:patt| $uid:x |} as p ->
+  method! pat =  fun
+    [ {:pat| $lid:x |} | {:pat| $uid:x |} as p ->
       (* convert expession into pattern only *)
        try substp loc [] (List.assoc x env) with 
-       [ Not_found -> super#patt p ]
-    | p -> super#patt p ];
+       [ Not_found -> super#pat p ]
+    | p -> super#pat p ];
 end;
 
 
@@ -176,10 +176,10 @@ end;
 let capture_antiquot : antiquot_filter = object
   inherit Objs.map as super;
   val mutable constraints =[];
-  method! patt = fun
+  method! pat = fun
   [ `Ant(_loc,s)
-      (* {:patt@_loc| $anti:s |} *)
-  (* | (\* {:patt@_loc| $str:s |} *\) *)
+      (* {:pat@_loc| $anti:s |} *)
+  (* | (\* {:pat@_loc| $str:s |} *\) *)
   (*   `Str(_loc,s) as p when is_antiquot s *) -> (* begin *)
       match s with
      [ {content=code;_} ->
@@ -189,7 +189,7 @@ let capture_antiquot : antiquot_filter = object
       let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
       let cons' = {| $lid:code' |} in 
       let () = constraints <- [(cons,cons')::constraints]in 
-      {:patt| $lid:code' |} (* only allows lidentifiers here *)
+      {:pat| $lid:code' |} (* only allows lidentifiers here *)
     end
      ]
     (* match view_antiquot s with *)
@@ -199,22 +199,22 @@ let capture_antiquot : antiquot_filter = object
     (*   let code' = "__fan__"^code in  (\* prefix "fan__" FIXME *\) *)
     (*   let cons' = {| $lid:code' |} in  *)
     (*   let () = constraints <- [(cons,cons')::constraints]in  *)
-    (*   {:patt| $lid:code' |} (\* only allows lidentifiers here *\) *)
+    (*   {:pat| $lid:code' |} (\* only allows lidentifiers here *\) *)
     (* end *)
   (* | None -> p ];    *)
   (* end *)
-  | p -> super#patt p ];
+  | p -> super#pat p ];
  method get_captured_variables =
    constraints;
  method clear_captured_variables =
    constraints <- [];
 end;
 
-let filter_patt_with_captured_variables patt= begin 
+let filter_pat_with_captured_variables pat= begin 
   capture_antiquot#clear_captured_variables;
-  let patt=capture_antiquot#patt patt in
+  let pat=capture_antiquot#pat pat in
   let constraints = capture_antiquot#get_captured_variables in
-  (patt,constraints)
+  (pat,constraints)
 end;
 
 
@@ -226,7 +226,7 @@ end;
 
   Examples:
   {[
-  fun_args _loc [{:patt|a|};{:patt|c|};{:patt|b|}] {|c|} |> FanBasic.p_exp f;
+  fun_args _loc [{:pat|a|};{:pat|c|};{:pat|b|}] {|c|} |> FanBasic.p_exp f;
   fun a  c  b  -> c
   ]}
  *)
@@ -305,12 +305,12 @@ let (<+) names acc  =
 (*
   Example:
   {[
-  [{:patt|a|}; {:patt|b|} ] <+< {|3|};
+  [{:pat|a|}; {:pat|b|} ] <+< {|3|};
   - : exp = fun a  b  -> 3
   ]}
  *)  
-let (<+<) patts acc =
-  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) patts acc;
+let (<+<) pats acc =
+  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) pats acc;
 
 
 
@@ -347,7 +347,7 @@ let mee_app x y = {| {| $($x) $($y) |}|};
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
                 (`Com (_loc, x, y)))))))
    *)
-(* let mep_app x y = {| {:patt| $($x) $($y) |}|}; *)
+(* let mep_app x y = {| {:pat| $($x) $($y) |}|}; *)
   (* {| `App (_loc, $x, $y) |};        *)
 (* let vep_app x y = {| `App (_loc,$x,$y)|}; *)
   
@@ -356,23 +356,23 @@ let mee_app x y = {| {| $($x) $($y) |}|};
    
   Example:
   {[
-  mep_of_str "B" = {|{:patt| B |}|};
+  mep_of_str "B" = {|{:pat| B |}|};
   - : bool = true
   ]}
   FIXME
-  {|{:patt|`B|}|}
-  {|{:patt|B|}|}
+  {|{:pat|`B|}|}
+  {|{:pat|B|}|}
  *)  
 
 (* let mep_of_str  s = *)
 (*   let len = String.length s in *)
 (*   if s.[0] = '`' then *)
 (*     let s = String.sub s 1 (len - 1 ) in *)
-(*     (\* {| {:patt|`$($str:s)|}|} *\) *)
-(*       {| {:patt|$(vrn:($str:s))|}|} *)
+(*     (\* {| {:pat|`$($str:s)|}|} *\) *)
+(*       {| {:pat|$(vrn:($str:s))|}|} *)
 (*   else *)
 (*    let u = {| {:ident| $(uid:$str:s) |} |} in  *)
-(*    {| {:patt| $(id:$u) |} |}; *)
+(*    {| {:pat| $(id:$u) |} |}; *)
 (*     (\* let u = {| Ast.Uid _loc $str:s |} in *\) *)
 (*   (\* {| Ast.PaId _loc $u |}; *\) *)
 
@@ -555,7 +555,7 @@ let eta_expand (exp:exp) number : exp =
  *)
 let gen_curry_n (acc:exp) ~arity cons n : exp =
   let args = List.init arity
-      (fun i -> List.init n (fun j -> {:patt| $(id:xid ~off:i j) |})) in
+      (fun i -> List.init n (fun j -> {:pat| $(id:xid ~off:i j) |})) in
   let pat = of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
@@ -601,10 +601,10 @@ let unknown len =
 (* let normalize = object *)
 (*   val exp:Ast.exp; *)
 (*   inherit FanAst.fold as super; *)
-(*   method! patt = with "patt" fun *)
+(*   method! pat = with "pat" fun *)
 (*     [ {| $_ |} -> {| "_" |} *)
 (*     | {| $lid:_ |} -> {| "_" |} *)
-(*     | {| $p as $_ |} -> self#patt p  *)
+(*     | {| $p as $_ |} -> self#pat p  *)
 (*     ] *)
 (* end; *)
 
@@ -618,7 +618,7 @@ let unknown len =
 (*   | {:ident| $anti:_ |} -> assert false ]; *)
 
     
-(* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)
+(* let rec normalize = let _loc = FanLoc.ghost in with "pat" fun *)
 (*   [ {| _ |} -> {|"_"|} *)
 (*   | {| $id:_|} -> {:exp| "_"|} *)
 (*   | {| ($p as $_) |} -> normalize p *)

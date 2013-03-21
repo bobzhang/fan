@@ -19,8 +19,8 @@ FanConfig.antiquotations := true;
   locals entry position assoc name string
   (pattern: Gram.t action_pattern)
   simple_exp delete_rules
-  (simple_patt: Gram.t simple_patt)
-  internal_patt|}  ;
+  (simple_pat: Gram.t simple_pat)
+  internal_pat|}  ;
 
 
 {:extend|Gram
@@ -303,7 +303,7 @@ FanConfig.antiquotations := true;
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
     match p with [Some _ ->
-      {(s) with pattern = (p: option action_pattern :> option patt) } | None -> s]  ] 
+      {(s) with pattern = (p: option action_pattern :> option pat) } | None -> s]  ] 
 
   (* return symbol with pattern(inferred) or None  *)
   symbol:
@@ -337,8 +337,8 @@ FanConfig.antiquotations := true;
       mk_symbol  ~text:(`Srules _loc (mk_srules _loc t rl ""))
         ~styp:({:ctyp|'$lid:t |} )
       ~pattern:None
-  | simple_patt{p} -> 
-      let (p,ls) = Expr.filter_patt_with_captured_variables (p : simple_patt :>patt) in
+  | simple_pat{p} -> 
+      let (p,ls) = Expr.filter_pat_with_captured_variables (p : simple_pat :>pat) in
       match ls with
       [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
       | [(x,y)::ys] ->
@@ -349,7 +349,7 @@ FanConfig.antiquotations := true;
         (* | `Uid ("Uid"|"Lid" as x) ; `Ant ((""),s) -> *)
         (*    let i = AntiquotSyntax.parse_ident _loc s in *)
         (*    let lid = gen_lid () in  *)
-        (*    let pattern = {:patt| `$x $lid:lid  |} in *)
+        (*    let pattern = {:pat| `$x $lid:lid  |} in *)
         (*    let match_fun = *)
         (*      {:exp| fun [$pat:pattern when $lid:lid = $lid:i -> true | _ -> false ] |} in *)
         (*    let descr = `Stok _loc match_fun "Normal" (x^) *)
@@ -369,14 +369,14 @@ FanConfig.antiquotations := true;
   | "("; S{s}; ")" -> s ]
   
 
-  simple_patt "patt":
+  simple_pat "pat":
   ["`"; luident{s}  ->  {|$vrn:s|}
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-    {| $vrn:v $(anti:mk_anti ~c:"patt" n s)|}
+    {| $vrn:v $(anti:mk_anti ~c:"pat" n s)|}
   |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
-  |"`"; luident{s}; "("; L1 internal_patt SEP ","{v}; ")" ->
+  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
     match v with
     [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
     | [x::xs] ->
@@ -386,7 +386,7 @@ FanConfig.antiquotations := true;
         (* `App(_loc,`Vrn(_loc,s),`Tup(_loc,`Com(_loc,x,com_of_list xs))) *)
         (* {|$vrn:s ($x,$list:xs)|} *)
     | _ -> assert false ]  ]
-  internal_patt "patt":
+  internal_pat "pat":
   {
    "as"
      [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
@@ -399,11 +399,11 @@ FanConfig.antiquotations := true;
      | "("; S{p}; ")" -> p] }
 
   pattern:
-  [ `Lid i -> {:patt| $lid:i |}
-  | "_" -> {:patt| _ |}
+  [ `Lid i -> {:pat| $lid:i |}
+  | "_" -> {:pat| _ |}
   | "("; pattern{p}; ")" -> p
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com [p1::ps] ]
-      (* {:patt| ($p1, $list:ps)|}] *)
+      (* {:pat| ($p1, $list:ps)|}] *)
   string:
   [ `STR (_, s) -> {:exp| $str:s |}| `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
 
@@ -434,30 +434,30 @@ AstQuotation.of_stru
 AstQuotation.add_quotation
     (d,"rule") rule
     ~mexp:FanGrammar.Expr.meta_rule
-    ~mpatt:FanGrammar.Patt.meta_rule
+    ~mpat:FanGrammar.Patt.meta_rule
     ~exp_filter:(fun x-> (x :ep :>exp))
-    ~patt_filter:(fun x->(x : ep :> patt));
+    ~pat_filter:(fun x->(x : ep :> pat));
 
 AstQuotation.add_quotation
     (d,"entry") entry
     ~mexp:FanGrammar.Expr.meta_entry
-    ~mpatt:FanGrammar.Patt.meta_entry
+    ~mpat:FanGrammar.Patt.meta_entry
     ~exp_filter:(fun x-> (x :ep :> exp))
-    ~patt_filter:(fun x-> (x :ep :> patt));
+    ~pat_filter:(fun x-> (x :ep :> pat));
 
 AstQuotation.add_quotation
     (d,"level") level
     ~mexp:FanGrammar.Expr.meta_level
-    ~mpatt:FanGrammar.Patt.meta_level
+    ~mpat:FanGrammar.Patt.meta_level
     ~exp_filter:(fun x-> (x :ep :> exp))
-    ~patt_filter:(fun x-> (x :ep :> patt));
+    ~pat_filter:(fun x-> (x :ep :> pat));
 
 AstQuotation.add_quotation
     (d,"symbol") psymbol
     ~mexp:FanGrammar.Expr.meta_symbol
-    ~mpatt:FanGrammar.Patt.meta_symbol
+    ~mpat:FanGrammar.Patt.meta_symbol
     ~exp_filter:(fun x -> (x :ep :>exp))
-    ~patt_filter:(fun x->  (x :ep :>patt));
+    ~pat_filter:(fun x->  (x :ep :>pat));
 *)  
 
 

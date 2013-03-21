@@ -142,17 +142,17 @@ let ident_of_ctyp =
     [ `Id(_loc,i) -> i
     | t -> self t ];
 
-let ident_of_patt =
+let ident_of_pat =
   let error () =
-    invalid_arg "ident_of_patt: this pattern is not an identifier" in
+    invalid_arg "ident_of_pat: this pattern is not an identifier" in
   let rec self = fun 
-    [ {:patt@_loc| $p1 $p2 |}
+    [ {:pat@_loc| $p1 $p2 |}
       -> {:ident| ( $(self p1) $(self p2) ) |}
-    | {:patt| $lid:_ |} -> error ()
-    | {:patt| $id:i |} -> if is_module_longident i then i else error ()
+    | {:pat| $lid:_ |} -> error ()
+    | {:pat| $id:i |} -> if is_module_longident i then i else error ()
     | _ -> error () ] in
     fun
-    [ {:patt| $id:i |} -> i
+    [ {:pat| $id:i |} -> i
     | p -> self p ];
 
 
@@ -163,7 +163,7 @@ let ident_of_patt =
 (*     | {| $lid:_ |} | {| ($_ $_) |} -> false *)
 (*     | {| $anti:_ |} -> assert false ]; *)
 
-(* let is_patt_constructor = fun *)
+(* let is_pat_constructor = fun *)
 (*     [ `Id(_,i) -> is_constructor i *)
 (*     | `Vrn (_loc,_) *)
 (*       -> true *)
@@ -219,7 +219,7 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l);
     
 
 
-let rec is_irrefut_patt (x: patt) = with patt
+let rec is_irrefut_pat (x: pat) = with pat
     match x with
     [
       `ArrayEmpty (_loc)
@@ -228,20 +228,20 @@ let rec is_irrefut_patt (x: patt) = with patt
     | {| () |} -> true
     | {| _ |} -> true
     (* | {||} -> true (\* why not *\) *)
-    | {| ($x as $_) |} -> is_irrefut_patt x (* && is_irrefut_patt y *)
+    | {| ($x as $_) |} -> is_irrefut_pat x (* && is_irrefut_pat y *)
     | {| { $p } |} ->
-        List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_patt p | _ -> true])
+        List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_pat p | _ -> true])
           (list_of_sem  p [])
-    | `Sem(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | `Com(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | `Or(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | `App(_,p1,p2) -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | `Sem(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
+    | `Com(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
+    | `Or(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2 (* could be more fine grained *)
+    | `App(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
           
-    | `Constraint(_,p,_) -> is_irrefut_patt p
-    | `Tup(_,p) -> is_irrefut_patt p
+    | `Constraint(_,p,_) -> is_irrefut_pat p
+    | `Tup(_,p) -> is_irrefut_pat p
     | `OptLablS _ -> true
-    | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_patt p
-    | `Label(_,_,p) | `Lazy (_,p) ->  is_irrefut_patt p
+    | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_pat p
+    | `Label(_,_,p) | `Lazy (_,p) ->  is_irrefut_pat p
     | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
 
     | `ModuleUnpack _ 

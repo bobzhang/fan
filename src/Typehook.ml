@@ -236,7 +236,7 @@ end;
 
 
 (* #default_quotation "exp"  ;; *)
-(* #lang_at "patt" "module_exp";; *)
+(* #lang_at "pat" "module_exp";; *)
 
 let g = Gram.create_gram
     ~keywords:

@@ -116,7 +116,7 @@ end;
    | Strip generator                                                 |
    +-----------------------------------------------------------------+ *)
 (* FIXME to be more elegant *)  
-let gen_strip = with {patt:ctyp;exp}
+let gen_strip = with {pat:ctyp;exp}
   let mk_variant cons params =
     let params' = (List.filter
                (fun [{ty={|loc|};_} -> false | _  -> true])
@@ -330,7 +330,7 @@ let generate (module_types:FSig.module_types) : stru =
           Some (`Or(_loc,case,acc))(* {:case| $vrn:key _loc  -> _loc | $acc |} *) ]
       else if arity > 1 then 
         let pats =
-          [ {:patt| _loc|} :: List.init (arity - 1) (fun _ -> {:patt| _ |}) ] in
+          [ {:pat| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
         let case = {:case| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
         [None -> Some case

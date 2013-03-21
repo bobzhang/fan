@@ -340,12 +340,12 @@ let mkmutable = fun
   | `MuNil _ -> Immutable
   | `Ant(_loc,_) -> ANT_ERROR ];
 
-let paolab (lab:string) (p:patt) : string =
+let paolab (lab:string) (p:pat) : string =
   match (lab, p) with
   [ ("", (`Id(_loc,`Lid(_,i)) | `Constraint(_loc,`Id(_,`Lid(_,i)),_)))
     -> i
   | ("", p) ->
-      errorf (loc_of p) "paolab %s" (dump_patt p)
+      errorf (loc_of p) "paolab %s" (dump_pat p)
   | _ -> lab ] ;
 
 
@@ -410,8 +410,8 @@ let type_parameters_and_type_name t  =
 
   
   
-let rec patt_fa al = fun
-  [ `App (_,f,a) -> patt_fa [a :: al] f
+let rec pat_fa al = fun
+  [ `App (_,f,a) -> pat_fa [a :: al] f
   | f -> (f, al) ];
 
 let rec deep_mkrangepat loc c1 c2 =
@@ -429,8 +429,8 @@ let rec mkrangepat loc c1 c2 =
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
 
-let rec patt (x:patt) =
-  with patt  match x with 
+let rec pat (x:pat) =
+  with pat  match x with 
   [ {| $(lid:("true"|"false" as txt)) |}  ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
     mkpat _loc p 
@@ -440,7 +440,7 @@ let rec patt (x:patt) =
       in mkpat _loc p
   |  `Alias (_loc, p1, x)->
       match x with
-      [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((patt p1), with_loc s sloc))
+      [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((pat p1), with_loc s sloc))
       | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
@@ -448,9 +448,9 @@ let rec patt (x:patt) =
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `App (loc, _, _) as f ->
-     let (f, al) = patt_fa [] f in
-     let al = List.map patt al in
-     match (patt f).ppat_desc with
+     let (f, al) = pat_fa [] f in
+     let al = List.map pat al in
+     match (pat f).ppat_desc with
      [ Ppat_construct (li, None, _) ->
          let a =  match al with
          [ [a] -> a
@@ -465,7 +465,7 @@ let rec patt (x:patt) =
      | _ ->
          error (loc_of f)
            "this is not a constructor, it cannot be applied in a pattern" ]
-     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map patt (list_of_sem p [])))
+     | `Array (loc,p) -> mkpat loc (Ppat_array (List.map pat (list_of_sem p [])))
      | `ArrayEmpty(loc) -> mkpat loc (Ppat_array [])
          
      | `Chr (loc,s) ->
@@ -491,7 +491,7 @@ let rec patt (x:patt) =
      | `OptLablExpr (loc,_,_,_)
      | `OptLabl(loc,_,_)
      | `OptLablS(loc,_)  -> error loc "labeled pattern not allowed here"
-     | `Or (loc, p1, p2) -> mkpat loc (Ppat_or (patt p1) (patt p2))
+     | `Or (loc, p1, p2) -> mkpat loc (Ppat_or (pat p1) (pat p2))
      | `PaRng (loc, p1, p2) ->
          match (p1, p2) with
          [ (`Chr (loc1, c1), `Chr (loc2, c2)) ->
@@ -504,21 +504,21 @@ let rec patt (x:patt) =
           let (wildcards,ps) =
             List.partition (fun [`Any _ -> true | _ -> false ]) ps in
           let is_closed = if wildcards = [] then Closed else Open in
-          let  mklabpat (p : rec_patt) =
+          let  mklabpat (p : rec_pat) =
             match p with 
-            [ `RecBind(_loc,i,p) -> (ident  i, patt p)
+            [ `RecBind(_loc,i,p) -> (ident  i, pat p)
             | p -> error (loc_of p) "invalid pattern" ] in
           mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
       | `Str (loc,s) ->
           mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
       | `Tup(loc,`Com(_,p1,p2)) ->
           mkpat loc (Ppat_tuple
-                       (List.map patt (list_of_com p1 (list_of_com p2 []))))
+                       (List.map pat (list_of_com p1 (list_of_com p2 []))))
       | `Tup (loc,_) -> error loc "singleton tuple pattern"
-      | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (patt p) (ctyp t))
+      | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint (pat p) (ctyp t))
       | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
       | `Vrn (loc,s) -> mkpat loc (Ppat_variant s None)
-      | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (patt p))
+      | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (pat p))
       | `ModuleUnpack(loc,`Uid(sloc,m)) ->
           mkpat loc (Ppat_unpack (with_loc m sloc))
       | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
@@ -648,53 +648,53 @@ let rec exp (x : exp) = with exp match x with
       | `Fun(loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(patt (`Id(sloc,`Lid(sloc,lab))),exp e)])
+               [(pat (`Id(sloc,`Lid(sloc,lab))),exp e)])
             
       | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(patt po, exp e)])
+               [(pat po, exp e)])
       | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(patt (`Id(sloc,`Lid(sloc,lab))),
+               [(pat (`Id(sloc,`Lid(sloc,lab))),
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
             
       | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
           mkexp loc
             (Pexp_function lab None
-               [(patt po,
+               [(pat po,
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
       | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
           mkexp loc (Pexp_function ("?"^lab) None
-                       [(patt (`Id(sloc,`Lid(sloc,lab))), exp e2)])
+                       [(pat (`Id(sloc,`Lid(sloc,lab))), exp e2)])
       | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None
-               [(patt p,
+               [(pat p,
                  exp e2)])
       | `Fun (loc,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
           mkexp loc
             (Pexp_function ("?" ^ lab) None
-               [(patt (`Id(sloc,`Lid(sloc,lab))),
+               [(pat (`Id(sloc,`Lid(sloc,lab))),
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
 
       | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) None
-               [( patt p,
+               [( pat p,
                   mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
       | `Fun (loc,`Case(_,`OptLablExpr(_,`Lid(_,lab),p,e1),e2)) -> 
           let lab = paolab lab p in
           mkexp loc
-            (Pexp_function ("?" ^ lab) (Some (exp e1)) [(patt p,exp e2)])
+            (Pexp_function ("?" ^ lab) (Some (exp e1)) [(pat p,exp e2)])
       | `Fun (loc,`CaseWhen(_,`OptLablExpr(_,`Lid(_,lab),p,e1),w,e2)) -> 
           let lab = paolab lab p in
           mkexp loc
             (Pexp_function ("?" ^ lab) (Some (exp e1))
-               [(patt p,
+               [(pat p,
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
             
       | `Fun (loc,a) -> mkexp loc (Pexp_function "" None (case a ))
@@ -730,17 +730,17 @@ let rec exp (x : exp) = with exp match x with
       | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
 
       | `ObjEnd(loc) ->
-          mkexp loc (Pexp_object{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
+          mkexp loc (Pexp_object{pcstr_pat= pat (`Any loc); pcstr_fields=[]})
       | `Obj(loc,cfl) ->
           let p = `Any loc in 
           let cil = cstru cfl [] in
-          mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
+          mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
       | `ObjPatEnd(loc,p) ->
-          mkexp loc (Pexp_object{pcstr_pat=patt p; pcstr_fields=[]})
+          mkexp loc (Pexp_object{pcstr_pat=pat p; pcstr_fields=[]})
             
       | `ObjPat (loc,p,cfl) ->
           let cil = cstru cfl [] in
-          mkexp loc (Pexp_object { pcstr_pat = patt p; pcstr_fields = cil })
+          mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
       | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
       | `OvrInst (loc,iel) ->
           let rec mkideexp (x:rec_exp) acc  = 
@@ -809,7 +809,7 @@ and label_exp (x : exp) = match x with
     
 and binding (x:binding) acc =  match x with
   [ `And(_,x,y) -> binding x (binding y acc)
-  | {:binding@_loc| $(pat: {:patt@sloc| $lid:bind_name |} ) =
+  | {:binding@_loc| $(pat: {:pat@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
 
       let rec id_to_string x = match x with
@@ -835,16 +835,16 @@ and binding (x:binding) acc =  match x with
       let e = mk_newtypes vars in
       [( pat, e) :: acc]
   | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
-      [(patt {:patt| ($p : ! $vs . $ty ) |}, exp e) :: acc]
-  | `Bind (_,p,e) -> [(patt p, exp e) :: acc]
+      [(pat {:pat| ($p : ! $vs . $ty ) |}, exp e) :: acc]
+  | `Bind (_,p,e) -> [(pat p, exp e) :: acc]
   | _ -> assert false ]
 and case (x:case) = 
   let cases = list_of_or x [] in
   List.filter_map
     (fun
-      [ `Case(_,p,e) -> Some(patt p, exp e) 
+      [ `Case(_,p,e) -> Some(pat p, exp e) 
       | `CaseWhen(_,p,w,e) ->
-          Some (patt p,
+          Some (pat p,
             mkexp (loc_of w) (Pexp_when (exp w) (exp e)))
       | x -> errorf (loc_of x ) "case %s" (dump_case x ) ]) cases
 
@@ -1164,28 +1164,28 @@ and class_exp  (x:Ast.class_exp) = match x with
         (Pcl_constr (long_class_ident id) [])
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
-        (Pcl_fun lab None (patt po ) (class_exp ce))
+        (Pcl_fun lab None (pat po ) (class_exp ce))
   | `CeFun(loc,`OptLablExpr(_,`Lid(_loc,lab),p,e),ce) ->
       let lab = paolab lab p in
-      mkcl loc (Pcl_fun ("?" ^ lab) (Some (exp e)) (patt p) (class_exp ce))
+      mkcl loc (Pcl_fun ("?" ^ lab) (Some (exp e)) (pat p) (class_exp ce))
   | `CeFun (loc,`OptLabl(_,`Lid(_loc,lab),p), ce) -> 
       let lab = paolab lab p in
-      mkcl loc (Pcl_fun ("?" ^ lab) None (patt p) (class_exp ce))
-  | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (patt p) (class_exp ce))
+      mkcl loc (Pcl_fun ("?" ^ lab) None (pat p) (class_exp ce))
+  | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun "" None (pat p) (class_exp ce))
   | `LetIn (loc, rf, bi, ce) ->
       mkcl loc (Pcl_let (mkrf rf) (binding bi []) (class_exp ce))
 
   | `ObjEnd(loc) ->
-      mkcl loc (Pcl_structure{pcstr_pat= patt (`Any loc); pcstr_fields=[]})
+      mkcl loc (Pcl_structure{pcstr_pat= pat (`Any loc); pcstr_fields=[]})
   | `Obj(loc,cfl) ->
       let p = `Any loc in
       let cil = cstru cfl [] in
-      mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
+      mkcl loc (Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;})
   | `ObjPatEnd(loc,p) ->
-      mkcl loc (Pcl_structure {pcstr_pat= patt p; pcstr_fields = []})
+      mkcl loc (Pcl_structure {pcstr_pat= pat p; pcstr_fields = []})
   | `ObjPat (loc,p,cfl) ->
       let cil = cstru cfl [] in
-      mkcl loc (Pcl_structure {pcstr_pat = patt p; pcstr_fields = cil;})
+      mkcl loc (Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;})
   | `Constraint (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (class_exp ce) (class_type ct))
   | t -> errorf (loc_of t) "class_exp: %s" (dump_class_exp t)]
@@ -1239,8 +1239,8 @@ let print_exp f  e =
 let to_string_exp = to_string_of_printer print_exp;  
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
   
-let print_patt f e =
-  pp f "@[%a@]@." AstPrint.pattern (patt e);
+let print_pat f e =
+  pp f "@[%a@]@." AstPrint.pattern (pat e);
   
 let print_stru f e =
   pp f "@[%a@]@." AstPrint.structure (stru e);

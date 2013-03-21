@@ -1,6 +1,6 @@
 
-(* open lang "patt"; *)
-(* #default_quotation "patt"  ;; *)
+(* open lang "pat"; *)
+(* #default_quotation "pat"  ;; *)
 
 (* open LibUtil; *)
 (* open Basic; *)

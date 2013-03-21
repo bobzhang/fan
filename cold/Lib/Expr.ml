@@ -11,11 +11,11 @@ let rec pattern_eq_expression p e =
   | (`App (_loc,p1,p2),`App (_,e1,e2)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
-let map loc (p : patt) (e : exp) (l : exp) =
+let map loc (p : pat) (e : exp) (l : exp) =
   (match (p, e) with
    | (`Id (_loc,`Lid (_,x)),`Id (_,`Lid (_,y))) when x = y -> l
    | _ ->
-       if is_irrefut_patt p
+       if is_irrefut_pat p
        then
          `App
            (loc,
@@ -95,7 +95,7 @@ let map loc (p : patt) (e : exp) (l : exp) =
                                                 (`Id (loc, (`Lid (loc, "l")))))))))))))))),
                   l)), (`Id (loc, (`Uid (loc, "[]"))))) : exp )
 let filter loc p b l =
-  if is_irrefut_patt p
+  if is_irrefut_pat p
   then
     `App
       (loc,
@@ -137,7 +137,7 @@ let rec compr _loc e =
   | (`gen (p,l))::((`gen (_,_))::_ as is) ->
       concat _loc (map _loc p (compr _loc e is) l)
   | _ -> raise Stream.Failure
-let bad_patt _loc =
+let bad_pat _loc =
   FanLoc.raise _loc
     (Failure "this macro cannot be used in a pattern (see its definition)")
 let substp loc env =
@@ -157,9 +157,9 @@ let substp loc env =
           function
           | `Sem (_loc,b1,b2) -> `Sem (_loc, (substbi b1), (substbi b2))
           | `RecBind (_loc,i,e) -> `RecBind (loc, i, (loop e))
-          | _ -> bad_patt _loc in
+          | _ -> bad_pat _loc in
         `Record (loc, (substbi bi))
-    | _ -> bad_patt loc in
+    | _ -> bad_pat loc in
   loop
 class subst loc env =
   object 
@@ -217,12 +217,12 @@ class subst loc env =
                                  else `Id (_loc, (`Lid (_loc, "false")))))))))))
            with | Not_found  -> super#exp e)
       | e -> super#exp e
-    method! patt =
+    method! pat =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as p ->
           (try substp loc [] (List.assoc x env)
-           with | Not_found  -> super#patt p)
-      | p -> super#patt p
+           with | Not_found  -> super#pat p)
+      | p -> super#pat p
   end
 class type antiquot_filter
   =
@@ -235,7 +235,7 @@ let capture_antiquot: antiquot_filter =
   object 
     inherit  Objs.map as super
     val mutable constraints = []
-    method! patt =
+    method! pat =
       function
       | `Ant (_loc,s) ->
           (match s with
@@ -245,15 +245,15 @@ let capture_antiquot: antiquot_filter =
                let cons' = `Id (_loc, (`Lid (_loc, code'))) in
                let () = constraints <- (cons, cons') :: constraints in
                `Id (_loc, (`Lid (_loc, code'))))
-      | p -> super#patt p
+      | p -> super#pat p
     method get_captured_variables = constraints
     method clear_captured_variables = constraints <- []
   end
-let filter_patt_with_captured_variables patt =
+let filter_pat_with_captured_variables pat =
   capture_antiquot#clear_captured_variables;
-  (let patt = capture_antiquot#patt patt in
+  (let pat = capture_antiquot#pat pat in
    let constraints = capture_antiquot#get_captured_variables in
-   (patt, constraints))
+   (pat, constraints))
 let fun_args _loc args body =
   if args = []
   then `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), body)))
@@ -278,8 +278,8 @@ let (<+) names acc =
     (fun name  acc  ->
        `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, name)))), acc))))
     names acc
-let (<+<) patts acc =
-  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc)))) patts
+let (<+<) pats acc =
+  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc)))) pats
     acc
 let mee_comma x y =
   `App

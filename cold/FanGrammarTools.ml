@@ -16,11 +16,11 @@ let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 let mk_rule ~prod  ~action  = { prod; action }
 let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
-let string_of_patt patt =
+let string_of_pat pat =
   let buf = Buffer.create 42 in
   let () =
     Format.bprintf buf "%a@?"
-      (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.patt p)) patt in
+      (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
   let str = Buffer.contents buf in if str = "" then assert false else str
 let check_not_tok s =
   match s with
@@ -226,7 +226,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "t")))))))), e1)))
      | (e,p) ->
-         let (exp,patt) =
+         let (exp,pat) =
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
@@ -245,7 +245,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                   (`Match
                      (_loc, exp,
                        (`Or
-                          (_loc, (`Case (_loc, patt, e1)),
+                          (_loc, (`Case (_loc, pat, e1)),
                             (`Case
                                (_loc, (`Any _loc),
                                  (`App
@@ -262,7 +262,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
               let p =
                 typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
               `Fun (_loc, (`Case (_loc, p, txt)))
-          | Some p when is_irrefut_patt p ->
+          | Some p when is_irrefut_pat p ->
               let p = typing p (make_ctyp s.styp tvar) in
               `Fun (_loc, (`Case (_loc, p, txt)))
           | None  -> `Fun (_loc, (`Case (_loc, (`Any _loc), txt)))
@@ -390,9 +390,9 @@ let text_of_functorial_extend _loc gram locals el =
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
-      let no_variable = FanObjs.wildcarder#patt pattern in
+      let no_variable = FanObjs.wildcarder#pat pattern in
       let match_fun =
-        if is_irrefut_patt no_variable
+        if is_irrefut_pat no_variable
         then
           `Fun
             (_loc,
@@ -408,11 +408,11 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                    (`Case
                       (_loc, (`Any _loc),
                         (`Id (_loc, (`Lid (_loc, "false"))))))))) in
-      let descr = string_of_patt no_variable in
+      let descr = string_of_pat no_variable in
       let text = `Stok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->
-      let p' = FanObjs.wildcarder#patt pattern in
+      let p' = FanObjs.wildcarder#pat pattern in
       let match_fun =
         `Fun
           (_loc,
@@ -423,7 +423,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                       (`Id (_loc, (`Lid (_loc, "true")))))),
                  (`Case
                     (_loc, (`Any _loc), (`Id (_loc, (`Lid (_loc, "false"))))))))) in
-      let descr = string_of_patt pattern in
+      let descr = string_of_pat pattern in
       let text = `Stok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
 let sfold ?sep  _loc (ns : string list) f e s =

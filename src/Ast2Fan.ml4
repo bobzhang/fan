@@ -33,8 +33,8 @@ class printer = object(self:'self)
       |Const_nativeint i -> {|$`nativeint:i|}
       |Const_char i -> {|$`chr:i|}
       |Const_string i -> {|$`str:i|} ];
-     method constant_patt _loc i =
-      with patt match i with 
+     method constant_pat _loc i =
+      with pat match i with 
       [Const_int32 i -> {|$`int32:i|}
       |Const_int i -> {|$`int:i|}
       |Const_int64 i -> {|$`int64:i|}
@@ -143,13 +143,13 @@ class printer = object(self:'self)
            {|(module $(id:self#longident_loc lid) with $(list:with_constrs) )|}
       ];
      method pattern {ppat_desc=x;ppat_loc=_loc} =
-       with patt match x with
+       with pat match x with
        [Ppat_any -> {| _ |}
        |Ppat_var {txt;_} -> {| $lid:txt|}
        |Ppat_alias (p,{txt;_}) ->
            {| ($(self#pattern p)  as $lid:txt )|}
        |Ppat_constant c ->
-           self#constant_patt _loc c
+           self#constant_pat _loc c
        |Ppat_tuple [] -> assert false
        |Ppat_tuple [x::xs] -> 
            {| ($(self#pattern x), $(list:(List.map self#pattern xs ))) |}

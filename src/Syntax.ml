@@ -25,28 +25,28 @@ let print_warning loc txt = !current_warning loc txt;
   class_longident class_longident_and_param class_name_and_param class_sig_item class_signature
   cstru class_structure class_type class_type_declaration
   class_type_longident class_type_longident_and_param
-  class_type_plus comma_ctyp comma_exp comma_ipatt comma_patt comma_type_parameter
+  class_type_plus comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
   ctyp cvalue_binding direction_flag direction_flag_quot
   dummy eq_exp exp exp_eoi field_exp field_exp_list fun_binding
-  fun_def ident implem interf ipatt ipatt_tcon patt_tcon
+  fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
-  label_patt_list label_patt label_longident
+  label_pat_list label_pat label_longident
   let_binding meth_list meth_decl module_binding
   module_binding
   module_binding0
   module_exp  module_longident  module_longident_with_app  module_rec_declaration
   module_type  (* package_type *) more_ctyp  name_tags
   (* opt_as_lident *)
-  opt_class_self_patt
+  opt_class_self_pat
   opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot  (* opt_eq_ctyp *)
   opt_exp  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
-  override_flag_quot  patt  patt_as_patt_opt  patt_eoi    (* poly_type *)
-  row_field  sem_exp  sem_exp_for_list  sem_patt  sem_patt_for_list  semi  sequence
+  override_flag_quot  pat  pat_as_pat_opt  pat_eoi    (* poly_type *)
+  row_field  sem_exp  sem_exp_for_list  sem_pat  sem_pat_for_list  semi  sequence
   sig_item  sig_items  star_ctyp  stru  strus  top_phrase  (* type_constraint *)
   type_declaration  type_ident_and_parameters  (* type_kind *)  type_longident  type_longident_and_parameters
-  type_parameter  type_parameters  typevars  val_longident  with_constr  exp_quot  patt_quot
+  type_parameter  type_parameters  typevars  val_longident  with_constr  exp_quot  pat_quot
   ctyp_quot  stru_quot  sig_item_quot  cstru_quot  class_sig_item_quot  module_exp_quot
   module_type_quot  class_type_quot  class_exp_quot  with_constr_quot  binding_quot  rec_exp_quot
   module_declaration
@@ -91,14 +91,14 @@ let print_warning loc txt = !current_warning loc txt;
 |};
   
 let antiquot_exp = Gram.eoi_entry exp ; 
-let antiquot_patt = Gram.eoi_entry patt;
+let antiquot_pat = Gram.eoi_entry pat;
 let antiquot_ident = Gram.eoi_entry ident; 
 let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str;
-let parse_patt loc str = Gram.parse_string antiquot_patt ~loc str;
+let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str;
 let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str;
-let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_patt;
+let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_pat;
 let exp_filter (x:ep) = (anti_filter#exp (x:>exp));
-let patt_filter (x:ep) = (anti_filter#patt (x:>patt));  
+let pat_filter (x:ep) = (anti_filter#pat (x:>pat));  
 
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =

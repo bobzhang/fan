@@ -40,19 +40,19 @@ let mapi_exp ?(arity=1) ?(names=[])
     ~f:(f:(ctyp->exp))
     (i:int) (ty : ctyp)  :
     FSig.ty_info =
-  with {patt:ctyp;exp}
+  with {pat:ctyp;exp}
   let name_exp = f ty in 
   let base = name_exp  +> names in
   (** FIXME as a tuple it is useful when arity> 1??? *)
   let id_exps =
     (List.init arity (fun index  -> {| $(id:xid ~off:index i) |} )) in 
   let exp0 = List.hd id_exps in 
-  let id_patts = id_exps in
+  let id_pats = id_exps in
   let pat0 = exp0 in
   let id_exp = tuple_com  id_exps  in
-  let id_patt = id_exp in
+  let id_pat = id_exp in
   let exp = appl_of_list [base:: id_exps]  in
-  {name_exp; exp; id_exp; id_exps; id_patt;id_patts;exp0;pat0;ty};       
+  {name_exp; exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty};       
 
 (* @raise Invalid_argument when type can not be handled *)  
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
@@ -61,12 +61,12 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   [ `Tup (_loc,t)  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
-    let patt = EP.mk_tuple ~arity ~number:len in
+    let pat = EP.mk_tuple ~arity ~number:len in
     let tys =
       List.mapi
         (mapi_exp ~arity ~names  ~f:simple_exp_of_ctyp) ls in
     names <+ (currying
-                  [ {:case| $pat:patt -> $(mk_tuple tys ) |} ] ~arity)
+                  [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
         "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty)];
@@ -91,7 +91,7 @@ let rec  normal_simple_exp_of_ctyp
   let right_trans = transform right_type_id in
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = with {patt:ctyp;exp} fun
+  let rec aux = with {pat:ctyp;exp} fun
     [ `Id(_loc,`Lid(_,id)) -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else right_trans {:ident| $lid:id |} 
@@ -129,7 +129,7 @@ let rec  normal_simple_exp_of_ctyp
       self#m_list (fun self -> self#tree mf_a)
  *)      
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
-    ?names ?arity ~mk_tuple ty = with {patt:ctyp}
+    ?names ?arity ~mk_tuple ty = with {pat:ctyp}
   let open Transform in 
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
@@ -173,7 +173,7 @@ let exp_of_ctyp
     simple_exp_of_ctyp (ty : or_ctyp)  =
   let f  (cons:string) (tyargs:list ctyp)  : case = 
     let args_length = List.length tyargs in  (* ` is not needed here *)
-    let p : patt =
+    let p : pat =
       (* calling gen_tuple_n*)
       EP.gen_tuple_n ?cons_transform ~arity  cons args_length in
     let mk (cons,tyargs) =
@@ -198,7 +198,7 @@ let exp_of_ctyp
    accept [variant types]
  *)  
 let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~destination
-    simple_exp_of_ctyp result ty = with {patt:ctyp;exp:case}
+    simple_exp_of_ctyp result ty = with {pat:ctyp;exp:case}
   let f (cons,tyargs) :  case=
     let len = List.length tyargs in
     let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
@@ -270,7 +270,7 @@ let fun_of_tydcl
          match repr with
          [`Record(_loc,t) ->       
            let cols =  Ctyp.list_of_record t  in
-           let patt = (EP.mk_record ~arity  cols  : patt)in
+           let pat = (EP.mk_record ~arity  cols  : pat)in
            let info =
              List.mapi
                (fun i x ->  match x with
@@ -282,7 +282,7 @@ let fun_of_tydcl
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
-            (currying ~arity [ {:case| $pat:patt -> $(mk_record info)  |} ])
+            (currying ~arity [ {:case| $pat:pat -> $(mk_record info)  |} ])
 
        |  `Sum (_,ctyp) -> 
           let funct = exp_of_ctyp ctyp in  
@@ -309,7 +309,7 @@ let fun_of_tydcl
 let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~trail ~mk_variant
     ~left_type_id ~left_type_variable
-    ~mk_record = with {patt:ctyp}
+    ~mk_record = with {pat:ctyp}
   let open Transform in 
   let tctor_var = basic_transform left_type_id in
   let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
@@ -394,7 +394,7 @@ let obj_of_module_types
     ~mk_record
     ~mk_variant
      base
-    class_name  simple_exp_of_ctyp (k:kind) (lst:module_types) : stru = with {patt:ctyp}
+    class_name  simple_exp_of_ctyp (k:kind) (lst:module_types) : stru = with {pat:ctyp}
   let tbl = Hashtbl.create 50 in 
     let f tydcl result_type =
       fun_of_tydcl ~names ~destination:(Obj k)

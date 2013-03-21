@@ -71,19 +71,18 @@ and or_ctyp =
   [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
   | sid | ant] 
 and of_ctyp = [ `Of of (sid* ctyp) | sid | ant] 
-and patt =
-  [ sid | `App of (patt* patt) | `Vrn of string | `Com of (patt* patt)
-  | `Sem of (patt* patt) | `Tup of patt | any | `Record of rec_patt | 
-    ant
-  | literal | `Alias of (patt* alident) | `ArrayEmpty | `Array of patt
-  | `LabelS of alident | `Label of (alident* patt)
-  | `OptLabl of (alident* patt) | `OptLablS of alident
-  | `OptLablExpr of (alident* patt* exp) | `Or of (patt* patt)
-  | `PaRng of (patt* patt) | `Constraint of (patt* ctyp)
-  | `ClassPath of ident | `Lazy of patt | `ModuleUnpack of auident
+and pat =
+  [ sid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
+  | `Sem of (pat* pat) | `Tup of pat | any | `Record of rec_pat | ant
+  | literal | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
+  | `LabelS of alident | `Label of (alident* pat)
+  | `OptLabl of (alident* pat) | `OptLablS of alident
+  | `OptLablExpr of (alident* pat* exp) | `Or of (pat* pat)
+  | `PaRng of (pat* pat) | `Constraint of (pat* ctyp) | `ClassPath of ident
+  | `Lazy of pat | `ModuleUnpack of auident
   | `ModuleConstraint of (auident* ctyp)] 
-and rec_patt =
-  [ `RecBind of (ident* patt) | `Sem of (rec_patt* rec_patt) | any | ant] 
+and rec_pat =
+  [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
 and exp =
   [ sid | `App of (exp* exp) | `Vrn of string | `Com of (exp* exp)
   | `Sem of (exp* exp) | `Tup of exp | any | `Record of rec_exp | ant
@@ -95,8 +94,8 @@ and exp =
   | `LabelS of alident | `Label of (alident* exp) | `Lazy of exp
   | `LetIn of (rec_flag* binding* exp)
   | `LetModule of (auident* module_exp* exp) | `Match of (exp* case)
-  | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (patt* cstru)
-  | `ObjPatEnd of patt | `OptLabl of (alident* exp) | `OptLablS of alident
+  | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (pat* cstru)
+  | `ObjPatEnd of pat | `OptLabl of (alident* exp) | `OptLablS of alident
   | `OvrInst of rec_exp | `OvrInstEmpty | `Seq of exp
   | `Send of (exp* alident) | `StringDot of (exp* exp) | `Try of (exp* case)
   | `Constraint of (exp* ctyp) | `Coercion of (exp* ctyp* ctyp)
@@ -121,14 +120,14 @@ and with_constr =
   | `ModuleEq of (ident* ident) | `TypeSubst of (ctyp* ctyp)
   | `ModuleSubst of (ident* ident) | `And of (with_constr* with_constr)
   | ant] 
-and binding = [ `And of (binding* binding) | `Bind of (patt* exp) | ant] 
+and binding = [ `And of (binding* binding) | `Bind of (pat* exp) | ant] 
 and module_binding =
   [ `And of (module_binding* module_binding)
   | `ModuleBind of (auident* module_type* module_exp)
   | `Constraint of (auident* module_type) | ant] 
 and case =
-  [ `Or of (case* case) | `Case of (patt* exp)
-  | `CaseWhen of (patt* exp* exp) | ant] 
+  [ `Or of (case* case) | `Case of (pat* exp) | `CaseWhen of (pat* exp* exp)
+  | ant] 
 and module_exp =
   [ sid | `App of (module_exp* module_exp)
   | `Functor of (auident* module_type* module_exp) | `Struct of stru
@@ -157,9 +156,9 @@ and class_sig_item =
 and class_exp =
   [ `CeApp of (class_exp* exp)
   | `ClassCon of (virtual_flag* ident* type_parameters)
-  | `ClassConS of (virtual_flag* ident) | `CeFun of (patt* class_exp)
+  | `ClassConS of (virtual_flag* ident) | `CeFun of (pat* class_exp)
   | `LetIn of (rec_flag* binding* class_exp) | `Obj of cstru | `ObjEnd
-  | `ObjPat of (patt* cstru) | `ObjPatEnd of patt
+  | `ObjPat of (pat* cstru) | `ObjPatEnd of pat
   | `Constraint of (class_exp* class_type) | `And of (class_exp* class_exp)
   | `Eq of (class_exp* class_exp) | ant] 
 and cstru =

@@ -23,7 +23,7 @@ and rule =  {
 and symbol =  {
   text: text;
   styp: styp;
-  pattern: patt option} 
+  pattern: pat option} 
 and text =
   [ `Smeta of (loc* string list* text list* exp* styp)
   | `Slist of (loc* bool* symbol* symbol option)
@@ -35,11 +35,11 @@ type used =
   | Unused
   | UsedScanned
   | UsedNotScanned 
-type simple_patt =
-  [ `Vrn of (loc* string) | `App of (loc* simple_patt* simple_patt)
-  | `Id of (loc* ident) | `Com of (loc* simple_patt* simple_patt)
-  | `Alias of (loc* simple_patt* alident)
-  | `Or of (loc* simple_patt* simple_patt) | `Str of (loc* string)
+type simple_pat =
+  [ `Vrn of (loc* string) | `App of (loc* simple_pat* simple_pat)
+  | `Id of (loc* ident) | `Com of (loc* simple_pat* simple_pat)
+  | `Alias of (loc* simple_pat* alident)
+  | `Or of (loc* simple_pat* simple_pat) | `Str of (loc* string)
   | `Any of loc | ant] 
 type action_pattern =
   [ `Id of (loc* ident) | `Com of (loc* action_pattern* action_pattern)

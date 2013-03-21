@@ -12,7 +12,7 @@ let dump_name_ctyp = to_string_of_printer dump#name_ctyp
 let dump_with_constr = to_string_of_printer dump#with_constr
 let dump_module_type = to_string_of_printer dump#module_type
 let dump_exp = to_string_of_printer dump#exp
-let dump_patt = to_string_of_printer dump#patt
+let dump_pat = to_string_of_printer dump#pat
 let dump_class_type = to_string_of_printer dump#class_type
 let dump_class_exp = to_string_of_printer dump#class_exp
 let dump_ident = to_string_of_printer dump#ident
@@ -29,8 +29,8 @@ let dump_decl_param = to_string_of_printer dump#decl_param
 let dump_decl_params = to_string_of_printer dump#decl_params
 let map_exp f =
   object  inherit  Objs.map as super method! exp x = f (super#exp x) end
-let map_patt f =
-  object  inherit  Objs.map as super method! patt x = f (super#patt x) end
+let map_pat f =
+  object  inherit  Objs.map as super method! pat x = f (super#pat x) end
 let map_ctyp f =
   object  inherit  Objs.map as super method! ctyp x = f (super#ctyp x) end
 let map_stru f =
@@ -48,9 +48,9 @@ class reloc _loc = object  inherit  Objs.map method! loc _ = _loc end
 let wildcarder =
   object (self)
     inherit  Objs.map as super
-    method! patt =
+    method! pat =
       function
       | `Id (_loc,`Lid (_,_)) -> `Any _loc
-      | `Alias (_loc,p,_) -> self#patt p
-      | p -> super#patt p
+      | `Alias (_loc,p,_) -> self#pat p
+      | p -> super#pat p
   end

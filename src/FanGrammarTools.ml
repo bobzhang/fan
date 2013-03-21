@@ -33,11 +33,11 @@ let mk_rule ~prod ~action =
 let mk_symbol  ?(pattern=None)  ~text ~styp =
   { text;styp;pattern};
 
-let string_of_patt patt = 
+let string_of_pat pat = 
   let buf = Buffer.create 42 in
   let () =
     Format.bprintf buf "%a@?"
-      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.patt p)) patt in
+      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
   let str = Buffer.contents buf in
   if str = "" then assert false else str;
 
@@ -70,12 +70,12 @@ let retype_rule_list_without_patterns _loc rl =
       (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
     [ {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
       {prod =
-       [{ (s) with pattern = Some {:patt| x |} }];
+       [{ (s) with pattern = Some {:pat| x |} }];
        action = Some {:exp| $(id:gm()).string_of_token x |}}
     (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
     | {prod = [({pattern = None; _ } as s)]; action = None} ->
 
-        {prod = [{ (s) with pattern = Some {:patt| x |} }];
+        {prod = [{ (s) with pattern = Some {:pat| x |} }];
          action = Some {:exp| x |}}
     (* ...; ([] -> a); ... *)
     | {prod = []; action = Some _} as r -> r
@@ -251,7 +251,7 @@ and make_exp_rules (_loc:loc)  (rl : list (list text * exp) ) (tvar:string) :exp
  *)
 let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
     (rtvar:string)  (tvar:string) : exp = with exp
-  let locid = {:patt| $(lid:!FanLoc.name) |} in 
+  let locid = {:pat| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
     [ Some act -> act | None -> {| () |} ] in
@@ -268,26 +268,26 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
       match tok_match_pl with
       [ ([],_) ->  {| fun ($locid :FanLoc.t) -> $e1 |}
       | (e,p) ->
-          let (exp,patt) =
+          let (exp,pat) =
             match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in
           let action_string = Ast2pt.to_string_exp act in
           {|fun ($locid :FanLoc.t) ->
-            match $exp with [ $(pat:patt) -> $e1 | _ -> failwith $`str:action_string
+            match $exp with [ $(pat:pat) -> $e1 | _ -> failwith $`str:action_string
            (* assert false *)]|} ] in
   let (_,txt) =
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [Some {:patt| ($_ $(tup:{:patt@_| _ |}) as $p) |} ->
-            let p = typing {:patt| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in
+        [Some {:pat| ($_ $(tup:{:pat@_| _ |}) as $p) |} ->
+            let p = typing {:pat| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |}
-        | Some p when is_irrefut_patt p ->
+        | Some p when is_irrefut_pat p ->
             let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
         | None -> {| fun _ -> $txt |}
         | Some _ ->
             let p =
-              typing {:patt| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
+              typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
   {| $(id:gm()).mk_action $txt |}  ;
 
@@ -417,21 +417,21 @@ let text_of_functorial_extend _loc  gram locals el =
 let mk_tok _loc ?restrict ~pattern styp = with exp
  match restrict with
  [ None ->
-   let no_variable = FanObjs.wildcarder#patt pattern in
+   let no_variable = FanObjs.wildcarder#pat pattern in
    let match_fun =
-     if is_irrefut_patt no_variable
+     if is_irrefut_pat no_variable
      then 
        {| fun [ $pat:no_variable -> true ] |}
      else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
-   let descr = string_of_patt no_variable in
+   let descr = string_of_pat no_variable in
    let text = `Stok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
      
  | Some restrict ->
-     let p'= FanObjs.wildcarder#patt pattern in
+     let p'= FanObjs.wildcarder#pat pattern in
      let match_fun = 
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
-     let descr = string_of_patt pattern in
+     let descr = string_of_pat pattern in
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} ] ;
    

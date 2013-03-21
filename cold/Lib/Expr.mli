@@ -14,22 +14,22 @@ open Ast
 
 (* val bigarray_set : loc -> exp -> exp -> exp option *)
 
-val pattern_eq_expression : patt -> exp -> bool
+val pattern_eq_expression : pat -> exp -> bool
 
-val map : loc -> patt -> exp -> exp -> exp
+val map : loc -> pat -> exp -> exp -> exp
 
-val filter : loc -> patt -> exp -> exp -> exp
+val filter : loc -> pat -> exp -> exp -> exp
 
 val concat : loc -> exp -> exp
 
 val compr :
   loc ->
   exp ->
-  [> `cond of exp | `gen of patt * exp ] list -> exp
+  [> `cond of exp | `gen of pat * exp ] list -> exp
 
-val bad_patt : FanLoc.t -> 'a
+val bad_pat : FanLoc.t -> 'a
 
-val substp : loc -> (string * patt) list -> exp -> patt
+val substp : loc -> (string * pat) list -> exp -> pat
 
 class subst: loc -> (string * exp) list -> Objs.map
 
@@ -41,9 +41,9 @@ end
 
 val capture_antiquot: antiquot_filter
 
-val filter_patt_with_captured_variables:  patt -> patt * (exp * exp) list
+val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list
 
-val fun_args : loc -> patt list -> exp -> exp
+val fun_args : loc -> pat list -> exp -> exp
 
 
 (* val mkumin : loc -> string -> exp -> exp *)
@@ -51,7 +51,7 @@ val fun_args : loc -> patt list -> exp -> exp
 val mk_record : (string * exp) list -> exp
 val failure : exp
 val ( <+ ) : string list -> exp -> exp
-val ( <+< ) : patt list -> exp -> exp
+val ( <+< ) : pat list -> exp -> exp
 val mee_comma : exp -> exp -> exp
 val mee_app : exp -> exp -> exp
 val vee_of_str : string -> exp

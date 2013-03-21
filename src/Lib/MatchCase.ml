@@ -11,10 +11,10 @@ open Basic;
  *)
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   (* let annot = Ctyp.mk_dest_type *)
-  let args : list patt =
+  let args : list pat =
     List.init arity (fun i ->
        (* `Alias (_loc, (`PaTyp (_loc, name)), (xid ~off:i 0 (\* :> ident *\)))) (\* FIXME *\) *)
-      {:patt| (#$id:name as $(lid: x ~off:i 0 )) |})in
+      {:pat| (#$id:name as $(lid: x ~off:i 0 )) |})in
   let exps = List.init arity (fun i -> {:exp| $(id:xid ~off:i 0) |} ) in
   let e = appl_of_list [e:: exps] in 
   let pat = args |>tuple_com in
@@ -29,7 +29,7 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
  
 
 
-(* {:patt| (#$id:x as y)|} *)
+(* {:pat| (#$id:x as y)|} *)
 
 
 

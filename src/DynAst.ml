@@ -3,7 +3,7 @@ open Ast;
 (* {:ocaml| *)
 type 'a tag  =
  [ Ctyp
- | Patt
+ | Pat
  | Expr
  | Module_type
  | Sig_item
@@ -22,7 +22,7 @@ type 'a tag  =
 (* |}; *)
 let string_of_tag = fun
  [ Ctyp -> "ctyp"
- | Patt -> "patt"
+ | Pat -> "pat"
  | Expr -> "exp"
  | Module_type -> "module_type"
  | Sig_item -> "sig_item"
@@ -40,7 +40,7 @@ let string_of_tag = fun
  | Module_binding -> "module_binding" ];
   
 let ctyp_tag : tag ctyp = Ctyp;
-let patt_tag : tag patt = Patt;
+let pat_tag : tag pat = Pat;
 let exp_tag : tag exp = Expr;
 let module_type_tag : tag module_type = Module_type;
 let sig_item_tag : tag sig_item = Sig_item;

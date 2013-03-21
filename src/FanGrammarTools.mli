@@ -15,9 +15,9 @@ val mk_level :
 val mk_rule :
   prod:symbol list -> action:exp option -> rule
 val mk_symbol :
-  ?pattern:patt option ->
+  ?pattern:pat option ->
   text:text -> styp:styp -> symbol
-val string_of_patt : patt -> string
+val string_of_pat : pat -> string
 
 val check_not_tok : symbol -> unit
     
@@ -61,7 +61,7 @@ val text_of_functorial_extend :
 val mk_tok :
   loc ->
   ?restrict:exp ->
-  pattern:patt -> styp -> symbol
+  pattern:pat -> styp -> symbol
 val sfold :
   ?sep:symbol ->
   loc ->

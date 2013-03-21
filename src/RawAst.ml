@@ -12,7 +12,7 @@
 
     == Core language ==
     ctyp               :: Representaion of types
-    patt               :: The type of patterns
+    pat               :: The type of patterns
     exp               :: The type of expessions
     case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
@@ -210,35 +210,35 @@ and of_ctyp =
   | ant
   | nil]
          
-and patt =
+and pat =
   [= nil
   | sid
-  | `App of (loc * patt * patt)
+  | `App of (loc * pat * pat)
   | `Vrn of (loc * string)
-  | `Com of (loc * patt * patt)
-  | `Sem of (loc * patt * patt)
-  | `Tup of (loc * patt )
+  | `Com of (loc * pat * pat)
+  | `Sem of (loc * pat * pat)
+  | `Tup of (loc * pat )
   | any
-  | `Record of (loc * rec_patt)
+  | `Record of (loc * rec_pat)
   | ant
   | literal
       
-  | `Alias of (loc * patt * alident)  (* (Node x y as n) *)
-  | `Array of (loc * patt) (* [| p |] *)
-  | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
+  | `Alias of (loc * pat * alident)  (* (Node x y as n) *)
+  | `Array of (loc * pat) (* [| p |] *)
+  | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
-  | `PaOlbi of (loc * alident * patt * meta_option exp)
-  | `Or of (loc * patt * patt) (* p | p *)
-  | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
-  | `Constraint of (loc * patt * ctyp) (* (p : t) *)
+  | `PaOlbi of (loc * alident * pat * meta_option exp)
+  | `Or of (loc * pat * pat) (* p | p *)
+  | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
+  | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
-  | `Lazy of (loc * patt) (* lazy p *)
+  | `Lazy of (loc * pat) (* lazy p *)
         (* (module M : ty ) *)      
   | `ModuleUnpack of (loc * auident * meta_option ctyp)]
-and rec_patt =
+and rec_pat =
   [= nil
-  | `RecBind of (loc * ident * patt)
-  | `Sem of (loc  * rec_patt * rec_patt)
+  | `RecBind of (loc * ident * pat)
+  | `Sem of (loc  * rec_pat * rec_pat)
   | any
   | ant]  
 and exp =
@@ -277,7 +277,7 @@ and exp =
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * patt * cstru)
+  | `Obj of (loc * pat * cstru)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * exp)
         (* {< rb >} *)
@@ -308,7 +308,7 @@ and rec_exp =
   | `Sem of (loc * rec_exp * rec_exp)
         (* i = e *)
   | `RecBind  of (loc * ident * exp)
-  | any (* Faked here to be symmertric to rec_patt *)
+  | any (* Faked here to be symmertric to rec_pat *)
   | ant (* $s$ *) ]
 and module_type =
   [= nil
@@ -372,8 +372,8 @@ and with_constr =
 and binding =
   [= nil
   | `And of (loc * binding * binding)
-        (* p = e *) (* let patt = exp *)
-  | `Bind  of (loc * patt * exp)
+        (* p = e *) (* let pat = exp *)
+  | `Bind  of (loc * pat * exp)
   | ant  ]
 and module_binding =
   [= nil
@@ -388,8 +388,8 @@ and case =
   [= nil
   | `Or of (loc * case * case)
         (* p (when e)? -> e *)
-  | `Case of (loc * patt * exp * exp)
-     (* | `Caseow of loc and patt and option exp and exp (\* FIXME *\) *)
+  | `Case of (loc * pat * exp * exp)
+     (* | `Caseow of loc and pat and option exp and exp (\* FIXME *\) *)
   | ant  ]
 and module_exp =
   [= nil
@@ -476,11 +476,11 @@ and class_exp =
       (* (virtual)? i ([ t ])? *)
   | `CeCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
       (* fun p -> ce *)
-  | `CeFun of (loc * patt * class_exp)
+  | `CeFun of (loc * pat * class_exp)
         (* let (rec)? bi in ce *)
   | `CeLet of (loc * rec_flag * binding * class_exp)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * patt * cstru)
+  | `Obj of (loc * pat * cstru)
         (* ce : ct *)
   | `CeTyc of (loc * class_exp * class_type)
         (* ce and ce *)
@@ -510,8 +510,8 @@ and cstru =
 
 
 
-(* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
-   Faked here to make a common subtyp of exp patt to be expessive enough *)
+(* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
+   Faked here to make a common subtyp of exp pat to be expessive enough *)
 type ep =
   [= nil
   | sid

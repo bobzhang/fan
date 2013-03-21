@@ -1,9 +1,9 @@
 open AstLoc
 open Lib
 type spat_comp =  
-  | SpTrm of FanLoc.t* patt* exp option
-  | SpNtr of FanLoc.t* patt* exp
-  | SpStr of FanLoc.t* patt 
+  | SpTrm of FanLoc.t* pat* exp option
+  | SpNtr of FanLoc.t* pat* exp
+  | SpStr of FanLoc.t* pat 
 type sexp_comp =  
   | SeTrm of FanLoc.t* exp
   | SeNtr of FanLoc.t* exp 

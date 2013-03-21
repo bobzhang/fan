@@ -1,7 +1,7 @@
 open Ast
 type 'a tag =  
   | Ctyp
-  | Patt
+  | Pat
   | Expr
   | Module_type
   | Sig_item
@@ -20,7 +20,7 @@ type 'a tag =
 let string_of_tag =
   function
   | Ctyp  -> "ctyp"
-  | Patt  -> "patt"
+  | Pat  -> "pat"
   | Expr  -> "exp"
   | Module_type  -> "module_type"
   | Sig_item  -> "sig_item"
@@ -37,7 +37,7 @@ let string_of_tag =
   | Rec_exp  -> "rec_exp"
   | Module_binding  -> "module_binding"
 let ctyp_tag: ctyp tag = Ctyp
-let patt_tag: patt tag = Patt
+let pat_tag: pat tag = Pat
 let exp_tag: exp tag = Expr
 let module_type_tag: module_type tag = Module_type
 let sig_item_tag: sig_item tag = Sig_item

@@ -59,7 +59,7 @@ and symbol ={
   styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
     
-  pattern : option patt
+  pattern : option pat
 }
 and text =
  [= `Smeta of (loc * list string * list text * exp * styp)
@@ -94,14 +94,14 @@ and text =
 (* end; *)
 type used = [ Unused | UsedScanned | UsedNotScanned ];
 
-type simple_patt =
+type simple_pat =
   [=
    `Vrn of (loc * string)
-  |`App of (loc * simple_patt * simple_patt )
+  |`App of (loc * simple_pat * simple_pat )
   |`Id of (loc * ident)
-  |`Com of (loc * simple_patt * simple_patt)
-  |`Alias of (loc * simple_patt * alident)
-  |`Or of (loc * simple_patt * simple_patt)
+  |`Com of (loc * simple_pat * simple_pat)
+  |`Alias of (loc * simple_pat * alident)
+  |`Or of (loc * simple_pat * simple_pat)
   |`Str of (loc * string)
   |`Any of loc
   | ant

@@ -64,7 +64,7 @@ val mkvalue_desc :
 
 val mkmutable : mutable_flag -> Asttypes.mutable_flag
 
-val paolab : string -> patt -> string
+val paolab : string -> pat -> string
 
 
 
@@ -81,13 +81,13 @@ val type_parameters_and_type_name :
   (string Asttypes.loc option * (bool * bool)) list
 
       
-val patt_fa :  patt list -> patt -> patt * patt list
+val pat_fa :  pat list -> pat -> pat * pat list
       
 val deep_mkrangepat : loc -> char -> char -> Parsetree.pattern
 
 val mkrangepat : loc -> char -> char -> Parsetree.pattern
 
-val patt : patt -> Parsetree.pattern
+val pat : pat -> Parsetree.pattern
 
 
 val override_flag :  loc -> override_flag -> Asttypes.override_flag
@@ -155,7 +155,7 @@ val pp : formatter -> ('a, formatter, unit) format -> 'a
 val print_exp : formatter -> exp -> unit
 val to_string_exp: exp -> string
     
-val print_patt : formatter -> patt -> unit
+val print_pat : formatter -> pat -> unit
 
 val print_stru : formatter -> stru -> unit
 

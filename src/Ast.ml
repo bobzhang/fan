@@ -12,7 +12,7 @@
 
     == Core language ==
     ctyp               :: Representaion of types
-    patt               :: The type of patterns
+    pat               :: The type of patterns
     exp               :: The type of expressions
     case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
@@ -247,43 +247,43 @@ and of_ctyp =
   [= `Of of (loc * sid * ctyp)
   | sid
   | ant]
-and patt =
+and pat =
   [= sid
-  | `App of (loc * patt * patt)
+  | `App of (loc * pat * pat)
   | `Vrn of (loc * string)
-  | `Com of (loc * patt * patt)
-  | `Sem of (loc * patt * patt)
-  | `Tup of (loc * patt )
+  | `Com of (loc * pat * pat)
+  | `Sem of (loc * pat * pat)
+  | `Tup of (loc * pat )
   | any
-  | `Record of (loc * rec_patt)
+  | `Record of (loc * rec_pat)
   | ant
   | literal
-  | `Alias of (loc * patt * alident)
+  | `Alias of (loc * pat * alident)
 
   | `ArrayEmpty of loc 
-  | `Array of (loc * patt) (* [| p |] *)
+  | `Array of (loc * pat) (* [| p |] *)
   | `LabelS of (loc * alident) (* ~s *)
-  | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
+  | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
 
     (* ?s or ?s:(p)   *)
-  | `OptLabl of (loc * alident * patt)
+  | `OptLabl of (loc * alident * pat)
   | `OptLablS of (loc * alident)
         
     (* ?s:(p = e) or ?(p = e) *)
-  | `OptLablExpr of (loc * alident * patt * exp)
+  | `OptLablExpr of (loc * alident * pat * exp)
         
-  | `Or of (loc * patt * patt) (* p | p *)
-  | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
-  | `Constraint of (loc * patt * ctyp) (* (p : t) *)
+  | `Or of (loc * pat * pat) (* p | p *)
+  | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
+  | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
-  | `Lazy of (loc * patt) (* lazy p *)
+  | `Lazy of (loc * pat) (* lazy p *)
     (* (module M ) *)   
   | `ModuleUnpack of (loc * auident)
     (* (module M : ty ) *)      
   | `ModuleConstraint of (loc * auident * ctyp) ]
-and rec_patt =
-  [= `RecBind of (loc * ident * patt)
-  | `Sem of (loc  * rec_patt * rec_patt)
+and rec_pat =
+  [= `RecBind of (loc * ident * pat)
+  | `Sem of (loc  * rec_pat * rec_pat)
   | any
   | ant]  
 and exp =
@@ -326,8 +326,8 @@ and exp =
 
   | `Obj of (loc * cstru)
   | `ObjEnd of loc 
-  | `ObjPat of (loc * patt * cstru)
-  | `ObjPatEnd of (loc * patt)
+  | `ObjPat of (loc * pat * cstru)
+  | `ObjPatEnd of (loc * pat)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * exp)
   | `OptLablS of (loc * alident)
@@ -352,7 +352,7 @@ and exp =
 and rec_exp =
   [= `Sem of (loc * rec_exp * rec_exp)
   | `RecBind  of (loc * ident * exp)
-  | any (* Faked here to be symmertric to rec_patt *)
+  | any (* Faked here to be symmertric to rec_pat *)
   | ant ]
 and module_type =
   [= sid
@@ -402,7 +402,7 @@ and with_constr =
    *)           
 and binding =
   [=  `And of (loc * binding * binding)
-  | `Bind  of (loc * patt * exp)
+  | `Bind  of (loc * pat * exp)
   | ant  ]
 and module_binding =
   [= 
@@ -414,8 +414,8 @@ and module_binding =
   | ant ]
 and case =
   [= `Or of (loc * case * case)
-  | `Case of (loc * patt * exp)
-  | `CaseWhen of (loc * patt * exp * exp)
+  | `Case of (loc * pat * exp)
+  | `CaseWhen of (loc * pat * exp * exp)
   | ant  ]
 and module_exp =
   [= sid
@@ -478,12 +478,12 @@ and class_exp =
   [= `CeApp of (loc * class_exp * exp)   (* ce e *)
   | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual v [t]*)
   | `ClassConS of (loc * virtual_flag * ident) (* virtual v *)
-  | `CeFun of (loc * patt * class_exp) (* fun p -> ce *)
+  | `CeFun of (loc * pat * class_exp) (* fun p -> ce *)
   | `LetIn of (loc * rec_flag * binding * class_exp) (* let (rec)? bi in ce *)
   | `Obj of (loc  * cstru) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
-  | `ObjPat of (loc * patt * cstru)(*object (p) .. end*)
-  | `ObjPatEnd of (loc * patt) (* object (p) end*)
+  | `ObjPat of (loc * pat * cstru)(*object (p) .. end*)
+  | `ObjPatEnd of (loc * pat) (* object (p) end*)
   | `Constraint of (loc * class_exp * class_type) (* ce : ct *)
   | `And of (loc * class_exp * class_exp)
   | `Eq  of (loc * class_exp * class_exp)
@@ -508,8 +508,8 @@ and cstru =
 
 
 
-(* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
-   Faked here to make a common subtyp of exp patt to be expnessive enough *)
+(* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
+   Faked here to make a common subtyp of exp pat to be expnessive enough *)
 type ep =
   [= sid
   | `App of (loc * ep * ep)

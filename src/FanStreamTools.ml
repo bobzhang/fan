@@ -13,9 +13,9 @@ open Lib;
 (* open lang "exp"; *)
 #default_quotation "exp";;
 type spat_comp =
-  [ SpTrm of FanLoc.t * patt * option exp
-  | SpNtr of FanLoc.t * patt * exp
-  | SpStr of FanLoc.t * patt ];
+  [ SpTrm of FanLoc.t * pat * option exp
+  | SpNtr of FanLoc.t * pat * exp
+  | SpStr of FanLoc.t * pat ];
 
 type sexp_comp =
   [ SeTrm of FanLoc.t * exp | SeNtr of FanLoc.t * exp ];
@@ -120,7 +120,7 @@ let stream_pattern_component skont ckont =
         else {| try $e with [ $(uid:gm()).Failure -> $ckont ] |}
       else if is_raise_failure ckont then
         {| let $p = $e in $skont |}
-      else if Expr.pattern_eq_expression {:patt| Some $p |} skont then
+      else if Expr.pattern_eq_expression {:pat| Some $p |} skont then
         {| try Some $e with [ $(uid:gm()).Failure -> $ckont ] |}
       else if is_raise ckont then
         let tst =
@@ -134,7 +134,7 @@ let stream_pattern_component skont ckont =
   | SpStr (_loc, p) ->
       try
         match p with
-        [ {:patt| $lid:v |} -> subst v skont
+        [ {:pat| $lid:v |} -> subst v skont
         | _ -> raise Not_found ]
       with
       [ Not_found -> {| let $p = $lid:strm_n in $skont |} ] ];
@@ -158,7 +158,7 @@ let stream_patterns_term _loc ekont tspel : exp =
   let pel =
     List.fold_right
       (fun (p, w, _loc, spcl, epo, e) acc ->
-        let p = {:patt| Some $p |} in
+        let p = {:pat| Some $p |} in
         let e =
           let ekont err =
             let str =
@@ -198,7 +198,7 @@ let cparser _loc bpo pc =
     match bpo with
     [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
     | None -> e ] in
-  let p = {:patt| ($lid:strm_n : $(uid:gm()).t _) |} in
+  let p = {:pat| ($lid:strm_n : $(uid:gm()).t _) |} in
   {| fun $p -> $e |} ;
 
 let cparser_match _loc me bpo pc =

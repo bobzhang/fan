@@ -79,8 +79,8 @@ module QMap =MapMake (struct type t =key ; let compare = compare; end);
   [map]  and [default] is used to help resolve default case {[ {||} ]}
 
   for example, you can register [Fan.Meta.exp] with [exp] and [stru] positions,
-  but when you call {[ with {exp:patt} ]} here, first the name of patt will be resolved
-  to be [Fan.Meta.patt], then when you parse {[ {| |} ]} in a position, because its
+  but when you call {[ with {exp:pat} ]} here, first the name of pat will be resolved
+  to be [Fan.Meta.pat], then when you parse {[ {| |} ]} in a position, because its
   name is "", so it will first turn to help from [map], then to default
   
  *)
@@ -261,11 +261,11 @@ let parse_quotation_result parse loc quot pos_tag str =
     
 (* [exp_filter] needs an coercion , we can not finish in one step
    by mexp, since 1. the type has to be relaxed not only to ep, since
-   [parse_patt] or [parse_exp] could introduce any type.
+   [parse_pat] or [parse_exp] could introduce any type.
    2. the context is a bit missing when expand the antiquotation..
-   it expands differently when in exp or patt... 
+   it expands differently when in exp or pat... 
  *)
-let add_quotation ~exp_filter ~patt_filter  ~mexp ~mpatt name entry  =
+let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
   let entry_eoi = Gram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
@@ -274,13 +274,13 @@ let add_quotation ~exp_filter ~patt_filter  ~mexp ~mpatt name entry  =
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
-  let expand_patt _loc loc_name_opt s =
+  let expand_pat _loc loc_name_opt s =
     Ref.protect FanConfig.antiquotations true begin fun _ ->
       let ast = Gram.parse_string entry_eoi ~loc:_loc s in
-      let meta_ast = mpatt _loc ast in
-      let exp_ast = patt_filter meta_ast in
+      let meta_ast = mpat _loc ast in
+      let exp_ast = pat_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name : patt -> patt =  with patt fun
+      let rec subst_first_loc name : pat -> pat =  with pat fun
         [
          `App(loc, `Vrn (_,u), (`Tup (_, `Com (_,_,rest)))) ->
          `App(loc, `Vrn(loc,u),(`Tup (loc,`Com(loc,`Id(_loc,`Lid (_loc,name)),rest))))
@@ -291,7 +291,7 @@ let add_quotation ~exp_filter ~patt_filter  ~mexp ~mpatt name entry  =
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
         |p -> p ] in
 
-      (* fun [{:patt| `a ($loc,b,c)|} -> b] *)
+      (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
           
       match loc_name_opt with
       [ None -> subst_first_loc (!FanLoc.name) exp_ast
@@ -299,7 +299,7 @@ let add_quotation ~exp_filter ~patt_filter  ~mexp ~mpatt name entry  =
       | Some name -> subst_first_loc name exp_ast ]
     end in begin
         add name DynAst.exp_tag expand_exp;
-        add name DynAst.patt_tag expand_patt;
+        add name DynAst.pat_tag expand_pat;
         add name DynAst.stru_tag expand_stru;
     end;
 
@@ -317,8 +317,8 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
   
 let of_stru = REGISTER(DynAst.stru_tag);
 let of_stru_with_filter = REGISTER_FILTER(DynAst.stru_tag);
-let of_patt  = REGISTER(DynAst.patt_tag);
-let of_patt_with_filter  = REGISTER_FILTER(DynAst.patt_tag);
+let of_pat  = REGISTER(DynAst.pat_tag);
+let of_pat_with_filter  = REGISTER_FILTER(DynAst.pat_tag);
 let of_cstru  = REGISTER(DynAst.cstru_tag);
 let of_cstru_with_filter  = REGISTER_FILTER(DynAst.cstru_tag);
 let of_case = REGISTER(DynAst.case_tag);

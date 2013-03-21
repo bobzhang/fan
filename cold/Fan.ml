@@ -43,88 +43,88 @@ let _ =
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 let _ =
   add_quotation (d, "sig_item") sig_item_quot ~mexp:(Filters.me#sig_item)
-    ~mpatt:(Filters.mp#sig_item) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#sig_item) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "stru") stru_quot ~mexp:(Filters.me#stru)
-    ~mpatt:(Filters.mp#stru) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#stru) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "ctyp") ctyp_quot ~mexp:(Filters.me#ctyp)
-    ~mpatt:(Filters.mp#ctyp) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#ctyp) ~exp_filter ~pat_filter
 let _ =
-  add_quotation (d, "patt") patt_quot ~mexp:(Filters.me#patt)
-    ~mpatt:(Filters.mp#patt) ~exp_filter ~patt_filter
+  add_quotation (d, "pat") pat_quot ~mexp:(Filters.me#pat)
+    ~mpat:(Filters.mp#pat) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "exp") exp_quot ~mexp:(Filters.me#exp)
-    ~mpatt:(Filters.mp#exp) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#exp) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "module_type") module_type_quot
-    ~mexp:(Filters.me#module_type) ~mpatt:(Filters.mp#module_type)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#module_type) ~mpat:(Filters.mp#module_type) ~exp_filter
+    ~pat_filter
 let _ =
   add_quotation (d, "module_exp") module_exp_quot
-    ~mexp:(Filters.me#module_exp) ~mpatt:(Filters.mp#module_exp) ~exp_filter
-    ~patt_filter
+    ~mexp:(Filters.me#module_exp) ~mpat:(Filters.mp#module_exp) ~exp_filter
+    ~pat_filter
 let _ =
   add_quotation (d, "class_type") class_type_quot
-    ~mexp:(Filters.me#class_type) ~mpatt:(Filters.mp#class_type) ~exp_filter
-    ~patt_filter
+    ~mexp:(Filters.me#class_type) ~mpat:(Filters.mp#class_type) ~exp_filter
+    ~pat_filter
 let _ =
   add_quotation (d, "class_exp") class_exp_quot ~mexp:(Filters.me#class_exp)
-    ~mpatt:(Filters.mp#class_exp) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#class_exp) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "class_sig_item") class_sig_item_quot
-    ~mexp:(Filters.me#class_sig_item) ~mpatt:(Filters.mp#class_sig_item)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#class_sig_item) ~mpat:(Filters.mp#class_sig_item)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "cstru") cstru_quot ~mexp:(Filters.me#cstru)
-    ~mpatt:(Filters.mp#cstru) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#cstru) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "with_constr") with_constr_quot
-    ~mexp:(Filters.me#with_constr) ~mpatt:(Filters.mp#with_constr)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#with_constr) ~mpat:(Filters.mp#with_constr) ~exp_filter
+    ~pat_filter
 let _ =
   add_quotation (d, "binding") binding_quot ~mexp:(Filters.me#binding)
-    ~mpatt:(Filters.mp#binding) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#binding) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "rec_exp") rec_exp_quot ~mexp:(Filters.me#rec_exp)
-    ~mpatt:(Filters.mp#rec_exp) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#rec_exp) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "case") case_quot ~mexp:(Filters.me#case)
-    ~mpatt:(Filters.mp#case) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#case) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "module_binding") module_binding_quot
-    ~mexp:(Filters.me#module_binding) ~mpatt:(Filters.mp#module_binding)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#module_binding) ~mpat:(Filters.mp#module_binding)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "ident") ident_quot ~mexp:(Filters.me#ident)
-    ~mpatt:(Filters.mp#ident) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#ident) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "rec_flag") rec_flag_quot ~mexp:(Filters.me#rec_flag)
-    ~mpatt:(Filters.mp#rec_flag) ~exp_filter ~patt_filter
+    ~mpat:(Filters.mp#rec_flag) ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "private_flag") private_flag_quot
-    ~mexp:(Filters.me#private_flag) ~mpatt:(Filters.mp#private_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#private_flag) ~mpat:(Filters.mp#private_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "row_var_flag") row_var_flag_quot
-    ~mexp:(Filters.me#row_var_flag) ~mpatt:(Filters.mp#row_var_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#row_var_flag) ~mpat:(Filters.mp#row_var_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "mutable_flag") mutable_flag_quot
-    ~mexp:(Filters.me#mutable_flag) ~mpatt:(Filters.mp#mutable_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#mutable_flag) ~mpat:(Filters.mp#mutable_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "virtual_flag") virtual_flag_quot
-    ~mexp:(Filters.me#virtual_flag) ~mpatt:(Filters.mp#virtual_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#virtual_flag) ~mpat:(Filters.mp#virtual_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "override_flag") override_flag_quot
-    ~mexp:(Filters.me#override_flag) ~mpatt:(Filters.mp#override_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#override_flag) ~mpat:(Filters.mp#override_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add_quotation (d, "direction_flag") direction_flag_quot
-    ~mexp:(Filters.me#direction_flag) ~mpatt:(Filters.mp#direction_flag)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#direction_flag) ~mpat:(Filters.mp#direction_flag)
+    ~exp_filter ~pat_filter
 let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))

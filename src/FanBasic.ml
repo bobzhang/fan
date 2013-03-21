@@ -50,8 +50,8 @@ let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
 let p_exp f  e =
   pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e);
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
-let p_patt f e =
-  pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e);
+let p_pat f e =
+  pp f "@[%a@]@." AstPrint.pattern (Ast2pt.pat e);
   
 let p_stru f e =
   pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e);

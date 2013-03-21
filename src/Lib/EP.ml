@@ -6,7 +6,7 @@ open Basic;
 
 (*
    A very naive lifting. It does not do any parsing at all
-   It is applied to both exp and patt
+   It is applied to both exp and pat
    {[
    of_str "`A";
    Vrn  "A" || Vrn "A"
@@ -24,7 +24,7 @@ open Basic;
 let of_str s =
   let len = String.length s in 
   if len = 0 then
-    invalid_arg "[exp|patt]_of_str len=0"
+    invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
     [ '`'->   
@@ -101,10 +101,10 @@ let gen_tuple_second ~number ~off =
    For pattern it's not very useful since it's not allowed
    to have the same name in pattern language
    {[
-   tuple_of_number <:patt< x >> 4 |> eprint;
+   tuple_of_number <:pat< x >> 4 |> eprint;
    (x, x, x, x)
 
-   tuple_of_number <:patt< x >> 1 |> eprint;
+   tuple_of_number <:pat< x >> 1 |> eprint;
    x
    ]}
  *)    
@@ -145,13 +145,13 @@ let of_vstr_number name i =
     
 (*
   {[
-    gen_tuple_n "X" 4 ~arity:2 |> opr#patt std_formatter ;
+    gen_tuple_n "X" 4 ~arity:2 |> opr#pat std_formatter ;
     (X a0 a1 a2 a3, X b0 b1 b2 b3)
 
-    gen_tuple_n "`X" 4 ~arity:2 |> opr#patt std_formatter ;
+    gen_tuple_n "`X" 4 ~arity:2 |> opr#pat std_formatter ;
    (`X a0 a1 a2 a3, `X b0 b1 b2 b3)
 
-    gen_tuplen "`X" 4 ~arity:1 |> opr#patt std_formatter ;
+    gen_tuplen "`X" 4 ~arity:1 |> opr#pat std_formatter ;
    `X a0 a1 a2 a3
   ]}
   
@@ -177,7 +177,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   Example:
    {[
   mk_record ~arity:3 (Lib.Ctyp.list_of_record {:ctyp| u:int; v:mutable float |} )
-  |> FanBasic.p_patt f;
+  |> FanBasic.p_pat f;
   ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
 
    ]}

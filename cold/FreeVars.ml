@@ -4,13 +4,13 @@ class c_fold_pattern_vars ['accu] f init =  object
   inherit FanAst.fold as super;
   val acc = init;
   method acc : 'accu = acc;
-  method! patt = fun
-  [ {:patt| $lid:s |} | {:patt| ~ $s |} | {:patt| ? $s |}
+  method! pat = fun
+  [ {:pat| $lid:s |} | {:pat| ~ $s |} | {:pat| ? $s |}
     -> {< acc = f s acc >}
-  | p -> super#patt p ];
+  | p -> super#pat p ];
 end;
 
-let fold_pattern_vars f p init = ((new c_fold_pattern_vars f init)#patt p)#acc;
+let fold_pattern_vars f p init = ((new c_fold_pattern_vars f init)#pat p)#acc;
 
 let rec fold_binding_vars f bi acc = match bi with
   [ {:binding| $bi1 and $bi2 |} ->
@@ -27,7 +27,7 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   method free = free;
   method set_env env = {< env = env >};
   method add_atom s = {< env = SSet.add s env >};
-  method add_patt p = {< env = fold_pattern_vars SSet.add p env >};
+  method add_pat p = {< env = fold_pattern_vars SSet.add p env >};
   method add_binding bi = {< env = fold_binding_vars SSet.add bi env >};
 
   method! exp = fun
@@ -46,13 +46,13 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | {:exp| $id:_ |} | {:exp| new $_ |} -> o
         
   | {:exp| object ($p) $cst end |} ->
-      ((o#add_patt p)#cstru cst)#set_env env
+      ((o#add_pat p)#cstru cst)#set_env env
         
   | e -> super#exp e ];
 
   method! case = fun
   [ {:case| $pat:p when $e1 -> $e2 |} ->
-    (((o#add_patt p)#exp e1)#exp e2)#set_env env
+    (((o#add_pat p)#exp e1)#exp e2)#set_env env
   | m -> super#case m ];
 
   method! stru = fun
@@ -66,13 +66,13 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
 
   method! class_exp = fun
   [ {:class_exp| fun $p -> $ce |} ->
-    ((o#add_patt p)#class_exp ce)#set_env env
+    ((o#add_pat p)#class_exp ce)#set_env env
   | {:class_exp| let $bi in $ce |} ->
       (((o#binding bi)#add_binding bi)#class_exp ce)#set_env env
   | {:class_exp| let rec $bi in $ce |} ->
       (((o#add_binding bi)#binding bi)#class_exp ce)#set_env env
   | {:class_exp| object ($p) $cst end |} ->
-      ((o#add_patt p)#cstru cst)#set_env env
+      ((o#add_pat p)#cstru cst)#set_env env
   | ce -> super#class_exp ce ];
 
   method! cstru = fun

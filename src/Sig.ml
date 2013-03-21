@@ -87,8 +87,8 @@ module type Syntax = sig
   (* val opt_comma_ctyp : Gram.t (\* ctyp *\) type_parameters; *)
     
   val comma_exp : Gram.t exp;
-  val comma_ipatt : Gram.t patt;
-  val comma_patt : Gram.t patt;
+  val comma_ipat : Gram.t pat;
+  val comma_pat : Gram.t pat;
   val comma_type_parameter : Gram.t (* ctyp *) type_parameters;
   val constrain : Gram.t type_constr (* (ctyp * ctyp) *);
   val constructor_arg_list : Gram.t ctyp;
@@ -100,7 +100,7 @@ module type Syntax = sig
   val direction_flag : Gram.t direction_flag;
   val direction_flag_quot : Gram.t direction_flag;
   val dummy : Gram.t unit;
-  val eq_exp : Gram.t ((* string *)alident -> patt -> patt);
+  val eq_exp : Gram.t ((* string *)alident -> pat -> pat);
   val exp : Gram.t exp;
   val exp_eoi : Gram.t exp;
   val exp_quot : Gram.t exp;
@@ -110,9 +110,9 @@ module type Syntax = sig
   val fun_def : Gram.t exp;
   val ident : Gram.t ident;
   val ident_quot : Gram.t ident;
-  val ipatt : Gram.t patt;
-  val ipatt_tcon : Gram.t patt;
-  val patt_tcon : Gram.t patt;    
+  val ipat : Gram.t pat;
+  val ipat_tcon : Gram.t pat;
+  val pat_tcon : Gram.t pat;    
   (* val label : Gram.t string; *)
   val label_declaration : Gram.t name_ctyp;
   val label_declaration_list : Gram.t name_ctyp;
@@ -120,8 +120,8 @@ module type Syntax = sig
   val label_exp_list : Gram.t rec_exp;
   val label_longident : Gram.t ident;
 
-  val label_patt : Gram.t rec_patt;
-  val label_patt_list : Gram.t rec_patt;
+  val label_pat : Gram.t rec_pat;
+  val label_pat_list : Gram.t rec_pat;
     
   val let_binding : Gram.t binding;
   val meth_list : Gram.t (name_ctyp * row_var_flag);
@@ -141,7 +141,7 @@ module type Syntax = sig
   val more_ctyp : Gram.t ctyp;
   val name_tags : Gram.t tag_names(* ctyp *);
   (* val opt_as_lident : Gram.t (\* string *\)(meta_option alident); *)
-  (* val opt_class_self_patt : Gram.t patt; *)
+  (* val opt_class_self_pat : Gram.t pat; *)
   val opt_class_self_type : Gram.t ctyp;
 
   val opt_dot_dot : Gram.t row_var_flag;
@@ -160,16 +160,16 @@ module type Syntax = sig
   val rec_flag_quot : Gram.t rec_flag;
   val opt_virtual : Gram.t virtual_flag;
   val virtual_flag_quot : Gram.t virtual_flag;
-  val patt : Gram.t patt;
-  val patt_as_patt_opt : Gram.t patt;
-  val patt_eoi : Gram.t patt;
-  val patt_quot : Gram.t patt;
+  val pat : Gram.t pat;
+  val pat_as_pat_opt : Gram.t pat;
+  val pat_eoi : Gram.t pat;
+  val pat_quot : Gram.t pat;
   (* val poly_type : Gram.t ctyp; *)
   val row_field : Gram.t row_field;
   val sem_exp : Gram.t exp;
   val sem_exp_for_list : Gram.t (exp -> exp);
-  val sem_patt : Gram.t patt;
-  val sem_patt_for_list : Gram.t (patt -> patt);
+  val sem_pat : Gram.t pat;
+  val sem_pat_for_list : Gram.t (pat -> pat);
   (* val semi : Gram.t unit; *)
   val sequence : Gram.t exp;
   val sig_item : Gram.t sig_item;
@@ -228,13 +228,13 @@ module type Syntax = sig
   val delete_rule_body: Gram.t exp;
   val dot_lstrings: Gram.t (FanToken.name);  
   val parse_exp: FanLoc.t -> string -> exp;
-    (**  generally "patt; EOI". *)
-  val parse_patt: FanLoc.t -> string -> patt;
+    (**  generally "pat; EOI". *)
+  val parse_pat: FanLoc.t -> string -> pat;
 
   val parse_ident: FanLoc.t -> string -> ident;
 
   val exp_filter: (* exp *)ep -> exp;
-  val patt_filter: (* patt *)ep -> patt;
+  val pat_filter: (* pat *)ep -> pat;
 
   val dot_namespace: Gram.t (list string);  
   module Options:sig

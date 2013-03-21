@@ -17,11 +17,11 @@ type ty_info =
   name_exp: exp;
   exp: exp;
   exp0: exp;
-  pat0: patt;
+  pat0: pat;
   id_exp: exp;
-  id_patt: patt;
+  id_pat: pat;
   id_exps: exp list;
-  id_patts: patt list;
+  id_pats: pat list;
   ty: ctyp} 
 type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
 type branch = [ `branch of (string* ctyp list)] 

@@ -71,9 +71,9 @@ let ident_of_ctyp =
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `Id (_loc,i) -> i | t -> self t
-let ident_of_patt =
+let ident_of_pat =
   let error () =
-    invalid_arg "ident_of_patt: this pattern is not an identifier" in
+    invalid_arg "ident_of_pat: this pattern is not an identifier" in
   let rec self =
     function
     | `App (_loc,p1,p2) -> `App (_loc, (self p1), (self p2))
@@ -94,25 +94,25 @@ let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
 let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
-let rec is_irrefut_patt (x : patt) =
+let rec is_irrefut_pat (x : pat) =
   match x with
   | `ArrayEmpty _loc|`LabelS (_loc,_)|`Id (_loc,`Lid (_,_)) -> true
   | `Id (_loc,`Uid (_,"()")) -> true
   | `Any _loc -> true
-  | `Alias (_loc,x,_) -> is_irrefut_patt x
+  | `Alias (_loc,x,_) -> is_irrefut_pat x
   | `Record (_loc,p) ->
       List.for_all
-        (function | `RecBind (_,_,p) -> is_irrefut_patt p | _ -> true)
+        (function | `RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
         (list_of_sem p [])
-  | `Sem (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Com (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Or (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `App (_,p1,p2) -> (is_irrefut_patt p1) && (is_irrefut_patt p2)
-  | `Constraint (_,p,_) -> is_irrefut_patt p
-  | `Tup (_,p) -> is_irrefut_patt p
+  | `Sem (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
+  | `Com (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
+  | `Or (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
+  | `App (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
+  | `Constraint (_,p,_) -> is_irrefut_pat p
+  | `Tup (_,p) -> is_irrefut_pat p
   | `OptLablS _ -> true
-  | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_patt p
-  | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_patt p
+  | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_pat p
+  | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_pat p
   | `Id (_loc,_) -> false
   | `ModuleUnpack _|`ModuleConstraint _ -> true
   | `Vrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)

@@ -19,16 +19,16 @@ let incorrect_number loc l1 l2 =
 
 
 
-let define ~exp ~patt eo x  = begin 
+let define ~exp ~pat eo x  = begin 
   match eo with
   [ Some ([], e) ->
     {:extend|Gram
         exp: Level "simple"
           [ `Uid $x -> (new FanObjs.reloc _loc)#exp e ]
-        patt: Level "simple"
+        pat: Level "simple"
           [ `Uid $x ->
             let p = Expr.substp _loc [] e
-            in (new FanObjs.reloc _loc)#patt p ] |}
+            in (new FanObjs.reloc _loc)#pat p ] |}
   | Some (sl, e) ->
       {:extend| Gram
         exp: Level "apply"
@@ -41,55 +41,55 @@ let define ~exp ~patt eo x  = begin
             (new Expr.subst _loc env)#exp e
           else
             incorrect_number _loc el sl ]
-        patt: Level "simple"
+        pat: Level "simple"
         [ `Uid $x; S{param} ->
           let pl = match param with
-            [ {:patt| ($tup:p) |} -> list_of_com p [] (* precise *)
+            [ {:pat| ($tup:p) |} -> list_of_com p [] (* precise *)
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in
             let p = Expr.substp _loc env e in
-            (new FanObjs.reloc _loc)#patt p
+            (new FanObjs.reloc _loc)#pat p
           else
             incorrect_number _loc pl sl ] |}
   | None -> () ];
   defined := [(x, eo) :: !defined]
 end;
 
-let undef ~exp ~patt x =
+let undef ~exp ~pat x =
   try
     begin
       let eo = List.assoc x !defined in
       match eo with
-        [ Some ([], _) -> {:delete| Gram exp: [`Uid $x ]  patt: [`Uid $x ] |}
-        | Some (_, _) ->  {:delete| Gram exp: [`Uid $x; S ] patt: [`Uid $x; S] |}
+        [ Some ([], _) -> {:delete| Gram exp: [`Uid $x ]  pat: [`Uid $x ] |}
+        | Some (_, _) ->  {:delete| Gram exp: [`Uid $x; S ] pat: [`Uid $x; S] |}
         | None -> () ];
         defined := List.remove x !defined;
     end
   with
     [ Not_found -> () ];
 
-let parse_def ~exp ~patt s =
+let parse_def ~exp ~pat s =
   match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
-  [ {:exp| $uid:n |} -> define ~exp ~patt None n
-  | {:exp| $uid:n = $e |} -> define ~exp ~patt (Some ([],e)) n
+  [ {:exp| $uid:n |} -> define ~exp ~pat None n
+  | {:exp| $uid:n = $e |} -> define ~exp ~pat (Some ([],e)) n
   | _ -> invalid_arg s ];
     
 
 
   
-let rec execute_macro ~exp ~patt nil cons = fun
+let rec execute_macro ~exp ~pat nil cons = fun
   [ Str i -> i
-  | Def (x, eo) -> begin  define ~exp ~patt eo x; nil  end
-  | Und x -> begin  undef ~exp ~patt x; nil  end
-  | ITE (b, l1, l2) -> execute_macro_list ~exp ~patt nil cons (if b then l1 else l2)
+  | Def (x, eo) -> begin  define ~exp ~pat eo x; nil  end
+  | Und x -> begin  undef ~exp ~pat x; nil  end
+  | ITE (b, l1, l2) -> execute_macro_list ~exp ~pat nil cons (if b then l1 else l2)
   | Lazy l -> Lazy.force l ] (* the semantics is unclear*)
 
-and execute_macro_list ~exp ~patt nil cons =  fun
+and execute_macro_list ~exp ~pat nil cons =  fun
   [ [] -> nil
   | [hd::tl] -> (* The evaluation order is important here *)
-      let il1 = execute_macro ~exp ~patt nil cons hd in
-      let il2 = execute_macro_list ~exp ~patt nil cons tl in
+      let il1 = execute_macro ~exp ~pat nil cons hd in
+      let il2 = execute_macro_list ~exp ~pat nil cons tl in
       cons il1 il2 ] ;
 
 (* Stack of conditionals. *)
@@ -103,12 +103,12 @@ let make_ITE_result st1 st2 =
 type branch = [ Then | Else ];
 
 (* Execute macro only if it belongs to the currently active branch. *)
-let execute_macro_if_active_branch ~exp ~patt _loc nil cons branch macro_def =
+let execute_macro_if_active_branch ~exp ~pat _loc nil cons branch macro_def =
   let _ = Format.eprintf "execute_macro_if_active_branch@."in
   let test = Stack.top stack in
   let item =
     if (test && branch=Then) || ((not test) && branch=Else) then begin 
-      let res = execute_macro ~exp ~patt nil cons macro_def;
+      let res = execute_macro ~exp ~pat nil cons macro_def;
       Format.eprintf "executing branch %s@." (if branch=Then then "Then" else "Else");
       res
     end

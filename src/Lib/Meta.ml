@@ -2,8 +2,8 @@
 
 (* never used before *)    
 (* module MetaLocVar : FanAst.META_LOC= struct *)
-(*   let meta_loc _loc _ = {:patt| $(lid:!FanLoc.name) |}; *)
-(*   (\* let meta_loc_patt _loc _ = {:patt| $(lid:!FanLoc.name) |}; *\) *)
+(*   let meta_loc _loc _ = {:pat| $(lid:!FanLoc.name) |}; *)
+(*   (\* let meta_loc_pat _loc _ = {:pat| $(lid:!FanLoc.name) |}; *\) *)
 (*   (\* let meta_loc_exp _loc _ = {:exp| $(lid:!FanLoc.name) |}; *\) *)
 (* end; *)
     
@@ -13,13 +13,13 @@
 
 (* module MetaLoc : FanAst.META_LOC= struct *)
 (*   (\* FIXME *\) *)
-(*   (\* let meta_loc_patt _loc _location = *\) *)
-(*   (\*   failwith  "MetaLoc.meta_loc_patt not implemented yet"  ; *\) *)
+(*   (\* let meta_loc_pat _loc _location = *\) *)
+(*   (\*   failwith  "MetaLoc.meta_loc_pat not implemented yet"  ; *\) *)
 (*     (\* let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in *\) *)
-(*     (\* {:patt| FanLoc.of_tuple *\) *)
+(*     (\* {:pat| FanLoc.of_tuple *\) *)
 (*     (\*   ($`str:a, $`int:b, $`int:c, $`int:d, *\) *)
 (*     (\*    $`int:e, $`int:f, $`int:g, *\) *)
-(*     (\*    $(if h then {:patt| true |} else {:patt| false |} )) |}; *\) *)
+(*     (\*    $(if h then {:pat| true |} else {:pat| false |} )) |}; *\) *)
 (*     (\* *)
 (*   Ast.App *)
 (*     (_loc, *)
@@ -66,9 +66,9 @@ let meta_loc _loc location =
      $(if h then {:exp| true |} else {:exp| false |} )) |};
   
 (* module MetaGhostLoc : FanAst.META_LOC= struct (\* MetaAction *\) *)
-(*   (\* let meta_loc_patt _loc _ = *\) *)
-(*   (\*   {:patt| FanLoc.ghost |}; (\\* FIXME *\\) *\) *)
-(*   (\* let meta_loc_patt _loc _ = failwith "MetaGhostLoc.meta_loc_patt not implemented"; *\) *)
+(*   (\* let meta_loc_pat _loc _ = *\) *)
+(*   (\*   {:pat| FanLoc.ghost |}; (\\* FIXME *\\) *\) *)
+(*   (\* let meta_loc_pat _loc _ = failwith "MetaGhostLoc.meta_loc_pat not implemented"; *\) *)
 (*   let meta_loc(\* _exp *\) _loc _ = {:exp| FanLoc.ghost |}; *)
 (* end; *)
 

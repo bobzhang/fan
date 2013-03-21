@@ -32,17 +32,17 @@ let apply () = begin
       class_sig_item class_sig_item_quot class_signature cstru cstru_quot
     class_structure
       class_type class_type_declaration class_type_longident class_type_longident_and_param
-    class_type_plus class_type_quot comma_ctyp comma_exp comma_ipatt comma_patt comma_type_parameter
+    class_type_plus class_type_quot comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
     constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
     cvalue_binding direction_flag dummy eq_exp exp exp_eoi exp_quot field_exp field_exp_list fun_binding
-    fun_def ident ident_quot implem interf ipatt ipatt_tcon patt_tcon label_declaration label_declaration_list
-    label_exp_list label_exp label_longident label_patt label_patt_list  let_binding meth_list
+    fun_def ident ident_quot implem interf ipat ipat_tcon pat_tcon label_declaration label_declaration_list
+    label_exp_list label_exp label_longident label_pat label_pat_list  let_binding meth_list
     meth_decl module_binding module_binding0 module_binding_quot module_declaration module_exp module_exp_quot
     module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
     more_ctyp name_tags opt_class_self_type opt_dot_dot
     opt_meth_list opt_mutable opt_private opt_rec opt_virtual 
-    patt patt_as_patt_opt patt_eoi patt_quot row_field sem_exp
-    sem_exp_for_list sem_patt sem_patt_for_list sequence sig_item sig_item_quot sig_items star_ctyp
+    pat pat_as_pat_opt pat_eoi pat_quot row_field sem_exp
+    sem_exp_for_list sem_pat sem_pat_for_list sequence sig_item sig_item_quot sig_items star_ctyp
     stru stru_quot strus top_phrase type_declaration type_ident_and_parameters
     type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
@@ -262,7 +262,7 @@ let apply () = begin
 
     with exp
     {:extend|
-      local:  fun_def_patt;
+      local:  fun_def_pat;
       exp_quot:
       [ exp{e1}; ","; comma_exp{e2} -> `Com(_loc,e1,e2)
       | exp{e1}; ";"; sem_exp{e2} -> `Sem(_loc,e1,e2)
@@ -289,7 +289,7 @@ let apply () = begin
       { RA
           [ "("; "type"; a_lident{i}; ")"; S{e} ->
             {| fun (type $i) -> $e |} 
-          | ipatt{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
+          | ipat{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
               (* {| fun $p -> $e |} *)
           | cvalue_binding{bi} -> bi  ] }
        lang:
@@ -312,17 +312,17 @@ let apply () = begin
            AstQuotation.map := SMap.add_list xys old;
            old
        end]
-       fun_def_patt:
+       fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e -> {|fun (type $i) -> $e |} 
-       | ipatt{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
-       | ipatt{p}; "when"; exp{w} -> fun e ->
+       | ipat{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
+       | ipat{p}; "when"; exp{w} -> fun e ->
            `Fun(_loc,`CaseWhen(_loc,p,w,e))
            (* {|fun $p when $w -> $e |} *) ]
        fun_def:
        {RA
-          [ fun_def_patt{f}; "->"; exp{e} ->  f e
-          | fun_def_patt{f}; S{e} -> f e] }    
+          [ fun_def_pat{f}; "->"; exp{e} ->  f e
+          | fun_def_pat{f}; S{e} -> f e] }    
        exp:
        {
         "top" RA
@@ -383,13 +383,13 @@ let apply () = begin
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
 
-        | "object"; "(";patt{p}; ")"; class_structure{cst};"end" ->
+        | "object"; "(";pat{p}; ")"; class_structure{cst};"end" ->
             `ObjPat(_loc,p,cst)
-        | "object"; "(";patt{p}; ")"; "end" ->
+        | "object"; "(";pat{p}; ")"; "end" ->
             `ObjPatEnd(_loc,p)
-        | "object"; "(";patt{p};":";ctyp{t};")";class_structure{cst};"end" ->
+        | "object"; "(";pat{p};":";ctyp{t};")";class_structure{cst};"end" ->
             `ObjPat(_loc,`Constraint(_loc,p,t),cst)
-        | "object"; "(";patt{p};":";ctyp{t};")";"end" ->
+        | "object"; "(";pat{p};":";ctyp{t};")";"end" ->
             `ObjPatEnd(_loc,`Constraint(_loc,p,t))
         | "object"; class_structure{cst};"end"->
             `Obj(_loc,cst)
@@ -511,24 +511,24 @@ let apply () = begin
         [ `Ant (("binding"|"list" as n),s) ->
           {| $(anti:mk_anti ~c:"binding" n s) |}
         | `Ant ((""|"anti" as n),s); "="; exp{e} ->
-            {| $(anti:mk_anti ~c:"patt" n s) = $e |}
+            {| $(anti:mk_anti ~c:"pat" n s) = $e |}
         | `Ant ((""|"anti" as n),s) -> {| $(anti:mk_anti ~c:"binding" n s) |}
         | S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
         | let_binding{b} -> b ] 
         let_binding:
-        [ patt{p}; fun_binding{e} -> {| $p = $e |} ] |};
+        [ pat{p}; fun_binding{e} -> {| $p = $e |} ] |};
 
   with case
     {:extend|
       case:
       [ "["; L1 case0 SEP "|"{l}; "]" -> or_of_list l (* {|  $list:l  |} *) (* FIXME *)
-      | patt{p}; "->"; exp{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
+      | pat{p}; "->"; exp{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
         `Ant (_loc, (mk_anti ~c:"case" n s))
-      | patt_as_patt_opt{p}; "when"; exp{w};  "->"; exp{e} ->
+      | pat_as_pat_opt{p}; "when"; exp{w};  "->"; exp{e} ->
            `CaseWhen (_loc, p, w, e)
-      | patt_as_patt_opt{p}; "->";exp{e} -> `Case(_loc,p,e)]
+      | pat_as_pat_opt{p}; "->";exp{e} -> `Case(_loc,p,e)]
       case_quot:
       [ L1 case0 SEP "|"{x} -> or_of_list x]  |};
   with rec_exp
@@ -553,39 +553,39 @@ let apply () = begin
         [ field_exp{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
         | field_exp{b1}; ";"            -> b1
         | field_exp{b1}                 -> b1  ] |};
-  with patt
-    {:extend| local: patt_constr;
-       patt_quot:
-       [ patt{x}; ","; comma_patt{y} -> `Com(_loc,x,y)
-       | patt{x}; ";"; sem_patt{y} -> `Sem(_loc,x,y)
-       | patt{x} -> x]
-       patt_as_patt_opt:
-       [ patt{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
-       | patt{p} -> p ]
-       patt_constr:
+  with pat
+    {:extend| local: pat_constr;
+       pat_quot:
+       [ pat{x}; ","; comma_pat{y} -> `Com(_loc,x,y)
+       | pat{x}; ";"; sem_pat{y} -> `Sem(_loc,x,y)
+       | pat{x} -> x]
+       pat_as_pat_opt:
+       [ pat{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
+       | pat{p} -> p ]
+       pat_constr:
        [module_longident{i} -> {| $id:i |}
 
        |"`"; luident{s}  -> {| $vrn:s|}
-       |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> {|$(anti:mk_anti ~c:"patt" n s)|} ]
-       patt:
+       |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> {|$(anti:mk_anti ~c:"pat" n s)|} ]
+       pat:
        { "|" LA
         [ S{p1}; "|"; S{p2} -> {| $p1 | $p2 |} ]
        ".." NA
         [ S{p1}; ".."; S{p2} -> {| $p1 .. $p2 |} ]
        "apply" LA
-        [ patt_constr{p1}; S{p2} ->
+        [ pat_constr{p1}; S{p2} ->
           match p2 with
             [ {| ($tup:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
                 (list_of_com p []) (* precise *)
             | _ -> {|$p1 $p2 |}  ]
-        | patt_constr{p1} -> p1
+        | pat_constr{p1} -> p1
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
         [ `Ant ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
                 |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
-          -> {| $(anti:mk_anti ~c:"patt" n s) |}
+          -> {| $(anti:mk_anti ~c:"pat" n s) |}
         | ident{i} -> {| $id:i |}
         | `INT(_,s) -> {|$int:s|}
         | `INT32(_,s) -> {|$int32:s|}
@@ -599,12 +599,12 @@ let apply () = begin
         | "-"; `NATIVEINT(_,s) -> {|$(int64:String.neg s)|}
         | "-"; `Flo(_,s) -> {|$(flo:String.neg s)|}
         | "["; "]" -> {| [] |}
-        | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" -> mk_list last
-        | "["; sem_patt_for_list{mk_list}; "]" -> mk_list {| [] |}
+        | "["; sem_pat_for_list{mk_list}; "::"; pat{last}; "]" -> mk_list last
+        | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> `ArrayEmpty(_loc)
-        | "[|"; sem_patt{pl}; "|]" -> `Array(_loc,pl)
-        | "{"; label_patt_list{pl}; "}" -> `Record(_loc,pl)
-            (* {| { $((pl : rec_patt :>patt)) } |} *)
+        | "[|"; sem_pat{pl}; "|]" -> `Array(_loc,pl)
+        | "{"; label_pat_list{pl}; "}" -> `Record(_loc,pl)
+            (* {| { $((pl : rec_pat :>pat)) } |} *)
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
@@ -617,42 +617,42 @@ let apply () = begin
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as";  a_lident{s}; ")" -> {| ($p as $s )|}
-        | "("; S{p}; ","; comma_patt{pl}; ")" -> {| ($p, $pl) |}
+        | "("; S{p}; ","; comma_pat{pl}; ")" -> {| ($p, $pl) |}
         | "`"; luident{s} -> {|$vrn:s|}
-          (* duplicated may be removed later with [patt Level "apply"] *)
+          (* duplicated may be removed later with [pat Level "apply"] *)
         | "#"; type_longident{i} -> {| # $i |}
-        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.pat_tag
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
         | "~"; a_lident{i} -> `LabelS(_loc,i)
-        | `OPTLABEL i; "("; patt_tcon{p}; "="; exp{e}; ")" ->
+        | `OPTLABEL i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)
-        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+        | `OPTLABEL i; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,`Lid(_loc,i),p)
             (* {| ? $lid:i : ($p)|} *)
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; exp{e}; ")" ->
+        | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,i,p,e)
             (* {| ?$i:($p=$e)|} *)
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
+        | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
             `OptLablExpr (_loc, i, p, (`Ant (_loc, (mk_anti n s))))
             (* {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|} *)
-        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
+        | "?"; a_lident{i}; ":"; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,i,p)
             (* {| ? $i:($p)|} *)
         | "?"; a_lident{i} -> `OptLablS(_loc,i )
-        | "?"; "("; ipatt_tcon{p}; ")" -> `OptLabl(_loc,`Lid(_loc,""),p) (* FIXME*)
+        | "?"; "("; ipat_tcon{p}; ")" -> `OptLabl(_loc,`Lid(_loc,""),p) (* FIXME*)
 
-        | "?"; "("; ipatt_tcon{p}; "="; exp{e}; ")" ->
+        | "?"; "("; ipat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
             (* {| ? ($p = $e) |}; *)
         ] }
-       ipatt:
-        [ "{"; label_patt_list{pl}; "}" ->
+       ipat:
+        [ "{"; label_pat_list{pl}; "}" ->
           {| { $pl }|}
-          (* {| { $((pl: rec_patt :>patt)) } |} *)
-        | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
+          (* {| { $((pl: rec_pat :>pat)) } |} *)
+        | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"pat" n s) |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
@@ -665,72 +665,72 @@ let apply () = begin
         | "("; S{p}; ")" -> p
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
-        | "("; S{p}; ","; comma_ipatt{pl}; ")" -> {| ($p, $pl) |}
+        | "("; S{p}; ","; comma_ipat{pl}; ")" -> {| ($p, $pl) |}
         | a_lident{s} -> {| $(id:(s:>ident)) |}
-        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag                            
+        | `QUOTATION x -> AstQuotation.expand _loc x DynAst.pat_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
         | "~"; a_lident{i} ->  `LabelS(_loc,i)
-        | `OPTLABEL i; "("; patt_tcon{p}; "="; exp{e}; ")" ->
+        | `OPTLABEL i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)
-        | `OPTLABEL i; "("; patt_tcon{p}; ")"  ->
+        | `OPTLABEL i; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,`Lid(_loc,i),p)
             (* {| ? $lid:i : ($p)|} *)
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; exp{e}; ")" ->
+        | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,i,p,e)
             (* {| ?$i:($p=$e)|} *)
-        | "?"; a_lident{i};":"; "("; patt_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
+        | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; `Ant(("opt" as n),s); ")" ->
             `OptLablExpr (_loc, i, p, (`Ant (_loc, (mk_anti n s))))
             (* {| ?$i : ($p = $(opt: `Ant(_loc, mk_anti n s )) )|} *)
-        | "?"; a_lident{i}; ":"; "("; patt_tcon{p}; ")"  ->
+        | "?"; a_lident{i}; ":"; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,i,p)
             (* {| ? $i:($p)|} *)
         | "?"; a_lident{i} -> `OptLablS(_loc,i ) 
-        | "?"; "("; ipatt_tcon{p}; ")" ->
+        | "?"; "("; ipat_tcon{p}; ")" ->
             `OptLabl(_loc,`Lid(_loc,""),p)
             (* {| ? ($p) |} *)
-        | "?"; "("; ipatt_tcon{p}; "="; exp{e}; ")" ->
+        | "?"; "("; ipat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
             (* {| ? ($p = $e) |} *)
    ]
-       sem_patt:
-       [`Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
-       | patt{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)
-       | patt{p}; ";" -> p
-       | patt{p} -> p ] 
-       sem_patt_for_list:
-       [ patt{p}; ";"; S{pl} -> fun acc -> {| [ $p :: $(pl acc) ] |}
-       | patt{p}; ";" -> fun acc -> {| [ $p :: $acc ] |}
-       | patt{p} -> fun acc -> {| [ $p :: $acc ] |}  ]
-       patt_tcon:
-       [ patt{p}; ":"; ctyp{t} -> {| ($p : $t) |}
-       | patt{p} -> p ]
-       ipatt_tcon:
-       [ `Ant((""|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s ) |}
+       sem_pat:
+       [`Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"pat;" n s) |}
+       | pat{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)
+       | pat{p}; ";" -> p
+       | pat{p} -> p ] 
+       sem_pat_for_list:
+       [ pat{p}; ";"; S{pl} -> fun acc -> {| [ $p :: $(pl acc) ] |}
+       | pat{p}; ";" -> fun acc -> {| [ $p :: $acc ] |}
+       | pat{p} -> fun acc -> {| [ $p :: $acc ] |}  ]
+       pat_tcon:
+       [ pat{p}; ":"; ctyp{t} -> {| ($p : $t) |}
+       | pat{p} -> p ]
+       ipat_tcon:
+       [ `Ant((""|"anti" as n),s) -> {| $(anti:mk_anti ~c:"pat" n s ) |}
        | a_lident{i} -> {|$(id:(i:>ident))|}
        | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}]
-       comma_ipatt:
+       comma_ipat:
        [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
-       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt," n s) |}
-       | ipatt{p} -> p ]
-       comma_patt:
+       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"pat," n s) |}
+       | ipat{p} -> p ]
+       comma_pat:
        [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
-       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt," n s) |}
-       | patt{p} -> p ]
-       label_patt_list:
-       [ label_patt{p1}; ";"; S{p2} -> {| $p1 ; $p2 |}
-       | label_patt{p1}; ";"; "_"       -> {| $p1 ; _ |}
-       | label_patt{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |}
-       | label_patt{p1}; ";"            -> p1
-       | label_patt{p1}                 -> p1   ] 
-       label_patt:
-       [ `Ant ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"patt" n s) |}
-       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.patt_tag
+       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"pat," n s) |}
+       | pat{p} -> p ]
+       label_pat_list:
+       [ label_pat{p1}; ";"; S{p2} -> {| $p1 ; $p2 |}
+       | label_pat{p1}; ";"; "_"       -> {| $p1 ; _ |}
+       | label_pat{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |}
+       | label_pat{p1}; ";"            -> p1
+       | label_pat{p1}                 -> p1   ] 
+       label_pat:
+       [ `Ant ((""|"pat"|"anti" as n),s) -> {| $(anti:mk_anti ~c:"pat" n s) |}
+       (* | `QUOTATION x -> AstQuotation.expand _loc x DynAst.pat_tag
         *) (* FIXME restore it later *)
-       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"patt;" n s) |}
-       | label_longident{i}; "="; patt{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
+       | `Ant (("list" as n),s) -> {| $(anti:mk_anti ~c:"pat;" n s) |}
+       | label_longident{i}; "="; pat{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
        | label_longident{i} ->
            `RecBind(_loc,i,`Id(_loc,`Lid(_loc,FanOps.to_lid i)))
            (* {| $i = $(lid:Ident.to_lid i) |} *)
@@ -917,7 +917,7 @@ let apply () = begin
       virtual_flag_quot: [  opt_virtual{x} -> x ] 
       row_var_flag_quot: [  opt_dot_dot{x} -> x ] 
       override_flag_quot:[  opt_override{x} -> x ] 
-      patt_eoi:  [ patt{x}; `EOI -> x ] 
+      pat_eoi:  [ pat{x}; `EOI -> x ] 
       exp_eoi:  [ exp{x}; `EOI -> x ]  |};
   with stru
     {:extend|
@@ -1079,17 +1079,17 @@ let apply () = begin
       class_fun_binding:
       [ "="; class_exp{ce} -> ce
       | ":"; class_type_plus{ct}; "="; class_exp{ce} -> `Constraint(_loc,ce,ct)
-      | ipatt{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
+      | ipat{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
       class_info_for_class_exp:
       [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
         `ClassCon(_loc,mv,(i:>ident),x)
       | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv, (i:>ident))]
       class_fun_def:
-      [ ipatt{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_exp{ce} -> ce ]
+      [ ipat{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_exp{ce} -> ce ]
       class_exp:
       { "top"
-          [ "fun"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
-          | "function"; ipatt{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
+          [ "fun"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
+          | "function"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
           | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
         "apply" NA
           [ S{ce}; exp Level "label"{e} -> {| $ce $e |} ]
@@ -1098,13 +1098,13 @@ let apply () = begin
           | `QUOTATION x -> AstQuotation.expand _loc x DynAst.class_exp_tag
           | class_longident_and_param{ce} -> ce
 
-          | "object"; "("; patt{p}; ")" ; class_structure{cst};"end" ->
+          | "object"; "("; pat{p}; ")" ; class_structure{cst};"end" ->
               `ObjPat(_loc,p,cst)
-          | "object"; "("; patt{p}; ")" ;"end" ->
+          | "object"; "("; pat{p}; ")" ;"end" ->
               `ObjPatEnd(_loc,p)
-          | "object";"("; patt{p};":";ctyp{t};")"; class_structure{cst};"end" ->
+          | "object";"("; pat{p};":";ctyp{t};")"; class_structure{cst};"end" ->
               `ObjPat(_loc,`Constraint(_loc,p,t),cst)
-          | "object";"("; patt{p};":";ctyp{t};")"; "end" ->
+          | "object";"("; pat{p};":";ctyp{t};")"; "end" ->
               `ObjPatEnd(_loc,`Constraint(_loc,p,t))
           | "object"; class_structure{cst};"end" -> `Obj(_loc,cst)
           | "object";"end" -> `ObjEnd(_loc)

@@ -28,8 +28,8 @@ let gen_stru
           `Last (fun s -> {:ident| $uid:m.$(lid:basic_transform id s) |} ) ] ;
       let trail (_,number)=
         if number > 1 then
-          let patt = EP.tuple_of_number {:patt| _ |} arity in 
-          Some {:case| $pat:patt -> $trail |}
+          let pat = EP.tuple_of_number {:pat| _ |} arity in 
+          Some {:case| $pat:pat -> $trail |}
         else (* {:case| |} *) None ;
       let names = names ;
       let mk_record = mk_record ;
@@ -72,8 +72,8 @@ let gen_object
        `Obj (basic_transform left_type_id) ;
      let trail (_,number)=
        if number > 1 then
-         let patt = EP.tuple_of_number {:patt| _ |} arity in 
-         Some {:case| $pat:patt -> $trail |}
+         let pat = EP.tuple_of_number {:pat| _ |} arity in 
+         Some {:case| $pat:pat -> $trail |}
        else None in
     Frame.(obj_of_module_types
              ?cons_transform
