@@ -13,12 +13,12 @@ let rec signature_item (x : Types.signature_item) =
 and type_declaration id
   { type_params; type_kind; type_private; type_manifest;_} =
   (let name = Ident.name id in
-   let params = List.map type_expr type_params in
+   let params = List.map type_exp type_params in
    let private_flag =
      match type_private with
      | Asttypes.Private  -> `Private _loc
      | Asttypes.Public  -> `PrNil _loc in
-   let manifest = Option.map type_expr type_manifest in
+   let manifest = Option.map type_exp type_manifest in
    match (type_kind, manifest) with
    | (Type_abstract ,None ) ->
        `TyAbstr (_loc, (`Lid (_loc, name)), params, [])
@@ -47,7 +47,7 @@ and type_declaration id
          (_loc, (`Lid (_loc, name)), params,
            (`TyRepr (_loc, private_flag, (`Sum (_loc, (type_sum xs))))), []) : 
   typedecl )
-and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_expr) list) =
+and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_exp) list) =
   (sem_of_list &
      (List.map
         (fun (i,m,e)  ->
@@ -55,12 +55,11 @@ and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_expr) list) =
            match m with
            | Asttypes.Mutable  ->
                `TyColMut
-                 (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_expr e))
+                 (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_exp e))
            | Asttypes.Immutable  ->
-               `TyCol
-                 (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_expr e))) xs) : 
-  name_ctyp )
-and type_sum (xs : (Ident.t* type_expr list* type_expr option) list) =
+               `TyCol (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_exp e)))
+        xs) : name_ctyp )
+and type_sum (xs : (Ident.t* type_exp list* type_exp option) list) =
   (or_of_list &
      (List.map
         (function
@@ -69,10 +68,9 @@ and type_sum (xs : (Ident.t* type_expr list* type_expr option) list) =
              (match xs with
               | [] -> `Id (_loc, (`Lid (_loc, name)))
               | x::[] ->
-                  `Of
-                    (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_expr x))
+                  `Of (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_exp x))
               | _ ->
-                  let tys = sta_of_list & (List.map type_expr xs) in
+                  let tys = sta_of_list & (List.map type_exp xs) in
                   `Of (_loc, (`Id (_loc, (`Lid (_loc, name)))), tys))
          | (_i,_xs,Some _x) ->
              failwithf "type_sum  for gadt not supported yet") xs) : 
@@ -82,19 +80,19 @@ and id_path (p : Path.t) =
    | Path.Pident x -> `Lid (_loc, (Ident.name x))
    | Path.Pdot (a,x,_depth) -> `Dot (_loc, (id_path a), (`Lid (_loc, x)))
    | Path.Papply (a,b) -> `App (_loc, (id_path a), (id_path b)) : ident )
-and type_expr ({ desc;_} : Types.type_expr) =
+and type_exp ({ desc;_} : Types.type_exp) =
   (match desc with
    | Tvar opt|Tunivar opt ->
        (match opt with
         | Some x -> `Quote (_loc, (`Normal _loc), (`Lid (_loc, x)))
         | None  -> `QuoteAny (_loc, (`Normal _loc)))
-   | Ttuple ls -> tup & (sta_of_list & (List.map type_expr ls))
+   | Ttuple ls -> tup & (sta_of_list & (List.map type_exp ls))
    | Tconstr (path,ls,_ref) ->
        (match ls with
         | [] -> `Id (_loc, (id_path path))
         | _ ->
             appl_of_list ((`Id (_loc, (id_path path))) ::
-              (List.map type_expr ls)))
+              (List.map type_exp ls)))
    | Tvariant _|Tpoly _|Tpackage _|Tlink _|Tfield _|Tnil |Tsubst _|Tobject _
      |Tarrow _ as x -> raise & (CtypNotSupport x) : ctyp )
 let signature (sg : Types.signature) = List.map signature_item sg

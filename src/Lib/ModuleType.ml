@@ -18,12 +18,12 @@ let app  mt1 mt2 =
    Here we need define [module_type_app], since
    {[
      |	App of loc * ident* ident
-     |	App of loc * expr * expr
+     |	App of loc * exp * exp
    ]}
-   but for module_expr
+   but for module_exp
    {[
      |	Id of loc * ident
-   |	App of loc * module_expr * module_expr
+   |	App of loc * module_exp * module_exp
    ]}
    since we require that for module_type_app operation, only
    Id can be used as app operation.

@@ -5,9 +5,9 @@ open Lib.Meta;
 
 let meta_loc_exp _loc loc =
   match !AstQuotation.current_loc_name with
-  [ None -> {:expr| $(lid:!FanLoc.name) |}
+  [ None -> {:exp| $(lid:!FanLoc.name) |}
   | Some "here" -> meta_loc _loc loc
-  | Some x -> {:expr| $lid:x |} ];;
+  | Some x -> {:exp| $lid:x |} ];;
 
 
 let meta_loc_patt _loc _ =  {:patt| _ |}; (* we use [subst_first_loc] *)
@@ -40,19 +40,19 @@ let ant_patt  ~parse_patt (x:ant) k = with patt
       |("nativeint",_,_) -> Some {|`NativeInt ($(mloc _loc),$e)|}
       |("chr",_,_) -> Some {|`Chr($(mloc _loc),$e)|}
       |("str",_,_) -> Some {|`Str($(mloc _loc),$e)|}
-      |("vrn","expr",_) -> Some {|`Vrn($(mloc _loc),$e)|}
+      |("vrn","exp",_) -> Some {|`Vrn($(mloc _loc),$e)|}
       |("vrn","patt",_) -> Some {|`Vrn($(mloc _loc),$e)|}
       | _ -> None ] ];
-let ant_expr ~parse_expr (x:ant) =  with expr 
+let ant_exp ~parse_exp (x:ant) =  with exp 
   match x with 
   [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
-    let mloc _loc = (meta_loc_exp _loc _loc :> expr) in
-      let e = parse_expr _loc code in
+    let mloc _loc = (meta_loc_exp _loc _loc :> exp) in
+      let e = parse_exp _loc code in
       match (decorations,cxt,sep) with
       [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
       | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
-      | ("vrn","expr",_) -> {|`Vrn($(mloc _loc),$e)|}
+      | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
       | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
@@ -87,7 +87,7 @@ let ant_expr ~parse_expr (x:ant) =  with expr
       | ("`bool",_,_) ->
           let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
           {| {| $(id:$x)  |} |}
-      | ("list","module_expr",_) ->
+      | ("list","module_exp",_) ->
           {| $(uid:gm()).app_of_list $e |}
       | ("list","module_type",_) ->
           {| $(uid:gm()).mtApp_of_list $e |}
@@ -96,7 +96,7 @@ let ant_expr ~parse_expr (x:ant) =  with expr
       | ("list",
          ("binding"|"module_binding"|
           "with_constr"|"class_type"|
-          "class_expr"|"ctypand"),_) ->
+          "class_exp"|"ctypand"),_) ->
             {| $(uid:gm()).and_of_list $e |}
       |("list","ctyp*",_) ->
           {| $(uid:gm()).sta_of_list $e |}
@@ -112,18 +112,18 @@ let ant_expr ~parse_expr (x:ant) =  with expr
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->
           {| $(uid:gm()).match_pre#case $e |}
-      |("list",("ctyp,"|"patt,"|"expr,"),_) ->
+      |("list",("ctyp,"|"patt,"|"exp,"),_) ->
           {| $(uid:gm()).com_of_list $e |}
       |("list",
         ("binding;"|"stru"
       |"sig_item"|"class_sig_item"
-            |"cstru"|"rec_expr"
-            |"ctyp;"|"patt;"|"expr;"),_) ->
+            |"cstru"|"rec_exp"
+            |"ctyp;"|"patt;"|"exp;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |} ]];
 *)
 
   
-let antiquot_expander ~parse_patt ~parse_expr = object
+let antiquot_expander ~parse_patt ~parse_exp = object
   inherit Objs.map as super;
   method! patt (x:patt)= with patt
     match x with 
@@ -147,20 +147,20 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       |("nativeint",_,_) -> {|`NativeInt ($(mloc _loc),$e)|}
       |("chr",_,_) -> {|`Chr($(mloc _loc),$e)|}
       |("str",_,_) -> {|`Str($(mloc _loc),$e)|}
-      |("vrn","expr",_) -> {|`Vrn($(mloc _loc),$e)|}
+      |("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
       |("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
     | _ -> super#patt e ]
  | e -> super#patt e];
-  method! expr (x:expr) = with expr
+  method! exp (x:exp) = with exp
     match x with 
     [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
-      let mloc _loc = (meta_loc_exp _loc _loc :> expr) in
-      let e = parse_expr _loc code in
+      let mloc _loc = (meta_loc_exp _loc _loc :> exp) in
+      let e = parse_exp _loc code in
       match (decorations,cxt,sep) with
       [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
       | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
-      | ("vrn","expr",_) -> {|`Vrn($(mloc _loc),$e)|}
+      | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("vrn","patt",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("lid",_,_) -> {|`Lid($(mloc _loc),$e)|}
       | ("uid",_,_) -> {|`Uid($(mloc _loc),$e)|}
@@ -195,7 +195,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       | ("`bool",_,_) ->
           let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
           {| {| $(id:$x)  |} |}
-      | ("list","module_expr",_) ->
+      | ("list","module_exp",_) ->
           {| $(uid:gm()).app_of_list $e |}
       | ("list","module_type",_) ->
           {| $(uid:gm()).mtApp_of_list $e |}
@@ -204,7 +204,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       | ("list",
          ("binding"|"module_binding"|
           "with_constr"|"class_type"|
-          "class_expr"|"ctypand"),_) ->
+          "class_exp"|"ctypand"),_) ->
             {| $(uid:gm()).and_of_list $e |}
       |("list","ctyp*",_) ->
           {| $(uid:gm()).sta_of_list $e |}
@@ -220,16 +220,16 @@ let antiquot_expander ~parse_patt ~parse_expr = object
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->
           {| $(uid:gm()).match_pre#case $e |}
-      |("list",("ctyp,"|"patt,"|"expr,"),_) ->
+      |("list",("ctyp,"|"patt,"|"exp,"),_) ->
           {| $(uid:gm()).com_of_list $e |}
       |("list",
         ("binding;"|"stru"
       |"sig_item"|"class_sig_item"
-            |"cstru"|"rec_expr"
-            |"ctyp;"|"patt;"|"expr;"),_) ->
+            |"cstru"|"rec_exp"
+            |"ctyp;"|"patt;"|"exp;"),_) ->
                 {| $(uid:gm()).sem_of_list $e |}
-      | _ -> super#expr e]
-      | e -> super#expr e];
+      | _ -> super#exp e]
+      | e -> super#exp e];
   end;
                   
 

@@ -13,24 +13,24 @@
     == Core language ==
     ctyp               :: Representaion of types
     patt               :: The type of patterns
-    expr               :: The type of expressions
+    exp               :: The type of expessions
     case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
     binding            :: The type of let bindings
-    rec_expr        :: The type of record definitions
+    rec_exp        :: The type of record definitions
 
     == Modules ==
     module_type        :: The type of module types
     sig_item           :: The type of signature items
     stru           :: The type of structure items
-    module_expr        :: The type of module expressions
+    module_exp        :: The type of module expessions
     module_binding     :: The type of recursive module definitions
     with_constr        :: The type of `with' constraints
 
     == Classes ==
     class_type         :: The type of class types
     class_sig_item     :: The type of class signature items
-    class_expr         :: The type of class expressions
+    class_exp         :: The type of class expessions
     cstru     :: The type of class structure items
  *)
 
@@ -227,7 +227,7 @@ and patt =
   | `Array of (loc * patt) (* [| p |] *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
-  | `PaOlbi of (loc * alident * patt * meta_option expr)
+  | `PaOlbi of (loc * alident * patt * meta_option exp)
   | `Or of (loc * patt * patt) (* p | p *)
   | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
   | `Constraint of (loc * patt * ctyp) (* (p : t) *)
@@ -241,73 +241,73 @@ and rec_patt =
   | `Sem of (loc  * rec_patt * rec_patt)
   | any
   | ant]  
-and expr =
+and exp =
   [= nil
   | sid
-  | `App of (loc * expr * expr)
+  | `App of (loc * exp * exp)
   | `Vrn of (loc * string)
-  | `Com of (loc * expr * expr)
-  | `Sem of (loc * expr * expr)
-  | `Tup of (loc * expr)
+  | `Com of (loc * exp * exp)
+  | `Sem of (loc * exp * exp)
+  | `Tup of (loc * exp)
   | any
-  | `Record of (loc * rec_expr)
+  | `Record of (loc * rec_exp)
   | ant 
   | literal
       (* { (e) with rb }  *)
-  | `RecordWith of (loc * rec_expr  * expr)         
-  | `Dot of (loc * expr * expr) (* e.e *)
-  | `ArrayDot of (loc * expr * expr) (* e.(e) *)
-  | `Array of (loc * expr) (* [| e |] *)
+  | `RecordWith of (loc * rec_exp  * exp)         
+  | `Dot of (loc * exp * exp) (* e.e *)
+  | `ArrayDot of (loc * exp * exp) (* e.(e) *)
+  | `Array of (loc * exp) (* [| e |] *)
   | `ExAsf of loc (* assert `False *)
-  | `ExAsr of (loc * expr) (* assert e *)
-  | `Assign of (loc * expr * expr) (* e := e *)
+  | `ExAsr of (loc * exp) (* assert e *)
+  | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
-  | `For of (loc * alident * expr * expr * direction_flag * expr)
+  | `For of (loc * alident * exp * exp * direction_flag * exp)
   | `Fun of (loc * case) (* fun [ mc ] *)
-  | `IfThenElse of (loc * expr * expr * expr) (* if e then e else e *)
-  | `IfThen of (loc * expr * expr) (* if e then e *)
-  | `Label of (loc * alident * expr) (* ~s or ~s:e *)
-  | `Lazy of (loc * expr) (* lazy e *)
+  | `IfThenElse of (loc * exp * exp * exp) (* if e then e else e *)
+  | `IfThen of (loc * exp * exp) (* if e then e *)
+  | `Label of (loc * alident * exp) (* ~s or ~s:e *)
+  | `Lazy of (loc * exp) (* lazy e *)
         (* let b in e or let rec b in e *)
-  | `LetIn of (loc * rec_flag * binding * expr)
+  | `LetIn of (loc * rec_flag * binding * exp)
         (* let module s = me in e *)
-  | `LetModule of (loc * auident * module_expr * expr)
+  | `LetModule of (loc * auident * module_exp * exp)
         (* match e with [ mc ] *)
-  | `Match of (loc * expr * case)
+  | `Match of (loc * exp * case)
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
   | `Obj of (loc * patt * cstru)
         (* ?s or ?s:e *)
-  | `OptLabl of (loc *alident * expr)
+  | `OptLabl of (loc *alident * exp)
         (* {< rb >} *)
-  | `OvrInst of (loc * rec_expr)
+  | `OvrInst of (loc * rec_exp)
         (* do { e } *)
-  | `Seq of (loc * expr)
+  | `Seq of (loc * exp)
         (* e#s *)
-  | `Send of (loc * expr * alident)
+  | `Send of (loc * exp * alident)
         (* e.[e] *)
-  | `StringDot of (loc * expr * expr)
+  | `StringDot of (loc * exp * exp)
         (* try e with [ mc ] *)
-  | `Try of (loc * expr * case)
+  | `Try of (loc * exp * case)
         (* (e : t) *)
-  | (* `Constraint *) `Constraint of (loc * expr * ctyp)
-  | `Coercion of (loc * expr * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
+  | (* `Constraint *) `Constraint of (loc * exp * ctyp)
+  | `Coercion of (loc * exp * ctyp * ctyp) (* (e : t) or (e : t :> t) *)          
         (* while e do { e } *)
-  | `While of (loc * expr * expr)
+  | `While of (loc * exp * exp)
         (* let open i in e *)
-  | `LetOpen of (loc * ident * expr)
+  | `LetOpen of (loc * ident * exp)
         (* fun (type t) -> e *)
         (* let f x (type t) y z = e *)
-  | `LocalTypeFun of (loc *  alident * expr)
+  | `LocalTypeFun of (loc *  alident * exp)
         (* (module ME : S) which is represented as (module (ME : S)) *)
-  | `Package_expr of (loc * module_expr) ]
-and rec_expr =
+  | `Package_exp of (loc * module_exp) ]
+and rec_exp =
   [= nil
        (* rb ; rb *)
-  | `Sem of (loc * rec_expr * rec_expr)
+  | `Sem of (loc * rec_exp * rec_exp)
         (* i = e *)
-  | `RecBind  of (loc * ident * expr)
+  | `RecBind  of (loc * ident * exp)
   | any (* Faked here to be symmertric to rec_patt *)
   | ant (* $s$ *) ]
 and module_type =
@@ -320,7 +320,7 @@ and module_type =
         (* mt with wc *)
   | `With of (loc * module_type * with_constr)
         (* module type of m *)
-  | `ModuleTypeOf of (loc * module_expr)
+  | `ModuleTypeOf of (loc * module_exp)
   | ant  ]
 and sig_item =
   [= nil
@@ -331,7 +331,7 @@ and sig_item =
         (* sg ; sg *)
   | `Sem of (loc * sig_item * sig_item)
         (* # s or # s e *)
-  | `Directive of (loc * alident * expr) (* semantics *)
+  | `Directive of (loc * alident * exp) (* semantics *)
         (* exception t *)
   | `Exception of (loc * of_ctyp)
         (* external s : t = s ... s *)
@@ -364,23 +364,23 @@ and with_constr =
   | ant  ]
              
              (*
-    let-binding	::=	pattern =  expr  
-     value-name  { parameter }  [: typexpr] =  expr  
-    value-name : type  { typeconstr } .  typexpr =  expr
+    let-binding	::=	pattern =  exp  
+     value-name  { parameter }  [: typexp] =  exp  
+    value-name : type  { typeconstr } .  typexp =  exp
     
    *)           
 and binding =
   [= nil
   | `And of (loc * binding * binding)
-        (* p = e *) (* let patt = expr *)
-  | `Bind  of (loc * patt * expr)
+        (* p = e *) (* let patt = exp *)
+  | `Bind  of (loc * patt * exp)
   | ant  ]
 and module_binding =
   [= nil
      (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
   | `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
-  | `ModuleBind  of (loc *  auident * module_type * module_expr)
+  | `ModuleBind  of (loc *  auident * module_type * module_exp)
       (* s : mt *)
   | `Constraint  of (loc * auident * module_type)
   | ant ]
@@ -388,32 +388,32 @@ and case =
   [= nil
   | `Or of (loc * case * case)
         (* p (when e)? -> e *)
-  | `Case of (loc * patt * expr * expr)
-     (* | `Caseow of loc and patt and option expr and expr (\* FIXME *\) *)
+  | `Case of (loc * patt * exp * exp)
+     (* | `Caseow of loc and patt and option exp and exp (\* FIXME *\) *)
   | ant  ]
-and module_expr =
+and module_exp =
   [= nil
   | sid
       (* me me *)
-  | `App of (loc * module_expr * module_expr)
+  | `App of (loc * module_exp * module_exp)
         (* functor (s : mt) -> me *)
-  | `Functor of (loc * auident * module_type * module_expr)
+  | `Functor of (loc * auident * module_type * module_exp)
   | `Struct of (loc * stru)
         (* (me : mt) *)
-  | `Constraint of (loc * module_expr * module_type)
+  | `Constraint of (loc * module_exp * module_type)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
-  | `PackageModule of (loc * expr)
+  | `PackageModule of (loc * exp)
   | ant  ]
 and stru =
   [= nil
      (* class cice *)
-  | `Class of (loc * class_expr)
+  | `Class of (loc * class_exp)
         (* class type cict *)
   | `ClassType of (loc * class_type)
   | `Sem of (loc * stru * stru)
         (* # s or # s e *)
-  | `Directive of (loc * alident * expr)
+  | `Directive of (loc * alident * exp)
         (* exception t or exception t = i *)
         (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
   | `Exception of ( loc * of_ctyp)
@@ -421,13 +421,13 @@ and stru =
            http://caml.inria.fr/pub/docs/manual-ocaml/manual016.html
          *)     
         (* e *)
-  | `StExp of (loc * expr)
+  | `StExp of (loc * exp)
         (* external s : t = s ... s *)
   | `External of (loc * alident  * ctyp * meta_list string)
         (* include me *)
-  | `Include of (loc * module_expr)
+  | `Include of (loc * module_exp)
         (* module s = me *)
-  | `Module of (loc * auident * module_expr)
+  | `Module of (loc * auident * module_exp)
         (* module rec mb *)
   | `RecModule of (loc * module_binding)
         (* module type s = mt *)
@@ -469,24 +469,24 @@ and class_sig_item =
         (* method virtual (private)? s : t *)
   | `CgVir of (loc *  alident * private_flag * ctyp)
   | ant ]
-and class_expr =
+and class_exp =
   [= nil
       (* ce e *)
-  | `CeApp of (loc * class_expr * expr)
+  | `CeApp of (loc * class_exp * exp)
       (* (virtual)? i ([ t ])? *)
   | `CeCon of (loc * virtual_flag * ident * (* ctyp *) type_parameters)
       (* fun p -> ce *)
-  | `CeFun of (loc * patt * class_expr)
+  | `CeFun of (loc * patt * class_exp)
         (* let (rec)? bi in ce *)
-  | `CeLet of (loc * rec_flag * binding * class_expr)
+  | `CeLet of (loc * rec_flag * binding * class_exp)
         (* object ((p))? (cst)? end *)
   | `Obj of (loc * patt * cstru)
         (* ce : ct *)
-  | `CeTyc of (loc * class_expr * class_type)
+  | `CeTyc of (loc * class_exp * class_type)
         (* ce and ce *)
-  | `And of (loc * class_expr * class_expr)
+  | `And of (loc * class_exp * class_exp)
         (* ce = ce *)
-  | `Eq  of (loc * class_expr * class_expr)
+  | `Eq  of (loc * class_exp * class_exp)
   | ant ]
 and cstru =
   [= nil
@@ -494,13 +494,13 @@ and cstru =
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)
-  | `Inherit of (loc * override_flag * class_expr * meta_option alident)
+  | `Inherit of (loc * override_flag * class_exp * meta_option alident)
       (* initializer e *)
-  | `Initializer of (loc * expr)
+  | `Initializer of (loc * exp)
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
-  | `CrMth of (loc * alident * override_flag * private_flag * expr * ctyp)
+  | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
         (* value(!)? (mutable)? s = e *)
-  | `CrVal of (loc *  alident * override_flag * mutable_flag * expr)
+  | `CrVal of (loc *  alident * override_flag * mutable_flag * exp)
         (* method virtual (private)? s : t *)
   | `CrVir of (loc * alident * private_flag * ctyp)
         (* val virtual (mutable)? s : t *)
@@ -511,7 +511,7 @@ and cstru =
 
 
 (* Any is necessary, since sometimes you want to [meta_loc_patt] to [_]
-   Faked here to make a common subtyp of expr patt to be expressive enough *)
+   Faked here to make a common subtyp of exp patt to be expessive enough *)
 type ep =
   [= nil
   | sid

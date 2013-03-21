@@ -267,7 +267,7 @@ let _ =
                         (fun (sl : 'psymbol list)  (_loc : FanLoc.t)  ->
                            (sl : 'e__5 )))))]), (`Skeyword "|"));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (sls : 'e__5 list)  _  _  (n : 'name)  (_loc : FanLoc.t)  ->\n     (expr_delete_rule _loc n sls : 'delete_rules ))\n",
+           ("Gram.mk_action\n  (fun _  (sls : 'e__5 list)  _  _  (n : 'name)  (_loc : FanLoc.t)  ->\n     (exp_delete_rule _loc n sls : 'delete_rules ))\n",
              (Gram.mk_action
                 (fun _  (sls : 'e__5 list)  _  _  (n : 'name) 
                    (_loc : FanLoc.t)  ->

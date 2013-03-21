@@ -19,7 +19,7 @@ open AstLoc;
      --
   {:stru| g |};
 
-  -- macro.expr
+  -- macro.exp
      
 
   -- macro.stru
@@ -31,7 +31,7 @@ open AstLoc;
 
 
   2. the position where macro expander appears?
-     currently only expr
+     currently only exp
 
   3. the type macro expander
      - macro.cstru should generate cstru 
@@ -41,15 +41,15 @@ open AstLoc;
   5. dependency
 
   Guarantee:
-    macro.expr should return expr
+    macro.exp should return exp
     macro.stru should return stru 
  *)
 type key = string;
 
-type expander =  expr -> expr;
+type expander =  exp -> exp;
 
 (*
-   expr -> stru
+   exp -> stru
 *)
   
 let macro_expanders: Hashtbl.t key expander = Hashtbl.create 40 ;
@@ -62,30 +62,30 @@ let rec fib = fun
   | n when n > 0 -> fib (n-1) + fib (n-2)
   | _ -> invalid_arg "fib" ];
 
-(* {:expr| f a b c|}
+(* {:exp| f a b c|}
    don't support currying
    always
    f a
    or f (a,b,c)
-   {:expr| f (a,b,c) |}
+   {:exp| f (a,b,c) |}
  *)
   
 let fibm  y =
   match y with
-  [ {:expr|$int:x|}  -> {:expr| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = loc_of x in {:expr| fib $x |} ];
+  [ {:exp|$int:x|}  -> {:exp| $(`int:fib (int_of_string x))|}
+  |  x -> let _loc = loc_of x in {:exp| fib $x |} ];
 
 register_macro ("FIB",fibm);      
 
 open LibUtil;
     
-(* let generate_fibs = with expr fun *)
-(*   [ {:expr|$int:x|} -> *)
+(* let generate_fibs = with exp fun *)
+(*   [ {:exp|$int:x|} -> *)
 (*     let j = int_of_string x in *)
 (*     let res = zfold_left ~until:j ~acc:{||} (fun acc i -> {| $acc; print_int (FIB $`int:i) |}) in *)
-(*     {:expr| $seq:res |} *)
+(*     {:exp| $seq:res |} *)
 (*     (\* Array.map (fun i -> {|print_int (FIB $`int:i) |} ) *\) *)
-(*     (\* {:expr| for _j = 0 to $int:x do print_int (FIB _j) done |} *\) *)
+(*     (\* {:exp| for _j = 0 to $int:x do print_int (FIB _j) done |} *\) *)
 (*   | e -> e ]; *)
 
 (* register_macro ("GFIB", generate_fibs);     *)
@@ -99,7 +99,7 @@ GFIB 10;
    FIB x]
    ;
 (*
-  {:expr| [FIB 13; FIB 13; FIB x ] |}
+  {:exp| [FIB 13; FIB 13; FIB x ] |}
  *)
 
 *)
@@ -107,12 +107,12 @@ GFIB 10;
 
 let macro_expander = object(self)
   inherit Objs.map as super;
-  method! expr = with expr fun
+  method! exp = with exp fun
   [{| $uid:a $y |} ->
     let try f = Hashtbl.find macro_expanders a in
-    self#expr (f y)
-    with Not_found -> {| $uid:a $(self#expr y)|}
-  | e -> super#expr e ];
+    self#exp (f y)
+    with Not_found -> {| $uid:a $(self#exp y)|}
+  | e -> super#exp e ];
 end;
 
 (* AstFilters.register_stru_filter ("macro", macro_expander#stru);   *)

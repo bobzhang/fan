@@ -141,7 +141,7 @@ type patt =
   | `Array of (loc * patt) (* [| p |] *)
   | `Label of (loc * alident * patt) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
-  | `PaOlbi of (loc * alident * patt * meta_option expr)
+  | `PaOlbi of (loc * alident * patt * meta_option exp)
   | `Or of (loc * patt * patt) (* p | p *)
   | `PaRng (* `Range  *)of (loc * patt * patt) (* p .. p *)
   | `Constraint of (loc * patt * ctyp) (* (p : t) *)

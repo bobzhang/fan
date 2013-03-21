@@ -212,7 +212,7 @@ let of_channel ic =
  }
 ;;
 
-(* Stream expressions builders *)
+(* Stream expessions builders *)
 
 (* In the slazy and lapp case, we can't statically predict the value
    of the "count" field. We put a dummy 0 value, which will be updated

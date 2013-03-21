@@ -47,8 +47,8 @@ let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
    to be dumped
  *)
 
-let p_expr f  e =
-  pp f "@[%a@]@." AstPrint.expression (Ast2pt.expr e);
+let p_exp f  e =
+  pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e);
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
 let p_patt f e =
   pp f "@[%a@]@." AstPrint.pattern (Ast2pt.patt e);

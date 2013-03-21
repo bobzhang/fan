@@ -242,7 +242,7 @@ let float_literal =
   
 (* Delimitors are extended (from 3.09) in a conservative way *)
 
-(* These chars that can't start an expression or a pattern: *)
+(* These chars that can't start an expession or a pattern: *)
 let safe_delimchars = ['%' '&' '/' '@' '^']
     
 (* These symbols are unsafe since "[<", "[|", etc. exsist. *)

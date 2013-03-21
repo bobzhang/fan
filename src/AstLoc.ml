@@ -61,7 +61,7 @@ let rec dot_of_list = fun
 
 (*
   {[
-  with expr appl_of_list [{|f|}; {|a|}; {|b|}] |> Ast2pt.print_expr f;
+  with exp appl_of_list [{|f|}; {|a|}; {|b|}] |> Ast2pt.print_exp f;
   f a b
   ]}
  *)
@@ -131,10 +131,10 @@ let rec view_app acc = fun
   
 let seq_sem ls = seq (sem_of_list ls);
 
-let binds bs (e:expr) =
+let binds bs (e:exp) =
   match bs with
   [[] -> e
   |_ ->
       let binds = and_of_list bs  in
       let _loc = binds <+> e in
-      {:expr|let $binds in $e |} ];  
+      {:exp|let $binds in $e |} ];  

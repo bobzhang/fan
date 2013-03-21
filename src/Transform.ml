@@ -4,9 +4,9 @@ open LibUtil;
 open Lib;
 open Ast;
 open FSig;
-let transform : full_id_transform -> ident -> expr =
+let transform : full_id_transform -> ident -> exp =
   let _loc = FanLoc.ghost in
-  let open Lib.Ident in with expr fun 
+  let open Lib.Ident in with exp fun 
   [ `Pre pre ->
      fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ]
   | `Post post ->
@@ -40,7 +40,7 @@ let basic_transform = fun
   | `Fun f -> f ];
   
 let right_transform =
-  let _loc = FanLoc.ghost in with expr fun 
+  let _loc = FanLoc.ghost in with exp fun 
   [ #basic_id_transform as x ->
    (** add as here to overcome the type system *)
     let f = basic_transform x in 

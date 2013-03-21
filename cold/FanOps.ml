@@ -53,7 +53,7 @@ let rec is_module_longident (x : ident) =
   | _ -> false
 let ident_of_exp =
   let error () =
-    invalid_arg "ident_of_expr: this expression is not an identifier" in
+    invalid_arg "ident_of_exp: this expession is not an identifier" in
   let rec self (x : exp) =
     match x with
     | `App (_loc,e1,e2) -> `App (_loc, (self e1), (self e2))

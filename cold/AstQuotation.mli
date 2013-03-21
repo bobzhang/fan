@@ -58,9 +58,9 @@ val dump_file : string option  ref
 
 
     
-(* theoretically you can use [mexpr] which lift it into any type you can *)
+(* theoretically you can use [mexp] which lift it into any type you can *)
 val add_quotation:
-    exp_filter:(ep -> exp) ->
+    exp_filter:(ep(* 'a *) -> exp) ->
       patt_filter:(ep(* 'b *) -> patt) ->
         mexp:(FanLoc.t -> 'c -> ep(* 'a *)) ->
           mpatt:(FanLoc.t -> 'c -> ep(* 'b *)) -> FanToken.name -> 'c Gram.t -> unit

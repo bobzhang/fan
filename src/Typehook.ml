@@ -140,14 +140,14 @@ class type traversal = object
 end;
 
 (*
-  Entrance is  [module_expr]
-  Choose [module_expr] as an entrace point to make the traversal
+  Entrance is  [module_exp]
+  Choose [module_exp] as an entrace point to make the traversal
   more modular.
   Usage
   {[
-  let v =  {:module_expr| struct $s end |} in
-  let module_expr =
-  (Typehook.traversal ())#module_expr v 
+  let v =  {:module_exp| struct $s end |} in
+  let module_exp =
+  (Typehook.traversal ())#module_exp v 
   ]}
 
   This function will apply all the plugins to generate
@@ -172,8 +172,8 @@ let traversal () : traversal  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! module_expr = with stru fun
-    [ {:module_expr| struct $u end |}  ->  begin 
+  method! module_exp = with stru fun
+    [ {:module_exp| struct $u end |}  ->  begin 
       self#in_module ;
       let res = self#stru u ;
       let module_types = List.rev (self#get_cur_module_types) ;
@@ -198,9 +198,9 @@ let traversal () : traversal  = object (self:'self_type)
                 |None -> {| $acc; $code |} ])  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
-      {:module_expr| struct $result end |}  
+      {:module_exp| struct $result end |}  
     end
-    | x -> super#module_expr x ];
+    | x -> super#module_exp x ];
 
   method! stru  = with stru fun
     [ {| type $_ and $_ |} as x -> begin
@@ -235,8 +235,8 @@ end;
 
 
 
-(* #default_quotation "expr"  ;; *)
-(* #lang_at "patt" "module_expr";; *)
+(* #default_quotation "exp"  ;; *)
+(* #lang_at "patt" "module_exp";; *)
 
 let g = Gram.create_gram
     ~keywords:
@@ -260,7 +260,7 @@ let g = Gram.create_gram
 {:create|(g:Gram.t)  fan_quot fan_quots
 |};
 
-with expr
+with exp
     {:extend|
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
@@ -304,15 +304,15 @@ include_quot:
 
     
 {:extend|save_quot:
-  [L1 [`Lid x -> x] {ls} ; "->"; Syntax.expr{b} ->
+  [L1 [`Lid x -> x] {ls} ; "->"; Syntax.exp{b} ->
     let symbs = List.map (fun x -> FanState.gensym x) ls in
     let res = FanState.gensym "res" in
     let exc = FanState.gensym "e" in
     let binds = and_of_list
         (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =
-       seq_sem (List.map2 (fun x y -> {:expr| $lid:x := $lid:y |}) ls symbs) in
-    {:expr|
+       seq_sem (List.map2 (fun x y -> {:exp| $lid:x := $lid:y |}) ls symbs) in
+    {:exp|
     let $binds in
     try begin 
       let $lid:res = $b in

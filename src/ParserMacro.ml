@@ -5,7 +5,7 @@ open Lib;
 
 {:create|Gram
   macro_def (* macro_def_sig *) uident_eval_ifdef uident_eval_ifndef
-  else_macro_def (* else_macro_def_sig *) else_expr smlist_then smlist_else (* sglist_then *)
+  else_macro_def (* else_macro_def_sig *) else_exp smlist_then smlist_else (* sglist_then *)
   (* sglist_else *) endif opt_macro_value uident 
 |};
 
@@ -14,11 +14,11 @@ let apply () = begin
 
     stru: First
     [ macro_def{x} ->
-      execute_macro ~expr ~patt {:stru|let _ = () |} (*FIXME*)
+      execute_macro ~exp ~patt {:stru|let _ = () |} (*FIXME*)
         (fun a b -> {:stru| $a; $b |}) x ]
     (* sig_item: First *)
     (* [ macro_def_sig{x} -> *)
-    (*   execute_macro ~expr ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ] *)
+    (*   execute_macro ~exp ~patt {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ] *)
     macro_def:
     [ "DEFINE"; uident{i}; opt_macro_value{def} -> Def i def
     | "UNDEF";  uident{i} -> Und i
@@ -46,43 +46,43 @@ let apply () = begin
     [ "ELSE"; smlist_else{st}; endif -> st | endif -> [] ]
     (* else_macro_def_sig: *)
     (* [ "ELSE"; sglist_else{st}; endif -> st | endif -> [] ] *)
-    else_expr:
-    [ "ELSE"; expr{e}; endif -> e | endif -> {:expr| () |} ]
+    else_exp:
+    [ "ELSE"; exp{e}; endif -> e | endif -> {:exp| () |} ]
     smlist_then:
     [ L1
         [ macro_def{d}; ";" ->
-          execute_macro_if_active_branch ~expr ~patt _loc
+          execute_macro_if_active_branch ~exp ~patt _loc
             {:stru|let _ = ()|} (* FIXME *)
             (fun a b -> {:stru| $a; $b |}) Then d
         | stru{si}; ";" -> Str si ]{sml} -> sml ]
     smlist_else:
     [ L1 [ macro_def{d}; ";" ->
-           execute_macro_if_active_branch ~expr ~patt  _loc
+           execute_macro_if_active_branch ~exp ~patt  _loc
            {:stru|let _ = ()|} (*FIXME*) (fun a b -> {:stru| $a; $b |}) Else d
          | stru{si}; ";" -> Str si ]{sml} -> sml ]
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
-    (*        execute_macro_if_active_branch ~expr ~patt *)
+    (*        execute_macro_if_active_branch ~exp ~patt *)
     (*       _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d *)
     (*        | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]    *)
     (* sglist_else: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
-    (*          execute_macro_if_active_branch ~expr ~patt *)
+    (*          execute_macro_if_active_branch ~exp ~patt *)
     (*            _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d *)
     (* | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]   *)
     endif: [ "END" -> () | "ENDIF" -> () ]
     opt_macro_value:
-    [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
-    | "="; expr{e} -> Some ([], e)
+    [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; exp{e} -> Some (pl, e)
+    | "="; exp{e} -> Some ([], e)
     | -> None ]
 
-    expr: Level "top"
-    [ "IFDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
+    exp: Level "top"
+    [ "IFDEF"; uident{i}; "THEN"; exp{e1}; else_exp{e2} ->
       if is_defined i then e1 else e2
-    | "IFNDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
+    | "IFNDEF"; uident{i}; "THEN"; exp{e1}; else_exp{e2} ->
         if is_defined i then e2 else e1
-    | "DEFINE"; `Lid i; "="; expr{def}; "IN"; expr{body} ->
-        (new Expr.subst _loc [(i, def)])#expr body ] 
+    | "DEFINE"; `Lid i; "="; exp{def}; "IN"; exp{body} ->
+        (new Expr.subst _loc [(i, def)])#exp body ] 
     patt:
     [ "IFDEF"; uident{i}; "THEN"; patt{p1};  "ELSE"; patt{p2}; endif ->
       if is_defined i then p1 else p2
@@ -92,10 +92,10 @@ let apply () = begin
     [ `Uid i -> i ]
     (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
 
-    expr: Before "simple"
+    exp: Before "simple"
     [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN" ]{kwd}
-      -> {:expr| $vrn:kwd |}
-    | "`"; luident{s} -> {:expr| $vrn:s |} ]
+      -> {:exp| $vrn:kwd |}
+    | "`"; luident{s} -> {:exp| $vrn:s |} ]
 
     patt: Before "simple"
     [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
@@ -103,11 +103,11 @@ let apply () = begin
     | "`"; luident{s} -> {:patt| $vrn:s |} ] |};
   Options.add
     ("-D",
-     (FanArg.String (parse_def ~expr ~patt)  ),
+     (FanArg.String (parse_def ~exp ~patt)  ),
      "<string> Define for IFDEF instruction.");
   Options.add
     ("-U",
-     (FanArg.String (undef ~expr ~patt)),
+     (FanArg.String (undef ~exp ~patt)),
      "<string> Undefine for IFDEF instruction.");
   Options.add
     ("-I",

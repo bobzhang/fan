@@ -14,18 +14,18 @@ class printer = object(self:'self)
       | Lapply(a,b) -> {| ($(id:self#longident _loc a) $(id:self#longident _loc b)) |}]  ;
     method longident_loc i =
       self#longident i.loc i.txt;
-    method gen_cases  _loc (lst: list (pattern*expression)) =
+    method gen_cases  _loc (lst: list (pattern*expession)) =
      with case 
      List.map
      (fun (p,e) ->
        match e.pexp_desc with
        [Pexp_when (e1,e2) ->
-           {| $(pat:self#pattern p) when $(self#expr e1) -> $(self#expr e2) |}
+           {| $(pat:self#pattern p) when $(self#exp e1) -> $(self#exp e2) |}
        | _ ->
-          {|$(pat:self#pattern p) -> $(self#expr (e:expression)) |} ]) lst ;
+          {|$(pat:self#pattern p) -> $(self#exp (e:expession)) |} ]) lst ;
 
-    method constant_expr _loc i=
-      with expr match i with 
+    method constant_exp _loc i=
+      with exp match i with 
       [Const_int32 i -> {|$`int32:i|}
       |Const_int i -> {|$`int:i|}
       |Const_int64 i -> {|$`int64:i|}
@@ -189,17 +189,17 @@ class printer = object(self:'self)
         | Ppat_unpack {txt;_} ->
             {| (module $txt )|}
         ];
-     method expr {pexp_desc=x;pexp_loc=_loc} =
-       with expr match x with
+     method exp {pexp_desc=x;pexp_loc=_loc} =
+       with exp match x with
        [Pexp_ident (lid_loc) ->
          {| $(id: self#longident_loc lid_loc) |}
        | Pexp_constant c ->
-           self#constant_expr _loc c
+           self#constant_exp _loc c
        | Pexp_let (recf,lst,e) ->
            let recf = self#rec_flag recf in
            let bindings =
-             List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#expr e) |}) lst in 
-           {|let $rec:recf $list:bindings in $(self#expr e) |}
+             List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#exp e) |}) lst in 
+           {|let $rec:recf $list:bindings in $(self#exp e) |}
        | Pexp_function (label,eo,lst) ->
            match label with
            ["" -> let cases = self#gen_cases _loc lst in {|fun [ $list:cases ] |}
@@ -209,129 +209,129 @@ class printer = object(self:'self)
                  if label.[0] = '?' then
                    match eo with
                    [ Some o ->
-                     {| fun ? $label:($(self#pattern p) = $(self#expr o))
-                       -> $(self#expr e) |} (* FIXME ?$ =$ illegal *)
+                     {| fun ? $label:($(self#pattern p) = $(self#exp o))
+                       -> $(self#exp e) |} (* FIXME ?$ =$ illegal *)
                    | None ->
-                     {| fun ? $label -> $(self#expr e ) |} ]
+                     {| fun ? $label -> $(self#exp e ) |} ]
                  else
-                   {| fun ~ $label -> $(self#expr e) |}
+                   {| fun ~ $label -> $(self#exp e) |}
                | _ -> assert false ] ]
        | Pexp_apply (e,lst) ->
            let args =
              List.map
                (fun (label,e) ->
-                 let v = self#expr e in
+                 let v = self#exp e in
                  if label = "" then
                    v 
                  else
                    {| ~ $label : $v |}
                ) lst in
-           FanAst.exApp_of_list [ self#expr e :: args]
+           FanAst.exApp_of_list [ self#exp e :: args]
        | Pexp_match (e, lst) ->
            let cases = self#gen_cases _loc lst in
-           {| match $(self#expr e) with
+           {| match $(self#exp e) with
               [$list:cases] |}
        | Pexp_try (e,lst) ->
            let cases = self#gen_cases _loc lst in
-           {| try $(self#expr e) with [$list:cases] |}
+           {| try $(self#exp e) with [$list:cases] |}
        | Pexp_tuple [] ->
            assert false
        | Pexp_tuple [x::xs] ->
-           {| ($(self#expr x), $(list:(List.map self#expr xs )) )|}
+           {| ($(self#exp x), $(list:(List.map self#exp xs )) )|}
        | Pexp_construct (lid_loc,eo,_) (* FIXME*)
            ->
              match eo with
              [ None -> {| $(id:self#longident_loc lid_loc) |}
              | Some v ->
-                 {|$(id:self#longident_loc lid_loc) $(self#expr v) |} (* FIXME *)
+                 {|$(id:self#longident_loc lid_loc) $(self#exp v) |} (* FIXME *)
              ]
         | Pexp_variant (label,eo) ->
             match eo with
-            [Some e -> {| `$label $(self#expr e) |}
+            [Some e -> {| `$label $(self#exp e) |}
             |None -> {| `$label |} ]
         | Pexp_record (lst,eo) ->
             let bindings =
               List.map
-                (fun (lid,e) -> {:rec_expr| $(id:self#longident_loc lid) = $(self#expr e) |}) lst in 
+                (fun (lid,e) -> {:rec_exp| $(id:self#longident_loc lid) = $(self#exp e) |}) lst in 
             match eo with
-            [ Some e  -> {| { ($(self#expr e)) with $list:bindings } |}
+            [ Some e  -> {| { ($(self#exp e)) with $list:bindings } |}
             | None -> {| { $list:bindings } |}]
         | Pexp_field (e,lid_loc) ->
-            {| $(self#expr e).$(id:self#longident_loc lid_loc) |}
+            {| $(self#exp e).$(id:self#longident_loc lid_loc) |}
         | Pexp_setfield (e1,lid_loc,e2) ->
-            {| $(self#expr e1).$(id:self#longident_loc lid_loc) <- $(self#expr e2) |}
+            {| $(self#exp e1).$(id:self#longident_loc lid_loc) <- $(self#exp e2) |}
         | Pexp_array lst ->
-            {| [| $(list: List.map self#expr lst ) |] |}
+            {| [| $(list: List.map self#exp lst ) |] |}
         | Pexp_ifthenelse (e1,e2,e3) ->
            match e3 with
            [Some e3 ->
-             {| if $(self#expr e1) then $(self#expr e2 ) else $(self#expr e3) |}
+             {| if $(self#exp e1) then $(self#exp e2 ) else $(self#exp e3) |}
            | None ->
-               {| if $(self#expr e1) then $(self#expr e2 ) else () |} ]  
+               {| if $(self#exp e1) then $(self#exp e2 ) else () |} ]  
         | Pexp_sequence (e1,e2) ->
-            {| begin $(self#expr e1) $(self#expr e2) end |}
+            {| begin $(self#exp e1) $(self#exp e2) end |}
         | Pexp_while (e1,e2) ->
-            {| while $(self#expr e1) do $(self#expr e2) done |}
+            {| while $(self#exp e1) do $(self#exp e2) done |}
         | Pexp_for ({txt;_},e1,e2,df,e3) ->
             (* FIXME non-terminal expected after ... more friendly error message *)
-            {| for $txt = $(self#expr e1) $(to:self#direction_flag df) $(self#expr e2) do
-                    $(self#expr e3)
+            {| for $txt = $(self#exp e1) $(to:self#direction_flag df) $(self#exp e2) do
+                    $(self#exp e3)
                 done
             |}
         | Pexp_constraint (e1,ot1,ot2) ->
             match (ot1,ot2) with
             [(None,None) ->
-              self#expr e1
+              self#exp e1
             | (Some t1,Some t2) ->
-                {| ($(self#expr e1) : $(self#core_type t1) :> $(self#core_type t2) ) |}
+                {| ($(self#exp e1) : $(self#core_type t1) :> $(self#core_type t2) ) |}
             | (Some t1,None) ->
-                {| ($(self#expr e1) : $(self#core_type t1)  ) |}
+                {| ($(self#exp e1) : $(self#core_type t1)  ) |}
             | (None,Some t2) ->
-                {| ($(self#expr e1) :> $(self#core_type t2) ) |}
+                {| ($(self#exp e1) :> $(self#core_type t2) ) |}
            ]  
         | Pexp_when _ -> assert false
         | Pexp_send (e,txt) -> 
-            {| $(self#expr e)# $txt |}
+            {| $(self#exp e)# $txt |}
         | Pexp_new lid_loc ->
             {| new $(id:self#longident_loc lid_loc) |}
         | Pexp_setinstvar ({txt;_},e) ->
-            {| $lid:txt <- $(self#expr e) |}
+            {| $lid:txt <- $(self#exp e) |}
         | Pexp_override lst ->
-            let lst = List.map (fun ({txt;_},e) -> {:rec_expr| $lid:txt = $(self#expr e)|}) lst in
+            let lst = List.map (fun ({txt;_},e) -> {:rec_exp| $lid:txt = $(self#exp e)|}) lst in
             {| {< $list:lst >}|}
         | Pexp_letmodule ({txt;_},me,e) ->
-            {| let module $txt = $(self#module_expr me) in $(self#expr e) |}
+            {| let module $txt = $(self#module_exp me) in $(self#exp e) |}
         | Pexp_assert e ->
-            {| assert $(self#expr e) |}
+            {| assert $(self#exp e) |}
         | Pexp_assertfalse -> {| assert false |}
-        | Pexp_lazy e -> {| lazy $(self#expr e) |}
+        | Pexp_lazy e -> {| lazy $(self#exp e) |}
         | Pexp_poly _ -> assert false (* appears only in Pcf_meth *)
-          (* {:expr| object (self:'self) method x = 3 ; end |} *)    
+          (* {:exp| object (self:'self) method x = 3 ; end |} *)    
         | Pexp_object {pcstr_pat=pat;pcstr_fields=fs}  -> (* assert false *)
             {|object ($(self#pattern pat)) $(self#class_fields fs) end |}
               
         | Pexp_newtype (str,e) ->
-            {| fun (type $str) ->  $(self#expr e) |}
+            {| fun (type $str) ->  $(self#exp e) |}
         | Pexp_pack me ->
-            {| (module $(self#module_expr me) ) |}
+            {| (module $(self#module_exp me) ) |}
         | Pexp_open (lid_loc,e) ->
-            {| $(id:self#longident_loc lid_loc).($(self#expr e) ) |}
+            {| $(id:self#longident_loc lid_loc).($(self#exp e) ) |}
         ];
 
-     method module_expr {pmod_desc=x;pmod_loc = _loc} : Ast.module_expr =
-       with module_expr match x with
+     method module_exp {pmod_desc=x;pmod_loc = _loc} : Ast.module_exp =
+       with module_exp match x with
        [ Pmod_ident lid_loc ->
          {| $(id:self#longident_loc lid_loc) |}
        | Pmod_structure s ->
            {| struct $(self#structure s) end|}
        | Pmod_functor ({txt;_},mty,me) ->
-           {| functor ($txt : $(self#module_type mty)) -> $(self#module_expr me) |}
+           {| functor ($txt : $(self#module_type mty)) -> $(self#module_exp me) |}
        | Pmod_apply (me1,me2) ->
-           {| $(self#module_expr me1) $(self#module_expr me2) |}
+           {| $(self#module_exp me1) $(self#module_exp me2) |}
        | Pmod_constraint (me,mty) ->
-           {| ( $(self#module_expr me) : $(self#module_type mty) ) |}
+           {| ( $(self#module_exp me) : $(self#module_type mty) ) |}
        | Pmod_unpack e ->
-           {| (val $(self#expr e)) |}
+           {| (val $(self#exp e)) |}
        ];
      method lhs_type_declaration (params,variance,({loc;_} as lid_loc)) =
        with ctyp
@@ -381,24 +381,24 @@ class printer = object(self:'self)
            let lst = List.map self#with_constraint lst in
            {| $(self#module_type mt1) with $list:lst |}
        | Pmty_typeof me ->
-           {| module type of $(self#module_expr me) |}
+           {| module type of $(self#module_exp me) |}
        ];  
 
      method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.stru =
        with stru match x with
-       [Pstr_eval e -> {| $(exp:self#expr e) |}
+       [Pstr_eval e -> {| $(exp:self#exp e) |}
        |Pstr_value (rf,lst) ->
            let bindings =
-             List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#expr e) |}) lst in 
+             List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#exp e) |}) lst in 
            {|let $(rec:self#rec_flag rf) $list:bindings |}
        | Pstr_module ({txt;_},me) ->
-           {| module $txt = $(self#module_expr me) |}
+           {| module $txt = $(self#module_exp me) |}
        | Pstr_modtype ({txt;_},mty) ->
            {| module type $txt = $(self#module_type mty) |}
        | Pstr_open lid ->
            {| open $(id:self#longident_loc lid) |}
        | Pstr_include me ->
-           {| include $(self#module_expr me) |}
+           {| include $(self#module_exp me) |}
        | Pstr_class_type _ 
        | Pstr_class _
        | Pstr_recmodule _
@@ -419,8 +419,8 @@ class printer = object(self:'self)
        assert false;
      method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.cstru =
        assert false;
-     method class_expr {pcl_desc=x;pcl_loc=_loc} : Ast.class_expr = assert false;
-     method class_type ({pci_expr;_}: class_infos class_type)  : Ast.class_type = assert false;
+     method class_exp {pcl_desc=x;pcl_loc=_loc} : Ast.class_exp = assert false;
+     method class_type ({pci_exp;_}: class_infos class_type)  : Ast.class_type = assert false;
   (*    method class_types ls = *)
   (*      with class_type_declaration *)
   (*      {| $(list:List.map self#class_type ls ) |} ; *)

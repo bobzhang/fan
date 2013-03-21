@@ -4,7 +4,7 @@ open Lib;
 open LibUtil;
 type 'a item_or_def  =
     [ Str of 'a
-    | Def of string * option (list string * expr)
+    | Def of string * option (list string * exp)
     | Und of string
     | ITE of bool * list (item_or_def 'a) * list (item_or_def 'a)
     | Lazy of Lazy.t 'a ];
@@ -19,26 +19,26 @@ let incorrect_number loc l1 l2 =
 
 
 
-let define ~expr ~patt eo x  = begin 
+let define ~exp ~patt eo x  = begin 
   match eo with
   [ Some ([], e) ->
     {:extend|Gram
-        expr: Level "simple"
-          [ `Uid $x -> (new FanObjs.reloc _loc)#expr e ]
+        exp: Level "simple"
+          [ `Uid $x -> (new FanObjs.reloc _loc)#exp e ]
         patt: Level "simple"
           [ `Uid $x ->
             let p = Expr.substp _loc [] e
             in (new FanObjs.reloc _loc)#patt p ] |}
   | Some (sl, e) ->
       {:extend| Gram
-        expr: Level "apply"
+        exp: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:expr| ($tup:e) |} -> list_of_com e []
+            [ {:exp| ($tup:e) |} -> list_of_com e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
-            (new Expr.subst _loc env)#expr e
+            (new Expr.subst _loc env)#exp e
           else
             incorrect_number _loc el sl ]
         patt: Level "simple"
@@ -56,40 +56,40 @@ let define ~expr ~patt eo x  = begin
   defined := [(x, eo) :: !defined]
 end;
 
-let undef ~expr ~patt x =
+let undef ~exp ~patt x =
   try
     begin
       let eo = List.assoc x !defined in
       match eo with
-        [ Some ([], _) -> {:delete| Gram expr: [`Uid $x ]  patt: [`Uid $x ] |}
-        | Some (_, _) ->  {:delete| Gram expr: [`Uid $x; S ] patt: [`Uid $x; S] |}
+        [ Some ([], _) -> {:delete| Gram exp: [`Uid $x ]  patt: [`Uid $x ] |}
+        | Some (_, _) ->  {:delete| Gram exp: [`Uid $x; S ] patt: [`Uid $x; S] |}
         | None -> () ];
         defined := List.remove x !defined;
     end
   with
     [ Not_found -> () ];
 
-let parse_def ~expr ~patt s =
-  match Gram.parse_string expr ~loc:(FanLoc.mk "<command line>") s with
-  [ {:expr| $uid:n |} -> define ~expr ~patt None n
-  | {:expr| $uid:n = $e |} -> define ~expr ~patt (Some ([],e)) n
+let parse_def ~exp ~patt s =
+  match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
+  [ {:exp| $uid:n |} -> define ~exp ~patt None n
+  | {:exp| $uid:n = $e |} -> define ~exp ~patt (Some ([],e)) n
   | _ -> invalid_arg s ];
     
 
 
   
-let rec execute_macro ~expr ~patt nil cons = fun
+let rec execute_macro ~exp ~patt nil cons = fun
   [ Str i -> i
-  | Def (x, eo) -> begin  define ~expr ~patt eo x; nil  end
-  | Und x -> begin  undef ~expr ~patt x; nil  end
-  | ITE (b, l1, l2) -> execute_macro_list ~expr ~patt nil cons (if b then l1 else l2)
+  | Def (x, eo) -> begin  define ~exp ~patt eo x; nil  end
+  | Und x -> begin  undef ~exp ~patt x; nil  end
+  | ITE (b, l1, l2) -> execute_macro_list ~exp ~patt nil cons (if b then l1 else l2)
   | Lazy l -> Lazy.force l ] (* the semantics is unclear*)
 
-and execute_macro_list ~expr ~patt nil cons =  fun
+and execute_macro_list ~exp ~patt nil cons =  fun
   [ [] -> nil
   | [hd::tl] -> (* The evaluation order is important here *)
-      let il1 = execute_macro ~expr ~patt nil cons hd in
-      let il2 = execute_macro_list ~expr ~patt nil cons tl in
+      let il1 = execute_macro ~exp ~patt nil cons hd in
+      let il2 = execute_macro_list ~exp ~patt nil cons tl in
       cons il1 il2 ] ;
 
 (* Stack of conditionals. *)
@@ -103,12 +103,12 @@ let make_ITE_result st1 st2 =
 type branch = [ Then | Else ];
 
 (* Execute macro only if it belongs to the currently active branch. *)
-let execute_macro_if_active_branch ~expr ~patt _loc nil cons branch macro_def =
+let execute_macro_if_active_branch ~exp ~patt _loc nil cons branch macro_def =
   let _ = Format.eprintf "execute_macro_if_active_branch@."in
   let test = Stack.top stack in
   let item =
     if (test && branch=Then) || ((not test) && branch=Else) then begin 
-      let res = execute_macro ~expr ~patt nil cons macro_def;
+      let res = execute_macro ~exp ~patt nil cons macro_def;
       Format.eprintf "executing branch %s@." (if branch=Then then "Then" else "Else");
       res
     end

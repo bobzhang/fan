@@ -92,9 +92,9 @@ val patt : patt -> Parsetree.pattern
 
 val override_flag :  loc -> override_flag -> Asttypes.override_flag
 
-val expr : expr -> Parsetree.expression
+val exp : exp -> Parsetree.expression
 
-val label_expr : expr -> Asttypes.label * Parsetree.expression
+val label_exp : exp -> Asttypes.label * Parsetree.expression
 
 val binding :
   binding ->
@@ -106,7 +106,7 @@ val case :
   (Parsetree.pattern * Parsetree.expression) list
 
 val mklabexp :
-  rec_expr ->
+  rec_exp ->
   (Longident.t Asttypes.loc * Parsetree.expression) list
       
 val mktype_decl :
@@ -125,11 +125,11 @@ val module_str_binding :
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list ->
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list
       
-val module_expr : module_expr -> Parsetree.module_expr
+val module_exp : module_exp -> Parsetree.module_expr
 
 val class_type : class_type -> Parsetree.class_type
 
-val class_info_class_expr : class_expr -> Parsetree.class_declaration
+val class_info_class_exp : class_exp -> Parsetree.class_declaration
 
 val class_info_class_type : class_type -> Parsetree.class_description
 
@@ -137,7 +137,7 @@ val class_sig_item :
   class_sig_item ->
   Parsetree.class_type_field list -> Parsetree.class_type_field list
 
-val class_expr : class_expr -> Parsetree.class_expr
+val class_exp : class_exp -> Parsetree.class_expr
 
 val cstru :
   cstru ->
@@ -147,13 +147,13 @@ val sig_item : sig_item -> Parsetree.signature_item list
 
 val stru : stru -> Parsetree.structure_item list
 
-val directive : expr -> Parsetree.directive_argument
+val directive : exp -> Parsetree.directive_argument
     
 val phrase : stru -> Parsetree.toplevel_phrase
 val pp : formatter -> ('a, formatter, unit) format -> 'a
 
-val print_expr : formatter -> expr -> unit
-val to_string_expr: expr -> string
+val print_exp : formatter -> exp -> unit
+val to_string_exp: exp -> string
     
 val print_patt : formatter -> patt -> unit
 

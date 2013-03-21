@@ -47,12 +47,12 @@ and type_declaration id
      _
    } : typedecl  =
   let name = Ident.name id in 
-  let params = List.map type_expr type_params in
+  let params = List.map type_exp type_params in
   let private_flag =
     match type_private with
     [Asttypes.Private -> `Private _loc  | Asttypes.Public -> `PrNil _loc ] in
   let manifest =
-    Option.map type_expr type_manifest in 
+    Option.map type_exp type_manifest in 
   match (type_kind,manifest) with
   [(Type_abstract,None) -> (* type float u *)
     `TyAbstr(_loc,`Lid(_loc,name),params,[])
@@ -83,17 +83,17 @@ and type_declaration id
          `TyRepr(_loc,private_flag,`Sum(_loc,type_sum xs)),
          [])]
 
-and type_record (xs: list (Ident.t * Asttypes.mutable_flag * type_expr) ) : name_ctyp=
+and type_record (xs: list (Ident.t * Asttypes.mutable_flag * type_exp) ) : name_ctyp=
   sem_of_list &
   List.map
     (fun (i,m,e) ->
       let name = Ident.name i in
       match m with
       [Asttypes.Mutable ->  
-        `TyColMut(_loc,`Id(_loc,`Lid(_loc,name)),type_expr e)
+        `TyColMut(_loc,`Id(_loc,`Lid(_loc,name)),type_exp e)
       |Asttypes.Immutable ->
-        `TyCol(_loc,`Id(_loc,`Lid(_loc,name)),type_expr e)]) xs 
-and type_sum (xs: list (Ident.t *  list type_expr *  option type_expr) ) : or_ctyp
+        `TyCol(_loc,`Id(_loc,`Lid(_loc,name)),type_exp e)]) xs 
+and type_sum (xs: list (Ident.t *  list type_exp *  option type_exp) ) : or_ctyp
     =
   or_of_list &
   List.map
@@ -102,9 +102,9 @@ and type_sum (xs: list (Ident.t *  list type_expr *  option type_expr) ) : or_ct
         let name = Ident.name i in
         match xs with
         [[] -> `Id(_loc,`Lid(_loc,name))
-        |[x] -> `Of(_loc,`Id(_loc,`Lid(_loc,name)),type_expr x)
+        |[x] -> `Of(_loc,`Id(_loc,`Lid(_loc,name)),type_exp x)
         | _ ->
-            let tys =  sta_of_list & List.map type_expr xs in
+            let tys =  sta_of_list & List.map type_exp xs in
             `Of(_loc,`Id(_loc,`Lid(_loc,name)),tys)]  
       |(_i,_xs,Some _x) -> failwithf "type_sum  for gadt not supported yet"]) xs
 
@@ -114,7 +114,7 @@ and id_path (p:Path.t) : ident  =
   |Path.Pdot(a,x,_depth) -> `Dot(_loc,id_path a,`Lid(_loc,x))
   |Path.Papply(a,b) ->
       `App(_loc, id_path a, id_path b) ]  
-and type_expr ({desc ;_} : Types.type_expr) : ctyp =
+and type_exp ({desc ;_} : Types.type_exp) : ctyp =
   match desc with
   [ Tvar opt
   | Tunivar opt -> 
@@ -124,13 +124,13 @@ and type_expr ({desc ;_} : Types.type_expr) : ctyp =
     |None ->
         `QuoteAny(_loc,`Normal _loc)]
   | Ttuple ls ->
-      tup & sta_of_list & (List.map type_expr ls)
+      tup & sta_of_list & (List.map type_exp ls)
   | Tconstr (path,ls,_ref) ->
       match ls with
       [[] ->
         `Id(_loc,id_path path)
       | _ ->
-          appl_of_list [ `Id(_loc,id_path path) :: List.map type_expr ls]]  
+          appl_of_list [ `Id(_loc,id_path path) :: List.map type_exp ls]]  
   | Tvariant _  
   (* [fatal_error] *)
   | Tpoly _      

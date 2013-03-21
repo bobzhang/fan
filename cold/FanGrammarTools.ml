@@ -163,7 +163,7 @@ let rec make_exp (tvar : string) (x : text) =
         `App
           (_loc,
             (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))))),
-            (make_expr_rules _loc rl ""))
+            (make_exp_rules _loc rl ""))
     | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),
@@ -177,8 +177,8 @@ let rec make_exp (tvar : string) (x : text) =
                               (_loc, (`Vrn (_loc, attr)),
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
-and make_expr_rules (_loc : loc) (rl : (text list* exp) list)
-  (tvar : string) =
+and make_exp_rules (_loc : loc) (rl : (text list* exp) list) (tvar : string)
+  =
   (list_of_list _loc
      (List.map
         (fun (sl,action)  ->
@@ -328,7 +328,7 @@ let text_of_entry (e : entry) =
        | Some ass -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), ass)
        | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
-     let prod = make_expr_rules _loc rl (e.name).tvar in
+     let prod = make_exp_rules _loc rl (e.name).tvar in
      `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
    match e.levels with
    | `Single l ->

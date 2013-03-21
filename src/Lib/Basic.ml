@@ -8,11 +8,11 @@ open Ast;
    we don't take care of Location.
  *)
 exception Unhandled of ctyp ;
-exception Finished of expr;
+exception Finished of exp;
 
 let _loc =FanLoc.ghost ;
 
-let unit_literal = {:expr| () |} ;
+let unit_literal = {:exp| () |} ;
   
 let x ?(off=0) (i:int)    =
   if off > 25 then invalid_arg "unsupported offset in x "

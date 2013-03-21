@@ -39,10 +39,10 @@ val mk_srules :
   string ->
   rule list -> string -> (text list * exp) list
 val make_exp : (* name -> *) string -> text -> exp
-val make_expr_rules :
+val make_exp_rules :
     loc -> (* name -> *) (text list * exp) list -> string -> exp
 
-(* val expr_of_delete_rule : *)
+(* val exp_of_delete_rule : *)
 val exp_delete_rule:
   loc -> name -> symbol list list  -> exp
       

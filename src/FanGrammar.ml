@@ -7,13 +7,13 @@ open Ast;
 {:ocaml|
 (* every entry has a name *)  
 type name  = {
-    expr : expr;
+    exp : exp;
     tvar : string;
     loc : loc
   };
 
 (* we need to define a new ADT only because
-   we did not find a way to express `STself and `STtok yet  *)
+   we did not find a way to expess `STself and `STtok yet  *)
 type styp =
  [= `Id of (loc * ident )
  | `App of (loc * styp * styp)
@@ -31,8 +31,8 @@ type attr = string;
 type entry   = {
   name : name ;
 
-  (*position expression node *)    
-  pos : option expr;
+  (*position expession node *)    
+  pos : option exp;
     
   levels : levels(* list level *);
 }
@@ -43,7 +43,7 @@ and level  ={
   (* mainly used for indexing *)  
   label : option string;
     
-  assoc : option expr;
+  assoc : option exp;
     
   rules : list rule
 }
@@ -51,7 +51,7 @@ and level  ={
 and rule = {
   prod : list symbol;
     
-  action : option expr
+  action : option exp
 }
 and symbol ={
   text : text;
@@ -62,19 +62,19 @@ and symbol ={
   pattern : option patt
 }
 and text =
- [= `Smeta of (loc * list string * list text * expr * styp)
+ [= `Smeta of (loc * list string * list text * exp * styp)
  | `Slist of (loc * bool * symbol * option symbol)
  | `Snterm of (loc * name  * option string)
  | `Sopt of (loc * text )
  | `Stry of (loc * text )
  | `Speek of (loc * text)
- | `Srules of (loc * list (list text * expr))
+ | `Srules of (loc * list (list text * exp))
  | `Sself of loc
  | `Snext of loc       
  | `Skeyword of (loc * string)
        
- | `Stok of (loc * expr * attr * string)
-(** The first is the match function expr(predicate),
+ | `Stok of (loc * exp * attr * string)
+(** The first is the match function exp(predicate),
 
     the second and the third  is the string description.
     The description string will be used for

@@ -1,25 +1,25 @@
 open Ast
-val mk_variant_eq : 'a -> FSig.ty_info list -> expr
-val mk_tuple_eq : FSig.ty_info list -> expr
-val mk_record_eq : FSig.record_col list -> expr
-val mk_variant_meta_expr : string -> FSig.ty_info list -> expr
-val mk_record_meta_expr : FSig.record_col list -> expr
-val mk_tuple_meta_expr : FSig.ty_info list -> expr
-val gen_meta_expr : FSig.module_types -> stru
-val mk_variant_meta_patt : string -> FSig.ty_info list -> expr
-val mk_record_meta_patt : FSig.record_col list -> expr
-val mk_tuple_meta_patt : FSig.ty_info list -> expr
+val mk_variant_eq : 'a -> FSig.ty_info list -> exp
+val mk_tuple_eq : FSig.ty_info list -> exp
+val mk_record_eq : FSig.record_col list -> exp
+val mk_variant_meta_exp : string -> FSig.ty_info list -> exp
+val mk_record_meta_exp : FSig.record_col list -> exp
+val mk_tuple_meta_exp : FSig.ty_info list -> exp
+val gen_meta_exp : FSig.module_types -> stru
+val mk_variant_meta_patt : string -> FSig.ty_info list -> exp
+val mk_record_meta_patt : FSig.record_col list -> exp
+val mk_tuple_meta_patt : FSig.ty_info list -> exp
 
 
-val extract : FSig.ty_info list -> expr list
+val extract : FSig.ty_info list -> exp list
 
-val mkfmt : string -> string -> string -> string list -> expr
+val mkfmt : string -> string -> string -> string list -> exp
 
-val mk_variant_print : string -> FSig.ty_info list -> expr
+val mk_variant_print : string -> FSig.ty_info list -> exp
 
-val mk_tuple_print : FSig.ty_info list -> expr
+val mk_tuple_print : FSig.ty_info list -> exp
 
-val mk_record_print : FSig.record_col list -> expr
+val mk_record_print : FSig.record_col list -> exp
 
 val gen_eq : FSig.module_types -> stru
 

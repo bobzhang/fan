@@ -10,15 +10,15 @@ open AstLoc;
 *)
 
 open Lib;
-(* open lang "expr"; *)
-#default_quotation "expr";;
+(* open lang "exp"; *)
+#default_quotation "exp";;
 type spat_comp =
-  [ SpTrm of FanLoc.t * patt * option expr
-  | SpNtr of FanLoc.t * patt * expr
+  [ SpTrm of FanLoc.t * patt * option exp
+  | SpNtr of FanLoc.t * patt * exp
   | SpStr of FanLoc.t * patt ];
 
 type sexp_comp =
-  [ SeTrm of FanLoc.t * expr | SeNtr of FanLoc.t * expr ];
+  [ SeTrm of FanLoc.t * exp | SeNtr of FanLoc.t * exp ];
 
 (* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)
@@ -113,6 +113,7 @@ let stream_pattern_component skont ckont =
         match e with
         [ {| fun [ ($lid:v : $uid:m.t _) -> $e ] |} when v = strm_n && m = gm() -> e
         | _ -> {| $e $lid:strm_n |} ] in
+      (* Simplify it *)
       if Expr.pattern_eq_expression p skont then
         if is_raise_failure ckont then e
         else if handle_failure e then e
@@ -153,7 +154,7 @@ let rec stream_pattern _loc epo e ekont = fun
         stream_pattern _loc epo e ekont spcl in
       let ckont = ekont err in stream_pattern_component skont ckont spc ];
 
-let stream_patterns_term _loc ekont tspel : expr =
+let stream_patterns_term _loc ekont tspel : exp =
   let pel =
     List.fold_right
       (fun (p, w, _loc, spcl, epo, e) acc ->

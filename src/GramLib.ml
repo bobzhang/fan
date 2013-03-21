@@ -5,7 +5,7 @@ open LibUtil;
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (parser
-    [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] -> {:expr| $lid:x |});
+    [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] -> {:exp| $lid:x |});
 
 (* [infix_kwds_filter]  *)  
 let rec infix_kwds_filter = parser
@@ -28,16 +28,16 @@ let rec infix_kwds_filter = parser
 
 
 (* very ad-hoc trick*)  
-(* let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) = *)
+(* let is_revised ~exp ~sem_exp_for_list:(x: Gram.t _) = *)
 (*   try begin *)
-(*        {:delete| Gram expr: ["["; x; "::"; expr; "]"] |}; *)
+(*        {:delete| Gram exp: ["["; x; "::"; exp; "]"] |}; *)
 (*       true *)
 (*   end with [ Not_found -> false ]; *)
-(* let mk_lang_meta fan_quots fan_quot fan_stru fan_expr fan_cstru fan_ctyp =  *)
-(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_expr  fan_cstru fan_ctyp  ; *)
+(* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_cstru fan_ctyp =  *)
+(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_cstru fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
-(*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:expr| begin $list:strs end |} ] ] *)
+(*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:exp| begin $list:strs end |} ] ] *)
 (*   fan_quot: *)
 (*     ["top" *)
 (*        [ "lang"; STRING{quot}-> begin      AstQuotation.default:= quot;  unit_literal _loc end  *)
@@ -52,13 +52,13 @@ let rec infix_kwds_filter = parser
 (*            unit_literal _loc *)
 (*        end ] ] END; *)
   (* fan_stru:[[STRING{file}; STRING{c} -> stru_of_file (file,c) ] ] *)
-  (* fan_expr: [[ STRING{file}; STRING{c}-> expr_of_file (file,c) ]] *)
+  (* fan_exp: [[ STRING{file}; STRING{c}-> exp_of_file (file,c) ]] *)
   (* fan_cstru: [[ STRING{file}; STRING{c}->  cstru_of_file (file,c) ]] *)
   (* fan_ctyp: [[STRING{file};STRING{c} ->  ctyp_of_file (file,c) ]] *)
 
 
   (* let mk_semi_list nt nts = *)
-  (*   with rec_expr *)
+  (*   with rec_exp *)
   (*   {:extend|Gram *)
   (*     nts:[ nt{b1};";";S{b2} -> {|$b1;$b2|} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
   (*   |}; *)

@@ -2,11 +2,11 @@
 {:ocaml| {:include| "src/Ast.ml"|}; |};
 
 (*
-{:N.expr| 3 + 4 |}
+{:N.exp| 3 + 4 |}
 
-{:N.expr| {:N.expr| 3 + 4 |}  |}
+{:N.exp| {:N.exp| 3 + 4 |}  |}
 
-{:N.expr| {:.Fan.Lang.Meta.N.expr| 3 |} |}
+{:N.exp| {:.Fan.Lang.Meta.N.exp| 3 |} |}
 
 *)
 

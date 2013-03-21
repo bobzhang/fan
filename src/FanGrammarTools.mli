@@ -8,12 +8,12 @@ val grammar_module_name : ident ref
 val gm : unit -> ident
 val mk_entry :
   name:name ->
-  pos:expr option -> levels:levels -> entry
+  pos:exp option -> levels:levels -> entry
 val mk_level :
   label:string option ->
-  assoc:expr option -> rules:rule list -> level
+  assoc:exp option -> rules:rule list -> level
 val mk_rule :
-  prod:symbol list -> action:expr option -> rule
+  prod:symbol list -> action:exp option -> rule
 val mk_symbol :
   ?pattern:patt option ->
   text:text -> styp:styp -> symbol
@@ -33,37 +33,37 @@ val make_ctyp : styp -> string -> ctyp
 
 val text_of_action :
   loc ->
-  symbol list -> ?action:expr -> string   -> string -> expr
+  symbol list -> ?action:exp -> string   -> string -> exp
 val mk_srules :
   loc ->
   string ->
-  rule list -> string -> (text list * expr) list
-val make_expr : (* name -> *) string -> text -> expr
-val make_expr_rules :
-    loc -> (* name -> *) (text list * expr) list -> string -> expr
+  rule list -> string -> (text list * exp) list
+val make_exp : (* name -> *) string -> text -> exp
+val make_exp_rules :
+    loc -> (* name -> *) (text list * exp) list -> string -> exp
 
-(* val expr_of_delete_rule : *)
-val expr_delete_rule:
-  loc -> name -> symbol list list  -> expr
+(* val exp_of_delete_rule : *)
+val exp_delete_rule:
+  loc -> name -> symbol list list  -> exp
       
 val mk_name : loc -> ident -> name
 val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
-val text_of_entry :   entry -> expr
+val text_of_entry :   entry -> exp
 val let_in_of_extend :
   loc ->
-  ident option -> name list option -> expr -> expr
+  ident option -> name list option -> exp -> exp
 val text_of_functorial_extend :
   loc ->
   ident option ->
-  name list option -> entry list -> expr
+  name list option -> entry list -> exp
 val mk_tok :
   loc ->
-  ?restrict:expr ->
+  ?restrict:exp ->
   pattern:patt -> styp -> symbol
 val sfold :
   ?sep:symbol ->
   loc ->
   string list ->
-  expr -> expr -> symbol -> symbol
+  exp -> exp -> symbol -> symbol

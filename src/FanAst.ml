@@ -11,10 +11,10 @@
 (*     (\*       Generally it's _loc to match with {:patt| ... |} quotations. *\) *)
 (*     (\*       The second location is the one to treat. *\\) *\) *)
 (*     (\* val meta_loc_patt : FanLoc.t -> FanLoc.t -> (\\* patt *\\)ep; *\) *)
-(*     (\*   (\\** The first location is where to put the returned expression. *\) *)
-(*     (\*       Generally it's _loc to match with {:expr| ... |} quotations. *\) *)
+(*     (\*   (\\** The first location is where to put the returned expession. *\) *)
+(*     (\*       Generally it's _loc to match with {:exp| ... |} quotations. *\) *)
 (*     (\*       The second location is the one to treat. *\\) *\) *)
-(*     (\* val meta_loc_expr : FanLoc.t -> FanLoc.t -> (\\* expr *\\)ep; *\) *)
+(*     (\* val meta_loc_exp : FanLoc.t -> FanLoc.t -> (\\* exp *\\)ep; *\) *)
 (*   val meta_loc: loc -> loc -> ep; *)
 (* end; *)
 

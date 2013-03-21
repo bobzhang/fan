@@ -57,7 +57,7 @@ val table_name:
     tables:(int array,int) Hashtbl.t -> counter:int ref -> int array -> string
     
 val output_byte : Buffer.t -> int -> unit
-val output_byte_array : int array -> expr
+val output_byte_array : int array -> exp
 val table : string * int array -> stru
 (* val mk_partition_name : int -> string *)
 
@@ -69,10 +69,10 @@ val partition:
 
 val best_final : bool array -> int option
 
-(* val call_state : ('a * 'b array * bool array) array -> int -> expr *)
+(* val call_state : ('a * 'b array * bool array) array -> int -> exp *)
 (* val gen_state : *)
 (*   ('a * 'b array * bool array) array -> *)
 (*   loc -> int -> int * int array * bool array -> binding *)
 val gen_definition :
-  loc -> (regexp * expr) list -> expr
+  loc -> (regexp * exp) list -> exp
     

@@ -108,7 +108,7 @@ let apply () =
          [([`Skeyword "ELSE";
            `Snterm (Gram.obj (exp : 'exp Gram.t ));
            `Snterm (Gram.obj (endif : 'endif Gram.t ))],
-            ("Gram.mk_action\n  (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  -> (e : 'else_exp ))\n",
+            ("Gram.mk_action (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  -> (e : 'else_exp ))\n",
               (Gram.mk_action
                  (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  ->
                     (e : 'else_exp )))));
@@ -214,7 +214,7 @@ let apply () =
            `Skeyword "THEN";
            `Sself;
            `Snterm (Gram.obj (else_exp : 'else_exp Gram.t ))],
-            ("Gram.mk_action\n  (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _ \n     (_loc : FanLoc.t)  -> (if is_defined i then e1 else e2 : 'exp ))\n",
+            ("Gram.mk_action\n  (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _  (_loc : FanLoc.t) \n     -> (if is_defined i then e1 else e2 : 'exp ))\n",
               (Gram.mk_action
                  (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _ 
                     (_loc : FanLoc.t)  ->
@@ -224,7 +224,7 @@ let apply () =
           `Skeyword "THEN";
           `Sself;
           `Snterm (Gram.obj (else_exp : 'else_exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _ \n     (_loc : FanLoc.t)  -> (if is_defined i then e2 else e1 : 'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _  (_loc : FanLoc.t) \n     -> (if is_defined i then e2 else e1 : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'else_exp)  (e1 : 'exp)  _  (i : 'uident)  _ 
                    (_loc : FanLoc.t)  ->

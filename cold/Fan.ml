@@ -62,16 +62,15 @@ let _ =
     ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "module_exp") module_exp_quot
-    ~mexp:(Filters.me#module_exp) ~mpatt:(Filters.mp#module_exp)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#module_exp) ~mpatt:(Filters.mp#module_exp) ~exp_filter
+    ~patt_filter
 let _ =
   add_quotation (d, "class_type") class_type_quot
-    ~mexp:(Filters.me#class_type) ~mpatt:(Filters.mp#class_type)
-    ~exp_filter ~patt_filter
+    ~mexp:(Filters.me#class_type) ~mpatt:(Filters.mp#class_type) ~exp_filter
+    ~patt_filter
 let _ =
-  add_quotation (d, "class_exp") class_exp_quot
-    ~mexp:(Filters.me#class_exp) ~mpatt:(Filters.mp#class_exp)
-    ~exp_filter ~patt_filter
+  add_quotation (d, "class_exp") class_exp_quot ~mexp:(Filters.me#class_exp)
+    ~mpatt:(Filters.mp#class_exp) ~exp_filter ~patt_filter
 let _ =
   add_quotation (d, "class_sig_item") class_sig_item_quot
     ~mexp:(Filters.me#class_sig_item) ~mpatt:(Filters.mp#class_sig_item)

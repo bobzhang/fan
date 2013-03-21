@@ -4,7 +4,7 @@
 (* module MetaLocVar : FanAst.META_LOC= struct *)
 (*   let meta_loc _loc _ = {:patt| $(lid:!FanLoc.name) |}; *)
 (*   (\* let meta_loc_patt _loc _ = {:patt| $(lid:!FanLoc.name) |}; *\) *)
-(*   (\* let meta_loc_expr _loc _ = {:expr| $(lid:!FanLoc.name) |}; *\) *)
+(*   (\* let meta_loc_exp _loc _ = {:exp| $(lid:!FanLoc.name) |}; *\) *)
 (* end; *)
     
 (* module MetaLoc *)
@@ -60,16 +60,16 @@
 
 let meta_loc _loc location =
   let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
-  {:expr| FanLoc.of_tuple
+  {:exp| FanLoc.of_tuple
     ($`str:a, $`int:b, $`int:c, $`int:d,
      $`int:e, $`int:f, $`int:g,
-     $(if h then {:expr| true |} else {:expr| false |} )) |};
+     $(if h then {:exp| true |} else {:exp| false |} )) |};
   
 (* module MetaGhostLoc : FanAst.META_LOC= struct (\* MetaAction *\) *)
 (*   (\* let meta_loc_patt _loc _ = *\) *)
 (*   (\*   {:patt| FanLoc.ghost |}; (\\* FIXME *\\) *\) *)
 (*   (\* let meta_loc_patt _loc _ = failwith "MetaGhostLoc.meta_loc_patt not implemented"; *\) *)
-(*   let meta_loc(\* _expr *\) _loc _ = {:expr| FanLoc.ghost |}; *)
+(*   let meta_loc(\* _exp *\) _loc _ = {:exp| FanLoc.ghost |}; *)
 (* end; *)
 
 

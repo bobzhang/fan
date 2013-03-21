@@ -14,10 +14,9 @@ let mk_variant_eq _cons =
                      `App
                        (_loc,
                          (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
-                         y)) ~f:(fun { exp;_}  -> exp) ls : FSig.ty_info
-                                                                list -> 
-                                                                exp )
-let mk_tuple_eq exprs = mk_variant_eq "" exprs
+                         y)) ~f:(fun { exp;_}  -> exp) ls : FSig.ty_info list
+                                                              -> exp )
+let mk_tuple_eq exps = mk_variant_eq "" exps
 let mk_record_eq: FSig.record_col list -> exp =
   fun cols  ->
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant_eq "")
@@ -60,14 +59,14 @@ let (gen_map,gen_map2) =
         (params |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { exp; pat0;_}  res  ->
-         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res))
-      params result in
+         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res)) params
+      result in
   let mk_tuple params =
     let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
       (fun { exp; pat0;_}  res  ->
-         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res))
-      params result in
+         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res)) params
+      result in
   let mk_record cols =
     let result =
       (cols |>
@@ -164,8 +163,8 @@ let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("MetaObj", gen_meta)
 let extract info =
-  (info |> (List.map (fun { name_exp; id_exp;_}  -> [name_exp; id_exp])))
-    |> List.concat
+  (info |> (List.map (fun { name_exp; id_exp;_}  -> [name_exp; id_exp]))) |>
+    List.concat
 let mkfmt pre sep post fields =
   `App
     (_loc,
@@ -213,8 +212,7 @@ let mk_variant_iter _cons params =
        let lst =
          params |>
            (List.map
-              (fun { name_exp; id_exp;_}  ->
-                 `App (_loc, name_exp, id_exp))) in
+              (fun { name_exp; id_exp;_}  -> `App (_loc, name_exp, id_exp))) in
        seq_sem lst : exp )
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =

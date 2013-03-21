@@ -1,6 +1,6 @@
 
 open Ast;
-#default_quotation "expr";;
+#default_quotation "exp";;
 class primitive =  object
   method int _loc (i:int) : ep =  {|$`int:i|};
   method int32 _loc (i:int32) : ep = {|$`int32:i|};
@@ -10,7 +10,7 @@ class primitive =  object
   method string _loc (i:string): ep = {|$`str:i|};
   method char _loc (i:char) : ep = {|$`chr:i|};
   method unit _loc (_:unit) : ep = {|()|};
-  (*default use [meta_loc] for expression*)   
+  (*default use [meta_loc] for expession*)   
   method loc _loc (_l:loc) : ep=
     `Id (_loc, (`Lid (_loc, !FanLoc.name)));
   method ant (_loc:loc) (x:ant) : ep = (x:>ep) ;  

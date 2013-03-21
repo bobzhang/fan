@@ -261,12 +261,12 @@ let fun_args _loc args body =
     List.fold_right
       (fun arg  body  -> `Fun (_loc, (`Case (_loc, arg, body)))) args body
 let _loc = FanLoc.ghost
-let mk_record label_exprs =
-  (let rec_exprs =
+let mk_record label_exps =
+  (let rec_exps =
      List.map
        (fun (label,exp)  -> `RecBind (_loc, (`Lid (_loc, label)), exp))
-       label_exprs in
-   `Record (_loc, (sem_of_list rec_exprs)) : exp )
+       label_exps in
+   `Record (_loc, (sem_of_list rec_exps)) : exp )
 let failure =
   `App
     (_loc, (`Id (_loc, (`Lid (_loc, "raise")))),
@@ -448,8 +448,8 @@ let mee_record_semi a b =
            (`App
               (_loc, (`Vrn (_loc, "Sem")),
                 (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
-let mk_record_ee label_exprs =
-  (label_exprs |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
+let mk_record_ee label_exps =
+  (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
     |>
     (fun es  ->
        `App
@@ -473,8 +473,8 @@ let currying cases ~arity  =
   if arity >= 2
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in
-    let exprs = List.map (fun s  -> `Id (_loc, (`Lid (_loc, s)))) names in
-    let x = tuple_com exprs in names <+ (`Match (_loc, x, cases))
+    let exps = List.map (fun s  -> `Id (_loc, (`Lid (_loc, s)))) names in
+    let x = tuple_com exps in names <+ (`Match (_loc, x, cases))
   else `Fun (_loc, cases)
 let unknown len =
   if len = 0

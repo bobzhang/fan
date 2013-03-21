@@ -1,4 +1,4 @@
-#default_quotation "expr";;
+#default_quotation "exp";;
 let _loc = FanLoc.ghost;
 open LibUtil;
 open AstLoc;
@@ -6,7 +6,7 @@ open Basic;
 
 (*
    A very naive lifting. It does not do any parsing at all
-   It is applied to both expr and patt
+   It is applied to both exp and patt
    {[
    of_str "`A";
    Vrn  "A" || Vrn "A"
@@ -24,7 +24,7 @@ open Basic;
 let of_str s =
   let len = String.length s in 
   if len = 0 then
-    invalid_arg "[expr|patt]_of_str len=0"
+    invalid_arg "[exp|patt]_of_str len=0"
   else
     match s.[0] with
     [ '`'->   
@@ -35,7 +35,7 @@ let of_str s =
 
 
 (*
-   Applied to both expression and pattern
+   Applied to both expession and pattern
    {[
     of_ident_number <:ident< X >> 3 |> eprint;
     X a0 a1 a2
@@ -186,7 +186,7 @@ let mk_record ?(arity=1) cols  =
   let mk_list off = 
     List.mapi (fun i -> fun  [ ({FSig.col_label;_}:FSig.col) ->
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
-      {:rec_expr| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
+      {:rec_exp| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
   let res = zfold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )

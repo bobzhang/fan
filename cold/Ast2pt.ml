@@ -16,7 +16,7 @@ let rec normalize_acc =
   | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
 let rec sep_dot_exp acc =
   function
-  | `Dot (_loc,e1,e2) -> sep_dot_exp (sep_dot_exp  acc e2) e1
+  | `Dot (_loc,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
   | `Id (loc,`Uid (_,s)) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
@@ -540,8 +540,7 @@ let rec exp (x : exp) =
       mkexp loc
         (Pexp_function
            (lab, None,
-             [((patt po),
-                (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))]))
+             [((patt po), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))]))
   | `Fun (loc,`Case (_,`OptLablS (_,`Lid (sloc,lab)),e2)) ->
       mkexp loc
         (Pexp_function
@@ -561,20 +560,17 @@ let rec exp (x : exp) =
       mkexp loc
         (Pexp_function
            (("?" ^ lab), None,
-             [((patt p),
-                (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
+             [((patt p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),e2)) ->
       let lab = paolab lab p in
       mkexp loc
-        (Pexp_function
-           (("?" ^ lab), (Some (exp e1)), [((patt p), (exp e2))]))
+        (Pexp_function (("?" ^ lab), (Some (exp e1)), [((patt p), (exp e2))]))
   | `Fun (loc,`CaseWhen (_,`OptLablExpr (_,`Lid (_,lab),p,e1),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
            (("?" ^ lab), (Some (exp e1)),
-             [((patt p),
-                (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
+             [((patt p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((exp e1), (exp e2), (Some (exp e3))))
@@ -641,8 +637,7 @@ let rec exp (x : exp) =
       let rec mkideexp (x : rec_exp) acc =
         match x with
         | `Sem (_,x,y) -> mkideexp x (mkideexp y acc)
-        | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (exp e)) ::
-            acc
+        | `RecBind (_,`Lid (sloc,s),e) -> ((with_loc s sloc), (exp e)) :: acc
         | _ -> assert false in
       mkexp loc (Pexp_override (mkideexp iel []))
   | `Record (loc,lel) -> mkexp loc (Pexp_record ((mklabexp lel), None))
@@ -683,8 +678,7 @@ let rec exp (x : exp) =
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
   | `Vrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
-      let e2 = `Seq (loc, el) in
-      mkexp loc (Pexp_while ((exp e1), (exp e2)))
+      let e2 = `Seq (loc, el) in mkexp loc (Pexp_while ((exp e1), (exp e2)))
   | `LetOpen (_loc,i,e) -> mkexp _loc (Pexp_open ((long_uident i), (exp e)))
   | `Package_exp (_loc,`Constraint (_,me,pt)) ->
       mkexp _loc
@@ -692,8 +686,7 @@ let rec exp (x : exp) =
            ((mkexp _loc (Pexp_pack (module_exp me))),
              (Some (mktyp _loc (Ptyp_package (package_type pt)))), None))
   | `Package_exp (loc,me) -> mkexp loc (Pexp_pack (module_exp me))
-  | `LocalTypeFun (loc,`Lid (_,i),e) ->
-      mkexp loc (Pexp_newtype (i, (exp e)))
+  | `LocalTypeFun (loc,`Lid (_,i),e) -> mkexp loc (Pexp_newtype (i, (exp e)))
   | x -> errorf (loc_of x) "exp:%s" (dump_exp x)
 and label_exp (x : exp) =
   match x with

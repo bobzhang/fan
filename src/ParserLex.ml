@@ -57,7 +57,7 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 
 
 let d = `Absolute ["Fan";"Lang";"Lex"];
-AstQuotation.of_expr
+AstQuotation.of_exp
   ~name:(d,"lex") ~entry:lex ;
 AstQuotation.of_stru
     ~name:(d,"reg")

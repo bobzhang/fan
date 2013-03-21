@@ -1,6 +1,6 @@
 
 (* open Ast; *)
-#default_quotation "class_expr";;
+#default_quotation "class_exp";;
 (* INCLUDE "src/Lib/CommonStructure.ml"; *)
 
 (* let rec view_app al =  fun *)

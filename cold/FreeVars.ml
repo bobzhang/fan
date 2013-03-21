@@ -30,29 +30,29 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   method add_patt p = {< env = fold_pattern_vars SSet.add p env >};
   method add_binding bi = {< env = fold_binding_vars SSet.add bi env >};
 
-  method! expr = fun
-  [ {:expr| $lid:s |} | {:expr| ~ $s |} | {:expr| ? $s |} ->
+  method! exp = fun
+  [ {:exp| $lid:s |} | {:exp| ~ $s |} | {:exp| ? $s |} ->
     if SSet.mem s env then o else {< free = f s free >}
       
-  | {:expr| let $bi in $e |} ->
-      (((o#add_binding bi)#expr e)#set_env env)#binding bi
+  | {:exp| let $bi in $e |} ->
+      (((o#add_binding bi)#exp e)#set_env env)#binding bi
         
-  | {:expr| let rec $bi in $e |} ->
-      (((o#add_binding bi)#expr e)#binding bi)#set_env env
+  | {:exp| let rec $bi in $e |} ->
+      (((o#add_binding bi)#exp e)#binding bi)#set_env env
         
-  | {:expr| for $s = $e1 $to:_ $e2 do  $e3 done |} ->
-      ((((o#expr e1)#expr e2)#add_atom s)#expr e3)#set_env env
+  | {:exp| for $s = $e1 $to:_ $e2 do  $e3 done |} ->
+      ((((o#exp e1)#exp e2)#add_atom s)#exp e3)#set_env env
         
-  | {:expr| $id:_ |} | {:expr| new $_ |} -> o
+  | {:exp| $id:_ |} | {:exp| new $_ |} -> o
         
-  | {:expr| object ($p) $cst end |} ->
+  | {:exp| object ($p) $cst end |} ->
       ((o#add_patt p)#cstru cst)#set_env env
         
-  | e -> super#expr e ];
+  | e -> super#exp e ];
 
   method! case = fun
   [ {:case| $pat:p when $e1 -> $e2 |} ->
-    (((o#add_patt p)#expr e1)#expr e2)#set_env env
+    (((o#add_patt p)#exp e1)#exp e2)#set_env env
   | m -> super#case m ];
 
   method! stru = fun
@@ -64,33 +64,33 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
       (o#add_binding bi)#binding bi
   | st -> super#stru st ];
 
-  method! class_expr = fun
-  [ {:class_expr| fun $p -> $ce |} ->
-    ((o#add_patt p)#class_expr ce)#set_env env
-  | {:class_expr| let $bi in $ce |} ->
-      (((o#binding bi)#add_binding bi)#class_expr ce)#set_env env
-  | {:class_expr| let rec $bi in $ce |} ->
-      (((o#add_binding bi)#binding bi)#class_expr ce)#set_env env
-  | {:class_expr| object ($p) $cst end |} ->
+  method! class_exp = fun
+  [ {:class_exp| fun $p -> $ce |} ->
+    ((o#add_patt p)#class_exp ce)#set_env env
+  | {:class_exp| let $bi in $ce |} ->
+      (((o#binding bi)#add_binding bi)#class_exp ce)#set_env env
+  | {:class_exp| let rec $bi in $ce |} ->
+      (((o#add_binding bi)#binding bi)#class_exp ce)#set_env env
+  | {:class_exp| object ($p) $cst end |} ->
       ((o#add_patt p)#cstru cst)#set_env env
-  | ce -> super#class_expr ce ];
+  | ce -> super#class_exp ce ];
 
   method! cstru = fun
   [ {:cstru| inherit $override:_ $_ |} as cst -> super#cstru cst
   | {:cstru| inherit $override:_ $ce as $s |} ->
-      (o#class_expr ce)#add_atom s
+      (o#class_exp ce)#add_atom s
   | {:cstru| val $override:_ $mutable:_ $s = $e |} ->
-      (o#expr e)#add_atom s
+      (o#exp e)#add_atom s
   | {:cstru| val virtual $mutable:_ $s : $t |} ->
       (o#ctyp t)#add_atom s
   | cst -> super#cstru cst ];
 
-  method! module_expr = fun
-  [ {:module_expr| struct $st end |} ->
+  method! module_exp = fun
+  [ {:module_exp| struct $st end |} ->
     (o#stru st)#set_env env
-  | me -> super#module_expr me ];
+  | me -> super#module_exp me ];
 end;
 
 let free_vars env_init e =
-  let fold = new fold_free_vars SSet.add ~env_init SSet.empty in (fold#expr e)#free;
+  let fold = new fold_free_vars SSet.add ~env_init SSet.empty in (fold#exp e)#free;
 

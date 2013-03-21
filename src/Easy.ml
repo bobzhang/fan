@@ -13,7 +13,7 @@ let _loc = FanLoc.ghost ;
 let gen_stru
     ?module_name
     ?(arity=1)
-    ?(trail= {:expr| failwith "arity >= 2 in other branches" |} )
+    ?(trail= {:exp| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
     ~id:(id:basic_id_transform)  ~names  
     (* you must specify when arity >=2 *)
@@ -45,7 +45,7 @@ let gen_stru
                ~left_type_id
                ~left_type_variable
                ~mk_record
-               (normal_simple_expr_of_ctyp
+               (normal_simple_exp_of_ctyp
                   ~arity ~names ~mk_tuple
                   ~right_type_id
                   ~left_type_id ~right_type_variable)
@@ -54,7 +54,7 @@ let gen_stru
 let gen_object
     ?module_name
     ?(arity=1)
-    ?(trail= {:expr| failwith "arity >= 2 in other branches" |} )
+    ?(trail= {:exp| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
     ~kind
     ~base
@@ -66,7 +66,7 @@ let gen_object
       let right_type_variable =
         `Exp (fun
           [v -> let v = basic_transform left_type_variable v
-          in  {:expr| $lid:v self |} ]) ;
+          in  {:exp| $lid:v self |} ]) ;
      let left_type_id  = `Pre "";
      let right_type_id  =
        `Obj (basic_transform left_type_id) ;
@@ -86,7 +86,7 @@ let gen_object
              ~mk_variant
              base
              class_name
-             (obj_simple_expr_of_ctyp
+             (obj_simple_exp_of_ctyp
                 ~right_type_id ~left_type_variable ~right_type_variable
                  ~names ~arity ~mk_tuple  )
              kind)

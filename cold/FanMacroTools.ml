@@ -30,8 +30,7 @@ let define ~exp  ~patt  eo x =
                          match __fan_0 with
                          | `Uid _ ->
                              (((new FanObjs.reloc) _loc)#exp e : 'exp )
-                         | _ ->
-                             failwith "((new FanObjs.reloc) _loc)#exp e\n"))))]));
+                         | _ -> failwith "((new FanObjs.reloc) _loc)#exp e\n"))))]));
         Gram.extend_single (patt : 'patt Gram.t )
           ((Some (`Level "simple")),
             (None, None,
@@ -58,7 +57,7 @@ let define ~exp  ~patt  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'exp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in\n            ((new Expr.subst) _loc env)#exp e\n          else incorrect_number _loc el sl : 'exp )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n\")\n",
+                 ("Gram.mk_action\n  (fun (param : 'exp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in ((new Expr.subst) _loc env)#exp e\n          else incorrect_number _loc el sl : 'exp )\n     | _ ->\n         failwith\n           \"let el = match param with | `Tup (_loc,e) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Expr.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n\")\n",
                    (Gram.mk_action
                       (fun (param : 'exp)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->

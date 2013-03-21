@@ -277,7 +277,7 @@ let output_byte_array v =  begin
     if i land 15 = 15 then Buffer.add_string b "\\\n    " else ()
   done;
   let s = Buffer.contents b ;
-  {:expr| $str:s |}
+  {:exp| $str:s |}
 end;
 
 let table (n,t) = {:stru| let $lid:n = $(output_byte_array t) |};
@@ -288,14 +288,14 @@ let binding_table (n,t) = {:binding|  $lid:n = $(output_byte_array t) |};
 let partition ~counter ~tables (i,p) =
   let rec gen_tree = function 
     [ Lte (i,yes,no) ->
-	{:expr| if (c <= $`int:i) 
+	{:exp| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
-	{:expr| $`int:i |}
+	{:exp| $`int:i |}
     | Table (offset, t) ->
-	let c = if offset = 0 then {:expr| c |} 
-	else {:expr| (c - $`int:offset) |} in
-	{:expr| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+	let c = if offset = 0 then {:exp| c |} 
+	else {:exp| (c - $`int:offset) |} in
+	{:exp| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
   let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
   {:stru| let $lid:f = fun c -> $body |};
@@ -303,14 +303,14 @@ let partition ~counter ~tables (i,p) =
 let binding_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 
     [ Lte (i,yes,no) ->
-	{:expr| if (c <= $`int:i) 
+	{:exp| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
-	{:expr| $`int:i |}
+	{:exp| $`int:i |}
     | Table (offset, t) ->
-	let c = if offset = 0 then {:expr| c |} 
-	else {:expr| (c - $`int:offset) |} in
-	{:expr| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+	let c = if offset = 0 then {:exp| c |} 
+	else {:exp| (c - $`int:offset) |} in
+	{:exp| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
   let body = gen_tree
       (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
@@ -333,7 +333,7 @@ let best_final final =
  *)  
 let gen_definition _loc l =
 
-  let call_state auto state = with expr
+  let call_state auto state = with exp
     let (_,trans,final) = auto.(state) in
     if Array.length trans = 0 then
       match best_final final with
@@ -356,12 +356,12 @@ let gen_definition _loc l =
          [{:case| _ -> $(id:gm()).backtrack lexbuf|}]) in
     
     let body =
-      {:expr|
+      {:exp|
       match ($lid:p ($(id:gm()).next lexbuf)) with
       [ $cases ]  
       (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
       |} in
-    let ret (body:expr) =
+    let ret (body:exp) =
       {:binding| $lid:f = fun lexbuf -> $body |} in
     match best_final final with
     [ None -> Some (ret body)
@@ -369,7 +369,7 @@ let gen_definition _loc l =
 	if Array.length trans = 0 then (* {:binding||} *) None else
 	Some
           (ret
-	     {:expr| begin  $(id:gm()).mark lexbuf $`int:i;  $body end |}) ] in
+	     {:exp| begin  $(id:gm()).mark lexbuf $`int:i;  $body end |}) ] in
 
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
@@ -405,11 +405,11 @@ let gen_definition _loc l =
   let rest =
     binds tables
       (binds parts
-       {:expr|
+       {:exp|
        let $rec:b $states in
        ( $(id:gm()).start lexbuf;
          match $(lid:mk_state_name 0) lexbuf with
          [ $cases ] )|}) in
-  {:expr| fun lexbuf -> $rest |};
+  {:exp| fun lexbuf -> $rest |};
 
 

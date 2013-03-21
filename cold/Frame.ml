@@ -38,8 +38,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        let ls = list_of_star t [] in
        let len = List.length ls in
        let patt = EP.mk_tuple ~arity ~number:len in
-       let tys =
-         List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
+       let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
        names <+ (currying [`Case (_loc, patt, (mk_tuple tys))] ~arity)
    | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
   exp )
@@ -65,8 +64,8 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                  (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
       | `Tup _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
-            (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple
-               ~right_type_id ~left_type_id ~right_type_variable cxt) ty
+            (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple ~right_type_id
+               ~left_type_id ~right_type_variable cxt) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
             (FanObjs.dump_ctyp ty) in
@@ -181,8 +180,8 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
     | `Some (_,xs) ->
         let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
-  ~destination  ~result_type  simple_exp_of_ctyp exp_of_ctyp
-  exp_of_variant tydcl =
+  ~destination  ~result_type  simple_exp_of_ctyp exp_of_ctyp exp_of_variant
+  tydcl =
   (match (tydcl : typedecl ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -198,8 +197,8 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                         | { col_label; col_mutable; col_ctyp } ->
                             {
                               re_info =
-                                (mapi_exp ~arity ~names
-                                   ~f:simple_exp_of_ctyp i col_ctyp);
+                                (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp
+                                   i col_ctyp);
                               re_label = col_label;
                               re_mutable = col_mutable
                             }) cols in

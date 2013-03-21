@@ -1,7 +1,7 @@
 open FanOps;
 
 (* open FanAst; *)
-#default_quotation     "expr";;
+#default_quotation     "exp";;
 
 
 (* +-----------------------------------------------------------------+
@@ -59,8 +59,8 @@ let rec pattern_eq_expression p e =
 (* +-----------------------------------------------------------------+
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
-(* loc -> patt -> expr -> expr -> expr     *)
-let map loc (p:patt) (e:expr) (l:expr) :expr =
+(* loc -> patt -> exp -> exp -> exp     *)
+let map loc (p:patt) (e:exp) (l:exp) :exp =
   match (p, e) with
   [ ({:patt| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
@@ -103,12 +103,12 @@ let bad_patt _loc =
 (* Environment is a [string*patt] pair,
 
    Try to convert the 
-   [expr] node into [patt] node.
-   when do the conversion, if the expr node has an identifier which
+   [exp] node into [patt] node.
+   when do the conversion, if the exp node has an identifier which
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop (x:expr)= with {patt:expr;expr:patt}
+  let rec loop (x:exp)= with {patt:exp;exp:patt}
     match x with
     [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
     (* | {| |} -> {@loc| |} *)
@@ -123,7 +123,7 @@ let substp loc env =
     | {| $tup:x |} -> {@loc| $(tup:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = with {patt:rec_expr;expr:patt} fun
+        let rec substbi = with {patt:rec_exp;exp:patt} fun
           [ {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
             (* {@loc| $(substbi b1); $(substbi b2) |} *)
@@ -133,20 +133,20 @@ let substp loc env =
     | _ -> bad_patt loc ] in loop;
 
 (*
-  [env] is a list of [string*expr],
+  [env] is a list of [string*exp],
 
-  traverse the [expr] node
-  when the identifier in pos expr in the expr has a speical meaning, using that instead
-  when the identifier in pos patt in the expr has a special meaning,
-  try to convert the expr meaning into patt and use that instead
+  traverse the [exp] node
+  when the identifier in pos exp in the exp has a speical meaning, using that instead
+  when the identifier in pos patt in the exp has a special meaning,
+  try to convert the exp meaning into patt and use that instead
  *)  
 class subst loc env = object
   inherit FanObjs.reloc loc as super;
-  method! expr =
+  method! exp =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
         try List.assoc x env with
-        [ Not_found -> super#expr e ]
+        [ Not_found -> super#exp e ]
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
         try
           let loc = loc_of (List.assoc x env) in
@@ -155,11 +155,11 @@ class subst loc env = object
             ($`str:a, $`int:b, $`int:c, $`int:d,
              $`int:e, $`int:f, $`int:g,
              $(if h then {| true |} else {| false |} )) |}
-        with [ Not_found -> super#expr e ]
-    | e -> super#expr e ];
+        with [ Not_found -> super#exp e ]
+    | e -> super#exp e ];
   method! patt =  fun
     [ {:patt| $lid:x |} | {:patt| $uid:x |} as p ->
-      (* convert expression into pattern only *)
+      (* convert expession into pattern only *)
        try substp loc [] (List.assoc x env) with 
        [ Not_found -> super#patt p ]
     | p -> super#patt p ];
@@ -168,7 +168,7 @@ end;
 
 class type antiquot_filter =object
   inherit Objs.map;
-  method get_captured_variables: list (expr * expr);
+  method get_captured_variables: list (exp * exp);
   method clear_captured_variables: unit;
 end;
   
@@ -221,12 +221,12 @@ end;
 
 
 (*
-  Given [args] and [body], generate an expression
+  Given [args] and [body], generate an expession
   when [args] is nil, adding a [unit]
 
   Examples:
   {[
-  fun_args _loc [{:patt|a|};{:patt|c|};{:patt|b|}] {|c|} |> FanBasic.p_expr f;
+  fun_args _loc [{:patt|a|};{:patt|c|};{:patt|b|}] {|c|} |> FanBasic.p_exp f;
   fun a  c  b  -> c
   ]}
  *)
@@ -247,9 +247,9 @@ let _loc = FanLoc.ghost ;
 (*    and [(~-.)] as a prefix [(-.)] *)
 (*    {[ *)
 (*    mkumin _loc "-." {| 3 |}; *)
-(*    - : expr = Int (, "-3") *)
+(*    - : exp = Int (, "-3") *)
 (*    mkumin _loc "-." {| a |}; *)
-(*    - : expr = *)
+(*    - : exp = *)
 (*    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a"))) *)
 (*    ]} *)
 (*  *\)   *)
@@ -273,18 +273,18 @@ let _loc = FanLoc.ghost ;
   Example:
   {[
   mk_record [("a",{|3|});("b",{|4|})] ;
-  - : expr = { a = 3; b = 4 }
+  - : exp = { a = 3; b = 4 }
 
   ]}
   FIXME: label is lid, it can be more precise
   [mk_record] becomes a bit complex when you have to consider
   the arity
  *)
-let mk_record label_exprs : expr=
-  let rec_exprs = List.map (fun (label, expr) ->
-    {:rec_expr| $lid:label = $expr |} ) label_exprs in
-  `Record (_loc, (sem_of_list rec_exprs));
-  (* {| { $list:rec_exprs } |} *)
+let mk_record label_exps : exp=
+  let rec_exps = List.map (fun (label, exp) ->
+    {:rec_exp| $lid:label = $exp |} ) label_exps in
+  `Record (_loc, (sem_of_list rec_exps));
+  (* {| { $list:rec_exps } |} *)
 
 
 (* TBD *)
@@ -296,7 +296,7 @@ let failure =
   Example:
   {[
   ["a";"b"] <+ {|3|};
-  - : expr = fun a  b  -> 3
+  - : exp = fun a  b  -> 3
   ]}
  *)
 let (<+) names acc  =
@@ -306,7 +306,7 @@ let (<+) names acc  =
   Example:
   {[
   [{:patt|a|}; {:patt|b|} ] <+< {|3|};
-  - : expr = fun a  b  -> 3
+  - : exp = fun a  b  -> 3
   ]}
  *)  
 let (<+<) patts acc =
@@ -409,9 +409,9 @@ let mee_of_str s =
                 (`Com (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
          
          `ExId (_loc, (`Uid (_loc, "A")))
-         {:expr| `Uid (_loc,"A") |}
-         {:expr| `ExId (_loc, (`Uid (_loc, "A"))) |}
-         {:expr| {:expr| A |}|}
+         {:exp| `Uid (_loc,"A") |}
+         {:exp| `ExId (_loc, (`Uid (_loc, "A"))) |}
+         {:exp| {:exp| A |}|}
          {| {| A |}|}
        *)
 
@@ -507,15 +507,15 @@ let mk_tuple_ee = fun
 (*
   Example:
   {[
-  mee_record_col "a" {|3|} = {| {:rec_expr| a = $($({|3|})) |}|};
+  mee_record_col "a" {|3|} = {| {:rec_exp| a = $($({|3|})) |}|};
   ]}
  *)
-let mee_record_col label expr =
-  {| {:rec_expr| $(lid:($str:label)) = $($expr) |}|} ;
+let mee_record_col label exp =
+  {| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} ;
 
 
 let mee_record_semi a b =
-  {| {:rec_expr| $($a);$($b) |} |};
+  {| {:rec_exp| $($a);$($b) |} |};
 
 
 (*
@@ -524,22 +524,22 @@ let mee_record_semi a b =
   mk_record_ee [("a",{|3|})] = {| {| { a = $($({|3|})) }|}|};
   ]}
  *)  
-let mk_record_ee label_exprs = 
-  label_exprs
-  |> List.map (fun (label,expr) -> mee_record_col label expr)
+let mk_record_ee label_exps = 
+  label_exps
+  |> List.map (fun (label,exp) -> mee_record_col label exp)
   |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} );
 
     
 
 (* Mainly used to overcome the value restriction
    {[
-    eta_expand {|f |} 3 |> FanBasic.p_expr f;
+    eta_expand {|f |} 3 |> FanBasic.p_exp f;
     fun a0  a1  a2  -> f a0 a1 a2
    ]}
  *)
-let eta_expand (expr:expr) number : expr =
+let eta_expand (exp:exp) number : exp =
   let names = List.init number (fun i -> x ~off:0 i ) in
-  names <+ (expr +> names );
+  names <+ (exp +> names );
 
 
 (*
@@ -553,7 +553,7 @@ let eta_expand (expr:expr) number : expr =
   ]}
   
  *)
-let gen_curry_n (acc:expr) ~arity cons n : expr =
+let gen_curry_n (acc:exp) ~arity cons n : exp =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {:patt| $(id:xid ~off:i j) |})) in
   let pat = of_str cons in
@@ -584,10 +584,10 @@ let currying cases ~arity =
   let cases = or_of_list cases in (* FIXME when cases is []*)
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
-    let exprs = List.map (fun s-> {| $lid:s |} ) names in
-    let x = tuple_com exprs in
+    let exps = List.map (fun s-> {| $lid:s |} ) names in
+    let x = tuple_com exps in
     names <+ {| match $x with [ $cases ]|} 
-    (* names <+ {| match $(tuple_com exprs) with [ $list:cases ] |} *)
+    (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
   else {| fun [ $cases ]|};
       (* {| fun [ $list:cases ] |} *)
 
@@ -599,7 +599,7 @@ let unknown len =
 
   
 (* let normalize = object *)
-(*   val expr:Ast.expr; *)
+(*   val exp:Ast.exp; *)
 (*   inherit FanAst.fold as super; *)
 (*   method! patt = with "patt" fun *)
 (*     [ {| $_ |} -> {| "_" |} *)
@@ -620,34 +620,34 @@ let unknown len =
     
 (* let rec normalize = let _loc = FanLoc.ghost in with "patt" fun *)
 (*   [ {| _ |} -> {|"_"|} *)
-(*   | {| $id:_|} -> {:expr| "_"|} *)
+(*   | {| $id:_|} -> {:exp| "_"|} *)
 (*   | {| ($p as $_) |} -> normalize p *)
-(*   | {| $p1 $p2 |} -> {:expr| $(normalize p1) ^ $(normalize p2) |} *)
-(*   | {| [| $p |]|} -> {:expr| "[|"^ $(normalize p) ^ "|]"|} (\* FIXME ^$ does not work *\) *)
-(*   | {| $p1;$p2 |} -> {:expr| $(normalize p1) ^ ";" ^  $(normalize p2) |} *)
-(*   | {| $p1,$p2|} ->  {:expr| $(normalize p1) ^ "," ^ $(normalize p2) |} *)
-(*   | {| $chr:x |} -> {:expr| "'" ^ String.make 1 $chr:x ^ "'" |} *)
-(*   | {| $int:x |} -> {:expr| $str:x |} *)
-(*   | {| $int32:x |} -> {:expr| $str:x |} *)
-(*   | {| $int64:x |} -> {:expr| $str:x |} *)
-(*   | {| $nativeint:x |} -> {:expr| "\"" ^ $str:x ^ "\""|}  *)
-(*   | {| $str:s |} -> {:expr| $str:s |} *)
-(*   | {| lazy $p |} -> {:expr| "lazy" ^ $(normalize p)|} *)
-(*   | {| (module $s) |}  -> {:expr| "(module" ^ $str:s ^")"|} *)
-(*   | {| $flo:x |} -> {:expr| $str:x|} *)
+(*   | {| $p1 $p2 |} -> {:exp| $(normalize p1) ^ $(normalize p2) |} *)
+(*   | {| [| $p |]|} -> {:exp| "[|"^ $(normalize p) ^ "|]"|} (\* FIXME ^$ does not work *\) *)
+(*   | {| $p1;$p2 |} -> {:exp| $(normalize p1) ^ ";" ^  $(normalize p2) |} *)
+(*   | {| $p1,$p2|} ->  {:exp| $(normalize p1) ^ "," ^ $(normalize p2) |} *)
+(*   | {| $chr:x |} -> {:exp| "'" ^ String.make 1 $chr:x ^ "'" |} *)
+(*   | {| $int:x |} -> {:exp| $str:x |} *)
+(*   | {| $int32:x |} -> {:exp| $str:x |} *)
+(*   | {| $int64:x |} -> {:exp| $str:x |} *)
+(*   | {| $nativeint:x |} -> {:exp| "\"" ^ $str:x ^ "\""|}  *)
+(*   | {| $str:s |} -> {:exp| $str:s |} *)
+(*   | {| lazy $p |} -> {:exp| "lazy" ^ $(normalize p)|} *)
+(*   | {| (module $s) |}  -> {:exp| "(module" ^ $str:s ^")"|} *)
+(*   | {| $flo:x |} -> {:exp| $str:x|} *)
 
-(*   | {| $p1 | $p2 |} -> {:expr| $(normalize p1)  ^ "|" ^ $(normalize p2)  |} *)
+(*   | {| $p1 | $p2 |} -> {:exp| $(normalize p1)  ^ "|" ^ $(normalize p2)  |} *)
         
-(*   | {| $p1 .. $p2 |} -> {:expr| $(normalize p1) ^ ".." ^ $(normalize p2) |} *)
+(*   | {| $p1 .. $p2 |} -> {:exp| $(normalize p1) ^ ".." ^ $(normalize p2) |} *)
         
-(*   | {| {$p} |} -> {:expr| "{" ^ $(normalize p)^ "}"|} *)
+(*   | {| {$p} |} -> {:exp| "{" ^ $(normalize p)^ "}"|} *)
 (*   | {| $i = $p |} -> *)
-(*       {:expr| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
+(*       {:exp| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
 
-(*   | {| ($tup:pl) |} -> {:expr| "("^ $(normalize pl) ^")"|} *)
+(*   | {| ($tup:pl) |} -> {:exp| "("^ $(normalize pl) ^")"|} *)
 (*   | {| ($p:$_)|} -> normalize p (\* type was ignored *\) *)
-(*   | {| `$s |} -> {:expr| "`" ^ $str:s |} *)
-(*   (\* | {| $anti:x |} -> Syntax.parse_expr *\) *)
+(*   | {| `$s |} -> {:exp| "`" ^ $str:s |} *)
+(*   (\* | {| $anti:x |} -> Syntax.parse_exp *\) *)
 (*   | {|$anti:_|} | {||} *)
 (*     | {| ? $_ |} | (\* FIXME ?$ not supported *\) *)
 (*       {| ? $_ : ($_) |} | {| ? $_ : ($_ = $_ )|} | *)

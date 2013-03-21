@@ -11,20 +11,20 @@ open AstLoc;
 
 
 (*
-  Given an location, and a list of expression node,
-  return an expression node which represents the list
-  of the expresson nodes
+  Given an location, and a list of expession node,
+  return an expession node which represents the list
+  of the expesson nodes
 
   Example:
   {[
-  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_expr f;
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_exp f;
   [b; c; d]
   ]}
-  (* {:expr| [1;2;3::[]]|} *)
+  (* {:exp| [1;2;3::[]]|} *)
   DoubleColon
  *)
 let list_of_list (loc:loc) =
-  let rec loop top =  with expr fun
+  let rec loop top =  with exp fun
     [ [] ->   {@ghost| [] |}
     | [e1 :: el] ->
         let _loc =
@@ -32,7 +32,7 @@ let list_of_list (loc:loc) =
         {| [$e1 :: $(loop false el)] |} ] in loop true ;
 
   
-#default_quotation "expr";;
+#default_quotation "exp";;
 
 let meta_int _loc i =  {|$`int:i|};
 
@@ -98,9 +98,9 @@ let rec is_module_longident (x:ident) =
   | `Uid _ -> true
   | _ -> false ];  
 
-let ident_of_expr =
-  let error () = invalid_arg "ident_of_expr: this expression is not an identifier" in
-  let rec self (x:expr)=
+let ident_of_exp =
+  let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
+  let rec self (x:exp)=
     match x with 
     [ `App(_loc,e1,e2) -> `App(_loc,self e1, self e2)
     | `Dot(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
@@ -169,9 +169,9 @@ let ident_of_patt =
 (*       -> true *)
 (*     | _ -> false ]; *)
 
-(* let rec is_expr_constructor = fun *)
+(* let rec is_exp_constructor = fun *)
 (*     [ `Id(_,i) -> is_constructor i *)
-(*     | `Dot(_,e1,e2) -> is_expr_constructor e1 && is_expr_constructor e2 *)
+(*     | `Dot(_,e1,e2) -> is_exp_constructor e1 && is_exp_constructor e2 *)
 (*     | `Vrn(_loc,_) -> true *)
 (*     | _ -> false ]; *)
 
@@ -281,10 +281,10 @@ let meta_array mf_a _loc ls =
 (*
   Examples:
   {[
-  bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_expr f;
+  bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_exp f;
   ]}
  *)  
-let bigarray_get loc arr (arg (* :expr  *))  (* : expr  *)= with expr
+let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
   let coords =
     match arg with
     [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
@@ -302,15 +302,15 @@ let bigarray_get loc arr (arg (* :expr  *))  (* : expr  *)= with expr
 (*
   Example:
   {[
-  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_expr f;
+  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_exp f;
   a.{b,c,d} <- (3 + 2)
   ]}
   FIXME
     1.ExArr, 2. can we just write $list:coords?
     Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
-     {:expr|a.{1,2,3,4,$rest:x}|}
+     {:exp|a.{1,2,3,4,$rest:x}|}
  *)
-let bigarray_set loc (var) newval (* : option expr *) = with expr
+let bigarray_set loc (var) newval (* : option exp *) = with exp
   match var with
   [ {|  $arr.{$c1} |} ->
     (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)
@@ -363,13 +363,13 @@ let rec to_lid =
    and [(~-.)] as a prefix [(-.)]
    {[
    mkumin _loc "-." {| 3 |};
-   - : expr = Int (, "-3")
+   - : exp = Int (, "-3")
    mkumin _loc "-." {| a |};
-   - : expr =
+   - : exp =
    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
-let mkumin loc prefix arg = with expr 
+let mkumin loc prefix arg = with exp 
   match arg with
   [ {| $int:n |} -> {@loc| $(int:String.neg n) |}
   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}
@@ -379,7 +379,7 @@ let mkumin loc prefix arg = with expr
   | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
 
       
-let mkassert loc =  with expr fun
+let mkassert loc =  with exp fun
   [ {| false |} -> {@loc| assert false |} 
   | e -> {@loc| assert $e |} ] ;      
 

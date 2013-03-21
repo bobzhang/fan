@@ -56,31 +56,31 @@ let (map_cstru_base_1,
   let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x |} in
-              let exp = {:expr|fun x -> x |} in
+              let exp = {:exp|fun x -> x |} in
               {| method $lid:x : $ty = $exp |} ) in 
   let v2 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x -> $lid:x |} in
-              let exp = {:expr| fun x _ ->  x|} in
+              let exp = {:exp| fun x _ ->  x|} in
               {| method $lid:x : $ty = $exp |} ) in
   let v3 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> 'self_type |} in
-              let exp = {:expr|fun _ -> self |} in 
+              let exp = {:exp|fun _ -> self |} in 
               {| method $lid:x : $ty = $exp |} ) in 
   let v4 = ty_names |> List.map (fun x ->
               let ty = {:ctyp| $lid:x -> $lid:x -> 'self_type |} in
-              let exp = {:expr|fun _ _ -> self |} in
+              let exp = {:exp|fun _ _ -> self |} in
               {| method $lid:x : $ty = $exp |} ) in
   let v5 = ty_names |> List.map (fun x ->
-    let exp = {:expr|$(lid:"pp_print_"^x)|} in
+    let exp = {:exp|$(lid:"pp_print_"^x)|} in
     {| method $lid:x  = $exp  |} ) in
   let v6 = ty_names |> List.map
     (fun x ->
       let ty = {:ctyp| $lid:x -> unit |} in
-      let exp = {:expr| fun _ -> () |} in
+      let exp = {:exp| fun _ -> () |} in
       {| method $lid:x : $ty = $exp  |}) in
   let v7 = ty_names |> List.map
     (fun x ->
-      let exp = {:expr|fun x y -> x = y|} in
+      let exp = {:exp|fun x y -> x = y|} in
       let ty = {:ctyp| $lid:x -> $lid:x -> bool |} in
       {| method $lid:x : $ty = $exp  |}) in
   (sem_of_list v1, sem_of_list v2, sem_of_list v3,sem_of_list v4,sem_of_list v5,
