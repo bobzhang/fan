@@ -18,7 +18,11 @@ let group_rs = ref PlTranslate.group_rs ;
 
 Fan.Syntax.Options.add ("-nogroup", (FanArg.Unit (fun () -> group_rs := PlTranslate.nogroup_rs)),"Don't try to optimally group predicate rules" );
 let g = Gram.create_gram ~annot:"prolog"
-    ~keywords:[]
+    ~keywords:[".";":";"-";",";"(";")";"=";
+               "\\=";"is";"=:=";"=\\=";"<";
+               "=<";">";">=";"+"; "_";"!";
+               "[";"]";"|";"%:";"?"
+             ]
     ();;
 {:create|(g:Gram.t) prog rule_or_mask rule body args term mask var arg_mask|};  
 
