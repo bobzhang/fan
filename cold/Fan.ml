@@ -126,6 +126,10 @@ let _ =
     ~mexp:(Filters.me#direction_flag) ~mpat:(Filters.mp#direction_flag)
     ~exp_filter ~pat_filter
 let _ =
+  add_quotation (d, "or_ctyp") constructor_declarations
+    ~mexp:(Filters.me#or_ctyp) ~mpat:(Filters.me#or_ctyp) ~exp_filter
+    ~pat_filter
+let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =

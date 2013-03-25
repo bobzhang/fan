@@ -13,24 +13,24 @@ end ;
 module PredMap = Map.Make Pred ;
 
 (* terms are integers, (anonymous) variables and compound (possibly atoms) *)
-type term 'loc =
-  [ Integer of int and 'loc
-  | Var of string and 'loc
+type 'loc term  =
+  [ Integer of int * 'loc
+  | Var of string * 'loc
   | Anon of 'loc
-  | Comp of string and  list (term 'loc) and 'loc]
+  | Comp of string *  list (term 'loc) * 'loc]
 ;
 
 (* e.g. for sibling/2: (X,Y) :- parent(Z,X), parent(Z,Y). *)
-type rule 'loc = (list (term 'loc)  * list (term 'loc)   * 'loc);
+type 'loc rule  = (list (term 'loc)  * list (term 'loc)   * 'loc);
 
 (* e.g. +X or -Y *)
-type arg_mask 'loc = [ArgOpen of 'loc | ArgClosed of 'loc | ArgAny of 'loc] ;
+type 'loc arg_mask  = [ArgOpen of 'loc | ArgClosed of 'loc | ArgAny of 'loc] ;
 
 (* e.g. for same/2: +X, ?Y *)
-type mask 'loc = (list (arg_mask 'loc) * 'loc );
+type 'loc mask  = (list (arg_mask 'loc) * 'loc );
 
 (* Complete program: map from pred to rule list + mask list *)
-type prog 'loc =  PredMap.t (list (rule 'loc)  * list (mask 'loc)) ;
+type 'loc prog  =  PredMap.t (list (rule 'loc)  * list (mask 'loc)) ;
 
 let rec statics_of_terms acc terms =
   List.fold_left (fun comps -> fun

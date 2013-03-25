@@ -262,3 +262,6 @@ let binds bs (e : exp) =
   | _ ->
       let binds = and_of_list bs in
       let _loc = binds <+> e in `LetIn (_loc, (`ReNil _loc), binds, e)
+let lid _loc n = `Id (_loc, (`Lid (_loc, n)))
+let uid _loc n = `Id (_loc, (`Uid (_loc, n)))
+let unit _loc = `Id (_loc, (`Uid (_loc, "()")))
