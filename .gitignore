@@ -56,3 +56,7 @@ o
 os
 top/
 src/test.ml
+src.stat
+*.txt
+*.plg
+*.stat
