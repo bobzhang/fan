@@ -5,3 +5,7 @@
   you could have some benefit, like
   when do the map traversal, you can map it to nil as a way of
   removing them.
+
+
+  without type annotations, the compilation time may downgrade in
+  some cases, should the quotation add type annotations automatically ?

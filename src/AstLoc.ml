@@ -72,21 +72,6 @@ let rec appl_of_list x  =
   | [x;y::xs] -> appl_of_list [(app x y)::xs]  ]  ;
 
     
-let tuple_com y=
-  match y with 
-  [[] -> failwith "tuple_com empty"
-  |[x] -> x
-  | [x::_] ->
-      let _loc = x <+> List.last y in
-      `Tup _loc (com_of_list y) ];
-    
-let tuple_sta y =
-  match y with
-   [ [] -> failwith "tuple_sta empty"
-   | [x] -> x
-   | [x::_] ->
-       let _loc =  x <+> List.last y in 
-       `Tup _loc (sta_of_list y)];
     
   
 let rec list_of_and x acc =
@@ -143,3 +128,28 @@ let lid _loc n = `Id(_loc,`Lid(_loc,n));
 let uid _loc n = `Id(_loc,`Uid(_loc,n));
 let unit _loc = `Id(_loc,`Uid(_loc,"()"));
 
+let ep_of_cons _loc n ps =
+  appl_of_list [(uid _loc n) :: ps];;
+
+let tuple_com_unit _loc = fun
+  [ [] -> unit _loc
+  | [p] -> p
+  | y ->
+      `Tup _loc (com_of_list y)
+  ];
+  
+let tuple_com y=
+  match y with 
+  [[] -> failwith "tuple_com empty"
+  |[x] -> x
+  | [x::_] ->
+      let _loc = x <+> List.last y in
+      `Tup _loc (com_of_list y) ];
+    
+let tuple_sta y =
+  match y with
+   [ [] -> failwith "tuple_sta empty"
+   | [x] -> x
+   | [x::_] ->
+       let _loc =  x <+> List.last y in 
+       `Tup _loc (sta_of_list y)];

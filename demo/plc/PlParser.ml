@@ -35,7 +35,7 @@ prog:
     {:stru| $(list:PlTranslate.prog_statics _loc res) ; $(list:PlTranslate.prog_rules _loc !group_rs res) |}
   ]
 rule_or_mask: [ rule{x} -> `Rule x | mask{x} -> `Mask x ]
-rule: [ `LID x; OPT args{t};  OPT body{b};  "." ->
+rule: [ `Lid x; OPT args{t};  OPT body{b};  "." ->
   let t = list_of_list_option t and b = list_of_list_option b
   in ((x,List.length t),t,b,_loc)]
 body: [ ":"; "-"; L1 term SEP ","{r} -> r ] 
@@ -58,7 +58,7 @@ term:
       [ "-"; `INT(x,_) -> Integer (-x, _loc)
       | "-"; S{x} -> Comp (PlNames.neg,[x],_loc) ]
  "simple" NA
-      [ `LID x; OPT args{t} ->
+      [ `Lid x; OPT args{t} ->
 	(match (x,t) with
 	[ (* ("_",None) -> Anon _loc *)
 	(* | ("_",Some _) -> FanLoc.raise _loc (Failure "Anonymous with arguments") *)
@@ -66,19 +66,19 @@ term:
 	| (x,Some t) -> Comp (x,t,_loc)])
       | "_" -> Anon _loc 
       | "!" -> Comp (PlNames.cut,[],_loc)
-      | `UID x -> Var (x,_loc)
+      | `Uid x -> Var (x,_loc)
       | `INT (x,_) -> Integer (x, _loc)
       | "("; S{t}; ")" -> t
       | "["; L0 S SEP ","{t};  OPT [ "|"; term{t} -> t]{e}; "]" ->
 	  term_list _loc t e ]  }
 
-mask: [ "%:"; `LID x; "(";  L1 arg_mask SEP ","{t}; ")" -> ((x, List.length t),t,_loc)] 
-var:  [ `UID x -> (x,_loc) ] 
+mask: [ "%:"; `Lid x; "(";  L1 arg_mask SEP ","{t}; ")" -> ((x, List.length t),t,_loc)] 
+var:  [ `Uid x -> (x,_loc) ] 
 arg_mask:
    [ "+"; OPT var -> ArgClosed _loc
    | "-"; OPT var -> ArgOpen _loc
    | "?";  OPT var -> ArgAny _loc ] |};
 
-
-AstQuotation.add_quotation_of_str_item ~name:"plc" ~entry:prog;
+let d = `Absolute ["Fan";"Lang"];
+AstQuotation.of_stru ~name:(d,"plc")  ~entry:prog;
 
