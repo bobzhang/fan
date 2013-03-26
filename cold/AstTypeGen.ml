@@ -462,18 +462,14 @@ let generate (module_types : FSig.module_types) =
      if name <> "ant"
      then
        let obj =
-         object 
-           inherit  Objs.map as super
-           method! row_field =
-             function
-             | `TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) -> `TyVrn (_loc, x)
-             | `TyVrnOf (_loc,x,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),y)))
-                 ->
-                 (match y with
-                  | `Sta (_loc,_,_) -> `TyVrnOf (_loc, x, (`Tup (_loc, y)))
-                  | _ -> `TyVrnOf (_loc, x, y))
-             | x -> super#row_field x
-         end in
+         Objs.map_row_field
+           (function
+            | `TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) -> `TyVrn (_loc, x)
+            | `TyVrnOf (_loc,x,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) ->
+                (match y with
+                 | `Sta (_loc,_,_) -> `TyVrnOf (_loc, x, (`Tup (_loc, y)))
+                 | _ -> `TyVrnOf (_loc, x, y))
+            | x -> x) in
        obj#typedecl ty
      else ty in
    (fun x  -> FSigUtil.stru_from_module_types ~f:aux x) module_types : 

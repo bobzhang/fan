@@ -398,19 +398,14 @@ Typehook.register
 let generate (module_types:FSig.module_types) : stru = with stru
   let aux (name,ty) =
     if  name <> "ant" then 
-  (* use [map_ctyp] instead  *) 
-     let obj = object
-       inherit Objs.map as super;
-       method! row_field = with row_field
-         (fun 
-          [ {| $vrn:x of loc |} -> {| $vrn:x |}
-          | {| $vrn:x of (loc * $y ) |}->
-              match y with
-              [ {:ctyp| $_ * $_ |} -> {| $vrn:x of $tup:y |}
-              | _ -> {| $vrn:x of $y |}]
-          | x -> super#row_field x ]);
-     end in
-     (* obj#ctyp ty *)
+     let obj = Objs.map_row_field begin fun 
+       [ {:row_field| $vrn:x of loc |} -> {:row_field| $vrn:x |}
+       | {:row_field| $vrn:x of (loc * $y ) |}->
+           match y with
+          [ {:ctyp| $_ * $_ |} -> {:row_field| $vrn:x of $tup:y |}
+           | _ -> {:row_field| $vrn:x of $y |}]
+       | x -> x ]
+     end in 
      obj#typedecl ty
   else ty  in
   (fun x ->  FSigUtil.stru_from_module_types ~f:aux x) module_types;
