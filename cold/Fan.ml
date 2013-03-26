@@ -133,10 +133,10 @@ let _ =
   add_quotation (d, "row_field") row_field ~mexp:(Filters.me#row_field)
     ~mpat:(Filters.mp#row_field) ~exp_filter ~pat_filter
 let _ =
-  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.exp_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =
-  add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.stru_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 let _ =
   Options.add

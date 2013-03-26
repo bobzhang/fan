@@ -211,10 +211,10 @@ add_quotation (d,"row_field") row_field
     ~mpat:Filters.mp#row_field
     ~exp_filter
     ~pat_filter;
-add (`Absolute ["Fan";"Lang"],"str") DynAst.exp_tag
+add (`Absolute ["Fan";"Lang"],"str") FanDyn.exp_tag
   (fun _loc _loc_option s -> {:exp|$str:s|});
 
-add (`Absolute ["Fan";"Lang"],"str") DynAst.stru_tag
+add (`Absolute ["Fan";"Lang"],"str") FanDyn.stru_tag
   (fun _loc _loc_option s ->
     `StExp(_loc,{:exp|$str:s|})(* {:stru| $(exp:{:exp|$str:s|}) |} *));
   

@@ -11,8 +11,8 @@ type quotation_error_message =
 type quotation_error = (name* string* quotation_error_message* exn) 
 exception QuotationError of quotation_error
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
-module ExpKey = DynAst.Pack(struct type 'a t = unit  end)
-module ExpFun = DynAst.Pack(struct type 'a t = 'a expand_fun  end)
+module ExpKey = FanDyn.Pack(struct type 'a t = unit  end)
+module ExpFun = FanDyn.Pack(struct type 'a t = 'a expand_fun  end)
 let current_loc_name = ref None
 let stack = Stack.create ()
 let current_quot () =
@@ -37,7 +37,7 @@ let expander_name ~pos:(pos : string)  (name : name) =
   | _ -> name
 let default_at_pos pos str = update (pos, str)
 let expanders_table = ref QMap.empty
-let add ((domain,n) as name) (tag : 'a DynAst.tag) (f : 'a expand_fun) =
+let add ((domain,n) as name) (tag : 'a FanDyn.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
@@ -55,7 +55,7 @@ let expand_quotation loc ~expander  pos_tag quot =
         raise (FanLoc.Exc_located (loc, exc1))
 let find loc name tag =
   let key =
-    ((expander_name ~pos:(DynAst.string_of_tag tag) name),
+    ((expander_name ~pos:(FanDyn.string_of_tag tag) name),
       (ExpKey.pack tag ())) in
   (try
      let pack = QMap.find key expanders_table.contents in
@@ -63,7 +63,7 @@ let find loc name tag =
    with
    | Not_found  ->
        (fun ()  ->
-          let pos_tag = DynAst.string_of_tag tag in
+          let pos_tag = FanDyn.string_of_tag tag in
           match name with
           | (`Sub [],"") ->
               FanLoc.raise loc
@@ -72,7 +72,7 @@ let find loc name tag =
    | e -> (fun ()  -> raise e)) ()
 let expand loc (quotation : FanToken.quotation) tag =
   let open FanToken in
-    let pos_tag = DynAst.string_of_tag tag in
+    let pos_tag = FanDyn.string_of_tag tag in
     let name = quotation.q_name in
     (try
        let expander = find loc name tag
@@ -187,43 +187,43 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
          | None  -> subst_first_loc FanLoc.name.contents exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
-  add name DynAst.exp_tag expand_exp;
-  add name DynAst.pat_tag expand_pat;
-  add name DynAst.stru_tag expand_stru
+  add name FanDyn.exp_tag expand_exp;
+  add name FanDyn.pat_tag expand_pat;
+  add name FanDyn.stru_tag expand_stru
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
     (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
 let _ = ()
 let _ = ()
-let of_stru ~name  ~entry  = add name DynAst.stru_tag (make_parser entry)
+let of_stru ~name  ~entry  = add name FanDyn.stru_tag (make_parser entry)
 let of_stru_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.stru_tag
+  add name FanDyn.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let of_pat ~name  ~entry  = add name DynAst.pat_tag (make_parser entry)
+let of_pat ~name  ~entry  = add name FanDyn.pat_tag (make_parser entry)
 let of_pat_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.pat_tag
+  add name FanDyn.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let of_cstru ~name  ~entry  = add name DynAst.cstru_tag (make_parser entry)
+let of_cstru ~name  ~entry  = add name FanDyn.cstru_tag (make_parser entry)
 let of_cstru_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.cstru_tag
+  add name FanDyn.cstru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
-let of_case ~name  ~entry  = add name DynAst.case_tag (make_parser entry)
+let of_case ~name  ~entry  = add name FanDyn.case_tag (make_parser entry)
 let of_case_with_filter ~name  ~entry  ~filter  =
-  add name DynAst.case_tag
+  add name FanDyn.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 let of_exp ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
     `StExp (loc, (expand_fun loc loc_name_opt s)) in
-  add name DynAst.exp_tag expand_fun; add name DynAst.stru_tag mk_fun
+  add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
 let of_exp_with_filter ~name  ~entry  ~filter  =
   let expand_fun loc loc_name_opt s =
     filter (make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     `StExp (loc, (expand_fun loc loc_name_opt s)) in
-  add name DynAst.exp_tag expand_fun; add name DynAst.stru_tag mk_fun
+  add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun

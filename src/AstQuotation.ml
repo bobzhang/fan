@@ -33,9 +33,9 @@ exception QuotationError of quotation_error;
 
 type 'a expand_fun  = FanLoc.t -> option string -> string -> 'a;
   
-module ExpKey = DynAst.Pack(struct  type 'a t  = unit; end);
+module ExpKey = FanDyn.Pack(struct  type 'a t  = unit; end);
 
-module ExpFun = DynAst.Pack(struct  type 'a t  = expand_fun 'a; end);
+module ExpFun = FanDyn.Pack(struct  type 'a t  = expand_fun 'a; end);
 
 
 
@@ -127,7 +127,7 @@ let default_at_pos pos str =  update (pos,str);
 let expanders_table =ref QMap.empty;
 
 
-let add ((domain,n) as name) (tag :DynAst.tag 'a) (f:expand_fun 'a) =
+let add ((domain,n) as name) (tag :FanDyn.tag 'a) (f:expand_fun 'a) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  = try  Hashtbl.find names_tbl domain with [Not_found -> SSet.empty] in begin
     Hashtbl.replace names_tbl domain (SSet.add  n s);
@@ -153,12 +153,12 @@ let expand_quotation loc ~expander pos_tag quot =
     
 (* The table is indexed by [quotation name] and [tag] *)
 let find loc name tag =
-  let key = (expander_name ~pos:(DynAst.string_of_tag tag) name, ExpKey.pack tag ()) in
+  let key = (expander_name ~pos:(FanDyn.string_of_tag tag) name, ExpKey.pack tag ()) in
   let try pack = QMap.find key !expanders_table in
   ExpFun.unpack tag pack
   with
     [Not_found ->
-      let pos_tag = DynAst.string_of_tag tag in
+      let pos_tag = FanDyn.string_of_tag tag in
       match name with
       [(`Sub [],"" )->
           (FanLoc.raise loc (QuotationError ( name,pos_tag,NoName,Not_found)))
@@ -171,7 +171,7 @@ let find loc name tag =
  *)
 let expand loc (quotation:FanToken.quotation) tag =
   let open FanToken in
-  let pos_tag = DynAst.string_of_tag tag in
+  let pos_tag = FanDyn.string_of_tag tag in
   let name = quotation.q_name in
   let try expander = find loc name tag
   and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc)  in begin
@@ -298,9 +298,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       | Some "_" -> exp_ast
       | Some name -> subst_first_loc name exp_ast ]
     end in begin
-        add name DynAst.exp_tag expand_exp;
-        add name DynAst.pat_tag expand_pat;
-        add name DynAst.stru_tag expand_stru;
+        add name FanDyn.exp_tag expand_exp;
+        add name FanDyn.pat_tag expand_pat;
+        add name FanDyn.stru_tag expand_stru;
     end;
 
 let make_parser entry =
@@ -315,14 +315,14 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
   
-let of_stru = REGISTER(DynAst.stru_tag);
-let of_stru_with_filter = REGISTER_FILTER(DynAst.stru_tag);
-let of_pat  = REGISTER(DynAst.pat_tag);
-let of_pat_with_filter  = REGISTER_FILTER(DynAst.pat_tag);
-let of_cstru  = REGISTER(DynAst.cstru_tag);
-let of_cstru_with_filter  = REGISTER_FILTER(DynAst.cstru_tag);
-let of_case = REGISTER(DynAst.case_tag);
-let of_case_with_filter = REGISTER_FILTER(DynAst.case_tag);
+let of_stru = REGISTER(FanDyn.stru_tag);
+let of_stru_with_filter = REGISTER_FILTER(FanDyn.stru_tag);
+let of_pat  = REGISTER(FanDyn.pat_tag);
+let of_pat_with_filter  = REGISTER_FILTER(FanDyn.pat_tag);
+let of_cstru  = REGISTER(FanDyn.cstru_tag);
+let of_cstru_with_filter  = REGISTER_FILTER(FanDyn.cstru_tag);
+let of_case = REGISTER(FanDyn.case_tag);
+let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag);
   
 
 (* both [exp] and [stru] positions are registered *)
@@ -330,8 +330,8 @@ let of_exp ~name ~entry =
   let expand_fun =  make_parser entry in
   let mk_fun loc loc_name_opt s =
     {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
-      add name DynAst.exp_tag expand_fun ;
-      add name DynAst.stru_tag mk_fun ;
+      add name FanDyn.exp_tag expand_fun ;
+      add name FanDyn.stru_tag mk_fun ;
     end ;
   
 let of_exp_with_filter ~name ~entry ~filter =
@@ -339,8 +339,8 @@ let of_exp_with_filter ~name ~entry ~filter =
     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
-      add name DynAst.exp_tag expand_fun ;
-      add name DynAst.stru_tag mk_fun ;
+      add name FanDyn.exp_tag expand_fun ;
+      add name FanDyn.stru_tag mk_fun ;
     end ;
   
 

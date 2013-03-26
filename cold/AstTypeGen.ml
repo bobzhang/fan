@@ -290,12 +290,95 @@ let generate (module_types : FSig.module_types) =
                 (`Fun (_loc, case)))))
    | None  -> failwithf "AstTypeGen.generate null case" : stru )
 let _ =
-  Typehook.register
-    ~filter:(fun s  -> not (List.mem s ["loc"; "meta_option"; "meta_list"]))
+  Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
     ("GenLoc", generate)
 let generate (module_types : FSig.module_types) =
+  (let tys: string list =
+     List.concat_map
+       (fun x  ->
+          match x with
+          | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
+          | `Single (x,_) -> [x]) module_types in
+   let typedecl =
+     let x =
+       or_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
+     `Type
+       ((FanLoc.of_tuple
+           ("src/AstTypeGen.ml", 356, 12162, 12179, 356, 12162, 12199, false)),
+         (`TyDcl
+            ((FanLoc.of_tuple
+                ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162, 12199,
+                  false)),
+              (`Lid
+                 ((FanLoc.of_tuple
+                     ("src/AstTypeGen.ml", 356, 12162, 12187, 356, 12162,
+                       12190, false)), "tag")),
+              (`Some
+                 ((FanLoc.of_tuple
+                     ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162,
+                       12190, false)),
+                   (`Quote
+                      ((FanLoc.of_tuple
+                          ("src/AstTypeGen.ml", 356, 12162, 12184, 356,
+                            12162, 12186, false)),
+                        (`Normal
+                           (FanLoc.of_tuple
+                              ("src/AstTypeGen.ml", 356, 12162, 12184, 356,
+                                12162, 12186, false))),
+                        (`Lid
+                           ((FanLoc.of_tuple
+                               ("src/AstTypeGen.ml", 356, 12162, 12185, 356,
+                                 12162, 12186, false)), "a")))))),
+              (`TyRepr
+                 ((FanLoc.of_tuple
+                     ("src/AstTypeGen.ml", 356, 12162, 12193, 356, 12162,
+                       12199, false)),
+                   (`PrNil
+                      (FanLoc.of_tuple
+                         ("src/AstTypeGen.ml", 356, 12162, 12193, 356, 12162,
+                           12199, false))),
+                   (`Sum
+                      ((FanLoc.of_tuple
+                          ("src/AstTypeGen.ml", 356, 12162, 12193, 356,
+                            12162, 12199, false)), x)))),
+              (`None
+                 (FanLoc.of_tuple
+                    ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162,
+                      12199, false)))))) in
+   let to_string =
+     let case =
+       or_of_list
+         (List.map
+            (fun x  ->
+               `Case
+                 (_loc, (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                   (`Str (_loc, x)))) tys) in
+     `Value
+       (_loc, (`ReNil _loc),
+         (`Bind
+            (_loc, (`Id (_loc, (`Lid (_loc, "string_of_tag")))),
+              (`Fun (_loc, case))))) in
+   let tags =
+     List.map
+       (fun x  ->
+          `Value
+            (_loc, (`ReNil _loc),
+              (`Bind
+                 (_loc, (`Id (_loc, (`Lid (_loc, (x ^ "_tag"))))),
+                   (`Constraint
+                      (_loc,
+                        (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                        (`App
+                           (_loc, (`Id (_loc, (`Lid (_loc, "tag")))),
+                             (`Id (_loc, (`Lid (_loc, x)))))))))))) tys in
+   sem_of_list (typedecl :: to_string :: tags) : stru )
+let _ =
+  Typehook.register
+    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
+    ("DynAst", generate)
+let generate (module_types : FSig.module_types) =
   (let aux (name,ty) =
-     if not (name = "ant")
+     if name <> "ant"
      then
        let obj =
          object 
@@ -312,6 +395,6 @@ let generate (module_types : FSig.module_types) =
          end in
        obj#typedecl ty
      else ty in
-   (fun x  -> let r = FSigUtil.stru_from_module_types ~f:aux x in r)
-     module_types : stru )
+   (fun x  -> FSigUtil.stru_from_module_types ~f:aux x) module_types : 
+  stru )
 let _ = Typehook.register ~filter:(fun _  -> true) ("LocType", generate)

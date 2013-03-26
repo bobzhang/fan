@@ -9,11 +9,11 @@ type 'a expand_fun  = FanLoc.t -> string option  -> string -> 'a
 val current_loc_name: string option ref
 
 (** [add name exp] adds the quotation [name] associated with the  expander [exp]. *)
-val add : FanToken.name -> 'a DynAst.tag  -> 'a expand_fun  -> unit
+val add : FanToken.name -> 'a FanDyn.tag  -> 'a expand_fun  -> unit
 
 
 (** [find name] returns the expander of the given quotation name. *)
-(* val find : string -> 'a DynAst.tag  -> 'a expand_fun  *)
+(* val find : string -> 'a FanDyn.tag  -> 'a expand_fun  *)
 
     
 (** [default] holds the default quotation name. *)
@@ -43,7 +43,7 @@ val parse_quotation_result:
 (** function translating quotation names; default = identity *)
 (* val translate : (string -> string) ref *)
 
-val expand : FanLoc.t -> FanToken.quotation -> 'a DynAst.tag  -> 'a
+val expand : FanLoc.t -> FanToken.quotation -> 'a FanDyn.tag  -> 'a
 
 val expand_quotation :
     FanLoc.t ->

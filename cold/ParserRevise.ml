@@ -282,16 +282,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.module_exp_tag : 'module_exp )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.module_exp_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.module_exp_tag : 'module_exp )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.module_exp_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.module_exp_tag : 
+                       (AstQuotation.expand _loc x FanDyn.module_exp_tag : 
                        'module_exp )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.module_exp_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.module_exp_tag\n"))));
          ([`Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
            ("Gram.mk_action\n  (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, i) : 'module_exp ))\n",
              (Gram.mk_action
@@ -403,16 +403,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.module_binding_tag : 'module_binding )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.module_binding_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.module_binding_tag : 'module_binding )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.module_binding_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.module_binding_tag : 
+                       (AstQuotation.expand _loc x FanDyn.module_binding_tag : 
                        'module_binding )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.module_binding_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.module_binding_tag\n"))));
          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (module_type : 'module_type Gram.t ));
@@ -452,16 +452,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.module_binding_tag : 'module_rec_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.module_binding_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.module_binding_tag : 'module_rec_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.module_binding_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.module_binding_tag : 
+                       (AstQuotation.expand _loc x FanDyn.module_binding_tag : 
                        'module_rec_declaration )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.module_binding_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.module_binding_tag\n"))));
          ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (module_type : 'module_type Gram.t ))],
@@ -505,16 +505,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.with_constr_tag : 'with_constr )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.with_constr_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.with_constr_tag : 'with_constr )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.with_constr_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.with_constr_tag : 
+                       (AstQuotation.expand _loc x FanDyn.with_constr_tag : 
                        'with_constr )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.with_constr_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.with_constr_tag\n"))));
          ([`Skeyword "type";
           `Snterm
             (Gram.obj
@@ -658,16 +658,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.module_type_tag : 'module_type )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.module_type_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.module_type_tag : 'module_type )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.module_type_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.module_type_tag : 
+                       (AstQuotation.expand _loc x FanDyn.module_type_tag : 
                        'module_type )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.module_type_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.module_type_tag\n"))));
          ([`Snterm
              (Gram.obj
                 (module_longident_with_app : 'module_longident_with_app
@@ -765,16 +765,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.sig_item_tag : 'sig_item )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.sig_item_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.sig_item_tag : 'sig_item )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.sig_item_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.sig_item_tag : 
+                       (AstQuotation.expand _loc x FanDyn.sig_item_tag : 
                        'sig_item )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.sig_item_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.sig_item_tag\n"))));
          ([`Skeyword "exception";
           `Snterm
             (Gram.obj
@@ -1631,16 +1631,16 @@ let apply () =
          [([`Stoken
               (((function | `QUOTATION _ -> true | _ -> false)),
                 (`Normal, "`QUOTATION _"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x DynAst.exp_tag : 'exp )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.exp_tag\n\")\n",
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.exp_tag : 'exp )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.exp_tag\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `QUOTATION x ->
-                        (AstQuotation.expand _loc x DynAst.exp_tag : 
+                        (AstQuotation.expand _loc x FanDyn.exp_tag : 
                         'exp )
                     | _ ->
                         failwith
-                          "AstQuotation.expand _loc x DynAst.exp_tag\n"))));
+                          "AstQuotation.expand _loc x FanDyn.exp_tag\n"))));
          ([`Stoken
              (((function
                 | `Ant
@@ -2734,14 +2734,14 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x DynAst.pat_tag : 'pat )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.pat_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.pat_tag : 'pat )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.pat_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.pat_tag : 'pat )
+                       (AstQuotation.expand _loc x FanDyn.pat_tag : 'pat )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x DynAst.pat_tag\n"))));
+                       failwith "AstQuotation.expand _loc x FanDyn.pat_tag\n"))));
          ([`Skeyword "_"],
            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'pat ))\n",
              (Gram.mk_action
@@ -2978,14 +2978,14 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x DynAst.pat_tag : 'ipat )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.pat_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.pat_tag : 'ipat )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.pat_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.pat_tag : 'ipat )
+                       (AstQuotation.expand _loc x FanDyn.pat_tag : 'ipat )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x DynAst.pat_tag\n"))));
+                       failwith "AstQuotation.expand _loc x FanDyn.pat_tag\n"))));
          ([`Skeyword "_"],
            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'ipat ))\n",
              (Gram.mk_action
@@ -4776,16 +4776,16 @@ let apply () =
           ([`Stoken
               (((function | `QUOTATION _ -> true | _ -> false)),
                 (`Normal, "`QUOTATION _"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x DynAst.stru_tag : 'stru )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.stru_tag\n\")\n",
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.stru_tag : 'stru )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.stru_tag\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `QUOTATION x ->
-                        (AstQuotation.expand _loc x DynAst.stru_tag : 
+                        (AstQuotation.expand _loc x FanDyn.stru_tag : 
                         'stru )
                     | _ ->
                         failwith
-                          "AstQuotation.expand _loc x DynAst.stru_tag\n"))));
+                          "AstQuotation.expand _loc x FanDyn.stru_tag\n"))));
           ([`Snterm (Gram.obj (exp : 'exp Gram.t ))],
             ("Gram.mk_action\n  (fun (e : 'exp)  (_loc : FanLoc.t)  -> (`StExp (_loc, e) : 'stru ))\n",
               (Gram.mk_action
@@ -4879,16 +4879,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_sig_item_tag : 'class_sig_item )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_sig_item_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_sig_item_tag : 'class_sig_item )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_sig_item_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.class_sig_item_tag : 
+                       (AstQuotation.expand _loc x FanDyn.class_sig_item_tag : 
                        'class_sig_item )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.class_sig_item_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.class_sig_item_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Gram.obj (class_type : 'class_type Gram.t ))],
            ("Gram.mk_action\n  (fun (cs : 'class_type)  _  (_loc : FanLoc.t)  ->\n     (`SigInherit (_loc, cs) : 'class_sig_item ))\n",
@@ -5001,16 +5001,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.cstru_tag : 'cstru )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.cstru_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.cstru_tag : 'cstru )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.cstru_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.cstru_tag : 
+                       (AstQuotation.expand _loc x FanDyn.cstru_tag : 
                        'cstru )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.cstru_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.cstru_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Gram.obj (opt_override : 'opt_override Gram.t ));
           `Snterm (Gram.obj (class_exp : 'class_exp Gram.t ))],
@@ -5173,16 +5173,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_exp_tag : 'class_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_exp_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_exp_tag : 'class_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_exp_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.class_exp_tag : 
+                       (AstQuotation.expand _loc x FanDyn.class_exp_tag : 
                        'class_declaration )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.class_exp_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.class_exp_tag\n"))));
          ([`Snterm
              (Gram.obj
                 (class_info_for_class_exp : 'class_info_for_class_exp Gram.t ));
@@ -5304,16 +5304,16 @@ let apply () =
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_exp_tag : 'class_exp )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_exp_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_exp_tag : 'class_exp )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_exp_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x DynAst.class_exp_tag : 
+                       (AstQuotation.expand _loc x FanDyn.class_exp_tag : 
                        'class_exp )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x DynAst.class_exp_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.class_exp_tag\n"))));
          ([`Snterm
              (Gram.obj
                 (class_longident_and_param : 'class_longident_and_param
@@ -5438,16 +5438,16 @@ let apply () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_type_tag : 'class_description )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_type_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_type_tag : 'class_description )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_type_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.class_type_tag : 
+                      (AstQuotation.expand _loc x FanDyn.class_type_tag : 
                       'class_description )
                   | _ ->
                       failwith
-                        "AstQuotation.expand _loc x DynAst.class_type_tag\n"))));
+                        "AstQuotation.expand _loc x FanDyn.class_type_tag\n"))));
         ([`Snterm
             (Gram.obj
                (class_info_for_class_type : 'class_info_for_class_type Gram.t ));
@@ -5485,16 +5485,16 @@ let apply () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_type_tag : 'class_type_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_type_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_type_tag : 'class_type_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_type_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.class_type_tag : 
+                      (AstQuotation.expand _loc x FanDyn.class_type_tag : 
                       'class_type_declaration )
                   | _ ->
                       failwith
-                        "AstQuotation.expand _loc x DynAst.class_type_tag\n"))));
+                        "AstQuotation.expand _loc x FanDyn.class_type_tag\n"))));
         ([`Snterm
             (Gram.obj
                (class_info_for_class_type : 'class_info_for_class_type Gram.t ));
@@ -5623,16 +5623,16 @@ let apply () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.class_type_tag : 'class_type )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.class_type_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.class_type_tag : 'class_type )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.class_type_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.class_type_tag : 
+                      (AstQuotation.expand _loc x FanDyn.class_type_tag : 
                       'class_type )
                   | _ ->
                       failwith
-                        "AstQuotation.expand _loc x DynAst.class_type_tag\n"))));
+                        "AstQuotation.expand _loc x FanDyn.class_type_tag\n"))));
         ([`Snterm
             (Gram.obj
                (class_type_longident_and_param : 'class_type_longident_and_param
@@ -5735,14 +5735,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'unquoted_typevars )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.ctyp_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'unquoted_typevars )
+                      (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'unquoted_typevars )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
+                      failwith "AstQuotation.expand _loc x FanDyn.ctyp_tag\n"))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i :>ident)) : 'unquoted_typevars ))\n",
             (Gram.mk_action
@@ -6207,14 +6207,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x DynAst.ctyp_tag : 'typevars )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'typevars )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.ctyp_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'typevars )
+                      (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'typevars )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
+                      failwith "AstQuotation.expand _loc x FanDyn.ctyp_tag\n"))));
         ([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'typevars ))\n",
             (Gram.mk_action
@@ -6345,14 +6345,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x DynAst.ctyp_tag : 'ctyp )\n     | _ -> failwith \"AstQuotation.expand _loc x DynAst.ctyp_tag\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'ctyp )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.ctyp_tag\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `QUOTATION x ->
-                      (AstQuotation.expand _loc x DynAst.ctyp_tag : 'ctyp )
+                      (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'ctyp )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x DynAst.ctyp_tag\n"))));
+                      failwith "AstQuotation.expand _loc x FanDyn.ctyp_tag\n"))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i :>ident)) : 'ctyp ))\n",
             (Gram.mk_action
