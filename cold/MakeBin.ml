@@ -230,8 +230,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     let main () =
       try
         let dynloader =
-          DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents)
-            ~camlp4_stdlib:(search_stdlib.contents) () in
+          DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents) () in
         DynLoader.instance := ((fun ()  -> dynloader));
         (let call_callback () =
            PreCast.iter_and_take_callbacks

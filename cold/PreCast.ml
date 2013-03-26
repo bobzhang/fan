@@ -117,7 +117,7 @@ let enable_dump_camlp4_ast_printer () =
         let print_implem ?input_file:_  ?output_file  ast =
           let open FanUtil in
             with_open_out_file output_file
-              (dump_ast FanConfig.camlp4_ast_impl_magic_number ast)
+              (dump_ast FanConfig.ast_impl_magic_number ast)
       end in replace_printer (module Id) (module P)
 let enable_null_printer () =
   let module Id =

@@ -1,10 +1,10 @@
 module type S = sig
   type t;
   exception Error of string * string;
-  (** [mk ?ocaml_stdlib ?camlp4_stdlib]
+  (** [mk ?ocaml_stdlib]
       The stdlib flag is true by default.
       To disable it use: [mk ~ocaml_stdlib:false] *)
-  val mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
+  val mk : ?ocaml_stdlib: bool  -> unit -> t;
   (** Fold over the current load path list. *)
   val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
   (** [load f] Load the file [f]. If [f] is not an absolute path name,
@@ -31,11 +31,9 @@ module Make (U:sig end) : S= struct
 
   let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
 
-  let mk ?(ocaml_stdlib = true) ?(camlp4_stdlib = true) () =
+  let mk ?(ocaml_stdlib = true)  () =
   let q = Queue.create () in begin
     if ocaml_stdlib then include_dir q FanConfig.ocaml_standard_library else ();
-    if camlp4_stdlib then begin
-    end else ();
     include_dir q ".";
   q
 end;

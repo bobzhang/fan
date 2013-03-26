@@ -1,20 +1,15 @@
 
 let ocaml_standard_library = Config.standard_library;;
 
-(* let camlp4_standard_library = *)
-(*   try Sys.getenv "CAMLP4LIB" *)
-(*   with Not_found -> *)
-(*     Filename.concat ocaml_standard_library "camlp4";; *)
 
 let version = Sys.ocaml_version;;
-let program_name = ref "camlp4";;
 let unsafe             = ref false;;
 let verbose            = ref false;;
 let antiquotations     = ref false;;
 let quotations         = ref true;;
 let inter_phrases: string option ref
     = ref None;;
-let camlp4_ast_impl_magic_number = "Camlp42006M002";;
+let ast_impl_magic_number = "FAN2013M002";;
 let camlp4_ast_intf_magic_number = "Camlp42006N002";;
 let ocaml_ast_intf_magic_number = Config.ast_intf_magic_number;;
 let ocaml_ast_impl_magic_number = Config.ast_impl_magic_number;;

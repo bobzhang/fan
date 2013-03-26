@@ -2,7 +2,7 @@ module type S =
   sig
     type t  
     exception Error of string*string
-    val mk : ?ocaml_stdlib:bool -> ?camlp4_stdlib:bool -> unit -> t
+    val mk : ?ocaml_stdlib:bool -> unit -> t
     val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a
     val load : t -> string -> unit
     val include_dir : t -> string -> unit
@@ -17,12 +17,11 @@ module Make(U:sig  end) : S =
     exception Error of string*string
     let include_dir x y = Queue.add y x
     let fold_load_path x f acc = Queue.fold (fun x  y  -> f y x) acc x
-    let mk ?(ocaml_stdlib= true)  ?(camlp4_stdlib= true)  () =
+    let mk ?(ocaml_stdlib= true)  () =
       let q = Queue.create () in
       if ocaml_stdlib
       then include_dir q FanConfig.ocaml_standard_library
       else ();
-      if camlp4_stdlib then () else ();
       include_dir q ".";
       q
     let find_in_path x name =
