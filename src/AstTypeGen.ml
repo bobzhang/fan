@@ -356,13 +356,14 @@ let generate (module_types:FSig.module_types) : stru = with stru
   let aux (name,ty) =
     if not (name ="ant") then 
      with ctyp
-  (* use [map_ctyp] instead  *)
+  (* use [map_ctyp] instead  *) 
      let obj = object
        inherit Objs.map as super;
        method! row_field = 
          (fun 
-          [ `TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc")))
+          [ (* {:row_field| $vrn:vrn of loc |} *)`TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc")))
                 (* {:ctyp| $vrn of loc |} *) -> `TyVrn(_loc,vrn)
+
                     (* {:ctyp|$vrn |} *)
           (* | {| ant |} -> {||} *)
           | `TyVrnOf(_loc,vrn,`Tup(_,`Sta(_,`Id(_,`Lid(_,"loc")),x)))

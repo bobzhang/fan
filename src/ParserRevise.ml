@@ -1222,6 +1222,9 @@ let apply_ctyp () = begin
       (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
       (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
           (* {| `$i of & $t |} *)
+      | `Ant(("vrn") as n, s) -> `TyVrn(_loc,`Ant(_loc,mk_anti ~c:"ctyp" n s))
+      | `Ant(("vrn") as n, s) ; "of"; ctyp{t} ->
+          `TyVrnOf(_loc,`Ant(_loc,(mk_anti ~c:"ctyp" n s)),t)
       | "`"; astr{i}; "of"; (* amp_ctyp *)ctyp{t} -> `TyVrnOf(_loc,i,t)
       | ctyp{t} -> `Ctyp(_loc,t) ]
 

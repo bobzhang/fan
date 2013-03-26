@@ -5949,6 +5949,36 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (i : 'astr)  _  (_loc : FanLoc.t)  ->
                   (`TyVrn (_loc, i) : 'row_field )))));
+        ([`Stoken
+            (((function | `Ant ("vrn",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"vrn\",_)"))],
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"vrn\" as n),s) ->\n         (`TyVrn (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s)))) : 'row_field )\n     | _ ->\n         failwith \"`TyVrn (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))))\n\")\n",
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (("vrn" as n),s) ->
+                      (`TyVrn (_loc, (`Ant (_loc, (mk_anti ~c:"ctyp" n s)))) : 
+                      'row_field )
+                  | _ ->
+                      failwith
+                        "`TyVrn (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))))\n"))));
+        ([`Stoken
+            (((function | `Ant ("vrn",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"vrn\",_)"));
+         `Skeyword "of";
+         `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"vrn\" as n),s) ->\n         (`TyVrnOf (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))), t) : \n         'row_field )\n     | _ ->\n         failwith\n           \"`TyVrnOf (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))), t)\n\")\n",
+            (Gram.mk_action
+               (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (("vrn" as n),s) ->
+                      (`TyVrnOf
+                         (_loc, (`Ant (_loc, (mk_anti ~c:"ctyp" n s))), t) : 
+                      'row_field )
+                  | _ ->
+                      failwith
+                        "`TyVrnOf (_loc, (`Ant (_loc, (mk_anti ~c:\"ctyp\" n s))), t)\n"))));
         ([`Skeyword "`";
          `Snterm (Gram.obj (astr : 'astr Gram.t ));
          `Skeyword "of";

@@ -21,7 +21,7 @@ let g = Gram.create_gram ~annot:"prolog"
     ~keywords:[".";":";"-";",";"(";")";"=";
                "\\=";"is";"=:=";"=\\=";"<";
                "=<";">";">=";"+"; "_";"!";
-               "[";"]";"|";"%:";"?"
+               "[";"]";"|";"%:";"?";":-"
              ]
     ();;
 {:create|(g:Gram.t) prog rule_or_mask rule body args term mask var arg_mask|};  
@@ -42,7 +42,7 @@ rule_or_mask: [ rule{x} -> `Rule x | mask{x} -> `Mask x ]
 rule: [ `Lid x; OPT args{t};  OPT body{b};  "." ->
   let t = list_of_list_option t and b = list_of_list_option b
   in ((x,List.length t),t,b,_loc)]
-body: [ ":"; "-"; L1 term SEP ","{r} -> r ] 
+body: [ ":-"; L1 term SEP ","{r} -> r ] 
 args: [ "(";  L1 term SEP ","{r}; ")" -> r ]
 term:
   { "relop" NA

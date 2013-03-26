@@ -206,7 +206,11 @@ add_quotation (d, "or_ctyp") constructor_declarations
     ~mpat:Filters.me#or_ctyp
     ~exp_filter
     ~pat_filter;
-  
+add_quotation (d,"row_field") row_field
+    ~mexp:Filters.me#row_field
+    ~mpat:Filters.mp#row_field
+    ~exp_filter
+    ~pat_filter;
 add (`Absolute ["Fan";"Lang"],"str") DynAst.exp_tag
   (fun _loc _loc_option s -> {:exp|$str:s|});
 

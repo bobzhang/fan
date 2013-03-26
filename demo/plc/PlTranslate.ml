@@ -10,26 +10,6 @@ let warning _loc msg =
 (** AST Helpers **)
 open AstLoc;
 
-(* let tuple_expr _loc = fun *)
-(*   [[] -> {:exp| () |} (\* empty tuple = unit *\) *)
-(*   | [p] -> p (\* singleton tuple = value *\) *)
-(*   | [e::es] -> {:exp| ($e,$list:es) |} (\* true tuple *\)]; *)
-
-(* let tuple_patt _loc = fun *)
-(*   [ [] -> {:pat| () |} *)
-(*   | [p] -> p *)
-(*   | [p::ps] -> {:pat| ($p,$list:ps) |}]; *)
-
-
-
-
-(* let patt_of_cons _loc n ps = *)
-(*   List.fold_left (fun acc p -> *)
-(*     {:pat| $acc $p |}) {:pat| $uid:n |} ps; *)
-
-(* let expr_of_cons _loc n es = *)
-(*   List.fold_left (fun acc e -> {:exp| $acc $e |}) {:exp| $uid:n |} es; *)
-
 let concat_expr ?sep _loc strs : option exp =
   List.fold_left (fun acc s ->
     match acc with

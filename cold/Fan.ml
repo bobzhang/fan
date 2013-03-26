@@ -130,6 +130,9 @@ let _ =
     ~mexp:(Filters.me#or_ctyp) ~mpat:(Filters.me#or_ctyp) ~exp_filter
     ~pat_filter
 let _ =
+  add_quotation (d, "row_field") row_field ~mexp:(Filters.me#row_field)
+    ~mpat:(Filters.mp#row_field) ~exp_filter ~pat_filter
+let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") DynAst.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))
 let _ =
