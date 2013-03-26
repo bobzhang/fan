@@ -1,10 +1,7 @@
 open LibUtil
 open AstLoc
 let meta =
-  object 
-    inherit  FanMeta.meta
-    method! loc _loc _ = `Id (_loc, (`Lid (_loc, "loc")))
-  end
+  object  inherit  FanMeta.meta method! loc _loc _ = lid _loc "loc" end
 let _ =
   AstFilters.register_stru_filter
     ("lift",
@@ -25,58 +22,6 @@ let _ =
 let _ =
   AstFilters.register_stru_filter
     ("strip", (((new FanObjs.reloc) FanLoc.ghost)#stru))
-let decorate_binding decorate_fun =
-  (object 
-     inherit  Objs.map as super
-     method! binding =
-       function
-       | `Bind (_loc,(`Id (_,`Lid (_,id)) as x),(`Fun (_,_) as e)) ->
-           `Bind (_loc, x, (decorate_fun id e))
-       | b -> super#binding b
-   end)#binding
-let decorate decorate_fun =
-  object (o)
-    inherit  Objs.map as super
-    method! stru =
-      function
-      | `Value (_loc,r,b) ->
-          `Value (_loc, r, (decorate_binding decorate_fun b))
-      | st -> super#stru st
-    method! exp =
-      function
-      | `LetIn (_loc,r,b,e) ->
-          `LetIn (_loc, r, (decorate_binding decorate_fun b), (o#exp e))
-      | `Fun (_loc,_) as e -> decorate_fun "<fun>" e
-      | e -> super#exp e
-  end
-let decorate_this_exp e id =
-  let buf = Buffer.create 42 in
-  let _loc = loc_of e in
-  let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
-  let s = Buffer.contents buf in
-  `LetIn
-    (_loc, (`ReNil _loc),
-      (`Bind
-         (_loc, (`Id (_loc, (`Uid (_loc, "()")))),
-           (`App
-              (_loc,
-                (`Id
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "Camlp4prof")),
-                          (`Lid (_loc, "count")))))),
-                (`Str (_loc, (String.escaped s))))))), e)
-let rec decorate_fun id =
-  let decorate = decorate decorate_fun in
-  let decorate_exp = decorate#exp in
-  let decorate_case = decorate#case in
-  function
-  | `Fun (_loc,`Case (_,p,e)) ->
-      `Fun (_loc, (`Case (_loc, p, (decorate_fun id e))))
-  | `Fun (_loc,m) -> decorate_this_exp (`Fun (_loc, (decorate_case m))) id
-  | e -> decorate_this_exp (decorate_exp e) id
-let _ =
-  AstFilters.register_stru_filter ("profile", ((decorate decorate_fun)#stru))
 let map_exp =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))

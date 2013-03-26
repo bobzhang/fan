@@ -2,7 +2,7 @@ open LibUtil;
 open AstLoc;
 let meta = object
   inherit FanMeta.meta;
-  method! loc _loc  _ = `Id(_loc,`Lid(_loc,"loc"));
+  method! loc _loc  _ = lid _loc "loc";
 end;
 AstFilters.register_stru_filter ("lift",(fun ast ->
   let _loc = loc_of ast in
