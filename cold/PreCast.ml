@@ -1,3 +1,4 @@
+open Format
 module Syntax = Syntax
 let sig_item_parser:
   (?directive_handler:(Ast.sig_item -> Ast.sig_item option) ->
@@ -62,26 +63,75 @@ let parser_plugin ((module Id)  : (module Sig.Id))
        let module M = Maker(Syntax) in
          register_parser M.parse_implem M.parse_interf)
 let enable_ocaml_printer () =
-  replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P)
+  let module Id =
+    struct let name = "Printers.OCaml"
+           let version = Sys.ocaml_version end in
+    let module P =
+      struct
+        let print_implem ?input_file:_  ?output_file  ast =
+          let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
+          FanUtil.with_open_out_file output_file
+            (fun oc  ->
+               let fmt = Format.formatter_of_out_channel oc in
+               let () = AstPrint.structure fmt pt in pp_print_flush fmt ())
+        let print_interf ?input_file:_  ?output_file  ast =
+          let pt =
+            match ast with | None  -> [] | Some ast -> Ast2pt.sig_item ast in
+          FanUtil.with_open_out_file output_file
+            (fun oc  ->
+               let fmt = Format.formatter_of_out_channel oc in
+               let () = AstPrint.signature fmt pt in pp_print_flush fmt ())
+      end in replace_printer (module Id) (module P)
 let enable_dump_ocaml_ast_printer () =
-  replace_printer (module PrinterDumpOCamlAst.Id) (module
-    PrinterDumpOCamlAst.P)
+  let module Id =
+    (struct
+       let name = "Camlp4Printers.DumpOCamlAst"
+       let version = Sys.ocaml_version
+     end : Sig.Id) in
+    let module P =
+      struct
+        let print_interf ?(input_file= "-")  ?output_file  ast =
+          let pt =
+            match ast with | None  -> [] | Some ast -> Ast2pt.sig_item ast in
+          let open FanUtil in
+            with_open_out_file output_file
+              (dump_pt FanConfig.ocaml_ast_intf_magic_number input_file pt)
+        let print_implem ?(input_file= "-")  ?output_file  ast =
+          let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
+          let open FanUtil in
+            with_open_out_file output_file
+              (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt)
+      end in replace_printer (module Id) (module P)
 let enable_dump_camlp4_ast_printer () =
-  replace_printer (module PrinterDumpCamlp4Ast.Id) (module
-    PrinterDumpCamlp4Ast.P)
+  let module Id =
+    struct
+      let name = "Camlp4Printers.DumpCamlp4Ast"
+      let version = Sys.ocaml_version
+    end in
+    let module P =
+      struct
+        let print_interf ?input_file:_  ?output_file  ast =
+          let open FanUtil in
+            with_open_out_file output_file
+              (dump_ast FanConfig.camlp4_ast_intf_magic_number ast)
+        let print_implem ?input_file:_  ?output_file  ast =
+          let open FanUtil in
+            with_open_out_file output_file
+              (dump_ast FanConfig.camlp4_ast_impl_magic_number ast)
+      end in replace_printer (module Id) (module P)
 let enable_null_printer () =
-  replace_printer (module PrinterNull.Id) (module PrinterNull.P)
+  let module Id =
+    struct let name = "Printers.Null"
+           let version = Sys.ocaml_version end in
+    let module P =
+      struct
+        let print_interf ?input_file:_  ?output_file:_  _ = ()
+        let print_implem ?input_file:_  ?output_file:_  _ = ()
+      end in replace_printer (module Id) (module P)
 let enable_auto isatty =
   if isatty ()
   then enable_ocaml_printer ()
   else enable_dump_ocaml_ast_printer ()
-module Printers =
-  struct
-    module OCaml = PrinterOCaml.P
-    module DumpOCamlAst = PrinterDumpOCamlAst.P
-    module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P
-    module Null = PrinterNull.P
-  end
 let _ = sig_item_parser := Syntax.parse_interf
 let _ = stru_parser := Syntax.parse_implem
 module CurrentParser =

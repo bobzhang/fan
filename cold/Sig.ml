@@ -218,13 +218,6 @@ type 'a printer_fun =
 module type PRECAST =
   sig
     module Syntax : Syntax
-    module Printers :
-    sig
-      module OCaml : PrinterImpl
-      module DumpOCamlAst : PrinterImpl
-      module DumpCamlp4Ast : PrinterImpl
-      module Null : PrinterImpl
-    end
     val loaded_modules : string list ref
     val iter_and_take_callbacks : ((string* (unit -> unit)) -> unit) -> unit
     val register_stru_parser : stru parser_fun -> unit
