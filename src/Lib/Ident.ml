@@ -89,8 +89,6 @@ let rec list_of_acc_ident x acc =
   map_to_string <:ident< u>> |> print_string;
   u
 
-  map_to_string <:ident<
-  Camlp4.Sig.MakeCamlp4Ast(Camlp4.PreCast.Loc).meta_bool >> 
 
   ]}
   see ident_map 

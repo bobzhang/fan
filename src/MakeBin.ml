@@ -17,15 +17,13 @@ let just_print_compilation_unit () = begin
 end;
 
 let print_version () =
-  begin eprintf "Camlp4 version %s@." FanConfig.version; exit 0 end;
+  begin eprintf "Fan version %s@." FanConfig.version; exit 0 end;
       
-(* let print_stdlib () = *)
-(*   begin  printf "%s@." FanConfig.camlp4_standard_library; exit 0 end; *)
       
 let warn_noassert () =
   begin
     eprintf "\
-      camlp4 warning: option -noassert is obsolete\n\
+      fan warning: option -noassert is obsolete\n\
       You should give the -noassert option to the ocaml compiler instead.@.";
         end;
 let just_print_filters () =
@@ -68,7 +66,7 @@ let task f x =
   let () = FanConfig.current_input_file := x in
   f x ;
 
-module Camlp4Bin
+module Make
      (PreCast:Sig.PRECAST) = struct
 
    let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
@@ -101,8 +99,7 @@ module Camlp4Bin
               PreCast.enable_ocaml_printer ()
           | ("Printers"|"", "pr_dump.cmo" | "p" ) -> 
               PreCast.enable_dump_ocaml_ast_printer ()
-          | ("Printers"|"",
-             "a" | "auto" | "camlp4autoprinter.cmo") ->
+          | ("Printers"|"", "a" | "auto") ->
                (* FIXME introduced dependency on Unix *)
                PreCast.enable_auto (fun [ () -> Unix.isatty Unix.stdout])
           | _ ->
@@ -142,7 +139,7 @@ module Camlp4Bin
             | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
             | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
                 FanLoc.raise _loc
-                  (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
+                  (XStream.Error (x ^ " is abad directive Fan can not handled "))
             | _ ->
                None
                 (* FIXME *)  
@@ -171,7 +168,7 @@ module Camlp4Bin
             (* | {| #import |} -> None (\* FIXME *\) *)
             | {| #$lid:x $_ |} ->
                 (* FIXME pattern match should give _loc automatically *)
-                FanLoc.raise _loc (XStream.Error (x ^ "bad directive camlp4 can not handled "))
+                FanLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
             | _ -> None
                 (* ignored *)
                 (* assert false *)
@@ -230,8 +227,6 @@ module Camlp4Bin
       let initial_spec_list =
         [("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
           "<directory>  Add directory in search patch for object files.");
-         (* ("-where", FanArg.Unit print_stdlib, *)
-         (*  "Print camlp4 library directory and exit."); *)
          ("-nolib", FanArg.Clear search_stdlib,
           "No automatic search for object files in library directory.");
          ("-intf", FanArg.String (fun x -> input_file (Intf x)),
@@ -253,13 +248,13 @@ module Camlp4Bin
          ("-o", FanArg.String (fun x -> output_file := Some x),
           "<file> Output on <file> instead of standard output.");
          ("-v", FanArg.Unit print_version,
-          "Print Camlp4 version and exit.");
+          "Print Fan version and exit.");
          ("-version", FanArg.Unit just_print_the_version,
-          "Print Camlp4 version number and exit.");
+          "Print Fan version number and exit.");
          ("-compilation-unit", FanArg.Unit just_print_compilation_unit,
            "Print the current compilation unit");
          ("-vnum", FanArg.Unit just_print_the_version,
-          "Print Camlp4 version number and exit.");
+          "Print Fan version number and exit.");
          ("-no_quot", FanArg.Clear FanConfig.quotations,
           "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
          (* ("-parsing-strict",FanArg.Set FanConfig.strict_parsing, ""); *)
@@ -271,7 +266,7 @@ module Camlp4Bin
          ("-parser", FanArg.String (rewrite_and_load "Parsers"),
           "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
          ("-printer", FanArg.String (rewrite_and_load "Printers"),
-          "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
+          "<name>  Load the printer <name>.cm(o|a|xs)");
          ("-ignore", FanArg.String ignore, "ignore the next argument");
          ("--", FanArg.Unit ignore, "Deprecated, does nothing")];
       

@@ -31,7 +31,7 @@
   "return", but a string of two elements: the backslash and the character
   ["n"]. To interpret a string use the first string of the [STRING]
   constructor (or if you need to compute it use the module
-  {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *)
+  {!TokenEval}. Same thing for the constructor [CHAR]. *)
 {:fans|
 keep on;
 derive(Print);

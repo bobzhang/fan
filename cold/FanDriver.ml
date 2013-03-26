@@ -1,1 +1,1 @@
-include MakeBin.Camlp4Bin(Fan)
+include MakeBin.Make(Fan)

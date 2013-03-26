@@ -7,11 +7,10 @@ let just_print_compilation_unit () =
    | Some v -> printf "%s@." v
    | None  -> printf "null");
   exit 0
-let print_version () =
-  eprintf "Camlp4 version %s@." FanConfig.version; exit 0
+let print_version () = eprintf "Fan version %s@." FanConfig.version; exit 0
 let warn_noassert () =
   eprintf
-    "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
+    "fan warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
@@ -37,7 +36,7 @@ type file_kind =
 let search_stdlib = ref true
 let print_loaded_modules = ref false
 let task f x = let () = FanConfig.current_input_file := x in f x
-module Camlp4Bin(PreCast:Sig.PRECAST) =
+module Make(PreCast:Sig.PRECAST) =
   struct
     let printers: (string,(module Sig.PRECAST_PLUGIN)) Hashtbl.t =
       Hashtbl.create 30
@@ -65,7 +64,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
        | (("Printers"|""),"o") -> PreCast.enable_ocaml_printer ()
        | (("Printers"|""),("pr_dump.cmo"|"p")) ->
            PreCast.enable_dump_ocaml_ast_printer ()
-       | (("Printers"|""),("a"|"auto"|"camlp4autoprinter.cmo")) ->
+       | (("Printers"|""),("a"|"auto")) ->
            PreCast.enable_auto (fun ()  -> Unix.isatty Unix.stdout)
        | _ ->
            let y = x ^ objext in
@@ -99,7 +98,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
       | `Directive (_loc,`Lid (_,x),_) ->
           FanLoc.raise _loc
-            (XStream.Error (x ^ " is abad directive camlp4 can not handled "))
+            (XStream.Error (x ^ " is abad directive Fan can not handled "))
       | _ -> None
     let rec str_handler =
       function
@@ -120,7 +119,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
       | `Directive (_loc,`Lid (_,x),_) ->
           FanLoc.raise _loc
-            (XStream.Error (x ^ "bad directive camlp4 can not handled "))
+            (XStream.Error (x ^ "bad directive Fan can not handled "))
       | _ -> None
     let process ?directive_handler  name pa pr clean fold_filters =
       match parse_file ?directive_handler name pa with
@@ -189,13 +188,13 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
         "<file> Dump quotation expander result in case of syntax error.");
       ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
         "<file> Output on <file> instead of standard output.");
-      ("-v", (FanArg.Unit print_version), "Print Camlp4 version and exit.");
+      ("-v", (FanArg.Unit print_version), "Print Fan version and exit.");
       ("-version", (FanArg.Unit just_print_the_version),
-        "Print Camlp4 version number and exit.");
+        "Print Fan version number and exit.");
       ("-compilation-unit", (FanArg.Unit just_print_compilation_unit),
         "Print the current compilation unit");
       ("-vnum", (FanArg.Unit just_print_the_version),
-        "Print Camlp4 version number and exit.");
+        "Print Fan version number and exit.");
       ("-no_quot", (FanArg.Clear FanConfig.quotations),
         "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
       ("-loaded-modules", (FanArg.Set print_loaded_modules),
@@ -209,7 +208,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
         "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
       ("-printer", (FanArg.String (rewrite_and_load "Printers")),
-        "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
+        "<name>  Load the printer <name>.cm(o|a|xs)");
       ("-ignore", (FanArg.String ignore), "ignore the next argument");
       ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
     let _ = PreCast.Syntax.Options.adds initial_spec_list

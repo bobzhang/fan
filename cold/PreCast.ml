@@ -84,10 +84,8 @@ let enable_ocaml_printer () =
       end in replace_printer (module Id) (module P)
 let enable_dump_ocaml_ast_printer () =
   let module Id =
-    (struct
-       let name = "Camlp4Printers.DumpOCamlAst"
-       let version = Sys.ocaml_version
-     end : Sig.Id) in
+    (struct let name = "DumpOCamlAst"
+            let version = Sys.ocaml_version end : Sig.Id) in
     let module P =
       struct
         let print_interf ?(input_file= "-")  ?output_file  ast =
@@ -102,22 +100,20 @@ let enable_dump_ocaml_ast_printer () =
             with_open_out_file output_file
               (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt)
       end in replace_printer (module Id) (module P)
-let enable_dump_camlp4_ast_printer () =
+let enable_dump_ast_printer () =
   let module Id =
-    struct
-      let name = "Camlp4Printers.DumpCamlp4Ast"
-      let version = Sys.ocaml_version
-    end in
+    struct let name = "DumFanAst"
+           let version = Sys.ocaml_version end in
     let module P =
       struct
         let print_interf ?input_file:_  ?output_file  ast =
           let open FanUtil in
             with_open_out_file output_file
-              (dump_ast FanConfig.camlp4_ast_intf_magic_number ast)
+              (dump_ast FanConfig.intf_magic_number ast)
         let print_implem ?input_file:_  ?output_file  ast =
           let open FanUtil in
             with_open_out_file output_file
-              (dump_ast FanConfig.ast_impl_magic_number ast)
+              (dump_ast FanConfig.impl_magic_number ast)
       end in replace_printer (module Id) (module P)
 let enable_null_printer () =
   let module Id =

@@ -289,7 +289,7 @@ module type PRECAST = sig
   val parser_plugin: (module Id) -> (module ParserPlugin) -> unit;
   val enable_ocaml_printer: unit -> unit;
   val enable_dump_ocaml_ast_printer: unit -> unit;
-  val enable_dump_camlp4_ast_printer: unit -> unit;
+  val enable_dump_ast_printer: unit -> unit;
   val enable_null_printer: unit -> unit;
   val enable_auto: (unit->bool) -> unit;
 

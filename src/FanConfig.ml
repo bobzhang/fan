@@ -9,8 +9,8 @@ let antiquotations     = ref false;;
 let quotations         = ref true;;
 let inter_phrases: string option ref
     = ref None;;
-let ast_impl_magic_number = "FAN2013M002";;
-let camlp4_ast_intf_magic_number = "Camlp42006N002";;
+let impl_magic_number = "FAN2013M002";;
+let intf_magic_number = "FAN2013N002";;
 let ocaml_ast_intf_magic_number = Config.ast_intf_magic_number;;
 let ocaml_ast_impl_magic_number = Config.ast_impl_magic_number;;
 let current_input_file = ref "";;
