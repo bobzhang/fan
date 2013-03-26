@@ -609,7 +609,7 @@ let unknown len =
 (* end; *)
 
 
-(* let rec string_of_ident = (\* duplicated with Camlp4Filters remove soon*\) *)
+(* let rec string_of_ident = (\* duplicated with  remove soon*\) *)
 (*   fun *)
 (*   [ {:ident| $lid:s |} -> s *)
 (*   | {:ident| $uid:s |} -> s *)

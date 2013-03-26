@@ -1,14 +1,5 @@
-
 open LibUtil;
-
 open AstLoc;
-
-(* module MetaLoc = struct *)
-(*    (\* this makes sense here, because, for list operation *)
-(*       you don't care about the location representation here *\) *)
-(*   let meta_loc  _loc _ = `Id(_loc,`Lid(_loc,"loc")) (\* {:pat| loc |} *\); *)
-(* end; *)
-(* module MetaAst = FanAst.Make MetaLoc; *)
 let meta = object
   inherit FanMeta.meta;
   method! loc _loc  _ = `Id(_loc,`Lid(_loc,"loc"));
@@ -16,40 +7,8 @@ end;
 AstFilters.register_stru_filter ("lift",(fun ast ->
   let _loc = loc_of ast in
   let e = (meta#stru _loc ast :ep  :> exp )in
-  {:stru| let loc = FanLoc.ghost in $e |}
-  (* {:stru| let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_stru _loc ast) |} *))); (* FIXME Loc => FanLoc*)
+  {:stru| let loc = FanLoc.ghost in $e |})); 
 
-let add_debug_exp (e:exp) : exp =
-  let _loc = loc_of e in
-  let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
-  {:exp|
-      try $e  with
-      [ XStream.Failure | Exit as exc -> raise exc (* FIXME *)
-      | exc -> begin
-          if Debug.mode "exc" then
-            Format.eprintf $`str:msg (Printexc.to_string exc) else ();
-          raise exc
-        end ] |};
-
-let rec map_case : case -> case  = with case 
-  fun
-  [ {| $m1 | $m2 |} ->
-      {| $(map_case m1) | $(map_case m2) |}
-  | {| $pat:p -> $e |} -> {|$pat:p -> $(add_debug_exp e)|}
-  | {| $pat:p when $w -> $e |} ->
-      {| $pat:p when $w -> $(add_debug_exp e) |}
-  | m -> m ];
-
-
-AstFilters.register_stru_filter ("exception",object
-  inherit Objs.map as super;
-  method! exp = fun
-  [ {:exp@_loc| fun [ $m ] |}  -> {:exp| fun [ $(map_case m) ] |}
-  | x -> super#exp x ];
-  method! stru = fun
-  [ {:stru| module Debug = $_ |} as st -> st
-  | st -> super#stru st ];
-end#stru);
 
 AstFilters.register_stru_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#stru);
 

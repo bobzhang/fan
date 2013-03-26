@@ -66,7 +66,7 @@ let load =
         end
         with
         [ Dynlink.Error e ->
-           raise (Error "Camlp4's dynamic loader initialization" (Dynlink.error_message e)) ]
+           raise (Error "Fan's dynamic loader initialization" (Dynlink.error_message e)) ]
       else ();
       let fname =
         try find_in_path _path file with
