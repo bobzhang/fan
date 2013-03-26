@@ -259,14 +259,10 @@ let gen_print_obj =
    +-----------------------------------------------------------------+ *)
 let mk_variant_iter _cons params :exp = with exp
   match params with
-  [ [] ->
-    {| () |}
+  [ [] -> unit _loc 
   | _ -> 
-      let lst =
-        params
-        |> List.map (fun [{name_exp; id_exp;_} -> {| $name_exp $id_exp |}]) in
+      let lst = params |> List.map (fun [{name_exp; id_exp;_} -> {| $name_exp $id_exp |}]) in
       seq_sem lst] ;
-  (* {| begin $list:lst end |} *)
 
 let mk_tuple_iter params : exp =
   mk_variant_iter "" params;
@@ -322,9 +318,9 @@ let generate (module_types:FSig.module_types) : stru =
       if arity= 1 then
         let case = {:case| $vrn:key _loc -> _loc |} in
         match acc with
-        [None ->   Some case (* {:case| $vrn:key _loc -> _loc |} *)
+        [None ->   Some case 
         |Some acc ->
-          Some (`Or(_loc,case,acc))(* {:case| $vrn:key _loc  -> _loc | $acc |} *) ]
+          Some (`Or(_loc,case,acc)) ]
       else if arity > 1 then 
         let pats =
           [ {:pat| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
@@ -332,7 +328,6 @@ let generate (module_types:FSig.module_types) : stru =
         match acc with
         [None -> Some case
         |Some acc -> Some(`Or(_loc,case,acc))]  
-        (* {:case| $vrn:key $(pat:(tuple_com pats)) -> _loc | $acc |} *)
       else failwithf "arity=0 key:%s" key
         
     ) tbl None  in

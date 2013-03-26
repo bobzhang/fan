@@ -91,7 +91,7 @@ val repr: entry -> 'a t
 
 val gram: gram
 (* create a standalone gram *)
-val create_gram: annot:string -> keywords: string list -> unit -> gram
+val create_lexer: annot:string -> keywords: string list -> unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
 

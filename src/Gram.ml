@@ -38,7 +38,7 @@ let gram =  {
 
 let filter = FanTokenFilter.filter gram.gfilter;
   
-let create_gram ~annot ~keywords () =
+let create_lexer ~annot ~keywords () =
   let v = ref (SSet.of_list keywords) in
   {annot;
    gkeywords = v ;

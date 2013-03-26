@@ -238,7 +238,7 @@ end;
 (* #default_quotation "exp"  ;; *)
 (* #lang_at "pat" "module_exp";; *)
 
-let g = Gram.create_gram
+let g = Gram.create_lexer
     ~keywords:
     ["derive";
      "unload";
@@ -278,7 +278,7 @@ with exp
       [L1[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
 |};  
 
-let g = Gram.create_gram ~annot:"include" ~keywords:[] ();
+let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();
 
 {:create| (g:Gram.t) include_quot |};
   {:extend|

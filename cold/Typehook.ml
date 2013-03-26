@@ -129,7 +129,7 @@ let traversal () =
        | t -> super#typedecl t
    end : traversal )
 let g =
-  Gram.create_gram
+  Gram.create_lexer
     ~keywords:["derive";
               "unload";
               "clear";
@@ -247,7 +247,7 @@ let _ =
              (Gram.mk_action
                 (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
                    (seq_sem xs : 'fan_quots )))))]))
-let g = Gram.create_gram ~annot:"include" ~keywords:[] ()
+let g = Gram.create_lexer ~annot:"include" ~keywords:[] ()
 let include_quot = Gram.mk_dynamic g "include_quot"
 let _ =
   Gram.extend_single (include_quot : 'include_quot Gram.t )

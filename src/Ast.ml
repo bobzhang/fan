@@ -187,20 +187,14 @@ and tag_names =
   | `TyVrn of (loc * astring )]   
 and typedecl =
     (* {:stru| type  ('a, 'b, 'c) t = t |} *)
-  [=
-   `TyDcl of (loc * alident * (* list ctyp *) opt_decl_params
-                *  type_info  * opt_type_constr)
-  | `TyAbstr of (loc * alident * (* list ctyp *)
-                   opt_decl_params
-                   * opt_type_constr ) 
+  [= `TyDcl of (loc * alident * opt_decl_params * type_info * opt_type_constr)
+  | `TyAbstr of (loc * alident * opt_decl_params * opt_type_constr ) 
   | `And of (loc * typedecl * typedecl)
   | ant ]
-
-      (* original syntax
-         {[ type v = u = A of int ]}
-       revise syntax
-       {[ type v = u = [A of int];]} 
-     *)
+(* original syntax
+   {[ type v = u = A of int ]}
+   revise syntax
+   {[ type v = u = [A of int];]} *)
 and type_constr =
   [= `And of (loc * type_constr * type_constr)
   | `Eq of (loc * ctyp * ctyp)
@@ -259,27 +253,21 @@ and pat =
   | ant
   | literal
   | `Alias of (loc * pat * alident)
-
   | `ArrayEmpty of loc 
   | `Array of (loc * pat) (* [| p |] *)
   | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
-
     (* ?s or ?s:(p)   *)
   | `OptLabl of (loc * alident * pat)
   | `OptLablS of (loc * alident)
-        
     (* ?s:(p = e) or ?(p = e) *)
   | `OptLablExpr of (loc * alident * pat * exp)
-        
   | `Or of (loc * pat * pat) (* p | p *)
   | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
   | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
   | `Lazy of (loc * pat) (* lazy p *)
-    (* (module M ) *)   
   | `ModuleUnpack of (loc * auident)
-    (* (module M : ty ) *)      
   | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_pat =
   [= `RecBind of (loc * ident * pat)
@@ -303,7 +291,7 @@ and exp =
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)
-  | `ExAsf of loc (* assert `False *)
+  | `ExAsf of loc (* assert false *)
   | `ExAsr of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
@@ -504,10 +492,6 @@ and cstru =
         (* val virtual (mutable)? s : t *)
   | `CrVvr of (loc * alident * mutable_flag * ctyp)
   | ant  ]; 
-
-
-
-
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)
 type ep =
@@ -520,7 +504,6 @@ type ep =
   | any
   | `ArrayEmpty of loc 
   | `Array of (loc * ep )
-        
   | `Record of (loc * rec_bind)
   | literal
   | ant ]
