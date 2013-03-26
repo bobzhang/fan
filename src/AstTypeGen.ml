@@ -359,19 +359,13 @@ let generate (module_types:FSig.module_types) : stru = with stru
   (* use [map_ctyp] instead  *) 
      let obj = object
        inherit Objs.map as super;
-       method! row_field = 
+       method! row_field = with row_field
          (fun 
-          [ (* {:row_field| $vrn:vrn of loc |} *)`TyVrnOf(_loc,vrn,`Id(_,`Lid(_,"loc")))
-                (* {:ctyp| $vrn of loc |} *) -> `TyVrn(_loc,vrn)
-
-                    (* {:ctyp|$vrn |} *)
-          (* | {| ant |} -> {||} *)
-          | `TyVrnOf(_loc,vrn,`Tup(_,`Sta(_,`Id(_,`Lid(_,"loc")),x)))
-              (* {| $vrn of (loc * $x )|} *) ->
-              match x with
-              [ {| $_ * $_ |} ->   `TyVrnOf(_loc,vrn,`Tup(_loc,x))
-                    (* {| $vrn of ( $x * $y) |} *)
-              | _ -> `TyVrnOf(_loc,vrn,x) (* {| $vrn of $x |} *)]
+          [ {| $vrn:x of loc |} -> {| $vrn:x |}
+          | {| $vrn:x of (loc * $y ) |}->
+              match y with
+              [ {:ctyp| $_ * $_ |} -> {| $vrn:x of $tup:y |}
+              | _ -> {| $vrn:x of $y |}]
           | x -> super#row_field x ]);
      end in
      (* obj#ctyp ty *)
