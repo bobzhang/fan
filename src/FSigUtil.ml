@@ -1,5 +1,5 @@
 open FSig;
-
+open LibUtil;
 open AstLoc;
 
 let stru_from_module_types ~f:(aux:named_type -> typedecl)
@@ -15,6 +15,13 @@ let stru_from_module_types ~f:(aux:named_type -> typedecl)
              {:stru| type $(aux ty)|}] ) x ) in
       sem_of_list xs] ;
 
+let stru_from_ty ~f:(f:string -> stru) (x:module_types) : stru  =     
+  let tys : list string =
+    List.concat_map
+      (fun x -> match x with
+      [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
+      |`Single (x,_) -> [x] ]) x in
+  sem_of_list (List.map f tys);
 
 
 

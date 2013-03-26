@@ -26,14 +26,14 @@ let map_exp = with exp fun
          $(if h then {| true |} else {| false |} )) |}
   | e -> e];
 
-AstFilters.register_stru_filter ("trash_nothing",(FanObjs.map_exp map_exp)#stru);
+AstFilters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);
   
 (* [s] should starts with __ *)
 let make_filter (s,code) =
   let f = with stru fun
   [ {| $lid:s'|} when s =s' -> code
   | e -> e  ] in
-  ("filter_"^s, (FanObjs.map_stru f )#stru);
+  ("filter_"^s, (Objs.map_stru f )#stru);
 
 let me = object
   inherit FanMeta.meta;

@@ -29,58 +29,6 @@ let dump_cstru = to_string_of_printer dump#cstru;
 let dump_decl_param = to_string_of_printer dump#decl_param;
 let dump_decl_params = to_string_of_printer dump#decl_params;
 
-let map_exp f = object
-  inherit Objs.map as super;
-  method! exp x = f (super#exp x);
-end;
-let map_pat f = object
-  inherit Objs.map as super;
-  method! pat x = f (super#pat x);
-end;
-let map_ctyp f = object
-  inherit Objs.map as super;
-  method! ctyp x = f (super#ctyp x);
-end;
-let map_stru f = object
-  inherit Objs.map as super;
-  method! stru x = f (super#stru x);
-end;
-let map_sig_item f = object
-  inherit Objs.map as super;
-  method! sig_item x = f (super#sig_item x);
-end;
-let map_ctyp f = object
-  inherit Objs.map as super;
-  method! ctyp x = f (super#ctyp x);
-end;
-let map_loc f = object
-  inherit Objs.map as super;
-  method! loc x = f (super#loc x);
-end;
-
-
-(* class clean_ast = object *)
-(*   inherit Objs.map as super; *)
-(*   (\* method! ctyp t = *\) *)
-(*   (\*   match super#ctyp t with *\) *)
-(*   (\*   [ `TyPol (_loc,`Nil _l,t)|`Arrow (_loc,t,`Nil _l)|`Arrow (_loc,`Nil _l,t) *\) *)
-(*   (\*   |`Sta (_loc,`Nil _l,t)|`Sta (_loc,t,`Nil _l) -> t *\) *)
-(*   (\*   | t -> t]; *\) *)
-(*   (\* (\\* method! type_parameters t = *\\) *\) *)
-(*   (\* (\\*   match super#type_parameters t with *\\) *\) *)
-(*   (\* (\\*     [`Com(_,t, `Nil _ ) -> t | `Com (_,`Nil _, t) -> t | t -> t]; *\\) *\) *)
-(*   (\* method! or_ctyp t = *\) *)
-(*   (\*   match super#or_ctyp t with [ `Or(_,t,`Nil _) -> t | `Or(_,`Nil _,t) -> t| t -> t]; *\) *)
-(*   (\* method! typedecl t = *\) *)
-(*   (\*    match super#typedecl t with [`And(_,t,`Nil _) | `And(_,`Nil _,t) -> t | t -> t]; *\) *)
-(*   (\* (\\* method! poly_ctyp t = *\\) *\) *)
-(*   (\* (\\*   match super#poly_ctyp t with *\\) *\) *)
-(*   (\* (\\*   [`TyPol(_,`Nil _,t) -> t | t ->t ]; *\\) *\) *)
-(*   (\* method! name_ctyp t = *\) *)
-(*   (\*   match super#name_ctyp t with *\) *)
-(*   (\*   [`Sem(_,t,`Nil _) *\) *)
-(*   (\*   |`Sem(_,`Nil _,t) -> t | t -> t ]  ; *\) *)
-(* end; *)
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

@@ -50,7 +50,7 @@ val expand_quotation :
       expander:(FanLoc.t -> string option -> string -> 'a) ->
         string -> FanToken.quotation -> 'a
 
-(** [dump_file] optionally tells Camlp4 to dump the
+(** [dump_file] optionally tells Fan to dump the
     result of an expander if this result is syntactically incorrect.
     If [None] (default), this result is not dumped. If [Some fname], the
     result is dumped in the file [fname]. *)

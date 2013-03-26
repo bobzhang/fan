@@ -8454,3 +8454,172 @@ and pp_print_rec_bind fmt =
         pp_print_rec_bind _a1 pp_print_rec_bind _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result514)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result514)
+let map_loc f =
+  object  inherit  map as super method! loc x = f (super#loc x) end
+let map_ant f =
+  object  inherit  map as super method! ant x = f (super#ant x) end
+let map_nil f =
+  object  inherit  map as super method! nil x = f (super#nil x) end
+let map_literal f =
+  object  inherit  map as super method! literal x = f (super#literal x) end
+let map_rec_flag f =
+  object  inherit  map as super method! rec_flag x = f (super#rec_flag x) end
+let map_direction_flag f =
+  object 
+    inherit  map as super
+    method! direction_flag x = f (super#direction_flag x)
+  end
+let map_mutable_flag f =
+  object 
+    inherit  map as super
+    method! mutable_flag x = f (super#mutable_flag x)
+  end
+let map_private_flag f =
+  object 
+    inherit  map as super
+    method! private_flag x = f (super#private_flag x)
+  end
+let map_virtual_flag f =
+  object 
+    inherit  map as super
+    method! virtual_flag x = f (super#virtual_flag x)
+  end
+let map_override_flag f =
+  object 
+    inherit  map as super
+    method! override_flag x = f (super#override_flag x)
+  end
+let map_row_var_flag f =
+  object 
+    inherit  map as super
+    method! row_var_flag x = f (super#row_var_flag x)
+  end
+let map_position_flag f =
+  object 
+    inherit  map as super
+    method! position_flag x = f (super#position_flag x)
+  end
+let map_strings f =
+  object  inherit  map as super method! strings x = f (super#strings x) end
+let map_alident f =
+  object  inherit  map as super method! alident x = f (super#alident x) end
+let map_auident f =
+  object  inherit  map as super method! auident x = f (super#auident x) end
+let map_aident f =
+  object  inherit  map as super method! aident x = f (super#aident x) end
+let map_astring f =
+  object  inherit  map as super method! astring x = f (super#astring x) end
+let map_uident f =
+  object  inherit  map as super method! uident x = f (super#uident x) end
+let map_ident f =
+  object  inherit  map as super method! ident x = f (super#ident x) end
+let map_dupath f =
+  object  inherit  map as super method! dupath x = f (super#dupath x) end
+let map_dlpath f =
+  object  inherit  map as super method! dlpath x = f (super#dlpath x) end
+let map_any f =
+  object  inherit  map as super method! any x = f (super#any x) end
+let map_sid f =
+  object  inherit  map as super method! sid x = f (super#sid x) end
+let map_ctyp f =
+  object  inherit  map as super method! ctyp x = f (super#ctyp x) end
+let map_type_parameters f =
+  object 
+    inherit  map as super
+    method! type_parameters x = f (super#type_parameters x)
+  end
+let map_row_field f =
+  object  inherit  map as super method! row_field x = f (super#row_field x)
+  end
+let map_tag_names f =
+  object  inherit  map as super method! tag_names x = f (super#tag_names x)
+  end
+let map_typedecl f =
+  object  inherit  map as super method! typedecl x = f (super#typedecl x) end
+let map_type_constr f =
+  object 
+    inherit  map as super
+    method! type_constr x = f (super#type_constr x)
+  end
+let map_opt_type_constr f =
+  object 
+    inherit  map as super
+    method! opt_type_constr x = f (super#opt_type_constr x)
+  end
+let map_decl_param f =
+  object  inherit  map as super method! decl_param x = f (super#decl_param x)
+  end
+let map_decl_params f =
+  object 
+    inherit  map as super
+    method! decl_params x = f (super#decl_params x)
+  end
+let map_opt_decl_params f =
+  object 
+    inherit  map as super
+    method! opt_decl_params x = f (super#opt_decl_params x)
+  end
+let map_type_info f =
+  object  inherit  map as super method! type_info x = f (super#type_info x)
+  end
+let map_type_repr f =
+  object  inherit  map as super method! type_repr x = f (super#type_repr x)
+  end
+let map_name_ctyp f =
+  object  inherit  map as super method! name_ctyp x = f (super#name_ctyp x)
+  end
+let map_or_ctyp f =
+  object  inherit  map as super method! or_ctyp x = f (super#or_ctyp x) end
+let map_of_ctyp f =
+  object  inherit  map as super method! of_ctyp x = f (super#of_ctyp x) end
+let map_pat f =
+  object  inherit  map as super method! pat x = f (super#pat x) end
+let map_rec_pat f =
+  object  inherit  map as super method! rec_pat x = f (super#rec_pat x) end
+let map_exp f =
+  object  inherit  map as super method! exp x = f (super#exp x) end
+let map_rec_exp f =
+  object  inherit  map as super method! rec_exp x = f (super#rec_exp x) end
+let map_module_type f =
+  object 
+    inherit  map as super
+    method! module_type x = f (super#module_type x)
+  end
+let map_sig_item f =
+  object  inherit  map as super method! sig_item x = f (super#sig_item x) end
+let map_with_constr f =
+  object 
+    inherit  map as super
+    method! with_constr x = f (super#with_constr x)
+  end
+let map_binding f =
+  object  inherit  map as super method! binding x = f (super#binding x) end
+let map_module_binding f =
+  object 
+    inherit  map as super
+    method! module_binding x = f (super#module_binding x)
+  end
+let map_case f =
+  object  inherit  map as super method! case x = f (super#case x) end
+let map_module_exp f =
+  object  inherit  map as super method! module_exp x = f (super#module_exp x)
+  end
+let map_stru f =
+  object  inherit  map as super method! stru x = f (super#stru x) end
+let map_class_type f =
+  object  inherit  map as super method! class_type x = f (super#class_type x)
+  end
+let map_class_sig_item f =
+  object 
+    inherit  map as super
+    method! class_sig_item x = f (super#class_sig_item x)
+  end
+let map_class_exp f =
+  object  inherit  map as super method! class_exp x = f (super#class_exp x)
+  end
+let map_cstru f =
+  object  inherit  map as super method! cstru x = f (super#cstru x) end
+let map_ep f =
+  object  inherit  map as super method! ep x = f (super#ep x) end
+let map_rec_bind f =
+  object  inherit  map as super method! rec_bind x = f (super#rec_bind x) end

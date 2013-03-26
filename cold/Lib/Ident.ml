@@ -68,5 +68,5 @@ let ident_map_full f x =
   | (Some pre,s) -> `Dot (_loc, pre, (`Lid (_loc, (f s))))
   | (None ,s) -> `Lid (_loc, (f s))
 let eq t1 t2 =
-  let strip_locs t = (FanObjs.map_loc (fun _  -> FanLoc.ghost))#ident t in
+  let strip_locs t = (Objs.map_loc (fun _  -> FanLoc.ghost))#ident t in
   (strip_locs t1) = (strip_locs t2)

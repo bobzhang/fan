@@ -89,7 +89,6 @@ let rec list_of_acc_ident x acc =
   map_to_string <:ident< u>> |> print_string;
   u
 
-
   ]}
   see ident_map 
  *)  
@@ -162,6 +161,6 @@ let ident_map_full f x =
     {| $(lid:f s ) |}];
 
 let eq t1 t2 =
-  let strip_locs t = (FanObjs.map_loc (fun _ -> FanLoc.ghost))#ident t in
+  let strip_locs t = (Objs.map_loc (fun _ -> FanLoc.ghost))#ident t in
   strip_locs t1 = strip_locs t2;
 

@@ -167,7 +167,7 @@ let abstract_list (x : typedecl) =
        | `Some (_,xs) -> Some (List.length & (list_of_com xs [])))
   | _ -> None
 let eq t1 t2 =
-  let strip_locs t = (FanObjs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
+  let strip_locs t = (Objs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
   (strip_locs t1) = (strip_locs t2)
 let eq_list t1 t2 =
   let rec loop =

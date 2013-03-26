@@ -41,6 +41,7 @@ let (gen_eq,gen_eqobj) = with exp
 [ ("Eq",gen_eq) ; ("OEq",gen_eqobj) ] |> List.iter Typehook.register;
 
 
+
 (* +-----------------------------------------------------------------+
    | Fold generator                                                  |
    +-----------------------------------------------------------------+ *)
@@ -366,7 +367,17 @@ let generate (module_types:FSig.module_types) : stru =
  sem_of_list [typedecl;to_string::tags] ;  
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);
-(* {:stru| type 'a u = [Int | Bool ] |} *)
+
+let generate (module_types:FSig.module_types) : stru =
+  let aux (f:string) : stru  =
+    {:stru|
+    let $(lid:"map_"^f) f = object
+      inherit map as super;
+      method! $lid:f x = f (super#$lid:f x);
+    end |} in
+  FSigUtil.stru_from_ty ~f:aux module_types;  
+Typehook.register
+  ~filter:(fun _ -> true) ("MapWrapper",generate);    
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)

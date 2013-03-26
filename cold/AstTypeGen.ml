@@ -304,47 +304,47 @@ let generate (module_types : FSig.module_types) =
        or_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      `Type
        ((FanLoc.of_tuple
-           ("src/AstTypeGen.ml", 356, 12162, 12179, 356, 12162, 12199, false)),
+           ("src/AstTypeGen.ml", 357, 12163, 12180, 357, 12163, 12200, false)),
          (`TyDcl
             ((FanLoc.of_tuple
-                ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162, 12199,
+                ("src/AstTypeGen.ml", 357, 12163, 12185, 357, 12163, 12200,
                   false)),
               (`Lid
                  ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 356, 12162, 12187, 356, 12162,
-                       12190, false)), "tag")),
+                     ("src/AstTypeGen.ml", 357, 12163, 12188, 357, 12163,
+                       12191, false)), "tag")),
               (`Some
                  ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162,
-                       12190, false)),
+                     ("src/AstTypeGen.ml", 357, 12163, 12185, 357, 12163,
+                       12191, false)),
                    (`Quote
                       ((FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 356, 12162, 12184, 356,
-                            12162, 12186, false)),
+                          ("src/AstTypeGen.ml", 357, 12163, 12185, 357,
+                            12163, 12187, false)),
                         (`Normal
                            (FanLoc.of_tuple
-                              ("src/AstTypeGen.ml", 356, 12162, 12184, 356,
-                                12162, 12186, false))),
+                              ("src/AstTypeGen.ml", 357, 12163, 12185, 357,
+                                12163, 12187, false))),
                         (`Lid
                            ((FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 356, 12162, 12185, 356,
-                                 12162, 12186, false)), "a")))))),
+                               ("src/AstTypeGen.ml", 357, 12163, 12186, 357,
+                                 12163, 12187, false)), "a")))))),
               (`TyRepr
                  ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 356, 12162, 12193, 356, 12162,
-                       12199, false)),
+                     ("src/AstTypeGen.ml", 357, 12163, 12194, 357, 12163,
+                       12200, false)),
                    (`PrNil
                       (FanLoc.of_tuple
-                         ("src/AstTypeGen.ml", 356, 12162, 12193, 356, 12162,
-                           12199, false))),
+                         ("src/AstTypeGen.ml", 357, 12163, 12194, 357, 12163,
+                           12200, false))),
                    (`Sum
                       ((FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 356, 12162, 12193, 356,
-                            12162, 12199, false)), x)))),
+                          ("src/AstTypeGen.ml", 357, 12163, 12194, 357,
+                            12163, 12200, false)), x)))),
               (`None
                  (FanLoc.of_tuple
-                    ("src/AstTypeGen.ml", 356, 12162, 12184, 356, 12162,
-                      12199, false)))))) in
+                    ("src/AstTypeGen.ml", 357, 12163, 12185, 357, 12163,
+                      12200, false)))))) in
    let to_string =
      let case =
        or_of_list
@@ -376,6 +376,60 @@ let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
     ("DynAst", generate)
+let generate (module_types : FSig.module_types) =
+  (let aux (f : string) =
+     (`Value
+        (_loc, (`ReNil _loc),
+          (`Bind
+             (_loc, (`Id (_loc, (`Lid (_loc, ("map_" ^ f))))),
+               (`Fun
+                  (_loc,
+                    (`Case
+                       (_loc, (`Id (_loc, (`Lid (_loc, "f")))),
+                         (`Obj
+                            (_loc,
+                              (`Sem
+                                 (_loc,
+                                   (`InheritAs
+                                      (_loc, (`OvNil _loc),
+                                        (`ClassConS
+                                           (_loc, (`ViNil _loc),
+                                             (`Lid (_loc, "map")))),
+                                        (`Lid (_loc, "super")))),
+                                   (`CrMthS
+                                      (_loc, (`Lid (_loc, f)),
+                                        (`Override _loc), (`PrNil _loc),
+                                        (`Fun
+                                           (_loc,
+                                             (`Case
+                                                (_loc,
+                                                  (`Id
+                                                     (_loc,
+                                                       (`Lid (_loc, "x")))),
+                                                  (`App
+                                                     (_loc,
+                                                       (`Id
+                                                          (_loc,
+                                                            (`Lid (_loc, "f")))),
+                                                       (`App
+                                                          (_loc,
+                                                            (`Send
+                                                               (_loc,
+                                                                 (`Id
+                                                                    (_loc,
+                                                                    (`Lid
+                                                                    (_loc,
+                                                                    "super")))),
+                                                                 (`Lid
+                                                                    (_loc, f)))),
+                                                            (`Id
+                                                               (_loc,
+                                                                 (`Lid
+                                                                    (_loc,
+                                                                    "x"))))))))))))))))))))))))) : 
+     stru ) in
+   FSigUtil.stru_from_ty ~f:aux module_types : stru )
+let _ = Typehook.register ~filter:(fun _  -> true) ("MapWrapper", generate)
 let generate (module_types : FSig.module_types) =
   (let aux (name,ty) =
      if name <> "ant"

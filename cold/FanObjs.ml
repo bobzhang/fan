@@ -27,23 +27,6 @@ let dump_class_sig_item = to_string_of_printer dump#class_sig_item
 let dump_cstru = to_string_of_printer dump#cstru
 let dump_decl_param = to_string_of_printer dump#decl_param
 let dump_decl_params = to_string_of_printer dump#decl_params
-let map_exp f =
-  object  inherit  Objs.map as super method! exp x = f (super#exp x) end
-let map_pat f =
-  object  inherit  Objs.map as super method! pat x = f (super#pat x) end
-let map_ctyp f =
-  object  inherit  Objs.map as super method! ctyp x = f (super#ctyp x) end
-let map_stru f =
-  object  inherit  Objs.map as super method! stru x = f (super#stru x) end
-let map_sig_item f =
-  object 
-    inherit  Objs.map as super
-    method! sig_item x = f (super#sig_item x)
-  end
-let map_ctyp f =
-  object  inherit  Objs.map as super method! ctyp x = f (super#ctyp x) end
-let map_loc f =
-  object  inherit  Objs.map as super method! loc x = f (super#loc x) end
 class reloc _loc = object  inherit  Objs.map method! loc _ = _loc end
 let wildcarder =
   object (self)

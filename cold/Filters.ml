@@ -71,11 +71,11 @@ let map_exp =
   | e -> e
 let _ =
   AstFilters.register_stru_filter
-    ("trash_nothing", ((FanObjs.map_exp map_exp)#stru))
+    ("trash_nothing", ((Objs.map_exp map_exp)#stru))
 let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
-  (("filter_" ^ s), ((FanObjs.map_stru f)#stru))
+  (("filter_" ^ s), ((Objs.map_stru f)#stru))
 let me =
   object 
     inherit  FanMeta.meta
