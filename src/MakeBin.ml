@@ -184,14 +184,14 @@ module Make
       let process_intf  name =
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (* (new FanObjs.clean_ast)#sig_item *) (fun x -> x)
+                (* (new Objs.clean_ast)#sig_item *) (fun x -> x)
                 AstFilters.apply_interf_filters;
       let process_impl  name =
         process ~directive_handler:str_handler
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
-          (* (new FanObjs.clean_ast)#stru *) (fun x -> x)
+          (* (new Objs.clean_ast)#stru *) (fun x -> x)
           AstFilters.apply_implem_filters
           (* gimd *);
 

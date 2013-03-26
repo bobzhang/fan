@@ -312,7 +312,7 @@ let generate (module_types:FSig.module_types) : stru =
             with 
               [Not_found -> Hashtbl.add tbl s arity]
           | _ -> ()]) branches
-    | _ -> FanLoc.errorf (loc_of ty) "generate module_types %s" (FanObjs.dump_typedecl ty) ] in   
+    | _ -> FanLoc.errorf (loc_of ty) "generate module_types %s" (Objs.dump_typedecl ty) ] in   
   let _ =
     List.iter (fun [`Mutual tys ->
       List.iter aux tys
@@ -377,7 +377,20 @@ let generate (module_types:FSig.module_types) : stru =
     end |} in
   FSigUtil.stru_from_ty ~f:aux module_types;  
 Typehook.register
-  ~filter:(fun _ -> true) ("MapWrapper",generate);    
+  ~filter:(fun _ -> true) ("MapWrapper",generate);
+    
+let generate (module_types:FSig.module_types) : stru =
+  let aux (f:string) : stru  =
+    {:stru|
+    let $(lid:"dump_"^f)  = LibUtil.to_string_of_printer dump#$lid:f
+  |} in
+  sem {:stru|let dump = new print|}
+      (FSigUtil.stru_from_ty ~f:aux module_types);  
+Typehook.register
+  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"]))
+      ("PrintWrapper",generate); (* double registration should complain*)
+
+
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)

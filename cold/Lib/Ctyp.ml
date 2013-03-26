@@ -20,8 +20,8 @@ let name_length_of_tydcl (x : typedecl) =
            | `None _ -> 0
            | `Some (_,xs) -> List.length & (list_of_com xs []))))
    | tydcl ->
-       failwithf "name_length_of_tydcl {|%s|}\n"
-         (FanObjs.dump_typedecl tydcl) : (string* int) )
+       failwithf "name_length_of_tydcl {|%s|}\n" (Objs.dump_typedecl tydcl) : 
+  (string* int) )
 let gen_quantifiers1 ~arity  n =
   (((List.init arity
        (fun i  ->
@@ -44,7 +44,7 @@ let ty_name_of_tydcl (x : typedecl) =
         | `None _ -> []
         | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
       appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
-  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)
+  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
@@ -58,7 +58,7 @@ let list_of_record (ty : name_ctyp) =
              { col_label; col_ctyp; col_mutable = false }
          | t0 ->
              FanLoc.errorf (loc_of t0) "list_of_record %s"
-               (FanObjs.dump_name_ctyp t0))) : FSig.col list )
+               (Objs.dump_name_ctyp t0))) : FSig.col list )
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
@@ -146,7 +146,7 @@ let is_recursive ty_dcl =
   | `And (_,_,_) -> true
   | _ ->
       failwithf "is_recursive not type declartion: %s"
-        (FanObjs.dump_typedecl ty_dcl)
+        (Objs.dump_typedecl ty_dcl)
 let qualified_app_list =
   function
   | `App (_loc,_,_) as x ->
@@ -233,7 +233,7 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
        | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
        | t ->
            FanLoc.errorf (loc_of t) "reduce_data_ctors: %s"
-             (FanObjs.dump_or_ctyp t)) init branches
+             (Objs.dump_or_ctyp t)) init branches
 let view_sum (t : or_ctyp) =
   let bs = list_of_or t [] in
   List.map
@@ -252,9 +252,9 @@ let view_variant (t : row_field) =
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
       | `Ctyp (_,`Id (_loc,i)) -> `abbrev i
       | u ->
-          FanLoc.errorf (loc_of u) "view_variant %s"
-            (FanObjs.dump_row_field u)) lst : vbranch list )
+          FanLoc.errorf (loc_of u) "view_variant %s" (Objs.dump_row_field u))
+     lst : vbranch list )
 let of_stru =
   function
   | `Type (_,x) -> x
-  | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (FanObjs.dump_stru t)
+  | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (Objs.dump_stru t)

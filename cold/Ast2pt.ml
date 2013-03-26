@@ -7,7 +7,7 @@ open ParsetreeHelper
 open FanLoc
 open FanOps
 open AstLoc
-open FanObjs
+open Objs
 let _ = ()
 let rec normalize_acc =
   function

@@ -8623,3 +8623,67 @@ let map_ep f =
   object  inherit  map as super method! ep x = f (super#ep x) end
 let map_rec_bind f =
   object  inherit  map as super method! rec_bind x = f (super#rec_bind x) end
+let dump = new print
+let dump_literal = LibUtil.to_string_of_printer dump#literal
+let dump_rec_flag = LibUtil.to_string_of_printer dump#rec_flag
+let dump_direction_flag = LibUtil.to_string_of_printer dump#direction_flag
+let dump_mutable_flag = LibUtil.to_string_of_printer dump#mutable_flag
+let dump_private_flag = LibUtil.to_string_of_printer dump#private_flag
+let dump_virtual_flag = LibUtil.to_string_of_printer dump#virtual_flag
+let dump_override_flag = LibUtil.to_string_of_printer dump#override_flag
+let dump_row_var_flag = LibUtil.to_string_of_printer dump#row_var_flag
+let dump_position_flag = LibUtil.to_string_of_printer dump#position_flag
+let dump_strings = LibUtil.to_string_of_printer dump#strings
+let dump_alident = LibUtil.to_string_of_printer dump#alident
+let dump_auident = LibUtil.to_string_of_printer dump#auident
+let dump_aident = LibUtil.to_string_of_printer dump#aident
+let dump_astring = LibUtil.to_string_of_printer dump#astring
+let dump_uident = LibUtil.to_string_of_printer dump#uident
+let dump_ident = LibUtil.to_string_of_printer dump#ident
+let dump_dupath = LibUtil.to_string_of_printer dump#dupath
+let dump_dlpath = LibUtil.to_string_of_printer dump#dlpath
+let dump_any = LibUtil.to_string_of_printer dump#any
+let dump_sid = LibUtil.to_string_of_printer dump#sid
+let dump_ctyp = LibUtil.to_string_of_printer dump#ctyp
+let dump_type_parameters = LibUtil.to_string_of_printer dump#type_parameters
+let dump_row_field = LibUtil.to_string_of_printer dump#row_field
+let dump_tag_names = LibUtil.to_string_of_printer dump#tag_names
+let dump_typedecl = LibUtil.to_string_of_printer dump#typedecl
+let dump_type_constr = LibUtil.to_string_of_printer dump#type_constr
+let dump_opt_type_constr = LibUtil.to_string_of_printer dump#opt_type_constr
+let dump_decl_param = LibUtil.to_string_of_printer dump#decl_param
+let dump_decl_params = LibUtil.to_string_of_printer dump#decl_params
+let dump_opt_decl_params = LibUtil.to_string_of_printer dump#opt_decl_params
+let dump_type_info = LibUtil.to_string_of_printer dump#type_info
+let dump_type_repr = LibUtil.to_string_of_printer dump#type_repr
+let dump_name_ctyp = LibUtil.to_string_of_printer dump#name_ctyp
+let dump_or_ctyp = LibUtil.to_string_of_printer dump#or_ctyp
+let dump_of_ctyp = LibUtil.to_string_of_printer dump#of_ctyp
+let dump_pat = LibUtil.to_string_of_printer dump#pat
+let dump_rec_pat = LibUtil.to_string_of_printer dump#rec_pat
+let dump_exp = LibUtil.to_string_of_printer dump#exp
+let dump_rec_exp = LibUtil.to_string_of_printer dump#rec_exp
+let dump_module_type = LibUtil.to_string_of_printer dump#module_type
+let dump_sig_item = LibUtil.to_string_of_printer dump#sig_item
+let dump_with_constr = LibUtil.to_string_of_printer dump#with_constr
+let dump_binding = LibUtil.to_string_of_printer dump#binding
+let dump_module_binding = LibUtil.to_string_of_printer dump#module_binding
+let dump_case = LibUtil.to_string_of_printer dump#case
+let dump_module_exp = LibUtil.to_string_of_printer dump#module_exp
+let dump_stru = LibUtil.to_string_of_printer dump#stru
+let dump_class_type = LibUtil.to_string_of_printer dump#class_type
+let dump_class_sig_item = LibUtil.to_string_of_printer dump#class_sig_item
+let dump_class_exp = LibUtil.to_string_of_printer dump#class_exp
+let dump_cstru = LibUtil.to_string_of_printer dump#cstru
+let dump_ep = LibUtil.to_string_of_printer dump#ep
+let dump_rec_bind = LibUtil.to_string_of_printer dump#rec_bind
+class reloc _loc = object  inherit  map method! loc _ = _loc end
+let wildcarder =
+  object (self)
+    inherit  map as super
+    method! pat =
+      function
+      | `Id (_loc,`Lid (_,_)) -> `Any _loc
+      | `Alias (_loc,p,_) -> self#pat p
+      | p -> super#pat p
+  end

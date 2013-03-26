@@ -14,7 +14,7 @@ let rec lid_of_ident =
   function
   | `Dot (_loc,_,i) -> lid_of_ident i
   | `Lid (_loc,lid) -> lid
-  | x -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (FanObjs.dump_ident x)
+  | x -> FanLoc.errorf (loc_of x) "lid_of_ident %s" (Objs.dump_ident x)
 let uid_of_ident =
   let rec aux =
     function
@@ -37,8 +37,7 @@ let map_to_string ident =
     | `App (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
-    | t ->
-        FanLoc.errorf (loc_of t) "map_to_string: %s" (FanObjs.dump_ident t) in
+    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
   aux ident ""
 let ident_map f x =
   let lst = list_of_acc_ident x [] in
@@ -49,7 +48,7 @@ let ident_map f x =
       let l = List.length ls in
       (match List.drop (l - 2) ls with
        | q::(`Lid (_loc,y))::[] -> `Dot (_loc, q, (`Lid (_loc, (f y))))
-       | _ -> FanLoc.errorf (loc_of x) "ident_map: %s" (FanObjs.dump_ident x))
+       | _ -> FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_ident x))
 let ident_map_of_ident f x =
   let lst = list_of_acc_ident x [] in
   match lst with
@@ -61,7 +60,7 @@ let ident_map_of_ident f x =
        | q::(`Lid (_loc,y))::[] -> `Dot (_loc, q, (f y))
        | _ ->
            FanLoc.errorf (loc_of x) "ident_map_of_ident: %s"
-             (FanObjs.dump_ident x))
+             (Objs.dump_ident x))
 let ident_map_full f x =
   let _loc = loc_of x in
   match ((uid_of_ident x), (lid_of_ident x)) with

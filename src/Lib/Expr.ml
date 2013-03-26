@@ -141,7 +141,7 @@ let substp loc env =
   try to convert the exp meaning into pat and use that instead
  *)  
 class subst loc env = object
-  inherit FanObjs.reloc loc as super;
+  inherit Objs.reloc loc as super;
   method! exp =
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->

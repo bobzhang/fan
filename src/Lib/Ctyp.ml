@@ -44,7 +44,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
     (name, match tyvars with [`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs []])
   | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n"  (FanObjs.dump_typedecl tydcl)];      
+      failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)];      
 
 
 
@@ -110,7 +110,7 @@ let ty_name_of_tydcl  (x:typedecl) =
     let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :> list ctyp) ] in
     appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
-      failwithf "ctyp_of_tydcl{|%s|}\n" (FanObjs.dump_typedecl tydcl)];      
+      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)];      
 
 (*
   {[
@@ -148,7 +148,7 @@ let list_of_record (ty:name_ctyp) : list FSig.col  =
                {col_label; col_ctyp; col_mutable=false}
          | t0 ->
              FanLoc.errorf (loc_of t0)
-               "list_of_record %s" (FanObjs.dump_name_ctyp t0) ]);
+               "list_of_record %s" (Objs.dump_name_ctyp t0) ]);
 
   
 (*
@@ -297,7 +297,7 @@ let is_recursive ty_dcl =
     (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | `And(_,_,_)  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (FanObjs.dump_typedecl ty_dcl)];
+  | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)];
 
 (*
   {:stru|
@@ -500,7 +500,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
       -> compose  (f cons [] ) acc
     | t->
         FanLoc.errorf (loc_of t)
-          "reduce_data_ctors: %s" (FanObjs.dump_or_ctyp t)]) init  branches;
+          "reduce_data_ctors: %s" (Objs.dump_or_ctyp t)]) init  branches;
     
 let view_sum (t:or_ctyp) =
   let bs = list_of_or t [] in
@@ -552,11 +552,11 @@ let view_variant (t:row_field) : list vbranch =
       (* |  `Id (_loc,i) -> *) `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (loc_of u)
-            "view_variant %s" (FanObjs.dump_row_field u) ] ) lst ;
+            "view_variant %s" (Objs.dump_row_field u) ] ) lst ;
 
     
 let of_stru = fun
   [ `Type(_,x) -> x
   | t ->
       FanLoc.errorf (loc_of t)
-        "Ctyp.of_stru %s" (FanObjs.dump_stru t) ];
+        "Ctyp.of_stru %s" (Objs.dump_stru t) ];

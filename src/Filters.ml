@@ -10,7 +10,7 @@ AstFilters.register_stru_filter ("lift",(fun ast ->
   {:stru| let loc = FanLoc.ghost in $e |})); 
 
 
-AstFilters.register_stru_filter ("strip",(new FanObjs.reloc  FanLoc.ghost)#stru);
+AstFilters.register_stru_filter ("strip",(new Objs.reloc  FanLoc.ghost)#stru);
 
 
 let map_exp = with exp fun

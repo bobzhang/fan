@@ -417,7 +417,7 @@ let text_of_functorial_extend _loc  gram locals el =
 let mk_tok _loc ?restrict ~pattern styp = with exp
  match restrict with
  [ None ->
-   let no_variable = FanObjs.wildcarder#pat pattern in
+   let no_variable = Objs.wildcarder#pat pattern in
    let match_fun =
      if is_irrefut_pat no_variable
      then 
@@ -428,7 +428,7 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
    {text; styp; pattern = Some pattern }
      
  | Some restrict ->
-     let p'= FanObjs.wildcarder#pat pattern in
+     let p'= Objs.wildcarder#pat pattern in
      let match_fun = 
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_pat pattern in

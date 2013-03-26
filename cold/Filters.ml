@@ -21,7 +21,7 @@ let _ =
                                  (`Lid (_loc, "ghost")))))))), e)))))
 let _ =
   AstFilters.register_stru_filter
-    ("strip", (((new FanObjs.reloc) FanLoc.ghost)#stru))
+    ("strip", (((new Objs.reloc) FanLoc.ghost)#stru))
 let map_exp =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))

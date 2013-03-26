@@ -163,7 +163,7 @@ let substp loc env =
   loop
 class subst loc env =
   object 
-    inherit  (FanObjs.reloc loc) as super
+    inherit  (Objs.reloc loc) as super
     method! exp =
       function
       | `Id (_loc,`Lid (_,x))|`Id (_loc,`Uid (_,x)) as e ->

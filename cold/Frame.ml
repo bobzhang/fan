@@ -40,7 +40,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        let pat = EP.mk_tuple ~arity ~number:len in
        let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
        names <+ (currying [`Case (_loc, pat, (mk_tuple tys))] ~arity)
-   | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty) : 
+   | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
   exp )
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt ty =
@@ -68,7 +68,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
                ~left_type_id ~right_type_variable cxt) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
-            (FanObjs.dump_ctyp ty) in
+            (Objs.dump_ctyp ty) in
     aux ty
 let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
@@ -99,7 +99,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
            | _ ->
                FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_exp_of_ctyp: %s"
-                 (FanObjs.dump_ctyp ty))
+                 (Objs.dump_ctyp ty))
       | `Arrow (_loc,t1,t2) ->
           aux
             (`App
@@ -111,7 +111,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
                ~right_type_variable ?names ?arity ~mk_tuple) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s"
-            (FanObjs.dump_ctyp ty) in
+            (Objs.dump_ctyp ty) in
     aux ty
 let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
@@ -173,8 +173,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
             (_loc,
               (`Case (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), acc)))
       | t ->
-          FanLoc.errorf (loc_of t) "mk_prefix: %s"
-            (FanObjs.dump_decl_params t) in
+          FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t) in
     match vars with
     | `None _ -> names <+ acc
     | `Some (_,xs) ->
@@ -209,7 +208,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars funct
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
-                   (FanObjs.dump_type_repr t))
+                   (Objs.dump_type_repr t))
         | `TyEq (_,_,ctyp) ->
             (match ctyp with
              | `Id _|`Tup _|`Quote _|`Arrow _|`App _ as x ->
@@ -222,13 +221,13 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars case
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
-                   (FanObjs.dump_ctyp t))
+                   (Objs.dump_ctyp t))
         | t ->
             FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s"
-              (FanObjs.dump_type_info t))
+              (Objs.dump_type_info t))
    | t ->
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
-         (FanObjs.dump_typedecl t) : exp )
+         (Objs.dump_typedecl t) : exp )
 let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
@@ -250,7 +249,7 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
       `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_exp)
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
-         (FanObjs.dump_typedecl tydcl);
+         (Objs.dump_typedecl tydcl);
        `Bind
          (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
            (`App

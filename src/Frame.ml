@@ -69,7 +69,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
                   [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
-        "tuple_exp_of_ctyp %s" (FanObjs.dump_ctyp ty)];
+        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)];
   
 (*
  @supported types type application: list int
@@ -109,7 +109,7 @@ let rec  normal_simple_exp_of_ctyp
              cxt) ty 
     | ty ->
         FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
-          (FanObjs.dump_ctyp ty)] in
+          (Objs.dump_ctyp ty)] in
   aux ty;
 
 
@@ -148,7 +148,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
         | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
-              (FanObjs.dump_ctyp ty)]
+              (Objs.dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
         aux {:ctyp| arrow $t1 $t2 |} 
     | `Tup _  as ty ->
@@ -156,7 +156,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
           (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
              ~right_type_variable ?names ?arity ~mk_tuple) ty 
     | ty ->
-        FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s" (FanObjs.dump_ctyp ty) ] in
+        FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s" (Objs.dump_ctyp ty) ] in
   aux ty ;
 
 (*
@@ -240,7 +240,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
     [ `Quote(_,_,`Lid(_loc,s)) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
-        FanLoc.errorf (loc_of t) "mk_prefix: %s" (FanObjs.dump_decl_params t)] in
+        FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t)] in
   match vars with
   [`None _ -> (names <+ acc)
   |`Some(_,xs) ->
@@ -289,7 +289,7 @@ let fun_of_tydcl
           (* for [exp_of_ctyp] appending names was delayed to be handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (FanObjs.dump_type_repr t) ]
+          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_type_repr t) ]
     | `TyEq(_,_,ctyp) ->
         match ctyp with 
         [ (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
@@ -299,9 +299,9 @@ let fun_of_tydcl
         | `PolyEq(_,t) | `PolySup(_,t) | `PolyInf(_,t)|`PolyInfSup(_,t,_) -> 
             let case =  exp_of_variant result_type t  in
             mk_prefix ~names ~left_type_variable tyvars case
-        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (FanObjs.dump_ctyp t)]
-    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (FanObjs.dump_type_info t)]
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (FanObjs.dump_typedecl t)] ;             
+        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (Objs.dump_ctyp t)]
+    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (Objs.dump_type_info t)]
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)] ;             
 
 (* destination is [Str_item] generate [stru], type annotations may
    not be needed here
@@ -331,7 +331,7 @@ let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
     {:binding| $(lid:tctor_var name) = $fun_exp |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
-      (FanObjs.dump_typedecl tydcl);
+      (Objs.dump_typedecl tydcl);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end ;

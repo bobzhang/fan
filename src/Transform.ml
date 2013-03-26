@@ -24,7 +24,7 @@ let transform : full_id_transform -> ident -> exp =
       fun [ {:ident| $lid:x |}  -> {| self# $(lid: f x) |}
           | t -> begin
             let dest =  map_to_string t;
-            let src = FanObjs.dump_ident t; (* FIXME *)
+            let src = Objs.dump_ident t; (* FIXME *)
             if not (Hashtbl.mem Basic.conversion_table src) then begin 
               Hashtbl.add Basic.conversion_table src dest;   
               eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;

@@ -22,7 +22,7 @@ let transform: full_id_transform -> ident -> exp =
                  (`Lid (_loc, (f x))))
          | t ->
              let dest = map_to_string t in
-             let src = FanObjs.dump_ident t in
+             let src = Objs.dump_ident t in
              (if not (Hashtbl.mem Basic.conversion_table src)
               then
                 (Hashtbl.add Basic.conversion_table src dest;

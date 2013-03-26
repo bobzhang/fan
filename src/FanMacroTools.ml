@@ -24,11 +24,11 @@ let define ~exp ~pat eo x  = begin
   [ Some ([], e) ->
     {:extend|Gram
         exp: Level "simple"
-          [ `Uid $x -> (new FanObjs.reloc _loc)#exp e ]
+          [ `Uid $x -> (new Objs.reloc _loc)#exp e ]
         pat: Level "simple"
           [ `Uid $x ->
             let p = Expr.substp _loc [] e
-            in (new FanObjs.reloc _loc)#pat p ] |}
+            in (new Objs.reloc _loc)#pat p ] |}
   | Some (sl, e) ->
       {:extend| Gram
         exp: Level "apply"
@@ -49,7 +49,7 @@ let define ~exp ~pat eo x  = begin
           if List.length pl = List.length sl then
             let env = List.combine sl pl in
             let p = Expr.substp _loc env e in
-            (new FanObjs.reloc _loc)#pat p
+            (new Objs.reloc _loc)#pat p
           else
             incorrect_number _loc pl sl ] |}
   | None -> () ];
