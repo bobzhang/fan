@@ -83,7 +83,7 @@ open L.Expr;;
 
 
 (* test dump *)
-let t_dump s =  t str_item s |> Ast2pt.str_item;;
+let t_dump s =  t stru s |> Ast2pt.stru;;
 open ParserGrammar;;
 
 #require "inspect";;
@@ -92,6 +92,6 @@ let view a= Dot.dump_to_file "test.dot"a;;
 #install_printer print_tree;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;
-#install_printer p_type_declaration;;
+(* #install_printer p_type_declaration;; *)
 
 #revise;;

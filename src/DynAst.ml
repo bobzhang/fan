@@ -1,3 +1,7 @@
+
+(* {:fans|keep off; derive(DynAst); |}; *)
+(* {:ocaml|{:include| "src/Ast.ml" |}; |}; *)
+
 (* {:fans|keep on ; derive (Print); |}; *)
 open Ast;
 (* {:ocaml| *)

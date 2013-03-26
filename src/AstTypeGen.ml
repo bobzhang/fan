@@ -311,17 +311,13 @@ let generate (module_types:FSig.module_types) : stru =
             with 
               [Not_found -> Hashtbl.add tbl s arity]
           | _ -> ()]) branches
-    | _ ->
-        FanLoc.errorf
-          (loc_of ty) "generate module_types %s"
-          (FanObjs.dump_typedecl ty) ] in   
+    | _ -> FanLoc.errorf (loc_of ty) "generate module_types %s" (FanObjs.dump_typedecl ty) ] in   
   let _ =
     List.iter (fun [`Mutual tys ->
       List.iter aux tys
          |`Single t -> aux t]) module_types in
   let case = Hashtbl.fold
     (fun key arity acc ->
-
       if arity= 1 then
         let case = {:case| $vrn:key _loc -> _loc |} in
         match acc with
@@ -344,18 +340,40 @@ let generate (module_types:FSig.module_types) : stru =
     {| let loc_of  = fun [ $case ]|}
   |None -> failwithf "AstTypeGen.generate null case" ];
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"; "meta_option";"meta_list"]))
-    ("GenLoc",generate);
+    ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",generate);
 
-
+(* +-----------------------------------------------------------------+
+   | DynAst generator                                                |
+   +-----------------------------------------------------------------+ *)
+let generate (module_types:FSig.module_types) : stru =
+  let tys : list string =
+    List.concat_map
+      (fun x -> match x with
+      [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
+      |`Single (x,_) -> [x] ]) module_types in
+  let typedecl =
+    let x  = or_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in
+    {:stru@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
+  let to_string =
+    let case =
+      or_of_list
+        (List.map (fun x -> {:case| $(uid:String.capitalize x) -> $str:x |}) tys) in 
+    {:stru| let string_of_tag = fun [ $case ] |} in
+ let tags  =
+   List.map
+     (fun x->
+       {:stru| let $(lid: x^"_tag") : tag $lid:x = $(uid:String.capitalize x) |}) tys  in
+ sem_of_list [typedecl;to_string::tags] ;  
+Typehook.register
+  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);
+(* {:stru| type 'a u = [Int | Bool ] |} *)
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
 (* remove the loc field *)
 let generate (module_types:FSig.module_types) : stru = with stru
   let aux (name,ty) =
-    if not (name ="ant") then 
-     with ctyp
+    if  name <> "ant" then 
   (* use [map_ctyp] instead  *) 
      let obj = object
        inherit Objs.map as super;
@@ -371,7 +389,6 @@ let generate (module_types:FSig.module_types) : stru = with stru
      (* obj#ctyp ty *)
      obj#typedecl ty
   else ty  in
-  (fun x -> let r = FSigUtil.stru_from_module_types ~f:aux x  in r
-  (* {:stru| module N = struct $r end |} *)) module_types;
+  (fun x ->  FSigUtil.stru_from_module_types ~f:aux x) module_types;
 
-Typehook.register ~filter:(fun _ -> true (* not (List.mem s ["loc"; "ant"]) *)) ("LocType",generate);
+Typehook.register ~filter:(fun _ -> true ) ("LocType",generate);
