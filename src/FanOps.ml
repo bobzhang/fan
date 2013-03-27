@@ -195,7 +195,7 @@ let ty_of_sbt = fun
 
 let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
 
-let sum_type_of_list l = or_of_list (List.map ty_of_stl l);
+let sum_type_of_list l = bar_of_list (List.map ty_of_stl l);
 
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
 

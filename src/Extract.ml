@@ -95,7 +95,7 @@ and type_record (xs: list (Ident.t * Asttypes.mutable_flag * type_exp) ) : name_
         `TyCol(_loc,`Id(_loc,`Lid(_loc,name)),type_exp e)]) xs 
 and type_sum (xs: list (Ident.t *  list type_exp *  option type_exp) ) : or_ctyp
     =
-  or_of_list &
+  bar_of_list &
   List.map
     (fun
       [(i,xs,None) ->

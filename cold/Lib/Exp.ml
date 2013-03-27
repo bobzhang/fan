@@ -486,7 +486,7 @@ let gen_curry_n (acc : exp) ~arity  cons n =
    List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
      (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )
 let currying cases ~arity  =
-  let cases = or_of_list cases in
+  let cases = bar_of_list cases in
   if arity >= 2
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in

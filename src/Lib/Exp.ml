@@ -452,7 +452,7 @@ let gen_curry_n (acc:exp) ~arity cons n : exp =
  *)
   
 let currying cases ~arity =
-  let cases = or_of_list cases in (* FIXME when cases is []*)
+  let cases = bar_of_list cases in (* FIXME when cases is []*)
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exps = List.map (fun s-> {| $lid:s |} ) names in

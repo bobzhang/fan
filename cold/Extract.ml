@@ -60,7 +60,7 @@ and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_exp) list) =
                `TyCol (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_exp e)))
         xs) : name_ctyp )
 and type_sum (xs : (Ident.t* type_exp list* type_exp option) list) =
-  (or_of_list &
+  (bar_of_list &
      (List.map
         (function
          | (i,xs,None ) ->

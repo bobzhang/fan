@@ -297,7 +297,8 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                        (_loc,
                          (`Dot
                             (_loc, (`Uid (_loc, (gm ()))),
-                              (`Lid (_loc, "or_of_list")))))), e) : Ast.exp )
+                              (`Lid (_loc, "bar_of_list")))))), e) : 
+               Ast.exp )
            | ("list","ctyp&",_) ->
                (`App
                   (_loc,
@@ -324,7 +325,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                             (_loc,
                               (`Dot
                                  (_loc, (`Uid (_loc, (gm ()))),
-                                   (`Lid (_loc, "or_of_list")))))), e))) : 
+                                   (`Lid (_loc, "bar_of_list")))))), e))) : 
                Ast.exp )
            | ("antilettry","case",_) ->
                (`App

@@ -91,7 +91,7 @@ let ty_of_sbt (_loc,s,v,t) =
   then `TyColMut (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
   else `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
 let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
-let sum_type_of_list l = or_of_list (List.map ty_of_stl l)
+let sum_type_of_list l = bar_of_list (List.map ty_of_stl l)
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 let rec is_irrefut_pat (x : pat) =

@@ -15,7 +15,8 @@ let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b);
 let com a b = let _loc = a <+> b in `Com(_loc,a,b);
 let app a b = let _loc = a <+> b in `App(_loc,a,b);
 let sta a b = let _loc = a <+> b in `Sta(_loc,a,b);
-let ora a b = let _loc = a <+> b in `Bar(_loc,a,b);
+let bar a b = let _loc = a <+> b in `Bar(_loc,a,b);
+(* let ora a b = let _loc = a <+> b in `Bar(_loc,a,b); *)
 let anda a b = let _loc = a <+> b in `And(_loc,a,b);
 let dot a b = let _loc = a <+> b in `Dot (_loc,a,b);
 let par x =  let _loc = loc_of x in `Par (_loc,x);
@@ -26,11 +27,15 @@ let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b);
 
   
 
-let rec or_of_list = fun
-  [ [] -> failwithf "or_of_list empty"
-  | [t] -> t
-  | [t::ts] -> ora t (or_of_list ts)];
+(* let rec or_of_list = fun *)
+(*   [ [] -> failwithf "or_of_list empty" *)
+(*   | [t] -> t *)
+(*   | [t::ts] -> bar t (or_of_list ts)]; *)
 
+let rec bar_of_list = fun
+  [ [] -> failwithf "bar_of_list empty"
+  | [t] -> t
+  | [t::ts] -> bar t (bar_of_list ts)]; 
 
 let rec and_of_list = fun
   [ [] -> failwithf "and_of_list empty"

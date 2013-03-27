@@ -16,9 +16,9 @@ let meta_loc_pat _loc _ =  {:pat| _ |}; (* we use [subst_first_loc] *)
   
 let gm () =
   match !FanConfig.compilation_unit with
-  [Some "FanAst" -> ( (* eprintf "Compilation unit: FanAst";  *)"" )
-  | Some _ -> ( (* eprintf "Compilation unit: %s@." x;  *)"FanAst" )
-  | None ->  ((* eprintf "Compilation unit None@." ;  *)"FanAst")];
+  [Some "FanAst" -> "" 
+  | Some _ -> "FanAst" 
+  | None ->  "FanAst"];
 
 (*    
 let ant_pat  ~parse_pat (x:ant) k = with pat 
@@ -102,12 +102,12 @@ let ant_exp ~parse_exp (x:ant) =  with exp
           {| $(uid:gm()).sta_of_list $e |}
       |("list","ctyp|",_)
       |("list","case",_) ->
-          {| $(uid:gm()).or_of_list $e |}
+          {| $(uid:gm()).bar_of_list $e |}
       |("list","ctyp&",_) ->
           {| $(uid:gm()).amp_of_list $e |}
       |("listlettry","case",_) ->
           {| (($(uid:gm()).match_pre)#case
-                ($(uid:gm()).or_of_list $e)) |}
+                ($(uid:gm()).bar_of_list $e)) |}
       |("antilettry","case",_) ->
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->
@@ -210,12 +210,12 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           {| $(uid:gm()).sta_of_list $e |}
       |("list","ctyp|",_)
       |("list","case",_) ->
-          {| $(uid:gm()).or_of_list $e |}
+          {| $(uid:gm()).bar_of_list $e |}
       |("list","ctyp&",_) ->
           {| $(uid:gm()).amp_of_list $e |}
       |("listlettry","case",_) ->
           {| (($(uid:gm()).match_pre)#case
-                ($(uid:gm()).or_of_list $e)) |}
+                ($(uid:gm()).bar_of_list $e)) |}
       |("antilettry","case",_) ->
           {| $(uid:gm()).match_pre#case (`Ant ($(mloc _loc), $e)) |}
       |("lettry","case",_) ->

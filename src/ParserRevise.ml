@@ -377,9 +377,9 @@ let apply () = begin
         [
         (* FIXME fun and function duplicated *)      
          "fun"; "[";  L1 case0 SEP "|"{a}; "]" ->
-           let cases = or_of_list a in `Fun (_loc,cases)
+           let cases = bar_of_list a in `Fun (_loc,cases)
         | "function"; "[";  L1 case0 SEP "|"{a}; "]" ->
-            let cases = or_of_list a in `Fun(_loc,cases)
+            let cases = bar_of_list a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
 
@@ -521,7 +521,7 @@ let apply () = begin
   with case
     {:extend|
       case:
-      [ "["; L1 case0 SEP "|"{l}; "]" -> or_of_list l (* {|  $list:l  |} *) (* FIXME *)
+      [ "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l (* {|  $list:l  |} *) (* FIXME *)
       | pat{p}; "->"; exp{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
@@ -530,7 +530,7 @@ let apply () = begin
            `CaseWhen (_loc, p, w, e)
       | pat_as_pat_opt{p}; "->";exp{e} -> `Case(_loc,p,e)]
       case_quot:
-      [ L1 case0 SEP "|"{x} -> or_of_list x]  |};
+      [ L1 case0 SEP "|"{x} -> bar_of_list x]  |};
   with rec_exp
       {:extend|
         rec_exp_quot:
