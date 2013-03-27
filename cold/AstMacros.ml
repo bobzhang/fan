@@ -10,10 +10,11 @@ let rec fib =
   | _ -> invalid_arg "fib"
 let fibm y =
   match y with
-  | `Int (_loc,x) -> `Int (_loc, (string_of_int (fib (int_of_string x))))
+  | (`Int (_loc,x) : Ast.exp) ->
+      (`Int (_loc, (string_of_int (fib (int_of_string x)))) : Ast.exp )
   | x ->
       let _loc = loc_of x in
-      `App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x)
+      (`App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x) : Ast.exp )
 let _ = register_macro ("FIB", fibm)
 open LibUtil
 let macro_expander =

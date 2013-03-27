@@ -22,11 +22,11 @@ DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
   
   ]}
  *)
-let rec normalize_acc = with ident fun
+let rec normalize_acc = with ident' fun
   [ {| $i1.$i2 |} ->
-    {:exp| $(normalize_acc i1).$(normalize_acc i2) |}
+    {:exp'| $(normalize_acc i1).$(normalize_acc i2) |}
   | {| ($i1 $i2) |} ->
-      {:exp| $(normalize_acc i1) $(normalize_acc i2) |}
+      {:exp'| $(normalize_acc i1) $(normalize_acc i2) |}
   | {| $anti:_ |} | {@_loc| $uid:_ |} |
     {@_loc| $lid:_ |} as i -> {:exp| $id:i |} ];
 
@@ -56,7 +56,7 @@ let rec normalize_acc = with ident fun
   ]}
  *)
 
-let rec sep_dot_exp acc = with exp fun
+let rec sep_dot_exp acc = with exp' fun
   [ {| $e1.$e2|} ->
     sep_dot_exp (sep_dot_exp acc e2) e1
   | {@loc| $uid:s |} as e ->
@@ -109,7 +109,7 @@ let mkrf : rec_flag -> Asttypes.rec_flag = fun
   If "", just remove it, this behavior should appear in other identifier as well FIXME
  *)
 let ident_tag (i:ident) =
-  let rec self i acc = with ident 
+  let rec self i acc = with ident' 
     match i with
     [ {| $(lid:"*predef*").$(lid:"option") |} ->
       (Some ((ldot (lident "*predef*") "option"), `lident))
@@ -430,7 +430,7 @@ let rec mkrangepat loc c1 c2 =
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
 
 let rec pat (x:pat) =
-  with pat  match x with 
+  with pat'  match x with 
   [ {| $(lid:("true"|"false" as txt)) |}  ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
     mkpat _loc p 
@@ -562,7 +562,7 @@ let override_flag loc =  fun
   pexp_loc = }
   ]}
  *)
-let rec exp (x : exp) = with exp match x with 
+let rec exp (x : exp) = with exp' match x with 
   [ `Dot(_loc,_,_)|
     `Id(_loc,`Dot _ ) ->
       let (e, l) =
@@ -942,7 +942,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
       | `ModuleSubst(_loc,i1,i2) ->
           Some (long_uident i1, Pwith_modsubst (long_uident i2))
       | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
-     with module_type fun 
+       fun 
        [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
        | `Functor(loc,`Uid(sloc,n),nt,mt) ->
            mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
@@ -1217,7 +1217,7 @@ and class_exp  (x:Ast.class_exp) = match x with
 let sig_item (ast:sig_item) : signature = sig_item ast [];
 let stru ast = stru ast [];
 
-let directive (x:exp) = with exp  match x with 
+let directive (x:exp) = with exp'  match x with 
   [`Str(_,s) -> Pdir_string s
   | `Int(_,i) -> Pdir_int (int_of_string i)
   | {| true |} -> Pdir_bool true

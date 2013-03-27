@@ -7,15 +7,15 @@ open Lib.Expr
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
-   | [] -> `Id (_loc, (`Lid (_loc, "true")))
+   | [] -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.exp )
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
-                     `App
-                       (_loc,
-                         (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
-                         y)) ~f:(fun { exp;_}  -> exp) ls : FSig.ty_info list
-                                                              -> exp )
+                     (`App
+                        (_loc,
+                          (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
+                          y) : Ast.exp )) ~f:(fun { exp;_}  -> exp) ls : 
+  FSig.ty_info list -> exp )
 let mk_tuple_eq exps = mk_variant_eq "" exps
 let mk_record_eq: FSig.record_col list -> exp =
   fun cols  ->
@@ -23,23 +23,23 @@ let mk_record_eq: FSig.record_col list -> exp =
 let (gen_eq,gen_eqobj) =
   ((gen_stru ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
       ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
-      ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()),
+      ~trail:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()),
     (gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
        ~base:"eqbase" ~class_name:"eq" ~mk_variant:mk_variant_eq ~names:[]
-       ~arity:2 ~trail:(`Id (_loc, (`Lid (_loc, "false")))) ()))
+       ~arity:2 ~trail:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()))
 let _ = [("Eq", gen_eq); ("OEq", gen_eqobj)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { exp;_}  -> exp))) |>
       (function
-       | [] -> `Id (_loc, (`Lid (_loc, "self")))
+       | [] -> (`Id (_loc, (`Lid (_loc, "self"))) : Ast.exp )
        | ls ->
            List.reduce_right
              (fun v  acc  ->
-                `LetIn
-                  (_loc, (`ReNil _loc),
-                    (`Bind (_loc, (`Id (_loc, (`Lid (_loc, "self")))), v)),
-                    acc)) ls) in
+                (`LetIn
+                   (_loc, (`ReNil _loc),
+                     (`Bind (_loc, (`Id (_loc, (`Lid (_loc, "self")))), v)),
+                     acc) : Ast.exp )) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant "") in
@@ -49,7 +49,7 @@ let (gen_fold,gen_fold2) =
        ~class_name:"fold2" ~mk_variant ~names:[] ~arity:2
        ~trail:(`App
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "fold2 failure")))) ()))
+                   (`Str (_loc, "fold2 failure"))) : Ast.exp ) ()))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -59,14 +59,14 @@ let (gen_map,gen_map2) =
         (params |> (List.map (fun { exp0;_}  -> exp0)))) in
     List.fold_right
       (fun { exp; pat0;_}  res  ->
-         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res)) params
-      result in
+         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+         Ast.exp )) params result in
   let mk_tuple params =
     let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
       (fun { exp; pat0;_}  res  ->
-         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res)) params
-      result in
+         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+         Ast.exp )) params result in
   let mk_record cols =
     let result =
       (cols |>
@@ -76,15 +76,15 @@ let (gen_map,gen_map2) =
         |> mk_record in
     List.fold_right
       (fun { re_info = { exp; pat0;_};_}  res  ->
-         `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res)) cols
-      result in
+         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+         Ast.exp )) cols result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" ~mk_variant ~names:[] ()),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" ~mk_variant ~names:[] ~arity:2
        ~trail:(`App
                  (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "map2 failure")))) ()))
+                   (`Str (_loc, "map2 failure"))) : Ast.exp ) ()))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let gen_strip =
@@ -103,8 +103,9 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
-         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res))
-      params' result in
+         | _ ->
+             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             Ast.exp )) params' result in
   let mk_tuple params =
     let result = (params |> (List.map (fun { exp0;_}  -> exp0))) |> tuple_com in
     List.fold_right
@@ -114,8 +115,9 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
-         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res))
-      params result in
+         | _ ->
+             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             Ast.exp )) params result in
   let mk_record cols =
     let result =
       (cols |>
@@ -129,8 +131,9 @@ let gen_strip =
            |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
            |`Id (_loc,`Lid (_,"loc"))
            |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
-         | _ -> `LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res))
-      cols result in
+         | _ ->
+             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             Ast.exp )) cols result in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[]
     ()
 let _ =
@@ -156,8 +159,8 @@ let _ =
   Typehook.register ~position:"__MetaExpr__" ~filter:(fun s  -> s <> "loc")
     ("MetaExpr", gen_meta_exp)
 let gen_meta =
-  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "ep"))))) ~mk_tuple
-    ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
+  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "ep"))) : Ast.ctyp ))
+    ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
@@ -166,16 +169,17 @@ let extract info =
   (info |> (List.map (fun { name_exp; id_exp;_}  -> [name_exp; id_exp]))) |>
     List.concat
 let mkfmt pre sep post fields =
-  `App
-    (_loc,
-      (`App
-         (_loc,
-           (`Id
-              (_loc,
-                (`Dot
-                   (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
-           (`Id (_loc, (`Lid (_loc, "fmt")))))),
-      (`Str (_loc, (pre ^ ((String.concat sep fields) ^ post)))))
+  (`App
+     (_loc,
+       (`App
+          (_loc,
+            (`Id
+               (_loc,
+                 (`Dot
+                    (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
+            (`Id (_loc, (`Lid (_loc, "fmt")))))),
+       (`Str (_loc, (pre ^ ((String.concat sep fields) ^ post))))) : 
+  Ast.exp )
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =
@@ -212,7 +216,8 @@ let mk_variant_iter _cons params =
        let lst =
          params |>
            (List.map
-              (fun { name_exp; id_exp;_}  -> `App (_loc, name_exp, id_exp))) in
+              (fun { name_exp; id_exp;_}  ->
+                 (`App (_loc, name_exp, id_exp) : Ast.exp ))) in
        seq_sem lst : exp )
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
 let mk_record_iter cols =
@@ -220,7 +225,7 @@ let mk_record_iter cols =
     cols |>
       (List.map
          (fun { re_info = { name_exp; id_exp;_};_}  ->
-            `App (_loc, name_exp, id_exp))) in
+            (`App (_loc, name_exp, id_exp) : Ast.exp ))) in
   seq_sem lst
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
@@ -257,7 +262,7 @@ let generate (module_types : FSig.module_types) =
        (fun key  arity  acc  ->
           if arity = 1
           then
-            let case =
+            let case: Ast.case =
               `Case
                 (_loc,
                   (`App
@@ -270,9 +275,9 @@ let generate (module_types : FSig.module_types) =
           else
             if arity > 1
             then
-              (let pats = (`Id (_loc, (`Lid (_loc, "_loc")))) ::
+              (let pats = (`Id (_loc, (`Lid (_loc, "_loc"))) : Ast.pat ) ::
                  (List.init (arity - 1) (fun _  -> `Any _loc)) in
-               let case =
+               let case: Ast.case =
                  `Case
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
@@ -283,11 +288,11 @@ let generate (module_types : FSig.module_types) =
             else failwithf "arity=0 key:%s" key) tbl None in
    match case with
    | Some case ->
-       `Value
-         (_loc, (`ReNil _loc),
-           (`Bind
-              (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))),
-                (`Fun (_loc, case)))))
+       (`Value
+          (_loc, (`ReNil _loc),
+            (`Bind
+               (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))),
+                 (`Fun (_loc, case))))) : Ast.stru )
    | None  -> failwithf "AstTypeGen.generate null case" : stru )
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
@@ -302,75 +307,77 @@ let generate (module_types : FSig.module_types) =
    let typedecl =
      let x =
        or_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
-     `Type
-       ((FanLoc.of_tuple
-           ("src/AstTypeGen.ml", 352, 11951, 11968, 352, 11951, 11988, false)),
-         (`TyDcl
-            ((FanLoc.of_tuple
-                ("src/AstTypeGen.ml", 352, 11951, 11973, 352, 11951, 11988,
-                  false)),
-              (`Lid
-                 ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 352, 11951, 11976, 352, 11951,
-                       11979, false)), "tag")),
-              (`Some
-                 ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 352, 11951, 11973, 352, 11951,
-                       11979, false)),
-                   (`Quote
-                      ((FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 352, 11951, 11973, 352,
-                            11951, 11975, false)),
-                        (`Normal
-                           (FanLoc.of_tuple
-                              ("src/AstTypeGen.ml", 352, 11951, 11973, 352,
-                                11951, 11975, false))),
-                        (`Lid
-                           ((FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 352, 11951, 11974, 352,
-                                 11951, 11975, false)), "a")))))),
-              (`TyRepr
-                 ((FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 352, 11951, 11982, 352, 11951,
-                       11988, false)),
-                   (`PrNil
-                      (FanLoc.of_tuple
-                         ("src/AstTypeGen.ml", 352, 11951, 11982, 352, 11951,
-                           11988, false))),
-                   (`Sum
-                      ((FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 352, 11951, 11982, 352,
-                            11951, 11988, false)), x)))),
-              (`None
-                 (FanLoc.of_tuple
-                    ("src/AstTypeGen.ml", 352, 11951, 11973, 352, 11951,
-                      11988, false)))))) in
+     (`Type
+        ((FanLoc.of_tuple
+            ("src/AstTypeGen.ml", 352, 11969, 11987, 352, 11969, 12007,
+              false)),
+          (`TyDcl
+             ((FanLoc.of_tuple
+                 ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969, 12007,
+                   false)),
+               (`Lid
+                  ((FanLoc.of_tuple
+                      ("src/AstTypeGen.ml", 352, 11969, 11995, 352, 11969,
+                        11998, false)), "tag")),
+               (`Some
+                  ((FanLoc.of_tuple
+                      ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969,
+                        11998, false)),
+                    (`Quote
+                       ((FanLoc.of_tuple
+                           ("src/AstTypeGen.ml", 352, 11969, 11992, 352,
+                             11969, 11994, false)),
+                         (`Normal
+                            (FanLoc.of_tuple
+                               ("src/AstTypeGen.ml", 352, 11969, 11992, 352,
+                                 11969, 11994, false))),
+                         (`Lid
+                            ((FanLoc.of_tuple
+                                ("src/AstTypeGen.ml", 352, 11969, 11993, 352,
+                                  11969, 11994, false)), "a")))))),
+               (`TyRepr
+                  ((FanLoc.of_tuple
+                      ("src/AstTypeGen.ml", 352, 11969, 12001, 352, 11969,
+                        12007, false)),
+                    (`PrNil
+                       (FanLoc.of_tuple
+                          ("src/AstTypeGen.ml", 352, 11969, 12001, 352,
+                            11969, 12007, false))),
+                    (`Sum
+                       ((FanLoc.of_tuple
+                           ("src/AstTypeGen.ml", 352, 11969, 12001, 352,
+                             11969, 12007, false)), x)))),
+               (`None
+                  (FanLoc.of_tuple
+                     ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969,
+                       12007, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        or_of_list
          (List.map
             (fun x  ->
-               `Case
-                 (_loc, (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
-                   (`Str (_loc, x)))) tys) in
-     `Value
-       (_loc, (`ReNil _loc),
-         (`Bind
-            (_loc, (`Id (_loc, (`Lid (_loc, "string_of_tag")))),
-              (`Fun (_loc, case))))) in
+               (`Case
+                  (_loc, (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                    (`Str (_loc, x))) : Ast.case )) tys) in
+     (`Value
+        (_loc, (`ReNil _loc),
+          (`Bind
+             (_loc, (`Id (_loc, (`Lid (_loc, "string_of_tag")))),
+               (`Fun (_loc, case))))) : Ast.stru ) in
    let tags =
      List.map
        (fun x  ->
-          `Value
-            (_loc, (`ReNil _loc),
-              (`Bind
-                 (_loc, (`Id (_loc, (`Lid (_loc, (x ^ "_tag"))))),
-                   (`Constraint
-                      (_loc,
-                        (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
-                        (`App
-                           (_loc, (`Id (_loc, (`Lid (_loc, "tag")))),
-                             (`Id (_loc, (`Lid (_loc, x)))))))))))) tys in
+          (`Value
+             (_loc, (`ReNil _loc),
+               (`Bind
+                  (_loc, (`Id (_loc, (`Lid (_loc, (x ^ "_tag"))))),
+                    (`Constraint
+                       (_loc,
+                         (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                         (`App
+                            (_loc, (`Id (_loc, (`Lid (_loc, "tag")))),
+                              (`Id (_loc, (`Lid (_loc, x))))))))))) : 
+          Ast.stru )) tys in
    sem_of_list (typedecl :: to_string :: tags) : stru )
 let _ =
   Typehook.register
@@ -378,80 +385,81 @@ let _ =
     ("DynAst", generate)
 let generate (module_types : FSig.module_types) =
   (let aux (f : string) =
-     (`Value
-        (_loc, (`ReNil _loc),
-          (`Bind
-             (_loc, (`Id (_loc, (`Lid (_loc, ("map_" ^ f))))),
-               (`Fun
-                  (_loc,
-                    (`Case
-                       (_loc, (`Id (_loc, (`Lid (_loc, "f")))),
-                         (`Obj
-                            (_loc,
-                              (`Sem
-                                 (_loc,
-                                   (`InheritAs
-                                      (_loc, (`OvNil _loc),
-                                        (`ClassConS
-                                           (_loc, (`ViNil _loc),
-                                             (`Lid (_loc, "map")))),
-                                        (`Lid (_loc, "super")))),
-                                   (`CrMthS
-                                      (_loc, (`Lid (_loc, f)),
-                                        (`Override _loc), (`PrNil _loc),
-                                        (`Fun
-                                           (_loc,
-                                             (`Case
-                                                (_loc,
-                                                  (`Id
-                                                     (_loc,
-                                                       (`Lid (_loc, "x")))),
-                                                  (`App
-                                                     (_loc,
-                                                       (`Id
-                                                          (_loc,
-                                                            (`Lid (_loc, "f")))),
-                                                       (`App
-                                                          (_loc,
-                                                            (`Send
-                                                               (_loc,
-                                                                 (`Id
+     ((`Value
+         (_loc, (`ReNil _loc),
+           (`Bind
+              (_loc, (`Id (_loc, (`Lid (_loc, ("map_" ^ f))))),
+                (`Fun
+                   (_loc,
+                     (`Case
+                        (_loc, (`Id (_loc, (`Lid (_loc, "f")))),
+                          (`Obj
+                             (_loc,
+                               (`Sem
+                                  (_loc,
+                                    (`InheritAs
+                                       (_loc, (`OvNil _loc),
+                                         (`ClassConS
+                                            (_loc, (`ViNil _loc),
+                                              (`Lid (_loc, "map")))),
+                                         (`Lid (_loc, "super")))),
+                                    (`CrMthS
+                                       (_loc, (`Lid (_loc, f)),
+                                         (`Override _loc), (`PrNil _loc),
+                                         (`Fun
+                                            (_loc,
+                                              (`Case
+                                                 (_loc,
+                                                   (`Id
+                                                      (_loc,
+                                                        (`Lid (_loc, "x")))),
+                                                   (`App
+                                                      (_loc,
+                                                        (`Id
+                                                           (_loc,
+                                                             (`Lid
+                                                                (_loc, "f")))),
+                                                        (`App
+                                                           (_loc,
+                                                             (`Send
+                                                                (_loc,
+                                                                  (`Id
                                                                     (_loc,
                                                                     (`Lid
                                                                     (_loc,
                                                                     "super")))),
-                                                                 (`Lid
+                                                                  (`Lid
                                                                     (_loc, f)))),
-                                                            (`Id
-                                                               (_loc,
-                                                                 (`Lid
+                                                             (`Id
+                                                                (_loc,
+                                                                  (`Lid
                                                                     (_loc,
                                                                     "x"))))))))))))))))))))))))) : 
-     stru ) in
+     Ast.stru ) : stru ) in
    FSigUtil.stru_from_ty ~f:aux module_types : stru )
 let _ = Typehook.register ~filter:(fun _  -> true) ("MapWrapper", generate)
 let generate (module_types : FSig.module_types) =
   (let aux (f : string) =
-     (`Value
-        (_loc, (`ReNil _loc),
-          (`Bind
-             (_loc, (`Id (_loc, (`Lid (_loc, ("dump_" ^ f))))),
-               (`App
-                  (_loc,
-                    (`Id
-                       (_loc,
-                         (`Dot
-                            (_loc, (`Uid (_loc, "LibUtil")),
-                              (`Lid (_loc, "to_string_of_printer")))))),
-                    (`Send
-                       (_loc, (`Id (_loc, (`Lid (_loc, "dump")))),
-                         (`Lid (_loc, f))))))))) : stru ) in
+     ((`Value
+         (_loc, (`ReNil _loc),
+           (`Bind
+              (_loc, (`Id (_loc, (`Lid (_loc, ("dump_" ^ f))))),
+                (`App
+                   (_loc,
+                     (`Id
+                        (_loc,
+                          (`Dot
+                             (_loc, (`Uid (_loc, "LibUtil")),
+                               (`Lid (_loc, "to_string_of_printer")))))),
+                     (`Send
+                        (_loc, (`Id (_loc, (`Lid (_loc, "dump")))),
+                          (`Lid (_loc, f))))))))) : Ast.stru ) : stru ) in
    sem
      (`Value
         (_loc, (`ReNil _loc),
           (`Bind
              (_loc, (`Id (_loc, (`Lid (_loc, "dump")))),
-               (`New (_loc, (`Lid (_loc, "print"))))))))
+               (`New (_loc, (`Lid (_loc, "print"))))))) : Ast.stru )
      (FSigUtil.stru_from_ty ~f:aux module_types) : stru )
 let _ =
   Typehook.register
@@ -464,11 +472,14 @@ let generate (module_types : FSig.module_types) =
        let obj =
          Objs.map_row_field
            (function
-            | `TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) -> `TyVrn (_loc, x)
-            | `TyVrnOf (_loc,x,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) ->
+            | (`TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) : Ast.row_field) ->
+                (`TyVrn (_loc, x) : Ast.row_field )
+            | (`TyVrnOf (_loc,x,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) :
+                Ast.row_field) ->
                 (match y with
-                 | `Sta (_loc,_,_) -> `TyVrnOf (_loc, x, (`Tup (_loc, y)))
-                 | _ -> `TyVrnOf (_loc, x, y))
+                 | (`Sta (_loc,_,_) : Ast.ctyp) ->
+                     `TyVrnOf (_loc, x, (`Tup (_loc, y)))
+                 | _ -> (`TyVrnOf (_loc, x, y) : Ast.row_field ))
             | x -> x) in
        obj#typedecl ty
      else ty in

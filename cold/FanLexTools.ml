@@ -98,7 +98,7 @@ let table_prefix = "__table_"
 let state_prefix = "__state_"
 let partition_prefix = "__partition_"
 let lexer_module_name =
-  let _loc = FanLoc.ghost in ref (`Uid (_loc, "Ulexing"))
+  let _loc = FanLoc.ghost in ref (`Uid (_loc, "Ulexing") : Ast.ident )
 let gm () = lexer_module_name.contents
 let mk_table_name i = Printf.sprintf "%s%i" table_prefix i
 let mk_state_name i = Printf.sprintf "__state_%i" i
@@ -172,112 +172,118 @@ let output_byte_array v =
     (output_byte b ((v.(i)) land 255);
      if (i land 15) = 15 then Buffer.add_string b "\\\n    " else ())
   done;
-  (let s = Buffer.contents b in `Str (_loc, s))
+  (let s = Buffer.contents b in (`Str (_loc, s) : Ast.exp ))
 let table (n,t) =
-  `Value
-    (_loc, (`ReNil _loc),
-      (`Bind (_loc, (`Id (_loc, (`Lid (_loc, n)))), (output_byte_array t))))
+  (`Value
+     (_loc, (`ReNil _loc),
+       (`Bind (_loc, (`Id (_loc, (`Lid (_loc, n)))), (output_byte_array t)))) : 
+  Ast.stru )
 let binding_table (n,t) =
-  `Bind (_loc, (`Id (_loc, (`Lid (_loc, n)))), (output_byte_array t))
+  (`Bind (_loc, (`Id (_loc, (`Lid (_loc, n)))), (output_byte_array t)) : 
+  Ast.binding )
 let partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        `IfThenElse
-          (_loc,
-            (`App
-               (_loc,
-                 (`App
-                    (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
-                      (`Id (_loc, (`Lid (_loc, "c")))))),
-                 (`Int (_loc, (string_of_int i))))), (gen_tree yes),
-            (gen_tree no))
-    | Return i -> `Int (_loc, (string_of_int i))
+        (`IfThenElse
+           (_loc,
+             (`App
+                (_loc,
+                  (`App
+                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
+                       (`Id (_loc, (`Lid (_loc, "c")))))),
+                  (`Int (_loc, (string_of_int i))))), (gen_tree yes),
+             (gen_tree no)) : Ast.exp )
+    | Return i -> (`Int (_loc, (string_of_int i)) : Ast.exp )
     | Table (offset,t) ->
         let c =
           if offset = 0
-          then `Id (_loc, (`Lid (_loc, "c")))
+          then (`Id (_loc, (`Lid (_loc, "c"))) : Ast.exp )
           else
-            `App
-              (_loc,
-                (`App
-                   (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
-                     (`Id (_loc, (`Lid (_loc, "c")))))),
-                (`Int (_loc, (string_of_int offset)))) in
-        `App
-          (_loc,
             (`App
-               (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+               (_loc,
                  (`App
-                    (_loc,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (`Uid (_loc, "Char")),
-                                (`Lid (_loc, "code")))))),
-                      (`StringDot
-                         (_loc,
-                           (`Id
-                              (_loc,
-                                (`Lid (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (`Int (_loc, "1"))) in
+                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                      (`Id (_loc, (`Lid (_loc, "c")))))),
+                 (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
+        (`App
+           (_loc,
+             (`App
+                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                  (`App
+                     (_loc,
+                       (`Id
+                          (_loc,
+                            (`Dot
+                               (_loc, (`Uid (_loc, "Char")),
+                                 (`Lid (_loc, "code")))))),
+                       (`StringDot
+                          (_loc,
+                            (`Id
+                               (_loc,
+                                 (`Lid
+                                    (_loc, (table_name ~tables ~counter t))))),
+                            c)))))), (`Int (_loc, "1"))) : Ast.exp ) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  `Value
-    (_loc, (`ReNil _loc),
-      (`Bind
-         (_loc, (`Id (_loc, (`Lid (_loc, f)))),
-           (`Fun
-              (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))), body)))))))
+  (`Value
+     (_loc, (`ReNil _loc),
+       (`Bind
+          (_loc, (`Id (_loc, (`Lid (_loc, f)))),
+            (`Fun
+               (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))), body))))))) : 
+    Ast.stru )
 let binding_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
-        `IfThenElse
-          (_loc,
-            (`App
-               (_loc,
-                 (`App
-                    (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
-                      (`Id (_loc, (`Lid (_loc, "c")))))),
-                 (`Int (_loc, (string_of_int i))))), (gen_tree yes),
-            (gen_tree no))
-    | Return i -> `Int (_loc, (string_of_int i))
+        (`IfThenElse
+           (_loc,
+             (`App
+                (_loc,
+                  (`App
+                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
+                       (`Id (_loc, (`Lid (_loc, "c")))))),
+                  (`Int (_loc, (string_of_int i))))), (gen_tree yes),
+             (gen_tree no)) : Ast.exp )
+    | Return i -> (`Int (_loc, (string_of_int i)) : Ast.exp )
     | Table (offset,t) ->
         let c =
           if offset = 0
-          then `Id (_loc, (`Lid (_loc, "c")))
+          then (`Id (_loc, (`Lid (_loc, "c"))) : Ast.exp )
           else
-            `App
-              (_loc,
-                (`App
-                   (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
-                     (`Id (_loc, (`Lid (_loc, "c")))))),
-                (`Int (_loc, (string_of_int offset)))) in
-        `App
-          (_loc,
             (`App
-               (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+               (_loc,
                  (`App
-                    (_loc,
-                      (`Id
-                         (_loc,
-                           (`Dot
-                              (_loc, (`Uid (_loc, "Char")),
-                                (`Lid (_loc, "code")))))),
-                      (`StringDot
-                         (_loc,
-                           (`Id
-                              (_loc,
-                                (`Lid (_loc, (table_name ~tables ~counter t))))),
-                           c)))))), (`Int (_loc, "1"))) in
+                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                      (`Id (_loc, (`Lid (_loc, "c")))))),
+                 (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
+        (`App
+           (_loc,
+             (`App
+                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                  (`App
+                     (_loc,
+                       (`Id
+                          (_loc,
+                            (`Dot
+                               (_loc, (`Uid (_loc, "Char")),
+                                 (`Lid (_loc, "code")))))),
+                       (`StringDot
+                          (_loc,
+                            (`Id
+                               (_loc,
+                                 (`Lid
+                                    (_loc, (table_name ~tables ~counter t))))),
+                            c)))))), (`Int (_loc, "1"))) : Ast.exp ) in
   let body =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  `Bind
-    (_loc, (`Id (_loc, (`Lid (_loc, f)))),
-      (`Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))), body)))))
+  (`Bind
+     (_loc, (`Id (_loc, (`Lid (_loc, f)))),
+       (`Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "c")))), body))))) : 
+    Ast.binding )
 let best_final final =
   let fin = ref None in
   Array.iteri
@@ -317,7 +323,7 @@ let gen_definition _loc l =
                          (_loc,
                            (`Dot (_loc, (gm ()), (`Lid (_loc, "backtrack")))))),
                       (`Id (_loc, (`Lid (_loc, "lexbuf")))))))]) in
-     let body =
+     let body: Ast.exp =
        `Match
          (_loc,
            (`App
@@ -355,8 +361,8 @@ let gen_definition _loc l =
                                             (_loc, (gm ()),
                                               (`Lid (_loc, "mark")))))),
                                     (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
-                               (`Int (_loc, (string_of_int i))))), body))))) : 
-    binding option ) in
+                               (`Int (_loc, (string_of_int i))))), body))) : 
+                Ast.exp )) : binding option ) in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -415,5 +421,6 @@ let gen_definition _loc l =
                                   (`Id
                                      (_loc, (`Lid (_loc, (mk_state_name 0))))),
                                   (`Id (_loc, (`Lid (_loc, "lexbuf")))))),
-                             cases))))))))) in
-  `Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), rest)))
+                             cases))))))) : Ast.exp )) in
+  (`Fun (_loc, (`Case (_loc, (`Id (_loc, (`Lid (_loc, "lexbuf")))), rest))) : 
+    Ast.exp )

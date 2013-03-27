@@ -8,7 +8,8 @@ let strip_loc_list f lst =
 let strip_loc_ant ant = ant ;
 
 {:fans|keep off;
-derive(Map2 Fold2 OIter Map Fold  OPrint OEq Strip Print MapWrapper PrintWrapper);
+derive((* Map2 Fold2 OIter   OEq *)
+   Print OPrint Map Fold Strip  MapWrapper PrintWrapper);
 |};
 
 {:ocaml|{:include| "src/Ast.ml"|} ; |};

@@ -1,13 +1,13 @@
-open Ast;
+
 open FanUtil;
 open Lib.Meta;
-
+open AstLoc;
 
 let meta_loc_exp _loc loc =
   match !AstQuotation.current_loc_name with
-  [ None -> {:exp| $(lid:!FanLoc.name) |}
+  [ None -> lid _loc !FanLoc.name
   | Some "here" -> meta_loc _loc loc
-  | Some x -> {:exp| $lid:x |} ];;
+  | Some x -> lid _loc x  ];;
 
 
 let meta_loc_pat _loc _ =  {:pat| _ |}; (* we use [subst_first_loc] *)
@@ -125,7 +125,7 @@ let ant_exp ~parse_exp (x:ant) =  with exp
   
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
-  method! pat (x:pat)= with pat
+  method! pat (x:pat)= with pat'
     match x with 
     [`Ant(_loc, {cxt;sep;decorations;content=code}) ->
       (* when the antiquotation appears in the pattern position,
@@ -151,7 +151,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}
     | _ -> super#pat e ]
  | e -> super#pat e];
-  method! exp (x:exp) = with exp
+  method! exp (x:exp) = with exp'
     match x with 
     [`Ant(_loc,{cxt;sep;decorations;content=code}) ->
       let mloc _loc = (meta_loc_exp _loc _loc :> exp) in

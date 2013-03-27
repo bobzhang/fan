@@ -3,9 +3,9 @@ open FSig
 open Lib
 let _loc = FanLoc.ghost
 let gen_stru ?module_name  ?(arity= 1)  ?(trail=
-  `App
-    (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
-      (`Str (_loc, "arity >= 2 in other branches"))))
+  (`App
+     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
+       (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
    ?cons_transform  ~id:(id : basic_id_transform)  ~names  ~mk_tuple 
   ~mk_record  ~mk_variant  () =
   let left_type_variable = `Pre "mf_" in
@@ -17,14 +17,14 @@ let gen_stru ?module_name  ?(arity= 1)  ?(trail=
     | Some m ->
         `Last
           ((fun s  ->
-              `Dot
-                (_loc, (`Uid (_loc, m)),
-                  (`Lid (_loc, (basic_transform id s)))))) in
+              (`Dot
+                 (_loc, (`Uid (_loc, m)),
+                   (`Lid (_loc, (basic_transform id s)))) : Ast.ident ))) in
   let trail (_,number) =
     if number > 1
     then
-      let pat = EP.tuple_of_number (`Any _loc) arity in
-      Some (`Case (_loc, pat, trail))
+      let pat = EP.tuple_of_number (`Any _loc : Ast.pat ) arity in
+      Some (`Case (_loc, pat, trail) : Ast.case )
     else None in
   let names = names in
   let mk_record = mk_record in
@@ -36,9 +36,9 @@ let gen_stru ?module_name  ?(arity= 1)  ?(trail=
       (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
          ~left_type_id ~right_type_variable)
 let gen_object ?module_name  ?(arity= 1)  ?(trail=
-  `App
-    (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
-      (`Str (_loc, "arity >= 2 in other branches"))))
+  (`App
+     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
+       (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ~names  ~mk_tuple  ~mk_record  ~mk_variant  () =
     Frame.check names;
@@ -47,16 +47,16 @@ let gen_object ?module_name  ?(arity= 1)  ?(trail=
        `Exp
          (fun v  ->
             let v = basic_transform left_type_variable v in
-            `App
-              (_loc, (`Id (_loc, (`Lid (_loc, v)))),
-                (`Id (_loc, (`Lid (_loc, "self")))))) in
+            (`App
+               (_loc, (`Id (_loc, (`Lid (_loc, v)))),
+                 (`Id (_loc, (`Lid (_loc, "self"))))) : Ast.exp )) in
      let left_type_id = `Pre "" in
      let right_type_id = `Obj (basic_transform left_type_id) in
      let trail (_,number) =
        if number > 1
        then
-         let pat = EP.tuple_of_number (`Any _loc) arity in
-         Some (`Case (_loc, pat, trail))
+         let pat = EP.tuple_of_number (`Any _loc : Ast.pat ) arity in
+         Some (`Case (_loc, pat, trail) : Ast.case )
        else None in
      let open Frame in
        obj_of_module_types ?cons_transform ?module_name ~arity ~names ~trail

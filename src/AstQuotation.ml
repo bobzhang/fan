@@ -287,7 +287,7 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
         | `App(_loc,`Vrn(_,u),`Any _) ->
             `App(_loc, `Vrn(_loc,u), `Id(_loc,`Lid(_loc,name)))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)
-              
+        | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
         |p -> p ] in
 
@@ -329,7 +329,7 @@ let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag);
 let of_exp ~name ~entry =
   let expand_fun =  make_parser entry in
   let mk_fun loc loc_name_opt s =
-    {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
+    {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
       add name FanDyn.exp_tag expand_fun ;
       add name FanDyn.stru_tag mk_fun ;
     end ;
@@ -338,7 +338,7 @@ let of_exp_with_filter ~name ~entry ~filter =
   let expand_fun =
     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    {:stru@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
+    {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
       add name FanDyn.exp_tag expand_fun ;
       add name FanDyn.stru_tag mk_fun ;
     end ;

@@ -1,6 +1,6 @@
 
 open Ast;
-#default_quotation "exp";;
+#default_quotation "ep'";;
 class primitive =  object
   method int _loc (i:int) : ep =  {|$`int:i|};
   method int32 _loc (i:int32) : ep = {|$`int32:i|};

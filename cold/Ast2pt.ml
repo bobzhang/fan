@@ -11,17 +11,21 @@ open Objs
 let _ = ()
 let rec normalize_acc =
   function
-  | `Dot (_loc,i1,i2) -> `Dot (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `App (_loc,i1,i2) -> `App (_loc, (normalize_acc i1), (normalize_acc i2))
-  | `Ant (_loc,_)|`Uid (_loc,_)|`Lid (_loc,_) as i -> `Id (_loc, i)
+  | (`Dot (_loc,i1,i2) : Ast.ident) ->
+      (`Dot (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
+  | (`App (_loc,i1,i2) : Ast.ident) ->
+      (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
+  | (`Ant (_loc,_) : Ast.ident)|(`Uid (_loc,_) : Ast.ident)
+    |(`Lid (_loc,_) : Ast.ident) as i -> `Id (_loc, i)
 let rec sep_dot_exp acc =
   function
-  | `Dot (_loc,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
-  | `Id (loc,`Uid (_,s)) as e ->
+  | (`Dot (_loc,e1,e2) : Ast.exp) -> sep_dot_exp (sep_dot_exp acc e2) e1
+  | (`Id (loc,`Uid (_,s)) : Ast.exp) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | `Id (_loc,(`Dot (_l,_,_) as i)) -> sep_dot_exp acc (normalize_acc i)
+  | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
+      sep_dot_exp acc (normalize_acc i)
   | e -> ((loc_of e), [], e) :: acc
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
@@ -41,21 +45,21 @@ let mkrf: rec_flag -> Asttypes.rec_flag =
 let ident_tag (i : ident) =
   let rec self i acc =
     match i with
-    | `Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) ->
+    | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : Ast.ident) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
-    | `Dot (_loc,i1,i2) -> self i2 (self i1 acc)
-    | `App (_loc,i1,i2) ->
+    | (`Dot (_loc,i1,i2) : Ast.ident) -> self i2 (self i1 acc)
+    | (`App (_loc,i1,i2) : Ast.ident) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
          | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i))
-    | `Uid (_loc,s) ->
+    | (`Uid (_loc,s) : Ast.ident) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
          | _ -> errorf (loc_of i) "invalid long identifier %s" (dump_ident i))
-    | `Lid (_loc,s) ->
+    | (`Lid (_loc,s) : Ast.ident) ->
         let x =
           match acc with
           | None  -> lident s
@@ -325,12 +329,13 @@ let rec mkrangepat loc c1 c2 =
              (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
 let rec pat (x : pat) =
   match x with
-  | `Id (_loc,`Lid (_,("true"|"false" as txt))) ->
+  | (`Id (_loc,`Lid (_,("true"|"false" as txt))) : Ast.pat) ->
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
       mkpat _loc p
-  | `Id (_loc,`Lid (sloc,s)) -> mkpat _loc (Ppat_var (with_loc s sloc))
-  | `Id (_loc,i) ->
+  | (`Id (_loc,`Lid (sloc,s)) : Ast.pat) ->
+      mkpat _loc (Ppat_var (with_loc s sloc))
+  | (`Id (_loc,i) : Ast.pat) ->
       let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p
   | `Alias (_loc,p1,x) ->
       (match x with
@@ -338,8 +343,9 @@ let rec pat (x : pat) =
            mkpat _loc (Ppat_alias ((pat p1), (with_loc s sloc)))
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | `Any _loc -> mkpat _loc Ppat_any
-  | `App (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,`Any loc_any)) ->
+  | (`Any _loc : Ast.pat) -> mkpat _loc Ppat_any
+  | (`App (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,(`Any loc_any : Ast.pat))) :
+      Ast.pat) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -489,7 +495,7 @@ let rec exp (x : exp) =
   | `Assign (loc,e,v) ->
       let e =
         match e with
-        | `Dot (loc,x,`Id (_,`Lid (_,"contents"))) ->
+        | (`Dot (loc,x,`Id (_,`Lid (_,"contents"))) : Ast.exp) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (exp x)); ("", (exp v))])
@@ -646,7 +652,7 @@ let rec exp (x : exp) =
   | `Seq (_loc,e) ->
       let rec loop =
         function
-        | [] -> exp (`Id (_loc, (`Uid (_loc, "()"))))
+        | [] -> exp (`Id (_loc, (`Uid (_loc, "()"))) : Ast.exp )
         | e::[] -> exp e
         | e::el ->
             let _loc = FanLoc.merge (loc_of e) _loc in
@@ -669,7 +675,7 @@ let rec exp (x : exp) =
        | _ -> mkexp loc (Pexp_tuple (List.map exp l)))
   | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
-  | `Id (_loc,`Uid (_,"()")) ->
+  | (`Id (_loc,`Uid (_,"()")) : Ast.exp) ->
       mkexp _loc (Pexp_construct ((lident_with_loc "()" _loc), None, true))
   | `Id (_loc,`Lid (_,("true"|"false" as s))) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
@@ -1152,8 +1158,8 @@ let directive (x : exp) =
   match x with
   | `Str (_,s) -> Pdir_string s
   | `Int (_,i) -> Pdir_int (int_of_string i)
-  | `Id (_loc,`Lid (_,"true")) -> Pdir_bool true
-  | `Id (_loc,`Lid (_,"false")) -> Pdir_bool false
+  | (`Id (_loc,`Lid (_,"true")) : Ast.exp) -> Pdir_bool true
+  | (`Id (_loc,`Lid (_,"false")) : Ast.exp) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_exp e))
 let phrase (x : stru) =
   match x with

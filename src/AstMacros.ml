@@ -72,8 +72,8 @@ let rec fib = fun
   
 let fibm  y =
   match y with
-  [ {:exp|$int:x|}  -> {:exp| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = loc_of x in {:exp| fib $x |} ];
+  [ {:exp'|$int:x|}  -> {:exp'| $(`int:fib (int_of_string x))|}
+  |  x -> let _loc = loc_of x in {:exp'| fib $x |} ];
 
 register_macro ("FIB",fibm);      
 

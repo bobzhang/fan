@@ -71,12 +71,12 @@ let retype_rule_list_without_patterns _loc rl =
     [ {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
       {prod =
        [{ (s) with pattern = Some {:pat| x |} }];
-       action = Some {:exp| $(id:gm()).string_of_token x |}}
+       action = Some {:exp'| $(id:gm()).string_of_token x |}}
     (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
     | {prod = [({pattern = None; _ } as s)]; action = None} ->
 
         {prod = [{ (s) with pattern = Some {:pat| x |} }];
-         action = Some {:exp| x |}}
+         action = Some {:exp'| x |}}
     (* ...; ([] -> a); ... *)
     | {prod = []; action = Some _} as r -> r
     | _ -> raise Exit ]) rl
@@ -228,8 +228,8 @@ let rec make_exp (tvar : string) (x:text) =
 (* the [rhs] was computed, compute the [lhs]
    the generated expession has type [production]
  *)    
-and make_exp_rules (_loc:loc)  (rl : list (list text * exp) ) (tvar:string) :exp=
-  with exp
+and make_exp_rules (_loc:loc)  (rl : list (list text * exp) ) (tvar:string) =
+  with exp'
   list_of_list _loc
     (List.map (fun (sl,action) ->
       (* let number = List.length sl in *)
@@ -313,7 +313,7 @@ let exp_delete_rule _loc n (symbolss:list (list symbol)) = with exp
   let rest = List.map
       (fun sl  ->
           let (e,b) = f _loc n sl in
-          {:exp| $(id:gm()).delete_rule $e $b |}) symbolss in
+          {:exp'| $(id:gm()).delete_rule $e $b |}) symbolss in
   match symbolss with
   [[] -> {| () |}
   |_ -> seq_sem rest ];  
@@ -381,8 +381,8 @@ let text_of_entry (e:entry) :exp =  with exp
 let let_in_of_extend _loc gram locals  default =
   let entry_mk =
     match gram with
-    [ Some g -> {:exp| $(id:gm()).mk_dynamic $id:g |}
-    | None   -> {:exp| $(id:gm()).mk |} ] in
+    [ Some g -> {:exp'| $(id:gm()).mk_dynamic $id:g |}
+    | None   -> {:exp'| $(id:gm()).mk |} ] in
   let local_binding_of_name = fun
     [ {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
       {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$lid:x) |}
@@ -392,7 +392,7 @@ let let_in_of_extend _loc gram locals  default =
   | Some [] -> default
   | Some ll ->
       let locals = and_of_list (List.map local_binding_of_name ll)  in
-      {:exp| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  ;
+      {:exp'| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  ;
 
 (* the [locals] is local entry name list,
    [el] is entry list
@@ -442,7 +442,7 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   let foldfun =
     try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
   let styp = {| '$(lid:new_type_var ()) |} in
-  let e = {:exp| $(id:gm()).$lid:foldfun $f $e |} in
+  let e = {:exp'| $(id:gm()).$lid:foldfun $f $e |} in
   let( t:styp) =
     {| $(`Type {| $(id:gm()).$(lid:"fold"^suffix) _ |})
       $(s.styp) $styp |} in 

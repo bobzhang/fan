@@ -81,9 +81,9 @@ let me =
     inherit  FanMeta.meta
     method! loc _loc loc =
       match AstQuotation.current_loc_name.contents with
-      | None  -> `Id (_loc, (`Lid (_loc, (FanLoc.name.contents))))
+      | None  -> lid _loc FanLoc.name.contents
       | Some "here" -> Lib.Meta.meta_loc _loc loc
-      | Some x -> `Id (_loc, (`Lid (_loc, x)))
+      | Some x -> lid _loc x
   end
 let mp = object  inherit  FanMeta.meta method! loc _loc _ = `Any _loc end
 let _ =

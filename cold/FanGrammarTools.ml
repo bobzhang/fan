@@ -52,13 +52,13 @@ let retype_rule_list_without_patterns _loc rl =
                             (`Dot
                                (_loc, (gm ()),
                                  (`Lid (_loc, "string_of_token")))))),
-                       (`Id (_loc, (`Lid (_loc, "x")))))))
+                       (`Id (_loc, (`Lid (_loc, "x"))))) : Ast.exp ))
            }
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
              prod =
                [{ s with pattern = (Some (`Id (_loc, (`Lid (_loc, "x"))))) }];
-             action = (Some (`Id (_loc, (`Lid (_loc, "x")))))
+             action = (Some (`Id (_loc, (`Lid (_loc, "x"))) : Ast.exp ))
            }
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
@@ -179,20 +179,20 @@ let rec make_exp (tvar : string) (x : text) =
   aux tvar x
 and make_exp_rules (_loc : loc) (rl : (text list* exp) list) (tvar : string)
   =
-  (list_of_list _loc
-     (List.map
-        (fun (sl,action)  ->
-           let action_string = Ast2pt.to_string_exp action in
-           let sl =
-             list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
-           `Tup
+  list_of_list _loc
+    (List.map
+       (fun (sl,action)  ->
+          let action_string = Ast2pt.to_string_exp action in
+          let sl =
+            list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
+          (`Tup
              (_loc,
                (`Com
                   (_loc, sl,
                     (`Tup
                        (_loc,
-                         (`Com (_loc, (`Str (_loc, action_string)), action))))))))
-        rl) : exp )
+                         (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
+            Ast.exp )) rl)
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
@@ -289,14 +289,14 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
     List.map
       (fun sl  ->
          let (e,b) = f _loc n sl in
-         `App
-           (_loc,
-             (`App
-                (_loc,
-                  (`Id
-                     (_loc,
-                       (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))))),
-                  e)), b)) symbolss in
+         (`App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`Id
+                      (_loc,
+                        (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))))),
+                   e)), b) : Ast.exp )) symbolss in
   match symbolss with
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | _ -> seq_sem rest
@@ -352,11 +352,12 @@ let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with
     | Some g ->
-        `App
-          (_loc,
-            (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))))),
-            (`Id (_loc, g)))
-    | None  -> `Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) in
+        (`App
+           (_loc,
+             (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))))),
+             (`Id (_loc, g))) : Ast.exp )
+    | None  ->
+        (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))))) : Ast.exp ) in
   let local_binding_of_name =
     function
     | { exp = `Id (_,`Lid (_,i)); tvar = x; loc = _loc } ->
@@ -377,11 +378,12 @@ let let_in_of_extend _loc gram locals default =
   | None |Some [] -> default
   | Some ll ->
       let locals = and_of_list (List.map local_binding_of_name ll) in
-      `LetIn
-        (_loc, (`ReNil _loc),
-          (`Bind
-             (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
-               entry_mk)), (`LetIn (_loc, (`ReNil _loc), locals, default)))
+      (`LetIn
+         (_loc, (`ReNil _loc),
+           (`Bind
+              (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
+                entry_mk)), (`LetIn (_loc, (`ReNil _loc), locals, default))) : 
+        Ast.exp )
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
@@ -433,7 +435,7 @@ let sfold ?sep  _loc (ns : string list) f e s =
   let foldfun =
     try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
   let styp = `Quote (_loc, (`Normal _loc), (`Lid (_loc, (new_type_var ())))) in
-  let e =
+  let e: Ast.exp =
     `App
       (_loc,
         (`App

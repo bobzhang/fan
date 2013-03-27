@@ -34,7 +34,7 @@ let define ~exp ~pat eo x  = begin
         exp: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:exp| ($tup:e) |} -> list_of_com e []
+            [ {:exp'| ($tup:e) |} -> list_of_com e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
@@ -71,8 +71,8 @@ let undef ~exp ~pat x =
 
 let parse_def ~exp ~pat s =
   match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
-  [ {:exp| $uid:n |} -> define ~exp ~pat None n
-  | {:exp| $uid:n = $e |} -> define ~exp ~pat (Some ([],e)) n
+  [ {:exp'| $uid:n |} -> define ~exp ~pat None n
+  | {:exp'| $uid:n = $e |} -> define ~exp ~pat (Some ([],e)) n
   | _ -> invalid_arg s ];
     
 

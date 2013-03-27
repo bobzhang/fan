@@ -15,7 +15,7 @@ let _loc = FanLoc.ghost;
    | Eq generator                                                    |
    +-----------------------------------------------------------------+ *)
 
-let mk_variant_eq _cons : list FSig.ty_info  -> exp  = with exp fun 
+let mk_variant_eq _cons : list FSig.ty_info  -> exp  = with exp' fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
@@ -26,7 +26,7 @@ let mk_record_eq : list FSig.record_col -> exp  = fun cols ->
     cols |> List.map (fun [ {re_info;_} -> re_info])
          |> mk_variant_eq "" ;
     
-let (gen_eq,gen_eqobj) = with exp
+let (gen_eq,gen_eqobj) = with exp'
   (gen_stru ~id:(`Pre "eq_")  ~names:[]
     ~arity:2
     ~mk_tuple:mk_tuple_eq
@@ -47,7 +47,7 @@ let (gen_eq,gen_eqobj) = with exp
    +-----------------------------------------------------------------+ *)
 
 
-let (gen_fold,gen_fold2) = with exp
+let (gen_fold,gen_fold2) = with exp'
   let mk_variant _cons params = 
     params
     |> List.map (fun [{exp;_} -> exp])
@@ -75,7 +75,7 @@ end;
    +-----------------------------------------------------------------+ *)
 
 
-let (gen_map,gen_map2) = with exp
+let (gen_map,gen_map2) = with exp'
   let mk_variant cons params =
     let result =
       appl_of_list
@@ -117,7 +117,7 @@ end;
    | Strip generator                                                 |
    +-----------------------------------------------------------------+ *)
 (* FIXME to be more elegant *)  
-let gen_strip = with {pat:ctyp;exp}
+let gen_strip = with {pat:ctyp;exp:exp'}
   let mk_variant cons params =
     let params' = (List.filter
                (fun [{ty={|loc|};_} -> false | _  -> true])
@@ -163,7 +163,7 @@ Typehook.register
    | Meta generator                                                  |
    +-----------------------------------------------------------------+ *)
   
-let mk_variant cons params = with exp
+let mk_variant cons params = with exp'
     let len = List.length params in 
     if String.ends_with cons "Ant" then
       EP.of_vstr_number "Ant" len
@@ -193,7 +193,7 @@ Typehook.register
    | Meta Object Generator                                           |
    +-----------------------------------------------------------------+ *)
 let gen_meta =
-  gen_object ~kind:(Concrete {:ctyp|ep|})
+  gen_object ~kind:(Concrete {:ctyp'|ep|})
     ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
@@ -212,7 +212,7 @@ let extract info = info
     |> List.map (fun [{name_exp;id_exp;_} -> [name_exp;id_exp] ])
     |> List.concat ;
 
-let mkfmt pre sep post fields = with exp
+let mkfmt pre sep post fields = with exp'
     {| Format.fprintf fmt  $(str: pre^ String.concat sep fields ^ post) |} ;
   
 let mk_variant_print cons params =
@@ -257,7 +257,7 @@ let gen_print_obj =
 (* +-----------------------------------------------------------------+
    | Iter geneartor                                                  |
    +-----------------------------------------------------------------+ *)
-let mk_variant_iter _cons params :exp = with exp
+let mk_variant_iter _cons params :exp = with exp'
   match params with
   [ [] -> unit _loc 
   | _ -> 
@@ -267,7 +267,7 @@ let mk_variant_iter _cons params :exp = with exp
 let mk_tuple_iter params : exp =
   mk_variant_iter "" params;
 
-let mk_record_iter cols = with exp
+let mk_record_iter cols = with exp'
   let lst =
     cols |>
     List.map
@@ -292,7 +292,7 @@ let gen_iter =
    +-----------------------------------------------------------------+ *)
 
 let generate (module_types:FSig.module_types) : stru =
-  with stru 
+  with stru' 
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
     match (ty:typedecl) with
@@ -316,15 +316,15 @@ let generate (module_types:FSig.module_types) : stru =
   let case = Hashtbl.fold
     (fun key arity acc ->
       if arity= 1 then
-        let case = {:case| $vrn:key _loc -> _loc |} in
+        let case = {:case'| $vrn:key _loc -> _loc |} in
         match acc with
         [None ->   Some case 
         |Some acc ->
           Some (`Or(_loc,case,acc)) ]
       else if arity > 1 then 
         let pats =
-          [ {:pat| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
-        let case = {:case| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
+          [ {:pat'| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
+        let case = {:case'| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
         [None -> Some case
         |Some acc -> Some(`Or(_loc,case,acc))]  
@@ -349,23 +349,23 @@ let generate (module_types:FSig.module_types) : stru =
       |`Single (x,_) -> [x] ]) module_types in
   let typedecl =
     let x  = or_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in
-    {:stru@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
+    {:stru'@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
   let to_string =
     let case =
       or_of_list
-        (List.map (fun x -> {:case| $(uid:String.capitalize x) -> $str:x |}) tys) in 
-    {:stru| let string_of_tag = fun [ $case ] |} in
+        (List.map (fun x -> {:case'| $(uid:String.capitalize x) -> $str:x |}) tys) in 
+    {:stru'| let string_of_tag = fun [ $case ] |} in
  let tags  =
    List.map
      (fun x->
-       {:stru| let $(lid: x^"_tag") : tag $lid:x = $(uid:String.capitalize x) |}) tys  in
+       {:stru'| let $(lid: x^"_tag") : tag $lid:x = $(uid:String.capitalize x) |}) tys  in
  sem_of_list [typedecl;to_string::tags] ;  
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);
 
 let generate (module_types:FSig.module_types) : stru =
   let aux (f:string) : stru  =
-    {:stru|
+    {:stru'|
     let $(lid:"map_"^f) f = object
       inherit map as super;
       method! $lid:f x = f (super#$lid:f x);
@@ -376,16 +376,17 @@ Typehook.register
     
 let generate (module_types:FSig.module_types) : stru =
   let aux (f:string) : stru  =
-    {:stru|
+    {:stru'|
     let $(lid:"dump_"^f)  = LibUtil.to_string_of_printer dump#$lid:f
   |} in
-  sem {:stru|let dump = new print|}
+  sem {:stru'|let dump = new print|}
       (FSigUtil.stru_from_ty ~f:aux module_types);  
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"]))
       ("PrintWrapper",generate); (* double registration should complain*)
 
 
+    
 (* +-----------------------------------------------------------------+
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
@@ -394,11 +395,11 @@ let generate (module_types:FSig.module_types) : stru = with stru
   let aux (name,ty) =
     if  name <> "ant" then 
      let obj = Objs.map_row_field begin fun 
-       [ {:row_field| $vrn:x of loc |} -> {:row_field| $vrn:x |}
-       | {:row_field| $vrn:x of (loc * $y ) |}->
+       [ {:row_field'| $vrn:x of loc |} -> {:row_field'| $vrn:x |}
+       | {:row_field'| $vrn:x of (loc * $y ) |}->
            match y with
-          [ {:ctyp| $_ * $_ |} -> {:row_field| $vrn:x of $tup:y |}
-           | _ -> {:row_field| $vrn:x of $y |}]
+          [ {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $tup:y |}
+           | _ -> {:row_field'| $vrn:x of $y |}]
        | x -> x ]
      end in 
      obj#typedecl ty

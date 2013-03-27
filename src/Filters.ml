@@ -39,9 +39,9 @@ let me = object
   inherit FanMeta.meta;
   method! loc _loc loc =
     match !AstQuotation.current_loc_name with
-    [ None -> {:exp| $(lid:!FanLoc.name) |}
+    [ None -> lid _loc !FanLoc.name
     | Some "here" -> Lib.Meta.meta_loc _loc loc
-    | Some x -> {:exp| $lid:x |} ];
+    | Some x ->  lid  _loc x ];
 end;
 let mp = object
   inherit FanMeta.meta;

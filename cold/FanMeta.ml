@@ -1,25 +1,29 @@
 open Ast
 class primitive =
   object 
-    method int _loc (i : int) = (`Int (_loc, (string_of_int i)) : ep )
+    method int _loc (i : int) =
+      ((`Int (_loc, (string_of_int i)) : Ast.ep ) : ep )
     method int32 _loc (i : int32) =
-      (`Int32 (_loc, (Int32.to_string i)) : ep )
+      ((`Int32 (_loc, (Int32.to_string i)) : Ast.ep ) : ep )
     method int64 _loc (i : int64) =
-      (`Int64 (_loc, (Int64.to_string i)) : ep )
+      ((`Int64 (_loc, (Int64.to_string i)) : Ast.ep ) : ep )
     method nativeint _loc (i : nativeint) =
-      (`NativeInt (_loc, (Nativeint.to_string i)) : ep )
+      ((`NativeInt (_loc, (Nativeint.to_string i)) : Ast.ep ) : ep )
     method float _loc (i : float) =
-      (`Flo (_loc, (FanUtil.float_repres i)) : ep )
-    method string _loc (i : string) = (`Str (_loc, (String.escaped i)) : ep )
-    method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : ep )
-    method unit _loc (_ : unit) = (`Id (_loc, (`Uid (_loc, "()"))) : ep )
+      ((`Flo (_loc, (FanUtil.float_repres i)) : Ast.ep ) : ep )
+    method string _loc (i : string) =
+      ((`Str (_loc, (String.escaped i)) : Ast.ep ) : ep )
+    method char _loc (i : char) =
+      ((`Chr (_loc, (Char.escaped i)) : Ast.ep ) : ep )
+    method unit _loc (_ : unit) =
+      ((`Id (_loc, (`Uid (_loc, "()"))) : Ast.ep ) : ep )
     method loc _loc (_l : loc) =
       (`Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with
-       | true  -> `Id (_loc, (`Lid (_loc, "true")))
-       | false  -> `Id (_loc, (`Lid (_loc, "false"))) : ep )
+       | true  -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.ep )
+       | false  -> (`Id (_loc, (`Lid (_loc, "false"))) : Ast.ep ) : ep )
   end
 let _ = (); ()
 let _ = ()

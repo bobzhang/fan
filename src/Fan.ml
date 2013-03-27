@@ -86,11 +86,13 @@ add_quotation (d,"pat") pat_quot
     ~mpat:Filters.mp#pat
     ~exp_filter
     ~pat_filter ;
+
 add_quotation (d,"exp") exp_quot
     ~mexp:Filters.me#exp
     ~mpat:Filters.mp#exp
     ~exp_filter
     ~pat_filter ;
+
 add_quotation (d,"module_type") module_type_quot
     ~mexp:Filters.me#module_type
     ~mpat:Filters.mp#module_type
@@ -211,6 +213,130 @@ add_quotation (d,"row_field") row_field
     ~mpat:Filters.mp#row_field
     ~exp_filter
     ~pat_filter;
+
+
+(* +-----------------------------------------------------------------+
+   | Strict version                                                  |
+   +-----------------------------------------------------------------+ *)
+
+let efilter str = fun e -> let e = exp_filter e in let _loc = loc_of e in
+  {:exp|($e : Ast.$lid:str)|};
+let pfilter str = fun e -> let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|}; 
+add_quotation (d,"sig_item'") sig_item_quot
+    ~mexp:Filters.me#sig_item
+    ~mpat:Filters.mp#sig_item
+    ~exp_filter:(efilter "sig_item")
+    ~pat_filter:(pfilter "sig_item") ;
+add_quotation (d,"stru'") stru_quot
+    ~mexp:Filters.me#stru
+    ~mpat:Filters.mp#stru
+    ~exp_filter:(efilter "stru")
+    ~pat_filter :(pfilter "stru");
+add_quotation (d,"ctyp'") ctyp_quot
+    ~mexp:Filters.me#ctyp
+    ~mpat:Filters.mp#ctyp
+    ~exp_filter:(efilter "ctyp")
+    ~pat_filter:(pfilter "ctyp") ;
+
+add_quotation (d,"pat'") pat_quot
+    ~mexp:Filters.me#pat
+    ~mpat:Filters.mp#pat
+    ~exp_filter:(efilter "pat")
+    ~pat_filter:(pfilter "pat") ;
+
+add_quotation (d,"ep'") exp_quot
+  ~mexp:Filters.me#exp
+  ~mpat:Filters.mp#exp
+  ~exp_filter:(efilter "ep")
+  ~pat_filter:(pfilter "ep");
+add_quotation (d,"exp'") exp_quot
+    ~mexp:Filters.me#exp
+    ~mpat:Filters.mp#exp
+    ~exp_filter:(efilter "exp")
+    ~pat_filter:(pfilter "exp") ;
+
+add_quotation (d,"module_type'") module_type_quot
+    ~mexp:Filters.me#module_type
+    ~mpat:Filters.mp#module_type
+    ~exp_filter:(efilter "module_type")
+    ~pat_filter:(pfilter "module_type") ;
+
+add_quotation (d,"module_exp'") module_exp_quot
+    ~mexp:Filters.me#module_exp
+    ~mpat:Filters.mp#module_exp
+    ~exp_filter:(efilter "module_exp")
+    ~pat_filter:(pfilter "module_exp") ;
+
+add_quotation (d,"class_type'") class_type_quot
+    ~mexp:Filters.me#class_type ~mpat:Filters.mp#class_type
+    ~exp_filter:(efilter "class_type")
+    ~pat_filter:(pfilter "class_type") ;
+  
+add_quotation (d,"class_exp'") class_exp_quot
+    ~mexp:Filters.me#class_exp
+    ~mpat:Filters.mp#class_exp
+    ~exp_filter:(efilter "class_exp")
+    ~pat_filter:(pfilter "class_exp") ;
+  
+add_quotation (d,"class_sig_item'") class_sig_item_quot
+    ~mexp:Filters.me#class_sig_item
+    ~mpat:Filters.mp#class_sig_item
+    ~exp_filter:(efilter "class_sig_item")
+    ~pat_filter:(pfilter "class_sig_item") ;
+
+add_quotation (d,"cstru'") cstru_quot
+    ~mexp:Filters.me#cstru
+    ~mpat:Filters.mp#cstru
+    ~exp_filter:(efilter "cstru")
+    ~pat_filter:(pfilter "cstru") ;
+  
+add_quotation (d,"with_constr'") with_constr_quot
+    ~mexp:Filters.me#with_constr
+    ~mpat:Filters.mp#with_constr
+    ~exp_filter:(efilter "with_constr")
+    ~pat_filter:(pfilter "with_constr") ;
+  
+add_quotation (d,"binding'") binding_quot
+    ~mexp:Filters.me#binding
+    ~mpat:Filters.mp#binding
+    ~exp_filter:(efilter "binding")
+    ~pat_filter:(pfilter "binding") ;
+  
+add_quotation (d,"rec_exp'") rec_exp_quot
+    ~mexp:Filters.me#rec_exp
+    ~mpat:Filters.mp#rec_exp
+    ~exp_filter:(efilter "rec_exp")
+    ~pat_filter:(pfilter "rec_exp") ;
+  
+add_quotation (d,"case'") case_quot
+    ~mexp:Filters.me#case
+    ~mpat:Filters.mp#case
+    ~exp_filter:(efilter "case")
+    ~pat_filter:(pfilter "case") ;
+  
+add_quotation (d,"module_binding'") module_binding_quot
+    ~mexp:Filters.me#module_binding
+    ~mpat:Filters.mp#module_binding
+    ~exp_filter:(efilter "module_binding")
+    ~pat_filter:(pfilter "module_binding") ;
+  
+add_quotation (d,"ident'") ident_quot
+    ~mexp:Filters.me#ident
+    ~mpat:Filters.mp#ident
+    ~exp_filter:(efilter "ident")
+    ~pat_filter:(pfilter "ident") ;
+  
+add_quotation (d, "or_ctyp'") constructor_declarations
+    ~mexp:Filters.me#or_ctyp
+    ~mpat:Filters.me#or_ctyp
+    ~exp_filter:(efilter "or_ctyp")
+    ~pat_filter:(pfilter "or_ctyp");
+add_quotation (d,"row_field'") row_field
+    ~mexp:Filters.me#row_field
+    ~mpat:Filters.mp#row_field
+    ~exp_filter:(efilter "row_field")
+    ~pat_filter:(pfilter "row_field");
+
 add (`Absolute ["Fan";"Lang"],"str") FanDyn.exp_tag
   (fun _loc _loc_option s -> {:exp|$str:s|});
 
