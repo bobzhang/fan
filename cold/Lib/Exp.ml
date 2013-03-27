@@ -40,7 +40,7 @@ let map loc (p : pat) (e : exp) (l : exp) =
                                  (`Lid (loc, "fold_right")))))),
                        (`Fun
                           (loc,
-                            (`Or
+                            (`Bar
                                (loc,
                                  (`CaseWhen
                                     (loc, p,
@@ -116,7 +116,7 @@ let filter loc p b l =
                    (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))))),
               (`Fun
                  (loc,
-                   (`Or
+                   (`Bar
                       (loc,
                         (`CaseWhen
                            (loc, p, (`Id (loc, (`Lid (loc, "true")))), b)),

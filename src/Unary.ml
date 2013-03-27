@@ -142,7 +142,7 @@ type pat =
   | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
   | `PaOlbi of (loc * alident * pat * meta_option exp)
-  | `Or of (loc * pat * pat) (* p | p *)
+  | `Bar of (loc * pat * pat) (* p | p *)
   | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
   | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)

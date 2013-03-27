@@ -73,7 +73,7 @@ type simple_pat =
   |`Id of (loc * ident)
   |`Com of (loc * simple_pat * simple_pat)
   |`Alias of (loc * simple_pat * alident)
-  |`Or of (loc * simple_pat * simple_pat)
+  |`Bar of (loc * simple_pat * simple_pat)
   |`Str of (loc * string)
   |`Any of loc
   | ant

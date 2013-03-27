@@ -38,7 +38,7 @@ let rec handle_failure e =
   | (`Match (_loc,me,a) : Ast.exp) ->
       let rec case_handle_failure =
         function
-        | (`Or (_loc,a1,a2) : Ast.case) ->
+        | (`Bar (_loc,a1,a2) : Ast.case) ->
             (case_handle_failure a1) && (case_handle_failure a2)
         | (`Case (_loc,_,e) : Ast.case) -> handle_failure e
         | _ -> false in
@@ -100,7 +100,7 @@ let stream_pattern_component skont ckont =
       (`Match
          (_loc,
            (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
-           (`Or
+           (`Bar
               (_loc,
                 (`Case
                    (_loc,
@@ -118,7 +118,7 @@ let stream_pattern_component skont ckont =
       (`Match
          (_loc,
            (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
-           (`Or
+           (`Bar
               (_loc,
                 (`CaseWhen
                    (_loc,
@@ -220,7 +220,7 @@ let stream_pattern_component skont ckont =
                                      (_loc, (`Uid (_loc, (gm ()))),
                                        (`Uid (_loc, "Failure")))))),
                              (`Id (_loc, (`Uid (_loc, "None")))))))),
-                   (`Or
+                   (`Bar
                       (_loc,
                         (`Case
                            (_loc,
@@ -309,8 +309,8 @@ let stream_patterns_term _loc ekont tspel =
               Ast.exp ) in
           match w with
           | Some w ->
-              (`Or (_loc, (`CaseWhen (_loc, p, w, e)), acc) : Ast.case )
-          | None  -> (`Or (_loc, (`Case (_loc, p, e)), acc) : Ast.case ))
+              (`Bar (_loc, (`CaseWhen (_loc, p, w, e)), acc) : Ast.case )
+          | None  -> (`Bar (_loc, (`Case (_loc, p, e)), acc) : Ast.case ))
        tspel (`Case (_loc, (`Any _loc), (ekont ())) : Ast.case ) in
    (`Match
       (_loc,

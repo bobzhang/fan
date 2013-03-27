@@ -419,12 +419,12 @@ class meta =
       fun _loc  ->
         function
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-        | `Or (_a0,_a1,_a2) ->
+        | `Bar (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Or")), (self#loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "Bar")), (self#loc _loc _a0))),
                      (self#row_field _loc _a1))), (self#row_field _loc _a2))
         | `TyVrn (_a0,_a1) ->
             `App
@@ -662,12 +662,12 @@ class meta =
     method or_ctyp : 'loc -> or_ctyp -> ep=
       fun _loc  ->
         function
-        | `Or (_a0,_a1,_a2) ->
+        | `Bar (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Or")), (self#loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "Bar")), (self#loc _loc _a0))),
                      (self#or_ctyp _loc _a1))), (self#or_ctyp _loc _a2))
         | `TyCol (_a0,_a1,_a2) ->
             `App
@@ -794,12 +794,12 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))), (self#pat _loc _a2))),
                 (self#exp _loc _a3))
-        | `Or (_a0,_a1,_a2) ->
+        | `Bar (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Or")), (self#loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "Bar")), (self#loc _loc _a0))),
                      (self#pat _loc _a1))), (self#pat _loc _a2))
         | `PaRng (_a0,_a1,_a2) ->
             `App
@@ -1449,12 +1449,12 @@ class meta =
     method case : 'loc -> case -> ep=
       fun _loc  ->
         function
-        | `Or (_a0,_a1,_a2) ->
+        | `Bar (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Or")), (self#loc _loc _a0))),
+                     (`App (_loc, (`Vrn (_loc, "Bar")), (self#loc _loc _a0))),
                      (self#case _loc _a1))), (self#case _loc _a2))
         | `Case (_a0,_a1,_a2) ->
             `App

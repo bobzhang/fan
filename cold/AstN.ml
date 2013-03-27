@@ -40,7 +40,7 @@ type ctyp =
 and type_parameters =
   [ `Com of (type_parameters* type_parameters) | `Ctyp of ctyp | ant] 
 and row_field =
-  [ ant | `Or of (row_field* row_field) | `TyVrn of astring
+  [ ant | `Bar of (row_field* row_field) | `TyVrn of astring
   | `TyVrnOf of (astring* ctyp) | `Ctyp of ctyp] 
 and tag_names = [ ant | `App of (tag_names* tag_names) | `TyVrn of astring] 
 and typedecl =
@@ -68,7 +68,7 @@ and name_ctyp =
   [ `Sem of (name_ctyp* name_ctyp) | `TyCol of (sid* ctyp)
   | `TyColMut of (sid* ctyp) | ant] 
 and or_ctyp =
-  [ `Or of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
+  [ `Bar of (or_ctyp* or_ctyp) | `TyCol of (sid* ctyp) | `Of of (sid* ctyp)
   | sid | ant] 
 and of_ctyp = [ `Of of (sid* ctyp) | sid | ant] 
 and pat =
@@ -77,7 +77,7 @@ and pat =
   | literal | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
   | `LabelS of alident | `Label of (alident* pat)
   | `OptLabl of (alident* pat) | `OptLablS of alident
-  | `OptLablExpr of (alident* pat* exp) | `Or of (pat* pat)
+  | `OptLablExpr of (alident* pat* exp) | `Bar of (pat* pat)
   | `PaRng of (pat* pat) | `Constraint of (pat* ctyp) | `ClassPath of ident
   | `Lazy of pat | `ModuleUnpack of auident
   | `ModuleConstraint of (auident* ctyp)] 
@@ -126,7 +126,7 @@ and module_binding =
   | `ModuleBind of (auident* module_type* module_exp)
   | `Constraint of (auident* module_type) | ant] 
 and case =
-  [ `Or of (case* case) | `Case of (pat* exp) | `CaseWhen of (pat* exp* exp)
+  [ `Bar of (case* case) | `Case of (pat* exp) | `CaseWhen of (pat* exp* exp)
   | ant] 
 and module_exp =
   [ sid | `App of (module_exp* module_exp)

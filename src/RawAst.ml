@@ -158,7 +158,7 @@ and type_parameters =
   | nil]  
 and row_field =
   [= ant_nil
-  | `Or of (loc * row_field * row_field )
+  | `Bar of (loc * row_field * row_field )
   | `TyVrn of (loc * astring)
   | `TyVrnOf of (loc * astring * ctyp)
   |  `Ctyp of (loc * ctyp)]
@@ -199,7 +199,7 @@ and name_ctyp =
   | ant
   | nil ]
 and or_ctyp =
-  [= `Or of (loc * or_ctyp * or_ctyp )
+  [= `Bar of (loc * or_ctyp * or_ctyp )
   | `TyCol of (loc * sid * ctyp)
   | `Of of (loc * (* ctyp *)sid * ctyp)
   | sid
@@ -228,7 +228,7 @@ and pat =
   | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
         (* ?s or ?s:(p)  ?s:(p = e) or ?(p = e) *)
   | `PaOlbi of (loc * alident * pat * meta_option exp)
-  | `Or of (loc * pat * pat) (* p | p *)
+  | `Bar of (loc * pat * pat) (* p | p *)
   | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
   | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
@@ -386,7 +386,7 @@ and module_binding =
   | ant ]
 and case =
   [= nil
-  | `Or of (loc * case * case)
+  | `Bar of (loc * case * case)
         (* p (when e)? -> e *)
   | `Case of (loc * pat * exp * exp)
      (* | `Caseow of loc and pat and option exp and exp (\* FIXME *\) *)

@@ -1217,7 +1217,7 @@ let apply_ctyp () = begin
       row_field:
       [ `Ant ((""|"typ" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
       | `Ant (("list" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp|" n s))
-      | S{t1}; "|"; S{t2} -> `Or(_loc,t1,t2)
+      | S{t1}; "|"; S{t2} -> `Bar(_loc,t1,t2)
       | "`"; astr{i} -> (* {| `$i |} *) `TyVrn(_loc,i)
       (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
       (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
@@ -1331,7 +1331,7 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s)) 
       | `Ant (("list" as n),s) ->   `Ant (_loc, (mk_anti ~c:"ctyp|" n s))
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | S{t1}; "|"; S{t2} ->    `Or(_loc,t1,t2)
+      | S{t1}; "|"; S{t2} ->    `Bar(_loc,t1,t2)
       | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,`Id(_loc,(s:>ident)),t)
       (* GADT to be improved *)      
       | a_uident{s}; ":"; ctyp{t} ->

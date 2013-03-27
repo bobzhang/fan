@@ -229,8 +229,8 @@ and pp_print_type_parameters fmt =
 and pp_print_row_field fmt =
   function
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result51)
-  | `Or (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Bar (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_row_field _a1 pp_print_row_field _a2
   | `TyVrn (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`TyVrn@ %a@ %a)@]" pp_print_loc _a0
@@ -343,8 +343,8 @@ and pp_print_name_ctyp fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result41)
 and pp_print_or_ctyp fmt =
   function
-  | `Or (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Bar (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_or_ctyp _a1 pp_print_or_ctyp _a2
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -408,8 +408,8 @@ and pp_print_pat fmt =
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_pat _a2 pp_print_exp _a3
-  | `Or (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Bar (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_pat _a2
   | `PaRng (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -693,8 +693,8 @@ and pp_print_module_binding fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result30)
 and pp_print_case fmt =
   function
-  | `Or (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Bar (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_case _a1 pp_print_case _a2
   | `Case (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -1194,8 +1194,8 @@ class print =
       fun fmt  ->
         function
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-        | `Or (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
+        | `Bar (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" self#loc _a0
               self#row_field _a1 self#row_field _a2
         | `TyVrn (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyVrn@ %a@ %a)@]" self#loc _a0
@@ -1319,8 +1319,8 @@ class print =
     method or_ctyp : 'fmt -> or_ctyp -> unit=
       fun fmt  ->
         function
-        | `Or (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
+        | `Bar (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" self#loc _a0
               self#or_ctyp _a1 self#or_ctyp _a2
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
@@ -1386,8 +1386,8 @@ class print =
         | `OptLablExpr (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#pat _a2 self#exp _a3
-        | `Or (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
+        | `Bar (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#pat _a2
         | `PaRng (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a@ %a)@]" self#loc _a0
@@ -1681,8 +1681,8 @@ class print =
     method case : 'fmt -> case -> unit=
       fun fmt  ->
         function
-        | `Or (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a@ %a)@]" self#loc _a0
+        | `Bar (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" self#loc _a0
               self#case _a1 self#case _a2
         | `Case (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a@ %a)@]" self#loc _a0
@@ -2182,10 +2182,10 @@ class map =
     method row_field : row_field -> row_field=
       function
       | #ant as _a0 -> (self#ant _a0 : ant  :>row_field)
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#row_field _a1 in
-          let _a2 = self#row_field _a2 in `Or (_a0, _a1, _a2)
+          let _a2 = self#row_field _a2 in `Bar (_a0, _a1, _a2)
       | `TyVrn (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#astring _a1 in `TyVrn (_a0, _a1)
@@ -2316,10 +2316,10 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
       function
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#or_ctyp _a1 in
-          let _a2 = self#or_ctyp _a2 in `Or (_a0, _a1, _a2)
+          let _a2 = self#or_ctyp _a2 in `Bar (_a0, _a1, _a2)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#sid _a1 in
@@ -2391,10 +2391,10 @@ class map =
           let _a1 = self#alident _a1 in
           let _a2 = self#pat _a2 in
           let _a3 = self#exp _a3 in `OptLablExpr (_a0, _a1, _a2, _a3)
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
-          let _a2 = self#pat _a2 in `Or (_a0, _a1, _a2)
+          let _a2 = self#pat _a2 in `Bar (_a0, _a1, _a2)
       | `PaRng (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
@@ -2731,10 +2731,10 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
     method case : case -> case=
       function
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#case _a1 in
-          let _a2 = self#case _a2 in `Or (_a0, _a1, _a2)
+          let _a2 = self#case _a2 in `Bar (_a0, _a1, _a2)
       | `Case (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
@@ -3218,7 +3218,7 @@ class fold =
     method row_field : row_field -> 'self_type=
       function
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#row_field _a1 in self#row_field _a2
       | `TyVrn (_a0,_a1) -> let self = self#loc _a0 in self#astring _a1
@@ -3316,7 +3316,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#or_ctyp _a1 in self#or_ctyp _a2
       | `TyCol (_a0,_a1,_a2) ->
@@ -3363,7 +3363,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#pat _a2 in self#exp _a3
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `PaRng (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
@@ -3584,7 +3584,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method case : case -> 'self_type=
       function
-      | `Or (_a0,_a1,_a2) ->
+      | `Bar (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#case _a1 in self#case _a2
       | `Case (_a0,_a1,_a2) ->
@@ -3970,9 +3970,9 @@ and strip_loc_type_parameters =
 and strip_loc_row_field =
   function
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result279)
-  | `Or (_a0,_a1,_a2) ->
+  | `Bar (_a0,_a1,_a2) ->
       let _a1 = strip_loc_row_field _a1 in
-      let _a2 = strip_loc_row_field _a2 in `Or (_a1, _a2)
+      let _a2 = strip_loc_row_field _a2 in `Bar (_a1, _a2)
   | `TyVrn (_a0,_a1) -> let _a1 = strip_loc_astring _a1 in `TyVrn _a1
   | `TyVrnOf (_a0,_a1,_a2) ->
       let _a1 = strip_loc_astring _a1 in
@@ -4070,9 +4070,9 @@ and strip_loc_name_ctyp =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
 and strip_loc_or_ctyp =
   function
-  | `Or (_a0,_a1,_a2) ->
+  | `Bar (_a0,_a1,_a2) ->
       let _a1 = strip_loc_or_ctyp _a1 in
-      let _a2 = strip_loc_or_ctyp _a2 in `Or (_a1, _a2)
+      let _a2 = strip_loc_or_ctyp _a2 in `Bar (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
@@ -4123,9 +4123,9 @@ and strip_loc_pat =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_pat _a2 in
       let _a3 = strip_loc_exp _a3 in `OptLablExpr (_a1, _a2, _a3)
-  | `Or (_a0,_a1,_a2) ->
+  | `Bar (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `Or (_a1, _a2)
+      let _a2 = strip_loc_pat _a2 in `Bar (_a1, _a2)
   | `PaRng (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_pat _a2 in `PaRng (_a1, _a2)
@@ -4362,9 +4362,9 @@ and strip_loc_module_binding =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result258)
 and strip_loc_case =
   function
-  | `Or (_a0,_a1,_a2) ->
+  | `Bar (_a0,_a1,_a2) ->
       let _a1 = strip_loc_case _a1 in
-      let _a2 = strip_loc_case _a2 in `Or (_a1, _a2)
+      let _a2 = strip_loc_case _a2 in `Bar (_a1, _a2)
   | `Case (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Case (_a1, _a2)

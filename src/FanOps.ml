@@ -234,7 +234,7 @@ let rec is_irrefut_pat (x: pat) = with pat
           (list_of_sem  p [])
     | `Sem(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
     | `Com(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
-    | `Or(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2 (* could be more fine grained *)
+    | `Bar(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2 (* could be more fine grained *)
     | `App(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
           
     | `Constraint(_,p,_) -> is_irrefut_pat p

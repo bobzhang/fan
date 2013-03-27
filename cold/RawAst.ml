@@ -42,7 +42,7 @@ and type_parameters =
   [ `Com of (loc* type_parameters* type_parameters) | `Ctyp of (loc* ctyp)
   | ant | nil] 
 and row_field =
-  [ ant_nil | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
+  [ ant_nil | `Bar of (loc* row_field* row_field) | `TyVrn of (loc* astring)
   | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp)] 
 and tag_names =
   [ ant_nil | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
@@ -59,7 +59,7 @@ and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `TyColMut of (loc* sid* ctyp) | ant | nil] 
 and or_ctyp =
-  [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
+  [ `Bar of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Of of (loc* sid* ctyp) | sid | ant_nil] 
 and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant | nil] 
 and pat =
@@ -68,7 +68,7 @@ and pat =
   | any | `Record of (loc* rec_pat) | ant | literal
   | `Alias of (loc* pat* alident) | `Array of (loc* pat)
   | `Label of (loc* alident* pat)
-  | `PaOlbi of (loc* alident* pat* exp meta_option) | `Or of (loc* pat* pat)
+  | `PaOlbi of (loc* alident* pat* exp meta_option) | `Bar of (loc* pat* pat)
   | `PaRng of (loc* pat* pat) | `Constraint of (loc* pat* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* pat)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 
@@ -123,7 +123,7 @@ and module_binding =
   | `ModuleBind of (loc* auident* module_type* module_exp)
   | `Constraint of (loc* auident* module_type) | ant] 
 and case =
-  [ nil | `Or of (loc* case* case) | `Case of (loc* pat* exp* exp) | ant] 
+  [ nil | `Bar of (loc* case* case) | `Case of (loc* pat* exp* exp) | ant] 
 and module_exp =
   [ nil | sid | `App of (loc* module_exp* module_exp)
   | `Functor of (loc* auident* module_type* module_exp)

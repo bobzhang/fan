@@ -15,6 +15,6 @@ let match_pre =
               (`Fun
                  (_loc,
                    (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e1)))))
-      | `Or (_loc,a1,a2) -> `Or (_loc, (self#case a1), (self#case a2))
+      | `Bar (_loc,a1,a2) -> `Bar (_loc, (self#case a1), (self#case a2))
       | `Ant (_loc,x) -> `Ant (_loc, (FanUtil.add_context x "lettry"))
   end

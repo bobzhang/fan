@@ -251,7 +251,7 @@ and row_field (x:row_field) acc =
   [`TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
   | `TyVrnOf(_loc,`C(_,i),t) ->
       [Rtag i false [ctyp t] :: acc ]
-  | `Or(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
+  | `Bar(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
   | `Ant(_loc,_) -> ANT_ERROR
   | `Ctyp(_,t) -> [Rinherit (ctyp t) :: acc]
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)]

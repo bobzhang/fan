@@ -908,11 +908,11 @@ let _ =
                     (`Alias (_loc, p1, s) : 'internal_pat )))))]);
       ((Some "|"), None,
         [([`Sself; `Skeyword "|"; `Sself],
-           ("Gram.mk_action\n  (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat)  (_loc : FanLoc.t)  ->\n     (`Or (_loc, p1, p2) : 'internal_pat ))\n",
+           ("Gram.mk_action\n  (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat)  (_loc : FanLoc.t)  ->\n     (`Bar (_loc, p1, p2) : 'internal_pat ))\n",
              (Gram.mk_action
                 (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat) 
                    (_loc : FanLoc.t)  ->
-                   (`Or (_loc, p1, p2) : 'internal_pat )))))]);
+                   (`Bar (_loc, p1, p2) : 'internal_pat )))))]);
       ((Some "simple"), None,
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),

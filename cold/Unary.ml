@@ -37,7 +37,7 @@ type pat =
   | any | `Record of (loc* rec_pat) | ant | literal
   | `Alias of (loc* pat* alident) | `Array of (loc* pat)
   | `Label of (loc* alident* pat)
-  | `PaOlbi of (loc* alident* pat* exp meta_option) | `Or of (loc* pat* pat)
+  | `PaOlbi of (loc* alident* pat* exp meta_option) | `Bar of (loc* pat* pat)
   | `PaRng of (loc* pat* pat) | `Constraint of (loc* pat* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* pat)
   | `ModuleUnpack of (loc* auident* ctyp meta_option)] 

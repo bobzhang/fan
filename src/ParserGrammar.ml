@@ -273,14 +273,14 @@ FanConfig.antiquotations := true;
      (,
      `Fun
      (,
-     `Or
+     `Bar
      (,
      `Case
      (,
      `App
      (, `Vrn (, "Uid"),
-     `Or
-     (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
+     `Bar
+     (, `Bar (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA"))),
      `Nil , `Id (, `Lid (, "true"))),
      `Case (, `Any , `Nil , `Id (, `Lid (, "false"))))),
      "Normal", "`Uid (\"LA\"|\"RA\"|\"NA\")");
@@ -290,7 +290,7 @@ FanConfig.antiquotations := true;
      (`App
      (, `Vrn (, "Uid"),
      `Alias
-     (, `Or (, `Or (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
+     (, `Bar (, `Bar (, `Str (, "LA"), `Str (, "RA")), `Str (, "NA")),
      `Lid (, "x"))))}];
      action = None}
      ]}  

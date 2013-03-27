@@ -47,7 +47,7 @@ and type_parameters =
   [ `Com of (loc* type_parameters* type_parameters) | `Ctyp of (loc* ctyp)
   | ant] 
 and row_field =
-  [ ant | `Or of (loc* row_field* row_field) | `TyVrn of (loc* astring)
+  [ ant | `Bar of (loc* row_field* row_field) | `TyVrn of (loc* astring)
   | `TyVrnOf of (loc* astring* ctyp) | `Ctyp of (loc* ctyp)] 
 and tag_names =
   [ ant | `App of (loc* tag_names* tag_names) | `TyVrn of (loc* astring)] 
@@ -75,7 +75,7 @@ and name_ctyp =
   [ `Sem of (loc* name_ctyp* name_ctyp) | `TyCol of (loc* sid* ctyp)
   | `TyColMut of (loc* sid* ctyp) | ant] 
 and or_ctyp =
-  [ `Or of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
+  [ `Bar of (loc* or_ctyp* or_ctyp) | `TyCol of (loc* sid* ctyp)
   | `Of of (loc* sid* ctyp) | sid | ant] 
 and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant] 
 and pat =
@@ -85,7 +85,7 @@ and pat =
   | `Alias of (loc* pat* alident) | `ArrayEmpty of loc | `Array of (loc* pat)
   | `LabelS of (loc* alident) | `Label of (loc* alident* pat)
   | `OptLabl of (loc* alident* pat) | `OptLablS of (loc* alident)
-  | `OptLablExpr of (loc* alident* pat* exp) | `Or of (loc* pat* pat)
+  | `OptLablExpr of (loc* alident* pat* exp) | `Bar of (loc* pat* pat)
   | `PaRng of (loc* pat* pat) | `Constraint of (loc* pat* ctyp)
   | `ClassPath of (loc* ident) | `Lazy of (loc* pat)
   | `ModuleUnpack of (loc* auident)
@@ -147,7 +147,7 @@ and module_binding =
   | `ModuleBind of (loc* auident* module_type* module_exp)
   | `Constraint of (loc* auident* module_type) | ant] 
 and case =
-  [ `Or of (loc* case* case) | `Case of (loc* pat* exp)
+  [ `Bar of (loc* case* case) | `Case of (loc* pat* exp)
   | `CaseWhen of (loc* pat* exp* exp) | ant] 
 and module_exp =
   [ sid | `App of (loc* module_exp* module_exp)

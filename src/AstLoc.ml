@@ -15,10 +15,10 @@ let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b);
 let com a b = let _loc = a <+> b in `Com(_loc,a,b);
 let app a b = let _loc = a <+> b in `App(_loc,a,b);
 let sta a b = let _loc = a <+> b in `Sta(_loc,a,b);
-let ora a b = let _loc = a <+> b in `Or(_loc,a,b);
+let ora a b = let _loc = a <+> b in `Bar(_loc,a,b);
 let anda a b = let _loc = a <+> b in `And(_loc,a,b);
 let dot a b = let _loc = a <+> b in `Dot (_loc,a,b);
-let tup x =  let _loc = loc_of x in `Par (_loc,x);
+let par x =  let _loc = loc_of x in `Par (_loc,x);
 let seq a = let _loc = loc_of a in `Seq (_loc,a) ;
 let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b);
 
@@ -94,7 +94,7 @@ let rec list_of_star x acc =
     
 let rec list_of_or x acc =
   match x with
-  [`Or(_,x,y) -> list_of_or x (list_of_or y acc)
+  [`Bar(_,x,y) -> list_of_or x (list_of_or y acc)
   | _ -> [x::acc]]  ;
 
     

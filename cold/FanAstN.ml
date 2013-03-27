@@ -211,7 +211,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
-        | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
+        | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#row_field _a0 _b0) && (self#row_field _a1 _b1)
         | (`TyVrn _a0,`TyVrn _b0) -> self#astring _a0 _b0
         | (`TyVrnOf (_a0,_a1),`TyVrnOf (_b0,_b1)) ->
@@ -314,7 +314,7 @@ class eq =
     method or_ctyp : or_ctyp -> or_ctyp -> 'result36=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
+        | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#or_ctyp _a0 _b0) && (self#or_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
@@ -361,7 +361,7 @@ class eq =
         | (`OptLablExpr (_a0,_a1,_a2),`OptLablExpr (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#pat _a1 _b1)) &&
               (self#exp _a2 _b2)
-        | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
+        | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`PaRng (_a0,_a1),`PaRng (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
@@ -559,7 +559,7 @@ class eq =
     method case : case -> case -> 'result47=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Or (_a0,_a1),`Or (_b0,_b1)) ->
+        | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#case _a0 _b0) && (self#case _a1 _b1)
         | (`Case (_a0,_a1),`Case (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#exp _a1 _b1)
@@ -961,8 +961,8 @@ class print =
       fun fmt  ->
         function
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-        | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#row_field _a0
+        | `Bar (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a)@]" self#row_field _a0
               self#row_field _a1
         | `TyVrn _a0 ->
             Format.fprintf fmt "@[<1>(`TyVrn@ %a)@]" self#astring _a0
@@ -1076,8 +1076,8 @@ class print =
     method or_ctyp : 'fmt -> or_ctyp -> unit=
       fun fmt  ->
         function
-        | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#or_ctyp _a0
+        | `Bar (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a)@]" self#or_ctyp _a0
               self#or_ctyp _a1
         | `TyCol (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
@@ -1133,8 +1133,8 @@ class print =
         | `OptLablExpr (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`OptLablExpr@ %a@ %a@ %a)@]"
               self#alident _a0 self#pat _a1 self#exp _a2
-        | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#pat _a0 self#pat
+        | `Bar (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a)@]" self#pat _a0 self#pat
               _a1
         | `PaRng (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`PaRng@ %a@ %a)@]" self#pat _a0
@@ -1387,9 +1387,9 @@ class print =
     method case : 'fmt -> case -> unit=
       fun fmt  ->
         function
-        | `Or (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Or@ %a@ %a)@]" self#case _a0 self#case
-              _a1
+        | `Bar (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Bar@ %a@ %a)@]" self#case _a0
+              self#case _a1
         | `Case (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Case@ %a@ %a)@]" self#pat _a0 
               self#exp _a1
@@ -1819,9 +1819,10 @@ and meta_type_parameters _loc =
 and meta_row_field _loc =
   function
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result166)
-  | `Or (_a0,_a1) ->
+  | `Bar (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_row_field _loc _a0))),
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "Bar")), (meta_row_field _loc _a0))),
           (meta_row_field _loc _a1))
   | `TyVrn _a0 ->
       `App (_loc, (`Vrn (_loc, "TyVrn")), (meta_astring _loc _a0))
@@ -1962,9 +1963,9 @@ and meta_name_ctyp _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result156)
 and meta_or_ctyp _loc =
   function
-  | `Or (_a0,_a1) ->
+  | `Bar (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_or_ctyp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_or_ctyp _loc _a0))),
           (meta_or_ctyp _loc _a1))
   | `TyCol (_a0,_a1) ->
       `App
@@ -2035,9 +2036,9 @@ and meta_pat _loc =
                   (_loc, (`Vrn (_loc, "OptLablExpr")),
                     (meta_alident _loc _a0))), (meta_pat _loc _a1))),
           (meta_exp _loc _a2))
-  | `Or (_a0,_a1) ->
+  | `Bar (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_pat _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_pat _loc _a0))),
           (meta_pat _loc _a1))
   | `PaRng (_a0,_a1) ->
       `App
@@ -2385,9 +2386,9 @@ and meta_module_binding _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
 and meta_case _loc =
   function
-  | `Or (_a0,_a1) ->
+  | `Bar (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Or")), (meta_case _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_case _loc _a0))),
           (meta_case _loc _a1))
   | `Case (_a0,_a1) ->
       `App

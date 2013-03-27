@@ -174,7 +174,7 @@ and row_field (x : row_field) acc =
   match x with
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
   | `TyVrnOf (_loc,`C (_,i),t) -> (Rtag (i, false, [ctyp t])) :: acc
-  | `Or (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
+  | `Bar (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
   | `Ctyp (_,t) -> (Rinherit (ctyp t)) :: acc
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
@@ -407,7 +407,7 @@ let rec pat (x : pat) =
       mkpat loc (Ppat_constant (Const_nativeint nati))
   | (`Flo (loc,s) : Ast.pat) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-  | (`Or (loc,p1,p2) : Ast.pat) -> mkpat loc (Ppat_or ((pat p1), (pat p2)))
+  | (`Bar (loc,p1,p2) : Ast.pat) -> mkpat loc (Ppat_or ((pat p1), (pat p2)))
   | (`Str (loc,s) : Ast.pat) ->
       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
   | (`PaRng (loc,p1,p2) : Ast.pat) ->

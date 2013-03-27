@@ -244,7 +244,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                                  (`Lid (_loc, "t")))))))),
                   (`Match
                      (_loc, exp,
-                       (`Or
+                       (`Bar
                           (_loc, (`Case (_loc, pat, e1)),
                             (`Case
                                (_loc, (`Any _loc),
@@ -402,7 +402,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
         else
           `Fun
             (_loc,
-              (`Or
+              (`Bar
                  (_loc,
                    (`Case
                       (_loc, no_variable,
@@ -418,7 +418,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let match_fun =
         `Fun
           (_loc,
-            (`Or
+            (`Bar
                (_loc,
                  (`CaseWhen
                     (_loc, pattern, restrict,

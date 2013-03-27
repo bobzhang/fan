@@ -177,7 +177,7 @@ and type_parameters =
   | ant]  
 and row_field =
   [= ant
-  | `Or of (loc * row_field * row_field )
+  | `Bar of (loc * row_field * row_field )
   | `TyVrn of (loc * astring)
   | `TyVrnOf of (loc * astring * ctyp)
   | `Ctyp of (loc * ctyp)]
@@ -232,7 +232,7 @@ and name_ctyp =
   | `TyColMut of (loc * sid * ctyp)
   | ant]
 and or_ctyp =
-  [= `Or of (loc * or_ctyp * or_ctyp )
+  [= `Bar of (loc * or_ctyp * or_ctyp )
   | `TyCol of (loc * sid * ctyp)
   | `Of of (loc * sid * ctyp)
   | sid
@@ -262,7 +262,7 @@ and pat =
   | `OptLablS of (loc * alident)
     (* ?s:(p = e) or ?(p = e) *)
   | `OptLablExpr of (loc * alident * pat * exp)
-  | `Or of (loc * pat * pat) (* p | p *)
+  | `Bar of (loc * pat * pat) (* p | p *)
   | `PaRng (* `Range  *)of (loc * pat * pat) (* p .. p *)
   | `Constraint of (loc * pat * ctyp) (* (p : t) *)
   | `ClassPath of (loc * ident) (* #i *)
@@ -401,7 +401,7 @@ and module_binding =
   | `Constraint  of (loc * auident * module_type) (* s : mt *)
   | ant ]
 and case =
-  [= `Or of (loc * case * case)
+  [= `Bar of (loc * case * case)
   | `Case of (loc * pat * exp)
   | `CaseWhen of (loc * pat * exp * exp)
   | ant  ]

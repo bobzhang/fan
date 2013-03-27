@@ -22,7 +22,6 @@ let loc_of =
   | `C (_loc,_) -> _loc
   | `LabelS (_loc,_) -> _loc
   | `Str (_loc,_) -> _loc
-  | `Or (_loc,_,_) -> _loc
   | `New (_loc,_) -> _loc
   | `Value (_loc,_,_) -> _loc
   | `PolyInfSup (_loc,_,_) -> _loc
@@ -166,6 +165,7 @@ let loc_of =
   | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
+  | `Bar (_loc,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ObjTyEnd (_loc,_) -> _loc
   | `ViNil _loc -> _loc
@@ -177,10 +177,10 @@ let sem a b = let _loc = a <+> b in `Sem (_loc, a, b)
 let com a b = let _loc = a <+> b in `Com (_loc, a, b)
 let app a b = let _loc = a <+> b in `App (_loc, a, b)
 let sta a b = let _loc = a <+> b in `Sta (_loc, a, b)
-let ora a b = let _loc = a <+> b in `Or (_loc, a, b)
+let ora a b = let _loc = a <+> b in `Bar (_loc, a, b)
 let anda a b = let _loc = a <+> b in `And (_loc, a, b)
 let dot a b = let _loc = a <+> b in `Dot (_loc, a, b)
-let tup x = let _loc = loc_of x in `Par (_loc, x)
+let par x = let _loc = loc_of x in `Par (_loc, x)
 let seq a = let _loc = loc_of a in `Seq (_loc, a)
 let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let typing a b = let _loc = a <+> b in `Constraint (_loc, a, b)
@@ -233,7 +233,7 @@ let rec list_of_star x acc =
   | _ -> x :: acc
 let rec list_of_or x acc =
   match x with
-  | `Or (_,x,y) -> list_of_or x (list_of_or y acc)
+  | `Bar (_,x,y) -> list_of_or x (list_of_or y acc)
   | _ -> x :: acc
 let rec list_of_sem x acc =
   match x with

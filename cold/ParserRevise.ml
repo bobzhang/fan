@@ -2445,10 +2445,10 @@ let apply () =
      (None,
        [((Some "|"), (Some `LA),
           [([`Sself; `Skeyword "|"; `Sself],
-             ("Gram.mk_action\n  (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : FanLoc.t)  ->\n     (`Or (_loc, p1, p2) : 'pat ))\n",
+             ("Gram.mk_action\n  (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : FanLoc.t)  ->\n     (`Bar (_loc, p1, p2) : 'pat ))\n",
                (Gram.mk_action
                   (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : FanLoc.t)  ->
-                     (`Or (_loc, p1, p2) : 'pat )))))]);
+                     (`Bar (_loc, p1, p2) : 'pat )))))]);
        ((Some ".."), (Some `NA),
          [([`Sself; `Skeyword ".."; `Sself],
             ("Gram.mk_action\n  (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : FanLoc.t)  ->\n     (`PaRng (_loc, p1, p2) : 'pat ))\n",
@@ -5940,10 +5940,10 @@ let apply_ctyp () =
                       (`Ant (_loc, (mk_anti ~c:"ctyp|" n s)) : 'row_field )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp|\" n s))\n"))));
         ([`Sself; `Skeyword "|"; `Sself],
-          ("Gram.mk_action\n  (fun (t2 : 'row_field)  _  (t1 : 'row_field)  (_loc : FanLoc.t)  ->\n     (`Or (_loc, t1, t2) : 'row_field ))\n",
+          ("Gram.mk_action\n  (fun (t2 : 'row_field)  _  (t1 : 'row_field)  (_loc : FanLoc.t)  ->\n     (`Bar (_loc, t1, t2) : 'row_field ))\n",
             (Gram.mk_action
                (fun (t2 : 'row_field)  _  (t1 : 'row_field) 
-                  (_loc : FanLoc.t)  -> (`Or (_loc, t1, t2) : 'row_field )))));
+                  (_loc : FanLoc.t)  -> (`Bar (_loc, t1, t2) : 'row_field )))));
         ([`Skeyword "`"; `Snterm (Gram.obj (astr : 'astr Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'astr)  _  (_loc : FanLoc.t)  -> (`TyVrn (_loc, i) : 'row_field ))\n",
             (Gram.mk_action
@@ -6486,11 +6486,11 @@ let apply_ctyp () =
                       (`Ant (_loc, (mk_anti ~c:"ctyp|" n s)) : 'constructor_declarations )
                   | _ -> failwith "`Ant (_loc, (mk_anti ~c:\"ctyp|\" n s))\n"))));
         ([`Sself; `Skeyword "|"; `Sself],
-          ("Gram.mk_action\n  (fun (t2 : 'constructor_declarations)  _  (t1 : 'constructor_declarations) \n     (_loc : FanLoc.t)  -> (`Or (_loc, t1, t2) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t2 : 'constructor_declarations)  _  (t1 : 'constructor_declarations) \n     (_loc : FanLoc.t)  -> (`Bar (_loc, t1, t2) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t2 : 'constructor_declarations)  _ 
                   (t1 : 'constructor_declarations)  (_loc : FanLoc.t)  ->
-                  (`Or (_loc, t1, t2) : 'constructor_declarations )))));
+                  (`Bar (_loc, t1, t2) : 'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword "of";
          `Snterm

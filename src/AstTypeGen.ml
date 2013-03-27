@@ -322,14 +322,14 @@ let generate (module_types:FSig.module_types) : stru =
         match acc with
         [None ->   Some case 
         |Some acc ->
-          Some (`Or(_loc,case,acc)) ]
+          Some (`Bar(_loc,case,acc)) ]
       else if arity > 1 then 
         let pats =
           [ {:pat'| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
         let case = {:case'| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
         [None -> Some case
-        |Some acc -> Some(`Or(_loc,case,acc))]  
+        |Some acc -> Some(`Bar(_loc,case,acc))]  
       else failwithf "arity=0 key:%s" key
         
     ) tbl None  in
