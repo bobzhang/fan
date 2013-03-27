@@ -1,6 +1,4 @@
 open FanOps;
-
-(* open FanAst; *)
 #default_quotation     "exp";;
 
 
@@ -15,43 +13,12 @@ open EP;
 
 
 
-
-
-
-(* (\* Add a sequence delimiter to the semi delimiter *)
-(*    antiquot is also decorated *)
-(*  *\)   *)
-(* let mksequence ?loc = fun *)
-(*   [ {| $_; $_ |} *)
-(*   | {| $anti:_ |} as e -> *)
-(*       let _loc = *)
-(*         match loc with [Some x -> x | None -> _loc] in *)
-(*       {| begin  $e end |} *)
-(*   | e -> e ]; *)
-
-
-(* (\* see [mksequence], antiquot is not decoreated *\)   *)
-(* let mksequence' ?loc = fun *)
-(*   [ {| $_; $_ |} as e -> *)
-(*     let _loc = match loc with *)
-(*       [Some x -> x | None -> _loc] in *)
-(*     {| begin  $e  end |} *)
-(*   | e -> e ]; *)
-
-  
-
-
-(* let mkassert loc = fun *)
-(*   [ {| false |} -> {@loc| assert false |}  *)
-(*   | e -> {@loc| assert $e |} ] ; *)
-
-
 (* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:pat| $lid:a |}, {@_| $lid:b |}) 
-  | ({:pat| $uid:a |}, {@_| $uid:b |}) -> a = b
-  | ({:pat| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
+  [ ({:pat'| $lid:a |}, {@_| $lid:b |}) 
+  | ({:pat'| $uid:a |}, {@_| $uid:b |}) -> a = b
+  | ({:pat'| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false ] ;
 
@@ -60,9 +27,9 @@ let rec pattern_eq_expression p e =
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
 (* loc -> pat -> exp -> exp -> exp     *)
-let map loc (p:pat) (e:exp) (l:exp) :exp =
+let map loc (p:pat) (e:exp) (l:exp) = with exp'
   match (p, e) with
-  [ ({:pat| $lid:x |}, {@_| $lid:y |}) when x = y -> l
+  [ ({:pat'| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
       if is_irrefut_pat p then
         {@loc| List.map (fun $p -> $e) $l |}
@@ -73,13 +40,13 @@ let map loc (p:pat) (e:exp) (l:exp) :exp =
             | _ -> (fun l -> l) ]) $l [] |} ];
 
 
-let filter loc p b l =
+let filter loc p b l = with exp'
     if is_irrefut_pat p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
   
-let concat _loc l = {| List.concat $l |};
+let concat _loc l = with exp' {| List.concat $l |};
 
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun
@@ -108,10 +75,9 @@ let bad_pat _loc =
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop (x:exp)= with {pat:exp;exp:pat}
+  let rec loop (x:exp)= with {pat:exp';exp:pat'}
     match x with
     [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
-    (* | {| |} -> {@loc| |} *)
     | {| $lid:x |} ->
         try List.assoc x env with
           [ Not_found -> {@loc| $lid:x |} ]
@@ -126,7 +92,6 @@ let substp loc env =
         let rec substbi = with {pat:rec_exp;exp:pat} fun
           [ {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
-            (* {@loc| $(substbi b1); $(substbi b2) |} *)
           | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
           | _ -> bad_pat _loc ] in
         {@loc| { $(substbi bi) } |}
@@ -140,9 +105,9 @@ let substp loc env =
   when the identifier in pos pat in the exp has a special meaning,
   try to convert the exp meaning into pat and use that instead
  *)  
-class subst loc env = object
+class subst loc env =  object
   inherit Objs.reloc loc as super;
-  method! exp =
+  method! exp = with exp'
     fun
     [ {| $lid:x |} | {| $uid:x |} as e ->
         try List.assoc x env with
@@ -158,7 +123,7 @@ class subst loc env = object
         with [ Not_found -> super#exp e ]
     | e -> super#exp e ];
   method! pat =  fun
-    [ {:pat| $lid:x |} | {:pat| $uid:x |} as p ->
+    [ {:pat'| $lid:x |} | {:pat'| $uid:x |} as p ->
       (* convert expession into pattern only *)
        try substp loc [] (List.assoc x env) with 
        [ Not_found -> super#pat p ]
@@ -177,10 +142,7 @@ let capture_antiquot : antiquot_filter = object
   inherit Objs.map as super;
   val mutable constraints =[];
   method! pat = fun
-  [ `Ant(_loc,s)
-      (* {:pat@_loc| $anti:s |} *)
-  (* | (\* {:pat@_loc| $str:s |} *\) *)
-  (*   `Str(_loc,s) as p when is_antiquot s *) -> (* begin *)
+  [ `Ant(_loc,s) -> 
       match s with
      [ {content=code;_} ->
        begin 
@@ -189,20 +151,9 @@ let capture_antiquot : antiquot_filter = object
       let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
       let cons' = {| $lid:code' |} in 
       let () = constraints <- [(cons,cons')::constraints]in 
-      {:pat| $lid:code' |} (* only allows lidentifiers here *)
+      {:pat'| $lid:code' |} (* only allows lidentifiers here *)
     end
      ]
-    (* match view_antiquot s with *)
-    (* [Some(_name,code) -> begin  *)
-    (*   (\* eprintf "Warning: the antiquot modifier %s is ignored@." name; *\) *)
-    (*   let cons = {| $lid:code |} in *)
-    (*   let code' = "__fan__"^code in  (\* prefix "fan__" FIXME *\) *)
-    (*   let cons' = {| $lid:code' |} in  *)
-    (*   let () = constraints <- [(cons,cons')::constraints]in  *)
-    (*   {:pat| $lid:code' |} (\* only allows lidentifiers here *\) *)
-    (* end *)
-  (* | None -> p ];    *)
-  (* end *)
   | p -> super#pat p ];
  method get_captured_variables =
    constraints;
@@ -230,7 +181,7 @@ end;
   fun a  c  b  -> c
   ]}
  *)
-let fun_args _loc args body =
+let fun_args _loc args body = with exp'
   if args = [] then {| fun () -> $body |}
   else
     List.fold_right
@@ -240,35 +191,6 @@ let fun_args _loc args body =
 
 
 let _loc = FanLoc.ghost ;
-
-(* (\* Given a [location] and [prefix](generally "-" or "-.") *)
-(*    The location provided is more precise. *)
-(*    since ocaml respect [(~-)] as a prefix [(-)] *)
-(*    and [(~-.)] as a prefix [(-.)] *)
-(*    {[ *)
-(*    mkumin _loc "-." {| 3 |}; *)
-(*    - : exp = Int (, "-3") *)
-(*    mkumin _loc "-." {| a |}; *)
-(*    - : exp = *)
-(*    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a"))) *)
-(*    ]} *)
-(*  *\)   *)
-(* let mkumin loc prefix arg = *)
-(*   match arg with *)
-(*   [ {| $int:n |} -> {@loc| $(int:String.neg n) |} *)
-(*   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |} *)
-(*   | {| $int64:n |} -> {@loc| $(int64:String.neg n) |} *)
-(*   | {| $nativeint:n |} -> {@loc| $(nativeint:String.neg n) |} *)
-(*   | {| $flo:n |} -> {@loc| $(flo:String.neg n) |} *)
-(*   | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ]; *)
-
-    
-
-(* let mk_assert  =  fun *)
-(*   [ {| false |} ->    {| assert false |}  *)
-(*   | e -> {| assert $e |} ]; *)
-
-
 (*
   Example:
   {[
@@ -282,13 +204,13 @@ let _loc = FanLoc.ghost ;
  *)
 let mk_record label_exps : exp=
   let rec_exps = List.map (fun (label, exp) ->
-    {:rec_exp| $lid:label = $exp |} ) label_exps in
+    {:rec_exp'| $lid:label = $exp |} ) label_exps in
   `Record (_loc, (sem_of_list rec_exps));
   (* {| { $list:rec_exps } |} *)
 
 
 (* TBD *)
-let failure =
+let failure = with exp'
   {| raise (Failure "metafilter: Cannot handle that kind of types ") |};       
 
 
@@ -299,7 +221,7 @@ let failure =
   - : exp = fun a  b  -> 3
   ]}
  *)
-let (<+) names acc  =
+let (<+) names acc  = with exp'
   List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|}) names acc ;
 
 (*
@@ -324,57 +246,6 @@ let mee_comma x y = {| {| $($x), $($y) |} |};
 let mvee_comma x y = {| `Com (_loc,$x,$y) |};
 
 let mee_app x y = {| {| $($x) $($y) |}|};
-  (* {|`App _loc $x $y |} *)
-  (*
-      `App
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc, (`Vrn (_loc, "App")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
-   *)
-  (* {| `App(_loc, $x, $y) |}; *)
-
-(* let vee_app x y = {| `App (_loc,$x,$y) |}; *)
-
-  (*
-      `App
-    (_loc, (`Vrn (_loc, "App")),
-      (`Tup
-         (_loc,
-           (`Com
-              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                (`Com (_loc, x, y)))))))
-   *)
-(* let mep_app x y = {| {:pat| $($x) $($y) |}|}; *)
-  (* {| `App (_loc, $x, $y) |};        *)
-(* let vep_app x y = {| `App (_loc,$x,$y)|}; *)
-  
-
-(*
-   
-  Example:
-  {[
-  mep_of_str "B" = {|{:pat| B |}|};
-  - : bool = true
-  ]}
-  FIXME
-  {|{:pat|`B|}|}
-  {|{:pat|B|}|}
- *)  
-
-(* let mep_of_str  s = *)
-(*   let len = String.length s in *)
-(*   if s.[0] = '`' then *)
-(*     let s = String.sub s 1 (len - 1 ) in *)
-(*     (\* {| {:pat|`$($str:s)|}|} *\) *)
-(*       {| {:pat|$(vrn:($str:s))|}|} *)
-(*   else *)
-(*    let u = {| {:ident| $(uid:$str:s) |} |} in  *)
-(*    {| {:pat| $(id:$u) |} |}; *)
-(*     (\* let u = {| Ast.Uid _loc $str:s |} in *\) *)
-(*   (\* {| Ast.PaId _loc $u |}; *\) *)
 
 (*
   FIXME bootstrap

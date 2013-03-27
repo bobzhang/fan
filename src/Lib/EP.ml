@@ -27,9 +27,7 @@ let of_str s =
     invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
-    [ '`'->   
-        (* {| ` $(String.sub s 1 (len - 1)) |} *)
-      {|  $(vrn: String.sub s 1 (len - 1)) |}
+    [ '`'-> {|  $(vrn: String.sub s 1 (len - 1)) |}
     | x when Char.is_uppercase x -> {| $uid:s |}
     | _ -> {| $lid:s |} ];    
 
