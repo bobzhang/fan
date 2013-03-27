@@ -25,7 +25,7 @@ let gen_tuple_first ~number  ~off  =
         zfold_left ~start:1 ~until:(number - 1)
           ~acc:(`Id (_loc, (xid ~off 0)))
           (fun acc  i  -> com acc (`Id (_loc, (xid ~off i)))) in
-      `Tup (_loc, lst)
+      `Par (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first"
 let gen_tuple_second ~number  ~off  =
   match number with
@@ -35,12 +35,12 @@ let gen_tuple_second ~number  ~off  =
         zfold_left ~start:1 ~until:(number - 1)
           ~acc:(`Id (_loc, (xid ~off:0 off)))
           (fun acc  i  -> com acc (`Id (_loc, (xid ~off:i off)))) in
-      `Tup (_loc, lst)
+      `Par (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first "
 let tuple_of_number ast n =
   let res =
     zfold_left ~start:1 ~until:(n - 1) ~acc:ast (fun acc  _  -> com acc ast) in
-  if n > 1 then `Tup (_loc, res) else res
+  if n > 1 then `Par (_loc, res) else res
 let of_vstr_number name i =
   let items = List.init i (fun i  -> `Id (_loc, (xid i))) in
   if items = []
@@ -63,7 +63,7 @@ let mk_record ?(arity= 1)  cols =
     zfold_left ~start:1 ~until:(arity - 1)
       ~acc:(`Record (_loc, (sem_of_list (mk_list 0))))
       (fun acc  i  -> com acc (`Record (_loc, (sem_of_list (mk_list i))))) in
-  if arity > 1 then `Tup (_loc, res) else res
+  if arity > 1 then `Par (_loc, res) else res
 let mk_tuple ~arity  ~number  =
   match arity with
   | 1 -> gen_tuple_first ~number ~off:0
@@ -72,5 +72,5 @@ let mk_tuple ~arity  ~number  =
         zfold_left ~start:1 ~until:(n - 1)
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
-      `Tup (_loc, e)
+      `Par (_loc, e)
   | _ -> invalid_arg "mk_tuple arity < 1 "

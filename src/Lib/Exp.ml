@@ -86,7 +86,7 @@ let substp loc env =
           [ Not_found -> {@loc| $uid:x |} ]
     | {| $int:x |} -> {@loc| $int:x |}
     | {| $str:s |} -> {@loc| $str:s |}
-    | {| $tup:x |} -> {@loc| $(tup:loop x) |}
+    | {| $par:x |} -> {@loc| $(par:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
         let rec substbi = with {pat:rec_exp;exp:pat} fun
@@ -275,7 +275,7 @@ let mee_of_str s =
            (`ExId (_loc, (`Lid (_loc, "_loc")))))),
       (`App
          (_loc, (`Vrn (_loc, "Uid")),
-           (`Tup
+           (`Par
               (_loc,
                 (`Com (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
          
@@ -330,7 +330,7 @@ let meee_of_str s =
   First print the result, then find a mechanical way to   construct
 
   Here we should avoid singleton tuple error
-  {| $tup:a |} when a is  single, it will cause error FIXME
+  {| $par:a |} when a is  single, it will cause error FIXME
 
  *)      
 
@@ -365,13 +365,13 @@ let mk_tuple_ee = fun
   [ [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| `Tup (_loc, $(List.reduce_right mee_comma xs)) |}];
+      {| `Par (_loc, $(List.reduce_right mee_comma xs)) |}];
 
 (* let mk_tuple_vee = fun  *)
 (*   [ [] -> invalid_arg "mktupee arity is zero " *)
 (*   | [x] -> x *)
 (*   | xs  -> *)
-(*       {| `Tup (_loc, $(List.reduce_right mvee_comma xs)) |}]; *)
+(*       {| `Par (_loc, $(List.reduce_right mvee_comma xs)) |}]; *)
 
   
   
@@ -515,7 +515,7 @@ let unknown len =
 (*   | {| $i = $p |} -> *)
 (*       {:exp| $(str:string_of_ident i) ^"=" ^ $(normalize p) |} *)
 
-(*   | {| ($tup:pl) |} -> {:exp| "("^ $(normalize pl) ^")"|} *)
+(*   | {| ($par:pl) |} -> {:exp| "("^ $(normalize pl) ^")"|} *)
 (*   | {| ($p:$_)|} -> normalize p (\* type was ignored *\) *)
 (*   | {| `$s |} -> {:exp| "`" ^ $str:s |} *)
 (*   (\* | {| $anti:x |} -> Syntax.parse_exp *\) *)

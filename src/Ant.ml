@@ -31,7 +31,7 @@ let ant_pat  ~parse_pat (x:ant) k = with pat
       |("uid",_,_) -> k {|`Uid($(mloc _loc), $e)|}
       |("lid",_,_) ->  {|`Lid($(mloc _loc), $e)|}
             (* |("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
-      |("tup",_,_) ->  Some {| `Tup ($(mloc _loc), $e)|}
+      |("par",_,_) ->  Some {| `Par ($(mloc _loc), $e)|}
       |("seq",_,_) -> Some {| `Seq ($(mloc _loc), $e) |}
       |("flo",_,_) -> Some {| `Flo($(mloc _loc), $e)|}
       |("int",_,_) -> Some {| `Int ($(mloc _loc), $e)|}
@@ -50,7 +50,7 @@ let ant_exp ~parse_exp (x:ant) =  with exp
       let e = parse_exp _loc code in
       match (decorations,cxt,sep) with
       [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
-      | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
+      | ("par",_,_) -> {|`Par($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
       | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}
@@ -138,7 +138,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |("uid",_,_) -> {|`Uid($(mloc _loc), $e)|}
       |("lid",_,_) -> {|`Lid($(mloc _loc), $e)|}
             (* |("id","ctyp",_) -> {|`Id($(mloc _loc),$e)|} *)
-      |("tup",_,_) ->  {| `Tup ($(mloc _loc), $e)|}
+      |("par",_,_) ->  {| `Par ($(mloc _loc), $e)|}
       |("seq",_,_) -> {| `Seq ($(mloc _loc), $e) |}
       |("flo",_,_) -> {| `Flo($(mloc _loc), $e)|}
       |("int",_,_) -> {| `Int ($(mloc _loc), $e)|}
@@ -158,7 +158,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       let e = parse_exp _loc code in
       match (decorations,cxt,sep) with
       [ ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|}
-      | ("tup",_,_) -> {|`Tup($(mloc _loc),$e)|}
+      | ("par",_,_) -> {|`Par($(mloc _loc),$e)|}
       | ("seq",_,_) -> {|`Seq($(mloc _loc),$e)|}
       | ("vrn","exp",_) -> {|`Vrn($(mloc _loc),$e)|}
       | ("vrn","pat",_) -> {|`Vrn($(mloc _loc),$e)|}

@@ -39,7 +39,7 @@ let map_exp =
              (_loc,
                (`Dot
                   (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
-          (`Tup
+          (`Par
              (_loc,
                (`Com
                   (_loc, (`Str (_loc, (String.escaped a))),

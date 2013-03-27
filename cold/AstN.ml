@@ -33,7 +33,7 @@ type ctyp =
   | `OptLabl of (alident* ctyp) | sid | `TyObj of (name_ctyp* row_var_flag)
   | `TyObjEnd of row_var_flag | `TyPol of (ctyp* ctyp) | `TyPolEnd of ctyp
   | `TyTypePol of (ctyp* ctyp) | `Quote of (position_flag* alident)
-  | `QuoteAny of position_flag | `Tup of ctyp | `Sta of (ctyp* ctyp)
+  | `QuoteAny of position_flag | `Par of ctyp | `Sta of (ctyp* ctyp)
   | `PolyEq of row_field | `PolySup of row_field | `PolyInf of row_field
   | `Com of (ctyp* ctyp) | `PolyInfSup of (row_field* tag_names)
   | `Package of module_type | ant] 
@@ -73,7 +73,7 @@ and or_ctyp =
 and of_ctyp = [ `Of of (sid* ctyp) | sid | ant] 
 and pat =
   [ sid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
-  | `Sem of (pat* pat) | `Tup of pat | any | `Record of rec_pat | ant
+  | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | ant
   | literal | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
   | `LabelS of alident | `Label of (alident* pat)
   | `OptLabl of (alident* pat) | `OptLablS of alident
@@ -85,7 +85,7 @@ and rec_pat =
   [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
 and exp =
   [ sid | `App of (exp* exp) | `Vrn of string | `Com of (exp* exp)
-  | `Sem of (exp* exp) | `Tup of exp | any | `Record of rec_exp | ant
+  | `Sem of (exp* exp) | `Par of exp | any | `Record of rec_exp | ant
   | literal | `RecordWith of (rec_exp* exp) | `Dot of (exp* exp)
   | `ArrayDot of (exp* exp) | `ArrayEmpty | `Array of exp | `ExAsf
   | `ExAsr of exp | `Assign of (exp* exp)
@@ -172,7 +172,7 @@ and cstru =
   | `CrVvr of (alident* mutable_flag* ctyp) | ant] 
 type ep =
   [ sid | `App of (ep* ep) | `Vrn of string | `Com of (ep* ep)
-  | `Sem of (ep* ep) | `Tup of ep | any | `ArrayEmpty | `Array of ep
+  | `Sem of (ep* ep) | `Par of ep | any | `ArrayEmpty | `Array of ep
   | `Record of rec_bind | literal | ant] 
 and rec_bind =
   [ `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

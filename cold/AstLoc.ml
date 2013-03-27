@@ -6,7 +6,6 @@ let _ = ()
 let loc_of =
   function
   | `Any _loc -> _loc
-  | `Tup (_loc,_) -> _loc
   | `Array (_loc,_) -> _loc
   | `Id (_loc,_) -> _loc
   | `ArrayDot (_loc,_,_) -> _loc
@@ -82,6 +81,7 @@ let loc_of =
   | `CeFun (_loc,_,_) -> _loc
   | `ClassPath (_loc,_) -> _loc
   | `Nil _loc -> _loc
+  | `Par (_loc,_) -> _loc
   | `Com (_loc,_,_) -> _loc
   | `TyRepr (_loc,_,_) -> _loc
   | `ArrayEmpty _loc -> _loc
@@ -180,7 +180,7 @@ let sta a b = let _loc = a <+> b in `Sta (_loc, a, b)
 let ora a b = let _loc = a <+> b in `Or (_loc, a, b)
 let anda a b = let _loc = a <+> b in `And (_loc, a, b)
 let dot a b = let _loc = a <+> b in `Dot (_loc, a, b)
-let tup x = let _loc = loc_of x in `Tup (_loc, x)
+let tup x = let _loc = loc_of x in `Par (_loc, x)
 let seq a = let _loc = loc_of a in `Seq (_loc, a)
 let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let typing a b = let _loc = a <+> b in `Constraint (_loc, a, b)
@@ -258,14 +258,14 @@ let uid _loc n = `Id (_loc, (`Uid (_loc, n)))
 let unit _loc = `Id (_loc, (`Uid (_loc, "()")))
 let ep_of_cons _loc n ps = appl_of_list ((uid _loc n) :: ps)
 let tuple_com_unit _loc =
-  function | [] -> unit _loc | p::[] -> p | y -> `Tup (_loc, (com_of_list y))
+  function | [] -> unit _loc | p::[] -> p | y -> `Par (_loc, (com_of_list y))
 let tuple_com y =
   match y with
   | [] -> failwith "tuple_com empty"
   | x::[] -> x
-  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (com_of_list y))
+  | x::_ -> let _loc = x <+> (List.last y) in `Par (_loc, (com_of_list y))
 let tuple_sta y =
   match y with
   | [] -> failwith "tuple_sta empty"
   | x::[] -> x
-  | x::_ -> let _loc = x <+> (List.last y) in `Tup (_loc, (sta_of_list y))
+  | x::_ -> let _loc = x <+> (List.last y) in `Par (_loc, (sta_of_list y))

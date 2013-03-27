@@ -282,8 +282,8 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       (* BOOTSTRAPPING *)
       let rec subst_first_loc name : pat -> pat =  with pat fun
         [
-         `App(loc, `Vrn (_,u), (`Tup (_, `Com (_,_,rest)))) ->
-         `App(loc, `Vrn(loc,u),(`Tup (loc,`Com(loc,`Id(_loc,`Lid (_loc,name)),rest))))
+         `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
+         `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Id(_loc,`Lid (_loc,name)),rest))))
         | `App(_loc,`Vrn(_,u),`Any _) ->
             `App(_loc, `Vrn(_loc,u), `Id(_loc,`Lid(_loc,name)))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)

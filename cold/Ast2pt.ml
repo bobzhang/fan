@@ -152,7 +152,7 @@ let rec ctyp (x : ctyp) =
         | _ -> assert false in
       mktyp loc (Ptyp_poly ((to_var_list t1), (ctyp t2)))
   | `Quote (_loc,`Normal _,`Lid (_,s)) -> mktyp _loc (Ptyp_var s)
-  | `Tup (loc,`Sta (_,t1,t2)) ->
+  | `Par (loc,`Sta (_,t1,t2)) ->
       mktyp loc
         (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
   | `PolyEq (_loc,t) ->
@@ -346,7 +346,7 @@ let rec pat (x : pat) =
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | (`Any _loc : Ast.pat) -> mkpat _loc Ppat_any
   | (`App
-       (_loc,`Id (_,(`Uid (sloc,s) : Ast.ident)),`Tup
+       (_loc,`Id (_,(`Uid (sloc,s) : Ast.ident)),`Par
                                                    (_,(`Any loc_any :
                                                         Ast.pat)))
       : Ast.pat) ->
@@ -429,10 +429,10 @@ let rec pat (x : pat) =
         | `RecBind (_loc,i,p) -> ((ident i), (pat p))
         | p -> error (loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
-  | (`Tup (loc,`Com (_,p1,p2)) : Ast.pat) ->
+  | (`Par (loc,`Com (_,p1,p2)) : Ast.pat) ->
       mkpat loc
         (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
-  | `Tup (loc,_) -> error loc "singleton tuple pattern"
+  | `Par (loc,_) -> error loc "singleton tuple pattern"
   | (`Constraint (loc,p,t) : Ast.pat) ->
       mkpat loc (Ppat_constraint ((pat p), (ctyp t)))
   | (`ClassPath (loc,i) : Ast.pat) ->
@@ -672,7 +672,7 @@ let rec exp (x : exp) =
   | `Str (loc,s) ->
       mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
   | `Try (loc,e,a) -> mkexp loc (Pexp_try ((exp e), (case a)))
-  | `Tup (loc,e) ->
+  | `Par (loc,e) ->
       let l = list_of_com e [] in
       (match l with
        | []|_::[] ->

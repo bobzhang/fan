@@ -186,7 +186,7 @@ class eq =
         | (`Quote (_a0,_a1),`Quote (_b0,_b1)) ->
             (self#position_flag _a0 _b0) && (self#alident _a1 _b1)
         | (`QuoteAny _a0,`QuoteAny _b0) -> self#position_flag _a0 _b0
-        | (`Tup _a0,`Tup _b0) -> self#ctyp _a0 _b0
+        | (`Par _a0,`Par _b0) -> self#ctyp _a0 _b0
         | (`Sta (_a0,_a1),`Sta (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`PolyEq _a0,`PolyEq _b0) -> self#row_field _a0 _b0
@@ -342,7 +342,7 @@ class eq =
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
-        | (`Tup _a0,`Tup _b0) -> self#pat _a0 _b0
+        | (`Par _a0,`Par _b0) -> self#pat _a0 _b0
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result38)
         | (`Record _a0,`Record _b0) -> self#rec_pat _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result38)
@@ -394,7 +394,7 @@ class eq =
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
-        | (`Tup _a0,`Tup _b0) -> self#exp _a0 _b0
+        | (`Par _a0,`Par _b0) -> self#exp _a0 _b0
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result40)
         | (`Record _a0,`Record _b0) -> self#rec_exp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result40)
@@ -726,7 +726,7 @@ class eq =
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
-        | (`Tup _a0,`Tup _b0) -> self#ep _a0 _b0
+        | (`Par _a0,`Par _b0) -> self#ep _a0 _b0
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result54)
         | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#ep _a0 _b0
@@ -930,7 +930,7 @@ class print =
         | `QuoteAny _a0 ->
             Format.fprintf fmt "@[<1>(`QuoteAny@ %a)@]" self#position_flag
               _a0
-        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ctyp _a0
+        | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" self#ctyp _a0
         | `Sta (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sta@ %a@ %a)@]" self#ctyp _a0
               self#ctyp _a1
@@ -1109,7 +1109,7 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#pat _a0 self#pat
               _a1
-        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#pat _a0
+        | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" self#pat _a0
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_pat _a0
@@ -1175,7 +1175,7 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#exp _a0 self#exp
               _a1
-        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#exp _a0
+        | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" self#exp _a0
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_exp _a0
@@ -1591,7 +1591,7 @@ class print =
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#ep _a0 self#ep
               _a1
-        | `Tup _a0 -> Format.fprintf fmt "@[<1>(`Tup@ %a)@]" self#ep _a0
+        | `Par _a0 -> Format.fprintf fmt "@[<1>(`Par@ %a)@]" self#ep _a0
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#ep _a0
@@ -1783,7 +1783,7 @@ let rec meta_ctyp _loc =
           (meta_alident _loc _a1))
   | `QuoteAny _a0 ->
       `App (_loc, (`Vrn (_loc, "QuoteAny")), (meta_position_flag _loc _a0))
-  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ctyp _loc _a0))
+  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_ctyp _loc _a0))
   | `Sta (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sta")), (meta_ctyp _loc _a0))),
@@ -2000,7 +2000,7 @@ and meta_pat _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_pat _loc _a0))),
           (meta_pat _loc _a1))
-  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_pat _loc _a0))
+  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_pat _loc _a0))
   | #any as _a0 -> (meta_any _loc _a0 :>'result153)
   | `Record _a0 ->
       `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_pat _loc _a0))
@@ -2088,7 +2088,7 @@ and meta_exp _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_exp _loc _a0))),
           (meta_exp _loc _a1))
-  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_exp _loc _a0))
+  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_exp _loc _a0))
   | #any as _a0 -> (meta_any _loc _a0 :>'result151)
   | `Record _a0 ->
       `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_exp _loc _a0))
@@ -2718,7 +2718,7 @@ let rec meta_ep _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_ep _loc _a0))),
           (meta_ep _loc _a1))
-  | `Tup _a0 -> `App (_loc, (`Vrn (_loc, "Tup")), (meta_ep _loc _a0))
+  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_ep _loc _a0))
   | #any as _a0 -> (meta_any _loc _a0 :>'result170)
   | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_ep _loc _a0))

@@ -131,7 +131,7 @@ type pat =
   | `Vrn of (loc * string)
   | `Com of (loc * pat * pat)
   | `Sem of (loc * pat * pat)
-  | `Tup of (loc * pat )
+  | `Par of (loc * pat )
   | any
   | `Record of (loc * rec_pat)
   | ant
@@ -150,10 +150,9 @@ type pat =
         (* (module M : ty ) *)      
   | `ModuleUnpack of (loc * auident * meta_option ctyp)]
 and rec_pat =
-   [= nil
+  [= nil
   | `RecBind of (loc * ident * pat)
   | `Sem of (loc  * rec_pat * rec_pat)
   | any
-     | ant]  
-;
+  | ant];
       

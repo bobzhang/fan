@@ -172,10 +172,10 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
          let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name =
            (function
-            | `App (loc,`Vrn (_,u),`Tup (_,`Com (_,_,rest))) ->
+            | `App (loc,`Vrn (_,u),`Par (_,`Com (_,_,rest))) ->
                 `App
                   (loc, (`Vrn (loc, u)),
-                    (`Tup
+                    (`Par
                        (loc,
                          (`Com (loc, (`Id (_loc, (`Lid (_loc, name)))), rest)))))
             | `App (_loc,`Vrn (_,u),`Any _) ->

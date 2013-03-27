@@ -81,7 +81,7 @@ let rec subst v e =
       (`LetIn (_loc, rf, (subst_binding v bi), (subst v e)) : Ast.exp )
   | (`App (_loc,e1,e2) : Ast.exp) ->
       (`App (_loc, (subst v e1), (subst v e2)) : Ast.exp )
-  | (`Tup (_loc,e) : Ast.exp) -> (`Tup (_loc, (subst v e)) : Ast.exp )
+  | (`Par (_loc,e) : Ast.exp) -> (`Par (_loc, (subst v e)) : Ast.exp )
   | (`Com (_loc,e1,e2) : Ast.exp) ->
       (`Com (_loc, (subst v e1), (subst v e2)) : Ast.exp )
   | _ -> raise Not_found

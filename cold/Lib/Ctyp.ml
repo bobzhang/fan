@@ -246,7 +246,7 @@ let view_variant (t : row_field) =
   (let lst = list_of_or t [] in
    List.map
      (function
-      | `TyVrnOf (_loc,`C (_,cons),`Tup (_,t)) ->
+      | `TyVrnOf (_loc,`C (_,cons),`Par (_,t)) ->
           `variant (cons, (list_of_star t []))
       | `TyVrnOf (_loc,`C (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])

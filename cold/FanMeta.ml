@@ -349,10 +349,10 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "QuoteAny")), (self#loc _loc _a0))),
                 (self#position_flag _loc _a1))
-        | `Tup (_a0,_a1) ->
+        | `Par (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Tup")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Par")), (self#loc _loc _a0))),
                 (self#ctyp _loc _a1))
         | `Sta (_a0,_a1,_a2) ->
             `App
@@ -728,10 +728,10 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
                      (self#pat _loc _a1))), (self#pat _loc _a2))
-        | `Tup (_a0,_a1) ->
+        | `Par (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Tup")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Par")), (self#loc _loc _a0))),
                 (self#pat _loc _a1))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | `Record (_a0,_a1) ->
@@ -893,10 +893,10 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
                      (self#exp _loc _a1))), (self#exp _loc _a2))
-        | `Tup (_a0,_a1) ->
+        | `Par (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Tup")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Par")), (self#loc _loc _a0))),
                 (self#exp _loc _a1))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | `Record (_a0,_a1) ->
@@ -2013,10 +2013,10 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
                      (self#ep _loc _a1))), (self#ep _loc _a2))
-        | `Tup (_a0,_a1) ->
+        | `Par (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Tup")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Par")), (self#loc _loc _a0))),
                 (self#ep _loc _a1))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | `ArrayEmpty _a0 ->

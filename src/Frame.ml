@@ -58,7 +58,7 @@ let mapi_exp ?(arity=1) ?(names=[])
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_exp_of_ctyp (ty:ctyp) : exp =
   match ty with
-  [ `Tup (_loc,t)  -> 
+  [ `Par (_loc,t)  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
     let pat = EP.mk_tuple ~arity ~number:len in
@@ -101,7 +101,7 @@ let rec  normal_simple_exp_of_ctyp
     | `Quote (_loc,_,`Lid(_,s)) ->   tyvar s
     | `Arrow(_loc,t1,t2) ->
         aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
-    | `Tup _  as ty ->
+    | `Par _  as ty ->
         tuple_exp_of_ctyp  ?arity ?names ~mk_tuple
           (normal_simple_exp_of_ctyp
              ?arity ?names ~mk_tuple
@@ -151,7 +151,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
               (Objs.dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
         aux {:ctyp| arrow $t1 $t2 |} 
-    | `Tup _  as ty ->
+    | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
              ~right_type_variable ?names ?arity ~mk_tuple) ty 
@@ -292,7 +292,7 @@ let fun_of_tydcl
           FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_type_repr t) ]
     | `TyEq(_,_,ctyp) ->
         match ctyp with 
-        [ (`Id _ | `Tup _ | `Quote _ | `Arrow _ | `App _ as x) ->
+        [ (`Id _ | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
           let exp = simple_exp_of_ctyp x in
           let funct = eta_expand (exp+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct

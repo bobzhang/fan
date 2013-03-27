@@ -1,7 +1,7 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
 set -e
-FILES=('Ast' 'FanAst' 'Objs' 'AstLoc' 'ParserRevise' 'Ast2pt' 'FanGrammar' 'FanOps' 'FanObjs' 'FanMeta')
+FILES=('Ast' 'FanAst' 'Objs' 'AstLoc' 'ParserRevise' 'Ast2pt' 'FanGrammar' 'FanOps'  'FanMeta')
 
 OB= ocamlbuild
 TMP=tmp

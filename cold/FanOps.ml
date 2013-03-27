@@ -109,7 +109,7 @@ let rec is_irrefut_pat (x : pat) =
   | `Or (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
   | `App (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
   | `Constraint (_,p,_) -> is_irrefut_pat p
-  | `Tup (_,p) -> is_irrefut_pat p
+  | `Par (_,p) -> is_irrefut_pat p
   | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_pat p
   | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_pat p
@@ -129,7 +129,7 @@ let meta_array mf_a _loc ls =
 let bigarray_get loc arr arg =
   let coords =
     match arg with
-    | `Tup (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
+    | `Par (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
         list_of_com e1 (list_of_com e2 [])
     | _ -> [arg] in
   match coords with

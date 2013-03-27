@@ -278,7 +278,7 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [Some {:pat| ($_ $(tup:{:pat@_| _ |}) as $p) |} ->
+        [Some {:pat| ($_ $(par:{:pat@_| _ |}) as $p) |} ->
             let p = typing {:pat| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |}
         | Some p when is_irrefut_pat p ->

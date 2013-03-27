@@ -33,7 +33,7 @@ type ctyp =
     sid
   | `TyObj of (loc* name_ctyp* row_var_flag) | `TyPol of (loc* ctyp* ctyp)
   | `TyTypePol of (loc* ctyp* ctyp)
-  | `Quote of (loc* position_flag* alident meta_option) | `Tup of (loc* ctyp)
+  | `Quote of (loc* position_flag* alident meta_option) | `Par of (loc* ctyp)
   | `Sta of (loc* ctyp* ctyp) | `PolyEq of (loc* row_field)
   | `PolySup of (loc* row_field) | `PolyInf of (loc* row_field)
   | `PolyInfSup of (loc* row_field* tag_names)
@@ -64,7 +64,7 @@ and or_ctyp =
 and of_ctyp = [ `Of of (loc* sid* ctyp) | sid | ant | nil] 
 and pat =
   [ nil | sid | `App of (loc* pat* pat) | `Vrn of (loc* string)
-  | `Com of (loc* pat* pat) | `Sem of (loc* pat* pat) | `Tup of (loc* pat)
+  | `Com of (loc* pat* pat) | `Sem of (loc* pat* pat) | `Par of (loc* pat)
   | any | `Record of (loc* rec_pat) | ant | literal
   | `Alias of (loc* pat* alident) | `Array of (loc* pat)
   | `Label of (loc* alident* pat)
@@ -77,7 +77,7 @@ and rec_pat =
   | any | ant] 
 and exp =
   [ nil | sid | `App of (loc* exp* exp) | `Vrn of (loc* string)
-  | `Com of (loc* exp* exp) | `Sem of (loc* exp* exp) | `Tup of (loc* exp)
+  | `Com of (loc* exp* exp) | `Sem of (loc* exp* exp) | `Par of (loc* exp)
   | any | `Record of (loc* rec_exp) | ant | literal
   | `RecordWith of (loc* rec_exp* exp) | `Dot of (loc* exp* exp)
   | `ArrayDot of (loc* exp* exp) | `Array of (loc* exp) | `ExAsf of loc
@@ -169,7 +169,7 @@ and cstru =
   | `CrVvr of (loc* alident* mutable_flag* ctyp) | ant] 
 type ep =
   [ nil | sid | `App of (loc* ep* ep) | `Vrn of (loc* string)
-  | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Tup of (loc* ep) | 
+  | `Com of (loc* ep* ep) | `Sem of (loc* ep* ep) | `Par of (loc* ep) | 
     any
   | `Array of (loc* ep) | `Record of (loc* rec_bind) | literal | ant] 
 and rec_bind =

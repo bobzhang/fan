@@ -383,7 +383,7 @@ FanConfig.antiquotations := true;
         `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
         (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
         (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
-        (* `App(_loc,`Vrn(_loc,s),`Tup(_loc,`Com(_loc,x,com_of_list xs))) *)
+        (* `App(_loc,`Vrn(_loc,s),`Par(_loc,`Com(_loc,x,com_of_list xs))) *)
         (* {|$vrn:s ($x,$list:xs)|} *)
     | _ -> assert false ]  ]
   internal_pat "pat":

@@ -162,7 +162,7 @@ type ctyp =
   | `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag )
   (* | type_quote *)
-  | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
+  | `Par of (loc * ctyp) (* ( t ) *) (* (int * string) *)
   | `Sta of (loc * ctyp * ctyp) (* t * t *)
   | `PolyEq of (loc * row_field)
   | `PolySup of (loc * row_field )
@@ -247,7 +247,7 @@ and pat =
   | `Vrn of (loc * string)
   | `Com of (loc * pat * pat)
   | `Sem of (loc * pat * pat)
-  | `Tup of (loc * pat )
+  | `Par of (loc * pat )
   | any
   | `Record of (loc * rec_pat)
   | ant
@@ -280,7 +280,7 @@ and exp =
   | `Vrn of (loc * string)
   | `Com of (loc * exp * exp)
   | `Sem of (loc * exp * exp)
-  | `Tup of (loc * exp)
+  | `Par of (loc * exp)
   | any
   | `Record of (loc * rec_exp)
   | ant 
@@ -500,7 +500,7 @@ type ep =
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)
   | `Sem of (loc * ep * ep)
-  | `Tup of (loc * ep)
+  | `Par of (loc * ep)
   | any
   | `ArrayEmpty of loc 
   | `Array of (loc * ep )

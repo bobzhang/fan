@@ -400,7 +400,7 @@ let generate (module_types:FSig.module_types) : stru = with stru
        [ {:row_field'| $vrn:x of loc |} -> {:row_field'| $vrn:x |}
        | {:row_field'| $vrn:x of (loc * $y ) |}->
            match y with
-          [ {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $tup:y |}
+          [ {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $par:y |}
           | _ -> {:row_field'| $vrn:x of $y |}]
        | x -> x ]
      end in 

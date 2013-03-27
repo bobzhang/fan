@@ -192,8 +192,8 @@ let rec pp_print_ctyp fmt =
   | `QuoteAny (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`QuoteAny@ %a@ %a)@]" pp_print_loc _a0
         pp_print_position_flag _a1
-  | `Tup (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
+  | `Par (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
   | `Sta (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sta@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -376,8 +376,8 @@ and pp_print_pat fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_pat _a2
-  | `Tup (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
+  | `Par (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result38)
   | `Record (_a0,_a1) ->
@@ -454,8 +454,8 @@ and pp_print_exp fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1 pp_print_exp _a2
-  | `Tup (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0
+  | `Par (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result36)
   | `Record (_a0,_a1) ->
@@ -916,8 +916,8 @@ let rec pp_print_ep fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ep _a1 pp_print_ep _a2
-  | `Tup (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" pp_print_loc _a0 pp_print_ep
+  | `Par (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0 pp_print_ep
         _a1
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result55)
   | `ArrayEmpty _a0 ->
@@ -1155,8 +1155,8 @@ class print =
         | `QuoteAny (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`QuoteAny@ %a@ %a)@]" self#loc _a0
               self#position_flag _a1
-        | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ctyp
+        | `Par (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" self#loc _a0 self#ctyp
               _a1
         | `Sta (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sta@ %a@ %a@ %a)@]" self#loc _a0
@@ -1354,8 +1354,8 @@ class print =
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#pat _a2
-        | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#pat
+        | `Par (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" self#loc _a0 self#pat
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `Record (_a0,_a1) ->
@@ -1434,8 +1434,8 @@ class print =
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#exp _a1 self#exp _a2
-        | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#exp
+        | `Par (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" self#loc _a0 self#exp
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `Record (_a0,_a1) ->
@@ -1913,8 +1913,8 @@ class print =
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#ep _a1 self#ep _a2
-        | `Tup (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Tup@ %a@ %a)@]" self#loc _a0 self#ep
+        | `Par (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" self#loc _a0 self#ep
               _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `ArrayEmpty _a0 ->
@@ -2141,9 +2141,9 @@ class map =
       | `QuoteAny (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#position_flag _a1 in `QuoteAny (_a0, _a1)
-      | `Tup (_a0,_a1) ->
+      | `Par (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in `Tup (_a0, _a1)
+          let _a1 = self#ctyp _a1 in `Par (_a0, _a1)
       | `Sta (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
@@ -2356,8 +2356,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
           let _a2 = self#pat _a2 in `Sem (_a0, _a1, _a2)
-      | `Tup (_a0,_a1) ->
-          let _a0 = self#loc _a0 in let _a1 = self#pat _a1 in `Tup (_a0, _a1)
+      | `Par (_a0,_a1) ->
+          let _a0 = self#loc _a0 in let _a1 = self#pat _a1 in `Par (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>pat)
       | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -2446,8 +2446,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in
           let _a2 = self#exp _a2 in `Sem (_a0, _a1, _a2)
-      | `Tup (_a0,_a1) ->
-          let _a0 = self#loc _a0 in let _a1 = self#exp _a1 in `Tup (_a0, _a1)
+      | `Par (_a0,_a1) ->
+          let _a0 = self#loc _a0 in let _a1 = self#exp _a1 in `Par (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>exp)
       | `Record (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -3013,8 +3013,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#ep _a1 in
           let _a2 = self#ep _a2 in `Sem (_a0, _a1, _a2)
-      | `Tup (_a0,_a1) ->
-          let _a0 = self#loc _a0 in let _a1 = self#ep _a1 in `Tup (_a0, _a1)
+      | `Par (_a0,_a1) ->
+          let _a0 = self#loc _a0 in let _a1 = self#ep _a1 in `Par (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>ep)
       | `ArrayEmpty _a0 -> let _a0 = self#loc _a0 in `ArrayEmpty _a0
       | `Array (_a0,_a1) ->
@@ -3193,7 +3193,7 @@ class fold =
           let self = self#position_flag _a1 in self#alident _a2
       | `QuoteAny (_a0,_a1) ->
           let self = self#loc _a0 in self#position_flag _a1
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
+      | `Par (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
       | `Sta (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
@@ -3341,7 +3341,7 @@ class fold =
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#pat _a2
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
+      | `Par (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_pat _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -3396,7 +3396,7 @@ class fold =
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
+      | `Par (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `Record (_a0,_a1) -> let self = self#loc _a0 in self#rec_exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -3782,7 +3782,7 @@ class fold =
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#ep _a1 in self#ep _a2
-      | `Tup (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
+      | `Par (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#ep _a1
@@ -3945,7 +3945,7 @@ let rec strip_loc_ctyp =
       let _a2 = strip_loc_alident _a2 in `Quote (_a1, _a2)
   | `QuoteAny (_a0,_a1) ->
       let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Tup _a1
+  | `Par (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Par _a1
   | `Sta (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Sta (_a1, _a2)
@@ -4101,7 +4101,7 @@ and strip_loc_pat =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_pat _a2 in `Sem (_a1, _a2)
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Tup _a1
+  | `Par (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Par _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result266)
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_pat _a1 in `Record _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result266)
@@ -4162,7 +4162,7 @@ and strip_loc_exp =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `Sem (_a1, _a2)
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Tup _a1
+  | `Par (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Par _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result264)
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `Record _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result264)
@@ -4566,7 +4566,7 @@ let rec strip_loc_ep =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ep _a1 in
       let _a2 = strip_loc_ep _a2 in `Sem (_a1, _a2)
-  | `Tup (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Tup _a1
+  | `Par (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Par _a1
   | #any as _a0 -> (strip_loc_any _a0 :>'result283)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Array _a1

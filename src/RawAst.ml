@@ -142,7 +142,7 @@ type ctyp =
   | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
         (*  +'s -'s 's +_ -_ *)      
   | `Quote of (loc * position_flag * meta_option alident)
-  | `Tup of (loc * ctyp) (* ( t ) *) (* (int * string) *)
+  | `Par of (loc * ctyp) (* ( t ) *) (* (int * string) *)
   | `Sta of (loc * ctyp * ctyp) (* t * t *)
   | `PolyEq of (loc * row_field)
   | `PolySup of (loc * row_field )
@@ -217,7 +217,7 @@ and pat =
   | `Vrn of (loc * string)
   | `Com of (loc * pat * pat)
   | `Sem of (loc * pat * pat)
-  | `Tup of (loc * pat )
+  | `Par of (loc * pat )
   | any
   | `Record of (loc * rec_pat)
   | ant
@@ -248,7 +248,7 @@ and exp =
   | `Vrn of (loc * string)
   | `Com of (loc * exp * exp)
   | `Sem of (loc * exp * exp)
-  | `Tup of (loc * exp)
+  | `Par of (loc * exp)
   | any
   | `Record of (loc * rec_exp)
   | ant 
@@ -519,7 +519,7 @@ type ep =
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)
   | `Sem of (loc * ep * ep)
-  | `Tup of (loc * ep)
+  | `Par of (loc * ep)
   | any
   | `Array of (loc * ep )
   | `Record of (loc * rec_bind)

@@ -85,7 +85,7 @@ let rec subst v e =
   | {| let $rec:rf $bi in $e |} ->
       {| let $rec:rf $(subst_binding v bi) in $(subst v e) |}
   | {| $e1 $e2 |} -> {| $(subst v e1) $(subst v e2) |}
-  | {| ( $tup:e ) |} -> {| ( $(tup:subst v e) ) |}
+  | {| ( $par:e ) |} -> {| ( $(par:subst v e) ) |}
   | {| $e1, $e2 |} -> {| $(subst v e1), $(subst v e2) |}
   | _ -> raise Not_found ]
 and subst_binding v =  fun

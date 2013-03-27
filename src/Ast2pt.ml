@@ -230,7 +230,7 @@ let rec ctyp (x:ctyp) = match x with
   (* QuoteAny should not appear here? *)      
   | `Quote (_loc,`Normal _, `Lid(_,s)) -> mktyp _loc (Ptyp_var s)
   (* | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s) *)
-  | `Tup(loc,`Sta(_,t1,t2)) ->
+  | `Par(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
   | `PolyEq(_loc,t) ->
       mktyp _loc (Ptyp_variant (row_field t []) true None)
@@ -447,7 +447,7 @@ let rec pat (x:pat) =
       | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
-  | {| $(id:{:ident'@sloc| $uid:s |}) $(tup:{@loc_any| _ |}) |} ->
+  | {| $(id:{:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} ->
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `App (loc, _, _) as f ->
@@ -518,7 +518,7 @@ let rec pat (x:pat) =
   | {@loc| ($p1,$p2)|} -> 
       mkpat loc (Ppat_tuple
                    (List.map pat (list_of_com p1 (list_of_com p2 []))))
-  | `Tup (loc,_) -> error loc "singleton tuple pattern"
+  | `Par (loc,_) -> error loc "singleton tuple pattern"
   | {@loc| ($p:$t)|} ->  mkpat loc (Ppat_constraint (pat p) (ctyp t))
   | {@loc| #$i |} -> mkpat loc (Ppat_type (long_type_ident i))
   | {@loc| $vrn:s|} -> mkpat loc (Ppat_variant s None)
@@ -775,7 +775,7 @@ let rec exp (x : exp) = with exp' match x with
       | `Str (loc,s) ->
           mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
       | `Try (loc,e,a) -> mkexp loc (Pexp_try (exp e) (case a (* [] *)))
-      | `Tup (loc,e) ->
+      | `Par (loc,e) ->
           let l = list_of_com e [] in
           match l with
             [ [] | [_] -> errorf loc "tuple should have at least two items" (dump_exp x)

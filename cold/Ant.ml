@@ -33,9 +33,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                (`App
                   (_loc, (`App (_loc, (`Vrn (_loc, "Lid")), (mloc _loc))), e) : 
                Ast.pat )
-           | ("tup",_,_) ->
+           | ("par",_,_) ->
                (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Tup")), (mloc _loc))), e) : 
+                  (_loc, (`App (_loc, (`Vrn (_loc, "Par")), (mloc _loc))), e) : 
                Ast.pat )
            | ("seq",_,_) ->
                (`App
@@ -89,59 +89,59 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
            | ("anti",_,__) ->
                (`App
                   (_loc, (`Vrn (_loc, "Ant")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("tup",_,_) ->
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+           | ("par",_,_) ->
                (`App
-                  (_loc, (`Vrn (_loc, "Tup")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                  (_loc, (`Vrn (_loc, "Par")),
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("seq",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Seq")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("vrn","exp",_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Vrn")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("vrn","pat",_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Vrn")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("lid",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Lid")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("uid",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Uid")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("str",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Str")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("chr",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Chr")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("int",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Int")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("int32",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Int32")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("int64",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Int64")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("flo",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Flo")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("nativeint",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "NativeInt")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`nativeint",_,_) ->
                let e: Ast.exp =
                  `App
@@ -153,13 +153,13 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "to_string")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "NativeInt")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`int",_,_) ->
                let e: Ast.exp =
                  `App (_loc, (`Id (_loc, (`Lid (_loc, "string_of_int")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`int32",_,_) ->
                let e: Ast.exp =
                  `App
@@ -171,7 +171,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "to_string")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int32")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`int64",_,_) ->
                let e: Ast.exp =
                  `App
@@ -183,7 +183,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "to_string")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int64")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`chr",_,_) ->
                let e: Ast.exp =
                  `App
@@ -195,7 +195,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "escaped")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Chr")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`str",_,_) ->
                let e: Ast.exp =
                  `App
@@ -207,7 +207,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "escaped")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Str")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`flo",_,_) ->
                let e: Ast.exp =
                  `App
@@ -219,12 +219,12 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                (`Lid (_loc, "float_repres")))))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Flo")),
-                    (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
+                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`bool",_,_) ->
                let x: Ast.exp =
                  `App
                    (_loc, (`Vrn (_loc, "Lid")),
-                     (`Tup
+                     (`Par
                         (_loc,
                           (`Com
                              (_loc, (mloc _loc),
@@ -339,7 +339,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                          (`Lid (_loc, "case")))),
                     (`App
                        (_loc, (`Vrn (_loc, "Ant")),
-                         (`Tup (_loc, (`Com (_loc, (mloc _loc), e))))))) : 
+                         (`Par (_loc, (`Com (_loc, (mloc _loc), e))))))) : 
                Ast.exp )
            | ("lettry","case",_) ->
                (`App

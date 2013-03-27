@@ -424,7 +424,7 @@ let apply () = begin
         | prefixop{f}; S{e} -> {| $f $e |} ]
        "simple"
         [ `QUOTATION x -> AstQuotation.expand _loc x FanDyn.exp_tag
-        | `Ant (("exp"|""|"anti"|"`bool" |"tup"|"seq"|"int"|"`int"
+        | `Ant (("exp"|""|"anti"|"`bool" |"par"|"seq"|"int"|"`int"
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
                     {| $(anti:mk_anti ~c:"exp" n s) |}
@@ -575,14 +575,14 @@ let apply () = begin
        "apply" LA
         [ pat_constr{p1}; S{p2} ->
           match p2 with
-            [ {| ($tup:p) |} ->
+            [ {| ($par:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
                 (list_of_com p []) (* precise *)
             | _ -> {|$p1 $p2 |}  ]
         | pat_constr{p1} -> p1
         | "lazy"; S{p} -> {| lazy $p |}  ]
        "simple"
-        [ `Ant ((""|"pat"|"anti"|"tup"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
+        [ `Ant ((""|"pat"|"anti"|"par"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
                 |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> {| $(anti:mk_anti ~c:"pat" n s) |}
@@ -652,7 +652,7 @@ let apply () = begin
         [ "{"; label_pat_list{pl}; "}" ->
           {| { $pl }|}
           (* {| { $((pl: rec_pat :>pat)) } |} *)
-        | `Ant ((""|"pat"|"anti"|"tup" as n),s) -> {| $(anti:mk_anti ~c:"pat" n s) |}
+        | `Ant ((""|"pat"|"anti"|"par" as n),s) -> {| $(anti:mk_anti ~c:"pat" n s) |}
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
@@ -1307,12 +1307,12 @@ let apply_ctyp () = begin
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc
-        | `Ant ((""|"typ"|"anti"|"tup" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
+        | `Ant ((""|"typ"|"anti"|"par" as n),s) -> `Ant (_loc, (mk_anti ~c:"ctyp" n s))
         | `Ant (("id" as n),s) -> `Id (_loc, (`Ant (_loc, (mk_anti ~c:"ident" n s))))
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
         | a_lident{i}->  `Id(_loc,(i:>ident))
         | a_uident{i} -> `Id(_loc,(i:>ident))
-        | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Tup (_loc, `Sta (_loc, t, tl))
+        | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)

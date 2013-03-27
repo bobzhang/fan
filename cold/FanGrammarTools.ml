@@ -96,7 +96,7 @@ let rec make_exp (tvar : string) (x : text) =
         let act = typing e (make_ctyp t tvar) in
         `App
           (_loc, (`Vrn (_loc, "Smeta")),
-            (`Tup
+            (`Par
                (_loc,
                  (`Com
                     (_loc, ns,
@@ -125,11 +125,11 @@ let rec make_exp (tvar : string) (x : text) =
              then
                `App
                  (_loc, (`Vrn (_loc, "Slist1sep")),
-                   (`Tup (_loc, (`Com (_loc, txt, x)))))
+                   (`Par (_loc, (`Com (_loc, txt, x)))))
              else
                `App
                  (_loc, (`Vrn (_loc, "Slist0sep")),
-                   (`Tup (_loc, (`Com (_loc, txt, x))))))
+                   (`Par (_loc, (`Com (_loc, txt, x))))))
     | `Snext _loc -> `Vrn (_loc, "Snext")
     | `Sself _loc -> `Vrn (_loc, "Sself")
     | `Skeyword (_loc,kwd) ->
@@ -151,7 +151,7 @@ let rec make_exp (tvar : string) (x : text) =
          | Some lab ->
              `App
                (_loc, (`Vrn (_loc, "Snterml")),
-                 (`Tup (_loc, (`Com (_loc, obj, (`Str (_loc, lab)))))))
+                 (`Par (_loc, (`Com (_loc, obj, (`Str (_loc, lab)))))))
          | None  ->
              if n.tvar = tvar
              then `Vrn (_loc, "Sself")
@@ -167,11 +167,11 @@ let rec make_exp (tvar : string) (x : text) =
     | `Stok (_loc,match_fun,attr,descr) ->
         `App
           (_loc, (`Vrn (_loc, "Stoken")),
-            (`Tup
+            (`Par
                (_loc,
                  (`Com
                     (_loc, match_fun,
-                      (`Tup
+                      (`Par
                          (_loc,
                            (`Com
                               (_loc, (`Vrn (_loc, attr)),
@@ -185,11 +185,11 @@ and make_exp_rules (_loc : loc) (rl : (text list* exp) list) (tvar : string)
           let action_string = Ast2pt.to_string_exp action in
           let sl =
             list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
-          (`Tup
+          (`Par
              (_loc,
                (`Com
                   (_loc, sl,
-                    (`Tup
+                    (`Par
                        (_loc,
                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
             Ast.exp )) rl)
@@ -258,7 +258,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
      List.fold_lefti
        (fun i  txt  s  ->
           match s.pattern with
-          | Some (`Alias (_loc,`App (_,_,`Tup (_,`Any _)),p)) ->
+          | Some (`Alias (_loc,`App (_,_,`Par (_,`Any _)),p)) ->
               let p =
                 typing (`Id (_loc, (p :>ident))) (make_ctyp s.styp tvar) in
               `Fun (_loc, (`Case (_loc, p, txt)))
@@ -329,7 +329,7 @@ let text_of_entry (e : entry) =
        | None  -> `Id (_loc, (`Uid (_loc, "None"))) in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
      let prod = make_exp_rules _loc rl (e.name).tvar in
-     `Tup (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
+     `Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) in
    match e.levels with
    | `Single l ->
        `App
@@ -339,7 +339,7 @@ let text_of_entry (e : entry) =
                 (`Id
                    (_loc,
                      (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))))),
-                ent)), (`Tup (_loc, (`Com (_loc, pos, (apply l))))))
+                ent)), (`Par (_loc, (`Com (_loc, pos, (apply l))))))
    | `Group ls ->
        let txt = list_of_list _loc (List.map apply ls) in
        `App
@@ -347,7 +347,7 @@ let text_of_entry (e : entry) =
            (`App
               (_loc,
                 (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
-                ent)), (`Tup (_loc, (`Com (_loc, pos, txt))))) : exp )
+                ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : exp )
 let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with

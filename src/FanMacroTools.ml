@@ -34,7 +34,7 @@ let define ~exp ~pat eo x  = begin
         exp: Level "apply"
         [ `Uid $x; S{param} ->
           let el =  match param with 
-            [ {:exp'| ($tup:e) |} -> list_of_com e []
+            [ {:exp'| ($par:e) |} -> list_of_com e []
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
@@ -44,7 +44,7 @@ let define ~exp ~pat eo x  = begin
         pat: Level "simple"
         [ `Uid $x; S{param} ->
           let pl = match param with
-            [ {:pat| ($tup:p) |} -> list_of_com p [] (* precise *)
+            [ {:pat| ($par:p) |} -> list_of_com p [] (* precise *)
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in

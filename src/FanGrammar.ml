@@ -83,5 +83,5 @@ type simple_pat =
 type action_pattern =
   [= `Id of (loc * ident)
   |`Com of (loc * action_pattern * action_pattern)
-  |`Tup of (loc * action_pattern )
+  |`Par of (loc * action_pattern )
   |`Any of loc ];  

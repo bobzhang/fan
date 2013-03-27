@@ -474,11 +474,11 @@ let generate (module_types : FSig.module_types) =
            (function
             | (`TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) : Ast.row_field) ->
                 (`TyVrn (_loc, x) : Ast.row_field )
-            | (`TyVrnOf (_loc,x,`Tup (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) :
+            | (`TyVrnOf (_loc,x,`Par (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) :
                 Ast.row_field) ->
                 (match y with
                  | (`Sta (_loc,_,_) : Ast.ctyp) ->
-                     `TyVrnOf (_loc, x, (`Tup (_loc, y)))
+                     `TyVrnOf (_loc, x, (`Par (_loc, y)))
                  | _ -> (`TyVrnOf (_loc, x, y) : Ast.row_field ))
             | x -> x) in
        obj#typedecl ty

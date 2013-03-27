@@ -238,7 +238,7 @@ let rec is_irrefut_pat (x: pat) = with pat
     | `App(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
           
     | `Constraint(_,p,_) -> is_irrefut_pat p
-    | `Tup(_,p) -> is_irrefut_pat p
+    | `Par(_,p) -> is_irrefut_pat p
     | `OptLablS _ -> true
     | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_pat p
     | `Label(_,_,p) | `Lazy (_,p) ->  is_irrefut_pat p

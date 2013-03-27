@@ -33,7 +33,7 @@ type sid = [ `Id of (loc* ident)]
 type any = [ `Any of loc] 
 type pat =
   [ nil | sid | `App of (loc* pat* pat) | `Vrn of (loc* string)
-  | `Com of (loc* pat* pat) | `Sem of (loc* pat* pat) | `Tup of (loc* pat)
+  | `Com of (loc* pat* pat) | `Sem of (loc* pat* pat) | `Par of (loc* pat)
   | any | `Record of (loc* rec_pat) | ant | literal
   | `Alias of (loc* pat* alident) | `Array of (loc* pat)
   | `Label of (loc* alident* pat)

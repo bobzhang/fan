@@ -535,9 +535,9 @@ let view_variant (t:row_field) : list vbranch =
 
   let lst = list_of_or t [] in 
   List.map (
-  fun [ (* {| `$cons of $tup:t |} *)
-        (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Tup (_, t))) *)
-       `TyVrnOf(_loc, `C(_,cons), `Tup(_,t))
+  fun [ (* {| `$cons of $par:t |} *)
+        (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
+       `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
         ->
         `variant (cons, list_of_star t [])
       | (* {| `$cons of $t |} *)

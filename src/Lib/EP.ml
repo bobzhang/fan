@@ -72,7 +72,7 @@ let gen_tuple_first ~number ~off =
       zfold_left ~start:1 ~until:(number-1)
         ~acc:({| $(id:xid ~off 0 ) |})
         (fun acc i -> com acc {| $(id:xid ~off i) |} ) in
-    {| $tup:lst |}
+    {| $par:lst |}
   | _ -> invalid_arg "n < 1 in gen_tuple_first" ];
 
 (*
@@ -90,7 +90,7 @@ let gen_tuple_second ~number ~off =
       zfold_left ~start:1 ~until:(number - 1)
         ~acc:({| $(id:xid ~off:0 off) |})
         (fun acc i -> com acc {| $(id:xid ~off:i off ) |} ) in
-    {| $tup:lst |}
+    {| $par:lst |}
   | _ -> 
         invalid_arg "n < 1 in gen_tuple_first "];    
 
@@ -109,7 +109,7 @@ let gen_tuple_second ~number ~off =
 let tuple_of_number ast n =
   let res = zfold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
-  if n > 1 then {| $tup:res |}
+  if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
   else res;
 
 (*
@@ -192,7 +192,7 @@ let mk_record ?(arity=1) cols  =
         com acc (`Record (_loc, (sem_of_list (mk_list i))))
        (* {| { $(list:mk_list i) } |} *)  ) in
   if arity > 1 then
-    {| $tup:res |}
+    {| $par:res |}
   else res ;    
 
 
@@ -214,7 +214,7 @@ let mk_tuple ~arity ~number =
       let e = zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
-      {| $tup:e |}
+      {| $par:e |}
   | _ -> invalid_arg "mk_tuple arity < 1 " ];        
 
   

@@ -18,7 +18,7 @@ let sta a b = let _loc = a <+> b in `Sta(_loc,a,b);
 let ora a b = let _loc = a <+> b in `Or(_loc,a,b);
 let anda a b = let _loc = a <+> b in `And(_loc,a,b);
 let dot a b = let _loc = a <+> b in `Dot (_loc,a,b);
-let tup x =  let _loc = loc_of x in `Tup (_loc,x);
+let tup x =  let _loc = loc_of x in `Par (_loc,x);
 let seq a = let _loc = loc_of a in `Seq (_loc,a) ;
 let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b);
 
@@ -135,7 +135,7 @@ let tuple_com_unit _loc = fun
   [ [] -> unit _loc
   | [p] -> p
   | y ->
-      `Tup _loc (com_of_list y)
+      `Par _loc (com_of_list y)
   ];
   
 let tuple_com y=
@@ -144,7 +144,7 @@ let tuple_com y=
   |[x] -> x
   | [x::_] ->
       let _loc = x <+> List.last y in
-      `Tup _loc (com_of_list y) ];
+      `Par _loc (com_of_list y) ];
     
 let tuple_sta y =
   match y with
@@ -152,4 +152,4 @@ let tuple_sta y =
    | [x] -> x
    | [x::_] ->
        let _loc =  x <+> List.last y in 
-       `Tup _loc (sta_of_list y)];
+       `Par _loc (sta_of_list y)];

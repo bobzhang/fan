@@ -155,7 +155,7 @@ let substp loc env =
          with | Not_found  -> (`Id (loc, (`Uid (loc, x))) : Ast.pat ))
     | (`Int (_loc,x) : Ast.exp) -> (`Int (loc, x) : Ast.pat )
     | (`Str (_loc,s) : Ast.exp) -> (`Str (loc, s) : Ast.pat )
-    | (`Tup (_loc,x) : Ast.exp) -> (`Tup (loc, (loop x)) : Ast.pat )
+    | (`Par (_loc,x) : Ast.exp) -> (`Par (loc, (loop x)) : Ast.pat )
     | (`Com (_loc,x1,x2) : Ast.exp) ->
         (`Com (loc, (loop x1), (loop x2)) : Ast.pat )
     | (`Record (_loc,bi) : Ast.exp) ->
@@ -189,7 +189,7 @@ class subst loc env =
                        (`Dot
                           (_loc, (`Uid (_loc, "FanLoc")),
                             (`Lid (_loc, "of_tuple")))))),
-                  (`Tup
+                  (`Par
                      (_loc,
                        (`Com
                           (_loc, (`Str (_loc, (String.escaped a))),
@@ -309,7 +309,7 @@ let mee_comma x y =
 let mvee_comma x y =
   `App
     (_loc, (`Vrn (_loc, "Com")),
-      (`Tup
+      (`Par
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
@@ -329,7 +329,7 @@ let mee_of_str s =
     let s = String.sub s 1 (len - 1) in
     `App
       (_loc, (`Vrn (_loc, "Vrn")),
-        (`Tup
+        (`Par
            (_loc,
              (`Com
                 (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
@@ -337,7 +337,7 @@ let mee_of_str s =
     (let u =
        `App
          (_loc, (`Vrn (_loc, "Uid")),
-           (`Tup
+           (`Par
               (_loc,
                 (`Com
                    (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
@@ -350,7 +350,7 @@ let mee_of_str s =
 let vee_of_str s =
   `App
     (_loc, (`Vrn (_loc, "Vrn")),
-      (`Tup
+      (`Par
          (_loc,
            (`Com
               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
@@ -372,7 +372,7 @@ let meee_of_str s =
         (`App
            (_loc,
              (`App
-                (_loc, (`Vrn (_loc, "Tup")),
+                (_loc, (`Vrn (_loc, "Par")),
                   (`Id (_loc, (`Lid (_loc, "_loc")))))),
              (`App
                 (_loc,
@@ -394,7 +394,7 @@ let meee_of_str s =
                                  (`Str (_loc, "_loc")))))))),
                   (`App
                      (_loc, (`Vrn (_loc, "Str")),
-                       (`Tup
+                       (`Par
                           (_loc,
                             (`Com
                                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
@@ -436,8 +436,8 @@ let mk_tuple_ee =
   | x::[] -> x
   | xs ->
       `App
-        (_loc, (`Vrn (_loc, "Tup")),
-          (`Tup
+        (_loc, (`Vrn (_loc, "Par")),
+          (`Par
              (_loc,
                (`Com
                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
@@ -452,7 +452,7 @@ let mee_record_col label exp =
                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
            (`App
               (_loc, (`Vrn (_loc, "Lid")),
-                (`Tup
+                (`Par
                    (_loc,
                      (`Com
                         (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
