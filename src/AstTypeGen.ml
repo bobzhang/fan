@@ -15,28 +15,25 @@ let _loc = FanLoc.ghost;
    | Eq generator                                                    |
    +-----------------------------------------------------------------+ *)
 
-let mk_variant_eq _cons : list FSig.ty_info  -> exp  = with exp' fun 
+let mk_variant _cons : list FSig.ty_info  -> exp  = with exp' fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
         ~f:(fun [{(* FSig. *)exp;_} -> exp]) ls ];
   
-let mk_tuple_eq exps = mk_variant_eq "" exps ;
-let mk_record_eq : list FSig.record_col -> exp  = fun cols -> 
+let mk_tuple exps = mk_variant "" exps ;
+let mk_record : list FSig.record_col -> exp  = fun cols -> 
     cols |> List.map (fun [ {re_info;_} -> re_info])
-         |> mk_variant_eq "" ;
+         |> mk_variant "" ;
     
 let (gen_eq,gen_eqobj) = with exp'
-  (gen_stru ~id:(`Pre "eq_")  ~names:[]
-    ~arity:2
-    ~mk_tuple:mk_tuple_eq
-    ~mk_record:mk_record_eq
-    ~mk_variant:mk_variant_eq
-    ~trail: {|false|} (),
-   gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
+  (gen_stru ~id:(`Pre "eq_")
+    ~arity:2 ~mk_tuple ~mk_record ~mk_variant
+    ~default: {|false|} (),
+   gen_object ~kind:Iter ~mk_tuple ~mk_record
      ~base:"eqbase" ~class_name:"eq"
-     ~mk_variant:mk_variant_eq ~names:[]
-     ~arity:2 ~trail: {|false|} ()) ;
+     ~mk_variant:mk_variant
+     ~arity:2 ~default: {|false|} ()) ;
   
 [ ("Eq",gen_eq) ; ("OEq",gen_eqobj) ] |> List.iter Typehook.register;
 
@@ -60,11 +57,11 @@ let (gen_fold,gen_fold2) = with exp'
     cols |> List.map (fun [ {re_info ; _ } -> re_info ] )
          |> mk_variant "" in 
   (gen_object ~kind:Fold ~mk_tuple ~mk_record
-     ~base:"foldbase" ~class_name:"fold" ~mk_variant ~names:[] (),
+     ~base:"foldbase" ~class_name:"fold" ~mk_variant (),
    gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
-     ~mk_variant ~names:[]
-     ~arity:2 ~trail: {|invalid_arg "fold2 failure" |} () ) ;
+     ~mk_variant
+     ~arity:2 ~default: {|invalid_arg "fold2 failure" |} () ) ;
 begin  
    [("Fold",gen_fold);
     ("Fold2",gen_fold2);] |> List.iter Typehook.register;
@@ -96,16 +93,16 @@ let (gen_map,gen_map2) = with exp'
     cols |> List.map
       (fun [ {re_label; re_info=({exp0;_ } as info) ; _ }  ->
         let _ = Obj.repr info in
-        (re_label,exp0) ] )  |> mk_record   in
+        (re_label,exp0) ] )  |> Exp.mk_record   in
     List.fold_right
       (fun {re_info={exp;pat0;_};_} res ->
         {|let $pat:pat0 = $exp in $res |}) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
-     ~mk_variant ~names:[] (),
+     ~mk_variant  (),
    gen_object ~kind:Map ~mk_tuple ~mk_record
-     ~base:"mapbase2" ~class_name:"map2" ~mk_variant ~names:[]
-     ~arity:2 ~trail: {|  invalid_arg "map2 failure" |} ());
+     ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
+     ~arity:2 ~default: {|  invalid_arg "map2 failure" |} ());
 
 begin
   [("Map",gen_map);
@@ -143,7 +140,7 @@ let gen_strip = with {pat:ctyp;exp:exp'}
   let mk_record cols =
     let result = 
     cols |> List.map (fun [ {re_label; re_info={exp0;_ } ; _ }  ->
-          (re_label,exp0) ] )  |> mk_record   in
+          (re_label,exp0) ] )  |> Exp.mk_record   in
     List.fold_right
       (fun {re_info={exp;pat0;ty;_};_} res ->
         match ty with
@@ -151,7 +148,8 @@ let gen_strip = with {pat:ctyp;exp:exp'}
         |  {|FanUtil.anti_cxt|}   ->
           res
         | _ -> {|let $pat:pat0 = $exp in $res |}]) cols result in
-  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[] ();
+  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
+    ();
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
     ("Strip",gen_strip);

@@ -16,7 +16,7 @@ val exp_of_variant:
     ?cons_transform:(string -> string) ->
   ?arity:int ->
   ?names:string list ->
-  trail:(FSig.vrn * int -> case option) ->
+  default:(FSig.vrn * int -> case option) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->
   destination:FSig.destination -> 
   (ctyp -> exp) -> ctyp -> row_field(* ctyp  *)->  exp
@@ -41,7 +41,7 @@ val exp_of_ctyp :
   ?cons_transform:(string -> string) ->
   ?arity:int ->
   ?names:string list ->
-  trail:(FSig.vrn * int -> case option) ->
+  default:(FSig.vrn * int -> case option) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->
   (ctyp -> exp) -> or_ctyp -> exp 
 val mk_prefix :
@@ -67,7 +67,7 @@ val binding_of_tydcl :
   typedecl ->
   ?arity:int ->
   ?names:string list ->
-  trail:(FSig.vrn * int -> case option) ->
+  default:(FSig.vrn * int -> case option) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
@@ -80,7 +80,7 @@ val stru_of_module_types :
   ?cons_transform:(string -> string) ->
   ?arity:int ->
   ?names:string list ->
-  trail:(FSig.vrn * int -> case option) ->
+  default:(FSig.vrn * int -> case option) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->
   left_type_id:FSig.basic_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
@@ -94,7 +94,7 @@ val obj_of_module_types :
     ?module_name:string ->
   ?arity:int ->
   ?names:string list ->
-  trail:(FSig.vrn * int -> case option) ->
+  default:(FSig.vrn * int -> case option) ->
   left_type_variable:FSig.basic_id_transform ->
   mk_record:(FSig.record_col list -> exp) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->

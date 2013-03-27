@@ -70,7 +70,6 @@ module type Syntax = sig
   val class_info_for_class_type : Gram.t class_type;
   val class_longident : Gram.t ident;
   val class_longident_and_param : Gram.t class_exp;
-  (* val class_name_and_param : Gram.t (alident(\* string *\) * (\* ctyp *\) type_parameters); *)
   val class_sig_item : Gram.t class_sig_item;
   val class_sig_item_quot : Gram.t class_sig_item;
   val class_signature : Gram.t class_sig_item;
@@ -83,14 +82,14 @@ module type Syntax = sig
   val class_type_longident_and_param : Gram.t class_type;
   val class_type_plus : Gram.t class_type;
   val class_type_quot : Gram.t class_type;
-  val comma_ctyp : Gram.t (* ctyp *) type_parameters;
-  (* val opt_comma_ctyp : Gram.t (\* ctyp *\) type_parameters; *)
+  val comma_ctyp : Gram.t type_parameters;
+
     
   val comma_exp : Gram.t exp;
   val comma_ipat : Gram.t pat;
   val comma_pat : Gram.t pat;
-  val comma_type_parameter : Gram.t (* ctyp *) type_parameters;
-  val constrain : Gram.t type_constr (* (ctyp * ctyp) *);
+  val comma_type_parameter : Gram.t type_parameters;
+  val constrain : Gram.t type_constr;
   val constructor_arg_list : Gram.t ctyp;
   val constructor_declaration : Gram.t of_ctyp;
   val constructor_declarations : Gram.t or_ctyp;
@@ -100,7 +99,7 @@ module type Syntax = sig
   val direction_flag : Gram.t direction_flag;
   val direction_flag_quot : Gram.t direction_flag;
   val dummy : Gram.t unit;
-  val eq_exp : Gram.t ((* string *)alident -> pat -> pat);
+  val eq_exp : Gram.t (alident -> pat -> pat);
   val exp : Gram.t exp;
   val exp_eoi : Gram.t exp;
   val exp_quot : Gram.t exp;
@@ -113,7 +112,7 @@ module type Syntax = sig
   val ipat : Gram.t pat;
   val ipat_tcon : Gram.t pat;
   val pat_tcon : Gram.t pat;    
-  (* val label : Gram.t string; *)
+
   val label_declaration : Gram.t name_ctyp;
   val label_declaration_list : Gram.t name_ctyp;
   val label_exp : Gram.t rec_exp;
@@ -125,7 +124,7 @@ module type Syntax = sig
     
   val let_binding : Gram.t binding;
   val meth_list : Gram.t (name_ctyp * row_var_flag);
-  val meth_decl : (* Gram.t ctyp *) Gram.t name_ctyp;
+  val meth_decl : Gram.t name_ctyp;
   val module_binding : Gram.t module_binding;
   val module_binding0 : Gram.t module_exp;
   val module_binding_quot : Gram.t module_binding;
@@ -139,21 +138,16 @@ module type Syntax = sig
   (* val package_type : Gram.t module_type; *)
   val module_type_quot : Gram.t module_type;
   val more_ctyp : Gram.t ctyp;
-  val name_tags : Gram.t tag_names(* ctyp *);
-  (* val opt_as_lident : Gram.t (\* string *\)(meta_option alident); *)
-  (* val opt_class_self_pat : Gram.t pat; *)
+  val name_tags : Gram.t tag_names;
   val opt_class_self_type : Gram.t ctyp;
 
   val opt_dot_dot : Gram.t row_var_flag;
   val row_var_flag_quot : Gram.t row_var_flag;
-  (* val opt_eq_ctyp : Gram.t ctyp; *)
-  (* val opt_exp : Gram.t exp; *)
   val opt_meth_list : Gram.t ctyp;
   val opt_mutable : Gram.t mutable_flag;
   val mutable_flag_quot : Gram.t mutable_flag;
   val opt_override : Gram.t override_flag;
   val override_flag_quot : Gram.t override_flag;
-  (* val opt_polyt : Gram.t ctyp; *)
   val opt_private : Gram.t private_flag;
   val private_flag_quot : Gram.t private_flag;
   val opt_rec : Gram.t rec_flag;
@@ -181,14 +175,14 @@ module type Syntax = sig
   val strus : Gram.t stru;
   (* val type_constraint : Gram.t unit; *)
   val type_declaration : Gram.t typedecl;
-  val type_ident_and_parameters : Gram.t (alident(* string *) * opt_decl_params);
+  val type_ident_and_parameters : Gram.t (alident * opt_decl_params);
   (* val type_kind : Gram.t ctyp; *)
   val type_info: Gram.t type_info;
   val type_repr: Gram.t type_repr;
     
   val type_longident : Gram.t ident;
   val type_longident_and_parameters : Gram.t ctyp;
-  val type_parameter : Gram.t (* type_quote *) decl_param;
+  val type_parameter : Gram.t decl_param;
   val type_parameters : Gram.t (ctyp -> ctyp);
   val typevars : Gram.t ctyp;
   val val_longident : Gram.t ident;
@@ -201,7 +195,7 @@ module type Syntax = sig
   val infixop3 : Gram.t exp;
   val infixop4 : Gram.t exp;
 
-  val string_list: Gram.t ((* meta_list *) strings);
+  val string_list: Gram.t strings;
   val infixop5: Gram.t exp;
   val infixop6: Gram.t exp;
   val module_longident_dot_lparen: Gram.t ident;
@@ -212,7 +206,7 @@ module type Syntax = sig
   val value_val_opt_override: Gram.t override_flag;
   val unquoted_typevars:Gram.t ctyp;
   val lang: Gram.t FanToken.name;
-
+  val with_lang: Gram.t exp;  
 
   val symbol:  Gram.t FanGrammar.symbol ;
   val rule:  Gram.t FanGrammar.rule;

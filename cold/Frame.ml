@@ -113,7 +113,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
           FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s"
             (Objs.dump_ctyp ty) in
     aux ty
-let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
+let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
@@ -128,11 +128,11 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
   let res =
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
-      then match trail info with | Some x -> x :: res | None  -> res
+      then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
   currying ~arity res
-let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail 
+let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  ~destination  simple_exp_of_ctyp result ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
@@ -158,7 +158,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
            | `abbrev lid -> (simple lid) :: acc) [] ls in
     let t =
       if ((List.length res) >= 2) && (arity >= 2)
-      then match trail info with | Some x -> x :: res | None  -> res
+      then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
   currying ~arity res
@@ -229,7 +229,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
          (Objs.dump_typedecl t) : exp )
 let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
-  ?(names= [])  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable 
+  ?(names= [])  ~default  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
   let open Transform in
     let tctor_var = basic_transform left_type_id in
@@ -242,9 +242,9 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
       let fun_exp =
         fun_of_tydcl ~destination:Str_item ~names ~arity ~left_type_variable
           ~mk_record ~result_type simple_exp_of_ctyp
-          (exp_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
+          (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
              simple_exp_of_ctyp)
-          (exp_of_variant ?cons_transform ~arity ~names ~trail ~mk_variant
+          (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
              ~destination:Str_item simple_exp_of_ctyp) tydcl in
       `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_exp)
     else
@@ -256,11 +256,11 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
               (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
                 (`Str (_loc, "Abstract data type not implemented"))))))
 let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
-  ~trail  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
+  ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : module_types) =
   let cxt = Hashset.create 50 in
   let mk_binding =
-    binding_of_tydcl ?cons_transform ?arity ?names ~trail ~mk_variant
+    binding_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
       ~left_type_id ~left_type_variable ~mk_record
       (simple_exp_of_ctyp_with_cxt cxt) in
   let fs (ty : types) =
@@ -289,7 +289,7 @@ let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
 let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
-  [])  ~trail 
+  [])  ~default 
   ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 
   ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp (k : kind)
   (lst : module_types) =
@@ -297,10 +297,10 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
    let f tydcl result_type =
      fun_of_tydcl ~names ~destination:(Obj k) ~arity ~left_type_variable
        ~mk_record simple_exp_of_ctyp
-       (exp_of_ctyp ?cons_transform ~arity ~names ~trail ~mk_variant
+       (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
           simple_exp_of_ctyp)
        (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
-          ~trail ~mk_variant simple_exp_of_ctyp) ~result_type tydcl in
+          ~default ~mk_variant simple_exp_of_ctyp) ~result_type tydcl in
    let mk_type tydcl =
      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
      let (ty,result_type) =

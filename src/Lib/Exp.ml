@@ -201,6 +201,8 @@ let _loc = FanLoc.ghost ;
   FIXME: label is lid, it can be more precise
   [mk_record] becomes a bit complex when you have to consider
   the arity
+  FIXME conflicts with the name in Easy, change
+  a better name later
  *)
 let mk_record label_exps : exp=
   let rec_exps = List.map (fun (label, exp) ->

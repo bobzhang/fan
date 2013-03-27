@@ -5,7 +5,7 @@ open FSig
 open Lib
 open Lib.Exp
 let _loc = FanLoc.ghost
-let mk_variant_eq _cons =
+let mk_variant _cons =
   (function
    | [] -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.exp )
    | ls ->
@@ -16,17 +16,16 @@ let mk_variant_eq _cons =
                           (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
                           y) : Ast.exp )) ~f:(fun { exp;_}  -> exp) ls : 
   FSig.ty_info list -> exp )
-let mk_tuple_eq exps = mk_variant_eq "" exps
-let mk_record_eq: FSig.record_col list -> exp =
+let mk_tuple exps = mk_variant "" exps
+let mk_record: FSig.record_col list -> exp =
   fun cols  ->
-    (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant_eq "")
+    (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant "")
 let (gen_eq,gen_eqobj) =
-  ((gen_stru ~id:(`Pre "eq_") ~names:[] ~arity:2 ~mk_tuple:mk_tuple_eq
-      ~mk_record:mk_record_eq ~mk_variant:mk_variant_eq
-      ~trail:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()),
-    (gen_object ~kind:Iter ~mk_tuple:mk_tuple_eq ~mk_record:mk_record_eq
-       ~base:"eqbase" ~class_name:"eq" ~mk_variant:mk_variant_eq ~names:[]
-       ~arity:2 ~trail:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()))
+  ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
+      ~default:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()),
+    (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
+       ~class_name:"eq" ~mk_variant ~arity:2
+       ~default:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()))
 let _ = [("Eq", gen_eq); ("OEq", gen_eqobj)] |> (List.iter Typehook.register)
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
@@ -44,12 +43,12 @@ let (gen_fold,gen_fold2) =
   let mk_record cols =
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant "") in
   ((gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase"
-      ~class_name:"fold" ~mk_variant ~names:[] ()),
+      ~class_name:"fold" ~mk_variant ()),
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
-       ~class_name:"fold2" ~mk_variant ~names:[] ~arity:2
-       ~trail:(`App
-                 (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "fold2 failure"))) : Ast.exp ) ()))
+       ~class_name:"fold2" ~mk_variant ~arity:2
+       ~default:(`App
+                   (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
+                     (`Str (_loc, "fold2 failure"))) : Ast.exp ) ()))
 let _ =
   [("Fold", gen_fold); ("Fold2", gen_fold2)] |> (List.iter Typehook.register)
 let (gen_map,gen_map2) =
@@ -73,18 +72,18 @@ let (gen_map,gen_map2) =
          (List.map
             (fun { re_label; re_info = ({ exp0;_} as info);_}  ->
                let _ = Obj.repr info in (re_label, exp0))))
-        |> mk_record in
+        |> Exp.mk_record in
     List.fold_right
       (fun { re_info = { exp; pat0;_};_}  res  ->
          (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
          Ast.exp )) cols result in
   ((gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase"
-      ~class_name:"map" ~mk_variant ~names:[] ()),
+      ~class_name:"map" ~mk_variant ()),
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
-       ~class_name:"map2" ~mk_variant ~names:[] ~arity:2
-       ~trail:(`App
-                 (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
-                   (`Str (_loc, "map2 failure"))) : Ast.exp ) ()))
+       ~class_name:"map2" ~mk_variant ~arity:2
+       ~default:(`App
+                   (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
+                     (`Str (_loc, "map2 failure"))) : Ast.exp ) ()))
 let _ =
   [("Map", gen_map); ("Map2", gen_map2)] |> (List.iter Typehook.register)
 let gen_strip =
@@ -123,7 +122,7 @@ let gen_strip =
       (cols |>
          (List.map
             (fun { re_label; re_info = { exp0;_};_}  -> (re_label, exp0))))
-        |> mk_record in
+        |> Exp.mk_record in
     List.fold_right
       (fun { re_info = { exp; pat0; ty;_};_}  res  ->
          match ty with
@@ -134,8 +133,7 @@ let gen_strip =
          | _ ->
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
              Ast.exp )) cols result in
-  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ~names:[]
-    ()
+  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ()
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", gen_strip)
@@ -309,48 +307,48 @@ let generate (module_types : FSig.module_types) =
        bar_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      (`Type
         ((FanLoc.of_tuple
-            ("src/AstTypeGen.ml", 354, 12010, 12028, 354, 12010, 12048,
+            ("src/AstTypeGen.ml", 352, 11867, 11885, 352, 11867, 11905,
               false)),
           (`TyDcl
              ((FanLoc.of_tuple
-                 ("src/AstTypeGen.ml", 354, 12010, 12033, 354, 12010, 12048,
+                 ("src/AstTypeGen.ml", 352, 11867, 11890, 352, 11867, 11905,
                    false)),
                (`Lid
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 354, 12010, 12036, 354, 12010,
-                        12039, false)), "tag")),
+                      ("src/AstTypeGen.ml", 352, 11867, 11893, 352, 11867,
+                        11896, false)), "tag")),
                (`Some
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 354, 12010, 12033, 354, 12010,
-                        12039, false)),
+                      ("src/AstTypeGen.ml", 352, 11867, 11890, 352, 11867,
+                        11896, false)),
                     (`Quote
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 354, 12010, 12033, 354,
-                             12010, 12035, false)),
+                           ("src/AstTypeGen.ml", 352, 11867, 11890, 352,
+                             11867, 11892, false)),
                          (`Normal
                             (FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 354, 12010, 12033, 354,
-                                 12010, 12035, false))),
+                               ("src/AstTypeGen.ml", 352, 11867, 11890, 352,
+                                 11867, 11892, false))),
                          (`Lid
                             ((FanLoc.of_tuple
-                                ("src/AstTypeGen.ml", 354, 12010, 12034, 354,
-                                  12010, 12035, false)), "a")))))),
+                                ("src/AstTypeGen.ml", 352, 11867, 11891, 352,
+                                  11867, 11892, false)), "a")))))),
                (`TyRepr
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 354, 12010, 12042, 354, 12010,
-                        12048, false)),
+                      ("src/AstTypeGen.ml", 352, 11867, 11899, 352, 11867,
+                        11905, false)),
                     (`PrNil
                        (FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 354, 12010, 12042, 354,
-                            12010, 12048, false))),
+                          ("src/AstTypeGen.ml", 352, 11867, 11899, 352,
+                            11867, 11905, false))),
                     (`Sum
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 354, 12010, 12042, 354,
-                             12010, 12048, false)), x)))),
+                           ("src/AstTypeGen.ml", 352, 11867, 11899, 352,
+                             11867, 11905, false)), x)))),
                (`None
                   (FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 354, 12010, 12033, 354, 12010,
-                       12048, false)))))) : Ast.stru ) in
+                     ("src/AstTypeGen.ml", 352, 11867, 11890, 352, 11867,
+                       11905, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        bar_of_list

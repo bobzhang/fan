@@ -13,9 +13,9 @@ let _loc = FanLoc.ghost ;
 let gen_stru
     ?module_name
     ?(arity=1)
-    ?(trail= {:exp'| failwith "arity >= 2 in other branches" |} )
+    ?(default= {:exp'| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
-    ~id:(id:basic_id_transform)  ~names  
+    ~id:(id:basic_id_transform)  ?(names=[])  
     (* you must specify when arity >=2 *)
     ~mk_tuple  ~mk_record ~mk_variant ()= begin 
       let left_type_variable  = `Pre "mf_" ;
@@ -26,10 +26,10 @@ let gen_stru
         [None ->   (id:>full_id_transform)
         |Some m ->
           `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} ) ] ;
-      let trail (_,number)=
+      let default (_,number)=
         if number > 1 then
           let pat = EP.tuple_of_number {:pat'| _ |} arity in 
-          Some {:case'| $pat:pat -> $trail |}
+          Some {:case'| $pat:pat -> $default |}
         else (* {:case'| |} *) None ;
       let names = names ;
       let mk_record = mk_record ;
@@ -40,7 +40,7 @@ let gen_stru
                ?cons_transform
                ~arity
                ~names
-               ~trail
+               ~default
                ~mk_variant
                ~left_type_id
                ~left_type_variable
@@ -54,12 +54,12 @@ let gen_stru
 let gen_object
     ?module_name
     ?(arity=1)
-    ?(trail= {:exp'| failwith "arity >= 2 in other branches" |} )
+    ?(default={:exp'| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
     ~kind
     ~base
     ~class_name = 
-  let make ~names ~mk_tuple  ~mk_record  ~mk_variant ()= 
+  let make ?(names=[]) ~mk_tuple  ~mk_record  ~mk_variant ()= 
     begin
       Frame.check names ;
       let left_type_variable  = `Pre "mf_";
@@ -70,17 +70,17 @@ let gen_object
      let left_type_id  = `Pre "";
      let right_type_id  =
        `Obj (basic_transform left_type_id) ;
-     let trail (_,number)=
+     let default (_,number)=
        if number > 1 then
          let pat = EP.tuple_of_number {:pat'| _ |} arity in 
-         Some {:case'| $pat:pat -> $trail |}
+         Some {:case'| $pat:pat -> $default |}
        else None in
     Frame.(obj_of_module_types
              ?cons_transform
              ?module_name
              ~arity
              ~names
-             ~trail
+             ~default
              ~left_type_variable
              ~mk_record
              ~mk_variant

@@ -65,7 +65,7 @@ let print_warning loc txt = !current_warning loc txt;
 
   module_longident_dot_lparen  sequence'  fun_def  
   module_binding_quot ident_quot string_list     
-  method_opt_override  value_val_opt_override  unquoted_typevars  lang
+  method_opt_override  value_val_opt_override  unquoted_typevars  lang with_lang
   (* for the grammar module *)  
   symbol
   rule
