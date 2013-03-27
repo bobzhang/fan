@@ -82,7 +82,7 @@ let apply () = begin
     | "IFNDEF"; uident{i}; "THEN"; exp{e1}; else_exp{e2} ->
         if is_defined i then e2 else e1
     | "DEFINE"; `Lid i; "="; exp{def}; "IN"; exp{body} ->
-        (new Expr.subst _loc [(i, def)])#exp body ] 
+        (new Exp.subst _loc [(i, def)])#exp body ] 
     pat:
     [ "IFDEF"; uident{i}; "THEN"; pat{p1};  "ELSE"; pat{p2}; endif ->
       if is_defined i then p1 else p2

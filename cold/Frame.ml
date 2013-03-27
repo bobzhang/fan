@@ -5,7 +5,7 @@ open Lib
 open Lib.Basic
 open FSig
 open Lib.EP
-open Lib.Expr
+open Lib.Exp
 let preserve = ["self"; "self_type"; "unit"; "result"]
 let check names =
   List.iter
@@ -146,7 +146,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~trail
     (let e = (simple_exp_of_ctyp (`Id (_loc, lid))) +> names in
      let (f,a) = view_app [] result in
      let annot = appl_of_list (f :: (List.map (fun _  -> `Any _loc) a)) in
-     MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
+     Case.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
   let info = (TyVrnEq, (List.length (list_of_or ty []))) in
   let ls = Ctyp.view_variant ty in
   let res =

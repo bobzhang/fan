@@ -236,17 +236,17 @@ let apply () =
           `Sself;
           `Skeyword "IN";
           `Sself],
-           ("Gram.mk_action\n  (fun (body : 'exp)  _  (def : 'exp)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid i -> (((new Expr.subst) _loc [(i, def)])#exp body : 'exp )\n     | _ -> failwith \"((new Expr.subst) _loc [(i, def)])#exp body\n\")\n",
+           ("Gram.mk_action\n  (fun (body : 'exp)  _  (def : 'exp)  _  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid i -> (((new Exp.subst) _loc [(i, def)])#exp body : 'exp )\n     | _ -> failwith \"((new Exp.subst) _loc [(i, def)])#exp body\n\")\n",
              (Gram.mk_action
                 (fun (body : 'exp)  _  (def : 'exp)  _ 
                    (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `Lid i ->
-                       (((new Expr.subst) _loc [(i, def)])#exp body : 
+                       (((new Exp.subst) _loc [(i, def)])#exp body : 
                        'exp )
                    | _ ->
                        failwith
-                         "((new Expr.subst) _loc [(i, def)])#exp body\n"))))]));
+                         "((new Exp.subst) _loc [(i, def)])#exp body\n"))))]));
    Gram.extend_single (pat : 'pat Gram.t )
      (None,
        (None, None,

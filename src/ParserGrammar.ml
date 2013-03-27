@@ -338,7 +338,7 @@ FanConfig.antiquotations := true;
         ~styp:({:ctyp|'$lid:t |} )
       ~pattern:None
   | simple_pat{p} -> 
-      let (p,ls) = Expr.filter_pat_with_captured_variables (p : simple_pat :>pat) in
+      let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat :>pat) in
       match ls with
       [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
       | [(x,y)::ys] ->
@@ -433,8 +433,8 @@ AstQuotation.of_stru
 (*
 AstQuotation.add_quotation
     (d,"rule") rule
-    ~mexp:FanGrammar.Expr.meta_rule
-    ~mpat:FanGrammar.Patt.meta_rule
+    ~mexp:FanGrammar.Exp.meta_rule
+    ~mpat:FanGrammar.Pat.meta_rule
     ~exp_filter:(fun x-> (x :ep :>exp))
     ~pat_filter:(fun x->(x : ep :> pat));
 

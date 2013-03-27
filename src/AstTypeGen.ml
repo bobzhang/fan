@@ -5,7 +5,7 @@ open Easy;
 
 open FSig;
 open Lib;
-open Lib.Expr;
+open Lib.Exp;
 
 
 let _loc = FanLoc.ghost;
@@ -246,7 +246,7 @@ let gen_print =
     ;    
 
 let gen_print_obj =
-  gen_object ~kind:Iter ~mk_tuple:mk_tuple_print
+  gen_object ~kind:(Concrete {:ctyp'|unit|}) ~mk_tuple:mk_tuple_print
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
     ~mk_variant:mk_variant_print ();
@@ -261,8 +261,10 @@ let mk_variant_iter _cons params :exp = with exp'
   match params with
   [ [] -> unit _loc 
   | _ -> 
-      let lst = params |> List.map (fun [{name_exp; id_exp;_} -> {| $name_exp $id_exp |}]) in
-      seq_sem lst] ;
+      let lst = params
+        |> List.map (fun [{name_exp; id_exp;_} ->
+        {| $name_exp $id_exp |}]) in
+        seq_sem lst] ;
 
 let mk_tuple_iter params : exp =
   mk_variant_iter "" params;
@@ -399,7 +401,7 @@ let generate (module_types:FSig.module_types) : stru = with stru
        | {:row_field'| $vrn:x of (loc * $y ) |}->
            match y with
           [ {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $tup:y |}
-           | _ -> {:row_field'| $vrn:x of $y |}]
+          | _ -> {:row_field'| $vrn:x of $y |}]
        | x -> x ]
      end in 
      obj#typedecl ty

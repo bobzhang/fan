@@ -10,7 +10,7 @@ open Lib.Basic;
 open FSig;
 
 open Lib.EP;
-open Lib.Expr;
+open Lib.Exp;
 
 (* preserved keywords for the generator *)
 let preserve =  ["self"; "self_type"; "unit"; "result"];
@@ -212,7 +212,7 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~trail ~mk_variant ~des
     let e = (simple_exp_of_ctyp {:ctyp|$id:lid|}) +> names  in
     let (f,a) = view_app [] result in
     let annot = appl_of_list [f :: List.map (fun _ -> {:ctyp|_|}) a] in
-    MatchCase.gen_tuple_abbrev ~arity ~annot ~destination lid e in
+    Case.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
   let info = (TyVrnEq, List.length (list_of_or ty [])) in
   let ls = Ctyp.view_variant ty in

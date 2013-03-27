@@ -3,7 +3,7 @@ open LibUtil
 open Easy
 open FSig
 open Lib
-open Lib.Expr
+open Lib.Exp
 let _loc = FanLoc.ghost
 let mk_variant_eq _cons =
   (function
@@ -203,9 +203,9 @@ let gen_print =
   gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
     ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 let gen_print_obj =
-  gen_object ~kind:Iter ~mk_tuple:mk_tuple_print ~base:"printbase"
-    ~class_name:"print" ~names:["fmt"] ~mk_record:mk_record_print
-    ~mk_variant:mk_variant_print ()
+  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "unit"))) : Ast.ctyp ))
+    ~mk_tuple:mk_tuple_print ~base:"printbase" ~class_name:"print"
+    ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 let _ =
   [("Print", gen_print); ("OPrint", gen_print_obj)] |>
     (List.iter Typehook.register)
@@ -309,48 +309,48 @@ let generate (module_types : FSig.module_types) =
        or_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      (`Type
         ((FanLoc.of_tuple
-            ("src/AstTypeGen.ml", 352, 11969, 11987, 352, 11969, 12007,
+            ("src/AstTypeGen.ml", 354, 12007, 12025, 354, 12007, 12045,
               false)),
           (`TyDcl
              ((FanLoc.of_tuple
-                 ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969, 12007,
+                 ("src/AstTypeGen.ml", 354, 12007, 12030, 354, 12007, 12045,
                    false)),
                (`Lid
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 352, 11969, 11995, 352, 11969,
-                        11998, false)), "tag")),
+                      ("src/AstTypeGen.ml", 354, 12007, 12033, 354, 12007,
+                        12036, false)), "tag")),
                (`Some
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969,
-                        11998, false)),
+                      ("src/AstTypeGen.ml", 354, 12007, 12030, 354, 12007,
+                        12036, false)),
                     (`Quote
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 352, 11969, 11992, 352,
-                             11969, 11994, false)),
+                           ("src/AstTypeGen.ml", 354, 12007, 12030, 354,
+                             12007, 12032, false)),
                          (`Normal
                             (FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 352, 11969, 11992, 352,
-                                 11969, 11994, false))),
+                               ("src/AstTypeGen.ml", 354, 12007, 12030, 354,
+                                 12007, 12032, false))),
                          (`Lid
                             ((FanLoc.of_tuple
-                                ("src/AstTypeGen.ml", 352, 11969, 11993, 352,
-                                  11969, 11994, false)), "a")))))),
+                                ("src/AstTypeGen.ml", 354, 12007, 12031, 354,
+                                  12007, 12032, false)), "a")))))),
                (`TyRepr
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 352, 11969, 12001, 352, 11969,
-                        12007, false)),
+                      ("src/AstTypeGen.ml", 354, 12007, 12039, 354, 12007,
+                        12045, false)),
                     (`PrNil
                        (FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 352, 11969, 12001, 352,
-                            11969, 12007, false))),
+                          ("src/AstTypeGen.ml", 354, 12007, 12039, 354,
+                            12007, 12045, false))),
                     (`Sum
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 352, 11969, 12001, 352,
-                             11969, 12007, false)), x)))),
+                           ("src/AstTypeGen.ml", 354, 12007, 12039, 354,
+                             12007, 12045, false)), x)))),
                (`None
                   (FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 352, 11969, 11992, 352, 11969,
-                       12007, false)))))) : Ast.stru ) in
+                     ("src/AstTypeGen.ml", 354, 12007, 12030, 354, 12007,
+                       12045, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        or_of_list

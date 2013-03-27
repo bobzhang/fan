@@ -27,7 +27,7 @@ let define ~exp ~pat eo x  = begin
           [ `Uid $x -> (new Objs.reloc _loc)#exp e ]
         pat: Level "simple"
           [ `Uid $x ->
-            let p = Expr.substp _loc [] e
+            let p = Exp.substp _loc [] e
             in (new Objs.reloc _loc)#pat p ] |}
   | Some (sl, e) ->
       {:extend| Gram
@@ -38,7 +38,7 @@ let define ~exp ~pat eo x  = begin
             | e -> [e] ]  in
           if List.length el = List.length sl then
             let env = List.combine sl el in
-            (new Expr.subst _loc env)#exp e
+            (new Exp.subst _loc env)#exp e
           else
             incorrect_number _loc el sl ]
         pat: Level "simple"
@@ -48,7 +48,7 @@ let define ~exp ~pat eo x  = begin
             | p -> [p] ] in
           if List.length pl = List.length sl then
             let env = List.combine sl pl in
-            let p = Expr.substp _loc env e in
+            let p = Exp.substp _loc env e in
             (new Objs.reloc _loc)#pat p
           else
             incorrect_number _loc pl sl ] |}

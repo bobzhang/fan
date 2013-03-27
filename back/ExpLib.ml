@@ -57,3 +57,54 @@
 (*   | e -> {| assert $e |} ]; *)
 
 
+  (* {|`App _loc $x $y |} *)
+  (*
+      `App
+    (_loc,
+      (`App
+         (_loc,
+           (`App
+              (_loc, (`Vrn (_loc, "App")),
+                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
+   *)
+  (* {| `App(_loc, $x, $y) |}; *)
+
+(* let vee_app x y = {| `App (_loc,$x,$y) |}; *)
+
+  (*
+      `App
+    (_loc, (`Vrn (_loc, "App")),
+      (`Tup
+         (_loc,
+           (`Com
+              (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                (`Com (_loc, x, y)))))))
+   *)
+(* let mep_app x y = {| {:pat| $($x) $($y) |}|}; *)
+  (* {| `App (_loc, $x, $y) |};        *)
+(* let vep_app x y = {| `App (_loc,$x,$y)|}; *)
+  
+
+(*
+   
+  Example:
+  {[
+  mep_of_str "B" = {|{:pat| B |}|};
+  - : bool = true
+  ]}
+  FIXME
+  {|{:pat|`B|}|}
+  {|{:pat|B|}|}
+ *)  
+
+(* let mep_of_str  s = *)
+(*   let len = String.length s in *)
+(*   if s.[0] = '`' then *)
+(*     let s = String.sub s 1 (len - 1 ) in *)
+(*     (\* {| {:pat|`$($str:s)|}|} *\) *)
+(*       {| {:pat|$(vrn:($str:s))|}|} *)
+(*   else *)
+(*    let u = {| {:ident| $(uid:$str:s) |} |} in  *)
+(*    {| {:pat| $(id:$u) |} |}; *)
+(*     (\* let u = {| Ast.Uid _loc $str:s |} in *\) *)
+(*   (\* {| Ast.PaId _loc $u |}; *\) *)

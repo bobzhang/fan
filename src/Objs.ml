@@ -7,6 +7,7 @@ let strip_loc_list f lst =
   List.map f lst ;
 let strip_loc_ant ant = ant ;
 
+  
 {:fans|keep off;
 derive((* Map2 Fold2 OIter   OEq *)
    Print OPrint Map Fold Strip  MapWrapper PrintWrapper);
@@ -26,8 +27,8 @@ end;
 let wildcarder = object (self)
   inherit map as super;
   method! pat = fun
-  [ {:pat| $lid:_ |} -> {:pat| _ |}
-  | {:pat| ($p as $_) |} -> self#pat p
+  [ {:pat'| $lid:_ |} -> {:pat'| _ |}
+  | {:pat'| ($p as $_) |} -> self#pat p
   | p -> super#pat p ];
 end;
 

@@ -10,8 +10,7 @@ open AstLoc;
 *)
 
 open Lib;
-(* open lang "exp"; *)
-#default_quotation "exp";;
+#default_quotation "exp'";;
 type spat_comp =
   [ SpTrm of FanLoc.t * pat * option exp
   | SpNtr of FanLoc.t * pat * exp
@@ -39,23 +38,23 @@ let is_raise_failure  = fun
   
 let rec handle_failure e =
   match e with
-  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case|$(uid:m).Failure -> $e|} *)
+  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case'|$(uid:m).Failure -> $e|} *)
     when m = gm()
     ->  handle_failure e
   | {| match $me with [ $a ] |} ->
       let rec case_handle_failure =
         fun
-        [ {:case| $a1 | $a2 |} ->
+        [ {:case'| $a1 | $a2 |} ->
             case_handle_failure a1 && case_handle_failure a2
-        | {:case| $pat:_ -> $e |} -> handle_failure e
+        | {:case'| $pat:_ -> $e |} -> handle_failure e
         | _ -> false ]
       in handle_failure me && case_handle_failure a
   | {| let $bi in $e |} ->
       let rec binding_handle_failure =
         fun
-        [ {:binding| $b1 and $b2 |} ->
+        [ {:binding'| $b1 and $b2 |} ->
             binding_handle_failure b1 && binding_handle_failure b2
-        | {:binding| $_ = $e |} -> handle_failure e
+        | {:binding'| $_ = $e |} -> handle_failure e
         | _ -> false ] in
       binding_handle_failure bi && handle_failure e
   | {| $lid:_ |} | {| $int:_ |} | {| $str:_ |} |
@@ -91,9 +90,9 @@ let rec subst v e =
   | _ -> raise Not_found ]
 and subst_binding v =  fun
   [ {:binding@_loc| $b1 and $b2 |} ->
-      {:binding| $(subst_binding v b1) and $(subst_binding v b2) |}
+      {:binding'| $(subst_binding v b1) and $(subst_binding v b2) |}
   | {:binding@_loc| $lid:v' = $e |} ->
-      {:binding| $lid:v' = $(if v = v' then e else subst v e) |}
+      {:binding'| $lid:v' = $(if v = v' then e else subst v e) |}
   | _ -> raise Not_found ];
 
 let stream_pattern_component skont ckont =
@@ -114,13 +113,13 @@ let stream_pattern_component skont ckont =
         [ {| fun [ ($lid:v : $uid:m.t _) -> $e ] |} when v = strm_n && m = gm() -> e
         | _ -> {| $e $lid:strm_n |} ] in
       (* Simplify it *)
-      if Expr.pattern_eq_expression p skont then
+      if Exp.pattern_eq_expression p skont then
         if is_raise_failure ckont then e
         else if handle_failure e then e
         else {| try $e with [ $(uid:gm()).Failure -> $ckont ] |}
       else if is_raise_failure ckont then
         {| let $p = $e in $skont |}
-      else if Expr.pattern_eq_expression {:pat| Some $p |} skont then
+      else if Exp.pattern_eq_expression {:pat'| Some $p |} skont then
         {| try Some $e with [ $(uid:gm()).Failure -> $ckont ] |}
       else if is_raise ckont then
         let tst =
@@ -134,7 +133,7 @@ let stream_pattern_component skont ckont =
   | SpStr (_loc, p) ->
       try
         match p with
-        [ {:pat| $lid:v |} -> subst v skont
+        [ {:pat'| $lid:v |} -> subst v skont
         | _ -> raise Not_found ]
       with
       [ Not_found -> {| let $p = $lid:strm_n in $skont |} ] ];
@@ -158,7 +157,7 @@ let stream_patterns_term _loc ekont tspel : exp =
   let pel =
     List.fold_right
       (fun (p, w, _loc, spcl, epo, e) acc ->
-        let p = {:pat| Some $p |} in
+        let p = {:pat'| Some $p |} in
         let e =
           let ekont err =
             let str =
@@ -169,9 +168,9 @@ let stream_patterns_term _loc ekont tspel : exp =
           let skont = stream_pattern _loc epo e ekont spcl in
           {| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
           match w with
-          [ Some w -> {:case| $pat:p when $w -> $e  | $acc |}
-          | None -> {:case| $pat:p -> $e  | $acc |} ])
-      tspel {:case| _ -> $(ekont () )|} in
+          [ Some w -> {:case'| $pat:p when $w -> $e  | $acc |}
+          | None -> {:case'| $pat:p -> $e  | $acc |} ])
+      tspel {:case'| _ -> $(ekont () )|} in
   {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} ;
 
 let rec group_terms = fun
@@ -198,7 +197,7 @@ let cparser _loc bpo pc =
     match bpo with
     [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
     | None -> e ] in
-  let p = {:pat| ($lid:strm_n : $(uid:gm()).t _) |} in
+  let p = {:pat'| ($lid:strm_n : $(uid:gm()).t _) |} in
   {| fun $p -> $e |} ;
 
 let cparser_match _loc me bpo pc =

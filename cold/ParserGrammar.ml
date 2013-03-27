@@ -708,11 +708,11 @@ let _ =
                      ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
                      ~pattern:None : 'symbol )))));
         ([`Snterm (Gram.obj (simple_pat : 'simple_pat Gram.t ))],
-          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Expr.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc,\n                     (`App (_loc, (`Id (_loc, (`Lid (_loc, \"&&\")))), acc)),\n                     (`App\n                        (_loc,\n                          (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                          y))))\n              (`App\n                 (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                   y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
+          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc,\n                     (`App (_loc, (`Id (_loc, (`Lid (_loc, \"&&\")))), acc)),\n                     (`App\n                        (_loc,\n                          (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                          y))))\n              (`App\n                 (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                   y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
             (Gram.mk_action
                (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->
                   (let (p,ls) =
-                     Expr.filter_pat_with_captured_variables
+                     Exp.filter_pat_with_captured_variables
                        (p : simple_pat  :>pat) in
                    match ls with
                    | [] -> mk_tok _loc ~pattern:p (`Tok _loc)

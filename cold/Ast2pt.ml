@@ -16,7 +16,7 @@ let rec normalize_acc =
   | (`App (_loc,i1,i2) : Ast.ident) ->
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | (`Ant (_loc,_) : Ast.ident)|(`Uid (_loc,_) : Ast.ident)
-    |(`Lid (_loc,_) : Ast.ident) as i -> `Id (_loc, i)
+    |(`Lid (_loc,_) : Ast.ident) as i -> (`Id (_loc, i) : Ast.exp )
 let rec sep_dot_exp acc =
   function
   | (`Dot (_loc,e1,e2) : Ast.exp) -> sep_dot_exp (sep_dot_exp acc e2) e1
@@ -104,7 +104,8 @@ let ctyp_long_id (t : ctyp) =
                                                                 Longident.t
                                                                 Location.loc) )
 let predef_option loc =
-  `Id (loc, (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option")))))
+  (`Id (loc, (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))))) : 
+  ctyp )
 let rec ctyp (x : ctyp) =
   match x with
   | `Id (_loc,i) ->
@@ -212,8 +213,8 @@ let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
     ptype_variance = variance
   }
 let mkprivate' m = if m then Private else Public
-let mkprivate =
-  function
+let mkprivate (x : private_flag) =
+  match x with
   | `Private _ -> Private
   | `PrNil _ -> Public
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
@@ -246,8 +247,8 @@ let mkvalue_desc loc t (p : strings list) =
       (fun p  ->
          match p with | `Str (_,p) -> p | _ -> failwithf "mkvalue_desc") p in
   { pval_type = (ctyp t); pval_prim = ps; pval_loc = loc }
-let mkmutable =
-  function
+let mkmutable (x : mutable_flag) =
+  match x with
   | `Mutable _ -> Mutable
   | `MuNil _ -> Immutable
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
@@ -299,15 +300,15 @@ let class_parameters (t : type_parameters) =
                 (dump_type_parameters t))
      | _ -> errorf (loc_of t) "class_parameters %s" (dump_type_parameters t))
     (list_of_com t [])
-let type_parameters_and_type_name t =
+let type_parameters_and_type_name (t : ctyp) =
   let rec aux t acc =
     match t with
     | `App (_loc,t1,t2) -> aux t1 ((optional_type_parameters t2) @ acc)
     | `Id (_loc,i) -> ((ident i), acc)
     | x -> errorf (loc_of x) "type_parameters_and_type_name %s" (dump_ctyp x) in
   aux t []
-let rec pat_fa al =
-  function | `App (_,f,a) -> pat_fa (a :: al) f | f -> (f, al)
+let rec pat_fa (al : pat list) (x : pat) =
+  match x with | `App (_,f,a) -> pat_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2
   then mkghpat loc (Ppat_constant (Const_char c1))
@@ -337,15 +338,18 @@ let rec pat (x : pat) =
       mkpat _loc (Ppat_var (with_loc s sloc))
   | (`Id (_loc,i) : Ast.pat) ->
       let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p
-  | `Alias (_loc,p1,x) ->
+  | (`Alias (_loc,p1,x) : Ast.pat) ->
       (match x with
        | `Lid (sloc,s) ->
            mkpat _loc (Ppat_alias ((pat p1), (with_loc s sloc)))
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | (`Any _loc : Ast.pat) -> mkpat _loc Ppat_any
-  | (`App (_loc,`Id (_,`Uid (sloc,s)),`Tup (_,(`Any loc_any : Ast.pat))) :
-      Ast.pat) ->
+  | (`App
+       (_loc,`Id (_,(`Uid (sloc,s) : Ast.ident)),`Tup
+                                                   (_,(`Any loc_any :
+                                                        Ast.pat)))
+      : Ast.pat) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -364,12 +368,12 @@ let rec pat (x : pat) =
        | _ ->
            error (loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
-  | `Array (loc,p) ->
+  | (`Array (loc,p) : Ast.pat) ->
       mkpat loc (Ppat_array (List.map pat (list_of_sem p [])))
-  | `ArrayEmpty loc -> mkpat loc (Ppat_array [])
-  | `Chr (loc,s) ->
+  | (`ArrayEmpty loc : Ast.pat) -> mkpat loc (Ppat_array [])
+  | (`Chr (loc,s) : Ast.pat) ->
       mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
-  | `Int (loc,s) ->
+  | (`Int (loc,s) : Ast.pat) ->
       let i =
         try int_of_string s
         with
@@ -377,7 +381,7 @@ let rec pat (x : pat) =
             error loc
               "Integer literal exceeds the range of representable integers of type int" in
       mkpat loc (Ppat_constant (Const_int i))
-  | `Int32 (loc,s) ->
+  | (`Int32 (loc,s) : Ast.pat) ->
       let i32 =
         try Int32.of_string s
         with
@@ -385,7 +389,7 @@ let rec pat (x : pat) =
             error loc
               "Integer literal exceeds the range of representable integers of type int32" in
       mkpat loc (Ppat_constant (Const_int32 i32))
-  | `Int64 (loc,s) ->
+  | (`Int64 (loc,s) : Ast.pat) ->
       let i64 =
         try Int64.of_string s
         with
@@ -393,7 +397,7 @@ let rec pat (x : pat) =
             error loc
               "Integer literal exceeds the range of representable integers of type int64" in
       mkpat loc (Ppat_constant (Const_int64 i64))
-  | `NativeInt (loc,s) ->
+  | (`NativeInt (loc,s) : Ast.pat) ->
       let nati =
         try Nativeint.of_string s
         with
@@ -401,19 +405,20 @@ let rec pat (x : pat) =
             error loc
               "Integer literal exceeds the range of representable integers of type nativeint" in
       mkpat loc (Ppat_constant (Const_nativeint nati))
-  | `Flo (loc,s) ->
+  | (`Flo (loc,s) : Ast.pat) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-  | `Label (loc,_,_)|`LabelS (loc,_) ->
-      error loc "labeled pattern not allowed here"
-  | `OptLablExpr (loc,_,_,_)|`OptLabl (loc,_,_)|`OptLablS (loc,_) ->
-      error loc "labeled pattern not allowed here"
-  | `Or (loc,p1,p2) -> mkpat loc (Ppat_or ((pat p1), (pat p2)))
-  | `PaRng (loc,p1,p2) ->
+  | (`Or (loc,p1,p2) : Ast.pat) -> mkpat loc (Ppat_or ((pat p1), (pat p2)))
+  | (`Str (loc,s) : Ast.pat) ->
+      mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
+  | (`PaRng (loc,p1,p2) : Ast.pat) ->
       (match (p1, p2) with
        | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
            let c1 = char_of_char_token loc1 c1 in
            let c2 = char_of_char_token loc2 c2 in mkrangepat loc c1 c2
        | _ -> error loc "range pattern allowed only for characters")
+  | `Label (loc,_,_)|`LabelS (loc,_)|`OptLablExpr (loc,_,_,_)
+    |`OptLabl (loc,_,_)|`OptLablS (loc,_) ->
+      error loc "labeled pattern not allowed here"
   | `Record (loc,p) ->
       let ps = list_of_sem p [] in
       let (wildcards,ps) =
@@ -424,25 +429,25 @@ let rec pat (x : pat) =
         | `RecBind (_loc,i,p) -> ((ident i), (pat p))
         | p -> error (loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
-  | `Str (loc,s) ->
-      mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-  | `Tup (loc,`Com (_,p1,p2)) ->
+  | (`Tup (loc,`Com (_,p1,p2)) : Ast.pat) ->
       mkpat loc
         (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
   | `Tup (loc,_) -> error loc "singleton tuple pattern"
-  | `Constraint (loc,p,t) -> mkpat loc (Ppat_constraint ((pat p), (ctyp t)))
-  | `ClassPath (loc,i) -> mkpat loc (Ppat_type (long_type_ident i))
-  | `Vrn (loc,s) -> mkpat loc (Ppat_variant (s, None))
-  | `Lazy (loc,p) -> mkpat loc (Ppat_lazy (pat p))
-  | `ModuleUnpack (loc,`Uid (sloc,m)) ->
+  | (`Constraint (loc,p,t) : Ast.pat) ->
+      mkpat loc (Ppat_constraint ((pat p), (ctyp t)))
+  | (`ClassPath (loc,i) : Ast.pat) ->
+      mkpat loc (Ppat_type (long_type_ident i))
+  | (`Vrn (loc,s) : Ast.pat) -> mkpat loc (Ppat_variant (s, None))
+  | (`Lazy (loc,p) : Ast.pat) -> mkpat loc (Ppat_lazy (pat p))
+  | (`ModuleUnpack (loc,`Uid (sloc,m)) : Ast.pat) ->
       mkpat loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (loc,`Uid (sloc,m),ty) ->
       mkpat loc
         (Ppat_constraint
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
   | p -> error (loc_of p) "invalid pattern"
-let override_flag loc =
-  function
+let override_flag loc (x : override_flag) =
+  match x with
   | `Override _ -> Override
   | `OvNil _ -> Fresh
   | _ -> error loc "antiquotation not allowed here"
@@ -705,11 +710,12 @@ and label_exp (x : exp) =
   | e -> ("", (exp e))
 and binding (x : binding) acc =
   match x with
-  | `And (_,x,y) -> binding x (binding y acc)
-  | `Bind
-      (_loc,`Id (sloc,`Lid (_,bind_name)),`Constraint
-                                            (_,e,`TyTypePol (_,vs,ty)))
-      ->
+  | (`And (_loc,x,y) : Ast.binding) -> binding x (binding y acc)
+  | (`Bind
+       (_loc,(`Id (sloc,`Lid (_,bind_name)) : Ast.pat),`Constraint
+                                                         (_,e,`TyTypePol
+                                                                (_,vs,ty)))
+      : Ast.binding) ->
       let rec id_to_string x =
         match x with
         | `Id (_loc,`Lid (_,x)) -> [x]
@@ -733,24 +739,24 @@ and binding (x : binding) acc =
              ((mkpat (Ppat_var (with_loc bind_name sloc))),
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
-  | `Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) ->
+  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Ast.binding) ->
       ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))))), (exp e)) ::
       acc
-  | `Bind (_,p,e) -> ((pat p), (exp e)) :: acc
+  | (`Bind (_loc,p,e) : Ast.binding) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x : case) =
   let cases = list_of_or x [] in
   List.filter_map
     (function
-     | `Case (_,p,e) -> Some ((pat p), (exp e))
-     | `CaseWhen (_,p,w,e) ->
+     | (`Case (_loc,p,e) : Ast.case) -> Some ((pat p), (exp e))
+     | (`CaseWhen (_loc,p,w,e) : Ast.case) ->
          Some ((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))
      | x -> errorf (loc_of x) "case %s" (dump_case x)) cases
 and mklabexp (x : rec_exp) =
   let bindings = list_of_sem x [] in
   List.filter_map
     (function
-     | `RecBind (_,i,e) -> Some ((ident i), (exp e))
+     | (`RecBind (_loc,i,e) : Ast.rec_exp) -> Some ((ident i), (exp e))
      | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x)) bindings
 and mktype_decl (x : typedecl) =
   let type_decl tl cl loc (x : type_info) =
