@@ -1,8 +1,7 @@
 
 #default_quotation "exp";;
 open AstLoc;
-
-
+open Ast;
 open Format;
 open LibUtil;
 open Lib;
@@ -52,7 +51,7 @@ let mapi_exp ?(arity=1) ?(names=[])
   let id_exp = tuple_com  id_exps  in
   let id_pat = id_exp in
   let exp = appl_of_list [base:: id_exps]  in
-  {name_exp; exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty};       
+  {name_exp; info_exp=exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty};       
 
 (* @raise Invalid_argument when type can not be handled *)  
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple

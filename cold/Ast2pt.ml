@@ -6,6 +6,7 @@ open FanUtil
 open ParsetreeHelper
 open FanLoc
 open FanOps
+open Ast
 open AstLoc
 open Objs
 let _ = ()

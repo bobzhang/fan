@@ -1,3 +1,4 @@
+open Ast
 open AstLoc
 open LibUtil
 let _loc = FanLoc.ghost

@@ -2,7 +2,7 @@
 open Ast;
 
 {:fans|keep off; derive(DynAst); |};
-{:ocaml|{:include| "src/Ast.ml" |}; |};
+{:ocaml|{:include| "src/Ast.mli" |}; |};
 
 
 type dyn;

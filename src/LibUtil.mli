@@ -59,7 +59,7 @@ module List :
     type dir = [ `Left | `Right ]
     val reduce_left : ('a -> 'a -> 'a) -> 'a list -> 'a
     val reduce_left_with :
-      compose:('a -> 'a -> 'a) -> f:('b -> 'a) -> 'b list -> 'a
+      compose:('a -> 'a -> 'a) -> project:('b -> 'a) -> 'b list -> 'a
     val reduce_right_with :
       compose:('a -> 'a -> 'a) -> f:('b -> 'a) -> 'b list -> 'a
     val reduce_right : ('a -> 'a -> 'a) -> 'a list -> 'a

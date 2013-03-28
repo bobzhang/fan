@@ -24,7 +24,7 @@ type ty_info = {
     name_exp: exp;
     (* [int] -> [meta_int] *)
 
-    exp: exp;
+    info_exp: exp;
     (* int -> [meta_int fmt x0] *)
 
     exp0: exp;

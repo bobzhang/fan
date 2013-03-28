@@ -1,4 +1,5 @@
 open AstLoc
+open Ast
 open Format
 open LibUtil
 open Lib
@@ -29,8 +30,17 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
    let id_exp = tuple_com id_exps in
    let id_pat = id_exp in
    let exp = appl_of_list (base :: id_exps) in
-   { name_exp; exp; id_exp; id_exps; id_pat; id_pats; exp0; pat0; ty } : 
-  FSig.ty_info )
+   {
+     name_exp;
+     info_exp = exp;
+     id_exp;
+     id_exps;
+     id_pat;
+     id_pats;
+     exp0;
+     pat0;
+     ty
+   } : FSig.ty_info )
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
   simple_exp_of_ctyp (ty : ctyp) =
   (match ty with

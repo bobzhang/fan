@@ -1,9 +1,6 @@
 #default_quotation "case";;
 open LibUtil;
-
-
-
-
+open Ast;
 open AstLoc;
 open Basic;
 (*

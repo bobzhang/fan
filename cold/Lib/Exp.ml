@@ -1,4 +1,5 @@
 open FanOps
+open Ast
 open AstLoc
 open LibUtil
 open Basic

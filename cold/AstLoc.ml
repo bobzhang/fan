@@ -1,6 +1,6 @@
 open LibUtil
 open FanLoc.Ops
-include Ast
+open Ast
 let _ = (); ()
 let _ = ()
 let loc_of =

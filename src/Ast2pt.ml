@@ -12,6 +12,7 @@ open FanUtil;
 open ParsetreeHelper;
 open FanLoc;
 open FanOps;
+open Ast;
 open AstLoc;
 open Objs;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";

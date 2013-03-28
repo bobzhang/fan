@@ -1,3 +1,4 @@
+open Ast
 open AstLoc
 open LibUtil
 type warning = FanLoc.t -> string -> unit 

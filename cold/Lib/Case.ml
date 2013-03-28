@@ -1,4 +1,5 @@
 open LibUtil
+open Ast
 open AstLoc
 open Basic
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =

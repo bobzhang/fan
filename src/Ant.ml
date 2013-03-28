@@ -1,4 +1,4 @@
-
+open Ast;
 open FanUtil;
 open Lib.Meta;
 open AstLoc;

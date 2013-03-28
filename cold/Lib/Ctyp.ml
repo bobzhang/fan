@@ -1,3 +1,4 @@
+open Ast
 open AstLoc
 open LibUtil
 open Basic
@@ -7,9 +8,9 @@ let app_arrow lst acc = List.fold_right arrow lst acc
 let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
     (fun name  acc  ->
-       `Arrow
-         (_loc, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, name)))), acc))
-    names ty
+       (`Arrow
+          (_loc, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, name)))), acc) : 
+       Ast.ctyp )) names ty
 let (+>) (params : ctyp list) (base : ctyp) =
   List.fold_right arrow params base
 let name_length_of_tydcl (x : typedecl) =
@@ -27,13 +28,16 @@ let gen_quantifiers1 ~arity  n =
        (fun i  ->
           List.init n
             (fun j  ->
-               `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))))))
+               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:i j)))) : 
+               Ast.ctyp ))))
       |> List.concat)
      |> appl_of_list : ctyp )
 let of_id_len ~off  (id,len) =
-  appl_of_list ((`Id (_loc, id)) ::
+  appl_of_list ((`Id (_loc, id) : Ast.ctyp ) ::
     (List.init len
-       (fun i  -> `Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))))))
+       (fun i  ->
+          (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))) : 
+          Ast.ctyp ))))
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
 let ty_name_of_tydcl (x : typedecl) =
@@ -43,7 +47,7 @@ let ty_name_of_tydcl (x : typedecl) =
         match tyvars with
         | `None _ -> []
         | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
-      appl_of_list ((`Id (_loc, (`Lid (_loc, name)))) :: tyvars)
+      appl_of_list ((`Id (_loc, (`Lid (_loc, name))) : Ast.ctyp ) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
@@ -67,12 +71,13 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
    let app_src =
      app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
-   let result_type =
+   let result_type: Ast.ctyp =
      `Quote
        (_loc, (`Normal _loc),
          (`Lid (_loc, ("result" ^ (string_of_int result_id.contents))))) in
    let _ = incr result_id in
-   let self_type = `Quote (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))) in
+   let self_type: Ast.ctyp =
+     `Quote (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))) in
    let (quant,dst) =
      match k with
      | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -87,15 +92,17 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
             app_arrow
               (List.init number
                  (fun _  ->
-                    `Quote
-                      (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:0 i)))))) in
+                    (`Quote
+                       (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:0 i)))) : 
+                    Ast.ctyp ))) in
           match k with
           | Obj u ->
               let dst =
                 match u with
                 | Map  ->
-                    `Quote
-                      (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:1 i))))
+                    (`Quote
+                       (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off:1 i)))) : 
+                    Ast.ctyp )
                 | Iter  -> result_type
                 | Concrete c -> c
                 | Fold  -> self_type in
@@ -106,7 +113,8 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    then ((`TyPolEnd (_loc, base)), dst)
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
-      ((`TyPol (_loc, quantifiers, (params +> base))), dst)) : (ctyp* ctyp) )
+      ((`TyPol (_loc, quantifiers, (params +> base)) : Ast.ctyp ), dst)) : 
+  (ctyp* ctyp) )
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 let mk_obj class_name base body =
@@ -137,7 +145,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | `Id (_loc,`Lid (_,i)) when i = name ->
+            | (`Id (_loc,`Lid (_,i)) : Ast.ctyp) when i = name ->
                 (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -149,13 +157,14 @@ let is_recursive ty_dcl =
         (Objs.dump_typedecl ty_dcl)
 let qualified_app_list =
   function
-  | `App (_loc,_,_) as x ->
+  | (`App (_loc,_,_) : Ast.ctyp) as x ->
       (match list_of_app x [] with
-       | (`Id (_loc,`Lid (_,_)))::_ -> None
-       | (`Id (_loc,i))::ys -> Some (i, ys)
+       | (`Id (_loc,`Lid (_,_)) : Ast.ctyp)::_ -> None
+       | (`Id (_loc,i) : Ast.ctyp)::ys -> Some (i, ys)
        | _ -> None)
-  | `Id (_loc,`Lid (_,_))|`Id (_loc,`Uid (_,_)) -> None
-  | `Id (_loc,i) -> Some (i, [])
+  | (`Id (_loc,`Lid (_,_)) : Ast.ctyp)|(`Id (_loc,`Uid (_,_)) : Ast.ctyp) ->
+      None
+  | (`Id (_loc,i) : Ast.ctyp) -> Some (i, [])
   | _ -> None
 let is_abstract (x : typedecl) =
   match x with | `TyAbstr _ -> true | _ -> false
@@ -207,7 +216,8 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Ident.map_to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Id (_loc, (`Lid (_loc, dest)))) :: lst))
+           appl_of_list ((`Id (_loc, (`Lid (_loc, dest))) : Ast.ctyp ) ::
+             lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

@@ -1,5 +1,5 @@
 (* NFA *)
-
+open Ast;
 open AstLoc;
 open LibUtil;
 type node = { 

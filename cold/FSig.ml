@@ -15,7 +15,7 @@ type col =  {
 type ty_info = 
   {
   name_exp: exp;
-  exp: exp;
+  info_exp: exp;
   exp0: exp;
   pat0: pat;
   id_exp: exp;

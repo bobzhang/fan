@@ -1,4 +1,4 @@
-
+open Ast;
 open AstLoc;
 open LibUtil;
 open Easy;
@@ -19,7 +19,7 @@ let mk_variant _cons : list FSig.ty_info  -> exp  = with exp' fun
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
-        ~f:(fun [{(* FSig. *)exp;_} -> exp]) ls ];
+        ~project:(fun {info_exp;_} -> info_exp) ls ];
   
 let mk_tuple exps = mk_variant "" exps ;
 let mk_record : list FSig.record_col -> exp  = fun cols -> 
@@ -47,7 +47,7 @@ let (gen_eq,gen_eqobj) = with exp'
 let (gen_fold,gen_fold2) = with exp'
   let mk_variant _cons params = 
     params
-    |> List.map (fun [{exp;_} -> exp])
+    |> List.map (fun [{info_exp;_} -> info_exp])
     |> (fun
         [ [] -> {|self|}
         | ls ->
@@ -79,13 +79,13 @@ let (gen_map,gen_map2) = with exp'
         [ (EP.of_str cons) ::
           params |> List.map (fun [{exp0;_} -> exp0]) ] in 
     List.fold_right
-      (fun {exp;pat0;_} res ->
-              {|let $pat:pat0 = $exp in $res |})  params result in
+      (fun {info_exp;pat0;_} res ->
+              {|let $pat:pat0 = $info_exp in $res |})  params result in
   let mk_tuple params =
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
-      (fun {exp;pat0;_} res ->
+      (fun {info_exp=exp;pat0;_} res ->
         {| let $pat:pat0 = $exp in $res |}) params result in 
   let mk_record cols =
     (* (->label,info.exp0) *)
@@ -95,7 +95,7 @@ let (gen_map,gen_map2) = with exp'
         let _ = Obj.repr info in
         (re_label,exp0) ] )  |> Exp.mk_record   in
     List.fold_right
-      (fun {re_info={exp;pat0;_};_} res ->
+      (fun {re_info={info_exp=exp;pat0;_};_} res ->
         {|let $pat:pat0 = $exp in $res |}) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
@@ -123,7 +123,7 @@ let gen_strip = with {pat:ctyp;exp:exp'}
       appl_of_list
          [(EP.of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
-      (fun {exp;pat0;ty;_} res ->
+      (fun {info_exp=exp;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
           {|FanUtil.anti_cxt |}  -> res
@@ -132,7 +132,7 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
-      (fun {exp;pat0;ty;_} res ->
+      (fun {info_exp=exp;pat0;ty;_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|}
         | {|loc|} | {| FanUtil.anti_cxt |} -> res
@@ -142,7 +142,7 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     cols |> List.map (fun [ {re_label; re_info={exp0;_ } ; _ }  ->
           (re_label,exp0) ] )  |> Exp.mk_record   in
     List.fold_right
-      (fun {re_info={exp;pat0;ty;_};_} res ->
+      (fun {re_info={info_exp=exp;pat0;ty;_};_} res ->
         match ty with
         [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
         |  {|FanUtil.anti_cxt|}   ->
@@ -167,14 +167,14 @@ let mk_variant cons params = with exp'
       EP.of_vstr_number "Ant" len
     else
       params
-      |> List.map (fun [ {exp;_} -> exp ])
+      |> List.map (fun [ {info_exp=exp;_} -> exp ])
       |> List.fold_left mee_app (mee_of_str cons)  ;
         
 let mk_record cols = cols |> List.map
-  (fun [ {re_label; re_info={exp;_};_} -> (re_label, exp)]) |> mk_record_ee ;
+  (fun [ {re_label; re_info={info_exp=exp;_};_} -> (re_label, exp)]) |> mk_record_ee ;
 
 let mk_tuple params =
-    params |> List.map (fun [{exp;_} -> exp]) |> mk_tuple_ee ;
+    params |> List.map (fun [{info_exp=exp;_} -> exp]) |> mk_tuple_ee ;
 
 let gen_meta_exp = 
   gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]

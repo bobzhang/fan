@@ -5,6 +5,7 @@ open FanOps;
 (* +-----------------------------------------------------------------+
    | the modules documented with [open Lib.Exp]                      |
    +-----------------------------------------------------------------+ *)
+open Ast;
 open AstLoc;
 open LibUtil;
 open Basic;

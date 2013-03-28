@@ -832,15 +832,18 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
     (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
+  let ast = "src/Ast.mli" in 
   Options.ocaml_lflags :=  [ "-linkall"] ;
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
-    "src/AstN.ml" |-? ["src/Ast.ml"];
-    "src/Objs.ml" |-? ["src/Ast.ml"];
-    "src/FanAst.ml"   |-? [(* "src/MetaTemplate.ml"; *) "src/Ast.ml"];
-    "src/FanAstN.ml"  |-? ["src/AstN.ml"; "src/Ast.ml"];
-    "src/AstLoc.ml" |-? ["src/Ast.ml"];
+    "src/AstN.ml" |-? [ast];
+    "src/Objs.ml" |-? [ast];
+    "src/FanAst.ml"   |-? [(* "src/MetaTemplate.ml"; *) ast];
+    "src/FanAstN.ml"  |-? ["src/AstN.ml"; ast];
+    "src/AstLoc.ml" |-? [ast];
+    "src/FanDyn.ml" |-? [ast];
+    "src/FanMeta.ml" |-? [ast];
   end;;
 
 (* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)

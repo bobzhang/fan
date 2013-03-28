@@ -1,4 +1,5 @@
 open LibUtil
+open Ast
 open AstLoc
 let list_of_list (loc : loc) =
   let rec loop top =

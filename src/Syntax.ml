@@ -1,4 +1,4 @@
-
+open Ast;
 open AstLoc;
 open LibUtil;
 
@@ -11,12 +11,7 @@ let print_warning loc txt = !current_warning loc txt;
 
 
 {:create|Gram
-  
-  a_ident
-  aident
-  amp_ctyp
-  and_ctyp
-  case
+a_ident aident amp_ctyp and_ctyp case
   case0
   binding
   class_declaration

@@ -1,4 +1,4 @@
-
+open Ast;
 open AstLoc;
 (*
   {:macro|M a b c|}

@@ -26,6 +26,6 @@ end;
 
 {:fans|keep off; derive (MetaObj); |};
 
-{:ocaml|{:include| "src/Ast.ml"|}; |};
+{:ocaml|{:include| "src/Ast.mli"|}; |};
 
   

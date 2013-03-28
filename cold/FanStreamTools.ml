@@ -1,3 +1,4 @@
+open Ast
 open AstLoc
 open Lib
 type spat_comp =  

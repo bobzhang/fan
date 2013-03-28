@@ -1,4 +1,5 @@
 open LibUtil;
+open Ast;
 open AstLoc;
 let meta = object
   inherit FanMeta.meta;

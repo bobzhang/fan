@@ -13,7 +13,8 @@ derive((* Map2 Fold2 OIter   OEq *)
    Print OPrint Map Fold Strip  MapWrapper PrintWrapper);
 |};
 
-{:ocaml|{:include| "src/Ast.ml"|} ; |};
+  
+{:ocaml|{:include| "src/Ast.mli"|} ; |};
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

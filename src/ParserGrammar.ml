@@ -1,5 +1,5 @@
 
-
+open Ast;
 open AstLoc;
 open FanGrammar;
 open FanGrammarTools;

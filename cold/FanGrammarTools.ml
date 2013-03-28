@@ -1,3 +1,4 @@
+open Ast
 open FanOps
 open Format
 open Lib

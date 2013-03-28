@@ -1,7 +1,7 @@
 open FSig;
 open LibUtil;
 open AstLoc;
-
+open Ast;
 let stru_from_module_types ~f:(aux:named_type -> typedecl)
     (x:module_types) : stru =
   let _loc = FanLoc.ghost in
