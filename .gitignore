@@ -60,3 +60,6 @@ src.stat
 *.txt
 *.plg
 *.stat
+src/A.ml
+src/Ast.ml
+src/S.ml

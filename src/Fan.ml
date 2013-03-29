@@ -337,7 +337,9 @@ add_quotation (d,"row_field'") row_field
     ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field");
 
-of_exp ~name:(d,"with") ~entry:with_lang; (* always stack using delimiters*)
+of_exp ~name:(d,"with_exp") ~entry:with_exp_lang;
+(* always stack using delimiters*)
+of_stru ~name:(d,"with_stru") ~entry:with_stru_lang;
 
 add (`Absolute ["Fan";"Lang"],"str") FanDyn.exp_tag
   (fun _loc _loc_option s -> {:exp|$str:s|});

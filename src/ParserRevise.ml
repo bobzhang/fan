@@ -46,7 +46,7 @@ let apply () = begin
     stru stru_quot strus top_phrase type_declaration type_ident_and_parameters
     type_longident type_longident_and_parameters type_parameter type_parameters typevars 
     val_longident with_constr with_constr_quot
-    lang with_lang
+    lang with_exp_lang with_stru_lang
   |};  
 
 
@@ -293,12 +293,10 @@ let apply () = begin
               (* {| fun $p -> $e |} *)
           | cvalue_binding{bi} -> bi  ] }
        lang:
-       [ dot_lstrings{ls} -> begin
+       [ dot_lstrings{ls} -> (
          let old = !AstQuotation.default;
          AstQuotation.default := FanToken.resolve_name ls;
-        old
-       end
-       ]
+           old)]
        pos_exps:
        [ L1
            [ `Lid x;":";dot_lstrings{y} ->
@@ -502,8 +500,11 @@ let apply () = begin
        | exp Level "top"{e} -> e ]
        dummy:
        [ -> () ] |};
-  {:extend| with_lang:
-    [ lang{old}; ":"; exp{x} -> (AstQuotation.default := old; x)] |};
+  {:extend| with_exp_lang:
+    [ lang{old}; ":"; exp{x} -> (AstQuotation.default := old; x)] |} ;
+  {:extend| with_stru_lang:
+    [lang{old};":"; stru{x} -> (AstQuotation.default:=old;x)]
+  |};
   with binding
       {:extend|
         binding_quot:

@@ -60,7 +60,8 @@ a_ident aident amp_ctyp and_ctyp case
 
   module_longident_dot_lparen  sequence'  fun_def  
   module_binding_quot ident_quot string_list     
-  method_opt_override  value_val_opt_override  unquoted_typevars  lang with_lang
+  method_opt_override  value_val_opt_override  unquoted_typevars  lang with_exp_lang
+  with_stru_lang
   (* for the grammar module *)  
   symbol
   rule
