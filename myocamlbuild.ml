@@ -695,9 +695,6 @@ let tmp = "tmp"
 
 let define_context_for_root r =
   let def = Pathname.define_context in   begin 
-    def (r // "Grammar") [r];
-    def (r // "Lex") [r];
-    def (r // "Lib") [r];
     def ("test") ["src"];
     def "testr" ["src"];
     def "llvm" ["src"];
