@@ -293,10 +293,10 @@ let apply () = begin
               (* {| fun $p -> $e |} *)
           | cvalue_binding{bi} -> bi  ] }
        lang:
-       [ dot_lstrings{ls} -> (
-         let old = !AstQuotation.default;
+       [ dot_lstrings{ls} -> 
+         let old = !AstQuotation.default in (
          AstQuotation.default := FanToken.resolve_name ls;
-           old)]
+         old)]
        pos_exps:
        [ L1
            [ `Lid x;":";dot_lstrings{y} ->
