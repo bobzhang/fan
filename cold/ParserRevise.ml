@@ -133,7 +133,8 @@ let apply () =
    Gram.clear with_constr;
    Gram.clear with_constr_quot;
    Gram.clear lang;
-   Gram.clear with_lang);
+   Gram.clear with_exp_lang;
+   Gram.clear with_stru_lang);
   (let list = ['!'; '?'; '~'] in
    let excl = ["!="; "??"] in
    setup_op_parser prefixop
@@ -2142,16 +2143,26 @@ let apply () =
          [([],
             ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (() : 'dummy ))\n",
               (Gram.mk_action (fun (_loc : FanLoc.t)  -> (() : 'dummy )))))])));
-  Gram.extend_single (with_lang : 'with_lang Gram.t )
+  Gram.extend_single (with_exp_lang : 'with_exp_lang Gram.t )
     (None,
       (None, None,
         [([`Snterm (Gram.obj (lang : 'lang Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'with_lang ))\n",
+           ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'with_exp_lang ))\n",
              (Gram.mk_action
                 (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->
-                   (AstQuotation.default := old; x : 'with_lang )))))]));
+                   (AstQuotation.default := old; x : 'with_exp_lang )))))]));
+  Gram.extend_single (with_stru_lang : 'with_stru_lang Gram.t )
+    (None,
+      (None, None,
+        [([`Snterm (Gram.obj (lang : 'lang Gram.t ));
+          `Skeyword ":";
+          `Snterm (Gram.obj (stru : 'stru Gram.t ))],
+           ("Gram.mk_action\n  (fun (x : 'stru)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'with_stru_lang ))\n",
+             (Gram.mk_action
+                (fun (x : 'stru)  _  (old : 'lang)  (_loc : FanLoc.t)  ->
+                   (AstQuotation.default := old; x : 'with_stru_lang )))))]));
   (Gram.extend_single (binding_quot : 'binding_quot Gram.t )
      (None,
        (None, None,

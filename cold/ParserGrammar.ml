@@ -4,7 +4,6 @@ open FanGrammar
 open FanGrammarTools
 open PreCast.Syntax
 open LibUtil
-open Lib
 open FanUtil
 let _ = FanConfig.antiquotations := true
 let nonterminals = Gram.mk "nonterminals"

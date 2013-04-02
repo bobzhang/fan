@@ -2,11 +2,10 @@ open AstLoc
 open Ast
 open Format
 open LibUtil
-open Lib
-open Lib.Basic
+open Basic
 open FSig
-open Lib.EP
-open Lib.Exp
+open EP
+open Exp
 let preserve = ["self"; "self_type"; "unit"; "result"]
 let check names =
   List.iter

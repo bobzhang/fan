@@ -5,7 +5,7 @@ open Filters;
 include PreCast;
 
 open AstQuotation;
-open Lib.Meta;
+open Meta;
 open Syntax;
 open LibUtil;
 open AstQuotation;

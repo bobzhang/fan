@@ -279,18 +279,17 @@ let apply () = begin
       [ "="; exp{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; exp{e} -> 
           let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
-      | ":"; (* poly_type *)ctyp{t}; "="; exp{e} -> {| ($e : $t) |}
-      | ":"; (* poly_type *)ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} ->
+      | ":"; ctyp{t}; "="; exp{e} -> {| ($e : $t) |}
+      | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} ->
           match t with
           [ {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} ]
-      | ":>"; ctyp{t}; "="; exp{e} -> (* {| ($e :> $t) |} *)`Subtype(_loc,e,t) ]
+      | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
       fun_binding:
       { RA
-          [ "("; "type"; a_lident{i}; ")"; S{e} ->
-            {| fun (type $i) -> $e |} 
+          [ "("; "type"; a_lident{i}; ")"; S{e} -> {| fun (type $i) -> $e |} 
           | ipat{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
-              (* {| fun $p -> $e |} *)
+
           | cvalue_binding{bi} -> bi  ] }
        lang:
        [ dot_lstrings{ls} -> 
@@ -735,7 +734,7 @@ let apply () = begin
        | label_longident{i}; "="; pat{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
        | label_longident{i} ->
            `RecBind(_loc,i,`Id(_loc,`Lid(_loc,FanOps.to_lid i)))
-           (* {| $i = $(lid:Ident.to_lid i) |} *)
+           (* {| $i = $(lid:Id.to_lid i) |} *)
        ] |};
     
     with ident

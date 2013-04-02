@@ -1,6 +1,5 @@
 open PreCast.Syntax
 open FanMacroTools
-open Lib
 let macro_def = Gram.mk "macro_def"
 let uident_eval_ifdef = Gram.mk "uident_eval_ifdef"
 let uident_eval_ifndef = Gram.mk "uident_eval_ifndef"

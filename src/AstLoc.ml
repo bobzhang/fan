@@ -108,6 +108,10 @@ let rec list_of_sem x acc =
   [`Sem(_,x,y) -> list_of_sem x (list_of_sem y acc)
   | _ -> [x::acc]]  ;
 
+let rec list_of_dot x acc =
+  match x with
+  [`Dot(_,x,y) -> list_of_dot x (list_of_dot y acc)
+  |x -> [x::acc]];
 
 let rec list_of_app  x acc =
   match x with

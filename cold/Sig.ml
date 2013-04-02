@@ -180,7 +180,8 @@ module type Syntax =
     val value_val_opt_override : override_flag Gram.t
     val unquoted_typevars : ctyp Gram.t
     val lang : FanToken.name Gram.t
-    val with_lang : exp Gram.t
+    val with_exp_lang : exp Gram.t
+    val with_stru_lang : stru Gram.t
     val symbol : FanGrammar.symbol Gram.t
     val rule : FanGrammar.rule Gram.t
     val rule_list : FanGrammar.rule list Gram.t

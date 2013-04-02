@@ -1,6 +1,6 @@
 open Transform;
 open FSig;
-open Lib;
+
 let _loc = FanLoc.ghost ;
 
 (**

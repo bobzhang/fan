@@ -2,7 +2,6 @@ open LibUtil;
 open AstLoc;
 open FSig;
 open Format;
-(* open Lib; *)
 
   
 (** A Hook To Ast Filters *)
@@ -100,7 +99,7 @@ let plugin_remove plugin =
 (*          let x =  *)
 (*            match (res (\* Ctyp.qualified_app_list ctyp *\), qualified)with *)
 (*            [(Some ({:ident|$i.$_ |},ls),Some q) when *)
-(*                 (Ident.eq i q && Ctyp.eq_list ls vars )-> *)
+(*                 (Id.eq i q && Ctyp.eq_list ls vars )-> *)
 (*                    (\* type u 'a = Loc.u 'a *\)        *)
 (*                   `TyDcl _loc name vars {:ctyp||} constraints *)
 (*                |(_,_) -> super#typedecl x ] in  *)
@@ -117,7 +116,7 @@ let plugin_remove plugin =
 (*   method! ident = fun *)
 (*     [ {:ident| $x.$y |} as i -> *)
 (*       match qualified with *)
-(*       [Some q when Ident.eq q  x -> super#ident y *)
+(*       [Some q when Id.eq q  x -> super#ident y *)
 (*       |_ -> super#ident i] *)
 (*     | i -> super#ident i]; *)
 (*   method! type_info = fun *)

@@ -1,6 +1,6 @@
 open LibUtil;
 open Format;
-open Grammar;
+(* open Grammar; *)
 include Entry;
 include Structure;
 

@@ -4,8 +4,8 @@ open LibUtil;
 open Easy;
 
 open FSig;
-open Lib;
-open Lib.Exp;
+
+open Exp;
 
 
 let _loc = FanLoc.ghost;

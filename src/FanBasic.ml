@@ -80,37 +80,4 @@ let parse_include_file entry =
     let ch = open_in file in
     let st = XStream.of_channel ch in
       Gram.parse entry (FanLoc.mk file) st;
-
-(* let parse_include_file rule file  = *)
-(*   if Sys.file_exists file then *)
-(*     let ch = open_in file in *)
-(*     let st = XStream.of_channel ch in  *)
-(*     Gram.parse rule (FanLoc.mk file) st *)
-(*   else  failwithf "@[file: %s not found@]@." file; *)
-    
-(* (\* to be exported   *\) *)
-(* let parse_include_file_smart file = let open Filename in *)
-(*   if check_suffix file ".ml" then *)
-(*     `Str (GramLib.parse_include_file strus file) *)
-(*   else if check_suffix file ".mli" then *)
-(*     `Sig (GramLib.parse_include_file sig_items file) *)
-(*   else begin *)
-(*   eprintf "file input should ends with either .ml or .mli"; *)
-(*   invalid_arg ("parse_include_file_smart: " ^ file ) *)
-(* end; *)
-
-(* let parse_module_type str = *)
-(*   try *)
-(*     match  Gram.parse_string module_type  str with *)
-(*     [ {:module_type| $id:i |}  -> i *)
-(*     | _ -> begin *)
-(*         eprintf "the module type %s is not a simple module type" str; *)
-(*         exit 2; *)
-(*     end ] *)
-(*   with *)
-(*     [ _ -> begin *)
-(*       eprintf "%s is not a valid module_type" str; *)
-(*       exit 2; *)
-(*     end]; *)
-
     

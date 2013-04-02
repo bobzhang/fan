@@ -1,6 +1,5 @@
 open Transform
 open FSig
-open Lib
 let _loc = FanLoc.ghost
 let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App

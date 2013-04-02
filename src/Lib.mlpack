@@ -2,7 +2,7 @@ Basic
 ClassExpr
 Ctyp
 Exp
-Ident
+Id
 Meta
 ModuleType
 Case

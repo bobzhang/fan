@@ -1,7 +1,7 @@
 
 open PreCast.Syntax;
 open FanMacroTools;
-open Lib;
+
 
 {:create|Gram
   macro_def (* macro_def_sig *) uident_eval_ifdef uident_eval_ifndef

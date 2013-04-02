@@ -5,9 +5,8 @@ open FanGrammar;
 open FanGrammarTools;
 open PreCast.Syntax;
 open LibUtil;
-open Lib;
 open FanUtil;
-(* open FanAst; *)
+
 
 FanConfig.antiquotations := true;
 

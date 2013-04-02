@@ -1,6 +1,6 @@
 
 
-(* open Lib; *)
+
 open LibUtil;  
 open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 

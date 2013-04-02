@@ -16,12 +16,7 @@ open Tags
  *)  
 module Options = struct
   include Options
-  (* create flags for camlp4.opt, camlp6, camlp6.opt series
-     should be deprecated when fan is mature enough
-   *)    
-  let p4s = ref ["camlp4",".opt"; "camlp4t",".byte"; "camlp4t",".native"]
-  let p4_suffix = ref ["";"o";"r";"of";"rf";"orf";"oof"]
-  let p4_opt = ref false
+
   (* modules to be documented *)    
   let doc_modules = ref StringSet.empty
   let verbose = ref false
@@ -183,108 +178,19 @@ module Util = struct
     List.iter (fun (s,lst) ->
       deps_mli s lst ) tbl
 
-(*****************************************************************************************)
-(***************************** mainly for camlp4 driver, deprecated now ******************)      
-  let p4  = Pathname.concat "camlp4"
-  let pa  = Pathname.concat (p4 "Camlp4Parsers")
-  let pr  = Pathname.concat (p4 "Camlp4Printers")
-  let fi  = Pathname.concat (p4 "Camlp4Filters")
-  let top = Pathname.concat (p4 "Camlp4Top")
-  let pa_r  = pa "Camlp4OCamlRevisedParser"
-  let pa_o  = pa "Camlp4OCamlParser"
-  let pa_q  = pa "Camlp4QuotationExpander"
-  let pa_qc = pa "Camlp4QuotationCommon"
-  let pa_rq = pa "Camlp4OCamlRevisedQuotationExpander"
-  let pa_oq = pa "Camlp4OCamlOriginalQuotationExpander"
-  let pa_rp = pa "Camlp4OCamlRevisedParserParser"
-  let pa_op = pa "Camlp4OCamlParserParser"
-  let pa_g  = pa "Camlp4GrammarParser"
-  let pa_l  = pa "Camlp4ListComprehension"
-  let pa_macro = pa "Camlp4MacroParser"
-  let pa_debug = pa "Camlp4DebugParser"
-  let pr_dump  = pr "Camlp4OCamlAstDumper"
-  let pr_r = pr "Camlp4OCamlRevisedPrinter"
-  let pr_o = pr "Camlp4OCamlPrinter"
-  let pr_a = pr "Camlp4AutoPrinter"
-  let mk_camlp4_bin name  modules = let open Opt in 
-  let name = name in
-  let byte = name-.-"byte" in
-  let native = name-.-"native" in
-  let deps = modules @ [p4 "Camlp4Bin"] in
-  let cmos = add_extensions ["cmo"] deps in
-  let cmxs = add_extensions ["cmx"] deps in begin
-    rule byte
-      ~prod:byte
-      begin fun _ _ ->
-        Cmd(S[!Options.ocamlc;  
-              A "dynlink.cma"; A"unix.cma";
-              T(tags_of_pathname byte++"ocaml"++"link"++"byte");
-              P (p4 "camlp4lib.cma");
-              A"-linkall";
-              atomize cmos;
-              A"-o";
-              Px (byte)])
-      end;
-    rule native
-      ~prod:native
-      begin fun _ _ ->
-        Cmd(S[!Options.ocamlopt;
-              A "dynlink.cmxa"; A"unix.cmxa";
-              T(tags_of_pathname native++"ocaml"++"link"++"native");
-              P (p4 "camlp4lib.cmxa");
-              A"-linkall"; atomize cmxs;
-              A"-o";
-              Px  native])
-      end
-  end
-  let mk_camlp4_series prefix modules = begin
-    let mk_camlp4 s pa pr= mk_camlp4_bin (prefix^s) (pa @ pr @modules) in 
-    mk_camlp4 "r"  [pa_r; pa_rp] [pr_a];
-    mk_camlp4 "rf"
-      [pa_r; pa_qc; pa_q; pa_rp; pa_g; pa_macro; pa_l] [pr_a];
-    mk_camlp4 "o" [pa_r; pa_o; pa_rp; pa_op] [pr_a] ;
-    mk_camlp4 "of"
-      [pa_r; pa_qc; pa_q; pa_o; pa_rp; pa_op; pa_g; pa_macro; pa_l]
-      [pr_a];
-    mk_camlp4 "oof"
-      [pa_r; pa_o; pa_rp; pa_op; pa_qc; pa_oq; pa_g; pa_macro; pa_l]
-      [pr_a] ;
-    mk_camlp4 "orf"
-      [pa_r; pa_o; pa_rp; pa_op; pa_qc; pa_rq; pa_g; pa_macro; pa_l]
-      [pr_a] ;
-  end
-  let use_p4="use_camlp4"
-(*****************************************************************************************)            
 end
 
     
 open Util;;
 open Opt;;            
 
-
-
-
-let () =  begin 
-  (* mk_camlp4_series "camlp4t" ["eval.cma"]; *)
-end;;
-
-
-    
-ocaml_lib ~extern:true
-"ocamlcommon" ~dir:"+compiler-libs";
-
 (* ocaml_lib "FanTop" ; *)
 (* use_lib "o" "FanTop"; *)
-
-ocaml_lib ~extern:true "ocamlcommon"
-  ~tag_name:"use_ocamltoplevel"
-  ~dir:"+compiler-libs";
-ocaml_lib ~extern:true "ocamlbytecomp"
-  ~tag_name:"use_ocamltoplevel"
-  ~dir:"+compiler-libs";
-ocaml_lib ~extern:true "ocamltoplevel"
-  ~tag_name:"use_ocamltoplevel"
-  ~dir:"+compiler-libs";
+    
+ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs";
+ocaml_lib ~extern:true "ocamlcommon" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
+ocaml_lib ~extern:true "ocamlbytecomp" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
+ocaml_lib ~extern:true "ocamltoplevel" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
 
 
 (*stolen from Ocaml_specific.ml*)
@@ -789,11 +695,9 @@ let tmp = "tmp"
 
 let define_context_for_root r =
   let def = Pathname.define_context in   begin 
-    def (r // "Camlp4/Printers") [ r //"Camlp4/Struct"; r // "Camlp4"; r] ;
     def (r // "Grammar") [r];
     def (r // "Lex") [r];
     def (r // "Lib") [r];
-    def (r // "PLib") [r];
     def ("test") ["src"];
     def "testr" ["src"];
     def "llvm" ["src"];
@@ -839,7 +743,7 @@ let () =
     flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/AstN.ml" |-? [ast];
     "src/Objs.ml" |-? [ast];
-    "src/FanAst.ml"   |-? [(* "src/MetaTemplate.ml"; *) ast];
+    "src/FanAst.ml"   |-? [ast];
     "src/FanAstN.ml"  |-? ["src/AstN.ml"; ast];
     "src/AstLoc.ml" |-? [ast];
     "src/FanDyn.ml" |-? [ast];
@@ -860,162 +764,3 @@ let _ = begin
 end
 
 
-(* let fan_quot_src =
- *   ["lib_common";
- *    "fan_sig";
- *    "fan_config";
- *    "fan_basic";
- *    "fan_dynamic_plugins";
- *    "fan_lang_meta";
- *    "fan_lang_include";
- *  ];;
- * (\** for fan library fan.cma *\)
- * let fan_src = ["fan_lang_asthook";
- *                "fan_config";
- *                "fan_basic";
- *           
- *                "fan_ctyp";
- *                "fan_dynamic_plugins";
- *                "fan_easy";
- *                "fan_expr";
- *                "fan_ident";
- *                "fan_module_type";
- *                "fan_patt";
- *                "fan_sig";
- *                "fan_transform";
- *                "fan_filter";
- *                "fan_lang_meta";
- *                "fan_lang_include";
- *                "fan_frame";
- *                (\* "fan_lang_compile"; *\)
- *                
- *                "common_base";
- *                "meta_base";
- *                "lib_common";
- *                "plugins/gen_print";
- *                "plugins/gen_meta";
- *                "plugins/gen_eq";
- *                "plugins/gen_map";
- *                "plugins/gen_fold";
- *              ];;
- * Options.doc_modules :=  StringSet.of_list &  ["fan_basic"];;
- * (\** use fan_lang_meta as a preprocess *\)
- * let use_parsings =
- *   [  "fan_expr.ml";
- *      "fan_patt.ml";
- *      "fan_ctyp.ml";
- *      "fan_transform.ml";
- *      "fan_ident.ml";
- *      "fan_module_type.ml";
- *      "fan_lang_asthook.ml";
- *      "fan_lang_compile.ml";
- *      "fan_frame.ml";
- *      "fan_filter.ml";
- *      "fan_ctyp_transform.ml";
- *      "fan_test_plugins.ml";
- *      "fan_eval.ml";
- *      "fan_easy.ml";
- *      "common_base.ml";
- *      "meta_base.ml";
- *      "code_template.ml";
- *      "meta_template.ml";
- *      "miniml/mlast_anti.ml";
- *    ];;
- * let ocaml_files = [ "camlp4ast";      
- *     "ident";      
- *     "lexing";     
- *     "location";   
- *     "longident";  
- *     "parsetree";  
- *     "asttypes";   
- *     "path";       
- *     "typedtree";  
- *     "types";
- *     "primitive";
- *     "env"; ];;
- * 
- * begin
- *   let tbl = List.map (fun s ->
- *     "ocaml"//(s^"_g"),
- *     ["ocaml"//s^"_i"]) ocaml_files in
- *   deps_mli_table tbl ;
- *   ["ocaml/compiler_ext.ml"; "ocaml/camlp4_ext.ml;";] |-??
- *   ((List.map (fun s -> "ocaml"// (s^"_i") /*> Inferred)) ocaml_files);
- * end ;;
- * 
- * (\* file level dependency *\)
- * begin
- *   ["common_base.ml";"common_base.cmo";"common_base.cmx"]
- *   |-?? ["code_template.cmo"];
- * end ;;
- * let mllib_table =
- *   [ "dyplib/dyp",
- *     ["dyp";"priority_by_relation";"automaton";"dyplex"];
- *     "fan_quot", fan_quot_src ;
- *     "fan", fan_src;
- *   ] in
- * List.iter (fun (name,modules) ->
- *   Hashtbl.replace Options.lib_files name modules) mllib_table ;;
- * let itarget_table =
- *   ["fan", [  "fan.cma" ;]] in
- * List.iter (fun (name,modules) ->
- *   Hashtbl.replace Options.target_files name modules) itarget_table;;
- * let (declare_fan,use_fan) = mk_local Cma "fan" ;;
- * let (declare_fan_quot,use_fan_quot) = mk_local Cma "fan_quot" ;;
- * 
- * let backend = "dyplib/dypgen_backend_camlp4.ml";;
- * begin
- *   tags_table :=
- *     [
- *      ["**/fan_*.ml";"**/*_ppr.ml"; "plugins/*.ml";
- *       "code_template.ml"; "common_base.ml"; "meta_base.ml";
- *       "meta_template.ml"; "test_dyp/test_parser.ml"; "**/lang_*.ml";
- *       "fan/*.ml" ] ,
- *      (\* ["camlp4trf.byte";use_p4]; *\)
- *      ["camlp4trf.byte";use_p4];
- *      ["**/fan_*.mli"],[use_p4];
- *      ["fan_test*.ml"; "miniml/mlast.ml"],[use_fan];
- *      ["ulex/gen_ulex.ml"],["camlp4trf.byte"; "use_camlp4"; use_fan;"use_camlp4"];
- *      ["ulex/cset.ml"], ["camlp4to.byte"; use_fan; "use_camlp4"];
- *      ["ulex/ulex.ml"], ["camlp4to.byte"; use_fan; "use_camlp4"];
- *      ["ulex/test*.ml"], ["camlp4to.byte"; "use_ulex"];
- *      ["eval.{ml,cmo,byte}"],
- *      ["pkg_compiler-libs.toplevel";"pkg_dynlink";"pkg_camlp4.lib"];
- *      ["eval.cma"], ["pkg_compiler-libs.toplevel"];
- *      ["fan.{cma}"], ["pkg_compiler-libs.toplevel"];
- *      ["test_fan_eval.{ml,cmo,byte}"],["pkg_dynlink"];
- *      ["eval/*.{ml,cmo,cma,byte}"],["pkg_compiler-libs"];
- *      ["miniml/mlast_parse.ml";"miniml/mlast_anti.ml"],["camlp4rf";use_p4];
- *      ["plugins/*.ml"], [use_fan_quot];
- *      ["ocaml/*.ml"], ["pkg_compiler-libs"; use_p4];
- *      ["ocaml/compiler_ext.ml";"ocaml/camlp4_ext.ml";"ocaml/test_meta.ml"],
- *      ["camlp4to.byte";use_fan];
- *      ["ocaml/camlp4_ext.ml"], [use_p4];
- *      ["ocaml/*.byte"], ["pkg_compiler-libs.common"];
- *      [backend], ["camlp4rf";use_p4];
- *      ["test_dyp/*.ml"; "test_dyp/*.byte";
- *       "test_meta/*.ml"; "test_meta/*.byte"], ["pkg_dyp"];
- *      ["Lexer.ml"],["pkg_camlp4.lib"];
- *      ["tdriver.ml";"tdriver.byte"],["pkg_camlp4.lib"];
- *     ];
- * end  *)
-
-(* let () = begin
- *   after_rules_dispatch := fun () -> 
- *     List.iter (fun (xs,ys) -> xs <+> ys ) !tags_table;
- *     flag ["ocaml"; "library"; "file:eval.cma"]
- *       & A"-linkpkg"; (\* link toplevel*\)
- *     (\* flag ["ocaml"; "library"; "file:fan.cma"] & A"-linkpkg"; (\\* link toplevel*\\) *\)
- *     let () = (backend::use_parsings) |**> [use_fan_quot] in
- *     declare_fan_quot ();
- *     declare_fan ();
- * end  *)
-
-(* let paths = [|"."; "eval" ; "dyplib"|]
- * let update_ml_files  = update (function x ->
- *     Filename.check_suffix x ".ml"
- *   || Filename.check_suffix x ".mli");;
- * Array.iter update_ml_files  paths;; *)
-(* flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
-(* flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
-(* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)

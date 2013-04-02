@@ -9,7 +9,7 @@ open AstLoc;
 
 *)
 
-open Lib;
+
 #default_quotation "exp'";;
 type spat_comp =
   [ SpTrm of FanLoc.t * pat * option exp

@@ -77,7 +77,7 @@ type full_id_transform =
     [=  basic_id_transform
     | `Idents of list ident  -> ident
     (* decompose to a list of ident and compose as an ident *)          
-    | `Ident of ident -> ident
+    | `Id of ident -> ident
     (* just pass the ident to user do ident transform *)
     | `Last of string -> ident
     (* pass the string, and << .$old$. .$return$. >>  *)      

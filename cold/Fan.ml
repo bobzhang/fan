@@ -3,7 +3,7 @@ open FanAst
 open Filters
 include PreCast
 open AstQuotation
-open Lib.Meta
+open Meta
 open Syntax
 open LibUtil
 open AstQuotation
@@ -226,7 +226,8 @@ let _ =
   add_quotation (d, "row_field'") row_field ~mexp:(Filters.me#row_field)
     ~mpat:(Filters.mp#row_field) ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field")
-let _ = of_exp ~name:(d, "with") ~entry:with_lang
+let _ = of_exp ~name:(d, "with_exp") ~entry:with_exp_lang
+let _ = of_stru ~name:(d, "with_stru") ~entry:with_stru_lang
 let _ =
   add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s))

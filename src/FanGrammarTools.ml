@@ -1,11 +1,8 @@
 open Ast;
 open FanOps;
 open Format;
-open Lib;
 open AstLoc;
 open LibUtil;
-(* module MetaAst = FanAst.Make Lib.Meta.MetaGhostLoc;   *)
-
 open FanGrammar;
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
@@ -320,7 +317,7 @@ let exp_delete_rule _loc n (symbolss:list (list symbol)) = with exp
   (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
-let mk_name _loc i = {exp = {:exp| $id:i |}; tvar = Ident.tvar_of_ident i; loc = _loc};
+let mk_name _loc i = {exp = {:exp| $id:i |}; tvar = Id.tvar_of_ident i; loc = _loc};
   
 let mk_slist loc min sep symb = `Slist loc min symb sep ;
 

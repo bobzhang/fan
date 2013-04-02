@@ -1,7 +1,6 @@
 open Ast
 open FanOps
 open Format
-open Lib
 open AstLoc
 open LibUtil
 open FanGrammar
@@ -302,7 +301,7 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | _ -> seq_sem rest
 let mk_name _loc i =
-  { exp = (`Id (_loc, i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
+  { exp = (`Id (_loc, i)); tvar = (Id.tvar_of_ident i); loc = _loc }
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let text_of_entry (e : entry) =
   (let _loc = (e.name).loc in

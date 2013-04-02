@@ -250,7 +250,7 @@ module type SyntaxPlugin = functor (Syn:Syntax) -> sig end ;
 (** generate two printers to be registered*)
 module type PrinterPlugin = functor (Syn:Syntax) -> PrinterImpl;
 
-(* module type OCAML_PARSER = functor (Ast:FanAst) -> Parser.S ; *)
+
 module type ParserPlugin = functor (Syn:Syntax) -> ParserImpl;
 (* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 

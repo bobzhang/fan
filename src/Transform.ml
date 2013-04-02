@@ -1,12 +1,11 @@
 
 open Format;
 open LibUtil;
-open Lib;
-open Ast;
+open AstLoc;
 open FSig;
-let transform : full_id_transform -> ident -> exp =
+let transform =
   let _loc = FanLoc.ghost in
-  let open Lib.Ident in with exp fun 
+  let open Id in with exp' fun 
   [ `Pre pre ->
      fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ]
   | `Post post ->
@@ -16,10 +15,10 @@ let transform : full_id_transform -> ident -> exp =
   | `Last f ->
       fun [ x -> {| $(id: ident_map_of_ident f x  ) |} ]
          
-  | `Ident f->
+  | `Id f->
      fun [x -> {| $(id: f x ) |} ]
   | `Idents f ->
-      fun [x -> {| $(id: f (list_of_acc_ident x []) )  |}  ]
+      fun [x -> {| $(id: f (list_of_dot x []) )  |}  ]
   | `Obj f ->
       fun [ {:ident| $lid:x |}  -> {| self# $(lid: f x) |}
           | t -> begin

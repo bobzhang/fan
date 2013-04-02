@@ -1,6 +1,5 @@
 open Ast
 open AstLoc
-open Lib
 type spat_comp =  
   | SpTrm of FanLoc.t* pat* exp option
   | SpNtr of FanLoc.t* pat* exp

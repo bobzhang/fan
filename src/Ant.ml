@@ -1,6 +1,6 @@
 open Ast;
 open FanUtil;
-open Lib.Meta;
+open Meta;
 open AstLoc;
 
 let meta_loc_exp _loc loc =

@@ -35,7 +35,7 @@ type basic_id_transform =
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
 type full_id_transform =
   [ basic_id_transform | `Idents of ident list -> ident
-  | `Ident of ident -> ident | `Last of string -> ident | `Obj of string id] 
+  | `Id of ident -> ident | `Last of string -> ident | `Obj of string id] 
 open StdLib
 open Objs
 let _ = (); ()
