@@ -1,6 +1,0 @@
-opam-version: "1"
-maintainer: "hongboz@seas.upenn.edu"
-build:[
- ["ocamlbuild" "cold/FanDriver.native"]       
-]
-ocaml-version: [>="4.00.1"]
