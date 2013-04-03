@@ -208,14 +208,6 @@ module Driver = struct
       Log.dprintf 2  "create tag :%s" use_tag;
     end), use_tag)
 
-  (**
-     stolen from ocamlbuild source p4_flags can not be applied twice.
-     it's already applied in [ocaml_specific.ml]
-   *)    
-  (* let p4_flags  = List.iter (fun p4 -> flag ["ocaml"; "pp"; p4] (A p4)) *)
-
-  (* let p4_flags' = List.iter (fun (p4, flags) -> flag ["ocaml"; "pp"; p4] flags) *)
-
   let fan  ?(printer=A "o")
       tag i o env build = (
     let ml = env i and pp_ml = env o in
@@ -566,40 +558,20 @@ module Default = struct
                ) (find_packages ());
     (* Like -package but for extensions syntax. Morover -syntax is
      * useless when linking. *)
-    List.iter ( fun syntax ->
-      flag ["ocaml"; "compile";  "syntax_"^syntax] & S[A"-syntax"; A syntax];
-      flag ["ocaml"; "ocamldep"; "syntax_"^syntax] & S[A"-syntax"; A syntax];
-      flag ["ocaml"; "doc";      "syntax_"^syntax] & S[A"-syntax"; A syntax];
-      flag ["ocaml"; "infer_interface";  "syntax_"^syntax] & S[A"-syntax"; A syntax];
-               ) (find_syntaxes ());
     (* The default "thread" tag is not compatible with ocamlfind.
        Indeed, the default rules add the "threads.cma" or
        "threads.cmxa" options when using this tag. When using the
        "-linkpkg" option with ocamlfind, this module will then be
        added twice on the command line.
        To solve this, one approach is to add the "-thread" option when using
-       the "threads" package using the previous plugin.
-     *)
+       the "threads" package using the previous plugin. *)
     flag ["ocaml"; "pkg_threads"; "compile"]  (S[A "-thread"]);
     flag ["ocaml"; "pkg_threads"; "link"]     (S[A "-thread"]);
     flag ["ocaml"; "pkg_threads"; "infer_interface"] (S[A "-thread"]);
-    
-
-    (****************************************************************)
-    (* internal parsers *)
-    flag["pp"  ; "ocaml"; "use_macro"]  (S[A"-parser"; A"macro"]);
-    flag["pp"  ; "ocaml"; "use_map"] (S[A"-filter"; A"map"]);
-    flag["pp"  ; "ocaml"; "use_meta"] (S[A"-filter"; A"meta"]);
-    flag["pp"  ; "ocaml"; "use_trash"] (S[A"-filter"; A"trash"]);
-    flag["pp"  ; "ocaml"; "use_lift"] (S[A"-filter"; A"lift"]);
-    flag["pp"  ; "ocaml"; "use_fold"] (S[A"-filter"; A"fold"]);
-    flag["pp"  ; "ocaml"; "use_debug"] (S[A"-parser"; A"debug"]);
     (****************************************************************)
     flag ["link";"ocaml";"g++";] (S[A"-cc"; A"g++"]);
     (* flag ["ocaml"; "doc"]  (S [A"-keep-code"]); *)
     (* argot_installed (); *)
-    syntax_path syntax_lib_file ;
-    flag ["ocaml"; "doc"; "use_camlp4"] (S[A"-I"; A"+camlp4"]);
    )
 end 
 

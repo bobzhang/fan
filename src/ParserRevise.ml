@@ -24,32 +24,6 @@ New syntax:\
 {:create|Gram pos_exps|};
 let apply () = begin 
   Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
-
-    {:clear|Gram
-     amp_ctyp and_ctyp case case0 case_quot binding binding_quot rec_exp_quot
-    class_declaration class_description class_exp class_exp_quot class_fun_binding class_fun_def
-    class_info_for_class_exp class_info_for_class_type class_longident class_longident_and_param
-      class_sig_item class_sig_item_quot class_signature cstru cstru_quot
-    class_structure
-      class_type class_type_declaration class_type_longident class_type_longident_and_param
-    class_type_plus class_type_quot comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
-    constrain constructor_arg_list constructor_declaration constructor_declarations ctyp ctyp_quot
-    cvalue_binding direction_flag dummy eq_exp exp exp_eoi exp_quot field_exp field_exp_list fun_binding
-    fun_def ident ident_quot implem interf ipat ipat_tcon pat_tcon label_declaration label_declaration_list
-    label_exp_list label_exp label_longident label_pat label_pat_list  let_binding meth_list
-    meth_decl module_binding module_binding0 module_binding_quot module_declaration module_exp module_exp_quot
-    module_longident module_longident_with_app module_rec_declaration module_type module_type_quot
-    more_ctyp name_tags opt_class_self_type opt_dot_dot
-    opt_meth_list opt_mutable opt_private opt_rec opt_virtual 
-    pat pat_as_pat_opt pat_eoi pat_quot row_field sem_exp
-    sem_exp_for_list sem_pat sem_pat_for_list sequence sig_item sig_item_quot sig_items star_ctyp
-    stru stru_quot strus top_phrase type_declaration type_ident_and_parameters
-    type_longident type_longident_and_parameters type_parameter type_parameters typevars 
-    val_longident with_constr with_constr_quot
-    lang with_exp_lang with_stru_lang
-  |};  
-
-
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
   setup_op_parser prefixop
