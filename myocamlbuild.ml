@@ -510,14 +510,14 @@ let syntax_path syntax_lib_file = (
   end )
 
 (* should be depracated, we use syntax_cache *)
-let find_syntaxes () = ["camlp4o"; "camlp4r"]
+(* let find_syntaxes () = ["camlp4o"; "camlp4r"] *)
 let ocamlfind x = S[A"ocamlfind"; x]
 
 module Default = struct
   let before_options () = (
     Options.ocamlc := (* ocamlfind & *)
       S[A"ocamlc.opt";
-        A"-annot";
+        (* A"-annot"; *)
         A "-w";
         A "+a-4-32-30";
         (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
@@ -688,12 +688,6 @@ let boot_flags =
 
 rule "src->tmp: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
     (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
-
-(* rule "tmp->cold: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml") *)
-(*     (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));; *)
-
-(* copy_rule "tmp -> cold :ml -> ml" *)
-(*    ~insert:`top "tmp/%.ml" "cold/%.ml" *)
 
 rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
     (fan  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;

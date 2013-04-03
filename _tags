@@ -1,33 +1,28 @@
 # -*- Mode:Shell-script -*-
 true:use_unix
+true: warn(-41)
+true:-traverse
 <top>:precious
-
-# true:-traverse
-# <cold> and <src>:traverse
-# <{cold,src}/Pprintast.ml>: warn_a
-
-# <{cold,src,debug}/Camlp4Printers/**.ml>: use_unix
-# <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
-# <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
-
-# <{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Exp,Ident,Meta,ModuleType,Patt,Case,EP}.cmx>:for-pack(Lib)
-# <{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Exp,Ident,Meta,ModuleType,Patt,Case,EP}.p.cmx>:for-pack(Lib)
-
+<{cold,src,debug}/Fan.ml>: warn(-33)
 <{cold,src,debug}/*.{p.native,native}>: use_dynlink, use_ocamlcommon
-# pkg_compiler-libs.common
-
 <{cold,src,debug}/*.{byte,d.byte}>: use_dynlink, use_ocamlcommon
-# pkg_compiler-libs.toplevel
 <{cold,src,debug}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan,Extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
-# pkg_compiler-libs.common
 <{cold,src,debug}/{FanTop,FanEval}.{ml,mli}>: use_ocamlcommon
 
+
+# pkg_compiler-libs.common
+# pkg_compiler-libs.toplevel
+# pkg_compiler-libs.common
 # <{cold,src,debug}/{FanTop}.{cma}>: use_ocamltoplevel
 # pkg_compiler-libs.toplevel
 # <src/o.top>:use_srcFanTop
 # <{cold,src}/o.top>: use_FanTop
 # <{cold,src,debug}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
 # true:warn(+a)
-
-<{cold,src,debug}/Fan.ml>: warn(-33)
-true: warn(-41)
+# <cold> and <src>:traverse
+# <{cold,src}/Pprintast.ml>: warn_a
+# <{cold,src,debug}/Camlp4Printers/**.ml>: use_unix
+# <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.cmx>:for-pack(Grammar)
+# <{cold,src,debug}/Grammar/{Comb,TreePrint,Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
+# <{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Exp,Ident,Meta,ModuleType,Patt,Case,EP}.cmx>:for-pack(Lib)
+# <{cold,src,debug}/Lib/{Basic,ClassExpr,Ctyp,Exp,Ident,Meta,ModuleType,Patt,Case,EP}.p.cmx>:for-pack(Lib)

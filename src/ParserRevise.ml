@@ -83,63 +83,61 @@ let apply () = begin
       [ module_exp{x} -> x]
       module_binding0:
       { RA
-        [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} ->
-            {| functor ( $m : $mt ) -> $mb |}
-        | ":"; module_type{mt}; "="; module_exp{me} ->
-            {| ( $me : $mt ) |}
-        | "="; module_exp{me} -> {| $me |} ] }
+        [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} -> `Functor (_loc, m, mt, mb)
+        | ":"; module_type{mt}; "="; module_exp{me} ->  `Constraint (_loc, me, mt)
+        | "="; module_exp{me} -> me  ] }
       module_exp:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
-            {| functor ( $i : $t ) -> $me |}
+             `Functor (_loc, i, t, me)
         | "struct"; strus{st}; "end" -> `Struct(_loc,st)
         | "struct"; "end" -> `StructEnd(_loc)]
        "apply"
-        [ S{me1}; S{me2} -> {| $me1 $me2 |} ]
+        [ S{me1}; S{me2} -> `App (_loc, me1, me2) ]
        "simple"
-        [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_exp" n s) |}
+        [ `Ant ((""|"mexp"|"anti"|"list" as n),s) -> `Ant (_loc, mk_anti ~c:"module_exp" n s)
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.module_exp_tag
-        | module_longident{i} -> {| $id:i |}
-        | "("; S{me}; ":"; module_type{mt}; ")" ->
-            {| ( $me : $mt ) |}
-        | "("; S{me}; ")" -> {| $me |}
-        | "("; "val"; exp{e}; ")" -> {| (val $e) |}  (* first class modules *)
-        | "("; "val"; exp{e}; ":"; (* package_type *)module_type{p}; ")" ->
-            {| (val $e : $p) |} ] } |};
+        | module_longident{i} -> `Id (_loc, i)
+        | "("; S{me}; ":"; module_type{mt}; ")" ->  `Constraint (_loc, me, mt)
+        | "("; S{me}; ")" ->  me
+        | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
+        | "("; "val"; exp{e}; ":"; module_type{p}; ")" ->
+             `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
+             ] } |};
 
   with module_binding
       {:extend|
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)
         | `Ant (("module_binding"|"anti"|"" as n),s) ->
-            {| $(anti:mk_anti ~c:"module_binding" n s) |}
+             `Ant (_loc, mk_anti ~c:"module_binding" n s)
         | a_uident{m}; ":"; module_type{mt} -> `Constraint(_loc,m,mt)
         | a_uident{m}; ":"; module_type{mt}; "="; module_exp{me} ->
-            (* {| $uid:m : $mt = $me |} *)
             `ModuleBind(_loc,m,mt,me)]
         module_binding:
-        [ S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
-        | `Ant (("module_binding"|"anti"|"list" |"" as n),s) -> {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        [ S{b1}; "and"; S{b2} -> `And(_loc,b1,b2)
+        | `Ant (("module_binding"|"anti"|"list" |"" as n),s) ->
+            `Ant (_loc, mk_anti ~c:"module_binding" n s)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
         | a_uident{m}; ":"; module_type{mt}; "="; module_exp{me} ->
             `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
-        [ S{m1}; "and"; S{m2} -> {| $m1 and $m2 |}
-        | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_binding" n s) |}
+        [ S{m1}; "and"; S{m2} -> `And(_loc,m1,m2)
+        | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->
+            `Ant (_loc, mk_anti ~c:"module_binding" n s)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
         | a_uident{m}; ":"; module_type{mt} ->
-            `Constraint(_loc,m,mt)
-            (* {| $uid:m : $mt |} *) ] |};
+            `Constraint(_loc,m,mt) ] |};
 
   with with_constr
       {:extend|
         with_constr_quot:
         [ with_constr{x} -> x   ]
         with_constr: 
-        [ S{wc1}; "and"; S{wc2} -> {| $wc1 and $wc2 |}
-        | `Ant ((""|"with_constr"|"anti"|"list" as n),s) -> {| $(anti:mk_anti ~c:"with_constr" n s) |}
+        [ S{wc1}; "and"; S{wc2} -> `And(_loc,wc1,wc2)
+        | `Ant ((""|"with_constr"|"anti"|"list" as n),s) ->
+            `Ant (_loc, mk_anti ~c:"with_constr" n s)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.with_constr_tag
         | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
             `TypeEq (_loc, t1, t2)
@@ -186,12 +184,12 @@ let apply () = begin
        "simple"
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"module_type" n s) |}
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_type_tag
-        | module_longident_with_app{i} -> {| $id:i |}
-        | "("; S{mt}; ")" -> {| $mt |}
+        | module_longident_with_app{i} -> `Id(_loc,i)
+        | "("; S{mt}; ")" -> mt
         | "module"; "type"; "of"; module_exp{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration:
       { RA
-        [ ":"; module_type{mt} -> {| $mt |}
+        [ ":"; module_type{mt} -> mt
         | "("; a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
             `Functor(_loc,i,t,mt)] }
       module_type_quot:
@@ -202,18 +200,17 @@ let apply () = begin
     sig_item_quot:
     [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
     | "#"; a_lident{s}; exp{dp} -> `Directive(_loc,s,dp)
-    | sig_item{sg1}; (* semi; *)";"; S{sg2} -> `Sem(_loc,sg1,sg2)
+    | sig_item{sg1}; ";"; S{sg2} -> `Sem(_loc,sg1,sg2)
     | sig_item{sg} -> sg] 
     sig_item:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti ~c:"sig_item" n s) |}
+    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> `Ant (_loc, mk_anti ~c:"sig_item" n s)
     | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.sig_item_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
         `External (_loc, i, t, sl)
-        (* {| external $i : $t = $sl |}  *)
-    | "include"; module_type{mt} -> {| include $mt |}
-    | "module"; a_uident{i}; module_declaration{mt} ->  {| module $i : $mt |}
-    | "module"; "rec"; module_rec_declaration{mb} ->    {| module rec $mb |}
+    | "include"; module_type{mt} -> `Include(_loc,mt)
+    | "module"; a_uident{i}; module_declaration{mt} -> `Module(_loc,i,mt)
+    | "module"; "rec"; module_rec_declaration{mb} ->  `RecModule (_loc, mb)
     | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
     | "open"; module_longident{i} -> `Open(_loc,i)
@@ -226,12 +223,13 @@ let apply () = begin
     [ "#"; a_lident{n};  ";;" ->
       ([ `DirectiveSimple(_loc,n) ],  Some _loc)
     | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
-    | sig_item{si}; (* semi *)";";  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | sig_item{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
     sig_items:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  {| $(anti:mk_anti n ~c:"sig_item" s) |}
-    | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"(* semi *); S{sg} ->  {| $(anti:mk_anti n ~c:"sig_item" s); $sg |} 
-    | L1 [ sig_item{sg}; (* semi *)";" -> sg ]{l} -> sem_of_list l  ]
+    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> `Ant (_loc, mk_anti n ~c:"sig_item" s)
+    | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"; S{sg} ->
+         `Sem (_loc, `Ant (_loc, mk_anti n ~c:"sig_item" s), sg)
+    | L1 [ sig_item{sg}; ";" -> sg ]{l} -> sem_of_list l  ]
  |};
 
     with exp
