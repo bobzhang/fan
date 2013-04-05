@@ -1,0 +1,3 @@
+[submodule "cstar"]
+	path = cstar
+	url = git@github.com:bobzhang/cstar.git
