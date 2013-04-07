@@ -1,15 +1,27 @@
 open Ast
+
 open LibUtil
+
 type key = string 
+
 let inject_exp_tbl: (key,exp) Hashtbl.t = Hashtbl.create 40
+
 let inject_stru_tbl: (key,stru) Hashtbl.t = Hashtbl.create 40
+
 let inject_cstru_tbl: (key,cstru) Hashtbl.t = Hashtbl.create 40
+
 let register_inject_exp (k,f) = Hashtbl.replace inject_exp_tbl k f
+
 let register_inject_stru (k,f) = Hashtbl.replace inject_stru_tbl k f
+
 let register_inject_cstru (k,f) = Hashtbl.replace inject_cstru_tbl k f
+
 let inject_exp = Gram.mk "inject_exp"
+
 let inject_stru = Gram.mk "inject_stru"
+
 let inject_cstru = Gram.mk "inject_cstru"
+
 let _ =
   Gram.extend_single (inject_exp : 'inject_exp Gram.t )
     (None,
@@ -68,6 +80,7 @@ let _ =
                    | _ ->
                        failwith
                          "try Hashtbl.find inject_cstru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n"))))]))
+
 let _ =
   let open AstQuotation in
     of_exp ~name:((`Absolute ["Fan"; "Inject"]), "exp") ~entry:inject_exp;

@@ -1,19 +1,26 @@
 open Ast
+
 open AstLoc
+
 open LibUtil
+
 type 'a item_or_def =  
   | Str of 'a
-  | Def of string* (string list* exp) option
+  | Def of string* (string list * exp) option
   | Und of string
   | ITE of bool* 'a item_or_def list* 'a item_or_def list
   | Lazy of 'a Lazy.t 
+
 let defined = ref []
+
 let is_defined i = List.mem_assoc i defined.contents
+
 let incorrect_number loc l1 l2 =
   FanLoc.raise loc
     (Failure
        (Printf.sprintf "expected %d parameters; found %d" (List.length l2)
           (List.length l1)))
+
 let define ~exp  ~pat  eo x =
   (match eo with
    | Some ([],e) ->
@@ -104,6 +111,7 @@ let define ~exp  ~pat  eo x =
                                "let pl = match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
   defined := ((x, eo) :: (defined.contents))
+
 let undef ~exp  ~pat  x =
   try
     (let eo = List.assoc x defined.contents in
@@ -135,12 +143,14 @@ let undef ~exp  ~pat  x =
      | None  -> ());
     defined := (List.remove x defined.contents)
   with | Not_found  -> ()
+
 let parse_def ~exp  ~pat  s =
   match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
   | (`Id (_loc,`Uid (_,n)) : Ast.exp) -> define ~exp ~pat None n
   | (`App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) :
       Ast.exp) -> define ~exp ~pat (Some ([], e)) n
   | _ -> invalid_arg s
+
 let rec execute_macro ~exp  ~pat  nil cons =
   function
   | Str i -> i
@@ -155,12 +165,16 @@ and execute_macro_list ~exp  ~pat  nil cons =
   | hd::tl ->
       let il1 = execute_macro ~exp ~pat nil cons hd in
       let il2 = execute_macro_list ~exp ~pat nil cons tl in cons il1 il2
+
 let stack = Stack.create ()
+
 let make_ITE_result st1 st2 =
   let test = Stack.pop stack in ITE (test, st1, st2)
+
 type branch =  
   | Then
   | Else 
+
 let execute_macro_if_active_branch ~exp  ~pat  _loc nil cons branch macro_def
   =
   let _ = Format.eprintf "execute_macro_if_active_branch@." in

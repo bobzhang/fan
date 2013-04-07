@@ -1,13 +1,19 @@
 open LibUtil
+
 open Structure
+
 let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ (ename ^ "] is empty")))
+
 let get_cur_loc strm =
   match XStream.peek strm with | Some (_,r) -> r | None  -> FanLoc.ghost
+
 let get_prev_loc strm =
   match XStream.get_last strm with | Some (_,l) -> l | None  -> FanLoc.ghost
+
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false
+
 let get_terminals x =
   let rec aux tokl last_tok =
     function
@@ -20,11 +26,13 @@ let get_terminals x =
   match x with
   | { node = (#terminal as x); son;_} -> aux [] x son
   | _ -> None
+
 let eq_Stoken_ids s1 s2 =
   match (s1, s2) with
   | ((`Antiquot,_),_) -> false
   | (_,(`Antiquot,_)) -> false
   | ((_,s1),(_,s2)) -> s1 = s2
+
 let logically_eq_symbols entry =
   let rec eq_symbol s1 s2 =
     match (s1, s2) with
@@ -49,6 +57,7 @@ let logically_eq_symbols entry =
     | ((LocAct (_,_)|DeadEnd ),(LocAct (_,_)|DeadEnd )) -> true
     | _ -> false in
   eq_symbol
+
 let rec eq_symbol s1 s2 =
   match (s1, s2) with
   | (`Snterm e1,`Snterm e2) -> e1 == e2

@@ -1,50 +1,83 @@
 open Format
+
 let id x = x
+
 let cons x xs = x :: xs
+
 let failwithf fmt = ksprintf failwith fmt
+
 let prerr_endlinef fmt = ksprintf prerr_endline fmt
+
 let invalid_argf fmt = kprintf invalid_arg fmt
+
 let some x = Some x
+
 let none = None
+
 let memoize f =
   let cache = Hashtbl.create 101 in
   fun v  ->
     try Hashtbl.find cache v
     with | Not_found  -> let r = f v in (Hashtbl.replace cache v r; r)
+
 let finally action f x =
   try let res = f x in action (); res with | e -> (action (); raise e)
+
 let with_dispose ~dispose  f x = finally (fun ()  -> dispose x) f x
+
 external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
+
 external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
+
 external id : 'a -> 'a = "%identity"
+
 external ( !& ) : _ -> unit = "%ignore"
+
 let time f v =
   let start = Unix.gettimeofday () in
   let res = f v in let end_ = Unix.gettimeofday () in (res, (end_ -. start))
+
 let (<|) f x = f x
+
 let (|-) f g x = g (f x)
+
 let (-|) f g x = f (g x)
+
 let flip f x y = f y x
+
 let ( *** )  f g (x,y) = ((f x), (g y))
+
 let (&&&) f g x = ((f x), (g x))
+
 let curry f x y = f (x, y)
+
 let uncurry f (x,y) = f x y
+
 let const x _ = x
+
 let tap f x = f x; x
+
 let is_even x = (x mod 2) == 0
+
 let pp = fprintf
+
 let to_string_of_printer printer v =
   let buf = Buffer.create 30 in
   let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf
+
 let zfold_left ?(start= 0)  ~until  ~acc  f =
   let v = ref acc in
   for x = start to until do v := (f v.contents x) done; v.contents
+
 type 'a cont = 'a -> exn 
+
 let callcc (type u) (f : u cont -> u) =
   let module M = struct exception Return of u end in
     try f (fun x  -> raise (M.Return x)) with | M.Return u -> u
+
 type 'a return =  {
   return: 'b . 'a -> 'b} 
+
 let with_return f =
   let module M = struct exception Return end in
     let r = ref None in
@@ -58,7 +91,9 @@ let with_return f =
     with
     | M.Return  ->
         (match r.contents with | None  -> assert false | Some x -> x)
+
 type 'a id = 'a -> 'a 
+
 module Queue =
   struct
     include Queue
@@ -78,6 +113,7 @@ module Queue =
       let q = create () in let _ = List.iter (fun x  -> push x q) l in q
     let rev q = of_list (to_list_rev q)
   end
+
 module List =
   struct
     include List
@@ -167,21 +203,23 @@ module List =
       then invalid_arg "List.take_rev n<0"
       else if n = 0 then [] else aux n lst []
   end
+
 module type MAP =
   sig
     include Map.S
-    val of_list : (key* 'a) list -> 'a t
+    val of_list : (key * 'a) list -> 'a t
     val of_hashtbl : (key,'a) Hashtbl.t -> 'a t
-    val elements : 'a t -> (key* 'a) list
-    val add_list : (key* 'a) list -> 'a t -> 'a t
+    val elements : 'a t -> (key * 'a) list
+    val add_list : (key * 'a) list -> 'a t -> 'a t
     val find_default : default:'a -> key -> 'a t -> 'a
     val find_opt : key -> 'a t -> 'a option
     val add_with :
       f:('a -> 'a -> 'a) ->
-        key -> 'a -> 'a t -> ('a t* [ `NotExist | `Exist])
+        key -> 'a -> 'a t -> ('a t * [ `NotExist | `Exist])
     val unsafe_height : 'a t -> int
-    val unsafe_node : 'a t -> (key* 'a) -> 'a t -> 'a t
+    val unsafe_node : 'a t -> (key * 'a) -> 'a t -> 'a t
   end
+
 module MapMake(S:Map.OrderedType) =
   (struct
      include Map.Make(S)
@@ -212,6 +250,7 @@ module MapMake(S:Map.OrderedType) =
        (Obj.magic o : 'a t )
      let find_opt k m = try Some (find k m) with | Not_found  -> None
    end : (MAP with type  key = S.t ))
+
 module type SET =
   sig
     include Set.S
@@ -220,6 +259,7 @@ module type SET =
     val of_array : elt array -> t
     val add_array : t -> elt array -> t
   end
+
 module SetMake(S:Set.OrderedType) =
   (struct
      include Set.Make(S)
@@ -228,14 +268,19 @@ module SetMake(S:Set.OrderedType) =
      let of_array = Array.fold_left (flip add) empty
      let add_array c = Array.fold_left (flip add) c
    end : (SET with type  elt = S.t ))
+
 module SSet = SetMake(String)
+
 module SMap = MapMake(String)
+
 module IMap =
   MapMake(struct type t = int 
                  let compare = Pervasives.compare end)
+
 module ISet =
   SetMake(struct type t = int 
                  let compare = Pervasives.compare end)
+
 module Hashset =
   struct
     type 'a t = ('a,unit) Hashtbl.t 
@@ -252,19 +297,23 @@ module Hashset =
     let add_list set vs = List.iter (add set) vs
     let to_list set = fold (fun x  y  -> x :: y) set []
   end
+
 let mk_set (type s) ~cmp  =
   let module M = struct type t = s 
                         let compare = cmp end in ((module
     Set.Make(M)) : (module Set.S with type elt = s) )
+
 let mk_map (type s) ~cmp  =
   let module M = struct type t = s 
                         let compare = cmp end in ((module
     Map.Make(M)) : (module Map.S with type key = s) )
+
 let mk_hashtbl (type s) ~eq  ~hash  =
   let module M = struct type t = s 
                         let equal = eq
                         let hash = hash end in ((module
     Hashtbl.Make(M)) : (module Hashtbl.S with type key = s) )
+
 module Char =
   struct
     include Char
@@ -275,6 +324,7 @@ module Char =
     let is_uppercase c = ('A' <= c) && (c <= 'Z')
     let is_lowercase c = ('a' <= c) && (c <= 'z')
   end
+
 module Return =
   struct
     type 'a t = 'a -> exn 
@@ -284,6 +334,7 @@ module Return =
          try f (fun x  -> M.Return x) with | M.Return u -> u : u )
     let with_label = label
   end
+
 module LStack =
   struct
     type 'a t =  {
@@ -318,6 +369,7 @@ module LStack =
       let rec loop () = if t.length > 0 then (f (pop_exn t); loop ()) in
       loop ()
   end
+
 module String =
   struct
     include String
@@ -454,6 +506,7 @@ module String =
              else "" :: acc in
            aux [] ((length str) - 1))
   end
+
 module Ref =
   struct
     let protect r v body =
@@ -485,6 +538,7 @@ module Ref =
     let swap a b = let buf = a.contents in a := b.contents; b := buf
     let modify x f = x := (f x.contents)
   end
+
 module Option =
   struct
     let may f = function | None  -> () | Some v -> f v
@@ -508,12 +562,14 @@ module Option =
       | (Some a,Some b) -> eq a b
       | _ -> false
   end
+
 module Buffer =
   struct
     include Buffer
     let (+>) buf chr = Buffer.add_char buf chr; buf
     let (+>>) buf str = Buffer.add_string buf str; buf
   end
+
 module Hashtbl =
   struct
     include Hashtbl
@@ -523,6 +579,7 @@ module Hashtbl =
       try find tbl k with | Not_found  -> default
     let find_opt tbl k = try Some (find tbl k) with | Not_found  -> None
   end
+
 module Array =
   struct
     include Array
@@ -573,6 +630,7 @@ module Array =
         else if p (xs.(i)) (ys.(i)) then loop (succ i) else false in
       loop 0
   end
+
 module type STREAM =
   sig
     type 'a t  
@@ -603,9 +661,9 @@ module type STREAM =
     val to_string_fmt : ('a -> string,unit,string) format -> 'a t -> string
     val to_string_fun : ('a -> string) -> 'a t -> string
     val of_fun : (unit -> 'a) -> 'a t
-    val foldl : ('a -> 'b -> ('a* bool option)) -> 'a -> 'b t -> 'a
+    val foldl : ('a -> 'b -> ('a * bool option)) -> 'a -> 'b t -> 'a
     val foldr : ('a -> 'b lazy_t -> 'b) -> 'b -> 'a t -> 'b
-    val fold : ('a -> 'a -> ('a* bool option)) -> 'a t -> 'a
+    val fold : ('a -> 'a -> ('a * bool option)) -> 'a t -> 'a
     val filter : ('a -> bool) -> 'a t -> 'a t
     val map2 : ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t
     val scanl : ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a t
@@ -615,10 +673,10 @@ module type STREAM =
     val drop : int -> 'a t -> 'a t
     val take_while : ('a -> bool) -> 'a t -> 'a t
     val drop_while : ('a -> bool) -> 'a t -> 'a t
-    val comb : ('a t* 'b t) -> ('a* 'b) t
-    val split : ('a* 'b) t -> ('a t* 'b t)
-    val merge : (bool -> 'a -> bool) -> ('a t* 'a t) -> 'a t
-    val switch : ('a -> bool) -> 'a t -> ('a t* 'a t)
+    val comb : ('a t * 'b t) -> ('a * 'b) t
+    val split : ('a * 'b) t -> ('a t * 'b t)
+    val merge : (bool -> 'a -> bool) -> ('a t * 'a t) -> 'a t
+    val switch : ('a -> bool) -> 'a t -> ('a t * 'a t)
     val cons : 'a -> 'a t -> 'a t
     val apnd : 'a t -> 'a t -> 'a t
     val is_empty : 'a t -> bool
@@ -629,6 +687,7 @@ module type STREAM =
     val peek_nth : 'a t -> int -> 'a option
     val njunk : int -> 'a t -> unit
   end
+
 module XStream =
   struct
     include XStream
@@ -673,6 +732,7 @@ module XStream =
             else XStream.slazy (fun _  -> filter f xs)))
       | _ -> XStream.sempty
   end
+
 module ErrorMonad =
   struct
     type log = string 
@@ -702,6 +762,7 @@ module ErrorMonad =
                   (aux (acc + 1) xs) >>= (fun xs  -> return (x :: xs)))) in
       aux 0 xs
   end
+
 module Unix =
   struct
     include Unix

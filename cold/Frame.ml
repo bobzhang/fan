@@ -1,12 +1,21 @@
 open AstLoc
+
 open Ast
+
 open Format
+
 open LibUtil
+
 open Basic
+
 open FSig
+
 open EP
+
 open Exp
+
 let preserve = ["self"; "self_type"; "unit"; "result"]
+
 let check names =
   List.iter
     (fun name  ->
@@ -17,6 +26,7 @@ let check names =
           List.iter (fun s  -> eprintf "%s\n" s) preserve;
           exit 2)
        else check_valid name) names
+
 let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
@@ -40,6 +50,7 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
      pat0;
      ty
    } : FSig.ty_info )
+
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
   simple_exp_of_ctyp (ty : ctyp) =
   (match ty with
@@ -51,6 +62,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        names <+ (currying [`Case (_loc, pat, (mk_tuple tys))] ~arity)
    | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
   exp )
+
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt ty =
   let open Transform in
@@ -79,6 +91,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
             (Objs.dump_ctyp ty) in
     aux ty
+
 let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
   let open Transform in
@@ -122,6 +135,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
           FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s"
             (Objs.dump_ctyp ty) in
     aux ty
+
 let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
@@ -141,6 +155,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   currying ~arity res
+
 let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  ~destination  simple_exp_of_ctyp result ty =
   let f (cons,tyargs) =
@@ -171,6 +186,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   currying ~arity res
+
 let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
   ~left_type_variable  =
   let open Transform in
@@ -187,6 +203,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
     | `None _ -> names <+ acc
     | `Some (_,xs) ->
         let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
+
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~destination  ~result_type  simple_exp_of_ctyp exp_of_ctyp exp_of_variant
   tydcl =
@@ -237,6 +254,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
    | t ->
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
          (Objs.dump_typedecl t) : exp )
+
 let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~default  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
@@ -264,6 +282,7 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
            (`App
               (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
                 (`Str (_loc, "Abstract data type not implemented"))))))
+
 let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
   ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : module_types) =
@@ -297,6 +316,7 @@ let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   match module_name with
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
+
 let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
   [])  ~default 
   ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 

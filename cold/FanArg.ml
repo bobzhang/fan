@@ -1,7 +1,11 @@
 type key = string 
+
 type doc = string 
+
 type usage_msg = string 
+
 type anon_fun = string -> unit 
+
 type spec =  
   | Unit of (unit -> unit)
   | Bool of (bool -> unit)
@@ -16,25 +20,33 @@ type spec =
   | Tuple of spec list
   | Symbol of string list* (string -> unit)
   | Rest of (string -> unit) 
+
 exception Bad of string
+
 exception Help of string
+
 type error =  
   | Unknown of string
   | Wrong of string* string* string
   | Missing of string
   | Message of string 
+
 exception Stop of error
+
 open Printf
+
 let rec assoc3 x l =
   match l with
   | [] -> raise Not_found
   | (y1,y2,_)::_ when y1 = x -> y2
   | _::t -> assoc3 x t
+
 let make_symlist prefix sep suffix l =
   match l with
   | [] -> "<none>"
   | h::t ->
       (List.fold_left (fun x  y  -> x ^ (sep ^ y)) (prefix ^ h) t) ^ suffix
+
 let print_spec buf (key,spec,doc) =
   if (String.length doc) > 0
   then
@@ -43,7 +55,9 @@ let print_spec buf (key,spec,doc) =
         bprintf buf "  %s %s%s\n" key (make_symlist "{" "|" "}" l) doc
     | _ -> bprintf buf "  %s %s\n" key doc
   else ()
+
 let help_action () = raise (Stop (Unknown "-help"))
+
 let add_help speclist =
   let add1 =
     try ignore (assoc3 "-help" speclist); []
@@ -56,12 +70,17 @@ let add_help speclist =
     | Not_found  ->
         [("--help", (Unit help_action), " Display this list of options")] in
   speclist @ (add1 @ add2)
+
 let usage_b buf speclist errmsg =
   bprintf buf "%s\n" errmsg; List.iter (print_spec buf) (add_help speclist)
+
 let usage_string speclist errmsg =
   let b = Buffer.create 200 in usage_b b speclist errmsg; Buffer.contents b
+
 let usage speclist errmsg = eprintf "%s" (usage_string speclist errmsg)
+
 let current = ref 0
+
 let parse_argv ?(current= current)  argv speclist anonfun errmsg =
   let l = Array.length argv in
   let b = Buffer.create 200 in
@@ -154,19 +173,23 @@ let parse_argv ?(current= current)  argv speclist anonfun errmsg =
         incr current)
      else ((try anonfun s with | Bad m -> stop (Message m)); incr current))
     done
+
 let parse l f msg =
   try parse_argv Sys.argv l f msg
   with | Bad msg -> (eprintf "%s" msg; exit 2)
   | Help msg -> (printf "%s" msg; exit 0)
+
 let second_word s =
   let len = String.length s in
   let rec loop n =
     if n >= len then len else if (s.[n]) = ' ' then loop (n + 1) else n in
   try loop (String.index s ' ') with | Not_found  -> len
+
 let max_arg_len cur (kwd,spec,doc) =
   match spec with
   | Symbol _ -> max cur (String.length kwd)
   | _ -> max cur ((String.length kwd) + (second_word doc))
+
 let add_padding len ksd =
   match ksd with
   | (_,_,"") -> ksd
@@ -180,6 +203,7 @@ let add_padding len ksd =
       let prefix = String.sub msg 0 cutcol in
       let suffix = String.sub msg cutcol ((String.length msg) - cutcol) in
       (kwd, spec, (prefix ^ (spaces ^ suffix)))
+
 let align speclist =
   let completed = add_help speclist in
   let len = List.fold_left max_arg_len 0 completed in

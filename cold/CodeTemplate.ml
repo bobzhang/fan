@@ -1,12 +1,17 @@
 open Ast
+
 open AstLoc
+
 open LibUtil
+
 let _loc = FanLoc.ghost
+
 type ty_meta = 
   {
   str: string;
   print: [ `Exist | `Custom of stru | `Fmt of string];
   eq: [ `Def | `Custom of stru]} 
+
 let base1_types =
   [("int", `Exist, `Def);
   ("int32", (`Fmt "%ld"), `Def);
@@ -83,8 +88,10 @@ let base1_types =
                               (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
                                 (`Id (_loc, (`Lid (_loc, "bool"))))))))))))) : 
        Ast.stru )))]
+
 let ty_metas =
   base1_types |> (List.map (fun (str,print,eq)  -> { str; print; eq }))
+
 let print_base1 =
   let items =
     ty_metas |>
@@ -157,6 +164,7 @@ let print_base1 =
                                                                 (_loc, "a")))))))))))))),
                                ty))))) : Ast.stru ))) in
   sem_of_list items
+
 let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print_cstru_base,iter_cstru_base_1,eq_cstru_base_2)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
@@ -295,6 +303,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                  ty) : Ast.cstru ))) in
   ((sem_of_list v1), (sem_of_list v2), (sem_of_list v3), (sem_of_list v4),
     (sem_of_list v5), (sem_of_list v6), (sem_of_list v7))
+
 let eq_base1 =
   let items =
     ty_metas |>
@@ -317,6 +326,7 @@ let eq_base1 =
                             (_loc, (`Id (_loc, (`Lid (_loc, "=")))), ty)))))
             | `Custom s -> s)) in
   sem_of_list items
+
 let _ =
   let open AstInjection in
     register_inject_cstru ("map_cstru_base_1", map_cstru_base_1);

@@ -1,4 +1,5 @@
 open Ast
+
 class primitive =
   object 
     method int _loc (i : int) =
@@ -25,8 +26,11 @@ class primitive =
        | true  -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.ep )
        | false  -> (`Id (_loc, (`Lid (_loc, "false"))) : Ast.ep ) : ep )
   end
+
 let _ = (); ()
+
 let _ = ()
+
 class meta =
   object (self : 'self_type)
     inherit  primitive

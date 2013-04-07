@@ -10,6 +10,7 @@ module type S =
     val is_native : bool
     val instance : (unit -> t) ref
   end
+
 module Make(U:sig  end) : S =
   struct
     type t = string Queue.t 

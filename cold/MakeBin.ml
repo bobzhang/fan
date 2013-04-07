@@ -1,41 +1,56 @@
 open Ast
+
 open Format
+
 open LibUtil
+
 let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
+
 let just_print_compilation_unit () =
   (match FanConfig.compilation_unit.contents with
    | Some v -> printf "%s@." v
    | None  -> printf "null");
   exit 0
+
 let print_version () = eprintf "Fan version %s@." FanConfig.version; exit 0
+
 let warn_noassert () =
   eprintf
     "fan warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
+
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
   pp "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters;
   pp "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters;
   pp "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters
+
 let just_print_parsers () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
   pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
+
 let just_print_applied_parsers () =
   let pp = eprintf in
   pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
     (fun f  q  -> Queue.iter (fun (k,_)  -> fprintf f "%s@;" k) q)
     AstParsers.applied_parsers
+
 let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
+
 type file_kind =  
   | Intf of string
   | Impl of string
   | Str of string
   | ModuleImpl of string
   | IncludeDir of string 
+
 let search_stdlib = ref true
+
 let print_loaded_modules = ref false
+
 let task f x = let () = FanConfig.current_input_file := x in f x
+
 module Make(PreCast:Sig.PRECAST) =
   struct
     let printers: (string,(module Sig.PRECAST_PLUGIN)) Hashtbl.t =

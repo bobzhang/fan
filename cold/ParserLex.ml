@@ -1,11 +1,19 @@
 open LibUtil
+
 open PreCast.Syntax
+
 let regexp = Gram.mk "regexp"
+
 let chr = Gram.mk "chr"
+
 let ch_class = Gram.mk "ch_class"
+
 let regexps = Gram.mk "regexps"
+
 let lex = Gram.mk "lex"
+
 let declare_regexp = Gram.mk "declare_regexp"
+
 let _ =
   Gram.extend_single (lex : 'lex Gram.t )
     (None,
@@ -222,6 +230,9 @@ let _ =
                   | _ ->
                       failwith
                         "let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n"))))]))
+
 let d = `Absolute ["Fan"; "Lang"; "Lex"]
+
 let _ = AstQuotation.of_exp ~name:(d, "lex") ~entry:lex
+
 let _ = AstQuotation.of_stru ~name:(d, "reg") ~entry:declare_regexp

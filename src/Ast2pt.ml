@@ -18,11 +18,6 @@ open Objs;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 
 
-(*
-  {[
-  
-  ]}
- *)
 let rec normalize_acc = with ident' fun
   [ {| $i1.$i2 |} ->
     {:exp'| $(normalize_acc i1).$(normalize_acc i2) |}

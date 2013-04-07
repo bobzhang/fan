@@ -1,7 +1,11 @@
 open LibUtil
+
 open Format
+
 include Entry
+
 include Structure
+
 let default_keywords =
   ["&&";
   "functor";
@@ -114,7 +118,9 @@ let default_keywords =
   "let";
   "lor";
   "[="]
+
 let gkeywords = ref (SSet.of_list default_keywords)
+
 let gram =
   {
     annot = "Fan";
@@ -122,7 +128,9 @@ let gram =
     gfilter =
       (FanTokenFilter.mk ~is_kwd:(fun x  -> SSet.mem x gkeywords.contents))
   }
+
 let filter = FanTokenFilter.filter gram.gfilter
+
 let create_lexer ~annot  ~keywords  () =
   let v = ref (SSet.of_list keywords) in
   {
@@ -130,34 +138,52 @@ let create_lexer ~annot  ~keywords  () =
     gkeywords = v;
     gfilter = (FanTokenFilter.mk ~is_kwd:(fun x  -> SSet.mem x v.contents))
   }
+
 let name_of_entry { ename;_} = ename
+
 let glexer = FanLexUtil.mk ()
+
 let lex loc cs = glexer loc cs
+
 let lex_string loc str = lex loc (XStream.of_string str)
+
 let parse_origin_tokens entry ts = Action.get (action_parse entry ts)
+
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (FanTokenFilter.filter (entry.egram).gfilter ts)
+
 let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs)
+
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string loc str)
+
 let mk = mk_dynamic gram
+
 let of_parser name strm = of_parser gram name strm
+
 let get_filter () = gram.gfilter
+
 let lex_string loc str = lex loc (XStream.of_string str)
+
 let token_stream_of_string s = s |> (lex_string FanLoc.string_loc)
+
 let parse entry loc cs =
   parse_origin_tokens entry
     (FanTokenFilter.filter (entry.egram).gfilter (glexer loc cs))
+
 let parse_string ?(loc= FanLoc.string_loc)  entry str =
   parse_origin_tokens entry
     (FanTokenFilter.filter (entry.egram).gfilter
        (glexer loc (XStream.of_string str)))
+
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
      (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens) : 'a )
+
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
     (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens)
+
 let parse_string_safe ?(loc= FanLoc.string_loc)  entry s =
   try parse_string entry ~loc s
   with
@@ -165,20 +191,31 @@ let parse_string_safe ?(loc= FanLoc.string_loc)  entry s =
       (eprintf "%s" (Printexc.to_string e);
        FanLoc.error_report (loc, s);
        FanLoc.raise loc e)
+
 let wrap_stream_parser p loc s =
   try p loc s
   with
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "error: %s@." (FanLoc.to_string loc); FanLoc.raise loc e)
+
 let delete_rule = Delete.delete_rule
+
 let srules rl = `Stree (List.fold_right Insert.add_production rl DeadEnd)
+
 let sfold0 = Fold.sfold0
+
 let sfold1 = Fold.sfold1
+
 let sfold0sep = Fold.sfold0sep
+
 let sfold1sep = Fold.sfold1sep
+
 let extend = Insert.extend
+
 let extend_single = Insert.extend_single
+
 let levels_of_entry = Insert.levels_of_entry
+
 let eoi_entry entry =
   let g = gram_of_entry entry in
   let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
@@ -196,6 +233,7 @@ let eoi_entry entry =
                    | `EOI -> (x : 'entry_eoi )
                    | _ -> failwith "x\n"))))]));
   entry_eoi
+
 let find_level ?position  entry =
   match entry.edesc with
   | Dparser _ -> invalid_arg "Gram.find_level"

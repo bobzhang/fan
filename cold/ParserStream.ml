@@ -1,7 +1,11 @@
 open Ast
+
 open Syntax
+
 open LibUtil
+
 open FanStreamTools
+
 let apply () =
   let grammar_entry_create = Gram.mk in
   let parser_ipat: 'parser_ipat Gram.t = grammar_entry_create "parser_ipat"
@@ -316,4 +320,5 @@ let apply () =
             (Gram.mk_action
                (fun (e : 'stream_exp)  _  (_loc : FanLoc.t)  ->
                   (SeNtr (_loc, e) : 'stream_exp_comp )))))]))
+
 let _ = AstParsers.register_parser ("stream", apply)

@@ -1,4 +1,5 @@
 open LibUtil
+
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (fun (__strm : _ XStream.t)  ->
@@ -6,6 +7,7 @@ let setup_op_parser entry p =
        | Some ((`KEYWORD x|`SYMBOL x),_loc) when p x ->
            (XStream.junk __strm; `Id (_loc, (`Lid (_loc, x))))
        | _ -> raise XStream.Failure)
+
 let rec infix_kwds_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some ((`KEYWORD "(",_) as tok) ->

@@ -1,7 +1,11 @@
 open Format
+
 open LibUtil
+
 open AstLoc
+
 open FSig
+
 let transform =
   let _loc = FanLoc.ghost in
   let open Id in
@@ -34,11 +38,13 @@ let transform =
               (`Send
                  (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
                    (`Lid (_loc, (f dest)))) : Ast.exp )))
+
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)
   | `Post post -> (fun x  -> x ^ post)
   | `Fun f -> f
+
 let right_transform =
   let _loc = FanLoc.ghost in
   function

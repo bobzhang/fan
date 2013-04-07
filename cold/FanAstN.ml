@@ -1,7 +1,11 @@
 open StdLib
+
 include AstN
+
 let _ = (); ()
+
 let _ = ()
+
 class eq =
   object (self : 'self_type)
     inherit  eqbase
@@ -749,6 +753,7 @@ class eq =
     method fanutil_anti_cxt :
       FanUtil.anti_cxt -> FanUtil.anti_cxt -> 'result57= self#unknown
   end
+
 class print =
   object (self : 'self_type)
     inherit  printbase
@@ -1613,8 +1618,11 @@ class print =
     method fanloc_t : 'fmt -> FanLoc.t -> unit= self#unknown
     method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> unit= self#unknown
   end
+
 let meta_ant _loc (`Ant (_a0,_a1)) = `Ant (_a0, _a1)
+
 let meta_nil _loc `Nil = `Vrn (_loc, "Nil")
+
 let meta_literal _loc =
   function
   | `Chr _a0 -> `App (_loc, (`Vrn (_loc, "Chr")), (meta_string _loc _a0))
@@ -1625,47 +1633,56 @@ let meta_literal _loc =
   | `NativeInt _a0 ->
       `App (_loc, (`Vrn (_loc, "NativeInt")), (meta_string _loc _a0))
   | `Str _a0 -> `App (_loc, (`Vrn (_loc, "Str")), (meta_string _loc _a0))
+
 let meta_rec_flag _loc =
   function
   | `Recursive -> `Vrn (_loc, "Recursive")
   | `ReNil -> `Vrn (_loc, "ReNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result119)
+
 let meta_direction_flag _loc =
   function
   | `To -> `Vrn (_loc, "To")
   | `Downto -> `Vrn (_loc, "Downto")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result120)
+
 let meta_mutable_flag _loc =
   function
   | `Mutable -> `Vrn (_loc, "Mutable")
   | `MuNil -> `Vrn (_loc, "MuNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result121)
+
 let meta_private_flag _loc =
   function
   | `Private -> `Vrn (_loc, "Private")
   | `PrNil -> `Vrn (_loc, "PrNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result122)
+
 let meta_virtual_flag _loc =
   function
   | `Virtual -> `Vrn (_loc, "Virtual")
   | `ViNil -> `Vrn (_loc, "ViNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result123)
+
 let meta_override_flag _loc =
   function
   | `Override -> `Vrn (_loc, "Override")
   | `OvNil -> `Vrn (_loc, "OvNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result124)
+
 let meta_row_var_flag _loc =
   function
   | `RowVar -> `Vrn (_loc, "RowVar")
   | `RvNil -> `Vrn (_loc, "RvNil")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result125)
+
 let meta_position_flag _loc =
   function
   | `Positive -> `Vrn (_loc, "Positive")
   | `Negative -> `Vrn (_loc, "Negative")
   | `Normal -> `Vrn (_loc, "Normal")
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result126)
+
 let rec meta_strings _loc =
   function
   | `App (_a0,_a1) ->
@@ -1674,22 +1691,27 @@ let rec meta_strings _loc =
           (meta_strings _loc _a1))
   | `Str _a0 -> `App (_loc, (`Vrn (_loc, "Str")), (meta_string _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result127)
+
 let meta_alident _loc =
   function
   | `Lid _a0 -> `App (_loc, (`Vrn (_loc, "Lid")), (meta_string _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result128)
+
 let meta_auident _loc =
   function
   | `Uid _a0 -> `App (_loc, (`Vrn (_loc, "Uid")), (meta_string _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result129)
+
 let meta_aident _loc =
   function
   | #alident as _a0 -> (meta_alident _loc _a0 :>'result130)
   | #auident as _a0 -> (meta_auident _loc _a0 :>'result130)
+
 let meta_astring _loc =
   function
   | `C _a0 -> `App (_loc, (`Vrn (_loc, "C")), (meta_string _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result131)
+
 let rec meta_uident _loc =
   function
   | `Dot (_a0,_a1) ->
@@ -1701,6 +1723,7 @@ let rec meta_uident _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_uident _loc _a0))),
           (meta_uident _loc _a1))
   | #auident as _a0 -> (meta_auident _loc _a0 :>'result132)
+
 let rec meta_ident _loc =
   function
   | `Dot (_a0,_a1) ->
@@ -1713,6 +1736,7 @@ let rec meta_ident _loc =
           (meta_ident _loc _a1))
   | #alident as _a0 -> (meta_alident _loc _a0 :>'result133)
   | #auident as _a0 -> (meta_auident _loc _a0 :>'result133)
+
 let rec meta_dupath _loc =
   function
   | `Dot (_a0,_a1) ->
@@ -1720,6 +1744,7 @@ let rec meta_dupath _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_dupath _loc _a0))),
           (meta_dupath _loc _a1))
   | #auident as _a0 -> (meta_auident _loc _a0 :>'result134)
+
 let meta_dlpath _loc =
   function
   | `Dot (_a0,_a1) ->
@@ -1727,9 +1752,12 @@ let meta_dlpath _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_dupath _loc _a0))),
           (meta_alident _loc _a1))
   | #alident as _a0 -> (meta_alident _loc _a0 :>'result135)
+
 let meta_any _loc `Any = `Vrn (_loc, "Any")
+
 let meta_sid _loc (`Id _a0) =
   `App (_loc, (`Vrn (_loc, "Id")), (meta_ident _loc _a0))
+
 let rec meta_ctyp _loc =
   function
   | `Alias (_a0,_a1) ->
@@ -2703,6 +2731,7 @@ and meta_cstru _loc =
                (`App (_loc, (`Vrn (_loc, "CrVvr")), (meta_alident _loc _a0))),
                (meta_mutable_flag _loc _a1))), (meta_ctyp _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result138)
+
 let rec meta_ep _loc =
   function
   | #sid as _a0 -> (meta_sid _loc _a0 :>'result170)

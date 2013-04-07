@@ -1,6 +1,9 @@
 open Structure
+
 open LibUtil
+
 open FanToken
+
 let with_loc (parse_fun : 'b parse) strm =
   let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
@@ -10,6 +13,7 @@ let with_loc (parse_fun : 'b parse) strm =
     let stop_off_ep = FanLoc.stop_off ep in
     if start_off_bp > stop_off_ep then FanLoc.join bp else FanLoc.merge bp ep in
   (x, loc)
+
 let level_number entry lab =
   let rec lookup levn =
     function
@@ -21,9 +25,11 @@ let level_number entry lab =
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found
+
 module ArgContainer = Stack
+
 let rec parser_of_tree entry (lev,assoc)
-  (q : (Action.t* FanLoc.t) ArgContainer.t) x =
+  (q : (Action.t * FanLoc.t) ArgContainer.t) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree tree =
     match tree with
@@ -153,6 +159,7 @@ and parser_of_symbol entry s nlevn =
            | Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
            | _ -> raise XStream.Failure) in
   with_loc (aux s)
+
 let start_parser_of_levels entry =
   let rec aux clevn (xs : level list) =
     (match xs with
@@ -177,11 +184,13 @@ let start_parser_of_levels entry =
                      with | XStream.Failure  -> (fun ()  -> hstart levn strm)))
                      ())) : int -> Action.t parse ) in
   aux 0
+
 let start_parser_of_entry entry =
   match entry.edesc with
   | Dlevels [] -> Tools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry elev
   | Dparser p -> (fun _  -> p)
+
 let rec continue_parser_of_levels entry clevn =
   function
   | [] -> (fun _  _  _  _  -> raise XStream.Failure)
@@ -204,6 +213,7 @@ let rec continue_parser_of_levels entry clevn =
                      let loc = FanLoc.merge bp loc in
                      let a = Action.getf2 act a loc in
                      entry.econtinue levn loc a strm)))
+
 let continue_parser_of_entry entry =
   match entry.edesc with
   | Dlevels elev ->

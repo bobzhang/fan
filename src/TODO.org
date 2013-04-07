@@ -1,0 +1,12 @@
+
+
+
+* merge Ant with Filter, limit named anti-quotattions
+
+* DEFINE better
+  
+
+* clean the identifier
+  
+
+* apply the cmi filter to compiler library(AstEq) for example

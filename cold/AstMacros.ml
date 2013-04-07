@@ -1,14 +1,21 @@
 open Ast
+
 open AstLoc
+
 type key = string 
+
 type expander = exp -> exp 
+
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40
+
 let register_macro (k,f) = Hashtbl.replace macro_expanders k f
+
 let rec fib =
   function
   | 0|1 -> 1
   | n when n > 0 -> (fib (n - 1)) + (fib (n - 2))
   | _ -> invalid_arg "fib"
+
 let fibm y =
   match y with
   | (`Int (_loc,x) : Ast.exp) ->
@@ -16,8 +23,11 @@ let fibm y =
   | x ->
       let _loc = loc_of x in
       (`App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x) : Ast.exp )
+
 let _ = register_macro ("FIB", fibm)
+
 open LibUtil
+
 let macro_expander =
   object (self)
     inherit  Objs.map as super

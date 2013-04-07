@@ -1,14 +1,17 @@
 open Format
+
 type position = Lexing.position =
   {
   pos_fname: string;
   pos_lnum: int;
   pos_bol: int;
   pos_cnum: int} 
+
 type t = Location.t = {
   loc_start: position;
   loc_end: position;
   loc_ghost: bool} 
+
 let dump_sel f x =
   let s =
     match x with
@@ -17,9 +20,11 @@ let dump_sel f x =
     | `both -> "`both"
     | _ -> "<not-printable>" in
   pp_print_string f s
+
 let pp_print_position f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
     x.pos_lnum x.pos_bol x.pos_cnum
+
 let dump_long f x =
   fprintf f
     "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
@@ -27,27 +32,33 @@ let dump_long f x =
     ((x.loc_start).pos_cnum - (x.loc_start).pos_bol)
     ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) pp_print_position
     x.loc_end ((x.loc_end).pos_cnum - (x.loc_end).pos_bol) x.loc_ghost
+
 let dump f x =
   fprintf f "[%S: %d:%d-%d %d:%d%t]" (x.loc_start).pos_fname
     (x.loc_start).pos_lnum ((x.loc_start).pos_cnum - (x.loc_start).pos_bol)
     ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) (x.loc_end).pos_lnum
     ((x.loc_end).pos_cnum - (x.loc_end).pos_bol)
     (fun o  -> if x.loc_ghost then fprintf o " (ghost)" else ())
+
 let start_pos name =
   { pos_fname = name; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 }
+
 let ghost_name = "ghost-location"
+
 let ghost =
   {
     loc_start = (start_pos ghost_name);
     loc_end = (start_pos ghost_name);
     loc_ghost = true
   }
+
 let mk file_name =
   {
     loc_start = (start_pos file_name);
     loc_end = (start_pos file_name);
     loc_ghost = false
   }
+
 let of_tuple
   (file_name,start_line,start_bol,start_off,stop_line,stop_bol,stop_off,ghost)
   =
@@ -68,6 +79,7 @@ let of_tuple
       };
     loc_ghost = ghost
   }
+
 let to_tuple
   {
     loc_start =
@@ -79,6 +91,7 @@ let to_tuple
   =
   (pos_fname, start_line, start_bol, start_off, stop_line, stop_bol,
     stop_off, ghost)
+
 let better_file_name a b =
   match (a, b) with
   | ("","") -> a
@@ -87,14 +100,20 @@ let better_file_name a b =
   | ("-",x) -> x
   | (x,"-") -> x
   | (x,_) -> x
+
 let of_lexbuf lb =
   let loc_start = Lexing.lexeme_start_p lb
   and loc_end = Lexing.lexeme_end_p lb in
   let loc = { loc_start; loc_end; loc_ghost = false } in loc
+
 let of_positions s e = { loc_start = s; loc_end = e; loc_ghost = false }
+
 let dummy_pos = Lexing.dummy_pos
+
 let start_pos x = x.loc_start
+
 let stop_pos x = x.loc_end
+
 let merge a b =
   if a == b
   then a
@@ -106,36 +125,54 @@ let merge a b =
        | (true ,_) -> { a with loc_end = (b.loc_end) }
        | (_,true ) -> { b with loc_start = (a.loc_start) } in
      r)
+
 let join x = { x with loc_end = (x.loc_start) }
+
 let join_end x = { x with loc_start = (x.loc_end) }
+
 let map f start_stop_both x =
   match start_stop_both with
   | `start -> { x with loc_start = (f x.loc_start) }
   | `stop -> { x with loc_end = (f x.loc_end) }
   | `both -> { x with loc_start = (f x.loc_start); loc_end = (f x.loc_end) }
+
 let move_pos chars x = { x with pos_cnum = (x.pos_cnum + chars) }
+
 let move s chars x = map (move_pos chars) s x
+
 let move_line lines x =
   let move_line_pos x =
     { x with pos_lnum = (x.pos_lnum + lines); pos_bol = (x.pos_cnum) } in
   map move_line_pos `both x
+
 let shift width x =
   { x with loc_start = (x.loc_end); loc_end = (move_pos width x.loc_end) }
+
 let file_name x = (x.loc_start).pos_fname
+
 let start_line x = (x.loc_start).pos_lnum
+
 let stop_line x = (x.loc_end).pos_lnum
+
 let start_bol x = (x.loc_start).pos_bol
+
 let stop_bol x = (x.loc_end).pos_bol
+
 let start_off x = (x.loc_start).pos_cnum
+
 let stop_off x = (x.loc_end).pos_cnum
+
 let is_ghost x = x.loc_ghost
+
 let set_file_name s x =
   {
     x with
     loc_start = { (x.loc_start) with pos_fname = s };
     loc_end = { (x.loc_end) with pos_fname = s }
   }
+
 let ghostify x = { x with loc_ghost = true }
+
 let make_absolute x =
   let pwd = Sys.getcwd () in
   let old_name = (x.loc_start).pos_fname in
@@ -148,11 +185,13 @@ let make_absolute x =
       loc_end = { (x.loc_end) with pos_fname = new_name }
     }
   else x
+
 let strictly_before x y =
   let b =
     ((x.loc_end).pos_cnum < (y.loc_start).pos_cnum) &&
       ((x.loc_end).pos_fname = (y.loc_start).pos_fname) in
   b
+
 let to_string x =
   let (a,b) = ((x.loc_start), (x.loc_end)) in
   let res =
@@ -163,8 +202,11 @@ let to_string x =
     sprintf "%s (end at line %d, character %d)" res (x.loc_end).pos_lnum
       (b.pos_cnum - b.pos_bol)
   else res
+
 let print out x = pp_print_string out (to_string x)
+
 let pp_print_t = print
+
 let check x msg =
   if
     ((start_line x) > (stop_line x)) ||
@@ -179,11 +221,14 @@ let check x msg =
     (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
      false)
   else true
+
 exception Exc_located of t*exn
+
 let raise loc exc =
   match exc with
   | Exc_located (_,_) -> raise exc
   | _ -> raise (Exc_located (loc, exc))
+
 let _ =
   Printexc.register_printer
     (function
@@ -192,7 +237,9 @@ let _ =
            (sprintf "Exc_located(%s,%s)" (to_string t)
               (Printexc.to_string exn))
      | _ -> None)
+
 let name = ref "_loc"
+
 let error_report (loc,s) =
   prerr_endline (to_string loc);
   (let (start_bol,stop_bol,start_off,stop_off) =
@@ -202,6 +249,9 @@ let error_report (loc,s) =
    let err_location =
      String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
    prerr_endline (sprintf "err: ^%s^" err_location))
+
 let string_loc = mk "<string>"
+
 let errorf loc fmt = Format.ksprintf (fun s  -> raise loc (Failure s)) fmt
+
 module Ops = struct let (<+>) = merge end

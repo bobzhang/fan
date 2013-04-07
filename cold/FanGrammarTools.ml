@@ -1,27 +1,43 @@
 open Ast
+
 open FanOps
+
 open Format
+
 open AstLoc
+
 open LibUtil
+
 open FanGrammar
+
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
+
 let prefix = "__fan_"
+
 let ghost = FanLoc.ghost
+
 let grammar_module_name = ref (`Uid (ghost, "Gram"))
+
 let gm () =
   match FanConfig.compilation_unit.contents with
   | Some "Gram" -> `Uid (ghost, "")
   | Some _|None  -> grammar_module_name.contents
+
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
+
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
+
 let mk_rule ~prod  ~action  = { prod; action }
+
 let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
+
 let string_of_pat pat =
   let buf = Buffer.create 42 in
   let () =
     Format.bprintf buf "%a@?"
       (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
   let str = Buffer.contents buf in if str = "" then assert false else str
+
 let check_not_tok s =
   match s with
   | { text = `Stok (_loc,_,_,_);_} ->
@@ -30,10 +46,14 @@ let check_not_tok s =
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
   | _ -> ()
+
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
+
 let gensym = let i = ref 0 in fun ()  -> incr i; i
+
 let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
+
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map
@@ -63,6 +83,7 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
   with | Exit  -> rl
+
 let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
@@ -87,6 +108,7 @@ let make_ctyp (styp : styp) tvar =
                             (`Lid (_loc, "t")))))))))
      | `Type t -> t in
    aux styp : ctyp )
+
 let rec make_exp (tvar : string) (x : text) =
   let rec aux tvar x =
     match x with
@@ -177,7 +199,7 @@ let rec make_exp (tvar : string) (x : text) =
                               (_loc, (`Vrn (_loc, attr)),
                                 (`Str (_loc, (String.escaped descr)))))))))))) in
   aux tvar x
-and make_exp_rules (_loc : loc) (rl : (text list* exp) list) (tvar : string)
+and make_exp_rules (_loc : loc) (rl : (text list * exp) list) (tvar : string)
   =
   list_of_list _loc
     (List.map
@@ -193,6 +215,7 @@ and make_exp_rules (_loc : loc) (rl : (text list* exp) list) (tvar : string)
                        (_loc,
                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
             Ast.exp )) rl)
+
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid = `Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) in
@@ -275,12 +298,15 @@ let text_of_action (_loc : loc) (psl : symbol list)
    `App
      (_loc, (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))))),
        txt) : exp )
+
 let mk_srule loc (t : string) (tvar : string) (r : rule) =
   (let sl = List.map (fun s  -> s.text) r.prod in
    let ac = text_of_action loc r.prod t ?action:(r.action) tvar in (sl, ac) : 
-  (text list* exp) )
+  (text list * exp) )
+
 let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-  (List.map (mk_srule loc t tvar) rl : (text list* exp) list )
+  (List.map (mk_srule loc t tvar) rl : (text list * exp) list )
+
 let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
     let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
@@ -300,9 +326,12 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
   match symbolss with
   | [] -> `Id (_loc, (`Uid (_loc, "()")))
   | _ -> seq_sem rest
+
 let mk_name _loc i =
   { exp = (`Id (_loc, i)); tvar = (Id.tvar_of_ident i); loc = _loc }
+
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
+
 let text_of_entry (e : entry) =
   (let _loc = (e.name).loc in
    let ent =
@@ -348,6 +377,7 @@ let text_of_entry (e : entry) =
               (_loc,
                 (`Id (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))))),
                 ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : exp )
+
 let let_in_of_extend _loc gram locals default =
   let entry_mk =
     match gram with
@@ -384,11 +414,13 @@ let let_in_of_extend _loc gram locals default =
               (_loc, (`Id (_loc, (`Lid (_loc, "grammar_entry_create")))),
                 entry_mk)), (`LetIn (_loc, (`ReNil _loc), locals, default))) : 
         Ast.exp )
+
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
     match el with | [] -> `Id (_loc, (`Uid (_loc, "()"))) | _ -> seq_sem el in
   let_in_of_extend _loc gram locals args
+
 let mk_tok _loc ?restrict  ~pattern  styp =
   match restrict with
   | None  ->
@@ -428,6 +460,7 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let descr = string_of_pat pattern in
       let text = `Stok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
+
 let sfold ?sep  _loc (ns : string list) f e s =
   let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
   let suffix = match sep with | None  -> "" | Some _ -> "sep" in

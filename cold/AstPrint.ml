@@ -242,7 +242,7 @@ class printer  ()= object(self:'self)
     match x.ptyp_desc with
     | Ptyp_any -> pp f "_";       
     | Ptyp_var s -> self#tyvar f  s; 
-    | Ptyp_tuple l ->  pp f "(%a)" (self#list self#core_type1 ~sep:"*@;") l 
+    | Ptyp_tuple l ->  pp f "(%a)" (self#list self#core_type1 ~sep:"@;*@;") l 
     | Ptyp_constr (li, l) ->
         pp f (* "%a%a@;" *) "%a%a"
           (fun f l -> match l with
@@ -536,8 +536,6 @@ class printer  ()= object(self:'self)
         pp f "@[<0>@[<hv2>try@ %a@]@ @[<0>with%a@]@]" (* "try@;@[<2>%a@]@\nwith@\n%a"*)
           self#reset#expression e  self#case_list l 
     | Pexp_let (rf, l, e) ->
-        (* pp f "@[<2>let %a%a in@;<1 -2>%a@]" (\*no identation here, a new line*\) *)
-        (*   self#rec_flag rf *)
         pp f "@[<2>%a in@;<1 -2>%a@]"
           self#reset#bindings (rf,l)
           self#expression e 
@@ -930,7 +928,7 @@ class printer  ()= object(self:'self)
     | Pmod_unpack e ->
         pp f "(val@ %a)"  self#expression  e
 
-  method structure f x = self#list ~sep:"@\n" self#structure_item f x
+  method structure f x = self#list ~sep:"@\n@." self#structure_item f x
 
   (* transform [f = fun g h -> ..] to [f g h = ... ] could be improved *)    
   method binding f ((p:pattern),(x:expression)) =

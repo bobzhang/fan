@@ -1,8 +1,13 @@
 open LibUtil
+
 open Types
+
 open AstLoc
+
 let _loc = FanLoc.ghost
+
 exception CtypNotSupport of type_desc
+
 let rec signature_item (x : Types.signature_item) =
   (match x with
    | Sig_value _|Sig_exception _|Sig_module _|Sig_class _|Sig_modtype _
@@ -47,7 +52,7 @@ and type_declaration id
          (_loc, (`Lid (_loc, name)), params,
            (`TyRepr (_loc, private_flag, (`Sum (_loc, (type_sum xs))))), []) : 
   typedecl )
-and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_exp) list) =
+and type_record (xs : (Ident.t * Asttypes.mutable_flag * type_exp) list) =
   (sem_of_list &
      (List.map
         (fun (i,m,e)  ->
@@ -59,7 +64,7 @@ and type_record (xs : (Ident.t* Asttypes.mutable_flag* type_exp) list) =
            | Asttypes.Immutable  ->
                `TyCol (_loc, (`Id (_loc, (`Lid (_loc, name)))), (type_exp e)))
         xs) : name_ctyp )
-and type_sum (xs : (Ident.t* type_exp list* type_exp option) list) =
+and type_sum (xs : (Ident.t * type_exp list * type_exp option) list) =
   (bar_of_list &
      (List.map
         (function
@@ -95,4 +100,5 @@ and type_exp ({ desc;_} : Types.type_exp) =
               (List.map type_exp ls)))
    | Tvariant _|Tpoly _|Tpackage _|Tlink _|Tfield _|Tnil |Tsubst _|Tobject _
      |Tarrow _ as x -> raise & (CtypNotSupport x) : ctyp )
+
 let signature (sg : Types.signature) = List.map signature_item sg

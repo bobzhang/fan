@@ -1,15 +1,27 @@
 open PreCast.Syntax
+
 open FanMacroTools
+
 let macro_def = Gram.mk "macro_def"
+
 let uident_eval_ifdef = Gram.mk "uident_eval_ifdef"
+
 let uident_eval_ifndef = Gram.mk "uident_eval_ifndef"
+
 let else_macro_def = Gram.mk "else_macro_def"
+
 let else_exp = Gram.mk "else_exp"
+
 let smlist_then = Gram.mk "smlist_then"
+
 let smlist_else = Gram.mk "smlist_else"
+
 let endif = Gram.mk "endif"
+
 let opt_macro_value = Gram.mk "opt_macro_value"
+
 let uident = Gram.mk "uident"
+
 let apply () =
   (Gram.extend_single (stru : 'stru Gram.t )
      ((Some `First),
@@ -392,4 +404,5 @@ let apply () =
   Options.add
     ("-I", (FanArg.String FanBasic.add_include_dir),
       "<string> Add a directory to INCLUDE search path.")
+
 let _ = AstParsers.register_parser ("macro", apply)

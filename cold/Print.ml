@@ -1,7 +1,11 @@
 open Structure
+
 open Format
+
 open LibUtil
+
 let pp = fprintf
+
 class text_grammar =
   object (self : 'self)
     method tree f t = self#rules f (flatten_tree t)
@@ -99,11 +103,14 @@ class text_grammar =
             | Dlevels elev -> self#levels f elev
             | Dparser _ -> pp f "<parser>") e : unit )
   end
+
 let text = new text_grammar
+
 let string_of_symbol s =
   ignore (flush_str_formatter ());
   text#symbol str_formatter s;
   flush_str_formatter ()
+
 class dump_grammar =
   object (self : 'self)
     inherit  text_grammar
@@ -117,4 +124,5 @@ class dump_grammar =
         (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc
         self#tree lsuffix self#tree lprefix
   end
+
 let dump = new dump_grammar

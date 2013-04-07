@@ -1,5 +1,7 @@
 open LibUtil
+
 open Format
+
 let error_report (loc,s) =
   prerr_endline (FanLoc.to_string loc);
   (let (start_bol,stop_bol,start_off,stop_off) =
@@ -10,6 +12,7 @@ let error_report (loc,s) =
    let err_location =
      String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
    prerr_endline (sprintf "err: ^%s^" err_location))
+
 let parse_string_of_entry ?(loc= FanLoc.mk "<string>")  entry s =
   try Gram.parse_string entry ~loc s
   with
@@ -17,21 +20,28 @@ let parse_string_of_entry ?(loc= FanLoc.mk "<string>")  entry s =
       (eprintf "%s" (Printexc.to_string e);
        error_report (loc, s);
        FanLoc.raise loc e)
+
 let wrap_stream_parser ?(loc= FanLoc.mk "<stream>")  p s =
   try p ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "error: %s" (FanLoc.to_string loc); FanLoc.raise loc e)
+
 let p_exp f e = pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e)
+
 let p_pat f e = pp f "@[%a@]@." AstPrint.pattern (Ast2pt.pat e)
+
 let p_stru f e = pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e)
+
 let p_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e)
+
 let add_include_dir str =
   if str <> ""
   then
     let str =
       if (str.[(String.length str) - 1]) = '/' then str else str ^ "/" in
     Ref.modify FanConfig.include_dirs (fun x  -> cons str x)
+
 let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
   fun file  ->

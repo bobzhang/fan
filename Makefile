@@ -14,6 +14,8 @@ cleandemo:
 cleantest:
 	rm -rf _build/test
 
+boot:
+	cd ~/fan/ && ocamlbuild -I src boot/FanDriver.native
 stat:
 	rm -rf stat/*
 	git_stats . stat

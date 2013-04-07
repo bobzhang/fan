@@ -1,6 +1,9 @@
 open LibUtil
+
 open Ast
+
 open AstLoc
+
 let list_of_list (loc : loc) =
   let rec loop top =
     function
@@ -11,22 +14,33 @@ let list_of_list (loc : loc) =
           (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
+
 let meta_int _loc i = `Int (_loc, (string_of_int i))
+
 let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
+
 let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
+
 let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
+
 let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
+
 let meta_string _loc i = `Str (_loc, (String.escaped i))
+
 let meta_char _loc i = `Chr (_loc, (Char.escaped i))
+
 let meta_unit _loc _ = `Id (_loc, (`Uid (_loc, "()")))
+
 let meta_bool _loc =
   function
   | true  -> `Id (_loc, (`Lid (_loc, "true")))
   | false  -> `Id (_loc, (`Lid (_loc, "false")))
+
 let meta_ref mf_a _loc i =
   `Record
     (_loc,
       (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
+
 let mklist loc =
   let rec loop top =
     function
@@ -37,21 +51,26 @@ let mklist loc =
           (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, "::")))), e1)),
             (loop false el)) in
   loop true
+
 let meta_list mf_a _loc ls =
   mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
+
 let meta_option mf_a _loc =
   function
   | None  -> `Id (_loc, (`Uid (_loc, "None")))
   | Some x -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+
 let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
   (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
   invalid_arg "meta_arrow not implemented"
+
 let rec is_module_longident (x : ident) =
   match x with
   | `Dot (_,_,i) -> is_module_longident i
   | `App (_,i1,i2) -> (is_module_longident i1) && (is_module_longident i2)
   | `Uid _ -> true
   | _ -> false
+
 let ident_of_exp =
   let error () =
     invalid_arg "ident_of_exp: this expession is not an identifier" in
@@ -63,6 +82,7 @@ let ident_of_exp =
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `Id (_loc,i) -> i | `App _ -> error () | t -> self t
+
 let ident_of_ctyp =
   let error () = invalid_arg "ident_of_ctyp: this type is not an identifier" in
   let rec self (x : ctyp) =
@@ -72,6 +92,7 @@ let ident_of_ctyp =
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `Id (_loc,i) -> i | t -> self t
+
 let ident_of_pat =
   let error () =
     invalid_arg "ident_of_pat: this pattern is not an identifier" in
@@ -82,19 +103,26 @@ let ident_of_pat =
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
   function | `Id (_loc,i) -> i | p -> self p
+
 let ty_of_stl =
   function
   | (_loc,s,[]) -> `Id (_loc, (`Uid (_loc, s)))
   | (_loc,s,tl) ->
       `Of (_loc, (`Id (_loc, (`Uid (_loc, s)))), (and_of_list tl))
+
 let ty_of_sbt (_loc,s,v,t) =
   if v
   then `TyColMut (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
   else `TyCol (_loc, (`Id (_loc, (`Lid (_loc, s)))), t)
+
 let bi_of_pe (p,e) = let _loc = loc_of p in `Bind (_loc, p, e)
+
 let sum_type_of_list l = bar_of_list (List.map ty_of_stl l)
+
 let record_type_of_list l = sem_of_list (List.map ty_of_sbt l)
+
 let binding_of_pel l = and_of_list (List.map bi_of_pe l)
+
 let rec is_irrefut_pat (x : pat) =
   match x with
   | `ArrayEmpty _loc|`LabelS (_loc,_)|`Id (_loc,`Lid (_,_)) -> true
@@ -119,14 +147,17 @@ let rec is_irrefut_pat (x : pat) =
   | `Vrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
     |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
     |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
+
 let array_of_array arr =
   match arr with
   | [||] -> `ArrayEmpty FanLoc.ghost
   | _ ->
       let items = (arr |> Array.to_list) |> sem_of_list in
       let _loc = loc_of items in `Array (_loc, items)
+
 let meta_array mf_a _loc ls =
   array_of_array (Array.map (fun x  -> mf_a _loc x) ls)
+
 let bigarray_get loc arr arg =
   let coords =
     match arg with
@@ -196,6 +227,7 @@ let bigarray_get loc arr arg =
                (`Sem
                   (loc, c1,
                     (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords))))))))))
+
 let bigarray_set loc var newval =
   match var with
   | `App
@@ -306,23 +338,27 @@ let bigarray_set loc var newval =
                                       (`Lid (loc, "set")))))))), arr)),
                   (`Array (loc, coords)))), newval))
   | _ -> None
+
 let mksequence ?loc  =
   function
   | `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
   | e -> e
+
 let mksequence' ?loc  =
   function
   | `Sem (_loc,_,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
   | e -> e
+
 let rec to_lid =
   function
   | `Dot (_loc,_,i) -> to_lid i
   | `Lid (_loc,lid) -> lid
   | _ -> assert false
+
 let mkumin loc prefix arg =
   match arg with
   | `Int (_loc,n) -> `Int (loc, (String.neg n))
@@ -331,8 +367,10 @@ let mkumin loc prefix arg =
   | `NativeInt (_loc,n) -> `NativeInt (loc, (String.neg n))
   | `Flo (_loc,n) -> `Flo (loc, (String.neg n))
   | _ -> `App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
+
 let mkassert loc =
   function | `Id (_loc,`Lid (_,"false")) -> `ExAsf loc | e -> `ExAsr (loc, e)
+
 let rec to_generalized x =
   match x with
   | `Arrow (_loc,t1,t2) ->

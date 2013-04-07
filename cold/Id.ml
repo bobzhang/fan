@@ -1,11 +1,14 @@
 open AstLoc
+
 open LibUtil
+
 let rec tvar_of_ident =
   function
   | (`Lid (_loc,x) : Ast.ident)|(`Uid (_loc,x) : Ast.ident) -> x
   | (`Dot (_loc,`Uid (_,x),xs) : Ast.ident) ->
       x ^ ("__" ^ (tvar_of_ident xs))
   | _ -> failwith "internal error in the Grammar extension"
+
 let map_to_string ident =
   let rec aux i acc =
     match i with
@@ -16,6 +19,7 @@ let map_to_string ident =
     | (`Uid (_loc,x) : Ast.ident) -> (String.lowercase x) ^ acc
     | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
   aux ident ""
+
 let ident_map f x =
   let lst = list_of_dot x [] in
   match lst with
@@ -27,6 +31,7 @@ let ident_map f x =
        | q::(`Lid (_loc,y) : Ast.ident)::[] ->
            (`Dot (_loc, q, (`Lid (_loc, (f y)))) : Ast.ident )
        | _ -> FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_ident x))
+
 let ident_map_of_ident f x =
   let lst = list_of_dot x [] in
   match lst with

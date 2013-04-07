@@ -1,16 +1,25 @@
 open Ast
+
 open AstLoc
+
 open FanOps
+
 open Syntax
+
 open LibUtil
+
 open FanUtil
+
 open GramLib
+
 let help_sequences () =
   Printf.eprintf
     "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    begin e1; e2; ... ; en end\n    while e begin e1; e2; ... ; en end\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n";
   flush stderr;
   exit 1
+
 let pos_exps = Gram.mk "pos_exps"
+
 let apply () =
   Options.add
     ("-help_seq", (FanArg.Unit help_sequences),
@@ -5594,6 +5603,7 @@ let apply () =
             (Gram.mk_action
                (fun (i : 'class_type_longident)  (_loc : FanLoc.t)  ->
                   (`ClassConS (_loc, (`ViNil _loc), i) : 'class_type_longident_and_param )))))]))
+
 let apply_ctyp () =
   Gram.extend_single (ctyp_quot : 'ctyp_quot Gram.t )
     (None,
@@ -6583,5 +6593,6 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun (t : 'ctyp)  (_loc : FanLoc.t)  ->
                   (`Ctyp (_loc, t) : 'comma_ctyp )))))]))
+
 let _ =
   AstParsers.register_parser ("revise", (fun ()  -> apply (); apply_ctyp ()))

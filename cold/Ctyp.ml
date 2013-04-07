@@ -1,18 +1,27 @@
 open Ast
+
 open AstLoc
+
 open LibUtil
+
 open Basic
+
 open FSig
+
 let arrow_of_list = List.reduce_right arrow
+
 let app_arrow lst acc = List.fold_right arrow lst acc
+
 let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
     (fun name  acc  ->
        (`Arrow
           (_loc, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, name)))), acc) : 
        Ast.ctyp )) names ty
+
 let (+>) (params : ctyp list) (base : ctyp) =
   List.fold_right arrow params base
+
 let name_length_of_tydcl (x : typedecl) =
   (match x with
    | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
@@ -22,7 +31,8 @@ let name_length_of_tydcl (x : typedecl) =
            | `Some (_,xs) -> List.length & (list_of_com xs []))))
    | tydcl ->
        failwithf "name_length_of_tydcl {|%s|}\n" (Objs.dump_typedecl tydcl) : 
-  (string* int) )
+  (string * int) )
+
 let gen_quantifiers1 ~arity  n =
   (((List.init arity
        (fun i  ->
@@ -32,14 +42,17 @@ let gen_quantifiers1 ~arity  n =
                Ast.ctyp ))))
       |> List.concat)
      |> appl_of_list : ctyp )
+
 let of_id_len ~off  (id,len) =
   appl_of_list ((`Id (_loc, id) : Ast.ctyp ) ::
     (List.init len
        (fun i  ->
           (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))) : 
           Ast.ctyp ))))
+
 let of_name_len ~off  (name,len) =
   let id = `Lid (_loc, name) in of_id_len ~off (id, len)
+
 let ty_name_of_tydcl (x : typedecl) =
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
@@ -49,8 +62,10 @@ let ty_name_of_tydcl (x : typedecl) =
         | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
       appl_of_list ((`Id (_loc, (`Lid (_loc, name))) : Ast.ctyp ) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
+
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
+
 let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= list_of_sem ty [] in
    tys |>
@@ -63,9 +78,13 @@ let list_of_record (ty : name_ctyp) =
          | t0 ->
              FanLoc.errorf (loc_of t0) "list_of_record %s"
                (Objs.dump_name_ctyp t0))) : FSig.col list )
+
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
+
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
+
 let result_id = ref 0
+
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let prefix =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
@@ -114,9 +133,11 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
       ((`TyPol (_loc, quantifiers, (params +> base)) : Ast.ctyp ), dst)) : 
-  (ctyp* ctyp) )
+  (ctyp * ctyp) )
+
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
+
 let mk_obj class_name base body =
   `Class
     (_loc,
@@ -136,6 +157,7 @@ let mk_obj class_name base body =
                           (`ClassConS
                              (_loc, (`ViNil _loc), (`Lid (_loc, base)))))),
                      body)))))))
+
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->
@@ -155,6 +177,7 @@ let is_recursive ty_dcl =
   | _ ->
       failwithf "is_recursive not type declartion: %s"
         (Objs.dump_typedecl ty_dcl)
+
 let qualified_app_list =
   function
   | (`App (_loc,_,_) : Ast.ctyp) as x ->
@@ -166,8 +189,10 @@ let qualified_app_list =
       None
   | (`Id (_loc,i) : Ast.ctyp) -> Some (i, [])
   | _ -> None
+
 let is_abstract (x : typedecl) =
   match x with | `TyAbstr _ -> true | _ -> false
+
 let abstract_list (x : typedecl) =
   match x with
   | `TyAbstr (_,_,lst,_) ->
@@ -175,9 +200,11 @@ let abstract_list (x : typedecl) =
        | `None _ -> Some 0
        | `Some (_,xs) -> Some (List.length & (list_of_com xs [])))
   | _ -> None
+
 let eq t1 t2 =
   let strip_locs t = (Objs.map_loc (fun _  -> FanLoc.ghost))#ctyp t in
   (strip_locs t1) = (strip_locs t2)
+
 let eq_list t1 t2 =
   let rec loop =
     function
@@ -185,6 +212,7 @@ let eq_list t1 t2 =
     | (x::xs,y::ys) -> (eq x y) && (loop (xs, ys))
     | (_,_) -> false in
   loop (t1, t2)
+
 let mk_transform_type_eq () =
   object (self : 'self_type)
     val transformers = Hashtbl.create 50
@@ -223,6 +251,7 @@ let mk_transform_type_eq () =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)
         transformers []
   end
+
 let transform_module_types (lst : FSig.module_types) =
   let obj = mk_transform_type_eq () in
   let item1 =
@@ -232,6 +261,7 @@ let transform_module_types (lst : FSig.module_types) =
            `Mutual (List.map (fun (s,ty)  -> (s, (obj#typedecl ty))) ls)
        | `Single (s,ty) -> `Single (s, (obj#typedecl ty))) lst in
   let new_types = obj#type_transformers in (new_types, item1)
+
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
   let branches = list_of_or ty [] in
@@ -244,6 +274,7 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
        | t ->
            FanLoc.errorf (loc_of t) "reduce_data_ctors: %s"
              (Objs.dump_or_ctyp t)) init branches
+
 let view_sum (t : or_ctyp) =
   let bs = list_of_or t [] in
   List.map
@@ -252,6 +283,7 @@ let view_sum (t : or_ctyp) =
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
          `branch (cons, (list_of_star t []))
      | _ -> assert false) bs
+
 let view_variant (t : row_field) =
   (let lst = list_of_or t [] in
    List.map
@@ -264,6 +296,7 @@ let view_variant (t : row_field) =
       | u ->
           FanLoc.errorf (loc_of u) "view_variant %s" (Objs.dump_row_field u))
      lst : vbranch list )
+
 let of_stru =
   function
   | `Type (_,x) -> x

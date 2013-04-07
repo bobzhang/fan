@@ -1,4 +1,5 @@
 open Structure
+
 let delete_rule_in_tree entry =
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with
@@ -24,7 +25,9 @@ let delete_rule_in_tree entry =
     | ([],LocAct (_,[])) -> Some ((Some []), DeadEnd)
     | ([],LocAct (_,action::list)) -> Some (None, (LocAct (action, list))) in
   delete_in_tree
+
 let removing _gram _kwd = ()
+
 let rec decr_keyw_use gram =
   function
   | `Skeyword kwd -> removing gram kwd
@@ -41,6 +44,7 @@ and decr_keyw_use_in_tree gram =
       (decr_keyw_use gram n.node;
        decr_keyw_use_in_tree gram n.son;
        decr_keyw_use_in_tree gram n.brother)
+
 let rec delete_rule_in_suffix entry symbols =
   function
   | lev::levs ->
@@ -55,6 +59,7 @@ let rec delete_rule_in_suffix entry symbols =
        | None  ->
            let levs = delete_rule_in_suffix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
+
 let rec delete_rule_in_prefix entry symbols =
   function
   | lev::levs ->
@@ -69,12 +74,14 @@ let rec delete_rule_in_prefix entry symbols =
        | None  ->
            let levs = delete_rule_in_prefix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
+
 let delete_rule_in_level_list entry symbols levs =
   match symbols with
   | `Sself::symbols -> delete_rule_in_suffix entry symbols levs
   | (`Snterm e)::symbols when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs
+
 let delete_rule entry sl =
   match entry.edesc with
   | Dlevels levs ->

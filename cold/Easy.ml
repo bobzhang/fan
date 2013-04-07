@@ -1,6 +1,9 @@
 open Transform
+
 open FSig
+
 let _loc = FanLoc.ghost
+
 let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App
      (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
@@ -34,6 +37,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
       ~mk_variant ~left_type_id ~left_type_variable ~mk_record
       (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
          ~left_type_id ~right_type_variable)
+
 let gen_object ?module_name  ?(arity= 1)  ?(default=
   (`App
      (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),

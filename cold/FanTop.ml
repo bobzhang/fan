@@ -1,6 +1,9 @@
 open Ast
+
 open LibUtil
+
 open Fan
+
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_,f)  -> f ()) in
   try
@@ -18,6 +21,7 @@ let wrap parse_fun lb =
          (Printexc.to_string y);
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
+
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens (Syntax.top_phrase : stru option Gram.t )
           token_stream
@@ -25,6 +29,7 @@ let toplevel_phrase token_stream =
   | Some stru ->
       let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
+
 let use_file token_stream =
   let rec loop () =
     let (pl,stopped_at_directive) =
@@ -53,19 +58,25 @@ let use_file token_stream =
        loop ()) in
   List.map (fun x  -> Ast2pt.phrase (AstFilters.apply_implem_filters x))
     (pl0 @ pl)
+
 let revise_parser = wrap toplevel_phrase
+
 let _ =
   Syntax.current_warning :=
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
   iter_and_take_callbacks (fun (_,f)  -> f ())
+
 let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
+
 let normal () =
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
   Toploop.parse_use_file := Parse.use_file
+
 let revise () =
   Toploop.parse_toplevel_phrase := revise_parser;
   Toploop.parse_use_file := (wrap use_file)
+
 let _ =
   Hashtbl.replace Toploop.directive_table "revise"
     (Toploop.Directive_none (fun ()  -> revise ()));

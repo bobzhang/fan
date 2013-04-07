@@ -1,28 +1,39 @@
 open Ast
+
 open AstLoc
+
 type spat_comp =  
   | SpTrm of FanLoc.t* pat* exp option
   | SpNtr of FanLoc.t* pat* exp
   | SpStr of FanLoc.t* pat 
+
 type sexp_comp =  
   | SeTrm of FanLoc.t* exp
   | SeNtr of FanLoc.t* exp 
+
 let grammar_module_name = ref "XStream"
+
 let gm () = grammar_module_name.contents
+
 let strm_n = "__strm"
+
 let peek_fun _loc =
   (`Id (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "peek"))))) : 
   Ast.exp )
+
 let junk_fun _loc =
   (`Id (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "junk"))))) : 
   Ast.exp )
+
 let empty _loc =
   (`Id (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "sempty"))))) : 
   Ast.exp )
+
 let is_raise =
   function
   | (`App (_loc,`Id (_,`Lid (_,"raise")),_) : Ast.exp) -> true
   | _ -> false
+
 let is_raise_failure =
   function
   | (`App
@@ -31,6 +42,7 @@ let is_raise_failure =
                                              (_,`Uid (_,m),`Uid (_,"Failure"))))
       : Ast.exp) when m = (gm ()) -> true
   | _ -> false
+
 let rec handle_failure e =
   match e with
   | (`Try (_loc,_,`Case (_,`Id (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure"))),e))
@@ -68,6 +80,7 @@ and is_constr_apply =
   | (`Id (_loc,`Lid (_,_)) : Ast.exp) -> false
   | (`App (_loc,x,_) : Ast.exp) -> is_constr_apply x
   | _ -> false
+
 let rec subst v e =
   let _loc = loc_of e in
   match e with
@@ -94,6 +107,7 @@ and subst_binding v =
          (_loc, (`Id (_loc, (`Lid (_loc, v')))),
            (if v = v' then e else subst v e)) : Ast.binding )
   | _ -> raise Not_found
+
 let stream_pattern_component skont ckont =
   function
   | SpTrm (_loc,p,None ) ->
@@ -239,6 +253,7 @@ let stream_pattern_component skont ckont =
               (_loc, (`ReNil _loc),
                 (`Bind (_loc, p, (`Id (_loc, (`Lid (_loc, strm_n)))))),
                 skont) : Ast.exp ))
+
 let rec stream_pattern _loc epo e ekont =
   function
   | [] ->
@@ -276,6 +291,7 @@ let rec stream_pattern _loc epo e ekont =
                               (`Uid (_loc, "Error")))))), str))) : Ast.exp ) in
         stream_pattern _loc epo e ekont spcl in
       let ckont = ekont err in stream_pattern_component skont ckont spc
+
 let stream_patterns_term _loc ekont tspel =
   (let pel =
      List.fold_right
@@ -316,12 +332,14 @@ let stream_patterns_term _loc ekont tspel =
       (_loc,
         (`App (_loc, (peek_fun _loc), (`Id (_loc, (`Lid (_loc, strm_n)))))),
         pel) : Ast.exp ) : exp )
+
 let rec group_terms =
   function
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->
       let (tspel,spel) = group_terms spel in
       (((p, w, _loc, spcl, epo, e) :: tspel), spel)
   | spel -> ([], spel)
+
 let rec parser_cases _loc =
   function
   | [] ->
@@ -338,6 +356,7 @@ let rec parser_cases _loc =
            stream_pattern _loc epo e (fun _  -> parser_cases _loc spel) spcl
        | (tspel,spel) ->
            stream_patterns_term _loc (fun _  -> parser_cases _loc spel) tspel)
+
 let cparser _loc bpo pc =
   let e = parser_cases _loc pc in
   let e =
@@ -367,6 +386,7 @@ let cparser _loc bpo pc =
                   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))))),
              (`Any _loc)))) in
   (`Fun (_loc, (`Case (_loc, p, e))) : Ast.exp )
+
 let cparser_match _loc me bpo pc =
   let pc = parser_cases _loc pc in
   let e =
@@ -403,6 +423,7 @@ let cparser_match _loc me bpo pc =
                                   (_loc, (`Uid (_loc, (gm ()))),
                                     (`Lid (_loc, "t")))))), (`Any _loc))))),
                 me)), e) : Ast.exp )
+
 let rec not_computing =
   function
   | (`Id (_loc,`Lid (_,_)) : Ast.exp)|(`Id (_loc,`Uid (_,_)) : Ast.exp)
@@ -418,6 +439,7 @@ and is_cons_apply_not_computing =
   | (`App (_loc,x,y) : Ast.exp) ->
       (is_cons_apply_not_computing x) && (not_computing y)
   | _ -> false
+
 let slazy _loc e =
   match e with
   | (`App (_loc,f,`Id (_,`Uid (_,"()"))) : Ast.exp) ->
@@ -425,6 +447,7 @@ let slazy _loc e =
        | (`Id (_loc,`Lid (_,_)) : Ast.exp) -> f
        | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : Ast.exp ))
   | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : Ast.exp )
+
 let rec cstream gloc =
   function
   | [] ->

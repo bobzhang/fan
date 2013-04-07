@@ -1,11 +1,15 @@
 open Structure
+
 open Format
+
 open LibUtil
+
 let higher s1 s2 =
   match (s1, s2) with
   | (#terminal,#terminal) -> false
   | (#terminal,_) -> true
   | _ -> false
+
 let rec derive_eps: symbol -> bool =
   function
   | `Slist0 _|`Slist0sep (_,_)|`Sopt _|`Speek _ -> true
@@ -19,10 +23,13 @@ and tree_derive_eps: tree -> bool =
   | Node { node = s; brother = bro; son } ->
       ((derive_eps s) && (tree_derive_eps son)) || (tree_derive_eps bro)
   | DeadEnd  -> false
+
 let empty_lev lname assoc =
   { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd; productions = [] }
+
 let levels_of_entry e =
   match e.edesc with | Dlevels ls -> Some ls | _ -> None
+
 let find_level ?position  entry levs =
   let find x n ls =
     let rec get =
@@ -49,6 +56,7 @@ let find_level ?position  entry levs =
       (match levs with
        | lev::levs -> ([], (Some (lev, "<top>")), levs)
        | [] -> ([], None, []))
+
 let rec check_gram entry =
   function
   | `Snterm e ->
@@ -76,8 +84,10 @@ and tree_check_gram entry =
        tree_check_gram entry brother;
        tree_check_gram entry son)
   | LocAct _|DeadEnd  -> ()
+
 let get_initial =
   function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
+
 let rec using_symbols gram symbols acc =
   List.fold_left (fun acc  symbol  -> using_symbol gram symbol acc) acc
     symbols
@@ -95,6 +105,7 @@ and using_node gram node acc =
   | Node { node = s; brother = bro; son } ->
       using_node gram son (using_node gram bro (using_symbol gram s acc))
   | LocAct (_,_)|DeadEnd  -> acc
+
 let add_production ((gsymbols,(annot,action)) : production) tree =
   let anno_action = ((List.length gsymbols), gsymbols, annot, action) in
   let rec try_insert s sl tree =
@@ -140,12 +151,14 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
               LocAct (anno_action, (old_action :: action_list)))
          | DeadEnd  -> LocAct (anno_action, [])) in
   insert gsymbols tree
+
 let add_production_in_level e1 (symbols,action) slev =
   if e1
   then
     { slev with lsuffix = (add_production (symbols, action) slev.lsuffix) }
   else
     { slev with lprefix = (add_production (symbols, action) slev.lprefix) }
+
 let merge_level (la : level) (lb : olevel) =
   let rules1 =
     match lb with
@@ -171,9 +184,11 @@ let merge_level (la : level) (lb : olevel) =
     (fun (symbols,action)  lev  ->
        let (e1,symbols) = get_initial symbols in
        add_production_in_level e1 (symbols, action) lev) rules1 la
+
 let level_of_olevel (lb : olevel) =
   let (lname1,assoc1,_) = lb in
   let la = empty_lev lname1 (Option.default `LA assoc1) in merge_level la lb
+
 let insert_olevels_in_levels entry position olevels =
   let elev =
     match entry.edesc with
@@ -190,6 +205,7 @@ let insert_olevels_in_levels entry position olevels =
            failwithf "Insert group levels in to a specific lev:%s"
              entry.ename
        | None  -> levs1 @ ((List.map level_of_olevel olevels) @ levs2))
+
 let insert_olevel entry position olevel =
   let elev =
     match entry.edesc with
@@ -203,6 +219,7 @@ let insert_olevel entry position olevel =
     | Some (lev,_n) -> merge_level lev olevel
     | None  -> level_of_olevel olevel in
   levs1 @ (l1 :: levs2)
+
 let rec scan_olevels entry (levels : olevel list) =
   List.map (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
@@ -223,12 +240,14 @@ and scan_product entry (symbols,x) =
          (match symbol with
           | `Snterm e when e == entry -> `Sself
           | _ -> symbol)) symbols), x)
+
 let extend entry (position,levels) =
   let levels = scan_olevels entry levels in
   let elev = insert_olevels_in_levels entry position levels in
   entry.edesc <- Dlevels elev;
   entry.estart <- FanParser.start_parser_of_entry entry;
   entry.econtinue <- FanParser.continue_parser_of_entry entry
+
 let extend_single entry (position,level) =
   let level = scan_olevel entry level in
   let elev = insert_olevel entry position level in

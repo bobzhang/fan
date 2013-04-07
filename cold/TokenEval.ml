@@ -1,17 +1,22 @@
 let valch x = (Char.code x) - (Char.code '0')
+
 let valch_hex x =
   let d = Char.code x in
   if d >= 97 then d - 87 else if d >= 65 then d - 55 else d - 48
+
 let rec skip_indent (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some (' '|'\t') -> (XStream.junk __strm; skip_indent __strm)
   | _ -> ()
+
 let skip_opt_linefeed (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some '\n' -> (XStream.junk __strm; ())
   | _ -> ()
+
 let chr c =
   if (c < 0) || (c > 255) then failwith "invalid char token" else Char.chr c
+
 let backslash (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some ('\n'|'\r'|'\\'|'\''|' '|'"' as x) -> (XStream.junk __strm; x)
@@ -43,6 +48,7 @@ let backslash (__strm : _ XStream.t) =
               | _ -> raise (XStream.Error "")))
         | _ -> raise (XStream.Error "")))
   | _ -> raise XStream.Failure
+
 let backslash_in_string strict store (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some '\n' -> (XStream.junk __strm; skip_indent __strm)
@@ -57,6 +63,7 @@ let backslash_in_string strict store (__strm : _ XStream.t) =
             | Some c when not strict ->
                 (XStream.junk __strm; store '\\'; store c)
             | _ -> failwith "invalid string token"))
+
 let char s =
   if (String.length s) = 1
   then s.[0]
@@ -71,6 +78,7 @@ let char s =
             (try backslash __strm
              with | XStream.Failure  -> raise (XStream.Error "")))
        | _ -> failwith "invalid char token")
+
 let string ?strict  s =
   let buf = Buffer.create 23 in
   let store = Buffer.add_char buf in

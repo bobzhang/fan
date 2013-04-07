@@ -1,18 +1,25 @@
 open Ast
+
 open FanUtil
+
 open Meta
+
 open AstLoc
+
 let meta_loc_exp _loc loc =
   match AstQuotation.current_loc_name.contents with
   | None  -> lid _loc FanLoc.name.contents
   | Some "here" -> meta_loc _loc loc
   | Some x -> lid _loc x
+
 let meta_loc_pat _loc _ = `Any _loc
+
 let gm () =
   match FanConfig.compilation_unit.contents with
   | Some "FanAst" -> ""
   | Some _ -> "FanAst"
   | None  -> "FanAst"
+
 let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
     inherit  Objs.map as super

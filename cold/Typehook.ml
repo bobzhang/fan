@@ -1,7 +1,11 @@
 open LibUtil
+
 open AstLoc
+
 open FSig
+
 open Format
+
 let apply_filter f (m : module_types) =
   (let f =
      function
@@ -15,16 +19,22 @@ let apply_filter f (m : module_types) =
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
    List.filter_map f m : module_types )
+
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
+
 let show_code = ref false
+
 let print_collect_module_types = ref false
+
 let register ?filter  ?position  (name,f) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else Hashtbl.add filters name { transform = f; position; filter }
+
 let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
   print_newline ()
+
 let plugin_add plugin =
   (try
      let v = Hashtbl.find filters plugin in
@@ -40,8 +50,10 @@ let plugin_add plugin =
    | Not_found  ->
        (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
+
 let plugin_remove plugin =
   Ref.modify FanState.current_filters (fun x  -> List.remove plugin x)
+
 class type traversal
   =
   object 
@@ -52,6 +64,7 @@ class type traversal
     method update_cur_module_types :
       (FSig.module_types -> FSig.module_types) -> unit
   end
+
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
@@ -128,6 +141,7 @@ let traversal () =
             t)
        | t -> super#typedecl t
    end : traversal )
+
 let g =
   Gram.create_lexer
     ~keywords:["derive";
@@ -142,8 +156,11 @@ let g =
               ")";
               ",";
               ";"] ~annot:"derive" ()
+
 let fan_quot = Gram.mk_dynamic g "fan_quot"
+
 let fan_quots = Gram.mk_dynamic g "fan_quots"
+
 let _ =
   Gram.extend_single (fan_quot : 'fan_quot Gram.t )
     (None,
@@ -247,8 +264,11 @@ let _ =
              (Gram.mk_action
                 (fun (xs : 'e__3 list)  (_loc : FanLoc.t)  ->
                    (seq_sem xs : 'fan_quots )))))]))
+
 let g = Gram.create_lexer ~annot:"include" ~keywords:[] ()
+
 let include_quot = Gram.mk_dynamic g "include_quot"
+
 let _ =
   Gram.extend_single (include_quot : 'include_quot Gram.t )
     (None,
@@ -279,7 +299,9 @@ let _ =
                    | _ ->
                        failwith
                          "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
+
 let save_quot = Gram.mk "save_quot"
+
 let _ =
   Gram.extend_single (save_quot : 'save_quot Gram.t )
     (None,
@@ -353,6 +375,7 @@ let _ =
                                                     (_loc,
                                                       (`Lid (_loc, exc))))))))))))))) : 
                    'save_quot )))))]))
+
 let _ =
   PreCast.Syntax.Options.add
     ("-keep", (FanArg.Set FanState.keep),

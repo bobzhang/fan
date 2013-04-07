@@ -1,15 +1,27 @@
 open Parsetree
+
 open Longident
+
 open Asttypes
+
 open LibUtil
+
 open FanUtil
+
 open ParsetreeHelper
+
 open FanLoc
+
 open FanOps
+
 open Ast
+
 open AstLoc
+
 open Objs
+
 let _ = ()
+
 let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : Ast.ident) ->
@@ -18,6 +30,7 @@ let rec normalize_acc =
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | (`Ant (_loc,_) : Ast.ident)|(`Uid (_loc,_) : Ast.ident)
     |(`Lid (_loc,_) : Ast.ident) as i -> (`Id (_loc, i) : Ast.exp )
+
 let rec sep_dot_exp acc =
   function
   | (`Dot (_loc,e1,e2) : Ast.exp) -> sep_dot_exp (sep_dot_exp acc e2) e1
@@ -28,21 +41,25 @@ let rec sep_dot_exp acc =
   | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
       sep_dot_exp acc (normalize_acc i)
   | e -> ((loc_of e), [], e) :: acc
+
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
   | `Virtual _ -> Virtual
   | `ViNil _ -> Concrete
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let mkdirection: direction_flag -> Asttypes.direction_flag =
   function
   | `To _ -> Upto
   | `Downto _ -> Downto
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let mkrf: rec_flag -> Asttypes.rec_flag =
   function
   | `Recursive _ -> Recursive
   | `ReNil _ -> Nonrecursive
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let ident_tag (i : ident) =
   let rec self i acc =
     match i with
@@ -72,23 +89,31 @@ let ident_tag (i : ident) =
   match self i None with
   | Some x -> x
   | None  -> error (loc_of i) "invalid long identifier "
+
 let ident_noloc i = fst (ident_tag i)
+
 let ident (i : ident) =
   (with_loc (ident_noloc i) (loc_of i) : Longident.t Location.loc )
+
 let long_lident ~err  id =
   match ident_tag id with
   | (i,`lident) -> i +> (loc_of id)
   | _ -> error (loc_of id) err
+
 let long_type_ident: ident -> Longident.t Location.loc =
   long_lident ~err:"invalid long identifier type"
+
 let long_class_ident = long_lident ~err:"invalid class name"
+
 let long_uident_noloc i =
   match ident_tag i with
   | (Ldot (i,s),`uident) -> ldot i s
   | (Lident s,`uident) -> lident s
   | (i,`app) -> i
   | _ -> error (loc_of i) "uppercase identifier expected"
+
 let long_uident i = (long_uident_noloc i) +> (loc_of i)
+
 let rec ctyp_long_id_prefix (t : ctyp) =
   (match t with
    | `Id (_loc,i) -> ident_noloc i
@@ -97,16 +122,19 @@ let rec ctyp_long_id_prefix (t : ctyp) =
        let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
    | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) : 
   Longident.t )
+
 let ctyp_long_id (t : ctyp) =
   (match t with
    | `Id (_loc,i) -> (false, (long_type_ident i))
    | `ClassPath (_,i) -> (true, (ident i))
-   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) : (bool*
+   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) : (bool *
                                                                 Longident.t
                                                                 Location.loc) )
+
 let predef_option loc =
   (`Id (loc, (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))))) : 
   ctyp )
+
 let rec ctyp (x : ctyp) =
   match x with
   | `Id (_loc,i) ->
@@ -187,14 +215,14 @@ and meth_list (fl : name_ctyp) acc =
    | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x) : core_field_type
                                                                    list )
 and package_type_constraints (wc : with_constr)
-  (acc : (Longident.t Asttypes.loc* core_type) list) =
+  (acc : (Longident.t Asttypes.loc * core_type) list) =
   (match wc with
    | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
    | `And (_loc,wc1,wc2) ->
        package_type_constraints wc1 (package_type_constraints wc2 acc)
    | x ->
        errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
-         (dump_with_constr x) : (Longident.t Asttypes.loc* core_type) list )
+         (dump_with_constr x) : (Longident.t Asttypes.loc * core_type) list )
 and package_type (x : module_type) =
   match x with
   | `With (_loc,`Id (_,i),wc) ->
@@ -202,6 +230,7 @@ and package_type (x : module_type) =
   | `Id (_loc,i) -> ((long_uident i), [])
   | mt ->
       errorf (loc_of mt) "unexpected package type: %s" (dump_module_type mt)
+
 let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
   let (params,variance) = List.split tl in
   {
@@ -213,12 +242,15 @@ let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
     ptype_loc = loc;
     ptype_variance = variance
   }
+
 let mkprivate' m = if m then Private else Public
+
 let mkprivate (x : private_flag) =
   match x with
   | `Private _ -> Private
   | `PrNil _ -> Public
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let mktrecord (x : name_ctyp) =
   match x with
   | `TyColMut (_loc,`Id (_,`Lid (sloc,s)),t) ->
@@ -226,6 +258,7 @@ let mktrecord (x : name_ctyp) =
   | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mktrecord %s " (dump_name_ctyp t)
+
 let mkvariant (x : or_ctyp) =
   match x with
   | `Id (_loc,`Uid (sloc,s)) -> ((with_loc s sloc), [], None, _loc)
@@ -237,28 +270,33 @@ let mkvariant (x : or_ctyp) =
   | `TyCol (_loc,`Id (_,`Uid (sloc,s)),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t)
+
 let type_kind (x : type_repr) =
   match x with
   | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem t []))
   | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or t []))
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let mkvalue_desc loc t (p : strings list) =
   let ps =
     List.map
       (fun p  ->
          match p with | `Str (_,p) -> p | _ -> failwithf "mkvalue_desc") p in
   { pval_type = (ctyp t); pval_prim = ps; pval_loc = loc }
+
 let mkmutable (x : mutable_flag) =
   match x with
   | `Mutable _ -> Mutable
   | `MuNil _ -> Immutable
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+
 let paolab (lab : string) (p : pat) =
   (match (lab, p) with
    | ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_))) ->
        i
    | ("",p) -> errorf (loc_of p) "paolab %s" (dump_pat p)
    | _ -> lab : string )
+
 let quote_map x =
   match x with
   | `Quote (_loc,p,`Lid (sloc,s)) ->
@@ -278,8 +316,10 @@ let quote_map x =
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
       (None, tuple)
   | _ -> errorf (loc_of x) "quote_map %s" (dump_ctyp x)
+
 let optional_type_parameters (t : ctyp) =
   List.map quote_map (list_of_app t [])
+
 let mk_type_parameters (tl : opt_decl_params) =
   (match tl with
    | `None _ -> []
@@ -288,8 +328,9 @@ let mk_type_parameters (tl : opt_decl_params) =
        List.map
          (function
           | #decl_param as x -> quote_map (x :>ctyp)
-          | _ -> assert false) xs : (string Asttypes.loc option* (bool*
+          | _ -> assert false) xs : (string Asttypes.loc option * (bool *
                                       bool)) list )
+
 let class_parameters (t : type_parameters) =
   List.filter_map
     (function
@@ -301,6 +342,7 @@ let class_parameters (t : type_parameters) =
                 (dump_type_parameters t))
      | _ -> errorf (loc_of t) "class_parameters %s" (dump_type_parameters t))
     (list_of_com t [])
+
 let type_parameters_and_type_name (t : ctyp) =
   let rec aux t acc =
     match t with
@@ -308,8 +350,10 @@ let type_parameters_and_type_name (t : ctyp) =
     | `Id (_loc,i) -> ((ident i), acc)
     | x -> errorf (loc_of x) "type_parameters_and_type_name %s" (dump_ctyp x) in
   aux t []
+
 let rec pat_fa (al : pat list) (x : pat) =
   match x with | `App (_,f,a) -> pat_fa (a :: al) f | f -> (f, al)
+
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2
   then mkghpat loc (Ppat_constant (Const_char c1))
@@ -318,6 +362,7 @@ let rec deep_mkrangepat loc c1 c2 =
       (Ppat_or
          ((mkghpat loc (Ppat_constant (Const_char c1))),
            (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
+
 let rec mkrangepat loc c1 c2 =
   if c1 > c2
   then mkrangepat loc c2 c1
@@ -329,6 +374,7 @@ let rec mkrangepat loc c1 c2 =
         (Ppat_or
            ((mkghpat loc (Ppat_constant (Const_char c1))),
              (deep_mkrangepat loc (Char.chr ((Char.code c1) + 1)) c2)))
+
 let rec pat (x : pat) =
   match x with
   | (`Id (_loc,`Lid (_,("true"|"false" as txt))) : Ast.pat) ->
@@ -447,11 +493,13 @@ let rec pat (x : pat) =
         (Ppat_constraint
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
   | p -> error (loc_of p) "invalid pattern"
+
 let override_flag loc (x : override_flag) =
   match x with
   | `Override _ -> Override
   | `OvNil _ -> Fresh
   | _ -> error loc "antiquotation not allowed here"
+
 let rec exp (x : exp) =
   match x with
   | `Dot (_loc,_,_)|`Id (_loc,`Dot _) ->
@@ -892,7 +940,7 @@ and sig_item (s : sig_item) (l : signature) =
        :: l
    | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t) : signature )
 and module_sig_binding (x : module_binding)
-  (acc : (string Asttypes.loc* Parsetree.module_type) list) =
+  (acc : (string Asttypes.loc * Parsetree.module_type) list) =
   match x with
   | `And (_,x,y) -> module_sig_binding x (module_sig_binding y acc)
   | `Constraint (_loc,`Uid (sloc,s),mt) ->
@@ -1159,8 +1207,11 @@ and cstru (c : cstru) l =
       (mkcf loc (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
       :: l
   | x -> errorf (loc_of x) "cstru: %s" (dump_cstru x)
+
 let sig_item (ast : sig_item) = (sig_item ast [] : signature )
+
 let stru ast = stru ast []
+
 let directive (x : exp) =
   match x with
   | `Str (_,s) -> Pdir_string s
@@ -1168,16 +1219,24 @@ let directive (x : exp) =
   | (`Id (_loc,`Lid (_,"true")) : Ast.exp) -> Pdir_bool true
   | (`Id (_loc,`Lid (_,"false")) : Ast.exp) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_exp e))
+
 let phrase (x : stru) =
   match x with
   | `Directive (_,`Lid (_,d),dp) -> Ptop_dir (d, (directive dp))
   | `DirectiveSimple (_,`Lid (_,d)) -> Ptop_dir (d, Pdir_none)
   | `Directive (_,`Ant (_loc,_),_) -> error _loc "antiquotation not allowed"
   | si -> Ptop_def (stru si)
+
 open Format
+
 let pp = fprintf
+
 let print_exp f e = pp f "@[%a@]@." AstPrint.expression (exp e)
+
 let to_string_exp = to_string_of_printer print_exp
+
 let print_pat f e = pp f "@[%a@]@." AstPrint.pattern (pat e)
+
 let print_stru f e = pp f "@[%a@]@." AstPrint.structure (stru e)
+
 let print_ctyp f e = pp f "@[%a@]@." AstPrint.core_type (ctyp e)

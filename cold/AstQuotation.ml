@@ -1,47 +1,75 @@
 open Ast
+
 open LibUtil
+
 open FanToken
+
 open Format
+
 let _ = ()
+
 type quotation_error_message =  
   | Finding
   | Expanding
   | ParsingResult of FanLoc.t* string
   | NoName 
-type quotation_error = (name* string* quotation_error_message* exn) 
+
+type quotation_error = (name * string * quotation_error_message * exn) 
+
 exception QuotationError of quotation_error
+
 type 'a expand_fun = FanLoc.t -> string option -> string -> 'a 
+
 module ExpKey = FanDyn.Pack(struct type 'a t = unit  end)
+
 module ExpFun = FanDyn.Pack(struct type 'a t = 'a expand_fun  end)
+
 let current_loc_name = ref None
+
 let stack = Stack.create ()
+
 let current_quot () =
   try Stack.pop stack
   with | Stack.Empty  -> failwith "it's not in a quotation context"
+
 let dump_file = ref None
-type key = (name* ExpKey.pack) 
+
+type key = (name * ExpKey.pack) 
+
 module QMap = MapMake(struct type t = key 
                              let compare = compare end)
+
 let map = ref SMap.empty
+
 let update (pos,(str : name)) = map := (SMap.add pos str map.contents)
+
 let fan_default = ((`Absolute ["Fan"]), "")
+
 let default: name ref = ref fan_default
+
 let set_default s = default := s
+
 let clear_map () = map := SMap.empty
+
 let clear_default () = default := fan_default
+
 let expander_name ~pos:(pos : string)  (name : name) =
   match name with
   | (`Sub [],"") ->
       SMap.find_default ~default:(default.contents) pos map.contents
   | (`Sub _,_) -> FanToken.resolve_name name
   | _ -> name
+
 let default_at_pos pos str = update (pos, str)
+
 let expanders_table = ref QMap.empty
+
 let add ((domain,n) as name) (tag : 'a FanDyn.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
+
 let expand_quotation loc ~expander  pos_tag quot =
   let open FanToken in
     let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
@@ -53,6 +81,7 @@ let expand_quotation loc ~expander  pos_tag quot =
     | exc ->
         let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
         raise (FanLoc.Exc_located (loc, exc1))
+
 let find loc name tag =
   let key =
     ((expander_name ~pos:(FanDyn.string_of_tag tag) name),
@@ -70,6 +99,7 @@ let find loc name tag =
                 (QuotationError (name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
+
 let expand loc (quotation : FanToken.quotation) tag =
   let open FanToken in
     let pos_tag = FanDyn.string_of_tag tag in
@@ -94,6 +124,7 @@ let expand loc (quotation : FanToken.quotation) tag =
             raise
               (FanLoc.Exc_located
                  (loc, (QuotationError (name, pos_tag, Finding, exc)))))) ()
+
 let quotation_error_to_string (name,position,ctx,exn) =
   let ppf = Buffer.create 30 in
   let name = expander_name ~pos:position name in
@@ -136,11 +167,13 @@ let quotation_error_to_string (name,position,ctx,exn) =
     | NoName  -> pp "No default quotation name" in
   let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn) in
   Buffer.contents ppf
+
 let _ =
   Printexc.register_printer
     (function
      | QuotationError x -> Some (quotation_error_to_string x)
      | _ -> None)
+
 let parse_quotation_result parse loc quot pos_tag str =
   let open FanToken in
     try parse loc str
@@ -155,6 +188,7 @@ let parse_quotation_result parse loc quot pos_tag str =
         let ctx = ParsingResult (iloc, (quot.q_contents)) in
         let exc1 = QuotationError ((quot.q_name), pos_tag, ctx, exc) in
         FanLoc.raise iloc exc1
+
 let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
   let entry_eoi = Gram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
@@ -192,37 +226,50 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
   add name FanDyn.exp_tag expand_exp;
   add name FanDyn.pat_tag expand_pat;
   add name FanDyn.stru_tag expand_stru
+
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
     (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
+
 let _ = ()
+
 let _ = ()
+
 let of_stru ~name  ~entry  = add name FanDyn.stru_tag (make_parser entry)
+
 let of_stru_with_filter ~name  ~entry  ~filter  =
   add name FanDyn.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
+
 let of_pat ~name  ~entry  = add name FanDyn.pat_tag (make_parser entry)
+
 let of_pat_with_filter ~name  ~entry  ~filter  =
   add name FanDyn.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
+
 let of_cstru ~name  ~entry  = add name FanDyn.cstru_tag (make_parser entry)
+
 let of_cstru_with_filter ~name  ~entry  ~filter  =
   add name FanDyn.cstru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
+
 let of_case ~name  ~entry  = add name FanDyn.case_tag (make_parser entry)
+
 let of_case_with_filter ~name  ~entry  ~filter  =
   add name FanDyn.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
+
 let of_exp ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
   add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
+
 let of_exp_with_filter ~name  ~entry  ~filter  =
   let expand_fun loc loc_name_opt s =
     filter (make_parser entry loc loc_name_opt s) in

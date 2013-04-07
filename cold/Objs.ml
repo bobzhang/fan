@@ -1,16 +1,26 @@
 open LibUtil
+
 open StdLib
+
 open Ast
+
 let strip_loc_list f lst = List.map f lst
+
 let strip_loc_ant ant = ant
+
 let _ = (); ()
+
 let _ = ()
+
 let pp_print_loc fmt _a0 = FanLoc.pp_print_t fmt _a0
+
 let pp_print_ant fmt (`Ant (_a0,_a1)) =
   Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
     FanUtil.pp_print_anti_cxt _a1
+
 let pp_print_nil fmt (`Nil _a0) =
   Format.fprintf fmt "@[<1>(`Nil@ %a)@]" pp_print_loc _a0
+
 let pp_print_literal fmt =
   function
   | `Chr (_a0,_a1) ->
@@ -34,46 +44,54 @@ let pp_print_literal fmt =
   | `Str (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
+
 let pp_print_rec_flag fmt =
   function
   | `Recursive _a0 ->
       Format.fprintf fmt "@[<1>(`Recursive@ %a)@]" pp_print_loc _a0
   | `ReNil _a0 -> Format.fprintf fmt "@[<1>(`ReNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result4)
+
 let pp_print_direction_flag fmt =
   function
   | `To _a0 -> Format.fprintf fmt "@[<1>(`To@ %a)@]" pp_print_loc _a0
   | `Downto _a0 -> Format.fprintf fmt "@[<1>(`Downto@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result5)
+
 let pp_print_mutable_flag fmt =
   function
   | `Mutable _a0 ->
       Format.fprintf fmt "@[<1>(`Mutable@ %a)@]" pp_print_loc _a0
   | `MuNil _a0 -> Format.fprintf fmt "@[<1>(`MuNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result6)
+
 let pp_print_private_flag fmt =
   function
   | `Private _a0 ->
       Format.fprintf fmt "@[<1>(`Private@ %a)@]" pp_print_loc _a0
   | `PrNil _a0 -> Format.fprintf fmt "@[<1>(`PrNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result7)
+
 let pp_print_virtual_flag fmt =
   function
   | `Virtual _a0 ->
       Format.fprintf fmt "@[<1>(`Virtual@ %a)@]" pp_print_loc _a0
   | `ViNil _a0 -> Format.fprintf fmt "@[<1>(`ViNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result8)
+
 let pp_print_override_flag fmt =
   function
   | `Override _a0 ->
       Format.fprintf fmt "@[<1>(`Override@ %a)@]" pp_print_loc _a0
   | `OvNil _a0 -> Format.fprintf fmt "@[<1>(`OvNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result9)
+
 let pp_print_row_var_flag fmt =
   function
   | `RowVar _a0 -> Format.fprintf fmt "@[<1>(`RowVar@ %a)@]" pp_print_loc _a0
   | `RvNil _a0 -> Format.fprintf fmt "@[<1>(`RvNil@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result10)
+
 let pp_print_position_flag fmt =
   function
   | `Positive _a0 ->
@@ -82,6 +100,7 @@ let pp_print_position_flag fmt =
       Format.fprintf fmt "@[<1>(`Negative@ %a)@]" pp_print_loc _a0
   | `Normal _a0 -> Format.fprintf fmt "@[<1>(`Normal@ %a)@]" pp_print_loc _a0
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result11)
+
 let rec pp_print_strings fmt =
   function
   | `App (_a0,_a1,_a2) ->
@@ -91,28 +110,33 @@ let rec pp_print_strings fmt =
       Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result12)
+
 let pp_print_alident fmt =
   function
   | `Lid (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result13)
+
 let pp_print_auident fmt =
   function
   | `Uid (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Uid@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result14)
+
 let pp_print_aident fmt =
   function
   | #alident as _a0 -> (pp_print_alident fmt _a0 :>'result15)
   | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result15)
+
 let pp_print_astring fmt =
   function
   | `C (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`C@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result16)
+
 let rec pp_print_uident fmt =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -122,6 +146,7 @@ let rec pp_print_uident fmt =
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_uident _a1 pp_print_uident _a2
   | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result17)
+
 let rec pp_print_ident fmt =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -132,23 +157,28 @@ let rec pp_print_ident fmt =
         pp_print_ident _a1 pp_print_ident _a2
   | #alident as _a0 -> (pp_print_alident fmt _a0 :>'result18)
   | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result18)
+
 let rec pp_print_dupath fmt =
   function
   | `Dot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_dupath _a1 pp_print_dupath _a2
   | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result19)
+
 let pp_print_dlpath fmt =
   function
   | `Dot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_dupath _a1 pp_print_alident _a2
   | #alident as _a0 -> (pp_print_alident fmt _a0 :>'result20)
+
 let pp_print_any fmt (`Any _a0) =
   Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
+
 let pp_print_sid fmt (`Id (_a0,_a1)) =
   Format.fprintf fmt "@[<1>(`Id@ %a@ %a)@]" pp_print_loc _a0 pp_print_ident
     _a1
+
 let rec pp_print_ctyp fmt =
   function
   | `Alias (_a0,_a1,_a2) ->
@@ -901,6 +931,7 @@ and pp_print_cstru fmt =
       Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_mutable_flag _a2 pp_print_ctyp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result23)
+
 let rec pp_print_ep fmt =
   function
   | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result55)
@@ -940,6 +971,7 @@ and pp_print_rec_bind fmt =
         pp_print_rec_bind _a1 pp_print_rec_bind _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result54)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result54)
+
 class print =
   object (self : 'self_type)
     inherit  printbase
@@ -1941,6 +1973,7 @@ class print =
     method fanloc_t : 'fmt -> FanLoc.t -> unit= self#unknown
     method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> unit= self#unknown
   end
+
 class map =
   object (self : 'self_type)
     inherit  mapbase
@@ -3041,6 +3074,7 @@ class map =
     method fanutil_anti_cxt : FanUtil.anti_cxt -> FanUtil.anti_cxt=
       self#unknown
   end
+
 class fold =
   object (self : 'self_type)
     inherit  foldbase
@@ -3801,7 +3835,9 @@ class fold =
     method fanloc_t : FanLoc.t -> 'self_type= self#unknown
     method fanutil_anti_cxt : FanUtil.anti_cxt -> 'self_type= self#unknown
   end
+
 let strip_loc_nil (`Nil _a0) = `Nil
+
 let strip_loc_literal =
   function
   | `Chr (_a0,_a1) -> `Chr _a1
@@ -3811,47 +3847,56 @@ let strip_loc_literal =
   | `Flo (_a0,_a1) -> `Flo _a1
   | `NativeInt (_a0,_a1) -> `NativeInt _a1
   | `Str (_a0,_a1) -> `Str _a1
+
 let strip_loc_rec_flag =
   function
   | `Recursive _a0 -> `Recursive
   | `ReNil _a0 -> `ReNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result232)
+
 let strip_loc_direction_flag =
   function
   | `To _a0 -> `To
   | `Downto _a0 -> `Downto
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result233)
+
 let strip_loc_mutable_flag =
   function
   | `Mutable _a0 -> `Mutable
   | `MuNil _a0 -> `MuNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result234)
+
 let strip_loc_private_flag =
   function
   | `Private _a0 -> `Private
   | `PrNil _a0 -> `PrNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result235)
+
 let strip_loc_virtual_flag =
   function
   | `Virtual _a0 -> `Virtual
   | `ViNil _a0 -> `ViNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result236)
+
 let strip_loc_override_flag =
   function
   | `Override _a0 -> `Override
   | `OvNil _a0 -> `OvNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result237)
+
 let strip_loc_row_var_flag =
   function
   | `RowVar _a0 -> `RowVar
   | `RvNil _a0 -> `RvNil
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result238)
+
 let strip_loc_position_flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
   | `Normal _a0 -> `Normal
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result239)
+
 let rec strip_loc_strings =
   function
   | `App (_a0,_a1,_a2) ->
@@ -3859,22 +3904,27 @@ let rec strip_loc_strings =
       let _a2 = strip_loc_strings _a2 in `App (_a1, _a2)
   | `Str (_a0,_a1) -> `Str _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result240)
+
 let strip_loc_alident =
   function
   | `Lid (_a0,_a1) -> `Lid _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result241)
+
 let strip_loc_auident =
   function
   | `Uid (_a0,_a1) -> `Uid _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result242)
+
 let strip_loc_aident =
   function
   | #alident as _a0 -> (strip_loc_alident _a0 :>'result243)
   | #auident as _a0 -> (strip_loc_auident _a0 :>'result243)
+
 let strip_loc_astring =
   function
   | `C (_a0,_a1) -> `C _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result244)
+
 let rec strip_loc_uident =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -3884,6 +3934,7 @@ let rec strip_loc_uident =
       let _a1 = strip_loc_uident _a1 in
       let _a2 = strip_loc_uident _a2 in `App (_a1, _a2)
   | #auident as _a0 -> (strip_loc_auident _a0 :>'result245)
+
 let rec strip_loc_ident =
   function
   | `Dot (_a0,_a1,_a2) ->
@@ -3894,20 +3945,25 @@ let rec strip_loc_ident =
       let _a2 = strip_loc_ident _a2 in `App (_a1, _a2)
   | #alident as _a0 -> (strip_loc_alident _a0 :>'result246)
   | #auident as _a0 -> (strip_loc_auident _a0 :>'result246)
+
 let rec strip_loc_dupath =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_dupath _a1 in
       let _a2 = strip_loc_dupath _a2 in `Dot (_a1, _a2)
   | #auident as _a0 -> (strip_loc_auident _a0 :>'result247)
+
 let strip_loc_dlpath =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_dupath _a1 in
       let _a2 = strip_loc_alident _a2 in `Dot (_a1, _a2)
   | #alident as _a0 -> (strip_loc_alident _a0 :>'result248)
+
 let strip_loc_any (`Any _a0) = `Any
+
 let strip_loc_sid (`Id (_a0,_a1)) = let _a1 = strip_loc_ident _a1 in `Id _a1
+
 let rec strip_loc_ctyp =
   function
   | `Alias (_a0,_a1,_a2) ->
@@ -4553,6 +4609,7 @@ and strip_loc_cstru =
       let _a2 = strip_loc_mutable_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CrVvr (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result251)
+
 let rec strip_loc_ep =
   function
   | #sid as _a0 -> (strip_loc_sid _a0 :>'result283)
@@ -4583,230 +4640,342 @@ and strip_loc_rec_bind =
       let _a2 = strip_loc_rec_bind _a2 in `Sem (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result282)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result282)
+
 let map_loc f =
   object  inherit  map as super method! loc x = f (super#loc x) end
+
 let map_ant f =
   object  inherit  map as super method! ant x = f (super#ant x) end
+
 let map_nil f =
   object  inherit  map as super method! nil x = f (super#nil x) end
+
 let map_literal f =
   object  inherit  map as super method! literal x = f (super#literal x) end
+
 let map_rec_flag f =
   object  inherit  map as super method! rec_flag x = f (super#rec_flag x) end
+
 let map_direction_flag f =
   object 
     inherit  map as super
     method! direction_flag x = f (super#direction_flag x)
   end
+
 let map_mutable_flag f =
   object 
     inherit  map as super
     method! mutable_flag x = f (super#mutable_flag x)
   end
+
 let map_private_flag f =
   object 
     inherit  map as super
     method! private_flag x = f (super#private_flag x)
   end
+
 let map_virtual_flag f =
   object 
     inherit  map as super
     method! virtual_flag x = f (super#virtual_flag x)
   end
+
 let map_override_flag f =
   object 
     inherit  map as super
     method! override_flag x = f (super#override_flag x)
   end
+
 let map_row_var_flag f =
   object 
     inherit  map as super
     method! row_var_flag x = f (super#row_var_flag x)
   end
+
 let map_position_flag f =
   object 
     inherit  map as super
     method! position_flag x = f (super#position_flag x)
   end
+
 let map_strings f =
   object  inherit  map as super method! strings x = f (super#strings x) end
+
 let map_alident f =
   object  inherit  map as super method! alident x = f (super#alident x) end
+
 let map_auident f =
   object  inherit  map as super method! auident x = f (super#auident x) end
+
 let map_aident f =
   object  inherit  map as super method! aident x = f (super#aident x) end
+
 let map_astring f =
   object  inherit  map as super method! astring x = f (super#astring x) end
+
 let map_uident f =
   object  inherit  map as super method! uident x = f (super#uident x) end
+
 let map_ident f =
   object  inherit  map as super method! ident x = f (super#ident x) end
+
 let map_dupath f =
   object  inherit  map as super method! dupath x = f (super#dupath x) end
+
 let map_dlpath f =
   object  inherit  map as super method! dlpath x = f (super#dlpath x) end
+
 let map_any f =
   object  inherit  map as super method! any x = f (super#any x) end
+
 let map_sid f =
   object  inherit  map as super method! sid x = f (super#sid x) end
+
 let map_ctyp f =
   object  inherit  map as super method! ctyp x = f (super#ctyp x) end
+
 let map_type_parameters f =
   object 
     inherit  map as super
     method! type_parameters x = f (super#type_parameters x)
   end
+
 let map_row_field f =
   object  inherit  map as super method! row_field x = f (super#row_field x)
   end
+
 let map_tag_names f =
   object  inherit  map as super method! tag_names x = f (super#tag_names x)
   end
+
 let map_typedecl f =
   object  inherit  map as super method! typedecl x = f (super#typedecl x) end
+
 let map_type_constr f =
   object 
     inherit  map as super
     method! type_constr x = f (super#type_constr x)
   end
+
 let map_opt_type_constr f =
   object 
     inherit  map as super
     method! opt_type_constr x = f (super#opt_type_constr x)
   end
+
 let map_decl_param f =
   object  inherit  map as super method! decl_param x = f (super#decl_param x)
   end
+
 let map_decl_params f =
   object 
     inherit  map as super
     method! decl_params x = f (super#decl_params x)
   end
+
 let map_opt_decl_params f =
   object 
     inherit  map as super
     method! opt_decl_params x = f (super#opt_decl_params x)
   end
+
 let map_type_info f =
   object  inherit  map as super method! type_info x = f (super#type_info x)
   end
+
 let map_type_repr f =
   object  inherit  map as super method! type_repr x = f (super#type_repr x)
   end
+
 let map_name_ctyp f =
   object  inherit  map as super method! name_ctyp x = f (super#name_ctyp x)
   end
+
 let map_or_ctyp f =
   object  inherit  map as super method! or_ctyp x = f (super#or_ctyp x) end
+
 let map_of_ctyp f =
   object  inherit  map as super method! of_ctyp x = f (super#of_ctyp x) end
+
 let map_pat f =
   object  inherit  map as super method! pat x = f (super#pat x) end
+
 let map_rec_pat f =
   object  inherit  map as super method! rec_pat x = f (super#rec_pat x) end
+
 let map_exp f =
   object  inherit  map as super method! exp x = f (super#exp x) end
+
 let map_rec_exp f =
   object  inherit  map as super method! rec_exp x = f (super#rec_exp x) end
+
 let map_module_type f =
   object 
     inherit  map as super
     method! module_type x = f (super#module_type x)
   end
+
 let map_sig_item f =
   object  inherit  map as super method! sig_item x = f (super#sig_item x) end
+
 let map_with_constr f =
   object 
     inherit  map as super
     method! with_constr x = f (super#with_constr x)
   end
+
 let map_binding f =
   object  inherit  map as super method! binding x = f (super#binding x) end
+
 let map_module_binding f =
   object 
     inherit  map as super
     method! module_binding x = f (super#module_binding x)
   end
+
 let map_case f =
   object  inherit  map as super method! case x = f (super#case x) end
+
 let map_module_exp f =
   object  inherit  map as super method! module_exp x = f (super#module_exp x)
   end
+
 let map_stru f =
   object  inherit  map as super method! stru x = f (super#stru x) end
+
 let map_class_type f =
   object  inherit  map as super method! class_type x = f (super#class_type x)
   end
+
 let map_class_sig_item f =
   object 
     inherit  map as super
     method! class_sig_item x = f (super#class_sig_item x)
   end
+
 let map_class_exp f =
   object  inherit  map as super method! class_exp x = f (super#class_exp x)
   end
+
 let map_cstru f =
   object  inherit  map as super method! cstru x = f (super#cstru x) end
+
 let map_ep f =
   object  inherit  map as super method! ep x = f (super#ep x) end
+
 let map_rec_bind f =
   object  inherit  map as super method! rec_bind x = f (super#rec_bind x) end
+
 let dump = new print
+
 let dump_literal = LibUtil.to_string_of_printer dump#literal
+
 let dump_rec_flag = LibUtil.to_string_of_printer dump#rec_flag
+
 let dump_direction_flag = LibUtil.to_string_of_printer dump#direction_flag
+
 let dump_mutable_flag = LibUtil.to_string_of_printer dump#mutable_flag
+
 let dump_private_flag = LibUtil.to_string_of_printer dump#private_flag
+
 let dump_virtual_flag = LibUtil.to_string_of_printer dump#virtual_flag
+
 let dump_override_flag = LibUtil.to_string_of_printer dump#override_flag
+
 let dump_row_var_flag = LibUtil.to_string_of_printer dump#row_var_flag
+
 let dump_position_flag = LibUtil.to_string_of_printer dump#position_flag
+
 let dump_strings = LibUtil.to_string_of_printer dump#strings
+
 let dump_alident = LibUtil.to_string_of_printer dump#alident
+
 let dump_auident = LibUtil.to_string_of_printer dump#auident
+
 let dump_aident = LibUtil.to_string_of_printer dump#aident
+
 let dump_astring = LibUtil.to_string_of_printer dump#astring
+
 let dump_uident = LibUtil.to_string_of_printer dump#uident
+
 let dump_ident = LibUtil.to_string_of_printer dump#ident
+
 let dump_dupath = LibUtil.to_string_of_printer dump#dupath
+
 let dump_dlpath = LibUtil.to_string_of_printer dump#dlpath
+
 let dump_any = LibUtil.to_string_of_printer dump#any
+
 let dump_sid = LibUtil.to_string_of_printer dump#sid
+
 let dump_ctyp = LibUtil.to_string_of_printer dump#ctyp
+
 let dump_type_parameters = LibUtil.to_string_of_printer dump#type_parameters
+
 let dump_row_field = LibUtil.to_string_of_printer dump#row_field
+
 let dump_tag_names = LibUtil.to_string_of_printer dump#tag_names
+
 let dump_typedecl = LibUtil.to_string_of_printer dump#typedecl
+
 let dump_type_constr = LibUtil.to_string_of_printer dump#type_constr
+
 let dump_opt_type_constr = LibUtil.to_string_of_printer dump#opt_type_constr
+
 let dump_decl_param = LibUtil.to_string_of_printer dump#decl_param
+
 let dump_decl_params = LibUtil.to_string_of_printer dump#decl_params
+
 let dump_opt_decl_params = LibUtil.to_string_of_printer dump#opt_decl_params
+
 let dump_type_info = LibUtil.to_string_of_printer dump#type_info
+
 let dump_type_repr = LibUtil.to_string_of_printer dump#type_repr
+
 let dump_name_ctyp = LibUtil.to_string_of_printer dump#name_ctyp
+
 let dump_or_ctyp = LibUtil.to_string_of_printer dump#or_ctyp
+
 let dump_of_ctyp = LibUtil.to_string_of_printer dump#of_ctyp
+
 let dump_pat = LibUtil.to_string_of_printer dump#pat
+
 let dump_rec_pat = LibUtil.to_string_of_printer dump#rec_pat
+
 let dump_exp = LibUtil.to_string_of_printer dump#exp
+
 let dump_rec_exp = LibUtil.to_string_of_printer dump#rec_exp
+
 let dump_module_type = LibUtil.to_string_of_printer dump#module_type
+
 let dump_sig_item = LibUtil.to_string_of_printer dump#sig_item
+
 let dump_with_constr = LibUtil.to_string_of_printer dump#with_constr
+
 let dump_binding = LibUtil.to_string_of_printer dump#binding
+
 let dump_module_binding = LibUtil.to_string_of_printer dump#module_binding
+
 let dump_case = LibUtil.to_string_of_printer dump#case
+
 let dump_module_exp = LibUtil.to_string_of_printer dump#module_exp
+
 let dump_stru = LibUtil.to_string_of_printer dump#stru
+
 let dump_class_type = LibUtil.to_string_of_printer dump#class_type
+
 let dump_class_sig_item = LibUtil.to_string_of_printer dump#class_sig_item
+
 let dump_class_exp = LibUtil.to_string_of_printer dump#class_exp
+
 let dump_cstru = LibUtil.to_string_of_printer dump#cstru
+
 let dump_ep = LibUtil.to_string_of_printer dump#ep
+
 let dump_rec_bind = LibUtil.to_string_of_printer dump#rec_bind
+
 class reloc _loc = object  inherit  map method! loc _ = _loc end
+
 let wildcarder =
   object (self)
     inherit  map as super

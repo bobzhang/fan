@@ -1,0 +1,288 @@
+Sun Dec 19 16:40:33 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Added support for 64-bit ints in order to run the hailstones
+	benchmark. HLVM generates code that is over 30x faster than OCaml and
+	Haskell (GHC 6.10).
+	* Updated requirements to LLVM 2.8.
+	
+
+Wed Dec  1 22:35:30 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Updated arithmetic ops to use fadd, fsub etc. for floating point
+	because using add, sub etc. for int and float has been deprecated in
+	LLVM 2.8.
+	* Removed the -f flag passed to llc in the opt.sh script because it was
+	also deprecated in LLVM 2.8.
+	
+
+Sat Jan 16 12:17:05 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Disabling TCO now uses a separate set of tests that do not require
+	TCO so they should all run.
+	* Applied bluestorm's patches for Makefile and camlp4 macros to make it
+	easier to write HLVM IR.
+
+
+Sun Jan 10 16:29:16 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Removed the use of AddressOf in the hash table test.
+	* Added --no-stack-handler option so you can remove the libsigsegv
+	handler that is used to detect stack overflows.
+	* Convert some remaining uses of GetValue in the GC to use the abstract
+	Seq.* API.
+	* Fixed a bug where Alloc wasn't initializing mark state so it could
+	already be marked when the mark phase starts and its children could go
+	unmarked and get reclaimed despite being reachable.
+
+
+Thu Jan  7 15:18:59 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Added a `Byte type to HLVM to make strings easier to use.
+	* Ported the ray tracer benchmark from OCaml to HLVM. HLVM is
+	  significantly faster despite the use of the FFI to do sqrt.
+	* Made runtime.cpp 64-bit happy (int -> long).
+
+
+Mon Jan  4 07:49:18 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Inlined get_stack.
+	* Changed the value "unit" to an undef rather than "int 0".
+	* Fixed unnecessary allocation of mark state for empty (NULL) arrays:
+	parallel n-queens is ~3% faster.
+	* Fixed the calculator example.
+
+
+Fri Jan  1 20:57:09 GMT 2010  Jon Harrop <jon@ffconsultancy.com>
+
+	* Optimized thread-local data to be passed by pointer in function
+	arguments, dramatically improving performance.
+	* Removed some concurrency bugs in the GC.
+	* Altered the parallel n-queens test to recursively spawn child
+	threads.
+	* Implemented ptr->size map in runtime.cpp to check for double frees
+	when runtime is in debugging mode.
+
+
+Mon Nov 30 01:14:49 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* First working version of threads and stop-the-world GC. Only took 5
+	days to implement!
+	* Global list of active threads and GC state (running or stopping the
+	world).
+	* Thread local state keeps thread state (running or suspended) and
+	shadow stack.
+	* First thread to hit allocation quota starts a GC by suspending all
+	other threads and performing the same mark+sweep algorithm, albeit
+	using all shadow stacks, before resuming all other threads. The other
+	threads spin while the GC is running.
+	* Currently, every function checks the global state on entry to see if
+	it needs to suspend itself. This is contention for the same lock from
+	every function call on every thread which is very wasteful and is the
+	main reason why HLVM is now 3x slower than it was. However, it is
+	easily remedied by removing checks from leaf functions (that make no
+	calls) and using a counter or even measuring elapsed real time to
+	check less often in non-leaf functions.
+	* Only non-trivial threading aspect is to enter and leave blocking
+	sections when users perform blocking operations like taking out locks
+	of their own. This ensures that one thread cannot start a GC cycle with
+	a lock taken out while another thread is waiting on that lock, which
+	would deadlock all threads.
+
+
+Thu Nov 12 18:08:41 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Time spent in mark and sweep phases is accumulated per expression
+	evaluated.
+	* Benchmarks are now warmed up to remove JIT time.
+	* New bubblesort benchmark.
+	* More fine-grained and intelligent loop unrolling.
+
+
+Sun Oct 25 22:40:03 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Updated to work with LLVM 2.6: now uses llcontext and initializes
+	targets before creating a JIT.
+	* Replaced the garbage collector with a more conventional mark-sweep
+	collector that stores mark state in the heap.
+
+
+Sat Sep 26 22:51:59 BST 2009  Jon Harrop <jon@ffconsultancy.com>
+
+        * Array allocation now accepts the initial element value.
+        * The second iteration of the compiler is now in SVN.
+
+Thu Jun 25 02:36:38 BST 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Improved parsing in the example compiler to handle line numbers and
+	EOF.
+	* Improved pattern matching in the example compiler to allow tuples to
+	be deconstructed in "let .. in" bindings as well as function
+	definitions.
+
+
+Sun Jun 21 20:04:48 BST 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Added two examples: a trivial calculator and a rudimentary compiler
+	with support for recursive function definitions with explicit types and
+	unit, char, int, float and tuple types. Arrays will require
+	polymorphism.
+	* Note: closures that do not require cycles can be represented entirely
+	unboxed.
+
+
+Sat Mar 21 17:42:31 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Memoized constant string literals.
+	* Fixed perf bug where all bound variables were being pushed onto the
+	shadow stack at the beginning of every function body instead of just
+	the function's arguments.
+	* Optimized array visit function to skip arrays that do not contain
+	any reference types.
+	* Implemented standalone compilation. All JIT executed functions are
+	called from a "main" function in the output aout.bc which the ./opt.sh
+	script compiles through LLVM's optimization passes into aoutopt. This
+	gives us some idea of how much performance would be gained by applying
+	LLVM's optimization passes if we had bindings for them.
+	* Moved timing code from the compiler into the generated code so our
+	standalone executable can be used for benchmarking.
+
+
+Fri Mar 13 02:42:33 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Switched from LLVM's malloc intrinsic to helper functions for alloc
+	(using calloc in order to initialize references to NULL) and free.
+	* Optimized the GC to use a hash table instead of linear search,
+	improving performance by up to 100x on our benchmarks.
+	* Avoided resetting the shadow stack at the ends of functions that do
+	not push any roots onto it.
+
+
+Wed Mar 11 21:05:44 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Chose to put new LLVM bindings into the HLVM project instead of
+	patching LLVM. We now have bindings for BuildExtractValue,
+	BuildInsertValue and for enabling tail call optimization globally.
+
+
+Wed Mar 11 04:01:45 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Tidied the run-time type code to reuse HLVM's own structs.
+	* Fixed a perf bug where reading a reference type from a bound
+	variable was pushing it onto the shadow stack. Sieve is now 70% faster.
+	* Fixed a bug in init_type which was invoking a fastcc function when it
+	should have been using the C calling convention.
+	* Added dummy arguments to all argumentless invocations to work around
+	a bug in LLVM's OCaml bindings, which calls malloc for zero bytes
+	(which is illegal) if there are zero arguments.
+
+
+Mon Mar  9 12:31:16 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Fixed the GC to use an explicit "visit stack" instead of the system
+	stack. This eliminates the stack overflow bug that prevented the list
+	test from running to completion but the current GC is so slow that
+	I still have not run this test to completion.
+
+
+Sun Mar  8 04:23:30 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Prepared for first public release.
+
+
+Fri Mar  6 01:56:13 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Made the "expr" and "def" functions mutually recursive so the 
+	compilation of an expression can trigger the compilation of an
+	auxiliary function that it depends upon.
+	* Implemented a simple stop-the-world mark and sweep garbage collector
+	written in the HLVM language itself.
+	* A new `UnsafeFunction top-level statement defines a function without
+	injecting any code for the GC.
+	* Ordinary functions call gc_root to register a local root into the
+	heap (e.g. when loading a reference type) by pushing it onto the shadow
+	stack, call gc_alloc when a value is allocated to push it onto the
+	allocated list and gc_restore when a function returns to unwind the
+	shadow stack.
+
+
+Tue Mar  3 02:38:35 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Realised that the current functionality can already be used to
+	represent closures as a function pointer and a reference type
+	containing the environment. Added some tests that use this.
+
+
+Wed Feb 25 21:20:26 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Made ffib benchmark 50% faster by swapping the branches of the "if"
+	expression: most common branch should go first.
+	* Added code to Printf to handle 32-bit floats by extending them to
+	64-bit floats for printing.
+
+
+Wed Feb 25 03:22:42 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Added OCaml bindings to the new ExtractElement and InsertElement
+	instructions now in LLVM's C bindings. This has improved performance
+	a lot: Mandelbrot3 (with complex arithmetic) is now 3.5x faster and
+	HLVM is faster than OCaml on every test.
+
+
+Sun Feb 22 16:14:10 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* First implementation of reference types represented as a struct
+	containing a pointer to the type and a pointer to the argument (if
+	any). This allows typed NULL references which should permit efficient
+	implementation of properly-typed linked lists.
+	* Returning first-class structs inhibits TCO so we must sret all struct
+	return types, which I have now done.
+	* Removed a layer of indirection in the representation of arrays, which
+	is now a struct containing the type, length and pointer to heap data.
+	* Fixed with respect to all existing tests. Array performance has
+	degraded slightly due to the current overhead of structs.
+
+
+Thu Feb 19 23:23:25 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* build_allocas must go in the entry block of a function. Altered
+	state#alloca to insert at the end of the entry block and tweaked the
+	compilation of "if" expressions to insert the final jump from the
+	previous block only after compilation of both branches is complete, so
+	they insert their allocas before the branch.
+	* Lots of optimization passes are not yet available from OCaml but
+	they could do a great deal with our code, particularly our inefficient
+	struct code.
+	* Reference type is a struct with a pointer to the type and a pointer
+	to the argument. That allows NULL to be typed.
+
+
+Fri Feb  6 01:39:13 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Added structs but they are locally allocated so they cannot be
+	passed in the arguments to a tail call.
+	* Used an ingenious workaround: copy every struct into an alloca in
+	order to use gep until extractvalue is implemented.
+	* Fixed a bug caused by marking every call as a tail call when this
+	can confuse LLVM's (CSE) optimization pass.
+
+
+Tue Jan 27 00:47:10 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Extended sieve and mandelbrot examples to illustrate segmentation
+	fault due to stack overflow due to non-tail calls.
+	* Introduced a Return constructor into the Expr.t type to handle tail
+	calls properly.
+	* Added first-class function pointers by casting all defined functions
+	into pointer types before binding them to their variable name.
+
+
+Sun Jan 25 06:51:00 GMT 2009  Jon Harrop <jon@ffconsultancy.com>
+
+	* Clean design with "expr" checking all types including return types.
+	* FastCC but no propagation of tail calls into final expressions.
+	* No extern functions.
+	* No first-class function pointers.
+	* No run-time types.
+	* No shadow stack.
+	* No tuples or multiple return values: functions accept multiple
+	arguments but return only one result.

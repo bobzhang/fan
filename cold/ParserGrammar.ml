@@ -1,31 +1,58 @@
 open Ast
+
 open AstLoc
+
 open FanGrammar
+
 open FanGrammarTools
+
 open PreCast.Syntax
+
 open LibUtil
+
 open FanUtil
+
 let _ = FanConfig.antiquotations := true
+
 let nonterminals = Gram.mk "nonterminals"
+
 let nonterminalsclear = Gram.mk "nonterminalsclear"
+
 let delete_rule_header = Gram.mk "delete_rule_header"
+
 let extend_header = Gram.mk "extend_header"
+
 let qualuid = Gram.mk "qualuid"
+
 let qualid = Gram.mk "qualid"
+
 let t_qualid = Gram.mk "t_qualid"
-let entry_name: ([ `name of FanToken.name | `non]* FanGrammar.name) Gram.t =
+
+let entry_name: ([ `name of FanToken.name | `non] * FanGrammar.name) Gram.t =
   Gram.mk "entry_name"
+
 let locals = Gram.mk "locals"
+
 let entry = Gram.mk "entry"
+
 let position = Gram.mk "position"
+
 let assoc = Gram.mk "assoc"
+
 let name = Gram.mk "name"
+
 let string = Gram.mk "string"
+
 let pattern: action_pattern Gram.t = Gram.mk "pattern"
+
 let simple_exp = Gram.mk "simple_exp"
+
 let delete_rules = Gram.mk "delete_rules"
+
 let simple_pat: simple_pat Gram.t = Gram.mk "simple_pat"
+
 let internal_pat = Gram.mk "internal_pat"
+
 let _ =
   Gram.extend_single (nonterminals : 'nonterminals Gram.t )
     (None,
@@ -191,6 +218,7 @@ let _ =
                                     (`Dot (_loc, t, (`Lid (_loc, "clear")))))),
                                (`Id (_loc, (x :>ident))))) ls in
                     seq_sem rest : 'nonterminalsclear )))))]))
+
 let _ =
   Gram.extend_single (extend_header : 'extend_header Gram.t )
     (None,
@@ -1042,8 +1070,13 @@ let _ =
             (Gram.mk_action
                (fun _  (e : 'exp)  _  (_loc : FanLoc.t)  ->
                   (e : 'simple_exp )))))]))
+
 let d = `Absolute ["Fan"; "Lang"]
+
 let _ = AstQuotation.of_exp ~name:(d, "extend") ~entry:extend_body
+
 let _ = AstQuotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body
+
 let _ = AstQuotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear
+
 let _ = AstQuotation.of_stru ~name:(d, "create") ~entry:nonterminals

@@ -1,8 +1,12 @@
 open LibUtil
+
 open Ast
+
 open AstLoc
+
 let meta =
   object  inherit  FanMeta.meta method! loc _loc _ = lid _loc "loc" end
+
 let _ =
   AstFilters.register_stru_filter
     ("lift",
@@ -20,9 +24,11 @@ let _ =
                             (`Dot
                                (_loc, (`Uid (_loc, "FanLoc")),
                                  (`Lid (_loc, "ghost")))))))), e)))))
+
 let _ =
   AstFilters.register_stru_filter
     ("strip", (((new Objs.reloc) FanLoc.ghost)#stru))
+
 let map_exp =
   function
   | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
@@ -70,13 +76,16 @@ let map_exp =
                           then `Id (_loc, (`Lid (_loc, "true")))
                           else `Id (_loc, (`Lid (_loc, "false")))))))))))
   | e -> e
+
 let _ =
   AstFilters.register_stru_filter
     ("trash_nothing", ((Objs.map_exp map_exp)#stru))
+
 let make_filter (s,code) =
   let f =
     function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
+
 let me =
   object 
     inherit  FanMeta.meta
@@ -86,7 +95,9 @@ let me =
       | Some "here" -> Meta.meta_loc _loc loc
       | Some x -> lid _loc x
   end
+
 let mp = object  inherit  FanMeta.meta method! loc _loc _ = `Any _loc end
+
 let _ =
   AstFilters.register_stru_filter
     ("serialize",
