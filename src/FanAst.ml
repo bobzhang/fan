@@ -1,11 +1,3 @@
-
-
-(** This file is related to BOOTSTRAPPING
-    take care when you want to remove some functions or
-    rename the file itself
- *)  
-(* open FanOps; *)
-(* open  Ast; *)
 (* module type META_LOC = sig *)
 (*     (\*   (\\** The first location is where to put the returned pattern. *\) *)
 (*     (\*       Generally it's _loc to match with {:pat| ... |} quotations. *\) *)
@@ -17,22 +9,6 @@
 (*     (\* val meta_loc_exp : FanLoc.t -> FanLoc.t -> (\\* exp *\\)ep; *\) *)
 (*   val meta_loc: loc -> loc -> ep; *)
 (* end; *)
-
-
-
-  
-
-(* {:fans|keep off; derive ( MetaExpr (\* GenLoc *\)); |}; *)
-  
-
-
-
-
-(* module Make(MetaLoc:META_LOC) = struct *)
-(*   include MetaLoc; *)
-(*   __MetaExpr__; *)
-(* end; *)
-    
 
 
 include AstLoc;

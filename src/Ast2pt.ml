@@ -367,7 +367,7 @@ let quote_map x =
       errorf (loc_of x) "quote_map %s" (dump_ctyp x)]  ;
     
 let optional_type_parameters (t:ctyp) = 
-  List.map quote_map (list_of_app t [])(* (FanAst.list_of_ctyp_app t []) *) ;
+  List.map quote_map (list_of_app t []);
 (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *)
 let mk_type_parameters (tl:opt_decl_params)
     :  list ( option (Asttypes.loc string)  * (bool * bool)) =

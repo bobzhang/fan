@@ -13,8 +13,7 @@ let apply () = begin
   {:extend|Gram
 
     stru: First
-    [ macro_def{x} ->
-      execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
+    [ macro_def{x} -> execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
         (fun a b -> {:stru| $a; $b |}) x ]
     (* sig_item: First *)
     (* [ macro_def_sig{x} -> *)

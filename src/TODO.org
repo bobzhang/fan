@@ -4,9 +4,15 @@
 * merge Ant with Filter, limit named anti-quotattions
 
 * DEFINE better
-  
+
+  {:define|exp: f(x)
+  |};;
 
 * clean the identifier
   
 
 * apply the cmi filter to compiler library(AstEq) for example
+  
+
+* Use AstN to generate code instead
+  
