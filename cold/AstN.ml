@@ -10,7 +10,7 @@ type nil = [ `Nil]
 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
-  | `Flo of string | `NativeInt of string | `Str of string] 
+  | `Flo of string | `Nativeint of string | `Str of string] 
 
 type rec_flag = [ `Recursive | `ReNil | ant] 
 

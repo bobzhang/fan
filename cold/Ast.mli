@@ -4,7 +4,7 @@ type nil = [ `Nil of loc]
 type literal =
   [ `Chr of (loc * string) | `Int of (loc * string)
   | `Int32 of (loc * string) | `Int64 of (loc * string)
-  | `Flo of (loc * string) | `NativeInt of (loc * string)
+  | `Flo of (loc * string) | `Nativeint of (loc * string)
   | `Str of (loc * string)] 
 type rec_flag = [ `Recursive of loc | `ReNil of loc | ant] 
 type direction_flag = [ `To of loc | `Downto of loc | ant] 

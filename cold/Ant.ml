@@ -29,63 +29,19 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
           let mloc _loc = meta_loc_pat _loc _loc in
           let e = parse_pat _loc code in
           (match (decorations, cxt, sep) with
-           | ("anti",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Ant")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("uid",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Uid")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("lid",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Lid")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("par",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Par")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("seq",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Seq")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("flo",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Flo")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("int",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Int")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("int32",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Int32")), (mloc _loc))),
-                    e) : Ast.pat )
-           | ("int64",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Int64")), (mloc _loc))),
-                    e) : Ast.pat )
            | ("nativeint",_,_) ->
                (`App
                   (_loc,
-                    (`App (_loc, (`Vrn (_loc, "NativeInt")), (mloc _loc))),
+                    (`App (_loc, (`Vrn (_loc, "Nativeint")), (mloc _loc))),
                     e) : Ast.pat )
-           | ("chr",_,_) ->
+           | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
+               |"nativeint"|"chr"|"str" as x),_,_)
+             |(("vrn" as x),("exp"|"pat"),_) ->
                (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Chr")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("str",_,_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Str")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("vrn","exp",_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e) : 
-               Ast.pat )
-           | ("vrn","pat",_) ->
-               (`App
-                  (_loc, (`App (_loc, (`Vrn (_loc, "Vrn")), (mloc _loc))), e) : 
-               Ast.pat )
+                  (_loc,
+                    (`App
+                       (_loc, (`Vrn (_loc, (String.capitalize x))),
+                         (mloc _loc))), e) : Ast.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : exp) =
@@ -148,7 +104,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("nativeint",_,_) ->
                (`App
-                  (_loc, (`Vrn (_loc, "NativeInt")),
+                  (_loc, (`Vrn (_loc, "Nativeint")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`nativeint",_,_) ->
                let e: Ast.exp =
@@ -160,7 +116,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                              (_loc, (`Uid (_loc, "Nativeint")),
                                (`Lid (_loc, "to_string")))))), e) in
                (`App
-                  (_loc, (`Vrn (_loc, "NativeInt")),
+                  (_loc, (`Vrn (_loc, "Nativeint")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`int",_,_) ->
                let e: Ast.exp =

@@ -9,7 +9,7 @@ class primitive =
     method int64 _loc (i : int64) =
       ((`Int64 (_loc, (Int64.to_string i)) : Ast.ep ) : ep )
     method nativeint _loc (i : nativeint) =
-      ((`NativeInt (_loc, (Nativeint.to_string i)) : Ast.ep ) : ep )
+      ((`Nativeint (_loc, (Nativeint.to_string i)) : Ast.ep ) : ep )
     method float _loc (i : float) =
       ((`Flo (_loc, (FanUtil.float_repres i)) : Ast.ep ) : ep )
     method string _loc (i : string) =
@@ -65,10 +65,10 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Flo")), (self#loc _loc _a0))),
                 (self#string _loc _a1))
-        | `NativeInt (_a0,_a1) ->
+        | `Nativeint (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "NativeInt")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Nativeint")), (self#loc _loc _a0))),
                 (self#string _loc _a1))
         | `Str (_a0,_a1) ->
             `App

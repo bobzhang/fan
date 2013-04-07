@@ -219,7 +219,7 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l);
     
 
 
-let rec is_irrefut_pat (x: pat) = with pat
+let rec is_irrefut_pat (x: pat) = with pat'
     match x with
     [
       `ArrayEmpty (_loc)
@@ -247,12 +247,13 @@ let rec is_irrefut_pat (x: pat) = with pat
     | `ModuleUnpack _ 
     | `ModuleConstraint _  -> true
     (* | {| (module $_ : $opt:_ ) |} -> true *)
+    | `Ant _ -> false 
     | (* {| `$_ |} *) `Vrn (_loc,_)
       (* {| $vrn:_ |} *)
     | {| $str:_ |} | {| $_ .. $_ |} |
       {| $flo:_ |} | {| $nativeint:_ |} | {| $int64:_ |} |
       {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
-      {| #$_ |} | {| [| $_ |] |} | {| $anti:_ |} -> false
+      {| #$_ |} | {| [| $_ |] |}  -> false
           (* add here ModuleUnpack *)
     ];      
       
@@ -369,7 +370,7 @@ let rec to_lid =
    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
-let mkumin loc prefix arg = with exp 
+let mkumin loc prefix arg = with exp' 
   match arg with
   [ {| $int:n |} -> {@loc| $(int:String.neg n) |}
   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}

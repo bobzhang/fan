@@ -26,7 +26,7 @@ class eq =
         | (`Int32 _a0,`Int32 _b0) -> self#string _a0 _b0
         | (`Int64 _a0,`Int64 _b0) -> self#string _a0 _b0
         | (`Flo _a0,`Flo _b0) -> self#string _a0 _b0
-        | (`NativeInt _a0,`NativeInt _b0) -> self#string _a0 _b0
+        | (`Nativeint _a0,`Nativeint _b0) -> self#string _a0 _b0
         | (`Str _a0,`Str _b0) -> self#string _a0 _b0
         | (_,_) -> false
     method rec_flag : rec_flag -> rec_flag -> 'result4=
@@ -774,8 +774,8 @@ class print =
         | `Int64 _a0 ->
             Format.fprintf fmt "@[<1>(`Int64@ %a)@]" self#string _a0
         | `Flo _a0 -> Format.fprintf fmt "@[<1>(`Flo@ %a)@]" self#string _a0
-        | `NativeInt _a0 ->
-            Format.fprintf fmt "@[<1>(`NativeInt@ %a)@]" self#string _a0
+        | `Nativeint _a0 ->
+            Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" self#string _a0
         | `Str _a0 -> Format.fprintf fmt "@[<1>(`Str@ %a)@]" self#string _a0
     method rec_flag : 'fmt -> rec_flag -> unit=
       fun fmt  ->
@@ -1630,8 +1630,8 @@ let meta_literal _loc =
   | `Int32 _a0 -> `App (_loc, (`Vrn (_loc, "Int32")), (meta_string _loc _a0))
   | `Int64 _a0 -> `App (_loc, (`Vrn (_loc, "Int64")), (meta_string _loc _a0))
   | `Flo _a0 -> `App (_loc, (`Vrn (_loc, "Flo")), (meta_string _loc _a0))
-  | `NativeInt _a0 ->
-      `App (_loc, (`Vrn (_loc, "NativeInt")), (meta_string _loc _a0))
+  | `Nativeint _a0 ->
+      `App (_loc, (`Vrn (_loc, "Nativeint")), (meta_string _loc _a0))
   | `Str _a0 -> `App (_loc, (`Vrn (_loc, "Str")), (meta_string _loc _a0))
 
 let meta_rec_flag _loc =

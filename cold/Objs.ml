@@ -38,8 +38,8 @@ let pp_print_literal fmt =
   | `Flo (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
-  | `NativeInt (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`NativeInt@ %a@ %a)@]" pp_print_loc _a0
+  | `Nativeint (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Nativeint@ %a@ %a)@]" pp_print_loc _a0
         pp_print_string _a1
   | `Str (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
@@ -1001,8 +1001,8 @@ class print =
         | `Flo (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" self#loc _a0
               self#string _a1
-        | `NativeInt (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`NativeInt@ %a@ %a)@]" self#loc _a0
+        | `Nativeint (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Nativeint@ %a@ %a)@]" self#loc _a0
               self#string _a1
         | `Str (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" self#loc _a0
@@ -2001,9 +2001,9 @@ class map =
       | `Flo (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Flo (_a0, _a1)
-      | `NativeInt (_a0,_a1) ->
+      | `Nativeint (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#string _a1 in `NativeInt (_a0, _a1)
+          let _a1 = self#string _a1 in `Nativeint (_a0, _a1)
       | `Str (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Str (_a0, _a1)
@@ -3090,7 +3090,7 @@ class fold =
       | `Int32 (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Int64 (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Flo (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
-      | `NativeInt (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
+      | `Nativeint (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
       | `Str (_a0,_a1) -> let self = self#loc _a0 in self#string _a1
     method rec_flag : rec_flag -> 'self_type=
       function
@@ -3845,7 +3845,7 @@ let strip_loc_literal =
   | `Int32 (_a0,_a1) -> `Int32 _a1
   | `Int64 (_a0,_a1) -> `Int64 _a1
   | `Flo (_a0,_a1) -> `Flo _a1
-  | `NativeInt (_a0,_a1) -> `NativeInt _a1
+  | `Nativeint (_a0,_a1) -> `Nativeint _a1
   | `Str (_a0,_a1) -> `Str _a1
 
 let strip_loc_rec_flag =

@@ -28,8 +28,8 @@ let rec normalize_acc =
       (`Dot (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | (`App (_loc,i1,i2) : Ast.ident) ->
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
-  | (`Ant (_loc,_) : Ast.ident)|(`Uid (_loc,_) : Ast.ident)
-    |(`Lid (_loc,_) : Ast.ident) as i -> (`Id (_loc, i) : Ast.exp )
+  | `Ant (_loc,_)|(`Uid (_loc,_) : Ast.ident)|(`Lid (_loc,_) : Ast.ident) as
+      i -> (`Id (_loc, i) : Ast.exp )
 
 let rec sep_dot_exp acc =
   function
@@ -444,7 +444,7 @@ let rec pat (x : pat) =
             error loc
               "Integer literal exceeds the range of representable integers of type int64" in
       mkpat loc (Ppat_constant (Const_int64 i64))
-  | (`NativeInt (loc,s) : Ast.pat) ->
+  | (`Nativeint (loc,s) : Ast.pat) ->
       let nati =
         try Nativeint.of_string s
         with
@@ -660,7 +660,7 @@ let rec exp (x : exp) =
             error loc
               "Integer literal exceeds the range of representable integers of type int64" in
       mkexp loc (Pexp_constant (Const_int64 i64))
-  | `NativeInt (loc,s) ->
+  | `Nativeint (loc,s) ->
       let nati =
         try Nativeint.of_string s
         with

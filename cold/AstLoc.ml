@@ -55,6 +55,7 @@ let loc_of =
   | `Class (_loc,_) -> _loc
   | `CrMthS (_loc,_,_,_,_) -> _loc
   | `LetIn (_loc,_,_,_) -> _loc
+  | `Nativeint (_loc,_) -> _loc
   | `Seq (_loc,_) -> _loc
   | `Quote (_loc,_,_) -> _loc
   | `TypeEq (_loc,_,_) -> _loc
@@ -68,7 +69,6 @@ let loc_of =
   | `Subtype (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
-  | `NativeInt (_loc,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc

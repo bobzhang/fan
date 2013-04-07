@@ -12,18 +12,9 @@ open FanUtil
 
 open GramLib
 
-let help_sequences () =
-  Printf.eprintf
-    "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    begin e1; e2; ... ; en end\n    while e begin e1; e2; ... ; en end\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n";
-  flush stderr;
-  exit 1
-
 let pos_exps = Gram.mk "pos_exps"
 
 let apply () =
-  Options.add
-    ("-help_seq", (FanArg.Unit help_sequences),
-      "Print explanations about new sequences and exit.");
   (let list = ['!'; '?'; '~'] in
    let excl = ["!="; "??"] in
    setup_op_parser prefixop
@@ -1612,12 +1603,12 @@ let apply () =
          ([`Stoken
              (((function | `NATIVEINT (_,_) -> true | _ -> false)),
                (`Normal, "`NATIVEINT (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `NATIVEINT (_,s) -> (`NativeInt (_loc, s) : 'exp )\n     | _ -> failwith \"`NativeInt (_loc, s)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `NATIVEINT (_,s) -> (`Nativeint (_loc, s) : 'exp )\n     | _ -> failwith \"`Nativeint (_loc, s)\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `NATIVEINT (_,s) -> (`NativeInt (_loc, s) : 'exp )
-                   | _ -> failwith "`NativeInt (_loc, s)\n"))));
+                   | `NATIVEINT (_,s) -> (`Nativeint (_loc, s) : 'exp )
+                   | _ -> failwith "`Nativeint (_loc, s)\n"))));
          ([`Stry
              (`Snterm
                 (Gram.obj

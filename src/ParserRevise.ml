@@ -5,31 +5,14 @@ open Syntax;
 open LibUtil;
 open FanUtil;
 open GramLib;
-let help_sequences () = begin
-  Printf.eprintf "\
-New syntax:\
-\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\
-\n    while e do e1; e2; ... ; en done\
-\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\
-\nOld syntax (still supported):\
-\n    begin e1; e2; ... ; en end\
-\n    while e begin e1; e2; ... ; en end\
-\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\
-\nVery old (no more supported) syntax:\
-\n    do e1; e2; ... ; en-1; return en\
-\n    while e do e1; e2; ... ; en; done\
-\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\
-\n"; flush stderr; exit 1  end;
 
 {:create|Gram pos_exps|};
 let apply () = begin 
-  Options.add ("-help_seq", (FanArg.Unit help_sequences), "Print explanations about new sequences and exit.");
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
   setup_op_parser prefixop
     (fun x -> not (List.mem x excl) && String.length x >= 2 &&
               List.mem x.[0] list && symbolchar x 1);
-
   let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
   let list_first_char_ok = ['='; '<'; '>'; '|'; '&'; '$'; '!'] in
   let excl = ["<-"; "||"; "&&"] in
@@ -77,7 +60,7 @@ let apply () = begin
     parser [< a = symb; 's >] -> kont a s
   end;
 
-  with module_exp
+  with module_exp'
   {:extend|
       module_exp_quot:
       [ module_exp{x} -> x]
@@ -106,7 +89,7 @@ let apply () = begin
              `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
              ] } |};
 
-  with module_binding
+  with module_binding'
       {:extend|
         module_binding_quot:
         [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)

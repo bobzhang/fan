@@ -21,7 +21,7 @@ let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
 
 let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
 
-let meta_nativeint _loc i = `NativeInt (_loc, (Nativeint.to_string i))
+let meta_nativeint _loc i = `Nativeint (_loc, (Nativeint.to_string i))
 
 let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
 
@@ -125,11 +125,12 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 
 let rec is_irrefut_pat (x : pat) =
   match x with
-  | `ArrayEmpty _loc|`LabelS (_loc,_)|`Id (_loc,`Lid (_,_)) -> true
-  | `Id (_loc,`Uid (_,"()")) -> true
-  | `Any _loc -> true
-  | `Alias (_loc,x,_) -> is_irrefut_pat x
-  | `Record (_loc,p) ->
+  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Id (_loc,`Lid (_,_)) : Ast.pat) ->
+      true
+  | (`Id (_loc,`Uid (_,"()")) : Ast.pat) -> true
+  | (`Any _loc : Ast.pat) -> true
+  | (`Alias (_loc,x,_) : Ast.pat) -> is_irrefut_pat x
+  | (`Record (_loc,p) : Ast.pat) ->
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
         (list_of_sem p [])
@@ -142,11 +143,14 @@ let rec is_irrefut_pat (x : pat) =
   | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_pat p
   | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_pat p
-  | `Id (_loc,_) -> false
+  | (`Id (_loc,_) : Ast.pat) -> false
   | `ModuleUnpack _|`ModuleConstraint _ -> true
-  | `Vrn (_loc,_)|`Str (_loc,_)|`PaRng (_loc,_,_)|`Flo (_loc,_)
-    |`NativeInt (_loc,_)|`Int64 (_loc,_)|`Int32 (_loc,_)|`Int (_loc,_)
-    |`Chr (_loc,_)|`ClassPath (_loc,_)|`Array (_loc,_)|`Ant (_loc,_) -> false
+  | `Ant _ -> false
+  | `Vrn (_loc,_)|(`Str (_loc,_) : Ast.pat)|(`PaRng (_loc,_,_) : Ast.pat)
+    |(`Flo (_loc,_) : Ast.pat)|(`Nativeint (_loc,_) : Ast.pat)
+    |(`Int64 (_loc,_) : Ast.pat)|(`Int32 (_loc,_) : Ast.pat)
+    |(`Int (_loc,_) : Ast.pat)|(`Chr (_loc,_) : Ast.pat)
+    |(`ClassPath (_loc,_) : Ast.pat)|(`Array (_loc,_) : Ast.pat) -> false
 
 let array_of_array arr =
   match arr with
@@ -361,12 +365,14 @@ let rec to_lid =
 
 let mkumin loc prefix arg =
   match arg with
-  | `Int (_loc,n) -> `Int (loc, (String.neg n))
-  | `Int32 (_loc,n) -> `Int32 (loc, (String.neg n))
-  | `Int64 (_loc,n) -> `Int64 (loc, (String.neg n))
-  | `NativeInt (_loc,n) -> `NativeInt (loc, (String.neg n))
-  | `Flo (_loc,n) -> `Flo (loc, (String.neg n))
-  | _ -> `App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg)
+  | (`Int (_loc,n) : Ast.exp) -> (`Int (loc, (String.neg n)) : Ast.exp )
+  | (`Int32 (_loc,n) : Ast.exp) -> (`Int32 (loc, (String.neg n)) : Ast.exp )
+  | (`Int64 (_loc,n) : Ast.exp) -> (`Int64 (loc, (String.neg n)) : Ast.exp )
+  | (`Nativeint (_loc,n) : Ast.exp) ->
+      (`Nativeint (loc, (String.neg n)) : Ast.exp )
+  | (`Flo (_loc,n) : Ast.exp) -> (`Flo (loc, (String.neg n)) : Ast.exp )
+  | _ ->
+      (`App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg) : Ast.exp )
 
 let mkassert loc =
   function | `Id (_loc,`Lid (_,"false")) -> `ExAsf loc | e -> `ExAsr (loc, e)

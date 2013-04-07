@@ -12,7 +12,7 @@
     | `Int32 of (loc * string)
     | `Int64 of (loc * string)
     | `Flo of (loc * string)
-    | `NativeInt of (loc * string)
+    | `Nativeint of (loc * string)
     | `Str of (loc * string)];   
 
     type rec_flag =

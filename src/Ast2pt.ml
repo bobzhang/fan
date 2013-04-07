@@ -23,7 +23,7 @@ let rec normalize_acc = with ident' fun
     {:exp'| $(normalize_acc i1).$(normalize_acc i2) |}
   | {| ($i1 $i2) |} ->
       {:exp'| $(normalize_acc i1) $(normalize_acc i2) |}
-  | {| $anti:_ |} | {@_loc| $uid:_ |} |
+  | `Ant (_loc,_) | {@_loc| $uid:_ |} |
     {@_loc| $lid:_ |} as i -> {:exp'| $id:i |} ];
 
 (*
@@ -716,7 +716,7 @@ let rec exp (x : exp) = with exp' match x with
           let i64 = try Int64.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
           ] in mkexp loc (Pexp_constant (Const_int64 i64))
-      | `NativeInt (loc,s) ->
+      | `Nativeint (loc,s) ->
           let nati = try Nativeint.of_string s with [
             Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
           ] in mkexp loc (Pexp_constant (Const_nativeint nati))
