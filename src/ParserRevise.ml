@@ -291,7 +291,7 @@ let apply () = begin
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
             `IfThenElse (_loc, e1, e2, e3)
         | "if"; S{e1}; "then"; S{e2} -> `IfThen (_loc, e1, e2)
-        | "do"; sequence{seq}; "done" -> `Seq(_loc,seq)(* FanOps.mksequence ~loc:_loc seq *)
+        | "do"; sequence{seq}; "done" -> `Seq(_loc,seq)
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exps{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
         | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
@@ -410,13 +410,14 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
         | "("; S{e}; ","; comma_exp{el}; ")" -> {| ( $e, $el ) |}
-        | "("; S{e}; ";"; sequence{seq}; ")" -> FanOps.mksequence ~loc:_loc {| $e; $seq |}
-        | "("; S{e}; ";"; ")" -> FanOps.mksequence ~loc:_loc e
+        | "("; S{e}; ";"; sequence{seq}; ")" -> `Seq(_loc,`Sem(_loc,e,seq))
+              (* FanOps.mksequence ~loc:_loc {| $e; $seq |} *)
+        | "("; S{e}; ";"; ")" -> `Seq(_loc,e)(* FanOps.mksequence ~loc:_loc e *)
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             {| ($e : $t :> $t2 ) |}
         | "("; S{e}; ":>"; ctyp{t}; ")" -> `Subtype(_loc,e,t)(* {| ($e :> $t) |} *)
         | "("; S{e}; ")" -> e
-        | "begin"; sequence{seq}; "end" -> FanOps.mksequence ~loc:_loc seq
+        | "begin"; sequence{seq}; "end" -> `Seq(_loc,seq)(* FanOps.mksequence ~loc:_loc seq *)
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_exp{me}; ")" ->
             {| (module $me) |}
@@ -428,11 +429,11 @@ let apply () = begin
        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          -> k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
-           {| let $rec:rf $bi in $(FanOps.mksequence ~loc:_loc el) |}
+           {| let $rec:rf $bi in $((* FanOps.mksequence ~loc:_loc el *)`Seq(_loc,el)) |}
        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
            exp{e}; sequence'{k} -> k {| let module $m = $mb in $e |}
        | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
-           {| let module $m = $mb in $(FanOps.mksequence ~loc:_loc el) |}
+           {| let module $m = $mb in $((* FanOps.mksequence ~loc:_loc el *)`Seq(_loc,el)) |}
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            {| let open $id:i in $e |}
        (* FIXME Ant should be able to be followed *)      

@@ -1716,17 +1716,16 @@ let apply () =
           `Skeyword ";";
           `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
           `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : FanLoc.t)  ->\n     (FanOps.mksequence ~loc:_loc (`Sem (_loc, e, seq)) : 'exp ))\n",
+           ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : FanLoc.t)  ->\n     (`Seq (_loc, (`Sem (_loc, e, seq))) : 'exp ))\n",
              (Gram.mk_action
                 (fun _  (seq : 'sequence)  _  (e : 'exp)  _ 
                    (_loc : FanLoc.t)  ->
-                   (FanOps.mksequence ~loc:_loc (`Sem (_loc, e, seq)) : 
-                   'exp )))));
+                   (`Seq (_loc, (`Sem (_loc, e, seq))) : 'exp )))));
          ([`Skeyword "("; `Sself; `Skeyword ";"; `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  _  (e : 'exp)  _  (_loc : FanLoc.t)  ->\n     (FanOps.mksequence ~loc:_loc e : 'exp ))\n",
+           ("Gram.mk_action\n  (fun _  _  (e : 'exp)  _  (_loc : FanLoc.t)  -> (`Seq (_loc, e) : 'exp ))\n",
              (Gram.mk_action
                 (fun _  _  (e : 'exp)  _  (_loc : FanLoc.t)  ->
-                   (FanOps.mksequence ~loc:_loc e : 'exp )))));
+                   (`Seq (_loc, e) : 'exp )))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":";
@@ -1755,10 +1754,10 @@ let apply () =
          ([`Skeyword "begin";
           `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
           `Skeyword "end"],
-           ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->\n     (FanOps.mksequence ~loc:_loc seq : 'exp ))\n",
+           ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->\n     (`Seq (_loc, seq) : 'exp ))\n",
              (Gram.mk_action
                 (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
-                   (FanOps.mksequence ~loc:_loc seq : 'exp )))));
+                   (`Seq (_loc, seq) : 'exp )))));
          ([`Skeyword "begin"; `Skeyword "end"],
            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'exp ))\n",
              (Gram.mk_action
@@ -1833,12 +1832,11 @@ let apply () =
           `Snterm (Gram.obj (binding : 'binding Gram.t ));
           `Skeyword ";";
           `Sself],
-           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (bi : 'binding)  (rf : 'opt_rec)  _ \n     (_loc : FanLoc.t)  ->\n     (`LetIn (_loc, rf, bi, (FanOps.mksequence ~loc:_loc el)) : 'sequence ))\n",
+           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (bi : 'binding)  (rf : 'opt_rec)  _ \n     (_loc : FanLoc.t)  ->\n     (`LetIn (_loc, rf, bi, (`Seq (_loc, el))) : 'sequence ))\n",
              (Gram.mk_action
                 (fun (el : 'sequence)  _  (bi : 'binding)  (rf : 'opt_rec)  _
                     (_loc : FanLoc.t)  ->
-                   (`LetIn (_loc, rf, bi, (FanOps.mksequence ~loc:_loc el)) : 
-                   'sequence )))));
+                   (`LetIn (_loc, rf, bi, (`Seq (_loc, el))) : 'sequence )))));
          ([`Skeyword "let";
           `Skeyword "module";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
@@ -1857,13 +1855,11 @@ let apply () =
           `Snterm (Gram.obj (module_binding0 : 'module_binding0 Gram.t ));
           `Skeyword ";";
           `Sself],
-           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (mb : 'module_binding0)  (m : 'a_uident)  _  _ \n     (_loc : FanLoc.t)  ->\n     (`LetModule (_loc, m, mb, (FanOps.mksequence ~loc:_loc el)) : 'sequence ))\n",
+           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (mb : 'module_binding0)  (m : 'a_uident)  _  _ \n     (_loc : FanLoc.t)  ->\n     (`LetModule (_loc, m, mb, (`Seq (_loc, el))) : 'sequence ))\n",
              (Gram.mk_action
                 (fun (el : 'sequence)  _  (mb : 'module_binding0) 
                    (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
-                   (`LetModule
-                      (_loc, m, mb, (FanOps.mksequence ~loc:_loc el)) : 
-                   'sequence )))));
+                   (`LetModule (_loc, m, mb, (`Seq (_loc, el))) : 'sequence )))));
          ([`Skeyword "let";
           `Skeyword "open";
           `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ));
