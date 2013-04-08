@@ -292,7 +292,7 @@ and exp =
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)
   (* | `ExAsf of loc (\* assert false *\) *)
-  | `ExAsr of (loc * exp) (* assert e *)
+  | `Assert of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
   | `For of (loc * alident * exp * exp * direction_flag * exp)

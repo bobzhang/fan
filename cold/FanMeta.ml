@@ -975,10 +975,10 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Array")), (self#loc _loc _a0))),
                 (self#exp _loc _a1))
-        | `ExAsr (_a0,_a1) ->
+        | `Assert (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "ExAsr")), (self#loc _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "Assert")), (self#loc _loc _a0))),
                 (self#exp _loc _a1))
         | `Assign (_a0,_a1,_a2) ->
             `App

@@ -544,8 +544,8 @@ let rec exp (x : exp) =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | `ExAsr (_loc,`Id (_,`Lid (_,"false"))) -> mkexp _loc Pexp_assertfalse
-  | `ExAsr (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
+  | `Assert (_loc,`Id (_,`Lid (_,"false"))) -> mkexp _loc Pexp_assertfalse
+  | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =
         match e with

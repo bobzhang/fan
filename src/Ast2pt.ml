@@ -610,12 +610,9 @@ let rec exp (x : exp) = with exp' match x with
             (Pexp_array
                (List.map exp (list_of_sem e []))) (* be more precise*)
       | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-         (* {:exp|assert false |}*)
-      | (* {|assert false|} *) `ExAsr (_loc, `Id (_, `Lid (_, "false")))
+      | (* {|assert false|} *) `Assert (_loc, `Id (_, `Lid (_, "false")))
         -> mkexp _loc Pexp_assertfalse
-      | `ExAsr(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
-      (* | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (exp e)) *)
-      (* | `ExAsf loc -> mkexp loc Pexp_assertfalse *)
+      | `Assert(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
       | `Assign (loc,e,v) ->
           (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
           let e =
@@ -625,7 +622,7 @@ let rec exp (x : exp) = with exp' match x with
                   [("", exp x); ("", exp v)]
             | `Dot (loc,_,_) ->
                 match (exp e).pexp_desc with
-                  [ Pexp_field (e, lab) -> Pexp_setfield e lab (exp v)
+                [ Pexp_field (e, lab) -> Pexp_setfield e lab (exp v)
                 | _ -> error loc "bad record access" ]
                 | `ArrayDot (loc, e1, e2) ->
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))

@@ -129,7 +129,6 @@ let loc_of =
   | `ModuleConstraint (_loc,_,_) -> _loc
   | `TyVrn (_loc,_) -> _loc
   | `Case (_loc,_,_) -> _loc
-  | `ExAsr (_loc,_) -> _loc
   | `OvrInstEmpty _loc -> _loc
   | `Exception (_loc,_) -> _loc
   | `CtCol (_loc,_,_) -> _loc
@@ -138,6 +137,7 @@ let loc_of =
   | `SigEnd _loc -> _loc
   | `ObjPatEnd (_loc,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
+  | `Assert (_loc,_) -> _loc
   | `StructEnd _loc -> _loc
   | `Int32 (_loc,_) -> _loc
   | `PaRng (_loc,_,_) -> _loc

@@ -352,7 +352,7 @@ let apply () = begin
         | "-."; S{e} -> FanOps.mkumin _loc "-." e ]
        "apply" LA
         [ S{e1}; S{e2} -> {| $e1 $e2 |}
-        | "assert"; S{e} -> `ExAsr(_loc,e)
+        | "assert"; S{e} -> `Assert(_loc,e)
             (* FanOps.mkassert _loc e *)
         | "new"; class_longident{i} -> `New (_loc,i) (* {| new $i |} *)
         | "lazy"; S{e} -> {| lazy $e |} ]

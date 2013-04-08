@@ -412,7 +412,7 @@ class eq =
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#exp _a0 _b0
-        | (`ExAsr _a0,`ExAsr _b0) -> self#exp _a0 _b0
+        | (`Assert _a0,`Assert _b0) -> self#exp _a0 _b0
         | (`Assign (_a0,_a1),`Assign (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`For (_a0,_a1,_a2,_a3,_a4),`For (_b0,_b1,_b2,_b3,_b4)) ->
@@ -1196,7 +1196,8 @@ class print =
               self#exp _a1
         | `ArrayEmpty -> Format.fprintf fmt "`ArrayEmpty"
         | `Array _a0 -> Format.fprintf fmt "@[<1>(`Array@ %a)@]" self#exp _a0
-        | `ExAsr _a0 -> Format.fprintf fmt "@[<1>(`ExAsr@ %a)@]" self#exp _a0
+        | `Assert _a0 ->
+            Format.fprintf fmt "@[<1>(`Assert@ %a)@]" self#exp _a0
         | `Assign (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Assign@ %a@ %a)@]" self#exp _a0
               self#exp _a1
@@ -2136,7 +2137,7 @@ and meta_exp _loc =
           (meta_exp _loc _a1))
   | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
   | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_exp _loc _a0))
-  | `ExAsr _a0 -> `App (_loc, (`Vrn (_loc, "ExAsr")), (meta_exp _loc _a0))
+  | `Assert _a0 -> `App (_loc, (`Vrn (_loc, "Assert")), (meta_exp _loc _a0))
   | `Assign (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Assign")), (meta_exp _loc _a0))),

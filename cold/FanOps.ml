@@ -377,8 +377,8 @@ let mkumin loc prefix arg =
 let mkassert loc =
   function
   | `Id (_loc,`Lid (_,"false")) ->
-      `ExAsr (loc, (`Id (loc, (`Lid (loc, "false")))))
-  | e -> `ExAsr (loc, e)
+      `Assert (loc, (`Id (loc, (`Lid (loc, "false")))))
+  | e -> `Assert (loc, e)
 
 let rec to_generalized x =
   match x with
