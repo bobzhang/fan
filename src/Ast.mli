@@ -304,6 +304,7 @@ and exp =
   | `Lazy of (loc * exp) (* lazy e *)
         (* let b in e or let rec b in e *)
   | `LetIn of (loc * rec_flag * binding * exp)
+  | `LetTryInWith of (loc * rec_flag * binding * exp * case)        
         (* let module s = me in e *)
   | `LetModule of (loc * auident * module_exp * exp)
         (* match e with [ mc ] *)

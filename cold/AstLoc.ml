@@ -151,6 +151,7 @@ let loc_of =
   | `Fun (_loc,_) -> _loc
   | `CeApp (_loc,_,_) -> _loc
   | `Eq (_loc,_,_) -> _loc
+  | `LetTryInWith (_loc,_,_,_,_) -> _loc
   | `LetModule (_loc,_,_,_) -> _loc
   | `LetOpen (_loc,_,_) -> _loc
   | `PolyInf (_loc,_) -> _loc

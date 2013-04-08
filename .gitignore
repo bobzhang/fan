@@ -63,3 +63,4 @@ src.stat
 src/A.ml
 src/Ast.ml
 src/S.ml
+*.dsource

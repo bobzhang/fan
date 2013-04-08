@@ -120,6 +120,7 @@ and exp =
   | `IfThenElse of (exp * exp * exp) | `IfThen of (exp * exp)
   | `LabelS of alident | `Label of (alident * exp) | `Lazy of exp
   | `LetIn of (rec_flag * binding * exp)
+  | `LetTryInWith of (rec_flag * binding * exp * case)
   | `LetModule of (auident * module_exp * exp) | `Match of (exp * case)
   | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (pat * cstru)
   | `ObjPatEnd of pat | `OptLabl of (alident * exp) | `OptLablS of alident

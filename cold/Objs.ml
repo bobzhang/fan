@@ -538,6 +538,10 @@ and pp_print_exp fmt =
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_exp _a3
+  | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+      Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a@ %a)@]"
+        pp_print_loc _a0 pp_print_rec_flag _a1 pp_print_binding _a2
+        pp_print_exp _a3 pp_print_case _a4
   | `LetModule (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_auident _a1 pp_print_module_exp _a2 pp_print_exp _a3
@@ -1519,6 +1523,10 @@ class print =
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_flag _a1 self#binding _a2 self#exp _a3
+        | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+            Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a@ %a)@]"
+              self#loc _a0 self#rec_flag _a1 self#binding _a2 self#exp _a3
+              self#case _a4
         | `LetModule (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#auident _a1 self#module_exp _a2 self#exp _a3
@@ -2542,6 +2550,12 @@ class map =
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
           let _a3 = self#exp _a3 in `LetIn (_a0, _a1, _a2, _a3)
+      | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#rec_flag _a1 in
+          let _a2 = self#binding _a2 in
+          let _a3 = self#exp _a3 in
+          let _a4 = self#case _a4 in `LetTryInWith (_a0, _a1, _a2, _a3, _a4)
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
@@ -3465,6 +3479,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#exp _a3
+      | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+          let self = self#loc _a0 in
+          let self = self#rec_flag _a1 in
+          let self = self#binding _a2 in
+          let self = self#exp _a3 in self#case _a4
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
@@ -4257,6 +4276,11 @@ and strip_loc_exp =
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
       let _a3 = strip_loc_exp _a3 in `LetIn (_a1, _a2, _a3)
+  | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+      let _a1 = strip_loc_rec_flag _a1 in
+      let _a2 = strip_loc_binding _a2 in
+      let _a3 = strip_loc_exp _a3 in
+      let _a4 = strip_loc_case _a4 in `LetTryInWith (_a1, _a2, _a3, _a4)
   | `LetModule (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_module_exp _a2 in

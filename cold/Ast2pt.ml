@@ -676,6 +676,37 @@ let rec exp (x : exp) =
   | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (exp e))
   | `LetIn (loc,rf,bi,e) ->
       mkexp loc (Pexp_let ((mkrf rf), (binding bi []), (exp e)))
+  | `LetTryInWith (_loc,rf,bi,e,cas) ->
+      let cas =
+        let rec f x =
+          match x with
+          | `Case (_loc,p,e) ->
+              `Case
+                (_loc, p,
+                  (`Fun
+                     (_loc,
+                       (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))
+          | `CaseWhen (_loc,p,c,e) ->
+              `CaseWhen
+                (_loc, p, c,
+                  (`Fun
+                     (_loc,
+                       (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))
+          | `Bar (_loc,a1,a2) -> `Bar (_loc, (f a1), (f a2))
+          | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+        f cas in
+      exp
+        (`App
+           (_loc,
+             (`Try
+                (_loc,
+                  (`LetIn
+                     (_loc, rf, bi,
+                       (`Fun
+                          (_loc,
+                            (`Case
+                               (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))),
+                  cas)), (`Id (_loc, (`Uid (_loc, "()"))))) : Ast.exp )
   | `LetModule (loc,`Uid (sloc,i),me,e) ->
       mkexp loc
         (Pexp_letmodule ((with_loc i sloc), (module_exp me), (exp e)))

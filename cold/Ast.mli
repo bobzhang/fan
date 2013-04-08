@@ -112,6 +112,7 @@ and exp =
   | `IfThen of (loc * exp * exp) | `LabelS of (loc * alident)
   | `Label of (loc * alident * exp) | `Lazy of (loc * exp)
   | `LetIn of (loc * rec_flag * binding * exp)
+  | `LetTryInWith of (loc * rec_flag * binding * exp * case)
   | `LetModule of (loc * auident * module_exp * exp)
   | `Match of (loc * exp * case) | `New of (loc * ident)
   | `Obj of (loc * cstru) | `ObjEnd of loc | `ObjPat of (loc * pat * cstru)

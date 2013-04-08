@@ -725,6 +725,30 @@ let rec exp (x : exp) = with exp' match x with
       | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (exp e))
       | `LetIn (loc,rf,bi,e) ->
           mkexp loc (Pexp_let (mkrf rf) (binding bi []) (exp e))
+      | `LetTryInWith(_loc,rf,bi,e,cas) ->
+          let cas =
+            with case 
+            let rec  f x = match x with 
+              [{|$pat:p -> $e|} -> {|$pat:p -> fun () -> $e |}
+              |{|$pat:p when $c -> $e|}
+                  -> {|$pat:p when $c -> fun () -> $e |}
+              | {|$a1 | $a2 |} -> {|$(f a1) | $(f a2) |}
+              | `Ant(_loc,_) -> ANT_ERROR ] in
+            f cas in  
+          exp
+            {:exp'|
+             (try let $rec:rf $bi in fun () -> $e with [ $cas ] ) () |}
+            (* mkexp _loc *)
+          (*   (Pexp_apply *)
+          (*      (mkexp _loc *)
+          (*         (Pexp_try *)
+               
+          (*         (mkexp _loc *)
+          (*            (Pexp_let (mkrf rf) (binding bi []) *)
+          (*               (exp {:exp'|fun () -> $e |}))) *)
+          (*         (case a))) *)
+          (*      ((exp {:exp'|()|}))) *)
+
       | `LetModule (loc,`Uid(sloc,i),me,e) ->
           mkexp loc (Pexp_letmodule (with_loc i sloc) (module_exp me) (exp e))
       | `Match (loc,e,a) -> mkexp loc (Pexp_match (exp e) (case a (* [] *)))

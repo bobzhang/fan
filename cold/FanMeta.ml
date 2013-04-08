@@ -1059,6 +1059,21 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#rec_flag _loc _a1))),
                      (self#binding _loc _a2))), (self#exp _loc _a3))
+        | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc,
+                               (`App
+                                  (_loc, (`Vrn (_loc, "LetTryInWith")),
+                                    (self#loc _loc _a0))),
+                               (self#rec_flag _loc _a1))),
+                          (self#binding _loc _a2))), (self#exp _loc _a3))),
+                (self#case _loc _a4))
         | `LetModule (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,

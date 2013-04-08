@@ -285,7 +285,8 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             `LetOpen (_loc, i, e)
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
-            {| let try $rec:r $bi in $x with [ $a ] |}
+            (* {| let try $rec:r $bi in $x with [ $a ] |} *)
+              `LetTryInWith(_loc,r,bi,x,a)
         | "match"; S{e}; "with"; case{a} -> `Match (_loc, e, a)
         | "try"; S{e}; "with"; case{a} -> `Try (_loc, e, a)
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
@@ -425,7 +426,8 @@ let apply () = begin
        [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
          k  (`LetIn (_loc, rf, bi, e))
        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
-         -> k {| let try $rec:r $bi in $x with [ $a ] |}
+         -> k (* {| let try $rec:r $bi in $x with [ $a ] |} *)
+             (`LetTryInWith(_loc,r,bi,x,a))
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            `LetIn (_loc, rf, bi, (`Seq (_loc, el)))
        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
@@ -928,7 +930,7 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
             {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; exp{x}; "with"; case{a}
-          -> {| let try $rec:r $bi in $x with [ $a ]|}
+          -> `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
         | "class"; "type"; class_type_declaration{ctd} ->
             `ClassType (_loc, ctd)

@@ -432,6 +432,11 @@ class eq =
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#exp _a2 _b2)
+        | (`LetTryInWith (_a0,_a1,_a2,_a3),`LetTryInWith (_b0,_b1,_b2,_b3))
+            ->
+            (((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
+               (self#exp _a2 _b2))
+              && (self#case _a3 _b3)
         | (`LetModule (_a0,_a1,_a2),`LetModule (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#module_exp _a1 _b1)) &&
               (self#exp _a2 _b2)
@@ -1221,6 +1226,9 @@ class print =
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
               _a0 self#binding _a1 self#exp _a2
+        | `LetTryInWith (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a)@]"
+              self#rec_flag _a0 self#binding _a1 self#exp _a2 self#case _a3
         | `LetModule (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a)@]" self#auident
               _a0 self#module_exp _a1 self#exp _a2
@@ -2183,6 +2191,17 @@ and meta_exp _loc =
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
                (meta_binding _loc _a1))), (meta_exp _loc _a2))
+  | `LetTryInWith (_a0,_a1,_a2,_a3) ->
+      `App
+        (_loc,
+          (`App
+             (_loc,
+               (`App
+                  (_loc,
+                    (`App
+                       (_loc, (`Vrn (_loc, "LetTryInWith")),
+                         (meta_rec_flag _loc _a0))), (meta_binding _loc _a1))),
+               (meta_exp _loc _a2))), (meta_case _loc _a3))
   | `LetModule (_a0,_a1,_a2) ->
       `App
         (_loc,
