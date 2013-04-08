@@ -267,11 +267,10 @@ let apply () = begin
        end]
        fun_def_pat:
        ["(";"type";a_lident{i};")" ->
-         fun e -> {|fun (type $i) -> $e |} 
+         fun e ->  `LocalTypeFun (_loc, i, e)
        | ipat{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
-       | ipat{p}; "when"; exp{w} -> fun e ->
-           `Fun(_loc,`CaseWhen(_loc,p,w,e))
-           (* {|fun $p when $w -> $e |} *) ]
+       | ipat{p}; "when"; exp{w} ->
+           fun e -> `Fun(_loc,`CaseWhen(_loc,p,w,e)) ]
        fun_def:
        {RA
           [ fun_def_pat{f}; "->"; exp{e} ->  f e
@@ -280,18 +279,19 @@ let apply () = begin
        {
         "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
-            {| let $rec:r $bi in $x |}
+          `LetIn(_loc,r,bi,x)
         | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; S{e} ->
-            {| let module $m = $mb in $e |}
+            `LetModule (_loc, m, mb, e)
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
-            {| let open $id:i in $e |}
+            `LetOpen (_loc, i, e)
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
             {| let try $rec:r $bi in $x with [ $a ] |}
-        | "match"; S{e}; "with"; case{a} -> {|match $e with [$a]|}
-        | "try"; S{e}; "with"; case{a} -> {|try $e with [$a]|}
-        | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} -> {| if $e1 then $e2 else $e3 |}
-        | "if"; S{e1}; "then"; S{e2} -> {| if $e1 then $e2 |}
-        | "do"; sequence{seq}; "done" -> FanOps.mksequence ~loc:_loc seq
+        | "match"; S{e}; "with"; case{a} -> `Match (_loc, e, a)
+        | "try"; S{e}; "with"; case{a} -> `Try (_loc, e, a)
+        | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} ->
+            `IfThenElse (_loc, e1, e2, e3)
+        | "if"; S{e1}; "then"; S{e2} -> `IfThen (_loc, e1, e2)
+        | "do"; sequence{seq}; "done" -> `Seq(_loc,seq)(* FanOps.mksequence ~loc:_loc seq *)
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exps{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
         | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
@@ -702,7 +702,7 @@ let apply () = begin
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
       astr:
       [`Lid i -> `C (_loc,i) | `Uid i -> `C(_loc,i) |
-      `Ant (n,s) -> mk_anti _loc  n s]
+       `Ant (("" | "vrn" as n),s) -> mk_anti _loc  n s]
       ident_quot:
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
@@ -850,11 +850,6 @@ let apply () = begin
       [ "rec" -> `Recursive _loc
       | `Ant (("rec"|"anti" as n),s) -> mk_anti _loc ~c:"rec_flag" n s
       | -> `ReNil _loc]
-
-      a_string:
-      [ `Ant((""|"lid") as n,s) -> mk_anti _loc  n s
-      |  `Lid s -> `C (_loc, s )
-      |  `Uid s -> `C (_loc,s)]
       a_lident:
       [ `Ant((""|"lid") as n,s) -> mk_anti _loc  ~c:"a_lident" n s
       | `Lid s  -> `Lid (_loc, s) ]
@@ -1172,17 +1167,16 @@ let apply_ctyp () = begin
       row_field:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp|" n s
-      | S{t1}; "|"; S{t2} -> `Bar(_loc,t1,t2)
-      | "`"; astr{i} -> (* {| `$i |} *) `TyVrn(_loc,i)
-      (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
-      (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
-          (* {| `$i of & $t |} *)
       | `Ant(("vrn") as n, s) -> `TyVrn(_loc,mk_anti _loc ~c:"ctyp" n s)
       | `Ant(("vrn") as n, s) ; "of"; ctyp{t} ->
           `TyVrnOf(_loc,mk_anti _loc ~c:"ctyp" n s,t)
+      | S{t1}; "|"; S{t2} -> `Bar(_loc,t1,t2)
+      | "`"; astr{i} ->  `TyVrn(_loc,i)
       | "`"; astr{i}; "of"; (* amp_ctyp *)ctyp{t} -> `TyVrnOf(_loc,i,t)
-      | ctyp{t} -> `Ctyp(_loc,t) ]
-
+      | ctyp{t} -> `Ctyp(_loc,t)
+      (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
+      (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
+          (* {| `$i of & $t |} *)]
       (* only used in row_field *)
       (* amp_ctyp: *)
       (* [ S{t1}; "&"; S{t2} -> `Amp(_loc,t1,t2) *)

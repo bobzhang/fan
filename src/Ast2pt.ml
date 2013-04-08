@@ -757,10 +757,10 @@ let rec exp (x : exp) = with exp' match x with
       | `Seq (_loc,e) ->
           let rec loop = fun
             [ [] -> exp {| () |}
-      | [e] -> exp e
-      | [e :: el] ->
-          let _loc = FanLoc.merge (loc_of e) _loc in
-          mkexp _loc (Pexp_sequence (exp e) (loop el)) ] in
+            | [e] -> exp e
+            | [e :: el] ->
+                let _loc = FanLoc.merge (loc_of e) _loc in
+                mkexp _loc (Pexp_sequence (exp e) (loop el)) ] in
           loop (list_of_sem e []) 
       | `Send (loc,e,`Lid(_,s)) -> mkexp loc (Pexp_send (exp e) s)
             

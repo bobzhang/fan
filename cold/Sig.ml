@@ -40,7 +40,6 @@ module type Syntax =
     val interf : (sig_item list * FanLoc.t option) Gram.t
     val implem : (stru list * FanLoc.t option) Gram.t
     val top_phrase : stru option Gram.t
-    val a_string : astring Gram.t
     val a_lident : [ `Lid of (loc * string) | ant] Gram.t
     val a_uident : auident Gram.t
     val aident : ident Gram.t
