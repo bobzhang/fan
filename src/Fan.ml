@@ -1,6 +1,6 @@
 
 open FanOps;
-open FanAst;
+open AstLoc;
 open Filters;  
 include PreCast;
 
