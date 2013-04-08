@@ -442,15 +442,15 @@ let apply () = begin
        | ";" -> fun e -> e
        | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
        infixop1:
-       [  [ "&" | "&&" ]{x} -> {| $lid:x |} ] (* FIXME *)
+       [  [ "&" | "&&" ]{x} -> `Id(_loc,`Lid(_loc,x)) ] (* FIXME *)
        infixop0:
-       [  [ "or" | "||" ]{x} -> {| $lid:x |} ]
+       [  [ "or" | "||" ]{x} -> `Id (_loc, `Lid (_loc, x)) ]
        sem_exp_for_list:
-       [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |}
+       [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |} (* FIXME *)
        | exp{e}; ";" -> fun acc -> {| [ $e :: $acc ] |}
        | exp{e} -> fun acc -> {| [ $e :: $acc ] |} ]
        comma_exp:
-       [ S{e1}; ","; S{e2} -> {| $e1, $e2 |}
+       [ S{e1}; ","; S{e2} -> `Com(_loc,e1,e2)
        | `Ant (("list" as n),s) -> mk_anti _loc ~c:"exp," n s
        | exp Level "top"{e} -> e ]
        dummy:
@@ -469,10 +469,10 @@ let apply () = begin
         | `Ant ((""|"anti" as n),s); "="; exp{e} ->
             {| $(mk_anti _loc  ~c:"pat" n s) = $e |}
         | `Ant ((""|"anti" as n),s) -> mk_anti _loc ~c:"binding" n s
-        | S{b1}; "and"; S{b2} -> {| $b1 and $b2 |}
+        | S{b1}; "and"; S{b2} -> `And (_loc, b1, b2)
         | let_binding{b} -> b ] 
         let_binding:
-        [ pat{p}; fun_binding{e} -> {| $p = $e |} ] |};
+        [ pat{p}; fun_binding{e} -> `Bind (_loc, p, e) ] |};
 
   with case
     {:extend|
@@ -495,18 +495,18 @@ let apply () = begin
         [ `Ant (("rec_exp" |""|"anti"|"list" as n),s) -> 
           mk_anti _loc ~c:"rec_exp" n s
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
-        | label_longident{i} ->
-            `RecBind (_loc, i, (`Id (_loc, (`Lid (_loc, (FanOps.to_lid i))))))]
+        | label_longident{i} ->  (*FIXME*)
+            `RecBind (_loc, i, `Id (_loc, (`Lid (_loc, FanOps.to_lid i))))]
         field_exp:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> mk_anti _loc ~c:"rec_exp" n s
         | a_lident{l}; "=";  exp Level "top"{e} ->
             `RecBind (_loc, (l:>ident), e) (* {| $lid:l = $e |} *) ]
         label_exp_list:
-        [ label_exp{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
+        [ label_exp{b1}; ";"; S{b2} ->`Sem (_loc, b1, b2)
         | label_exp{b1}; ";"            -> b1
         | label_exp{b1}                 -> b1  ]
         field_exp_list:
-        [ field_exp{b1}; ";"; S{b2} -> {| $b1 ; $b2 |}
+        [ field_exp{b1}; ";"; S{b2} -> `Sem (_loc, b1, b2)
         | field_exp{b1}; ";"            -> b1
         | field_exp{b1}                 -> b1  ] |};
   with pat
@@ -516,44 +516,43 @@ let apply () = begin
        | pat{x}; ";"; sem_pat{y} -> `Sem(_loc,x,y)
        | pat{x} -> x]
        pat_as_pat_opt:
-       [ pat{p1}; "as"; a_lident{s} -> {| ($p1 as $s) |}
+       [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
        | pat{p} -> p ]
        pat_constr:
        [module_longident{i} -> `Id(_loc,i)
        |"`"; luident{s}  -> `Vrn(_loc,s)
-       |`Ant ((""|"pat"|"anti"|"vrn" as n), s) ->
-           mk_anti _loc ~c:"pat" n s]
+       |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> mk_anti _loc ~c:"pat" n s]
        pat:
        { "|" LA
         [ S{p1}; "|"; S{p2} -> `Bar(_loc,p1,p2) ]
        ".." NA
         [ S{p1}; ".."; S{p2} -> `PaRng(_loc,p1,p2) ]
        "apply" LA
-        [ pat_constr{p1}; S{p2} ->
+        [ pat_constr{p1}; S{p2} -> (*FIXME *)
           match p2 with
             [ {| ($par:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
                 (list_of_com p []) (* precise *)
             | _ -> {|$p1 $p2 |}  ]
         | pat_constr{p1} -> p1
-        | "lazy"; S{p} -> {| lazy $p |}  ]
+        | "lazy"; S{p} -> `Lazy (_loc, p)  ]
        "simple"
         [ `Ant ((""|"pat"|"anti"|"par"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
                 |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> mk_anti _loc ~c:"pat" n s
-        | ident{i} -> {| $id:i |}
-        | `INT(_,s) -> {|$int:s|}
-        | `INT32(_,s) -> {|$int32:s|}
-        | `INT64(_,s) -> {|$int64:s|}
-        | `Flo(_,s) -> {|$flo:s|}
-        | `CHAR(_,s) -> {|$chr:s|}
-        | `STR(_,s) -> {|$str:s|}
-        | "-"; `INT(_,s) -> {|$(int:String.neg s)|}
-        | "-"; `INT32(_,s) -> {|$(int32:String.neg s)|}
-        | "-"; `INT64(_,s) -> {|$(int64:String.neg s)|}
-        | "-"; `NATIVEINT(_,s) -> {|$(int64:String.neg s)|}
-        | "-"; `Flo(_,s) -> {|$(flo:String.neg s)|}
+        | ident{i} -> `Id (_loc, i)
+        | `INT(_,s) ->  `Int (_loc, s)
+        | `INT32(_,s) ->  `Int32 (_loc, s)
+        | `INT64(_,s) ->  `Int64 (_loc, s)
+        | `Flo(_,s) ->  `Flo (_loc, s)
+        | `CHAR(_,s) -> `Chr(_loc,s)
+        | `STR(_,s) -> `Str(_loc,s)
+        | "-"; `INT(_,s) ->  `Int (_loc, String.neg s)
+        | "-"; `INT32(_,s) -> `Int32(_loc, String.neg s) 
+        | "-"; `INT64(_,s) -> `Int64(_loc,String.neg s)
+        | "-"; `NATIVEINT(_,s) -> `Nativeint(_loc,String.neg s)
+        | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
         | "["; sem_pat_for_list{mk_list}; "::"; pat{last}; "]" -> mk_list last
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
@@ -648,8 +647,7 @@ let apply () = begin
             (* {| ? ($p) |} *)
         | "?"; "("; ipat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
-            (* {| ? ($p = $e) |} *)
-   ]
+            (* {| ? ($p = $e) |} *)]
        sem_pat:
        [`Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat;" n s
        | pat{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)
@@ -693,9 +691,7 @@ let apply () = begin
     
     with ident
     {:extend|
-
       (* parse [a] [B], depreacated  *)
-
       luident: [`Lid i -> i | `Uid i -> i]
       (* parse [a] [B] *)
       aident: [ a_lident{i} -> (i:>ident) | a_uident{i} -> (i:>ident)]
