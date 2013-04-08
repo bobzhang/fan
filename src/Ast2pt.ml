@@ -511,16 +511,16 @@ let rec pat (x:pat) =
             [ `RecBind(_loc,i,p) -> (ident  i, pat p)
             | p -> error (loc_of p) "invalid pattern" ] in
           mkpat loc (Ppat_record (List.map mklabpat ps, is_closed))
-  | {@loc| ($p1,$p2)|} -> 
-      mkpat loc (Ppat_tuple
+  | {| ($p1,$p2)|} -> 
+      mkpat _loc (Ppat_tuple
                    (List.map pat (list_of_com p1 (list_of_com p2 []))))
   | `Par (loc,_) -> error loc "singleton tuple pattern"
-  | {@loc| ($p:$t)|} ->  mkpat loc (Ppat_constraint (pat p) (ctyp t))
-  | {@loc| #$i |} -> mkpat loc (Ppat_type (long_type_ident i))
-  | {@loc| $vrn:s|} -> mkpat loc (Ppat_variant s None)
-  | {@loc| lazy $p|} -> mkpat loc (Ppat_lazy (pat p))
-  | {@loc| (module $({:ident@sloc| $uid:m |}))|} -> 
-       mkpat loc (Ppat_unpack (with_loc m sloc))
+  | {| ($p:$t)|} ->  mkpat _loc (Ppat_constraint (pat p) (ctyp t))
+  | {| #$i |} -> mkpat _loc (Ppat_type (long_type_ident i))
+  | {| $vrn:s|} -> mkpat _loc (Ppat_variant s None)
+  | {| lazy $p|} -> mkpat _loc (Ppat_lazy (pat p))
+  | {| (module $({:ident@sloc| $uid:m |}))|} -> 
+       mkpat _loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
           mkpat loc
             (Ppat_constraint
@@ -610,8 +610,7 @@ let rec exp (x : exp) = with exp' match x with
             (Pexp_array
                (List.map exp (list_of_sem e []))) (* be more precise*)
       | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-      | (* {|assert false|} *) `Assert (_loc, `Id (_, `Lid (_, "false")))
-        -> mkexp _loc Pexp_assertfalse
+      | {|assert false|} -> mkexp _loc Pexp_assertfalse
       | `Assert(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
       | `Assign (loc,e,v) ->
           (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
