@@ -1,5 +1,10 @@
+
+
 (* open FanUtil; *)
-open LibUtil;
+
+open LibUtil;;
+
+(* syntax error class declaration TODO FIXME *)
 class c_fold_pattern_vars ['accu] f init =  object
   inherit FanAst.fold as super;
   val acc = init;

@@ -24,8 +24,9 @@ type anti_cxt = {
     content:string;
   }
       
-
-val mk_anti: ?c:string -> ?sep:string -> string -> string -> anti_cxt    
+val mk_anti: ?c:string ->
+  ?sep:string -> 'a -> string -> string -> [> `Ant of 'a * anti_cxt ]
+(* val mk_anti: ?c:string -> ?sep:string -> string -> string -> anti_cxt     *)
 
 val add_context: anti_cxt -> string -> anti_cxt        
 val pp_print_anti_cxt : Format.formatter -> anti_cxt -> unit    

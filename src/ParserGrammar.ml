@@ -371,7 +371,7 @@ FanConfig.antiquotations := true;
   simple_pat "pat":
   ["`"; luident{s}  ->  {|$vrn:s|}
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-    {| $vrn:v $(anti:mk_anti ~c:"pat" n s)|}
+    {| $vrn:v $(mk_anti _loc ~c:"pat" n s)|}
   |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
   |"`"; luident{s}; "_" -> {|$vrn:s _|}

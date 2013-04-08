@@ -68,12 +68,13 @@ type anti_cxt = {
   };
   |};
     
-let mk_anti ?(c="") ?sep n s =  {
+let mk_anti ?(c="") ?sep loc n s =
+  let c = {
   cxt = c;
   decorations= n;
   content =s ;
   sep;
- };
+ } in `Ant(loc,c);
     
 let add_context s c =
   {s with decorations = s.decorations ^ c};
