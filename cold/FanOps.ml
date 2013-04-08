@@ -375,7 +375,10 @@ let mkumin loc prefix arg =
       (`App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg) : Ast.exp )
 
 let mkassert loc =
-  function | `Id (_loc,`Lid (_,"false")) -> `ExAsf loc | e -> `ExAsr (loc, e)
+  function
+  | `Id (_loc,`Lid (_,"false")) ->
+      `ExAsr (loc, (`Id (loc, (`Lid (loc, "false")))))
+  | e -> `ExAsr (loc, e)
 
 let rec to_generalized x =
   match x with

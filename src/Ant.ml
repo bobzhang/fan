@@ -1,12 +1,12 @@
 open Ast;
 open FanUtil;
-open Meta;
+(* open Meta; *)
 open AstLoc;
 
 let meta_loc_exp _loc loc =
   match !AstQuotation.current_loc_name with
   [ None -> lid _loc !FanLoc.name
-  | Some "here" -> meta_loc _loc loc
+  | Some "here" -> FanMeta.meta_loc _loc loc
   | Some x -> lid _loc x  ];;
 
 

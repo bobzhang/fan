@@ -105,7 +105,7 @@ and exp =
   | `Par of (loc * exp) | any | `Record of (loc * rec_exp) | ant | literal
   | `RecordWith of (loc * rec_exp * exp) | `Dot of (loc * exp * exp)
   | `ArrayDot of (loc * exp * exp) | `ArrayEmpty of loc
-  | `Array of (loc * exp) | `ExAsf of loc | `ExAsr of (loc * exp)
+  | `Array of (loc * exp) | `ExAsr of (loc * exp)
   | `Assign of (loc * exp * exp)
   | `For of (loc * alident * exp * exp * direction_flag * exp)
   | `Fun of (loc * case) | `IfThenElse of (loc * exp * exp * exp)

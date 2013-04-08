@@ -167,7 +167,6 @@ let loc_of =
   | `ObjTy (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
   | `Module (_loc,_,_) -> _loc
-  | `ExAsf _loc -> _loc
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
   | `Bar (_loc,_,_) -> _loc

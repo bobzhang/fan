@@ -507,7 +507,6 @@ and pp_print_exp fmt =
   | `Array (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
-  | `ExAsf _a0 -> Format.fprintf fmt "@[<1>(`ExAsf@ %a)@]" pp_print_loc _a0
   | `ExAsr (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
@@ -1489,7 +1488,6 @@ class print =
         | `Array (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Array@ %a@ %a)@]" self#loc _a0
               self#exp _a1
-        | `ExAsf _a0 -> Format.fprintf fmt "@[<1>(`ExAsf@ %a)@]" self#loc _a0
         | `ExAsr (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ExAsr@ %a@ %a)@]" self#loc _a0
               self#exp _a1
@@ -2503,7 +2501,6 @@ class map =
       | `Array (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in `Array (_a0, _a1)
-      | `ExAsf _a0 -> let _a0 = self#loc _a0 in `ExAsf _a0
       | `ExAsr (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in `ExAsr (_a0, _a1)
@@ -3444,7 +3441,6 @@ class fold =
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `ArrayEmpty _a0 -> self#loc _a0
       | `Array (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
-      | `ExAsf _a0 -> self#loc _a0
       | `ExAsr (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `Assign (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
@@ -4234,7 +4230,6 @@ and strip_loc_exp =
       let _a2 = strip_loc_exp _a2 in `ArrayDot (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Array _a1
-  | `ExAsf _a0 -> `ExAsf
   | `ExAsr (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `ExAsr _a1
   | `Assign (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in

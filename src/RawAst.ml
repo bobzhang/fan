@@ -258,7 +258,7 @@ and exp =
   | `Dot of (loc * exp * exp) (* e.e *)
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `Array of (loc * exp) (* [| e |] *)
-  | `ExAsf of loc (* assert `False *)
+  (* | `ExAsf of loc (\* assert `False *\) *)
   | `ExAsr of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)

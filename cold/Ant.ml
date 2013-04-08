@@ -2,14 +2,12 @@ open Ast
 
 open FanUtil
 
-open Meta
-
 open AstLoc
 
 let meta_loc_exp _loc loc =
   match AstQuotation.current_loc_name.contents with
   | None  -> lid _loc FanLoc.name.contents
-  | Some "here" -> meta_loc _loc loc
+  | Some "here" -> FanMeta.meta_loc _loc loc
   | Some x -> lid _loc x
 
 let meta_loc_pat _loc _ = `Any _loc
@@ -29,11 +27,6 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
           let mloc _loc = meta_loc_pat _loc _loc in
           let e = parse_pat _loc code in
           (match (decorations, cxt, sep) with
-           | ("nativeint",_,_) ->
-               (`App
-                  (_loc,
-                    (`App (_loc, (`Vrn (_loc, "Nativeint")), (mloc _loc))),
-                    e) : Ast.pat )
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
                |"nativeint"|"chr"|"str" as x),_,_)
              |(("vrn" as x),("exp"|"pat"),_) ->
@@ -54,57 +47,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                (`App
                   (_loc, (`Vrn (_loc, "Ant")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("par",_,_) ->
+           | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
+               |"nativeint"|"chr"|"str" as x),_,_)
+             |(("vrn" as x),("exp"|"pat"),_) ->
                (`App
-                  (_loc, (`Vrn (_loc, "Par")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("seq",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Seq")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("vrn","exp",_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Vrn")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("vrn","pat",_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Vrn")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("lid",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Lid")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("uid",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Uid")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("str",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Str")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("chr",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Chr")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("int",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Int")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("int32",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Int32")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("int64",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Int64")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("flo",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Flo")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
-           | ("nativeint",_,_) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Nativeint")),
+                  (_loc, (`Vrn (_loc, (String.capitalize x))),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`nativeint",_,_) ->
                let e: Ast.exp =

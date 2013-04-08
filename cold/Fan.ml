@@ -8,8 +8,6 @@ include PreCast
 
 open AstQuotation
 
-open Meta
-
 open Syntax
 
 open LibUtil

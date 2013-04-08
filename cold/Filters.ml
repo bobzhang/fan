@@ -92,7 +92,7 @@ let me =
     method! loc _loc loc =
       match AstQuotation.current_loc_name.contents with
       | None  -> lid _loc FanLoc.name.contents
-      | Some "here" -> Meta.meta_loc _loc loc
+      | Some "here" -> FanMeta.meta_loc _loc loc
       | Some x -> lid _loc x
   end
 

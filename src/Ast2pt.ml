@@ -610,8 +610,12 @@ let rec exp (x : exp) = with exp' match x with
             (Pexp_array
                (List.map exp (list_of_sem e []))) (* be more precise*)
       | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-      | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (exp e))
-      | `ExAsf loc -> mkexp loc Pexp_assertfalse
+         (* {:exp|assert false |}*)
+      | (* {|assert false|} *) `ExAsr (_loc, `Id (_, `Lid (_, "false")))
+        -> mkexp _loc Pexp_assertfalse
+      | `ExAsr(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
+      (* | `ExAsr (loc,e) -> mkexp loc (Pexp_assert (exp e)) *)
+      (* | `ExAsf loc -> mkexp loc Pexp_assertfalse *)
       | `Assign (loc,e,v) ->
           (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
           let e =

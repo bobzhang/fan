@@ -1400,10 +1400,10 @@ let apply () =
                  (fun (e2 : 'exp)  (e1 : 'exp)  (_loc : FanLoc.t)  ->
                     (`App (_loc, e1, e2) : 'exp )))));
          ([`Skeyword "assert"; `Sself],
-           ("Gram.mk_action\n  (fun (e : 'exp)  _  (_loc : FanLoc.t)  -> (FanOps.mkassert _loc e : 'exp ))\n",
+           ("Gram.mk_action\n  (fun (e : 'exp)  _  (_loc : FanLoc.t)  -> (`ExAsr (_loc, e) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e : 'exp)  _  (_loc : FanLoc.t)  ->
-                   (FanOps.mkassert _loc e : 'exp )))));
+                   (`ExAsr (_loc, e) : 'exp )))));
          ([`Skeyword "new";
           `Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
            ("Gram.mk_action\n  (fun (i : 'class_longident)  _  (_loc : FanLoc.t)  ->\n     (`New (_loc, i) : 'exp ))\n",

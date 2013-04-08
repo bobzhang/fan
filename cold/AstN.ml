@@ -114,8 +114,8 @@ and exp =
   [ sid | `App of (exp * exp) | `Vrn of string | `Com of (exp * exp)
   | `Sem of (exp * exp) | `Par of exp | any | `Record of rec_exp | ant
   | literal | `RecordWith of (rec_exp * exp) | `Dot of (exp * exp)
-  | `ArrayDot of (exp * exp) | `ArrayEmpty | `Array of exp | `ExAsf
-  | `ExAsr of exp | `Assign of (exp * exp)
+  | `ArrayDot of (exp * exp) | `ArrayEmpty | `Array of exp | `ExAsr of exp
+  | `Assign of (exp * exp)
   | `For of (alident * exp * exp * direction_flag * exp) | `Fun of case
   | `IfThenElse of (exp * exp * exp) | `IfThen of (exp * exp)
   | `LabelS of alident | `Label of (alident * exp) | `Lazy of exp

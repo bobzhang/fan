@@ -38,7 +38,7 @@ open LibUtil;;
 
 open FanUtil;;
 open Stream;;
-open Grammar;;
+(* open Grammar;; *)
 open Structure;;
 open OAstPrint;;
 Toploop.print_out_value := loose#out_value;;
@@ -58,13 +58,13 @@ let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 (* #load_rec "FanTop.cma";; *)
 open Syntax;;
 let t e s = Gram.parse_string e  s;;
-module L = Lib;;
-open L.Meta;;
+(* module L = Lib;; *)
+(* open L.Meta;; *)
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 end;;
 
-let print_tree f x  = pp f "@[%a@]@." Grammar.Print.dump#tree x ;; 
+let print_tree f x  = pp f "@[%a@]@." Print.dump#tree x ;; 
 let p_type_declaration  =  AstPrint.default#type_declaration;;
 
 (* AstQuotation.default:="expr";; *)
@@ -79,7 +79,7 @@ open ParserLex;;
 (* #load_rec "Ulexing.cma";; *)
 module O = Obj;;
 open Ast;;
-open L.Expr;;
+open Exp;;
 
 
 (* test dump *)

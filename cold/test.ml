@@ -1,0 +1,1 @@
+let _ = assert false

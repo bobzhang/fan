@@ -3,7 +3,7 @@
    Todo:
    add phantom type to track some type invariants?
  *)
-(** Signature for OCaml syntax trees. *) (*
+(*
 
     It provides:
       - Types for all kinds of structure.
@@ -291,7 +291,7 @@ and exp =
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)
-  | `ExAsf of loc (* assert false *)
+  (* | `ExAsf of loc (\* assert false *\) *)
   | `ExAsr of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
