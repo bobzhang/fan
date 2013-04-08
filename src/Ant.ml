@@ -41,9 +41,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       let mloc _loc = (meta_loc_exp _loc _loc :> exp) in
       let e = parse_exp _loc code in
       match (decorations,cxt,sep) with
-      [ (* ("anti",_,__) -> {|`Ant($(mloc _loc),$e)|} *)
-      (* | *)
-        (("uid" | "lid" | "par" | "seq"
+      [(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
            {|$(vrn:String.capitalize x) ($(mloc _loc),$e) |}         

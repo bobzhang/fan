@@ -296,9 +296,9 @@ let apply () = begin
         | "with";"{"; pos_exps{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
         | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
             sequence{seq}; "done" ->
-              {| for $i = $e1 $to:df $e2 do $seq done |}
+              `For (_loc, i, e1, e2, df, seq)
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
-            {|while $e do $seq done |}   ]  
+            `While (_loc, e, seq)]  
        ":=" NA
         [ S{e1}; ":="; S{e2} -> {| $e1 := $e2 |} 
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
@@ -336,30 +336,25 @@ let apply () = begin
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
 
-        | "object"; "(";pat{p}; ")"; class_structure{cst};"end" ->
-            `ObjPat(_loc,p,cst)
-        | "object"; "(";pat{p}; ")"; "end" ->
-            `ObjPatEnd(_loc,p)
+        | "object"; "(";pat{p}; ")"; class_structure{cst};"end" -> `ObjPat(_loc,p,cst)
+        | "object"; "(";pat{p}; ")"; "end" -> `ObjPatEnd(_loc,p)
         | "object"; "(";pat{p};":";ctyp{t};")";class_structure{cst};"end" ->
             `ObjPat(_loc,`Constraint(_loc,p,t),cst)
         | "object"; "(";pat{p};":";ctyp{t};")";"end" ->
             `ObjPatEnd(_loc,`Constraint(_loc,p,t))
-        | "object"; class_structure{cst};"end"->
-            `Obj(_loc,cst)
-        | "object";"end" -> `ObjEnd(_loc)
-      ]
+        | "object"; class_structure{cst};"end"-> `Obj(_loc,cst)
+        | "object";"end" -> `ObjEnd(_loc)]
        "unary minus" NA
-        [ "-"; S{e} -> FanOps.mkumin _loc "-" e
+        [ "-"; S{e} -> FanOps.mkumin _loc "-" e (* Delayed into Dump *)
         | "-."; S{e} -> FanOps.mkumin _loc "-." e ]
        "apply" LA
-        [ S{e1}; S{e2} -> {| $e1 $e2 |}
+        [ S{e1}; S{e2} -> `App(_loc,e1,e2)
         | "assert"; S{e} -> `Assert(_loc,e)
             (* FanOps.mkassert _loc e *)
         | "new"; class_longident{i} -> `New (_loc,i) (* {| new $i |} *)
-        | "lazy"; S{e} -> {| lazy $e |} ]
+        | "lazy"; S{e} -> `Lazy(_loc,e) ]
        "label" NA
-        [ "~"; a_lident{i}; ":"; S{e} ->
-          {| ~ $i : $e |}
+        [ "~"; a_lident{i}; ":"; S{e} -> `Label (_loc, i, e)
         | "~"; a_lident{i} -> `LabelS(_loc,i)
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
         | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
@@ -368,83 +363,86 @@ let apply () = begin
         | "?"; a_lident{i}; ":"; S{e} -> `OptLabl(_loc,i,e)
         | "?"; a_lident{i} -> `OptLablS(_loc,i) ] 
        "." LA
-        [ S{e1}; "."; "("; S{e2}; ")" -> {| $e1 .( $e2 ) |}
-        | S{e1}; "."; "["; S{e2}; "]" -> {| $e1 .[ $e2 ] |}
+        [ S{e1}; "."; "("; S{e2}; ")" -> `ArrayDot (_loc, e1, e2)
+        | S{e1}; "."; "["; S{e2}; "]" -> `StringDot (_loc, e1, e2)
         | S{e1}; "."; "{"; comma_exp{e2}; "}" -> FanOps.bigarray_get _loc e1 e2
-        | S{e1}; "."; S{e2} -> {| $e1 . $e2 |}
-        | S{e}; "#"; a_lident{lab} -> {| $e # $lab |} ]
+        | S{e1}; "."; S{e2} -> `Dot (_loc, e1, e2)
+        | S{e}; "#"; a_lident{lab} -> `Send (_loc, e, lab) ]
        "~-" NA
-        [ "!"; S{e} ->  {| ! $e|}
-        | prefixop{f}; S{e} -> {| $f $e |} ]
+        [ "!"; S{e} ->  {| ! $e|} (* FIXME *)
+        | prefixop{f}; S{e} -> `App (_loc, f, e) ]
        "simple"
         [ `QUOTATION x -> AstQuotation.expand _loc x FanDyn.exp_tag
         | `Ant (("exp"|""|"anti"|"`bool" |"par"|"seq"|"int"|"`int"
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
                     mk_anti _loc ~c:"exp" n s
-        | `INT(_,s) -> {|$int:s|}
-        | `INT32(_,s) -> {|$int32:s|}
-        | `INT64(_,s) -> {|$int64:s|}
-        | `Flo(_,s) -> {|$flo:s|}
-        | `CHAR(_,s) -> {|$chr:s|}
-        | `STR(_,s) -> {|$str:s|}
-        | `NATIVEINT(_,s) -> {|$nativeint:s|}
+        | `INT(_,s) ->  `Int(_loc,s)
+        | `INT32(_,s) -> `Int32(_loc,s)
+        | `INT64(_,s) -> `Int64(_loc,s)
+        | `Flo(_,s) -> `Flo (_loc, s)
+        | `CHAR(_,s) -> `Chr (_loc, s)
+        | `STR(_,s) -> `Str (_loc, s)
+        | `NATIVEINT(_,s) -> `Nativeint (_loc, s)
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
-            {| let open $i in $e |}
+            `LetOpen (_loc, i, e)
         (* | TRY val_longident{i} -> {| $id:i |} *)
-        | ident{i} -> {|$id:i|} (* FIXME logic was splitted here *)
+        | ident{i} -> `Id(_loc,i)  (* FIXME logic was splitted here *)
         | "`"; luident{s} -> `Vrn(_loc,s)
-        | "["; "]" -> {| [] |}
+        | "["; "]" -> {| [] |} (* FIXME *)
         | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last
         | "["; sem_exp_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> `ArrayEmpty(_loc)
-        | "[|"; sem_exp{el}; "|]" -> {| [| $el |] |}
+        | "[|"; sem_exp{el}; "|]" -> `Array (_loc, el)
 
+        (* | "{"; a_lident{x} ; "with"; label_exp_list{el}; "}" -> *)
+        (*     `RecordWith (_loc, el, `Id (_loc,(x:>ident))) *)
         | "{"; `Lid x ; "with"; label_exp_list{el}; "}" ->
             {| { ($lid:x) with $el }|} (* FIXME add antiquot support *)
-        | "{"; label_exp_list{el}; "}" -> {| { $el } |}
+        | "{"; label_exp_list{el}; "}" -> `Record (_loc, el)
         | "{"; "("; S{e}; ")"; "with"; label_exp_list{el}; "}" ->
-            {| { ($e) with $el } |}
+            `RecordWith (_loc, el, e)
         | "{<"; ">}" -> `OvrInstEmpty(_loc)
         | "{<"; field_exp_list{fel}; ">}" -> `OvrInst(_loc,fel) 
         | "("; ")" -> {| () |}
-        | "("; S{e}; ":"; ctyp{t}; ")" -> {| ($e : $t) |}
-        | "("; S{e}; ","; comma_exp{el}; ")" -> {| ( $e, $el ) |}
+        | "("; S{e}; ":"; ctyp{t}; ")" -> `Constraint (_loc, e, t)
+        | "("; S{e}; ","; comma_exp{el}; ")" ->
+            `Par (_loc, `Com (_loc, e, el))
         | "("; S{e}; ";"; sequence{seq}; ")" -> `Seq(_loc,`Sem(_loc,e,seq))
               (* FanOps.mksequence ~loc:_loc {| $e; $seq |} *)
         | "("; S{e}; ";"; ")" -> `Seq(_loc,e)(* FanOps.mksequence ~loc:_loc e *)
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
-            {| ($e : $t :> $t2 ) |}
-        | "("; S{e}; ":>"; ctyp{t}; ")" -> `Subtype(_loc,e,t)(* {| ($e :> $t) |} *)
+            `Coercion (_loc, e, t, t2)
+        | "("; S{e}; ":>"; ctyp{t}; ")" -> `Subtype(_loc,e,t)
         | "("; S{e}; ")" -> e
-        | "begin"; sequence{seq}; "end" -> `Seq(_loc,seq)(* FanOps.mksequence ~loc:_loc seq *)
+        | "begin"; sequence{seq}; "end" -> `Seq(_loc,seq)
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_exp{me}; ")" ->
-            {| (module $me) |}
-        | "("; "module"; module_exp{me}; ":"; (* package_type *)module_type{pt}; ")" ->
-            {| (module $me : $pt) |}  ] }
+            `Package_exp (_loc, me)
+        | "("; "module"; module_exp{me}; ":"; module_type{pt}; ")" ->
+            `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
-         k {| let $rec:rf $bi in $e |}
+         k  (`LetIn (_loc, rf, bi, e))
        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          -> k {| let try $rec:r $bi in $x with [ $a ] |}
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
-           {| let $rec:rf $bi in $((* FanOps.mksequence ~loc:_loc el *)`Seq(_loc,el)) |}
+           `LetIn (_loc, rf, bi, (`Seq (_loc, el)))
        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
-           exp{e}; sequence'{k} -> k {| let module $m = $mb in $e |}
+           exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
        | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
-           {| let module $m = $mb in $((* FanOps.mksequence ~loc:_loc el *)`Seq(_loc,el)) |}
+           `LetModule (_loc, m, mb, `Seq (_loc, el))
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
-           {| let open $id:i in $e |}
+           `LetOpen (_loc, i, e)
        (* FIXME Ant should be able to be followed *)      
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"exp;" n s
        | exp{e}; sequence'{k} -> k e ]
        sequence':
        [ -> fun e -> e
        | ";" -> fun e -> e
-       | ";"; sequence{el} -> fun e -> {| $e; $el |} ]       
+       | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
        infixop1:
-       [  [ "&" | "&&" ]{x} -> {| $lid:x |} ]
+       [  [ "&" | "&&" ]{x} -> {| $lid:x |} ] (* FIXME *)
        infixop0:
        [  [ "or" | "||" ]{x} -> {| $lid:x |} ]
        sem_exp_for_list:
