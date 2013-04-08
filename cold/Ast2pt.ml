@@ -476,18 +476,18 @@ let rec pat (x : pat) =
         | `RecBind (_loc,i,p) -> ((ident i), (pat p))
         | p -> error (loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
-  | (`Par (loc,`Com (_,p1,p2)) : Ast.pat) ->
-      mkpat loc
+  | (`Par (_loc,`Com (_,p1,p2)) : Ast.pat) ->
+      mkpat _loc
         (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
   | `Par (loc,_) -> error loc "singleton tuple pattern"
-  | (`Constraint (loc,p,t) : Ast.pat) ->
-      mkpat loc (Ppat_constraint ((pat p), (ctyp t)))
-  | (`ClassPath (loc,i) : Ast.pat) ->
-      mkpat loc (Ppat_type (long_type_ident i))
-  | (`Vrn (loc,s) : Ast.pat) -> mkpat loc (Ppat_variant (s, None))
-  | (`Lazy (loc,p) : Ast.pat) -> mkpat loc (Ppat_lazy (pat p))
-  | (`ModuleUnpack (loc,`Uid (sloc,m)) : Ast.pat) ->
-      mkpat loc (Ppat_unpack (with_loc m sloc))
+  | (`Constraint (_loc,p,t) : Ast.pat) ->
+      mkpat _loc (Ppat_constraint ((pat p), (ctyp t)))
+  | (`ClassPath (_loc,i) : Ast.pat) ->
+      mkpat _loc (Ppat_type (long_type_ident i))
+  | (`Vrn (_loc,s) : Ast.pat) -> mkpat _loc (Ppat_variant (s, None))
+  | (`Lazy (_loc,p) : Ast.pat) -> mkpat _loc (Ppat_lazy (pat p))
+  | (`ModuleUnpack (_loc,`Uid (sloc,m)) : Ast.pat) ->
+      mkpat _loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (loc,`Uid (sloc,m),ty) ->
       mkpat loc
         (Ppat_constraint
@@ -544,7 +544,8 @@ let rec exp (x : exp) =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | `Assert (_loc,`Id (_,`Lid (_,"false"))) -> mkexp _loc Pexp_assertfalse
+  | (`Assert (_loc,`Id (_,`Lid (_,"false"))) : Ast.exp) ->
+      mkexp _loc Pexp_assertfalse
   | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =

@@ -854,7 +854,7 @@ let _ =
          `Stoken
            (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
              (`Normal, "`Ant ((\"\"|\"anti\"),_)"))],
-          ("Gram.mk_action\n  (fun (__fan_2 : [> FanToken.t])  (v : 'luident)  _  (_loc : FanLoc.t)  ->\n     match __fan_2 with\n     | `Ant ((\"\"|\"anti\" as n),s) ->\n         (`App\n            (_loc, (`Vrn (_loc, v)), (`Ant (_loc, (mk_anti ~c:\"pat\" n s)))) : \n         'simple_pat )\n     | _ ->\n         failwith\n           \"`App (_loc, (`Vrn (_loc, v)), (`Ant (_loc, (mk_anti ~c:\"pat\" n s))))\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_2 : [> FanToken.t])  (v : 'luident)  _  (_loc : FanLoc.t)  ->\n     match __fan_2 with\n     | `Ant ((\"\"|\"anti\" as n),s) ->\n         (`App (_loc, (`Vrn (_loc, v)), (mk_anti _loc ~c:\"pat\" n s)) : \n         'simple_pat )\n     | _ ->\n         failwith\n           \"`App (_loc, (`Vrn (_loc, v)), (mk_anti _loc ~c:\"pat\" n s))\n\")\n",
             (Gram.mk_action
                (fun (__fan_2 : [> FanToken.t])  (v : 'luident)  _ 
                   (_loc : FanLoc.t)  ->
@@ -862,10 +862,10 @@ let _ =
                   | `Ant ((""|"anti" as n),s) ->
                       (`App
                          (_loc, (`Vrn (_loc, v)),
-                           (`Ant (_loc, (mk_anti ~c:"pat" n s)))) : 'simple_pat )
+                           (mk_anti _loc ~c:"pat" n s)) : 'simple_pat )
                   | _ ->
                       failwith
-                        "`App (_loc, (`Vrn (_loc, v)), (`Ant (_loc, (mk_anti ~c:\"pat\" n s))))\n"))));
+                        "`App (_loc, (`Vrn (_loc, v)), (mk_anti _loc ~c:\"pat\" n s))\n"))));
         ([`Skeyword "`";
          `Snterm (Gram.obj (luident : 'luident Gram.t ));
          `Stoken

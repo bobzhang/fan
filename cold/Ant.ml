@@ -43,10 +43,6 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
           let mloc _loc = (meta_loc_exp _loc _loc :>exp) in
           let e = parse_exp _loc code in
           (match (decorations, cxt, sep) with
-           | ("anti",_,__) ->
-               (`App
-                  (_loc, (`Vrn (_loc, "Ant")),
-                    (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
                |"nativeint"|"chr"|"str" as x),_,_)
              |(("vrn" as x),("exp"|"pat"),_) ->
