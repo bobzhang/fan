@@ -52,17 +52,28 @@ let rec normalize_acc = with ident' fun
   ]}
  *)
 
-let rec sep_dot_exp acc = with exp' fun
-  [ {| $e1.$e2|} ->
-    sep_dot_exp (sep_dot_exp acc e2) e1
-  | {@loc| $uid:s |} as e ->
-      match acc with
-      [ [] -> [(loc, [], e)]
-      | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
-  | {| $(id:({:ident@_l| $_.$_ |} as i)) |} ->
-      sep_dot_exp acc (normalize_acc i)
-  | e -> [(loc_of e, [], e) :: acc] ];
+(* let rec sep_dot_exp acc = with exp' fun *)
+(*   [ {| $e1.$e2|} -> *)
+(*     sep_dot_exp (sep_dot_exp acc e2) e1 *)
+(*   | {@loc| $uid:s |} as e -> *)
+(*       match acc with *)
+(*       [ [] -> [(loc, [], e)] *)
+(*       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ] *)
+(*   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} -> *)
+(*       sep_dot_exp acc (normalize_acc i) *)
+(*   | e -> [(loc_of e, [], e) :: acc] ];; *)
 
+let rec sep_dot_exp acc = fun
+  [ `Field(_,e1,e2) ->
+    sep_dot_exp (sep_dot_exp acc e2) e1
+  | (`Id (loc,`Uid (_,s)) : Ast.exp) as e ->
+      (match acc with
+       [ [] -> [(loc, [], e)]
+       | [(loc',sl,e)::l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ])
+  | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
+      sep_dot_exp acc (normalize_acc i)
+  | e -> [((loc_of e), [], e) :: acc] ];
+  
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
   [ `Virtual _ -> Virtual
   | `ViNil _  -> Concrete

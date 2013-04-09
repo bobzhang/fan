@@ -301,7 +301,9 @@ let apply () = begin
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
             `While (_loc, e, seq)]  
        ":=" NA
-        [ S{e1}; ":="; S{e2} -> {| $e1 := $e2 |} 
+        [ S{e1}; ":="; S{e2} ->
+          `Assign (_loc,`Field(_loc,e1,`Id(_,`Lid(_loc,"contents"))))
+          (* {| $e1 := $e2 |}  *)
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
             [ Some e -> e
@@ -327,6 +329,7 @@ let apply () = begin
         | S{e1}; "lsl"; S{e2} -> {| $e1 lsl $e2 |}
         | S{e1}; "lsr"; S{e2} -> {| $e1 lsr $e2 |}
         | S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
+          
        "obj" RA
         [
         (* FIXME fun and function duplicated *)      
