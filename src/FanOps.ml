@@ -98,12 +98,12 @@ let rec is_module_longident (x:ident) =
   | `Uid _ -> true
   | _ -> false ];  
 
-let ident_of_exp =
+let ident_of_exp : exp -> ident =
   let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
-  let rec self (x:exp)=
+  let rec self (x:exp) : ident =
     match x with 
     [ `App(_loc,e1,e2) -> `App(_loc,self e1, self e2)
-    | `Dot(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
+    | `Field(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
     | `Id(_loc,`Lid _ ) -> error ()
     | `Id (_loc,i) -> if is_module_longident i then i else error ()
     | _ -> error () ] in 
@@ -285,7 +285,7 @@ let meta_array mf_a _loc ls =
   bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_exp f;
   ]}
  *)  
-let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
+let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
   let coords =
     match arg with
     [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
@@ -311,7 +311,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
     Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
      {:exp|a.{1,2,3,4,$rest:x}|}
  *)
-let bigarray_set loc (var) newval (* : option exp *) = with exp
+let bigarray_set loc (var) newval (* : option exp *) = with exp'
   match var with
   [ {|  $arr.{$c1} |} ->
     (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)

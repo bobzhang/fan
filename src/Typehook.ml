@@ -308,10 +308,10 @@ include_quot:
     let res = FanState.gensym "res" in
     let exc = FanState.gensym "e" in
     let binds = and_of_list
-        (List.map2 (fun x y -> {:binding| $lid:x = ! $lid:y |} ) symbs ls ) in
+        (List.map2 (fun x y -> {:binding'| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =
-       seq_sem (List.map2 (fun x y -> {:exp| $lid:x := $lid:y |}) ls symbs) in
-    {:exp|
+       seq_sem (List.map2 (fun x y -> {:exp'| $lid:x := $lid:y |}) ls symbs) in
+    {:exp'|
     let $binds in
     try begin 
       let $lid:res = $b in

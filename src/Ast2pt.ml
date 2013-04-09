@@ -575,7 +575,7 @@ let override_flag loc (x:override_flag) =
   ]}
  *)
 let rec exp (x : exp) = with exp' match x with 
-  [ `Dot(_loc,_,_)|
+  [ `Field(_loc,_,_)|
     `Id(_loc,`Dot _ ) ->
       let (e, l) =
         match sep_dot_exp [] x with
@@ -630,7 +630,7 @@ let rec exp (x : exp) = with exp' match x with
               [ {@loc| $x.contents |} -> (* FIXME *)
                 Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
                   [("", exp x); ("", exp v)]
-            | `Dot (loc,_,_) ->
+            | `Field (loc,_,_) ->
                 match (exp e).pexp_desc with
                 [ Pexp_field (e, lab) -> Pexp_setfield e lab (exp v)
                 | _ -> error loc "bad record access" ]

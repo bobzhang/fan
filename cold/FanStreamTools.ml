@@ -89,7 +89,7 @@ let rec subst v e =
       (`Id (_loc, (`Lid (_loc, x))) : Ast.exp )
   | (`Id (_loc,`Uid (_,_)) : Ast.exp)|(`Int (_loc,_) : Ast.exp)
     |(`Chr (_loc,_) : Ast.exp)|(`Str (_loc,_) : Ast.exp)
-    |(`Dot (_loc,_,_) : Ast.exp) -> e
+    |(`Field (_loc,_,_) : Ast.exp) -> e
   | (`LetIn (_loc,rf,bi,e) : Ast.exp) ->
       (`LetIn (_loc, rf, (subst_binding v bi), (subst v e)) : Ast.exp )
   | (`App (_loc,e1,e2) : Ast.exp) ->

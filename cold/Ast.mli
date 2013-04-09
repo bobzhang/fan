@@ -103,7 +103,7 @@ and exp =
   [ sid | `App of (loc * exp * exp) | `Vrn of (loc * string)
   | `Com of (loc * exp * exp) | `Sem of (loc * exp * exp)
   | `Par of (loc * exp) | any | `Record of (loc * rec_exp) | ant | literal
-  | `RecordWith of (loc * rec_exp * exp) | `Dot of (loc * exp * exp)
+  | `RecordWith of (loc * rec_exp * exp) | `Field of (loc * exp * exp)
   | `ArrayDot of (loc * exp * exp) | `ArrayEmpty of loc
   | `Array of (loc * exp) | `Assert of (loc * exp)
   | `Assign of (loc * exp * exp)

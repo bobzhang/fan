@@ -25,7 +25,7 @@ let _ = ()
 let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : Ast.ident) ->
-      (`Dot (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
+      (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | (`App (_loc,i1,i2) : Ast.ident) ->
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | `Ant (_loc,_)|(`Uid (_loc,_) : Ast.ident)|(`Lid (_loc,_) : Ast.ident) as
@@ -33,7 +33,7 @@ let rec normalize_acc =
 
 let rec sep_dot_exp acc =
   function
-  | (`Dot (_loc,e1,e2) : Ast.exp) -> sep_dot_exp (sep_dot_exp acc e2) e1
+  | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
   | (`Id (loc,`Uid (_,s)) : Ast.exp) as e ->
       (match acc with
        | [] -> [(loc, [], e)]
@@ -502,7 +502,7 @@ let override_flag loc (x : override_flag) =
 
 let rec exp (x : exp) =
   match x with
-  | `Dot (_loc,_,_)|`Id (_loc,`Dot _) ->
+  | `Field (_loc,_,_)|`Id (_loc,`Dot _) ->
       let (e,l) =
         match sep_dot_exp [] x with
         | (loc,ml,`Id (sloc,`Uid (_,s)))::l ->
@@ -550,11 +550,11 @@ let rec exp (x : exp) =
   | `Assign (loc,e,v) ->
       let e =
         match e with
-        | (`Dot (loc,x,`Id (_,`Lid (_,"contents"))) : Ast.exp) ->
+        | (`Field (loc,x,`Id (_,`Lid (_,"contents"))) : Ast.exp) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (exp x)); ("", (exp v))])
-        | `Dot (loc,_,_) ->
+        | `Field (loc,_,_) ->
             (match (exp e).pexp_desc with
              | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (exp v))
              | _ -> error loc "bad record access")

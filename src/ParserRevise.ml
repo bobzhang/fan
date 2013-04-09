@@ -302,7 +302,7 @@ let apply () = begin
             `While (_loc, e, seq)]  
        ":=" NA
         [ S{e1}; ":="; S{e2} ->
-          `Assign (_loc,`Field(_loc,e1,`Id(_,`Lid(_loc,"contents"))))
+          (`Assign (_loc,`Field(_loc,e1,`Id(_loc,`Lid(_loc,"contents"))),e2):exp)
           (* {| $e1 := $e2 |}  *)
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
@@ -370,10 +370,10 @@ let apply () = begin
         [ S{e1}; "."; "("; S{e2}; ")" -> `ArrayDot (_loc, e1, e2)
         | S{e1}; "."; "["; S{e2}; "]" -> `StringDot (_loc, e1, e2)
         | S{e1}; "."; "{"; comma_exp{e2}; "}" -> FanOps.bigarray_get _loc e1 e2
-        | S{e1}; "."; S{e2} -> `Dot (_loc, e1, e2)
+        | S{e1}; "."; S{e2} -> (* `Dot (_loc, e1, e2) *)`Field(_loc,e1,e2)
         | S{e}; "#"; a_lident{lab} -> `Send (_loc, e, lab) ]
        "~-" NA
-        [ "!"; S{e} ->  {| ! $e|} (* FIXME *)
+        [ "!"; S{e} ->  (* {| ! $e|} *) (* FIXME *)`Field(_loc,e,`Id(_loc,`Lid(_loc,"contents")))
         | prefixop{f}; S{e} -> `App (_loc, f, e) ]
        "simple"
         [ `QUOTATION x -> AstQuotation.expand _loc x FanDyn.exp_tag

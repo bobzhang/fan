@@ -82,6 +82,7 @@ let loc_of =
   | `Ctyp (_loc,_) -> _loc
   | `ReNil _loc -> _loc
   | `Lazy (_loc,_) -> _loc
+  | `Field (_loc,_,_) -> _loc
   | `CeFun (_loc,_,_) -> _loc
   | `ClassPath (_loc,_) -> _loc
   | `Nil _loc -> _loc

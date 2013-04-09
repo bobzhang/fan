@@ -496,8 +496,8 @@ and pp_print_exp fmt =
   | `RecordWith (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_exp _a1 pp_print_exp _a2
-  | `Dot (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Field (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Field@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1 pp_print_exp _a2
   | `ArrayDot (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -1481,8 +1481,8 @@ class print =
         | `RecordWith (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" self#loc
               _a0 self#rec_exp _a1 self#exp _a2
-        | `Dot (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Dot@ %a@ %a@ %a)@]" self#loc _a0
+        | `Field (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Field@ %a@ %a@ %a)@]" self#loc _a0
               self#exp _a1 self#exp _a2
         | `ArrayDot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" self#loc _a0
@@ -2497,10 +2497,10 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_exp _a1 in
           let _a2 = self#exp _a2 in `RecordWith (_a0, _a1, _a2)
-      | `Dot (_a0,_a1,_a2) ->
+      | `Field (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in
-          let _a2 = self#exp _a2 in `Dot (_a0, _a1, _a2)
+          let _a2 = self#exp _a2 in `Field (_a0, _a1, _a2)
       | `ArrayDot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in
@@ -3449,7 +3449,7 @@ class fold =
       | `RecordWith (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_exp _a1 in self#exp _a2
-      | `Dot (_a0,_a1,_a2) ->
+      | `Field (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `ArrayDot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
@@ -4241,9 +4241,9 @@ and strip_loc_exp =
   | `RecordWith (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `RecordWith (_a1, _a2)
-  | `Dot (_a0,_a1,_a2) ->
+  | `Field (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `Dot (_a1, _a2)
+      let _a2 = strip_loc_exp _a2 in `Field (_a1, _a2)
   | `ArrayDot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `ArrayDot (_a1, _a2)

@@ -71,16 +71,16 @@ let rec is_module_longident (x : ident) =
   | `Uid _ -> true
   | _ -> false
 
-let ident_of_exp =
+let ident_of_exp: exp -> ident =
   let error () =
     invalid_arg "ident_of_exp: this expession is not an identifier" in
   let rec self (x : exp) =
-    match x with
-    | `App (_loc,e1,e2) -> `App (_loc, (self e1), (self e2))
-    | `Dot (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
-    | `Id (_loc,`Lid _) -> error ()
-    | `Id (_loc,i) -> if is_module_longident i then i else error ()
-    | _ -> error () in
+    (match x with
+     | `App (_loc,e1,e2) -> `App (_loc, (self e1), (self e2))
+     | `Field (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
+     | `Id (_loc,`Lid _) -> error ()
+     | `Id (_loc,i) -> if is_module_longident i then i else error ()
+     | _ -> error () : ident ) in
   function | `Id (_loc,i) -> i | `App _ -> error () | t -> self t
 
 let ident_of_ctyp =
@@ -165,83 +165,85 @@ let meta_array mf_a _loc ls =
 let bigarray_get loc arr arg =
   let coords =
     match arg with
-    | `Par (_loc,`Com (_,e1,e2))|`Com (_loc,e1,e2) ->
+    | (`Par (_loc,`Com (_,e1,e2)) : Ast.exp)|(`Com (_loc,e1,e2) : Ast.exp) ->
         list_of_com e1 (list_of_com e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"
   | c1::[] ->
-      `App
-        (loc,
-          (`App
-             (loc,
-               (`Id
-                  (loc,
-                    (`Dot
-                       (loc, (`Uid (loc, "Bigarray")),
-                         (`Dot
-                            (loc, (`Uid (loc, "Array1")),
-                              (`Lid (loc, "get")))))))), arr)), c1)
+      (`App
+         (loc,
+           (`App
+              (loc,
+                (`Id
+                   (loc,
+                     (`Dot
+                        (loc, (`Uid (loc, "Bigarray")),
+                          (`Dot
+                             (loc, (`Uid (loc, "Array1")),
+                               (`Lid (loc, "get")))))))), arr)), c1) : 
+      Ast.exp )
   | c1::c2::[] ->
-      `App
-        (loc,
-          (`App
-             (loc,
-               (`App
-                  (loc,
-                    (`Id
-                       (loc,
-                         (`Dot
-                            (loc, (`Uid (loc, "Bigarray")),
-                              (`Dot
-                                 (loc, (`Uid (loc, "Array2")),
-                                   (`Lid (loc, "get")))))))), arr)), c1)),
-          c2)
+      (`App
+         (loc,
+           (`App
+              (loc,
+                (`App
+                   (loc,
+                     (`Id
+                        (loc,
+                          (`Dot
+                             (loc, (`Uid (loc, "Bigarray")),
+                               (`Dot
+                                  (loc, (`Uid (loc, "Array2")),
+                                    (`Lid (loc, "get")))))))), arr)), c1)),
+           c2) : Ast.exp )
   | c1::c2::c3::[] ->
-      `App
-        (loc,
-          (`App
-             (loc,
-               (`App
-                  (loc,
-                    (`App
-                       (loc,
-                         (`Id
-                            (loc,
-                              (`Dot
-                                 (loc, (`Uid (loc, "Bigarray")),
-                                   (`Dot
-                                      (loc, (`Uid (loc, "Array3")),
-                                        (`Lid (loc, "get")))))))), arr)), c1)),
-               c2)), c3)
+      (`App
+         (loc,
+           (`App
+              (loc,
+                (`App
+                   (loc,
+                     (`App
+                        (loc,
+                          (`Id
+                             (loc,
+                               (`Dot
+                                  (loc, (`Uid (loc, "Bigarray")),
+                                    (`Dot
+                                       (loc, (`Uid (loc, "Array3")),
+                                         (`Lid (loc, "get")))))))), arr)),
+                     c1)), c2)), c3) : Ast.exp )
   | c1::c2::c3::coords ->
-      `App
-        (loc,
-          (`App
-             (loc,
-               (`Id
-                  (loc,
-                    (`Dot
-                       (loc, (`Uid (loc, "Bigarray")),
-                         (`Dot
-                            (loc, (`Uid (loc, "Genarray")),
-                              (`Lid (loc, "get")))))))), arr)),
-          (`Array
-             (loc,
-               (`Sem
-                  (loc, c1,
-                    (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords))))))))))
+      (`App
+         (loc,
+           (`App
+              (loc,
+                (`Id
+                   (loc,
+                     (`Dot
+                        (loc, (`Uid (loc, "Bigarray")),
+                          (`Dot
+                             (loc, (`Uid (loc, "Genarray")),
+                               (`Lid (loc, "get")))))))), arr)),
+           (`Array
+              (loc,
+                (`Sem
+                   (loc, c1,
+                     (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords)))))))))) : 
+      Ast.exp )
 
 let bigarray_set loc var newval =
   match var with
-  | `App
-      (_loc,`App
-              (_,`Id
-                   (_,`Dot
-                        (_,`Uid (_,"Bigarray"),`Dot
-                                                 (_,`Uid (_,"Array1"),
-                                                  `Lid (_,"get")))),arr),c1)
-      ->
+  | (`App
+       (_loc,`App
+               (_,`Id
+                    (_,`Dot
+                         (_,`Uid (_,"Bigarray"),`Dot
+                                                  (_,`Uid (_,"Array1"),
+                                                   `Lid (_,"get")))),arr),c1)
+      : Ast.exp) ->
       Some
         (`App
            (loc,
@@ -256,16 +258,16 @@ let bigarray_set loc var newval =
                                  (`Dot
                                     (loc, (`Uid (loc, "Array1")),
                                       (`Lid (loc, "set")))))))), arr)), c1)),
-             newval))
-  | `App
-      (_loc,`App
-              (_,`App
-                   (_,`Id
-                        (_,`Dot
-                             (_,`Uid (_,"Bigarray"),`Dot
-                                                      (_,`Uid (_,"Array2"),
-                                                       `Lid (_,"get")))),arr),c1),c2)
-      ->
+             newval) : Ast.exp )
+  | (`App
+       (_loc,`App
+               (_,`App
+                    (_,`Id
+                         (_,`Dot
+                              (_,`Uid (_,"Bigarray"),`Dot
+                                                       (_,`Uid (_,"Array2"),
+                                                        `Lid (_,"get")))),arr),c1),c2)
+      : Ast.exp) ->
       Some
         (`App
            (loc,
@@ -282,22 +284,22 @@ let bigarray_set loc var newval =
                                       (`Dot
                                          (loc, (`Uid (loc, "Array2")),
                                            (`Lid (loc, "set")))))))), arr)),
-                       c1)), c2)), newval))
-  | `App
-      (_loc,`App
-              (_,`App
-                   (_,`App
-                        (_,`Id
-                             (_,`Dot
-                                  (_,`Uid (_,"Bigarray"),`Dot
-                                                           (_,`Uid
-                                                                (_,"Array3"),
-                                                            `Lid (_,"get")))),arr),c1),c2),c3)
-      ->
+                       c1)), c2)), newval) : Ast.exp )
+  | (`App
+       (_loc,`App
+               (_,`App
+                    (_,`App
+                         (_,`Id
+                              (_,`Dot
+                                   (_,`Uid (_,"Bigarray"),`Dot
+                                                            (_,`Uid
+                                                                 (_,"Array3"),
+                                                             `Lid (_,"get")))),arr),c1),c2),c3)
+      : Ast.exp) ->
       Some
         (`Assign
            (loc,
-             (`Dot
+             (`Field
                 (loc,
                   (`App
                      (loc,
@@ -316,16 +318,17 @@ let bigarray_set loc var newval =
                                                      (`Uid (loc, "Array3")),
                                                      (`Lid (loc, "get")))))))),
                                       arr)), c1)), c2)), c3)),
-                  (`Id (loc, (`Lid (loc, "contents")))))), newval))
-  | `App
-      (_loc,`App
-              (_,`Id
-                   (_,`Dot
-                        (_,`Uid (_,"Bigarray"),`Dot
-                                                 (_,`Uid (_,"Genarray"),
-                                                  `Lid (_,"get")))),arr),
-       `Array (_,coords))
-      ->
+                  (`Id (loc, (`Lid (loc, "contents")))))), newval) : 
+        Ast.exp )
+  | (`App
+       (_loc,`App
+               (_,`Id
+                    (_,`Dot
+                         (_,`Uid (_,"Bigarray"),`Dot
+                                                  (_,`Uid (_,"Genarray"),
+                                                   `Lid (_,"get")))),arr),
+        `Array (_,coords))
+      : Ast.exp) ->
       Some
         (`App
            (loc,
@@ -340,7 +343,7 @@ let bigarray_set loc var newval =
                                  (`Dot
                                     (loc, (`Uid (loc, "Genarray")),
                                       (`Lid (loc, "set")))))))), arr)),
-                  (`Array (loc, coords)))), newval))
+                  (`Array (loc, coords)))), newval) : Ast.exp )
   | _ -> None
 
 let mksequence ?loc  =

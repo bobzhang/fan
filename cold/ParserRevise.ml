@@ -1128,15 +1128,15 @@ let apply () =
                     (_loc : FanLoc.t)  -> (`While (_loc, e, seq) : 'exp )))))]);
        ((Some ":="), (Some `NA),
          [([`Sself; `Skeyword ":="; `Sself],
-            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`Assign\n        (_loc, (`Dot (_loc, e1, (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n          e2) : 'exp ))\n",
+            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     ((`Assign\n         (_loc, (`Field (_loc, e1, (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n           e2) : exp ) : 'exp ))\n",
               (Gram.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                    (`Assign
-                       (_loc,
-                         (`Dot
-                            (_loc, e1,
-                              (`Id (_loc, (`Lid (_loc, "contents")))))), e2) : 
-                    'exp )))));
+                    ((`Assign
+                        (_loc,
+                          (`Field
+                             (_loc, e1,
+                               (`Id (_loc, (`Lid (_loc, "contents")))))), e2) : 
+                    exp ) : 'exp )))));
          ([`Sself; `Skeyword "<-"; `Sself],
            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (match FanOps.bigarray_set _loc e1 e2 with\n      | Some e -> e\n      | None  -> `Assign (_loc, e1, e2) : 'exp ))\n",
              (Gram.mk_action
@@ -1451,10 +1451,10 @@ let apply () =
                    (_loc : FanLoc.t)  ->
                    (FanOps.bigarray_get _loc e1 e2 : 'exp )))));
          ([`Sself; `Skeyword "."; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`Dot (_loc, e1, e2) : 'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`Field (_loc, e1, e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`Dot (_loc, e1, e2) : 'exp )))));
+                   (`Field (_loc, e1, e2) : 'exp )))));
          ([`Sself;
           `Skeyword "#";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
@@ -1464,10 +1464,11 @@ let apply () =
                    (`Send (_loc, e, lab) : 'exp )))))]);
        ((Some "~-"), (Some `NA),
          [([`Skeyword "!"; `Sself],
-            ("Gram.mk_action\n  (fun (e : 'exp)  _  (_loc : FanLoc.t)  ->\n     (`Dot (_loc, e, (`Id (_loc, (`Lid (_loc, \"contents\"))))) : 'exp ))\n",
+            ("Gram.mk_action\n  (fun (e : 'exp)  _  (_loc : FanLoc.t)  ->\n     (`Field (_loc, e, (`Id (_loc, (`Lid (_loc, \"contents\"))))) : 'exp ))\n",
               (Gram.mk_action
                  (fun (e : 'exp)  _  (_loc : FanLoc.t)  ->
-                    (`Dot (_loc, e, (`Id (_loc, (`Lid (_loc, "contents"))))) : 
+                    (`Field
+                       (_loc, e, (`Id (_loc, (`Lid (_loc, "contents"))))) : 
                     'exp )))));
          ([`Snterm (Gram.obj (prefixop : 'prefixop Gram.t )); `Sself],
            ("Gram.mk_action\n  (fun (e : 'exp)  (f : 'prefixop)  (_loc : FanLoc.t)  ->\n     (`App (_loc, f, e) : 'exp ))\n",

@@ -952,12 +952,13 @@ class meta =
                         (_loc, (`Vrn (_loc, "RecordWith")),
                           (self#loc _loc _a0))), (self#rec_exp _loc _a1))),
                 (self#exp _loc _a2))
-        | `Dot (_a0,_a1,_a2) ->
+        | `Field (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Field")), (self#loc _loc _a0))),
                      (self#exp _loc _a1))), (self#exp _loc _a2))
         | `ArrayDot (_a0,_a1,_a2) ->
             `App

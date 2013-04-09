@@ -406,7 +406,7 @@ class eq =
             (self#literal _a0 _b0 :>'result40)
         | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
             (self#rec_exp _a0 _b0) && (self#exp _a1 _b1)
-        | (`Dot (_a0,_a1),`Dot (_b0,_b1)) ->
+        | (`Field (_a0,_a1),`Field (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`ArrayDot (_a0,_a1),`ArrayDot (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
@@ -1193,9 +1193,9 @@ class print =
         | `RecordWith (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]" self#rec_exp
               _a0 self#exp _a1
-        | `Dot (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Dot@ %a@ %a)@]" self#exp _a0 self#exp
-              _a1
+        | `Field (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Field@ %a@ %a)@]" self#exp _a0
+              self#exp _a1
         | `ArrayDot (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a)@]" self#exp _a0
               self#exp _a1
@@ -2135,9 +2135,9 @@ and meta_exp _loc =
         (_loc,
           (`App (_loc, (`Vrn (_loc, "RecordWith")), (meta_rec_exp _loc _a0))),
           (meta_exp _loc _a1))
-  | `Dot (_a0,_a1) ->
+  | `Field (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_exp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "Field")), (meta_exp _loc _a0))),
           (meta_exp _loc _a1))
   | `ArrayDot (_a0,_a1) ->
       `App

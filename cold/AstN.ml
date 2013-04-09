@@ -113,7 +113,7 @@ and rec_pat =
 and exp =
   [ sid | `App of (exp * exp) | `Vrn of string | `Com of (exp * exp)
   | `Sem of (exp * exp) | `Par of exp | any | `Record of rec_exp | ant
-  | literal | `RecordWith of (rec_exp * exp) | `Dot of (exp * exp)
+  | literal | `RecordWith of (rec_exp * exp) | `Field of (exp * exp)
   | `ArrayDot of (exp * exp) | `ArrayEmpty | `Array of exp | `Assert of exp
   | `Assign of (exp * exp)
   | `For of (alident * exp * exp * direction_flag * exp) | `Fun of case

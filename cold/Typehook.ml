@@ -320,7 +320,7 @@ let _ =
                            | _ -> failwith "x\n"))))]);
           `Skeyword "->";
           `Snterm (Gram.obj (Syntax.exp : 'Syntax__exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (b : 'Syntax__exp)  _  (ls : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (let symbs = List.map (fun x  -> FanState.gensym x) ls in\n      let res = FanState.gensym \"res\" in\n      let exc = FanState.gensym \"e\" in\n      let binds =\n        and_of_list\n          (List.map2\n             (fun x  y  ->\n                `Bind\n                  (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, y)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))))) symbs ls) in\n      let restore =\n        seq_sem\n          (List.map2\n             (fun x  y  ->\n                `Assign\n                  (_loc,\n                    (`Dot\n                       (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                         (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n                    (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in\n      `LetIn\n        (_loc, (`ReNil _loc), binds,\n          (`Try\n             (_loc,\n               (`Seq\n                  (_loc,\n                    (`LetIn\n                       (_loc, (`ReNil _loc),\n                         (`Bind (_loc, (`Id (_loc, (`Lid (_loc, res)))), b)),\n                         (`LetIn\n                            (_loc, (`ReNil _loc),\n                              (`Bind (_loc, (`Any _loc), restore)),\n                              (`Id (_loc, (`Lid (_loc, res)))))))))),\n               (`Case\n                  (_loc, (`Id (_loc, (`Lid (_loc, exc)))),\n                    (`Seq\n                       (_loc,\n                         (`Sem\n                            (_loc, restore,\n                              (`App\n                                 (_loc, (`Id (_loc, (`Lid (_loc, \"raise\")))),\n                                   (`Id (_loc, (`Lid (_loc, exc))))))))))))))) : \n     'save_quot ))\n",
+           ("Gram.mk_action\n  (fun (b : 'Syntax__exp)  _  (ls : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (let symbs = List.map (fun x  -> FanState.gensym x) ls in\n      let res = FanState.gensym \"res\" in\n      let exc = FanState.gensym \"e\" in\n      let binds =\n        and_of_list\n          (List.map2\n             (fun x  y  ->\n                (`Bind\n                   (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                     (`Field\n                        (_loc, (`Id (_loc, (`Lid (_loc, y)))),\n                          (`Id (_loc, (`Lid (_loc, \"contents\"))))))) : \n                Ast.binding )) symbs ls) in\n      let restore =\n        seq_sem\n          (List.map2\n             (fun x  y  ->\n                (`Assign\n                   (_loc,\n                     (`Field\n                        (_loc, (`Id (_loc, (`Lid (_loc, x)))),\n                          (`Id (_loc, (`Lid (_loc, \"contents\")))))),\n                     (`Id (_loc, (`Lid (_loc, y))))) : Ast.exp )) ls symbs) in\n      (`LetIn\n         (_loc, (`ReNil _loc), binds,\n           (`Try\n              (_loc,\n                (`Seq\n                   (_loc,\n                     (`LetIn\n                        (_loc, (`ReNil _loc),\n                          (`Bind (_loc, (`Id (_loc, (`Lid (_loc, res)))), b)),\n                          (`LetIn\n                             (_loc, (`ReNil _loc),\n                               (`Bind (_loc, (`Any _loc), restore)),\n                               (`Id (_loc, (`Lid (_loc, res)))))))))),\n                (`Case\n                   (_loc, (`Id (_loc, (`Lid (_loc, exc)))),\n                     (`Seq\n                        (_loc,\n                          (`Sem\n                             (_loc, restore,\n                               (`App\n                                  (_loc,\n                                    (`Id (_loc, (`Lid (_loc, \"raise\")))),\n                                    (`Id (_loc, (`Lid (_loc, exc))))))))))))))) : \n        Ast.exp ) : 'save_quot ))\n",
              (Gram.mk_action
                 (fun (b : 'Syntax__exp)  _  (ls : 'e__4 list) 
                    (_loc : FanLoc.t)  ->
@@ -331,54 +331,57 @@ let _ =
                       and_of_list
                         (List.map2
                            (fun x  y  ->
-                              `Bind
-                                (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                  (`Dot
-                                     (_loc, (`Id (_loc, (`Lid (_loc, y)))),
-                                       (`Id (_loc, (`Lid (_loc, "contents"))))))))
-                           symbs ls) in
+                              (`Bind
+                                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                   (`Field
+                                      (_loc, (`Id (_loc, (`Lid (_loc, y)))),
+                                        (`Id
+                                           (_loc, (`Lid (_loc, "contents"))))))) : 
+                              Ast.binding )) symbs ls) in
                     let restore =
                       seq_sem
                         (List.map2
                            (fun x  y  ->
-                              `Assign
-                                (_loc,
-                                  (`Dot
-                                     (_loc, (`Id (_loc, (`Lid (_loc, x)))),
-                                       (`Id (_loc, (`Lid (_loc, "contents")))))),
-                                  (`Id (_loc, (`Lid (_loc, y)))))) ls symbs) in
-                    `LetIn
-                      (_loc, (`ReNil _loc), binds,
-                        (`Try
-                           (_loc,
-                             (`Seq
-                                (_loc,
-                                  (`LetIn
-                                     (_loc, (`ReNil _loc),
-                                       (`Bind
-                                          (_loc,
-                                            (`Id (_loc, (`Lid (_loc, res)))),
-                                            b)),
-                                       (`LetIn
-                                          (_loc, (`ReNil _loc),
-                                            (`Bind
-                                               (_loc, (`Any _loc), restore)),
-                                            (`Id (_loc, (`Lid (_loc, res)))))))))),
-                             (`Case
-                                (_loc, (`Id (_loc, (`Lid (_loc, exc)))),
-                                  (`Seq
-                                     (_loc,
-                                       (`Sem
-                                          (_loc, restore,
-                                            (`App
-                                               (_loc,
-                                                 (`Id
-                                                    (_loc,
-                                                      (`Lid (_loc, "raise")))),
-                                                 (`Id
-                                                    (_loc,
-                                                      (`Lid (_loc, exc))))))))))))))) : 
-                   'save_quot )))))]))
+                              (`Assign
+                                 (_loc,
+                                   (`Field
+                                      (_loc, (`Id (_loc, (`Lid (_loc, x)))),
+                                        (`Id
+                                           (_loc, (`Lid (_loc, "contents")))))),
+                                   (`Id (_loc, (`Lid (_loc, y))))) : 
+                              Ast.exp )) ls symbs) in
+                    (`LetIn
+                       (_loc, (`ReNil _loc), binds,
+                         (`Try
+                            (_loc,
+                              (`Seq
+                                 (_loc,
+                                   (`LetIn
+                                      (_loc, (`ReNil _loc),
+                                        (`Bind
+                                           (_loc,
+                                             (`Id (_loc, (`Lid (_loc, res)))),
+                                             b)),
+                                        (`LetIn
+                                           (_loc, (`ReNil _loc),
+                                             (`Bind
+                                                (_loc, (`Any _loc), restore)),
+                                             (`Id (_loc, (`Lid (_loc, res)))))))))),
+                              (`Case
+                                 (_loc, (`Id (_loc, (`Lid (_loc, exc)))),
+                                   (`Seq
+                                      (_loc,
+                                        (`Sem
+                                           (_loc, restore,
+                                             (`App
+                                                (_loc,
+                                                  (`Id
+                                                     (_loc,
+                                                       (`Lid (_loc, "raise")))),
+                                                  (`Id
+                                                     (_loc,
+                                                       (`Lid (_loc, exc))))))))))))))) : 
+                      Ast.exp ) : 'save_quot )))))]))
 
 let _ =
   PreCast.Syntax.Options.add
