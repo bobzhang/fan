@@ -103,7 +103,7 @@ and name_ctyp =
   [ `Sem of (name_ctyp * name_ctyp) | `TyCol of (alident * ctyp)
   | `TyColMut of (alident * ctyp) | ant] 
 and or_ctyp =
-  [ `Bar of (or_ctyp * or_ctyp) | `TyCol of (sid * ctyp)
+  [ `Bar of (or_ctyp * or_ctyp) | `TyCol of (auident * ctyp)
   | `Of of (sid * ctyp) | sid | ant] 
 and of_ctyp = [ `Of of (vid * ctyp) | vid' | ant] 
 and pat =

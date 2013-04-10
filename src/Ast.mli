@@ -249,7 +249,7 @@ and name_ctyp =
   | ant]
 and or_ctyp =
   [= `Bar of (loc * or_ctyp * or_ctyp )
-  | `TyCol of (loc * sid * ctyp)
+  | `TyCol of (loc * auident * ctyp)
   | `Of of (loc * sid * ctyp)
   | sid
   | ant]

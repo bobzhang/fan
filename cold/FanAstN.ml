@@ -348,7 +348,7 @@ class eq =
         | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#or_ctyp _a0 _b0) && (self#or_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#auident _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result39)
@@ -1142,7 +1142,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Bar@ %a@ %a)@]" self#or_ctyp _a0
               self#or_ctyp _a1
         | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
+            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#auident _a0
               self#ctyp _a1
         | `Of (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#sid _a0 self#ctyp
@@ -2088,7 +2088,8 @@ and meta_or_ctyp _loc =
           (meta_or_ctyp _loc _a1))
   | `TyCol (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_auident _loc _a0))),
           (meta_ctyp _loc _a1))
   | `Of (_a0,_a1) ->
       `App

@@ -774,7 +774,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "TyCol")), (self#loc _loc _a0))),
-                     (self#sid _loc _a1))), (self#ctyp _loc _a2))
+                     (self#auident _loc _a1))), (self#ctyp _loc _a2))
         | `Of (_a0,_a1,_a2) ->
             `App
               (_loc,

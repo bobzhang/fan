@@ -1317,7 +1317,7 @@ let apply_ctyp () = begin
           let (tl, rt) = FanOps.to_generalized t in
             (* {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |} *)
             `TyCol
-            (_loc, (`Id (_loc, (s :>ident))),
+            (_loc, s,
              match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list tl,rt)]
              (* (`Arrow (_loc, (sta_of_list tl), rt)) *))
       | a_uident{s} -> `Id(_loc,(s:>ident)) ]

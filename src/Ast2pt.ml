@@ -311,9 +311,9 @@ let mkvariant (x:or_ctyp) =
     (with_loc  s sloc, [], None,  _loc)
   | `Of(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, List.map ctyp (list_of_star t []), None,  _loc)
-  | `TyCol(_loc,`Id(_,`Uid(sloc,s)),`Arrow(_,t,u)) -> (*GADT*)
+  | `TyCol(_loc,`Uid(sloc,s),`Arrow(_,t,u)) -> (*GADT*)
       (with_loc s sloc, List.map ctyp (list_of_star t []), Some (ctyp u),  _loc)
-  | `TyCol(_loc,`Id(_,`Uid(sloc,s)),t) ->
+  | `TyCol(_loc,`Uid(sloc,s),t) ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t) ];
 

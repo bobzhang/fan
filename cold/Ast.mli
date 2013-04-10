@@ -88,7 +88,7 @@ and name_ctyp =
   [ `Sem of (loc * name_ctyp * name_ctyp) | `TyCol of (loc * alident * ctyp)
   | `TyColMut of (loc * alident * ctyp) | ant] 
 and or_ctyp =
-  [ `Bar of (loc * or_ctyp * or_ctyp) | `TyCol of (loc * sid * ctyp)
+  [ `Bar of (loc * or_ctyp * or_ctyp) | `TyCol of (loc * auident * ctyp)
   | `Of of (loc * sid * ctyp) | sid | ant] 
 and of_ctyp = [ `Of of (loc * vid * ctyp) | vid' | ant] 
 and pat =

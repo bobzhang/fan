@@ -6244,12 +6244,12 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = FanOps.to_generalized t in\n      `TyCol\n        (_loc, (`Id (_loc, (s :>ident))),\n          (match tl with\n           | [] -> rt\n           | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = FanOps.to_generalized t in\n      `TyCol\n        (_loc, s,\n          (match tl with\n           | [] -> rt\n           | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->
                   (let (tl,rt) = FanOps.to_generalized t in
                    `TyCol
-                     (_loc, (`Id (_loc, (s :>ident))),
+                     (_loc, s,
                        (match tl with
                         | [] -> rt
                         | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 
