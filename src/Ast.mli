@@ -120,14 +120,14 @@ type uident =
 
 type ident =
   [= `Dot of (loc * ident * ident)
-  | `App of (loc * ident * ident) 
+  | `Apply of (loc * ident * ident) 
   | alident
   | auident];
 
 (* same as ident except without [outer-ant] *)
 type ident'=
   [= `Dot of (loc * ident * ident)
-  |`App of (loc * ident * ident )
+  | `Apply of (loc * ident * ident )
   | `Lid of (loc * string)
   | `Uid of (loc * string)
   ];
@@ -154,7 +154,7 @@ type any = [= `Any of loc];
 (*   [= `Quote of (loc * position_flag * alident) *)
 (*   | `QuoteAny of (loc * position_flag) | any | ant ]; *)
 
-type sid = [= `Id of (loc * ident)];
+(* type sid = [= `Id of (loc * ident)]; *)
 
 
 type ctyp =
@@ -165,7 +165,9 @@ type ctyp =
   | `ClassPath of (loc * ident) (* #i *) (* #point *)
   | `Label of (loc * alident * ctyp) (* ~s:t *)
   | `OptLabl of (loc * alident * ctyp ) (* ?s:t *)
-  | sid
+  | ident'
+  (* | `Id of (loc * ident) *)
+        
       (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
   | `TyObj of (loc * name_ctyp * row_var_flag )
   | `TyObjEnd of (loc * row_var_flag)
@@ -390,7 +392,7 @@ and sig_item =
   | ant  ]
           
 and with_constr =
-  [= `TypeEq of (loc * ctyp * ctyp)
+  [= `TypeEq of (loc * ctyp * ctyp) (* *)
   | `TypeEqPriv of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident)
   | `TypeSubst of (loc * ctyp * ctyp)

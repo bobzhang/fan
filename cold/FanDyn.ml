@@ -27,7 +27,6 @@ type 'a tag =
   | Dupath
   | Dlpath
   | Any
-  | Sid
   | Ctyp
   | Type_parameters
   | Row_field
@@ -86,7 +85,6 @@ let string_of_tag =
   | Dupath  -> "dupath"
   | Dlpath  -> "dlpath"
   | Any  -> "any"
-  | Sid  -> "sid"
   | Ctyp  -> "ctyp"
   | Type_parameters  -> "type_parameters"
   | Row_field  -> "row_field"
@@ -164,8 +162,6 @@ let dupath_tag: dupath tag = Dupath
 let dlpath_tag: dlpath tag = Dlpath
 
 let any_tag: any tag = Any
-
-(* let sid_tag: sid tag = Sid *)
 
 let ctyp_tag: ctyp tag = Ctyp
 

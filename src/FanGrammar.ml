@@ -12,7 +12,7 @@ type name = {(* every entry has a name *)
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)
 type styp =
- [= `Id of (loc * ident )
+ [= ident'
  | `App of (loc * styp * styp)
  | `Quote of (loc * position_flag * (* meta_option *) alident)
  | `Self of (loc * string)

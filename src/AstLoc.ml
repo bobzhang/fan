@@ -14,6 +14,7 @@ let (<+>) a b = loc_of a <+> loc_of b;
 let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b);
 let com a b = let _loc = a <+> b in `Com(_loc,a,b);
 let app a b = let _loc = a <+> b in `App(_loc,a,b);
+let apply a b = let _loc = a <+> b in `Apply(_loc,a,b);
 let sta a b = let _loc = a <+> b in `Sta(_loc,a,b);
 let bar a b = let _loc = a <+> b in `Bar(_loc,a,b);
 let anda a b = let _loc = a <+> b in `And(_loc,a,b);

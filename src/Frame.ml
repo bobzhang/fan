@@ -90,12 +90,12 @@ let rec  normal_simple_exp_of_ctyp
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
   let rec aux = with {pat:ctyp';exp'} fun
-    [ `Id(_loc,`Lid(_,id)) -> 
+    [ `Lid(_,id) -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
       else
         right_trans (`Lid(_loc,id))
         (* right_trans {:ident| $lid:id |}  *)
-    | `Id (_loc,id) ->
+    | (#ident' as id) ->
         right_trans (Id.to_vid id )
         (* match id with *)
         (* [ (#vid as id)  ->    *)
@@ -141,11 +141,11 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
   let var = basic_transform left_type_variable in
   let tyvar = right_transform right_type_variable  in 
   let rec aux : ctyp -> exp = fun
-    [ `Id (_loc,id) -> trans (Id.to_vid id)
+    [ (#ident' as id)  -> trans (Id.to_vid id)
     | `Quote(_loc,_,`Lid(_,s)) ->   tyvar s
     | `App _  as ty ->
         match  list_of_app ty []  with
-        [ [ {| $id:tctor |} :: ls ] ->
+        [ [ (#ident' as tctor) :: ls ] ->
           appl_of_list [trans (Id.to_vid tctor) ::
                         (ls |> List.map
                           (fun
@@ -214,8 +214,8 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
     let e = mk (cons,tyargs) in
     {| $pat:p -> $e |} in 
   (* for the case [`a | b ] *)
-  let simple lid :case=
-    let e = (simple_exp_of_ctyp {:ctyp|$id:lid|}) +> names  in
+  let simple (lid:ident) :case=
+    let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
     let (f,a) = view_app [] result in
     let annot = appl_of_list [f :: List.map (fun _ -> {:ctyp|_|}) a] in
     Case.gen_tuple_abbrev ~arity ~annot ~destination lid e in
@@ -298,7 +298,7 @@ let fun_of_tydcl
           FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_type_repr t) ]
     | `TyEq(_,_,ctyp) ->
         match ctyp with 
-        [ (`Id _ | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
+        [ (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
           let exp = simple_exp_of_ctyp x in
           let funct = eta_expand (exp+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct

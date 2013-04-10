@@ -21,7 +21,7 @@ DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
 let rec normalize_acc = with ident' fun
   [ {| $i1.$i2 |} ->
     {:exp'| $(normalize_acc i1).$(normalize_acc i2) |}
-  | {| ($i1 $i2) |} ->
+  | `Apply(_loc,i1,i2) ->
       {:exp'| $(normalize_acc i1) $(normalize_acc i2) |}
   | `Ant (_loc,_) | {@_loc| $uid:_ |} |
     {@_loc| $lid:_ |} as i -> {:exp'| $id:i |} ];
@@ -116,7 +116,7 @@ let ident_tag (i:ident) =
       (Some ((ldot (lident "*predef*") "option"), `lident))
     | {| $i1.$i2 |} ->
         self i2 (self i1 acc) (* take care of the order *)
-    | {| ($i1 $i2) |} -> match ((self i1 None), (self i2 None),acc) with
+    | `Apply(_loc,i1,i2) -> match ((self i1 None), (self i2 None),acc) with
         (* FIXME uid required here, more precise *)
         [ (Some (l,_),Some (r,_),None) ->
           Some(Lapply l r,`app)
@@ -167,7 +167,7 @@ let long_uident  i =
 
 let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
   match t with
-  [`Id(_loc,i) -> ident_noloc i
+  [ #ident' as i  -> ident_noloc i
   | `App(_loc,m1,m2) ->
       let li1 = ctyp_long_id_prefix m1 in
       let li2 = ctyp_long_id_prefix m2 in
@@ -176,15 +176,17 @@ let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
 
 let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
   match t with
-  [  `Id(_loc,i) -> (false, long_type_ident i)
+  [ #ident' as i -> (false, long_type_ident i)
   | `ClassPath (_, i) -> (true, ident i)
   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) ] ;
 
 let predef_option loc : ctyp =
-  `Id (loc, `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option")));
+  `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"));
 
 let rec ctyp (x:ctyp) = match x with 
-  [`Id(_loc,i)-> let li = long_type_ident i in
+  [  (#ident' as i) ->
+    let li = long_type_ident (i:>ident) in
+    let _loc = loc_of i in 
     mktyp _loc (Ptyp_constr li [])
   | `Alias(_loc,t1,`Lid(_,s)) -> 
       mktyp _loc (Ptyp_alias (ctyp t1) s)
@@ -265,7 +267,7 @@ and meth_list (fl:name_ctyp) acc : list core_field_type = match fl with
 and package_type_constraints (wc:with_constr)
     (acc: list (Asttypes.loc Longident.t  *core_type))
     : list (Asttypes.loc Longident.t  *core_type) =  match wc with
-    [ `TypeEq(_loc,`Id(_,id),ct) -> [(ident id, ctyp ct) :: acc]
+    [ `TypeEq(_loc, (#ident' as id),ct) -> [(ident id, ctyp ct) :: acc]
     | `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
     | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
@@ -402,11 +404,11 @@ let  class_parameters (t:type_parameters) =
 
 
 let type_parameters_and_type_name (t:ctyp)  =
-  let rec aux t acc = 
+  let rec aux (t:ctyp) acc = 
   match t with
   [`App(_loc,t1,t2) ->
-    aux t1 (optional_type_parameters t2 @ acc)
-  | `Id(_loc,i) -> (ident i, acc)
+    aux (t1:>ctyp) (optional_type_parameters (t2:>ctyp) @ acc)
+  | #ident' as i  -> (ident i, acc)
   | x ->
       errorf (loc_of x) "type_parameters_and_type_name %s"
         (dump_ctyp x) ] in aux t [];
@@ -853,13 +855,10 @@ let rec exp (x : exp) = with exp' match x with
       | x -> errorf (loc_of x ) "exp:%s" (dump_exp x) ]
 and label_exp (x : exp) = match x with 
   [ `Label (_loc,`Lid(_,lab),eo) -> (lab,  exp eo)
-  | `LabelS(_loc,`Lid(sloc,lab)) ->
-      (lab,exp(* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)))
+  | `LabelS(_loc,`Lid(sloc,lab)) -> (lab,exp (`Lid(sloc,lab)))
   | `OptLabl (_loc,`Lid(_,lab),eo) -> ("?" ^ lab, exp eo)
   | `OptLablS(loc,`Lid(_,lab)) ->
-      ("?"^lab,
-       exp (`Lid(loc,lab))
-       (* exp (`Id(loc,`Lid(loc,lab))) *))
+      ("?"^lab, exp (`Lid(loc,lab)))
   | e -> ("", exp e) ]
     
 and binding (x:binding) acc =  match x with
@@ -868,7 +867,7 @@ and binding (x:binding) acc =  match x with
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
 
       let rec id_to_string (x:ctyp) = match x with
-      [  `Id(_loc,`Lid(_,x)) -> [x]
+      [  `Lid(_,x) -> [x]
       | `App(_loc,x,y) -> (id_to_string x) @ (id_to_string y)
       | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x)]   in
       let vars = id_to_string vs in

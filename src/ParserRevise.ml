@@ -143,13 +143,13 @@ let apply () = begin
         [ S{mt}; "with"; with_constr{wc} -> `With(_loc,mt,wc)]
         "apply"
         [ S{mt1}; S{mt2} ->
-          let app0 mt1 mt2 =
+          (* let app0 mt1 mt2 = *)
             match (mt1, mt2) with
             [ ((#ident as i1), (#ident as i2))(* (`Id(loc1,i1),`Id(loc2,i2)) *) ->
-              app i1 i2 
+              apply i1 i2 
               (* let _loc = FanLoc.merge loc1 loc2 in *)
               (* `Id(_loc,`App(_loc,i1,i2)) *)
-            | _ -> raise XStream.Failure ] in app0 mt1 mt2
+            | _ -> raise XStream.Failure ] (* in app0 mt1 mt2 *)
           (* ModuleType.app0 mt1 mt2 *) ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
@@ -732,7 +732,7 @@ let apply () = begin
         | `Lid i -> {| $lid:i |}
         | `Uid i -> {| $uid:i |}
         | `Uid s ; "." ; S{j} -> {|$uid:s.$j|}
-        | "("; S{i};S{j}; ")" -> `App _loc i j  ] }
+        | "("; S{i};S{j}; ")" -> `Apply _loc i j  ] }
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:
@@ -797,7 +797,7 @@ let apply () = begin
 
       module_longident_with_app:
       { "apply"
-        [ S{i}; S{j} -> {| ($i $j) |} ]
+        [ S{i}; S{j} -> `Apply(_loc,i,j) ]
        "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
        "simple"
@@ -809,7 +809,7 @@ let apply () = begin
       (* parse [(A B).c ]*)
       type_longident: (* FIXME *)
       { "apply" (* No parens *)
-        [ S{i}; S{j} -> {| ($i $j) |} ]
+        [ S{i}; S{j} -> `Apply(_loc,i,j) ]
         "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
         "simple"
@@ -1158,7 +1158,7 @@ let apply_ctyp () = begin
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc ~c:"ctyp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
-      | a_lident{i} -> `Id(_loc,(i:>ident))]
+      | a_lident{i} -> (i:>ctyp) (* `Id(_loc,(i:>ident)) *)]
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> mk_anti _loc n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
@@ -1170,9 +1170,9 @@ let apply_ctyp () = begin
       | "-"; "_" -> `QuoteAny (_loc, `Negative _loc)
       | "_" ->  `Any _loc]
       type_longident_and_parameters:
-      [ "("; type_parameters{tpl}; ")";type_longident{i} -> tpl {| $id:i|}
-      | type_parameter{tpl} ; type_longident{i} -> `App(_loc,{|$id:i|},(tpl:>ctyp))
-      | type_longident{i} -> {|$id:i|} 
+      [ "("; type_parameters{tpl}; ")";type_longident{i} -> tpl (i:>ctyp) 
+      | type_parameter{tpl} ; type_longident{i} -> `App(_loc, (i:>ctyp),(tpl:>ctyp))
+      | type_longident{i} -> (i:>ctyp)
       | `Ant ((""|"anti" as n),s) -> mk_anti _loc n s ~c:"ctyp" ]
       type_parameters:
       [ type_parameter{t1}; S{t2} ->
@@ -1276,21 +1276,22 @@ let apply_ctyp () = begin
        "apply" LA
         [ S{t1}; S{t2} ->
           let t = `App(_loc,t1,t2) in
-          try `Id(_loc,ident_of_ctyp t)
+          try (ident_of_ctyp t:>ctyp)
           with [ Invalid_argument _ -> t ]]
        "." LA
         [ S{t1}; "."; S{t2} ->
             try
-              `Id (_loc, (`Dot (_loc, (ident_of_ctyp t1), (ident_of_ctyp t2))))
+              
+              `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2))
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc
         | `Ant ((""|"typ"|"anti"|"par" as n),s) -> mk_anti _loc ~c:"ctyp" n s
-        | `Ant (("id" as n),s) -> `Id (_loc, mk_anti _loc ~c:"ident" n s)
+        | `Ant (("id" as n),s) -> mk_anti _loc ~c:"ident" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
-        | a_lident{i}->  `Id(_loc,(i:>ident))
-        | a_uident{i} -> `Id(_loc,(i:>ident))
+        | a_lident{i}->  (i :> ctyp)
+        | a_uident{i} -> (i:> ctyp)
         | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)

@@ -94,7 +94,7 @@ let meta_arrow (type t)
 let rec is_module_longident (x:ident) =
   match x with
   [`Dot(_,_,i) -> is_module_longident i
-  |`App(_,i1,i2) -> is_module_longident i1 && is_module_longident i2
+  |`Apply(_,i1,i2) -> is_module_longident i1 && is_module_longident i2
   | `Uid _ -> true
   | _ -> false ];  
 
@@ -102,7 +102,7 @@ let ident_of_exp : exp -> ident =
   let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
   let rec self (x:exp) : ident =
     match x with 
-    [ `App(_loc,e1,e2) -> `App(_loc,self e1, self e2)
+    [ `App(_loc,e1,e2) -> `Apply(_loc,self e1, self e2)
     | `Field(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
     | `Lid _  -> error ()
     | `Uid _ | `Dot _ as i -> (i:vid:>ident)
@@ -130,17 +130,17 @@ let ident_of_exp : exp -> ident =
   - : ident =
   `Dot (, `App (, `Uid (, "A"), `Uid (, "B")), `Lid (, "t"))  ]}
  *)
-let ident_of_ctyp =
+let ident_of_ctyp : ctyp -> ident =
   let error () =
     invalid_arg "ident_of_ctyp: this type is not an identifier" in
   let rec self  (x:ctyp) =
     match x with 
-    [ `App(_loc,t1,t2) -> `App(_loc,self t1, self t2)
-    | `Id(_loc,`Lid _ ) -> error ()
-    | `Id(_loc,i) -> if is_module_longident i then i else error ()
+    [ `Apply(_loc,t1,t2) -> `Apply(_loc,self (t1:>ctyp), self (t2:>ctyp))
+    | `Lid _  -> error ()
+    | #ident' as i -> if is_module_longident i then i else error ()
     | _ -> error () ] in
     fun
-    [ `Id(_loc,i) -> i
+    [ #ident as i (* `Id(_loc,i) *) -> i (* allow antiquot here *)
     | t -> self t ];;
 
 (* let ident_of_pat = *)
@@ -179,28 +179,28 @@ let ident_of_ctyp =
 
 
 
-let ty_of_stl = fun
-    [ (_loc, s, []) ->
-      `Id(_loc,`Uid(_loc,s))
-      (* {:ctyp| $uid:s |} *)
-    | (_loc, s, tl) ->
-        `Of (_loc, `Id (_loc, `Uid (_loc, s)), and_of_list tl)];
+(* let ty_of_stl = fun *)
+(*     [ (_loc, s, []) -> *)
+(*       `Id(_loc,`Uid(_loc,s)) *)
+(*       (\* {:ctyp| $uid:s |} *\) *)
+(*     | (_loc, s, tl) -> *)
+(*         `Of (_loc, `Id (_loc, `Uid (_loc, s)), and_of_list tl)]; *)
         (* {:ctyp| $uid:s of $(and_of_list tl) |} *) 
 
-let ty_of_sbt = fun
-    [ (_loc, s, v, t) ->
-      if v then
-        `TyColMut (_loc, `Id (_loc, `Lid (_loc, s)), t)
-      else
-        `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)];
+(* let ty_of_sbt = fun *)
+(*     [ (_loc, s, v, t) -> *)
+(*       if v then *)
+(*         `TyColMut (_loc, `Id (_loc, `Lid (_loc, s)), t) *)
+(*       else *)
+(*         `TyCol (_loc, `Id (_loc, `Lid (_loc, s)), t)]; *)
 
-let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |};
+(* let bi_of_pe (p, e) = let _loc = loc_of p in {:binding| $p = $e |}; *)
 
-let sum_type_of_list l = bar_of_list (List.map ty_of_stl l);
+(* let sum_type_of_list l = bar_of_list (List.map ty_of_stl l); *)
 
-let record_type_of_list l = sem_of_list (List.map ty_of_sbt l);
+(* let record_type_of_list l = sem_of_list (List.map ty_of_sbt l); *)
 
-let binding_of_pel l = and_of_list (List.map bi_of_pe l);
+(* let binding_of_pel l = and_of_list (List.map bi_of_pe l); *)
 
 (* FIXME should be amp *)  
 (* let rec list_of_amp x acc = *)

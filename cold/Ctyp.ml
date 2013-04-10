@@ -43,8 +43,8 @@ let gen_quantifiers1 ~arity  n =
       |> List.concat)
      |> appl_of_list : ctyp )
 
-let of_id_len ~off  ((id:ident),len) =
-  appl_of_list (( id :> Ast.ctyp ) ::
+let of_id_len ~off  ((id : ident),len) =
+  appl_of_list ((id :>ctyp) ::
     (List.init len
        (fun i  ->
           (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))) : 
@@ -60,7 +60,7 @@ let ty_name_of_tydcl (x : typedecl) =
         match tyvars with
         | `None _ -> []
         | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
-      appl_of_list (( (`Lid (_loc, name)) : Ast.ctyp ) :: tyvars)
+      appl_of_list ((`Lid (_loc, name) : Ast.ctyp ) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
@@ -167,7 +167,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | (`Lid (_,i) : Ast.ctyp) when i = name ->
+            | (`Lid (_loc,i) : Ast.ctyp) when i = name ->
                 (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -178,17 +178,16 @@ let is_recursive ty_dcl =
       failwithf "is_recursive not type declartion: %s"
         (Objs.dump_typedecl ty_dcl)
 
-let qualified_app_list =
-  function
-  | (`App (_loc,_,_) : Ast.ctyp) as x ->
-      (match list_of_app x [] with
-       | (`Lid (_,_) : Ast.ctyp)::_ -> None
-       | (#ident' as i : Ast.ctyp)::ys -> Some (i, ys)
-       | _ -> None)
-  | (`Lid (_,_) : Ast.ctyp)|(`Uid (_,_) : Ast.ctyp) ->
-      None
-  | (#ident' as i : Ast.ctyp) -> Some (i, [])
-  | _ -> None
+let qualified_app_list x =
+  (match x with
+   | (`App (_loc,_,_) : Ast.ctyp) as x ->
+       (match list_of_app x [] with
+        | (`Lid (_loc,_) : Ast.ctyp)::_ -> None
+        | (#ident' as i)::ys -> Some (i, ys)
+        | _ -> None)
+   | (`Lid (_loc,_) : Ast.ctyp)|(`Uid (_loc,_) : Ast.ctyp) -> None
+   | #ident' as i -> Some (i, [])
+   | _ -> None : (ident * ctyp list) option )
 
 let is_abstract (x : typedecl) =
   match x with | `TyAbstr _ -> true | _ -> false
@@ -244,8 +243,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Id.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list (( (`Lid (_loc, dest)) : Ast.ctyp ) ::
-             lst))
+           appl_of_list ((`Lid (_loc, dest) : Ast.ctyp ) :: lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

@@ -218,8 +218,10 @@ add_quotation (d,"row_field") row_field
    | Strict version                                                  |
    +-----------------------------------------------------------------+ *)
 
-let efilter str = fun e -> let e = exp_filter e in let _loc = loc_of e in
-  {:exp|($e : Ast.$lid:str)|};
+let efilter str =
+  fun e ->
+    let e = exp_filter e in let _loc = loc_of e in
+    {:exp|($e : Ast.$lid:str)|};
 let pfilter str = fun e -> let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|}; 
 add_quotation (d,"sig_item'") sig_item_quot
     ~mexp:Filters.me#sig_item

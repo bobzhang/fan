@@ -51,14 +51,12 @@ let base1_types =
                                                (`Str (_loc, "()")))))))))))),
                       (`Arrow
                          (_loc,
-                           (
-                                (`Dot
-                                   (_loc, (`Uid (_loc, "Format")),
-                                     (`Lid (_loc, "formatter"))))),
+                           (`Dot
+                              (_loc, (`Uid (_loc, "Format")),
+                                (`Lid (_loc, "formatter")))),
                            (`Arrow
-                              (_loc, ( (`Lid (_loc, "unit"))),
-                                ( (`Lid (_loc, "unit")))))))))))) : 
-       Ast.stru )),
+                              (_loc, (`Lid (_loc, "unit")),
+                                (`Lid (_loc, "unit"))))))))))) : Ast.stru )),
     (`Custom
        (`Value
           (_loc, (`ReNil _loc),
@@ -76,11 +74,10 @@ let base1_types =
                                         (_loc, (`Any _loc),
                                           (`Lid (_loc, "true")))))))))),
                       (`Arrow
-                         (_loc, ( (`Lid (_loc, "unit"))),
+                         (_loc, (`Lid (_loc, "unit")),
                            (`Arrow
-                              (_loc, ( (`Lid (_loc, "unit"))),
-                                ( (`Lid (_loc, "bool")))))))))))) : 
-       Ast.stru )))]
+                              (_loc, (`Lid (_loc, "unit")),
+                                (`Lid (_loc, "bool"))))))))))) : Ast.stru )))]
 
 let ty_metas =
   base1_types |> (List.map (fun (str,print,eq)  -> { str; print; eq }))
@@ -93,13 +90,10 @@ let print_base1 =
             let ty: Ast.ctyp =
               `Arrow
                 (_loc,
-                  (
-                       (`Dot
-                          (_loc, (`Uid (_loc, "Format")),
-                            (`Lid (_loc, "formatter"))))),
-                  (`Arrow
-                     (_loc, ( (`Lid (_loc, str))),
-                       ( (`Lid (_loc, "unit")))))) in
+                  (`Dot
+                     (_loc, (`Uid (_loc, "Format")),
+                       (`Lid (_loc, "formatter")))),
+                  (`Arrow (_loc, (`Lid (_loc, str)), (`Lid (_loc, "unit"))))) in
             let name = "pp_print_" ^ str in
             match print with
             | `Exist ->
@@ -153,9 +147,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
       (List.map
          (fun x  ->
             let ty: Ast.ctyp =
-              `Arrow
-                (_loc, ( (`Lid (_loc, x))),
-                  ( (`Lid (_loc, x)))) in
+              `Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, x))) in
             let exp: Ast.exp =
               `Fun
                 (_loc,
@@ -169,10 +161,8 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
          (fun x  ->
             let ty: Ast.ctyp =
               `Arrow
-                (_loc, ( (`Lid (_loc, x))),
-                  (`Arrow
-                     (_loc, ( (`Lid (_loc, x))),
-                       ( (`Lid (_loc, x)))))) in
+                (_loc, (`Lid (_loc, x)),
+                  (`Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, x))))) in
             let exp: Ast.exp =
               `Fun
                 (_loc,
@@ -190,7 +180,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
          (fun x  ->
             let ty: Ast.ctyp =
               `Arrow
-                (_loc, ( (`Lid (_loc, x))),
+                (_loc, (`Lid (_loc, x)),
                   (`Quote (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))))) in
             let exp: Ast.exp =
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))) in
@@ -203,9 +193,9 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
          (fun x  ->
             let ty: Ast.ctyp =
               `Arrow
-                (_loc, ( (`Lid (_loc, x))),
+                (_loc, (`Lid (_loc, x)),
                   (`Arrow
-                     (_loc, ( (`Lid (_loc, x))),
+                     (_loc, (`Lid (_loc, x)),
                        (`Quote
                           (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))))))) in
             let exp: Ast.exp =
@@ -232,9 +222,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
       (List.map
          (fun x  ->
             let ty: Ast.ctyp =
-              `Arrow
-                (_loc, ( (`Lid (_loc, x))),
-                  ( (`Lid (_loc, "unit")))) in
+              `Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, "unit"))) in
             let exp: Ast.exp =
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Uid (_loc, "()"))))) in
             (`CrMth
@@ -261,10 +249,8 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                                       (`Lid (_loc, "y"))))))))))) in
             let ty: Ast.ctyp =
               `Arrow
-                (_loc, ( (`Lid (_loc, x))),
-                  (`Arrow
-                     (_loc, ( (`Lid (_loc, x))),
-                       ( (`Lid (_loc, "bool")))))) in
+                (_loc, (`Lid (_loc, x)),
+                  (`Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, "bool"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -278,10 +264,8 @@ let eq_base1 =
          (fun { str; eq;_}  ->
             let ty: Ast.ctyp =
               `Arrow
-                (_loc, ( (`Lid (_loc, str))),
-                  (`Arrow
-                     (_loc, ( (`Lid (_loc, str))),
-                       ( (`Lid (_loc, "bool")))))) in
+                (_loc, (`Lid (_loc, str)),
+                  (`Arrow (_loc, (`Lid (_loc, str)), (`Lid (_loc, "bool"))))) in
             let name = "eq_" ^ str in
             match eq with
             | `Def ->

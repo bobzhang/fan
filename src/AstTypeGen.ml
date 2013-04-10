@@ -117,16 +117,17 @@ end;
 let gen_strip = with {pat:ctyp;exp:exp'}
   let mk_variant cons params =
     let params' = (List.filter
-               (fun [{ty={|loc|};_} -> false | _  -> true])
+               (fun [{ty= `Lid(_,"loc");_} -> false | _  -> true])
                params) in
     let result =
       appl_of_list
          [(EP.of_str cons) :: params' |> List.map (fun [{exp0;_} -> exp0]) ]  in 
     List.fold_right
       (fun {info_exp=exp;pat0;ty;_} res ->
-        match ty with
-        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|} |
-          {|FanUtil.anti_cxt |}  -> res
+        match (ty:ctyp) with
+        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
+             res
         | _ -> {|let $pat:pat0 = $exp in $res |}]) params' result in
   let mk_tuple params =
     let result = 
@@ -134,8 +135,8 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     List.fold_right
       (fun {info_exp=exp;pat0;ty;_} res ->
         match ty with
-        [ {|int|} | {|string |} |{|int32|} | {|nativeint|}
-        | {|loc|} | {| FanUtil.anti_cxt |} -> res
+        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) ->  res
         | _ -> {|let $pat:pat0 = $exp in $res |}]) params result in 
   let mk_record cols =
     let result = 
@@ -144,8 +145,8 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     List.fold_right
       (fun {re_info={info_exp=exp;pat0;ty;_};_} res ->
         match ty with
-        [ {|int|} | {|string |} |{|int32|} | {|nativeint|} | {|loc|}
-        |  {|FanUtil.anti_cxt|}   ->
+        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
           res
         | _ -> {|let $pat:pat0 = $exp in $res |}]) cols result in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant

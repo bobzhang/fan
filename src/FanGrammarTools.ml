@@ -92,7 +92,7 @@ let retype_rule_list_without_patterns _loc rl =
     
 let make_ctyp (styp:styp) tvar : ctyp = 
   let rec aux  = with ctyp fun  
-    [ `Id _ | `Quote _ as x -> x  
+    [ #ident' | `Quote _ as x -> x  
     | `App(_loc,t1,t2) -> `App(_loc,aux t1,aux t2)
     | `Self (_loc, x) ->
         if tvar = "" then

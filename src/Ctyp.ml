@@ -69,8 +69,8 @@ let gen_quantifiers1 ~arity n  : ctyp =
   Loc.t 'all_c0 'all_c1 'all_c2
   ]}
  *)  
-let of_id_len ~off (id,len) =
-  appl_of_list [{|$id:id |} ::
+let of_id_len ~off ((id:ident),len) =
+  appl_of_list [(id:>ctyp) ::
     (List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))];
   
@@ -316,15 +316,16 @@ let is_recursive ty_dcl =
   ]}
   
  *)  
-let qualified_app_list = fun 
+let qualified_app_list x : (option (ident * list ctyp)) =
+  match x with 
   [ {| $_ $_ |} as x->
     match list_of_app x []with
     [ [ {| $lid:_  |} :: _ ] -> None
-    | [ {| $id:i   |} ::ys]  ->
+    | [ (#ident' as i) ::ys]  ->
         Some (i,ys)
     | _ -> None ]
   | ( {| $lid:_  |} | {| $uid:_  |}) -> None
-  | {| $id:i  |} -> Some (i, [])
+  | #ident'  as i  -> Some (i, [])
   | _ -> None ];
 
 let is_abstract (x:typedecl)=
@@ -395,7 +396,7 @@ let mk_transform_type_eq () = object(self:'self_type)
     [ 
      {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
-       match (* qualified_app_list ctyp *) r with
+       match  r with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
          let vars =
            match vars with 
@@ -549,7 +550,7 @@ let view_variant (t:row_field) : list vbranch =
         `TyVrn (_loc, `C (_,cons))
         ->
           `variant (cons, [])
-      | `Ctyp (_ , `Id(_loc,i)) -> 
+      | `Ctyp (_ , (#ident' as i) ) -> 
       (* |  `Id (_loc,i) -> *) `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (loc_of u)

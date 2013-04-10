@@ -179,15 +179,13 @@ let efilter str e =
   let e = exp_filter e in
   let _loc = loc_of e in
   `Constraint
-    (_loc, e,
-      ((`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str))))))
+    (_loc, e, (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str)))))
 
 let pfilter str e =
   let p = pat_filter e in
   let _loc = loc_of p in
   `Constraint
-    (_loc, p,
-      ((`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str))))))
+    (_loc, p, (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str)))))
 
 let _ =
   add_quotation (d, "sig_item'") sig_item_quot ~mexp:(Filters.me#sig_item)
