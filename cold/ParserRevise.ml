@@ -6236,11 +6236,11 @@ let apply_ctyp () =
          `Skeyword "of";
          `Snterm
            (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'constructor_arg_list)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t : 'constructor_arg_list)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Of (_loc, s, t) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declarations )))));
+                  (`Of (_loc, s, t) : 'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],

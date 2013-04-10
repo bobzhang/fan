@@ -89,7 +89,7 @@ and name_ctyp =
   | `TyColMut of (loc * alident * ctyp) | ant] 
 and or_ctyp =
   [ `Bar of (loc * or_ctyp * or_ctyp) | `TyCol of (loc * auident * ctyp)
-  | `Of of (loc * sid * ctyp) | auident] 
+  | `Of of (loc * auident * ctyp) | auident] 
 and of_ctyp = [ `Of of (loc * vid * ctyp) | vid' | ant] 
 and pat =
   [ vid | `App of (loc * pat * pat) | `Vrn of (loc * string)

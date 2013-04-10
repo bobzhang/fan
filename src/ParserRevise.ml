@@ -1311,7 +1311,7 @@ let apply_ctyp () = begin
       | `Ant (("list" as n),s) ->   mk_anti _loc ~c:"ctyp|" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
       | S{t1}; "|"; S{t2} ->    `Bar(_loc,t1,t2)
-      | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,`Id(_loc,(s:>ident)),t)
+      | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,s,t)
       (* GADT to be improved *)      
       | a_uident{s}; ":"; ctyp{t} ->
           let (tl, rt) = FanOps.to_generalized t in

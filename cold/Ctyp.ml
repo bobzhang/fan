@@ -268,7 +268,7 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
   List.fold_left
     (fun acc  x  ->
        match (x : or_ctyp ) with
-       | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
+       | `Of (_loc,`Uid (_,cons),tys) ->
            compose (f cons (list_of_star tys [])) acc
        | `Uid (_,cons) -> compose (f cons []) acc
        | t ->
@@ -280,8 +280,7 @@ let view_sum (t : or_ctyp) =
   List.map
     (function
      | `Uid (_,cons) -> `branch (cons, [])
-     | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
-         `branch (cons, (list_of_star t []))
+     | `Of (_loc,`Uid (_,cons),t) -> `branch (cons, (list_of_star t []))
      | _ -> assert false) bs
 
 let view_variant (t : row_field) =

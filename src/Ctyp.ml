@@ -493,7 +493,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
     (f:  string -> list ctyp -> 'e)  =
   let branches = list_of_or ty [] in
   List.fold_left (fun acc x -> match (x:or_ctyp) with
-    [  `Of (_loc, (`Id (_, (`Uid (_, cons)))), tys)
+    [  `Of (_loc, `Uid (_, cons), tys)
       ->
         compose (f cons (list_of_star tys [])) acc  
     | (* {| $uid:cons |} *)
@@ -509,7 +509,7 @@ let view_sum (t:or_ctyp) =
     (fun
       [ (* {|$uid:cons|} *) `Uid(_,cons) ->
         `branch (cons,[])
-       | `Of(_loc,`Id(_,`Uid(_,cons)),t) (* {|$uid:cons of $t|} *) ->
+       | `Of(_loc,`Uid(_,cons),t) (* {|$uid:cons of $t|} *) ->
            `branch (cons,  list_of_star  t [])
        | _ -> assert false ]) bs ;
 

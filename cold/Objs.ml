@@ -421,7 +421,7 @@ and pp_print_or_ctyp fmt =
         pp_print_auident _a1 pp_print_ctyp _a2
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_sid _a1 pp_print_ctyp _a2
+        pp_print_auident _a1 pp_print_ctyp _a2
   | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result43)
 and pp_print_of_ctyp fmt =
   function
@@ -1438,7 +1438,7 @@ class print =
               self#auident _a1 self#ctyp _a2
         | `Of (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
-              self#sid _a1 self#ctyp _a2
+              self#auident _a1 self#ctyp _a2
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
     method of_ctyp : 'fmt -> of_ctyp -> unit=
       fun fmt  ->
@@ -2478,7 +2478,7 @@ class map =
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
       | `Of (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#sid _a1 in
+          let _a1 = self#auident _a1 in
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
       | #auident as _a0 -> (self#auident _a0 : auident  :>or_ctyp)
     method of_ctyp : of_ctyp -> of_ctyp=
@@ -3502,7 +3502,8 @@ class fold =
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#ctyp _a2
       | `Of (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
+          let self = self#loc _a0 in
+          let self = self#auident _a1 in self#ctyp _a2
       | #auident as _a0 -> (self#auident _a0 :>'self_type)
     method of_ctyp : of_ctyp -> 'self_type=
       function
@@ -4307,7 +4308,7 @@ and strip_loc_or_ctyp =
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | `Of (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_sid _a1 in
+      let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
   | #auident as _a0 -> (strip_loc_auident _a0 :>'result283)
 and strip_loc_of_ctyp =

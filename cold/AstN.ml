@@ -104,7 +104,7 @@ and name_ctyp =
   | `TyColMut of (alident * ctyp) | ant] 
 and or_ctyp =
   [ `Bar of (or_ctyp * or_ctyp) | `TyCol of (auident * ctyp)
-  | `Of of (sid * ctyp) | auident] 
+  | `Of of (auident * ctyp) | auident] 
 and of_ctyp = [ `Of of (vid * ctyp) | vid' | ant] 
 and pat =
   [ vid | `App of (pat * pat) | `Vrn of string | `Com of (pat * pat)
