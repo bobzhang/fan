@@ -69,32 +69,6 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       | ("`bool",_,_) ->
           let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
           {| {| $(id:$x)  |} |}
-      (* | ("list","module_exp",_) -> *)
-      (*     {| $(uid:gm()).app_of_list $e |} *)
-      (* | ("list","module_type",_) -> *)
-      (*     {| $(uid:gm()).mtApp_of_list $e |} *)
-      (* | ("list","ident",_) -> *)
-      (*     {| $(uid:gm()).dot_of_list $e |} *)
-      (* | ("list", *)
-      (*    ("binding"|"module_binding"| *)
-      (*     "with_constr"|"class_type"| *)
-      (*     "class_exp"|"ctypand"),_) -> *)
-      (*       {| $(uid:gm()).and_of_list $e |} *)
-      (* |("list","ctyp*",_) -> *)
-      (*     {| $(uid:gm()).sta_of_list $e |} *)
-      (* |("list","ctyp|",_) *)
-      (* |("list","case",_) -> *)
-      (*     {| $(uid:gm()).bar_of_list $e |} *)
-      (* |("list","ctyp&",_) -> *)
-      (*     {| $(uid:gm()).amp_of_list $e |} *)
-      (* |("list",("ctyp,"|"pat,"|"exp,"),_) -> *)
-      (*     {| $(uid:gm()).com_of_list $e |} *)
-      (* |("list", *)
-      (*   ("binding;"|"stru" *)
-      (* |"sig_item"|"class_sig_item" *)
-      (*       |"cstru"|"rec_exp" *)
-      (*       |"ctyp;"|"pat;"|"exp;"),_) -> *)
-      (*           {| $(uid:gm()).sem_of_list $e |} *)
       | _ -> super#exp e]
       | e -> super#exp e];
   end;
