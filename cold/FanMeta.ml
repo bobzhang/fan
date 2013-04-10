@@ -250,6 +250,33 @@ class meta =
                      (self#ident _loc _a1))), (self#ident _loc _a2))
         | #alident as _a0 -> (self#alident _loc _a0 :>ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>ep)
+    method ident' : 'loc -> ident' -> ep=
+      fun _loc  ->
+        function
+        | `Dot (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
+                     (self#ident _loc _a1))), (self#ident _loc _a2))
+        | `App (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
+                     (self#ident _loc _a1))), (self#ident _loc _a2))
+        | `Lid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Lid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
+        | `Uid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Uid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
     method vid : 'loc -> vid -> ep=
       fun _loc  ->
         function
@@ -790,7 +817,6 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Record")), (self#loc _loc _a0))),
                 (self#rec_pat _loc _a1))
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
         | #literal as _a0 -> (self#literal _loc _a0 :>ep)
         | `Alias (_a0,_a1,_a2) ->
             `App
@@ -1263,7 +1289,7 @@ class meta =
     method module_type : 'loc -> module_type -> ep=
       fun _loc  ->
         function
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #ident' as _a0 -> (self#ident' _loc _a0 :>ep)
         | `Functor (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -2096,7 +2122,6 @@ class meta =
                 (`App (_loc, (`Vrn (_loc, "Record")), (self#loc _loc _a0))),
                 (self#rec_bind _loc _a1))
         | #literal as _a0 -> (self#literal _loc _a0 :>ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method rec_bind : 'loc -> rec_bind -> ep=
       fun _loc  ->
         function

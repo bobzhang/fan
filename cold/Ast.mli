@@ -27,6 +27,9 @@ type uident =
 type ident =
   [ `Dot of (loc * ident * ident) | `App of (loc * ident * ident) | alident
   | auident] 
+type ident' =
+  [ `Dot of (loc * ident * ident) | `App of (loc * ident * ident)
+  | `Lid of (loc * string) | `Uid of (loc * string)] 
 type vid =
   [ `Dot of (loc * vid * vid) | `Lid of (loc * string)
   | `Uid of (loc * string) | ant] 
@@ -88,7 +91,7 @@ and of_ctyp = [ `Of of (loc * sid * ctyp) | sid | ant]
 and pat =
   [ vid | `App of (loc * pat * pat) | `Vrn of (loc * string)
   | `Com of (loc * pat * pat) | `Sem of (loc * pat * pat)
-  | `Par of (loc * pat) | any | `Record of (loc * rec_pat) | ant | literal
+  | `Par of (loc * pat) | any | `Record of (loc * rec_pat) | literal
   | `Alias of (loc * pat * alident) | `ArrayEmpty of loc
   | `Array of (loc * pat) | `LabelS of (loc * alident)
   | `Label of (loc * alident * pat) | `OptLabl of (loc * alident * pat)
@@ -133,7 +136,7 @@ and rec_exp =
     any
   | ant] 
 and module_type =
-  [ sid | `Functor of (loc * auident * module_type * module_type)
+  [ ident' | `Functor of (loc * auident * module_type * module_type)
   | `Sig of (loc * sig_item) | `SigEnd of loc
   | `With of (loc * module_type * with_constr)
   | `ModuleTypeOf of (loc * module_exp) | ant] 
@@ -219,7 +222,7 @@ type ep =
   [ vid | `App of (loc * ep * ep) | `Vrn of (loc * string)
   | `Com of (loc * ep * ep) | `Sem of (loc * ep * ep) | `Par of (loc * ep)
   | any | `ArrayEmpty of loc | `Array of (loc * ep)
-  | `Record of (loc * rec_bind) | literal | ant] 
+  | `Record of (loc * rec_bind) | literal] 
 and rec_bind =
   [ `RecBind of (loc * ident * ep) | `Sem of (loc * rec_bind * rec_bind)
   | any | ant] 

@@ -470,28 +470,24 @@ let apply () =
                     (`With (_loc, mt, wc) : 'module_type )))))]);
        ((Some "apply"), None,
          [([`Sself; `Sself],
-            ("Gram.mk_action\n  (fun (mt2 : 'module_type)  (mt1 : 'module_type)  (_loc : FanLoc.t)  ->\n     (let app0 mt1 mt2 =\n        match (mt1, mt2) with\n        | (`Id (loc1,i1),`Id (loc2,i2)) ->\n            let _loc = FanLoc.merge loc1 loc2 in\n            `Id (_loc, (`App (_loc, i1, i2)))\n        | _ -> raise XStream.Failure in\n      app0 mt1 mt2 : 'module_type ))\n",
+            ("Gram.mk_action\n  (fun (mt2 : 'module_type)  (mt1 : 'module_type)  (_loc : FanLoc.t)  ->\n     (let app0 mt1 mt2 =\n        match (mt1, mt2) with\n        | ((#ident as i1),(#ident as i2)) -> app i1 i2\n        | _ -> raise XStream.Failure in\n      app0 mt1 mt2 : 'module_type ))\n",
               (Gram.mk_action
                  (fun (mt2 : 'module_type)  (mt1 : 'module_type) 
                     (_loc : FanLoc.t)  ->
                     (let app0 mt1 mt2 =
                        match (mt1, mt2) with
-                       | (`Id (loc1,i1),`Id (loc2,i2)) ->
-                           let _loc = FanLoc.merge loc1 loc2 in
-                           `Id (_loc, (`App (_loc, i1, i2)))
+                       | ((#ident as i1),(#ident as i2)) -> app i1 i2
                        | _ -> raise XStream.Failure in
                      app0 mt1 mt2 : 'module_type )))))]);
        ((Some "."), None,
          [([`Sself; `Skeyword "."; `Sself],
-            ("Gram.mk_action\n  (fun (mt2 : 'module_type)  _  (mt1 : 'module_type)  (_loc : FanLoc.t)  ->\n     (let acc0 mt1 mt2 =\n        match (mt1, mt2) with\n        | (`Id (loc1,i1),`Id (loc2,i2)) ->\n            let _loc = FanLoc.merge loc1 loc2 in\n            `Id (_loc, (`Dot (_loc, i1, i2)))\n        | _ -> raise XStream.Failure in\n      acc0 mt1 mt2 : 'module_type ))\n",
+            ("Gram.mk_action\n  (fun (mt2 : 'module_type)  _  (mt1 : 'module_type)  (_loc : FanLoc.t)  ->\n     (let acc0 mt1 mt2 =\n        match (mt1, mt2) with\n        | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n        | _ -> raise XStream.Failure in\n      acc0 mt1 mt2 : 'module_type ))\n",
               (Gram.mk_action
                  (fun (mt2 : 'module_type)  _  (mt1 : 'module_type) 
                     (_loc : FanLoc.t)  ->
                     (let acc0 mt1 mt2 =
                        match (mt1, mt2) with
-                       | (`Id (loc1,i1),`Id (loc2,i2)) ->
-                           let _loc = FanLoc.merge loc1 loc2 in
-                           `Id (_loc, (`Dot (_loc, i1, i2)))
+                       | ((#ident as i1),(#ident as i2)) -> dot i1 i2
                        | _ -> raise XStream.Failure in
                      acc0 mt1 mt2 : 'module_type )))))]);
        ((Some "sig"), None,
@@ -537,10 +533,10 @@ let apply () =
              (Gram.obj
                 (module_longident_with_app : 'module_longident_with_app
                                                Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'module_longident_with_app)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, i) : 'module_type ))\n",
+           ("Gram.mk_action\n  (fun (i : 'module_longident_with_app)  (_loc : FanLoc.t)  ->\n     ((i : ident  :>module_type) : 'module_type ))\n",
              (Gram.mk_action
                 (fun (i : 'module_longident_with_app)  (_loc : FanLoc.t)  ->
-                   (`Id (_loc, i) : 'module_type )))));
+                   ((i : ident  :>module_type) : 'module_type )))));
          ([`Skeyword "("; `Sself; `Skeyword ")"],
            ("Gram.mk_action\n  (fun _  (mt : 'module_type)  _  (_loc : FanLoc.t)  -> (mt : 'module_type ))\n",
              (Gram.mk_action

@@ -272,9 +272,9 @@ and package_type_constraints (wc:with_constr)
           (dump_with_constr x) ]
 
 and package_type (x : module_type) = match x with 
-    [`With(_loc,`Id(_,i),wc) ->
+    [ (`With(_loc,(#ident' as i),wc) :module_type) ->
       (long_uident i, package_type_constraints wc [])
-    | `Id(_loc,i) -> (long_uident i, [])
+    | (* `Id(_loc,i) *)#ident' as i  -> (long_uident i, [])
     | mt -> errorf (loc_of mt)
           "unexpected package type: %s"
           (dump_module_type mt)] ;
@@ -998,7 +998,7 @@ and module_type : Ast.module_type -> Parsetree.module_type =
           Some (long_uident i1, Pwith_modsubst (long_uident i2))
       | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_with_constr t)]) constrs in
        fun 
-       [ `Id(loc,i) -> mkmty loc (Pmty_ident (long_uident i))
+       [ #ident' as i  -> let loc = loc_of i in mkmty loc (Pmty_ident (long_uident i))
        | `Functor(loc,`Uid(sloc,n),nt,mt) ->
            mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
        | `Sig(loc,sl) ->

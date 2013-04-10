@@ -44,6 +44,10 @@ type uident =
 type ident =
   [ `Dot of (ident * ident) | `App of (ident * ident) | alident | auident] 
 
+type ident' =
+  [ `Dot of (ident * ident) | `App of (ident * ident) | `Lid of string
+  | `Uid of string] 
+
 type vid = [ `Dot of (vid * vid) | `Lid of string | `Uid of string | ant] 
 
 type dupath = [ `Dot of (dupath * dupath) | auident] 
@@ -102,8 +106,8 @@ and or_ctyp =
 and of_ctyp = [ `Of of (sid * ctyp) | sid | ant] 
 and pat =
   [ vid | `App of (pat * pat) | `Vrn of string | `Com of (pat * pat)
-  | `Sem of (pat * pat) | `Par of pat | any | `Record of rec_pat | ant
-  | literal | `Alias of (pat * alident) | `ArrayEmpty | `Array of pat
+  | `Sem of (pat * pat) | `Par of pat | any | `Record of rec_pat | literal
+  | `Alias of (pat * alident) | `ArrayEmpty | `Array of pat
   | `LabelS of alident | `Label of (alident * pat)
   | `OptLabl of (alident * pat) | `OptLablS of alident
   | `OptLablExpr of (alident * pat * exp) | `Bar of (pat * pat)
@@ -135,7 +139,7 @@ and exp =
 and rec_exp =
   [ `Sem of (rec_exp * rec_exp) | `RecBind of (ident * exp) | any | ant] 
 and module_type =
-  [ sid | `Functor of (auident * module_type * module_type)
+  [ ident' | `Functor of (auident * module_type * module_type)
   | `Sig of sig_item | `SigEnd | `With of (module_type * with_constr)
   | `ModuleTypeOf of module_exp | ant] 
 and sig_item =
@@ -205,6 +209,6 @@ and cstru =
 type ep =
   [ vid | `App of (ep * ep) | `Vrn of string | `Com of (ep * ep)
   | `Sem of (ep * ep) | `Par of ep | any | `ArrayEmpty | `Array of ep
-  | `Record of rec_bind | literal | ant] 
+  | `Record of rec_bind | literal] 
 and rec_bind =
   [ `RecBind of (ident * ep) | `Sem of (rec_bind * rec_bind) | any | ant] 

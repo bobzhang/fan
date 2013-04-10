@@ -124,6 +124,13 @@ type ident =
   | alident
   | auident];
 
+(* same as ident except without [outer-ant] *)
+type ident'=
+  [= `Dot of (loc * ident * ident)
+  |`App of (loc * ident * ident )
+  | `Lid of (loc * string)
+  | `Uid of (loc * string)
+  ];
 type vid =
   [= `Dot of (loc * vid * vid)
   | `Lid of (loc * string)
@@ -247,7 +254,7 @@ and of_ctyp =
   | sid
   | ant]
 and pat =
-  [= (* sid | *) vid
+  [=  vid
   | `App of (loc * pat * pat)
   | `Vrn of (loc * string)
   | `Com of (loc * pat * pat)
@@ -255,7 +262,6 @@ and pat =
   | `Par of (loc * pat )
   | any
   | `Record of (loc * rec_pat)
-  | ant
   | literal
   | `Alias of (loc * pat * alident)
   | `ArrayEmpty of loc 
@@ -280,7 +286,7 @@ and rec_pat =
   | any
   | ant]  
 and exp =
-  [=  (* sid |  *)vid
+  [=  vid
   | `App of (loc * exp * exp)
   | `Vrn of (loc * string)
   | `Com of (loc * exp * exp)
@@ -288,7 +294,6 @@ and exp =
   | `Par of (loc * exp)
   | any
   | `Record of (loc * rec_exp)
-  (* | ant  *)
   | literal
       (* { (e) with rb }  *)
   | `RecordWith of (loc * rec_exp  * exp) (* FIXME give more restrict for the e *)         
@@ -350,7 +355,7 @@ and rec_exp =
   | any (* Faked here to be symmertric to rec_pat *)
   | ant ]
 and module_type =
-  [= sid
+  [= ident'
   | `Functor of (loc * auident * module_type * module_type)
   | `Sig of (loc * sig_item)
   | `SigEnd of loc 
@@ -502,7 +507,7 @@ and cstru =
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)
 type ep =
-  [= (* sid |  *)vid
+  [= vid
   | `App of (loc * ep * ep)
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)
@@ -512,8 +517,7 @@ type ep =
   | `ArrayEmpty of loc 
   | `Array of (loc * ep )
   | `Record of (loc * rec_bind)
-  | literal
-  | ant ]
+  | literal ]
 and rec_bind =
   [=  `RecBind of (loc * ident * ep)
   | `Sem of (loc * rec_bind * rec_bind)

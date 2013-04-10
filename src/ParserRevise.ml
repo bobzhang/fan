@@ -145,18 +145,20 @@ let apply () = begin
         [ S{mt1}; S{mt2} ->
           let app0 mt1 mt2 =
             match (mt1, mt2) with
-            [ (`Id(loc1,i1),`Id(loc2,i2)) ->
-              let _loc = FanLoc.merge loc1 loc2 in
-              `Id(_loc,`App(_loc,i1,i2))
+            [ ((#ident as i1), (#ident as i2))(* (`Id(loc1,i1),`Id(loc2,i2)) *) ->
+              app i1 i2 
+              (* let _loc = FanLoc.merge loc1 loc2 in *)
+              (* `Id(_loc,`App(_loc,i1,i2)) *)
             | _ -> raise XStream.Failure ] in app0 mt1 mt2
           (* ModuleType.app0 mt1 mt2 *) ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
-            [ (`Id(loc1,i1),`Id(loc2,i2)) ->
-              let _loc = FanLoc.merge loc1 loc2 in
-              `Id(_loc,`Dot(_loc,i1,i2))
+            [ ((#ident as i1), (#ident as i2))(* (`Id(loc1,i1),`Id(loc2,i2)) *) ->
+              dot i1 i2 
+              (* let _loc = FanLoc.merge loc1 loc2 in *)
+              (* `Id(_loc,`Dot(_loc,i1,i2)) *)
                 (* ({| $id:i1 |}, {@_| $id:i2 |}) ->  {| $(id:{:ident| $i1.$i2 |}) |} *)
             | _ -> raise XStream.Failure ] in
           acc0 mt1 mt2
@@ -168,7 +170,7 @@ let apply () = begin
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->
           mk_anti _loc ~c:"module_type" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_type_tag
-        | module_longident_with_app{i} -> `Id(_loc,i)
+        | module_longident_with_app{i} -> (* `Id(_loc,i) *) (i:ident:>module_type) 
         | "("; S{mt}; ")" -> mt
         | "module"; "type"; "of"; module_exp{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration:
