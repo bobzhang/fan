@@ -71,9 +71,9 @@ let list_of_record (ty : name_ctyp) =
    tys |>
      (List.map
         (function
-         | `TyColMut (_,`Id (_,`Lid (_,col_label)),col_ctyp) ->
+         | `TyColMut (_,`Lid (_,col_label),col_ctyp) ->
              { col_label; col_ctyp; col_mutable = true }
-         | `TyCol (_,`Id (_,`Lid (_,col_label)),col_ctyp) ->
+         | `TyCol (_,`Lid (_,col_label),col_ctyp) ->
              { col_label; col_ctyp; col_mutable = false }
          | t0 ->
              FanLoc.errorf (loc_of t0) "list_of_record %s"

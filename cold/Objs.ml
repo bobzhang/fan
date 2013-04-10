@@ -406,10 +406,10 @@ and pp_print_name_ctyp fmt =
         pp_print_name_ctyp _a1 pp_print_name_ctyp _a2
   | `TyCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_sid _a1 pp_print_ctyp _a2
+        pp_print_alident _a1 pp_print_ctyp _a2
   | `TyColMut (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_sid _a1 pp_print_ctyp _a2
+        pp_print_alident _a1 pp_print_ctyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result44)
 and pp_print_or_ctyp fmt =
   function
@@ -1423,10 +1423,10 @@ class print =
               self#name_ctyp _a1 self#name_ctyp _a2
         | `TyCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#sid _a1 self#ctyp _a2
+              self#alident _a1 self#ctyp _a2
         | `TyColMut (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" self#loc _a0
-              self#sid _a1 self#ctyp _a2
+              self#alident _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method or_ctyp : 'fmt -> or_ctyp -> unit=
       fun fmt  ->
@@ -2461,11 +2461,11 @@ class map =
           let _a2 = self#name_ctyp _a2 in `Sem (_a0, _a1, _a2)
       | `TyCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#sid _a1 in
+          let _a1 = self#alident _a1 in
           let _a2 = self#ctyp _a2 in `TyCol (_a0, _a1, _a2)
       | `TyColMut (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#sid _a1 in
+          let _a1 = self#alident _a1 in
           let _a2 = self#ctyp _a2 in `TyColMut (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>name_ctyp)
     method or_ctyp : or_ctyp -> or_ctyp=
@@ -3490,9 +3490,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#name_ctyp _a1 in self#name_ctyp _a2
       | `TyCol (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in self#ctyp _a2
       | `TyColMut (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in self#ctyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method or_ctyp : or_ctyp -> 'self_type=
       function
@@ -4293,10 +4295,10 @@ and strip_loc_name_ctyp =
       let _a1 = strip_loc_name_ctyp _a1 in
       let _a2 = strip_loc_name_ctyp _a2 in `Sem (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_sid _a1 in
+      let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
   | `TyColMut (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_sid _a1 in
+      let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result284)
 and strip_loc_or_ctyp =

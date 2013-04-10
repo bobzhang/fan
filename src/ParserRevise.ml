@@ -1187,7 +1187,10 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s)        -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s)          -> mk_anti _loc  ~c:"ctyp;" n s
       (* | `QUOTATION x                       -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_lident{lab}; ":"; ctyp{t} -> `TyCol(_loc,`Id(_loc, (lab :> ident)),t)]
+      | a_lident{lab}; ":"; ctyp{t} ->
+          `TyCol(_loc,lab,t)
+          (* `TyCol(_loc,`Id(_loc, (lab :> ident)),t) *)
+      ]
       opt_meth_list:
       [ meth_list{(ml, v) } -> `TyObj (_loc, ml, v)
       | opt_dot_dot{v}     -> `TyObjEnd(_loc,v) ]
@@ -1337,8 +1340,13 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp;" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_lident{s}; ":"; ctyp{t} -> `TyCol (_loc, (`Id (_loc, (s :>ident))), t)
-      | "mutable"; a_lident{s}; ":";  ctyp{t} -> `TyColMut(_loc,`Id(_loc,(s:>ident)),t)]
+      | a_lident{s}; ":"; ctyp{t} ->
+          `TyCol(_loc,s,t)
+          (* `TyCol (_loc, (`Id (_loc, (s :>ident))), t) *)
+      | "mutable"; a_lident{s}; ":";  ctyp{t} ->
+          `TyColMut(_loc,s,t)
+          (* `TyColMut(_loc,`Id(_loc,(s:>ident)),t) *)
+      ]
       comma_type_parameter:
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp," n s

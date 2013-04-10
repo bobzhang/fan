@@ -5644,10 +5644,10 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, (`Id (_loc, (lab :>ident))), t) : 'meth_decl ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, lab, t) : 'meth_decl ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : FanLoc.t)  ->
-                  (`TyCol (_loc, (`Id (_loc, (lab :>ident))), t) : 'meth_decl )))))]));
+                  (`TyCol (_loc, lab, t) : 'meth_decl )))))]));
   Gram.extend_single (opt_meth_list : 'opt_meth_list Gram.t )
     (None,
       (None, None,
@@ -6361,18 +6361,18 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, (`Id (_loc, (s :>ident))), t) : 'label_declaration ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, s, t) : 'label_declaration ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : FanLoc.t)  ->
-                  (`TyCol (_loc, (`Id (_loc, (s :>ident))), t) : 'label_declaration )))));
+                  (`TyCol (_loc, s, t) : 'label_declaration )))));
         ([`Skeyword "mutable";
          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`TyColMut (_loc, (`Id (_loc, (s :>ident))), t) : 'label_declaration ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`TyColMut (_loc, s, t) : 'label_declaration ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : FanLoc.t)  ->
-                  (`TyColMut (_loc, (`Id (_loc, (s :>ident))), t) : 'label_declaration )))))]));
+                  (`TyColMut (_loc, s, t) : 'label_declaration )))))]));
   Gram.extend_single (comma_type_parameter : 'comma_type_parameter Gram.t )
     (None,
       (None, None,

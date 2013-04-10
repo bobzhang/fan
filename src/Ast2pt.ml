@@ -258,7 +258,7 @@ and row_field (x:row_field) acc =
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)]
 and meth_list (fl:name_ctyp) acc : list core_field_type = match fl with
   [`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-  | `TyCol(_loc,`Id(_,`Lid(_,lab)),t) ->
+  | `TyCol(_loc,`Lid(_,lab),t) ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x )]
     
@@ -298,9 +298,9 @@ let mkprivate (x:private_flag)=
   | `Ant(_loc,_)-> ANT_ERROR ];
 
 let mktrecord (x: name_ctyp)= match x with 
-  [`TyColMut(_loc,`Id(_,`Lid(sloc,s)),t) ->
+  [`TyColMut(_loc,`Lid(sloc,s),t) ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
-  | `TyCol(_loc,`Id(_,`Lid(sloc,s)),t) ->
+  | `TyCol(_loc,`Lid(sloc,s),t) ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
   | t -> errorf (loc_of t) "mktrecord %s "
         (dump_name_ctyp t)];

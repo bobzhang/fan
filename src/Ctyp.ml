@@ -141,9 +141,9 @@ let list_of_record (ty:name_ctyp) : list FSig.col  =
          [ 
            (* {| $lid:label : mutable $ctyp  |} *)
            (* `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) -> *)
-           `TyColMut(_,`Id(_,`Lid(_,col_label)),col_ctyp) ->
+           `TyColMut(_,`Lid(_,col_label),col_ctyp) ->
              {col_label; col_ctyp; col_mutable=true}
-         | `TyCol (_, (`Id (_, (`Lid (_, col_label)))), col_ctyp)
+         | `TyCol (_, `Lid (_, col_label), col_ctyp)
              (* {| $lid:label :  $ctyp  |} *) -> 
                {col_label; col_ctyp; col_mutable=false}
          | t0 ->

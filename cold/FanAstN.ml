@@ -337,9 +337,9 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#name_ctyp _a0 _b0) && (self#name_ctyp _a1 _b1)
         | (`TyCol (_a0,_a1),`TyCol (_b0,_b1)) ->
-            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
         | (`TyColMut (_a0,_a1),`TyColMut (_b0,_b1)) ->
-            (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result38)
         | (_,_) -> false
     method or_ctyp : or_ctyp -> or_ctyp -> 'result39=
@@ -1129,10 +1129,10 @@ class print =
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#name_ctyp _a0
               self#name_ctyp _a1
         | `TyCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#sid _a0
+            Format.fprintf fmt "@[<1>(`TyCol@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
         | `TyColMut (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a)@]" self#sid _a0
+            Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method or_ctyp : 'fmt -> or_ctyp -> unit=
@@ -2071,11 +2071,13 @@ and meta_name_ctyp _loc =
           (meta_name_ctyp _loc _a1))
   | `TyCol (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_alident _loc _a0))),
           (meta_ctyp _loc _a1))
   | `TyColMut (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyColMut")), (meta_sid _loc _a0))),
+        (_loc,
+          (`App (_loc, (`Vrn (_loc, "TyColMut")), (meta_alident _loc _a0))),
           (meta_ctyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result165)
 and meta_or_ctyp _loc =

@@ -209,7 +209,7 @@ and row_field (x : row_field) acc =
 and meth_list (fl : name_ctyp) acc =
   (match fl with
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
-   | `TyCol (_loc,`Id (_,`Lid (_,lab)),t) ->
+   | `TyCol (_loc,`Lid (_,lab),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
    | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x) : core_field_type
                                                                    list )
@@ -252,9 +252,9 @@ let mkprivate (x : private_flag) =
 
 let mktrecord (x : name_ctyp) =
   match x with
-  | `TyColMut (_loc,`Id (_,`Lid (sloc,s)),t) ->
+  | `TyColMut (_loc,`Lid (sloc,s),t) ->
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), _loc)
-  | `TyCol (_loc,`Id (_,`Lid (sloc,s)),t) ->
+  | `TyCol (_loc,`Lid (sloc,s),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mktrecord %s " (dump_name_ctyp t)
 

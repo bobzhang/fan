@@ -746,7 +746,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "TyCol")), (self#loc _loc _a0))),
-                     (self#sid _loc _a1))), (self#ctyp _loc _a2))
+                     (self#alident _loc _a1))), (self#ctyp _loc _a2))
         | `TyColMut (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -754,7 +754,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "TyColMut")),
-                          (self#loc _loc _a0))), (self#sid _loc _a1))),
+                          (self#loc _loc _a0))), (self#alident _loc _a1))),
                 (self#ctyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method or_ctyp : 'loc -> or_ctyp -> ep=
