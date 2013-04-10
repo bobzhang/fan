@@ -70,7 +70,7 @@ type simple_pat =
   [=
    `Vrn of (loc * string)
   |`App of (loc * simple_pat * simple_pat )
-  |`Id of (loc * ident)
+  | vid 
   |`Com of (loc * simple_pat * simple_pat)
   |`Alias of (loc * simple_pat * alident)
   |`Bar of (loc * simple_pat * simple_pat)
@@ -81,7 +81,7 @@ type simple_pat =
 
 (* make [S] a keyword ? *) 
 type action_pattern =
-  [= `Id of (loc * ident)
+  [= vid
   |`Com of (loc * action_pattern * action_pattern)
   |`Par of (loc * action_pattern )
   |`Any of loc ];  

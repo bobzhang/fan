@@ -104,11 +104,12 @@ let ident_of_exp : exp -> ident =
     match x with 
     [ `App(_loc,e1,e2) -> `App(_loc,self e1, self e2)
     | `Field(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
-    | `Id(_loc,`Lid _ ) -> error ()
-    | `Id (_loc,i) -> if is_module_longident i then i else error ()
+    | `Lid _  -> error ()
+    | `Uid _ | `Dot _ as i -> (i:vid:>ident)
+    (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
     | _ -> error () ] in 
   fun
-    [ `Id(_loc,i) -> i
+    [ #vid as i ->  (i:vid :>ident)
     | `App _ -> error ()
     | t -> self t ];
 (*
@@ -140,20 +141,20 @@ let ident_of_ctyp =
     | _ -> error () ] in
     fun
     [ `Id(_loc,i) -> i
-    | t -> self t ];
+    | t -> self t ];;
 
-let ident_of_pat =
-  let error () =
-    invalid_arg "ident_of_pat: this pattern is not an identifier" in
-  let rec self = fun 
-    [ {:pat@_loc| $p1 $p2 |}
-      -> {:ident| ( $(self p1) $(self p2) ) |}
-    | {:pat| $lid:_ |} -> error ()
-    | {:pat| $id:i |} -> if is_module_longident i then i else error ()
-    | _ -> error () ] in
-    fun
-    [ {:pat| $id:i |} -> i
-    | p -> self p ];
+(* let ident_of_pat = *)
+(*   let error () = *)
+(*     invalid_arg "ident_of_pat: this pattern is not an identifier" in *)
+(*   let rec self = fun  *)
+(*     [ {:pat@_loc| $p1 $p2 |} *)
+(*       -> {:ident| ( $(self p1) $(self p2) ) |} *)
+(*     | {:pat| $lid:_ |} -> error () *)
+(*     | {:pat| $id:i |} -> if is_module_longident i then i else error () *)
+(*     | _ -> error () ] in *)
+(*     fun *)
+(*     [ {:pat| $id:i |} -> i *)
+(*     | p -> self p ];; *)
 
 
 
@@ -221,13 +222,14 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l);
 
 let rec is_irrefut_pat (x: pat) = with pat'
     match x with
-    [
-      `ArrayEmpty (_loc)
+    [ `Lid _ (* | `Dot _  *)(* | `Uid _  *)->  true 
+    | `ArrayEmpty (_loc)
     | `LabelS (_loc,_)
-    | {| $lid:_ |} -> true
+    (* | {| $lid:_ |} -> true *)
     | {| () |} -> true
     | {| _ |} -> true
     (* | {||} -> true (\* why not *\) *)
+    | `Dot(_,_,y) -> is_irrefut_pat (y:vid:>pat) 
     | {| ($x as $_) |} -> is_irrefut_pat x (* && is_irrefut_pat y *)
     | {| { $p } |} ->
         List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_pat p | _ -> true])
@@ -242,8 +244,8 @@ let rec is_irrefut_pat (x: pat) = with pat'
     | `OptLablS _ -> true
     | `OptLabl(_,_,p) | `OptLablExpr(_,_,p,_) -> is_irrefut_pat p
     | `Label(_,_,p) | `Lazy (_,p) ->  is_irrefut_pat p
-    | {| $id:_ |} -> false (* here one need to know the arity of constructors *)
-
+    (* | {| $id:_ |} -> false (\* here one need to know the arity of constructors *\) *)
+    | `Uid _ -> false
     | `ModuleUnpack _ 
     | `ModuleConstraint _  -> true
     (* | {| (module $_ : $opt:_ ) |} -> true *)

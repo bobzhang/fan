@@ -84,11 +84,11 @@ let compile ~part_tbl  (rs : regexp array) =
           let part = get_part ~part_tbl part in
           let targets = Array.map aux targets in
           let finals = Array.map (fun (_,f)  -> List.mem f state) rs in
-          states_def.contents <- (i, (part, targets, finals)) ::
-            (states_def.contents);
+          states_def := ((i, (part, targets, finals)) ::
+            (states_def.contents));
           i)) in
   let init = ref [] in
-  Array.iter (fun (i,_)  -> init.contents <- add_node init.contents i) rs;
+  Array.iter (fun (i,_)  -> init := (add_node init.contents i)) rs;
   ignore (aux init.contents);
   Array.init counter.contents (fun id  -> List.assoc id states_def.contents)
 
@@ -97,13 +97,11 @@ let partitions ~part_tbl  () =
     let seg = ref [] in
     Array.iteri
       (fun i  c  ->
-         List.iter
-           (fun (a,b)  -> seg.contents <- (a, b, i) :: (seg.contents)) c)
+         List.iter (fun (a,b)  -> seg := ((a, b, i) :: (seg.contents))) c)
       part;
     List.sort (fun (a1,_,_)  (a2,_,_)  -> compare a1 a2) seg.contents in
   let res = ref [] in
-  Hashtbl.iter
-    (fun part  i  -> res.contents <- (i, (aux part)) :: (res.contents))
+  Hashtbl.iter (fun part  i  -> res := ((i, (aux part)) :: (res.contents)))
     part_tbl;
   Hashtbl.clear part_tbl;
   res.contents
@@ -235,9 +233,7 @@ let partition ~counter  ~tables  (i,p) =
            (_loc,
              (`App
                 (_loc,
-                  (`App
-                     (_loc, ((`Lid (_loc, "<="))),
-                       (`Lid (_loc, "c")))),
+                  (`App (_loc, (`Lid (_loc, "<=")), (`Lid (_loc, "c")))),
                   (`Int (_loc, (string_of_int i))))), (gen_tree yes),
              (gen_tree no)) : Ast.exp )
     | Return i -> (`Int (_loc, (string_of_int i)) : Ast.exp )
@@ -247,15 +243,12 @@ let partition ~counter  ~tables  (i,p) =
           then (`Lid (_loc, "c") : Ast.exp )
           else
             (`App
-               (_loc,
-                 (`App
-                    (_loc, ((`Lid (_loc, "-"))),
-                      (`Lid (_loc, "c")))),
+               (_loc, (`App (_loc, (`Lid (_loc, "-")), (`Lid (_loc, "c")))),
                  (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
         (`App
            (_loc,
              (`App
-                (_loc, ((`Lid (_loc, "-"))),
+                (_loc, (`Lid (_loc, "-")),
                   (`App
                      (_loc,
                        (`Dot
@@ -283,9 +276,7 @@ let binding_partition ~counter  ~tables  (i,p) =
            (_loc,
              (`App
                 (_loc,
-                  (`App
-                     (_loc, ( (`Lid (_loc, "<="))),
-                       (`Lid (_loc, "c")))),
+                  (`App (_loc, (`Lid (_loc, "<=")), (`Lid (_loc, "c")))),
                   (`Int (_loc, (string_of_int i))))), (gen_tree yes),
              (gen_tree no)) : Ast.exp )
     | Return i -> (`Int (_loc, (string_of_int i)) : Ast.exp )
@@ -295,15 +286,12 @@ let binding_partition ~counter  ~tables  (i,p) =
           then (`Lid (_loc, "c") : Ast.exp )
           else
             (`App
-               (_loc,
-                 (`App
-                    (_loc, ( (`Lid (_loc, "-"))),
-                      (`Lid (_loc, "c")))),
+               (_loc, (`App (_loc, (`Lid (_loc, "-")), (`Lid (_loc, "c")))),
                  (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
         (`App
            (_loc,
              (`App
-                (_loc, ((`Lid (_loc, "-"))),
+                (_loc, (`Lid (_loc, "-")),
                   (`App
                      (_loc,
                        (`Dot
@@ -323,8 +311,7 @@ let binding_partition ~counter  ~tables  (i,p) =
 let best_final final =
   let fin = ref None in
   Array.iteri
-    (fun i  b  ->
-       if b && (fin.contents = None) then fin.contents <- Some i else ())
+    (fun i  b  -> if b && (fin.contents = None) then fin := (Some i) else ())
     final;
   fin.contents
 

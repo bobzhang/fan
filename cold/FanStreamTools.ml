@@ -397,7 +397,7 @@ let rec cstream gloc =
   function
   | [] ->
       let _loc = gloc in
-      (    (`Dot (_loc, (`Uid (_loc, "XStream")), (`Lid (_loc, "sempty")))) : 
+      (`Dot (_loc, (`Uid (_loc, "XStream")), (`Lid (_loc, "sempty"))) : 
         Ast.exp )
   | (SeTrm (_loc,e))::[] ->
       if not_computing e

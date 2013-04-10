@@ -12,7 +12,7 @@ open LibUtil
 
 open FanUtil
 
-let _ = FanConfig.antiquotations.contents <- true
+let _ = FanConfig.antiquotations := true
 
 let nonterminals: stru Gram.t = Gram.mk "nonterminals"
 
@@ -232,19 +232,19 @@ let _ =
           `Skeyword ":";
           `Snterm (Gram.obj (t_qualid : 't_qualid Gram.t ));
           `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (t : 't_qualid)  _  (i : 'qualid)  _  (_loc : FanLoc.t)  ->\n     (let old = gm () in\n      let () = grammar_module_name.contents <- t in ((Some i), old) : \n     'extend_header ))\n",
+           ("Gram.mk_action\n  (fun _  (t : 't_qualid)  _  (i : 'qualid)  _  (_loc : FanLoc.t)  ->\n     (let old = gm () in let () = grammar_module_name := t in ((Some i), old) : \n     'extend_header ))\n",
              (Gram.mk_action
                 (fun _  (t : 't_qualid)  _  (i : 'qualid)  _ 
                    (_loc : FanLoc.t)  ->
                    (let old = gm () in
-                    let () = grammar_module_name.contents <- t in
-                    ((Some i), old) : 'extend_header )))));
+                    let () = grammar_module_name := t in ((Some i), old) : 
+                   'extend_header )))));
         ([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let old = gm () in\n      let () = grammar_module_name.contents <- t in (None, old) : 'extend_header ))\n",
+          ("Gram.mk_action\n  (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let old = gm () in let () = grammar_module_name := t in (None, old) : \n     'extend_header ))\n",
             (Gram.mk_action
                (fun (t : 'qualuid)  (_loc : FanLoc.t)  ->
                   (let old = gm () in
-                   let () = grammar_module_name.contents <- t in (None, old) : 
+                   let () = grammar_module_name := t in (None, old) : 
                   'extend_header )))));
         ([],
           ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> ((None, (gm ())) : 'extend_header ))\n",
@@ -256,35 +256,33 @@ let _ =
         [([`Snterm (Gram.obj (extend_header : 'extend_header Gram.t ));
           `Sopt (`Snterm (Gram.obj (locals : 'locals Gram.t )));
           `Slist1 (`Snterm (Gram.obj (entry : 'entry Gram.t )))],
-           ("Gram.mk_action\n  (fun (el : 'entry list)  (locals : 'locals option) \n     ((gram,old) : 'extend_header)  (_loc : FanLoc.t)  ->\n     (let res = text_of_functorial_extend _loc gram locals el in\n      let () = grammar_module_name.contents <- old in res : 'extend_body ))\n",
+           ("Gram.mk_action\n  (fun (el : 'entry list)  (locals : 'locals option) \n     ((gram,old) : 'extend_header)  (_loc : FanLoc.t)  ->\n     (let res = text_of_functorial_extend _loc gram locals el in\n      let () = grammar_module_name := old in res : 'extend_body ))\n",
              (Gram.mk_action
                 (fun (el : 'entry list)  (locals : 'locals option) 
                    ((gram,old) : 'extend_header)  (_loc : FanLoc.t)  ->
                    (let res = text_of_functorial_extend _loc gram locals el in
-                    let () = grammar_module_name.contents <- old in res : 
-                   'extend_body )))))]));
+                    let () = grammar_module_name := old in res : 'extend_body )))))]));
   Gram.extend_single (delete_rule_header : 'delete_rule_header Gram.t )
     (None,
       (None, None,
         [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ))],
-           ("Gram.mk_action\n  (fun (g : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let old = gm () in let () = grammar_module_name.contents <- g in old : \n     'delete_rule_header ))\n",
+           ("Gram.mk_action\n  (fun (g : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let old = gm () in let () = grammar_module_name := g in old : 'delete_rule_header ))\n",
              (Gram.mk_action
                 (fun (g : 'qualuid)  (_loc : FanLoc.t)  ->
                    (let old = gm () in
-                    let () = grammar_module_name.contents <- g in old : 
-                   'delete_rule_header )))))]));
+                    let () = grammar_module_name := g in old : 'delete_rule_header )))))]));
   Gram.extend_single (delete_rule_body : 'delete_rule_body Gram.t )
     (None,
       (None, None,
         [([`Snterm
              (Gram.obj (delete_rule_header : 'delete_rule_header Gram.t ));
           `Slist1 (`Snterm (Gram.obj (delete_rules : 'delete_rules Gram.t )))],
-           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name.contents <- old in seq_sem es : 'delete_rule_body ))\n",
+           ("Gram.mk_action\n  (fun (es : 'delete_rules list)  (old : 'delete_rule_header) \n     (_loc : FanLoc.t)  ->\n     (let () = grammar_module_name := old in seq_sem es : 'delete_rule_body ))\n",
              (Gram.mk_action
                 (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
                    (_loc : FanLoc.t)  ->
-                   (let () = grammar_module_name.contents <- old in
-                    seq_sem es : 'delete_rule_body )))))]));
+                   (let () = grammar_module_name := old in seq_sem es : 
+                   'delete_rule_body )))))]));
   Gram.extend_single (delete_rules : 'delete_rules Gram.t )
     (None,
       (None, None,
@@ -421,15 +419,15 @@ let _ =
                           match __fan_0 with
                           | `STR (_,x) -> (x : 'e__6 )
                           | _ -> failwith "x\n"))))])],
-           ("Gram.mk_action\n  (fun (name : 'e__6 option)  (il : 'qualid)  (_loc : FanLoc.t)  ->\n     (((match name with\n        | Some x ->\n            let old = AstQuotation.default.contents in\n            (AstQuotation.default.contents <-\n               FanToken.resolve_name ((`Sub []), x);\n             `name old)\n        | None  -> `non), (mk_name _loc il)) : 'entry_name ))\n",
+           ("Gram.mk_action\n  (fun (name : 'e__6 option)  (il : 'qualid)  (_loc : FanLoc.t)  ->\n     (((match name with\n        | Some x ->\n            let old = AstQuotation.default.contents in\n            (AstQuotation.default := (FanToken.resolve_name ((`Sub []), x));\n             `name old)\n        | None  -> `non), (mk_name _loc il)) : 'entry_name ))\n",
              (Gram.mk_action
                 (fun (name : 'e__6 option)  (il : 'qualid)  (_loc : FanLoc.t)
                     ->
                    (((match name with
                       | Some x ->
                           let old = AstQuotation.default.contents in
-                          (AstQuotation.default.contents <-
-                             FanToken.resolve_name ((`Sub []), x);
+                          (AstQuotation.default :=
+                             (FanToken.resolve_name ((`Sub []), x));
                            `name old)
                       | None  -> `non), (mk_name _loc il)) : 'entry_name )))))]));
   Gram.extend_single (entry : 'entry Gram.t )
@@ -439,12 +437,12 @@ let _ =
           `Skeyword ":";
           `Sopt (`Snterm (Gram.obj (position : 'position Gram.t )));
           `Snterm (Gram.obj (level_list : 'level_list Gram.t ))],
-           ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     ((match n with\n       | `name old -> AstQuotation.default.contents <- old\n       | _ -> ());\n      (match (pos, levels) with\n       | (Some (`App (_loc,`Vrn (_,\"Level\"),_)),`Group _) ->\n           failwithf\n             \"For Group levels the position can not be applied to Level\"\n       | _ -> mk_entry ~name:p ~pos ~levels) : 'entry ))\n",
+           ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     ((match n with | `name old -> AstQuotation.default := old | _ -> ());\n      (match (pos, levels) with\n       | (Some (`App (_loc,`Vrn (_,\"Level\"),_)),`Group _) ->\n           failwithf\n             \"For Group levels the position can not be applied to Level\"\n       | _ -> mk_entry ~name:p ~pos ~levels) : 'entry ))\n",
              (Gram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
                    ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->
                    ((match n with
-                     | `name old -> AstQuotation.default.contents <- old
+                     | `name old -> AstQuotation.default := old
                      | _ -> ());
                     (match (pos, levels) with
                      | (Some (`App (_loc,`Vrn (_,"Level"),_)),`Group _) ->
@@ -742,7 +740,7 @@ let _ =
                      ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
                      ~pattern:None : 'symbol )))));
         ([`Snterm (Gram.obj (simple_pat : 'simple_pat Gram.t ))],
-          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                     (`App\n                        (_loc,\n                          (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                          y))))\n              (`App\n                 (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"=\")))), x)),\n                   y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
+          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                     (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))))\n              (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
             (Gram.mk_action
                (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->
                   (let (p,ls) =
@@ -759,15 +757,11 @@ let _ =
                                   (`App (_loc, (`Lid (_loc, "&&")), acc)),
                                   (`App
                                      (_loc,
-                                       (`App
-                                          (_loc,
-                                            ( (`Lid (_loc, "="))),
-                                            x)), y))))
+                                       (`App (_loc, (`Lid (_loc, "=")), x)),
+                                       y))))
                            (`App
-                              (_loc,
-                                (`App
-                                   (_loc, ( (`Lid (_loc, "="))),
-                                     x)), y)) ys in
+                              (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y))
+                           ys in
                        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
                   'symbol )))));
         ([`Stoken

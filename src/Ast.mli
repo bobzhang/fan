@@ -124,6 +124,11 @@ type ident =
   | alident
   | auident];
 
+type vid =
+  [= `Dot of (loc * vid * vid)
+  | `Lid of (loc * string)
+  | `Uid of (loc * string) | ant ];
+
 type dupath =
   [= `Dot of (loc * dupath * dupath)
   | auident];
@@ -242,7 +247,7 @@ and of_ctyp =
   | sid
   | ant]
 and pat =
-  [= sid
+  [= (* sid | *) vid
   | `App of (loc * pat * pat)
   | `Vrn of (loc * string)
   | `Com of (loc * pat * pat)
@@ -275,7 +280,7 @@ and rec_pat =
   | any
   | ant]  
 and exp =
-  [=  sid
+  [=  (* sid |  *)vid
   | `App of (loc * exp * exp)
   | `Vrn of (loc * string)
   | `Com of (loc * exp * exp)
@@ -283,7 +288,7 @@ and exp =
   | `Par of (loc * exp)
   | any
   | `Record of (loc * rec_exp)
-  | ant 
+  (* | ant  *)
   | literal
       (* { (e) with rb }  *)
   | `RecordWith of (loc * rec_exp  * exp) (* FIXME give more restrict for the e *)         
@@ -497,7 +502,7 @@ and cstru =
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)
 type ep =
-  [= sid
+  [= (* sid |  *)vid
   | `App of (loc * ep * ep)
   | `Vrn of (loc * string)
   | `Com of (loc * ep * ep)

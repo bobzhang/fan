@@ -84,16 +84,24 @@ let rec  normal_simple_exp_of_ctyp
     ?arity ?names ~mk_tuple
     ~right_type_id ~left_type_id
     ~right_type_variable
-    cxt ty = 
+    cxt (ty:ctyp) = 
   let open Transform in
   let right_trans = transform right_type_id in
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = with {pat:ctyp;exp} fun
+  let rec aux = with {pat:ctyp';exp'} fun
     [ `Id(_loc,`Lid(_,id)) -> 
       if Hashset.mem cxt id then {| $(lid:left_trans id) |}
-      else right_trans {:ident| $lid:id |} 
-    | `Id (_loc,id) ->   right_trans id (* recursive call here *)
+      else
+        right_trans (`Lid(_loc,id))
+        (* right_trans {:ident| $lid:id |}  *)
+    | `Id (_loc,id) ->
+        right_trans (Id.to_vid id )
+        (* match id with *)
+        (* [ (#vid as id)  ->    *)
+        (*   right_trans id (\* recursive call here *\) *)
+        (* | _ -> failwithf "normal_simple_exp_of_ctyp complex type"] *)
+            
     | `App(_loc,t1,t2) ->
         {| $(aux t1) $(aux t2) |}
     | `Quote (_loc,_,`Lid(_,s)) ->   tyvar s
@@ -105,7 +113,7 @@ let rec  normal_simple_exp_of_ctyp
              ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
-    | ty ->
+    | (ty:ctyp) ->
         FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
           (Objs.dump_ctyp ty)] in
   aux ty;
@@ -127,28 +135,28 @@ let rec  normal_simple_exp_of_ctyp
       self#m_list (fun self -> self#tree mf_a)
  *)      
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
-    ?names ?arity ~mk_tuple ty = with {pat:ctyp}
+    ?names ?arity ~mk_tuple ty = with {pat:ctyp'}
   let open Transform in 
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = fun
-    [ `Id (_loc,id) -> trans id
+  let rec aux : ctyp -> exp = fun
+    [ `Id (_loc,id) -> trans (Id.to_vid id)
     | `Quote(_loc,_,`Lid(_,s)) ->   tyvar s
     | `App _  as ty ->
         match  list_of_app ty []  with
         [ [ {| $id:tctor |} :: ls ] ->
-          appl_of_list [trans tctor::
+          appl_of_list [trans (Id.to_vid tctor) ::
                         (ls |> List.map
                           (fun
-                            [ `Quote (_loc,_,`Lid(_,s)) -> {:exp| $(lid:var s) |} 
-                            | t ->   {:exp| fun self -> $(aux t) |} ])) ]
+                            [ `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
+                            | t ->   {:exp'| fun self -> $(aux t) |} ])) ]
         | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
               (Objs.dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
-        aux {:ctyp| arrow $t1 $t2 |} 
+        aux {:ctyp'| arrow $t1 $t2 |} 
     | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable

@@ -14,7 +14,7 @@ let filter (_,q) =
     | Some x ->
         (XStream.junk __strm;
          (let xs = __strm in
-          XStream.lcons (fun _  -> x) (XStream.slazy (fun _  -> self xs))))
+          XStream.icons x (XStream.slazy (fun _  -> self xs))))
     | _ -> XStream.sempty in
   self
 

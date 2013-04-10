@@ -393,7 +393,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   inherit Objs.map as super;
   method! stru = fun
     [ 
-     {:stru| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+     {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
        match (* qualified_app_list ctyp *) r with
        [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
@@ -408,7 +408,8 @@ let mk_transform_type_eq () = object(self:'self_type)
              [type u int = Loc.t int]
              This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
            *)
-           let src = i and dest = Id.map_to_string i in begin
+           let src = i and dest =             
+             Id.to_string i in begin
              Hashtbl.replace transformers dest (src,List.length lst);
              {:stru| let _ = ()|} (* FIXME *)
            end 
@@ -418,7 +419,7 @@ let mk_transform_type_eq () = object(self:'self_type)
     match qualified_app_list x with
       [ Some (i, lst) ->
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-          let src = i and dest = Id.map_to_string i in begin
+          let src = i and dest = Id.to_string i in begin
             Hashtbl.replace transformers dest (src,List.length lst);
             appl_of_list [ {| $lid:dest |} :: lst ]
           end

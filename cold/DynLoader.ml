@@ -46,7 +46,7 @@ module Make(U:sig  end) : S =
           (try
              Dynlink.init ();
              Dynlink.allow_unsafe_modules true;
-             _initialized.contents <- true
+             _initialized := true
            with
            | Dynlink.Error e ->
                raise

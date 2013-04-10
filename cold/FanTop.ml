@@ -62,20 +62,20 @@ let use_file token_stream =
 let revise_parser = wrap toplevel_phrase
 
 let _ =
-  Syntax.current_warning.contents <-
-    (fun loc  txt  ->
-       Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt));
+  Syntax.current_warning :=
+    ((fun loc  txt  ->
+        Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
   iter_and_take_callbacks (fun (_,f)  -> f ())
 
 let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
 
 let normal () =
-  Toploop.parse_toplevel_phrase.contents <- Parse.toplevel_phrase;
-  Toploop.parse_use_file.contents <- Parse.use_file
+  Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
+  Toploop.parse_use_file := Parse.use_file
 
 let revise () =
-  Toploop.parse_toplevel_phrase.contents <- revise_parser;
-  Toploop.parse_use_file.contents <- wrap use_file
+  Toploop.parse_toplevel_phrase := revise_parser;
+  Toploop.parse_use_file := (wrap use_file)
 
 let _ =
   Hashtbl.replace Toploop.directive_table "revise"

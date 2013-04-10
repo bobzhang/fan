@@ -110,7 +110,7 @@ let define ~exp  ~pat  eo x =
                              failwith
                                "let pl = match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
-  defined.contents <- (x, eo) :: (defined.contents)
+  defined := ((x, eo) :: (defined.contents))
 
 let undef ~exp  ~pat  x =
   try
@@ -141,7 +141,7 @@ let undef ~exp  ~pat  x =
                   | _ -> false)), (`Antiquot, "`Uid __fan__x"));
             `Sself])
      | None  -> ());
-    defined.contents <- List.remove x defined.contents
+    defined := (List.remove x defined.contents)
   with | Not_found  -> ()
 
 let parse_def ~exp  ~pat  s =

@@ -4,8 +4,8 @@ val print_warning : FanLoc.t -> string -> unit
 
 val prefix : string
 
-val grammar_module_name : ident ref
-val gm : unit -> ident
+val grammar_module_name : vid ref
+val gm : unit -> vid
 val mk_entry :
   name:name ->
   pos:exp option -> levels:levels -> entry
@@ -46,17 +46,17 @@ val make_exp_rules :
 val exp_delete_rule:
   loc -> name -> symbol list list  -> exp
       
-val mk_name : loc -> ident -> name
+val mk_name : loc -> (* ident *)vid -> name
 val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
 val text_of_entry :   entry -> exp
 val let_in_of_extend :
   loc ->
-  ident option -> name list option -> exp -> exp
+  (* ident *)vid option -> name list option -> exp -> exp
 val text_of_functorial_extend :
   loc ->
-  ident option ->
+  (* ident *)vid option ->
   name list option -> entry list -> exp
 val mk_tok :
   loc ->

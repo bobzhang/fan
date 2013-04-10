@@ -41,17 +41,17 @@ module QMap = MapMake(struct type t = key
 
 let map = ref SMap.empty
 
-let update (pos,(str : name)) = map.contents <- SMap.add pos str map.contents
+let update (pos,(str : name)) = map := (SMap.add pos str map.contents)
 
 let fan_default = ((`Absolute ["Fan"]), "")
 
 let default: name ref = ref fan_default
 
-let set_default s = default.contents <- s
+let set_default s = default := s
 
-let clear_map () = map.contents <- SMap.empty
+let clear_map () = map := SMap.empty
 
-let clear_default () = default.contents <- fan_default
+let clear_default () = default := fan_default
 
 let expander_name ~pos:(pos : string)  (name : name) =
   match name with
@@ -68,7 +68,7 @@ let add ((domain,n) as name) (tag : 'a FanDyn.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
-  expanders_table.contents <- QMap.add k v expanders_table.contents
+  expanders_table := (QMap.add k v expanders_table.contents)
 
 let expand_quotation loc ~expander  pos_tag quot =
   let open FanToken in
@@ -209,12 +209,9 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
             | `App (loc,`Vrn (_,u),`Par (_,`Com (_,_,rest))) ->
                 `App
                   (loc, (`Vrn (loc, u)),
-                    (`Par
-                       (loc,
-                         (`Com (loc, ( (`Lid (_loc, name))), rest)))))
+                    (`Par (loc, (`Com (loc, (`Lid (_loc, name)), rest)))))
             | `App (_loc,`Vrn (_,u),`Any _) ->
-                `App
-                  (_loc, (`Vrn (_loc, u)), ((`Lid (_loc, name))))
+                `App (_loc, (`Vrn (_loc, u)), (`Lid (_loc, name)))
             | `App (_loc,a,b) -> `App (_loc, (subst_first_loc name a), b)
             | `Constraint (_loc,a,ty) ->
                 `Constraint (_loc, (subst_first_loc name a), ty)

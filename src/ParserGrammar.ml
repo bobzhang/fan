@@ -12,8 +12,9 @@ FanConfig.antiquotations := true;
 
 
 
-{:create|Gram nonterminals nonterminalsclear
-  delete_rule_header extend_header  qualuid qualid t_qualid
+{:create|Gram (nonterminals:Gram.t stru) (nonterminalsclear: Gram.t exp)
+  delete_rule_header extend_header  (qualuid : Gram.t vid) (qualid:Gram.t vid)
+  (t_qualid:Gram.t vid)
   (entry_name : Gram.t ([=`name of FanToken.name | `non] * FanGrammar.name))
   locals entry position assoc name string
   (pattern: Gram.t action_pattern)
@@ -44,11 +45,15 @@ FanConfig.antiquotations := true;
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
       | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
     ->
-    with stru
+    with stru'
     let mk =
       match t with
-      [`static t -> {:exp| $id:t.mk |}
-      |`dynamic(x,t) -> {:exp| $id:t.mk_dynamic $id:x |}] in   
+      [`static t -> let t = (t : vid :> exp ) in {:exp'| $t.mk |}
+      |`dynamic(x,t) ->
+          let x = (x : vid :> exp) in
+          let t = (t : vid :> exp ) in 
+        (* {:exp'| $id:t.mk_dynamic $x |} *)
+        {:exp'|$t.mk_dynamic $x |} ] in   
     sem_of_list & List.map
       (fun
         (_loc,x,descr,ty) ->
@@ -71,9 +76,11 @@ FanConfig.antiquotations := true;
    *)
   nonterminalsclear:
   [ qualuid{t}; L1 [a_lident{x}->x ]{ls} ->
-    let rest = List.map (fun x ->
+    let rest = List.map (fun (x:alident) ->
+      let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
-      {:exp| $id:t.clear $(id:(x:>ident)) |}) ls in
+      let t = (t:vid :> exp) in
+      {:exp'| $t.clear $x |}) ls in
     seq_sem rest
     (* {:exp| begin $list:rest end |} *) ]
 |};
@@ -98,11 +105,11 @@ FanConfig.antiquotations := true;
   extend_header:
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 
-    let () = grammar_module_name := t in
+    let () = grammar_module_name := t (* (t:vid :> ident) *) in
     (Some i,old)
   | qualuid{t}  ->
       let old = gm() in
-      let () = grammar_module_name := t in 
+      let () = grammar_module_name :=  t (* (t:vid :> ident) *) in 
       (None,old)
   | -> (None,gm())]
 
@@ -136,13 +143,14 @@ FanConfig.antiquotations := true;
    *) 
   extend_body:
   [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
-    let res = text_of_functorial_extend _loc  gram locals el in 
+    let res = text_of_functorial_extend _loc  gram (* (gram: option vid :> option ident) *)
+        locals el in 
     let () = grammar_module_name := old in
     res      ]
 
   (*for side effets, parser action *)
   delete_rule_header:
-  [ qualuid{g} -> let old = gm () in let () = grammar_module_name := g in old  ]
+  [ qualuid{g} -> let old = gm () in let () = grammar_module_name := g (* (g:vid :> ident) *) in old  ]
 
   delete_rule_body:
   [ delete_rule_header{old};  L1 delete_rules {es} ->
@@ -184,7 +192,7 @@ FanConfig.antiquotations := true;
   [ `Lid "local"; ":"; L1 name{sl}; ";" -> sl ]
 
   (* stands for the non-terminal  *)
-  name:[ qualid{il} -> mk_name _loc il ] 
+  name:[ qualid{il} -> mk_name _loc il(* (il : vid :> ident) *) ] 
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
@@ -193,7 +201,7 @@ FanConfig.antiquotations := true;
       [ Some x -> (let old = !AstQuotation.default in
       (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
        `name old))
-    | None -> `non], mk_name _loc il)
+    | None -> `non], mk_name _loc il(* (il: vid :> ident) *))
   end]
 
   (* return an entry [FanGrammar.entry]
@@ -343,7 +351,7 @@ FanConfig.antiquotations := true;
       | [(x,y)::ys] ->
         let restrict =
           List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
-            {:exp| $x = $y |} ys  in 
+            {:exp| $x = $y |} ys  in  (* FIXME *)
         mk_tok _loc ~restrict ~pattern:p (`Tok _loc) ]
         (* | `Uid ("Uid"|"Lid" as x) ; `Ant ((""),s) -> *)
         (*    let i = AntiquotSyntax.parse_ident _loc s in *)
@@ -362,7 +370,7 @@ FanConfig.antiquotations := true;
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
   | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         let i = parse_ident _loc s in
-        let n = mk_name _loc i in
+        let n = mk_name _loc (Id.to_vid i) in (* FIXME  *)
         mk_symbol ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
   | "("; S{s}; ")" -> s ]
@@ -415,7 +423,7 @@ FanConfig.antiquotations := true;
       sfold ~sep _loc [x;y] f e s  ]
 
   simple_exp:
-  [ a_lident{i} -> {:exp| $(id:(i:>ident)) |}
+  [ a_lident{i} -> (i : alident :>exp) 
   | "("; exp{e}; ")" -> e ]  |};
 
 

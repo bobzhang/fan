@@ -1,29 +1,36 @@
 
 open Format;
 open LibUtil;
+open Ast;
 open AstLoc;
 open FSig;
-let transform =
+let transform :full_id_transform -> vid -> exp  =
   let _loc = FanLoc.ghost in
   let open Id in with exp' fun 
   [ `Pre pre ->
-     fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ]
+      fun  x ->  (ident_map (fun x -> pre ^ x) x : exp)
+     (* fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ] *)
   | `Post post ->
-     fun [x -> {| $(id:  ident_map (fun x -> x ^ post) x ) |} ]
+      fun x -> (ident_map (fun x-> x ^ post) x : exp )
+     (* fun [x -> {| $(id:  ident_map (fun x -> x ^ post) x ) |} ] *)
   | `Fun f ->
-     fun [x -> {| $(id:  ident_map f x ) |} ]
+      fun x -> ident_map f x 
+     (* fun [x -> {| $(id:  ident_map f x ) |} ] *)
   | `Last f ->
-      fun [ x -> {| $(id: ident_map_of_ident f x  ) |} ]
+      fun  x -> (ident_map_of_ident f x : vid :> exp)
+          (* {| $(id: ident_map_of_ident f x  ) |} *) 
          
   | `Id f->
-     fun [x -> {| $(id: f x ) |} ]
+      fun x -> (f x : vid :> exp)
+     (* fun [x -> {| $(id: f x ) |} ] *)
   | `Idents f ->
-      fun [x -> {| $(id: f (list_of_dot x []) )  |}  ]
+      fun x  -> (f (list_of_dot x []) : vid :> exp )
+      (* fun [x -> {| $(id: f (list_of_dot x []) )  |}  ] *)
   | `Obj f ->
       fun [ {:ident| $lid:x |}  -> {| self# $(lid: f x) |}
           | t -> begin
             let dest =  map_to_string t;
-            let src = Objs.dump_ident t; (* FIXME *)
+            let src = Objs.dump_vid t; (* FIXME *)
             if not (Hashtbl.mem Basic.conversion_table src) then begin 
               Hashtbl.add Basic.conversion_table src dest;   
               eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;

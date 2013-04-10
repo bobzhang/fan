@@ -1,5 +1,5 @@
 open LibUtil
-open Ast
+
 open PreCast.Syntax
 
 let regexp = Gram.mk "regexp"
@@ -12,7 +12,7 @@ let regexps = Gram.mk "regexps"
 
 let lex = Gram.mk "lex"
 
-let declare_regexp : stru Gram.t = Gram.mk "declare_regexp"
+let declare_regexp = Gram.mk "declare_regexp"
 
 let _ =
   Gram.extend_single (lex : 'lex Gram.t )
@@ -63,11 +63,10 @@ let _ =
                             x;
                         Hashtbl.add FanLexTools.named_regexps x r) () : 
                   (_,'e__2,'e__3) Gram.foldsep )))],
-           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))) : 'declare_regexp ))\n",
+           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (`StExp (_loc, (`Uid (_loc, \"()\"))) : 'declare_regexp ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`StExp (_loc, (`Uid (_loc, "()"))) : 
-                   'declare_regexp )))))]));
+                   (`StExp (_loc, (`Uid (_loc, "()"))) : 'declare_regexp )))))]));
   Gram.extend_single (regexps : 'regexps Gram.t )
     (None,
       (None, None,
@@ -215,21 +214,21 @@ let _ =
         ([`Stoken
             (((function | `STR (_,_) -> true | _ -> false)),
               (`Normal, "`STR (_,_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) ->\n         (let c = ref LexSet.empty in\n          (for i = 0 to (String.length s) - 1 do\n             c.contents <-\n               LexSet.union c.contents (LexSet.singleton (Char.code (s.[i])))\n           done;\n           c.contents) : 'ch_class )\n     | _ ->\n         failwith\n           \"let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c.contents <-\n    LexSet.union c.contents (LexSet.singleton (Char.code (s.[i])))\ndone;\nc.contents\n\")\n",
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (s,_) ->\n         (let c = ref LexSet.empty in\n          (for i = 0 to (String.length s) - 1 do\n             c :=\n               (LexSet.union c.contents\n                  (LexSet.singleton (Char.code (s.[i]))))\n           done;\n           c.contents) : 'ch_class )\n     | _ ->\n         failwith\n           \"let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n\")\n",
             (Gram.mk_action
                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `STR (s,_) ->
                       (let c = ref LexSet.empty in
                        (for i = 0 to (String.length s) - 1 do
-                          c.contents <-
-                            LexSet.union c.contents
-                              (LexSet.singleton (Char.code (s.[i])))
+                          c :=
+                            (LexSet.union c.contents
+                               (LexSet.singleton (Char.code (s.[i]))))
                         done;
                         c.contents) : 'ch_class )
                   | _ ->
                       failwith
-                        "let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c.contents <-\n    LexSet.union c.contents (LexSet.singleton (Char.code (s.[i])))\ndone;\nc.contents\n"))))]))
+                        "let c = ref LexSet.empty in\nfor i = 0 to (String.length s) - 1 do\n  c := (LexSet.union c.contents (LexSet.singleton (Char.code (s.[i]))))\ndone;\nc.contents\n"))))]))
 
 let d = `Absolute ["Fan"; "Lang"; "Lex"]
 

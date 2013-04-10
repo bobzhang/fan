@@ -283,9 +283,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       let rec subst_first_loc name : pat -> pat =  with pat fun
         [
          `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
-         `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Id(_loc,`Lid (_loc,name)),rest))))
+         `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
         | `App(_loc,`Vrn(_,u),`Any _) ->
-            `App(_loc, `Vrn(_loc,u), `Id(_loc,`Lid(_loc,name)))
+            `App(_loc, `Vrn(_loc,u), `Lid(_loc,name))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)
         | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
@@ -315,35 +315,75 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));
 
   
-let of_stru = REGISTER(FanDyn.stru_tag);
-let of_stru_with_filter = REGISTER_FILTER(FanDyn.stru_tag);
-let of_pat  = REGISTER(FanDyn.pat_tag);
-let of_pat_with_filter  = REGISTER_FILTER(FanDyn.pat_tag);
-let of_cstru  = REGISTER(FanDyn.cstru_tag);
-let of_cstru_with_filter  = REGISTER_FILTER(FanDyn.cstru_tag);
-let of_case = REGISTER(FanDyn.case_tag);
-let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag);
+(* let of_stru = REGISTER(FanDyn.stru_tag); *)
+(* let of_stru_with_filter = REGISTER_FILTER(FanDyn.stru_tag); *)
+(* let of_pat  = REGISTER(FanDyn.pat_tag); *)
+(* let of_pat_with_filter  = REGISTER_FILTER(FanDyn.pat_tag); *)
+(* let of_cstru  = REGISTER(FanDyn.cstru_tag); *)
+(* let of_cstru_with_filter  = REGISTER_FILTER(FanDyn.cstru_tag); *)
+(* let of_case = REGISTER(FanDyn.case_tag); *)
+(* let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag); *)
   
 
-(* both [exp] and [stru] positions are registered *)
-let of_exp ~name ~entry =
-  let expand_fun =  make_parser entry in
+(* (\* both [exp] and [stru] positions are registered *\) *)
+(* let of_exp ~name ~entry = *)
+(*   let expand_fun =  make_parser entry in *)
+(*   let mk_fun loc loc_name_opt s = *)
+(*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
+(*       add name FanDyn.exp_tag expand_fun ; *)
+(*       add name FanDyn.stru_tag mk_fun ; *)
+(*     end ; *)
+  
+(* let of_exp_with_filter ~name ~entry ~filter = *)
+(*   let expand_fun = *)
+(*     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in *)
+(*   let mk_fun loc loc_name_opt s = *)
+(*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
+(*       add name FanDyn.exp_tag expand_fun ; *)
+(*       add name FanDyn.stru_tag mk_fun ; *)
+(*     end ; *)
+  
+
+
+
+  
+let of_stru ~name  ~entry  = add name FanDyn.stru_tag (make_parser entry);
+
+let of_stru_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.stru_tag
+    (fun loc  loc_name_opt  s  ->
+       filter (make_parser entry loc loc_name_opt s));
+
+let of_pat ~name  ~entry  = add name FanDyn.pat_tag (make_parser entry);
+
+let of_pat_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.pat_tag
+    (fun loc  loc_name_opt  s  ->
+       filter (make_parser entry loc loc_name_opt s));
+
+let of_cstru ~name  ~entry  = add name FanDyn.cstru_tag (make_parser entry);
+
+let of_cstru_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.cstru_tag
+    (fun loc  loc_name_opt  s  ->
+       filter (make_parser entry loc loc_name_opt s));
+
+let of_case ~name  ~entry  = add name FanDyn.case_tag (make_parser entry);
+
+let of_case_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.case_tag
+    (fun loc  loc_name_opt  s  ->
+       filter (make_parser entry loc loc_name_opt s));
+
+let of_exp ~name  ~entry  =
+  let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
-    {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
-      add name FanDyn.exp_tag expand_fun ;
-      add name FanDyn.stru_tag mk_fun ;
-    end ;
-  
-let of_exp_with_filter ~name ~entry ~filter =
-  let expand_fun =
-    fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
+  (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun);
+
+let of_exp_with_filter ~name  ~entry  ~filter  =
+  let expand_fun loc loc_name_opt s =
+    filter (make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin
-      add name FanDyn.exp_tag expand_fun ;
-      add name FanDyn.stru_tag mk_fun ;
-    end ;
-  
-
-
-
-  
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
+  (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun);

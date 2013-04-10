@@ -79,9 +79,8 @@ a_ident aident amp_ctyp and_ctyp case
   a_lident
   a_uident
   luident
-
   uident
-  
+  vid 
   astr
   dot_namespace
 |};

@@ -12,7 +12,7 @@ let prefix = "__fan_"  ;
 let ghost = FanLoc.ghost ;  
 let grammar_module_name = ref (`Uid (ghost,"Gram")) ;
   
-let gm () =
+let gm () : vid =
   match !FanConfig.compilation_unit with
   [Some "Gram" -> `Uid(ghost,"")
   |Some _ | None -> 
@@ -68,7 +68,10 @@ let retype_rule_list_without_patterns _loc rl =
     [ {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
       {prod =
        [{ (s) with pattern = Some {:pat| x |} }];
-       action = Some {:exp'| $(id:gm()).string_of_token x |}}
+       action =
+       Some {:exp'|$((gm() : vid :> exp)).string_of_token x |}
+         (* {:exp'| $(id:gm()).string_of_token x |} *)
+     }
     (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
     | {prod = [({pattern = None; _ } as s)]; action = None} ->
 
@@ -188,14 +191,15 @@ let make_ctyp (styp:styp) tvar : ctyp =
    ]}
  *)    
 let rec make_exp (tvar : string) (x:text) =
-  with exp
+  with exp'
   let rec aux tvar x =
     match x with
     [ `Smeta (_loc, n, tl, e, t) ->
       let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
       let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
-      let act = typing e (make_ctyp t tvar) in 
-      {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |}
+      let act = typing e (make_ctyp t tvar) in
+      {| `Smeta ($ns, $el, ($((gm() : vid :> exp)).Action.mk $act )) |}
+      (* {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |} *)
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         match  ts with
@@ -207,7 +211,11 @@ let rec make_exp (tvar : string) (x:text) =
     | `Sself _loc ->  {| `Sself|}
     | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
     | `Snterm (_loc, n, lev) ->
-        let obj = {| ($(id:gm()).obj ($(n.exp) : $(id:gm()).t '$(lid:n.tvar)))|} in 
+        let obj =
+          {| ($((gm() : vid :> exp)).obj
+                ($(n.exp) : $(id:(gm(): vid :> ident)).t '$(lid:n.tvar)))|}
+          (* {| ($(id:gm()).obj *)
+          (*       ($(n.exp) : $(id:(gm()(\* : vid :> ident *\))).t '$(lid:n.tvar)))|} *) in 
         match lev with
        [ Some lab ->
          {| `Snterml ($obj,$str:lab)|}
@@ -217,7 +225,8 @@ let rec make_exp (tvar : string) (x:text) =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
-        {| $(id:gm()).srules $(make_exp_rules _loc rl "") |}
+        {| $((gm():vid:>exp)).srules $(make_exp_rules _loc rl "") |}
+        (* {| $(id:gm()).srules $(make_exp_rules _loc rl "") |} *)
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
 
@@ -247,7 +256,7 @@ and make_exp_rules (_loc:loc)  (rl : list (list text * exp) ) (tvar:string) =
    ]}
  *)
 let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
-    (rtvar:string)  (tvar:string) : exp = with exp
+    (rtvar:string)  (tvar:string) : exp = with exp'
   let locid = {:pat| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
@@ -275,8 +284,10 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [Some {:pat| ($_ $(par:{:pat@_| _ |}) as $p) |} ->
-            let p = typing {:pat| $(id:(p:>ident)) |} (make_ctyp s.styp tvar)  in
+        [Some {:pat'| ($_ $(par:{:pat@_| _ |}) as $p) |} ->
+            let p = typing (p:alident :> pat)(* {:pat'| $(id:(p:>ident)) |} *)
+
+                (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |}
         | Some p when is_irrefut_pat p ->
             let p = typing p (make_ctyp s.styp tvar) in
@@ -286,7 +297,8 @@ let text_of_action (_loc:loc)  (psl: list symbol) ?action:(act:option exp)
             let p =
               typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
-  {| $(id:gm()).mk_action $txt |}  ;
+  {| $((gm():vid:>exp)).mk_action $txt |}
+  (* {| $(id:gm()).mk_action $txt |} *)  ;
 
 let mk_srule loc (t : string)  (tvar : string) (r : rule) : (list text *  exp) =
   let sl = List.map (fun s  -> s.text) r.prod in
@@ -310,14 +322,17 @@ let exp_delete_rule _loc n (symbolss:list (list symbol)) = with exp
   let rest = List.map
       (fun sl  ->
           let (e,b) = f _loc n sl in
-          {:exp'| $(id:gm()).delete_rule $e $b |}) symbolss in
+          {:exp'| $((gm():vid:>exp)).delete_rule $e $b |}
+          (* {:exp'| $(id:gm()).delete_rule $e $b |} *)) symbolss in
   match symbolss with
   [[] -> {| () |}
   |_ -> seq_sem rest ];  
   (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
-let mk_name _loc i = {exp = {:exp| $id:i |}; tvar = Id.tvar_of_ident i; loc = _loc};
+let mk_name _loc (i:vid) =
+  {exp = (i:vid :> exp) (* {:exp| $id:i |} *);
+   tvar = Id.tvar_of_ident i; loc = _loc};
   
 let mk_slist loc min sep symb = `Slist loc min symb sep ;
 
@@ -335,11 +350,11 @@ let mk_slist loc min sep symb = `Slist loc min symb sep ;
   {[(Some `LA)]} it has type [position option]
   
  *)  
-let text_of_entry (e:entry) :exp =  with exp
+let text_of_entry (e:entry) :exp =  with exp'
   let _loc = e.name.loc in    
   let ent =
     let x = e.name in
-    {| ($(x.exp) : $(id:gm()).t '$(lid:x.tvar)) |}   in
+    {| ($(x.exp) : $(id:(gm():vid :> ident)).t '$(lid:x.tvar)) |}   in
   let pos =
     match e.pos with
     [ Some pos -> {| Some $pos |} 
@@ -360,10 +375,12 @@ let text_of_entry (e:entry) :exp =  with exp
           {| ($lab, $ass, $prod) |}) in
     match e.levels with
     [`Single l ->
-      {| $(id:gm()).extend_single $ent ($pos, $(apply l) ) |}
+      {| $((gm():vid:>exp)).extend_single $ent ($pos, $(apply l) ) |}
+      (* {| $(id:gm()).extend_single $ent ($pos, $(apply l) ) |} *)
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
-        {|$(id:gm()).extend $ent ($pos,$txt)|}   ];  
+        {|$((gm():vid:>exp)).extend $ent ($pos,$txt)|}
+        (* {|$(id:gm()).extend $ent ($pos,$txt)|} *)   ];  
   
 
 (* [gl] is the name  list option
@@ -375,15 +392,19 @@ let text_of_entry (e:entry) :exp =  with exp
 
    This function generate some local entries
  *)   
-let let_in_of_extend _loc gram locals  default =
+let let_in_of_extend _loc (gram: option vid) locals  default =
   let entry_mk =
     match gram with
-    [ Some g -> {:exp'| $(id:gm()).mk_dynamic $id:g |}
-    | None   -> {:exp'| $(id:gm()).mk |} ] in
+    [ Some g -> let g = (g:vid :> exp) in
+    {:exp'| $((gm():vid:>exp)).mk_dynamic $g |}
+    (* {:exp'| $(id:gm()).mk_dynamic $g |} *)
+    | None   -> (* {:exp'| $(id:gm()).mk |} *)
+        {:exp'| $((gm():vid:>exp)).mk |}
+    ] in
   let local_binding_of_name = fun
     [ {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
-      {:binding| $lid:i =  (grammar_entry_create $str:i : $(id:gm()).t '$lid:x) |}
-    | _ -> failwith "internal error in the Grammar extension" ]  in
+      {:binding'| $lid:i =  (grammar_entry_create $str:i : $(id:(gm():vid :> ident)).t '$lid:x) |}
+    | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp) ]  in
   match locals with
   [ None 
   | Some [] -> default
@@ -439,9 +460,11 @@ let sfold ?sep _loc  (ns:list string)  f e s = with ctyp
   let foldfun =
     try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
   let styp = {| '$(lid:new_type_var ()) |} in
-  let e = {:exp'| $(id:gm()).$lid:foldfun $f $e |} in
+  let e =
+    {:exp'| $((gm():vid:>exp)).$lid:foldfun $f $e |}
+(* {:exp'| $(id:gm()).$lid:foldfun $f $e |} *) in
   let( t:styp) =
-    {| $(`Type {| $(id:gm()).$(lid:"fold"^suffix) _ |})
+    {| $(`Type {| $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) _ |})
       $(s.styp) $styp |} in 
   let text = `Smeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
   {text ; styp ; pattern = None } ;

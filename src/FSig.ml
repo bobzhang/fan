@@ -75,11 +75,11 @@ type rhs_basic_id_transform =
 
 type full_id_transform =
     [=  basic_id_transform
-    | `Idents of list ident  -> ident
+    | `Idents of (* list ident  -> ident *) list vid -> vid 
     (* decompose to a list of ident and compose as an ident *)          
-    | `Id of ident -> ident
+    | `Id of (* ident -> ident *) vid -> vid
     (* just pass the ident to user do ident transform *)
-    | `Last of string -> ident
+    | `Last of string -> (* ident *) vid
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of id string ];
 

@@ -1,12 +1,12 @@
 #default_quotation "ident'";;
-
+open Ast;
 open AstLoc;
 open LibUtil;
 
 (*
   {[  mapping an ident to  a type variable   ]}
  *)  
-let rec tvar_of_ident = fun
+let rec tvar_of_ident : vid -> string = with ident fun
   [ {| $lid:x |} | {| $uid:x |} -> x
   | {| $uid:x.$xs |} -> x ^ "__" ^ tvar_of_ident xs
   | _ -> failwith "internal error in the Grammar extension" ];
@@ -23,7 +23,16 @@ let rec tvar_of_ident = fun
   ]}
   see ident_map 
  *)  
-let map_to_string ident =
+let map_to_string (ident:vid) = with ident
+  let rec aux i acc = match i with 
+  [ {| $a.$b  |} -> aux a ("_" ^ aux b acc)
+  (* | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end") *)
+  | {| $lid:x |} -> x ^ acc
+  | {| $uid:x |} -> String.lowercase x ^ acc
+  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t)] in 
+  aux ident "";
+
+let to_string (ident:ident) = with ident
   let rec aux i acc = match i with 
   [ {| $a.$b  |} -> aux a ("_" ^ aux b acc)
   | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
@@ -32,6 +41,12 @@ let map_to_string ident =
   | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t)] in 
   aux ident "";
 
+let rec to_vid   (x:ident) : vid =
+  match x with
+  [`App _ -> failwithf "Id.to_vid"
+  |`Dot(_loc,a,b) -> `Dot(_loc, to_vid a, to_vid b)
+  | `Lid _ | `Uid _ | `Ant _ as x -> x
+  ];  
 
 (*
    For qualified identifier, we only use the last qulifier.
@@ -47,7 +62,7 @@ let map_to_string ident =
 
    ]}
  *)
-let ident_map f x =
+let ident_map f (x:vid) = with ident 
   let lst = list_of_dot x [] in
   match lst with
   [ [] ->  invalid_arg "ident_map identifier [] "
@@ -58,12 +73,12 @@ let ident_map f x =
       [ [ q; {| $lid:y |} ] ->
         {| $q.$(lid: f y) |}
       | _ ->
-          FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_ident x) ]];          
+          FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_vid x) ]];          
 
 (* the same as [ident_map] except f is of type
    [string -> ident ]
  *)
-let ident_map_of_ident f x =
+let ident_map_of_ident f x  : vid= with ident 
   let lst = list_of_dot x [] in
   match lst with
   [ [] ->  invalid_arg "ident_map identifier [] "
@@ -73,5 +88,5 @@ let ident_map_of_ident f x =
       match List.drop (l-2) ls with
       [ [ q; {|$lid:y|} ] ->
         {|$q.$(f y) |}
-      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (Objs.dump_ident x)]];          
+      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (Objs.dump_vid x)]];          
     

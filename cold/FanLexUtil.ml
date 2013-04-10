@@ -57,7 +57,7 @@ let rec clean (__strm : _ XStream.t) =
   | Some x ->
       (XStream.junk __strm;
        (let xs = __strm in
-        XStream.lcons (fun _  -> x) (XStream.slazy (fun _  -> clean xs))))
+        XStream.icons x (XStream.slazy (fun _  -> clean xs))))
   | _ -> XStream.sempty
 
 let rec strict_clean (__strm : _ XStream.t) =
@@ -66,8 +66,7 @@ let rec strict_clean (__strm : _ XStream.t) =
   | Some x ->
       (XStream.junk __strm;
        (let xs = __strm in
-        XStream.lcons (fun _  -> x)
-          (XStream.slazy (fun _  -> strict_clean xs))))
+        XStream.icons x (XStream.slazy (fun _  -> strict_clean xs))))
   | _ -> XStream.sempty
 
 let debug_from_string ?quotations  str =

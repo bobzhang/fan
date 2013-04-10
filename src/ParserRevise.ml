@@ -81,7 +81,7 @@ let apply () = begin
         [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"module_exp" _loc n s
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.module_exp_tag
-        | module_longident{i} -> `Id (_loc, i)
+        | module_longident{i} -> `Id (_loc, (i : vid :>ident))
         | "("; S{me}; ":"; module_type{mt}; ")" ->  `Constraint (_loc, me, mt)
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
@@ -129,9 +129,9 @@ let apply () = begin
         | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
             `TypeSubst (_loc, t1, t2)
         | "module"; module_longident{i1}; "="; module_longident_with_app{i2} ->
-            `ModuleEq (_loc, i1, i2)
+            `ModuleEq (_loc, (i1:vid :> ident) , i2)
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
-            `ModuleSubst (_loc, i1, i2)] |};
+            `ModuleSubst (_loc, (i1: vid :> ident), i2)] |};
 
   with module_type
     {:extend|
@@ -197,7 +197,7 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration{mb} ->  `RecModule (_loc, mb)
     | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
-    | "open"; module_longident{i} -> `Open(_loc,i)
+    | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
     | "type"; type_declaration{t} -> `Type(_loc,t)
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
     | "class"; class_description{cd} ->    `Class(_loc,cd)
@@ -283,7 +283,7 @@ let apply () = begin
         | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; S{e} ->
             `LetModule (_loc, m, mb, e)
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
-            `LetOpen (_loc, i, e)
+            `LetOpen (_loc, (i:vid :> ident), e)
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
             (* {| let try $rec:r $bi in $x with [ $a ] |} *)
               `LetTryInWith(_loc,r,bi,x,a)
@@ -302,7 +302,8 @@ let apply () = begin
             `While (_loc, e, seq)]  
        ":=" NA
         [ S{e1}; ":="; S{e2} ->
-          (`Assign (_loc,`Field(_loc,e1,`Id(_loc,`Lid(_loc,"contents"))),e2):exp)
+          (* (`Assign (_loc,`Field(_loc,e1,`Id(_loc,`Lid(_loc,"contents"))),e2):exp) *)
+          (`Assign (_loc,`Field(_loc,e1,`Lid(_loc,"contents")),e2):exp)
           (* {| $e1 := $e2 |}  *)
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
@@ -373,7 +374,9 @@ let apply () = begin
         | S{e1}; "."; S{e2} -> (* `Dot (_loc, e1, e2) *)`Field(_loc,e1,e2)
         | S{e}; "#"; a_lident{lab} -> `Send (_loc, e, lab) ]
        "~-" NA
-        [ "!"; S{e} ->  (* {| ! $e|} *) (* FIXME *)`Field(_loc,e,`Id(_loc,`Lid(_loc,"contents")))
+        [ "!"; S{e} ->  (* {| ! $e|} *) (* FIXME *)
+          (* `Field(_loc,e,`Id(_loc,`Lid(_loc,"contents"))) *)
+          `Field(_loc,e,`Lid(_loc,"contents"))
         | prefixop{f}; S{e} -> `App (_loc, f, e) ]
        "simple"
         [ `QUOTATION x -> AstQuotation.expand _loc x FanDyn.exp_tag
@@ -391,7 +394,8 @@ let apply () = begin
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             `LetOpen (_loc, i, e)
         (* | TRY val_longident{i} -> {| $id:i |} *)
-        | ident{i} -> `Id(_loc,i)  (* FIXME logic was splitted here *)
+        (* | ident{i} -> i  (\* FIXME logic was splitted here *\) *)
+        | vid{i} -> (i :vid :>exp) 
         | "`"; luident{s} -> `Vrn(_loc,s)
         | "["; "]" -> {| [] |} (* FIXME *)
         | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last
@@ -438,7 +442,7 @@ let apply () = begin
        | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
            `LetModule (_loc, m, mb, `Seq (_loc, el))
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
-           `LetOpen (_loc, i, e)
+           `LetOpen (_loc, (i: vid :> ident), e)
        (* FIXME Ant should be able to be followed *)      
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"exp;" n s
        | exp{e}; sequence'{k} -> k e ]
@@ -447,9 +451,13 @@ let apply () = begin
        | ";" -> fun e -> e
        | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
        infixop1:
-       [  [ "&" | "&&" ]{x} -> `Id(_loc,`Lid(_loc,x)) ] (* FIXME *)
+       [  [ "&" | "&&" ]{x} ->
+         `Lid(_loc,x)
+         (* `Id(_loc,`Lid(_loc,x)) *) ] (* FIXME *)
        infixop0:
-       [  [ "or" | "||" ]{x} -> `Id (_loc, `Lid (_loc, x)) ]
+       [  [ "or" | "||" ]{x} ->
+         `Lid(_loc,x)
+         (* `Id (_loc, `Lid (_loc, x)) *) ]
        sem_exp_for_list:
        [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |} (* FIXME *)
        | exp{e}; ";" -> fun acc -> {| [ $e :: $acc ] |}
@@ -501,7 +509,9 @@ let apply () = begin
           mk_anti _loc ~c:"rec_exp" n s
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
         | label_longident{i} ->  (*FIXME*)
-            `RecBind (_loc, i, `Id (_loc, (`Lid (_loc, FanOps.to_lid i))))]
+            (* `RecBind (_loc, i, `Id (_loc, (`Lid (_loc, FanOps.to_lid i)))) *)
+            `RecBind (_loc, i, `Lid (_loc, FanOps.to_lid i))
+        ]
         field_exp:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> mk_anti _loc ~c:"rec_exp" n s
         | a_lident{l}; "=";  exp Level "top"{e} ->
@@ -524,8 +534,8 @@ let apply () = begin
        [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
        | pat{p} -> p ]
        pat_constr:
-       [module_longident{i} -> `Id(_loc,i)
-       |"`"; luident{s}  -> `Vrn(_loc,s)
+       [module_longident{i} -> (* `Id(_loc,i) *) (i :vid :> pat)
+       |"`"; luident{s}  -> (`Vrn(_loc,s) :pat)
        |`Ant ((""|"pat"|"anti"|"vrn" as n), s) -> mk_anti _loc ~c:"pat" n s]
        pat:
        { "|" LA
@@ -546,7 +556,8 @@ let apply () = begin
                 |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> mk_anti _loc ~c:"pat" n s
-        | ident{i} -> `Id (_loc, i)
+        (* | ident{i} -> `Id (_loc, i) *)
+        | vid{i} -> (i : vid :> pat)
         | `INT(_,s) ->  `Int (_loc, s)
         | `INT32(_,s) ->  `Int32 (_loc, s)
         | `INT64(_,s) ->  `Int64 (_loc, s)
@@ -625,7 +636,7 @@ let apply () = begin
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
         | "("; S{p}; ","; comma_ipat{pl}; ")" -> {| ($p, $pl) |}
-        | a_lident{s} -> {| $(id:(s:>ident)) |}
+        | a_lident{s} -> (* {| $(id:(s:>ident)) |} *) (s: alident :> pat)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.pat_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
@@ -667,8 +678,11 @@ let apply () = begin
        | pat{p} -> p ]
        ipat_tcon:
        [ `Ant((""|"anti" as n),s) -> mk_anti _loc  ~c:"pat" n s 
-       | a_lident{i} -> {|$(id:(i:>ident))|}
-       | a_lident{i}; ":"; ctyp{t} -> {| ($(id:(i:>ident)) : $t) |}]
+       | a_lident{i} -> (* {|$(id:(i:>ident))|} *) (i : alident :> pat)
+       | a_lident{i}; ":"; ctyp{t} ->
+           (`Constraint (_loc, (i : alident :>  pat), t) : pat)
+           (* {| ($(id:(i:>ident)) : $t) |} *)
+       ]
        comma_ipat:
        [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat," n s
@@ -690,7 +704,8 @@ let apply () = begin
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat;" n s
        | label_longident{i}; "="; pat{p} -> (* {| $i = $p |} *) `RecBind(_loc,i,p)
        | label_longident{i} ->
-           `RecBind(_loc,i,`Id(_loc,`Lid(_loc,FanOps.to_lid i)))
+           (* `RecBind(_loc,i,`Id(_loc,`Lid(_loc,FanOps.to_lid i))) *)
+           `RecBind(_loc,i,`Lid(_loc,FanOps.to_lid i))
            (* {| $i = $(lid:Id.to_lid i) |} *)
        ] |};
     
@@ -726,7 +741,16 @@ let apply () = begin
       | `Lid i -> `Lid(_loc,i)
       | `Uid i -> `Uid(_loc,i)
       | `Uid s ; "." ; S{j} ->  `Dot (_loc, `Uid (_loc, s), j)]
-
+      
+      vid: (* duplicate ident  FIXME *)
+      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
+      | `Ant (("lid" as n), s) -> mk_anti _loc  ~c:"ident" n s
+      | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+           `Dot (_loc, mk_anti _loc ~c:"ident" n s, i)
+      | `Lid i -> `Lid(_loc,i)
+      | `Uid i -> `Uid(_loc,i)
+      | `Uid s ; "." ; S{j} ->  `Dot (_loc, `Uid (_loc, s), j)]
+      
       uident:
       [`Uid s -> `Uid(_loc,s)
       | `Ant((""|"id"|"anti"|"list"|"uid" as n),s) ->
@@ -920,7 +944,7 @@ let apply () = begin
         | "module"; "rec"; module_binding{mb} -> `RecModule(_loc,mb)
         | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
             `ModuleType(_loc,i,mt)
-        | "open"; module_longident{i} -> `Open(_loc,i)
+        | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
         | "type"; type_declaration{td} -> `Type(_loc,td)
         | "let"; opt_rec{r}; binding{bi}; "in"; exp{x} ->
               {| let $rec:r $bi in $x |}
@@ -931,6 +955,7 @@ let apply () = begin
         | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; exp{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
+            let i = (i:vid :> ident) in 
             {| let open $id:i in $e |}
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; exp{x}; "with"; case{a}
           -> `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))

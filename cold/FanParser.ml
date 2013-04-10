@@ -92,8 +92,7 @@ let rec parser_of_tree entry (lev,assoc)
     let ((arity,_symbols,_,parse),loc) = with_loc parse strm in
     let ans = ref parse in
     for _i = 1 to arity do
-      (let (v,_) = ArgContainer.pop q in
-       ans.contents <- Action.getf ans.contents v)
+      (let (v,_) = ArgContainer.pop q in ans := (Action.getf ans.contents v))
     done;
     ((ans.contents), loc)
 and parser_of_terminals (terminals : terminal list) strm =
@@ -106,7 +105,7 @@ and parser_of_terminals (terminals : terminal list) strm =
             match XStream.peek_nth strm i with
             | Some (t,loc) -> (t, loc)
             | None  -> invalid_arg "parser_of_terminals" in
-          acc.contents <- ((Action.mk t), loc) :: (acc.contents);
+          acc := (((Action.mk t), loc) :: (acc.contents));
           if
             not
               (match terminal with

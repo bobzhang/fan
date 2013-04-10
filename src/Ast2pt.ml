@@ -52,26 +52,20 @@ let rec normalize_acc = with ident' fun
   ]}
  *)
 
-(* let rec sep_dot_exp acc = with exp' fun *)
-(*   [ {| $e1.$e2|} -> *)
-(*     sep_dot_exp (sep_dot_exp acc e2) e1 *)
-(*   | {@loc| $uid:s |} as e -> *)
-(*       match acc with *)
-(*       [ [] -> [(loc, [], e)] *)
-(*       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ] *)
-(*   | {| $(id:({:ident@_l| $_.$_ |} as i)) |} -> *)
-(*       sep_dot_exp acc (normalize_acc i) *)
-(*   | e -> [(loc_of e, [], e) :: acc] ];; *)
 
-let rec sep_dot_exp acc = fun
+let rec sep_dot_exp acc : exp -> list (loc * list string * exp )= fun
   [ `Field(_,e1,e2) ->
     sep_dot_exp (sep_dot_exp acc e2) e1
-  | (`Id (loc,`Uid (_,s)) : Ast.exp) as e ->
+  (* | `Uid(loc,s) as e -> *)
+  (*     (match acc with *)
+  (*     [[] -> [(loc,[],e)] *)
+  (*     |[(loc',sl,e) :: l] -> [(FanLoc.merge loc loc', [s::sl], e) :: l] ]) *)
+  | (`Dot(_l,_,_) as i) ->
+      sep_dot_exp acc (normalize_acc (i : vid :>ident)) 
+  |  `Uid(loc,s) as e ->
       (match acc with
        [ [] -> [(loc, [], e)]
        | [(loc',sl,e)::l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ])
-  | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
-      sep_dot_exp acc (normalize_acc i)
   | e -> [((loc_of e), [], e) :: acc] ];
   
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
@@ -166,7 +160,7 @@ let long_uident_noloc  i =
     [ (Ldot (i, s), `uident) -> ldot i s
     | (Lident s, `uident) -> lident s
     | (i, `app) -> i
-    | _ -> error (loc_of i) "uppercase identifier expected" ];
+    | _ -> errorf (loc_of i) "uppercase identifier expected %s" ("") ];
 
 let long_uident  i =
    long_uident_noloc  i +> loc_of i;
@@ -351,7 +345,7 @@ let mkmutable (x:mutable_flag)=
 
 let paolab (lab:string) (p:pat) : string =
   match (lab, p) with
-  [ ("", (`Id(_loc,`Lid(_,i)) | `Constraint(_loc,`Id(_,`Lid(_,i)),_)))
+  [ ("",(`Lid(_loc,i) | `Constraint(_loc,`Lid(_,i),_)))
     -> i
   | ("", p) ->
       errorf (loc_of p) "paolab %s" (dump_pat p)
@@ -441,20 +435,30 @@ let rec mkrangepat loc c1 c2 =
 
 let rec pat (x:pat) =
   with pat'  match x with 
-  [ {| $(lid:("true"|"false" as txt)) |}  ->
+  [ (* {| $(lid:("true"|"false" as txt)) |} | *)
+    `Lid(_loc,("true"|"false" as txt)) ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
-    mkpat _loc p 
-  | {| $(id:{:ident@sloc| $lid:s |}) |} -> mkpat _loc (Ppat_var (with_loc s sloc))
-  | {| $id:i |} ->
-      let p = Ppat_construct (long_uident  i) None false 
+    mkpat _loc p
+  | `Lid(sloc, s) -> mkpat sloc (Ppat_var (with_loc s sloc))
+  (* | {| $(id:{:ident@sloc| $lid:s |}) |} -> mkpat sloc(\* _loc *\) (Ppat_var (with_loc s sloc)) *)
+  (* | `Lid(sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc)) *)
+  | (`Uid (_loc,_) | `Dot (_loc,_,_) as i) ->
+      let p = Ppat_construct (long_uident  (i:vid :> ident)) None false 
       in mkpat _loc p
+  (* | `Dot( _loc,_,_) | `Uid (_loc,_) as i -> *)
+  (*     let p = Ppat_construct (long_uident  (i : vid :>ident)) None false *)
+  (*     in mkpat _loc p *)
+  (* | `Id(_loc,i) -> *)
+  (*     let p = Ppat_construct (long_uident  i ) None false *)
+  (*     in mkpat _loc p *)
   |  {| ($p1 as $x )|}->
       match x with
       [`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((pat p1), with_loc s sloc))
       | `Ant (_loc,_) -> error _loc "invalid antiquotations"]  
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
-  | {| $(id:{:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} ->
+  | (`App (_loc,`Uid(sloc,s),`Par(_,`Any loc_any )) : Ast.pat) -> 
+  (* | {| $(id:{:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} -> *)
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `App (loc, _, _) as f ->
@@ -475,37 +479,37 @@ let rec pat (x:pat) =
      | _ ->
          error (loc_of f)
            "this is not a constructor, it cannot be applied in a pattern" ]
-  | {@loc| [| $p |] |}  -> mkpat loc (Ppat_array (List.map pat (list_of_sem p [])))
-  | {@loc| [| |]|} -> mkpat loc (Ppat_array [])
-  | {@loc|$chr:s|} -> 
-         mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
-  | {@loc|$int:s|} -> 
+  | {| [| $p |] |}  -> mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
+  | {| [| |]|} -> mkpat _loc (Ppat_array [])
+  | {|$chr:s|} -> 
+         mkpat _loc (Ppat_constant (Const_char (char_of_char_token _loc s)))
+  | {|$int:s|} -> 
          let i = try int_of_string s with [
-           Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
-         ] in mkpat loc (Ppat_constant (Const_int i))
-  | {@loc|$int32:s|} ->
+           Failure _ -> error _loc "Integer literal exceeds the range of representable integers of type int"
+         ] in mkpat _loc (Ppat_constant (Const_int i))
+  | {|$int32:s|} ->
          let i32 = try Int32.of_string s with [
-           Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
-         ] in mkpat loc (Ppat_constant (Const_int32 i32))
-  | {@loc|$int64:s|} ->
+           Failure _ -> error _loc "Integer literal exceeds the range of representable integers of type int32"
+         ] in mkpat _loc (Ppat_constant (Const_int32 i32))
+  | {|$int64:s|} ->
        let i64 = try Int64.of_string s with [
-         Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
-         ] in mkpat loc (Ppat_constant (Const_int64 i64))
-  | {@loc|$nativeint:s|} ->
+         Failure _ -> error _loc "Integer literal exceeds the range of representable integers of type int64"
+         ] in mkpat _loc (Ppat_constant (Const_int64 i64))
+  | {|$nativeint:s|} ->
       let nati = try Nativeint.of_string s with [
-           Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
-         ] in mkpat loc (Ppat_constant (Const_nativeint nati))
-  | {@loc|$flo:s|} -> mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-  | {@loc|$p1 | $p2 |} -> mkpat loc (Ppat_or (pat p1) (pat p2))
-  | {@loc|$str:s|} ->
-       mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-  | {@loc| ($p1 .. $p2)  |}->
-      match (p1, p2) with
+           Failure _ -> error _loc "Integer literal exceeds the range of representable integers of type nativeint"
+         ] in mkpat _loc (Ppat_constant (Const_nativeint nati))
+  | {|$flo:s|} -> mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
+  | {|$p1 | $p2 |} -> mkpat _loc (Ppat_or (pat p1) (pat p2))
+  | {|$str:s|} ->
+       mkpat _loc (Ppat_constant (Const_string (string_of_string_token _loc s)))
+  | {| ($p1 .. $p2)  |}->
+       match (p1, p2) with
       [ (`Chr (loc1, c1), `Chr (loc2, c2)) ->
         let c1 = char_of_char_token loc1 c1 in
         let c2 = char_of_char_token loc2 c2 in
-        mkrangepat loc c1 c2
-      | _ -> error loc "range pattern allowed only for characters" ]
+        mkrangepat _loc c1 c2
+      | _ -> error _loc "range pattern allowed only for characters" ]
         
   | `Label (loc,_,_) | `LabelS(loc,_) 
   | `OptLablExpr (loc,_,_,_)
@@ -537,7 +541,7 @@ let rec pat (x:pat) =
             (Ppat_constraint
                (mkpat sloc (Ppat_unpack (with_loc m sloc)))
                (ctyp ty))
-   |  p -> error (loc_of p) "invalid pattern" ];
+  |  p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p) ];
 
   
 
@@ -576,12 +580,12 @@ let override_flag loc (x:override_flag) =
  *)
 let rec exp (x : exp) = with exp' match x with 
   [ `Field(_loc,_,_)|
-    `Id(_loc,`Dot _ ) ->
+    (* `Id(_loc,`Dot _ ) | *) `Dot (_loc,_,_)->
       let (e, l) =
         match sep_dot_exp [] x with
-          [ [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] ->
+        [ (* [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] |  *)[(loc, ml, `Uid(sloc,s)) :: l] ->
             (mkexp loc (Pexp_construct (mkli sloc  s ml) None false), l)
-        | [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] ->
+        | (* [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] | *) [(loc, ml, `Lid(sloc,s)) :: l] ->
             (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
         | [(_, [], e) :: l] -> (exp e, l)
         | _ -> errorf (loc_of x) "exp: %s" (dump_exp x) ] in
@@ -589,12 +593,16 @@ let rec exp (x : exp) = with exp' match x with
         List.fold_left
           (fun (loc_bp, e1) (loc_ep, ml, e2) ->
             match e2 with
-              [ `Id(sloc,`Lid(_,s)) ->
-                let loc = FanLoc.merge loc_bp loc_ep in
-                (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
-            | _ -> error (loc_of e2) "lowercase identifier expected" ])
+              [ (* `Id(sloc,`Lid(_,s)) -> *)
+              (*   let loc = FanLoc.merge loc_bp loc_ep in *)
+              (*   (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml))) *)
+              (* |  *)`Lid(sloc,s) ->
+                  let loc = FanLoc.merge loc_bp loc_ep in
+                  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
+              | _ -> error (loc_of e2) "lowercase identifier expected" ])
           (_loc, e) l in
       e
+
   | `App (loc, _, _) as f ->
       let (f, al) = view_app [] f in
       let al = List.map label_exp al in
@@ -622,12 +630,13 @@ let rec exp (x : exp) = with exp' match x with
                (List.map exp (list_of_sem e []))) (* be more precise*)
       | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
       | {|assert false|} -> mkexp _loc Pexp_assertfalse
+      (* | `Assert (_loc, (`Lid (_, "false"))) -> mkexp _loc Pexp_assertfalse *)
       | `Assert(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
       | `Assign (loc,e,v) ->
           (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
           let e =
             match e with
-              [ {@loc| $x.contents |} -> (* FIXME *)
+            [ {@loc| $x.contents |} -> (* FIXME *)
                 Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
                   [("", exp x); ("", exp v)]
             | `Field (loc,_,_) ->
@@ -637,7 +646,7 @@ let rec exp (x : exp) = with exp' match x with
                 | `ArrayDot (loc, e1, e2) ->
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                       [("", exp e1); ("", exp e2); ("", exp v)]
-                | `Id(_,`Lid(lloc,lab))  ->
+                | (* `Id(_,`Lid(lloc,lab)) |  *)`Lid(lloc,lab)  ->
                     Pexp_setinstvar (with_loc lab lloc) (exp v)
                 | `StringDot (loc, e1, e2) ->
                     Pexp_apply
@@ -660,7 +669,9 @@ let rec exp (x : exp) = with exp' match x with
       | `Fun(loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(pat (`Id(sloc,`Lid(sloc,lab))),exp e)])
+               [(* (pat (`Id(sloc,`Lid(sloc,lab))),exp e) *)
+               (pat (`Lid(sloc,lab)),exp e)
+              ])
             
       | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
           mkexp loc
@@ -669,7 +680,7 @@ let rec exp (x : exp) = with exp' match x with
       | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(pat (`Id(sloc,`Lid(sloc,lab))),
+               [(pat (* `Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)),
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
             
       | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
@@ -679,7 +690,7 @@ let rec exp (x : exp) = with exp' match x with
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
       | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
           mkexp loc (Pexp_function ("?"^lab) None
-                       [(pat (`Id(sloc,`Lid(sloc,lab))), exp e2)])
+                       [(pat (* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)), exp e2)])
       | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
           let lab = paolab lab p in
           mkexp loc
@@ -689,7 +700,7 @@ let rec exp (x : exp) = with exp' match x with
       | `Fun (loc,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
           mkexp loc
             (Pexp_function ("?" ^ lab) None
-               [(pat (`Id(sloc,`Lid(sloc,lab))),
+               [(pat (* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)),
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
 
       | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
@@ -809,38 +820,46 @@ let rec exp (x : exp) = with exp' match x with
       | `Par (loc,e) ->
           let l = list_of_com e [] in
           match l with
-            [ [] | [_] -> errorf loc "tuple should have at least two items" (dump_exp x)
+          [ []
+          | [_] -> errorf loc "tuple should have at least two items" (dump_exp x)
           | _ -> 
               mkexp loc (Pexp_tuple (List.map exp l))]
-          | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (exp e) (Some (ctyp t)) None)
-          | {| () |} ->
-              mkexp _loc (Pexp_construct (lident_with_loc "()" _loc) None true)
-          | `Id(_loc,`Lid(_,("true"|"false" as s))) -> 
-              mkexp _loc (Pexp_construct (lident_with_loc s _loc) None true)
-          | `Id(_,`Lid(_loc,s)) ->
-              mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-          | `Id(_,`Uid(_loc,s)) ->
-              mkexp _loc (Pexp_construct (lident_with_loc  s _loc) None true)
-          | `Vrn (loc,s) -> mkexp loc (Pexp_variant  s None)
-          | `While (loc, e1, el) ->
-              let e2 = `Seq loc el in
-              mkexp loc (Pexp_while (exp e1) (exp e2))
-          | `LetOpen(_loc,i,e) ->
+      | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (exp e) (Some (ctyp t)) None)
+
+      | (* `Id(_loc,`Uid(_,"()")) |  *)`Uid(_loc,"()")->
+          mkexp _loc (Pexp_construct (lident_with_loc "()" _loc) None true)
+
+      | (* `Id(_loc,`Lid(_,("true"|"false" as s))) | *)
+        `Lid(_loc,("true"|"false" as s)) -> 
+          mkexp _loc (Pexp_construct (lident_with_loc s _loc) None true)
+      | (* `Id(_,`Lid(_loc,s)) | *) `Lid(_loc,s) ->
+          mkexp _loc (Pexp_ident (lident_with_loc s _loc))
+      | (* `Id(_,`Uid(_loc,s)) | *) `Uid(_loc,s) ->
+          mkexp _loc (Pexp_construct (lident_with_loc  s _loc) None true)
+      | `Vrn (loc,s) -> mkexp loc (Pexp_variant  s None)
+      | `While (loc, e1, el) ->
+          let e2 = `Seq loc el in
+          mkexp loc (Pexp_while (exp e1) (exp e2))
+      | `LetOpen(_loc,i,e) ->
               mkexp _loc (Pexp_open (long_uident i) (exp e))
-          | `Package_exp (_loc,`Constraint(_,me,pt)) -> 
-              mkexp _loc
-                (Pexp_constraint
+      | `Package_exp (_loc,`Constraint(_,me,pt)) -> 
+          mkexp _loc
+            (Pexp_constraint
                    (mkexp _loc (Pexp_pack (module_exp me)),
                     Some (mktyp _loc (Ptyp_package (package_type pt))), None))
-          | `Package_exp(loc,me) -> 
-              mkexp loc (Pexp_pack (module_exp me))
-          | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (exp e))
-          | x -> errorf (loc_of x ) "exp:%s" (dump_exp x) ]
+      | `Package_exp(loc,me) -> 
+          mkexp loc (Pexp_pack (module_exp me))
+      | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype i (exp e))
+      | x -> errorf (loc_of x ) "exp:%s" (dump_exp x) ]
 and label_exp (x : exp) = match x with 
   [ `Label (_loc,`Lid(_,lab),eo) -> (lab,  exp eo)
-  | `LabelS(_loc,`Lid(sloc,lab)) -> (lab,exp(`Id(sloc,`Lid(sloc,lab))))
+  | `LabelS(_loc,`Lid(sloc,lab)) ->
+      (lab,exp(* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)))
   | `OptLabl (_loc,`Lid(_,lab),eo) -> ("?" ^ lab, exp eo)
-  | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, exp (`Id(loc,`Lid(loc,lab))))
+  | `OptLablS(loc,`Lid(_,lab)) ->
+      ("?"^lab,
+       exp (`Lid(loc,lab))
+       (* exp (`Id(loc,`Lid(loc,lab))) *))
   | e -> ("", exp e) ]
     
 and binding (x:binding) acc =  match x with
@@ -848,7 +867,7 @@ and binding (x:binding) acc =  match x with
   | {:binding'@_loc| $(pat: {:pat'@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
 
-      let rec id_to_string x = match x with
+      let rec id_to_string (x:ctyp) = match x with
       [  `Id(_loc,`Lid(_,x)) -> [x]
       | `App(_loc,x,y) -> (id_to_string x) @ (id_to_string y)
       | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x)]   in

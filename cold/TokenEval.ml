@@ -6,8 +6,7 @@ let valch_hex x =
 
 let rec skip_indent (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some (' '|'\t') ->
-      (XStream.junk __strm; (let s = __strm in skip_indent s))
+  | Some (' '|'\t') -> (XStream.junk __strm; skip_indent __strm)
   | _ -> ()
 
 let skip_opt_linefeed (__strm : _ XStream.t) =
@@ -52,7 +51,7 @@ let backslash (__strm : _ XStream.t) =
 
 let backslash_in_string strict store (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some '\n' -> (XStream.junk __strm; (let s = __strm in skip_indent s))
+  | Some '\n' -> (XStream.junk __strm; skip_indent __strm)
   | Some '\r' ->
       (XStream.junk __strm;
        (let s = __strm in skip_opt_linefeed s; skip_indent s))
@@ -76,10 +75,8 @@ let char s =
        match XStream.peek __strm with
        | Some '\\' ->
            (XStream.junk __strm;
-            (let x =
-               try backslash __strm
-               with | XStream.Failure  -> raise (XStream.Error "") in
-             x))
+            (try backslash __strm
+             with | XStream.Failure  -> raise (XStream.Error "")))
        | _ -> failwith "invalid char token")
 
 let string ?strict  s =
@@ -92,7 +89,7 @@ let string ?strict  s =
          (let _ =
             try backslash_in_string (strict <> None) store __strm
             with | XStream.Failure  -> raise (XStream.Error "") in
-          let s = __strm in parse s))
+          parse __strm))
     | Some c -> (XStream.junk __strm; (let s = __strm in store c; parse s))
     | _ -> Buffer.contents buf in
   parse (XStream.of_string s)

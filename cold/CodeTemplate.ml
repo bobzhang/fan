@@ -238,10 +238,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Id (_loc, (`Lid (_loc, "unit"))))) in
             let exp: Ast.exp =
-              `Fun
-                (_loc,
-                  (`Case
-                     (_loc, (`Any _loc), ((`Uid (_loc, "()")))))) in
+              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Uid (_loc, "()"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -261,8 +258,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                                  (`App
                                     (_loc,
                                       (`App
-                                         (_loc,
-                                           ( (`Lid (_loc, "="))),
+                                         (_loc, (`Lid (_loc, "=")),
                                            (`Lid (_loc, "x")))),
                                       (`Lid (_loc, "y"))))))))))) in
             let ty: Ast.ctyp =

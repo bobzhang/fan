@@ -81,7 +81,7 @@ class primitive =  object
   method unit _loc (_:unit) : ep = {|()|};
   (*default use [meta_loc] for expession*)   
   method loc _loc (_l:loc) : ep=
-    `Id (_loc, (`Lid (_loc, !FanLoc.name)));
+    `Lid (_loc, !FanLoc.name);
   method ant (_loc:loc) (x:ant) : ep = (x:>ep) ;  
   (* FIXME bool antiquot *)
   method bool _loc x  : ep=

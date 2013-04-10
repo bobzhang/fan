@@ -67,7 +67,7 @@ let to_string_of_printer printer v =
 
 let zfold_left ?(start= 0)  ~until  ~acc  f =
   let v = ref acc in
-  for x = start to until do v.contents <- f v.contents x done; v.contents
+  for x = start to until do v := (f v.contents x) done; v.contents
 
 type 'a cont = 'a -> exn 
 
@@ -81,8 +81,7 @@ type 'a return =  {
 let with_return f =
   let module M = struct exception Return end in
     let r = ref None in
-    let return =
-      { return = (fun x  -> r.contents <- Some x; raise M.Return) } in
+    let return = { return = (fun x  -> r := (Some x); raise M.Return) } in
     try
       let rval = f return in
       match r.contents with
@@ -412,8 +411,7 @@ module String =
       let found = ref false in
       let i = ref 0 in
       while (i.contents < len) && (not found.contents) do
-        if not (f (s.[i.contents])) then found.contents <- true else incr i
-        done;
+        if not (f (s.[i.contents])) then found := true else incr i done;
       String.sub s i.contents (len - i.contents)
     let neg n =
       let len = String.length n in
@@ -513,39 +511,32 @@ module Ref =
   struct
     let protect r v body =
       let old = r.contents in
-      try r.contents <- v; (let res = body () in r.contents <- old; res)
-      with | x -> (r.contents <- old; raise x)
+      try r := v; (let res = body () in r := old; res)
+      with | x -> (r := old; raise x)
     let safe r body =
-      let old = r.contents in finally (fun ()  -> r.contents <- old) body ()
+      let old = r.contents in finally (fun ()  -> r := old) body ()
     let protect2 (r1,v1) (r2,v2) body =
       let o1 = r1.contents and o2 = r2.contents in
-      try
-        r1.contents <- v1;
-        r2.contents <- v2;
-        (let res = body () in r1.contents <- o1; r2.contents <- o2; res)
-      with | e -> (r1.contents <- o1; r2.contents <- o2; raise e)
+      try r1 := v1; r2 := v2; (let res = body () in r1 := o1; r2 := o2; res)
+      with | e -> (r1 := o1; r2 := o2; raise e)
     let save2 r1 r2 body =
       let o1 = r1.contents and o2 = r2.contents in
-      finally (fun ()  -> r1.contents <- o1; r2.contents <- o2) body ()
+      finally (fun ()  -> r1 := o1; r2 := o2) body ()
     let protects refs vs body =
       let olds = List.map (fun x  -> x.contents) refs in
       try
-        List.iter2 (fun ref  v  -> ref.contents <- v) refs vs;
+        List.iter2 (fun ref  v  -> ref := v) refs vs;
         (let res = body () in
-         List.iter2 (fun ref  v  -> ref.contents <- v) refs olds; res)
-      with
-      | e ->
-          (List.iter2 (fun ref  v  -> ref.contents <- v) refs olds; raise e)
+         List.iter2 (fun ref  v  -> ref := v) refs olds; res)
+      with | e -> (List.iter2 (fun ref  v  -> ref := v) refs olds; raise e)
     let saves (refs : 'a ref list) body =
       let olds = List.map (fun x  -> x.contents) refs in
-      finally
-        (fun ()  -> List.iter2 (fun ref  x  -> ref.contents <- x) refs olds)
+      finally (fun ()  -> List.iter2 (fun ref  x  -> ref := x) refs olds)
         body ()
-    let post r f = let old = r.contents in r.contents <- f old; old
-    let pre r f = r.contents <- f r.contents; r.contents
-    let swap a b =
-      let buf = a.contents in a.contents <- b.contents; b.contents <- buf
-    let modify x f = x.contents <- f x.contents
+    let post r f = let old = r.contents in r := (f old); old
+    let pre r f = r := (f r.contents); r.contents
+    let swap a b = let buf = a.contents in a := b.contents; b := buf
+    let modify x f = x := (f x.contents)
   end
 
 module Option =
@@ -600,8 +591,7 @@ module Array =
         (let acc = ref acc in
          let rec loop i =
            if i < l1
-           then
-             (acc.contents <- f acc.contents (a1.(i)) (a2.(i)); loop (i + 1))
+           then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
            else acc.contents in
          loop 0)
     let stream a = XStream.of_array a
@@ -613,7 +603,7 @@ module Array =
         (match t.(i) with
          | None  -> ()
          | Some _ as s ->
-             (if res_size.contents = 0 then first_some.contents <- s else ();
+             (if res_size.contents = 0 then first_some := s else ();
               incr res_size))
       done;
       (match first_some.contents with
@@ -707,14 +697,12 @@ module XStream =
         | Some x ->
             (XStream.junk __strm;
              (let xs = __strm in
-              XStream.lapp (fun _  -> aux xs) (XStream.lsing (fun _  -> x))))
+              XStream.lapp (fun _  -> aux xs) (XStream.ising x)))
         | _ -> XStream.sempty in
       aux strm
     let tail (__strm : _ XStream.t) =
       match XStream.peek __strm with
-      | Some _ ->
-          (XStream.junk __strm;
-           (let xs = __strm in XStream.slazy (fun _  -> xs)))
+      | Some _ -> (XStream.junk __strm; __strm)
       | _ -> XStream.sempty
     let rec map f (__strm : _ XStream.t) =
       match XStream.peek __strm with
@@ -740,9 +728,7 @@ module XStream =
           (XStream.junk __strm;
            (let xs = __strm in
             if f x
-            then
-              XStream.lcons (fun _  -> x)
-                (XStream.slazy (fun _  -> filter f xs))
+            then XStream.icons x (XStream.slazy (fun _  -> filter f xs))
             else XStream.slazy (fun _  -> filter f xs)))
       | _ -> XStream.sempty
   end

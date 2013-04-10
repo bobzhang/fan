@@ -179,8 +179,8 @@ let state_prefix = "__state_";
 let partition_prefix = "__partition_";
 
 (* FIXME ghost location introduced *)
-let lexer_module_name =
-  let _loc = FanLoc.ghost in ref {:ident'|$(uid:"Ulexing")|};
+let lexer_module_name : ref vid=
+  let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|};
   
 let gm () = !lexer_module_name; 
 let mk_table_name i =
@@ -332,7 +332,7 @@ let best_final final =
    3. provide a `rec antiquot 
  *)  
 let gen_definition _loc l =
-
+  let g = (gm():>exp) in
   let call_state auto state = with exp
     let (_,trans,final) = auto.(state) in
     if Array.length trans = 0 then
@@ -342,22 +342,20 @@ let gen_definition _loc l =
     else
       let f = mk_state_name state in
       {| $lid:f lexbuf |} in
-
   (* generate states transition *)
   let gen_state auto _loc i (part,trans,final) : option binding  =
     let f = mk_state_name i in 
     let p = mk_partition_name part in
     let cases =
       Array.mapi 
-        (fun i j -> {:case| $`int:i -> $(call_state auto j) |})
+        (fun i j -> {:case'| $`int:i -> $(call_state auto j) |})
         trans in
     let cases = bar_of_list
         (Array.to_list cases @
-         [{:case| _ -> $(id:gm()).backtrack lexbuf|}]) in
-    
+         [{:case| _ -> $g.backtrack lexbuf|}]) in
     let body =
       {:exp'|
-      match ($lid:p ($(id:gm()).next lexbuf)) with
+      match ($lid:p ($g.next lexbuf)) with
       [ $cases ]  
       (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
       |} in
@@ -369,8 +367,7 @@ let gen_definition _loc l =
 	if Array.length trans = 0 then (* {:binding||} *) None else
 	Some
           (ret
-	     {:exp'| begin  $(id:gm()).mark lexbuf $`int:i;  $body end |}) ] in
-
+	     {:exp'| begin  $g.mark lexbuf $`int:i;  $body end |}) ] in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -401,13 +398,13 @@ let gen_definition _loc l =
     | _ -> (`Recursive _loc, and_of_list (Array.to_list states)) ] in
   let cases =
     bar_of_list
-      (Array.to_list cases @ [{:case| _ -> raise $(id:gm()).Error|}]) in
+      (Array.to_list cases @ [{:case'| _ -> raise $g.Error|}]) in
   let rest =
     binds tables
       (binds parts
        {:exp'|
        let $rec:b $states in
-       ( $(id:gm()).start lexbuf;
+       ( $g.start lexbuf;
          match $(lid:mk_state_name 0) lexbuf with
          [ $cases ] )|}) in
   {:exp'| fun lexbuf -> $rest |};

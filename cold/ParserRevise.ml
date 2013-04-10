@@ -62,7 +62,7 @@ let apply () =
        match XStream.peek __strm with
        | Some (`Ant (("list" as n),s),_loc) ->
            (XStream.junk __strm; mk_anti ~c:"exp;" _loc n s)
-       | _ -> let a = symb1 __strm in a in
+       | _ -> symb1 __strm in
      let rec kont al (__strm : _ XStream.t) =
        match XStream.peek __strm with
        | Some (`KEYWORD ";",_) ->
@@ -73,8 +73,7 @@ let apply () =
              let s = __strm in
              let _loc = al <+> a in kont (`Sem (_loc, al, a)) s))
        | _ -> al in
-     fun (__strm : _ XStream.t)  ->
-       let a = symb __strm in let s = __strm in kont a s);
+     fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm);
   (Gram.extend_single (module_exp_quot : 'module_exp_quot Gram.t )
      (None,
        (None, None,
@@ -912,13 +911,12 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
-            ("Gram.mk_action\n  (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->\n     (let old = AstQuotation.default.contents in\n      AstQuotation.default.contents <- FanToken.resolve_name ls; old : \n     'lang ))\n",
+            ("Gram.mk_action\n  (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->\n     (let old = AstQuotation.default.contents in\n      AstQuotation.default := (FanToken.resolve_name ls); old : 'lang ))\n",
               (Gram.mk_action
                  (fun (ls : 'dot_lstrings)  (_loc : FanLoc.t)  ->
                     (let old = AstQuotation.default.contents in
-                     AstQuotation.default.contents <-
-                       FanToken.resolve_name ls;
-                     old : 'lang )))))]));
+                     AstQuotation.default := (FanToken.resolve_name ls); old : 
+                    'lang )))))]));
    Gram.extend_single (pos_exps : 'pos_exps Gram.t )
      (None,
        (None, None,
@@ -957,11 +955,11 @@ let apply () =
                                 failwith
                                   "((x : string ), (FanToken.resolve_name ((`Sub []), x)))\n"))))]),
                 (`Skeyword ";"))],
-            ("Gram.mk_action\n  (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->\n     (let old = AstQuotation.map.contents in\n      AstQuotation.map.contents <- SMap.add_list xys old; old : 'pos_exps ))\n",
+            ("Gram.mk_action\n  (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->\n     (let old = AstQuotation.map.contents in\n      AstQuotation.map := (SMap.add_list xys old); old : 'pos_exps ))\n",
               (Gram.mk_action
                  (fun (xys : 'e__2 list)  (_loc : FanLoc.t)  ->
                     (let old = AstQuotation.map.contents in
-                     AstQuotation.map.contents <- SMap.add_list xys old; old : 
+                     AstQuotation.map := (SMap.add_list xys old); old : 
                     'pos_exps )))))]));
    Gram.extend_single (fun_def_pat : 'fun_def_pat Gram.t )
      (None,
@@ -1091,20 +1089,20 @@ let apply () =
           ([`Skeyword "with";
            `Snterm (Gram.obj (lang : 'lang Gram.t ));
            `Sself],
-            ("Gram.mk_action\n  (fun (x : 'exp)  (old : 'lang)  _  (_loc : FanLoc.t)  ->\n     (AstQuotation.default.contents <- old; x : 'exp ))\n",
+            ("Gram.mk_action\n  (fun (x : 'exp)  (old : 'lang)  _  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'exp ))\n",
               (Gram.mk_action
                  (fun (x : 'exp)  (old : 'lang)  _  (_loc : FanLoc.t)  ->
-                    (AstQuotation.default.contents <- old; x : 'exp )))));
+                    (AstQuotation.default := old; x : 'exp )))));
           ([`Skeyword "with";
            `Skeyword "{";
            `Snterm (Gram.obj (pos_exps : 'pos_exps Gram.t ));
            `Skeyword "}";
            `Sself],
-            ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'pos_exps)  _  _  (_loc : FanLoc.t)  ->\n     (AstQuotation.map.contents <- old; x : 'exp ))\n",
+            ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'pos_exps)  _  _  (_loc : FanLoc.t)  ->\n     (AstQuotation.map := old; x : 'exp ))\n",
               (Gram.mk_action
                  (fun (x : 'exp)  _  (old : 'pos_exps)  _  _ 
                     (_loc : FanLoc.t)  ->
-                    (AstQuotation.map.contents <- old; x : 'exp )))));
+                    (AstQuotation.map := old; x : 'exp )))));
           ([`Skeyword "for";
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword "=";
@@ -1192,38 +1190,30 @@ let apply () =
                     (`App (_loc, (`App (_loc, op, e1)), e2) : 'exp )))))]);
        ((Some "*"), (Some `LA),
          [([`Sself; `Skeyword "land"; `Sself],
-            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"land\")))), e1)), e2) : \n     'exp ))\n",
+            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"land\")), e1)), e2) : 'exp ))\n",
               (Gram.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
                     (`App
-                       (_loc,
-                         (`App
-                            (_loc, ( (`Lid (_loc, "land"))), e1)),
-                         e2) : 'exp )))));
+                       (_loc, (`App (_loc, (`Lid (_loc, "land")), e1)), e2) : 
+                    'exp )))));
          ([`Sself; `Skeyword "lor"; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"lor\")))), e1)), e2) : \n     'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"lor\")), e1)), e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`App
-                      (_loc,
-                        (`App (_loc, ((`Lid (_loc, "lor"))), e1)),
-                        e2) : 'exp )))));
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "lor")), e1)), e2) : 
+                   'exp )))));
          ([`Sself; `Skeyword "lxor"; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"lxor\")))), e1)), e2) : \n     'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"lxor\")), e1)), e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`App
-                      (_loc,
-                        (`App (_loc, ( (`Lid (_loc, "lxor"))), e1)),
-                        e2) : 'exp )))));
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "lxor")), e1)), e2) : 
+                   'exp )))));
          ([`Sself; `Skeyword "mod"; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"mod\")))), e1)), e2) : \n     'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"mod\")), e1)), e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`App
-                      (_loc,
-                        (`App (_loc, (`Lid (_loc, "mod")), e1)),
-                        e2) : 'exp )))));
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "mod")), e1)), e2) : 
+                   'exp )))));
          ([`Sself; `Snterm (Gram.obj (infixop5 : 'infixop5 Gram.t )); `Sself],
            ("Gram.mk_action\n  (fun (e2 : 'exp)  (op : 'infixop5)  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, op, e1)), e2) : 'exp ))\n",
              (Gram.mk_action
@@ -1232,29 +1222,23 @@ let apply () =
                    (`App (_loc, (`App (_loc, op, e1)), e2) : 'exp )))))]);
        ((Some "**"), (Some `RA),
          [([`Sself; `Skeyword "asr"; `Sself],
-            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"asr\")))), e1)), e2) : \n     'exp ))\n",
+            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"asr\")), e1)), e2) : 'exp ))\n",
               (Gram.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                    (`App
-                       (_loc,
-                         (`App (_loc, ((`Lid (_loc, "asr"))), e1)),
-                         e2) : 'exp )))));
+                    (`App (_loc, (`App (_loc, (`Lid (_loc, "asr")), e1)), e2) : 
+                    'exp )))));
          ([`Sself; `Skeyword "lsl"; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"lsl\")))), e1)), e2) : \n     'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"lsl\")), e1)), e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`App
-                      (_loc,
-                        (`App (_loc, ( (`Lid (_loc, "lsl"))), e1)),
-                        e2) : 'exp )))));
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "lsl")), e1)), e2) : 
+                   'exp )))));
          ([`Sself; `Skeyword "lsr"; `Sself],
-           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Id (_loc, (`Lid (_loc, \"lsr\")))), e1)), e2) : \n     'exp ))\n",
+           ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Lid (_loc, \"lsr\")), e1)), e2) : 'exp ))\n",
              (Gram.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
-                   (`App
-                      (_loc,
-                        (`App (_loc, ( (`Lid (_loc, "lsr"))), e1)),
-                        e2) : 'exp )))));
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "lsr")), e1)), e2) : 
+                   'exp )))));
          ([`Sself; `Snterm (Gram.obj (infixop6 : 'infixop6 Gram.t )); `Sself],
            ("Gram.mk_action\n  (fun (e2 : 'exp)  (op : 'infixop6)  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, op, e1)), e2) : 'exp ))\n",
              (Gram.mk_action
@@ -1595,10 +1579,9 @@ let apply () =
                 (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
                    (`Vrn (_loc, s) : 'exp )))));
          ([`Skeyword "["; `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"[]\"))) : 'exp ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"[]\") : 'exp ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ( (`Uid (_loc, "[]")) : 'exp )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "[]") : 'exp )))));
          ([`Skeyword "[";
           `Snterm (Gram.obj (sem_exp_for_list : 'sem_exp_for_list Gram.t ));
           `Skeyword "::";
@@ -1611,10 +1594,10 @@ let apply () =
          ([`Skeyword "[";
           `Snterm (Gram.obj (sem_exp_for_list : 'sem_exp_for_list Gram.t ));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (mk_list : 'sem_exp_for_list)  _  (_loc : FanLoc.t)  ->\n     (mk_list (`Id (_loc, (`Uid (_loc, \"[]\")))) : 'exp ))\n",
+           ("Gram.mk_action\n  (fun _  (mk_list : 'sem_exp_for_list)  _  (_loc : FanLoc.t)  ->\n     (mk_list (`Uid (_loc, \"[]\")) : 'exp ))\n",
              (Gram.mk_action
                 (fun _  (mk_list : 'sem_exp_for_list)  _  (_loc : FanLoc.t) 
-                   -> (mk_list ((`Uid (_loc, "[]"))) : 'exp )))));
+                   -> (mk_list (`Uid (_loc, "[]")) : 'exp )))));
          ([`Skeyword "[|"; `Skeyword "|]"],
            ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'exp ))\n",
              (Gram.mk_action
@@ -1672,10 +1655,9 @@ let apply () =
                 (fun _  (fel : 'field_exp_list)  _  (_loc : FanLoc.t)  ->
                    (`OvrInst (_loc, fel) : 'exp )))));
          ([`Skeyword "("; `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'exp ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"()\") : 'exp ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ( (`Uid (_loc, "()")) : 'exp )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "()") : 'exp )))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":";
@@ -1743,10 +1725,9 @@ let apply () =
                 (fun _  (seq : 'sequence)  _  (_loc : FanLoc.t)  ->
                    (`Seq (_loc, seq) : 'exp )))));
          ([`Skeyword "begin"; `Skeyword "end"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'exp ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"()\") : 'exp ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ((`Uid (_loc, "()")) : 'exp )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "()") : 'exp )))));
          ([`Skeyword "(";
           `Skeyword "module";
           `Snterm (Gram.obj (module_exp : 'module_exp Gram.t ));
@@ -1910,33 +1891,28 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Gram.obj (exp : 'exp Gram.t )); `Skeyword ";"; `Sself],
-            ("Gram.mk_action\n  (fun (el : 'sem_exp_for_list)  _  (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App\n          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), e)),\n            (el acc)) : 'sem_exp_for_list ))\n",
+            ("Gram.mk_action\n  (fun (el : 'sem_exp_for_list)  _  (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (el acc)) : \n     'sem_exp_for_list ))\n",
               (Gram.mk_action
                  (fun (el : 'sem_exp_for_list)  _  (e : 'exp) 
                     (_loc : FanLoc.t)  ->
                     (fun acc  ->
                        `App
-                         (_loc,
-                           (`App (_loc, ((`Uid (_loc, "::"))), e)),
+                         (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
                            (el acc)) : 'sem_exp_for_list )))));
          ([`Snterm (Gram.obj (exp : 'exp Gram.t )); `Skeyword ";"],
-           ("Gram.mk_action\n  (fun _  (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), e)), acc) : \n     'sem_exp_for_list ))\n",
+           ("Gram.mk_action\n  (fun _  (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : \n     'sem_exp_for_list ))\n",
              (Gram.mk_action
                 (fun _  (e : 'exp)  (_loc : FanLoc.t)  ->
                    (fun acc  ->
-                      `App
-                        (_loc,
-                          (`App (_loc, ((`Uid (_loc, "::"))), e)),
-                          acc) : 'sem_exp_for_list )))));
+                      `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
+                   'sem_exp_for_list )))));
          ([`Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), e)), acc) : \n     'sem_exp_for_list ))\n",
+           ("Gram.mk_action\n  (fun (e : 'exp)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : \n     'sem_exp_for_list ))\n",
              (Gram.mk_action
                 (fun (e : 'exp)  (_loc : FanLoc.t)  ->
                    (fun acc  ->
-                      `App
-                        (_loc,
-                          (`App (_loc, ((`Uid (_loc, "::"))), e)),
-                          acc) : 'sem_exp_for_list )))))]));
+                      `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
+                   'sem_exp_for_list )))))]));
    Gram.extend_single (comma_exp : 'comma_exp Gram.t )
      (None,
        (None, None,
@@ -1971,20 +1947,20 @@ let apply () =
         [([`Snterm (Gram.obj (lang : 'lang Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default.contents <- old; x : 'with_exp_lang ))\n",
+           ("Gram.mk_action\n  (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'with_exp_lang ))\n",
              (Gram.mk_action
                 (fun (x : 'exp)  _  (old : 'lang)  (_loc : FanLoc.t)  ->
-                   (AstQuotation.default.contents <- old; x : 'with_exp_lang )))))]));
+                   (AstQuotation.default := old; x : 'with_exp_lang )))))]));
   Gram.extend_single (with_stru_lang : 'with_stru_lang Gram.t )
     (None,
       (None, None,
         [([`Snterm (Gram.obj (lang : 'lang Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (stru : 'stru Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'stru)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default.contents <- old; x : 'with_stru_lang ))\n",
+           ("Gram.mk_action\n  (fun (x : 'stru)  _  (old : 'lang)  (_loc : FanLoc.t)  ->\n     (AstQuotation.default := old; x : 'with_stru_lang ))\n",
              (Gram.mk_action
                 (fun (x : 'stru)  _  (old : 'lang)  (_loc : FanLoc.t)  ->
-                   (AstQuotation.default.contents <- old; x : 'with_stru_lang )))))]));
+                   (AstQuotation.default := old; x : 'with_stru_lang )))))]));
   (Gram.extend_single (binding_quot : 'binding_quot Gram.t )
      (None,
        (None, None,
@@ -2440,10 +2416,9 @@ let apply () =
                    | `Flo (_,s) -> (`Flo (_loc, (String.neg s)) : 'pat )
                    | _ -> failwith "`Flo (_loc, (String.neg s))\n"))));
          ([`Skeyword "["; `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"[]\"))) : 'pat ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"[]\") : 'pat ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ( (`Uid (_loc, "[]")) : 'pat )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "[]") : 'pat )))));
          ([`Skeyword "[";
           `Snterm (Gram.obj (sem_pat_for_list : 'sem_pat_for_list Gram.t ));
           `Skeyword "::";
@@ -2456,10 +2431,10 @@ let apply () =
          ([`Skeyword "[";
           `Snterm (Gram.obj (sem_pat_for_list : 'sem_pat_for_list Gram.t ));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (mk_list : 'sem_pat_for_list)  _  (_loc : FanLoc.t)  ->\n     (mk_list (`Id (_loc, (`Uid (_loc, \"[]\")))) : 'pat ))\n",
+           ("Gram.mk_action\n  (fun _  (mk_list : 'sem_pat_for_list)  _  (_loc : FanLoc.t)  ->\n     (mk_list (`Uid (_loc, \"[]\")) : 'pat ))\n",
              (Gram.mk_action
                 (fun _  (mk_list : 'sem_pat_for_list)  _  (_loc : FanLoc.t) 
-                   -> (mk_list ((`Uid (_loc, "[]"))) : 'pat )))));
+                   -> (mk_list (`Uid (_loc, "[]")) : 'pat )))));
          ([`Skeyword "[|"; `Skeyword "|]"],
            ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ArrayEmpty _loc : 'pat ))\n",
              (Gram.mk_action
@@ -2479,10 +2454,9 @@ let apply () =
                 (fun _  (pl : 'label_pat_list)  _  (_loc : FanLoc.t)  ->
                    (`Record (_loc, pl) : 'pat )))));
          ([`Skeyword "("; `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'pat ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"()\") : 'pat ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ((`Uid (_loc, "()")) : 'pat )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "()") : 'pat )))));
          ([`Skeyword "(";
           `Skeyword "module";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
@@ -2728,10 +2702,9 @@ let apply () =
                        (mk_anti _loc ~c:"pat" n s : 'ipat )
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Skeyword "("; `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Id (_loc, (`Uid (_loc, \"()\"))) : 'ipat ))\n",
+           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"()\") : 'ipat ))\n",
              (Gram.mk_action
-                (fun _  _  (_loc : FanLoc.t)  ->
-                   ((`Uid (_loc, "()")) : 'ipat )))));
+                (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "()") : 'ipat )))));
          ([`Skeyword "(";
           `Skeyword "module";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
@@ -2979,33 +2952,28 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Gram.obj (pat : 'pat Gram.t )); `Skeyword ";"; `Sself],
-            ("Gram.mk_action\n  (fun (pl : 'sem_pat_for_list)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App\n          (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), p)),\n            (pl acc)) : 'sem_pat_for_list ))\n",
+            ("Gram.mk_action\n  (fun (pl : 'sem_pat_for_list)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (pl acc)) : \n     'sem_pat_for_list ))\n",
               (Gram.mk_action
                  (fun (pl : 'sem_pat_for_list)  _  (p : 'pat) 
                     (_loc : FanLoc.t)  ->
                     (fun acc  ->
                        `App
-                         (_loc,
-                           (`App (_loc, ( (`Uid (_loc, "::"))), p)),
+                         (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
                            (pl acc)) : 'sem_pat_for_list )))));
          ([`Snterm (Gram.obj (pat : 'pat Gram.t )); `Skeyword ";"],
-           ("Gram.mk_action\n  (fun _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), p)), acc) : \n     'sem_pat_for_list ))\n",
+           ("Gram.mk_action\n  (fun _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : \n     'sem_pat_for_list ))\n",
              (Gram.mk_action
                 (fun _  (p : 'pat)  (_loc : FanLoc.t)  ->
                    (fun acc  ->
-                      `App
-                        (_loc,
-                          (`App (_loc, ((`Uid (_loc, "::"))), p)),
-                          acc) : 'sem_pat_for_list )))));
+                      `App (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
+                   'sem_pat_for_list )))));
          ([`Snterm (Gram.obj (pat : 'pat Gram.t ))],
-           ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  ->\n        `App (_loc, (`App (_loc, (`Id (_loc, (`Uid (_loc, \"::\")))), p)), acc) : \n     'sem_pat_for_list ))\n",
+           ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FanLoc.t)  ->\n     (fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc) : \n     'sem_pat_for_list ))\n",
              (Gram.mk_action
                 (fun (p : 'pat)  (_loc : FanLoc.t)  ->
                    (fun acc  ->
-                      `App
-                        (_loc,
-                          (`App (_loc, ( (`Uid (_loc, "::"))), p)),
-                          acc) : 'sem_pat_for_list )))))]));
+                      `App (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
+                   'sem_pat_for_list )))))]));
    Gram.extend_single (pat_tcon : 'pat_tcon Gram.t )
      (None,
        (None, None,
@@ -4281,11 +4249,11 @@ let apply () =
           `Skeyword "import";
           `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ));
           `Skeyword ";;"],
-           ("Gram.mk_action\n  (fun _  (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths.contents <- (`Absolute x) :: (FanToken.paths.contents);\n      ([`DirectiveSimple (_loc, (`Lid (_loc, \"import\")))], (Some _loc)) : \n     'implem ))\n",
+           ("Gram.mk_action\n  (fun _  (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents));\n      ([`DirectiveSimple (_loc, (`Lid (_loc, \"import\")))], (Some _loc)) : \n     'implem ))\n",
              (Gram.mk_action
                 (fun _  (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->
-                   (FanToken.paths.contents <- (`Absolute x) ::
-                      (FanToken.paths.contents);
+                   (FanToken.paths := ((`Absolute x) ::
+                      (FanToken.paths.contents));
                     ([`DirectiveSimple (_loc, (`Lid (_loc, "import")))],
                       (Some _loc)) : 'implem )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"; `Sself],
@@ -4382,11 +4350,11 @@ let apply () =
          ([`Skeyword "#";
           `Skeyword "import";
           `Snterm (Gram.obj (dot_namespace : 'dot_namespace Gram.t ))],
-           ("Gram.mk_action\n  (fun (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths.contents <- (`Absolute x) :: (FanToken.paths.contents);\n      None : 'top_phrase ))\n",
+           ("Gram.mk_action\n  (fun (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->\n     (FanToken.paths := ((`Absolute x) :: (FanToken.paths.contents)); None : \n     'top_phrase ))\n",
              (Gram.mk_action
                 (fun (x : 'dot_namespace)  _  _  (_loc : FanLoc.t)  ->
-                   (FanToken.paths.contents <- (`Absolute x) ::
-                      (FanToken.paths.contents);
+                   (FanToken.paths := ((`Absolute x) ::
+                      (FanToken.paths.contents));
                     None : 'top_phrase )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"],
            ("Gram.mk_action\n  (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (Some st : 'top_phrase ))\n",

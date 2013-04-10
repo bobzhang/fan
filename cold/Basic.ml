@@ -10,7 +10,7 @@ exception Finished of exp
 
 let _loc = FanLoc.ghost
 
-let unit_literal = `Id (_loc, (`Uid (_loc, "()")))
+let unit_literal = `Uid (_loc, "()")
 
 let x ?(off= 0)  (i : int) =
   if off > 25

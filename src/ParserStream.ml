@@ -37,7 +37,8 @@ let apply () =
            Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel)
          | None -> cstream _loc sel ] ]
      parser_ipat:
-     [ a_lident{i} -> {:pat| $(id:(i:>ident)) |}  | "_" -> {:pat| _ |}  ]         
+     [ a_lident{i} -> (* {:pat| $(id:(i:>ident)) |} *)
+       (i: alident:> pat)  | "_" -> {:pat| _ |}  ]         
      parser_case_list:
      [ "["; L0 parser_case SEP "|"{pcl}; "]" -> pcl
      | parser_case{pc} -> [pc] ] 

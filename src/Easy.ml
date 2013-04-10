@@ -25,7 +25,7 @@ let gen_stru
         match module_name with
         [None ->   (id:>full_id_transform)
         |Some m ->
-          `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} ) ] ;
+          `Last (fun s -> {:ident| $uid:m.$(lid:basic_transform id s) |} ) ] ;
       let default (_,number)=
         if number > 1 then
           let pat = EP.tuple_of_number {:pat'| _ |} arity in 

@@ -1,5 +1,5 @@
 open LibUtil
-open Ast
+
 open AstLoc
 
 open FSig
@@ -107,7 +107,7 @@ let traversal () =
                   FanState.current_filters.contents
                   (if FanState.keep.contents
                    then res
-                   else `StExp (_loc, ((`Uid (_loc, "()"))))) in
+                   else `StExp (_loc, (`Uid (_loc, "()")))) in
               self#out_module; `Struct (_loc, result))))
        | x -> super#module_exp x
      method! stru =
@@ -121,7 +121,7 @@ let traversal () =
              self#out_and_types;
              if FanState.keep.contents
              then x
-             else `StExp (_loc, ((`Uid (_loc, "()"))))))
+             else `StExp (_loc, (`Uid (_loc, "()")))))
        | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
            (if print_collect_module_types.contents
@@ -157,7 +157,7 @@ let g =
               ",";
               ";"] ~annot:"derive" ()
 
-let fan_quot : exp Gram.t  = Gram.mk_dynamic g "fan_quot"
+let fan_quot = Gram.mk_dynamic g "fan_quot"
 
 let fan_quots = Gram.mk_dynamic g "fan_quots"
 
@@ -188,11 +188,11 @@ let _ =
                          | `Uid x -> (x : 'e__1 )
                          | _ -> failwith "x\n"))))]);
           `Skeyword ")"],
-           ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_add plugins; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+           ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_add plugins; `Uid (_loc, \"()\") : 'fan_quot ))\n",
              (Gram.mk_action
                 (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->
-                   (List.iter plugin_add plugins;
-                   `Uid (_loc, "()") : 'fan_quot )))));
+                   (List.iter plugin_add plugins; `Uid (_loc, "()") : 
+                   'fan_quot )))));
         ([`Skeyword "unload";
          `Slist1sep
            ((Gram.srules
@@ -214,41 +214,37 @@ let _ =
                          match __fan_0 with
                          | `Uid x -> (x : 'e__2 )
                          | _ -> failwith "x\n"))))]), (`Skeyword ","))],
-          ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_remove plugins; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (List.iter plugin_remove plugins; `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
-                  (List.iter plugin_remove plugins;
-                   (`Uid (_loc, "()")) : 'fan_quot )))));
+                  (List.iter plugin_remove plugins; `Uid (_loc, "()") : 
+                  'fan_quot )))));
         ([`Skeyword "clear"],
-          ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (FanState.reset_current_filters (); `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (FanState.reset_current_filters (); `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  (_loc : FanLoc.t)  ->
-                  (FanState.reset_current_filters ();
-                   (`Uid (_loc, "()")) : 'fan_quot )))));
+                  (FanState.reset_current_filters (); `Uid (_loc, "()") : 
+                  'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "on"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep.contents <- true; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := true; `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (FanState.keep.contents <- true;
-                   (`Uid (_loc, "()")) : 'fan_quot )))));
+                  (FanState.keep := true; `Uid (_loc, "()") : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "off"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep.contents <- false; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (FanState.keep := false; `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (FanState.keep.contents <- false;
-                   (`Uid (_loc, "()")) : 'fan_quot )))));
+                  (FanState.keep := false; `Uid (_loc, "()") : 'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "on"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code.contents <- true; `Id (_loc, (`Uid (_loc, \"()\"))) : 'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := true; `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (show_code.contents <- true;
-                   (`Uid (_loc, "()")) : 'fan_quot )))));
+                  (show_code := true; `Uid (_loc, "()") : 'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "off"],
-          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code.contents <- false; `Id (_loc, (`Uid (_loc, \"()\"))) : \n     'fan_quot ))\n",
+          ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (show_code := false; `Uid (_loc, \"()\") : 'fan_quot ))\n",
             (Gram.mk_action
                (fun _  _  (_loc : FanLoc.t)  ->
-                  (show_code.contents <- false;
-                  (`Uid (_loc, "()")) : 'fan_quot )))))]));
+                  (show_code := false; `Uid (_loc, "()") : 'fan_quot )))))]));
   Gram.extend_single (fan_quots : 'fan_quots Gram.t )
     (None,
       (None, None,

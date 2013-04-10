@@ -28,11 +28,10 @@ let rec infix_kwds_filter (__strm : _ XStream.t) =
               | _ -> raise (XStream.Error "")))
         | _ ->
             let xs = __strm in
-            XStream.lcons (fun _  -> tok)
+            XStream.icons tok
               (XStream.slazy (fun _  -> infix_kwds_filter xs))))
   | Some x ->
       (XStream.junk __strm;
        (let xs = __strm in
-        XStream.lcons (fun _  -> x)
-          (XStream.slazy (fun _  -> infix_kwds_filter xs))))
+        XStream.icons x (XStream.slazy (fun _  -> infix_kwds_filter xs))))
   | _ -> XStream.sempty
