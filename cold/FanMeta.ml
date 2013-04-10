@@ -298,6 +298,26 @@ class meta =
                 (`App (_loc, (`Vrn (_loc, "Uid")), (self#loc _loc _a0))),
                 (self#string _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method vid' : 'loc -> vid' -> ep=
+      fun _loc  ->
+        function
+        | `Dot (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
+                     (self#vid _loc _a1))), (self#vid _loc _a2))
+        | `Lid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Lid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
+        | `Uid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Uid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
     method dupath : 'loc -> dupath -> ep=
       fun _loc  ->
         function
@@ -773,8 +793,8 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Of")), (self#loc _loc _a0))),
-                     (self#sid _loc _a1))), (self#ctyp _loc _a2))
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+                     (self#vid _loc _a1))), (self#ctyp _loc _a2))
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method pat : 'loc -> pat -> ep=
       fun _loc  ->

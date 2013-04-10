@@ -136,6 +136,10 @@ type vid =
   | `Lid of (loc * string)
   | `Uid of (loc * string) | ant ];
 
+type vid'=
+  [= `Dot of (loc * vid * vid)
+  | `Lid of (loc * string)
+  | `Uid of (loc * string) ];
 type dupath =
   [= `Dot of (loc * dupath * dupath)
   | auident];
@@ -249,9 +253,9 @@ and or_ctyp =
   | `Of of (loc * sid * ctyp)
   | sid
   | ant]
-and of_ctyp =
-  [= `Of of (loc * sid * ctyp)
-  | sid
+and of_ctyp = (* For exception definition*)
+  [= `Of of (loc * vid * ctyp)
+  | vid'
   | ant]
 and pat =
   [=  vid

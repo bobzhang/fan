@@ -926,9 +926,9 @@ and sig_item (s : sig_item) (l : signature) =
        :: l
    | `Sem (_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
    | `Directive _|`DirectiveSimple _ -> l
-   | `Exception (_loc,`Id (_,`Uid (_,s))) ->
+   | `Exception (_loc,`Uid (_,s)) ->
        (mksig _loc (Psig_exception ((with_loc s _loc), []))) :: l
-   | `Exception (_loc,`Of (_,`Id (_,`Uid (sloc,s)),t)) ->
+   | `Exception (_loc,`Of (_,`Uid (sloc,s),t)) ->
        (mksig _loc
           (Psig_exception
              ((with_loc s sloc), (List.map ctyp (list_of_star t [])))))
@@ -991,7 +991,7 @@ and module_exp (x : Ast.module_exp) =
   | t -> errorf (loc_of t) "module_exp: %s" (dump_module_exp t)
 and stru (s : stru) (l : structure) =
   (match s with
-   | `Class (loc,cd) ->
+   | (`Class (loc,cd) : stru) ->
        (mkstr loc
           (Pstr_class (List.map class_info_class_exp (list_of_and cd []))))
        :: l
@@ -1002,9 +1002,9 @@ and stru (s : stru) (l : structure) =
        :: l
    | `Sem (_,st1,st2) -> stru st1 (stru st2 l)
    | `Directive _|`DirectiveSimple _ -> l
-   | `Exception (loc,`Id (_,`Uid (_,s))) ->
+   | `Exception (loc,`Uid (_,s)) ->
        (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
-   | `Exception (loc,`Of (_,`Id (_,`Uid (_,s)),t)) ->
+   | `Exception (loc,`Of (_,`Uid (_,s),t)) ->
        (mkstr loc
           (Pstr_exception
              ((with_loc s loc), (List.map ctyp (list_of_star t [])))))

@@ -23,6 +23,7 @@ type 'a tag =
   | Ident
   | Ident'
   | Vid
+  | Vid'
   | Dupath
   | Dlpath
   | Any
@@ -81,6 +82,7 @@ let string_of_tag =
   | Ident  -> "ident"
   | Ident'  -> "ident'"
   | Vid  -> "vid"
+  | Vid'  -> "vid'"
   | Dupath  -> "dupath"
   | Dlpath  -> "dlpath"
   | Any  -> "any"
@@ -154,6 +156,8 @@ let ident_tag: ident tag = Ident
 let ident'_tag: ident' tag = Ident'
 
 let vid_tag: vid tag = Vid
+
+let vid'_tag: vid' tag = Vid'
 
 let dupath_tag: dupath tag = Dupath
 

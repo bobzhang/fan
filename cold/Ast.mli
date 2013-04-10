@@ -33,6 +33,9 @@ type ident' =
 type vid =
   [ `Dot of (loc * vid * vid) | `Lid of (loc * string)
   | `Uid of (loc * string) | ant] 
+type vid' =
+  [ `Dot of (loc * vid * vid) | `Lid of (loc * string)
+  | `Uid of (loc * string)] 
 type dupath = [ `Dot of (loc * dupath * dupath) | auident] 
 type dlpath = [ `Dot of (loc * dupath * alident) | alident] 
 type any = [ `Any of loc] 
@@ -87,7 +90,7 @@ and name_ctyp =
 and or_ctyp =
   [ `Bar of (loc * or_ctyp * or_ctyp) | `TyCol of (loc * sid * ctyp)
   | `Of of (loc * sid * ctyp) | sid | ant] 
-and of_ctyp = [ `Of of (loc * sid * ctyp) | sid | ant] 
+and of_ctyp = [ `Of of (loc * vid * ctyp) | vid' | ant] 
 and pat =
   [ vid | `App of (loc * pat * pat) | `Vrn of (loc * string)
   | `Com of (loc * pat * pat) | `Sem of (loc * pat * pat)

@@ -6277,16 +6277,16 @@ let apply_ctyp () =
          `Skeyword "of";
          `Snterm
            (Gram.obj (constructor_arg_list : 'constructor_arg_list Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'constructor_arg_list)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declaration ))\n",
+          ("Gram.mk_action\n  (fun (t : 'constructor_arg_list)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Of (_loc, (s :>vid), t) : 'constructor_declaration ))\n",
             (Gram.mk_action
                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : FanLoc.t)  ->
-                  (`Of (_loc, (`Id (_loc, (s :>ident))), t) : 'constructor_declaration )))));
+                  (`Of (_loc, (s :>vid), t) : 'constructor_declaration )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
-          ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (s :>ident)) : 'constructor_declaration ))\n",
+          ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     ((s :>of_ctyp) : 'constructor_declaration ))\n",
             (Gram.mk_action
                (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (s :>ident)) : 'constructor_declaration )))))]));
+                  ((s :>of_ctyp) : 'constructor_declaration )))))]));
   Gram.extend_single (constructor_arg_list : 'constructor_arg_list Gram.t )
     (None,
       (None, None,

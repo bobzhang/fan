@@ -50,6 +50,8 @@ type ident' =
 
 type vid = [ `Dot of (vid * vid) | `Lid of string | `Uid of string | ant] 
 
+type vid' = [ `Dot of (vid * vid) | `Lid of string | `Uid of string] 
+
 type dupath = [ `Dot of (dupath * dupath) | auident] 
 
 type dlpath = [ `Dot of (dupath * alident) | alident] 
@@ -103,7 +105,7 @@ and name_ctyp =
 and or_ctyp =
   [ `Bar of (or_ctyp * or_ctyp) | `TyCol of (sid * ctyp)
   | `Of of (sid * ctyp) | sid | ant] 
-and of_ctyp = [ `Of of (sid * ctyp) | sid | ant] 
+and of_ctyp = [ `Of of (vid * ctyp) | vid' | ant] 
 and pat =
   [ vid | `App of (pat * pat) | `Vrn of string | `Com of (pat * pat)
   | `Sem of (pat * pat) | `Par of pat | any | `Record of rec_pat | literal

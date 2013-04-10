@@ -1010,41 +1010,41 @@ and module_type : Ast.module_type -> Parsetree.module_type =
        | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
   match s with 
- [ `Class (loc,cd) ->
+  [ `Class (loc,cd) ->
    [mksig loc (Psig_class
                  (List.map class_info_class_type (list_of_and cd []))) :: l]
- | `ClassType (loc,ctd) ->
-     [mksig loc (Psig_class_type
-                   (List.map class_info_class_type (list_of_and ctd []))) :: l]
- | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
- | `Directive _ | `DirectiveSimple _  -> l
-       
- | `Exception(_loc,`Id(_,`Uid(_,s))) ->
+  | `ClassType (loc,ctd) ->
+   [mksig loc (Psig_class_type
+                 (List.map class_info_class_type (list_of_and ctd []))) :: l]
+  | `Sem(_,sg1,sg2) -> sig_item sg1 (sig_item sg2 l)
+  | `Directive _ | `DirectiveSimple _  -> l
+        
+  | `Exception(_loc,`Uid(_,s)) ->
      [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
- | `Exception(_loc,`Of(_,`Id(_,`Uid(sloc,s)),t)) ->
-     [mksig _loc (Psig_exception (with_loc s sloc)
+  | `Exception(_loc,`Of(_,`Uid(sloc,s),t)) ->
+      [mksig _loc (Psig_exception (with_loc s sloc)
                     (List.map ctyp (list_of_star t []))) :: l]
- | `Exception (_,_) -> assert false (*FIXME*)
- | `External (loc, `Lid(sloc,n), t, sl) ->
-     [mksig loc
+  | `Exception (_,_) -> assert false (*FIXME*)
+  | `External (loc, `Lid(sloc,n), t, sl) ->
+      [mksig loc
         (Psig_value (with_loc n sloc)
            (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
- | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
- | `Module (loc,`Uid(sloc,n),mt) ->
-     [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
- | `RecModule (loc,mb) ->
-     [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
- | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
-     [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
- | `ModuleType (loc,`Uid(sloc,n),mt) ->
-     let si =  Pmodtype_manifest (module_type mt)  in
-     [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
- | `Open (loc,id) ->
-     [mksig loc (Psig_open (long_uident id)) :: l]
- | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
- | `Val (loc,`Lid(sloc,n),t) ->
-     [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
- | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t)]
+  | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
+  | `Module (loc,`Uid(sloc,n),mt) ->
+      [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
+  | `RecModule (loc,mb) ->
+      [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
+  | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
+      [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
+  | `ModuleType (loc,`Uid(sloc,n),mt) ->
+      let si =  Pmodtype_manifest (module_type mt)  in
+      [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
+  | `Open (loc,id) ->
+      [mksig loc (Psig_open (long_uident id)) :: l]
+  | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
+  | `Val (loc,`Lid(sloc,n),t) ->
+      [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
+  | t -> errorf (loc_of t) "sig_item: %s" (dump_sig_item t)]
 and module_sig_binding (x:module_binding) 
     (acc: list (Asttypes.loc string * Parsetree.module_type))  =
   match x with 
@@ -1079,7 +1079,7 @@ and module_exp (x:Ast.module_exp)=
   | t -> errorf (loc_of t) "module_exp: %s" (dump_module_exp t) ]
 and stru (s:stru) (l:structure) : structure =
   match s with 
-  [ `Class (loc,cd) ->
+  [ (`Class (loc,cd) :stru) ->
     [mkstr loc (Pstr_class
                   (List.map class_info_class_exp (list_of_and cd []))) :: l]
   | `ClassType (loc,ctd) ->
@@ -1087,9 +1087,9 @@ and stru (s:stru) (l:structure) : structure =
                       (List.map class_info_class_type (list_of_and ctd []))) :: l]
   | `Sem(_,st1,st2) -> stru st1 (stru st2 l)
   | `Directive _ | `DirectiveSimple _  -> l
-  | `Exception(loc,`Id(_,`Uid(_,s))) ->
+  | `Exception(loc,`Uid(_,s)) ->
       [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
-  | `Exception (loc, `Of (_, `Id (_, `Uid (_, s)), t))
+  | `Exception (loc, `Of (_,  `Uid (_, s), t))
       ->
         [mkstr loc (Pstr_exception (with_loc s loc)
                       (List.map ctyp (list_of_star t []))) :: l ]

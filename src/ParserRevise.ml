@@ -1321,8 +1321,10 @@ let apply_ctyp () = begin
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,`Id(_loc,(s:>ident)),t)
-      | a_uident{s} -> `Id(_loc,(s:>ident))  ]
+      | a_uident{s}; "of"; constructor_arg_list{t} ->
+          `Of(_loc,(s:>vid),t)
+          (* `Of(_loc,`Id(_loc,(s:>ident)),t) *)
+      | a_uident{s} -> (s:>of_ctyp) (* `Id(_loc,(s:>ident)) *)  ]
       constructor_arg_list:
       [ `Ant (("list" as n),s) ->  mk_anti _loc ~c:"ctyp*" n s
       | S{t1}; "*"; S{t2} -> `Sta(_loc,t1,t2)
