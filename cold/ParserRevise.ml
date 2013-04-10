@@ -6255,10 +6255,10 @@ let apply_ctyp () =
                         | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 
                   'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
-          ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (s :>ident)) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     ((s :>or_ctyp) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->
-                  (`Id (_loc, (s :>ident)) : 'constructor_declarations )))))]));
+                  ((s :>or_ctyp) : 'constructor_declarations )))))]));
   Gram.extend_single
     (constructor_declaration : 'constructor_declaration Gram.t )
     (None,

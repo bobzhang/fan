@@ -270,7 +270,7 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
        match (x : or_ctyp ) with
        | `Of (_loc,`Id (_,`Uid (_,cons)),tys) ->
            compose (f cons (list_of_star tys [])) acc
-       | `Id (_loc,`Uid (_,cons)) -> compose (f cons []) acc
+       | `Uid (_,cons) -> compose (f cons []) acc
        | t ->
            FanLoc.errorf (loc_of t) "reduce_data_ctors: %s"
              (Objs.dump_or_ctyp t)) init branches
@@ -279,7 +279,7 @@ let view_sum (t : or_ctyp) =
   let bs = list_of_or t [] in
   List.map
     (function
-     | `Id (_,`Uid (_,cons)) -> `branch (cons, [])
+     | `Uid (_,cons) -> `branch (cons, [])
      | `Of (_loc,`Id (_,`Uid (_,cons)),t) ->
          `branch (cons, (list_of_star t []))
      | _ -> assert false) bs

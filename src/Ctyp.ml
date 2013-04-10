@@ -497,7 +497,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
       ->
         compose (f cons (list_of_star tys [])) acc  
     | (* {| $uid:cons |} *)
-      `Id (_loc, (`Uid (_, cons)))
+      `Uid (_, cons)
       -> compose  (f cons [] ) acc
     | t->
         FanLoc.errorf (loc_of t)
@@ -507,7 +507,7 @@ let view_sum (t:or_ctyp) =
   let bs = list_of_or t [] in
   List.map
     (fun
-      [ (* {|$uid:cons|} *) `Id(_,`Uid(_,cons)) ->
+      [ (* {|$uid:cons|} *) `Uid(_,cons) ->
         `branch (cons,[])
        | `Of(_loc,`Id(_,`Uid(_,cons)),t) (* {|$uid:cons of $t|} *) ->
            `branch (cons,  list_of_star  t [])

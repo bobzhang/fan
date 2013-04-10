@@ -307,8 +307,8 @@ let mktrecord (x: name_ctyp)= match x with
   
 let mkvariant (x:or_ctyp) = 
   match x with
-  [`Id(_loc,`Uid(sloc,s)) ->
-    (with_loc  s sloc, [], None,  _loc)
+  [ `Uid(sloc,s) ->
+    (with_loc  s sloc, [], None,  sloc)
   | `Of(_loc,`Id(_,`Uid(sloc,s)),t) ->
       (with_loc  s sloc, List.map ctyp (list_of_star t []), None,  _loc)
   | `TyCol(_loc,`Uid(sloc,s),`Arrow(_,t,u)) -> (*GADT*)

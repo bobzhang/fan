@@ -348,7 +348,7 @@ let generate (module_types:FSig.module_types) : stru =
       [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
       |`Single (x,_) -> [x] ]) module_types in
   let typedecl =
-    let x  = bar_of_list (List.map (fun x -> `Id(_loc,uid _loc (String.capitalize x))) tys) in (* FIXME *)
+    let x  = bar_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in (* FIXME *)
     {:stru'@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
   let to_string =
     let case =

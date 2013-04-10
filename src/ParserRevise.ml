@@ -1320,7 +1320,7 @@ let apply_ctyp () = begin
             (_loc, s,
              match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list tl,rt)]
              (* (`Arrow (_loc, (sta_of_list tl), rt)) *))
-      | a_uident{s} -> `Id(_loc,(s:>ident)) ]
+      | a_uident{s} -> (s :> or_ctyp) ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)

@@ -782,8 +782,7 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Of")), (self#loc _loc _a0))),
                      (self#sid _loc _a1))), (self#ctyp _loc _a2))
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+        | #auident as _a0 -> (self#auident _loc _a0 :>ep)
     method of_ctyp : 'loc -> of_ctyp -> ep=
       fun _loc  ->
         function

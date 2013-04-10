@@ -251,8 +251,8 @@ and or_ctyp =
   [= `Bar of (loc * or_ctyp * or_ctyp )
   | `TyCol of (loc * auident * ctyp)
   | `Of of (loc * sid * ctyp)
-  | sid
-  | ant]
+  | auident
+  ]
 and of_ctyp = (* For exception definition*)
   [= `Of of (loc * vid * ctyp)
   | vid'

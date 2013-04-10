@@ -351,8 +351,8 @@ class eq =
             (self#auident _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result39)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result39)
+        | ((#auident as _a0),(#auident as _b0)) ->
+            (self#auident _a0 _b0 :>'result39)
         | (_,_) -> false
     method of_ctyp : of_ctyp -> of_ctyp -> 'result40=
       fun _a0  _b0  ->
@@ -1147,8 +1147,7 @@ class print =
         | `Of (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a)@]" self#sid _a0 self#ctyp
               _a1
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
-        | #ant as _a0 -> (self#ant fmt _a0 :>unit)
+        | #auident as _a0 -> (self#auident fmt _a0 :>unit)
     method of_ctyp : 'fmt -> of_ctyp -> unit=
       fun fmt  ->
         function
@@ -2095,8 +2094,7 @@ and meta_or_ctyp _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (meta_sid _loc _a0))),
           (meta_ctyp _loc _a1))
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result164)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result164)
+  | #auident as _a0 -> (meta_auident _loc _a0 :>'result164)
 and meta_of_ctyp _loc =
   function
   | `Of (_a0,_a1) ->

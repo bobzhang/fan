@@ -422,8 +422,7 @@ and pp_print_or_ctyp fmt =
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sid _a1 pp_print_ctyp _a2
-  | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result43)
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result43)
+  | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result43)
 and pp_print_of_ctyp fmt =
   function
   | `Of (_a0,_a1,_a2) ->
@@ -1440,8 +1439,7 @@ class print =
         | `Of (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" self#loc _a0
               self#sid _a1 self#ctyp _a2
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
-        | #ant as _a0 -> (self#ant fmt _a0 :>unit)
+        | #auident as _a0 -> (self#auident fmt _a0 :>unit)
     method of_ctyp : 'fmt -> of_ctyp -> unit=
       fun fmt  ->
         function
@@ -2482,8 +2480,7 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#sid _a1 in
           let _a2 = self#ctyp _a2 in `Of (_a0, _a1, _a2)
-      | #sid as _a0 -> (self#sid _a0 : sid  :>or_ctyp)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>or_ctyp)
+      | #auident as _a0 -> (self#auident _a0 : auident  :>or_ctyp)
     method of_ctyp : of_ctyp -> of_ctyp=
       function
       | `Of (_a0,_a1,_a2) ->
@@ -3506,8 +3503,7 @@ class fold =
           let self = self#auident _a1 in self#ctyp _a2
       | `Of (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#sid _a1 in self#ctyp _a2
-      | #sid as _a0 -> (self#sid _a0 :>'self_type)
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
+      | #auident as _a0 -> (self#auident _a0 :>'self_type)
     method of_ctyp : of_ctyp -> 'self_type=
       function
       | `Of (_a0,_a1,_a2) ->
@@ -4313,8 +4309,7 @@ and strip_loc_or_ctyp =
   | `Of (_a0,_a1,_a2) ->
       let _a1 = strip_loc_sid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
-  | #sid as _a0 -> (strip_loc_sid _a0 :>'result283)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result283)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result283)
 and strip_loc_of_ctyp =
   function
   | `Of (_a0,_a1,_a2) ->
