@@ -65,11 +65,10 @@ let map loc (p : pat) (e : exp) (l : exp) =
                                                                     (
                                                                     `App
                                                                     (loc,
-                                                                    (`Id
-                                                                    (loc,
+                                                                    (
                                                                     (`Uid
                                                                     (loc,
-                                                                    "::")))),
+                                                                    "::"))),
                                                                     (`Lid
                                                                     (loc,
                                                                     "x")))),
@@ -85,7 +84,7 @@ let map loc (p : pat) (e : exp) (l : exp) =
                                            (`Case
                                               (loc, (`Lid (loc, "l")),
                                                 (`Lid (loc, "l")))))))))))))),
-                  l)), (`Id (loc, (`Uid (loc, "[]"))))) : Ast.exp )
+                  l)), ( (`Uid (loc, "[]")))) : Ast.exp )
 
 let filter loc p b l =
   if is_irrefut_pat p
@@ -247,7 +246,7 @@ let filter_pat_with_captured_variables pat =
 let fun_args _loc args body =
   if args = []
   then
-    (`Fun (_loc, (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), body))) : 
+    (`Fun (_loc, (`Case (_loc, ((`Uid (_loc, "()"))), body))) : 
     Ast.exp )
   else
     List.fold_right
@@ -281,30 +280,30 @@ let (<+<) pats acc =
   List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc)))) pats
     acc
 
-let mee_comma x y =
+let mee_comma (x:exp) (y:exp) : exp  =
   `App
     (_loc,
       (`App
          (_loc,
            (`App
               (_loc, (`Vrn (_loc, "Com")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
+                ((`Lid (_loc, "_loc"))))), x)), y)
 
 let mvee_comma x y =
   `App
     (_loc, (`Vrn (_loc, "Com")),
       (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Com (_loc, x, y)))))))
 
-let mee_app x y =
+let mee_app (x:exp) (y:exp) : exp  =
   `App
     (_loc,
       (`App
          (_loc,
            (`App
               (_loc, (`Vrn (_loc, "App")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), x)), y)
+                ((`Lid (_loc, "_loc"))))), x)), y)
 
-let mee_of_str s =
+let mee_of_str s : exp =
   let len = String.length s in
   if (s.[0]) = '`'
   then
@@ -314,7 +313,7 @@ let mee_of_str s =
         (`Par
            (_loc,
              (`Com
-                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), (`Str (_loc, s)))))))
+                (_loc, ((`Lid (_loc, "_loc"))), (`Str (_loc, s)))))))
   else
     (let u =
        `App
@@ -322,7 +321,7 @@ let mee_of_str s =
            (`Par
               (_loc,
                 (`Com
-                   (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                   (_loc, ((`Lid (_loc, "_loc"))),
                      (`Str (_loc, s))))))) in
      u)
 
@@ -331,52 +330,52 @@ let vee_of_str s =
     (_loc, (`Vrn (_loc, "Vrn")),
       (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s)))))))
 
-let meee_of_str s =
-  let u =
-    `App
-      (_loc,
-        (`App
-           (_loc,
-             (`App
-                (_loc, (`Vrn (_loc, "App")),
-                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
-             (`App
-                (_loc,
-                  (`App
-                     (_loc, (`Vrn (_loc, "Vrn")),
-                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                  (`Str (_loc, "Uid")))))),
-        (`App
-           (_loc,
-             (`App
-                (_loc, (`Vrn (_loc, "Par")),
-                  (`Id (_loc, (`Lid (_loc, "_loc")))))),
-             (`App
-                (_loc,
-                  (`App
-                     (_loc,
-                       (`App
-                          (_loc, (`Vrn (_loc, "Com")),
-                            (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                       (`App
-                          (_loc,
-                            (`App
-                               (_loc, (`Vrn (_loc, "Id")),
-                                 (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                            (`App
-                               (_loc,
-                                 (`App
-                                    (_loc, (`Vrn (_loc, "Lid")),
-                                      (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                                 (`Str (_loc, "_loc")))))))),
-                  (`App
-                     (_loc, (`Vrn (_loc, "Str")),
-                       (`Par
-                          (_loc,
-                            (`Com
-                               (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
-                                 (`Str (_loc, s))))))))))))) in
-  u
+(* let meee_of_str s = *)
+(*   let u = *)
+(*     `App *)
+(*       (_loc, *)
+(*         (`App *)
+(*            (_loc, *)
+(*              (`App *)
+(*                 (_loc, (`Vrn (_loc, "App")), *)
+(*                   (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*              (`App *)
+(*                 (_loc, *)
+(*                   (`App *)
+(*                      (_loc, (`Vrn (_loc, "Vrn")), *)
+(*                        (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*                   (`Str (_loc, "Uid")))))), *)
+(*         (`App *)
+(*            (_loc, *)
+(*              (`App *)
+(*                 (_loc, (`Vrn (_loc, "Par")), *)
+(*                   (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*              (`App *)
+(*                 (_loc, *)
+(*                   (`App *)
+(*                      (_loc, *)
+(*                        (`App *)
+(*                           (_loc, (`Vrn (_loc, "Com")), *)
+(*                             (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*                        (`App *)
+(*                           (_loc, *)
+(*                             (`App *)
+(*                                (_loc, (`Vrn (_loc, "Id")), *)
+(*                                  (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*                             (`App *)
+(*                                (_loc, *)
+(*                                  (`App *)
+(*                                     (_loc, (`Vrn (_loc, "Lid")), *)
+(*                                       (`Id (_loc, (`Lid (_loc, "_loc")))))), *)
+(*                                  (`Str (_loc, "_loc")))))))), *)
+(*                   (`App *)
+(*                      (_loc, (`Vrn (_loc, "Str")), *)
+(*                        (`Par *)
+(*                           (_loc, *)
+(*                             (`Com *)
+(*                                (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))), *)
+(*                                  (`Str (_loc, s))))))))))))) in *)
+(*   u *)
 
 let mk_tuple_ee =
   function
@@ -391,30 +390,30 @@ let mk_tuple_ee =
                   (_loc, (`Lid (_loc, "_loc")),
                     (List.reduce_right mee_comma xs))))))
 
-let mee_record_col label exp =
+let mee_record_col label (exp:exp) : exp  =
   `App
     (_loc,
       (`App
          (_loc,
            (`App
               (_loc, (`Vrn (_loc, "RecBind")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                ( (`Lid (_loc, "_loc"))))),
            (`App
               (_loc, (`Vrn (_loc, "Lid")),
                 (`Par
                    (_loc,
                      (`Com
-                        (_loc, (`Id (_loc, (`Lid (_loc, "_loc")))),
+                        (_loc, ((`Lid (_loc, "_loc"))),
                           (`Str (_loc, label)))))))))), exp)
 
-let mee_record_semi a b =
+let mee_record_semi a b :exp =
   `App
     (_loc,
       (`App
          (_loc,
            (`App
               (_loc, (`Vrn (_loc, "Sem")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))), a)), b)
+                ((`Lid (_loc, "_loc"))))), a)), b)
 
 let mk_record_ee label_exps =
   (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
@@ -424,7 +423,7 @@ let mk_record_ee label_exps =
          (_loc,
            (`App
               (_loc, (`Vrn (_loc, "Record")),
-                (`Id (_loc, (`Lid (_loc, "_loc")))))),
+                ( (`Lid (_loc, "_loc"))))),
            (List.reduce_right mee_record_semi es)))
 
 let eta_expand (exp : exp) number =

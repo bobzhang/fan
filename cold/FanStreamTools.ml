@@ -387,7 +387,7 @@ and is_cons_apply_not_computing =
 
 let slazy _loc e =
   match e with
-  | (`App (_loc,f,`Id (_,`Uid (_,"()"))) : Ast.exp) ->
+  | (`App (_loc,f,`Uid (_,"()")) : Ast.exp) ->
       (match f with
        | (`Lid (_loc,_) : Ast.exp) -> f
        | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : Ast.exp ))
@@ -397,9 +397,7 @@ let rec cstream gloc =
   function
   | [] ->
       let _loc = gloc in
-      (`Id
-         (_loc,
-           (`Dot (_loc, (`Uid (_loc, "XStream")), (`Lid (_loc, "sempty"))))) : 
+      (    (`Dot (_loc, (`Uid (_loc, "XStream")), (`Lid (_loc, "sempty")))) : 
         Ast.exp )
   | (SeTrm (_loc,e))::[] ->
       if not_computing e

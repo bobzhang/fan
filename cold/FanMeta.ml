@@ -45,9 +45,9 @@ class primitive =
     method char _loc (i : char) =
       ((`Chr (_loc, (Char.escaped i)) : Ast.ep ) : ep )
     method unit _loc (_ : unit) =
-      ((`Id (_loc, (`Uid (_loc, "()"))) : Ast.ep ) : ep )
+      (`Uid (_loc, "()") : Ast.ep )
     method loc _loc (_l : loc) =
-      (`Id (_loc, (`Lid (_loc, (FanLoc.name.contents)))) : ep )
+      ((`Lid (_loc, (FanLoc.name.contents))) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with

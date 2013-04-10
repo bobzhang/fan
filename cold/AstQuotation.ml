@@ -211,10 +211,10 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
                   (loc, (`Vrn (loc, u)),
                     (`Par
                        (loc,
-                         (`Com (loc, (`Id (_loc, (`Lid (_loc, name)))), rest)))))
+                         (`Com (loc, ( (`Lid (_loc, name))), rest)))))
             | `App (_loc,`Vrn (_,u),`Any _) ->
                 `App
-                  (_loc, (`Vrn (_loc, u)), (`Id (_loc, (`Lid (_loc, name)))))
+                  (_loc, (`Vrn (_loc, u)), ((`Lid (_loc, name))))
             | `App (_loc,a,b) -> `App (_loc, (subst_first_loc name a), b)
             | `Constraint (_loc,a,ty) ->
                 `Constraint (_loc, (subst_first_loc name a), ty)

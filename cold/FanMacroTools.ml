@@ -147,7 +147,7 @@ let undef ~exp  ~pat  x =
 let parse_def ~exp  ~pat  s =
   match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
   | (`Uid (_loc,n) : Ast.exp) -> define ~exp ~pat None n
-  | (`App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Uid (_,n)),e) : Ast.exp) ->
+  | (`App (_loc,`App (_,`Lid (_,"="),`Uid (_,n)),e) : Ast.exp) ->
       define ~exp ~pat (Some ([], e)) n
   | _ -> invalid_arg s
 

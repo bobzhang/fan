@@ -236,7 +236,7 @@ let partition ~counter  ~tables  (i,p) =
              (`App
                 (_loc,
                   (`App
-                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
+                     (_loc, ((`Lid (_loc, "<="))),
                        (`Lid (_loc, "c")))),
                   (`Int (_loc, (string_of_int i))))), (gen_tree yes),
              (gen_tree no)) : Ast.exp )
@@ -249,13 +249,13 @@ let partition ~counter  ~tables  (i,p) =
             (`App
                (_loc,
                  (`App
-                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                    (_loc, ((`Lid (_loc, "-"))),
                       (`Lid (_loc, "c")))),
                  (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
         (`App
            (_loc,
              (`App
-                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                (_loc, ((`Lid (_loc, "-"))),
                   (`App
                      (_loc,
                        (`Dot
@@ -284,7 +284,7 @@ let binding_partition ~counter  ~tables  (i,p) =
              (`App
                 (_loc,
                   (`App
-                     (_loc, (`Id (_loc, (`Lid (_loc, "<=")))),
+                     (_loc, ( (`Lid (_loc, "<="))),
                        (`Lid (_loc, "c")))),
                   (`Int (_loc, (string_of_int i))))), (gen_tree yes),
              (gen_tree no)) : Ast.exp )
@@ -297,13 +297,13 @@ let binding_partition ~counter  ~tables  (i,p) =
             (`App
                (_loc,
                  (`App
-                    (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                    (_loc, ( (`Lid (_loc, "-"))),
                       (`Lid (_loc, "c")))),
                  (`Int (_loc, (string_of_int offset)))) : Ast.exp ) in
         (`App
            (_loc,
              (`App
-                (_loc, (`Id (_loc, (`Lid (_loc, "-")))),
+                (_loc, ((`Lid (_loc, "-"))),
                   (`App
                      (_loc,
                        (`Dot

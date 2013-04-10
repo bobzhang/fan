@@ -10,7 +10,7 @@ let stru_from_module_types ~f:(aux : named_type -> typedecl)
   (x : module_types) =
   (let _loc = FanLoc.ghost in
    match x with
-   | [] -> (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))) : Ast.stru )
+   | [] -> (`StExp (_loc, ((`Uid (_loc, "()")))) : Ast.stru )
    | _ ->
        let xs: stru list =
          List.map

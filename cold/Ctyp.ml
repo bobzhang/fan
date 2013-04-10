@@ -235,7 +235,7 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = Id.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                  `StExp (_loc, ((`Uid (_loc, "()")))))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =

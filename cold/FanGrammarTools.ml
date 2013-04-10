@@ -227,7 +227,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
    let act =
      match act with
      | Some act -> act
-     | None  -> (`Id (_loc, (`Uid (_loc, "()"))) : Ast.exp ) in
+     | None  -> ((`Uid (_loc, "()")) : Ast.exp ) in
    let (_,tok_match_pl) =
      List.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
@@ -312,7 +312,7 @@ let mk_srule loc (t : string) (tvar : string) (r : rule) =
 let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
   (List.map (mk_srule loc t tvar) rl : (text list * exp) list )
 
-let exp_delete_rule _loc n (symbolss : symbol list list) =
+let exp_delete_rule _loc n (symbolss : symbol list list) : exp =
   let f _loc n sl =
     let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
     ((n.exp), sl) in
@@ -329,7 +329,7 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
                         (`Lid (_loc, "delete_rule")))), e)), b) : Ast.exp ))
       symbolss in
   match symbolss with
-  | [] -> `Id (_loc, (`Uid (_loc, "()")))
+  | [] -> (`Uid (_loc, "()"))
   | _ -> seq_sem rest
 
 let mk_name _loc (i : vid) =
@@ -403,7 +403,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
         (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk"))) : Ast.exp ) in
   let local_binding_of_name =
     function
-    | { exp = (`Lid (_,i)|`Id (_,`Lid (_,i))|`Lid (_,i)); tvar = x;
+    | { exp = (`Lid (_,i)); tvar = x;
         loc = _loc } ->
         (`Bind
            (_loc, (`Lid (_loc, i)),
@@ -436,7 +436,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
-    match el with | [] -> `Id (_loc, (`Uid (_loc, "()"))) | _ -> seq_sem el in
+    match el with | [] ->  (`Uid (_loc, "()")) | _ -> seq_sem el in
   let_in_of_extend _loc gram locals args
 
 let mk_tok _loc ?restrict  ~pattern  styp =

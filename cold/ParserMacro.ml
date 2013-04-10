@@ -31,7 +31,7 @@ let apply () =
               (Gram.mk_action
                  (fun (x : 'macro_def)  (_loc : FanLoc.t)  ->
                     (execute_macro ~exp ~pat
-                       (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                       (`StExp (_loc, ( (`Uid (_loc, "()")))))
                        (fun a  b  -> `Sem (_loc, a, b)) x : 'stru )))))]));
    Gram.extend_single (macro_def : 'macro_def Gram.t )
      (None,
@@ -127,7 +127,7 @@ let apply () =
            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (`Uid (_loc, \"()\"))) : 'else_exp ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`Id (_loc, (`Uid (_loc, "()"))) : 'else_exp )))))]));
+                   ((`Uid (_loc, "()")) : 'else_exp )))))]));
    Gram.extend_single (smlist_then : 'smlist_then Gram.t )
      (None,
        (None, None,
@@ -140,7 +140,7 @@ let apply () =
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                             (execute_macro_if_active_branch ~exp ~pat _loc
                                (`StExp
-                                  (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                                  (_loc, ( (`Uid (_loc, "()")))))
                                (fun a  b  -> `Sem (_loc, a, b)) Then d : 
                             'e__1 )))));
                  ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"],
@@ -164,7 +164,7 @@ let apply () =
                          (fun _  (d : 'macro_def)  (_loc : FanLoc.t)  ->
                             (execute_macro_if_active_branch ~exp ~pat _loc
                                (`StExp
-                                  (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
+                                  (_loc, ( (`Uid (_loc, "()")))))
                                (fun a  b  -> `Sem (_loc, a, b)) Else d : 
                             'e__2 )))));
                  ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"],

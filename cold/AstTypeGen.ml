@@ -337,7 +337,7 @@ let generate (module_types : FSig.module_types) =
           | `Single (x,_) -> [x]) module_types in
    let typedecl =
      let x =
-       bar_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
+       bar_of_list (List.map (fun x  -> `Id(_loc,uid _loc (String.capitalize x))) tys) in
      (`Type
         ((FanLoc.of_tuple
             ("src/AstTypeGen.ml", 352, 11958, 11976, 352, 11958, 11996,

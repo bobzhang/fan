@@ -294,11 +294,11 @@ let binds bs (e : exp) =
       let _loc = binds <+> e in
       (`LetIn (_loc, (`ReNil _loc), binds, e) : Ast.exp )
 
-let lid _loc n = `Id (_loc, (`Lid (_loc, n)))
+let lid _loc n = `Lid (_loc, n)
 
-let uid _loc n = `Id (_loc, (`Uid (_loc, n)))
+let uid _loc n = `Uid (_loc, n)
 
-let unit _loc = `Id (_loc, (`Uid (_loc, "()")))
+let unit _loc = `Uid (_loc, "()")
 
 let ep_of_cons _loc n ps = appl_of_list ((uid _loc n) :: ps)
 

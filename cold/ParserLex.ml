@@ -1,5 +1,5 @@
 open LibUtil
-
+open Ast
 open PreCast.Syntax
 
 let regexp = Gram.mk "regexp"
@@ -12,7 +12,7 @@ let regexps = Gram.mk "regexps"
 
 let lex = Gram.mk "lex"
 
-let declare_regexp = Gram.mk "declare_regexp"
+let declare_regexp : stru Gram.t = Gram.mk "declare_regexp"
 
 let _ =
   Gram.extend_single (lex : 'lex Gram.t )
@@ -66,7 +66,7 @@ let _ =
            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (`StExp (_loc, (`Id (_loc, (`Uid (_loc, \"()\"))))) : 'declare_regexp ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))) : 
+                   (`StExp (_loc, (`Uid (_loc, "()"))) : 
                    'declare_regexp )))))]));
   Gram.extend_single (regexps : 'regexps Gram.t )
     (None,

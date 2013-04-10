@@ -35,12 +35,12 @@ let rec sep_dot_exp acc =
   (function
    | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
    | `Dot (_l,_,_) as i -> sep_dot_exp acc (normalize_acc (i : vid  :>ident))
-   | (`Id (loc,`Uid (_,s)) : Ast.exp)|`Uid (loc,s) as e ->
+   | (* (`Id (loc,`Uid (_,s)) : Ast.exp)| *)`Uid (loc,s) as e ->
        (match acc with
         | [] -> [(loc, [], e)]
         | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-   | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
-       sep_dot_exp acc (normalize_acc i)
+   (* | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) -> *)
+   (*     sep_dot_exp acc (normalize_acc i) *)
    | e -> ((loc_of e), [], e) :: acc : exp -> (loc * string list * exp) list )
 
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
@@ -293,8 +293,8 @@ let mkmutable (x : mutable_flag) =
 
 let paolab (lab : string) (p : pat) =
   (match (lab, p) with
-   | ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_)))
-     |("",(`Lid (_loc,i)|`Constraint (_loc,`Lid (_,i),_))) -> i
+   | (* ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_))) *)
+     (* | *)("",(`Lid (_loc,i)|`Constraint (_loc,`Lid (_,i),_))) -> i
    | ("",p) -> errorf (loc_of p) "paolab %s" (dump_pat p)
    | _ -> lab : string )
 
@@ -378,22 +378,22 @@ let rec mkrangepat loc c1 c2 =
 
 let rec pat (x : pat) =
   match x with
-  | (`Lid (_loc,("true"|"false" as txt)) : Ast.pat)
-    |`Lid (_loc,("true"|"false" as txt)) ->
+  | (`Lid (_loc,("true"|"false" as txt)) : Ast.pat) -> 
+    (* |`Lid (_loc,("true"|"false" as txt)) -> *) 
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
       mkpat _loc p
   | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc))
-  | (`Lid (sloc,s) : Ast.pat) -> mkpat sloc (Ppat_var (with_loc s sloc))
-  | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc))
+  (* | (`Lid (sloc,s) : Ast.pat) -> mkpat sloc (Ppat_var (with_loc s sloc)) *)
+  (* | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc)) *)
   | `Uid (_loc,_)|`Dot (_loc,_,_) as i ->
       let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
       mkpat _loc p
-  | `Dot (_loc,_,_)|`Uid (_loc,_) as i ->
-      let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
-      mkpat _loc p
-  | `Id (_loc,i) ->
-      let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p
+  (* | `Dot (_loc,_,_)|`Uid (_loc,_) as i -> *)
+  (*     let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in *)
+  (*     mkpat _loc p *)
+  (* | `Id (_loc,i) -> *)
+  (*     let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p *)
   | (`Alias (_loc,p1,x) : Ast.pat) ->
       (match x with
        | `Lid (sloc,s) ->
@@ -509,12 +509,12 @@ let override_flag loc (x : override_flag) =
 
 let rec exp (x : exp) =
   match x with
-  | `Field (_loc,_,_)|`Id (_loc,`Dot _)|`Dot (_loc,_,_) ->
+  | `Field (_loc,_,_)(* |`Id (_loc,`Dot _) *)|`Dot (_loc,_,_) ->
       let (e,l) =
         match sep_dot_exp [] x with
-        | (loc,ml,`Id (sloc,`Uid (_,s)))::l|(loc,ml,`Uid (sloc,s))::l ->
+        | (* (loc,ml,`Id (sloc,`Uid (_,s)))::l| *)(loc,ml,`Uid (sloc,s))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
-        | (loc,ml,`Id (sloc,`Lid (_,s)))::l|(loc,ml,`Lid (sloc,s))::l ->
+        | (* (loc,ml,`Id (sloc,`Lid (_,s)))::l| *)(loc,ml,`Lid (sloc,s))::l ->
             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
         | (_,[],e)::l -> ((exp e), l)
         | _ -> errorf (loc_of x) "exp: %s" (dump_exp x) in
@@ -522,9 +522,9 @@ let rec exp (x : exp) =
         List.fold_left
           (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
              match e2 with
-             | `Id (sloc,`Lid (_,s)) ->
-                 let loc = FanLoc.merge loc_bp loc_ep in
-                 (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
+             (* | `Id (sloc,`Lid (_,s)) -> *)
+             (*     let loc = FanLoc.merge loc_bp loc_ep in *)
+             (*     (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml))))) *)
              | `Lid (sloc,s) ->
                  let loc = FanLoc.merge loc_bp loc_ep in
                  (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
@@ -556,7 +556,7 @@ let rec exp (x : exp) =
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
   | (`Assert (_loc,`Lid (_,"false")) : Ast.exp) ->
       mkexp _loc Pexp_assertfalse
-  | `Assert (_loc,`Lid (_,"false")) -> mkexp _loc Pexp_assertfalse
+  (* | `Assert (_loc,`Lid (_,"false")) -> mkexp _loc Pexp_assertfalse *)
   | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =
@@ -573,7 +573,7 @@ let rec exp (x : exp) =
             Pexp_apply
               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
                 [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
-        | `Id (_,`Lid (lloc,lab))|`Lid (lloc,lab) ->
+        | (* `Id (_,`Lid (lloc,lab))| *)`Lid (lloc,lab) ->
             Pexp_setinstvar ((with_loc lab lloc), (exp v))
         | `StringDot (loc,e1,e2) ->
             Pexp_apply
@@ -694,13 +694,13 @@ let rec exp (x : exp) =
                 (_loc, p,
                   (`Fun
                      (_loc,
-                       (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))
+                       (`Case (_loc, ((`Uid (_loc, "()"))), e)))))
           | `CaseWhen (_loc,p,c,e) ->
               `CaseWhen
                 (_loc, p, c,
                   (`Fun
                      (_loc,
-                       (`Case (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))
+                       (`Case (_loc, ((`Uid (_loc, "()"))), e)))))
           | `Bar (_loc,a1,a2) -> `Bar (_loc, (f a1), (f a2))
           | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
         f cas in
@@ -714,8 +714,8 @@ let rec exp (x : exp) =
                        (`Fun
                           (_loc,
                             (`Case
-                               (_loc, (`Id (_loc, (`Uid (_loc, "()")))), e)))))),
-                  cas)), (`Id (_loc, (`Uid (_loc, "()"))))) : Ast.exp )
+                               (_loc, ((`Uid (_loc, "()"))), e)))))),
+                  cas)), ( (`Uid (_loc, "()")))) : Ast.exp )
   | `LetModule (loc,`Uid (sloc,i),me,e) ->
       mkexp loc
         (Pexp_letmodule ((with_loc i sloc), (module_exp me), (exp e)))
@@ -747,7 +747,7 @@ let rec exp (x : exp) =
   | `Seq (_loc,e) ->
       let rec loop =
         function
-        | [] -> exp (`Id (_loc, (`Uid (_loc, "()"))) : Ast.exp )
+        | [] -> exp (`Uid (_loc, "()") : Ast.exp )
         | e::[] -> exp e
         | e::el ->
             let _loc = FanLoc.merge (loc_of e) _loc in
@@ -770,14 +770,14 @@ let rec exp (x : exp) =
        | _ -> mkexp loc (Pexp_tuple (List.map exp l)))
   | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
-  | `Id (_loc,`Uid (_,"()"))|`Uid (_loc,"()") ->
+  | (* `Id (_loc,`Uid (_,"()"))| *)`Uid (_loc,"()") ->
       mkexp _loc (Pexp_construct ((lident_with_loc "()" _loc), None, true))
-  | `Id (_loc,`Lid (_,("true"|"false" as s)))
-    |`Lid (_loc,("true"|"false" as s)) ->
+  | (* `Id (_loc,`Lid (_,("true"|"false" as s))) *)
+    (* | *)`Lid (_loc,("true"|"false" as s)) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
-  | `Id (_,`Lid (_loc,s))|`Lid (_loc,s) ->
+  | (* `Id (_,`Lid (_loc,s))| *)`Lid (_loc,s) ->
       mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-  | `Id (_,`Uid (_loc,s))|`Uid (_loc,s) ->
+  | (* `Id (_,`Uid (_loc,s))| *)`Uid (_loc,s) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
   | `Vrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->

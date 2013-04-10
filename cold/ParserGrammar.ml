@@ -761,12 +761,12 @@ let _ =
                                      (_loc,
                                        (`App
                                           (_loc,
-                                            (`Id (_loc, (`Lid (_loc, "=")))),
+                                            ( (`Lid (_loc, "="))),
                                             x)), y))))
                            (`App
                               (_loc,
                                 (`App
-                                   (_loc, (`Id (_loc, (`Lid (_loc, "=")))),
+                                   (_loc, ( (`Lid (_loc, "="))),
                                      x)), y)) ys in
                        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
                   'symbol )))));
