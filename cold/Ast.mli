@@ -169,7 +169,7 @@ and case =
   [ `Bar of (loc * case * case) | `Case of (loc * pat * exp)
   | `CaseWhen of (loc * pat * exp * exp) | ant] 
 and module_exp =
-  [ sid | `App of (loc * module_exp * module_exp)
+  [ vid' | `App of (loc * module_exp * module_exp)
   | `Functor of (loc * auident * module_type * module_exp)
   | `Struct of (loc * stru) | `StructEnd of loc
   | `Constraint of (loc * module_exp * module_type)

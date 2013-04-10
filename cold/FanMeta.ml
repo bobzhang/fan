@@ -1587,7 +1587,7 @@ class meta =
     method module_exp : 'loc -> module_exp -> ep=
       fun _loc  ->
         function
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>ep)
         | `App (_a0,_a1,_a2) ->
             `App
               (_loc,

@@ -775,7 +775,7 @@ and pp_print_case fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result32)
 and pp_print_module_exp fmt =
   function
-  | #sid as _a0 -> (pp_print_sid fmt _a0 :>'result31)
+  | #vid' as _a0 -> (pp_print_vid' fmt _a0 :>'result31)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_exp _a1 pp_print_module_exp _a2
@@ -1805,7 +1805,7 @@ class print =
     method module_exp : 'fmt -> module_exp -> unit=
       fun fmt  ->
         function
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
+        | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
               self#module_exp _a1 self#module_exp _a2
@@ -2901,7 +2901,7 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>case)
     method module_exp : module_exp -> module_exp=
       function
-      | #sid as _a0 -> (self#sid _a0 : sid  :>module_exp)
+      | #vid' as _a0 -> (self#vid' _a0 : vid'  :>module_exp)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_exp _a1 in
@@ -3777,7 +3777,7 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method module_exp : module_exp -> 'self_type=
       function
-      | #sid as _a0 -> (self#sid _a0 :>'self_type)
+      | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#module_exp _a1 in self#module_exp _a2
@@ -4607,7 +4607,7 @@ and strip_loc_case =
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result272)
 and strip_loc_module_exp =
   function
-  | #sid as _a0 -> (strip_loc_sid _a0 :>'result271)
+  | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result271)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_exp _a1 in
       let _a2 = strip_loc_module_exp _a2 in `App (_a1, _a2)

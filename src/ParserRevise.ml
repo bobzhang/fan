@@ -81,7 +81,7 @@ let apply () = begin
         [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"module_exp" _loc n s
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.module_exp_tag
-        | module_longident{i} -> `Id (_loc, (i : vid :>ident))
+        | module_longident{i} -> (* `Id (_loc, (i : vid :>ident)) *) (i:>module_exp)
         | "("; S{me}; ":"; module_type{mt}; ")" ->  `Constraint (_loc, me, mt)
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)

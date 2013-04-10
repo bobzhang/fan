@@ -166,7 +166,7 @@ and case =
   [ `Bar of (case * case) | `Case of (pat * exp)
   | `CaseWhen of (pat * exp * exp) | ant] 
 and module_exp =
-  [ sid | `App of (module_exp * module_exp)
+  [ vid' | `App of (module_exp * module_exp)
   | `Functor of (auident * module_type * module_exp) | `Struct of stru
   | `StructEnd | `Constraint of (module_exp * module_type)
   | `PackageModule of exp | ant] 

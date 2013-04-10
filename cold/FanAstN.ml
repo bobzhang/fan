@@ -604,7 +604,7 @@ class eq =
     method module_exp : module_exp -> module_exp -> 'result51=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result51)
+        | ((#vid' as _a0),(#vid' as _b0)) -> (self#vid' _a0 _b0 :>'result51)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#module_exp _a0 _b0) && (self#module_exp _a1 _b1)
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
@@ -1462,7 +1462,7 @@ class print =
     method module_exp : 'fmt -> module_exp -> unit=
       fun fmt  ->
         function
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
+        | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#module_exp _a0
               self#module_exp _a1
@@ -2530,7 +2530,7 @@ and meta_case _loc =
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
 and meta_module_exp _loc =
   function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result152)
+  | #vid' as _a0 -> (meta_vid' _loc _a0 :>'result152)
   | `App (_a0,_a1) ->
       `App
         (_loc,

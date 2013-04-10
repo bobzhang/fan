@@ -422,7 +422,7 @@ and case =
   | `CaseWhen of (loc * pat * exp * exp)
   | ant  ]
 and module_exp =
-  [= sid
+  [= vid' 
   | `App of (loc * module_exp * module_exp) (* me me *)
   | `Functor of (loc * auident * module_type * module_exp)
   | `Struct of (loc * stru)

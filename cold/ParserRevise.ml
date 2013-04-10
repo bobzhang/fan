@@ -173,10 +173,10 @@ let apply () =
                        failwith
                          "AstQuotation.expand _loc x FanDyn.module_exp_tag\n"))));
          ([`Snterm (Gram.obj (module_longident : 'module_longident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i : vid  :>ident)) : 'module_exp ))\n",
+           ("Gram.mk_action\n  (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->\n     ((i :>module_exp) : 'module_exp ))\n",
              (Gram.mk_action
                 (fun (i : 'module_longident)  (_loc : FanLoc.t)  ->
-                   (`Id (_loc, (i : vid  :>ident)) : 'module_exp )))));
+                   ((i :>module_exp) : 'module_exp )))));
          ([`Skeyword "(";
           `Sself;
           `Skeyword ":";

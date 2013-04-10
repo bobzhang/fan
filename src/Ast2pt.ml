@@ -1060,7 +1060,8 @@ and module_str_binding (x:Ast.module_binding) acc =
   | t -> errorf (loc_of t) "module_str_binding: %s" (dump_module_binding t)]
 and module_exp (x:Ast.module_exp)=
   match x with 
-  [`Id(loc,i)   -> mkmod loc (Pmod_ident (long_uident i))
+  [ #vid'  as i ->
+    let loc = loc_of i in  mkmod loc (Pmod_ident (long_uident (i:vid':>ident)))
   | `App(loc,me1,me2) ->
       mkmod loc (Pmod_apply (module_exp me1) (module_exp me2))
   | `Functor(loc,`Uid(sloc,n),mt,me) ->
