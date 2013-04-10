@@ -23,7 +23,7 @@ let to_string (ident : ident) =
   let rec aux i acc =
     match i with
     | `Dot (_loc,a,b) -> aux a ("_" ^ (aux b acc))
-    | `App (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
+    | `Apply (_loc,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
     | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
@@ -31,7 +31,7 @@ let to_string (ident : ident) =
 
 let rec to_vid (x : ident) =
   (match x with
-   | `App _ -> failwithf "Id.to_vid"
+   | `Apply _ -> failwithf "Id.to_vid"
    | `Dot (_loc,a,b) -> `Dot (_loc, (to_vid a), (to_vid b))
    | `Lid _|`Uid _|`Ant _ as x -> x : vid )
 

@@ -104,7 +104,7 @@ let gen_strip =
   let mk_variant cons params =
     let params' =
       List.filter
-        (function | { ty = `Id (_loc,`Lid (_,"loc"));_} -> false | _ -> true)
+        (function | { ty = `Lid (_,"loc");_} -> false | _ -> true)
         params in
     let result =
       appl_of_list ((EP.of_str cons) ::
@@ -112,10 +112,10 @@ let gen_strip =
     List.fold_right
       (fun { info_exp = exp; pat0; ty;_}  res  ->
          match ty with
-         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
-           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
-           |`Id (_loc,`Lid (_,"loc"))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+         | `Lid (_,"int")|`Lid (_,"string")
+           |`Lid (_,"int32")|`Lid (_,"nativeint")
+           |`Lid (_,"loc")
+           |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
              Ast.exp )) params' result in
@@ -124,10 +124,10 @@ let gen_strip =
     List.fold_right
       (fun { info_exp = exp; pat0; ty;_}  res  ->
          match ty with
-         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
-           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
-           |`Id (_loc,`Lid (_,"loc"))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+         | `Lid (_,"int")|`Lid (_,"string")
+           |`Lid (_,"int32")|`Lid (_,"nativeint")
+           |`Lid (_,"loc")
+           |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
              Ast.exp )) params result in
@@ -140,10 +140,10 @@ let gen_strip =
     List.fold_right
       (fun { re_info = { info_exp = exp; pat0; ty;_};_}  res  ->
          match ty with
-         | `Id (_loc,`Lid (_,"int"))|`Id (_loc,`Lid (_,"string"))
-           |`Id (_loc,`Lid (_,"int32"))|`Id (_loc,`Lid (_,"nativeint"))
-           |`Id (_loc,`Lid (_,"loc"))
-           |`Id (_loc,`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt"))) -> res
+         | `Lid (_,"int")|`Lid (_,"string")
+           |`Lid (_,"int32")|`Lid (_,"nativeint")
+           |`Lid (_,"loc")
+           |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
              Ast.exp )) cols result in
@@ -179,7 +179,7 @@ let _ =
     ("MetaExpr", gen_meta_exp)
 
 let gen_meta =
-  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "ep"))) : Ast.ctyp ))
+  gen_object ~kind:(Concrete ( (`Lid (_loc, "ep")) : Ast.ctyp ))
     ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
 
@@ -228,7 +228,7 @@ let gen_print =
     ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 
 let gen_print_obj =
-  gen_object ~kind:(Concrete (`Id (_loc, (`Lid (_loc, "unit"))) : Ast.ctyp ))
+  gen_object ~kind:(Concrete ( (`Lid (_loc, "unit")) : Ast.ctyp ))
     ~mk_tuple:mk_tuple_print ~base:"printbase" ~class_name:"print"
     ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
 
@@ -404,8 +404,8 @@ let generate (module_types : FSig.module_types) =
                     (`Constraint
                        (_loc, (`Uid (_loc, (String.capitalize x))),
                          (`App
-                            (_loc, (`Id (_loc, (`Lid (_loc, "tag")))),
-                              (`Id (_loc, (`Lid (_loc, x))))))))))) : 
+                            (_loc, ( (`Lid (_loc, "tag"))),
+                              ( (`Lid (_loc, x)))))))))) : 
           Ast.stru )) tys in
    sem_of_list (typedecl :: to_string :: tags) : stru )
 
@@ -493,9 +493,9 @@ let generate (module_types : FSig.module_types) =
        let obj =
          Objs.map_row_field
            (function
-            | (`TyVrnOf (_loc,x,`Id (_,`Lid (_,"loc"))) : Ast.row_field) ->
+            | (`TyVrnOf (_loc,x,`Lid (_,"loc")) : Ast.row_field) ->
                 (`TyVrn (_loc, x) : Ast.row_field )
-            | (`TyVrnOf (_loc,x,`Par (_,`Sta (_,`Id (_,`Lid (_,"loc")),y))) :
+            | (`TyVrnOf (_loc,x,`Par (_,`Sta (_,`Lid (_,"loc"),y))) :
                 Ast.row_field) ->
                 (match y with
                  | (`Sta (_loc,_,_) : Ast.ctyp) ->

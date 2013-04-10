@@ -241,12 +241,13 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
                      (self#ident _loc _a1))), (self#ident _loc _a2))
-        | `App (_a0,_a1,_a2) ->
+        | `Apply (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Apply")), (self#loc _loc _a0))),
                      (self#ident _loc _a1))), (self#ident _loc _a2))
         | #alident as _a0 -> (self#alident _loc _a0 :>ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>ep)
@@ -260,12 +261,13 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
                      (self#ident _loc _a1))), (self#ident _loc _a2))
-        | `App (_a0,_a1,_a2) ->
+        | `Apply (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
+                     (`App
+                        (_loc, (`Vrn (_loc, "Apply")), (self#loc _loc _a0))),
                      (self#ident _loc _a1))), (self#ident _loc _a2))
         | `Lid (_a0,_a1) ->
             `App
@@ -343,11 +345,6 @@ class meta =
     method any : 'loc -> any -> ep=
       fun _loc  (`Any _a0)  ->
         `App (_loc, (`Vrn (_loc, "Any")), (self#loc _loc _a0))
-    method sid : 'loc -> sid -> ep=
-      fun _loc  (`Id (_a0,_a1))  ->
-        `App
-          (_loc, (`App (_loc, (`Vrn (_loc, "Id")), (self#loc _loc _a0))),
-            (self#ident _loc _a1))
     method ctyp : 'loc -> ctyp -> ep=
       fun _loc  ->
         function
@@ -396,7 +393,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "OptLabl")), (self#loc _loc _a0))),
                      (self#alident _loc _a1))), (self#ctyp _loc _a2))
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #ident' as _a0 -> (self#ident' _loc _a0 :>ep)
         | `TyObj (_a0,_a1,_a2) ->
             `App
               (_loc,

@@ -122,11 +122,10 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                     (`Str (_loc, "false"))))))))) in
                (`Constraint
                   (_loc, x,
-                    (`Id
-                       (_loc,
+                    (
                          (`Dot
                             (_loc, (`Uid (_loc, "Ast")),
-                              (`Lid (_loc, "exp"))))))) : Ast.exp )
+                              (`Lid (_loc, "exp")))))) : Ast.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

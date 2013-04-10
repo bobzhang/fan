@@ -18,6 +18,6 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let open FSig in
     match destination with
     | Obj (Map ) ->
-        (`Case (_loc, pat, (`Coercion (_loc, e, (`Id (_loc, name)), annot))) : 
+        (`Case (_loc, pat, (`Coercion (_loc, e, ( name:>ctyp), annot))) : 
         Ast.case )
     | _ -> (`Case (_loc, pat, (`Subtype (_loc, e, annot))) : Ast.case )

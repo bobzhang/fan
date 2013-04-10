@@ -70,18 +70,18 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
     let tyvar = right_transform right_type_variable in
     let rec aux =
       function
-      | `Id (_loc,`Lid (_,id)) ->
+      | `Lid (_,id) ->
           if Hashset.mem cxt id
           then `Lid (_loc, (left_trans id))
           else right_trans (`Lid (_loc, id))
-      | `Id (_loc,id) -> right_trans (Id.to_vid id)
+      | #ident' as id  -> right_trans (Id.to_vid id)
       | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
       | `Quote (_loc,_,`Lid (_,s)) -> tyvar s
       | `Arrow (_loc,t1,t2) ->
           aux
             (`App
                (_loc,
-                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
+                 (`App (_loc, ( (`Lid (_loc, "arrow"))), t1)), t2))
       | `Par _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
             (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple ~right_type_id
@@ -99,11 +99,11 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
     let tyvar = right_transform right_type_variable in
     let rec aux: ctyp -> exp =
       function
-      | `Id (_loc,id) -> trans (Id.to_vid id)
+      | #ident' as id -> trans (Id.to_vid id)
       | `Quote (_loc,_,`Lid (_,s)) -> tyvar s
       | `App _ as ty ->
           (match list_of_app ty [] with
-           | (`Id (_loc,tctor) : Ast.ctyp)::ls ->
+           | (#ident' as tctor  : Ast.ctyp)::ls ->
                appl_of_list ((trans (Id.to_vid tctor)) ::
                  (ls |>
                     (List.map
@@ -124,7 +124,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
           aux
             (`App
                (_loc,
-                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2) : 
+                 (`App (_loc, ( (`Lid (_loc, "arrow"))), t1)), t2) : 
             Ast.ctyp )
       | `Par _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
@@ -165,8 +165,8 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
        mk_variant cons exps in
      let e = mk (cons, tyargs) in `Case (_loc, p, e) : case ) in
-  let simple lid =
-    (let e = (simple_exp_of_ctyp (`Id (_loc, lid))) +> names in
+  let simple (lid:ident) =
+    (let e = (simple_exp_of_ctyp ( lid :> ctyp)) +> names in
      let (f,a) = view_app [] result in
      let annot = appl_of_list (f :: (List.map (fun _  -> `Any _loc) a)) in
      Case.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
@@ -234,7 +234,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                    (Objs.dump_type_repr t))
         | `TyEq (_,_,ctyp) ->
             (match ctyp with
-             | `Id _|`Par _|`Quote _|`Arrow _|`App _ as x ->
+             | #ident' |`Par _|`Quote _|`Arrow _|`App _ as x ->
                  let exp = simple_exp_of_ctyp x in
                  let funct = eta_expand (exp +> names) arity in
                  mk_prefix ~names ~left_type_variable tyvars funct

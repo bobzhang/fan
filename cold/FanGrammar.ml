@@ -6,7 +6,7 @@ type name =  {
   loc: loc} 
 
 type styp =
-  [ `Id of (loc * ident) | `App of (loc * styp * styp)
+  [ ident' | `App of (loc * styp * styp)
   | `Quote of (loc * position_flag * alident) | `Self of (loc * string)
   | `Tok of loc | `Type of ctyp] 
 

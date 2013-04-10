@@ -137,10 +137,9 @@ let stream_pattern_component skont ckont =
              (_loc,`Case
                      (_,`Constraint
                           (_,`Lid (_,v),`App
-                                          (_,`Id
-                                               (_,`Dot
+                                          (_,`Dot
                                                     (_,`Uid (_,m),`Lid
-                                                                    (_,"t"))),
+                                                                    (_,"t")),
                                            `Any _)),e))
             : Ast.exp) when (v = strm_n) && (m = (gm ())) -> e
         | _ -> (`App (_loc, e, (`Lid (_loc, strm_n))) : Ast.exp ) in
@@ -329,9 +328,8 @@ let cparser _loc bpo pc =
       (_loc, (`Lid (_loc, strm_n)),
         (`App
            (_loc,
-             (`Id
-                (_loc,
-                  (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))))),
+             (
+                  (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t"))))),
              (`Any _loc)))) in
   (`Fun (_loc, (`Case (_loc, p, e))) : Ast.exp )
 
@@ -362,11 +360,10 @@ let cparser_match _loc me bpo pc =
                    (_loc, (`Lid (_loc, strm_n)),
                      (`App
                         (_loc,
-                          (`Id
-                             (_loc,
+                          (
                                (`Dot
                                   (_loc, (`Uid (_loc, (gm ()))),
-                                    (`Lid (_loc, "t")))))), (`Any _loc))))),
+                                    (`Lid (_loc, "t"))))), (`Any _loc))))),
                 me)), e) : Ast.exp )
 
 let rec not_computing =

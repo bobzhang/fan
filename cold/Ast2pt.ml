@@ -26,7 +26,7 @@ let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : Ast.ident) ->
       (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
-  | (`App (_loc,i1,i2) : Ast.ident) ->
+  | `Apply (_loc,i1,i2) ->
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | `Ant (_loc,_)|(`Uid (_loc,_) : Ast.ident)|(`Lid (_loc,_) : Ast.ident) as
       i -> (i : Ast.exp )
@@ -65,7 +65,7 @@ let ident_tag (i : ident) =
     | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : Ast.ident) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
     | (`Dot (_loc,i1,i2) : Ast.ident) -> self i2 (self i1 acc)
-    | (`App (_loc,i1,i2) : Ast.ident) ->
+    | `Apply (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
          | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i))
@@ -115,7 +115,7 @@ let long_uident i = (long_uident_noloc i) +> (loc_of i)
 
 let rec ctyp_long_id_prefix (t : ctyp) =
   (match t with
-   | `Id (_loc,i) -> ident_noloc i
+   | #ident' as i -> ident_noloc i
    | `App (_loc,m1,m2) ->
        let li1 = ctyp_long_id_prefix m1 in
        let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
@@ -124,20 +124,20 @@ let rec ctyp_long_id_prefix (t : ctyp) =
 
 let ctyp_long_id (t : ctyp) =
   (match t with
-   | `Id (_loc,i) -> (false, (long_type_ident i))
+   | #ident' as i -> (false, (long_type_ident i))
    | `ClassPath (_,i) -> (true, (ident i))
    | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) : (bool *
                                                                 Longident.t
                                                                 Location.loc) )
 
 let predef_option loc =
-  (`Id (loc, (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))))) : 
-  ctyp )
+  (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))) : ctyp )
 
 let rec ctyp (x : ctyp) =
   match x with
-  | `Id (_loc,i) ->
-      let li = long_type_ident i in mktyp _loc (Ptyp_constr (li, []))
+  | #ident' as i ->
+      let li = long_type_ident (i :>ident) in
+      let _loc = loc_of i in mktyp _loc (Ptyp_constr (li, []))
   | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc,_,_) as f ->
@@ -216,7 +216,7 @@ and meth_list (fl : name_ctyp) acc =
 and package_type_constraints (wc : with_constr)
   (acc : (Longident.t Asttypes.loc * core_type) list) =
   (match wc with
-   | `TypeEq (_loc,`Id (_,id),ct) -> ((ident id), (ctyp ct)) :: acc
+   | `TypeEq (_loc,(#ident' as id),ct) -> ((ident id), (ctyp ct)) :: acc
    | `And (_loc,wc1,wc2) ->
        package_type_constraints wc1 (package_type_constraints wc2 acc)
    | x ->
@@ -342,10 +342,11 @@ let class_parameters (t : type_parameters) =
     (list_of_com t [])
 
 let type_parameters_and_type_name (t : ctyp) =
-  let rec aux t acc =
+  let rec aux (t : ctyp) acc =
     match t with
-    | `App (_loc,t1,t2) -> aux t1 ((optional_type_parameters t2) @ acc)
-    | `Id (_loc,i) -> ((ident i), acc)
+    | `App (_loc,t1,t2) ->
+        aux (t1 :>ctyp) ((optional_type_parameters (t2 :>ctyp)) @ acc)
+    | #ident' as i -> ((ident i), acc)
     | x -> errorf (loc_of x) "type_parameters_and_type_name %s" (dump_ctyp x) in
   aux t []
 
@@ -782,7 +783,7 @@ and binding (x : binding) acc =
       : Ast.binding) ->
       let rec id_to_string (x : ctyp) =
         match x with
-        | `Id (_loc,`Lid (_,x)) -> [x]
+        | `Lid (_,x) -> [x]
         | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
         | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x) in
       let vars = id_to_string vs in

@@ -636,7 +636,7 @@ let _ =
                        (let () = check_not_tok s in
                         let styp =
                           `App
-                            (_loc, (`Id (_loc, (`Lid (_loc, "list")))),
+                            (_loc, ( (`Lid (_loc, "list"))),
                               (s.styp)) in
                         let text =
                           mk_slist _loc
@@ -648,12 +648,12 @@ let _ =
                         mk_symbol ~text ~styp ~pattern:None : 'symbol )
                    | _ ->
                        failwith
-                         "let () = check_not_tok s in\nlet styp = `App (_loc, (`Id (_loc, (`Lid (_loc, \"list\")))), (s.styp)) in\nlet text =\n  mk_slist _loc\n    (match x with\n     | \"L0\" -> false\n     | \"L1\" -> true\n     | _ -> failwithf \"only (L0|L1) allowed here\") sep s in\nmk_symbol ~text ~styp ~pattern:None\n"))));
+                         "let () = check_not_tok s in\nlet styp = `App (_loc, ( (`Lid (_loc, \"list\"))), (s.styp)) in\nlet text =\n  mk_slist _loc\n    (match x with\n     | \"L0\" -> false\n     | \"L1\" -> true\n     | _ -> failwithf \"only (L0|L1) allowed here\") sep s in\nmk_symbol ~text ~styp ~pattern:None\n"))));
         ([`Stoken
             (((function | `Uid "OPT" -> true | _ -> false)),
               (`Normal, "`Uid \"OPT\""));
          `Sself],
-          ("Gram.mk_action\n  (fun (s : 'symbol)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid \"OPT\" ->\n         (let () = check_not_tok s in\n          let styp =\n            `App (_loc, (`Id (_loc, (`Lid (_loc, \"option\")))), (s.styp)) in\n          let text = `Sopt (_loc, (s.text)) in\n          mk_symbol ~text ~styp ~pattern:None : 'symbol )\n     | _ ->\n         failwith\n           \"let () = check_not_tok s in\nlet styp = `App (_loc, (`Id (_loc, (`Lid (_loc, \"option\")))), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n\")\n",
+          ("Gram.mk_action\n  (fun (s : 'symbol)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid \"OPT\" ->\n         (let () = check_not_tok s in\n          let styp =\n            `App (_loc, ( (`Lid (_loc, \"option\"))), (s.styp)) in\n          let text = `Sopt (_loc, (s.text)) in\n          mk_symbol ~text ~styp ~pattern:None : 'symbol )\n     | _ ->\n         failwith\n           \"let () = check_not_tok s in\nlet styp = `App (_loc, ( (`Lid (_loc, \"option\"))), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n\")\n",
             (Gram.mk_action
                (fun (s : 'symbol)  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
@@ -662,13 +662,13 @@ let _ =
                       (let () = check_not_tok s in
                        let styp =
                          `App
-                           (_loc, (`Id (_loc, (`Lid (_loc, "option")))),
+                           (_loc, ( (`Lid (_loc, "option"))),
                              (s.styp)) in
                        let text = `Sopt (_loc, (s.text)) in
                        mk_symbol ~text ~styp ~pattern:None : 'symbol )
                   | _ ->
                       failwith
-                        "let () = check_not_tok s in\nlet styp = `App (_loc, (`Id (_loc, (`Lid (_loc, \"option\")))), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n"))));
+                        "let () = check_not_tok s in\nlet styp = `App (_loc, ( (`Lid (_loc, \"option\"))), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n"))));
         ([`Stoken
             (((function | `Uid "TRY" -> true | _ -> false)),
               (`Normal, "`Uid \"TRY\""));

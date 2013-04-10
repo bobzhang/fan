@@ -25,10 +25,11 @@ type uident =
   [ `Dot of (loc * uident * uident) | `App of (loc * uident * uident)
   | auident] 
 type ident =
-  [ `Dot of (loc * ident * ident) | `App of (loc * ident * ident) | alident
+  [ `Dot of (loc * ident * ident) | `Apply of (loc * ident * ident) | 
+    alident
   | auident] 
 type ident' =
-  [ `Dot of (loc * ident * ident) | `App of (loc * ident * ident)
+  [ `Dot of (loc * ident * ident) | `Apply of (loc * ident * ident)
   | `Lid of (loc * string) | `Uid of (loc * string)] 
 type vid =
   [ `Dot of (loc * vid * vid) | `Lid of (loc * string)
@@ -39,12 +40,11 @@ type vid' =
 type dupath = [ `Dot of (loc * dupath * dupath) | auident] 
 type dlpath = [ `Dot of (loc * dupath * alident) | alident] 
 type any = [ `Any of loc] 
-type sid = [ `Id of (loc * ident)] 
 type ctyp =
   [ `Alias of (loc * ctyp * alident) | any | `App of (loc * ctyp * ctyp)
   | `Arrow of (loc * ctyp * ctyp) | `ClassPath of (loc * ident)
   | `Label of (loc * alident * ctyp) | `OptLabl of (loc * alident * ctyp)
-  | sid | `TyObj of (loc * name_ctyp * row_var_flag)
+  | ident' | `TyObj of (loc * name_ctyp * row_var_flag)
   | `TyObjEnd of (loc * row_var_flag) | `TyPol of (loc * ctyp * ctyp)
   | `TyPolEnd of (loc * ctyp) | `TyTypePol of (loc * ctyp * ctyp)
   | `Quote of (loc * position_flag * alident)

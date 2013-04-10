@@ -83,7 +83,7 @@ let retype_rule_list_without_patterns _loc rl =
 let make_ctyp (styp : styp) tvar =
   (let rec aux =
      function
-     | `Id _|`Quote _ as x -> x
+     | #ident' |`Quote _ as x -> x
      | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
      | `Self (_loc,x) ->
          if tvar = ""
@@ -97,11 +97,10 @@ let make_ctyp (styp : styp) tvar =
            (_loc,
              (`Ctyp
                 (_loc,
-                  (`Id
-                     (_loc,
+                  (
                        (`Dot
                           (_loc, (`Uid (_loc, "FanToken")),
-                            (`Lid (_loc, "t")))))))))
+                            (`Lid (_loc, "t"))))))))
      | `Type t -> t in
    aux styp : ctyp )
 
@@ -162,11 +161,10 @@ let rec make_exp (tvar : string) (x : text) =
                  (_loc, (n.exp),
                    (`App
                       (_loc,
-                        (`Id
-                           (_loc,
+                        (
                              (`Dot
                                 (_loc, (gm () : vid  :>ident),
-                                  (`Lid (_loc, "t")))))),
+                                  (`Lid (_loc, "t"))))),
                         (`Quote
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))))))) in
         (match lev with
@@ -248,11 +246,10 @@ let text_of_action (_loc : loc) (psl : symbol list)
                  (_loc,
                    (`Constraint
                       (_loc, locid,
-                        (`Id
-                           (_loc,
+                        (
                              (`Dot
                                 (_loc, (`Uid (_loc, "FanLoc")),
-                                  (`Lid (_loc, "t")))))))), e1))) : Ast.exp )
+                                  (`Lid (_loc, "t"))))))), e1))) : Ast.exp )
      | (e,p) ->
          let (exp,pat) =
            match (e, p) with
@@ -265,11 +262,10 @@ let text_of_action (_loc : loc) (psl : symbol list)
                  (_loc,
                    (`Constraint
                       (_loc, locid,
-                        (`Id
-                           (_loc,
+                        (
                              (`Dot
                                 (_loc, (`Uid (_loc, "FanLoc")),
-                                  (`Lid (_loc, "t")))))))),
+                                  (`Lid (_loc, "t"))))))),
                    (`Match
                       (_loc, exp,
                         (`Bar
@@ -343,9 +339,8 @@ let text_of_entry (e : entry) =
         (_loc, (x.exp),
           (`App
              (_loc,
-               (`Id
-                  (_loc,
-                    (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))))),
+               (
+                    (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t"))))),
                (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (x.tvar)))))))) : 
        Ast.exp ) in
    let pos =
@@ -411,11 +406,10 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                        (`Str (_loc, i)))),
                   (`App
                      (_loc,
-                       (`Id
-                          (_loc,
+                       (
                             (`Dot
                                (_loc, (gm () : vid  :>ident),
-                                 (`Lid (_loc, "t")))))),
+                                 (`Lid (_loc, "t"))))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
         Ast.binding )
     | { exp;_} ->
@@ -487,11 +481,10 @@ let sfold ?sep  _loc (ns : string list) f e s =
              (`Type
                 (`App
                    (_loc,
-                     (`Id
-                        (_loc,
+                     (
                           (`Dot
                              (_loc, (gm () : vid  :>ident),
-                               (`Lid (_loc, ("fold" ^ suffix))))))),
+                               (`Lid (_loc, ("fold" ^ suffix)))))),
                      (`Any _loc)))), (s.styp))), styp) in
   let text =
     `Smeta

@@ -43,8 +43,8 @@ let gen_quantifiers1 ~arity  n =
       |> List.concat)
      |> appl_of_list : ctyp )
 
-let of_id_len ~off  (id,len) =
-  appl_of_list ((`Id (_loc, id) : Ast.ctyp ) ::
+let of_id_len ~off  ((id:ident),len) =
+  appl_of_list (( id :> Ast.ctyp ) ::
     (List.init len
        (fun i  ->
           (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (allx ~off i)))) : 
@@ -60,7 +60,7 @@ let ty_name_of_tydcl (x : typedecl) =
         match tyvars with
         | `None _ -> []
         | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
-      appl_of_list ((`Id (_loc, (`Lid (_loc, name))) : Ast.ctyp ) :: tyvars)
+      appl_of_list (( (`Lid (_loc, name)) : Ast.ctyp ) :: tyvars)
   | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
@@ -167,7 +167,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | (`Id (_loc,`Lid (_,i)) : Ast.ctyp) when i = name ->
+            | (`Lid (_,i) : Ast.ctyp) when i = name ->
                 (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -182,12 +182,12 @@ let qualified_app_list =
   function
   | (`App (_loc,_,_) : Ast.ctyp) as x ->
       (match list_of_app x [] with
-       | (`Id (_loc,`Lid (_,_)) : Ast.ctyp)::_ -> None
-       | (`Id (_loc,i) : Ast.ctyp)::ys -> Some (i, ys)
+       | (`Lid (_,_) : Ast.ctyp)::_ -> None
+       | (#ident' as i : Ast.ctyp)::ys -> Some (i, ys)
        | _ -> None)
-  | (`Id (_loc,`Lid (_,_)) : Ast.ctyp)|(`Id (_loc,`Uid (_,_)) : Ast.ctyp) ->
+  | (`Lid (_,_) : Ast.ctyp)|(`Uid (_,_) : Ast.ctyp) ->
       None
-  | (`Id (_loc,i) : Ast.ctyp) -> Some (i, [])
+  | (#ident' as i : Ast.ctyp) -> Some (i, [])
   | _ -> None
 
 let is_abstract (x : typedecl) =
@@ -244,7 +244,7 @@ let mk_transform_type_eq () =
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = Id.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Id (_loc, (`Lid (_loc, dest))) : Ast.ctyp ) ::
+           appl_of_list (( (`Lid (_loc, dest)) : Ast.ctyp ) ::
              lst))
       | None  -> super#ctyp x
     method type_transformers =
@@ -291,7 +291,7 @@ let view_variant (t : row_field) =
           `variant (cons, (list_of_star t []))
       | `TyVrnOf (_loc,`C (_,cons),t) -> `variant (cons, [t])
       | `TyVrn (_loc,`C (_,cons)) -> `variant (cons, [])
-      | `Ctyp (_,`Id (_loc,i)) -> `abbrev i
+      | `Ctyp (_,(#ident' as i)) -> `abbrev i
       | u ->
           FanLoc.errorf (loc_of u) "view_variant %s" (Objs.dump_row_field u))
      lst : vbranch list )
