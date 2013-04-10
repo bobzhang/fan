@@ -13,36 +13,32 @@ let of_str s =
   else
     (match s.[0] with
      | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))
-     | x when Char.is_uppercase x -> `Id (_loc, (`Uid (_loc, s)))
-     | _ -> `Id (_loc, (`Lid (_loc, s))))
+     | x when Char.is_uppercase x -> `Uid (_loc, s)
+     | _ -> `Lid (_loc, s))
 
 let of_ident_number cons n =
-  appl_of_list ((`Id (_loc, cons)) ::
-    (List.init n (fun i  -> `Id (_loc, (xid i)))))
+  appl_of_list (cons :: (List.init n (fun i  -> xid i)))
 
 let (+>) f names =
-  appl_of_list (f ::
-    (List.map (fun lid  -> `Id (_loc, (`Lid (_loc, lid)))) names))
+  appl_of_list (f :: (List.map (fun lid  -> `Lid (_loc, lid)) names))
 
 let gen_tuple_first ~number  ~off  =
   match number with
-  | 1 -> `Id (_loc, (xid ~off 0))
+  | 1 -> xid ~off 0
   | n when n > 1 ->
       let lst =
-        zfold_left ~start:1 ~until:(number - 1)
-          ~acc:(`Id (_loc, (xid ~off 0)))
-          (fun acc  i  -> com acc (`Id (_loc, (xid ~off i)))) in
+        zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off 0)
+          (fun acc  i  -> com acc (xid ~off i)) in
       `Par (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first"
 
 let gen_tuple_second ~number  ~off  =
   match number with
-  | 1 -> `Id (_loc, (xid ~off:0 off))
+  | 1 -> xid ~off:0 off
   | n when n > 1 ->
       let lst =
-        zfold_left ~start:1 ~until:(number - 1)
-          ~acc:(`Id (_loc, (xid ~off:0 off)))
-          (fun acc  i  -> com acc (`Id (_loc, (xid ~off:i off)))) in
+        zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off:0 off)
+          (fun acc  i  -> com acc (xid ~off:i off)) in
       `Par (_loc, lst)
   | _ -> invalid_arg "n < 1 in gen_tuple_first "
 
@@ -52,16 +48,14 @@ let tuple_of_number ast n =
   if n > 1 then `Par (_loc, res) else res
 
 let of_vstr_number name i =
-  let items = List.init i (fun i  -> `Id (_loc, (xid i))) in
+  let items = List.init i (fun i  -> xid i) in
   if items = []
   then `Vrn (_loc, name)
   else
     (let item = items |> tuple_com in `App (_loc, (`Vrn (_loc, name)), item))
 
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
-  let args =
-    List.init arity
-      (fun i  -> List.init n (fun j  -> `Id (_loc, (xid ~off:i j)))) in
+  let args = List.init arity (fun i  -> List.init n (fun j  -> xid ~off:i j)) in
   let pat = of_str (cons_transform cons) in
   (List.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
 
@@ -69,8 +63,7 @@ let mk_record ?(arity= 1)  cols =
   let mk_list off =
     List.mapi
       (fun i  ({ FSig.col_label = col_label;_} : FSig.col)  ->
-         `RecBind
-           (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i))))) cols in
+         `RecBind (_loc, (`Lid (_loc, col_label)), (xid ~off i))) cols in
   let res =
     zfold_left ~start:1 ~until:(arity - 1)
       ~acc:(`Record (_loc, (sem_of_list (mk_list 0))))

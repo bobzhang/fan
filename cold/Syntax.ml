@@ -357,6 +357,8 @@ let luident = Gram.mk "luident"
 
 let uident = Gram.mk "uident"
 
+let vid = Gram.mk "vid"
+
 let astr = Gram.mk "astr"
 
 let dot_namespace = Gram.mk "dot_namespace"
@@ -413,8 +415,9 @@ module Options =
   struct
     type spec_list = (string * FanArg.spec * string) list 
     let init_spec_list = ref []
-    let init spec_list = init_spec_list := spec_list
+    let init spec_list = init_spec_list.contents <- spec_list
     let add (name,spec,descr) =
-      init_spec_list := (init_spec_list.contents @ [(name, spec, descr)])
-    let adds ls = init_spec_list := (init_spec_list.contents @ ls)
+      init_spec_list.contents <-
+        init_spec_list.contents @ [(name, spec, descr)]
+    let adds ls = init_spec_list.contents <- init_spec_list.contents @ ls
   end

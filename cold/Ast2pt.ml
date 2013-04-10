@@ -29,18 +29,19 @@ let rec normalize_acc =
   | (`App (_loc,i1,i2) : Ast.ident) ->
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
   | `Ant (_loc,_)|(`Uid (_loc,_) : Ast.ident)|(`Lid (_loc,_) : Ast.ident) as
-      i -> (`Id (_loc, i) : Ast.exp )
+      i -> (i : Ast.exp )
 
 let rec sep_dot_exp acc =
-  function
-  | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
-  | (`Id (loc,`Uid (_,s)) : Ast.exp) as e ->
-      (match acc with
-       | [] -> [(loc, [], e)]
-       | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
-  | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
-      sep_dot_exp acc (normalize_acc i)
-  | e -> ((loc_of e), [], e) :: acc
+  (function
+   | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
+   | `Dot (_l,_,_) as i -> sep_dot_exp acc (normalize_acc (i : vid  :>ident))
+   | (`Id (loc,`Uid (_,s)) : Ast.exp)|`Uid (loc,s) as e ->
+       (match acc with
+        | [] -> [(loc, [], e)]
+        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
+   | (`Id (_loc,(`Dot (_l,_,_) as i)) : Ast.exp) ->
+       sep_dot_exp acc (normalize_acc i)
+   | e -> ((loc_of e), [], e) :: acc : exp -> (loc * string list * exp) list )
 
 let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
   function
@@ -110,7 +111,7 @@ let long_uident_noloc i =
   | (Ldot (i,s),`uident) -> ldot i s
   | (Lident s,`uident) -> lident s
   | (i,`app) -> i
-  | _ -> error (loc_of i) "uppercase identifier expected"
+  | _ -> errorf (loc_of i) "uppercase identifier expected %s" ""
 
 let long_uident i = (long_uident_noloc i) +> (loc_of i)
 
@@ -292,8 +293,8 @@ let mkmutable (x : mutable_flag) =
 
 let paolab (lab : string) (p : pat) =
   (match (lab, p) with
-   | ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_))) ->
-       i
+   | ("",(`Id (_loc,`Lid (_,i))|`Constraint (_loc,`Id (_,`Lid (_,i)),_)))
+     |("",(`Lid (_loc,i)|`Constraint (_loc,`Lid (_,i),_))) -> i
    | ("",p) -> errorf (loc_of p) "paolab %s" (dump_pat p)
    | _ -> lab : string )
 
@@ -377,13 +378,21 @@ let rec mkrangepat loc c1 c2 =
 
 let rec pat (x : pat) =
   match x with
-  | (`Id (_loc,`Lid (_,("true"|"false" as txt))) : Ast.pat) ->
+  | (`Lid (_loc,("true"|"false" as txt)) : Ast.pat)
+    |`Lid (_loc,("true"|"false" as txt)) ->
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
       mkpat _loc p
-  | (`Id (_loc,`Lid (sloc,s)) : Ast.pat) ->
-      mkpat _loc (Ppat_var (with_loc s sloc))
-  | (`Id (_loc,i) : Ast.pat) ->
+  | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc))
+  | (`Lid (sloc,s) : Ast.pat) -> mkpat sloc (Ppat_var (with_loc s sloc))
+  | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc))
+  | `Uid (_loc,_)|`Dot (_loc,_,_) as i ->
+      let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
+      mkpat _loc p
+  | `Dot (_loc,_,_)|`Uid (_loc,_) as i ->
+      let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
+      mkpat _loc p
+  | `Id (_loc,i) ->
       let p = Ppat_construct ((long_uident i), None, false) in mkpat _loc p
   | (`Alias (_loc,p1,x) : Ast.pat) ->
       (match x with
@@ -392,11 +401,7 @@ let rec pat (x : pat) =
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | (`Any _loc : Ast.pat) -> mkpat _loc Ppat_any
-  | (`App
-       (_loc,`Id (_,(`Uid (sloc,s) : Ast.ident)),`Par
-                                                   (_,(`Any loc_any :
-                                                        Ast.pat)))
-      : Ast.pat) ->
+  | (`App (_loc,`Uid (sloc,s),`Par (_,`Any loc_any)) : Ast.pat) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -415,54 +420,56 @@ let rec pat (x : pat) =
        | _ ->
            error (loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
-  | (`Array (loc,p) : Ast.pat) ->
-      mkpat loc (Ppat_array (List.map pat (list_of_sem p [])))
-  | (`ArrayEmpty loc : Ast.pat) -> mkpat loc (Ppat_array [])
-  | (`Chr (loc,s) : Ast.pat) ->
-      mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
-  | (`Int (loc,s) : Ast.pat) ->
+  | (`Array (_loc,p) : Ast.pat) ->
+      mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
+  | (`ArrayEmpty _loc : Ast.pat) -> mkpat _loc (Ppat_array [])
+  | (`Chr (_loc,s) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_char (char_of_char_token _loc s)))
+  | (`Int (_loc,s) : Ast.pat) ->
       let i =
         try int_of_string s
         with
         | Failure _ ->
-            error loc
+            error _loc
               "Integer literal exceeds the range of representable integers of type int" in
-      mkpat loc (Ppat_constant (Const_int i))
-  | (`Int32 (loc,s) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_int i))
+  | (`Int32 (_loc,s) : Ast.pat) ->
       let i32 =
         try Int32.of_string s
         with
         | Failure _ ->
-            error loc
+            error _loc
               "Integer literal exceeds the range of representable integers of type int32" in
-      mkpat loc (Ppat_constant (Const_int32 i32))
-  | (`Int64 (loc,s) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_int32 i32))
+  | (`Int64 (_loc,s) : Ast.pat) ->
       let i64 =
         try Int64.of_string s
         with
         | Failure _ ->
-            error loc
+            error _loc
               "Integer literal exceeds the range of representable integers of type int64" in
-      mkpat loc (Ppat_constant (Const_int64 i64))
-  | (`Nativeint (loc,s) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_int64 i64))
+  | (`Nativeint (_loc,s) : Ast.pat) ->
       let nati =
         try Nativeint.of_string s
         with
         | Failure _ ->
-            error loc
+            error _loc
               "Integer literal exceeds the range of representable integers of type nativeint" in
-      mkpat loc (Ppat_constant (Const_nativeint nati))
-  | (`Flo (loc,s) : Ast.pat) ->
-      mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
-  | (`Bar (loc,p1,p2) : Ast.pat) -> mkpat loc (Ppat_or ((pat p1), (pat p2)))
-  | (`Str (loc,s) : Ast.pat) ->
-      mkpat loc (Ppat_constant (Const_string (string_of_string_token loc s)))
-  | (`PaRng (loc,p1,p2) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_nativeint nati))
+  | (`Flo (_loc,s) : Ast.pat) ->
+      mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
+  | (`Bar (_loc,p1,p2) : Ast.pat) ->
+      mkpat _loc (Ppat_or ((pat p1), (pat p2)))
+  | (`Str (_loc,s) : Ast.pat) ->
+      mkpat _loc
+        (Ppat_constant (Const_string (string_of_string_token _loc s)))
+  | (`PaRng (_loc,p1,p2) : Ast.pat) ->
       (match (p1, p2) with
        | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
            let c1 = char_of_char_token loc1 c1 in
-           let c2 = char_of_char_token loc2 c2 in mkrangepat loc c1 c2
-       | _ -> error loc "range pattern allowed only for characters")
+           let c2 = char_of_char_token loc2 c2 in mkrangepat _loc c1 c2
+       | _ -> error _loc "range pattern allowed only for characters")
   | `Label (loc,_,_)|`LabelS (loc,_)|`OptLablExpr (loc,_,_,_)
     |`OptLabl (loc,_,_)|`OptLablS (loc,_) ->
       error loc "labeled pattern not allowed here"
@@ -492,7 +499,7 @@ let rec pat (x : pat) =
       mkpat loc
         (Ppat_constraint
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
-  | p -> error (loc_of p) "invalid pattern"
+  | p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p)
 
 let override_flag loc (x : override_flag) =
   match x with
@@ -502,12 +509,12 @@ let override_flag loc (x : override_flag) =
 
 let rec exp (x : exp) =
   match x with
-  | `Field (_loc,_,_)|`Id (_loc,`Dot _) ->
+  | `Field (_loc,_,_)|`Id (_loc,`Dot _)|`Dot (_loc,_,_) ->
       let (e,l) =
         match sep_dot_exp [] x with
-        | (loc,ml,`Id (sloc,`Uid (_,s)))::l ->
+        | (loc,ml,`Id (sloc,`Uid (_,s)))::l|(loc,ml,`Uid (sloc,s))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
-        | (loc,ml,`Id (sloc,`Lid (_,s)))::l ->
+        | (loc,ml,`Id (sloc,`Lid (_,s)))::l|(loc,ml,`Lid (sloc,s))::l ->
             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
         | (_,[],e)::l -> ((exp e), l)
         | _ -> errorf (loc_of x) "exp: %s" (dump_exp x) in
@@ -516,6 +523,9 @@ let rec exp (x : exp) =
           (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
              match e2 with
              | `Id (sloc,`Lid (_,s)) ->
+                 let loc = FanLoc.merge loc_bp loc_ep in
+                 (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
+             | `Lid (sloc,s) ->
                  let loc = FanLoc.merge loc_bp loc_ep in
                  (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
              | _ -> error (loc_of e2) "lowercase identifier expected")
@@ -544,13 +554,14 @@ let rec exp (x : exp) =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | (`Assert (_loc,`Id (_,`Lid (_,"false"))) : Ast.exp) ->
+  | (`Assert (_loc,`Lid (_,"false")) : Ast.exp) ->
       mkexp _loc Pexp_assertfalse
+  | `Assert (_loc,`Lid (_,"false")) -> mkexp _loc Pexp_assertfalse
   | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =
         match e with
-        | (`Field (loc,x,`Id (_,`Lid (_,"contents"))) : Ast.exp) ->
+        | (`Field (loc,x,`Lid (_,"contents")) : Ast.exp) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (exp x)); ("", (exp v))])
@@ -562,7 +573,7 @@ let rec exp (x : exp) =
             Pexp_apply
               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
                 [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
-        | `Id (_,`Lid (lloc,lab)) ->
+        | `Id (_,`Lid (lloc,lab))|`Lid (lloc,lab) ->
             Pexp_setinstvar ((with_loc lab lloc), (exp v))
         | `StringDot (loc,e1,e2) ->
             Pexp_apply
@@ -587,15 +598,14 @@ let rec exp (x : exp) =
              (exp e3)))
   | `Fun (loc,`Case (_,`LabelS (_,`Lid (sloc,lab)),e)) ->
       mkexp loc
-        (Pexp_function
-           (lab, None, [((pat (`Id (sloc, (`Lid (sloc, lab))))), (exp e))]))
+        (Pexp_function (lab, None, [((pat (`Lid (sloc, lab))), (exp e))]))
   | `Fun (loc,`Case (_,`Label (_,`Lid (_,lab),po),e)) ->
       mkexp loc (Pexp_function (lab, None, [((pat po), (exp e))]))
   | `Fun (loc,`CaseWhen (_,`LabelS (_,`Lid (sloc,lab)),w,e)) ->
       mkexp loc
         (Pexp_function
            (lab, None,
-             [((pat (`Id (sloc, (`Lid (sloc, lab))))),
+             [((pat (`Lid (sloc, lab))),
                 (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))]))
   | `Fun (loc,`CaseWhen (_,`Label (_,`Lid (_,lab),po),w,e)) ->
       mkexp loc
@@ -605,8 +615,7 @@ let rec exp (x : exp) =
   | `Fun (loc,`Case (_,`OptLablS (_,`Lid (sloc,lab)),e2)) ->
       mkexp loc
         (Pexp_function
-           (("?" ^ lab), None,
-             [((pat (`Id (sloc, (`Lid (sloc, lab))))), (exp e2))]))
+           (("?" ^ lab), None, [((pat (`Lid (sloc, lab))), (exp e2))]))
   | `Fun (loc,`Case (_,`OptLabl (_,`Lid (_,lab),p),e2)) ->
       let lab = paolab lab p in
       mkexp loc (Pexp_function (("?" ^ lab), None, [((pat p), (exp e2))]))
@@ -614,7 +623,7 @@ let rec exp (x : exp) =
       mkexp loc
         (Pexp_function
            (("?" ^ lab), None,
-             [((pat (`Id (sloc, (`Lid (sloc, lab))))),
+             [((pat (`Lid (sloc, lab))),
                 (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,`CaseWhen (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
       let lab = paolab lab p in
@@ -761,12 +770,14 @@ let rec exp (x : exp) =
        | _ -> mkexp loc (Pexp_tuple (List.map exp l)))
   | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
-  | (`Id (_loc,`Uid (_,"()")) : Ast.exp) ->
+  | `Id (_loc,`Uid (_,"()"))|`Uid (_loc,"()") ->
       mkexp _loc (Pexp_construct ((lident_with_loc "()" _loc), None, true))
-  | `Id (_loc,`Lid (_,("true"|"false" as s))) ->
+  | `Id (_loc,`Lid (_,("true"|"false" as s)))
+    |`Lid (_loc,("true"|"false" as s)) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
-  | `Id (_,`Lid (_loc,s)) -> mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-  | `Id (_,`Uid (_loc,s)) ->
+  | `Id (_,`Lid (_loc,s))|`Lid (_loc,s) ->
+      mkexp _loc (Pexp_ident (lident_with_loc s _loc))
+  | `Id (_,`Uid (_loc,s))|`Uid (_loc,s) ->
       mkexp _loc (Pexp_construct ((lident_with_loc s _loc), None, true))
   | `Vrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
@@ -783,21 +794,18 @@ let rec exp (x : exp) =
 and label_exp (x : exp) =
   match x with
   | `Label (_loc,`Lid (_,lab),eo) -> (lab, (exp eo))
-  | `LabelS (_loc,`Lid (sloc,lab)) ->
-      (lab, (exp (`Id (sloc, (`Lid (sloc, lab))))))
+  | `LabelS (_loc,`Lid (sloc,lab)) -> (lab, (exp (`Lid (sloc, lab))))
   | `OptLabl (_loc,`Lid (_,lab),eo) -> (("?" ^ lab), (exp eo))
-  | `OptLablS (loc,`Lid (_,lab)) ->
-      (("?" ^ lab), (exp (`Id (loc, (`Lid (loc, lab))))))
+  | `OptLablS (loc,`Lid (_,lab)) -> (("?" ^ lab), (exp (`Lid (loc, lab))))
   | e -> ("", (exp e))
 and binding (x : binding) acc =
   match x with
   | (`And (_loc,x,y) : Ast.binding) -> binding x (binding y acc)
   | (`Bind
-       (_loc,(`Id (sloc,`Lid (_,bind_name)) : Ast.pat),`Constraint
-                                                         (_,e,`TyTypePol
-                                                                (_,vs,ty)))
+       (_loc,(`Lid (sloc,bind_name) : Ast.pat),`Constraint
+                                                 (_,e,`TyTypePol (_,vs,ty)))
       : Ast.binding) ->
-      let rec id_to_string x =
+      let rec id_to_string (x : ctyp) =
         match x with
         | `Id (_loc,`Lid (_,x)) -> [x]
         | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
@@ -1248,8 +1256,8 @@ let directive (x : exp) =
   match x with
   | `Str (_,s) -> Pdir_string s
   | `Int (_,i) -> Pdir_int (int_of_string i)
-  | (`Id (_loc,`Lid (_,"true")) : Ast.exp) -> Pdir_bool true
-  | (`Id (_loc,`Lid (_,"false")) : Ast.exp) -> Pdir_bool false
+  | (`Lid (_loc,"true") : Ast.exp) -> Pdir_bool true
+  | (`Lid (_loc,"false") : Ast.exp) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_exp e))
 
 let phrase (x : stru) =

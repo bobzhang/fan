@@ -22,7 +22,7 @@ let fibm y =
       (`Int (_loc, (string_of_int (fib (int_of_string x)))) : Ast.exp )
   | x ->
       let _loc = loc_of x in
-      (`App (_loc, (`Id (_loc, (`Lid (_loc, "fib")))), x) : Ast.exp )
+      (`App (_loc, (`Lid (_loc, "fib")), x) : Ast.exp )
 
 let _ = register_macro ("FIB", fibm)
 
@@ -33,14 +33,12 @@ let macro_expander =
     inherit  Objs.map as super
     method! exp =
       function
-      | `App (_loc,`Id (_,`Uid (_,a)),y) ->
+      | `App (_loc,`Uid (_,a),y) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#exp (f y)
             with
             | Not_found  ->
-                (fun ()  ->
-                   `App (_loc, (`Id (_loc, (`Uid (_loc, a)))), (self#exp y)))))
-            ()
+                (fun ()  -> `App (_loc, (`Uid (_loc, a)), (self#exp y))))) ()
       | e -> super#exp e
   end

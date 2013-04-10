@@ -308,7 +308,8 @@ let _ =
     ("-dlang",
       (FanArg.String
          (fun s  ->
-            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
+            AstQuotation.default.contents <-
+              FanToken.resolve_name ((`Sub []), s))),
       " Set the default language")
 
 let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]

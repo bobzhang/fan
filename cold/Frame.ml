@@ -31,8 +31,7 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
    let base = name_exp +> names in
-   let id_exps =
-     List.init arity (fun index  -> `Id (_loc, (xid ~off:index i))) in
+   let id_exps = List.init arity (fun index  -> xid ~off:index i) in
    let exp0 = List.hd id_exps in
    let id_pats = id_exps in
    let pat0 = exp0 in
@@ -64,7 +63,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
   exp )
 
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
-  ~left_type_id  ~right_type_variable  cxt ty =
+  ~left_type_id  ~right_type_variable  cxt (ty : ctyp) =
   let open Transform in
     let right_trans = transform right_type_id in
     let left_trans = basic_transform left_type_id in
@@ -73,9 +72,9 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
       function
       | `Id (_loc,`Lid (_,id)) ->
           if Hashset.mem cxt id
-          then `Id (_loc, (`Lid (_loc, (left_trans id))))
+          then `Lid (_loc, (left_trans id))
           else right_trans (`Lid (_loc, id))
-      | `Id (_loc,id) -> right_trans id
+      | `Id (_loc,id) -> right_trans (Id.to_vid id)
       | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
       | `Quote (_loc,_,`Lid (_,s)) -> tyvar s
       | `Arrow (_loc,t1,t2) ->
@@ -87,7 +86,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
             (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple ~right_type_id
                ~left_type_id ~right_type_variable cxt) ty
-      | ty ->
+      | (ty : ctyp) ->
           FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
             (Objs.dump_ctyp ty) in
     aux ty
@@ -98,26 +97,25 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
     let trans = transform right_type_id in
     let var = basic_transform left_type_variable in
     let tyvar = right_transform right_type_variable in
-    let rec aux =
+    let rec aux: ctyp -> exp =
       function
-      | `Id (_loc,id) -> trans id
+      | `Id (_loc,id) -> trans (Id.to_vid id)
       | `Quote (_loc,_,`Lid (_,s)) -> tyvar s
       | `App _ as ty ->
           (match list_of_app ty [] with
-           | (`Id (_loc,tctor))::ls ->
-               appl_of_list ((trans tctor) ::
+           | (`Id (_loc,tctor) : Ast.ctyp)::ls ->
+               appl_of_list ((trans (Id.to_vid tctor)) ::
                  (ls |>
                     (List.map
                        (function
                         | `Quote (_loc,_,`Lid (_,s)) ->
-                            `Id (_loc, (`Lid (_loc, (var s))))
+                            (`Lid (_loc, (var s)) : Ast.exp )
                         | t ->
-                            `Fun
-                              (_loc,
-                                (`Case
-                                   (_loc,
-                                     (`Id (_loc, (`Lid (_loc, "self")))),
-                                     (aux t))))))))
+                            (`Fun
+                               (_loc,
+                                 (`Case
+                                    (_loc, (`Lid (_loc, "self")), (aux t)))) : 
+                            Ast.exp )))))
            | _ ->
                FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_exp_of_ctyp: %s"
@@ -126,7 +124,8 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
           aux
             (`App
                (_loc,
-                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2))
+                 (`App (_loc, (`Id (_loc, (`Lid (_loc, "arrow")))), t1)), t2) : 
+            Ast.ctyp )
       | `Par _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
             (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
@@ -194,9 +193,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
     let f (var : decl_params) acc =
       match var with
       | `Quote (_,_,`Lid (_loc,s)) ->
-          `Fun
-            (_loc,
-              (`Case (_loc, (`Id (_loc, (`Lid (_loc, (varf s))))), acc)))
+          `Fun (_loc, (`Case (_loc, (`Lid (_loc, (varf s))), acc)))
       | t ->
           FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t) in
     match vars with
@@ -273,14 +270,14 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
              simple_exp_of_ctyp)
           (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
              ~destination:Str_item simple_exp_of_ctyp) tydcl in
-      `Bind (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))), fun_exp)
+      `Bind (_loc, (`Lid (_loc, (tctor_var name))), fun_exp)
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
          (Objs.dump_typedecl tydcl);
        `Bind
-         (_loc, (`Id (_loc, (`Lid (_loc, (tctor_var name))))),
+         (_loc, (`Lid (_loc, (tctor_var name))),
            (`App
-              (_loc, (`Id (_loc, (`Lid (_loc, "failwithf")))),
+              (_loc, (`Lid (_loc, "failwithf")),
                 (`Str (_loc, "Abstract data type not implemented"))))))
 
 let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 

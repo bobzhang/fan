@@ -6,7 +6,7 @@ let _loc = FanLoc.ghost
 
 let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App
-     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
+     (_loc, (`Lid (_loc, "failwith")),
        (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
    ?cons_transform  ~id:(id : basic_id_transform)  ?(names= [])  ~mk_tuple 
   ~mk_record  ~mk_variant  () =
@@ -19,9 +19,9 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
     | Some m ->
         `Last
           ((fun s  ->
-              (`Dot
-                 (_loc, (`Uid (_loc, m)),
-                   (`Lid (_loc, (basic_transform id s)))) : Ast.ident ))) in
+              `Dot
+                (_loc, (`Uid (_loc, m)),
+                  (`Lid (_loc, (basic_transform id s)))))) in
   let default (_,number) =
     if number > 1
     then
@@ -40,7 +40,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
 
 let gen_object ?module_name  ?(arity= 1)  ?(default=
   (`App
-     (_loc, (`Id (_loc, (`Lid (_loc, "failwith")))),
+     (_loc, (`Lid (_loc, "failwith")),
        (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ?(names= [])  ~mk_tuple  ~mk_record  ~mk_variant  () =
@@ -50,9 +50,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(default=
        `Exp
          (fun v  ->
             let v = basic_transform left_type_variable v in
-            (`App
-               (_loc, (`Id (_loc, (`Lid (_loc, v)))),
-                 (`Id (_loc, (`Lid (_loc, "self"))))) : Ast.exp )) in
+            (`App (_loc, (`Lid (_loc, v)), (`Lid (_loc, "self"))) : Ast.exp )) in
      let left_type_id = `Pre "" in
      let right_type_id = `Obj (basic_transform left_type_id) in
      let default (_,number) =

@@ -32,9 +32,7 @@ let meta_char _loc i = `Chr (_loc, (Char.escaped i))
 let meta_unit _loc _ = `Id (_loc, (`Uid (_loc, "()")))
 
 let meta_bool _loc =
-  function
-  | true  -> `Id (_loc, (`Lid (_loc, "true")))
-  | false  -> `Id (_loc, (`Lid (_loc, "false")))
+  function | true  -> `Lid (_loc, "true") | false  -> `Lid (_loc, "false")
 
 let meta_ref mf_a _loc i =
   `Record
@@ -57,8 +55,8 @@ let meta_list mf_a _loc ls =
 
 let meta_option mf_a _loc =
   function
-  | None  -> `Id (_loc, (`Uid (_loc, "None")))
-  | Some x -> `App (_loc, (`Id (_loc, (`Uid (_loc, "Some")))), (mf_a _loc x))
+  | None  -> `Uid (_loc, "None")
+  | Some x -> `App (_loc, (`Uid (_loc, "Some")), (mf_a _loc x))
 
 let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
   (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
@@ -99,10 +97,10 @@ let ident_of_pat =
   let rec self =
     function
     | `App (_loc,p1,p2) -> `App (_loc, (self p1), (self p2))
-    | `Id (_loc,`Lid (_,_)) -> error ()
-    | `Id (_loc,i) -> if is_module_longident i then i else error ()
+    | `Lid (_loc,_) -> error ()
+    | i -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function | `Id (_loc,i) -> i | p -> self p
+  function | i -> i | p -> self p
 
 let ty_of_stl =
   function
@@ -125,8 +123,8 @@ let binding_of_pel l = and_of_list (List.map bi_of_pe l)
 
 let rec is_irrefut_pat (x : pat) =
   match x with
-  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Id (_loc,`Lid (_,_)) : Ast.pat) ->
-      true
+  | `Lid _|`Dot _|`Uid _ -> true
+  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Lid (_loc,_) : Ast.pat) -> true
   | (`Id (_loc,`Uid (_,"()")) : Ast.pat) -> true
   | (`Any _loc : Ast.pat) -> true
   | (`Alias (_loc,x,_) : Ast.pat) -> is_irrefut_pat x
@@ -143,7 +141,7 @@ let rec is_irrefut_pat (x : pat) =
   | `OptLablS _ -> true
   | `OptLabl (_,_,p)|`OptLablExpr (_,_,p,_) -> is_irrefut_pat p
   | `Label (_,_,p)|`Lazy (_,p) -> is_irrefut_pat p
-  | (`Id (_loc,_) : Ast.pat) -> false
+  | (_ : Ast.pat) -> false
   | `ModuleUnpack _|`ModuleConstraint _ -> true
   | `Ant _ -> false
   | `Vrn (_loc,_)|(`Str (_loc,_) : Ast.pat)|(`PaRng (_loc,_,_) : Ast.pat)
@@ -318,15 +316,13 @@ let bigarray_set loc var newval =
                                                      (`Uid (loc, "Array3")),
                                                      (`Lid (loc, "get")))))))),
                                       arr)), c1)), c2)), c3)),
-                  (`Id (loc, (`Lid (loc, "contents")))))), newval) : 
-        Ast.exp )
+                  (`Lid (loc, "contents")))), newval) : Ast.exp )
   | (`App
        (_loc,`App
-               (_,`Id
-                    (_,`Dot
-                         (_,`Uid (_,"Bigarray"),`Dot
-                                                  (_,`Uid (_,"Genarray"),
-                                                   `Lid (_,"get")))),arr),
+               (_,`Dot
+                    (_,`Uid (_,"Bigarray"),`Dot
+                                             (_,`Uid (_,"Genarray"),`Lid
+                                                                    (_,"get"))),arr),
         `Array (_,coords))
       : Ast.exp) ->
       Some
@@ -336,13 +332,11 @@ let bigarray_set loc var newval =
                 (loc,
                   (`App
                      (loc,
-                       (`Id
-                          (loc,
+                       (`Dot
+                          (loc, (`Uid (loc, "Bigarray")),
                             (`Dot
-                               (loc, (`Uid (loc, "Bigarray")),
-                                 (`Dot
-                                    (loc, (`Uid (loc, "Genarray")),
-                                      (`Lid (loc, "set")))))))), arr)),
+                               (loc, (`Uid (loc, "Genarray")),
+                                 (`Lid (loc, "set")))))), arr)),
                   (`Array (loc, coords)))), newval) : Ast.exp )
   | _ -> None
 
@@ -374,8 +368,7 @@ let mkumin loc prefix arg =
   | (`Nativeint (_loc,n) : Ast.exp) ->
       (`Nativeint (loc, (String.neg n)) : Ast.exp )
   | (`Flo (_loc,n) : Ast.exp) -> (`Flo (loc, (String.neg n)) : Ast.exp )
-  | _ ->
-      (`App (loc, (`Id (loc, (`Lid (loc, ("~" ^ prefix))))), arg) : Ast.exp )
+  | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : Ast.exp )
 
 let rec to_generalized x =
   match x with

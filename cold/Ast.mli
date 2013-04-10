@@ -27,6 +27,9 @@ type uident =
 type ident =
   [ `Dot of (loc * ident * ident) | `App of (loc * ident * ident) | alident
   | auident] 
+type vid =
+  [ `Dot of (loc * vid * vid) | `Lid of (loc * string)
+  | `Uid of (loc * string) | ant] 
 type dupath = [ `Dot of (loc * dupath * dupath) | auident] 
 type dlpath = [ `Dot of (loc * dupath * alident) | alident] 
 type any = [ `Any of loc] 
@@ -83,7 +86,7 @@ and or_ctyp =
   | `Of of (loc * sid * ctyp) | sid | ant] 
 and of_ctyp = [ `Of of (loc * sid * ctyp) | sid | ant] 
 and pat =
-  [ sid | `App of (loc * pat * pat) | `Vrn of (loc * string)
+  [ vid | `App of (loc * pat * pat) | `Vrn of (loc * string)
   | `Com of (loc * pat * pat) | `Sem of (loc * pat * pat)
   | `Par of (loc * pat) | any | `Record of (loc * rec_pat) | ant | literal
   | `Alias of (loc * pat * alident) | `ArrayEmpty of loc
@@ -100,9 +103,9 @@ and rec_pat =
     any
   | ant] 
 and exp =
-  [ sid | `App of (loc * exp * exp) | `Vrn of (loc * string)
+  [ vid | `App of (loc * exp * exp) | `Vrn of (loc * string)
   | `Com of (loc * exp * exp) | `Sem of (loc * exp * exp)
-  | `Par of (loc * exp) | any | `Record of (loc * rec_exp) | ant | literal
+  | `Par of (loc * exp) | any | `Record of (loc * rec_exp) | literal
   | `RecordWith of (loc * rec_exp * exp) | `Field of (loc * exp * exp)
   | `ArrayDot of (loc * exp * exp) | `ArrayEmpty of loc
   | `Array of (loc * exp) | `Assert of (loc * exp)
@@ -213,7 +216,7 @@ and cstru =
   | `CrVir of (loc * alident * private_flag * ctyp)
   | `CrVvr of (loc * alident * mutable_flag * ctyp) | ant] 
 type ep =
-  [ sid | `App of (loc * ep * ep) | `Vrn of (loc * string)
+  [ vid | `App of (loc * ep * ep) | `Vrn of (loc * string)
   | `Com of (loc * ep * ep) | `Sem of (loc * ep * ep) | `Par of (loc * ep)
   | any | `ArrayEmpty of loc | `Array of (loc * ep)
   | `Record of (loc * rec_bind) | literal | ant] 

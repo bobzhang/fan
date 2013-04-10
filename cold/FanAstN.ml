@@ -142,33 +142,42 @@ class eq =
         | ((#auident as _a0),(#auident as _b0)) ->
             (self#auident _a0 _b0 :>'result18)
         | (_,_) -> false
-    method dupath : dupath -> dupath -> 'result19=
+    method vid : vid -> vid -> 'result19=
+      fun _a0  _b0  ->
+        match (_a0, _b0) with
+        | (`Dot (_a0,_a1),`Dot (_b0,_b1)) ->
+            (self#vid _a0 _b0) && (self#vid _a1 _b1)
+        | (`Lid _a0,`Lid _b0) -> self#string _a0 _b0
+        | (`Uid _a0,`Uid _b0) -> self#string _a0 _b0
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result19)
+        | (_,_) -> false
+    method dupath : dupath -> dupath -> 'result20=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Dot (_a0,_a1),`Dot (_b0,_b1)) ->
             (self#dupath _a0 _b0) && (self#dupath _a1 _b1)
         | ((#auident as _a0),(#auident as _b0)) ->
-            (self#auident _a0 _b0 :>'result19)
+            (self#auident _a0 _b0 :>'result20)
         | (_,_) -> false
-    method dlpath : dlpath -> dlpath -> 'result20=
+    method dlpath : dlpath -> dlpath -> 'result21=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Dot (_a0,_a1),`Dot (_b0,_b1)) ->
             (self#dupath _a0 _b0) && (self#alident _a1 _b1)
         | ((#alident as _a0),(#alident as _b0)) ->
-            (self#alident _a0 _b0 :>'result20)
+            (self#alident _a0 _b0 :>'result21)
         | (_,_) -> false
-    method any : any -> any -> 'result21=
+    method any : any -> any -> 'result22=
       fun _a0  _b0  -> match (_a0, _b0) with | (`Any,`Any) -> true
-    method sid : sid -> sid -> 'result22=
+    method sid : sid -> sid -> 'result23=
       fun _a0  _b0  ->
         match (_a0, _b0) with | (`Id _a0,`Id _b0) -> self#ident _a0 _b0
-    method ctyp : ctyp -> ctyp -> 'result23=
+    method ctyp : ctyp -> ctyp -> 'result24=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Alias (_a0,_a1),`Alias (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#alident _a1 _b1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result23)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result24)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Arrow (_a0,_a1),`Arrow (_b0,_b1)) ->
@@ -178,7 +187,7 @@ class eq =
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result23)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result24)
         | (`TyObj (_a0,_a1),`TyObj (_b0,_b1)) ->
             (self#name_ctyp _a0 _b0) && (self#row_var_flag _a1 _b1)
         | (`TyObjEnd _a0,`TyObjEnd _b0) -> self#row_var_flag _a0 _b0
@@ -201,20 +210,20 @@ class eq =
         | (`PolyInfSup (_a0,_a1),`PolyInfSup (_b0,_b1)) ->
             (self#row_field _a0 _b0) && (self#tag_names _a1 _b1)
         | (`Package _a0,`Package _b0) -> self#module_type _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result23)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result24)
         | (_,_) -> false
-    method type_parameters : type_parameters -> type_parameters -> 'result24=
+    method type_parameters : type_parameters -> type_parameters -> 'result25=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#type_parameters _a0 _b0) && (self#type_parameters _a1 _b1)
         | (`Ctyp _a0,`Ctyp _b0) -> self#ctyp _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result24)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
         | (_,_) -> false
-    method row_field : row_field -> row_field -> 'result25=
+    method row_field : row_field -> row_field -> 'result26=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result26)
         | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
             (self#row_field _a0 _b0) && (self#row_field _a1 _b1)
         | (`TyVrn _a0,`TyVrn _b0) -> self#astring _a0 _b0
@@ -222,15 +231,15 @@ class eq =
             (self#astring _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Ctyp _a0,`Ctyp _b0) -> self#ctyp _a0 _b0
         | (_,_) -> false
-    method tag_names : tag_names -> tag_names -> 'result26=
+    method tag_names : tag_names -> tag_names -> 'result27=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result26)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result27)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#tag_names _a0 _b0) && (self#tag_names _a1 _b1)
         | (`TyVrn _a0,`TyVrn _b0) -> self#astring _a0 _b0
         | (_,_) -> false
-    method typedecl : typedecl -> typedecl -> 'result27=
+    method typedecl : typedecl -> typedecl -> 'result28=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`TyDcl (_a0,_a1,_a2,_a3),`TyDcl (_b0,_b1,_b2,_b3)) ->
@@ -242,33 +251,33 @@ class eq =
               (self#opt_type_constr _a2 _b2)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#typedecl _a0 _b0) && (self#typedecl _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result27)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result28)
         | (_,_) -> false
-    method type_constr : type_constr -> type_constr -> 'result28=
+    method type_constr : type_constr -> type_constr -> 'result29=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#type_constr _a0 _b0) && (self#type_constr _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result28)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result29)
         | (_,_) -> false
-    method opt_type_constr : opt_type_constr -> opt_type_constr -> 'result29=
+    method opt_type_constr : opt_type_constr -> opt_type_constr -> 'result30=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Some _a0,`Some _b0) -> self#type_constr _a0 _b0
         | (`None,`None) -> true
         | (_,_) -> false
-    method decl_param : decl_param -> decl_param -> 'result30=
+    method decl_param : decl_param -> decl_param -> 'result31=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Quote (_a0,_a1),`Quote (_b0,_b1)) ->
             (self#position_flag _a0 _b0) && (self#alident _a1 _b1)
         | (`QuoteAny _a0,`QuoteAny _b0) -> self#position_flag _a0 _b0
         | (`Any,`Any) -> true
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result30)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result31)
         | (_,_) -> false
-    method decl_params : decl_params -> decl_params -> 'result31=
+    method decl_params : decl_params -> decl_params -> 'result32=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Quote (_a0,_a1),`Quote (_b0,_b1)) ->
@@ -277,15 +286,15 @@ class eq =
         | (`Any,`Any) -> true
         | (`Com (_a0,_a1),`Com (_b0,_b1)) ->
             (self#decl_params _a0 _b0) && (self#decl_params _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result31)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result32)
         | (_,_) -> false
-    method opt_decl_params : opt_decl_params -> opt_decl_params -> 'result32=
+    method opt_decl_params : opt_decl_params -> opt_decl_params -> 'result33=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Some _a0,`Some _b0) -> self#decl_params _a0 _b0
         | (`None,`None) -> true
         | (_,_) -> false
-    method type_info : type_info -> type_info -> 'result33=
+    method type_info : type_info -> type_info -> 'result34=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`TyMan (_a0,_a1,_a2),`TyMan (_b0,_b1,_b2)) ->
@@ -295,16 +304,16 @@ class eq =
             (self#private_flag _a0 _b0) && (self#type_repr _a1 _b1)
         | (`TyEq (_a0,_a1),`TyEq (_b0,_b1)) ->
             (self#private_flag _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result33)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result34)
         | (_,_) -> false
-    method type_repr : type_repr -> type_repr -> 'result34=
+    method type_repr : type_repr -> type_repr -> 'result35=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Record _a0,`Record _b0) -> self#name_ctyp _a0 _b0
         | (`Sum _a0,`Sum _b0) -> self#or_ctyp _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result34)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result35)
         | (_,_) -> false
-    method name_ctyp : name_ctyp -> name_ctyp -> 'result35=
+    method name_ctyp : name_ctyp -> name_ctyp -> 'result36=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -313,9 +322,9 @@ class eq =
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | (`TyColMut (_a0,_a1),`TyColMut (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result35)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result36)
         | (_,_) -> false
-    method or_ctyp : or_ctyp -> or_ctyp -> 'result36=
+    method or_ctyp : or_ctyp -> or_ctyp -> 'result37=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
@@ -324,21 +333,21 @@ class eq =
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result36)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result36)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result37)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result37)
         | (_,_) -> false
-    method of_ctyp : of_ctyp -> of_ctyp -> 'result37=
+    method of_ctyp : of_ctyp -> of_ctyp -> 'result38=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Of (_a0,_a1),`Of (_b0,_b1)) ->
             (self#sid _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result37)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result37)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result38)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result38)
         | (_,_) -> false
-    method pat : pat -> pat -> 'result38=
+    method pat : pat -> pat -> 'result39=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result38)
+        | ((#vid as _a0),(#vid as _b0)) -> (self#vid _a0 _b0 :>'result39)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Vrn _a0,`Vrn _b0) -> self#string _a0 _b0
@@ -347,11 +356,11 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#pat _a1 _b1)
         | (`Par _a0,`Par _b0) -> self#pat _a0 _b0
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result38)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result39)
         | (`Record _a0,`Record _b0) -> self#rec_pat _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result38)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result39)
         | ((#literal as _a0),(#literal as _b0)) ->
-            (self#literal _a0 _b0 :>'result38)
+            (self#literal _a0 _b0 :>'result39)
         | (`Alias (_a0,_a1),`Alias (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#alident _a1 _b1)
         | (`ArrayEmpty,`ArrayEmpty) -> true
@@ -377,20 +386,20 @@ class eq =
         | (`ModuleConstraint (_a0,_a1),`ModuleConstraint (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#ctyp _a1 _b1)
         | (_,_) -> false
-    method rec_pat : rec_pat -> rec_pat -> 'result39=
+    method rec_pat : rec_pat -> rec_pat -> 'result40=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#pat _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#rec_pat _a0 _b0) && (self#rec_pat _a1 _b1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result39)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result39)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result40)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result40)
         | (_,_) -> false
-    method exp : exp -> exp -> 'result40=
+    method exp : exp -> exp -> 'result41=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result40)
+        | ((#vid as _a0),(#vid as _b0)) -> (self#vid _a0 _b0 :>'result41)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`Vrn _a0,`Vrn _b0) -> self#string _a0 _b0
@@ -399,11 +408,10 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#exp _a1 _b1)
         | (`Par _a0,`Par _b0) -> self#exp _a0 _b0
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result40)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result41)
         | (`Record _a0,`Record _b0) -> self#rec_exp _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result40)
         | ((#literal as _a0),(#literal as _b0)) ->
-            (self#literal _a0 _b0 :>'result40)
+            (self#literal _a0 _b0 :>'result41)
         | (`RecordWith (_a0,_a1),`RecordWith (_b0,_b1)) ->
             (self#rec_exp _a0 _b0) && (self#exp _a1 _b1)
         | (`Field (_a0,_a1),`Field (_b0,_b1)) ->
@@ -475,20 +483,20 @@ class eq =
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
         | (`Package_exp _a0,`Package_exp _b0) -> self#module_exp _a0 _b0
         | (_,_) -> false
-    method rec_exp : rec_exp -> rec_exp -> 'result41=
+    method rec_exp : rec_exp -> rec_exp -> 'result42=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#rec_exp _a0 _b0) && (self#rec_exp _a1 _b1)
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#exp _a1 _b1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result41)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result41)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result42)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result42)
         | (_,_) -> false
-    method module_type : module_type -> module_type -> 'result42=
+    method module_type : module_type -> module_type -> 'result43=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result42)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result43)
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
               (self#module_type _a2 _b2)
@@ -497,9 +505,9 @@ class eq =
         | (`With (_a0,_a1),`With (_b0,_b1)) ->
             (self#module_type _a0 _b0) && (self#with_constr _a1 _b1)
         | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#module_exp _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result42)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result43)
         | (_,_) -> false
-    method sig_item : sig_item -> sig_item -> 'result43=
+    method sig_item : sig_item -> sig_item -> 'result44=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class _a0,`Class _b0) -> self#class_type _a0 _b0
@@ -524,9 +532,9 @@ class eq =
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Val (_a0,_a1),`Val (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result43)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result44)
         | (_,_) -> false
-    method with_constr : with_constr -> with_constr -> 'result44=
+    method with_constr : with_constr -> with_constr -> 'result45=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`TypeEq (_a0,_a1),`TypeEq (_b0,_b1)) ->
@@ -541,18 +549,18 @@ class eq =
             (self#ident _a0 _b0) && (self#ident _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#with_constr _a0 _b0) && (self#with_constr _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result44)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result45)
         | (_,_) -> false
-    method binding : binding -> binding -> 'result45=
+    method binding : binding -> binding -> 'result46=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#binding _a0 _b0) && (self#binding _a1 _b1)
         | (`Bind (_a0,_a1),`Bind (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#exp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result45)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result46)
         | (_,_) -> false
-    method module_binding : module_binding -> module_binding -> 'result46=
+    method module_binding : module_binding -> module_binding -> 'result47=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
@@ -562,9 +570,9 @@ class eq =
               (self#module_exp _a2 _b2)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#module_type _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result46)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result47)
         | (_,_) -> false
-    method case : case -> case -> 'result47=
+    method case : case -> case -> 'result48=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Bar (_a0,_a1),`Bar (_b0,_b1)) ->
@@ -573,12 +581,12 @@ class eq =
             (self#pat _a0 _b0) && (self#exp _a1 _b1)
         | (`CaseWhen (_a0,_a1,_a2),`CaseWhen (_b0,_b1,_b2)) ->
             ((self#pat _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result47)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
         | (_,_) -> false
-    method module_exp : module_exp -> module_exp -> 'result48=
+    method module_exp : module_exp -> module_exp -> 'result49=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result48)
+        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result49)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#module_exp _a0 _b0) && (self#module_exp _a1 _b1)
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
@@ -589,9 +597,9 @@ class eq =
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#module_exp _a0 _b0) && (self#module_type _a1 _b1)
         | (`PackageModule _a0,`PackageModule _b0) -> self#exp _a0 _b0
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result49)
         | (_,_) -> false
-    method stru : stru -> stru -> 'result49=
+    method stru : stru -> stru -> 'result50=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class _a0,`Class _b0) -> self#class_exp _a0 _b0
@@ -616,9 +624,9 @@ class eq =
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Value (_a0,_a1),`Value (_b0,_b1)) ->
             (self#rec_flag _a0 _b0) && (self#binding _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result49)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result50)
         | (_,_) -> false
-    method class_type : class_type -> class_type -> 'result50=
+    method class_type : class_type -> class_type -> 'result51=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
@@ -639,9 +647,9 @@ class eq =
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result50)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result51)
         | (_,_) -> false
-    method class_sig_item : class_sig_item -> class_sig_item -> 'result51=
+    method class_sig_item : class_sig_item -> class_sig_item -> 'result52=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
@@ -659,9 +667,9 @@ class eq =
         | (`CgVir (_a0,_a1,_a2),`CgVir (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result51)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
         | (_,_) -> false
-    method class_exp : class_exp -> class_exp -> 'result52=
+    method class_exp : class_exp -> class_exp -> 'result53=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1),`CeApp (_b0,_b1)) ->
@@ -687,9 +695,9 @@ class eq =
             (self#class_exp _a0 _b0) && (self#class_exp _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#class_exp _a0 _b0) && (self#class_exp _a1 _b1)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result53)
         | (_,_) -> false
-    method cstru : cstru -> cstru -> 'result53=
+    method cstru : cstru -> cstru -> 'result54=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
@@ -721,12 +729,12 @@ class eq =
         | (`CrVvr (_a0,_a1,_a2),`CrVvr (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#mutable_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result53)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result54)
         | (_,_) -> false
-    method ep : ep -> ep -> 'result54=
+    method ep : ep -> ep -> 'result55=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | ((#sid as _a0),(#sid as _b0)) -> (self#sid _a0 _b0 :>'result54)
+        | ((#vid as _a0),(#vid as _b0)) -> (self#vid _a0 _b0 :>'result55)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
         | (`Vrn _a0,`Vrn _b0) -> self#string _a0 _b0
@@ -735,27 +743,27 @@ class eq =
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#ep _a0 _b0) && (self#ep _a1 _b1)
         | (`Par _a0,`Par _b0) -> self#ep _a0 _b0
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result54)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result55)
         | (`ArrayEmpty,`ArrayEmpty) -> true
         | (`Array _a0,`Array _b0) -> self#ep _a0 _b0
         | (`Record _a0,`Record _b0) -> self#rec_bind _a0 _b0
         | ((#literal as _a0),(#literal as _b0)) ->
-            (self#literal _a0 _b0 :>'result54)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result54)
+            (self#literal _a0 _b0 :>'result55)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result55)
         | (_,_) -> false
-    method rec_bind : rec_bind -> rec_bind -> 'result55=
+    method rec_bind : rec_bind -> rec_bind -> 'result56=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`RecBind (_a0,_a1),`RecBind (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#ep _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#rec_bind _a0 _b0) && (self#rec_bind _a1 _b1)
-        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result55)
-        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result55)
+        | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result56)
+        | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result56)
         | (_,_) -> false
-    method fanloc_t : FanLoc.t -> FanLoc.t -> 'result56= self#unknown
+    method fanloc_t : FanLoc.t -> FanLoc.t -> 'result57= self#unknown
     method fanutil_anti_cxt :
-      FanUtil.anti_cxt -> FanUtil.anti_cxt -> 'result57= self#unknown
+      FanUtil.anti_cxt -> FanUtil.anti_cxt -> 'result58= self#unknown
   end
 
 class print =
@@ -879,6 +887,15 @@ class print =
               self#ident _a1
         | #alident as _a0 -> (self#alident fmt _a0 :>unit)
         | #auident as _a0 -> (self#auident fmt _a0 :>unit)
+    method vid : 'fmt -> vid -> unit=
+      fun fmt  ->
+        function
+        | `Dot (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Dot@ %a@ %a)@]" self#vid _a0 self#vid
+              _a1
+        | `Lid _a0 -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" self#string _a0
+        | `Uid _a0 -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" self#string _a0
+        | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method dupath : 'fmt -> dupath -> unit=
       fun fmt  ->
         function
@@ -1107,7 +1124,7 @@ class print =
     method pat : 'fmt -> pat -> unit=
       fun fmt  ->
         function
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
+        | #vid as _a0 -> (self#vid fmt _a0 :>unit)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#pat _a0 self#pat
               _a1
@@ -1173,7 +1190,7 @@ class print =
     method exp : 'fmt -> exp -> unit=
       fun fmt  ->
         function
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
+        | #vid as _a0 -> (self#vid fmt _a0 :>unit)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#exp _a0 self#exp
               _a1
@@ -1188,7 +1205,6 @@ class print =
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | `Record _a0 ->
             Format.fprintf fmt "@[<1>(`Record@ %a)@]" self#rec_exp _a0
-        | #ant as _a0 -> (self#ant fmt _a0 :>unit)
         | #literal as _a0 -> (self#literal fmt _a0 :>unit)
         | `RecordWith (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a)@]" self#rec_exp
@@ -1592,7 +1608,7 @@ class print =
     method ep : 'fmt -> ep -> unit=
       fun fmt  ->
         function
-        | #sid as _a0 -> (self#sid fmt _a0 :>unit)
+        | #vid as _a0 -> (self#vid fmt _a0 :>unit)
         | `App (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#ep _a0 self#ep
               _a1
@@ -1626,1163 +1642,4 @@ class print =
     method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> unit= self#unknown
   end
 
-let meta_ant _loc (`Ant (_a0,_a1)) = `Ant (_a0, _a1)
-
-let meta_nil _loc `Nil = `Vrn (_loc, "Nil")
-
-let meta_literal _loc =
-  function
-  | `Chr _a0 -> `App (_loc, (`Vrn (_loc, "Chr")), (meta_string _loc _a0))
-  | `Int _a0 -> `App (_loc, (`Vrn (_loc, "Int")), (meta_string _loc _a0))
-  | `Int32 _a0 -> `App (_loc, (`Vrn (_loc, "Int32")), (meta_string _loc _a0))
-  | `Int64 _a0 -> `App (_loc, (`Vrn (_loc, "Int64")), (meta_string _loc _a0))
-  | `Flo _a0 -> `App (_loc, (`Vrn (_loc, "Flo")), (meta_string _loc _a0))
-  | `Nativeint _a0 ->
-      `App (_loc, (`Vrn (_loc, "Nativeint")), (meta_string _loc _a0))
-  | `Str _a0 -> `App (_loc, (`Vrn (_loc, "Str")), (meta_string _loc _a0))
-
-let meta_rec_flag _loc =
-  function
-  | `Recursive -> `Vrn (_loc, "Recursive")
-  | `ReNil -> `Vrn (_loc, "ReNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result119)
-
-let meta_direction_flag _loc =
-  function
-  | `To -> `Vrn (_loc, "To")
-  | `Downto -> `Vrn (_loc, "Downto")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result120)
-
-let meta_mutable_flag _loc =
-  function
-  | `Mutable -> `Vrn (_loc, "Mutable")
-  | `MuNil -> `Vrn (_loc, "MuNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result121)
-
-let meta_private_flag _loc =
-  function
-  | `Private -> `Vrn (_loc, "Private")
-  | `PrNil -> `Vrn (_loc, "PrNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result122)
-
-let meta_virtual_flag _loc =
-  function
-  | `Virtual -> `Vrn (_loc, "Virtual")
-  | `ViNil -> `Vrn (_loc, "ViNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result123)
-
-let meta_override_flag _loc =
-  function
-  | `Override -> `Vrn (_loc, "Override")
-  | `OvNil -> `Vrn (_loc, "OvNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result124)
-
-let meta_row_var_flag _loc =
-  function
-  | `RowVar -> `Vrn (_loc, "RowVar")
-  | `RvNil -> `Vrn (_loc, "RvNil")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result125)
-
-let meta_position_flag _loc =
-  function
-  | `Positive -> `Vrn (_loc, "Positive")
-  | `Negative -> `Vrn (_loc, "Negative")
-  | `Normal -> `Vrn (_loc, "Normal")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result126)
-
-let rec meta_strings _loc =
-  function
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_strings _loc _a0))),
-          (meta_strings _loc _a1))
-  | `Str _a0 -> `App (_loc, (`Vrn (_loc, "Str")), (meta_string _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result127)
-
-let meta_alident _loc =
-  function
-  | `Lid _a0 -> `App (_loc, (`Vrn (_loc, "Lid")), (meta_string _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result128)
-
-let meta_auident _loc =
-  function
-  | `Uid _a0 -> `App (_loc, (`Vrn (_loc, "Uid")), (meta_string _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result129)
-
-let meta_aident _loc =
-  function
-  | #alident as _a0 -> (meta_alident _loc _a0 :>'result130)
-  | #auident as _a0 -> (meta_auident _loc _a0 :>'result130)
-
-let meta_astring _loc =
-  function
-  | `C _a0 -> `App (_loc, (`Vrn (_loc, "C")), (meta_string _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result131)
-
-let rec meta_uident _loc =
-  function
-  | `Dot (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_uident _loc _a0))),
-          (meta_uident _loc _a1))
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_uident _loc _a0))),
-          (meta_uident _loc _a1))
-  | #auident as _a0 -> (meta_auident _loc _a0 :>'result132)
-
-let rec meta_ident _loc =
-  function
-  | `Dot (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_ident _loc _a0))),
-          (meta_ident _loc _a1))
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_ident _loc _a0))),
-          (meta_ident _loc _a1))
-  | #alident as _a0 -> (meta_alident _loc _a0 :>'result133)
-  | #auident as _a0 -> (meta_auident _loc _a0 :>'result133)
-
-let rec meta_dupath _loc =
-  function
-  | `Dot (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_dupath _loc _a0))),
-          (meta_dupath _loc _a1))
-  | #auident as _a0 -> (meta_auident _loc _a0 :>'result134)
-
-let meta_dlpath _loc =
-  function
-  | `Dot (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Dot")), (meta_dupath _loc _a0))),
-          (meta_alident _loc _a1))
-  | #alident as _a0 -> (meta_alident _loc _a0 :>'result135)
-
-let meta_any _loc `Any = `Vrn (_loc, "Any")
-
-let meta_sid _loc (`Id _a0) =
-  `App (_loc, (`Vrn (_loc, "Id")), (meta_ident _loc _a0))
-
-let rec meta_ctyp _loc =
-  function
-  | `Alias (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_ctyp _loc _a0))),
-          (meta_alident _loc _a1))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result168)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Arrow (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Arrow")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `ClassPath _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassPath")), (meta_ident _loc _a0))
-  | `Label (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `OptLabl (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result168)
-  | `TyObj (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyObj")), (meta_name_ctyp _loc _a0))),
-          (meta_row_var_flag _loc _a1))
-  | `TyObjEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "TyObjEnd")), (meta_row_var_flag _loc _a0))
-  | `TyPol (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyPol")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `TyPolEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "TyPolEnd")), (meta_ctyp _loc _a0))
-  | `TyTypePol (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyTypePol")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Quote (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Quote")), (meta_position_flag _loc _a0))),
-          (meta_alident _loc _a1))
-  | `QuoteAny _a0 ->
-      `App (_loc, (`Vrn (_loc, "QuoteAny")), (meta_position_flag _loc _a0))
-  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_ctyp _loc _a0))
-  | `Sta (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sta")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `PolyEq _a0 ->
-      `App (_loc, (`Vrn (_loc, "PolyEq")), (meta_row_field _loc _a0))
-  | `PolySup _a0 ->
-      `App (_loc, (`Vrn (_loc, "PolySup")), (meta_row_field _loc _a0))
-  | `PolyInf _a0 ->
-      `App (_loc, (`Vrn (_loc, "PolyInf")), (meta_row_field _loc _a0))
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `PolyInfSup (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "PolyInfSup")), (meta_row_field _loc _a0))),
-          (meta_tag_names _loc _a1))
-  | `Package _a0 ->
-      `App (_loc, (`Vrn (_loc, "Package")), (meta_module_type _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result168)
-and meta_type_parameters _loc =
-  function
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Com")), (meta_type_parameters _loc _a0))),
-          (meta_type_parameters _loc _a1))
-  | `Ctyp _a0 -> `App (_loc, (`Vrn (_loc, "Ctyp")), (meta_ctyp _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result167)
-and meta_row_field _loc =
-  function
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result166)
-  | `Bar (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Bar")), (meta_row_field _loc _a0))),
-          (meta_row_field _loc _a1))
-  | `TyVrn _a0 ->
-      `App (_loc, (`Vrn (_loc, "TyVrn")), (meta_astring _loc _a0))
-  | `TyVrnOf (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyVrnOf")), (meta_astring _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Ctyp _a0 -> `App (_loc, (`Vrn (_loc, "Ctyp")), (meta_ctyp _loc _a0))
-and meta_tag_names _loc =
-  function
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result165)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "App")), (meta_tag_names _loc _a0))),
-          (meta_tag_names _loc _a1))
-  | `TyVrn _a0 ->
-      `App (_loc, (`Vrn (_loc, "TyVrn")), (meta_astring _loc _a0))
-and meta_typedecl _loc =
-  function
-  | `TyDcl (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "TyDcl")),
-                         (meta_alident _loc _a0))),
-                    (meta_opt_decl_params _loc _a1))),
-               (meta_type_info _loc _a2))), (meta_opt_type_constr _loc _a3))
-  | `TyAbstr (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "TyAbstr")), (meta_alident _loc _a0))),
-               (meta_opt_decl_params _loc _a1))),
-          (meta_opt_type_constr _loc _a2))
-  | `And (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_typedecl _loc _a0))),
-          (meta_typedecl _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result164)
-and meta_type_constr _loc =
-  function
-  | `And (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_type_constr _loc _a0))),
-          (meta_type_constr _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result163)
-and meta_opt_type_constr _loc =
-  function
-  | `Some _a0 ->
-      `App (_loc, (`Vrn (_loc, "Some")), (meta_type_constr _loc _a0))
-  | `None -> `Vrn (_loc, "None")
-and meta_decl_param _loc =
-  function
-  | `Quote (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Quote")), (meta_position_flag _loc _a0))),
-          (meta_alident _loc _a1))
-  | `QuoteAny _a0 ->
-      `App (_loc, (`Vrn (_loc, "QuoteAny")), (meta_position_flag _loc _a0))
-  | `Any -> `Vrn (_loc, "Any")
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result161)
-and meta_decl_params _loc =
-  function
-  | `Quote (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Quote")), (meta_position_flag _loc _a0))),
-          (meta_alident _loc _a1))
-  | `QuoteAny _a0 ->
-      `App (_loc, (`Vrn (_loc, "QuoteAny")), (meta_position_flag _loc _a0))
-  | `Any -> `Vrn (_loc, "Any")
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Com")), (meta_decl_params _loc _a0))),
-          (meta_decl_params _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result160)
-and meta_opt_decl_params _loc =
-  function
-  | `Some _a0 ->
-      `App (_loc, (`Vrn (_loc, "Some")), (meta_decl_params _loc _a0))
-  | `None -> `Vrn (_loc, "None")
-and meta_type_info _loc =
-  function
-  | `TyMan (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "TyMan")), (meta_ctyp _loc _a0))),
-               (meta_private_flag _loc _a1))), (meta_type_repr _loc _a2))
-  | `TyRepr (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyRepr")), (meta_private_flag _loc _a0))),
-          (meta_type_repr _loc _a1))
-  | `TyEq (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TyEq")), (meta_private_flag _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result158)
-and meta_type_repr _loc =
-  function
-  | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_name_ctyp _loc _a0))
-  | `Sum _a0 -> `App (_loc, (`Vrn (_loc, "Sum")), (meta_or_ctyp _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result157)
-and meta_name_ctyp _loc =
-  function
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Sem")), (meta_name_ctyp _loc _a0))),
-          (meta_name_ctyp _loc _a1))
-  | `TyCol (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `TyColMut (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyColMut")), (meta_sid _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result156)
-and meta_or_ctyp _loc =
-  function
-  | `Bar (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_or_ctyp _loc _a0))),
-          (meta_or_ctyp _loc _a1))
-  | `TyCol (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TyCol")), (meta_sid _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Of (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (meta_sid _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result155)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result155)
-and meta_of_ctyp _loc =
-  function
-  | `Of (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Of")), (meta_sid _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result154)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result154)
-and meta_pat _loc =
-  function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result153)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_pat _loc _a0))),
-          (meta_pat _loc _a1))
-  | `Vrn _a0 -> `App (_loc, (`Vrn (_loc, "Vrn")), (meta_string _loc _a0))
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_pat _loc _a0))),
-          (meta_pat _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_pat _loc _a0))),
-          (meta_pat _loc _a1))
-  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_pat _loc _a0))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result153)
-  | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_pat _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
-  | #literal as _a0 -> (meta_literal _loc _a0 :>'result153)
-  | `Alias (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Alias")), (meta_pat _loc _a0))),
-          (meta_alident _loc _a1))
-  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
-  | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_pat _loc _a0))
-  | `LabelS _a0 ->
-      `App (_loc, (`Vrn (_loc, "LabelS")), (meta_alident _loc _a0))
-  | `Label (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
-          (meta_pat _loc _a1))
-  | `OptLabl (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
-          (meta_pat _loc _a1))
-  | `OptLablS _a0 ->
-      `App (_loc, (`Vrn (_loc, "OptLablS")), (meta_alident _loc _a0))
-  | `OptLablExpr (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "OptLablExpr")),
-                    (meta_alident _loc _a0))), (meta_pat _loc _a1))),
-          (meta_exp _loc _a2))
-  | `Bar (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_pat _loc _a0))),
-          (meta_pat _loc _a1))
-  | `PaRng (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "PaRng")), (meta_pat _loc _a0))),
-          (meta_pat _loc _a1))
-  | `Constraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_pat _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `ClassPath _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassPath")), (meta_ident _loc _a0))
-  | `Lazy _a0 -> `App (_loc, (`Vrn (_loc, "Lazy")), (meta_pat _loc _a0))
-  | `ModuleUnpack _a0 ->
-      `App (_loc, (`Vrn (_loc, "ModuleUnpack")), (meta_auident _loc _a0))
-  | `ModuleConstraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "ModuleConstraint")),
-               (meta_auident _loc _a0))), (meta_ctyp _loc _a1))
-and meta_rec_pat _loc =
-  function
-  | `RecBind (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
-          (meta_pat _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_pat _loc _a0))),
-          (meta_rec_pat _loc _a1))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result152)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result152)
-and meta_exp _loc =
-  function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result151)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Vrn _a0 -> `App (_loc, (`Vrn (_loc, "Vrn")), (meta_string _loc _a0))
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_exp _loc _a0))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result151)
-  | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_exp _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result151)
-  | #literal as _a0 -> (meta_literal _loc _a0 :>'result151)
-  | `RecordWith (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "RecordWith")), (meta_rec_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Field (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Field")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `ArrayDot (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ArrayDot")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
-  | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_exp _loc _a0))
-  | `Assert _a0 -> `App (_loc, (`Vrn (_loc, "Assert")), (meta_exp _loc _a0))
-  | `Assign (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Assign")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `For (_a0,_a1,_a2,_a3,_a4) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc,
-                         (`App
-                            (_loc, (`Vrn (_loc, "For")),
-                              (meta_alident _loc _a0))), (meta_exp _loc _a1))),
-                    (meta_exp _loc _a2))), (meta_direction_flag _loc _a3))),
-          (meta_exp _loc _a4))
-  | `Fun _a0 -> `App (_loc, (`Vrn (_loc, "Fun")), (meta_case _loc _a0))
-  | `IfThenElse (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "IfThenElse")), (meta_exp _loc _a0))),
-               (meta_exp _loc _a1))), (meta_exp _loc _a2))
-  | `IfThen (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "IfThen")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `LabelS _a0 ->
-      `App (_loc, (`Vrn (_loc, "LabelS")), (meta_alident _loc _a0))
-  | `Label (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Label")), (meta_alident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Lazy _a0 -> `App (_loc, (`Vrn (_loc, "Lazy")), (meta_exp _loc _a0))
-  | `LetIn (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
-               (meta_binding _loc _a1))), (meta_exp _loc _a2))
-  | `LetTryInWith (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "LetTryInWith")),
-                         (meta_rec_flag _loc _a0))), (meta_binding _loc _a1))),
-               (meta_exp _loc _a2))), (meta_case _loc _a3))
-  | `LetModule (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "LetModule")), (meta_auident _loc _a0))),
-               (meta_module_exp _loc _a1))), (meta_exp _loc _a2))
-  | `Match (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_exp _loc _a0))),
-          (meta_case _loc _a1))
-  | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
-  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
-  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
-  | `ObjPat (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
-          (meta_cstru _loc _a1))
-  | `ObjPatEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
-  | `OptLabl (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "OptLabl")), (meta_alident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `OptLablS _a0 ->
-      `App (_loc, (`Vrn (_loc, "OptLablS")), (meta_alident _loc _a0))
-  | `OvrInst _a0 ->
-      `App (_loc, (`Vrn (_loc, "OvrInst")), (meta_rec_exp _loc _a0))
-  | `OvrInstEmpty -> `Vrn (_loc, "OvrInstEmpty")
-  | `Seq _a0 -> `App (_loc, (`Vrn (_loc, "Seq")), (meta_exp _loc _a0))
-  | `Send (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Send")), (meta_exp _loc _a0))),
-          (meta_alident _loc _a1))
-  | `StringDot (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "StringDot")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Try (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Try")), (meta_exp _loc _a0))),
-          (meta_case _loc _a1))
-  | `Constraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_exp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Coercion (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "Coercion")), (meta_exp _loc _a0))),
-               (meta_ctyp _loc _a1))), (meta_ctyp _loc _a2))
-  | `Subtype (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Subtype")), (meta_exp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `While (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "While")), (meta_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `LetOpen (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "LetOpen")), (meta_ident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `LocalTypeFun (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "LocalTypeFun")), (meta_alident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Package_exp _a0 ->
-      `App (_loc, (`Vrn (_loc, "Package_exp")), (meta_module_exp _loc _a0))
-and meta_rec_exp _loc =
-  function
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_exp _loc _a0))),
-          (meta_rec_exp _loc _a1))
-  | `RecBind (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
-          (meta_exp _loc _a1))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result150)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result150)
-and meta_module_type _loc =
-  function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result149)
-  | `Functor (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
-               (meta_module_type _loc _a1))), (meta_module_type _loc _a2))
-  | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
-  | `SigEnd -> `Vrn (_loc, "SigEnd")
-  | `With (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "With")), (meta_module_type _loc _a0))),
-          (meta_with_constr _loc _a1))
-  | `ModuleTypeOf _a0 ->
-      `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (meta_module_exp _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result149)
-and meta_sig_item _loc =
-  function
-  | `Class _a0 ->
-      `App (_loc, (`Vrn (_loc, "Class")), (meta_class_type _loc _a0))
-  | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_class_type _loc _a0))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_sig_item _loc _a0))),
-          (meta_sig_item _loc _a1))
-  | `DirectiveSimple _a0 ->
-      `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
-  | `Directive (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Directive")), (meta_alident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Exception _a0 ->
-      `App (_loc, (`Vrn (_loc, "Exception")), (meta_of_ctyp _loc _a0))
-  | `External (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "External")), (meta_alident _loc _a0))),
-               (meta_ctyp _loc _a1))), (meta_strings _loc _a2))
-  | `Include _a0 ->
-      `App (_loc, (`Vrn (_loc, "Include")), (meta_module_type _loc _a0))
-  | `Module (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Module")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
-  | `RecModule _a0 ->
-      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_module_binding _loc _a0))
-  | `ModuleType (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "ModuleType")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
-  | `ModuleTypeEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ModuleTypeEnd")), (meta_auident _loc _a0))
-  | `Open _a0 -> `App (_loc, (`Vrn (_loc, "Open")), (meta_ident _loc _a0))
-  | `Type _a0 -> `App (_loc, (`Vrn (_loc, "Type")), (meta_typedecl _loc _a0))
-  | `Val (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Val")), (meta_alident _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
-and meta_with_constr _loc =
-  function
-  | `TypeEq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "TypeEq")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `TypeEqPriv (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TypeEqPriv")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `ModuleEq (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "ModuleEq")), (meta_ident _loc _a0))),
-          (meta_ident _loc _a1))
-  | `TypeSubst (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "TypeSubst")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `ModuleSubst (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "ModuleSubst")), (meta_ident _loc _a0))),
-          (meta_ident _loc _a1))
-  | `And (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_with_constr _loc _a0))),
-          (meta_with_constr _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result147)
-and meta_binding _loc =
-  function
-  | `And (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_binding _loc _a0))),
-          (meta_binding _loc _a1))
-  | `Bind (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Bind")), (meta_pat _loc _a0))),
-          (meta_exp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result146)
-and meta_module_binding _loc =
-  function
-  | `And (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_module_binding _loc _a0))),
-          (meta_module_binding _loc _a1))
-  | `ModuleBind (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "ModuleBind")),
-                    (meta_auident _loc _a0))), (meta_module_type _loc _a1))),
-          (meta_module_exp _loc _a2))
-  | `Constraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
-and meta_case _loc =
-  function
-  | `Bar (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Bar")), (meta_case _loc _a0))),
-          (meta_case _loc _a1))
-  | `Case (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Case")), (meta_pat _loc _a0))),
-          (meta_exp _loc _a1))
-  | `CaseWhen (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "CaseWhen")), (meta_pat _loc _a0))),
-               (meta_exp _loc _a1))), (meta_exp _loc _a2))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result144)
-and meta_module_exp _loc =
-  function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result143)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "App")), (meta_module_exp _loc _a0))),
-          (meta_module_exp _loc _a1))
-  | `Functor (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
-               (meta_module_type _loc _a1))), (meta_module_exp _loc _a2))
-  | `Struct _a0 -> `App (_loc, (`Vrn (_loc, "Struct")), (meta_stru _loc _a0))
-  | `StructEnd -> `Vrn (_loc, "StructEnd")
-  | `Constraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "Constraint")), (meta_module_exp _loc _a0))),
-          (meta_module_type _loc _a1))
-  | `PackageModule _a0 ->
-      `App (_loc, (`Vrn (_loc, "PackageModule")), (meta_exp _loc _a0))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result143)
-and meta_stru _loc =
-  function
-  | `Class _a0 ->
-      `App (_loc, (`Vrn (_loc, "Class")), (meta_class_exp _loc _a0))
-  | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_class_type _loc _a0))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_stru _loc _a0))),
-          (meta_stru _loc _a1))
-  | `DirectiveSimple _a0 ->
-      `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
-  | `Directive (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Directive")), (meta_alident _loc _a0))),
-          (meta_exp _loc _a1))
-  | `Exception _a0 ->
-      `App (_loc, (`Vrn (_loc, "Exception")), (meta_of_ctyp _loc _a0))
-  | `StExp _a0 -> `App (_loc, (`Vrn (_loc, "StExp")), (meta_exp _loc _a0))
-  | `External (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "External")), (meta_alident _loc _a0))),
-               (meta_ctyp _loc _a1))), (meta_strings _loc _a2))
-  | `Include _a0 ->
-      `App (_loc, (`Vrn (_loc, "Include")), (meta_module_exp _loc _a0))
-  | `Module (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Module")), (meta_auident _loc _a0))),
-          (meta_module_exp _loc _a1))
-  | `RecModule _a0 ->
-      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_module_binding _loc _a0))
-  | `ModuleType (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "ModuleType")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
-  | `Open _a0 -> `App (_loc, (`Vrn (_loc, "Open")), (meta_ident _loc _a0))
-  | `Type _a0 -> `App (_loc, (`Vrn (_loc, "Type")), (meta_typedecl _loc _a0))
-  | `Value (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Value")), (meta_rec_flag _loc _a0))),
-          (meta_binding _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result142)
-and meta_class_type _loc =
-  function
-  | `ClassCon (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "ClassCon")),
-                    (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
-          (meta_type_parameters _loc _a2))
-  | `ClassConS (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "ClassConS")), (meta_virtual_flag _loc _a0))),
-          (meta_ident _loc _a1))
-  | `CtFun (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "CtFun")), (meta_ctyp _loc _a0))),
-          (meta_class_type _loc _a1))
-  | `ObjTy (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ObjTy")), (meta_ctyp _loc _a0))),
-          (meta_class_sig_item _loc _a1))
-  | `ObjTyEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ObjTyEnd")), (meta_ctyp _loc _a0))
-  | `Obj _a0 ->
-      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_sig_item _loc _a0))
-  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
-  | `And (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
-  | `CtCol (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result141)
-and meta_class_sig_item _loc =
-  function
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Sem")), (meta_class_sig_item _loc _a0))),
-          (meta_class_sig_item _loc _a1))
-  | `SigInherit _a0 ->
-      `App (_loc, (`Vrn (_loc, "SigInherit")), (meta_class_type _loc _a0))
-  | `Method (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "Method")), (meta_alident _loc _a0))),
-               (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | `CgVal (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "CgVal")),
-                         (meta_alident _loc _a0))),
-                    (meta_mutable_flag _loc _a1))),
-               (meta_virtual_flag _loc _a2))), (meta_ctyp _loc _a3))
-  | `CgVir (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "CgVir")), (meta_alident _loc _a0))),
-               (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result140)
-and meta_class_exp _loc =
-  function
-  | `CeApp (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "CeApp")), (meta_class_exp _loc _a0))),
-          (meta_exp _loc _a1))
-  | `ClassCon (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "ClassCon")),
-                    (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
-          (meta_type_parameters _loc _a2))
-  | `ClassConS (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "ClassConS")), (meta_virtual_flag _loc _a0))),
-          (meta_ident _loc _a1))
-  | `CeFun (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_pat _loc _a0))),
-          (meta_class_exp _loc _a1))
-  | `LetIn (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
-               (meta_binding _loc _a1))), (meta_class_exp _loc _a2))
-  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
-  | `ObjEnd -> `Vrn (_loc, "ObjEnd")
-  | `ObjPat (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
-          (meta_cstru _loc _a1))
-  | `ObjPatEnd _a0 ->
-      `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
-  | `Constraint (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "Constraint")), (meta_class_exp _loc _a0))),
-          (meta_class_type _loc _a1))
-  | `And (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_class_exp _loc _a0))),
-          (meta_class_exp _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_exp _loc _a0))),
-          (meta_class_exp _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result139)
-and meta_cstru _loc =
-  function
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_cstru _loc _a0))),
-          (meta_cstru _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
-  | `Inherit (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "Inherit")), (meta_override_flag _loc _a0))),
-          (meta_class_exp _loc _a1))
-  | `InheritAs (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc, (`Vrn (_loc, "InheritAs")),
-                    (meta_override_flag _loc _a0))),
-               (meta_class_exp _loc _a1))), (meta_alident _loc _a2))
-  | `Initializer _a0 ->
-      `App (_loc, (`Vrn (_loc, "Initializer")), (meta_exp _loc _a0))
-  | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc,
-                         (`App
-                            (_loc, (`Vrn (_loc, "CrMth")),
-                              (meta_alident _loc _a0))),
-                         (meta_override_flag _loc _a1))),
-                    (meta_private_flag _loc _a2))), (meta_exp _loc _a3))),
-          (meta_ctyp _loc _a4))
-  | `CrMthS (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "CrMthS")),
-                         (meta_alident _loc _a0))),
-                    (meta_override_flag _loc _a1))),
-               (meta_private_flag _loc _a2))), (meta_exp _loc _a3))
-  | `CrVal (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "CrVal")),
-                         (meta_alident _loc _a0))),
-                    (meta_override_flag _loc _a1))),
-               (meta_mutable_flag _loc _a2))), (meta_exp _loc _a3))
-  | `CrVir (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "CrVir")), (meta_alident _loc _a0))),
-               (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | `CrVvr (_a0,_a1,_a2) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "CrVvr")), (meta_alident _loc _a0))),
-               (meta_mutable_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result138)
-
-let rec meta_ep _loc =
-  function
-  | #sid as _a0 -> (meta_sid _loc _a0 :>'result170)
-  | `App (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_ep _loc _a0))),
-          (meta_ep _loc _a1))
-  | `Vrn _a0 -> `App (_loc, (`Vrn (_loc, "Vrn")), (meta_string _loc _a0))
-  | `Com (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (meta_ep _loc _a0))),
-          (meta_ep _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_ep _loc _a0))),
-          (meta_ep _loc _a1))
-  | `Par _a0 -> `App (_loc, (`Vrn (_loc, "Par")), (meta_ep _loc _a0))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result170)
-  | `ArrayEmpty -> `Vrn (_loc, "ArrayEmpty")
-  | `Array _a0 -> `App (_loc, (`Vrn (_loc, "Array")), (meta_ep _loc _a0))
-  | `Record _a0 ->
-      `App (_loc, (`Vrn (_loc, "Record")), (meta_rec_bind _loc _a0))
-  | #literal as _a0 -> (meta_literal _loc _a0 :>'result170)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result170)
-and meta_rec_bind _loc =
-  function
-  | `RecBind (_a0,_a1) ->
-      `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "RecBind")), (meta_ident _loc _a0))),
-          (meta_ep _loc _a1))
-  | `Sem (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_rec_bind _loc _a0))),
-          (meta_rec_bind _loc _a1))
-  | #any as _a0 -> (meta_any _loc _a0 :>'result169)
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result169)
+let _ = __MetaExpr__

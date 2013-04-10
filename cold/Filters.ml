@@ -18,12 +18,10 @@ let _ =
              (`LetIn
                 (_loc, (`ReNil _loc),
                   (`Bind
-                     (_loc, (`Id (_loc, (`Lid (_loc, "loc")))),
-                       (`Id
-                          (_loc,
-                            (`Dot
-                               (_loc, (`Uid (_loc, "FanLoc")),
-                                 (`Lid (_loc, "ghost")))))))), e)))))
+                     (_loc, (`Lid (_loc, "loc")),
+                       (`Dot
+                          (_loc, (`Uid (_loc, "FanLoc")),
+                            (`Lid (_loc, "ghost")))))), e)))))
 
 let _ =
   AstFilters.register_stru_filter
@@ -31,21 +29,18 @@ let _ =
 
 let map_exp =
   function
-  | `App (_loc,e,`Id (_,`Uid (_,"NOTHING")))
-    |`Fun (_loc,`Case (_,`Id (_,`Uid (_,"NOTHING")),e)) -> e
-  | `Id (_loc,`Lid (_,"__FILE__")) ->
+  | `App (_loc,e,`Uid (_,"NOTHING"))
+    |`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) -> e
+  | `Lid (_loc,"__FILE__") ->
       `Str (_loc, (String.escaped (FanLoc.file_name _loc)))
-  | `Id (_loc,`Lid (_,"__PWD__")) ->
+  | `Lid (_loc,"__PWD__") ->
       `Str
         (_loc, (String.escaped (Filename.dirname (FanLoc.file_name _loc))))
-  | `Id (_loc,`Lid (_,"__LOCATION__")) ->
+  | `Lid (_loc,"__LOCATION__") ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       `App
         (_loc,
-          (`Id
-             (_loc,
-               (`Dot
-                  (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
+          (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))),
           (`Par
              (_loc,
                (`Com
@@ -73,8 +68,8 @@ let map_exp =
                                    (`Int (_loc, (string_of_int f))))),
                               (`Int (_loc, (string_of_int g))))),
                          (if h
-                          then `Id (_loc, (`Lid (_loc, "true")))
-                          else `Id (_loc, (`Lid (_loc, "false")))))))))))
+                          then `Lid (_loc, "true")
+                          else `Lid (_loc, "false")))))))))
   | e -> e
 
 let _ =
@@ -82,8 +77,7 @@ let _ =
     ("trash_nothing", ((Objs.map_exp map_exp)#stru))
 
 let make_filter (s,code) =
-  let f =
-    function | `StExp (_loc,`Id (_,`Lid (_,s'))) when s = s' -> code | e -> e in
+  let f = function | `StExp (_loc,`Lid (_,s')) when s = s' -> code | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
 
 let me =
@@ -108,6 +102,4 @@ let _ =
            (_loc, x,
              (`Value
                 (_loc, (`ReNil _loc),
-                  (`Bind
-                     (_loc,
-                       (`Id (_loc, (`Lid (_loc, "__fan_repr_of_file")))), y)))))))
+                  (`Bind (_loc, (`Lid (_loc, "__fan_repr_of_file")), y)))))))

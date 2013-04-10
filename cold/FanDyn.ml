@@ -21,6 +21,7 @@ type 'a tag =
   | Astring
   | Uident
   | Ident
+  | Vid
   | Dupath
   | Dlpath
   | Any
@@ -77,6 +78,7 @@ let string_of_tag =
   | Astring  -> "astring"
   | Uident  -> "uident"
   | Ident  -> "ident"
+  | Vid  -> "vid"
   | Dupath  -> "dupath"
   | Dlpath  -> "dlpath"
   | Any  -> "any"
@@ -146,6 +148,8 @@ let astring_tag: astring tag = Astring
 let uident_tag: uident tag = Uident
 
 let ident_tag: ident tag = Ident
+
+let vid_tag: vid tag = Vid
 
 let dupath_tag: dupath tag = Dupath
 

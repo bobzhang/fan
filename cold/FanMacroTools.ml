@@ -110,7 +110,7 @@ let define ~exp  ~pat  eo x =
                              failwith
                                "let pl = match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
-  defined := ((x, eo) :: (defined.contents))
+  defined.contents <- (x, eo) :: (defined.contents)
 
 let undef ~exp  ~pat  x =
   try
@@ -141,14 +141,14 @@ let undef ~exp  ~pat  x =
                   | _ -> false)), (`Antiquot, "`Uid __fan__x"));
             `Sself])
      | None  -> ());
-    defined := (List.remove x defined.contents)
+    defined.contents <- List.remove x defined.contents
   with | Not_found  -> ()
 
 let parse_def ~exp  ~pat  s =
   match Gram.parse_string exp ~loc:(FanLoc.mk "<command line>") s with
-  | (`Id (_loc,`Uid (_,n)) : Ast.exp) -> define ~exp ~pat None n
-  | (`App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Id (_,`Uid (_,n))),e) :
-      Ast.exp) -> define ~exp ~pat (Some ([], e)) n
+  | (`Uid (_loc,n) : Ast.exp) -> define ~exp ~pat None n
+  | (`App (_loc,`App (_,`Id (_,`Lid (_,"=")),`Uid (_,n)),e) : Ast.exp) ->
+      define ~exp ~pat (Some ([], e)) n
   | _ -> invalid_arg s
 
 let rec execute_macro ~exp  ~pat  nil cons =

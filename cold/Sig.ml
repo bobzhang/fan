@@ -77,6 +77,7 @@ module type Syntax =
     val class_type_plus : class_type Gram.t
     val class_type_quot : class_type Gram.t
     val comma_ctyp : type_parameters Gram.t
+    val vid : vid Gram.t
     val comma_exp : exp Gram.t
     val comma_ipat : pat Gram.t
     val comma_pat : pat Gram.t
@@ -120,7 +121,7 @@ module type Syntax =
     val module_declaration : module_type Gram.t
     val module_exp : module_exp Gram.t
     val module_exp_quot : module_exp Gram.t
-    val module_longident : ident Gram.t
+    val module_longident : vid Gram.t
     val module_longident_with_app : ident Gram.t
     val module_rec_declaration : module_binding Gram.t
     val module_type : module_type Gram.t

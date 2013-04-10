@@ -49,7 +49,7 @@ let search_stdlib = ref true
 
 let print_loaded_modules = ref false
 
-let task f x = let () = FanConfig.current_input_file := x in f x
+let task f x = let () = FanConfig.current_input_file.contents <- x in f x
 
 module Make(PreCast:Sig.PRECAST) =
   struct
@@ -58,7 +58,7 @@ module Make(PreCast:Sig.PRECAST) =
     let rcall_callback = ref (fun ()  -> ())
     let loaded_modules = ref SSet.empty
     let add_to_loaded_modules name =
-      loaded_modules := (SSet.add name loaded_modules.contents)
+      loaded_modules.contents <- SSet.add name loaded_modules.contents
     let _ =
       Printexc.register_printer
         (function
@@ -89,7 +89,7 @@ module Make(PreCast:Sig.PRECAST) =
     let output_file = ref None
     let parse_file ?directive_handler  name pa =
       let loc = FanLoc.mk name in
-      PreCast.Syntax.current_warning := print_warning;
+      PreCast.Syntax.current_warning.contents <- print_warning;
       (let ic = if name = "-" then stdin else open_in_bin name in
        let cs = XStream.of_channel ic in
        let clear () = if name = "-" then () else close_in ic in
@@ -106,7 +106,8 @@ module Make(PreCast:Sig.PRECAST) =
           parse_file ~directive_handler:sig_handler s
             PreCast.CurrentParser.parse_interf
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
-          (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
+          (AstQuotation.default.contents <-
+             FanToken.resolve_name ((`Sub []), s);
            None)
       | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
           (AstFilters.use_interf_filter s; None)
@@ -125,7 +126,8 @@ module Make(PreCast:Sig.PRECAST) =
           parse_file ~directive_handler:str_handler s
             PreCast.CurrentParser.parse_implem
       | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
-          (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
+          (AstQuotation.default.contents <-
+             FanToken.resolve_name ((`Sub []), s);
            None)
       | `DirectiveSimple (_loc,`Lid (_,"lang_clear")) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
@@ -158,16 +160,16 @@ module Make(PreCast:Sig.PRECAST) =
       rcall_callback.contents ();
       (match x with
        | Intf file_name ->
-           (FanConfig.compilation_unit :=
-              (Some
-                 (String.capitalize
-                    (let open Filename in chop_extension (basename file_name))));
+           (FanConfig.compilation_unit.contents <-
+              Some
+                (String.capitalize
+                   (let open Filename in chop_extension (basename file_name)));
             task process_intf file_name)
        | Impl file_name ->
-           (FanConfig.compilation_unit :=
-              (Some
-                 (String.capitalize
-                    (let open Filename in chop_extension (basename file_name))));
+           (FanConfig.compilation_unit.contents <-
+              Some
+                (String.capitalize
+                   (let open Filename in chop_extension (basename file_name)));
             task process_impl file_name)
        | Str s ->
            let (f,o) = Filename.open_temp_file "from_string" ".ml" in
@@ -199,9 +201,10 @@ module Make(PreCast:Sig.PRECAST) =
         ("<name>   Name of the location variable (default: " ^
            (FanLoc.name.contents ^ ").")));
       ("-QD",
-        (FanArg.String ((fun x  -> AstQuotation.dump_file := (Some x)))),
+        (FanArg.String
+           ((fun x  -> AstQuotation.dump_file.contents <- Some x))),
         "<file> Dump quotation expander result in case of syntax error.");
-      ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
+      ("-o", (FanArg.String ((fun x  -> output_file.contents <- Some x))),
         "<file> Output on <file> instead of standard output.");
       ("-v", (FanArg.Unit print_version), "Print Fan version and exit.");
       ("-version", (FanArg.Unit just_print_the_version),
@@ -245,13 +248,13 @@ module Make(PreCast:Sig.PRECAST) =
       try
         let dynloader =
           DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents) () in
-        DynLoader.instance := ((fun ()  -> dynloader));
+        DynLoader.instance.contents <- (fun ()  -> dynloader);
         (let call_callback () =
            PreCast.iter_and_take_callbacks
              (fun (name,module_callback)  ->
                 let () = add_to_loaded_modules name in module_callback ()) in
          call_callback ();
-         rcall_callback := call_callback;
+         rcall_callback.contents <- call_callback;
          FanArg.parse PreCast.Syntax.Options.init_spec_list anon_fun
            "fan <options> <file>\nOptions are:\n";
          call_callback ();

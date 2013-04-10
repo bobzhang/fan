@@ -111,10 +111,10 @@ let apply () =
     (None,
       (None, None,
         [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     (`Id (_loc, (i :>ident)) : 'parser_ipat ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->\n     ((i : alident  :>pat) : 'parser_ipat ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
-                   (`Id (_loc, (i :>ident)) : 'parser_ipat )))));
+                   ((i : alident  :>pat) : 'parser_ipat )))));
         ([`Skeyword "_"],
           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Any _loc : 'parser_ipat ))\n",
             (Gram.mk_action

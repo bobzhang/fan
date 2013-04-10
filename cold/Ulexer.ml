@@ -73,9 +73,9 @@ module Stack =
 
 let opt_char: char option Stack.t = Stack.create ()
 
-let turn_on_quotation_debug () = debug := true
+let turn_on_quotation_debug () = debug.contents <- true
 
-let turn_off_quotation_debug () = debug := false
+let turn_off_quotation_debug () = debug.contents <- false
 
 let clear_stack () = Stack.clear opt_char
 

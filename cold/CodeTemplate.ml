@@ -26,13 +26,13 @@ let base1_types =
        (`Value
           (_loc, (`ReNil _loc),
             (`Bind
-               (_loc, (`Id (_loc, (`Lid (_loc, "pp_print_unit")))),
+               (_loc, (`Lid (_loc, "pp_print_unit")),
                  (`Constraint
                     (_loc,
                       (`Fun
                          (_loc,
                            (`Case
-                              (_loc, (`Id (_loc, (`Lid (_loc, "fmt")))),
+                              (_loc, (`Lid (_loc, "fmt")),
                                 (`Fun
                                    (_loc,
                                      (`Case
@@ -41,19 +41,13 @@ let base1_types =
                                              (_loc,
                                                (`App
                                                   (_loc,
-                                                    (`Id
+                                                    (`Dot
                                                        (_loc,
-                                                         (`Dot
-                                                            (_loc,
-                                                              (`Uid
-                                                                 (_loc,
-                                                                   "Format")),
-                                                              (`Lid
-                                                                 (_loc,
-                                                                   "fprintf")))))),
-                                                    (`Id
-                                                       (_loc,
-                                                         (`Lid (_loc, "fmt")))))),
+                                                         (`Uid
+                                                            (_loc, "Format")),
+                                                         (`Lid
+                                                            (_loc, "fprintf")))),
+                                                    (`Lid (_loc, "fmt")))),
                                                (`Str (_loc, "()")))))))))))),
                       (`Arrow
                          (_loc,
@@ -70,7 +64,7 @@ let base1_types =
        (`Value
           (_loc, (`ReNil _loc),
             (`Bind
-               (_loc, (`Id (_loc, (`Lid (_loc, "eq_unit")))),
+               (_loc, (`Lid (_loc, "eq_unit")),
                  (`Constraint
                     (_loc,
                       (`Fun
@@ -81,7 +75,7 @@ let base1_types =
                                    (_loc,
                                      (`Case
                                         (_loc, (`Any _loc),
-                                          (`Id (_loc, (`Lid (_loc, "true")))))))))))),
+                                          (`Lid (_loc, "true")))))))))),
                       (`Arrow
                          (_loc, (`Id (_loc, (`Lid (_loc, "unit")))),
                            (`Arrow
@@ -113,55 +107,43 @@ let print_base1 =
             | `Exist ->
                 (`Value
                    (_loc, (`ReNil _loc),
-                     (`Bind
-                        (_loc, (`Id (_loc, (`Lid (_loc, name)))),
-                          (`Id (_loc, (`Lid (_loc, name))))))) : Ast.stru )
+                     (`Bind (_loc, (`Lid (_loc, name)), (`Lid (_loc, name))))) : 
+                Ast.stru )
             | `Custom s -> s
             | `Fmt c ->
                 (`Value
                    (_loc, (`ReNil _loc),
                      (`Bind
-                        (_loc, (`Id (_loc, (`Lid (_loc, name)))),
+                        (_loc, (`Lid (_loc, name)),
                           (`Constraint
                              (_loc,
                                (`Fun
                                   (_loc,
                                     (`Case
-                                       (_loc,
-                                         (`Id (_loc, (`Lid (_loc, "fmt")))),
+                                       (_loc, (`Lid (_loc, "fmt")),
                                          (`Fun
                                             (_loc,
                                               (`Case
-                                                 (_loc,
-                                                   (`Id
-                                                      (_loc,
-                                                        (`Lid (_loc, "a")))),
+                                                 (_loc, (`Lid (_loc, "a")),
                                                    (`App
                                                       (_loc,
                                                         (`App
                                                            (_loc,
                                                              (`App
                                                                 (_loc,
-                                                                  (`Id
-                                                                    (_loc,
-                                                                    (`Dot
+                                                                  (`Dot
                                                                     (_loc,
                                                                     (`Uid
                                                                     (_loc,
                                                                     "Format")),
                                                                     (`Lid
                                                                     (_loc,
-                                                                    "fprintf")))))),
-                                                                  (`Id
+                                                                    "fprintf")))),
+                                                                  (`Lid
                                                                     (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "fmt")))))),
+                                                                    "fmt")))),
                                                              (`Str (_loc, c)))),
-                                                        (`Id
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc, "a")))))))))))))),
+                                                        (`Lid (_loc, "a")))))))))))),
                                ty))))) : Ast.stru ))) in
   sem_of_list items
 
@@ -179,9 +161,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
             let exp: Ast.exp =
               `Fun
                 (_loc,
-                  (`Case
-                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))),
-                       (`Id (_loc, (`Lid (_loc, "x"))))))) in
+                  (`Case (_loc, (`Lid (_loc, "x")), (`Lid (_loc, "x"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -199,12 +179,10 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))),
+                     (_loc, (`Lid (_loc, "x")),
                        (`Fun
                           (_loc,
-                            (`Case
-                               (_loc, (`Any _loc),
-                                 (`Id (_loc, (`Lid (_loc, "x"))))))))))) in
+                            (`Case (_loc, (`Any _loc), (`Lid (_loc, "x"))))))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -217,10 +195,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
                   (`Quote (_loc, (`Normal _loc), (`Lid (_loc, "self_type"))))) in
             let exp: Ast.exp =
-              `Fun
-                (_loc,
-                  (`Case
-                     (_loc, (`Any _loc), (`Id (_loc, (`Lid (_loc, "self"))))))) in
+              `Fun (_loc, (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -242,9 +217,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                      (_loc, (`Any _loc),
                        (`Fun
                           (_loc,
-                            (`Case
-                               (_loc, (`Any _loc),
-                                 (`Id (_loc, (`Lid (_loc, "self"))))))))))) in
+                            (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
                  ty) : Ast.cstru ))) in
@@ -252,7 +225,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
     ty_names |>
       (List.map
          (fun x  ->
-            let exp: Ast.exp = `Id (_loc, (`Lid (_loc, ("pp_print_" ^ x)))) in
+            let exp: Ast.exp = `Lid (_loc, ("pp_print_" ^ x)) in
             (`CrMthS
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp) : 
               Ast.cstru ))) in
@@ -280,18 +253,18 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
               `Fun
                 (_loc,
                   (`Case
-                     (_loc, (`Id (_loc, (`Lid (_loc, "x")))),
+                     (_loc, (`Lid (_loc, "x")),
                        (`Fun
                           (_loc,
                             (`Case
-                               (_loc, (`Id (_loc, (`Lid (_loc, "y")))),
+                               (_loc, (`Lid (_loc, "y")),
                                  (`App
                                     (_loc,
                                       (`App
                                          (_loc,
                                            (`Id (_loc, (`Lid (_loc, "=")))),
-                                           (`Id (_loc, (`Lid (_loc, "x")))))),
-                                      (`Id (_loc, (`Lid (_loc, "y"))))))))))))) in
+                                           (`Lid (_loc, "x")))),
+                                      (`Lid (_loc, "y"))))))))))) in
             let ty: Ast.ctyp =
               `Arrow
                 (_loc, (`Id (_loc, (`Lid (_loc, x)))),
@@ -321,9 +294,8 @@ let eq_base1 =
                 `Value
                   (_loc, (`ReNil _loc),
                     (`Bind
-                       (_loc, (`Id (_loc, (`Lid (_loc, name)))),
-                         (`Constraint
-                            (_loc, (`Id (_loc, (`Lid (_loc, "=")))), ty)))))
+                       (_loc, (`Lid (_loc, name)),
+                         (`Constraint (_loc, (`Lid (_loc, "=")), ty)))))
             | `Custom s -> s)) in
   sem_of_list items
 

@@ -154,11 +154,12 @@ let error_on_unknown_keywords = ref false
 let rec ignore_layout (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
-      (XStream.junk __strm; ignore_layout __strm)
+      (XStream.junk __strm; (let s = __strm in ignore_layout s))
   | Some x ->
       (XStream.junk __strm;
        (let s = __strm in
-        XStream.icons x (XStream.slazy (fun _  -> ignore_layout s))))
+        XStream.lcons (fun _  -> x)
+          (XStream.slazy (fun _  -> ignore_layout s))))
   | _ -> XStream.sempty
 
 let print ppf x = pp_print_string ppf (to_string x)

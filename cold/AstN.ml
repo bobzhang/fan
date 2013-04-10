@@ -44,6 +44,8 @@ type uident =
 type ident =
   [ `Dot of (ident * ident) | `App of (ident * ident) | alident | auident] 
 
+type vid = [ `Dot of (vid * vid) | `Lid of string | `Uid of string | ant] 
+
 type dupath = [ `Dot of (dupath * dupath) | auident] 
 
 type dlpath = [ `Dot of (dupath * alident) | alident] 
@@ -99,7 +101,7 @@ and or_ctyp =
   | `Of of (sid * ctyp) | sid | ant] 
 and of_ctyp = [ `Of of (sid * ctyp) | sid | ant] 
 and pat =
-  [ sid | `App of (pat * pat) | `Vrn of string | `Com of (pat * pat)
+  [ vid | `App of (pat * pat) | `Vrn of string | `Com of (pat * pat)
   | `Sem of (pat * pat) | `Par of pat | any | `Record of rec_pat | ant
   | literal | `Alias of (pat * alident) | `ArrayEmpty | `Array of pat
   | `LabelS of alident | `Label of (alident * pat)
@@ -111,9 +113,9 @@ and pat =
 and rec_pat =
   [ `RecBind of (ident * pat) | `Sem of (rec_pat * rec_pat) | any | ant] 
 and exp =
-  [ sid | `App of (exp * exp) | `Vrn of string | `Com of (exp * exp)
-  | `Sem of (exp * exp) | `Par of exp | any | `Record of rec_exp | ant
-  | literal | `RecordWith of (rec_exp * exp) | `Field of (exp * exp)
+  [ vid | `App of (exp * exp) | `Vrn of string | `Com of (exp * exp)
+  | `Sem of (exp * exp) | `Par of exp | any | `Record of rec_exp | literal
+  | `RecordWith of (rec_exp * exp) | `Field of (exp * exp)
   | `ArrayDot of (exp * exp) | `ArrayEmpty | `Array of exp | `Assert of exp
   | `Assign of (exp * exp)
   | `For of (alident * exp * exp * direction_flag * exp) | `Fun of case
@@ -201,7 +203,7 @@ and cstru =
   | `CrVvr of (alident * mutable_flag * ctyp) | ant] 
 
 type ep =
-  [ sid | `App of (ep * ep) | `Vrn of string | `Com of (ep * ep)
+  [ vid | `App of (ep * ep) | `Vrn of string | `Com of (ep * ep)
   | `Sem of (ep * ep) | `Par of ep | any | `ArrayEmpty | `Array of ep
   | `Record of rec_bind | literal | ant] 
 and rec_bind =

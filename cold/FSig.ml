@@ -46,8 +46,8 @@ type basic_id_transform =
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
 
 type full_id_transform =
-  [ basic_id_transform | `Idents of ident list -> ident
-  | `Id of ident -> ident | `Last of string -> ident | `Obj of string id] 
+  [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
+  | `Last of string -> vid | `Obj of string id] 
 
 open StdLib
 

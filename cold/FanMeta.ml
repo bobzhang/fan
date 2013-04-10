@@ -1,10 +1,7 @@
 let meta_loc _loc location =
   let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
   `App
-    (_loc,
-      (`Id
-         (_loc,
-           (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))))),
+    (_loc, (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))),
       (`Par
          (_loc,
            (`Com
@@ -27,9 +24,7 @@ let meta_loc _loc location =
                                     (`Int (_loc, (string_of_int e))))),
                                (`Int (_loc, (string_of_int f))))),
                           (`Int (_loc, (string_of_int g))))),
-                     (if h
-                      then `Id (_loc, (`Lid (_loc, "true")))
-                      else `Id (_loc, (`Lid (_loc, "false")))))))))))
+                     (if h then `Lid (_loc, "true") else `Lid (_loc, "false")))))))))
 
 open Ast
 
@@ -56,8 +51,8 @@ class primitive =
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with
-       | true  -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.ep )
-       | false  -> (`Id (_loc, (`Lid (_loc, "false"))) : Ast.ep ) : ep )
+       | true  -> (`Lid (_loc, "true") : Ast.ep )
+       | false  -> (`Lid (_loc, "false") : Ast.ep ) : ep )
   end
 
 let _ = (); ()
@@ -257,6 +252,27 @@ class meta =
                      (self#ident _loc _a1))), (self#ident _loc _a2))
         | #alident as _a0 -> (self#alident _loc _a0 :>ep)
         | #auident as _a0 -> (self#auident _loc _a0 :>ep)
+    method vid : 'loc -> vid -> ep=
+      fun _loc  ->
+        function
+        | `Dot (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Dot")), (self#loc _loc _a0))),
+                     (self#vid _loc _a1))), (self#vid _loc _a2))
+        | `Lid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Lid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
+        | `Uid (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Uid")), (self#loc _loc _a0))),
+                (self#string _loc _a1))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method dupath : 'loc -> dupath -> ep=
       fun _loc  ->
         function
@@ -738,7 +754,7 @@ class meta =
     method pat : 'loc -> pat -> ep=
       fun _loc  ->
         function
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>ep)
         | `App (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -903,7 +919,7 @@ class meta =
     method exp : 'loc -> exp -> ep=
       fun _loc  ->
         function
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>ep)
         | `App (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -941,7 +957,6 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Record")), (self#loc _loc _a0))),
                 (self#rec_exp _loc _a1))
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
         | #literal as _a0 -> (self#literal _loc _a0 :>ep)
         | `RecordWith (_a0,_a1,_a2) ->
             `App
@@ -2037,7 +2052,7 @@ class meta =
     method ep : 'loc -> ep -> ep=
       fun _loc  ->
         function
-        | #sid as _a0 -> (self#sid _loc _a0 :>ep)
+        | #vid as _a0 -> (self#vid _loc _a0 :>ep)
         | `App (_a0,_a1,_a2) ->
             `App
               (_loc,

@@ -3,19 +3,21 @@ open LibUtil
 let sfold0 f e _entry _symbl psymb =
   let rec fold accu (__strm : _ XStream.t) =
     match try Some (psymb __strm) with | XStream.Failure  -> None with
-    | Some a -> fold (f a accu) __strm
+    | Some a -> let s = __strm in fold (f a accu) s
     | _ -> accu in
-  fun (__strm : _ XStream.t)  -> fold e __strm
+  fun (__strm : _ XStream.t)  -> let a = fold e __strm in a
 
 let sfold1 f e _entry _symbl psymb =
   let rec fold accu (__strm : _ XStream.t) =
     match try Some (psymb __strm) with | XStream.Failure  -> None with
-    | Some a -> fold (f a accu) __strm
+    | Some a -> let s = __strm in fold (f a accu) s
     | _ -> accu in
   fun (__strm : _ XStream.t)  ->
     let a = psymb __strm in
-    try fold (f a e) __strm
-    with | XStream.Failure  -> raise (XStream.Error "")
+    let a =
+      try fold (f a e) __strm
+      with | XStream.Failure  -> raise (XStream.Error "") in
+    a
 
 let sfold0sep f e entry symbl psymb psep =
   let failed =
@@ -28,11 +30,11 @@ let sfold0sep f e entry symbl psymb psep =
         let a =
           try psymb __strm
           with | XStream.Failure  -> raise (XStream.Error (failed symbl)) in
-        kont (f a accu) __strm
+        let s = __strm in kont (f a accu) s
     | _ -> accu in
   fun (__strm : _ XStream.t)  ->
     match try Some (psymb __strm) with | XStream.Failure  -> None with
-    | Some a -> kont (f a e) __strm
+    | Some a -> let s = __strm in kont (f a e) s
     | _ -> e
 
 let sfold1sep f e entry symbl psymb psep =
@@ -49,15 +51,17 @@ let sfold1sep f e entry symbl psymb psep =
     | Some () ->
         let a =
           try
-            try psymb __strm
+            match try Some (psymb __strm) with | XStream.Failure  -> None
             with
-            | XStream.Failure  ->
-                let a =
-                  try parse_top symbl __strm
-                  with
-                  | XStream.Failure  -> raise (XStream.Error (failed symbl)) in
-                Obj.magic a
+            | Some a -> a
+            | _ ->
+                (match try Some (parse_top symbl __strm)
+                       with | XStream.Failure  -> None
+                 with
+                 | Some a -> Obj.magic a
+                 | _ -> raise (XStream.Error (failed symbl)))
           with | XStream.Failure  -> raise (XStream.Error "") in
-        kont (f a accu) __strm
+        let s = __strm in kont (f a accu) s
     | _ -> accu in
-  fun (__strm : _ XStream.t)  -> let a = psymb __strm in kont (f a e) __strm
+  fun (__strm : _ XStream.t)  ->
+    let a = psymb __strm in let s = __strm in kont (f a e) s

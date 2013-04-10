@@ -119,8 +119,8 @@ let parse_argv ?(current= current)  argv speclist anonfun errmsg =
                    | Invalid_argument "bool_of_string" ->
                        raise (Stop (Wrong (s, arg, "a boolean"))));
                   incr current)
-             | Set r -> r := true
-             | Clear r -> r := false
+             | Set r -> r.contents <- true
+             | Clear r -> r.contents <- false
              | String f when (current.contents + 1) < l ->
                  (f (argv.(current.contents + 1)); incr current)
              | Symbol (symb,f) when (current.contents + 1) < l ->
@@ -134,7 +134,7 @@ let parse_argv ?(current= current)  argv speclist anonfun errmsg =
                            (s, arg,
                              ("one of: " ^ (make_symlist "" " " "" symb)))))
              | Set_string r when (current.contents + 1) < l ->
-                 (r := (argv.(current.contents + 1)); incr current)
+                 (r.contents <- argv.(current.contents + 1); incr current)
              | Int f when (current.contents + 1) < l ->
                  let arg = argv.(current.contents + 1) in
                  ((try f (int_of_string arg)
@@ -144,7 +144,7 @@ let parse_argv ?(current= current)  argv speclist anonfun errmsg =
                   incr current)
              | Set_int r when (current.contents + 1) < l ->
                  let arg = argv.(current.contents + 1) in
-                 ((try r := (int_of_string arg)
+                 ((try r.contents <- int_of_string arg
                    with
                    | Failure "int_of_string" ->
                        raise (Stop (Wrong (s, arg, "an integer"))));
@@ -158,7 +158,7 @@ let parse_argv ?(current= current)  argv speclist anonfun errmsg =
                   incr current)
              | Set_float r when (current.contents + 1) < l ->
                  let arg = argv.(current.contents + 1) in
-                 ((try r := (float_of_string arg)
+                 ((try r.contents <- float_of_string arg
                    with
                    | Failure "float_of_string" ->
                        raise (Stop (Wrong (s, arg, "a float"))));

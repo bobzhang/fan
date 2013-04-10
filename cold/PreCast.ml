@@ -30,22 +30,24 @@ let iter_and_take_callbacks f =
   try loop () with | Queue.Empty  -> ()
 
 let declare_dyn_module m f =
-  loaded_modules := (m :: (loaded_modules.contents));
+  loaded_modules.contents <- m :: (loaded_modules.contents);
   Queue.add (m, f) callbacks
 
-let register_stru_parser f = stru_parser := f
+let register_stru_parser f = stru_parser.contents <- f
 
-let register_sig_item_parser f = sig_item_parser := f
+let register_sig_item_parser f = sig_item_parser.contents <- f
 
-let register_parser f g = stru_parser := f; sig_item_parser := g
+let register_parser f g =
+  stru_parser.contents <- f; sig_item_parser.contents <- g
 
 let current_parser () = ((stru_parser.contents), (sig_item_parser.contents))
 
-let register_stru_printer f = stru_printer := f
+let register_stru_printer f = stru_printer.contents <- f
 
-let register_sig_item_printer f = sig_item_printer := f
+let register_sig_item_printer f = sig_item_printer.contents <- f
 
-let register_printer f g = stru_printer := f; sig_item_printer := g
+let register_printer f g =
+  stru_printer.contents <- f; sig_item_printer.contents <- g
 
 let current_printer () =
   ((stru_printer.contents), (sig_item_printer.contents))
@@ -158,9 +160,9 @@ let enable_auto isatty =
   then enable_ocaml_printer ()
   else enable_dump_ocaml_ast_printer ()
 
-let _ = sig_item_parser := Syntax.parse_interf
+let _ = sig_item_parser.contents <- Syntax.parse_interf
 
-let _ = stru_parser := Syntax.parse_implem
+let _ = stru_parser.contents <- Syntax.parse_implem
 
 module CurrentParser =
   struct

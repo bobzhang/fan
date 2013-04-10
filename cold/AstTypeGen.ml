@@ -14,16 +14,13 @@ let _loc = FanLoc.ghost
 
 let mk_variant _cons =
   (function
-   | [] -> (`Id (_loc, (`Lid (_loc, "true"))) : Ast.exp )
+   | [] -> (`Lid (_loc, "true") : Ast.exp )
    | ls ->
        List.reduce_left_with
          ~compose:(fun x  y  ->
-                     (`App
-                        (_loc,
-                          (`App (_loc, (`Id (_loc, (`Lid (_loc, "&&")))), x)),
-                          y) : Ast.exp ))
-         ~project:(fun { info_exp;_}  -> info_exp) ls : FSig.ty_info list ->
-                                                          exp )
+                     (`App (_loc, (`App (_loc, (`Lid (_loc, "&&")), x)), y) : 
+                     Ast.exp )) ~project:(fun { info_exp;_}  -> info_exp) ls : 
+  FSig.ty_info list -> exp )
 
 let mk_tuple exps = mk_variant "" exps
 
@@ -33,10 +30,10 @@ let mk_record: FSig.record_col list -> exp =
 
 let (gen_eq,gen_eqobj) =
   ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
-      ~default:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()),
+      ~default:(`Lid (_loc, "false") : Ast.exp ) ()),
     (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
        ~class_name:"eq" ~mk_variant ~arity:2
-       ~default:(`Id (_loc, (`Lid (_loc, "false"))) : Ast.exp ) ()))
+       ~default:(`Lid (_loc, "false") : Ast.exp ) ()))
 
 let _ = [("Eq", gen_eq); ("OEq", gen_eqobj)] |> (List.iter Typehook.register)
 
@@ -44,14 +41,14 @@ let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { info_exp;_}  -> info_exp))) |>
       (function
-       | [] -> (`Id (_loc, (`Lid (_loc, "self"))) : Ast.exp )
+       | [] -> (`Lid (_loc, "self") : Ast.exp )
        | ls ->
            List.reduce_right
              (fun v  acc  ->
                 (`LetIn
                    (_loc, (`ReNil _loc),
-                     (`Bind (_loc, (`Id (_loc, (`Lid (_loc, "self")))), v)),
-                     acc) : Ast.exp )) ls) in
+                     (`Bind (_loc, (`Lid (_loc, "self")), v)), acc) : 
+                Ast.exp )) ls) in
   let mk_tuple = mk_variant "" in
   let mk_record cols =
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant "") in
@@ -60,7 +57,7 @@ let (gen_fold,gen_fold2) =
     (gen_object ~kind:Fold ~mk_tuple ~mk_record ~base:"foldbase2"
        ~class_name:"fold2" ~mk_variant ~arity:2
        ~default:(`App
-                   (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
+                   (_loc, (`Lid (_loc, "invalid_arg")),
                      (`Str (_loc, "fold2 failure"))) : Ast.exp ) ()))
 
 let _ =
@@ -97,7 +94,7 @@ let (gen_map,gen_map2) =
     (gen_object ~kind:Map ~mk_tuple ~mk_record ~base:"mapbase2"
        ~class_name:"map2" ~mk_variant ~arity:2
        ~default:(`App
-                   (_loc, (`Id (_loc, (`Lid (_loc, "invalid_arg")))),
+                   (_loc, (`Lid (_loc, "invalid_arg")),
                      (`Str (_loc, "map2 failure"))) : Ast.exp ) ()))
 
 let _ =
@@ -199,11 +196,8 @@ let mkfmt pre sep post fields =
      (_loc,
        (`App
           (_loc,
-            (`Id
-               (_loc,
-                 (`Dot
-                    (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))))),
-            (`Id (_loc, (`Lid (_loc, "fmt")))))),
+            (`Dot (_loc, (`Uid (_loc, "Format")), (`Lid (_loc, "fprintf")))),
+            (`Lid (_loc, "fmt")))),
        (`Str (_loc, (pre ^ ((String.concat sep fields) ^ post))))) : 
   Ast.exp )
 
@@ -303,23 +297,21 @@ let generate (module_types : FSig.module_types) =
             let case: Ast.case =
               `Case
                 (_loc,
-                  (`App
-                     (_loc, (`Vrn (_loc, key)),
-                       (`Id (_loc, (`Lid (_loc, "_loc")))))),
-                  (`Id (_loc, (`Lid (_loc, "_loc"))))) in
+                  (`App (_loc, (`Vrn (_loc, key)), (`Lid (_loc, "_loc")))),
+                  (`Lid (_loc, "_loc"))) in
             match acc with
             | None  -> Some case
             | Some acc -> Some (`Bar (_loc, case, acc))
           else
             if arity > 1
             then
-              (let pats = (`Id (_loc, (`Lid (_loc, "_loc"))) : Ast.pat ) ::
+              (let pats = (`Lid (_loc, "_loc") : Ast.pat ) ::
                  (List.init (arity - 1) (fun _  -> `Any _loc)) in
                let case: Ast.case =
                  `Case
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, key)), (tuple_com pats))),
-                     (`Id (_loc, (`Lid (_loc, "_loc"))))) in
+                     (`Lid (_loc, "_loc"))) in
                match acc with
                | None  -> Some case
                | Some acc -> Some (`Bar (_loc, case, acc)))
@@ -328,9 +320,8 @@ let generate (module_types : FSig.module_types) =
    | Some case ->
        (`Value
           (_loc, (`ReNil _loc),
-            (`Bind
-               (_loc, (`Id (_loc, (`Lid (_loc, "loc_of")))),
-                 (`Fun (_loc, case))))) : Ast.stru )
+            (`Bind (_loc, (`Lid (_loc, "loc_of")), (`Fun (_loc, case))))) : 
+       Ast.stru )
    | None  -> failwithf "AstTypeGen.generate null case" : stru )
 
 let _ =
@@ -397,23 +388,21 @@ let generate (module_types : FSig.module_types) =
          (List.map
             (fun x  ->
                (`Case
-                  (_loc, (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                  (_loc, (`Uid (_loc, (String.capitalize x))),
                     (`Str (_loc, x))) : Ast.case )) tys) in
      (`Value
         (_loc, (`ReNil _loc),
-          (`Bind
-             (_loc, (`Id (_loc, (`Lid (_loc, "string_of_tag")))),
-               (`Fun (_loc, case))))) : Ast.stru ) in
+          (`Bind (_loc, (`Lid (_loc, "string_of_tag")), (`Fun (_loc, case))))) : 
+       Ast.stru ) in
    let tags =
      List.map
        (fun x  ->
           (`Value
              (_loc, (`ReNil _loc),
                (`Bind
-                  (_loc, (`Id (_loc, (`Lid (_loc, (x ^ "_tag"))))),
+                  (_loc, (`Lid (_loc, (x ^ "_tag"))),
                     (`Constraint
-                       (_loc,
-                         (`Id (_loc, (`Uid (_loc, (String.capitalize x))))),
+                       (_loc, (`Uid (_loc, (String.capitalize x))),
                          (`App
                             (_loc, (`Id (_loc, (`Lid (_loc, "tag")))),
                               (`Id (_loc, (`Lid (_loc, x))))))))))) : 
@@ -430,11 +419,11 @@ let generate (module_types : FSig.module_types) =
      ((`Value
          (_loc, (`ReNil _loc),
            (`Bind
-              (_loc, (`Id (_loc, (`Lid (_loc, ("map_" ^ f))))),
+              (_loc, (`Lid (_loc, ("map_" ^ f))),
                 (`Fun
                    (_loc,
                      (`Case
-                        (_loc, (`Id (_loc, (`Lid (_loc, "f")))),
+                        (_loc, (`Lid (_loc, "f")),
                           (`Obj
                              (_loc,
                                (`Sem
@@ -451,32 +440,21 @@ let generate (module_types : FSig.module_types) =
                                          (`Fun
                                             (_loc,
                                               (`Case
-                                                 (_loc,
-                                                   (`Id
-                                                      (_loc,
-                                                        (`Lid (_loc, "x")))),
+                                                 (_loc, (`Lid (_loc, "x")),
                                                    (`App
                                                       (_loc,
-                                                        (`Id
-                                                           (_loc,
-                                                             (`Lid
-                                                                (_loc, "f")))),
+                                                        (`Lid (_loc, "f")),
                                                         (`App
                                                            (_loc,
                                                              (`Send
                                                                 (_loc,
-                                                                  (`Id
+                                                                  (`Lid
                                                                     (_loc,
-                                                                    (`Lid
-                                                                    (_loc,
-                                                                    "super")))),
+                                                                    "super")),
                                                                   (`Lid
                                                                     (_loc, f)))),
-                                                             (`Id
-                                                                (_loc,
-                                                                  (`Lid
-                                                                    (_loc,
-                                                                    "x"))))))))))))))))))))))))) : 
+                                                             (`Lid
+                                                                (_loc, "x"))))))))))))))))))))))) : 
      Ast.stru ) : stru ) in
    FSigUtil.stru_from_ty ~f:aux module_types : stru )
 
@@ -487,22 +465,19 @@ let generate (module_types : FSig.module_types) =
      ((`Value
          (_loc, (`ReNil _loc),
            (`Bind
-              (_loc, (`Id (_loc, (`Lid (_loc, ("dump_" ^ f))))),
+              (_loc, (`Lid (_loc, ("dump_" ^ f))),
                 (`App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "LibUtil")),
-                               (`Lid (_loc, "to_string_of_printer")))))),
-                     (`Send
-                        (_loc, (`Id (_loc, (`Lid (_loc, "dump")))),
-                          (`Lid (_loc, f))))))))) : Ast.stru ) : stru ) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "LibUtil")),
+                          (`Lid (_loc, "to_string_of_printer")))),
+                     (`Send (_loc, (`Lid (_loc, "dump")), (`Lid (_loc, f))))))))) : 
+     Ast.stru ) : stru ) in
    sem
      (`Value
         (_loc, (`ReNil _loc),
           (`Bind
-             (_loc, (`Id (_loc, (`Lid (_loc, "dump")))),
+             (_loc, (`Lid (_loc, "dump")),
                (`New (_loc, (`Lid (_loc, "print"))))))) : Ast.stru )
      (FSigUtil.stru_from_ty ~f:aux module_types) : stru )
 

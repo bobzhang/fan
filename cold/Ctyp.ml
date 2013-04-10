@@ -147,7 +147,7 @@ let mk_obj class_name base body =
            (`ObjPat
               (_loc,
                 (`Constraint
-                   (_loc, (`Id (_loc, (`Lid (_loc, "self")))),
+                   (_loc, (`Lid (_loc, "self")),
                      (`Quote
                         (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
                 (`Sem
@@ -219,7 +219,7 @@ let mk_transform_type_eq () =
     inherit  Objs.map as super
     method! stru =
       function
-      | `Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) as x ->
+      | (`Type (_loc,`TyDcl (_,_name,vars,ctyp,_)) : Ast.stru) as x ->
           let r =
             match ctyp with
             | `TyEq (_,_,t) -> qualified_app_list t
@@ -233,7 +233,7 @@ let mk_transform_type_eq () =
                if not (eq_list (vars : decl_params list  :>ctyp list) lst)
                then super#stru x
                else
-                 (let src = i and dest = Id.map_to_string i in
+                 (let src = i and dest = Id.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
                   `StExp (_loc, (`Id (_loc, (`Uid (_loc, "()"))))))
            | None  -> super#stru x)
@@ -242,7 +242,7 @@ let mk_transform_type_eq () =
       match qualified_app_list x with
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
-          let src = i and dest = Id.map_to_string i in
+          let src = i and dest = Id.to_string i in
           (Hashtbl.replace transformers dest (src, (List.length lst));
            appl_of_list ((`Id (_loc, (`Lid (_loc, dest))) : Ast.ctyp ) ::
              lst))

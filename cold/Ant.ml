@@ -47,17 +47,15 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Nativeint")),
-                               (`Lid (_loc, "to_string")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "Nativeint")),
+                          (`Lid (_loc, "to_string")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Nativeint")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
            | ("`int",_,_) ->
                let e: Ast.exp =
-                 `App (_loc, (`Id (_loc, (`Lid (_loc, "string_of_int")))), e) in
+                 `App (_loc, (`Lid (_loc, "string_of_int")), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -65,11 +63,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Int32")),
-                               (`Lid (_loc, "to_string")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "Int32")),
+                          (`Lid (_loc, "to_string")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int32")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -77,11 +73,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Int64")),
-                               (`Lid (_loc, "to_string")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "Int64")),
+                          (`Lid (_loc, "to_string")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Int64")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -89,11 +83,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "Char")),
-                               (`Lid (_loc, "escaped")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "Char")),
+                          (`Lid (_loc, "escaped")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Chr")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -101,11 +93,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "String")),
-                               (`Lid (_loc, "escaped")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "String")),
+                          (`Lid (_loc, "escaped")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Str")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -113,11 +103,9 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                let e: Ast.exp =
                  `App
                    (_loc,
-                     (`Id
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, "FanUtil")),
-                               (`Lid (_loc, "float_repres")))))), e) in
+                     (`Dot
+                        (_loc, (`Uid (_loc, "FanUtil")),
+                          (`Lid (_loc, "float_repres")))), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Flo")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : Ast.exp )
@@ -133,12 +121,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                                   (_loc, e, (`Str (_loc, "true")),
                                     (`Str (_loc, "false"))))))))) in
                (`Constraint
-                  (_loc,
-                    (`App
-                       (_loc,
-                         (`App
-                            (_loc, (`Vrn (_loc, "Id")),
-                              (`Id (_loc, (`Lid (_loc, "_loc")))))), x)),
+                  (_loc, x,
                     (`Id
                        (_loc,
                          (`Dot
