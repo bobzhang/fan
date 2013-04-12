@@ -37,8 +37,6 @@ let class_fun_binding = Gram.mk "class_fun_binding"
 
 let class_fun_def = Gram.mk "class_fun_def"
 
-let class_info_for_clexp = Gram.mk "class_info_for_clexp"
-
 let class_info_for_cltyp = Gram.mk "class_info_for_cltyp"
 
 let class_longident = Gram.mk "class_longident"

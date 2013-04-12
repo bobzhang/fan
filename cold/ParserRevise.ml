@@ -4893,14 +4893,29 @@ let apply () =
                    | _ ->
                        failwith
                          "AstQuotation.expand _loc x FanDyn.clexp_tag\n"))));
-         ([`Snterm
-             (Gram.obj (class_info_for_clexp : 'class_info_for_clexp Gram.t ));
+         ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Skeyword "[";
+          `Snterm
+            (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
+          `Skeyword "]";
           `Snterm (Gram.obj (class_fun_binding : 'class_fun_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  (ci : 'class_info_for_clexp) \n     (_loc : FanLoc.t)  -> (`Eq (_loc, ci, ce) : 'class_declaration ))\n",
+           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  _  (x : 'comma_type_parameter)  _ \n     (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, (`ClassCon (_loc, mv, (i :>ident), x)), ce) : 'class_declaration ))\n",
              (Gram.mk_action
-                (fun (ce : 'class_fun_binding)  (ci : 'class_info_for_clexp) 
-                   (_loc : FanLoc.t)  ->
-                   (`Eq (_loc, ci, ce) : 'class_declaration )))))]));
+                (fun (ce : 'class_fun_binding)  _ 
+                   (x : 'comma_type_parameter)  _  (i : 'a_lident) 
+                   (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
+                   (`Eq (_loc, (`ClassCon (_loc, mv, (i :>ident), x)), ce) : 
+                   'class_declaration )))));
+         ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+          `Snterm (Gram.obj (class_fun_binding : 'class_fun_binding Gram.t ))],
+           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  (i : 'a_lident)  (mv : 'opt_virtual) \n     (_loc : FanLoc.t)  ->\n     (`Eq (_loc, (`ClassConS (_loc, mv, (i :>ident))), ce) : 'class_declaration ))\n",
+             (Gram.mk_action
+                (fun (ce : 'class_fun_binding)  (i : 'a_lident) 
+                   (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
+                   (`Eq (_loc, (`ClassConS (_loc, mv, (i :>ident))), ce) : 
+                   'class_declaration )))))]));
    Gram.extend_single (class_fun_binding : 'class_fun_binding Gram.t )
      (None,
        (None, None,
@@ -4924,27 +4939,6 @@ let apply () =
                 (fun (cfb : 'class_fun_binding)  (p : 'ipat) 
                    (_loc : FanLoc.t)  ->
                    (`CeFun (_loc, p, cfb) : 'class_fun_binding )))))]));
-   Gram.extend_single (class_info_for_clexp : 'class_info_for_clexp Gram.t )
-     (None,
-       (None, None,
-         [([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
-           `Skeyword "[";
-           `Snterm
-             (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
-           `Skeyword "]"],
-            ("Gram.mk_action\n  (fun _  (x : 'comma_type_parameter)  _  (i : 'a_lident) \n     (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`ClassCon (_loc, mv, (i :>ident), x) : 'class_info_for_clexp ))\n",
-              (Gram.mk_action
-                 (fun _  (x : 'comma_type_parameter)  _  (i : 'a_lident) 
-                    (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
-                    (`ClassCon (_loc, mv, (i :>ident), x) : 'class_info_for_clexp )))));
-         ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`ClassConS (_loc, mv, (i :>ident)) : 'class_info_for_clexp ))\n",
-             (Gram.mk_action
-                (fun (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t) 
-                   ->
-                   (`ClassConS (_loc, mv, (i :>ident)) : 'class_info_for_clexp )))))]));
    Gram.extend_single (class_fun_def : 'class_fun_def Gram.t )
      (None,
        (None, None,

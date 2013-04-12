@@ -66,7 +66,6 @@ module type Syntax = sig
   val clexp_quot : Gram.t clexp;
   val class_fun_binding : Gram.t clexp;
   val class_fun_def : Gram.t clexp;
-  val class_info_for_clexp : Gram.t clexp;
   val class_info_for_cltyp : Gram.t cltyp;
   val class_longident : Gram.t ident;
   val class_longident_and_param : Gram.t clexp;

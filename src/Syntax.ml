@@ -16,7 +16,7 @@ a_ident aident amp_ctyp and_ctyp case
   binding
   class_declaration
   class_description
-  clexp class_fun_binding class_fun_def class_info_for_clexp class_info_for_cltyp
+  clexp class_fun_binding class_fun_def  class_info_for_cltyp
   class_longident class_longident_and_param class_name_and_param clsigi class_signature
   cstru class_structure cltyp cltyp_declaration
   cltyp_longident cltyp_longident_and_param

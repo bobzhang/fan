@@ -1040,15 +1040,15 @@ let apply () = begin
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
-      | class_info_for_clexp{ci}; class_fun_binding{ce} -> {| $ci = $ce |} ]
+
+      | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_binding{ce}
+        -> `Eq(_loc, `ClassCon(_loc,mv,(i:>ident),x),ce)
+      | opt_virtual{mv}; a_lident{i}; class_fun_binding{ce} ->
+          `Eq(_loc, `ClassConS(_loc,mv, (i:>ident)),ce)            ]
       class_fun_binding:
       [ "="; clexp{ce} -> ce
       | ":"; cltyp_plus{ct}; "="; clexp{ce} -> `Constraint(_loc,ce,ct)
       | ipat{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
-      class_info_for_clexp:
-      [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
-        `ClassCon(_loc,mv,(i:>ident),x)
-      | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv, (i:>ident))]
       class_fun_def:
       [ ipat{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; clexp{ce} -> ce ]
       clexp:
