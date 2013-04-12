@@ -61,8 +61,8 @@ type ctyp =
   | `Par of (loc * ctyp) | `Sta of (loc * ctyp * ctyp)
   | `PolyEq of (loc * row_field) | `PolySup of (loc * row_field)
   | `PolyInf of (loc * row_field)
-  | `PolyInfSup of (loc * row_field * tag_names)
-  | `Package of (loc * module_type) | ant] 
+  | `PolyInfSup of (loc * row_field * tag_names) | `Package of (loc * mtyp)
+  | ant] 
 and type_parameters =
   [ `Com of (loc * type_parameters * type_parameters) | `Ctyp of (loc * ctyp)
   | ant | nil] 
@@ -126,19 +126,18 @@ and exp =
 and rec_exp =
   [ nil | `Sem of (loc * rec_exp * rec_exp) | `RecBind of (loc * ident * exp)
   | any | ant] 
-and module_type =
-  [ nil | sid | `MtFun of (loc * auident * module_type * module_type)
-  | `Sig of (loc * sig_item) | `With of (loc * module_type * with_constr)
+and mtyp =
+  [ nil | sid | `MtFun of (loc * auident * mtyp * mtyp)
+  | `Sig of (loc * sig_item) | `With of (loc * mtyp * with_constr)
   | `ModuleTypeOf of (loc * module_exp) | ant] 
 and sig_item =
   [ nil | `Class of (loc * class_type) | `ClassType of (loc * class_type)
   | `Sem of (loc * sig_item * sig_item) | `Directive of (loc * alident * exp)
   | `Exception of (loc * of_ctyp)
   | `External of (loc * alident * ctyp * string meta_list)
-  | `Include of (loc * module_type)
-  | `Module of (loc * auident * module_type)
+  | `Include of (loc * mtyp) | `Module of (loc * auident * mtyp)
   | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * module_type) | `Open of (loc * ident)
+  | `ModuleType of (loc * auident * mtyp) | `Open of (loc * ident)
   | `Type of (loc * typedecl) | `Val of (loc * alident * ctyp) | ant] 
 and with_constr =
   [ nil | `TypeEq of (loc * ctyp * ctyp) | `TypeEqPriv of (loc * ctyp * ctyp)
@@ -150,16 +149,16 @@ and binding =
   | ant] 
 and module_binding =
   [ nil | `And of (loc * module_binding * module_binding)
-  | `ModuleBind of (loc * auident * module_type * module_exp)
-  | `Constraint of (loc * auident * module_type) | ant] 
+  | `ModuleBind of (loc * auident * mtyp * module_exp)
+  | `Constraint of (loc * auident * mtyp) | ant] 
 and case =
   [ nil | `Bar of (loc * case * case) | `Case of (loc * pat * exp * exp)
   | ant] 
 and module_exp =
   [ nil | sid | `App of (loc * module_exp * module_exp)
-  | `Functor of (loc * auident * module_type * module_exp)
-  | `Struct of (loc * stru) | `Constraint of (loc * module_exp * module_type)
-  | `PackageModule of (loc * exp) | ant] 
+  | `Functor of (loc * auident * mtyp * module_exp) | `Struct of (loc * stru)
+  | `Constraint of (loc * module_exp * mtyp) | `PackageModule of (loc * exp)
+  | ant] 
 and stru =
   [ nil | `Class of (loc * class_exp) | `ClassType of (loc * class_type)
   | `Sem of (loc * stru * stru) | `Directive of (loc * alident * exp)
@@ -167,7 +166,7 @@ and stru =
   | `External of (loc * alident * ctyp * string meta_list)
   | `Include of (loc * module_exp) | `Module of (loc * auident * module_exp)
   | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * module_type) | `Open of (loc * ident)
+  | `ModuleType of (loc * auident * mtyp) | `Open of (loc * ident)
   | `Type of (loc * typedecl) | `Value of (loc * rec_flag * binding) | 
     ant]
   

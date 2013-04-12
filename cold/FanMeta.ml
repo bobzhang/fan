@@ -491,7 +491,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Package")), (self#loc _loc _a0))),
-                (self#module_type _loc _a1))
+                (self#mtyp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method type_parameters : 'loc -> type_parameters -> ep=
       fun _loc  ->
@@ -1302,10 +1302,17 @@ class meta =
                      (self#ident _loc _a1))), (self#exp _loc _a2))
         | #any as _a0 -> (self#any _loc _a0 :>ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method module_type : 'loc -> module_type -> ep=
+    method mtyp : 'loc -> mtyp -> ep=
       fun _loc  ->
         function
         | #ident' as _a0 -> (self#ident' _loc _a0 :>ep)
+        | `Sig (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Sig")), (self#loc _loc _a0))),
+                (self#sig_item _loc _a1))
+        | `SigEnd _a0 ->
+            `App (_loc, (`Vrn (_loc, "SigEnd")), (self#loc _loc _a0))
         | `Functor (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -1316,24 +1323,15 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "Functor")),
                                (self#loc _loc _a0))),
-                          (self#auident _loc _a1))),
-                     (self#module_type _loc _a2))),
-                (self#module_type _loc _a3))
-        | `Sig (_a0,_a1) ->
-            `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sig")), (self#loc _loc _a0))),
-                (self#sig_item _loc _a1))
-        | `SigEnd _a0 ->
-            `App (_loc, (`Vrn (_loc, "SigEnd")), (self#loc _loc _a0))
+                          (self#auident _loc _a1))), (self#mtyp _loc _a2))),
+                (self#mtyp _loc _a3))
         | `With (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "With")), (self#loc _loc _a0))),
-                     (self#module_type _loc _a1))),
-                (self#with_constr _loc _a2))
+                     (self#mtyp _loc _a1))), (self#with_constr _loc _a2))
         | `ModuleTypeOf (_a0,_a1) ->
             `App
               (_loc,
@@ -1397,7 +1395,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Include")), (self#loc _loc _a0))),
-                (self#module_type _loc _a1))
+                (self#mtyp _loc _a1))
         | `Module (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1405,7 +1403,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Module")), (self#loc _loc _a0))),
-                     (self#auident _loc _a1))), (self#module_type _loc _a2))
+                     (self#auident _loc _a1))), (self#mtyp _loc _a2))
         | `RecModule (_a0,_a1) ->
             `App
               (_loc,
@@ -1419,7 +1417,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "ModuleType")),
                           (self#loc _loc _a0))), (self#auident _loc _a1))),
-                (self#module_type _loc _a2))
+                (self#mtyp _loc _a2))
         | `ModuleTypeEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1539,8 +1537,7 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "ModuleBind")),
                                (self#loc _loc _a0))),
-                          (self#auident _loc _a1))),
-                     (self#module_type _loc _a2))),
+                          (self#auident _loc _a1))), (self#mtyp _loc _a2))),
                 (self#module_exp _loc _a3))
         | `Constraint (_a0,_a1,_a2) ->
             `App
@@ -1550,7 +1547,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Constraint")),
                           (self#loc _loc _a0))), (self#auident _loc _a1))),
-                (self#module_type _loc _a2))
+                (self#mtyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method case : 'loc -> case -> ep=
       fun _loc  ->
@@ -1603,8 +1600,7 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "Functor")),
                                (self#loc _loc _a0))),
-                          (self#auident _loc _a1))),
-                     (self#module_type _loc _a2))),
+                          (self#auident _loc _a1))), (self#mtyp _loc _a2))),
                 (self#module_exp _loc _a3))
         | `Struct (_a0,_a1) ->
             `App
@@ -1621,7 +1617,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Constraint")),
                           (self#loc _loc _a0))), (self#module_exp _loc _a1))),
-                (self#module_type _loc _a2))
+                (self#mtyp _loc _a2))
         | `PackageModule (_a0,_a1) ->
             `App
               (_loc,
@@ -1712,7 +1708,7 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "ModuleType")),
                           (self#loc _loc _a0))), (self#auident _loc _a1))),
-                (self#module_type _loc _a2))
+                (self#mtyp _loc _a2))
         | `Open (_a0,_a1) ->
             `App
               (_loc,

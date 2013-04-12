@@ -6,7 +6,7 @@ open FSig
 
 open Format
 
-let apply_filter f (m : module_types) =
+let apply_filter f (m : mtyps) =
   (let f =
      function
      | `Single (s,_) as x -> if f s then Some x else None
@@ -18,13 +18,13 @@ let apply_filter f (m : module_types) =
           | [] -> None
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
-   List.filter_map f m : module_types )
+   List.filter_map f m : mtyps )
 
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
 
 let show_code = ref false
 
-let print_collect_module_types = ref false
+let print_collect_mtyps = ref false
 
 let register ?filter  ?position  (name,f) =
   if Hashtbl.mem filters name
@@ -58,24 +58,23 @@ class type traversal
   =
   object 
     inherit Objs.map
-    method get_cur_module_types : FSig.module_types
+    method get_cur_mtyps : FSig.mtyps
     method get_cur_and_types : FSig.and_types
     method update_cur_and_types : (FSig.and_types -> FSig.and_types) -> unit
-    method update_cur_module_types :
-      (FSig.module_types -> FSig.module_types) -> unit
+    method update_cur_mtyps : (FSig.mtyps -> FSig.mtyps) -> unit
   end
 
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
-     val module_types_stack = (Stack.create () : module_types Stack.t )
+     val mtyps_stack = (Stack.create () : mtyps Stack.t )
      val mutable cur_and_types = ([] : and_types )
      val mutable and_group = false
-     method get_cur_module_types : module_types= Stack.top module_types_stack
-     method update_cur_module_types f =
-       let open Stack in push (f (pop module_types_stack)) module_types_stack
-     method private in_module = Stack.push [] module_types_stack
-     method private out_module = (Stack.pop module_types_stack) |> ignore
+     method get_cur_mtyps : mtyps= Stack.top mtyps_stack
+     method update_cur_mtyps f =
+       let open Stack in push (f (pop mtyps_stack)) mtyps_stack
+     method private in_module = Stack.push [] mtyps_stack
+     method private out_module = (Stack.pop mtyps_stack) |> ignore
      method private in_and_types = and_group <- true; cur_and_types <- []
      method private out_and_types = and_group <- false; cur_and_types <- []
      method private is_in_and_types = and_group
@@ -86,17 +85,17 @@ let traversal () =
        | `Struct (_loc,u) ->
            (self#in_module;
             (let res = self#stru u in
-             let module_types = List.rev self#get_cur_module_types in
-             if print_collect_module_types.contents
-             then eprintf "@[%a@]@." FSig.pp_print_module_types module_types;
+             let mtyps = List.rev self#get_cur_mtyps in
+             if print_collect_mtyps.contents
+             then eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps;
              (let result =
                 List.fold_right
                   (fun (_,{ position; transform; filter })  acc  ->
-                     let module_types =
+                     let mtyps =
                        match filter with
-                       | Some x -> apply_filter x module_types
-                       | None  -> module_types in
-                     let code = transform module_types in
+                       | Some x -> apply_filter x mtyps
+                       | None  -> mtyps in
+                     let code = transform mtyps in
                      match position with
                      | Some x ->
                          let (name,f) = Filters.make_filter (x, code) in
@@ -115,7 +114,7 @@ let traversal () =
        | `Type (_loc,`And (_,_,_)) as x ->
            (self#in_and_types;
             (let _ = super#stru x in
-             self#update_cur_module_types
+             self#update_cur_mtyps
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
@@ -124,9 +123,9 @@ let traversal () =
              else `StExp (_loc, (`Uid (_loc, "()")))))
        | `Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) as x ->
            let item = `Single (name, t) in
-           (if print_collect_module_types.contents
+           (if print_collect_mtyps.contents
             then eprintf "Came across @[%a@]@." FSig.pp_print_types item;
-            self#update_cur_module_types (fun lst  -> item :: lst);
+            self#update_cur_mtyps (fun lst  -> item :: lst);
             x)
        | `Value (_loc,`ReNil _,_)|`ModuleType (_loc,_,_)|`Include (_loc,_)
          |`External (_loc,_,_,_)|`StExp (_loc,_)|`Exception (_loc,_)

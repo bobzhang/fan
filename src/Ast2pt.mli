@@ -39,7 +39,7 @@ val package_type_constraints :
   with_constr ->
   (Longident.t Asttypes.loc * Parsetree.core_type) list ->
   (Longident.t Asttypes.loc * Parsetree.core_type) list
-val package_type : module_type -> Parsetree.package_type
+val package_type : mtyp -> Parsetree.package_type
 
 val mkprivate' : bool -> Asttypes.private_flag
 
@@ -113,7 +113,7 @@ val mktype_decl :
   typedecl ->
   (string Asttypes.loc * Parsetree.type_declaration) list
 
-val module_type : module_type -> Parsetree.module_type
+val mtyp : mtyp -> Parsetree.module_type
 
 val module_sig_binding :
   module_binding ->

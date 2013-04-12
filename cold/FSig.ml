@@ -58,7 +58,7 @@ let _ = (); ()
 type named_type = (string * typedecl) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
-and module_types = types list 
+and mtyps = types list 
 
 type destination =  
   | Obj of kind
@@ -84,7 +84,7 @@ and pp_print_types fmt =
       Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types _a0
   | `Single _a0 ->
       Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
-and pp_print_module_types fmt _a0 = pp_print_list pp_print_types fmt _a0
+and pp_print_mtyps fmt _a0 = pp_print_list pp_print_types fmt _a0
 
 let rec pp_print_destination fmt =
   function
@@ -109,6 +109,6 @@ type plugin_name = string
 
 type plugin = 
   {
-  transform: module_types -> stru;
+  transform: mtyps -> stru;
   position: string option;
   filter: (string -> bool) option} 

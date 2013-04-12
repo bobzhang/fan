@@ -457,10 +457,10 @@ end;
 (*
   This is a general tranversal, which could be bootstrapped
   using our pluggin actually
-  Preprocess module_types, generate type equalities
+  Preprocess mtyps, generate type equalities
 
  *)
-let transform_module_types  (lst:FSig.module_types) =
+let transform_mtyps  (lst:FSig.mtyps) =
   let obj = mk_transform_type_eq () in 
   let item1 =
     List.map (fun

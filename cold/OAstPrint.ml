@@ -307,12 +307,12 @@ class printer () = object (self:'self)
           (if mut then "mutable " else "")
           (if vr then "virtual " else "")
           name self#out_type ty
-  method module_type ppf =
+  method mtyp ppf =
     function
         Omty_abstract -> ()
       | Omty_functor (name, mty_arg, mty_res) ->
           fprintf ppf "@[<2>functor@ (%s : %a) ->@ %a@]" name
-            self#module_type mty_arg self#module_type mty_res
+            self#mtyp mty_arg self#mtyp mty_res
       | Omty_ident id -> fprintf ppf "%a" self#ident id
       | Omty_signature sg ->
           fprintf ppf "@[<hv 2>sig@ %a@;<1 -2>end@]" self#signature sg
@@ -339,13 +339,13 @@ class printer () = object (self:'self)
       | Osig_modtype (name, Omty_abstract) ->
           fprintf ppf "@[<2>module type %s@]" name
       | Osig_modtype (name, mty) ->
-          fprintf ppf "@[<2>module type %s =@ %a@]" name self#module_type mty
+          fprintf ppf "@[<2>module type %s =@ %a@]" name self#mtyp mty
       | Osig_module (name, mty, rs) ->
           fprintf ppf "@[<2>%s %s :@ %a@]"
             (match rs with Orec_not -> "module"
             | Orec_first -> "module rec"
             | Orec_next -> "and")
-            name self#module_type mty
+            name self#mtyp mty
       | Osig_type(td, rs) ->
           self#type_decl
             (if rs = Orec_next then "and" else "type")

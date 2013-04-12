@@ -94,7 +94,7 @@ and and_types =
 and types =
     [= `Mutual of and_types
     | `Single of named_type ]
-and module_types = list types;
+and mtyps = list types;
 
 type destination =
   [Obj of kind
@@ -115,7 +115,7 @@ type warning_type =
 type plugin_name = string ;
 
 type plugin = {
-    transform:(module_types -> stru);
+    transform:(mtyps -> stru);
     (* activate: mutable bool; *)
     position: option string;
     filter: option (string->bool);

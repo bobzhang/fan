@@ -273,13 +273,13 @@ and package_type_constraints (wc:with_constr)
     | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
           (dump_with_constr x) ]
 
-and package_type (x : module_type) = match x with 
-    [ (`With(_loc,(#ident' as i),wc) :module_type) ->
+and package_type (x : mtyp) = match x with 
+    [ (`With(_loc,(#ident' as i),wc) :mtyp) ->
       (long_uident i, package_type_constraints wc [])
     | (* `Id(_loc,i) *)#ident' as i  -> (long_uident i, [])
     | mt -> errorf (loc_of mt)
           "unexpected package type: %s"
-          (dump_module_type mt)] ;
+          (dump_mtyp mt)] ;
 
 let mktype loc tl cl ~type_kind ~priv ~manifest =
   let (params, variance) = List.split tl in
@@ -972,7 +972,7 @@ and mktype_decl (x:typedecl)  =
               
         | (t:typedecl) ->
             errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)]) tys
-and module_type : Ast.module_type -> Parsetree.module_type =
+and mtyp : Ast.mtyp -> Parsetree.module_type =
   let  mkwithc (wc:with_constr)  =
     let mkwithtyp pwith_type loc priv id_tpl ct =
       let (id, tpl) = type_parameters_and_type_name id_tpl in
@@ -999,14 +999,14 @@ and module_type : Ast.module_type -> Parsetree.module_type =
        fun 
        [ #ident' as i  -> let loc = loc_of i in mkmty loc (Pmty_ident (long_uident i))
        | `Functor(loc,`Uid(sloc,n),nt,mt) ->
-           mkmty loc (Pmty_functor (with_loc n sloc) (module_type nt) (module_type mt))
+           mkmty loc (Pmty_functor (with_loc n sloc) (mtyp nt) (mtyp mt))
        | `Sig(loc,sl) ->
            mkmty loc (Pmty_signature (sig_item sl []))
        | `SigEnd(loc) -> mkmty loc (Pmty_signature [])
-       | `With(loc,mt,wc) -> mkmty loc (Pmty_with (module_type mt) (mkwithc wc ))
+       | `With(loc,mt,wc) -> mkmty loc (Pmty_with (mtyp mt) (mkwithc wc ))
        | `ModuleTypeOf(_loc,me) ->
            mkmty _loc (Pmty_typeof (module_exp me))
-       | t -> errorf (loc_of t) "module_type: %s" (dump_module_type t) ]
+       | t -> errorf (loc_of t) "mtyp: %s" (dump_mtyp t) ]
 and sig_item (s:sig_item) (l:signature) :signature =
   match s with 
   [ `Class (loc,cd) ->
@@ -1028,15 +1028,15 @@ and sig_item (s:sig_item) (l:signature) :signature =
       [mksig loc
         (Psig_value (with_loc n sloc)
            (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
-  | `Include (loc,mt) -> [mksig loc (Psig_include (module_type mt)) :: l]
+  | `Include (loc,mt) -> [mksig loc (Psig_include (mtyp mt)) :: l]
   | `Module (loc,`Uid(sloc,n),mt) ->
-      [mksig loc (Psig_module (with_loc n sloc) (module_type mt)) :: l]
+      [mksig loc (Psig_module (with_loc n sloc) (mtyp mt)) :: l]
   | `RecModule (loc,mb) ->
       [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
   | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
       [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
-      let si =  Pmodtype_manifest (module_type mt)  in
+      let si =  Pmodtype_manifest (mtyp mt)  in
       [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
   | `Open (loc,id) ->
       [mksig loc (Psig_open (long_uident id)) :: l]
@@ -1049,13 +1049,13 @@ and module_sig_binding (x:module_binding)
   match x with 
   [ `And(_,x,y) -> module_sig_binding x (module_sig_binding y acc)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
-      [(with_loc s sloc, module_type mt) :: acc]
+      [(with_loc s sloc, mtyp mt) :: acc]
   | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_module_binding t) ]
 and module_str_binding (x:Ast.module_binding) acc =
   match x with 
   [ `And(_,x,y) -> module_str_binding x (module_str_binding y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
-      [(with_loc s sloc, module_type mt, module_exp me) :: acc]
+      [(with_loc s sloc, mtyp mt, module_exp me) :: acc]
   | t -> errorf (loc_of t) "module_str_binding: %s" (dump_module_binding t)]
 and module_exp (x:Ast.module_exp)=
   match x with 
@@ -1064,11 +1064,11 @@ and module_exp (x:Ast.module_exp)=
   | `App(loc,me1,me2) ->
       mkmod loc (Pmod_apply (module_exp me1) (module_exp me2))
   | `Functor(loc,`Uid(sloc,n),mt,me) ->
-      mkmod loc (Pmod_functor (with_loc n sloc) (module_type mt) (module_exp me))
+      mkmod loc (Pmod_functor (with_loc n sloc) (mtyp mt) (module_exp me))
   | `Struct(loc,sl) -> mkmod loc (Pmod_structure (stru sl []))
   | `StructEnd(loc) -> mkmod loc (Pmod_structure [])
   | `Constraint(loc,me,mt) ->
-        mkmod loc (Pmod_constraint (module_exp me) (module_type mt))
+        mkmod loc (Pmod_constraint (module_exp me) (mtyp mt))
   | `PackageModule(loc,`Constraint(_,e,`Package(_,pt))) ->
       mkmod loc
         (Pmod_unpack (
@@ -1111,7 +1111,7 @@ and stru (s:stru) (l:structure) : structure =
   | `RecModule (loc,mb) ->
         [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
-        [mkstr loc (Pstr_modtype (with_loc n sloc) (module_type mt)) :: l]
+        [mkstr loc (Pstr_modtype (with_loc n sloc) (mtyp mt)) :: l]
   | `Open (loc,id) ->
         [mkstr loc (Pstr_open (long_uident id)) :: l]
   | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]

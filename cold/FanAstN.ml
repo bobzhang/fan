@@ -225,7 +225,7 @@ class eq =
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`PolyInfSup (_a0,_a1),`PolyInfSup (_b0,_b1)) ->
             (self#row_field _a0 _b0) && (self#tag_names _a1 _b1)
-        | (`Package _a0,`Package _b0) -> self#module_type _a0 _b0
+        | (`Package _a0,`Package _b0) -> self#mtyp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result25)
         | (_,_) -> false
     method type_parameters : type_parameters -> type_parameters -> 'result26=
@@ -508,18 +508,18 @@ class eq =
         | ((#any as _a0),(#any as _b0)) -> (self#any _a0 _b0 :>'result43)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result43)
         | (_,_) -> false
-    method module_type : module_type -> module_type -> 'result44=
+    method mtyp : mtyp -> mtyp -> 'result44=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#ident' as _a0),(#ident' as _b0)) ->
             (self#ident' _a0 _b0 :>'result44)
-        | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
-            ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
-              (self#module_type _a2 _b2)
         | (`Sig _a0,`Sig _b0) -> self#sig_item _a0 _b0
         | (`SigEnd,`SigEnd) -> true
+        | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
+            ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
+              (self#mtyp _a2 _b2)
         | (`With (_a0,_a1),`With (_b0,_b1)) ->
-            (self#module_type _a0 _b0) && (self#with_constr _a1 _b1)
+            (self#mtyp _a0 _b0) && (self#with_constr _a1 _b1)
         | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#module_exp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result44)
         | (_,_) -> false
@@ -537,12 +537,12 @@ class eq =
         | (`External (_a0,_a1,_a2),`External (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#strings _a2 _b2)
-        | (`Include _a0,`Include _b0) -> self#module_type _a0 _b0
+        | (`Include _a0,`Include _b0) -> self#mtyp _a0 _b0
         | (`Module (_a0,_a1),`Module (_b0,_b1)) ->
-            (self#auident _a0 _b0) && (self#module_type _a1 _b1)
+            (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`RecModule _a0,`RecModule _b0) -> self#module_binding _a0 _b0
         | (`ModuleType (_a0,_a1),`ModuleType (_b0,_b1)) ->
-            (self#auident _a0 _b0) && (self#module_type _a1 _b1)
+            (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`ModuleTypeEnd _a0,`ModuleTypeEnd _b0) -> self#auident _a0 _b0
         | (`Open _a0,`Open _b0) -> self#ident _a0 _b0
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
@@ -582,10 +582,10 @@ class eq =
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#module_binding _a0 _b0) && (self#module_binding _a1 _b1)
         | (`ModuleBind (_a0,_a1,_a2),`ModuleBind (_b0,_b1,_b2)) ->
-            ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
+            ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
               (self#module_exp _a2 _b2)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
-            (self#auident _a0 _b0) && (self#module_type _a1 _b1)
+            (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
         | (_,_) -> false
     method case : case -> case -> 'result49=
@@ -606,12 +606,12 @@ class eq =
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
             (self#module_exp _a0 _b0) && (self#module_exp _a1 _b1)
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
-            ((self#auident _a0 _b0) && (self#module_type _a1 _b1)) &&
+            ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
               (self#module_exp _a2 _b2)
         | (`Struct _a0,`Struct _b0) -> self#stru _a0 _b0
         | (`StructEnd,`StructEnd) -> true
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
-            (self#module_exp _a0 _b0) && (self#module_type _a1 _b1)
+            (self#module_exp _a0 _b0) && (self#mtyp _a1 _b1)
         | (`PackageModule _a0,`PackageModule _b0) -> self#exp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result50)
         | (_,_) -> false
@@ -635,7 +635,7 @@ class eq =
             (self#auident _a0 _b0) && (self#module_exp _a1 _b1)
         | (`RecModule _a0,`RecModule _b0) -> self#module_binding _a0 _b0
         | (`ModuleType (_a0,_a1),`ModuleType (_b0,_b1)) ->
-            (self#auident _a0 _b0) && (self#module_type _a1 _b1)
+            (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`Open _a0,`Open _b0) -> self#ident _a0 _b0
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Value (_a0,_a1),`Value (_b0,_b1)) ->
@@ -1004,7 +1004,7 @@ class print =
             Format.fprintf fmt "@[<1>(`PolyInfSup@ %a@ %a)@]" self#row_field
               _a0 self#tag_names _a1
         | `Package _a0 ->
-            Format.fprintf fmt "@[<1>(`Package@ %a)@]" self#module_type _a0
+            Format.fprintf fmt "@[<1>(`Package@ %a)@]" self#mtyp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method type_parameters : 'fmt -> type_parameters -> unit=
       fun fmt  ->
@@ -1338,18 +1338,18 @@ class print =
               self#exp _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_type : 'fmt -> module_type -> unit=
+    method mtyp : 'fmt -> mtyp -> unit=
       fun fmt  ->
         function
         | #ident' as _a0 -> (self#ident' fmt _a0 :>unit)
-        | `Functor (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
-              _a0 self#module_type _a1 self#module_type _a2
         | `Sig _a0 ->
             Format.fprintf fmt "@[<1>(`Sig@ %a)@]" self#sig_item _a0
         | `SigEnd -> Format.fprintf fmt "`SigEnd"
+        | `Functor (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
+              _a0 self#mtyp _a1 self#mtyp _a2
         | `With (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`With@ %a@ %a)@]" self#module_type _a0
+            Format.fprintf fmt "@[<1>(`With@ %a@ %a)@]" self#mtyp _a0
               self#with_constr _a1
         | `ModuleTypeOf _a0 ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a)@]" self#module_exp
@@ -1377,16 +1377,16 @@ class print =
             Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a)@]" self#alident
               _a0 self#ctyp _a1 self#strings _a2
         | `Include _a0 ->
-            Format.fprintf fmt "@[<1>(`Include@ %a)@]" self#module_type _a0
+            Format.fprintf fmt "@[<1>(`Include@ %a)@]" self#mtyp _a0
         | `Module (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a)@]" self#auident _a0
-              self#module_type _a1
+              self#mtyp _a1
         | `RecModule _a0 ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a)@]" self#module_binding
               _a0
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
-              _a0 self#module_type _a1
+              _a0 self#mtyp _a1
         | `ModuleTypeEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a)@]" self#auident _a0
         | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
@@ -1436,10 +1436,10 @@ class print =
               _a0 self#module_binding _a1
         | `ModuleBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a)@]"
-              self#auident _a0 self#module_type _a1 self#module_exp _a2
+              self#auident _a0 self#mtyp _a1 self#module_exp _a2
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#auident
-              _a0 self#module_type _a1
+              _a0 self#mtyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method case : 'fmt -> case -> unit=
       fun fmt  ->
@@ -1463,13 +1463,13 @@ class print =
               self#module_exp _a1
         | `Functor (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
-              _a0 self#module_type _a1 self#module_exp _a2
+              _a0 self#mtyp _a1 self#module_exp _a2
         | `Struct _a0 ->
             Format.fprintf fmt "@[<1>(`Struct@ %a)@]" self#stru _a0
         | `StructEnd -> Format.fprintf fmt "`StructEnd"
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#module_exp
-              _a0 self#module_type _a1
+              _a0 self#mtyp _a1
         | `PackageModule _a0 ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a)@]" self#exp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
@@ -1505,7 +1505,7 @@ class print =
               _a0
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
-              _a0 self#module_type _a1
+              _a0 self#mtyp _a1
         | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
         | `Type _a0 ->
             Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
@@ -1913,7 +1913,7 @@ let rec meta_ctyp _loc =
              (_loc, (`Vrn (_loc, "PolyInfSup")), (meta_row_field _loc _a0))),
           (meta_tag_names _loc _a1))
   | `Package _a0 ->
-      `App (_loc, (`Vrn (_loc, "Package")), (meta_module_type _loc _a0))
+      `App (_loc, (`Vrn (_loc, "Package")), (meta_mtyp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result174)
 and meta_type_parameters _loc =
   function
@@ -2366,9 +2366,11 @@ and meta_rec_exp _loc =
           (meta_exp _loc _a1))
   | #any as _a0 -> (meta_any _loc _a0 :>'result156)
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result156)
-and meta_module_type _loc =
+and meta_mtyp _loc =
   function
   | #ident' as _a0 -> (meta_ident' _loc _a0 :>'result155)
+  | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
+  | `SigEnd -> `Vrn (_loc, "SigEnd")
   | `Functor (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2376,13 +2378,10 @@ and meta_module_type _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
-               (meta_module_type _loc _a1))), (meta_module_type _loc _a2))
-  | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
-  | `SigEnd -> `Vrn (_loc, "SigEnd")
+               (meta_mtyp _loc _a1))), (meta_mtyp _loc _a2))
   | `With (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "With")), (meta_module_type _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "With")), (meta_mtyp _loc _a0))),
           (meta_with_constr _loc _a1))
   | `ModuleTypeOf _a0 ->
       `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (meta_module_exp _loc _a0))
@@ -2415,19 +2414,19 @@ and meta_sig_item _loc =
                   (_loc, (`Vrn (_loc, "External")), (meta_alident _loc _a0))),
                (meta_ctyp _loc _a1))), (meta_strings _loc _a2))
   | `Include _a0 ->
-      `App (_loc, (`Vrn (_loc, "Include")), (meta_module_type _loc _a0))
+      `App (_loc, (`Vrn (_loc, "Include")), (meta_mtyp _loc _a0))
   | `Module (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Module")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
+          (meta_mtyp _loc _a1))
   | `RecModule _a0 ->
       `App (_loc, (`Vrn (_loc, "RecModule")), (meta_module_binding _loc _a0))
   | `ModuleType (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "ModuleType")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
+          (meta_mtyp _loc _a1))
   | `ModuleTypeEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ModuleTypeEnd")), (meta_auident _loc _a0))
   | `Open _a0 -> `App (_loc, (`Vrn (_loc, "Open")), (meta_ident _loc _a0))
@@ -2494,13 +2493,13 @@ and meta_module_binding _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "ModuleBind")),
-                    (meta_auident _loc _a0))), (meta_module_type _loc _a1))),
+                    (meta_auident _loc _a0))), (meta_mtyp _loc _a1))),
           (meta_module_exp _loc _a2))
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
+          (meta_mtyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result151)
 and meta_case _loc =
   function
@@ -2535,7 +2534,7 @@ and meta_module_exp _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
-               (meta_module_type _loc _a1))), (meta_module_exp _loc _a2))
+               (meta_mtyp _loc _a1))), (meta_module_exp _loc _a2))
   | `Struct _a0 -> `App (_loc, (`Vrn (_loc, "Struct")), (meta_stru _loc _a0))
   | `StructEnd -> `Vrn (_loc, "StructEnd")
   | `Constraint (_a0,_a1) ->
@@ -2543,7 +2542,7 @@ and meta_module_exp _loc =
         (_loc,
           (`App
              (_loc, (`Vrn (_loc, "Constraint")), (meta_module_exp _loc _a0))),
-          (meta_module_type _loc _a1))
+          (meta_mtyp _loc _a1))
   | `PackageModule _a0 ->
       `App (_loc, (`Vrn (_loc, "PackageModule")), (meta_exp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result149)
@@ -2588,7 +2587,7 @@ and meta_stru _loc =
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "ModuleType")), (meta_auident _loc _a0))),
-          (meta_module_type _loc _a1))
+          (meta_mtyp _loc _a1))
   | `Open _a0 -> `App (_loc, (`Vrn (_loc, "Open")), (meta_ident _loc _a0))
   | `Type _a0 -> `App (_loc, (`Vrn (_loc, "Type")), (meta_typedecl _loc _a0))
   | `Value (_a0,_a1) ->

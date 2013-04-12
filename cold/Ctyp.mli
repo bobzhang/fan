@@ -50,8 +50,8 @@ val eq_list : ctyp list -> ctyp list -> bool
 (* val mk_transform_type_eq : *)
 (*   unit -> FanAst.map *)
   
-val transform_module_types : FSig.module_types ->
-  (string * ident * int) list * FSig.module_types
+val transform_mtyps : FSig.mtyps ->
+  (string * ident * int) list * FSig.mtyps
 
 val reduce_data_ctors:
     or_ctyp ->

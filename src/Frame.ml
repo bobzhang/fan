@@ -342,12 +342,12 @@ let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
     failwithf $(str:"Abstract data type not implemented") |};
   end ;
 
-let stru_of_module_types ?module_name ?cons_transform
+let stru_of_mtyps ?module_name ?cons_transform
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
     (* ~destination *)
     simple_exp_of_ctyp_with_cxt
-    (lst:module_types)  =
+    (lst:mtyps)  =
   let cxt  = Hashset.create 50 in 
   let mk_binding (* : string -> ctyp -> binding *) =
     binding_of_tydcl ?cons_transform ?arity
@@ -392,7 +392,7 @@ let stru_of_module_types ?module_name ?cons_transform
    and qualified data type.
    all the types in one module will derive a class 
   *)
-let obj_of_module_types
+let obj_of_mtyps
     ?cons_transform
     ?module_name
     ?(arity=1) ?(names=[]) ~default  
@@ -400,7 +400,7 @@ let obj_of_module_types
     ~mk_record
     ~mk_variant
      base
-    class_name  simple_exp_of_ctyp (k:kind) (lst:module_types) : stru = with {pat:ctyp}
+    class_name  simple_exp_of_ctyp (k:kind) (lst:mtyps) : stru = with {pat:ctyp}
   let tbl = Hashtbl.create 50 in 
     let f tydcl result_type =
       fun_of_tydcl ~names ~destination:(Obj k)
@@ -440,7 +440,7 @@ let obj_of_module_types
          | None ->  mk_cstru named_type ]] in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
-    let (extras,lst) = Ctyp.transform_module_types lst in 
+    let (extras,lst) = Ctyp.transform_mtyps lst in 
     let body = List.map fs lst in 
     let body : cstru =
       let items = List.map (fun (dest,src,len) ->

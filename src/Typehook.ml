@@ -7,7 +7,7 @@ open Format;
 (** A Hook To Ast Filters *)
 
 
-let apply_filter f (m:module_types) : module_types = begin 
+let apply_filter f (m:mtyps) : mtyps = begin 
   (* eprintf "applying filter@."; *)
   let f  = (fun
     [ (`Single (s,_) as x) ->
@@ -32,7 +32,7 @@ let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
 
   
 let show_code =  ref false;
-let print_collect_module_types = ref false;
+let print_collect_mtyps = ref false;
   
 let register  ?filter ?position (name,f) =
   if Hashtbl.mem filters name
@@ -128,13 +128,13 @@ let plugin_remove plugin =
 
 class type traversal = object
   inherit Objs.map;
-  method get_cur_module_types: FSig.module_types;
+  method get_cur_mtyps: FSig.mtyps;
   method get_cur_and_types: FSig.and_types;
   (* method in_and_types: *)
   method update_cur_and_types:
       (FSig.and_types -> FSig.and_types) -> unit;
-  method update_cur_module_types:
-      (FSig.module_types -> FSig.module_types) -> unit;
+  method update_cur_mtyps:
+      (FSig.mtyps -> FSig.mtyps) -> unit;
 
 end;
 
@@ -154,15 +154,15 @@ end;
  *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit Objs.map as super;
-  val module_types_stack : Stack.t module_types = Stack.create ();
+  val mtyps_stack : Stack.t mtyps = Stack.create ();
   val mutable cur_and_types : and_types= [];
   val mutable and_group = false;
-  method get_cur_module_types : module_types =
-    Stack.top module_types_stack;
-  method update_cur_module_types f =
-    Stack.(push (f (pop module_types_stack)) module_types_stack);
-  method private in_module =  Stack.push [] module_types_stack ;
-  method private out_module = Stack.pop module_types_stack |> ignore;
+  method get_cur_mtyps : mtyps =
+    Stack.top mtyps_stack;
+  method update_cur_mtyps f =
+    Stack.(push (f (pop mtyps_stack)) mtyps_stack);
+  method private in_module =  Stack.push [] mtyps_stack ;
+  method private out_module = Stack.pop mtyps_stack |> ignore;
     
   method private in_and_types = begin and_group <- true; cur_and_types <- [] end;
   method private out_and_types = begin and_group <- false; cur_and_types <- [] end;
@@ -175,18 +175,18 @@ let traversal () : traversal  = object (self:'self_type)
     [ {:module_exp| struct $u end |}  ->  begin 
       self#in_module ;
       let res = self#stru u ;
-      let module_types = List.rev (self#get_cur_module_types) ;
-      if !print_collect_module_types then
-        eprintf "@[%a@]@." FSig.pp_print_module_types module_types ;
+      let mtyps = List.rev (self#get_cur_mtyps) ;
+      if !print_collect_mtyps then
+        eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps ;
       let result =
         List.fold_right
           (fun (_, {(* activate; *)position;transform;filter}) acc
             ->
-              let module_types =
+              let mtyps =
                 match filter with
-                [Some x -> apply_filter x module_types
-                |None -> module_types] in
-                let code = transform module_types in 
+                [Some x -> apply_filter x mtyps
+                |None -> mtyps] in
+                let code = transform mtyps in 
                 match position with
                 [Some x ->
                   let (name,f) = Filters.make_filter (x,code) in begin 
@@ -205,15 +205,15 @@ let traversal () : traversal  = object (self:'self_type)
     [ {| type $_ and $_ |} as x -> begin
       self#in_and_types;
       let _ = super#stru x ;
-      self#update_cur_module_types
+      self#update_cur_mtyps
           (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
       self#out_and_types;
       (if !FanState.keep then x else {| let _ = () |} (* FIXME *) )
     end
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
-        if !print_collect_module_types then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
-        self#update_cur_module_types (fun lst -> [ item :: lst]);
+        if !print_collect_mtyps then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
+        self#update_cur_mtyps (fun lst -> [ item :: lst]);
        (* if !keep then x else {| |} *)
        x (* always keep *)
     end

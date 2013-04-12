@@ -20,7 +20,7 @@
     rec_exp        :: The type of record definitions
 
     == Modules ==
-    module_type        :: The type of module types
+    mtyp        :: The type of module types
     sig_item           :: The type of signature items
     stru           :: The type of structure items
     module_exp        :: The type of module expessions
@@ -149,7 +149,7 @@ type ctyp =
   | `PolyInf of (loc * row_field)
   | `PolyInfSup of (loc * row_field * tag_names)
         
-  | `Package of (loc * module_type) (* (module S) *)
+  | `Package of (loc * mtyp) (* (module S) *)
   | ant ]
 and type_parameters =
   [= `Com of (loc * type_parameters * type_parameters)
@@ -309,15 +309,15 @@ and rec_exp =
   | `RecBind  of (loc * ident * exp)
   | any (* Faked here to be symmertric to rec_pat *)
   | ant (* $s$ *) ]
-and module_type =
+and mtyp =
   [= nil
   | sid
        (* functor (s : mt) -> mt *)
-  | `MtFun of (loc * auident * module_type * module_type)
+  | `MtFun of (loc * auident * mtyp * mtyp)
         (* sig sg end *)
   | `Sig of (loc * sig_item)
         (* mt with wc *)
-  | `With of (loc * module_type * with_constr)
+  | `With of (loc * mtyp * with_constr)
         (* module type of m *)
   | `ModuleTypeOf of (loc * module_exp)
   | ant  ]
@@ -335,13 +335,13 @@ and sig_item =
   | `Exception of (loc * of_ctyp)
         (* external s : t = s ... s *)
   | `External of (loc * alident  * ctyp * meta_list string)
-  | `Include of (loc * module_type)
+  | `Include of (loc * mtyp)
         (* module s : mt *)
-  | `Module of (loc * auident * module_type)
+  | `Module of (loc * auident * mtyp)
         (* module rec mb *)
   | `RecModule of (loc * module_binding)
         (* module type s = mt *)
-  | `ModuleType of (loc * auident * module_type)
+  | `ModuleType of (loc * auident * mtyp)
   | `Open of (loc * ident)
   | `Type of (loc * typedecl)
         (* va s : t *)
@@ -379,9 +379,9 @@ and module_binding =
      (* mb and mb *) (* module rec (s : mt) = me and (s : mt) = me *)
   | `And of (loc * module_binding * module_binding)
       (* s : mt = me *)
-  | `ModuleBind  of (loc *  auident * module_type * module_exp)
+  | `ModuleBind  of (loc *  auident * mtyp * module_exp)
       (* s : mt *)
-  | `Constraint  of (loc * auident * module_type)
+  | `Constraint  of (loc * auident * mtyp)
   | ant ]
 and case =
   [= nil
@@ -396,10 +396,10 @@ and module_exp =
       (* me me *)
   | `App of (loc * module_exp * module_exp)
         (* functor (s : mt) -> me *)
-  | `Functor of (loc * auident * module_type * module_exp)
+  | `Functor of (loc * auident * mtyp * module_exp)
   | `Struct of (loc * stru)
         (* (me : mt) *)
-  | `Constraint of (loc * module_exp * module_type)
+  | `Constraint of (loc * module_exp * mtyp)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
   | `PackageModule of (loc * exp)
@@ -430,7 +430,7 @@ and stru =
         (* module rec mb *)
   | `RecModule of (loc * module_binding)
         (* module type s = mt *)
-  | `ModuleType of (loc * (* string *)auident * module_type)
+  | `ModuleType of (loc * (* string *)auident * mtyp)
         (* open i *)
   | `Open of (loc * ident)
         (* type t *)

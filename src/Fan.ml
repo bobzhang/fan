@@ -92,9 +92,9 @@ add_quotation (d,"exp") exp_quot
     ~exp_filter
     ~pat_filter ;
 
-add_quotation (d,"module_type") module_type_quot
-    ~mexp:Filters.me#module_type
-    ~mpat:Filters.mp#module_type
+add_quotation (d,"mtyp") mtyp_quot
+    ~mexp:Filters.me#mtyp
+    ~mpat:Filters.mp#mtyp
     ~exp_filter
     ~pat_filter ;
 add_quotation (d,"module_exp") module_exp_quot
@@ -256,11 +256,11 @@ add_quotation (d,"exp'") exp_quot
     ~exp_filter:(efilter "exp")
     ~pat_filter:(pfilter "exp") ;
 
-add_quotation (d,"module_type'") module_type_quot
-    ~mexp:Filters.me#module_type
-    ~mpat:Filters.mp#module_type
-    ~exp_filter:(efilter "module_type")
-    ~pat_filter:(pfilter "module_type") ;
+add_quotation (d,"mtyp'") mtyp_quot
+    ~mexp:Filters.me#mtyp
+    ~mpat:Filters.mp#mtyp
+    ~exp_filter:(efilter "mtyp")
+    ~pat_filter:(pfilter "mtyp") ;
 
 add_quotation (d,"module_exp'") module_exp_quot
     ~mexp:Filters.me#module_exp

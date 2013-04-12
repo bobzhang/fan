@@ -275,9 +275,9 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
               (_loc, (`Lid (_loc, "failwithf")),
                 (`Str (_loc, "Abstract data type not implemented"))))))
 
-let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names 
-  ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
-  simple_exp_of_ctyp_with_cxt (lst : module_types) =
+let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default 
+  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
+  simple_exp_of_ctyp_with_cxt (lst : mtyps) =
   let cxt = Hashset.create 50 in
   let mk_binding =
     binding_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
@@ -309,11 +309,11 @@ let stru_of_module_types ?module_name  ?cons_transform  ?arity  ?names
   | None  -> item
   | Some m -> `Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item)))
 
-let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
-  [])  ~default 
+let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= []) 
+  ~default 
   ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 
   ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp (k : kind)
-  (lst : module_types) =
+  (lst : mtyps) =
   (let tbl = Hashtbl.create 50 in
    let f tydcl result_type =
      fun_of_tydcl ~names ~destination:(Obj k) ~arity ~left_type_variable
@@ -346,7 +346,7 @@ let obj_of_module_types ?cons_transform  ?module_name  ?(arity= 1)  ?(names=
                  (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
                    (unknown n), ty)
            | None  -> mk_cstru named_type) : cstru ) in
-   let (extras,lst) = Ctyp.transform_module_types lst in
+   let (extras,lst) = Ctyp.transform_mtyps lst in
    let body = List.map fs lst in
    let body: cstru =
      let items =

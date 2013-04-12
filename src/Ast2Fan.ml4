@@ -325,11 +325,11 @@ class printer = object(self:'self)
        | Pmod_structure s ->
            {| struct $(self#structure s) end|}
        | Pmod_functor ({txt;_},mty,me) ->
-           {| functor ($txt : $(self#module_type mty)) -> $(self#module_exp me) |}
+           {| functor ($txt : $(self#mtyp mty)) -> $(self#module_exp me) |}
        | Pmod_apply (me1,me2) ->
            {| $(self#module_exp me1) $(self#module_exp me2) |}
        | Pmod_constraint (me,mty) ->
-           {| ( $(self#module_exp me) : $(self#module_type mty) ) |}
+           {| ( $(self#module_exp me) : $(self#mtyp mty) ) |}
        | Pmod_unpack e ->
            {| (val $(self#exp e)) |}
        ];
@@ -370,16 +370,16 @@ class printer = object(self:'self)
            {| module $(id:self#longident_loc lid1) := $(id:self#longident_loc lid2) |}
        ] ;
      
-     method module_type {pmty_desc=x;pmty_loc=_loc}:Ast.module_type =
-       with module_type match x with
+     method mtyp {pmty_desc=x;pmty_loc=_loc}:Ast.mtyp =
+       with mtyp match x with
        [Pmty_ident lid_loc -> {| $(id:self#longident_loc lid_loc ) |}
        |Pmty_signature s ->
            {| sig $(self#signature s) end |}
        | Pmty_functor ({txt;_},mty1,mty2 ) ->
-           {| functor ($txt : $(self#module_type mty1)) -> $(self#module_type mty2) |}
+           {| functor ($txt : $(self#mtyp mty1)) -> $(self#mtyp mty2) |}
        | Pmty_with (mt1,lst) ->
            let lst = List.map self#with_constraint lst in
-           {| $(self#module_type mt1) with $list:lst |}
+           {| $(self#mtyp mt1) with $list:lst |}
        | Pmty_typeof me ->
            {| module type of $(self#module_exp me) |}
        ];  
@@ -394,7 +394,7 @@ class printer = object(self:'self)
        | Pstr_module ({txt;_},me) ->
            {| module $txt = $(self#module_exp me) |}
        | Pstr_modtype ({txt;_},mty) ->
-           {| module type $txt = $(self#module_type mty) |}
+           {| module type $txt = $(self#mtyp mty) |}
        | Pstr_open lid ->
            {| open $(id:self#longident_loc lid) |}
        | Pstr_include me ->

@@ -292,7 +292,7 @@ let gen_iter =
    | Get Location generator                                          |
    +-----------------------------------------------------------------+ *)
 
-let generate (module_types:FSig.module_types) : stru =
+let generate (mtyps:FSig.mtyps) : stru =
   with stru' 
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
@@ -309,11 +309,11 @@ let generate (module_types:FSig.module_types) : stru =
             with 
               [Not_found -> Hashtbl.add tbl s arity]
           | _ -> ()]) branches
-    | _ -> FanLoc.errorf (loc_of ty) "generate module_types %s" (Objs.dump_typedecl ty) ] in   
+    | _ -> FanLoc.errorf (loc_of ty) "generate mtyps %s" (Objs.dump_typedecl ty) ] in   
   let _ =
     List.iter (fun [`Mutual tys ->
       List.iter aux tys
-         |`Single t -> aux t]) module_types in
+         |`Single t -> aux t]) mtyps in
   let case = Hashtbl.fold
     (fun key arity acc ->
       if arity= 1 then
@@ -342,12 +342,12 @@ Typehook.register
 (* +-----------------------------------------------------------------+
    | DynAst generator                                                |
    +-----------------------------------------------------------------+ *)
-let generate (module_types:FSig.module_types) : stru =
+let generate (mtyps:FSig.mtyps) : stru =
   let tys : list string =
     List.concat_map
       (fun x -> match x with
       [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
-      |`Single (x,_) -> [x] ]) module_types in
+      |`Single (x,_) -> [x] ]) mtyps in
   let typedecl =
     let x  = bar_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in (* FIXME *)
     {:stru'@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
@@ -364,24 +364,24 @@ let generate (module_types:FSig.module_types) : stru =
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);
 
-let generate (module_types:FSig.module_types) : stru =
+let generate (mtyps:FSig.mtyps) : stru =
   let aux (f:string) : stru  =
     {:stru'|
     let $(lid:"map_"^f) f = object
       inherit map as super;
       method! $lid:f x = f (super#$lid:f x);
     end |} in
-  FSigUtil.stru_from_ty ~f:aux module_types;  
+  FSigUtil.stru_from_ty ~f:aux mtyps;  
 Typehook.register
   ~filter:(fun _ -> true) ("MapWrapper",generate);
     
-let generate (module_types:FSig.module_types) : stru =
+let generate (mtyps:FSig.mtyps) : stru =
   let aux (f:string) : stru  =
     {:stru'|
     let $(lid:"dump_"^f)  = LibUtil.to_string_of_printer dump#$lid:f
   |} in
   sem {:stru'|let dump = new print|}
-      (FSigUtil.stru_from_ty ~f:aux module_types);  
+      (FSigUtil.stru_from_ty ~f:aux mtyps);  
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"]))
       ("PrintWrapper",generate); (* double registration should complain*)
@@ -392,7 +392,7 @@ Typehook.register
    | Type Generator                                                  |
    +-----------------------------------------------------------------+ *)
 (* remove the loc field *)
-let generate (module_types:FSig.module_types) : stru = with stru
+let generate (mtyps:FSig.mtyps) : stru = with stru
   let aux (name,ty) =
     if  name <> "ant" then 
      let obj = Objs.map_row_field begin fun 
@@ -405,6 +405,6 @@ let generate (module_types:FSig.module_types) : stru = with stru
      end in 
      obj#typedecl ty
   else ty  in
-  (fun x ->  FSigUtil.stru_from_module_types ~f:aux x) module_types;
+  (fun x ->  FSigUtil.stru_from_mtyps ~f:aux x) mtyps;
 
 Typehook.register ~filter:(fun _ -> true ) ("LocType",generate);

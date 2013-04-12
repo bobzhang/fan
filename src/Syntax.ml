@@ -31,8 +31,7 @@ a_ident aident amp_ctyp and_ctyp case
   module_binding
   module_binding0
   module_exp  module_longident  module_longident_with_app  module_rec_declaration
-  module_type  (* package_type *) more_ctyp  name_tags
-  (* opt_as_lident *)
+  mtyp    name_tags
   opt_class_self_pat
   opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot  (* opt_eq_ctyp *)
   opt_exp  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
@@ -43,7 +42,7 @@ a_ident aident amp_ctyp and_ctyp case
   type_declaration  type_ident_and_parameters  (* type_kind *)  type_longident  type_longident_and_parameters
   type_parameter  type_parameters  typevars  val_longident  with_constr  exp_quot  pat_quot
   ctyp_quot  stru_quot  sig_item_quot  cstru_quot  class_sig_item_quot  module_exp_quot
-  module_type_quot  class_type_quot  class_exp_quot  with_constr_quot  binding_quot  rec_exp_quot
+  mtyp_quot  class_type_quot  class_exp_quot  with_constr_quot  binding_quot  rec_exp_quot
   module_declaration
   type_info
   type_repr

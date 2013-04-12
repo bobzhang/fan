@@ -128,16 +128,16 @@ module type Syntax = sig
   val module_binding : Gram.t module_binding;
   val module_binding0 : Gram.t module_exp;
   val module_binding_quot : Gram.t module_binding;
-  val module_declaration : Gram.t module_type;
+  val module_declaration : Gram.t mtyp;
   val module_exp : Gram.t module_exp;
   val module_exp_quot : Gram.t module_exp;
   val module_longident : Gram.t vid;
   val module_longident_with_app : Gram.t ident;
   val module_rec_declaration : Gram.t module_binding;
-  val module_type : Gram.t module_type;
-  (* val package_type : Gram.t module_type; *)
-  val module_type_quot : Gram.t module_type;
-  val more_ctyp : Gram.t ctyp;
+  val mtyp : Gram.t mtyp;
+  (* val package_type : Gram.t mtyp; *)
+  val mtyp_quot : Gram.t mtyp;
+  (* val more_ctyp : Gram.t ctyp; *)
   val name_tags : Gram.t tag_names;
   val opt_class_self_type : Gram.t ctyp;
 

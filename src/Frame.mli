@@ -75,7 +75,7 @@ val binding_of_tydcl :
   (* destination:FSig.destination -> *)
     binding
       
-val stru_of_module_types :
+val stru_of_mtyps :
   ?module_name:string ->
   ?cons_transform:(string -> string) ->
   ?arity:int ->
@@ -87,9 +87,9 @@ val stru_of_module_types :
   mk_record:(FSig.record_col list -> exp) ->
   (* destination:FSig.destination ->  *)
   ((string, unit) Hashtbl.t -> ctyp -> exp ) ->
-  FSig.module_types -> stru
+  FSig.mtyps -> stru
       
-val obj_of_module_types :
+val obj_of_mtyps :
   ?cons_transform:(string -> string) ->
     ?module_name:string ->
   ?arity:int ->
@@ -100,5 +100,5 @@ val obj_of_module_types :
   mk_variant:(string -> FSig.ty_info list -> exp) ->
   (* destination:FSig.destination  -> *)
      string ->  string ->  (ctyp -> exp ) -> 
-  FSig.kind -> FSig.module_types -> stru
+  FSig.kind -> FSig.mtyps -> stru
   

@@ -46,7 +46,7 @@ type 'a tag =
   | Rec_pat
   | Exp
   | Rec_exp
-  | Module_type
+  | Mtyp
   | Sig_item
   | With_constr
   | Binding
@@ -104,7 +104,7 @@ let string_of_tag =
   | Rec_pat  -> "rec_pat"
   | Exp  -> "exp"
   | Rec_exp  -> "rec_exp"
-  | Module_type  -> "module_type"
+  | Mtyp  -> "mtyp"
   | Sig_item  -> "sig_item"
   | With_constr  -> "with_constr"
   | Binding  -> "binding"
@@ -201,7 +201,7 @@ let exp_tag: exp tag = Exp
 
 let rec_exp_tag: rec_exp tag = Rec_exp
 
-let module_type_tag: module_type tag = Module_type
+let mtyp_tag: mtyp tag = Mtyp
 
 let sig_item_tag: sig_item tag = Sig_item
 

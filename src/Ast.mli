@@ -20,7 +20,7 @@
     rec_exp        :: The type of record definitions
 
     == Modules ==
-    module_type        :: The type of module types
+    mtyp        :: The type of module types
     sig_item           :: The type of signature items
     stru           :: The type of structure items
     module_exp        :: The type of module expressions
@@ -129,8 +129,8 @@ type ident'=
   [= `Dot of (loc * ident * ident)
   | `Apply of (loc * ident * ident )
   | `Lid of (loc * string)
-  | `Uid of (loc * string)
-  ];
+  | `Uid of (loc * string)];
+
 type vid =
   [= `Dot of (loc * vid * vid)
   | `Lid of (loc * string)
@@ -140,6 +140,7 @@ type vid'=
   [= `Dot of (loc * vid * vid)
   | `Lid of (loc * string)
   | `Uid of (loc * string) ];
+
 type dupath =
   [= `Dot of (loc * dupath * dupath)
   | auident];
@@ -166,9 +167,8 @@ type ctyp =
   | `Label of (loc * alident * ctyp) (* ~s:t *)
   | `OptLabl of (loc * alident * ctyp ) (* ?s:t *)
   | ident'
-  (* | `Id of (loc * ident) *)
-        
-      (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
+
+    (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
   | `TyObj of (loc * name_ctyp * row_var_flag )
   | `TyObjEnd of (loc * row_var_flag)
 
@@ -179,7 +179,6 @@ type ctyp =
   (*  +'s -'s 's +_ -_ *)      
   | `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag )
-  (* | type_quote *)
   | `Par of (loc * ctyp) (* ( t ) *) (* (int * string) *)
   | `Sta of (loc * ctyp * ctyp) (* t * t *)
   | `PolyEq of (loc * row_field)
@@ -187,7 +186,7 @@ type ctyp =
   | `PolyInf of (loc * row_field)
   | `Com of (loc * ctyp * ctyp)
   | `PolyInfSup of (loc * row_field * tag_names)
-  | `Package of (loc * module_type) (* (module S) *)
+  | `Package of (loc * mtyp) (* (module S) *)
   | ant ]
 and type_parameters =
   [= `Com of (loc * type_parameters * type_parameters)
@@ -253,8 +252,7 @@ and or_ctyp =
   [= `Bar of (loc * or_ctyp * or_ctyp )
   | `TyCol of (loc * auident * ctyp)
   | `Of of (loc * auident * ctyp)
-  | auident
-  ]
+  | auident  ]
 and of_ctyp = (* For exception definition*)
   [= `Of of (loc * vid * ctyp)
   | vid'
@@ -274,8 +272,7 @@ and pat =
   | `Array of (loc * pat) (* [| p |] *)
   | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * pat) (* ~s or ~s:(p) *)
-    (* ?s or ?s:(p)   *)
-  | `OptLabl of (loc * alident * pat)
+  | `OptLabl of (loc * alident * pat) (* ?s or ?s:(p)   *)
   | `OptLablS of (loc * alident)
     (* ?s:(p = e) or ?(p = e) *)
   | `OptLablExpr of (loc * alident * pat * exp)
@@ -302,13 +299,12 @@ and exp =
   | `Record of (loc * rec_exp)
   | literal
       (* { (e) with rb }  *)
-  | `RecordWith of (loc * rec_exp  * exp) (* FIXME give more restrict for the e *)         
-  (* | `Dot of (loc * exp * exp) (\* e.e *\) *)
-  | `Field of (loc * exp * exp)
+  | `RecordWith of (loc * rec_exp  * exp)
+        (* FIXME give more restrict for the e *)         
+  | `Field of (loc * exp * exp) (* e.e *)
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)
-  (* | `ExAsf of loc (\* assert false *\) *)
   | `Assert of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
@@ -319,32 +315,23 @@ and exp =
   | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * exp) (* ~s or ~s:e *)
   | `Lazy of (loc * exp) (* lazy e *)
-        (* let b in e or let rec b in e *)
   | `LetIn of (loc * rec_flag * binding * exp)
   | `LetTryInWith of (loc * rec_flag * binding * exp * case)        
-        (* let module s = me in e *)
-  | `LetModule of (loc * auident * module_exp * exp)
-        (* match e with [ mc ] *)
-  | `Match of (loc * exp * case)
-        (* new i *)
-  | `New of (loc * ident)
-        (* object ((p))? (cst)? end *)
-
-  | `Obj of (loc * cstru)
+  | `LetModule of (loc * auident * module_exp * exp) (* let module s = me in e *)
+  | `Match of (loc * exp * case) (* match e with [ mc ] *)
+  | `New of (loc * ident) (* new i *)
+  | `Obj of (loc * cstru) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc 
   | `ObjPat of (loc * pat * cstru)
   | `ObjPatEnd of (loc * pat)
-        (* ?s or ?s:e *)
-  | `OptLabl of (loc *alident * exp)
+  | `OptLabl of (loc *alident * exp) (* ?s or ?s:e *)
   | `OptLablS of (loc * alident)
-        (* {< rb >} *)
-  | `OvrInst of (loc * rec_exp)
+  | `OvrInst of (loc * rec_exp) (* {< rb >} *)
   | `OvrInstEmpty of loc
   | `Seq of (loc * exp) (* do { e } *)
   | `Send of (loc * exp * alident) (* e#s *)
   | `StringDot of (loc * exp * exp) (* e.[e] *)
   | `Try of (loc * exp * case) (* try e with [ mc ] *)
-
   | `Constraint of (loc * exp * ctyp) (*(e : t) *)
   | `Coercion of (loc * exp * ctyp * ctyp) (* or (e : t :> t) *)
   | `Subtype of (loc * exp * ctyp) (* (e :> t) *)
@@ -360,12 +347,16 @@ and rec_exp =
   | `RecBind  of (loc * ident * exp)
   | any (* Faked here to be symmertric to rec_pat *)
   | ant ]
-and module_type =
+
+(*
+  http://caml.inria.fr/pub/docs/manual-ocaml/manual018.html
+ *)          
+and mtyp =
   [= ident'
-  | `Functor of (loc * auident * module_type * module_type)
   | `Sig of (loc * sig_item)
-  | `SigEnd of loc 
-  | `With of (loc * module_type * with_constr) (* mt with wc *)
+  | `SigEnd of loc
+  | `Functor of (loc * auident * mtyp * mtyp)
+  | `With of (loc * mtyp * with_constr) (* mt with wc *)
   | `ModuleTypeOf of (loc * module_exp) (* module type of m *)
   | ant  ]
 and sig_item =
@@ -378,28 +369,23 @@ and sig_item =
   | `Exception of (loc * of_ctyp)
         (* external s : t = s ... s *)
   | `External of (loc * alident  * ctyp * (* meta_list  *)strings)
-  | `Include of (loc * module_type)
-        (* module s : mt *)
-  | `Module of (loc * auident * module_type)
-        (* module rec mb *)
-  | `RecModule of (loc * module_binding)
-        (* module type s = mt *)
-  | `ModuleType of (loc * auident * module_type)
+  | `Include of (loc * mtyp)
+  | `Module of (loc * auident * mtyp) (* module s : mt *)
+  | `RecModule of (loc * module_binding) (* module rec mb *)
+  | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `ModuleTypeEnd of (loc * auident)
   | `Open of (loc * ident)
   | `Type of (loc * typedecl)
-  |  `Val of (loc * alident * ctyp)
+  | `Val of (loc * alident * ctyp)
   | ant  ]
-          
 and with_constr =
-  [= `TypeEq of (loc * ctyp * ctyp) (* *)
+  [= `TypeEq of (loc * ctyp * ctyp)
   | `TypeEqPriv of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident)
   | `TypeSubst of (loc * ctyp * ctyp)
   | `ModuleSubst of (loc * ident * ident)
   | `And of (loc * with_constr * with_constr)
   | ant  ]
-             
              (*
     let-binding	::=	pattern =  exp  
      value-name  { parameter }  [: typexp] =  exp  
@@ -411,12 +397,10 @@ and binding =
   | `Bind  of (loc * pat * exp)
   | ant  ]
 and module_binding =
-  [= 
-     (* module rec (s : mt) = me and (s : mt) = me *)
-   `And of (loc * module_binding * module_binding)
-      (* s : mt = me *)
-  | `ModuleBind  of (loc *  auident * module_type * module_exp)
-  | `Constraint  of (loc * auident * module_type) (* s : mt *)
+(* module rec (s : mt) = me and (s : mt) = me *)
+  [= `And of (loc * module_binding * module_binding)
+  | `ModuleBind  of (loc *  auident * mtyp * module_exp) (* s : mt = me *)
+  | `Constraint  of (loc * auident * mtyp) (* s : mt *)
   | ant ]
 and case =
   [= `Bar of (loc * case * case)
@@ -426,10 +410,10 @@ and case =
 and module_exp =
   [= vid' 
   | `App of (loc * module_exp * module_exp) (* me me *)
-  | `Functor of (loc * auident * module_type * module_exp)
+  | `Functor of (loc * auident * mtyp * module_exp)
   | `Struct of (loc * stru)
   | `StructEnd of loc 
-  | `Constraint of (loc * module_exp * module_type) (* (me : mt) *)
+  | `Constraint of (loc * module_exp * mtyp) (* (me : mt) *)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
   | `PackageModule of (loc * exp)
@@ -440,8 +424,8 @@ and stru =
   | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp)
-        (* exception t or exception t = i *)
-        (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
+  (* exception t or exception t = i *)
+  (* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)
   | `Exception of ( loc * of_ctyp)
         (* TODO ExceptionRebind
            http://caml.inria.fr/pub/docs/manual-ocaml/manual016.html
@@ -451,7 +435,7 @@ and stru =
   | `Include of (loc * module_exp)
   | `Module of (loc * auident * module_exp)
   | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * module_type) (* module type s = mt *)
+  | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `Open of (loc * ident) (* open i *)
   | `Type of (loc * typedecl) (* type t *)
   | `Value of (loc * rec_flag * binding) (* value (rec)? bi *)
@@ -495,7 +479,8 @@ and class_exp =
   | `Eq  of (loc * class_exp * class_exp)
   | ant ]
 and cstru =
-  [=  `Sem of (loc * cstru * cstru)
+  [=
+   `Sem of (loc * cstru * cstru)
   | `Eq of (loc * ctyp * ctyp)
   | `Inherit of (loc * override_flag * class_exp)
   | `InheritAs of (loc * override_flag * class_exp * alident)

@@ -153,9 +153,7 @@ let module_longident_with_app = Gram.mk "module_longident_with_app"
 
 let module_rec_declaration = Gram.mk "module_rec_declaration"
 
-let module_type = Gram.mk "module_type"
-
-let more_ctyp = Gram.mk "more_ctyp"
+let mtyp = Gram.mk "mtyp"
 
 let name_tags = Gram.mk "name_tags"
 
@@ -261,7 +259,7 @@ let class_sig_item_quot = Gram.mk "class_sig_item_quot"
 
 let module_exp_quot = Gram.mk "module_exp_quot"
 
-let module_type_quot = Gram.mk "module_type_quot"
+let mtyp_quot = Gram.mk "mtyp_quot"
 
 let class_type_quot = Gram.mk "class_type_quot"
 

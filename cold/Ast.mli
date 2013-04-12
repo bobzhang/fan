@@ -52,8 +52,8 @@ type ctyp =
   | `Sta of (loc * ctyp * ctyp) | `PolyEq of (loc * row_field)
   | `PolySup of (loc * row_field) | `PolyInf of (loc * row_field)
   | `Com of (loc * ctyp * ctyp)
-  | `PolyInfSup of (loc * row_field * tag_names)
-  | `Package of (loc * module_type) | ant] 
+  | `PolyInfSup of (loc * row_field * tag_names) | `Package of (loc * mtyp)
+  | ant] 
 and type_parameters =
   [ `Com of (loc * type_parameters * type_parameters) | `Ctyp of (loc * ctyp)
   | ant] 
@@ -138,22 +138,20 @@ and rec_exp =
   [ `Sem of (loc * rec_exp * rec_exp) | `RecBind of (loc * ident * exp) | 
     any
   | ant] 
-and module_type =
-  [ ident' | `Functor of (loc * auident * module_type * module_type)
-  | `Sig of (loc * sig_item) | `SigEnd of loc
-  | `With of (loc * module_type * with_constr)
-  | `ModuleTypeOf of (loc * module_exp) | ant] 
+and mtyp =
+  [ ident' | `Sig of (loc * sig_item) | `SigEnd of loc
+  | `Functor of (loc * auident * mtyp * mtyp)
+  | `With of (loc * mtyp * with_constr) | `ModuleTypeOf of (loc * module_exp)
+  | ant] 
 and sig_item =
   [ `Class of (loc * class_type) | `ClassType of (loc * class_type)
   | `Sem of (loc * sig_item * sig_item) | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp) | `Exception of (loc * of_ctyp)
-  | `External of (loc * alident * ctyp * strings)
-  | `Include of (loc * module_type)
-  | `Module of (loc * auident * module_type)
-  | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * module_type)
-  | `ModuleTypeEnd of (loc * auident) | `Open of (loc * ident)
-  | `Type of (loc * typedecl) | `Val of (loc * alident * ctyp) | ant] 
+  | `External of (loc * alident * ctyp * strings) | `Include of (loc * mtyp)
+  | `Module of (loc * auident * mtyp) | `RecModule of (loc * module_binding)
+  | `ModuleType of (loc * auident * mtyp) | `ModuleTypeEnd of (loc * auident)
+  | `Open of (loc * ident) | `Type of (loc * typedecl)
+  | `Val of (loc * alident * ctyp) | ant] 
 and with_constr =
   [ `TypeEq of (loc * ctyp * ctyp) | `TypeEqPriv of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident) | `TypeSubst of (loc * ctyp * ctyp)
@@ -163,16 +161,15 @@ and binding =
   [ `And of (loc * binding * binding) | `Bind of (loc * pat * exp) | ant] 
 and module_binding =
   [ `And of (loc * module_binding * module_binding)
-  | `ModuleBind of (loc * auident * module_type * module_exp)
-  | `Constraint of (loc * auident * module_type) | ant] 
+  | `ModuleBind of (loc * auident * mtyp * module_exp)
+  | `Constraint of (loc * auident * mtyp) | ant] 
 and case =
   [ `Bar of (loc * case * case) | `Case of (loc * pat * exp)
   | `CaseWhen of (loc * pat * exp * exp) | ant] 
 and module_exp =
   [ vid' | `App of (loc * module_exp * module_exp)
-  | `Functor of (loc * auident * module_type * module_exp)
-  | `Struct of (loc * stru) | `StructEnd of loc
-  | `Constraint of (loc * module_exp * module_type)
+  | `Functor of (loc * auident * mtyp * module_exp) | `Struct of (loc * stru)
+  | `StructEnd of loc | `Constraint of (loc * module_exp * mtyp)
   | `PackageModule of (loc * exp) | ant] 
 and stru =
   [ `Class of (loc * class_exp) | `ClassType of (loc * class_type)
@@ -181,7 +178,7 @@ and stru =
   | `StExp of (loc * exp) | `External of (loc * alident * ctyp * strings)
   | `Include of (loc * module_exp) | `Module of (loc * auident * module_exp)
   | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * module_type) | `Open of (loc * ident)
+  | `ModuleType of (loc * auident * mtyp) | `Open of (loc * ident)
   | `Type of (loc * typedecl) | `Value of (loc * rec_flag * binding) | 
     ant]
   

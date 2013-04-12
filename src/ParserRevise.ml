@@ -66,12 +66,12 @@ let apply () = begin
       [ module_exp{x} -> x]
       module_binding0:
       { RA
-        [ "("; a_uident{m}; ":"; module_type{mt}; ")"; S{mb} -> `Functor (_loc, m, mt, mb)
-        | ":"; module_type{mt}; "="; module_exp{me} ->  `Constraint (_loc, me, mt)
+        [ "("; a_uident{m}; ":"; mtyp{mt}; ")"; S{mb} -> `Functor (_loc, m, mt, mb)
+        | ":"; mtyp{mt}; "="; module_exp{me} ->  `Constraint (_loc, me, mt)
         | "="; module_exp{me} -> me  ] }
       module_exp:
       { "top"
-        [ "functor"; "("; a_uident{i}; ":"; module_type{t}; ")"; "->"; S{me} ->
+        [ "functor"; "("; a_uident{i}; ":"; mtyp{t}; ")"; "->"; S{me} ->
              `Functor (_loc, i, t, me)
         | "struct"; strus{st}; "end" -> `Struct(_loc,st)
         | "struct"; "end" -> `StructEnd(_loc)]
@@ -82,10 +82,10 @@ let apply () = begin
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.module_exp_tag
         | module_longident{i} -> (* `Id (_loc, (i : vid :>ident)) *) (i:>module_exp)
-        | "("; S{me}; ":"; module_type{mt}; ")" ->  `Constraint (_loc, me, mt)
+        | "("; S{me}; ":"; mtyp{mt}; ")" ->  `Constraint (_loc, me, mt)
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
-        | "("; "val"; exp{e}; ":"; module_type{p}; ")" ->
+        | "("; "val"; exp{e}; ":"; mtyp{p}; ")" ->
              `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
              ] } |};
 
@@ -95,22 +95,22 @@ let apply () = begin
         [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)
         | `Ant (("module_binding"|"anti"|"" as n),s) ->
             mk_anti _loc ~c:"module_binding" n s
-        | a_uident{m}; ":"; module_type{mt} -> `Constraint(_loc,m,mt)
-        | a_uident{m}; ":"; module_type{mt}; "="; module_exp{me} ->
+        | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt)
+        | a_uident{m}; ":"; mtyp{mt}; "="; module_exp{me} ->
             `ModuleBind(_loc,m,mt,me)]
         module_binding:
         [ S{b1}; "and"; S{b2} -> `And(_loc,b1,b2)
         | `Ant (("module_binding"|"anti"|"list" |"" as n),s) ->
             mk_anti _loc ~c:"module_binding" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
-        | a_uident{m}; ":"; module_type{mt}; "="; module_exp{me} ->
+        | a_uident{m}; ":"; mtyp{mt}; "="; module_exp{me} ->
             `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> `And(_loc,m1,m2)
         | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->
             mk_anti _loc ~c:"module_binding" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
-        | a_uident{m}; ":"; module_type{mt} ->
+        | a_uident{m}; ":"; mtyp{mt} ->
             `Constraint(_loc,m,mt) ] |};
 
   with with_constr
@@ -133,9 +133,9 @@ let apply () = begin
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
             `ModuleSubst (_loc, (i1: vid :> ident), i2)] |};
 
-  with module_type
+  with mtyp
     {:extend|
-      module_type:
+      mtyp:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
           `Functor(_loc,i,t,mt)]
@@ -168,18 +168,18 @@ let apply () = begin
         | "sig";"end" -> `SigEnd(_loc)]
        "simple"
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->
-          mk_anti _loc ~c:"module_type" n s
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_type_tag
-        | module_longident_with_app{i} -> (* `Id(_loc,i) *) (i:ident:>module_type) 
+          mk_anti _loc ~c:"mtyp" n s
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mtyp_tag
+        | module_longident_with_app{i} -> (* `Id(_loc,i) *) (i:ident:>mtyp) 
         | "("; S{mt}; ")" -> mt
         | "module"; "type"; "of"; module_exp{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration:
       { RA
-        [ ":"; module_type{mt} -> mt
-        | "("; a_uident{i}; ":"; module_type{t}; ")"; S{mt} ->
+        [ ":"; mtyp{mt} -> mt
+        | "("; a_uident{i}; ":"; mtyp{t}; ")"; S{mt} ->
             `Functor(_loc,i,t,mt)] }
-      module_type_quot:
-      [ module_type{x} -> x  ]  |};
+      mtyp_quot:
+      [ mtyp{x} -> x  ]  |};
 
   with sig_item
   {:extend|
@@ -194,10 +194,10 @@ let apply () = begin
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
         `External (_loc, i, t, sl)
-    | "include"; module_type{mt} -> `Include(_loc,mt)
+    | "include"; mtyp{mt} -> `Include(_loc,mt)
     | "module"; a_uident{i}; module_declaration{mt} -> `Module(_loc,i,mt)
     | "module"; "rec"; module_rec_declaration{mb} ->  `RecModule (_loc, mb)
-    | "module"; "type"; a_uident{i}; "="; module_type{mt} -> `ModuleType(_loc,i,mt)
+    | "module"; "type"; a_uident{i}; "="; mtyp{mt} -> `ModuleType(_loc,i,mt)
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
     | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
     | "type"; type_declaration{t} -> `Type(_loc,t)
@@ -429,7 +429,7 @@ let apply () = begin
         | "begin"; "end" -> {| () |}
         | "("; "module"; module_exp{me}; ")" ->
             `Package_exp (_loc, me)
-        | "("; "module"; module_exp{me}; ":"; module_type{pt}; ")" ->
+        | "("; "module"; module_exp{me}; ":"; mtyp{pt}; ")" ->
             `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
@@ -581,7 +581,7 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
-        | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
+        | "("; "module"; a_uident{m}; ":"; (* package_type *)mtyp{pt}; ")" ->
             `ModuleConstraint(_loc,m, `Package(_loc,pt))
               (* {| ( module $m :  $pt )|} *)
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
@@ -628,7 +628,7 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
-        | "("; "module"; a_uident{m}; ":"; (* package_type *)module_type{pt}; ")" ->
+        | "("; "module"; a_uident{m}; ":"; (* package_type *)mtyp{pt}; ")" ->
              `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))
               (* {| (module $m : $pt )|} *)
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
@@ -944,7 +944,7 @@ let apply () = begin
         | "include"; module_exp{me} -> `Include(_loc,me)
         | "module"; a_uident{i}; module_binding0{mb} -> `Module(_loc,i,mb)
         | "module"; "rec"; module_binding{mb} -> `RecModule(_loc,mb)
-        | "module"; "type"; a_uident{i}; "="; module_type{mt} ->
+        | "module"; "type"; a_uident{i}; "="; mtyp{mt} ->
             `ModuleType(_loc,i,mt)
         | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
         | "type"; type_declaration{td} -> `Type(_loc,td)
@@ -1096,11 +1096,11 @@ let apply () = begin
   with class_type
     {:extend|
       class_description:
-      [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
+      [ S{cd1}; "and"; S{cd2} -> `And(_loc,cd1,cd2)
       | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
           mk_anti _loc ~c:"class_type" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_type_tag
-      | class_info_for_class_type{ci}; ":"; class_type_plus{ct} -> {| $ci : $ct |}  ]
+      | class_info_for_class_type{ci}; ":"; class_type_plus{ct} -> `CtCol (_loc, ci, ct)  ]
       class_type_declaration:
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
       | `Ant ((""|"typ"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"class_type" n s
@@ -1114,7 +1114,7 @@ let apply () = begin
       class_type_quot:
       [ S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2)
       | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2)
-      | S{ct1}; ":"; S{ct2} -> {| $ct1 : $ct2 |}
+      | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2)
       (* | "virtual";  class_name_and_param{(i, ot)} -> *)
       (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
           (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
@@ -1141,7 +1141,7 @@ let apply () = begin
       | "object"; "end" -> `ObjEnd(_loc)]
       class_type_longident_and_param:
       [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
-        `ClassCon (_loc, (`ViNil _loc), i, t)
+        `ClassCon (_loc, `ViNil _loc, i, t)
       | class_type_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
 end;
 
@@ -1150,10 +1150,8 @@ let apply_ctyp () = begin
   with ctyp
     {:extend|
       ctyp_quot:
-      [more_ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
-      | more_ctyp{x} -> x ]
-      more_ctyp:
-      [ctyp{x} -> x (* | type_parameter{x} -> x *)   ]
+      [ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
+      |ctyp{x} -> x ]
       unquoted_typevars:
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc ~c:"ctyp" n s
@@ -1175,8 +1173,7 @@ let apply_ctyp () = begin
       | type_longident{i} -> (i:>ctyp)
       | `Ant ((""|"anti" as n),s) -> mk_anti _loc n s ~c:"ctyp" ]
       type_parameters:
-      [ type_parameter{t1}; S{t2} ->
-        fun acc -> t2 (`App(_loc,acc, (t1:>ctyp)))
+      [ type_parameter{t1}; S{t2} -> fun acc -> t2 (`App(_loc,acc, (t1:>ctyp)))
       | type_parameter{t} -> fun acc -> `App(_loc,acc, (t:>ctyp))
       | -> fun t -> t  ]
       meth_list:
@@ -1187,10 +1184,7 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s)        -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s)          -> mk_anti _loc  ~c:"ctyp;" n s
       (* | `QUOTATION x                       -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_lident{lab}; ":"; ctyp{t} ->
-          `TyCol(_loc,lab,t)
-          (* `TyCol(_loc,`Id(_loc, (lab :> ident)),t) *)
-      ]
+      | a_lident{lab}; ":"; ctyp{t} -> `TyCol(_loc,lab,t)]
       opt_meth_list:
       [ meth_list{(ml, v) } -> `TyObj (_loc, ml, v)
       | opt_dot_dot{v}     -> `TyObjEnd(_loc,v) ]
@@ -1202,7 +1196,7 @@ let apply_ctyp () = begin
           `TyVrnOf(_loc,mk_anti _loc ~c:"ctyp" n s,t)
       | S{t1}; "|"; S{t2} -> `Bar(_loc,t1,t2)
       | "`"; astr{i} ->  `TyVrn(_loc,i)
-      | "`"; astr{i}; "of"; (* amp_ctyp *)ctyp{t} -> `TyVrnOf(_loc,i,t)
+      | "`"; astr{i}; "of";ctyp{t} -> `TyVrnOf(_loc,i,t)
       | ctyp{t} -> `Ctyp(_loc,t)
       (* | "`"; astr{i}; "of"; "&"; amp_ctyp{t} -> *)
       (*     `TyOfAmp (_loc, (`TyVrn (_loc, i)), t) *)
@@ -1237,8 +1231,7 @@ let apply_ctyp () = begin
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
       |  ctyp{t1} -> `TyEq(_loc,`PrNil _loc, t1)
       | "private"; ctyp{t1} -> `TyEq(_loc,`Private _loc,t1)
-      |  ctyp{t1}; "=";"private"; type_repr{t2} ->
-          `TyMan(_loc, t1, `Private _loc,t2)
+      |  ctyp{t1}; "=";"private"; type_repr{t2} -> `TyMan(_loc, t1, `Private _loc,t2)
       | "private"; type_repr{t2} -> `TyRepr(_loc,`Private _loc, t2)]
 
       type_repr:
@@ -1248,8 +1241,7 @@ let apply_ctyp () = begin
       type_ident_and_parameters:
       [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} ->
         (i, `Some(_loc, com_of_list (tpl :> list decl_params)))
-      |  type_parameter{t};  a_lident{i} ->
-          (i, `Some (_loc,(t:>decl_params)))
+      |  type_parameter{t};  a_lident{i} -> (i, `Some (_loc,(t:>decl_params)))
       |  a_lident{i} -> (i, `None _loc)]
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> `Eq(_loc,t1, t2) ]
@@ -1258,19 +1250,18 @@ let apply_ctyp () = begin
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc  ~c:"ctyp" n s
       | `Ant(("list" as n),s) ->     mk_anti _loc ~c:"forall" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
-      | "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc, i)
-            (* {| '$i |} *)]
+      | "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc, i)]
       ctyp:
       {
        "alias" LA
         [ S{t1}; "as"; "'"; a_lident{i} -> `Alias(_loc,t1,i)]
        "forall" LA
-        [ "!"; typevars{t1}; "."; ctyp{t2} -> {| ! $t1 . $t2 |} ]
+        [ "!"; typevars{t1}; "."; ctyp{t2} -> `TyPol (_loc, t1, t2) ]
        "arrow" RA
-        [ S{t1}; "->"; S{t2} ->  {| $t1 -> $t2 |} ]
+        [ S{t1}; "->"; S{t2} ->  `Arrow(_loc,t1,t2) ]
        "label" NA
-        [ "~"; a_lident{i}; ":"; S{t} -> {| ~ $i : $t |}
-        | `LABEL s ; ":"; S{t} -> {| ~$lid:s : $t |}
+        [ "~"; a_lident{i}; ":"; S{t} -> `Label (_loc, i, t)
+        | `LABEL s ; ":"; S{t} -> `Label (_loc, (`Lid (_loc, s)), t) (* FIXME *)
         | `OPTLABEL s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
         | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
        "apply" LA
@@ -1281,8 +1272,7 @@ let apply_ctyp () = begin
        "." LA
         [ S{t1}; "."; S{t2} ->
             try
-              
-              `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2))
+              `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
             with [ Invalid_argument s -> raise (XStream.Error s) ] ]
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
@@ -1299,9 +1289,9 @@ let apply_ctyp () = begin
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)
         | "[<"; row_field{rfl}; "]" -> `PolyInf(_loc,rfl)
         | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" -> `PolyInfSup(_loc,rfl,ntl)
-        | "#"; class_longident{i} -> {| #$i |}
+        | "#"; class_longident{i} ->  `ClassPath (_loc, i)
         | "<"; opt_meth_list{t}; ">" -> t
-        | "("; "module"; module_type{p}; ")" -> `Package(_loc,p)  ] }
+        | "("; "module"; mtyp{p}; ")" -> `Package(_loc,p)  ] }
       star_ctyp:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) ->  mk_anti _loc ~c:"ctyp*" n s
@@ -1325,10 +1315,8 @@ let apply_ctyp () = begin
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_uident{s}; "of"; constructor_arg_list{t} ->
-          `Of(_loc,(s:>vid),t)
-          (* `Of(_loc,`Id(_loc,(s:>ident)),t) *)
-      | a_uident{s} -> (s:>of_ctyp) (* `Id(_loc,(s:>ident)) *)  ]
+      | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,(s:>vid),t)
+      | a_uident{s} -> (s:>of_ctyp)  ]
       constructor_arg_list:
       [ `Ant (("list" as n),s) ->  mk_anti _loc ~c:"ctyp*" n s
       | S{t1}; "*"; S{t2} -> `Sta(_loc,t1,t2)
@@ -1341,13 +1329,8 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp;" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
-      | a_lident{s}; ":"; ctyp{t} ->
-          `TyCol(_loc,s,t)
-          (* `TyCol (_loc, (`Id (_loc, (s :>ident))), t) *)
-      | "mutable"; a_lident{s}; ":";  ctyp{t} ->
-          `TyColMut(_loc,s,t)
-          (* `TyColMut(_loc,`Id(_loc,(s:>ident)),t) *)
-      ]
+      | a_lident{s}; ":"; ctyp{t} -> `TyCol(_loc,s,t)
+      | "mutable"; a_lident{s}; ":";  ctyp{t} -> `TyColMut(_loc,s,t)]
       comma_type_parameter:
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp," n s

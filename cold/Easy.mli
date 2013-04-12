@@ -10,7 +10,7 @@ val gen_stru :
   mk_tuple:(FSig.ty_info list -> exp) ->
   mk_record:(FSig.record_col list -> exp) ->
   mk_variant:(string -> FSig.ty_info list -> exp) -> unit -> 
-  FSig.module_types -> stru
+  FSig.mtyps -> stru
 val gen_object :
   ?module_name:string ->
   ?arity:int ->
@@ -23,4 +23,4 @@ val gen_object :
   mk_tuple:(FSig.ty_info list -> exp) ->
   mk_record:(FSig.record_col list -> exp) ->
   mk_variant:(string -> FSig.ty_info list -> exp) -> unit -> 
-  FSig.module_types -> stru
+  FSig.mtyps -> stru

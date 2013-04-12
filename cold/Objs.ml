@@ -281,7 +281,7 @@ let rec pp_print_ctyp fmt =
         pp_print_row_field _a1 pp_print_tag_names _a2
   | `Package (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Package@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_type _a1
+        pp_print_mtyp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result55)
 and pp_print_type_parameters fmt =
   function
@@ -648,20 +648,19 @@ and pp_print_rec_exp fmt =
         pp_print_ident _a1 pp_print_exp _a2
   | #any as _a0 -> (pp_print_any fmt _a0 :>'result37)
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result37)
-and pp_print_module_type fmt =
+and pp_print_mtyp fmt =
   function
   | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result36)
-  | `Functor (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_type
-        _a3
   | `Sig (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sig_item _a1
   | `SigEnd _a0 -> Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" pp_print_loc _a0
+  | `Functor (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mtyp _a3
   | `With (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_type _a1 pp_print_with_constr _a2
+        pp_print_mtyp _a1 pp_print_with_constr _a2
   | `ModuleTypeOf (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_exp _a1
@@ -691,16 +690,16 @@ and pp_print_sig_item fmt =
         _a0 pp_print_alident _a1 pp_print_ctyp _a2 pp_print_strings _a3
   | `Include (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_type _a1
+        pp_print_mtyp _a1
   | `Module (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2
+        pp_print_auident _a1 pp_print_mtyp _a2
   | `RecModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_module_binding _a1
   | `ModuleType (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2
+        pp_print_auident _a1 pp_print_mtyp _a2
   | `ModuleTypeEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1
@@ -751,11 +750,10 @@ and pp_print_module_binding fmt =
         pp_print_module_binding _a1 pp_print_module_binding _a2
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_exp
-        _a3
+        _a0 pp_print_auident _a1 pp_print_mtyp _a2 pp_print_module_exp _a3
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2
+        pp_print_auident _a1 pp_print_mtyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result32)
 and pp_print_case fmt =
   function
@@ -777,7 +775,7 @@ and pp_print_module_exp fmt =
         pp_print_module_exp _a1 pp_print_module_exp _a2
   | `Functor (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2 pp_print_module_exp _a3
+        pp_print_auident _a1 pp_print_mtyp _a2 pp_print_module_exp _a3
   | `Struct (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc _a0
         pp_print_stru _a1
@@ -785,7 +783,7 @@ and pp_print_module_exp fmt =
       Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" pp_print_loc _a0
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1 pp_print_module_type _a2
+        pp_print_module_exp _a1 pp_print_mtyp _a2
   | `PackageModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
@@ -827,7 +825,7 @@ and pp_print_stru fmt =
         pp_print_module_binding _a1
   | `ModuleType (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_type _a2
+        pp_print_auident _a1 pp_print_mtyp _a2
   | `Open (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1
@@ -1282,7 +1280,7 @@ class print =
               _a0 self#row_field _a1 self#tag_names _a2
         | `Package (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Package@ %a@ %a)@]" self#loc _a0
-              self#module_type _a1
+              self#mtyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method type_parameters : 'fmt -> type_parameters -> unit=
       fun fmt  ->
@@ -1668,21 +1666,21 @@ class print =
               self#ident _a1 self#exp _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_type : 'fmt -> module_type -> unit=
+    method mtyp : 'fmt -> mtyp -> unit=
       fun fmt  ->
         function
         | #ident' as _a0 -> (self#ident' fmt _a0 :>unit)
-        | `Functor (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2 self#module_type _a3
         | `Sig (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc _a0
               self#sig_item _a1
         | `SigEnd _a0 ->
             Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" self#loc _a0
+        | `Functor (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#auident _a1 self#mtyp _a2 self#mtyp _a3
         | `With (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" self#loc _a0
-              self#module_type _a1 self#with_constr _a2
+              self#mtyp _a1 self#with_constr _a2
         | `ModuleTypeOf (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc _a0
               self#module_exp _a1
@@ -1713,16 +1711,16 @@ class print =
               _a0 self#alident _a1 self#ctyp _a2 self#strings _a3
         | `Include (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" self#loc _a0
-              self#module_type _a1
+              self#mtyp _a1
         | `Module (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc _a0
-              self#auident _a1 self#module_type _a2
+              self#auident _a1 self#mtyp _a2
         | `RecModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
               self#module_binding _a1
         | `ModuleType (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2
+              _a0 self#auident _a1 self#mtyp _a2
         | `ModuleTypeEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" self#loc _a0
               self#auident _a1
@@ -1776,11 +1774,10 @@ class print =
               self#module_binding _a1 self#module_binding _a2
         | `ModuleBind (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#auident _a1 self#module_type _a2
-              self#module_exp _a3
+              self#loc _a0 self#auident _a1 self#mtyp _a2 self#module_exp _a3
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2
+              _a0 self#auident _a1 self#mtyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method case : 'fmt -> case -> unit=
       fun fmt  ->
@@ -1804,7 +1801,7 @@ class print =
               self#module_exp _a1 self#module_exp _a2
         | `Functor (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2 self#module_exp _a3
+              _a0 self#auident _a1 self#mtyp _a2 self#module_exp _a3
         | `Struct (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc _a0
               self#stru _a1
@@ -1812,7 +1809,7 @@ class print =
             Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" self#loc _a0
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#module_exp _a1 self#module_type _a2
+              _a0 self#module_exp _a1 self#mtyp _a2
         | `PackageModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc _a0
               self#exp _a1
@@ -1855,7 +1852,7 @@ class print =
               self#module_binding _a1
         | `ModuleType (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#module_type _a2
+              _a0 self#auident _a1 self#mtyp _a2
         | `Open (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" self#loc _a0
               self#ident _a1
@@ -2309,7 +2306,7 @@ class map =
           let _a2 = self#tag_names _a2 in `PolyInfSup (_a0, _a1, _a2)
       | `Package (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_type _a1 in `Package (_a0, _a1)
+          let _a1 = self#mtyp _a1 in `Package (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>ctyp)
     method type_parameters : type_parameters -> type_parameters=
       function
@@ -2744,26 +2741,26 @@ class map =
           let _a2 = self#exp _a2 in `RecBind (_a0, _a1, _a2)
       | #any as _a0 -> (self#any _a0 : any  :>rec_exp)
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_exp)
-    method module_type : module_type -> module_type=
+    method mtyp : mtyp -> mtyp=
       function
-      | #ident' as _a0 -> (self#ident' _a0 : ident'  :>module_type)
-      | `Functor (_a0,_a1,_a2,_a3) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in
-          let _a3 = self#module_type _a3 in `Functor (_a0, _a1, _a2, _a3)
+      | #ident' as _a0 -> (self#ident' _a0 : ident'  :>mtyp)
       | `Sig (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#sig_item _a1 in `Sig (_a0, _a1)
       | `SigEnd _a0 -> let _a0 = self#loc _a0 in `SigEnd _a0
+      | `Functor (_a0,_a1,_a2,_a3) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#auident _a1 in
+          let _a2 = self#mtyp _a2 in
+          let _a3 = self#mtyp _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `With (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_type _a1 in
+          let _a1 = self#mtyp _a1 in
           let _a2 = self#with_constr _a2 in `With (_a0, _a1, _a2)
       | `ModuleTypeOf (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_exp _a1 in `ModuleTypeOf (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>module_type)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>mtyp)
     method sig_item : sig_item -> sig_item=
       function
       | `Class (_a0,_a1) ->
@@ -2793,18 +2790,18 @@ class map =
           let _a3 = self#strings _a3 in `External (_a0, _a1, _a2, _a3)
       | `Include (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_type _a1 in `Include (_a0, _a1)
+          let _a1 = self#mtyp _a1 in `Include (_a0, _a1)
       | `Module (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in `Module (_a0, _a1, _a2)
+          let _a2 = self#mtyp _a2 in `Module (_a0, _a1, _a2)
       | `RecModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_binding _a1 in `RecModule (_a0, _a1)
       | `ModuleType (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in `ModuleType (_a0, _a1, _a2)
+          let _a2 = self#mtyp _a2 in `ModuleType (_a0, _a1, _a2)
       | `ModuleTypeEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in `ModuleTypeEnd (_a0, _a1)
@@ -2866,12 +2863,12 @@ class map =
       | `ModuleBind (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in
+          let _a2 = self#mtyp _a2 in
           let _a3 = self#module_exp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in `Constraint (_a0, _a1, _a2)
+          let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
     method case : case -> case=
       function
@@ -2899,7 +2896,7 @@ class map =
       | `Functor (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in
+          let _a2 = self#mtyp _a2 in
           let _a3 = self#module_exp _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `Struct (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -2908,7 +2905,7 @@ class map =
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#module_exp _a1 in
-          let _a2 = self#module_type _a2 in `Constraint (_a0, _a1, _a2)
+          let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
       | `PackageModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in `PackageModule (_a0, _a1)
@@ -2956,7 +2953,7 @@ class map =
       | `ModuleType (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_type _a2 in `ModuleType (_a0, _a1, _a2)
+          let _a2 = self#mtyp _a2 in `ModuleType (_a0, _a1, _a2)
       | `Open (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ident _a1 in `Open (_a0, _a1)
@@ -3371,7 +3368,7 @@ class fold =
       | `PolyInfSup (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#row_field _a1 in self#tag_names _a2
-      | `Package (_a0,_a1) -> let self = self#loc _a0 in self#module_type _a1
+      | `Package (_a0,_a1) -> let self = self#loc _a0 in self#mtyp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method type_parameters : type_parameters -> 'self_type=
       function
@@ -3660,18 +3657,18 @@ class fold =
           let self = self#ident _a1 in self#exp _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method module_type : module_type -> 'self_type=
+    method mtyp : mtyp -> 'self_type=
       function
       | #ident' as _a0 -> (self#ident' _a0 :>'self_type)
+      | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sig_item _a1
+      | `SigEnd _a0 -> self#loc _a0
       | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_type _a2 in self#module_type _a3
-      | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sig_item _a1
-      | `SigEnd _a0 -> self#loc _a0
+          let self = self#mtyp _a2 in self#mtyp _a3
       | `With (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_type _a1 in self#with_constr _a2
+          let self = self#mtyp _a1 in self#with_constr _a2
       | `ModuleTypeOf (_a0,_a1) ->
           let self = self#loc _a0 in self#module_exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -3693,15 +3690,15 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#ctyp _a2 in self#strings _a3
-      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#module_type _a1
+      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#mtyp _a1
       | `Module (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_type _a2
+          let self = self#auident _a1 in self#mtyp _a2
       | `RecModule (_a0,_a1) ->
           let self = self#loc _a0 in self#module_binding _a1
       | `ModuleType (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_type _a2
+          let self = self#auident _a1 in self#mtyp _a2
       | `ModuleTypeEnd (_a0,_a1) ->
           let self = self#loc _a0 in self#auident _a1
       | `Open (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
@@ -3747,10 +3744,10 @@ class fold =
       | `ModuleBind (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_type _a2 in self#module_exp _a3
+          let self = self#mtyp _a2 in self#module_exp _a3
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_type _a2
+          let self = self#auident _a1 in self#mtyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method case : case -> 'self_type=
       function
@@ -3772,12 +3769,12 @@ class fold =
       | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_type _a2 in self#module_exp _a3
+          let self = self#mtyp _a2 in self#module_exp _a3
       | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#stru _a1
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_exp _a1 in self#module_type _a2
+          let self = self#module_exp _a1 in self#mtyp _a2
       | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method stru : stru -> 'self_type=
@@ -3807,7 +3804,7 @@ class fold =
           let self = self#loc _a0 in self#module_binding _a1
       | `ModuleType (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_type _a2
+          let self = self#auident _a1 in self#mtyp _a2
       | `Open (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Type (_a0,_a1) -> let self = self#loc _a0 in self#typedecl _a1
       | `Value (_a0,_a1,_a2) ->
@@ -4175,7 +4172,7 @@ let rec strip_loc_ctyp =
   | `PolyInfSup (_a0,_a1,_a2) ->
       let _a1 = strip_loc_row_field _a1 in
       let _a2 = strip_loc_tag_names _a2 in `PolyInfSup (_a1, _a2)
-  | `Package (_a0,_a1) -> let _a1 = strip_loc_module_type _a1 in `Package _a1
+  | `Package (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Package _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result291)
 and strip_loc_type_parameters =
   function
@@ -4485,17 +4482,17 @@ and strip_loc_rec_exp =
       let _a2 = strip_loc_exp _a2 in `RecBind (_a1, _a2)
   | #any as _a0 -> (strip_loc_any _a0 :>'result273)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result273)
-and strip_loc_module_type =
+and strip_loc_mtyp =
   function
   | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result272)
-  | `Functor (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in
-      let _a3 = strip_loc_module_type _a3 in `Functor (_a1, _a2, _a3)
   | `Sig (_a0,_a1) -> let _a1 = strip_loc_sig_item _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
+  | `Functor (_a0,_a1,_a2,_a3) ->
+      let _a1 = strip_loc_auident _a1 in
+      let _a2 = strip_loc_mtyp _a2 in
+      let _a3 = strip_loc_mtyp _a3 in `Functor (_a1, _a2, _a3)
   | `With (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_type _a1 in
+      let _a1 = strip_loc_mtyp _a1 in
       let _a2 = strip_loc_with_constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) ->
       let _a1 = strip_loc_module_exp _a1 in `ModuleTypeOf _a1
@@ -4518,15 +4515,15 @@ and strip_loc_sig_item =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in
       let _a3 = strip_loc_strings _a3 in `External (_a1, _a2, _a3)
-  | `Include (_a0,_a1) -> let _a1 = strip_loc_module_type _a1 in `Include _a1
+  | `Include (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Include _a1
   | `Module (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in `Module (_a1, _a2)
+      let _a2 = strip_loc_mtyp _a2 in `Module (_a1, _a2)
   | `RecModule (_a0,_a1) ->
       let _a1 = strip_loc_module_binding _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in `ModuleType (_a1, _a2)
+      let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
   | `ModuleTypeEnd (_a0,_a1) ->
       let _a1 = strip_loc_auident _a1 in `ModuleTypeEnd _a1
   | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
@@ -4572,11 +4569,11 @@ and strip_loc_module_binding =
       let _a2 = strip_loc_module_binding _a2 in `And (_a1, _a2)
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in
+      let _a2 = strip_loc_mtyp _a2 in
       let _a3 = strip_loc_module_exp _a3 in `ModuleBind (_a1, _a2, _a3)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
+      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result268)
 and strip_loc_case =
   function
@@ -4599,13 +4596,13 @@ and strip_loc_module_exp =
       let _a2 = strip_loc_module_exp _a2 in `App (_a1, _a2)
   | `Functor (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in
+      let _a2 = strip_loc_mtyp _a2 in
       let _a3 = strip_loc_module_exp _a3 in `Functor (_a1, _a2, _a3)
   | `Struct (_a0,_a1) -> let _a1 = strip_loc_stru _a1 in `Struct _a1
   | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_module_exp _a1 in
-      let _a2 = strip_loc_module_type _a2 in `Constraint (_a1, _a2)
+      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) ->
       let _a1 = strip_loc_exp _a1 in `PackageModule _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result266)
@@ -4636,7 +4633,7 @@ and strip_loc_stru =
       let _a1 = strip_loc_module_binding _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_type _a2 in `ModuleType (_a1, _a2)
+      let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
   | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
   | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
   | `Value (_a0,_a1,_a2) ->
@@ -4976,11 +4973,8 @@ let map_exp f =
 let map_rec_exp f =
   object  inherit  map as super method! rec_exp x = f (super#rec_exp x) end
 
-let map_module_type f =
-  object 
-    inherit  map as super
-    method! module_type x = f (super#module_type x)
-  end
+let map_mtyp f =
+  object  inherit  map as super method! mtyp x = f (super#mtyp x) end
 
 let map_sig_item f =
   object  inherit  map as super method! sig_item x = f (super#sig_item x) end
@@ -5117,7 +5111,7 @@ let dump_exp = LibUtil.to_string_of_printer dump#exp
 
 let dump_rec_exp = LibUtil.to_string_of_printer dump#rec_exp
 
-let dump_module_type = LibUtil.to_string_of_printer dump#module_type
+let dump_mtyp = LibUtil.to_string_of_printer dump#mtyp
 
 let dump_sig_item = LibUtil.to_string_of_printer dump#sig_item
 

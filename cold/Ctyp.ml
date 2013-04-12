@@ -250,7 +250,7 @@ let mk_transform_type_eq () =
         transformers []
   end
 
-let transform_module_types (lst : FSig.module_types) =
+let transform_mtyps (lst : FSig.mtyps) =
   let obj = mk_transform_type_eq () in
   let item1 =
     List.map

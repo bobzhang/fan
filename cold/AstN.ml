@@ -67,9 +67,7 @@ type ctyp =
   | `Quote of (position_flag * alident) | `QuoteAny of position_flag
   | `Par of ctyp | `Sta of (ctyp * ctyp) | `PolyEq of row_field
   | `PolySup of row_field | `PolyInf of row_field | `Com of (ctyp * ctyp)
-  | `PolyInfSup of (row_field * tag_names) | `Package of module_type | 
-    ant]
-  
+  | `PolyInfSup of (row_field * tag_names) | `Package of mtyp | ant] 
 and type_parameters =
   [ `Com of (type_parameters * type_parameters) | `Ctyp of ctyp | ant] 
 and row_field =
@@ -138,17 +136,16 @@ and exp =
   | `LocalTypeFun of (alident * exp) | `Package_exp of module_exp] 
 and rec_exp =
   [ `Sem of (rec_exp * rec_exp) | `RecBind of (ident * exp) | any | ant] 
-and module_type =
-  [ ident' | `Functor of (auident * module_type * module_type)
-  | `Sig of sig_item | `SigEnd | `With of (module_type * with_constr)
-  | `ModuleTypeOf of module_exp | ant] 
+and mtyp =
+  [ ident' | `Sig of sig_item | `SigEnd | `Functor of (auident * mtyp * mtyp)
+  | `With of (mtyp * with_constr) | `ModuleTypeOf of module_exp | ant] 
 and sig_item =
   [ `Class of class_type | `ClassType of class_type
   | `Sem of (sig_item * sig_item) | `DirectiveSimple of alident
   | `Directive of (alident * exp) | `Exception of of_ctyp
-  | `External of (alident * ctyp * strings) | `Include of module_type
-  | `Module of (auident * module_type) | `RecModule of module_binding
-  | `ModuleType of (auident * module_type) | `ModuleTypeEnd of auident
+  | `External of (alident * ctyp * strings) | `Include of mtyp
+  | `Module of (auident * mtyp) | `RecModule of module_binding
+  | `ModuleType of (auident * mtyp) | `ModuleTypeEnd of auident
   | `Open of ident | `Type of typedecl | `Val of (alident * ctyp) | ant] 
 and with_constr =
   [ `TypeEq of (ctyp * ctyp) | `TypeEqPriv of (ctyp * ctyp)
@@ -158,24 +155,23 @@ and with_constr =
 and binding = [ `And of (binding * binding) | `Bind of (pat * exp) | ant] 
 and module_binding =
   [ `And of (module_binding * module_binding)
-  | `ModuleBind of (auident * module_type * module_exp)
-  | `Constraint of (auident * module_type) | ant] 
+  | `ModuleBind of (auident * mtyp * module_exp)
+  | `Constraint of (auident * mtyp) | ant] 
 and case =
   [ `Bar of (case * case) | `Case of (pat * exp)
   | `CaseWhen of (pat * exp * exp) | ant] 
 and module_exp =
   [ vid' | `App of (module_exp * module_exp)
-  | `Functor of (auident * module_type * module_exp) | `Struct of stru
-  | `StructEnd | `Constraint of (module_exp * module_type)
-  | `PackageModule of exp | ant] 
+  | `Functor of (auident * mtyp * module_exp) | `Struct of stru | `StructEnd
+  | `Constraint of (module_exp * mtyp) | `PackageModule of exp | ant] 
 and stru =
   [ `Class of class_exp | `ClassType of class_type | `Sem of (stru * stru)
   | `DirectiveSimple of alident | `Directive of (alident * exp)
   | `Exception of of_ctyp | `StExp of exp
   | `External of (alident * ctyp * strings) | `Include of module_exp
   | `Module of (auident * module_exp) | `RecModule of module_binding
-  | `ModuleType of (auident * module_type) | `Open of ident
-  | `Type of typedecl | `Value of (rec_flag * binding) | ant] 
+  | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
+  | `Value of (rec_flag * binding) | ant] 
 and class_type =
   [ `ClassCon of (virtual_flag * ident * type_parameters)
   | `ClassConS of (virtual_flag * ident) | `CtFun of (ctyp * class_type)

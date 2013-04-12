@@ -118,15 +118,14 @@ module type Syntax =
     val module_binding : module_binding Gram.t
     val module_binding0 : module_exp Gram.t
     val module_binding_quot : module_binding Gram.t
-    val module_declaration : module_type Gram.t
+    val module_declaration : mtyp Gram.t
     val module_exp : module_exp Gram.t
     val module_exp_quot : module_exp Gram.t
     val module_longident : vid Gram.t
     val module_longident_with_app : ident Gram.t
     val module_rec_declaration : module_binding Gram.t
-    val module_type : module_type Gram.t
-    val module_type_quot : module_type Gram.t
-    val more_ctyp : ctyp Gram.t
+    val mtyp : mtyp Gram.t
+    val mtyp_quot : mtyp Gram.t
     val name_tags : tag_names Gram.t
     val opt_class_self_type : ctyp Gram.t
     val opt_dot_dot : row_var_flag Gram.t

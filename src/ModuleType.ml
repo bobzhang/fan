@@ -1,13 +1,13 @@
 
 (* open FanAst; *)
-#default_quotation "module_type'";;
+#default_quotation "mtyp'";;
 
 
 
 let app  mt1 mt2 =
   match (mt1, mt2) with
   [ ({| $(id:i1) |}, {@_| $id:i2 |}) -> {| $(id: {:ident| ($i1 $i2) |}) |}
-  | _ -> invalid_arg "Fan_module_type app" ];
+  | _ -> invalid_arg "Fan_mtyp app" ];
 (**
    This is the place where [App] makes sense
    {[
@@ -15,7 +15,7 @@ let app  mt1 mt2 =
 
    MtId  (App  (Uid  "A") (Uid  "B"))
    ]}
-   Here we need define [module_type_app], since
+   Here we need define [mtyp_app], since
    {[
      |	App of loc * ident* ident
      |	App of loc * exp * exp
@@ -25,7 +25,7 @@ let app  mt1 mt2 =
      |	Id of loc * ident
    |	App of loc * module_exp * module_exp
    ]}
-   since we require that for module_type_app operation, only
+   since we require that for mtyp_app operation, only
    Id can be used as app operation.
 *)      
 

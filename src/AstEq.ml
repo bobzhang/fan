@@ -275,12 +275,12 @@ let rec eq_structure_item_desc :
       eq_list
         (fun ((a0, a1, a2), (b0, b1, b2)) ->
            ((Asttypes.eq_loc eq_string (a0, b0)) &&
-              (eq_module_type (a1, b1)))
+              (eq_mtyp (a1, b1)))
              && (eq_module_expr (a2, b2)))
         (a0, b0)
   | (Pstr_modtype (a0, a1), Pstr_modtype (b0, b1)) ->
       (Asttypes.eq_loc eq_string (a0, b0)) &&
-        (eq_module_type (a1, b1))
+        (eq_mtyp (a1, b1))
   | (Pstr_open a0, Pstr_open b0) ->
       Asttypes.eq_loc Longident.eq_t (a0, b0)
   | (Pstr_class a0, Pstr_class b0) ->
@@ -305,12 +305,12 @@ and eq_module_expr_desc :
   | (Pmod_structure a0, Pmod_structure b0) -> eq_structure (a0, b0)
   | (Pmod_functor (a0, a1, a2), Pmod_functor (b0, b1, b2)) ->
       ((Asttypes.eq_loc eq_string (a0, b0)) &&
-         (eq_module_type (a1, b1)))
+         (eq_mtyp (a1, b1)))
         && (eq_module_expr (a2, b2))
   | (Pmod_apply (a0, a1), Pmod_apply (b0, b1)) ->
       (eq_module_expr (a0, b0)) && (eq_module_expr (a1, b1))
   | (Pmod_constraint (a0, a1), Pmod_constraint (b0, b1)) ->
-      (eq_module_expr (a0, b0)) && (eq_module_type (a1, b1))
+      (eq_module_expr (a0, b0)) && (eq_mtyp (a1, b1))
   | (Pmod_unpack a0, Pmod_unpack b0) -> eq_expression (a0, b0)
   | (_, _) -> false
 and eq_module_expr : (module_expr * module_expr) -> 'result =
@@ -334,7 +334,7 @@ and eq_modtype_declaration :
   function
   | (Pmodtype_abstract, Pmodtype_abstract) -> true
   | (Pmodtype_manifest a0, Pmodtype_manifest b0) ->
-      eq_module_type (a0, b0)
+      eq_mtyp (a0, b0)
   | (_, _) -> false
 and eq_signature_item_desc :
   (signature_item_desc * signature_item_desc) -> 'result =
@@ -353,19 +353,19 @@ and eq_signature_item_desc :
         (eq_exception_declaration (a1, b1))
   | (Psig_module (a0, a1), Psig_module (b0, b1)) ->
       (Asttypes.eq_loc eq_string (a0, b0)) &&
-        (eq_module_type (a1, b1))
+        (eq_mtyp (a1, b1))
   | (Psig_recmodule a0, Psig_recmodule b0) ->
       eq_list
         (fun ((a0, a1), (b0, b1)) ->
            (Asttypes.eq_loc eq_string (a0, b0)) &&
-             (eq_module_type (a1, b1)))
+             (eq_mtyp (a1, b1)))
         (a0, b0)
   | (Psig_modtype (a0, a1), Psig_modtype (b0, b1)) ->
       (Asttypes.eq_loc eq_string (a0, b0)) &&
         (eq_modtype_declaration (a1, b1))
   | (Psig_open a0, Psig_open b0) ->
       Asttypes.eq_loc Longident.eq_t (a0, b0)
-  | (Psig_include a0, Psig_include b0) -> eq_module_type (a0, b0)
+  | (Psig_include a0, Psig_include b0) -> eq_mtyp (a0, b0)
   | (Psig_class a0, Psig_class b0) ->
       eq_list eq_class_description (a0, b0)
   | (Psig_class_type a0, Psig_class_type b0) ->
@@ -379,18 +379,18 @@ and eq_signature_item :
     -> (eq_signature_item_desc (a0, b0)) && (Location.eq_t (a1, b1))
 and eq_signature : (signature * signature) -> 'result =
   fun (a0, a1) -> eq_list eq_signature_item (a0, a1)
-and eq_module_type_desc :
-  (module_type_desc * module_type_desc) -> 'result =
+and eq_mtyp_desc :
+  (mtyp_desc * mtyp_desc) -> 'result =
   function
   | (Pmty_ident a0, Pmty_ident b0) ->
       Asttypes.eq_loc Longident.eq_t (a0, b0)
   | (Pmty_signature a0, Pmty_signature b0) -> eq_signature (a0, b0)
   | (Pmty_functor (a0, a1, a2), Pmty_functor (b0, b1, b2)) ->
       ((Asttypes.eq_loc eq_string (a0, b0)) &&
-         (eq_module_type (a1, b1)))
-        && (eq_module_type (a2, b2))
+         (eq_mtyp (a1, b1)))
+        && (eq_mtyp (a2, b2))
   | (Pmty_with (a0, a1), Pmty_with (b0, b1)) ->
-      (eq_module_type (a0, b0)) &&
+      (eq_mtyp (a0, b0)) &&
         (eq_list
            (fun ((a0, a1), (b0, b1)) ->
               (Asttypes.eq_loc Longident.eq_t (a0, b0)) &&
@@ -398,11 +398,11 @@ and eq_module_type_desc :
            (a1, b1))
   | (Pmty_typeof a0, Pmty_typeof b0) -> eq_module_expr (a0, b0)
   | (_, _) -> false
-and eq_module_type : (module_type * module_type) -> 'result =
+and eq_mtyp : (mtyp * mtyp) -> 'result =
   fun
     ({ pmty_desc = a0; pmty_loc = a1 },
      { pmty_desc = b0; pmty_loc = b1 })
-    -> (eq_module_type_desc (a0, b0)) && (Location.eq_t (a1, b1))
+    -> (eq_mtyp_desc (a0, b0)) && (Location.eq_t (a1, b1))
 and eq_class_declaration :
   (class_declaration * class_declaration) -> 'result =
   fun (a0, a1) -> eq_class_infos eq_class_expr (a0, a1)

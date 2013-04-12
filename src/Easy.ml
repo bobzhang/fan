@@ -35,7 +35,7 @@ let gen_stru
       let mk_record = mk_record ;
       let cons_transform = cons_transform;
       Frame.check names ;
-      Frame.(stru_of_module_types
+      Frame.(stru_of_mtyps
                ?module_name
                ?cons_transform
                ~arity
@@ -75,7 +75,7 @@ let gen_object
          let pat = EP.tuple_of_number {:pat'| _ |} arity in 
          Some {:case'| $pat:pat -> $default |}
        else None in
-    Frame.(obj_of_module_types
+    Frame.(obj_of_mtyps
              ?cons_transform
              ?module_name
              ~arity

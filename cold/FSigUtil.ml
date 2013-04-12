@@ -6,8 +6,7 @@ open AstLoc
 
 open Ast
 
-let stru_from_module_types ~f:(aux : named_type -> typedecl) 
-  (x : module_types) =
+let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
   (let _loc = FanLoc.ghost in
    match x with
    | [] -> (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )
@@ -20,7 +19,7 @@ let stru_from_module_types ~f:(aux : named_type -> typedecl)
             | `Single ty -> (`Type (_loc, (aux ty)) : Ast.stru )) x in
        sem_of_list xs : stru )
 
-let stru_from_ty ~f:(f : string -> stru)  (x : module_types) =
+let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
      List.concat_map
        (fun x  ->
