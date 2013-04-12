@@ -68,7 +68,6 @@ module type Syntax = sig
   val class_fun_def : Gram.t clexp;
   val class_info_for_cltyp : Gram.t cltyp;
   val class_longident : Gram.t ident;
-  val class_longident_and_param : Gram.t clexp;
   val clsigi : Gram.t clsigi;
   val clsigi_quot : Gram.t clsigi;
   val class_signature : Gram.t clsigi;

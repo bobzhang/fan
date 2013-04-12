@@ -819,15 +819,15 @@ let apply () = begin
       class_longident: [ label_longident{x} -> x ]
       
       method_opt_override:
-      [ "method"; "!" -> {:override_flag| ! |}
+      [ "method"; "!" -> `Override _loc 
       | "method"; `Ant (((""|"override"|"anti") as n),s) ->
           mk_anti _loc ~c:"override_flag" n s
-      | "method" -> {:override_flag||}  ] 
+      | "method" -> `OvNil _loc   ] 
       opt_override:
-      [ "!" -> {:override_flag| ! |}
+      [ "!" -> `Override _loc
       | `Ant ((("!"|"override"|"anti") as n),s) ->
           mk_anti _loc ~c:"override_flag" n s
-      | -> {:override_flag||} ]
+      | -> `OvNil _loc  ]
       
       value_val_opt_override:
       [ "val"; "!" -> `Override _loc
@@ -1028,19 +1028,11 @@ let apply () = begin
   with clexp
     {:extend|
       clexp_quot:
-      [(*  S{ce1}; "and"; S{ce2} -> `And(_loc,ce1,ce2) *)
-      (* | S{ce1}; "="; S{ce2} -> `Eq(_loc,ce1,ce2) *)
-      (* (\* | "virtual";   class_name_and_param{(i, ot)} -> *\) *)
-      (* (\*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *\) *)
-      (* (\* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *\) *)
-      (* (\*     let anti = `Ant (_loc,mk_anti ~c:"clexp" n s) in *\) *)
-      (* (\*     `ClassCon (_loc, anti, i, ot) *\) *)
-      (* | *) clexp{x} -> x]
+      [ clexp{x} -> x]
       class_declaration:
       [ S{c1}; "and"; S{c2} -> `And(_loc,c1,c2)
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
-
       | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_binding{ce}
         -> `Eq(_loc, `ClassCon(_loc,mv,(i:>ident),x),ce)
       | opt_virtual{mv}; a_lident{i}; class_fun_binding{ce} ->
@@ -1061,8 +1053,8 @@ let apply () = begin
         "simple"
           [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"clexp" n s
           | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
-          | class_longident_and_param{ce} -> ce
-
+          |class_longident{ci}; "["; comma_ctyp{t}; "]" -> `ClassCon (_loc, `ViNil _loc, ci, t)
+          | class_longident{ci} -> `ClassConS(_loc,`ViNil _loc,ci)
           | "object"; "("; pat{p}; ")" ; class_structure{cst};"end" ->
               `ObjPat(_loc,p,cst)
           | "object"; "("; pat{p}; ")" ;"end" ->
@@ -1074,13 +1066,7 @@ let apply () = begin
           | "object"; class_structure{cst};"end" -> `Obj(_loc,cst)
           | "object";"end" -> `ObjEnd(_loc)
           | "("; S{ce}; ":"; cltyp{ct}; ")" -> `Constraint(_loc,ce,ct)
-          | "("; S{ce}; ")" -> ce ] }
-      class_longident_and_param:
-      [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->
-        `ClassCon (_loc, `ViNil _loc, ci, t)
-      | class_longident{ci} ->
-          `ClassConS(_loc,`ViNil _loc,ci)
-          (* {| $id:ci |} *)  ]  |};
+          | "("; S{ce}; ")" -> ce ] } |};
   with cltyp
     {:extend|
       class_description:
@@ -1103,12 +1089,6 @@ let apply () = begin
       [ S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2)
       | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2)
       | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2)
-      (* | "virtual";  class_name_and_param{(i, ot)} -> *)
-      (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
-          (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
-      (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
-      (*     let anti = `Ant (_loc,mk_anti ~c:"cltyp" n s) in *)
-      (*     `ClassCon (_loc, anti, i, ot) *)
       | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
           let anti = mk_anti _loc ~c:"cltyp" n s in
           `ClassCon(_loc,anti,i,t)
@@ -1128,8 +1108,7 @@ let apply () = begin
       | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
       | "object"; "end" -> `ObjEnd(_loc)]
       cltyp_longident_and_param:
-      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" ->
-        `ClassCon (_loc, `ViNil _loc, i, t)
+      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" -> `ClassCon (_loc, `ViNil _loc, i, t)
       | cltyp_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
 end;
 

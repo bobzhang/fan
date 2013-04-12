@@ -62,7 +62,6 @@ module type Syntax =
     val class_fun_def : clexp Gram.t
     val class_info_for_cltyp : cltyp Gram.t
     val class_longident : ident Gram.t
-    val class_longident_and_param : clexp Gram.t
     val clsigi : clsigi Gram.t
     val clsigi_quot : clsigi Gram.t
     val class_signature : clsigi Gram.t

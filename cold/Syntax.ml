@@ -41,8 +41,6 @@ let class_info_for_cltyp = Gram.mk "class_info_for_cltyp"
 
 let class_longident = Gram.mk "class_longident"
 
-let class_longident_and_param = Gram.mk "class_longident_and_param"
-
 let class_name_and_param = Gram.mk "class_name_and_param"
 
 let clsigi = Gram.mk "clsigi"
