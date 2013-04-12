@@ -179,7 +179,7 @@ and clsigi =
   | `SigInherit of (loc * cltyp)
   | `Method of (loc * alident * private_flag * ctyp)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
-  | `CgVir of (loc * alident * private_flag * ctyp) | ant] 
+  | `VirMeth of (loc * alident * private_flag * ctyp) | ant] 
 and clexp =
   [ nil | `CeApp of (loc * clexp * exp)
   | `CeCon of (loc * virtual_flag * ident * type_parameters)
@@ -193,7 +193,7 @@ and cstru =
   | `Initializer of (loc * exp)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
-  | `CrVir of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * private_flag * ctyp)
   | `CrVvr of (loc * alident * mutable_flag * ctyp) | ant] 
 
 type ep =

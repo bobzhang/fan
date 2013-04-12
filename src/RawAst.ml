@@ -466,7 +466,7 @@ and clsigi =
         (* val (virtual)? (mutable)? s : t *)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
         (* method virtual (private)? s : t *)
-  | `CgVir of (loc *  alident * private_flag * ctyp)
+  | `VirMeth of (loc *  alident * private_flag * ctyp)
   | ant ]
 and clexp =
   [= nil
@@ -501,7 +501,7 @@ and cstru =
         (* value(!)? (mutable)? s = e *)
   | `CrVal of (loc *  alident * override_flag * mutable_flag * exp)
         (* method virtual (private)? s : t *)
-  | `CrVir of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * private_flag * ctyp)
         (* val virtual (mutable)? s : t *)
   | `CrVvr of (loc * alident * mutable_flag * ctyp)
   | ant  ]; 

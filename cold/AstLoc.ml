@@ -43,7 +43,6 @@ let loc_of =
   | `IfThenElse (_loc,_,_,_) -> _loc
   | `ClassType (_loc,_) -> _loc
   | `ModuleUnpack (_loc,_) -> _loc
-  | `CrVir (_loc,_,_,_) -> _loc
   | `Package (_loc,_) -> _loc
   | `While (_loc,_,_) -> _loc
   | `CrMth (_loc,_,_,_,_,_) -> _loc
@@ -69,7 +68,6 @@ let loc_of =
   | `Subtype (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
-  | `ModuleApp (_loc,_,_,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc
@@ -98,7 +96,6 @@ let loc_of =
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
   | `ObjPat (_loc,_,_) -> _loc
-  | `CgVir (_loc,_,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
   | `TyColMut (_loc,_,_) -> _loc
   | `ModuleEq (_loc,_,_) -> _loc
@@ -142,6 +139,7 @@ let loc_of =
   | `Assert (_loc,_) -> _loc
   | `StructEnd _loc -> _loc
   | `Int32 (_loc,_) -> _loc
+  | `VirMeth (_loc,_,_,_) -> _loc
   | `PaRng (_loc,_,_) -> _loc
   | `RecModule (_loc,_) -> _loc
   | `LocalTypeFun (_loc,_,_) -> _loc
@@ -173,7 +171,6 @@ let loc_of =
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
   | `Bar (_loc,_,_) -> _loc
-  | `Col (_loc,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ObjTyEnd (_loc,_) -> _loc
   | `ViNil _loc -> _loc

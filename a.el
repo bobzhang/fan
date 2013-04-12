@@ -44,12 +44,8 @@
 
 (setq v
       (hash-table/from-list
-       "module_binding" "mbind"
-       "sig_item" "sigi"
-       "class_type" "cltyp"
-       "with_constr" "constr"
-       "class_exp" "clexp"
-       "class_sig_item" "clsigi"
+       "CgVir" "VirMeth"
+       "CrVir" "VirMeth"
        )
       )
 

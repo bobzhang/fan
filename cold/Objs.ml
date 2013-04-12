@@ -220,7 +220,7 @@ let rec pp_print_ctyp fmt =
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_alident _a2
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result56)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result55)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
@@ -236,7 +236,7 @@ let rec pp_print_ctyp fmt =
   | `OptLabl (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`OptLabl@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_ctyp _a2
-  | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result56)
+  | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result55)
   | `TyObj (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyObj@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_name_ctyp _a1 pp_print_row_var_flag _a2
@@ -282,7 +282,7 @@ let rec pp_print_ctyp fmt =
   | `Package (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Package@ %a@ %a)@]" pp_print_loc _a0
         pp_print_mtyp _a1
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result56)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result55)
 and pp_print_type_parameters fmt =
   function
   | `Com (_a0,_a1,_a2) ->
@@ -291,10 +291,10 @@ and pp_print_type_parameters fmt =
   | `Ctyp (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Ctyp@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result55)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result54)
 and pp_print_row_field fmt =
   function
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result54)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result53)
   | `Bar (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_row_field _a1 pp_print_row_field _a2
@@ -309,7 +309,7 @@ and pp_print_row_field fmt =
         pp_print_ctyp _a1
 and pp_print_tag_names fmt =
   function
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result53)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result52)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_tag_names _a1 pp_print_tag_names _a2
@@ -329,7 +329,7 @@ and pp_print_typedecl fmt =
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_typedecl _a1 pp_print_typedecl _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result52)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result51)
 and pp_print_type_constr fmt =
   function
   | `And (_a0,_a1,_a2) ->
@@ -338,7 +338,7 @@ and pp_print_type_constr fmt =
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result51)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result50)
 and pp_print_opt_type_constr fmt =
   function
   | `Some (_a0,_a1) ->
@@ -354,7 +354,7 @@ and pp_print_decl_param fmt =
       Format.fprintf fmt "@[<1>(`QuoteAny@ %a@ %a)@]" pp_print_loc _a0
         pp_print_position_flag _a1
   | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result49)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result48)
 and pp_print_decl_params fmt =
   function
   | `Quote (_a0,_a1,_a2) ->
@@ -367,7 +367,7 @@ and pp_print_decl_params fmt =
   | `Com (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_decl_params _a1 pp_print_decl_params _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result48)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result47)
 and pp_print_opt_decl_params fmt =
   function
   | `Some (_a0,_a1) ->
@@ -385,7 +385,7 @@ and pp_print_type_info fmt =
   | `TyEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyEq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_private_flag _a1 pp_print_ctyp _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result46)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result45)
 and pp_print_type_repr fmt =
   function
   | `Record (_a0,_a1) ->
@@ -394,7 +394,7 @@ and pp_print_type_repr fmt =
   | `Sum (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sum@ %a@ %a)@]" pp_print_loc _a0
         pp_print_or_ctyp _a1
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result45)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result44)
 and pp_print_name_ctyp fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -406,7 +406,7 @@ and pp_print_name_ctyp fmt =
   | `TyColMut (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TyColMut@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_ctyp _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result44)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result43)
 and pp_print_or_ctyp fmt =
   function
   | `Bar (_a0,_a1,_a2) ->
@@ -418,17 +418,17 @@ and pp_print_or_ctyp fmt =
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_ctyp _a2
-  | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result43)
+  | #auident as _a0 -> (pp_print_auident fmt _a0 :>'result42)
 and pp_print_of_ctyp fmt =
   function
   | `Of (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Of@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_vid _a1 pp_print_ctyp _a2
-  | #vid' as _a0 -> (pp_print_vid' fmt _a0 :>'result42)
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result42)
+  | #vid' as _a0 -> (pp_print_vid' fmt _a0 :>'result41)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result41)
 and pp_print_pat fmt =
   function
-  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result41)
+  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result40)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_pat _a2
@@ -444,11 +444,11 @@ and pp_print_pat fmt =
   | `Par (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result41)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result40)
   | `Record (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_pat _a1
-  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result41)
+  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result40)
   | `Alias (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_alident _a2
@@ -501,11 +501,11 @@ and pp_print_rec_pat fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_pat _a1 pp_print_rec_pat _a2
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result40)
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result40)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result39)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result39)
 and pp_print_exp fmt =
   function
-  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result39)
+  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result38)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1 pp_print_exp _a2
@@ -521,11 +521,11 @@ and pp_print_exp fmt =
   | `Par (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result39)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result38)
   | `Record (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_exp _a1
-  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result39)
+  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result38)
   | `RecordWith (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecordWith@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_exp _a1 pp_print_exp _a2
@@ -646,11 +646,11 @@ and pp_print_rec_exp fmt =
   | `RecBind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ident _a1 pp_print_exp _a2
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result38)
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result38)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result37)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result37)
 and pp_print_mtyp fmt =
   function
-  | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result37)
+  | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result36)
   | `Sig (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc _a0
         pp_print_sigi _a1
@@ -664,7 +664,7 @@ and pp_print_mtyp fmt =
   | `ModuleTypeOf (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc _a0
         pp_print_mexp _a1
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result37)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result36)
 and pp_print_sigi fmt =
   function
   | `Val (_a0,_a1,_a2) ->
@@ -688,9 +688,6 @@ and pp_print_sigi fmt =
   | `Module (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_mtyp _a2
-  | `ModuleApp (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`ModuleApp@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_mtbind _a2 pp_print_mtyp _a3
   | `ModuleTypeEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1
@@ -715,16 +712,19 @@ and pp_print_sigi fmt =
   | `RecModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_mbind _a1
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result36)
-and pp_print_mtbind fmt =
-  function
-  | `App (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_mtbind _a1 pp_print_mtbind _a2
-  | `Col (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Col@ %a@ %a)@]" pp_print_auident _a0
-        pp_print_mtyp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result35)
+and pp_print_mbind fmt =
+  function
+  | `And (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_mbind _a1 pp_print_mbind _a2
+  | `ModuleBind (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mexp _a3
+  | `Constraint (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_auident _a1 pp_print_mtyp _a2
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result34)
 and pp_print_constr fmt =
   function
   | `TypeEq (_a0,_a1,_a2) ->
@@ -745,7 +745,7 @@ and pp_print_constr fmt =
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_constr _a1 pp_print_constr _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result34)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result33)
 and pp_print_binding fmt =
   function
   | `And (_a0,_a1,_a2) ->
@@ -754,18 +754,6 @@ and pp_print_binding fmt =
   | `Bind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_exp _a2
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result33)
-and pp_print_mbind fmt =
-  function
-  | `And (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_mbind _a1 pp_print_mbind _a2
-  | `ModuleBind (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mexp _a3
-  | `Constraint (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_mtyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result32)
 and pp_print_case fmt =
   function
@@ -882,25 +870,25 @@ and pp_print_cltyp fmt =
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result28)
 and pp_print_clsigi fmt =
   function
-  | `Eq (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_clsigi _a1 pp_print_clsigi _a2
   | `SigInherit (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" pp_print_loc _a0
         pp_print_cltyp _a1
-  | `Method (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
   | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
       Format.fprintf fmt "@[<1>(`CgVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_mutable_flag _a2
         pp_print_virtual_flag _a3 pp_print_ctyp _a4
-  | `CgVir (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `Method (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
+  | `VirMeth (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
+  | `Eq (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1 pp_print_ctyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result27)
 and pp_print_clexp fmt =
   function
@@ -970,8 +958,8 @@ and pp_print_cstru fmt =
       Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_override_flag _a2
         pp_print_mutable_flag _a3 pp_print_exp _a4
-  | `CrVir (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `VirMeth (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
   | `CrVvr (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -980,7 +968,7 @@ and pp_print_cstru fmt =
 
 let rec pp_print_ep fmt =
   function
-  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result58)
+  | #vid as _a0 -> (pp_print_vid fmt _a0 :>'result57)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ep _a1 pp_print_ep _a2
@@ -996,7 +984,7 @@ let rec pp_print_ep fmt =
   | `Par (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Par@ %a@ %a)@]" pp_print_loc _a0 pp_print_ep
         _a1
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result58)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result57)
   | `ArrayEmpty _a0 ->
       Format.fprintf fmt "@[<1>(`ArrayEmpty@ %a)@]" pp_print_loc _a0
   | `Array (_a0,_a1) ->
@@ -1005,7 +993,7 @@ let rec pp_print_ep fmt =
   | `Record (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Record@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_bind _a1
-  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result58)
+  | #literal as _a0 -> (pp_print_literal fmt _a0 :>'result57)
 and pp_print_rec_bind fmt =
   function
   | `RecBind (_a0,_a1,_a2) ->
@@ -1014,8 +1002,8 @@ and pp_print_rec_bind fmt =
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_bind _a1 pp_print_rec_bind _a2
-  | #any as _a0 -> (pp_print_any fmt _a0 :>'result57)
-  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result57)
+  | #any as _a0 -> (pp_print_any fmt _a0 :>'result56)
+  | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result56)
 
 class print =
   object (self : 'self_type)
@@ -1721,9 +1709,6 @@ class print =
         | `Module (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc _a0
               self#auident _a1 self#mtyp _a2
-        | `ModuleApp (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`ModuleApp@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#auident _a1 self#mtbind _a2 self#mtyp _a3
         | `ModuleTypeEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeEnd@ %a@ %a)@]" self#loc _a0
               self#auident _a1
@@ -1749,15 +1734,18 @@ class print =
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
               self#mbind _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method mtbind : 'fmt -> mtbind -> unit=
+    method mbind : 'fmt -> mbind -> unit=
       fun fmt  ->
         function
-        | `App (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
-              self#mtbind _a1 self#mtbind _a2
-        | `Col (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Col@ %a@ %a)@]" self#auident _a0
-              self#mtyp _a1
+        | `And (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
+              self#mbind _a1 self#mbind _a2
+        | `ModuleBind (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
+              self#loc _a0 self#auident _a1 self#mtyp _a2 self#mexp _a3
+        | `Constraint (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
+              _a0 self#auident _a1 self#mtyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method constr : 'fmt -> constr -> unit=
       fun fmt  ->
@@ -1790,19 +1778,6 @@ class print =
         | `Bind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#exp _a2
-        | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method mbind : 'fmt -> mbind -> unit=
-      fun fmt  ->
-        function
-        | `And (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#mbind _a1 self#mbind _a2
-        | `ModuleBind (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#auident _a1 self#mtyp _a2 self#mexp _a3
-        | `Constraint (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#mtyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method case : 'fmt -> case -> unit=
       fun fmt  ->
@@ -1925,25 +1900,25 @@ class print =
     method clsigi : 'fmt -> clsigi -> unit=
       fun fmt  ->
         function
-        | `Eq (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#clsigi _a1 self#clsigi _a2
         | `SigInherit (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" self#loc _a0
               self#cltyp _a1
-        | `Method (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
         | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`CgVal@ %a@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#alident _a1 self#mutable_flag _a2
               self#virtual_flag _a3 self#ctyp _a4
-        | `CgVir (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#private_flag _a2 self#ctyp _a3
+        | `Method (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
+        | `VirMeth (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
+        | `Eq (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
+              self#ctyp _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method clexp : 'fmt -> clexp -> unit=
       fun fmt  ->
@@ -2016,9 +1991,9 @@ class print =
             Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#alident _a1 self#override_flag _a2
               self#mutable_flag _a3 self#exp _a4
-        | `CrVir (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CrVir@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#private_flag _a2 self#ctyp _a3
+        | `VirMeth (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
         | `CrVvr (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#mutable_flag _a2 self#ctyp _a3
@@ -2813,11 +2788,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#mtyp _a2 in `Module (_a0, _a1, _a2)
-      | `ModuleApp (_a0,_a1,_a2,_a3) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#auident _a1 in
-          let _a2 = self#mtbind _a2 in
-          let _a3 = self#mtyp _a3 in `ModuleApp (_a0, _a1, _a2, _a3)
       | `ModuleTypeEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in `ModuleTypeEnd (_a0, _a1)
@@ -2846,16 +2816,22 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#mbind _a1 in `RecModule (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>sigi)
-    method mtbind : mtbind -> mtbind=
+    method mbind : mbind -> mbind=
       function
-      | `App (_a0,_a1,_a2) ->
+      | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#mtbind _a1 in
-          let _a2 = self#mtbind _a2 in `App (_a0, _a1, _a2)
-      | `Col (_a0,_a1) ->
-          let _a0 = self#auident _a0 in
-          let _a1 = self#mtyp _a1 in `Col (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>mtbind)
+          let _a1 = self#mbind _a1 in
+          let _a2 = self#mbind _a2 in `And (_a0, _a1, _a2)
+      | `ModuleBind (_a0,_a1,_a2,_a3) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#auident _a1 in
+          let _a2 = self#mtyp _a2 in
+          let _a3 = self#mexp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
+      | `Constraint (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#auident _a1 in
+          let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>mbind)
     method constr : constr -> constr=
       function
       | `TypeEq (_a0,_a1,_a2) ->
@@ -2894,22 +2870,6 @@ class map =
           let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in `Bind (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>binding)
-    method mbind : mbind -> mbind=
-      function
-      | `And (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#mbind _a1 in
-          let _a2 = self#mbind _a2 in `And (_a0, _a1, _a2)
-      | `ModuleBind (_a0,_a1,_a2,_a3) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#auident _a1 in
-          let _a2 = self#mtyp _a2 in
-          let _a3 = self#mexp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
-      | `Constraint (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#auident _a1 in
-          let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>mbind)
     method case : case -> case=
       function
       | `Bar (_a0,_a1,_a2) ->
@@ -3047,10 +3007,6 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>cltyp)
     method clsigi : clsigi -> clsigi=
       function
-      | `Eq (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in
-          let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#clsigi _a1 in
@@ -3058,22 +3014,26 @@ class map =
       | `SigInherit (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#cltyp _a1 in `SigInherit (_a0, _a1)
-      | `Method (_a0,_a1,_a2,_a3) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#alident _a1 in
-          let _a2 = self#private_flag _a2 in
-          let _a3 = self#ctyp _a3 in `Method (_a0, _a1, _a2, _a3)
       | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#mutable_flag _a2 in
           let _a3 = self#virtual_flag _a3 in
           let _a4 = self#ctyp _a4 in `CgVal (_a0, _a1, _a2, _a3, _a4)
-      | `CgVir (_a0,_a1,_a2,_a3) ->
+      | `Method (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#private_flag _a2 in
-          let _a3 = self#ctyp _a3 in `CgVir (_a0, _a1, _a2, _a3)
+          let _a3 = self#ctyp _a3 in `Method (_a0, _a1, _a2, _a3)
+      | `VirMeth (_a0,_a1,_a2,_a3) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#private_flag _a2 in
+          let _a3 = self#ctyp _a3 in `VirMeth (_a0, _a1, _a2, _a3)
+      | `Eq (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#ctyp _a1 in
+          let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>clsigi)
     method clexp : clexp -> clexp=
       function
@@ -3165,11 +3125,11 @@ class map =
           let _a2 = self#override_flag _a2 in
           let _a3 = self#mutable_flag _a3 in
           let _a4 = self#exp _a4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
-      | `CrVir (_a0,_a1,_a2,_a3) ->
+      | `VirMeth (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#private_flag _a2 in
-          let _a3 = self#ctyp _a3 in `CrVir (_a0, _a1, _a2, _a3)
+          let _a3 = self#ctyp _a3 in `VirMeth (_a0, _a1, _a2, _a3)
       | `CrVvr (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3726,10 +3686,6 @@ class fold =
       | `Module (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
-      | `ModuleApp (_a0,_a1,_a2,_a3) ->
-          let self = self#loc _a0 in
-          let self = self#auident _a1 in
-          let self = self#mtbind _a2 in self#mtyp _a3
       | `ModuleTypeEnd (_a0,_a1) ->
           let self = self#loc _a0 in self#auident _a1
       | `ModuleType (_a0,_a1,_a2) ->
@@ -3747,12 +3703,18 @@ class fold =
       | `Include (_a0,_a1) -> let self = self#loc _a0 in self#mtyp _a1
       | `RecModule (_a0,_a1) -> let self = self#loc _a0 in self#mbind _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method mtbind : mtbind -> 'self_type=
+    method mbind : mbind -> 'self_type=
       function
-      | `App (_a0,_a1,_a2) ->
+      | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#mtbind _a1 in self#mtbind _a2
-      | `Col (_a0,_a1) -> let self = self#auident _a0 in self#mtyp _a1
+          let self = self#mbind _a1 in self#mbind _a2
+      | `ModuleBind (_a0,_a1,_a2,_a3) ->
+          let self = self#loc _a0 in
+          let self = self#auident _a1 in
+          let self = self#mtyp _a2 in self#mexp _a3
+      | `Constraint (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#auident _a1 in self#mtyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method constr : constr -> 'self_type=
       function
@@ -3782,19 +3744,6 @@ class fold =
           let self = self#binding _a1 in self#binding _a2
       | `Bind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
-      | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method mbind : mbind -> 'self_type=
-      function
-      | `And (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#mbind _a1 in self#mbind _a2
-      | `ModuleBind (_a0,_a1,_a2,_a3) ->
-          let self = self#loc _a0 in
-          let self = self#auident _a1 in
-          let self = self#mtyp _a2 in self#mexp _a3
-      | `Constraint (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#auident _a1 in self#mtyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method case : case -> 'self_type=
       function
@@ -3886,26 +3835,26 @@ class fold =
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method clsigi : clsigi -> 'self_type=
       function
-      | `Eq (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#clsigi _a1 in self#clsigi _a2
       | `SigInherit (_a0,_a1) -> let self = self#loc _a0 in self#cltyp _a1
-      | `Method (_a0,_a1,_a2,_a3) ->
-          let self = self#loc _a0 in
-          let self = self#alident _a1 in
-          let self = self#private_flag _a2 in self#ctyp _a3
       | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#mutable_flag _a2 in
           let self = self#virtual_flag _a3 in self#ctyp _a4
-      | `CgVir (_a0,_a1,_a2,_a3) ->
+      | `Method (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
+      | `VirMeth (_a0,_a1,_a2,_a3) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in
+          let self = self#private_flag _a2 in self#ctyp _a3
+      | `Eq (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#ctyp _a1 in self#ctyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method clexp : clexp -> 'self_type=
       function
@@ -3974,7 +3923,7 @@ class fold =
           let self = self#alident _a1 in
           let self = self#override_flag _a2 in
           let self = self#mutable_flag _a3 in self#exp _a4
-      | `CrVir (_a0,_a1,_a2,_a3) ->
+      | `VirMeth (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
@@ -4028,50 +3977,50 @@ let strip_loc_rec_flag =
   function
   | `Recursive _a0 -> `Recursive
   | `ReNil _a0 -> `ReNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result244)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result240)
 
 let strip_loc_direction_flag =
   function
   | `To _a0 -> `To
   | `Downto _a0 -> `Downto
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result245)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result241)
 
 let strip_loc_mutable_flag =
   function
   | `Mutable _a0 -> `Mutable
   | `MuNil _a0 -> `MuNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result246)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result242)
 
 let strip_loc_private_flag =
   function
   | `Private _a0 -> `Private
   | `PrNil _a0 -> `PrNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result247)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result243)
 
 let strip_loc_virtual_flag =
   function
   | `Virtual _a0 -> `Virtual
   | `ViNil _a0 -> `ViNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result248)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result244)
 
 let strip_loc_override_flag =
   function
   | `Override _a0 -> `Override
   | `OvNil _a0 -> `OvNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result249)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result245)
 
 let strip_loc_row_var_flag =
   function
   | `RowVar _a0 -> `RowVar
   | `RvNil _a0 -> `RvNil
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result250)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result246)
 
 let strip_loc_position_flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
   | `Normal _a0 -> `Normal
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result251)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result247)
 
 let rec strip_loc_strings =
   function
@@ -4079,27 +4028,27 @@ let rec strip_loc_strings =
       let _a1 = strip_loc_strings _a1 in
       let _a2 = strip_loc_strings _a2 in `App (_a1, _a2)
   | `Str (_a0,_a1) -> `Str _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result252)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result248)
 
 let strip_loc_alident =
   function
   | `Lid (_a0,_a1) -> `Lid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result253)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result249)
 
 let strip_loc_auident =
   function
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result254)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result250)
 
 let strip_loc_aident =
   function
-  | #alident as _a0 -> (strip_loc_alident _a0 :>'result255)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result255)
+  | #alident as _a0 -> (strip_loc_alident _a0 :>'result251)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result251)
 
 let strip_loc_astring =
   function
   | `C (_a0,_a1) -> `C _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result256)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result252)
 
 let rec strip_loc_uident =
   function
@@ -4109,7 +4058,7 @@ let rec strip_loc_uident =
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_uident _a1 in
       let _a2 = strip_loc_uident _a2 in `App (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result257)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result253)
 
 let rec strip_loc_ident =
   function
@@ -4119,8 +4068,8 @@ let rec strip_loc_ident =
   | `Apply (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_ident _a2 in `Apply (_a1, _a2)
-  | #alident as _a0 -> (strip_loc_alident _a0 :>'result258)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result258)
+  | #alident as _a0 -> (strip_loc_alident _a0 :>'result254)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result254)
 
 let strip_loc_ident' =
   function
@@ -4140,7 +4089,7 @@ let rec strip_loc_vid =
       let _a2 = strip_loc_vid _a2 in `Dot (_a1, _a2)
   | `Lid (_a0,_a1) -> `Lid _a1
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result260)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result256)
 
 let strip_loc_vid' =
   function
@@ -4155,14 +4104,14 @@ let rec strip_loc_dupath =
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_dupath _a1 in
       let _a2 = strip_loc_dupath _a2 in `Dot (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result262)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result258)
 
 let strip_loc_dlpath =
   function
   | `Dot (_a0,_a1,_a2) ->
       let _a1 = strip_loc_dupath _a1 in
       let _a2 = strip_loc_alident _a2 in `Dot (_a1, _a2)
-  | #alident as _a0 -> (strip_loc_alident _a0 :>'result263)
+  | #alident as _a0 -> (strip_loc_alident _a0 :>'result259)
 
 let strip_loc_any (`Any _a0) = `Any
 
@@ -4171,7 +4120,7 @@ let rec strip_loc_ctyp =
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>'result296)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result291)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `App (_a1, _a2)
@@ -4185,7 +4134,7 @@ let rec strip_loc_ctyp =
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `OptLabl (_a1, _a2)
-  | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result296)
+  | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result291)
   | `TyObj (_a0,_a1,_a2) ->
       let _a1 = strip_loc_name_ctyp _a1 in
       let _a2 = strip_loc_row_var_flag _a2 in `TyObj (_a1, _a2)
@@ -4217,17 +4166,17 @@ let rec strip_loc_ctyp =
       let _a1 = strip_loc_row_field _a1 in
       let _a2 = strip_loc_tag_names _a2 in `PolyInfSup (_a1, _a2)
   | `Package (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Package _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result296)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result291)
 and strip_loc_type_parameters =
   function
   | `Com (_a0,_a1,_a2) ->
       let _a1 = strip_loc_type_parameters _a1 in
       let _a2 = strip_loc_type_parameters _a2 in `Com (_a1, _a2)
   | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result295)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result290)
 and strip_loc_row_field =
   function
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result294)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result289)
   | `Bar (_a0,_a1,_a2) ->
       let _a1 = strip_loc_row_field _a1 in
       let _a2 = strip_loc_row_field _a2 in `Bar (_a1, _a2)
@@ -4238,7 +4187,7 @@ and strip_loc_row_field =
   | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
 and strip_loc_tag_names =
   function
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result293)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result288)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_tag_names _a1 in
       let _a2 = strip_loc_tag_names _a2 in `App (_a1, _a2)
@@ -4257,7 +4206,7 @@ and strip_loc_typedecl =
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_typedecl _a1 in
       let _a2 = strip_loc_typedecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result292)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result287)
 and strip_loc_type_constr =
   function
   | `And (_a0,_a1,_a2) ->
@@ -4266,7 +4215,7 @@ and strip_loc_type_constr =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result291)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result286)
 and strip_loc_opt_type_constr =
   function
   | `Some (_a0,_a1) -> let _a1 = strip_loc_type_constr _a1 in `Some _a1
@@ -4279,7 +4228,7 @@ and strip_loc_decl_param =
   | `QuoteAny (_a0,_a1) ->
       let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
   | `Any _a0 -> `Any
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result289)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result284)
 and strip_loc_decl_params =
   function
   | `Quote (_a0,_a1,_a2) ->
@@ -4291,7 +4240,7 @@ and strip_loc_decl_params =
   | `Com (_a0,_a1,_a2) ->
       let _a1 = strip_loc_decl_params _a1 in
       let _a2 = strip_loc_decl_params _a2 in `Com (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result288)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result283)
 and strip_loc_opt_decl_params =
   function
   | `Some (_a0,_a1) -> let _a1 = strip_loc_decl_params _a1 in `Some _a1
@@ -4308,12 +4257,12 @@ and strip_loc_type_info =
   | `TyEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_private_flag _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyEq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result286)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result281)
 and strip_loc_type_repr =
   function
   | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
   | `Sum (_a0,_a1) -> let _a1 = strip_loc_or_ctyp _a1 in `Sum _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result285)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result280)
 and strip_loc_name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -4325,7 +4274,7 @@ and strip_loc_name_ctyp =
   | `TyColMut (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result284)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result279)
 and strip_loc_or_ctyp =
   function
   | `Bar (_a0,_a1,_a2) ->
@@ -4337,17 +4286,17 @@ and strip_loc_or_ctyp =
   | `Of (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>'result283)
+  | #auident as _a0 -> (strip_loc_auident _a0 :>'result278)
 and strip_loc_of_ctyp =
   function
   | `Of (_a0,_a1,_a2) ->
       let _a1 = strip_loc_vid _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result282)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result282)
+  | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result277)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result277)
 and strip_loc_pat =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>'result281)
+  | #vid as _a0 -> (strip_loc_vid _a0 :>'result276)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_pat _a2 in `App (_a1, _a2)
@@ -4359,9 +4308,9 @@ and strip_loc_pat =
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_pat _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>'result281)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result276)
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_pat _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>'result281)
+  | #literal as _a0 -> (strip_loc_literal _a0 :>'result276)
   | `Alias (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
@@ -4403,11 +4352,11 @@ and strip_loc_rec_pat =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_pat _a1 in
       let _a2 = strip_loc_rec_pat _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>'result280)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result280)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result275)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result275)
 and strip_loc_exp =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>'result279)
+  | #vid as _a0 -> (strip_loc_vid _a0 :>'result274)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `App (_a1, _a2)
@@ -4419,9 +4368,9 @@ and strip_loc_exp =
       let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>'result279)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result274)
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>'result279)
+  | #literal as _a0 -> (strip_loc_literal _a0 :>'result274)
   | `RecordWith (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_exp _a1 in
       let _a2 = strip_loc_exp _a2 in `RecordWith (_a1, _a2)
@@ -4524,11 +4473,11 @@ and strip_loc_rec_exp =
   | `RecBind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_exp _a2 in `RecBind (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>'result278)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result278)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result273)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result273)
 and strip_loc_mtyp =
   function
-  | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result277)
+  | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result272)
   | `Sig (_a0,_a1) -> let _a1 = strip_loc_sigi _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
   | `Functor (_a0,_a1,_a2,_a3) ->
@@ -4540,7 +4489,7 @@ and strip_loc_mtyp =
       let _a2 = strip_loc_constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) ->
       let _a1 = strip_loc_mexp _a1 in `ModuleTypeOf _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result277)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result272)
 and strip_loc_sigi =
   function
   | `Val (_a0,_a1,_a2) ->
@@ -4557,10 +4506,6 @@ and strip_loc_sigi =
   | `Module (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in `Module (_a1, _a2)
-  | `ModuleApp (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtbind _a2 in
-      let _a3 = strip_loc_mtyp _a3 in `ModuleApp (_a1, _a2, _a3)
   | `ModuleTypeEnd (_a0,_a1) ->
       let _a1 = strip_loc_auident _a1 in `ModuleTypeEnd _a1
   | `ModuleType (_a0,_a1,_a2) ->
@@ -4577,16 +4522,20 @@ and strip_loc_sigi =
   | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
   | `Include (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Include _a1
   | `RecModule (_a0,_a1) -> let _a1 = strip_loc_mbind _a1 in `RecModule _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result276)
-and strip_loc_mtbind =
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result271)
+and strip_loc_mbind =
   function
-  | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mtbind _a1 in
-      let _a2 = strip_loc_mtbind _a2 in `App (_a1, _a2)
-  | `Col (_a0,_a1) ->
-      let _a0 = strip_loc_auident _a0 in
-      let _a1 = strip_loc_mtyp _a1 in `Col (_a0, _a1)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result275)
+  | `And (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_mbind _a1 in
+      let _a2 = strip_loc_mbind _a2 in `And (_a1, _a2)
+  | `ModuleBind (_a0,_a1,_a2,_a3) ->
+      let _a1 = strip_loc_auident _a1 in
+      let _a2 = strip_loc_mtyp _a2 in
+      let _a3 = strip_loc_mexp _a3 in `ModuleBind (_a1, _a2, _a3)
+  | `Constraint (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_auident _a1 in
+      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result270)
 and strip_loc_constr =
   function
   | `TypeEq (_a0,_a1,_a2) ->
@@ -4607,7 +4556,7 @@ and strip_loc_constr =
   | `And (_a0,_a1,_a2) ->
       let _a1 = strip_loc_constr _a1 in
       let _a2 = strip_loc_constr _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result274)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
 and strip_loc_binding =
   function
   | `And (_a0,_a1,_a2) ->
@@ -4616,20 +4565,7 @@ and strip_loc_binding =
   | `Bind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result273)
-and strip_loc_mbind =
-  function
-  | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mbind _a1 in
-      let _a2 = strip_loc_mbind _a2 in `And (_a1, _a2)
-  | `ModuleBind (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_mexp _a3 in `ModuleBind (_a1, _a2, _a3)
-  | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result272)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result268)
 and strip_loc_case =
   function
   | `Bar (_a0,_a1,_a2) ->
@@ -4642,10 +4578,10 @@ and strip_loc_case =
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in
       let _a3 = strip_loc_exp _a3 in `CaseWhen (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result271)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result267)
 and strip_loc_mexp =
   function
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result270)
+  | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result266)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_mexp _a1 in
       let _a2 = strip_loc_mexp _a2 in `App (_a1, _a2)
@@ -4660,7 +4596,7 @@ and strip_loc_mexp =
       let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) ->
       let _a1 = strip_loc_exp _a1 in `PackageModule _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result270)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result266)
 and strip_loc_stru =
   function
   | `Class (_a0,_a1) -> let _a1 = strip_loc_clexp _a1 in `Class _a1
@@ -4692,7 +4628,7 @@ and strip_loc_stru =
   | `Value (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in `Value (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result265)
 and strip_loc_cltyp =
   function
   | `ClassCon (_a0,_a1,_a2,_a3) ->
@@ -4720,30 +4656,30 @@ and strip_loc_cltyp =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_cltyp _a1 in
       let _a2 = strip_loc_cltyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result268)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result264)
 and strip_loc_clsigi =
   function
-  | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_clsigi _a1 in
       let _a2 = strip_loc_clsigi _a2 in `Sem (_a1, _a2)
   | `SigInherit (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `SigInherit _a1
-  | `Method (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_private_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `Method (_a1, _a2, _a3)
   | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_mutable_flag _a2 in
       let _a3 = strip_loc_virtual_flag _a3 in
       let _a4 = strip_loc_ctyp _a4 in `CgVal (_a1, _a2, _a3, _a4)
-  | `CgVir (_a0,_a1,_a2,_a3) ->
+  | `Method (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `CgVir (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result267)
+      let _a3 = strip_loc_ctyp _a3 in `Method (_a1, _a2, _a3)
+  | `VirMeth (_a0,_a1,_a2,_a3) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_private_flag _a2 in
+      let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
+  | `Eq (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_ctyp _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result263)
 and strip_loc_clexp =
   function
   | `CeApp (_a0,_a1,_a2) ->
@@ -4778,7 +4714,7 @@ and strip_loc_clexp =
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_clexp _a1 in
       let _a2 = strip_loc_clexp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result266)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result262)
 and strip_loc_cstru =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -4811,19 +4747,19 @@ and strip_loc_cstru =
       let _a2 = strip_loc_override_flag _a2 in
       let _a3 = strip_loc_mutable_flag _a3 in
       let _a4 = strip_loc_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
-  | `CrVir (_a0,_a1,_a2,_a3) ->
+  | `VirMeth (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `CrVir (_a1, _a2, _a3)
+      let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
   | `CrVvr (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_mutable_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CrVvr (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result265)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result261)
 
 let rec strip_loc_ep =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>'result298)
+  | #vid as _a0 -> (strip_loc_vid _a0 :>'result293)
   | `App (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ep _a1 in
       let _a2 = strip_loc_ep _a2 in `App (_a1, _a2)
@@ -4835,11 +4771,11 @@ let rec strip_loc_ep =
       let _a1 = strip_loc_ep _a1 in
       let _a2 = strip_loc_ep _a2 in `Sem (_a1, _a2)
   | `Par (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>'result298)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result293)
   | `ArrayEmpty _a0 -> `ArrayEmpty
   | `Array (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Array _a1
   | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_bind _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>'result298)
+  | #literal as _a0 -> (strip_loc_literal _a0 :>'result293)
 and strip_loc_rec_bind =
   function
   | `RecBind (_a0,_a1,_a2) ->
@@ -4848,8 +4784,8 @@ and strip_loc_rec_bind =
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_bind _a1 in
       let _a2 = strip_loc_rec_bind _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>'result297)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>'result297)
+  | #any as _a0 -> (strip_loc_any _a0 :>'result292)
+  | #ant as _a0 -> (strip_loc_ant _a0 :>'result292)
 
 let map_loc f =
   object  inherit  map as super method! loc x = f (super#loc x) end
@@ -5031,17 +4967,14 @@ let map_mtyp f =
 let map_sigi f =
   object  inherit  map as super method! sigi x = f (super#sigi x) end
 
-let map_mtbind f =
-  object  inherit  map as super method! mtbind x = f (super#mtbind x) end
+let map_mbind f =
+  object  inherit  map as super method! mbind x = f (super#mbind x) end
 
 let map_constr f =
   object  inherit  map as super method! constr x = f (super#constr x) end
 
 let map_binding f =
   object  inherit  map as super method! binding x = f (super#binding x) end
-
-let map_mbind f =
-  object  inherit  map as super method! mbind x = f (super#mbind x) end
 
 let map_case f =
   object  inherit  map as super method! case x = f (super#case x) end
@@ -5158,13 +5091,11 @@ let dump_mtyp = LibUtil.to_string_of_printer dump#mtyp
 
 let dump_sigi = LibUtil.to_string_of_printer dump#sigi
 
-let dump_mtbind = LibUtil.to_string_of_printer dump#mtbind
+let dump_mbind = LibUtil.to_string_of_printer dump#mbind
 
 let dump_constr = LibUtil.to_string_of_printer dump#constr
 
 let dump_binding = LibUtil.to_string_of_printer dump#binding
-
-let dump_mbind = LibUtil.to_string_of_printer dump#mbind
 
 let dump_case = LibUtil.to_string_of_printer dump#case
 

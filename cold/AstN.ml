@@ -143,19 +143,18 @@ and sigi =
   [ `Val of (alident * ctyp) | `External of (alident * ctyp * strings)
   | `Type of typedecl | `Exception of of_ctyp | `Class of cltyp
   | `ClassType of cltyp | `Module of (auident * mtyp)
-  | `ModuleApp of (auident * mtbind * mtyp) | `ModuleTypeEnd of auident
-  | `ModuleType of (auident * mtyp) | `Sem of (sigi * sigi)
-  | `DirectiveSimple of alident | `Directive of (alident * exp)
-  | `Open of ident | `Include of mtyp | `RecModule of mbind | ant] 
-and mtbind = [ `App of (mtbind * mtbind) | `Col of (auident * mtyp) | ant] 
+  | `ModuleTypeEnd of auident | `ModuleType of (auident * mtyp)
+  | `Sem of (sigi * sigi) | `DirectiveSimple of alident
+  | `Directive of (alident * exp) | `Open of ident | `Include of mtyp
+  | `RecModule of mbind | ant] 
+and mbind =
+  [ `And of (mbind * mbind) | `ModuleBind of (auident * mtyp * mexp)
+  | `Constraint of (auident * mtyp) | ant] 
 and constr =
   [ `TypeEq of (ctyp * ctyp) | `ModuleEq of (ident * ident)
   | `TypeEqPriv of (ctyp * ctyp) | `TypeSubst of (ctyp * ctyp)
   | `ModuleSubst of (ident * ident) | `And of (constr * constr) | ant] 
 and binding = [ `And of (binding * binding) | `Bind of (pat * exp) | ant] 
-and mbind =
-  [ `And of (mbind * mbind) | `ModuleBind of (auident * mtyp * mexp)
-  | `Constraint of (auident * mtyp) | ant] 
 and case =
   [ `Bar of (case * case) | `Case of (pat * exp)
   | `CaseWhen of (pat * exp * exp) | ant] 
@@ -179,10 +178,12 @@ and cltyp =
   | `And of (cltyp * cltyp) | `CtCol of (cltyp * cltyp)
   | `Eq of (cltyp * cltyp) | ant] 
 and clsigi =
-  [ `Eq of (ctyp * ctyp) | `Sem of (clsigi * clsigi) | `SigInherit of cltyp
-  | `Method of (alident * private_flag * ctyp)
+  [ `Sem of (clsigi * clsigi) | `SigInherit of cltyp
   | `CgVal of (alident * mutable_flag * virtual_flag * ctyp)
-  | `CgVir of (alident * private_flag * ctyp) | ant] 
+  | `Method of (alident * private_flag * ctyp)
+  | `VirMeth of (alident * private_flag * ctyp) | `Eq of (ctyp * ctyp) | 
+    ant]
+  
 and clexp =
   [ `CeApp of (clexp * exp)
   | `ClassCon of (virtual_flag * ident * type_parameters)
@@ -198,7 +199,7 @@ and cstru =
   | `CrMth of (alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (alident * override_flag * private_flag * exp)
   | `CrVal of (alident * override_flag * mutable_flag * exp)
-  | `CrVir of (alident * private_flag * ctyp)
+  | `VirMeth of (alident * private_flag * ctyp)
   | `CrVvr of (alident * mutable_flag * ctyp) | ant] 
 
 type ep =

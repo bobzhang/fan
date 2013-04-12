@@ -378,7 +378,11 @@ and sigi =
   | `ClassType of (loc * cltyp) (* class type cict *)
 
   | `Module of (loc * auident * mtyp) (* module s : mt *)
-  | `ModuleApp of (loc * auident * mtbind * mtyp)
+
+    (*
+      Support in parser [module_declaration]
+      | `ModuleApp of (loc * auident * mtbind * mtyp) *)
+        
   | `ModuleTypeEnd of (loc * auident)
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
 
@@ -392,10 +396,19 @@ and sigi =
   | `RecModule of (loc * mbind) (* module rec mb *)
         
   | ant  ]
+(*
 and mtbind =
   [= `App of (loc * mtbind * mtbind )
   | `Col of (auident * mtyp)
-  | ant ]      
+  | ant ]
+*)          
+and mbind =
+(* module rec (s : mt) = me and (s : mt) = me *)
+  [= `And of (loc * mbind * mbind)
+  | `ModuleBind  of (loc *  auident * mtyp * mexp) (* s : mt = me *)
+  | `Constraint  of (loc * auident * mtyp) (* s : mt *)
+  | ant ]
+          
 and constr =
   [=
    `TypeEq of (loc * ctyp * ctyp)
@@ -407,22 +420,14 @@ and constr =
   | `ModuleSubst of (loc * ident * ident)
   | `And of (loc * constr * constr)
   | ant  ]
-             (*
-    let-binding	::=	pattern =  exp  
-     value-name  { parameter }  [: typexp] =  exp  
-    value-name : type  { typeconstr } .  typexp =  exp
-    
+(* let-binding	::=	pattern =  exp  
+    value-name  { parameter }  [: typexp] =  exp  
+   value-name : type  { typeconstr } .  typexp =  exp
    *)           
 and binding =
   [=  `And of (loc * binding * binding)
   | `Bind  of (loc * pat * exp)
   | ant  ]
-and mbind =
-(* module rec (s : mt) = me and (s : mt) = me *)
-  [= `And of (loc * mbind * mbind)
-  | `ModuleBind  of (loc *  auident * mtyp * mexp) (* s : mt = me *)
-  | `Constraint  of (loc * auident * mtyp) (* s : mt *)
-  | ant ]
 and case =
   [= `Bar of (loc * case * case)
   | `Case of (loc * pat * exp)
@@ -461,11 +466,42 @@ and stru =
   | `Type of (loc * typedecl) (* type t *)
   | `Value of (loc * rec_flag * binding) (* value (rec)? bi *)
   | ant  ]
+
+(*
+  classtype-definition ::=
+    class type classtype-def {and classtype-def}
+  
+  classtype-def ::=
+    [virtual] [[type-parameters]] class-name = class-body-type
+
+  class-type ::=
+      class-body-type
+    | [[?]label-name:] typexpr -> class-type
+
+  class-body-type
+      ::= object [(typexpr)] {class-field-spec} end
+      | class-path
+      | [ typexpr {,typexpr} ] class-path
+
+
+
+  class_type_declaration:  virtual_flag class_type_parameters
+  LIDENT EQUAL  class_signature
+
+  class_signature:
+    LBRACKET core_type_comma_list RBRACKET clty_longident
+  | clty_longident
+  | OBJECT class_sig_body END
+  class_sig_body: class_self_type class_sig_fields
+ *)    
 and cltyp = (* class body type *)         
-  [= `ClassCon of
-    (loc * virtual_flag * ident *  type_parameters) (* (virtual)? i [ t ] *)
-  | `ClassConS of (loc * virtual_flag * ident) (* (virtual)? i *)
-  | `CtFun of (loc * ctyp * cltyp) (* [t] -> ct *)
+  [= 
+   `ClassCon of (loc * virtual_flag * ident *  type_parameters)
+       (* (virtual)? i [ t ] *)
+  | `ClassConS of (loc * virtual_flag * ident)
+        (* (virtual)? i *)
+  | `CtFun of (loc * ctyp * cltyp)
+        (* [t] -> ct *)
   | `ObjTy of (loc * ctyp * clsigi) (*object (ty) ..  end*)
   | `ObjTyEnd of (loc * ctyp) (*object (ty) end*)
   | `Obj of (loc * clsigi) (* object ... end *)
@@ -474,17 +510,36 @@ and cltyp = (* class body type *)
   | `CtCol of (loc * cltyp * cltyp) (* ct : ct *)
   | `Eq  of (loc * cltyp * cltyp) (* ct = ct *)
   | ant ]
+
+(* and clfun = [`Fun of (loc * ctyp * cltyp)]
+   class_signature:
+    LBRACKET core_type_comma_list RBRACKET clty_longident
+  | clty_longident
+  | OBJECT class_sig_body END
+  | OBJECT class_sig_body error
+   class-field-sec 
+   ::= inherit class-type
+   | val [mutable] [virtual] inst-var-name : typexpr
+   | method [private] method-name : poly-typeexpr
+   | method [private] virtual method-name : poly-typexpr
+   | constraint typeexpr = typeexpr 
+ *)
 and clsigi =
-  [= `Eq of (loc * ctyp * ctyp)
-  | `Sem of (loc * clsigi * clsigi)
+  [= 
+    `Sem of (loc * clsigi * clsigi)
   | `SigInherit of (loc * cltyp)
+
+        (* val (virtual)? (mutable)? s : t *)
+  | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
       (* method s : t or method private s : t *)
   | `Method of (loc * alident * private_flag * ctyp)
-      (* val (virtual)? (mutable)? s : t *)
-  | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
       (* method virtual (private)? s : t *)
-  | `CgVir of (loc *  alident * private_flag * ctyp)
+  | `VirMeth of (loc *  alident * private_flag * ctyp)
+  | `Eq of (loc * ctyp * ctyp)        
   | ant ]
+(* and clfieldi = *)
+(*   [= `InheritI of (loc * clsigi) *)
+(*   | ]       *)
 and clexp =
   [= `CeApp of (loc * clexp * exp)   (* ce e *)
   | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual v [t]*)
@@ -512,7 +567,7 @@ and cstru =
         (* value(!)? (mutable)? s = e *)
   | `CrVal of (loc *  alident * override_flag * mutable_flag * exp)
         (* method virtual (private)? s : t *)
-  | `CrVir of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * private_flag * ctyp)
         (* val virtual (mutable)? s : t *)
   | `CrVvr of (loc * alident * mutable_flag * ctyp)
   | ant  ]; 

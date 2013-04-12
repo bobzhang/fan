@@ -163,10 +163,9 @@ let apply () = begin
         | "("; S{mt}; ")" -> mt
         | "module"; "type"; "of"; mexp{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration: (* syntax sugar *)
-      (* { RA *)
-        [ ":"; mtyp{mt} -> mt
-        | "("; a_uident{i}; ":"; mtyp{t}; ")"; S{mt} ->
-            `Functor(_loc,i,t,mt)] (* } *)
+      [ ":"; mtyp{mt} -> mt
+      | "("; a_uident{i}; ":"; mtyp{t}; ")"; S{mt} ->
+          `Functor(_loc,i,t,mt)]
       mtyp_quot:
       [ mtyp{x} -> x  ]  |};
 
@@ -1008,7 +1007,7 @@ let apply () = begin
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                 (* poly_type *)ctyp{t} ->
                 match o with
-                [ {:override_flag@_||} -> `CrVir (_loc, l, pf, t)
+                [ {:override_flag@_||} -> `VirMeth (_loc, l, pf, t)
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);

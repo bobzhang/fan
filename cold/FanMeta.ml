@@ -1389,18 +1389,6 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "Module")), (self#loc _loc _a0))),
                      (self#auident _loc _a1))), (self#mtyp _loc _a2))
-        | `ModuleApp (_a0,_a1,_a2,_a3) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "ModuleApp")),
-                               (self#loc _loc _a0))),
-                          (self#auident _loc _a1))), (self#mtbind _loc _a2))),
-                (self#mtyp _loc _a3))
         | `ModuleTypeEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1454,21 +1442,37 @@ class meta =
                 (`App (_loc, (`Vrn (_loc, "RecModule")), (self#loc _loc _a0))),
                 (self#mbind _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method mtbind : 'loc -> mtbind -> ep=
+    method mbind : 'loc -> mbind -> ep=
       fun _loc  ->
         function
-        | `App (_a0,_a1,_a2) ->
+        | `And (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
-                     (self#mtbind _loc _a1))), (self#mtbind _loc _a2))
-        | `Col (_a0,_a1) ->
+                     (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
+                     (self#mbind _loc _a1))), (self#mbind _loc _a2))
+        | `ModuleBind (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Col")), (self#auident _loc _a0))),
-                (self#mtyp _loc _a1))
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "ModuleBind")),
+                               (self#loc _loc _a0))),
+                          (self#auident _loc _a1))), (self#mtyp _loc _a2))),
+                (self#mexp _loc _a3))
+        | `Constraint (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "Constraint")),
+                          (self#loc _loc _a0))), (self#auident _loc _a1))),
+                (self#mtyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method constr : 'loc -> constr -> ep=
       fun _loc  ->
@@ -1542,38 +1546,6 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Bind")), (self#loc _loc _a0))),
                      (self#pat _loc _a1))), (self#exp _loc _a2))
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method mbind : 'loc -> mbind -> ep=
-      fun _loc  ->
-        function
-        | `And (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
-                     (self#mbind _loc _a1))), (self#mbind _loc _a2))
-        | `ModuleBind (_a0,_a1,_a2,_a3) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "ModuleBind")),
-                               (self#loc _loc _a0))),
-                          (self#auident _loc _a1))), (self#mtyp _loc _a2))),
-                (self#mexp _loc _a3))
-        | `Constraint (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Constraint")),
-                          (self#loc _loc _a0))), (self#auident _loc _a1))),
-                (self#mtyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method case : 'loc -> case -> ep=
       fun _loc  ->
@@ -1832,13 +1804,6 @@ class meta =
     method clsigi : 'loc -> clsigi -> ep=
       fun _loc  ->
         function
-        | `Eq (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
-                     (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1852,18 +1817,6 @@ class meta =
                 (`App
                    (_loc, (`Vrn (_loc, "SigInherit")), (self#loc _loc _a0))),
                 (self#cltyp _loc _a1))
-        | `Method (_a0,_a1,_a2,_a3) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "Method")),
-                               (self#loc _loc _a0))),
-                          (self#alident _loc _a1))),
-                     (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
         | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
@@ -1879,7 +1832,7 @@ class meta =
                                (self#alident _loc _a1))),
                           (self#mutable_flag _loc _a2))),
                      (self#virtual_flag _loc _a3))), (self#ctyp _loc _a4))
-        | `CgVir (_a0,_a1,_a2,_a3) ->
+        | `Method (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -1887,10 +1840,29 @@ class meta =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "CgVir")),
+                             (_loc, (`Vrn (_loc, "Method")),
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
                      (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
+        | `VirMeth (_a0,_a1,_a2,_a3) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "VirMeth")),
+                               (self#loc _loc _a0))),
+                          (self#alident _loc _a1))),
+                     (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
+        | `Eq (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
+                     (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method clexp : 'loc -> clexp -> ep=
       fun _loc  ->
@@ -2080,7 +2052,7 @@ class meta =
                                (self#alident _loc _a1))),
                           (self#override_flag _loc _a2))),
                      (self#mutable_flag _loc _a3))), (self#exp _loc _a4))
-        | `CrVir (_a0,_a1,_a2,_a3) ->
+        | `VirMeth (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -2088,7 +2060,7 @@ class meta =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "CrVir")),
+                             (_loc, (`Vrn (_loc, "VirMeth")),
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
                      (self#private_flag _loc _a2))), (self#ctyp _loc _a3))

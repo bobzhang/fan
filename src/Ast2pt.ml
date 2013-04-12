@@ -1198,7 +1198,7 @@ and class_info_cltyp (ci:cltyp) =
         [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
     | `CgVal (loc, `Lid(_,s), b, v, t) ->
         [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
-    | `CgVir (loc,`Lid(_,s),b,t) ->
+    | `VirMeth (loc,`Lid(_,s),b,t) ->
         [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
     | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) ]
 and clexp  (x:Ast.clexp) = match x with 
@@ -1263,7 +1263,7 @@ and clexp  (x:Ast.clexp) = match x with
         [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
     | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
         [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, exp e)) :: l]
-    | `CrVir (loc,`Lid(sloc,s),pf,t) ->
+    | `VirMeth (loc,`Lid(sloc,s),pf,t) ->
         [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
     | `CrVvr (loc,`Lid(sloc,s),mf,t) ->
         [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]

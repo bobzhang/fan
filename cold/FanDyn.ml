@@ -48,10 +48,9 @@ type 'a tag =
   | Rec_exp
   | Mtyp
   | Sigi
-  | Mtbind
+  | Mbind
   | Constr
   | Binding
-  | Mbind
   | Case
   | Mexp
   | Stru
@@ -107,10 +106,9 @@ let string_of_tag =
   | Rec_exp  -> "rec_exp"
   | Mtyp  -> "mtyp"
   | Sigi  -> "sigi"
-  | Mtbind  -> "mtbind"
+  | Mbind  -> "mbind"
   | Constr  -> "constr"
   | Binding  -> "binding"
-  | Mbind  -> "mbind"
   | Case  -> "case"
   | Mexp  -> "mexp"
   | Stru  -> "stru"
@@ -207,13 +205,11 @@ let mtyp_tag: mtyp tag = Mtyp
 
 let sigi_tag: sigi tag = Sigi
 
-let mtbind_tag: mtbind tag = Mtbind
+let mbind_tag: mbind tag = Mbind
 
 let constr_tag: constr tag = Constr
 
 let binding_tag: binding tag = Binding
-
-let mbind_tag: mbind tag = Mbind
 
 let case_tag: case tag = Case
 

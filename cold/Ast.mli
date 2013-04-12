@@ -147,13 +147,14 @@ and sigi =
   | `External of (loc * alident * ctyp * strings) | `Type of (loc * typedecl)
   | `Exception of (loc * of_ctyp) | `Class of (loc * cltyp)
   | `ClassType of (loc * cltyp) | `Module of (loc * auident * mtyp)
-  | `ModuleApp of (loc * auident * mtbind * mtyp)
   | `ModuleTypeEnd of (loc * auident) | `ModuleType of (loc * auident * mtyp)
   | `Sem of (loc * sigi * sigi) | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp) | `Open of (loc * ident)
   | `Include of (loc * mtyp) | `RecModule of (loc * mbind) | ant] 
-and mtbind =
-  [ `App of (loc * mtbind * mtbind) | `Col of (auident * mtyp) | ant] 
+and mbind =
+  [ `And of (loc * mbind * mbind)
+  | `ModuleBind of (loc * auident * mtyp * mexp)
+  | `Constraint of (loc * auident * mtyp) | ant] 
 and constr =
   [ `TypeEq of (loc * ctyp * ctyp) | `ModuleEq of (loc * ident * ident)
   | `TypeEqPriv of (loc * ctyp * ctyp) | `TypeSubst of (loc * ctyp * ctyp)
@@ -161,10 +162,6 @@ and constr =
   | ant] 
 and binding =
   [ `And of (loc * binding * binding) | `Bind of (loc * pat * exp) | ant] 
-and mbind =
-  [ `And of (loc * mbind * mbind)
-  | `ModuleBind of (loc * auident * mtyp * mexp)
-  | `Constraint of (loc * auident * mtyp) | ant] 
 and case =
   [ `Bar of (loc * case * case) | `Case of (loc * pat * exp)
   | `CaseWhen of (loc * pat * exp * exp) | ant] 
@@ -190,11 +187,11 @@ and cltyp =
   | `And of (loc * cltyp * cltyp) | `CtCol of (loc * cltyp * cltyp)
   | `Eq of (loc * cltyp * cltyp) | ant] 
 and clsigi =
-  [ `Eq of (loc * ctyp * ctyp) | `Sem of (loc * clsigi * clsigi)
-  | `SigInherit of (loc * cltyp)
-  | `Method of (loc * alident * private_flag * ctyp)
+  [ `Sem of (loc * clsigi * clsigi) | `SigInherit of (loc * cltyp)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
-  | `CgVir of (loc * alident * private_flag * ctyp) | ant] 
+  | `Method of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * private_flag * ctyp)
+  | `Eq of (loc * ctyp * ctyp) | ant] 
 and clexp =
   [ `CeApp of (loc * clexp * exp)
   | `ClassCon of (loc * virtual_flag * ident * type_parameters)
@@ -212,7 +209,7 @@ and cstru =
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (loc * alident * override_flag * private_flag * exp)
   | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
-  | `CrVir of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * private_flag * ctyp)
   | `CrVvr of (loc * alident * mutable_flag * ctyp) | ant] 
 type ep =
   [ vid | `App of (loc * ep * ep) | `Vrn of (loc * string)

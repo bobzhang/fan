@@ -1128,7 +1128,7 @@ and clsigi (c : clsigi) (l : class_type_field list) =
    | `CgVal (loc,`Lid (_,s),b,v,t) ->
        (mkctf loc (Pctf_val (s, (mkmutable b), (mkvirtual v), (ctyp t)))) ::
        l
-   | `CgVir (loc,`Lid (_,s),b,t) ->
+   | `VirMeth (loc,`Lid (_,s),b,t) ->
        (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
    | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) : class_type_field
                                                              list )
@@ -1205,7 +1205,7 @@ and cstru (c : cstru) l =
             ((with_loc s sloc), (mkmutable mf), (override_flag loc ov),
               (exp e))))
       :: l
-  | `CrVir (loc,`Lid (sloc,s),pf,t) ->
+  | `VirMeth (loc,`Lid (sloc,s),pf,t) ->
       (mkcf loc
          (Pcf_virt ((with_loc s sloc), (mkprivate pf), (mkpolytype (ctyp t)))))
       :: l
