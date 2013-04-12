@@ -163,7 +163,7 @@ and mexp =
   | `Struct of stru | `StructEnd | `Constraint of (mexp * mtyp)
   | `PackageModule of exp | ant] 
 and stru =
-  [ `Class of clexp | `ClassType of cltyp | `Sem of (stru * stru)
+  [ `Class of cldecl | `ClassType of cltyp | `Sem of (stru * stru)
   | `DirectiveSimple of alident | `Directive of (alident * exp)
   | `Exception of of_ctyp | `StExp of exp
   | `External of (alident * ctyp * strings) | `Include of mexp
@@ -184,14 +184,15 @@ and clsigi =
   | `VirMeth of (alident * private_flag * ctyp) | `Eq of (ctyp * ctyp) | 
     ant]
   
+and cldecl =
+  [ `ClDecl of (virtual_flag * ident * type_parameters * clexp)
+  | `ClDeclS of (virtual_flag * ident * clexp) | `And of (cldecl * cldecl)
+  | ant] 
 and clexp =
-  [ `CeApp of (clexp * exp)
-  | `ClassCon of (virtual_flag * ident * type_parameters)
-  | `ClassConS of (virtual_flag * ident) | `CeFun of (pat * clexp)
-  | `LetIn of (rec_flag * binding * clexp) | `Obj of cstru | `ObjEnd
-  | `ObjPat of (pat * cstru) | `ObjPatEnd of pat
-  | `Constraint of (clexp * cltyp) | `And of (clexp * clexp)
-  | `Eq of (clexp * clexp) | ant] 
+  [ `CeApp of (clexp * exp) | vid' | `ClApply of (vid * type_parameters)
+  | `CeFun of (pat * clexp) | `LetIn of (rec_flag * binding * clexp)
+  | `Obj of cstru | `ObjEnd | `ObjPat of (pat * cstru) | `ObjPatEnd of pat
+  | `Constraint of (clexp * cltyp) | ant] 
 and cstru =
   [ `Sem of (cstru * cstru) | `Eq of (ctyp * ctyp)
   | `Inherit of (override_flag * clexp)

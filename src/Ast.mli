@@ -445,7 +445,7 @@ and mexp =
   | `PackageModule of (loc * exp)
   | ant  ]
 and stru =
-  [= `Class of (loc * clexp) (* class cice *)
+  [= `Class of (loc * (* clexp *)cldecl) (* class cice *)
   | `ClassType of (loc * cltyp) (* class type cict *)
   | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
@@ -540,10 +540,16 @@ and clsigi =
 (* and clfieldi = *)
 (*   [= `InheritI of (loc * clsigi) *)
 (*   | ]       *)
+and cldecl =
+  [=
+   `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
+  | `ClDeclS of (loc * virtual_flag * ident * clexp )
+  | `And of (loc * cldecl * cldecl)
+  | ant ]      
 and clexp =
   [= `CeApp of (loc * clexp * exp)   (* ce e *)
-  | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual v [t]*)
-  | `ClassConS of (loc * virtual_flag * ident) (* virtual v *)
+  | vid' (* class-path*)
+  | `ClApply of (loc * vid * type_parameters)
   | `CeFun of (loc * pat * clexp) (* fun p -> ce *)
   | `LetIn of (loc * rec_flag * binding * clexp) (* let (rec)? bi in ce *)
   | `Obj of (loc  * cstru) (* object ((p))? (cst)? end *)
@@ -551,8 +557,6 @@ and clexp =
   | `ObjPat of (loc * pat * cstru)(*object (p) .. end*)
   | `ObjPatEnd of (loc * pat) (* object (p) end*)
   | `Constraint of (loc * clexp * cltyp) (* ce : ct *)
-  | `And of (loc * clexp * clexp)
-  | `Eq  of (loc * clexp * clexp)
   | ant ]
 and cstru =
   [=

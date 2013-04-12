@@ -1146,9 +1146,10 @@ and cltyp (x:Ast.cltyp) = match x with
       mkcty loc (Pcty_signature {pcsig_self = ctyp t; pcsig_fields = cil; pcsig_loc =  loc;})
   |  x -> errorf (loc_of x) "class type: %s" (dump_cltyp x) ]
       
-and class_info_clexp (ci:clexp) =
+and class_info_clexp (ci:cldecl) =
   match ci with 
-  [ `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ce) ->
+  [ (`ClDecl(loc,vir,`Lid(nloc,name),params,ce) : cldecl) -> 
+   (* `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ce) -> *)
     let (loc_params, (params, variance)) =
       (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
@@ -1157,14 +1158,15 @@ and class_info_clexp (ci:clexp) =
          pci_expr = clexp ce;
          pci_loc =  loc;
          pci_variance = variance}
-  | `Eq(_loc,`ClassConS(loc,vir,`Lid(nloc,name)),ce) ->
+  | `ClDeclS(loc,vir,`Lid(nloc,name),ce) -> 
+  (* | `Eq(_loc,`ClassConS(loc,vir,`Lid(nloc,name)),ce) -> *)
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
          pci_expr = clexp ce;
          pci_loc =  loc;
          pci_variance = []}
-  | ce -> errorf  (loc_of ce) "class_info_clexp: %s" (dump_clexp ce) ]
+  | ce -> errorf  (loc_of ce) "class_info_clexp: %s" (dump_cldecl ce) ]
 and class_info_cltyp (ci:cltyp) =
   match ci with 
   [ `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct)
@@ -1202,21 +1204,28 @@ and class_info_cltyp (ci:cltyp) =
         [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
     | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) ]
 and clexp  (x:Ast.clexp) = match x with 
-  [ `CeApp (loc, _, _) as c ->
-      let rec view_app al =
-        function [ `CeApp (_loc,ce,a) -> view_app [a :: al] ce | ce -> (ce, al) ]in
+  [ (`CeApp (loc, _, _):clexp) as c ->
+      let rec view_app acc (x:clexp)  =
+        match x  with 
+        [ (`CeApp (_loc,ce,(a:exp)) :clexp) -> view_app [a :: acc] ce
+        | ce -> (ce, acc) ]in
       let (ce, el) = view_app [] c in
       let el = List.map label_exp el in
       mkcl loc (Pcl_apply (clexp ce) el)
-  | `ClassCon (loc, `ViNil _, id,tl) ->
+
+  | ( `ClApply (loc,id,tl):clexp) -> 
+  (* | `ClassCon (loc, `ViNil _, id,tl) -> *)
       mkcl loc
-        (Pcl_constr (long_class_ident id)
+        (Pcl_constr (long_class_ident (id:>ident))
            (List.map (
             fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false])
               (list_of_com tl [])))
-  | `ClassConS(loc,`ViNil _, id) ->
-      mkcl loc
-        (Pcl_constr (long_class_ident id) [])
+        
+  | #vid' as id  ->
+      let _loc = loc_of id in 
+  (* | `ClassConS(loc,`ViNil _, id) -> *)
+      mkcl _loc
+        (Pcl_constr (long_class_ident (id : vid' :>ident)) [])
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
         (Pcl_fun lab None (pat po ) (clexp ce))

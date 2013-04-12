@@ -1032,29 +1032,35 @@ let apply () = begin
       class_declaration:
       [ S{c1}; "and"; S{c2} -> `And(_loc,c1,c2)
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
+      (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag *)
       | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_binding{ce}
-        -> `Eq(_loc, `ClassCon(_loc,mv,(i:>ident),x),ce)
+        -> `ClDecl(_loc,mv,(i:>ident),x,ce)
+          (* `Eq(_loc, `ClassCon(_loc,mv,(i:>ident),x),ce) *)
       | opt_virtual{mv}; a_lident{i}; class_fun_binding{ce} ->
-          `Eq(_loc, `ClassConS(_loc,mv, (i:>ident)),ce)            ]
+          `ClDeclS(_loc,mv,(i:>ident),ce)
+          (* `Eq(_loc, `ClassConS(_loc,mv, (i:>ident)),ce)           *)  ]
       class_fun_binding:
       [ "="; clexp{ce} -> ce
       | ":"; cltyp_plus{ct}; "="; clexp{ce} -> `Constraint(_loc,ce,ct)
-      | ipat{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
+      | ipat{p}; S{cfb} -> `CeFun (_loc, p, cfb)  ]
       class_fun_def:
-      [ ipat{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; clexp{ce} -> ce ]
+      [ ipat{p}; S{ce} -> `CeFun(_loc,p,ce)
+      | "->"; clexp{ce} -> ce ]
       clexp:
       { "top"
-          [ "fun"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
-          | "function"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
+          [ "fun"; ipat{p}; class_fun_def{ce} ->  `CeFun (_loc, p, ce)
+          | "function"; ipat{p}; class_fun_def{ce} -> `CeFun (_loc, p, ce)
           | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
         "apply" NA
-          [ S{ce}; exp Level "label"{e} -> {| $ce $e |} ]
+          [ S{ce}; exp Level "label"{e} -> `CeApp (_loc, ce, e) ]
         "simple"
           [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"clexp" n s
           | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
-          |class_longident{ci}; "["; comma_ctyp{t}; "]" -> `ClassCon (_loc, `ViNil _loc, ci, t)
-          | class_longident{ci} -> `ClassConS(_loc,`ViNil _loc,ci)
+          | vid(* class_longident *){ci}; "["; comma_ctyp{t}; "]" ->
+              `ClApply(_loc,ci,t)
+              (* `ClassCon (_loc, `ViNil _loc, ci, t) *)
+          | vid (* class_longident *){ci} -> (ci :>clexp)
+              (* `ClassConS(_loc,`ViNil _loc,ci) *)
           | "object"; "("; pat{p}; ")" ; class_structure{cst};"end" ->
               `ObjPat(_loc,p,cst)
           | "object"; "("; pat{p}; ")" ;"end" ->
@@ -1108,7 +1114,8 @@ let apply () = begin
       | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
       | "object"; "end" -> `ObjEnd(_loc)]
       cltyp_longident_and_param:
-      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" -> `ClassCon (_loc, `ViNil _loc, i, t)
+      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" ->
+        `ClassCon (_loc, `ViNil _loc, i, t)
       | cltyp_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
 end;
 

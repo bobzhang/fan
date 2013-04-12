@@ -60,7 +60,7 @@ module type Syntax = sig
   val binding : Gram.t binding;
   val binding_quot : Gram.t binding;
   val rec_exp_quot : Gram.t rec_exp;
-  val class_declaration : Gram.t clexp;
+  val class_declaration : Gram.t cldecl(* clexp *);
   val class_description : Gram.t cltyp;
   val clexp : Gram.t clexp;
   val clexp_quot : Gram.t clexp;

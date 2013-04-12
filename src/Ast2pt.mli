@@ -129,7 +129,7 @@ val mexp : mexp -> Parsetree.module_expr
 
 val cltyp : cltyp -> Parsetree.class_type
 
-val class_info_clexp : clexp -> Parsetree.class_declaration
+val class_info_clexp : cldecl(* clexp *) -> Parsetree.class_declaration
 
 val class_info_cltyp : cltyp -> Parsetree.class_description
 
