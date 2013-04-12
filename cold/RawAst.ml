@@ -114,87 +114,82 @@ and exp =
   | `Fun of (loc * case) | `IfThenElse of (loc * exp * exp * exp)
   | `IfThen of (loc * exp * exp) | `Label of (loc * alident * exp)
   | `Lazy of (loc * exp) | `LetIn of (loc * rec_flag * binding * exp)
-  | `LetModule of (loc * auident * module_exp * exp)
-  | `Match of (loc * exp * case) | `New of (loc * ident)
-  | `Obj of (loc * pat * cstru) | `OptLabl of (loc * alident * exp)
-  | `OvrInst of (loc * rec_exp) | `Seq of (loc * exp)
-  | `Send of (loc * exp * alident) | `StringDot of (loc * exp * exp)
-  | `Try of (loc * exp * case) | `Constraint of (loc * exp * ctyp)
+  | `LetModule of (loc * auident * mexp * exp) | `Match of (loc * exp * case)
+  | `New of (loc * ident) | `Obj of (loc * pat * cstru)
+  | `OptLabl of (loc * alident * exp) | `OvrInst of (loc * rec_exp)
+  | `Seq of (loc * exp) | `Send of (loc * exp * alident)
+  | `StringDot of (loc * exp * exp) | `Try of (loc * exp * case)
+  | `Constraint of (loc * exp * ctyp)
   | `Coercion of (loc * exp * ctyp * ctyp) | `While of (loc * exp * exp)
   | `LetOpen of (loc * ident * exp) | `LocalTypeFun of (loc * alident * exp)
-  | `Package_exp of (loc * module_exp)] 
+  | `Package_exp of (loc * mexp)] 
 and rec_exp =
   [ nil | `Sem of (loc * rec_exp * rec_exp) | `RecBind of (loc * ident * exp)
   | any | ant] 
 and mtyp =
   [ nil | sid | `MtFun of (loc * auident * mtyp * mtyp)
-  | `Sig of (loc * sig_item) | `With of (loc * mtyp * with_constr)
-  | `ModuleTypeOf of (loc * module_exp) | ant] 
-and sig_item =
-  [ nil | `Class of (loc * class_type) | `ClassType of (loc * class_type)
-  | `Sem of (loc * sig_item * sig_item) | `Directive of (loc * alident * exp)
+  | `Sig of (loc * sigi) | `With of (loc * mtyp * constr)
+  | `ModuleTypeOf of (loc * mexp) | ant] 
+and sigi =
+  [ nil | `Class of (loc * cltyp) | `ClassType of (loc * cltyp)
+  | `Sem of (loc * sigi * sigi) | `Directive of (loc * alident * exp)
   | `Exception of (loc * of_ctyp)
   | `External of (loc * alident * ctyp * string meta_list)
   | `Include of (loc * mtyp) | `Module of (loc * auident * mtyp)
-  | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * mtyp) | `Open of (loc * ident)
-  | `Type of (loc * typedecl) | `Val of (loc * alident * ctyp) | ant] 
-and with_constr =
+  | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
+  | `Open of (loc * ident) | `Type of (loc * typedecl)
+  | `Val of (loc * alident * ctyp) | ant] 
+and constr =
   [ nil | `TypeEq of (loc * ctyp * ctyp) | `TypeEqPriv of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident) | `TypeSubst of (loc * ctyp * ctyp)
-  | `ModuleSubst of (loc * ident * ident)
-  | `And of (loc * with_constr * with_constr) | ant] 
+  | `ModuleSubst of (loc * ident * ident) | `And of (loc * constr * constr)
+  | ant] 
 and binding =
   [ nil | `And of (loc * binding * binding) | `Bind of (loc * pat * exp)
   | ant] 
-and module_binding =
-  [ nil | `And of (loc * module_binding * module_binding)
-  | `ModuleBind of (loc * auident * mtyp * module_exp)
+and mbind =
+  [ nil | `And of (loc * mbind * mbind)
+  | `ModuleBind of (loc * auident * mtyp * mexp)
   | `Constraint of (loc * auident * mtyp) | ant] 
 and case =
   [ nil | `Bar of (loc * case * case) | `Case of (loc * pat * exp * exp)
   | ant] 
-and module_exp =
-  [ nil | sid | `App of (loc * module_exp * module_exp)
-  | `Functor of (loc * auident * mtyp * module_exp) | `Struct of (loc * stru)
-  | `Constraint of (loc * module_exp * mtyp) | `PackageModule of (loc * exp)
-  | ant] 
+and mexp =
+  [ nil | sid | `App of (loc * mexp * mexp)
+  | `Functor of (loc * auident * mtyp * mexp) | `Struct of (loc * stru)
+  | `Constraint of (loc * mexp * mtyp) | `PackageModule of (loc * exp) | 
+    ant]
+  
 and stru =
-  [ nil | `Class of (loc * class_exp) | `ClassType of (loc * class_type)
+  [ nil | `Class of (loc * clexp) | `ClassType of (loc * cltyp)
   | `Sem of (loc * stru * stru) | `Directive of (loc * alident * exp)
   | `Exception of (loc * of_ctyp) | `StExp of (loc * exp)
   | `External of (loc * alident * ctyp * string meta_list)
-  | `Include of (loc * module_exp) | `Module of (loc * auident * module_exp)
-  | `RecModule of (loc * module_binding)
-  | `ModuleType of (loc * auident * mtyp) | `Open of (loc * ident)
-  | `Type of (loc * typedecl) | `Value of (loc * rec_flag * binding) | 
-    ant]
-  
-and class_type =
+  | `Include of (loc * mexp) | `Module of (loc * auident * mexp)
+  | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
+  | `Open of (loc * ident) | `Type of (loc * typedecl)
+  | `Value of (loc * rec_flag * binding) | ant] 
+and cltyp =
   [ nil | `CtCon of (loc * virtual_flag * ident * type_parameters)
-  | `CtFun of (loc * ctyp * class_type)
-  | `CtSig of (loc * ctyp * class_sig_item)
-  | `And of (loc * class_type * class_type)
-  | `CtCol of (loc * class_type * class_type)
-  | `CtEq of (loc * class_type * class_type) | ant] 
-and class_sig_item =
-  [ nil | `Eq of (loc * ctyp * ctyp)
-  | `Sem of (loc * class_sig_item * class_sig_item)
-  | `SigInherit of (loc * class_type)
+  | `CtFun of (loc * ctyp * cltyp) | `CtSig of (loc * ctyp * clsigi)
+  | `And of (loc * cltyp * cltyp) | `CtCol of (loc * cltyp * cltyp)
+  | `CtEq of (loc * cltyp * cltyp) | ant] 
+and clsigi =
+  [ nil | `Eq of (loc * ctyp * ctyp) | `Sem of (loc * clsigi * clsigi)
+  | `SigInherit of (loc * cltyp)
   | `Method of (loc * alident * private_flag * ctyp)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
   | `CgVir of (loc * alident * private_flag * ctyp) | ant] 
-and class_exp =
-  [ nil | `CeApp of (loc * class_exp * exp)
+and clexp =
+  [ nil | `CeApp of (loc * clexp * exp)
   | `CeCon of (loc * virtual_flag * ident * type_parameters)
-  | `CeFun of (loc * pat * class_exp)
-  | `CeLet of (loc * rec_flag * binding * class_exp)
-  | `Obj of (loc * pat * cstru) | `CeTyc of (loc * class_exp * class_type)
-  | `And of (loc * class_exp * class_exp)
-  | `Eq of (loc * class_exp * class_exp) | ant] 
+  | `CeFun of (loc * pat * clexp)
+  | `CeLet of (loc * rec_flag * binding * clexp)
+  | `Obj of (loc * pat * cstru) | `CeTyc of (loc * clexp * cltyp)
+  | `And of (loc * clexp * clexp) | `Eq of (loc * clexp * clexp) | ant] 
 and cstru =
   [ nil | `Sem of (loc * cstru * cstru) | `Eq of (loc * ctyp * ctyp)
-  | `Inherit of (loc * override_flag * class_exp * alident meta_option)
+  | `Inherit of (loc * override_flag * clexp * alident meta_option)
   | `Initializer of (loc * exp)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrVal of (loc * alident * override_flag * mutable_flag * exp)

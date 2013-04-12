@@ -16,21 +16,21 @@ a_ident aident amp_ctyp and_ctyp case
   binding
   class_declaration
   class_description
-  class_exp class_fun_binding class_fun_def class_info_for_class_exp class_info_for_class_type
-  class_longident class_longident_and_param class_name_and_param class_sig_item class_signature
-  cstru class_structure class_type class_type_declaration
-  class_type_longident class_type_longident_and_param
-  class_type_plus comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
+  clexp class_fun_binding class_fun_def class_info_for_clexp class_info_for_cltyp
+  class_longident class_longident_and_param class_name_and_param clsigi class_signature
+  cstru class_structure cltyp cltyp_declaration
+  cltyp_longident cltyp_longident_and_param
+  cltyp_plus comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
   ctyp cvalue_binding direction_flag direction_flag_quot
   dummy eq_exp exp exp_eoi field_exp field_exp_list fun_binding
   fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
   label_pat_list label_pat label_longident
-  let_binding meth_list meth_decl module_binding
-  module_binding
-  module_binding0
-  module_exp  module_longident  module_longident_with_app  module_rec_declaration
+  let_binding meth_list meth_decl mbind
+  mbind
+  mbind0
+  mexp  module_longident  module_longident_with_app  module_rec_declaration
   mtyp    name_tags
   opt_class_self_pat
   opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot  (* opt_eq_ctyp *)
@@ -38,11 +38,11 @@ a_ident aident amp_ctyp and_ctyp case
   private_flag_quot  opt_rec  rec_flag_quot  opt_virtual  virtual_flag_quot  opt_override
   override_flag_quot  pat  pat_as_pat_opt  pat_eoi    (* poly_type *)
   row_field  sem_exp  sem_exp_for_list  sem_pat  sem_pat_for_list  semi  sequence
-  sig_item  sig_items  star_ctyp  stru  strus  top_phrase  (* type_constraint *)
+  sigi  sigis  star_ctyp  stru  strus  top_phrase  (* type_constraint *)
   type_declaration  type_ident_and_parameters  (* type_kind *)  type_longident  type_longident_and_parameters
-  type_parameter  type_parameters  typevars  val_longident  with_constr  exp_quot  pat_quot
-  ctyp_quot  stru_quot  sig_item_quot  cstru_quot  class_sig_item_quot  module_exp_quot
-  mtyp_quot  class_type_quot  class_exp_quot  with_constr_quot  binding_quot  rec_exp_quot
+  type_parameter  type_parameters  typevars  val_longident  constr  exp_quot  pat_quot
+  ctyp_quot  stru_quot  sigi_quot  cstru_quot  clsigi_quot  mexp_quot
+  mtyp_quot  cltyp_quot  clexp_quot  constr_quot  binding_quot  rec_exp_quot
   module_declaration
   type_info
   type_repr
@@ -58,7 +58,7 @@ a_ident aident amp_ctyp and_ctyp case
   (case_quot "quotation of case (try/match/function case)")
 
   module_longident_dot_lparen  sequence'  fun_def  
-  module_binding_quot ident_quot string_list     
+  mbind_quot ident_quot string_list     
   method_opt_override  value_val_opt_override  unquoted_typevars  lang with_exp_lang
   with_stru_lang
   (* for the grammar module *)  

@@ -60,16 +60,16 @@ let apply () = begin
     parser [< a = symb; 's >] -> kont a s
   end;
 
-  with module_exp'
+  with mexp'
   {:extend|
-      module_exp_quot:
-      [ module_exp{x} -> x]
-      module_binding0:
+      mexp_quot:
+      [ mexp{x} -> x]
+      mbind0:
       { RA
         [ "("; a_uident{m}; ":"; mtyp{mt}; ")"; S{mb} -> `Functor (_loc, m, mt, mb)
-        | ":"; mtyp{mt}; "="; module_exp{me} ->  `Constraint (_loc, me, mt)
-        | "="; module_exp{me} -> me  ] }
-      module_exp:
+        | ":"; mtyp{mt}; "="; mexp{me} ->  `Constraint (_loc, me, mt)
+        | "="; mexp{me} -> me  ] }
+      mexp:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; mtyp{t}; ")"; "->"; S{me} ->
              `Functor (_loc, i, t, me)
@@ -78,10 +78,10 @@ let apply () = begin
        "apply"
         [ S{me1}; S{me2} -> `App (_loc, me1, me2) ]
        "simple"
-        [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"module_exp" _loc n s
+        [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"mexp" _loc n s
         | `QUOTATION x ->
-            AstQuotation.expand _loc x FanDyn.module_exp_tag
-        | module_longident{i} -> (* `Id (_loc, (i : vid :>ident)) *) (i:>module_exp)
+            AstQuotation.expand _loc x FanDyn.mexp_tag
+        | module_longident{i} -> (* `Id (_loc, (i : vid :>ident)) *) (i:>mexp)
         | "("; S{me}; ":"; mtyp{mt}; ")" ->  `Constraint (_loc, me, mt)
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
@@ -89,39 +89,39 @@ let apply () = begin
              `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
              ] } |};
 
-  with module_binding'
+  with mbind'
       {:extend|
-        module_binding_quot:
+        mbind_quot:
         [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)
-        | `Ant (("module_binding"|"anti"|"" as n),s) ->
-            mk_anti _loc ~c:"module_binding" n s
+        | `Ant (("mbind"|"anti"|"" as n),s) ->
+            mk_anti _loc ~c:"mbind" n s
         | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt)
-        | a_uident{m}; ":"; mtyp{mt}; "="; module_exp{me} ->
+        | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} ->
             `ModuleBind(_loc,m,mt,me)]
-        module_binding:
+        mbind:
         [ S{b1}; "and"; S{b2} -> `And(_loc,b1,b2)
-        | `Ant (("module_binding"|"anti"|"list" |"" as n),s) ->
-            mk_anti _loc ~c:"module_binding" n s
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
-        | a_uident{m}; ":"; mtyp{mt}; "="; module_exp{me} ->
+        | `Ant (("mbind"|"anti"|"list" |"" as n),s) ->
+            mk_anti _loc ~c:"mbind" n s
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
+        | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} ->
             `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> `And(_loc,m1,m2)
-        | `Ant ((""|"module_binding"|"anti"|"list" as n),s) ->
-            mk_anti _loc ~c:"module_binding" n s
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.module_binding_tag
+        | `Ant ((""|"mbind"|"anti"|"list" as n),s) ->
+            mk_anti _loc ~c:"mbind" n s
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
         | a_uident{m}; ":"; mtyp{mt} ->
             `Constraint(_loc,m,mt) ] |};
 
-  with with_constr
+  with constr
       {:extend|
-        with_constr_quot:
-        [ with_constr{x} -> x   ]
-        with_constr: 
+        constr_quot:
+        [ constr{x} -> x   ]
+        constr: 
         [ S{wc1}; "and"; S{wc2} -> `And(_loc,wc1,wc2)
-        | `Ant ((""|"with_constr"|"anti"|"list" as n),s) ->
-            mk_anti _loc ~c:"with_constr" n s
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.with_constr_tag
+        | `Ant ((""|"constr"|"anti"|"list" as n),s) ->
+            mk_anti _loc ~c:"constr" n s
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.constr_tag
         | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
             `TypeEq (_loc, t1, t2)
         | "type"; type_longident_and_parameters{t1}; "="; "private"; ctyp{t2} ->
@@ -140,7 +140,7 @@ let apply () = begin
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
           `Functor(_loc,i,t,mt)]
         "with"
-        [ S{mt}; "with"; with_constr{wc} -> `With(_loc,mt,wc)]
+        [ S{mt}; "with"; constr{wc} -> `With(_loc,mt,wc)]
         "apply"
         [ S{mt1}; S{mt2} ->
           (* let app0 mt1 mt2 = *)
@@ -164,7 +164,7 @@ let apply () = begin
           acc0 mt1 mt2
           (* ModuleType.acc0 mt1 mt2 *) ] (*FIXME*)
         "sig"
-        [ "sig"; sig_items{sg}; "end" -> `Sig(_loc,sg)
+        [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)
         | "sig";"end" -> `SigEnd(_loc)]
        "simple"
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->
@@ -172,7 +172,7 @@ let apply () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mtyp_tag
         | module_longident_with_app{i} -> (* `Id(_loc,i) *) (i:ident:>mtyp) 
         | "("; S{mt}; ")" -> mt
-        | "module"; "type"; "of"; module_exp{me} -> `ModuleTypeOf(_loc,me)] }
+        | "module"; "type"; "of"; mexp{me} -> `ModuleTypeOf(_loc,me)] }
       module_declaration:
       { RA
         [ ":"; mtyp{mt} -> mt
@@ -181,16 +181,16 @@ let apply () = begin
       mtyp_quot:
       [ mtyp{x} -> x  ]  |};
 
-  with sig_item
+  with sigi
   {:extend|
-    sig_item_quot:
+    sigi_quot:
     [ "#"; a_lident{s} -> `DirectiveSimple(_loc,s)
     | "#"; a_lident{s}; exp{dp} -> `Directive(_loc,s,dp)
-    | sig_item{sg1}; ";"; S{sg2} -> `Sem(_loc,sg1,sg2)
-    | sig_item{sg} -> sg] 
-    sig_item:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  mk_anti _loc ~c:"sig_item" n s
-    | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.sig_item_tag
+    | sigi{sg1}; ";"; S{sg2} -> `Sem(_loc,sg1,sg2)
+    | sigi{sg} -> sg] 
+    sigi:
+    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  mk_anti _loc ~c:"sigi" n s
+    | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.sigi_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
         `External (_loc, i, t, sl)
@@ -203,19 +203,19 @@ let apply () = begin
     | "type"; type_declaration{t} -> `Type(_loc,t)
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
     | "class"; class_description{cd} ->    `Class(_loc,cd)
-    | "class"; "type"; class_type_declaration{ctd} ->  `ClassType(_loc,ctd) ]
+    | "class"; "type"; cltyp_declaration{ctd} ->  `ClassType(_loc,ctd) ]
     (* mli entrance *)    
     interf:
     [ "#"; a_lident{n};  ";;" ->
       ([ `DirectiveSimple(_loc,n) ],  Some _loc)
     | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
-    | sig_item{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | sigi{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
-    sig_items:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> mk_anti _loc  n ~c:"sig_item" s
+    sigis:
+    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> mk_anti _loc  n ~c:"sigi" s
     | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"; S{sg} ->
-         `Sem (_loc,  mk_anti _loc  n ~c:"sig_item" s, sg)
-    | L1 [ sig_item{sg}; ";" -> sg ]{l} -> sem_of_list l  ]
+         `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
+    | L1 [ sigi{sg}; ";" -> sg ]{l} -> sem_of_list l  ]
  |};
 
     with exp
@@ -282,7 +282,7 @@ let apply () = begin
         "top" RA
         [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
           `LetIn(_loc,r,bi,x)
-        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; S{e} ->
+        | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; S{e} ->
             `LetModule (_loc, m, mb, e)
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             `LetOpen (_loc, (i:vid :> ident), e)
@@ -427,9 +427,9 @@ let apply () = begin
         | "("; S{e}; ")" -> e
         | "begin"; sequence{seq}; "end" -> `Seq(_loc,seq)
         | "begin"; "end" -> {| () |}
-        | "("; "module"; module_exp{me}; ")" ->
+        | "("; "module"; mexp{me}; ")" ->
             `Package_exp (_loc, me)
-        | "("; "module"; module_exp{me}; ":"; mtyp{pt}; ")" ->
+        | "("; "module"; mexp{me}; ":"; mtyp{pt}; ")" ->
             `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
@@ -439,9 +439,9 @@ let apply () = begin
              (`LetTryInWith(_loc,r,bi,x,a))
        | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
            `LetIn (_loc, rf, bi, (`Seq (_loc, el)))
-       | "let"; "module"; a_uident{m}; module_binding0{mb}; "in";
+       | "let"; "module"; a_uident{m}; mbind0{mb}; "in";
            exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
-       | "let"; "module"; a_uident{m}; module_binding0{mb}; ";"; S{el} ->
+       | "let"; "module"; a_uident{m}; mbind0{mb}; ";"; S{el} ->
            `LetModule (_loc, m, mb, `Seq (_loc, el))
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            `LetOpen (_loc, (i: vid :> ident), e)
@@ -826,7 +826,7 @@ let apply () = begin
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
       | `Ant((""|"uid" as n),s); "."; S{l} -> {|$(mk_anti _loc ~c:"ident" n s).$l|} ]
       
-      class_type_longident: [ type_longident{x} -> x ]
+      cltyp_longident: [ type_longident{x} -> x ]
       val_longident:[ ident{x} -> x ]
       class_longident: [ label_longident{x} -> x ]
       
@@ -941,9 +941,9 @@ let apply () = begin
         (*     {| exception $t = $i |} *)
         | "external"; a_lident{i};":"; ctyp{t};"="; string_list{sl} ->
             `External (_loc, i, t, sl)
-        | "include"; module_exp{me} -> `Include(_loc,me)
-        | "module"; a_uident{i}; module_binding0{mb} -> `Module(_loc,i,mb)
-        | "module"; "rec"; module_binding{mb} -> `RecModule(_loc,mb)
+        | "include"; mexp{me} -> `Include(_loc,me)
+        | "module"; a_uident{i}; mbind0{mb} -> `Module(_loc,i,mb)
+        | "module"; "rec"; mbind{mb} -> `RecModule(_loc,mb)
         | "module"; "type"; a_uident{i}; "="; mtyp{mt} ->
             `ModuleType(_loc,i,mt)
         | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
@@ -954,7 +954,7 @@ let apply () = begin
             match bi with
             [ `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
             | _ -> `Value(_loc,r,bi) ]
-        | "let"; "module"; a_uident{m}; module_binding0{mb}; "in"; exp{e} ->
+        | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; exp{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
             let i = (i:vid :> ident) in 
@@ -962,7 +962,7 @@ let apply () = begin
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; exp{x}; "with"; case{a}
           -> `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
-        | "class"; "type"; class_type_declaration{ctd} ->
+        | "class"; "type"; cltyp_declaration{ctd} ->
             `ClassType (_loc, ctd)
         | `Ant ((""|"stri"|"anti"|"list" as n),s) ->
             mk_anti _loc ~c:"stru" n s
@@ -971,21 +971,21 @@ let apply () = begin
               (* this entry makes {| let $rec:r $bi in $x |} parsable *)
         ] }   |};
 
-  with class_sig_item
+  with clsigi
     {:extend|
-      class_sig_item_quot:
-      [ class_sig_item{x1}; ";"; S{x2} -> `Sem(_loc,x1,x2)
-      | class_sig_item{x} -> x]
+      clsigi_quot:
+      [ clsigi{x1}; ";"; S{x2} -> `Sem(_loc,x1,x2)
+      | clsigi{x} -> x]
       class_signature:
       [ `Ant ((""|"csg"|"anti"|"list" as n),s) ->
-        mk_anti _loc  ~c:"class_sig_item" n s
+        mk_anti _loc  ~c:"clsigi" n s
       | `Ant ((""|"csg"|"anti"|"list" as n),s);";"; S{csg} ->
-          {|$(mk_anti _loc ~c:"class_sig_item" n s); $csg |}
-      | L1 [ class_sig_item{csg};";" -> csg ]{l} -> sem_of_list l ]
-      class_sig_item:
-      [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"class_sig_item" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_sig_item_tag
-      | "inherit"; class_type{cs} -> `SigInherit(_loc,cs)
+          {|$(mk_anti _loc ~c:"clsigi" n s); $csg |}
+      | L1 [ clsigi{csg};";" -> csg ]{l} -> sem_of_list l ]
+      clsigi:
+      [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clsigi" n s
+      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clsigi_tag
+      | "inherit"; cltyp{cs} -> `SigInherit(_loc,cs)
 
       | "val"; opt_mutable{mf}; opt_virtual{mv};a_lident{l}; ":"; ctyp{t} ->
           {| val $mutable:mf $virtual:mv $l : $t |}
@@ -1004,9 +1004,9 @@ let apply () = begin
       cstru:
         [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cstru" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cstru_tag
-        | "inherit"; opt_override{o}; class_exp{ce}(* ; opt_as_lident{pb} *) ->
+        | "inherit"; opt_override{o}; clexp{ce}(* ; opt_as_lident{pb} *) ->
             `Inherit(_loc,o,ce)
-        | "inherit"; opt_override{o}; class_exp{ce}; "as"; a_lident{i} ->
+        | "inherit"; opt_override{o}; clexp{ce}; "as"; a_lident{i} ->
             `InheritAs(_loc,o,ce,i)
         | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_binding{e}
           ->
@@ -1037,33 +1037,33 @@ let apply () = begin
         | cstru{x} -> x]
     |};
     
-  with class_exp
+  with clexp
     {:extend|
-      class_exp_quot:
+      clexp_quot:
       [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
       | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
       (* | "virtual";   class_name_and_param{(i, ot)} -> *)
       (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
       (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
-      (*     let anti = `Ant (_loc,mk_anti ~c:"class_exp" n s) in *)
+      (*     let anti = `Ant (_loc,mk_anti ~c:"clexp" n s) in *)
       (*     `ClassCon (_loc, anti, i, ot) *)
-      | class_exp{x} -> x]
+      | clexp{x} -> x]
       class_declaration:
       [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
-      | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"class_exp" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_exp_tag
-      | class_info_for_class_exp{ci}; class_fun_binding{ce} -> {| $ci = $ce |} ]
+      | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
+      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
+      | class_info_for_clexp{ci}; class_fun_binding{ce} -> {| $ci = $ce |} ]
       class_fun_binding:
-      [ "="; class_exp{ce} -> ce
-      | ":"; class_type_plus{ct}; "="; class_exp{ce} -> `Constraint(_loc,ce,ct)
+      [ "="; clexp{ce} -> ce
+      | ":"; cltyp_plus{ct}; "="; clexp{ce} -> `Constraint(_loc,ce,ct)
       | ipat{p}; S{cfb} -> {| fun $p -> $cfb |}  ]
-      class_info_for_class_exp:
+      class_info_for_clexp:
       [ opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]" -> 
         `ClassCon(_loc,mv,(i:>ident),x)
       | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv, (i:>ident))]
       class_fun_def:
-      [ ipat{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; class_exp{ce} -> ce ]
-      class_exp:
+      [ ipat{p}; S{ce} -> {| fun $p -> $ce |}  | "->"; clexp{ce} -> ce ]
+      clexp:
       { "top"
           [ "fun"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
           | "function"; ipat{p}; class_fun_def{ce} -> {| fun $p -> $ce |}
@@ -1071,8 +1071,8 @@ let apply () = begin
         "apply" NA
           [ S{ce}; exp Level "label"{e} -> {| $ce $e |} ]
         "simple"
-          [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"class_exp" n s
-          | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_exp_tag
+          [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"clexp" n s
+          | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
           | class_longident_and_param{ce} -> ce
 
           | "object"; "("; pat{p}; ")" ; class_structure{cst};"end" ->
@@ -1085,7 +1085,7 @@ let apply () = begin
               `ObjPatEnd(_loc,`Constraint(_loc,p,t))
           | "object"; class_structure{cst};"end" -> `Obj(_loc,cst)
           | "object";"end" -> `ObjEnd(_loc)
-          | "("; S{ce}; ":"; class_type{ct}; ")" -> `Constraint(_loc,ce,ct)
+          | "("; S{ce}; ":"; cltyp{ct}; ")" -> `Constraint(_loc,ce,ct)
           | "("; S{ce}; ")" -> ce ] }
       class_longident_and_param:
       [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->
@@ -1093,25 +1093,25 @@ let apply () = begin
       | class_longident{ci} ->
           `ClassConS(_loc,`ViNil _loc,ci)
           (* {| $id:ci |} *)  ]  |};
-  with class_type
+  with cltyp
     {:extend|
       class_description:
       [ S{cd1}; "and"; S{cd2} -> `And(_loc,cd1,cd2)
       | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
-          mk_anti _loc ~c:"class_type" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_type_tag
-      | class_info_for_class_type{ci}; ":"; class_type_plus{ct} -> `CtCol (_loc, ci, ct)  ]
-      class_type_declaration:
+          mk_anti _loc ~c:"cltyp" n s
+      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
+      | class_info_for_cltyp{ci}; ":"; cltyp_plus{ct} -> `CtCol (_loc, ci, ct)  ]
+      cltyp_declaration:
       [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
-      | `Ant ((""|"typ"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"class_type" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_type_tag
-      | class_info_for_class_type{ci}; "="; class_type{ct} ->
+      | `Ant ((""|"typ"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cltyp" n s
+      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
+      | class_info_for_cltyp{ci}; "="; cltyp{ct} ->
           `Eq(_loc,ci,ct) ]
-      class_info_for_class_type:
+      class_info_for_cltyp:
       [ opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]" ->
         `ClassCon(_loc,mv,(i:>ident),x)
       | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv,(i:>ident))]
-      class_type_quot:
+      cltyp_quot:
       [ S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2)
       | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2)
       | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2)
@@ -1119,30 +1119,30 @@ let apply () = begin
       (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
           (* {| virtual $((i:>ident)) [ $ot ] |} (\* types *\) *)
       (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
-      (*     let anti = `Ant (_loc,mk_anti ~c:"class_type" n s) in *)
+      (*     let anti = `Ant (_loc,mk_anti ~c:"cltyp" n s) in *)
       (*     `ClassCon (_loc, anti, i, ot) *)
       | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
-          let anti = mk_anti _loc ~c:"class_type" n s in
+          let anti = mk_anti _loc ~c:"cltyp" n s in
           `ClassCon(_loc,anti,i,t)
       | `Ant (("virtual" as n),s); ident{i} ->
-          let anti = mk_anti _loc  ~c:"class_type" n s in
+          let anti = mk_anti _loc  ~c:"cltyp" n s in
           `ClassConS(_loc,anti,i)
-      | class_type_plus{x} -> x]
-      class_type_plus:
+      | cltyp_plus{x} -> x]
+      cltyp_plus:
       [ "["; ctyp{t}; "]"; "->"; S{ct} -> `CtFun(_loc,t,ct)
-      | class_type{ct} -> ct ]
-      class_type:
-      [ `Ant ((""|"ctyp"|"anti" as n),s) -> mk_anti _loc  ~c:"class_type" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.class_type_tag
-      | class_type_longident_and_param{ct} -> ct
+      | cltyp{ct} -> ct ]
+      cltyp:
+      [ `Ant ((""|"ctyp"|"anti" as n),s) -> mk_anti _loc  ~c:"cltyp" n s
+      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
+      | cltyp_longident_and_param{ct} -> ct
       | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `ObjTy(_loc,t,csg)
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
       | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
       | "object"; "end" -> `ObjEnd(_loc)]
-      class_type_longident_and_param:
-      [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
+      cltyp_longident_and_param:
+      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" ->
         `ClassCon (_loc, `ViNil _loc, i, t)
-      | class_type_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
+      | cltyp_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
 end;
 
 

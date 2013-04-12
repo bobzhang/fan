@@ -20,10 +20,10 @@ let app  mt1 mt2 =
      |	App of loc * ident* ident
      |	App of loc * exp * exp
    ]}
-   but for module_exp
+   but for mexp
    {[
      |	Id of loc * ident
-   |	App of loc * module_exp * module_exp
+   |	App of loc * mexp * mexp
    ]}
    since we require that for mtyp_app operation, only
    Id can be used as app operation.

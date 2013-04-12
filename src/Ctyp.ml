@@ -309,8 +309,8 @@ let is_recursive ty_dcl =
   detect patterns like [List.t int ] or [List.t]
   Here the order matters
   {[
-  ( {:sig_item| type 'a tbl  = Ident.tbl 'a |} |> fun
-    [ <:sig_item< type .$FanAst.TyDcl _loc _ _ x _ $. >>
+  ( {:sigi| type 'a tbl  = Ident.tbl 'a |} |> fun
+    [ <:sigi< type .$FanAst.TyDcl _loc _ _ x _ $. >>
      -> qualified_app_list x ]);
   Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
   ]}

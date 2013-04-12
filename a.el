@@ -44,17 +44,12 @@
 
 (setq v
       (hash-table/from-list
-       "TXmeta" "Smeta"
-       "TXlist" "Slist"
-       "TXopt" "Sopt"
-       "TXtry" "Stry"
-       "TXpeek" "Speek"
-       "TXself" "Sself"
-       "TXkwd" "Skeyword"
-       "TXtok" "Stok"
-       "TXnext" "Snext"
-       "TXrules" "Srules"
-       "TXnterm" "Snterm"
+       "module_binding" "mbind"
+       "sig_item" "sigi"
+       "class_type" "cltyp"
+       "with_constr" "constr"
+       "class_exp" "clexp"
+       "class_sig_item" "clsigi"
        )
       )
 

@@ -80,7 +80,7 @@ let traversal () =
      method private is_in_and_types = and_group
      method get_cur_and_types = cur_and_types
      method update_cur_and_types f = cur_and_types <- f cur_and_types
-     method! module_exp =
+     method! mexp =
        function
        | `Struct (_loc,u) ->
            (self#in_module;
@@ -108,7 +108,7 @@ let traversal () =
                    then res
                    else `StExp (_loc, (`Uid (_loc, "()")))) in
               self#out_module; `Struct (_loc, result))))
-       | x -> super#module_exp x
+       | x -> super#mexp x
      method! stru =
        function
        | `Type (_loc,`And (_,_,_)) as x ->

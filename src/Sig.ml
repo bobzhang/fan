@@ -23,13 +23,13 @@ module type ParserImpl = sig
   val parse_implem : ?directive_handler:(stru -> option stru) ->
     FanLoc.t -> XStream.t char -> option stru;
 
-  val parse_interf : ?directive_handler:(sig_item -> option sig_item) ->
-        FanLoc.t -> XStream.t char -> option sig_item;
+  val parse_interf : ?directive_handler:(sigi -> option sigi) ->
+        FanLoc.t -> XStream.t char -> option sigi;
 end;
 
 module type PrinterImpl = sig
   val print_interf : ?input_file:string -> ?output_file:string ->
-    option sig_item  -> unit;
+    option sigi  -> unit;
   val print_implem : ?input_file:string -> ?output_file:string ->
     option stru -> unit;
 end;
@@ -40,7 +40,7 @@ module type Syntax = sig
   include Warning;
   include ParserImpl;
   include PrinterImpl;
-  val interf : Gram.t (list sig_item * option FanLoc.t);
+  val interf : Gram.t (list sigi * option FanLoc.t);
   val implem : Gram.t (list stru * option FanLoc.t);
   val top_phrase : Gram.t (option stru);
   (* val a_string: Gram.t astring; *)
@@ -60,28 +60,28 @@ module type Syntax = sig
   val binding : Gram.t binding;
   val binding_quot : Gram.t binding;
   val rec_exp_quot : Gram.t rec_exp;
-  val class_declaration : Gram.t class_exp;
-  val class_description : Gram.t class_type;
-  val class_exp : Gram.t class_exp;
-  val class_exp_quot : Gram.t class_exp;
-  val class_fun_binding : Gram.t class_exp;
-  val class_fun_def : Gram.t class_exp;
-  val class_info_for_class_exp : Gram.t class_exp;
-  val class_info_for_class_type : Gram.t class_type;
+  val class_declaration : Gram.t clexp;
+  val class_description : Gram.t cltyp;
+  val clexp : Gram.t clexp;
+  val clexp_quot : Gram.t clexp;
+  val class_fun_binding : Gram.t clexp;
+  val class_fun_def : Gram.t clexp;
+  val class_info_for_clexp : Gram.t clexp;
+  val class_info_for_cltyp : Gram.t cltyp;
   val class_longident : Gram.t ident;
-  val class_longident_and_param : Gram.t class_exp;
-  val class_sig_item : Gram.t class_sig_item;
-  val class_sig_item_quot : Gram.t class_sig_item;
-  val class_signature : Gram.t class_sig_item;
+  val class_longident_and_param : Gram.t clexp;
+  val clsigi : Gram.t clsigi;
+  val clsigi_quot : Gram.t clsigi;
+  val class_signature : Gram.t clsigi;
   val cstru : Gram.t cstru;
   val cstru_quot : Gram.t cstru;
   val class_structure : Gram.t cstru;
-  val class_type : Gram.t class_type;
-  val class_type_declaration : Gram.t class_type;
-  val class_type_longident : Gram.t ident;
-  val class_type_longident_and_param : Gram.t class_type;
-  val class_type_plus : Gram.t class_type;
-  val class_type_quot : Gram.t class_type;
+  val cltyp : Gram.t cltyp;
+  val cltyp_declaration : Gram.t cltyp;
+  val cltyp_longident : Gram.t ident;
+  val cltyp_longident_and_param : Gram.t cltyp;
+  val cltyp_plus : Gram.t cltyp;
+  val cltyp_quot : Gram.t cltyp;
   val comma_ctyp : Gram.t type_parameters;
 
   val vid: Gram.t vid;  
@@ -125,15 +125,15 @@ module type Syntax = sig
   val let_binding : Gram.t binding;
   val meth_list : Gram.t (name_ctyp * row_var_flag);
   val meth_decl : Gram.t name_ctyp;
-  val module_binding : Gram.t module_binding;
-  val module_binding0 : Gram.t module_exp;
-  val module_binding_quot : Gram.t module_binding;
+  val mbind : Gram.t mbind;
+  val mbind0 : Gram.t mexp;
+  val mbind_quot : Gram.t mbind;
   val module_declaration : Gram.t mtyp;
-  val module_exp : Gram.t module_exp;
-  val module_exp_quot : Gram.t module_exp;
+  val mexp : Gram.t mexp;
+  val mexp_quot : Gram.t mexp;
   val module_longident : Gram.t vid;
   val module_longident_with_app : Gram.t ident;
-  val module_rec_declaration : Gram.t module_binding;
+  val module_rec_declaration : Gram.t mbind;
   val mtyp : Gram.t mtyp;
   (* val package_type : Gram.t mtyp; *)
   val mtyp_quot : Gram.t mtyp;
@@ -166,9 +166,9 @@ module type Syntax = sig
   val sem_pat_for_list : Gram.t (pat -> pat);
   (* val semi : Gram.t unit; *)
   val sequence : Gram.t exp;
-  val sig_item : Gram.t sig_item;
-  val sig_item_quot : Gram.t sig_item;
-  val sig_items : Gram.t sig_item;
+  val sigi : Gram.t sigi;
+  val sigi_quot : Gram.t sigi;
+  val sigis : Gram.t sigi;
   val star_ctyp : Gram.t ctyp;
   val stru : Gram.t stru;
   val stru_quot : Gram.t stru;
@@ -186,8 +186,8 @@ module type Syntax = sig
   val type_parameters : Gram.t (ctyp -> ctyp);
   val typevars : Gram.t ctyp;
   val val_longident : Gram.t ident;
-  val with_constr : Gram.t with_constr;
-  val with_constr_quot : Gram.t with_constr;
+  val constr : Gram.t constr;
+  val constr_quot : Gram.t constr;
   val prefixop : Gram.t exp;
   val infixop0 : Gram.t exp;
   val infixop1 : Gram.t exp;
@@ -268,11 +268,11 @@ module type PRECAST = sig
   val loaded_modules : ref (list string);
   val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;
   val register_stru_parser : parser_fun stru -> unit;
-  val register_sig_item_parser : parser_fun sig_item -> unit;
+  val register_sigi_parser : parser_fun sigi -> unit;
   val register_parser :
-      parser_fun stru -> parser_fun sig_item -> unit;
+      parser_fun stru -> parser_fun sigi -> unit;
   val current_parser :
-      unit -> (parser_fun stru * parser_fun sig_item);
+      unit -> (parser_fun stru * parser_fun sigi);
 
   val plugin : (module Id) -> (module PLUGIN) -> unit ;
   val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;
@@ -289,11 +289,11 @@ module type PRECAST = sig
 
 
   val register_stru_printer : printer_fun stru -> unit;
-  val register_sig_item_printer : printer_fun sig_item -> unit;
+  val register_sigi_printer : printer_fun sigi -> unit;
   val register_printer :
-      printer_fun stru -> printer_fun sig_item -> unit;
+      printer_fun stru -> printer_fun sigi -> unit;
   val current_printer :
-      unit -> (printer_fun stru * printer_fun sig_item);
+      unit -> (printer_fun stru * printer_fun sigi);
         
   val declare_dyn_module : string -> (unit -> unit) -> unit  ;
 

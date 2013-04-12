@@ -461,7 +461,7 @@ class eq =
                (self#exp _a2 _b2))
               && (self#case _a3 _b3)
         | (`LetModule (_a0,_a1,_a2),`LetModule (_b0,_b1,_b2)) ->
-            ((self#auident _a0 _b0) && (self#module_exp _a1 _b1)) &&
+            ((self#auident _a0 _b0) && (self#mexp _a1 _b1)) &&
               (self#exp _a2 _b2)
         | (`Match (_a0,_a1),`Match (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#case _a1 _b1)
@@ -496,7 +496,7 @@ class eq =
             (self#ident _a0 _b0) && (self#exp _a1 _b1)
         | (`LocalTypeFun (_a0,_a1),`LocalTypeFun (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
-        | (`Package_exp _a0,`Package_exp _b0) -> self#module_exp _a0 _b0
+        | (`Package_exp _a0,`Package_exp _b0) -> self#mexp _a0 _b0
         | (_,_) -> false
     method rec_exp : rec_exp -> rec_exp -> 'result43=
       fun _a0  _b0  ->
@@ -513,23 +513,23 @@ class eq =
         match (_a0, _b0) with
         | ((#ident' as _a0),(#ident' as _b0)) ->
             (self#ident' _a0 _b0 :>'result44)
-        | (`Sig _a0,`Sig _b0) -> self#sig_item _a0 _b0
+        | (`Sig _a0,`Sig _b0) -> self#sigi _a0 _b0
         | (`SigEnd,`SigEnd) -> true
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
               (self#mtyp _a2 _b2)
         | (`With (_a0,_a1),`With (_b0,_b1)) ->
-            (self#mtyp _a0 _b0) && (self#with_constr _a1 _b1)
-        | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#module_exp _a0 _b0
+            (self#mtyp _a0 _b0) && (self#constr _a1 _b1)
+        | (`ModuleTypeOf _a0,`ModuleTypeOf _b0) -> self#mexp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result44)
         | (_,_) -> false
-    method sig_item : sig_item -> sig_item -> 'result45=
+    method sigi : sigi -> sigi -> 'result45=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Class _a0,`Class _b0) -> self#class_type _a0 _b0
-        | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
+        | (`Class _a0,`Class _b0) -> self#cltyp _a0 _b0
+        | (`ClassType _a0,`ClassType _b0) -> self#cltyp _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#sig_item _a0 _b0) && (self#sig_item _a1 _b1)
+            (self#sigi _a0 _b0) && (self#sigi _a1 _b1)
         | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
         | (`Directive (_a0,_a1),`Directive (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
@@ -540,7 +540,7 @@ class eq =
         | (`Include _a0,`Include _b0) -> self#mtyp _a0 _b0
         | (`Module (_a0,_a1),`Module (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
-        | (`RecModule _a0,`RecModule _b0) -> self#module_binding _a0 _b0
+        | (`RecModule _a0,`RecModule _b0) -> self#mbind _a0 _b0
         | (`ModuleType (_a0,_a1),`ModuleType (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`ModuleTypeEnd _a0,`ModuleTypeEnd _b0) -> self#auident _a0 _b0
@@ -550,7 +550,7 @@ class eq =
             (self#alident _a0 _b0) && (self#ctyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result45)
         | (_,_) -> false
-    method with_constr : with_constr -> with_constr -> 'result46=
+    method constr : constr -> constr -> 'result46=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`TypeEq (_a0,_a1),`TypeEq (_b0,_b1)) ->
@@ -564,7 +564,7 @@ class eq =
         | (`ModuleSubst (_a0,_a1),`ModuleSubst (_b0,_b1)) ->
             (self#ident _a0 _b0) && (self#ident _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#with_constr _a0 _b0) && (self#with_constr _a1 _b1)
+            (self#constr _a0 _b0) && (self#constr _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result46)
         | (_,_) -> false
     method binding : binding -> binding -> 'result47=
@@ -576,14 +576,14 @@ class eq =
             (self#pat _a0 _b0) && (self#exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result47)
         | (_,_) -> false
-    method module_binding : module_binding -> module_binding -> 'result48=
+    method mbind : mbind -> mbind -> 'result48=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#module_binding _a0 _b0) && (self#module_binding _a1 _b1)
+            (self#mbind _a0 _b0) && (self#mbind _a1 _b1)
         | (`ModuleBind (_a0,_a1,_a2),`ModuleBind (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
-              (self#module_exp _a2 _b2)
+              (self#mexp _a2 _b2)
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
@@ -599,27 +599,27 @@ class eq =
             ((self#pat _a0 _b0) && (self#exp _a1 _b1)) && (self#exp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result49)
         | (_,_) -> false
-    method module_exp : module_exp -> module_exp -> 'result50=
+    method mexp : mexp -> mexp -> 'result50=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | ((#vid' as _a0),(#vid' as _b0)) -> (self#vid' _a0 _b0 :>'result50)
         | (`App (_a0,_a1),`App (_b0,_b1)) ->
-            (self#module_exp _a0 _b0) && (self#module_exp _a1 _b1)
+            (self#mexp _a0 _b0) && (self#mexp _a1 _b1)
         | (`Functor (_a0,_a1,_a2),`Functor (_b0,_b1,_b2)) ->
             ((self#auident _a0 _b0) && (self#mtyp _a1 _b1)) &&
-              (self#module_exp _a2 _b2)
+              (self#mexp _a2 _b2)
         | (`Struct _a0,`Struct _b0) -> self#stru _a0 _b0
         | (`StructEnd,`StructEnd) -> true
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
-            (self#module_exp _a0 _b0) && (self#mtyp _a1 _b1)
+            (self#mexp _a0 _b0) && (self#mtyp _a1 _b1)
         | (`PackageModule _a0,`PackageModule _b0) -> self#exp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result50)
         | (_,_) -> false
     method stru : stru -> stru -> 'result51=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`Class _a0,`Class _b0) -> self#class_exp _a0 _b0
-        | (`ClassType _a0,`ClassType _b0) -> self#class_type _a0 _b0
+        | (`Class _a0,`Class _b0) -> self#clexp _a0 _b0
+        | (`ClassType _a0,`ClassType _b0) -> self#cltyp _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#stru _a0 _b0) && (self#stru _a1 _b1)
         | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
@@ -630,10 +630,10 @@ class eq =
         | (`External (_a0,_a1,_a2),`External (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#ctyp _a1 _b1)) &&
               (self#strings _a2 _b2)
-        | (`Include _a0,`Include _b0) -> self#module_exp _a0 _b0
+        | (`Include _a0,`Include _b0) -> self#mexp _a0 _b0
         | (`Module (_a0,_a1),`Module (_b0,_b1)) ->
-            (self#auident _a0 _b0) && (self#module_exp _a1 _b1)
-        | (`RecModule _a0,`RecModule _b0) -> self#module_binding _a0 _b0
+            (self#auident _a0 _b0) && (self#mexp _a1 _b1)
+        | (`RecModule _a0,`RecModule _b0) -> self#mbind _a0 _b0
         | (`ModuleType (_a0,_a1),`ModuleType (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`Open _a0,`Open _b0) -> self#ident _a0 _b0
@@ -642,7 +642,7 @@ class eq =
             (self#rec_flag _a0 _b0) && (self#binding _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result51)
         | (_,_) -> false
-    method class_type : class_type -> class_type -> 'result52=
+    method cltyp : cltyp -> cltyp -> 'result52=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
@@ -651,28 +651,28 @@ class eq =
         | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
             (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CtFun (_a0,_a1),`CtFun (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#class_type _a1 _b1)
+            (self#ctyp _a0 _b0) && (self#cltyp _a1 _b1)
         | (`ObjTy (_a0,_a1),`ObjTy (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#class_sig_item _a1 _b1)
+            (self#ctyp _a0 _b0) && (self#clsigi _a1 _b1)
         | (`ObjTyEnd _a0,`ObjTyEnd _b0) -> self#ctyp _a0 _b0
-        | (`Obj _a0,`Obj _b0) -> self#class_sig_item _a0 _b0
+        | (`Obj _a0,`Obj _b0) -> self#clsigi _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
+            (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
         | (`CtCol (_a0,_a1),`CtCol (_b0,_b1)) ->
-            (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
+            (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
-            (self#class_type _a0 _b0) && (self#class_type _a1 _b1)
+            (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
         | (_,_) -> false
-    method class_sig_item : class_sig_item -> class_sig_item -> 'result53=
+    method clsigi : clsigi -> clsigi -> 'result53=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#class_sig_item _a0 _b0) && (self#class_sig_item _a1 _b1)
-        | (`SigInherit _a0,`SigInherit _b0) -> self#class_type _a0 _b0
+            (self#clsigi _a0 _b0) && (self#clsigi _a1 _b1)
+        | (`SigInherit _a0,`SigInherit _b0) -> self#cltyp _a0 _b0
         | (`Method (_a0,_a1,_a2),`Method (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
@@ -685,32 +685,32 @@ class eq =
               (self#ctyp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result53)
         | (_,_) -> false
-    method class_exp : class_exp -> class_exp -> 'result54=
+    method clexp : clexp -> clexp -> 'result54=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`CeApp (_a0,_a1),`CeApp (_b0,_b1)) ->
-            (self#class_exp _a0 _b0) && (self#exp _a1 _b1)
+            (self#clexp _a0 _b0) && (self#exp _a1 _b1)
         | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
             ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
               (self#type_parameters _a2 _b2)
         | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
             (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
         | (`CeFun (_a0,_a1),`CeFun (_b0,_b1)) ->
-            (self#pat _a0 _b0) && (self#class_exp _a1 _b1)
+            (self#pat _a0 _b0) && (self#clexp _a1 _b1)
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
-              (self#class_exp _a2 _b2)
+              (self#clexp _a2 _b2)
         | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#cstru _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#pat _a0 _b0
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
-            (self#class_exp _a0 _b0) && (self#class_type _a1 _b1)
+            (self#clexp _a0 _b0) && (self#cltyp _a1 _b1)
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#class_exp _a0 _b0) && (self#class_exp _a1 _b1)
+            (self#clexp _a0 _b0) && (self#clexp _a1 _b1)
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
-            (self#class_exp _a0 _b0) && (self#class_exp _a1 _b1)
+            (self#clexp _a0 _b0) && (self#clexp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result54)
         | (_,_) -> false
     method cstru : cstru -> cstru -> 'result55=
@@ -721,9 +721,9 @@ class eq =
         | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
         | (`Inherit (_a0,_a1),`Inherit (_b0,_b1)) ->
-            (self#override_flag _a0 _b0) && (self#class_exp _a1 _b1)
+            (self#override_flag _a0 _b0) && (self#clexp _a1 _b1)
         | (`InheritAs (_a0,_a1,_a2),`InheritAs (_b0,_b1,_b2)) ->
-            ((self#override_flag _a0 _b0) && (self#class_exp _a1 _b1)) &&
+            ((self#override_flag _a0 _b0) && (self#clexp _a1 _b1)) &&
               (self#alident _a2 _b2)
         | (`Initializer _a0,`Initializer _b0) -> self#exp _a0 _b0
         | (`CrMth (_a0,_a1,_a2,_a3,_a4),`CrMth (_b0,_b1,_b2,_b3,_b4)) ->
@@ -1276,7 +1276,7 @@ class print =
               self#rec_flag _a0 self#binding _a1 self#exp _a2 self#case _a3
         | `LetModule (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a)@]" self#auident
-              _a0 self#module_exp _a1 self#exp _a2
+              _a0 self#mexp _a1 self#exp _a2
         | `Match (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a)@]" self#exp _a0
               self#case _a1
@@ -1325,8 +1325,7 @@ class print =
             Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a)@]" self#alident
               _a0 self#exp _a1
         | `Package_exp _a0 ->
-            Format.fprintf fmt "@[<1>(`Package_exp@ %a)@]" self#module_exp
-              _a0
+            Format.fprintf fmt "@[<1>(`Package_exp@ %a)@]" self#mexp _a0
     method rec_exp : 'fmt -> rec_exp -> unit=
       fun fmt  ->
         function
@@ -1342,29 +1341,27 @@ class print =
       fun fmt  ->
         function
         | #ident' as _a0 -> (self#ident' fmt _a0 :>unit)
-        | `Sig _a0 ->
-            Format.fprintf fmt "@[<1>(`Sig@ %a)@]" self#sig_item _a0
+        | `Sig _a0 -> Format.fprintf fmt "@[<1>(`Sig@ %a)@]" self#sigi _a0
         | `SigEnd -> Format.fprintf fmt "`SigEnd"
         | `Functor (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
               _a0 self#mtyp _a1 self#mtyp _a2
         | `With (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`With@ %a@ %a)@]" self#mtyp _a0
-              self#with_constr _a1
+              self#constr _a1
         | `ModuleTypeOf _a0 ->
-            Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a)@]" self#module_exp
-              _a0
+            Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a)@]" self#mexp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method sig_item : 'fmt -> sig_item -> unit=
+    method sigi : 'fmt -> sigi -> unit=
       fun fmt  ->
         function
         | `Class _a0 ->
-            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#class_type _a0
+            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#cltyp _a0
         | `ClassType _a0 ->
-            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#class_type _a0
+            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltyp _a0
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#sig_item _a0
-              self#sig_item _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#sigi _a0
+              self#sigi _a1
         | `DirectiveSimple _a0 ->
             Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a)@]" self#alident
               _a0
@@ -1382,8 +1379,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a)@]" self#auident _a0
               self#mtyp _a1
         | `RecModule _a0 ->
-            Format.fprintf fmt "@[<1>(`RecModule@ %a)@]" self#module_binding
-              _a0
+            Format.fprintf fmt "@[<1>(`RecModule@ %a)@]" self#mbind _a0
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
               _a0 self#mtyp _a1
@@ -1396,7 +1392,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Val@ %a@ %a)@]" self#alident _a0
               self#ctyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method with_constr : 'fmt -> with_constr -> unit=
+    method constr : 'fmt -> constr -> unit=
       fun fmt  ->
         function
         | `TypeEq (_a0,_a1) ->
@@ -1415,8 +1411,8 @@ class print =
             Format.fprintf fmt "@[<1>(`ModuleSubst@ %a@ %a)@]" self#ident _a0
               self#ident _a1
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#with_constr _a0
-              self#with_constr _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#constr _a0
+              self#constr _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method binding : 'fmt -> binding -> unit=
       fun fmt  ->
@@ -1428,15 +1424,15 @@ class print =
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a)@]" self#pat _a0 
               self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_binding : 'fmt -> module_binding -> unit=
+    method mbind : 'fmt -> mbind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#module_binding
-              _a0 self#module_binding _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#mbind _a0
+              self#mbind _a1
         | `ModuleBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a)@]"
-              self#auident _a0 self#mtyp _a1 self#module_exp _a2
+              self#auident _a0 self#mtyp _a1 self#mexp _a2
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#auident
               _a0 self#mtyp _a1
@@ -1454,22 +1450,22 @@ class print =
             Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a)@]" self#pat _a0
               self#exp _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_exp : 'fmt -> module_exp -> unit=
+    method mexp : 'fmt -> mexp -> unit=
       fun fmt  ->
         function
         | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
         | `App (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#module_exp _a0
-              self#module_exp _a1
+            Format.fprintf fmt "@[<1>(`App@ %a@ %a)@]" self#mexp _a0
+              self#mexp _a1
         | `Functor (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a)@]" self#auident
-              _a0 self#mtyp _a1 self#module_exp _a2
+              _a0 self#mtyp _a1 self#mexp _a2
         | `Struct _a0 ->
             Format.fprintf fmt "@[<1>(`Struct@ %a)@]" self#stru _a0
         | `StructEnd -> Format.fprintf fmt "`StructEnd"
         | `Constraint (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#module_exp
-              _a0 self#mtyp _a1
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#mexp _a0
+              self#mtyp _a1
         | `PackageModule _a0 ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a)@]" self#exp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
@@ -1477,9 +1473,9 @@ class print =
       fun fmt  ->
         function
         | `Class _a0 ->
-            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#class_exp _a0
+            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#clexp _a0
         | `ClassType _a0 ->
-            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#class_type _a0
+            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltyp _a0
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#stru _a0
               self#stru _a1
@@ -1496,13 +1492,12 @@ class print =
             Format.fprintf fmt "@[<1>(`External@ %a@ %a@ %a)@]" self#alident
               _a0 self#ctyp _a1 self#strings _a2
         | `Include _a0 ->
-            Format.fprintf fmt "@[<1>(`Include@ %a)@]" self#module_exp _a0
+            Format.fprintf fmt "@[<1>(`Include@ %a)@]" self#mexp _a0
         | `Module (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a)@]" self#auident _a0
-              self#module_exp _a1
+              self#mexp _a1
         | `RecModule _a0 ->
-            Format.fprintf fmt "@[<1>(`RecModule@ %a)@]" self#module_binding
-              _a0
+            Format.fprintf fmt "@[<1>(`RecModule@ %a)@]" self#mbind _a0
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
               _a0 self#mtyp _a1
@@ -1513,7 +1508,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" self#rec_flag _a0
               self#binding _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_type : 'fmt -> class_type -> unit=
+    method cltyp : 'fmt -> cltyp -> unit=
       fun fmt  ->
         function
         | `ClassCon (_a0,_a1,_a2) ->
@@ -1524,36 +1519,35 @@ class print =
               self#virtual_flag _a0 self#ident _a1
         | `CtFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a)@]" self#ctyp _a0
-              self#class_type _a1
+              self#cltyp _a1
         | `ObjTy (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjTy@ %a@ %a)@]" self#ctyp _a0
-              self#class_sig_item _a1
+              self#clsigi _a1
         | `ObjTyEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjTyEnd@ %a)@]" self#ctyp _a0
-        | `Obj _a0 ->
-            Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#class_sig_item _a0
+        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#clsigi _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#class_type _a0
-              self#class_type _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#cltyp _a0
+              self#cltyp _a1
         | `CtCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a)@]" self#class_type _a0
-              self#class_type _a1
+            Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a)@]" self#cltyp _a0
+              self#cltyp _a1
         | `Eq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#class_type _a0
-              self#class_type _a1
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#cltyp _a0
+              self#cltyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_sig_item : 'fmt -> class_sig_item -> unit=
+    method clsigi : 'fmt -> clsigi -> unit=
       fun fmt  ->
         function
         | `Eq (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
               _a1
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#class_sig_item
-              _a0 self#class_sig_item _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#clsigi _a0
+              self#clsigi _a1
         | `SigInherit _a0 ->
-            Format.fprintf fmt "@[<1>(`SigInherit@ %a)@]" self#class_type _a0
+            Format.fprintf fmt "@[<1>(`SigInherit@ %a)@]" self#cltyp _a0
         | `Method (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a)@]" self#alident
               _a0 self#private_flag _a1 self#ctyp _a2
@@ -1564,11 +1558,11 @@ class print =
             Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a)@]" self#alident _a0
               self#private_flag _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_exp : 'fmt -> class_exp -> unit=
+    method clexp : 'fmt -> clexp -> unit=
       fun fmt  ->
         function
         | `CeApp (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a)@]" self#class_exp _a0
+            Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a)@]" self#clexp _a0
               self#exp _a1
         | `ClassCon (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a)@]"
@@ -1578,10 +1572,10 @@ class print =
               self#virtual_flag _a0 self#ident _a1
         | `CeFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a)@]" self#pat _a0
-              self#class_exp _a1
+              self#clexp _a1
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
-              _a0 self#binding _a1 self#class_exp _a2
+              _a0 self#binding _a1 self#clexp _a2
         | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
@@ -1590,14 +1584,14 @@ class print =
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#pat _a0
         | `Constraint (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#class_exp
-              _a0 self#class_type _a1
+            Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#clexp _a0
+              self#cltyp _a1
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#class_exp _a0
-              self#class_exp _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#clexp _a0
+              self#clexp _a1
         | `Eq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#class_exp _a0
-              self#class_exp _a1
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#clexp _a0
+              self#clexp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method cstru : 'fmt -> cstru -> unit=
       fun fmt  ->
@@ -1610,10 +1604,10 @@ class print =
               _a1
         | `Inherit (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a)@]" self#override_flag
-              _a0 self#class_exp _a1
+              _a0 self#clexp _a1
         | `InheritAs (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a)@]"
-              self#override_flag _a0 self#class_exp _a1 self#alident _a2
+              self#override_flag _a0 self#clexp _a1 self#alident _a2
         | `Initializer _a0 ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a)@]" self#exp _a0
         | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
@@ -2282,7 +2276,7 @@ and meta_exp _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "LetModule")), (meta_auident _loc _a0))),
-               (meta_module_exp _loc _a1))), (meta_exp _loc _a2))
+               (meta_mexp _loc _a1))), (meta_exp _loc _a2))
   | `Match (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_exp _loc _a0))),
@@ -2352,7 +2346,7 @@ and meta_exp _loc =
              (_loc, (`Vrn (_loc, "LocalTypeFun")), (meta_alident _loc _a0))),
           (meta_exp _loc _a1))
   | `Package_exp _a0 ->
-      `App (_loc, (`Vrn (_loc, "Package_exp")), (meta_module_exp _loc _a0))
+      `App (_loc, (`Vrn (_loc, "Package_exp")), (meta_mexp _loc _a0))
 and meta_rec_exp _loc =
   function
   | `Sem (_a0,_a1) ->
@@ -2369,7 +2363,7 @@ and meta_rec_exp _loc =
 and meta_mtyp _loc =
   function
   | #ident' as _a0 -> (meta_ident' _loc _a0 :>'result155)
-  | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sig_item _loc _a0))
+  | `Sig _a0 -> `App (_loc, (`Vrn (_loc, "Sig")), (meta_sigi _loc _a0))
   | `SigEnd -> `Vrn (_loc, "SigEnd")
   | `Functor (_a0,_a1,_a2) ->
       `App
@@ -2382,20 +2376,19 @@ and meta_mtyp _loc =
   | `With (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "With")), (meta_mtyp _loc _a0))),
-          (meta_with_constr _loc _a1))
+          (meta_constr _loc _a1))
   | `ModuleTypeOf _a0 ->
-      `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (meta_module_exp _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ModuleTypeOf")), (meta_mexp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result155)
-and meta_sig_item _loc =
+and meta_sigi _loc =
   function
-  | `Class _a0 ->
-      `App (_loc, (`Vrn (_loc, "Class")), (meta_class_type _loc _a0))
+  | `Class _a0 -> `App (_loc, (`Vrn (_loc, "Class")), (meta_cltyp _loc _a0))
   | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_class_type _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltyp _loc _a0))
   | `Sem (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_sig_item _loc _a0))),
-          (meta_sig_item _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_sigi _loc _a0))),
+          (meta_sigi _loc _a1))
   | `DirectiveSimple _a0 ->
       `App (_loc, (`Vrn (_loc, "DirectiveSimple")), (meta_alident _loc _a0))
   | `Directive (_a0,_a1) ->
@@ -2421,7 +2414,7 @@ and meta_sig_item _loc =
           (`App (_loc, (`Vrn (_loc, "Module")), (meta_auident _loc _a0))),
           (meta_mtyp _loc _a1))
   | `RecModule _a0 ->
-      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_module_binding _loc _a0))
+      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_mbind _loc _a0))
   | `ModuleType (_a0,_a1) ->
       `App
         (_loc,
@@ -2436,7 +2429,7 @@ and meta_sig_item _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Val")), (meta_alident _loc _a0))),
           (meta_ctyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result154)
-and meta_with_constr _loc =
+and meta_constr _loc =
   function
   | `TypeEq (_a0,_a1) ->
       `App
@@ -2464,9 +2457,8 @@ and meta_with_constr _loc =
           (meta_ident _loc _a1))
   | `And (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_with_constr _loc _a0))),
-          (meta_with_constr _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_constr _loc _a0))),
+          (meta_constr _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
 and meta_binding _loc =
   function
@@ -2479,13 +2471,12 @@ and meta_binding _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Bind")), (meta_pat _loc _a0))),
           (meta_exp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result152)
-and meta_module_binding _loc =
+and meta_mbind _loc =
   function
   | `And (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_module_binding _loc _a0))),
-          (meta_module_binding _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_mbind _loc _a0))),
+          (meta_mbind _loc _a1))
   | `ModuleBind (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2494,7 +2485,7 @@ and meta_module_binding _loc =
                (`App
                   (_loc, (`Vrn (_loc, "ModuleBind")),
                     (meta_auident _loc _a0))), (meta_mtyp _loc _a1))),
-          (meta_module_exp _loc _a2))
+          (meta_mexp _loc _a2))
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
@@ -2519,14 +2510,13 @@ and meta_case _loc =
                (`App (_loc, (`Vrn (_loc, "CaseWhen")), (meta_pat _loc _a0))),
                (meta_exp _loc _a1))), (meta_exp _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result150)
-and meta_module_exp _loc =
+and meta_mexp _loc =
   function
   | #vid' as _a0 -> (meta_vid' _loc _a0 :>'result149)
   | `App (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "App")), (meta_module_exp _loc _a0))),
-          (meta_module_exp _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "App")), (meta_mexp _loc _a0))),
+          (meta_mexp _loc _a1))
   | `Functor (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2534,24 +2524,22 @@ and meta_module_exp _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "Functor")), (meta_auident _loc _a0))),
-               (meta_mtyp _loc _a1))), (meta_module_exp _loc _a2))
+               (meta_mtyp _loc _a1))), (meta_mexp _loc _a2))
   | `Struct _a0 -> `App (_loc, (`Vrn (_loc, "Struct")), (meta_stru _loc _a0))
   | `StructEnd -> `Vrn (_loc, "StructEnd")
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "Constraint")), (meta_module_exp _loc _a0))),
+          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_mexp _loc _a0))),
           (meta_mtyp _loc _a1))
   | `PackageModule _a0 ->
       `App (_loc, (`Vrn (_loc, "PackageModule")), (meta_exp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result149)
 and meta_stru _loc =
   function
-  | `Class _a0 ->
-      `App (_loc, (`Vrn (_loc, "Class")), (meta_class_exp _loc _a0))
+  | `Class _a0 -> `App (_loc, (`Vrn (_loc, "Class")), (meta_clexp _loc _a0))
   | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_class_type _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltyp _loc _a0))
   | `Sem (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_stru _loc _a0))),
@@ -2575,14 +2563,14 @@ and meta_stru _loc =
                   (_loc, (`Vrn (_loc, "External")), (meta_alident _loc _a0))),
                (meta_ctyp _loc _a1))), (meta_strings _loc _a2))
   | `Include _a0 ->
-      `App (_loc, (`Vrn (_loc, "Include")), (meta_module_exp _loc _a0))
+      `App (_loc, (`Vrn (_loc, "Include")), (meta_mexp _loc _a0))
   | `Module (_a0,_a1) ->
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Module")), (meta_auident _loc _a0))),
-          (meta_module_exp _loc _a1))
+          (meta_mexp _loc _a1))
   | `RecModule _a0 ->
-      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_module_binding _loc _a0))
+      `App (_loc, (`Vrn (_loc, "RecModule")), (meta_mbind _loc _a0))
   | `ModuleType (_a0,_a1) ->
       `App
         (_loc,
@@ -2596,7 +2584,7 @@ and meta_stru _loc =
           (`App (_loc, (`Vrn (_loc, "Value")), (meta_rec_flag _loc _a0))),
           (meta_binding _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
-and meta_class_type _loc =
+and meta_cltyp _loc =
   function
   | `ClassCon (_a0,_a1,_a2) ->
       `App
@@ -2616,33 +2604,29 @@ and meta_class_type _loc =
   | `CtFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CtFun")), (meta_ctyp _loc _a0))),
-          (meta_class_type _loc _a1))
+          (meta_cltyp _loc _a1))
   | `ObjTy (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjTy")), (meta_ctyp _loc _a0))),
-          (meta_class_sig_item _loc _a1))
+          (meta_clsigi _loc _a1))
   | `ObjTyEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjTyEnd")), (meta_ctyp _loc _a0))
-  | `Obj _a0 ->
-      `App (_loc, (`Vrn (_loc, "Obj")), (meta_class_sig_item _loc _a0))
+  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_clsigi _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `And (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_cltyp _loc _a0))),
+          (meta_cltyp _loc _a1))
   | `CtCol (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_cltyp _loc _a0))),
+          (meta_cltyp _loc _a1))
   | `Eq (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_type _loc _a0))),
-          (meta_class_type _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_cltyp _loc _a0))),
+          (meta_cltyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result147)
-and meta_class_sig_item _loc =
+and meta_clsigi _loc =
   function
   | `Eq (_a0,_a1) ->
       `App
@@ -2650,11 +2634,10 @@ and meta_class_sig_item _loc =
           (meta_ctyp _loc _a1))
   | `Sem (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "Sem")), (meta_class_sig_item _loc _a0))),
-          (meta_class_sig_item _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_clsigi _loc _a0))),
+          (meta_clsigi _loc _a1))
   | `SigInherit _a0 ->
-      `App (_loc, (`Vrn (_loc, "SigInherit")), (meta_class_type _loc _a0))
+      `App (_loc, (`Vrn (_loc, "SigInherit")), (meta_cltyp _loc _a0))
   | `Method (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2682,12 +2665,11 @@ and meta_class_sig_item _loc =
                (`App (_loc, (`Vrn (_loc, "CgVir")), (meta_alident _loc _a0))),
                (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result146)
-and meta_class_exp _loc =
+and meta_clexp _loc =
   function
   | `CeApp (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "CeApp")), (meta_class_exp _loc _a0))),
+        (_loc, (`App (_loc, (`Vrn (_loc, "CeApp")), (meta_clexp _loc _a0))),
           (meta_exp _loc _a1))
   | `ClassCon (_a0,_a1,_a2) ->
       `App
@@ -2707,14 +2689,14 @@ and meta_class_exp _loc =
   | `CeFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CeFun")), (meta_pat _loc _a0))),
-          (meta_class_exp _loc _a1))
+          (meta_clexp _loc _a1))
   | `LetIn (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
-               (meta_binding _loc _a1))), (meta_class_exp _loc _a2))
+               (meta_binding _loc _a1))), (meta_clexp _loc _a2))
   | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
@@ -2726,18 +2708,16 @@ and meta_class_exp _loc =
   | `Constraint (_a0,_a1) ->
       `App
         (_loc,
-          (`App
-             (_loc, (`Vrn (_loc, "Constraint")), (meta_class_exp _loc _a0))),
-          (meta_class_type _loc _a1))
+          (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_clexp _loc _a0))),
+          (meta_cltyp _loc _a1))
   | `And (_a0,_a1) ->
       `App
-        (_loc,
-          (`App (_loc, (`Vrn (_loc, "And")), (meta_class_exp _loc _a0))),
-          (meta_class_exp _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_clexp _loc _a0))),
+          (meta_clexp _loc _a1))
   | `Eq (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_class_exp _loc _a0))),
-          (meta_class_exp _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_clexp _loc _a0))),
+          (meta_clexp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result145)
 and meta_cstru _loc =
   function
@@ -2754,7 +2734,7 @@ and meta_cstru _loc =
         (_loc,
           (`App
              (_loc, (`Vrn (_loc, "Inherit")), (meta_override_flag _loc _a0))),
-          (meta_class_exp _loc _a1))
+          (meta_clexp _loc _a1))
   | `InheritAs (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2762,8 +2742,8 @@ and meta_cstru _loc =
              (_loc,
                (`App
                   (_loc, (`Vrn (_loc, "InheritAs")),
-                    (meta_override_flag _loc _a0))),
-               (meta_class_exp _loc _a1))), (meta_alident _loc _a2))
+                    (meta_override_flag _loc _a0))), (meta_clexp _loc _a1))),
+          (meta_alident _loc _a2))
   | `Initializer _a0 ->
       `App (_loc, (`Vrn (_loc, "Initializer")), (meta_exp _loc _a0))
   | `CrMth (_a0,_a1,_a2,_a3,_a4) ->

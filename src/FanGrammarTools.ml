@@ -141,11 +141,11 @@ let make_ctyp (styp:styp) tvar : ctyp =
                          Hashtbl.add FanLexTools.named_regexps x r) () : 
                    (_,'e__2,'e__3) Gram.foldsep )))
    `Slist0
-     (Gram.srules sig_items
-                 [([`Snterm (Gram.obj (sig_item : 'sig_item Gram.t ));
+     (Gram.srules sigis
+                 [([`Snterm (Gram.obj (sigi : 'sigi Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
-                       (fun _  (sg : 'sig_item)  (_loc : FanLoc.t)  ->
+                       (fun _  (sg : 'sigi)  (_loc : FanLoc.t)  ->
                           (sg : 'e__1 ))))])
 
    `Slist0sep
@@ -342,7 +342,7 @@ let mk_slist loc min sep symb = `Slist loc min symb sep ;
 
   [ent] is something like
   {[
-  (module_exp : 'module_exp Gram.t )
+  (module_exp : 'mexp Gram.t )
   ]}
 
   

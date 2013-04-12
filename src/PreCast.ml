@@ -1,13 +1,13 @@
 open Format;
 module Syntax = Syntax;
 
-let sig_item_parser:   ref ( ?directive_handler:(Ast.sig_item -> option Ast.sig_item ) ->
-   FanLoc.t -> LibUtil.XStream.t char  -> option Ast.sig_item)
+let sigi_parser:   ref ( ?directive_handler:(Ast.sigi -> option Ast.sigi ) ->
+   FanLoc.t -> LibUtil.XStream.t char  -> option Ast.sigi)
  =
   ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
 let stru_parser =
   ref (fun ?directive_handler:(_)  _ _ -> failwith "No implementation parser");
-let sig_item_printer =
+let sigi_printer =
   ref (fun ?input_file:(_) ?output_file:(_)  _ -> failwith "No interface printer");
 let stru_printer =
   ref (fun ?input_file:(_)  ?output_file:(_) _ -> failwith "No implementation printer");
@@ -26,16 +26,16 @@ let declare_dyn_module m f = begin
   end;
 
 let register_stru_parser f = stru_parser := f;
-let register_sig_item_parser f = sig_item_parser := f;
+let register_sigi_parser f = sigi_parser := f;
 let register_parser f g =
-  begin  stru_parser := f; sig_item_parser := g  end;
-let current_parser () = (!stru_parser, !sig_item_parser);
+  begin  stru_parser := f; sigi_parser := g  end;
+let current_parser () = (!stru_parser, !sigi_parser);
 
 let register_stru_printer f = stru_printer := f;
-let register_sig_item_printer f = sig_item_printer := f;
+let register_sigi_printer f = sigi_printer := f;
 let register_printer f g =
-  begin  stru_printer := f; sig_item_printer := g  end;
-let current_printer () = (!stru_printer, !sig_item_printer);
+  begin  stru_printer := f; sigi_printer := g  end;
+let current_printer () = (!stru_printer, !sigi_printer);
 
 
   
@@ -82,7 +82,7 @@ let enable_ocaml_printer () = begin
           pp_print_flush fmt (););
       let print_interf ?input_file:(_)  ?output_file ast =
         let pt = match ast with
-          [None -> []| Some ast -> Ast2pt.sig_item ast] in
+          [None -> []| Some ast -> Ast2pt.sigi ast] in
         FanUtil.with_open_out_file output_file
           (fun oc ->
             let fmt = Format.formatter_of_out_channel oc in
@@ -103,7 +103,7 @@ let enable_dump_ocaml_ast_printer () =
      let pt =
        match ast with
        [None -> []
-       |Some ast -> Ast2pt.sig_item ast] in
+       |Some ast -> Ast2pt.sigi ast] in
     FanUtil.(with_open_out_file
                output_file
                (dump_pt
@@ -151,19 +151,19 @@ let enable_auto isatty  =
     enable_dump_ocaml_ast_printer ();
 
   
-sig_item_parser := Syntax.parse_interf;
+sigi_parser := Syntax.parse_interf;
 stru_parser := Syntax.parse_implem;
 
 module CurrentParser = struct
   let parse_interf ?directive_handler loc strm =
-    !sig_item_parser ?directive_handler loc strm;
+    !sigi_parser ?directive_handler loc strm;
   let parse_implem ?directive_handler loc strm =
     !stru_parser ?directive_handler loc strm;
 end;
 
 module CurrentPrinter = struct
   let print_interf ?input_file ?output_file ast =
-    !sig_item_printer ?input_file ?output_file ast;
+    !sigi_printer ?input_file ?output_file ast;
   let print_implem ?input_file ?output_file ast =
     !stru_printer ?input_file ?output_file ast;
 end;

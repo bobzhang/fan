@@ -273,9 +273,9 @@ class printer () = object (self:'self)
       | tyl -> fprintf ppf "@[<1>(%a)@]@ " (self#typlist self#out_type ",") tyl
 (* end *)
     
-(* class class_type_printer () = object(self:'self) *)
+(* class cltyp_printer () = object(self:'self) *)
   (* inherit type_printer () *)
-  method class_type ppf =  function
+  method cltyp ppf =  function
       Octy_constr (id, tyl) ->
         let pr_tyl ppf =
           function
@@ -286,15 +286,15 @@ class printer () = object (self:'self)
         fprintf ppf "@[%a%a@]" pr_tyl tyl self#ident id
     | Octy_fun (lab, ty, cty) ->
           fprintf ppf "@[%s%a ->@ %a@]" (if lab <> "" then lab ^ ":" else "")
-            self#out_type_2 ty self#class_type cty
+            self#out_type_2 ty self#cltyp cty
     | Octy_signature (self_ty, csil) ->
         let pr_param ppf = function
             Some ty -> fprintf ppf "@ @[(%a)@]" self#out_type ty
           | None -> () in
         fprintf ppf "@[<hv 2>@[<2>object%a@]@ %a@;<1 -2>end@]" pr_param self_ty
-          (print_list self#class_sig_item (fun ppf -> fprintf ppf "@ "))
+          (print_list self#clsigi (fun ppf -> fprintf ppf "@ "))
           csil
-  method class_sig_item ppf = function
+  method clsigi ppf = function
       Ocsg_constraint (ty1, ty2) ->
         fprintf ppf "@[<2>constraint %a =@ %a@]" self#out_type ty1
           self#out_type ty2
@@ -319,21 +319,21 @@ class printer () = object (self:'self)
   method signature ppf =
     function
         [] -> ()
-      | [item] -> self#sig_item ppf item
+      | [item] -> self#sigi ppf item
       | item :: items ->
-          fprintf ppf "%a@ %a" self#sig_item item self#signature items
-  method sig_item ppf =
+          fprintf ppf "%a@ %a" self#sigi item self#signature items
+  method sigi ppf =
     function
         Osig_class (vir_flag, name, params, clt, rs) ->
           fprintf ppf "@[<2>%s%s@ %a%s@ :@ %a@]"
             (if rs = Orec_next then "and" else "class")
             (if vir_flag then " virtual" else "") print_out_class_params params
-            name self#class_type clt
-      | Osig_class_type (vir_flag, name, params, clt, rs) ->
+            name self#cltyp clt
+      | Osig_cltyp (vir_flag, name, params, clt, rs) ->
           fprintf ppf "@[<2>%s%s@ %a%s@ =@ %a@]"
             (if rs = Orec_next then "and" else "class type")
             (if vir_flag then " virtual" else "") print_out_class_params params
-            name self#class_type clt
+            name self#cltyp clt
       | Osig_exception (id, tyl) ->
           fprintf ppf "@[<2>exception %a@]" self#constr (id, tyl,None)
       | Osig_modtype (name, Omty_abstract) ->
@@ -448,9 +448,9 @@ class printer () = object (self:'self)
       | (tree, valopt) :: items ->
           begin match valopt with
             Some v ->
-              fprintf ppf "@[<2>%a =@ %a@]" self#sig_item tree
+              fprintf ppf "@[<2>%a =@ %a@]" self#sigi tree
                 self#out_value v
-          | None -> fprintf ppf "@[%a@]" self#sig_item tree
+          | None -> fprintf ppf "@[%a@]" self#sigi tree
           end;
           if items <> [] then fprintf ppf "@ %a" self#items items
               

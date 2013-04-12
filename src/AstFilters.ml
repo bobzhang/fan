@@ -5,11 +5,11 @@ open Ast ;
 type key = string;
 type 'a filter  = 'a -> 'a;
   
-let interf_filters: Hashtbl.t key (filter sig_item) = Hashtbl.create 40;
+let interf_filters: Hashtbl.t key (filter sigi) = Hashtbl.create 40;
 let implem_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
 let topphrase_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
 
-let applied_interf_filters:  Queue.t (string * filter sig_item) = Queue.create ();
+let applied_interf_filters:  Queue.t (string * filter sigi) = Queue.create ();
 let applied_implem_filters:  Queue.t (string *filter stru) = Queue.create ();
 let applied_topphrase_filters:  Queue.t (string * filter stru) = Queue.create ();
   
@@ -34,7 +34,7 @@ let use_topphrase_filter s =
     with Not_found -> failwithf "filter %s is not registered" s in
   Queue.add (s,u) applied_topphrase_filters;
 
-let register_sig_item_filter (k,f) =
+let register_sigi_filter (k,f) =
   Hashtbl.replace interf_filters k f ;
 let register_stru_filter (k,f) = begin 
   Hashtbl.replace implem_filters k f ;

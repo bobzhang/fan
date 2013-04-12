@@ -36,7 +36,7 @@ val meth_list :
       Parsetree.core_field_type list -> Parsetree.core_field_type list
 
 val package_type_constraints :
-  with_constr ->
+  constr ->
   (Longident.t Asttypes.loc * Parsetree.core_type) list ->
   (Longident.t Asttypes.loc * Parsetree.core_type) list
 val package_type : mtyp -> Parsetree.package_type
@@ -116,34 +116,34 @@ val mktype_decl :
 val mtyp : mtyp -> Parsetree.module_type
 
 val module_sig_binding :
-  module_binding ->
+  mbind ->
   (string Asttypes.loc * Parsetree.module_type) list ->
   (string Asttypes.loc * Parsetree.module_type) list
       
 val module_str_binding :
-  module_binding ->
+  mbind ->
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list ->
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list
       
-val module_exp : module_exp -> Parsetree.module_expr
+val mexp : mexp -> Parsetree.module_expr
 
-val class_type : class_type -> Parsetree.class_type
+val cltyp : cltyp -> Parsetree.class_type
 
-val class_info_class_exp : class_exp -> Parsetree.class_declaration
+val class_info_clexp : clexp -> Parsetree.class_declaration
 
-val class_info_class_type : class_type -> Parsetree.class_description
+val class_info_cltyp : cltyp -> Parsetree.class_description
 
-val class_sig_item :
-  class_sig_item ->
+val clsigi :
+  clsigi ->
   Parsetree.class_type_field list -> Parsetree.class_type_field list
 
-val class_exp : class_exp -> Parsetree.class_expr
+val clexp : clexp -> Parsetree.class_expr
 
 val cstru :
   cstru ->
   Parsetree.class_field list -> Parsetree.class_field list
 
-val sig_item : sig_item -> Parsetree.signature_item list
+val sigi : sigi -> Parsetree.signature_item list
 
 val stru : stru -> Parsetree.structure_item list
 

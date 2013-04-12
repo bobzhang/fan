@@ -24,9 +24,9 @@ of_stru_with_filter
     let _loc = loc_of s in 
     let v =  `Struct(_loc,s)in
     (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_stru s in *)
-    let module_exp =
-      (Typehook.traversal ())#module_exp v in
-    let code = match module_exp with
+    let mexp =
+      (Typehook.traversal ())#mexp v in
+    let code = match mexp with
     [ `Struct(_loc,item)  -> item
     | _ -> failwith "can not find items back " ]  in
     begin
@@ -66,9 +66,9 @@ let d = `Absolute ["Fan";"Lang";"Meta"];
 
 
 
-add_quotation (d,"sig_item") sig_item_quot
-    ~mexp:Filters.me#sig_item
-    ~mpat:Filters.mp#sig_item
+add_quotation (d,"sigi") sigi_quot
+    ~mexp:Filters.me#sigi
+    ~mpat:Filters.mp#sigi
     ~exp_filter ~pat_filter ;
 add_quotation (d,"stru") stru_quot
     ~mexp:Filters.me#stru
@@ -97,26 +97,26 @@ add_quotation (d,"mtyp") mtyp_quot
     ~mpat:Filters.mp#mtyp
     ~exp_filter
     ~pat_filter ;
-add_quotation (d,"module_exp") module_exp_quot
-    ~mexp:Filters.me#module_exp
-    ~mpat:Filters.mp#module_exp
+add_quotation (d,"mexp") mexp_quot
+    ~mexp:Filters.me#mexp
+    ~mpat:Filters.mp#mexp
     ~exp_filter
     ~pat_filter ;
 
-add_quotation (d,"class_type") class_type_quot
-    ~mexp:Filters.me#class_type ~mpat:Filters.mp#class_type
+add_quotation (d,"cltyp") cltyp_quot
+    ~mexp:Filters.me#cltyp ~mpat:Filters.mp#cltyp
     ~exp_filter
     ~pat_filter ;
   
-add_quotation (d,"class_exp") class_exp_quot
-    ~mexp:Filters.me#class_exp
-    ~mpat:Filters.mp#class_exp
+add_quotation (d,"clexp") clexp_quot
+    ~mexp:Filters.me#clexp
+    ~mpat:Filters.mp#clexp
     ~exp_filter
     ~pat_filter ;
   
-add_quotation (d,"class_sig_item") class_sig_item_quot
-    ~mexp:Filters.me#class_sig_item
-    ~mpat:Filters.mp#class_sig_item
+add_quotation (d,"clsigi") clsigi_quot
+    ~mexp:Filters.me#clsigi
+    ~mpat:Filters.mp#clsigi
     ~exp_filter
     ~pat_filter ;
 
@@ -126,9 +126,9 @@ add_quotation (d,"cstru") cstru_quot
     ~exp_filter
     ~pat_filter ;
   
-add_quotation (d,"with_constr") with_constr_quot
-    ~mexp:Filters.me#with_constr
-    ~mpat:Filters.mp#with_constr
+add_quotation (d,"constr") constr_quot
+    ~mexp:Filters.me#constr
+    ~mpat:Filters.mp#constr
     ~exp_filter
     ~pat_filter ;
   
@@ -150,9 +150,9 @@ add_quotation (d,"case") case_quot
     ~exp_filter
     ~pat_filter ;
   
-add_quotation (d,"module_binding") module_binding_quot
-    ~mexp:Filters.me#module_binding
-    ~mpat:Filters.mp#module_binding
+add_quotation (d,"mbind") mbind_quot
+    ~mexp:Filters.me#mbind
+    ~mpat:Filters.mp#mbind
     ~exp_filter
     ~pat_filter ;
   
@@ -223,11 +223,11 @@ let efilter str =
     let e = exp_filter e in let _loc = loc_of e in
     {:exp|($e : Ast.$lid:str)|};
 let pfilter str = fun e -> let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|}; 
-add_quotation (d,"sig_item'") sig_item_quot
-    ~mexp:Filters.me#sig_item
-    ~mpat:Filters.mp#sig_item
-    ~exp_filter:(efilter "sig_item")
-    ~pat_filter:(pfilter "sig_item") ;
+add_quotation (d,"sigi'") sigi_quot
+    ~mexp:Filters.me#sigi
+    ~mpat:Filters.mp#sigi
+    ~exp_filter:(efilter "sigi")
+    ~pat_filter:(pfilter "sigi") ;
 add_quotation (d,"stru'") stru_quot
     ~mexp:Filters.me#stru
     ~mpat:Filters.mp#stru
@@ -262,28 +262,28 @@ add_quotation (d,"mtyp'") mtyp_quot
     ~exp_filter:(efilter "mtyp")
     ~pat_filter:(pfilter "mtyp") ;
 
-add_quotation (d,"module_exp'") module_exp_quot
-    ~mexp:Filters.me#module_exp
-    ~mpat:Filters.mp#module_exp
-    ~exp_filter:(efilter "module_exp")
-    ~pat_filter:(pfilter "module_exp") ;
+add_quotation (d,"mexp'") mexp_quot
+    ~mexp:Filters.me#mexp
+    ~mpat:Filters.mp#mexp
+    ~exp_filter:(efilter "mexp")
+    ~pat_filter:(pfilter "mexp") ;
 
-add_quotation (d,"class_type'") class_type_quot
-    ~mexp:Filters.me#class_type ~mpat:Filters.mp#class_type
-    ~exp_filter:(efilter "class_type")
-    ~pat_filter:(pfilter "class_type") ;
+add_quotation (d,"cltyp'") cltyp_quot
+    ~mexp:Filters.me#cltyp ~mpat:Filters.mp#cltyp
+    ~exp_filter:(efilter "cltyp")
+    ~pat_filter:(pfilter "cltyp") ;
   
-add_quotation (d,"class_exp'") class_exp_quot
-    ~mexp:Filters.me#class_exp
-    ~mpat:Filters.mp#class_exp
-    ~exp_filter:(efilter "class_exp")
-    ~pat_filter:(pfilter "class_exp") ;
+add_quotation (d,"clexp'") clexp_quot
+    ~mexp:Filters.me#clexp
+    ~mpat:Filters.mp#clexp
+    ~exp_filter:(efilter "clexp")
+    ~pat_filter:(pfilter "clexp") ;
   
-add_quotation (d,"class_sig_item'") class_sig_item_quot
-    ~mexp:Filters.me#class_sig_item
-    ~mpat:Filters.mp#class_sig_item
-    ~exp_filter:(efilter "class_sig_item")
-    ~pat_filter:(pfilter "class_sig_item") ;
+add_quotation (d,"clsigi'") clsigi_quot
+    ~mexp:Filters.me#clsigi
+    ~mpat:Filters.mp#clsigi
+    ~exp_filter:(efilter "clsigi")
+    ~pat_filter:(pfilter "clsigi") ;
 
 add_quotation (d,"cstru'") cstru_quot
     ~mexp:Filters.me#cstru
@@ -291,11 +291,11 @@ add_quotation (d,"cstru'") cstru_quot
     ~exp_filter:(efilter "cstru")
     ~pat_filter:(pfilter "cstru") ;
   
-add_quotation (d,"with_constr'") with_constr_quot
-    ~mexp:Filters.me#with_constr
-    ~mpat:Filters.mp#with_constr
-    ~exp_filter:(efilter "with_constr")
-    ~pat_filter:(pfilter "with_constr") ;
+add_quotation (d,"constr'") constr_quot
+    ~mexp:Filters.me#constr
+    ~mpat:Filters.mp#constr
+    ~exp_filter:(efilter "constr")
+    ~pat_filter:(pfilter "constr") ;
   
 add_quotation (d,"binding'") binding_quot
     ~mexp:Filters.me#binding
@@ -315,11 +315,11 @@ add_quotation (d,"case'") case_quot
     ~exp_filter:(efilter "case")
     ~pat_filter:(pfilter "case") ;
   
-add_quotation (d,"module_binding'") module_binding_quot
-    ~mexp:Filters.me#module_binding
-    ~mpat:Filters.mp#module_binding
-    ~exp_filter:(efilter "module_binding")
-    ~pat_filter:(pfilter "module_binding") ;
+add_quotation (d,"mbind'") mbind_quot
+    ~mexp:Filters.me#mbind
+    ~mpat:Filters.mp#mbind
+    ~exp_filter:(efilter "mbind")
+    ~pat_filter:(pfilter "mbind") ;
   
 add_quotation (d,"ident'") ident_quot
     ~mexp:Filters.me#ident

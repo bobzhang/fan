@@ -125,7 +125,7 @@ and exp =
   | `LabelS of alident | `Label of (alident * exp) | `Lazy of exp
   | `LetIn of (rec_flag * binding * exp)
   | `LetTryInWith of (rec_flag * binding * exp * case)
-  | `LetModule of (auident * module_exp * exp) | `Match of (exp * case)
+  | `LetModule of (auident * mexp * exp) | `Match of (exp * case)
   | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (pat * cstru)
   | `ObjPatEnd of pat | `OptLabl of (alident * exp) | `OptLablS of alident
   | `OvrInst of rec_exp | `OvrInstEmpty | `Seq of exp
@@ -133,69 +133,66 @@ and exp =
   | `Try of (exp * case) | `Constraint of (exp * ctyp)
   | `Coercion of (exp * ctyp * ctyp) | `Subtype of (exp * ctyp)
   | `While of (exp * exp) | `LetOpen of (ident * exp)
-  | `LocalTypeFun of (alident * exp) | `Package_exp of module_exp] 
+  | `LocalTypeFun of (alident * exp) | `Package_exp of mexp] 
 and rec_exp =
   [ `Sem of (rec_exp * rec_exp) | `RecBind of (ident * exp) | any | ant] 
 and mtyp =
-  [ ident' | `Sig of sig_item | `SigEnd | `Functor of (auident * mtyp * mtyp)
-  | `With of (mtyp * with_constr) | `ModuleTypeOf of module_exp | ant] 
-and sig_item =
-  [ `Class of class_type | `ClassType of class_type
-  | `Sem of (sig_item * sig_item) | `DirectiveSimple of alident
-  | `Directive of (alident * exp) | `Exception of of_ctyp
-  | `External of (alident * ctyp * strings) | `Include of mtyp
-  | `Module of (auident * mtyp) | `RecModule of module_binding
+  [ ident' | `Sig of sigi | `SigEnd | `Functor of (auident * mtyp * mtyp)
+  | `With of (mtyp * constr) | `ModuleTypeOf of mexp | ant] 
+and sigi =
+  [ `Class of cltyp | `ClassType of cltyp | `Sem of (sigi * sigi)
+  | `DirectiveSimple of alident | `Directive of (alident * exp)
+  | `Exception of of_ctyp | `External of (alident * ctyp * strings)
+  | `Include of mtyp | `Module of (auident * mtyp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `ModuleTypeEnd of auident
   | `Open of ident | `Type of typedecl | `Val of (alident * ctyp) | ant] 
-and with_constr =
+and constr =
   [ `TypeEq of (ctyp * ctyp) | `TypeEqPriv of (ctyp * ctyp)
   | `ModuleEq of (ident * ident) | `TypeSubst of (ctyp * ctyp)
-  | `ModuleSubst of (ident * ident) | `And of (with_constr * with_constr)
-  | ant] 
+  | `ModuleSubst of (ident * ident) | `And of (constr * constr) | ant] 
 and binding = [ `And of (binding * binding) | `Bind of (pat * exp) | ant] 
-and module_binding =
-  [ `And of (module_binding * module_binding)
-  | `ModuleBind of (auident * mtyp * module_exp)
+and mbind =
+  [ `And of (mbind * mbind) | `ModuleBind of (auident * mtyp * mexp)
   | `Constraint of (auident * mtyp) | ant] 
 and case =
   [ `Bar of (case * case) | `Case of (pat * exp)
   | `CaseWhen of (pat * exp * exp) | ant] 
-and module_exp =
-  [ vid' | `App of (module_exp * module_exp)
-  | `Functor of (auident * mtyp * module_exp) | `Struct of stru | `StructEnd
-  | `Constraint of (module_exp * mtyp) | `PackageModule of exp | ant] 
+and mexp =
+  [ vid' | `App of (mexp * mexp) | `Functor of (auident * mtyp * mexp)
+  | `Struct of stru | `StructEnd | `Constraint of (mexp * mtyp)
+  | `PackageModule of exp | ant] 
 and stru =
-  [ `Class of class_exp | `ClassType of class_type | `Sem of (stru * stru)
+  [ `Class of clexp | `ClassType of cltyp | `Sem of (stru * stru)
   | `DirectiveSimple of alident | `Directive of (alident * exp)
   | `Exception of of_ctyp | `StExp of exp
-  | `External of (alident * ctyp * strings) | `Include of module_exp
-  | `Module of (auident * module_exp) | `RecModule of module_binding
+  | `External of (alident * ctyp * strings) | `Include of mexp
+  | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
   | `Value of (rec_flag * binding) | ant] 
-and class_type =
+and cltyp =
   [ `ClassCon of (virtual_flag * ident * type_parameters)
-  | `ClassConS of (virtual_flag * ident) | `CtFun of (ctyp * class_type)
-  | `ObjTy of (ctyp * class_sig_item) | `ObjTyEnd of ctyp
-  | `Obj of class_sig_item | `ObjEnd | `And of (class_type * class_type)
-  | `CtCol of (class_type * class_type) | `Eq of (class_type * class_type)
-  | ant] 
-and class_sig_item =
-  [ `Eq of (ctyp * ctyp) | `Sem of (class_sig_item * class_sig_item)
-  | `SigInherit of class_type | `Method of (alident * private_flag * ctyp)
+  | `ClassConS of (virtual_flag * ident) | `CtFun of (ctyp * cltyp)
+  | `ObjTy of (ctyp * clsigi) | `ObjTyEnd of ctyp | `Obj of clsigi | 
+    `ObjEnd
+  | `And of (cltyp * cltyp) | `CtCol of (cltyp * cltyp)
+  | `Eq of (cltyp * cltyp) | ant] 
+and clsigi =
+  [ `Eq of (ctyp * ctyp) | `Sem of (clsigi * clsigi) | `SigInherit of cltyp
+  | `Method of (alident * private_flag * ctyp)
   | `CgVal of (alident * mutable_flag * virtual_flag * ctyp)
   | `CgVir of (alident * private_flag * ctyp) | ant] 
-and class_exp =
-  [ `CeApp of (class_exp * exp)
+and clexp =
+  [ `CeApp of (clexp * exp)
   | `ClassCon of (virtual_flag * ident * type_parameters)
-  | `ClassConS of (virtual_flag * ident) | `CeFun of (pat * class_exp)
-  | `LetIn of (rec_flag * binding * class_exp) | `Obj of cstru | `ObjEnd
+  | `ClassConS of (virtual_flag * ident) | `CeFun of (pat * clexp)
+  | `LetIn of (rec_flag * binding * clexp) | `Obj of cstru | `ObjEnd
   | `ObjPat of (pat * cstru) | `ObjPatEnd of pat
-  | `Constraint of (class_exp * class_type) | `And of (class_exp * class_exp)
-  | `Eq of (class_exp * class_exp) | ant] 
+  | `Constraint of (clexp * cltyp) | `And of (clexp * clexp)
+  | `Eq of (clexp * clexp) | ant] 
 and cstru =
   [ `Sem of (cstru * cstru) | `Eq of (ctyp * ctyp)
-  | `Inherit of (override_flag * class_exp)
-  | `InheritAs of (override_flag * class_exp * alident) | `Initializer of exp
+  | `Inherit of (override_flag * clexp)
+  | `InheritAs of (override_flag * clexp * alident) | `Initializer of exp
   | `CrMth of (alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (alident * override_flag * private_flag * exp)
   | `CrVal of (alident * override_flag * mutable_flag * exp)

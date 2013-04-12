@@ -52,7 +52,7 @@ let show_modules () =
   
 (*
   Get all definitions from mli file
-  Entrance: sig_item
+  Entrance: sigi
  *)
 
 
@@ -80,18 +80,18 @@ let plugin_remove plugin =
 (* Filter type definitions from mli file
    for simplicity, we only care about `toplevel type definitions'
    nested type definitions in module are not considered.
-   {:sig_item| type $x |}
+   {:sigi| type $x |}
  *)  
 (* let filter_type_defs ?qualified () = object *)
 (*   inherit Objs.map as super; *)
 (*   val mutable type_defs = None ; *)
-(*   method! sig_item = with sig_item fun *)
+(*   method! sigi = with sigi fun *)
 (*     [ *)
 (*      ( {| val $_ : $_ |} | {| include $_ |} | {| external $_ : $_ = $_ |} *)
 (*      | {|exception $_ |}  | {| class $_ |}  | {| class type $_ |} *)
 (*      | {| # $_ |}  | {| module $_:$_ |}    | {| module type $_ = $_ |} *)
 (*      | {| module rec $_ |}  | {| open $_ |} ) -> *)
-(*          {| |} (\* For sig_item, keep does not make sense. *\) *)
+(*          {| |} (\* For sigi, keep does not make sense. *\) *)
 (*      | {@_| type $((`TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin *)
 (*          let res = *)
 (*            match ctyp with *)
@@ -112,7 +112,7 @@ let plugin_remove plugin =
 (*          let () = type_defs <- Some {:stru| $type_defs ; $({:stru|type $x |}) |} in *)
 (*          {|type $x |}  *)
 (*          end *)
-(*      | x -> super#sig_item x]; *)
+(*      | x -> super#sigi x]; *)
 (*   method! ident = fun *)
 (*     [ {:ident| $x.$y |} as i -> *)
 (*       match qualified with *)
@@ -139,14 +139,14 @@ class type traversal = object
 end;
 
 (*
-  Entrance is  [module_exp]
-  Choose [module_exp] as an entrace point to make the traversal
+  Entrance is  [mexp]
+  Choose [mexp] as an entrace point to make the traversal
   more modular.
   Usage
   {[
-  let v =  {:module_exp| struct $s end |} in
-  let module_exp =
-  (Typehook.traversal ())#module_exp v 
+  let v =  {:mexp| struct $s end |} in
+  let mexp =
+  (Typehook.traversal ())#mexp v 
   ]}
 
   This function will apply all the plugins to generate
@@ -171,8 +171,8 @@ let traversal () : traversal  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! module_exp = with stru fun
-    [ {:module_exp| struct $u end |}  ->  begin 
+  method! mexp = with stru fun
+    [ {:mexp| struct $u end |}  ->  begin 
       self#in_module ;
       let res = self#stru u ;
       let mtyps = List.rev (self#get_cur_mtyps) ;
@@ -197,9 +197,9 @@ let traversal () : traversal  = object (self:'self_type)
                 |None -> {| $acc; $code |} ])  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
-      {:module_exp| struct $result end |}  
+      {:mexp| struct $result end |}  
     end
-    | x -> super#module_exp x ];
+    | x -> super#mexp x ];
 
   method! stru  = with stru fun
     [ {| type $_ and $_ |} as x -> begin
@@ -235,7 +235,7 @@ end;
 
 
 (* #default_quotation "exp"  ;; *)
-(* #lang_at "pat" "module_exp";; *)
+(* #lang_at "pat" "mexp";; *)
 
 let g = Gram.create_lexer
     ~keywords:

@@ -6,14 +6,13 @@ type key = string
 
 type 'a filter = 'a -> 'a 
 
-let interf_filters: (key,sig_item filter) Hashtbl.t = Hashtbl.create 40
+let interf_filters: (key,sigi filter) Hashtbl.t = Hashtbl.create 40
 
 let implem_filters: (key,stru filter) Hashtbl.t = Hashtbl.create 40
 
 let topphrase_filters: (key,stru filter) Hashtbl.t = Hashtbl.create 40
 
-let applied_interf_filters: (string * sig_item filter) Queue.t =
-  Queue.create ()
+let applied_interf_filters: (string * sigi filter) Queue.t = Queue.create ()
 
 let applied_implem_filters: (string * stru filter) Queue.t = Queue.create ()
 
@@ -47,7 +46,7 @@ let use_topphrase_filter s =
     with | Not_found  -> failwithf "filter %s is not registered" s in
   Queue.add (s, u) applied_topphrase_filters
 
-let register_sig_item_filter (k,f) = Hashtbl.replace interf_filters k f
+let register_sigi_filter (k,f) = Hashtbl.replace interf_filters k f
 
 let register_stru_filter (k,f) = Hashtbl.replace implem_filters k f
 

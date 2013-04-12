@@ -123,7 +123,7 @@ module Make
           clear ();
           phr
         end;
-       let  rec sig_handler  : sig_item -> option sig_item= with sig_item
+       let  rec sig_handler  : sigi -> option sigi= with sigi
           (fun
             [{| #load $str:s |}-> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
@@ -184,7 +184,7 @@ module Make
       let process_intf  name =
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (* (new Objs.clean_ast)#sig_item *) (fun x -> x)
+                (* (new Objs.clean_ast)#sigi *) (fun x -> x)
                 AstFilters.apply_interf_filters;
       let process_impl  name =
         process ~directive_handler:str_handler

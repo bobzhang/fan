@@ -20,14 +20,14 @@ module type ParserImpl =
       ?directive_handler:(stru -> stru option) ->
         FanLoc.t -> char XStream.t -> stru option
     val parse_interf :
-      ?directive_handler:(sig_item -> sig_item option) ->
-        FanLoc.t -> char XStream.t -> sig_item option
+      ?directive_handler:(sigi -> sigi option) ->
+        FanLoc.t -> char XStream.t -> sigi option
   end
 
 module type PrinterImpl =
   sig
     val print_interf :
-      ?input_file:string -> ?output_file:string -> sig_item option -> unit
+      ?input_file:string -> ?output_file:string -> sigi option -> unit
     val print_implem :
       ?input_file:string -> ?output_file:string -> stru option -> unit
   end
@@ -37,7 +37,7 @@ module type Syntax =
     include Warning
     include ParserImpl
     include PrinterImpl
-    val interf : (sig_item list * FanLoc.t option) Gram.t
+    val interf : (sigi list * FanLoc.t option) Gram.t
     val implem : (stru list * FanLoc.t option) Gram.t
     val top_phrase : stru option Gram.t
     val a_lident : [ `Lid of (loc * string) | ant] Gram.t
@@ -54,28 +54,28 @@ module type Syntax =
     val binding : binding Gram.t
     val binding_quot : binding Gram.t
     val rec_exp_quot : rec_exp Gram.t
-    val class_declaration : class_exp Gram.t
-    val class_description : class_type Gram.t
-    val class_exp : class_exp Gram.t
-    val class_exp_quot : class_exp Gram.t
-    val class_fun_binding : class_exp Gram.t
-    val class_fun_def : class_exp Gram.t
-    val class_info_for_class_exp : class_exp Gram.t
-    val class_info_for_class_type : class_type Gram.t
+    val class_declaration : clexp Gram.t
+    val class_description : cltyp Gram.t
+    val clexp : clexp Gram.t
+    val clexp_quot : clexp Gram.t
+    val class_fun_binding : clexp Gram.t
+    val class_fun_def : clexp Gram.t
+    val class_info_for_clexp : clexp Gram.t
+    val class_info_for_cltyp : cltyp Gram.t
     val class_longident : ident Gram.t
-    val class_longident_and_param : class_exp Gram.t
-    val class_sig_item : class_sig_item Gram.t
-    val class_sig_item_quot : class_sig_item Gram.t
-    val class_signature : class_sig_item Gram.t
+    val class_longident_and_param : clexp Gram.t
+    val clsigi : clsigi Gram.t
+    val clsigi_quot : clsigi Gram.t
+    val class_signature : clsigi Gram.t
     val cstru : cstru Gram.t
     val cstru_quot : cstru Gram.t
     val class_structure : cstru Gram.t
-    val class_type : class_type Gram.t
-    val class_type_declaration : class_type Gram.t
-    val class_type_longident : ident Gram.t
-    val class_type_longident_and_param : class_type Gram.t
-    val class_type_plus : class_type Gram.t
-    val class_type_quot : class_type Gram.t
+    val cltyp : cltyp Gram.t
+    val cltyp_declaration : cltyp Gram.t
+    val cltyp_longident : ident Gram.t
+    val cltyp_longident_and_param : cltyp Gram.t
+    val cltyp_plus : cltyp Gram.t
+    val cltyp_quot : cltyp Gram.t
     val comma_ctyp : type_parameters Gram.t
     val vid : vid Gram.t
     val comma_exp : exp Gram.t
@@ -115,15 +115,15 @@ module type Syntax =
     val let_binding : binding Gram.t
     val meth_list : (name_ctyp * row_var_flag) Gram.t
     val meth_decl : name_ctyp Gram.t
-    val module_binding : module_binding Gram.t
-    val module_binding0 : module_exp Gram.t
-    val module_binding_quot : module_binding Gram.t
+    val mbind : mbind Gram.t
+    val mbind0 : mexp Gram.t
+    val mbind_quot : mbind Gram.t
     val module_declaration : mtyp Gram.t
-    val module_exp : module_exp Gram.t
-    val module_exp_quot : module_exp Gram.t
+    val mexp : mexp Gram.t
+    val mexp_quot : mexp Gram.t
     val module_longident : vid Gram.t
     val module_longident_with_app : ident Gram.t
-    val module_rec_declaration : module_binding Gram.t
+    val module_rec_declaration : mbind Gram.t
     val mtyp : mtyp Gram.t
     val mtyp_quot : mtyp Gram.t
     val name_tags : tag_names Gram.t
@@ -151,9 +151,9 @@ module type Syntax =
     val sem_pat : pat Gram.t
     val sem_pat_for_list : (pat -> pat) Gram.t
     val sequence : exp Gram.t
-    val sig_item : sig_item Gram.t
-    val sig_item_quot : sig_item Gram.t
-    val sig_items : sig_item Gram.t
+    val sigi : sigi Gram.t
+    val sigi_quot : sigi Gram.t
+    val sigis : sigi Gram.t
     val star_ctyp : ctyp Gram.t
     val stru : stru Gram.t
     val stru_quot : stru Gram.t
@@ -168,8 +168,8 @@ module type Syntax =
     val type_parameters : (ctyp -> ctyp) Gram.t
     val typevars : ctyp Gram.t
     val val_longident : ident Gram.t
-    val with_constr : with_constr Gram.t
-    val with_constr_quot : with_constr Gram.t
+    val constr : constr Gram.t
+    val constr_quot : constr Gram.t
     val prefixop : exp Gram.t
     val infixop0 : exp Gram.t
     val infixop1 : exp Gram.t
@@ -237,9 +237,9 @@ module type PRECAST =
     val loaded_modules : string list ref
     val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit
     val register_stru_parser : stru parser_fun -> unit
-    val register_sig_item_parser : sig_item parser_fun -> unit
-    val register_parser : stru parser_fun -> sig_item parser_fun -> unit
-    val current_parser : unit -> (stru parser_fun * sig_item parser_fun)
+    val register_sigi_parser : sigi parser_fun -> unit
+    val register_parser : stru parser_fun -> sigi parser_fun -> unit
+    val current_parser : unit -> (stru parser_fun * sigi parser_fun)
     val plugin : (module Id) -> (module PLUGIN) -> unit
     val syntax_plugin : (module Id) -> (module SyntaxPlugin) -> unit
     val syntax_extension : (module Id) -> (module SyntaxExtension) -> unit
@@ -253,9 +253,9 @@ module type PRECAST =
     val enable_null_printer : unit -> unit
     val enable_auto : (unit -> bool) -> unit
     val register_stru_printer : stru printer_fun -> unit
-    val register_sig_item_printer : sig_item printer_fun -> unit
-    val register_printer : stru printer_fun -> sig_item printer_fun -> unit
-    val current_printer : unit -> (stru printer_fun * sig_item printer_fun)
+    val register_sigi_printer : sigi printer_fun -> unit
+    val register_printer : stru printer_fun -> sigi printer_fun -> unit
+    val current_printer : unit -> (stru printer_fun * sigi printer_fun)
     val declare_dyn_module : string -> (unit -> unit) -> unit
     module CurrentParser : ParserImpl
     module CurrentPrinter : PrinterImpl

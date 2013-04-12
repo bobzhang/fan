@@ -96,7 +96,7 @@ module Make(PreCast:Sig.PRECAST) =
        let phr =
          try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
        clear (); phr)
-    let rec sig_handler: sig_item -> sig_item option =
+    let rec sig_handler: sigi -> sigi option =
       function
       | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
           (rewrite_and_load "" s; None)

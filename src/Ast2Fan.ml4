@@ -136,11 +136,11 @@ class printer = object(self:'self)
 
 
        | Ptyp_package (lid, ls) ->
-           let with_constrs =
+           let constrs =
              List.map
                (fun (lid,ty) ->
-                 {:with_constr| type $(id:self#longident_loc lid) = $(self#core_type ty) |} ) ls in 
-           {|(module $(id:self#longident_loc lid) with $(list:with_constrs) )|}
+                 {:constr| type $(id:self#longident_loc lid) = $(self#core_type ty) |} ) ls in 
+           {|(module $(id:self#longident_loc lid) with $(list:constrs) )|}
       ];
      method pattern {ppat_desc=x;ppat_loc=_loc} =
        with pat match x with
@@ -300,7 +300,7 @@ class printer = object(self:'self)
             let lst = List.map (fun ({txt;_},e) -> {:rec_exp| $lid:txt = $(self#exp e)|}) lst in
             {| {< $list:lst >}|}
         | Pexp_letmodule ({txt;_},me,e) ->
-            {| let module $txt = $(self#module_exp me) in $(self#exp e) |}
+            {| let module $txt = $(self#mexp me) in $(self#exp e) |}
         | Pexp_assert e ->
             {| assert $(self#exp e) |}
         | Pexp_assertfalse -> {| assert false |}
@@ -313,23 +313,23 @@ class printer = object(self:'self)
         | Pexp_newtype (str,e) ->
             {| fun (type $str) ->  $(self#exp e) |}
         | Pexp_pack me ->
-            {| (module $(self#module_exp me) ) |}
+            {| (module $(self#mexp me) ) |}
         | Pexp_open (lid_loc,e) ->
             {| $(id:self#longident_loc lid_loc).($(self#exp e) ) |}
         ];
 
-     method module_exp {pmod_desc=x;pmod_loc = _loc} : Ast.module_exp =
-       with module_exp match x with
+     method mexp {pmod_desc=x;pmod_loc = _loc} : Ast.mexp =
+       with mexp match x with
        [ Pmod_ident lid_loc ->
          {| $(id:self#longident_loc lid_loc) |}
        | Pmod_structure s ->
            {| struct $(self#structure s) end|}
        | Pmod_functor ({txt;_},mty,me) ->
-           {| functor ($txt : $(self#mtyp mty)) -> $(self#module_exp me) |}
+           {| functor ($txt : $(self#mtyp mty)) -> $(self#mexp me) |}
        | Pmod_apply (me1,me2) ->
-           {| $(self#module_exp me1) $(self#module_exp me2) |}
+           {| $(self#mexp me1) $(self#mexp me2) |}
        | Pmod_constraint (me,mty) ->
-           {| ( $(self#module_exp me) : $(self#mtyp mty) ) |}
+           {| ( $(self#mexp me) : $(self#mtyp mty) ) |}
        | Pmod_unpack e ->
            {| (val $(self#exp e)) |}
        ];
@@ -355,8 +355,8 @@ class printer = object(self:'self)
          [
           {@loc| $(id:self#longident_loc lid_loc) |}::
           u] ;
-     method with_constraint  (({loc=_loc;_} as lid1),w)  =
-       with with_constr match w with
+     method constraint  (({loc=_loc;_} as lid1),w)  =
+       with constr match w with
        [ Pwith_type ({ptype_params=ls;ptype_manifest=Some ty;ptype_variance;_} ) -> 
            {| type $(self#lhs_type_declaration (ls, ptype_variance,lid1))
                  = $(self#core_type ty)|}
@@ -378,10 +378,10 @@ class printer = object(self:'self)
        | Pmty_functor ({txt;_},mty1,mty2 ) ->
            {| functor ($txt : $(self#mtyp mty1)) -> $(self#mtyp mty2) |}
        | Pmty_with (mt1,lst) ->
-           let lst = List.map self#with_constraint lst in
+           let lst = List.map self#constraint lst in
            {| $(self#mtyp mt1) with $list:lst |}
        | Pmty_typeof me ->
-           {| module type of $(self#module_exp me) |}
+           {| module type of $(self#mexp me) |}
        ];  
 
      method structure_item {pstr_desc=x;pstr_loc=_loc} : Ast.stru =
@@ -392,14 +392,14 @@ class printer = object(self:'self)
              List.map (fun (p,e) -> {:binding| $(self#pattern p) = $(self#exp e) |}) lst in 
            {|let $(rec:self#rec_flag rf) $list:bindings |}
        | Pstr_module ({txt;_},me) ->
-           {| module $txt = $(self#module_exp me) |}
+           {| module $txt = $(self#mexp me) |}
        | Pstr_modtype ({txt;_},mty) ->
            {| module type $txt = $(self#mtyp mty) |}
        | Pstr_open lid ->
            {| open $(id:self#longident_loc lid) |}
        | Pstr_include me ->
-           {| include $(self#module_exp me) |}
-       | Pstr_class_type _ 
+           {| include $(self#mexp me) |}
+       | Pstr_cltyp _ 
        | Pstr_class _
        | Pstr_recmodule _
        | Pstr_exn_rebind _
@@ -411,21 +411,21 @@ class printer = object(self:'self)
 
      method structure (ls:structure) : Ast.stru =
        assert false; 
-     method signature (ls:signature)  : Ast.sig_item =
+     method signature (ls:signature)  : Ast.sigi =
        assert false;
-     method signature_item {psig_desc=x;psig_loc=_loc} : Ast.sig_item =
+     method signature_item {psig_desc=x;psig_loc=_loc} : Ast.sigi =
        raise Not_found;
      method class_fields (ls:list class_field) : Ast.cstru =
        assert false;
      method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.cstru =
        assert false;
-     method class_exp {pcl_desc=x;pcl_loc=_loc} : Ast.class_exp = assert false;
-     method class_type ({pci_exp;_}: class_infos class_type)  : Ast.class_type = assert false;
-  (*    method class_types ls = *)
-  (*      with class_type_declaration *)
-  (*      {| $(list:List.map self#class_type ls ) |} ; *)
-  (* {:class_type| object end |} *)
-  (*   {:class_type| $a and $b |} *)
+     method clexp {pcl_desc=x;pcl_loc=_loc} : Ast.clexp = assert false;
+     method cltyp ({pci_exp;_}: class_infos cltyp)  : Ast.cltyp = assert false;
+  (*    method cltyps ls = *)
+  (*      with cltyp_declaration *)
+  (*      {| $(list:List.map self#cltyp ls ) |} ; *)
+  (* {:cltyp| object end |} *)
+  (*   {:cltyp| $a and $b |} *)
        (* {:stru| class type a = object end and b = object end|} *)
 end;
 

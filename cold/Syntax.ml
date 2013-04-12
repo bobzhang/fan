@@ -31,15 +31,15 @@ let class_declaration = Gram.mk "class_declaration"
 
 let class_description = Gram.mk "class_description"
 
-let class_exp = Gram.mk "class_exp"
+let clexp = Gram.mk "clexp"
 
 let class_fun_binding = Gram.mk "class_fun_binding"
 
 let class_fun_def = Gram.mk "class_fun_def"
 
-let class_info_for_class_exp = Gram.mk "class_info_for_class_exp"
+let class_info_for_clexp = Gram.mk "class_info_for_clexp"
 
-let class_info_for_class_type = Gram.mk "class_info_for_class_type"
+let class_info_for_cltyp = Gram.mk "class_info_for_cltyp"
 
 let class_longident = Gram.mk "class_longident"
 
@@ -47,7 +47,7 @@ let class_longident_and_param = Gram.mk "class_longident_and_param"
 
 let class_name_and_param = Gram.mk "class_name_and_param"
 
-let class_sig_item = Gram.mk "class_sig_item"
+let clsigi = Gram.mk "clsigi"
 
 let class_signature = Gram.mk "class_signature"
 
@@ -55,15 +55,15 @@ let cstru = Gram.mk "cstru"
 
 let class_structure = Gram.mk "class_structure"
 
-let class_type = Gram.mk "class_type"
+let cltyp = Gram.mk "cltyp"
 
-let class_type_declaration = Gram.mk "class_type_declaration"
+let cltyp_declaration = Gram.mk "cltyp_declaration"
 
-let class_type_longident = Gram.mk "class_type_longident"
+let cltyp_longident = Gram.mk "cltyp_longident"
 
-let class_type_longident_and_param = Gram.mk "class_type_longident_and_param"
+let cltyp_longident_and_param = Gram.mk "cltyp_longident_and_param"
 
-let class_type_plus = Gram.mk "class_type_plus"
+let cltyp_plus = Gram.mk "cltyp_plus"
 
 let comma_ctyp = Gram.mk "comma_ctyp"
 
@@ -139,13 +139,13 @@ let meth_list = Gram.mk "meth_list"
 
 let meth_decl = Gram.mk "meth_decl"
 
-let module_binding = Gram.mk "module_binding"
+let mbind = Gram.mk "mbind"
 
-let module_binding = Gram.mk "module_binding"
+let mbind = Gram.mk "mbind"
 
-let module_binding0 = Gram.mk "module_binding0"
+let mbind0 = Gram.mk "mbind0"
 
-let module_exp = Gram.mk "module_exp"
+let mexp = Gram.mk "mexp"
 
 let module_longident = Gram.mk "module_longident"
 
@@ -213,9 +213,9 @@ let semi = Gram.mk "semi"
 
 let sequence = Gram.mk "sequence"
 
-let sig_item = Gram.mk "sig_item"
+let sigi = Gram.mk "sigi"
 
-let sig_items = Gram.mk "sig_items"
+let sigis = Gram.mk "sigis"
 
 let star_ctyp = Gram.mk "star_ctyp"
 
@@ -241,7 +241,7 @@ let typevars = Gram.mk "typevars"
 
 let val_longident = Gram.mk "val_longident"
 
-let with_constr = Gram.mk "with_constr"
+let constr = Gram.mk "constr"
 
 let exp_quot = Gram.mk "exp_quot"
 
@@ -251,21 +251,21 @@ let ctyp_quot = Gram.mk "ctyp_quot"
 
 let stru_quot = Gram.mk "stru_quot"
 
-let sig_item_quot = Gram.mk "sig_item_quot"
+let sigi_quot = Gram.mk "sigi_quot"
 
 let cstru_quot = Gram.mk "cstru_quot"
 
-let class_sig_item_quot = Gram.mk "class_sig_item_quot"
+let clsigi_quot = Gram.mk "clsigi_quot"
 
-let module_exp_quot = Gram.mk "module_exp_quot"
+let mexp_quot = Gram.mk "mexp_quot"
 
 let mtyp_quot = Gram.mk "mtyp_quot"
 
-let class_type_quot = Gram.mk "class_type_quot"
+let cltyp_quot = Gram.mk "cltyp_quot"
 
-let class_exp_quot = Gram.mk "class_exp_quot"
+let clexp_quot = Gram.mk "clexp_quot"
 
-let with_constr_quot = Gram.mk "with_constr_quot"
+let constr_quot = Gram.mk "constr_quot"
 
 let binding_quot = Gram.mk "binding_quot"
 
@@ -303,7 +303,7 @@ let sequence' = Gram.mk "sequence'"
 
 let fun_def = Gram.mk "fun_def"
 
-let module_binding_quot = Gram.mk "module_binding_quot"
+let mbind_quot = Gram.mk "mbind_quot"
 
 let ident_quot = Gram.mk "ident_quot"
 

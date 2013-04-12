@@ -15,9 +15,9 @@ let apply () = begin
     stru: First
     [ macro_def{x} -> execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
         (fun a b -> {:stru| $a; $b |}) x ]
-    (* sig_item: First *)
+    (* sigi: First *)
     (* [ macro_def_sig{x} -> *)
-    (*   execute_macro ~exp ~pat {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) x ] *)
+    (*   execute_macro ~exp ~pat {:sigi||} (fun a b -> {:sigi| $a; $b |}) x ] *)
     macro_def:
     [ "DEFINE"; uident{i}; opt_macro_value{def} -> Def i def
     | "UNDEF";  uident{i} -> Und i
@@ -35,7 +35,7 @@ let apply () = begin
     (* | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} -> *)
     (*     make_ITE_result sg1 sg2 *)
     (* | "INCLUDE"; `STR (_, fname) -> *)
-    (*     Lazy (lazy (FanBasic.parse_include_file sig_items fname)) ] *)
+    (*     Lazy (lazy (FanBasic.parse_include_file sigis fname)) ] *)
 
     uident_eval_ifdef:
     [ uident{i} -> Stack.push (is_defined i) stack ]
@@ -62,13 +62,13 @@ let apply () = begin
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
     (*        execute_macro_if_active_branch ~exp ~pat *)
-    (*       _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Then d *)
-    (*        | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]    *)
+    (*       _loc {:sigi||} (fun a b -> {:sigi| $a; $b |}) Then d *)
+    (*        | sigi{si}; semi -> Str si ]{sgl} -> sgl ]    *)
     (* sglist_else: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
     (*          execute_macro_if_active_branch ~exp ~pat *)
-    (*            _loc {:sig_item||} (fun a b -> {:sig_item| $a; $b |}) Else d *)
-    (* | sig_item{si}; semi -> Str si ]{sgl} -> sgl ]   *)
+    (*            _loc {:sigi||} (fun a b -> {:sigi| $a; $b |}) Else d *)
+    (* | sigi{si}; semi -> Str si ]{sgl} -> sgl ]   *)
     endif: [ "END" -> () | "ENDIF" -> () ]
     opt_macro_value:
     [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; exp{e} -> Some (pl, e)

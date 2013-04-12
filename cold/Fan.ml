@@ -21,9 +21,9 @@ let _ =
     ~filter:(fun s  ->
                let _loc = loc_of s in
                let v = `Struct (_loc, s) in
-               let module_exp = (Typehook.traversal ())#module_exp v in
+               let mexp = (Typehook.traversal ())#mexp v in
                let code =
-                 match module_exp with
+                 match mexp with
                  | `Struct (_loc,item) -> item
                  | _ -> failwith "can not find items back " in
                if Typehook.show_code.contents
@@ -59,8 +59,8 @@ let _ =
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 
 let _ =
-  add_quotation (d, "sig_item") sig_item_quot ~mexp:(Filters.me#sig_item)
-    ~mpat:(Filters.mp#sig_item) ~exp_filter ~pat_filter
+  add_quotation (d, "sigi") sigi_quot ~mexp:(Filters.me#sigi)
+    ~mpat:(Filters.mp#sigi) ~exp_filter ~pat_filter
 
 let _ =
   add_quotation (d, "stru") stru_quot ~mexp:(Filters.me#stru)
@@ -83,32 +83,28 @@ let _ =
     ~mpat:(Filters.mp#mtyp) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "module_exp") module_exp_quot
-    ~mexp:(Filters.me#module_exp) ~mpat:(Filters.mp#module_exp) ~exp_filter
-    ~pat_filter
+  add_quotation (d, "mexp") mexp_quot ~mexp:(Filters.me#mexp)
+    ~mpat:(Filters.mp#mexp) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "class_type") class_type_quot
-    ~mexp:(Filters.me#class_type) ~mpat:(Filters.mp#class_type) ~exp_filter
-    ~pat_filter
+  add_quotation (d, "cltyp") cltyp_quot ~mexp:(Filters.me#cltyp)
+    ~mpat:(Filters.mp#cltyp) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "class_exp") class_exp_quot ~mexp:(Filters.me#class_exp)
-    ~mpat:(Filters.mp#class_exp) ~exp_filter ~pat_filter
+  add_quotation (d, "clexp") clexp_quot ~mexp:(Filters.me#clexp)
+    ~mpat:(Filters.mp#clexp) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "class_sig_item") class_sig_item_quot
-    ~mexp:(Filters.me#class_sig_item) ~mpat:(Filters.mp#class_sig_item)
-    ~exp_filter ~pat_filter
+  add_quotation (d, "clsigi") clsigi_quot ~mexp:(Filters.me#clsigi)
+    ~mpat:(Filters.mp#clsigi) ~exp_filter ~pat_filter
 
 let _ =
   add_quotation (d, "cstru") cstru_quot ~mexp:(Filters.me#cstru)
     ~mpat:(Filters.mp#cstru) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "with_constr") with_constr_quot
-    ~mexp:(Filters.me#with_constr) ~mpat:(Filters.mp#with_constr) ~exp_filter
-    ~pat_filter
+  add_quotation (d, "constr") constr_quot ~mexp:(Filters.me#constr)
+    ~mpat:(Filters.mp#constr) ~exp_filter ~pat_filter
 
 let _ =
   add_quotation (d, "binding") binding_quot ~mexp:(Filters.me#binding)
@@ -123,9 +119,8 @@ let _ =
     ~mpat:(Filters.mp#case) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "module_binding") module_binding_quot
-    ~mexp:(Filters.me#module_binding) ~mpat:(Filters.mp#module_binding)
-    ~exp_filter ~pat_filter
+  add_quotation (d, "mbind") mbind_quot ~mexp:(Filters.me#mbind)
+    ~mpat:(Filters.mp#mbind) ~exp_filter ~pat_filter
 
 let _ =
   add_quotation (d, "ident") ident_quot ~mexp:(Filters.me#ident)
@@ -187,9 +182,9 @@ let pfilter str e =
     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str)))))
 
 let _ =
-  add_quotation (d, "sig_item'") sig_item_quot ~mexp:(Filters.me#sig_item)
-    ~mpat:(Filters.mp#sig_item) ~exp_filter:(efilter "sig_item")
-    ~pat_filter:(pfilter "sig_item")
+  add_quotation (d, "sigi'") sigi_quot ~mexp:(Filters.me#sigi)
+    ~mpat:(Filters.mp#sigi) ~exp_filter:(efilter "sigi")
+    ~pat_filter:(pfilter "sigi")
 
 let _ =
   add_quotation (d, "stru'") stru_quot ~mexp:(Filters.me#stru)
@@ -222,25 +217,24 @@ let _ =
     ~pat_filter:(pfilter "mtyp")
 
 let _ =
-  add_quotation (d, "module_exp'") module_exp_quot
-    ~mexp:(Filters.me#module_exp) ~mpat:(Filters.mp#module_exp)
-    ~exp_filter:(efilter "module_exp") ~pat_filter:(pfilter "module_exp")
+  add_quotation (d, "mexp'") mexp_quot ~mexp:(Filters.me#mexp)
+    ~mpat:(Filters.mp#mexp) ~exp_filter:(efilter "mexp")
+    ~pat_filter:(pfilter "mexp")
 
 let _ =
-  add_quotation (d, "class_type'") class_type_quot
-    ~mexp:(Filters.me#class_type) ~mpat:(Filters.mp#class_type)
-    ~exp_filter:(efilter "class_type") ~pat_filter:(pfilter "class_type")
+  add_quotation (d, "cltyp'") cltyp_quot ~mexp:(Filters.me#cltyp)
+    ~mpat:(Filters.mp#cltyp) ~exp_filter:(efilter "cltyp")
+    ~pat_filter:(pfilter "cltyp")
 
 let _ =
-  add_quotation (d, "class_exp'") class_exp_quot ~mexp:(Filters.me#class_exp)
-    ~mpat:(Filters.mp#class_exp) ~exp_filter:(efilter "class_exp")
-    ~pat_filter:(pfilter "class_exp")
+  add_quotation (d, "clexp'") clexp_quot ~mexp:(Filters.me#clexp)
+    ~mpat:(Filters.mp#clexp) ~exp_filter:(efilter "clexp")
+    ~pat_filter:(pfilter "clexp")
 
 let _ =
-  add_quotation (d, "class_sig_item'") class_sig_item_quot
-    ~mexp:(Filters.me#class_sig_item) ~mpat:(Filters.mp#class_sig_item)
-    ~exp_filter:(efilter "class_sig_item")
-    ~pat_filter:(pfilter "class_sig_item")
+  add_quotation (d, "clsigi'") clsigi_quot ~mexp:(Filters.me#clsigi)
+    ~mpat:(Filters.mp#clsigi) ~exp_filter:(efilter "clsigi")
+    ~pat_filter:(pfilter "clsigi")
 
 let _ =
   add_quotation (d, "cstru'") cstru_quot ~mexp:(Filters.me#cstru)
@@ -248,9 +242,9 @@ let _ =
     ~pat_filter:(pfilter "cstru")
 
 let _ =
-  add_quotation (d, "with_constr'") with_constr_quot
-    ~mexp:(Filters.me#with_constr) ~mpat:(Filters.mp#with_constr)
-    ~exp_filter:(efilter "with_constr") ~pat_filter:(pfilter "with_constr")
+  add_quotation (d, "constr'") constr_quot ~mexp:(Filters.me#constr)
+    ~mpat:(Filters.mp#constr) ~exp_filter:(efilter "constr")
+    ~pat_filter:(pfilter "constr")
 
 let _ =
   add_quotation (d, "binding'") binding_quot ~mexp:(Filters.me#binding)
@@ -268,10 +262,9 @@ let _ =
     ~pat_filter:(pfilter "case")
 
 let _ =
-  add_quotation (d, "module_binding'") module_binding_quot
-    ~mexp:(Filters.me#module_binding) ~mpat:(Filters.mp#module_binding)
-    ~exp_filter:(efilter "module_binding")
-    ~pat_filter:(pfilter "module_binding")
+  add_quotation (d, "mbind'") mbind_quot ~mexp:(Filters.me#mbind)
+    ~mpat:(Filters.mp#mbind) ~exp_filter:(efilter "mbind")
+    ~pat_filter:(pfilter "mbind")
 
 let _ =
   add_quotation (d, "ident'") ident_quot ~mexp:(Filters.me#ident)

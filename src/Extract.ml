@@ -2,8 +2,8 @@
    reference:
    [printtyp.ml] [oprint.ml]
    the main function [tree_of_typexp]
-   Compiler dump [Types.signature] to [out_sig_item] and then
-   print [out_sig_item]
+   Compiler dump [Types.signature] to [out_sigi] and then
+   print [out_sigi]
 
  *)
 
@@ -25,7 +25,7 @@ let rec signature_item (x:Types.signature_item)  : option typedecl =
   | Sig_module _
   | Sig_class _
   | Sig_modtype _
-  | Sig_class_type _ -> None
+  | Sig_cltyp _ -> None
         (* copied from [printtyp] *)
   | Sig_type (id,_,_) when Btype.is_row_name (Ident.name id) -> None
 

@@ -47,16 +47,16 @@ type 'a tag =
   | Exp
   | Rec_exp
   | Mtyp
-  | Sig_item
-  | With_constr
+  | Sigi
+  | Constr
   | Binding
-  | Module_binding
+  | Mbind
   | Case
-  | Module_exp
+  | Mexp
   | Stru
-  | Class_type
-  | Class_sig_item
-  | Class_exp
+  | Cltyp
+  | Clsigi
+  | Clexp
   | Cstru
   | Ep
   | Rec_bind 
@@ -105,16 +105,16 @@ let string_of_tag =
   | Exp  -> "exp"
   | Rec_exp  -> "rec_exp"
   | Mtyp  -> "mtyp"
-  | Sig_item  -> "sig_item"
-  | With_constr  -> "with_constr"
+  | Sigi  -> "sigi"
+  | Constr  -> "constr"
   | Binding  -> "binding"
-  | Module_binding  -> "module_binding"
+  | Mbind  -> "mbind"
   | Case  -> "case"
-  | Module_exp  -> "module_exp"
+  | Mexp  -> "mexp"
   | Stru  -> "stru"
-  | Class_type  -> "class_type"
-  | Class_sig_item  -> "class_sig_item"
-  | Class_exp  -> "class_exp"
+  | Cltyp  -> "cltyp"
+  | Clsigi  -> "clsigi"
+  | Clexp  -> "clexp"
   | Cstru  -> "cstru"
   | Ep  -> "ep"
   | Rec_bind  -> "rec_bind"
@@ -203,25 +203,25 @@ let rec_exp_tag: rec_exp tag = Rec_exp
 
 let mtyp_tag: mtyp tag = Mtyp
 
-let sig_item_tag: sig_item tag = Sig_item
+let sigi_tag: sigi tag = Sigi
 
-let with_constr_tag: with_constr tag = With_constr
+let constr_tag: constr tag = Constr
 
 let binding_tag: binding tag = Binding
 
-let module_binding_tag: module_binding tag = Module_binding
+let mbind_tag: mbind tag = Mbind
 
 let case_tag: case tag = Case
 
-let module_exp_tag: module_exp tag = Module_exp
+let mexp_tag: mexp tag = Mexp
 
 let stru_tag: stru tag = Stru
 
-let class_type_tag: class_type tag = Class_type
+let cltyp_tag: cltyp tag = Cltyp
 
-let class_sig_item_tag: class_sig_item tag = Class_sig_item
+let clsigi_tag: clsigi tag = Clsigi
 
-let class_exp_tag: class_exp tag = Class_exp
+let clexp_tag: clexp tag = Clexp
 
 let cstru_tag: cstru tag = Cstru
 

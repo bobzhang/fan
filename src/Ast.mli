@@ -21,16 +21,16 @@
 
     == Modules ==
     mtyp        :: The type of module types
-    sig_item           :: The type of signature items
+    sigi           :: The type of signature items
     stru           :: The type of structure items
-    module_exp        :: The type of module expressions
-    module_binding     :: The type of recursive module definitions
-    with_constr        :: The type of `with' constraints
+    mexp        :: The type of module expressions
+    mbind     :: The type of recursive module definitions
+    constr        :: The type of `with' constraints
 
     == Classes ==
-    class_type         :: The type of class types
-    class_sig_item     :: The type of class signature items
-    class_exp         :: The type of class expressions
+    cltyp         :: The type of class types
+    class_sigi     :: The type of class signature items
+    clexp         :: The type of class expressions
     cstru     :: The type of class structure items
  *)
 
@@ -317,7 +317,7 @@ and exp =
   | `Lazy of (loc * exp) (* lazy e *)
   | `LetIn of (loc * rec_flag * binding * exp)
   | `LetTryInWith of (loc * rec_flag * binding * exp * case)        
-  | `LetModule of (loc * auident * module_exp * exp) (* let module s = me in e *)
+  | `LetModule of (loc * auident * mexp * exp) (* let module s = me in e *)
   | `Match of (loc * exp * case) (* match e with [ mc ] *)
   | `New of (loc * ident) (* new i *)
   | `Obj of (loc * cstru) (* object ((p))? (cst)? end *)
@@ -341,7 +341,7 @@ and exp =
         (* let f x (type t) y z = e *)
   | `LocalTypeFun of (loc *  alident * exp)
         (* (module ME : S) which is represented as (module (ME : S)) *)
-  | `Package_exp of (loc * module_exp) ]
+  | `Package_exp of (loc * mexp) ]
 and rec_exp =
   [= `Sem of (loc * rec_exp * rec_exp)
   | `RecBind  of (loc * ident * exp)
@@ -353,16 +353,20 @@ and rec_exp =
  *)          
 and mtyp =
   [= ident'
-  | `Sig of (loc * sig_item)
+  | `Sig of (loc * sigi)
   | `SigEnd of loc
   | `Functor of (loc * auident * mtyp * mtyp)
-  | `With of (loc * mtyp * with_constr) (* mt with wc *)
-  | `ModuleTypeOf of (loc * module_exp) (* module type of m *)
+  | `With of (loc * mtyp * constr) (* mt with wc *)
+
+  (*
+    http://caml.inria.fr/pub/docs/manual-ocaml/manual021.html#toc82
+   *)      
+  | `ModuleTypeOf of (loc * mexp)
   | ant  ]
-and sig_item =
-  [= `Class of (loc * class_type)
-  | `ClassType of (loc * class_type) (* class type cict *)
-  | `Sem of (loc * sig_item * sig_item)
+and sigi =
+  [= `Class of (loc * cltyp)
+  | `ClassType of (loc * cltyp) (* class type cict *)
+  | `Sem of (loc * sigi * sigi)
   | `DirectiveSimple of (loc * alident) (* # s or # s e *)
   | `Directive of (loc * alident * exp) (* semantics *)
         (* exception t *)
@@ -371,20 +375,20 @@ and sig_item =
   | `External of (loc * alident  * ctyp * (* meta_list  *)strings)
   | `Include of (loc * mtyp)
   | `Module of (loc * auident * mtyp) (* module s : mt *)
-  | `RecModule of (loc * module_binding) (* module rec mb *)
+  | `RecModule of (loc * mbind) (* module rec mb *)
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `ModuleTypeEnd of (loc * auident)
   | `Open of (loc * ident)
   | `Type of (loc * typedecl)
   | `Val of (loc * alident * ctyp)
   | ant  ]
-and with_constr =
+and constr =
   [= `TypeEq of (loc * ctyp * ctyp)
   | `TypeEqPriv of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident)
   | `TypeSubst of (loc * ctyp * ctyp)
   | `ModuleSubst of (loc * ident * ident)
-  | `And of (loc * with_constr * with_constr)
+  | `And of (loc * constr * constr)
   | ant  ]
              (*
     let-binding	::=	pattern =  exp  
@@ -396,10 +400,10 @@ and binding =
   [=  `And of (loc * binding * binding)
   | `Bind  of (loc * pat * exp)
   | ant  ]
-and module_binding =
+and mbind =
 (* module rec (s : mt) = me and (s : mt) = me *)
-  [= `And of (loc * module_binding * module_binding)
-  | `ModuleBind  of (loc *  auident * mtyp * module_exp) (* s : mt = me *)
+  [= `And of (loc * mbind * mbind)
+  | `ModuleBind  of (loc *  auident * mtyp * mexp) (* s : mt = me *)
   | `Constraint  of (loc * auident * mtyp) (* s : mt *)
   | ant ]
 and case =
@@ -407,20 +411,20 @@ and case =
   | `Case of (loc * pat * exp)
   | `CaseWhen of (loc * pat * exp * exp)
   | ant  ]
-and module_exp =
+and mexp =
   [= vid' 
-  | `App of (loc * module_exp * module_exp) (* me me *)
-  | `Functor of (loc * auident * mtyp * module_exp)
+  | `App of (loc * mexp * mexp) (* me me *)
+  | `Functor of (loc * auident * mtyp * mexp)
   | `Struct of (loc * stru)
   | `StructEnd of loc 
-  | `Constraint of (loc * module_exp * mtyp) (* (me : mt) *)
+  | `Constraint of (loc * mexp * mtyp) (* (me : mt) *)
         (* (value e) *)
         (* (value e : S) which is represented as (value (e : S)) *)
   | `PackageModule of (loc * exp)
   | ant  ]
 and stru =
-  [= `Class of (loc * class_exp) (* class cice *)
-  | `ClassType of (loc * class_type) (* class type cict *)
+  [= `Class of (loc * clexp) (* class cice *)
+  | `ClassType of (loc * cltyp) (* class type cict *)
   | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp)
@@ -432,31 +436,31 @@ and stru =
          *)     
   | `StExp of (loc * exp)
   | `External of (loc * alident  * ctyp *  strings)
-  | `Include of (loc * module_exp)
-  | `Module of (loc * auident * module_exp)
-  | `RecModule of (loc * module_binding)
+  | `Include of (loc * mexp)
+  | `Module of (loc * auident * mexp)
+  | `RecModule of (loc * mbind)
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `Open of (loc * ident) (* open i *)
   | `Type of (loc * typedecl) (* type t *)
   | `Value of (loc * rec_flag * binding) (* value (rec)? bi *)
   | ant  ]
-and class_type = (* class body type *)         
+and cltyp = (* class body type *)         
   [= `ClassCon of
     (loc * virtual_flag * ident *  type_parameters) (* (virtual)? i [ t ] *)
   | `ClassConS of (loc * virtual_flag * ident) (* (virtual)? i *)
-  | `CtFun of (loc * ctyp * class_type) (* [t] -> ct *)
-  | `ObjTy of (loc * ctyp * class_sig_item) (*object (ty) ..  end*)
+  | `CtFun of (loc * ctyp * cltyp) (* [t] -> ct *)
+  | `ObjTy of (loc * ctyp * clsigi) (*object (ty) ..  end*)
   | `ObjTyEnd of (loc * ctyp) (*object (ty) end*)
-  | `Obj of (loc * class_sig_item) (* object ... end *)
+  | `Obj of (loc * clsigi) (* object ... end *)
   | `ObjEnd of (loc) (* object end*)
-  | `And of (loc * class_type * class_type)
-  | `CtCol of (loc * class_type * class_type) (* ct : ct *)
-  | `Eq  of (loc * class_type * class_type) (* ct = ct *)
+  | `And of (loc * cltyp * cltyp)
+  | `CtCol of (loc * cltyp * cltyp) (* ct : ct *)
+  | `Eq  of (loc * cltyp * cltyp) (* ct = ct *)
   | ant ]
-and class_sig_item =
+and clsigi =
   [= `Eq of (loc * ctyp * ctyp)
-  | `Sem of (loc * class_sig_item * class_sig_item)
-  | `SigInherit of (loc * class_type)
+  | `Sem of (loc * clsigi * clsigi)
+  | `SigInherit of (loc * cltyp)
       (* method s : t or method private s : t *)
   | `Method of (loc * alident * private_flag * ctyp)
       (* val (virtual)? (mutable)? s : t *)
@@ -464,26 +468,26 @@ and class_sig_item =
       (* method virtual (private)? s : t *)
   | `CgVir of (loc *  alident * private_flag * ctyp)
   | ant ]
-and class_exp =
-  [= `CeApp of (loc * class_exp * exp)   (* ce e *)
+and clexp =
+  [= `CeApp of (loc * clexp * exp)   (* ce e *)
   | `ClassCon of (loc * virtual_flag * ident * type_parameters)(* virtual v [t]*)
   | `ClassConS of (loc * virtual_flag * ident) (* virtual v *)
-  | `CeFun of (loc * pat * class_exp) (* fun p -> ce *)
-  | `LetIn of (loc * rec_flag * binding * class_exp) (* let (rec)? bi in ce *)
+  | `CeFun of (loc * pat * clexp) (* fun p -> ce *)
+  | `LetIn of (loc * rec_flag * binding * clexp) (* let (rec)? bi in ce *)
   | `Obj of (loc  * cstru) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
   | `ObjPat of (loc * pat * cstru)(*object (p) .. end*)
   | `ObjPatEnd of (loc * pat) (* object (p) end*)
-  | `Constraint of (loc * class_exp * class_type) (* ce : ct *)
-  | `And of (loc * class_exp * class_exp)
-  | `Eq  of (loc * class_exp * class_exp)
+  | `Constraint of (loc * clexp * cltyp) (* ce : ct *)
+  | `And of (loc * clexp * clexp)
+  | `Eq  of (loc * clexp * clexp)
   | ant ]
 and cstru =
   [=
    `Sem of (loc * cstru * cstru)
   | `Eq of (loc * ctyp * ctyp)
-  | `Inherit of (loc * override_flag * class_exp)
-  | `InheritAs of (loc * override_flag * class_exp * alident)
+  | `Inherit of (loc * override_flag * clexp)
+  | `InheritAs of (loc * override_flag * clexp * alident)
   | `Initializer of (loc * exp)
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)

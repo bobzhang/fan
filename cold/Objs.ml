@@ -577,7 +577,7 @@ and pp_print_exp fmt =
         pp_print_exp _a3 pp_print_case _a4
   | `LetModule (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_module_exp _a2 pp_print_exp _a3
+        _a0 pp_print_auident _a1 pp_print_mexp _a2 pp_print_exp _a3
   | `Match (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1 pp_print_case _a2
@@ -637,7 +637,7 @@ and pp_print_exp fmt =
         _a0 pp_print_alident _a1 pp_print_exp _a2
   | `Package_exp (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Package_exp@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1
+        pp_print_mexp _a1
 and pp_print_rec_exp fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -653,29 +653,29 @@ and pp_print_mtyp fmt =
   | #ident' as _a0 -> (pp_print_ident' fmt _a0 :>'result36)
   | `Sig (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_sig_item _a1
+        pp_print_sigi _a1
   | `SigEnd _a0 -> Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" pp_print_loc _a0
   | `Functor (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mtyp _a3
   | `With (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_mtyp _a1 pp_print_with_constr _a2
+        pp_print_mtyp _a1 pp_print_constr _a2
   | `ModuleTypeOf (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1
+        pp_print_mexp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result36)
-and pp_print_sig_item fmt =
+and pp_print_sigi fmt =
   function
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1
+        pp_print_cltyp _a1
   | `ClassType (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1
+        pp_print_cltyp _a1
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_sig_item _a1 pp_print_sig_item _a2
+        pp_print_sigi _a1 pp_print_sigi _a2
   | `DirectiveSimple (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1
@@ -696,7 +696,7 @@ and pp_print_sig_item fmt =
         pp_print_auident _a1 pp_print_mtyp _a2
   | `RecModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_binding _a1
+        pp_print_mbind _a1
   | `ModuleType (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_mtyp _a2
@@ -713,7 +713,7 @@ and pp_print_sig_item fmt =
       Format.fprintf fmt "@[<1>(`Val@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_ctyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result35)
-and pp_print_with_constr fmt =
+and pp_print_constr fmt =
   function
   | `TypeEq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`TypeEq@ %a@ %a@ %a)@]" pp_print_loc _a0
@@ -732,7 +732,7 @@ and pp_print_with_constr fmt =
         pp_print_ident _a1 pp_print_ident _a2
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_with_constr _a1 pp_print_with_constr _a2
+        pp_print_constr _a1 pp_print_constr _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result34)
 and pp_print_binding fmt =
   function
@@ -743,14 +743,14 @@ and pp_print_binding fmt =
       Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_exp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result33)
-and pp_print_module_binding fmt =
+and pp_print_mbind fmt =
   function
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_binding _a1 pp_print_module_binding _a2
+        pp_print_mbind _a1 pp_print_mbind _a2
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_auident _a1 pp_print_mtyp _a2 pp_print_module_exp _a3
+        _a0 pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mexp _a3
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_mtyp _a2
@@ -767,15 +767,15 @@ and pp_print_case fmt =
       Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_pat _a1 pp_print_exp _a2 pp_print_exp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result31)
-and pp_print_module_exp fmt =
+and pp_print_mexp fmt =
   function
   | #vid' as _a0 -> (pp_print_vid' fmt _a0 :>'result30)
   | `App (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1 pp_print_module_exp _a2
+        pp_print_mexp _a1 pp_print_mexp _a2
   | `Functor (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_mtyp _a2 pp_print_module_exp _a3
+        pp_print_auident _a1 pp_print_mtyp _a2 pp_print_mexp _a3
   | `Struct (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" pp_print_loc _a0
         pp_print_stru _a1
@@ -783,7 +783,7 @@ and pp_print_module_exp fmt =
       Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" pp_print_loc _a0
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1 pp_print_mtyp _a2
+        pp_print_mexp _a1 pp_print_mtyp _a2
   | `PackageModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
@@ -792,10 +792,10 @@ and pp_print_stru fmt =
   function
   | `Class (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_exp _a1
+        pp_print_clexp _a1
   | `ClassType (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1
+        pp_print_cltyp _a1
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_stru _a1 pp_print_stru _a2
@@ -816,13 +816,13 @@ and pp_print_stru fmt =
         _a0 pp_print_alident _a1 pp_print_ctyp _a2 pp_print_strings _a3
   | `Include (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_exp _a1
+        pp_print_mexp _a1
   | `Module (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_auident _a1 pp_print_module_exp _a2
+        pp_print_auident _a1 pp_print_mexp _a2
   | `RecModule (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_module_binding _a1
+        pp_print_mbind _a1
   | `ModuleType (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_auident _a1 pp_print_mtyp _a2
@@ -836,7 +836,7 @@ and pp_print_stru fmt =
       Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_rec_flag _a1 pp_print_binding _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result29)
-and pp_print_class_type fmt =
+and pp_print_cltyp fmt =
   function
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" pp_print_loc
@@ -847,38 +847,38 @@ and pp_print_class_type fmt =
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CtFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_class_type _a2
+        pp_print_ctyp _a1 pp_print_cltyp _a2
   | `ObjTy (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjTy@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_class_sig_item _a2
+        pp_print_ctyp _a1 pp_print_clsigi _a2
   | `ObjTyEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjTyEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_sig_item _a1
+        pp_print_clsigi _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1 pp_print_class_type _a2
+        pp_print_cltyp _a1 pp_print_cltyp _a2
   | `CtCol (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1 pp_print_class_type _a2
+        pp_print_cltyp _a1 pp_print_cltyp _a2
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1 pp_print_class_type _a2
+        pp_print_cltyp _a1 pp_print_cltyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result28)
-and pp_print_class_sig_item fmt =
+and pp_print_clsigi fmt =
   function
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_ctyp _a1 pp_print_ctyp _a2
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_sig_item _a1 pp_print_class_sig_item _a2
+        pp_print_clsigi _a1 pp_print_clsigi _a2
   | `SigInherit (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_type _a1
+        pp_print_cltyp _a1
   | `Method (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
@@ -890,11 +890,11 @@ and pp_print_class_sig_item fmt =
       Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result27)
-and pp_print_class_exp fmt =
+and pp_print_clexp fmt =
   function
   | `CeApp (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_exp _a1 pp_print_exp _a2
+        pp_print_clexp _a1 pp_print_exp _a2
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_virtual_flag _a1 pp_print_ident _a2
@@ -904,10 +904,10 @@ and pp_print_class_exp fmt =
         pp_print_virtual_flag _a1 pp_print_ident _a2
   | `CeFun (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_pat _a1 pp_print_class_exp _a2
+        pp_print_pat _a1 pp_print_clexp _a2
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_class_exp _a3
+        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_clexp _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_cstru _a1
@@ -920,13 +920,13 @@ and pp_print_class_exp fmt =
         pp_print_pat _a1
   | `Constraint (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_exp _a1 pp_print_class_type _a2
+        pp_print_clexp _a1 pp_print_cltyp _a2
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_exp _a1 pp_print_class_exp _a2
+        pp_print_clexp _a1 pp_print_clexp _a2
   | `Eq (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_class_exp _a1 pp_print_class_exp _a2
+        pp_print_clexp _a1 pp_print_clexp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result26)
 and pp_print_cstru fmt =
   function
@@ -938,11 +938,11 @@ and pp_print_cstru fmt =
         pp_print_ctyp _a1 pp_print_ctyp _a2
   | `Inherit (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_override_flag _a1 pp_print_class_exp _a2
+        pp_print_override_flag _a1 pp_print_clexp _a2
   | `InheritAs (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_override_flag _a1 pp_print_class_exp _a2
-        pp_print_alident _a3
+        _a0 pp_print_override_flag _a1 pp_print_clexp _a2 pp_print_alident
+        _a3
   | `Initializer (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc _a0
         pp_print_exp _a1
@@ -1593,7 +1593,7 @@ class print =
               self#case _a4
         | `LetModule (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#auident _a1 self#module_exp _a2 self#exp _a3
+              self#loc _a0 self#auident _a1 self#mexp _a2 self#exp _a3
         | `Match (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a@ %a)@]" self#loc _a0
               self#exp _a1 self#case _a2
@@ -1654,7 +1654,7 @@ class print =
               _a0 self#alident _a1 self#exp _a2
         | `Package_exp (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Package_exp@ %a@ %a)@]" self#loc _a0
-              self#module_exp _a1
+              self#mexp _a1
     method rec_exp : 'fmt -> rec_exp -> unit=
       fun fmt  ->
         function
@@ -1671,8 +1671,8 @@ class print =
         function
         | #ident' as _a0 -> (self#ident' fmt _a0 :>unit)
         | `Sig (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc _a0
-              self#sig_item _a1
+            Format.fprintf fmt "@[<1>(`Sig@ %a@ %a)@]" self#loc _a0 self#sigi
+              _a1
         | `SigEnd _a0 ->
             Format.fprintf fmt "@[<1>(`SigEnd@ %a)@]" self#loc _a0
         | `Functor (_a0,_a1,_a2,_a3) ->
@@ -1680,23 +1680,23 @@ class print =
               _a0 self#auident _a1 self#mtyp _a2 self#mtyp _a3
         | `With (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`With@ %a@ %a@ %a)@]" self#loc _a0
-              self#mtyp _a1 self#with_constr _a2
+              self#mtyp _a1 self#constr _a2
         | `ModuleTypeOf (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleTypeOf@ %a@ %a)@]" self#loc _a0
-              self#module_exp _a1
+              self#mexp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method sig_item : 'fmt -> sig_item -> unit=
+    method sigi : 'fmt -> sigi -> unit=
       fun fmt  ->
         function
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1
+              self#cltyp _a1
         | `ClassType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1
+              self#cltyp _a1
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#sig_item _a1 self#sig_item _a2
+              self#sigi _a1 self#sigi _a2
         | `DirectiveSimple (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`DirectiveSimple@ %a@ %a)@]" self#loc
               _a0 self#alident _a1
@@ -1717,7 +1717,7 @@ class print =
               self#auident _a1 self#mtyp _a2
         | `RecModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
-              self#module_binding _a1
+              self#mbind _a1
         | `ModuleType (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#mtyp _a2
@@ -1734,7 +1734,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Val@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method with_constr : 'fmt -> with_constr -> unit=
+    method constr : 'fmt -> constr -> unit=
       fun fmt  ->
         function
         | `TypeEq (_a0,_a1,_a2) ->
@@ -1754,7 +1754,7 @@ class print =
               _a0 self#ident _a1 self#ident _a2
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#with_constr _a1 self#with_constr _a2
+              self#constr _a1 self#constr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method binding : 'fmt -> binding -> unit=
       fun fmt  ->
@@ -1766,15 +1766,15 @@ class print =
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#exp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_binding : 'fmt -> module_binding -> unit=
+    method mbind : 'fmt -> mbind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#module_binding _a1 self#module_binding _a2
+              self#mbind _a1 self#mbind _a2
         | `ModuleBind (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`ModuleBind@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#auident _a1 self#mtyp _a2 self#module_exp _a3
+              self#loc _a0 self#auident _a1 self#mtyp _a2 self#mexp _a3
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#mtyp _a2
@@ -1792,16 +1792,16 @@ class print =
             Format.fprintf fmt "@[<1>(`CaseWhen@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#pat _a1 self#exp _a2 self#exp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method module_exp : 'fmt -> module_exp -> unit=
+    method mexp : 'fmt -> mexp -> unit=
       fun fmt  ->
         function
         | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
         | `App (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" self#loc _a0
-              self#module_exp _a1 self#module_exp _a2
+              self#mexp _a1 self#mexp _a2
         | `Functor (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Functor@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#auident _a1 self#mtyp _a2 self#module_exp _a3
+              _a0 self#auident _a1 self#mtyp _a2 self#mexp _a3
         | `Struct (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Struct@ %a@ %a)@]" self#loc _a0
               self#stru _a1
@@ -1809,7 +1809,7 @@ class print =
             Format.fprintf fmt "@[<1>(`StructEnd@ %a)@]" self#loc _a0
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#module_exp _a1 self#mtyp _a2
+              _a0 self#mexp _a1 self#mtyp _a2
         | `PackageModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`PackageModule@ %a@ %a)@]" self#loc _a0
               self#exp _a1
@@ -1819,10 +1819,10 @@ class print =
         function
         | `Class (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Class@ %a@ %a)@]" self#loc _a0
-              self#class_exp _a1
+              self#clexp _a1
         | `ClassType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ClassType@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1
+              self#cltyp _a1
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#stru _a1 self#stru _a2
@@ -1843,13 +1843,13 @@ class print =
               _a0 self#alident _a1 self#ctyp _a2 self#strings _a3
         | `Include (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Include@ %a@ %a)@]" self#loc _a0
-              self#module_exp _a1
+              self#mexp _a1
         | `Module (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a@ %a)@]" self#loc _a0
-              self#auident _a1 self#module_exp _a2
+              self#auident _a1 self#mexp _a2
         | `RecModule (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`RecModule@ %a@ %a)@]" self#loc _a0
-              self#module_binding _a1
+              self#mbind _a1
         | `ModuleType (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a@ %a)@]" self#loc
               _a0 self#auident _a1 self#mtyp _a2
@@ -1863,7 +1863,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_flag _a1 self#binding _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_type : 'fmt -> class_type -> unit=
+    method cltyp : 'fmt -> cltyp -> unit=
       fun fmt  ->
         function
         | `ClassCon (_a0,_a1,_a2,_a3) ->
@@ -1875,29 +1875,29 @@ class print =
               self#virtual_flag _a1 self#ident _a2
         | `CtFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#class_type _a2
+              self#ctyp _a1 self#cltyp _a2
         | `ObjTy (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjTy@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#class_sig_item _a2
+              self#ctyp _a1 self#clsigi _a2
         | `ObjTyEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjTyEnd@ %a@ %a)@]" self#loc _a0
               self#ctyp _a1
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
-              self#class_sig_item _a1
+              self#clsigi _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1 self#class_type _a2
+              self#cltyp _a1 self#cltyp _a2
         | `CtCol (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1 self#class_type _a2
+              self#cltyp _a1 self#cltyp _a2
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1 self#class_type _a2
+              self#cltyp _a1 self#cltyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_sig_item : 'fmt -> class_sig_item -> unit=
+    method clsigi : 'fmt -> clsigi -> unit=
       fun fmt  ->
         function
         | `Eq (_a0,_a1,_a2) ->
@@ -1905,10 +1905,10 @@ class print =
               self#ctyp _a1 self#ctyp _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_sig_item _a1 self#class_sig_item _a2
+              self#clsigi _a1 self#clsigi _a2
         | `SigInherit (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`SigInherit@ %a@ %a)@]" self#loc _a0
-              self#class_type _a1
+              self#cltyp _a1
         | `Method (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`Method@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
@@ -1920,12 +1920,12 @@ class print =
             Format.fprintf fmt "@[<1>(`CgVir@ %a@ %a@ %a@ %a)@]" self#loc _a0
               self#alident _a1 self#private_flag _a2 self#ctyp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method class_exp : 'fmt -> class_exp -> unit=
+    method clexp : 'fmt -> clexp -> unit=
       fun fmt  ->
         function
         | `CeApp (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeApp@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_exp _a1 self#exp _a2
+              self#clexp _a1 self#exp _a2
         | `ClassCon (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#virtual_flag _a1 self#ident _a2 self#type_parameters
@@ -1935,10 +1935,10 @@ class print =
               self#virtual_flag _a1 self#ident _a2
         | `CeFun (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`CeFun@ %a@ %a@ %a)@]" self#loc _a0
-              self#pat _a1 self#class_exp _a2
+              self#pat _a1 self#clexp _a2
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2 self#class_exp _a3
+              self#rec_flag _a1 self#binding _a2 self#clexp _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#cstru _a1
@@ -1952,13 +1952,13 @@ class print =
               self#pat _a1
         | `Constraint (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
-              _a0 self#class_exp _a1 self#class_type _a2
+              _a0 self#clexp _a1 self#cltyp _a2
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_exp _a1 self#class_exp _a2
+              self#clexp _a1 self#clexp _a2
         | `Eq (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
-              self#class_exp _a1 self#class_exp _a2
+              self#clexp _a1 self#clexp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method cstru : 'fmt -> cstru -> unit=
       fun fmt  ->
@@ -1971,11 +1971,11 @@ class print =
               self#ctyp _a1 self#ctyp _a2
         | `Inherit (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" self#loc _a0
-              self#override_flag _a1 self#class_exp _a2
+              self#override_flag _a1 self#clexp _a2
         | `InheritAs (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#override_flag _a1 self#class_exp _a2
-              self#alident _a3
+              self#loc _a0 self#override_flag _a1 self#clexp _a2 self#alident
+              _a3
         | `Initializer (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
               self#exp _a1
@@ -2656,7 +2656,7 @@ class map =
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_exp _a2 in
+          let _a2 = self#mexp _a2 in
           let _a3 = self#exp _a3 in `LetModule (_a0, _a1, _a2, _a3)
       | `Match (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -2728,7 +2728,7 @@ class map =
           let _a2 = self#exp _a2 in `LocalTypeFun (_a0, _a1, _a2)
       | `Package_exp (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_exp _a1 in `Package_exp (_a0, _a1)
+          let _a1 = self#mexp _a1 in `Package_exp (_a0, _a1)
     method rec_exp : rec_exp -> rec_exp=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -2746,7 +2746,7 @@ class map =
       | #ident' as _a0 -> (self#ident' _a0 : ident'  :>mtyp)
       | `Sig (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#sig_item _a1 in `Sig (_a0, _a1)
+          let _a1 = self#sigi _a1 in `Sig (_a0, _a1)
       | `SigEnd _a0 -> let _a0 = self#loc _a0 in `SigEnd _a0
       | `Functor (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
@@ -2756,23 +2756,23 @@ class map =
       | `With (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#mtyp _a1 in
-          let _a2 = self#with_constr _a2 in `With (_a0, _a1, _a2)
+          let _a2 = self#constr _a2 in `With (_a0, _a1, _a2)
       | `ModuleTypeOf (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_exp _a1 in `ModuleTypeOf (_a0, _a1)
+          let _a1 = self#mexp _a1 in `ModuleTypeOf (_a0, _a1)
       | #ant as _a0 -> (self#ant _a0 : ant  :>mtyp)
-    method sig_item : sig_item -> sig_item=
+    method sigi : sigi -> sigi=
       function
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in `Class (_a0, _a1)
+          let _a1 = self#cltyp _a1 in `Class (_a0, _a1)
       | `ClassType (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in `ClassType (_a0, _a1)
+          let _a1 = self#cltyp _a1 in `ClassType (_a0, _a1)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#sig_item _a1 in
-          let _a2 = self#sig_item _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#sigi _a1 in
+          let _a2 = self#sigi _a2 in `Sem (_a0, _a1, _a2)
       | `DirectiveSimple (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in `DirectiveSimple (_a0, _a1)
@@ -2797,7 +2797,7 @@ class map =
           let _a2 = self#mtyp _a2 in `Module (_a0, _a1, _a2)
       | `RecModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_binding _a1 in `RecModule (_a0, _a1)
+          let _a1 = self#mbind _a1 in `RecModule (_a0, _a1)
       | `ModuleType (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
@@ -2815,8 +2815,8 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#ctyp _a2 in `Val (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>sig_item)
-    method with_constr : with_constr -> with_constr=
+      | #ant as _a0 -> (self#ant _a0 : ant  :>sigi)
+    method constr : constr -> constr=
       function
       | `TypeEq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -2840,9 +2840,9 @@ class map =
           let _a2 = self#ident _a2 in `ModuleSubst (_a0, _a1, _a2)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#with_constr _a1 in
-          let _a2 = self#with_constr _a2 in `And (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>with_constr)
+          let _a1 = self#constr _a1 in
+          let _a2 = self#constr _a2 in `And (_a0, _a1, _a2)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>constr)
     method binding : binding -> binding=
       function
       | `And (_a0,_a1,_a2) ->
@@ -2854,22 +2854,22 @@ class map =
           let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in `Bind (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>binding)
-    method module_binding : module_binding -> module_binding=
+    method mbind : mbind -> mbind=
       function
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_binding _a1 in
-          let _a2 = self#module_binding _a2 in `And (_a0, _a1, _a2)
+          let _a1 = self#mbind _a1 in
+          let _a2 = self#mbind _a2 in `And (_a0, _a1, _a2)
       | `ModuleBind (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#mtyp _a2 in
-          let _a3 = self#module_exp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
+          let _a3 = self#mexp _a3 in `ModuleBind (_a0, _a1, _a2, _a3)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>module_binding)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>mbind)
     method case : case -> case=
       function
       | `Bar (_a0,_a1,_a2) ->
@@ -2886,38 +2886,38 @@ class map =
           let _a2 = self#exp _a2 in
           let _a3 = self#exp _a3 in `CaseWhen (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>case)
-    method module_exp : module_exp -> module_exp=
+    method mexp : mexp -> mexp=
       function
-      | #vid' as _a0 -> (self#vid' _a0 : vid'  :>module_exp)
+      | #vid' as _a0 -> (self#vid' _a0 : vid'  :>mexp)
       | `App (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_exp _a1 in
-          let _a2 = self#module_exp _a2 in `App (_a0, _a1, _a2)
+          let _a1 = self#mexp _a1 in
+          let _a2 = self#mexp _a2 in `App (_a0, _a1, _a2)
       | `Functor (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
           let _a2 = self#mtyp _a2 in
-          let _a3 = self#module_exp _a3 in `Functor (_a0, _a1, _a2, _a3)
+          let _a3 = self#mexp _a3 in `Functor (_a0, _a1, _a2, _a3)
       | `Struct (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#stru _a1 in `Struct (_a0, _a1)
       | `StructEnd _a0 -> let _a0 = self#loc _a0 in `StructEnd _a0
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_exp _a1 in
+          let _a1 = self#mexp _a1 in
           let _a2 = self#mtyp _a2 in `Constraint (_a0, _a1, _a2)
       | `PackageModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in `PackageModule (_a0, _a1)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>module_exp)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>mexp)
     method stru : stru -> stru=
       function
       | `Class (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_exp _a1 in `Class (_a0, _a1)
+          let _a1 = self#clexp _a1 in `Class (_a0, _a1)
       | `ClassType (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in `ClassType (_a0, _a1)
+          let _a1 = self#cltyp _a1 in `ClassType (_a0, _a1)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#stru _a1 in
@@ -2942,14 +2942,14 @@ class map =
           let _a3 = self#strings _a3 in `External (_a0, _a1, _a2, _a3)
       | `Include (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_exp _a1 in `Include (_a0, _a1)
+          let _a1 = self#mexp _a1 in `Include (_a0, _a1)
       | `Module (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
-          let _a2 = self#module_exp _a2 in `Module (_a0, _a1, _a2)
+          let _a2 = self#mexp _a2 in `Module (_a0, _a1, _a2)
       | `RecModule (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#module_binding _a1 in `RecModule (_a0, _a1)
+          let _a1 = self#mbind _a1 in `RecModule (_a0, _a1)
       | `ModuleType (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#auident _a1 in
@@ -2965,7 +2965,7 @@ class map =
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in `Value (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>stru)
-    method class_type : class_type -> class_type=
+    method cltyp : cltyp -> cltyp=
       function
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
@@ -2980,32 +2980,32 @@ class map =
       | `CtFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
-          let _a2 = self#class_type _a2 in `CtFun (_a0, _a1, _a2)
+          let _a2 = self#cltyp _a2 in `CtFun (_a0, _a1, _a2)
       | `ObjTy (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in
-          let _a2 = self#class_sig_item _a2 in `ObjTy (_a0, _a1, _a2)
+          let _a2 = self#clsigi _a2 in `ObjTy (_a0, _a1, _a2)
       | `ObjTyEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#ctyp _a1 in `ObjTyEnd (_a0, _a1)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_sig_item _a1 in `Obj (_a0, _a1)
+          let _a1 = self#clsigi _a1 in `Obj (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in
-          let _a2 = self#class_type _a2 in `And (_a0, _a1, _a2)
+          let _a1 = self#cltyp _a1 in
+          let _a2 = self#cltyp _a2 in `And (_a0, _a1, _a2)
       | `CtCol (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in
-          let _a2 = self#class_type _a2 in `CtCol (_a0, _a1, _a2)
+          let _a1 = self#cltyp _a1 in
+          let _a2 = self#cltyp _a2 in `CtCol (_a0, _a1, _a2)
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in
-          let _a2 = self#class_type _a2 in `Eq (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>class_type)
-    method class_sig_item : class_sig_item -> class_sig_item=
+          let _a1 = self#cltyp _a1 in
+          let _a2 = self#cltyp _a2 in `Eq (_a0, _a1, _a2)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>cltyp)
+    method clsigi : clsigi -> clsigi=
       function
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3013,11 +3013,11 @@ class map =
           let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_sig_item _a1 in
-          let _a2 = self#class_sig_item _a2 in `Sem (_a0, _a1, _a2)
+          let _a1 = self#clsigi _a1 in
+          let _a2 = self#clsigi _a2 in `Sem (_a0, _a1, _a2)
       | `SigInherit (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_type _a1 in `SigInherit (_a0, _a1)
+          let _a1 = self#cltyp _a1 in `SigInherit (_a0, _a1)
       | `Method (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3034,12 +3034,12 @@ class map =
           let _a1 = self#alident _a1 in
           let _a2 = self#private_flag _a2 in
           let _a3 = self#ctyp _a3 in `CgVir (_a0, _a1, _a2, _a3)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>class_sig_item)
-    method class_exp : class_exp -> class_exp=
+      | #ant as _a0 -> (self#ant _a0 : ant  :>clsigi)
+    method clexp : clexp -> clexp=
       function
       | `CeApp (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_exp _a1 in
+          let _a1 = self#clexp _a1 in
           let _a2 = self#exp _a2 in `CeApp (_a0, _a1, _a2)
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
@@ -3054,12 +3054,12 @@ class map =
       | `CeFun (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
-          let _a2 = self#class_exp _a2 in `CeFun (_a0, _a1, _a2)
+          let _a2 = self#clexp _a2 in `CeFun (_a0, _a1, _a2)
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
           let _a2 = self#binding _a2 in
-          let _a3 = self#class_exp _a3 in `LetIn (_a0, _a1, _a2, _a3)
+          let _a3 = self#clexp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
@@ -3073,17 +3073,17 @@ class map =
           let _a1 = self#pat _a1 in `ObjPatEnd (_a0, _a1)
       | `Constraint (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_exp _a1 in
-          let _a2 = self#class_type _a2 in `Constraint (_a0, _a1, _a2)
+          let _a1 = self#clexp _a1 in
+          let _a2 = self#cltyp _a2 in `Constraint (_a0, _a1, _a2)
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_exp _a1 in
-          let _a2 = self#class_exp _a2 in `And (_a0, _a1, _a2)
+          let _a1 = self#clexp _a1 in
+          let _a2 = self#clexp _a2 in `And (_a0, _a1, _a2)
       | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#class_exp _a1 in
-          let _a2 = self#class_exp _a2 in `Eq (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>class_exp)
+          let _a1 = self#clexp _a1 in
+          let _a2 = self#clexp _a2 in `Eq (_a0, _a1, _a2)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>clexp)
     method cstru : cstru -> cstru=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3097,11 +3097,11 @@ class map =
       | `Inherit (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
-          let _a2 = self#class_exp _a2 in `Inherit (_a0, _a1, _a2)
+          let _a2 = self#clexp _a2 in `Inherit (_a0, _a1, _a2)
       | `InheritAs (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
-          let _a2 = self#class_exp _a2 in
+          let _a2 = self#clexp _a2 in
           let _a3 = self#alident _a3 in `InheritAs (_a0, _a1, _a2, _a3)
       | `Initializer (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -3605,7 +3605,7 @@ class fold =
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#module_exp _a2 in self#exp _a3
+          let self = self#mexp _a2 in self#exp _a3
       | `Match (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
@@ -3645,8 +3645,7 @@ class fold =
       | `LocalTypeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#exp _a2
-      | `Package_exp (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_exp _a1
+      | `Package_exp (_a0,_a1) -> let self = self#loc _a0 in self#mexp _a1
     method rec_exp : rec_exp -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
@@ -3660,7 +3659,7 @@ class fold =
     method mtyp : mtyp -> 'self_type=
       function
       | #ident' as _a0 -> (self#ident' _a0 :>'self_type)
-      | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sig_item _a1
+      | `Sig (_a0,_a1) -> let self = self#loc _a0 in self#sigi _a1
       | `SigEnd _a0 -> self#loc _a0
       | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -3668,18 +3667,16 @@ class fold =
           let self = self#mtyp _a2 in self#mtyp _a3
       | `With (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#mtyp _a1 in self#with_constr _a2
-      | `ModuleTypeOf (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_exp _a1
+          let self = self#mtyp _a1 in self#constr _a2
+      | `ModuleTypeOf (_a0,_a1) -> let self = self#loc _a0 in self#mexp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method sig_item : sig_item -> 'self_type=
+    method sigi : sigi -> 'self_type=
       function
-      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_type _a1
-      | `ClassType (_a0,_a1) ->
-          let self = self#loc _a0 in self#class_type _a1
+      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#cltyp _a1
+      | `ClassType (_a0,_a1) -> let self = self#loc _a0 in self#cltyp _a1
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#sig_item _a1 in self#sig_item _a2
+          let self = self#sigi _a1 in self#sigi _a2
       | `DirectiveSimple (_a0,_a1) ->
           let self = self#loc _a0 in self#alident _a1
       | `Directive (_a0,_a1,_a2) ->
@@ -3694,8 +3691,7 @@ class fold =
       | `Module (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
-      | `RecModule (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_binding _a1
+      | `RecModule (_a0,_a1) -> let self = self#loc _a0 in self#mbind _a1
       | `ModuleType (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
@@ -3707,7 +3703,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in self#ctyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method with_constr : with_constr -> 'self_type=
+    method constr : constr -> 'self_type=
       function
       | `TypeEq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3726,7 +3722,7 @@ class fold =
           let self = self#ident _a1 in self#ident _a2
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#with_constr _a1 in self#with_constr _a2
+          let self = self#constr _a1 in self#constr _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method binding : binding -> 'self_type=
       function
@@ -3736,15 +3732,15 @@ class fold =
       | `Bind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method module_binding : module_binding -> 'self_type=
+    method mbind : mbind -> 'self_type=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_binding _a1 in self#module_binding _a2
+          let self = self#mbind _a1 in self#mbind _a2
       | `ModuleBind (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#mtyp _a2 in self#module_exp _a3
+          let self = self#mtyp _a2 in self#mexp _a3
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
@@ -3760,28 +3756,27 @@ class fold =
           let self = self#loc _a0 in
           let self = self#pat _a1 in let self = self#exp _a2 in self#exp _a3
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method module_exp : module_exp -> 'self_type=
+    method mexp : mexp -> 'self_type=
       function
       | #vid' as _a0 -> (self#vid' _a0 :>'self_type)
       | `App (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_exp _a1 in self#module_exp _a2
+          let self = self#mexp _a1 in self#mexp _a2
       | `Functor (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in
-          let self = self#mtyp _a2 in self#module_exp _a3
+          let self = self#mtyp _a2 in self#mexp _a3
       | `Struct (_a0,_a1) -> let self = self#loc _a0 in self#stru _a1
       | `StructEnd _a0 -> self#loc _a0
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#module_exp _a1 in self#mtyp _a2
+          let self = self#mexp _a1 in self#mtyp _a2
       | `PackageModule (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method stru : stru -> 'self_type=
       function
-      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#class_exp _a1
-      | `ClassType (_a0,_a1) ->
-          let self = self#loc _a0 in self#class_type _a1
+      | `Class (_a0,_a1) -> let self = self#loc _a0 in self#clexp _a1
+      | `ClassType (_a0,_a1) -> let self = self#loc _a0 in self#cltyp _a1
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#stru _a1 in self#stru _a2
@@ -3796,12 +3791,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#ctyp _a2 in self#strings _a3
-      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#module_exp _a1
+      | `Include (_a0,_a1) -> let self = self#loc _a0 in self#mexp _a1
       | `Module (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#auident _a1 in self#module_exp _a2
-      | `RecModule (_a0,_a1) ->
-          let self = self#loc _a0 in self#module_binding _a1
+          let self = self#auident _a1 in self#mexp _a2
+      | `RecModule (_a0,_a1) -> let self = self#loc _a0 in self#mbind _a1
       | `ModuleType (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#auident _a1 in self#mtyp _a2
@@ -3811,7 +3805,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in self#binding _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method class_type : class_type -> 'self_type=
+    method cltyp : cltyp -> 'self_type=
       function
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -3822,33 +3816,32 @@ class fold =
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CtFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#class_type _a2
+          let self = self#ctyp _a1 in self#cltyp _a2
       | `ObjTy (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#class_sig_item _a2
+          let self = self#ctyp _a1 in self#clsigi _a2
       | `ObjTyEnd (_a0,_a1) -> let self = self#loc _a0 in self#ctyp _a1
-      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#class_sig_item _a1
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#clsigi _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_type _a1 in self#class_type _a2
+          let self = self#cltyp _a1 in self#cltyp _a2
       | `CtCol (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_type _a1 in self#class_type _a2
+          let self = self#cltyp _a1 in self#cltyp _a2
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_type _a1 in self#class_type _a2
+          let self = self#cltyp _a1 in self#cltyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method class_sig_item : class_sig_item -> 'self_type=
+    method clsigi : clsigi -> 'self_type=
       function
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_sig_item _a1 in self#class_sig_item _a2
-      | `SigInherit (_a0,_a1) ->
-          let self = self#loc _a0 in self#class_type _a1
+          let self = self#clsigi _a1 in self#clsigi _a2
+      | `SigInherit (_a0,_a1) -> let self = self#loc _a0 in self#cltyp _a1
       | `Method (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
@@ -3863,11 +3856,11 @@ class fold =
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method class_exp : class_exp -> 'self_type=
+    method clexp : clexp -> 'self_type=
       function
       | `CeApp (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_exp _a1 in self#exp _a2
+          let self = self#clexp _a1 in self#exp _a2
       | `ClassCon (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#virtual_flag _a1 in
@@ -3877,11 +3870,11 @@ class fold =
           let self = self#virtual_flag _a1 in self#ident _a2
       | `CeFun (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#pat _a1 in self#class_exp _a2
+          let self = self#pat _a1 in self#clexp _a2
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in self#class_exp _a3
+          let self = self#binding _a2 in self#clexp _a3
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
@@ -3890,13 +3883,13 @@ class fold =
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_exp _a1 in self#class_type _a2
+          let self = self#clexp _a1 in self#cltyp _a2
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_exp _a1 in self#class_exp _a2
+          let self = self#clexp _a1 in self#clexp _a2
       | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#class_exp _a1 in self#class_exp _a2
+          let self = self#clexp _a1 in self#clexp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method cstru : cstru -> 'self_type=
       function
@@ -3908,11 +3901,11 @@ class fold =
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Inherit (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#override_flag _a1 in self#class_exp _a2
+          let self = self#override_flag _a1 in self#clexp _a2
       | `InheritAs (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#override_flag _a1 in
-          let self = self#class_exp _a2 in self#alident _a3
+          let self = self#clexp _a2 in self#alident _a3
       | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let self = self#loc _a0 in
@@ -4423,7 +4416,7 @@ and strip_loc_exp =
       let _a4 = strip_loc_case _a4 in `LetTryInWith (_a1, _a2, _a3, _a4)
   | `LetModule (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_exp _a2 in
+      let _a2 = strip_loc_mexp _a2 in
       let _a3 = strip_loc_exp _a3 in `LetModule (_a1, _a2, _a3)
   | `Match (_a0,_a1,_a2) ->
       let _a1 = strip_loc_exp _a1 in
@@ -4471,7 +4464,7 @@ and strip_loc_exp =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_exp _a2 in `LocalTypeFun (_a1, _a2)
   | `Package_exp (_a0,_a1) ->
-      let _a1 = strip_loc_module_exp _a1 in `Package_exp _a1
+      let _a1 = strip_loc_mexp _a1 in `Package_exp _a1
 and strip_loc_rec_exp =
   function
   | `Sem (_a0,_a1,_a2) ->
@@ -4485,7 +4478,7 @@ and strip_loc_rec_exp =
 and strip_loc_mtyp =
   function
   | #ident' as _a0 -> (strip_loc_ident' _a0 :>'result272)
-  | `Sig (_a0,_a1) -> let _a1 = strip_loc_sig_item _a1 in `Sig _a1
+  | `Sig (_a0,_a1) -> let _a1 = strip_loc_sigi _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
   | `Functor (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
@@ -4493,18 +4486,17 @@ and strip_loc_mtyp =
       let _a3 = strip_loc_mtyp _a3 in `Functor (_a1, _a2, _a3)
   | `With (_a0,_a1,_a2) ->
       let _a1 = strip_loc_mtyp _a1 in
-      let _a2 = strip_loc_with_constr _a2 in `With (_a1, _a2)
+      let _a2 = strip_loc_constr _a2 in `With (_a1, _a2)
   | `ModuleTypeOf (_a0,_a1) ->
-      let _a1 = strip_loc_module_exp _a1 in `ModuleTypeOf _a1
+      let _a1 = strip_loc_mexp _a1 in `ModuleTypeOf _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result272)
-and strip_loc_sig_item =
+and strip_loc_sigi =
   function
-  | `Class (_a0,_a1) -> let _a1 = strip_loc_class_type _a1 in `Class _a1
-  | `ClassType (_a0,_a1) ->
-      let _a1 = strip_loc_class_type _a1 in `ClassType _a1
+  | `Class (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `Class _a1
+  | `ClassType (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `ClassType _a1
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_sig_item _a1 in
-      let _a2 = strip_loc_sig_item _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_loc_sigi _a1 in
+      let _a2 = strip_loc_sigi _a2 in `Sem (_a1, _a2)
   | `DirectiveSimple (_a0,_a1) ->
       let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
@@ -4519,8 +4511,7 @@ and strip_loc_sig_item =
   | `Module (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in `Module (_a1, _a2)
-  | `RecModule (_a0,_a1) ->
-      let _a1 = strip_loc_module_binding _a1 in `RecModule _a1
+  | `RecModule (_a0,_a1) -> let _a1 = strip_loc_mbind _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
@@ -4532,7 +4523,7 @@ and strip_loc_sig_item =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Val (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result271)
-and strip_loc_with_constr =
+and strip_loc_constr =
   function
   | `TypeEq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
@@ -4550,8 +4541,8 @@ and strip_loc_with_constr =
       let _a1 = strip_loc_ident _a1 in
       let _a2 = strip_loc_ident _a2 in `ModuleSubst (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_with_constr _a1 in
-      let _a2 = strip_loc_with_constr _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_constr _a1 in
+      let _a2 = strip_loc_constr _a2 in `And (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result270)
 and strip_loc_binding =
   function
@@ -4562,15 +4553,15 @@ and strip_loc_binding =
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
-and strip_loc_module_binding =
+and strip_loc_mbind =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_binding _a1 in
-      let _a2 = strip_loc_module_binding _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_mbind _a1 in
+      let _a2 = strip_loc_mbind _a2 in `And (_a1, _a2)
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_module_exp _a3 in `ModuleBind (_a1, _a2, _a3)
+      let _a3 = strip_loc_mexp _a3 in `ModuleBind (_a1, _a2, _a3)
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
@@ -4588,29 +4579,28 @@ and strip_loc_case =
       let _a2 = strip_loc_exp _a2 in
       let _a3 = strip_loc_exp _a3 in `CaseWhen (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result267)
-and strip_loc_module_exp =
+and strip_loc_mexp =
   function
   | #vid' as _a0 -> (strip_loc_vid' _a0 :>'result266)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_exp _a1 in
-      let _a2 = strip_loc_module_exp _a2 in `App (_a1, _a2)
+      let _a1 = strip_loc_mexp _a1 in
+      let _a2 = strip_loc_mexp _a2 in `App (_a1, _a2)
   | `Functor (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_module_exp _a3 in `Functor (_a1, _a2, _a3)
+      let _a3 = strip_loc_mexp _a3 in `Functor (_a1, _a2, _a3)
   | `Struct (_a0,_a1) -> let _a1 = strip_loc_stru _a1 in `Struct _a1
   | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_module_exp _a1 in
+      let _a1 = strip_loc_mexp _a1 in
       let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
   | `PackageModule (_a0,_a1) ->
       let _a1 = strip_loc_exp _a1 in `PackageModule _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result266)
 and strip_loc_stru =
   function
-  | `Class (_a0,_a1) -> let _a1 = strip_loc_class_exp _a1 in `Class _a1
-  | `ClassType (_a0,_a1) ->
-      let _a1 = strip_loc_class_type _a1 in `ClassType _a1
+  | `Class (_a0,_a1) -> let _a1 = strip_loc_clexp _a1 in `Class _a1
+  | `ClassType (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `ClassType _a1
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_loc_stru _a1 in
       let _a2 = strip_loc_stru _a2 in `Sem (_a1, _a2)
@@ -4625,12 +4615,11 @@ and strip_loc_stru =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_ctyp _a2 in
       let _a3 = strip_loc_strings _a3 in `External (_a1, _a2, _a3)
-  | `Include (_a0,_a1) -> let _a1 = strip_loc_module_exp _a1 in `Include _a1
+  | `Include (_a0,_a1) -> let _a1 = strip_loc_mexp _a1 in `Include _a1
   | `Module (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_module_exp _a2 in `Module (_a1, _a2)
-  | `RecModule (_a0,_a1) ->
-      let _a1 = strip_loc_module_binding _a1 in `RecModule _a1
+      let _a2 = strip_loc_mexp _a2 in `Module (_a1, _a2)
+  | `RecModule (_a0,_a1) -> let _a1 = strip_loc_mbind _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
       let _a1 = strip_loc_auident _a1 in
       let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
@@ -4640,7 +4629,7 @@ and strip_loc_stru =
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in `Value (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result265)
-and strip_loc_class_type =
+and strip_loc_cltyp =
   function
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
@@ -4651,33 +4640,32 @@ and strip_loc_class_type =
       let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CtFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_class_type _a2 in `CtFun (_a1, _a2)
+      let _a2 = strip_loc_cltyp _a2 in `CtFun (_a1, _a2)
   | `ObjTy (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_class_sig_item _a2 in `ObjTy (_a1, _a2)
+      let _a2 = strip_loc_clsigi _a2 in `ObjTy (_a1, _a2)
   | `ObjTyEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `ObjTyEnd _a1
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_class_sig_item _a1 in `Obj _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clsigi _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_type _a1 in
-      let _a2 = strip_loc_class_type _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_cltyp _a1 in
+      let _a2 = strip_loc_cltyp _a2 in `And (_a1, _a2)
   | `CtCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_type _a1 in
-      let _a2 = strip_loc_class_type _a2 in `CtCol (_a1, _a2)
+      let _a1 = strip_loc_cltyp _a1 in
+      let _a2 = strip_loc_cltyp _a2 in `CtCol (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_type _a1 in
-      let _a2 = strip_loc_class_type _a2 in `Eq (_a1, _a2)
+      let _a1 = strip_loc_cltyp _a1 in
+      let _a2 = strip_loc_cltyp _a2 in `Eq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result264)
-and strip_loc_class_sig_item =
+and strip_loc_clsigi =
   function
   | `Eq (_a0,_a1,_a2) ->
       let _a1 = strip_loc_ctyp _a1 in
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_sig_item _a1 in
-      let _a2 = strip_loc_class_sig_item _a2 in `Sem (_a1, _a2)
-  | `SigInherit (_a0,_a1) ->
-      let _a1 = strip_loc_class_type _a1 in `SigInherit _a1
+      let _a1 = strip_loc_clsigi _a1 in
+      let _a2 = strip_loc_clsigi _a2 in `Sem (_a1, _a2)
+  | `SigInherit (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `SigInherit _a1
   | `Method (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
@@ -4692,10 +4680,10 @@ and strip_loc_class_sig_item =
       let _a2 = strip_loc_private_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `CgVir (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result263)
-and strip_loc_class_exp =
+and strip_loc_clexp =
   function
   | `CeApp (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_exp _a1 in
+      let _a1 = strip_loc_clexp _a1 in
       let _a2 = strip_loc_exp _a2 in `CeApp (_a1, _a2)
   | `ClassCon (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_virtual_flag _a1 in
@@ -4706,11 +4694,11 @@ and strip_loc_class_exp =
       let _a2 = strip_loc_ident _a2 in `ClassConS (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_class_exp _a2 in `CeFun (_a1, _a2)
+      let _a2 = strip_loc_clexp _a2 in `CeFun (_a1, _a2)
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
-      let _a3 = strip_loc_class_exp _a3 in `LetIn (_a1, _a2, _a3)
+      let _a3 = strip_loc_clexp _a3 in `LetIn (_a1, _a2, _a3)
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
@@ -4718,14 +4706,14 @@ and strip_loc_class_exp =
       let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_exp _a1 in
-      let _a2 = strip_loc_class_type _a2 in `Constraint (_a1, _a2)
+      let _a1 = strip_loc_clexp _a1 in
+      let _a2 = strip_loc_cltyp _a2 in `Constraint (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_exp _a1 in
-      let _a2 = strip_loc_class_exp _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_clexp _a1 in
+      let _a2 = strip_loc_clexp _a2 in `And (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_class_exp _a1 in
-      let _a2 = strip_loc_class_exp _a2 in `Eq (_a1, _a2)
+      let _a1 = strip_loc_clexp _a1 in
+      let _a2 = strip_loc_clexp _a2 in `Eq (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result262)
 and strip_loc_cstru =
   function
@@ -4737,10 +4725,10 @@ and strip_loc_cstru =
       let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
   | `Inherit (_a0,_a1,_a2) ->
       let _a1 = strip_loc_override_flag _a1 in
-      let _a2 = strip_loc_class_exp _a2 in `Inherit (_a1, _a2)
+      let _a2 = strip_loc_clexp _a2 in `Inherit (_a1, _a2)
   | `InheritAs (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_override_flag _a1 in
-      let _a2 = strip_loc_class_exp _a2 in
+      let _a2 = strip_loc_clexp _a2 in
       let _a3 = strip_loc_alident _a3 in `InheritAs (_a1, _a2, _a3)
   | `Initializer (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Initializer _a1
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
@@ -4976,47 +4964,35 @@ let map_rec_exp f =
 let map_mtyp f =
   object  inherit  map as super method! mtyp x = f (super#mtyp x) end
 
-let map_sig_item f =
-  object  inherit  map as super method! sig_item x = f (super#sig_item x) end
+let map_sigi f =
+  object  inherit  map as super method! sigi x = f (super#sigi x) end
 
-let map_with_constr f =
-  object 
-    inherit  map as super
-    method! with_constr x = f (super#with_constr x)
-  end
+let map_constr f =
+  object  inherit  map as super method! constr x = f (super#constr x) end
 
 let map_binding f =
   object  inherit  map as super method! binding x = f (super#binding x) end
 
-let map_module_binding f =
-  object 
-    inherit  map as super
-    method! module_binding x = f (super#module_binding x)
-  end
+let map_mbind f =
+  object  inherit  map as super method! mbind x = f (super#mbind x) end
 
 let map_case f =
   object  inherit  map as super method! case x = f (super#case x) end
 
-let map_module_exp f =
-  object  inherit  map as super method! module_exp x = f (super#module_exp x)
-  end
+let map_mexp f =
+  object  inherit  map as super method! mexp x = f (super#mexp x) end
 
 let map_stru f =
   object  inherit  map as super method! stru x = f (super#stru x) end
 
-let map_class_type f =
-  object  inherit  map as super method! class_type x = f (super#class_type x)
-  end
+let map_cltyp f =
+  object  inherit  map as super method! cltyp x = f (super#cltyp x) end
 
-let map_class_sig_item f =
-  object 
-    inherit  map as super
-    method! class_sig_item x = f (super#class_sig_item x)
-  end
+let map_clsigi f =
+  object  inherit  map as super method! clsigi x = f (super#clsigi x) end
 
-let map_class_exp f =
-  object  inherit  map as super method! class_exp x = f (super#class_exp x)
-  end
+let map_clexp f =
+  object  inherit  map as super method! clexp x = f (super#clexp x) end
 
 let map_cstru f =
   object  inherit  map as super method! cstru x = f (super#cstru x) end
@@ -5113,25 +5089,25 @@ let dump_rec_exp = LibUtil.to_string_of_printer dump#rec_exp
 
 let dump_mtyp = LibUtil.to_string_of_printer dump#mtyp
 
-let dump_sig_item = LibUtil.to_string_of_printer dump#sig_item
+let dump_sigi = LibUtil.to_string_of_printer dump#sigi
 
-let dump_with_constr = LibUtil.to_string_of_printer dump#with_constr
+let dump_constr = LibUtil.to_string_of_printer dump#constr
 
 let dump_binding = LibUtil.to_string_of_printer dump#binding
 
-let dump_module_binding = LibUtil.to_string_of_printer dump#module_binding
+let dump_mbind = LibUtil.to_string_of_printer dump#mbind
 
 let dump_case = LibUtil.to_string_of_printer dump#case
 
-let dump_module_exp = LibUtil.to_string_of_printer dump#module_exp
+let dump_mexp = LibUtil.to_string_of_printer dump#mexp
 
 let dump_stru = LibUtil.to_string_of_printer dump#stru
 
-let dump_class_type = LibUtil.to_string_of_printer dump#class_type
+let dump_cltyp = LibUtil.to_string_of_printer dump#cltyp
 
-let dump_class_sig_item = LibUtil.to_string_of_printer dump#class_sig_item
+let dump_clsigi = LibUtil.to_string_of_printer dump#clsigi
 
-let dump_class_exp = LibUtil.to_string_of_printer dump#class_exp
+let dump_clexp = LibUtil.to_string_of_printer dump#clexp
 
 let dump_cstru = LibUtil.to_string_of_printer dump#cstru
 
