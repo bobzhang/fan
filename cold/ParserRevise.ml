@@ -4843,22 +4843,10 @@ let apply () =
   (Gram.extend_single (clexp_quot : 'clexp_quot Gram.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
-            ("Gram.mk_action\n  (fun (ce2 : 'clexp_quot)  _  (ce1 : 'clexp_quot)  (_loc : FanLoc.t)  ->\n     (`And (_loc, ce1, ce2) : 'clexp_quot ))\n",
+         [([`Snterm (Gram.obj (clexp : 'clexp Gram.t ))],
+            ("Gram.mk_action (fun (x : 'clexp)  (_loc : FanLoc.t)  -> (x : 'clexp_quot ))\n",
               (Gram.mk_action
-                 (fun (ce2 : 'clexp_quot)  _  (ce1 : 'clexp_quot) 
-                    (_loc : FanLoc.t)  ->
-                    (`And (_loc, ce1, ce2) : 'clexp_quot )))));
-         ([`Sself; `Skeyword "="; `Sself],
-           ("Gram.mk_action\n  (fun (ce2 : 'clexp_quot)  _  (ce1 : 'clexp_quot)  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, ce1, ce2) : 'clexp_quot ))\n",
-             (Gram.mk_action
-                (fun (ce2 : 'clexp_quot)  _  (ce1 : 'clexp_quot) 
-                   (_loc : FanLoc.t)  ->
-                   (`Eq (_loc, ce1, ce2) : 'clexp_quot )))));
-         ([`Snterm (Gram.obj (clexp : 'clexp Gram.t ))],
-           ("Gram.mk_action (fun (x : 'clexp)  (_loc : FanLoc.t)  -> (x : 'clexp_quot ))\n",
-             (Gram.mk_action
-                (fun (x : 'clexp)  (_loc : FanLoc.t)  -> (x : 'clexp_quot )))))]));
+                 (fun (x : 'clexp)  (_loc : FanLoc.t)  -> (x : 'clexp_quot )))))]));
    Gram.extend_single (class_declaration : 'class_declaration Gram.t )
      (None,
        (None, None,

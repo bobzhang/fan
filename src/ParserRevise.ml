@@ -1028,16 +1028,16 @@ let apply () = begin
   with clexp
     {:extend|
       clexp_quot:
-      [ S{ce1}; "and"; S{ce2} -> {| $ce1 and $ce2 |}
-      | S{ce1}; "="; S{ce2} -> {| $ce1 = $ce2 |}
-      (* | "virtual";   class_name_and_param{(i, ot)} -> *)
-      (*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *)
-      (* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *)
-      (*     let anti = `Ant (_loc,mk_anti ~c:"clexp" n s) in *)
-      (*     `ClassCon (_loc, anti, i, ot) *)
-      | clexp{x} -> x]
+      [(*  S{ce1}; "and"; S{ce2} -> `And(_loc,ce1,ce2) *)
+      (* | S{ce1}; "="; S{ce2} -> `Eq(_loc,ce1,ce2) *)
+      (* (\* | "virtual";   class_name_and_param{(i, ot)} -> *\) *)
+      (* (\*     `ClassCon (_loc, `Virtual _loc, (i :>ident), ot) *\) *)
+      (* (\* | `Ant (("virtual" as n),s); ident{i}; opt_comma_ctyp{ot} -> *\) *)
+      (* (\*     let anti = `Ant (_loc,mk_anti ~c:"clexp" n s) in *\) *)
+      (* (\*     `ClassCon (_loc, anti, i, ot) *\) *)
+      (* | *) clexp{x} -> x]
       class_declaration:
-      [ S{c1}; "and"; S{c2} -> {| $c1 and $c2 |}
+      [ S{c1}; "and"; S{c2} -> `And(_loc,c1,c2)
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
 
