@@ -27,6 +27,7 @@ let loc_of =
   | `C (_loc,_) -> _loc
   | `LabelS (_loc,_) -> _loc
   | `Str (_loc,_) -> _loc
+  | `ClDeclS (_loc,_,_,_) -> _loc
   | `New (_loc,_) -> _loc
   | `Value (_loc,_,_) -> _loc
   | `PolyInfSup (_loc,_,_) -> _loc
@@ -62,6 +63,7 @@ let loc_of =
   | `OptLabl (_loc,_,_) -> _loc
   | `Coercion (_loc,_,_,_) -> _loc
   | `CtFun (_loc,_,_) -> _loc
+  | `ClApply (_loc,_,_) -> _loc
   | `Arrow (_loc,_,_) -> _loc
   | `ObjEnd _loc -> _loc
   | `Bind (_loc,_,_) -> _loc
@@ -135,6 +137,7 @@ let loc_of =
   | `And (_loc,_,_) -> _loc
   | `SigEnd _loc -> _loc
   | `ObjPatEnd (_loc,_) -> _loc
+  | `ClDecl (_loc,_,_,_,_) -> _loc
   | `TyDcl (_loc,_,_,_,_) -> _loc
   | `Assert (_loc,_) -> _loc
   | `StructEnd _loc -> _loc

@@ -54,7 +54,7 @@ module type Syntax =
     val binding : binding Gram.t
     val binding_quot : binding Gram.t
     val rec_exp_quot : rec_exp Gram.t
-    val class_declaration : clexp Gram.t
+    val class_declaration : cldecl Gram.t
     val class_description : cltyp Gram.t
     val clexp : clexp Gram.t
     val clexp_quot : clexp Gram.t

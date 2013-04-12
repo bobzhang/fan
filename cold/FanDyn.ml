@@ -56,6 +56,7 @@ type 'a tag =
   | Stru
   | Cltyp
   | Clsigi
+  | Cldecl
   | Clexp
   | Cstru
   | Ep
@@ -114,6 +115,7 @@ let string_of_tag =
   | Stru  -> "stru"
   | Cltyp  -> "cltyp"
   | Clsigi  -> "clsigi"
+  | Cldecl  -> "cldecl"
   | Clexp  -> "clexp"
   | Cstru  -> "cstru"
   | Ep  -> "ep"
@@ -220,6 +222,8 @@ let stru_tag: stru tag = Stru
 let cltyp_tag: cltyp tag = Cltyp
 
 let clsigi_tag: clsigi tag = Clsigi
+
+let cldecl_tag: cldecl tag = Cldecl
 
 let clexp_tag: clexp tag = Clexp
 

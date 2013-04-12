@@ -138,12 +138,27 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
 
-let mk_obj class_name base body =
+let mk_obj (class_name:string) (base:string) (body:cstru) : stru =
   `Class
     (_loc,
-      (`Eq
+      (* (`Eq *)
+      (*    (_loc, *)
+      (*      (`ClassConS (_loc, (`ViNil _loc), (`Lid (_loc, class_name)))), *)
+      (*      (`ObjPat *)
+      (*         (_loc, *)
+      (*           (`Constraint *)
+      (*              (_loc, (`Lid (_loc, "self")), *)
+      (*                (`Quote *)
+      (*                   (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))), *)
+      (*           (`Sem *)
+      (*              (_loc, *)
+      (*                (`Inherit *)
+      (*                   (_loc, (`OvNil _loc), *)
+      (*                     ((`Lid (_loc, base)))) : cstru), *)
+      (*                body))))) : cldecl) *)
+     (`ClDeclS
          (_loc,
-           (`ClassConS (_loc, (`ViNil _loc), (`Lid (_loc, class_name)))),
+           (`ViNil _loc), `Lid (_loc, class_name),
            (`ObjPat
               (_loc,
                 (`Constraint
@@ -154,9 +169,9 @@ let mk_obj class_name base body =
                    (_loc,
                      (`Inherit
                         (_loc, (`OvNil _loc),
-                          (`ClassConS
-                             (_loc, (`ViNil _loc), (`Lid (_loc, base)))))),
-                     body)))))))
+                          ((`Lid (_loc, base)))) : cstru),
+                     body))))) : cldecl)
+    )
 
 let is_recursive ty_dcl =
   match ty_dcl with

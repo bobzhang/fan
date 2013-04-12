@@ -421,9 +421,8 @@ let generate (mtyps : FSig.mtyps) =
                                   (_loc,
                                     (`InheritAs
                                        (_loc, (`OvNil _loc),
-                                         (`ClassConS
-                                            (_loc, (`ViNil _loc),
-                                              (`Lid (_loc, "map")))),
+                                         (
+                                              (`Lid (_loc, "map"))),
                                          (`Lid (_loc, "super")))),
                                     (`CrMthS
                                        (_loc, (`Lid (_loc, f)),

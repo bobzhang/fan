@@ -4868,19 +4868,6 @@ let apply () =
                    | `Ant ((""|"cdcl"|"anti"|"list" as n),s) ->
                        (mk_anti _loc ~c:"clexp" n s : 'class_declaration )
                    | _ -> failwith "mk_anti _loc ~c:\"clexp\" n s\n"))));
-         ([`Stoken
-             (((function | `QUOTATION _ -> true | _ -> false)),
-               (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.clexp_tag : 'class_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.clexp_tag\n\")\n",
-             (Gram.mk_action
-                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `QUOTATION x ->
-                       (AstQuotation.expand _loc x FanDyn.clexp_tag : 
-                       'class_declaration )
-                   | _ ->
-                       failwith
-                         "AstQuotation.expand _loc x FanDyn.clexp_tag\n"))));
          ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword "[";
@@ -4888,22 +4875,20 @@ let apply () =
             (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
           `Skeyword "]";
           `Snterm (Gram.obj (class_fun_binding : 'class_fun_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  _  (x : 'comma_type_parameter)  _ \n     (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, (`ClassCon (_loc, mv, (i :>ident), x)), ce) : 'class_declaration ))\n",
+           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  _  (x : 'comma_type_parameter)  _ \n     (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`ClDecl (_loc, mv, (i :>ident), x, ce) : 'class_declaration ))\n",
              (Gram.mk_action
                 (fun (ce : 'class_fun_binding)  _ 
                    (x : 'comma_type_parameter)  _  (i : 'a_lident) 
                    (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
-                   (`Eq (_loc, (`ClassCon (_loc, mv, (i :>ident), x)), ce) : 
-                   'class_declaration )))));
+                   (`ClDecl (_loc, mv, (i :>ident), x, ce) : 'class_declaration )))));
          ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Snterm (Gram.obj (class_fun_binding : 'class_fun_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  (i : 'a_lident)  (mv : 'opt_virtual) \n     (_loc : FanLoc.t)  ->\n     (`Eq (_loc, (`ClassConS (_loc, mv, (i :>ident))), ce) : 'class_declaration ))\n",
+           ("Gram.mk_action\n  (fun (ce : 'class_fun_binding)  (i : 'a_lident)  (mv : 'opt_virtual) \n     (_loc : FanLoc.t)  ->\n     (`ClDeclS (_loc, mv, (i :>ident), ce) : 'class_declaration ))\n",
              (Gram.mk_action
                 (fun (ce : 'class_fun_binding)  (i : 'a_lident) 
                    (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
-                   (`Eq (_loc, (`ClassConS (_loc, mv, (i :>ident))), ce) : 
-                   'class_declaration )))))]));
+                   (`ClDeclS (_loc, mv, (i :>ident), ce) : 'class_declaration )))))]));
    Gram.extend_single (class_fun_binding : 'class_fun_binding Gram.t )
      (None,
        (None, None,
@@ -4997,20 +4982,19 @@ let apply () =
                    | _ ->
                        failwith
                          "AstQuotation.expand _loc x FanDyn.clexp_tag\n"))));
-         ([`Snterm (Gram.obj (class_longident : 'class_longident Gram.t ));
+         ([`Snterm (Gram.obj (vid : 'vid Gram.t ));
           `Skeyword "[";
           `Snterm (Gram.obj (comma_ctyp : 'comma_ctyp Gram.t ));
           `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (t : 'comma_ctyp)  _  (ci : 'class_longident)  (_loc : FanLoc.t) \n     -> (`ClassCon (_loc, (`ViNil _loc), ci, t) : 'clexp ))\n",
+           ("Gram.mk_action\n  (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : FanLoc.t)  ->\n     (`ClApply (_loc, ci, t) : 'clexp ))\n",
              (Gram.mk_action
-                (fun _  (t : 'comma_ctyp)  _  (ci : 'class_longident) 
-                   (_loc : FanLoc.t)  ->
-                   (`ClassCon (_loc, (`ViNil _loc), ci, t) : 'clexp )))));
-         ([`Snterm (Gram.obj (class_longident : 'class_longident Gram.t ))],
-           ("Gram.mk_action\n  (fun (ci : 'class_longident)  (_loc : FanLoc.t)  ->\n     (`ClassConS (_loc, (`ViNil _loc), ci) : 'clexp ))\n",
+                (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : FanLoc.t) 
+                   -> (`ClApply (_loc, ci, t) : 'clexp )))));
+         ([`Snterm (Gram.obj (vid : 'vid Gram.t ))],
+           ("Gram.mk_action\n  (fun (ci : 'vid)  (_loc : FanLoc.t)  -> ((ci :>clexp) : 'clexp ))\n",
              (Gram.mk_action
-                (fun (ci : 'class_longident)  (_loc : FanLoc.t)  ->
-                   (`ClassConS (_loc, (`ViNil _loc), ci) : 'clexp )))));
+                (fun (ci : 'vid)  (_loc : FanLoc.t)  ->
+                   ((ci :>clexp) : 'clexp )))));
          ([`Skeyword "object";
           `Skeyword "(";
           `Snterm (Gram.obj (pat : 'pat Gram.t ));

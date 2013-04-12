@@ -171,7 +171,7 @@ and mexp =
   | `StructEnd of loc | `Constraint of (loc * mexp * mtyp)
   | `PackageModule of (loc * exp) | ant] 
 and stru =
-  [ `Class of (loc * clexp) | `ClassType of (loc * cltyp)
+  [ `Class of (loc * cldecl) | `ClassType of (loc * cltyp)
   | `Sem of (loc * stru * stru) | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp) | `Exception of (loc * of_ctyp)
   | `StExp of (loc * exp) | `External of (loc * alident * ctyp * strings)
@@ -192,15 +192,18 @@ and clsigi =
   | `Method of (loc * alident * private_flag * ctyp)
   | `VirMeth of (loc * alident * private_flag * ctyp)
   | `Eq of (loc * ctyp * ctyp) | ant] 
+and cldecl =
+  [ `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
+  | `ClDeclS of (loc * virtual_flag * ident * clexp)
+  | `And of (loc * cldecl * cldecl) | ant] 
 and clexp =
-  [ `CeApp of (loc * clexp * exp)
-  | `ClassCon of (loc * virtual_flag * ident * type_parameters)
-  | `ClassConS of (loc * virtual_flag * ident)
-  | `CeFun of (loc * pat * clexp)
+  [ `CeApp of (loc * clexp * exp) | vid'
+  | `ClApply of (loc * vid * type_parameters) | `CeFun of (loc * pat * clexp)
   | `LetIn of (loc * rec_flag * binding * clexp) | `Obj of (loc * cstru)
   | `ObjEnd of loc | `ObjPat of (loc * pat * cstru)
-  | `ObjPatEnd of (loc * pat) | `Constraint of (loc * clexp * cltyp)
-  | `And of (loc * clexp * clexp) | `Eq of (loc * clexp * clexp) | ant] 
+  | `ObjPatEnd of (loc * pat) | `Constraint of (loc * clexp * cltyp) | 
+    ant]
+  
 and cstru =
   [ `Sem of (loc * cstru * cstru) | `Eq of (loc * ctyp * ctyp)
   | `Inherit of (loc * override_flag * clexp)
