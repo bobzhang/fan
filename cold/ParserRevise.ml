@@ -527,25 +527,25 @@ let apply () =
              (Gram.mk_action
                 (fun (me : 'mexp)  _  _  _  (_loc : FanLoc.t)  ->
                    (`ModuleTypeOf (_loc, me) : 'mtyp )))))])]);
-   Gram.extend (module_declaration : 'module_declaration Gram.t )
+   Gram.extend_single (module_declaration : 'module_declaration Gram.t )
      (None,
-       [(None, (Some `RA),
-          [([`Skeyword ":"; `Snterm (Gram.obj (mtyp : 'mtyp Gram.t ))],
-             ("Gram.mk_action\n  (fun (mt : 'mtyp)  _  (_loc : FanLoc.t)  -> (mt : 'module_declaration ))\n",
-               (Gram.mk_action
-                  (fun (mt : 'mtyp)  _  (_loc : FanLoc.t)  ->
-                     (mt : 'module_declaration )))));
-          ([`Skeyword "(";
-           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
-           `Skeyword ":";
-           `Snterm (Gram.obj (mtyp : 'mtyp Gram.t ));
-           `Skeyword ")";
-           `Sself],
-            ("Gram.mk_action\n  (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _  (i : 'a_uident)  _ \n     (_loc : FanLoc.t)  -> (`Functor (_loc, i, t, mt) : 'module_declaration ))\n",
+       (None, None,
+         [([`Skeyword ":"; `Snterm (Gram.obj (mtyp : 'mtyp Gram.t ))],
+            ("Gram.mk_action\n  (fun (mt : 'mtyp)  _  (_loc : FanLoc.t)  -> (mt : 'module_declaration ))\n",
               (Gram.mk_action
-                 (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _ 
-                    (i : 'a_uident)  _  (_loc : FanLoc.t)  ->
-                    (`Functor (_loc, i, t, mt) : 'module_declaration )))))])]);
+                 (fun (mt : 'mtyp)  _  (_loc : FanLoc.t)  ->
+                    (mt : 'module_declaration )))));
+         ([`Skeyword "(";
+          `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
+          `Skeyword ":";
+          `Snterm (Gram.obj (mtyp : 'mtyp Gram.t ));
+          `Skeyword ")";
+          `Sself],
+           ("Gram.mk_action\n  (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _  (i : 'a_uident)  _ \n     (_loc : FanLoc.t)  -> (`Functor (_loc, i, t, mt) : 'module_declaration ))\n",
+             (Gram.mk_action
+                (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _ 
+                   (i : 'a_uident)  _  (_loc : FanLoc.t)  ->
+                   (`Functor (_loc, i, t, mt) : 'module_declaration )))))]));
    Gram.extend_single (mtyp_quot : 'mtyp_quot Gram.t )
      (None,
        (None, None,

@@ -96,8 +96,7 @@ let apply () = begin
         | `Ant (("mbind"|"anti"|"" as n),s) ->
             mk_anti _loc ~c:"mbind" n s
         | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt)
-        | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} ->
-            `ModuleBind(_loc,m,mt,me)]
+        | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} -> `ModuleBind(_loc,m,mt,me)]
         mbind:
         [ S{b1}; "and"; S{b2} -> `And(_loc,b1,b2)
         | `Ant (("mbind"|"anti"|"list" |"" as n),s) ->
@@ -110,8 +109,7 @@ let apply () = begin
         | `Ant ((""|"mbind"|"anti"|"list" as n),s) ->
             mk_anti _loc ~c:"mbind" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
-        | a_uident{m}; ":"; mtyp{mt} ->
-            `Constraint(_loc,m,mt) ] |};
+        | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt) ] |};
 
   with constr
       {:extend|
@@ -143,26 +141,17 @@ let apply () = begin
         [ S{mt}; "with"; constr{wc} -> `With(_loc,mt,wc)]
         "apply"
         [ S{mt1}; S{mt2} ->
-          (* let app0 mt1 mt2 = *)
             match (mt1, mt2) with
-            [ ((#ident as i1), (#ident as i2))(* (`Id(loc1,i1),`Id(loc2,i2)) *) ->
-              apply i1 i2 
-              (* let _loc = FanLoc.merge loc1 loc2 in *)
-              (* `Id(_loc,`App(_loc,i1,i2)) *)
-            | _ -> raise XStream.Failure ] (* in app0 mt1 mt2 *)
-          (* ModuleType.app0 mt1 mt2 *) ] (* FIXME *)
+            [ ((#ident as i1), (#ident as i2)) -> apply i1 i2 
+            | _ -> raise XStream.Failure ]] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
-            [ ((#ident as i1), (#ident as i2))(* (`Id(loc1,i1),`Id(loc2,i2)) *) ->
+            [ ((#ident as i1), (#ident as i2)) ->
               dot i1 i2 
-              (* let _loc = FanLoc.merge loc1 loc2 in *)
-              (* `Id(_loc,`Dot(_loc,i1,i2)) *)
-                (* ({| $id:i1 |}, {@_| $id:i2 |}) ->  {| $(id:{:ident| $i1.$i2 |}) |} *)
             | _ -> raise XStream.Failure ] in
-          acc0 mt1 mt2
-          (* ModuleType.acc0 mt1 mt2 *) ] (*FIXME*)
+          acc0 mt1 mt2 ] (*FIXME*)
         "sig"
         [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)
         | "sig";"end" -> `SigEnd(_loc)]
@@ -170,14 +159,14 @@ let apply () = begin
         [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->
           mk_anti _loc ~c:"mtyp" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mtyp_tag
-        | module_longident_with_app{i} -> (* `Id(_loc,i) *) (i:ident:>mtyp) 
+        | module_longident_with_app{i} ->  (i:ident:>mtyp) 
         | "("; S{mt}; ")" -> mt
         | "module"; "type"; "of"; mexp{me} -> `ModuleTypeOf(_loc,me)] }
-      module_declaration:
-      { RA
+      module_declaration: (* syntax sugar *)
+      (* { RA *)
         [ ":"; mtyp{mt} -> mt
         | "("; a_uident{i}; ":"; mtyp{t}; ")"; S{mt} ->
-            `Functor(_loc,i,t,mt)] }
+            `Functor(_loc,i,t,mt)] (* } *)
       mtyp_quot:
       [ mtyp{x} -> x  ]  |};
 

@@ -143,17 +143,20 @@ and mtyp =
     ant]
   
 and sigi =
-  [ `Class of (loc * cltyp) | `ClassType of (loc * cltyp)
+  [ `Val of (loc * alident * ctyp)
+  | `External of (loc * alident * ctyp * strings) | `Type of (loc * typedecl)
+  | `Exception of (loc * of_ctyp) | `Class of (loc * cltyp)
+  | `ClassType of (loc * cltyp) | `Module of (loc * auident * mtyp)
+  | `ModuleApp of (loc * auident * mtbind * mtyp)
+  | `ModuleTypeEnd of (loc * auident) | `ModuleType of (loc * auident * mtyp)
   | `Sem of (loc * sigi * sigi) | `DirectiveSimple of (loc * alident)
-  | `Directive of (loc * alident * exp) | `Exception of (loc * of_ctyp)
-  | `External of (loc * alident * ctyp * strings) | `Include of (loc * mtyp)
-  | `Module of (loc * auident * mtyp) | `RecModule of (loc * mbind)
-  | `ModuleType of (loc * auident * mtyp) | `ModuleTypeEnd of (loc * auident)
-  | `Open of (loc * ident) | `Type of (loc * typedecl)
-  | `Val of (loc * alident * ctyp) | ant] 
+  | `Directive of (loc * alident * exp) | `Open of (loc * ident)
+  | `Include of (loc * mtyp) | `RecModule of (loc * mbind) | ant] 
+and mtbind =
+  [ `App of (loc * mtbind * mtbind) | `Col of (auident * mtyp) | ant] 
 and constr =
-  [ `TypeEq of (loc * ctyp * ctyp) | `TypeEqPriv of (loc * ctyp * ctyp)
-  | `ModuleEq of (loc * ident * ident) | `TypeSubst of (loc * ctyp * ctyp)
+  [ `TypeEq of (loc * ctyp * ctyp) | `ModuleEq of (loc * ident * ident)
+  | `TypeEqPriv of (loc * ctyp * ctyp) | `TypeSubst of (loc * ctyp * ctyp)
   | `ModuleSubst of (loc * ident * ident) | `And of (loc * constr * constr)
   | ant] 
 and binding =

@@ -1342,6 +1342,35 @@ class meta =
     method sigi : 'loc -> sigi -> ep=
       fun _loc  ->
         function
+        | `Val (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Val")), (self#loc _loc _a0))),
+                     (self#alident _loc _a1))), (self#ctyp _loc _a2))
+        | `External (_a0,_a1,_a2,_a3) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "External")),
+                               (self#loc _loc _a0))),
+                          (self#alident _loc _a1))), (self#ctyp _loc _a2))),
+                (self#strings _loc _a3))
+        | `Type (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Type")), (self#loc _loc _a0))),
+                (self#typedecl _loc _a1))
+        | `Exception (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Exception")), (self#loc _loc _a0))),
+                (self#of_ctyp _loc _a1))
         | `Class (_a0,_a1) ->
             `App
               (_loc,
@@ -1352,6 +1381,41 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "ClassType")), (self#loc _loc _a0))),
                 (self#cltyp _loc _a1))
+        | `Module (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "Module")), (self#loc _loc _a0))),
+                     (self#auident _loc _a1))), (self#mtyp _loc _a2))
+        | `ModuleApp (_a0,_a1,_a2,_a3) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "ModuleApp")),
+                               (self#loc _loc _a0))),
+                          (self#auident _loc _a1))), (self#mtbind _loc _a2))),
+                (self#mtyp _loc _a3))
+        | `ModuleTypeEnd (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc, (`Vrn (_loc, "ModuleTypeEnd")),
+                     (self#loc _loc _a0))), (self#auident _loc _a1))
+        | `ModuleType (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "ModuleType")),
+                          (self#loc _loc _a0))), (self#auident _loc _a1))),
+                (self#mtyp _loc _a2))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1374,73 +1438,37 @@ class meta =
                         (_loc, (`Vrn (_loc, "Directive")),
                           (self#loc _loc _a0))), (self#alident _loc _a1))),
                 (self#exp _loc _a2))
-        | `Exception (_a0,_a1) ->
-            `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Exception")), (self#loc _loc _a0))),
-                (self#of_ctyp _loc _a1))
-        | `External (_a0,_a1,_a2,_a3) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "External")),
-                               (self#loc _loc _a0))),
-                          (self#alident _loc _a1))), (self#ctyp _loc _a2))),
-                (self#strings _loc _a3))
-        | `Include (_a0,_a1) ->
-            `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Include")), (self#loc _loc _a0))),
-                (self#mtyp _loc _a1))
-        | `Module (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "Module")), (self#loc _loc _a0))),
-                     (self#auident _loc _a1))), (self#mtyp _loc _a2))
-        | `RecModule (_a0,_a1) ->
-            `App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecModule")), (self#loc _loc _a0))),
-                (self#mbind _loc _a1))
-        | `ModuleType (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "ModuleType")),
-                          (self#loc _loc _a0))), (self#auident _loc _a1))),
-                (self#mtyp _loc _a2))
-        | `ModuleTypeEnd (_a0,_a1) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc, (`Vrn (_loc, "ModuleTypeEnd")),
-                     (self#loc _loc _a0))), (self#auident _loc _a1))
         | `Open (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Open")), (self#loc _loc _a0))),
                 (self#ident _loc _a1))
-        | `Type (_a0,_a1) ->
+        | `Include (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Type")), (self#loc _loc _a0))),
-                (self#typedecl _loc _a1))
-        | `Val (_a0,_a1,_a2) ->
+                (`App (_loc, (`Vrn (_loc, "Include")), (self#loc _loc _a0))),
+                (self#mtyp _loc _a1))
+        | `RecModule (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "RecModule")), (self#loc _loc _a0))),
+                (self#mbind _loc _a1))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method mtbind : 'loc -> mtbind -> ep=
+      fun _loc  ->
+        function
+        | `App (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Val")), (self#loc _loc _a0))),
-                     (self#alident _loc _a1))), (self#ctyp _loc _a2))
+                     (`App (_loc, (`Vrn (_loc, "App")), (self#loc _loc _a0))),
+                     (self#mtbind _loc _a1))), (self#mtbind _loc _a2))
+        | `Col (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Col")), (self#auident _loc _a0))),
+                (self#mtyp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method constr : 'loc -> constr -> ep=
       fun _loc  ->
@@ -1453,15 +1481,6 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "TypeEq")), (self#loc _loc _a0))),
                      (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
-        | `TypeEqPriv (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "TypeEqPriv")),
-                          (self#loc _loc _a0))), (self#ctyp _loc _a1))),
-                (self#ctyp _loc _a2))
         | `ModuleEq (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1471,6 +1490,15 @@ class meta =
                         (_loc, (`Vrn (_loc, "ModuleEq")),
                           (self#loc _loc _a0))), (self#ident _loc _a1))),
                 (self#ident _loc _a2))
+        | `TypeEqPriv (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "TypeEqPriv")),
+                          (self#loc _loc _a0))), (self#ctyp _loc _a1))),
+                (self#ctyp _loc _a2))
         | `TypeSubst (_a0,_a1,_a2) ->
             `App
               (_loc,

@@ -37,8 +37,8 @@ let loc_of =
   | `Normal _loc -> _loc
   | `Sem (_loc,_,_) -> _loc
   | `Send (_loc,_,_) -> _loc
-  | `ModuleTypeEnd (_loc,_) -> _loc
   | `Type (_loc,_) -> _loc
+  | `ModuleTypeEnd (_loc,_) -> _loc
   | `Chr (_loc,_) -> _loc
   | `IfThenElse (_loc,_,_,_) -> _loc
   | `ClassType (_loc,_) -> _loc
@@ -69,6 +69,7 @@ let loc_of =
   | `Subtype (_loc,_,_) -> _loc
   | `Functor (_loc,_,_,_) -> _loc
   | `With (_loc,_,_) -> _loc
+  | `ModuleApp (_loc,_,_,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
   | `Private _loc -> _loc
@@ -172,6 +173,7 @@ let loc_of =
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
   | `Bar (_loc,_,_) -> _loc
+  | `Col (_loc,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ObjTyEnd (_loc,_) -> _loc
   | `ViNil _loc -> _loc

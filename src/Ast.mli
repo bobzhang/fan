@@ -364,29 +364,46 @@ and mtyp =
   | `ModuleTypeOf of (loc * mexp)
   | ant  ]
 and sigi =
-  [= `Class of (loc * cltyp)
+  [=
+      `Val of (loc * alident * ctyp)
+    (* BNF for external_declaration is missing in OCaml manual
+       primitive_declaration:
+       | STRING                                      { [$1] }
+       | STRING primitive_declaration                { $1 :: $2 } *)
+  | `External of (loc * alident  * ctyp * strings) (* external s : t = s ... s *)
+  | `Type of (loc * typedecl)
+  | `Exception of (loc * of_ctyp) (* exception t *)
+
+  | `Class of (loc * cltyp)
   | `ClassType of (loc * cltyp) (* class type cict *)
+
+  | `Module of (loc * auident * mtyp) (* module s : mt *)
+  | `ModuleApp of (loc * auident * mtbind * mtyp)
+  | `ModuleTypeEnd of (loc * auident)
+  | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
+
+        
   | `Sem of (loc * sigi * sigi)
   | `DirectiveSimple of (loc * alident) (* # s or # s e *)
   | `Directive of (loc * alident * exp) (* semantics *)
-        (* exception t *)
-  | `Exception of (loc * of_ctyp)
-        (* external s : t = s ... s *)
-  | `External of (loc * alident  * ctyp * (* meta_list  *)strings)
-  | `Include of (loc * mtyp)
-  | `Module of (loc * auident * mtyp) (* module s : mt *)
-  | `RecModule of (loc * mbind) (* module rec mb *)
-  | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
-  | `ModuleTypeEnd of (loc * auident)
+
   | `Open of (loc * ident)
-  | `Type of (loc * typedecl)
-  | `Val of (loc * alident * ctyp)
+  | `Include of (loc * mtyp)
+  | `RecModule of (loc * mbind) (* module rec mb *)
+        
   | ant  ]
+and mtbind =
+  [= `App of (loc * mtbind * mtbind )
+  | `Col of (auident * mtyp)
+  | ant ]      
 and constr =
-  [= `TypeEq of (loc * ctyp * ctyp)
-  | `TypeEqPriv of (loc * ctyp * ctyp)
+  [=
+   `TypeEq of (loc * ctyp * ctyp)
   | `ModuleEq of (loc * ident * ident)
+        
+  | `TypeEqPriv of (loc * ctyp * ctyp)
   | `TypeSubst of (loc * ctyp * ctyp)
+        
   | `ModuleSubst of (loc * ident * ident)
   | `And of (loc * constr * constr)
   | ant  ]
