@@ -179,6 +179,7 @@ and stru =
   | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
   | `Open of (loc * ident) | `Type of (loc * typedecl)
   | `Value of (loc * rec_flag * binding) | ant] 
+and cltdecl = [ `And of (loc * cltdecl * cltdecl) | ant] 
 and cltyp =
   [ `ClassCon of (loc * virtual_flag * ident * type_parameters)
   | `ClassConS of (loc * virtual_flag * ident)

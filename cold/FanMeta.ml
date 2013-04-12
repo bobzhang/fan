@@ -1725,6 +1725,17 @@ class meta =
                         (_loc, (`Vrn (_loc, "Value")), (self#loc _loc _a0))),
                      (self#rec_flag _loc _a1))), (self#binding _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method cltdecl : 'loc -> cltdecl -> ep=
+      fun _loc  ->
+        function
+        | `And (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
+                     (self#cltdecl _loc _a1))), (self#cltdecl _loc _a2))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method cltyp : 'loc -> cltyp -> ep=
       fun _loc  ->
         function

@@ -445,7 +445,7 @@ and mexp =
   | `PackageModule of (loc * exp)
   | ant  ]
 and stru =
-  [= `Class of (loc * (* clexp *)cldecl) (* class cice *)
+  [= `Class of (loc * cldecl) (* class cice *)
   | `ClassType of (loc * cltyp) (* class type cict *)
   | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
@@ -493,7 +493,10 @@ and stru =
   | clty_longident
   | OBJECT class_sig_body END
   class_sig_body: class_self_type class_sig_fields
- *)    
+ *)
+and cltdecl =
+  [= `And of (loc * cltdecl * cltdecl)
+  | ant ]  
 and cltyp = (* class body type *)         
   [= 
    `ClassCon of (loc * virtual_flag * ident *  type_parameters)

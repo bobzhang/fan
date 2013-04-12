@@ -54,6 +54,7 @@ type 'a tag =
   | Case
   | Mexp
   | Stru
+  | Cltdecl
   | Cltyp
   | Clsigi
   | Cldecl
@@ -113,6 +114,7 @@ let string_of_tag =
   | Case  -> "case"
   | Mexp  -> "mexp"
   | Stru  -> "stru"
+  | Cltdecl  -> "cltdecl"
   | Cltyp  -> "cltyp"
   | Clsigi  -> "clsigi"
   | Cldecl  -> "cldecl"
@@ -218,6 +220,8 @@ let case_tag: case tag = Case
 let mexp_tag: mexp tag = Mexp
 
 let stru_tag: stru tag = Stru
+
+let cltdecl_tag: cltdecl tag = Cltdecl
 
 let cltyp_tag: cltyp tag = Cltyp
 

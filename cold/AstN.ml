@@ -170,6 +170,7 @@ and stru =
   | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
   | `Value of (rec_flag * binding) | ant] 
+and cltdecl = [ `And of (cltdecl * cltdecl) | ant] 
 and cltyp =
   [ `ClassCon of (virtual_flag * ident * type_parameters)
   | `ClassConS of (virtual_flag * ident) | `CtFun of (ctyp * cltyp)

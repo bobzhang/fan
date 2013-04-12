@@ -1035,10 +1035,8 @@ let apply () = begin
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag *)
       | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_binding{ce}
         -> `ClDecl(_loc,mv,(i:>ident),x,ce)
-          (* `Eq(_loc, `ClassCon(_loc,mv,(i:>ident),x),ce) *)
       | opt_virtual{mv}; a_lident{i}; class_fun_binding{ce} ->
-          `ClDeclS(_loc,mv,(i:>ident),ce)
-          (* `Eq(_loc, `ClassConS(_loc,mv, (i:>ident)),ce)           *)  ]
+          `ClDeclS(_loc,mv,(i:>ident),ce)]
       class_fun_binding:
       [ "="; clexp{ce} -> ce
       | ":"; cltyp_plus{ct}; "="; clexp{ce} -> `Constraint(_loc,ce,ct)
@@ -1055,14 +1053,13 @@ let apply () = begin
           [ S{ce}; exp Level "label"{e} -> `CeApp (_loc, ce, e) ]
         "simple"
           [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"clexp" n s
-          | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag
-          | vid(* class_longident *){ci}; "["; comma_ctyp{t}; "]" ->
+          | `QUOTATION x ->
+              AstQuotation.expand _loc x FanDyn.clexp_tag
+          | vid{ci}; "["; comma_ctyp{t}; "]" ->
               `ClApply(_loc,ci,t)
-              (* `ClassCon (_loc, `ViNil _loc, ci, t) *)
-          | vid (* class_longident *){ci} -> (ci :>clexp)
-              (* `ClassConS(_loc,`ViNil _loc,ci) *)
-          | "object"; "("; pat{p}; ")" ; class_structure{cst};"end" ->
-              `ObjPat(_loc,p,cst)
+          | vid {ci} -> (ci :>clexp)
+          | "object"; "("; pat{p}; ")" ; class_structure{cst};"end"
+            -> `ObjPat(_loc,p,cst)
           | "object"; "("; pat{p}; ")" ;"end" ->
               `ObjPatEnd(_loc,p)
           | "object";"("; pat{p};":";ctyp{t};")"; class_structure{cst};"end" ->
@@ -1082,7 +1079,7 @@ let apply () = begin
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
       | class_info_for_cltyp{ci}; ":"; cltyp_plus{ct} -> `CtCol (_loc, ci, ct)  ]
       cltyp_declaration:
-      [ S{cd1}; "and"; S{cd2} -> {| $cd1 and $cd2 |}
+      [ S{cd1}; "and"; S{cd2} -> `And(_loc,cd1,cd2)
       | `Ant ((""|"typ"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cltyp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
       | class_info_for_cltyp{ci}; "="; cltyp{ct} ->
@@ -1092,16 +1089,17 @@ let apply () = begin
         `ClassCon(_loc,mv,(i:>ident),x)
       | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv,(i:>ident))]
       cltyp_quot:
-      [ S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2)
-      | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2)
-      | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2)
-      | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" ->
-          let anti = mk_anti _loc ~c:"cltyp" n s in
-          `ClassCon(_loc,anti,i,t)
-      | `Ant (("virtual" as n),s); ident{i} ->
-          let anti = mk_anti _loc  ~c:"cltyp" n s in
-          `ClassConS(_loc,anti,i)
-      | cltyp_plus{x} -> x]
+      [(*  S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2) *)
+      (* | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2) *)
+      (* | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2) *)
+      (* | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" -> *)
+      (*     let anti = mk_anti _loc ~c:"cltyp" n s in *)
+      (*     `ClassCon(_loc,anti,i,t) *)
+      (* | `Ant (("virtual" as n),s); ident{i} -> *)
+      (*     let anti = mk_anti _loc  ~c:"cltyp" n s in *)
+      (*     `ClassConS(_loc,anti,i) *)
+       cltyp{x} -> x  
+      (* | cltyp_plus{x} -> x *)]
       cltyp_plus:
       [ "["; ctyp{t}; "]"; "->"; S{ct} -> `CtFun(_loc,t,ct)
       | cltyp{ct} -> ct ]
