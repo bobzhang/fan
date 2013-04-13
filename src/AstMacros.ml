@@ -26,7 +26,7 @@ open AstLoc;
      `StExp ..  
 
   1. the position where macro quotation appears
-     - cstru
+     - clfield
        combine with translate, this should be inferred automatically
 
 
@@ -34,7 +34,7 @@ open AstLoc;
      currently only exp
 
   3. the type macro expander
-     - macro.cstru should generate cstru 
+     - macro.clfield should generate clfield 
 
   4. register
 

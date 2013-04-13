@@ -123,8 +123,8 @@ and exp =
   | `LetIn of (loc * rec_flag * binding * exp)
   | `LetTryInWith of (loc * rec_flag * binding * exp * case)
   | `LetModule of (loc * auident * mexp * exp) | `Match of (loc * exp * case)
-  | `New of (loc * ident) | `Obj of (loc * cstru) | `ObjEnd of loc
-  | `ObjPat of (loc * pat * cstru) | `ObjPatEnd of (loc * pat)
+  | `New of (loc * ident) | `Obj of (loc * clfield) | `ObjEnd of loc
+  | `ObjPat of (loc * pat * clfield) | `ObjPatEnd of (loc * pat)
   | `OptLabl of (loc * alident * exp) | `OptLablS of (loc * alident)
   | `OvrInst of (loc * rec_exp) | `OvrInstEmpty of loc | `Seq of (loc * exp)
   | `Send of (loc * exp * alident) | `StringDot of (loc * exp * exp)
@@ -201,21 +201,21 @@ and cldecl =
 and clexp =
   [ `CeApp of (loc * clexp * exp) | vid'
   | `ClApply of (loc * vid * type_parameters) | `CeFun of (loc * pat * clexp)
-  | `LetIn of (loc * rec_flag * binding * clexp) | `Obj of (loc * cstru)
-  | `ObjEnd of loc | `ObjPat of (loc * pat * cstru)
+  | `LetIn of (loc * rec_flag * binding * clexp) | `Obj of (loc * clfield)
+  | `ObjEnd of loc | `ObjPat of (loc * pat * clfield)
   | `ObjPatEnd of (loc * pat) | `Constraint of (loc * clexp * cltyp) | 
     ant]
   
-and cstru =
-  [ `Sem of (loc * cstru * cstru) | `Eq of (loc * ctyp * ctyp)
+and clfield =
+  [ `Sem of (loc * clfield * clfield)
   | `Inherit of (loc * override_flag * clexp)
   | `InheritAs of (loc * override_flag * clexp * alident)
-  | `Initializer of (loc * exp)
+  | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
+  | `VirVal of (loc * alident * mutable_flag * ctyp)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (loc * alident * override_flag * private_flag * exp)
-  | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
   | `VirMeth of (loc * alident * private_flag * ctyp)
-  | `VirVal of (loc * alident * mutable_flag * ctyp) | ant] 
+  | `Eq of (loc * ctyp * ctyp) | `Initializer of (loc * exp) | ant] 
 type ep =
   [ vid | `App of (loc * ep * ep) | `Vrn of (loc * string)
   | `Com of (loc * ep * ep) | `Sem of (loc * ep * ep) | `Par of (loc * ep)

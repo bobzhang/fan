@@ -415,9 +415,9 @@ class printer = object(self:'self)
        assert false;
      method signature_item {psig_desc=x;psig_loc=_loc} : Ast.sigi =
        raise Not_found;
-     method class_fields (ls:list class_field) : Ast.cstru =
+     method class_fields (ls:list class_field) : Ast.clfield =
        assert false;
-     method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.cstru =
+     method class_field {pcf_desc=x;pcf_loc = _loc} : Ast.clfield =
        assert false;
      method clexp {pcl_desc=x;pcl_loc=_loc} : Ast.clexp = assert false;
      method cltyp ({pci_exp;_}: class_infos cltyp)  : Ast.cltyp = assert false;

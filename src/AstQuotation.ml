@@ -319,8 +319,8 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
 (* let of_stru_with_filter = REGISTER_FILTER(FanDyn.stru_tag); *)
 (* let of_pat  = REGISTER(FanDyn.pat_tag); *)
 (* let of_pat_with_filter  = REGISTER_FILTER(FanDyn.pat_tag); *)
-(* let of_cstru  = REGISTER(FanDyn.cstru_tag); *)
-(* let of_cstru_with_filter  = REGISTER_FILTER(FanDyn.cstru_tag); *)
+(* let of_clfield  = REGISTER(FanDyn.clfield_tag); *)
+(* let of_clfield_with_filter  = REGISTER_FILTER(FanDyn.clfield_tag); *)
 (* let of_case = REGISTER(FanDyn.case_tag); *)
 (* let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag); *)
   
@@ -361,10 +361,10 @@ let of_pat_with_filter ~name  ~entry  ~filter  =
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s));
 
-let of_cstru ~name  ~entry  = add name FanDyn.cstru_tag (make_parser entry);
+let of_clfield ~name  ~entry  = add name FanDyn.clfield_tag (make_parser entry);
 
-let of_cstru_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.cstru_tag
+let of_clfield_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.clfield_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s));
 

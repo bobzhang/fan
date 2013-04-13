@@ -59,7 +59,7 @@ type 'a tag =
   | Clsigi
   | Cldecl
   | Clexp
-  | Cstru
+  | Clfield
   | Ep
   | Rec_bind 
 
@@ -119,7 +119,7 @@ let string_of_tag =
   | Clsigi  -> "clsigi"
   | Cldecl  -> "cldecl"
   | Clexp  -> "clexp"
-  | Cstru  -> "cstru"
+  | Clfield  -> "clfield"
   | Ep  -> "ep"
   | Rec_bind  -> "rec_bind"
 
@@ -231,7 +231,7 @@ let cldecl_tag: cldecl tag = Cldecl
 
 let clexp_tag: clexp tag = Clexp
 
-let cstru_tag: cstru tag = Cstru
+let clfield_tag: clfield tag = Clfield
 
 let ep_tag: ep tag = Ep
 

@@ -65,9 +65,9 @@ module type Syntax =
     val clsigi : clsigi Gram.t
     val clsigi_quot : clsigi Gram.t
     val class_signature : clsigi Gram.t
-    val cstru : cstru Gram.t
-    val cstru_quot : cstru Gram.t
-    val class_structure : cstru Gram.t
+    val clfield : clfield Gram.t
+    val clfield_quot : clfield Gram.t
+    val class_structure : clfield Gram.t
     val cltyp : cltyp Gram.t
     val cltyp_declaration : cltdecl Gram.t
     val cltyp_longident : ident Gram.t

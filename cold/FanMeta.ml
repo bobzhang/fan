@@ -1159,7 +1159,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Obj")), (self#loc _loc _a0))),
-                (self#cstru _loc _a1))
+                (self#clfield _loc _a1))
         | `ObjEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjEnd")), (self#loc _loc _a0))
         | `ObjPat (_a0,_a1,_a2) ->
@@ -1169,7 +1169,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "ObjPat")), (self#loc _loc _a0))),
-                     (self#pat _loc _a1))), (self#cstru _loc _a2))
+                     (self#pat _loc _a1))), (self#clfield _loc _a2))
         | `ObjPatEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1958,7 +1958,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Obj")), (self#loc _loc _a0))),
-                (self#cstru _loc _a1))
+                (self#clfield _loc _a1))
         | `ObjEnd _a0 ->
             `App (_loc, (`Vrn (_loc, "ObjEnd")), (self#loc _loc _a0))
         | `ObjPat (_a0,_a1,_a2) ->
@@ -1968,7 +1968,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "ObjPat")), (self#loc _loc _a0))),
-                     (self#pat _loc _a1))), (self#cstru _loc _a2))
+                     (self#pat _loc _a1))), (self#clfield _loc _a2))
         | `ObjPatEnd (_a0,_a1) ->
             `App
               (_loc,
@@ -1984,7 +1984,7 @@ class meta =
                           (self#loc _loc _a0))), (self#clexp _loc _a1))),
                 (self#cltyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method cstru : 'loc -> cstru -> ep=
+    method clfield : 'loc -> clfield -> ep=
       fun _loc  ->
         function
         | `Sem (_a0,_a1,_a2) ->
@@ -1993,14 +1993,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "Sem")), (self#loc _loc _a0))),
-                     (self#cstru _loc _a1))), (self#cstru _loc _a2))
-        | `Eq (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
-                     (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
+                     (self#clfield _loc _a1))), (self#clfield _loc _a2))
         | `Inherit (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -2021,12 +2014,33 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#override_flag _loc _a1))),
                      (self#clexp _loc _a2))), (self#alident _loc _a3))
-        | `Initializer (_a0,_a1) ->
+        | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
                 (`App
-                   (_loc, (`Vrn (_loc, "Initializer")), (self#loc _loc _a0))),
-                (self#exp _loc _a1))
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc,
+                               (`App
+                                  (_loc, (`Vrn (_loc, "CrVal")),
+                                    (self#loc _loc _a0))),
+                               (self#alident _loc _a1))),
+                          (self#override_flag _loc _a2))),
+                     (self#mutable_flag _loc _a3))), (self#exp _loc _a4))
+        | `VirVal (_a0,_a1,_a2,_a3) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "VirVal")),
+                               (self#loc _loc _a0))),
+                          (self#alident _loc _a1))),
+                     (self#mutable_flag _loc _a2))), (self#ctyp _loc _a3))
         | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
             `App
               (_loc,
@@ -2060,21 +2074,6 @@ class meta =
                                (self#alident _loc _a1))),
                           (self#override_flag _loc _a2))),
                      (self#private_flag _loc _a3))), (self#exp _loc _a4))
-        | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc,
-                               (`App
-                                  (_loc, (`Vrn (_loc, "CrVal")),
-                                    (self#loc _loc _a0))),
-                               (self#alident _loc _a1))),
-                          (self#override_flag _loc _a2))),
-                     (self#mutable_flag _loc _a3))), (self#exp _loc _a4))
         | `VirMeth (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
@@ -2087,18 +2086,19 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
                      (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
-        | `VirVal (_a0,_a1,_a2,_a3) ->
+        | `Eq (_a0,_a1,_a2) ->
             `App
               (_loc,
                 (`App
                    (_loc,
-                     (`App
-                        (_loc,
-                          (`App
-                             (_loc, (`Vrn (_loc, "VirVal")),
-                               (self#loc _loc _a0))),
-                          (self#alident _loc _a1))),
-                     (self#mutable_flag _loc _a2))), (self#ctyp _loc _a3))
+                     (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
+                     (self#ctyp _loc _a1))), (self#ctyp _loc _a2))
+        | `Initializer (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc, (`Vrn (_loc, "Initializer")), (self#loc _loc _a0))),
+                (self#exp _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method ep : 'loc -> ep -> ep=
       fun _loc  ->

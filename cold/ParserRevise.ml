@@ -4659,13 +4659,13 @@ let apply () =
                  | `Ant ((""|"cst"|"anti"|"list"),_) -> true
                  | _ -> false)),
                 (`Normal, "`Ant ((\"\"|\"cst\"|\"anti\"|\"list\"),_)"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (mk_anti _loc ~c:\"cstru\" n s : 'class_structure )\n     | _ -> failwith \"mk_anti _loc ~c:\"cstru\" n s\n\")\n",
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (mk_anti _loc ~c:\"clfield\" n s : 'class_structure )\n     | _ -> failwith \"mk_anti _loc ~c:\"clfield\" n s\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `Ant ((""|"cst"|"anti"|"list" as n),s) ->
-                        (mk_anti _loc ~c:"cstru" n s : 'class_structure )
-                    | _ -> failwith "mk_anti _loc ~c:\"cstru\" n s\n"))));
+                        (mk_anti _loc ~c:"clfield" n s : 'class_structure )
+                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function
                 | `Ant ((""|"cst"|"anti"|"list"),_) -> true
@@ -4673,30 +4673,30 @@ let apply () =
                (`Normal, "`Ant ((\"\"|\"cst\"|\"anti\"|\"list\"),_)"));
           `Skeyword ";";
           `Sself],
-           ("Gram.mk_action\n  (fun (cst : 'class_structure)  _  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc ~c:\"cstru\" n s), cst) : 'class_structure )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc ~c:\"cstru\" n s), cst)\n\")\n",
+           ("Gram.mk_action\n  (fun (cst : 'class_structure)  _  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : 'class_structure )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst)\n\")\n",
              (Gram.mk_action
                 (fun (cst : 'class_structure)  _  (__fan_0 : [> FanToken.t]) 
                    (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant ((""|"cst"|"anti"|"list" as n),s) ->
-                       (`Sem (_loc, (mk_anti _loc ~c:"cstru" n s), cst) : 
+                       (`Sem (_loc, (mk_anti _loc ~c:"clfield" n s), cst) : 
                        'class_structure )
                    | _ ->
                        failwith
-                         "`Sem (_loc, (mk_anti _loc ~c:\"cstru\" n s), cst)\n"))));
+                         "`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst)\n"))));
          ([`Slist1
              (Gram.srules
-                [([`Snterm (Gram.obj (cstru : 'cstru Gram.t ));
+                [([`Snterm (Gram.obj (clfield : 'clfield Gram.t ));
                   `Skeyword ";"],
-                   ("Gram.mk_action (fun _  (cst : 'cstru)  (_loc : FanLoc.t)  -> (cst : 'e__8 ))\n",
+                   ("Gram.mk_action\n  (fun _  (cst : 'clfield)  (_loc : FanLoc.t)  -> (cst : 'e__8 ))\n",
                      (Gram.mk_action
-                        (fun _  (cst : 'cstru)  (_loc : FanLoc.t)  ->
+                        (fun _  (cst : 'clfield)  (_loc : FanLoc.t)  ->
                            (cst : 'e__8 )))))])],
            ("Gram.mk_action\n  (fun (l : 'e__8 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_structure ))\n",
              (Gram.mk_action
                 (fun (l : 'e__8 list)  (_loc : FanLoc.t)  ->
                    (sem_of_list l : 'class_structure )))))]));
-   Gram.extend_single (cstru : 'cstru Gram.t )
+   Gram.extend_single (clfield : 'clfield Gram.t )
      (None,
        (None, None,
          [([`Stoken
@@ -4704,55 +4704,55 @@ let apply () =
                  | `Ant ((""|"cst"|"anti"|"list"),_) -> true
                  | _ -> false)),
                 (`Normal, "`Ant ((\"\"|\"cst\"|\"anti\"|\"list\"),_)"))],
-            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (mk_anti _loc ~c:\"cstru\" n s : 'cstru )\n     | _ -> failwith \"mk_anti _loc ~c:\"cstru\" n s\n\")\n",
+            ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\"|\"anti\"|\"list\" as n),s) ->\n         (mk_anti _loc ~c:\"clfield\" n s : 'clfield )\n     | _ -> failwith \"mk_anti _loc ~c:\"clfield\" n s\n\")\n",
               (Gram.mk_action
                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `Ant ((""|"cst"|"anti"|"list" as n),s) ->
-                        (mk_anti _loc ~c:"cstru" n s : 'cstru )
-                    | _ -> failwith "mk_anti _loc ~c:\"cstru\" n s\n"))));
+                        (mk_anti _loc ~c:"clfield" n s : 'clfield )
+                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `QUOTATION _ -> true | _ -> false)),
                (`Normal, "`QUOTATION _"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.cstru_tag : 'cstru )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.cstru_tag\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.clfield_tag : 'clfield )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.clfield_tag\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `QUOTATION x ->
-                       (AstQuotation.expand _loc x FanDyn.cstru_tag : 
-                       'cstru )
+                       (AstQuotation.expand _loc x FanDyn.clfield_tag : 
+                       'clfield )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x FanDyn.cstru_tag\n"))));
+                         "AstQuotation.expand _loc x FanDyn.clfield_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Gram.obj (opt_override : 'opt_override Gram.t ));
           `Snterm (Gram.obj (clexp : 'clexp Gram.t ))],
-           ("Gram.mk_action\n  (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : FanLoc.t)  ->\n     (`Inherit (_loc, o, ce) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : FanLoc.t)  ->\n     (`Inherit (_loc, o, ce) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : FanLoc.t)
-                    -> (`Inherit (_loc, o, ce) : 'cstru )))));
+                    -> (`Inherit (_loc, o, ce) : 'clfield )))));
          ([`Skeyword "inherit";
           `Snterm (Gram.obj (opt_override : 'opt_override Gram.t ));
           `Snterm (Gram.obj (clexp : 'clexp Gram.t ));
           `Skeyword "as";
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (ce : 'clexp)  (o : 'opt_override)  _ \n     (_loc : FanLoc.t)  -> (`InheritAs (_loc, o, ce, i) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (ce : 'clexp)  (o : 'opt_override)  _ \n     (_loc : FanLoc.t)  -> (`InheritAs (_loc, o, ce, i) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (i : 'a_lident)  _  (ce : 'clexp)  (o : 'opt_override) 
                    _  (_loc : FanLoc.t)  ->
-                   (`InheritAs (_loc, o, ce, i) : 'cstru )))));
+                   (`InheritAs (_loc, o, ce, i) : 'clfield )))));
          ([`Snterm
              (Gram.obj
                 (value_val_opt_override : 'value_val_opt_override Gram.t ));
           `Snterm (Gram.obj (opt_mutable : 'opt_mutable Gram.t ));
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Snterm (Gram.obj (cvalue_binding : 'cvalue_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'cvalue_binding)  (lab : 'a_lident)  (mf : 'opt_mutable) \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrVal (_loc, lab, o, mf, e) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (e : 'cvalue_binding)  (lab : 'a_lident)  (mf : 'opt_mutable) \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrVal (_loc, lab, o, mf, e) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (e : 'cvalue_binding)  (lab : 'a_lident) 
                    (mf : 'opt_mutable)  (o : 'value_val_opt_override) 
                    (_loc : FanLoc.t)  ->
-                   (`CrVal (_loc, lab, o, mf, e) : 'cstru )))));
+                   (`CrVal (_loc, lab, o, mf, e) : 'clfield )))));
          ([`Snterm
              (Gram.obj
                 (value_val_opt_override : 'value_val_opt_override Gram.t ));
@@ -4761,7 +4761,7 @@ let apply () =
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> `VirVal (_loc, l, mf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'cstru ))\n",
+           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> `VirVal (_loc, l, mf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
              (Gram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ 
                    (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
@@ -4771,7 +4771,7 @@ let apply () =
                         raise
                           (XStream.Error
                              "override (!) is incompatible with virtual") : 
-                   'cstru )))));
+                   'clfield )))));
          ([`Snterm
              (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
           `Skeyword "virtual";
@@ -4779,7 +4779,7 @@ let apply () =
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> `VirMeth (_loc, l, pf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'cstru ))\n",
+           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> `VirMeth (_loc, l, pf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
              (Gram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                    (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
@@ -4789,7 +4789,7 @@ let apply () =
                         raise
                           (XStream.Error
                              "override (!) is incompatible with virtual") : 
-                   'cstru )))));
+                   'clfield )))));
          ([`Snterm
              (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
           `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
@@ -4797,49 +4797,51 @@ let apply () =
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Snterm (Gram.obj (fun_binding : 'fun_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'fun_binding)  (t : 'ctyp)  _  (l : 'a_lident) \n     (pf : 'opt_private)  (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrMth (_loc, l, o, pf, e, t) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (e : 'fun_binding)  (t : 'ctyp)  _  (l : 'a_lident) \n     (pf : 'opt_private)  (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrMth (_loc, l, o, pf, e, t) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (e : 'fun_binding)  (t : 'ctyp)  _  (l : 'a_lident) 
                    (pf : 'opt_private)  (o : 'method_opt_override) 
                    (_loc : FanLoc.t)  ->
-                   (`CrMth (_loc, l, o, pf, e, t) : 'cstru )))));
+                   (`CrMth (_loc, l, o, pf, e, t) : 'clfield )))));
          ([`Snterm
              (Gram.obj (method_opt_override : 'method_opt_override Gram.t ));
           `Snterm (Gram.obj (opt_private : 'opt_private Gram.t ));
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Snterm (Gram.obj (fun_binding : 'fun_binding Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'fun_binding)  (l : 'a_lident)  (pf : 'opt_private) \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrMthS (_loc, l, o, pf, e) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (e : 'fun_binding)  (l : 'a_lident)  (pf : 'opt_private) \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (`CrMthS (_loc, l, o, pf, e) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (e : 'fun_binding)  (l : 'a_lident)  (pf : 'opt_private)
                     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
-                   (`CrMthS (_loc, l, o, pf, e) : 'cstru )))));
+                   (`CrMthS (_loc, l, o, pf, e) : 'clfield )))));
          ([`Skeyword "constraint";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
           `Skeyword "=";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, t1, t2) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, t1, t2) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                   (`Eq (_loc, t1, t2) : 'cstru )))));
+                   (`Eq (_loc, t1, t2) : 'clfield )))));
          ([`Skeyword "initializer"; `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (se : 'exp)  _  (_loc : FanLoc.t)  ->\n     (`Initializer (_loc, se) : 'cstru ))\n",
+           ("Gram.mk_action\n  (fun (se : 'exp)  _  (_loc : FanLoc.t)  ->\n     (`Initializer (_loc, se) : 'clfield ))\n",
              (Gram.mk_action
                 (fun (se : 'exp)  _  (_loc : FanLoc.t)  ->
-                   (`Initializer (_loc, se) : 'cstru )))))]));
-   Gram.extend_single (cstru_quot : 'cstru_quot Gram.t )
+                   (`Initializer (_loc, se) : 'clfield )))))]));
+   Gram.extend_single (clfield_quot : 'clfield_quot Gram.t )
      (None,
        (None, None,
-         [([`Snterm (Gram.obj (cstru : 'cstru Gram.t ));
+         [([`Snterm (Gram.obj (clfield : 'clfield Gram.t ));
            `Skeyword ";";
            `Sself],
-            ("Gram.mk_action\n  (fun (x2 : 'cstru_quot)  _  (x1 : 'cstru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, x1, x2) : 'cstru_quot ))\n",
+            ("Gram.mk_action\n  (fun (x2 : 'clfield_quot)  _  (x1 : 'clfield)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, x1, x2) : 'clfield_quot ))\n",
               (Gram.mk_action
-                 (fun (x2 : 'cstru_quot)  _  (x1 : 'cstru)  (_loc : FanLoc.t)
-                     -> (`Sem (_loc, x1, x2) : 'cstru_quot )))));
-         ([`Snterm (Gram.obj (cstru : 'cstru Gram.t ))],
-           ("Gram.mk_action (fun (x : 'cstru)  (_loc : FanLoc.t)  -> (x : 'cstru_quot ))\n",
+                 (fun (x2 : 'clfield_quot)  _  (x1 : 'clfield) 
+                    (_loc : FanLoc.t)  ->
+                    (`Sem (_loc, x1, x2) : 'clfield_quot )))));
+         ([`Snterm (Gram.obj (clfield : 'clfield Gram.t ))],
+           ("Gram.mk_action\n  (fun (x : 'clfield)  (_loc : FanLoc.t)  -> (x : 'clfield_quot ))\n",
              (Gram.mk_action
-                (fun (x : 'cstru)  (_loc : FanLoc.t)  -> (x : 'cstru_quot )))))])));
+                (fun (x : 'clfield)  (_loc : FanLoc.t)  ->
+                   (x : 'clfield_quot )))))])));
   (Gram.extend_single (clexp_quot : 'clexp_quot Gram.t )
      (None,
        (None, None,

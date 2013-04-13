@@ -586,11 +586,11 @@ and pp_print_exp fmt =
         pp_print_ident _a1
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_cstru _a1
+        pp_print_clfield _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_pat _a1 pp_print_cstru _a2
+        pp_print_pat _a1 pp_print_clfield _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1
@@ -924,11 +924,11 @@ and pp_print_clexp fmt =
         pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_clexp _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_cstru _a1
+        pp_print_clfield _a1
   | `ObjEnd _a0 -> Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" pp_print_loc _a0
   | `ObjPat (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_pat _a1 pp_print_cstru _a2
+        pp_print_pat _a1 pp_print_clfield _a2
   | `ObjPatEnd (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1
@@ -936,14 +936,11 @@ and pp_print_clexp fmt =
       Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_clexp _a1 pp_print_cltyp _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result26)
-and pp_print_cstru fmt =
+and pp_print_clfield fmt =
   function
   | `Sem (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_cstru _a1 pp_print_cstru _a2
-  | `Eq (_a0,_a1,_a2) ->
-      Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_ctyp _a1 pp_print_ctyp _a2
+        pp_print_clfield _a1 pp_print_clfield _a2
   | `Inherit (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_override_flag _a1 pp_print_clexp _a2
@@ -951,9 +948,13 @@ and pp_print_cstru fmt =
       Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_override_flag _a1 pp_print_clexp _a2 pp_print_alident
         _a3
-  | `Initializer (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_exp _a1
+  | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
+      Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
+        _a0 pp_print_alident _a1 pp_print_override_flag _a2
+        pp_print_mutable_flag _a3 pp_print_exp _a4
+  | `VirVal (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_alident _a1 pp_print_mutable_flag _a2 pp_print_ctyp _a3
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
       Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
         pp_print_loc _a0 pp_print_alident _a1 pp_print_override_flag _a2
@@ -962,16 +963,15 @@ and pp_print_cstru fmt =
       Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_alident _a1 pp_print_override_flag _a2
         pp_print_private_flag _a3 pp_print_exp _a4
-  | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-      Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" pp_print_loc
-        _a0 pp_print_alident _a1 pp_print_override_flag _a2
-        pp_print_mutable_flag _a3 pp_print_exp _a4
   | `VirMeth (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
-  | `VirVal (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_alident _a1 pp_print_mutable_flag _a2 pp_print_ctyp _a3
+  | `Eq (_a0,_a1,_a2) ->
+      Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_ctyp _a1 pp_print_ctyp _a2
+  | `Initializer (_a0,_a1) ->
+      Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" pp_print_loc _a0
+        pp_print_exp _a1
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result25)
 
 let rec pp_print_ep fmt =
@@ -1610,12 +1610,12 @@ class print =
               self#ident _a1
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
-              self#cstru _a1
+              self#clfield _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#pat _a1 self#cstru _a2
+              self#pat _a1 self#clfield _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
               self#pat _a1
@@ -1965,12 +1965,12 @@ class print =
               self#rec_flag _a1 self#binding _a2 self#clexp _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
-              self#cstru _a1
+              self#clfield _a1
         | `ObjEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjEnd@ %a)@]" self#loc _a0
         | `ObjPat (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a@ %a)@]" self#loc _a0
-              self#pat _a1 self#cstru _a2
+              self#pat _a1 self#clfield _a2
         | `ObjPatEnd (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a@ %a)@]" self#loc _a0
               self#pat _a1
@@ -1978,15 +1978,12 @@ class print =
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a@ %a)@]" self#loc
               _a0 self#clexp _a1 self#cltyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method cstru : 'fmt -> cstru -> unit=
+    method clfield : 'fmt -> clfield -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
-              self#cstru _a1 self#cstru _a2
-        | `Eq (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
-              self#ctyp _a1 self#ctyp _a2
+              self#clfield _a1 self#clfield _a2
         | `Inherit (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a@ %a)@]" self#loc _a0
               self#override_flag _a1 self#clexp _a2
@@ -1994,9 +1991,13 @@ class print =
             Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a@ %a)@]" 
               self#loc _a0 self#override_flag _a1 self#clexp _a2 self#alident
               _a3
-        | `Initializer (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
-              self#exp _a1
+        | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
+            Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
+              self#loc _a0 self#alident _a1 self#override_flag _a2
+              self#mutable_flag _a3 self#exp _a4
+        | `VirVal (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 self#mutable_flag _a2 self#ctyp _a3
         | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
             Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#override_flag _a2
@@ -2005,16 +2006,15 @@ class print =
             Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a@ %a)@]"
               self#loc _a0 self#alident _a1 self#override_flag _a2
               self#private_flag _a3 self#exp _a4
-        | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-            Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a@ %a)@]" 
-              self#loc _a0 self#alident _a1 self#override_flag _a2
-              self#mutable_flag _a3 self#exp _a4
         | `VirMeth (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
-        | `VirVal (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" self#loc
-              _a0 self#alident _a1 self#mutable_flag _a2 self#ctyp _a3
+        | `Eq (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a@ %a)@]" self#loc _a0
+              self#ctyp _a1 self#ctyp _a2
+        | `Initializer (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Initializer@ %a@ %a)@]" self#loc _a0
+              self#exp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method ep : 'fmt -> ep -> unit=
       fun fmt  ->
@@ -2685,12 +2685,12 @@ class map =
           let _a1 = self#ident _a1 in `New (_a0, _a1)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
+          let _a1 = self#clfield _a1 in `Obj (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
-          let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
+          let _a2 = self#clfield _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in `ObjPatEnd (_a0, _a1)
@@ -3098,12 +3098,12 @@ class map =
           let _a3 = self#clexp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#cstru _a1 in `Obj (_a0, _a1)
+          let _a1 = self#clfield _a1 in `Obj (_a0, _a1)
       | `ObjEnd _a0 -> let _a0 = self#loc _a0 in `ObjEnd _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
-          let _a2 = self#cstru _a2 in `ObjPat (_a0, _a1, _a2)
+          let _a2 = self#clfield _a2 in `ObjPat (_a0, _a1, _a2)
       | `ObjPatEnd (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in `ObjPatEnd (_a0, _a1)
@@ -3112,16 +3112,12 @@ class map =
           let _a1 = self#clexp _a1 in
           let _a2 = self#cltyp _a2 in `Constraint (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>clexp)
-    method cstru : cstru -> cstru=
+    method clfield : clfield -> clfield=
       function
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#cstru _a1 in
-          let _a2 = self#cstru _a2 in `Sem (_a0, _a1, _a2)
-      | `Eq (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#ctyp _a1 in
-          let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
+          let _a1 = self#clfield _a1 in
+          let _a2 = self#clfield _a2 in `Sem (_a0, _a1, _a2)
       | `Inherit (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#override_flag _a1 in
@@ -3131,9 +3127,17 @@ class map =
           let _a1 = self#override_flag _a1 in
           let _a2 = self#clexp _a2 in
           let _a3 = self#alident _a3 in `InheritAs (_a0, _a1, _a2, _a3)
-      | `Initializer (_a0,_a1) ->
+      | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#exp _a1 in `Initializer (_a0, _a1)
+          let _a1 = self#alident _a1 in
+          let _a2 = self#override_flag _a2 in
+          let _a3 = self#mutable_flag _a3 in
+          let _a4 = self#exp _a4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
+      | `VirVal (_a0,_a1,_a2,_a3) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#alident _a1 in
+          let _a2 = self#mutable_flag _a2 in
+          let _a3 = self#ctyp _a3 in `VirVal (_a0, _a1, _a2, _a3)
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
@@ -3147,23 +3151,19 @@ class map =
           let _a2 = self#override_flag _a2 in
           let _a3 = self#private_flag _a3 in
           let _a4 = self#exp _a4 in `CrMthS (_a0, _a1, _a2, _a3, _a4)
-      | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#alident _a1 in
-          let _a2 = self#override_flag _a2 in
-          let _a3 = self#mutable_flag _a3 in
-          let _a4 = self#exp _a4 in `CrVal (_a0, _a1, _a2, _a3, _a4)
       | `VirMeth (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#private_flag _a2 in
           let _a3 = self#ctyp _a3 in `VirMeth (_a0, _a1, _a2, _a3)
-      | `VirVal (_a0,_a1,_a2,_a3) ->
+      | `Eq (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#alident _a1 in
-          let _a2 = self#mutable_flag _a2 in
-          let _a3 = self#ctyp _a3 in `VirVal (_a0, _a1, _a2, _a3)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>cstru)
+          let _a1 = self#ctyp _a1 in
+          let _a2 = self#ctyp _a2 in `Eq (_a0, _a1, _a2)
+      | `Initializer (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#exp _a1 in `Initializer (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>clfield)
     method ep : ep -> ep=
       function
       | #vid as _a0 -> (self#vid _a0 : vid  :>ep)
@@ -3637,11 +3637,11 @@ class fold =
       | `Match (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#case _a2
       | `New (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
-      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#clfield _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#pat _a1 in self#cstru _a2
+          let self = self#pat _a1 in self#clfield _a2
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `OptLabl (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
@@ -3921,24 +3921,21 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
           let self = self#binding _a2 in self#clexp _a3
-      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#cstru _a1
+      | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#clfield _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#pat _a1 in self#cstru _a2
+          let self = self#pat _a1 in self#clfield _a2
       | `ObjPatEnd (_a0,_a1) -> let self = self#loc _a0 in self#pat _a1
       | `Constraint (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#clexp _a1 in self#cltyp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method cstru : cstru -> 'self_type=
+    method clfield : clfield -> 'self_type=
       function
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#cstru _a1 in self#cstru _a2
-      | `Eq (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ctyp _a1 in self#ctyp _a2
+          let self = self#clfield _a1 in self#clfield _a2
       | `Inherit (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#override_flag _a1 in self#clexp _a2
@@ -3946,7 +3943,15 @@ class fold =
           let self = self#loc _a0 in
           let self = self#override_flag _a1 in
           let self = self#clexp _a2 in self#alident _a3
-      | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
+      | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in
+          let self = self#override_flag _a2 in
+          let self = self#mutable_flag _a3 in self#exp _a4
+      | `VirVal (_a0,_a1,_a2,_a3) ->
+          let self = self#loc _a0 in
+          let self = self#alident _a1 in
+          let self = self#mutable_flag _a2 in self#ctyp _a3
       | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
@@ -3958,19 +3963,14 @@ class fold =
           let self = self#alident _a1 in
           let self = self#override_flag _a2 in
           let self = self#private_flag _a3 in self#exp _a4
-      | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-          let self = self#loc _a0 in
-          let self = self#alident _a1 in
-          let self = self#override_flag _a2 in
-          let self = self#mutable_flag _a3 in self#exp _a4
       | `VirMeth (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
-      | `VirVal (_a0,_a1,_a2,_a3) ->
+      | `Eq (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#alident _a1 in
-          let self = self#mutable_flag _a2 in self#ctyp _a3
+          let self = self#ctyp _a1 in self#ctyp _a2
+      | `Initializer (_a0,_a1) -> let self = self#loc _a0 in self#exp _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method ep : ep -> 'self_type=
       function
@@ -4462,11 +4462,11 @@ and strip_loc_exp =
       let _a1 = strip_loc_exp _a1 in
       let _a2 = strip_loc_case _a2 in `Match (_a1, _a2)
   | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clfield _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
+      let _a2 = strip_loc_clfield _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
       let _a1 = strip_loc_alident _a1 in
@@ -4757,24 +4757,21 @@ and strip_loc_clexp =
       let _a1 = strip_loc_rec_flag _a1 in
       let _a2 = strip_loc_binding _a2 in
       let _a3 = strip_loc_clexp _a3 in `LetIn (_a1, _a2, _a3)
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_cstru _a1 in `Obj _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clfield _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_cstru _a2 in `ObjPat (_a1, _a2)
+      let _a2 = strip_loc_clfield _a2 in `ObjPat (_a1, _a2)
   | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
       let _a1 = strip_loc_clexp _a1 in
       let _a2 = strip_loc_cltyp _a2 in `Constraint (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result270)
-and strip_loc_cstru =
+and strip_loc_clfield =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_cstru _a1 in
-      let _a2 = strip_loc_cstru _a2 in `Sem (_a1, _a2)
-  | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
+      let _a1 = strip_loc_clfield _a1 in
+      let _a2 = strip_loc_clfield _a2 in `Sem (_a1, _a2)
   | `Inherit (_a0,_a1,_a2) ->
       let _a1 = strip_loc_override_flag _a1 in
       let _a2 = strip_loc_clexp _a2 in `Inherit (_a1, _a2)
@@ -4782,7 +4779,15 @@ and strip_loc_cstru =
       let _a1 = strip_loc_override_flag _a1 in
       let _a2 = strip_loc_clexp _a2 in
       let _a3 = strip_loc_alident _a3 in `InheritAs (_a1, _a2, _a3)
-  | `Initializer (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Initializer _a1
+  | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_override_flag _a2 in
+      let _a3 = strip_loc_mutable_flag _a3 in
+      let _a4 = strip_loc_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
+  | `VirVal (_a0,_a1,_a2,_a3) ->
+      let _a1 = strip_loc_alident _a1 in
+      let _a2 = strip_loc_mutable_flag _a2 in
+      let _a3 = strip_loc_ctyp _a3 in `VirVal (_a1, _a2, _a3)
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_override_flag _a2 in
@@ -4794,19 +4799,14 @@ and strip_loc_cstru =
       let _a2 = strip_loc_override_flag _a2 in
       let _a3 = strip_loc_private_flag _a3 in
       let _a4 = strip_loc_exp _a4 in `CrMthS (_a1, _a2, _a3, _a4)
-  | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_override_flag _a2 in
-      let _a3 = strip_loc_mutable_flag _a3 in
-      let _a4 = strip_loc_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
   | `VirMeth (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
-  | `VirVal (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_mutable_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `VirVal (_a1, _a2, _a3)
+  | `Eq (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_ctyp _a1 in
+      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
+  | `Initializer (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Initializer _a1
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
 
 let rec strip_loc_ep =
@@ -5052,8 +5052,8 @@ let map_cldecl f =
 let map_clexp f =
   object  inherit  map as super method! clexp x = f (super#clexp x) end
 
-let map_cstru f =
-  object  inherit  map as super method! cstru x = f (super#cstru x) end
+let map_clfield f =
+  object  inherit  map as super method! clfield x = f (super#clfield x) end
 
 let map_ep f =
   object  inherit  map as super method! ep x = f (super#ep x) end
@@ -5171,7 +5171,7 @@ let dump_cldecl = LibUtil.to_string_of_printer dump#cldecl
 
 let dump_clexp = LibUtil.to_string_of_printer dump#clexp
 
-let dump_cstru = LibUtil.to_string_of_printer dump#cstru
+let dump_clfield = LibUtil.to_string_of_printer dump#clfield
 
 let dump_ep = LibUtil.to_string_of_printer dump#ep
 

@@ -47,7 +47,7 @@ let clsigi = Gram.mk "clsigi"
 
 let class_signature = Gram.mk "class_signature"
 
-let cstru = Gram.mk "cstru"
+let clfield = Gram.mk "clfield"
 
 let class_structure = Gram.mk "class_structure"
 
@@ -247,7 +247,7 @@ let stru_quot = Gram.mk "stru_quot"
 
 let sigi_quot = Gram.mk "sigi_quot"
 
-let cstru_quot = Gram.mk "cstru_quot"
+let clfield_quot = Gram.mk "clfield_quot"
 
 let clsigi_quot = Gram.mk "clsigi_quot"
 

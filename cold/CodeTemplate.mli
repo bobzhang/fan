@@ -11,10 +11,10 @@ val base1_types :
   list
 val ty_metas : ty_meta list
 
-val map_cstru_base_1 : cstru
-val map_cstru_base_2 : cstru
-val fold_cstru_base_1 : cstru
-val fold_cstru_base_2 : cstru
-val print_cstru_base : cstru
+val map_clfield_base_1 : clfield
+val map_clfield_base_2 : clfield
+val fold_clfield_base_1 : clfield
+val fold_clfield_base_2 : clfield
+val print_clfield_base : clfield
 val eq_base1 : stru
 val print_base1 : stru

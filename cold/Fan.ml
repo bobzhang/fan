@@ -49,8 +49,8 @@ let _ =
     ~filter:(AstMacros.macro_expander#exp)
 
 let _ =
-  of_cstru_with_filter ~name:(d, "cstru") ~entry:cstru
-    ~filter:(AstMacros.macro_expander#cstru)
+  of_clfield_with_filter ~name:(d, "clfield") ~entry:clfield
+    ~filter:(AstMacros.macro_expander#clfield)
 
 let _ =
   of_stru_with_filter ~name:(d, "stru") ~entry:stru
@@ -99,8 +99,8 @@ let _ =
     ~mpat:(Filters.mp#clsigi) ~exp_filter ~pat_filter
 
 let _ =
-  add_quotation (d, "cstru") cstru_quot ~mexp:(Filters.me#cstru)
-    ~mpat:(Filters.mp#cstru) ~exp_filter ~pat_filter
+  add_quotation (d, "clfield") clfield_quot ~mexp:(Filters.me#clfield)
+    ~mpat:(Filters.mp#clfield) ~exp_filter ~pat_filter
 
 let _ =
   add_quotation (d, "constr") constr_quot ~mexp:(Filters.me#constr)
@@ -237,9 +237,9 @@ let _ =
     ~pat_filter:(pfilter "clsigi")
 
 let _ =
-  add_quotation (d, "cstru'") cstru_quot ~mexp:(Filters.me#cstru)
-    ~mpat:(Filters.mp#cstru) ~exp_filter:(efilter "cstru")
-    ~pat_filter:(pfilter "cstru")
+  add_quotation (d, "clfield'") clfield_quot ~mexp:(Filters.me#clfield)
+    ~mpat:(Filters.mp#clfield) ~exp_filter:(efilter "clfield")
+    ~pat_filter:(pfilter "clfield")
 
 let _ =
   add_quotation (d, "constr'") constr_quot ~mexp:(Filters.me#constr)

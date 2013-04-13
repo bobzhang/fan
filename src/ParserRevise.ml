@@ -982,16 +982,16 @@ let apply () = begin
       | "method"; opt_private{pf}; a_lident{l}; ":";ctyp{t} ->
           {| method $private:pf $l : $t |}
       | "constraint"; ctyp{t1}; "="; ctyp{t2} -> {|constraint $t1 = $t2|} ] |};  
-  with cstru
+  with clfield
     {:extend|
       class_structure:
-        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cstru" n s
+        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clfield" n s
         | `Ant ((""|"cst"|"anti"|"list" as n),s); (* semi *)";"; S{cst} ->
-            {| $(mk_anti _loc ~c:"cstru" n s); $cst |}
-        | L1 [ cstru{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
-      cstru:
-        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cstru" n s
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cstru_tag
+            {| $(mk_anti _loc ~c:"clfield" n s); $cst |}
+        | L1 [ clfield{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
+      clfield:
+        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clfield" n s
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clfield_tag
         | "inherit"; opt_override{o}; clexp{ce}(* ; opt_as_lident{pb} *) ->
             `Inherit(_loc,o,ce)
         | "inherit"; opt_override{o}; clexp{ce}; "as"; a_lident{i} ->
@@ -1020,9 +1020,9 @@ let apply () = begin
        | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
           {|constraint $t1 = $t2|}
         | "initializer"; exp{se} -> {| initializer $se |} ]
-      cstru_quot:
-        [ cstru{x1}; (* semi *)";"; S{x2} -> `Sem(_loc,x1,x2)
-        | cstru{x} -> x]
+      clfield_quot:
+        [ clfield{x1}; (* semi *)";"; S{x2} -> `Sem(_loc,x1,x2)
+        | clfield{x} -> x]
     |};
     
   with clexp
@@ -1039,7 +1039,8 @@ let apply () = begin
           `ClDeclS(_loc,mv,(i:>ident),ce)]
       class_fun_binding:
       [ "="; clexp{ce} -> ce
-      | ":"; cltyp_plus{ct}; "="; clexp{ce} -> `Constraint(_loc,ce,ct)
+      | ":"; cltyp_plus{ct}; "="; clexp{ce} ->
+          `Constraint(_loc,ce,ct)
       | ipat{p}; S{cfb} -> `CeFun (_loc, p, cfb)  ]
       class_fun_def:
       [ ipat{p}; S{ce} -> `CeFun(_loc,p,ce)
@@ -1050,7 +1051,8 @@ let apply () = begin
           | "function"; ipat{p}; class_fun_def{ce} -> `CeFun (_loc, p, ce)
           | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
         "apply" NA
-          [ S{ce}; exp Level "label"{e} -> `CeApp (_loc, ce, e) ]
+          [ S{ce}; exp Level "label"{e} ->
+            `CeApp (_loc, ce, e) ]
         "simple"
           [ `Ant ((""|"cexp"|"anti" as n),s) -> mk_anti _loc ~c:"clexp" n s
           | `QUOTATION x ->

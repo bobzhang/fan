@@ -115,7 +115,7 @@ and exp =
   | `IfThen of (loc * exp * exp) | `Label of (loc * alident * exp)
   | `Lazy of (loc * exp) | `LetIn of (loc * rec_flag * binding * exp)
   | `LetModule of (loc * auident * mexp * exp) | `Match of (loc * exp * case)
-  | `New of (loc * ident) | `Obj of (loc * pat * cstru)
+  | `New of (loc * ident) | `Obj of (loc * pat * clfield)
   | `OptLabl of (loc * alident * exp) | `OvrInst of (loc * rec_exp)
   | `Seq of (loc * exp) | `Send of (loc * exp * alident)
   | `StringDot of (loc * exp * exp) | `Try of (loc * exp * case)
@@ -185,10 +185,10 @@ and clexp =
   | `CeCon of (loc * virtual_flag * ident * type_parameters)
   | `CeFun of (loc * pat * clexp)
   | `CeLet of (loc * rec_flag * binding * clexp)
-  | `Obj of (loc * pat * cstru) | `CeTyc of (loc * clexp * cltyp)
+  | `Obj of (loc * pat * clfield) | `CeTyc of (loc * clexp * cltyp)
   | `And of (loc * clexp * clexp) | `Eq of (loc * clexp * clexp) | ant] 
-and cstru =
-  [ nil | `Sem of (loc * cstru * cstru) | `Eq of (loc * ctyp * ctyp)
+and clfield =
+  [ nil | `Sem of (loc * clfield * clfield) | `Eq of (loc * ctyp * ctyp)
   | `Inherit of (loc * override_flag * clexp * alident meta_option)
   | `Initializer of (loc * exp)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)

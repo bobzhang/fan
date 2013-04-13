@@ -31,7 +31,7 @@
     cltyp         :: The type of class types
     class_sigi     :: The type of class signature items
     clexp         :: The type of class expressions
-    cstru     :: The type of class structure items
+    clfield     :: The type of class structure items
  *)
 
 
@@ -320,9 +320,9 @@ and exp =
   | `LetModule of (loc * auident * mexp * exp) (* let module s = me in e *)
   | `Match of (loc * exp * case) (* match e with [ mc ] *)
   | `New of (loc * ident) (* new i *)
-  | `Obj of (loc * cstru) (* object ((p))? (cst)? end *)
+  | `Obj of (loc * clfield) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc 
-  | `ObjPat of (loc * pat * cstru)
+  | `ObjPat of (loc * pat * clfield)
   | `ObjPatEnd of (loc * pat)
   | `OptLabl of (loc *alident * exp) (* ?s or ?s:e *)
   | `OptLablS of (loc * alident)
@@ -544,32 +544,37 @@ and cldecl =
   | `And of (loc * cldecl * cldecl)
   | ant ]      
 and clexp =
-  [= `CeApp of (loc * clexp * exp)   (* ce e *)
+  [= `CeApp of (loc * clexp * exp)   (* ce e  [class-expr {argument}+] *)
   | vid' (* class-path*)
   | `ClApply of (loc * vid * type_parameters)
   | `CeFun of (loc * pat * clexp) (* fun p -> ce *)
   | `LetIn of (loc * rec_flag * binding * clexp) (* let (rec)? bi in ce *)
-  | `Obj of (loc  * cstru) (* object ((p))? (cst)? end *)
+  | `Obj of (loc  * clfield) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
-  | `ObjPat of (loc * pat * cstru)(*object (p) .. end*)
+  | `ObjPat of (loc * pat * clfield)(*object (p) .. end*)
   | `ObjPatEnd of (loc * pat) (* object (p) end*)
   | `Constraint of (loc * clexp * cltyp) (* ce : ct *)
   | ant ]
-and cstru =
-  [= `Sem of (loc * cstru * cstru)
-  | `Eq of (loc * ctyp * ctyp)
+
+ (* http://caml.inria.fr/pub/docs/manual-ocaml/manual017.html#toc57
+      [clfield]
+    *)       
+and clfield =
+  [= `Sem of (loc * clfield * clfield)
+
   | `Inherit of (loc * override_flag * clexp)
   | `InheritAs of (loc * override_flag * clexp * alident)
-  | `Initializer of (loc * exp)
+
+  | `CrVal of (loc *  alident * override_flag * mutable_flag * exp) (* value(!)? (mutable)? s = e *)
+  | `VirVal of (loc * alident * mutable_flag * ctyp) (* val virtual (mutable)? s : t *)
+        
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (loc * alident * override_flag * private_flag * exp )
-        (* value(!)? (mutable)? s = e *)
-  | `CrVal of (loc *  alident * override_flag * mutable_flag * exp)
         (* method virtual (private)? s : t *)
   | `VirMeth of (loc * alident * private_flag * ctyp)
-        (* val virtual (mutable)? s : t *)
-  | `VirVal of (loc * alident * mutable_flag * ctyp)
+  | `Eq of (loc * ctyp * ctyp)
+  | `Initializer of (loc * exp)
   | ant  ]; 
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)

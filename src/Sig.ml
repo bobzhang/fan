@@ -71,9 +71,9 @@ module type Syntax = sig
   val clsigi : Gram.t clsigi;
   val clsigi_quot : Gram.t clsigi;
   val class_signature : Gram.t clsigi;
-  val cstru : Gram.t cstru;
-  val cstru_quot : Gram.t cstru;
-  val class_structure : Gram.t cstru;
+  val clfield : Gram.t clfield;
+  val clfield_quot : Gram.t clfield;
+  val class_structure : Gram.t clfield;
   val cltyp : Gram.t cltyp;
   val cltyp_declaration : Gram.t cltdecl(* cltyp *);
   val cltyp_longident : Gram.t ident;

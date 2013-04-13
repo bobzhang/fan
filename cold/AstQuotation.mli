@@ -72,7 +72,7 @@ val of_exp: name:FanToken.name -> entry: exp Gram.t  -> unit
 
 val of_pat: name:FanToken.name -> entry: pat Gram.t  -> unit
 
-val of_cstru: name:FanToken.name -> entry: cstru Gram.t  -> unit
+val of_clfield: name:FanToken.name -> entry: clfield Gram.t  -> unit
 
 val of_case: name:FanToken.name -> entry: case Gram.t  -> unit
 
@@ -87,9 +87,9 @@ val of_stru_with_filter: name:FanToken.name ->
 val of_pat_with_filter :
   name:FanToken.name -> entry:pat Gram.t -> filter:(pat -> pat) -> unit
 
-val of_cstru_with_filter :
+val of_clfield_with_filter :
   name:FanToken.name
-  -> entry:cstru Gram.t -> filter:(cstru -> cstru) -> unit
+  -> entry:clfield Gram.t -> filter:(clfield -> clfield) -> unit
 
 val of_case_with_filter :
   name:FanToken.name

@@ -139,8 +139,8 @@ val clsigi :
 
 val clexp : clexp -> Parsetree.class_expr
 
-val cstru :
-  cstru ->
+val clfield :
+  clfield ->
   Parsetree.class_field list -> Parsetree.class_field list
 
 val sigi : sigi -> Parsetree.signature_item list

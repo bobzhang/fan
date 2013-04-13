@@ -782,13 +782,13 @@ let rec exp (x : exp) = with exp' match x with
           mkexp loc (Pexp_object{pcstr_pat= pat (`Any loc); pcstr_fields=[]})
       | `Obj(loc,cfl) ->
           let p = `Any loc in 
-          let cil = cstru cfl [] in
+          let cil = clfield cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
       | `ObjPatEnd(loc,p) ->
           mkexp loc (Pexp_object{pcstr_pat=pat p; pcstr_fields=[]})
             
       | `ObjPat (loc,p,cfl) ->
-          let cil = cstru cfl [] in
+          let cil = clfield cfl [] in
           mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
       | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
       | `OvrInst (loc,iel) ->
@@ -1248,21 +1248,21 @@ and clexp  (x:Ast.clexp) = match x with
       mkcl loc (Pcl_structure{pcstr_pat= pat (`Any loc); pcstr_fields=[]})
   | `Obj(loc,cfl) ->
       let p = `Any loc in
-      let cil = cstru cfl [] in
+      let cil = clfield cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;})
   | `ObjPatEnd(loc,p) ->
       mkcl loc (Pcl_structure {pcstr_pat= pat p; pcstr_fields = []})
   | `ObjPat (loc,p,cfl) ->
-      let cil = cstru cfl [] in
+      let cil = clfield cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;})
   | `Constraint (loc,ce,ct) ->
       mkcl loc (Pcl_constraint (clexp ce) (cltyp ct))
   | t -> errorf (loc_of t) "clexp: %s" (dump_clexp t)]
 
-  and cstru (c:cstru) l =
+  and clfield (c:clfield) l =
     match c with
     [ `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
-    | `Sem(_,cst1,cst2) -> cstru cst1 (cstru cst2 l)
+    | `Sem(_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
     | `Inherit (loc, ov, ce) ->
         [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) None) :: l]
     | `InheritAs(loc,ov,ce,`Lid(_,x)) ->
@@ -1281,7 +1281,7 @@ and clexp  (x:Ast.clexp) = match x with
         [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
     | `VirVal (loc,`Lid(sloc,s),mf,t) ->
         [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
-    | x  -> errorf  (loc_of  x) "cstru: %s" (dump_cstru x) ];
+    | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) ];
 
 let sigi (ast:sigi) : signature = sigi ast [];
 let stru ast = stru ast [];

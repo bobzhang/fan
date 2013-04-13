@@ -422,31 +422,31 @@ let obj_of_mtyps
             (Obj k) in
         (ty,result_type) in
         
-    let mk_cstru (name,tydcl) : cstru = 
+    let mk_clfield (name,tydcl) : clfield = 
       let (ty,result_type) = mk_type tydcl in
-      {:cstru| method $lid:name : $ty = $(f tydcl result_type) |}  in 
-    let fs (ty:types) : cstru =
+      {:clfield| method $lid:name : $ty = $(f tydcl result_type) |}  in 
+    let fs (ty:types) : clfield =
       match ty with
       [ `Mutual named_types ->
-        sem_of_list (List.map mk_cstru named_types)
+        sem_of_list (List.map mk_clfield named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          [ Some n  -> begin
            let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
-           {:cstru| method $lid:name : $ty= $(unknown n) |}
+           {:clfield| method $lid:name : $ty= $(unknown n) |}
          end
-         | None ->  mk_cstru named_type ]] in 
+         | None ->  mk_clfield named_type ]] in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
     let (extras,lst) = Ctyp.transform_mtyps lst in 
     let body = List.map fs lst in 
-    let body : cstru =
+    let body : clfield =
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        {:cstru| method
+        {:clfield| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
       sem_of_list (body @ items) in begin 
         let v = Ctyp.mk_obj class_name  base body;

@@ -36,7 +36,7 @@ val mk_method_type_of_name :
       
 (* val mk_dest_type: destination:FSig.destination -> ident * int -> ctyp  *)
         
-val mk_obj : string -> string -> cstru -> stru
+val mk_obj : string -> string -> clfield -> stru
 val is_recursive : typedecl -> bool
 val is_abstract : typedecl -> bool
 

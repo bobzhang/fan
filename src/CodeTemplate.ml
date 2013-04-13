@@ -45,14 +45,14 @@ let print_base1 = with stru'
 
   
   
-let (map_cstru_base_1,
-     map_cstru_base_2,
-     fold_cstru_base_1,
-     fold_cstru_base_2,
-     print_cstru_base,
-     iter_cstru_base_1,
-     eq_cstru_base_2 
-    ) =  with cstru'
+let (map_clfield_base_1,
+     map_clfield_base_2,
+     fold_clfield_base_1,
+     fold_clfield_base_2,
+     print_clfield_base,
+     iter_clfield_base_1,
+     eq_clfield_base_2 
+    ) =  with clfield'
   let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp'| $lid:x -> $lid:x |} in
@@ -101,21 +101,21 @@ let eq_base1 = with stru
     (* {| $list:items |} *) ;
 
 let open AstInjection in begin 
-  register_inject_cstru
-    ("map_cstru_base_1",map_cstru_base_1);
-  register_inject_cstru
-    ("map_cstru_base_2",map_cstru_base_2);
-  register_inject_cstru
-    ("fold_cstru_base_1",fold_cstru_base_1);
-  register_inject_cstru
-    ("fold_cstru_base_2",fold_cstru_base_2);
-  (* val print_cstru_base : cstru *)
-  register_inject_cstru
-    ("print_cstru_base",print_cstru_base);
-  register_inject_cstru
-    ("iter_cstru_base_1", iter_cstru_base_1);
-  register_inject_cstru
-    ("eq_cstru_base_2", eq_cstru_base_2);
+  register_inject_clfield
+    ("map_clfield_base_1",map_clfield_base_1);
+  register_inject_clfield
+    ("map_clfield_base_2",map_clfield_base_2);
+  register_inject_clfield
+    ("fold_clfield_base_1",fold_clfield_base_1);
+  register_inject_clfield
+    ("fold_clfield_base_2",fold_clfield_base_2);
+  (* val print_clfield_base : clfield *)
+  register_inject_clfield
+    ("print_clfield_base",print_clfield_base);
+  register_inject_clfield
+    ("iter_clfield_base_1", iter_clfield_base_1);
+  register_inject_clfield
+    ("eq_clfield_base_2", eq_clfield_base_2);
   register_inject_stru ("eq_base1",eq_base1);
   register_inject_stru ("print_base1",print_base1);
 

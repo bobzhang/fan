@@ -247,10 +247,11 @@ let of_pat_with_filter ~name  ~entry  ~filter  =
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 
-let of_cstru ~name  ~entry  = add name FanDyn.cstru_tag (make_parser entry)
+let of_clfield ~name  ~entry  =
+  add name FanDyn.clfield_tag (make_parser entry)
 
-let of_cstru_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.cstru_tag
+let of_clfield_with_filter ~name  ~entry  ~filter  =
+  add name FanDyn.clfield_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 

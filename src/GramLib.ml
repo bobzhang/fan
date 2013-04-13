@@ -33,8 +33,8 @@ let rec infix_kwds_filter = parser
 (*        {:delete| Gram exp: ["["; x; "::"; exp; "]"] |}; *)
 (*       true *)
 (*   end with [ Not_found -> false ]; *)
-(* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_cstru fan_ctyp =  *)
-(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_cstru fan_ctyp  ; *)
+(* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)
+(*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
 (*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:exp| begin $list:strs end |} ] ] *)
@@ -53,7 +53,7 @@ let rec infix_kwds_filter = parser
 (*        end ] ] END; *)
   (* fan_stru:[[STRING{file}; STRING{c} -> stru_of_file (file,c) ] ] *)
   (* fan_exp: [[ STRING{file}; STRING{c}-> exp_of_file (file,c) ]] *)
-  (* fan_cstru: [[ STRING{file}; STRING{c}->  cstru_of_file (file,c) ]] *)
+  (* fan_clfield: [[ STRING{file}; STRING{c}->  clfield_of_file (file,c) ]] *)
   (* fan_ctyp: [[STRING{file};STRING{c} ->  ctyp_of_file (file,c) ]] *)
 
 

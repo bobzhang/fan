@@ -53,9 +53,9 @@ let d = `Absolute ["Fan";"Lang";"Macro"];
 of_exp_with_filter
     ~name:(d,"exp") ~entry:exp ~filter:(AstMacros.macro_expander#exp);
 
-of_cstru_with_filter
-    ~name:(d,"cstru") ~entry:cstru
-    ~filter:(AstMacros.macro_expander#cstru);
+of_clfield_with_filter
+    ~name:(d,"clfield") ~entry:clfield
+    ~filter:(AstMacros.macro_expander#clfield);
 
 of_stru_with_filter
     ~name:(d,"stru") ~entry:stru
@@ -120,9 +120,9 @@ add_quotation (d,"clsigi") clsigi_quot
     ~exp_filter
     ~pat_filter ;
 
-add_quotation (d,"cstru") cstru_quot
-    ~mexp:Filters.me#cstru
-    ~mpat:Filters.mp#cstru
+add_quotation (d,"clfield") clfield_quot
+    ~mexp:Filters.me#clfield
+    ~mpat:Filters.mp#clfield
     ~exp_filter
     ~pat_filter ;
   
@@ -285,11 +285,11 @@ add_quotation (d,"clsigi'") clsigi_quot
     ~exp_filter:(efilter "clsigi")
     ~pat_filter:(pfilter "clsigi") ;
 
-add_quotation (d,"cstru'") cstru_quot
-    ~mexp:Filters.me#cstru
-    ~mpat:Filters.mp#cstru
-    ~exp_filter:(efilter "cstru")
-    ~pat_filter:(pfilter "cstru") ;
+add_quotation (d,"clfield'") clfield_quot
+    ~mexp:Filters.me#clfield
+    ~mpat:Filters.mp#clfield
+    ~exp_filter:(efilter "clfield")
+    ~pat_filter:(pfilter "clfield") ;
   
 add_quotation (d,"constr'") constr_quot
     ~mexp:Filters.me#constr

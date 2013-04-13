@@ -61,7 +61,7 @@ let pp_print_arrow _mf_a _f_b fmt _v =
   fprintf fmt "<<<function>>>";
 
 class printbase = object(self:'self_type)
-  {:cstru| print_cstru_base|};  
+  {:clfield| print_clfield_base|};  
   method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> list 'a -> unit =
     fun mf_a fmt lst -> pp_print_list (fun a -> mf_a self a) fmt lst ;
   method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> array 'a -> unit =
@@ -77,7 +77,7 @@ class printbase = object(self:'self_type)
 end;
 
 class mapbase = object (self:'self_type)
-  {:cstru|map_cstru_base_1|};  
+  {:clfield|map_clfield_base_1|};  
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> (list 'a0 -> list 'b0) =
     fun mf_a -> fun [ [] -> []
     | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys]];
@@ -99,7 +99,7 @@ end ;
 
   
 class iterbase = object(self:'self)
-  {:cstru| iter_cstru_base_1 |};
+  {:clfield| iter_clfield_base_1 |};
   method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> (list 'a0 -> unit) =
     fun mf_a ls -> List.iter (mf_a self) ls ;
   method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> (array 'a0 -> unit) =
@@ -121,7 +121,7 @@ end;
 
 
 class eqbase = object(self:'self)
-  {:cstru| eq_cstru_base_2 |};
+  {:clfield| eq_clfield_base_2 |};
   method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> (list 'a0 -> list 'a0 -> bool) =
     fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys ;
   method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> (array 'a0 -> array 'a0-> bool) =
@@ -144,7 +144,7 @@ end;
 
 
 class mapbase2 = object (self:'self_type)
-  {:cstru|map_cstru_base_2|};  
+  {:clfield|map_clfield_base_2|};  
   method list:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
               list 'a0  -> list 'a0  -> list 'b0 =
@@ -189,7 +189,7 @@ class monadbase = mapbase;
 class monadbase2 = mapbase2;
   
 class foldbase = object (self:'self_type)
-  {:cstru|fold_cstru_base_1|};
+  {:clfield|fold_clfield_base_1|};
   method list : ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
     (list 'a0 -> 'self_type) = fun mf_a ->
       List.fold_left (fun self v -> (mf_a self v)) self ;
@@ -212,7 +212,7 @@ class foldbase = object (self:'self_type)
 end ;
   
 class foldbase2 = object (self:'self_type)
-  {:cstru|fold_cstru_base_2|};  
+  {:clfield|fold_clfield_base_2|};  
   method list: ! 'a0.
       ('self_type -> 'a0 ->  'a0 -> 'self_type) ->
         list 'a0 -> list 'a0 -> 'self_type =  fun mf_a lx ly->

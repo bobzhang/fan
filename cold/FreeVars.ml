@@ -51,7 +51,7 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | {:exp| $id:_ |} | {:exp| new $_ |} -> o
         
   | {:exp| object ($p) $cst end |} ->
-      ((o#add_pat p)#cstru cst)#set_env env
+      ((o#add_pat p)#clfield cst)#set_env env
         
   | e -> super#exp e ];
 
@@ -77,18 +77,18 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | {:clexp| let rec $bi in $ce |} ->
       (((o#add_binding bi)#binding bi)#clexp ce)#set_env env
   | {:clexp| object ($p) $cst end |} ->
-      ((o#add_pat p)#cstru cst)#set_env env
+      ((o#add_pat p)#clfield cst)#set_env env
   | ce -> super#clexp ce ];
 
-  method! cstru = fun
-  [ {:cstru| inherit $override:_ $_ |} as cst -> super#cstru cst
-  | {:cstru| inherit $override:_ $ce as $s |} ->
+  method! clfield = fun
+  [ {:clfield| inherit $override:_ $_ |} as cst -> super#clfield cst
+  | {:clfield| inherit $override:_ $ce as $s |} ->
       (o#clexp ce)#add_atom s
-  | {:cstru| val $override:_ $mutable:_ $s = $e |} ->
+  | {:clfield| val $override:_ $mutable:_ $s = $e |} ->
       (o#exp e)#add_atom s
-  | {:cstru| val virtual $mutable:_ $s : $t |} ->
+  | {:clfield| val virtual $mutable:_ $s : $t |} ->
       (o#ctyp t)#add_atom s
-  | cst -> super#cstru cst ];
+  | cst -> super#clfield cst ];
 
   method! mexp = fun
   [ {:mexp| struct $st end |} ->

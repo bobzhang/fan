@@ -466,10 +466,10 @@ class eq =
         | (`Match (_a0,_a1),`Match (_b0,_b1)) ->
             (self#exp _a0 _b0) && (self#case _a1 _b1)
         | (`New _a0,`New _b0) -> self#ident _a0 _b0
-        | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
+        | (`Obj _a0,`Obj _b0) -> self#clfield _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#pat _a0 _b0) && (self#cstru _a1 _b1)
+            (self#pat _a0 _b0) && (self#clfield _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#pat _a0 _b0
         | (`OptLabl (_a0,_a1),`OptLabl (_b0,_b1)) ->
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
@@ -720,28 +720,32 @@ class eq =
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
             ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
               (self#clexp _a2 _b2)
-        | (`Obj _a0,`Obj _b0) -> self#cstru _a0 _b0
+        | (`Obj _a0,`Obj _b0) -> self#clfield _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`ObjPat (_a0,_a1),`ObjPat (_b0,_b1)) ->
-            (self#pat _a0 _b0) && (self#cstru _a1 _b1)
+            (self#pat _a0 _b0) && (self#clfield _a1 _b1)
         | (`ObjPatEnd _a0,`ObjPatEnd _b0) -> self#pat _a0 _b0
         | (`Constraint (_a0,_a1),`Constraint (_b0,_b1)) ->
             (self#clexp _a0 _b0) && (self#cltyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result56)
         | (_,_) -> false
-    method cstru : cstru -> cstru -> 'result57=
+    method clfield : clfield -> clfield -> 'result57=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
-            (self#cstru _a0 _b0) && (self#cstru _a1 _b1)
-        | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
-            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+            (self#clfield _a0 _b0) && (self#clfield _a1 _b1)
         | (`Inherit (_a0,_a1),`Inherit (_b0,_b1)) ->
             (self#override_flag _a0 _b0) && (self#clexp _a1 _b1)
         | (`InheritAs (_a0,_a1,_a2),`InheritAs (_b0,_b1,_b2)) ->
             ((self#override_flag _a0 _b0) && (self#clexp _a1 _b1)) &&
               (self#alident _a2 _b2)
-        | (`Initializer _a0,`Initializer _b0) -> self#exp _a0 _b0
+        | (`CrVal (_a0,_a1,_a2,_a3),`CrVal (_b0,_b1,_b2,_b3)) ->
+            (((self#alident _a0 _b0) && (self#override_flag _a1 _b1)) &&
+               (self#mutable_flag _a2 _b2))
+              && (self#exp _a3 _b3)
+        | (`VirVal (_a0,_a1,_a2),`VirVal (_b0,_b1,_b2)) ->
+            ((self#alident _a0 _b0) && (self#mutable_flag _a1 _b1)) &&
+              (self#ctyp _a2 _b2)
         | (`CrMth (_a0,_a1,_a2,_a3,_a4),`CrMth (_b0,_b1,_b2,_b3,_b4)) ->
             ((((self#alident _a0 _b0) && (self#override_flag _a1 _b1)) &&
                 (self#private_flag _a2 _b2))
@@ -751,16 +755,12 @@ class eq =
             (((self#alident _a0 _b0) && (self#override_flag _a1 _b1)) &&
                (self#private_flag _a2 _b2))
               && (self#exp _a3 _b3)
-        | (`CrVal (_a0,_a1,_a2,_a3),`CrVal (_b0,_b1,_b2,_b3)) ->
-            (((self#alident _a0 _b0) && (self#override_flag _a1 _b1)) &&
-               (self#mutable_flag _a2 _b2))
-              && (self#exp _a3 _b3)
         | (`VirMeth (_a0,_a1,_a2),`VirMeth (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | (`VirVal (_a0,_a1,_a2),`VirVal (_b0,_b1,_b2)) ->
-            ((self#alident _a0 _b0) && (self#mutable_flag _a1 _b1)) &&
-              (self#ctyp _a2 _b2)
+        | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
+            (self#ctyp _a0 _b0) && (self#ctyp _a1 _b1)
+        | (`Initializer _a0,`Initializer _b0) -> self#exp _a0 _b0
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result57)
         | (_,_) -> false
     method ep : ep -> ep -> 'result58=
@@ -1297,11 +1297,11 @@ class print =
             Format.fprintf fmt "@[<1>(`Match@ %a@ %a)@]" self#exp _a0
               self#case _a1
         | `New _a0 -> Format.fprintf fmt "@[<1>(`New@ %a)@]" self#ident _a0
-        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
+        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#clfield _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#pat _a0
-              self#cstru _a1
+              self#clfield _a1
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#pat _a0
         | `OptLabl (_a0,_a1) ->
@@ -1610,34 +1610,35 @@ class print =
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
               _a0 self#binding _a1 self#clexp _a2
-        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#cstru _a0
+        | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#clfield _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ObjPat@ %a@ %a)@]" self#pat _a0
-              self#cstru _a1
+              self#clfield _a1
         | `ObjPatEnd _a0 ->
             Format.fprintf fmt "@[<1>(`ObjPatEnd@ %a)@]" self#pat _a0
         | `Constraint (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Constraint@ %a@ %a)@]" self#clexp _a0
               self#cltyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method cstru : 'fmt -> cstru -> unit=
+    method clfield : 'fmt -> clfield -> unit=
       fun fmt  ->
         function
         | `Sem (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#cstru _a0
-              self#cstru _a1
-        | `Eq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
-              _a1
+            Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#clfield _a0
+              self#clfield _a1
         | `Inherit (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Inherit@ %a@ %a)@]" self#override_flag
               _a0 self#clexp _a1
         | `InheritAs (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`InheritAs@ %a@ %a@ %a)@]"
               self#override_flag _a0 self#clexp _a1 self#alident _a2
-        | `Initializer _a0 ->
-            Format.fprintf fmt "@[<1>(`Initializer@ %a)@]" self#exp _a0
+        | `CrVal (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a)@]" self#alident
+              _a0 self#override_flag _a1 self#mutable_flag _a2 self#exp _a3
+        | `VirVal (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a)@]" self#alident
+              _a0 self#mutable_flag _a1 self#ctyp _a2
         | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`CrMth@ %a@ %a@ %a@ %a@ %a)@]"
               self#alident _a0 self#override_flag _a1 self#private_flag _a2
@@ -1646,15 +1647,14 @@ class print =
             Format.fprintf fmt "@[<1>(`CrMthS@ %a@ %a@ %a@ %a)@]"
               self#alident _a0 self#override_flag _a1 self#private_flag _a2
               self#exp _a3
-        | `CrVal (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CrVal@ %a@ %a@ %a@ %a)@]" self#alident
-              _a0 self#override_flag _a1 self#mutable_flag _a2 self#exp _a3
         | `VirMeth (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a)@]" self#alident
               _a0 self#private_flag _a1 self#ctyp _a2
-        | `VirVal (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a)@]" self#alident
-              _a0 self#mutable_flag _a1 self#ctyp _a2
+        | `Eq (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#ctyp _a0 self#ctyp
+              _a1
+        | `Initializer _a0 ->
+            Format.fprintf fmt "@[<1>(`Initializer@ %a)@]" self#exp _a0
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method ep : 'fmt -> ep -> unit=
       fun fmt  ->
@@ -2310,12 +2310,12 @@ and meta_exp _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "Match")), (meta_exp _loc _a0))),
           (meta_case _loc _a1))
   | `New _a0 -> `App (_loc, (`Vrn (_loc, "New")), (meta_ident _loc _a0))
-  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
+  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_clfield _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
-          (meta_cstru _loc _a1))
+          (meta_clfield _loc _a1))
   | `ObjPatEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
   | `OptLabl (_a0,_a1) ->
@@ -2755,12 +2755,12 @@ and meta_clexp _loc =
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
                (meta_binding _loc _a1))), (meta_clexp _loc _a2))
-  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_cstru _loc _a0))
+  | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_clfield _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "ObjPat")), (meta_pat _loc _a0))),
-          (meta_cstru _loc _a1))
+          (meta_clfield _loc _a1))
   | `ObjPatEnd _a0 ->
       `App (_loc, (`Vrn (_loc, "ObjPatEnd")), (meta_pat _loc _a0))
   | `Constraint (_a0,_a1) ->
@@ -2769,16 +2769,12 @@ and meta_clexp _loc =
           (`App (_loc, (`Vrn (_loc, "Constraint")), (meta_clexp _loc _a0))),
           (meta_cltyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result149)
-and meta_cstru _loc =
+and meta_clfield _loc =
   function
   | `Sem (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_cstru _loc _a0))),
-          (meta_cstru _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
-          (meta_ctyp _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_clfield _loc _a0))),
+          (meta_clfield _loc _a1))
   | `Inherit (_a0,_a1) ->
       `App
         (_loc,
@@ -2794,8 +2790,25 @@ and meta_cstru _loc =
                   (_loc, (`Vrn (_loc, "InheritAs")),
                     (meta_override_flag _loc _a0))), (meta_clexp _loc _a1))),
           (meta_alident _loc _a2))
-  | `Initializer _a0 ->
-      `App (_loc, (`Vrn (_loc, "Initializer")), (meta_exp _loc _a0))
+  | `CrVal (_a0,_a1,_a2,_a3) ->
+      `App
+        (_loc,
+          (`App
+             (_loc,
+               (`App
+                  (_loc,
+                    (`App
+                       (_loc, (`Vrn (_loc, "CrVal")),
+                         (meta_alident _loc _a0))),
+                    (meta_override_flag _loc _a1))),
+               (meta_mutable_flag _loc _a2))), (meta_exp _loc _a3))
+  | `VirVal (_a0,_a1,_a2) ->
+      `App
+        (_loc,
+          (`App
+             (_loc,
+               (`App (_loc, (`Vrn (_loc, "VirVal")), (meta_alident _loc _a0))),
+               (meta_mutable_flag _loc _a1))), (meta_ctyp _loc _a2))
   | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
       `App
         (_loc,
@@ -2823,18 +2836,6 @@ and meta_cstru _loc =
                          (meta_alident _loc _a0))),
                     (meta_override_flag _loc _a1))),
                (meta_private_flag _loc _a2))), (meta_exp _loc _a3))
-  | `CrVal (_a0,_a1,_a2,_a3) ->
-      `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, "CrVal")),
-                         (meta_alident _loc _a0))),
-                    (meta_override_flag _loc _a1))),
-               (meta_mutable_flag _loc _a2))), (meta_exp _loc _a3))
   | `VirMeth (_a0,_a1,_a2) ->
       `App
         (_loc,
@@ -2843,13 +2844,12 @@ and meta_cstru _loc =
                (`App
                   (_loc, (`Vrn (_loc, "VirMeth")), (meta_alident _loc _a0))),
                (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | `VirVal (_a0,_a1,_a2) ->
+  | `Eq (_a0,_a1) ->
       `App
-        (_loc,
-          (`App
-             (_loc,
-               (`App (_loc, (`Vrn (_loc, "VirVal")), (meta_alident _loc _a0))),
-               (meta_mutable_flag _loc _a1))), (meta_ctyp _loc _a2))
+        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_ctyp _loc _a0))),
+          (meta_ctyp _loc _a1))
+  | `Initializer _a0 ->
+      `App (_loc, (`Vrn (_loc, "Initializer")), (meta_exp _loc _a0))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
 
 let rec meta_ep _loc =

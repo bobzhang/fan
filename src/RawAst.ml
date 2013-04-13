@@ -31,7 +31,7 @@
     cltyp         :: The type of class types
     clsigi     :: The type of class signature items
     clexp         :: The type of class expessions
-    cstru     :: The type of class structure items
+    clfield     :: The type of class structure items
  *)
 
 
@@ -276,7 +276,7 @@ and exp =
         (* new i *)
   | `New of (loc * ident)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * pat * cstru)
+  | `Obj of (loc * pat * clfield)
         (* ?s or ?s:e *)
   | `OptLabl of (loc *alident * exp)
         (* {< rb >} *)
@@ -479,7 +479,7 @@ and clexp =
         (* let (rec)? bi in ce *)
   | `CeLet of (loc * rec_flag * binding * clexp)
         (* object ((p))? (cst)? end *)
-  | `Obj of (loc * pat * cstru)
+  | `Obj of (loc * pat * clfield)
         (* ce : ct *)
   | `CeTyc of (loc * clexp * cltyp)
         (* ce and ce *)
@@ -487,9 +487,9 @@ and clexp =
         (* ce = ce *)
   | `Eq  of (loc * clexp * clexp)
   | ant ]
-and cstru =
+and clfield =
   [= nil
-  | `Sem of (loc * cstru * cstru)
+  | `Sem of (loc * clfield * clfield)
         (* type t = t *)
   | `Eq of (loc * ctyp * ctyp)
         (* inherit(!)? ce (as s)? *)

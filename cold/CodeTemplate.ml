@@ -139,7 +139,7 @@ let print_base1 =
                                ty))))) : Ast.stru ))) in
   sem_of_list items
 
-let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print_cstru_base,iter_cstru_base_1,eq_cstru_base_2)
+let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base_2,print_clfield_base,iter_clfield_base_1,eq_clfield_base_2)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
   let v1 =
@@ -154,7 +154,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                   (`Case (_loc, (`Lid (_loc, "x")), (`Lid (_loc, "x"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   let v2 =
     ty_names |>
       (List.map
@@ -173,7 +173,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                             (`Case (_loc, (`Any _loc), (`Lid (_loc, "x"))))))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   let v3 =
     ty_names |>
       (List.map
@@ -186,7 +186,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   let v4 =
     ty_names |>
       (List.map
@@ -208,7 +208,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                             (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   let v5 =
     ty_names |>
       (List.map
@@ -216,7 +216,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
             let exp: Ast.exp = `Lid (_loc, ("pp_print_" ^ x)) in
             (`CrMthS
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp) : 
-              Ast.cstru ))) in
+              Ast.clfield ))) in
   let v6 =
     ty_names |>
       (List.map
@@ -227,7 +227,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Uid (_loc, "()"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   let v7 =
     ty_names |>
       (List.map
@@ -253,7 +253,7 @@ let (map_cstru_base_1,map_cstru_base_2,fold_cstru_base_1,fold_cstru_base_2,print
                   (`Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, "bool"))))) in
             (`CrMth
                (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.cstru ))) in
+                 ty) : Ast.clfield ))) in
   ((sem_of_list v1), (sem_of_list v2), (sem_of_list v3), (sem_of_list v4),
     (sem_of_list v5), (sem_of_list v6), (sem_of_list v7))
 
@@ -279,12 +279,12 @@ let eq_base1 =
 
 let _ =
   let open AstInjection in
-    register_inject_cstru ("map_cstru_base_1", map_cstru_base_1);
-    register_inject_cstru ("map_cstru_base_2", map_cstru_base_2);
-    register_inject_cstru ("fold_cstru_base_1", fold_cstru_base_1);
-    register_inject_cstru ("fold_cstru_base_2", fold_cstru_base_2);
-    register_inject_cstru ("print_cstru_base", print_cstru_base);
-    register_inject_cstru ("iter_cstru_base_1", iter_cstru_base_1);
-    register_inject_cstru ("eq_cstru_base_2", eq_cstru_base_2);
+    register_inject_clfield ("map_clfield_base_1", map_clfield_base_1);
+    register_inject_clfield ("map_clfield_base_2", map_clfield_base_2);
+    register_inject_clfield ("fold_clfield_base_1", fold_clfield_base_1);
+    register_inject_clfield ("fold_clfield_base_2", fold_clfield_base_2);
+    register_inject_clfield ("print_clfield_base", print_clfield_base);
+    register_inject_clfield ("iter_clfield_base_1", iter_clfield_base_1);
+    register_inject_clfield ("eq_clfield_base_2", eq_clfield_base_2);
     register_inject_stru ("eq_base1", eq_base1);
     register_inject_stru ("print_base1", print_base1)

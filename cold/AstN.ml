@@ -126,7 +126,7 @@ and exp =
   | `LetIn of (rec_flag * binding * exp)
   | `LetTryInWith of (rec_flag * binding * exp * case)
   | `LetModule of (auident * mexp * exp) | `Match of (exp * case)
-  | `New of ident | `Obj of cstru | `ObjEnd | `ObjPat of (pat * cstru)
+  | `New of ident | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
   | `ObjPatEnd of pat | `OptLabl of (alident * exp) | `OptLablS of alident
   | `OvrInst of rec_exp | `OvrInstEmpty | `Seq of exp
   | `Send of (exp * alident) | `StringDot of (exp * exp)
@@ -193,17 +193,17 @@ and cldecl =
 and clexp =
   [ `CeApp of (clexp * exp) | vid' | `ClApply of (vid * type_parameters)
   | `CeFun of (pat * clexp) | `LetIn of (rec_flag * binding * clexp)
-  | `Obj of cstru | `ObjEnd | `ObjPat of (pat * cstru) | `ObjPatEnd of pat
-  | `Constraint of (clexp * cltyp) | ant] 
-and cstru =
-  [ `Sem of (cstru * cstru) | `Eq of (ctyp * ctyp)
-  | `Inherit of (override_flag * clexp)
-  | `InheritAs of (override_flag * clexp * alident) | `Initializer of exp
+  | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
+  | `ObjPatEnd of pat | `Constraint of (clexp * cltyp) | ant] 
+and clfield =
+  [ `Sem of (clfield * clfield) | `Inherit of (override_flag * clexp)
+  | `InheritAs of (override_flag * clexp * alident)
+  | `CrVal of (alident * override_flag * mutable_flag * exp)
+  | `VirVal of (alident * mutable_flag * ctyp)
   | `CrMth of (alident * override_flag * private_flag * exp * ctyp)
   | `CrMthS of (alident * override_flag * private_flag * exp)
-  | `CrVal of (alident * override_flag * mutable_flag * exp)
-  | `VirMeth of (alident * private_flag * ctyp)
-  | `VirVal of (alident * mutable_flag * ctyp) | ant] 
+  | `VirMeth of (alident * private_flag * ctyp) | `Eq of (ctyp * ctyp)
+  | `Initializer of exp | ant] 
 
 type ep =
   [ vid | `App of (ep * ep) | `Vrn of string | `Com of (ep * ep)

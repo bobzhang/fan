@@ -328,14 +328,14 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
        Ctyp.mk_method_type ~number:arity ~prefix:names
          ((`Lid (_loc, name)), len) (Obj k) in
      (ty, result_type) in
-   let mk_cstru (name,tydcl) =
+   let mk_clfield (name,tydcl) =
      (let (ty,result_type) = mk_type tydcl in
       `CrMth
         (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
-          (f tydcl result_type), ty) : cstru ) in
+          (f tydcl result_type), ty) : clfield ) in
    let fs (ty : types) =
      (match ty with
-      | `Mutual named_types -> sem_of_list (List.map mk_cstru named_types)
+      | `Mutual named_types -> sem_of_list (List.map mk_clfield named_types)
       | `Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
@@ -345,10 +345,10 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                `CrMth
                  (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
                    (unknown n), ty)
-           | None  -> mk_cstru named_type) : cstru ) in
+           | None  -> mk_clfield named_type) : clfield ) in
    let (extras,lst) = Ctyp.transform_mtyps lst in
    let body = List.map fs lst in
-   let body: cstru =
+   let body: clfield =
      let items =
        List.map
          (fun (dest,src,len)  ->
