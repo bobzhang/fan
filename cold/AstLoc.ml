@@ -62,6 +62,7 @@ let loc_of =
   | `Quote (_loc,_,_) -> _loc
   | `TypeEq (_loc,_,_) -> _loc
   | `DirectiveSimple (_loc,_) -> _loc
+  | `VirVal (_loc,_,_,_) -> _loc
   | `OptLabl (_loc,_,_) -> _loc
   | `Coercion (_loc,_,_,_) -> _loc
   | `ClApply (_loc,_,_) -> _loc
@@ -159,7 +160,6 @@ let loc_of =
   | `PolyInf (_loc,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
-  | `CrVvr (_loc,_,_,_) -> _loc
   | `Recursive _loc -> _loc
   | `OptLablExpr (_loc,_,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc

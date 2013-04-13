@@ -203,7 +203,7 @@ and cstru =
   | `CrMthS of (alident * override_flag * private_flag * exp)
   | `CrVal of (alident * override_flag * mutable_flag * exp)
   | `VirMeth of (alident * private_flag * ctyp)
-  | `CrVvr of (alident * mutable_flag * ctyp) | ant] 
+  | `VirVal of (alident * mutable_flag * ctyp) | ant] 
 
 type ep =
   [ vid | `App of (ep * ep) | `Vrn of string | `Com of (ep * ep)

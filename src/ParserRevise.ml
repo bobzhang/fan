@@ -1091,7 +1091,7 @@ let apply () = begin
         ; "="; cltyp{ct} ->
           `CtDecl(_loc,mv,(i:>ident),x,ct)
       | opt_virtual{mv}; a_lident{i}; "="; cltyp{ct} ->           
-          `CtDeclS(_loc,mv,(i:>ident),ct)
+          `CtDeclS(_loc,mv,(i:>ident),ct)]
       cltyp_quot:
       [cltyp{x} -> x]
       cltyp_plus:

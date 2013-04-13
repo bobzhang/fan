@@ -2087,7 +2087,7 @@ class meta =
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
                      (self#private_flag _loc _a2))), (self#ctyp _loc _a3))
-        | `CrVvr (_a0,_a1,_a2,_a3) ->
+        | `VirVal (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
@@ -2095,7 +2095,7 @@ class meta =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "CrVvr")),
+                             (_loc, (`Vrn (_loc, "VirVal")),
                                (self#loc _loc _a0))),
                           (self#alident _loc _a1))),
                      (self#mutable_flag _loc _a2))), (self#ctyp _loc _a3))

@@ -969,8 +969,8 @@ and pp_print_cstru fmt =
   | `VirMeth (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_private_flag _a2 pp_print_ctyp _a3
-  | `CrVvr (_a0,_a1,_a2,_a3) ->
-      Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
+  | `VirVal (_a0,_a1,_a2,_a3) ->
+      Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_alident _a1 pp_print_mutable_flag _a2 pp_print_ctyp _a3
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result25)
 
@@ -2012,9 +2012,9 @@ class print =
         | `VirMeth (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a@ %a)@]" self#loc
               _a0 self#alident _a1 self#private_flag _a2 self#ctyp _a3
-        | `CrVvr (_a0,_a1,_a2,_a3) ->
-            Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#alident _a1 self#mutable_flag _a2 self#ctyp _a3
+        | `VirVal (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a@ %a)@]" self#loc
+              _a0 self#alident _a1 self#mutable_flag _a2 self#ctyp _a3
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method ep : 'fmt -> ep -> unit=
       fun fmt  ->
@@ -3158,11 +3158,11 @@ class map =
           let _a1 = self#alident _a1 in
           let _a2 = self#private_flag _a2 in
           let _a3 = self#ctyp _a3 in `VirMeth (_a0, _a1, _a2, _a3)
-      | `CrVvr (_a0,_a1,_a2,_a3) ->
+      | `VirVal (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#alident _a1 in
           let _a2 = self#mutable_flag _a2 in
-          let _a3 = self#ctyp _a3 in `CrVvr (_a0, _a1, _a2, _a3)
+          let _a3 = self#ctyp _a3 in `VirVal (_a0, _a1, _a2, _a3)
       | #ant as _a0 -> (self#ant _a0 : ant  :>cstru)
     method ep : ep -> ep=
       function
@@ -3967,7 +3967,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#private_flag _a2 in self#ctyp _a3
-      | `CrVvr (_a0,_a1,_a2,_a3) ->
+      | `VirVal (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#alident _a1 in
           let self = self#mutable_flag _a2 in self#ctyp _a3
@@ -4803,10 +4803,10 @@ and strip_loc_cstru =
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_private_flag _a2 in
       let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
-  | `CrVvr (_a0,_a1,_a2,_a3) ->
+  | `VirVal (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_alident _a1 in
       let _a2 = strip_loc_mutable_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `CrVvr (_a1, _a2, _a3)
+      let _a3 = strip_loc_ctyp _a3 in `VirVal (_a1, _a2, _a3)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result269)
 
 let rec strip_loc_ep =

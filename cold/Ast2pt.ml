@@ -1209,7 +1209,7 @@ and cstru (c : cstru) l =
       (mkcf loc
          (Pcf_virt ((with_loc s sloc), (mkprivate pf), (mkpolytype (ctyp t)))))
       :: l
-  | `CrVvr (loc,`Lid (sloc,s),mf,t) ->
+  | `VirVal (loc,`Lid (sloc,s),mf,t) ->
       (mkcf loc (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
       :: l
   | x -> errorf (loc_of x) "cstru: %s" (dump_cstru x)

@@ -194,7 +194,7 @@ and cstru =
   | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
   | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
   | `VirMeth of (loc * alident * private_flag * ctyp)
-  | `CrVvr of (loc * alident * mutable_flag * ctyp) | ant] 
+  | `VirVal of (loc * alident * mutable_flag * ctyp) | ant] 
 
 type ep =
   [ nil | sid | `App of (loc * ep * ep) | `Vrn of (loc * string)

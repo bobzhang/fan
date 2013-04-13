@@ -503,7 +503,7 @@ and cstru =
         (* method virtual (private)? s : t *)
   | `VirMeth of (loc * alident * private_flag * ctyp)
         (* val virtual (mutable)? s : t *)
-  | `CrVvr of (loc * alident * mutable_flag * ctyp)
+  | `VirVal of (loc * alident * mutable_flag * ctyp)
   | ant  ]; 
 
 

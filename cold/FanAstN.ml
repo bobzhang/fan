@@ -758,7 +758,7 @@ class eq =
         | (`VirMeth (_a0,_a1,_a2),`VirMeth (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#private_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
-        | (`CrVvr (_a0,_a1,_a2),`CrVvr (_b0,_b1,_b2)) ->
+        | (`VirVal (_a0,_a1,_a2),`VirVal (_b0,_b1,_b2)) ->
             ((self#alident _a0 _b0) && (self#mutable_flag _a1 _b1)) &&
               (self#ctyp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result57)
@@ -1652,9 +1652,9 @@ class print =
         | `VirMeth (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`VirMeth@ %a@ %a@ %a)@]" self#alident
               _a0 self#private_flag _a1 self#ctyp _a2
-        | `CrVvr (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`CrVvr@ %a@ %a@ %a)@]" self#alident _a0
-              self#mutable_flag _a1 self#ctyp _a2
+        | `VirVal (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`VirVal@ %a@ %a@ %a)@]" self#alident
+              _a0 self#mutable_flag _a1 self#ctyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method ep : 'fmt -> ep -> unit=
       fun fmt  ->
@@ -2843,12 +2843,12 @@ and meta_cstru _loc =
                (`App
                   (_loc, (`Vrn (_loc, "VirMeth")), (meta_alident _loc _a0))),
                (meta_private_flag _loc _a1))), (meta_ctyp _loc _a2))
-  | `CrVvr (_a0,_a1,_a2) ->
+  | `VirVal (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
              (_loc,
-               (`App (_loc, (`Vrn (_loc, "CrVvr")), (meta_alident _loc _a0))),
+               (`App (_loc, (`Vrn (_loc, "VirVal")), (meta_alident _loc _a0))),
                (meta_mutable_flag _loc _a1))), (meta_ctyp _loc _a2))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result148)
 

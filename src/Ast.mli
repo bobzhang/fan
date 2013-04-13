@@ -569,7 +569,7 @@ and cstru =
         (* method virtual (private)? s : t *)
   | `VirMeth of (loc * alident * private_flag * ctyp)
         (* val virtual (mutable)? s : t *)
-  | `CrVvr of (loc * alident * mutable_flag * ctyp)
+  | `VirVal of (loc * alident * mutable_flag * ctyp)
   | ant  ]; 
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)
