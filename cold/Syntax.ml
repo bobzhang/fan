@@ -57,8 +57,6 @@ let cltyp_declaration = Gram.mk "cltyp_declaration"
 
 let cltyp_longident = Gram.mk "cltyp_longident"
 
-let cltyp_longident_and_param = Gram.mk "cltyp_longident_and_param"
-
 let cltyp_plus = Gram.mk "cltyp_plus"
 
 let comma_ctyp = Gram.mk "comma_ctyp"

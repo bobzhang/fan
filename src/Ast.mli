@@ -374,8 +374,8 @@ and sigi =
   | `Type of (loc * typedecl)
   | `Exception of (loc * of_ctyp) (* exception t *)
 
-  | `Class of (loc * cltyp)
-  | `ClassType of (loc * cltyp) (* class type cict *)
+  | `Class of (loc * (* cltyp *)cltdecl)
+  | `ClassType of (loc * (* cltyp *)cltdecl) (* class type cict *)
 
   | `Module of (loc * auident * mtyp) (* module s : mt *)
 
@@ -446,7 +446,7 @@ and mexp =
   | ant  ]
 and stru =
   [= `Class of (loc * cldecl) (* class cice *)
-  | `ClassType of (loc * cltyp) (* class type cict *)
+  | `ClassType of (loc * (* cltyp *)cltdecl) (* class type cict *)
   | `Sem of (loc * stru * stru)
   | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp)
@@ -496,22 +496,18 @@ and stru =
  *)
 and cltdecl =
   [= `And of (loc * cltdecl * cltdecl)
+  | `CtDecl of (loc * virtual_flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (loc * virtual_flag * ident * cltyp)
   | ant ]  
 and cltyp = (* class body type *)         
-  [= 
-   `ClassCon of (loc * virtual_flag * ident *  type_parameters)
-       (* (virtual)? i [ t ] *)
-  | `ClassConS of (loc * virtual_flag * ident)
-        (* (virtual)? i *)
-  | `CtFun of (loc * ctyp * cltyp)
-        (* [t] -> ct *)
+  [= vid'
+  | `ClApply of (loc * vid * type_parameters)
+  | `CtFun of (loc * ctyp * cltyp) (* [t] -> ct *)
   | `ObjTy of (loc * ctyp * clsigi) (*object (ty) ..  end*)
   | `ObjTyEnd of (loc * ctyp) (*object (ty) end*)
   | `Obj of (loc * clsigi) (* object ... end *)
   | `ObjEnd of (loc) (* object end*)
-  | `And of (loc * cltyp * cltyp)
-  | `CtCol of (loc * cltyp * cltyp) (* ct : ct *)
-  | `Eq  of (loc * cltyp * cltyp) (* ct = ct *)
+  | `And of (loc * cltyp * cltyp) (* FIXME  constraint typexpr = typeexpr missing *)
   | ant ]
 
 (* and clfun = [`Fun of (loc * ctyp * cltyp)]
@@ -531,8 +527,7 @@ and clsigi =
   [= 
     `Sem of (loc * clsigi * clsigi)
   | `SigInherit of (loc * cltyp)
-
-        (* val (virtual)? (mutable)? s : t *)
+    (* val (virtual)? (mutable)? s : t *)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
       (* method s : t or method private s : t *)
   | `Method of (loc * alident * private_flag * ctyp)
@@ -544,8 +539,7 @@ and clsigi =
 (*   [= `InheritI of (loc * clsigi) *)
 (*   | ]       *)
 and cldecl =
-  [=
-   `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
+  [= `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
   | `ClDeclS of (loc * virtual_flag * ident * clexp )
   | `And of (loc * cldecl * cldecl)
   | ant ]      
@@ -562,8 +556,7 @@ and clexp =
   | `Constraint of (loc * clexp * cltyp) (* ce : ct *)
   | ant ]
 and cstru =
-  [=
-   `Sem of (loc * cstru * cstru)
+  [= `Sem of (loc * cstru * cstru)
   | `Eq of (loc * ctyp * ctyp)
   | `Inherit of (loc * override_flag * clexp)
   | `InheritAs of (loc * override_flag * clexp * alident)

@@ -1076,45 +1076,36 @@ let apply () = begin
       [ S{cd1}; "and"; S{cd2} -> `And(_loc,cd1,cd2)
       | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
           mk_anti _loc ~c:"cltyp" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
-      | class_info_for_cltyp{ci}; ":"; cltyp_plus{ct} -> `CtCol (_loc, ci, ct)  ]
+      (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag *)
+      | opt_virtual{mv};  a_lident{i};"[";
+          comma_type_parameter{x}; "]"; ":"; cltyp_plus{ct} ->
+            `CtDecl(_loc,mv,(i:>ident),x,ct)
+      | opt_virtual{mv}; a_lident{i} ; ":"; cltyp_plus{ct}->
+          `CtDeclS(_loc,mv,(i:>ident),ct)]
       cltyp_declaration:
       [ S{cd1}; "and"; S{cd2} -> `And(_loc,cd1,cd2)
       | `Ant ((""|"typ"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"cltyp" n s
-      | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
-      | class_info_for_cltyp{ci}; "="; cltyp{ct} ->
-          `Eq(_loc,ci,ct) ]
-      class_info_for_cltyp:
-      [ opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]" ->
-        `ClassCon(_loc,mv,(i:>ident),x)
-      | opt_virtual{mv}; a_lident{i} -> `ClassConS(_loc,mv,(i:>ident))]
+      (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag *)
+
+      | opt_virtual{mv};  a_lident{i};"["; comma_type_parameter{x}; "]"
+        ; "="; cltyp{ct} ->
+          `CtDecl(_loc,mv,(i:>ident),x,ct)
+      | opt_virtual{mv}; a_lident{i}; "="; cltyp{ct} ->           
+          `CtDeclS(_loc,mv,(i:>ident),ct)
       cltyp_quot:
-      [(*  S{ct1}; "and"; S{ct2} -> `And(_loc,ct1,ct2) *)
-      (* | S{ct1}; "="; S{ct2} -> `Eq(_loc,ct1,ct2) *)
-      (* | S{ct1}; ":"; S{ct2} -> `CtCol(_loc,ct1,ct2) *)
-      (* | `Ant (("virtual" as n),s); ident{i}; "["; comma_ctyp{t}; "]" -> *)
-      (*     let anti = mk_anti _loc ~c:"cltyp" n s in *)
-      (*     `ClassCon(_loc,anti,i,t) *)
-      (* | `Ant (("virtual" as n),s); ident{i} -> *)
-      (*     let anti = mk_anti _loc  ~c:"cltyp" n s in *)
-      (*     `ClassConS(_loc,anti,i) *)
-       cltyp{x} -> x  
-      (* | cltyp_plus{x} -> x *)]
+      [cltyp{x} -> x]
       cltyp_plus:
       [ "["; ctyp{t}; "]"; "->"; S{ct} -> `CtFun(_loc,t,ct)
       | cltyp{ct} -> ct ]
       cltyp:
       [ `Ant ((""|"ctyp"|"anti" as n),s) -> mk_anti _loc  ~c:"cltyp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.cltyp_tag
-      | cltyp_longident_and_param{ct} -> ct
+      | vid{i}; "["; comma_ctyp{t}; "]" -> `ClApply(_loc,i,t)
+      | vid{i} -> (i :> cltyp) 
       | "object";"(";ctyp{t};")";class_signature{csg};"end" -> `ObjTy(_loc,t,csg)
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
       | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
-      | "object"; "end" -> `ObjEnd(_loc)]
-      cltyp_longident_and_param:
-      [ cltyp_longident{i}; "["; comma_ctyp{t}; "]" ->
-        `ClassCon (_loc, `ViNil _loc, i, t)
-      | cltyp_longident{i} -> `ClassConS(_loc,`ViNil _loc,i)] |} ;
+      | "object"; "end" -> `ObjEnd(_loc)] |} ;
 end;
 
 
@@ -1128,7 +1119,7 @@ let apply_ctyp () = begin
       [ S{t1}; S{t2} -> {| $t1 $t2 |}
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc ~c:"ctyp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
-      | a_lident{i} -> (i:>ctyp) (* `Id(_loc,(i:>ident)) *)]
+      | a_lident{i} -> (i:>ctyp) ]
       type_parameter:
       [ `Ant ((""|"typ"|"anti" as n),s) -> mk_anti _loc n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
@@ -1149,7 +1140,7 @@ let apply_ctyp () = begin
       | type_parameter{t} -> fun acc -> `App(_loc,acc, (t:>ctyp))
       | -> fun t -> t  ]
       meth_list:
-      [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml)(* {| $m; $ml |} *), v)
+      [ meth_decl{m}; ";"; S{(ml, v) }  -> (`Sem(_loc,m,ml), v)
       | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
       | meth_decl{m}; opt_dot_dot{v}      -> (m, v)  ]
       meth_decl:
@@ -1184,9 +1175,6 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) ->  mk_anti _loc ~c:"ctyp" n s
       | S{t1}; S{t2} -> `App (_loc, t1, t2)
       | "`"; astr{i} -> `TyVrn (_loc, i)  ]
-
-
-      
       type_declaration:
       [ `Ant ((""|"typ"|"anti" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) ->          mk_anti _loc ~c:"ctypand" n s

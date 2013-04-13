@@ -533,8 +533,8 @@ class eq =
               (self#strings _a2 _b2)
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Exception _a0,`Exception _b0) -> self#of_ctyp _a0 _b0
-        | (`Class _a0,`Class _b0) -> self#cltyp _a0 _b0
-        | (`ClassType _a0,`ClassType _b0) -> self#cltyp _a0 _b0
+        | (`Class _a0,`Class _b0) -> self#cltdecl _a0 _b0
+        | (`ClassType _a0,`ClassType _b0) -> self#cltdecl _a0 _b0
         | (`Module (_a0,_a1),`Module (_b0,_b1)) ->
             (self#auident _a0 _b0) && (self#mtyp _a1 _b1)
         | (`ModuleTypeEnd _a0,`ModuleTypeEnd _b0) -> self#auident _a0 _b0
@@ -619,7 +619,7 @@ class eq =
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`Class _a0,`Class _b0) -> self#cldecl _a0 _b0
-        | (`ClassType _a0,`ClassType _b0) -> self#cltyp _a0 _b0
+        | (`ClassType _a0,`ClassType _b0) -> self#cltdecl _a0 _b0
         | (`Sem (_a0,_a1),`Sem (_b0,_b1)) ->
             (self#stru _a0 _b0) && (self#stru _a1 _b1)
         | (`DirectiveSimple _a0,`DirectiveSimple _b0) -> self#alident _a0 _b0
@@ -647,16 +647,21 @@ class eq =
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
             (self#cltdecl _a0 _b0) && (self#cltdecl _a1 _b1)
+        | (`CtDecl (_a0,_a1,_a2,_a3),`CtDecl (_b0,_b1,_b2,_b3)) ->
+            (((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
+               (self#type_parameters _a2 _b2))
+              && (self#cltyp _a3 _b3)
+        | (`CtDeclS (_a0,_a1,_a2),`CtDeclS (_b0,_b1,_b2)) ->
+            ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
+              (self#cltyp _a2 _b2)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
         | (_,_) -> false
     method cltyp : cltyp -> cltyp -> 'result53=
       fun _a0  _b0  ->
         match (_a0, _b0) with
-        | (`ClassCon (_a0,_a1,_a2),`ClassCon (_b0,_b1,_b2)) ->
-            ((self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)) &&
-              (self#type_parameters _a2 _b2)
-        | (`ClassConS (_a0,_a1),`ClassConS (_b0,_b1)) ->
-            (self#virtual_flag _a0 _b0) && (self#ident _a1 _b1)
+        | ((#vid' as _a0),(#vid' as _b0)) -> (self#vid' _a0 _b0 :>'result53)
+        | (`ClApply (_a0,_a1),`ClApply (_b0,_b1)) ->
+            (self#vid _a0 _b0) && (self#type_parameters _a1 _b1)
         | (`CtFun (_a0,_a1),`CtFun (_b0,_b1)) ->
             (self#ctyp _a0 _b0) && (self#cltyp _a1 _b1)
         | (`ObjTy (_a0,_a1),`ObjTy (_b0,_b1)) ->
@@ -665,10 +670,6 @@ class eq =
         | (`Obj _a0,`Obj _b0) -> self#clsigi _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
-        | (`CtCol (_a0,_a1),`CtCol (_b0,_b1)) ->
-            (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
-        | (`Eq (_a0,_a1),`Eq (_b0,_b1)) ->
             (self#cltyp _a0 _b0) && (self#cltyp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result53)
         | (_,_) -> false
@@ -1381,9 +1382,9 @@ class print =
         | `Exception _a0 ->
             Format.fprintf fmt "@[<1>(`Exception@ %a)@]" self#of_ctyp _a0
         | `Class _a0 ->
-            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#cltyp _a0
+            Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#cltdecl _a0
         | `ClassType _a0 ->
-            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltyp _a0
+            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltdecl _a0
         | `Module (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Module@ %a@ %a)@]" self#auident _a0
               self#mtyp _a1
@@ -1490,7 +1491,7 @@ class print =
         | `Class _a0 ->
             Format.fprintf fmt "@[<1>(`Class@ %a)@]" self#cldecl _a0
         | `ClassType _a0 ->
-            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltyp _a0
+            Format.fprintf fmt "@[<1>(`ClassType@ %a)@]" self#cltdecl _a0
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#stru _a0
               self#stru _a1
@@ -1529,16 +1530,21 @@ class print =
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#cltdecl _a0
               self#cltdecl _a1
+        | `CtDecl (_a0,_a1,_a2,_a3) ->
+            Format.fprintf fmt "@[<1>(`CtDecl@ %a@ %a@ %a@ %a)@]"
+              self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
+              self#cltyp _a3
+        | `CtDeclS (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`CtDeclS@ %a@ %a@ %a)@]"
+              self#virtual_flag _a0 self#ident _a1 self#cltyp _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method cltyp : 'fmt -> cltyp -> unit=
       fun fmt  ->
         function
-        | `ClassCon (_a0,_a1,_a2) ->
-            Format.fprintf fmt "@[<1>(`ClassCon@ %a@ %a@ %a)@]"
-              self#virtual_flag _a0 self#ident _a1 self#type_parameters _a2
-        | `ClassConS (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`ClassConS@ %a@ %a)@]"
-              self#virtual_flag _a0 self#ident _a1
+        | #vid' as _a0 -> (self#vid' fmt _a0 :>unit)
+        | `ClApply (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`ClApply@ %a@ %a)@]" self#vid _a0
+              self#type_parameters _a1
         | `CtFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`CtFun@ %a@ %a)@]" self#ctyp _a0
               self#cltyp _a1
@@ -1551,12 +1557,6 @@ class print =
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `And (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#cltyp _a0
-              self#cltyp _a1
-        | `CtCol (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`CtCol@ %a@ %a)@]" self#cltyp _a0
-              self#cltyp _a1
-        | `Eq (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`Eq@ %a@ %a)@]" self#cltyp _a0
               self#cltyp _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method clsigi : 'fmt -> clsigi -> unit=
@@ -2425,9 +2425,10 @@ and meta_sigi _loc =
   | `Type _a0 -> `App (_loc, (`Vrn (_loc, "Type")), (meta_typedecl _loc _a0))
   | `Exception _a0 ->
       `App (_loc, (`Vrn (_loc, "Exception")), (meta_of_ctyp _loc _a0))
-  | `Class _a0 -> `App (_loc, (`Vrn (_loc, "Class")), (meta_cltyp _loc _a0))
+  | `Class _a0 ->
+      `App (_loc, (`Vrn (_loc, "Class")), (meta_cltdecl _loc _a0))
   | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltyp _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltdecl _loc _a0))
   | `Module (_a0,_a1) ->
       `App
         (_loc,
@@ -2567,7 +2568,7 @@ and meta_stru _loc =
   function
   | `Class _a0 -> `App (_loc, (`Vrn (_loc, "Class")), (meta_cldecl _loc _a0))
   | `ClassType _a0 ->
-      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltyp _loc _a0))
+      `App (_loc, (`Vrn (_loc, "ClassType")), (meta_cltdecl _loc _a0))
   | `Sem (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (meta_stru _loc _a0))),
@@ -2618,24 +2619,35 @@ and meta_cltdecl _loc =
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_cltdecl _loc _a0))),
           (meta_cltdecl _loc _a1))
-  | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
-and meta_cltyp _loc =
-  function
-  | `ClassCon (_a0,_a1,_a2) ->
+  | `CtDecl (_a0,_a1,_a2,_a3) ->
       `App
         (_loc,
           (`App
              (_loc,
                (`App
-                  (_loc, (`Vrn (_loc, "ClassCon")),
-                    (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
-          (meta_type_parameters _loc _a2))
-  | `ClassConS (_a0,_a1) ->
+                  (_loc,
+                    (`App
+                       (_loc, (`Vrn (_loc, "CtDecl")),
+                         (meta_virtual_flag _loc _a0))),
+                    (meta_ident _loc _a1))), (meta_type_parameters _loc _a2))),
+          (meta_cltyp _loc _a3))
+  | `CtDeclS (_a0,_a1,_a2) ->
       `App
         (_loc,
           (`App
-             (_loc, (`Vrn (_loc, "ClassConS")), (meta_virtual_flag _loc _a0))),
-          (meta_ident _loc _a1))
+             (_loc,
+               (`App
+                  (_loc, (`Vrn (_loc, "CtDeclS")),
+                    (meta_virtual_flag _loc _a0))), (meta_ident _loc _a1))),
+          (meta_cltyp _loc _a2))
+  | #ant as _a0 -> (meta_ant _loc _a0 :>'result153)
+and meta_cltyp _loc =
+  function
+  | #vid' as _a0 -> (meta_vid' _loc _a0 :>'result152)
+  | `ClApply (_a0,_a1) ->
+      `App
+        (_loc, (`App (_loc, (`Vrn (_loc, "ClApply")), (meta_vid _loc _a0))),
+          (meta_type_parameters _loc _a1))
   | `CtFun (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "CtFun")), (meta_ctyp _loc _a0))),
@@ -2651,14 +2663,6 @@ and meta_cltyp _loc =
   | `And (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_cltyp _loc _a0))),
-          (meta_cltyp _loc _a1))
-  | `CtCol (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "CtCol")), (meta_cltyp _loc _a0))),
-          (meta_cltyp _loc _a1))
-  | `Eq (_a0,_a1) ->
-      `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "Eq")), (meta_cltyp _loc _a0))),
           (meta_cltyp _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result152)
 and meta_clsigi _loc =

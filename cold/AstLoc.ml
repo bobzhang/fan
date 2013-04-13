@@ -10,6 +10,7 @@ let _ = ()
 
 let loc_of =
   function
+  | `CtDeclS (_loc,_,_,_) -> _loc
   | `Apply (_loc,_,_) -> _loc
   | `Any _loc -> _loc
   | `Array (_loc,_) -> _loc
@@ -19,6 +20,7 @@ let loc_of =
   | `QuoteAny (_loc,_) -> _loc
   | `TyEq (_loc,_,_) -> _loc
   | `ModuleBind (_loc,_,_,_) -> _loc
+  | `CtDecl (_loc,_,_,_,_) -> _loc
   | `Sta (_loc,_,_) -> _loc
   | `Match (_loc,_,_) -> _loc
   | `Obj (_loc,_) -> _loc
@@ -62,8 +64,8 @@ let loc_of =
   | `DirectiveSimple (_loc,_) -> _loc
   | `OptLabl (_loc,_,_) -> _loc
   | `Coercion (_loc,_,_,_) -> _loc
-  | `CtFun (_loc,_,_) -> _loc
   | `ClApply (_loc,_,_) -> _loc
+  | `CtFun (_loc,_,_) -> _loc
   | `Arrow (_loc,_,_) -> _loc
   | `ObjEnd _loc -> _loc
   | `Bind (_loc,_,_) -> _loc
@@ -93,7 +95,6 @@ let loc_of =
   | `ArrayEmpty _loc -> _loc
   | `Int64 (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
-  | `ClassCon (_loc,_,_,_) -> _loc
   | `TyPolEnd (_loc,_) -> _loc
   | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
@@ -124,7 +125,6 @@ let loc_of =
   | `OvrInst (_loc,_) -> _loc
   | `OvNil _loc -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
-  | `ClassConS (_loc,_,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
   | `ModuleConstraint (_loc,_,_) -> _loc
@@ -132,7 +132,6 @@ let loc_of =
   | `Case (_loc,_,_) -> _loc
   | `OvrInstEmpty _loc -> _loc
   | `Exception (_loc,_) -> _loc
-  | `CtCol (_loc,_,_) -> _loc
   | `RecordWith (_loc,_,_) -> _loc
   | `And (_loc,_,_) -> _loc
   | `SigEnd _loc -> _loc

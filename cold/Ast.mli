@@ -145,8 +145,8 @@ and mtyp =
 and sigi =
   [ `Val of (loc * alident * ctyp)
   | `External of (loc * alident * ctyp * strings) | `Type of (loc * typedecl)
-  | `Exception of (loc * of_ctyp) | `Class of (loc * cltyp)
-  | `ClassType of (loc * cltyp) | `Module of (loc * auident * mtyp)
+  | `Exception of (loc * of_ctyp) | `Class of (loc * cltdecl)
+  | `ClassType of (loc * cltdecl) | `Module of (loc * auident * mtyp)
   | `ModuleTypeEnd of (loc * auident) | `ModuleType of (loc * auident * mtyp)
   | `Sem of (loc * sigi * sigi) | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp) | `Open of (loc * ident)
@@ -171,7 +171,7 @@ and mexp =
   | `StructEnd of loc | `Constraint of (loc * mexp * mtyp)
   | `PackageModule of (loc * exp) | ant] 
 and stru =
-  [ `Class of (loc * cldecl) | `ClassType of (loc * cltyp)
+  [ `Class of (loc * cldecl) | `ClassType of (loc * cltdecl)
   | `Sem of (loc * stru * stru) | `DirectiveSimple of (loc * alident)
   | `Directive of (loc * alident * exp) | `Exception of (loc * of_ctyp)
   | `StExp of (loc * exp) | `External of (loc * alident * ctyp * strings)
@@ -179,14 +179,15 @@ and stru =
   | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
   | `Open of (loc * ident) | `Type of (loc * typedecl)
   | `Value of (loc * rec_flag * binding) | ant] 
-and cltdecl = [ `And of (loc * cltdecl * cltdecl) | ant] 
+and cltdecl =
+  [ `And of (loc * cltdecl * cltdecl)
+  | `CtDecl of (loc * virtual_flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (loc * virtual_flag * ident * cltyp) | ant] 
 and cltyp =
-  [ `ClassCon of (loc * virtual_flag * ident * type_parameters)
-  | `ClassConS of (loc * virtual_flag * ident)
+  [ vid' | `ClApply of (loc * vid * type_parameters)
   | `CtFun of (loc * ctyp * cltyp) | `ObjTy of (loc * ctyp * clsigi)
   | `ObjTyEnd of (loc * ctyp) | `Obj of (loc * clsigi) | `ObjEnd of loc
-  | `And of (loc * cltyp * cltyp) | `CtCol of (loc * cltyp * cltyp)
-  | `Eq of (loc * cltyp * cltyp) | ant] 
+  | `And of (loc * cltyp * cltyp) | ant] 
 and clsigi =
   [ `Sem of (loc * clsigi * clsigi) | `SigInherit of (loc * cltyp)
   | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)

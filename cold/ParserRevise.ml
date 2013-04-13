@@ -5086,28 +5086,28 @@ let apply () =
                   | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
                       (mk_anti _loc ~c:"cltyp" n s : 'class_description )
                   | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.cltyp_tag : 'class_description )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.cltyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x FanDyn.cltyp_tag : 
-                      'class_description )
-                  | _ ->
-                      failwith
-                        "AstQuotation.expand _loc x FanDyn.cltyp_tag\n"))));
-        ([`Snterm
-            (Gram.obj (class_info_for_cltyp : 'class_info_for_cltyp Gram.t ));
+        ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+         `Skeyword "[";
+         `Snterm
+           (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
+         `Skeyword "]";
          `Skeyword ":";
          `Snterm (Gram.obj (cltyp_plus : 'cltyp_plus Gram.t ))],
-          ("Gram.mk_action\n  (fun (ct : 'cltyp_plus)  _  (ci : 'class_info_for_cltyp)  (_loc : FanLoc.t)\n      -> (`CtCol (_loc, ci, ct) : 'class_description ))\n",
+          ("Gram.mk_action\n  (fun (ct : 'cltyp_plus)  _  _  (x : 'comma_type_parameter)  _ \n     (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'class_description ))\n",
             (Gram.mk_action
-               (fun (ct : 'cltyp_plus)  _  (ci : 'class_info_for_cltyp) 
-                  (_loc : FanLoc.t)  ->
-                  (`CtCol (_loc, ci, ct) : 'class_description )))))]));
+               (fun (ct : 'cltyp_plus)  _  _  (x : 'comma_type_parameter)  _ 
+                  (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
+                  (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'class_description )))));
+        ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+         `Skeyword ":";
+         `Snterm (Gram.obj (cltyp_plus : 'cltyp_plus Gram.t ))],
+          ("Gram.mk_action\n  (fun (ct : 'cltyp_plus)  _  (i : 'a_lident)  (mv : 'opt_virtual) \n     (_loc : FanLoc.t)  ->\n     (`CtDeclS (_loc, mv, (i :>ident), ct) : 'class_description ))\n",
+            (Gram.mk_action
+               (fun (ct : 'cltyp_plus)  _  (i : 'a_lident) 
+                  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
+                  (`CtDeclS (_loc, mv, (i :>ident), ct) : 'class_description )))))]));
   Gram.extend_single (cltyp_declaration : 'cltyp_declaration Gram.t )
     (None,
       (None, None,
@@ -5129,49 +5129,28 @@ let apply () =
                   | `Ant ((""|"typ"|"anti"|"list" as n),s) ->
                       (mk_anti _loc ~c:"cltyp" n s : 'cltyp_declaration )
                   | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
-        ([`Stoken
-            (((function | `QUOTATION _ -> true | _ -> false)),
-              (`Normal, "`QUOTATION _"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x ->\n         (AstQuotation.expand _loc x FanDyn.cltyp_tag : 'cltyp_declaration )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.cltyp_tag\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `QUOTATION x ->
-                      (AstQuotation.expand _loc x FanDyn.cltyp_tag : 
-                      'cltyp_declaration )
-                  | _ ->
-                      failwith
-                        "AstQuotation.expand _loc x FanDyn.cltyp_tag\n"))));
-        ([`Snterm
-            (Gram.obj (class_info_for_cltyp : 'class_info_for_cltyp Gram.t ));
+        ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
+         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+         `Skeyword "[";
+         `Snterm
+           (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
+         `Skeyword "]";
          `Skeyword "=";
          `Snterm (Gram.obj (cltyp : 'cltyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (ct : 'cltyp)  _  (ci : 'class_info_for_cltyp)  (_loc : FanLoc.t)  ->\n     (`Eq (_loc, ci, ct) : 'cltyp_declaration ))\n",
+          ("Gram.mk_action\n  (fun (ct : 'cltyp)  _  _  (x : 'comma_type_parameter)  _  (i : 'a_lident) \n     (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'cltyp_declaration ))\n",
             (Gram.mk_action
-               (fun (ct : 'cltyp)  _  (ci : 'class_info_for_cltyp) 
-                  (_loc : FanLoc.t)  ->
-                  (`Eq (_loc, ci, ct) : 'cltyp_declaration )))))]));
-  Gram.extend_single (class_info_for_cltyp : 'class_info_for_cltyp Gram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-          `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
-          `Skeyword "[";
-          `Snterm
-            (Gram.obj (comma_type_parameter : 'comma_type_parameter Gram.t ));
-          `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (x : 'comma_type_parameter)  _  (i : 'a_lident) \n     (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`ClassCon (_loc, mv, (i :>ident), x) : 'class_info_for_cltyp ))\n",
-             (Gram.mk_action
-                (fun _  (x : 'comma_type_parameter)  _  (i : 'a_lident) 
-                   (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
-                   (`ClassCon (_loc, mv, (i :>ident), x) : 'class_info_for_cltyp )))));
+               (fun (ct : 'cltyp)  _  _  (x : 'comma_type_parameter)  _ 
+                  (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->
+                  (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'cltyp_declaration )))));
         ([`Snterm (Gram.obj (opt_virtual : 'opt_virtual Gram.t ));
-         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t)  ->\n     (`ClassConS (_loc, mv, (i :>ident)) : 'class_info_for_cltyp ))\n",
+         `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
+         `Skeyword "=";
+         `Snterm (Gram.obj (cltyp : 'cltyp Gram.t ))],
+          ("Gram.mk_action\n  (fun (ct : 'cltyp)  _  (i : 'a_lident)  (mv : 'opt_virtual) \n     (_loc : FanLoc.t)  ->\n     (`CtDeclS (_loc, mv, (i :>ident), ct) : 'cltyp_declaration ))\n",
             (Gram.mk_action
-               (fun (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : FanLoc.t) 
-                  ->
-                  (`ClassConS (_loc, mv, (i :>ident)) : 'class_info_for_cltyp )))))]));
+               (fun (ct : 'cltyp)  _  (i : 'a_lident)  (mv : 'opt_virtual) 
+                  (_loc : FanLoc.t)  ->
+                  (`CtDeclS (_loc, mv, (i :>ident), ct) : 'cltyp_declaration )))))]));
   Gram.extend_single (cltyp_quot : 'cltyp_quot Gram.t )
     (None,
       (None, None,
@@ -5222,13 +5201,18 @@ let apply () =
                   | _ ->
                       failwith
                         "AstQuotation.expand _loc x FanDyn.cltyp_tag\n"))));
-        ([`Snterm
-            (Gram.obj
-               (cltyp_longident_and_param : 'cltyp_longident_and_param Gram.t ))],
-          ("Gram.mk_action\n  (fun (ct : 'cltyp_longident_and_param)  (_loc : FanLoc.t)  ->\n     (ct : 'cltyp ))\n",
+        ([`Snterm (Gram.obj (vid : 'vid Gram.t ));
+         `Skeyword "[";
+         `Snterm (Gram.obj (comma_ctyp : 'comma_ctyp Gram.t ));
+         `Skeyword "]"],
+          ("Gram.mk_action\n  (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : FanLoc.t)  ->\n     (`ClApply (_loc, i, t) : 'cltyp ))\n",
             (Gram.mk_action
-               (fun (ct : 'cltyp_longident_and_param)  (_loc : FanLoc.t)  ->
-                  (ct : 'cltyp )))));
+               (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : FanLoc.t) 
+                  -> (`ClApply (_loc, i, t) : 'cltyp )))));
+        ([`Snterm (Gram.obj (vid : 'vid Gram.t ))],
+          ("Gram.mk_action\n  (fun (i : 'vid)  (_loc : FanLoc.t)  -> ((i :>cltyp) : 'cltyp ))\n",
+            (Gram.mk_action
+               (fun (i : 'vid)  (_loc : FanLoc.t)  -> ((i :>cltyp) : 'cltyp )))));
         ([`Skeyword "object";
          `Skeyword "(";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
@@ -5257,25 +5241,7 @@ let apply () =
         ([`Skeyword "object"; `Skeyword "end"],
           ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'cltyp ))\n",
             (Gram.mk_action
-               (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'cltyp )))))]));
-  Gram.extend_single
-    (cltyp_longident_and_param : 'cltyp_longident_and_param Gram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Gram.obj (cltyp_longident : 'cltyp_longident Gram.t ));
-          `Skeyword "[";
-          `Snterm (Gram.obj (comma_ctyp : 'comma_ctyp Gram.t ));
-          `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (t : 'comma_ctyp)  _  (i : 'cltyp_longident)  (_loc : FanLoc.t)  ->\n     (`ClassCon (_loc, (`ViNil _loc), i, t) : 'cltyp_longident_and_param ))\n",
-             (Gram.mk_action
-                (fun _  (t : 'comma_ctyp)  _  (i : 'cltyp_longident) 
-                   (_loc : FanLoc.t)  ->
-                   (`ClassCon (_loc, (`ViNil _loc), i, t) : 'cltyp_longident_and_param )))));
-        ([`Snterm (Gram.obj (cltyp_longident : 'cltyp_longident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'cltyp_longident)  (_loc : FanLoc.t)  ->\n     (`ClassConS (_loc, (`ViNil _loc), i) : 'cltyp_longident_and_param ))\n",
-            (Gram.mk_action
-               (fun (i : 'cltyp_longident)  (_loc : FanLoc.t)  ->
-                  (`ClassConS (_loc, (`ViNil _loc), i) : 'cltyp_longident_and_param )))))]))
+               (fun _  _  (_loc : FanLoc.t)  -> (`ObjEnd _loc : 'cltyp )))))]))
 
 let apply_ctyp () =
   Gram.extend_single (ctyp_quot : 'ctyp_quot Gram.t )

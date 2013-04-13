@@ -61,7 +61,7 @@ module type Syntax = sig
   val binding_quot : Gram.t binding;
   val rec_exp_quot : Gram.t rec_exp;
   val class_declaration : Gram.t cldecl(* clexp *);
-  val class_description : Gram.t cltyp;
+  val class_description : Gram.t (* cltyp *)cltdecl;
   val clexp : Gram.t clexp;
   val clexp_quot : Gram.t clexp;
   val class_fun_binding : Gram.t clexp;
@@ -75,9 +75,9 @@ module type Syntax = sig
   val cstru_quot : Gram.t cstru;
   val class_structure : Gram.t cstru;
   val cltyp : Gram.t cltyp;
-  val cltyp_declaration : Gram.t cltyp;
+  val cltyp_declaration : Gram.t cltdecl(* cltyp *);
   val cltyp_longident : Gram.t ident;
-  val cltyp_longident_and_param : Gram.t cltyp;
+
   val cltyp_plus : Gram.t cltyp;
   val cltyp_quot : Gram.t cltyp;
   val comma_ctyp : Gram.t type_parameters;

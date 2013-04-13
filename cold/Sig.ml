@@ -55,7 +55,7 @@ module type Syntax =
     val binding_quot : binding Gram.t
     val rec_exp_quot : rec_exp Gram.t
     val class_declaration : cldecl Gram.t
-    val class_description : cltyp Gram.t
+    val class_description : cltdecl Gram.t
     val clexp : clexp Gram.t
     val clexp_quot : clexp Gram.t
     val class_fun_binding : clexp Gram.t
@@ -69,9 +69,8 @@ module type Syntax =
     val cstru_quot : cstru Gram.t
     val class_structure : cstru Gram.t
     val cltyp : cltyp Gram.t
-    val cltyp_declaration : cltyp Gram.t
+    val cltyp_declaration : cltdecl Gram.t
     val cltyp_longident : ident Gram.t
-    val cltyp_longident_and_param : cltyp Gram.t
     val cltyp_plus : cltyp Gram.t
     val cltyp_quot : cltyp Gram.t
     val comma_ctyp : type_parameters Gram.t

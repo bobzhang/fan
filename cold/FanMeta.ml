@@ -1375,12 +1375,12 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Class")), (self#loc _loc _a0))),
-                (self#cltyp _loc _a1))
+                (self#cltdecl _loc _a1))
         | `ClassType (_a0,_a1) ->
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "ClassType")), (self#loc _loc _a0))),
-                (self#cltyp _loc _a1))
+                (self#cltdecl _loc _a1))
         | `Module (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1634,7 +1634,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "ClassType")), (self#loc _loc _a0))),
-                (self#cltyp _loc _a1))
+                (self#cltdecl _loc _a1))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1735,11 +1735,7 @@ class meta =
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
                      (self#cltdecl _loc _a1))), (self#cltdecl _loc _a2))
-        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method cltyp : 'loc -> cltyp -> ep=
-      fun _loc  ->
-        function
-        | `ClassCon (_a0,_a1,_a2,_a3) ->
+        | `CtDecl (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
                 (`App
@@ -1747,20 +1743,39 @@ class meta =
                      (`App
                         (_loc,
                           (`App
-                             (_loc, (`Vrn (_loc, "ClassCon")),
-                               (self#loc _loc _a0))),
-                          (self#virtual_flag _loc _a1))),
-                     (self#ident _loc _a2))),
-                (self#type_parameters _loc _a3))
-        | `ClassConS (_a0,_a1,_a2) ->
+                             (_loc,
+                               (`App
+                                  (_loc, (`Vrn (_loc, "CtDecl")),
+                                    (self#loc _loc _a0))),
+                               (self#virtual_flag _loc _a1))),
+                          (self#ident _loc _a2))),
+                     (self#type_parameters _loc _a3))),
+                (self#cltyp _loc _a4))
+        | `CtDeclS (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App
-                        (_loc, (`Vrn (_loc, "ClassConS")),
-                          (self#loc _loc _a0))),
-                     (self#virtual_flag _loc _a1))), (self#ident _loc _a2))
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "CtDeclS")),
+                               (self#loc _loc _a0))),
+                          (self#virtual_flag _loc _a1))),
+                     (self#ident _loc _a2))), (self#cltyp _loc _a3))
+        | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method cltyp : 'loc -> cltyp -> ep=
+      fun _loc  ->
+        function
+        | #vid' as _a0 -> (self#vid' _loc _a0 :>ep)
+        | `ClApply (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "ClApply")), (self#loc _loc _a0))),
+                     (self#vid _loc _a1))), (self#type_parameters _loc _a2))
         | `CtFun (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1795,21 +1810,6 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
-                     (self#cltyp _loc _a1))), (self#cltyp _loc _a2))
-        | `CtCol (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`Vrn (_loc, "CtCol")), (self#loc _loc _a0))),
-                     (self#cltyp _loc _a1))), (self#cltyp _loc _a2))
-        | `Eq (_a0,_a1,_a2) ->
-            `App
-              (_loc,
-                (`App
-                   (_loc,
-                     (`App (_loc, (`Vrn (_loc, "Eq")), (self#loc _loc _a0))),
                      (self#cltyp _loc _a1))), (self#cltyp _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method clsigi : 'loc -> clsigi -> ep=

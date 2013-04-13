@@ -141,8 +141,8 @@ and mtyp =
   | `With of (mtyp * constr) | `ModuleTypeOf of mexp | ant] 
 and sigi =
   [ `Val of (alident * ctyp) | `External of (alident * ctyp * strings)
-  | `Type of typedecl | `Exception of of_ctyp | `Class of cltyp
-  | `ClassType of cltyp | `Module of (auident * mtyp)
+  | `Type of typedecl | `Exception of of_ctyp | `Class of cltdecl
+  | `ClassType of cltdecl | `Module of (auident * mtyp)
   | `ModuleTypeEnd of auident | `ModuleType of (auident * mtyp)
   | `Sem of (sigi * sigi) | `DirectiveSimple of alident
   | `Directive of (alident * exp) | `Open of ident | `Include of mtyp
@@ -163,21 +163,22 @@ and mexp =
   | `Struct of stru | `StructEnd | `Constraint of (mexp * mtyp)
   | `PackageModule of exp | ant] 
 and stru =
-  [ `Class of cldecl | `ClassType of cltyp | `Sem of (stru * stru)
+  [ `Class of cldecl | `ClassType of cltdecl | `Sem of (stru * stru)
   | `DirectiveSimple of alident | `Directive of (alident * exp)
   | `Exception of of_ctyp | `StExp of exp
   | `External of (alident * ctyp * strings) | `Include of mexp
   | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
   | `Value of (rec_flag * binding) | ant] 
-and cltdecl = [ `And of (cltdecl * cltdecl) | ant] 
+and cltdecl =
+  [ `And of (cltdecl * cltdecl)
+  | `CtDecl of (virtual_flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (virtual_flag * ident * cltyp) | ant] 
 and cltyp =
-  [ `ClassCon of (virtual_flag * ident * type_parameters)
-  | `ClassConS of (virtual_flag * ident) | `CtFun of (ctyp * cltyp)
+  [ vid' | `ClApply of (vid * type_parameters) | `CtFun of (ctyp * cltyp)
   | `ObjTy of (ctyp * clsigi) | `ObjTyEnd of ctyp | `Obj of clsigi | 
     `ObjEnd
-  | `And of (cltyp * cltyp) | `CtCol of (cltyp * cltyp)
-  | `Eq of (cltyp * cltyp) | ant] 
+  | `And of (cltyp * cltyp) | ant] 
 and clsigi =
   [ `Sem of (clsigi * clsigi) | `SigInherit of cltyp
   | `CgVal of (alident * mutable_flag * virtual_flag * ctyp)

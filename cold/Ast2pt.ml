@@ -1025,15 +1025,16 @@ and stru (s : stru) (l : structure) =
    | x -> errorf (loc_of x) "stru : %s" (dump_stru x) : structure )
 and cltyp (x : Ast.cltyp) =
   match x with
-  | `ClassCon (loc,`ViNil _,id,tl) ->
+  | `ClApply (loc,id,tl) ->
       mkcty loc
         (Pcty_constr
-           ((long_class_ident id),
+           ((long_class_ident (id :>ident)),
              (List.map
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com tl []))))
-  | `ClassConS (loc,`ViNil _,id) ->
-      mkcty loc (Pcty_constr ((long_class_ident id), []))
+  | #vid' as id ->
+      let loc = loc_of id in
+      mkcty loc (Pcty_constr ((long_class_ident (id : vid'  :>ident)), []))
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (cltyp ct)))
   | `CtFun (loc,`OptLabl (loc1,`Lid (_,lab),t),ct) ->
@@ -1090,10 +1091,9 @@ and class_info_clexp (ci : cldecl) =
         pci_variance = []
       }
   | ce -> errorf (loc_of ce) "class_info_clexp: %s" (dump_cldecl ce)
-and class_info_cltyp (ci : cltyp) =
+and class_info_cltyp (ci : cltdecl) =
   match ci with
-  | `Eq (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct)
-    |`CtCol (_,`ClassCon (loc,vir,`Lid (nloc,name),params),ct) ->
+  | (`CtDecl (loc,vir,`Lid (nloc,name),params,ct) : cltdecl) ->
       let (loc_params,(params,variance)) =
         ((loc_of params), (List.split (class_parameters params))) in
       {
@@ -1104,8 +1104,7 @@ and class_info_cltyp (ci : cltyp) =
         pci_loc = loc;
         pci_variance = variance
       }
-  | `Eq (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct)
-    |`CtCol (_,`ClassConS (loc,vir,`Lid (nloc,name)),ct) ->
+  | (`CtDeclS (loc,vir,`Lid (nloc,name),ct) : cltdecl) ->
       {
         pci_virt = (mkvirtual vir);
         pci_params = ([], loc);
@@ -1116,7 +1115,7 @@ and class_info_cltyp (ci : cltyp) =
       }
   | ct ->
       errorf (loc_of ct) "bad class/class type declaration/definition %s "
-        (dump_cltyp ct)
+        (dump_cltdecl ct)
 and clsigi (c : clsigi) (l : class_type_field list) =
   (match c with
    | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l

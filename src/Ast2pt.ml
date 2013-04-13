@@ -1119,12 +1119,15 @@ and stru (s:stru) (l:structure) : structure =
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
   | x-> errorf (loc_of x) "stru : %s" (dump_stru x) ]
 and cltyp (x:Ast.cltyp) = match x with
-  [ `ClassCon (loc, `ViNil _, id,tl) ->
+  [ `ClApply(loc, id, tl) -> 
+   (* `ClassCon (loc, `ViNil _, id,tl) -> *)
     mkcty loc
-        (Pcty_constr (long_class_ident id)
+        (Pcty_constr (long_class_ident (id:>ident))
            (List.map (fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false]) (list_of_com tl [])))
-  | `ClassConS(loc,`ViNil _, id) ->
-      mkcty loc (Pcty_constr (long_class_ident id) [])
+  | #vid' as id ->
+      let loc = loc_of id in
+  (* | `ClassConS(loc,`ViNil _, id) -> *)
+      mkcty loc (Pcty_constr (long_class_ident (id:vid' :> ident)) [])
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (cltyp ct))
         
@@ -1167,10 +1170,11 @@ and class_info_clexp (ci:cldecl) =
          pci_loc =  loc;
          pci_variance = []}
   | ce -> errorf  (loc_of ce) "class_info_clexp: %s" (dump_cldecl ce) ]
-and class_info_cltyp (ci:cltyp) =
+and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
   match ci with 
-  [ `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct)
-  | `CtCol (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct)
+  [ (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) :cltdecl)
+  (*  `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct) *)
+  (* | `CtCol (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct) *)
     ->
         let (loc_params, (params, variance)) =
           (loc_of params, List.split (class_parameters params)) in
@@ -1180,8 +1184,9 @@ and class_info_cltyp (ci:cltyp) =
          pci_expr = cltyp ct;
          pci_loc =  loc;
          pci_variance = variance}
-  | `Eq (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct)
-  | `CtCol (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) ->
+  | (`CtDeclS (loc,vir,`Lid(nloc,name),ct) : cltdecl) -> 
+  (* | `Eq (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) *)
+  (* | `CtCol (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) -> *)
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
@@ -1189,7 +1194,7 @@ and class_info_cltyp (ci:cltyp) =
          pci_loc =  loc;
          pci_variance = []}
   | ct -> errorf (loc_of ct)
-          "bad class/class type declaration/definition %s " (dump_cltyp ct)]
+          "bad class/class type declaration/definition %s " (dump_cltdecl ct)]
   and clsigi (c:clsigi) (l: list class_type_field) : list class_type_field =
     match c with 
     [`Eq (loc, t1, t2) ->
