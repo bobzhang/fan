@@ -6,14 +6,14 @@ type key = string;
 type 'a filter  = 'a -> 'a;
   
 
-let interf_filters: ( key, filter sigi) Hashtbl.t   = Hashtbl.create 40;;
-let implem_filters: (key, filter stru) Hashtbl.t  = Hashtbl.create 40;;
+let interf_filters: ( key, sigi filter ) Hashtbl.t   = Hashtbl.create 40;;
+let implem_filters: (key, stru filter ) Hashtbl.t  = Hashtbl.create 40;;
 
-let topphrase_filters: (key, filter stru) Hashtbl.t  = Hashtbl.create 40;
+let topphrase_filters: (key, stru filter ) Hashtbl.t  = Hashtbl.create 40;
 
-let applied_interf_filters:  Queue.t (string * filter sigi) = Queue.create ();
-let applied_implem_filters:  Queue.t (string *filter stru) = Queue.create ();
-let applied_topphrase_filters:  Queue.t (string * filter stru) = Queue.create ();
+let applied_interf_filters:  (string * sigi filter ) Queue.t  = Queue.create ();
+let applied_implem_filters:  (string * stru filter ) Queue.t  = Queue.create ();
+let applied_topphrase_filters:  (string * stru filter ) Queue.t  = Queue.create ();
   
 let apply_interf_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_interf_filters;
 let apply_implem_filters  i = Queue.fold (fun ast (_name,f) -> f ast) i applied_implem_filters;

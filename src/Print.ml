@@ -9,7 +9,7 @@ class text_grammar= object(self:'self)
   method list :  ! 'a .
       ?sep:space_formatter -> ?first:space_formatter ->
       ?last:space_formatter -> (Format.formatter -> 'a -> unit) ->
-        Format.formatter ->  list 'a -> unit
+        Format.formatter ->  'a list -> unit
             = fun  ?sep ?first  ?last fu f xs -> 
               let first = match first with [Some x -> x | None -> ""]
               and last = match last with [Some x -> x | None -> ""]
@@ -26,7 +26,7 @@ class text_grammar= object(self:'self)
                   end ] in
           aux f xs;
   method option : ! 'a . ?first:space_formatter -> ?last:space_formatter ->
-    (Format.formatter -> 'a -> unit) -> Format.formatter ->  option 'a -> unit =
+    (Format.formatter -> 'a -> unit) -> Format.formatter ->  'a option -> unit =
       fun  ?first  ?last fu f a ->
         let first = match first with [Some x -> x | None -> ""]
         and last = match last with [Some x -> x | None -> ""]  in

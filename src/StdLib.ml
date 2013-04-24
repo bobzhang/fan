@@ -62,29 +62,29 @@ let pp_print_arrow _mf_a _f_b fmt _v =
 
 class printbase = object(self:'self_type)
   {:clfield| print_clfield_base|};  
-  method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> list 'a -> unit =
+  method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> 'a list -> unit =
     fun mf_a fmt lst -> pp_print_list (fun a -> mf_a self a) fmt lst ;
-  method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> array 'a -> unit =
+  method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> 'a array -> unit =
     fun mf_a fmt array -> pp_print_array (fun a -> mf_a self a) fmt array;
-  method option: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> option 'a -> unit =
+  method option: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> 'a option -> unit =
     fun mf_a fmt o -> pp_print_option (fun a -> mf_a self a) fmt o ;
   method arrow: ! 'a 'b. ('self_type -> 'fmt -> 'a -> unit) -> ('self_type -> 'fmt -> 'b -> unit) ->
     'fmt -> ('a->'b) -> unit = fun _ _ fmt _v -> fprintf fmt "<<<function>>>";
   method ref: !'a. ('self_type ->'fmt-> 'a -> unit)
-    -> 'fmt -> ref 'a -> unit =
+    -> 'fmt -> 'a ref -> unit =
     fun mf_a fmt  v -> pp_print_ref (mf_a self) fmt v ;
   method unknown: ! 'a. Format.formatter -> 'a -> unit = fun _fmt _x -> () ;
 end;
 
 class mapbase = object (self:'self_type)
   {:clfield|map_clfield_base_1|};  
-  method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> (list 'a0 -> list 'b0) =
+  method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 list -> 'b0 list) =
     fun mf_a -> fun [ [] -> []
     | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys]];
-  method array: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> (array 'a0 -> array 'b0) =
+  method array: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 array -> 'b0 array) =
     fun mf_a arr->
       Array.map (fun x -> mf_a self x) arr;
-  method option: ! 'a 'b. ('self_type -> 'a -> 'b) -> (option 'a -> option 'b) =
+  method option: ! 'a 'b. ('self_type -> 'a -> 'b) -> ('a option -> 'b option) =
     fun mf_a oa -> match oa with
       [None -> None
       |Some x -> Some (mf_a self x)];
@@ -92,7 +92,7 @@ class mapbase = object (self:'self_type)
       ('self_type -> 'a0 -> 'b0) -> ('self_type -> 'a1 -> 'b1) ->
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
           failwith "not implemented in map arrow";
-  method ref: !'a 'b. ('self_type ->'a -> 'b) -> (ref 'a -> ref 'b) =
+  method ref: !'a 'b. ('self_type ->'a -> 'b) -> ('a ref -> 'b ref) =
     fun mf_a -> fun [ (* {contents} *) x  -> ref (mf_a self !x)];
   method unknown: !'a. 'a -> 'a = fun x ->x;         
 end ;
@@ -100,13 +100,13 @@ end ;
   
 class iterbase = object(self:'self)
   {:clfield| iter_clfield_base_1 |};
-  method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> (list 'a0 -> unit) =
+  method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> ('a0 list -> unit) =
     fun mf_a ls -> List.iter (mf_a self) ls ;
-  method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> (array 'a0 -> unit) =
+  method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> ('a0 array -> unit) =
     fun mf_a arr->
       Array.iter (fun x -> mf_a self x) arr;
   method option:
-      ! 'a . ('self_type -> 'a -> unit) -> (option 'a -> unit ) =
+      ! 'a . ('self_type -> 'a -> unit) -> ('a option -> unit ) =
     fun mf_a oa -> match oa with
       [None -> ()
       |Some x -> mf_a self x ];
@@ -114,7 +114,7 @@ class iterbase = object(self:'self)
       ('self_type -> 'a0 -> unit) -> ('self_type -> 'a1 -> unit) ->
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
           failwith "not implemented in iter arrow";
-  method ref: !'a . ('self_type ->'a -> unit) -> (ref 'a -> unit) =
+  method ref: !'a . ('self_type ->'a -> unit) -> ('a ref -> unit) =
     fun mf_a x  ->  mf_a self !x;
   method unknown: !'a. 'a -> unit = fun _-> ();
 end;
@@ -122,12 +122,12 @@ end;
 
 class eqbase = object(self:'self)
   {:clfield| eq_clfield_base_2 |};
-  method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> (list 'a0 -> list 'a0 -> bool) =
+  method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> ('a0 list -> 'a0 list -> bool) =
     fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys ;
-  method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> (array 'a0 -> array 'a0-> bool) =
+  method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> ('a0 array -> 'a0 array-> bool) =
     fun mf_a xs ys -> Array.for_all2  (mf_a self) xs ys ;
   method option:
-      ! 'a . ('self_type -> 'a -> 'a-> bool) -> (option 'a -> option 'a -> bool ) =
+      ! 'a . ('self_type -> 'a -> 'a-> bool) -> ('a option -> 'a option -> bool ) =
     fun mf_a x y-> match (x, y) with
     [(None,None) -> true
     |(Some x,Some y) -> (mf_a self x y)
@@ -137,7 +137,7 @@ class eqbase = object(self:'self)
       ('self_type -> 'a0 -> bool) -> ('self_type -> 'a1 -> bool) ->
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
           failwith "not implemented in iter arrow";
-  method ref: !'a . ('self_type ->'a -> 'a-> bool) -> (ref 'a -> ref 'a -> bool) =
+  method ref: !'a . ('self_type ->'a -> 'a-> bool) -> ('a ref -> 'a ref -> bool) =
     fun mf_a x y -> mf_a self !x !y;
   method unknown: !'a. 'a -> 'a -> bool = fun _ _ -> true;
 end;
@@ -147,7 +147,7 @@ class mapbase2 = object (self:'self_type)
   {:clfield|map_clfield_base_2|};  
   method list:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
-              list 'a0  -> list 'a0  -> list 'b0 =
+              'a0 list  -> 'a0 list  -> 'b0 list =
           fun mf_a x y-> match (x,y) with 
             [ ([],[]) -> []
             | ([a0:: a1], [b0 :: b1] ) ->
@@ -155,7 +155,7 @@ class mapbase2 = object (self:'self_type)
             | (_, _) -> invalid_arg "map2 failure" ];
   method array:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
-              array 'a0 -> array 'a0 -> array 'b0 =
+              'a0 array -> 'a0 array -> 'b0 array =
           fun mf_a arr1 arr2 ->
               let lx = Array.length arr1 and ly = Array.length arr2 in
               if lx <> ly then invalid_arg "map2 array length is not equal" 
@@ -170,12 +170,12 @@ class mapbase2 = object (self:'self_type)
                 end;
 
   method option:! 'a0 'b0 . ('self_type -> 'a0 -> 'a0 -> 'b0) ->
-    option 'a0 -> option 'a0 -> option 'b0 = fun mf_a x y ->
+    'a0 option -> 'a0 option -> 'b0 option = fun mf_a x y ->
       match (x,y) with
       [(Some x,Some y) -> Some (mf_a self x y)
       | (_,_) -> None];
   method ref: !'a0 'b0. ('self_type -> 'a0 -> 'a0 -> 'b0) ->
-    ref 'a0 -> ref 'a0 -> ref 'b0 = fun mf_a x y -> match (x,y) with
+    'a0 ref -> 'a0 ref -> 'b0 ref = fun mf_a x y -> match (x,y) with
      [((* {val=a},{val=b} *)x,y)->  ref (mf_a self !x !y)(* {val=mf_a self a b } *)];
       
   method arrow: ! 'a0 'b0 'a1 'b1. ('self_type -> 'a0 -> 'a0 ->'b0) ->
@@ -191,19 +191,19 @@ class monadbase2 = mapbase2;
 class foldbase = object (self:'self_type)
   {:clfield|fold_clfield_base_1|};
   method list : ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
-    (list 'a0 -> 'self_type) = fun mf_a ->
+    ('a0 list -> 'self_type) = fun mf_a ->
       List.fold_left (fun self v -> (mf_a self v)) self ;
   method array: ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
-    (array 'a0 -> 'self_type) =
+    ('a0 array -> 'self_type) =
     fun mf_a -> 
       Array.fold_left (fun self v -> (mf_a self v)) self ;
   method option: ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
-    (option 'a0 -> 'self_type) = fun mf_a ->
+    ('a0 option -> 'self_type) = fun mf_a ->
       fun
         [None -> self
         |Some x -> mf_a self x ];
   method ref: !'a0.('self_type -> 'a0 -> 'self_type) ->
-    (ref 'a0 -> 'self_type) = fun mf_a -> fun
+    ('a0 ref -> 'self_type) = fun mf_a -> fun
       [ x  -> (mf_a self !x) ];
   method arrow: ! 'a0 'a1 . ('self_type -> 'a0 -> 'self_type) ->
     ('self_type -> 'a1 -> 'self_type) -> ('a0 -> 'a1) -> 'self_type =
@@ -215,19 +215,19 @@ class foldbase2 = object (self:'self_type)
   {:clfield|fold_clfield_base_2|};  
   method list: ! 'a0.
       ('self_type -> 'a0 ->  'a0 -> 'self_type) ->
-        list 'a0 -> list 'a0 -> 'self_type =  fun mf_a lx ly->
+        'a0 list -> 'a0 list -> 'self_type =  fun mf_a lx ly->
           List.fold_left2 mf_a self lx ly;
   method array: ! 'a0.
       ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
-        array 'a0 -> array 'a0 -> 'self_type =  fun mf_a lx ly -> 
+        'a0 array -> 'a0 array -> 'self_type =  fun mf_a lx ly -> 
           Array.fold_left2 mf_a self lx ly;
   method option: ! 'a0. ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
-    option 'a0 -> option 'a0 -> 'self_type = fun mf_a lx ly ->
+    'a0 option -> 'a0 option -> 'self_type = fun mf_a lx ly ->
       match (lx,ly) with
       [ (Some x,Some y) -> mf_a self x y
       | (_,_) -> self ];
   method ref: !'a0.('self_type -> 'a0 -> 'a0 -> 'self_type) ->
-    ref 'a0 -> ref 'a0 -> 'self_type = fun mf_a x y -> match (x,y) with
+    'a0 ref -> 'a0 ref -> 'self_type = fun mf_a x y -> match (x,y) with
       [ (a, b) -> (mf_a self !a !b) ];
   method arrow: !'a0 'a1.
       ('self_type -> 'a0 -> 'a0 -> 'self_type) ->

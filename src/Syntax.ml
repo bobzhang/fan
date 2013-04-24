@@ -124,7 +124,7 @@ let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementatio
   
 
 module Options = struct
-  type spec_list = list (string * FanArg.spec * string);
+  type spec_list = (string * FanArg.spec * string) list ;
   let init_spec_list = ref [];
   let init spec_list = init_spec_list := spec_list;
   let add (name, spec, descr) =

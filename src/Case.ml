@@ -8,7 +8,7 @@ open Basic;
  *)
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   (* let annot = Ctyp.mk_dest_type *)
-  let args : list pat =
+  let args :  pat list =
     List.init arity (fun i ->
       {:pat| (#$id:name as $(lid: x ~off:i 0 )) |})in
   let exps = List.init arity (fun i -> {:exp| $(id:xid ~off:i 0) |} ) in

@@ -100,7 +100,7 @@ let parse_string ?(loc=FanLoc.string_loc) entry  str =
     (FanTokenFilter.filter entry.egram.gfilter
        (glexer loc (XStream.of_string str)));
   
-let debug_origin_token_stream (entry:t 'a) tokens : 'a =
+let debug_origin_token_stream (entry:'a t ) tokens : 'a =
   parse_origin_tokens entry (XStream.map (fun t -> (t,FanLoc.ghost)) tokens);
   
 let debug_filtered_token_stream entry tokens =

@@ -47,7 +47,7 @@ open StdLib;
 (* domain is the namespace all begins with capital letters *)
   
 type domains =
-    [= `Absolute of list string | `Sub of list string]  ;
+    [= `Absolute of string list | `Sub of string list]  ;
 type name = (domains*string);
 
 type quotation ={
@@ -77,7 +77,7 @@ type t =
   | `COMMENT of string
   | `BLANKS of string
   | `NEWLINE
-  | `LINE_DIRECTIVE of (int * option string )
+  | `LINE_DIRECTIVE of (int * string option )
   | `EOI];
 type error = 
   [ Illegal_token of string
@@ -89,9 +89,9 @@ type error =
 type 'a token  = [> t] as 'a;
 
 
-type stream = XStream.t (t * FanLoc.t);
+type stream = (t * FanLoc.t)XStream.t ;
 
-type 'a estream  = XStream.t (token 'a * FanLoc.t);
+type 'a estream  = ('a token  * FanLoc.t) XStream.t ;
 
 type 'a parse  = stream -> 'a;
 
@@ -190,7 +190,7 @@ let string_of_name (x,y) =
   
 (* [only absolute] domains can be stored
  *)  
-let paths :  ref (list domains) =
+let paths :  domains list ref  =
   ref [ `Absolute ["Fan";"Lang"];
         `Absolute ["Fan";"Lang";"Meta"];
         `Absolute ["Fan";"Lang";"Filter"];

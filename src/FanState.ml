@@ -4,7 +4,7 @@ open FSig;
 
 
 (* when you do the iteration, you should do it in reverse order *)  
-let current_filters:  ref (list (plugin_name * plugin)) = ref [];
+let current_filters:  (plugin_name * plugin) list ref  = ref [];
 let reset_current_filters ()= current_filters := [];
 let keep = ref true;
 

@@ -18,7 +18,7 @@ let rec print_node decomp pref f t =
       | _ -> pp f "-%a" (print_sons  "+-" decomp pref') sons ]
       else ()
     end
-and print_sons (start:string) (decomp:'a -> (string * list 'a))
+and print_sons (start:string) (decomp:'a -> (string * 'a list))
     (pref:string) f = fun
   [ [] ->  () (* when entering into foreset *)
   | [s] -> pp f "`-%a" (print_node decomp (pref ^ "  ")) s

@@ -19,26 +19,26 @@ type spec =
   | (* Call the function with unit argument *)
   Bool of bool -> unit
   | (* Call the function with a bool argument *)
-  Set of ref bool
+  Set of bool ref 
   | (* Set the reference to true *)
-  Clear of ref bool
+  Clear of  bool ref
   | (* Set the reference to false *)
   String of string -> unit
   | (* Call the function with a string argument *)
-  Set_string of ref string
+  Set_string of  string ref
   | (* Set the reference to the string argument *)
   Int of int -> unit
   | (* Call the function with an int argument *)
-  Set_int of ref int
+  Set_int of int ref
   | (* Set the reference to the int argument *)
   Float of float -> unit
   | (* Call the function with a float argument *)
-  Set_float of ref float
+  Set_float of float ref
   | (* Set the reference to the float argument *)
-  Tuple of list spec
+  Tuple of spec list
   | (* Take several arguments according to the
                                   spec list *)
-  Symbol of list string * string -> unit
+  Symbol of string list * string -> unit
   | (* Take one of the symbols as argument and
                                   call the function with the symbol. *)
   Rest of string -> unit ];

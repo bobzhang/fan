@@ -15,14 +15,14 @@ let _loc = FanLoc.ghost;
    | Eq generator                                                    |
    +-----------------------------------------------------------------+ *)
 
-let mk_variant _cons : list FSig.ty_info  -> exp  = with exp' fun 
+let mk_variant _cons : FSig.ty_info list   -> exp  = with exp' fun 
   [ [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
         ~project:(fun {info_exp;_} -> info_exp) ls ];
   
 let mk_tuple exps = mk_variant "" exps ;
-let mk_record : list FSig.record_col -> exp  = fun cols -> 
+let mk_record : FSig.record_col list  -> exp  = fun cols -> 
     cols |> List.map (fun [ {re_info;_} -> re_info])
          |> mk_variant "" ;
     
@@ -343,7 +343,7 @@ Typehook.register
    | DynAst generator                                                |
    +-----------------------------------------------------------------+ *)
 let generate (mtyps:FSig.mtyps) : stru =
-  let tys : list string =
+  let tys :  string list =
     List.concat_map
       (fun x -> match x with
       [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
@@ -359,7 +359,8 @@ let generate (mtyps:FSig.mtyps) : stru =
  let tags  =
    List.map
      (fun x->
-       {:stru'| let $(lid: x^"_tag") : tag $lid:x = $(uid:String.capitalize x) |}) tys  in
+       {:stru'| let $(lid: x^"_tag") :  $lid:x tag =
+              $(uid:String.capitalize x) |}) tys  in
  sem_of_list [typedecl;to_string::tags] ;  
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);

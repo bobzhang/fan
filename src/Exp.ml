@@ -134,7 +134,7 @@ end;
 
 class type antiquot_filter =object
   inherit Objs.map;
-  method get_captured_variables: list (exp * exp);
+  method get_captured_variables: (exp * exp) list ;
   method clear_captured_variables: unit;
 end;
   

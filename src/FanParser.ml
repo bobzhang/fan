@@ -6,7 +6,7 @@ open FanToken;
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let with_loc (parse_fun: parse 'b) strm =
+let with_loc (parse_fun: 'b parse ) strm =
   let bp = Tools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Tools.get_prev_loc strm in
@@ -47,7 +47,7 @@ module ArgContainer= Stack;
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
-let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t (Action.t * FanLoc.t)) x =
+let rec parser_of_tree entry (lev,assoc) (q: (Action.t * FanLoc.t) ArgContainer.t ) x =
   let alevn = match assoc with [`LA|`NA -> lev + 1 | `RA -> lev ] in
   (*
     Given a tree, return a parser which has the type
@@ -137,7 +137,7 @@ let rec parser_of_tree entry (lev,assoc) (q: ArgContainer.t (Action.t * FanLoc.t
   val a : FanToken.t = `KEYWORD "c"
   ]}
  *)    
-and parser_of_terminals (terminals:list terminal ) strm =
+and parser_of_terminals (terminals: terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in begin
     try
@@ -207,7 +207,7 @@ and parser_of_symbol entry s nlevn =
    [clevn] is the current level 
  *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs: list level) : int -> parse Action.t =
+  let rec aux clevn  (xs:  level list) : int ->  Action.t parse =
     match xs with 
     [ [] -> fun _ -> fun _ -> raise XStream.Failure  
     | [lev :: levs] ->

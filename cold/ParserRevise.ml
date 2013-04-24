@@ -5833,10 +5833,10 @@ let apply_ctyp () =
                   (`OptLabl (_loc, i, t) : 'ctyp )))))]);
       ((Some "apply"), (Some `LA),
         [([`Sself; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (let t = `App (_loc, t1, t2) in\n      try (ident_of_ctyp t :>ctyp) with | Invalid_argument _ -> t : 'ctyp ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (let t = `App (_loc, t2, t1) in\n      try (ident_of_ctyp t :>ctyp) with | Invalid_argument _ -> t : 'ctyp ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (let t = `App (_loc, t1, t2) in
+                   (let t = `App (_loc, t2, t1) in
                     try (ident_of_ctyp t :>ctyp)
                     with | Invalid_argument _ -> t : 'ctyp )))))]);
       ((Some "."), (Some `LA),

@@ -12,7 +12,7 @@ open AstLoc;
 
 #default_quotation "exp'";;
 type spat_comp =
-  [ SpTrm of FanLoc.t * pat * option exp
+  [ SpTrm of FanLoc.t * pat * exp option 
   | SpNtr of FanLoc.t * pat * exp
   | SpStr of FanLoc.t * pat ];
 
@@ -110,7 +110,7 @@ let stream_pattern_component skont ckont =
   | SpNtr (_loc, p, e) ->
       let e =
         match e with
-        [ {| fun [ ($lid:v : $uid:m.t _) -> $e ] |} when v = strm_n && m = gm() -> e
+        [ {| fun [ ($lid:v : _ $uid:m.t ) -> $e ] |} when v = strm_n && m = gm() -> e
         | _ -> {| $e $lid:strm_n |} ] in
       (* Simplify it *)
       if Exp.pattern_eq_expression p skont then
@@ -197,7 +197,7 @@ let cparser _loc bpo pc =
     match bpo with
     [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
     | None -> e ] in
-  let p = {:pat'| ($lid:strm_n : $(uid:gm()).t _) |} in
+  let p = {:pat'| ($lid:strm_n : _ $(uid:gm()).t ) |} in
   {| fun $p -> $e |} ;
 
 let cparser_match _loc me bpo pc =
@@ -208,7 +208,7 @@ let cparser_match _loc me bpo pc =
     | None -> pc ]  in
   match me with
   [ {| $lid:x |} when x = strm_n -> e
-  | _ -> {| let ($lid:strm_n : $(uid:gm()).t _) = $me in $e |} ] ;
+  | _ -> {| let ($lid:strm_n : _ $(uid:gm()).t ) = $me in $e |} ] ;
 
 (* streams *)
 

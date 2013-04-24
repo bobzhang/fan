@@ -53,7 +53,7 @@ let rec normalize_acc = with ident' fun
  *)
 
 
-let rec sep_dot_exp acc : exp -> list (loc * list string * exp )= fun
+let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = fun
   [ `Field(_,e1,e2) ->
     sep_dot_exp (sep_dot_exp acc e2) e1
   (* | `Uid(loc,s) as e -> *)
@@ -143,7 +143,7 @@ let ident_tag (i:ident) =
 
 let ident_noloc i = fst (ident_tag  i);
 
-let ident (i:ident) : Location.loc Longident.t  =
+let ident (i:ident) :  Longident.t Location.loc  =
   with_loc (ident_noloc  i) (loc_of i);
 
 let long_lident ~err id =
@@ -151,7 +151,7 @@ let long_lident ~err id =
     [ (i, `lident) -> i +> (loc_of id)
     | _ -> error (loc_of id) err ];
 
-let long_type_ident :ident -> Location.loc Longident.t =
+let long_type_ident :ident -> Longident.t Location.loc =
   long_lident ~err:"invalid long identifier type";
 let long_class_ident = long_lident ~err:"invalid class name";
 
@@ -174,7 +174,7 @@ let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
       Lapply li1 li2
   | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) ] ;
 
-let ctyp_long_id (t:ctyp) : (bool *  Location.loc Longident.t) =
+let ctyp_long_id (t:ctyp) : (bool *   Longident.t Location.loc) =
   match t with
   [ #ident' as i -> (false, long_type_ident i)
   | `ClassPath (_, i) -> (true, ident i)
@@ -258,15 +258,15 @@ and row_field (x:row_field) acc =
   | `Ant(_loc,_) -> ANT_ERROR
   | `Ctyp(_,t) -> [Rinherit (ctyp t) :: acc]
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)]
-and meth_list (fl:name_ctyp) acc : list core_field_type = match fl with
+and meth_list (fl:name_ctyp) acc : core_field_type list   = match fl with
   [`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Lid(_,lab),t) ->
       [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x )]
     
 and package_type_constraints (wc:constr)
-    (acc: list (Asttypes.loc Longident.t  *core_type))
-    : list (Asttypes.loc Longident.t  *core_type) =  match wc with
+    (acc: (Longident.t Asttypes.loc  *core_type) list )
+    : (Longident.t Asttypes.loc   *core_type) list  =  match wc with
     [ `TypeEq(_loc, (#ident' as id),ct) -> [(ident id, ctyp ct) :: acc]
     | `And(_loc,wc1,wc2) ->
         package_type_constraints wc1 (package_type_constraints wc2 acc)
@@ -337,7 +337,7 @@ let type_kind (x:type_repr) =
     
     
 
-let mkvalue_desc loc t (p: list strings) =
+let mkvalue_desc loc t (p:  strings list) =
   let ps = List.map (fun p ->
     match p with
     [`Str (_,p) -> p
@@ -383,7 +383,7 @@ let optional_type_parameters (t:ctyp) =
   List.map quote_map (list_of_app t []);
 (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *)
 let mk_type_parameters (tl:opt_decl_params)
-    :  list ( option (Asttypes.loc string)  * (bool * bool)) =
+    :  ( (string Asttypes.loc ) option   * (bool * bool))list  =
   match tl with
   [`None _ -> []
   | `Some(_,x) ->
@@ -421,7 +421,7 @@ let type_parameters_and_type_name (t:ctyp)  =
 
   
   
-let rec pat_fa (al: list pat) (x:pat) =
+let rec pat_fa (al: pat list) (x:pat) =
   match x with
   [ `App (_,f,a) -> pat_fa [a :: al] f
   | f -> (f, al) ];
@@ -1051,7 +1051,7 @@ and sigi (s:sigi) (l:signature) :signature =
       [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
   | t -> errorf (loc_of t) "sigi: %s" (dump_sigi t)]
 and module_sig_binding (x:mbind) 
-    (acc: list (Asttypes.loc string * Parsetree.module_type))  =
+    (acc: (string Asttypes.loc * Parsetree.module_type) list )  =
   match x with 
   [ `And(_,x,y) -> module_sig_binding x (module_sig_binding y acc)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
@@ -1201,7 +1201,7 @@ and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
          pci_variance = []}
   | ct -> errorf (loc_of ct)
           "bad class/class type declaration/definition %s " (dump_cltdecl ct)]
-  and clsigi (c:clsigi) (l: list class_type_field) : list class_type_field =
+  and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
     match c with 
     [`Eq (loc, t1, t2) ->
          [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]

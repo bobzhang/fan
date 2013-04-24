@@ -4,8 +4,8 @@ open AstLoc;
 open LibUtil;
 type node = { 
     id : int; 
-    mutable eps :  list node; (* FIXME inconsistent with original syntax *)
-    mutable trans : list (LexSet.t * node);
+    mutable eps :  node list ; (* FIXME inconsistent with original syntax *)
+    mutable trans : (LexSet.t * node) list ;
 };
 
 (* Compilation regexp -> NFA *)
@@ -62,7 +62,7 @@ let of_string s =
     
 (* Determinization *)
 
-type state = list node;
+type state = node list ;
 
 let rec add_node state node = 
   if List.memq node state then state else add_nodes [node::state] node.eps
@@ -85,7 +85,7 @@ let transition state =
   end;
 
 (* It will change the counter *)    
-let find_alloc tbl (counter: ref int) x : int =
+let find_alloc tbl (counter: int ref ) x : int =
   try Hashtbl.find tbl x
   with [Not_found ->      begin
     let i = !counter ;
@@ -97,7 +97,7 @@ let find_alloc tbl (counter: ref int) x : int =
 (* let part_tbl = Hashtbl.create 31 *)
 let part_id = ref 0;
     
-let get_part ~part_tbl (t : array LexSet.t ) = find_alloc part_tbl part_id t;
+let get_part ~part_tbl (t : LexSet.t array) = find_alloc part_tbl part_id t;
 
 (*
   {[
@@ -112,7 +112,7 @@ let get_part ~part_tbl (t : array LexSet.t ) = find_alloc part_tbl part_id t;
 
   ]}
  *)
-let compile ~part_tbl (rs: array regexp) =
+let compile ~part_tbl (rs: regexp array ) =
   let rs = Array.map compile_re rs in
   let counter = ref 0 in
   let states = Hashtbl.create 31 in
@@ -179,7 +179,7 @@ let state_prefix = "__state_";
 let partition_prefix = "__partition_";
 
 (* FIXME ghost location introduced *)
-let lexer_module_name : ref vid=
+let lexer_module_name : vid ref =
   let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|};
   
 let gm () = !lexer_module_name; 
@@ -195,7 +195,7 @@ let mk_partition_name i =
 
 type decision_tree =
   [ Lte of int *  decision_tree * decision_tree
-  | Table of int *  array int
+  | Table of int *  int array 
   | Return of int];
 
 let decision l =
@@ -343,7 +343,7 @@ let gen_definition _loc l =
       let f = mk_state_name state in
       {| $lid:f lexbuf |} in
   (* generate states transition *)
-  let gen_state auto _loc i (part,trans,final) : option binding  =
+  let gen_state auto _loc i (part,trans,final) : binding option   =
     let f = mk_state_name i in 
     let p = mk_partition_name part in
     let cases =

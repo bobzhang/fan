@@ -8,30 +8,30 @@ end;
 module type Warning = sig
   type warning = FanLoc.t -> string -> unit;
   val default_warning: warning;
-  val current_warning: ref warning;
+  val current_warning: warning ref ;
   val print_warning: warning;  
 end;
 
 (** A type for stream filters. *)
 type ('a, 'loc) stream_filter  =
-    XStream.t ('a * 'loc) -> XStream.t ('a * 'loc);
+    ('a * 'loc) XStream.t  -> ('a * 'loc) XStream.t ;
 
 module type ParserImpl = sig
   (** When  the parser encounter a directive it stops (since the directive may change  the
       syntax), the given [directive_handler] function  evaluates  it  and
       the parsing starts again. *)
-  val parse_implem : ?directive_handler:(stru -> option stru) ->
-    FanLoc.t -> XStream.t char -> option stru;
+  val parse_implem : ?directive_handler:(stru -> stru option ) ->
+    FanLoc.t ->  char XStream.t -> stru option ;
 
-  val parse_interf : ?directive_handler:(sigi -> option sigi) ->
-        FanLoc.t -> XStream.t char -> option sigi;
+  val parse_interf : ?directive_handler:(sigi ->  sigi option ) ->
+        FanLoc.t -> char XStream.t  -> sigi option ;
 end;
 
 module type PrinterImpl = sig
   val print_interf : ?input_file:string -> ?output_file:string ->
-    option sigi  -> unit;
+    sigi option   -> unit;
   val print_implem : ?input_file:string -> ?output_file:string ->
-    option stru -> unit;
+    stru option  -> unit;
 end;
 
 
@@ -40,187 +40,187 @@ module type Syntax = sig
   include Warning;
   include ParserImpl;
   include PrinterImpl;
-  val interf : Gram.t (list sigi * option FanLoc.t);
-  val implem : Gram.t (list stru * option FanLoc.t);
-  val top_phrase : Gram.t (option stru);
-  (* val a_string: Gram.t astring; *)
-  val a_lident: Gram.t [= `Lid of (loc*string) | ant] (* alident *);
-  val a_uident: Gram.t auident;
-  val aident: Gram.t ident;
-  val astr: Gram.t astring;
-  val luident: Gram.t string;
-  val uident: Gram.t uident;  
+  val interf : (sigi list  * FanLoc.t option ) Gram.t ;
+  val implem : (stru list  * FanLoc.t option ) Gram.t ;
+  val top_phrase : stru option Gram.t ;
+  (* val a_string: astring Gram.t; *)
+  val a_lident: [= `Lid of (loc*string) | ant] Gram.t  (* alident *);
+  val a_uident: auident Gram.t;
+  val aident: ident Gram.t;
+  val astr: astring Gram.t;
+  val luident: string Gram.t;
+  val uident: uident Gram.t;  
     
     
-  val amp_ctyp : Gram.t ctyp;
-  val and_ctyp : Gram.t ctyp;
-  val case : Gram.t case;
-  val case0 : Gram.t case;
-  val case_quot : Gram.t case;
-  val binding : Gram.t binding;
-  val binding_quot : Gram.t binding;
-  val rec_exp_quot : Gram.t rec_exp;
-  val class_declaration : Gram.t cldecl(* clexp *);
-  val class_description : Gram.t (* cltyp *)cltdecl;
-  val clexp : Gram.t clexp;
-  val clexp_quot : Gram.t clexp;
-  val class_fun_binding : Gram.t clexp;
-  val class_fun_def : Gram.t clexp;
-  val class_info_for_cltyp : Gram.t cltyp;
-  val class_longident : Gram.t ident;
-  val clsigi : Gram.t clsigi;
-  val clsigi_quot : Gram.t clsigi;
-  val class_signature : Gram.t clsigi;
-  val clfield : Gram.t clfield;
-  val clfield_quot : Gram.t clfield;
-  val class_structure : Gram.t clfield;
-  val cltyp : Gram.t cltyp;
-  val cltyp_declaration : Gram.t cltdecl(* cltyp *);
-  val cltyp_longident : Gram.t ident;
+  val amp_ctyp : ctyp Gram.t;
+  val and_ctyp : ctyp Gram.t;
+  val case : case Gram.t;
+  val case0 : case Gram.t;
+  val case_quot : case Gram.t;
+  val binding : binding Gram.t;
+  val binding_quot : binding Gram.t;
+  val rec_exp_quot : rec_exp Gram.t;
+  val class_declaration : cldecl Gram.t;
+  val class_description : cltdecl Gram.t;
+  val clexp : clexp Gram.t;
+  val clexp_quot : clexp Gram.t;
+  val class_fun_binding : clexp Gram.t;
+  val class_fun_def : clexp Gram.t;
+  val class_info_for_cltyp : cltyp Gram.t;
+  val class_longident : ident Gram.t;
+  val clsigi : clsigi Gram.t;
+  val clsigi_quot : clsigi Gram.t;
+  val class_signature : clsigi Gram.t;
+  val clfield : clfield Gram.t;
+  val clfield_quot : clfield Gram.t;
+  val class_structure : clfield Gram.t;
+  val cltyp : cltyp Gram.t;
+  val cltyp_declaration : cltdecl Gram.t(* cltyp *);
+  val cltyp_longident : ident Gram.t;
 
-  val cltyp_plus : Gram.t cltyp;
-  val cltyp_quot : Gram.t cltyp;
-  val comma_ctyp : Gram.t type_parameters;
+  val cltyp_plus : cltyp Gram.t;
+  val cltyp_quot : cltyp Gram.t;
+  val comma_ctyp : type_parameters Gram.t;
 
-  val vid: Gram.t vid;  
-  val comma_exp : Gram.t exp;
-  val comma_ipat : Gram.t pat;
-  val comma_pat : Gram.t pat;
-  val comma_type_parameter : Gram.t type_parameters;
-  val constrain : Gram.t type_constr;
-  val constructor_arg_list : Gram.t ctyp;
-  val constructor_declaration : Gram.t of_ctyp;
-  val constructor_declarations : Gram.t or_ctyp;
-  val ctyp : Gram.t ctyp;
-  val ctyp_quot : Gram.t ctyp;
-  val cvalue_binding : Gram.t exp;
-  val direction_flag : Gram.t direction_flag;
-  val direction_flag_quot : Gram.t direction_flag;
-  val dummy : Gram.t unit;
-  val eq_exp : Gram.t (alident -> pat -> pat);
-  val exp : Gram.t exp;
-  val exp_eoi : Gram.t exp;
-  val exp_quot : Gram.t exp;
-  val field_exp : Gram.t rec_exp;
-  val field_exp_list : Gram.t rec_exp;
-  val fun_binding : Gram.t exp;
-  val fun_def : Gram.t exp;
-  val ident : Gram.t ident;
-  val ident_quot : Gram.t ident;
-  val ipat : Gram.t pat;
-  val ipat_tcon : Gram.t pat;
-  val pat_tcon : Gram.t pat;    
+  val vid: vid Gram.t;  
+  val comma_exp : exp Gram.t;
+  val comma_ipat : pat Gram.t;
+  val comma_pat : pat Gram.t;
+  val comma_type_parameter : type_parameters Gram.t;
+  val constrain : type_constr Gram.t;
+  val constructor_arg_list : ctyp Gram.t;
+  val constructor_declaration : of_ctyp Gram.t;
+  val constructor_declarations : or_ctyp Gram.t;
+  val ctyp : ctyp Gram.t;
+  val ctyp_quot : ctyp Gram.t;
+  val cvalue_binding : exp Gram.t;
+  val direction_flag : direction_flag Gram.t;
+  val direction_flag_quot : direction_flag Gram.t;
+  val dummy : unit Gram.t;
+  val eq_exp : (alident -> pat -> pat) Gram.t ;
+  val exp : exp Gram.t;
+  val exp_eoi : exp Gram.t;
+  val exp_quot : exp Gram.t;
+  val field_exp : rec_exp Gram.t;
+  val field_exp_list : rec_exp Gram.t;
+  val fun_binding : exp Gram.t;
+  val fun_def : exp Gram.t;
+  val ident : ident Gram.t;
+  val ident_quot : ident Gram.t;
+  val ipat : pat Gram.t;
+  val ipat_tcon : pat Gram.t;
+  val pat_tcon : pat Gram.t;    
 
-  val label_declaration : Gram.t name_ctyp;
-  val label_declaration_list : Gram.t name_ctyp;
-  val label_exp : Gram.t rec_exp;
-  val label_exp_list : Gram.t rec_exp;
-  val label_longident : Gram.t ident;
+  val label_declaration : name_ctyp Gram.t;
+  val label_declaration_list : name_ctyp Gram.t;
+  val label_exp : rec_exp Gram.t;
+  val label_exp_list : rec_exp Gram.t;
+  val label_longident : ident Gram.t;
 
-  val label_pat : Gram.t rec_pat;
-  val label_pat_list : Gram.t rec_pat;
+  val label_pat : rec_pat Gram.t;
+  val label_pat_list : rec_pat Gram.t;
     
-  val let_binding : Gram.t binding;
-  val meth_list : Gram.t (name_ctyp * row_var_flag);
-  val meth_decl : Gram.t name_ctyp;
-  val mbind : Gram.t mbind;
-  val mbind0 : Gram.t mexp;
-  val mbind_quot : Gram.t mbind;
-  val module_declaration : Gram.t mtyp;
-  val mexp : Gram.t mexp;
-  val mexp_quot : Gram.t mexp;
-  val module_longident : Gram.t vid;
-  val module_longident_with_app : Gram.t ident;
-  val module_rec_declaration : Gram.t mbind;
-  val mtyp : Gram.t mtyp;
-  (* val package_type : Gram.t mtyp; *)
-  val mtyp_quot : Gram.t mtyp;
-  (* val more_ctyp : Gram.t ctyp; *)
-  val name_tags : Gram.t tag_names;
-  val opt_class_self_type : Gram.t ctyp;
+  val let_binding : binding Gram.t;
+  val meth_list : (name_ctyp * row_var_flag) Gram.t ;
+  val meth_decl : name_ctyp Gram.t;
+  val mbind : mbind Gram.t;
+  val mbind0 : mexp Gram.t;
+  val mbind_quot : mbind Gram.t;
+  val module_declaration : mtyp Gram.t;
+  val mexp : mexp Gram.t;
+  val mexp_quot : mexp Gram.t;
+  val module_longident : vid Gram.t;
+  val module_longident_with_app : ident Gram.t;
+  val module_rec_declaration : mbind Gram.t;
+  val mtyp : mtyp Gram.t;
+  (* val package_type : mtyp Gram.t; *)
+  val mtyp_quot : mtyp Gram.t;
+  (* val more_ctyp : ctyp Gram.t; *)
+  val name_tags : tag_names Gram.t;
+  val opt_class_self_type : ctyp Gram.t;
 
-  val opt_dot_dot : Gram.t row_var_flag;
-  val row_var_flag_quot : Gram.t row_var_flag;
-  val opt_meth_list : Gram.t ctyp;
-  val opt_mutable : Gram.t mutable_flag;
-  val mutable_flag_quot : Gram.t mutable_flag;
-  val opt_override : Gram.t override_flag;
-  val override_flag_quot : Gram.t override_flag;
-  val opt_private : Gram.t private_flag;
-  val private_flag_quot : Gram.t private_flag;
-  val opt_rec : Gram.t rec_flag;
-  val rec_flag_quot : Gram.t rec_flag;
-  val opt_virtual : Gram.t virtual_flag;
-  val virtual_flag_quot : Gram.t virtual_flag;
-  val pat : Gram.t pat;
-  val pat_as_pat_opt : Gram.t pat;
-  val pat_eoi : Gram.t pat;
-  val pat_quot : Gram.t pat;
-  (* val poly_type : Gram.t ctyp; *)
-  val row_field : Gram.t row_field;
-  val sem_exp : Gram.t exp;
-  val sem_exp_for_list : Gram.t (exp -> exp);
-  val sem_pat : Gram.t pat;
-  val sem_pat_for_list : Gram.t (pat -> pat);
-  (* val semi : Gram.t unit; *)
-  val sequence : Gram.t exp;
-  val sigi : Gram.t sigi;
-  val sigi_quot : Gram.t sigi;
-  val sigis : Gram.t sigi;
+  val opt_dot_dot : row_var_flag Gram.t;
+  val row_var_flag_quot : row_var_flag Gram.t;
+  val opt_meth_list : ctyp Gram.t;
+  val opt_mutable : mutable_flag Gram.t;
+  val mutable_flag_quot : mutable_flag Gram.t;
+  val opt_override : override_flag Gram.t;
+  val override_flag_quot : override_flag Gram.t;
+  val opt_private : private_flag Gram.t;
+  val private_flag_quot : private_flag Gram.t;
+  val opt_rec : rec_flag Gram.t;
+  val rec_flag_quot : rec_flag Gram.t;
+  val opt_virtual : virtual_flag Gram.t;
+  val virtual_flag_quot : virtual_flag Gram.t;
+  val pat : pat Gram.t;
+  val pat_as_pat_opt : pat Gram.t;
+  val pat_eoi : pat Gram.t;
+  val pat_quot : pat Gram.t;
+  (* val poly_type : ctyp Gram.t; *)
+  val row_field : row_field Gram.t;
+  val sem_exp : exp Gram.t;
+  val sem_exp_for_list : (exp -> exp) Gram.t ;
+  val sem_pat : pat Gram.t;
+  val sem_pat_for_list :  (pat -> pat) Gram.t;
+  (* val semi : unit Gram.t; *)
+  val sequence : exp Gram.t;
+  val sigi : sigi Gram.t;
+  val sigi_quot : sigi Gram.t;
+  val sigis : sigi Gram.t;
 
-  val star_ctyp: Gram.t ctyp;
-  val com_ctyp: Gram.t ctyp;
-  val stru : Gram.t stru;
-  val stru_quot : Gram.t stru;
-  val strus : Gram.t stru;
-  (* val type_constraint : Gram.t unit; *)
-  val type_declaration : Gram.t typedecl;
-  val type_ident_and_parameters : Gram.t (alident * opt_decl_params);
-  (* val type_kind : Gram.t ctyp; *)
-  val type_info: Gram.t type_info;
-  val type_repr: Gram.t type_repr;
+  val star_ctyp: ctyp Gram.t;
+  val com_ctyp: ctyp Gram.t;
+  val stru : stru Gram.t;
+  val stru_quot : stru Gram.t;
+  val strus : stru Gram.t;
+  (* val type_constraint : unit Gram.t; *)
+  val type_declaration : typedecl Gram.t;
+  val type_ident_and_parameters : (alident * opt_decl_params) Gram.t ;
+  (* val type_kind : ctyp Gram.t; *)
+  val type_info: type_info Gram.t;
+  val type_repr: type_repr Gram.t;
     
-  val type_longident : Gram.t ident;
-  val type_longident_and_parameters : Gram.t ctyp;
-  val type_parameter : Gram.t decl_param;
-  val type_parameters : Gram.t (ctyp -> ctyp);
-  val typevars : Gram.t ctyp;
-  val val_longident : Gram.t ident;
-  val constr : Gram.t constr;
-  val constr_quot : Gram.t constr;
-  val prefixop : Gram.t exp;
-  val infixop0 : Gram.t exp;
-  val infixop1 : Gram.t exp;
-  val infixop2 : Gram.t exp;
-  val infixop3 : Gram.t exp;
-  val infixop4 : Gram.t exp;
+  val type_longident : ident Gram.t;
+  val type_longident_and_parameters : ctyp Gram.t;
+  val type_parameter : decl_param Gram.t;
+  val type_parameters : (ctyp -> ctyp) Gram.t ;
+  val typevars : ctyp Gram.t;
+  val val_longident : ident Gram.t;
+  val constr : constr Gram.t;
+  val constr_quot : constr Gram.t;
+  val prefixop : exp Gram.t;
+  val infixop0 : exp Gram.t;
+  val infixop1 : exp Gram.t;
+  val infixop2 : exp Gram.t;
+  val infixop3 : exp Gram.t;
+  val infixop4 : exp Gram.t;
 
-  val string_list: Gram.t strings;
-  val infixop5: Gram.t exp;
-  val infixop6: Gram.t exp;
-  val module_longident_dot_lparen: Gram.t ident;
-  val sequence':Gram.t (exp -> exp); 
-  val fun_def: Gram.t exp;
+  val string_list: strings Gram.t;
+  val infixop5: exp Gram.t;
+  val infixop6: exp Gram.t;
+  val module_longident_dot_lparen: ident Gram.t;
+  val sequence': (exp -> exp) Gram.t ; 
+  val fun_def: exp Gram.t ;
 
-  val method_opt_override: Gram.t override_flag;
-  val value_val_opt_override: Gram.t override_flag;
-  val unquoted_typevars:Gram.t ctyp;
-  val lang: Gram.t FanToken.name;
-  val with_exp_lang: Gram.t exp;  
-  val with_stru_lang: Gram.t stru;  
-  val symbol:  Gram.t FanGrammar.symbol ;
-  val rule:  Gram.t FanGrammar.rule;
-  (* val meta_rule: Gram.t exp; *)
+  val method_opt_override: override_flag Gram.t;
+  val value_val_opt_override: override_flag Gram.t;
+  val unquoted_typevars:ctyp Gram.t;
+  val lang: FanToken.name Gram.t;
+  val with_exp_lang: exp Gram.t;  
+  val with_stru_lang: stru Gram.t;  
+  val symbol:  FanGrammar.symbol Gram.t ;
+  val rule:  FanGrammar.rule Gram.t;
+  (* val meta_rule: exp Gram.t; *)
 
   (* val rules: Gram.t (list FanGrammar.rule); *)
-  val rule_list: Gram.t (list FanGrammar.rule);
-  val psymbol: Gram.t FanGrammar.symbol;
-  val level:  Gram.t FanGrammar.level;
-  val level_list: Gram.t ([= `Group of (list FanGrammar.level) | `Single of FanGrammar.level ]);
-  val entry: Gram.t FanGrammar.entry;
-  val extend_body: Gram.t exp;
-  val delete_rule_body: Gram.t exp;
-  val dot_lstrings: Gram.t (FanToken.name);  
+  val rule_list: FanGrammar.rule list Gram.t ;
+  val psymbol: FanGrammar.symbol Gram.t;
+  val level:  FanGrammar.level Gram.t ;
+  val level_list: ([= `Group of (FanGrammar.level list ) | `Single of FanGrammar.level ]) Gram.t ;
+  val entry: FanGrammar.entry Gram.t;
+  val extend_body: exp Gram.t ;
+  val delete_rule_body: exp Gram.t ;
+  val dot_lstrings: (FanToken.name) Gram.t ;  
   val parse_exp: FanLoc.t -> string -> exp;
     (**  generally "pat; EOI". *)
   val parse_pat: FanLoc.t -> string -> pat;
@@ -230,13 +230,13 @@ module type Syntax = sig
   val exp_filter: (* exp *)ep -> exp;
   val pat_filter: (* pat *)ep -> pat;
 
-  val dot_namespace: Gram.t (list string);  
+  val dot_namespace:  string list Gram.t ;  
   module Options:sig
-    type spec_list = list (string * FanArg.spec * string);
+    type spec_list = (string * FanArg.spec * string) list ;
     val init : spec_list -> unit;
     val add : (string * FanArg.spec * string) -> unit;
-    val adds : list (string * FanArg.spec * string) -> unit;
-    val init_spec_list: ref spec_list;
+    val adds : (string * FanArg.spec * string) list  -> unit;
+    val init_spec_list: spec_list ref ;
   end;
 end;
 
@@ -256,23 +256,23 @@ module type ParserPlugin = functor (Syn:Syntax) -> ParserImpl;
 
 
 type 'a parser_fun  =
-    ?directive_handler:('a -> option 'a) -> loc
-      -> XStream.t char -> option 'a;
+    ?directive_handler:('a -> 'a option) -> loc
+      -> char XStream.t -> 'a option;
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
-        option 'a -> unit;
+        'a option -> unit;
 
 module type PRECAST = sig
   module Syntax     : Syntax ;
-  val loaded_modules : ref (list string);
+  val loaded_modules : string list ref ;
   val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;
-  val register_stru_parser : parser_fun stru -> unit;
-  val register_sigi_parser : parser_fun sigi -> unit;
+  val register_stru_parser : stru parser_fun -> unit;
+  val register_sigi_parser : sigi parser_fun  -> unit;
   val register_parser :
-      parser_fun stru -> parser_fun sigi -> unit;
+      stru parser_fun  -> sigi parser_fun  -> unit;
   val current_parser :
-      unit -> (parser_fun stru * parser_fun sigi);
+      unit -> ( stru parser_fun * sigi parser_fun );
 
   val plugin : (module Id) -> (module PLUGIN) -> unit ;
   val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;
@@ -288,12 +288,12 @@ module type PRECAST = sig
   val enable_auto: (unit->bool) -> unit;
 
 
-  val register_stru_printer : printer_fun stru -> unit;
-  val register_sigi_printer : printer_fun sigi -> unit;
+  val register_stru_printer : stru printer_fun -> unit;
+  val register_sigi_printer : sigi printer_fun  -> unit;
   val register_printer :
-      printer_fun stru -> printer_fun sigi -> unit;
+      stru printer_fun  ->  sigi printer_fun -> unit;
   val current_printer :
-      unit -> (printer_fun stru * printer_fun sigi);
+      unit -> ( stru printer_fun *  sigi printer_fun);
         
   val declare_dyn_module : string -> (unit -> unit) -> unit  ;
 

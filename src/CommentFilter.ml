@@ -1,7 +1,7 @@
 
 
 
-type t = (XStream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
+type t = ((string * FanLoc.t) XStream.t  * (string * FanLoc.t) Queue.t );
 let mk () =
   let q = Queue.create () in
   let f _ =

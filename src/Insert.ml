@@ -271,7 +271,7 @@ let insert_olevel entry position olevel =
    check whether the [gram]  is identical
    and insert the [keywords] here 
  *)    
-let rec scan_olevels entry (levels: list olevel) =
+let rec scan_olevels entry (levels: olevel list ) =
   List.map  (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)

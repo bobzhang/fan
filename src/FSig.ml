@@ -37,10 +37,10 @@ type ty_info = {
     id_pat: pat;
     (* (ai,bi) *)
 
-    id_exps: list exp;
+    id_exps: exp list ;
     (* [ai;bi;ci] *)
 
-    id_pats: list pat;
+    id_pats:  pat list;
     (* [ai;bi;ci]*)
 
     ty: ctyp;
@@ -49,17 +49,17 @@ type ty_info = {
 ;
 
 type vbranch =
-   [= `variant of (string* list ctyp)
+   [= `variant of (string* ctyp list )
    | `abbrev of ident ];
 type branch =
-   [= `branch of (string * list ctyp) ];
+   [= `branch of (string * ctyp list) ];
 (* Feed to user to compose an expession node *)
 type record_col = {
     re_label: string ;
     re_mutable: bool ;
     re_info: ty_info;
   };
-type record_info = list record_col ;
+type record_info =  record_col list;
 
 (* types below are used to tell fan how to produce
    function of type [ident -> ident]
@@ -67,7 +67,7 @@ type record_info = list record_col ;
 type basic_id_transform =
     [= `Pre of string
     | `Post of string
-    | `Fun of id string ];
+    | `Fun of string id ];
 
 type rhs_basic_id_transform =
     [= basic_id_transform
@@ -75,13 +75,13 @@ type rhs_basic_id_transform =
 
 type full_id_transform =
     [=  basic_id_transform
-    | `Idents of (* list ident  -> ident *) list vid -> vid 
+    | `Idents of (* list ident  -> ident *) vid list  -> vid 
     (* decompose to a list of ident and compose as an ident *)          
     | `Id of (* ident -> ident *) vid -> vid
     (* just pass the ident to user do ident transform *)
     | `Last of string -> (* ident *) vid
     (* pass the string, and << .$old$. .$return$. >>  *)      
-    | `Obj of id string ];
+    | `Obj of  string id ];
 
 open StdLib;
 open Objs;
@@ -89,12 +89,11 @@ open Objs;
 
 {:ocaml|
 type named_type = (string* (* ctyp *)typedecl)
-and and_types =
-    list named_type
+and and_types = named_type list
 and types =
     [= `Mutual of and_types
     | `Single of named_type ]
-and mtyps = list types;
+and mtyps =  types list;
 
 type destination =
   [Obj of kind
@@ -117,8 +116,8 @@ type plugin_name = string ;
 type plugin = {
     transform:(mtyps -> stru);
     (* activate: mutable bool; *)
-    position: option string;
-    filter: option (string->bool);
+    position: string option ;
+    filter: (string->bool) option ;
   };
 
 

@@ -22,7 +22,7 @@ end;
 {:ocaml|
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = FanLoc.t -> Action.t -> parse 'a;
+type 'a cont_parse  = FanLoc.t -> Action.t -> 'a parse ;
     
 type description =
     [= `Normal
@@ -38,32 +38,32 @@ type terminal =
 type gram = {
     annot : string;
     gfilter         : FanTokenFilter.t;
-    gkeywords :  ref SSet.t;
+    gkeywords :   SSet.t ref;
 };
 
-type label = option string;
+type label =  string option;
   
 type entry = {
     egram     : gram;
     ename     : string;
-    mutable estart    :  int -> parse Action.t;
-    mutable econtinue : int -> cont_parse Action.t;
+    mutable estart    :  int -> Action.t parse ;
+    mutable econtinue : int -> Action.t cont_parse ;
     mutable edesc     :  desc;
     mutable freezed :  bool;}
 and desc =
-    [ Dlevels of list level
+    [ Dlevels of level list 
     (* | Dlevel of level  *)
     | Dparser of stream -> Action.t ]
 and level = {
     assoc   : assoc         ;
     lname   : label;
-    productions : list production;
+    productions : production list ;
     (* the raw productions stored in the level*)
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
     [=
-     `Smeta of (list string * list symbol * Action.t)
+     `Smeta of (string list  * symbol list  * Action.t)
     | `Snterm of entry
     | `Snterml of (entry * string) (* the second argument is the level name *)
     | `Slist0 of symbol
@@ -79,7 +79,7 @@ and symbol =
     | terminal ]
 and tree = (* internal struccture *)
     [ Node of node
-    | LocAct of (* (int*Action.t) *)anno_action * list anno_action (* (int * Action.t) *)
+    | LocAct of (* (int*Action.t) *)anno_action *  anno_action list (* (int * Action.t) *)
     (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
     (* | ReplaceAction of Action.t and node  *)
     (* | LocActAppend of anno_action and list anno_action and tree  *)
@@ -88,24 +88,24 @@ and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
-and production= (list symbol *  (* Action.t *) (string * Action.t))
-and anno_action = (int  * list symbol * string  * Action.t) ;
+and production= (symbol list  *  (* Action.t *) (string * Action.t))
+and anno_action = (int  * symbol list  * string  * Action.t) ;
 |};
 
 
 (* FIXME duplciate with Gram.mli*)
-type olevel = (label * option assoc * list production);
-type extend_statment = (option position * list olevel);
-type single_extend_statement =  (option position * olevel);      
-type delete_statment = list symbol;
+type olevel = (label * assoc option  * production list );
+type extend_statment = (position option  * olevel list );
+type single_extend_statement =  (position option  * olevel);      
+type delete_statment = symbol list ;
 
 type ('a,'b,'c) fold  =
-    entry -> list symbol ->
-      (XStream.t 'a -> 'b) -> XStream.t 'a -> 'c;
+    entry -> symbol list  ->
+      ('a XStream.t -> 'b) -> 'a XStream.t -> 'c;
 
 type  ('a, 'b, 'c) foldsep =
-    entry -> list symbol ->
-      (XStream.t 'a -> 'b) -> (XStream.t 'a -> unit) -> XStream.t 'a -> 'c;
+    entry -> symbol list  ->
+      ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t  -> 'c;
 
 let gram_of_entry {egram;_} = egram;
 let mk_action=Action.mk;
@@ -118,11 +118,11 @@ let rec flatten_tree = fun
   | Node {node = n; brother = b; son = s} ->
       List.map (fun l -> [n::l]) (flatten_tree s) @ flatten_tree b ];
 
-type brothers = [ Bro of symbol * list brothers | End];
+type brothers = [ Bro of symbol * brothers list  | End];
 
 
   
-type space_formatter =  format unit Format.formatter unit;
+type space_formatter =  (unit, Format.formatter, unit )format ;
 
 let get_brothers x =
   let rec aux acc =  fun

@@ -3,10 +3,10 @@ open AstLoc;
 open LibUtil;
 type 'a item_or_def  =
     [ Str of 'a
-    | Def of string * option (list string * exp)
+    | Def of string * ( string list * exp)option 
     | Und of string
-    | ITE of bool * list (item_or_def 'a) * list (item_or_def 'a)
-    | Lazy of Lazy.t 'a ];
+    | ITE of bool * ('a item_or_def ) list  * ('a item_or_def  )list 
+    | Lazy of 'a Lazy.t  ];
 
 let defined = ref [];
 let is_defined i = List.mem_assoc i !defined;

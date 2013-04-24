@@ -161,7 +161,7 @@ type any = [= `Any of loc];
 type ctyp =
   [= `Alias of (loc * ctyp * alident)
   | any
-  | `App of (loc * ctyp * ctyp) (* t t *) (* list 'a *)
+  | `App of (loc * ctyp * ctyp) (* t t *) (* 'a list *)
   | `Arrow of (loc * ctyp * ctyp)
   | `ClassPath of (loc * ident) (* #i *) (* #point *)
   | `Label of (loc * alident * ctyp) (* ~s:t *)
@@ -172,7 +172,7 @@ type ctyp =
   | `TyObj of (loc * name_ctyp * row_var_flag )
   | `TyObjEnd of (loc * row_var_flag)
 
-  | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . list 'a -> 'a *)
+  | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . 'a list -> 'a *)
   | `TyPolEnd of (loc *ctyp) (* !. t *)  
   | `TyTypePol of (loc * ctyp * ctyp) (* type t . t *) (* type a . list a -> a *)
 

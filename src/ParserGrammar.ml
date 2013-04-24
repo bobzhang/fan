@@ -12,14 +12,14 @@ FanConfig.antiquotations := true;
 
 
 
-{:create|Gram (nonterminals:Gram.t stru) (nonterminalsclear: Gram.t exp)
-  delete_rule_header extend_header  (qualuid : Gram.t vid) (qualid:Gram.t vid)
-  (t_qualid:Gram.t vid)
-  (entry_name : Gram.t ([=`name of FanToken.name | `non] * FanGrammar.name))
+{:create|Gram (nonterminals: stru Gram.t) (nonterminalsclear:  exp Gram.t)
+  delete_rule_header extend_header  (qualuid : vid Gram.t) (qualid:vid Gram.t)
+  (t_qualid:vid Gram.t )
+  (entry_name : ([=`name of FanToken.name | `non] * FanGrammar.name) Gram.t )
   locals entry position assoc name string
-  (pattern: Gram.t action_pattern)
+  (pattern: action_pattern Gram.t )
   simple_exp delete_rules
-  (simple_pat: Gram.t simple_pat)
+  (simple_pat: simple_pat Gram.t )
   internal_pat|}  ;
 
 
@@ -310,14 +310,14 @@ FanConfig.antiquotations := true;
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
     match p with [Some _ ->
-      {(s) with pattern = (p: option action_pattern :> option pat) } | None -> s]  ] 
+      {(s) with pattern = (p:  action_pattern option :>  pat option) } | None -> s]  ] 
 
   (* return symbol with pattern(inferred) or None  *)
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
     let () = check_not_tok s in
     (* let styp = `STapp _loc (`STlid _loc "list") s.styp in *)
-    let styp = {:ctyp| list  $(s.styp) |} in 
+    let styp = {:ctyp| $(s.styp) list   |} in 
     let text = mk_slist _loc
         (match x with
           ["L0" -> false | "L1" -> true
@@ -325,7 +325,7 @@ FanConfig.antiquotations := true;
     mk_symbol ~text ~styp ~pattern:None
   |`Uid "OPT"; S{s}  ->
     let () = check_not_tok s in
-    let styp = {:ctyp| option $(s.styp) |} in 
+    let styp = {:ctyp|  $(s.styp) option |} in 
     let text = `Sopt _loc s.text in
     mk_symbol  ~text ~styp ~pattern:None
   |`Uid "TRY"; S{s} ->

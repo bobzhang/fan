@@ -92,7 +92,7 @@ let zfold_left ?(start = 0) ~until ~acc f =
 (* we put the return value exn, so we don't need to work around type system later *)    
 type 'a cont  = 'a -> exn;
 
-let callcc  (type u) (f: cont u-> u)  =
+let callcc  (type u) (f: u cont  -> u)  =
   let module M = struct exception Return of u ; end in
   try f (fun x -> raise (M.Return x))
   with [M.Return u -> u];
@@ -293,19 +293,19 @@ end;
 
 module type MAP = sig
   include Map.S;
-  val of_list: list(key * 'a) -> t 'a;
-  val of_hashtbl:(key,'a) Hashtbl.t  -> t 'a;
-  val elements: t 'a -> list (key * 'a);
-  val add_list: list (key * 'a) -> t 'a -> t 'a;
-  val find_default: ~default :'a -> key -> t 'a -> 'a ;
-  val find_opt: key -> t 'a -> option 'a;  
+  val of_list: (key * 'a) list -> 'a t;
+  val of_hashtbl:(key,'a) Hashtbl.t  -> 'a t;
+  val elements: 'a t -> (key * 'a) list ;
+  val add_list: (key * 'a) list  -> 'a t -> 'a t;
+  val find_default: ~default :'a -> key -> 'a t -> 'a ;
+  val find_opt: key -> 'a t -> 'a option ;  
     (* FIXME  [~default:] [~default :] *)
   val add_with: ~f :('a -> 'a -> 'a) -> key ->
-    'a ->  t 'a ->
-      (t 'a * [= `NotExist | `Exist]);
+    'a ->  'a t ->
+      ('a t * [= `NotExist | `Exist]);
 
-  val unsafe_height: t 'a -> int;
-  val unsafe_node:  t 'a -> (key * 'a) ->  t 'a ->  t 'a;
+  val unsafe_height: 'a t -> int;
+  val unsafe_node:  'a t -> (key * 'a) ->  'a t ->  'a t;
 end;
 module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
   include Map.Make S;
@@ -324,14 +324,14 @@ module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
   let add_with ~f k v s =
      try (add k (f  (find k s) v) s, `Exist) with [Not_found -> (add k v s,`NotExist)] ;
 
-  let unsafe_height (l:t 'a) : int =
+  let unsafe_height (l:'a t) : int =
     if l = empty then 0
     else (Obj.magic (Obj.field (Obj.repr l)  4) :int)  ;
 
   (* this is unsafe, since the difference between the height of [l] and
      the height of [r] may exceed 1
    *)  
-  let unsafe_node (l:t 'a) ((k:key),(v:'a)) (r:t 'a) =
+  let unsafe_node (l:'a t) ((k:key),(v:'a)) (r:'a t) =
     let h = max (unsafe_height l) (unsafe_height  r) + 1 in
     let o = Obj.new_block 0 4 in begin 
       Obj.set_field o 0 (Obj.repr l);
@@ -339,7 +339,7 @@ module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
       Obj.set_field o 2 (Obj.repr v);
       Obj.set_field o 3 (Obj.repr r);
       Obj.set_field o 4 (Obj.repr h);
-      (Obj.magic o : t 'a)
+      (Obj.magic o : 'a t)
     end;
     
   let find_opt k m =
@@ -350,10 +350,10 @@ end ;
 
 module type SET = sig
   include Set.S;
-  val of_list: list elt -> t ;
-  val add_list: t -> list elt -> t ;
-  val of_array: array elt -> t;
-  val add_array: t -> array elt -> t ;
+  val of_list: elt list  -> t ;
+  val add_list: t ->  elt list -> t ;
+  val of_array: elt array  -> t;
+  val add_array: t ->  elt array -> t ;
 end;
 module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
   include Set.Make S;
@@ -437,7 +437,7 @@ module Return = struct
   let return label v =
     raise (label v);
 
-  let label (type u) (f : t u-> u) : u =
+  let label (type u) (f : u t ->  u) : u =
       let module M = struct exception Return of u; end in
       try f (fun x -> M.Return x)
       with [M.Return u -> u];
@@ -447,7 +447,7 @@ end;
 
 module LStack = struct
   type 'a t  = {
-      mutable elts : list 'a;
+      mutable elts : 'a list;
       mutable length :  int;
     };
   exception Empty;
@@ -741,7 +741,7 @@ module Ref = struct
   (* The state [itself] should be [persistent],
      otherwise it does not make sense to restore
    *)      
-  let saves (refs: list (ref 'a)) body =
+  let saves (refs: 'a ref list ) body =
     let olds = List.map (fun x -> !x) refs in
     finally (fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) body ();
 
@@ -965,65 +965,65 @@ module type STREAM = sig
   type  'a t ;
   exception Failure;
   exception Error of string;
-  val from: (int -> option 'a) -> t 'a;
-  val of_list: list 'a-> t 'a;
-  val of_string: string ->  t char;
-  val of_channel: in_channel -> t char;
-  val iter: ('a -> unit) -> t 'a -> unit;
-  val next: t 'a -> 'a;
-  val empty: t 'a -> unit;
-  val peek: t 'a -> option 'a;
-  val junk: t 'a -> unit;
-  val count: t 'a -> int;
-  val npeek: int -> t 'a ->  list 'a;
-  val iapp: t 'a -> t 'a -> t 'a;
-  val icons: 'a -> t 'a -> t 'a;
-  val ising: 'a -> t 'a;
-  val lapp: (unit -> t 'a) -> t 'a -> t 'a;
-  val lcons: (unit -> 'a) -> t 'a -> t 'a;
-  val lsing: (unit -> 'a) -> t 'a;
-  val sempty: t 'a;
-  val slazy: (unit -> t 'a) -> t 'a;
-  val dump: ('a -> unit) -> t 'a -> unit;
+  val from: (int -> 'a option ) -> 'a t;
+  val of_list: 'a list-> 'a t;
+  val of_string: string ->  char t;
+  val of_channel: in_channel -> char t ;
+  val iter: ('a -> unit) -> 'a t -> unit;
+  val next: 'a t -> 'a;
+  val empty: 'a t -> unit;
+  val peek: 'a t -> 'a option ;
+  val junk: 'a t -> unit;
+  val count: 'a t -> int;
+  val npeek: int -> 'a t ->  'a list ;
+  val iapp: 'a t -> 'a t -> 'a t;
+  val icons: 'a -> 'a t -> 'a t;
+  val ising: 'a -> 'a t;
+  val lapp: (unit -> 'a t) -> 'a t -> 'a t;
+  val lcons: (unit -> 'a) -> 'a t -> 'a t;
+  val lsing: (unit -> 'a) -> 'a t;
+  val sempty: 'a t;
+  val slazy: (unit -> 'a t) -> 'a t;
+  val dump: ('a -> unit) -> 'a t -> unit;
     
-  val to_list: t 'a ->  list 'a;
-  val to_string: t char -> string;
+  val to_list: 'a t ->  'a list ;
+  val to_string: char t -> string;
   val to_string_fmt:
-     format ('a -> string) unit string -> t 'a -> string;
-  val to_string_fun: ('a -> string) -> t 'a -> string;
-  val of_fun: (unit -> 'a) -> t 'a;
-  val foldl: ('a -> 'b -> ('a * option bool )) -> 'a -> t 'b -> 'a;
-  val foldr: ('a ->  lazy_t 'b -> 'b) -> 'b -> t 'a -> 'b;
-  val fold: ('a -> 'a -> ('a *  option bool)) -> t 'a -> 'a;
-  val filter: ('a -> bool) -> t 'a -> t 'a;
-  val map2: ('a -> 'b -> 'c) -> t 'a -> t 'b -> t 'c;
-  val scanl: ('a -> 'b -> 'a) -> 'a -> t 'b -> t 'a;
-  val scan: ('a -> 'a -> 'a) -> t 'a -> t 'a;
-  val concat: t (t 'a)  -> t 'a;
-  val take: int -> t 'a -> t 'a;
-  val drop: int -> t 'a -> t 'a;
-  val take_while: ('a -> bool) -> t 'a -> t 'a;
-  val drop_while: ('a -> bool) -> t 'a -> t 'a;
-  val comb: (t 'a * t 'b) ->  t ('a * 'b);
-  val split:  t ('a * 'b) -> (t 'a * t 'b);
+     (('a -> string),unit,string) format   -> 'a t -> string;
+  val to_string_fun: ('a -> string) -> 'a t -> string;
+  val of_fun: (unit -> 'a) -> 'a t;
+  val foldl: ('a -> 'b -> ('a * bool option )) -> 'a -> 'b t -> 'a;
+  val foldr: ('a ->  'b lazy_t  -> 'b) -> 'b -> 'a t -> 'b;
+  val fold: ('a -> 'a -> ('a *   bool option)) -> 'a t -> 'a;
+  val filter: ('a -> bool) -> 'a t -> 'a t;
+  val map2: ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t ;
+  val scanl: ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a t;
+  val scan: ('a -> 'a -> 'a) -> 'a t -> 'a t;
+  val concat: 'a t t   -> 'a t;
+  val take: int -> 'a t -> 'a t;
+  val drop: int -> 'a t -> 'a t;
+  val take_while: ('a -> bool) -> 'a t -> 'a t;
+  val drop_while: ('a -> bool) -> 'a t -> 'a t;
+  val comb: ('a t * 'b t) ->  ('a * 'b) t ;
+  val split:  ('a * 'b) t  -> ('a t * 'b t);
   val merge:
-    (bool -> 'a -> bool) -> (t 'a * t 'a) -> t 'a;
-  val switch: ('a -> bool) -> t 'a -> (t 'a * t 'a);
-  val cons: 'a -> t 'a -> t 'a;
-  val apnd: t 'a -> t 'a -> t 'a;
-  val is_empty: t 'a -> bool;
-  val rev: t 'a -> t 'a;
-  val tail: t 'a -> t 'a;
-  val map: ('a -> 'b) -> t 'a -> t 'b;
-  val dup: t 'a -> t 'a;
-  val peek_nth: t 'a -> int ->   option 'a;
-  val njunk: int -> t 'a -> unit;
+    (bool -> 'a -> bool) -> ('a t * 'a t) -> 'a t;
+  val switch: ('a -> bool) -> 'a t -> ('a t * 'a t);
+  val cons: 'a -> 'a t -> 'a t;
+  val apnd: 'a t -> 'a t -> 'a t;
+  val is_empty: 'a t -> bool;
+  val rev: 'a t -> 'a t;
+  val tail: 'a t -> 'a t;
+  val map: ('a -> 'b) -> 'a t -> 'b t;
+  val dup: 'a t -> 'a t;
+  val peek_nth: 'a t -> int ->   'a option ;
+  val njunk: int -> 'a t  -> unit;
 end;
 
   
 (* module Trie = struct *)
 (* end; *)
-module XStream (* : STREAM with type t 'a = XStream.t 'a *) = struct
+module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
   (* include BatStream; *)
   include XStream;
   let rev strm=

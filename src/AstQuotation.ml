@@ -31,11 +31,11 @@ exception QuotationError of quotation_error;
    | to generate an arbitrary value of type ['a]                     |
    +-----------------------------------------------------------------+ *)
 
-type 'a expand_fun  = FanLoc.t -> option string -> string -> 'a;
+type 'a expand_fun  = FanLoc.t ->  string option -> string -> 'a;
   
 module ExpKey = FanDyn.Pack(struct  type 'a t  = unit; end);
 
-module ExpFun = FanDyn.Pack(struct  type 'a t  = expand_fun 'a; end);
+module ExpFun = FanDyn.Pack(struct  type 'a t  = 'a expand_fun ; end);
 
 
 
@@ -96,7 +96,7 @@ let update (pos,(str:name)) =
  *)  
 let fan_default = (`Absolute ["Fan"],"");
   
-let default : ref name = ref fan_default ;
+let default :  name ref = ref fan_default ;
 
 let set_default s =  default := s;  
   
@@ -127,7 +127,7 @@ let default_at_pos pos str =  update (pos,str);
 let expanders_table =ref QMap.empty;
 
 
-let add ((domain,n) as name) (tag :FanDyn.tag 'a) (f:expand_fun 'a) =
+let add ((domain,n) as name) (tag : 'a FanDyn.tag ) (f:  'a expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  = try  Hashtbl.find names_tbl domain with [Not_found -> SSet.empty] in begin
     Hashtbl.replace names_tbl domain (SSet.add  n s);

@@ -12,20 +12,20 @@
  *)
 open LibUtil;
 open Types;
-open AstLoc;
+open Ast;
 
 let _loc = FanLoc.ghost ;
 
 exception CtypNotSupport of type_desc;
   
-let rec signature_item (x:Types.signature_item)  : option typedecl =
+let rec signature_item (x:Types.signature_item)  : typedecl option  =
   match  x with
   [ Sig_value _
   | Sig_exception _
   | Sig_module _
   | Sig_class _
   | Sig_modtype _
-  | Sig_cltyp _ -> None
+  | Sig_class_type _ -> None
         (* copied from [printtyp] *)
   | Sig_type (id,_,_) when Btype.is_row_name (Ident.name id) -> None
 
@@ -83,7 +83,7 @@ and type_declaration id
          `TyRepr(_loc,private_flag,`Sum(_loc,type_sum xs)),
          [])]
 
-and type_record (xs: list (Ident.t * Asttypes.mutable_flag * type_exp) ) : name_ctyp=
+and type_record (xs: (Ident.t * Asttypes.mutable_flag * type_exp) list  ) : name_ctyp=
   sem_of_list &
   List.map
     (fun (i,m,e) ->
@@ -93,7 +93,7 @@ and type_record (xs: list (Ident.t * Asttypes.mutable_flag * type_exp) ) : name_
         `TyColMut(_loc,`Id(_loc,`Lid(_loc,name)),type_exp e)
       |Asttypes.Immutable ->
         `TyCol(_loc,`Id(_loc,`Lid(_loc,name)),type_exp e)]) xs 
-and type_sum (xs: list (Ident.t *  list type_exp *  option type_exp) ) : or_ctyp
+and type_sum (xs: (Ident.t *  type_exp list  *  type_exp option ) list  ) : or_ctyp
     =
   bar_of_list &
   List.map

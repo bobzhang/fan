@@ -154,7 +154,7 @@ end;
  *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit Objs.map as super;
-  val mtyps_stack : Stack.t mtyps = Stack.create ();
+  val mtyps_stack : mtyps Stack.t  = Stack.create ();
   val mutable cur_and_types : and_types= [];
   val mutable and_group = false;
   method get_cur_mtyps : mtyps =

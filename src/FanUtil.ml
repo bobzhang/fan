@@ -62,7 +62,7 @@ open StdLib;
 {:ocaml|
 type anti_cxt = {
     cxt:string;
-    sep: option string;
+    sep: string option ;
     mutable decorations:   string; (* keep it simple first*)
     content:string;
   };

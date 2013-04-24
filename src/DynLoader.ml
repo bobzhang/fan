@@ -18,11 +18,11 @@ module type S = sig
   val find_in_path : t -> string -> string;
   (** [is_native] [true] if we are in native code, [false] for bytecode. *)
   val is_native : bool;
-  val instance: ref (unit -> t);  
+  val instance: (unit -> t) ref ;  
 end;
 
 module Make (U:sig end) : S= struct 
-  type t = Queue.t string;
+  type t = string Queue.t ;
 
   let instance =  ref (fun () -> failwith "empty in dynloader");
   exception Error of string * string;

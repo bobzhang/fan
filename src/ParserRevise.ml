@@ -1118,7 +1118,7 @@ let apply_ctyp () = begin
       [ctyp{x}; "*"; star_ctyp{y} -> `Sta (_loc, x, y)
       |ctyp{x} -> x ]
       unquoted_typevars:
-      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      [ S{t1}; S{t2} -> `App(_loc,t1,t2)(* {| $t1 $t2 |} *) (* FIXME order matters ?*)
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc ~c:"ctyp" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
       | a_lident{i} -> (i:>ctyp) ]
@@ -1202,13 +1202,13 @@ let apply_ctyp () = begin
       | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
       [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident{i} ->
-        (i, `Some(_loc, com_of_list (tpl :> list decl_params)))
+        (i, `Some(_loc, com_of_list (tpl :>  decl_params list)))
       |  type_parameter{t};  a_lident{i} -> (i, `Some (_loc,(t:>decl_params)))
       |  a_lident{i} -> (i, `None _loc)]
       constrain:
       [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> `Eq(_loc,t1, t2) ]
       typevars:
-      [ S{t1}; S{t2} -> {| $t1 $t2 |}
+      [ S{t1}; S{t2} -> `App(_loc,t1,t2)(* {| $t1 $t2 |} *) (* FIXME order matters?*)
       | `Ant ((""|"typ" as n),s) ->  mk_anti _loc  ~c:"ctyp" n s
       | `Ant(("list" as n),s) ->     mk_anti _loc ~c:"forall" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
@@ -1229,7 +1229,7 @@ let apply_ctyp () = begin
          
        "apply" LA
         [ S{t1}; S{t2} ->
-          let t = `App(_loc,t1,t2) in
+          let t = `App(_loc,t2,t1) in
           try (ident_of_ctyp t:>ctyp)
           with [ Invalid_argument _ -> t
                ]

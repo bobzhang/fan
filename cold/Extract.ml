@@ -2,7 +2,7 @@ open LibUtil
 
 open Types
 
-open AstLoc
+open Ast
 
 let _loc = FanLoc.ghost
 
@@ -11,7 +11,7 @@ exception CtypNotSupport of type_desc
 let rec signature_item (x : Types.signature_item) =
   (match x with
    | Sig_value _|Sig_exception _|Sig_module _|Sig_class _|Sig_modtype _
-     |Sig_cltyp _ -> None
+     |Sig_class_type _ -> None
    | Sig_type (id,_,_) when Btype.is_row_name (Ident.name id) -> None
    | Sig_type (id,td,_rs) ->
        (try Some (type_declaration id td) with | _ -> None) : typedecl option )

@@ -24,35 +24,35 @@ type attr = string;
 type entry   = {
   name : name ;
   (*position expession node *)    
-  pos : option exp;
+  pos : exp option ;
   levels : levels(* list level *);
 }
 and levels =
- [= `Group of (list level) | `Single of level]   
+ [= `Group of (level list ) | `Single of level]   
 and level  ={
   (* mainly used for indexing *)  
-  label : option string;
-  assoc : option exp;
-  rules : list rule
+  label : string option ;
+  assoc : exp option ;
+  rules : rule list
 }
 and rule = {
-  prod : list symbol;
-  action : option exp
+  prod : symbol list ;
+  action : exp option 
 }
 and symbol ={
   text : text;
   styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
-  pattern : option pat
+  pattern : pat option 
 }
 and text =
- [= `Smeta of (loc * list string * list text * exp * styp)
- | `Slist of (loc * bool * symbol * option symbol)
- | `Snterm of (loc * name  * option string)
+ [= `Smeta of (loc * string list  * text list  * exp * styp)
+ | `Slist of (loc * bool * symbol * symbol option )
+ | `Snterm of (loc * name  * string option )
  | `Sopt of (loc * text )
  | `Stry of (loc * text )
  | `Speek of (loc * text)
- | `Srules of (loc * list (list text * exp))
+ | `Srules of (loc * (text list  * exp) list )
  | `Sself of loc
  | `Snext of loc       
  | `Skeyword of (loc * string)

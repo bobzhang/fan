@@ -133,7 +133,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
         let txt1 = name_of_symbol_failed entry s in
         txt1 ^ (" or " ^ (txt ^ " expected"))
     | `Slist0sep (s,sep) ->
-        (match magic "tree_failed: 'a -> list 'b" prev_symb_result with
+        (match magic "tree_failed: 'a -> 'b list" prev_symb_result with
          | [] ->
              let txt1 = name_of_symbol_failed entry s in
              txt1 ^ (" or " ^ (txt ^ " expected"))
@@ -141,7 +141,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
              let txt1 = name_of_symbol_failed entry sep in
              txt1 ^ (" or " ^ (txt ^ " expected")))
     | `Slist1sep (s,sep) ->
-        (match magic "tree_failed: 'a -> list 'b" prev_symb_result with
+        (match magic "tree_failed: 'a -> 'b list" prev_symb_result with
          | [] ->
              let txt1 = name_of_symbol_failed entry s in
              txt1 ^ (" or " ^ (txt ^ " expected"))

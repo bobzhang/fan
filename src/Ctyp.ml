@@ -27,14 +27,14 @@ let arrow_of_list = List.reduce_right arrow;
   
 let app_arrow lst acc = List.fold_right arrow lst acc;
   
-let (<+) (names: list string) (ty:ctyp) =
+let (<+) (names: string list ) (ty:ctyp) =
   List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty;
   
-let (+>) (params: list ctyp) (base:ctyp) = List.fold_right arrow params base;    
+let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base;    
 
 (*
    {[
-   match <:stru< type list 'a  = [A of int | B of 'a] >> with
+   match <:stru< type 'a list  = [A of int | B of 'a] >> with
    [ <:stru<type .$x$. >> -> name_length_of_tydcl x ];
    ("list",1)
    ]}
@@ -76,7 +76,7 @@ let of_id_len ~off ((id:ident),len) =
   
 (*
    {[
-    ( <:stru< type list 'a  = [A of int | B of 'a] >> |>
+    ( <:stru< type 'a list  = [A of int | B of 'a] >> |>
     fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
         |> of_name_len ~off:1 |> eprint ] );
    list 'all_b0
@@ -107,7 +107,7 @@ let of_name_len ~off (name,len) =
 let ty_name_of_tydcl  (x:typedecl) =
   match x with 
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-    let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :> list ctyp) ] in
+    let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list) ] in
     appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)];      
@@ -134,8 +134,8 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
    ]}
    
  *)
-let list_of_record (ty:name_ctyp) : list FSig.col  =
-  let (tys : list name_ctyp)  = list_of_sem ty [] in
+let list_of_record (ty:name_ctyp) : FSig.col list  =
+  let (tys : name_ctyp list )  = list_of_sem ty [] in
     (* list_of_sem' ty [] *) tys|> List.map (
        fun
          [ 
@@ -316,7 +316,7 @@ let is_recursive ty_dcl =
   ]}
   
  *)  
-let qualified_app_list x : (option (ident * list ctyp)) =
+let qualified_app_list x : ((ident * ctyp list ) option ) =
   match x with 
   [ {| $_ $_ |} as x->
     match list_of_app x []with
@@ -401,7 +401,7 @@ let mk_transform_type_eq () = object(self:'self_type)
          let vars =
            match vars with 
            [`None _ -> [] | `Some (_,x) -> list_of_com x []] in
-         if  not (eq_list (vars : list decl_params :> list ctyp) lst) then 
+         if  not (eq_list (vars : decl_params list  :>  ctyp list) lst) then 
            super#stru x
          else
           (* Manual substitution
@@ -491,7 +491,7 @@ let transform_mtyps  (lst:FSig.mtyps) =
     [ A of [`a | `b] and int ]
  *)
 let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
-    (f:  string -> list ctyp -> 'e)  =
+    (f:  string -> ctyp list  -> 'e)  =
   let branches = list_of_or ty [] in
   List.fold_left (fun acc x -> match (x:or_ctyp) with
     [  `Of (_loc, `Uid (_, cons), tys)
@@ -533,7 +533,7 @@ let view_sum (t:or_ctyp) =
   ]
   ]}
  *)    
-let view_variant (t:row_field) : list vbranch =
+let view_variant (t:row_field) : vbranch list  =
 
   let lst = list_of_or t [] in 
   List.map (

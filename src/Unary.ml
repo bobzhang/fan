@@ -64,7 +64,7 @@
     | ant];
    type 'a meta_list  =
     [= `LNil 
-    | `LCons of ('a * meta_list 'a)
+    | `LCons of ('a * 'a meta_list )
     | ant];
 
    type alident =

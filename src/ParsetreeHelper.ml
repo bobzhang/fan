@@ -66,7 +66,7 @@ let array_function loc str name = with_loc (array_function_no_loc str name) loc;
   ]}
   FIXME performance problem  
  *)
-let mkli sloc s (list: list string) =
+let mkli sloc s (list: string list ) =
   let aux = fun
     [ [] -> lident s
     | [x] -> ldot (lident x) s 

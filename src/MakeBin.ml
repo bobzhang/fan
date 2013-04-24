@@ -123,7 +123,7 @@ module Make
           clear ();
           phr
         end;
-       let  rec sig_handler  : sigi -> option sigi= with sigi
+       let  rec sig_handler  : sigi -> sigi option =  with sigi
           (fun
             [{| #load $str:s |}-> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->

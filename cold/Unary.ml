@@ -65,11 +65,11 @@ type pat =
   | `Par of (loc * pat) | any | `Record of (loc * rec_pat) | ant | literal
   | `Alias of (loc * pat * alident) | `Array of (loc * pat)
   | `Label of (loc * alident * pat)
-  | `PaOlbi of (loc * alident * pat * exp meta_option)
+  | `PaOlbi of (loc * alident * pat * meta_option exp)
   | `Bar of (loc * pat * pat) | `PaRng of (loc * pat * pat)
   | `Constraint of (loc * pat * ctyp) | `ClassPath of (loc * ident)
   | `Lazy of (loc * pat)
-  | `ModuleUnpack of (loc * auident * ctyp meta_option)] 
+  | `ModuleUnpack of (loc * auident * meta_option ctyp)] 
 and rec_pat =
   [ nil | `RecBind of (loc * ident * pat) | `Sem of (loc * rec_pat * rec_pat)
   | any | ant] 

@@ -71,7 +71,7 @@ module Stack =
       pop stk
   end
 
-let opt_char: char option Stack.t = Stack.create ()
+let opt_char: (option,Stack.t) char = Stack.create ()
 
 let turn_on_quotation_debug () = debug := true
 

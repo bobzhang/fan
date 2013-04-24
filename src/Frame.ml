@@ -78,7 +78,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
    ((m_int _loc fmt (a0, b0)), (m_float _loc fmt (a0, b0)),
     (m_float _loc fmt (a0, b0))))]
  return type is result
-Plz supply current type [type list 'a] =>  [list]
+Plz supply current type [type 'a list] =>  [list]
  *)    
 let rec  normal_simple_exp_of_ctyp
     ?arity ?names ~mk_tuple
@@ -106,7 +106,7 @@ let rec  normal_simple_exp_of_ctyp
         {| $(aux t1) $(aux t2) |}
     | `Quote (_loc,_,`Lid(_,s)) ->   tyvar s
     | `Arrow(_loc,t1,t2) ->
-        aux {:ctyp| arrow $t1 $t2 |} (* arrow is a keyword now*)
+        aux {:ctyp| ($t1,$t2) arrow |} (* arrow is a keyword now*)
     | `Par _  as ty ->
         tuple_exp_of_ctyp  ?arity ?names ~mk_tuple
           (normal_simple_exp_of_ctyp
@@ -124,11 +124,11 @@ let rec  normal_simple_exp_of_ctyp
 (*
    list int ==>
       self#list (fun self -> self#int)
-   list 'a  ==>
+   'a list  ==>
        self#list mf_a 
    'a  ==> (mf_a self)
 
-  list (list 'a) ==>
+  list ('a list) ==>
       self#list (fun self -> (self#list mf_a))
 
   m_list (tree 'a) ==>
@@ -156,7 +156,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
               "list_of_app in obj_simple_exp_of_ctyp: %s"
               (Objs.dump_ctyp ty)]
     | `Arrow(_loc,t1,t2) -> 
-        aux {:ctyp'| arrow $t1 $t2 |} 
+        aux {:ctyp'| ($t1,$t2) arrow  |} 
     | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
@@ -177,7 +177,7 @@ let exp_of_ctyp
     ?(names=[])
     ~default ~mk_variant
     simple_exp_of_ctyp (ty : or_ctyp)  =
-  let f  (cons:string) (tyargs:list ctyp)  : case = 
+  let f  (cons:string) (tyargs:ctyp list )  : case = 
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p : pat =
       (* calling gen_tuple_n*)
@@ -188,7 +188,7 @@ let exp_of_ctyp
     let e = mk (cons,tyargs) in
     {:case| $pat:p -> $e |} in  begin 
     let info = (Sum, List.length (list_of_or ty [])) in 
-    let res : list case =
+    let res :  case list =
       Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
     let res =
       let t = (* only under this case we need defaulting  *)
