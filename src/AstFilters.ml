@@ -5,9 +5,11 @@ open Ast ;
 type key = string;
 type 'a filter  = 'a -> 'a;
   
-let interf_filters: Hashtbl.t key (filter sigi) = Hashtbl.create 40;
-let implem_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
-let topphrase_filters: Hashtbl.t key (filter stru) = Hashtbl.create 40;
+
+let interf_filters: ( key, filter sigi) Hashtbl.t   = Hashtbl.create 40;;
+let implem_filters: (key, filter stru) Hashtbl.t  = Hashtbl.create 40;;
+
+let topphrase_filters: (key, filter stru) Hashtbl.t  = Hashtbl.create 40;
 
 let applied_interf_filters:  Queue.t (string * filter sigi) = Queue.create ();
 let applied_implem_filters:  Queue.t (string *filter stru) = Queue.create ();

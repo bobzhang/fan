@@ -157,7 +157,7 @@ let partitions ~part_tbl () =
 (* Named regexp *)
 
 let named_regexps =
-  (Hashtbl.create 13 :  Hashtbl.t string regexp );
+  (Hashtbl.create 13 :  (string,regexp) Hashtbl.t  );
 
 let () =
   List.iter (fun (n,c) -> Hashtbl.add named_regexps n (chars c))

@@ -5917,6 +5917,18 @@ let apply_ctyp () =
           ("Gram.mk_action (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (t : 'ctyp ))\n",
             (Gram.mk_action
                (fun _  (t : 'ctyp)  _  (_loc : FanLoc.t)  -> (t : 'ctyp )))));
+        ([`Skeyword "(";
+         `Sself;
+         `Skeyword ",";
+         `Snterm (Gram.obj (com_ctyp : 'com_ctyp Gram.t ));
+         `Skeyword ")";
+         `Snterm (Gram.obj (type_longident : 'type_longident Gram.t ))],
+          ("Gram.mk_action\n  (fun (j : 'type_longident)  _  (tl : 'com_ctyp)  _  (t : 'ctyp)  _ \n     (_loc : FanLoc.t)  ->\n     (appl_of_list ((j :>ctyp) :: t :: (list_of_com tl [])) : 'ctyp ))\n",
+            (Gram.mk_action
+               (fun (j : 'type_longident)  _  (tl : 'com_ctyp)  _ 
+                  (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
+                  (appl_of_list ((j :>ctyp) :: t :: (list_of_com tl [])) : 
+                  'ctyp )))));
         ([`Skeyword "[=";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
          `Skeyword "]"],
@@ -5969,6 +5981,61 @@ let apply_ctyp () =
             (Gram.mk_action
                (fun _  (p : 'mtyp)  _  _  (_loc : FanLoc.t)  ->
                   (`Package (_loc, p) : 'ctyp )))))])]);
+  Gram.extend_single (comma_ctyp : 'comma_ctyp Gram.t )
+    (None,
+      (None, None,
+        [([`Sself; `Skeyword ","; `Sself],
+           ("Gram.mk_action\n  (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp)  (_loc : FanLoc.t)  ->\n     (`Com (_loc, t1, t2) : 'comma_ctyp ))\n",
+             (Gram.mk_action
+                (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp) 
+                   (_loc : FanLoc.t)  -> (`Com (_loc, t1, t2) : 'comma_ctyp )))));
+        ([`Stoken
+            (((function | `Ant (("list"|""),_) -> true | _ -> false)),
+              (`Normal, "`Ant ((\"list\"|\"\"),_)"))],
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\"|\"\" as n),s) ->\n         (mk_anti _loc ~c:\"ctyp,\" n s : 'comma_ctyp )\n     | _ -> failwith \"mk_anti _loc ~c:\"ctyp,\" n s\n\")\n",
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (("list"|"" as n),s) ->
+                      (mk_anti _loc ~c:"ctyp," n s : 'comma_ctyp )
+                  | _ -> failwith "mk_anti _loc ~c:\"ctyp,\" n s\n"))));
+        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (`Ctyp (_loc, t) : 'comma_ctyp ))\n",
+            (Gram.mk_action
+               (fun (t : 'ctyp)  (_loc : FanLoc.t)  ->
+                  (`Ctyp (_loc, t) : 'comma_ctyp )))))]));
+  Gram.extend_single (com_ctyp : 'com_ctyp Gram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Ant ((""|"typ"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"typ\"),_)"))],
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"typ\" as n),s) -> (mk_anti _loc ~c:\"ctyp\" n s : 'com_ctyp )\n     | _ -> failwith \"mk_anti _loc ~c:\"ctyp\" n s\n\")\n",
+             (Gram.mk_action
+                (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"typ" as n),s) ->
+                       (mk_anti _loc ~c:"ctyp" n s : 'com_ctyp )
+                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
+        ([`Stoken
+            (((function | `Ant ("list",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"list\",_)"))],
+          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\" as n),s) -> (mk_anti _loc ~c:\"ctyp,\" n s : 'com_ctyp )\n     | _ -> failwith \"mk_anti _loc ~c:\"ctyp,\" n s\n\")\n",
+            (Gram.mk_action
+               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (("list" as n),s) ->
+                      (mk_anti _loc ~c:"ctyp," n s : 'com_ctyp )
+                  | _ -> failwith "mk_anti _loc ~c:\"ctyp,\" n s\n"))));
+        ([`Sself; `Skeyword ","; `Sself],
+          ("Gram.mk_action\n  (fun (t2 : 'com_ctyp)  _  (t1 : 'com_ctyp)  (_loc : FanLoc.t)  ->\n     (`Com (_loc, t1, t2) : 'com_ctyp ))\n",
+            (Gram.mk_action
+               (fun (t2 : 'com_ctyp)  _  (t1 : 'com_ctyp)  (_loc : FanLoc.t) 
+                  -> (`Com (_loc, t1, t2) : 'com_ctyp )))));
+        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
+          ("Gram.mk_action (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'com_ctyp ))\n",
+            (Gram.mk_action
+               (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (t : 'com_ctyp )))))]));
   Gram.extend_single (star_ctyp : 'star_ctyp Gram.t )
     (None,
       (None, None,
@@ -6189,30 +6256,7 @@ let apply_ctyp () =
           ("Gram.mk_action\n  (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->\n     (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter ))\n",
             (Gram.mk_action
                (fun (t : 'type_parameter)  (_loc : FanLoc.t)  ->
-                  (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter )))))]));
-  Gram.extend_single (comma_ctyp : 'comma_ctyp Gram.t )
-    (None,
-      (None, None,
-        [([`Sself; `Skeyword ","; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp)  (_loc : FanLoc.t)  ->\n     (`Com (_loc, t1, t2) : 'comma_ctyp ))\n",
-             (Gram.mk_action
-                (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp) 
-                   (_loc : FanLoc.t)  -> (`Com (_loc, t1, t2) : 'comma_ctyp )))));
-        ([`Stoken
-            (((function | `Ant (("list"|""),_) -> true | _ -> false)),
-              (`Normal, "`Ant ((\"list\"|\"\"),_)"))],
-          ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"list\"|\"\" as n),s) ->\n         (mk_anti _loc ~c:\"ctyp,\" n s : 'comma_ctyp )\n     | _ -> failwith \"mk_anti _loc ~c:\"ctyp,\" n s\n\")\n",
-            (Gram.mk_action
-               (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                  match __fan_0 with
-                  | `Ant (("list"|"" as n),s) ->
-                      (mk_anti _loc ~c:"ctyp," n s : 'comma_ctyp )
-                  | _ -> failwith "mk_anti _loc ~c:\"ctyp,\" n s\n"))));
-        ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  (_loc : FanLoc.t)  -> (`Ctyp (_loc, t) : 'comma_ctyp ))\n",
-            (Gram.mk_action
-               (fun (t : 'ctyp)  (_loc : FanLoc.t)  ->
-                  (`Ctyp (_loc, t) : 'comma_ctyp )))))]))
+                  (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter )))))]))
 
 let _ =
   AstParsers.register_parser ("revise", (fun ()  -> apply (); apply_ctyp ()))

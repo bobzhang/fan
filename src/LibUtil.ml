@@ -294,7 +294,7 @@ end;
 module type MAP = sig
   include Map.S;
   val of_list: list(key * 'a) -> t 'a;
-  val of_hashtbl:Hashtbl.t key 'a -> t 'a;
+  val of_hashtbl:(key,'a) Hashtbl.t  -> t 'a;
   val elements: t 'a -> list (key * 'a);
   val add_list: list (key * 'a) -> t 'a -> t 'a;
   val find_default: ~default :'a -> key -> t 'a -> 'a ;
@@ -379,7 +379,7 @@ end);
 
 
 module Hashset = struct
-  type 'a t  =  Hashtbl.t 'a unit;
+  type 'a t  =  ('a,unit)Hashtbl.t;
   let create = Hashtbl.create;
   let add set x = Hashtbl.replace set x ();
   let remove = Hashtbl.remove;

@@ -81,14 +81,16 @@ let ident_of_exp: exp -> ident =
   | t -> self t
 
 let ident_of_ctyp: ctyp -> ident =
-  let error () = invalid_arg "ident_of_ctyp: this type is not an identifier" in
+  let error x =
+    invalid_argf "ident_of_ctyp: this type %s is not an identifier"
+      (Objs.dump_ctyp x) in
   let rec self (x : ctyp) =
     match x with
     | `Apply (_loc,t1,t2) ->
         `Apply (_loc, (self (t1 :>ctyp)), (self (t2 :>ctyp)))
-    | `Lid _ -> error ()
-    | #ident' as i -> if is_module_longident i then i else error ()
-    | _ -> error () in
+    | `Lid _ -> error x
+    | #ident' as i -> if is_module_longident i then i else error x
+    | _ -> error x in
   function | #ident as i -> i | t -> self t
 
 let rec is_irrefut_pat (x : pat) =

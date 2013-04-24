@@ -3,9 +3,9 @@ open LibUtil;
 
 type key = string;
 
-let inject_exp_tbl: Hashtbl.t key exp = Hashtbl.create 40; 
-let inject_stru_tbl: Hashtbl.t key stru = Hashtbl.create 40;
-let inject_clfield_tbl: Hashtbl.t key clfield = Hashtbl.create 40;
+let inject_exp_tbl: (key,exp) Hashtbl.t = Hashtbl.create 40;;
+let inject_stru_tbl: (key,stru) Hashtbl.t = Hashtbl.create 40;;
+let inject_clfield_tbl: (key,clfield)Hashtbl.t = Hashtbl.create 40;
 
 let register_inject_exp (k,f)=
   Hashtbl.replace inject_exp_tbl k f;

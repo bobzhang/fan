@@ -52,7 +52,7 @@ type expander =  exp -> exp;
    exp -> stru
 *)
   
-let macro_expanders: Hashtbl.t key expander = Hashtbl.create 40 ;
+let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40 ;
 
 let register_macro (k,f) =
   Hashtbl.replace macro_expanders k f;

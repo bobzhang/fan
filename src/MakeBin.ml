@@ -69,7 +69,7 @@ let task f x =
 module Make
      (PreCast:Sig.PRECAST) = struct
 
-   let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) = Hashtbl.create 30;
+   let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30;
      (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
   let rcall_callback = ref (fun () -> ());
     let loaded_modules = ref SSet.empty;

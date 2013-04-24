@@ -253,7 +253,7 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
   let open Transform in
     let tctor_var = basic_transform left_type_id in
     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
-    let (ty,result_type) =
+    let (_ty,result_type) =
       Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
         Str_item in
     if not (Ctyp.is_abstract tydcl)

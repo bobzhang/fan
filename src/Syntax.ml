@@ -20,7 +20,7 @@ a_ident aident amp_ctyp and_ctyp case
   class_longident  class_name_and_param clsigi class_signature
   clfield class_structure cltyp cltyp_declaration
   cltyp_longident 
-  cltyp_plus comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
+  cltyp_plus com_ctyp comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
   ctyp cvalue_binding direction_flag direction_flag_quot
   dummy eq_exp exp exp_eoi field_exp field_exp_list fun_binding

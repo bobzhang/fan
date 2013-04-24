@@ -4,7 +4,7 @@ type effect = unit -> unit;
   
 let applied_parsers: Queue.t (string * effect) = Queue.create ();
 
-let registered_parsers: Hashtbl.t key effect = Hashtbl.create 40;
+let registered_parsers: (key,effect) Hashtbl.t = Hashtbl.create 40;
 
 let use_parsers ls =
   List.iter (fun s ->

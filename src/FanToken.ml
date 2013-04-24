@@ -217,7 +217,7 @@ let name_of_string s : name =
 
 
 
-let names_tbl : Hashtbl.t domains SSet.t =
+let names_tbl : (domains,SSet.t) Hashtbl.t =
   Hashtbl.create 30 ;
     
 (*

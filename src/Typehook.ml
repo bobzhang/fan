@@ -25,7 +25,7 @@ end;
   
 (* type plugin_name = string ; *)
   
-let filters : Hashtbl.t plugin_name plugin = Hashtbl.create 30;
+let filters : (plugin_name, plugin) Hashtbl.t  = Hashtbl.create 30;;
 
 (* (\* when you do the iteration, you should do it in reverse order *\)   *)
 (* let current_filters:  ref (list (plugin_name * plugin)) = ref []; *)

@@ -19,3 +19,6 @@
 * Use AstN to generate code instead
 
 * TODO inline the simple grammar does help a lot ....
+
+** inline Ant with fixed pattern -> more aggressive inlining later?
+   

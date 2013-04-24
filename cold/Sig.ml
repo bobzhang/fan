@@ -152,6 +152,7 @@ module type Syntax =
     val sigi_quot : sigi Gram.t
     val sigis : sigi Gram.t
     val star_ctyp : ctyp Gram.t
+    val com_ctyp : ctyp Gram.t
     val stru : stru Gram.t
     val stru_quot : stru Gram.t
     val strus : stru Gram.t

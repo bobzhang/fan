@@ -46,7 +46,7 @@ let check_valid str =
 
 
 
-let conversion_table : Hashtbl.t string string = Hashtbl.create 50;
+let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50;
 
 
   

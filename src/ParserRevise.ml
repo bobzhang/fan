@@ -1231,7 +1231,9 @@ let apply_ctyp () = begin
         [ S{t1}; S{t2} ->
           let t = `App(_loc,t1,t2) in
           try (ident_of_ctyp t:>ctyp)
-          with [ Invalid_argument _ -> t ]]
+          with [ Invalid_argument _ -> t
+               ]
+        ]
        (* [mod_ext_longident] and [type_longident]
           | type_longident
           { mktyp(Ptyp_constr(mkrhs $1 1, [])) }
@@ -1253,6 +1255,9 @@ let apply_ctyp () = begin
         | a_uident{i} -> (i:> ctyp)
         | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
+
+        | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
+            appl_of_list  [(j:>ctyp); t::list_of_com tl []]
         | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)
@@ -1261,6 +1266,15 @@ let apply_ctyp () = begin
         | "#"; class_longident{i} ->  `ClassPath (_loc, i)
         | "<"; opt_meth_list{t}; ">" -> t
         | "("; "module"; mtyp{p}; ")" -> `Package(_loc,p)  ] }
+      comma_ctyp: (* DUPLICATED removed later *)
+      [ S{t1}; ","; S{t2} -> `Com (_loc, t1, t2) 
+      | `Ant (("list" | "" as n),s) -> mk_anti _loc ~c:"ctyp," n s
+      | ctyp{t} -> `Ctyp(_loc,t)  ]
+      com_ctyp:
+      [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
+      | `Ant (("list" as n),s) ->  mk_anti _loc ~c:"ctyp," n s
+      | S{t1}; ","; S{t2} -> `Com(_loc,t1,t2)
+      | ctyp{t} -> t  ]
       star_ctyp:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s
       | `Ant (("list" as n),s) ->  mk_anti _loc ~c:"ctyp*" n s
@@ -1298,10 +1312,7 @@ let apply_ctyp () = begin
       [ S{t1}; ","; S{t2} ->  `Com (_loc, t1, t2)
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp," n s
       | type_parameter{t} -> `Ctyp(_loc, (t:>ctyp))  ]
-      comma_ctyp:
-      [ S{t1}; ","; S{t2} -> `Com (_loc, t1, t2) 
-      | `Ant (("list" | "" as n),s) -> mk_anti _loc ~c:"ctyp," n s
-      | ctyp{t} -> `Ctyp(_loc,t)  ]  |};
+  |};
 end;
 
   
