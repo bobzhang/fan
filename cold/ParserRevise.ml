@@ -4317,7 +4317,7 @@ let apply () =
                    (FanToken.paths := ((`Absolute x) ::
                       (FanToken.paths.contents));
                     None : 'top_phrase )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"],
+         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"],
            ("Gram.mk_action\n  (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (Some st : 'top_phrase ))\n",
              (Gram.mk_action
                 (fun _  (st : 'stru)  (_loc : FanLoc.t)  ->
@@ -6043,16 +6043,10 @@ let apply_ctyp () =
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
          `Skeyword ":";
          `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (let (tl,rt) = FanOps.to_generalized t in\n      `TyCol\n        (_loc, s,\n          (match tl with\n           | [] -> rt\n           | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 'constructor_declarations ))\n",
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     (`TyCol (_loc, s, t) : 'constructor_declarations ))\n",
             (Gram.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : FanLoc.t)  ->
-                  (let (tl,rt) = FanOps.to_generalized t in
-                   `TyCol
-                     (_loc, s,
-                       (match tl with
-                        | [] -> rt
-                        | _ -> `Arrow (_loc, (sta_of_list tl), rt))) : 
-                  'constructor_declarations )))));
+                  (`TyCol (_loc, s, t) : 'constructor_declarations )))));
         ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
           ("Gram.mk_action\n  (fun (s : 'a_uident)  (_loc : FanLoc.t)  ->\n     ((s :>or_ctyp) : 'constructor_declarations ))\n",
             (Gram.mk_action

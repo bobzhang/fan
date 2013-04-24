@@ -385,12 +385,12 @@ let mkumin loc prefix arg = with exp'
 
 
 (* here -> can not be used as a delimiter, if we remove quotations.*)  
-let rec to_generalized x = with ctyp
-  match x with
-  [ {| $t1 -> $t2 |} ->
-    let (tl, rt) = to_generalized t2 in
-    ([t1 :: tl], rt)
-  | t -> ([], t) ];
+(* let rec to_generalized x = with ctyp' *)
+(*   match x with *)
+(*   [ {| $t1 -> $t2 |} -> *)
+(*     let (tl, rt) = to_generalized t2 in *)
+(*     ([t1 :: tl], rt) *)
+(*   | t -> ([], t) ]; *)
   
 
   

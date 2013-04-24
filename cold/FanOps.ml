@@ -318,9 +318,3 @@ let mkumin loc prefix arg =
       (`Nativeint (loc, (String.neg n)) : Ast.exp )
   | (`Flo (_loc,n) : Ast.exp) -> (`Flo (loc, (String.neg n)) : Ast.exp )
   | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : Ast.exp )
-
-let rec to_generalized x =
-  match x with
-  | `Arrow (_loc,t1,t2) ->
-      let (tl,rt) = to_generalized t2 in ((t1 :: tl), rt)
-  | t -> ([], t)

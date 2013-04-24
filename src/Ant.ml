@@ -1,6 +1,5 @@
 open Ast;
 open FanUtil;
-(* open Meta; *)
 open AstLoc;
 
 let meta_loc_exp _loc loc =
@@ -9,17 +8,12 @@ let meta_loc_exp _loc loc =
   | Some "here" -> FanMeta.meta_loc _loc loc
   | Some x -> lid _loc x  ];;
 
+(* we use [subst_first_loc] *)
+let meta_loc_pat _loc _ =  {:pat| _ |}; 
 
-let meta_loc_pat _loc _ =  {:pat| _ |}; (* we use [subst_first_loc] *)
 
-(* let gm () = *)
-(*   match !FanConfig.compilation_unit with *)
-(*   [Some "FanAst" -> ""  *)
-(*   | Some _ -> "FanAst"  *)
-(*   | None ->  "FanAst"]; *)
-
-    (* when the antiquotation appears in the pattern position,
-       its final context is [pat] *)  
+(* when the antiquotation appears in the pattern position,
+   its final context is [pat] *)  
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
   method! pat (x:pat)= with pat'
@@ -71,6 +65,6 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           {| {| $(id:$x)  |} |}
       | _ -> super#exp e]
       | e -> super#exp e];
-  end;
+  end;;
                   
 

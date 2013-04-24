@@ -262,9 +262,11 @@ let mkvariant (x : or_ctyp) =
   | `Uid (sloc,s) -> ((with_loc s sloc), [], None, sloc)
   | `Of (_loc,`Uid (sloc,s),t) ->
       ((with_loc s sloc), (List.map ctyp (list_of_star t [])), None, _loc)
-  | `TyCol (_loc,`Uid (sloc,s),`Arrow (_,t,u)) ->
-      ((with_loc s sloc), (List.map ctyp (list_of_star t [])),
-        (Some (ctyp u)), _loc)
+  | `TyCol (_loc,`Uid (sloc,s),(`Arrow _ as t)) ->
+      (match List.rev (list_of_arrow_r t []) with
+       | u::t ->
+           ((with_loc s sloc), (List.map ctyp t), (Some (ctyp u)), _loc)
+       | [] -> assert false)
   | `TyCol (_loc,`Uid (sloc,s),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
   | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t)

@@ -81,7 +81,7 @@ let apply () = begin
         [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"mexp" _loc n s
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.mexp_tag
-        | module_longident{i} -> (* `Id (_loc, (i : vid :>ident)) *) (i:>mexp)
+        | module_longident{i} ->  (i:>mexp)
         | "("; S{me}; ":"; mtyp{mt}; ")" ->  `Constraint (_loc, me, mt)
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
@@ -914,7 +914,7 @@ let apply () = begin
       | "#";"import"; dot_namespace{x} ->
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
            None)
-      | stru{st}; ";" -> Some st
+      | stru{st}; ";;" -> Some st
       | `EOI -> None ]
       stru_quot:
       [ "#"; a_lident{n}; exp{dp} -> `Directive(_loc,n,dp)
@@ -1226,11 +1226,18 @@ let apply_ctyp () = begin
         | `LABEL s ; ":"; S{t} -> `Label (_loc, (`Lid (_loc, s)), t) (* FIXME *)
         | `OPTLABEL s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
         | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
+         
        "apply" LA
         [ S{t1}; S{t2} ->
           let t = `App(_loc,t1,t2) in
           try (ident_of_ctyp t:>ctyp)
           with [ Invalid_argument _ -> t ]]
+       (* [mod_ext_longident] and [type_longident]
+          | type_longident
+          { mktyp(Ptyp_constr(mkrhs $1 1, [])) }
+          | simple_core_type2 type_longident
+          { mktyp(Ptyp_constr(mkrhs $2 2, [$1])) }
+          | LPAREN core_type_comma_list RPAREN type_longident *)  
        "." LA
         [ S{t1}; "."; S{t2} ->
             try
@@ -1265,14 +1272,8 @@ let apply_ctyp () = begin
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag *)
       | S{t1}; "|"; S{t2} ->    `Bar(_loc,t1,t2)
       | a_uident{s}; "of"; constructor_arg_list{t} -> `Of(_loc,s,t)
-      (* GADT to be improved *)      
-      | a_uident{s}; ":"; ctyp{t} ->
-          let (tl, rt) = FanOps.to_generalized t in
-            (* {| $(id:(s:>ident)) : ($(FanAst.and_of_list tl) -> $rt) |} *)
-            `TyCol
-            (_loc, s,
-             match tl with [ [] -> rt | _ -> `Arrow (_loc,sta_of_list tl,rt)]
-             (* (`Arrow (_loc, (sta_of_list tl), rt)) *))
+      | a_uident{s}; ":"; ctyp{t} -> (* GADT  *)      
+          `TyCol(_loc,s,t)
       | a_uident{s} -> (s :> or_ctyp) ]
       constructor_declaration:
       [ `Ant ((""|"typ" as n),s) -> mk_anti _loc ~c:"ctyp" n s

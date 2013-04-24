@@ -284,6 +284,11 @@ let rec list_of_app x acc =
   | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
   | x -> x :: acc
 
+let rec list_of_arrow_r x acc =
+  match x with
+  | `Arrow (_,t1,t2) -> list_of_arrow_r t1 (list_of_arrow_r t2 acc)
+  | x -> x :: acc
+
 let rec view_app acc =
   function | `App (_,f,a) -> view_app (a :: acc) f | f -> (f, acc)
 

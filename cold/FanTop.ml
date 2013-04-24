@@ -1,5 +1,3 @@
-open Ast
-
 open LibUtil
 
 open Fan
@@ -23,9 +21,7 @@ let wrap parse_fun lb =
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens (Syntax.top_phrase : stru option Gram.t )
-          token_stream
-  with
+  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
   | Some stru ->
       let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file

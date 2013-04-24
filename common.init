@@ -1,12 +1,14 @@
 (* -*- Mode:caml; -*- *)
-#load "FanTop.cma";;
+
+#load "FanUTop.cma";;
+#directory "+compiler-libs";;
 (* #load_rec "FanLoc.cmo";; *)
 (* #load_rec "FanBasic.cmo";; *)
 (* #load_rec "Query.cmo";; *)
 
 (* #load_rec "FanLexUtil.cmo";; *)
 
-#load_rec "OAstPrint.cmo";;
+(* #load_rec "OAstPrint.cmo";; *)
 (* consult Topdirs for more utlities *)
 let fmt = std_formatter
 (* let _ = Clflags.noprompt := true;; *)
@@ -40,15 +42,15 @@ open FanUtil;;
 open Stream;;
 (* open Grammar;; *)
 open Structure;;
-open OAstPrint;;
-Toploop.print_out_value := loose#out_value;;
-Toploop.print_out_type := loose#out_type;;
+(* open OAstPrint;; *)
+(* Toploop.print_out_value := loose#out_value;; *)
+(* Toploop.print_out_type := loose#out_type;; *)
 
-Toploop.print_out_class_type := loose#class_type;;
-Toploop.print_out_module_type := loose#module_type;;
-Toploop.print_out_sig_item := loose#sig_item;;
-Toploop.print_out_signature := loose#signature;;
-Toploop.print_out_phrase := loose#phrase;;
+(* Toploop.print_out_class_type := loose#class_type;; *)
+(* Toploop.print_out_module_type := loose#module_type;; *)
+(* Toploop.print_out_sig_item := loose#sig_item;; *)
+(* Toploop.print_out_signature := loose#signature;; *)
+(* Toploop.print_out_phrase := loose#phrase;; *)
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 
 
@@ -86,9 +88,9 @@ open Exp;;
 let t_dump s =  t stru s |> Ast2pt.stru;;
 open ParserGrammar;;
 
-#require "inspect";;
-open Inspect;;
-let view a= Dot.dump_to_file "test.dot"a;;
+(* #require "inspect";; *)
+(* open Inspect;; *)
+(* let view a= Dot.dump_to_file "test.dot"a;; *)
 #install_printer print_tree;;
 #install_printer Gram.dump;;
 #install_printer print_ocaml_loc;;

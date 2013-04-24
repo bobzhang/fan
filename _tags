@@ -9,7 +9,8 @@ true:-traverse
 <{cold,src,debug}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan,Extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
 <{cold,src,debug}/{FanTop,FanEval}.{ml,mli}>: use_ocamlcommon
 
-
+<{cold,src,debug}/{FanUTop}.{ml,mli}> : use_ocamlcommon, pkg_utop
+<{cold,src,debug}/{FanUTop}.{byte,d.byte}>: pkg_compiler-libs.toplevel, pkg_threads, pkg_utop
 # pkg_compiler-libs.common
 # pkg_compiler-libs.toplevel
 # pkg_compiler-libs.common
