@@ -2,8 +2,11 @@ open Format
 
 module Syntax = Syntax
 
-let sigi_parser =
-  ref (fun ?directive_handler:_  _  _  -> failwith "No interface parser")
+let sigi_parser:
+  (?directive_handler:(Ast.sigi -> Ast.sigi option) ->
+     FanLoc.t -> char LibUtil.XStream.t -> Ast.sigi option)
+    ref
+  = ref (fun ?directive_handler:_  _  _  -> failwith "No interface parser")
 
 let stru_parser =
   ref

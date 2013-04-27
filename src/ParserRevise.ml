@@ -480,8 +480,9 @@ let apply () = begin
   with case
     {:extend|
       case:
-      [ "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l (* {|  $list:l  |} *) (* FIXME *)
-      | pat{p}; "->"; exp{e} -> `Case(_loc,p,e)(* {| $pat:p -> $e |} *) ]
+      [ "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l
+      | "|"; L1 case0 SEP "|"{l} -> bar_of_list l 
+      | pat{p}; "->"; exp{e} -> `Case(_loc,p,e) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
         mk_anti _loc ~c:"case" n s
@@ -499,9 +500,7 @@ let apply () = begin
           mk_anti _loc ~c:"rec_exp" n s
         | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
         | label_longident{i} ->  (*FIXME*)
-            (* `RecBind (_loc, i, `Id (_loc, (`Lid (_loc, FanOps.to_lid i)))) *)
-            `RecBind (_loc, i, `Lid (_loc, FanOps.to_lid i))
-        ]
+            `RecBind (_loc, i, `Lid (_loc, FanOps.to_lid i))]
         field_exp:
         [ `Ant ((""|"bi"|"anti" |"list" as n),s) -> mk_anti _loc ~c:"rec_exp" n s
         | a_lident{l}; "=";  exp Level "top"{e} ->

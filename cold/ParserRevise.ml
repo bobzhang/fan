@@ -1999,6 +1999,13 @@ let apply () =
               (Gram.mk_action
                  (fun _  (l : 'case0 list)  _  (_loc : FanLoc.t)  ->
                     (bar_of_list l : 'case )))));
+         ([`Skeyword "|";
+          `Slist1sep
+            ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))), (`Skeyword "|"))],
+           ("Gram.mk_action\n  (fun (l : 'case0 list)  _  (_loc : FanLoc.t)  -> (bar_of_list l : 'case ))\n",
+             (Gram.mk_action
+                (fun (l : 'case0 list)  _  (_loc : FanLoc.t)  ->
+                   (bar_of_list l : 'case )))));
          ([`Snterm (Gram.obj (pat : 'pat Gram.t ));
           `Skeyword "->";
           `Snterm (Gram.obj (exp : 'exp Gram.t ))],
