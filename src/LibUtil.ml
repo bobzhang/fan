@@ -99,7 +99,7 @@ let callcc  (type u) (f: u cont  -> u)  =
   
 
 
-type  'a return  = { return : ! 'b. 'a -> 'b };
+type  'a return  = { return : ! 'b. 'a -> 'b };;
 
 let with_return f =
   let module M = struct
@@ -114,15 +114,16 @@ let with_return f =
   try
     let rval = f return in
     begin match !r with
-    [ None -> rval
-    | Some _ -> failwith "with_return exited normally despite return being called"]
+    | None -> rval
+    | Some _ -> failwith "with_return exited normally despite return being called"
     end
   with M.Return ->                      (* allows other exceptions through *)
     match !r with
-    [ None -> assert false
-    | Some x -> x];
+    | None -> assert false
+    | Some x -> x
+;;
 
-          
+
 type 'a id  = 'a -> 'a;
 module Queue = struct
   include Queue;
@@ -130,7 +131,7 @@ module Queue = struct
     with_return (fun r -> (iter(fun x -> if f x then r.return (Some x)) t; None));
   let find_map t ~f =
     with_return (fun r ->
-      (iter (fun x -> match f x with [None -> () | Some _ as res -> r.return res]) t;
+      (iter (fun x -> match f x with | None -> () | Some _ as res -> r.return res) t;
       None));
   (* the first element is in the bottom *)  
   let to_list_rev q =

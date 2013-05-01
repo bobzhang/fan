@@ -12,22 +12,23 @@ open Tags.Operators
 open Tags
 
 
+
 (*
   Extend module [Options]
  *)  
 module Options = struct
   include Options
 
-  (* modules to be documented *)    
+      (* modules to be documented *)    
   let doc_modules = ref StringSet.empty
   let verbose = ref false
   let debug = ref false
-  (* handle .mllib files *)    
+      (* handle .mllib files *)    
   let lib_files: (string, string list)Hashtbl.t = Hashtbl.create 50
-  (* handle .itarget files *)    
+      (* handle .itarget files *)    
   let target_files: (string,string list)Hashtbl.t = Hashtbl.create 50 
   let version = "1.0"
-  (* compile time, not precise enough *)    
+      (* compile time, not precise enough *)    
   let time = Unix.(
     let {tm_mon;tm_mday;tm_year;
          tm_hour;tm_min;
@@ -39,7 +40,36 @@ module Options = struct
 end
 
 (* Utility modules *)    
-module Util = struct   
+module Util = struct
+  let sep str  =
+    let len = String.length str in 
+    let rec aux start current  acc=
+      if current >= len then
+        match start with
+        |Some x -> String.sub str x (current - x):: acc
+        |None -> acc
+      else 
+        match start, str.[current] with
+        | None,(' '|'\n'|'\t') ->
+            aux start (current+1) acc
+        | Some v,(' '|'\n'|'\t') ->
+            aux
+              None
+              (current+1)
+              (String.sub str v (current - v) :: acc)
+        | None, x ->
+            aux
+              (Some current)
+              (current+1)
+              acc
+        | Some _, x ->
+            aux
+              start
+              (current+1)
+              acc in
+    List.rev (aux None 0 [])
+      
+
   let flip f x y = f y x
       (* ad-hoc trim endline *)    
   let trim_endline str = 
@@ -56,6 +86,7 @@ module Util = struct
     let module M = struct exception Return of u end in
     try f (fun x -> raise (M.Return x))
     with M.Return u -> u
+        
   module String = struct
     include String
     let ends_with s e =
@@ -79,9 +110,10 @@ module Util = struct
     ksprintf (fun str-> if !Options.verbose then prerr_endline str) fmt
   let run_and_read      = Ocamlbuild_pack.My_unix.run_and_read
   let blank_sep_strings = Ocamlbuild_pack.Lexers.blank_sep_strings
-  let opt_bind x f = match x with
-  |Some v -> f v
-  |None -> None
+  let opt_bind x f =
+    match x with
+    |Some v -> f v
+    |None -> None
 
   let buffer_size = 8192
   let buffer = String.create buffer_size
@@ -89,41 +121,41 @@ module Util = struct
     let () = Log.dprintf 1 "%s --> %s\n" input_name output_name in 
     let fd_in = openfile input_name [O_RDONLY] 0 in
     let fd_out = openfile output_name [O_WRONLY; O_CREAT; O_TRUNC] 0o666 in
-    let rec copy_loop () = match read fd_in buffer 0 buffer_size with
-    |  0 -> ()
-    | r -> ignore (write fd_out buffer 0 r); copy_loop ()
-    in
+    let rec copy_loop () =
+      match read fd_in buffer 0 buffer_size with
+      |  0 -> ()
+      | r -> ignore (write fd_out buffer 0 r); copy_loop () in
     copy_loop ();
     close fd_in;
     close fd_out)
   let update f path = let (//) = Filename.concat in 
-    Sys.readdir path |> Array.iter
-      (fun x ->
-        let x = (if path<>"." then path // x else x ) in 
-        if f x  then
-          let target =  "_build"  // x in
-          try 
-            let {Unix.st_mtime=m_x ;_ } = Unix.stat x in
-            if Sys.file_exists target then
-              let {Unix.st_mtime=m_y;_} = Unix.stat target in
-              if m_x > m_y then begin 
-                Sys.remove target;
-                file_copy x target 
-              end 
-              else ()
-            else begin
-              let subdir = "_build"// path in 
-              if not (Sys.file_exists subdir) then  (* FIXME  more precise *)
-                Unix.(mkdir subdir 0o755)
-              else ();
-              (file_copy x target)
-            end
-          with
-            e -> begin
-              Format.eprintf "%s" (Printexc.to_string e);
-              Format.eprintf "ignoreing a file %s" x ;
+  Sys.readdir path |> Array.iter
+    (fun x ->
+      let x = (if path<>"." then path // x else x ) in 
+      if f x  then
+        let target =  "_build"  // x in
+        try 
+          let {Unix.st_mtime=m_x ;_ } = Unix.stat x in
+          if Sys.file_exists target then
+            let {Unix.st_mtime=m_y;_} = Unix.stat target in
+            if m_x > m_y then begin 
+              Sys.remove target;
+              file_copy x target 
             end 
-      )
+            else ()
+          else begin
+            let subdir = "_build"// path in 
+            if not (Sys.file_exists subdir) then  (* FIXME  more precise *)
+              Unix.(mkdir subdir 0o755)
+            else ();
+            (file_copy x target)
+          end
+        with
+          e -> begin
+            Format.eprintf "%s" (Printexc.to_string e);
+            Format.eprintf "ignoreing a file %s" x ;
+          end 
+    )
 
 
   type file_type =
@@ -187,7 +219,7 @@ open Opt;;
 
 (* ocaml_lib "FanTop" ; *)
 (* use_lib "o" "FanTop"; *)
-    
+
 ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs";
 ocaml_lib ~extern:true "ocamlcommon" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
 ocaml_lib ~extern:true "ocamlbytecomp" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
@@ -229,8 +261,8 @@ module Driver = struct
     end
     | _ ->
         Cmd (S[pp;  A "-printer"; printer; A "-o"; Px pp_ml; P ml])
-    (* let pp = match pp with | N -> default | _ -> pp in *)
-    (* Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ]) *)
+          (* let pp = match pp with | N -> default | _ -> pp in *)
+          (* Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ]) *)
    )
   let infer_with_error_channel ?(ocamlc=Options.ocamlc) flags tag =
     let infer ml dlambda env build = let open Ocaml_utils in
@@ -238,9 +270,9 @@ module Driver = struct
     let tags = tags_of_pathname ml ++ "ocaml" in
     Ocaml_compiler.prepare_compile build ml ;
     Cmd(S( [!ocamlc; ocaml_ppflags tags; ocaml_include_flags ml] @
-          List.map (fun f -> A f) flags @
-          [(if Tags.mem "thread" tags then A"-thread" else N);
-          T(tags++tag); P ml; Sh"2>"; Px dlambda]) ) in
+           List.map (fun f -> A f) flags @
+           [(if Tags.mem "thread" tags then A"-thread" else N);
+            T(tags++tag); P ml; Sh"2>"; Px dlambda]) ) in
     infer 
   let infer_dlambda =  infer_with_error_channel ["-dlambda"] "infer_dlambda"
   let infer_drawlambda = infer_with_error_channel ["-drawlambda"] "infer_drawlambda"
@@ -258,33 +290,33 @@ module Driver = struct
     let modules = String.concat "\n" (StringSet.elements !Options.doc_modules) in
     Cmd (S[A"echo"; Quote(Sh modules); Sh">"; P ("foo" /*> Odocl)])
 
-  (* generate files for .mllib .mldylib .itarget *)    
-  let mk_files file lst env build =
-    let lst = String.concat "\n" lst  in
-    Cmd (S[A"echo"; Quote(Sh lst); Sh ">"; P file ])
+      (* generate files for .mllib .mldylib .itarget *)    
+let mk_files file lst env build =
+  let lst = String.concat "\n" lst  in
+  Cmd (S[A"echo"; Quote(Sh lst); Sh ">"; P file ])
 
-  let mk_lib tbl suffix env build =
-    let m = env "%" in 
-    let lst =
-      try  Hashtbl.find tbl  m
-      with Not_found -> begin
+let mk_lib tbl suffix env build =
+  let m = env "%" in 
+  let lst =
+    try  Hashtbl.find tbl  m
+    with Not_found -> begin
       Log.dprintf 2
         "Warning: %s not defined in table, using default  rule" m;
       raise Rule.Failed
     end in
-    mk_files (m/*>suffix) lst env build
-  let mk_mllib = mk_lib Options.lib_files Mllib
-  let mk_mldylib = mk_lib Options.lib_files Mldylib
-  let mk_itarget = mk_lib Options.target_files Itarget
-  let mk_version _ _ = (
-    let cmd =
-      sprintf "let version = %S\n\
+  mk_files (m/*>suffix) lst env build
+let mk_mllib = mk_lib Options.lib_files Mllib
+let mk_mldylib = mk_lib Options.lib_files Mldylib
+let mk_itarget = mk_lib Options.target_files Itarget
+let mk_version _ _ = (
+  let cmd =
+    sprintf "let version = %S\n\
 let compile_time = %S" 
     Options.version Options.time in
-    Cmd (S[A"echo"; Quote (Sh cmd); Sh ">"; P"version.ml"]))
+Cmd (S[A"echo"; Quote (Sh cmd); Sh ">"; P"version.ml"]))
 end;;
     
-open Driver;;
+    open Driver;;
 (** My rules *)
  begin (
    (* let open List in *)
@@ -330,9 +362,9 @@ open Driver;;
    rule "generate %.itarget" ~prod:"%.itarget" mk_itarget;
    rule "version.ml" ~prod:"version.ml" mk_version;
    rule "preprocess: ml -> _ppr.ml" ~dep: "%.ml" ~prod:"%_ppr.ml"
-    (fan ~printer:(A"r") "%_ppr.ml" "%.ml" "%_ppr.ml");
+     (fan ~printer:(A"r") "%_ppr.ml" "%.ml" "%_ppr.ml");
    rule "preprocess: ml -> _ppo.ml" ~dep: "%.ml" ~prod: "%_ppo.ml"
-    (fan ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
+     (fan ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
    let myocamldoc tags =
      Ocaml_tools.ocamldoc_l_dir tags in 
    (* -- "extension:html" in  when you want use plugins
@@ -341,7 +373,7 @@ open Driver;;
      ~dep:"%.odocl" ~stamp:"%.docdir/html.stamp" ~prod:"%.docdir/index.html"
      ~insert:`top
      (Ocaml_tools.document_ocaml_project ~ocamldoc:myocamldoc
-       "%.odocl" "%.docdir/index.html" "%.docdir");
+        "%.odocl" "%.docdir/index.html" "%.docdir");
    rule "dypgen %.dyp -> %.ml "
      ~tags:["dypgen"] ~prods:["%.ml"] ~deps:["%.dyp"]
      begin fun env _ ->
@@ -365,7 +397,7 @@ open Driver;;
    (*   ~dep:"%.mlx" *)
    (*   (Ocaml_tools.ocamldep_command "-impl %.mlx" "%.mlx.depends"); *)
 
-   )
+  )
  end 
 
 
@@ -373,21 +405,21 @@ open Driver;;
    configuration syntax extensions
    the key is used by ocamlfind query to get its path.
    for example: ocamlfind query bitstring
-*)    
+ *)    
 let syntax_lib_file
     = ["bitstring",[`D "bitstring.cma" ;
 		    `D "bitstring_persistent.cma";
 		    `D "pa_bitstring.cmo"]
-      ;"ulex",     [`D "pa_ulex.cma"]
-      ;"bolt",     [`D "bolt_pp.cmo"]
-      ;"xstrp4",   [`D "xstrp4.cma"]
-      ;"sexplib",     [`P ("type-conv", "Pa_type_conv.cma"); `D "pa_sexp_conv.cma"]
-      ;"mikmatch_pcre", [`D "pa_mikmatch_pcre.cma"]
-      ;"meta_filter",    [`D "meta_filter.cma"]
-      ;"text", [`D "text.cma"; `D "text-pcre-syntax.cma"]
-      ;"type_conv", [`D "pa_type_conv.cma"]
-      ;"js_of_ocaml", [`D "pa_js.cmo"]   
-      ]
+         ;"ulex",     [`D "pa_ulex.cma"]
+         ;"bolt",     [`D "bolt_pp.cmo"]
+         ;"xstrp4",   [`D "xstrp4.cma"]
+         ;"sexplib",     [`P ("type-conv", "Pa_type_conv.cma"); `D "pa_sexp_conv.cma"]
+         ;"mikmatch_pcre", [`D "pa_mikmatch_pcre.cma"]
+         ;"meta_filter",    [`D "meta_filter.cma"]
+         ;"text", [`D "text.cma"; `D "text-pcre-syntax.cma"]
+         ;"type_conv", [`D "pa_type_conv.cma"]
+         ;"js_of_ocaml", [`D "pa_js.cmo"]   
+     ]
 let syntax_lib_file_cache
     = ".syntax_lib_file_cache"
 let menhir_opts = S [A"--dump";A"--explain"; A"--infer";]
@@ -415,19 +447,19 @@ let argot_installed  () =
 (** handle package *)    
 let find_packages () =
   blank_sep_strings &
-    Lexing.from_string &
-    run_and_read "ocamlfind list | cut -d' ' -f1"      
+  Lexing.from_string &
+  run_and_read "ocamlfind list | cut -d' ' -f1"      
 
 (** list extensions for debug purpose *)
 let extensions () = 
   let pas = List.filter 
-    (fun x ->
-      String.contains_string x  0 "pa_" <> None) (find_packages ()) in 
+      (fun x ->
+        String.contains_string x  0 "pa_" <> None) (find_packages ()) in 
   let tbl = List.map 
-    (fun pkg -> 
-      let dir = 
-        trim_endline (run_and_read ("ocamlfind query " ^ pkg))in 
-      (pkg, dir)) pas in 
+      (fun pkg -> 
+        let dir = 
+          trim_endline (run_and_read ("ocamlfind query " ^ pkg))in 
+        (pkg, dir)) pas in 
   tbl
 (** not turned on by default *)    
 let _ = 
@@ -497,8 +529,8 @@ let syntax_path syntax_lib_file = (
             args :=
               (package,
                (["ocaml"; "pp"; "use_"^ package],
-               (S(List.map (fun file -> A file)
-		   all_path_files)))) ::!args
+                (S(List.map (fun file -> A file)
+		     all_path_files)))) ::!args
           end 
         else begin 
 	  prerr_endlinef "package %s does not exist" package;
@@ -598,18 +630,18 @@ module PackageLinkFix =  struct
       (byte_dep_mlpack "%.mlpack" "%.ml.depends")
   let mlpack_dirs = ["src";"cold"] (* *)      
   let after_rules () = 
-        List.iter
-          (fun p ->
-            dep ["ocaml"; "byte"; "pack"; "extension:cmo"; "file:"^p^".cmo"]
-              [p^".ml.depends"])
+    List.iter
+      (fun p ->
+        dep ["ocaml"; "byte"; "pack"; "extension:cmo"; "file:"^p^".cmo"]
+          [p^".ml.depends"])
       (List.concat (List.map packages_in_dir (List.map Pathname.mk mlpack_dirs)))
 end
 
 ;;    
 (**************************************************************)
-    
+ 
 
-type actions =  (unit -> unit) list ref
+ type actions =  (unit -> unit) list ref
 let before_options : actions = ref []
 and after_options : actions = ref []
 and before_rules : actions = ref []
@@ -627,10 +659,10 @@ let (+>) x l =  l := x :: !l
     dep ["ocamldep"; "file:test_dump.ml"] ["test_type_r.ml"];
     dep ["ocamldep"; "file:test_lift_filter.pp.ml"] ["test_type.ml"];
     demo how to use dep
-        dep ["ocamldep"; "file:test/test_string.ml"]
-        ["test/test_data/string.txt";
-        "test/test_data/char.txt"];
-    *)
+    dep ["ocamldep"; "file:test/test_string.ml"]
+    ["test/test_data/string.txt";
+    "test/test_data/char.txt"];
+ *)
 
 
 (** replace of _tags file *)
@@ -688,16 +720,16 @@ let boot_flags =
     A"-printer"; A"p"];;
 
 rule "src->tmp: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
-    (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
+  (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
 
 rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
-    (fan  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
+  (fan  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
 
 rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
-    (fan  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
+  (fan  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
 
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
-    (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
+  (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
   let ast = "src/Ast.mli" in 
@@ -717,9 +749,9 @@ let () =
 (* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)
 (*   ~insert *)
 copy_rule "src/FanDriver.byte -> boot/FanDriver.byte"
-  ~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
+~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
 copy_rule "src/FanDriver.native -> boot/FanDriver.native"
-  ~insert:`top "src/FanDriver.native" "boot/FanDriver.native";;
+~insert:`top "src/FanDriver.native" "boot/FanDriver.native";;
 
 
 
