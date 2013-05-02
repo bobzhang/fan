@@ -9,7 +9,7 @@ let meta_loc_exp _loc loc =
   | Some x -> lid _loc x  ;;
 
 (* we use [subst_first_loc] *)
-let meta_loc_pat _loc _ =  {:pat| _ |}; 
+let meta_loc_pat _loc _ =  {:pat| _ |};;
 
 
 (* when the antiquotation appears in the pattern position,

@@ -27,3 +27,7 @@
    
 
 * better error message for resolve_name
+
+  
+
+* remove double semicolon...
