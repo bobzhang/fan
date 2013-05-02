@@ -10,6 +10,8 @@
 (*                                                                     *)
 (***********************************************************************)
 
+(* $Id: main.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+
 open Config
 open Clflags
 
@@ -119,7 +121,6 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _output_obj () = output_c_object := true; custom_runtime := true
   let _pack = set make_package
   let _pp s = preprocessor := Some s
-  let _ppx s = ppx := s :: !ppx
   let _principal = set principal
   let _rectypes = set recursive_types
   let _runtime_variant s = runtime_variant := s
@@ -138,9 +139,7 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _where = print_standard_library
   let _verbose = set verbose
   let _nopervasives = set nopervasives
-  let _dsource = set dump_source
   let _dparsetree = set dump_parsetree
-  let _dtypedtree = set dump_typedtree
   let _drawlambda = set dump_rawlambda
   let _dlambda = set dump_lambda
   let _dinstr = set dump_instr
