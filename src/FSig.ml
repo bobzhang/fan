@@ -106,7 +106,7 @@ and kind =
 
 type warning_type =
   | Abstract of string 
-  | Qualified of string ;
+  | Qualified of string 
  
   |};
 

@@ -279,8 +279,9 @@ with exp
 
 let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();
 
-{:create| (g:Gram.t) include_quot |};
-  {:extend|
+{:create| (g:Gram.t) include_quot |};;
+
+{:extend|
 include_quot:
   [`STR(_,s) ->
     let keep = FanState.keep and cf = FanState.current_filters in

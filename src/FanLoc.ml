@@ -358,5 +358,5 @@ let errorf loc fmt =
   Format.ksprintf (fun s -> raise loc (Failure s))   fmt ;
 
 module Ops = struct 
-  let (<+>) = merge;
+  let (<+>) = merge
 end;

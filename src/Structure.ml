@@ -12,9 +12,9 @@ type position =
 module Action  = struct
   type  t     = Obj.t   ;
   let mk :'a -> t   = Obj.repr;
-  let get: t -> 'a  = Obj.obj ;
-  let getf: t-> 'a -> 'b  = Obj.obj ;
-  let getf2: t -> 'a -> 'b -> 'c = Obj.obj ;
+  let get: t -> 'a  = Obj.obj 
+  let getf: t-> 'a -> 'b  = Obj.obj 
+  let getf2: t -> 'a -> 'b -> 'c = Obj.obj 
 end;
 
 (* {:fans|derive (OIter ); |}; *)
@@ -89,7 +89,7 @@ and node = {
     son     : tree   ;
     brother : tree   }
 and production= (symbol list  *  (* Action.t *) (string * Action.t))
-and anno_action = (int  * symbol list  * string  * Action.t) ;
+and anno_action = (int  * symbol list  * string  * Action.t) 
 |};
 
 

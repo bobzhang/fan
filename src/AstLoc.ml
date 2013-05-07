@@ -5,7 +5,7 @@ open Ast;
 
 
 
-{:ocaml|{:include|"src/Ast.mli"|};|};
+{:ocaml|{:include|"src/Ast.mli"|}|};
 
 let ghost = FanLoc.ghost ; (* to refine *)
 

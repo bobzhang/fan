@@ -83,7 +83,7 @@ type error =
   | Illegal_token of string
   | Keyword_as_label of string
   | Illegal_token_pattern of (string * string)
-  | Illegal_constructor of string;
+  | Illegal_constructor of string
 |};
 
 type 'a token  = [> t] as 'a;

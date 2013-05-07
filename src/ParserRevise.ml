@@ -131,8 +131,24 @@ let apply () = begin
         | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
             `ModuleSubst (_loc, (i1: vid :> ident), i2)] |};
 
-  with mtyp
+
+
+
     {:extend|
+      sigis:
+      [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> mk_anti _loc  n ~c:"sigi" s
+
+      | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";;"; S{sg} ->
+          `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
+      | `Ant ((""|"sigi"|"anti"|"list" as n),s);  S{sg} ->
+          `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
+            
+      | sigi{sg};";;" ; S{s} -> `Sem(_loc,sg,s)
+      | sigi{sg};";;" ->sg            
+      | sigi{sg}; S{s} -> `Sem(_loc,sg,s)
+      | sigi{sg} ->sg
+
+      (* | L1 [ sigi{sg}; ";" -> sg ]{l} -> sem_of_list l  *) ]
       mtyp:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
@@ -197,13 +213,10 @@ let apply () = begin
     [ "#"; a_lident{n};  ";;" ->
       ([ `DirectiveSimple(_loc,n) ],  Some _loc)
     | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
-    | sigi{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped)
+    (* | sigi{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped) *)
+    | sigi{si}; ";;";  S{(sil, stopped)} -> ([si :: sil], stopped)
+    | sigi{si}; S{(sil,stopped)} -> ([si :: sil], stopped)
     | `EOI -> ([], None) ]
-    sigis:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> mk_anti _loc  n ~c:"sigi" s
-    | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";"; S{sg} ->
-         `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
-    | L1 [ sigi{sg}; ";" -> sg ]{l} -> sem_of_list l  ]
  |};
 
     with exp
@@ -904,13 +917,24 @@ let apply () = begin
             (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
 
-      (* used by module .... end *)
+      (* used by [struct .... end]
+         constains at least one element 
+       *)
       strus: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> mk_anti _loc n ~c:"stru" s
       | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} ->
-          {|$(mk_anti _loc n ~c:"stru" s); $st |}
-      | L1 [ stru{st}; ";" -> st ]{l} -> sem_of_list l
-      | L1 [ stru{st}; ";;" -> st ]{l} -> sem_of_list l ]
+          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      | `Ant ((""|"stri"|"anti"|"list" as n),s); ";;"; S{st} ->
+          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      | `Ant ((""|"stri"|"anti"|"list" as n),s);  S{st} ->
+          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      | stru{st};";"; S{xs} -> `Sem(_loc,st,xs)
+      | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)
+      | stru{st};";;" -> st
+      | stru{st}; S{xs} -> `Sem(_loc,st,xs)
+      | stru{st} -> st 
+      (* | L1 [ stru{st}; ";" -> st ]{l} -> sem_of_list l *)
+      (* | L1 [ stru{st}; ";;" -> st ]{l} -> sem_of_list l *) ]
       top_phrase:
       [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
@@ -1257,10 +1281,8 @@ let apply_ctyp () = begin
         | a_uident{i} -> (i:> ctyp)
         | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
-
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
             appl_of_list  [(j:>ctyp); t::list_of_com tl []]
-        (* | "["; row_field{rfl}; "]" -> `PolyEq(_loc,rfl) *)
         | "["; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)

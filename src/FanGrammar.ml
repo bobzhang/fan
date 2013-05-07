@@ -61,7 +61,7 @@ and text =
     the second and the third  is the string description.
     The description string will be used for
     grammar insertion and left factoring.
-    Keep this string [normalized] and well comparable. *) ];
+    Keep this string [normalized] and well comparable. *) ]
   |};
 
 type used =

@@ -65,7 +65,7 @@ type anti_cxt = {
     sep: string option ;
     mutable decorations:   string; (* keep it simple first*)
     content:string;
-  };
+  }
   |};
     
 let mk_anti ?(c="") ?sep loc n s =

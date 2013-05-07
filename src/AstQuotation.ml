@@ -33,9 +33,9 @@ exception QuotationError of quotation_error;
 
 type 'a expand_fun  = FanLoc.t ->  string option -> string -> 'a;
   
-module ExpKey = FanDyn.Pack(struct  type 'a t  = unit; end);
+module ExpKey = FanDyn.Pack(struct  type 'a t  = unit end);
 
-module ExpFun = FanDyn.Pack(struct  type 'a t  = 'a expand_fun ; end);
+module ExpFun = FanDyn.Pack(struct  type 'a t  = 'a expand_fun  end);
 
 
 
@@ -63,7 +63,7 @@ let dump_file = ref None;
   
 type key = (name * ExpKey.pack);;
 
-module QMap =MapMake (struct type t =key ; let compare = compare; end);;
+module QMap =MapMake (struct type t =key ; let compare = compare end);;
 
 (*
   [names_tbl] is used to manage the namespace and names,

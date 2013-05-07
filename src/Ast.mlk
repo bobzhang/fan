@@ -35,9 +35,9 @@
  *)
 
 
-type loc = FanLoc.t
-type ant = [ `Ant of (loc * FanUtil.anti_cxt)]
-type nil = [ `Nil of loc]
+type loc = FanLoc.t;
+type ant = [ `Ant of (loc * FanUtil.anti_cxt)];
+type nil = [ `Nil of loc];
 
 
 type literal =
@@ -47,115 +47,115 @@ type literal =
   | `Int64 of (loc * string)
   | `Flo of (loc * string)
   | `Nativeint of (loc * string)
-  | `Str of (loc * string)]   
+  | `Str of (loc * string)];   
 
 type rec_flag =
   [ `Recursive of loc 
   | `ReNil of loc 
-  | ant]
+  | ant];
 
 type direction_flag =
   [ `To of loc
   | `Downto of loc
-  | ant ]
+  | ant ];
 
 type mutable_flag =
   [ `Mutable of loc 
   | `MuNil of loc 
-  | ant ]
+  | ant ];
 
 type private_flag =
   [ `Private of loc 
   | `PrNil of loc 
-  | ant ]
+  | ant ];
 
 type virtual_flag =
   [ `Virtual of loc 
   | `ViNil of loc 
-  | ant ]
+  | ant ];
 
 
 type override_flag =
   [ `Override of loc 
   | `OvNil of loc 
-  | ant ]
+  | ant ];
 
 type row_var_flag =
   [ `RowVar of loc 
   | `RvNil of loc 
-  | ant ]
+  | ant ];
 
 type position_flag =
   [ `Positive of loc
   | `Negative of loc
   | `Normal of loc
-  |ant]
+  |ant];
 
 
 type strings =
   [ `App of (loc * strings * strings)
   | `Str of (loc * string)
-  | ant  ]  
+  | ant  ]  ;
 
 type alident =
   [ `Lid of (loc * string)
-  | ant]
+  | ant];
 
 type auident =
   [ `Uid of (loc * string)
-  | ant]
+  | ant];
 
 type aident =
   [ alident
-  | auident ]
+  | auident ];
 
 type astring =
   [ `C of (loc * string)
-  | ant ]
+  | ant ];
 
 type uident =
   [ `Dot of (loc * uident * uident)
   | `App of (loc * uident * uident)
-  | auident]
+  | auident];
 
 type ident =
   [ `Dot of (loc * ident * ident)
   | `Apply of (loc * ident * ident) 
   | alident
-  | auident]
+  | auident];
 
 (* same as ident except without [outer-ant] *)
 type ident'=
   [ `Dot of (loc * ident * ident)
   | `Apply of (loc * ident * ident )
   | `Lid of (loc * string)
-  | `Uid of (loc * string)]
+  | `Uid of (loc * string)];
 
 type vid =
   [ `Dot of (loc * vid * vid)
   | `Lid of (loc * string)
-  | `Uid of (loc * string) | ant ]
+  | `Uid of (loc * string) | ant ];
 
 type vid'=
   [ `Dot of (loc * vid * vid)
   | `Lid of (loc * string)
-  | `Uid of (loc * string) ]
+  | `Uid of (loc * string) ];
 
 type dupath =
   [ `Dot of (loc * dupath * dupath)
-  | auident]
+  | auident];
 
 type dlpath=
   [ `Dot of (loc * dupath * alident)
-  | alident]
+  | alident];
 
 
-type any = [ `Any of loc]
+type any = [ `Any of loc];
 (* type type_quote = *)
 (*   [ `Quote of (loc * position_flag * alident) *)
-(*   | `QuoteAny of (loc * position_flag) | any | ant ] *)
+(*   | `QuoteAny of (loc * position_flag) | any | ant ]; *)
 
-(* type sid = [ `Id of (loc * ident)] *)
+(* type sid = [ `Id of (loc * ident)]; *)
 
 
 type ctyp =
@@ -211,7 +211,7 @@ and typedecl =
 (* original syntax
    {[ type v = u = A of int ]}
    revise syntax
-   {[ type v = u = [A of int]]} *)
+   {[ type v = u = [A of int];]} *)
 and type_constr =
   [ `And of (loc * type_constr * type_constr)
   | `Eq of (loc * ctyp * ctyp)
@@ -575,7 +575,7 @@ and clfield =
   | `VirMeth of (loc * alident * private_flag * ctyp)
   | `Eq of (loc * ctyp * ctyp)
   | `Initializer of (loc * exp)
-  | ant  ] 
+  | ant  ]; 
 (* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]
    Faked here to make a common subtyp of exp pat to be expnessive enough *)
 type ep =
@@ -594,7 +594,7 @@ and rec_bind =
   [  `RecBind of (loc * ident * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
-  | ant] 
+  | ant] ;
       
       
 (* let _loc = FanLoc.ghost; *)

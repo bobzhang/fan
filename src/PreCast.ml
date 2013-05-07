@@ -68,8 +68,8 @@ let parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) =
 
 let enable_ocaml_printer () = begin
   let module Id = struct
-    let name = "Printers.OCaml";
-    let version = Sys.ocaml_version;
+    let name = "Printers.OCaml"
+    let version = Sys.ocaml_version
   end in 
   let module P = struct
     let print_implem ?input_file:(_)  ?output_file ast =
@@ -87,7 +87,7 @@ let enable_ocaml_printer () = begin
           (fun oc ->
             let fmt = Format.formatter_of_out_channel oc in
             let () = AstPrint.signature fmt pt in
-            pp_print_flush fmt (););
+            pp_print_flush fmt ();)
   end in 
   replace_printer (module Id) (module P);
  (* FIXME can be simplified *)
@@ -96,76 +96,77 @@ end;
 let enable_dump_ocaml_ast_printer () =
   let module Id : Sig.Id = struct
     let name = "DumpOCamlAst";
-    let version = Sys.ocaml_version;
+    let version = Sys.ocaml_version
   end in 
  let module P = struct 
    let print_interf ?(input_file = "-") ?output_file ast =
      let pt =
        match ast with
-       [None -> []
-       |Some ast -> Ast2pt.sigi ast] in
+       |None -> []
+       |Some ast -> Ast2pt.sigi ast in
     FanUtil.(with_open_out_file
                output_file
                (dump_pt
                  FanConfig.ocaml_ast_intf_magic_number input_file pt));
   let print_implem ?(input_file = "-") ?output_file ast =
-    let pt = match ast with
-      [None -> []  
-      |Some ast -> Ast2pt.stru ast] in
+    let pt =
+      match ast with
+      |None -> []  
+      |Some ast -> Ast2pt.stru ast in
     FanUtil.(with_open_out_file
                output_file
-               (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt));
+               (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt))
  end in 
   replace_printer (module Id) (module P);
 
 let enable_dump_ast_printer () =
   let module Id = struct
-    let name = "DumFanAst";
-    let version = Sys.ocaml_version;
+    let name = "DumFanAst"
+    let version = Sys.ocaml_version
   end in 
   let module P = struct 
     let print_interf ?input_file:(_)  ?output_file ast =
       FanUtil.(with_open_out_file output_file
-                 (dump_ast FanConfig.intf_magic_number ast));
+                 (dump_ast FanConfig.intf_magic_number ast))
     let print_implem ?input_file:(_) ?output_file ast =
       FanUtil.(with_open_out_file output_file
-                 (dump_ast FanConfig.impl_magic_number ast));
+                 (dump_ast FanConfig.impl_magic_number ast))
   end in 
-  replace_printer (module Id) (module P);
+  replace_printer (module Id) (module P);;
 
 let enable_null_printer () =
   let module Id = struct
-    let name = "Printers.Null";
-      let version = Sys.ocaml_version;
+    let name = "Printers.Null"
+    let version = Sys.ocaml_version
   end in 
   let module P = struct
-    let print_interf ?input_file:(_) ?output_file:(_) _ = ();
-    let print_implem ?input_file:(_)  ?output_file:(_)  _ = ();
+    let print_interf ?input_file:(_) ?output_file:(_) _ = ()
+    let print_implem ?input_file:(_)  ?output_file:(_)  _ = ()
   end in
-  replace_printer (module Id) (module P);
+  replace_printer (module Id) (module P);;
 
 let enable_auto isatty  =
   if isatty () then
     enable_ocaml_printer ()
   else
-    enable_dump_ocaml_ast_printer ();
+    enable_dump_ocaml_ast_printer ();;
 
   
-sigi_parser := Syntax.parse_interf;
-stru_parser := Syntax.parse_implem;
+sigi_parser := Syntax.parse_interf;;
+stru_parser := Syntax.parse_implem;;
 
 module CurrentParser = struct
   let parse_interf ?directive_handler loc strm =
-    !sigi_parser ?directive_handler loc strm;
+    !sigi_parser ?directive_handler loc strm
   let parse_implem ?directive_handler loc strm =
-    !stru_parser ?directive_handler loc strm;
+    !stru_parser ?directive_handler loc strm
 end;
 
 module CurrentPrinter = struct
   let print_interf ?input_file ?output_file ast =
-    !sigi_printer ?input_file ?output_file ast;
+    !sigi_printer ?input_file ?output_file ast
   let print_implem ?input_file ?output_file ast =
-    !stru_printer ?input_file ?output_file ast;
+    !stru_printer ?input_file ?output_file ast
 end;
 
 

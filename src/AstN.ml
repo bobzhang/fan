@@ -1,5 +1,5 @@
-{:fans|keep off; derive (LocType);|};
-{:ocaml| {:include| "src/Ast.mli"|}; |};
+{:fans|keep off; derive (LocType);|};;
+{:ocaml| {:include| "src/Ast.mli"|} |};;
 
 (*
 {:N.exp| 3 + 4 |}

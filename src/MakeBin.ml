@@ -300,7 +300,7 @@ module Make
           end else ()
         end
       with [exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end];
-      main ();
+      main ()
     end ;
     
 

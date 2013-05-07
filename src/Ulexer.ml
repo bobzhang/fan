@@ -64,16 +64,16 @@ let print_opt_char fmt = function
   | None -> fprintf fmt "None"];
 
 module Stack=struct   
-  include Stack;
+  include Stack
   let push v stk= begin 
     if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
     push v stk
-  end ;
+  end 
   let pop stk = begin
     if !debug then Format.eprintf "Pop %a@." print_opt_char (top stk)
     else ();
     pop stk
-  end; 
+  end 
 end;
 
 (* the trailing char after "<<" *)    

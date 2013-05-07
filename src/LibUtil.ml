@@ -93,7 +93,7 @@ let zfold_left ?(start = 0) ~until ~acc f =
 type 'a cont  = 'a -> exn;
 
 let callcc  (type u) (f: u cont  -> u)  =
-  let module M = struct exception Return of u ; end in
+  let module M = struct exception Return of u end in
   try f (fun x -> raise (M.Return x))
   with [M.Return u -> u];
   
@@ -105,7 +105,7 @@ let with_return f =
   let module M = struct
     (* Raised to indicate ~return was called.  Local so that the exception is tied to a
        particular call of [with_return]. *)
-    exception Return;
+    exception Return
   end in
   let r = ref None in                   (* stores the return value *)
   let return = {                        (* closure passed to f *)
@@ -143,7 +143,7 @@ module Queue = struct
     q;
     
   let rev q=
-    of_list (to_list_rev q );
+    of_list (to_list_rev q )
     (* let nq = create () in *)
     (* while not (empty q) do *)
     (*   push pop q *)
@@ -289,24 +289,24 @@ module List = struct
            else aux (n-1) xs [x::acc]] in
      if n <0 then invalid_arg "List.take_rev n<0"
      else if n = 0 then []
-     else aux n lst [];
+     else aux n lst []
 end;
 
 module type MAP = sig
-  include Map.S;
-  val of_list: (key * 'a) list -> 'a t;
-  val of_hashtbl:(key,'a) Hashtbl.t  -> 'a t;
-  val elements: 'a t -> (key * 'a) list ;
-  val add_list: (key * 'a) list  -> 'a t -> 'a t;
-  val find_default: ~default :'a -> key -> 'a t -> 'a ;
-  val find_opt: key -> 'a t -> 'a option ;  
+  include Map.S
+  val of_list: (key * 'a) list -> 'a t
+  val of_hashtbl:(key,'a) Hashtbl.t  -> 'a t
+  val elements: 'a t -> (key * 'a) list 
+  val add_list: (key * 'a) list  -> 'a t -> 'a t
+  val find_default: ~default :'a -> key -> 'a t -> 'a 
+  val find_opt: key -> 'a t -> 'a option
     (* FIXME  [~default:] [~default :] *)
   val add_with: ~f :('a -> 'a -> 'a) -> key ->
     'a ->  'a t ->
-      ('a t * [ `NotExist | `Exist]);
+      ('a t * [ `NotExist | `Exist])
 
-  val unsafe_height: 'a t -> int;
-  val unsafe_node:  'a t -> (key * 'a) ->  'a t ->  'a t;
+  val unsafe_height: 'a t -> int
+  val unsafe_node:  'a t -> (key * 'a) ->  'a t ->  'a t
 end;
 module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
   include Map.Make S;
@@ -344,24 +344,24 @@ module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
     end;
     
   let find_opt k m =
-    try Some (find k m) with Not_found -> None;
+    try Some (find k m) with Not_found -> None
 end ;
 
 
 
 module type SET = sig
-  include Set.S;
-  val of_list: elt list  -> t ;
-  val add_list: t ->  elt list -> t ;
-  val of_array: elt array  -> t;
-  val add_array: t ->  elt array -> t ;
+  include Set.S
+  val of_list: elt list  -> t 
+  val add_list: t ->  elt list -> t 
+  val of_array: elt array  -> t
+  val add_array: t ->  elt array -> t 
 end;
 module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
-  include Set.Make S;
-  let of_list = List.fold_left (flip add) empty;
-  let add_list c = List.fold_left (flip add) c;
-  let of_array = Array.fold_left (flip add) empty;
-  let add_array c = Array.fold_left (flip add) c;
+  include Set.Make S
+  let of_list = List.fold_left (flip add) empty
+  let add_list c = List.fold_left (flip add) c
+  let of_array = Array.fold_left (flip add) empty
+  let add_array c = Array.fold_left (flip add) c
 end;
 (* module SSet = Set.Make String; *)
 module SSet =SetMake String; 
@@ -370,12 +370,12 @@ module SMap = MapMake String;
   
 module IMap = MapMake (struct
   type t = int;
-  let compare = Pervasives.compare ; 
+  let compare = Pervasives.compare  
 end);
 
 module ISet = SetMake(struct
- type t = int;
- let compare = Pervasives.compare;
+ type t = int
+ let compare = Pervasives.compare
 end);
 
 
@@ -396,20 +396,20 @@ module Hashset = struct
     end;
   let add_list set vs =
     List.iter (add set) vs;
-  let to_list set = fold (fun x y -> [x::y]) set [];
+  let to_list set = fold (fun x y -> [x::y]) set []
   (* let empty = Hashtbl.create 30 ; *)
 end ;
 
 let mk_set (type s) ~cmp =
-  let module M = struct type t = s; let compare = cmp; end in
+  let module M = struct type t = s; let compare = cmp end in
   (module Set.Make M :Set.S with type elt = s);
 
 let mk_map (type s) ~cmp=
-  let module M = struct type t = s; let compare = cmp; end in
+  let module M = struct type t = s; let compare = cmp end in
   (module Map.Make M : Map.S with type key = s);
   
 let mk_hashtbl (type s) ~eq ~hash =
-  let module M=struct type t = s; let equal = eq; let hash = hash; end
+  let module M=struct type t = s; let equal = eq; let hash = hash end
   in  (module Hashtbl.Make M  :Hashtbl.S with type key = s);
   
 module Char = struct
@@ -426,8 +426,8 @@ module Char = struct
     [ '0'..'9' -> true
     | _ -> false];
 
-  let is_uppercase c = 'A' <= c && c <= 'Z';
-  let is_lowercase c = 'a' <= c && c <= 'z';
+  let is_uppercase c = 'A' <= c && c <= 'Z'
+  let is_lowercase c = 'a' <= c && c <= 'z'
 
   
 end;
@@ -439,10 +439,10 @@ module Return = struct
     raise (label v);
 
   let label (type u) (f : u t ->  u) : u =
-      let module M = struct exception Return of u; end in
+      let module M = struct exception Return of u end in
       try f (fun x -> M.Return x)
       with [M.Return u -> u];
-  let with_label = label;
+  let with_label = label
 
 end;
 
@@ -512,7 +512,7 @@ module LStack = struct
 
   let until_empty t f =
     let rec loop () = if t.length > 0 then (f (pop_exn t); loop ()) in
-    loop ();
+    loop ()
 
 end;
 module String = struct
@@ -690,7 +690,7 @@ module String = struct
         (* Negative ofs: the last sep started at the beginning of str *)
         [""::acc]
     in
-      aux [] (length str - 1 );
+      aux [] (length str - 1 )
     
   (* let filter_map f a = *)
   (*   let u = Array.filter *)
@@ -744,22 +744,22 @@ module Ref = struct
    *)      
   let saves (refs: 'a ref list ) body =
     let olds = List.map (fun x -> !x) refs in
-    finally (fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) body ();
+    finally (fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) body ()
 
 
   let post r f =
     let old = !r in 
-    (r := f old; old);
+    (r := f old; old)
 
    let pre r f =
-     (r := f !r; !r);
+     (r := f !r; !r)
 
   let swap a b =
     let buf = !a in
-    (a := !b; b := buf);
+    (a := !b; b := buf)
     
   let modify x f =
-    x := f !x;
+    x := f !x
 end;
 module Option = struct
 
@@ -878,26 +878,26 @@ module Option = struct
 
          let eq ?(eq=(=)) x y =
            match (x,y) with
-           [ (None, None) -> true
+           | (None, None) -> true
            | (Some a, Some b) -> eq a b
-           | _ -> false];
+           | _ -> false
 
 end;
 
 module Buffer = struct
   include Buffer;
-  let (+>) buf chr = begin Buffer.add_char buf chr; buf end;
-  let (+>>) buf str = begin Buffer.add_string buf str; buf end;  
+  let (+>) buf chr = begin Buffer.add_char buf chr; buf end
+  let (+>>) buf str = begin Buffer.add_string buf str; buf end  
 end;
 
 module Hashtbl = struct
-  include Hashtbl;
-  let keys tbl = fold (fun k _ acc -> [k::acc]) tbl [];
-  let values tbl = fold (fun _ v acc -> [v::acc] ) tbl [];
+  include Hashtbl
+  let keys tbl = fold (fun k _ acc -> [k::acc]) tbl []
+  let values tbl = fold (fun _ v acc -> [v::acc] ) tbl []
   let find_default ~default tbl k =
-    try find tbl k with Not_found -> default ;
+    try find tbl k with Not_found -> default 
   let find_opt tbl k =
-    try Some (find tbl k) with Not_found -> None;
+    try Some (find tbl k) with Not_found -> None
 end;
 
 module Array = struct
@@ -957,68 +957,68 @@ module Array = struct
       if i = n then true
       else if p xs.(i) ys.(i) then loop (succ i)
       else false  in
-  loop 0;
+  loop 0
     
 end;
 
 
 module type STREAM = sig
-  type  'a t ;
-  exception Failure;
-  exception Error of string;
-  val from: (int -> 'a option ) -> 'a t;
-  val of_list: 'a list-> 'a t;
-  val of_string: string ->  char t;
-  val of_channel: in_channel -> char t ;
-  val iter: ('a -> unit) -> 'a t -> unit;
-  val next: 'a t -> 'a;
-  val empty: 'a t -> unit;
-  val peek: 'a t -> 'a option ;
-  val junk: 'a t -> unit;
-  val count: 'a t -> int;
-  val npeek: int -> 'a t ->  'a list ;
-  val iapp: 'a t -> 'a t -> 'a t;
-  val icons: 'a -> 'a t -> 'a t;
-  val ising: 'a -> 'a t;
-  val lapp: (unit -> 'a t) -> 'a t -> 'a t;
-  val lcons: (unit -> 'a) -> 'a t -> 'a t;
-  val lsing: (unit -> 'a) -> 'a t;
-  val sempty: 'a t;
-  val slazy: (unit -> 'a t) -> 'a t;
-  val dump: ('a -> unit) -> 'a t -> unit;
+  type  'a t 
+  exception Failure
+  exception Error of string
+  val from: (int -> 'a option ) -> 'a t
+  val of_list: 'a list-> 'a t
+  val of_string: string ->  char t
+  val of_channel: in_channel -> char t 
+  val iter: ('a -> unit) -> 'a t -> unit
+  val next: 'a t -> 'a
+  val empty: 'a t -> unit
+  val peek: 'a t -> 'a option 
+  val junk: 'a t -> unit
+  val count: 'a t -> int
+  val npeek: int -> 'a t ->  'a list 
+  val iapp: 'a t -> 'a t -> 'a t
+  val icons: 'a -> 'a t -> 'a t
+  val ising: 'a -> 'a t
+  val lapp: (unit -> 'a t) -> 'a t -> 'a t
+  val lcons: (unit -> 'a) -> 'a t -> 'a t
+  val lsing: (unit -> 'a) -> 'a t
+  val sempty: 'a t
+  val slazy: (unit -> 'a t) -> 'a t
+  val dump: ('a -> unit) -> 'a t -> unit
     
-  val to_list: 'a t ->  'a list ;
-  val to_string: char t -> string;
+  val to_list: 'a t ->  'a list 
+  val to_string: char t -> string
   val to_string_fmt:
-     (('a -> string),unit,string) format   -> 'a t -> string;
-  val to_string_fun: ('a -> string) -> 'a t -> string;
-  val of_fun: (unit -> 'a) -> 'a t;
-  val foldl: ('a -> 'b -> ('a * bool option )) -> 'a -> 'b t -> 'a;
-  val foldr: ('a ->  'b lazy_t  -> 'b) -> 'b -> 'a t -> 'b;
-  val fold: ('a -> 'a -> ('a *   bool option)) -> 'a t -> 'a;
-  val filter: ('a -> bool) -> 'a t -> 'a t;
-  val map2: ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t ;
-  val scanl: ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a t;
-  val scan: ('a -> 'a -> 'a) -> 'a t -> 'a t;
-  val concat: 'a t t   -> 'a t;
-  val take: int -> 'a t -> 'a t;
-  val drop: int -> 'a t -> 'a t;
-  val take_while: ('a -> bool) -> 'a t -> 'a t;
-  val drop_while: ('a -> bool) -> 'a t -> 'a t;
-  val comb: ('a t * 'b t) ->  ('a * 'b) t ;
-  val split:  ('a * 'b) t  -> ('a t * 'b t);
+     (('a -> string),unit,string) format   -> 'a t -> string
+  val to_string_fun: ('a -> string) -> 'a t -> string
+  val of_fun: (unit -> 'a) -> 'a t
+  val foldl: ('a -> 'b -> ('a * bool option )) -> 'a -> 'b t -> 'a
+  val foldr: ('a ->  'b lazy_t  -> 'b) -> 'b -> 'a t -> 'b
+  val fold: ('a -> 'a -> ('a *   bool option)) -> 'a t -> 'a
+  val filter: ('a -> bool) -> 'a t -> 'a t
+  val map2: ('a -> 'b -> 'c) -> 'a t -> 'b t -> 'c t 
+  val scanl: ('a -> 'b -> 'a) -> 'a -> 'b t -> 'a t
+  val scan: ('a -> 'a -> 'a) -> 'a t -> 'a t
+  val concat: 'a t t   -> 'a t
+  val take: int -> 'a t -> 'a t
+  val drop: int -> 'a t -> 'a t
+  val take_while: ('a -> bool) -> 'a t -> 'a t
+  val drop_while: ('a -> bool) -> 'a t -> 'a t
+  val comb: ('a t * 'b t) ->  ('a * 'b) t 
+  val split:  ('a * 'b) t  -> ('a t * 'b t)
   val merge:
-    (bool -> 'a -> bool) -> ('a t * 'a t) -> 'a t;
-  val switch: ('a -> bool) -> 'a t -> ('a t * 'a t);
-  val cons: 'a -> 'a t -> 'a t;
-  val apnd: 'a t -> 'a t -> 'a t;
-  val is_empty: 'a t -> bool;
-  val rev: 'a t -> 'a t;
-  val tail: 'a t -> 'a t;
-  val map: ('a -> 'b) -> 'a t -> 'b t;
-  val dup: 'a t -> 'a t;
-  val peek_nth: 'a t -> int ->   'a option ;
-  val njunk: int -> 'a t  -> unit;
+    (bool -> 'a -> bool) -> ('a t * 'a t) -> 'a t
+  val switch: ('a -> bool) -> 'a t -> ('a t * 'a t)
+  val cons: 'a -> 'a t -> 'a t
+  val apnd: 'a t -> 'a t -> 'a t
+  val is_empty: 'a t -> bool
+  val rev: 'a t -> 'a t
+  val tail: 'a t -> 'a t
+  val map: ('a -> 'b) -> 'a t -> 'b t
+  val dup: 'a t -> 'a t
+  val peek_nth: 'a t -> int ->   'a option 
+  val njunk: int -> 'a t  -> unit
 end;
 
   
@@ -1057,7 +1057,7 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
     for _i = 1 to n do XStream.junk strm done; (* FIXME unsed  index i*)
   let rec filter f = parser
     [ [< x; 'xs >] -> if f x then [< x ; 'filter f xs >] else [< 'filter f xs >]
-    | [< >] -> [<>] ]; 
+    | [< >] -> [<>] ] 
    (* let rec filter f = parser *)
    (*  [ [< x; 'xs>] -> [<>]]    *)
   (* value rec map f = parser *)
@@ -1093,13 +1093,16 @@ module ErrorMonad = struct
     [ Left _ -> ma
     | Right x -> Right (x ^ str)];
         
-  let ( <|> ) fa fb a =  match fa a with
-    [ (Left _ as x) -> x
-    | Right str -> (fb a) >>? str];
+  let ( <|> ) fa fb a =
+    match fa a with
+    | (Left _ as x) -> x
+    | Right str -> (fb a) >>? str
 
         (* raise an exception to make type system simple  *)      
-  let unwrap f a =  match f a with
-    [ Left res -> res | Right msg -> failwith msg];
+  let unwrap f a =
+    match f a with
+    | Left res -> res
+    | Right msg -> failwith msg
 
   let mapi_m f xs =
     let rec aux acc xs =
@@ -1108,7 +1111,7 @@ module ErrorMonad = struct
       | [x :: xs] ->
           (f x acc) >>=
           (fun x -> (aux (acc + 1) xs) >>= (fun xs -> return [x :: xs]))]
-    in aux 0 xs;
+    in aux 0 xs
 end;
   
 
@@ -1155,103 +1158,6 @@ module Unix = struct
           (pid, (in_read, out_write, err_read))
         end;
   let open_shell_process_full cmd =
-    open_process_full [ "/bin/sh"; "-c"; cmd ];
-
-(*   let command_aux readers = *)
-(*     let read_buflen = 4096 in *)
-(*     let read_buf = String.create read_buflen in *)
-(*     let try_read_lines fd buf = *)
-(*     let read_bytes =  *)
-(*       try Some (read fd read_buf 0 read_buflen) with *)
-(*       [ Unix_error ((EAGAIN | EWOULDBLOCK), _, _) -> None] in *)
-(*       match read_bytes with *)
-(*       [ None -> [], false *)
-(*       | Some 0 -> (\* eof *\) *)
-(*           let s = Buffer.contents buf in *)
-(*           (if s = "" then [] else [s]), true *)
-(*       | Some len -> *)
-(*         let buffer_old_len = Buffer.length buf in *)
-(*         Buffer.add_substring buf read_buf 0 len; *)
-
-(*         let pos_in_buffer pos = buffer_old_len + pos in *)
-        
-(*         let rec get_lines st from_in_buffer pos =   *)
-(*           match *)
-(*             if pos >= len then None *)
-(*             else Xstring.index_from_to read_buf pos (len-1) '\n' *)
-(*           with *)
-(*           | None -> *)
-(*               let rem = *)
-(*                 Buffer.sub buf *)
-(*                   from_in_buffer *)
-(*                   (Buffer.length buf - from_in_buffer) *)
-(*               in *)
-(*               Buffer.clear buf; *)
-(*               if String.length rem > buf_flush_limit then rem :: st *)
-(*               else begin *)
-(*                 Buffer.add_string buf rem; st *)
-(*               end *)
-(*           | Some pos -> *)
-(*               let next_from_in_buffer = pos_in_buffer pos + 1 in *)
-(*               let line = *)
-(*                 Buffer.sub buf *)
-(*                   from_in_buffer *)
-(*                   (next_from_in_buffer - from_in_buffer) *)
-(*               in *)
-(*               get_lines (line :: st) next_from_in_buffer (pos + 1) *)
-(*         in *)
-(*         (List.rev (get_lines [] 0 0), false  in *)
-
-(*   let rec loop readers = *)
-(*     if readers = [] then () (\* no more reader and no need to loop *\) *)
-(*     else begin *)
-(*       let fds = List.map (fun (fd, _, _) -> fd) readers in  *)
-(*       let readables, _, _ = select fds [] [](\*?*\) (-1.0)(\*?*\) in *)
-(*       let readers' =  *)
-(*         List.fold_right (fun (fd, buf, fs as reader) st -> *)
-(*           if not (List.mem fd readables) then *)
-(*             reader :: st *)
-(*           else begin *)
-(*             let rec loop () = *)
-(*               let lines, is_eof = try_read_lines fd buf in *)
-(*               if lines <> [] then begin *)
-(*                 List.iter (fun line -> *)
-(*                   List.iter (fun f -> f (`Read line)) fs) lines; *)
-(*                 if not is_eof then loop () else is_eof *)
-(*               end else is_eof  *)
-(*             in *)
-(*             if loop () then begin *)
-(* 	      (\* reached eof. remove the reader *\) *)
-(* 	      List.iter (fun f -> f `EOF) fs; *)
-(*               close fd;  *)
-(* 	      st *)
-(*             end else reader :: st *)
-(*           end) readers [] *)
-
-(*       in *)
-(*       loop readers' *)
-(*     end *)
-(*   in *)
-(*   loop readers *)
-(* ;     *)
- (*  let command_wrapper (pid, (out, in_, err)) f = *)
-(*     try begin  *)
-(*       close in_; *)
-(*       set_nonblock out; *)
-(*       set_nonblock err; *)
-(*       let buf_out = Buffer.create buf_flush_limit in *)
-(*       let buf_err = Buffer.create buf_flush_limit in *)
-
-(*     command_aux *)
-(*       [out, buf_out, [fun s -> f (`Out, s)]; *)
-(*        err, buf_err, [fun s -> f (`Err, s)]]; *)
-(*     snd (waitpid_non_intr pid) *)
-(*   with *)
-(*   | e -> *)
-(*       (\* kill really ? *\) *)
-(*       kill pid 9; *)
-(*       ignore (waitpid_non_intr pid); *)
-(*       raise e *)
-(* ; *)    
-end;
+    open_process_full [ "/bin/sh"; "-c"; cmd ]
+end;;(* FIXME *)
 

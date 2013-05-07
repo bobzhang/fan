@@ -1,42 +1,42 @@
 module type S = sig
-  type t;
-  exception Error of string * string;
+  type t
+  exception Error of string * string
   (** [mk ?ocaml_stdlib]
       The stdlib flag is true by default.
       To disable it use: [mk ~ocaml_stdlib:false] *)
-  val mk : ?ocaml_stdlib: bool  -> unit -> t;
+  val mk : ?ocaml_stdlib: bool  -> unit -> t
   (** Fold over the current load path list. *)
-  val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
+  val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a
   (** [load f] Load the file [f]. If [f] is not an absolute path name,
       the load path list used to find the directory of [f]. *)
-  val load : t -> string -> unit;
+  val load : t -> string -> unit
   (** [include_dir d] Add the directory [d] in the current load path
      list (like the common -I option). *)
-  val include_dir : t -> string -> unit;
+  val include_dir : t -> string -> unit
   (** [find_in_path f] Returns the full path of the file [f] if
      [f] is in the current load path, raises [Not_found] otherwise. *)
-  val find_in_path : t -> string -> string;
+  val find_in_path : t -> string -> string
   (** [is_native] [true] if we are in native code, [false] for bytecode. *)
-  val is_native : bool;
-  val instance: (unit -> t) ref ;  
+  val is_native : bool
+  val instance: (unit -> t) ref   
 end;
 
 module Make (U:sig end) : S= struct 
-  type t = string Queue.t ;
+  type t = string Queue.t 
 
   let instance =  ref (fun () -> failwith "empty in dynloader");
-  exception Error of string * string;
+  exception Error of string * string
 
-  let include_dir x y = Queue.add y x;
+  let include_dir x y = Queue.add y x
 
-  let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
+  let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x
 
   let mk ?(ocaml_stdlib = true)  () =
   let q = Queue.create () in begin
     if ocaml_stdlib then include_dir q FanConfig.ocaml_standard_library else ();
     include_dir q ".";
-  q
-end;
+    q
+  end
 (* Load files in core *)
 let find_in_path x name =
   if not (Filename.is_implicit name) then
@@ -75,5 +75,5 @@ let load =
     end;
 
 
-let is_native = Dynlink.is_native;
+let is_native = Dynlink.is_native
 end;

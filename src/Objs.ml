@@ -14,7 +14,7 @@ derive((* Map2 Fold2 OIter   OEq *)
 |};
 
   
-{:ocaml|{:include| "src/Ast.mli"|} ; |};
+{:ocaml|{:include| "src/Ast.mli"|}  |};
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object
