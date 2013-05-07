@@ -333,11 +333,11 @@ let generate (mtyps : FSig.mtyps) =
        bar_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      (`Type
         ((FanLoc.of_tuple
-            ("src/AstTypeGen.ml", 353, 12005, 12023, 353, 12005, 12043,
+            ("src/AstTypeGen.ml", 353, 12005, 12023, 353, 12005, 12041,
               false)),
           (`TyDcl
              ((FanLoc.of_tuple
-                 ("src/AstTypeGen.ml", 353, 12005, 12028, 353, 12005, 12043,
+                 ("src/AstTypeGen.ml", 353, 12005, 12028, 353, 12005, 12041,
                    false)),
                (`Lid
                   ((FanLoc.of_tuple
@@ -362,19 +362,19 @@ let generate (mtyps : FSig.mtyps) =
                (`TyRepr
                   ((FanLoc.of_tuple
                       ("src/AstTypeGen.ml", 353, 12005, 12037, 353, 12005,
-                        12043, false)),
+                        12041, false)),
                     (`PrNil
                        (FanLoc.of_tuple
                           ("src/AstTypeGen.ml", 353, 12005, 12037, 353,
-                            12005, 12043, false))),
+                            12005, 12041, false))),
                     (`Sum
                        ((FanLoc.of_tuple
                            ("src/AstTypeGen.ml", 353, 12005, 12037, 353,
-                             12005, 12043, false)), x)))),
+                             12005, 12041, false)), x)))),
                (`None
                   (FanLoc.of_tuple
                      ("src/AstTypeGen.ml", 353, 12005, 12028, 353, 12005,
-                       12043, false)))))) : Ast.stru ) in
+                       12041, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        bar_of_list

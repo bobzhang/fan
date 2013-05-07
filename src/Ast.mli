@@ -594,7 +594,7 @@ and rec_bind =
   [=  `RecBind of (loc * ident * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
-  | ant];
+  | ant] ;
       
       
 (* let _loc = FanLoc.ghost; *)

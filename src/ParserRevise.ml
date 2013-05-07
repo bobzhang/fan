@@ -1192,7 +1192,7 @@ let apply_ctyp () = begin
           `TyAbstr(_loc,n,tpl,
                    match cl with [[] -> `None _loc | _ -> `Some(_loc, and_of_list cl)])]
       type_info:
-      [type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
+      [ type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
       |  ctyp{t1} -> `TyEq(_loc,`PrNil _loc, t1)
       | "private"; ctyp{t1} -> `TyEq(_loc,`Private _loc,t1)
@@ -1200,7 +1200,8 @@ let apply_ctyp () = begin
       | "private"; type_repr{t2} -> `TyRepr(_loc,`Private _loc, t2)]
 
       type_repr:
-      ["["; constructor_declarations{t}; "]" -> `Sum(_loc,t )
+      [(* "["; constructor_declarations{t}; "]" -> `Sum(_loc,t ) *)
+      (* | *) "|"; constructor_declarations{t} -> `Sum(_loc,t)
       (* | "["; "]" -> `Sum(_loc,`Nil _loc) *)
       | "{"; label_declaration_list{t}; "}" -> `Record (_loc, t)]
       type_ident_and_parameters:
@@ -1262,6 +1263,7 @@ let apply_ctyp () = begin
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
             appl_of_list  [(j:>ctyp); t::list_of_com tl []]
         | "[="; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
+        | "["; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)
         | "[<"; row_field{rfl}; "]" -> `PolyInf(_loc,rfl)

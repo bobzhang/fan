@@ -54,11 +54,11 @@ AstParsers.use_parsers
     ];
   
 type file_kind =
-  [ Intf of string
+  | Intf of string
   | Impl of string
   | Str of string
   | ModuleImpl of string
-  | IncludeDir of string ];
+  | IncludeDir of string ;
   
 let search_stdlib = ref true;
 let print_loaded_modules = ref false;

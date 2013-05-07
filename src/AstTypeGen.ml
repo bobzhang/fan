@@ -350,7 +350,7 @@ let generate (mtyps:FSig.mtyps) : stru =
       |`Single (x,_) -> [x] ]) mtyps in
   let typedecl =
     let x  = bar_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in (* FIXME *)
-    {:stru'@here| type 'a tag = [ $x ]|} (* see PR 5961*) in
+    {:stru'@here| type 'a tag = | $x  |} (* see PR 5961*) in
   let to_string =
     let case =
       bar_of_list

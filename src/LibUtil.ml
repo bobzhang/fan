@@ -1068,7 +1068,7 @@ end;
 module ErrorMonad = struct     
   type log = string;
 
-  type 'a result = [ Left of 'a | Right of log];
+  type 'a result = | Left of 'a | Right of log;
 
   let return x = Left x;
       

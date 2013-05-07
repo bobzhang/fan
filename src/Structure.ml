@@ -51,9 +51,9 @@ type entry = {
     mutable edesc     :  desc;
     mutable freezed :  bool;}
 and desc =
-    [ Dlevels of level list 
+  | Dlevels of level list 
     (* | Dlevel of level  *)
-    | Dparser of stream -> Action.t ]
+  | Dparser of stream -> Action.t 
 and level = {
     assoc   : assoc         ;
     lname   : label;
@@ -78,12 +78,12 @@ and symbol =
     | `Stree of tree
     | terminal ]
 and tree = (* internal struccture *)
-    [ Node of node
-    | LocAct of (* (int*Action.t) *)anno_action *  anno_action list (* (int * Action.t) *)
+  | Node of node
+  | LocAct of (* (int*Action.t) *)anno_action *  anno_action list (* (int * Action.t) *)
     (* | EarlyAction of Action.t and node (\* This action was only used to produce side effect *\) *)
     (* | ReplaceAction of Action.t and node  *)
     (* | LocActAppend of anno_action and list anno_action and tree  *)
-    | DeadEnd ]
+    | DeadEnd 
 and node = {
     node    : symbol ;
     son     : tree   ;
@@ -118,7 +118,9 @@ let rec flatten_tree = fun
   | Node {node = n; brother = b; son = s} ->
       List.map (fun l -> [n::l]) (flatten_tree s) @ flatten_tree b ];
 
-type brothers = [ Bro of symbol * brothers list  | End];
+type brothers =
+  | Bro of symbol * brothers list
+  | End;
 
 
   

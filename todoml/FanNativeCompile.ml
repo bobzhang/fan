@@ -10,12 +10,11 @@
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: main.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
+(* $Id: optmain.ml 12511 2012-05-30 13:29:48Z lefessan $ *)
 
 open Config
 open Clflags
-(* replace my pipleline*)  
-module Compile = FanCompile 
+
 let output_prefix name =
   let oname =
     match !output_name with
@@ -24,37 +23,36 @@ let output_prefix name =
   Misc.chop_extension_if_any oname
 
 let process_interface_file ppf name =
-  Compile.interface ppf name (output_prefix name)
+  Optcompile.interface ppf name (output_prefix name)
 
 let process_implementation_file ppf name =
   let opref = output_prefix name in
-  Compile.implementation ppf name opref;
-  objfiles := (opref ^ ".cmo") :: !objfiles
+  Optcompile.implementation ppf name opref;
+  objfiles := (opref ^ ".cmx") :: !objfiles
+
+let cmxa_present = ref false;;
 
 let process_file ppf name =
   if Filename.check_suffix name ".ml"
-  || Filename.check_suffix name ".mlt" then begin
-    let opref = output_prefix name in
-    Compile.implementation ppf name opref;
-    objfiles := (opref ^ ".cmo") :: !objfiles
-  end
+  || Filename.check_suffix name ".mlt" then
+    process_implementation_file ppf name
   else if Filename.check_suffix name !Config.interface_suffix then begin
     let opref = output_prefix name in
-    Compile.interface ppf name opref;
+    Optcompile.interface ppf name opref;
     if !make_package then objfiles := (opref ^ ".cmi") :: !objfiles
   end
-  else if Filename.check_suffix name ".cmo"
-       || Filename.check_suffix name ".cma" then
+  else if Filename.check_suffix name ".cmx" then
     objfiles := name :: !objfiles
-  else if Filename.check_suffix name ".cmi" && !make_package then
+  else if Filename.check_suffix name ".cmxa" then begin
+    cmxa_present := true;
+    objfiles := name :: !objfiles
+  end else if Filename.check_suffix name ".cmi" && !make_package then
     objfiles := name :: !objfiles
   else if Filename.check_suffix name ext_obj
        || Filename.check_suffix name ext_lib then
     ccobjs := name :: !ccobjs
-  else if Filename.check_suffix name ext_dll then
-    dllibs := name :: !dllibs
   else if Filename.check_suffix name ".c" then begin
-    Compile.c_file name;
+    Optcompile.c_file name;
     ccobjs := (Filename.chop_suffix (Filename.basename name) ".c" ^ ext_obj)
               :: !ccobjs
   end
@@ -62,7 +60,7 @@ let process_file ppf name =
     raise(Arg.Bad("don't know what to do with " ^ name))
 
 let print_version_and_library () =
-  print_string "The OCaml compiler, version ";
+  print_string "The OCaml native-code compiler, version ";
   print_string Config.version; print_newline();
   print_string "Standard library directory: ";
   print_string Config.standard_library; print_newline();
@@ -74,23 +72,35 @@ let print_version_string () =
 let print_standard_library () =
   print_string Config.standard_library; print_newline(); exit 0
 
-let usage = "Usage: ocamlc <options> <files>\nOptions are:"
+let fatal err =
+  prerr_endline err;
+  exit 2
 
-let ppf = Format.err_formatter
+let extract_output = function
+  | Some s -> s
+  | None ->
+      fatal "Please specify the name of the output file, using option -o"
+
+let default_output = function
+  | Some s -> s
+  | None -> Config.default_executable_name
+
+let usage = "Usage: ocamlopt <options> <files>\nOptions are:"
 
 (* Error messages to standard error formatter *)
-let anonymous = process_file ppf;;
-let impl = process_implementation_file ppf;;
-let intf = process_interface_file ppf;;
+let anonymous = process_file Format.err_formatter;;
+let impl = process_implementation_file Format.err_formatter;;
+let intf = process_interface_file Format.err_formatter;;
 
 let show_config () =
   Config.print_config stdout;
   exit 0;
 ;;
 
-module Options = Main_args.Make_bytecomp_options (struct
+module Options = Main_args.Make_optcomp_options (struct
   let set r () = r := true
-  let unset r () = r := false
+  let clear r () = r := false
+
   let _a = set make_archive
   let _absname = set Location.absname
   let _annot = set annotations
@@ -99,90 +109,97 @@ module Options = Main_args.Make_bytecomp_options (struct
   let _cc s = c_compiler := Some s
   let _cclib s = ccobjs := Misc.rev_split_words s @ !ccobjs
   let _ccopt s = ccopts := s :: !ccopts
-  let _config = show_config
-  let _custom = set custom_runtime
-  let _dllib s = dllibs := Misc.rev_split_words s @ !dllibs
-  let _dllpath s = dllpaths := !dllpaths @ [s]
+  let _compact = clear optimize_for_speed
+  let _config () = show_config ()
+  let _for_pack s = for_package := Some s
   let _g = set debug
   let _i () = print_types := true; compile_only := true
-  let _I s = include_dirs := s :: !include_dirs
+  let _I dir = include_dirs := dir :: !include_dirs
   let _impl = impl
+  let _inline n = inline_threshold := n * 8
   let _intf = intf
   let _intf_suffix s = Config.interface_suffix := s
-  let _labels = unset classic
+  let _labels = clear classic
   let _linkall = set link_everything
-  let _make_runtime () =
-    custom_runtime := true; make_runtime := true; link_everything := true
-  let _no_app_funct = unset applicative_functors
+  let _no_app_funct = clear applicative_functors
   let _noassert = set noassert
-  let _nolabels = set classic
   let _noautolink = set no_auto_link
+  let _nodynlink = clear dlcode
+  let _nolabels = set classic
   let _nostdlib = set no_std_include
   let _o s = output_name := Some s
-  let _output_obj () = output_c_object := true; custom_runtime := true
+  let _output_obj = set output_c_object
+  let _p = set gprofile
   let _pack = set make_package
   let _pp s = preprocessor := Some s
   let _principal = set principal
   let _rectypes = set recursive_types
   let _runtime_variant s = runtime_variant := s
   let _strict_sequence = set strict_sequence
+  let _shared () = shared := true; dlcode := true
+  let _S = set keep_asm_file
   let _thread = set use_threads
-  let _vmthread = set use_vmthreads
   let _unsafe = set fast
-  let _use_prims s = use_prims := s
-  let _use_runtime s = use_runtime := s
-  let _v = print_version_and_library
-  let _version = print_version_string
-  let _vnum = print_version_string
-  let _w = (Warnings.parse_options false)
-  let _warn_error = (Warnings.parse_options true)
-  let _warn_help = Warnings.help_warnings
-  let _where = print_standard_library
+  let _v () = print_version_and_library ()
+  let _version () = print_version_string ()
+  let _vnum () = print_version_string ()
   let _verbose = set verbose
+  let _w s = Warnings.parse_options false s
+  let _warn_error s = Warnings.parse_options true s
+  let _warn_help = Warnings.help_warnings
+  let _where () = print_standard_library ()
+
   let _nopervasives = set nopervasives
   let _dparsetree = set dump_parsetree
   let _drawlambda = set dump_rawlambda
   let _dlambda = set dump_lambda
-  let _dinstr = set dump_instr
+  let _dclambda = set dump_clambda
+  let _dcmm = set dump_cmm
+  let _dsel = set dump_selection
+  let _dcombine = set dump_combine
+  let _dlive () = dump_live := true; Printmach.print_live := true
+  let _dspill = set dump_spill
+  let _dsplit = set dump_split
+  let _dinterf = set dump_interf
+  let _dprefer = set dump_prefer
+  let _dalloc = set dump_regalloc
+  let _dreload = set dump_reload
+  let _dscheduling = set dump_scheduling
+  let _dlinear = set dump_linear
+  let _dstartup = set keep_startup_file
+
   let anonymous = anonymous
-end)
-
-let fatal err =
-  prerr_endline err;
-  exit 2
-
-let extract_output = function
-  | Some s -> s
-  | None -> fatal "Please specify the name of the output file, using option -o"
-
-let default_output = function
-  | Some s -> s
-  | None -> Config.default_executable_name
+end);;
 
 let main () =
+  native_code := true;
+  let ppf = Format.err_formatter in
   try
-    Arg.parse Options.list anonymous usage;
+    Arg.parse (Arch.command_line_options @ Options.list) anonymous usage;
     if
       List.length (List.filter (fun x -> !x)
-                      [make_archive;make_package;compile_only;output_c_object])
-        > 1
+                     [make_package; make_archive; shared;
+                      compile_only; output_c_object]) > 1
     then
-      if !print_types then
-        fatal "Option -i is incompatible with -pack, -a, -output-obj"
-      else
-        fatal "Please specify at most one of -pack, -a, -c, -output-obj";
+      fatal "Please specify at most one of -pack, -a, -shared, -c, -output-obj";
     if !make_archive then begin
-      Compile.init_path();
-
-      Bytelibrarian.create_archive ppf  (List.rev !objfiles)
-                                   (extract_output !output_name);
+      if !cmxa_present then
+        fatal "Option -a cannot be used with .cmxa input files.";
+      Optcompile.init_path();
+      let target = extract_output !output_name in
+      Asmlibrarian.create_archive (List.rev !objfiles) target;
       Warnings.check_fatal ();
     end
     else if !make_package then begin
-      Compile.init_path();
-      let extracted_output = extract_output !output_name in
-      let revd = List.rev !objfiles in
-      Bytepackager.package_files ppf revd (extracted_output);
+      Optcompile.init_path();
+      let target = extract_output !output_name in
+      Asmpackager.package_files ppf (List.rev !objfiles) target;
+      Warnings.check_fatal ();
+    end
+    else if !shared then begin
+      Optcompile.init_path();
+      let target = extract_output !output_name in
+      Asmlink.link_shared ppf (List.rev !objfiles) target;
       Warnings.check_fatal ();
     end
     else if not !compile_only && !objfiles <> [] then begin
@@ -190,25 +207,24 @@ let main () =
         if !output_c_object then
           let s = extract_output !output_name in
           if (Filename.check_suffix s Config.ext_obj
-            || Filename.check_suffix s Config.ext_dll
-            || Filename.check_suffix s ".c")
+            || Filename.check_suffix s Config.ext_dll)
           then s
           else
             fatal
               (Printf.sprintf
-                 "The extension of the output file must be .c, %s or %s"
+                 "The extension of the output file must be %s or %s"
                  Config.ext_obj Config.ext_dll
               )
         else
           default_output !output_name
       in
-      Compile.init_path();
-      Bytelink.link ppf (List.rev !objfiles) target;
+      Optcompile.init_path();
+      Asmlink.link ppf (List.rev !objfiles) target;
       Warnings.check_fatal ();
     end;
     exit 0
   with x ->
-    Errors.report_error ppf x;
+    Opterrors.report_error ppf x;
     exit 2
 
 let _ = main ()

@@ -5687,15 +5687,14 @@ let apply_ctyp () =
   Gram.extend_single (type_repr : 'type_repr Gram.t )
     (None,
       (None, None,
-        [([`Skeyword "[";
+        [([`Skeyword "|";
           `Snterm
             (Gram.obj
-               (constructor_declarations : 'constructor_declarations Gram.t ));
-          `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, t) : 'type_repr ))\n",
+               (constructor_declarations : 'constructor_declarations Gram.t ))],
+           ("Gram.mk_action\n  (fun (t : 'constructor_declarations)  _  (_loc : FanLoc.t)  ->\n     (`Sum (_loc, t) : 'type_repr ))\n",
              (Gram.mk_action
-                (fun _  (t : 'constructor_declarations)  _  (_loc : FanLoc.t)
-                    -> (`Sum (_loc, t) : 'type_repr )))));
+                (fun (t : 'constructor_declarations)  _  (_loc : FanLoc.t) 
+                   -> (`Sum (_loc, t) : 'type_repr )))));
         ([`Skeyword "{";
          `Snterm
            (Gram.obj
@@ -5955,6 +5954,13 @@ let apply_ctyp () =
                   (appl_of_list ((j :>ctyp) :: t :: (list_of_com tl [])) : 
                   'ctyp )))));
         ([`Skeyword "[=";
+         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
+         `Skeyword "]"],
+          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->\n     (`PolyEq (_loc, rfl) : 'ctyp ))\n",
+            (Gram.mk_action
+               (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->
+                  (`PolyEq (_loc, rfl) : 'ctyp )))));
+        ([`Skeyword "[";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
          `Skeyword "]"],
           ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->\n     (`PolyEq (_loc, rfl) : 'ctyp ))\n",

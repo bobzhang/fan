@@ -64,7 +64,8 @@ and text =
     Keep this string [normalized] and well comparable. *) ];
   |};
 
-type used = [ Unused | UsedScanned | UsedNotScanned ];
+type used =
+  | Unused | UsedScanned | UsedNotScanned ;
 
 type simple_pat =
   [=

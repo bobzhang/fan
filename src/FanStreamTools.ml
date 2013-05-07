@@ -12,12 +12,12 @@ open AstLoc;
 
 #default_quotation "exp'";;
 type spat_comp =
-  [ SpTrm of FanLoc.t * pat * exp option 
+  | SpTrm of FanLoc.t * pat * exp option 
   | SpNtr of FanLoc.t * pat * exp
-  | SpStr of FanLoc.t * pat ];
+  | SpStr of FanLoc.t * pat ;
 
 type sexp_comp =
-  [ SeTrm of FanLoc.t * exp | SeNtr of FanLoc.t * exp ];
+  |SeTrm of FanLoc.t * exp | SeNtr of FanLoc.t * exp ;
 
 (* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)

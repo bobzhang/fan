@@ -11,10 +11,10 @@ open Format;;
 
 (* {:ocaml| *)
 type quotation_error_message =
-    [ Finding
-    | Expanding
-    | ParsingResult of FanLoc.t * string
-    | NoName];;
+  | Finding
+  | Expanding
+  | ParsingResult of FanLoc.t * string
+  | NoName;;
 
 (* the first argument is quotation name
    the second argument is the position tag 

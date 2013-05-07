@@ -15,7 +15,7 @@ type doc = string;
 type usage_msg = string;
 type anon_fun = string -> unit;
 type spec =
-  [ Unit of unit -> unit
+  | Unit of unit -> unit
   | (* Call the function with unit argument *)
   Bool of bool -> unit
   | (* Call the function with a bool argument *)
@@ -41,25 +41,25 @@ type spec =
   Symbol of string list * string -> unit
   | (* Take one of the symbols as argument and
                                   call the function with the symbol. *)
-  Rest of string -> unit ];
+  Rest of string -> unit ;
 (* Stop interpreting keywords and call the
                                   function with each remaining argument *)
 exception Bad of string;
 exception Help of string;
 type error =
-  [ Unknown of string
+  | Unknown of string
   | Wrong of string * string * string
   | (* option, actual, expected *)
   Missing of string
-  | Message of string ];
+  | Message of string ;
 exception Stop of error;
 (* used internally *)
 open Printf;
 let rec assoc3 x l =
   match l with
-  [ [] -> raise Not_found
+  | [] -> raise Not_found
   | [ (y1, y2, _) :: _ ] when y1 = x -> y2
-  | [ _ :: t ] -> assoc3 x t ];
+  | [ _ :: t ] -> assoc3 x t ;
 let make_symlist prefix sep suffix l =
   match l with
   [ [] -> "<none>"

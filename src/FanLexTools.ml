@@ -194,9 +194,9 @@ let mk_partition_name i =
 (* Decision tree for partitions *)
 
 type decision_tree =
-  [ Lte of int *  decision_tree * decision_tree
+  | Lte of int *  decision_tree * decision_tree
   | Table of int *  int array 
-  | Return of int];
+  | Return of int;
 
 let decision l =
   let l = List.map (fun (a,b,i) -> (a,b,Return i)) l in

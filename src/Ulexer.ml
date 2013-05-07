@@ -4,7 +4,7 @@ open Format;
 open Lexing;
 
 type lex_error  =
-  [ Illegal_character of char
+  | Illegal_character of char
   | Illegal_escape    of string
   | Unterminated_comment
   | Unterminated_string
@@ -15,7 +15,7 @@ type lex_error  =
   | Unterminated_string_in_antiquot
   | Comment_start
   | Comment_not_end
-  | Literal_overflow of string];
+  | Literal_overflow of string;
 
 exception Lexing_error  of lex_error;
 
@@ -77,7 +77,7 @@ module Stack=struct
 end;
 
 (* the trailing char after "<<" *)    
-let opt_char : Stack.t  (option char)  = Stack.create ();
+let opt_char : char option Stack.t    = Stack.create ();
 
 let turn_on_quotation_debug () = debug:=true ;
   

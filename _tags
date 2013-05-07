@@ -1,16 +1,27 @@
-# -*- Mode:Shell-script -*-
+
+
 true:use_unix
 true: warn(-41)
 true:-traverse
 <top>:precious
 <{cold,src,debug}/Fan.ml>: warn(-33)
-<{cold,src,debug}/*.{p.native,native}>: use_dynlink, use_ocamlcommon
-<{cold,src,debug}/*.{byte,d.byte}>: use_dynlink, use_ocamlcommon
 <{cold,src,debug}/{OAstPrint,AstPrint,AstEq,FanSig,FanLoc,FanConfig,Ast2pt,PAst2pt,Sig,ParsetreeHelper,Ast2Fan,Extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
-<{cold,src,debug}/{FanTop,FanEval}.{ml,mli}>: use_ocamlcommon
+
+<{cold,src,debug}/{FanTop,FanEval,Famlc,Famlopt,FanOptCompile,FanCompile}.{ml,mli}>: use_ocamlcommon
+
+<{cold,src,debug}/{Famlc}.{byte,native}> : use_ocamlbytecomp
+<{cold,src,debug}/{Famlopt}.{byte,native}> : use_ocamlnativecomp
+<{cold,src,debug}/FanDriver.{p.native,native}>: use_dynlink, use_ocamlcommon
+<{cold,src,debug}/FanDriver.{byte,d.byte}>: use_dynlink, use_ocamlcommon
 
 <{cold,src,debug}/{FanUTop}.{ml,mli}> : use_ocamlcommon, pkg_utop
 <{cold,src,debug}/{FanUTop}.{byte,d.byte}>: pkg_compiler-libs.toplevel, pkg_threads, pkg_utop
+
+
+
+
+
+
 # pkg_compiler-libs.common
 # pkg_compiler-libs.toplevel
 # pkg_compiler-libs.common

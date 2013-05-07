@@ -4,12 +4,12 @@ open LibUtil;
 open Ast;
 
 type vrn =
-    [ Sum 
-    | TyVrnEq
-    | TyVrnSup
-    | TyVrnInf
-    | TyVrnInfSup
-    | TyAbstr ];
+  | Sum 
+  | TyVrnEq
+  | TyVrnSup
+  | TyVrnInf
+  | TyVrnInfSup
+  | TyAbstr ;
 type trail_info = (vrn*int);
 
 (* [collumn] meta data for the record *)
@@ -96,17 +96,17 @@ and types =
 and mtyps =  types list;
 
 type destination =
-  [Obj of kind
-  |Str_item]
+  |Obj of kind
+  |Str_item
 and kind =
-  [ Fold
+  | Fold
   | Iter (* Iter style *) 
   | Map (* Map style *)
-  | Concrete of ctyp];
+  | Concrete of ctyp;
 
 type warning_type =
-  [ Abstract of string 
-  | Qualified of string ];
+  | Abstract of string 
+  | Qualified of string ;
  
   |};
 

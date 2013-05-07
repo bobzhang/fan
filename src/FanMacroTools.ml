@@ -2,11 +2,11 @@ open Ast;
 open AstLoc;
 open LibUtil;
 type 'a item_or_def  =
-    [ Str of 'a
-    | Def of string * ( string list * exp)option 
-    | Und of string
-    | ITE of bool * ('a item_or_def ) list  * ('a item_or_def  )list 
-    | Lazy of 'a Lazy.t  ];
+  | Str of 'a
+  | Def of string * ( string list * exp)option 
+  | Und of string
+  | ITE of bool * ('a item_or_def ) list  * ('a item_or_def  )list 
+  | Lazy of 'a Lazy.t  ;
 
 let defined = ref [];
 let is_defined i = List.mem_assoc i !defined;
@@ -99,7 +99,7 @@ let make_ITE_result st1 st2 =
   let test = Stack.pop stack in
   ITE test st1 st2 ;
 
-type branch = [ Then | Else ];
+type branch = | Then | Else ;
 
 (* Execute macro only if it belongs to the currently active branch. *)
 let execute_macro_if_active_branch ~exp ~pat _loc nil cons branch macro_def =

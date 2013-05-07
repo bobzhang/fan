@@ -222,6 +222,14 @@ open Opt;;
 (* use_lib "o" "FanTop"; *)
 
 ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs";
+
+ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs" ~tag_name:"use_ocamlbytecomp";
+ocaml_lib ~extern:true "ocamlbytecomp" ~dir:"+compiler-libs" ~tag_name:"use_ocamlbytecomp";
+
+ocaml_lib ~extern:true "ocamlcommon" ~dir:"+compiler-libs" ~tag_name:"use_ocamlnativecomp";
+ocaml_lib ~extern:true "ocamloptcomp" ~dir:"+compiler-libs" ~tag_name:"use_ocamlnativecomp";
+
+  
 ocaml_lib ~extern:true "ocamlcommon" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
 ocaml_lib ~extern:true "ocamlbytecomp" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
 ocaml_lib ~extern:true "ocamltoplevel" ~tag_name:"use_ocamltoplevel" ~dir:"+compiler-libs";
