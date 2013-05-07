@@ -1065,10 +1065,8 @@ let _ =
 
 let d = `Absolute ["Fan"; "Lang"]
 
-let _ = AstQuotation.of_exp ~name:(d, "extend") ~entry:extend_body
-
-let _ = AstQuotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body
-
-let _ = AstQuotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear
-
-let _ = AstQuotation.of_stru ~name:(d, "create") ~entry:nonterminals
+let _ =
+  AstQuotation.of_exp ~name:(d, "extend") ~entry:extend_body;
+  AstQuotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body;
+  AstQuotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear;
+  AstQuotation.of_stru ~name:(d, "create") ~entry:nonterminals

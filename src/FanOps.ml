@@ -1,6 +1,6 @@
-open LibUtil;
-open Ast;
-open AstLoc;
+open LibUtil
+open Ast
+open AstLoc
 
 
 (* +-----------------------------------------------------------------+
@@ -29,29 +29,29 @@ let list_of_list (loc:loc) =
     | [e1 :: el] ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+        {| [$e1 :: $(loop false el)] |} ] in loop true ;;
 
-  
+(* FIXME  double semi colon needed before *)  
 #default_quotation "exp";;
 
-let meta_int _loc i =  {|$`int:i|};
+let meta_int _loc i =  {|$`int:i|}
 
-let meta_int32 _loc i =  {|$`int32:i|};
+let meta_int32 _loc i =  {|$`int32:i|}
 
-let meta_int64 _loc i =  {|$`int64:i|};
+let meta_int64 _loc i =  {|$`int64:i|}
   
-let meta_nativeint _loc i =  {|$`nativeint:i|};
+let meta_nativeint _loc i =  {|$`nativeint:i|}
   
-let meta_float _loc i = {|$`flo:i|};
+let meta_float _loc i = {|$`flo:i|}
   
-let meta_string _loc i = {|$`str:i|};
+let meta_string _loc i = {|$`str:i|}
   
-let meta_char _loc i = {|$`chr:i|};
-let meta_unit _loc _ =  {|()|};
-let meta_bool _loc =  fun [true -> {|true|} | false -> {|false|} ];
+let meta_char _loc i = {|$`chr:i|}
+let meta_unit _loc _ =  {|()|}
+let meta_bool _loc =  fun [true -> {|true|} | false -> {|false|} ]
 
 let meta_ref mf_a _loc i =
-  {| {contents= $(mf_a _loc !i) } |};
+  {| {contents= $(mf_a _loc !i) } |}
 
 
   
@@ -63,20 +63,20 @@ let mklist loc =
     | [e1 :: el] ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of (e1)) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;
+        {| [$e1 :: $(loop false el)] |} ] in loop true 
 
 let meta_list mf_a _loc  ls =
-  mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) ;
+  mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) 
   
   
 let meta_option mf_a _loc  = fun
   [ None -> {|None|}
-  | Some x -> {|Some $(mf_a _loc x)|} ];
+  | Some x -> {|Some $(mf_a _loc x)|} ]
 
 let meta_arrow (type t)
     (_mf_a: FanLoc.t -> 'a -> t)
     (_mf_b: FanLoc.t -> 'b ->t)
-    (_loc: FanLoc.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented";
+    (_loc: FanLoc.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented"
     
 
 (* +-----------------------------------------------------------------+
@@ -93,25 +93,25 @@ let meta_arrow (type t)
  *)
 let rec is_module_longident (x:ident) =
   match x with
-  [`Dot(_,_,i) -> is_module_longident i
+  |`Dot(_,_,i) -> is_module_longident i
   |`Apply(_,i1,i2) -> is_module_longident i1 && is_module_longident i2
   | `Uid _ -> true
-  | _ -> false ];  
+  | _ -> false 
 
 let ident_of_exp : exp -> ident =
   let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
   let rec self (x:exp) : ident =
     match x with 
-    [ `App(_loc,e1,e2) -> `Apply(_loc,self e1, self e2)
+    | `App(_loc,e1,e2) -> `Apply(_loc,self e1, self e2)
     | `Field(_loc,e1,e2) -> `Dot(_loc,self e1,self e2)
     | `Lid _  -> error ()
     | `Uid _ | `Dot _ as i -> (i:vid:>ident)
     (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
-    | _ -> error () ] in 
+    | _ -> error ()  in 
   fun
     [ #vid as i ->  (i:vid :>ident)
     | `App _ -> error ()
-    | t -> self t ];
+    | t -> self t ]
 (*
   {[
   ident_of_ctyp {:ctyp| list int |} ; ;
@@ -135,13 +135,13 @@ let ident_of_ctyp : ctyp -> ident =
     invalid_argf  "ident_of_ctyp: this type %s is not an identifier"  (Objs.dump_ctyp x) in
   let rec self  (x:ctyp) =
     match x with 
-    [ `Apply(_loc,t1,t2) -> `Apply(_loc,self (t1:>ctyp), self (t2:>ctyp))
+    | `Apply(_loc,t1,t2) -> `Apply(_loc,self (t1:>ctyp), self (t2:>ctyp))
     | `Lid _  -> error x
     | #ident' as i -> if is_module_longident i then i else error x
-    | _ -> error x ] in
+    | _ -> error x  in
     fun
     [ #ident as i (* `Id(_loc,i) *) -> i (* allow antiquot here *)
-    | t -> self t ];;
+    | t -> self t ]
 
 (* let ident_of_pat = *)
 (*   let error () = *)
@@ -222,7 +222,7 @@ let ident_of_ctyp : ctyp -> ident =
 
 let rec is_irrefut_pat (x: pat) = with pat'
     match x with
-    [ `Lid _ ->  true 
+    | `Lid _ ->  true 
     | `ArrayEmpty (_loc)
     | `LabelS (_loc,_)
     | {| () |} -> true
@@ -254,7 +254,7 @@ let rec is_irrefut_pat (x: pat) = with pat'
       {| $int32:_ |} | {| $int:_ |} | {| $chr:_ |} |
       {| #$_ |} | {| [| $_ |] |}  -> false
           (* add here ModuleUnpack *)
-    ];      
+
       
   
 
@@ -268,14 +268,14 @@ let rec is_irrefut_pat (x: pat) = with pat'
  *)
 let array_of_array arr =
   match arr  with
-  [[||] -> `ArrayEmpty (FanLoc.ghost)
+  | [||] -> `ArrayEmpty (FanLoc.ghost)
   | _ ->   
       let items = arr |> Array.to_list |> sem_of_list in
       let _loc = loc_of items in
-      `Array(_loc,items)];
+      `Array(_loc,items)
   
 let meta_array mf_a _loc ls =
-  array_of_array (Array.map (fun x -> mf_a _loc x) ls)  ;
+  array_of_array (Array.map (fun x -> mf_a _loc x) ls)  
 
 
 (*
@@ -287,16 +287,16 @@ let meta_array mf_a _loc ls =
 let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
   let coords =
     match arg with
-    [ {| ($e1, $e2) |} | {| $e1, $e2 |} ->
+    | {| ($e1, $e2) |} | {| $e1, $e2 |} ->
       list_of_com e1 (list_of_com e2 [])
-    | _ -> [arg] ] in
+    | _ -> [arg]  in
   match coords with
-  [ [] -> failwith "bigarray_get null list"
+  | [] -> failwith "bigarray_get null list"
   | [c1] -> {@loc| $arr.{$c1} |}  
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
   | [c1;c2;c3::coords] ->
-      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list coords) } |} ];
+      {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list coords) } |} 
 
 
 (*
@@ -312,7 +312,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
  *)
 let bigarray_set loc (var) newval (* : option exp *) = with exp'
   match var with
-  [ {|  $arr.{$c1} |} ->
+  | {|  $arr.{$c1} |} ->
     (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)
       Some {@loc| $arr.{$c1} <- $newval |}
   | {|  $arr.{$c1, $c2} |} ->
@@ -324,7 +324,7 @@ let bigarray_set loc (var) newval (* : option exp *) = with exp'
         (* $arr.{$c1,$c2,$c3,$c4,$list:y}*)
   |  {| Bigarray.Genarray.get $arr [| $coords |] |} -> (* FIXME how to remove Bigarray here?*)
       Some {@loc| Bigarray.Genarray.set $arr [| $coords |] $newval |}
-  | _ -> None ];
+  | _ -> None 
   
 
 
@@ -336,7 +336,7 @@ let mksequence ?loc  =
   [ `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with [ Some x -> x | None  -> _loc] in
       `Seq (_loc, e)
-  | e -> e ];  
+  | e -> e ]
 
 (* see [mksequence], antiquot is not decoreated *)    
 let mksequence' ?loc  =
@@ -345,7 +345,7 @@ let mksequence' ?loc  =
       let _loc =
         match loc with [ Some x -> x | None  -> _loc] in
       `Seq (_loc, e)
-  | e -> e];
+  | e -> e]
 
 
         
@@ -353,8 +353,7 @@ let rec to_lid =
   function
   [ `Dot (_loc,_,i) -> to_lid i
   | `Lid (_loc,lid) -> lid
-  | _ -> assert false ];
-
+  | _ -> assert false ]
 
 
 (* Given a [location] and [prefix](generally "-" or "-.")
@@ -371,12 +370,12 @@ let rec to_lid =
  *)  
 let mkumin loc prefix arg = with exp' 
   match arg with
-  [ {| $int:n |} -> {@loc| $(int:String.neg n) |}
+  | {| $int:n |} -> {@loc| $(int:String.neg n) |}
   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}
   | {| $int64:n |} -> {@loc| $(int64:String.neg n) |}
   | {| $nativeint:n |} -> {@loc| $(nativeint:String.neg n) |}
   | {| $flo:n |} -> {@loc| $(flo:String.neg n) |}
-  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |} ];
+  | _ -> {@loc| $(lid:"~" ^ prefix) $arg |}
 
 (* {:exp|assert l|}*)      
 (* let mkassert loc =  with exp fun *)

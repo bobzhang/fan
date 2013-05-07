@@ -1,11 +1,11 @@
-open LibUtil;
+open LibUtil
 
 
     
 let setup_op_parser entry p =
   Gram.setup_parser entry
     (parser
-    [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] -> {:exp| $lid:x |});
+    [< (`KEYWORD x | `SYMBOL x,_loc) when p x >] -> {:exp| $lid:x |})
 
 (* [infix_kwds_filter]  *)  
 let rec infix_kwds_filter = parser
@@ -17,7 +17,7 @@ let rec infix_kwds_filter = parser
     | [< 'xs >] ->
         [< tok; '(infix_kwds_filter xs) >] ]
   | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]
-  | [< >] -> [< >] ];
+  | [< >] -> [< >] ]
   
 
 

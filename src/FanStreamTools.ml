@@ -1,5 +1,5 @@
-open Ast;
-open AstLoc;
+open Ast
+open AstLoc
 
 (*
   identifiers referenced:
@@ -14,31 +14,37 @@ open AstLoc;
 type spat_comp =
   | SpTrm of FanLoc.t * pat * exp option 
   | SpNtr of FanLoc.t * pat * exp
-  | SpStr of FanLoc.t * pat ;
+  | SpStr of FanLoc.t * pat 
 
 type sexp_comp =
-  |SeTrm of FanLoc.t * exp | SeNtr of FanLoc.t * exp ;
+  |SeTrm of FanLoc.t * exp
+  | SeNtr of FanLoc.t * exp 
 
 (* default module name ["Stream"] for compatibility *)
-let grammar_module_name = ref "XStream"; (* BOOTSTRAPPING *)
-let gm () = !grammar_module_name;  
-let strm_n = "__strm";
+let grammar_module_name = ref "XStream" (* BOOTSTRAPPING *)
 
-let peek_fun _loc = {| $(uid:gm()).peek |};
-let junk_fun _loc = {| $(uid:gm()).junk |};
+let gm () = !grammar_module_name
+    
+let strm_n = "__strm"
+
+let peek_fun _loc = {| $(uid:gm()).peek |}
+    
+let junk_fun _loc = {| $(uid:gm()).junk |}
 
 
-let empty _loc = {| $(uid:gm()).sempty |} ;
-let is_raise  = fun 
-  [ {| raise $_ |} -> true
-  | _ -> false ] ;
-let is_raise_failure  = fun 
-  [ {| raise $uid:m.Failure |} when m = gm() -> true
-  | _ -> false ] ;
+let empty _loc =
+  {| $(uid:gm()).sempty |} 
+let is_raise  = function
+  | {| raise $_ |} -> true
+  | _ -> false
+        
+let is_raise_failure  = function
+  | {| raise $uid:m.Failure |} when m = gm() -> true
+  | _ -> false
   
 let rec handle_failure e =
   match e with
-  [ {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case'|$(uid:m).Failure -> $e|} *)
+  | {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case'|$(uid:m).Failure -> $e|} *)
     when m = gm()
     ->  handle_failure e
   | {| match $me with [ $a ] |} ->
@@ -66,12 +72,12 @@ let rec handle_failure e =
       | _ -> true ]
   | {| $f $x |} ->
       is_constr_apply f && handle_failure f && handle_failure x
-  | _ -> false ]
-and is_constr_apply = fun
-  [ {| $uid:_ |} -> true
+  | _ -> false 
+and is_constr_apply = function
+  | {| $uid:_ |} -> true
   | {| $lid:_ |} -> false
   | {| $x $_ |} -> is_constr_apply x
-  | _ -> false ];
+  | _ -> false 
 
 let rec subst v e =
   let _loc = loc_of e in
@@ -88,16 +94,15 @@ let rec subst v e =
   | {| ( $par:e ) |} -> {| ( $(par:subst v e) ) |}
   | {| $e1, $e2 |} -> {| $(subst v e1), $(subst v e2) |}
   | _ -> raise Not_found ]
-and subst_binding v =  fun
-  [ {:binding@_loc| $b1 and $b2 |} ->
+and subst_binding v =  function
+  | {:binding@_loc| $b1 and $b2 |} ->
       {:binding'| $(subst_binding v b1) and $(subst_binding v b2) |}
   | {:binding@_loc| $lid:v' = $e |} ->
       {:binding'| $lid:v' = $(if v = v' then e else subst v e) |}
-  | _ -> raise Not_found ];
+  | _ -> raise Not_found 
 
-let stream_pattern_component skont ckont =
-  fun
-  [ SpTrm (_loc, p, None) ->
+let stream_pattern_component skont ckont = function
+  | SpTrm (_loc, p, None) ->
       {| match $(peek_fun _loc) $lid:strm_n with
         [ Some $p ->
           begin  $(junk_fun _loc) $lid:strm_n; $skont  end
@@ -127,31 +132,33 @@ let stream_pattern_component skont ckont =
           else {| try $e with [ $(uid:gm()).Failure -> $ckont ] |}  in
         {| let $p = $tst in $skont |}
       else
-        {| match try Some $e with [ $(uid:gm()).Failure -> None ] with
-                [ Some $p -> $skont
-                | _ -> $ckont ] |}
+        {|
+        match try Some $e with [ $(uid:gm()).Failure -> None ] with
+        | Some $p -> $skont
+        | _ -> $ckont  |}
   | SpStr (_loc, p) ->
       try
         match p with
-        [ {:pat'| $lid:v |} -> subst v skont
-        | _ -> raise Not_found ]
+        | {:pat'| $lid:v |} -> subst v skont
+        | _ -> raise Not_found 
       with
-      [ Not_found -> {| let $p = $lid:strm_n in $skont |} ] ];
+      | Not_found -> {| let $p = $lid:strm_n in $skont |} 
 
-let rec stream_pattern _loc epo e ekont = fun
-  [ [] ->
-      match epo with
-      [ Some ep -> {| let $ep = $(uid:gm()).count $lid:strm_n in $e |}
-      | _ -> e ]
+let rec stream_pattern _loc epo e ekont = function
+  | [] ->
+      (match epo with
+      | Some ep -> {| let $ep = $(uid:gm()).count $lid:strm_n in $e |}
+      | _ -> e )
   | [(spc, err) :: spcl] ->
       let skont =
         let ekont err =
-          let str = match err with
-            [ Some estr -> estr
-            | _ -> {| "" |} ] in
+          let str =
+            match err with
+            | Some estr -> estr
+            | _ -> {| "" |}  in
           {| raise ($(uid:gm()).Error $str) |} in
         stream_pattern _loc epo e ekont spcl in
-      let ckont = ekont err in stream_pattern_component skont ckont spc ];
+      let ckont = ekont err in stream_pattern_component skont ckont spc 
 
 let stream_patterns_term _loc ekont tspel : exp =
   let pel =
@@ -171,24 +178,24 @@ let stream_patterns_term _loc ekont tspel : exp =
           [ Some w -> {:case'| $pat:p when $w -> $e  | $acc |}
           | None -> {:case'| $pat:p -> $e  | $acc |} ])
       tspel {:case'| _ -> $(ekont () )|} in
-  {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} ;
+  {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} 
 
-let rec group_terms = fun
-  [ [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->
+let rec group_terms = function
+  | [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->
     let (tspel, spel) = group_terms spel in
     ([(p, w, _loc, spcl, epo, e) :: tspel], spel)
-  | spel -> ([], spel) ];
+  | spel -> ([], spel) 
 
 
   
-let rec parser_cases _loc = fun
-  [ [] -> {| raise $(uid:gm()).Failure |}
+let rec parser_cases _loc = function
+  | [] -> {| raise $(uid:gm()).Failure |}
   | spel ->
       match group_terms spel with
-      [ ([], [(spcl, epo, e) :: spel]) ->
+      | ([], [(spcl, epo, e) :: spel]) ->
           stream_pattern _loc epo e (fun _ -> parser_cases _loc spel) spcl
       | (tspel, spel) ->
-          stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel ] ];
+          stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel 
 
 (* it call [parser_cases] *)  
 let cparser _loc bpo pc =
@@ -198,43 +205,41 @@ let cparser _loc bpo pc =
     [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
     | None -> e ] in
   let p = {:pat'| ($lid:strm_n : _ $(uid:gm()).t ) |} in
-  {| fun $p -> $e |} ;
+  {| fun $p -> $e |} 
 
 let cparser_match _loc me bpo pc =
   let pc = parser_cases _loc pc in
   let e =
     match bpo with
-    [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $pc |}
-    | None -> pc ]  in
+    | Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $pc |}
+    | None -> pc   in
   match me with
-  [ {| $lid:x |} when x = strm_n -> e
-  | _ -> {| let ($lid:strm_n : _ $(uid:gm()).t ) = $me in $e |} ] ;
+  | {| $lid:x |} when x = strm_n -> e
+  | _ -> {| let ($lid:strm_n : _ $(uid:gm()).t ) = $me in $e |} 
 
 (* streams *)
 
-let rec not_computing =
-  fun
-  [ {| $lid:_ |} | {| $uid:_ |} | {| $int:_ |} |
+let rec not_computing = function
+  | {| $lid:_ |} | {| $uid:_ |} | {| $int:_ |} |
     {| $flo:_ |} | {| $chr:_ |} | {| $str:_ |} -> true
   | {| $x $y |} -> is_cons_apply_not_computing x && not_computing y
-  | _ -> false ]
-and is_cons_apply_not_computing =
-  fun
-  [ {| $uid:_ |} -> true
+  | _ -> false 
+and is_cons_apply_not_computing = function
+  | {| $uid:_ |} -> true
   | {| $lid:_ |} -> false
   | {| $x $y |} -> is_cons_apply_not_computing x && not_computing y
-  | _ -> false ];
+  | _ -> false 
 
 let slazy _loc e =
   match e with
-  [ {| $f () |} ->
-      match f with
-      [ {| $lid:_ |} -> f
-      | _ -> {| fun _ -> $e |} ]
-  | _ -> {| fun _ -> $e |} ] ;
+  | {| $f () |} ->
+      (match f with
+      | {| $lid:_ |} -> f
+      | _ -> {| fun _ -> $e |} )
+  | _ -> {| fun _ -> $e |} 
 
-let rec cstream gloc =  fun
-  [ [] -> let _loc = gloc in {| [< >] |}
+let rec cstream gloc =  function
+  | [] -> let _loc = gloc in {| [< >] |}
   | [SeTrm (_loc, e)] ->
       if not_computing e
       then {| $(uid:gm()).ising $e |}
@@ -248,5 +253,5 @@ let rec cstream gloc =  fun
       else {| $(uid:gm()).slazy $(slazy _loc e) |}
   | [SeNtr (_loc, e) :: secl] ->
       if not_computing e then {| $(uid:gm()).iapp $e $(cstream gloc secl) |}
-      else {| $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) |} ] ;
+      else {| $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) |} 
     

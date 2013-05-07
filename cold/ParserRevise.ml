@@ -4271,15 +4271,15 @@ let apply () =
                       (FanToken.paths.contents));
                     ([`DirectiveSimple (_loc, (`Lid (_loc, "import")))],
                       (Some _loc)) : 'implem )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"; `Sself],
-           ("Gram.mk_action\n  (fun ((sil,stopped) : 'implem)  _  (si : 'stru)  (_loc : FanLoc.t)  ->\n     (((si :: sil), stopped) : 'implem ))\n",
-             (Gram.mk_action
-                (fun ((sil,stopped) : 'implem)  _  (si : 'stru) 
-                   (_loc : FanLoc.t)  -> (((si :: sil), stopped) : 'implem )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"; `Sself],
            ("Gram.mk_action\n  (fun ((sil,stopped) : 'implem)  _  (si : 'stru)  (_loc : FanLoc.t)  ->\n     (((si :: sil), stopped) : 'implem ))\n",
              (Gram.mk_action
                 (fun ((sil,stopped) : 'implem)  _  (si : 'stru) 
+                   (_loc : FanLoc.t)  -> (((si :: sil), stopped) : 'implem )))));
+         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Sself],
+           ("Gram.mk_action\n  (fun ((sil,stopped) : 'implem)  (si : 'stru)  (_loc : FanLoc.t)  ->\n     (((si :: sil), stopped) : 'implem ))\n",
+             (Gram.mk_action
+                (fun ((sil,stopped) : 'implem)  (si : 'stru) 
                    (_loc : FanLoc.t)  -> (((si :: sil), stopped) : 'implem )))));
          ([`Stoken
              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],

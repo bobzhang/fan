@@ -232,6 +232,6 @@ let _ =
 
 let d = `Absolute ["Fan"; "Lang"; "Lex"]
 
-let _ = AstQuotation.of_exp ~name:(d, "lex") ~entry:lex
-
-let _ = AstQuotation.of_stru ~name:(d, "reg") ~entry:declare_regexp
+let _ =
+  AstQuotation.of_exp ~name:(d, "lex") ~entry:lex;
+  AstQuotation.of_stru ~name:(d, "reg") ~entry:declare_regexp

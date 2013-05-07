@@ -1,31 +1,32 @@
-open Format;
-open LibUtil;
-open Ast;
+open Format
+open LibUtil
+open Ast
 
 (*
    Basic module contains utility functions to manipulate Ast
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location.
  *)
-exception Unhandled of ctyp ;
-exception Finished of exp;
+exception Unhandled of ctyp 
+exception Finished of exp
 
-let _loc =FanLoc.ghost ;
+let _loc =FanLoc.ghost 
 
-let unit_literal = {:exp| () |} ;
+let unit_literal = {:exp| () |} 
   
 let x ?(off=0) (i:int)    =
   if off > 25 then invalid_arg "unsupported offset in x "
   else
     let base = Char.(code 'a' + off |> chr) in
-    "_"^String.of_char base ^ string_of_int i;
+    "_"^String.of_char base ^ string_of_int i
     
 let xid ?(off=0) (i:int)   =
-  {:ident| $(lid:x ~off i) |} ;
+  {:ident| $(lid:x ~off i) |} 
   
-let allx ?(off=0) i =  "all" ^x ~off i ;
+let allx ?(off=0) i =  "all" ^x ~off i 
   
-let allxid ?(off=0) i = {:ident| $(lid:allx ~off i) |};
+let allxid ?(off=0) i =
+  {:ident| $(lid:allx ~off i) |}
   
 let check_valid str =
   let len = String.length str in
@@ -39,14 +40,14 @@ let check_valid str =
              can not be a-[digit], can not start with [all_]";
            exit 2;
          end 
-  else ();    
+  else ()
 
   
 
 
 
 
-let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50;
+let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 
 
   

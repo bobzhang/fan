@@ -1,10 +1,13 @@
 
 
 
-open LibUtil;  
-open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
+open LibUtil
+  
+open PreCast.Syntax;;
+(* FIXME contains a lot of modules, like Gen*)
+  
 
-{:create|Gram regexp chr ch_class regexps lex declare_regexp|};
+{:create|Gram regexp chr ch_class regexps lex declare_regexp|};;
 
 
 {:extend|Gram
@@ -53,16 +56,21 @@ open PreCast.Syntax; (* FIXME contains a lot of modules, like Gen*)
 	  c := LexSet.union !c (LexSet.singleton (Char.code s.[i])) 
         done;
           !c
-    end ] |};
+    end ] |};;
 
 
-let d = `Absolute ["Fan";"Lang";"Lex"];
-AstQuotation.of_exp
+let d = `Absolute ["Fan";"Lang";"Lex"];;
+    
+
+begin
+    AstQuotation.of_exp
   ~name:(d,"lex") ~entry:lex ;
 AstQuotation.of_stru
     ~name:(d,"reg")
     ~entry:declare_regexp;  
-  
+end;;
+
+
 (*
 let change_ids suffix = object
   inherit FanAst.map (* as super *);

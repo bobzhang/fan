@@ -1,13 +1,13 @@
 
-open PreCast.Syntax;
-open FanMacroTools;
+open PreCast.Syntax
+open FanMacroTools
 
 
 {:create|Gram
   macro_def (* macro_def_sig *) uident_eval_ifdef uident_eval_ifndef
   else_macro_def (* else_macro_def_sig *) else_exp smlist_then smlist_else (* sglist_then *)
   (* sglist_else *) endif opt_macro_value uident 
-|};
+|};;
 
 let apply () = begin 
   {:extend|Gram
@@ -112,12 +112,12 @@ let apply () = begin
     ("-I",
      (FanArg.String FanBasic.add_include_dir),
      "<string> Add a directory to INCLUDE search path.");
-end;
+end;;
     
 
 
 (* TODO, we need record more information here  *)
-AstParsers.register_parser ("macro", apply);
+AstParsers.register_parser ("macro", apply);;
 
 
 

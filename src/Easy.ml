@@ -1,7 +1,7 @@
-open Transform;
-open FSig;
+open Transform
+open FSig
 
-let _loc = FanLoc.ghost ;
+let _loc = FanLoc.ghost 
 
 (**
    For var, in most cases we just add a prefix
@@ -50,7 +50,9 @@ let gen_stru
                   ~right_type_id
                   ~left_type_id ~right_type_variable)
                );
-    end;
+    end
+
+    
 let gen_object
     ?module_name
     ?(arity=1)
@@ -92,7 +94,7 @@ let gen_object
              kind)
     end in
   make
-;
+
 
 
 

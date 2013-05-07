@@ -1,25 +1,28 @@
 
 
-open Structure;
-open LibUtil;
-open Format;
-let pp = fprintf ;
+open Structure
+
+open LibUtil
+
+open Format
+
+let pp = fprintf 
 
   
-let name_of_descr = fun
-  [(`Antiquot,s) -> "$"^s
-  |(_,s) -> s ];
+let name_of_descr = function
+  |(`Antiquot,s) -> "$"^s
+  |(_,s) -> s 
   
-let  name_of_symbol entry : [> symbol] -> string  =  fun
-  [ `Snterm e -> "[" ^ e.ename ^ "]"
+let  name_of_symbol entry : [> symbol] -> string  =  function
+  | `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | `Sself | `Snext -> "[" ^ entry.ename ^ "]"
   | `Stoken (_, descr) -> name_of_descr descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
-  | _ -> "???" ];
+  | _ -> "???" 
 
-let tree_in_entry prev_symb tree = fun
-  [ Dlevels levels ->
+let tree_in_entry prev_symb tree = function
+  | Dlevels levels ->
       let rec search_level level =
         match search_tree level.lsuffix with
         [ Some t -> Some (Node {node = `Sself; son = t; brother = DeadEnd})
@@ -86,20 +89,20 @@ let tree_in_entry prev_symb tree = fun
             | None -> None ]
         | _ -> None ] in
       try List.find_map search_level  levels with [Not_found -> tree]
-  | Dparser _ -> tree ];
+  | Dparser _ -> tree 
 
   
 (* error message entrance *)
-let rec name_of_symbol_failed entry  = fun
-  [ `Slist0 s | `Slist0sep (s, _) |
+let rec name_of_symbol_failed entry  = function
+  | `Slist0 s | `Slist0sep (s, _) |
     `Slist1 s | `Slist1sep (s, _) |
     `Sopt s | `Stry s | `Speek s  ->
       name_of_symbol_failed entry s
   | `Stree t -> name_of_tree_failed entry t
-  | s -> name_of_symbol entry s ]
+  | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
   match x with 
-  [ Node ({node ; brother; son = son} as y)->
+  [Node ({node ; brother; son = son} as y)->
       match Tools.get_terminals y  with
       [ None ->
           let txt = name_of_symbol_failed entry node in
@@ -119,9 +122,9 @@ and name_of_tree_failed entry x =
                (match tok with
                 [ `Stoken (_, descr) -> name_of_descr descr
                 | `Skeyword kwd -> kwd]))) "" tokl ]
-  | DeadEnd | LocAct (_, _) -> "???" ];
+  | DeadEnd | LocAct (_, _) -> "???" ]
 
-let magic _s x = (* debug magic "Obj.magic: %s@." _s in *) Obj.magic x;
+let magic _s x = (* debug magic "Obj.magic: %s@." _s in *) Obj.magic x
 
 (* [prev_symb_result] is cast by [Obj.magic] *)
 let tree_failed entry prev_symb_result prev_symb tree =
@@ -163,13 +166,13 @@ let tree_failed entry prev_symb_result prev_symb tree =
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"
-    end;
+    end
   
 let symb_failed entry prev_symb_result prev_symb symb =
   let tree = Node {node = symb; brother = DeadEnd; son = DeadEnd} in
-  tree_failed entry prev_symb_result prev_symb tree;
+  tree_failed entry prev_symb_result prev_symb tree
 
 let symb_failed_txt e s1 s2 =
-  symb_failed e 0 s1 s2;
+  symb_failed e 0 s1 s2
 
 

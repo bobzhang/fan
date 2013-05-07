@@ -1,10 +1,10 @@
 
-open Format;
-open LibUtil;
+open Format
+open LibUtil
 
 
-let normal_handler = fun
-  [ Out_of_memory ->  Some "Out of memory"
+let normal_handler = function
+  | Out_of_memory ->  Some "Out of memory"
   | Assert_failure ((file, line, char)) ->
       Some (sprintf "Assertion failed, file %S, line %d, char %d" file line
               char)
@@ -16,9 +16,9 @@ let normal_handler = fun
   | Sys_error str -> Some (sprintf "I/O error: %S" str)
   | XStream.Failure -> Some (sprintf "Parse failure")
   | XStream.Error str -> Some (sprintf  "XStream.Error %s" str)
-  | _ -> None];
+  | _ -> None;;
     
-Printexc.register_printer normal_handler; 
+Printexc.register_printer normal_handler;;
 
 (* copied from otypes.ml Values *)
 let valid_float_lexeme s =
@@ -27,11 +27,11 @@ let valid_float_lexeme s =
     if i >= l
     then s ^ "."
     else (match s.[i] with [ '0' .. '9' | '-' -> loop (i + 1) | _ -> s])
-  in loop 0;
+  in loop 0
     
 let float_repres f =
   match classify_float f with
-  [ FP_nan -> "nan"
+  | FP_nan -> "nan"
   | FP_infinite -> if f < 0.0 then "neg_infinity" else "infinity"
   | _ ->
       let float_val =
@@ -45,19 +45,22 @@ let float_repres f =
           if f = (float_of_string s2)
           then s2
           else Printf.sprintf "%.18g" f)
-      in valid_float_lexeme float_val];
+      in valid_float_lexeme float_val
 
 let cvt_int_literal s =
   let n = String.length s in
   match s.[n-1] with
-  ['l' -> `INT32 (Int32.(neg (of_string ("-" ^ s))),s)
+  |'l' -> `INT32 (Int32.(neg (of_string ("-" ^ s))),s)
   |'L' -> `INT64 (Int64.(neg (of_string ("-" ^ s))),s)
   |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
-  | _  -> `INT (- int_of_string ("-" ^ s),s) ];  
+  | _  -> `INT (- int_of_string ("-" ^ s),s) 
 
-open StdLib;    
-{:fans| keep on;
- derive (Print );|};
+
+open StdLib;;
+
+
+
+{:fans| keep on;  derive (Print );|};;
     
 {:ocaml|
 type anti_cxt = {
@@ -66,7 +69,7 @@ type anti_cxt = {
     mutable decorations:   string; (* keep it simple first*)
     content:string;
   }
-  |};
+  |};;
     
 let mk_anti ?(c="") ?sep loc n s =
   let c = {
@@ -74,10 +77,10 @@ let mk_anti ?(c="") ?sep loc n s =
   decorations= n;
   content =s ;
   sep;
- } in `Ant(loc,c);
+ } in `Ant(loc,c)
     
 let add_context s c =
-  {s with decorations = s.decorations ^ c};
+  {s with decorations = s.decorations ^ c}
 
   
 
@@ -86,7 +89,8 @@ let add_context s c =
 
 let symbolchars =
   ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
-   '@'; '^'; '|'; '~'; '\\'];
+   '@'; '^'; '|'; '~'; '\\']
+    
 let symbolchar s i =
   let len = String.length s in
   try
@@ -95,7 +99,7 @@ let symbolchar s i =
         raise Not_found
       else ();
     done; true)
-  with [Not_found -> false];
+  with | Not_found -> false
 
   
 
@@ -103,26 +107,26 @@ let symbolchar s i =
 (* either dump to a file or stdout *)    
 let with_open_out_file x f =
   match x with
-  [ Some file -> let oc = open_out_bin file in begin f oc; flush oc; close_out oc end
-  | None -> (set_binary_mode_out stdout true; f stdout; flush stdout) ];
+  | Some file -> let oc = open_out_bin file in begin f oc; flush oc; close_out oc end
+  | None -> (set_binary_mode_out stdout true; f stdout; flush stdout) 
         
 (* dump binary *)
 let dump_ast magic ast oc =
-  begin output_string oc magic; output_value oc ast end;
+  begin output_string oc magic; output_value oc ast end
     
 let dump_pt magic fname pt oc = begin
   output_string oc magic;
   output_value oc (if fname = "-" then "" else fname);
   output_value oc pt
-end;
+end
 
 
 let char_of_char_token loc s =
-  try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
+  try TokenEval.char s with | Failure _ as exn -> FanLoc.raise loc exn 
     
 let string_of_string_token loc s =
   try TokenEval.string s
-  with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
+  with | Failure _ as exn -> FanLoc.raise loc exn 
 
 
 (*
@@ -142,7 +146,7 @@ let remove_underscores s =
   let buf = Buffer.create l in
   let () = String.iter (fun ch ->
     if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
-  Buffer.contents buf ;
+  Buffer.contents buf 
     
 
       
@@ -162,4 +166,4 @@ let destruct_poly s =
   else
     if s.[0] = '`' then
       Some (String.sub s 1 (n-1))
-    else None;
+    else None

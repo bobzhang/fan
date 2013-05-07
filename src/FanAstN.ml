@@ -1,6 +1,6 @@
 
-open StdLib;
-include AstN;
+open StdLib
+include AstN;;
 (* {:fans|keep off; *)
 (*  derive ((\* Map2 Fold2 Map Fold Print OPrint *\) OEq ); |}; *)
 
@@ -8,7 +8,7 @@ include AstN;
 
 {:ocaml| {:include| "src/AstN.ml" |} |};;
 
-__MetaExpr__;
+__MetaExpr__;;
 
 
 

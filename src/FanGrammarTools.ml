@@ -1,34 +1,34 @@
-open Ast;
-open FanOps;
-open Format;
-open AstLoc;
-open LibUtil;
-open FanGrammar;
+open Ast
+open FanOps
+open Format
+open AstLoc
+open LibUtil
+open FanGrammar
 
-let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
+let print_warning = eprintf "%a:\n%s@." FanLoc.print
 
   
-let prefix = "__fan_"  ;
-let ghost = FanLoc.ghost ;  
-let grammar_module_name = ref (`Uid (ghost,"Gram")) ;
+let prefix = "__fan_"  
+let ghost = FanLoc.ghost
+let grammar_module_name = ref (`Uid (ghost,"Gram")) 
   
 let gm () : vid =
   match !FanConfig.compilation_unit with
-  [Some "Gram" -> `Uid(ghost,"")
+  |Some "Gram" -> `Uid(ghost,"")
   |Some _ | None -> 
-      !grammar_module_name];
+      !grammar_module_name
 
 let mk_entry ~name ~pos ~levels =
-  {name;pos;levels};
+  {name;pos;levels}
   
 let mk_level ~label ~assoc ~rules =
-  {label; assoc;rules};
+  {label; assoc;rules}
   
 let mk_rule ~prod ~action =
-  {prod;action};
+  {prod;action}
   
 let mk_symbol  ?(pattern=None)  ~text ~styp =
-  { text;styp;pattern};
+  { text;styp;pattern}
 
 let string_of_pat pat = 
   let buf = Buffer.create 42 in
@@ -36,7 +36,7 @@ let string_of_pat pat =
     Format.bprintf buf "%a@?"
       (fun fmt p -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
   let str = Buffer.contents buf in
-  if str = "" then assert false else str;
+  if str = "" then assert false else str
 
 (** FIXME why deprecate such syntax
     It makes
@@ -45,20 +45,20 @@ let string_of_pat pat =
  *)  
 let check_not_tok s = 
     match s with
-    [ {text = `Stok (_loc, _, _, _) ;_} ->
+    | {text = `Stok (_loc, _, _, _) ;_} ->
         FanLoc.raise _loc (XStream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
-    | _ -> () ];
+    | _ -> () 
       
 let new_type_var = 
   let i = ref 0 in fun () -> begin
     incr i; "e__" ^ string_of_int !i
-  end ;
+  end 
     
-let gensym  = let i = ref 0 in fun () -> (incr i; i);
+let gensym  = let i = ref 0 in fun () -> (incr i; i)
 
-let gen_lid ()=  prefix^string_of_int (!(gensym ()));
+let gen_lid ()=  prefix^string_of_int (!(gensym ()))
   
 (* transform rule list *)  
 let retype_rule_list_without_patterns _loc rl =
@@ -81,7 +81,7 @@ let retype_rule_list_without_patterns _loc rl =
     | {prod = []; action = Some _} as r -> r
     | _ -> raise Exit ]) rl
   with
-    [ Exit -> rl ];
+    [ Exit -> rl ]
 
 
 
@@ -100,7 +100,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$lid:tvar |}
     | `Tok _loc -> {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
-    | `Type t -> t ] in aux styp;
+    | `Type t -> t ] in aux styp
 
       
 
@@ -242,7 +242,7 @@ and make_exp_rules (_loc:loc)  (rl : (text list  * exp) list  ) (tvar:string) =
       let action_string = Ast2pt.to_string_exp action in
       (* let exp = (Filters.ME.meta_exp _loc action) in *)
       let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
-      {| ($sl,($str:action_string,$action(* ,$exp *))) |} ) rl);
+      {| ($sl,($str:action_string,$action(* ,$exp *))) |} ) rl)
   
 (* generate action, collecting patterns into action
    [rtvar] stands for the type of the return value
@@ -298,20 +298,15 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
               typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} ])  e psl in
   {| $((gm():vid:>exp)).mk_action $txt |}
-  (* {| $(id:gm()).mk_action $txt |} *)  ;
 
 let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp) =
   let sl = List.map (fun s  -> s.text) r.prod in
   let ac = text_of_action loc r.prod t ?action:r.action tvar in
-  (sl, ac);
+  (sl, ac)
   
 (* the [rhs] was already computed, the [lhs] was left *)
 let mk_srules loc ( t : string) (rl:rule list ) (tvar:string) : (text list  * exp)list  =
-  List.map (mk_srule loc t tvar) rl;
-    (* (fun r -> *)
-    (*   let sl = List.map (fun s  -> s.text) r.prod in *)
-    (*   let ac = text_of_action loc r.prod t ?action:r.action tvar in *)
-    (*   (sl, ac)) rl ; *)
+  List.map (mk_srule loc t tvar) rl
     
 
 
@@ -326,15 +321,15 @@ let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
           (* {:exp'| $(id:gm()).delete_rule $e $b |} *)) symbolss in
   match symbolss with
   [[] -> {| () |}
-  |_ -> seq_sem rest ];  
+  |_ -> seq_sem rest ]
   (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
 let mk_name _loc (i:vid) =
   {exp = (i:vid :> exp) (* {:exp| $id:i |} *);
-   tvar = Id.tvar_of_ident i; loc = _loc};
+   tvar = Id.tvar_of_ident i; loc = _loc}
   
-let mk_slist loc min sep symb = `Slist loc min symb sep ;
+let mk_slist loc min sep symb = `Slist loc min symb sep 
 
 
 (*
@@ -374,13 +369,13 @@ let text_of_entry (e:entry) :exp =  with exp'
           (* generated code of type [olevel] *)
           {| ($lab, $ass, $prod) |}) in
     match e.levels with
-    [`Single l ->
+    |`Single l ->
       {| $((gm():vid:>exp)).extend_single $ent ($pos, $(apply l) ) |}
       (* {| $(id:gm()).extend_single $ent ($pos, $(apply l) ) |} *)
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
         {|$((gm():vid:>exp)).extend $ent ($pos,$txt)|}
-        (* {|$(id:gm()).extend $ent ($pos,$txt)|} *)   ];  
+
   
 
 (* [gl] is the name  list option
@@ -410,7 +405,7 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
   | Some [] -> default
   | Some ll ->
       let locals = and_of_list (List.map local_binding_of_name ll)  in
-      {:exp'| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  ;
+      {:exp'| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  
 
 (* the [locals] is local entry name list,
    [el] is entry list
@@ -428,7 +423,7 @@ let text_of_functorial_extend _loc  gram locals el =
     match el with
     [ [] -> {:exp| () |}
     | _ -> seq_sem el  ]  in
-  let_in_of_extend _loc gram locals  args;
+  let_in_of_extend _loc gram locals  args
 
 
 (* generate Stok *)  
@@ -451,7 +446,7 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_pat pattern in
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
-     {text; styp; pattern = Some p'} ] ;
+     {text; styp; pattern = Some p'} ] 
    
 let sfold ?sep _loc  (ns:string list )  f e s = with ctyp
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
@@ -467,7 +462,7 @@ let sfold ?sep _loc  (ns:string list )  f e s = with ctyp
     {| ($(s.styp), $styp) $(`Type {|  _ $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) |})
        |} in 
   let text = `Smeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
-  {text ; styp ; pattern = None } ;
+  {text ; styp ; pattern = None } 
 
 
 

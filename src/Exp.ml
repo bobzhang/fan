@@ -1,16 +1,17 @@
-open FanOps;
+open FanOps
+  
 #default_quotation     "exp";;
 
 
 (* +-----------------------------------------------------------------+
    | the modules documented with [open Exp]                          |
    +-----------------------------------------------------------------+ *)
-open Ast;
-open AstLoc;
-open LibUtil;
-open Basic;
-open FanUtil;
-open EP;
+open Ast
+open AstLoc
+open LibUtil
+open Basic
+open FanUtil
+open EP
 
 
 
@@ -21,7 +22,7 @@ let rec pattern_eq_expression p e =
   | ({:pat'| $uid:a |}, {@_| $uid:b |}) -> a = b
   | ({:pat'| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
-  | _ -> false ] ;
+  | _ -> false ] 
 
   
 (* +-----------------------------------------------------------------+
@@ -38,16 +39,16 @@ let map loc (p:pat) (e:exp) (l:exp) = with exp'
         {@loc| List.fold_right
           (fun
             [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
-            | _ -> (fun l -> l) ]) $l [] |} ];
+            | _ -> (fun l -> l) ]) $l [] |} ]
 
 
 let filter loc p b l = with exp'
     if is_irrefut_pat p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
-      {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |};
+      {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |}
   
-let concat _loc l = with exp' {| List.concat $l |};
+let concat _loc l = with exp' {| List.concat $l |}
 
 (* only this function needs to be exposed *)
 let rec compr _loc e =  fun
@@ -56,7 +57,7 @@ let rec compr _loc e =  fun
         compr _loc e [`gen (p, filter _loc p b l) :: items]
     | [`gen (p, l) :: ([ `gen (_, _) :: _ ] as is )] ->
         concat _loc (map _loc p (compr _loc e is) l)
-    | _ -> raise Stream.Failure ];
+    | _ -> raise Stream.Failure ]
 
 
 (* +-----------------------------------------------------------------+
@@ -66,7 +67,7 @@ let rec compr _loc e =  fun
 let bad_pat _loc =
   FanLoc.raise _loc
     (Failure
-       "this macro cannot be used in a pattern (see its definition)");
+       "this macro cannot be used in a pattern (see its definition)")
 
 (* Environment is a [string*pat] pair,
 
@@ -96,7 +97,7 @@ let substp loc env =
           | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
           | _ -> bad_pat _loc ] in
         {@loc| { $(substbi bi) } |}
-    | _ -> bad_pat loc ] in loop;
+    | _ -> bad_pat loc ] in loop
 
 (*
   [env] is a list of [string*exp],
@@ -129,14 +130,14 @@ class subst loc env =  object
        try substp loc [] (List.assoc x env) with 
        [ Not_found -> super#pat p ]
     | p -> super#pat p ];
-end;
+end
 
 
 class type antiquot_filter =object
   inherit Objs.map;
   method get_captured_variables: (exp * exp) list ;
   method clear_captured_variables: unit;
-end;
+end
   
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
 let capture_antiquot : antiquot_filter = object
@@ -160,14 +161,14 @@ let capture_antiquot : antiquot_filter = object
    constraints;
  method clear_captured_variables =
    constraints <- [];
-end;
+end
 
 let filter_pat_with_captured_variables pat= begin 
   capture_antiquot#clear_captured_variables;
   let pat=capture_antiquot#pat pat in
   let constraints = capture_antiquot#get_captured_variables in
   (pat,constraints)
-end;
+end
 
 
 
@@ -187,11 +188,11 @@ let fun_args _loc args body = with exp'
   else
     List.fold_right
       (fun arg body ->
-	{| fun $arg -> $body |}) args body;
+	{| fun $arg -> $body |}) args body
   
 
 
-let _loc = FanLoc.ghost ;
+let _loc = FanLoc.ghost 
 (*
   Example:
   {[
@@ -208,13 +209,13 @@ let _loc = FanLoc.ghost ;
 let mk_record label_exps : exp=
   let rec_exps = List.map (fun (label, exp) ->
     {:rec_exp'| $lid:label = $exp |} ) label_exps in
-  `Record (_loc, (sem_of_list rec_exps));
+  `Record (_loc, (sem_of_list rec_exps))
   (* {| { $list:rec_exps } |} *)
 
 
 (* TBD *)
 let failure = with exp'
-  {| raise (Failure "metafilter: Cannot handle that kind of types ") |};       
+  {| raise (Failure "metafilter: Cannot handle that kind of types ") |}
 
 
 (*
@@ -225,7 +226,7 @@ let failure = with exp'
   ]}
  *)
 let (<+) names acc  = with exp'
-  List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|}) names acc ;
+  List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|}) names acc 
 
 (*
   Example:
@@ -235,7 +236,7 @@ let (<+) names acc  = with exp'
   ]}
  *)  
 let (<+<) pats acc =
-  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) pats acc;
+  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) pats acc
 
 
 
@@ -244,11 +245,11 @@ let (<+<) pats acc =
    +-----------------------------------------------------------------+ *)
   
   
-let mee_comma x y = {| {| $($x), $($y) |} |};
+let mee_comma x y = {| {| $($x), $($y) |} |}
   (* {| `Com _loc $x $y  |}; *)
-let mvee_comma x y = {| `Com (_loc,$x,$y) |};
+let mvee_comma x y = {| `Com (_loc,$x,$y) |}
 
-let mee_app x y = {| {| $($x) $($y) |}|};
+let mee_app x y = {| {| $($x) $($y) |}|}
 
 (*
   FIXME bootstrap
@@ -268,7 +269,7 @@ let mee_of_str s =
     {|{|$(vrn:($str:s))|}|}
   else
     let u = {| {:ident| $(uid:$str:s) |} |} in
-    {| {| $(id:$u) |} |};
+    {| {| $(id:$u) |} |}
     (* {| {| $(uid:$s)|}|} *)
       (* {| A |}
            `App
@@ -304,7 +305,7 @@ let mee_of_str s =
 (*   {| Vrn _loc $str:s|}; *)
 
 let vee_of_str s =
-  {| `Vrn (_loc,$str:s) |};
+  {| `Vrn (_loc,$str:s) |}
 
 (* let vep_of_str s = *)
 (*   {| `Vrn (_loc,$str:s)|}; *)
@@ -316,7 +317,7 @@ let vee_of_str s =
  *)
 let meee_of_str s =
   let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in 
-  {| {| {| $(id:$($u))|}|}|};
+  {| {| {| $(id:$($u))|}|}|}
 
 
 (*
@@ -364,11 +365,11 @@ let meee_of_str s =
   given string input "u" and [ {| meta_u |} ]
  *)
 
-let mk_tuple_ee = fun 
-  [ [] -> invalid_arg "mktupee arity is zero "
+let mk_tuple_ee = function
+  | [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      {| `Par (_loc, $(List.reduce_right mee_comma xs)) |}];
+      {| `Par (_loc, $(List.reduce_right mee_comma xs)) |}
 
 (* let mk_tuple_vee = fun  *)
 (*   [ [] -> invalid_arg "mktupee arity is zero " *)
@@ -385,11 +386,11 @@ let mk_tuple_ee = fun
   ]}
  *)
 let mee_record_col label exp =
-  {| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} ;
+  {| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} 
 
 
 let mee_record_semi a b =
-  {| {:rec_exp| $($a);$($b) |} |};
+  {| {:rec_exp| $($a);$($b) |} |}
 
 
 (*
@@ -401,7 +402,7 @@ let mee_record_semi a b =
 let mk_record_ee label_exps = 
   label_exps
   |> List.map (fun (label,exp) -> mee_record_col label exp)
-  |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} );
+  |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} )
 
     
 
@@ -413,7 +414,7 @@ let mk_record_ee label_exps =
  *)
 let eta_expand (exp:exp) number : exp =
   let names = List.init number (fun i -> x ~off:0 i ) in
-  names <+ (exp +> names );
+  names <+ (exp +> names )
 
 
 (*
@@ -433,7 +434,7 @@ let gen_curry_n (acc:exp) ~arity cons n : exp =
   let pat = of_str cons in
   List.fold_right
     (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
-    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc;
+    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc
 
 (*
   Example:
@@ -462,14 +463,14 @@ let currying cases ~arity =
     let x = tuple_com exps in
     names <+ {| match $x with [ $cases ]|} 
     (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
-  else {| fun [ $cases ]|};
+  else {| fun [ $cases ]|}
       (* {| fun [ $list:cases ] |} *)
 
 
 let unknown len =
   if len = 0 then
     {| self# $(`Lid (_loc, "unknown")) |} (* FIXME*)
-  else {| failwith $(str:"not implemented!") |};
+  else {| failwith $(str:"not implemented!") |}
 
   
 (* let normalize = object *)

@@ -1,4 +1,4 @@
-open Ast;
+open Ast
 
 (* {:fans| keep on;  derive (MetaExpr);|}; *)
 {:ocaml|
@@ -7,7 +7,7 @@ type name = {(* every entry has a name *)
     exp : exp;
     tvar : string;
     loc : loc
-  };
+  }
 
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)
@@ -17,10 +17,10 @@ type styp =
  | `Quote of (loc * position_flag * (* meta_option *) alident)
  | `Self of (loc * string)
  | `Tok of loc
- | `Type of ctyp ];
+ | `Type of ctyp ]
 (* Normal, Antiquot, etc. translated to
    `Normal `Antiquot *)
-type attr = string;
+type attr = string
 type entry   = {
   name : name ;
   (*position expession node *)    
@@ -62,10 +62,10 @@ and text =
     The description string will be used for
     grammar insertion and left factoring.
     Keep this string [normalized] and well comparable. *) ]
-  |};
+  |};;
 
 type used =
-  | Unused | UsedScanned | UsedNotScanned ;
+  | Unused | UsedScanned | UsedNotScanned 
 
 type simple_pat =
   [
@@ -78,11 +78,11 @@ type simple_pat =
   |`Str of (loc * string)
   |`Any of loc
   | ant
-   ];
+   ]
 
 (* make [S] a keyword ? *) 
 type action_pattern =
   [ vid
   |`Com of (loc * action_pattern * action_pattern)
   |`Par of (loc * action_pattern )
-  |`Any of loc ];  
+  |`Any of loc ]

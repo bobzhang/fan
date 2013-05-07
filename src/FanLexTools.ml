@@ -1,36 +1,36 @@
 (* NFA *)
-open Ast;
-open AstLoc;
-open LibUtil;
+open Ast
+open AstLoc
+open LibUtil
 type node = { 
     id : int; 
     mutable eps :  node list ; (* FIXME inconsistent with original syntax *)
     mutable trans : (LexSet.t * node) list ;
-};
+}
 
 (* Compilation regexp -> NFA *)
 
-type regexp = node -> node;
+type regexp = node -> node
 
-let cur_id = ref 0;
+let cur_id = ref 0
 let new_node () = begin 
   incr cur_id;
   { id = !cur_id; eps = []; trans = [] }
-end;
+end
 
-let seq r1 r2 succ = r1 (r2 succ);
+let seq r1 r2 succ = r1 (r2 succ)
 
 let alt r1 r2 succ =
   let n = new_node () in begin 
     n.eps <- [r1 succ; r2 succ];
     n
-  end;
+  end
 
 let rep r succ =
   let n = new_node () in begin 
     n.eps <- [r n; succ];
     n
-  end;
+  end
 
 (* return [nr] instead *)
 let plus r succ = begin 
@@ -38,36 +38,36 @@ let plus r succ = begin
   let nr = r n ;
   n.eps <- [nr; succ];
   nr
-end;
+end
   
-let eps succ = succ;
+let eps succ = succ
 
 let chars c succ = begin 
   let n = new_node () ;
   n.trans <- [(c,succ)];
   n
-end;
+end
 
 let compile_re re = begin 
   let final = new_node () ;
   (re final, final)
-end;
+end
   
 let of_string s =
   let rec aux n =
     if n = String.length s then eps
     else 
       seq (chars (LexSet.singleton (Char.code s.[n]))) (aux (succ n)) in
-  aux 0;
+  aux 0
     
 (* Determinization *)
 
-type state = node list ;
+type state = node list 
 
 let rec add_node state node = 
   if List.memq node state then state else add_nodes [node::state] node.eps
 and add_nodes state nodes =
-  List.fold_left add_node state nodes;
+  List.fold_left add_node state nodes
 
 
 let transition state =
@@ -82,7 +82,7 @@ let transition state =
   let t = Array.of_list t in begin 
     Array.sort (fun (c1,_) (c2,_) -> compare c1 c2) t;
     (Array.map fst t, Array.map snd t)
-  end;
+  end
 
 (* It will change the counter *)    
 let find_alloc tbl (counter: int ref ) x : int =
@@ -92,12 +92,12 @@ let find_alloc tbl (counter: int ref ) x : int =
     let _ = incr counter ;
     let _ = Hashtbl.add tbl x i ;
     i
-  end];
+  end]
  
 (* let part_tbl = Hashtbl.create 31 *)
-let part_id = ref 0;
+let part_id = ref 0
     
-let get_part ~part_tbl (t : LexSet.t array) = find_alloc part_tbl part_id t;
+let get_part ~part_tbl (t : LexSet.t array) = find_alloc part_tbl part_id t
 
 (*
   {[
@@ -134,7 +134,7 @@ let compile ~part_tbl (rs: regexp array ) =
     Array.iter (fun (i,_) -> init := add_node !init i) rs;
     ignore(aux !init);
     Array.init !counter (fun id -> List.assoc id !states_def)
-  end;
+  end
 
 (* fetch the data from [part_tbl] *)    
 let partitions ~part_tbl () =
@@ -150,14 +150,14 @@ let partitions ~part_tbl () =
     Hashtbl.iter (fun part i -> res := [(i, aux part) :: !res]) part_tbl;
     Hashtbl.clear part_tbl;
     !res
-  end;
+  end
 
 
 
 (* Named regexp *)
 
 let named_regexps =
-  (Hashtbl.create 13 :  (string,regexp) Hashtbl.t  );
+  (Hashtbl.create 13 :  (string,regexp) Hashtbl.t  )
 
 let () =
   List.iter (fun (n,c) -> Hashtbl.add named_regexps n (chars c))
@@ -172,23 +172,26 @@ let () =
       ("xml_blank", LexSet.blank);
 
       ("tr8876_ident_char", LexSet.tr8876_ident_char);
-    ]; 
+    ]
 
-let table_prefix = "__table_"  ;
-let state_prefix = "__state_";
-let partition_prefix = "__partition_";
+let table_prefix = "__table_"  
+let state_prefix = "__state_"
+let partition_prefix = "__partition_"
 
 (* FIXME ghost location introduced *)
 let lexer_module_name : vid ref =
-  let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|};
+  let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|}
   
-let gm () = !lexer_module_name; 
+let gm () = !lexer_module_name
+    
 let mk_table_name i =
-  Printf.sprintf "%s%i" table_prefix i;
+  Printf.sprintf "%s%i" table_prefix i
+
 let mk_state_name i =
-  Printf.sprintf "__state_%i" i;
+  Printf.sprintf "__state_%i" i
+    
 let mk_partition_name i =
-  Printf.sprintf "%s%i" partition_prefix i ;
+  Printf.sprintf "%s%i" partition_prefix i 
   
   
 (* Decision tree for partitions *)
@@ -196,7 +199,7 @@ let mk_partition_name i =
 type decision_tree =
   | Lte of int *  decision_tree * decision_tree
   | Table of int *  int array 
-  | Return of int;
+  | Return of int
 
 let decision l =
   let l = List.map (fun (a,b,i) -> (a,b,Return i)) l in
@@ -211,9 +214,9 @@ let decision l =
     [ [ _;_::_ ] as l -> aux (merge2 l)
     | [(a,b,d)] -> Lte (a - 1, Return (-1), Lte (b, d, Return (-1)))
     | _ -> Return (-1)] in
-  aux l;
+  aux l
 
-let limit = 8192;
+let limit = 8192
 
 let decision_table l =
   let rec aux m accu = function
@@ -226,7 +229,7 @@ let decision_table l =
       let arr = Array.create (max-min+1) 0 in begin 
         List.iter (fun (a,b,i) -> for j = a to b do arr.(j-min) <- i + 1 done) l1;
         Lte (min-1, Return (-1), Lte (max, Table (min,arr), decision l2))
-      end ];
+      end ]
 
 let rec simplify min max = function
   [ Lte (i,yes,no) ->
@@ -237,13 +240,13 @@ let rec simplify min max = function
           simplify min max no
         else
           Lte (i, simplify min i yes, simplify (i+1) max no)
-  | x -> x];
+  | x -> x]
 		   
     
 (*  the generated code depends on [next] [backtrack] [start] [Error] *)
 
 
-let _loc = FanLoc.ghost;
+let _loc = FanLoc.ghost
 
   
 
@@ -251,7 +254,7 @@ let get_tables ~tables () = begin
   let t = Hashtbl.fold (fun key x accu -> [(x,key)::accu]) tables [] ;
   Hashtbl.clear tables;
   t
-end;
+end
 
 
 let table_name ~tables ~counter t =
@@ -262,13 +265,13 @@ let table_name ~tables ~counter t =
     (* let n = Printf.sprintf "%s%i" table_prefix !counter ; *)
     Hashtbl.add tables t !counter;
     mk_table_name !counter
-  end;
+  end
 
 let output_byte buf b =
   let open Buffer in begin
     ignore( buf +> '\\' +>  Char.chr (48 + b/100)  +>
             Char.chr (48 + (b/10) mod 10) +> Char.chr (48 + b mod 10))
-  end;
+  end
   
 let output_byte_array v =  begin 
   let b = Buffer.create (Array.length v * 5) ;
@@ -278,10 +281,10 @@ let output_byte_array v =  begin
   done;
   let s = Buffer.contents b ;
   {:exp'| $str:s |}
-end;
+end
 
-let table (n,t) = {:stru'| let $lid:n = $(output_byte_array t) |};
-let binding_table (n,t) = {:binding'|  $lid:n = $(output_byte_array t) |};
+let table (n,t) = {:stru'| let $lid:n = $(output_byte_array t) |}
+let binding_table (n,t) = {:binding'|  $lid:n = $(output_byte_array t) |}
 
 
 
@@ -298,7 +301,7 @@ let partition ~counter ~tables (i,p) =
 	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
   let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:stru'| let $lid:f = fun c -> $body |};
+  {:stru'| let $lid:f = fun c -> $body |}
 
 let binding_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 
@@ -314,7 +317,7 @@ let binding_partition ~counter ~tables (i,p) =
   let body = gen_tree
       (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:binding'|  $lid:f = fun c -> $body |};
+  {:binding'|  $lid:f = fun c -> $body |}
 
 (* Code generation for the automata *)
 
@@ -323,7 +326,7 @@ let best_final final =
   Array.iteri 
     (fun i b -> if b && (!fin = None) then fin := Some i else ()) final;
   !fin
-  end;
+  end
 
 
 (* FIXME,
@@ -407,6 +410,6 @@ let gen_definition _loc l =
        ( $g.start lexbuf;
          match $(lid:mk_state_name 0) lexbuf with
          [ $cases ] )|}) in
-  {:exp'| fun lexbuf -> $rest |};
+  {:exp'| fun lexbuf -> $rest |}
 
 

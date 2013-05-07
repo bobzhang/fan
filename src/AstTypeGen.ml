@@ -1,30 +1,31 @@
-open Ast;
-open AstLoc;
-open LibUtil;
-open Easy;
+open Ast
+open AstLoc
+open LibUtil
+open Easy
 
-open FSig;
+open FSig
 
-open Exp;
+open Exp
 
 
-let _loc = FanLoc.ghost;
+let _loc = FanLoc.ghost
 
 
 (* +-----------------------------------------------------------------+
    | Eq generator                                                    |
    +-----------------------------------------------------------------+ *)
 
-let mk_variant _cons : FSig.ty_info list   -> exp  = with exp' fun 
-  [ [] -> {|true|}
+let mk_variant _cons : FSig.ty_info list   -> exp  = with exp' function 
+  | [] -> {|true|}
   | ls -> List.reduce_left_with
         ~compose:(fun x y -> {| $x && $y|}  )
-        ~project:(fun {info_exp;_} -> info_exp) ls ];
+        ~project:(fun {info_exp;_} -> info_exp) ls
   
-let mk_tuple exps = mk_variant "" exps ;
+let mk_tuple exps = mk_variant "" exps
+    
 let mk_record : FSig.record_col list  -> exp  = fun cols -> 
     cols |> List.map (fun [ {re_info;_} -> re_info])
-         |> mk_variant "" ;
+         |> mk_variant "" 
     
 let (gen_eq,gen_eqobj) = with exp'
   (gen_stru ~id:(`Pre "eq_")
@@ -33,9 +34,9 @@ let (gen_eq,gen_eqobj) = with exp'
    gen_object ~kind:Iter ~mk_tuple ~mk_record
      ~base:"eqbase" ~class_name:"eq"
      ~mk_variant:mk_variant
-     ~arity:2 ~default: {|false|} ()) ;
+     ~arity:2 ~default: {|false|} ()) ;;
   
-[ ("Eq",gen_eq) ; ("OEq",gen_eqobj) ] |> List.iter Typehook.register;
+[ ("Eq",gen_eq) ; ("OEq",gen_eqobj) ] |> List.iter Typehook.register;;
 
 
 
@@ -61,11 +62,13 @@ let (gen_fold,gen_fold2) = with exp'
    gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
      ~mk_variant
-     ~arity:2 ~default: {|invalid_arg "fold2 failure" |} () ) ;
+     ~arity:2 ~default: {|invalid_arg "fold2 failure" |} () ) ;;
+
+
 begin  
    [("Fold",gen_fold);
     ("Fold2",gen_fold2);] |> List.iter Typehook.register;
-end;
+end;;
 
 (* +-----------------------------------------------------------------+
    | Map generator                                                   |
@@ -102,13 +105,13 @@ let (gen_map,gen_map2) = with exp'
      ~mk_variant  (),
    gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
-     ~arity:2 ~default: {|  invalid_arg "map2 failure" |} ());
+     ~arity:2 ~default: {|  invalid_arg "map2 failure" |} ());;
 
 begin
   [("Map",gen_map);
    ("Map2",gen_map2);]
   |> List.iter Typehook.register;
-end;
+end;;
 
 (* +-----------------------------------------------------------------+
    | Strip generator                                                 |
@@ -150,10 +153,12 @@ let gen_strip = with {pat:ctyp;exp:exp'}
           res
         | _ -> {|let $pat:pat0 = $exp in $res |}]) cols result in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
-    ();
+    ();;
+
+
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
-    ("Strip",gen_strip);
+    ("Strip",gen_strip);;
 
 
   
@@ -169,24 +174,24 @@ let mk_variant cons params = with exp'
     else
       params
       |> List.map (fun [ {info_exp=exp;_} -> exp ])
-      |> List.fold_left mee_app (mee_of_str cons)  ;
+      |> List.fold_left mee_app (mee_of_str cons)  
         
 let mk_record cols = cols |> List.map
-  (fun [ {re_label; re_info={info_exp=exp;_};_} -> (re_label, exp)]) |> mk_record_ee ;
+  (fun [ {re_label; re_info={info_exp=exp;_};_} -> (re_label, exp)]) |> mk_record_ee 
 
 let mk_tuple params =
-    params |> List.map (fun [{info_exp=exp;_} -> exp]) |> mk_tuple_ee ;
+    params |> List.map (fun [{info_exp=exp;_} -> exp]) |> mk_tuple_ee 
 
 let gen_meta_exp = 
   gen_stru  ~id:(`Pre "meta_")  ~names:["_loc"]
     ~mk_tuple
-    ~mk_record ~mk_variant:mk_variant ();
+    ~mk_record ~mk_variant:mk_variant ();;
 
 (* add hock FIXME*)  
 Typehook.register
     ~position:"__MetaExpr__"
     ~filter:(fun s -> s<>"loc")
-    ("MetaExpr",gen_meta_exp);
+    ("MetaExpr",gen_meta_exp);;
 
 (* +-----------------------------------------------------------------+
    | Meta Object Generator                                           |
@@ -197,10 +202,12 @@ let gen_meta =
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
     ~names:["_loc"]
-    ();
+    ();;
+
+
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc";"ant"]))
-    ("MetaObj", gen_meta);
+    ("MetaObj", gen_meta);;
   
 
 (* +-----------------------------------------------------------------+
@@ -209,10 +216,10 @@ Typehook.register
   
 let extract info = info
     |> List.map (fun [{name_exp;id_exp;_} -> [name_exp;id_exp] ])
-    |> List.concat ;
+    |> List.concat 
 
 let mkfmt pre sep post fields = with exp'
-    {| Format.fprintf fmt  $(str: pre^ String.concat sep fields ^ post) |} ;
+    {| Format.fprintf fmt  $(str: pre^ String.concat sep fields ^ post) |} 
   
 let mk_variant_print cons params =
     let len = List.length params in
@@ -222,12 +229,13 @@ let mk_variant_print cons params =
             "@ " ")@]" (List.init len (fun _ -> "%a"))
         else
           mkfmt cons "" "" [] in
-    appl_of_list [pre :: extract params ] ;
+    appl_of_list [pre :: extract params ] 
     
+
 let mk_tuple_print params =
     let len = List.length params in
     let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _ -> "%a")) in
-    appl_of_list [pre :: extract params];
+    appl_of_list [pre :: extract params]
     (* params |> extract |> apply pre  ; *)
     
 let mk_record_print cols = 
@@ -236,44 +244,44 @@ let mk_record_print cols =
        |>  mkfmt "@[<hv 1>{" ";@," "}@]" in
     appl_of_list [pre :: 
                   (cols |> List.map(fun [ {re_info;_} -> re_info ])
-                  |> extract )] (* apply pre *)  ;
+                  |> extract )] (* apply pre *)  
   
 let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
     ~mk_variant:mk_variant_print ()
-    ;    
+
 
 let gen_print_obj =
   gen_object ~kind:(Concrete {:ctyp'|unit|}) ~mk_tuple:mk_tuple_print
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
-    ~mk_variant:mk_variant_print ();
+    ~mk_variant:mk_variant_print ();;
 
 [("Print",gen_print);
- ("OPrint",gen_print_obj)] |> List.iter Typehook.register;
+ ("OPrint",gen_print_obj)] |> List.iter Typehook.register;;
 
 (* +-----------------------------------------------------------------+
    | Iter geneartor                                                  |
    +-----------------------------------------------------------------+ *)
 let mk_variant_iter _cons params :exp = with exp'
   match params with
-  [ [] -> unit _loc 
+  | [] -> unit _loc 
   | _ -> 
       let lst = params
         |> List.map (fun [{name_exp; id_exp;_} ->
         {| $name_exp $id_exp |}]) in
-        seq_sem lst] ;
+        seq_sem lst 
 
 let mk_tuple_iter params : exp =
-  mk_variant_iter "" params;
+  mk_variant_iter "" params
 
 let mk_record_iter cols = with exp'
   let lst =
     cols |>
     List.map
     (fun [{re_info={name_exp; id_exp;_};_} -> {| $name_exp $id_exp |}]) in
-  seq_sem lst;
+  seq_sem lst
 
 
 let gen_iter =
@@ -284,9 +292,9 @@ let gen_iter =
     ~mk_tuple:mk_tuple_iter
     ~mk_record:mk_record_iter
     ~mk_variant:mk_variant_iter
-    ();
+    ();;
 
-("OIter",gen_iter) |> Typehook.register;
+("OIter",gen_iter) |> Typehook.register;;
 
 (* +-----------------------------------------------------------------+
    | Get Location generator                                          |
@@ -333,11 +341,13 @@ let generate (mtyps:FSig.mtyps) : stru =
         
     ) tbl None  in
   match case with
-  [Some case ->   
+  |Some case ->   
     {| let loc_of  = fun [ $case ]|}
-  |None -> failwithf "AstTypeGen.generate null case" ];
+  |None -> failwithf "AstTypeGen.generate null case" ;;
+
+
 Typehook.register
-    ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",generate);
+    ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",generate);;
 
 (* +-----------------------------------------------------------------+
    | DynAst generator                                                |
@@ -361,9 +371,11 @@ let generate (mtyps:FSig.mtyps) : stru =
      (fun x->
        {:stru'| let $(lid: x^"_tag") :  $lid:x tag =
               $(uid:String.capitalize x) |}) tys  in
- sem_of_list [typedecl;to_string::tags] ;  
+ sem_of_list [typedecl;to_string::tags] ;;
+  
 Typehook.register
-  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);
+  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);;
+
 
 let generate (mtyps:FSig.mtyps) : stru =
   let aux (f:string) : stru  =
@@ -372,20 +384,26 @@ let generate (mtyps:FSig.mtyps) : stru =
       inherit map as super;
       method! $lid:f x = f (super#$lid:f x);
     end |} in
-  FSigUtil.stru_from_ty ~f:aux mtyps;  
+  FSigUtil.stru_from_ty ~f:aux mtyps;;  
+
 Typehook.register
-  ~filter:(fun _ -> true) ("MapWrapper",generate);
-    
+  ~filter:(fun _ -> true) ("MapWrapper",generate);;
+
+
+
+
 let generate (mtyps:FSig.mtyps) : stru =
   let aux (f:string) : stru  =
     {:stru'|
     let $(lid:"dump_"^f)  = LibUtil.to_string_of_printer dump#$lid:f
   |} in
   sem {:stru'|let dump = new print|}
-      (FSigUtil.stru_from_ty ~f:aux mtyps);  
+      (FSigUtil.stru_from_ty ~f:aux mtyps);;  
+
+
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"]))
-      ("PrintWrapper",generate); (* double registration should complain*)
+      ("PrintWrapper",generate);; (* double registration should complain*)
 
 
     
@@ -406,6 +424,6 @@ let generate (mtyps:FSig.mtyps) : stru = with stru
      end in 
      obj#typedecl ty
   else ty  in
-  (fun x ->  FSigUtil.stru_from_mtyps ~f:aux x) mtyps;
+  (fun x ->  FSigUtil.stru_from_mtyps ~f:aux x) mtyps;;
 
-Typehook.register ~filter:(fun _ -> true ) ("LocType",generate);
+Typehook.register ~filter:(fun _ -> true ) ("LocType",generate);;

@@ -22,8 +22,7 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
      List.concat_map
-       (fun x  ->
-          match x with
-          | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
-          | `Single (x,_) -> [x]) x in
+       (function
+        | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
+        | `Single (x,_) -> [x]) x in
    sem_of_list (List.map f tys) : stru )

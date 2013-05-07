@@ -1,26 +1,27 @@
-open LibUtil;
-open Structure;
+open LibUtil
+open Structure
 
 
 let empty_entry ename _ =
-  raise (XStream.Error ("entry [" ^ ename ^ "] is empty"));
+  raise (XStream.Error ("entry [" ^ ename ^ "] is empty"))
 
 
 
 (* get_cur_loc *must* be used first *)  
 let get_cur_loc strm =
   match XStream.peek strm with
-  [ Some (_,r) -> r
-  | None -> FanLoc.ghost ];
+  | Some (_,r) -> r
+  | None -> FanLoc.ghost 
 
 
 let get_prev_loc strm =
   match XStream.get_last strm with
-  [Some (_,l) -> l
-  |None -> FanLoc.ghost];
+  |Some (_,l) -> l
+  |None -> FanLoc.ghost
 
-let is_level_labelled n =
-  fun [ {lname=Some n1 ; _  } -> n = n1 | _ -> false ];
+let is_level_labelled n =   function
+  | {lname=Some n1 ; _  } -> n = n1
+  | _ -> false 
 
 (*
   try to decouple the node [x] into
@@ -42,13 +43,13 @@ let get_terminals x =
   [{node=(#terminal as x);son;_} ->
     (* first case we don't require anything on [brother] *)
      (aux [] x son)
-  | _ -> None ];
+  | _ -> None ]
 
 let eq_Stoken_ids s1 s2 =
   match (s1,s2) with
   [ ((`Antiquot,_),_) -> false
   | (_,(`Antiquot,_)) -> false
-  | ((_,s1),(_,s2)) -> s1 = s2];
+  | ((_,s1),(_,s2)) -> s1 = s2]
 
 let logically_eq_symbols entry =
   let rec eq_symbol s1 s2 =
@@ -72,7 +73,8 @@ let logically_eq_symbols entry =
     [ (Node n1, Node n2) ->
       eq_symbol n1.node n2.node && eq_tree n1.son n2.son &&  eq_tree n1.brother n2.brother
     | (LocAct (_, _) | DeadEnd, LocAct (_, _) | DeadEnd) -> true
-    | _ -> false ] in eq_symbol;
+    | _ -> false ] in eq_symbol
+
 
 let rec eq_symbol s1 s2 =
   match (s1, s2) with
@@ -88,7 +90,7 @@ let rec eq_symbol s1 s2 =
       eq_symbol s1 s2 && eq_symbol sep1 sep2
   | (`Stree _, `Stree _) -> false
   | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2
-  | _ -> s1 = s2 ];
+  | _ -> s1 = s2 ]
     
 
 (* let rec get_first = fun *)

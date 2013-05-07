@@ -1,13 +1,16 @@
-open Ast;
-open AstLoc;
-open LibUtil;
+open Ast
+open AstLoc
+open LibUtil
 
 
 
-type warning = FanLoc.t -> string -> unit;
-let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
-let current_warning = ref default_warning;
-let print_warning loc txt = !current_warning loc txt;
+type warning = FanLoc.t -> string -> unit
+    
+let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt
+    
+let current_warning = ref default_warning
+    
+let print_warning loc txt = !current_warning loc txt;;
 
 
 {:create|Gram
@@ -76,17 +79,17 @@ a_ident aident amp_ctyp and_ctyp case
   vid 
   astr
   dot_namespace
-|};
+|};;
   
-let antiquot_exp = Gram.eoi_entry exp ; 
-let antiquot_pat = Gram.eoi_entry pat;
-let antiquot_ident = Gram.eoi_entry ident; 
-let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str;
-let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str;
-let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str;
-let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_pat;
-let exp_filter (x:ep) = (anti_filter#exp (x:>exp));
-let pat_filter (x:ep) = (anti_filter#pat (x:>pat));  
+let antiquot_exp = Gram.eoi_entry exp 
+let antiquot_pat = Gram.eoi_entry pat
+let antiquot_ident = Gram.eoi_entry ident
+let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str
+let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str
+let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
+let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_pat
+let exp_filter (x:ep) = (anti_filter#exp (x:>exp))
+let pat_filter (x:ep) = (anti_filter#pat (x:>pat))
 
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =
@@ -103,24 +106,24 @@ let wrap directive_handler pa init_loc cs =
             | Some x -> [x :: xs] 
       in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
     | None -> pl 
-  in loop init_loc;
+  in loop init_loc
   
 let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
   let l = wrap directive_handler (Gram.parse implem) _loc cs in
   match l with
   | [] -> None
-  | l -> Some (sem_of_list l);; 
+  | l -> Some (sem_of_list l)
 
 
 let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
   let l = wrap directive_handler (Gram.parse interf) _loc cs in
   match l with
   | [] -> None   
-  | l -> Some (sem_of_list l);; 
+  | l -> Some (sem_of_list l)
     
-let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";;
+let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer"
 
-let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";;
+let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer"
 
 
   
@@ -133,6 +136,6 @@ module Options = struct
    init_spec_list := !init_spec_list @ [(name, spec, descr)];
   let adds ls =
     init_spec_list := !init_spec_list @ ls 
-end;
+end
 
 

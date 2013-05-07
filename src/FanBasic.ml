@@ -4,8 +4,8 @@
    we don't take care of Location.(Should be FIXED later)
  *)
 
-open LibUtil;
-open Format;
+open LibUtil
+open Format
 
 let error_report (loc,s) = begin
   prerr_endline (FanLoc.to_string loc);
@@ -21,26 +21,25 @@ let error_report (loc,s) = begin
   let err_location = String.sub s abs_start_off
       (abs_stop_off - abs_start_off + 1) in
   prerr_endline (sprintf "err: ^%s^" err_location);
-end ;
+end 
 
 let parse_string_of_entry ?(loc=FanLoc.mk "<string>") entry  s =
   try
     Gram.parse_string entry  ~loc s
   with
-    [FanLoc.Exc_located(loc, e) -> begin
+  |FanLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
       error_report (loc,s);
       FanLoc.raise loc e ;
-    end ];
+  end
 
 let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
   try p ~loc s
   with
-    [FanLoc.Exc_located(loc,e) -> begin
+  |FanLoc.Exc_located(loc,e) -> begin
       eprintf "error: %s" (FanLoc.to_string loc) ;
       FanLoc.raise loc e;
     end 
-   ];
 
 
 (* FIXME will Ast2pt do the check, and then some partial Ast node will not be able
@@ -48,19 +47,19 @@ let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
  *)
 
 let p_exp f  e =
-  pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e);
+  pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e)
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
 let p_pat f e =
-  pp f "@[%a@]@." AstPrint.pattern (Ast2pt.pat e);
+  pp f "@[%a@]@." AstPrint.pattern (Ast2pt.pat e)
   
 let p_stru f e =
-  pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e);
+  pp f "@[%a@]@." AstPrint.structure (Ast2pt.stru e)
 
 (* FIXME allow more interfaces later *)  
 (* let p_ident f e = *)
 (*   eprintf "@[%a@]@." Pprintast.fmt_longident (Ast2pt.ident e) ;     *)
 let p_ctyp f e =
-  pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e) ;
+  pp f "@[%a@]@." AstPrint.core_type (Ast2pt.ctyp e) 
   
 
 (* Add something to the above, make sure it ends with a slash. *)
@@ -69,15 +68,15 @@ let add_include_dir str =
     let str =
       if String.get str ((String.length str)-1) = '/'
       then str else str ^ "/"
-    in Ref.modify FanConfig.include_dirs (fun x -> cons str x);
+    in Ref.modify FanConfig.include_dirs (fun x -> cons str x)
  
 let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
   fun file ->
     let file =
       try (List.find (dir_ok file) ( ["./" :: !FanConfig.include_dirs] )) ^ file
-      with [ Not_found -> file ] in
+      with | Not_found -> file  in
     let ch = open_in file in
     let st = XStream.of_channel ch in
-      Gram.parse entry (FanLoc.mk file) st;
+      Gram.parse entry (FanLoc.mk file) st
     

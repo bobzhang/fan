@@ -1,6 +1,6 @@
-(* open Ast; *)
-open LibUtil;
-open Fan;
+
+open LibUtil
+open Fan
 
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
@@ -26,12 +26,12 @@ let wrap parse_fun lb =
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
-    [ Some stru ->
+  | Some stru ->
         let stru =
           (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
           AstFilters.apply_implem_filters stru in
         Ast2pt.phrase stru
-    | None -> raise End_of_file ];;
+  | None -> raise End_of_file 
 
   
 let use_file token_stream =
@@ -56,9 +56,9 @@ let use_file token_stream =
           Gram.parse_origin_tokens Syntax.implem  token_stream in  
         if stopped_at_directive <> None then pl @ loop () else pl in loop () in
   (* FIXME semantics imprecise, the filter will always be applied *)
-  List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl);
+  List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl)
 
-let revise_parser =  wrap toplevel_phrase; 
+let revise_parser =  wrap toplevel_phrase;;
 
 begin
   Syntax.current_warning :=
@@ -66,21 +66,21 @@ begin
       Toploop.print_warning  loc Format.err_formatter
         (Warnings.Camlp4 txt));
   iter_and_take_callbacks (fun (_, f) -> f ());
-end;
-
-AstParsers.use_parsers
+  AstParsers.use_parsers
     ["revise";"stream";"macro"];
+end;;
+
   
 
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
   Toploop.parse_use_file := Parse.use_file;
-end;;
+end
     
 let revise ()  = begin
   Toploop.parse_toplevel_phrase := revise_parser;
   Toploop.parse_use_file := wrap use_file;
-end;
+end;;
 
 begin 
   Hashtbl.replace Toploop.directive_table "revise"
@@ -90,7 +90,7 @@ begin
     (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun () -> normal ()))
-end;
+end;;
 
 
 

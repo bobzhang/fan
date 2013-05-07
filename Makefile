@@ -20,3 +20,5 @@ boot:
 stat:
 	rm -rf stat/*
 	git_stats . stat
+
+.PHONY: top

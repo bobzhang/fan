@@ -1,17 +1,20 @@
 
 #default_quotation "exp";;
-open AstLoc;
-open Ast;
-open Format;
-open LibUtil;
-open Basic;
-open FSig;
 
-open EP;
-open Exp;
+open AstLoc
+open Ast
+  
+open Format
+  
+open LibUtil
+open Basic
+open FSig
+
+open EP
+open Exp
 
 (* preserved keywords for the generator *)
-let preserve =  ["self"; "self_type"; "unit"; "result"];
+let preserve =  ["self"; "self_type"; "unit"; "result"]
 
 let check names =
     (* we preserve some keywords to avoid variable capture *)
@@ -22,7 +25,7 @@ let check names =
       List.iter (fun s -> eprintf "%s\n" s) preserve;
       exit 2
     end
-    else check_valid name) names;
+    else check_valid name) names
 
 (* +-----------------------------------------------------------------+
    | utilities                                                       |
@@ -50,7 +53,7 @@ let mapi_exp ?(arity=1) ?(names=[])
   let id_exp = tuple_com  id_exps  in
   let id_pat = id_exp in
   let exp = appl_of_list [base:: id_exps]  in
-  {name_exp; info_exp=exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty};       
+  {name_exp; info_exp=exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty}
 
 (* @raise Invalid_argument when type can not be handled *)  
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
@@ -67,7 +70,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
                   [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
-        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)];
+        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)]
   
 (*
  @supported types type application: list int
@@ -116,7 +119,7 @@ let rec  normal_simple_exp_of_ctyp
     | (ty:ctyp) ->
         FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
           (Objs.dump_ctyp ty)] in
-  aux ty;
+  aux ty
 
 
 
@@ -163,7 +166,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
              ~right_type_variable ?names ?arity ~mk_tuple) ty 
     | ty ->
         FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s" (Objs.dump_ctyp ty) ] in
-  aux ty ;
+  aux ty 
 
 (*
   accept [simple_exp_of_ctyp]
@@ -198,7 +201,7 @@ let exp_of_ctyp
         else res in
       List.rev t in 
     currying ~arity res 
-  end;
+  end
 
 (* return a [exp] node
    accept [variant types]
@@ -234,7 +237,7 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
       (* [default info :: res] *)
     else res in
   List.rev t in
-  currying ~arity res ;
+  currying ~arity res
 
 (* add extra arguments to the generated expession node
  *)  
@@ -252,7 +255,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   |`Some(_,xs) ->
       let vars = list_of_com xs [] in
       List.fold_right f vars (names <+ acc)
-  ];  
+  ]
   (* let xs  = list_of_com vars [] in *)
   (* List.fold_right f vars ( names <+ acc); *)
 
@@ -307,7 +310,7 @@ let fun_of_tydcl
             mk_prefix ~names ~left_type_variable tyvars case
         | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (Objs.dump_ctyp t)]
     | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (Objs.dump_type_info t)]
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)] ;             
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)]
 
 (* destination is [Str_item] generate [stru], type annotations may
    not be needed here
@@ -340,7 +343,7 @@ let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
       (Objs.dump_typedecl tydcl);
     {:binding| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
-  end ;
+  end
 
 let stru_of_mtyps ?module_name ?cons_transform
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
@@ -384,7 +387,7 @@ let stru_of_mtyps ?module_name ?cons_transform
     | _ ->  sem_of_list (List.map fs lst ) ]  in
   match module_name with
   [ None -> item
-  | Some m -> {:stru| module $uid:m = struct $item end |} ];
+  | Some m -> {:stru| module $uid:m = struct $item end |} ]
 
 
  (*
@@ -456,7 +459,7 @@ let obj_of_mtyps
         match module_name with
         [None -> v
         |Some u -> {:stru| module $uid:u = struct $v  end  |} ]  
-      end ;
+      end 
   
   
 

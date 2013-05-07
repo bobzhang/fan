@@ -1,23 +1,25 @@
-open Ast;
+open Ast
 
-open Format;
-open LibUtil;
+open Format
+open LibUtil
 
 
 (*be careful, since you can register your own [stru_parser],
   if you do it in-consistently, this may result in an
   in-consistent behavior *)  
 let just_print_the_version () =
-  begin  printf "%s@." FanConfig.version; exit 0 end ;
-let just_print_compilation_unit () = begin 
-  match !FanConfig.compilation_unit with
-  [Some v -> printf "%s@." v
-  |None -> printf "null"];
-  exit 0 ;  
-end;
+  begin  printf "%s@." FanConfig.version; exit 0 end
+    
+let just_print_compilation_unit () =
+  begin 
+    (match !FanConfig.compilation_unit with
+    | Some v -> printf "%s@." v
+    | None -> printf "null");
+    exit 0 ;  
+  end
 
 let print_version () =
-  begin eprintf "Fan version %s@." FanConfig.version; exit 0 end;
+  begin eprintf "Fan version %s@." FanConfig.version; exit 0 end
       
       
 let warn_noassert () =
@@ -25,7 +27,8 @@ let warn_noassert () =
     eprintf "\
       fan warning: option -noassert is obsolete\n\
       You should give the -noassert option to the ocaml compiler instead.@.";
-        end;
+  end
+    
 let just_print_filters () =
   let pp = eprintf (* and f = Format.std_formatter *) in 
   let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in
@@ -33,17 +36,23 @@ let just_print_filters () =
     pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters ;
     pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters ;
     pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters 
-  end;
+  end
+
+
+    
 let just_print_parsers () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in begin
     pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
-  end;
+  end
   
 let just_print_applied_parsers () =
   let pp = eprintf in
   pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
-    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) AstParsers.applied_parsers;
+    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) AstParsers.applied_parsers
+;;
+
+
 
   
 AstParsers.use_parsers
@@ -51,45 +60,48 @@ AstParsers.use_parsers
       "stream";
       "macro";
       (* "ListComprehension" *)
-    ];
+    ];;
   
 type file_kind =
   | Intf of string
   | Impl of string
   | Str of string
   | ModuleImpl of string
-  | IncludeDir of string ;
+  | IncludeDir of string 
   
-let search_stdlib = ref true;
-let print_loaded_modules = ref false;
+let search_stdlib = ref true
+    
+let print_loaded_modules = ref false
+
 let task f x =
   let () = FanConfig.current_input_file := x in
-  f x ;
+  f x 
 
 module Make
      (PreCast:Sig.PRECAST) = struct
 
-   let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30;
-     (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
-  let rcall_callback = ref (fun () -> ());
-    let loaded_modules = ref SSet.empty;
-    let add_to_loaded_modules name =
-      loaded_modules := SSet.add name !loaded_modules;
+       let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30
+       (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
+       let rcall_callback = ref (fun () -> ())
+       let loaded_modules = ref SSet.empty
+       let add_to_loaded_modules name =
+         loaded_modules := SSet.add name !loaded_modules;;
         
-    Printexc.register_printer
-            (
-              fun [ FanLoc.Exc_located (loc, exn) ->
-                    Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
-                  | _ -> None ]);
-     module DynLoader = DynLoader.Make (struct end);
+       Printexc.register_printer
+        (function
+          |FanLoc.Exc_located (loc, exn) ->
+              Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
+          | _ -> None );;
+       module DynLoader = DynLoader.Make (struct end)
       (* let plugins = Hashtbl.create 50;      *)
-     let (objext,libext) =
-        if DynLoader.is_native then
-          (".cmxs",".cmxs")
-        else (".cmo",".cma");
-     let rewrite_and_load n x =
-        let dyn_loader = !DynLoader.instance () in 
-        let find_in_path = DynLoader.find_in_path dyn_loader in
+       let (objext,libext) =
+         if DynLoader.is_native then
+           (".cmxs",".cmxs")
+         else (".cmo",".cma")
+
+       let rewrite_and_load n x =
+         let dyn_loader = !DynLoader.instance () in 
+         let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do
           add_to_loaded_modules name;
           DynLoader.load dyn_loader name
@@ -107,9 +119,12 @@ module Make
             real_load (try find_in_path y with [ Not_found -> x ])
         ];
           !rcall_callback ();
-        end;
-     let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
-     let output_file = ref None;                
+        end
+
+          
+     let print_warning = eprintf "%a:\n%s@." FanLoc.print
+
+     let output_file = ref None              
      let parse_file  ?directive_handler name pa = begin 
 
       let loc = FanLoc.mk name ;
@@ -144,7 +159,9 @@ module Make
                None
                 (* FIXME *)  
                 (* assert false *)
-            ] );
+            ] )
+
+           
       let rec str_handler = with stru
           (fun
             [ {| #load $str:s |} -> begin rewrite_and_load "" s; None end
@@ -172,20 +189,25 @@ module Make
             | _ -> None
                 (* ignored *)
                 (* assert false *)
-            ] );
+            ] )
+
+           
       let process  ?directive_handler name pa pr clean fold_filters =
           match parse_file  ?directive_handler name pa with
           [None ->
             pr ?input_file:(Some name) ?output_file:!output_file None 
           |Some x ->
               Some (clean (fold_filters x))
-              |> pr ?input_file:(Some name) ?output_file:!output_file];
+              |> pr ?input_file:(Some name) ?output_file:!output_file]
+              
       (* [entrance] *)  
       let process_intf  name =
         process ~directive_handler:sig_handler
           name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (* (new Objs.clean_ast)#sigi *) (fun x -> x)
-                AstFilters.apply_interf_filters;
+                AstFilters.apply_interf_filters
+
+          
       let process_impl  name =
         process ~directive_handler:str_handler
           name
@@ -193,7 +215,7 @@ module Make
           PreCast.CurrentPrinter.print_implem
           (* (new Objs.clean_ast)#stru *) (fun x -> x)
           AstFilters.apply_implem_filters
-          (* gimd *);
+          (* gimd *)
 
       
       let input_file x =
@@ -222,7 +244,7 @@ module Make
           | ModuleImpl file_name -> rewrite_and_load "" file_name
           | IncludeDir dir -> DynLoader.include_dir dyn_loader dir ];
           !rcall_callback ();
-        end;
+        end
       
       let initial_spec_list =
         [("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
@@ -268,9 +290,9 @@ module Make
          ("-printer", FanArg.String (rewrite_and_load "Printers"),
           "<name>  Load the printer <name>.cm(o|a|xs)");
          ("-ignore", FanArg.String ignore, "ignore the next argument");
-         ("--", FanArg.Unit ignore, "Deprecated, does nothing")];
+         ("--", FanArg.Unit ignore, "Deprecated, does nothing")];;
       
-      PreCast.Syntax.Options.adds initial_spec_list;
+      PreCast.Syntax.Options.adds initial_spec_list;;
 
       (* handle the file name *)  
       let anon_fun name =
@@ -279,7 +301,7 @@ module Make
           else if Filename.check_suffix name ".ml" then Impl name
           else if Filename.check_suffix name objext then ModuleImpl name
           else if Filename.check_suffix name libext then ModuleImpl name
-          else raise (FanArg.Bad ("don't know what to do with " ^ name)));
+          else raise (FanArg.Bad ("don't know what to do with " ^ name)))
       
       let main () = try
         begin 
@@ -299,8 +321,8 @@ module Make
             SSet.iter (eprintf "%s@.") !loaded_modules;
           end else ()
         end
-      with [exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end];
-      main ()
-    end ;
+      with [exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end];;
+      main ();;
+end 
     
 

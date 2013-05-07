@@ -1,20 +1,23 @@
-open LibUtil;
-open Ast;
+open LibUtil
+open Ast
 
 module type Id = sig
   val name : string
   val version : string
-end;
+end
+
+
+      
 module type Warning = sig
   type warning = FanLoc.t -> string -> unit
   val default_warning: warning
   val current_warning: warning ref 
   val print_warning: warning
-end;
+end
 
 (** A type for stream filters. *)
 type ('a, 'loc) stream_filter  =
-    ('a * 'loc) XStream.t  -> ('a * 'loc) XStream.t ;
+    ('a * 'loc) XStream.t  -> ('a * 'loc) XStream.t
 
 module type ParserImpl = sig
   (** When  the parser encounter a directive it stops (since the directive may change  the
@@ -25,14 +28,14 @@ module type ParserImpl = sig
 
   val parse_interf : ?directive_handler:(sigi ->  sigi option ) ->
         FanLoc.t -> char XStream.t  -> sigi option 
-end;
+end
 
 module type PrinterImpl = sig
   val print_interf : ?input_file:string -> ?output_file:string ->
     sigi option   -> unit
   val print_implem : ?input_file:string -> ?output_file:string ->
     stru option  -> unit
-end;
+end
 
 
   
@@ -238,11 +241,11 @@ module type Syntax = sig
     val adds : (string * FanArg.spec * string) list  -> unit
     val init_spec_list: spec_list ref 
   end
-end;
+end
 
 
 module type SyntaxExtension =
-    functor (Syn : Syntax)  -> Syntax;
+    functor (Syn : Syntax)  -> Syntax
 
 module type PLUGIN = functor (Unit:sig end) -> sig end;;
 module type SyntaxPlugin = functor (Syn:Syntax) -> sig end ;;
@@ -257,11 +260,11 @@ module type ParserPlugin = functor (Syn:Syntax) -> ParserImpl;;
 
 type 'a parser_fun  =
     ?directive_handler:('a -> 'a option) -> loc
-      -> char XStream.t -> 'a option;
+      -> char XStream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
-        'a option -> unit;;
+        'a option -> unit
 
 module type PRECAST = sig
   module Syntax     : Syntax 
@@ -299,13 +302,13 @@ module type PRECAST = sig
 
   module CurrentParser : ParserImpl
   module CurrentPrinter : PrinterImpl
-end ;
+end 
 
 
 (* for dynamic loading *)
 module type PRECAST_PLUGIN = sig
   val apply : (module PRECAST) -> unit
-end;
+end
 
 
 

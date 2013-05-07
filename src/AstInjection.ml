@@ -1,24 +1,24 @@
-open Ast;
-open LibUtil;
+open Ast
+open LibUtil
 
-type key = string;
+type key = string
 
 let inject_exp_tbl: (key,exp) Hashtbl.t = Hashtbl.create 40;;
 let inject_stru_tbl: (key,stru) Hashtbl.t = Hashtbl.create 40;;
-let inject_clfield_tbl: (key,clfield)Hashtbl.t = Hashtbl.create 40;
+let inject_clfield_tbl: (key,clfield)Hashtbl.t = Hashtbl.create 40
 
 let register_inject_exp (k,f)=
-  Hashtbl.replace inject_exp_tbl k f;
+  Hashtbl.replace inject_exp_tbl k f
 let register_inject_stru (k,f)=
-  Hashtbl.replace inject_stru_tbl k f;
+  Hashtbl.replace inject_stru_tbl k f
 let register_inject_clfield (k,f) =
-  Hashtbl.replace inject_clfield_tbl k f;
-
+  Hashtbl.replace inject_clfield_tbl k f
+;;
 
 
 {:create|Gram
   inject_exp inject_stru inject_clfield
-|};
+|};;
   
 {:extend| Gram
   inject_exp:
@@ -35,7 +35,7 @@ let register_inject_clfield (k,f) =
   [`Lid x ->
      try Hashtbl.find inject_clfield_tbl x
      with [Not_found -> failwithf "inject.exp %s not found" x ]]
-|};
+|};;
 
 let open AstQuotation in begin
   of_exp
@@ -46,4 +46,4 @@ let open AstQuotation in begin
   of_clfield
     ~name:((`Absolute ["Fan";"Inject"], "clfield"))
      ~entry:inject_clfield; 
-end;  
+end

@@ -1,8 +1,11 @@
 #default_quotation "exp";;
-let _loc = FanLoc.ghost;
-open LibUtil;
-open AstLoc;
-open Basic;
+
+
+
+let _loc = FanLoc.ghost
+open LibUtil
+open AstLoc
+open Basic
 
 (*
    A very naive lifting. It does not do any parsing at all
@@ -27,9 +30,9 @@ let of_str s =
     invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
-    [ '`'-> {|  $(vrn: String.sub s 1 (len - 1)) |}
+    | '`'-> {|  $(vrn: String.sub s 1 (len - 1)) |}
     | x when Char.is_uppercase x -> {| $uid:s |}
-    | _ -> {| $lid:s |} ];    
+    | _ -> {| $lid:s |} 
 
 
 (*
@@ -40,7 +43,7 @@ let of_str s =
     ]}
 *)
 let  of_ident_number  cons n = 
-  appl_of_list [{| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} ))];
+  appl_of_list [{| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} ))]
 
 
 
@@ -54,7 +57,7 @@ let  of_ident_number  cons n =
    ]}
  *)
 let (+>) f names  =
-  appl_of_list [f:: (List.map (fun lid -> {| $lid:lid |} ) names)];
+  appl_of_list [f:: (List.map (fun lid -> {| $lid:lid |} ) names)]
 
 
 (*
@@ -66,14 +69,14 @@ let (+>) f names  =
  *)
 let gen_tuple_first ~number ~off =
   match number with
-  [ 1 -> {| $(id:xid ~off 0 ) |}  
+  | 1 -> {| $(id:xid ~off 0 ) |}  
   | n when n > 1 -> 
     let lst =
       zfold_left ~start:1 ~until:(number-1)
         ~acc:({| $(id:xid ~off 0 ) |})
         (fun acc i -> com acc {| $(id:xid ~off i) |} ) in
     {| $par:lst |}
-  | _ -> invalid_arg "n < 1 in gen_tuple_first" ];
+  | _ -> invalid_arg "n < 1 in gen_tuple_first" 
 
 (*
    {[
@@ -83,7 +86,7 @@ let gen_tuple_first ~number ~off =
  *)
 let gen_tuple_second ~number ~off =
   match number with 
-  [ 1 -> {| $(id:xid ~off:0 off) |}
+  | 1 -> {| $(id:xid ~off:0 off) |}
       
   | n when n > 1 -> 
     let lst =
@@ -92,7 +95,7 @@ let gen_tuple_second ~number ~off =
         (fun acc i -> com acc {| $(id:xid ~off:i off ) |} ) in
     {| $par:lst |}
   | _ -> 
-        invalid_arg "n < 1 in gen_tuple_first "];    
+        invalid_arg "n < 1 in gen_tuple_first "
 
 
 (*
@@ -110,7 +113,7 @@ let tuple_of_number ast n =
   let res = zfold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
   if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
-  else res;
+  else res
 
 (*
    @raise Invalid_argument
@@ -139,7 +142,6 @@ let of_vstr_number name i =
     (* `App (_loc, (`Vrn (_loc, name)), item) (\* FIXME*\) *)
     {| $vrn:name $item |}
       
-    ;
     
 (*
   {[
@@ -158,7 +160,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
   let pat = of_str (cons_transform cons) in 
-  List.map (fun lst -> appl_of_list [pat:: lst]) args |> tuple_com ;
+  List.map (fun lst -> appl_of_list [pat:: lst]) args |> tuple_com 
     
 
   
@@ -193,7 +195,7 @@ let mk_record ?(arity=1) cols  =
        (* {| { $(list:mk_list i) } |} *)  ) in
   if arity > 1 then
     {| $par:res |}
-  else res ;    
+  else res     
 
 
 (*
@@ -209,12 +211,12 @@ let mk_record ?(arity=1) cols  =
  *)      
 let mk_tuple ~arity ~number =
   match arity with
-  [ 1 -> gen_tuple_first ~number ~off:0
+  | 1 -> gen_tuple_first ~number ~off:0
   | n when n > 1 -> 
       let e = zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
       {| $par:e |}
-  | _ -> invalid_arg "mk_tuple arity < 1 " ];        
+  | _ -> invalid_arg "mk_tuple arity < 1 " 
 
   

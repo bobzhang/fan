@@ -1,17 +1,17 @@
-open FanToken;
+open FanToken
 
 
 type t = {
     is_kwd : string -> bool;
      mutable filter : filter;
-  };
+  }
 
-open LibUtil;
+open LibUtil
 
 let mk ~is_kwd ={
   is_kwd ;
   filter = ignore_layout
-};
+}
     
 let filter x =
   let f (tok, loc) = 
@@ -34,12 +34,12 @@ let filter x =
   (*       [< x; 'tracer xs >] *)
   (*   | [< >] -> [< >] ] *)
   (* in fun strm -> tracer (x.filter (filter strm)); *)
-  fun strm -> x.filter (XStream.map f strm);
+  fun strm -> x.filter (XStream.map f strm)
 
-let define_filter x f = x.filter <- f x.filter;
+let define_filter x f = x.filter <- f x.filter
 
 (* keyword added hook FIXME gives an warning later*)  
-let keyword_added _ _ _ = ();
-let keyword_removed _ _ = ();
+let keyword_added _ _ _ = ()
+let keyword_removed _ _ = ()
 
 

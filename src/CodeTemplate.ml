@@ -1,14 +1,14 @@
-open Ast;
-open AstLoc;
-open LibUtil;
+open Ast
+open AstLoc
+open LibUtil
 
-let _loc =FanLoc.ghost ;
+let _loc =FanLoc.ghost 
 
 type ty_meta = {
     str:string;
     print: [ `Exist | `Custom of stru | `Fmt of string];
     eq: [ `Def | `Custom of stru]
-  };
+  }
 
 let base1_types = with stru'
   [ ("int", `Exist , `Def) ;
@@ -22,12 +22,12 @@ let base1_types = with stru'
     ("unit", `Custom (
      {| let pp_print_unit : Format.formatter -> unit -> unit = fun fmt _ ->
           Format.fprintf fmt "()" |} ),
-     `Custom ( {|  let eq_unit : unit -> unit -> bool = fun _ _ -> true |}  ))];
+     `Custom ( {|  let eq_unit : unit -> unit -> bool = fun _ _ -> true |}  ))]
 
 let ty_metas =
   base1_types |> List.map (fun
     [(str,print,eq) ->
-      {str;print;eq}]);
+      {str;print;eq}])
   
 let print_base1 = with stru'
   let items =
@@ -41,7 +41,7 @@ let print_base1 = with stru'
     |`Fmt c ->
       {|let $lid:name : $ty =
         fun fmt a -> Format.fprintf fmt $str:c a  |} ]]) in
-      sem_of_list items;
+      sem_of_list items
 
   
   
@@ -87,18 +87,22 @@ let (map_clfield_base_1,
    sem_of_list v6, sem_of_list v7)
 
   (* ({|$list:v1|},{|$list:v2|},{|$list:v3|}, *)
-  (*  {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|}) *);
+  (*  {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|}) *)
 
-let eq_base1 = with stru
-  let items = ty_metas |> List.map (fun [
-  {str;eq;_} ->
-    let ty =  {:ctyp'| $lid:str -> $lid:str -> bool |}  in
-    let name = "eq_" ^ str in
-    match eq with
-    [`Def -> {| let $lid:name : $ty = (=) |}
-    |`Custom s -> s ]]) in
-    sem_of_list items
-    (* {| $list:items |} *) ;
+let eq_base1 =
+  with stru
+  (* let open stru in  *)
+  let items =
+    ty_metas |> List.map
+      (fun 
+        {str;eq;_} ->
+          let ty =  {:ctyp'| $lid:str -> $lid:str -> bool |}  in
+          let name = "eq_" ^ str in
+          match eq with
+          |`Def -> {| let $lid:name : $ty = (=) |}
+          |`Custom s -> s ) in
+            sem_of_list items
+              (* {| $list:items |} *) 
 
 let open AstInjection in begin 
   register_inject_clfield
@@ -117,9 +121,9 @@ let open AstInjection in begin
   register_inject_clfield
     ("eq_clfield_base_2", eq_clfield_base_2);
   register_inject_stru ("eq_base1",eq_base1);
-  register_inject_stru ("print_base1",print_base1);
+  register_inject_stru ("print_base1",print_base1)
 
-end;
+end
 
 
 

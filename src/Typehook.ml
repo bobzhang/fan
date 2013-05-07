@@ -1,7 +1,7 @@
-open LibUtil;
-open AstLoc;
-open FSig;
-open Format;
+open LibUtil
+open AstLoc
+open FSig
+open Format
 
   
 (** A Hook To Ast Filters *)
@@ -9,30 +9,30 @@ open Format;
 
 let apply_filter f (m:mtyps) : mtyps = begin 
   (* eprintf "applying filter@."; *)
-  let f  = (fun
-    [ (`Single (s,_) as x) ->
-      if f s then Some  x else None
+  let f  = (function
+    | (`Single (s,_) as x) ->
+        if f s then Some  x else None
     | `Mutual ls ->
-       let x = List.filter_map (fun ((s,_) as x) -> if f s then Some x  else None) ls in
-       match x with
-       [ [] -> None
-       | [x] -> Some (`Single  x)
-       |  y -> Some (`Mutual y)]]) in
+        let x = List.filter_map (fun ((s,_) as x) -> if f s then Some x  else None) ls in
+        match x with
+        | [] -> None
+        | [x] -> Some (`Single  x)
+        |  y -> Some (`Mutual y)) in
   List.filter_map  f m ;
-end;
+end
 
 
-  
+    
 (* type plugin_name = string ; *)
-  
+    
 let filters : (plugin_name, plugin) Hashtbl.t  = Hashtbl.create 30;;
 
 (* (\* when you do the iteration, you should do it in reverse order *\)   *)
 (* let current_filters:  ref (list (plugin_name * plugin)) = ref []; *)
 
   
-let show_code =  ref false;
-let print_collect_mtyps = ref false;
+let show_code =  ref false
+let print_collect_mtyps = ref false
   
 let register  ?filter ?position (name,f) =
   if Hashtbl.mem filters name
@@ -40,7 +40,7 @@ let register  ?filter ?position (name,f) =
   else begin
    (* eprintf "%s filter registered@." name ; *)
    Hashtbl.add filters name {transform=f; (* activate=false; *)position;filter} ;
-  end;
+  end
 
 let show_modules () =
   begin
@@ -48,7 +48,7 @@ let show_modules () =
       (fun key _  ->
         Format.printf  "%s@ " key ) filters;
     print_newline()
-  end;    
+  end
   
 (*
   Get all definitions from mli file
@@ -65,14 +65,14 @@ let plugin_add plugin =
       eprintf "<Warning> plugin %s has already been loaded" plugin;
   end
   with
-  [Not_found -> begin
+  |Not_found -> begin
     show_modules ();
     failwithf "plugins %s not found " plugin ;
-  end];
+  end
 
     
 let plugin_remove plugin =
-    Ref.modify FanState.current_filters (fun x -> List.remove plugin x) ;
+    Ref.modify FanState.current_filters (fun x -> List.remove plugin x) 
   
 
 
@@ -136,7 +136,7 @@ class type traversal = object
   method update_cur_mtyps:
       (FSig.mtyps -> FSig.mtyps) -> unit;
 
-end;
+end
 
 (*
   Entrance is  [mexp]
@@ -171,8 +171,8 @@ let traversal () : traversal  = object (self:'self_type)
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types;
   (* entrance *)  
-  method! mexp = with stru fun
-    [ {:mexp| struct $u end |}  ->  begin 
+  method! mexp = with stru function
+    | {:mexp| struct $u end |}  ->  begin 
       self#in_module ;
       let res = self#stru u ;
       let mtyps = List.rev (self#get_cur_mtyps) ;
@@ -199,10 +199,10 @@ let traversal () : traversal  = object (self:'self_type)
       self#out_module ;
       {:mexp| struct $result end |}  
     end
-    | x -> super#mexp x ];
+    | x -> super#mexp x ;
 
-  method! stru  = with stru fun
-    [ {| type $_ and $_ |} as x -> begin
+  method! stru  = with stru function
+    | {| type $_ and $_ |} as x -> begin
       self#in_and_types;
       let _ = super#stru x ;
       self#update_cur_mtyps
@@ -221,16 +221,16 @@ let traversal () : traversal  = object (self:'self_type)
     | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
 (* {| exception $_ |} *) 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
-    |  x ->  super#stru x  ];
-  method! typedecl = fun
-    [ `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
+    |  x ->  super#stru x  ;
+  method! typedecl = function
+    | `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
       if self#is_in_and_types then
         self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
       else ();
       t
     end
-    | t -> super#typedecl t ];
-end;
+    | t -> super#typedecl t ;
+end
 
 
 
@@ -253,14 +253,13 @@ let g = Gram.create_lexer
      ";"
    ]
     ~annot:"derive"
-    ();
+    ();;
 
 
-{:create|(g:Gram.t)  fan_quot fan_quots
-|};
+{:create|(g:Gram.t)  fan_quot fan_quots|};;
 
 with exp
-    {:extend|
+{:extend|
       fan_quot:
       ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
           begin List.iter plugin_add plugins; {| () |}  end
@@ -275,9 +274,9 @@ with exp
       | "show_code"; "off" -> begin show_code := false; {| ()|} end]
       fan_quots:
       [L1[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
-|};  
+|};;  
 
-let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();
+let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();;
 
 {:create| (g:Gram.t) include_quot |};;
 
@@ -295,7 +294,7 @@ include_quot:
 
 
 
-{:create|Gram  save_quot|};
+{:create|Gram  save_quot|};;
 (* {:save| a b c -> begin *)
 (*   print_int a; *)
 (*   print_int b ; *)
@@ -324,9 +323,9 @@ include_quot:
   |}
 
  ]
-|};
+|};;
   
 begin 
   PreCast.Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
   PreCast.Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
-end;
+end;;

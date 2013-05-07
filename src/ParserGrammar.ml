@@ -1,14 +1,14 @@
 
-open Ast;
-open AstLoc;
-open FanGrammar;
-open FanGrammarTools;
-open PreCast.Syntax;
-open LibUtil;
-open FanUtil;
+open Ast
+open AstLoc
+open FanGrammar
+open FanGrammarTools
+open PreCast.Syntax
+open LibUtil
+open FanUtil
 
 
-FanConfig.antiquotations := true;
+FanConfig.antiquotations := true;;
 
 
 
@@ -20,7 +20,7 @@ FanConfig.antiquotations := true;
   (pattern: action_pattern Gram.t )
   simple_exp delete_rules
   (simple_pat: simple_pat Gram.t )
-  internal_pat|}  ;
+  internal_pat|}  ;;
 
 
 {:extend|Gram
@@ -83,7 +83,7 @@ FanConfig.antiquotations := true;
       {:exp'| $t.clear $x |}) ls in
     seq_sem rest
     (* {:exp| begin $list:rest end |} *) ]
-|};
+|};;
 
 
 {:extend|Gram
@@ -424,10 +424,12 @@ FanConfig.antiquotations := true;
 
   simple_exp:
   [ a_lident{i} -> (i : alident :>exp) 
-  | "("; exp{e}; ")" -> e ]  |};
+  | "("; exp{e}; ")" -> e ]  |};;
 
 
-let d = `Absolute["Fan";"Lang"];
+let d = `Absolute["Fan";"Lang"];;
+
+begin
 AstQuotation.of_exp
   ~name:((d,  "extend")) ~entry:extend_body;
 AstQuotation.of_exp
@@ -436,6 +438,8 @@ AstQuotation.of_exp
     ~name:((d,"clear")) ~entry:nonterminalsclear;
 AstQuotation.of_stru
     ~name:((d,"create")) ~entry:nonterminals;
+end;;
+
 
 (*
 AstQuotation.add_quotation

@@ -1,5 +1,5 @@
-open Ast;
-open AstLoc;
+open Ast
+open AstLoc
 (*
   {:macro|M a b c|}
 
@@ -44,23 +44,23 @@ open AstLoc;
     macro.exp should return exp
     macro.stru should return stru 
  *)
-type key = string;
+type key = string
 
-type expander =  exp -> exp;
+type expander =  exp -> exp
 
 (*
    exp -> stru
 *)
   
-let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40 ;
+let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40 
 
 let register_macro (k,f) =
-  Hashtbl.replace macro_expanders k f;
+  Hashtbl.replace macro_expanders k f
 
-let rec fib = fun
-  [ 0 | 1 ->  1
+let rec fib = function
+  | 0 | 1 ->  1
   | n when n > 0 -> fib (n-1) + fib (n-2)
-  | _ -> invalid_arg "fib" ];
+  | _ -> invalid_arg "fib" 
 
 (* {:exp| f a b c|}
    don't support currying
@@ -72,12 +72,12 @@ let rec fib = fun
   
 let fibm  y =
   match y with
-  [ {:exp'|$int:x|}  -> {:exp'| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = loc_of x in {:exp'| fib $x |} ];
+  | {:exp'|$int:x|}  -> {:exp'| $(`int:fib (int_of_string x))|}
+  |  x -> let _loc = loc_of x in {:exp'| fib $x |} ;;
 
-register_macro ("FIB",fibm);      
+register_macro ("FIB",fibm);;      
 
-open LibUtil;
+open LibUtil
     
 (* let generate_fibs = with exp fun *)
 (*   [ {:exp|$int:x|} -> *)
@@ -107,12 +107,12 @@ GFIB 10;
 
 let macro_expander = object(self)
   inherit Objs.map as super;
-  method! exp = with exp fun
-  [{| $uid:a $y |} ->
-    let try f = Hashtbl.find macro_expanders a in
-    self#exp (f y)
-    with Not_found -> {| $uid:a $(self#exp y)|}
-  | e -> super#exp e ];
-end;
+  method! exp = with exp function
+    |{| $uid:a $y |} ->
+        (let try f = Hashtbl.find macro_expanders a in
+        self#exp (f y)
+        with Not_found -> {| $uid:a $(self#exp y)|})
+    | e -> super#exp e ;
+end
 
 (* AstFilters.register_stru_filter ("macro", macro_expander#stru);   *)

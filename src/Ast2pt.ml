@@ -4,18 +4,20 @@
   Dump the FanAst to Parsetree, this file should
   introduce minimal dependency or only dependent on those generated files
  *)  
-open Parsetree;
-open Longident;
-open Asttypes;
-open LibUtil;
-open FanUtil;
-open ParsetreeHelper;
-open FanLoc;
-open FanOps;
-open Ast;
-open AstLoc;
-open Objs;
-DEFINE ANT_ERROR = error _loc "antiquotation not expected here";
+open Parsetree
+open Longident
+open Asttypes
+open LibUtil
+open FanUtil
+open ParsetreeHelper
+open FanLoc
+open FanOps
+open Ast
+open AstLoc
+open Objs;;
+
+  
+DEFINE ANT_ERROR = error _loc "antiquotation not expected here";;
 
 
 let rec normalize_acc = with ident' fun
@@ -24,7 +26,7 @@ let rec normalize_acc = with ident' fun
   | `Apply(_loc,i1,i2) ->
       {:exp'| $(normalize_acc i1) $(normalize_acc i2) |}
   | `Ant (_loc,_) | {@_loc| $uid:_ |} |
-    {@_loc| $lid:_ |} as i -> {:exp'| $id:i |} ];
+    {@_loc| $lid:_ |} as i -> {:exp'| $id:i |} ]
 
 (*
   The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
@@ -66,22 +68,22 @@ let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = fun
       (match acc with
        [ [] -> [(loc, [], e)]
        | [(loc',sl,e)::l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ])
-  | e -> [((loc_of e), [], e) :: acc] ];
+  | e -> [((loc_of e), [], e) :: acc] ]
   
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = fun 
   [ `Virtual _ -> Virtual
   | `ViNil _  -> Concrete
-  | `Ant (_loc,_) -> ANT_ERROR ];
+  | `Ant (_loc,_) -> ANT_ERROR ]
 
 let mkdirection : direction_flag -> Asttypes.direction_flag = fun
   [ `To _ -> Upto
   | `Downto _ -> Downto
-  | `Ant (_loc,_) -> ANT_ERROR ];
+  | `Ant (_loc,_) -> ANT_ERROR ]
 
 let mkrf : rec_flag -> Asttypes.rec_flag = fun
   [ `Recursive _  -> Recursive
   | `ReNil _  -> Nonrecursive
-  | `Ant(_loc,_) -> ANT_ERROR ];
+  | `Ant(_loc,_) -> ANT_ERROR ]
 
 
 (*
@@ -139,31 +141,31 @@ let ident_tag (i:ident) =
           Some (x, `lident)
     | `Ant(_,_) -> error (loc_of i) "invalid long identifier" ]  in
   match self i None  with
-    [Some x -> x | None -> error (loc_of i) "invalid long identifier "];
+    [Some x -> x | None -> error (loc_of i) "invalid long identifier "]
 
-let ident_noloc i = fst (ident_tag  i);
+let ident_noloc i = fst (ident_tag  i)
 
 let ident (i:ident) :  Longident.t Location.loc  =
-  with_loc (ident_noloc  i) (loc_of i);
+  with_loc (ident_noloc  i) (loc_of i)
 
 let long_lident ~err id =
     match ident_tag id with
     [ (i, `lident) -> i +> (loc_of id)
-    | _ -> error (loc_of id) err ];
+    | _ -> error (loc_of id) err ]
 
 let long_type_ident :ident -> Longident.t Location.loc =
-  long_lident ~err:"invalid long identifier type";
-let long_class_ident = long_lident ~err:"invalid class name";
+  long_lident ~err:"invalid long identifier type"
+let long_class_ident = long_lident ~err:"invalid class name"
 
 let long_uident_noloc  i =
     match ident_tag i with
     [ (Ldot (i, s), `uident) -> ldot i s
     | (Lident s, `uident) -> lident s
     | (i, `app) -> i
-    | _ -> errorf (loc_of i) "uppercase identifier expected %s" ("") ];
+    | _ -> errorf (loc_of i) "uppercase identifier expected %s" ("") ]
 
 let long_uident  i =
-   long_uident_noloc  i +> loc_of i;
+   long_uident_noloc  i +> loc_of i
 
 let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
   match t with
@@ -172,18 +174,19 @@ let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
       let li1 = ctyp_long_id_prefix m1 in
       let li2 = ctyp_long_id_prefix m2 in
       Lapply li1 li2
-  | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) ] ;
+  | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) ]
 
 let ctyp_long_id (t:ctyp) : (bool *   Longident.t Location.loc) =
   match t with
   [ #ident' as i -> (false, long_type_ident i)
   | `ClassPath (_, i) -> (true, ident i)
-  | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) ] ;
+  | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) ]
 
 let predef_option loc : ctyp =
-  `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"));
+  `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"))
 
-let rec ctyp (x:ctyp) = match x with 
+let rec ctyp (x:ctyp) =
+  match x with 
   [  (#ident' as i) ->
     let li = long_type_ident (i:>ident) in
     let _loc = loc_of i in 
@@ -273,13 +276,14 @@ and package_type_constraints (wc:constr)
     | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
           (dump_constr x) ]
 
-and package_type (x : mtyp) = match x with 
-    [ (`With(_loc,(#ident' as i),wc) :mtyp) ->
+and package_type (x : mtyp) =
+  match x with 
+  | (`With(_loc,(#ident' as i),wc) :mtyp) ->
       (long_uident i, package_type_constraints wc [])
-    | (* `Id(_loc,i) *)#ident' as i  -> (long_uident i, [])
-    | mt -> errorf (loc_of mt)
+  | (* `Id(_loc,i) *)#ident' as i  -> (long_uident i, [])
+  | mt -> errorf (loc_of mt)
           "unexpected package type: %s"
-          (dump_mtyp mt)] ;
+          (dump_mtyp mt)
 
 let mktype loc tl cl ~type_kind ~priv ~manifest =
   let (params, variance) = List.split tl in
@@ -289,15 +293,15 @@ let mktype loc tl cl ~type_kind ~priv ~manifest =
    ptype_private = priv;
    ptype_manifest = manifest;
    ptype_loc =  loc;
-   ptype_variance = variance} ;
+   ptype_variance = variance} 
   
-let mkprivate' m = if m then Private else Public;
+let mkprivate' m = if m then Private else Public
 
 let mkprivate (x:private_flag)=
   match x with 
   [ `Private _ -> Private
   | `PrNil _ -> Public
-  | `Ant(_loc,_)-> ANT_ERROR ];
+  | `Ant(_loc,_)-> ANT_ERROR ]
 
 let mktrecord (x: name_ctyp)= match x with 
   [`TyColMut(_loc,`Lid(sloc,s),t) ->
@@ -305,51 +309,51 @@ let mktrecord (x: name_ctyp)= match x with
   | `TyCol(_loc,`Lid(sloc,s),t) ->
       (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
   | t -> errorf (loc_of t) "mktrecord %s "
-        (dump_name_ctyp t)];
+        (dump_name_ctyp t)]
   
 let mkvariant (x:or_ctyp) = 
   match x with
-  [ `Uid(sloc,s) ->
+  | `Uid(sloc,s) ->
     (with_loc  s sloc, [], None,  sloc)
   | `Of(_loc,`Uid(sloc,s),t) ->
       (with_loc  s sloc, List.map ctyp (list_of_star t []), None,  _loc)
 
   | `TyCol(_loc,`Uid(sloc,s),( `Arrow _  as t )) -> (*GADT*)
-      match List.rev (list_of_arrow_r t []) with
-      [ [u::t] ->
+      (match List.rev (list_of_arrow_r t []) with
+      | [u::t] ->
         (with_loc s sloc,
          List.map ctyp t, Some (ctyp u),  _loc)  
-      | [] -> assert false]  
+      | [] -> assert false)
       
   | `TyCol(_loc,`Uid(sloc,s),t) ->
       (with_loc  s sloc, [], Some (ctyp t),  _loc)
-  | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t) ];
+  | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t) 
 
 
 
 let type_kind (x:type_repr) =
   match x with
-  [`Record (_loc,t) ->
+  | `Record (_loc,t) ->
     (Ptype_record (List.map mktrecord (list_of_sem t [])))
   | `Sum(_loc,t) ->
       (Ptype_variant (List.map mkvariant (list_of_or t [])))
-  | `Ant(_loc,_) -> ANT_ERROR];
+  | `Ant(_loc,_) -> ANT_ERROR
     
     
 
 let mkvalue_desc loc t (p:  strings list) =
   let ps = List.map (fun p ->
     match p with
-    [`Str (_,p) -> p
-    | _ -> failwithf  "mkvalue_desc"]) p in
-  {pval_type = ctyp t; pval_prim = ps; pval_loc =  loc};
+    | `Str (_,p) -> p
+    | _ -> failwithf  "mkvalue_desc") p in
+  {pval_type = ctyp t; pval_prim = ps; pval_loc =  loc}
 
 
 let mkmutable (x:mutable_flag)=
   match x with
-  [`Mutable _ -> Mutable
+  |`Mutable _ -> Mutable
   | `MuNil _ -> Immutable
-  | `Ant(_loc,_) -> ANT_ERROR ];
+  | `Ant(_loc,_) -> ANT_ERROR 
 
 let paolab (lab:string) (p:pat) : string =
   match (lab, p) with
@@ -357,7 +361,7 @@ let paolab (lab:string) (p:pat) : string =
     -> i
   | ("", p) ->
       errorf (loc_of p) "paolab %s" (dump_pat p)
-  | _ -> lab ] ;
+  | _ -> lab ]
 
 
 let quote_map x =
@@ -377,15 +381,15 @@ let quote_map x =
       |`Ant (_loc,_) -> ANT_ERROR ] in
       (None,tuple)
   | _ ->
-      errorf (loc_of x) "quote_map %s" (dump_ctyp x)]  ;
+      errorf (loc_of x) "quote_map %s" (dump_ctyp x)]
     
 let optional_type_parameters (t:ctyp) = 
-  List.map quote_map (list_of_app t []);
+  List.map quote_map (list_of_app t [])
 (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *)
 let mk_type_parameters (tl:opt_decl_params)
     :  ( (string Asttypes.loc ) option   * (bool * bool))list  =
   match tl with
-  [`None _ -> []
+  | `None _ -> []
   | `Some(_,x) ->
       let xs = list_of_com x [] in
       List.map
@@ -393,7 +397,7 @@ let mk_type_parameters (tl:opt_decl_params)
           [ #decl_param as x ->
              quote_map (x:>ctyp)
           |  _ -> assert false]) xs
-   ]  ;
+
 
   
 (* ['a,'b,'c']*)
@@ -406,7 +410,7 @@ let  class_parameters (t:type_parameters) =
         | (None,_) ->
             errorf (loc_of t) "class_parameters %s" (dump_type_parameters t)]
         | _ ->  errorf (loc_of t) "class_parameters %s" (dump_type_parameters t) ])
-    (list_of_com t []);
+    (list_of_com t [])
 
 
 let type_parameters_and_type_name (t:ctyp)  =
@@ -417,21 +421,21 @@ let type_parameters_and_type_name (t:ctyp)  =
   | #ident' as i  -> (ident i, acc)
   | x ->
       errorf (loc_of x) "type_parameters_and_type_name %s"
-        (dump_ctyp x) ] in aux t [];
+        (dump_ctyp x) ] in aux t []
 
   
   
 let rec pat_fa (al: pat list) (x:pat) =
   match x with
   [ `App (_,f,a) -> pat_fa [a :: al] f
-  | f -> (f, al) ];
+  | f -> (f, al) ]
 
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2 then mkghpat loc (Ppat_constant (Const_char c1))
   else
     mkghpat loc
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
-         (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
+         (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
 
 let rec mkrangepat loc c1 c2 =
   if c1 > c2 then mkrangepat loc c2 c1
@@ -439,7 +443,7 @@ let rec mkrangepat loc c1 c2 =
   else
     mkpat loc
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
-         (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2));
+         (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
 
 let rec pat (x:pat) =
   with pat'  match x with 
@@ -549,16 +553,16 @@ let rec pat (x:pat) =
             (Ppat_constraint
                (mkpat sloc (Ppat_unpack (with_loc m sloc)))
                (ctyp ty))
-  |  p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p) ];
+  |  p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p) ]
 
   
 
 
 let override_flag loc (x:override_flag) =
   match x with
-  [ `Override _ -> Override
+  | `Override _ -> Override
   | `OvNil _  -> Fresh
-  |  _ -> error loc "antiquotation not allowed here" ];
+  |  _ -> error loc "antiquotation not allowed here" 
 
   
 
@@ -1287,44 +1291,45 @@ and clexp  (x:Ast.clexp) = match x with
         [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
     | `VirVal (loc,`Lid(sloc,s),mf,t) ->
         [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
-    | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) ];
+    | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) ]
 
-let sigi (ast:sigi) : signature = sigi ast [];
-let stru ast = stru ast [];
+let sigi (ast:sigi) : signature = sigi ast []
+let stru ast = stru ast []
 
 let directive (x:exp) = with exp'  match x with 
   [`Str(_,s) -> Pdir_string s
   | `Int(_,i) -> Pdir_int (int_of_string i)
   | {| true |} -> Pdir_bool true
   | {| false |} -> Pdir_bool false
-  | e -> Pdir_ident (ident_noloc (ident_of_exp e)) ] ;
+  | e -> Pdir_ident (ident_noloc (ident_of_exp e)) ] 
 
 let phrase (x: stru) =
   match x with 
   [ `Directive (_, `Lid(_,d),dp) -> Ptop_dir d (directive dp)
   | `DirectiveSimple(_,`Lid(_,d)) -> Ptop_dir d Pdir_none
   | `Directive (_, `Ant(_loc,_),_) -> error _loc "antiquotation not allowed"
-  | si -> Ptop_def (stru si) ];
+  | si -> Ptop_def (stru si) ]
 
-open Format;
-let pp = fprintf;  
+
+open Format
+let pp = fprintf
 
 let print_exp f  e =
-  pp f "@[%a@]@." AstPrint.expression (exp e);
-let to_string_exp = to_string_of_printer print_exp;  
+  pp f "@[%a@]@." AstPrint.expression (exp e)
+let to_string_exp = to_string_of_printer print_exp
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
   
 let print_pat f e =
-  pp f "@[%a@]@." AstPrint.pattern (pat e);
+  pp f "@[%a@]@." AstPrint.pattern (pat e)
   
 let print_stru f e =
-  pp f "@[%a@]@." AstPrint.structure (stru e);
+  pp f "@[%a@]@." AstPrint.structure (stru e)
 
 (* FIXME allow more interfaces later *)  
 (* let p_ident f e = *)
 (*   eprintf "@[%a@]@." Pprintast.fmt_longident (ident e) ;     *)
 let print_ctyp f e =
-  pp f "@[%a@]@." AstPrint.core_type (ctyp e) ;
+  pp f "@[%a@]@." AstPrint.core_type (ctyp e)
 
 
 

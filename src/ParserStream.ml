@@ -1,7 +1,7 @@
-open Ast;
-open Syntax;
-open LibUtil;
-open FanStreamTools;
+open Ast
+open Syntax
+open LibUtil
+open FanStreamTools
 
 
 let apply () = 
@@ -69,9 +69,9 @@ let apply () =
      | stream_exp_comp{se} -> [se] ] 
     stream_exp_comp: 
      [  stream_exp{e} -> SeTrm _loc e
-     | stream_quot;stream_exp{e} -> SeNtr _loc e ]  |};
+     | stream_quot;stream_exp{e} -> SeNtr _loc e ]  |};;
 
-AstParsers.register_parser ("stream",apply)  ;
+AstParsers.register_parser ("stream",apply)  ;;
 
 
 

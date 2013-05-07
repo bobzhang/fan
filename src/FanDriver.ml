@@ -2,5 +2,5 @@
 
 
 
-include MakeBin.Make  Fan;
+include MakeBin.Make  Fan
 

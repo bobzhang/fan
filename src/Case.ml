@@ -1,8 +1,13 @@
 #default_quotation "case'";;
-open LibUtil;
-open Ast;
-open AstLoc;
-open Basic;
+
+
+
+open LibUtil
+open Ast
+open AstLoc
+open Basic
+
+
 (*
   An ad-hoc solution for [`a|a|`b] code generation, to imporove later
  *)
@@ -17,11 +22,11 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
 
   let open FSig in
   match destination with
-  [Obj(Map) ->
+  | Obj(Map) ->
      {| $pat:pat -> ( $e : $((name:>ctyp)) :> $annot) |}
   |_ ->
-      {| $pat:pat -> ( $e  :> $annot) |}]
-    ;  
+      {| $pat:pat -> ( $e  :> $annot) |}
+
  
 
 

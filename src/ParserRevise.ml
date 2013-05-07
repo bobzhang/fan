@@ -1,12 +1,12 @@
-open Ast;
-open AstLoc;
-open FanOps;
-open Syntax;
-open LibUtil;
-open FanUtil;
-open GramLib;
+open Ast
+open AstLoc
+open FanOps
+open Syntax
+open LibUtil
+open FanUtil
+open GramLib
 
-{:create|Gram pos_exps|};
+{:create|Gram pos_exps|};;
 let apply () = begin 
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
@@ -912,8 +912,9 @@ let apply () = begin
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
 
-      | stru{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped)
+      (* | stru{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped) *)
       | stru{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
+      | stru{si}; (* ";;"; *) S{(sil, stopped)} -> ([si :: sil], stopped)            
             (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
 
@@ -1135,7 +1136,7 @@ let apply () = begin
       | "object";class_signature{csg};"end"-> `Obj(_loc,csg)
       | "object"; "(";ctyp{t};")" -> `ObjTyEnd(_loc,t)
       | "object"; "end" -> `ObjEnd(_loc)] |} ;
-end;
+end;;
 
 
 let apply_ctyp () = begin
@@ -1338,11 +1339,11 @@ let apply_ctyp () = begin
       | `Ant (("list" as n),s) -> mk_anti _loc ~c:"ctyp," n s
       | type_parameter{t} -> `Ctyp(_loc, (t:>ctyp))  ]
   |};
-end;
+end;;
 
   
 AstParsers.register_parser
-    ("revise",fun () -> begin apply (); apply_ctyp () end);
+    ("revise",fun () -> begin apply (); apply_ctyp () end);;
 
 
 

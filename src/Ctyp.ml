@@ -1,10 +1,11 @@
 #default_quotation "ctyp'";;
-open Ast;
-open AstLoc;
-open LibUtil;
 
-open Basic;
-open FSig;
+open Ast
+open AstLoc
+open LibUtil
+
+open Basic
+open FSig
 
 
 (* let rec to_var_list =  fun *)
@@ -23,14 +24,14 @@ open FSig;
 
 
 
-let arrow_of_list = List.reduce_right arrow;
+let arrow_of_list = List.reduce_right arrow
   
-let app_arrow lst acc = List.fold_right arrow lst acc;
+let app_arrow lst acc = List.fold_right arrow lst acc
   
 let (<+) (names: string list ) (ty:ctyp) =
-  List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty;
+  List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty
   
-let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base;    
+let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
 (*
    {[
@@ -44,7 +45,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
     (name, match tyvars with [`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs []])
   | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)];      
+      failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)]
 
 
 
@@ -60,7 +61,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
 let gen_quantifiers1 ~arity n  : ctyp =
   List.init arity
     (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
-  |> List.concat |> appl_of_list;
+  |> List.concat |> appl_of_list
 
 
 (*
@@ -70,9 +71,10 @@ let gen_quantifiers1 ~arity n  : ctyp =
   ]}
  *)  
 let of_id_len ~off ((id:ident),len) =
-  appl_of_list [(id:>ctyp) ::
-    (List.init len
-       (fun i -> {|  '$(lid:allx ~off i) |}))];
+  appl_of_list
+    [(id:>ctyp) ::
+     (List.init len
+       (fun i -> {|  '$(lid:allx ~off i) |}))]
   
 (*
    {[
@@ -90,7 +92,7 @@ let of_id_len ~off ((id:ident),len) =
 
 let of_name_len ~off (name,len) =
   let id = {:ident| $lid:name |}  in
-  of_id_len ~off (id,len);
+  of_id_len ~off (id,len)
 
 
 (*
@@ -110,7 +112,7 @@ let ty_name_of_tydcl  (x:typedecl) =
     let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list) ] in
     appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
-      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)];      
+      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)]
 
 (*
   {[
@@ -121,7 +123,7 @@ let ty_name_of_tydcl  (x:typedecl) =
   ]}
  *)  
 let gen_ty_of_tydcl ~off (tydcl:typedecl) =
-  tydcl |> name_length_of_tydcl |>of_name_len ~off ;
+  tydcl |> name_length_of_tydcl |>of_name_len ~off 
   
 (*
    @raise Invalid_argument 
@@ -137,8 +139,8 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
 let list_of_record (ty:name_ctyp) : FSig.col list  =
   let (tys : name_ctyp list )  = list_of_sem ty [] in
     (* list_of_sem' ty [] *) tys|> List.map (
-       fun
-         [ 
+       function
+         |
            (* {| $lid:label : mutable $ctyp  |} *)
            (* `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) -> *)
            `TyColMut(_,`Lid(_,col_label),col_ctyp) ->
@@ -148,7 +150,7 @@ let list_of_record (ty:name_ctyp) : FSig.col list  =
                {col_label; col_ctyp; col_mutable=false}
          | t0 ->
              FanLoc.errorf (loc_of t0)
-               "list_of_record %s" (Objs.dump_name_ctyp t0) ]);
+               "list_of_record %s" (Objs.dump_name_ctyp t0) )
 
   
 (*
@@ -160,7 +162,7 @@ let list_of_record (ty:name_ctyp) : FSig.col list  =
    int
    ]}
  *)
-let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta;
+let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
 
 (*
   {[
@@ -169,7 +171,7 @@ let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta;
   ]}
   *)
 let repeat_arrow_n ty n =
-  List.init n (fun _ -> ty) |>  arrow_of_list;
+  List.init n (fun _ -> ty) |>  arrow_of_list
   
 (*
   [result] is a keyword
@@ -210,7 +212,9 @@ let repeat_arrow_n ty n =
     ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
       'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
  *)
-let result_id = ref 0; (* to be clean soon *)  
+let result_id = ref 0 (* to be clean soon *)
+
+    
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   let prefix = List.map (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
@@ -248,7 +252,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd (_loc, base),dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-    ({| ! $quantifiers . $(params +> base) |},dst);
+    ({| ! $quantifiers . $(params +> base) |},dst)
 
 (* FIXME : merge with [mk_type_of] *)  
 (* let result_id = ref 0;   *)
@@ -266,17 +270,18 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
 (*     |Obj Fold -> (1, self_type) *)
 (*     |Str_item -> (1,result_type)] in dst; *)
 
+
 (* *)  
 let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
   let id = {:ident| $lid:name |} in
-  mk_method_type ~number ~prefix (id,len) k ;
+  mk_method_type ~number ~prefix (id,len) k 
 
 
 let mk_obj class_name  base body =
   {:stru| class $lid:class_name = object (self: 'self_type)
     inherit $lid:base ;
     $body;
-  end |};
+  end |}
 
   
 let is_recursive ty_dcl =
@@ -297,7 +302,7 @@ let is_recursive ty_dcl =
     (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | `And(_,_,_)  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)];
+  | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)]
 
 (*
   {:stru|
@@ -326,10 +331,10 @@ let qualified_app_list x : ((ident * ctyp list ) option ) =
     | _ -> None ]
   | ( {| $lid:_  |} | {| $uid:_  |}) -> None
   | #ident'  as i  -> Some (i, [])
-  | _ -> None ];
+  | _ -> None ]
 
 let is_abstract (x:typedecl)=
-  match x with [`TyAbstr _ -> true | _ -> false];
+  match x with [`TyAbstr _ -> true | _ -> false]
   (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
@@ -342,17 +347,19 @@ let abstract_list (x:typedecl)=
         Some (List.length & list_of_com xs [])
   ]
     (* Some (List.length lst) *)
-  | _ -> None];
+  | _ -> None]
   
 let eq t1 t2 =
   let strip_locs t = (Objs.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
-  strip_locs t1 = strip_locs t2;
+  strip_locs t1 = strip_locs t2
+
+    
 (* FIXME add hoc *)  
 let eq_list t1 t2 =
-  let rec loop = fun
-    [ ([],[]) -> true
+  let rec loop = function
+    | ([],[]) -> true
     | ([x::xs],[y::ys]) -> eq x y && loop (xs,ys)
-    | (_,_) -> false] in loop (t1,t2);
+    | (_,_) -> false in loop (t1,t2)
   
 (*
 
@@ -450,7 +457,7 @@ let mk_transform_type_eq () = object(self:'self_type)
     Hashtbl.fold (fun dest (src,len) acc ->
       [(dest,src,len)  :: acc]) transformers [];
 
-end;
+end
 
 
 
@@ -463,15 +470,15 @@ end;
 let transform_mtyps  (lst:FSig.mtyps) =
   let obj = mk_transform_type_eq () in 
   let item1 =
-    List.map (fun
-           [`Mutual ls ->
-             `Mutual (List.map
-                      (fun (s,ty) ->
-                        (s, obj#typedecl ty)) ls)
-           |`Single (s,ty) ->
-               `Single (s, obj#typedecl ty)]) lst in
+    List.map (function
+      |`Mutual ls ->
+          `Mutual (List.map
+                     (fun (s,ty) ->
+                       (s, obj#typedecl ty)) ls)
+      |`Single (s,ty) ->
+          `Single (s, obj#typedecl ty)) lst in
   let new_types = obj#type_transformers in
-  (new_types,item1);
+  (new_types,item1)
       
 (* 
    {[
@@ -502,7 +509,7 @@ let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
       -> compose  (f cons [] ) acc
     | t->
         FanLoc.errorf (loc_of t)
-          "reduce_data_ctors: %s" (Objs.dump_or_ctyp t)]) init  branches;
+          "reduce_data_ctors: %s" (Objs.dump_or_ctyp t)]) init  branches
     
 let view_sum (t:or_ctyp) =
   let bs = list_of_or t [] in
@@ -512,7 +519,7 @@ let view_sum (t:or_ctyp) =
         `branch (cons,[])
        | `Of(_loc,`Uid(_,cons),t) (* {|$uid:cons of $t|} *) ->
            `branch (cons,  list_of_star  t [])
-       | _ -> assert false ]) bs ;
+       | _ -> assert false ]) bs 
 
 (*
   {[
@@ -554,11 +561,11 @@ let view_variant (t:row_field) : vbranch list  =
       (* |  `Id (_loc,i) -> *) `abbrev i  
       (* | {|$lid:x|} -> `abbrev x  *)
       | u -> FanLoc.errorf (loc_of u)
-            "view_variant %s" (Objs.dump_row_field u) ] ) lst ;
+            "view_variant %s" (Objs.dump_row_field u) ] ) lst 
 
     
-let of_stru = fun
-  [ `Type(_,x) -> x
+let of_stru = function
+  |`Type(_,x) -> x
   | t ->
       FanLoc.errorf (loc_of t)
-        "Ctyp.of_stru %s" (Objs.dump_stru t) ];
+        "Ctyp.of_stru %s" (Objs.dump_stru t) 

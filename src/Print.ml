@@ -1,7 +1,7 @@
-open Structure;
-open Format;
-open LibUtil;
-let pp = fprintf ;
+open Structure
+open Format
+open LibUtil
+let pp = fprintf 
   
       
 class text_grammar= object(self:'self)
@@ -94,16 +94,16 @@ class text_grammar= object(self:'self)
         |Dparser _ -> pp f "<parser>"]
       ) e
   end;
-end;
+end
 
-let text = new text_grammar;
+let text = new text_grammar
 
 (* FIXME if I move this into the object, the output is different*)  
 let string_of_symbol s = begin
   ignore (flush_str_formatter ());
   text#symbol str_formatter s;
   flush_str_formatter ()
-end;
+end
   
 class dump_grammar = object(self:'self)
   inherit text_grammar ;
@@ -123,7 +123,7 @@ class dump_grammar = object(self:'self)
       self#assoc assoc
       self#tree lsuffix
       self#tree lprefix ];
-end;
+end
 
-let dump = new dump_grammar;
+let dump = new dump_grammar
     

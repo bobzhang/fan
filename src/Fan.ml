@@ -1,23 +1,24 @@
 
-open FanOps;
-open AstLoc;
-open Filters;  
-include PreCast;
+open FanOps
+open AstLoc
+open Filters
 
-open AstQuotation;
-open Syntax;
-open LibUtil;
-open AstQuotation;
+include PreCast
 
-
-
+open AstQuotation
+open Syntax
+open LibUtil
+open AstQuotation
 
 
 
 
-let d = `Absolute ["Fan";"Lang"];
 
 
+
+let d = `Absolute ["Fan";"Lang"];;
+
+begin
 of_stru_with_filter
   ~name:(d,"ocaml") ~entry:strus
   ~filter:(fun s ->
@@ -48,12 +49,13 @@ of_exp ~name:(d,"fans") ~entry:Typehook.fan_quots ;
 of_exp ~name:(d,"save") ~entry:Typehook.save_quot;
 
 of_stru ~name:(d,"include") ~entry:Typehook.include_quot;
-
+end;;
 
 
   
-let d = `Absolute ["Fan";"Lang";"Macro"];
-  
+let d = `Absolute ["Fan";"Lang";"Macro"];;
+
+begin
 of_exp_with_filter
     ~name:(d,"exp") ~entry:exp ~filter:(AstMacros.macro_expander#exp);
 
@@ -64,12 +66,14 @@ of_clfield_with_filter
 of_stru_with_filter
     ~name:(d,"stru") ~entry:stru
     ~filter:(AstMacros.macro_expander#stru);
-
-
-let d = `Absolute ["Fan";"Lang";"Meta"];
+end;;
 
 
 
+let d = `Absolute ["Fan";"Lang";"Meta"];;
+
+
+begin
 add_quotation (d,"sigi") sigi_quot
     ~mexp:Filters.me#sigi
     ~mpat:Filters.mp#sigi
@@ -216,7 +220,7 @@ add_quotation (d,"row_field") row_field
     ~mpat:Filters.mp#row_field
     ~exp_filter
     ~pat_filter;
-
+end;;
 
 (* +-----------------------------------------------------------------+
    | Strict version                                                  |
@@ -225,8 +229,13 @@ add_quotation (d,"row_field") row_field
 let efilter str =
   fun e ->
     let e = exp_filter e in let _loc = loc_of e in
-    {:exp|($e : Ast.$lid:str)|};
-let pfilter str = fun e -> let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|}; 
+    {:exp|($e : Ast.$lid:str)|}
+
+      
+let pfilter str =
+  fun e -> let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|};;
+
+begin
 add_quotation (d,"sigi'") sigi_quot
     ~mexp:Filters.me#sigi
     ~mpat:Filters.mp#sigi
@@ -352,14 +361,16 @@ add (`Absolute ["Fan";"Lang"],"str") FanDyn.exp_tag
 add (`Absolute ["Fan";"Lang"],"str") FanDyn.stru_tag
   (fun _loc _loc_option s ->
     `StExp(_loc,{:exp|$str:s|})(* {:stru| $(exp:{:exp|$str:s|}) |} *));
-  
+end;;
+
+
 Options.add
     ("-dlang",
      FanArg.String (fun s ->
        AstQuotation.default := FanToken.resolve_name (`Sub [],s))
-       ," Set the default language");
+       ," Set the default language");;
 
-let d = `Absolute ["Fan"; "Lang"; "Meta";"N"] ;
+let d = `Absolute ["Fan"; "Lang"; "Meta";"N"] 
 (*
   (* temporarily turned off, since it's not the core of Fan *)
 add_quotation (d,"exp") exp_quot
@@ -373,14 +384,14 @@ add_quotation (d,"exp") exp_quot
   
 (* Try to force linking for convenience *)  
 (* open ParserListComprehension; *)
-open ParserRevise;
-open ParserMacro;
-open ParserGrammar;
+open ParserRevise
+open ParserMacro
+open ParserGrammar
 
-open ParserStream;
-open ParserLex;  
-open AstInjection;
-open AstTypeGen;
-open CodeTemplate;
+open ParserStream
+open ParserLex
+open AstInjection
+open AstTypeGen
+open CodeTemplate
 
 (* open FanEval; *)

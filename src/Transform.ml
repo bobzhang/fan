@@ -1,9 +1,9 @@
 
-open Format;
-open LibUtil;
-open Ast;
-open AstLoc;
-open FSig;
+open Format
+open LibUtil
+open Ast
+open AstLoc
+open FSig
 let transform :full_id_transform -> vid -> exp  =
   let _loc = FanLoc.ghost in
   let open Id in with exp' fun 
@@ -38,12 +38,12 @@ let transform :full_id_transform -> vid -> exp  =
             else ();
               {| self# $(lid:f dest) |}
                 (*todo  set its default let to self#unknown *)
-          end]  ];
+          end]  ]
 
 let basic_transform = fun 
   [ `Pre pre -> (fun x -> pre ^ x)
   | `Post post -> (fun x -> x ^ post)
-  | `Fun f -> f ];
+  | `Fun f -> f ]
   
 let right_transform =
   let _loc = FanLoc.ghost in with exp fun 
@@ -51,7 +51,7 @@ let right_transform =
    (** add as here to overcome the type system *)
     let f = basic_transform x in 
     fun [x -> {| $(lid: f x) |} ]
-  | `Exp f -> f ];
+  | `Exp f -> f ]
   
 
 

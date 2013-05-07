@@ -1,6 +1,9 @@
-open Structure;
-open LibUtil;
-open FanToken;
+open Structure
+  
+open LibUtil
+  
+open FanToken
+  
 (* open Format; *)
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
@@ -16,7 +19,7 @@ let with_loc (parse_fun: 'b parse ) strm =
     if start_off_bp > stop_off_ep then 
       FanLoc.join bp
     else FanLoc.merge bp ep in
-  (x, loc);
+  (x, loc)
 
 
 (* given a level string, return a number from 0
@@ -34,7 +37,7 @@ let level_number entry lab =
         if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs ] in
   match entry.edesc with
   [ Dlevels elev -> lookup 0 elev
-  | Dparser _ -> raise Not_found ] ;
+  | Dparser _ -> raise Not_found ] 
     
 
 (* in case of syntax error, the system attempts to recover the error by applying
@@ -42,7 +45,7 @@ let level_number entry lab =
    so there's no behavior difference between [LA] and [NA]
  *)
     
-module ArgContainer= Stack;
+module ArgContainer= Stack
   
 (*
   It outputs a stateful parser, but it is functional itself
@@ -164,7 +167,7 @@ and parser_of_terminals (terminals: terminal list) strm =
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
     match s with 
-   [ `Smeta (_, symbls, act) ->
+    | `Smeta (_, symbls, act) ->
      let act = Obj.magic act entry symbls
      and pl = List.map aux symbls in
      Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
@@ -198,8 +201,8 @@ and parser_of_symbol entry s nlevn =
         |_ -> raise XStream.Failure ]
   | `Stoken (f, _) -> fun strm ->
       match XStream.peek strm with
-      [Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
-      |_ -> raise XStream.Failure]] in with_loc (aux s);
+      |Some (tok,_) when f tok -> (XStream.junk strm; Action.mk tok)
+      |_ -> raise XStream.Failure in with_loc (aux s)
 
 
 
@@ -232,22 +235,22 @@ let start_parser_of_levels entry =
               let a = Action.getf act loc in
               entry.econtinue levn loc a strm
               with [XStream.Failure -> hstart levn strm]] ] in
-  aux 0;
+  aux 0
   
 let start_parser_of_entry entry =
   match entry.edesc with
-  [ Dlevels [] -> Tools.empty_entry entry.ename
+  | Dlevels [] -> Tools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry  elev
-  | Dparser p -> fun _ -> p ] ;
+  | Dparser p -> fun _ -> p
     
 
 
-let rec continue_parser_of_levels entry clevn = fun
-  [ [] -> fun _ _ _ ->  fun _ -> raise XStream.Failure
+let rec continue_parser_of_levels entry clevn = function
+  | [] -> fun _ _ _ ->  fun _ -> raise XStream.Failure
   | [lev :: levs] ->
       let hcontinue = continue_parser_of_levels entry  (clevn+1) levs in
       match lev.lsuffix with
-      [ DeadEnd -> hcontinue
+      | DeadEnd -> hcontinue
           (* the continue function first tries the [continue] function of the next level,
              if it fails or if it's the last level, it tries its associated tree, then
              call itself again, giving the result as parameter. If the associated tree
@@ -261,10 +264,10 @@ let rec continue_parser_of_levels entry clevn = fun
           else
             try hcontinue levn bp a strm
             with
-            [XStream.Failure ->
+            | XStream.Failure ->
               let (act,loc) = ccontinue strm in
               let loc = FanLoc.merge bp loc in
-              let a = Action.getf2 act a loc in entry.econtinue levn loc a strm]] ];
+              let a = Action.getf2 act a loc in entry.econtinue levn loc a strm
 
   
 let continue_parser_of_entry entry =
@@ -273,5 +276,5 @@ let continue_parser_of_entry entry =
   [ Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in
     fun levn bp a strm -> try p levn bp a strm with XStream.Failure -> a 
-  | Dparser _ -> fun _ _ _ _ -> raise XStream.Failure  ];
+  | Dparser _ -> fun _ _ _ _ -> raise XStream.Failure  ]
 

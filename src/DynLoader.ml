@@ -19,7 +19,7 @@ module type S = sig
   (** [is_native] [true] if we are in native code, [false] for bytecode. *)
   val is_native : bool
   val instance: (unit -> t) ref   
-end;
+end
 
 module Make (U:sig end) : S= struct 
   type t = string Queue.t 
@@ -44,13 +44,14 @@ let find_in_path x name =
   else
     let res =
       fold_load_path x
-        (fun dir ->
-          fun
-          [ None ->
+        (fun dir -> function
+          | None ->
               let fullname = Filename.concat dir name in
               if Sys.file_exists fullname then Some fullname else None
-          | x -> x ]) None
-    in match res with [ None -> raise Not_found | Some x -> x ];
+          | x -> x ) None in
+    match res with
+    |None -> raise Not_found
+    | Some x -> x 
 
 let load =
   let _initialized = ref false in
@@ -72,8 +73,8 @@ let load =
       in
       try Dynlink.loadfile fname with
       [ Dynlink.Error e -> raise (Error fname (Dynlink.error_message e)) ]
-    end;
+    end
 
 
 let is_native = Dynlink.is_native
-end;
+end

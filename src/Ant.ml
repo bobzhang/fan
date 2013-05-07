@@ -1,15 +1,15 @@
-open Ast;
-open FanUtil;
-open AstLoc;
+open Ast
+open FanUtil
+open AstLoc
 
 let meta_loc_exp _loc loc =
   match !AstQuotation.current_loc_name with
   | None -> lid _loc !FanLoc.name
   | Some "here" -> FanMeta.meta_loc _loc loc
-  | Some x -> lid _loc x  ;;
+  | Some x -> lid _loc x  
 
 (* we use [subst_first_loc] *)
-let meta_loc_pat _loc _ =  {:pat| _ |};;
+let meta_loc_pat _loc _ =  {:pat| _ |}
 
 
 (* when the antiquotation appears in the pattern position,
@@ -64,6 +64,6 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           {| {| $(id:$x)  |} |}
       | _ -> super#exp e end
     | e -> super#exp e;
-  end;;
+  end
                   
 

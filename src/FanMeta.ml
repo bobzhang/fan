@@ -63,12 +63,13 @@ let meta_loc _loc location =
   {:exp| FanLoc.of_tuple
     ($`str:a, $`int:b, $`int:c, $`int:d,
      $`int:e, $`int:f, $`int:g,
-     $(if h then {:exp| true |} else {:exp| false |} )) |};
+     $(if h then {:exp| true |} else {:exp| false |} )) |}
   
 
 
 
-open Ast;
+open Ast
+  
 #default_quotation "ep'";;
 class primitive =  object
   method int _loc (i:int) : ep =  {|$`int:i|};
@@ -91,10 +92,10 @@ class primitive =  object
      method unknown (_loc : loc) = (assert false : 'a . 'a -> ep )
      a bug to be FIXED
    *)
-end;
+end;;
 
-{:fans|keep off; derive (MetaObj); |};
+{:fans|keep off; derive (MetaObj); |};;
 
-{:ocaml|{:include| "src/Ast.mli"|} |};
+{:ocaml|{:include| "src/Ast.mli"|} |};;
 
   

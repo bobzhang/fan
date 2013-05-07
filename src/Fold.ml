@@ -1,14 +1,15 @@
-open LibUtil;
+open LibUtil
 
 let sfold0 f e _entry _symbl psymb =
   let rec fold accu =  parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
-      | [< >] -> accu ] in parser [< a = fold e >] -> a;
+      | [< >] -> accu ] in parser [< a = fold e >] -> a
+            
 let sfold1 f e _entry _symbl psymb =
   let rec fold accu = parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
       | [< >] -> accu ] in parser
-      [< a = psymb; a = fold (f a e) >] -> a;
+      [< a = psymb; a = fold (f a e) >] -> a
 
 let sfold0sep f e entry symbl psymb psep =
   let failed = fun
@@ -19,12 +20,12 @@ let sfold0sep f e entry symbl psymb psep =
     | [< >] -> accu ] in
   parser
     [ [< a = psymb; 's >] -> kont (f a e) s
-    | [< >] -> e ] ;
+    | [< >] -> e ] 
 
 let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never used*)
-  let failed = fun
-    [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
-    | _ -> assert false ] in
+  let failed = function
+    | [symb; sep] -> Failed.symb_failed_txt entry sep symb
+    | _ -> assert false  in
   let parse_top =  fun
     [ [symb; _] -> FanParser.parser_of_symbol entry symb 0 (* FIXME context *)
     | _ -> raise XStream.Failure ] in
@@ -39,5 +40,5 @@ let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never use
         's >] ->
           kont (f a accu) s
     | [< >] -> accu ] in
-  parser [ [< a = psymb; 's >] -> kont (f a e) s];
+  parser [ [< a = psymb; 's >] -> kont (f a e) s]
 
