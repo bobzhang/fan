@@ -2,7 +2,8 @@
 OB = ocamlbuild
 
 
-
+top:
+	ocamlbuild -I src foo.otarget
 cleansrc:
 	rm -rf _build/src
 cleancold:
