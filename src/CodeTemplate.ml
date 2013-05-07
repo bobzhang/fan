@@ -6,8 +6,8 @@ let _loc =FanLoc.ghost ;
 
 type ty_meta = {
     str:string;
-    print: [= `Exist | `Custom of stru | `Fmt of string];
-    eq: [= `Def | `Custom of stru]
+    print: [ `Exist | `Custom of stru | `Fmt of string];
+    eq: [ `Def | `Custom of stru]
   };
 
 let base1_types = with stru'

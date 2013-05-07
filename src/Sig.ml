@@ -44,7 +44,7 @@ module type Syntax = sig
   val implem : (stru list  * FanLoc.t option ) Gram.t ;
   val top_phrase : stru option Gram.t ;
   (* val a_string: astring Gram.t; *)
-  val a_lident: [= `Lid of (loc*string) | ant] Gram.t  (* alident *);
+  val a_lident: [ `Lid of (loc*string) | ant] Gram.t  (* alident *);
   val a_uident: auident Gram.t;
   val aident: ident Gram.t;
   val astr: astring Gram.t;
@@ -216,7 +216,7 @@ module type Syntax = sig
   val rule_list: FanGrammar.rule list Gram.t ;
   val psymbol: FanGrammar.symbol Gram.t;
   val level:  FanGrammar.level Gram.t ;
-  val level_list: ([= `Group of (FanGrammar.level list ) | `Single of FanGrammar.level ]) Gram.t ;
+  val level_list: ([ `Group of (FanGrammar.level list ) | `Single of FanGrammar.level ]) Gram.t ;
   val entry: FanGrammar.entry Gram.t;
   val extend_body: exp Gram.t ;
   val delete_rule_body: exp Gram.t ;

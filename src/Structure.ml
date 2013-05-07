@@ -4,9 +4,9 @@ open FanToken;
 
 
 type assoc =
-    [= `NA|`RA|`LA];
+    [ `NA|`RA|`LA];
 type position =
-    [= `First | `Last | `Before of string | `After of string | `Level of string];
+    [ `First | `Last | `Before of string | `After of string | `Level of string];
 
 
 module Action  = struct
@@ -25,14 +25,14 @@ end;
 type 'a cont_parse  = FanLoc.t -> Action.t -> 'a parse ;
     
 type description =
-    [= `Normal
+    [ `Normal
     | `Antiquot];
 
 type descr = (description * string) ;  
 type token_pattern = ((FanToken.t -> bool) * descr);
 
 type terminal =
-    [= `Skeyword of string
+    [ `Skeyword of string
     | `Stoken of token_pattern ];
   
 type gram = {
@@ -62,7 +62,7 @@ and level = {
     lsuffix : tree          ;
     lprefix : tree          }
 and symbol =
-    [=
+    [
      `Smeta of (string list  * symbol list  * Action.t)
     | `Snterm of entry
     | `Snterml of (entry * string) (* the second argument is the level name *)

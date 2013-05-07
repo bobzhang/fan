@@ -49,10 +49,10 @@ type ty_info = {
 ;
 
 type vbranch =
-   [= `variant of (string* ctyp list )
+   [ `variant of (string* ctyp list )
    | `abbrev of ident ];
 type branch =
-   [= `branch of (string * ctyp list) ];
+   [ `branch of (string * ctyp list) ];
 (* Feed to user to compose an expession node *)
 type record_col = {
     re_label: string ;
@@ -65,16 +65,16 @@ type record_info =  record_col list;
    function of type [ident -> ident]
  *)
 type basic_id_transform =
-    [= `Pre of string
+    [ `Pre of string
     | `Post of string
     | `Fun of string id ];
 
 type rhs_basic_id_transform =
-    [= basic_id_transform
+    [ basic_id_transform
     | `Exp of string -> exp ];
 
 type full_id_transform =
-    [=  basic_id_transform
+    [  basic_id_transform
     | `Idents of (* list ident  -> ident *) vid list  -> vid 
     (* decompose to a list of ident and compose as an ident *)          
     | `Id of (* ident -> ident *) vid -> vid
@@ -91,7 +91,7 @@ open Objs;
 type named_type = (string* (* ctyp *)typedecl)
 and and_types = named_type list
 and types =
-    [= `Mutual of and_types
+    [ `Mutual of and_types
     | `Single of named_type ]
 and mtyps =  types list;
 

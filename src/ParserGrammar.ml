@@ -15,7 +15,7 @@ FanConfig.antiquotations := true;
 {:create|Gram (nonterminals: stru Gram.t) (nonterminalsclear:  exp Gram.t)
   delete_rule_header extend_header  (qualuid : vid Gram.t) (qualid:vid Gram.t)
   (t_qualid:vid Gram.t )
-  (entry_name : ([=`name of FanToken.name | `non] * FanGrammar.name) Gram.t )
+  (entry_name : ([`name of FanToken.name | `non] * FanGrammar.name) Gram.t )
   locals entry position assoc name string
   (pattern: action_pattern Gram.t )
   simple_exp delete_rules

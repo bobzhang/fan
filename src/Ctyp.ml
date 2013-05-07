@@ -516,17 +516,17 @@ let view_sum (t:or_ctyp) =
 
 (*
   {[
-  L.Ctyp.reduce_variant {:ctyp| [= `Chr of (loc * string) (* 'c' *)
+  L.Ctyp.reduce_variant {:ctyp| [ `Chr of (loc * string) (* 'c' *)
     | `Int of   (loc * string) (* 42 *)
       | `Int32 of (loc * string)
       | `Int64 of (loc * string)
       | `Flo of (loc * string)
       | `Nativeint of (loc * string)
         (* s *) (* "foo" *)
-        | `Str of (loc * string) | u | list int | [= `b | `c ] ] |};
+        | `Str of (loc * string) | u | list int | [ `b | `c ] ] |};
 
-  type v = [= `b];
-  type u = [= `a | v ];
+  type v = [ `b];
+  type u = [ `a | v ];
   let pp_print_u = function
   [ `a -> pp_print "%a"
   | #v -> pp_print_v 

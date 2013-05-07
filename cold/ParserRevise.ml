@@ -5953,13 +5953,6 @@ let apply_ctyp () =
                   (t : 'ctyp)  _  (_loc : FanLoc.t)  ->
                   (appl_of_list ((j :>ctyp) :: t :: (list_of_com tl [])) : 
                   'ctyp )))));
-        ([`Skeyword "[=";
-         `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
-         `Skeyword "]"],
-          ("Gram.mk_action\n  (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->\n     (`PolyEq (_loc, rfl) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun _  (rfl : 'row_field)  _  (_loc : FanLoc.t)  ->
-                  (`PolyEq (_loc, rfl) : 'ctyp )))));
         ([`Skeyword "[";
          `Snterm (Gram.obj (row_field : 'row_field Gram.t ));
          `Skeyword "]"],

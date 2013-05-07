@@ -236,7 +236,7 @@ module List = struct
     List.iter (fun x -> 
       let () = f !i x in  incr i) lst;    
 
-  type dir = [= `Left | `Right];
+  type dir = [ `Left | `Right];
 
   let reduce_left f lst =
     match lst with
@@ -303,7 +303,7 @@ module type MAP = sig
     (* FIXME  [~default:] [~default :] *)
   val add_with: ~f :('a -> 'a -> 'a) -> key ->
     'a ->  'a t ->
-      ('a t * [= `NotExist | `Exist]);
+      ('a t * [ `NotExist | `Exist]);
 
   val unsafe_height: 'a t -> int;
   val unsafe_node:  'a t -> (key * 'a) ->  'a t ->  'a t;

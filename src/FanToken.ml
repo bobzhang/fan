@@ -47,7 +47,7 @@ open StdLib;
 (* domain is the namespace all begins with capital letters *)
   
 type domains =
-    [= `Absolute of string list | `Sub of string list]  ;
+    [ `Absolute of string list | `Sub of string list]  ;
 type name = (domains*string);
 
 type quotation ={
@@ -58,7 +58,7 @@ type quotation ={
   };
 
 type t =
-  [=  `KEYWORD of string
+  [  `KEYWORD of string
   | `SYMBOL of string
   | `Lid of string
   | `Uid of string

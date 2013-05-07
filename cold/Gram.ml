@@ -117,7 +117,7 @@ let default_keywords =
   ">";
   "let";
   "lor";
-  "[="]
+  "["]
 
 let gkeywords = ref (SSet.of_list default_keywords)
 

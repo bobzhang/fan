@@ -12,7 +12,7 @@ type name = {(* every entry has a name *)
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)
 type styp =
- [= ident'
+ [ ident'
  | `App of (loc * styp * styp)
  | `Quote of (loc * position_flag * (* meta_option *) alident)
  | `Self of (loc * string)
@@ -28,7 +28,7 @@ type entry   = {
   levels : levels(* list level *);
 }
 and levels =
- [= `Group of (level list ) | `Single of level]   
+ [ `Group of (level list ) | `Single of level]   
 and level  ={
   (* mainly used for indexing *)  
   label : string option ;
@@ -46,7 +46,7 @@ and symbol ={
   pattern : pat option 
 }
 and text =
- [= `Smeta of (loc * string list  * text list  * exp * styp)
+ [ `Smeta of (loc * string list  * text list  * exp * styp)
  | `Slist of (loc * bool * symbol * symbol option )
  | `Snterm of (loc * name  * string option )
  | `Sopt of (loc * text )
@@ -68,7 +68,7 @@ type used =
   | Unused | UsedScanned | UsedNotScanned ;
 
 type simple_pat =
-  [=
+  [
    `Vrn of (loc * string)
   |`App of (loc * simple_pat * simple_pat )
   | vid 
@@ -82,7 +82,7 @@ type simple_pat =
 
 (* make [S] a keyword ? *) 
 type action_pattern =
-  [= vid
+  [ vid
   |`Com of (loc * action_pattern * action_pattern)
   |`Par of (loc * action_pattern )
   |`Any of loc ];  
