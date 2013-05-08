@@ -404,7 +404,7 @@ FanConfig.antiquotations := true;;
   [ `Lid i -> {:pat| $lid:i |}
   | "_" -> {:pat| _ |}
   | "("; pattern{p}; ")" -> p
-  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com [p1::ps] ]
+  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
       (* {:pat| ($p1, $list:ps)|}] *)
   string:
   [ `STR (_, s) -> {:exp| $str:s |}| `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)

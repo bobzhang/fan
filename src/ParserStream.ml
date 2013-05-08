@@ -51,7 +51,7 @@ let apply () =
      stream_exp:  [ exp{e} -> e ] 
      stream_pat:
      [ stream_pat_comp{spc} -> [(spc, None)]
-     | stream_pat_comp{spc}; ";"; stream_pat_comp_err_list{sp} ->    [(spc, None) :: sp]
+     | stream_pat_comp{spc}; ";"; stream_pat_comp_err_list{sp} -> (spc, None) :: sp
      | -> [] ]
      stream_pat_comp: (* FIXME here *)
      [  pat{p}; OPT [ "when"; stream_exp{e} -> e ]{eo} ->  SpTrm _loc p eo
@@ -62,9 +62,9 @@ let apply () =
     stream_pat_comp_err_list:
      [ stream_pat_comp_err{spc} -> [spc]
      | stream_pat_comp_err{spc}; ";" -> [spc]
-     | stream_pat_comp_err{spc}; ";"; stream_pat_comp_err_list{sp} -> [spc :: sp] ] 
+     | stream_pat_comp_err{spc}; ";"; stream_pat_comp_err_list{sp} -> spc :: sp ] 
     stream_exp_comp_list:
-     [ stream_exp_comp{se}; ";"; stream_exp_comp_list{sel} -> [se :: sel]
+     [ stream_exp_comp{se}; ";"; stream_exp_comp_list{sel} -> se :: sel
      | stream_exp_comp{se}; ";" -> [se]
      | stream_exp_comp{se} -> [se] ] 
     stream_exp_comp: 

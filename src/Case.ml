@@ -17,7 +17,7 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
     List.init arity (fun i ->
       {:pat| (#$id:name as $(lid: x ~off:i 0 )) |})in
   let exps = List.init arity (fun i -> {:exp| $(id:xid ~off:i 0) |} ) in
-  let e = appl_of_list [e:: exps] in 
+  let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
 
   let open FSig in

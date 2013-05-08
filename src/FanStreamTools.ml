@@ -184,7 +184,7 @@ let stream_patterns_term _loc ekont tspel : exp =
 let rec group_terms = function
   | ((SpTrm (_loc, p, w), None) :: spcl, epo, e) :: spel ->
     let (tspel, spel) = group_terms spel in
-    ([(p, w, _loc, spcl, epo, e) :: tspel], spel)
+    ((p, w, _loc, spcl, epo, e) :: tspel, spel)
   | spel -> ([], spel) 
 
 

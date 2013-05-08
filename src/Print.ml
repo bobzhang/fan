@@ -92,7 +92,7 @@ class text_grammar= object(self:'self)
   method level f  = fun {assoc;lname;lsuffix;lprefix;_} ->
     (* FIXME we have original [productions] not used *)
     let rules =
-      List.map (fun t  -> [`Sself :: t]) (flatten_tree lsuffix) @ flatten_tree lprefix in 
+      List.map (fun t  -> `Sself :: t) (flatten_tree lsuffix) @ flatten_tree lprefix in 
     pp f "%a %a@;%a" (self#option (fun f s -> pp f "%S" s)) lname self#assoc assoc self#rules rules ;
   method assoc f = function
     | `LA -> pp f "LA"

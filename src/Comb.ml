@@ -4,20 +4,20 @@ open LibUtil
  *)  
 let slist0 ~f ps  = 
   let rec loop al = parser
-    [ [< a = ps; 's >] -> loop [a :: al] s
+    [ [< a = ps; 's >] -> loop (a :: al) s
     | [< >] -> al ] in
   parser [< a = loop [] >] -> f a 
 
 let slist1 ~f ps =
   let rec loop al = parser
-    [[< a = ps; 's>]  -> loop [a::al] s
+    [[< a = ps; 's>]  -> loop (a::al) s
     |[<>] -> al ] in
   parser [< a = ps; 's >] -> f (loop [a] s)
     
 let slist0sep ~err ~f s sep  =
   let rec kont al = parser
     [ [< v = sep; a = s?? err v; 's >] ->
-      kont [a::al] s
+      kont (a::al) s
     | [<>] -> al ] in
   parser
     [[< a = s; 's >] -> f (kont [a] s)
@@ -29,7 +29,7 @@ let slist1sep ~err ~f s sep =
           [ [< a = s >] -> a
           | [< >] ->
              raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) ];
-           's >] ->kont [a :: al] s
+           's >] ->kont (a :: al) s
       | [< >] -> al ] in
   parser [< a = s ; 's >] ->
     f (kont [a] s)

@@ -88,7 +88,7 @@ class mapbase = object (self:'self_type)
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 list -> 'b0 list) =
     fun mf_a -> function
       | [] -> []
-      | y::ys -> [ (mf_a self y) :: self#list mf_a ys];
+      | y::ys -> (mf_a self y) :: self#list mf_a ys;
   method array: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 array -> 'b0 array) =
     fun mf_a arr->
       Array.map (fun x -> mf_a self x) arr;
@@ -161,7 +161,7 @@ class mapbase2 = object (self:'self_type)
             match (x,y) with 
             | ([],[]) -> []
             | (a0:: a1, b0 :: b1 ) ->
-                [(mf_a self a0 b0) ::  (self#list mf_a a1 b1)]
+                (mf_a self a0 b0) ::  (self#list mf_a a1 b1)
             | (_, _) -> invalid_arg "map2 failure" ;
   method array:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->

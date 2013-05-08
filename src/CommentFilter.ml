@@ -24,7 +24,7 @@ let filter (_, q) =
 
 let take_list (_, q) =
   let rec self accu =
-    if Queue.is_empty q then accu else self [Queue.take q :: accu]
+    if Queue.is_empty q then accu else self (Queue.take q :: accu)
   in self []
 
 let take_stream = fst

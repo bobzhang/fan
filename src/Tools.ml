@@ -35,10 +35,10 @@ let is_level_labelled n =   function
 let get_terminals x =
   let rec aux tokl last_tok  = function
     | Node {node = (#terminal as tok); son; brother = DeadEnd}
-      ->  aux [last_tok :: tokl] tok son
+      ->  aux (last_tok :: tokl) tok son
     | tree ->
         if tokl = [] then None (* FIXME?*)
-        else Some (List.rev [last_tok :: tokl], last_tok, tree)  in
+        else Some (List.rev (last_tok :: tokl), last_tok, tree)  in
   match x with
   | {node=(#terminal as x);son;_} ->
     (* first case we don't require anything on [brother] *)

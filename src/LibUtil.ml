@@ -3,7 +3,7 @@ open Format
 
 let id x = x
 
-let cons x xs = [x::xs]
+let cons x xs = x::xs
     
 let failwithf fmt = ksprintf failwith fmt
     
@@ -145,7 +145,7 @@ module Queue = struct
        None))
       (* the first element is in the bottom *)  
   let to_list_rev q =
-    fold (fun acc v -> [v::acc]) [] q 
+    fold (fun acc v -> v::acc) [] q 
 
   let of_list l =
     let q = create () in
@@ -165,7 +165,7 @@ module List = struct
     let rec aux l ((n,acc) as r) =
       match l with
       |[] -> r 
-      |x::xs -> aux xs (n+1,[x::acc]) in
+      |x::xs -> aux xs (n+1,x::acc) in
     aux l (0,[])
       
   let hd = function
@@ -219,7 +219,7 @@ module List = struct
           else invalid_arg "Index past end of list"
       | (h::t  as l) ->
           if n = 0 then (acc, l)
-          else aux (n-1) [h::acc] t  in
+          else aux (n-1) (h::acc) t  in
     if n < 0 then invalid_arg "split_at n< 0"
     else
       let (a,b) =  aux n [] xs  in
@@ -244,7 +244,7 @@ module List = struct
   let rec remove x v =
     match v with 
     | (y, _) :: l when y = x -> l
-    | d :: l -> [d :: remove x l]
+    | d :: l -> (d :: remove x l)
     | [] -> []
 
   let iteri f lst =
@@ -299,7 +299,7 @@ module List = struct
     | [] -> []
     | x::xs ->
         match f x with
-        |Some y -> [y:: filter_map  f xs]
+        |Some y -> (y:: filter_map  f xs)
         |None -> filter_map f xs
               
   let take_rev  n lst =
@@ -307,8 +307,8 @@ module List = struct
       match l with
       | [] ->  acc
       | x::xs ->
-          if n = 1 then [x::acc]
-          else aux (n-1) xs [x::acc] in
+          if n = 1 then (x::acc)
+          else aux (n-1) xs (x::acc) in
     if n <0 then invalid_arg "List.take_rev n<0"
     else if n = 0 then []
     else aux n lst []
@@ -342,7 +342,7 @@ module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
   let of_hashtbl tbl =
     Hashtbl.fold (fun k v acc -> add k v acc) tbl empty
   let elements map =
-    fold (fun k v acc ->  [ (k,v) :: acc] ) map [] 
+    fold (fun k v acc ->  (k,v) :: acc ) map [] 
   let find_default ~default k m =
     try find k m with Not_found -> default
 
@@ -421,7 +421,7 @@ module Hashset = struct
     end
   let add_list set vs =
     List.iter (add set) vs;
-  let to_list set = fold (fun x y -> [x::y]) set []
+  let to_list set = fold (fun x y -> x::y) set []
   (* let empty = Hashtbl.create 30 ; *)
 end 
 
@@ -493,7 +493,7 @@ module LStack = struct
       t.length <- length
     end
 
-  let push x t = set t [x :: t.elts] (t.length + 1)
+  let push x t = set t (x :: t.elts) (t.length + 1)
 
   let pop_exn t =
     match t.elts with
@@ -715,17 +715,16 @@ module String = struct
         | Some idx -> (* sep found *)
             let end_of_sep = idx + seplen - 1 in
               if end_of_sep = ofs (* sep at end of str *)
-              then aux [""::acc] (idx - 1)
+              then aux (""::acc) (idx - 1)
               else
                 let token = sub str (end_of_sep + 1) (ofs - end_of_sep) in
-                  aux [token::acc] (idx - 1)
+                  aux (token::acc) (idx - 1)
         | None     -> (* sep NOT found *)
-            [(sub str 0 (ofs + 1))::acc]
+            (sub str 0 (ofs + 1))::acc
       )
       else
         (* Negative ofs: the last sep started at the beginning of str *)
-        [""::acc]
-    in
+        ""::acc in
       aux [] (length str - 1 )
     
   (* let filter_map f a = *)
@@ -934,8 +933,8 @@ end
 
 module Hashtbl = struct
   include Hashtbl
-  let keys tbl = fold (fun k _ acc -> [k::acc]) tbl []
-  let values tbl = fold (fun _ v acc -> [v::acc] ) tbl []
+  let keys tbl = fold (fun k _ acc -> k::acc) tbl []
+  let values tbl = fold (fun _ v acc -> v::acc ) tbl []
   let find_default ~default tbl k =
     try find tbl k with Not_found -> default 
   let find_opt tbl k =
@@ -1157,7 +1156,7 @@ module ErrorMonad = struct
       | [] -> return  []
       | x :: xs ->
           (f x acc) >>=
-          (fun x -> (aux (acc + 1) xs) >>= (fun xs -> return [x :: xs]))
+          (fun x -> (aux (acc + 1) xs) >>= (fun xs -> return (x :: xs)))
     in aux 0 xs
 end
 

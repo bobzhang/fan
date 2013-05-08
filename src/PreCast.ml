@@ -28,7 +28,7 @@ let iter_and_take_callbacks f =
 
 (* Register callbacks here *)    
 let declare_dyn_module m f = begin
-    loaded_modules := [ m :: !loaded_modules ];
+    loaded_modules := m :: !loaded_modules ;
       Queue.add (m, f) callbacks;
   end
 

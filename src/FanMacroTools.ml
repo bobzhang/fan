@@ -58,7 +58,7 @@ let define ~exp ~pat eo x  =
           else
             incorrect_number _loc pl sl ] |}
     | None -> ());
-  defined := [(x, eo) :: !defined]
+  defined := (x, eo) :: !defined
 end
 
 let undef ~exp ~pat x =

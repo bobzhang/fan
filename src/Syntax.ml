@@ -103,7 +103,7 @@ let wrap directive_handler pa init_loc cs =
         | x :: xs ->
             match directive_handler x with
             | None -> xs
-            | Some x -> [x :: xs] 
+            | Some x -> x :: xs
       in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
     | None -> pl 
   in loop init_loc

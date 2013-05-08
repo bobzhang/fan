@@ -38,7 +38,7 @@ let map loc (p:pat) (e:exp) (l:exp) = with exp'
       else
         {@loc| List.fold_right
           (function
-            | $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
+            | $pat:p when true -> (fun x xs -> x :: xs ) $e
             | _ -> (fun l -> l) ) $l [] |} 
 
 
@@ -54,7 +54,7 @@ let concat _loc l = with exp' {| List.concat $l |}
 let rec compr _loc e =  function
   | [`gen (p, l)] -> map _loc p e l
   | `gen (p, l):: `cond b :: items ->
-      compr _loc e [`gen (p, filter _loc p b l) :: items]
+      compr _loc e (`gen (p, filter _loc p b l) :: items)
   | `gen (p, l) :: ( `gen (_, _) :: _  as is ) ->
       concat _loc (map _loc p (compr _loc e is) l)
   | _ -> raise Stream.Failure 
@@ -157,7 +157,7 @@ let capture_antiquot : antiquot_filter = object
         let cons = {| $lid:code |} in
         let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
         let cons' = {| $lid:code' |} in 
-        let () = constraints <- [(cons,cons')::constraints]in 
+        let () = constraints <- (cons,cons')::constraints in 
         {:pat'| $lid:code' |} (* only allows lidentifiers here *)
     end
      
@@ -439,7 +439,7 @@ let gen_curry_n (acc:exp) ~arity cons n : exp =
   let pat = of_str cons in
   List.fold_right
     (fun p acc -> {| function | $pat:p -> $acc  |} )
-    (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc
+    (List.map (fun lst -> appl_of_list (pat:: lst)) args) acc
 
 (*
   Example:

@@ -1169,6 +1169,13 @@ let apply () =
                  (fun (e2 : 'exp)  (op : 'infixop3)  (e1 : 'exp) 
                     (_loc : FanLoc.t)  ->
                     (`App (_loc, (`App (_loc, op, e1)), e2) : 'exp )))))]);
+       ((Some "::"), (Some `RA),
+         [([`Sself; `Skeyword "::"; `Sself],
+            ("Gram.mk_action\n  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e1)), e2) : 'exp ))\n",
+              (Gram.mk_action
+                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : FanLoc.t)  ->
+                    (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), e2) : 
+                    'exp )))))]);
        ((Some "+"), (Some `LA),
          [([`Sself;
            `Snterm (Gram.obj (infixop4 : 'infixop4 Gram.t ));
@@ -1570,15 +1577,6 @@ let apply () =
            ("Gram.mk_action (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, \"[]\") : 'exp ))\n",
              (Gram.mk_action
                 (fun _  _  (_loc : FanLoc.t)  -> (`Uid (_loc, "[]") : 'exp )))));
-         ([`Skeyword "[";
-          `Snterm (Gram.obj (sem_exp_for_list : 'sem_exp_for_list Gram.t ));
-          `Skeyword "::";
-          `Sself;
-          `Skeyword "]"],
-           ("Gram.mk_action\n  (fun _  (last : 'exp)  _  (mk_list : 'sem_exp_for_list)  _ \n     (_loc : FanLoc.t)  -> (mk_list last : 'exp ))\n",
-             (Gram.mk_action
-                (fun _  (last : 'exp)  _  (mk_list : 'sem_exp_for_list)  _ 
-                   (_loc : FanLoc.t)  -> (mk_list last : 'exp )))));
          ([`Skeyword "[";
           `Snterm (Gram.obj (sem_exp_for_list : 'sem_exp_for_list Gram.t ));
           `Skeyword "]"],

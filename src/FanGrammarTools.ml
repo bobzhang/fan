@@ -268,7 +268,7 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
       (fun i ((oe,op) as ep)  x -> match x with 
       | {pattern=Some p ; text=`Stok _;_ } ->
           let id = prefix ^ string_of_int i in
-          ([ {|$lid:id|} :: oe], [p:: op])
+          ( {|$lid:id|} :: oe, p:: op)
       | _ ->  ep   ) ([],[])  psl in
   let e =
     let e1 = {| ($act : '$lid:rtvar ) |} in

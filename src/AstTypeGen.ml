@@ -79,8 +79,8 @@ let (gen_map,gen_map2) = with exp'
   let mk_variant cons params =
     let result =
       appl_of_list
-        [ (EP.of_str cons) ::
-          params |> List.map (fun {exp0;_} -> exp0) ] in 
+        ( EP.of_str cons ::
+          (params |> List.map (fun {exp0;_} -> exp0)) ) in 
     List.fold_right
       (fun {info_exp;pat0;_} res ->
               {|let $pat:pat0 = $info_exp in $res |})  params result in
@@ -126,7 +126,7 @@ let gen_strip = with {pat:ctyp;exp:exp'}
                params) in
     let result =
       appl_of_list
-         [(EP.of_str cons) :: params' |> List.map (fun {exp0;_} -> exp0) ]  in 
+         (EP.of_str cons :: (params' |> List.map (fun {exp0;_} -> exp0) ))  in 
     List.fold_right
       (fun {info_exp=exp;pat0;ty;_} res ->
         match (ty:ctyp) with
@@ -231,22 +231,22 @@ let mk_variant_print cons params =
             "@ " ")@]" (List.init len (fun _ -> "%a"))
         else
           mkfmt cons "" "" [] in
-    appl_of_list [pre :: extract params ] 
+    appl_of_list (pre :: extract params)
     
 
 let mk_tuple_print params =
     let len = List.length params in
     let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _ -> "%a")) in
-    appl_of_list [pre :: extract params]
+    appl_of_list (pre :: extract params)
     (* params |> extract |> apply pre  ; *)
     
 let mk_record_print cols = 
     let pre = cols
        |> List.map (fun  {re_label;_} -> re_label^":%a" )
        |>  mkfmt "@[<hv 1>{" ";@," "}@]" in
-    appl_of_list [pre :: 
+    appl_of_list (pre :: 
                   (cols |> List.map(fun  {re_info;_} -> re_info )
-                  |> extract )] (* apply pre *)  
+                  |> extract )) (* apply pre *)  
   
 let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
@@ -334,7 +334,7 @@ let generate (mtyps:FSig.mtyps) : stru =
           Some (`Bar(_loc,case,acc)) 
       else if arity > 1 then 
         let pats =
-          [ {:pat'| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
+          ({:pat'| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ) in
         let case = {:case'| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
         |None -> Some case
@@ -374,7 +374,7 @@ let generate (mtyps:FSig.mtyps) : stru =
      (fun x->
        {:stru'| let $(lid: x^"_tag") :  $lid:x tag =
               $(uid:String.capitalize x) |}) tys  in
- sem_of_list [typedecl;to_string::tags] ;;
+ sem_of_list (typedecl::to_string::tags) ;;
   
 Typehook.register
   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",generate);;

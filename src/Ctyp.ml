@@ -72,9 +72,9 @@ let gen_quantifiers1 ~arity n  : ctyp =
  *)  
 let of_id_len ~off ((id:ident),len) =
   appl_of_list
-    [(id:>ctyp) ::
-     (List.init len
-       (fun i -> {|  '$(lid:allx ~off i) |}))]
+    ((id:>ctyp) ::
+     List.init len
+       (fun i -> {|  '$(lid:allx ~off i) |}))
   
 (*
    {[
@@ -113,7 +113,7 @@ let ty_name_of_tydcl  (x:typedecl) =
       match tyvars with
       | `None _ -> []
       |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in
-    appl_of_list [ {| $lid:name |} :: tyvars]
+    appl_of_list ( {| $lid:name |} :: tyvars)
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
@@ -436,7 +436,7 @@ let mk_transform_type_eq () = object(self:'self_type)
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
           let src = i and dest = Id.to_string i in begin
             Hashtbl.replace transformers dest (src,List.length lst);
-            appl_of_list [ {| $lid:dest |} :: lst ]
+            appl_of_list ({| $lid:dest |} :: lst )
           end
     | None -> super#ctyp x;
 
@@ -462,7 +462,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   (* dump the type declarations *)  
   method type_transformers = 
     Hashtbl.fold (fun dest (src,len) acc ->
-      [(dest,src,len)  :: acc]) transformers [];
+      (dest,src,len)  :: acc) transformers [];
 
 end
 

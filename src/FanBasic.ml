@@ -74,7 +74,7 @@ let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
   fun file ->
     let file =
-      try (List.find (dir_ok file) ( ["./" :: !FanConfig.include_dirs] )) ^ file
+      try (List.find (dir_ok file) ( "./" :: !FanConfig.include_dirs )) ^ file
       with | Not_found -> file  in
     let ch = open_in file in
     let st = XStream.of_channel ch in

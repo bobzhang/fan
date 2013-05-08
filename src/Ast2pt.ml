@@ -67,8 +67,8 @@ let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
   |  `Uid(loc,s) as e ->
       (match acc with
       | [] -> [(loc, [], e)]
-      | (loc',sl,e)::l -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] )
-  | e -> [((loc_of e), [], e) :: acc] 
+      | (loc',sl,e)::l -> (FanLoc.merge loc loc', s :: sl, e) :: l )
+  | e -> ((loc_of e), [], e) :: acc
         
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = function 
   | `Virtual _ -> Virtual
@@ -262,25 +262,25 @@ let rec ctyp (x:ctyp) =
         
 and row_field (x:row_field) acc =
   match x with 
-  |`TyVrn (_loc,`C(_,i)) -> [Rtag i true [] :: acc]
+  |`TyVrn (_loc,`C(_,i)) -> Rtag i true [] :: acc
   | `TyVrnOf(_loc,`C(_,i),t) ->
-      [Rtag i false [ctyp t] :: acc ]
+      Rtag i false [ctyp t] :: acc 
   | `Bar(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
   | `Ant(_loc,_) -> ANT_ERROR
-  | `Ctyp(_,t) -> [Rinherit (ctyp t) :: acc]
+  | `Ctyp(_,t) -> Rinherit (ctyp t) :: acc
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
 and meth_list (fl:name_ctyp) acc : core_field_type list   =
   match fl with
   |`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Lid(_,lab),t) ->
-      [mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc]
+      mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc
   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x )
         
 and package_type_constraints (wc:constr)
     (acc: (Longident.t Asttypes.loc  *core_type) list )
     : (Longident.t Asttypes.loc   *core_type) list  =
   match wc with
-  | `TypeEq(_loc, (#ident' as id),ct) -> [(ident id, ctyp ct) :: acc]
+  | `TypeEq(_loc, (#ident' as id),ct) -> (ident id, ctyp ct) :: acc
   | `And(_loc,wc1,wc2) ->
       package_type_constraints wc1 (package_type_constraints wc2 acc)
   | x -> errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
@@ -441,7 +441,7 @@ let type_parameters_and_type_name (t:ctyp)  =
     
 let rec pat_fa (al: pat list) (x:pat) =
   match x with
-  | `App (_,f,a) -> pat_fa [a :: al] f
+  | `App (_,f,a) -> pat_fa (a :: al) f
   | f -> (f, al) 
 
 let rec deep_mkrangepat loc c1 c2 =
@@ -821,7 +821,7 @@ let rec exp (x : exp) = with exp' match x with
           let rec mkideexp (x:rec_exp) acc  = 
             match x with 
             |`Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
-            | `RecBind(_,`Lid(sloc,s),e) -> [(with_loc s sloc, exp e) :: acc]
+            | `RecBind(_,`Lid(sloc,s),e) -> (with_loc s sloc, exp e) :: acc
             | _ -> assert false  in
           mkexp loc (Pexp_override (mkideexp iel []))
       | `Record (loc,lel) ->
@@ -916,10 +916,10 @@ and binding (x:binding) acc =  match x with
                  (mkpat (Ppat_var (with_loc bind_name sloc)),
                   mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
       let e = mk_newtypes vars in
-      [( pat, e) :: acc]
+      ( pat, e) :: acc
   | {:binding'@_loc| $p = ($e : ! $vs . $ty) |} ->
-      [(pat {:pat| ($p : ! $vs . $ty ) |}, exp e) :: acc]
-  | {:binding'| $p = $e |} -> [(pat p, exp e) :: acc]
+      (pat {:pat| ($p : ! $vs . $ty ) |}, exp e) :: acc
+  | {:binding'| $p = $e |} -> (pat p, exp e) :: acc
   | _ -> assert false 
 and case (x:case) = 
   let cases = list_of_or x [] in
@@ -1037,52 +1037,52 @@ and mtyp : Ast.mtyp -> Parsetree.module_type =
 and sigi (s:sigi) (l:signature) :signature =
   match s with 
   | `Class (loc,cd) ->
-   [mksig loc (Psig_class
-                 (List.map class_info_cltyp (list_of_and cd []))) :: l]
+   mksig loc (Psig_class
+                 (List.map class_info_cltyp (list_of_and cd []))) :: l
   | `ClassType (loc,ctd) ->
-   [mksig loc (Psig_class_type
-                 (List.map class_info_cltyp (list_of_and ctd []))) :: l]
+   mksig loc (Psig_class_type
+                 (List.map class_info_cltyp (list_of_and ctd []))) :: l
   | `Sem(_,sg1,sg2) -> sigi sg1 (sigi sg2 l)
   | `Directive _ | `DirectiveSimple _  -> l
         
   | `Exception(_loc,`Uid(_,s)) ->
-     [mksig _loc (Psig_exception (with_loc s _loc) []) :: l]
+     mksig _loc (Psig_exception (with_loc s _loc) []) :: l
   | `Exception(_loc,`Of(_,`Uid(sloc,s),t)) ->
-      [mksig _loc (Psig_exception (with_loc s sloc)
-                    (List.map ctyp (list_of_star t []))) :: l]
+      mksig _loc (Psig_exception (with_loc s sloc)
+                    (List.map ctyp (list_of_star t []))) :: l
   | `Exception (_,_) -> assert false (*FIXME*)
   | `External (loc, `Lid(sloc,n), t, sl) ->
-      [mksig loc
+      mksig loc
         (Psig_value (with_loc n sloc)
-           (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l]
-  | `Include (loc,mt) -> [mksig loc (Psig_include (mtyp mt)) :: l]
+           (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l
+  | `Include (loc,mt) -> mksig loc (Psig_include (mtyp mt)) :: l
   | `Module (loc,`Uid(sloc,n),mt) ->
-      [mksig loc (Psig_module (with_loc n sloc) (mtyp mt)) :: l]
+      mksig loc (Psig_module (with_loc n sloc) (mtyp mt)) :: l
   | `RecModule (loc,mb) ->
-      [mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l]
+      mksig loc (Psig_recmodule (module_sig_binding mb [])) :: l
   | `ModuleTypeEnd(loc,`Uid(sloc,n)) ->
-      [mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l]
+      mksig loc (Psig_modtype (with_loc n sloc ) Pmodtype_abstract ) :: l
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
       let si =  Pmodtype_manifest (mtyp mt)  in
-      [mksig loc (Psig_modtype (with_loc n sloc) si) :: l]
+      mksig loc (Psig_modtype (with_loc n sloc) si) :: l
   | `Open (loc,id) ->
-      [mksig loc (Psig_open (long_uident id)) :: l]
-  | `Type (loc,tdl) -> [mksig loc (Psig_type (mktype_decl tdl )) :: l]
+      mksig loc (Psig_open (long_uident id)) :: l
+  | `Type (loc,tdl) -> mksig loc (Psig_type (mktype_decl tdl )) :: l
   | `Val (loc,`Lid(sloc,n),t) ->
-      [mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l]
+      mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l
   | t -> errorf (loc_of t) "sigi: %s" (dump_sigi t)
 and module_sig_binding (x:mbind) 
     (acc: (string Asttypes.loc * Parsetree.module_type) list )  =
   match x with 
   | `And(_,x,y) -> module_sig_binding x (module_sig_binding y acc)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
-      [(with_loc s sloc, mtyp mt) :: acc]
+      (with_loc s sloc, mtyp mt) :: acc
   | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_mbind t) 
 and module_str_binding (x:Ast.mbind) acc =
   match x with 
   | `And(_,x,y) -> module_str_binding x (module_str_binding y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
-      [(with_loc s sloc, mtyp mt, mexp me) :: acc]
+      (with_loc s sloc, mtyp mt, mexp me) :: acc
   | t -> errorf (loc_of t) "module_str_binding: %s" (dump_mbind t)
 and mexp (x:Ast.mexp)=
   match x with 
@@ -1107,43 +1107,43 @@ and mexp (x:Ast.mexp)=
 and stru (s:stru) (l:structure) : structure =
   match s with 
   | (`Class (loc,cd) :stru) ->
-    [mkstr loc (Pstr_class
-                  (List.map class_info_clexp (list_of_and cd []))) :: l]
+    mkstr loc (Pstr_class
+                  (List.map class_info_clexp (list_of_and cd []))) :: l
   | `ClassType (loc,ctd) ->
-        [mkstr loc (Pstr_class_type
-                      (List.map class_info_cltyp (list_of_and ctd []))) :: l]
+      mkstr loc (Pstr_class_type
+                      (List.map class_info_cltyp (list_of_and ctd []))) :: l
   | `Sem(_,st1,st2) -> stru st1 (stru st2 l)
   | `Directive _ | `DirectiveSimple _  -> l
   | `Exception(loc,`Uid(_,s)) ->
-      [mkstr loc (Pstr_exception (with_loc s loc) []) :: l ]
+      mkstr loc (Pstr_exception (with_loc s loc) []) :: l 
   | `Exception (loc, `Of (_,  `Uid (_, s), t))
       ->
-        [mkstr loc (Pstr_exception (with_loc s loc)
-                      (List.map ctyp (list_of_star t []))) :: l ]
+        mkstr loc (Pstr_exception (with_loc s loc)
+                      (List.map ctyp (list_of_star t []))) :: l 
           (* TODO *)     
           (* | {@loc| exception $uid:s = $i |} -> *)
           (*     [mkstr loc (Pstr_exn_rebind (with_loc s loc) (ident i)) :: l ] *)
           (* | {@loc| exception $uid:_ of $_ = $_ |} -> *)
           (*     error loc "type in exception alias" *)
   | `Exception (_,_) -> assert false (*FIXME*)
-  | `StExp (loc,e) -> [mkstr loc (Pstr_eval (exp e)) :: l]
+  | `StExp (loc,e) -> mkstr loc (Pstr_eval (exp e)) :: l
   | `External(loc,`Lid(sloc,n),t,sl) ->
-      [mkstr loc
+      mkstr loc
          (Pstr_primitive
             (with_loc n sloc)
-            (mkvalue_desc loc t (list_of_app sl [] ))) :: l]
-  | `Include (loc,me) -> [mkstr loc (Pstr_include (mexp me)) :: l]
+            (mkvalue_desc loc t (list_of_app sl [] ))) :: l
+  | `Include (loc,me) -> mkstr loc (Pstr_include (mexp me)) :: l
   | `Module (loc,`Uid(sloc,n),me) ->
-      [mkstr loc (Pstr_module (with_loc n sloc) (mexp me)) :: l]
+      mkstr loc (Pstr_module (with_loc n sloc) (mexp me)) :: l
   | `RecModule (loc,mb) ->
-        [mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l]
+        mkstr loc (Pstr_recmodule (module_str_binding mb [])) :: l
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
-        [mkstr loc (Pstr_modtype (with_loc n sloc) (mtyp mt)) :: l]
+        mkstr loc (Pstr_modtype (with_loc n sloc) (mtyp mt)) :: l
   | `Open (loc,id) ->
-        [mkstr loc (Pstr_open (long_uident id)) :: l]
-  | `Type (loc,tdl) -> [mkstr loc (Pstr_type (mktype_decl tdl )) :: l]
+        mkstr loc (Pstr_open (long_uident id)) :: l
+  | `Type (loc,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
   | `Value (loc,rf,bi) ->
-      [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
+      mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l
   | x-> errorf (loc_of x) "stru : %s" (dump_stru x) 
 and cltyp (x:Ast.cltyp) =
   match x with
@@ -1226,22 +1226,22 @@ and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
   and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
     match c with 
     |`Eq (loc, t1, t2) ->
-         [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
+         mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l
     | `Sem(_,csg1,csg2) -> clsigi csg1 (clsigi csg2 l)
-    | `SigInherit (loc,ct) -> [mkctf loc (Pctf_inher (cltyp ct)) :: l]
+    | `SigInherit (loc,ct) -> mkctf loc (Pctf_inher (cltyp ct)) :: l
     | `Method (loc,`Lid(_,s),pf,t) ->
-        [mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l]
+        mkctf loc (Pctf_meth (s, mkprivate pf, mkpolytype (ctyp t))) :: l
     | `CgVal (loc, `Lid(_,s), b, v, t) ->
-        [mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l]
+        mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l
     | `VirMeth (loc,`Lid(_,s),b,t) ->
-        [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
+        mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l
     | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) 
 and clexp  (x:Ast.clexp) =
   match x with 
   | (`CeApp (loc, _, _):clexp) as c ->
       let rec view_app acc (x:clexp)  =
         match x  with 
-        | (`CeApp (_loc,ce,(a:exp)) :clexp) -> view_app [a :: acc] ce
+        | (`CeApp (_loc,ce,(a:exp)) :clexp) -> view_app (a :: acc) ce
         | ce -> (ce, acc) in
       let (ce, el) = view_app [] c in
       let el = List.map label_exp el in
@@ -1289,26 +1289,26 @@ and clexp  (x:Ast.clexp) =
 
 and clfield (c:clfield) l =
   match c with
-  | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
+  | `Eq (loc, t1, t2) -> (mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l)
   | `Sem(_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
   | `Inherit (loc, ov, ce) ->
-      [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) None) :: l]
+      mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) None) :: l
   | `InheritAs(loc,ov,ce,`Lid(_,x)) ->
-      [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) (Some x)) :: l]
-  | `Initializer (loc,e) -> [mkcf loc (Pcf_init (exp e)) :: l]
+      mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) (Some x)) :: l
+  | `Initializer (loc,e) -> mkcf loc (Pcf_init (exp e)) :: l
   | `CrMthS(loc,`Lid(sloc,s),ov,pf,e) ->
       let e = mkexp loc (Pexp_poly (exp e) None) in
-      [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
+      mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l
   | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
       let t = Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly (exp e) t) in
-      [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
+      mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l
   | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
-      [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, exp e)) :: l]
+      mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, exp e)) :: l
   | `VirMeth (loc,`Lid(sloc,s),pf,t) ->
-      [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
+      mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l
   | `VirVal (loc,`Lid(sloc,s),mf,t) ->
-      [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
+      mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l
   | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) 
         
 let sigi (ast:sigi) : signature = sigi ast []

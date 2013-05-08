@@ -154,7 +154,7 @@ and parser_of_terminals (terminals: terminal list) strm =
             | Some (t,loc) (* (tok,_) *) -> (t,loc)
             | None -> invalid_arg "parser_of_terminals" in
           begin
-            acc:= [(Action.mk t,loc)::!acc];
+            acc:= (Action.mk t,loc)::!acc;
             if not
                 (match terminal with
                 |`Stoken(f,_) -> f t

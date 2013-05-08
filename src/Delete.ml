@@ -16,8 +16,8 @@ let delete_rule_in_tree entry =
     | (s :: sl, Node ({node;brother;son} as n)) ->
         if Tools.logically_eq_symbols entry s node then
             match delete_in_tree sl son with
-            |Some (Some dsl,DeadEnd) -> Some (Some [node::dsl],brother)
-            |Some (Some dsl, t) -> Some (Some [node::dsl],Node {(n) with son=t})
+            |Some (Some dsl,DeadEnd) -> Some (Some (node::dsl),brother)
+            |Some (Some dsl, t) -> Some (Some (node::dsl),Node {(n) with son=t})
             |Some (None,t) -> Some (None,Node {(n) with son=t})
             |None -> None
         else
@@ -70,11 +70,11 @@ let rec delete_rule_in_suffix entry symbols = function
         match t with
         | DeadEnd when lev.lprefix == DeadEnd -> levs
         | _ ->
-            [ {(lev) with lsuffix=t} :: levs]
+            {(lev) with lsuffix=t} :: levs
       end
       | None ->
           let levs = delete_rule_in_suffix entry symbols levs in
-          [lev :: levs] )
+          lev :: levs )
   | [] -> raise Not_found 
 
 
@@ -87,10 +87,10 @@ let rec delete_rule_in_prefix entry symbols = function
           | None -> ()) ;
           match t with
           | DeadEnd when lev.lsuffix == DeadEnd -> levs
-          | _ -> [ {(lev) with lprefix=t}::levs]
+          | _ -> {(lev) with lprefix=t}::levs
       end
       | None -> let levs = delete_rule_in_prefix entry symbols levs in
-        [lev :: levs]) 
+        lev :: levs)
   | [] -> raise Not_found 
         
 

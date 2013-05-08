@@ -214,8 +214,8 @@ let apply () = begin
       ([ `DirectiveSimple(_loc,n) ],  Some _loc)
     | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
     (* | sigi{si}; ";";  S{(sil, stopped)} -> ([si :: sil], stopped) *)
-    | sigi{si}; ";;";  S{(sil, stopped)} -> ([si :: sil], stopped)
-    | sigi{si}; S{(sil,stopped)} -> ([si :: sil], stopped)
+    | sigi{si}; ";;";  S{(sil, stopped)} -> (si :: sil, stopped)
+    | sigi{si}; S{(sil,stopped)} -> (si :: sil, stopped)
     | `EOI -> ([], None) ]
  |};
 
@@ -319,6 +319,11 @@ let apply () = begin
         [ S{e1}; infixop2{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "^" RA
         [ S{e1}; infixop3{op}; S{e2} -> {| $op $e1 $e2 |} ]
+        "::" RA
+        [ S{e1}; "::"; S{e2} ->
+           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), e2)
+          (* {:exp| [ $e1 :: $e2 ] |} *)
+        ]  
        "+" LA
         [ S{e1}; infixop4{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "*" LA
@@ -397,7 +402,7 @@ let apply () = begin
         | "`"; luident{s} -> `Vrn(_loc,s)
         | "["; "]" -> {| [] |} (* FIXME *)
               
-        | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last
+        (* | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last *)
         | "["; sem_exp_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> `ArrayEmpty(_loc)
         | "[|"; sem_exp{el}; "|]" -> `Array (_loc, el)
@@ -429,9 +434,17 @@ let apply () = begin
         | "("; "module"; mexp{me}; ":"; mtyp{pt}; ")" ->
             `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
        sem_exp_for_list:
-       [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |} (* FIXME *)
-       | exp{e}; ";" -> fun acc -> {| [ $e :: $acc ] |}
-       | exp{e} -> fun acc -> {| [ $e :: $acc ] |} ]
+       [ exp{e}; ";"; S{el} ->
+         fun acc ->
+           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), (el acc))
+             (* {| [ $e :: $(el acc) ] |} (\* FIXME *\) *)
+       | exp{e}; ";" -> fun acc ->
+           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc)
+           (* {| [ $e :: $acc ] |} *)
+       | exp{e} -> fun acc ->
+           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc)
+           (* {| [ $e :: $acc ] |} *)
+       ]
 
 
        sequence: (*FIXME*)
@@ -675,13 +688,13 @@ let apply () = begin
        sem_pat_for_list:
        [ pat{p}; ";"; S{pl} -> fun acc ->
          `App(_loc, `App(_loc,`Uid(_loc,"::"),p),pl acc)
-         (* {| [ $p :: $(pl acc) ] |} *)
+         (* {:pat|  $p :: $(pl acc)  |} *)
        | pat{p}; ";" -> fun acc ->
            `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)
-           (* {| [ $p :: $acc ] |} *)
+           (* {:pat|  $p :: $acc  |} *)
        | pat{p} -> fun acc ->
            `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)
-           (* {| [ $p :: $acc ] |} *)
+           (* {:pat|  $p :: $acc  |} *)
        ]
        pat_tcon:
        [ pat{p}; ":"; ctyp{t} -> {| ($p : $t) |}
@@ -769,19 +782,19 @@ let apply () = begin
 
 
       dot_namespace:
-      [ `Uid i; "."; S{xs} -> [i::xs]
+      [ `Uid i; "."; S{xs} -> i::xs
       | `Uid i -> [i]]
       (* parse [a.b.c] no antiquot *)
       dot_lstrings:
       [ `Lid i -> (`Sub[],i)
       | `Uid i ; "." ; S {xs} ->
           (match xs with
-          |(`Sub xs,v) -> (`Sub [i::xs],v)
+          |(`Sub xs,v) -> (`Sub (i::xs),v)
           | _ -> raise (XStream.Error "impossible dot_lstrings"))
 
       | "."; `Uid i; "."; S{xs} ->
           match xs with
-          |(`Sub xs,v) -> (`Absolute [i::xs],v)
+          |(`Sub xs,v) -> (`Absolute (i::xs),v)
           | _ -> raise (XStream.Error "impossible dot_lstrings") ]
 
       (* parse [A.B.(] *)
@@ -911,10 +924,10 @@ let apply () = begin
       | "#"; a_lident{n}; ";;" ->
         ([`DirectiveSimple(_loc,n)], Some _loc)
       | "#";"import"; dot_namespace{x};";;" -> 
-          (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
+          (FanToken.paths :=  `Absolute  x :: !FanToken.paths;
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
-      | stru{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
-      | stru{si};  S{(sil, stopped)} -> ([si :: sil], stopped) (* FIXME merge with the above in the future*)            
+      | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)
+      | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped) (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
 
       (* used by [struct .... end]
@@ -939,7 +952,7 @@ let apply () = begin
       [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
       | "#";"import"; dot_namespace{x} ->
-          (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
+          (FanToken.paths := `Absolute  x :: !FanToken.paths;
            None)
       | stru{st}; ";;" -> Some st
       | `EOI -> None ]
@@ -1285,7 +1298,7 @@ let apply_ctyp () = begin
         | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
-            appl_of_list  [(j:>ctyp); t::list_of_com tl []]
+            appl_of_list  ((j:>ctyp):: t::list_of_com tl [])
         | "["; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)

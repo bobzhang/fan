@@ -65,7 +65,7 @@ let of_string s =
 type state = node list 
 
 let rec add_node state node = 
-  if List.memq node state then state else add_nodes [node::state] node.eps
+  if List.memq node state then state else add_nodes (node::state) node.eps
 and add_nodes state nodes =
   List.fold_left add_node state nodes
 
@@ -127,7 +127,7 @@ let compile ~part_tbl (rs: regexp array ) =
         let part = get_part ~part_tbl part ;
         let targets = Array.map aux targets ;
         let finals = Array.map (fun (_,f) -> List.mem f state) rs ;
-        states_def := [(i, (part,targets,finals)) :: !states_def];
+        states_def := (i, (part,targets,finals)) :: !states_def;
         i
       end in
   let init = ref [] in begin 
@@ -142,12 +142,12 @@ let partitions ~part_tbl () =
     let seg = ref [] in begin 
     Array.iteri
       (fun i c -> 
-	 List.iter (fun (a,b) -> seg := [(a,b,i) :: !seg]) c)
+	 List.iter (fun (a,b) -> seg := (a,b,i) :: !seg) c)
       part;
       List.sort (fun (a1,_,_) (a2,_,_) -> compare a1 a2) !seg
     end in
   let res = ref [] in begin
-    Hashtbl.iter (fun part i -> res := [(i, aux part) :: !res]) part_tbl;
+    Hashtbl.iter (fun part i -> res := (i, aux part) :: !res) part_tbl;
     Hashtbl.clear part_tbl;
     !res
   end
@@ -208,7 +208,7 @@ let decision l =
 	let x =
 	  if b1 + 1 = a2 then d2
 	  else Lte (a2 - 1,Return (-1), d2) in
-	[(a1,b2, Lte (b1,d1, x)) :: (merge2 rest)]
+	(a1,b2, Lte (b1,d1, x)) :: (merge2 rest)
     | rest -> rest  in
   let rec aux = function
     |  _::_::_  as l -> aux (merge2 l)
@@ -221,7 +221,7 @@ let limit = 8192
 let decision_table l =
   let rec aux m accu = function
     | ((a,b,i) as x)::rem when (b < limit && i < 255)-> 
-	aux (min a m) [x::accu] rem
+	aux (min a m) (x::accu) rem
     | rem -> (m,accu,rem)   in
   match aux max_int [] l  with
   | (_,[], _) -> decision l
@@ -251,7 +251,7 @@ let _loc = FanLoc.ghost
   
 
 let get_tables ~tables () = begin 
-  let t = Hashtbl.fold (fun key x accu -> [(x,key)::accu]) tables [] ;
+  let t = Hashtbl.fold (fun key x accu -> ((x,key)::accu)) tables [] ;
   Hashtbl.clear tables;
   t
 end

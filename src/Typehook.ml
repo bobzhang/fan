@@ -206,14 +206,14 @@ let traversal () : traversal  = object (self:'self_type)
       self#in_and_types;
       let _ = super#stru x ;
       self#update_cur_mtyps
-          (fun lst -> [`Mutual (List.rev self#get_cur_and_types) :: lst] );
+          (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
       self#out_and_types;
       (if !FanState.keep then x else {| let _ = () |} (* FIXME *) )
     end
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
         let item =  `Single (name,t) ;
         if !print_collect_mtyps then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
-        self#update_cur_mtyps (fun lst -> [ item :: lst]);
+        self#update_cur_mtyps (fun lst -> item :: lst);
        (* if !keep then x else {| |} *)
        x (* always keep *)
     end
@@ -225,7 +225,7 @@ let traversal () : traversal  = object (self:'self_type)
   method! typedecl = function
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
       if self#is_in_and_types then
-        self#update_cur_and_types (fun lst -> [ (name,t) :: lst] )
+        self#update_cur_and_types (fun lst -> (name,t) :: lst )
       else ();
       t
     end

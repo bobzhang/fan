@@ -52,7 +52,7 @@ let mapi_exp ?(arity=1) ?(names=[])
   let pat0 = exp0 in
   let id_exp = tuple_com  id_exps  in
   let id_pat = id_exp in
-  let exp = appl_of_list [base:: id_exps]  in
+  let exp = appl_of_list (base:: id_exps)  in
   {name_exp; info_exp=exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty}
 
 (* @raise Invalid_argument when type can not be handled *)  
@@ -150,11 +150,12 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
         begin
           match  list_of_app ty []  with
           |  (#ident' as tctor) :: ls  ->
-              appl_of_list [trans (Id.to_vid tctor) ::
-                        (ls |> List.map
-                          (function
-                            | `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
-                            | t ->   {:exp'| fun self -> $(aux t) |} )) ]
+              appl_of_list
+                (trans (Id.to_vid tctor) ::
+                 (ls |> List.map
+                   (function
+                     | `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
+                     | t ->   {:exp'| fun self -> $(aux t) |} )) )
           | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
@@ -198,7 +199,7 @@ let exp_of_ctyp
     let res =
       let t = (* only under this case we need defaulting  *)
         if List.length res >= 2 && arity >= 2 then
-          match default info with | Some x-> [x::res] | None -> res 
+          match default info with | Some x-> x::res | None -> res 
           (* [ default info :: res ] *)
         else res in
       List.rev t in 
@@ -222,7 +223,7 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
   let simple (lid:ident) :case=
     let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
     let (f,a) = view_app [] result in
-    let annot = appl_of_list [f :: List.map (fun _ -> {:ctyp|_|}) a] in
+    let annot = appl_of_list (f :: List.map (fun _ -> {:ctyp|_|}) a) in
     Case.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
   let info = (TyVrnEq, List.length (list_of_or ty [])) in
@@ -231,11 +232,11 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
     let res = List.fold_left
       (fun  acc x ->
         match x with
-        | (`variant (cons,args)) -> [f ("`"^cons,args)::acc]
-        | `abbrev (lid) ->  [simple lid :: acc ] )  [] ls in
+        | (`variant (cons,args)) -> f ("`"^cons,args)::acc
+        | `abbrev (lid) ->  simple lid :: acc  )  [] ls in
   let t =
     if List.length res >= 2 && arity >= 2 then
-      match default info with | Some x-> [x::res] | None -> res 
+      match default info with | Some x-> x::res | None -> res 
       (* [default info :: res] *)
     else res in
   List.rev t in

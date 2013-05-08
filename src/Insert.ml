@@ -49,12 +49,12 @@ let find_level ?position entry  levs =
         |`Level _ ->
             ([],  Some(lev,n), levs)
         |`Before _ ->
-            ([],  None , [lev::levs])
+            ([],  None , lev::levs)
         |`After _ ->
            ([lev],None , levs)  
       else
         let (levs1,rlev,levs2) = get levs in
-        ([lev::levs1], rlev, levs2)  in
+        (lev::levs1, rlev, levs2)  in
     get ls in 
   match position with
   | Some `First -> ([], None , levs)
@@ -114,7 +114,7 @@ and  using_symbol gram symbol acc =
   | `Slist1sep (s, t) ->
       using_symbol gram t (using_symbol gram s acc)
   | `Stree t -> using_node gram  t acc 
-  | `Skeyword kwd -> [kwd :: acc]
+  | `Skeyword kwd -> kwd :: acc
   | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc 
 and using_node gram  node acc =
   match node with 
@@ -197,7 +197,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
             if !(FanConfig.gram_warning_verbose) then
                 eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Print.dump#rule symbols;
-            LocAct anno_action [old_action::action_list]
+            LocAct anno_action (old_action::action_list)
         end
         | DeadEnd -> LocAct anno_action []   in 
   insert gsymbols tree 
@@ -271,7 +271,7 @@ let insert_olevel entry position olevel =
     match v with
     | Some (lev,_n) -> merge_level lev olevel
     | None -> level_of_olevel olevel in
-  levs1 @ [l1 :: levs2] 
+  levs1 @ (l1 :: levs2)
 
             
 (* for the side effects,
