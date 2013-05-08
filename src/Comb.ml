@@ -48,13 +48,13 @@ let tryp ps strm =
   let r =
     try ps strm'
     with
-    [ XStream.Error _ | FanLoc.Exc_located (_, (XStream.Error _)) ->
+    | XStream.Error _ | FanLoc.Exc_located (_, (XStream.Error _)) ->
         raise XStream.Failure
-    | exc -> raise exc ] in begin 
+    | exc -> raise exc  in begin 
         XStream.njunk (XStream.count strm') strm ;
         r;
     end
-  
+    
 let peek ps strm =
   let strm' = XStream.dup strm in
   let r =

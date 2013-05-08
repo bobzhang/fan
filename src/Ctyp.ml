@@ -42,10 +42,10 @@ let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
  *)
 let name_length_of_tydcl (x:typedecl) : (string * int) =
   match x with 
-  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-    (name, match tyvars with [`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs []])
+  | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
+    (name, match tyvars with |`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs [])
   | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)]
+      failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)
 
 
 
@@ -108,11 +108,14 @@ let of_name_len ~off (name,len) =
  *)  
 let ty_name_of_tydcl  (x:typedecl) =
   match x with 
-  [ `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-    let tyvars = match tyvars with [`None _ -> [] |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list) ] in
+  | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
+    let tyvars =
+      match tyvars with
+      | `None _ -> []
+      |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in
     appl_of_list [ {| $lid:name |} :: tyvars]
   | tydcl ->
-      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)]
+      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
 (*
   {[
@@ -226,11 +229,11 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let self_type = {| 'self_type |}  in 
   let (quant,dst) =
     match k with
-    [Obj Map -> (2, (of_id_len ~off:1 (id,len)))
+    |Obj Map -> (2, (of_id_len ~off:1 (id,len)))
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Obj (Concrete c ) -> (1,c)
-    |Str_item -> (1,result_type)] in 
+    |Str_item -> (1,result_type) in 
   let params =
     List.init len
       (fun i
@@ -239,15 +242,15 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
               (List.init number
                  (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
           match k with
-          [Obj u  ->
+          |Obj u  ->
               let dst =
                 match  u with
-                [ Map -> {|  '$(lid:allx ~off:1 i) |}
+                | Map -> {|  '$(lid:allx ~off:1 i) |}
                 | Iter -> result_type
                 | Concrete c -> c 
-                | Fold-> self_type ] in
+                | Fold-> self_type  in
               (arrow self_type  (prefix <+ (app_src dst)))
-          |Str_item -> prefix <+ (app_src result_type)]) in 
+          |Str_item -> prefix <+ (app_src result_type)) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then
     ( `TyPolEnd (_loc, base),dst)
@@ -286,7 +289,7 @@ let mk_obj class_name  base body =
   
 let is_recursive ty_dcl =
   match ty_dcl with
-  [ `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
+  | `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
     let obj = object(self:'self_type)
       inherit Objs.fold as super;
       val mutable is_recursive = false;
@@ -302,7 +305,7 @@ let is_recursive ty_dcl =
     (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | `And(_,_,_)  -> true (* FIXME imprecise *)
-  | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)]
+  | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)
 
 (*
   {:stru|
@@ -323,32 +326,34 @@ let is_recursive ty_dcl =
  *)  
 let qualified_app_list x : ((ident * ctyp list ) option ) =
   match x with 
-  [ {| $_ $_ |} as x->
-    match list_of_app x []with
-    [ [ {| $lid:_  |} :: _ ] -> None
-    | [ (#ident' as i) ::ys]  ->
-        Some (i,ys)
-    | _ -> None ]
+  | {| $_ $_ |} as x->
+      begin match list_of_app x [] with
+      | [ {| $lid:_  |} :: _ ] -> None
+      | [ (#ident' as i) ::ys]  ->
+          Some (i,ys)
+      | _ -> None
+      end
   | ( {| $lid:_  |} | {| $uid:_  |}) -> None
   | #ident'  as i  -> Some (i, [])
-  | _ -> None ]
+  | _ -> None 
 
 let is_abstract (x:typedecl)=
-  match x with [`TyAbstr _ -> true | _ -> false]
+  match x with
+  | `TyAbstr _ -> true
+  | _ -> false
   (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
-
   match x with 
-  [ `TyAbstr (_, _, lst,  _) ->
-    match lst with
-    [`None _ -> Some 0
-    |`Some (_,xs) ->
-        Some (List.length & list_of_com xs [])
-  ]
-    (* Some (List.length lst) *)
-  | _ -> None]
-  
+  | `TyAbstr (_, _, lst,  _) ->
+      begin match lst with
+      | `None _ -> Some 0
+      |`Some (_,xs) ->
+          Some (List.length & list_of_com xs [])
+      end
+        (* Some (List.length lst) *)
+  | _ -> None
+        
 let eq t1 t2 =
   let strip_locs t = (Objs.map_loc (fun _ -> FanLoc.ghost))#ctyp t in
   strip_locs t1 = strip_locs t2
@@ -399,15 +404,17 @@ let eq_list t1 t2 =
 let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
   inherit Objs.map as super;
-  method! stru = fun
+  method! stru = function
     [ 
      {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
-       let r = match ctyp with [`TyEq (_,_,t) -> qualified_app_list t | _ -> None ] in
-       match  r with
-       [ Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
+       let r =
+         match ctyp with
+         | `TyEq (_,_,t) -> qualified_app_list t | _ -> None  in
+       begin match  r with
+       | Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
          let vars =
            match vars with 
-           [`None _ -> [] | `Some (_,x) -> list_of_com x []] in
+           | `None _ -> [] | `Some (_,x) -> list_of_com x [] in
          if  not (eq_list (vars : decl_params list  :>  ctyp list) lst) then 
            super#stru x
          else
@@ -421,17 +428,18 @@ let mk_transform_type_eq () = object(self:'self_type)
              Hashtbl.replace transformers dest (src,List.length lst);
              {:stru| let _ = ()|} (* FIXME *)
            end 
-       | None ->  super#stru x ]
+       | None ->  super#stru x
+       end
      | x -> super#stru x ];
   method! ctyp x =
     match qualified_app_list x with
-      [ Some (i, lst) ->
+    | Some (i, lst) ->
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
           let src = i and dest = Id.to_string i in begin
             Hashtbl.replace transformers dest (src,List.length lst);
             appl_of_list [ {| $lid:dest |} :: lst ]
           end
-      | None -> super#ctyp x];
+    | None -> super#ctyp x;
 
   (* method! (\* ctyp *\)type_info  x = *)
 
@@ -500,37 +508,39 @@ let transform_mtyps  (lst:FSig.mtyps) =
 let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
     (f:  string -> ctyp list  -> 'e)  =
   let branches = list_of_or ty [] in
-  List.fold_left (fun acc x -> match (x:or_ctyp) with
-    [  `Of (_loc, `Uid (_, cons), tys)
-      ->
-        compose (f cons (list_of_star tys [])) acc  
-    | (* {| $uid:cons |} *)
-      `Uid (_, cons)
-      -> compose  (f cons [] ) acc
-    | t->
-        FanLoc.errorf (loc_of t)
-          "reduce_data_ctors: %s" (Objs.dump_or_ctyp t)]) init  branches
+  List.fold_left
+    (fun acc x ->
+      match (x:or_ctyp) with
+      |  `Of (_loc, `Uid (_, cons), tys)
+        ->
+          compose (f cons (list_of_star tys [])) acc  
+      | (* {| $uid:cons |} *)
+        `Uid (_, cons)
+        -> compose  (f cons [] ) acc
+      | t->
+          FanLoc.errorf (loc_of t)
+            "reduce_data_ctors: %s" (Objs.dump_or_ctyp t)) init  branches
     
 let view_sum (t:or_ctyp) =
   let bs = list_of_or t [] in
   List.map
-    (fun
-      [ (* {|$uid:cons|} *) `Uid(_,cons) ->
-        `branch (cons,[])
-       | `Of(_loc,`Uid(_,cons),t) (* {|$uid:cons of $t|} *) ->
-           `branch (cons,  list_of_star  t [])
-       | _ -> assert false ]) bs 
+    (function
+      | (* {|$uid:cons|} *) `Uid(_,cons) ->
+          `branch (cons,[])
+      | `Of(_loc,`Uid(_,cons),t) (* {|$uid:cons of $t|} *) ->
+          `branch (cons,  list_of_star  t [])
+      | _ -> assert false ) bs 
 
 (*
   {[
   L.Ctyp.reduce_variant {:ctyp| [ `Chr of (loc * string) (* 'c' *)
-    | `Int of   (loc * string) (* 42 *)
-      | `Int32 of (loc * string)
-      | `Int64 of (loc * string)
-      | `Flo of (loc * string)
-      | `Nativeint of (loc * string)
-        (* s *) (* "foo" *)
-        | `Str of (loc * string) | u | list int | [ `b | `c ] ] |};
+  | `Int of   (loc * string) (* 42 *)
+  | `Int32 of (loc * string)
+  | `Int64 of (loc * string)
+  | `Flo of (loc * string)
+  | `Nativeint of (loc * string)
+  (* s *) (* "foo" *)
+  | `Str of (loc * string) | u | list int | [ `b | `c ] ] |};
 
   type v = [ `b];
   type u = [ `a | v ];
@@ -541,27 +551,27 @@ let view_sum (t:or_ctyp) =
   ]}
  *)    
 let view_variant (t:row_field) : vbranch list  =
-
   let lst = list_of_or t [] in 
   List.map (
-  fun [ (* {| `$cons of $par:t |} *)
-        (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
-       `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
-        ->
+  function
+    | (* {| `$cons of $par:t |} *)
+      (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
+      `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
+      ->
         `variant (cons, list_of_star t [])
-      | (* {| `$cons of $t |} *)
-        (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
-        `TyVrnOf(_loc,`C(_,cons),t)
-        -> `variant (cons, [t])
-      | (* {| `$cons |} *)
-        `TyVrn (_loc, `C (_,cons))
-        ->
-          `variant (cons, [])
-      | `Ctyp (_ , (#ident' as i) ) -> 
-      (* |  `Id (_loc,i) -> *) `abbrev i  
-      (* | {|$lid:x|} -> `abbrev x  *)
-      | u -> FanLoc.errorf (loc_of u)
-            "view_variant %s" (Objs.dump_row_field u) ] ) lst 
+    | (* {| `$cons of $t |} *)
+      (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
+      `TyVrnOf(_loc,`C(_,cons),t)
+      -> `variant (cons, [t])
+    | (* {| `$cons |} *)
+      `TyVrn (_loc, `C (_,cons))
+      ->
+        `variant (cons, [])
+    | `Ctyp (_ , (#ident' as i) ) -> 
+        (* |  `Id (_loc,i) -> *) `abbrev i  
+          (* | {|$lid:x|} -> `abbrev x  *)
+    | u -> FanLoc.errorf (loc_of u)
+          "view_variant %s" (Objs.dump_row_field u)  ) lst 
 
     
 let of_stru = function

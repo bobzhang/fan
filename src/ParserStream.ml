@@ -13,29 +13,29 @@ let apply () =
     exp: Level "top"
         [ "parser";  OPT [ `Uid(n) -> n]  {name}; OPT parser_ipat{po}; parser_case_list{pcl}
           ->
-            match name with
-            [ Some o ->
+            (match name with
+            | Some o ->
               Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser _loc po pcl)
-            | None -> cparser _loc po pcl]
+            | None -> cparser _loc po pcl)
         | "match"; S{e}; "with"; "parser";  OPT [`Uid(n) -> n ] {name}; OPT parser_ipat{po};
           parser_case_list{pcl}
           ->
             match name with
-            [ Some o ->
+            | Some o ->
               Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser_match _loc e po pcl)
-            | None -> cparser_match _loc e po pcl ] ] 
+            | None -> cparser_match _loc e po pcl ] 
      exp: Level "simple"
      [ stream_begin{name};  stream_end ->
-       match name with
-       [ Some o ->
+       (match name with
+       | Some o ->
          Ref.protect FanStreamTools.grammar_module_name o (fun _ ->
            FanStreamTools.empty _loc )
-       | None -> FanStreamTools.empty _loc ]
+       | None -> FanStreamTools.empty _loc )
      | stream_begin{name}; stream_exp_comp_list{sel}; stream_end ->
          match name with
-         [ Some o ->   
+         | Some o ->   
            Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel)
-         | None -> cstream _loc sel ] ]
+         | None -> cstream _loc sel ] 
      parser_ipat:
      [ a_lident{i} -> (* {:pat| $(id:(i:>ident)) |} *)
        (i: alident:> pat)  | "_" -> {:pat| _ |}  ]         

@@ -334,26 +334,28 @@ let bigarray_set loc (var) newval (* : option exp *) = with exp'
 let mksequence ?loc  =
   function
   [ `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
-      let _loc = match loc with [ Some x -> x | None  -> _loc] in
+      let _loc =
+        match loc with
+        | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
   | e -> e ]
 
 (* see [mksequence], antiquot is not decoreated *)    
-let mksequence' ?loc  =
-  function
-  [ `Sem (_loc,_,_) as e ->
+let mksequence' ?loc  = function
+  | `Sem (_loc,_,_) as e ->
       let _loc =
-        match loc with [ Some x -> x | None  -> _loc] in
+        match loc with
+        |Some x -> x
+        | None  -> _loc in
       `Seq (_loc, e)
-  | e -> e]
+  | e -> e
 
 
         
-let rec to_lid =
-  function
-  [ `Dot (_loc,_,i) -> to_lid i
+let rec to_lid = function
+  | `Dot (_loc,_,i) -> to_lid i
   | `Lid (_loc,lid) -> lid
-  | _ -> assert false ]
+  | _ -> assert false 
 
 
 (* Given a [location] and [prefix](generally "-" or "-.")

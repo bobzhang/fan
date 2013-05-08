@@ -233,12 +233,12 @@ let names_tbl : (domains,SSet.t) Hashtbl.t =
 let resolve_name (n:name) : name =
   match n with
   |((`Sub _ as x) ,v) ->
-    let try r =
-      List.find
-      (fun path ->
-        let try set = Hashtbl.find names_tbl (concat_domain (path, x)) in
-        SSet.mem v set
-        with Not_found -> false) !paths in
-    (concat_domain (r, x),v)
-    with [Not_found -> failwithf "resolve_name %s" v]
+      (let try r =
+        List.find
+          (fun path ->
+            let try set = Hashtbl.find names_tbl (concat_domain (path, x)) in
+            SSet.mem v set
+            with Not_found -> false) !paths in
+      (concat_domain (r, x),v)
+      with Not_found -> failwithf "resolve_name %s" v)
   | x ->  x

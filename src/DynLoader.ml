@@ -64,15 +64,14 @@ let load =
          _initialized := true
         end
         with
-        [ Dynlink.Error e ->
-           raise (Error "Fan's dynamic loader initialization" (Dynlink.error_message e)) ]
+         Dynlink.Error e ->
+           raise (Error "Fan's dynamic loader initialization" (Dynlink.error_message e)) 
       else ();
       let fname =
         try find_in_path _path file with
-        [ Not_found -> raise (Error file "file not found in path") ]
-      in
-      try Dynlink.loadfile fname with
-      [ Dynlink.Error e -> raise (Error fname (Dynlink.error_message e)) ]
+         Not_found -> raise (Error file "file not found in path") in
+      try Dynlink.loadfile fname
+      with Dynlink.Error e -> raise (Error fname (Dynlink.error_message e)) 
     end
 
 

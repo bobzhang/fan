@@ -87,7 +87,7 @@ class primitive =  object
   (* FIXME bool antiquot *)
   method bool _loc x  : ep=
     match x with
-    [true -> {|true|} | false -> {| false |} ];
+    |true -> {|true|} | false -> {| false |} ;
   (* method unknown (_loc:loc) : ! 'a . 'a -> ep  = assert false;
      method unknown (_loc : loc) = (assert false : 'a . 'a -> ep )
      a bug to be FIXED

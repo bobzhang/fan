@@ -18,28 +18,28 @@ open EP
 (* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  [ ({:pat'| $lid:a |}, {@_| $lid:b |}) 
+  | ({:pat'| $lid:a |}, {@_| $lid:b |}) 
   | ({:pat'| $uid:a |}, {@_| $uid:b |}) -> a = b
   | ({:pat'| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
-  | _ -> false ] 
+  | _ -> false 
 
-  
+        
 (* +-----------------------------------------------------------------+
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
 (* loc -> pat -> exp -> exp -> exp     *)
 let map loc (p:pat) (e:exp) (l:exp) = with exp'
   match (p, e) with
-  [ ({:pat'| $lid:x |}, {@_| $lid:y |}) when x = y -> l
+  | ({:pat'| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
       if is_irrefut_pat p then
         {@loc| List.map (fun $p -> $e) $l |}
       else
         {@loc| List.fold_right
-          (fun
-            [ $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
-            | _ -> (fun l -> l) ]) $l [] |} ]
+          (function
+            | $pat:p when true -> (fun x xs -> [ x :: xs ]) $e
+            | _ -> (fun l -> l) ) $l [] |} 
 
 
 let filter loc p b l = with exp'
@@ -79,13 +79,15 @@ let bad_pat _loc =
 let substp loc env =
   let rec loop (x:exp)= with {pat:exp';exp:pat'}
     match x with
-    [ {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
+    | {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
     | {| $lid:x |} ->
-        try List.assoc x env with
-          [ Not_found -> {@loc| $lid:x |} ]
+        begin try List.assoc x env with
+           Not_found -> {@loc| $lid:x |}
+        end
     | {| $uid:x |} ->
-        try List.assoc x env with
-          [ Not_found -> {@loc| $uid:x |} ]
+        begin try List.assoc x env with
+           Not_found -> {@loc| $uid:x |}
+        end
     | {| $int:x |} -> {@loc| $int:x |}
     | {| $str:s |} -> {@loc| $str:s |}
     | {| $par:x |} -> {@loc| $(par:loop x) |}
@@ -97,7 +99,7 @@ let substp loc env =
           | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
           | _ -> bad_pat _loc ] in
         {@loc| { $(substbi bi) } |}
-    | _ -> bad_pat loc ] in loop
+    | _ -> bad_pat loc  in loop
 
 (*
   [env] is a list of [string*exp],
@@ -109,27 +111,31 @@ let substp loc env =
  *)  
 class subst loc env =  object
   inherit Objs.reloc loc as super;
-  method! exp = with exp'
-    fun
-    [ {| $lid:x |} | {| $uid:x |} as e ->
-        try List.assoc x env with
-        [ Not_found -> super#exp e ]
+  method! exp = with exp' function
+    | {| $lid:x |} | {| $uid:x |} as e ->
+        begin try List.assoc x env with
+          Not_found -> super#exp e
+        end
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
-        try
-          let loc = loc_of (List.assoc x env) in
-          let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-          {| FanLoc.of_tuple
-            ($`str:a, $`int:b, $`int:c, $`int:d,
-             $`int:e, $`int:f, $`int:g,
-             $(if h then {| true |} else {| false |} )) |}
-        with [ Not_found -> super#exp e ]
-    | e -> super#exp e ];
-  method! pat =  fun
-    [ {:pat'| $lid:x |} | {:pat'| $uid:x |} as p ->
-      (* convert expession into pattern only *)
-       try substp loc [] (List.assoc x env) with 
-       [ Not_found -> super#pat p ]
-    | p -> super#pat p ];
+        begin
+          try
+            let loc = loc_of (List.assoc x env) in
+            let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
+            {| FanLoc.of_tuple
+              ($`str:a, $`int:b, $`int:c, $`int:d,
+               $`int:e, $`int:f, $`int:g,
+               $(if h then {| true |} else {| false |} )) |}
+          with  Not_found -> super#exp e
+        end
+    | e -> super#exp e ;
+  method! pat =  function
+    | {:pat'| $lid:x |} | {:pat'| $uid:x |} as p ->
+        (* convert expession into pattern only *)
+        begin
+          try substp loc [] (List.assoc x env) with 
+            Not_found -> super#pat p
+        end
+    | p -> super#pat p ;
 end
 
 
@@ -143,20 +149,19 @@ end
 let capture_antiquot : antiquot_filter = object
   inherit Objs.map as super;
   val mutable constraints =[];
-  method! pat = fun
-  [ `Ant(_loc,s) -> 
-      match s with
-     [ {content=code;_} ->
-       begin 
-      (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
-      let cons = {| $lid:code |} in
-      let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
-      let cons' = {| $lid:code' |} in 
-      let () = constraints <- [(cons,cons')::constraints]in 
-      {:pat'| $lid:code' |} (* only allows lidentifiers here *)
+  method! pat = function
+    | `Ant(_loc,s) -> 
+      begin match s with {content=code;_} ->
+       (* begin  *)
+        (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
+        let cons = {| $lid:code |} in
+        let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
+        let cons' = {| $lid:code' |} in 
+        let () = constraints <- [(cons,cons')::constraints]in 
+        {:pat'| $lid:code' |} (* only allows lidentifiers here *)
     end
-     ]
-  | p -> super#pat p ];
+     
+  | p -> super#pat p ;
  method get_captured_variables =
    constraints;
  method clear_captured_variables =
@@ -461,7 +466,7 @@ let currying cases ~arity =
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exps = List.map (fun s-> {| $lid:s |} ) names in
     let x = tuple_com exps in
-    names <+ {| match $x with [ $cases ]|} 
+    names <+ {| match $x with | $cases |} 
     (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
   else {| fun [ $cases ]|}
       (* {| fun [ $list:cases ] |} *)

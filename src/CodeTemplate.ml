@@ -30,21 +30,21 @@ let ty_metas =
       {str;print;eq}])
   
 let print_base1 = with stru'
-  let items =
-    ty_metas |> List.map (fun [
-      {str;print;_} ->
-    let ty = {:ctyp'| Format.formatter -> $lid:str -> unit |} in
-    let name = "pp_print_"^str in
-    match print with
-    [`Exist -> {| let $lid:name = $lid:name |}
-    |`Custom s -> s
-    |`Fmt c ->
-      {|let $lid:name : $ty =
-        fun fmt a -> Format.fprintf fmt $str:c a  |} ]]) in
-      sem_of_list items
+let items =
+  ty_metas |> List.map (fun 
+    {str;print;_} ->
+      let ty = {:ctyp'| Format.formatter -> $lid:str -> unit |} in
+      let name = "pp_print_"^str in
+      match print with
+      |`Exist -> {| let $lid:name = $lid:name |}
+      |`Custom s -> s
+      |`Fmt c ->
+          {|let $lid:name : $ty =
+            fun fmt a -> Format.fprintf fmt $str:c a  |} ) in
+          sem_of_list items
 
-  
-  
+            
+            
 let (map_clfield_base_1,
      map_clfield_base_2,
      fold_clfield_base_1,

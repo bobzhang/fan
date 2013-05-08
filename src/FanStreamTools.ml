@@ -44,10 +44,10 @@ let is_raise_failure  = function
   
 let rec handle_failure e =
   match e with
-  | {| try $_ with [ $(uid:m).Failure -> $e] |}  (* {:case'|$(uid:m).Failure -> $e|} *)
+  | {| try $_ with | $(uid:m).Failure -> $e |}  (* {:case'|$(uid:m).Failure -> $e|} *)
     when m = gm()
     ->  handle_failure e
-  | {| match $me with [ $a ] |} ->
+  | {| match $me with | $a  |} ->
       let rec case_handle_failure =
         fun
         [ {:case'| $a1 | $a2 |} ->
@@ -67,9 +67,10 @@ let rec handle_failure e =
     {| $chr:_ |} | {| fun [ $_ ] |} | {| $uid:_ |} ->
       true
   | {| raise $e |} ->
-      match e with
-      [ {| $uid:m.Failure |} when m = gm() -> false
-      | _ -> true ]
+      begin match e with
+      | {| $uid:m.Failure |} when m = gm() -> false
+      | _ -> true
+      end
   | {| $f $x |} ->
       is_constr_apply f && handle_failure f && handle_failure x
   | _ -> false 
@@ -82,7 +83,7 @@ and is_constr_apply = function
 let rec subst v e =
   let _loc = loc_of e in
   match e with
-  [ {| $lid:x |} ->
+  | {| $lid:x |} ->
       let x = if x = v then strm_n else x in
       {| $lid:x |}
   | ( {| $uid:_ |}  | {| $int:_ |} 
@@ -93,7 +94,7 @@ let rec subst v e =
   | {| $e1 $e2 |} -> {| $(subst v e1) $(subst v e2) |}
   | {| ( $par:e ) |} -> {| ( $(par:subst v e) ) |}
   | {| $e1, $e2 |} -> {| $(subst v e1), $(subst v e2) |}
-  | _ -> raise Not_found ]
+  | _ -> raise Not_found 
 and subst_binding v =  function
   | {:binding@_loc| $b1 and $b2 |} ->
       {:binding'| $(subst_binding v b1) and $(subst_binding v b2) |}
@@ -103,37 +104,39 @@ and subst_binding v =  function
 
 let stream_pattern_component skont ckont = function
   | SpTrm (_loc, p, None) ->
-      {| match $(peek_fun _loc) $lid:strm_n with
-        [ Some $p ->
+      {|
+      match $(peek_fun _loc) $lid:strm_n with
+      | Some $p ->
           begin  $(junk_fun _loc) $lid:strm_n; $skont  end
-        | _ -> $ckont ] |}
+      | _ -> $ckont  |}
   | SpTrm (_loc, p, (Some w)) ->
-      {| match $(peek_fun _loc) $lid:strm_n with
-         [ Some $p when $w ->
+      {|
+      match $(peek_fun _loc) $lid:strm_n with
+      | Some $p when $w ->
            begin  $(junk_fun _loc) $lid:strm_n; $skont  end
-         | _ -> $ckont ] |}
+      | _ -> $ckont  |}
   | SpNtr (_loc, p, e) ->
       let e =
         match e with
-        [ {| fun [ ($lid:v : _ $uid:m.t ) -> $e ] |} when v = strm_n && m = gm() -> e
-        | _ -> {| $e $lid:strm_n |} ] in
+        | {| fun [ ($lid:v : _ $uid:m.t ) -> $e ] |} when v = strm_n && m = gm() -> e
+        | _ -> {| $e $lid:strm_n |}  in
       (* Simplify it *)
       if Exp.pattern_eq_expression p skont then
         if is_raise_failure ckont then e
         else if handle_failure e then e
-        else {| try $e with [ $(uid:gm()).Failure -> $ckont ] |}
+        else {| try $e with | $(uid:gm()).Failure -> $ckont  |}
       else if is_raise_failure ckont then
         {| let $p = $e in $skont |}
       else if Exp.pattern_eq_expression {:pat'| Some $p |} skont then
-        {| try Some $e with [ $(uid:gm()).Failure -> $ckont ] |}
+        {| try Some $e with | $(uid:gm()).Failure -> $ckont  |}
       else if is_raise ckont then
         let tst =
           if handle_failure e then e
-          else {| try $e with [ $(uid:gm()).Failure -> $ckont ] |}  in
+          else {| try $e with | $(uid:gm()).Failure -> $ckont  |}  in
         {| let $p = $tst in $skont |}
       else
         {|
-        match try Some $e with [ $(uid:gm()).Failure -> None ] with
+        match (try Some $e with | $(uid:gm()).Failure -> None)  with
         | Some $p -> $skont
         | _ -> $ckont  |}
   | SpStr (_loc, p) ->
@@ -169,16 +172,16 @@ let stream_patterns_term _loc ekont tspel : exp =
           let ekont err =
             let str =
               match err with
-              [ Some estr -> estr
-              | _ -> {| "" |} ] in
+              | Some estr -> estr
+              | _ -> {| "" |}  in
             {| raise ($(uid:gm()).Error $str) |} in
           let skont = stream_pattern _loc epo e ekont spcl in
           {| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
           match w with
-          [ Some w -> {:case'| $pat:p when $w -> $e  | $acc |}
-          | None -> {:case'| $pat:p -> $e  | $acc |} ])
+          | Some w -> {:case'| $pat:p when $w -> $e  | $acc |}
+          | None -> {:case'| $pat:p -> $e  | $acc |} )
       tspel {:case'| _ -> $(ekont () )|} in
-  {| match $(peek_fun _loc) $lid:strm_n with [ $pel ] |} 
+  {| match $(peek_fun _loc) $lid:strm_n with | $pel  |} 
 
 let rec group_terms = function
   | [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->
@@ -202,8 +205,8 @@ let cparser _loc bpo pc =
   let e = parser_cases _loc pc in
   let e =
     match bpo with
-    [ Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
-    | None -> e ] in
+    | Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
+    | None -> e  in
   let p = {:pat'| ($lid:strm_n : _ $(uid:gm()).t ) |} in
   {| fun $p -> $e |} 
 

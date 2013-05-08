@@ -2,6 +2,7 @@
 open Format
 
 let id x = x
+
 let cons x xs = [x::xs]
     
 let failwithf fmt = ksprintf failwith fmt
@@ -28,8 +29,7 @@ let finally action f x  =
     action ();
     res 
   end
-  with
-  |e -> begin action (); raise e end
+  with e -> begin action (); raise e end
     
 let with_dispose ~dispose f x =
   finally (fun () -> dispose x) f x
@@ -116,7 +116,8 @@ let with_return f =
   let r = ref None in                   (* stores the return value *)
   let return = {                        (* closure passed to f *)
     return = (fun x ->
-      (r := Some x; raise M.Return));} in
+      (r := Some x; raise M.Return));
+  } in
   try
     let rval = f return in
     begin match !r with
@@ -153,12 +154,11 @@ module Queue = struct
       
   let rev q=
     of_list (to_list_rev q )
-      (* let nq = create () in *)
-      (* while not (empty q) do *)
-      (*   push pop q *)
-      (* done *)
       
 end
+
+
+
 module List = struct
   include List
   let rev_len l =
@@ -167,7 +167,7 @@ module List = struct
       |[] -> r 
       |[x::xs] -> aux xs (n+1,[x::acc]) in
     aux l (0,[])
-    
+      
   let hd = function
     | [] -> failwith "hd"
     | [a::_] -> a
@@ -182,35 +182,35 @@ module List = struct
           
   let null xs = xs = []
       
-  (*
-    {[
-    drop 3 [1;2;3;4];
+      (*
+        {[
+        drop 3 [1;2;3;4];
 
-    list int = [4]
-    ]}
-   *)
+        list int = [4]
+        ]}
+       *)
   let rec drop n = function
     | [_ :: l] when n > 0 -> drop (n-1) l
     | l -> l
 
-  (*
-    {[
-    [1;2;3;4;5]
-    ([4;3;2;1], 5 )
-    ]}
-   *)  
+          (*
+            {[
+            [1;2;3;4;5]
+            ([4;3;2;1], 5 )
+            ]}
+           *)  
   let lastbut1 ls =
     match ls with
     | [ ] -> failwith "lastbut1 empty"
     |  _ -> let l = List.rev ls in
-     (List.tl l, List.hd l )
-    
+      (List.tl l, List.hd l )
+        
   let last ls =
     match ls with
     | [] -> failwith "last empty"
     | _ -> List.hd (List.rev ls)
           
-  (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
+          (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
   let  split_at n xs =
     let rec aux  n acc xs = 
       match xs with 
@@ -218,29 +218,31 @@ module List = struct
           if n = 0 then (acc,[])
           else invalid_arg "Index past end of list"
       | ([h::t ] as l) ->
-        if n = 0 then (acc, l)
-        else aux (n-1) [h::acc] t  in
+          if n = 0 then (acc, l)
+          else aux (n-1) [h::acc] t  in
     if n < 0 then invalid_arg "split_at n< 0"
     else
       let (a,b) =  aux n [] xs  in
       (rev a ,b)
-      
-  let rec find_map f = function
+        
+  let rec find_map f v =
+    match v with
     | [] -> raise Not_found
     | [x :: xs] ->
         match f x with
         | Some y -> y
         | None -> find_map f xs
 
-  (* include BatList;
-     return a pair [(int,acc)]
-   *)
+              (* include BatList;
+                 return a pair [(int,acc)]
+               *)
   let fold_lefti f acc ls =
     fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls
       
-  (* let fold_righti f ls acc = *)
-  (*   fold_right (fun x (acc ) *)
-  let rec remove x = function
+      (* let fold_righti f ls acc = *)
+      (*   fold_right (fun x (acc ) *)
+  let rec remove x v =
+    match v with 
     | [(y, _) :: l] when y = x -> l
     | [d :: l] -> [d :: remove x l]
     | [] -> []
@@ -259,8 +261,8 @@ module List = struct
     | [x::xs] ->
         let rec loop x xs =
           match xs with
-          [ [] -> x
-          | [y::ys] -> loop (f x y) ys] in loop x xs
+          | [] -> x
+          | [y::ys] -> loop (f x y) ys in loop x xs
           
   let reduce_left_with ~compose ~project lst =     
     match lst with
@@ -268,24 +270,26 @@ module List = struct
     | [x :: xs] ->
         let rec loop x xs =
           match xs with
-          [[] -> x
-          | [y :: ys] -> loop (compose x  (project y))  ys]in
+          | [] -> x
+          | [y :: ys] -> loop (compose x  (project y))  ys in
         loop (project x) xs
           
   let reduce_right_with ~compose ~f  lst =
     match lst with
     | [] -> invalid_arg "reduce_right length zero"
     | xs ->
-        let rec loop xs = match xs with
-          [ [] -> assert false
+        let rec loop xs =
+          match xs with
+          | [] -> assert false
           | [y] -> f y
-          | [y::ys] -> compose (f y) (loop ys) ] in
+          | [y::ys] -> compose (f y) (loop ys)  in
         loop xs
           
   let reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x)
-    
+      
   let init n f =
-    Array.(to_list ( (init n f )))
+    Array.init n f |> Array.to_list
+
 
   let concat_map f lst =
     fold_right (fun x acc -> f x @ acc) lst []
@@ -293,21 +297,21 @@ module List = struct
   let rec filter_map f ls =
     match ls with
     | [] -> []
-    |[x::xs] ->
+    | [x::xs] ->
         match f x with
         |Some y -> [y:: filter_map  f xs]
         |None -> filter_map f xs
-      
-   let take_rev  n lst =
-     let rec aux n l acc =
-       match l with
-       | [] ->  acc
-       | [x::xs] ->
-           if n = 1 then [x::acc]
-           else aux (n-1) xs [x::acc] in
-     if n <0 then invalid_arg "List.take_rev n<0"
-     else if n = 0 then []
-     else aux n lst []
+              
+  let take_rev  n lst =
+    let rec aux n l acc =
+      match l with
+      | [] ->  acc
+      | [x::xs] ->
+          if n = 1 then [x::acc]
+          else aux (n-1) xs [x::acc] in
+    if n <0 then invalid_arg "List.take_rev n<0"
+    else if n = 0 then []
+    else aux n lst []
 end
     
 
@@ -344,7 +348,7 @@ module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
 
   (* can be more efficient if we break the abstraction *)    
   let add_with ~f k v s =
-     try (add k (f  (find k s) v) s, `Exist) with [Not_found -> (add k v s,`NotExist)] 
+     try (add k (f  (find k s) v) s, `Exist) with Not_found -> (add k v s,`NotExist)
 
   let unsafe_height (l:'a t) : int =
     if l = empty then 0
@@ -705,18 +709,18 @@ module String = struct
      let rec aux acc ofs =
       if ofs >= 0 then (
         match
-          try Some (rfind_from str ofs sep)
-          with [Not_found -> None]
+          (try Some (rfind_from str ofs sep)
+           with Not_found -> None)
         with
-          [ Some idx -> (* sep found *)
+        | Some idx -> (* sep found *)
             let end_of_sep = idx + seplen - 1 in
               if end_of_sep = ofs (* sep at end of str *)
               then aux [""::acc] (idx - 1)
               else
                 let token = sub str (end_of_sep + 1) (ofs - end_of_sep) in
                   aux [token::acc] (idx - 1)
-          | None     -> (* sep NOT found *)
-            [(sub str 0 (ofs + 1))::acc]]
+        | None     -> (* sep NOT found *)
+            [(sub str 0 (ofs + 1))::acc]
       )
       else
         (* Negative ofs: the last sep started at the beginning of str *)
@@ -737,7 +741,7 @@ module Ref = struct
       let res = body();
       r := old;
       res
-    end with [x -> (r := old; raise x)]
+    end with x -> (r := old; raise x)
         
   let safe r body =
     let old = !r in
@@ -1161,16 +1165,18 @@ end
   
 
 module Unix = struct
+
   include Unix
+
   let folddir ~f ~init path =
     let dh = opendir path in
     finally (fun _ -> closedir dh)
-    (fun () ->
-    let rec loop st =
-        let try st' = f st (readdir dh) in
-        loop st'
-        with End_of_file -> st    in
-    loop init) ()
+      (fun () ->
+        let rec loop st =
+          let try st' = f st (readdir dh) in
+          loop st'
+          with End_of_file -> st    in
+        loop init) ()
     
   let try_set_close_on_exec fd =
     try begin set_close_on_exec fd; true end  with Invalid_argument _ -> false
@@ -1184,11 +1190,11 @@ module Unix = struct
     let cloexec = List.for_all try_set_close_on_exec toclose in
     match fork() with
     |  0 -> begin 
-      dup2 input stdin; close input;
-      dup2 output stdout; close output;
-      dup2 error stderr; close error;
-      if not cloexec then List.iter close toclose else ();
-      try execvp cmd cmdargs with _ -> exit 127
+        dup2 input stdin; close input;
+        dup2 output stdout; close output;
+        dup2 error stderr; close error;
+        if not cloexec then List.iter close toclose else ();
+        try execvp cmd cmdargs with _ -> exit 127
     end (* never return *)
     | id -> id
           

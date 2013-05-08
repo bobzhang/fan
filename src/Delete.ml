@@ -16,20 +16,20 @@ let delete_rule_in_tree entry =
     | ([s :: sl], Node ({node;brother;son} as n)) ->
         if Tools.logically_eq_symbols entry s node then
             match delete_in_tree sl son with
-            [Some (Some dsl,DeadEnd) -> Some (Some [node::dsl],brother)
+            |Some (Some dsl,DeadEnd) -> Some (Some [node::dsl],brother)
             |Some (Some dsl, t) -> Some (Some [node::dsl],Node {(n) with son=t})
             |Some (None,t) -> Some (None,Node {(n) with son=t})
-            |None -> None]
+            |None -> None
         else
-          match delete_in_tree symbols brother with
-          [ Some (dsl, t) ->
+          (match delete_in_tree symbols brother with
+          | Some (dsl, t) ->
               Some (dsl, Node {(n) with brother=t} )
-          | None -> None ]
+          | None -> None )
     | ([_ :: _], _) -> None
     | ([], Node n) ->
-        match delete_in_tree [] n.brother with
-        [ Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
-        | None -> None ]
+        (match delete_in_tree [] n.brother with
+        | Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
+        | None -> None )
     | ([], DeadEnd) -> None
     | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
     | ([], LocAct (_, [action :: list])) -> Some (None, LocAct action list)  in
@@ -62,37 +62,37 @@ and decr_keyw_use_in_tree gram =  function
 
 let rec delete_rule_in_suffix entry symbols = function
   | [lev :: levs] ->
-      match delete_rule_in_tree entry symbols lev.lsuffix with
-      [ Some (dsl, t) ->begin 
-        match dsl with
-        [ Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
-        | None -> () ];
+      (match delete_rule_in_tree entry symbols lev.lsuffix with
+      | Some (dsl, t) ->begin 
+        (match dsl with
+        | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+        | None -> () );
         match t with
-        [ DeadEnd when lev.lprefix == DeadEnd -> levs
+        | DeadEnd when lev.lprefix == DeadEnd -> levs
         | _ ->
-            [ {(lev) with lsuffix=t} :: levs]]
+            [ {(lev) with lsuffix=t} :: levs]
       end
       | None ->
           let levs = delete_rule_in_suffix entry symbols levs in
-          [lev :: levs] ]
+          [lev :: levs] )
   | [] -> raise Not_found 
 
 
 let rec delete_rule_in_prefix entry symbols = function
   | [lev :: levs] ->
-      match delete_rule_in_tree entry symbols lev.lprefix with
-      [ Some (dsl, t) -> begin 
-        match dsl with
-        [ Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
-        | None -> () ];
-        match t with
-        [ DeadEnd when lev.lsuffix == DeadEnd -> levs
-        | _ -> [ {(lev) with lprefix=t}::levs]]
+      (match delete_rule_in_tree entry symbols lev.lprefix with
+      | Some (dsl, t) -> begin 
+          (match dsl with
+          | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+          | None -> ()) ;
+          match t with
+          | DeadEnd when lev.lsuffix == DeadEnd -> levs
+          | _ -> [ {(lev) with lprefix=t}::levs]
       end
       | None -> let levs = delete_rule_in_prefix entry symbols levs in
-          [lev :: levs] ]
+        [lev :: levs]) 
   | [] -> raise Not_found 
-  
+        
 
 let  delete_rule_in_level_list entry symbols levs =
   match symbols with

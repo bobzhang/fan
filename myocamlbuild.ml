@@ -445,7 +445,7 @@ module Default = struct
   let before_options () = (
     Options.ocamlc := ocamlfind &
       S[A"ocamlc";
-        (* A"-annot"; *)
+        A"-annot";
         A "-w";
         A "+a-4-32-30";
         (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)

@@ -106,8 +106,8 @@ module Make
           add_to_loaded_modules name;
           DynLoader.load dyn_loader name
         done in begin 
-          match (n, String.lowercase x) with
-          [("Printers"|"", "o" ) -> 
+          (match (n, String.lowercase x) with
+          |("Printers"|"", "o" ) -> 
               PreCast.enable_ocaml_printer ()
           | ("Printers"|"", "pr_dump.cmo" | "p" ) -> 
               PreCast.enable_dump_ocaml_ast_printer ()
@@ -116,8 +116,7 @@ module Make
                PreCast.enable_auto (fun [ () -> Unix.isatty Unix.stdout])
           | _ ->
             let y = x^objext in
-            real_load (try find_in_path y with [ Not_found -> x ])
-        ];
+            real_load (try find_in_path y with  Not_found -> x ));
           !rcall_callback ();
         end
 
@@ -134,7 +133,7 @@ module Make
           let clear () = if name = "-" then () else close_in ic;
           let phr =
             try pa ?directive_handler loc cs
-            with [x -> begin  clear (); raise x end ];
+            with x -> begin  clear (); raise x end ;
           clear ();
           phr
         end;
@@ -194,11 +193,11 @@ module Make
            
       let process  ?directive_handler name pa pr clean fold_filters =
           match parse_file  ?directive_handler name pa with
-          [None ->
+          |None ->
             pr ?input_file:(Some name) ?output_file:!output_file None 
           |Some x ->
               Some (clean (fold_filters x))
-              |> pr ?input_file:(Some name) ?output_file:!output_file]
+              |> pr ?input_file:(Some name) ?output_file:!output_file
               
       (* [entrance] *)  
       let process_intf  name =
@@ -222,8 +221,8 @@ module Make
         let dyn_loader = !DynLoader.instance () in 
         begin
           !rcall_callback ();
-          match x with
-          [ Intf file_name -> begin
+          (match x with
+          | Intf file_name -> begin
             FanConfig.compilation_unit :=
               Some (String.capitalize (Filename.(chop_extension (basename file_name))));
             task process_intf  file_name
@@ -242,7 +241,7 @@ module Make
                 at_exit (fun () -> Sys.remove f);
               end
           | ModuleImpl file_name -> rewrite_and_load "" file_name
-          | IncludeDir dir -> DynLoader.include_dir dyn_loader dir ];
+          | IncludeDir dir -> DynLoader.include_dir dyn_loader dir) ;
           !rcall_callback ();
         end
       
@@ -321,7 +320,7 @@ module Make
             SSet.iter (eprintf "%s@.") !loaded_modules;
           end else ()
         end
-      with [exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end];;
+      with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
       main ();;
 end 
     

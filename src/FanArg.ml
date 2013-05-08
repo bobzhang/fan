@@ -90,14 +90,12 @@ let add_help speclist =
   let add1 =
     try (ignore (assoc3 "-help" speclist); [])
     with
-    [ Not_found ->
-        [ ("-help", (Unit help_action), " Display this list of options") ] ]
+     Not_found -> [ ("-help", (Unit help_action), " Display this list of options") ] 
   and add2 =
     try (ignore (assoc3 "--help" speclist); [])
     with
-    [ Not_found ->
-        [ ("--help", (Unit help_action), " Display this list of options") ] ]
-  in speclist @ (add1 @ add2)
+     Not_found -> [ ("--help", (Unit help_action), " Display this list of options") ] in
+  speclist @ (add1 @ add2)
 
                   
 let usage_b buf speclist errmsg =
@@ -118,111 +116,108 @@ let parse_argv ?(current = current) argv speclist anonfun errmsg =
   let stop error =
     let progname = if initpos < l then argv.(initpos) else "(?)"
     in
-      (match error with
-       [ Unknown "-help" -> ()
-       | Unknown "--help" -> ()
-       | Unknown s -> bprintf b "%s: unknown option `%s'.\n" progname s
-       | Missing s ->
-           bprintf b "%s: option `%s' needs an argument.\n" progname s
-       | Wrong (opt, arg, expected) ->
-           bprintf b "%s: wrong argument `%s'; option `%s' expects %s.\n"
-             progname arg opt expected
-       | Message s -> bprintf b "%s: %s.\n" progname s ];
-       usage_b b !speclist errmsg;
-       if (error = (Unknown "-help")) || (error = (Unknown "--help"))
-       then raise (Help (Buffer.contents b))
-       else raise (Bad (Buffer.contents b)))
+    ((match error with
+    | Unknown "-help" -> ()
+    | Unknown "--help" -> ()
+    | Unknown s -> bprintf b "%s: unknown option `%s'.\n" progname s
+    | Missing s ->
+        bprintf b "%s: option `%s' needs an argument.\n" progname s
+    | Wrong (opt, arg, expected) ->
+        bprintf b "%s: wrong argument `%s'; option `%s' expects %s.\n"
+          progname arg opt expected
+    | Message s -> bprintf b "%s: %s.\n" progname s) ;
+     usage_b b !speclist errmsg;
+     if (error = (Unknown "-help")) || (error = (Unknown "--help"))
+     then raise (Help (Buffer.contents b))
+     else raise (Bad (Buffer.contents b)))
   in
-    (incr current;
-     while !current < l do let s = argv.(!current);
-       if ((String.length s) >= 1) && ((String.get s 0) = '-')
-       then
-         let action =
-           try assoc3 s !speclist with [ Not_found -> stop (Unknown s) ]
-         in
-           (try
-              let rec treat_action =
-                fun
-                [ Unit f -> f ()
-                | Bool f when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      (try f (bool_of_string arg)
-                       with
-                       [ Invalid_argument "bool_of_string" ->
-                           raise (Stop (Wrong s arg "a boolean")) ];
-                       incr current)
-                | Set r -> r := true
-                | Clear r -> r := false
-                | String f when (!current + 1) < l ->
-                    (f argv.(!current + 1); incr current)
-                | Symbol (symb, f) when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      if List.mem arg symb
-                      then (f argv.(!current + 1); incr current)
-                      else
-                        raise
-                          (Stop
-                             (Wrong s arg
-                                ("one of: " ^ (make_symlist "" " " "" symb))))
-                | Set_string r when (!current + 1) < l ->
-                    (r := argv.(!current + 1); incr current)
-                | Int f when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      (try f (int_of_string arg)
-                       with
-                       [ Failure "int_of_string" ->
-                           raise (Stop (Wrong s arg "an integer")) ];
-                       incr current)
-                | Set_int r when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      (try r := int_of_string arg
-                       with
-                       [ Failure "int_of_string" ->
-                           raise (Stop (Wrong s arg "an integer")) ];
-                       incr current)
-                | Float f when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      (try f (float_of_string arg)
-                       with
-                       [ Failure "float_of_string" ->
-                           raise (Stop (Wrong s arg "a float")) ];
-                       incr current)
-                | Set_float r when (!current + 1) < l ->
-                    let arg = argv.(!current + 1)
-                    in
-                      (try r := float_of_string arg
-                       with
-                       [ Failure "float_of_string" ->
-                           raise (Stop (Wrong s arg "a float")) ];
-                       incr current)
-                | Tuple specs -> List.iter treat_action specs
-                | Rest f ->
-                    while !current < (l - 1) do f argv.(!current + 1);
-                      incr current done
-                | _ -> raise (Stop (Missing s)) ]
-              in treat_action action
-            with [ Bad m -> stop (Message m) | Stop e -> stop e ];
-            incr current)
-       else (try anonfun s with [ Bad m -> stop (Message m) ]; incr current)
-       done)
+  (incr current;
+   while !current < l do let s = argv.(!current);
+     if ((String.length s) >= 1) && ((String.get s 0) = '-')
+     then
+       let action =
+         try assoc3 s !speclist with  Not_found -> stop (Unknown s) in
+       ((try
+         let rec treat_action =
+           fun
+             [ Unit f -> f ()
+       | Bool f when (!current + 1) < l ->
+           let arg = argv.(!current + 1)
+           in
+           ((try f (bool_of_string arg) with
+              Invalid_argument "bool_of_string" ->
+               raise (Stop (Wrong s arg "a boolean")) );
+             incr current)
+       | Set r -> r := true
+       | Clear r -> r := false
+       | String f when (!current + 1) < l ->
+           (f argv.(!current + 1); incr current)
+       | Symbol (symb, f) when (!current + 1) < l ->
+           let arg = argv.(!current + 1)
+           in
+           if List.mem arg symb
+           then (f argv.(!current + 1); incr current)
+           else
+             raise
+               (Stop
+                  (Wrong s arg
+                     ("one of: " ^ (make_symlist "" " " "" symb))))
+       | Set_string r when (!current + 1) < l ->
+           (r := argv.(!current + 1); incr current)
+       | Int f when (!current + 1) < l ->
+           let arg = argv.(!current + 1)
+           in
+           (try f (int_of_string arg)
+           with
+              Failure "int_of_string" ->
+               raise (Stop (Wrong s arg "an integer")) ;
+             incr current)
+       | Set_int r when (!current + 1) < l ->
+           let arg = argv.(!current + 1)
+           in
+           ((try r := int_of_string arg
+           with Failure "int_of_string" ->
+               raise (Stop (Wrong s arg "an integer")) );
+             incr current)
+       | Float f when (!current + 1) < l ->
+           let arg = argv.(!current + 1) in
+           ((try f (float_of_string arg)
+           with
+              Failure "float_of_string" ->
+               raise (Stop (Wrong s arg "a float")) );
+             incr current)
+       | Set_float r when (!current + 1) < l ->
+           let arg = argv.(!current + 1) in
+           ((try r := float_of_string arg with
+              Failure "float_of_string" ->
+               raise (Stop (Wrong s arg "a float")) );
+             incr current)
+       | Tuple specs -> List.iter treat_action specs
+       | Rest f ->
+           while !current < (l - 1) do f argv.(!current + 1);
+             incr current done
+       | _ -> raise (Stop (Missing s)) ]
+         in treat_action action
+       with
+       | Bad m -> stop (Message m)
+       | Stop e -> stop e );
+        incr current)
+     else ((try anonfun s with  Bad m -> stop (Message m) ); incr current)
+   done)
 
 
-  
+    
 let parse l f msg =
   try parse_argv Sys.argv l f msg
-  with [ Bad msg -> (eprintf "%s" msg; exit 2)
-  | Help msg -> (printf "%s" msg; exit 0) ]
+  with
+  |Bad msg -> (eprintf "%s" msg; exit 2)
+  | Help msg -> (printf "%s" msg; exit 0) 
       
 let second_word s =
   let len = String.length s in
   let rec loop n =
     if n >= len then len else if s.[n] = ' ' then loop (n + 1) else n
-  in try loop (String.index s ' ') with [ Not_found -> len ]
+  in try loop (String.index s ' ') with  Not_found -> len 
       
 let max_arg_len cur (kwd, spec, doc) =
   match spec with

@@ -27,21 +27,22 @@ of_stru_with_filter
     (* let _ = Format.eprintf "@[%a@]@." Ast2pt.print_stru s in *)
     let mexp =
       (Typehook.traversal ())#mexp v in
-    let code = match mexp with
-    [ `Struct(_loc,item)  -> item
-    | _ -> failwith "can not find items back " ]  in
+    let code =
+      match mexp with
+      | `Struct(_loc,item)  -> item
+      | _ -> failwith "can not find items back " in
     begin
       if !Typehook.show_code then
         try
           FanBasic.p_stru Format.std_formatter code
         with
-          [_ -> begin
+        | _ -> begin
             prerr_endline &
             "There is a printer bug\
              Our code generator may still work when \
              Printer is broken\
              Plz send bug report to " ^ FanConfig.bug_main_address;
-          end];
+          end;
       code
     end);
 

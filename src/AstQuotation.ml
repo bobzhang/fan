@@ -244,7 +244,7 @@ Printexc.register_printer (fun
 let parse_quotation_result parse loc quot pos_tag str =
   let open FanToken in
   try parse loc str with
-  [ FanLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
+  | FanLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
       let ctx = ParsingResult iloc quot.q_contents in
       let exc1 = QuotationError (n, pos_tag, ctx, exc) in
       FanLoc.raise iloc exc1
@@ -253,7 +253,7 @@ let parse_quotation_result parse loc quot pos_tag str =
   | FanLoc.Exc_located (iloc, exc) ->
       let ctx = ParsingResult iloc quot.q_contents in
       let exc1 = QuotationError (quot.q_name, pos_tag, ctx, exc) in
-      FanLoc.raise iloc exc1 ]
+      FanLoc.raise iloc exc1 
 
     
 (* [exp_filter] needs an coercion , we can not finish in one step
@@ -291,9 +291,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
           
       match loc_name_opt with
-      [ None -> subst_first_loc (!FanLoc.name) exp_ast
+      | None -> subst_first_loc (!FanLoc.name) exp_ast
       | Some "_" -> exp_ast
-      | Some name -> subst_first_loc name exp_ast ]
+      | Some name -> subst_first_loc name exp_ast 
     end in begin
         add name FanDyn.exp_tag expand_exp;
         add name FanDyn.pat_tag expand_pat;

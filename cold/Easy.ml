@@ -31,7 +31,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
   let names = names in
   let mk_record = mk_record in
   let cons_transform = cons_transform in
-  Frame.check names;
+  let () = Frame.check names in
   let open Frame in
     stru_of_mtyps ?module_name ?cons_transform ~arity ~names ~default
       ~mk_variant ~left_type_id ~left_type_variable ~mk_record
@@ -44,24 +44,24 @@ let gen_object ?module_name  ?(arity= 1)  ?(default=
        (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
    ?cons_transform  ~kind  ~base  ~class_name  =
   let make ?(names= [])  ~mk_tuple  ~mk_record  ~mk_variant  () =
-    Frame.check names;
-    (let left_type_variable = `Pre "mf_" in
-     let right_type_variable =
-       `Exp
-         (fun v  ->
-            let v = basic_transform left_type_variable v in
-            (`App (_loc, (`Lid (_loc, v)), (`Lid (_loc, "self"))) : Ast.exp )) in
-     let left_type_id = `Pre "" in
-     let right_type_id = `Obj (basic_transform left_type_id) in
-     let default (_,number) =
-       if number > 1
-       then
-         let pat = EP.tuple_of_number (`Any _loc : Ast.pat ) arity in
-         Some (`Case (_loc, pat, default) : Ast.case )
-       else None in
-     let open Frame in
-       obj_of_mtyps ?cons_transform ?module_name ~arity ~names ~default
-         ~left_type_variable ~mk_record ~mk_variant base class_name
-         (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
-            ~right_type_variable ~names ~arity ~mk_tuple) kind) in
+    let () = Frame.check names in
+    let left_type_variable = `Pre "mf_" in
+    let right_type_variable =
+      `Exp
+        (fun v  ->
+           let v = basic_transform left_type_variable v in
+           (`App (_loc, (`Lid (_loc, v)), (`Lid (_loc, "self"))) : Ast.exp )) in
+    let left_type_id = `Pre "" in
+    let right_type_id = `Obj (basic_transform left_type_id) in
+    let default (_,number) =
+      if number > 1
+      then
+        let pat = EP.tuple_of_number (`Any _loc : Ast.pat ) arity in
+        Some (`Case (_loc, pat, default) : Ast.case )
+      else None in
+    let open Frame in
+      obj_of_mtyps ?cons_transform ?module_name ~arity ~names ~default
+        ~left_type_variable ~mk_record ~mk_variant base class_name
+        (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
+           ~right_type_variable ~names ~arity ~mk_tuple) kind in
   make

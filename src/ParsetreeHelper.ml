@@ -80,7 +80,7 @@ let varify_constructors var_names = (* string list -> Parsetree.core_type -> Par
   let rec loop t =
     let desc =
       match t.ptyp_desc with
-      [ Ptyp_any -> Ptyp_any
+      | Ptyp_any -> Ptyp_any
       | Ptyp_var x -> Ptyp_var x
       | Ptyp_arrow (label, core_type, core_type') ->
           Ptyp_arrow label (loop core_type) (loop core_type')
@@ -100,15 +100,15 @@ let varify_constructors var_names = (* string list -> Parsetree.core_type -> Par
       | Ptyp_poly (string_lst, core_type) ->
           Ptyp_poly(string_lst, loop core_type)
       | Ptyp_package (longident, lst) ->
-          Ptyp_package(longident,List.map (fun (n,typ) -> (n,loop typ) ) lst)] in
+          Ptyp_package(longident,List.map (fun (n,typ) -> (n,loop typ) ) lst) in
     {(t) with ptyp_desc = desc}
 and loop_core_field t = (* Parsetree.core_field_type -> Parsetree.core_field_type*)
     let desc =
       match t.pfield_desc with
-      [ Pfield(n,typ) ->
+      | Pfield(n,typ) ->
           Pfield(n,loop typ)
       | Pfield_var ->
-          Pfield_var]  in
+          Pfield_var  in
     { t with pfield_desc=desc}
       
 and loop_row_field x  =

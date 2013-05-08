@@ -13,10 +13,10 @@ let wrap parse_fun lb =
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
     let token_stream = Gram.filter  not_filtered_token_stream in
     match token_stream with parser (* FIXME *)
-  [ [< (`EOI, _) >] -> raise End_of_file
-  | [< >] -> parse_fun token_stream ]
+    [ [< (`EOI, _) >] -> raise End_of_file
+    | [< >] -> parse_fun token_stream ]
   with
-  [ End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
   | (FanLoc.Exc_located (loc, y) ) -> begin
       Format.eprintf "@[<0>%a%s@]@."
@@ -26,16 +26,16 @@ let wrap parse_fun lb =
    | x ->  begin 
       Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
       raise Exit
-  end ] ;;
+  end 
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
-    [ Some stru ->
+  | Some stru ->
         let stru =
           (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
           AstFilters.apply_implem_filters stru in
         Ast2pt.phrase stru
-    | None -> raise End_of_file ];;
+  | None -> raise End_of_file 
 
   
 
@@ -47,15 +47,15 @@ let revise_parser str _bol =
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lexbuf in
     let token_stream = Gram.filter not_filtered_token_stream in
     match XStream.peek token_stream with
-    [ Some (`EOI,_) -> (XStream.junk token_stream;raise End_of_file)
-    | _ -> UTop.Value (toplevel_phrase token_stream) ]  
+    | Some (`EOI,_) -> (XStream.junk token_stream;raise End_of_file)
+    | _ -> UTop.Value (toplevel_phrase token_stream) 
   with
-    [ End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x
+  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x
       ->
         raise x
-    |(FanLoc.Exc_located(loc,y)) ->
+  |(FanLoc.Exc_located(_loc,y)) ->
         (UTop.Error ([(0,0)],Printexc.to_string y))
-       ];;
+  
 
 let normal () = begin
   UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;

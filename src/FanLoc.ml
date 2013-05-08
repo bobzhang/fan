@@ -167,7 +167,7 @@ let merge a b =
   else
     let r =
       match (a.loc_ghost, b.loc_ghost) with
-      [ (false, false) ->
+      | (false, false) ->
         (* FIXME if a.file_name <> b.file_name then
           raise (Invalid_argument
             (sprintf "Loc.merge: Filenames must be equal: %s <> %s"
@@ -176,7 +176,7 @@ let merge a b =
           { (a) with loc_end = b.loc_end }
       | (true, true) -> { (a) with loc_end = b.loc_end }
       | (true, _) -> { (a) with loc_end = b.loc_end }
-      | (_, true) -> { (b) with loc_start = a.loc_start } ]
+      | (_, true) -> { (b) with loc_start = a.loc_start } 
     in
     (* debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in *)
     r

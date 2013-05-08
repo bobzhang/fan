@@ -26,22 +26,24 @@ let rec tvar_of_ident : vid -> string = with ident fun
   ]}
   see ident_map 
  *)  
-let map_to_string (ident:vid) = with ident
-  let rec aux i acc = match i with 
-  [ {| $a.$b  |} -> aux a ("_" ^ aux b acc)
-  (* | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end") *)
-  | {| $lid:x |} -> x ^ acc
-  | {| $uid:x |} -> String.lowercase x ^ acc
-  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t)] in 
+let map_to_string (ident:vid) =  with ident
+  let rec aux i acc =
+    match i with 
+    | {| $a.$b  |} -> aux a ("_" ^ aux b acc)
+          (* | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end") *)
+    | {| $lid:x |} -> x ^ acc
+    | {| $uid:x |} -> String.lowercase x ^ acc
+    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t) in 
   aux ident ""
 
 let to_string (ident:ident) = with ident'
-  let rec aux i acc = match i with 
-  [ {| $a.$b  |} -> aux a ("_" ^ aux b acc)
-  | `Apply(_,a,b) -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
-  | {| $lid:x |} -> x ^ acc
-  | {| $uid:x |} -> String.lowercase x ^ acc
-  | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t)] in 
+  let rec aux i acc =
+    match i with 
+    |{| $a.$b  |} -> aux a ("_" ^ aux b acc)
+    | `Apply(_,a,b) -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
+    | {| $lid:x |} -> x ^ acc
+    | {| $uid:x |} -> String.lowercase x ^ acc
+    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in 
   aux ident ""
 
 let rec to_vid   (x:ident) : vid =

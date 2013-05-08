@@ -158,15 +158,15 @@ let apply () = begin
         "apply"
         [ S{mt1}; S{mt2} ->
             match (mt1, mt2) with
-            [ ((#ident as i1), (#ident as i2)) -> apply i1 i2 
-            | _ -> raise XStream.Failure ]] (* FIXME *)
+            | ((#ident as i1), (#ident as i2)) -> apply i1 i2 
+            | _ -> raise XStream.Failure ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
-            [ ((#ident as i1), (#ident as i2)) ->
+            | ((#ident as i1), (#ident as i2)) ->
               dot i1 i2 
-            | _ -> raise XStream.Failure ] in
+            | _ -> raise XStream.Failure  in
           acc0 mt1 mt2 ] (*FIXME*)
         "sig"
         [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)
@@ -240,9 +240,9 @@ let apply () = begin
           let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
       | ":"; ctyp{t}; "="; exp{e} -> {| ($e : $t) |}
       | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} ->
-          match t with
-          [ {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
-          | _ -> {| ($e : $t :> $t2) |} ]
+          (match t with
+          | {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
+          | _ -> {| ($e : $t :> $t2) |} )
       | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
       fun_binding:
       { RA
@@ -310,8 +310,8 @@ let apply () = begin
           (* {| $e1 := $e2 |}  *)
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
-            [ Some e -> e
-            | None -> `Assign(_loc,e1,e2) ] ]
+            | Some e -> e
+            | None -> `Assign(_loc,e1,e2)  ]
        "||" RA
         [ S{e1}; infixop0{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "&&" RA
@@ -497,8 +497,8 @@ let apply () = begin
   with case
     {:extend|
       case:
-      [ "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l
-      | "|"; L1 case0 SEP "|"{l} -> bar_of_list l 
+      [ (* "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l *)
+      (* |  *)"|"; L1 case0 SEP "|"{l} -> bar_of_list l 
       | pat{p}; "->"; exp{e} -> `Case(_loc,p,e) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
@@ -550,11 +550,11 @@ let apply () = begin
         [ S{p1}; ".."; S{p2} -> `PaRng(_loc,p1,p2) ]
        "apply" LA
         [ pat_constr{p1}; S{p2} -> (*FIXME *)
-          match p2 with
-            [ {| ($par:p) |} ->
+          (match p2 with
+          | {| ($par:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
                 (list_of_com p []) (* precise *)
-            | _ -> {|$p1 $p2 |}  ]
+          | _ -> {|$p1 $p2 |})  
         | pat_constr{p1} -> p1
         | "lazy"; S{p} -> `Lazy (_loc, p)  ]
        "simple"
@@ -773,14 +773,14 @@ let apply () = begin
       dot_lstrings:
       [ `Lid i -> (`Sub[],i)
       | `Uid i ; "." ; S {xs} ->
-          match xs with
-          [(`Sub xs,v) -> (`Sub [i::xs],v)
-          | _ -> raise (XStream.Error "impossible dot_lstrings")]  
+          (match xs with
+          |(`Sub xs,v) -> (`Sub [i::xs],v)
+          | _ -> raise (XStream.Error "impossible dot_lstrings"))
 
       | "."; `Uid i; "."; S{xs} ->
           match xs with
-          [(`Sub xs,v) -> (`Absolute [i::xs],v)
-          | _ -> raise (XStream.Error "impossible dot_lstrings") ]]
+          |(`Sub xs,v) -> (`Absolute [i::xs],v)
+          | _ -> raise (XStream.Error "impossible dot_lstrings") ]
 
       (* parse [A.B.(] *)
       module_longident_dot_lparen:
@@ -911,11 +911,8 @@ let apply () = begin
       | "#";"import"; dot_namespace{x};";;" -> 
           (FanToken.paths := [ `Absolute  x :: !FanToken.paths];
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
-
-      (* | stru{si}; ";"; S{(sil, stopped)} -> ([si :: sil], stopped) *)
       | stru{si}; ";;"; S{(sil, stopped)} -> ([si :: sil], stopped)
-      | stru{si}; (* ";;"; *) S{(sil, stopped)} -> ([si :: sil], stopped)            
-            (* FIXME merge with the above in the future*)            
+      | stru{si};  S{(sil, stopped)} -> ([si :: sil], stopped) (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
 
       (* used by [struct .... end]
@@ -967,9 +964,9 @@ let apply () = begin
         | "let"; opt_rec{r}; binding{bi}; "in"; exp{x} ->
               {| let $rec:r $bi in $x |}
         | "let"; opt_rec{r}; binding{bi} ->
-            match bi with
-            [ `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
-            | _ -> `Value(_loc,r,bi) ]
+            (match bi with
+            | `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
+            | _ -> `Value(_loc,r,bi))
         | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; exp{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
@@ -1029,14 +1026,14 @@ let apply () = begin
             {| val $override:o $mutable:mf $lab = $e |}
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
                 (* poly_type *)ctyp{t} ->
-                match o with
-                [ {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]                    
+                (match o with
+                | {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
+                | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                 (* poly_type *)ctyp{t} ->
-                match o with
-                [ {:override_flag@_||} -> `VirMeth (_loc, l, pf, t)
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual")]  
+                (match o with
+                | {:override_flag@_||} -> `VirMeth (_loc, l, pf, t)
+                | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
                 fun_binding{e} ->
@@ -1212,10 +1209,13 @@ let apply_ctyp () = begin
       | S{t1}; "and"; S{t2} ->  `And(_loc,t1,t2)
       |  type_ident_and_parameters{(n, tpl)}; "="; type_info{tk}; L0 constrain{cl}
         -> `TyDcl (_loc, n, tpl, tk,
-                   match cl with [[]-> `None _loc | _ -> `Some(_loc,and_of_list cl)])
+                   match cl with
+                   |[]-> `None _loc
+                   | _ -> `Some(_loc,and_of_list cl))
       | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} ->
           `TyAbstr(_loc,n,tpl,
-                   match cl with [[] -> `None _loc | _ -> `Some(_loc, and_of_list cl)])]
+                   match cl with
+                   |[] -> `None _loc | _ -> `Some(_loc, and_of_list cl))]
       type_info:
       [ type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
       | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
@@ -1258,8 +1258,8 @@ let apply_ctyp () = begin
         [ S{t1}; S{t2} ->
           let t = `App(_loc,t2,t1) in
           try (ident_of_ctyp t:>ctyp)
-          with [ Invalid_argument _ -> t
-               ]
+          with  Invalid_argument _ -> t
+               
         ]
        (* [mod_ext_longident] and [type_longident]
           | type_longident
@@ -1271,7 +1271,7 @@ let apply_ctyp () = begin
         [ S{t1}; "."; S{t2} ->
             try
               `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
-            with [ Invalid_argument s -> raise (XStream.Error s) ] ]
+            with Invalid_argument s -> raise (XStream.Error s) ]
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc

@@ -143,14 +143,14 @@ module List =
       if n < 0
       then invalid_arg "split_at n< 0"
       else (let (a,b) = aux n [] xs in ((rev a), b))
-    let rec find_map f =
-      function
+    let rec find_map f v =
+      match v with
       | [] -> raise Not_found
       | x::xs -> (match f x with | Some y -> y | None  -> find_map f xs)
     let fold_lefti f acc ls =
       fold_left (fun (i,acc)  x  -> ((i + 1), (f i acc x))) (0, acc) ls
-    let rec remove x =
-      function
+    let rec remove x v =
+      match v with
       | (y,_)::l when y = x -> l
       | d::l -> d :: (remove x l)
       | [] -> []
@@ -185,7 +185,7 @@ module List =
             | y::ys -> compose (f y) (loop ys) in
           loop xs
     let reduce_right compose = reduce_right_with ~compose ~f:(fun x  -> x)
-    let init n f = let open Array in to_list (init n f)
+    let init n f = (Array.init n f) |> Array.to_list
     let concat_map f lst = fold_right (fun x  acc  -> (f x) @ acc) lst []
     let rec filter_map f ls =
       match ls with

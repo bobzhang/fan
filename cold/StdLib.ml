@@ -145,8 +145,7 @@ class mapbase =
       fun mf_a  arr  -> Array.map (fun x  -> mf_a self x) arr
     method option :
       'a 'b . ('self_type -> 'a -> 'b) -> 'a option -> 'b option=
-      fun mf_a  oa  ->
-        match oa with | None  -> None | Some x -> Some (mf_a self x)
+      fun mf_a  -> function | None  -> None | Some x -> Some (mf_a self x)
     method arrow :
       'a0 'a1 'b0 'b1 .
         ('self_type -> 'a0 -> 'b0) ->
@@ -173,7 +172,7 @@ class iterbase =
     method array : 'a0 . ('self_type -> 'a0 -> unit) -> 'a0 array -> unit=
       fun mf_a  arr  -> Array.iter (fun x  -> mf_a self x) arr
     method option : 'a . ('self_type -> 'a -> unit) -> 'a option -> unit=
-      fun mf_a  oa  -> match oa with | None  -> () | Some x -> mf_a self x
+      fun mf_a  -> function | None  -> () | Some x -> mf_a self x
     method arrow :
       'a0 'a1 'b0 'b1 .
         ('self_type -> 'a0 -> unit) ->

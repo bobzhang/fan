@@ -87,12 +87,12 @@ let transition state =
 (* It will change the counter *)    
 let find_alloc tbl (counter: int ref ) x : int =
   try Hashtbl.find tbl x
-  with [Not_found ->      begin
+  with Not_found ->      begin
     let i = !counter ;
     let _ = incr counter ;
     let _ = Hashtbl.add tbl x i ;
     i
-  end]
+  end
  
 (* let part_tbl = Hashtbl.create 31 *)
 let part_id = ref 0
@@ -119,7 +119,7 @@ let compile ~part_tbl (rs: regexp array ) =
   let states_def = ref [] in
   let rec aux state =
     try Hashtbl.find states state
-    with [Not_found ->
+    with Not_found ->
       let i = !counter in begin 
         incr counter;
         Hashtbl.add states state i;
@@ -129,7 +129,7 @@ let compile ~part_tbl (rs: regexp array ) =
         let finals = Array.map (fun (_,f) -> List.mem f state) rs ;
         states_def := [(i, (part,targets,finals)) :: !states_def];
         i
-      end] in
+      end in
   let init = ref [] in begin 
     Array.iter (fun (i,_) -> init := add_node !init i) rs;
     ignore(aux !init);
@@ -220,19 +220,19 @@ let limit = 8192
 
 let decision_table l =
   let rec aux m accu = function
-    [ [ ((a,b,i) as x)::rem] when (b < limit && i < 255)-> 
+    | [ ((a,b,i) as x)::rem] when (b < limit && i < 255)-> 
 	aux (min a m) [x::accu] rem
-    | rem -> (m,accu,rem) ]  in
+    | rem -> (m,accu,rem)   in
   match aux max_int [] l  with
-  [ (_,[], _) -> decision l
+  | (_,[], _) -> decision l
   | (min,([(_,max,_)::_] as l1), l2) ->
       let arr = Array.create (max-min+1) 0 in begin 
         List.iter (fun (a,b,i) -> for j = a to b do arr.(j-min) <- i + 1 done) l1;
         Lte (min-1, Return (-1), Lte (max, Table (min,arr), decision l2))
-      end ]
+      end 
 
 let rec simplify min max = function
-  [ Lte (i,yes,no) ->
+  | Lte (i,yes,no) ->
       if i >= max then
         simplify min max yes 
       else
@@ -240,9 +240,9 @@ let rec simplify min max = function
           simplify min max no
         else
           Lte (i, simplify min i yes, simplify (i+1) max no)
-  | x -> x]
-		   
-    
+  | x -> x
+	
+        
 (*  the generated code depends on [next] [backtrack] [start] [Error] *)
 
 
@@ -340,8 +340,8 @@ let gen_definition _loc l =
     let (_,trans,final) = auto.(state) in
     if Array.length trans = 0 then
       match best_final final with
-      [ Some i -> {| $`int:i |}
-      | None -> assert false]
+      | Some i -> {| $`int:i |}
+      | None -> assert false
     else
       let f = mk_state_name state in
       {| $lid:f lexbuf |} in
@@ -359,18 +359,18 @@ let gen_definition _loc l =
     let body =
       {:exp'|
       match ($lid:p ($g.next lexbuf)) with
-      [ $cases ]  
+      | $cases 
       (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
       |} in
     let ret (body:exp) =
       {:binding| $lid:f = fun lexbuf -> $body |} in
     match best_final final with
-    [ None -> Some (ret body)
+    | None -> Some (ret body)
     | Some i -> 
 	if Array.length trans = 0 then (* {:binding||} *) None else
 	Some
           (ret
-	     {:exp'| begin  $g.mark lexbuf $`int:i;  $body end |}) ] in
+	     {:exp'| begin  $g.mark lexbuf $`int:i;  $body end |})  in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -395,10 +395,10 @@ let gen_definition _loc l =
   let (b,states) =
     let len = Array.length states in
     match len with
-    [ 1 ->
+    | 1 ->
       (`ReNil _loc,states.(0))
     | 0 -> failwithf "FanLexTools.states length = 0 "
-    | _ -> (`Recursive _loc, and_of_list (Array.to_list states)) ] in
+    | _ -> (`Recursive _loc, and_of_list (Array.to_list states))  in
   let cases =
     bar_of_list
       (Array.to_list cases @ [{:case'| _ -> raise $g.Error|}]) in
@@ -409,7 +409,7 @@ let gen_definition _loc l =
        let $rec:b $states in
        ( $g.start lexbuf;
          match $(lid:mk_state_name 0) lexbuf with
-         [ $cases ] )|}) in
+         | $cases  )|}) in
   {:exp'| fun lexbuf -> $rest |}
 
 

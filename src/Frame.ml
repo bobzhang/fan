@@ -59,7 +59,7 @@ let mapi_exp ?(arity=1) ?(names=[])
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_exp_of_ctyp (ty:ctyp) : exp =
   match ty with
-  [ `Par (_loc,t)  -> 
+  | `Par (_loc,t)  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
     let pat = EP.mk_tuple ~arity ~number:len in
@@ -70,7 +70,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
                   [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
       FanLoc.errorf _loc
-        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)]
+        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)
   
 (*
  @supported types type application: list int
@@ -147,17 +147,19 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
     [ (#ident' as id)  -> trans (Id.to_vid id)
     | `Quote(_loc,_,`Lid(_,s)) ->   tyvar s
     | `App _  as ty ->
-        match  list_of_app ty []  with
-        [ [ (#ident' as tctor) :: ls ] ->
-          appl_of_list [trans (Id.to_vid tctor) ::
+        begin
+          match  list_of_app ty []  with
+          | [ (#ident' as tctor) :: ls ] ->
+              appl_of_list [trans (Id.to_vid tctor) ::
                         (ls |> List.map
-                          (fun
-                            [ `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
-                            | t ->   {:exp'| fun self -> $(aux t) |} ])) ]
-        | _  ->
+                          (function
+                            | `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
+                            | t ->   {:exp'| fun self -> $(aux t) |} )) ]
+          | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
-              (Objs.dump_ctyp ty)]
+              (Objs.dump_ctyp ty)
+        end
     | `Arrow(_loc,t1,t2) -> 
         aux {:ctyp'| ($t1,$t2) arrow  |} 
     | `Par _  as ty ->
@@ -196,7 +198,7 @@ let exp_of_ctyp
     let res =
       let t = (* only under this case we need defaulting  *)
         if List.length res >= 2 && arity >= 2 then
-          match default info with [Some x-> [x::res] | None -> res ]
+          match default info with | Some x-> [x::res] | None -> res 
           (* [ default info :: res ] *)
         else res in
       List.rev t in 
@@ -229,11 +231,11 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
     let res = List.fold_left
       (fun  acc x ->
         match x with
-        [ (`variant (cons,args)) -> [f ("`"^cons,args)::acc]
-        | `abbrev (lid) ->  [simple lid :: acc ] ])  [] ls in
+        | (`variant (cons,args)) -> [f ("`"^cons,args)::acc]
+        | `abbrev (lid) ->  [simple lid :: acc ] )  [] ls in
   let t =
     if List.length res >= 2 && arity >= 2 then
-      match default info with [Some x-> [x::res] | None -> res ]
+      match default info with | Some x-> [x::res] | None -> res 
       (* [default info :: res] *)
     else res in
   List.rev t in
@@ -246,16 +248,16 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   let varf = basic_transform left_type_variable in
   let  f (var:decl_params) acc =
     match var with
-    [ `Quote(_,_,`Lid(_loc,s)) ->
+    | `Quote(_,_,`Lid(_loc,s)) ->
         {| fun $(lid: varf s) -> $acc |}
     | t  ->
-        FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t)] in
+        FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t) in
   match vars with
-  [`None _ -> (names <+ acc)
+  |`None _ -> (names <+ acc)
   |`Some(_,xs) ->
       let vars = list_of_com xs [] in
       List.fold_right f vars (names <+ acc)
-  ]
+  
   (* let xs  = list_of_com vars [] in *)
   (* List.fold_right f vars ( names <+ acc); *)
 
@@ -272,22 +274,22 @@ let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record ~destination ~result_type
     simple_exp_of_ctyp exp_of_ctyp exp_of_variant  tydcl :exp = 
     match (tydcl:typedecl) with 
-    [ `TyDcl (_, _, tyvars, ctyp, _constraints) ->
+    | `TyDcl (_, _, tyvars, ctyp, _constraints) ->
       (* let ctyp = *)
-       match ctyp with
-       [  `TyMan(_,_,_,repr) | `TyRepr(_,_,repr) ->
-         match repr with
-         [`Record(_loc,t) ->       
+       begin match ctyp with
+       |  `TyMan(_,_,_,repr) | `TyRepr(_,_,repr) ->
+         begin match repr with
+         | `Record(_loc,t) ->       
            let cols =  Ctyp.list_of_record t  in
            let pat = (EP.mk_record ~arity  cols  : pat)in
            let info =
              List.mapi
                (fun i x ->  match x with
-                 [ {col_label;col_mutable;col_ctyp} ->
+                {col_label;col_mutable;col_ctyp} ->
                      {re_info = (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) i col_ctyp  ;
                       re_label = col_label;
                       re_mutable = col_mutable}
-                 ] ) cols in
+                  ) cols in
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
@@ -298,19 +300,23 @@ let fun_of_tydcl
           (* for [exp_of_ctyp] appending names was delayed to be handled in mkcon *)
           mk_prefix ~names ~left_type_variable tyvars funct
        | t ->
-          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_type_repr t) ]
+          FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_type_repr t)
+         end
     | `TyEq(_,_,ctyp) ->
-        match ctyp with 
-        [ (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
+        begin match ctyp with 
+        | (#ident'  | `Par _ | `Quote _ | `Arrow _ | `App _ as x) ->
           let exp = simple_exp_of_ctyp x in
           let funct = eta_expand (exp+>names) arity  in
           mk_prefix ~names ~left_type_variable tyvars funct
         | `PolyEq(_,t) | `PolySup(_,t) | `PolyInf(_,t)|`PolyInfSup(_,t,_) -> 
             let case =  exp_of_variant result_type t  in
             mk_prefix ~names ~left_type_variable tyvars case
-        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (Objs.dump_ctyp t)]
-    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (Objs.dump_type_info t)]
-   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)]
+        | t -> FanLoc.errorf  (loc_of t)"fun_of_tydcl inner %s" (Objs.dump_ctyp t)
+        end
+    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl middle %s" (Objs.dump_type_info t)
+       end
+   | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)
+
 
 (* destination is [Str_item] generate [stru], type annotations may
    not be needed here
@@ -358,20 +364,22 @@ let stru_of_mtyps ?module_name ?cons_transform
       (* ~destination *)
       (simple_exp_of_ctyp_with_cxt cxt) in
   (* return new types as generated  new context *)
-  let fs (ty:types) : stru= match ty with
-    [ `Mutual named_types ->
-      (* let binding = *)
-      match named_types with
-      [ [] -> {:stru| let _ = ()|} (* FIXME *)
-      | xs -> begin 
-          List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
-          let binding = List.reduce_right_with
-              ~compose:(fun x y -> {:binding| $x and $y |} )
-              ~f:(fun (_name,ty) ->begin
-                mk_binding  ty;
-              end ) xs;
-         {:stru| let rec $binding |} 
-      end ]
+  let fs (ty:types) : stru=
+    match ty with
+    | `Mutual named_types ->
+        (* let binding = *)
+        begin match named_types with
+        | [] -> {:stru| let _ = ()|} (* FIXME *)
+        | xs -> begin 
+            List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
+            let binding = List.reduce_right_with
+                ~compose:(fun x y -> {:binding| $x and $y |} )
+                ~f:(fun (_name,ty) ->begin
+                  mk_binding  ty;
+                end ) xs;
+              {:stru| let rec $binding |} 
+        end
+        end
 
     | `Single (name,tydcl) -> begin 
         Hashset.add cxt name;
@@ -380,21 +388,24 @@ let stru_of_mtyps ?module_name ?cons_transform
           else `ReNil  _loc
         and binding = mk_binding  tydcl in 
         {:stru| let $rec:rec_flag  $binding |}
-    end ] in
+    end  in
   let item =
     match lst with
-    [[] -> {:stru|let _ = ()|}
-    | _ ->  sem_of_list (List.map fs lst ) ]  in
-  match module_name with
-  [ None -> item
-  | Some m -> {:stru| module $uid:m = struct $item end |} ]
+    | [] -> {:stru|let _ = ()|}
+    | _ ->  sem_of_list (List.map fs lst )   in
+      match module_name with
+      | None -> item
+      | Some m -> {:stru| module $uid:m = struct $item end |} 
 
 
- (*
-   Generate warnings for abstract data type
-   and qualified data type.
-   all the types in one module will derive a class 
-  *)
+            
+
+
+(*
+  Generate warnings for abstract data type
+  and qualified data type.
+  all the types in one module will derive a class 
+ *)
 let obj_of_mtyps
     ?cons_transform
     ?module_name
@@ -430,17 +441,17 @@ let obj_of_mtyps
       {:clfield| method $lid:name : $ty = $(f tydcl result_type) |}  in 
     let fs (ty:types) : clfield =
       match ty with
-      [ `Mutual named_types ->
+      | `Mutual named_types ->
         sem_of_list (List.map mk_clfield named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
-         [ Some n  -> begin
+         | Some n  -> begin
            let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
            {:clfield| method $lid:name : $ty= $(unknown n) |}
          end
-         | None ->  mk_clfield named_type ]] in 
+         | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
     let (extras,lst) = Ctyp.transform_mtyps lst in 
@@ -457,8 +468,8 @@ let obj_of_mtyps
           eprintf "@[%a@]@." FSig.pp_print_warning_type  v)
             tbl;
         match module_name with
-        [None -> v
-        |Some u -> {:stru| module $uid:u = struct $v  end  |} ]  
+        | None -> v
+        |Some u -> {:stru| module $uid:u = struct $v  end  |} 
       end 
   
   

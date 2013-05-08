@@ -26,8 +26,12 @@ let valid_float_lexeme s =
   let rec loop i =
     if i >= l
     then s ^ "."
-    else (match s.[i] with [ '0' .. '9' | '-' -> loop (i + 1) | _ -> s])
-  in loop 0
+    else
+      match s.[i] with
+      |'0' .. '9'
+      | '-' -> loop (i + 1)
+      | _ -> s in
+  loop 0
     
 let float_repres f =
   match classify_float f with

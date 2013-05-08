@@ -1,4 +1,3 @@
-(* open FanUtil; *)
 open LibUtil
 open Format  
 open Lexing
@@ -45,7 +44,7 @@ let print_lex_error ppf =  function
   | Comment_not_end ->
       fprintf ppf "this is not the end of a comment"
 
-            
+        
 let lex_error_to_string = to_string_of_printer print_lex_error
 
 let _ =
@@ -100,7 +99,7 @@ end
  *)
 
 type context =
-    { loc        :  FanLoc.position ; (* FanLoc.t  ; *)
+    { loc        :  FanLoc.position ;
      (* only record the start position when enter into a quotation or antiquotation*)
       in_comment : bool     ;
       quotations : bool     ;
@@ -165,7 +164,9 @@ let parse f c =
   f c c.lexbuf
     
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
+  let s =
+    parse_nested ~lexer:quotation
+      {c with loc = Lexing.lexeme_start_p  c.lexbuf} in
   let contents = String.sub s 0 (String.length s - retract) in
   `QUOTATION {FanToken.q_name     = name     ;
               q_loc      = loc      ;
@@ -179,9 +180,10 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
 let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let lexbuf = c.lexbuf in
   let pos = lexbuf.lex_curr_p in
-  let new_file = match file with
-  [ None -> pos.pos_fname
-  | Some s -> s] in
+  let new_file =
+    match file with
+    | None -> pos.pos_fname
+    | Some s -> s in
   lexbuf.lex_curr_p <-
     { pos with
       pos_fname = new_file;

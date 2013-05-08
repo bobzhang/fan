@@ -48,24 +48,24 @@ FanConfig.antiquotations := true;;
     with stru'
     let mk =
       match t with
-      [`static t -> let t = (t : vid :> exp ) in {:exp'| $t.mk |}
+      |`static t -> let t = (t : vid :> exp ) in {:exp'| $t.mk |}
       |`dynamic(x,t) ->
           let x = (x : vid :> exp) in
           let t = (t : vid :> exp ) in 
         (* {:exp'| $id:t.mk_dynamic $x |} *)
-        {:exp'|$t.mk_dynamic $x |} ] in   
+        {:exp'|$t.mk_dynamic $x |}  in   
     sem_of_list & List.map
       (fun
         (_loc,x,descr,ty) ->
         match (descr,ty) with
-        [(Some d,None) ->
+        |(Some d,None) ->
             {| let $lid:x = $mk $str:d |}
         | (Some d,Some typ) ->
             {| let $lid:x : $typ = $mk $str:d |}
         |(None,None) ->
             {| let $lid:x = $mk $str:x  |}
         | (None,Some typ) ->
-            {| let $lid:x : $typ = $mk $str:x  |} ] ) ls 
+            {| let $lid:x : $typ = $mk $str:x  |}  ) ls 
             
             (* {| $list:rest |} *) ]
   (* {[
@@ -198,10 +198,10 @@ FanConfig.antiquotations := true;;
   entry_name:
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> begin
     (match name with
-      [ Some x -> (let old = !AstQuotation.default in
+    | Some x -> (let old = !AstQuotation.default in
       (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
        `name old))
-    | None -> `non], mk_name _loc il(* (il: vid :> ident) *))
+    | None -> `non, mk_name _loc il)
   end]
 
   (* return an entry [FanGrammar.entry]
@@ -220,19 +220,16 @@ FanConfig.antiquotations := true;;
    *)
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
-    -> begin 
-      match n with
-      [`name old -> AstQuotation.default := old
-      | _ -> ()];
-        match (pos,levels) with
-        [(Some {:exp| `Level $_ |},`Group _) ->
-          failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~name:p ~pos ~levels]  
-    end
-   (* entry_name{(n,p)}; ":"; OPT position{pos}; level{l} -> begin *)
-   (*   match n with *)
-   (*   [`name old-> AstQuotation.default]   *)
-   (* end *)
+    ->
+      begin 
+        (match n with
+        |`name old -> AstQuotation.default := old
+        | _ -> ());
+        (match (pos,levels) with
+        |(Some {:exp| `Level $_ |},`Group _) ->
+            failwithf "For Group levels the position can not be applied to Level"
+        | _ -> mk_entry ~name:p ~pos ~levels)
+      end
   ]
 
   (* parse [position] and translate into [exp] node, fixme,
@@ -309,8 +306,10 @@ FanConfig.antiquotations := true;;
   (* return symbol with patterns (may override inferred patterns) *)
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
-    match p with [Some _ ->
-      {(s) with pattern = (p:  action_pattern option :>  pat option) } | None -> s]  ] 
+    match p with
+    |Some _ ->
+        {(s) with pattern = (p:  action_pattern option :>  pat option) }
+    | None -> s  ] 
 
   (* return symbol with pattern(inferred) or None  *)
   symbol:
@@ -320,8 +319,8 @@ FanConfig.antiquotations := true;;
     let styp = {:ctyp| $(s.styp) list   |} in 
     let text = mk_slist _loc
         (match x with
-          ["L0" -> false | "L1" -> true
-        | _ -> failwithf "only (L0|L1) allowed here"]) sep s in
+        |"L0" -> false | "L1" -> true
+        | _ -> failwithf "only (L0|L1) allowed here") sep s in
     mk_symbol ~text ~styp ~pattern:None
   |`Uid "OPT"; S{s}  ->
     let () = check_not_tok s in
@@ -346,13 +345,13 @@ FanConfig.antiquotations := true;;
       ~pattern:None
   | simple_pat{p} -> 
       let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat :>pat) in
-      match ls with
-      [ [] -> mk_tok _loc ~pattern:p (`Tok _loc)
+      (match ls with
+      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)
       | [(x,y)::ys] ->
         let restrict =
           List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
             {:exp| $x = $y |} ys  in  (* FIXME *)
-        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) ]
+        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) )
         (* | `Uid ("Uid"|"Lid" as x) ; `Ant ((""),s) -> *)
         (*    let i = AntiquotSyntax.parse_ident _loc s in *)
         (*    let lid = gen_lid () in  *)
@@ -385,14 +384,14 @@ FanConfig.antiquotations := true;;
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
     match v with
-    [ [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
+    | [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
     | [x::xs] ->
         `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
         (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
         (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
         (* `App(_loc,`Vrn(_loc,s),`Par(_loc,`Com(_loc,x,com_of_list xs))) *)
         (* {|$vrn:s ($x,$list:xs)|} *)
-    | _ -> assert false ]  ]
+    | _ -> assert false   ]
   internal_pat "pat":
   {
    "as"

@@ -81,7 +81,7 @@ let retype_rule_list_without_patterns _loc rl =
     | {prod = []; action = Some _} as r -> r
     | _ -> raise Exit ]) rl
   with
-    [ Exit -> rl ]
+     Exit -> rl 
 
 
 
@@ -194,7 +194,7 @@ let rec make_exp (tvar : string) (x:text) =
   with exp'
   let rec aux tvar x =
     match x with
-    [ `Smeta (_loc, n, tl, e, t) ->
+    | `Smeta (_loc, n, tl, e, t) ->
       let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
       let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
       let act = typing e (make_ctyp t tvar) in
@@ -202,11 +202,12 @@ let rec make_exp (tvar : string) (x:text) =
       (* {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |} *)
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
-        match  ts with
-        [  None -> if min then  {| `Slist1 $txt |} else {| `Slist0 $txt |} 
+        begin match  ts with
+        |  None -> if min then  {| `Slist1 $txt |} else {| `Slist0 $txt |} 
         | Some s ->
             let x = aux tvar s.text in
-            if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |} ]
+            if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |}
+        end
     | `Snext _loc ->  {| `Snext |}
     | `Sself _loc ->  {| `Sself|}
     | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
@@ -216,11 +217,11 @@ let rec make_exp (tvar : string) (x:text) =
                 ($(n.exp) : '$(lid:n.tvar) $(id:(gm(): vid :> ident)).t ))|}
           (* {| ($(id:gm()).obj *)
           (*       ($(n.exp) : $(id:(gm()(\* : vid :> ident *\))).t '$(lid:n.tvar)))|} *) in 
-        match lev with
-       [ Some lab ->
-         {| `Snterml ($obj,$str:lab)|}
-       | None ->
-           if n.tvar = tvar then {| `Sself|} else {| `Snterm $obj |} ]
+        begin match lev with
+        | Some lab -> {| `Snterml ($obj,$str:lab)|}
+        | None ->
+           if n.tvar = tvar then {| `Sself|} else {| `Snterm $obj |}
+        end
     | `Sopt (_loc, t) -> {| `Sopt $(aux "" t) |}
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
@@ -228,7 +229,7 @@ let rec make_exp (tvar : string) (x:text) =
         {| $((gm():vid:>exp)).srules $(make_exp_rules _loc rl "") |}
         (* {| $(id:gm()).srules $(make_exp_rules _loc rl "") |} *)
     | `Stok (_loc, match_fun, attr, descr) ->
-      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |} ] in aux  tvar x
+      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |}  in aux  tvar x
 
 
 (* the [rhs] was computed, compute the [lhs]
@@ -260,31 +261,34 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
   let locid = {:pat| $(lid:!FanLoc.name) |} in 
   let act =
     match act with
-    [ Some act -> act | None -> {| () |} ] in
+    | Some act -> act | None -> {| () |}  in
   (* collect the patterns *)
   let (_,tok_match_pl) =
     List.fold_lefti
       (fun i ((oe,op) as ep)  x -> match x with 
-      [ {pattern=Some p ; text=`Stok _;_ } ->
+      | {pattern=Some p ; text=`Stok _;_ } ->
           let id = prefix ^ string_of_int i in
           ([ {|$lid:id|} :: oe], [p:: op])
-      | _ ->  ep ]  ) ([],[])  psl in
+      | _ ->  ep   ) ([],[])  psl in
   let e =
     let e1 = {| ($act : '$lid:rtvar ) |} in
       match tok_match_pl with
-      [ ([],_) ->  {| fun ($locid :FanLoc.t) -> $e1 |}
+      | ([],_) ->
+          {| fun ($locid :FanLoc.t) -> $e1 |}
       | (e,p) ->
           let (exp,pat) =
-            match (e,p) with [([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p)] in
+            match (e,p) with
+            | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
           {|fun ($locid :FanLoc.t) ->
-            match $exp with [ $(pat:pat) -> $e1 | _ -> failwith $`str:action_string
-           (* assert false *)]|} ] in
+            match $exp with
+            | $(pat:pat) -> $e1
+            | _ -> failwith $`str:action_string |}  in
   let (_,txt) =
     List.fold_lefti
       (fun i txt s ->
         match s.pattern with
-        [Some {:pat'| ($_ $(par:{:pat@_| _ |}) as $p) |} ->
+        |Some {:pat'| ($_ $(par:{:pat@_| _ |}) as $p) |} ->
             let p = typing (p:alident :> pat)(* {:pat'| $(id:(p:>ident)) |} *)
 
                 (make_ctyp s.styp tvar)  in
@@ -296,7 +300,7 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
         | Some _ ->
             let p =
               typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
-            {| fun $p -> $txt |} ])  e psl in
+            {| fun $p -> $txt |} )  e psl in
   {| $((gm():vid:>exp)).mk_action $txt |}
 
 let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp) =
@@ -320,8 +324,8 @@ let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
           {:exp'| $((gm():vid:>exp)).delete_rule $e $b |}
           (* {:exp'| $(id:gm()).delete_rule $e $b |} *)) symbolss in
   match symbolss with
-  [[] -> {| () |}
-  |_ -> seq_sem rest ]
+  | [] -> {| () |}
+  |_ -> seq_sem rest 
   (* seq (sem_of_list rest); *)
   
 (* given the entry of the name, make a name *)
@@ -352,18 +356,18 @@ let text_of_entry (e:entry) :exp =  with exp'
     {| ($(x.exp) : '$(lid:x.tvar) $(id:(gm():vid :> ident)).t)  |}   in
   let pos =
     match e.pos with
-    [ Some pos -> {| Some $pos |} 
-    | None -> {| None |}  ] in
+    | Some pos -> {| Some $pos |} 
+    | None -> {| None |}   in
     let apply =
       (fun level  ->
         let lab =
           match level.label with
-          [ Some lab ->   {| Some $str:lab |}
-          | None ->   {|None|} ]  in
+          | Some lab ->   {| Some $str:lab |}
+          | None ->   {|None|}   in
         let ass =
           match level.assoc with
-          [ Some ass ->   {| Some $ass |}
-          | None ->    {|None|} ]  in
+          | Some ass ->   {| Some $ass |}
+          | None ->    {|None|}   in
           let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
           let prod = make_exp_rules _loc rl e.name.tvar in
           (* generated code of type [olevel] *)
@@ -390,22 +394,20 @@ let text_of_entry (e:entry) :exp =  with exp'
 let let_in_of_extend _loc (gram: vid option ) locals  default =
   let entry_mk =
     match gram with
-    [ Some g -> let g = (g:vid :> exp) in
+    | Some g -> let g = (g:vid :> exp) in
     {:exp'| $((gm():vid:>exp)).mk_dynamic $g |}
     (* {:exp'| $(id:gm()).mk_dynamic $g |} *)
     | None   -> (* {:exp'| $(id:gm()).mk |} *)
-        {:exp'| $((gm():vid:>exp)).mk |}
-    ] in
-  let local_binding_of_name = fun
-    [ {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
+        {:exp'| $((gm():vid:>exp)).mk |} in
+  let local_binding_of_name = function
+    | {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
       {:binding'| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) |}
-    | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp) ]  in
+    | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
   match locals with
-  [ None 
-  | Some [] -> default
+  | None | Some [] -> default
   | Some ll ->
       let locals = and_of_list (List.map local_binding_of_name ll)  in
-      {:exp'| let grammar_entry_create = $entry_mk in let $locals in $default |}  ]  
+      {:exp'| let grammar_entry_create = $entry_mk in let $locals in $default |}    
 
 (* the [locals] is local entry name list,
    [el] is entry list
@@ -421,15 +423,15 @@ let text_of_functorial_extend _loc  gram locals el =
     let el =
       List.map  text_of_entry el  in
     match el with
-    [ [] -> {:exp| () |}
-    | _ -> seq_sem el  ]  in
+    | [] -> {:exp| () |}
+    | _ -> seq_sem el    in
   let_in_of_extend _loc gram locals  args
 
 
 (* generate Stok *)  
 let mk_tok _loc ?restrict ~pattern styp = with exp
  match restrict with
- [ None ->
+ | None ->
    let no_variable = Objs.wildcarder#pat pattern in
    let match_fun =
      if is_irrefut_pat no_variable
@@ -446,14 +448,16 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
        {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
      let descr = string_of_pat pattern in
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
-     {text; styp; pattern = Some p'} ] 
+     {text; styp; pattern = Some p'} 
    
 let sfold ?sep _loc  (ns:string list )  f e s = with ctyp
   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
-  let suffix = match sep with [None -> ""|Some  _ -> "sep"] in
+  let suffix =
+    match sep with
+    | None -> ""|Some  _ -> "sep" in
   let n = List.hd ns in 
   let foldfun =
-    try List.assoc n fs ^ suffix  with [Not_found -> invalid_arg "sfold"] in
+    try List.assoc n fs ^ suffix  with Not_found -> invalid_arg "sfold" in
   let styp = {| '$(lid:new_type_var ()) |} in
   let e =
     {:exp'| $((gm():vid:>exp)).$lid:foldfun $f $e |}
@@ -461,7 +465,7 @@ let sfold ?sep _loc  (ns:string list )  f e s = with ctyp
   let( t:styp) =
     {| ($(s.styp), $styp) $(`Type {|  _ $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) |})
        |} in 
-  let text = `Smeta _loc ns (match sep with [None -> [s.text] | Some sep -> [s.text;sep.text] ])  e t   in 
+  let text = `Smeta _loc ns (match sep with | None -> [s.text] | Some sep -> [s.text;sep.text] )  e t   in 
   {text ; styp ; pattern = None } 
 
 

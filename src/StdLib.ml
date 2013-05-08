@@ -93,9 +93,9 @@ class mapbase = object (self:'self_type)
     fun mf_a arr->
       Array.map (fun x -> mf_a self x) arr;
   method option: ! 'a 'b. ('self_type -> 'a -> 'b) -> ('a option -> 'b option) =
-    fun mf_a oa -> match oa with
-      [None -> None
-      |Some x -> Some (mf_a self x)];
+    fun mf_a -> function 
+      |None -> None
+      |Some x -> Some (mf_a self x);
   method arrow: ! 'a0 'a1 'b0 'b1 .
       ('self_type -> 'a0 -> 'b0) -> ('self_type -> 'a1 -> 'b1) ->
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
@@ -115,9 +115,9 @@ class iterbase = object(self:'self)
       Array.iter (fun x -> mf_a self x) arr;
   method option:
       ! 'a . ('self_type -> 'a -> unit) -> ('a option -> unit ) =
-    fun mf_a oa -> match oa with
-      [None -> ()
-      |Some x -> mf_a self x ];
+    fun mf_a -> function 
+      |None -> ()
+      |Some x -> mf_a self x ;
   method arrow: ! 'a0 'a1 'b0 'b1 .
       ('self_type -> 'a0 -> unit) -> ('self_type -> 'a1 -> unit) ->
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
@@ -136,10 +136,11 @@ class eqbase = object(self:'self)
     fun mf_a xs ys -> Array.for_all2  (mf_a self) xs ys ;
   method option:
       ! 'a . ('self_type -> 'a -> 'a-> bool) -> ('a option -> 'a option -> bool ) =
-    fun mf_a x y-> match (x, y) with
-    [(None,None) -> true
-    |(Some x,Some y) -> (mf_a self x y)
-    | (_,_) -> false ];
+    fun mf_a x y->
+      match (x, y) with
+      |(None,None) -> true
+      |(Some x,Some y) -> (mf_a self x y)
+      | (_,_) -> false ;
 
   method arrow: ! 'a0 'a1 'b0 'b1 .
       ('self_type -> 'a0 -> bool) -> ('self_type -> 'a1 -> bool) ->
@@ -156,11 +157,12 @@ class mapbase2 = object (self:'self_type)
   method list:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
               'a0 list  -> 'a0 list  -> 'b0 list =
-          fun mf_a x y-> match (x,y) with 
-            [ ([],[]) -> []
+          fun mf_a x y->
+            match (x,y) with 
+            | ([],[]) -> []
             | ([a0:: a1], [b0 :: b1] ) ->
                 [(mf_a self a0 b0) ::  (self#list mf_a a1 b1)]
-            | (_, _) -> invalid_arg "map2 failure" ];
+            | (_, _) -> invalid_arg "map2 failure" ;
   method array:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
               'a0 array -> 'a0 array -> 'b0 array =
@@ -180,11 +182,11 @@ class mapbase2 = object (self:'self_type)
   method option:! 'a0 'b0 . ('self_type -> 'a0 -> 'a0 -> 'b0) ->
     'a0 option -> 'a0 option -> 'b0 option = fun mf_a x y ->
       match (x,y) with
-      [(Some x,Some y) -> Some (mf_a self x y)
-      | (_,_) -> None];
+      |(Some x,Some y) -> Some (mf_a self x y)
+      | (_,_) -> None;
   method ref: !'a0 'b0. ('self_type -> 'a0 -> 'a0 -> 'b0) ->
     'a0 ref -> 'a0 ref -> 'b0 ref = fun mf_a x y -> match (x,y) with
-     [((* {val=a},{val=b} *)x,y)->  ref (mf_a self !x !y)(* {val=mf_a self a b } *)];
+     ((* {val=a},{val=b} *)x,y)->  ref (mf_a self !x !y)(* {val=mf_a self a b } *);
       
   method arrow: ! 'a0 'b0 'a1 'b1. ('self_type -> 'a0 -> 'a0 ->'b0) ->
     ('self_type -> 'a1 -> 'a1->'b1) ->
@@ -232,11 +234,12 @@ class foldbase2 = object (self:'self_type)
   method option: ! 'a0. ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
     'a0 option -> 'a0 option -> 'self_type = fun mf_a lx ly ->
       match (lx,ly) with
-      [ (Some x,Some y) -> mf_a self x y
-      | (_,_) -> self ];
+      | (Some x,Some y) -> mf_a self x y
+      | (_,_) -> self ;
   method ref: !'a0.('self_type -> 'a0 -> 'a0 -> 'self_type) ->
-    'a0 ref -> 'a0 ref -> 'self_type = fun mf_a x y -> match (x,y) with
-      [ (a, b) -> (mf_a self !a !b) ];
+    'a0 ref -> 'a0 ref -> 'self_type =
+      fun mf_a x y ->
+      match (x,y) with (a, b) -> (mf_a self !a !b) ;
   method arrow: !'a0 'a1.
       ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
         ('self_type -> 'a1 -> 'a1 -> 'self_type) ->

@@ -41,7 +41,7 @@ let revise_parser str _bol =
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
       as x -> raise x
-  | FanLoc.Exc_located (loc,y) ->
+  | FanLoc.Exc_located (_loc,y) ->
       UTop.Error ([(0, 0)], (Printexc.to_string y))
 
 let normal () =

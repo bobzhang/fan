@@ -184,17 +184,17 @@ let traversal () : traversal  = object (self:'self_type)
             ->
               let mtyps =
                 match filter with
-                [Some x -> apply_filter x mtyps
-                |None -> mtyps] in
+                |Some x -> apply_filter x mtyps
+                |None -> mtyps in
                 let code = transform mtyps in 
                 match position with
-                [Some x ->
+                |Some x ->
                   let (name,f) = Filters.make_filter (x,code) in begin 
                     AstFilters.register_stru_filter (name,f);
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |None -> {| $acc; $code |} ])  !FanState.current_filters 
+                |None -> {| $acc; $code |} )  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
       {:mexp| struct $result end |}  
@@ -319,7 +319,7 @@ include_quot:
       let _ = $restore in 
       $lid:res    
     end with
-      [ $lid:exc -> (begin $restore ; raise $lid:exc end)]
+    | $lid:exc -> (begin $restore ; raise $lid:exc end)
   |}
 
  ]

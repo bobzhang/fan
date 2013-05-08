@@ -174,13 +174,13 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
       if Tools.eq_symbol s node then
         Some (Node { x with son = insert sl son})
       else
-        match try_insert s sl brother with
-        [ Some y -> Some (Node {x with brother=y})
+        (match try_insert s sl brother with
+        | Some y -> Some (Node {x with brother=y})
         | None ->
             if higher node s || (derive_eps s && not (derive_eps node)) then
               (* node has higher priority *)
               Some (Node {x with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
-            else None ]
+            else None )
     | LocAct (_, _) | DeadEnd -> None 
   and  insert_in_tree s sl tree =
     match try_insert s sl tree with
@@ -245,33 +245,35 @@ end
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
 let insert_olevels_in_levels entry position olevels =
-  let elev = match entry.edesc with
-    [ Dlevels elev -> elev
+  let elev =
+    match entry.edesc with
+    | Dlevels elev -> elev
     | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
-    match olevels with
-    [ [] -> elev
-    | [_::_] -> 
-        let (levs1, make_lev, levs2) = find_level ?position entry  elev in
-        match make_lev with
-        [Some (_lev,_n) ->
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename  in
+  match olevels with
+  | [] -> elev
+  | [_::_] -> 
+      let (levs1, make_lev, levs2) = find_level ?position entry  elev in
+      match make_lev with
+      | Some (_lev,_n) ->
           failwithf "Insert group levels in to a specific lev:%s" entry.ename
-        | None -> levs1 @ List.map level_of_olevel olevels @ levs2] ]
+      | None -> levs1 @ List.map level_of_olevel olevels @ levs2 
 
 
 let insert_olevel entry position olevel =
-  let elev = match entry.edesc with
-    [ Dlevels elev -> elev
+  let elev =
+    match entry.edesc with
+    | Dlevels elev -> elev
     | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename ] in
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename  in
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
-    [Some (lev,_n) -> merge_level lev olevel
-    |None -> level_of_olevel olevel] in
-    levs1 @ [l1 :: levs2] 
+    | Some (lev,_n) -> merge_level lev olevel
+    | None -> level_of_olevel olevel in
+  levs1 @ [l1 :: levs2] 
 
-    
+            
 (* for the side effects,
    check whether the [gram]  is identical
    and insert the [keywords] here 
@@ -282,21 +284,23 @@ and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
 and scan_product entry (symbols,x) = begin
   (List.map
-    (fun symbol -> begin
-      let keywords =using_symbol entry.egram symbol [] ;
-      let diff = let open SSet in
-        elements & diff (of_list keywords) !(entry.egram.gkeywords) ;
-      if diff <> [] then begin
-        failwithf
-         "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
-          (List.reduce_left (^) diff);
-      end;
-      check_gram entry symbol;
-      match symbol with [`Snterm e when e == entry -> `Sself | _ -> symbol]
-      end) symbols,x)
+     (fun symbol -> begin
+       let keywords =using_symbol entry.egram symbol [] ;
+         let diff = let open SSet in
+         elements & diff (of_list keywords) !(entry.egram.gkeywords) ;
+         if diff <> [] then begin
+           failwithf
+             "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
+             (List.reduce_left (^) diff);
+         end;
+         check_gram entry symbol;
+         match symbol with
+         |`Snterm e when e == entry -> `Sself
+         | _ -> symbol
+     end) symbols,x)
 end
 
-  
+    
 (* mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future
  *)    

@@ -128,19 +128,19 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     List.fold_right
       (fun {info_exp=exp;pat0;ty;_} res ->
         match (ty:ctyp) with
-        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
              res
-        | _ -> {|let $pat:pat0 = $exp in $res |}]) params' result in
+        | _ -> {|let $pat:pat0 = $exp in $res |}) params' result in
   let mk_tuple params =
     let result = 
       params |> List.map (fun [{exp0; _ } -> exp0]) |> tuple_com in
     List.fold_right
       (fun {info_exp=exp;pat0;ty;_} res ->
         match ty with
-        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) ->  res
-        | _ -> {|let $pat:pat0 = $exp in $res |}]) params result in 
+        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in 
   let mk_record cols =
     let result = 
     cols |> List.map (fun [ {re_label; re_info={exp0;_ } ; _ }  ->
@@ -148,10 +148,10 @@ let gen_strip = with {pat:ctyp;exp:exp'}
     List.fold_right
       (fun {re_info={info_exp=exp;pat0;ty;_};_} res ->
         match ty with
-        [ `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
+        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
           res
-        | _ -> {|let $pat:pat0 = $exp in $res |}]) cols result in
+        | _ -> {|let $pat:pat0 = $exp in $res |}) cols result in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ();;
 
@@ -269,8 +269,7 @@ let mk_variant_iter _cons params :exp = with exp'
   | [] -> unit _loc 
   | _ -> 
       let lst = params
-        |> List.map (fun [{name_exp; id_exp;_} ->
-        {| $name_exp $id_exp |}]) in
+        |> List.map (fun {name_exp; id_exp;_} -> {| $name_exp $id_exp |}) in
         seq_sem lst 
 
 let mk_tuple_iter params : exp =
@@ -280,7 +279,7 @@ let mk_record_iter cols = with exp'
   let lst =
     cols |>
     List.map
-    (fun [{re_info={name_exp; id_exp;_};_} -> {| $name_exp $id_exp |}]) in
+    (fun {re_info={name_exp; id_exp;_};_} -> {| $name_exp $id_exp |}) in
   seq_sem lst
 
 
@@ -305,38 +304,39 @@ let generate (mtyps:FSig.mtyps) : stru =
   let tbl = Hashtbl.create 30 in
   let aux (_,ty) =
     match (ty:typedecl) with
-    [`TyDcl(_,_,_,`TyEq(_,_,`PolyEq(_,t)),_) ->
+    |`TyDcl(_,_,_,`TyEq(_,_,`PolyEq(_,t)),_) ->
       let branches = Ctyp.view_variant t in
       List.iter
-        (fun
-          [`variant (s,ls) ->
-            let arity = List.length ls in
-            let try v = Hashtbl.find tbl s in
-            if v <> arity then
-              failwithf "%s has diffireent arities" s
-            with 
-              [Not_found -> Hashtbl.add tbl s arity]
-          | _ -> ()]) branches
-    | _ -> FanLoc.errorf (loc_of ty) "generate mtyps %s" (Objs.dump_typedecl ty) ] in   
+        (function
+          |`variant (s,ls) ->
+              (let arity = List.length ls in
+              let try v = Hashtbl.find tbl s in
+              if v <> arity then
+                failwithf "%s has diffireent arities" s
+              with 
+                Not_found -> Hashtbl.add tbl s arity)
+          | _ -> ()) branches
+    | _ -> FanLoc.errorf (loc_of ty) "generate mtyps %s" (Objs.dump_typedecl ty)  in   
   let _ =
-    List.iter (fun [`Mutual tys ->
-      List.iter aux tys
-         |`Single t -> aux t]) mtyps in
+    List.iter
+      (function
+        |`Mutual tys -> List.iter aux tys
+        |`Single t -> aux t) mtyps in
   let case = Hashtbl.fold
     (fun key arity acc ->
       if arity= 1 then
         let case = {:case'| $vrn:key _loc -> _loc |} in
         match acc with
-        [None ->   Some case 
+        |None ->   Some case 
         |Some acc ->
-          Some (`Bar(_loc,case,acc)) ]
+          Some (`Bar(_loc,case,acc)) 
       else if arity > 1 then 
         let pats =
           [ {:pat'| _loc|} :: List.init (arity - 1) (fun _ -> {:pat| _ |}) ] in
         let case = {:case'| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
         match acc with
-        [None -> Some case
-        |Some acc -> Some(`Bar(_loc,case,acc))]  
+        |None -> Some case
+        |Some acc -> Some(`Bar(_loc,case,acc))
       else failwithf "arity=0 key:%s" key
         
     ) tbl None  in
@@ -355,9 +355,10 @@ Typehook.register
 let generate (mtyps:FSig.mtyps) : stru =
   let tys :  string list =
     List.concat_map
-      (fun x -> match x with
-      [`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
-      |`Single (x,_) -> [x] ]) mtyps in
+      (fun x ->
+        match x with
+        |`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
+        |`Single (x,_) -> [x] ) mtyps in
   let typedecl =
     let x  = bar_of_list (List.map (fun x -> uid _loc (String.capitalize x)) tys) in (* FIXME *)
     {:stru'@here| type 'a tag = | $x  |} (* see PR 5961*) in
@@ -417,9 +418,9 @@ let generate (mtyps:FSig.mtyps) : stru = with stru
      let obj = Objs.map_row_field begin fun 
        [ {:row_field'| $vrn:x of loc |} -> {:row_field'| $vrn:x |}
        | {:row_field'| $vrn:x of (loc * $y ) |}->
-           match y with
-          [ {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $par:y |}
-          | _ -> {:row_field'| $vrn:x of $y |}]
+           (match y with
+           | {:ctyp'| $_ * $_ |} -> {:row_field| $vrn:x of $par:y |}
+           | _ -> {:row_field'| $vrn:x of $y |})
        | x -> x ]
      end in 
      obj#typedecl ty

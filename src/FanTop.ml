@@ -11,7 +11,7 @@ let wrap parse_fun lb =
   [ [< (`EOI, _) >] -> raise End_of_file
   | [< >] -> parse_fun token_stream ]
   with
-  [ End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
   | (FanLoc.Exc_located (loc, y) ) -> begin
       Format.eprintf "@[<0>%a%s@]@."
@@ -21,7 +21,7 @@ let wrap parse_fun lb =
    | x ->  begin 
       Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
       raise Exit
-  end ] ;;
+  end 
 
 
 let toplevel_phrase token_stream =
@@ -39,13 +39,13 @@ let use_file token_stream =
       let (pl, stopped_at_directive) = Gram.parse_origin_tokens Syntax.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
-        [ [ {| #load $str:s |} ] ->
+        | [ {| #load $str:s |} ] ->
             begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
         | [ {| #directory $str:s |} ] ->
             begin  Topdirs.dir_directory s; loop ()  end
         | [ {| #default_quotation $str:s |} ] ->
             begin AstQuotation.set_default (FanToken.resolve_name (`Sub [],s)); loop () end 
-        | _ -> (pl, false) ]
+        | _ -> (pl, false) 
       else (pl, true) in
   let (pl0, eoi) = loop () in
   let pl =

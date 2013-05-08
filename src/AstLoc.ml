@@ -75,13 +75,13 @@ let rec appl_of_list x  =
   
 let rec list_of_and x acc =
   match x with
-  [`And(_,x,y) -> list_of_and x (list_of_and y acc)
-  | _ -> [x::acc] ]
+  |`And(_,x,y) -> list_of_and x (list_of_and y acc)
+  | _ -> [x::acc] 
 
 let rec list_of_com x acc =
   match x with
-  [`Com(_,x,y) -> list_of_com x (list_of_com y acc)
-  | _ -> [x::acc]]
+  |`Com(_,x,y) -> list_of_com x (list_of_com y acc)
+  | _ -> [x::acc]
     
 
 
@@ -156,16 +156,16 @@ let tuple_com_unit _loc = fun
   
 let tuple_com y=
   match y with 
-  [[] -> failwith "tuple_com empty"
+  |[] -> failwith "tuple_com empty"
   |[x] -> x
   | [x::_] ->
       let _loc = x <+> List.last y in
-      `Par _loc (com_of_list y) ]
+      `Par _loc (com_of_list y) 
     
 let tuple_sta y =
   match y with
-   [ [] -> failwith "tuple_sta empty"
-   | [x] -> x
-   | [x::_] ->
+  | [] -> failwith "tuple_sta empty"
+  | [x] -> x
+  | [x::_] ->
        let _loc =  x <+> List.last y in 
-       `Par _loc (sta_of_list y)]
+       `Par _loc (sta_of_list y)
