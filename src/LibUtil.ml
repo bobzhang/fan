@@ -165,20 +165,20 @@ module List = struct
     let rec aux l ((n,acc) as r) =
       match l with
       |[] -> r 
-      |[x::xs] -> aux xs (n+1,[x::acc]) in
+      |x::xs -> aux xs (n+1,[x::acc]) in
     aux l (0,[])
       
   let hd = function
     | [] -> failwith "hd"
-    | [a::_] -> a
+    | a::_ -> a
 
   let tl = function
     | [] -> failwith "List.tl"
-    | [_::l] -> l
+    | _::l -> l
           
   let safe_tl = function
     | [] -> []
-    | [_::l] -> l
+    | _::l -> l
           
   let null xs = xs = []
       
@@ -190,7 +190,7 @@ module List = struct
         ]}
        *)
   let rec drop n = function
-    | [_ :: l] when n > 0 -> drop (n-1) l
+    | _ :: l when n > 0 -> drop (n-1) l
     | l -> l
 
           (*
@@ -217,7 +217,7 @@ module List = struct
       | [] ->
           if n = 0 then (acc,[])
           else invalid_arg "Index past end of list"
-      | ([h::t ] as l) ->
+      | (h::t  as l) ->
           if n = 0 then (acc, l)
           else aux (n-1) [h::acc] t  in
     if n < 0 then invalid_arg "split_at n< 0"
@@ -228,7 +228,7 @@ module List = struct
   let rec find_map f v =
     match v with
     | [] -> raise Not_found
-    | [x :: xs] ->
+    | x :: xs ->
         match f x with
         | Some y -> y
         | None -> find_map f xs
@@ -243,8 +243,8 @@ module List = struct
       (*   fold_right (fun x (acc ) *)
   let rec remove x v =
     match v with 
-    | [(y, _) :: l] when y = x -> l
-    | [d :: l] -> [d :: remove x l]
+    | (y, _) :: l when y = x -> l
+    | d :: l -> [d :: remove x l]
     | [] -> []
 
   let iteri f lst =
@@ -258,20 +258,20 @@ module List = struct
   let reduce_left f lst =
     match lst with
     | [] -> invalid_arg "reduce_left length zero"
-    | [x::xs] ->
+    | x::xs ->
         let rec loop x xs =
           match xs with
           | [] -> x
-          | [y::ys] -> loop (f x y) ys in loop x xs
+          | y::ys -> loop (f x y) ys in loop x xs
           
   let reduce_left_with ~compose ~project lst =     
     match lst with
     | [] -> invalid_arg "reduce_left length zero"
-    | [x :: xs] ->
+    | x :: xs ->
         let rec loop x xs =
           match xs with
           | [] -> x
-          | [y :: ys] -> loop (compose x  (project y))  ys in
+          | y :: ys -> loop (compose x  (project y))  ys in
         loop (project x) xs
           
   let reduce_right_with ~compose ~f  lst =
@@ -282,7 +282,7 @@ module List = struct
           match xs with
           | [] -> assert false
           | [y] -> f y
-          | [y::ys] -> compose (f y) (loop ys)  in
+          | y::ys -> compose (f y) (loop ys)  in
         loop xs
           
   let reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x)
@@ -297,7 +297,7 @@ module List = struct
   let rec filter_map f ls =
     match ls with
     | [] -> []
-    | [x::xs] ->
+    | x::xs ->
         match f x with
         |Some y -> [y:: filter_map  f xs]
         |None -> filter_map f xs
@@ -306,7 +306,7 @@ module List = struct
     let rec aux n l acc =
       match l with
       | [] ->  acc
-      | [x::xs] ->
+      | x::xs ->
           if n = 1 then [x::acc]
           else aux (n-1) xs [x::acc] in
     if n <0 then invalid_arg "List.take_rev n<0"
@@ -498,14 +498,14 @@ module LStack = struct
   let pop_exn t =
     match t.elts with
     | [] -> raise Empty
-    | [x :: l] -> (set t l (t.length - 1); x)
+    | x :: l -> (set t l (t.length - 1); x)
 
   let pop t = try Some (pop_exn t) with |Empty -> None
 
   let top_exn t =
     match t.elts with
     | [] -> raise Empty
-    | [x :: _] -> x
+    | x :: _ -> x
 
   let top t = try Some (top_exn t) with |Empty -> None
 
@@ -1087,7 +1087,7 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
   (* the minimual [n] is 0 *)
   let peek_nth strm n   =
     let rec loop i = function
-      | [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
+      | x :: xs -> if i = 0 then Some x else loop (i - 1) xs
       | [] -> None  in
     if n < 0 then
       invalid_arg "XStream.peek_nth"
@@ -1155,7 +1155,7 @@ module ErrorMonad = struct
     let rec aux acc xs =
       match xs with
       | [] -> return  []
-      | [x :: xs] ->
+      | x :: xs ->
           (f x acc) >>=
           (fun x -> (aux (acc + 1) xs) >>= (fun xs -> return [x :: xs]))
     in aux 0 xs
@@ -1184,7 +1184,7 @@ module Unix = struct
   let gen_open_proc_full cmdargs input output error toclose =
     let cmd =
       match cmdargs with
-      | [x :: _] -> x
+      | x :: _ -> x
       | _ -> invalid_arg "Unix.gen_open_proc_full"  in
     let cmdargs = Array.of_list cmdargs in
     let cloexec = List.for_all try_set_close_on_exec toclose in

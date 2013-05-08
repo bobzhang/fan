@@ -27,12 +27,7 @@ let rec infix_kwds_filter = parser
 
 
 
-(* very ad-hoc trick*)  
-(* let is_revised ~exp ~sem_exp_for_list:(x: Gram.t _) = *)
-(*   try begin *)
-(*        {:delete| Gram exp: ["["; x; "::"; exp; "]"] |}; *)
-(*       true *)
-(*   end with [ Not_found -> false ]; *)
+
 (* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)
 (*   EXTEND Gram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)
 (*   fan_quots: *)

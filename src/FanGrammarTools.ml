@@ -196,7 +196,7 @@ let rec make_exp (tvar : string) (x:text) =
     match x with
     | `Smeta (_loc, n, tl, e, t) ->
       let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
-      let ns = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
+      let (ns:exp) = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
       let act = typing e (make_ctyp t tvar) in
       {| `Smeta ($ns, $el, ($((gm() : vid :> exp)).Action.mk $act )) |}
       (* {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |} *)

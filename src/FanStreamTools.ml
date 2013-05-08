@@ -150,7 +150,7 @@ let rec stream_pattern _loc epo e ekont = function
       (match epo with
       | Some ep -> {| let $ep = $(uid:gm()).count $lid:strm_n in $e |}
       | _ -> e )
-  | [(spc, err) :: spcl] ->
+  | (spc, err) :: spcl ->
       let skont =
         let ekont err =
           let str =
@@ -182,7 +182,7 @@ let stream_patterns_term _loc ekont tspel : exp =
   {| match $(peek_fun _loc) $lid:strm_n with | $pel  |} 
 
 let rec group_terms = function
-  | [([(SpTrm (_loc, p, w), None) :: spcl], epo, e) :: spel] ->
+  | ((SpTrm (_loc, p, w), None) :: spcl, epo, e) :: spel ->
     let (tspel, spel) = group_terms spel in
     ([(p, w, _loc, spcl, epo, e) :: tspel], spel)
   | spel -> ([], spel) 
@@ -193,7 +193,7 @@ let rec parser_cases _loc = function
   | [] -> {| raise $(uid:gm()).Failure |}
   | spel ->
       match group_terms spel with
-      | ([], [(spcl, epo, e) :: spel]) ->
+      | ([], (spcl, epo, e) :: spel) ->
           stream_pattern _loc epo e (fun _ -> parser_cases _loc spel) spcl
       | (tspel, spel) ->
           stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel 
@@ -239,20 +239,21 @@ let slazy _loc e =
       | _ -> {| fun _ -> $e |} )
   | _ -> {| fun _ -> $e |} 
 
+
 let rec cstream gloc =  function
   | [] -> let _loc = gloc in {| [< >] |}
   | [SeTrm (_loc, e)] ->
       if not_computing e
       then {| $(uid:gm()).ising $e |}
       else {| $(uid:gm()).lsing $(slazy _loc e) |}
-  | [SeTrm (_loc, e) :: secl] ->
+  | SeTrm (_loc, e) :: secl ->
       if not_computing e
       then {| $(uid:gm()).icons $e $(cstream gloc secl) |}
       else {| $(uid:gm()).lcons $(slazy _loc e) $(cstream gloc secl) |}
   | [SeNtr (_loc, e)] ->
       if not_computing e then e
       else {| $(uid:gm()).slazy $(slazy _loc e) |}
-  | [SeNtr (_loc, e) :: secl] ->
+  | SeNtr (_loc, e) :: secl ->
       if not_computing e then {| $(uid:gm()).iapp $e $(cstream gloc secl) |}
       else {| $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) |} 
-    
+          

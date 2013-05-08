@@ -33,7 +33,7 @@ let with_loc (parse_fun: 'b parse ) strm =
 let level_number entry lab =
   let rec lookup levn = function
     | [] -> failwithf "unknown level %s"  lab
-    | [lev :: levs] ->
+    | lev :: levs ->
         if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
@@ -216,7 +216,7 @@ let start_parser_of_levels entry =
   let rec aux clevn  (xs:  level list) : int ->  Action.t parse =
     match xs with 
     | [] -> fun _ -> fun _ -> raise XStream.Failure  
-    | [lev :: levs] ->
+    | lev :: levs ->
         let hstart = aux  (clevn+1) levs in
         match lev.lprefix with
         | DeadEnd -> hstart (* try the upper levels *)
@@ -250,7 +250,7 @@ let start_parser_of_entry entry =
 
 let rec continue_parser_of_levels entry clevn = function
   | [] -> fun _ _ _ ->  fun _ -> raise XStream.Failure
-  | [lev :: levs] ->
+  | lev :: levs ->
       let hcontinue = continue_parser_of_levels entry  (clevn+1) levs in
       match lev.lsuffix with
       | DeadEnd -> hcontinue

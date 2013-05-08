@@ -246,9 +246,9 @@ let apply () = begin
       | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
       fun_binding:
       { RA
-          [ "("; "type"; a_lident{i}; ")"; S{e} -> {| fun (type $i) -> $e |} 
+          [ "("; "type"; a_lident{i}; ")"; S{e} ->
+            `LocalTypeFun(_loc,i,e)
           | ipat{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
-
           | cvalue_binding{bi} -> bi  ] }
        lang:
        [ dot_lstrings{ls} -> 
@@ -288,7 +288,6 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             `LetOpen (_loc, (i:vid :> ident), e)
         | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
-            (* {| let try $rec:r $bi in $x with [ $a ] |} *)
               `LetTryInWith(_loc,r,bi,x,a)
         | "match"; S{e}; "with"; case{a} -> `Match (_loc, e, a)
         | "try"; S{e}; "with"; case{a} -> `Try (_loc, e, a)
@@ -335,19 +334,12 @@ let apply () = begin
         | S{e1}; infixop6{op}; S{e2} -> {| $op $e1 $e2 |} ]
           
        "obj" RA
-        [
-        (* FIXME fun and function duplicated *)      
-        (*  "fun"; "[";  L1 case0 SEP "|"{a}; "]" -> *)
-        (*    let cases = bar_of_list a in `Fun (_loc,cases) *)
-        (* | *) "fun"; "|";  L1 case0 SEP "|"{a}  ->
+        ["fun"; "|";  L1 case0 SEP "|"{a}  ->
            let cases = bar_of_list a in `Fun (_loc,cases)
-        (* | "function"; "[";  L1 case0 SEP "|"{a}; "]" -> *)
-        (*     let cases = bar_of_list a in `Fun(_loc,cases) *)
         | "function"; "|"; L1 case0 SEP "|"{a} ->
             let cases = bar_of_list a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e
         | "function"; fun_def{e} -> e
-
         | "object"; "(";pat{p}; ")"; class_structure{cst};"end" -> `ObjPat(_loc,p,cst)
         | "object"; "(";pat{p}; ")"; "end" -> `ObjPatEnd(_loc,p)
         | "object"; "(";pat{p};":";ctyp{t};")";class_structure{cst};"end" ->
@@ -378,11 +370,10 @@ let apply () = begin
         [ S{e1}; "."; "("; S{e2}; ")" -> `ArrayDot (_loc, e1, e2)
         | S{e1}; "."; "["; S{e2}; "]" -> `StringDot (_loc, e1, e2)
         | S{e1}; "."; "{"; comma_exp{e2}; "}" -> FanOps.bigarray_get _loc e1 e2
-        | S{e1}; "."; S{e2} -> (* `Dot (_loc, e1, e2) *)`Field(_loc,e1,e2)
+        | S{e1}; "."; S{e2} -> `Field(_loc,e1,e2)
         | S{e}; "#"; a_lident{lab} -> `Send (_loc, e, lab) ]
        "~-" NA
         [ "!"; S{e} ->  (* {| ! $e|} *) (* FIXME *)
-          (* `Field(_loc,e,`Id(_loc,`Lid(_loc,"contents"))) *)
           `Field(_loc,e,`Lid(_loc,"contents"))
         | prefixop{f}; S{e} -> `App (_loc, f, e) ]
        "simple"
@@ -405,6 +396,7 @@ let apply () = begin
         | vid{i} -> (i :vid :>exp) 
         | "`"; luident{s} -> `Vrn(_loc,s)
         | "["; "]" -> {| [] |} (* FIXME *)
+              
         | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last
         | "["; sem_exp_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> `ArrayEmpty(_loc)
@@ -436,6 +428,12 @@ let apply () = begin
             `Package_exp (_loc, me)
         | "("; "module"; mexp{me}; ":"; mtyp{pt}; ")" ->
             `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
+       sem_exp_for_list:
+       [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |} (* FIXME *)
+       | exp{e}; ";" -> fun acc -> {| [ $e :: $acc ] |}
+       | exp{e} -> fun acc -> {| [ $e :: $acc ] |} ]
+
+
        sequence: (*FIXME*)
        [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
          k  (`LetIn (_loc, rf, bi, e))
@@ -462,13 +460,8 @@ let apply () = begin
          `Lid(_loc,x)
          (* `Id(_loc,`Lid(_loc,x)) *) ] (* FIXME *)
        infixop0:
-       [  [ "or" | "||" ]{x} ->
-         `Lid(_loc,x)
-         (* `Id (_loc, `Lid (_loc, x)) *) ]
-       sem_exp_for_list:
-       [ exp{e}; ";"; S{el} -> fun acc -> {| [ $e :: $(el acc) ] |} (* FIXME *)
-       | exp{e}; ";" -> fun acc -> {| [ $e :: $acc ] |}
-       | exp{e} -> fun acc -> {| [ $e :: $acc ] |} ]
+       [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ]
+       
        comma_exp:
        [ S{e1}; ","; S{e2} -> `Com(_loc,e1,e2)
        | `Ant (("list" as n),s) -> mk_anti _loc ~c:"exp," n s
@@ -497,8 +490,7 @@ let apply () = begin
   with case
     {:extend|
       case:
-      [ (* "["; L1 case0 SEP "|"{l}; "]" -> bar_of_list l *)
-      (* |  *)"|"; L1 case0 SEP "|"{l} -> bar_of_list l 
+      [ "|"; L1 case0 SEP "|"{l} -> bar_of_list l 
       | pat{p}; "->"; exp{e} -> `Case(_loc,p,e) ]
       case0:
       [ `Ant (("case"|"list"| "anti"|"" as n),s) ->
@@ -548,6 +540,9 @@ let apply () = begin
         [ S{p1}; "|"; S{p2} -> `Bar(_loc,p1,p2) ]
        ".." NA
         [ S{p1}; ".."; S{p2} -> `PaRng(_loc,p1,p2) ]
+        "::" RA
+        [ S{p1}; "::"; S{p2} ->
+          `App (_loc, `App (_loc, `Uid (_loc, "::"), p1), p2)]   
        "apply" LA
         [ pat_constr{p1}; S{p2} -> (*FIXME *)
           (match p2 with
@@ -562,7 +557,6 @@ let apply () = begin
                 |"vrn"
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> mk_anti _loc ~c:"pat" n s
-        (* | ident{i} -> `Id (_loc, i) *)
         | vid{i} -> (i : vid :> pat)
         | `INT(_,s) ->  `Int (_loc, s)
         | `INT32(_,s) ->  `Int32 (_loc, s)
@@ -576,8 +570,10 @@ let apply () = begin
         | "-"; `NATIVEINT(_,s) -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
-        | "["; sem_pat_for_list{mk_list}; "::"; pat{last}; "]" -> mk_list last
+
+        (* | "["; sem_pat_for_list{mk_list}; "::"; pat{last}; "]" -> mk_list last *)
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
+              
         | "[|"; "|]" -> `ArrayEmpty(_loc)
         | "[|"; sem_pat{pl}; "|]" -> `Array(_loc,pl)
         | "{"; label_pat_list{pl}; "}" -> `Record(_loc,pl)
@@ -670,25 +666,31 @@ let apply () = begin
         | "?"; "("; ipat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
             (* {| ? ($p = $e) |} *)]
+       
        sem_pat:
        [`Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat;" n s
        | pat{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)
        | pat{p}; ";" -> p
        | pat{p} -> p ] 
        sem_pat_for_list:
-       [ pat{p}; ";"; S{pl} -> fun acc -> {| [ $p :: $(pl acc) ] |}
-       | pat{p}; ";" -> fun acc -> {| [ $p :: $acc ] |}
-       | pat{p} -> fun acc -> {| [ $p :: $acc ] |}  ]
+       [ pat{p}; ";"; S{pl} -> fun acc ->
+         `App(_loc, `App(_loc,`Uid(_loc,"::"),p),pl acc)
+         (* {| [ $p :: $(pl acc) ] |} *)
+       | pat{p}; ";" -> fun acc ->
+           `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)
+           (* {| [ $p :: $acc ] |} *)
+       | pat{p} -> fun acc ->
+           `App(_loc, `App(_loc,`Uid(_loc,"::"),p),acc)
+           (* {| [ $p :: $acc ] |} *)
+       ]
        pat_tcon:
        [ pat{p}; ":"; ctyp{t} -> {| ($p : $t) |}
        | pat{p} -> p ]
        ipat_tcon:
        [ `Ant((""|"anti" as n),s) -> mk_anti _loc  ~c:"pat" n s 
-       | a_lident{i} -> (* {|$(id:(i:>ident))|} *) (i : alident :> pat)
+       | a_lident{i} ->  (i : alident :> pat)
        | a_lident{i}; ":"; ctyp{t} ->
-           (`Constraint (_loc, (i : alident :>  pat), t) : pat)
-           (* {| ($(id:(i:>ident)) : $t) |} *)
-       ]
+           (`Constraint (_loc, (i : alident :>  pat), t) : pat)]
        comma_ipat:
        [ S{p1}; ","; S{p2} -> {| $p1, $p2 |}
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat," n s

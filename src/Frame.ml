@@ -149,7 +149,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
     | `App _  as ty ->
         begin
           match  list_of_app ty []  with
-          | [ (#ident' as tctor) :: ls ] ->
+          |  (#ident' as tctor) :: ls  ->
               appl_of_list [trans (Id.to_vid tctor) ::
                         (ls |> List.map
                           (function

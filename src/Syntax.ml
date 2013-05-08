@@ -100,7 +100,7 @@ let wrap directive_handler pa init_loc cs =
       let pl =
         match List.rev pl with
         | [] -> assert false
-        | [x :: xs] ->
+        | x :: xs ->
             match directive_handler x with
             | None -> xs
             | Some x -> [x :: xs] 

@@ -204,14 +204,14 @@ type decision_tree =
 let decision l =
   let l = List.map (fun (a,b,i) -> (a,b,Return i)) l in
   let rec merge2 = function
-    | [(a1,b1,d1) ; (a2,b2,d2) :: rest] ->
+    | (a1,b1,d1) :: (a2,b2,d2) :: rest ->
 	let x =
 	  if b1 + 1 = a2 then d2
 	  else Lte (a2 - 1,Return (-1), d2) in
 	[(a1,b2, Lte (b1,d1, x)) :: (merge2 rest)]
     | rest -> rest  in
   let rec aux = function
-    | [ _;_::_ ] as l -> aux (merge2 l)
+    |  _::_::_  as l -> aux (merge2 l)
     | [(a,b,d)] -> Lte (a - 1, Return (-1), Lte (b, d, Return (-1)))
     | _ -> Return (-1) in
   aux l
@@ -220,12 +220,12 @@ let limit = 8192
 
 let decision_table l =
   let rec aux m accu = function
-    | [ ((a,b,i) as x)::rem] when (b < limit && i < 255)-> 
+    | ((a,b,i) as x)::rem when (b < limit && i < 255)-> 
 	aux (min a m) [x::accu] rem
     | rem -> (m,accu,rem)   in
   match aux max_int [] l  with
   | (_,[], _) -> decision l
-  | (min,([(_,max,_)::_] as l1), l2) ->
+  | (min,((_,max,_)::_ as l1), l2) ->
       let arr = Array.create (max-min+1) 0 in begin 
         List.iter (fun (a,b,i) -> for j = a to b do arr.(j-min) <- i + 1 done) l1;
         Lte (min-1, Return (-1), Lte (max, Table (min,arr), decision l2))

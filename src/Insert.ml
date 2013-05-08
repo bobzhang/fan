@@ -43,7 +43,7 @@ let find_level ?position entry  levs =
   let find x n  ls = 
     let rec get = function
       | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename
-      | [lev::levs] ->
+      | lev::levs ->
       if Tools.is_level_labelled n lev then
         match x with
         |`Level _ ->
@@ -63,7 +63,7 @@ let find_level ?position entry  levs =
       find x n levs
   | None ->      (* default behavior*)   
       match levs with
-      | [lev :: levs] -> ([], Some (lev, "<top>"), levs)
+      | lev :: levs -> ([], Some (lev, "<top>"), levs)
       | [] -> ([], None, []) 
 
 let rec check_gram entry = function
@@ -94,7 +94,7 @@ and tree_check_gram entry = function
 
   
 let get_initial = function
-  | [`Sself :: symbols] -> (true, symbols)
+  | `Sself :: symbols -> (true, symbols)
   | symbols -> (false, symbols) 
 
 (* Insert the symbol list into the gram,
@@ -188,7 +188,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
     | None -> Node {node = s; son = insert sl DeadEnd; brother = tree} 
   and  insert symbols tree =
     match symbols with
-    | [s :: sl] -> insert_in_tree s sl tree 
+    | s :: sl -> insert_in_tree s sl tree 
     | [] ->
         match tree with
         | Node ({ brother;_} as x) ->
@@ -252,7 +252,7 @@ let insert_olevels_in_levels entry position olevels =
         failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename  in
   match olevels with
   | [] -> elev
-  | [_::_] -> 
+  | _::_ -> 
       let (levs1, make_lev, levs2) = find_level ?position entry  elev in
       match make_lev with
       | Some (_lev,_n) ->

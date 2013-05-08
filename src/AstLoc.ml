@@ -29,33 +29,33 @@ let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b)
 let rec bar_of_list = function
   | [] -> failwithf "bar_of_list empty"
   | [t] -> t
-  | [t::ts] -> bar t (bar_of_list ts)
+  | t::ts -> bar t (bar_of_list ts)
 
 let rec and_of_list = function
   | [] -> failwithf "and_of_list empty"
   | [t] -> t
-  | [t::ts] -> anda t (and_of_list ts) 
+  | t::ts -> anda t (and_of_list ts) 
 
 
 let rec sem_of_list = function
   | [] -> failwithf "sem_of_list empty"
   | [t] -> t
-  | [t::ts] -> sem t (sem_of_list ts)
+  | t::ts -> sem t (sem_of_list ts)
   
 let rec com_of_list = function
   | [] -> failwithf "com_of_list empty"
   | [t] -> t
-  | [t::ts] -> com t (com_of_list ts)
+  | t::ts -> com t (com_of_list ts)
   
 let rec sta_of_list = function
   | [] -> failwithf "sta_of_list empty"
   | [t] -> t
-  | [t::ts] -> sta t (sta_of_list ts)
+  | t::ts -> sta t (sta_of_list ts)
 
 let rec dot_of_list = function
   | [] -> failwithf "dot_of_list empty"
   | [t] -> t
-  | [t::ts] -> dot t (dot_of_list ts)
+  | t::ts -> dot t (dot_of_list ts)
   
 
 (*
@@ -68,7 +68,7 @@ let rec appl_of_list x  =
   match x with
   | [] -> failwithf "appl_of_list empty"
   | [x] -> x
-  | [x;y::xs] -> appl_of_list [(app x y)::xs]  
+  | x::y::xs -> appl_of_list [(app x y)::xs]  
 
     
     
@@ -158,7 +158,7 @@ let tuple_com y=
   match y with 
   |[] -> failwith "tuple_com empty"
   |[x] -> x
-  | [x::_] ->
+  | x::_ -> (* FIXME [x::_] still compiles *)
       let _loc = x <+> List.last y in
       `Par _loc (com_of_list y) 
     
@@ -166,6 +166,6 @@ let tuple_sta y =
   match y with
   | [] -> failwith "tuple_sta empty"
   | [x] -> x
-  | [x::_] ->
+  | x::_ ->
        let _loc =  x <+> List.last y in 
        `Par _loc (sta_of_list y)

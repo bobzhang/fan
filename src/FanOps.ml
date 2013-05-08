@@ -26,10 +26,14 @@ open AstLoc
 let list_of_list (loc:loc) =
   let rec loop top =  with exp function
     | [] ->   {@ghost| [] |}
-    | [e1 :: el] ->
+    | e1 :: el ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [$e1 :: $(loop false el)] |}  in loop true ;;
+        (* `App(_loc,`App(_loc,`Uid(_loc,"::"),e1,loop false el)) *)
+        {| [$e1 :: $(loop false el)] |}
+(* FIXME *)
+  in
+  loop true ;;
 
 (* FIXME  double semi colon needed before *)  
 #default_quotation "exp";;
@@ -60,10 +64,11 @@ let meta_ref mf_a _loc i =
 let mklist loc =
   let rec loop top =  function
     | [] -> {@loc| [] |}
-    | [e1 :: el] ->
+    | e1 :: el ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of (e1)) loc in
-        {| [$e1 :: $(loop false el)] |}  in loop true 
+        {| [$e1 :: $(loop false el)] |}
+  in loop true 
 
 let meta_list mf_a _loc  ls =
   mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) 
@@ -295,7 +300,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
   | [c1] -> {@loc| $arr.{$c1} |}  
   | [c1; c2] -> {@loc| $arr.{$c1,$c2} |}  
   | [c1; c2; c3] -> {@loc| $arr.{$c1,$c2,$c3} |} 
-  | [c1;c2;c3::coords] ->
+  | c1::c2::c3::coords ->
       {@loc| $arr.{$c1,$c2,$c3,$(sem_of_list coords) } |} 
 
 

@@ -64,14 +64,14 @@ open Printf
 let rec assoc3 x l =
   match l with
   | [] -> raise Not_found
-  | [ (y1, y2, _) :: _ ] when y1 = x -> y2
-  | [ _ :: t ] -> assoc3 x t
+  |  (y1, y2, _) :: _  when y1 = x -> y2
+  |  _ :: t  -> assoc3 x t
 
         
 let make_symlist prefix sep suffix l =
   match l with
   | [] -> "<none>"
-  | [ h :: t ] ->
+  |  h :: t  ->
       (List.fold_left (fun x y -> x ^ (sep ^ y)) (prefix ^ h) t) ^ suffix
                                                                      
 let print_spec buf (key, spec, doc) =

@@ -13,7 +13,7 @@ open Structure
 let delete_rule_in_tree entry =
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with
-    | ([s :: sl], Node ({node;brother;son} as n)) ->
+    | (s :: sl, Node ({node;brother;son} as n)) ->
         if Tools.logically_eq_symbols entry s node then
             match delete_in_tree sl son with
             |Some (Some dsl,DeadEnd) -> Some (Some [node::dsl],brother)
@@ -25,14 +25,14 @@ let delete_rule_in_tree entry =
           | Some (dsl, t) ->
               Some (dsl, Node {(n) with brother=t} )
           | None -> None )
-    | ([_ :: _], _) -> None
+    | (_ :: _, _) -> None
     | ([], Node n) ->
         (match delete_in_tree [] n.brother with
         | Some (dsl, t) -> Some (dsl, Node {(n) with brother =t  })
         | None -> None )
     | ([], DeadEnd) -> None
     | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
-    | ([], LocAct (_, [action :: list])) -> Some (None, LocAct action list)  in
+    | ([], LocAct (_, action :: list)) -> Some (None, LocAct action list)  in
   delete_in_tree
 
 
@@ -61,7 +61,7 @@ and decr_keyw_use_in_tree gram =  function
   end 
 
 let rec delete_rule_in_suffix entry symbols = function
-  | [lev :: levs] ->
+  | lev :: levs ->
       (match delete_rule_in_tree entry symbols lev.lsuffix with
       | Some (dsl, t) ->begin 
         (match dsl with
@@ -79,7 +79,7 @@ let rec delete_rule_in_suffix entry symbols = function
 
 
 let rec delete_rule_in_prefix entry symbols = function
-  | [lev :: levs] ->
+  | lev :: levs ->
       (match delete_rule_in_tree entry symbols lev.lprefix with
       | Some (dsl, t) -> begin 
           (match dsl with
@@ -96,8 +96,8 @@ let rec delete_rule_in_prefix entry symbols = function
 
 let  delete_rule_in_level_list entry symbols levs =
   match symbols with
-  | [`Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
-  | [`Snterm e :: symbols] when e == entry ->
+  | `Sself :: symbols -> delete_rule_in_suffix entry symbols levs
+  | `Snterm e :: symbols when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs 
 

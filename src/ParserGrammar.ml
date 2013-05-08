@@ -347,7 +347,7 @@ FanConfig.antiquotations := true;;
       let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat :>pat) in
       (match ls with
       | [] -> mk_tok _loc ~pattern:p (`Tok _loc)
-      | [(x,y)::ys] ->
+      | (x,y)::ys ->
         let restrict =
           List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
             {:exp| $x = $y |} ys  in  (* FIXME *)
@@ -385,12 +385,8 @@ FanConfig.antiquotations := true;;
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
     match v with
     | [x] ->  (* {| $vrn:s $x |} *) `App(_loc,`Vrn(_loc,s),x)
-    | [x::xs] ->
+    | x::xs ->
         `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
-        (* appl_of_list [ `Vrn(_loc,s) :: com_of_list v] *)
-        (* `App(_loc,`Vrn(_loc,s), tuple_com v) *)
-        (* `App(_loc,`Vrn(_loc,s),`Par(_loc,`Com(_loc,x,com_of_list xs))) *)
-        (* {|$vrn:s ($x,$list:xs)|} *)
     | _ -> assert false   ]
   internal_pat "pat":
   {

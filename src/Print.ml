@@ -29,7 +29,7 @@ class text_grammar= object(self:'self)
                 | xs ->
                     let rec loop  f = function
                       | [x] -> fu f x
-                      | [x::xs] ->  pp f "%a%(%)%a" fu x sep loop xs 
+                      | x::xs ->  pp f "%a%(%)%a" fu x sep loop xs 
                       | _ -> assert false  in begin
                           pp f "%(%)%a%(%)" first loop xs last;
                       end  in

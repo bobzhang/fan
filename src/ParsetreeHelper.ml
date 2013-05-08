@@ -71,7 +71,7 @@ let mkli sloc s (list: string list ) =
   let aux = function
     | [] -> lident s
     | [x] -> ldot (lident x) s 
-    | [ x;y::z ] ->
+    |  x::y::z  ->
         List.fold_left ldot (ldot (lident x ) y) (z@[s]) in
   with_loc (aux (List.filter (fun s -> s<>"") list)) sloc 
 

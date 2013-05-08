@@ -106,7 +106,7 @@ let rec make_exp (tvar : string) (x : text) =
     match x with
     | `Smeta (_loc,n,tl,e,t) ->
         let el = list_of_list _loc (List.map (fun t  -> aux "" t) tl) in
-        let ns =
+        let (ns :exp)=
           list_of_list _loc
             (List.map (fun n  -> (`Str (_loc, n) : Ast.exp )) n) in
         let act = typing e (make_ctyp t tvar) in

@@ -67,7 +67,7 @@ let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
   |  `Uid(loc,s) as e ->
       (match acc with
       | [] -> [(loc, [], e)]
-      | [(loc',sl,e)::l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] )
+      | (loc',sl,e)::l -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] )
   | e -> [((loc_of e), [], e) :: acc] 
         
 let mkvirtual : virtual_flag  -> Asttypes.virtual_flag = function 
@@ -331,7 +331,7 @@ let mkvariant (x:or_ctyp) =
 
   | `TyCol(_loc,`Uid(sloc,s),( `Arrow _  as t )) -> (*GADT*)
       (match List.rev (list_of_arrow_r t []) with
-      | [u::t] ->
+      | u::t ->
         (with_loc s sloc,
          List.map ctyp t, Some (ctyp u),  _loc)  
       | [] -> assert false)
@@ -611,23 +611,20 @@ let rec exp (x : exp) = with exp' match x with
     (* `Id(_loc,`Dot _ ) | *) `Dot (_loc,_,_)->
       let (e, l) =
         match sep_dot_exp [] x with
-        | (* [(loc, ml, `Id(sloc,`Uid(_,s))) :: l] |  *)[(loc, ml, `Uid(sloc,s)) :: l] ->
+        | (loc, ml, `Uid(sloc,s)) :: l ->
             (mkexp loc (Pexp_construct (mkli sloc  s ml) None false), l)
-        | (* [(loc, ml, `Id(sloc,`Lid(_,s))) :: l] | *) [(loc, ml, `Lid(sloc,s)) :: l] ->
+        | (loc, ml, `Lid(sloc,s)) :: l ->
             (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
-        | [(_, [], e) :: l] -> (exp e, l)
+        | (_, [], e) :: l -> (exp e, l)
         | _ -> errorf (loc_of x) "exp: %s" (dump_exp x) in
       let (_, e) =
         List.fold_left
           (fun (loc_bp, e1) (loc_ep, ml, e2) ->
             match e2 with
-            | (* `Id(sloc,`Lid(_,s)) -> *)
-              (*   let loc = FanLoc.merge loc_bp loc_ep in *)
-              (*   (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml))) *)
-              (* |  *)`Lid(sloc,s) ->
-                  let loc = FanLoc.merge loc_bp loc_ep in
-                  (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
-              | _ -> error (loc_of e2) "lowercase identifier expected" )
+            | `Lid(sloc,s) ->
+                let loc = FanLoc.merge loc_bp loc_ep in
+                (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
+            | _ -> error (loc_of e2) "lowercase identifier expected" )
           (_loc, e) l in
       e
 
@@ -835,7 +832,7 @@ let rec exp (x : exp) = with exp' match x with
           let rec loop = function
             | [] -> exp {| () |}
             | [e] -> exp e
-            | [e :: el] ->
+            | e :: el ->
                 let _loc = FanLoc.merge (loc_of e) _loc in
                 mkexp _loc (Pexp_sequence (exp e) (loop el))  in
           loop (list_of_sem e []) 
@@ -910,8 +907,8 @@ and binding (x:binding) acc =  match x with
       let e = mkexp (Pexp_constraint (exp e) (Some (ctyp ty)) None) in
       let rec mk_newtypes x =
         match x with
-        | [newtype :: []] -> mkexp (Pexp_newtype(newtype, e))
-        | [newtype :: newtypes] ->
+        | [newtype ] -> mkexp (Pexp_newtype(newtype, e))
+        | newtype :: newtypes ->
             mkexp(Pexp_newtype (newtype,mk_newtypes newtypes))
         | [] -> assert false in
       let pat =

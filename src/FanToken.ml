@@ -213,12 +213,12 @@ let name_of_string s : name =
   match s.[0] with
   | '.' ->
     (match List.rev (List.filter String.not_empty (String.nsplit s "." ) )with
-    | [x::xs] -> (`Absolute (List.rev xs),x)
+    | x::xs -> (`Absolute (List.rev xs),x)
     | _ -> assert false )
       
   |'A' .. 'Z' ->
       (match List.rev (List.filter String.not_empty (String.nsplit s ".")) with
-      | [x::xs] -> (`Sub (List.rev xs),x )
+      | x::xs -> (`Sub (List.rev xs),x )
       | _ -> assert false) 
   | _ -> (`Sub [],s)
 

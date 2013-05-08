@@ -23,7 +23,7 @@ and print_sons (start:string) (decomp:'a -> (string * 'a list))
     (pref:string) f = function
       | [] ->  () (* when entering into foreset *)
       | [s] -> pp f "`-%a" (print_node decomp (pref ^ "  ")) s
-      | [s :: sons] ->  
+      | s :: sons ->  
           pp f "%s%a@\n%s%a"
             start (print_node decomp (pref ^ "| ")) s
             pref  (print_sons "|-"  decomp  pref ) sons 

@@ -53,9 +53,9 @@ let concat _loc l = with exp' {| List.concat $l |}
 (* only this function needs to be exposed *)
 let rec compr _loc e =  function
   | [`gen (p, l)] -> map _loc p e l
-  | [`gen (p, l); `cond b :: items] ->
+  | `gen (p, l):: `cond b :: items ->
       compr _loc e [`gen (p, filter _loc p b l) :: items]
-  | [`gen (p, l) :: ([ `gen (_, _) :: _ ] as is )] ->
+  | `gen (p, l) :: ( `gen (_, _) :: _  as is ) ->
       concat _loc (map _loc p (compr _loc e is) l)
   | _ -> raise Stream.Failure 
 

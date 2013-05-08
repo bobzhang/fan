@@ -92,7 +92,7 @@ let rec execute_macro ~exp ~pat nil cons = function
 
 and execute_macro_list ~exp ~pat nil cons = function
   | [] -> nil
-  | [hd::tl] -> (* The evaluation order is important here *)
+  | hd::tl -> (* The evaluation order is important here *)
       let il1 = execute_macro ~exp ~pat nil cons hd in
       let il2 = execute_macro_list ~exp ~pat nil cons tl in
       cons il1 il2 

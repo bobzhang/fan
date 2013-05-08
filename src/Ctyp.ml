@@ -328,8 +328,8 @@ let qualified_app_list x : ((ident * ctyp list ) option ) =
   match x with 
   | {| $_ $_ |} as x->
       begin match list_of_app x [] with
-      | [ {| $lid:_  |} :: _ ] -> None
-      | [ (#ident' as i) ::ys]  ->
+      | {| $lid:_  |} :: _  -> None
+      | (#ident' as i) ::ys  ->
           Some (i,ys)
       | _ -> None
       end
@@ -363,7 +363,7 @@ let eq t1 t2 =
 let eq_list t1 t2 =
   let rec loop = function
     | ([],[]) -> true
-    | ([x::xs],[y::ys]) -> eq x y && loop (xs,ys)
+    | (x::xs,y::ys) -> eq x y && loop (xs,ys)
     | (_,_) -> false in loop (t1,t2)
   
 (*
