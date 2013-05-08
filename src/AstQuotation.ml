@@ -237,9 +237,9 @@ let quotation_error_to_string (name, position, ctx, exn) =
     | NoName -> pp "No default quotation name"  in
   let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn)in Buffer.contents ppf;;
 
-Printexc.register_printer (fun
-  [ QuotationError x -> Some (quotation_error_to_string x )
-  | _ -> None]);;
+Printexc.register_printer (function
+  | QuotationError x -> Some (quotation_error_to_string x )
+  | _ -> None);;
 
 let parse_quotation_result parse loc quot pos_tag str =
   let open FanToken in
@@ -277,16 +277,15 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name : pat -> pat =  with pat fun
-        [
-         `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
+      let rec subst_first_loc name : pat -> pat =  with pat function
+        | `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
          `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
         | `App(_loc,`Vrn(_,u),`Any _) ->
             `App(_loc, `Vrn(_loc,u), `Lid(_loc,name))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)
         | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
         (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
-        |p -> p ] in
+        |p -> p  in
 
       (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
           

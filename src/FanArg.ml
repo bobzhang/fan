@@ -138,65 +138,64 @@ let parse_argv ?(current = current) argv speclist anonfun errmsg =
        let action =
          try assoc3 s !speclist with  Not_found -> stop (Unknown s) in
        ((try
-         let rec treat_action =
-           fun
-             [ Unit f -> f ()
-       | Bool f when (!current + 1) < l ->
-           let arg = argv.(!current + 1)
-           in
-           ((try f (bool_of_string arg) with
-              Invalid_argument "bool_of_string" ->
-               raise (Stop (Wrong s arg "a boolean")) );
-             incr current)
-       | Set r -> r := true
-       | Clear r -> r := false
-       | String f when (!current + 1) < l ->
-           (f argv.(!current + 1); incr current)
-       | Symbol (symb, f) when (!current + 1) < l ->
-           let arg = argv.(!current + 1)
-           in
-           if List.mem arg symb
-           then (f argv.(!current + 1); incr current)
-           else
-             raise
-               (Stop
-                  (Wrong s arg
-                     ("one of: " ^ (make_symlist "" " " "" symb))))
-       | Set_string r when (!current + 1) < l ->
-           (r := argv.(!current + 1); incr current)
-       | Int f when (!current + 1) < l ->
-           let arg = argv.(!current + 1)
-           in
-           (try f (int_of_string arg)
-           with
-              Failure "int_of_string" ->
-               raise (Stop (Wrong s arg "an integer")) ;
-             incr current)
-       | Set_int r when (!current + 1) < l ->
-           let arg = argv.(!current + 1)
-           in
-           ((try r := int_of_string arg
-           with Failure "int_of_string" ->
-               raise (Stop (Wrong s arg "an integer")) );
-             incr current)
-       | Float f when (!current + 1) < l ->
-           let arg = argv.(!current + 1) in
-           ((try f (float_of_string arg)
-           with
-              Failure "float_of_string" ->
-               raise (Stop (Wrong s arg "a float")) );
-             incr current)
-       | Set_float r when (!current + 1) < l ->
-           let arg = argv.(!current + 1) in
-           ((try r := float_of_string arg with
-              Failure "float_of_string" ->
-               raise (Stop (Wrong s arg "a float")) );
-             incr current)
-       | Tuple specs -> List.iter treat_action specs
-       | Rest f ->
-           while !current < (l - 1) do f argv.(!current + 1);
-             incr current done
-       | _ -> raise (Stop (Missing s)) ]
+         let rec treat_action = function
+           | Unit f -> f ()
+           | Bool f when (!current + 1) < l ->
+               let arg = argv.(!current + 1)
+               in
+               ((try f (bool_of_string arg) with
+                 Invalid_argument "bool_of_string" ->
+                   raise (Stop (Wrong s arg "a boolean")) );
+                incr current)
+           | Set r -> r := true
+           | Clear r -> r := false
+           | String f when (!current + 1) < l ->
+               (f argv.(!current + 1); incr current)
+           | Symbol (symb, f) when (!current + 1) < l ->
+               let arg = argv.(!current + 1)
+               in
+               if List.mem arg symb
+               then (f argv.(!current + 1); incr current)
+               else
+                 raise
+                   (Stop
+                      (Wrong s arg
+                         ("one of: " ^ (make_symlist "" " " "" symb))))
+           | Set_string r when (!current + 1) < l ->
+               (r := argv.(!current + 1); incr current)
+           | Int f when (!current + 1) < l ->
+               let arg = argv.(!current + 1)
+               in
+               (try f (int_of_string arg)
+               with
+                 Failure "int_of_string" ->
+                   raise (Stop (Wrong s arg "an integer")) ;
+                   incr current)
+           | Set_int r when (!current + 1) < l ->
+               let arg = argv.(!current + 1)
+               in
+               ((try r := int_of_string arg
+               with Failure "int_of_string" ->
+                 raise (Stop (Wrong s arg "an integer")) );
+                incr current)
+           | Float f when (!current + 1) < l ->
+               let arg = argv.(!current + 1) in
+               ((try f (float_of_string arg)
+               with
+                 Failure "float_of_string" ->
+                   raise (Stop (Wrong s arg "a float")) );
+                incr current)
+           | Set_float r when (!current + 1) < l ->
+               let arg = argv.(!current + 1) in
+               ((try r := float_of_string arg with
+                 Failure "float_of_string" ->
+                   raise (Stop (Wrong s arg "a float")) );
+                incr current)
+           | Tuple specs -> List.iter treat_action specs
+           | Rest f ->
+               while !current < (l - 1) do f argv.(!current + 1);
+                 incr current done
+           | _ -> raise (Stop (Missing s)) 
          in treat_action action
        with
        | Bad m -> stop (Message m)

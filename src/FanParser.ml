@@ -31,20 +31,20 @@ let with_loc (parse_fun: 'b parse ) strm =
    ]}
  *)  
 let level_number entry lab =
-  let rec lookup levn = fun
-    [ [] -> failwithf "unknown level %s"  lab
+  let rec lookup levn = function
+    | [] -> failwithf "unknown level %s"  lab
     | [lev :: levs] ->
-        if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs ] in
+        if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found 
-    
+        
 
 (* in case of syntax error, the system attempts to recover the error by applying
    the [continue] function of the previous symbol(if the symbol is a call to an entry),
    so there's no behavior difference between [LA] and [NA]
  *)
-    
+        
 module ArgContainer= Stack
   
 (*

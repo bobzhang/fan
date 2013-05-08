@@ -204,16 +204,16 @@ type decision_tree =
 let decision l =
   let l = List.map (fun (a,b,i) -> (a,b,Return i)) l in
   let rec merge2 = function
-    [ [(a1,b1,d1) ; (a2,b2,d2) :: rest] ->
+    | [(a1,b1,d1) ; (a2,b2,d2) :: rest] ->
 	let x =
 	  if b1 + 1 = a2 then d2
 	  else Lte (a2 - 1,Return (-1), d2) in
 	[(a1,b2, Lte (b1,d1, x)) :: (merge2 rest)]
-    | rest -> rest ] in
+    | rest -> rest  in
   let rec aux = function
-    [ [ _;_::_ ] as l -> aux (merge2 l)
+    | [ _;_::_ ] as l -> aux (merge2 l)
     | [(a,b,d)] -> Lte (a - 1, Return (-1), Lte (b, d, Return (-1)))
-    | _ -> Return (-1)] in
+    | _ -> Return (-1) in
   aux l
 
 let limit = 8192
@@ -290,7 +290,7 @@ let binding_table (n,t) = {:binding'|  $lid:n = $(output_byte_array t) |}
 
 let partition ~counter ~tables (i,p) =
   let rec gen_tree = function 
-    [ Lte (i,yes,no) ->
+    | Lte (i,yes,no) ->
 	{:exp'| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
@@ -298,14 +298,14 @@ let partition ~counter ~tables (i,p) =
     | Table (offset, t) ->
 	let c = if offset = 0 then {:exp'| c |} 
 	else {:exp'| (c - $`int:offset) |} in
-	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
   let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
   {:stru'| let $lid:f = fun c -> $body |}
 
 let binding_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 
-    [ Lte (i,yes,no) ->
+    | Lte (i,yes,no) ->
 	{:exp'| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
@@ -313,7 +313,7 @@ let binding_partition ~counter ~tables (i,p) =
     | Table (offset, t) ->
 	let c = if offset = 0 then {:exp'| c |} 
 	else {:exp'| (c - $`int:offset) |} in
-	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|} ] in
+	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
   let body = gen_tree
       (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in

@@ -26,36 +26,36 @@ let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b)
 
   
 
-let rec bar_of_list = fun
-  [ [] -> failwithf "bar_of_list empty"
+let rec bar_of_list = function
+  | [] -> failwithf "bar_of_list empty"
   | [t] -> t
-  | [t::ts] -> bar t (bar_of_list ts)] 
+  | [t::ts] -> bar t (bar_of_list ts)
 
-let rec and_of_list = fun
-  [ [] -> failwithf "and_of_list empty"
+let rec and_of_list = function
+  | [] -> failwithf "and_of_list empty"
   | [t] -> t
-  | [t::ts] -> anda t (and_of_list ts) ]
+  | [t::ts] -> anda t (and_of_list ts) 
 
 
-let rec sem_of_list = fun
-  [ [] -> failwithf "sem_of_list empty"
+let rec sem_of_list = function
+  | [] -> failwithf "sem_of_list empty"
   | [t] -> t
-  | [t::ts] -> sem t (sem_of_list ts)]
+  | [t::ts] -> sem t (sem_of_list ts)
   
-let rec com_of_list = fun
-  [ [] -> failwithf "com_of_list empty"
+let rec com_of_list = function
+  | [] -> failwithf "com_of_list empty"
   | [t] -> t
-  | [t::ts] -> com t (com_of_list ts)]
+  | [t::ts] -> com t (com_of_list ts)
   
-let rec sta_of_list = fun
-  [ [] -> failwithf "sta_of_list empty"
+let rec sta_of_list = function
+  | [] -> failwithf "sta_of_list empty"
   | [t] -> t
-  | [t::ts] -> sta t (sta_of_list ts)]
+  | [t::ts] -> sta t (sta_of_list ts)
 
-let rec dot_of_list = fun
-  [ [] -> failwithf "dot_of_list empty"
+let rec dot_of_list = function
+  | [] -> failwithf "dot_of_list empty"
   | [t] -> t
-  | [t::ts] -> dot t (dot_of_list ts)]
+  | [t::ts] -> dot t (dot_of_list ts)
   
 
 (*
@@ -123,7 +123,7 @@ let rec list_of_arrow_r x acc =
   | x -> [x::acc] 
 
 
-let rec view_app acc = fun
+let rec view_app acc = function
   |`App (_,f,a) -> view_app [a::acc] f
   | f -> (f,acc)
 
@@ -147,12 +147,12 @@ let unit _loc = `Uid(_loc,"()")
 let ep_of_cons _loc n ps =
   appl_of_list [(uid _loc n) :: ps]
 
-let tuple_com_unit _loc = fun
-  [ [] -> unit _loc
+let tuple_com_unit _loc = function
+  | [] -> unit _loc
   | [p] -> p
   | y ->
       `Par _loc (com_of_list y)
-  ]
+
   
 let tuple_com y=
   match y with 

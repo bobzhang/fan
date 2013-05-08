@@ -1086,9 +1086,9 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
 
   (* the minimual [n] is 0 *)
   let peek_nth strm n   =
-    let rec loop i = fun
-      [ [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
-      | [] -> None ] in
+    let rec loop i = function
+      | [x :: xs] -> if i = 0 then Some x else loop (i - 1) xs
+      | [] -> None  in
     if n < 0 then
       invalid_arg "XStream.peek_nth"
     else loop n (XStream.npeek (n+1) strm)

@@ -184,9 +184,9 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
  *)
 let mk_record ?(arity=1) cols  =
   let mk_list off = 
-    List.mapi (fun i -> fun  [ ({FSig.col_label;_}:FSig.col) ->
+    List.mapi (fun i -> fun   ({FSig.col_label;_}:FSig.col) ->
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
-      {:rec_exp| $lid:col_label = $(id:xid ~off i )  |} ]) cols in
+      {:rec_exp| $lid:col_label = $(id:xid ~off i )  |} ) cols in
   let res = zfold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )

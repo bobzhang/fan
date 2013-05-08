@@ -293,13 +293,13 @@ let is_recursive ty_dcl =
     let obj = object(self:'self_type)
       inherit Objs.fold as super;
       val mutable is_recursive = false;
-      method! ctyp = fun
-        [ {| $lid:i |} when i = name -> begin 
+      method! ctyp = function
+        | {| $lid:i |} when i = name -> begin 
           is_recursive <- true;
           self;
         end 
         | x ->  if is_recursive then  self
-            else super#ctyp x  ];
+            else super#ctyp x  ;
       method is_recursive = is_recursive;
     end in
     (obj#type_info(* ctyp *) ctyp)#is_recursive
@@ -405,8 +405,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
   inherit Objs.map as super;
   method! stru = function
-    [ 
-     {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+    | {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        let r =
          match ctyp with
          | `TyEq (_,_,t) -> qualified_app_list t | _ -> None  in
@@ -430,7 +429,7 @@ let mk_transform_type_eq () = object(self:'self_type)
            end 
        | None ->  super#stru x
        end
-     | x -> super#stru x ];
+     | x -> super#stru x ;
   method! ctyp x =
     match qualified_app_list x with
     | Some (i, lst) ->

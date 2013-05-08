@@ -24,12 +24,12 @@ open AstLoc
   DoubleColon
  *)
 let list_of_list (loc:loc) =
-  let rec loop top =  with exp fun
-    [ [] ->   {@ghost| [] |}
+  let rec loop top =  with exp function
+    | [] ->   {@ghost| [] |}
     | [e1 :: el] ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of e1) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true ;;
+        {| [$e1 :: $(loop false el)] |}  in loop true ;;
 
 (* FIXME  double semi colon needed before *)  
 #default_quotation "exp";;
@@ -48,7 +48,7 @@ let meta_string _loc i = {|$`str:i|}
   
 let meta_char _loc i = {|$`chr:i|}
 let meta_unit _loc _ =  {|()|}
-let meta_bool _loc =  fun [true -> {|true|} | false -> {|false|} ]
+let meta_bool _loc =  function | true -> {|true|} | false -> {|false|} 
 
 let meta_ref mf_a _loc i =
   {| {contents= $(mf_a _loc !i) } |}
@@ -58,20 +58,20 @@ let meta_ref mf_a _loc i =
 (* [mklist] and [mkarray]
    duplicated with ExprPatt to remove cyclic dependency *)
 let mklist loc =
-  let rec loop top =  fun
-    [ [] -> {@loc| [] |}
+  let rec loop top =  function
+    | [] -> {@loc| [] |}
     | [e1 :: el] ->
         let _loc =
           if top then loc else FanLoc.merge (loc_of (e1)) loc in
-        {| [$e1 :: $(loop false el)] |} ] in loop true 
+        {| [$e1 :: $(loop false el)] |}  in loop true 
 
 let meta_list mf_a _loc  ls =
   mklist _loc (List.map (fun x -> mf_a _loc x ) ls ) 
   
   
-let meta_option mf_a _loc  = fun
-  [ None -> {|None|}
-  | Some x -> {|Some $(mf_a _loc x)|} ]
+let meta_option mf_a _loc  = function
+  | None -> {|None|}
+  | Some x -> {|Some $(mf_a _loc x)|} 
 
 let meta_arrow (type t)
     (_mf_a: FanLoc.t -> 'a -> t)
@@ -108,10 +108,10 @@ let ident_of_exp : exp -> ident =
     | `Uid _ | `Dot _ as i -> (i:vid:>ident)
     (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
     | _ -> error ()  in 
-  fun
-    [ #vid as i ->  (i:vid :>ident)
+  function
+    | #vid as i ->  (i:vid :>ident)
     | `App _ -> error ()
-    | t -> self t ]
+    | t -> self t 
 (*
   {[
   ident_of_ctyp {:ctyp| list int |} ; ;
@@ -139,9 +139,9 @@ let ident_of_ctyp : ctyp -> ident =
     | `Lid _  -> error x
     | #ident' as i -> if is_module_longident i then i else error x
     | _ -> error x  in
-    fun
-    [ #ident as i (* `Id(_loc,i) *) -> i (* allow antiquot here *)
-    | t -> self t ]
+  function
+    | #ident as i (* `Id(_loc,i) *) -> i (* allow antiquot here *)
+    | t -> self t 
 
 (* let ident_of_pat = *)
 (*   let error () = *)
@@ -185,7 +185,7 @@ let ident_of_ctyp : ctyp -> ident =
 (*       (\* {:ctyp| $uid:s |} *\) *)
 (*     | (_loc, s, tl) -> *)
 (*         `Of (_loc, `Id (_loc, `Uid (_loc, s)), and_of_list tl)]; *)
-        (* {:ctyp| $uid:s of $(and_of_list tl) |} *) 
+          (* {:ctyp| $uid:s of $(and_of_list tl) |} *) 
 
 (* let ty_of_sbt = fun *)
 (*     [ (_loc, s, v, t) -> *)
@@ -215,9 +215,9 @@ let ident_of_ctyp : ctyp -> ident =
 (*   | _ -> [x::acc] ];     *)
 
 
-  
+          
 
-    
+          
 
 
 let rec is_irrefut_pat (x: pat) = with pat'
@@ -230,7 +230,7 @@ let rec is_irrefut_pat (x: pat) = with pat'
     | `Dot(_,_,y) -> is_irrefut_pat (y:vid:>pat) 
     | {| ($x as $_) |} -> is_irrefut_pat x
     | {| { $p } |} ->
-        List.for_all (fun [`RecBind (_,_,p) -> is_irrefut_pat p | _ -> true])
+        List.for_all (function |`RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
           (list_of_sem  p [])
     | `Sem(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
     | `Com(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
@@ -331,14 +331,13 @@ let bigarray_set loc (var) newval (* : option exp *) = with exp'
     
 (* Add a sequence delimiter to the semi delimiter
    antiquot is also decorated *)    
-let mksequence ?loc  =
-  function
-  [ `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
+let mksequence ?loc  = function
+  | `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc =
         match loc with
         | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
-  | e -> e ]
+  | e -> e 
 
 (* see [mksequence], antiquot is not decoreated *)    
 let mksequence' ?loc  = function

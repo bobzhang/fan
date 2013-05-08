@@ -48,23 +48,21 @@ let rec handle_failure e =
     when m = gm()
     ->  handle_failure e
   | {| match $me with | $a  |} ->
-      let rec case_handle_failure =
-        fun
-        [ {:case'| $a1 | $a2 |} ->
+      let rec case_handle_failure = function
+          | {:case'| $a1 | $a2 |} ->
             case_handle_failure a1 && case_handle_failure a2
-        | {:case'| $pat:_ -> $e |} -> handle_failure e
-        | _ -> false ]
+          | {:case'| $pat:_ -> $e |} -> handle_failure e
+          | _ -> false 
       in handle_failure me && case_handle_failure a
   | {| let $bi in $e |} ->
-      let rec binding_handle_failure =
-        fun
-        [ {:binding'| $b1 and $b2 |} ->
+      let rec binding_handle_failure = function
+        | {:binding'| $b1 and $b2 |} ->
             binding_handle_failure b1 && binding_handle_failure b2
         | {:binding'| $_ = $e |} -> handle_failure e
-        | _ -> false ] in
+        | _ -> false  in
       binding_handle_failure bi && handle_failure e
   | {| $lid:_ |} | {| $int:_ |} | {| $str:_ |} |
-    {| $chr:_ |} | {| fun [ $_ ] |} | {| $uid:_ |} ->
+    {| $chr:_ |} | {| function | $_  |} | {| $uid:_ |} ->
       true
   | {| raise $e |} ->
       begin match e with
@@ -118,7 +116,7 @@ let stream_pattern_component skont ckont = function
   | SpNtr (_loc, p, e) ->
       let e =
         match e with
-        | {| fun [ ($lid:v : _ $uid:m.t ) -> $e ] |} when v = strm_n && m = gm() -> e
+        | {| function | ($lid:v : _ $uid:m.t ) -> $e  |} when v = strm_n && m = gm() -> e
         | _ -> {| $e $lid:strm_n |}  in
       (* Simplify it *)
       if Exp.pattern_eq_expression p skont then

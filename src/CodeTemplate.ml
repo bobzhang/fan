@@ -25,9 +25,8 @@ let base1_types = with stru'
      `Custom ( {|  let eq_unit : unit -> unit -> bool = fun _ _ -> true |}  ))]
 
 let ty_metas =
-  base1_types |> List.map (fun
-    [(str,print,eq) ->
-      {str;print;eq}])
+  base1_types |> List.map
+    (fun (str,print,eq) -> {str;print;eq})
   
 let print_base1 = with stru'
 let items =
@@ -53,7 +52,7 @@ let (map_clfield_base_1,
      iter_clfield_base_1,
      eq_clfield_base_2 
     ) =  with clfield'
-  let ty_names = ty_metas |> List.map (fun [{str;_} -> str]) in
+  let ty_names = ty_metas |> List.map (fun {str;_} -> str) in
   let v1 = ty_names |> List.map (fun x ->
               let ty = {:ctyp'| $lid:x -> $lid:x |} in
               let exp = {:exp'|fun x -> x |} in

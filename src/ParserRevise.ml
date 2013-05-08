@@ -337,12 +337,12 @@ let apply () = begin
        "obj" RA
         [
         (* FIXME fun and function duplicated *)      
-         "fun"; "[";  L1 case0 SEP "|"{a}; "]" ->
+        (*  "fun"; "[";  L1 case0 SEP "|"{a}; "]" -> *)
+        (*    let cases = bar_of_list a in `Fun (_loc,cases) *)
+        (* | *) "fun"; "|";  L1 case0 SEP "|"{a}  ->
            let cases = bar_of_list a in `Fun (_loc,cases)
-        | "fun"; "|";  L1 case0 SEP "|"{a}  ->
-           let cases = bar_of_list a in `Fun (_loc,cases)
-        | "function"; "[";  L1 case0 SEP "|"{a}; "]" ->
-            let cases = bar_of_list a in `Fun(_loc,cases)
+        (* | "function"; "[";  L1 case0 SEP "|"{a}; "]" -> *)
+        (*     let cases = bar_of_list a in `Fun(_loc,cases) *)
         | "function"; "|"; L1 case0 SEP "|"{a} ->
             let cases = bar_of_list a in `Fun(_loc,cases)
         | "fun"; fun_def{e} -> e

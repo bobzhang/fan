@@ -38,22 +38,21 @@ let pp_print_exn fmt (e:exn) =
   fprintf fmt "%s" (Printexc.to_string e)
     
 let eq_list mf_a  xs ys =
-  let rec loop  = fun
-    [ ([],[]) -> true
+  let rec loop  = function
+    | ([],[]) -> true
     | ([x::xs],[y::ys]) -> mf_a x y && loop (xs,ys)
-    | (_,_) -> false] in
+    | (_,_) -> false in
   loop (xs,ys)
 
 let eq_array mf_a  xs ys =
   let lx = Array.length xs and ly = Array.length ys in
   if lx <> ly then false
   else
-    let rec loop = fun
-      [ i ->
-        if i >= lx then true
-        else if mf_a xs.(i) ys.(i) then loop (i+1) else false ] in
+    let rec loop i = 
+      if i >= lx then true
+      else if mf_a xs.(i) ys.(i) then loop (i+1) else false  in
     loop 0 
-    
+      
 let pp_print_array mf_a  fmt  lst =
   let open Array in 
   fprintf fmt "@[<1>[|%a|]@]"
@@ -87,8 +86,9 @@ end
 class mapbase = object (self:'self_type)
   {:clfield|map_clfield_base_1|};  
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 list -> 'b0 list) =
-    fun mf_a -> fun [ [] -> []
-    | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys]];
+    fun mf_a -> function
+      | [] -> []
+      | [y::ys] -> [ (mf_a self y) :: self#list mf_a ys];
   method array: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 array -> 'b0 array) =
     fun mf_a arr->
       Array.map (fun x -> mf_a self x) arr;
@@ -101,7 +101,7 @@ class mapbase = object (self:'self_type)
         ('a0 -> 'a1) -> ('b0 -> 'b1) = fun _mf_a _mf_b _f ->
           failwith "not implemented in map arrow";
   method ref: !'a 'b. ('self_type ->'a -> 'b) -> ('a ref -> 'b ref) =
-    fun mf_a -> fun [ (* {contents} *) x  -> ref (mf_a self !x)];
+    fun mf_a -> fun  (* {contents} *) x  -> ref (mf_a self !x);
   method unknown: !'a. 'a -> 'a = fun x ->x;         
 end 
 
@@ -209,12 +209,12 @@ class foldbase = object (self:'self_type)
       Array.fold_left (fun self v -> (mf_a self v)) self ;
   method option: ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
     ('a0 option -> 'self_type) = fun mf_a ->
-      fun
-        [None -> self
-        |Some x -> mf_a self x ];
+      function
+        | None -> self
+        | Some x -> mf_a self x ;
   method ref: !'a0.('self_type -> 'a0 -> 'self_type) ->
     ('a0 ref -> 'self_type) = fun mf_a -> fun
-      [ x  -> (mf_a self !x) ];
+       x  -> (mf_a self !x) ;
   method arrow: ! 'a0 'a1 . ('self_type -> 'a0 -> 'self_type) ->
     ('self_type -> 'a1 -> 'self_type) -> ('a0 -> 'a1) -> 'self_type =
       fun  _ _ _ -> invalid_arg "fold arrow is not implemented";

@@ -9,10 +9,10 @@ open LibUtil
 (*
   {[  mapping an ident to  a type variable   ]}
  *)  
-let rec tvar_of_ident : vid -> string = with ident fun
-  [ {| $lid:x |} | {| $uid:x |} -> x
+let rec tvar_of_ident : vid -> string = with ident function
+  | {| $lid:x |} | {| $uid:x |} -> x
   | {| $uid:x.$xs |} -> x ^ "__" ^ tvar_of_ident xs
-  | _ -> failwith "internal error in the Grammar extension" ]
+  | _ -> failwith "internal error in the Grammar extension" 
 
 (*
   {[

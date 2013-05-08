@@ -20,7 +20,7 @@ AstFilters.register_stru_filter ("strip",(new Objs.reloc  FanLoc.ghost)#stru);;
 
 
 let map_exp = with exp function
-  | {| $e NOTHING |} | {| fun [NOTHING  -> $e] |} -> e
+  | {| $e NOTHING |} | {| function | NOTHING  -> $e |} -> e
   | {| __FILE__ |} -> {| $(`str:FanLoc.file_name _loc) |}
   | {| __PWD__ |} ->
       {|$(`str:Filename.dirname (FanLoc.file_name _loc) ) |}

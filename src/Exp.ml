@@ -46,24 +46,24 @@ let filter loc p b l = with exp'
     if is_irrefut_pat p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
-      {@loc| List.filter (fun [ $pat:p when true -> $b | _ -> false ]) $l |}
+      {@loc| List.filter (function | $pat:p when true -> $b | _ -> false ) $l |}
   
 let concat _loc l = with exp' {| List.concat $l |}
 
 (* only this function needs to be exposed *)
-let rec compr _loc e =  fun
-    [ [`gen (p, l)] -> map _loc p e l
-    | [`gen (p, l); `cond b :: items] ->
-        compr _loc e [`gen (p, filter _loc p b l) :: items]
-    | [`gen (p, l) :: ([ `gen (_, _) :: _ ] as is )] ->
-        concat _loc (map _loc p (compr _loc e is) l)
-    | _ -> raise Stream.Failure ]
+let rec compr _loc e =  function
+  | [`gen (p, l)] -> map _loc p e l
+  | [`gen (p, l); `cond b :: items] ->
+      compr _loc e [`gen (p, filter _loc p b l) :: items]
+  | [`gen (p, l) :: ([ `gen (_, _) :: _ ] as is )] ->
+      concat _loc (map _loc p (compr _loc e is) l)
+  | _ -> raise Stream.Failure 
 
 
 (* +-----------------------------------------------------------------+
    | Utiliies for macro expansion                                    |
    +-----------------------------------------------------------------+ *)
-  
+        
 let bad_pat _loc =
   FanLoc.raise _loc
     (Failure
@@ -93,11 +93,11 @@ let substp loc env =
     | {| $par:x |} -> {@loc| $(par:loop x) |}
     | {| $x1, $x2 |} -> {@loc| $(loop x1), $(loop x2) |}
     | {| { $bi } |} ->
-        let rec substbi = with {pat:rec_exp;exp:pat} fun
-          [ {| $b1; $b2 |} ->
+        let rec substbi = with {pat:rec_exp;exp:pat} function
+          | {| $b1; $b2 |} ->
             `Sem(_loc,substbi b1, substbi b2)
           | {| $id:i = $e |} -> `RecBind (loc,i,loop e)(* {@loc| $i = $(loop e) |} *)
-          | _ -> bad_pat _loc ] in
+          | _ -> bad_pat _loc  in
         {@loc| { $(substbi bi) } |}
     | _ -> bad_pat loc  in loop
 
@@ -231,7 +231,7 @@ let failure = with exp'
   ]}
  *)
 let (<+) names acc  = with exp'
-  List.fold_right (fun name acc ->  {| fun [ $lid:name -> $acc ]|}) names acc 
+  List.fold_right (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 
 
 (*
   Example:
@@ -241,7 +241,7 @@ let (<+) names acc  = with exp'
   ]}
  *)  
 let (<+<) pats acc =
-  List.fold_right (fun p acc -> {| fun [ $pat:p -> $acc] |} ) pats acc
+  List.fold_right (fun p acc -> {| function | $pat:p -> $acc |} ) pats acc
 
 
 
@@ -438,7 +438,7 @@ let gen_curry_n (acc:exp) ~arity cons n : exp =
       (fun i -> List.init n (fun j -> {:pat| $(id:xid ~off:i j) |})) in
   let pat = of_str cons in
   List.fold_right
-    (fun p acc -> {| fun [ $pat:p -> $acc ] |} )
+    (fun p acc -> {| function | $pat:p -> $acc  |} )
     (List.map (fun lst -> appl_of_list [pat:: lst]) args) acc
 
 (*
@@ -468,7 +468,7 @@ let currying cases ~arity =
     let x = tuple_com exps in
     names <+ {| match $x with | $cases |} 
     (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
-  else {| fun [ $cases ]|}
+  else {| function | $cases |}
       (* {| fun [ $list:cases ] |} *)
 
 

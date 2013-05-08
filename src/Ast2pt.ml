@@ -406,10 +406,10 @@ let mk_type_parameters (tl:opt_decl_params)
   | `Some(_,x) ->
       let xs = list_of_com x [] in
       List.map
-        (fun
-          [ #decl_param as x ->
+        (function
+          | #decl_param as x ->
              quote_map (x:>ctyp)
-          |  _ -> assert false]) xs
+          |  _ -> assert false) xs
 
 
   
@@ -547,7 +547,7 @@ let rec pat (x:pat) =  with pat'  match x with
   | `Record (loc,p) ->
           let ps = list_of_sem p [] in (* precise*)
           let (wildcards,ps) =
-            List.partition (fun [`Any _ -> true | _ -> false ]) ps in
+            List.partition (function |`Any _ -> true | _ -> false ) ps in
           let is_closed = if wildcards = [] then Closed else Open in
           let  mklabpat (p : rec_pat) =
             match p with 
@@ -832,12 +832,12 @@ let rec exp (x : exp) = with exp' match x with
       | `RecordWith(loc,lel,eo) ->
           mkexp loc (Pexp_record (mklabexp lel) (Some (exp eo)))
       | `Seq (_loc,e) ->
-          let rec loop = fun
-            [ [] -> exp {| () |}
+          let rec loop = function
+            | [] -> exp {| () |}
             | [e] -> exp e
             | [e :: el] ->
                 let _loc = FanLoc.merge (loc_of e) _loc in
-                mkexp _loc (Pexp_sequence (exp e) (loop el)) ] in
+                mkexp _loc (Pexp_sequence (exp e) (loop el))  in
           loop (list_of_sem e []) 
       | `Send (loc,e,`Lid(_,s)) -> mkexp loc (Pexp_send (exp e) s)
             
@@ -927,19 +927,19 @@ and binding (x:binding) acc =  match x with
 and case (x:case) = 
   let cases = list_of_or x [] in
   List.filter_map
-    (fun
-      [ {:case'| $pat:p -> $e |} -> Some(pat p, exp e) 
+    (function
+      | {:case'| $pat:p -> $e |} -> Some(pat p, exp e) 
       | {:case'| $pat:p when $w -> $e |} ->
           Some (pat p,
             mkexp (loc_of w) (Pexp_when (exp w) (exp e)))
-      | x -> errorf (loc_of x ) "case %s" (dump_case x ) ]) cases
+      | x -> errorf (loc_of x ) "case %s" (dump_case x ) ) cases
 
 and mklabexp (x:rec_exp)  =
     let bindings = list_of_sem x [] in
     List.filter_map
-      (fun
-        [ {:rec_exp'| $id:i = $e |} ->  Some (ident i, exp e)
-        |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x) ]) bindings
+      (function
+        | {:rec_exp'| $id:i = $e |} ->  Some (ident i, exp e)
+        |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x) ) bindings
 
 (* Example:
    {[
@@ -975,10 +975,10 @@ and mktype_decl (x:typedecl)  =
             | `Some(_,cl) ->
               list_of_and cl []
               |> List.map
-                  (fun
-                    [`Eq(loc,t1,t2) ->
+                  (function
+                    |`Eq(loc,t1,t2) ->
                       (ctyp t1, ctyp t2, loc)
-                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)]) in
+                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)) in
           (c+>sloc,
            type_decl
              (mk_type_parameters tl)
@@ -990,10 +990,10 @@ and mktype_decl (x:typedecl)  =
             | `Some(_,cl) ->
               list_of_and cl []
               |> List.map
-                  (fun
-                    [`Eq(loc,t1,t2) ->
+                  (function
+                    |`Eq(loc,t1,t2) ->
                       (ctyp t1, ctyp t2, loc)
-                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)]) in            
+                    | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)) in            
             (c+>sloc,
              mktype cloc
                (mk_type_parameters tl)
@@ -1014,8 +1014,8 @@ and mtyp : Ast.mtyp -> Parsetree.module_type =
             ptype_manifest = Some (ctyp ct);
             ptype_loc =  loc; ptype_variance = variance}) in
     let constrs = list_of_and wc [] in
-    List.filter_map (fun 
-      [`TypeEq(_loc,id_tpl,ct) ->
+    List.filter_map (function
+      |`TypeEq(_loc,id_tpl,ct) ->
         Some (mkwithtyp (fun x -> Pwith_type x) _loc Public id_tpl ct)
       |`TypeEqPriv(_loc,id_tpl,ct) ->
         Some (mkwithtyp (fun x -> Pwith_type x) _loc Private id_tpl ct)
@@ -1025,9 +1025,9 @@ and mtyp : Ast.mtyp -> Parsetree.module_type =
           Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc Public id_tpl ct )
       | `ModuleSubst(_loc,i1,i2) ->
           Some (long_uident i1, Pwith_modsubst (long_uident i2))
-      | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_constr t)]) constrs in
-       fun 
-       [ #ident' as i  -> let loc = loc_of i in mkmty loc (Pmty_ident (long_uident i))
+      | t -> errorf (loc_of t) "bad with constraint (antiquotation) : %s" (dump_constr t)) constrs in
+       function 
+         | #ident' as i  -> let loc = loc_of i in mkmty loc (Pmty_ident (long_uident i))
        | `Functor(loc,`Uid(sloc,n),nt,mt) ->
            mkmty loc (Pmty_functor (with_loc n sloc) (mtyp nt) (mtyp mt))
        | `Sig(loc,sl) ->
@@ -1036,7 +1036,7 @@ and mtyp : Ast.mtyp -> Parsetree.module_type =
        | `With(loc,mt,wc) -> mkmty loc (Pmty_with (mtyp mt) (mkwithc wc ))
        | `ModuleTypeOf(_loc,me) ->
            mkmty _loc (Pmty_typeof (mexp me))
-       | t -> errorf (loc_of t) "mtyp: %s" (dump_mtyp t) ]
+       | t -> errorf (loc_of t) "mtyp: %s" (dump_mtyp t) 
 and sigi (s:sigi) (l:signature) :signature =
   match s with 
   | `Class (loc,cd) ->
@@ -1154,7 +1154,7 @@ and cltyp (x:Ast.cltyp) =
    (* `ClassCon (loc, `ViNil _, id,tl) -> *)
     mkcty loc
         (Pcty_constr (long_class_ident (id:>ident))
-           (List.map (fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false]) (list_of_com tl [])))
+           (List.map (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false) (list_of_com tl [])))
   | #vid' as id ->
       let loc = loc_of id in
   (* | `ClassConS(loc,`ViNil _, id) -> *)
@@ -1254,8 +1254,7 @@ and clexp  (x:Ast.clexp) =
   (* | `ClassCon (loc, `ViNil _, id,tl) -> *)
       mkcl loc
         (Pcl_constr (long_class_ident (id:>ident))
-           (List.map (
-            fun [`Ctyp (_loc,x) -> ctyp x | _ -> assert false])
+           (List.map (function |`Ctyp (_loc,x) -> ctyp x | _ -> assert false)
               (list_of_com tl [])))
         
   | #vid' as id  ->
@@ -1291,30 +1290,30 @@ and clexp  (x:Ast.clexp) =
       mkcl loc (Pcl_constraint (clexp ce) (cltyp ct))
   | t -> errorf (loc_of t) "clexp: %s" (dump_clexp t)
 
-  and clfield (c:clfield) l =
-    match c with
-    | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
-    | `Sem(_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
-    | `Inherit (loc, ov, ce) ->
-        [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) None) :: l]
-    | `InheritAs(loc,ov,ce,`Lid(_,x)) ->
-        [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) (Some x)) :: l]
-    | `Initializer (loc,e) -> [mkcf loc (Pcf_init (exp e)) :: l]
-    | `CrMthS(loc,`Lid(sloc,s),ov,pf,e) ->
-        let e = mkexp loc (Pexp_poly (exp e) None) in
-        [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
-    | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
-        let t = Some (mkpolytype (ctyp t)) in
-        let e = mkexp loc (Pexp_poly (exp e) t) in
-        [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
-    | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
-        [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, exp e)) :: l]
-    | `VirMeth (loc,`Lid(sloc,s),pf,t) ->
-        [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
-    | `VirVal (loc,`Lid(sloc,s),mf,t) ->
-        [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
-    | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) 
-
+and clfield (c:clfield) l =
+  match c with
+  | `Eq (loc, t1, t2) -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
+  | `Sem(_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
+  | `Inherit (loc, ov, ce) ->
+      [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) None) :: l]
+  | `InheritAs(loc,ov,ce,`Lid(_,x)) ->
+      [mkcf loc (Pcf_inher (override_flag loc ov) (clexp ce) (Some x)) :: l]
+  | `Initializer (loc,e) -> [mkcf loc (Pcf_init (exp e)) :: l]
+  | `CrMthS(loc,`Lid(sloc,s),ov,pf,e) ->
+      let e = mkexp loc (Pexp_poly (exp e) None) in
+      [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
+  | `CrMth (loc, `Lid(sloc,s), ov, pf, e, t) ->
+      let t = Some (mkpolytype (ctyp t)) in
+      let e = mkexp loc (Pexp_poly (exp e) t) in
+      [mkcf loc (Pcf_meth (with_loc s sloc, mkprivate pf, override_flag loc ov, e)) :: l]
+  | `CrVal (loc, `Lid(sloc,s), ov, mf, e) ->
+      [mkcf loc (Pcf_val (with_loc s sloc, mkmutable mf, override_flag loc ov, exp e)) :: l]
+  | `VirMeth (loc,`Lid(sloc,s),pf,t) ->
+      [mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l]
+  | `VirVal (loc,`Lid(sloc,s),mf,t) ->
+      [mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l]
+  | x  -> errorf  (loc_of  x) "clfield: %s" (dump_clfield x) 
+        
 let sigi (ast:sigi) : signature = sigi ast []
 let stru ast = stru ast []
 

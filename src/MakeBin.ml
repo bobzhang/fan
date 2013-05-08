@@ -113,7 +113,7 @@ module Make
               PreCast.enable_dump_ocaml_ast_printer ()
           | ("Printers"|"", "a" | "auto") ->
                (* FIXME introduced dependency on Unix *)
-               PreCast.enable_auto (fun [ () -> Unix.isatty Unix.stdout])
+               PreCast.enable_auto (fun  () -> Unix.isatty Unix.stdout)
           | _ ->
             let y = x^objext in
             real_load (try find_in_path y with  Not_found -> x ));
@@ -138,8 +138,8 @@ module Make
           phr
         end;
        let  rec sig_handler  : sigi -> sigi option =  with sigi
-          (fun
-            [{| #load $str:s |}-> begin rewrite_and_load "" s; None end
+          (function
+            | {| #load $str:s |}-> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s|} ->
@@ -158,12 +158,12 @@ module Make
                None
                 (* FIXME *)  
                 (* assert false *)
-            ] )
+             )
 
            
       let rec str_handler = with stru
-          (fun
-            [ {| #load $str:s |} -> begin rewrite_and_load "" s; None end
+          (function
+            | {| #load $str:s |} -> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->
                 begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
             | {| #use $str:s |} ->
@@ -187,8 +187,7 @@ module Make
                 FanLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
             | _ -> None
                 (* ignored *)
-                (* assert false *)
-            ] )
+                (* assert false *))
 
            
       let process  ?directive_handler name pa pr clean fold_filters =

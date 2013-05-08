@@ -66,9 +66,8 @@ let gen_object
       let () =  Frame.check names in
       let left_type_variable  = `Pre "mf_" in
       let right_type_variable =
-        `Exp (fun
-          [v -> let v = basic_transform left_type_variable v
-          in  {:exp'| $lid:v self |} ]) in
+        `Exp (fun v -> let v = basic_transform left_type_variable v
+          in  {:exp'| $lid:v self |} ) in
       let left_type_id  = `Pre ""in
       let right_type_id  =
         `Obj (basic_transform left_type_id) in

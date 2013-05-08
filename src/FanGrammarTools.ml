@@ -63,25 +63,25 @@ let gen_lid ()=  prefix^string_of_int (!(gensym ()))
 (* transform rule list *)  
 let retype_rule_list_without_patterns _loc rl =
   try
-    List.map(fun
-      (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
-    [ {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
-      {prod =
-       [{ (s) with pattern = Some {:pat| x |} }];
-       action =
-       Some {:exp'|$((gm() : vid :> exp)).string_of_token x |}
-         (* {:exp'| $(id:gm()).string_of_token x |} *)
-     }
-    (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
-    | {prod = [({pattern = None; _ } as s)]; action = None} ->
+    List.map(function
+        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
+      | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
+          {prod =
+           [{ (s) with pattern = Some {:pat| x |} }];
+           action =
+           Some {:exp'|$((gm() : vid :> exp)).string_of_token x |}
+             (* {:exp'| $(id:gm()).string_of_token x |} *)
+         }
+            (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
+      | {prod = [({pattern = None; _ } as s)]; action = None} ->
 
-        {prod = [{ (s) with pattern = Some {:pat| x |} }];
-         action = Some {:exp'| x |}}
-    (* ...; ([] -> a); ... *)
-    | {prod = []; action = Some _} as r -> r
-    | _ -> raise Exit ]) rl
+          {prod = [{ (s) with pattern = Some {:pat| x |} }];
+           action = Some {:exp'| x |}}
+            (* ...; ([] -> a); ... *)
+      | {prod = []; action = Some _} as r -> r
+      | _ -> raise Exit ) rl
   with
-     Exit -> rl 
+    Exit -> rl 
 
 
 
@@ -89,10 +89,10 @@ let retype_rule_list_without_patterns _loc rl =
   translate [styp] into [ctyp],
   given the assumption that the entry output [tvar] type
  *)
-    
+        
 let make_ctyp (styp:styp) tvar : ctyp = 
-  let rec aux  = with ctyp fun  
-    [ #ident' | `Quote _ as x -> x  
+  let rec aux  = with ctyp function  
+    | #ident' | `Quote _ as x -> x  
     | `App(_loc,t1,t2) -> `App(_loc,aux t1,aux t2)
     | `Self (_loc, x) ->
         if tvar = "" then
@@ -100,7 +100,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$lid:tvar |}
     | `Tok _loc -> {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
-    | `Type t -> t ] in aux styp
+    | `Type t -> t  in aux styp
 
       
 
@@ -436,8 +436,8 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
    let match_fun =
      if is_irrefut_pat no_variable
      then 
-       {| fun [ $pat:no_variable -> true ] |}
-     else {| fun [$pat:no_variable -> true | _ -> false ] |} in 
+       {| function | $pat:no_variable -> true  |}
+     else {| function | $pat:no_variable -> true | _ -> false  |} in 
    let descr = string_of_pat no_variable in
    let text = `Stok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
@@ -445,7 +445,7 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
  | Some restrict ->
      let p'= Objs.wildcarder#pat pattern in
      let match_fun = 
-       {| fun [$pat:pattern when $restrict -> true | _ -> false ] |}  in
+       {| function | $pat:pattern when $restrict -> true | _ -> false  |}  in
      let descr = string_of_pat pattern in
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} 

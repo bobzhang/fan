@@ -129,7 +129,8 @@ class dump_grammar = object(self:'self)
     (*   flush_str_formatter () *)
     (* end in *)
     TreePrint.print_sons "|-"
-      (fun [Bro (s, ls) -> (string_of_symbol s, ls) | End -> (".",[])]) "" f
+      (function
+        | Bro (s, ls) -> (string_of_symbol s, ls) | End -> (".",[])) "" f
       (get_brothers tree);
   method! level f =
     function {assoc;lname;lsuffix;lprefix;_} ->
