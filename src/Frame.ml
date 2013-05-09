@@ -41,7 +41,7 @@ let mapi_exp ?(arity=1) ?(names=[])
     ~f:(f:(ctyp->exp))
     (i:int) (ty : ctyp)  :
     FSig.ty_info =
-  with {pat:ctyp;exp}
+  with {pat:ctyp;exp:exp'}
   let name_exp = f ty in 
   let base = name_exp  +> names in
   (** FIXME as a tuple it is useful when arity> 1??? *)
@@ -92,7 +92,7 @@ let rec  normal_simple_exp_of_ctyp
   let right_trans = transform right_type_id in
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
-  let rec aux = with {pat:ctyp';exp'} function
+  let rec aux = with {pat:ctyp;exp} function
     | `Lid(_,id) -> 
         if Hashset.mem cxt id then {| $(lid:left_trans id) |}
         else
@@ -138,7 +138,7 @@ let rec  normal_simple_exp_of_ctyp
   self#m_list (fun self -> self#tree mf_a)
  *)      
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
-    ?names ?arity ~mk_tuple ty = with {pat:ctyp'}
+    ?names ?arity ~mk_tuple ty = with {pat:ctyp}
   let open Transform in 
   let trans = transform right_type_id in
   let var = basic_transform left_type_variable in
@@ -154,15 +154,15 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
                 (trans (Id.to_vid tctor) ::
                  (ls |> List.map
                    (function
-                     | `Quote (_loc,_,`Lid(_,s)) -> {:exp'| $(lid:var s) |} 
-                     | t ->   {:exp'| fun self -> $(aux t) |} )) )
+                     | `Quote (_loc,_,`Lid(_,s)) -> {:exp| $(lid:var s) |} 
+                     | t ->   {:exp| fun self -> $(aux t) |} )) )
           | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
               (Objs.dump_ctyp ty)
         end
     | `Arrow(_loc,t1,t2) -> 
-        aux {:ctyp'| ($t1,$t2) arrow  |} 
+        aux {:ctyp| ($t1,$t2) arrow  |} 
     | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable

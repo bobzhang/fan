@@ -9,14 +9,14 @@ let meta_loc_exp _loc loc =
   | Some x -> lid _loc x  
 
 (* we use [subst_first_loc] *)
-let meta_loc_pat _loc _ =  {:pat| _ |}
+let meta_loc_pat _loc _ =  {:pat'| _ |}
 
 
 (* when the antiquotation appears in the pattern position,
    its final context is [pat] *)  
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
-  method! pat (x:pat)= with pat'
+  method! pat (x:pat)= with pat
     match x with 
     |`Ant(_loc, {cxt;sep;decorations;content=code}) ->
       let mloc _loc =meta_loc_pat  _loc _loc in
@@ -28,7 +28,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
            {|$(vrn:String.capitalize x) ($(mloc _loc),$e) |}
       | _ -> super#pat e end 
     | e -> super#pat e ;
-  method! exp (x:exp) = with exp'
+  method! exp (x:exp) = with exp
     match x with 
     |`Ant(_loc,{cxt;sep;decorations;content=code}) ->
       let mloc _loc = (meta_loc_exp _loc _loc :> exp) in

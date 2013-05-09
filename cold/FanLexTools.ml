@@ -322,11 +322,11 @@ let gen_definition _loc l =
     if (Array.length trans) = 0
     then
       match best_final final with
-      | Some i -> `Int (_loc, (string_of_int i))
+      | Some i -> (`Int (_loc, (string_of_int i)) : Ast.exp )
       | None  -> assert false
     else
       (let f = mk_state_name state in
-       `App (_loc, (`Lid (_loc, f)), (`Lid (_loc, "lexbuf")))) in
+       (`App (_loc, (`Lid (_loc, f)), (`Lid (_loc, "lexbuf"))) : Ast.exp )) in
   let gen_state auto _loc i (part,trans,final) =
     (let f = mk_state_name i in
      let p = mk_partition_name part in
@@ -339,11 +339,11 @@ let gen_definition _loc l =
      let cases =
        bar_of_list
          ((Array.to_list cases) @
-            [`Case
-               (_loc, (`Any _loc),
-                 (`App
-                    (_loc, (`Field (_loc, g, (`Lid (_loc, "backtrack")))),
-                      (`Lid (_loc, "lexbuf")))))]) in
+            [(`Case
+                (_loc, (`Any _loc),
+                  (`App
+                     (_loc, (`Field (_loc, g, (`Lid (_loc, "backtrack")))),
+                       (`Lid (_loc, "lexbuf"))))) : Ast.case )]) in
      let body: Ast.exp =
        `Match
          (_loc,
@@ -353,9 +353,10 @@ let gen_definition _loc l =
                    (_loc, (`Field (_loc, g, (`Lid (_loc, "next")))),
                      (`Lid (_loc, "lexbuf")))))), cases) in
      let ret (body : exp) =
-       `Bind
-         (_loc, (`Lid (_loc, f)),
-           (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), body))))) in
+       (`Bind
+          (_loc, (`Lid (_loc, f)),
+            (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), body))))) : 
+       Ast.binding ) in
      match best_final final with
      | None  -> Some (ret body)
      | Some i ->
@@ -382,8 +383,8 @@ let gen_definition _loc l =
   let auto = compile ~part_tbl rs in
   let cases =
     Array.mapi
-      (fun i  (_,e)  -> `Case (_loc, (`Int (_loc, (string_of_int i))), e))
-      brs in
+      (fun i  (_,e)  ->
+         (`Case (_loc, (`Int (_loc, (string_of_int i))), e) : Ast.case )) brs in
   let table_counter = ref 0 in
   let tables = Hashtbl.create 31 in
   let states = Array.filter_mapi (gen_state auto _loc) auto in

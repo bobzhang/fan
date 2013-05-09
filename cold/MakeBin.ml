@@ -96,41 +96,43 @@ module Make(PreCast:PRECAST) =
        clear (); phr)
     let rec sig_handler: sigi -> sigi option =
       function
-      | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->
           (rewrite_and_load "" s; None)
-      | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)) : Ast.sigi) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.sigi) ->
           parse_file ~directive_handler:sig_handler s
             PreCast.CurrentParser.parse_interf
-      | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
+          Ast.sigi) ->
           (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
            None)
-      | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : Ast.sigi) ->
           (AstFilters.use_interf_filter s; None)
       | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
-      | `Directive (_loc,`Lid (_,x),_) ->
+      | (`Directive (_loc,`Lid (_,x),_) : Ast.sigi) ->
           FanLoc.raise _loc
             (XStream.Error (x ^ " is abad directive Fan can not handled "))
       | _ -> None
     let rec str_handler =
       function
-      | `Directive (_loc,`Lid (_,"load"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru) ->
           (rewrite_and_load "" s; None)
-      | `Directive (_loc,`Lid (_,"directory"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)) : Ast.stru) ->
           (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
-      | `Directive (_loc,`Lid (_,"use"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.stru) ->
           parse_file ~directive_handler:str_handler s
             PreCast.CurrentParser.parse_implem
-      | `Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
+          Ast.stru) ->
           (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s));
            None)
-      | `DirectiveSimple (_loc,`Lid (_,"lang_clear")) ->
+      | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : Ast.stru) ->
           (AstQuotation.clear_map (); AstQuotation.clear_default (); None)
-      | `Directive (_loc,`Lid (_,"filter"),`Str (_,s)) ->
+      | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : Ast.stru) ->
           (AstFilters.use_implem_filter s; None)
       | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
-      | `Directive (_loc,`Lid (_,x),_) ->
+      | (`Directive (_loc,`Lid (_,x),_) : Ast.stru) ->
           FanLoc.raise _loc
             (XStream.Error (x ^ "bad directive Fan can not handled "))
       | _ -> None

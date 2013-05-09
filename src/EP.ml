@@ -1,4 +1,4 @@
-#default_quotation "exp";;
+#default_quotation "exp'";;
 
 
 
@@ -43,7 +43,8 @@ let of_str s =
     ]}
 *)
 let  of_ident_number  cons n = 
-  appl_of_list ({| $id:cons |}:: (List.init n (fun  i -> {| $(id:xid i) |} )))
+  appl_of_list (cons:: List.init n xid )
+    (* {| $(id:xid i) |}  FIXME why a type annotation here?*)
 
 
 
@@ -57,7 +58,7 @@ let  of_ident_number  cons n =
    ]}
  *)
 let (+>) f names  =
-  appl_of_list (f:: (List.map (fun lid -> {| $lid:lid |} ) names))
+  appl_of_list (f:: (List.map (fun lid -> `Lid (_loc,lid) ) names))
 
 
 (*
@@ -179,7 +180,7 @@ let mk_record ?(arity=1) cols  =
   let mk_list off = 
     List.mapi (fun i -> fun   ({FSig.col_label;_}:FSig.col) ->
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
-      {:rec_exp| $lid:col_label = $(id:xid ~off i )  |} ) cols in
+      {:rec_exp'| $lid:col_label = $(id:xid ~off i )  |} ) cols in
   let res = zfold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(_loc,sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )

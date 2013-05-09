@@ -61,7 +61,8 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = ({ pattern = None ; styp = `Tok _;_} as s)::[];
            action = None  } ->
            {
-             prod = [{ s with pattern = (Some (`Lid (_loc, "x"))) }];
+             prod =
+               [{ s with pattern = (Some (`Lid (_loc, "x") : Ast.pat )) }];
              action =
                (Some
                   (`App
@@ -73,7 +74,8 @@ let retype_rule_list_without_patterns _loc rl =
            }
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
            {
-             prod = [{ s with pattern = (Some (`Lid (_loc, "x"))) }];
+             prod =
+               [{ s with pattern = (Some (`Lid (_loc, "x") : Ast.pat )) }];
              action = (Some (`Lid (_loc, "x") : Ast.exp ))
            }
        | { prod = []; action = Some _ } as r -> r
@@ -91,13 +93,16 @@ let make_ctyp (styp : styp) tvar =
            FanLoc.raise _loc
              (XStream.Error
                 ("'" ^ (x ^ "' illegal in anonymous entry level")))
-         else `Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar)))
+         else
+           (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : Ast.ctyp )
      | `Tok _loc ->
-         `PolySup
-           (_loc,
-             (`Ctyp
-                (_loc,
-                  (`Dot (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t")))))))
+         (`PolySup
+            (_loc,
+              (`Ctyp
+                 (_loc,
+                   (`Dot
+                      (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t"))))))) : 
+         Ast.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
 
@@ -216,7 +221,7 @@ and make_exp_rules (_loc : loc) (rl : (text list * exp) list) (tvar : string)
 
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
-  (let locid = `Lid (_loc, (FanLoc.name.contents)) in
+  (let locid: Ast.pat = `Lid (_loc, (FanLoc.name.contents)) in
    let act =
      match act with
      | Some act -> act
@@ -275,7 +280,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
      List.fold_lefti
        (fun i  txt  s  ->
           match s.pattern with
-          | Some (`Alias (_loc,`App (_,_,`Par (_,`Any _)),p) : Ast.pat) ->
+          | Some (`Alias (_loc,`App (_,_,`Par (_,(`Any _ : Ast.pat))),p)) ->
               let p = typing (p : alident  :>pat) (make_ctyp s.styp tvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : Ast.exp )
           | Some p when is_irrefut_pat p ->
@@ -285,7 +290,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
               (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : Ast.exp )
           | Some _ ->
               let p =
-                typing (`Lid (_loc, (prefix ^ (string_of_int i))))
+                typing (`Lid (_loc, (prefix ^ (string_of_int i))) : Ast.pat )
                   (make_ctyp s.styp tvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : Ast.exp )) e psl in
    (`App
@@ -304,7 +309,7 @@ let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
 let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
     let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
-    ((n.exp), sl) in
+    ((n.exp : Ast.exp ), sl) in
   let rest =
     List.map
       (fun sl  ->
@@ -317,7 +322,9 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
                       (_loc, (gm () : vid  :>exp),
                         (`Lid (_loc, "delete_rule")))), e)), b) : Ast.exp ))
       symbolss in
-  match symbolss with | [] -> `Uid (_loc, "()") | _ -> seq_sem rest
+  match symbolss with
+  | [] -> (`Uid (_loc, "()") : Ast.exp )
+  | _ -> seq_sem rest
 
 let mk_name _loc (i : vid) =
   { exp = (i : vid  :>exp); tvar = (Id.tvar_of_ident i); loc = _loc }
@@ -388,7 +395,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
         (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk"))) : Ast.exp ) in
   let local_binding_of_name =
     function
-    | { exp = `Lid (_,i); tvar = x; loc = _loc } ->
+    | { exp = (`Lid (_,i) : Ast.exp); tvar = x; loc = _loc } ->
         (`Bind
            (_loc, (`Lid (_loc, i)),
              (`Constraint
@@ -417,7 +424,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
 let text_of_functorial_extend _loc gram locals el =
   let args =
     let el = List.map text_of_entry el in
-    match el with | [] -> `Uid (_loc, "()") | _ -> seq_sem el in
+    match el with | [] -> (`Uid (_loc, "()") : Ast.exp ) | _ -> seq_sem el in
   let_in_of_extend _loc gram locals args
 
 let mk_tok _loc ?restrict  ~pattern  styp =
@@ -426,19 +433,22 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let no_variable = Objs.wildcarder#pat pattern in
       let match_fun =
         if is_irrefut_pat no_variable
-        then `Fun (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true")))))
+        then
+          (`Fun (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true"))))) : 
+          Ast.exp )
         else
-          `Fun
-            (_loc,
-              (`Bar
-                 (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true")))),
-                   (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
+          (`Fun
+             (_loc,
+               (`Bar
+                  (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true")))),
+                    (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+          Ast.exp ) in
       let descr = string_of_pat no_variable in
       let text = `Stok (_loc, match_fun, "Normal", descr) in
       { text; styp; pattern = (Some pattern) }
   | Some restrict ->
       let p' = Objs.wildcarder#pat pattern in
-      let match_fun =
+      let match_fun: Ast.exp =
         `Fun
           (_loc,
             (`Bar

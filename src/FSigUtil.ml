@@ -10,14 +10,14 @@ let stru_from_mtyps ~f:(aux:named_type -> typedecl)
     (x:mtyps) : stru =
   let _loc = FanLoc.ghost in
   match x with
-  | [] -> {:stru'| let _ = () |}
+  | [] -> {:stru| let _ = () |}
   | _ ->
       let xs : stru list   =
         (List.map
            (function
-             |`Mutual tys -> {:stru'| type $(and_of_list (List.map aux tys)) |}
+             |`Mutual tys -> {:stru| type $(and_of_list (List.map aux tys)) |}
              |`Single ty ->
-                 {:stru'| type $(aux ty)|} ) x ) in
+                 {:stru| type $(aux ty)|} ) x ) in
       sem_of_list xs 
 
 let stru_from_ty ~f:(f:string -> stru) (x:mtyps) : stru  =     

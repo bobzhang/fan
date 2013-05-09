@@ -10,7 +10,7 @@ type ty_meta = {
     eq: [ `Def | `Custom of stru]
   }
 
-let base1_types = with stru'
+let base1_types = with stru
   [ ("int", `Exist , `Def) ;
     ("int32", `Fmt "%ld", `Def);
     ("int64", `Fmt "%Ld", `Def );
@@ -28,11 +28,11 @@ let ty_metas =
   base1_types |> List.map
     (fun (str,print,eq) -> {str;print;eq})
   
-let print_base1 = with stru'
+let print_base1 = with stru
 let items =
   ty_metas |> List.map (fun 
     {str;print;_} ->
-      let ty = {:ctyp'| Format.formatter -> $lid:str -> unit |} in
+      let ty = {:ctyp| Format.formatter -> $lid:str -> unit |} in
       let name = "pp_print_"^str in
       match print with
       |`Exist -> {| let $lid:name = $lid:name |}
@@ -51,36 +51,36 @@ let (map_clfield_base_1,
      print_clfield_base,
      iter_clfield_base_1,
      eq_clfield_base_2 
-    ) =  with clfield'
+    ) =  with clfield
   let ty_names = ty_metas |> List.map (fun {str;_} -> str) in
   let v1 = ty_names |> List.map (fun x ->
-              let ty = {:ctyp'| $lid:x -> $lid:x |} in
-              let exp = {:exp'|fun x -> x |} in
+              let ty = {:ctyp| $lid:x -> $lid:x |} in
+              let exp = {:exp|fun x -> x |} in
               {| method $lid:x : $ty = $exp |} ) in 
   let v2 = ty_names |> List.map (fun x ->
-              let ty = {:ctyp'| $lid:x -> $lid:x -> $lid:x |} in
-              let exp = {:exp'| fun x _ ->  x|} in
+              let ty = {:ctyp| $lid:x -> $lid:x -> $lid:x |} in
+              let exp = {:exp| fun x _ ->  x|} in
               {| method $lid:x : $ty = $exp |} ) in
   let v3 = ty_names |> List.map (fun x ->
-              let ty = {:ctyp'| $lid:x -> 'self_type |} in
-              let exp = {:exp'|fun _ -> self |} in 
+              let ty = {:ctyp| $lid:x -> 'self_type |} in
+              let exp = {:exp|fun _ -> self |} in 
               {| method $lid:x : $ty = $exp |} ) in 
   let v4 = ty_names |> List.map (fun x ->
-              let ty = {:ctyp'| $lid:x -> $lid:x -> 'self_type |} in
-              let exp = {:exp'|fun _ _ -> self |} in
+              let ty = {:ctyp| $lid:x -> $lid:x -> 'self_type |} in
+              let exp = {:exp|fun _ _ -> self |} in
               {| method $lid:x : $ty = $exp |} ) in
   let v5 = ty_names |> List.map (fun x ->
-    let exp = {:exp'|$(lid:"pp_print_"^x)|} in
+    let exp = {:exp|$(lid:"pp_print_"^x)|} in
     {| method $lid:x  = $exp  |} ) in
   let v6 = ty_names |> List.map
     (fun x ->
-      let ty = {:ctyp'| $lid:x -> unit |} in
-      let exp = {:exp'| fun _ -> () |} in
+      let ty = {:ctyp| $lid:x -> unit |} in
+      let exp = {:exp| fun _ -> () |} in
       {| method $lid:x : $ty = $exp  |}) in
   let v7 = ty_names |> List.map
     (fun x ->
-      let exp = {:exp'|fun x y -> x = y|} in
-      let ty = {:ctyp'| $lid:x -> $lid:x -> bool |} in
+      let exp = {:exp|fun x y -> x = y|} in
+      let ty = {:ctyp| $lid:x -> $lid:x -> bool |} in
       {| method $lid:x : $ty = $exp  |}) in
   (sem_of_list v1, sem_of_list v2, sem_of_list v3,sem_of_list v4,sem_of_list v5,
    sem_of_list v6, sem_of_list v7)
@@ -95,7 +95,7 @@ let eq_base1 =
     ty_metas |> List.map
       (fun 
         {str;eq;_} ->
-          let ty =  {:ctyp'| $lid:str -> $lid:str -> bool |}  in
+          let ty =  {:ctyp| $lid:str -> $lid:str -> bool |}  in
           let name = "eq_" ^ str in
           match eq with
           |`Def -> {| let $lid:name : $ty = (=) |}

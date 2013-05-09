@@ -16,8 +16,7 @@ let of_str s =
      | x when Char.is_uppercase x -> `Uid (_loc, s)
      | _ -> `Lid (_loc, s))
 
-let of_ident_number cons n =
-  appl_of_list (cons :: (List.init n (fun i  -> xid i)))
+let of_ident_number cons n = appl_of_list (cons :: (List.init n xid))
 
 let (+>) f names =
   appl_of_list (f :: (List.map (fun lid  -> `Lid (_loc, lid)) names))

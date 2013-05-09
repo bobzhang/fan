@@ -29,8 +29,8 @@ end;;
 let wildcarder = object (self)
   inherit map as super;
   method! pat = function
-    | {:pat'| $lid:_ |} -> {:pat'| _ |}
-    | {:pat'| ($p as $_) |} -> self#pat p
+    | {:pat| $lid:_ |} -> {:pat| _ |}
+    | {:pat| ($p as $_) |} -> self#pat p
     | p -> super#pat p ;
 end
 

@@ -180,7 +180,7 @@ let partition_prefix = "__partition_"
 
 (* FIXME ghost location introduced *)
 let lexer_module_name : vid ref =
-  let _loc = FanLoc.ghost in ref {:ident|$(uid:"Ulexing")|}
+  let _loc = FanLoc.ghost in ref (`Uid(_loc,"Ulexing"))
   
 let gm () = !lexer_module_name
     
@@ -280,44 +280,44 @@ let output_byte_array v =  begin
     if i land 15 = 15 then Buffer.add_string b "\\\n    " else ()
   done;
   let s = Buffer.contents b ;
-  {:exp'| $str:s |}
+  {:exp| $str:s |}
 end
 
-let table (n,t) = {:stru'| let $lid:n = $(output_byte_array t) |}
-let binding_table (n,t) = {:binding'|  $lid:n = $(output_byte_array t) |}
+let table (n,t) = {:stru| let $lid:n = $(output_byte_array t) |}
+let binding_table (n,t) = {:binding|  $lid:n = $(output_byte_array t) |}
 
 
 
 let partition ~counter ~tables (i,p) =
   let rec gen_tree = function 
     | Lte (i,yes,no) ->
-	{:exp'| if (c <= $`int:i) 
+	{:exp| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
-	{:exp'| $`int:i |}
+	{:exp| $`int:i |}
     | Table (offset, t) ->
-	let c = if offset = 0 then {:exp'| c |} 
-	else {:exp'| (c - $`int:offset) |} in
-	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
+	let c = if offset = 0 then {:exp| c |} 
+	else {:exp| (c - $`int:offset) |} in
+	{:exp| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
   let body = gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:stru'| let $lid:f = fun c -> $body |}
+  {:stru| let $lid:f = fun c -> $body |}
 
 let binding_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 
     | Lte (i,yes,no) ->
-	{:exp'| if (c <= $`int:i) 
+	{:exp| if (c <= $`int:i) 
 	then $(gen_tree yes) else $(gen_tree no) |}
     | Return i ->
-	{:exp'| $`int:i |}
+	{:exp| $`int:i |}
     | Table (offset, t) ->
-	let c = if offset = 0 then {:exp'| c |} 
-	else {:exp'| (c - $`int:offset) |} in
-	{:exp'| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
+	let c = if offset = 0 then {:exp| c |} 
+	else {:exp| (c - $`int:offset) |} in
+	{:exp| Char.code ($(lid: table_name ~tables ~counter t).[$c]) - 1|}  in
   let body = gen_tree
       (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:binding'|  $lid:f = fun c -> $body |}
+  {:binding|  $lid:f = fun c -> $body |}
 
 (* Code generation for the automata *)
 
@@ -351,13 +351,13 @@ let gen_definition _loc l =
     let p = mk_partition_name part in
     let cases =
       Array.mapi 
-        (fun i j -> {:case'| $`int:i -> $(call_state auto j) |})
+        (fun i j -> {:case| $`int:i -> $(call_state auto j) |})
         trans in
     let cases = bar_of_list
         (Array.to_list cases @
          [{:case| _ -> $g.backtrack lexbuf|}]) in
     let body =
-      {:exp'|
+      {:exp|
       match ($lid:p ($g.next lexbuf)) with
       | $cases 
       (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
@@ -370,7 +370,7 @@ let gen_definition _loc l =
 	if Array.length trans = 0 then (* {:binding||} *) None else
 	Some
           (ret
-	     {:exp'| begin  $g.mark lexbuf $`int:i;  $body end |})  in
+	     {:exp| begin  $g.mark lexbuf $`int:i;  $body end |})  in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -401,15 +401,15 @@ let gen_definition _loc l =
     | _ -> (`Recursive _loc, and_of_list (Array.to_list states))  in
   let cases =
     bar_of_list
-      (Array.to_list cases @ [{:case'| _ -> raise $g.Error|}]) in
+      (Array.to_list cases @ [{:case| _ -> raise $g.Error|}]) in
   let rest =
     binds tables
       (binds parts
-       {:exp'|
+       {:exp|
        let $rec:b $states in
        ( $g.start lexbuf;
          match $(lid:mk_state_name 0) lexbuf with
          | $cases  )|}) in
-  {:exp'| fun lexbuf -> $rest |}
+  {:exp| fun lexbuf -> $rest |}
 
 

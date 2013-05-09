@@ -90,7 +90,7 @@ let define ~exp  ~pat  eo x =
                       | `Uid __fan__x when x = __fan__x -> true
                       | _ -> false)), (`Antiquot, "`Uid __fan__x"));
                 `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'pat)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let pl =\n            match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\n          if (List.length pl) = (List.length sl)\n          then\n            let env = List.combine sl pl in\n            let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\n          else incorrect_number _loc pl sl : 'pat )\n     | _ ->\n         failwith\n           \"let pl = match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n\")\n",
+                 ("Gram.mk_action\n  (fun (param : 'pat)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let pl =\n            match param with\n            | (`Par (_loc,p) : Ast.pat) -> list_of_com p []\n            | p -> [p] in\n          if (List.length pl) = (List.length sl)\n          then\n            let env = List.combine sl pl in\n            let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\n          else incorrect_number _loc pl sl : 'pat )\n     | _ ->\n         failwith\n           \"let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n\")\n",
                    (Gram.mk_action
                       (fun (param : 'pat)  (__fan_0 : [> FanToken.t]) 
                          (_loc : FanLoc.t)  ->
@@ -98,7 +98,8 @@ let define ~exp  ~pat  eo x =
                          | `Uid _ ->
                              (let pl =
                                 match param with
-                                | `Par (_loc,p) -> list_of_com p []
+                                | (`Par (_loc,p) : Ast.pat) ->
+                                    list_of_com p []
                                 | p -> [p] in
                               if (List.length pl) = (List.length sl)
                               then
@@ -108,7 +109,7 @@ let define ~exp  ~pat  eo x =
                               else incorrect_number _loc pl sl : 'pat )
                          | _ ->
                              failwith
-                               "let pl = match param with | `Par (_loc,p) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
+                               "let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
    | None  -> ());
   defined := ((x, eo) :: (defined.contents))
 

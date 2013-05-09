@@ -713,9 +713,9 @@ let apply () = begin
        | `Ant (("list" as n),s) -> mk_anti _loc  ~c:"pat," n s
        | pat{p} -> p ]
        label_pat_list:
-       [ label_pat{p1}; ";"; S{p2} -> {| $p1 ; $p2 |}
-       | label_pat{p1}; ";"; "_"       -> {| $p1 ; _ |}
-       | label_pat{p1}; ";"; "_"; ";"  -> {| $p1 ; _ |}
+       [ label_pat{p1}; ";"; S{p2} -> `Sem(_loc,p1,p2)(* {| $p1 ; $p2 |} *)
+       | label_pat{p1}; ";"; "_"       -> `Sem(_loc,p1,`Any _loc)
+       | label_pat{p1}; ";"; "_"; ";"  -> `Sem(_loc,p1,`Any _loc)
        | label_pat{p1}; ";"            -> p1
        | label_pat{p1}                 -> p1   ] 
        label_pat:
@@ -809,10 +809,12 @@ let apply () = begin
       module_longident:
       [ `Ant ((""|"id"|"anti"|"list" as n),s) ->
         mk_anti _loc ~c:"ident" n s 
-      | `Uid i; "."; S{l} -> {| $uid:i.$l|}
-      | `Uid i -> {|$uid:i|}
+      | `Uid i; "."; S{l} ->  `Dot (_loc, `Uid (_loc, i), l)
+      | `Uid i -> `Uid(_loc,i)
       | `Ant ((""|"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
-      | `Ant((""|"uid" as n), s); "."; S{l} -> {|$(mk_anti _loc ~c:"ident" n s).$l |} ]
+      | `Ant((""|"uid" as n), s); "."; S{l} ->
+          `Dot (_loc, mk_anti _loc ~c:"ident" n s, l)
+      ]
 
       module_longident_with_app:
       { "apply"
@@ -866,25 +868,25 @@ let apply () = begin
             mk_anti _loc ~c:"override_flag" n s
       | "val" -> `OvNil _loc]
       direction_flag:
-      [ "to" -> {:direction_flag| to |}
-      | "downto" -> {:direction_flag| downto |}
+      [ "to" ->  `To _loc
+      | "downto" -> `Downto _loc 
       | `Ant (("to"|"anti"|"" as n),s) ->
           mk_anti _loc  ~c:"direction_flag" n s]
 
       opt_private:
-      [ "private" -> {:private_flag| private |}
+      [ "private" -> `Private _loc
       | `Ant (("private"|"anti" as n),s) ->
           mk_anti _loc  ~c:"private_flag" n s
-      | -> {:private_flag||}  ] 
+      | -> `PrNil _loc   ] 
       opt_mutable:
-      [ "mutable" -> {:mutable_flag| mutable |}
+      [ "mutable" ->  `Mutable _loc
       | `Ant (("mutable"|"anti" as n),s) ->
           mk_anti _loc ~c:"mutable_flag" n s
-      | -> {:mutable_flag||}  ] 
+      | -> `MuNil _loc  ] 
       opt_virtual:
-      [ "virtual" -> {:virtual_flag| virtual |}
+      [ "virtual" -> `Virtual _loc 
       | `Ant (("virtual"|"anti" as n),s) -> mk_anti _loc  ~c:"virtual_flag" n s
-      | -> {:virtual_flag||}  ] 
+      | -> `ViNil _loc   ] 
       opt_dot_dot:
       [ ".." -> `RowVar _loc
       | `Ant ((".."|"anti" as n),s) -> mk_anti _loc ~c:"row_var_flag" n s
@@ -1040,14 +1042,14 @@ let apply () = begin
           ->
             {| val $override:o $mutable:mf $lab = $e |}
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
-                (* poly_type *)ctyp{t} ->
+                ctyp{t} ->
                 (match o with
-                | {:override_flag@_||} ->{| val virtual $mutable:mf $l : $t |}
+                | `OvNil _ ->{| val virtual $mutable:mf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
-                (* poly_type *)ctyp{t} ->
+                  ctyp{t} ->
                 (match o with
-                | {:override_flag@_||} -> `VirMeth (_loc, l, pf, t)
+                | `OvNil _ -> `VirMeth (_loc, l, pf, t)
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);

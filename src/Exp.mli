@@ -58,7 +58,7 @@ val vee_of_str : string -> exp
 
 val mee_of_str : string -> exp
 
-val meee_of_str : string -> exp
+(* val meee_of_str : string -> exp *)
 
 val mk_tuple_ee : exp list -> exp
 

@@ -269,11 +269,12 @@ let eq_base1 =
             let name = "eq_" ^ str in
             match eq with
             | `Def ->
-                `Value
-                  (_loc, (`ReNil _loc),
-                    (`Bind
-                       (_loc, (`Lid (_loc, name)),
-                         (`Constraint (_loc, (`Lid (_loc, "=")), ty)))))
+                (`Value
+                   (_loc, (`ReNil _loc),
+                     (`Bind
+                        (_loc, (`Lid (_loc, name)),
+                          (`Constraint (_loc, (`Lid (_loc, "=")), ty))))) : 
+                Ast.stru )
             | `Custom s -> s)) in
   sem_of_list items
 

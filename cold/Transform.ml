@@ -44,5 +44,6 @@ let right_transform =
   let _loc = FanLoc.ghost in
   function
   | #basic_id_transform as x ->
-      let f = basic_transform x in (fun x  -> `Lid (_loc, (f x)))
+      let f = basic_transform x in
+      (fun x  -> (`Lid (_loc, (f x)) : Ast.exp ))
   | `Exp f -> f

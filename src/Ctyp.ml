@@ -1,4 +1,4 @@
-#default_quotation "ctyp'";;
+#default_quotation "ctyp";;
 
 open Ast
 open AstLoc
@@ -29,6 +29,7 @@ let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
   
 let (<+) (names: string list ) (ty:ctyp) =
+  let _loc = FanLoc.ghost in
   List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty
   
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
@@ -59,6 +60,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   quantifier variables can not be unified
  *)  
 let gen_quantifiers1 ~arity n  : ctyp =
+  let _loc = FanLoc.ghost in
   List.init arity
     (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
   |> List.concat |> appl_of_list
@@ -71,6 +73,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   ]}
  *)  
 let of_id_len ~off ((id:ident),len) =
+  let _loc = FanLoc.ghost in 
   appl_of_list
     ((id:>ctyp) ::
      List.init len
@@ -91,6 +94,7 @@ let of_id_len ~off ((id:ident),len) =
  *)    
 
 let of_name_len ~off (name,len) =
+  let _loc = FanLoc.ghost in
   let id = {:ident| $lid:name |}  in
   of_id_len ~off (id,len)
 
@@ -107,6 +111,7 @@ let of_name_len ~off (name,len) =
    ]}
  *)  
 let ty_name_of_tydcl  (x:typedecl) =
+  let _loc = FanLoc.ghost in
   match x with 
   | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
     let tyvars =
@@ -220,6 +225,7 @@ let result_id = ref 0 (* to be clean soon *)
     
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
+  let _loc = FanLoc.ghost in
   let prefix = List.map (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
@@ -276,11 +282,13 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
 
 (* *)  
 let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
+  let _loc = FanLoc.ghost in
   let id = {:ident| $lid:name |} in
   mk_method_type ~number ~prefix (id,len) k 
 
 
 let mk_obj class_name  base body =
+  let _loc = FanLoc.ghost in
   {:stru| class $lid:class_name = object (self: 'self_type)
     inherit $lid:base ;
     $body;
@@ -405,7 +413,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50;
   inherit Objs.map as super;
   method! stru = function
-    | {:stru'| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+    | {:stru| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
        let r =
          match ctyp with
          | `TyEq (_,_,t) -> qualified_app_list t | _ -> None  in
@@ -431,6 +439,7 @@ let mk_transform_type_eq () = object(self:'self_type)
        end
      | x -> super#stru x ;
   method! ctyp x =
+    let _loc = FanLoc.ghost in
     match qualified_app_list x with
     | Some (i, lst) ->
           let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 

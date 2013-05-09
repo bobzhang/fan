@@ -1,4 +1,4 @@
-#default_quotation "case'";;
+#default_quotation "case";;
 
 
 
@@ -13,7 +13,9 @@ open Basic
  *)
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   (* let annot = Ctyp.mk_dest_type *)
+  let _loc =FanLoc.ghost in  
   let args :  pat list =
+
     List.init arity (fun i ->
       {:pat| (#$id:name as $(lid: x ~off:i 0 )) |})in
   let exps = List.init arity (fun i -> {:exp| $(id:xid ~off:i 0) |} ) in

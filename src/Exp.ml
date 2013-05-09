@@ -18,9 +18,9 @@ open EP
 (* Utilities for [Stream] optimizations  *)
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | ({:pat'| $lid:a |}, {@_| $lid:b |}) 
-  | ({:pat'| $uid:a |}, {@_| $uid:b |}) -> a = b
-  | ({:pat'| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
+  | ({:pat| $lid:a |}, {@_| $lid:b |}) 
+  | ({:pat| $uid:a |}, {@_| $uid:b |}) -> a = b
+  | ({:pat| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
       pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
   | _ -> false 
 
@@ -29,9 +29,9 @@ let rec pattern_eq_expression p e =
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
 (* loc -> pat -> exp -> exp -> exp     *)
-let map loc (p:pat) (e:exp) (l:exp) = with exp'
+let map loc (p:pat) (e:exp) (l:exp) = with exp
   match (p, e) with
-  | ({:pat'| $lid:x |}, {@_| $lid:y |}) when x = y -> l
+  | ({:pat| $lid:x |}, {@_| $lid:y |}) when x = y -> l
   | _ ->
       if is_irrefut_pat p then
         {@loc| List.map (fun $p -> $e) $l |}
@@ -42,13 +42,13 @@ let map loc (p:pat) (e:exp) (l:exp) = with exp'
             | _ -> (fun l -> l) ) $l [] |} 
 
 
-let filter loc p b l = with exp'
+let filter loc p b l = with exp
     if is_irrefut_pat p then
       {@loc| List.filter (fun $p -> $b) $l |}
     else
       {@loc| List.filter (function | $pat:p when true -> $b | _ -> false ) $l |}
   
-let concat _loc l = with exp' {| List.concat $l |}
+let concat _loc l = with exp {| List.concat $l |}
 
 (* only this function needs to be exposed *)
 let rec compr _loc e =  function
@@ -77,7 +77,7 @@ let bad_pat _loc =
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let rec loop (x:exp)= with {pat:exp';exp:pat'}
+  let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     | {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
     | {| $lid:x |} ->
@@ -111,7 +111,7 @@ let substp loc env =
  *)  
 class subst loc env =  object
   inherit Objs.reloc loc as super;
-  method! exp = with exp' function
+  method! exp = with exp function
     | {| $lid:x |} | {| $uid:x |} as e ->
         begin try List.assoc x env with
           Not_found -> super#exp e
@@ -129,7 +129,7 @@ class subst loc env =  object
         end
     | e -> super#exp e ;
   method! pat =  function
-    | {:pat'| $lid:x |} | {:pat'| $uid:x |} as p ->
+    | {:pat| $lid:x |} | {:pat| $uid:x |} as p ->
         (* convert expession into pattern only *)
         begin
           try substp loc [] (List.assoc x env) with 
@@ -158,7 +158,7 @@ let capture_antiquot : antiquot_filter = object
         let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
         let cons' = {| $lid:code' |} in 
         let () = constraints <- (cons,cons')::constraints in 
-        {:pat'| $lid:code' |} (* only allows lidentifiers here *)
+        {:pat| $lid:code' |} (* only allows lidentifiers here *)
     end
      
   | p -> super#pat p ;
@@ -188,7 +188,7 @@ end
   fun a  c  b  -> c
   ]}
  *)
-let fun_args _loc args body = with exp'
+let fun_args _loc args body = with exp
   if args = [] then {| fun () -> $body |}
   else
     List.fold_right
@@ -213,13 +213,13 @@ let _loc = FanLoc.ghost
  *)
 let mk_record label_exps : exp=
   let rec_exps = List.map (fun (label, exp) ->
-    {:rec_exp'| $lid:label = $exp |} ) label_exps in
+    {:rec_exp| $lid:label = $exp |} ) label_exps in
   `Record (_loc, (sem_of_list rec_exps))
   (* {| { $list:rec_exps } |} *)
 
 
 (* TBD *)
-let failure = with exp'
+let failure = with exp
   {| raise (Failure "metafilter: Cannot handle that kind of types ") |}
 
 
@@ -230,7 +230,7 @@ let failure = with exp'
   - : exp = fun a  b  -> 3
   ]}
  *)
-let (<+) names acc  = with exp'
+let (<+) names acc  = with exp
   List.fold_right (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 
 
 (*
@@ -250,11 +250,15 @@ let (<+<) pats acc =
    +-----------------------------------------------------------------+ *)
   
   
-let mee_comma x y = {| {| $($x), $($y) |} |}
+let mee_comma x y =
+  with exp'
+  {| {| $($x), $($y) |} |}(* BOOTSTRAPPING*)
   (* {| `Com _loc $x $y  |}; *)
-let mvee_comma x y = {| `Com (_loc,$x,$y) |}
+(* let mvee_comma x y = {| `Com (_loc,$x,$y) |} *)
 
-let mee_app x y = {| {| $($x) $($y) |}|}
+let mee_app x y =
+  with exp' (* BOOTSTRAPPING *)
+  {| {| $($x) $($y) |}|}
 
 (*
   FIXME bootstrap
@@ -265,7 +269,7 @@ let mee_app x y = {| {| $($x) $($y) |}|}
   ]}
   FIXME
  *)   
-let mee_of_str s =
+let mee_of_str s = with exp'
   (* let u = {| |} *)
   let len = String.length s in
   if s.[0]='`' then
@@ -273,7 +277,7 @@ let mee_of_str s =
     (* {| {| `$($str:s) |} |} *)
     {|{|$(vrn:($str:s))|}|}
   else
-    let u = {| {:ident| $(uid:$str:s) |} |} in
+    let u = {| {:ident'| $(uid:$str:s) |} |} in
     {| {| $(id:$u) |} |}
     (* {| {| $(uid:$s)|}|} *)
       (* {| A |}
@@ -320,9 +324,9 @@ let vee_of_str s =
   meee_of_str "A" = {| {| {| A |}|}|};
   ]}
  *)
-let meee_of_str s =
-  let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in 
-  {| {| {| $(id:$($u))|}|}|}
+(* let meee_of_str s = *)
+(*   let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in  *)
+(*   {| {| {| $(id:$($u))|}|}|} *)
 
 
 (*
@@ -370,7 +374,7 @@ let meee_of_str s =
   given string input "u" and [ {| meta_u |} ]
  *)
 
-let mk_tuple_ee = function
+let mk_tuple_ee = function (* BOOTSTRAPPING *)
   | [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
@@ -391,11 +395,11 @@ let mk_tuple_ee = function
   ]}
  *)
 let mee_record_col label exp =
-  {| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} 
+  {:exp'| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} 
 
 
 let mee_record_semi a b =
-  {| {:rec_exp| $($a);$($b) |} |}
+  {:exp'| {:rec_exp| $($a);$($b) |} |}
 
 
 (*
@@ -404,7 +408,8 @@ let mee_record_semi a b =
   mk_record_ee [("a",{|3|})] = {| {| { a = $($({|3|})) }|}|};
   ]}
  *)  
-let mk_record_ee label_exps = 
+let mk_record_ee label_exps =
+  with exp'
   label_exps
   |> List.map (fun (label,exp) -> mee_record_col label exp)
   |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} )

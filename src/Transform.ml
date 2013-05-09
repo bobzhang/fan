@@ -6,7 +6,7 @@ open AstLoc
 open FSig
 let transform :full_id_transform -> vid -> exp  =
   let _loc = FanLoc.ghost in
-  let open Id in with exp' function
+  let open Id in with exp function
     | `Pre pre ->
         fun  x ->  (ident_map (fun x -> pre ^ x) x : exp)
             (* fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ] *)
@@ -28,7 +28,7 @@ let transform :full_id_transform -> vid -> exp  =
             (* fun [x -> {| $(id: f (list_of_dot x []) )  |}  ] *)
     | `Obj f ->
         function
-          | {:ident| $lid:x |}  -> {| self# $(lid: f x) |}
+          | `Lid(_loc,x)  -> {| self# $(lid: f x) |}
           | t -> begin
               let dest =  map_to_string t;
                 let src = Objs.dump_vid t; (* FIXME *)

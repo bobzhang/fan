@@ -20,13 +20,13 @@ open Objs;;
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";;
 
 
-let rec normalize_acc = with ident' function
+let rec normalize_acc = with ident function
   | {| $i1.$i2 |} ->
-    {:exp'| $(normalize_acc i1).$(normalize_acc i2) |}
+    {:exp| $(normalize_acc i1).$(normalize_acc i2) |}
   | `Apply(_loc,i1,i2) ->
-      {:exp'| $(normalize_acc i1) $(normalize_acc i2) |}
+      {:exp| $(normalize_acc i1) $(normalize_acc i2) |}
   | `Ant (_loc,_) | {@_loc| $uid:_ |} |
-    {@_loc| $lid:_ |} as i -> {:exp'| $id:i |} 
+    {@_loc| $lid:_ |} as i -> {:exp| $id:i |} 
 
 (*
   The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
@@ -112,7 +112,7 @@ let mkrf : rec_flag -> Asttypes.rec_flag = function
   If "", just remove it, this behavior should appear in other identifier as well FIXME
  *)
 let ident_tag (i:ident) =
-  let rec self i acc = with ident' 
+  let rec self i acc = with ident
     match i with
     | {| $(lid:"*predef*").$(lid:"option") |} ->
       (Some ((ldot (lident "*predef*") "option"), `lident))
@@ -290,7 +290,7 @@ and package_type (x : mtyp) =
   match x with 
   | (`With(_loc,(#ident' as i),wc) :mtyp) ->
       (long_uident i, package_type_constraints wc [])
-  | (* `Id(_loc,i) *)#ident' as i  -> (long_uident i, [])
+  | #ident' as i  -> (long_uident i, [])
   | mt -> errorf (loc_of mt)
         "unexpected package type: %s"
         (dump_mtyp mt)
@@ -459,7 +459,7 @@ let rec mkrangepat loc c1 c2 =
       (Ppat_or (mkghpat loc (Ppat_constant (Const_char c1)))
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
 
-let rec pat (x:pat) =  with pat'  match x with 
+let rec pat (x:pat) =  with pat  match x with 
   | (* {| $(lid:("true"|"false" as txt)) |} | *)
     `Lid(_loc,("true"|"false" as txt)) ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
@@ -562,7 +562,7 @@ let rec pat (x:pat) =  with pat'  match x with
   | {| #$i |} -> mkpat _loc (Ppat_type (long_type_ident i))
   | {| $vrn:s|} -> mkpat _loc (Ppat_variant s None)
   | {| lazy $p|} -> mkpat _loc (Ppat_lazy (pat p))
-  | {| (module $({:ident@sloc| $uid:m |}))|} -> 
+  | {| (module $({:ident'@sloc| $uid:m |}))|} -> 
        mkpat _loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (loc,`Uid(sloc,m),ty) ->
           mkpat loc
@@ -606,7 +606,7 @@ let override_flag loc (x:override_flag) =
   pexp_loc = }
   ]}
  *)
-let rec exp (x : exp) = with exp' match x with 
+let rec exp (x : exp) = with exp match x with 
   | `Field(_loc,_,_)|
     (* `Id(_loc,`Dot _ ) | *) `Dot (_loc,_,_)->
       let (e, l) =
@@ -786,7 +786,7 @@ let rec exp (x : exp) = with exp' match x with
               | `Ant(_loc,_) -> ANT_ERROR  in
             f cas in  
           exp
-            {:exp'|
+            {:exp|
              (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |}
             (* mkexp _loc *)
           (*   (Pexp_apply *)
@@ -890,8 +890,8 @@ and label_exp (x : exp) =
   | e -> ("", exp e) 
     
 and binding (x:binding) acc =  match x with
-  | {:binding'| $x and $y |} -> binding x (binding y acc)
-  | {:binding'@_loc| $(pat: {:pat'@sloc| $lid:bind_name |} ) =
+  | {:binding| $x and $y |} -> binding x (binding y acc)
+  | {:binding@_loc| $(pat: {:pat@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
 
       let rec id_to_string (x:ctyp) =
@@ -917,16 +917,16 @@ and binding (x:binding) acc =  match x with
                   mktyp _loc (Ptyp_poly ampersand_vars ty'))) in
       let e = mk_newtypes vars in
       ( pat, e) :: acc
-  | {:binding'@_loc| $p = ($e : ! $vs . $ty) |} ->
+  | {:binding@_loc| $p = ($e : ! $vs . $ty) |} ->
       (pat {:pat| ($p : ! $vs . $ty ) |}, exp e) :: acc
-  | {:binding'| $p = $e |} -> (pat p, exp e) :: acc
+  | {:binding| $p = $e |} -> (pat p, exp e) :: acc
   | _ -> assert false 
 and case (x:case) = 
   let cases = list_of_or x [] in
   List.filter_map
     (function
-      | {:case'| $pat:p -> $e |} -> Some(pat p, exp e) 
-      | {:case'| $pat:p when $w -> $e |} ->
+      | {:case| $pat:p -> $e |} -> Some(pat p, exp e) 
+      | {:case| $pat:p when $w -> $e |} ->
           Some (pat p,
             mkexp (loc_of w) (Pexp_when (exp w) (exp e)))
       | x -> errorf (loc_of x ) "case %s" (dump_case x ) ) cases
@@ -935,7 +935,7 @@ and mklabexp (x:rec_exp)  =
     let bindings = list_of_sem x [] in
     List.filter_map
       (function
-        | {:rec_exp'| $id:i = $e |} ->  Some (ident i, exp e)
+        | {:rec_exp| $id:i = $e |} ->  Some (ident i, exp e)
         |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x) ) bindings
 
 (* Example:
@@ -1314,7 +1314,7 @@ and clfield (c:clfield) l =
 let sigi (ast:sigi) : signature = sigi ast []
 let stru ast = stru ast []
 
-let directive (x:exp) = with exp'  match x with 
+let directive (x:exp) = with exp  match x with 
   |`Str(_,s) -> Pdir_string s
   | `Int(_,i) -> Pdir_int (int_of_string i)
   | {| true |} -> Pdir_bool true

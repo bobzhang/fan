@@ -3,9 +3,9 @@
 set -e
 dest=${1:-cold}
 echo "snapshoping to $dest"
-
+files=$(find src | grep -v .# |  grep '\.\(ml\|mll\|mli\|mlpack\)$' | perl -pe 's|.*?/|tmp/|')
 make cleantmp
-ocamlbuild -I src $(find src | grep -v .# |  grep '\.\(ml\|mll\|mli\|mlpack\)$' | perl -pe 's|.*?/|tmp/|')
+ocamlbuild -I src $files
 # needs copy mll mlpack as well
 
 rm -rf $dest # do the cleaning, in case some files are discarded 

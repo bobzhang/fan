@@ -299,7 +299,7 @@ let generate (mtyps : FSig.mtyps) =
             if arity > 1
             then
               (let pats = (`Lid (_loc, "_loc") : Ast.pat ) ::
-                 (List.init (arity - 1) (fun _  -> `Any _loc)) in
+                 (List.init (arity - 1) (fun _  -> (`Any _loc : Ast.pat ))) in
                let case: Ast.case =
                  `Case
                    (_loc,
@@ -333,48 +333,48 @@ let generate (mtyps : FSig.mtyps) =
        bar_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      (`Type
         ((FanLoc.of_tuple
-            ("src/AstTypeGen.ml", 366, 12039, 12057, 366, 12039, 12075,
+            ("src/AstTypeGen.ml", 366, 12024, 12041, 366, 12024, 12059,
               false)),
           (`TyDcl
              ((FanLoc.of_tuple
-                 ("src/AstTypeGen.ml", 366, 12039, 12062, 366, 12039, 12075,
+                 ("src/AstTypeGen.ml", 366, 12024, 12046, 366, 12024, 12059,
                    false)),
                (`Lid
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 366, 12039, 12065, 366, 12039,
-                        12068, false)), "tag")),
+                      ("src/AstTypeGen.ml", 366, 12024, 12049, 366, 12024,
+                        12052, false)), "tag")),
                (`Some
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 366, 12039, 12062, 366, 12039,
-                        12068, false)),
+                      ("src/AstTypeGen.ml", 366, 12024, 12046, 366, 12024,
+                        12052, false)),
                     (`Quote
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 366, 12039, 12062, 366,
-                             12039, 12064, false)),
+                           ("src/AstTypeGen.ml", 366, 12024, 12046, 366,
+                             12024, 12048, false)),
                          (`Normal
                             (FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 366, 12039, 12062, 366,
-                                 12039, 12064, false))),
+                               ("src/AstTypeGen.ml", 366, 12024, 12046, 366,
+                                 12024, 12048, false))),
                          (`Lid
                             ((FanLoc.of_tuple
-                                ("src/AstTypeGen.ml", 366, 12039, 12063, 366,
-                                  12039, 12064, false)), "a")))))),
+                                ("src/AstTypeGen.ml", 366, 12024, 12047, 366,
+                                  12024, 12048, false)), "a")))))),
                (`TyRepr
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 366, 12039, 12071, 366, 12039,
-                        12075, false)),
+                      ("src/AstTypeGen.ml", 366, 12024, 12055, 366, 12024,
+                        12059, false)),
                     (`PrNil
                        (FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 366, 12039, 12071, 366,
-                            12039, 12075, false))),
+                          ("src/AstTypeGen.ml", 366, 12024, 12055, 366,
+                            12024, 12059, false))),
                     (`Sum
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 366, 12039, 12071, 366,
-                             12039, 12075, false)), x)))),
+                           ("src/AstTypeGen.ml", 366, 12024, 12055, 366,
+                             12024, 12059, false)), x)))),
                (`None
                   (FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 366, 12039, 12062, 366, 12039,
-                       12075, false)))))) : Ast.stru ) in
+                     ("src/AstTypeGen.ml", 366, 12024, 12046, 366, 12024,
+                       12059, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        bar_of_list
@@ -488,7 +488,7 @@ let generate (mtyps : FSig.mtyps) =
                 Ast.row_field) ->
                 (match y with
                  | (`Sta (_loc,_,_) : Ast.ctyp) ->
-                     `TyVrnOf (_loc, x, (`Par (_loc, y)))
+                     (`TyVrnOf (_loc, x, (`Par (_loc, y))) : Ast.row_field )
                  | _ -> (`TyVrnOf (_loc, x, y) : Ast.row_field ))
             | x -> x) in
        obj#typedecl ty

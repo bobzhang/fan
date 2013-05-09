@@ -33,12 +33,14 @@ let macro_expander =
     inherit  Objs.map as super
     method! exp =
       function
-      | `App (_loc,`Uid (_,a),y) ->
+      | (`App (_loc,`Uid (_,a),y) : Ast.exp) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#exp (f y)
             with
             | Not_found  ->
-                (fun ()  -> `App (_loc, (`Uid (_loc, a)), (self#exp y))))) ()
+                (fun ()  ->
+                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : Ast.exp ))))
+            ()
       | e -> super#exp e
   end

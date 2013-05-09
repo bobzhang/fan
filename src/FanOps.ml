@@ -24,7 +24,7 @@ open AstLoc
   DoubleColon
  *)
 let list_of_list (loc:loc) =
-  let rec loop top =  with exp function
+  let rec loop top =  with exp' function
     | [] ->   {@ghost| [] |}
     | e1 :: el ->
         let _loc =
@@ -36,7 +36,7 @@ let list_of_list (loc:loc) =
   loop true ;;
 
 (* FIXME  double semi colon needed before *)  
-#default_quotation "exp";;
+#default_quotation "exp'";;
 
 let meta_int _loc i =  {|$`int:i|}
 
@@ -226,7 +226,7 @@ let ident_of_ctyp : ctyp -> ident =
           
 
 
-let rec is_irrefut_pat (x: pat) = with pat'
+let rec is_irrefut_pat (x: pat) = with pat
     match x with
     | `Lid _ ->  true 
     | `ArrayEmpty (_loc)
@@ -290,7 +290,7 @@ let meta_array mf_a _loc ls =
   bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_exp f;
   ]}
  *)  
-let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
+let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
   let coords =
     match arg with
     | {| ($e1, $e2) |} | {| $e1, $e2 |} ->
@@ -316,7 +316,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp'
     Technically, we cannot, it uses [Pexp_array], pattern match doesnot work here
      {:exp|a.{1,2,3,4,$rest:x}|}
  *)
-let bigarray_set loc (var) newval (* : option exp *) = with exp'
+let bigarray_set loc (var) newval (* : option exp *) = with exp
   match var with
   | {|  $arr.{$c1} |} ->
     (* Some {@loc|Bigarray.Array1.set $arr $c1 $newval |} *)
@@ -375,7 +375,7 @@ let rec to_lid = function
    App (, ExId (, Lid (, "~-.")), ExId (, Lid (, "a")))
    ]}
  *)  
-let mkumin loc prefix arg = with exp' 
+let mkumin loc prefix arg = with exp 
   match arg with
   | {| $int:n |} -> {@loc| $(int:String.neg n) |}
   | {| $int32:n |} -> {@loc| $(int32:String.neg n) |}

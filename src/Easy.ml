@@ -13,7 +13,7 @@ let _loc = FanLoc.ghost
 let gen_stru
     ?module_name
     ?(arity=1)
-    ?(default= {:exp'| failwith "arity >= 2 in other branches" |} )
+    ?(default= {:exp| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
     ~id:(id:basic_id_transform)  ?(names=[])  
     (* you must specify when arity >=2 *)
@@ -25,11 +25,11 @@ let gen_stru
     match module_name with
     |None ->   (id:>full_id_transform)
     |Some m ->
-        `Last (fun s -> {:ident| $uid:m.$(lid:basic_transform id s) |} )  in
+        `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} )  in
   let default (_,number)=
     if number > 1 then
       let pat = EP.tuple_of_number {:pat'| _ |} arity in 
-      Some {:case'| $pat:pat -> $default |}
+      Some {:case| $pat:pat -> $default |}
     else (* {:case'| |} *) None in
   let names = names in
   let mk_record = mk_record in
@@ -56,7 +56,7 @@ let gen_stru
 let gen_object
     ?module_name
     ?(arity=1)
-    ?(default={:exp'| failwith "arity >= 2 in other branches" |} )
+    ?(default={:exp| failwith "arity >= 2 in other branches" |} )
     ?cons_transform
     ~kind
     ~base
@@ -67,14 +67,14 @@ let gen_object
       let left_type_variable  = `Pre "mf_" in
       let right_type_variable =
         `Exp (fun v -> let v = basic_transform left_type_variable v
-          in  {:exp'| $lid:v self |} ) in
+          in  {:exp| $lid:v self |} ) in
       let left_type_id  = `Pre ""in
       let right_type_id  =
         `Obj (basic_transform left_type_id) in
       let default (_,number)=
         if number > 1 then
           let pat = EP.tuple_of_number {:pat'| _ |} arity in 
-          Some {:case'| $pat:pat -> $default |}
+          Some {:case| $pat:pat -> $default |}
         else None in
       Frame.(obj_of_mtyps
                ?cons_transform

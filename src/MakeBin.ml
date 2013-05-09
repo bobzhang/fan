@@ -150,7 +150,7 @@ module Make
             | {| #default_quotation $str:s |} ->
                 begin AstQuotation.default :=
                   FanToken.resolve_name (`Sub [], s); None end
-            | {| #$({:ident@_|filter|}) $str:s |} ->
+            | {| #$({:ident'@_|filter|}) $str:s |} -> (* FIXME simplify later*)
                 begin AstFilters.use_interf_filter s; None ; end
             | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
             | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)

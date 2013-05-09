@@ -53,7 +53,7 @@ end
     
 let mp = object
   inherit FanMeta.meta;
-  method! loc _loc _ = {:pat| _ |}; (* we use [subst_first_loc] *)    
+  method! loc _loc _ = {:pat'| _ |}; (* we use [subst_first_loc] *)    
 end;;
 
 

@@ -45,15 +45,15 @@ FanConfig.antiquotations := true;;
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
       | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
     ->
-    with stru'
+    with stru
     let mk =
       match t with
-      |`static t -> let t = (t : vid :> exp ) in {:exp'| $t.mk |}
+      |`static t -> let t = (t : vid :> exp ) in {:exp| $t.mk |}
       |`dynamic(x,t) ->
           let x = (x : vid :> exp) in
           let t = (t : vid :> exp ) in 
-        (* {:exp'| $id:t.mk_dynamic $x |} *)
-        {:exp'|$t.mk_dynamic $x |}  in   
+        (* {:exp| $id:t.mk_dynamic $x |} *)
+        {:exp|$t.mk_dynamic $x |}  in   
     sem_of_list & List.map
       (fun
         (_loc,x,descr,ty) ->
@@ -80,7 +80,7 @@ FanConfig.antiquotations := true;;
       let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
       let t = (t:vid :> exp) in
-      {:exp'| $t.clear $x |}) ls in
+      {:exp| $t.clear $x |}) ls in
     seq_sem rest
     (* {:exp| begin $list:rest end |} *) ]
 |};;
@@ -316,7 +316,7 @@ FanConfig.antiquotations := true;;
   [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
     let () = check_not_tok s in
     (* let styp = `STapp _loc (`STlid _loc "list") s.styp in *)
-    let styp = {:ctyp| $(s.styp) list   |} in 
+    let styp = {:ctyp'| $(s.styp) list   |} in 
     let text = mk_slist _loc
         (match x with
         |"L0" -> false | "L1" -> true
@@ -324,7 +324,7 @@ FanConfig.antiquotations := true;;
     mk_symbol ~text ~styp ~pattern:None
   |`Uid "OPT"; S{s}  ->
     let () = check_not_tok s in
-    let styp = {:ctyp|  $(s.styp) option |} in 
+    let styp = {:ctyp'|  $(s.styp) option |} in 
     let text = `Sopt _loc s.text in
     mk_symbol  ~text ~styp ~pattern:None
   |`Uid "TRY"; S{s} ->
@@ -341,7 +341,7 @@ FanConfig.antiquotations := true;;
       let rl = retype_rule_list_without_patterns _loc rl in
       let t = new_type_var () in
       mk_symbol  ~text:(`Srules _loc (mk_srules _loc t rl ""))
-        ~styp:({:ctyp|'$lid:t |} )
+        ~styp:({:ctyp'|'$lid:t |} )
       ~pattern:None
   | simple_pat{p} -> 
       let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat :>pat) in
@@ -366,16 +366,16 @@ FanConfig.antiquotations := true;;
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
   | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
-          ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
+          ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
   | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         let i = parse_ident _loc s in
         let n = mk_name _loc (Id.to_vid i) in (* FIXME  *)
         mk_symbol ~text:(`Snterm _loc n lev)
-          ~styp:({:ctyp|'$(lid:n.tvar)|}) ~pattern:None
+          ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
   | "("; S{s}; ")" -> s ]
   
 
-  simple_pat "pat":
+  simple_pat "pat'":
   ["`"; luident{s}  ->  {|$vrn:s|}
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
     {| $vrn:v $(mk_anti _loc ~c:"pat" n s)|}
@@ -388,7 +388,7 @@ FanConfig.antiquotations := true;;
     | x::xs ->
         `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), (com_of_list xs))
     | _ -> assert false   ]
-  internal_pat "pat":
+  internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
      [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
@@ -401,8 +401,8 @@ FanConfig.antiquotations := true;;
      | "("; S{p}; ")" -> p] }
 
   pattern:
-  [ `Lid i -> {:pat| $lid:i |}
-  | "_" -> {:pat| _ |}
+  [ `Lid i -> {:pat'| $lid:i |}
+  | "_" -> {:pat'| _ |}
   | "("; pattern{p}; ")" -> p
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
       (* {:pat| ($p1, $list:ps)|}] *)

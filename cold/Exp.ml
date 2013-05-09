@@ -14,9 +14,9 @@ open EP
 
 let rec pattern_eq_expression p e =
   match (p, e) with
-  | ((`Lid (_loc,a) : Ast.pat),`Lid (_,b))
-    |((`Uid (_loc,a) : Ast.pat),`Uid (_,b)) -> a = b
-  | ((`App (_loc,p1,p2) : Ast.pat),`App (_,e1,e2)) ->
+  | ((`Lid (_loc,a) : Ast.pat),(`Lid (_,b) : Ast.exp))
+    |((`Uid (_loc,a) : Ast.pat),(`Uid (_,b) : Ast.exp)) -> a = b
+  | ((`App (_loc,p1,p2) : Ast.pat),(`App (_,e1,e2) : Ast.exp)) ->
       (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
   | _ -> false
 
@@ -140,8 +140,10 @@ let substp loc env =
     | (`Record (_loc,bi) : Ast.exp) ->
         let rec substbi =
           function
-          | `Sem (_loc,b1,b2) -> `Sem (_loc, (substbi b1), (substbi b2))
-          | `RecBind (_loc,i,e) -> `RecBind (loc, i, (loop e))
+          | (`Sem (_loc,b1,b2) : Ast.rec_exp) ->
+              `Sem (_loc, (substbi b1), (substbi b2))
+          | (`RecBind (_loc,i,e) : Ast.rec_exp) ->
+              `RecBind (loc, i, (loop e))
           | _ -> bad_pat _loc in
         (`Record (loc, (substbi bi)) : Ast.pat )
     | _ -> bad_pat loc in
@@ -226,9 +228,9 @@ let capture_antiquot: antiquot_filter =
       | `Ant (_loc,s) ->
           (match s with
            | { content = code;_} ->
-               let cons = `Lid (_loc, code) in
+               let cons: Ast.exp = `Lid (_loc, code) in
                let code' = "__fan__" ^ code in
-               let cons' = `Lid (_loc, code') in
+               let cons': Ast.exp = `Lid (_loc, code') in
                let () = constraints <- (cons, cons') :: constraints in
                (`Lid (_loc, code') : Ast.pat ))
       | p -> super#pat p
@@ -274,7 +276,8 @@ let (<+) names acc =
     names acc
 
 let (<+<) pats acc =
-  List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc)))) pats
+  List.fold_right
+    (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp )) pats
     acc
 
 let mee_comma x y =
@@ -283,11 +286,6 @@ let mee_comma x y =
       (`App
          (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (`Lid (_loc, "_loc")))),
            x)), y)
-
-let mvee_comma x y =
-  `App
-    (_loc, (`Vrn (_loc, "Com")),
-      (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Com (_loc, x, y)))))))
 
 let mee_app x y =
   `App
@@ -313,76 +311,51 @@ let mee_of_str s =
      u)
 
 let vee_of_str s =
-  `App
-    (_loc, (`Vrn (_loc, "Vrn")),
-      (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s)))))))
-
-let meee_of_str s =
-  let u =
-    `App
-      (_loc,
-        (`App
-           (_loc, (`App (_loc, (`Vrn (_loc, "App")), (`Lid (_loc, "_loc")))),
-             (`App
-                (_loc,
-                  (`App (_loc, (`Vrn (_loc, "Vrn")), (`Lid (_loc, "_loc")))),
-                  (`Str (_loc, "Uid")))))),
-        (`App
-           (_loc, (`App (_loc, (`Vrn (_loc, "Par")), (`Lid (_loc, "_loc")))),
-             (`App
-                (_loc,
-                  (`App
-                     (_loc,
-                       (`App
-                          (_loc, (`Vrn (_loc, "Com")), (`Lid (_loc, "_loc")))),
-                       (`App
-                          (_loc,
-                            (`App
-                               (_loc, (`Vrn (_loc, "Lid")),
-                                 (`Lid (_loc, "_loc")))),
-                            (`Str (_loc, "_loc")))))),
-                  (`App
-                     (_loc, (`Vrn (_loc, "Str")),
-                       (`Par
-                          (_loc,
-                            (`Com
-                               (_loc, (`Lid (_loc, "_loc")),
-                                 (`Str (_loc, s))))))))))))) in
-  u
+  (`App
+     (_loc, (`Vrn (_loc, "Vrn")),
+       (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) : 
+  Ast.exp )
 
 let mk_tuple_ee =
   function
   | [] -> invalid_arg "mktupee arity is zero "
   | x::[] -> x
   | xs ->
-      `App
-        (_loc, (`Vrn (_loc, "Par")),
-          (`Par
-             (_loc,
-               (`Com
-                  (_loc, (`Lid (_loc, "_loc")),
-                    (List.reduce_right mee_comma xs))))))
+      (`App
+         (_loc, (`Vrn (_loc, "Par")),
+           (`Par
+              (_loc,
+                (`Com
+                   (_loc, (`Lid (_loc, "_loc")),
+                     (List.reduce_right mee_comma xs)))))) : Ast.exp )
 
 let mee_record_col label exp =
-  `App
+  `Constraint
     (_loc,
       (`App
          (_loc,
-           (`App (_loc, (`Vrn (_loc, "RecBind")), (`Lid (_loc, "_loc")))),
            (`App
-              (_loc, (`Vrn (_loc, "Lid")),
-                (`Par
-                   (_loc,
-                     (`Com
-                        (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, label)))))))))),
-      exp)
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "RecBind")), (`Lid (_loc, "_loc")))),
+                (`App
+                   (_loc, (`Vrn (_loc, "Lid")),
+                     (`Par
+                        (_loc,
+                          (`Com
+                             (_loc, (`Lid (_loc, "_loc")),
+                               (`Str (_loc, label)))))))))), exp)),
+      (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, "rec_exp")))))
 
 let mee_record_semi a b =
-  `App
+  `Constraint
     (_loc,
       (`App
-         (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (`Lid (_loc, "_loc")))),
-           a)), b)
+         (_loc,
+           (`App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Sem")), (`Lid (_loc, "_loc")))),
+                a)), b)),
+      (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, "rec_exp")))))
 
 let mk_record_ee label_exps =
   (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
@@ -399,9 +372,11 @@ let eta_expand (exp : exp) number =
 
 let gen_curry_n (acc : exp) ~arity  cons n =
   (let args =
-     List.init arity (fun i  -> List.init n (fun j  -> xid ~off:i j)) in
+     List.init arity
+       (fun i  -> List.init n (fun j  -> (xid ~off:i j : Ast.pat ))) in
    let pat = of_str cons in
-   List.fold_right (fun p  acc  -> `Fun (_loc, (`Case (_loc, p, acc))))
+   List.fold_right
+     (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp ))
      (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )
 
 let currying cases ~arity  =
@@ -409,12 +384,16 @@ let currying cases ~arity  =
   if arity >= 2
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in
-    let exps = List.map (fun s  -> `Lid (_loc, s)) names in
-    let x = tuple_com exps in names <+ (`Match (_loc, x, cases))
-  else `Fun (_loc, cases)
+    let exps = List.map (fun s  -> (`Lid (_loc, s) : Ast.exp )) names in
+    let x = tuple_com exps in names <+ (`Match (_loc, x, cases) : Ast.exp )
+  else (`Fun (_loc, cases) : Ast.exp )
 
 let unknown len =
   if len = 0
-  then `Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, "unknown")))
+  then
+    (`Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, "unknown"))) : 
+    Ast.exp )
   else
-    `App (_loc, (`Lid (_loc, "failwith")), (`Str (_loc, "not implemented!")))
+    (`App
+       (_loc, (`Lid (_loc, "failwith")), (`Str (_loc, "not implemented!"))) : 
+    Ast.exp )

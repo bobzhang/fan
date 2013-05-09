@@ -13,6 +13,7 @@ let arrow_of_list = List.reduce_right arrow
 let app_arrow lst acc = List.fold_right arrow lst acc
 
 let (<+) (names : string list) (ty : ctyp) =
+  let _loc = FanLoc.ghost in
   List.fold_right
     (fun name  acc  ->
        (`Arrow
@@ -34,7 +35,8 @@ let name_length_of_tydcl (x : typedecl) =
   (string * int) )
 
 let gen_quantifiers1 ~arity  n =
-  (((List.init arity
+  (let _loc = FanLoc.ghost in
+   ((List.init arity
        (fun i  ->
           List.init n
             (fun j  ->
@@ -44,6 +46,7 @@ let gen_quantifiers1 ~arity  n =
      |> appl_of_list : ctyp )
 
 let of_id_len ~off  ((id : ident),len) =
+  let _loc = FanLoc.ghost in
   appl_of_list ((id :>ctyp) ::
     (List.init len
        (fun i  ->
@@ -51,9 +54,11 @@ let of_id_len ~off  ((id : ident),len) =
           Ast.ctyp ))))
 
 let of_name_len ~off  (name,len) =
-  let id = `Lid (_loc, name) in of_id_len ~off (id, len)
+  let _loc = FanLoc.ghost in
+  let id: Ast.ident = `Lid (_loc, name) in of_id_len ~off (id, len)
 
 let ty_name_of_tydcl (x : typedecl) =
+  let _loc = FanLoc.ghost in
   match x with
   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
       let tyvars =
@@ -86,7 +91,8 @@ let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
 
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
-  (let prefix =
+  (let _loc = FanLoc.ghost in
+   let prefix =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
    let app_src =
      app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
@@ -136,23 +142,26 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (ctyp * ctyp) )
 
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
-  let id = `Lid (_loc, name) in mk_method_type ~number ~prefix (id, len) k
+  let _loc = FanLoc.ghost in
+  let id: Ast.ident = `Lid (_loc, name) in
+  mk_method_type ~number ~prefix (id, len) k
 
 let mk_obj class_name base body =
-  `Class
-    (_loc,
-      (`ClDeclS
-         (_loc, (`ViNil _loc), (`Lid (_loc, class_name)),
-           (`ObjPat
-              (_loc,
-                (`Constraint
-                   (_loc, (`Lid (_loc, "self")),
-                     (`Quote
-                        (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
-                (`Sem
-                   (_loc,
-                     (`Inherit (_loc, (`OvNil _loc), (`Lid (_loc, base)))),
-                     body)))))))
+  let _loc = FanLoc.ghost in
+  (`Class
+     (_loc,
+       (`ClDeclS
+          (_loc, (`ViNil _loc), (`Lid (_loc, class_name)),
+            (`ObjPat
+               (_loc,
+                 (`Constraint
+                    (_loc, (`Lid (_loc, "self")),
+                      (`Quote
+                         (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
+                 (`Sem
+                    (_loc,
+                      (`Inherit (_loc, (`OvNil _loc), (`Lid (_loc, base)))),
+                      body))))))) : Ast.stru )
 
 let is_recursive ty_dcl =
   match ty_dcl with
@@ -230,10 +239,11 @@ let mk_transform_type_eq () =
                else
                  (let src = i and dest = Id.to_string i in
                   Hashtbl.replace transformers dest (src, (List.length lst));
-                  `StExp (_loc, (`Uid (_loc, "()"))))
+                  (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru ))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
+      let _loc = FanLoc.ghost in
       match qualified_app_list x with
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in

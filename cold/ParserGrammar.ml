@@ -437,7 +437,7 @@ let _ =
           `Skeyword ":";
           `Sopt (`Snterm (Gram.obj (position : 'position Gram.t )));
           `Snterm (Gram.obj (level_list : 'level_list Gram.t ))],
-           ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     ((match n with | `name old -> AstQuotation.default := old | _ -> ());\n      (match (pos, levels) with\n       | (Some (`App (_loc,`Vrn (_,\"Level\"),_)),`Group _) ->\n           failwithf\n             \"For Group levels the position can not be applied to Level\"\n       | _ -> mk_entry ~name:p ~pos ~levels) : 'entry ))\n",
+           ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     ((match n with | `name old -> AstQuotation.default := old | _ -> ());\n      (match (pos, levels) with\n       | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : Ast.exp),`Group _) ->\n           failwithf\n             \"For Group levels the position can not be applied to Level\"\n       | _ -> mk_entry ~name:p ~pos ~levels) : 'entry ))\n",
              (Gram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
                    ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->
@@ -445,7 +445,9 @@ let _ =
                      | `name old -> AstQuotation.default := old
                      | _ -> ());
                     (match (pos, levels) with
-                     | (Some (`App (_loc,`Vrn (_,"Level"),_)),`Group _) ->
+                     | (Some
+                        (`App (_loc,`Vrn (_,"Level"),_) : Ast.exp),`Group _)
+                         ->
                          failwithf
                            "For Group levels the position can not be applied to Level"
                      | _ -> mk_entry ~name:p ~pos ~levels) : 'entry )))))]));
@@ -455,27 +457,30 @@ let _ =
         [([`Stoken
              (((function | `Uid ("First"|"Last") -> true | _ -> false)),
                (`Normal, "`Uid (\"First\"|\"Last\")"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"First\"|\"Last\" as x) -> (`Vrn (_loc, x) : 'position )\n     | _ -> failwith \"`Vrn (_loc, x)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"First\"|\"Last\" as x) ->\n         ((`Vrn (_loc, x) : Ast.exp ) : 'position )\n     | _ -> failwith \"(`Vrn (_loc, x) : Ast.exp )\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Uid ("First"|"Last" as x) ->
-                       (`Vrn (_loc, x) : 'position )
-                   | _ -> failwith "`Vrn (_loc, x)\n"))));
+                       ((`Vrn (_loc, x) : Ast.exp ) : 'position )
+                   | _ -> failwith "(`Vrn (_loc, x) : Ast.exp )\n"))));
         ([`Stoken
             (((function
                | `Uid ("Before"|"After"|"Level") -> true
                | _ -> false)),
               (`Normal, "`Uid (\"Before\"|\"After\"|\"Level\")"));
          `Snterm (Gram.obj (string : 'string Gram.t ))],
-          ("Gram.mk_action\n  (fun (n : 'string)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"Before\"|\"After\"|\"Level\" as x) ->\n         (`App (_loc, (`Vrn (_loc, x)), n) : 'position )\n     | _ -> failwith \"`App (_loc, (`Vrn (_loc, x)), n)\n\")\n",
+          ("Gram.mk_action\n  (fun (n : 'string)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"Before\"|\"After\"|\"Level\" as x) ->\n         ((`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp ) : 'position )\n     | _ -> failwith \"(`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp )\n\")\n",
             (Gram.mk_action
                (fun (n : 'string)  (__fan_0 : [> FanToken.t]) 
                   (_loc : FanLoc.t)  ->
                   match __fan_0 with
                   | `Uid ("Before"|"After"|"Level" as x) ->
-                      (`App (_loc, (`Vrn (_loc, x)), n) : 'position )
-                  | _ -> failwith "`App (_loc, (`Vrn (_loc, x)), n)\n"))));
+                      ((`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp ) : 
+                      'position )
+                  | _ ->
+                      failwith
+                        "(`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp )\n"))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (`Normal, "`Uid _"))],
           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid x ->\n         (failwithf\n            \"%s is not the right position:(First|Last) or (Before|After|Level)\"\n            x : 'position )\n     | _ ->\n         failwith\n           \"failwithf \"%s is not the right position:(First|Last) or (Before|After|Level)\"\n  x\n\")\n",
@@ -532,12 +537,13 @@ let _ =
         [([`Stoken
              (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
                (`Normal, "`Uid (\"LA\"|\"RA\"|\"NA\")"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"LA\"|\"RA\"|\"NA\" as x) -> (`Vrn (_loc, x) : 'assoc )\n     | _ -> failwith \"`Vrn (_loc, x)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"LA\"|\"RA\"|\"NA\" as x) -> ((`Vrn (_loc, x) : Ast.exp ) : 'assoc )\n     | _ -> failwith \"(`Vrn (_loc, x) : Ast.exp )\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `Uid ("LA"|"RA"|"NA" as x) -> (`Vrn (_loc, x) : 'assoc )
-                   | _ -> failwith "`Vrn (_loc, x)\n"))));
+                   | `Uid ("LA"|"RA"|"NA" as x) ->
+                       ((`Vrn (_loc, x) : Ast.exp ) : 'assoc )
+                   | _ -> failwith "(`Vrn (_loc, x) : Ast.exp )\n"))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (`Normal, "`Uid _"))],
           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid x ->\n         (failwithf \"%s is not a correct associativity:(LA|RA|NA)\" x : \n         'assoc )\n     | _ ->\n         failwith\n           \"failwithf \"%s is not a correct associativity:(LA|RA|NA)\" x\n\")\n",
@@ -736,7 +742,7 @@ let _ =
                      ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
                      ~pattern:None : 'symbol )))));
         ([`Snterm (Gram.obj (simple_pat : 'simple_pat Gram.t ))],
-          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 `App\n                   (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                     (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))))\n              (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y)) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
+          ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 (`App\n                    (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                      (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))) : \n                 Ast.exp ))\n              (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y) : \n              Ast.exp ) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
             (Gram.mk_action
                (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->
                   (let (p,ls) =
@@ -748,16 +754,16 @@ let _ =
                        let restrict =
                          List.fold_left
                            (fun acc  (x,y)  ->
-                              `App
-                                (_loc,
-                                  (`App (_loc, (`Lid (_loc, "&&")), acc)),
-                                  (`App
-                                     (_loc,
-                                       (`App (_loc, (`Lid (_loc, "=")), x)),
-                                       y))))
+                              (`App
+                                 (_loc,
+                                   (`App (_loc, (`Lid (_loc, "&&")), acc)),
+                                   (`App
+                                      (_loc,
+                                        (`App (_loc, (`Lid (_loc, "=")), x)),
+                                        y))) : Ast.exp ))
                            (`App
-                              (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y))
-                           ys in
+                              (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y) : 
+                           Ast.exp ) ys in
                        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
                   'symbol )))));
         ([`Stoken
@@ -996,12 +1002,12 @@ let _ =
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) -> (`Str (_loc, s) : 'string )\n     | _ -> failwith \"`Str (_loc, s)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) -> ((`Str (_loc, s) : Ast.exp ) : 'string )\n     | _ -> failwith \"(`Str (_loc, s) : Ast.exp )\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
-                   | `STR (_,s) -> (`Str (_loc, s) : 'string )
-                   | _ -> failwith "`Str (_loc, s)\n"))));
+                   | `STR (_,s) -> ((`Str (_loc, s) : Ast.exp ) : 'string )
+                   | _ -> failwith "(`Str (_loc, s) : Ast.exp )\n"))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
               (`Normal, "`Ant (\"\",_)"))],

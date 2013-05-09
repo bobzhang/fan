@@ -10,8 +10,8 @@ open LibUtil
   {[  mapping an ident to  a type variable   ]}
  *)  
 let rec tvar_of_ident : vid -> string = with ident function
-  | {| $lid:x |} | {| $uid:x |} -> x
-  | {| $uid:x.$xs |} -> x ^ "__" ^ tvar_of_ident xs
+  | `Lid (_,x) | `Uid(_,x) -> x
+  | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ tvar_of_ident xs
   | _ -> failwith "internal error in the Grammar extension" 
 
 (*
@@ -26,7 +26,7 @@ let rec tvar_of_ident : vid -> string = with ident function
   ]}
   see ident_map 
  *)  
-let map_to_string (ident:vid) =  with ident
+let map_to_string (ident:vid) =  with ident'
   let rec aux i acc =
     match i with 
     | {| $a.$b  |} -> aux a ("_" ^ aux b acc)
@@ -67,11 +67,11 @@ let rec to_vid   (x:ident) : vid =
 
    ]}
  *)
-let ident_map f (x:vid) = with ident 
+let ident_map f (x:vid) = with ident'
   let lst = list_of_dot x [] in
   match lst with
   | [] ->  invalid_arg "ident_map identifier [] "
-  | [ {| $lid:y |} ]  -> {| $(lid: f y) |}
+  | [`Lid(_loc,y)]  -> {| $(lid: f y) |}
   | ls ->
       let l = List.length ls in
       match List.drop (l-2) ls with
@@ -84,7 +84,7 @@ let ident_map f (x:vid) = with ident
    [string -> ident ]
  *)
 let ident_map_of_ident f x  : vid =
-  with ident 
+  with ident' 
   let lst = list_of_dot x [] in
   match lst with
   | [] ->  invalid_arg "ident_map identifier [] "

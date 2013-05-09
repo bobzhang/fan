@@ -675,15 +675,18 @@ let rec exp (x : exp) =
       let cas =
         let rec f x =
           match x with
-          | `Case (_loc,p,e) ->
-              `Case
-                (_loc, p,
-                  (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))
-          | `CaseWhen (_loc,p,c,e) ->
-              `CaseWhen
-                (_loc, p, c,
-                  (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))
-          | `Bar (_loc,a1,a2) -> `Bar (_loc, (f a1), (f a2))
+          | (`Case (_loc,p,e) : Ast.case) ->
+              (`Case
+                 (_loc, p,
+                   (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
+              Ast.case )
+          | (`CaseWhen (_loc,p,c,e) : Ast.case) ->
+              (`CaseWhen
+                 (_loc, p, c,
+                   (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
+              Ast.case )
+          | (`Bar (_loc,a1,a2) : Ast.case) ->
+              (`Bar (_loc, (f a1), (f a2)) : Ast.case )
           | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
         f cas in
       exp
@@ -805,8 +808,9 @@ and binding (x : binding) acc =
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
   | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Ast.binding) ->
-      ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))))), (exp e)) ::
-      acc
+      ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Ast.pat )),
+        (exp e))
+      :: acc
   | (`Bind (_loc,p,e) : Ast.binding) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x : case) =

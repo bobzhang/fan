@@ -33,11 +33,12 @@ let use_file token_stream =
     if stopped_at_directive <> None
     then
       match pl with
-      | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)))::[] ->
+      | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru)::[] ->
           (Topdirs.dir_load Format.std_formatter s; loop ())
-      | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)))::[] ->
+      | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)) : Ast.stru)::[] ->
           (Topdirs.dir_directory s; loop ())
-      | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)))::[] ->
+      | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
+          Ast.stru)::[] ->
           (AstQuotation.set_default (FanToken.resolve_name ((`Sub []), s));
            loop ())
       | _ -> (pl, false)
