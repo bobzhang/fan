@@ -11,7 +11,7 @@ external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
 external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
 external id : 'a -> 'a = "%identity"
 external ( !& ) : 'a -> unit = "%ignore"
-val time : ('a -> 'b) -> 'a -> 'b * float
+(* val time : ('a -> 'b) -> 'a -> 'b * float *)
 val ( <| ) : ('a -> 'b) -> 'a -> 'b
 val ( |- ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
 val ( -| ) : ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b
@@ -239,19 +239,19 @@ module ErrorMonad :
     val unwrap : ('a -> 'b result) -> 'a -> 'b
     val mapi_m : ('a -> int -> 'b result) -> 'a list -> 'b list result
   end
-module Unix :
-  sig
-    include module type of Unix
-    val folddir : f:('a -> string -> 'a) -> init:'a -> string -> 'a
-    val try_set_close_on_exec : file_descr -> bool
-    val gen_open_proc_full :
-      string list ->
-      file_descr -> file_descr -> file_descr -> file_descr list -> int
-    val open_process_full :
-      string list -> int * (file_descr * file_descr * file_descr)
-    val open_shell_process_full :
-      string -> int * (file_descr * file_descr * file_descr)
-  end
+(* module Unix : *)
+(*   sig *)
+(*     include module type of Unix *)
+(*     val folddir : f:('a -> string -> 'a) -> init:'a -> string -> 'a *)
+(*     val try_set_close_on_exec : file_descr -> bool *)
+(*     val gen_open_proc_full : *)
+(*       string list -> *)
+(*       file_descr -> file_descr -> file_descr -> file_descr list -> int *)
+(*     val open_process_full : *)
+(*       string list -> int * (file_descr * file_descr * file_descr) *)
+(*     val open_shell_process_full : *)
+(*       string -> int * (file_descr * file_descr * file_descr) *)
+(*   end *)
 
 module LStack: sig
   type 'a t = { mutable elts : 'a list; mutable length : int; }

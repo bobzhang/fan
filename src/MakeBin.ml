@@ -77,10 +77,12 @@ let task f x =
   let () = FanConfig.current_input_file := x in
   f x 
 
+module type PRECAST = module type of PreCast
+    
 module Make
-     (PreCast:Sig.PRECAST) = struct
+     (PreCast:PRECAST) = struct
 
-       let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30
+       (* let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30 *)
        (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
        let rcall_callback = ref (fun () -> ())
        let loaded_modules = ref SSet.empty
@@ -111,9 +113,9 @@ module Make
               PreCast.enable_ocaml_printer ()
           | ("Printers"|"", "pr_dump.cmo" | "p" ) -> 
               PreCast.enable_dump_ocaml_ast_printer ()
-          | ("Printers"|"", "a" | "auto") ->
-               (* FIXME introduced dependency on Unix *)
-               PreCast.enable_auto (fun  () -> Unix.isatty Unix.stdout)
+          (* | ("Printers"|"", "a" | "auto") -> *)
+          (*      (\* FIXME introduced dependency on Unix *\) *)
+          (*      PreCast.enable_auto (fun  () -> Unix.isatty Unix.stdout) *)
           | _ ->
             let y = x^objext in
             real_load (try find_in_path y with  Not_found -> x ));

@@ -40,12 +40,6 @@ external (&) : ('a -> 'b) -> 'a -> 'b = "%apply"
 external id : 'a -> 'a = "%identity"
 external (!&) : _ -> unit = "%ignore"
 
-let time f v =
-  let start = Unix.gettimeofday () in
-  let res = f v in
-  let end_ = Unix.gettimeofday () in
-  (res, end_ -. start)
-    
 
 let ( <| ) f x = f x
 
@@ -1162,54 +1156,4 @@ end
 
     
   
-
-module Unix = struct
-
-  include Unix
-
-  let folddir ~f ~init path =
-    let dh = opendir path in
-    finally (fun _ -> closedir dh)
-      (fun () ->
-        let rec loop st =
-          let try st' = f st (readdir dh) in
-          loop st'
-          with End_of_file -> st    in
-        loop init) ()
-    
-  let try_set_close_on_exec fd =
-    try begin set_close_on_exec fd; true end  with Invalid_argument _ -> false
-      
-  let gen_open_proc_full cmdargs input output error toclose =
-    let cmd =
-      match cmdargs with
-      | x :: _ -> x
-      | _ -> invalid_arg "Unix.gen_open_proc_full"  in
-    let cmdargs = Array.of_list cmdargs in
-    let cloexec = List.for_all try_set_close_on_exec toclose in
-    match fork() with
-    |  0 -> begin 
-        dup2 input stdin; close input;
-        dup2 output stdout; close output;
-        dup2 error stderr; close error;
-        if not cloexec then List.iter close toclose else ();
-        try execvp cmd cmdargs with _ -> exit 127
-    end (* never return *)
-    | id -> id
-          
-  let open_process_full cmdargs =
-    let (in_read, in_write) = pipe() in
-    let (out_read, out_write) = pipe() in
-    let (err_read, err_write) = pipe() in
-    let pid = gen_open_proc_full cmdargs
-        out_read in_write err_write [in_read; out_write; err_read]  in begin 
-          close out_read;
-          close in_write;
-          close err_write;
-          (pid, (in_read, out_write, err_read))
-        end
-      
-  let open_shell_process_full cmd =
-    open_process_full [ "/bin/sh"; "-c"; cmd ]
-end
 

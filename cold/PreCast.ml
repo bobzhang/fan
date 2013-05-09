@@ -49,42 +49,10 @@ let register_printer f g = stru_printer := f; sigi_printer := g
 
 let current_printer () = ((stru_printer.contents), (sigi_printer.contents))
 
-let plugin ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.PLUGIN)) =
-  declare_dyn_module Id.name
-    (fun _  -> let module M = Maker(struct  end) in ())
-
-let syntax_plugin ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.SyntaxPlugin)) =
-  declare_dyn_module Id.name (fun _  -> let module M = Maker(Syntax) in ())
-
-let syntax_extension ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.SyntaxExtension)) =
-  declare_dyn_module Id.name (fun _  -> let module M = Maker(Syntax) in ())
-
-let printer_plugin ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.PrinterPlugin)) =
-  declare_dyn_module Id.name
-    (fun _  ->
-       let module M = Maker(Syntax) in
-         register_printer M.print_implem M.print_interf)
-
 let replace_printer ((module Id)  : (module Sig.Id))
   ((module P)  : (module Sig.PrinterImpl)) =
   declare_dyn_module Id.name
     (fun _  -> register_printer P.print_implem P.print_interf)
-
-let replace_parser ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.ParserImpl)) =
-  declare_dyn_module Id.name
-    (fun _  -> register_parser Maker.parse_implem Maker.parse_interf)
-
-let parser_plugin ((module Id)  : (module Sig.Id))
-  ((module Maker)  : (module Sig.ParserPlugin)) =
-  declare_dyn_module Id.name
-    (fun _  ->
-       let module M = Maker(Syntax) in
-         register_parser M.parse_implem M.parse_interf)
 
 let enable_ocaml_printer () =
   let module Id =
@@ -139,21 +107,6 @@ let enable_dump_ast_printer () =
             with_open_out_file output_file
               (dump_ast FanConfig.impl_magic_number ast)
       end in replace_printer (module Id) (module P)
-
-let enable_null_printer () =
-  let module Id =
-    struct let name = "Printers.Null"
-           let version = Sys.ocaml_version end in
-    let module P =
-      struct
-        let print_interf ?input_file:_  ?output_file:_  _ = ()
-        let print_implem ?input_file:_  ?output_file:_  _ = ()
-      end in replace_printer (module Id) (module P)
-
-let enable_auto isatty =
-  if isatty ()
-  then enable_ocaml_printer ()
-  else enable_dump_ocaml_ast_printer ()
 
 let _ = sigi_parser := Syntax.parse_interf
 

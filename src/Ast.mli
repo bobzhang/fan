@@ -224,7 +224,7 @@ and decl_param =
   | `QuoteAny of (loc * position_flag )
   | `Any of loc | ant]
 and decl_params =
- [ `Quote of (loc * position_flag * alident)
+  [ `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag )
   | `Any of loc 
   | `Com of (loc  * decl_params * decl_params) | ant]

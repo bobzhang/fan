@@ -51,10 +51,10 @@ let print_loaded_modules = ref false
 
 let task f x = let () = FanConfig.current_input_file := x in f x
 
-module Make(PreCast:Sig.PRECAST) =
+module type PRECAST = module type of PreCast
+
+module Make(PreCast:PRECAST) =
   struct
-    let printers: (string,(module Sig.PRECAST_PLUGIN)) Hashtbl.t =
-      Hashtbl.create 30
     let rcall_callback = ref (fun ()  -> ())
     let loaded_modules = ref SSet.empty
     let add_to_loaded_modules name =
@@ -79,8 +79,6 @@ module Make(PreCast:Sig.PRECAST) =
        | (("Printers"|""),"o") -> PreCast.enable_ocaml_printer ()
        | (("Printers"|""),("pr_dump.cmo"|"p")) ->
            PreCast.enable_dump_ocaml_ast_printer ()
-       | (("Printers"|""),("a"|"auto")) ->
-           PreCast.enable_auto (fun ()  -> Unix.isatty Unix.stdout)
        | _ ->
            let y = x ^ objext in
            real_load (try find_in_path y with | Not_found  -> x));
