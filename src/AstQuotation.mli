@@ -58,7 +58,8 @@ val dump_file : string option  ref
 
 
     
-(* theoretically you can use [mexp] which lift it into any type you can *)
+(** theoretically you can use [mexp] which lift it into any type you can
+   but we made a restriction here *)
 val add_quotation:
     exp_filter:(ep(* 'a *) -> exp) ->
       pat_filter:(ep(* 'b *) -> pat) ->

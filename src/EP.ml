@@ -164,13 +164,6 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
     
 
   
-(*
-  This is used for Prolog, deprecated soon
- *)  
-(* let tuple _loc  =   fun *)
-(*   [[] -> {|()|} *)
-(*   |[p] -> p *)
-(*   | [e::es] -> {| ($e, $list:es) |} ]; *)
 
 
 (*

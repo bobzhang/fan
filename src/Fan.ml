@@ -15,6 +15,15 @@ open AstQuotation
 
 
 
+(* +-----------------------------------------------------------------+
+   | Strict version                                                  |
+   +-----------------------------------------------------------------+ *)
+
+let efilter str e =
+    let e = exp_filter e in let _loc = loc_of e in
+    {:exp|($e : Ast.$lid:str)|}
+let pfilter str e =
+  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|};;
 
 let d = `Absolute ["Fan";"Lang"];;
 
@@ -221,17 +230,6 @@ begin
     ~pat_filter;
 end;;
 
-(* +-----------------------------------------------------------------+
-   | Strict version                                                  |
-   +-----------------------------------------------------------------+ *)
-
-let efilter str e =
-    let e = exp_filter e in let _loc = loc_of e in
-    {:exp|($e : Ast.$lid:str)|}
-
-      
-let pfilter str e =
-  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|};;
 
 begin
   add_quotation (d,"sigi'") sigi_quot

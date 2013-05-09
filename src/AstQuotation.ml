@@ -279,24 +279,24 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       (* BOOTSTRAPPING *)
       let rec subst_first_loc name : pat -> pat =  with pat function
         | `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
-         `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
+            `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
         | `App(_loc,`Vrn(_,u),`Any _) ->
             `App(_loc, `Vrn(_loc,u), `Lid(_loc,name))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)
         | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
-        (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
+              (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
         |p -> p  in
 
       (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
-          
+      
       match loc_name_opt with
       | None -> subst_first_loc (!FanLoc.name) exp_ast
       | Some "_" -> exp_ast
       | Some name -> subst_first_loc name exp_ast 
     end in begin
-        add name FanDyn.exp_tag expand_exp;
-        add name FanDyn.pat_tag expand_pat;
-        add name FanDyn.stru_tag expand_stru;
+      add name FanDyn.exp_tag expand_exp;
+      add name FanDyn.pat_tag expand_pat;
+      add name FanDyn.stru_tag expand_stru;
     end
 
     
