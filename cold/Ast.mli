@@ -17,6 +17,7 @@ type position_flag =
   [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
 type strings =
   [ `App of (loc * strings * strings) | `Str of (loc * string) | ant] 
+type lident = [ `Lid of (loc * string)] 
 type alident = [ `Lid of (loc * string) | ant] 
 type auident = [ `Uid of (loc * string) | ant] 
 type aident = [ alident | auident] 

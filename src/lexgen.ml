@@ -23,7 +23,7 @@ exception Memory_overflow
 
 (* Deep abstract syntax for regular expressions *)
 
-type ident = (string *  LexSyntax.location)
+type ident = Ast.lident
 
 type tag_info = {id : string ; start : bool ; action : int}
 
@@ -75,14 +75,14 @@ type  automata_entry =
     auto_args: string list ;
     auto_mem_size : int ;
     auto_initial_state: (int * memory_action list);
-    auto_actions: (int * t_env * LexSyntax.location) list }
+    auto_actions: (int * t_env * Ast.exp) list }
 
 
 (* A lot of sets and map structures *)
 
 module Ints = Set.Make(struct type t = int let compare = compare end)
 
-let id_compare (id1,_) (id2,_) = String.compare id1 id2
+
 
 let tag_compare t1 t2 = Pervasives.compare t1 t2
 
@@ -92,10 +92,20 @@ module TagMap =
   Map.Make (struct type t = tag_info let compare = tag_compare end)
 
 module IdSet =
-  Set.Make (struct type t = ident let compare = id_compare end)
+  Set.Make (
+  struct
+    type t = ident
+    (* let compare ( `Lid(_,id1) : t) ( `Lid(_,id2):t )= String.compare id1 id2
+       FIXME
+     *)
+    let compare (x:t) y = match (x,y) with (`Lid(_,id1),`Lid(_,id2)) -> String.compare id1 id2
+  end)
 
 module IdMap =
-  Map.Make (struct type t =  ident let compare = id_compare end)
+  Map.Make (struct
+    type t =  ident
+    let compare (x:t) y = match (x,y) with (`Lid(_,id1),`Lid(_,id2)) -> String.compare id1 id2          
+  end)
 
 (*********************)
 (* Variable cleaning *)
@@ -289,7 +299,7 @@ let rec encode_regexp char_vars act = function
   | Repetition r ->
       let r = encode_regexp char_vars act r in
       Star r
-  | Bind (r,((name,_) as x)) ->
+  | Bind (r,(`Lid(_,name) as x)) ->
       let r = encode_regexp char_vars act r in
       if IdSet.mem x char_vars then
         Seq (Tag {id=name ; start=true ; action=act},r)
@@ -330,7 +340,7 @@ let add_pos p i =
   | None -> None
 
 let mem_name name id_set =
-  IdSet.exists (fun (id_name,_) -> name = id_name) id_set
+  IdSet.exists (function | (`Lid(_,id_name)) -> name = id_name) id_set (* FIXME*)
 
 let opt_regexp all_vars char_vars optional_vars double_vars r =
 
@@ -474,7 +484,9 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
   let (r,_) = alloc_exp None r in
   let m =
     IdSet.fold
-      (fun ((name,_) as x) r ->
+      (function x r ->
+        match x with
+        | `Lid(_,name) -> 
 
         let v =
           if IdSet.mem x char_vars then
@@ -1142,13 +1154,17 @@ let make_tag_entry id start act a r = match a with
       TagMap.add {id=id ; start=start ; action=act} m r
   | _ -> r
 
-let extract_tags l =
+        
+let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
+    : int TagMap.t array =
   let envs = Array.create (List.length l) TagMap.empty in
   (List.iter
     (fun (act,m,_) ->
       envs.(act) <-
          List.fold_right
-           (fun ((name,_),v) r -> match v with
+           (fun (x,v) r ->
+             let name = match x with | `Lid(_,name) -> name in
+             match v with
            | Ident_char (_,t) -> make_tag_entry name true act t r
            | Ident_string (_,t1,t2) ->
                make_tag_entry name true act t1

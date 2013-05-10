@@ -4451,15 +4451,10 @@ let apply () =
              (Gram.mk_action
                 (fun (n : 'a_lident)  _  (_loc : FanLoc.t)  ->
                    (`DirectiveSimple (_loc, n) : 'stru_quot )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"; `Sself],
-           ("Gram.mk_action\n  (fun (st2 : 'stru_quot)  _  (st1 : 'stru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st1, st2) : 'stru_quot ))\n",
+         ([`Snterm (Gram.obj (strus : 'strus Gram.t ))],
+           ("Gram.mk_action (fun (x : 'strus)  (_loc : FanLoc.t)  -> (x : 'stru_quot ))\n",
              (Gram.mk_action
-                (fun (st2 : 'stru_quot)  _  (st1 : 'stru)  (_loc : FanLoc.t) 
-                   -> (`Sem (_loc, st1, st2) : 'stru_quot )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t ))],
-           ("Gram.mk_action (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'stru_quot ))\n",
-             (Gram.mk_action
-                (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'stru_quot )))))]));
+                (fun (x : 'strus)  (_loc : FanLoc.t)  -> (x : 'stru_quot )))))]));
    Gram.extend (stru : 'stru Gram.t )
      (None,
        [((Some "top"), None,

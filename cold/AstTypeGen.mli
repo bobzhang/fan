@@ -21,4 +21,4 @@ val mk_variant_iter : 'a -> FSig.ty_info list -> Ast.exp
 val mk_tuple_iter : FSig.ty_info list -> Ast.exp
 val mk_record_iter : FSig.record_col list -> [> `Seq of FanLoc.t * Ast.exp ]
 val gen_iter : FSig.mtyps -> Ast.stru
-val generate : FSig.mtyps -> Ast.stru
+val generate : FSig.mtyps -> Ast.stru option

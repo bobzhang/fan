@@ -15,6 +15,7 @@ type 'a tag =
   | Row_var_flag
   | Position_flag
   | Strings
+  | Lident
   | Alident
   | Auident
   | Aident
@@ -75,6 +76,7 @@ let string_of_tag =
   | Row_var_flag  -> "row_var_flag"
   | Position_flag  -> "position_flag"
   | Strings  -> "strings"
+  | Lident  -> "lident"
   | Alident  -> "alident"
   | Auident  -> "auident"
   | Aident  -> "aident"
@@ -142,6 +144,8 @@ let row_var_flag_tag: row_var_flag tag = Row_var_flag
 let position_flag_tag: position_flag tag = Position_flag
 
 let strings_tag: strings tag = Strings
+
+let lident_tag: lident tag = Lident
 
 let alident_tag: alident tag = Alident
 

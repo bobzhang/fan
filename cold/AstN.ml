@@ -30,6 +30,8 @@ type position_flag = [ `Positive | `Negative | `Normal | ant]
 
 type strings = [ `App of (strings * strings) | `Str of string | ant] 
 
+type lident = [ `Lid of string] 
+
 type alident = [ `Lid of string | ant] 
 
 type auident = [ `Uid of string | ant] 

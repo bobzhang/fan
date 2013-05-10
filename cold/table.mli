@@ -2,29 +2,30 @@
 (*                                                                     *)
 (*                                OCaml                                *)
 (*                                                                     *)
-(*            Xavier Leroy, projet Cristal, INRIA Rocquencourt         *)
+(*            Luc Maranget, projet Moscova, INRIA Rocquencourt         *)
 (*                                                                     *)
-(*  Copyright 1996 Institut National de Recherche en Informatique et   *)
+(*  Copyright 2002 Institut National de Recherche en Informatique et   *)
 (*  en Automatique.  All rights reserved.  This file is distributed    *)
 (*  under the terms of the Q Public License version 1.0.               *)
 (*                                                                     *)
 (***********************************************************************)
 
-(* $Id: syntax.ml 11156 2011-07-27 14:17:02Z doligez $ *)
+(* Table used for code emission, ie extensible arrays *)
+type 'a t
 
-  
-type regular_expression =
-  | Epsilon
-  | Characters of Cset.t
-  | Eof
-  | Sequence of regular_expression * regular_expression
-  | Alternative of regular_expression * regular_expression
-  | Repetition of regular_expression
-  | Bind of regular_expression * Ast.lident 
+val create : 'a -> 'a t
 
-type  entry =
-  {name:string ;
-   shortest : bool ;
-   args : string list ;
-   clauses : (regular_expression * Ast.exp) list}
+val emit : 'a t -> 'a -> unit
 
+val iter : 'a t -> ('a -> unit) -> unit
+
+val trim : 'a t -> 'a array
+
+
+exception Error
+
+val get : 'a t -> int -> 'a
+
+
+
+val size : 'a t -> int

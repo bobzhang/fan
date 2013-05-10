@@ -109,6 +109,6 @@ type plugin_name = string
 
 type plugin = 
   {
-  transform: mtyps -> stru;
+  transform: mtyps -> stru option;
   position: string option;
   filter: (string -> bool) option} 

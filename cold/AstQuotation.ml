@@ -100,30 +100,31 @@ let find loc name tag =
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
 
-let expand loc (quotation : FanToken.quotation) tag =
-  let open FanToken in
-    let pos_tag = FanDyn.string_of_tag tag in
-    let name = quotation.q_name in
-    (try
-       let expander = find loc name tag
-       and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
-       fun ()  ->
-         Stack.push quotation.q_name stack;
-         finally (fun _  -> Stack.pop stack)
-           (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
-     with
-     | FanLoc.Exc_located (_,QuotationError _) as exc ->
-         (fun ()  -> raise exc)
-     | FanLoc.Exc_located (qloc,exc) ->
-         (fun ()  ->
-            raise
-              (FanLoc.Exc_located
-                 (qloc, (QuotationError (name, pos_tag, Finding, exc)))))
-     | exc ->
-         (fun ()  ->
-            raise
-              (FanLoc.Exc_located
-                 (loc, (QuotationError (name, pos_tag, Finding, exc)))))) ()
+let expand loc (quotation : FanToken.quotation) (tag : 'a FanDyn.tag) =
+  (let open FanToken in
+     let pos_tag = FanDyn.string_of_tag tag in
+     let name = quotation.q_name in
+     (try
+        let expander = find loc name tag
+        and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
+        fun ()  ->
+          Stack.push quotation.q_name stack;
+          finally (fun _  -> Stack.pop stack)
+            (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
+      with
+      | FanLoc.Exc_located (_,QuotationError _) as exc ->
+          (fun ()  -> raise exc)
+      | FanLoc.Exc_located (qloc,exc) ->
+          (fun ()  ->
+             raise
+               (FanLoc.Exc_located
+                  (qloc, (QuotationError (name, pos_tag, Finding, exc)))))
+      | exc ->
+          (fun ()  ->
+             raise
+               (FanLoc.Exc_located
+                  (loc, (QuotationError (name, pos_tag, Finding, exc)))))) () : 
+  'a )
 
 let quotation_error_to_string (name,position,ctx,exn) =
   let ppf = Buffer.create 30 in

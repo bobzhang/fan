@@ -1,3 +1,5 @@
+open Ast
+
 let meta_loc _loc location =
   let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
   `App
@@ -25,8 +27,6 @@ let meta_loc _loc location =
                                (`Int (_loc, (string_of_int f))))),
                           (`Int (_loc, (string_of_int g))))),
                      (if h then `Lid (_loc, "true") else `Lid (_loc, "false")))))))))
-
-open Ast
 
 class primitive =
   object 
@@ -182,6 +182,11 @@ class meta =
                 (`App (_loc, (`Vrn (_loc, "Str")), (self#loc _loc _a0))),
                 (self#string _loc _a1))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
+    method lident : 'loc -> lident -> ep=
+      fun _loc  (`Lid (_a0,_a1))  ->
+        `App
+          (_loc, (`App (_loc, (`Vrn (_loc, "Lid")), (self#loc _loc _a0))),
+            (self#string _loc _a1))
     method alident : 'loc -> alident -> ep=
       fun _loc  ->
         function

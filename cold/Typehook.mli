@@ -3,19 +3,12 @@ open FSig
 
 val print_collect_mtyps: bool ref
 
-(* type plugin = { *)
-(*   transform : FSig.mtyps -> stru; *)
-(*   mutable activate : bool; *)
-(*   position: string option; *)
-(*   filter: (string -> bool) option; *)
-(* } *)
-(* type plugin_name = string *)
-(* val filters : (plugin_name, plugin) LibUtil.Hashtbl.t *)
+
 val show_code : bool ref
 
 val register :
     ?filter:(string->bool) -> ?position:string ->
-      plugin_name * (FSig.mtyps -> stru) -> unit
+      plugin_name * (FSig.mtyps -> stru option) -> unit
 val show_modules : unit -> unit
 val plugin_add : plugin_name -> unit
 val plugin_remove : plugin_name -> unit

@@ -2,11 +2,9 @@ open LibUtil
 
 open AstLoc
 
-open FSig
-
 open Format
 
-let apply_filter f (m : mtyps) =
+let apply_filter f (m : FSig.mtyps) =
   (let f =
      function
      | `Single (s,_) as x -> if f s then Some x else None
@@ -18,18 +16,19 @@ let apply_filter f (m : mtyps) =
           | [] -> None
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
-   List.filter_map f m : mtyps )
+   List.filter_map f m : FSig.mtyps )
 
-let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
+let filters: (FSig.plugin_name,FSig.plugin) Hashtbl.t = Hashtbl.create 30
 
 let show_code = ref false
 
 let print_collect_mtyps = ref false
 
-let register ?filter  ?position  (name,f) =
+let register ?filter  ?position  (name,transform) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
-  else Hashtbl.add filters name { transform = f; position; filter }
+  else
+    Hashtbl.add filters name { FSig.transform = transform; position; filter }
 
 let show_modules () =
   Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
@@ -67,10 +66,10 @@ class type traversal
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
-     val mtyps_stack = (Stack.create () : mtyps Stack.t )
-     val mutable cur_and_types = ([] : and_types )
+     val mtyps_stack = (Stack.create () : FSig.mtyps Stack.t )
+     val mutable cur_and_types = ([] : FSig.and_types )
      val mutable and_group = false
-     method get_cur_mtyps : mtyps= Stack.top mtyps_stack
+     method get_cur_mtyps : FSig.mtyps= Stack.top mtyps_stack
      method update_cur_mtyps f =
        let open Stack in push (f (pop mtyps_stack)) mtyps_stack
      method private in_module = Stack.push [] mtyps_stack
@@ -90,20 +89,22 @@ let traversal () =
              then eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps;
              (let result =
                 List.fold_right
-                  (fun (_,{ position; transform; filter })  acc  ->
+                  (fun (_,{ FSig.position = position; transform; filter }) 
+                     acc  ->
                      let mtyps =
                        match filter with
                        | Some x -> apply_filter x mtyps
                        | None  -> mtyps in
                      let code = transform mtyps in
-                     match position with
-                     | Some x ->
+                     match (position, code) with
+                     | (Some x,Some code) ->
                          let (name,f) = Filters.make_filter (x, code) in
                          (AstFilters.register_stru_filter (name, f);
                           AstFilters.use_implem_filter name;
                           acc)
-                     | None  -> (`Sem (_loc, acc, code) : Ast.stru ))
-                  FanState.current_filters.contents
+                     | (None ,Some code) ->
+                         (`Sem (_loc, acc, code) : Ast.stru )
+                     | (_,None ) -> acc) FanState.current_filters.contents
                   (if FanState.keep.contents
                    then res
                    else (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )) in
