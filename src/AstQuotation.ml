@@ -1,9 +1,7 @@
-open Ast;;
-open LibUtil;;
-
-
-open FanToken;;
-open Format;;
+open Ast
+open LibUtil
+open FanToken
+open Format
 
 
 (* FIXME order is in-correct  *)
@@ -167,7 +165,7 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (quotation:FanToken.quotation) tag =
+let expand loc (quotation:FanToken.quotation) (tag:'a FanDyn.tag) : 'a =
   let open FanToken in
   let pos_tag = FanDyn.string_of_tag tag in
   let name = quotation.q_name in

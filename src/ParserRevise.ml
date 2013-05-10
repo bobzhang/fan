@@ -947,9 +947,7 @@ let apply () = begin
       | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)
       | stru{st};";;" -> st
       | stru{st}; S{xs} -> `Sem(_loc,st,xs)
-      | stru{st} -> st 
-      (* | L1 [ stru{st}; ";" -> st ]{l} -> sem_of_list l *)
-      (* | L1 [ stru{st}; ";;" -> st ]{l} -> sem_of_list l *) ]
+      | stru{st} -> st ]
       top_phrase:
       [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
@@ -961,8 +959,7 @@ let apply () = begin
       stru_quot:
       [ "#"; a_lident{n}; exp{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)
-      | stru{st1}; ";";S{st2} -> `Sem(_loc,st1,st2)
-      | stru{st} -> st]
+      | strus{x} -> x]
 
       stru:
       { "top"

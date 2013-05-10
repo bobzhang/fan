@@ -95,8 +95,11 @@ type position_flag =
 type strings =
   [ `App of (loc * strings * strings)
   | `Str of (loc * string)
-  | ant  ]  
-
+  | ant  ]
+      
+type lident =
+  [ `Lid of (loc * string) ]
+      
 type alident =
   [ `Lid of (loc * string)
   | ant]

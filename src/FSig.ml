@@ -92,11 +92,12 @@ open Objs;;
 {:fans|keep on; derive (Print); |};;
 
 {:ocaml|
-type named_type = (string* (* ctyp *)typedecl)
+type named_type = (string* typedecl)
 and and_types = named_type list
 and types =
     [ `Mutual of and_types
     | `Single of named_type ]
+
 and mtyps =  types list
 
 type destination =
@@ -118,8 +119,7 @@ type warning_type =
 type plugin_name = string 
 
 type plugin = {
-    transform:(mtyps -> stru);
-    (* activate: mutable bool; *)
+    transform:(mtyps -> stru option);
     position: string option ;
     filter: (string->bool) option ;
   }

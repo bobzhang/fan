@@ -1,13 +1,12 @@
 open LibUtil
 open AstLoc
-open FSig
 open Format
 
   
 (** A Hook To Ast Filters *)
 
 
-let apply_filter f (m:mtyps) : mtyps = begin 
+let apply_filter f (m:FSig.mtyps) : FSig.mtyps = begin 
   (* eprintf "applying filter@."; *)
   let f  = (function
     | (`Single (s,_) as x) ->
@@ -22,24 +21,16 @@ let apply_filter f (m:mtyps) : mtyps = begin
 end
 
 
-    
-(* type plugin_name = string ; *)
-    
-let filters : (plugin_name, plugin) Hashtbl.t  = Hashtbl.create 30;;
+let filters : (FSig.plugin_name, FSig.plugin) Hashtbl.t  = Hashtbl.create 30;;
 
-(* (\* when you do the iteration, you should do it in reverse order *\)   *)
-(* let current_filters:  ref (list (plugin_name * plugin)) = ref []; *)
-
-  
 let show_code =  ref false
 let print_collect_mtyps = ref false
   
-let register  ?filter ?position (name,f) =
+let register  ?filter ?position (name,transform) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else begin
-   (* eprintf "%s filter registered@." name ; *)
-   Hashtbl.add filters name {transform=f; (* activate=false; *)position;filter} ;
+   Hashtbl.add filters name {FSig.transform; position;filter} ;
   end
 
 let show_modules () =
@@ -154,10 +145,10 @@ end
  *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit Objs.map as super;
-  val mtyps_stack : mtyps Stack.t  = Stack.create ();
-  val mutable cur_and_types : and_types= [];
+  val mtyps_stack : FSig.mtyps Stack.t  = Stack.create ();
+  val mutable cur_and_types : FSig.and_types= [];
   val mutable and_group = false;
-  method get_cur_mtyps : mtyps =
+  method get_cur_mtyps : FSig.mtyps =
     Stack.top mtyps_stack;
   method update_cur_mtyps f =
     Stack.(push (f (pop mtyps_stack)) mtyps_stack);
@@ -180,21 +171,23 @@ let traversal () : traversal  = object (self:'self_type)
         eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps ;
       let result =
         List.fold_right
-          (fun (_, {(* activate; *)position;transform;filter}) acc
+          (fun (_, {FSig.position;transform;filter}) acc
             ->
               let mtyps =
                 match filter with
                 |Some x -> apply_filter x mtyps
                 |None -> mtyps in
                 let code = transform mtyps in 
-                match position with
-                |Some x ->
+                match (position,code) with
+                |(Some x,Some code) ->
                   let (name,f) = Filters.make_filter (x,code) in begin 
                     AstFilters.register_stru_filter (name,f);
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |None -> {| $acc; $code |} )  !FanState.current_filters 
+                |(None,Some code) -> {| $acc; $code |}
+                |(_,None) -> acc 
+          )  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
       {:mexp| struct $result end |}  
