@@ -55,7 +55,7 @@ let as_cset = function
             "fanlex (warning): multiple definition of named regexp '%s'\n" x;
         Hashtbl.add named_regexps x r
     end) (())
-        [`Lid x ; "="; regexp{r} -> (x,r)]  SEP ";" -> {:stru|let _ = () |} (* FIXME*)
+        ["let"; `Lid x ; "="; regexp{r} -> (x,r)] -> {:stru|let _ = () |} (* FIXME*)
     ]
   regexp:
 

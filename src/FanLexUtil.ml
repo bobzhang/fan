@@ -1,5 +1,6 @@
 open Format
-open FanLexer
+(* open FanLexer *)
+open FLexer  
 open LibUtil
 open Lexing
 

@@ -81,23 +81,23 @@ let _ =
     (None,
       (None, None,
         [([`Smeta
-             (["FOLD1"; "SEP"],
+             (["FOLD1"],
                [Gram.srules
-                  [([`Stoken
-                       (((function | `Lid _ -> true | _ -> false)),
-                         (`Normal, "`Lid _"));
+                  [([`Skeyword "let";
+                    `Stoken
+                      (((function | `Lid _ -> true | _ -> false)),
+                        (`Normal, "`Lid _"));
                     `Skeyword "=";
                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                     ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x -> ((x, r) : 'e__3 )\n     | _ -> failwith \"(x, r)\n\")\n",
+                     ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid x -> ((x, r) : 'e__3 )\n     | _ -> failwith \"(x, r)\n\")\n",
                        (Gram.mk_action
-                          (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
-                             (_loc : FanLoc.t)  ->
-                             match __fan_0 with
+                          (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t]) 
+                             _  (_loc : FanLoc.t)  ->
+                             match __fan_1 with
                              | `Lid x -> ((x, r) : 'e__3 )
-                             | _ -> failwith "(x, r)\n"))))];
-               `Skeyword ";"],
+                             | _ -> failwith "(x, r)\n"))))]],
                (Gram.Action.mk
-                  (Gram.sfold1sep
+                  (Gram.sfold1
                      (fun (x,r)  ()  ->
                         if Hashtbl.mem named_regexps x
                         then
@@ -106,7 +106,7 @@ let _ =
                             x;
                         Hashtbl.add named_regexps x r) () : (_,'e__3,
                                                               'e__4)
-                                                              Gram.foldsep )))],
+                                                              Gram.fold )))],
            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     ((`StExp (_loc, (`Uid (_loc, \"()\"))) : Ast.stru ) : 'declare_regexp ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->

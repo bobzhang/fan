@@ -1,6 +1,7 @@
+
 val lexing_store : char XStream.t -> string -> int -> int
-val from_context :
-  FanLexer.context -> ([> FanToken.t ] * FanLoc.t) XStream.t
+(* val from_context : *)
+(*   context -> ([> FanToken.t ] * FanLoc.t) XStream.t *)
 val from_lexbuf :
   ?quotations:bool ->
   Lexing.lexbuf -> ([> FanToken.t ] * FanLoc.t) XStream.t
