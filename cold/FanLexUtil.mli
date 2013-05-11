@@ -1,4 +1,4 @@
-(* open FLexer *)
+
 val lexing_store : char XStream.t -> string -> int -> int
 (* val from_context : *)
 (*   context -> ([> FanToken.t ] * FanLoc.t) XStream.t *)

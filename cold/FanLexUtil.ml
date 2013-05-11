@@ -1,6 +1,6 @@
 open Format
 
-open FanLexer
+open FLexer
 
 open LibUtil
 
