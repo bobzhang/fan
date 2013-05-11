@@ -1,0 +1,59 @@
+
+
+
+* 01 lexer
+  How to handle strings in quotation?
+
+  Shall we treat them verbatim or impose some restrictions?
+  the following quotations legal
+
+  If we treat them verbatim the following is good (we may not like)
+  {:lexer| "|}
+  {:lexer| "agho |}
+
+  If we treat only string specially, the following is wrong (should be
+  a bug)
+  {:lexer| '"' |}
+
+
+  So to conclude, we should add some checks in quotation?
+
+  how about this
+  {:lexer| "|}" |}, if we treat them verbatim, this should fail.
+
+  The problem becomes serious when handling nested quotations and
+  anti-quotations:
+     A sample code:
+     #+BEGIN_SRC ocaml
+       and quotation c = {:lexer|
+         | '{' (':' quotation_name)? ('@' locname)? '|' (extra_quot as p)?
+             ->
+               begin
+                 store c ;
+                 Stack.push p opt_char; (* take care the order matters*)
+                 with_curr_loc quotation c ;
+                 parse quotation c
+               end
+         | (extra_quot as p)? "|}" ->
+       ... |}     
+     #+END_SRC
+
+   The current solution is ad-hoc:
+     It requires string to follow the ocaml convention, and for char,
+     it has a loose requirement, it tries to recognize '"' problem,
+     but
+     does not prevent '    a' happen.
+     #+BEGIN_SRC ocaml
+           | "\"" {store c;
+                   begin
+                     try with_curr_loc string c
+                     with FanLoc.Exc_located(_,Lexing_error Unterminated_string) ->
+                       err Unterminated_string_in_quotation (loc_merge c)
+                   end;
+                   Buffer.add_char c.buffer '"';
+                   parse quotation c
+                 }
+           | "'" ( [^ '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+           | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+                  {store_parse quotation c }
+     #+END_SRC

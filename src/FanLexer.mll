@@ -464,6 +464,9 @@ and quotation c = parse
             Buffer.add_char c.buffer '"';
             parse quotation c
           }
+    | "'" ( [^ '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+    | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+           {store_parse quotation c }
     | eof {show_stack (); err Unterminated_quotation (loc_merge c)}
     | newline                                     {
       update_loc c ;
