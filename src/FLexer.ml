@@ -190,22 +190,21 @@ let warn error loc =
   Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error;;
 
 {:regexp|
+
 let newline = ('\010' | '\013' | "\013\010")
 let blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
 let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
-let identchar =
-  ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
-let 
-ident = (lowercase|uppercase) identchar*
+let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
+let ident = (lowercase|uppercase) identchar*
 
 (* let quotation_name= ident ('.'ident)* *)
+    
 let quotation_name = '.' ? (uppercase  identchar* '.') * (lowercase identchar* )
 let locname = ident
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
 let uident = uppercase identchar *
-    
 let not_star_symbolchar =
   [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 let symbolchar = '*' | not_star_symbolchar
@@ -268,86 +267,8 @@ let right_delimitor =
    (* | (delimchars* ['|' ':'])? '}' *)
 |};;
 
-let rec token c = {:lexer|
-  | newline -> (update_loc c; `NEWLINE)
-  | blank + as x ->  `BLANKS x 
-  | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
-  | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
-  | lowercase identchar * as x ->  `Lid x 
-  | uppercase identchar * as x ->  `Uid x 
-  | int_literal  ('l'|'L'|'n')? as x -> 
-      (try cvt_int_literal x with
-        Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf))
-  | float_literal as f -> 
-       (try  `Flo(float_of_string f, f) with
-         Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf)) 
-  | '"' -> ( with_curr_loc string c;
-             let s = buff_contents c in `STR (TokenEval.string s, s))
-  | "'" (newline as x) "'" ->
-           ( update_loc c  ~retract:1; `CHAR (TokenEval.char x, x))
-  | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
-      -> (`CHAR (TokenEval.char x, x))
-  | "'\\" (_ as c) -> 
-           (err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf))         
-  | "(*" ->
-           (store c; `COMMENT(parse_nested ~lexer:comment (in_comment c)))
-  | "(*)" ->
-           ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
-             parse comment (in_comment c); `COMMENT (buff_contents c))
-  | "*)" ->
-           ( warn Comment_not_end (FanLoc.of_lexbuf lexbuf) ;
-             move_curr_p (-1) c; `SYMBOL "*")
-  | "{<" as s -> `SYMBOL s
-  | ">}" as s -> `SYMBOL s
-  | "{|" (extra_quot as p)? (quotchar* as beginning) ->
-            if quotations c  then
-             (
-              move_curr_p (-String.length beginning) c; (* FIX partial application*)
-              Stack.push p opt_char;
-              let len = 2 + opt_char_len p in 
-              mk_quotation
-                quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
-           else
-             parse
-               (symbolchar_star
-                  ("{|" ^
-                   (match p with
-                   |Some x -> String.make 1 x | None -> "") ^ beginning))
-               c                       
-  | "{||}" -> 
-           `QUOTATION { FanToken.q_name =FanToken.empty_name ;
-                             q_loc = ""; q_shift = 2; q_contents = "" }
-  | "{@"  ->   with_curr_loc maybe_quotation_at c
-  | "{:"  ->
-             with_curr_loc maybe_quotation_colon c
-  | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
-      ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
-      [! '\010' '\013'] * newline ->
-        let inum = int_of_string num in begin 
-          update_loc c ?file:name ~line:inum ~absolute:true ;
-          `LINE_DIRECTIVE(inum, name)
-        end
-  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
-  | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op 
-  | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
-  | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
-  | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
-  | '$' ->
-      if antiquots c then 
-        with_curr_loc dollar c 
-      else parse (symbolchar_star "$") c 
-  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  -> `SYMBOL x 
-  | ! ->
-      let pos = lexbuf.lex_curr_p in begin
-        lexbuf.lex_curr_p <-
-          { pos with pos_bol  = pos.pos_bol  + 1 ;
-            pos_cnum = pos.pos_cnum + 1 };
-        `EOI
-      end
-  | _ as c ->  err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
-|}
-and comment c = {:lexer|
+
+let rec comment c = {:lexer|
   |"(*"  ->
       begin
         store c;
@@ -363,7 +284,8 @@ and comment c = {:lexer|
       end
   | _ ->  store_parse comment c 
 |}
-and string c = {:lexer|
+
+let rec string c = {:lexer|
   | '"' ->  set_start_p c 
   | '\\' newline ([' ' '\t'] * as space) ->
       begin
@@ -388,10 +310,14 @@ and string c = {:lexer|
   | ! ->  err Unterminated_string (loc_merge c) 
   | _ ->  store_parse string c 
 |}
-and  symbolchar_star beginning _c = {:lexer|
+
+let  symbolchar_star beginning _c = {:lexer|
   | symbolchar* as tok -> `SYMBOL(beginning ^ tok)
 |}
-and maybe_quotation_at c  = {:lexer|
+
+
+
+let rec   maybe_quotation_at c  = {:lexer|
   | (ident as loc)  '|' (extra_quot as p)? ->
       begin
         move_start_p (-2) c;
@@ -403,6 +329,7 @@ and maybe_quotation_at c  = {:lexer|
   | _ as c  ->
       err (Illegal_quotation (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
 |}
+
 and maybe_quotation_colon c = {:lexer|
   | (quotation_name as name)  '|' (extra_quot as p)?  ->
       let len = String.length name in
@@ -428,7 +355,7 @@ and maybe_quotation_colon c = {:lexer|
    
   |  _ as c(* symbolchar* as tok *) ->
        err (Illegal_quotation (String.make 1 c))
-        (FanLoc.of_lexbuf lexbuf) (* `SYMBOL("{:" ^ tok) *) 
+        (FanLoc.of_lexbuf lexbuf) 
 |}
 
 (*
@@ -534,3 +461,85 @@ and quotation c = {:lexer|
   | _ -> store_parse quotation c
           
 |}
+    
+let token c = {:lexer|
+  | newline -> (update_loc c; `NEWLINE)
+  | blank + as x ->  `BLANKS x 
+  | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
+  | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
+  | lowercase identchar * as x ->  `Lid x 
+  | uppercase identchar * as x ->  `Uid x 
+  | int_literal  ('l'|'L'|'n')? as x -> 
+      (try cvt_int_literal x with
+        Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf))
+  | float_literal as f -> 
+       (try  `Flo(float_of_string f, f) with
+         Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf)) 
+  | '"' -> ( with_curr_loc string c;
+             let s = buff_contents c in `STR (TokenEval.string s, s))
+  | "'" (newline as x) "'" ->
+           ( update_loc c  ~retract:1; `CHAR (TokenEval.char x, x))
+  | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+      -> (`CHAR (TokenEval.char x, x))
+  | "'\\" (_ as c) -> 
+           (err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf))         
+  | "(*" ->
+           (store c; `COMMENT(parse_nested ~lexer:comment (in_comment c)))
+  | "(*)" ->
+           ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
+             parse comment (in_comment c); `COMMENT (buff_contents c))
+  | "*)" ->
+           ( warn Comment_not_end (FanLoc.of_lexbuf lexbuf) ;
+             move_curr_p (-1) c; `SYMBOL "*")
+  | "{<" as s -> `SYMBOL s
+  | ">}" as s -> `SYMBOL s
+  | "{|" (extra_quot as p)? (quotchar* as beginning) ->
+            if quotations c  then
+             (
+              move_curr_p (-String.length beginning) c; (* FIX partial application*)
+              Stack.push p opt_char;
+              let len = 2 + opt_char_len p in 
+              mk_quotation
+                quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
+           else
+             parse
+               (symbolchar_star
+                  ("{|" ^
+                   (match p with
+                   |Some x -> String.make 1 x | None -> "") ^ beginning))
+               c                       
+  | "{||}" -> 
+           `QUOTATION { FanToken.q_name =FanToken.empty_name ;
+                             q_loc = ""; q_shift = 2; q_contents = "" }
+  | "{@"  ->   with_curr_loc maybe_quotation_at c
+  | "{:"  ->
+             with_curr_loc maybe_quotation_colon c
+  | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
+      ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
+      [! '\010' '\013'] * newline ->
+        let inum = int_of_string num in begin 
+          update_loc c ?file:name ~line:inum ~absolute:true ;
+          `LINE_DIRECTIVE(inum, name)
+        end
+  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
+  | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op 
+  | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
+  | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
+  | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
+  | '$' ->
+      if antiquots c then 
+        with_curr_loc dollar c 
+      else parse (symbolchar_star "$") c 
+  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  -> `SYMBOL x 
+  | ! ->
+      let pos = lexbuf.lex_curr_p in begin
+        lexbuf.lex_curr_p <-
+          { pos with pos_bol  = pos.pos_bol  + 1 ;
+            pos_cnum = pos.pos_cnum + 1 };
+        `EOI
+      end
+  | _ as c ->  err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
+|}
+
+    

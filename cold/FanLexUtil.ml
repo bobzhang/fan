@@ -11,9 +11,8 @@ let lexing_store s buff max =
     if n >= max
     then n
     else
-      (let (__strm :_ XStream.t)= s in
-       match XStream.peek __strm with
-       | Some x -> (XStream.junk __strm; buff.[n] <- x; succ n)
+      (match XStream.peek s with
+       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
        | _ -> n) in
   self 0 s
 

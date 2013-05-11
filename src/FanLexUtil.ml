@@ -7,9 +7,9 @@ let lexing_store s buff max =
    let  self n s =
      if n >= max then n
      else
-       match s with parser
-       [ [< x >] -> begin buff.[n]<- x; succ n end
-       | [< >] -> n ] in  
+       match XStream.peek s with
+       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
+       | _ -> n in 
    self 0 s
 
 let from_context c =
