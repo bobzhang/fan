@@ -43,11 +43,11 @@ type ident_info =
   | Ident_char of bool * tag_addr
 type t_env = (ident * ident_info) list
 
-type ('args,'action) lexer_entry =
-  { lex_name: string;
+type  lexer_entry =
+  { (* lex_name: string; *)
     lex_regexp: regexp;
     lex_mem_tags: int ;
-    lex_actions: (int *  t_env * 'action) list }
+    lex_actions: (int *  t_env * Ast.exp(* 'action *)) list }
 
 
 type automata =
@@ -71,8 +71,8 @@ and tag_action = | SetTag of int * int | EraseTag of int
 (* Representation of entry points *)
 
 type  automata_entry =
-  { auto_name: string;
-    auto_args: string list ;
+  { (* auto_name: string; *)
+    (* auto_args: string list ; *)
     auto_mem_size : int ;
     auto_initial_state: (int * memory_action list);
     auto_actions: (int * t_env * Ast.exp) list }
@@ -525,19 +525,33 @@ let encode_casedef casedef =
 let encode_lexdef def =
   (chars := [];
    chars_count := 0;
-   let entry_list =
+   let (entry_list : (lexer_entry *bool) list ) =
      List.map
-       (fun {name=entry_name ; args=args ; shortest=shortest ; clauses= casedef} ->
+       (fun {shortest=shortest ; clauses= casedef} ->
          let (re,actions,_,ntags) = encode_casedef casedef in
-         ({ lex_name = entry_name;
-            lex_regexp = re;
+         ({lex_regexp = re;
             lex_mem_tags = ntags ;
-            lex_actions = List.rev actions },args,shortest))
+            lex_actions = List.rev actions },
+          shortest))
        def in
    let chr = Array.of_list (List.rev !chars) in
    (chars := [];
     (chr, entry_list)))
-
+    
+let encode_single_lexdef def =
+  (chars := [];
+   chars_count := 0;
+   let result : (lexer_entry * bool)=
+     match def with
+       {shortest=shortest ; clauses= casedef} ->
+         let (re,actions,_,ntags) = encode_casedef casedef in
+         ({lex_regexp = re;
+           lex_mem_tags = ntags ;
+           lex_actions = List.rev actions },
+          shortest) in
+   let chr = Array.of_list (List.rev !chars) in
+   (chars := [];
+    (chr, result)))
 (* To generate directly a NFA from a regular expression.
    Confer Aho-Sethi-Ullman, dragon book, chap. 3
    Extension to tagged automata.
@@ -625,7 +639,7 @@ let followpos size entry_list =
         fill s r2)
     | Star r ->
         fill (TransSet.union (firstpos r) s) r in
-  (List.iter (fun (entry,_,_) -> fill TransSet.empty entry.lex_regexp) entry_list ;
+  (List.iter (fun (entry,_) -> fill TransSet.empty entry.lex_regexp) entry_list ;
   v)
 
 (************************)
@@ -1174,6 +1188,53 @@ let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
   envs)
 
 
+let make_single_dfa (lexdef:LexSyntax.entry) :
+    (automata_entry  * automata array) = begin
+  let (chars, entry) = encode_single_lexdef lexdef in
+  let follow = followpos (Array.length chars) [entry] in
+(*
+  dfollow follow ;
+ *)
+  let _ = reset_state () in
+  let r_states = ref [] in
+  let initial_states =
+    match entry with  (le,(* args, *)shortest) ->
+      let tags = extract_tags le.lex_actions in
+      (reset_state_partial le.lex_mem_tags ;
+       let pos_set = firstpos le.lex_regexp in
+(*
+  prerr_string "trans={" ; dtransset pos_set ; prerr_endline "}" ;
+ *)
+       let init_state = create_init_state pos_set in
+       let init_num = get_state init_state in
+       (r_states :=
+         map_on_all_states
+           (translate_state shortest tags chars follow) !r_states ;
+        { (* auto_name = le.lex_name; *)
+            (* auto_args = args ; *)
+            auto_mem_size =
+            (if !temp_pending then !next_mem_cell+1 else !next_mem_cell) ;
+            auto_initial_state = init_num ;
+            auto_actions = le.lex_actions }))
+ in
+  let states = !r_states in
+(*
+  prerr_endline "** states **" ;
+  for i = 0 to !next_state_num-1 do
+  Printf.eprintf "+++ %d +++\n" i ;
+  dstate (Table.get state_table i) ;
+  prerr_endline ""
+  done ;
+  Printf.eprintf "%d states\n" !next_state_num ;
+ *)
+  let actions = Array.create !next_state_num (Perform (0,[])) in
+  (List.iter (fun (act, i) -> actions.(i) <- act) states;
+(* Useless state reset, so as to restrict GC roots *)
+   reset_state  () ;
+   reset_state_partial  0 ;
+   (initial_states, actions))
+end
+    
 let make_dfa (lexdef:LexSyntax.entry list) :
     (automata_entry list * automata array) = begin
   let (chars, entry_list) = encode_lexdef lexdef in
@@ -1185,7 +1246,7 @@ let make_dfa (lexdef:LexSyntax.entry list) :
   let r_states = ref [] in
   let initial_states =
     List.map
-      (fun (le,args,shortest) ->
+      (fun (le,(* args, *)shortest) ->
         let tags = extract_tags le.lex_actions in
         (reset_state_partial le.lex_mem_tags ;
          let pos_set = firstpos le.lex_regexp in
@@ -1197,8 +1258,8 @@ let make_dfa (lexdef:LexSyntax.entry list) :
          (r_states :=
            map_on_all_states
              (translate_state shortest tags chars follow) !r_states ;
-          { auto_name = le.lex_name;
-            auto_args = args ;
+          { (* auto_name = le.lex_name; *)
+            (* auto_args = args ; *)
             auto_mem_size =
             (if !temp_pending then !next_mem_cell+1 else !next_mem_cell) ;
             auto_initial_state = init_num ;

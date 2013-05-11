@@ -32,12 +32,11 @@ type ident_info =
 
 type t_env = (ident * ident_info) list 
 
-type ('args,'action) lexer_entry = 
+type lexer_entry = 
   {
-  lex_name: string;
   lex_regexp: regexp;
   lex_mem_tags: int;
-  lex_actions: (int * t_env * 'action) list} 
+  lex_actions: (int * t_env * Ast.exp) list} 
 
 type automata =  
   | Perform of int* tag_action list
@@ -57,8 +56,6 @@ and tag_action =
 
 type automata_entry = 
   {
-  auto_name: string;
-  auto_args: string list;
   auto_mem_size: int;
   auto_initial_state: (int * memory_action list);
   auto_actions: (int * t_env * Ast.exp) list} 
@@ -368,18 +365,32 @@ let encode_casedef casedef =
 let encode_lexdef def =
   chars := [];
   chars_count := 0;
-  (let entry_list =
+  (let (entry_list :(lexer_entry * bool) list)=
      List.map
-       (fun { name = entry_name; args; shortest; clauses = casedef }  ->
+       (fun { shortest; clauses = casedef }  ->
           let (re,actions,_,ntags) = encode_casedef casedef in
           ({
-             lex_name = entry_name;
              lex_regexp = re;
              lex_mem_tags = ntags;
              lex_actions = (List.rev actions)
-           }, args, shortest)) def in
+           }, shortest)) def in
    let chr = Array.of_list (List.rev chars.contents) in
    chars := []; (chr, entry_list))
+
+let encode_single_lexdef def =
+  chars := [];
+  chars_count := 0;
+  (let result: (lexer_entry * bool) =
+     match def with
+     | { shortest; clauses = casedef } ->
+         let (re,actions,_,ntags) = encode_casedef casedef in
+         ({
+            lex_regexp = re;
+            lex_mem_tags = ntags;
+            lex_actions = (List.rev actions)
+          }, shortest) in
+   let chr = Array.of_list (List.rev chars.contents) in
+   chars := []; (chr, result))
 
 type t_transition =  
   | OnChars of int
@@ -444,7 +455,7 @@ let followpos size entry_list =
             else firstpos r2) r1;
          fill s r2)
     | Star r -> fill (TransSet.union (firstpos r) s) r in
-  List.iter (fun (entry,_,_)  -> fill TransSet.empty entry.lex_regexp)
+  List.iter (fun (entry,_)  -> fill TransSet.empty entry.lex_regexp)
     entry_list;
   v
 
@@ -847,6 +858,37 @@ let extract_tags (l : (int * (ident * ident_info) list * 'b) list) =
                    (make_tag_entry name false act t2 r)) m TagMap.empty) l;
    envs : int TagMap.t array )
 
+let make_single_dfa (lexdef : LexSyntax.entry) =
+  (let (chars,entry) = encode_single_lexdef lexdef in
+   let follow = followpos (Array.length chars) [entry] in
+   let _ = reset_state () in
+   let r_states = ref [] in
+   let initial_states =
+     match entry with
+     | (le,shortest) ->
+         let tags = extract_tags le.lex_actions in
+         (reset_state_partial le.lex_mem_tags;
+          (let pos_set = firstpos le.lex_regexp in
+           let init_state = create_init_state pos_set in
+           let init_num = get_state init_state in
+           r_states :=
+             (map_on_all_states (translate_state shortest tags chars follow)
+                r_states.contents);
+           {
+             auto_mem_size =
+               (if temp_pending.contents
+                then next_mem_cell.contents + 1
+                else next_mem_cell.contents);
+             auto_initial_state = init_num;
+             auto_actions = (le.lex_actions)
+           })) in
+   let states = r_states.contents in
+   let actions = Array.create next_state_num.contents (Perform (0, [])) in
+   List.iter (fun (act,i)  -> actions.(i) <- act) states;
+   reset_state ();
+   reset_state_partial 0;
+   (initial_states, actions) : (automata_entry * automata array) )
+
 let make_dfa (lexdef : LexSyntax.entry list) =
   (let (chars,entry_list) = encode_lexdef lexdef in
    let follow = followpos (Array.length chars) entry_list in
@@ -854,7 +896,7 @@ let make_dfa (lexdef : LexSyntax.entry list) =
    let r_states = ref [] in
    let initial_states =
      List.map
-       (fun (le,args,shortest)  ->
+       (fun (le,shortest)  ->
           let tags = extract_tags le.lex_actions in
           reset_state_partial le.lex_mem_tags;
           (let pos_set = firstpos le.lex_regexp in
@@ -864,8 +906,6 @@ let make_dfa (lexdef : LexSyntax.entry list) =
              (map_on_all_states (translate_state shortest tags chars follow)
                 r_states.contents);
            {
-             auto_name = (le.lex_name);
-             auto_args = args;
              auto_mem_size =
                (if temp_pending.contents
                 then next_mem_cell.contents + 1

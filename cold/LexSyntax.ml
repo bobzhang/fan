@@ -7,9 +7,6 @@ type regular_expression =
   | Repetition of regular_expression
   | Bind of regular_expression* Ast.lident 
 
-type entry = 
-  {
-  name: string;
+type entry =  {
   shortest: bool;
-  args: string list;
   clauses: (regular_expression * Ast.exp) list} 

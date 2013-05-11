@@ -47,12 +47,14 @@ type ident_info =
 type t_env = (ident * ident_info) list
 
 type automata_entry =
-  { auto_name: string;
-    auto_args: string list ;
+  { (* auto_name: string; *)
+    (* auto_args: string list ; *)
     auto_mem_size : int ;
     auto_initial_state: int * memory_action list ;
     auto_actions: (int * t_env * Ast.exp) list }
-
+      
+val make_single_dfa:
+    LexSyntax.entry -> automata_entry * automata array
 val make_dfa :
    LexSyntax.entry list ->
    automata_entry list * automata array

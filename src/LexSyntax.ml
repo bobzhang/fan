@@ -23,8 +23,6 @@ type regular_expression =
   | Bind of regular_expression * Ast.lident 
 
 type  entry =
-  {name:string ;
-   shortest : bool ;
-   args : string list ;
+  {shortest : bool ;
    clauses : (regular_expression * Ast.exp) list}
 

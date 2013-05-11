@@ -221,3 +221,4 @@ open AstTypeGen
 
 open CodeTemplate
 
+open OCamlLex
