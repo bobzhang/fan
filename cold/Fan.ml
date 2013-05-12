@@ -238,8 +238,6 @@ let _ =
 
 let _ = of_exp ~name:(d, "p") ~entry:p
 
-let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
-
 open ParserRevise
 
 open ParserMacro
@@ -247,6 +245,8 @@ open ParserMacro
 open ParserGrammar
 
 open ParserStream
+
+let _ = of_exp ~name:(d, "stream") ~entry:ParserStream.stream_exp
 
 open ParserLex
 

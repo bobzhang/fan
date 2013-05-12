@@ -54,14 +54,16 @@ let mk () loc strm =
 
 (* remove trailing `EOI*)  
 let rec clean  =  parser
-  [ [< (`EOI,loc) >] -> [< (`EOI,loc) >]
-  | [< x; 'xs>]  -> [< x ; 'clean xs >]
-  | [< >] -> [< >] ] 
+  [ [< (`EOI,loc) >] -> {:stream| (`EOI,loc)|}
+  | [< x; 'xs>]  ->
+      {:stream| x; 'clean xs|}
+
+  | [< >] -> {:stream||} ] 
 
 let rec strict_clean = parser
-  [ [< (`EOI,_) >] -> [<>]
-  | [< x; 'xs>]  -> [< x ; 'strict_clean xs >]
-  | [< >] -> [< >] ]
+  [ [< (`EOI,_) >] -> {:stream||}
+  | [< x; 'xs>]  -> {:stream| x; 'strict_clean xs |}
+  | [< >] -> {:stream||} ]
     
 let debug_from_string ?quotations str =
   let loc = FanLoc.string_loc  in

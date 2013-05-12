@@ -1,54 +1,56 @@
+open Ast
+
 type spat_comp =
-    SpTrm of FanLoc.t * Ast.pat * Ast.exp option
-  | SpNtr of FanLoc.t * Ast.pat * Ast.exp
-  | SpStr of FanLoc.t * Ast.pat
-type sexp_comp = SeTrm of FanLoc.t * Ast.exp | SeNtr of FanLoc.t * Ast.exp
+  | SpTrm of FanLoc.t * pat * exp option
+  | SpNtr of FanLoc.t * pat * exp
+  | SpStr of FanLoc.t * pat
+type sexp_comp =
+  | SeTrm of FanLoc.t * exp
+  | SeNtr of FanLoc.t * exp
+
+
+type stream_pat = (spat_comp * exp option)
+type stream_pats = stream_pat list
+type stream_case = (stream_pats * pat option * exp)      
+type stream_cases = stream_case list
+      
 val grammar_module_name : string ref
 val gm : unit -> string
 val strm_n : string
-val peek_fun : Ast.loc -> Ast.exp
-val junk_fun : Ast.loc -> Ast.exp
-val empty : Ast.loc -> Ast.exp
+val peek_fun : loc -> exp
+val junk_fun : loc -> exp
+val empty : loc -> exp
 
 
-val handle_failure : Ast.exp -> bool
-val is_constr_apply : Ast.exp -> bool
-val subst : string -> Ast.exp -> Ast.exp
-val subst_binding : string -> Ast.binding -> Ast.binding
-val stream_pattern_component : Ast.exp -> Ast.exp -> spat_comp -> Ast.exp
+val handle_failure : exp -> bool
+val is_constr_apply : exp -> bool
+val subst : string -> exp -> exp
+val subst_binding : string -> binding -> binding
+val stream_pattern_component : exp -> exp -> spat_comp -> exp
+
 val stream_pattern :
-  Ast.loc ->
-  Ast.pat option ->
-  Ast.exp ->
-  (Ast.exp option -> Ast.exp) ->
-  (spat_comp * Ast.exp option) list -> Ast.exp
+  loc ->
+  pat option ->
+  exp ->
+  (exp option -> exp) ->
+  stream_pats -> exp
+
 val stream_patterns_term :
-  Ast.loc ->
-  (unit -> Ast.exp) ->
-  (Ast.pat * Ast.exp option * Ast.loc *
-   (spat_comp * Ast.exp option) list * Ast.pat option * Ast.exp)
-  list -> Ast.exp
-val group_terms :
-  ((spat_comp * 'a option) list * 'b * 'c) list ->
-  (Ast.pat * Ast.exp option * FanLoc.t * (spat_comp * 'a option) list *
-   'b * 'c)
-  list * ((spat_comp * 'a option) list * 'b * 'c) list
-val parser_cases :
-  Ast.loc ->
-  ((spat_comp * Ast.exp option) list * Ast.pat option * Ast.exp) list ->
-  Ast.exp
-val cparser :
-  Ast.loc ->
-  Ast.pat option ->
-  ((spat_comp * Ast.exp option) list * Ast.pat option * Ast.exp) list ->
-  Ast.exp
-val cparser_match :
-  Ast.loc ->
-  Ast.exp ->
-  Ast.pat option ->
-  ((spat_comp * Ast.exp option) list * Ast.pat option * Ast.exp) list ->
-  Ast.exp
-val not_computing : Ast.exp -> bool
-val is_cons_apply_not_computing : Ast.exp -> bool
-val slazy : Ast.loc -> Ast.exp -> Ast.exp
-val cstream : Ast.loc -> sexp_comp list -> Ast.exp
+  loc ->
+  (unit -> exp) ->
+  (pat * exp option * loc * stream_pats * pat option * exp)
+  list -> exp
+
+val parser_cases :  loc ->  stream_cases ->  exp
+
+val cparser :  loc ->  pat option -> stream_cases ->  exp
+
+val cparser_match :  loc ->  exp ->  pat option -> stream_cases ->  exp
+    
+val not_computing : exp -> bool
+
+val is_cons_apply_not_computing : exp -> bool
+
+val slazy : loc -> exp -> exp
+
+val cstream : loc -> sexp_comp list -> exp

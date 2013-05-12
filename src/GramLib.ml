@@ -13,11 +13,18 @@ let rec infix_kwds_filter = parser
     match xs with parser
     [ [< (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
          (`KEYWORD ")", _); 'xs >] ->
-           [< (`Lid i, _loc); '(infix_kwds_filter xs) >]
+           {:stream| (`Lid i, _loc); '(infix_kwds_filter xs) |}
+
     | [< 'xs >] ->
-        [< tok; '(infix_kwds_filter xs) >] ]
-  | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]
-  | [< >] -> [< >] ]
+        {:stream| tok; 'infix_kwds_filter xs |} ]
+
+  | [< x; 'xs >] ->
+      {:stream| x; ' infix_kwds_filter xs |}
+
+  | [< >] ->
+      {:stream||}
+
+  ]
   
 
 

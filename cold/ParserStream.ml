@@ -26,6 +26,8 @@ let parser_case = Gram.mk "parser_case"
 
 let parser_case_list = Gram.mk "parser_case_list"
 
+let stream_exp = Gram.mk "stream_exp"
+
 let apply () =
   Gram.extend_single (exp : 'exp Gram.t )
     ((Some (`Level "top")),
@@ -80,32 +82,49 @@ let apply () =
                        Ref.protect FanStreamTools.grammar_module_name o
                          (fun _  -> cparser_match _loc e po pcl)
                    | None  -> cparser_match _loc e po pcl : 'exp )))))]));
-  Gram.extend_single (exp : 'exp Gram.t )
-    ((Some (`Level "simple")),
+  Gram.extend_single (stream_exp : 'stream_exp Gram.t )
+    (None,
       (None, None,
-        [([`Snterm (Gram.obj (stream_begin : 'stream_begin Gram.t ));
-          `Skeyword ">]"],
-           ("Gram.mk_action\n  (fun _  (name : 'stream_begin)  (_loc : FanLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FanStreamTools.grammar_module_name o\n            (fun _  -> FanStreamTools.empty _loc)\n      | None  -> FanStreamTools.empty _loc : 'exp ))\n",
+        [([`Skeyword "!";
+          `Stoken
+            (((function | `Uid _ -> true | _ -> false)), (`Normal, "`Uid _"))],
+           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Uid n ->\n         (Ref.protect FanStreamTools.grammar_module_name n\n            (fun _  -> FanStreamTools.empty _loc) : 'stream_exp )\n     | _ ->\n         failwith\n           \"Ref.protect FanStreamTools.grammar_module_name n\n  (fun _  -> FanStreamTools.empty _loc)\n\")\n",
              (Gram.mk_action
-                (fun _  (name : 'stream_begin)  (_loc : FanLoc.t)  ->
-                   (match name with
-                    | Some o ->
-                        Ref.protect FanStreamTools.grammar_module_name o
-                          (fun _  -> FanStreamTools.empty _loc)
-                    | None  -> FanStreamTools.empty _loc : 'exp )))));
-        ([`Snterm (Gram.obj (stream_begin : 'stream_begin Gram.t ));
+                (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
+                   match __fan_1 with
+                   | `Uid n ->
+                       (Ref.protect FanStreamTools.grammar_module_name n
+                          (fun _  -> FanStreamTools.empty _loc) : 'stream_exp )
+                   | _ ->
+                       failwith
+                         "Ref.protect FanStreamTools.grammar_module_name n\n  (fun _  -> FanStreamTools.empty _loc)\n"))));
+        ([`Skeyword "!";
+         `Stoken
+           (((function | `Uid _ -> true | _ -> false)), (`Normal, "`Uid _"));
          `Snterm
-           (Gram.obj (stream_exp_comp_list : 'stream_exp_comp_list Gram.t ));
-         `Skeyword ">]"],
-          ("Gram.mk_action\n  (fun _  (sel : 'stream_exp_comp_list)  (name : 'stream_begin) \n     (_loc : FanLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FanStreamTools.grammar_module_name o\n            (fun _  -> cstream _loc sel)\n      | None  -> cstream _loc sel : 'exp ))\n",
+           (Gram.obj (stream_exp_comp_list : 'stream_exp_comp_list Gram.t ))],
+          ("Gram.mk_action\n  (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FanToken.t])  _ \n     (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Uid n ->\n         (Ref.protect FanStreamTools.grammar_module_name n\n            (fun _  -> cstream _loc sel) : 'stream_exp )\n     | _ ->\n         failwith\n           \"Ref.protect FanStreamTools.grammar_module_name n (fun _  -> cstream _loc sel)\n\")\n",
             (Gram.mk_action
-               (fun _  (sel : 'stream_exp_comp_list)  (name : 'stream_begin) 
-                  (_loc : FanLoc.t)  ->
-                  (match name with
-                   | Some o ->
-                       Ref.protect FanStreamTools.grammar_module_name o
-                         (fun _  -> cstream _loc sel)
-                   | None  -> cstream _loc sel : 'exp )))))]));
+               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FanToken.t])
+                   _  (_loc : FanLoc.t)  ->
+                  match __fan_1 with
+                  | `Uid n ->
+                      (Ref.protect FanStreamTools.grammar_module_name n
+                         (fun _  -> cstream _loc sel) : 'stream_exp )
+                  | _ ->
+                      failwith
+                        "Ref.protect FanStreamTools.grammar_module_name n (fun _  -> cstream _loc sel)\n"))));
+        ([`Snterm
+            (Gram.obj (stream_exp_comp_list : 'stream_exp_comp_list Gram.t ))],
+          ("Gram.mk_action\n  (fun (sel : 'stream_exp_comp_list)  (_loc : FanLoc.t)  ->\n     (cstream _loc sel : 'stream_exp ))\n",
+            (Gram.mk_action
+               (fun (sel : 'stream_exp_comp_list)  (_loc : FanLoc.t)  ->
+                  (cstream _loc sel : 'stream_exp )))));
+        ([],
+          ("Gram.mk_action\n  (fun (_loc : FanLoc.t)  -> (FanStreamTools.empty _loc : 'stream_exp ))\n",
+            (Gram.mk_action
+               (fun (_loc : FanLoc.t)  ->
+                  (FanStreamTools.empty _loc : 'stream_exp )))))]));
   Gram.extend_single (parser_ipat : 'parser_ipat Gram.t )
     (None,
       (None, None,

@@ -17,9 +17,19 @@ type spat_comp =
   | SpStr of FanLoc.t * pat 
 
 type sexp_comp =
-  |SeTrm of FanLoc.t * exp
+  | SeTrm of FanLoc.t * exp
   | SeNtr of FanLoc.t * exp 
 
+(* [exp option] is for the error message *)
+type stream_pat = (spat_comp * exp option)
+      
+type stream_pats = stream_pat list
+
+(* the second case is for [Stream.count] *)      
+type stream_case = (stream_pats * pat option * exp)
+      
+type stream_cases = stream_case list
+      
 (* default module name ["Stream"] for compatibility *)
 let grammar_module_name = ref "XStream" (* BOOTSTRAPPING *)
 
@@ -177,7 +187,8 @@ let stream_patterns_term _loc ekont tspel : exp =
       tspel {:case| _ -> $(ekont () )|} in
   {| match $(peek_fun _loc) $lid:strm_n with | $pel  |} 
 
-let rec group_terms = function
+let rec group_terms (xs:stream_cases) =
+  match xs with
   | ((SpTrm (_loc, p, w), None) :: spcl, epo, e) :: spel ->
     let (tspel, spel) = group_terms spel in
     ((p, w, _loc, spcl, epo, e) :: tspel, spel)
@@ -185,7 +196,8 @@ let rec group_terms = function
 
 
   
-let rec parser_cases _loc = function
+let rec parser_cases _loc (x:stream_cases) =
+  match x with 
   | [] -> {| raise $(uid:gm()).Failure |}
   | spel ->
       match group_terms spel with
@@ -204,6 +216,9 @@ let cparser _loc bpo pc =
   let p = {:pat| ($lid:strm_n : _ $(uid:gm()).t ) |} in
   {| fun $p -> $e |} 
 
+(* mainly used in inline (fun __x -> y) e
+   let __x = e in y
+ *)    
 let cparser_match _loc me bpo pc =
   let pc = parser_cases _loc pc in
   let e =
@@ -237,7 +252,9 @@ let slazy _loc e =
 
 
 let rec cstream gloc =  function
-  | [] -> let _loc = gloc in {| [< >] |}
+  | [] -> let _loc = gloc in (* {| [< >] |}  FIXME horrible error message *)
+      (* {| {:stream||}|} *) (* FIXME return XStream.empty *)
+      {| $(uid:gm()).sempty |}
   | [SeTrm (_loc, e)] ->
       if not_computing e
       then {| $(uid:gm()).ising $e |}

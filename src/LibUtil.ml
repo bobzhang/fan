@@ -1065,17 +1065,21 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
   include XStream
   let rev strm=
     let rec aux = parser
-    [ [< x ; 'xs>] -> [< 'aux xs ; x >]
-    | [< >] ->  [< >] ] in
+    [ [< x ; 'xs>] ->
+      {:stream| 'aux xs; x|}
+
+    | [< >] ->  {:stream||}
+   ] in
     aux strm
       
   let tail = parser
-    [ [< _; 'xs >] -> [< 'xs >]
-    | [< >] -> [<>]]
+    [ [< _; 'xs >] -> xs 
+
+    | [< >] -> {:stream||} ]
         
   let rec map f  = parser
-    [ [< x; 'xs >] -> [< f x; 'map f xs >]
-    | [< >] -> [< >] ]
+    [ [< x; 'xs >] -> {:stream| f x ; 'map f xs |}
+    | [< >] -> {:stream||} ]
 
   (* the minimual [n] is 0 *)
   let peek_nth strm n   =
@@ -1095,8 +1099,10 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
     for _i = 1 to n do XStream.junk strm done (* FIXME unsed  index i*)
       
   let rec filter f = parser
-    [ [< x; 'xs >] -> if f x then [< x ; 'filter f xs >] else [< 'filter f xs >]
-    | [< >] -> [<>] ]
+    [ [< x; 'xs >] ->
+      if f x then {:stream| x; 'filter f xs|}
+      else {:stream| 'filter f xs|}
+    | [< >] -> {:stream||} ]
         
 end
 

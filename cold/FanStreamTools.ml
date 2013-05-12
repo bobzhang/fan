@@ -11,6 +11,14 @@ type sexp_comp =
   | SeTrm of FanLoc.t* exp
   | SeNtr of FanLoc.t* exp 
 
+type stream_pat = (spat_comp * exp option) 
+
+type stream_pats = stream_pat list 
+
+type stream_case = (stream_pats * pat option * exp) 
+
+type stream_cases = stream_case list 
+
 let grammar_module_name = ref "XStream"
 
 let gm () = grammar_module_name.contents
@@ -291,15 +299,15 @@ let stream_patterns_term _loc ekont tspel =
    (`Match (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))), pel) : 
      Ast.exp ) : exp )
 
-let rec group_terms =
-  function
+let rec group_terms (xs : stream_cases) =
+  match xs with
   | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->
       let (tspel,spel) = group_terms spel in
       (((p, w, _loc, spcl, epo, e) :: tspel), spel)
   | spel -> ([], spel)
 
-let rec parser_cases _loc =
-  function
+let rec parser_cases _loc (x : stream_cases) =
+  match x with
   | [] ->
       (`App
          (_loc, (`Lid (_loc, "raise")),
@@ -396,7 +404,7 @@ let rec cstream gloc =
   function
   | [] ->
       let _loc = gloc in
-      (`Dot (_loc, (`Uid (_loc, "XStream")), (`Lid (_loc, "sempty"))) : 
+      (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "sempty"))) : 
         Ast.exp )
   | (SeTrm (_loc,e))::[] ->
       if not_computing e

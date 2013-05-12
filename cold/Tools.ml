@@ -58,7 +58,7 @@ let logically_eq_symbols entry =
     | _ -> false in
   eq_symbol
 
-let rec eq_symbol s1 s2 =
+let rec eq_symbol (s1 : symbol) (s2 : symbol) =
   match (s1, s2) with
   | (`Snterm e1,`Snterm e2) -> e1 == e2
   | (`Snterml (e1,l1),`Snterml (e2,l2)) -> (e1 == e2) && (l1 = l2)
@@ -67,6 +67,7 @@ let rec eq_symbol s1 s2 =
   | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
     |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
       (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
-  | (`Stree _,`Stree _) -> false
+  | (`Stree s1,`Stree s2) -> eq_tree s1 s2
   | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
   | _ -> s1 = s2
+and eq_tree _t1 _t2 = false
