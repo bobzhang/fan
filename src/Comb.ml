@@ -4,34 +4,35 @@ open LibUtil
  *)  
 let slist0 ~f ps  = 
   let rec loop al = parser
-    [ [< a = ps; 's >] -> loop (a :: al) s
-    | [< >] -> al ] in
-  parser [< a = loop [] >] -> f a 
+    |  a = ps; 's  -> loop (a :: al) s
+    |  -> al  in
+  parser
+    |  a = loop []  -> f a 
 
 let slist1 ~f ps =
   let rec loop al = parser
-    [[< a = ps; 's>]  -> loop (a::al) s
-    |[<>] -> al ] in
-  parser [< a = ps; 's >] -> f (loop [a] s)
+    | a = ps; 's  -> loop (a::al) s
+    | -> al  in
+  parser
+    | a = ps; 's -> f (loop [a] s)
     
 let slist0sep ~err ~f s sep  =
   let rec kont al = parser
-    [ [< v = sep; a = s?? err v; 's >] ->
-      kont (a::al) s
-    | [<>] -> al ] in
+    |  v = sep; a = s?? err v; 's  -> kont (a::al) s
+    |  -> al  in
   parser
-    [[< a = s; 's >] -> f (kont [a] s)
-    |[< >] -> f []]
+    | a = s; 's  -> f (kont [a] s)
+    |  -> f []
 
 let slist1sep ~err ~f s sep =
   let rec kont al = parser
-      [ [< v = sep; a = parser
-          [ [< a = s >] -> a
-          | [< >] ->
-             raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) ];
-           's >] ->kont (a :: al) s
-      | [< >] -> al ] in
-  parser [< a = s ; 's >] ->
+    |  v = sep; a = (parser
+        |  a = s  -> a
+        | ->
+            raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) );
+      's  ->kont (a :: al) s
+    |  -> al  in
+  parser | a = s ; 's  ->
     f (kont [a] s)
     (* Action.mk (List.rev (kont [a] s)) *)
 
@@ -40,8 +41,8 @@ let slist1sep ~err ~f s sep =
 (* let slist1sep ~err ~f s sep = *)
   
 let opt ps ~f = parser
-  [ [< a = ps >] -> f (Some a)
-  | [< >] -> f None ]
+  |  a = ps  -> f (Some a)
+  |  -> f None 
 
 let tryp ps strm =
   let strm' = XStream.dup strm in
@@ -66,7 +67,7 @@ let peek ps strm =
   r
 
 let orp ?(msg="") p1 p2 = parser
-  [ [< a = p1>] -> a
-  | [< a = p2 >] -> a
-  | [<>] -> raise (XStream.Error msg) ]
+  |  a = p1 -> a
+  |  a = p2 -> a
+  |   -> raise (XStream.Error msg) 
 

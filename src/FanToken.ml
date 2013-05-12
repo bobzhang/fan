@@ -136,12 +136,12 @@ let check_keyword _ = true
 let error_on_unknown_keywords = ref false
 
 let rec ignore_layout  = parser
-  [ [< (`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _ , _); 's >] ->
+  | (`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _ , _); 's  ->
     ignore_layout s
-  | [< x; 's >] -> {:stream| x; 'ignore_layout s |}
-  | [< >] -> {:stream||}
+  |  x; 's  -> {:stream| x; 'ignore_layout s |}
+  |  -> {:stream||}
       
-  ];;
+
 
   
 let print ppf x = pp_print_string ppf (to_string x)

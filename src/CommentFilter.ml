@@ -11,15 +11,15 @@ let mk () =
 
 let filter (_, q) =
   let rec self = parser
-    [ [< (`COMMENT x, loc); 'xs >] -> begin
-      Queue.add (x, loc) q;
-      (* debug comments "add: %S at %a@\n" x FanLoc.dump loc in *)
-      self xs
+    |  (`COMMENT x, loc); 'xs  -> begin
+        Queue.add (x, loc) q;
+        (* debug comments "add: %S at %a@\n" x FanLoc.dump loc in *)
+        self xs
     end
-    | [< x; 'xs >] ->
+    |  x; 'xs ->
         (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
         {:stream|x;'self xs|}
-    | [< >] -> {:stream||} ] in self
+    |  -> {:stream||}  in self
 
 
 let take_list (_, q) =

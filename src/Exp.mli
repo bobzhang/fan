@@ -14,7 +14,7 @@ open Ast
 
 (* val bigarray_set : loc -> exp -> exp -> exp option *)
 
-val pattern_eq_expression : pat -> exp -> bool
+(* val pattern_eq_expression : pat -> exp -> bool *)
 
 val map : loc -> pat -> exp -> exp -> exp
 

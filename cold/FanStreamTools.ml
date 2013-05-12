@@ -3,9 +3,9 @@ open Ast
 open AstLoc
 
 type spat_comp =  
-  | SpTrm of FanLoc.t* pat* exp option
-  | SpNtr of FanLoc.t* pat* exp
-  | SpStr of FanLoc.t* pat 
+  | SpWhen of loc* pat* exp option
+  | SpMatch of loc* pat* exp
+  | SpStr of loc* pat 
 
 type stream_pat = (spat_comp * exp option) 
 
@@ -57,180 +57,186 @@ let rec handle_failure e =
         | (`Bind (_loc,_,e) : Ast.binding) -> handle_failure e
         | _ -> false in
       (binding_handle_failure bi) && (handle_failure e)
-  | (`Lid (_loc,_) : Ast.exp)|(`Int (_loc,_) : Ast.exp)
-    |(`Str (_loc,_) : Ast.exp)|(`Chr (_loc,_) : Ast.exp)
-    |(`Fun (_loc,_) : Ast.exp)|(`Uid (_loc,_) : Ast.exp) -> true
-  | (`App (_loc,`Lid (_,"raise"),e) : Ast.exp) ->
-      (match e with
-       | (`Dot (_loc,`Uid (_,m),`Uid (_,"Failure")) : Ast.exp) when
-           m = (gm ()) -> false
-       | _ -> true)
+  | #literal|#vid' -> true
+  | (`Fun (_loc,_) : Ast.exp) -> true
+  | (`App (_loc,`Lid (_,"raise"),`Dot (_,`Uid (_,m),`Uid (_,"Failure"))) :
+      Ast.exp) -> m <> (gm ())
+  | (`App (_loc,`Lid (_,"raise"),_) : Ast.exp) -> true
   | (`App (_loc,f,x) : Ast.exp) ->
       (is_constr_apply f) && ((handle_failure f) && (handle_failure x))
   | _ -> false
 
-let rec subst v e =
-  let _loc = loc_of e in
-  match e with
-  | (`Lid (_loc,x) : Ast.exp) ->
-      let x = if x = v then strm_n else x in (`Lid (_loc, x) : Ast.exp )
-  | (`Uid (_loc,_) : Ast.exp)|(`Int (_loc,_) : Ast.exp)
-    |(`Chr (_loc,_) : Ast.exp)|(`Str (_loc,_) : Ast.exp)
-    |(`Field (_loc,_,_) : Ast.exp) -> e
-  | (`LetIn (_loc,rf,bi,e) : Ast.exp) ->
-      (`LetIn (_loc, rf, (subst_binding v bi), (subst v e)) : Ast.exp )
-  | (`App (_loc,e1,e2) : Ast.exp) ->
-      (`App (_loc, (subst v e1), (subst v e2)) : Ast.exp )
-  | (`Par (_loc,e) : Ast.exp) -> (`Par (_loc, (subst v e)) : Ast.exp )
-  | (`Com (_loc,e1,e2) : Ast.exp) ->
-      (`Com (_loc, (subst v e1), (subst v e2)) : Ast.exp )
-  | _ -> raise Not_found
-and subst_binding v =
-  function
-  | (`And (_loc,b1,b2) : Ast.binding) ->
-      (`And (_loc, (subst_binding v b1), (subst_binding v b2)) : Ast.binding )
-  | (`Bind (_loc,`Lid (_,v'),e) : Ast.binding) ->
-      (`Bind (_loc, (`Lid (_loc, v')), (if v = v' then e else subst v e)) : 
-      Ast.binding )
-  | _ -> raise Not_found
-
-let stream_pattern_component skont ckont =
-  function
-  | SpTrm (_loc,p,None ) ->
-      (`Match
-         (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
-           (`Bar
-              (_loc,
-                (`Case
-                   (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
-                     (`Seq
-                        (_loc,
-                          (`Sem
-                             (_loc,
-                               (`App
-                                  (_loc, (junk_fun _loc),
-                                    (`Lid (_loc, strm_n)))), skont)))))),
-                (`Case (_loc, (`Any _loc), ckont))))) : Ast.exp )
-  | SpTrm (_loc,p,Some w) ->
-      (`Match
-         (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
-           (`Bar
-              (_loc,
-                (`CaseWhen
-                   (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)), w,
-                     (`Seq
-                        (_loc,
-                          (`Sem
-                             (_loc,
-                               (`App
-                                  (_loc, (junk_fun _loc),
-                                    (`Lid (_loc, strm_n)))), skont)))))),
-                (`Case (_loc, (`Any _loc), ckont))))) : Ast.exp )
-  | SpNtr (_loc,p,e) ->
-      let e =
-        match e with
-        | (`Fun
-             (_loc,`Case
-                     (_,`Constraint
-                          (_,`Lid (_,v),`App
-                                          (_,`Dot (_,`Uid (_,m),`Lid (_,"t")),
-                                           `Any _)),e))
-            : Ast.exp) when (v = strm_n) && (m = (gm ())) -> e
-        | _ -> (`App (_loc, e, (`Lid (_loc, strm_n))) : Ast.exp ) in
-      if Exp.pattern_eq_expression p skont
-      then
-        (if
-           (function
-            | (`App
-                 (_loc,`Lid (_,"raise"),`Dot
-                                          (_,`Uid (_,m),`Uid (_,"Failure")))
-                : Ast.exp) when m = (gm ()) -> true
-            | _ -> false) ckont
-         then e
-         else
-           if handle_failure e
-           then e
-           else
-             (`Try
-                (_loc, e,
-                  (`Case
-                     (_loc,
-                       (`Dot
-                          (_loc, (`Uid (_loc, (gm ()))),
-                            (`Uid (_loc, "Failure")))), ckont))) : Ast.exp ))
-      else
-        if
-          ((function
-            | (`App
-                 (_loc,`Lid (_,"raise"),`Dot
-                                          (_,`Uid (_,m),`Uid (_,"Failure")))
-                : Ast.exp) when m = (gm ()) -> true
-            | _ -> false)) ckont
-        then
-          (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, e)), skont) : 
-          Ast.exp )
-        else
-          if
-            Exp.pattern_eq_expression
-              (`App (_loc, (`Uid (_loc, "Some")), p) : Ast.pat ) skont
-          then
+let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
+  (match (x : spat_comp ) with
+   | SpWhen (_loc,p,None ) ->
+       (`Match
+          (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
+            (`Bar
+               (_loc,
+                 (`Case
+                    (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
+                      (`Seq
+                         (_loc,
+                           (`Sem
+                              (_loc,
+                                (`App
+                                   (_loc, (junk_fun _loc),
+                                     (`Lid (_loc, strm_n)))), skont)))))),
+                 (`Case (_loc, (`Any _loc), ckont))))) : Ast.exp )
+   | SpWhen (_loc,p,Some w) ->
+       (`Match
+          (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
+            (`Bar
+               (_loc,
+                 (`CaseWhen
+                    (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)), w,
+                      (`Seq
+                         (_loc,
+                           (`Sem
+                              (_loc,
+                                (`App
+                                   (_loc, (junk_fun _loc),
+                                     (`Lid (_loc, strm_n)))), skont)))))),
+                 (`Case (_loc, (`Any _loc), ckont))))) : Ast.exp )
+   | SpMatch (_loc,p,e) ->
+       let rec pat_eq_exp p e =
+         match (p, e) with
+         | ((`Lid (_loc,a) : Ast.pat),(`Lid (_,b) : Ast.exp))
+           |((`Uid (_loc,a) : Ast.pat),(`Uid (_,b) : Ast.exp)) -> a = b
+         | ((`App (_loc,p1,p2) : Ast.pat),(`App (_,e1,e2) : Ast.exp)) ->
+             (pat_eq_exp p1 e1) && (pat_eq_exp p2 e2)
+         | _ -> false in
+       let e =
+         match e with
+         | (`Fun
+              (_loc,`Case
+                      (_,`Constraint
+                           (_,`Lid (_,v),`App
+                                           (_,`Dot
+                                                (_,`Uid (_,m),`Lid (_,"t")),
+                                            `Any _)),e))
+             : Ast.exp) when (v = strm_n) && (m = (gm ())) -> e
+         | _ -> (`App (_loc, e, (`Lid (_loc, strm_n))) : Ast.exp ) in
+       if pat_eq_exp p skont
+       then
+         (if
+            ((function
+              | (`App
+                   (_loc,`Lid (_,"raise"),`Dot
+                                            (_,`Uid (_,m),`Uid (_,"Failure")))
+                  : Ast.exp) when m = (gm ()) -> true
+              | _ -> false) ckont) || (handle_failure e)
+          then e
+          else
             (`Try
-               (_loc, (`App (_loc, (`Uid (_loc, "Some")), e)),
+               (_loc, e,
                  (`Case
                     (_loc,
                       (`Dot
                          (_loc, (`Uid (_loc, (gm ()))),
-                           (`Uid (_loc, "Failure")))), ckont))) : Ast.exp )
-          else
-            if
-              ((function
-                | (`App (_loc,`Lid (_,"raise"),_) : Ast.exp) -> true
-                | _ -> false)) ckont
-            then
-              (let tst =
-                 if handle_failure e
-                 then e
-                 else
-                   (`Try
-                      (_loc, e,
-                        (`Case
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Uid (_loc, "Failure")))), ckont))) : 
-                   Ast.exp ) in
-               (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, tst)), skont) : 
-                 Ast.exp ))
-            else
-              (`Match
-                 (_loc,
-                   (`Try
-                      (_loc, (`App (_loc, (`Uid (_loc, "Some")), e)),
-                        (`Case
-                           (_loc,
-                             (`Dot
-                                (_loc, (`Uid (_loc, (gm ()))),
-                                  (`Uid (_loc, "Failure")))),
-                             (`Uid (_loc, "None")))))),
-                   (`Bar
-                      (_loc,
-                        (`Case
-                           (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
-                             skont)), (`Case (_loc, (`Any _loc), ckont))))) : 
-              Ast.exp )
-  | SpStr (_loc,p) ->
-      (try
-         match p with
-         | (`Lid (_loc,v) : Ast.pat) -> subst v skont
+                           (`Uid (_loc, "Failure")))), ckont))) : Ast.exp ))
+       else
+         if
+           ((function
+             | (`App
+                  (_loc,`Lid (_,"raise"),`Dot
+                                           (_,`Uid (_,m),`Uid (_,"Failure")))
+                 : Ast.exp) when m = (gm ()) -> true
+             | _ -> false)) ckont
+         then
+           (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, e)), skont) : 
+           Ast.exp )
+         else
+           if
+             pat_eq_exp (`App (_loc, (`Uid (_loc, "Some")), p) : Ast.pat )
+               skont
+           then
+             (`Try
+                (_loc, (`App (_loc, (`Uid (_loc, "Some")), e)),
+                  (`Case
+                     (_loc,
+                       (`Dot
+                          (_loc, (`Uid (_loc, (gm ()))),
+                            (`Uid (_loc, "Failure")))), ckont))) : Ast.exp )
+           else
+             if
+               ((function
+                 | (`App (_loc,`Lid (_,"raise"),_) : Ast.exp) -> true
+                 | _ -> false)) ckont
+             then
+               (let tst =
+                  if handle_failure e
+                  then e
+                  else
+                    (`Try
+                       (_loc, e,
+                         (`Case
+                            (_loc,
+                              (`Dot
+                                 (_loc, (`Uid (_loc, (gm ()))),
+                                   (`Uid (_loc, "Failure")))), ckont))) : 
+                    Ast.exp ) in
+                (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, tst)), skont) : 
+                  Ast.exp ))
+             else
+               (`Match
+                  (_loc,
+                    (`Try
+                       (_loc, (`App (_loc, (`Uid (_loc, "Some")), e)),
+                         (`Case
+                            (_loc,
+                              (`Dot
+                                 (_loc, (`Uid (_loc, (gm ()))),
+                                   (`Uid (_loc, "Failure")))),
+                              (`Uid (_loc, "None")))))),
+                    (`Bar
+                       (_loc,
+                         (`Case
+                            (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
+                              skont)), (`Case (_loc, (`Any _loc), ckont))))) : 
+               Ast.exp )
+   | SpStr (_loc,p) ->
+       let rec subst (v : string) (e : exp) =
+         let _loc = loc_of e in
+         match e with
+         | (`Lid (_loc,x) : Ast.exp) ->
+             let x = if x = v then strm_n else x in
+             (`Lid (_loc, x) : Ast.exp )
+         | (`Uid (_loc,_) : Ast.exp)|(`Int (_loc,_) : Ast.exp)
+           |(`Chr (_loc,_) : Ast.exp)|(`Str (_loc,_) : Ast.exp)
+           |(`Field (_loc,_,_) : Ast.exp) -> e
+         | (`LetIn (_loc,rf,bi,e) : Ast.exp) ->
+             (`LetIn (_loc, rf, (subst_binding v bi), (subst v e)) : 
+             Ast.exp )
+         | (`App (_loc,e1,e2) : Ast.exp) ->
+             (`App (_loc, (subst v e1), (subst v e2)) : Ast.exp )
+         | (`Par (_loc,e) : Ast.exp) -> (`Par (_loc, (subst v e)) : Ast.exp )
+         | (`Com (_loc,e1,e2) : Ast.exp) ->
+             (`Com (_loc, (subst v e1), (subst v e2)) : Ast.exp )
          | _ -> raise Not_found
-       with
-       | Not_found  ->
-           (`LetIn
-              (_loc, (`ReNil _loc), (`Bind (_loc, p, (`Lid (_loc, strm_n)))),
-                skont) : Ast.exp ))
+       and subst_binding v =
+         function
+         | (`And (_loc,b1,b2) : Ast.binding) ->
+             (`And (_loc, (subst_binding v b1), (subst_binding v b2)) : 
+             Ast.binding )
+         | (`Bind (_loc,`Lid (_,v'),e) : Ast.binding) ->
+             (`Bind
+                (_loc, (`Lid (_loc, v')), (if v = v' then e else subst v e)) : 
+             Ast.binding )
+         | _ -> raise Not_found in
+       (try
+          match p with
+          | (`Lid (_loc,v) : Ast.pat) -> subst v skont
+          | _ -> raise Not_found
+        with
+        | Not_found  ->
+            (`LetIn
+               (_loc, (`ReNil _loc),
+                 (`Bind (_loc, p, (`Lid (_loc, strm_n)))), skont) : Ast.exp )) : 
+  exp )
 
-let rec stream_pattern _loc epo e ekont =
-  function
+let rec stream_pattern _loc (x,epo,e) (ekont : exp option -> exp) =
+  match x with
   | [] ->
       (match epo with
        | Some ep ->
@@ -247,7 +253,7 @@ let rec stream_pattern _loc epo e ekont =
        | _ -> e)
   | (spc,err)::spcl ->
       let skont =
-        let ekont err =
+        let ekont0 err =
           let str =
             match err with
             | Some estr -> estr
@@ -259,10 +265,17 @@ let rec stream_pattern _loc epo e ekont =
                     (`Dot
                        (_loc, (`Uid (_loc, (gm ()))), (`Uid (_loc, "Error")))),
                     str))) : Ast.exp ) in
-        stream_pattern _loc epo e ekont spcl in
+        stream_pattern _loc (spcl, epo, e) ekont0 in
       let ckont = ekont err in stream_pattern_component skont ckont spc
 
-let stream_patterns_term _loc ekont tspel =
+let rec group_terms (xs : stream_cases) =
+  match xs with
+  | ((SpWhen (_loc,p,w),None )::spcl,epo,e)::spel ->
+      let (tspel,spel) = group_terms spel in
+      (((p, w, _loc, spcl, epo, e) :: tspel), spel)
+  | spel -> ([], spel)
+
+let stream_patterns_term _loc (ekont : unit -> exp) tspel =
   (let pel =
      List.fold_right
        (fun (p,w,_loc,spcl,epo,e)  acc  ->
@@ -280,7 +293,7 @@ let stream_patterns_term _loc ekont tspel =
                         (`Dot
                            (_loc, (`Uid (_loc, (gm ()))),
                              (`Uid (_loc, "Error")))), str))) : Ast.exp ) in
-            let skont = stream_pattern _loc epo e ekont spcl in
+            let skont = stream_pattern _loc (spcl, epo, e) ekont in
             (`Seq
                (_loc,
                  (`Sem
@@ -295,13 +308,6 @@ let stream_patterns_term _loc ekont tspel =
    (`Match (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))), pel) : 
      Ast.exp ) : exp )
 
-let rec group_terms (xs : stream_cases) =
-  match xs with
-  | ((SpTrm (_loc,p,w),None )::spcl,epo,e)::spel ->
-      let (tspel,spel) = group_terms spel in
-      (((p, w, _loc, spcl, epo, e) :: tspel), spel)
-  | spel -> ([], spel)
-
 let rec parser_cases _loc (x : stream_cases) =
   match x with
   | [] ->
@@ -311,8 +317,8 @@ let rec parser_cases _loc (x : stream_cases) =
       Ast.exp )
   | spel ->
       (match group_terms spel with
-       | ([],(spcl,epo,e)::spel) ->
-           stream_pattern _loc epo e (fun _  -> parser_cases _loc spel) spcl
+       | ([],x::spel) ->
+           stream_pattern _loc x (fun _  -> parser_cases _loc spel)
        | (tspel,spel) ->
            stream_patterns_term _loc (fun _  -> parser_cases _loc spel) tspel)
 

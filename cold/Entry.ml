@@ -23,8 +23,7 @@ let mk_dynamic g n =
     egram = g;
     ename = n;
     estart = (empty_entry n);
-    econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+    econtinue = (fun _  _  _  _  -> raise XStream.Failure);
     edesc = (Dlevels []);
     freezed = false
   }
@@ -51,8 +50,7 @@ let of_parser g n (p : stream -> 'a) =
     egram = g;
     ename = n;
     estart = (fun _  -> f);
-    econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+    econtinue = (fun _  _  _  _  -> raise XStream.Failure);
     edesc = (Dparser f);
     freezed = true
   }
@@ -60,14 +58,12 @@ let of_parser g n (p : stream -> 'a) =
 let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in
   e.estart <- (fun _  -> f);
-  e.econtinue <-
-    (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
   e.edesc <- Dparser f
 
 let clear e =
-  e.estart <- (fun _  (__strm : _ XStream.t)  -> raise XStream.Failure);
-  e.econtinue <-
-    (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+  e.estart <- (fun _  _  -> raise XStream.Failure);
+  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
   e.edesc <- Dlevels []
 
 let obj x = x

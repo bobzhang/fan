@@ -1,7 +1,7 @@
 
 
 
-* 01 lexer
+* DONE 01 lexer
   How to handle strings in quotation?
 
   Shall we treat them verbatim or impose some restrictions?
@@ -59,10 +59,29 @@
      #+END_SRC
 
 
-* 02 illegal begin (ghost locatio horrible error message)
+* DONE 02 illegal begin (ghost locatio horrible error message)
 
   When the parser raise "illegal begin " excpetion, the location is
   ghost a horrible error message.
 
   FIX
   
+
+
+
+
+* 03 paser merge
+
+  #+BEGIN_SRC caml
+      (*
+      FIXME:
+      the merge does not work well with
+
+      prefix:
+      |-OPT [ "!"; `Uid _]---.
+      `-OPT [ "!"; `Uid _]---stream_exp_comp_list---
+      It's better to bring refine STree in the future,
+      get rid of Action.t in most cases
+     *)
+  
+  #+END_SRC

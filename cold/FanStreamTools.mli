@@ -1,8 +1,8 @@
 open Ast
 
 type spat_comp =
-  | SpTrm of FanLoc.t * pat * exp option
-  | SpNtr of FanLoc.t * pat * exp
+  | SpWhen of FanLoc.t * pat * exp option
+  | SpMatch of FanLoc.t * pat * exp
   | SpStr of FanLoc.t * pat
 type sexp_comp =
   | SeTrm of FanLoc.t * exp
@@ -24,22 +24,15 @@ val empty : loc -> exp
 
 val handle_failure : exp -> bool
 val is_constr_apply : exp -> bool
-val subst : string -> exp -> exp
-val subst_binding : string -> binding -> binding
+
 val stream_pattern_component : exp -> exp -> spat_comp -> exp
 
-val stream_pattern :
-  loc ->
-  pat option ->
-  exp ->
-  (exp option -> exp) ->
-  stream_pats -> exp
+val stream_pattern : loc -> stream_case -> (exp option -> exp) -> exp
 
 val stream_patterns_term :
   loc ->
   (unit -> exp) ->
-  (pat * exp option * loc * stream_pats * pat option * exp)
-  list -> exp
+  (pat * exp option * loc * stream_pats * pat option * exp) list -> exp
 
 val parser_cases :  loc ->  stream_cases ->  exp
 

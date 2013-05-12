@@ -12,14 +12,6 @@ open FanUtil
 
 open EP
 
-let rec pattern_eq_expression p e =
-  match (p, e) with
-  | ((`Lid (_loc,a) : Ast.pat),(`Lid (_,b) : Ast.exp))
-    |((`Uid (_loc,a) : Ast.pat),(`Uid (_,b) : Ast.exp)) -> a = b
-  | ((`App (_loc,p1,p2) : Ast.pat),(`App (_,e1,e2) : Ast.exp)) ->
-      (pattern_eq_expression p1 e1) && (pattern_eq_expression p2 e2)
-  | _ -> false
-
 let map loc (p : pat) (e : exp) (l : exp) =
   match (p, e) with
   | ((`Lid (_loc,x) : Ast.pat),(`Lid (_,y) : Ast.exp)) when x = y -> l

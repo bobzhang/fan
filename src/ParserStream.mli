@@ -10,6 +10,9 @@ val stream_pat_comp : spat_comp Gram.t
 val stream_pat_comp_err : stream_pat Gram.t
 val stream_pat_comp_err_list : stream_pats Gram.t
 
+
+
+
 (* build stream expression *)    
 val stream_exp : exp Gram.t    
 val parser_case : stream_case Gram.t

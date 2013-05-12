@@ -15,14 +15,6 @@ open EP
 
 
 
-(* Utilities for [Stream] optimizations  *)
-let rec pattern_eq_expression p e =
-  match (p, e) with
-  | ({:pat| $lid:a |}, {@_| $lid:b |}) 
-  | ({:pat| $uid:a |}, {@_| $uid:b |}) -> a = b
-  | ({:pat| $p1 $p2 |}, {@_| $e1 $e2 |}) ->
-      pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
-  | _ -> false 
 
         
 (* +-----------------------------------------------------------------+

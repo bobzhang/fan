@@ -19,7 +19,7 @@ let mk_dynamic g n ={
   egram = g;
   ename = n;
   estart = empty_entry n;
-  econtinue _ _ _ = parser [];
+  econtinue _ _ _ = (fun _ -> raise XStream.Failure);
   edesc = Dlevels [] ;
   freezed = false;     
 }
@@ -38,7 +38,7 @@ let action_parse entry (ts: stream) : Action.t =
   end
   with
   | XStream.Failure ->
-        FanLoc.raise (get_cur_loc ts)(* (get_prev_loc ts) *)
+        FanLoc.raise (get_cur_loc ts)
           (XStream.Error ("illegal begin of " ^ entry.ename))
   | FanLoc.Exc_located (_, _) as exc -> begin
       eprintf "%s@." (Printexc.to_string exc);
@@ -55,7 +55,7 @@ let of_parser g n (p : stream -> 'a)   =
   egram = g;
   ename = n;
   estart _ = f;
-  econtinue _ _ _ = parser [];
+  econtinue _ _ _ = fun _ -> raise XStream.Failure;
   edesc = Dparser f;
   freezed = true (* false *);    
 }
@@ -63,13 +63,13 @@ let of_parser g n (p : stream -> 'a)   =
 let setup_parser e (p : stream -> 'a) =
   let f ts = Action.mk (p ts) in begin
     e.estart <- fun _ -> f;
-    e.econtinue <- fun _ _ _ -> parser [];
+    e.econtinue <- fun _ _ _ -> fun _ -> raise XStream.Failure;
     e.edesc <- Dparser f
   end
 
 let clear e = begin 
-  e.estart <- fun _ -> parser [];
-  e.econtinue <- fun _ _ _ -> parser [];
+  e.estart <- fun _ -> fun _ -> raise XStream.Failure;
+  e.econtinue <- fun _ _ _ -> fun _-> raise XStream.Failure;
   e.edesc <- Dlevels []
 end
 
