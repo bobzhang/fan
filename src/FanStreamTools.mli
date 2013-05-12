@@ -9,8 +9,8 @@ val strm_n : string
 val peek_fun : Ast.loc -> Ast.exp
 val junk_fun : Ast.loc -> Ast.exp
 val empty : Ast.loc -> Ast.exp
-val is_raise : Ast.exp -> bool
-val is_raise_failure : Ast.exp -> bool
+
+
 val handle_failure : Ast.exp -> bool
 val is_constr_apply : Ast.exp -> bool
 val subst : string -> Ast.exp -> Ast.exp

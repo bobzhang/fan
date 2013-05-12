@@ -76,7 +76,5 @@ let revise () =
 let _ =
   Hashtbl.replace Toploop.directive_table "revise"
     (Toploop.Directive_none (fun ()  -> revise ()));
-  Hashtbl.replace Toploop.directive_table "pwd"
-    (Toploop.Directive_none (fun ()  -> prerr_endline (Sys.getcwd ())));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun ()  -> normal ()))

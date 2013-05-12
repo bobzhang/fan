@@ -10,7 +10,7 @@ open AstLoc
 *)
 
 
-#default_quotation "exp'";;
+#default_quotation "exp";;
 type spat_comp =
   | SpTrm of FanLoc.t * pat * exp option 
   | SpNtr of FanLoc.t * pat * exp
@@ -32,33 +32,34 @@ let peek_fun _loc = {| $(uid:gm()).peek |}
 let junk_fun _loc = {| $(uid:gm()).junk |}
 
 
-let empty _loc =
-  {| $(uid:gm()).sempty |} 
-let is_raise  = function
-  | {| raise $_ |} -> true
-  | _ -> false
-        
-let is_raise_failure  = function
-  | {| raise $uid:m.Failure |} when m = gm() -> true
-  | _ -> false
-  
+let empty _loc =  {| $(uid:gm()).sempty |}
+
+(* Predicate whether the expression is a constructor application *)    
+let rec  is_constr_apply a =
+  match a with 
+  | {| $uid:_ |} -> true
+  | {| $x $_ |} -> is_constr_apply x
+  | {| $lid:_ |} -> false        
+  | _ -> false 
+
+
+(**)  
 let rec handle_failure e =
   match e with
-  | {| try $_ with | $(uid:m).Failure -> $e |}  (* {:case'|$(uid:m).Failure -> $e|} *)
-    when m = gm()
+  | {| try $_ with | $(uid:m).Failure -> $e |} when m = gm()
     ->  handle_failure e
   | {| match $me with | $a  |} ->
       let rec case_handle_failure = function
-          | {:case'| $a1 | $a2 |} ->
+          | {:case| $a1 | $a2 |} ->
             case_handle_failure a1 && case_handle_failure a2
-          | {:case'| $pat:_ -> $e |} -> handle_failure e
-          | _ -> false 
-      in handle_failure me && case_handle_failure a
+          | {:case| $pat:_ -> $e |} -> handle_failure e
+          | _ -> false in
+      handle_failure me && case_handle_failure a
   | {| let $bi in $e |} ->
       let rec binding_handle_failure = function
-        | {:binding'| $b1 and $b2 |} ->
+        | {:binding| $b1 and $b2 |} ->
             binding_handle_failure b1 && binding_handle_failure b2
-        | {:binding'| $_ = $e |} -> handle_failure e
+        | {:binding| $_ = $e |} -> handle_failure e
         | _ -> false  in
       binding_handle_failure bi && handle_failure e
   | {| $lid:_ |} | {| $int:_ |} | {| $str:_ |} |
@@ -71,11 +72,6 @@ let rec handle_failure e =
       end
   | {| $f $x |} ->
       is_constr_apply f && handle_failure f && handle_failure x
-  | _ -> false 
-and is_constr_apply = function
-  | {| $uid:_ |} -> true
-  | {| $lid:_ |} -> false
-  | {| $x $_ |} -> is_constr_apply x
   | _ -> false 
 
 let rec subst v e =
@@ -95,9 +91,9 @@ let rec subst v e =
   | _ -> raise Not_found 
 and subst_binding v =  function
   | {:binding@_loc| $b1 and $b2 |} ->
-      {:binding'| $(subst_binding v b1) and $(subst_binding v b2) |}
+      {:binding| $(subst_binding v b1) and $(subst_binding v b2) |}
   | {:binding@_loc| $lid:v' = $e |} ->
-      {:binding'| $lid:v' = $(if v = v' then e else subst v e) |}
+      {:binding| $lid:v' = $(if v = v' then e else subst v e) |}
   | _ -> raise Not_found 
 
 let stream_pattern_component skont ckont = function
@@ -120,14 +116,14 @@ let stream_pattern_component skont ckont = function
         | _ -> {| $e $lid:strm_n |}  in
       (* Simplify it *)
       if Exp.pattern_eq_expression p skont then
-        if is_raise_failure ckont then e
+        if {:p|{|raise $uid:m.Failure|} when m = gm() |}  ckont then e
         else if handle_failure e then e
         else {| try $e with | $(uid:gm()).Failure -> $ckont  |}
-      else if is_raise_failure ckont then
+      else if {:p|{|raise $uid:m.Failure|} when m = gm() |} ckont then
         {| let $p = $e in $skont |}
-      else if Exp.pattern_eq_expression {:pat'| Some $p |} skont then
+      else if Exp.pattern_eq_expression {:pat| Some $p |} skont then
         {| try Some $e with | $(uid:gm()).Failure -> $ckont  |}
-      else if is_raise ckont then
+      else if {:p| {|raise $_|}|}  ckont then
         let tst =
           if handle_failure e then e
           else {| try $e with | $(uid:gm()).Failure -> $ckont  |}  in
@@ -140,7 +136,7 @@ let stream_pattern_component skont ckont = function
   | SpStr (_loc, p) ->
       try
         match p with
-        | {:pat'| $lid:v |} -> subst v skont
+        | {:pat| $lid:v |} -> subst v skont
         | _ -> raise Not_found 
       with
       | Not_found -> {| let $p = $lid:strm_n in $skont |} 
@@ -165,7 +161,7 @@ let stream_patterns_term _loc ekont tspel : exp =
   let pel =
     List.fold_right
       (fun (p, w, _loc, spcl, epo, e) acc ->
-        let p = {:pat'| Some $p |} in
+        let p = {:pat| Some $p |} in
         let e =
           let ekont err =
             let str =
@@ -176,9 +172,9 @@ let stream_patterns_term _loc ekont tspel : exp =
           let skont = stream_pattern _loc epo e ekont spcl in
           {| begin  $(junk_fun _loc) $lid:strm_n; $skont  end |} in
           match w with
-          | Some w -> {:case'| $pat:p when $w -> $e  | $acc |}
-          | None -> {:case'| $pat:p -> $e  | $acc |} )
-      tspel {:case'| _ -> $(ekont () )|} in
+          | Some w -> {:case| $pat:p when $w -> $e  | $acc |}
+          | None -> {:case| $pat:p -> $e  | $acc |} )
+      tspel {:case| _ -> $(ekont () )|} in
   {| match $(peek_fun _loc) $lid:strm_n with | $pel  |} 
 
 let rec group_terms = function
@@ -205,7 +201,7 @@ let cparser _loc bpo pc =
     match bpo with
     | Some bp -> {| let $bp = $(uid:gm()).count $lid:strm_n in $e |}
     | None -> e  in
-  let p = {:pat'| ($lid:strm_n : _ $(uid:gm()).t ) |} in
+  let p = {:pat| ($lid:strm_n : _ $(uid:gm()).t ) |} in
   {| fun $p -> $e |} 
 
 let cparser_match _loc me bpo pc =

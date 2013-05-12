@@ -202,6 +202,17 @@ let _ =
          (fun s  ->
             AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
       " Set the default language")
+open Syntax
+{:create|Gram p|};;
+
+
+
+{:extend|p:
+  [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true |_ -> false |}
+  |pat{p} -> {:exp'| function | $pat:p -> true | _ -> false |} ]
+|};;
+
+of_exp ~name:(d,"p") ~entry:p;;
 
 let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
 

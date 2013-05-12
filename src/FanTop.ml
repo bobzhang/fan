@@ -8,8 +8,8 @@ let wrap parse_fun lb =
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
     let token_stream = Gram.filter  not_filtered_token_stream in
     match token_stream with parser (* FIXME *)
-  [ [< (`EOI, _) >] -> raise End_of_file
-  | [< >] -> parse_fun token_stream ]
+    [ [< (`EOI, _) >] -> raise End_of_file
+    | [< >] -> parse_fun token_stream ]
   with
   | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
@@ -86,8 +86,6 @@ begin
   Hashtbl.replace Toploop.directive_table "revise"
     (Toploop.Directive_none (fun () -> revise ()));
 
-  Hashtbl.replace Toploop.directive_table "pwd"
-    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun () -> normal ()))
 end;;

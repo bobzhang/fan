@@ -202,6 +202,42 @@ let _ =
             AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
       " Set the default language")
 
+open Syntax
+
+let p = Gram.mk "p"
+
+let _ =
+  Gram.extend_single (p : 'p Gram.t )
+    (None,
+      (None, None,
+        [([`Snterm (Gram.obj (pat : 'pat Gram.t ));
+          `Skeyword "when";
+          `Snterm (Gram.obj (exp : 'exp Gram.t ))],
+           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     Ast.exp ) : 'p ))\n",
+             (Gram.mk_action
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->
+                   ((`Fun
+                       (_loc,
+                         (`Bar
+                            (_loc,
+                              (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
+                              (`Case
+                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                   Ast.exp ) : 'p )))));
+        ([`Snterm (Gram.obj (pat : 'pat Gram.t ))],
+          ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FanLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
+            (Gram.mk_action
+               (fun (p : 'pat)  (_loc : FanLoc.t)  ->
+                  (`Fun
+                     (_loc,
+                       (`Bar
+                          (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
+                            (`Case
+                               (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                  'p )))))]))
+
+let _ = of_exp ~name:(d, "p") ~entry:p
+
 let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
 
 open ParserRevise

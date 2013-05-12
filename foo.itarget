@@ -5,6 +5,6 @@
 # src/FanLexUtil.cmo
 src/FanDriver.byte
 # src/Grammar.cmo
-src/Ulexing.cma
+# src/Ulexing.cma
 src/FanTop.cma
 
