@@ -57,3 +57,12 @@
            | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
                   {store_parse quotation c }
      #+END_SRC
+
+
+* 02 illegal begin (ghost locatio horrible error message)
+
+  When the parser raise "illegal begin " excpetion, the location is
+  ghost a horrible error message.
+
+  FIX
+  
