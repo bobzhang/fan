@@ -16,9 +16,6 @@ type spat_comp =
   | SpNtr of FanLoc.t * pat * exp
   | SpStr of FanLoc.t * pat 
 
-type sexp_comp =
-  | SeTrm of FanLoc.t * exp
-  | SeNtr of FanLoc.t * exp 
 
 (* [exp option] is for the error message *)
 type stream_pat = (spat_comp * exp option)
@@ -231,16 +228,28 @@ let cparser_match _loc me bpo pc =
 
 (* streams *)
 
-let rec not_computing = function
-  | {| $lid:_ |} | {| $uid:_ |} | {| $int:_ |} |
-    {| $flo:_ |} | {| $chr:_ |} | {| $str:_ |} -> true
-  | {| $x $y |} -> is_cons_apply_not_computing x && not_computing y
-  | _ -> false 
-and is_cons_apply_not_computing = function
-  | {| $uid:_ |} -> true
-  | {| $lid:_ |} -> false
-  | {| $x $y |} -> is_cons_apply_not_computing x && not_computing y
-  | _ -> false 
+
+
+
+type sexp_comp =
+  | SeTrm of loc * exp
+  | SeNtr of loc * exp 
+
+(** Approximation algorithm to predicate whether x is a computing expression or not
+ *)        
+let  not_computing x =
+  let rec aux  x =
+    match x with
+    | #literal -> true
+    | #vid' -> true
+    | {| $x $y |} -> is_cons_apply_not_computing x && aux  y
+    | _ -> false 
+  and is_cons_apply_not_computing = function
+    | {| $uid:_ |} -> true
+    | {| $lid:_ |} -> false
+    | {| $x $y |} -> is_cons_apply_not_computing x && aux y
+    | _ -> false  in
+  aux x 
 
 let slazy _loc e =
   match e with
@@ -250,10 +259,9 @@ let slazy _loc e =
       | _ -> {| fun _ -> $e |} )
   | _ -> {| fun _ -> $e |} 
 
-
+(* FIXME horrible error message *)
 let rec cstream gloc =  function
-  | [] -> let _loc = gloc in (* {| [< >] |}  FIXME horrible error message *)
-      (* {| {:stream||}|} *) (* FIXME return XStream.empty *)
+  | [] -> let _loc = gloc in (* {| [< >] |} *)
       {| $(uid:gm()).sempty |}
   | [SeTrm (_loc, e)] ->
       if not_computing e

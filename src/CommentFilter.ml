@@ -19,8 +19,7 @@ let filter (_, q) =
     | [< x; 'xs >] ->
         (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
         {:stream|x;'self xs|}
-        (* [< x; 'self xs >] *)
-    | [< >] -> {:stream||}(* [< >] *) ] in self
+    | [< >] -> {:stream||} ] in self
 
 
 let take_list (_, q) =

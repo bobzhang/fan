@@ -53,18 +53,6 @@ let apply () =
     |  ->  FanStreamTools.empty _loc]
 
     
-     (* exp : Level "simple" *)
-     (* [ stream_begin{name};  ">]" -> *)
-     (*   (match name with *)
-     (*   | Some o -> *)
-     (*     Ref.protect FanStreamTools.grammar_module_name o (fun _ -> *)
-     (*       FanStreamTools.empty _loc ) *)
-     (*   | None -> FanStreamTools.empty _loc ) *)
-     (* | stream_begin{name}; stream_exp_comp_list{sel}; ">]" -> *)
-     (*     match name with *)
-     (*     | Some o ->    *)
-     (*       Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cstream _loc sel) *)
-     (*     | None -> cstream _loc sel ]  *)
      parser_ipat :
      [ a_lident{i} -> (i: alident:> pat)
      | "_" -> {:pat| _ |}  ]         

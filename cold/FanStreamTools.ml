@@ -7,10 +7,6 @@ type spat_comp =
   | SpNtr of FanLoc.t* pat* exp
   | SpStr of FanLoc.t* pat 
 
-type sexp_comp =  
-  | SeTrm of FanLoc.t* exp
-  | SeNtr of FanLoc.t* exp 
-
 type stream_pat = (spat_comp * exp option) 
 
 type stream_pats = stream_pat list 
@@ -376,21 +372,26 @@ let cparser_match _loc me bpo pc =
                                (`Lid (_loc, "t")))), (`Any _loc))))), me)),
            e) : Ast.exp )
 
-let rec not_computing =
-  function
-  | (`Lid (_loc,_) : Ast.exp)|(`Uid (_loc,_) : Ast.exp)
-    |(`Int (_loc,_) : Ast.exp)|(`Flo (_loc,_) : Ast.exp)
-    |(`Chr (_loc,_) : Ast.exp)|(`Str (_loc,_) : Ast.exp) -> true
-  | (`App (_loc,x,y) : Ast.exp) ->
-      (is_cons_apply_not_computing x) && (not_computing y)
-  | _ -> false
-and is_cons_apply_not_computing =
-  function
-  | (`Uid (_loc,_) : Ast.exp) -> true
-  | (`Lid (_loc,_) : Ast.exp) -> false
-  | (`App (_loc,x,y) : Ast.exp) ->
-      (is_cons_apply_not_computing x) && (not_computing y)
-  | _ -> false
+type sexp_comp =  
+  | SeTrm of loc* exp
+  | SeNtr of loc* exp 
+
+let not_computing x =
+  let rec aux x =
+    match x with
+    | #literal -> true
+    | #vid' -> true
+    | (`App (_loc,x,y) : Ast.exp) ->
+        (is_cons_apply_not_computing x) && (aux y)
+    | _ -> false
+  and is_cons_apply_not_computing =
+    function
+    | (`Uid (_loc,_) : Ast.exp) -> true
+    | (`Lid (_loc,_) : Ast.exp) -> false
+    | (`App (_loc,x,y) : Ast.exp) ->
+        (is_cons_apply_not_computing x) && (aux y)
+    | _ -> false in
+  aux x
 
 let slazy _loc e =
   match e with

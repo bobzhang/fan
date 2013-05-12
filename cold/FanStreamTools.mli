@@ -49,7 +49,7 @@ val cparser_match :  loc ->  exp ->  pat option -> stream_cases ->  exp
     
 val not_computing : exp -> bool
 
-val is_cons_apply_not_computing : exp -> bool
+
 
 val slazy : loc -> exp -> exp
 

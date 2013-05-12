@@ -37,7 +37,7 @@ let action_parse entry (ts : stream) =
      (let res = entry.estart 0 ts in p Format.err_formatter "@]@."; res)
    with
    | XStream.Failure  ->
-       FanLoc.raise (get_prev_loc ts)
+       FanLoc.raise (get_cur_loc ts)
          (XStream.Error ("illegal begin of " ^ entry.ename))
    | FanLoc.Exc_located (_,_) as exc ->
        (eprintf "%s@." (Printexc.to_string exc); raise exc)
