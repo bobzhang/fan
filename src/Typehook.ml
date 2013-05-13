@@ -185,7 +185,7 @@ let traversal () : traversal  = object (self:'self_type)
                     AstFilters.use_implem_filter name ;
                     acc
                   end
-                |(None,Some code) -> {| $acc; $code |}
+                |(None,Some code) -> {| $acc;; $code |}
                 |(_,None) -> acc 
           )  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );

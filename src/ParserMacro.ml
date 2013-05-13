@@ -14,7 +14,7 @@ let apply () = begin
 
     stru: First
     [ macro_def{x} -> execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
-        (fun a b -> {:stru| $a; $b |}) x ]
+        (fun a b -> {:stru| $a;; $b |}) x ]
     (* sigi: First *)
     (* [ macro_def_sig{x} -> *)
     (*   execute_macro ~exp ~pat {:sigi||} (fun a b -> {:sigi| $a; $b |}) x ] *)
@@ -52,12 +52,12 @@ let apply () = begin
         [ macro_def{d}; ";" ->
           execute_macro_if_active_branch ~exp ~pat _loc
             {:stru|let _ = ()|} (* FIXME *)
-            (fun a b -> {:stru| $a; $b |}) Then d
+            (fun a b -> {:stru| $a;; $b |}) Then d
         | stru{si}; ";" -> Str si ]{sml} -> sml ]
     smlist_else:
     [ L1 [ macro_def{d}; ";" ->
            execute_macro_if_active_branch ~exp ~pat  _loc
-           {:stru|let _ = ()|} (*FIXME*) (fun a b -> {:stru| $a; $b |}) Else d
+           {:stru|let _ = ()|} (*FIXME*) (fun a b -> {:stru| $a;; $b |}) Else d
          | stru{si}; ";" -> Str si ]{sml} -> sml ]
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)

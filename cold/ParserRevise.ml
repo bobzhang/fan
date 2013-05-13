@@ -4323,24 +4323,6 @@ let apply () =
                 | `Ant ((""|"stri"|"anti"|"list"),_) -> true
                 | _ -> false)),
                (`Normal, "`Ant ((\"\"|\"stri\"|\"anti\"|\"list\"),_)"));
-          `Skeyword ";";
-          `Sself],
-           ("Gram.mk_action\n  (fun (st : 'strus)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"stri\"|\"anti\"|\"list\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st) : 'strus )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n\")\n",
-             (Gram.mk_action
-                (fun (st : 'strus)  _  (__fan_0 : [> FanToken.t]) 
-                   (_loc : FanLoc.t)  ->
-                   match __fan_0 with
-                   | `Ant ((""|"stri"|"anti"|"list" as n),s) ->
-                       (`Sem (_loc, (mk_anti _loc n ~c:"stru" s), st) : 
-                       'strus )
-                   | _ ->
-                       failwith
-                         "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
-         ([`Stoken
-             (((function
-                | `Ant ((""|"stri"|"anti"|"list"),_) -> true
-                | _ -> false)),
-               (`Normal, "`Ant ((\"\"|\"stri\"|\"anti\"|\"list\"),_)"));
           `Skeyword ";;";
           `Sself],
            ("Gram.mk_action\n  (fun (st : 'strus)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"stri\"|\"anti\"|\"list\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st) : 'strus )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n\")\n",

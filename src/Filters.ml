@@ -63,5 +63,5 @@ AstFilters.register_stru_filter
      (fun x ->
         let _loc = FanLoc.ghost in 
         let y = (me#stru _loc x : ep :> exp)in 
-        {:stru| $x; let __fan_repr_of_file = $y |}
+        {:stru| $x ;; let __fan_repr_of_file = $y |}
         ) );;

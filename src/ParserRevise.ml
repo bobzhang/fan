@@ -938,13 +938,12 @@ let apply () = begin
        *)
       strus: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> mk_anti _loc n ~c:"stru" s
-      | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} ->
-          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      (* | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} -> *)
+      (*     `Sem (_loc, mk_anti _loc n ~c:"stru" s, st) *)
       | `Ant ((""|"stri"|"anti"|"list" as n),s); ";;"; S{st} ->
           `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
       | `Ant ((""|"stri"|"anti"|"list" as n),s);  S{st} ->
           `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
-      (* | stru{st};";"; S{xs} -> `Sem(_loc,st,xs) *)
       | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)
       | stru{st};";;" -> st
       | stru{st}; S{xs} -> `Sem(_loc,st,xs)
