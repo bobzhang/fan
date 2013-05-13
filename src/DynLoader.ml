@@ -24,7 +24,7 @@ end
 module Make (U:sig end) : S= struct 
   type t = string Queue.t 
 
-  let instance =  ref (fun () -> failwith "empty in dynloader");
+  let instance =  ref (fun () -> failwith "empty in dynloader")
   exception Error of string * string
 
   let include_dir x y = Queue.add y x

@@ -4371,11 +4371,6 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";"; `Sself],
-           ("Gram.mk_action\n  (fun (xs : 'strus)  _  (st : 'stru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'strus ))\n",
-             (Gram.mk_action
-                (fun (xs : 'strus)  _  (st : 'stru)  (_loc : FanLoc.t)  ->
-                   (`Sem (_loc, st, xs) : 'strus )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"; `Sself],
            ("Gram.mk_action\n  (fun (xs : 'strus)  _  (st : 'stru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'strus ))\n",
              (Gram.mk_action

@@ -93,7 +93,7 @@ let enable_ocaml_printer () = begin
         (fun oc ->
           let fmt = Format.formatter_of_out_channel oc in
           let () = AstPrint.structure fmt pt in 
-          pp_print_flush fmt (););
+          pp_print_flush fmt ();)
       let print_interf ?input_file:(_)  ?output_file ast =
         let pt =
           match ast with
@@ -111,7 +111,7 @@ end
 
 let enable_dump_ocaml_ast_printer () =
   let module Id : Sig.Id = struct
-    let name = "DumpOCamlAst";
+    let name = "DumpOCamlAst"
     let version = Sys.ocaml_version
   end in 
  let module P = struct 
@@ -123,7 +123,7 @@ let enable_dump_ocaml_ast_printer () =
     FanUtil.(with_open_out_file
                output_file
                (dump_pt
-                 FanConfig.ocaml_ast_intf_magic_number input_file pt));
+                 FanConfig.ocaml_ast_intf_magic_number input_file pt))
   let print_implem ?(input_file = "-") ?output_file ast =
     let pt =
       match ast with

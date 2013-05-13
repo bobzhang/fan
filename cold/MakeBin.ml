@@ -87,13 +87,13 @@ module Make(PreCast:PRECAST) =
     let output_file = ref None
     let parse_file ?directive_handler  name pa =
       let loc = FanLoc.mk name in
-      PreCast.Syntax.current_warning := print_warning;
-      (let ic = if name = "-" then stdin else open_in_bin name in
-       let cs = XStream.of_channel ic in
-       let clear () = if name = "-" then () else close_in ic in
-       let phr =
-         try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
-       clear (); phr)
+      let () = PreCast.Syntax.current_warning := print_warning in
+      let ic = if name = "-" then stdin else open_in_bin name in
+      let cs = XStream.of_channel ic in
+      let clear () = if name = "-" then () else close_in ic in
+      let phr =
+        try pa ?directive_handler loc cs with | x -> (clear (); raise x) in
+      let () = clear () in phr
     let rec sig_handler: sigi -> sigi option =
       function
       | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->

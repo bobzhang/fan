@@ -414,21 +414,21 @@ module Hashset = struct
       set
     end
   let add_list set vs =
-    List.iter (add set) vs;
+    List.iter (add set) vs
   let to_list set = fold (fun x y -> x::y) set []
   (* let empty = Hashtbl.create 30 ; *)
 end 
 
 let mk_set (type s) ~cmp =
-  let module M = struct type t = s; let compare = cmp end in
+  let module M = struct type t = s let compare = cmp end in
   (module Set.Make M :Set.S with type elt = s)
 
 let mk_map (type s) ~cmp=
-  let module M = struct type t = s; let compare = cmp end in
+  let module M = struct type t = s let compare = cmp end in
   (module Map.Make M : Map.S with type key = s)
   
 let mk_hashtbl (type s) ~eq ~hash =
-  let module M=struct type t = s; let equal = eq; let hash = hash end
+  let module M=struct type t = s let equal = eq let hash = hash end
   in  (module Hashtbl.Make M  :Hashtbl.S with type key = s)
   
 module Char = struct
@@ -541,14 +541,14 @@ end
 
     
 module String = struct
-  include String;
+  include String
   (* include BatString; *)
-  let init len f = begin 
-    let s = create len ;
-    for i = 0 to len - 1 do
-      unsafe_set s i (f i)
-    done;
-    s
+  let init len f = 
+    let s = create len in begin
+      for i = 0 to len - 1 do
+        unsafe_set s i (f i)
+      done;
+      s
   end
 
   let is_empty s = s = ""
@@ -756,7 +756,7 @@ module Ref = struct
         
   let save2 r1 r2 body =
       let o1 = !r1 and o2 = !r2 in
-      finally (fun () -> (r1:=o1; r2:=o2)) body ();
+      finally (fun () -> (r1:=o1; r2:=o2)) body ()
       
   let protects refs vs body =
     let olds = List.map (fun x-> !x ) refs in 
@@ -766,10 +766,9 @@ module Ref = struct
       List.iter2 (fun ref v -> ref:=v) refs olds;
       res   
     end
-      with e -> begin
-        List.iter2 (fun ref v -> ref:=v) refs olds;
-        raise e;
-      end;
+      with e -> 
+        (List.iter2 (fun ref v -> ref:=v) refs olds;
+        raise e)
 
   (* The state [itself] should be [persistent],
      otherwise it does not make sense to restore
@@ -1118,7 +1117,7 @@ module ErrorMonad = struct
     | Left v -> f v
     | Right x -> Right x
 
-  let bind = (>>=);
+  let bind = (>>=)
       
   let map f = function
     | Left v -> Left (f v)

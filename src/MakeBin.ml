@@ -128,18 +128,19 @@ module Make
      let output_file = ref None              
      let parse_file  ?directive_handler name pa = begin 
 
-      let loc = FanLoc.mk name ;
-          PreCast.Syntax.current_warning := print_warning;
-          let ic = if name = "-" then stdin else open_in_bin name;
-          let cs = XStream.of_channel ic;
-          let clear () = if name = "-" then () else close_in ic;
-          let phr =
-            try pa ?directive_handler loc cs
-            with x -> begin  clear (); raise x end ;
-          clear ();
-          phr
-        end;
-       let  rec sig_handler  : sigi -> sigi option =  with sigi
+       let loc = FanLoc.mk name in
+       let  () = PreCast.Syntax.current_warning := print_warning in
+       let ic = if name = "-" then stdin else open_in_bin name in
+       let cs = XStream.of_channel ic in
+       let clear () = if name = "-" then () else close_in ic in
+       let phr =
+         try pa ?directive_handler loc cs
+         with x -> begin  clear (); raise x end in
+       let () = clear () in
+       phr
+     end
+
+    let  rec sig_handler  : sigi -> sigi option =  with sigi
           (function
             | {| #load $str:s |}-> begin rewrite_and_load "" s; None end
             | {| #directory $str:s |} ->

@@ -14,7 +14,7 @@ let print_warning loc txt = !current_warning loc txt;;
 
 
 {:create|Gram
-a_ident aident amp_ctyp and_ctyp case
+  a_ident aident amp_ctyp and_ctyp case
   case0
   bind
   class_declaration
@@ -81,7 +81,7 @@ a_ident aident amp_ctyp and_ctyp case
   dot_namespace
 |};;
   
-let antiquot_exp = Gram.eoi_entry exp 
+  let antiquot_exp = Gram.eoi_entry exp 
 let antiquot_pat = Gram.eoi_entry pat
 let antiquot_ident = Gram.eoi_entry ident
 let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str
@@ -96,18 +96,18 @@ let wrap directive_handler pa init_loc cs =
     let (pl, stopped_at_directive) = pa loc cs in
     match stopped_at_directive with
     | Some new_loc ->
-      (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
-      let pl =
-        match List.rev pl with
-        | [] -> assert false
-        | x :: xs ->
-            match directive_handler x with
-            | None -> xs
-            | Some x -> x :: xs
-      in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
+        (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
+        let pl =
+          match List.rev pl with
+          | [] -> assert false
+          | x :: xs ->
+              match directive_handler x with
+              | None -> xs
+              | Some x -> x :: xs
+        in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
     | None -> pl 
   in loop init_loc
-  
+    
 let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
   let l = wrap directive_handler (Gram.parse implem) _loc cs in
   match l with
@@ -120,20 +120,20 @@ let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
   match l with
   | [] -> None   
   | l -> Some (sem_of_list l)
-    
+        
 let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer"
 
 let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer"
 
 
-  
+    
 
 module Options = struct
   type spec_list = (string * FanArg.spec * string) list 
   let init_spec_list = ref []
   let init spec_list = init_spec_list := spec_list
   let add (name, spec, descr) =
-   init_spec_list := !init_spec_list @ [(name, spec, descr)];
+    init_spec_list := !init_spec_list @ [(name, spec, descr)]
   let adds ls =
     init_spec_list := !init_spec_list @ ls 
 end
