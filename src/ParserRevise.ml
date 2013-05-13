@@ -79,7 +79,7 @@ let apply () = begin
        "apply"
         [ S{me1}; S{me2} -> `App (_loc, me1, me2) ]
        "simple"
-        [ `Ant ((""|"mexp"|"anti"|"list" as n),s) ->  mk_anti ~c:"mexp" _loc n s
+        [ `Ant ((""|"mexp" as n),s) ->  mk_anti ~c:"mexp" _loc n s
         | `QUOTATION x ->
             AstQuotation.expand _loc x FanDyn.mexp_tag
         | module_longident{i} ->  (i:>mexp)
@@ -100,14 +100,14 @@ let apply () = begin
         | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} -> `ModuleBind(_loc,m,mt,me)]
         mbind:
         [ S{b1}; "and"; S{b2} -> `And(_loc,b1,b2)
-        | `Ant (("mbind"|"anti"|"list" |"" as n),s) ->
+        | `Ant (("mbind" |"" as n),s) ->
             mk_anti _loc ~c:"mbind" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
         | a_uident{m}; ":"; mtyp{mt}; "="; mexp{me} ->
             `ModuleBind (_loc, m, mt, me)]
         module_rec_declaration:
         [ S{m1}; "and"; S{m2} -> `And(_loc,m1,m2)
-        | `Ant ((""|"mbind"|"anti"|"list" as n),s) ->
+        | `Ant ((""|"mbind" as n),s) ->
             mk_anti _loc ~c:"mbind" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
         | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt) ] |};
@@ -118,7 +118,7 @@ let apply () = begin
         [ constr{x} -> x   ]
         constr: 
         [ S{wc1}; "and"; S{wc2} -> `And(_loc,wc1,wc2)
-        | `Ant ((""|"constr"|"anti"|"list" as n),s) ->
+        | `Ant ((""|"constr" as n),s) ->
             mk_anti _loc ~c:"constr" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.constr_tag
         | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
@@ -137,11 +137,11 @@ let apply () = begin
 
     {:extend|
       sigis:
-      [ `Ant ((""|"sigi"|"anti"|"list" as n),s) -> mk_anti _loc  n ~c:"sigi" s
+      [ `Ant ((""|"sigi" as n),s) -> mk_anti _loc  n ~c:"sigi" s
 
-      | `Ant ((""|"sigi"|"anti"|"list" as n),s); ";;"; S{sg} ->
+      | `Ant ((""|"sigi" as n),s); ";;"; S{sg} ->
           `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
-      | `Ant ((""|"sigi"|"anti"|"list" as n),s);  S{sg} ->
+      | `Ant ((""|"sigi" as n),s);  S{sg} ->
           `Sem (_loc,  mk_anti _loc  n ~c:"sigi" s, sg)
             
       | sigi{sg};";;" ; S{s} -> `Sem(_loc,sg,s)
@@ -173,7 +173,7 @@ let apply () = begin
         [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)
         | "sig";"end" -> `SigEnd(_loc)]
        "simple"
-        [ `Ant ((""|"mtyp"|"anti"|"list" as n),s) ->
+        [ `Ant ((""|"mtyp" as n),s) ->
           mk_anti _loc ~c:"mtyp" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mtyp_tag
         | module_longident_with_app{i} ->  (i:ident:>mtyp) 
@@ -194,7 +194,7 @@ let apply () = begin
     | sigi{sg1}; ";"; S{sg2} -> `Sem(_loc,sg1,sg2)
     | sigi{sg} -> sg] 
     sigi:
-    [ `Ant ((""|"sigi"|"anti"|"list" as n),s) ->  mk_anti _loc ~c:"sigi" n s
+    [ `Ant ((""|"sigi" as n),s) ->  mk_anti _loc ~c:"sigi" n s
     | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.sigi_tag
     | "exception"; constructor_declaration{t} ->  {| exception $t |}
     | "external"; a_lident{i};":";ctyp{t};"=" ;string_list{sl} ->
@@ -519,7 +519,7 @@ let apply () = begin
         rec_exp_quot:
         [ label_exp_list{x} -> x  ]
         label_exp:
-        [ `Ant (("rec_exp" |""|"anti"|"list" as n),s) -> 
+        [ `Ant (("rec_exp" |"" as n),s) -> 
           mk_anti _loc ~c:"rec_exp" n s
         | label_longident{i}; fun_bind{e} -> {| $id:i = $e |}
         | label_longident{i} ->  (*FIXME*)
@@ -744,10 +744,10 @@ let apply () = begin
       { "."
         [ S{i}; "."; S{j} -> {| $i.$j  |} ]
         "simple"
-        [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) ->
+        [ `Ant ((""|"id" |"uid" as n),s) ->
           mk_anti _loc  ~c:"ident" n s
         | `Ant (("lid" as n), s) -> mk_anti _loc  ~c:"ident" n s
-        | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+        | `Ant ((""|"id"|"uid" as n),s); "."; S{i} ->
             `Dot (_loc, mk_anti _loc  ~c:"ident" n s, i)
         | `Lid i -> {| $lid:i |}
         | `Uid i -> {| $uid:i |}
@@ -756,18 +756,18 @@ let apply () = begin
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:
-      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
+      [ `Ant ((""|"id"|"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
       | `Ant (("lid" as n), s) -> mk_anti _loc  ~c:"ident" n s
-      | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+      | `Ant ((""|"id"|"uid" as n),s); "."; S{i} ->
            `Dot (_loc, mk_anti _loc ~c:"ident" n s, i)
       | `Lid i -> `Lid(_loc,i)
       | `Uid i -> `Uid(_loc,i)
       | `Uid s ; "." ; S{j} ->  `Dot (_loc, `Uid (_loc, s), j)]
       
       vid: (* duplicate ident  FIXME *)
-      [ `Ant ((""|"id"|"anti"|"list" |"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
+      [ `Ant ((""|"id" |"uid" as n),s) -> mk_anti _loc ~c:"ident" n s
       | `Ant (("lid" as n), s) -> mk_anti _loc  ~c:"ident" n s
-      | `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; S{i} ->
+      | `Ant ((""|"id"|"uid" as n),s); "."; S{i} ->
            `Dot (_loc, mk_anti _loc ~c:"ident" n s, i)
       | `Lid i -> `Lid(_loc,i)
       | `Uid i -> `Uid(_loc,i)
@@ -775,10 +775,10 @@ let apply () = begin
       
       uident:
       [`Uid s -> `Uid(_loc,s)
-      | `Ant((""|"id"|"anti"|"list"|"uid" as n),s) ->
+      | `Ant((""|"id"|"uid" as n),s) ->
           mk_anti _loc  ~c:"uident" n s
       |`Uid s; "."; S{l} -> dot (`Uid (_loc,s)) l
-      |`Ant((""|"id"|"anti"|"list"|"uid" as n),s) ;"." ; S{i} ->
+      |`Ant((""|"id"|"uid" as n),s) ;"." ; S{i} ->
           dot (mk_anti _loc ~c:"uident" n s) i]
 
 
@@ -800,7 +800,7 @@ let apply () = begin
 
       (* parse [A.B.(] *)
       module_longident_dot_lparen:
-      [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s); "."; "(" ->
+      [ `Ant ((""|"id"|"uid" as n),s); "."; "(" ->
         mk_anti _loc  ~c:"ident" n s 
 
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
@@ -808,7 +808,7 @@ let apply () = begin
       | `Ant (("uid"|"" as n),s); "."; S{l} -> {|$(mk_anti _loc  ~c:"ident" n s).$l|} ]
       (* parse [A.B] *)
       module_longident:
-      [ `Ant ((""|"id"|"anti"|"list" as n),s) ->
+      [ `Ant ((""|"id" as n),s) ->
         mk_anti _loc ~c:"ident" n s 
       | `Uid i; "."; S{l} ->  `Dot (_loc, `Uid (_loc, i), l)
       | `Uid i -> `Uid(_loc,i)
@@ -823,7 +823,7 @@ let apply () = begin
        "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
        "simple"
-        [ `Ant ((""|"id"|"anti"|"list"|"uid" as n),s) ->
+        [ `Ant ((""|"id"|"uid" as n),s) ->
           mk_anti _loc ~c:"ident" n s
         | `Uid i -> `Uid(_loc,i)
         | "("; S{i}; ")" -> i ] }
@@ -835,14 +835,14 @@ let apply () = begin
         "."
         [ S{i}; "."; S{j} -> {| $i.$j |} ]
         "simple"
-        [ `Ant ((""|"id"|"anti"|"list"|"uid"|"lid" as n),s) ->
+        [ `Ant ((""|"id"|"uid"|"lid" as n),s) ->
           mk_anti _loc ~c:"ident" n s
         | `Lid i -> {|$lid:i|}
         | `Uid i -> {|$uid:i|}
         | "("; S{i}; ")" -> i ] }
 
       label_longident:
-      [ `Ant ((""|"id"|"anti"|"list"|"lid" as n),s) ->
+      [ `Ant ((""|"id"|"lid" as n),s) ->
         mk_anti _loc ~c:"ident" n s
       | `Lid i -> {|$lid:i|}
       | `Uid i; "."; S{l} -> {|$uid:i.$l|}
@@ -937,13 +937,9 @@ let apply () = begin
          constains at least one element 
        *)
       strus: (* FIXME dump seems to be incorrect *)
-      [ `Ant ((""|"stri"|"anti"|"list" as n),s) -> mk_anti _loc n ~c:"stru" s
-      (* | `Ant ((""|"stri"|"anti"|"list" as n),s); ";"; S{st} -> *)
-      (*     `Sem (_loc, mk_anti _loc n ~c:"stru" s, st) *)
-      | `Ant ((""|"stri"|"anti"|"list" as n),s); ";;"; S{st} ->
-          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
-      | `Ant ((""|"stri"|"anti"|"list" as n),s);  S{st} ->
-          `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      [ `Ant ((""|"stri" as n),s) -> mk_anti _loc n ~c:"stru" s
+      | `Ant ((""|"stri" as n),s);  S{st} -> `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
+      | `Ant ((""|"stri" as n),s); ";;"; S{st} -> `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
       | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)
       | stru{st};";;" -> st
       | stru{st}; S{xs} -> `Sem(_loc,st,xs)
@@ -991,7 +987,7 @@ let apply () = begin
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
         | "class"; "type"; cltyp_declaration{ctd} ->
             `ClassType (_loc, ctd)
-        | `Ant ((""|"stri"|"anti"|"list" as n),s) ->
+        | `Ant ((""|"stri" as n),s) ->
             mk_anti _loc ~c:"stru" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.stru_tag
         | exp{e} -> `StExp(_loc,e)
@@ -1004,13 +1000,13 @@ let apply () = begin
       [ clsigi{x1}; ";"; S{x2} -> `Sem(_loc,x1,x2)
       | clsigi{x} -> x]
       class_signature:
-      [ `Ant ((""|"csg"|"anti"|"list" as n),s) ->
+      [ `Ant ((""|"csg" as n),s) ->
         mk_anti _loc  ~c:"clsigi" n s
-      | `Ant ((""|"csg"|"anti"|"list" as n),s);";"; S{csg} ->
+      | `Ant ((""|"csg" as n),s);";"; S{csg} ->
           {|$(mk_anti _loc ~c:"clsigi" n s); $csg |}
       | L1 [ clsigi{csg};";" -> csg ]{l} -> sem_of_list l ]
       clsigi:
-      [ `Ant ((""|"csg"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clsigi" n s
+      [ `Ant ((""|"csg" as n),s) -> mk_anti _loc ~c:"clsigi" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clsigi_tag
       | "inherit"; cltyp{cs} -> `SigInherit(_loc,cs)
 
@@ -1024,8 +1020,8 @@ let apply () = begin
   with clfield
     {:extend|
       class_structure:
-        [ `Ant ((""|"cst"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clfield" n s
-        | `Ant ((""|"cst"|"anti"|"list" as n),s); (* semi *)";"; S{cst} ->
+        [ `Ant ((""|"cst" as n),s) -> mk_anti _loc ~c:"clfield" n s
+        | `Ant ((""|"cst" as n),s); ";"; S{cst} ->
             {| $(mk_anti _loc ~c:"clfield" n s); $cst |}
         | L1 [ clfield{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
       clfield:
