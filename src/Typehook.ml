@@ -118,14 +118,14 @@ let plugin_remove plugin =
 (* end; *)
 
 class type traversal = object
-  inherit Objs.map;
-  method get_cur_mtyps: FSig.mtyps;
-  method get_cur_and_types: FSig.and_types;
+  inherit Objs.map
+  method get_cur_mtyps: FSig.mtyps
+  method get_cur_and_types: FSig.and_types
   (* method in_and_types: *)
   method update_cur_and_types:
-      (FSig.and_types -> FSig.and_types) -> unit;
+      (FSig.and_types -> FSig.and_types) -> unit
   method update_cur_mtyps:
-      (FSig.mtyps -> FSig.mtyps) -> unit;
+      (FSig.mtyps -> FSig.mtyps) -> unit
 
 end
 

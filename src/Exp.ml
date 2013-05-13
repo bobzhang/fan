@@ -126,9 +126,9 @@ end
 
 
 class type antiquot_filter =object
-  inherit Objs.map;
-  method get_captured_variables: (exp * exp) list; 
-  method clear_captured_variables: unit;
+  inherit Objs.map
+  method get_captured_variables: (exp * exp) list
+  method clear_captured_variables: unit
 end
       
 (* We don't do any parsing for antiquots here, so it's parser-independent *)  
