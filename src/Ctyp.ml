@@ -1,4 +1,4 @@
-#default_quotation "ctyp";;
+  #default_quotation "ctyp";;
 
 open Ast
 open AstLoc
@@ -25,34 +25,34 @@ open FSig
 
 
 let arrow_of_list = List.reduce_right arrow
-  
+    
 let app_arrow lst acc = List.fold_right arrow lst acc
-  
+    
 let (<+) (names: string list ) (ty:ctyp) =
   let _loc = FanLoc.ghost in
   List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty
-  
+    
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
 (*
-   {[
-   match <:stru< type 'a list  = [A of int | B of 'a] >> with
-   [ <:stru<type .$x$. >> -> name_length_of_tydcl x ];
-   ("list",1)
-   ]}
+  {[
+  match <:stru< type 'a list  = [A of int | B of 'a] >> with
+  [ <:stru<type .$x$. >> -> name_length_of_tydcl x ];
+  ("list",1)
+  ]}
  *)
 let name_length_of_tydcl (x:typedecl) : (string * int) =
   match x with 
   | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-    (name, match tyvars with |`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs [])
+      (name, match tyvars with |`None _ -> 0 | `Some (_,xs) -> List.length & list_of_com  xs [])
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n"  (Objs.dump_typedecl tydcl)
 
 
 
 (*
-   generate universal quantifiers for object's type signatures
-   {[
+  generate universal quantifiers for object's type signatures
+  {[
 
   gen_quantifiers ~arity:2 3 |> eprint;
   'all_a0 'all_a1 'all_a2 'all_b0 'all_b1 'all_b2
@@ -78,18 +78,18 @@ let of_id_len ~off ((id:ident),len) =
     ((id:>ctyp) ::
      List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))
-  
+    
 (*
-   {[
-    ( <:stru< type 'a list  = [A of int | B of 'a] >> |>
-    fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
-        |> of_name_len ~off:1 |> eprint ] );
-   list 'all_b0
+  {[
+  ( <:stru< type 'a list  = [A of int | B of 'a] >> |>
+  fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
+  |> of_name_len ~off:1 |> eprint ] );
+  list 'all_b0
 
-    ( <:stru< type list   = [A of int | B] >> |>
-    fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
-        |> of_name_len ~off:1 |> eprint ] );
-   ]}
+  ( <:stru< type list   = [A of int | B] >> |>
+  fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
+  |> of_name_len ~off:1 |> eprint ] );
+  ]}
 
  *)    
 
@@ -100,7 +100,7 @@ let of_name_len ~off (name,len) =
 
 
 (*
-   @raise Invalid_argument  when the input is not a type declaration
+  @raise Invalid_argument  when the input is not a type declaration
 
   {[
   
@@ -108,17 +108,17 @@ let of_name_len ~off (name,len) =
   <:stru< type list 'a  = [A of int | B of 'a] >>;
 
   list 'a
-   ]}
+  ]}
  *)  
 let ty_name_of_tydcl  (x:typedecl) =
   let _loc = FanLoc.ghost in
   match x with 
   | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-    let tyvars =
-      match tyvars with
-      | `None _ -> []
-      |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in
-    appl_of_list ( {| $lid:name |} :: tyvars)
+      let tyvars =
+        match tyvars with
+        | `None _ -> []
+        |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in
+      appl_of_list ( {| $lid:name |} :: tyvars)
   | tydcl ->
       failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
@@ -132,43 +132,43 @@ let ty_name_of_tydcl  (x:typedecl) =
  *)  
 let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   tydcl |> name_length_of_tydcl |>of_name_len ~off 
-  
+    
 (*
-   @raise Invalid_argument 
+  @raise Invalid_argument 
 
-   {[
-     L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
-     - : FSig.col list =
-     [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
-      {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
-   ]}
-   
+  {[
+  L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
+  - : FSig.col list =
+  [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
+  {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
+  ]}
+  
  *)
 let list_of_record (ty:name_ctyp) : FSig.col list  =
   let (tys : name_ctyp list )  = list_of_sem ty [] in
-    (* list_of_sem' ty [] *) tys|> List.map (
-       function
-         |
-           (* {| $lid:label : mutable $ctyp  |} *)
-           (* `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) -> *)
-           `TyColMut(_,`Lid(_,col_label),col_ctyp) ->
-             {col_label; col_ctyp; col_mutable=true}
-         | `TyCol (_, `Lid (_, col_label), col_ctyp)
-             (* {| $lid:label :  $ctyp  |} *) -> 
-               {col_label; col_ctyp; col_mutable=false}
-         | t0 ->
-             FanLoc.errorf (loc_of t0)
-               "list_of_record %s" (Objs.dump_name_ctyp t0) )
+  (* list_of_sem' ty [] *) tys|> List.map (
+  function
+    |
+      (* {| $lid:label : mutable $ctyp  |} *)
+      (* `TyCol (_, (`Id (_, (`Lid (_, col_label)))), (`Mut (_, col_ctyp))) -> *)
+      `TyColMut(_,`Lid(_,col_label),col_ctyp) ->
+        {col_label; col_ctyp; col_mutable=true}
+    | `TyCol (_, `Lid (_, col_label), col_ctyp)
+        (* {| $lid:label :  $ctyp  |} *) -> 
+          {col_label; col_ctyp; col_mutable=false}
+    | t0 ->
+        FanLoc.errorf (loc_of t0)
+          "list_of_record %s" (Objs.dump_name_ctyp t0) )
 
-  
+    
 (*
-   @raise Invalid_argument 
-   {[
-   gen_tuple_n {| int |} 3  |> eprint;
-   (int * int * int)
-   gen_tuple_n {| int |} 1  |> eprint;
-   int
-   ]}
+  @raise Invalid_argument 
+  {[
+  gen_tuple_n {| int |} 3  |> eprint;
+  (int * int * int)
+  gen_tuple_n {| int |} 1  |> eprint;
+  int
+  ]}
  *)
 let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
 
@@ -177,17 +177,17 @@ let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
   repeat_arrow_n <:ctyp< 'a >> 3 |> eprint;
   'a -> 'a -> 'a
   ]}
-  *)
+ *)
 let repeat_arrow_n ty n =
   List.init n (fun _ -> ty) |>  arrow_of_list
-  
+    
 (*
   [result] is a keyword
   {[
   let (name,len) =
-    ( {:stru| type list 'a  'b = [A of int | B of 'a] |}
-      |>
-      fun [ {:stru|type $x |} -> name_length_of_tydcl x]);
+  ( {:stru| type list 'a  'b = [A of int | B of 'a] |}
+  |>
+  fun [ {:stru|type $x |} -> name_length_of_tydcl x]);
 
 
   let f = mk_method_type ~number:2 ~prefix:["fmt"]
@@ -198,27 +198,27 @@ let repeat_arrow_n ty n =
   f (Obj Map)|> eprint;
   ! 'all_a0 'all_a1 'all_b0 'all_b1.
   ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
-    ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'all_b1) ->
-      'fmt ->
-        list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> list 'all_b0 'all_b1
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'all_b1) ->
+  'fmt ->
+  list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> list 'all_b0 'all_b1
 
   f (Obj Iter)|> eprint;
   ! 'all_a0 'all_a1.
   ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
-    ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
-      'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
   
   f (Obj Fold) |> eprint;
   ! 'all_a0 'all_a1.
   ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'self_type) ->
-    ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'self_type) ->
-      'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'self_type
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'self_type) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'self_type
   
   f Str_item |> eprint;
   ! 'all_a0 'all_a1.
   ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
-    ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
-      'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
+  ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
  *)
 let result_id = ref 0 (* to be clean soon *)
 
@@ -261,7 +261,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd (_loc, base),dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-    ({| ! $quantifiers . $(params +> base) |},dst)
+  ({| ! $quantifiers . $(params +> base) |},dst)
 
 (* FIXME : merge with [mk_type_of] *)  
 (* let result_id = ref 0;   *)
@@ -294,23 +294,23 @@ let mk_obj class_name  base body =
     $body;
   end |}
 
-  
+    
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (_, `Lid(_,name), _, ctyp, _)  ->
-    let obj = object(self:'self_type)
-      inherit Objs.fold as super;
-      val mutable is_recursive = false;
-      method! ctyp = function
-        | {| $lid:i |} when i = name -> begin 
-          is_recursive <- true;
-          self;
-        end 
-        | x ->  if is_recursive then  self
-            else super#ctyp x  ;
-      method is_recursive = is_recursive;
-    end in
-    (obj#type_info(* ctyp *) ctyp)#is_recursive
+      let obj = object(self:'self_type)
+        inherit Objs.fold as super;
+        val mutable is_recursive = false;
+        method! ctyp = function
+          | {| $lid:i |} when i = name -> begin 
+              is_recursive <- true;
+              self
+          end 
+          | x ->  if is_recursive then  self
+          else super#ctyp x  
+        method is_recursive = is_recursive
+      end in
+      (obj#type_info(* ctyp *) ctyp)#is_recursive
 
   | `And(_,_,_)  -> true (* FIXME imprecise *)
   | _ -> failwithf "is_recursive not type declartion: %s" (Objs.dump_typedecl ty_dcl)
@@ -326,8 +326,8 @@ let is_recursive ty_dcl =
   Here the order matters
   {[
   ( {:sigi| type 'a tbl  = Ident.tbl 'a |} |> fun
-    [ <:sigi< type .$FanAst.TyDcl _loc _ _ x _ $. >>
-     -> qualified_app_list x ]);
+  [ <:sigi< type .$FanAst.TyDcl _loc _ _ x _ $. >>
+  -> qualified_app_list x ]);
   Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
   ]}
   
@@ -349,7 +349,7 @@ let is_abstract (x:typedecl)=
   match x with
   | `TyAbstr _ -> true
   | _ -> false
-  (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
+        (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
   match x with 
@@ -373,7 +373,7 @@ let eq_list t1 t2 =
     | ([],[]) -> true
     | (x::xs,y::ys) -> eq x y && loop (xs,ys)
     | (_,_) -> false in loop (t1,t2)
-  
+    
 (*
 
   {[
@@ -410,68 +410,68 @@ let eq_list t1 t2 =
   ]}
  *)
 let mk_transform_type_eq () = object(self:'self_type)
-  val transformers = Hashtbl.create 50;
-  inherit Objs.map as super;
+  val transformers = Hashtbl.create 50
+  inherit Objs.map as super
   method! stru = function
     | {:stru| type $(`TyDcl (_, _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
-       let r =
-         match ctyp with
-         | `TyEq (_,_,t) -> qualified_app_list t | _ -> None  in
-       begin match  r with
-       | Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
-         let vars =
-           match vars with 
-           | `None _ -> [] | `Some (_,x) -> list_of_com x [] in
-         if  not (eq_list (vars : decl_params list  :>  ctyp list) lst) then 
-           super#stru x
-         else
-          (* Manual substitution
-             [type u 'a 'b = Loc.t 'a 'b]
-             [type u int = Loc.t int]
-             This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
-           *)
-           let src = i and dest =             
-             Id.to_string i in begin
-             Hashtbl.replace transformers dest (src,List.length lst);
-             {:stru| let _ = ()|} (* FIXME *)
-           end 
-       | None ->  super#stru x
-       end
-     | x -> super#stru x ;
+        let r =
+          match ctyp with
+          | `TyEq (_,_,t) -> qualified_app_list t | _ -> None  in
+        begin match  r with
+        | Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
+            let vars =
+              match vars with 
+              | `None _ -> [] | `Some (_,x) -> list_of_com x [] in
+            if  not (eq_list (vars : decl_params list  :>  ctyp list) lst) then 
+              super#stru x
+            else
+              (* Manual substitution
+                 [type u 'a 'b = Loc.t 'a 'b]
+                 [type u int = Loc.t int]
+                 This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
+               *)
+              let src = i and dest =             
+                Id.to_string i in begin
+                  Hashtbl.replace transformers dest (src,List.length lst);
+                  {:stru| let _ = ()|} (* FIXME *)
+                end 
+        | None ->  super#stru x
+        end
+    | x -> super#stru x 
   method! ctyp x =
     let _loc = FanLoc.ghost in
     match qualified_app_list x with
     | Some (i, lst) ->
-          let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-          let src = i and dest = Id.to_string i in begin
-            Hashtbl.replace transformers dest (src,List.length lst);
-            appl_of_list ({| $lid:dest |} :: lst )
-          end
-    | None -> super#ctyp x;
+        let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
+        let src = i and dest = Id.to_string i in begin
+          Hashtbl.replace transformers dest (src,List.length lst);
+          appl_of_list ({| $lid:dest |} :: lst )
+        end
+    | None -> super#ctyp x
 
-  (* method! (\* ctyp *\)type_info  x = *)
+          (* method! (\* ctyp *\)type_info  x = *)
 
-  (*   match x with *)
-  (*   [ `TyMan (loc , p1 , x ,p2, repr) ->  *)
-  (*       match qualified_app_list x with *)
-  (*       [ Some (i, lst) -> *)
-  (*         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in  *)
-  (*         let src = i and dest = Id.map_to_string i in begin *)
-  (*           Hashtbl.replace transformers dest (src,List.length lst); *)
-  (*           let v = appl_of_list [ {| $lid:dest |} :: lst ] ; *)
-  (*           `TyMan(loc,p1,v,p2,repr)   *)
-  (*         end *)
-  (*       | None  -> (\* match x with *\) *)
-  (*       (\* <:stru< type a =b == [A of int] >> ; *\) *)
-  (*     (\* [ `TyMan(_loc,p1,x,p2,ctyp)(\\* {| $x == $ctyp |} *\\) -> (\\* ignore x on purpose *\\) *\) *)
-  (*       `TyMan(_loc,p1,x,p2,super#type_repr repr) ] *)
-  (*       (\* {| $x == $(super#ctyp ctyp) |} *\) *)
-  (*   | _ ->   super#type_info  x  ]; *)
+          (*   match x with *)
+          (*   [ `TyMan (loc , p1 , x ,p2, repr) ->  *)
+          (*       match qualified_app_list x with *)
+          (*       [ Some (i, lst) -> *)
+          (*         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in  *)
+          (*         let src = i and dest = Id.map_to_string i in begin *)
+          (*           Hashtbl.replace transformers dest (src,List.length lst); *)
+          (*           let v = appl_of_list [ {| $lid:dest |} :: lst ] ; *)
+          (*           `TyMan(loc,p1,v,p2,repr)   *)
+          (*         end *)
+          (*       | None  -> (\* match x with *\) *)
+          (*       (\* <:stru< type a =b == [A of int] >> ; *\) *)
+          (*     (\* [ `TyMan(_loc,p1,x,p2,ctyp)(\\* {| $x == $ctyp |} *\\) -> (\\* ignore x on purpose *\\) *\) *)
+          (*       `TyMan(_loc,p1,x,p2,super#type_repr repr) ] *)
+          (*       (\* {| $x == $(super#ctyp ctyp) |} *\) *)
+          (*   | _ ->   super#type_info  x  ]; *)
 
-  (* dump the type declarations *)  
+          (* dump the type declarations *)  
   method type_transformers = 
     Hashtbl.fold (fun dest (src,len) acc ->
-      (dest,src,len)  :: acc) transformers [];
+      (dest,src,len)  :: acc) transformers []
 
 end
 
@@ -495,23 +495,23 @@ let transform_mtyps  (lst:FSig.mtyps) =
           `Single (s, obj#typedecl ty)) lst in
   let new_types = obj#type_transformers in
   (new_types,item1)
-      
+    
 (* 
    {[
-    reduce_data_ctors
-    {:ctyp| A of option int and float | B of float |} []
-      (fun  s xs acc ->
-         (prerr_endline s;  [xs :: acc] ))  ;
-    A
-    B
+   reduce_data_ctors
+   {:ctyp| A of option int and float | B of float |} []
+   (fun  s xs acc ->
+   (prerr_endline s;  [xs :: acc] ))  ;
+   A
+   B
    Id  (Lid  "float");
-    App  (Id  (Lid  "option")) (Id  (Lid  "int"));
-    Id  (Lid  "float")
-    ]}
-    @return result type to indicate error
-    FIXME a good  support for arrow types?
-    FIXME moved to astbuild?
-    [ A of [`a | `b] and int ]
+   App  (Id  (Lid  "option")) (Id  (Lid  "int"));
+   Id  (Lid  "float")
+   ]}
+   @return result type to indicate error
+   FIXME a good  support for arrow types?
+   FIXME moved to astbuild?
+   [ A of [`a | `b] and int ]
  *)
 let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
     (f:  string -> ctyp list  -> 'e)  =

@@ -386,8 +386,8 @@ let generate (mtyps:FSig.mtyps) : stru =
   let aux (f:string) : stru  =
     {:stru|
     let $(lid:"map_"^f) f = object
-      inherit map as super;
-      method! $lid:f x = f (super#$lid:f x);
+      inherit map as super
+      method! $lid:f x = f (super#$lid:f x)
     end |} in
   FSigUtil.stru_from_ty ~f:aux mtyps;;  
 

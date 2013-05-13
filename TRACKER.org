@@ -85,3 +85,19 @@
      *)
   
   #+END_SRC
+
+
+* 04 class parser error
+
+  can not parse... the class variable
+  #+BEGIN_SRC caml
+    class c_fold_pattern_vars ['accu] f init =  object
+      inherit FanAst.fold as super
+      val acc = init
+      method acc : 'accu = acc
+      method! pat = fun
+        [ {:pat| $lid:s |} | {:pat| ~ $s |} | {:pat| ? $s |}
+        -> {< acc = f s acc >}
+      | p -> super#pat p ]
+    end
+  #+END_SRC

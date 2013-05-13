@@ -73,7 +73,7 @@ let traversal () =
      method update_cur_mtyps f =
        let open Stack in push (f (pop mtyps_stack)) mtyps_stack
      method private in_module = Stack.push [] mtyps_stack
-     method private out_module = (Stack.pop mtyps_stack) |> ignore
+     method private out_module = ignore (Stack.pop mtyps_stack)
      method private in_and_types = and_group <- true; cur_and_types <- []
      method private out_and_types = and_group <- false; cur_and_types <- []
      method private is_in_and_types = and_group
@@ -138,8 +138,7 @@ let traversal () =
        function
        | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
            (if self#is_in_and_types
-            then self#update_cur_and_types (fun lst  -> (name, t) :: lst)
-            else ();
+            then self#update_cur_and_types (fun lst  -> (name, t) :: lst);
             t)
        | t -> super#typedecl t
    end : traversal )

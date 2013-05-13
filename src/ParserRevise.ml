@@ -847,8 +847,7 @@ let apply () = begin
       
       method_opt_override:
       [ "method"; "!" -> `Override _loc 
-      | "method"; `Ant (((""|"override") as n),s) ->
-          mk_anti _loc ~c:"override_flag" n s
+      | "method"; `Ant (((""|"override") as n),s) -> mk_anti _loc ~c:"override_flag" n s
       | "method" -> `OvNil _loc   ] 
       opt_override:
       [ "!" -> `Override _loc
@@ -931,12 +930,14 @@ let apply () = begin
        *)
       strus: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri" as n),s) -> mk_anti _loc n ~c:"stru" s
+      | `Ant ((""|"stri" as n),s) ;";;" -> mk_anti _loc n ~c:"stru" s          
       | `Ant ((""|"stri" as n),s);  S{st} -> `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
       | `Ant ((""|"stri" as n),s); ";;"; S{st} -> `Sem (_loc, mk_anti _loc n ~c:"stru" s, st)
-      | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)
+      | stru{st} -> st
       | stru{st};";;" -> st
-      | stru{st}; S{xs} -> `Sem(_loc,st,xs)
-      | stru{st} -> st ]
+      | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)            
+      | stru{st}; S{xs} -> `Sem(_loc,st,xs)]
+
       top_phrase:
       [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
@@ -1012,11 +1013,21 @@ let apply () = begin
       | "constraint"; ctyp{t1}; "="; ctyp{t2} -> {|constraint $t1 = $t2|} ] |};  
   with clfield
     {:extend|
+
+      
       class_structure:
-        [ `Ant ((""|"cst" as n),s) -> mk_anti _loc ~c:"clfield" n s
-        | `Ant ((""|"cst" as n),s); ";"; S{cst} ->
-            {| $(mk_anti _loc ~c:"clfield" n s); $cst |}
-        | L1 [ clfield{cst}; (* semi *)";" -> cst ]{l} -> sem_of_list l  ]
+       [ `Ant ((""|"cst" as n),s) -> mk_anti _loc ~c:"clfield" n s
+       | `Ant ((""|"cst" as n),s); ";" -> mk_anti _loc ~c:"clfield" n s
+       | `Ant ((""|"cst" as n),s);S{st} -> `Sem(_loc, mk_anti _loc ~c:"clfield" n s,st)  
+       | `Ant ((""|"cst" as n),s); ";"; S{cst} -> {| $(mk_anti _loc ~c:"clfield" n s); $cst |}
+       | clfield{st} -> st
+       | clfield{st};";" -> st
+       | clfield{st};";";S{xs} -> `Sem(_loc,st,xs)
+       | clfield{st}; S{xs} -> `Sem(_loc,st,xs)
+       ]
+
+
+      
       clfield:
         [ `Ant ((""|"cst" as n),s) -> mk_anti _loc ~c:"clfield" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clfield_tag

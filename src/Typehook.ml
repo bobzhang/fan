@@ -144,56 +144,55 @@ end
   the code
  *)  
 let traversal () : traversal  = object (self:'self_type)
-  inherit Objs.map as super;
-  val mtyps_stack : FSig.mtyps Stack.t  = Stack.create ();
-  val mutable cur_and_types : FSig.and_types= [];
-  val mutable and_group = false;
+  inherit Objs.map as super
+  val mtyps_stack : FSig.mtyps Stack.t  = Stack.create ()
+  val mutable cur_and_types : FSig.and_types= []
+  val mutable and_group = false
   method get_cur_mtyps : FSig.mtyps =
-    Stack.top mtyps_stack;
+    Stack.top mtyps_stack
   method update_cur_mtyps f =
-    Stack.(push (f (pop mtyps_stack)) mtyps_stack);
-  method private in_module =  Stack.push [] mtyps_stack ;
-  method private out_module = Stack.pop mtyps_stack |> ignore;
-    
-  method private in_and_types = begin and_group <- true; cur_and_types <- [] end;
-  method private out_and_types = begin and_group <- false; cur_and_types <- [] end;
-  method private is_in_and_types = and_group;
-  method get_cur_and_types = cur_and_types;
+    Stack.(push (f (pop mtyps_stack)) mtyps_stack)
+  method private in_module =  Stack.push [] mtyps_stack 
+  method private out_module = ignore (Stack.pop mtyps_stack)
+      
+  method private in_and_types =  (and_group <- true; cur_and_types <- [])
+  method private out_and_types = (and_group <- false; cur_and_types <- [])
+  method private is_in_and_types = and_group
+  method get_cur_and_types = cur_and_types
   method update_cur_and_types f = 
-    cur_and_types <-  f cur_and_types;
-  (* entrance *)  
+    cur_and_types <-  f cur_and_types
+        (* entrance *)  
   method! mexp = with stru function
     | {:mexp| struct $u end |}  ->  begin 
-      self#in_module ;
-      let res = self#stru u ;
-      let mtyps = List.rev (self#get_cur_mtyps) ;
-      if !print_collect_mtyps then
-        eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps ;
-      let result =
-        List.fold_right
-          (fun (_, {FSig.position;transform;filter}) acc
-            ->
-              let mtyps =
-                match filter with
-                |Some x -> apply_filter x mtyps
-                |None -> mtyps in
-                let code = transform mtyps in 
-                match (position,code) with
-                |(Some x,Some code) ->
-                  let (name,f) = Filters.make_filter (x,code) in begin 
-                    AstFilters.register_stru_filter (name,f);
-                    AstFilters.use_implem_filter name ;
-                    acc
-                  end
-                |(None,Some code) -> {| $acc;; $code |}
+        self#in_module ;
+        let res = self#stru u ;
+          let mtyps = List.rev (self#get_cur_mtyps) ;
+            if !print_collect_mtyps then
+              eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps ;
+            let result =
+              List.fold_right
+                (fun (_, {FSig.position;transform;filter}) acc
+                  ->
+                    let mtyps =
+                      match filter with
+                      |Some x -> apply_filter x mtyps
+                      |None -> mtyps in
+                    let code = transform mtyps in 
+                    match (position,code) with
+                    |(Some x,Some code) ->
+                        let (name,f) = Filters.make_filter (x,code) in begin 
+                          AstFilters.register_stru_filter (name,f);
+                          AstFilters.use_implem_filter name ;
+                          acc
+                        end
+                    |(None,Some code) -> {| $acc;; $code |}
                 |(_,None) -> acc 
           )  !FanState.current_filters 
           (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
       self#out_module ;
       {:mexp| struct $result end |}  
     end
-    | x -> super#mexp x ;
-
+    | x -> super#mexp x 
   method! stru  = with stru function
     | {| type $_ and $_ |} as x -> begin
       self#in_and_types;
@@ -214,15 +213,13 @@ let traversal () : traversal  = object (self:'self_type)
     | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
 (* {| exception $_ |} *) 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
-    |  x ->  super#stru x  ;
+    |  x ->  super#stru x  
   method! typedecl = function
-    | `TyDcl (_, `Lid(_,name), _, _, _) as t -> begin
-      if self#is_in_and_types then
-        self#update_cur_and_types (fun lst -> (name,t) :: lst )
-      else ();
-      t
-    end
-    | t -> super#typedecl t ;
+    | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 
+      ((if self#is_in_and_types then
+        self#update_cur_and_types (fun lst -> (name,t) :: lst ));
+        t)
+    | t -> super#typedecl t 
 end
 
 

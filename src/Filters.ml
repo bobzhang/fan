@@ -5,15 +5,17 @@ open AstLoc
 
   
 let meta = object
-  inherit FanMeta.meta;
-  method! loc _loc  _ = lid _loc "loc";
+  inherit FanMeta.meta
+  method! loc _loc  _ = lid _loc "loc"
 end;;
 
     
-AstFilters.register_stru_filter ("lift",(fun ast ->
-  let _loc = loc_of ast in
-  let e = (meta#stru _loc ast :ep  :> exp )in
-  {:stru| let loc = FanLoc.ghost in $e |}));;
+AstFilters.register_stru_filter
+("lift",
+ (fun ast ->
+   let _loc = loc_of ast in
+   let e = (meta#stru _loc ast :ep  :> exp )in
+   {:stru| let loc = FanLoc.ghost in $e |}));;
 
 
 AstFilters.register_stru_filter ("strip",(new Objs.reloc  FanLoc.ghost)#stru);;
@@ -47,13 +49,13 @@ let me = object
     match !AstQuotation.current_loc_name with
     | None -> lid _loc !FanLoc.name
     | Some "here" -> FanMeta.meta_loc _loc loc
-    | Some x ->  lid  _loc x ;
+    | Some x ->  lid  _loc x 
 end
 
     
 let mp = object
-  inherit FanMeta.meta;
-  method! loc _loc _ = {:pat'| _ |}; (* we use [subst_first_loc] *)    
+  inherit FanMeta.meta
+  method! loc _loc _ = {:pat'| _ |} (* we use [subst_first_loc] *)    
 end;;
 
 

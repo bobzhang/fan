@@ -13,45 +13,45 @@ open AstLoc
   macro name, and apply
 
   fib 32 -->
-     fib 31 + fib 30
+  fib 31 + fib 30
 
-     -- `App
-     --
+  -- `App
+  --
   {:stru| g |};
 
   -- macro.exp
-     
+  
 
   -- macro.stru
-     `StExp ..  
+  `StExp ..  
 
   1. the position where macro quotation appears
-     - clfield
-       combine with translate, this should be inferred automatically
+  - clfield
+  combine with translate, this should be inferred automatically
 
 
   2. the position where macro expander appears?
-     currently only exp
+  currently only exp
 
   3. the type macro expander
-     - macro.clfield should generate clfield 
+  - macro.clfield should generate clfield 
 
   4. register
 
   5. dependency
 
   Guarantee:
-    macro.exp should return exp
-    macro.stru should return stru 
+  macro.exp should return exp
+  macro.stru should return stru 
  *)
 type key = string
 
 type expander =  exp -> exp
 
 (*
-   exp -> stru
-*)
-  
+  exp -> stru
+ *)
+    
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40 
 
 let register_macro (k,f) =
@@ -69,7 +69,7 @@ let rec fib = function
    or f (a,b,c)
    {:exp| f (a,b,c) |}
  *)
-  
+        
 let fibm  y =
   match y with
   | {:exp|$int:x|}  -> {:exp| $(`int:fib (int_of_string x))|}
@@ -78,7 +78,7 @@ let fibm  y =
 register_macro ("FIB",fibm);;      
 
 open LibUtil
-    
+  
 (* let generate_fibs = with exp fun *)
 (*   [ {:exp|$int:x|} -> *)
 (*     let j = int_of_string x in *)
@@ -91,19 +91,19 @@ open LibUtil
 (* register_macro ("GFIB", generate_fibs);     *)
 
 (*
-#filter "macro";;
-GFIB 10;
+  #filter "macro";;
+  GFIB 10;
 (* let u x = *)
   [FIB 13;
-   FIB 13;
-   FIB x]
-   ;
+  FIB 13;
+  FIB x]
+  ;
 (*
   {:exp| [FIB 13; FIB 13; FIB x ] |}
  *)
 
-*)
-    
+ *)
+  
 
 let macro_expander = object(self)
   inherit Objs.map as super;
@@ -112,7 +112,7 @@ let macro_expander = object(self)
         (let try f = Hashtbl.find macro_expanders a in
         self#exp (f y)
         with Not_found -> {| $uid:a $(self#exp y)|})
-    | e -> super#exp e ;
+    | e -> super#exp e 
 end
 
 (* AstFilters.register_stru_filter ("macro", macro_expander#stru);   *)

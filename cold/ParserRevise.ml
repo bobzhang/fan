@@ -4198,6 +4198,17 @@ let apply () =
          ([`Stoken
              (((function | `Ant ((""|"stri"),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"\"|\"stri\"),_)"));
+          `Skeyword ";;"],
+           ("Gram.mk_action\n  (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"stri\" as n),s) -> (mk_anti _loc n ~c:\"stru\" s : 'strus )\n     | _ -> failwith \"mk_anti _loc n ~c:\"stru\" s\n\")\n",
+             (Gram.mk_action
+                (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"stri" as n),s) ->
+                       (mk_anti _loc n ~c:"stru" s : 'strus )
+                   | _ -> failwith "mk_anti _loc n ~c:\"stru\" s\n"))));
+         ([`Stoken
+             (((function | `Ant ((""|"stri"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"stri\"),_)"));
           `Sself],
            ("Gram.mk_action\n  (fun (st : 'strus)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"stri\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st) : 'strus )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n\")\n",
              (Gram.mk_action
@@ -4226,24 +4237,24 @@ let apply () =
                    | _ ->
                        failwith
                          "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
+         ([`Snterm (Gram.obj (stru : 'stru Gram.t ))],
+           ("Gram.mk_action (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus ))\n",
+             (Gram.mk_action
+                (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus )))));
+         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"],
+           ("Gram.mk_action (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus ))\n",
+             (Gram.mk_action
+                (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"; `Sself],
            ("Gram.mk_action\n  (fun (xs : 'strus)  _  (st : 'stru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'strus ))\n",
              (Gram.mk_action
                 (fun (xs : 'strus)  _  (st : 'stru)  (_loc : FanLoc.t)  ->
                    (`Sem (_loc, st, xs) : 'strus )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Skeyword ";;"],
-           ("Gram.mk_action (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus ))\n",
-             (Gram.mk_action
-                (fun _  (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus )))));
          ([`Snterm (Gram.obj (stru : 'stru Gram.t )); `Sself],
            ("Gram.mk_action\n  (fun (xs : 'strus)  (st : 'stru)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'strus ))\n",
              (Gram.mk_action
                 (fun (xs : 'strus)  (st : 'stru)  (_loc : FanLoc.t)  ->
-                   (`Sem (_loc, st, xs) : 'strus )))));
-         ([`Snterm (Gram.obj (stru : 'stru Gram.t ))],
-           ("Gram.mk_action (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus ))\n",
-             (Gram.mk_action
-                (fun (st : 'stru)  (_loc : FanLoc.t)  -> (st : 'strus )))))]));
+                   (`Sem (_loc, st, xs) : 'strus )))))]));
    Gram.extend_single (top_phrase : 'top_phrase Gram.t )
      (None,
        (None, None,
@@ -4610,6 +4621,32 @@ let apply () =
          ([`Stoken
              (((function | `Ant ((""|"cst"),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"\"|\"cst\"),_)"));
+          `Skeyword ";"],
+           ("Gram.mk_action\n  (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\" as n),s) ->\n         (mk_anti _loc ~c:\"clfield\" n s : 'class_structure )\n     | _ -> failwith \"mk_anti _loc ~c:\"clfield\" n s\n\")\n",
+             (Gram.mk_action
+                (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"cst" as n),s) ->
+                       (mk_anti _loc ~c:"clfield" n s : 'class_structure )
+                   | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
+         ([`Stoken
+             (((function | `Ant ((""|"cst"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"cst\"),_)"));
+          `Sself],
+           ("Gram.mk_action\n  (fun (st : 'class_structure)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)\n      ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\" as n),s) ->\n         (`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st) : 'class_structure )\n     | _ -> failwith \"`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n\")\n",
+             (Gram.mk_action
+                (fun (st : 'class_structure)  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"cst" as n),s) ->
+                       (`Sem (_loc, (mk_anti _loc ~c:"clfield" n s), st) : 
+                       'class_structure )
+                   | _ ->
+                       failwith
+                         "`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n"))));
+         ([`Stoken
+             (((function | `Ant ((""|"cst"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"cst\"),_)"));
           `Skeyword ";";
           `Sself],
            ("Gram.mk_action\n  (fun (cst : 'class_structure)  _  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"cst\" as n),s) ->\n         ((`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : Ast.clfield ) : \n         'class_structure )\n     | _ ->\n         failwith\n           \"(`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : Ast.clfield )\n\")\n",
@@ -4623,18 +4660,30 @@ let apply () =
                    | _ ->
                        failwith
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : Ast.clfield )\n"))));
-         ([`Slist1
-             (Gram.srules
-                [([`Snterm (Gram.obj (clfield : 'clfield Gram.t ));
-                  `Skeyword ";"],
-                   ("Gram.mk_action\n  (fun _  (cst : 'clfield)  (_loc : FanLoc.t)  -> (cst : 'e__5 ))\n",
-                     (Gram.mk_action
-                        (fun _  (cst : 'clfield)  (_loc : FanLoc.t)  ->
-                           (cst : 'e__5 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_structure ))\n",
+         ([`Snterm (Gram.obj (clfield : 'clfield Gram.t ))],
+           ("Gram.mk_action\n  (fun (st : 'clfield)  (_loc : FanLoc.t)  -> (st : 'class_structure ))\n",
              (Gram.mk_action
-                (fun (l : 'e__5 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'class_structure )))))]));
+                (fun (st : 'clfield)  (_loc : FanLoc.t)  ->
+                   (st : 'class_structure )))));
+         ([`Snterm (Gram.obj (clfield : 'clfield Gram.t )); `Skeyword ";"],
+           ("Gram.mk_action\n  (fun _  (st : 'clfield)  (_loc : FanLoc.t)  -> (st : 'class_structure ))\n",
+             (Gram.mk_action
+                (fun _  (st : 'clfield)  (_loc : FanLoc.t)  ->
+                   (st : 'class_structure )))));
+         ([`Snterm (Gram.obj (clfield : 'clfield Gram.t ));
+          `Skeyword ";";
+          `Sself],
+           ("Gram.mk_action\n  (fun (xs : 'class_structure)  _  (st : 'clfield)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'class_structure ))\n",
+             (Gram.mk_action
+                (fun (xs : 'class_structure)  _  (st : 'clfield) 
+                   (_loc : FanLoc.t)  ->
+                   (`Sem (_loc, st, xs) : 'class_structure )))));
+         ([`Snterm (Gram.obj (clfield : 'clfield Gram.t )); `Sself],
+           ("Gram.mk_action\n  (fun (xs : 'class_structure)  (st : 'clfield)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, st, xs) : 'class_structure ))\n",
+             (Gram.mk_action
+                (fun (xs : 'class_structure)  (st : 'clfield) 
+                   (_loc : FanLoc.t)  ->
+                   (`Sem (_loc, st, xs) : 'class_structure )))))]));
    Gram.extend_single (clfield : 'clfield Gram.t )
      (None,
        (None, None,

@@ -29,7 +29,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
            {|$(vrn:String.capitalize x) ($(mloc _loc),$e) |}
       | _ -> super#pat e)
-    | e -> super#pat e ;
+    | e -> super#pat e 
   method! exp (x:exp) = with exp
     match x with 
     |`Ant(_loc,{cxt;sep;decorations;content=code}) ->
@@ -65,7 +65,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           let x = {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |} in
           {| {| $(id:$x)  |} |}
       | _ -> super#exp e)
-    | e -> super#exp e;
+    | e -> super#exp e
   end
                   
 
