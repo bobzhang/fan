@@ -87,8 +87,9 @@
   #+END_SRC
 
 
-* 04 class parser error
+* DONE 04 class parser error
 
+  This is not a bug :-), it's a build script bug in Fan, fixed now.
   can not parse... the class variable
   #+BEGIN_SRC caml
     class c_fold_pattern_vars ['accu] f init =  object
