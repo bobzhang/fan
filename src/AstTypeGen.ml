@@ -159,11 +159,46 @@ let gen_strip = with {pat:ctyp;exp}
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ();;
 
-
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
     ("Strip",some gen_strip);;
 
+(*************************************************************************)
+(* Fill location                                                         *) 
+(*************************************************************************)
+let gen_fill = with {pat:ctyp;exp}
+  let mk_variant cons params =
+    let result =
+      appl_of_list
+         (EP.of_str cons ::
+          {:exp|loc|} ::
+          (params |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
+    List.fold_right
+      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+        match (ty:ctyp) with
+        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc"|"ant")
+        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
+             res
+        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in
+  let mk_tuple params =
+    let result = 
+      params |> List.map (fun {FSig.exp0; _ } -> exp0) |> tuple_com in
+    List.fold_right
+      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+        match ty with
+        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc"|"ant")
+        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) ->  res
+        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in 
+  let mk_record _cols = assert false in
+  gen_stru
+    ~id:(`Pre "fill_loc_") ~mk_tuple
+    ~mk_record ~mk_variant
+    ~names:["loc"]
+    ();;
+
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
+    ("Fill",some gen_fill);;
 
   
   

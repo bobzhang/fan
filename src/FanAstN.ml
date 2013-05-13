@@ -1,14 +1,15 @@
 
-open StdLib
-include AstN;;
-(* {:fans|keep off; *)
-(*  derive ((\* Map2 Fold2 Map Fold Print OPrint *\) OEq ); |}; *)
 
-{:fans|keep off; derive ( OEq OPrint MetaExpr);|};;
+include AstN
+
+(** this is caused by #ant problem, which requires [fill_loc_ant] to be
+    specifiied *)
+let fill_loc_ant _loc x = x;;
+{:fans|keep off; derive (  Fill (* OEq OPrint *)(* MetaExpr *));|};;
 
 {:ocaml| {:include| "src/AstN.ml" |} |};;
 
-__MetaExpr__;;
+(* __MetaExpr__;; *)
 
 
 
