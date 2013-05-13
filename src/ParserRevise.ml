@@ -7,6 +7,7 @@ open FanUtil
 open GramLib
 
 {:create|Gram pos_exps|};;
+
 let apply () = begin 
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
@@ -993,12 +994,17 @@ let apply () = begin
       clsigi_quot:
       [ clsigi{x1}; ";"; S{x2} -> `Sem(_loc,x1,x2)
       | clsigi{x} -> x]
+
       class_signature:
-      [ `Ant ((""|"csg" as n),s) ->
-        mk_anti _loc  ~c:"clsigi" n s
-      | `Ant ((""|"csg" as n),s);";"; S{csg} ->
-          {|$(mk_anti _loc ~c:"clsigi" n s); $csg |}
-      | L1 [ clsigi{csg};";" -> csg ]{l} -> sem_of_list l ]
+      [ `Ant ((""|"csg" as n),s) -> mk_anti _loc  ~c:"clsigi" n s
+      | `Ant((""|"csg" as n),s);";" -> mk_anti _loc  ~c:"clsigi" n s
+      | `Ant ((""|"csg" as n),s); S{csg} -> (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : Ast.clsigi )            
+      | `Ant ((""|"csg" as n),s);";"; S{csg} -> (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : Ast.clsigi )
+      | clsigi{csg} -> csg
+      | clsigi{csg};";" -> csg            
+      | clsigi{csg};";";S{xs} -> `Sem(_loc,csg,xs)
+      | clsigi{csg}; S{xs} -> `Sem(_loc,csg,xs)]
+      
       clsigi:
       [ `Ant ((""|"csg" as n),s) -> mk_anti _loc ~c:"clsigi" n s
       | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clsigi_tag
@@ -1023,8 +1029,7 @@ let apply () = begin
        | clfield{st} -> st
        | clfield{st};";" -> st
        | clfield{st};";";S{xs} -> `Sem(_loc,st,xs)
-       | clfield{st}; S{xs} -> `Sem(_loc,st,xs)
-       ]
+       | clfield{st}; S{xs} -> `Sem(_loc,st,xs)]
 
 
       

@@ -4509,6 +4509,32 @@ let apply () =
          ([`Stoken
              (((function | `Ant ((""|"csg"),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"\"|\"csg\"),_)"));
+          `Skeyword ";"],
+           ("Gram.mk_action\n  (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"csg\" as n),s) ->\n         (mk_anti _loc ~c:\"clsigi\" n s : 'class_signature )\n     | _ -> failwith \"mk_anti _loc ~c:\"clsigi\" n s\n\")\n",
+             (Gram.mk_action
+                (fun _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"csg" as n),s) ->
+                       (mk_anti _loc ~c:"clsigi" n s : 'class_signature )
+                   | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
+         ([`Stoken
+             (((function | `Ant ((""|"csg"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"csg\"),_)"));
+          `Sself],
+           ("Gram.mk_action\n  (fun (csg : 'class_signature)  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"csg\" as n),s) ->\n         ((`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi ) : \n         'class_signature )\n     | _ ->\n         failwith\n           \"(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi )\n\")\n",
+             (Gram.mk_action
+                (fun (csg : 'class_signature)  (__fan_0 : [> FanToken.t]) 
+                   (_loc : FanLoc.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"csg" as n),s) ->
+                       ((`Sem (_loc, (mk_anti _loc ~c:"clsigi" n s), csg) : 
+                       Ast.clsigi ) : 'class_signature )
+                   | _ ->
+                       failwith
+                         "(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi )\n"))));
+         ([`Stoken
+             (((function | `Ant ((""|"csg"),_) -> true | _ -> false)),
+               (`Normal, "`Ant ((\"\"|\"csg\"),_)"));
           `Skeyword ";";
           `Sself],
            ("Gram.mk_action\n  (fun (csg : 'class_signature)  _  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\"|\"csg\" as n),s) ->\n         ((`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi ) : \n         'class_signature )\n     | _ ->\n         failwith\n           \"(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi )\n\")\n",
@@ -4522,18 +4548,30 @@ let apply () =
                    | _ ->
                        failwith
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : Ast.clsigi )\n"))));
-         ([`Slist1
-             (Gram.srules
-                [([`Snterm (Gram.obj (clsigi : 'clsigi Gram.t ));
-                  `Skeyword ";"],
-                   ("Gram.mk_action (fun _  (csg : 'clsigi)  (_loc : FanLoc.t)  -> (csg : 'e__4 ))\n",
-                     (Gram.mk_action
-                        (fun _  (csg : 'clsigi)  (_loc : FanLoc.t)  ->
-                           (csg : 'e__4 )))))])],
-           ("Gram.mk_action\n  (fun (l : 'e__4 list)  (_loc : FanLoc.t)  ->\n     (sem_of_list l : 'class_signature ))\n",
+         ([`Snterm (Gram.obj (clsigi : 'clsigi Gram.t ))],
+           ("Gram.mk_action\n  (fun (csg : 'clsigi)  (_loc : FanLoc.t)  -> (csg : 'class_signature ))\n",
              (Gram.mk_action
-                (fun (l : 'e__4 list)  (_loc : FanLoc.t)  ->
-                   (sem_of_list l : 'class_signature )))))]));
+                (fun (csg : 'clsigi)  (_loc : FanLoc.t)  ->
+                   (csg : 'class_signature )))));
+         ([`Snterm (Gram.obj (clsigi : 'clsigi Gram.t )); `Skeyword ";"],
+           ("Gram.mk_action\n  (fun _  (csg : 'clsigi)  (_loc : FanLoc.t)  -> (csg : 'class_signature ))\n",
+             (Gram.mk_action
+                (fun _  (csg : 'clsigi)  (_loc : FanLoc.t)  ->
+                   (csg : 'class_signature )))));
+         ([`Snterm (Gram.obj (clsigi : 'clsigi Gram.t ));
+          `Skeyword ";";
+          `Sself],
+           ("Gram.mk_action\n  (fun (xs : 'class_signature)  _  (csg : 'clsigi)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, csg, xs) : 'class_signature ))\n",
+             (Gram.mk_action
+                (fun (xs : 'class_signature)  _  (csg : 'clsigi) 
+                   (_loc : FanLoc.t)  ->
+                   (`Sem (_loc, csg, xs) : 'class_signature )))));
+         ([`Snterm (Gram.obj (clsigi : 'clsigi Gram.t )); `Sself],
+           ("Gram.mk_action\n  (fun (xs : 'class_signature)  (csg : 'clsigi)  (_loc : FanLoc.t)  ->\n     (`Sem (_loc, csg, xs) : 'class_signature ))\n",
+             (Gram.mk_action
+                (fun (xs : 'class_signature)  (csg : 'clsigi) 
+                   (_loc : FanLoc.t)  ->
+                   (`Sem (_loc, csg, xs) : 'class_signature )))))]));
    Gram.extend_single (clsigi : 'clsigi Gram.t )
      (None,
        (None, None,
