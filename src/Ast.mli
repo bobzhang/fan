@@ -16,7 +16,7 @@
     exp               :: The type of expressions
     case         :: The type of cases for match/function/try constructions
     ident              :: The type of identifiers (including path like Foo(X).Bar.y)
-    binding            :: The type of let bindings
+    bind            :: The type of let binds
     rec_exp        :: The type of record definitions
 
     == Modules ==
@@ -318,8 +318,8 @@ and exp =
   | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * exp) (* ~s or ~s:e *)
   | `Lazy of (loc * exp) (* lazy e *)
-  | `LetIn of (loc * rec_flag * binding * exp)
-  | `LetTryInWith of (loc * rec_flag * binding * exp * case)        
+  | `LetIn of (loc * rec_flag * bind * exp)
+  | `LetTryInWith of (loc * rec_flag * bind * exp * case)        
   | `LetModule of (loc * auident * mexp * exp) (* let module s = me in e *)
   | `Match of (loc * exp * case) (* match e with [ mc ] *)
   | `New of (loc * ident) (* new i *)
@@ -427,8 +427,8 @@ and constr =
     value-name  { parameter }  [: typexp] =  exp  
    value-name : type  { typeconstr } .  typexp =  exp
    *)           
-and binding =
-  [  `And of (loc * binding * binding)
+and bind =
+  [  `And of (loc * bind * bind)
   | `Bind  of (loc * pat * exp)
   | ant  ]
 and case =
@@ -467,7 +467,7 @@ and stru =
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `Open of (loc * ident) (* open i *)
   | `Type of (loc * typedecl) (* type t *)
-  | `Value of (loc * rec_flag * binding) (* value (rec)? bi *)
+  | `Value of (loc * rec_flag * bind) (* value (rec)? bi *)
   | ant  ]
 
 (*
@@ -538,9 +538,7 @@ and clsigi =
   | `VirMeth of (loc *  alident * private_flag * ctyp)
   | `Eq of (loc * ctyp * ctyp)        
   | ant ]
-(* and clfieldi = *)
-(*   [ `InheritI of (loc * clsigi) *)
-(*   | ]       *)
+
 and cldecl =
   [ `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
   | `ClDeclS of (loc * virtual_flag * ident * clexp )
@@ -551,7 +549,7 @@ and clexp =
   | vid' (* class-path*)
   | `ClApply of (loc * vid * type_parameters)
   | `CeFun of (loc * pat * clexp) (* fun p -> ce *)
-  | `LetIn of (loc * rec_flag * binding * clexp) (* let (rec)? bi in ce *)
+  | `LetIn of (loc * rec_flag * bind * clexp) (* let (rec)? bi in ce *)
   | `Obj of (loc  * clfield) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
   | `ObjPat of (loc * pat * clfield)(*object (p) .. end*)

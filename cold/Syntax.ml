@@ -25,7 +25,7 @@ let case = Gram.mk "case"
 
 let case0 = Gram.mk "case0"
 
-let binding = Gram.mk "binding"
+let bind = Gram.mk "bind"
 
 let class_declaration = Gram.mk "class_declaration"
 
@@ -33,7 +33,7 @@ let class_description = Gram.mk "class_description"
 
 let clexp = Gram.mk "clexp"
 
-let class_fun_binding = Gram.mk "class_fun_binding"
+let class_fun_bind = Gram.mk "class_fun_bind"
 
 let class_fun_def = Gram.mk "class_fun_def"
 
@@ -81,7 +81,7 @@ let constructor_declarations = Gram.mk "constructor_declarations"
 
 let ctyp = Gram.mk "ctyp"
 
-let cvalue_binding = Gram.mk "cvalue_binding"
+let cvalue_bind = Gram.mk "cvalue_bind"
 
 let direction_flag = Gram.mk "direction_flag"
 
@@ -99,7 +99,7 @@ let field_exp = Gram.mk "field_exp"
 
 let field_exp_list = Gram.mk "field_exp_list"
 
-let fun_binding = Gram.mk "fun_binding"
+let fun_bind = Gram.mk "fun_bind"
 
 let fun_def = Gram.mk "fun_def"
 
@@ -129,7 +129,7 @@ let label_pat = Gram.mk "label_pat"
 
 let label_longident = Gram.mk "label_longident"
 
-let let_binding = Gram.mk "let_binding"
+let let_bind = Gram.mk "let_bind"
 
 let meth_list = Gram.mk "meth_list"
 
@@ -263,7 +263,7 @@ let clexp_quot = Gram.mk "clexp_quot"
 
 let constr_quot = Gram.mk "constr_quot"
 
-let binding_quot = Gram.mk "binding_quot"
+let bind_quot = Gram.mk "bind_quot"
 
 let rec_exp_quot = Gram.mk "rec_exp_quot"
 

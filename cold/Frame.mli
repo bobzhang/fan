@@ -61,7 +61,7 @@ val fun_of_tydcl :
         (or_ctyp -> exp ) ->
           (ctyp -> row_field -> exp) ->  (* labeld as variant *)
             typedecl -> exp
-val binding_of_tydcl :
+val bind_of_tydcl :
   ?cons_transform:(string -> string) ->
   (ctyp -> exp ) ->
   typedecl ->
@@ -73,7 +73,7 @@ val binding_of_tydcl :
   left_type_variable:FSig.basic_id_transform ->
   mk_record:(FSig.record_col list -> exp) ->
   (* destination:FSig.destination -> *)
-    binding
+    bind
       
 val stru_of_mtyps :
   ?module_name:string ->

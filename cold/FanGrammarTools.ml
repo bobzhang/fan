@@ -393,7 +393,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
              g) : Ast.exp )
     | None  ->
         (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk"))) : Ast.exp ) in
-  let local_binding_of_name =
+  let local_bind_of_name =
     function
     | { exp = (`Lid (_,i) : Ast.exp); tvar = x; loc = _loc } ->
         (`Bind
@@ -408,14 +408,14 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                        (`Dot
                           (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
-        Ast.binding )
+        Ast.bind )
     | { exp;_} ->
         failwithf "internal error in the Grammar extension %s"
           (Objs.dump_exp exp) in
   match locals with
   | None |Some [] -> default
   | Some ll ->
-      let locals = and_of_list (List.map local_binding_of_name ll) in
+      let locals = and_of_list (List.map local_bind_of_name ll) in
       (`LetIn
          (_loc, (`ReNil _loc),
            (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),

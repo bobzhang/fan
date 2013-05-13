@@ -24,14 +24,14 @@ val and_ctyp : ctyp Gram.t
 val case : case Gram.t
 val case0 : case Gram.t
 val case_quot : case Gram.t
-val binding : binding Gram.t
-val binding_quot : binding Gram.t
+val bind : bind Gram.t
+val bind_quot : bind Gram.t
 val rec_exp_quot : rec_exp Gram.t
 val class_declaration : cldecl Gram.t
 val class_description : cltdecl Gram.t
 val clexp : clexp Gram.t
 val clexp_quot : clexp Gram.t
-val class_fun_binding : clexp Gram.t
+val class_fun_bind : clexp Gram.t
 val class_fun_def : clexp Gram.t
 val class_info_for_cltyp : cltyp Gram.t
 val class_longident : ident Gram.t
@@ -60,7 +60,7 @@ val constructor_declaration : of_ctyp Gram.t
 val constructor_declarations : or_ctyp Gram.t
 val ctyp : ctyp Gram.t
 val ctyp_quot : ctyp Gram.t
-val cvalue_binding : exp Gram.t
+val cvalue_bind : exp Gram.t
 val direction_flag : direction_flag Gram.t
 val direction_flag_quot : direction_flag Gram.t
 val dummy : unit Gram.t
@@ -70,7 +70,7 @@ val exp_eoi : exp Gram.t
 val exp_quot : exp Gram.t
 val field_exp : rec_exp Gram.t
 val field_exp_list : rec_exp Gram.t
-val fun_binding : exp Gram.t
+val fun_bind : exp Gram.t
 val fun_def : exp Gram.t
 val ident : ident Gram.t
 val ident_quot : ident Gram.t
@@ -87,7 +87,7 @@ val label_longident : ident Gram.t
 val label_pat : rec_pat Gram.t
 val label_pat_list : rec_pat Gram.t
     
-val let_binding : binding Gram.t
+val let_bind : bind Gram.t
 val meth_list : (name_ctyp * row_var_flag) Gram.t 
 val meth_decl : name_ctyp Gram.t
 val mbind : mbind Gram.t

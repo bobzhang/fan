@@ -574,11 +574,11 @@ and pp_print_exp fmt =
         pp_print_exp _a1
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_exp _a3
+        pp_print_rec_flag _a1 pp_print_bind _a2 pp_print_exp _a3
   | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
       Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a@ %a)@]"
-        pp_print_loc _a0 pp_print_rec_flag _a1 pp_print_binding _a2
-        pp_print_exp _a3 pp_print_case _a4
+        pp_print_loc _a0 pp_print_rec_flag _a1 pp_print_bind _a2 pp_print_exp
+        _a3 pp_print_case _a4
   | `LetModule (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" pp_print_loc
         _a0 pp_print_auident _a1 pp_print_mexp _a2 pp_print_exp _a3
@@ -750,11 +750,11 @@ and pp_print_constr fmt =
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_constr _a1 pp_print_constr _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result36)
-and pp_print_binding fmt =
+and pp_print_bind fmt =
   function
   | `And (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_binding _a1 pp_print_binding _a2
+        pp_print_bind _a1 pp_print_bind _a2
   | `Bind (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" pp_print_loc _a0
         pp_print_pat _a1 pp_print_exp _a2
@@ -838,7 +838,7 @@ and pp_print_stru fmt =
         pp_print_typedecl _a1
   | `Value (_a0,_a1,_a2) ->
       Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2
+        pp_print_rec_flag _a1 pp_print_bind _a2
   | #ant as _a0 -> (pp_print_ant fmt _a0 :>'result32)
 and pp_print_cltdecl fmt =
   function
@@ -925,7 +925,7 @@ and pp_print_clexp fmt =
         pp_print_pat _a1 pp_print_clexp _a2
   | `LetIn (_a0,_a1,_a2,_a3) ->
       Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" pp_print_loc _a0
-        pp_print_rec_flag _a1 pp_print_binding _a2 pp_print_clexp _a3
+        pp_print_rec_flag _a1 pp_print_bind _a2 pp_print_clexp _a3
   | `Obj (_a0,_a1) ->
       Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" pp_print_loc _a0
         pp_print_clfield _a1
@@ -1602,10 +1602,10 @@ class print =
               self#exp _a1
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2 self#exp _a3
+              self#rec_flag _a1 self#bind _a2 self#exp _a3
         | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
             Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a@ %a)@]"
-              self#loc _a0 self#rec_flag _a1 self#binding _a2 self#exp _a3
+              self#loc _a0 self#rec_flag _a1 self#bind _a2 self#exp _a3
               self#case _a4
         | `LetModule (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a@ %a)@]" 
@@ -1785,12 +1785,12 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
               self#constr _a1 self#constr _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method binding : 'fmt -> binding -> unit=
+    method bind : 'fmt -> bind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`And@ %a@ %a@ %a)@]" self#loc _a0
-              self#binding _a1 self#binding _a2
+              self#bind _a1 self#bind _a2
         | `Bind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a@ %a)@]" self#loc _a0
               self#pat _a1 self#exp _a2
@@ -1877,7 +1877,7 @@ class print =
               self#typedecl _a1
         | `Value (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2
+              self#rec_flag _a1 self#bind _a2
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method cltdecl : 'fmt -> cltdecl -> unit=
       fun fmt  ->
@@ -1970,7 +1970,7 @@ class print =
               self#pat _a1 self#clexp _a2
         | `LetIn (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a@ %a)@]" self#loc _a0
-              self#rec_flag _a1 self#binding _a2 self#clexp _a3
+              self#rec_flag _a1 self#bind _a2 self#clexp _a3
         | `Obj (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Obj@ %a@ %a)@]" self#loc _a0
               self#clfield _a1
@@ -2675,12 +2675,12 @@ class map =
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
-          let _a2 = self#binding _a2 in
+          let _a2 = self#bind _a2 in
           let _a3 = self#exp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
-          let _a2 = self#binding _a2 in
+          let _a2 = self#bind _a2 in
           let _a3 = self#exp _a3 in
           let _a4 = self#case _a4 in `LetTryInWith (_a0, _a1, _a2, _a3, _a4)
       | `LetModule (_a0,_a1,_a2,_a3) ->
@@ -2889,17 +2889,17 @@ class map =
           let _a1 = self#constr _a1 in
           let _a2 = self#constr _a2 in `And (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>constr)
-    method binding : binding -> binding=
+    method bind : bind -> bind=
       function
       | `And (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#binding _a1 in
-          let _a2 = self#binding _a2 in `And (_a0, _a1, _a2)
+          let _a1 = self#bind _a1 in
+          let _a2 = self#bind _a2 in `And (_a0, _a1, _a2)
       | `Bind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#pat _a1 in
           let _a2 = self#exp _a2 in `Bind (_a0, _a1, _a2)
-      | #ant as _a0 -> (self#ant _a0 : ant  :>binding)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>bind)
     method case : case -> case=
       function
       | `Bar (_a0,_a1,_a2) ->
@@ -2993,7 +2993,7 @@ class map =
       | `Value (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
-          let _a2 = self#binding _a2 in `Value (_a0, _a1, _a2)
+          let _a2 = self#bind _a2 in `Value (_a0, _a1, _a2)
       | #ant as _a0 -> (self#ant _a0 : ant  :>stru)
     method cltdecl : cltdecl -> cltdecl=
       function
@@ -3106,7 +3106,7 @@ class map =
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#rec_flag _a1 in
-          let _a2 = self#binding _a2 in
+          let _a2 = self#bind _a2 in
           let _a3 = self#clexp _a3 in `LetIn (_a0, _a1, _a2, _a3)
       | `Obj (_a0,_a1) ->
           let _a0 = self#loc _a0 in
@@ -3638,11 +3638,11 @@ class fold =
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in self#exp _a3
+          let self = self#bind _a2 in self#exp _a3
       | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in
+          let self = self#bind _a2 in
           let self = self#exp _a3 in self#case _a4
       | `LetModule (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
@@ -3779,11 +3779,11 @@ class fold =
           let self = self#loc _a0 in
           let self = self#constr _a1 in self#constr _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method binding : binding -> 'self_type=
+    method bind : bind -> 'self_type=
       function
       | `And (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#binding _a1 in self#binding _a2
+          let self = self#bind _a1 in self#bind _a2
       | `Bind (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#pat _a1 in self#exp _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -3845,7 +3845,7 @@ class fold =
       | `Type (_a0,_a1) -> let self = self#loc _a0 in self#typedecl _a1
       | `Value (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
-          let self = self#rec_flag _a1 in self#binding _a2
+          let self = self#rec_flag _a1 in self#bind _a2
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method cltdecl : cltdecl -> 'self_type=
       function
@@ -3934,7 +3934,7 @@ class fold =
       | `LetIn (_a0,_a1,_a2,_a3) ->
           let self = self#loc _a0 in
           let self = self#rec_flag _a1 in
-          let self = self#binding _a2 in self#clexp _a3
+          let self = self#bind _a2 in self#clexp _a3
       | `Obj (_a0,_a1) -> let self = self#loc _a0 in self#clfield _a1
       | `ObjEnd _a0 -> self#loc _a0
       | `ObjPat (_a0,_a1,_a2) ->
@@ -4463,11 +4463,11 @@ and strip_loc_exp =
   | `Lazy (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Lazy _a1
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
-      let _a2 = strip_loc_binding _a2 in
+      let _a2 = strip_loc_bind _a2 in
       let _a3 = strip_loc_exp _a3 in `LetIn (_a1, _a2, _a3)
   | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
       let _a1 = strip_loc_rec_flag _a1 in
-      let _a2 = strip_loc_binding _a2 in
+      let _a2 = strip_loc_bind _a2 in
       let _a3 = strip_loc_exp _a3 in
       let _a4 = strip_loc_case _a4 in `LetTryInWith (_a1, _a2, _a3, _a4)
   | `LetModule (_a0,_a1,_a2,_a3) ->
@@ -4613,11 +4613,11 @@ and strip_loc_constr =
       let _a1 = strip_loc_constr _a1 in
       let _a2 = strip_loc_constr _a2 in `And (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result284)
-and strip_loc_binding =
+and strip_loc_bind =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_binding _a1 in
-      let _a2 = strip_loc_binding _a2 in `And (_a1, _a2)
+      let _a1 = strip_loc_bind _a1 in
+      let _a2 = strip_loc_bind _a2 in `And (_a1, _a2)
   | `Bind (_a0,_a1,_a2) ->
       let _a1 = strip_loc_pat _a1 in
       let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
@@ -4683,7 +4683,7 @@ and strip_loc_stru =
   | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
   | `Value (_a0,_a1,_a2) ->
       let _a1 = strip_loc_rec_flag _a1 in
-      let _a2 = strip_loc_binding _a2 in `Value (_a1, _a2)
+      let _a2 = strip_loc_bind _a2 in `Value (_a1, _a2)
   | #ant as _a0 -> (strip_loc_ant _a0 :>'result280)
 and strip_loc_cltdecl =
   function
@@ -4771,7 +4771,7 @@ and strip_loc_clexp =
       let _a2 = strip_loc_clexp _a2 in `CeFun (_a1, _a2)
   | `LetIn (_a0,_a1,_a2,_a3) ->
       let _a1 = strip_loc_rec_flag _a1 in
-      let _a2 = strip_loc_binding _a2 in
+      let _a2 = strip_loc_bind _a2 in
       let _a3 = strip_loc_clexp _a3 in `LetIn (_a1, _a2, _a3)
   | `Obj (_a0,_a1) -> let _a1 = strip_loc_clfield _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
@@ -5044,8 +5044,8 @@ let map_mbind f =
 let map_constr f =
   object  inherit  map as super method! constr x = f (super#constr x) end
 
-let map_binding f =
-  object  inherit  map as super method! binding x = f (super#binding x) end
+let map_bind f =
+  object  inherit  map as super method! bind x = f (super#bind x) end
 
 let map_case f =
   object  inherit  map as super method! case x = f (super#case x) end
@@ -5174,7 +5174,7 @@ let dump_mbind = LibUtil.to_string_of_printer dump#mbind
 
 let dump_constr = LibUtil.to_string_of_printer dump#constr
 
-let dump_binding = LibUtil.to_string_of_printer dump#binding
+let dump_bind = LibUtil.to_string_of_printer dump#bind
 
 let dump_case = LibUtil.to_string_of_printer dump#case
 

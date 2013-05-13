@@ -670,7 +670,7 @@ let rec exp (x : exp) =
       error loc "labeled expression not allowed here"
   | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (exp e))
   | `LetIn (loc,rf,bi,e) ->
-      mkexp loc (Pexp_let ((mkrf rf), (binding bi []), (exp e)))
+      mkexp loc (Pexp_let ((mkrf rf), (bind bi []), (exp e)))
   | `LetTryInWith (_loc,rf,bi,e,cas) ->
       let cas =
         let rec f x =
@@ -777,13 +777,13 @@ and label_exp (x : exp) =
   | `OptLabl (_loc,`Lid (_,lab),eo) -> (("?" ^ lab), (exp eo))
   | `OptLablS (loc,`Lid (_,lab)) -> (("?" ^ lab), (exp (`Lid (loc, lab))))
   | e -> ("", (exp e))
-and binding (x : binding) acc =
+and bind (x : bind) acc =
   match x with
-  | (`And (_loc,x,y) : Ast.binding) -> binding x (binding y acc)
+  | (`And (_loc,x,y) : Ast.bind) -> bind x (bind y acc)
   | (`Bind
        (_loc,(`Lid (sloc,bind_name) : Ast.pat),`Constraint
                                                  (_,e,`TyTypePol (_,vs,ty)))
-      : Ast.binding) ->
+      : Ast.bind) ->
       let rec id_to_string (x : ctyp) =
         match x with
         | `Lid (_,x) -> [x]
@@ -807,11 +807,11 @@ and binding (x : binding) acc =
              ((mkpat (Ppat_var (with_loc bind_name sloc))),
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
-  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Ast.binding) ->
+  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Ast.bind) ->
       ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Ast.pat )),
         (exp e))
       :: acc
-  | (`Bind (_loc,p,e) : Ast.binding) -> ((pat p), (exp e)) :: acc
+  | (`Bind (_loc,p,e) : Ast.bind) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x : case) =
   let cases = list_of_or x [] in
@@ -822,11 +822,11 @@ and case (x : case) =
          Some ((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))
      | x -> errorf (loc_of x) "case %s" (dump_case x)) cases
 and mklabexp (x : rec_exp) =
-  let bindings = list_of_sem x [] in
+  let binds = list_of_sem x [] in
   List.filter_map
     (function
      | (`RecBind (_loc,i,e) : Ast.rec_exp) -> Some ((ident i), (exp e))
-     | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x)) bindings
+     | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x)) binds
 and mktype_decl (x : typedecl) =
   let type_decl tl cl loc (x : type_info) =
     match x with
@@ -945,7 +945,7 @@ and sigi (s : sigi) (l : signature) =
    | `Module (loc,`Uid (sloc,n),mt) ->
        (mksig loc (Psig_module ((with_loc n sloc), (mtyp mt)))) :: l
    | `RecModule (loc,mb) ->
-       (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
+       (mksig loc (Psig_recmodule (module_sig_bind mb []))) :: l
    | `ModuleTypeEnd (loc,`Uid (sloc,n)) ->
        (mksig loc (Psig_modtype ((with_loc n sloc), Pmodtype_abstract))) :: l
    | `ModuleType (loc,`Uid (sloc,n),mt) ->
@@ -957,19 +957,19 @@ and sigi (s : sigi) (l : signature) =
        (mksig loc (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
        :: l
    | t -> errorf (loc_of t) "sigi: %s" (dump_sigi t) : signature )
-and module_sig_binding (x : mbind)
+and module_sig_bind (x : mbind)
   (acc : (string Asttypes.loc * Parsetree.module_type) list) =
   match x with
-  | `And (_,x,y) -> module_sig_binding x (module_sig_binding y acc)
+  | `And (_,x,y) -> module_sig_bind x (module_sig_bind y acc)
   | `Constraint (_loc,`Uid (sloc,s),mt) -> ((with_loc s sloc), (mtyp mt)) ::
       acc
-  | t -> errorf (loc_of t) "module_sig_binding: %s" (dump_mbind t)
-and module_str_binding (x : Ast.mbind) acc =
+  | t -> errorf (loc_of t) "module_sig_bind: %s" (dump_mbind t)
+and module_str_bind (x : Ast.mbind) acc =
   match x with
-  | `And (_,x,y) -> module_str_binding x (module_str_binding y acc)
+  | `And (_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind (_loc,`Uid (sloc,s),mt,me) ->
       ((with_loc s sloc), (mtyp mt), (mexp me)) :: acc
-  | t -> errorf (loc_of t) "module_str_binding: %s" (dump_mbind t)
+  | t -> errorf (loc_of t) "module_str_bind: %s" (dump_mbind t)
 and mexp (x : Ast.mexp) =
   match x with
   | #vid' as i ->
@@ -1021,13 +1021,13 @@ and stru (s : stru) (l : structure) =
    | `Module (loc,`Uid (sloc,n),me) ->
        (mkstr loc (Pstr_module ((with_loc n sloc), (mexp me)))) :: l
    | `RecModule (loc,mb) ->
-       (mkstr loc (Pstr_recmodule (module_str_binding mb []))) :: l
+       (mkstr loc (Pstr_recmodule (module_str_bind mb []))) :: l
    | `ModuleType (loc,`Uid (sloc,n),mt) ->
        (mkstr loc (Pstr_modtype ((with_loc n sloc), (mtyp mt)))) :: l
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
-   | `Value (loc,rf,bi) ->
-       (mkstr loc (Pstr_value ((mkrf rf), (binding bi [])))) :: l
+   | `Value (loc,rf,bi) -> (mkstr loc (Pstr_value ((mkrf rf), (bind bi []))))
+       :: l
    | x -> errorf (loc_of x) "stru : %s" (dump_stru x) : structure )
 and cltyp (x : Ast.cltyp) =
   match x with
@@ -1166,7 +1166,7 @@ and clexp (x : Ast.clexp) =
       mkcl loc (Pcl_fun (("?" ^ lab), None, (pat p), (clexp ce)))
   | `CeFun (loc,p,ce) -> mkcl loc (Pcl_fun ("", None, (pat p), (clexp ce)))
   | `LetIn (loc,rf,bi,ce) ->
-      mkcl loc (Pcl_let ((mkrf rf), (binding bi []), (clexp ce)))
+      mkcl loc (Pcl_let ((mkrf rf), (bind bi []), (clexp ce)))
   | `ObjEnd loc ->
       mkcl loc
         (Pcl_structure { pcstr_pat = (pat (`Any loc)); pcstr_fields = [] })

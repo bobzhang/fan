@@ -222,8 +222,8 @@ let table (n,t) =
      (_loc, (`ReNil _loc),
        (`Bind (_loc, (`Lid (_loc, n)), (output_byte_array t)))) : Ast.stru )
 
-let binding_table (n,t) =
-  (`Bind (_loc, (`Lid (_loc, n)), (output_byte_array t)) : Ast.binding )
+let bind_table (n,t) =
+  (`Bind (_loc, (`Lid (_loc, n)), (output_byte_array t)) : Ast.bind )
 
 let partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
@@ -268,7 +268,7 @@ let partition ~counter  ~tables  (i,p) =
             (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "c")), body))))))) : 
     Ast.stru )
 
-let binding_partition ~counter  ~tables  (i,p) =
+let bind_partition ~counter  ~tables  (i,p) =
   let rec gen_tree =
     function
     | Lte (i,yes,no) ->
@@ -306,7 +306,7 @@ let binding_partition ~counter  ~tables  (i,p) =
   let f = mk_partition_name i in
   (`Bind
      (_loc, (`Lid (_loc, f)),
-       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "c")), body))))) : Ast.binding )
+       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "c")), body))))) : Ast.bind )
 
 let best_final final =
   let fin = ref None in
@@ -356,7 +356,7 @@ let gen_definition _loc l =
        (`Bind
           (_loc, (`Lid (_loc, f)),
             (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), body))))) : 
-       Ast.binding ) in
+       Ast.bind ) in
      match best_final final with
      | None  -> Some (ret body)
      | Some i ->
@@ -376,7 +376,7 @@ let gen_definition _loc l =
                                     (`Field (_loc, g, (`Lid (_loc, "mark")))),
                                     (`Lid (_loc, "lexbuf")))),
                                (`Int (_loc, (string_of_int i))))), body))) : 
-                Ast.exp )) : binding option ) in
+                Ast.exp )) : bind option ) in
   let part_tbl = Hashtbl.create 30 in
   let brs = Array.of_list l in
   let rs = Array.map fst brs in
@@ -392,9 +392,9 @@ let gen_definition _loc l =
     List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
       (partitions ~part_tbl ()) in
   let parts =
-    List.map (binding_partition ~counter:table_counter ~tables) partitions in
+    List.map (bind_partition ~counter:table_counter ~tables) partitions in
   let tables =
-    List.map (fun (i,arr)  -> binding_table ((mk_table_name i), arr))
+    List.map (fun (i,arr)  -> bind_table ((mk_table_name i), arr))
       (List.sort (fun (i0,_)  (i1,_)  -> compare i0 i1)
          (get_tables ~tables ())) in
   let (b,states) =

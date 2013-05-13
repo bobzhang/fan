@@ -115,7 +115,7 @@ let auto_binds =
                                                                     (_loc,
                                                                     "lex_last_action")))))),
                                                           (`Int (_loc, "-1"))))))))))))))))))))))) : 
-  Ast.binding );
+  Ast.bind );
   (`Bind
      (_loc, (`Lid (_loc, "__ocaml_lex_next_char")),
        (`Fun
@@ -233,7 +233,7 @@ let auto_binds =
                                                          (`Uid (_loc, "Char")),
                                                          (`Lid (_loc, "code")))),
                                                     (`Lid (_loc, "c"))))))))))))))))))))) : 
-  Ast.binding )]
+  Ast.bind )]
 
 let output_pats (pats : int list) =
   bar_of_list
@@ -360,7 +360,7 @@ let output_trans (i : int) (trans : automata) =
                           (`Lid (_loc, "lexbuf")))), moves) : Ast.exp )]) in
   (`Bind
      (_loc, (`Lid (_loc, state)),
-       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), e))))) : Ast.binding )
+       (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), e))))) : Ast.bind )
 
 let output_args (args : string list) e =
   List.fold_right
@@ -370,7 +370,7 @@ let output_args (args : string list) e =
 let output_automata (transitions : Lexgen.automata array) =
   (Array.to_list
      (Array.mapi (fun i  auto  -> output_trans i auto) transitions) : 
-  binding list )
+  bind list )
 
 let output_env (env : t_env) =
   let env =
@@ -416,7 +416,7 @@ let output_env (env : t_env) =
                    (_loc,
                      (`App
                         (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                          nstart)), nend))) : Ast.binding )
+                          nstart)), nend))) : Ast.bind )
        | Ident_char (o,nstart) ->
            let sub =
              if o
@@ -434,7 +434,7 @@ let output_env (env : t_env) =
               (_loc, id,
                 (`App
                    (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                     nstart))) : Ast.binding )) env
+                     nstart))) : Ast.bind )) env
 
 let output_entry
   ({ auto_mem_size; auto_initial_state = (init_num,init_moves); auto_actions

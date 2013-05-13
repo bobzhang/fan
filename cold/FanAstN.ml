@@ -456,11 +456,11 @@ class eq =
             (self#alident _a0 _b0) && (self#exp _a1 _b1)
         | (`Lazy _a0,`Lazy _b0) -> self#exp _a0 _b0
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
-            ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
+            ((self#rec_flag _a0 _b0) && (self#bind _a1 _b1)) &&
               (self#exp _a2 _b2)
         | (`LetTryInWith (_a0,_a1,_a2,_a3),`LetTryInWith (_b0,_b1,_b2,_b3))
             ->
-            (((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
+            (((self#rec_flag _a0 _b0) && (self#bind _a1 _b1)) &&
                (self#exp _a2 _b2))
               && (self#case _a3 _b3)
         | (`LetModule (_a0,_a1,_a2),`LetModule (_b0,_b1,_b2)) ->
@@ -582,11 +582,11 @@ class eq =
             (self#constr _a0 _b0) && (self#constr _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result48)
         | (_,_) -> false
-    method binding : binding -> binding -> 'result49=
+    method bind : bind -> bind -> 'result49=
       fun _a0  _b0  ->
         match (_a0, _b0) with
         | (`And (_a0,_a1),`And (_b0,_b1)) ->
-            (self#binding _a0 _b0) && (self#binding _a1 _b1)
+            (self#bind _a0 _b0) && (self#bind _a1 _b1)
         | (`Bind (_a0,_a1),`Bind (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#exp _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result49)
@@ -642,7 +642,7 @@ class eq =
         | (`Open _a0,`Open _b0) -> self#ident _a0 _b0
         | (`Type _a0,`Type _b0) -> self#typedecl _a0 _b0
         | (`Value (_a0,_a1),`Value (_b0,_b1)) ->
-            (self#rec_flag _a0 _b0) && (self#binding _a1 _b1)
+            (self#rec_flag _a0 _b0) && (self#bind _a1 _b1)
         | ((#ant as _a0),(#ant as _b0)) -> (self#ant _a0 _b0 :>'result52)
         | (_,_) -> false
     method cltdecl : cltdecl -> cltdecl -> 'result53=
@@ -721,7 +721,7 @@ class eq =
         | (`CeFun (_a0,_a1),`CeFun (_b0,_b1)) ->
             (self#pat _a0 _b0) && (self#clexp _a1 _b1)
         | (`LetIn (_a0,_a1,_a2),`LetIn (_b0,_b1,_b2)) ->
-            ((self#rec_flag _a0 _b0) && (self#binding _a1 _b1)) &&
+            ((self#rec_flag _a0 _b0) && (self#bind _a1 _b1)) &&
               (self#clexp _a2 _b2)
         | (`Obj _a0,`Obj _b0) -> self#clfield _a0 _b0
         | (`ObjEnd,`ObjEnd) -> true
@@ -1292,10 +1292,10 @@ class print =
         | `Lazy _a0 -> Format.fprintf fmt "@[<1>(`Lazy@ %a)@]" self#exp _a0
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
-              _a0 self#binding _a1 self#exp _a2
+              _a0 self#bind _a1 self#exp _a2
         | `LetTryInWith (_a0,_a1,_a2,_a3) ->
             Format.fprintf fmt "@[<1>(`LetTryInWith@ %a@ %a@ %a@ %a)@]"
-              self#rec_flag _a0 self#binding _a1 self#exp _a2 self#case _a3
+              self#rec_flag _a0 self#bind _a1 self#exp _a2 self#case _a3
         | `LetModule (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetModule@ %a@ %a@ %a)@]" self#auident
               _a0 self#mexp _a1 self#exp _a2
@@ -1449,12 +1449,12 @@ class print =
             Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#constr _a0
               self#constr _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method binding : 'fmt -> binding -> unit=
+    method bind : 'fmt -> bind -> unit=
       fun fmt  ->
         function
         | `And (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#binding _a0
-              self#binding _a1
+            Format.fprintf fmt "@[<1>(`And@ %a@ %a)@]" self#bind _a0
+              self#bind _a1
         | `Bind (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Bind@ %a@ %a)@]" self#pat _a0 
               self#exp _a1
@@ -1528,7 +1528,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
         | `Value (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" self#rec_flag _a0
-              self#binding _a1
+              self#bind _a1
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method cltdecl : 'fmt -> cltdecl -> unit=
       fun fmt  ->
@@ -1615,7 +1615,7 @@ class print =
               self#clexp _a1
         | `LetIn (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`LetIn@ %a@ %a@ %a)@]" self#rec_flag
-              _a0 self#binding _a1 self#clexp _a2
+              _a0 self#bind _a1 self#clexp _a2
         | `Obj _a0 -> Format.fprintf fmt "@[<1>(`Obj@ %a)@]" self#clfield _a0
         | `ObjEnd -> Format.fprintf fmt "`ObjEnd"
         | `ObjPat (_a0,_a1) ->
@@ -2294,7 +2294,7 @@ and meta_exp _loc =
           (`App
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
-               (meta_binding _loc _a1))), (meta_exp _loc _a2))
+               (meta_bind _loc _a1))), (meta_exp _loc _a2))
   | `LetTryInWith (_a0,_a1,_a2,_a3) ->
       `App
         (_loc,
@@ -2304,7 +2304,7 @@ and meta_exp _loc =
                   (_loc,
                     (`App
                        (_loc, (`Vrn (_loc, "LetTryInWith")),
-                         (meta_rec_flag _loc _a0))), (meta_binding _loc _a1))),
+                         (meta_rec_flag _loc _a0))), (meta_bind _loc _a1))),
                (meta_exp _loc _a2))), (meta_case _loc _a3))
   | `LetModule (_a0,_a1,_a2) ->
       `App
@@ -2519,12 +2519,12 @@ and meta_constr _loc =
         (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_constr _loc _a0))),
           (meta_constr _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result161)
-and meta_binding _loc =
+and meta_bind _loc =
   function
   | `And (_a0,_a1) ->
       `App
-        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_binding _loc _a0))),
-          (meta_binding _loc _a1))
+        (_loc, (`App (_loc, (`Vrn (_loc, "And")), (meta_bind _loc _a0))),
+          (meta_bind _loc _a1))
   | `Bind (_a0,_a1) ->
       `App
         (_loc, (`App (_loc, (`Vrn (_loc, "Bind")), (meta_pat _loc _a0))),
@@ -2620,7 +2620,7 @@ and meta_stru _loc =
       `App
         (_loc,
           (`App (_loc, (`Vrn (_loc, "Value")), (meta_rec_flag _loc _a0))),
-          (meta_binding _loc _a1))
+          (meta_bind _loc _a1))
   | #ant as _a0 -> (meta_ant _loc _a0 :>'result157)
 and meta_cltdecl _loc =
   function
@@ -2763,7 +2763,7 @@ and meta_clexp _loc =
           (`App
              (_loc,
                (`App (_loc, (`Vrn (_loc, "LetIn")), (meta_rec_flag _loc _a0))),
-               (meta_binding _loc _a1))), (meta_clexp _loc _a2))
+               (meta_bind _loc _a1))), (meta_clexp _loc _a2))
   | `Obj _a0 -> `App (_loc, (`Vrn (_loc, "Obj")), (meta_clfield _loc _a0))
   | `ObjEnd -> `Vrn (_loc, "ObjEnd")
   | `ObjPat (_a0,_a1) ->

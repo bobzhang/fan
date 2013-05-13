@@ -16,9 +16,9 @@ class printer :
   object ('b)
     val pipe : bool
     val semi : bool
-    method binding :
+    method bind :
       Format.formatter -> Parsetree.pattern * Parsetree.expression -> unit
-    method bindings:
+    method binds:
         Format.formatter ->
           Asttypes.rec_flag * (Parsetree.pattern * Parsetree.expression) list ->
             unit

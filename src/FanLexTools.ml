@@ -284,7 +284,7 @@ let output_byte_array v =  begin
 end
 
 let table (n,t) = {:stru| let $lid:n = $(output_byte_array t) |}
-let binding_table (n,t) = {:binding|  $lid:n = $(output_byte_array t) |}
+let bind_table (n,t) = {:bind|  $lid:n = $(output_byte_array t) |}
 
 
 
@@ -303,7 +303,7 @@ let partition ~counter ~tables (i,p) =
   let f = mk_partition_name i in
   {:stru| let $lid:f = fun c -> $body |}
 
-let binding_partition ~counter ~tables (i,p) = 
+let bind_partition ~counter ~tables (i,p) = 
   let rec gen_tree = function 
     | Lte (i,yes,no) ->
 	{:exp| if (c <= $`int:i) 
@@ -317,7 +317,7 @@ let binding_partition ~counter ~tables (i,p) =
   let body = gen_tree
       (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
-  {:binding|  $lid:f = fun c -> $body |}
+  {:bind|  $lid:f = fun c -> $body |}
 
 (* Code generation for the automata *)
 
@@ -346,7 +346,7 @@ let gen_definition _loc l =
       let f = mk_state_name state in
       {| $lid:f lexbuf |} in
   (* generate states transition *)
-  let gen_state auto _loc i (part,trans,final) : binding option   =
+  let gen_state auto _loc i (part,trans,final) : bind option   =
     let f = mk_state_name i in 
     let p = mk_partition_name part in
     let cases =
@@ -363,11 +363,11 @@ let gen_definition _loc l =
       (* [ $cases | _ -> $(id:gm()).backtrack lexbuf ] *)
       |} in
     let ret (body:exp) =
-      {:binding| $lid:f = fun lexbuf -> $body |} in
+      {:bind| $lid:f = fun lexbuf -> $body |} in
     match best_final final with
     | None -> Some (ret body)
     | Some i -> 
-	if Array.length trans = 0 then (* {:binding||} *) None else
+	if Array.length trans = 0 then (* {:bind||} *) None else
 	Some
           (ret
 	     {:exp| begin  $g.mark lexbuf $`int:i;  $body end |})  in
@@ -386,11 +386,11 @@ let gen_definition _loc l =
       (partitions ~part_tbl ()) in 
   let parts = 
     List.map
-      (binding_partition ~counter:table_counter ~tables) partitions in
+      (bind_partition ~counter:table_counter ~tables) partitions in
   let tables =
     List.map
       (fun (i,arr) ->
-        binding_table (mk_table_name i,arr))
+        bind_table (mk_table_name i,arr))
       (List.sort (fun (i0,_) (i1,_) -> compare i0 i1) (get_tables ~tables ())) in
   let (b,states) =
     let len = Array.length states in

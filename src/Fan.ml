@@ -90,8 +90,8 @@ let _ = begin
     ~mpat:(Filters.mp#clfield) ~exp_filter ~pat_filter;
   add_quotation (d, "constr'") constr_quot ~mexp:(Filters.me#constr)
     ~mpat:(Filters.mp#constr) ~exp_filter ~pat_filter;
-  add_quotation (d, "binding'") binding_quot ~mexp:(Filters.me#binding)
-    ~mpat:(Filters.mp#binding) ~exp_filter ~pat_filter;
+  add_quotation (d, "bind'") bind_quot ~mexp:(Filters.me#bind)
+    ~mpat:(Filters.mp#bind) ~exp_filter ~pat_filter;
   add_quotation (d, "rec_exp'") rec_exp_quot ~mexp:(Filters.me#rec_exp)
     ~mpat:(Filters.mp#rec_exp) ~exp_filter ~pat_filter;
   add_quotation (d, "case'") case_quot ~mexp:(Filters.me#case)
@@ -167,9 +167,9 @@ let _ = begin
   add_quotation (d, "constr") constr_quot ~mexp:(Filters.me#constr)
     ~mpat:(Filters.mp#constr) ~exp_filter:(efilter "constr")
     ~pat_filter:(pfilter "constr");
-  add_quotation (d, "binding") binding_quot ~mexp:(Filters.me#binding)
-    ~mpat:(Filters.mp#binding) ~exp_filter:(efilter "binding")
-    ~pat_filter:(pfilter "binding");
+  add_quotation (d, "bind") bind_quot ~mexp:(Filters.me#bind)
+    ~mpat:(Filters.mp#bind) ~exp_filter:(efilter "bind")
+    ~pat_filter:(pfilter "bind");
   add_quotation (d, "rec_exp") rec_exp_quot ~mexp:(Filters.me#rec_exp)
     ~mpat:(Filters.mp#rec_exp) ~exp_filter:(efilter "rec_exp")
     ~pat_filter:(pfilter "rec_exp");

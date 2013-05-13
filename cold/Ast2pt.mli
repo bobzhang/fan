@@ -96,8 +96,8 @@ val exp : exp -> Parsetree.expression
 
 val label_exp : exp -> Asttypes.label * Parsetree.expression
 
-val binding :
-  binding ->
+val bind :
+  bind ->
   (Parsetree.pattern * Parsetree.expression) list ->
   (Parsetree.pattern * Parsetree.expression) list
       
@@ -115,12 +115,12 @@ val mktype_decl :
 
 val mtyp : mtyp -> Parsetree.module_type
 
-val module_sig_binding :
+val module_sig_bind :
   mbind ->
   (string Asttypes.loc * Parsetree.module_type) list ->
   (string Asttypes.loc * Parsetree.module_type) list
       
-val module_str_binding :
+val module_str_bind :
   mbind ->
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list ->
   (string Asttypes.loc * Parsetree.module_type * Parsetree.module_expr) list

@@ -125,8 +125,8 @@ and exp =
   | `For of (alident * exp * exp * direction_flag * exp) | `Fun of case
   | `IfThenElse of (exp * exp * exp) | `IfThen of (exp * exp)
   | `LabelS of alident | `Label of (alident * exp) | `Lazy of exp
-  | `LetIn of (rec_flag * binding * exp)
-  | `LetTryInWith of (rec_flag * binding * exp * case)
+  | `LetIn of (rec_flag * bind * exp)
+  | `LetTryInWith of (rec_flag * bind * exp * case)
   | `LetModule of (auident * mexp * exp) | `Match of (exp * case)
   | `New of ident | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
   | `ObjPatEnd of pat | `OptLabl of (alident * exp) | `OptLablS of alident
@@ -156,7 +156,7 @@ and constr =
   [ `TypeEq of (ctyp * ctyp) | `ModuleEq of (ident * ident)
   | `TypeEqPriv of (ctyp * ctyp) | `TypeSubst of (ctyp * ctyp)
   | `ModuleSubst of (ident * ident) | `And of (constr * constr) | ant] 
-and binding = [ `And of (binding * binding) | `Bind of (pat * exp) | ant] 
+and bind = [ `And of (bind * bind) | `Bind of (pat * exp) | ant] 
 and case =
   [ `Bar of (case * case) | `Case of (pat * exp)
   | `CaseWhen of (pat * exp * exp) | ant] 
@@ -171,7 +171,7 @@ and stru =
   | `External of (alident * ctyp * strings) | `Include of mexp
   | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
-  | `Value of (rec_flag * binding) | ant] 
+  | `Value of (rec_flag * bind) | ant] 
 and cltdecl =
   [ `And of (cltdecl * cltdecl)
   | `CtDecl of (virtual_flag * ident * type_parameters * cltyp)
@@ -194,7 +194,7 @@ and cldecl =
   | ant] 
 and clexp =
   [ `CeApp of (clexp * exp) | vid' | `ClApply of (vid * type_parameters)
-  | `CeFun of (pat * clexp) | `LetIn of (rec_flag * binding * clexp)
+  | `CeFun of (pat * clexp) | `LetIn of (rec_flag * bind * clexp)
   | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
   | `ObjPatEnd of pat | `Constraint of (clexp * cltyp) | ant] 
 and clfield =

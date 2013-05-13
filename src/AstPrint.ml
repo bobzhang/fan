@@ -537,7 +537,7 @@ class printer  ()= object(self:'self)
           self#reset#expression e  self#case_list l 
     | Pexp_let (rf, l, e) ->
         pp f "@[<2>%a in@;<1 -2>%a@]"
-          self#reset#bindings (rf,l)
+          self#reset#binds (rf,l)
           self#expression e 
     | Pexp_apply (e, l) ->
         (if not (self#sugar_expr f x) then
@@ -770,7 +770,7 @@ class printer  ()= object(self:'self)
               pp f "%s :@;%a=@;%a"
                 s.txt (self#core_type) ct self#expression e
           | Pexp_poly (e,None) ->
-              self#binding f ({ppat_desc=Ppat_var s;ppat_loc=Location.none} ,e)
+              self#bind f ({ppat_desc=Ppat_var s;ppat_loc=Location.none} ,e)
           | _ ->
               self#expression f e ) e 
     | Pcf_constr (ct1, ct2) ->
@@ -795,7 +795,7 @@ class printer  ()= object(self:'self)
         (* pp f "let@;%a%a@ in@ %a" *)
           pp f "%a@ in@ %a"
           (* self#rec_flag rf *)
-          self#bindings  (rf,l)
+          self#binds  (rf,l)
           self#class_expr ce
     | Pcl_apply (ce, l) ->
         pp f "(%a@ %a)"  self#class_expr ce (self#list self#label_x_expression_param) l 
@@ -931,7 +931,7 @@ class printer  ()= object(self:'self)
   method structure f x = self#list ~sep:"@\n@." self#structure_item f x
 
   (* transform [f = fun g h -> ..] to [f g h = ... ] could be improved *)    
-  method binding f ((p:pattern),(x:expression)) =
+  method bind f ((p:pattern),(x:expression)) =
     let rec pp_print_pexp_function f x =
       match x.pexp_desc with 
       | Pexp_function (label,eo,[(p,e)]) ->
@@ -962,24 +962,24 @@ class printer  ()= object(self:'self)
     | _ ->
         pp f "%a@;=@;%a" self#pattern p self#expression x 
   (* [in] is not printed *)        
-  method bindings f (rf,l) =
+  method binds f (rf,l) =
     begin match l with
     | [] -> ()
-    | [x] -> pp f "@[<2>let %a%a@]" self#rec_flag rf self#binding x 
+    | [x] -> pp f "@[<2>let %a%a@]" self#rec_flag rf self#bind x 
     | x::xs ->
         (* pp f "@[<hv0>let %a@[<2>%a%a@]" *)
         (* FIXME the indentation is not good see [Insert].ml*)
         pp f "@[<hv0>@[<2>let %a%a%a@]"
-          self#rec_flag rf  self#binding x
+          self#rec_flag rf  self#bind x
           (fun f l -> match l with
           | [] -> assert false
           | [x] ->
               pp f
                 (* "@]@;and @[<2>%a@]" *)
                 "@]@;@[<2>and %a@]"
-                self#binding x 
+                self#bind x 
           | xs -> 
-              self#list self#binding
+              self#list self#bind
                 (* ~first:"@]@;and @[<2>" *)
                 ~first:"@]@;@[<2>and "
                 (* ~sep:"@]@;and @[<2>" *)
@@ -993,8 +993,8 @@ class printer  ()= object(self:'self)
         pp f "@[<hov2>let@ _ =@ %a@]" self#expression e 
     | Pstr_type [] -> assert false
     | Pstr_type l  -> self#type_def_list f l 
-    | Pstr_value (rf, l) -> (* pp f "@[<hov2>let %a%a@]"  self#rec_flag rf self#bindings l *)
-        pp f "@[<2>%a@]" self#bindings (rf,l)
+    | Pstr_value (rf, l) -> (* pp f "@[<hov2>let %a%a@]"  self#rec_flag rf self#binds l *)
+        pp f "@[<2>%a@]" self#binds (rf,l)
     | Pstr_exception (s, ed) -> self#exception_declaration f (s.txt,ed)
     | Pstr_module (s, me) ->
         let rec module_helper me = match me.pmod_desc with

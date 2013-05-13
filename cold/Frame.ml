@@ -255,7 +255,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
          (Objs.dump_typedecl t) : exp )
 
-let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
+let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
   ?(names= [])  ~default  ~mk_variant  ~left_type_id  ~left_type_variable 
   ~mk_record  =
   let open Transform in
@@ -273,7 +273,7 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
              simple_exp_of_ctyp)
           (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
              ~destination:Str_item simple_exp_of_ctyp) tydcl in
-      (`Bind (_loc, (`Lid (_loc, (tctor_var name))), fun_exp) : Ast.binding )
+      (`Bind (_loc, (`Lid (_loc, (tctor_var name))), fun_exp) : Ast.bind )
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n"
          (Objs.dump_typedecl tydcl);
@@ -282,14 +282,14 @@ let binding_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
             (`App
                (_loc, (`Lid (_loc, "failwithf")),
                  (`Str (_loc, "Abstract data type not implemented"))))) : 
-       Ast.binding ))
+       Ast.bind ))
 
 let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default 
   ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
   let cxt = Hashset.create 50 in
-  let mk_binding =
-    binding_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
+  let mk_bind =
+    bind_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
       ~left_type_id ~left_type_variable ~mk_record
       (simple_exp_of_ctyp_with_cxt cxt) in
   let fs (ty : types) =
@@ -299,17 +299,17 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default
           | [] -> (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )
           | xs ->
               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-               (let binding =
+               (let bind =
                   List.reduce_right_with
-                    ~compose:(fun x  y  -> (`And (_loc, x, y) : Ast.binding ))
-                    ~f:(fun (_name,ty)  -> mk_binding ty) xs in
-                (`Value (_loc, (`Recursive _loc), binding) : Ast.stru ))))
+                    ~compose:(fun x  y  -> (`And (_loc, x, y) : Ast.bind ))
+                    ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+                (`Value (_loc, (`Recursive _loc), bind) : Ast.stru ))))
      | `Single (name,tydcl) ->
          (Hashset.add cxt name;
           (let rec_flag =
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
-           and binding = mk_binding tydcl in
-           (`Value (_loc, rec_flag, binding) : Ast.stru ))) : stru ) in
+           and bind = mk_bind tydcl in
+           (`Value (_loc, rec_flag, bind) : Ast.stru ))) : stru ) in
   let item =
     match lst with
     | [] -> (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )

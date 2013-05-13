@@ -322,7 +322,7 @@ let fun_of_tydcl
 (* destination is [Str_item] generate [stru], type annotations may
    not be needed here
  *)          
-let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
+let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~default ~mk_variant
     ~left_type_id ~left_type_variable
     ~mk_record = with {pat:ctyp}
@@ -343,12 +343,12 @@ let binding_of_tydcl ?cons_transform simple_exp_of_ctyp
            ~arity ~names ~default ~mk_variant
            ~destination:Str_item
            simple_exp_of_ctyp) tydcl  in
-    (* {:binding| $(lid:tctor_var name) : $ty = $fun_exp |} *)
-    {:binding| $(lid:tctor_var name) = $fun_exp |}
+    (* {:bind| $(lid:tctor_var name) : $ty = $fun_exp |} *)
+    {:bind| $(lid:tctor_var name) = $fun_exp |}
   else begin
     eprintf "Warning: %s as a abstract type no structure generated\n"
       (Objs.dump_typedecl tydcl);
-    {:binding| $(lid:tctor_var  name) =
+    {:bind| $(lid:tctor_var  name) =
     failwithf $(str:"Abstract data type not implemented") |};
   end
 
@@ -359,8 +359,8 @@ let stru_of_mtyps ?module_name ?cons_transform
     simple_exp_of_ctyp_with_cxt
     (lst:mtyps)  =
   let cxt  = Hashset.create 50 in 
-  let mk_binding (* : string -> ctyp -> binding *) =
-    binding_of_tydcl ?cons_transform ?arity
+  let mk_bind (* : string -> ctyp -> bind *) =
+    bind_of_tydcl ?cons_transform ?arity
       ?names ~default ~mk_variant ~left_type_id ~left_type_variable ~mk_record
       (* ~destination *)
       (simple_exp_of_ctyp_with_cxt cxt) in
@@ -368,17 +368,17 @@ let stru_of_mtyps ?module_name ?cons_transform
   let fs (ty:types) : stru=
     match ty with
     | `Mutual named_types ->
-        (* let binding = *)
+        (* let bind = *)
         begin match named_types with
         | [] -> {:stru| let _ = ()|} (* FIXME *)
         | xs -> begin 
             List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
-            let binding = List.reduce_right_with
-                ~compose:(fun x y -> {:binding| $x and $y |} )
+            let bind = List.reduce_right_with
+                ~compose:(fun x y -> {:bind| $x and $y |} )
                 ~f:(fun (_name,ty) ->begin
-                  mk_binding  ty;
+                  mk_bind  ty;
                 end ) xs;
-              {:stru| let rec $binding |} 
+              {:stru| let rec $bind |} 
         end
         end
 
@@ -387,8 +387,8 @@ let stru_of_mtyps ?module_name ?cons_transform
         let rec_flag =
           if Ctyp.is_recursive tydcl then `Recursive _loc
           else `ReNil  _loc
-        and binding = mk_binding  tydcl in 
-        {:stru| let $rec:rec_flag  $binding |}
+        and bind = mk_bind  tydcl in 
+        {:stru| let $rec:rec_flag  $bind |}
     end  in
   let item =
     match lst with

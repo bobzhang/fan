@@ -50,13 +50,13 @@ let rec handle_failure e =
         | _ -> false in
       (handle_failure me) && (case_handle_failure a)
   | (`LetIn (_loc,`ReNil _,bi,e) : Ast.exp) ->
-      let rec binding_handle_failure =
+      let rec bind_handle_failure =
         function
-        | (`And (_loc,b1,b2) : Ast.binding) ->
-            (binding_handle_failure b1) && (binding_handle_failure b2)
-        | (`Bind (_loc,_,e) : Ast.binding) -> handle_failure e
+        | (`And (_loc,b1,b2) : Ast.bind) ->
+            (bind_handle_failure b1) && (bind_handle_failure b2)
+        | (`Bind (_loc,_,e) : Ast.bind) -> handle_failure e
         | _ -> false in
-      (binding_handle_failure bi) && (handle_failure e)
+      (bind_handle_failure bi) && (handle_failure e)
   | #literal|#vid' -> true
   | (`Fun (_loc,_) : Ast.exp) -> true
   | (`App (_loc,`Lid (_,"raise"),`Dot (_,`Uid (_,m),`Uid (_,"Failure"))) :
@@ -206,23 +206,21 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
            |(`Chr (_loc,_) : Ast.exp)|(`Str (_loc,_) : Ast.exp)
            |(`Field (_loc,_,_) : Ast.exp) -> e
          | (`LetIn (_loc,rf,bi,e) : Ast.exp) ->
-             (`LetIn (_loc, rf, (subst_binding v bi), (subst v e)) : 
-             Ast.exp )
+             (`LetIn (_loc, rf, (subst_bind v bi), (subst v e)) : Ast.exp )
          | (`App (_loc,e1,e2) : Ast.exp) ->
              (`App (_loc, (subst v e1), (subst v e2)) : Ast.exp )
          | (`Par (_loc,e) : Ast.exp) -> (`Par (_loc, (subst v e)) : Ast.exp )
          | (`Com (_loc,e1,e2) : Ast.exp) ->
              (`Com (_loc, (subst v e1), (subst v e2)) : Ast.exp )
          | _ -> raise Not_found
-       and subst_binding v =
+       and subst_bind v =
          function
-         | (`And (_loc,b1,b2) : Ast.binding) ->
-             (`And (_loc, (subst_binding v b1), (subst_binding v b2)) : 
-             Ast.binding )
-         | (`Bind (_loc,`Lid (_,v'),e) : Ast.binding) ->
+         | (`And (_loc,b1,b2) : Ast.bind) ->
+             (`And (_loc, (subst_bind v b1), (subst_bind v b2)) : Ast.bind )
+         | (`Bind (_loc,`Lid (_,v'),e) : Ast.bind) ->
              (`Bind
                 (_loc, (`Lid (_loc, v')), (if v = v' then e else subst v e)) : 
-             Ast.binding )
+             Ast.bind )
          | _ -> raise Not_found in
        (try
           match p with

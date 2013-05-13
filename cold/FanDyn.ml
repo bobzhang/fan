@@ -51,7 +51,7 @@ type 'a tag =
   | Sigi
   | Mbind
   | Constr
-  | Binding
+  | Bind
   | Case
   | Mexp
   | Stru
@@ -112,7 +112,7 @@ let string_of_tag =
   | Sigi  -> "sigi"
   | Mbind  -> "mbind"
   | Constr  -> "constr"
-  | Binding  -> "binding"
+  | Bind  -> "bind"
   | Case  -> "case"
   | Mexp  -> "mexp"
   | Stru  -> "stru"
@@ -217,7 +217,7 @@ let mbind_tag: mbind tag = Mbind
 
 let constr_tag: constr tag = Constr
 
-let binding_tag: binding tag = Binding
+let bind_tag: bind tag = Bind
 
 let case_tag: case tag = Case
 

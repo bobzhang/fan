@@ -50,15 +50,10 @@ let apply () =
      | "_" -> {:pat| _ |}  ]         
 
      parser_case_list :
-     [ (* "["; L0 parser_case SEP "|"{pcl}; "]" -> pcl *)
-     (* | *)
-       "|"; L0 parser_case SEP "|"{pcl} -> pcl
-     | parser_case{pc} -> [pc] ]
+     ["|"; L0 parser_case SEP "|"{pcl} -> pcl]
     
     parser_case :
-    [ (* "[<"; *)
-      stream_pat{sp}; (* ">]"; OPT parser_ipat{po}; *) "->"; exp{e}
-      ->   (sp, None, e) ] 
+    [stream_pat{sp}; "->"; exp{e} ->   (sp, None, e) ] 
     stream_begin :
     [ "[<"; OPT [ "!"; `Uid(n)->n]{name} -> name  ]   
 

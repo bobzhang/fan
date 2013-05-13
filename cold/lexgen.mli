@@ -13,7 +13,7 @@
 (* $Id: lexgen.mli 11156 2011-07-27 14:17:02Z doligez $ *)
 
 
-(* raised when there are too many bindings (>= 254 memory cells) *)
+(* raised when there are too many binds (>= 254 memory cells) *)
 exception Memory_overflow
 
 

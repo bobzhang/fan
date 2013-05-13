@@ -72,7 +72,7 @@ val best_final : bool array -> int option
 (* val call_state : ('a * 'b array * bool array) array -> int -> exp *)
 (* val gen_state : *)
 (*   ('a * 'b array * bool array) array -> *)
-(*   loc -> int -> int * int array * bool array -> binding *)
+(*   loc -> int -> int * int array * bool array -> bind *)
 val gen_definition :
   loc -> (regexp * exp) list -> exp
     

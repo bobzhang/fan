@@ -1118,8 +1118,8 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "LetIn")),
                                (self#loc _loc _a0))),
-                          (self#rec_flag _loc _a1))),
-                     (self#binding _loc _a2))), (self#exp _loc _a3))
+                          (self#rec_flag _loc _a1))), (self#bind _loc _a2))),
+                (self#exp _loc _a3))
         | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
             `App
               (_loc,
@@ -1133,7 +1133,7 @@ class meta =
                                   (_loc, (`Vrn (_loc, "LetTryInWith")),
                                     (self#loc _loc _a0))),
                                (self#rec_flag _loc _a1))),
-                          (self#binding _loc _a2))), (self#exp _loc _a3))),
+                          (self#bind _loc _a2))), (self#exp _loc _a3))),
                 (self#case _loc _a4))
         | `LetModule (_a0,_a1,_a2,_a3) ->
             `App
@@ -1534,7 +1534,7 @@ class meta =
                      (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
                      (self#constr _loc _a1))), (self#constr _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
-    method binding : 'loc -> binding -> ep=
+    method bind : 'loc -> bind -> ep=
       fun _loc  ->
         function
         | `And (_a0,_a1,_a2) ->
@@ -1543,7 +1543,7 @@ class meta =
                 (`App
                    (_loc,
                      (`App (_loc, (`Vrn (_loc, "And")), (self#loc _loc _a0))),
-                     (self#binding _loc _a1))), (self#binding _loc _a2))
+                     (self#bind _loc _a1))), (self#bind _loc _a2))
         | `Bind (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1728,7 +1728,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Value")), (self#loc _loc _a0))),
-                     (self#rec_flag _loc _a1))), (self#binding _loc _a2))
+                     (self#rec_flag _loc _a1))), (self#bind _loc _a2))
         | #ant as _a0 -> (self#ant _loc _a0 :>ep)
     method cltdecl : 'loc -> cltdecl -> ep=
       fun _loc  ->
@@ -1957,8 +1957,8 @@ class meta =
                           (`App
                              (_loc, (`Vrn (_loc, "LetIn")),
                                (self#loc _loc _a0))),
-                          (self#rec_flag _loc _a1))),
-                     (self#binding _loc _a2))), (self#clexp _loc _a3))
+                          (self#rec_flag _loc _a1))), (self#bind _loc _a2))),
+                (self#clexp _loc _a3))
         | `Obj (_a0,_a1) ->
             `App
               (_loc,

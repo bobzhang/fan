@@ -16,21 +16,21 @@ let print_warning loc txt = !current_warning loc txt;;
 {:create|Gram
 a_ident aident amp_ctyp and_ctyp case
   case0
-  binding
+  bind
   class_declaration
   class_description
-  clexp class_fun_binding class_fun_def  class_info_for_cltyp
+  clexp class_fun_bind class_fun_def  class_info_for_cltyp
   class_longident  class_name_and_param clsigi class_signature
   clfield class_structure cltyp cltyp_declaration
   cltyp_longident 
   cltyp_plus com_ctyp comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
-  ctyp cvalue_binding direction_flag direction_flag_quot
-  dummy eq_exp exp exp_eoi field_exp field_exp_list fun_binding
+  ctyp cvalue_bind direction_flag direction_flag_quot
+  dummy eq_exp exp exp_eoi field_exp field_exp_list fun_bind
   fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 
   label_pat_list label_pat label_longident
-  let_binding meth_list meth_decl mbind
+  let_bind meth_list meth_decl mbind
   mbind  mbind0 mexp  module_longident  module_longident_with_app  module_rec_declaration
   mtyp name_tags opt_class_self_pat opt_class_self_type  opt_comma_ctyp  opt_dot_dot  row_var_flag_quot
   opt_exp  opt_meth_list  opt_mutable  mutable_flag_quot  opt_polyt  opt_private
@@ -41,7 +41,7 @@ a_ident aident amp_ctyp and_ctyp case
   type_declaration  type_ident_and_parameters  type_longident  type_longident_and_parameters
   type_parameter  type_parameters  typevars  val_longident  constr  exp_quot  pat_quot
   ctyp_quot  stru_quot  sigi_quot  clfield_quot  clsigi_quot  mexp_quot
-  mtyp_quot  cltyp_quot  clexp_quot  constr_quot  binding_quot  rec_exp_quot
+  mtyp_quot  cltyp_quot  clexp_quot  constr_quot  bind_quot  rec_exp_quot
   module_declaration type_info type_repr
   (infixop0 "or ||")
   (infixop1  "& &&")

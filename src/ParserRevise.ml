@@ -61,7 +61,7 @@ let apply () = begin
       |  a = symb; 's  -> kont a s
   end;
 
-  with mexp'
+  with mexp
   {:extend|
       mexp_quot:
       [ mexp{x} -> x]
@@ -90,7 +90,7 @@ let apply () = begin
              `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
              ] } |};
 
-  with mbind'
+  with mbind
       {:extend|
         mbind_quot:
         [ S{b1}; "and"; S{b2} ->  `And(_loc,b1,b2)
@@ -235,7 +235,7 @@ let apply () = begin
 
        {:stru| let f : ! 'a . 'a -> 'a = fun x -> x |}  
         *)
-      cvalue_binding:
+      cvalue_bind:
       [ "="; exp{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; exp{e} -> 
           let u = {:ctyp| ! $t1 . $t2 |} in  {| ($e : $u) |}
@@ -245,12 +245,12 @@ let apply () = begin
           | {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} )
       | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
-      fun_binding:
+      fun_bind:
       { RA
           [ "("; "type"; a_lident{i}; ")"; S{e} ->
             `LocalTypeFun(_loc,i,e)
           | ipat{p}; S{e} -> `Fun(_loc,`Case(_loc,p,e))
-          | cvalue_binding{bi} -> bi  ] }
+          | cvalue_bind{bi} -> bi  ] }
        lang:
        [ dot_lstrings{ls} -> 
          let old = !AstQuotation.default in (
@@ -282,13 +282,13 @@ let apply () = begin
        exp:
        {
         "top" RA
-        [ "let"; opt_rec{r}; binding{bi}; "in"; S{x} ->
+        [ "let"; opt_rec{r}; bind{bi}; "in"; S{x} ->
           `LetIn(_loc,r,bi,x)
         | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; S{e} ->
             `LetModule (_loc, m, mb, e)
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
             `LetOpen (_loc, (i:vid :> ident), e)
-        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a} ->
+        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a} ->
               `LetTryInWith(_loc,r,bi,x,a)
         | "match"; S{e}; "with"; case{a} -> `Match (_loc, e, a)
         | "try"; S{e}; "with"; case{a} -> `Try (_loc, e, a)
@@ -449,12 +449,12 @@ let apply () = begin
 
 
        sequence: (*FIXME*)
-       [ "let"; opt_rec{rf}; binding{bi}; "in"; exp{e}; sequence'{k} ->
+       [ "let"; opt_rec{rf}; bind{bi}; "in"; exp{e}; sequence'{k} ->
          k  (`LetIn (_loc, rf, bi, e))
-       | "let"; "try"; opt_rec{r}; binding{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
+       | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          -> k (* {| let try $rec:r $bi in $x with [ $a ] |} *)
              (`LetTryInWith(_loc,r,bi,x,a))
-       | "let"; opt_rec{rf}; binding{bi}; ";"; S{el} ->
+       | "let"; opt_rec{rf}; bind{bi}; ";"; S{el} ->
            `LetIn (_loc, rf, bi, (`Seq (_loc, el)))
        | "let"; "module"; a_uident{m}; mbind0{mb}; "in";
            exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
@@ -487,19 +487,19 @@ let apply () = begin
   {:extend| with_stru_lang:
     [lang{old};":"; stru{x} -> (AstQuotation.default:=old;x)]
   |};
-  with binding
+  with bind
       {:extend|
-        binding_quot:
-        [ binding{x} -> x  ] 
-        binding:
-        [ `Ant (("binding"|"list" as n),s) -> mk_anti _loc ~c:"binding" n s
+        bind_quot:
+        [ bind{x} -> x  ] 
+        bind:
+        [ `Ant (("bind"|"list" as n),s) -> mk_anti _loc ~c:"bind" n s
         | `Ant ((""|"anti" as n),s); "="; exp{e} ->
             {| $(mk_anti _loc  ~c:"pat" n s) = $e |}
-        | `Ant ((""|"anti" as n),s) -> mk_anti _loc ~c:"binding" n s
+        | `Ant ((""|"anti" as n),s) -> mk_anti _loc ~c:"bind" n s
         | S{b1}; "and"; S{b2} -> `And (_loc, b1, b2)
-        | let_binding{b} -> b ] 
-        let_binding:
-        [ pat{p}; fun_binding{e} -> `Bind (_loc, p, e) ] |};
+        | let_bind{b} -> b ] 
+        let_bind:
+        [ pat{p}; fun_bind{e} -> `Bind (_loc, p, e) ] |};
 
   with case
     {:extend|
@@ -521,7 +521,7 @@ let apply () = begin
         label_exp:
         [ `Ant (("rec_exp" |""|"anti"|"list" as n),s) -> 
           mk_anti _loc ~c:"rec_exp" n s
-        | label_longident{i}; fun_binding{e} -> {| $id:i = $e |}
+        | label_longident{i}; fun_bind{e} -> {| $id:i = $e |}
         | label_longident{i} ->  (*FIXME*)
             `RecBind (_loc, i, `Lid (_loc, FanOps.to_lid i))]
         field_exp:
@@ -976,9 +976,9 @@ let apply () = begin
             `ModuleType(_loc,i,mt)
         | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
         | "type"; type_declaration{td} -> `Type(_loc,td)
-        | "let"; opt_rec{r}; binding{bi}; "in"; exp{x} ->
+        | "let"; opt_rec{r}; bind{bi}; "in"; exp{x} ->
               {| let $rec:r $bi in $x |}
-        | "let"; opt_rec{r}; binding{bi} ->
+        | "let"; opt_rec{r}; bind{bi} ->
             (match bi with
             | `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
             | _ -> `Value(_loc,r,bi))
@@ -987,7 +987,7 @@ let apply () = begin
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
             let i = (i:vid :> ident) in 
             {| let open $id:i in $e |}
-        | "let"; "try"; opt_rec{r}; binding{bi}; "in"; exp{x}; "with"; case{a}
+        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; exp{x}; "with"; case{a}
           -> `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)
         | "class"; "type"; cltyp_declaration{ctd} ->
@@ -1036,7 +1036,7 @@ let apply () = begin
             `Inherit(_loc,o,ce)
         | "inherit"; opt_override{o}; clexp{ce}; "as"; a_lident{i} ->
             `InheritAs(_loc,o,ce,i)
-        | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_binding{e}
+        | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_bind{e}
           ->
             {| val $override:o $mutable:mf $lab = $e |}
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
@@ -1051,10 +1051,10 @@ let apply () = begin
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
-                fun_binding{e} ->
+                fun_bind{e} ->
                   `CrMth(_loc,l,o,pf,e,t)
             (* {| method $override:o $private:pf $l : $topt = $e |} *)
-       | method_opt_override{o}; opt_private{pf};a_lident{l}; fun_binding{e} ->
+       | method_opt_override{o}; opt_private{pf};a_lident{l}; fun_bind{e} ->
            `CrMthS(_loc,l,o,pf,e)
              
        | "constraint"; ctyp{t1}; "="; ctyp{t2} ->
@@ -1073,11 +1073,11 @@ let apply () = begin
       [ S{c1}; "and"; S{c2} -> `And(_loc,c1,c2)
       | `Ant ((""|"cdcl"|"anti"|"list" as n),s) -> mk_anti _loc ~c:"clexp" n s
       (* | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.clexp_tag *)
-      | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_binding{ce}
+      | opt_virtual{mv};  a_lident{i}; "["; comma_type_parameter{x}; "]"; class_fun_bind{ce}
         -> `ClDecl(_loc,mv,(i:>ident),x,ce)
-      | opt_virtual{mv}; a_lident{i}; class_fun_binding{ce} ->
+      | opt_virtual{mv}; a_lident{i}; class_fun_bind{ce} ->
           `ClDeclS(_loc,mv,(i:>ident),ce)]
-      class_fun_binding:
+      class_fun_bind:
       [ "="; clexp{ce} -> ce
       | ":"; cltyp_plus{ct}; "="; clexp{ce} ->
           `Constraint(_loc,ce,ct)
@@ -1089,7 +1089,7 @@ let apply () = begin
       { "top"
           [ "fun"; ipat{p}; class_fun_def{ce} ->  `CeFun (_loc, p, ce)
           | "function"; ipat{p}; class_fun_def{ce} -> `CeFun (_loc, p, ce)
-          | "let"; opt_rec{rf}; binding{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
+          | "let"; opt_rec{rf}; bind{bi}; "in"; S{ce} -> `LetIn(_loc,rf,bi,ce)]
         "apply" NA
           [ S{ce}; exp Level "label"{e} ->
             `CeApp (_loc, ce, e) ]

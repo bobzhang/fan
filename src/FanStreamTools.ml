@@ -66,12 +66,12 @@ let rec handle_failure e =
           | _ -> false in
       handle_failure me && case_handle_failure a
   | {| let $bi in $e |} ->
-      let rec binding_handle_failure = function
-        | {:binding| $b1 and $b2 |} ->
-            binding_handle_failure b1 && binding_handle_failure b2
-        | {:binding| $_ = $e |} -> handle_failure e
+      let rec bind_handle_failure = function
+        | {:bind| $b1 and $b2 |} ->
+            bind_handle_failure b1 && bind_handle_failure b2
+        | {:bind| $_ = $e |} -> handle_failure e
         | _ -> false  in
-      binding_handle_failure bi && handle_failure e
+      bind_handle_failure bi && handle_failure e
   | #literal | #vid'-> true
   |  {| function | $_  |}  -> true
   | {|raise $uid:m.Failure|} -> m <> gm()
@@ -145,16 +145,16 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
         | {| $chr:_ |}  | {| $str:_ |} 
         | {| $_ . $_ |} )-> e
         | {| let $rec:rf $bi in $e |} ->
-            {| let $rec:rf $(subst_binding v bi) in $(subst v e) |}
+            {| let $rec:rf $(subst_bind v bi) in $(subst v e) |}
         | {| $e1 $e2 |} -> {| $(subst v e1) $(subst v e2) |}
         | {| ( $par:e ) |} -> {| ( $(par:subst v e) ) |}
         | {| $e1, $e2 |} -> {| $(subst v e1), $(subst v e2) |}
         | _ -> raise Not_found 
-      and subst_binding v =  function
-        | {:binding@_loc| $b1 and $b2 |} ->
-            {:binding| $(subst_binding v b1) and $(subst_binding v b2) |}
-        | {:binding@_loc| $lid:v' = $e |} ->
-            {:binding| $lid:v' = $(if v = v' then e else subst v e) |}
+      and subst_bind v =  function
+        | {:bind@_loc| $b1 and $b2 |} ->
+            {:bind| $(subst_bind v b1) and $(subst_bind v b2) |}
+        | {:bind@_loc| $lid:v' = $e |} ->
+            {:bind| $lid:v' = $(if v = v' then e else subst v e) |}
         | _ -> raise Not_found  in
 
       try

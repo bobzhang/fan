@@ -7,7 +7,7 @@ open LibUtil
 let _loc = FanLoc.mk "x"
 
 let auto_binds =
-  [{:binding|
+  [{:bind|
   __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     (lexbuf.Lexing.lex_mem <- Array.create mem_size (-1) ;
@@ -15,7 +15,7 @@ let auto_binds =
      lexbuf.Lexing.lex_last_pos <- pos ;
      lexbuf.Lexing.lex_last_action <- (-1))
   |};
-   {:binding|
+   {:bind|
    __ocaml_lex_next_char lexbuf =
     if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len then
       begin
@@ -170,12 +170,12 @@ let output_trans (i:int) (trans:automata)=
               ])
           | No_remember ->
               [{:exp| match __ocaml_lex_next_char lexbuf with | $moves |}]) in
-  {:binding| $lid:state lexbuf = $e  |}
+  {:bind| $lid:state lexbuf = $e  |}
       
 let output_args (args:string list) e =
   List.fold_right (fun a b -> {:exp| fun $lid:a -> $b |}) args e
     
-let output_automata (transitions:Lexgen.automata array) : binding list = 
+let output_automata (transitions:Lexgen.automata array) : bind list = 
   (Array.to_list (Array.mapi (fun i auto -> output_trans i auto) transitions))
 
   
@@ -204,7 +204,7 @@ let output_env (env:t_env) =
             else {:exp|Lexing.sub_lexeme|} in
           let nstart = output_tag_access nstart in
           let nend = output_tag_access nend in
-          {:binding| $id = $sub lexbuf  $nstart $nend|}
+          {:bind| $id = $sub lexbuf  $nstart $nend|}
       | Ident_char (o,nstart) ->
           (* break the invariant ....
              "Lexing.sub_lexeme_char_opt" can not be an lident...
@@ -215,7 +215,7 @@ let output_env (env:t_env) =
             else  {:exp|Lexing.sub_lexeme_char|} in
           let nstart = output_tag_access nstart in
           let _loc = loc_of id in (* location *)
-          {:binding| $id = $sub lexbuf $nstart |}
+          {:bind| $id = $sub lexbuf $nstart |}
     ) env
      
 let output_entry

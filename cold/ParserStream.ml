@@ -148,12 +148,7 @@ let apply () =
            ("Gram.mk_action\n  (fun (pcl : 'parser_case list)  _  (_loc : FanLoc.t)  ->\n     (pcl : 'parser_case_list ))\n",
              (Gram.mk_action
                 (fun (pcl : 'parser_case list)  _  (_loc : FanLoc.t)  ->
-                   (pcl : 'parser_case_list )))));
-        ([`Snterm (Gram.obj (parser_case : 'parser_case Gram.t ))],
-          ("Gram.mk_action\n  (fun (pc : 'parser_case)  (_loc : FanLoc.t)  -> ([pc] : 'parser_case_list ))\n",
-            (Gram.mk_action
-               (fun (pc : 'parser_case)  (_loc : FanLoc.t)  ->
-                  ([pc] : 'parser_case_list )))))]));
+                   (pcl : 'parser_case_list )))))]));
   Gram.extend_single (parser_case : 'parser_case Gram.t )
     (None,
       (None, None,

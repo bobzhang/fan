@@ -398,14 +398,14 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
     (* {:exp| $(id:gm()).mk_dynamic $g |} *)
     | None   -> (* {:exp| $(id:gm()).mk |} *)
         {:exp| $((gm():vid:>exp)).mk |} in
-  let local_binding_of_name = function
+  let local_bind_of_name = function
     | {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
-      {:binding| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) |}
+      {:bind| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) |}
     | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
   match locals with
   | None | Some [] -> default
   | Some ll ->
-      let locals = and_of_list (List.map local_binding_of_name ll)  in
+      let locals = and_of_list (List.map local_bind_of_name ll)  in
       {:exp| let grammar_entry_create = $entry_mk in let $locals in $default |}    
 
 (* the [locals] is local entry name list,
