@@ -41,22 +41,22 @@ let rec sep_dot_exp acc =
         | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
    | e -> ((loc_of e), [], e) :: acc : exp -> (loc * string list * exp) list )
 
-let mkvirtual: virtual_flag -> Asttypes.virtual_flag =
+let mkvirtual: flag -> Asttypes.virtual_flag =
   function
-  | `Virtual _ -> Virtual
-  | `ViNil _ -> Concrete
+  | `Positive _ -> Virtual
+  | `Negative _ -> Concrete
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 
-let mkdirection: direction_flag -> Asttypes.direction_flag =
+let mkdirection: flag -> Asttypes.direction_flag =
   function
-  | `To _ -> Upto
-  | `Downto _ -> Downto
+  | `Positive _ -> Upto
+  | `Negative _ -> Downto
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 
-let mkrf: rec_flag -> Asttypes.rec_flag =
+let mkrf: flag -> Asttypes.rec_flag =
   function
-  | `Recursive _ -> Recursive
-  | `ReNil _ -> Nonrecursive
+  | `Positive _ -> Recursive
+  | `Negative _ -> Nonrecursive
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 
 let ident_tag (i : ident) =
@@ -155,15 +155,15 @@ let rec ctyp (x : ctyp) =
   | `TyObjEnd (_loc,row) ->
       let xs =
         match row with
-        | `RvNil _ -> []
-        | `RowVar _ -> [mkfield _loc Pfield_var]
+        | `Negative _ -> []
+        | `Positive _ -> [mkfield _loc Pfield_var]
         | `Ant _ -> error _loc "antiquotation not expected here" in
       mktyp _loc (Ptyp_object xs)
   | `TyObj (_loc,fl,row) ->
       let xs =
         match row with
-        | `RvNil _ -> []
-        | `RowVar _ -> [mkfield _loc Pfield_var]
+        | `Negative _ -> []
+        | `Positive _ -> [mkfield _loc Pfield_var]
         | `Ant _ -> error _loc "antiquotation not expected here" in
       mktyp _loc (Ptyp_object (meth_list fl xs))
   | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
@@ -243,10 +243,10 @@ let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
 
 let mkprivate' m = if m then Private else Public
 
-let mkprivate (x : private_flag) =
+let mkprivate (x : flag) =
   match x with
-  | `Private _ -> Private
-  | `PrNil _ -> Public
+  | `Positive _ -> Private
+  | `Negative _ -> Public
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 
 let mktrecord (x : name_ctyp) =
@@ -284,10 +284,10 @@ let mkvalue_desc loc t (p : strings list) =
          match p with | `Str (_,p) -> p | _ -> failwithf "mkvalue_desc") p in
   { pval_type = (ctyp t); pval_prim = ps; pval_loc = loc }
 
-let mkmutable (x : mutable_flag) =
+let mkmutable (x : flag) =
   match x with
-  | `Mutable _ -> Mutable
-  | `MuNil _ -> Immutable
+  | `Positive _ -> Mutable
+  | `Negative _ -> Immutable
   | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
 
 let paolab (lab : string) (p : pat) =
@@ -492,10 +492,10 @@ let rec pat (x : pat) =
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
   | p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p)
 
-let override_flag loc (x : override_flag) =
+let flag loc (x : flag) =
   match x with
-  | `Override _ -> Override
-  | `OvNil _ -> Fresh
+  | `Positive _ -> Override
+  | `Negative _ -> Fresh
   | _ -> error loc "antiquotation not allowed here"
 
 let rec exp (x : exp) =
@@ -1187,29 +1187,24 @@ and clfield (c : clfield) l =
   | `Eq (loc,t1,t2) -> (mkcf loc (Pcf_constr ((ctyp t1), (ctyp t2)))) :: l
   | `Sem (_,cst1,cst2) -> clfield cst1 (clfield cst2 l)
   | `Inherit (loc,ov,ce) ->
-      (mkcf loc (Pcf_inher ((override_flag loc ov), (clexp ce), None))) :: l
+      (mkcf loc (Pcf_inher ((flag loc ov), (clexp ce), None))) :: l
   | `InheritAs (loc,ov,ce,`Lid (_,x)) ->
-      (mkcf loc (Pcf_inher ((override_flag loc ov), (clexp ce), (Some x))))
-      :: l
+      (mkcf loc (Pcf_inher ((flag loc ov), (clexp ce), (Some x)))) :: l
   | `Initializer (loc,e) -> (mkcf loc (Pcf_init (exp e))) :: l
   | `CrMthS (loc,`Lid (sloc,s),ov,pf,e) ->
       let e = mkexp loc (Pexp_poly ((exp e), None)) in
       (mkcf loc
-         (Pcf_meth
-            ((with_loc s sloc), (mkprivate pf), (override_flag loc ov), e)))
+         (Pcf_meth ((with_loc s sloc), (mkprivate pf), (flag loc ov), e)))
         :: l
   | `CrMth (loc,`Lid (sloc,s),ov,pf,e,t) ->
       let t = Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly ((exp e), t)) in
       (mkcf loc
-         (Pcf_meth
-            ((with_loc s sloc), (mkprivate pf), (override_flag loc ov), e)))
+         (Pcf_meth ((with_loc s sloc), (mkprivate pf), (flag loc ov), e)))
         :: l
   | `CrVal (loc,`Lid (sloc,s),ov,mf,e) ->
       (mkcf loc
-         (Pcf_val
-            ((with_loc s sloc), (mkmutable mf), (override_flag loc ov),
-              (exp e))))
+         (Pcf_val ((with_loc s sloc), (mkmutable mf), (flag loc ov), (exp e))))
       :: l
   | `VirMeth (loc,`Lid (sloc,s),pf,t) ->
       (mkcf loc

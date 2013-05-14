@@ -6,13 +6,7 @@ type literal =
   | `Int32 of (loc * string) | `Int64 of (loc * string)
   | `Flo of (loc * string) | `Nativeint of (loc * string)
   | `Str of (loc * string)] 
-type rec_flag = [ `Recursive of loc | `ReNil of loc | ant] 
-type direction_flag = [ `To of loc | `Downto of loc | ant] 
-type mutable_flag = [ `Mutable of loc | `MuNil of loc | ant] 
-type private_flag = [ `Private of loc | `PrNil of loc | ant] 
-type virtual_flag = [ `Virtual of loc | `ViNil of loc | ant] 
-type override_flag = [ `Override of loc | `OvNil of loc | ant] 
-type row_var_flag = [ `RowVar of loc | `RvNil of loc | ant] 
+type flag = [ `Positive of loc | `Negative of loc | ant] 
 type position_flag =
   [ `Positive of loc | `Negative of loc | `Normal of loc | ant] 
 type strings =
@@ -45,9 +39,9 @@ type ctyp =
   [ `Alias of (loc * ctyp * alident) | any | `App of (loc * ctyp * ctyp)
   | `Arrow of (loc * ctyp * ctyp) | `ClassPath of (loc * ident)
   | `Label of (loc * alident * ctyp) | `OptLabl of (loc * alident * ctyp)
-  | ident' | `TyObj of (loc * name_ctyp * row_var_flag)
-  | `TyObjEnd of (loc * row_var_flag) | `TyPol of (loc * ctyp * ctyp)
-  | `TyPolEnd of (loc * ctyp) | `TyTypePol of (loc * ctyp * ctyp)
+  | ident' | `TyObj of (loc * name_ctyp * flag) | `TyObjEnd of (loc * flag)
+  | `TyPol of (loc * ctyp * ctyp) | `TyPolEnd of (loc * ctyp)
+  | `TyTypePol of (loc * ctyp * ctyp)
   | `Quote of (loc * position_flag * alident)
   | `QuoteAny of (loc * position_flag) | `Par of (loc * ctyp)
   | `Sta of (loc * ctyp * ctyp) | `PolyEq of (loc * row_field)
@@ -80,9 +74,10 @@ and decl_params =
   | `Com of (loc * decl_params * decl_params) | ant] 
 and opt_decl_params = [ `Some of (loc * decl_params) | `None of loc] 
 and type_info =
-  [ `TyMan of (loc * ctyp * private_flag * type_repr)
-  | `TyRepr of (loc * private_flag * type_repr)
-  | `TyEq of (loc * private_flag * ctyp) | ant] 
+  [ `TyMan of (loc * ctyp * flag * type_repr)
+  | `TyRepr of (loc * flag * type_repr) | `TyEq of (loc * flag * ctyp) | 
+    ant]
+  
 and type_repr =
   [ `Record of (loc * name_ctyp) | `Sum of (loc * or_ctyp) | ant] 
 and name_ctyp =
@@ -117,12 +112,11 @@ and exp =
   | `ArrayDot of (loc * exp * exp) | `ArrayEmpty of loc
   | `Array of (loc * exp) | `Assert of (loc * exp)
   | `Assign of (loc * exp * exp)
-  | `For of (loc * alident * exp * exp * direction_flag * exp)
-  | `Fun of (loc * case) | `IfThenElse of (loc * exp * exp * exp)
-  | `IfThen of (loc * exp * exp) | `LabelS of (loc * alident)
-  | `Label of (loc * alident * exp) | `Lazy of (loc * exp)
-  | `LetIn of (loc * rec_flag * bind * exp)
-  | `LetTryInWith of (loc * rec_flag * bind * exp * case)
+  | `For of (loc * alident * exp * exp * flag * exp) | `Fun of (loc * case)
+  | `IfThenElse of (loc * exp * exp * exp) | `IfThen of (loc * exp * exp)
+  | `LabelS of (loc * alident) | `Label of (loc * alident * exp)
+  | `Lazy of (loc * exp) | `LetIn of (loc * flag * bind * exp)
+  | `LetTryInWith of (loc * flag * bind * exp * case)
   | `LetModule of (loc * auident * mexp * exp) | `Match of (loc * exp * case)
   | `New of (loc * ident) | `Obj of (loc * clfield) | `ObjEnd of loc
   | `ObjPat of (loc * pat * clfield) | `ObjPatEnd of (loc * pat)
@@ -178,11 +172,11 @@ and stru =
   | `Include of (loc * mexp) | `Module of (loc * auident * mexp)
   | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
   | `Open of (loc * ident) | `Type of (loc * typedecl)
-  | `Value of (loc * rec_flag * bind) | ant] 
+  | `Value of (loc * flag * bind) | ant] 
 and cltdecl =
   [ `And of (loc * cltdecl * cltdecl)
-  | `CtDecl of (loc * virtual_flag * ident * type_parameters * cltyp)
-  | `CtDeclS of (loc * virtual_flag * ident * cltyp) | ant] 
+  | `CtDecl of (loc * flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (loc * flag * ident * cltyp) | ant] 
 and cltyp =
   [ vid' | `ClApply of (loc * vid * type_parameters)
   | `CtFun of (loc * ctyp * cltyp) | `ObjTy of (loc * ctyp * clsigi)
@@ -190,32 +184,31 @@ and cltyp =
   | `And of (loc * cltyp * cltyp) | ant] 
 and clsigi =
   [ `Sem of (loc * clsigi * clsigi) | `SigInherit of (loc * cltyp)
-  | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
-  | `Method of (loc * alident * private_flag * ctyp)
-  | `VirMeth of (loc * alident * private_flag * ctyp)
-  | `Eq of (loc * ctyp * ctyp) | ant] 
+  | `CgVal of (loc * alident * flag * flag * ctyp)
+  | `Method of (loc * alident * flag * ctyp)
+  | `VirMeth of (loc * alident * flag * ctyp) | `Eq of (loc * ctyp * ctyp)
+  | ant] 
 and cldecl =
-  [ `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
-  | `ClDeclS of (loc * virtual_flag * ident * clexp)
+  [ `ClDecl of (loc * flag * ident * type_parameters * clexp)
+  | `ClDeclS of (loc * flag * ident * clexp)
   | `And of (loc * cldecl * cldecl) | ant] 
 and clexp =
   [ `CeApp of (loc * clexp * exp) | vid'
   | `ClApply of (loc * vid * type_parameters) | `CeFun of (loc * pat * clexp)
-  | `LetIn of (loc * rec_flag * bind * clexp) | `Obj of (loc * clfield)
+  | `LetIn of (loc * flag * bind * clexp) | `Obj of (loc * clfield)
   | `ObjEnd of loc | `ObjPat of (loc * pat * clfield)
   | `ObjPatEnd of (loc * pat) | `Constraint of (loc * clexp * cltyp) | 
     ant]
   
 and clfield =
-  [ `Sem of (loc * clfield * clfield)
-  | `Inherit of (loc * override_flag * clexp)
-  | `InheritAs of (loc * override_flag * clexp * alident)
-  | `CrVal of (loc * alident * override_flag * mutable_flag * exp)
-  | `VirVal of (loc * alident * mutable_flag * ctyp)
-  | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
-  | `CrMthS of (loc * alident * override_flag * private_flag * exp)
-  | `VirMeth of (loc * alident * private_flag * ctyp)
-  | `Eq of (loc * ctyp * ctyp) | `Initializer of (loc * exp) | ant] 
+  [ `Sem of (loc * clfield * clfield) | `Inherit of (loc * flag * clexp)
+  | `InheritAs of (loc * flag * clexp * alident)
+  | `CrVal of (loc * alident * flag * flag * exp)
+  | `VirVal of (loc * alident * flag * ctyp)
+  | `CrMth of (loc * alident * flag * flag * exp * ctyp)
+  | `CrMthS of (loc * alident * flag * flag * exp)
+  | `VirMeth of (loc * alident * flag * ctyp) | `Eq of (loc * ctyp * ctyp)
+  | `Initializer of (loc * exp) | ant] 
 type ep =
   [ vid | `App of (loc * ep * ep) | `Vrn of (loc * string)
   | `Com of (loc * ep * ep) | `Sem of (loc * ep * ep) | `Par of (loc * ep)

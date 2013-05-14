@@ -61,8 +61,8 @@ val constructor_declarations : or_ctyp Gram.t
 val ctyp : ctyp Gram.t
 val ctyp_quot : ctyp Gram.t
 val cvalue_bind : exp Gram.t
-val direction_flag : direction_flag Gram.t
-val direction_flag_quot : direction_flag Gram.t
+val flag : flag Gram.t
+val direction_flag_quot : flag Gram.t
 val dummy : unit Gram.t
 val eq_exp : (alident -> pat -> pat) Gram.t 
 val exp : exp Gram.t
@@ -88,7 +88,7 @@ val label_pat : rec_pat Gram.t
 val label_pat_list : rec_pat Gram.t
     
 val let_bind : bind Gram.t
-val meth_list : (name_ctyp * row_var_flag) Gram.t 
+val meth_list : (name_ctyp * flag) Gram.t 
 val meth_decl : name_ctyp Gram.t
 val mbind : mbind Gram.t
 val mbind0 : mexp Gram.t
@@ -104,19 +104,19 @@ val mtyp_quot : mtyp Gram.t
 val name_tags : tag_names Gram.t
 val opt_class_self_type : ctyp Gram.t
 
-val opt_dot_dot : row_var_flag Gram.t
-val row_var_flag_quot : row_var_flag Gram.t
+val opt_dot_dot : flag Gram.t
+val row_var_flag_quot : flag Gram.t
 val opt_meth_list : ctyp Gram.t
-val opt_mutable : mutable_flag Gram.t
-val mutable_flag_quot : mutable_flag Gram.t
-val opt_override : override_flag Gram.t
-val override_flag_quot : override_flag Gram.t
-val opt_private : private_flag Gram.t
-val private_flag_quot : private_flag Gram.t
-val opt_rec : rec_flag Gram.t
-val rec_flag_quot : rec_flag Gram.t
-val opt_virtual : virtual_flag Gram.t
-val virtual_flag_quot : virtual_flag Gram.t
+val opt_mutable : flag Gram.t
+val mutable_flag_quot : flag Gram.t
+val opt_override : flag Gram.t
+val override_flag_quot : flag Gram.t
+val opt_private : flag Gram.t
+val private_flag_quot : flag Gram.t
+val opt_rec : flag Gram.t
+val rec_flag_quot : flag Gram.t
+val opt_virtual : flag Gram.t
+val virtual_flag_quot : flag Gram.t
 val pat : pat Gram.t
 val pat_as_pat_opt : pat Gram.t
 val pat_eoi : pat Gram.t
@@ -163,8 +163,8 @@ val module_longident_dot_lparen: ident Gram.t
 val sequence': (exp -> exp) Gram.t 
 val fun_def: exp Gram.t 
 
-val method_opt_override: override_flag Gram.t
-val value_val_opt_override: override_flag Gram.t
+val method_opt_override: flag Gram.t
+val value_val_opt_override: flag Gram.t
 val unquoted_typevars:ctyp Gram.t
 val lang: FanToken.name Gram.t
 val with_exp_lang: exp Gram.t  

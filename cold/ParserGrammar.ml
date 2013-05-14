@@ -142,7 +142,7 @@ let _ =
                          match __fan_1 with
                          | `Lid x -> ((_loc, x, y, (Some t)) : 'e__3 )
                          | _ -> failwith "(_loc, x, y, (Some t))\n"))))])],
-           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t ->\n            let t = (t : vid  :>exp) in\n            (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : Ast.exp )\n        | `dynamic (x,t) ->\n            let x = (x : vid  :>exp) in\n            let t = (t : vid  :>exp) in\n            (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n              Ast.exp ) in\n      sem_of_list &\n        (List.map\n           (fun (_loc,x,descr,ty)  ->\n              match (descr, ty) with\n              | (Some d,None ) ->\n                  (`Value\n                     (_loc, (`ReNil _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, d))))))) : \n                  Ast.stru )\n              | (Some d,Some typ) ->\n                  (`Value\n                     (_loc, (`ReNil _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, d)))),\n                                 typ))))) : Ast.stru )\n              | (None ,None ) ->\n                  (`Value\n                     (_loc, (`ReNil _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, x))))))) : \n                  Ast.stru )\n              | (None ,Some typ) ->\n                  (`Value\n                     (_loc, (`ReNil _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, x)))),\n                                 typ))))) : Ast.stru )) ls) : 'nonterminals ))\n",
+           ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t ->\n            let t = (t : vid  :>exp) in\n            (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : Ast.exp )\n        | `dynamic (x,t) ->\n            let x = (x : vid  :>exp) in\n            let t = (t : vid  :>exp) in\n            (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n              Ast.exp ) in\n      sem_of_list &\n        (List.map\n           (fun (_loc,x,descr,ty)  ->\n              match (descr, ty) with\n              | (Some d,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, d))))))) : \n                  Ast.stru )\n              | (Some d,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, d)))),\n                                 typ))))) : Ast.stru )\n              | (None ,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, x))))))) : \n                  Ast.stru )\n              | (None ,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, x)))),\n                                 typ))))) : Ast.stru )) ls) : 'nonterminals ))\n",
              (Gram.mk_action
                 (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                    (let mk =
@@ -163,14 +163,14 @@ let _ =
                             match (descr, ty) with
                             | (Some d,None ) ->
                                 (`Value
-                                   (_loc, (`ReNil _loc),
+                                   (_loc, (`Negative _loc),
                                      (`Bind
                                         (_loc, (`Lid (_loc, x)),
                                           (`App (_loc, mk, (`Str (_loc, d))))))) : 
                                 Ast.stru )
                             | (Some d,Some typ) ->
                                 (`Value
-                                   (_loc, (`ReNil _loc),
+                                   (_loc, (`Negative _loc),
                                      (`Bind
                                         (_loc, (`Lid (_loc, x)),
                                           (`Constraint
@@ -181,14 +181,14 @@ let _ =
                                 Ast.stru )
                             | (None ,None ) ->
                                 (`Value
-                                   (_loc, (`ReNil _loc),
+                                   (_loc, (`Negative _loc),
                                      (`Bind
                                         (_loc, (`Lid (_loc, x)),
                                           (`App (_loc, mk, (`Str (_loc, x))))))) : 
                                 Ast.stru )
                             | (None ,Some typ) ->
                                 (`Value
-                                   (_loc, (`ReNil _loc),
+                                   (_loc, (`Negative _loc),
                                      (`Bind
                                         (_loc, (`Lid (_loc, x)),
                                           (`Constraint

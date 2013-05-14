@@ -1,9 +1,9 @@
 open Ast
 open Format
   
-val mkvirtual : virtual_flag -> Asttypes.virtual_flag
-val mkdirection : direction_flag -> Asttypes.direction_flag
-val mkrf : rec_flag -> Asttypes.rec_flag
+val mkvirtual : flag -> Asttypes.virtual_flag
+val mkdirection : flag -> Asttypes.direction_flag
+val mkrf : flag -> Asttypes.rec_flag
 
 val ident_tag : ident -> Longident.t * [> `app | `lident | `uident ]
 
@@ -43,7 +43,7 @@ val package_type : mtyp -> Parsetree.package_type
 
 val mkprivate' : bool -> Asttypes.private_flag
 
-val mkprivate : private_flag -> Asttypes.private_flag
+val mkprivate : flag -> Asttypes.private_flag
 
 val mktrecord :
   name_ctyp ->
@@ -62,7 +62,7 @@ val mkvariant :
 val mkvalue_desc :
   Location.t -> ctyp -> strings list -> Parsetree.value_description
 
-val mkmutable : mutable_flag -> Asttypes.mutable_flag
+val mkmutable : flag -> Asttypes.mutable_flag
 
 val paolab : string -> pat -> string
 
@@ -90,7 +90,7 @@ val mkrangepat : loc -> char -> char -> Parsetree.pattern
 val pat : pat -> Parsetree.pattern
 
 
-val override_flag :  loc -> override_flag -> Asttypes.override_flag
+val flag :  loc -> flag -> Asttypes.override_flag
 
 val exp : exp -> Parsetree.expression
 

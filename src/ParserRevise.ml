@@ -298,7 +298,7 @@ let apply () = begin
         | "do"; sequence{seq}; "done" -> `Seq(_loc,seq)
         | "with"; lang{old}; S{x} -> begin  AstQuotation.default := old; x  end
         | "with";"{"; pos_exps{old} ;"}"; S{x} -> begin AstQuotation.map := old; x end
-        | "for"; a_lident{i}; "="; S{e1}; direction_flag{df}; S{e2}; "do";
+        | "for"; a_lident{i}; "="; S{e1}; flag{df}; S{e2}; "do";
             sequence{seq}; "done" ->
               `For (_loc, i, e1, e2, df, seq)
         | "while"; S{e}; "do"; sequence{seq}; "done" ->
@@ -847,50 +847,50 @@ let apply () = begin
       class_longident: [ label_longident{x} -> x ]
       
       method_opt_override:
-      [ "method"; "!" -> `Override _loc 
-      | "method"; `Ant (((""|"override") as n),s) -> mk_anti _loc ~c:"override_flag" n s
-      | "method" -> `OvNil _loc   ] 
+      [ "method"; "!" -> `Positive _loc 
+      | "method"; `Ant (((""|"override") as n),s) -> mk_anti _loc ~c:"flag" n s
+      | "method" -> `Negative _loc   ] 
       opt_override:
-      [ "!" -> `Override _loc
+      [ "!" -> `Positive _loc
       | `Ant ((("!"|"override") as n),s) ->
-          mk_anti _loc ~c:"override_flag" n s
-      | -> `OvNil _loc  ]
+          mk_anti _loc ~c:"flag" n s
+      | -> `Negative _loc  ]
       
       value_val_opt_override:
-      [ "val"; "!" -> `Override _loc
+      [ "val"; "!" -> `Positive _loc
       | "val"; `Ant (((""|"override"|"!") as n),s) ->
-            mk_anti _loc ~c:"override_flag" n s
-      | "val" -> `OvNil _loc]
-      direction_flag:
-      [ "to" ->  `To _loc
-      | "downto" -> `Downto _loc 
+            mk_anti _loc ~c:"flag" n s
+      | "val" -> `Negative _loc]
+      flag:
+      [ "to" ->  `Positive _loc
+      | "downto" -> `Negative _loc 
       | `Ant (("to"|"" as n),s) ->
-          mk_anti _loc  ~c:"direction_flag" n s]
+          mk_anti _loc  ~c:"flag" n s]
 
       opt_private:
-      [ "private" -> `Private _loc
+      [ "private" -> `Positive _loc
       | `Ant (("private" as n),s) ->
-          mk_anti _loc  ~c:"private_flag" n s
-      | -> `PrNil _loc   ] 
+          mk_anti _loc  ~c:"flag" n s
+      | -> `Negative _loc   ] 
       opt_mutable:
-      [ "mutable" ->  `Mutable _loc
+      [ "mutable" ->  `Positive _loc
       | `Ant (("mutable" as n),s) ->
-          mk_anti _loc ~c:"mutable_flag" n s
-      | -> `MuNil _loc  ] 
+          mk_anti _loc ~c:"flag" n s
+      | -> `Negative _loc  ] 
       opt_virtual:
-      [ "virtual" -> `Virtual _loc 
-      | `Ant (("virtual" as n),s) -> mk_anti _loc  ~c:"virtual_flag" n s
-      | -> `ViNil _loc   ] 
+      [ "virtual" -> `Positive _loc 
+      | `Ant (("virtual" as n),s) -> mk_anti _loc  ~c:"flag" n s
+      | -> `Negative _loc   ] 
       opt_dot_dot:
-      [ ".." -> `RowVar _loc
-      | `Ant ((".." as n),s) -> mk_anti _loc ~c:"row_var_flag" n s
-      | -> `RvNil _loc   ]
+      [ ".." -> `Positive _loc
+      | `Ant ((".." as n),s) -> mk_anti _loc ~c:"flag" n s
+      | -> `Negative _loc   ]
 
       (*opt_rec@inline *)
       opt_rec:
-      [ "rec" -> `Recursive _loc
-      | `Ant (("rec" as n),s) -> mk_anti _loc ~c:"rec_flag" n s
-      | -> `ReNil _loc]
+      [ "rec" -> `Positive _loc
+      | `Ant (("rec" as n),s) -> mk_anti _loc ~c:"flag" n s
+      | -> `Negative _loc]
       a_lident:
       [ `Ant((""|"lid") as n,s) -> mk_anti _loc  ~c:"a_lident" n s
       | `Lid s  -> `Lid (_loc, s) ]
@@ -903,7 +903,7 @@ let apply () = begin
       | `STR (_, x) -> `Str(_loc,x)
       | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)]
       rec_flag_quot:  [ opt_rec{x} -> x ]
-      direction_flag_quot:  [ direction_flag{x} -> x ] 
+      direction_flag_quot:  [ flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 
       private_flag_quot: [  opt_private{x} -> x ]
       virtual_flag_quot: [  opt_virtual{x} -> x ] 
@@ -1046,12 +1046,12 @@ let apply () = begin
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
                 ctyp{t} ->
                 (match o with
-                | `OvNil _ ->{| val virtual $mutable:mf $l : $t |}
+                | `Negative _ ->{| val virtual $mutable:mf $l : $t |}
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                   ctyp{t} ->
                 (match o with
-                | `OvNil _ -> `VirMeth (_loc, l, pf, t)
+                | `Negative _ -> `VirMeth (_loc, l, pf, t)
                 | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
@@ -1232,12 +1232,12 @@ let apply_ctyp () = begin
                    match cl with
                    |[] -> `None _loc | _ -> `Some(_loc, and_of_list cl))]
       type_info:
-      [ type_repr{t2} -> `TyRepr(_loc,`PrNil _loc,t2)
-      | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `PrNil _loc, t2)
-      | ctyp{t1} -> `TyEq(_loc,`PrNil _loc, t1)
-      | "private"; ctyp{t1} -> `TyEq(_loc,`Private _loc,t1)
-      |  ctyp{t1}; "=";"private"; type_repr{t2} -> `TyMan(_loc, t1, `Private _loc,t2)
-      | "private"; type_repr{t2} -> `TyRepr(_loc,`Private _loc, t2)]
+      [ type_repr{t2} -> `TyRepr(_loc,`Negative _loc,t2)
+      | ctyp{t1}; "="; type_repr{t2} -> `TyMan(_loc, t1, `Negative _loc, t2)
+      | ctyp{t1} -> `TyEq(_loc,`Negative _loc, t1)
+      | "private"; ctyp{t1} -> `TyEq(_loc,`Positive _loc,t1)
+      |  ctyp{t1}; "=";"private"; type_repr{t2} -> `TyMan(_loc, t1, `Positive _loc,t2)
+      | "private"; type_repr{t2} -> `TyRepr(_loc,`Positive _loc, t2)]
 
       type_repr:
       [ "|"; constructor_declarations{t} -> `Sum(_loc,t)

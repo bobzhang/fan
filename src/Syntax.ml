@@ -25,7 +25,7 @@ let print_warning loc txt = !current_warning loc txt;;
   cltyp_longident 
   cltyp_plus com_ctyp comma_ctyp comma_exp comma_ipat comma_pat comma_type_parameter
   constrain constructor_arg_list constructor_declaration constructor_declarations
-  ctyp cvalue_bind direction_flag direction_flag_quot
+  ctyp cvalue_bind flag direction_flag_quot
   dummy eq_exp exp exp_eoi field_exp field_exp_list fun_bind
   fun_def ident implem interf ipat ipat_tcon pat_tcon
   label_declaration  label_declaration_list label_exp label_exp_list 

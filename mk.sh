@@ -1,14 +1,15 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
 set -e
-FILES=('Ast.mli'  'Objs.ml' 'AstLoc.ml' 'ParserRevise.ml' 'Ast2pt.ml' 'FanGrammar.ml' 'FanDyn.ml' 'FanOps.ml'  'FanMeta.ml')
+FILES=('FanMeta.ml')
 
 OB= ocamlbuild
 TMP=tmp
+
 for i in ${FILES[@]}
 do
     ocamlbuild -I src $TMP/$i
-    echo "$OB $TMP/$i.ml\n"
+    echo "$OB $TMP/$i\n"
     cp _build/$TMP/$i cold/
 done
 # ocamlbuild tmp/Ast.ml tmp/FanAst.ml tmp/ParserRevise.ml tmp/Sig.ml tmp/OCamlInitSyntax.ml tmp/Ast2pt.ml

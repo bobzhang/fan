@@ -417,9 +417,9 @@ let let_in_of_extend _loc (gram : vid option) locals default =
   | Some ll ->
       let locals = and_of_list (List.map local_bind_of_name ll) in
       (`LetIn
-         (_loc, (`ReNil _loc),
+         (_loc, (`Negative _loc),
            (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),
-           (`LetIn (_loc, (`ReNil _loc), locals, default))) : Ast.exp )
+           (`LetIn (_loc, (`Negative _loc), locals, default))) : Ast.exp )
 
 let text_of_functorial_extend _loc gram locals el =
   let args =

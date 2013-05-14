@@ -18,54 +18,18 @@ let fill_loc_literal loc =
   | `Nativeint _a0 -> `Nativeint (loc, _a0)
   | `Str _a0 -> `Str (loc, _a0)
 
-let fill_loc_rec_flag loc =
+let fill_loc_flag loc =
   function
-  | `Recursive -> `Recursive loc
-  | `ReNil -> `ReNil loc
+  | `Positive -> `Positive loc
+  | `Negative -> `Negative loc
   | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result2)
-
-let fill_loc_direction_flag loc =
-  function
-  | `To -> `To loc
-  | `Downto -> `Downto loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result3)
-
-let fill_loc_mutable_flag loc =
-  function
-  | `Mutable -> `Mutable loc
-  | `MuNil -> `MuNil loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result4)
-
-let fill_loc_private_flag loc =
-  function
-  | `Private -> `Private loc
-  | `PrNil -> `PrNil loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result5)
-
-let fill_loc_virtual_flag loc =
-  function
-  | `Virtual -> `Virtual loc
-  | `ViNil -> `ViNil loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result6)
-
-let fill_loc_override_flag loc =
-  function
-  | `Override -> `Override loc
-  | `OvNil -> `OvNil loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result7)
-
-let fill_loc_row_var_flag loc =
-  function
-  | `RowVar -> `RowVar loc
-  | `RvNil -> `RvNil loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result8)
 
 let fill_loc_position_flag loc =
   function
   | `Positive -> `Positive loc
   | `Negative -> `Negative loc
   | `Normal -> `Normal loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result9)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result3)
 
 let rec fill_loc_strings loc =
   function
@@ -73,29 +37,29 @@ let rec fill_loc_strings loc =
       let _a0 = fill_loc_strings loc _a0 in
       let _a1 = fill_loc_strings loc _a1 in `App (loc, _a0, _a1)
   | `Str _a0 -> `Str (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result10)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result4)
 
 let fill_loc_lident loc (`Lid _a0) = `Lid (loc, _a0)
 
 let fill_loc_alident loc =
   function
   | `Lid _a0 -> `Lid (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result12)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result6)
 
 let fill_loc_auident loc =
   function
   | `Uid _a0 -> `Uid (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result13)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result7)
 
 let fill_loc_aident loc =
   function
-  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result14)
-  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result14)
+  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result8)
+  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result8)
 
 let fill_loc_astring loc =
   function
   | `C _a0 -> `C (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result15)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result9)
 
 let rec fill_loc_uident loc =
   function
@@ -105,7 +69,7 @@ let rec fill_loc_uident loc =
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_uident loc _a0 in
       let _a1 = fill_loc_uident loc _a1 in `App (loc, _a0, _a1)
-  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result16)
+  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result10)
 
 let rec fill_loc_ident loc =
   function
@@ -115,8 +79,8 @@ let rec fill_loc_ident loc =
   | `Apply (_a0,_a1) ->
       let _a0 = fill_loc_ident loc _a0 in
       let _a1 = fill_loc_ident loc _a1 in `Apply (loc, _a0, _a1)
-  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result17)
-  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result17)
+  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result11)
+  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result11)
 
 let fill_loc_ident' loc =
   function
@@ -136,7 +100,7 @@ let rec fill_loc_vid loc =
       let _a1 = fill_loc_vid loc _a1 in `Dot (loc, _a0, _a1)
   | `Lid _a0 -> `Lid (loc, _a0)
   | `Uid _a0 -> `Uid (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result19)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result13)
 
 let fill_loc_vid' loc =
   function
@@ -151,14 +115,14 @@ let rec fill_loc_dupath loc =
   | `Dot (_a0,_a1) ->
       let _a0 = fill_loc_dupath loc _a0 in
       let _a1 = fill_loc_dupath loc _a1 in `Dot (loc, _a0, _a1)
-  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result21)
+  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result15)
 
 let fill_loc_dlpath loc =
   function
   | `Dot (_a0,_a1) ->
       let _a0 = fill_loc_dupath loc _a0 in
       let _a1 = fill_loc_alident loc _a1 in `Dot (loc, _a0, _a1)
-  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result22)
+  | #alident as _a0 -> (fill_loc_alident loc _a0 :>'result16)
 
 let fill_loc_any loc `Any = `Any loc
 
@@ -167,7 +131,7 @@ let rec fill_loc_ctyp loc =
   | `Alias (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_alident loc _a1 in `Alias (loc, _a0, _a1)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result56)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result50)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `App (loc, _a0, _a1)
@@ -182,12 +146,11 @@ let rec fill_loc_ctyp loc =
   | `OptLabl (_a0,_a1) ->
       let _a0 = fill_loc_alident loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `OptLabl (loc, _a0, _a1)
-  | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>'result56)
+  | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>'result50)
   | `TyObj (_a0,_a1) ->
       let _a0 = fill_loc_name_ctyp loc _a0 in
-      let _a1 = fill_loc_row_var_flag loc _a1 in `TyObj (loc, _a0, _a1)
-  | `TyObjEnd _a0 ->
-      let _a0 = fill_loc_row_var_flag loc _a0 in `TyObjEnd (loc, _a0)
+      let _a1 = fill_loc_flag loc _a1 in `TyObj (loc, _a0, _a1)
+  | `TyObjEnd _a0 -> let _a0 = fill_loc_flag loc _a0 in `TyObjEnd (loc, _a0)
   | `TyPol (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `TyPol (loc, _a0, _a1)
@@ -216,17 +179,17 @@ let rec fill_loc_ctyp loc =
       let _a0 = fill_loc_row_field loc _a0 in
       let _a1 = fill_loc_tag_names loc _a1 in `PolyInfSup (loc, _a0, _a1)
   | `Package _a0 -> let _a0 = fill_loc_mtyp loc _a0 in `Package (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result56)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result50)
 and fill_loc_type_parameters loc =
   function
   | `Com (_a0,_a1) ->
       let _a0 = fill_loc_type_parameters loc _a0 in
       let _a1 = fill_loc_type_parameters loc _a1 in `Com (loc, _a0, _a1)
   | `Ctyp _a0 -> let _a0 = fill_loc_ctyp loc _a0 in `Ctyp (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result55)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result49)
 and fill_loc_row_field loc =
   function
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result54)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result48)
   | `Bar (_a0,_a1) ->
       let _a0 = fill_loc_row_field loc _a0 in
       let _a1 = fill_loc_row_field loc _a1 in `Bar (loc, _a0, _a1)
@@ -237,7 +200,7 @@ and fill_loc_row_field loc =
   | `Ctyp _a0 -> let _a0 = fill_loc_ctyp loc _a0 in `Ctyp (loc, _a0)
 and fill_loc_tag_names loc =
   function
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result53)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result47)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_tag_names loc _a0 in
       let _a1 = fill_loc_tag_names loc _a1 in `App (loc, _a0, _a1)
@@ -258,7 +221,7 @@ and fill_loc_typedecl loc =
   | `And (_a0,_a1) ->
       let _a0 = fill_loc_typedecl loc _a0 in
       let _a1 = fill_loc_typedecl loc _a1 in `And (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result52)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result46)
 and fill_loc_type_constr loc =
   function
   | `And (_a0,_a1) ->
@@ -267,7 +230,7 @@ and fill_loc_type_constr loc =
   | `Eq (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result51)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result45)
 and fill_loc_opt_type_constr loc =
   function
   | `Some _a0 -> let _a0 = fill_loc_type_constr loc _a0 in `Some (loc, _a0)
@@ -280,7 +243,7 @@ and fill_loc_decl_param loc =
   | `QuoteAny _a0 ->
       let _a0 = fill_loc_position_flag loc _a0 in `QuoteAny (loc, _a0)
   | `Any -> `Any loc
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result49)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result43)
 and fill_loc_decl_params loc =
   function
   | `Quote (_a0,_a1) ->
@@ -292,7 +255,7 @@ and fill_loc_decl_params loc =
   | `Com (_a0,_a1) ->
       let _a0 = fill_loc_decl_params loc _a0 in
       let _a1 = fill_loc_decl_params loc _a1 in `Com (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result48)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result42)
 and fill_loc_opt_decl_params loc =
   function
   | `Some _a0 -> let _a0 = fill_loc_decl_params loc _a0 in `Some (loc, _a0)
@@ -301,20 +264,20 @@ and fill_loc_type_info loc =
   function
   | `TyMan (_a0,_a1,_a2) ->
       let _a0 = fill_loc_ctyp loc _a0 in
-      let _a1 = fill_loc_private_flag loc _a1 in
+      let _a1 = fill_loc_flag loc _a1 in
       let _a2 = fill_loc_type_repr loc _a2 in `TyMan (loc, _a0, _a1, _a2)
   | `TyRepr (_a0,_a1) ->
-      let _a0 = fill_loc_private_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_type_repr loc _a1 in `TyRepr (loc, _a0, _a1)
   | `TyEq (_a0,_a1) ->
-      let _a0 = fill_loc_private_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `TyEq (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result46)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result40)
 and fill_loc_type_repr loc =
   function
   | `Record _a0 -> let _a0 = fill_loc_name_ctyp loc _a0 in `Record (loc, _a0)
   | `Sum _a0 -> let _a0 = fill_loc_or_ctyp loc _a0 in `Sum (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result45)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result39)
 and fill_loc_name_ctyp loc =
   function
   | `Sem (_a0,_a1) ->
@@ -326,7 +289,7 @@ and fill_loc_name_ctyp loc =
   | `TyColMut (_a0,_a1) ->
       let _a0 = fill_loc_alident loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `TyColMut (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result44)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result38)
 and fill_loc_or_ctyp loc =
   function
   | `Bar (_a0,_a1) ->
@@ -338,17 +301,17 @@ and fill_loc_or_ctyp loc =
   | `Of (_a0,_a1) ->
       let _a0 = fill_loc_auident loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `Of (loc, _a0, _a1)
-  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result43)
+  | #auident as _a0 -> (fill_loc_auident loc _a0 :>'result37)
 and fill_loc_of_ctyp loc =
   function
   | `Of (_a0,_a1) ->
       let _a0 = fill_loc_vid loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `Of (loc, _a0, _a1)
-  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result42)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result42)
+  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result36)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result36)
 and fill_loc_pat loc =
   function
-  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result41)
+  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result35)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_pat loc _a1 in `App (loc, _a0, _a1)
@@ -360,9 +323,9 @@ and fill_loc_pat loc =
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_pat loc _a1 in `Sem (loc, _a0, _a1)
   | `Par _a0 -> let _a0 = fill_loc_pat loc _a0 in `Par (loc, _a0)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result41)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result35)
   | `Record _a0 -> let _a0 = fill_loc_rec_pat loc _a0 in `Record (loc, _a0)
-  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result41)
+  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result35)
   | `Alias (_a0,_a1) ->
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_alident loc _a1 in `Alias (loc, _a0, _a1)
@@ -406,11 +369,11 @@ and fill_loc_rec_pat loc =
   | `Sem (_a0,_a1) ->
       let _a0 = fill_loc_rec_pat loc _a0 in
       let _a1 = fill_loc_rec_pat loc _a1 in `Sem (loc, _a0, _a1)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result40)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result40)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result34)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result34)
 and fill_loc_exp loc =
   function
-  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result39)
+  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result33)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_exp loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `App (loc, _a0, _a1)
@@ -422,9 +385,9 @@ and fill_loc_exp loc =
       let _a0 = fill_loc_exp loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `Sem (loc, _a0, _a1)
   | `Par _a0 -> let _a0 = fill_loc_exp loc _a0 in `Par (loc, _a0)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result39)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result33)
   | `Record _a0 -> let _a0 = fill_loc_rec_exp loc _a0 in `Record (loc, _a0)
-  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result39)
+  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result33)
   | `RecordWith (_a0,_a1) ->
       let _a0 = fill_loc_rec_exp loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `RecordWith (loc, _a0, _a1)
@@ -444,7 +407,7 @@ and fill_loc_exp loc =
       let _a0 = fill_loc_alident loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in
       let _a2 = fill_loc_exp loc _a2 in
-      let _a3 = fill_loc_direction_flag loc _a3 in
+      let _a3 = fill_loc_flag loc _a3 in
       let _a4 = fill_loc_exp loc _a4 in `For (loc, _a0, _a1, _a2, _a3, _a4)
   | `Fun _a0 -> let _a0 = fill_loc_case loc _a0 in `Fun (loc, _a0)
   | `IfThenElse (_a0,_a1,_a2) ->
@@ -460,11 +423,11 @@ and fill_loc_exp loc =
       let _a1 = fill_loc_exp loc _a1 in `Label (loc, _a0, _a1)
   | `Lazy _a0 -> let _a0 = fill_loc_exp loc _a0 in `Lazy (loc, _a0)
   | `LetIn (_a0,_a1,_a2) ->
-      let _a0 = fill_loc_rec_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_bind loc _a1 in
       let _a2 = fill_loc_exp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
   | `LetTryInWith (_a0,_a1,_a2,_a3) ->
-      let _a0 = fill_loc_rec_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_bind loc _a1 in
       let _a2 = fill_loc_exp loc _a2 in
       let _a3 = fill_loc_case loc _a3 in
@@ -529,11 +492,11 @@ and fill_loc_rec_exp loc =
   | `RecBind (_a0,_a1) ->
       let _a0 = fill_loc_ident loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `RecBind (loc, _a0, _a1)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result38)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result38)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result32)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result32)
 and fill_loc_mtyp loc =
   function
-  | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>'result37)
+  | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>'result31)
   | `Sig _a0 -> let _a0 = fill_loc_sigi loc _a0 in `Sig (loc, _a0)
   | `SigEnd -> `SigEnd loc
   | `Functor (_a0,_a1,_a2) ->
@@ -545,7 +508,7 @@ and fill_loc_mtyp loc =
       let _a1 = fill_loc_constr loc _a1 in `With (loc, _a0, _a1)
   | `ModuleTypeOf _a0 ->
       let _a0 = fill_loc_mexp loc _a0 in `ModuleTypeOf (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result37)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result31)
 and fill_loc_sigi loc =
   function
   | `Val (_a0,_a1) ->
@@ -581,7 +544,7 @@ and fill_loc_sigi loc =
   | `Include _a0 -> let _a0 = fill_loc_mtyp loc _a0 in `Include (loc, _a0)
   | `RecModule _a0 ->
       let _a0 = fill_loc_mbind loc _a0 in `RecModule (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result36)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result30)
 and fill_loc_mbind loc =
   function
   | `And (_a0,_a1) ->
@@ -594,7 +557,7 @@ and fill_loc_mbind loc =
   | `Constraint (_a0,_a1) ->
       let _a0 = fill_loc_auident loc _a0 in
       let _a1 = fill_loc_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result35)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result29)
 and fill_loc_constr loc =
   function
   | `TypeEq (_a0,_a1) ->
@@ -615,7 +578,7 @@ and fill_loc_constr loc =
   | `And (_a0,_a1) ->
       let _a0 = fill_loc_constr loc _a0 in
       let _a1 = fill_loc_constr loc _a1 in `And (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result34)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result28)
 and fill_loc_bind loc =
   function
   | `And (_a0,_a1) ->
@@ -624,7 +587,7 @@ and fill_loc_bind loc =
   | `Bind (_a0,_a1) ->
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `Bind (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result33)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result27)
 and fill_loc_case loc =
   function
   | `Bar (_a0,_a1) ->
@@ -637,10 +600,10 @@ and fill_loc_case loc =
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in
       let _a2 = fill_loc_exp loc _a2 in `CaseWhen (loc, _a0, _a1, _a2)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result32)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result26)
 and fill_loc_mexp loc =
   function
-  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result31)
+  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result25)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_mexp loc _a0 in
       let _a1 = fill_loc_mexp loc _a1 in `App (loc, _a0, _a1)
@@ -655,7 +618,7 @@ and fill_loc_mexp loc =
       let _a1 = fill_loc_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
   | `PackageModule _a0 ->
       let _a0 = fill_loc_exp loc _a0 in `PackageModule (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result31)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result25)
 and fill_loc_stru loc =
   function
   | `Class _a0 -> let _a0 = fill_loc_cldecl loc _a0 in `Class (loc, _a0)
@@ -688,27 +651,27 @@ and fill_loc_stru loc =
   | `Open _a0 -> let _a0 = fill_loc_ident loc _a0 in `Open (loc, _a0)
   | `Type _a0 -> let _a0 = fill_loc_typedecl loc _a0 in `Type (loc, _a0)
   | `Value (_a0,_a1) ->
-      let _a0 = fill_loc_rec_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_bind loc _a1 in `Value (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result30)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result24)
 and fill_loc_cltdecl loc =
   function
   | `And (_a0,_a1) ->
       let _a0 = fill_loc_cltdecl loc _a0 in
       let _a1 = fill_loc_cltdecl loc _a1 in `And (loc, _a0, _a1)
   | `CtDecl (_a0,_a1,_a2,_a3) ->
-      let _a0 = fill_loc_virtual_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_ident loc _a1 in
       let _a2 = fill_loc_type_parameters loc _a2 in
       let _a3 = fill_loc_cltyp loc _a3 in `CtDecl (loc, _a0, _a1, _a2, _a3)
   | `CtDeclS (_a0,_a1,_a2) ->
-      let _a0 = fill_loc_virtual_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_ident loc _a1 in
       let _a2 = fill_loc_cltyp loc _a2 in `CtDeclS (loc, _a0, _a1, _a2)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result29)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result23)
 and fill_loc_cltyp loc =
   function
-  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result28)
+  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result22)
   | `ClApply (_a0,_a1) ->
       let _a0 = fill_loc_vid loc _a0 in
       let _a1 = fill_loc_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
@@ -724,7 +687,7 @@ and fill_loc_cltyp loc =
   | `And (_a0,_a1) ->
       let _a0 = fill_loc_cltyp loc _a0 in
       let _a1 = fill_loc_cltyp loc _a1 in `And (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result28)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result22)
 and fill_loc_clsigi loc =
   function
   | `Sem (_a0,_a1) ->
@@ -734,42 +697,42 @@ and fill_loc_clsigi loc =
       let _a0 = fill_loc_cltyp loc _a0 in `SigInherit (loc, _a0)
   | `CgVal (_a0,_a1,_a2,_a3) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_mutable_flag loc _a1 in
-      let _a2 = fill_loc_virtual_flag loc _a2 in
+      let _a1 = fill_loc_flag loc _a1 in
+      let _a2 = fill_loc_flag loc _a2 in
       let _a3 = fill_loc_ctyp loc _a3 in `CgVal (loc, _a0, _a1, _a2, _a3)
   | `Method (_a0,_a1,_a2) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_private_flag loc _a1 in
+      let _a1 = fill_loc_flag loc _a1 in
       let _a2 = fill_loc_ctyp loc _a2 in `Method (loc, _a0, _a1, _a2)
   | `VirMeth (_a0,_a1,_a2) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_private_flag loc _a1 in
+      let _a1 = fill_loc_flag loc _a1 in
       let _a2 = fill_loc_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
   | `Eq (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result27)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result21)
 and fill_loc_cldecl loc =
   function
   | `ClDecl (_a0,_a1,_a2,_a3) ->
-      let _a0 = fill_loc_virtual_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_ident loc _a1 in
       let _a2 = fill_loc_type_parameters loc _a2 in
       let _a3 = fill_loc_clexp loc _a3 in `ClDecl (loc, _a0, _a1, _a2, _a3)
   | `ClDeclS (_a0,_a1,_a2) ->
-      let _a0 = fill_loc_virtual_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_ident loc _a1 in
       let _a2 = fill_loc_clexp loc _a2 in `ClDeclS (loc, _a0, _a1, _a2)
   | `And (_a0,_a1) ->
       let _a0 = fill_loc_cldecl loc _a0 in
       let _a1 = fill_loc_cldecl loc _a1 in `And (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result26)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result20)
 and fill_loc_clexp loc =
   function
   | `CeApp (_a0,_a1) ->
       let _a0 = fill_loc_clexp loc _a0 in
       let _a1 = fill_loc_exp loc _a1 in `CeApp (loc, _a0, _a1)
-  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result25)
+  | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>'result19)
   | `ClApply (_a0,_a1) ->
       let _a0 = fill_loc_vid loc _a0 in
       let _a1 = fill_loc_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
@@ -777,7 +740,7 @@ and fill_loc_clexp loc =
       let _a0 = fill_loc_pat loc _a0 in
       let _a1 = fill_loc_clexp loc _a1 in `CeFun (loc, _a0, _a1)
   | `LetIn (_a0,_a1,_a2) ->
-      let _a0 = fill_loc_rec_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_bind loc _a1 in
       let _a2 = fill_loc_clexp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
   | `Obj _a0 -> let _a0 = fill_loc_clfield loc _a0 in `Obj (loc, _a0)
@@ -789,54 +752,54 @@ and fill_loc_clexp loc =
   | `Constraint (_a0,_a1) ->
       let _a0 = fill_loc_clexp loc _a0 in
       let _a1 = fill_loc_cltyp loc _a1 in `Constraint (loc, _a0, _a1)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result25)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result19)
 and fill_loc_clfield loc =
   function
   | `Sem (_a0,_a1) ->
       let _a0 = fill_loc_clfield loc _a0 in
       let _a1 = fill_loc_clfield loc _a1 in `Sem (loc, _a0, _a1)
   | `Inherit (_a0,_a1) ->
-      let _a0 = fill_loc_override_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_clexp loc _a1 in `Inherit (loc, _a0, _a1)
   | `InheritAs (_a0,_a1,_a2) ->
-      let _a0 = fill_loc_override_flag loc _a0 in
+      let _a0 = fill_loc_flag loc _a0 in
       let _a1 = fill_loc_clexp loc _a1 in
       let _a2 = fill_loc_alident loc _a2 in `InheritAs (loc, _a0, _a1, _a2)
   | `CrVal (_a0,_a1,_a2,_a3) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_override_flag loc _a1 in
-      let _a2 = fill_loc_mutable_flag loc _a2 in
+      let _a1 = fill_loc_flag loc _a1 in
+      let _a2 = fill_loc_flag loc _a2 in
       let _a3 = fill_loc_exp loc _a3 in `CrVal (loc, _a0, _a1, _a2, _a3)
   | `VirVal (_a0,_a1,_a2) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_mutable_flag loc _a1 in
+      let _a1 = fill_loc_flag loc _a1 in
       let _a2 = fill_loc_ctyp loc _a2 in `VirVal (loc, _a0, _a1, _a2)
   | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_override_flag loc _a1 in
-      let _a2 = fill_loc_private_flag loc _a2 in
+      let _a1 = fill_loc_flag loc _a1 in
+      let _a2 = fill_loc_flag loc _a2 in
       let _a3 = fill_loc_exp loc _a3 in
       let _a4 = fill_loc_ctyp loc _a4 in
       `CrMth (loc, _a0, _a1, _a2, _a3, _a4)
   | `CrMthS (_a0,_a1,_a2,_a3) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_override_flag loc _a1 in
-      let _a2 = fill_loc_private_flag loc _a2 in
+      let _a1 = fill_loc_flag loc _a1 in
+      let _a2 = fill_loc_flag loc _a2 in
       let _a3 = fill_loc_exp loc _a3 in `CrMthS (loc, _a0, _a1, _a2, _a3)
   | `VirMeth (_a0,_a1,_a2) ->
       let _a0 = fill_loc_alident loc _a0 in
-      let _a1 = fill_loc_private_flag loc _a1 in
+      let _a1 = fill_loc_flag loc _a1 in
       let _a2 = fill_loc_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
   | `Eq (_a0,_a1) ->
       let _a0 = fill_loc_ctyp loc _a0 in
       let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
   | `Initializer _a0 ->
       let _a0 = fill_loc_exp loc _a0 in `Initializer (loc, _a0)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result24)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result18)
 
 let rec fill_loc_ep loc =
   function
-  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result58)
+  | #vid as _a0 -> (fill_loc_vid loc _a0 :>'result52)
   | `App (_a0,_a1) ->
       let _a0 = fill_loc_ep loc _a0 in
       let _a1 = fill_loc_ep loc _a1 in `App (loc, _a0, _a1)
@@ -848,11 +811,11 @@ let rec fill_loc_ep loc =
       let _a0 = fill_loc_ep loc _a0 in
       let _a1 = fill_loc_ep loc _a1 in `Sem (loc, _a0, _a1)
   | `Par _a0 -> let _a0 = fill_loc_ep loc _a0 in `Par (loc, _a0)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result58)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result52)
   | `ArrayEmpty -> `ArrayEmpty loc
   | `Array _a0 -> let _a0 = fill_loc_ep loc _a0 in `Array (loc, _a0)
   | `Record _a0 -> let _a0 = fill_loc_rec_bind loc _a0 in `Record (loc, _a0)
-  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result58)
+  | #literal as _a0 -> (fill_loc_literal loc _a0 :>'result52)
 and fill_loc_rec_bind loc =
   function
   | `RecBind (_a0,_a1) ->
@@ -861,5 +824,5 @@ and fill_loc_rec_bind loc =
   | `Sem (_a0,_a1) ->
       let _a0 = fill_loc_rec_bind loc _a0 in
       let _a1 = fill_loc_rec_bind loc _a1 in `Sem (loc, _a0, _a1)
-  | #any as _a0 -> (fill_loc_any loc _a0 :>'result57)
-  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result57)
+  | #any as _a0 -> (fill_loc_any loc _a0 :>'result51)
+  | #ant as _a0 -> (fill_loc_ant loc _a0 :>'result51)

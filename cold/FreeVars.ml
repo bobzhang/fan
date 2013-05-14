@@ -40,9 +40,9 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | (`Lid (_loc,s) : Ast.exp)|(`LabelS (_loc,`Lid (_,s)) : Ast.exp)
         |(`OptLablS (_loc,`Lid (_,s)) : Ast.exp) ->
           if SSet.mem s env then o else {<free = f s free>}
-      | (`LetIn (_loc,`ReNil _,bi,e) : Ast.exp) ->
+      | (`LetIn (_loc,`Negative _,bi,e) : Ast.exp) ->
           (((o#add_bind bi)#exp e)#set_env env)#bind bi
-      | (`LetIn (_loc,`Recursive _,bi,e) : Ast.exp) ->
+      | (`LetIn (_loc,`Positive _,bi,e) : Ast.exp) ->
           (((o#add_bind bi)#exp e)#bind bi)#set_env env
       | (`For (_loc,`Lid (_,s),e1,e2,_,e3) : Ast.exp) ->
           ((((o#exp e1)#exp e2)#add_atom s)#exp e3)#set_env env
@@ -58,16 +58,16 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
     method! stru =
       function
       | (`External (_loc,`Lid (_,s),t,_) : Ast.stru) -> (o#ctyp t)#add_atom s
-      | (`Value (_loc,`ReNil _,bi) : Ast.stru) -> (o#bind bi)#add_bind bi
-      | (`Value (_loc,`Recursive _,bi) : Ast.stru) -> (o#add_bind bi)#bind bi
+      | (`Value (_loc,`Negative _,bi) : Ast.stru) -> (o#bind bi)#add_bind bi
+      | (`Value (_loc,`Positive _,bi) : Ast.stru) -> (o#add_bind bi)#bind bi
       | st -> super#stru st
     method! clexp =
       function
       | (`CeFun (_loc,p,ce) : Ast.clexp) ->
           ((o#add_pat p)#clexp ce)#set_env env
-      | (`LetIn (_loc,`ReNil _,bi,ce) : Ast.clexp) ->
+      | (`LetIn (_loc,`Negative _,bi,ce) : Ast.clexp) ->
           (((o#bind bi)#add_bind bi)#clexp ce)#set_env env
-      | (`LetIn (_loc,`Recursive _,bi,ce) : Ast.clexp) ->
+      | (`LetIn (_loc,`Positive _,bi,ce) : Ast.clexp) ->
           (((o#add_bind bi)#bind bi)#clexp ce)#set_env env
       | (`ObjPat (_loc,p,cst) : Ast.clexp) ->
           ((o#add_pat p)#clfield cst)#set_env env

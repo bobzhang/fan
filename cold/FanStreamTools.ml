@@ -49,7 +49,7 @@ let rec handle_failure e =
         | (`Case (_loc,_,e) : Ast.case) -> handle_failure e
         | _ -> false in
       (handle_failure me) && (case_handle_failure a)
-  | (`LetIn (_loc,`ReNil _,bi,e) : Ast.exp) ->
+  | (`LetIn (_loc,`Negative _,bi,e) : Ast.exp) ->
       let rec bind_handle_failure =
         function
         | (`And (_loc,b1,b2) : Ast.bind) ->
@@ -144,7 +144,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                  : Ast.exp) when m = (gm ()) -> true
              | _ -> false)) ckont
          then
-           (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, e)), skont) : 
+           (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, p, e)), skont) : 
            Ast.exp )
          else
            if
@@ -176,7 +176,8 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                                  (_loc, (`Uid (_loc, (gm ()))),
                                    (`Uid (_loc, "Failure")))), ckont))) : 
                     Ast.exp ) in
-                (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, p, tst)), skont) : 
+                (`LetIn
+                   (_loc, (`Negative _loc), (`Bind (_loc, p, tst)), skont) : 
                   Ast.exp ))
              else
                (`Match
@@ -229,7 +230,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
         with
         | Not_found  ->
             (`LetIn
-               (_loc, (`ReNil _loc),
+               (_loc, (`Negative _loc),
                  (`Bind (_loc, p, (`Lid (_loc, strm_n)))), skont) : Ast.exp )) : 
   exp )
 
@@ -239,7 +240,7 @@ let rec stream_pattern _loc (x,epo,e) (ekont : exp option -> exp) =
       (match epo with
        | Some ep ->
            (`LetIn
-              (_loc, (`ReNil _loc),
+              (_loc, (`Negative _loc),
                 (`Bind
                    (_loc, ep,
                      (`App
@@ -326,7 +327,7 @@ let cparser _loc bpo pc =
     match bpo with
     | Some bp ->
         (`LetIn
-           (_loc, (`ReNil _loc),
+           (_loc, (`Negative _loc),
              (`Bind
                 (_loc, bp,
                   (`App
@@ -350,7 +351,7 @@ let cparser_match _loc me bpo pc =
     match bpo with
     | Some bp ->
         (`LetIn
-           (_loc, (`ReNil _loc),
+           (_loc, (`Negative _loc),
              (`Bind
                 (_loc, bp,
                   (`App
@@ -364,7 +365,7 @@ let cparser_match _loc me bpo pc =
   | (`Lid (_loc,x) : Ast.exp) when x = strm_n -> e
   | _ ->
       (`LetIn
-         (_loc, (`ReNil _loc),
+         (_loc, (`Negative _loc),
            (`Bind
               (_loc,
                 (`Constraint

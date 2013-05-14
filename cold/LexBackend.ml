@@ -20,7 +20,7 @@ let auto_binds =
                        (`Case
                           (_loc, (`Lid (_loc, "mem_size")),
                             (`LetIn
-                               (_loc, (`ReNil _loc),
+                               (_loc, (`Negative _loc),
                                  (`Bind
                                     (_loc, (`Lid (_loc, "pos")),
                                       (`Field
@@ -174,7 +174,7 @@ let auto_binds =
                       (`Seq
                          (_loc,
                            (`LetIn
-                              (_loc, (`ReNil _loc),
+                              (_loc, (`Negative _loc),
                                 (`Bind
                                    (_loc, (`Lid (_loc, "i")),
                                      (`Field
@@ -183,7 +183,7 @@ let auto_binds =
                                              (_loc, (`Uid (_loc, "Lexing")),
                                                (`Lid (_loc, "lex_curr_pos")))))))),
                                 (`LetIn
-                                   (_loc, (`ReNil _loc),
+                                   (_loc, (`Negative _loc),
                                      (`Bind
                                         (_loc, (`Lid (_loc, "c")),
                                           (`StringDot
@@ -463,7 +463,7 @@ let output_entry
                      let bind = and_of_list xs in
                      (`Case
                         (_loc, (`Int (_loc, n)),
-                          (`LetIn (_loc, (`ReNil _loc), bind, act))) : 
+                          (`LetIn (_loc, (`Negative _loc), bind, act))) : 
                        Ast.case ))))
           @
           [(`Case
@@ -479,13 +479,13 @@ let output_entry
         (`Case
            (_loc, (`Lid (_loc, "lexbuf")),
              (`LetIn
-                (_loc, (`Recursive _loc), binds,
+                (_loc, (`Positive _loc), binds,
                   (`Seq
                      (_loc,
                        (`Sem
                           (_loc, actions,
                             (`LetIn
-                               (_loc, (`ReNil _loc),
+                               (_loc, (`Negative _loc),
                                  (`Bind
                                     (_loc,
                                       (`Lid (_loc, "__ocaml_lex_result")),

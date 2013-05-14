@@ -42,33 +42,20 @@ let mapi_exp ?(arity=1) ?(names=[])
 
 
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
-    simple_exp_of_ctyp (ty:ctyp) : exp =
+    ~f (ty:ctyp) : exp =
   match ty with
   | `Par (_loc,t)  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
     let pat = (EP.mk_tuple ~arity ~number:len :> pat) in
     let tys =
-      List.mapi
-        (mapi_exp ~arity ~names  ~f:simple_exp_of_ctyp) ls in
-    names <+ (currying
-                  [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
+      mk_tuple
+        (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
+    names <+ (currying [ {:case| $pat:pat -> $tys |} ] ~arity)
   | _  ->
       let _loc = loc_of ty in
-      FanLoc.errorf _loc
-        "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)
+      FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)
   
-(*
- @supported types type application: list int
-     basic type: int
-     product type: (int * float * int)
- [m_list
- (fun _loc fmt ((a0, a1, a2), (b0, b1, b2)) ->
-   ((m_int _loc fmt (a0, b0)), (m_float _loc fmt (a0, b0)),
-    (m_float _loc fmt (a0, b0))))]
- return type is result
-Plz supply current type [type 'a list] =>  [list]
- *)    
 let rec  normal_simple_exp_of_ctyp
     ?arity ?names ~mk_tuple
     ~right_type_id ~left_type_id
@@ -83,14 +70,8 @@ let rec  normal_simple_exp_of_ctyp
         if Hashset.mem cxt id then {| $(lid:left_trans id) |}
         else
           right_trans (`Lid(_loc,id))
-            (* right_trans {:ident| $lid:id |}  *)
     | (#ident' as id) ->
         right_trans (Id.to_vid id )
-          (* match id with *)
-          (* [ (#vid as id)  ->    *)
-          (*   right_trans id (\* recursive call here *\) *)
-          (* | _ -> failwithf "normal_simple_exp_of_ctyp complex type"] *)
-          
     | `App(_loc,t1,t2) ->
         {| $(aux t1) $(aux t2) |}
     | `Quote (_loc,_,`Lid(_,s)) ->   tyvar s
@@ -98,7 +79,7 @@ let rec  normal_simple_exp_of_ctyp
         aux {:ctyp| ($t1,$t2) arrow |} (* arrow is a keyword now*)
     | `Par _  as ty ->
         tuple_exp_of_ctyp  ?arity ?names ~mk_tuple
-          (normal_simple_exp_of_ctyp
+          ~f:(normal_simple_exp_of_ctyp
              ?arity ?names ~mk_tuple
              ~right_type_id ~left_type_id ~right_type_variable
              cxt) ty 
@@ -107,22 +88,7 @@ let rec  normal_simple_exp_of_ctyp
           (Objs.dump_ctyp ty) in
   aux ty
 
-
-
-
-(*
-  list int ==>
-  self#list (fun self -> self#int)
-  'a list  ==>
-  self#list mf_a 
-  'a  ==> (mf_a self)
-
-  list ('a list) ==>
-  self#list (fun self -> (self#list mf_a))
-
-  m_list (tree 'a) ==>
-  self#m_list (fun self -> self#tree mf_a)
- *)      
+   
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
     ?names ?arity ~mk_tuple ty = with {pat:ctyp}
   let open Transform in 
@@ -150,18 +116,12 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
         aux {:ctyp| ($t1,$t2) arrow  |} 
     | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
-          (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
-             ~right_type_variable ?names ?arity ~mk_tuple) ty 
+          ~f:(obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
+                ~right_type_variable ?names ?arity ~mk_tuple) ty 
     | ty ->
         FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s" (Objs.dump_ctyp ty)  in
   aux ty 
 
-(*
-  accept [simple_exp_of_ctyp]
-  call [reduce_data_ctors]  for [sum types]
-  assume input is  [sum type]
-  accept input type to generate  a function expession 
- *)  
 let exp_of_ctyp
     ?cons_transform
     ?(arity=1)
@@ -185,7 +145,8 @@ let exp_of_ctyp
     let res =
       let t = (* only under this case we need defaulting  *)
         if List.length res >= 2 && arity >= 2 then
-          match default info with | Some x-> x::res | None -> res 
+          match default info with
+          | Some x-> x::res | None -> res 
           (* [ default info :: res ] *)
         else res in
       List.rev t in 
@@ -355,15 +316,14 @@ let stru_of_mtyps ?module_name ?cons_transform
         end
         end
 
-    | `Single (name,tydcl) -> begin 
-        Hashset.add cxt name;
-        let _loc = loc_of tydcl in
-        let rec_flag =
-          if Ctyp.is_recursive tydcl then `Recursive _loc
-          else `ReNil  _loc
-        and bind = mk_bind  tydcl in 
-        {:stru| let $rec:rec_flag  $bind |}
-    end  in
+    | `Single (name,tydcl) ->
+        (Hashset.add cxt name;
+         let _loc = loc_of tydcl in
+         let flag =
+           if Ctyp.is_recursive tydcl then `Positive _loc
+           else `Negative  _loc
+         and bind = mk_bind  tydcl in 
+         {:stru| let $rec:flag  $bind |}) in
   let item =
     match lst with
     | [] -> {:stru@ghost|let _ = ()|}

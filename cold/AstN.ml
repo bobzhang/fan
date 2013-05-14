@@ -12,19 +12,7 @@ type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
   | `Flo of string | `Nativeint of string | `Str of string] 
 
-type rec_flag = [ `Recursive | `ReNil | ant] 
-
-type direction_flag = [ `To | `Downto | ant] 
-
-type mutable_flag = [ `Mutable | `MuNil | ant] 
-
-type private_flag = [ `Private | `PrNil | ant] 
-
-type virtual_flag = [ `Virtual | `ViNil | ant] 
-
-type override_flag = [ `Override | `OvNil | ant] 
-
-type row_var_flag = [ `RowVar | `RvNil | ant] 
+type flag = [ `Positive | `Negative | ant] 
 
 type position_flag = [ `Positive | `Negative | `Normal | ant] 
 
@@ -64,7 +52,7 @@ type ctyp =
   [ `Alias of (ctyp * alident) | any | `App of (ctyp * ctyp)
   | `Arrow of (ctyp * ctyp) | `ClassPath of ident
   | `Label of (alident * ctyp) | `OptLabl of (alident * ctyp) | ident'
-  | `TyObj of (name_ctyp * row_var_flag) | `TyObjEnd of row_var_flag
+  | `TyObj of (name_ctyp * flag) | `TyObjEnd of flag
   | `TyPol of (ctyp * ctyp) | `TyPolEnd of ctyp | `TyTypePol of (ctyp * ctyp)
   | `Quote of (position_flag * alident) | `QuoteAny of position_flag
   | `Par of ctyp | `Sta of (ctyp * ctyp) | `PolyEq of row_field
@@ -93,9 +81,8 @@ and decl_params =
   | `Com of (decl_params * decl_params) | ant] 
 and opt_decl_params = [ `Some of decl_params | `None] 
 and type_info =
-  [ `TyMan of (ctyp * private_flag * type_repr)
-  | `TyRepr of (private_flag * type_repr) | `TyEq of (private_flag * ctyp)
-  | ant] 
+  [ `TyMan of (ctyp * flag * type_repr) | `TyRepr of (flag * type_repr)
+  | `TyEq of (flag * ctyp) | ant] 
 and type_repr = [ `Record of name_ctyp | `Sum of or_ctyp | ant] 
 and name_ctyp =
   [ `Sem of (name_ctyp * name_ctyp) | `TyCol of (alident * ctyp)
@@ -121,12 +108,11 @@ and exp =
   | `Sem of (exp * exp) | `Par of exp | any | `Record of rec_exp | literal
   | `RecordWith of (rec_exp * exp) | `Field of (exp * exp)
   | `ArrayDot of (exp * exp) | `ArrayEmpty | `Array of exp | `Assert of exp
-  | `Assign of (exp * exp)
-  | `For of (alident * exp * exp * direction_flag * exp) | `Fun of case
-  | `IfThenElse of (exp * exp * exp) | `IfThen of (exp * exp)
+  | `Assign of (exp * exp) | `For of (alident * exp * exp * flag * exp)
+  | `Fun of case | `IfThenElse of (exp * exp * exp) | `IfThen of (exp * exp)
   | `LabelS of alident | `Label of (alident * exp) | `Lazy of exp
-  | `LetIn of (rec_flag * bind * exp)
-  | `LetTryInWith of (rec_flag * bind * exp * case)
+  | `LetIn of (flag * bind * exp)
+  | `LetTryInWith of (flag * bind * exp * case)
   | `LetModule of (auident * mexp * exp) | `Match of (exp * case)
   | `New of ident | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
   | `ObjPatEnd of pat | `OptLabl of (alident * exp) | `OptLablS of alident
@@ -171,11 +157,11 @@ and stru =
   | `External of (alident * ctyp * strings) | `Include of mexp
   | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
-  | `Value of (rec_flag * bind) | ant] 
+  | `Value of (flag * bind) | ant] 
 and cltdecl =
   [ `And of (cltdecl * cltdecl)
-  | `CtDecl of (virtual_flag * ident * type_parameters * cltyp)
-  | `CtDeclS of (virtual_flag * ident * cltyp) | ant] 
+  | `CtDecl of (flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (flag * ident * cltyp) | ant] 
 and cltyp =
   [ vid' | `ClApply of (vid * type_parameters) | `CtFun of (ctyp * cltyp)
   | `ObjTy of (ctyp * clsigi) | `ObjTyEnd of ctyp | `Obj of clsigi | 
@@ -183,28 +169,27 @@ and cltyp =
   | `And of (cltyp * cltyp) | ant] 
 and clsigi =
   [ `Sem of (clsigi * clsigi) | `SigInherit of cltyp
-  | `CgVal of (alident * mutable_flag * virtual_flag * ctyp)
-  | `Method of (alident * private_flag * ctyp)
-  | `VirMeth of (alident * private_flag * ctyp) | `Eq of (ctyp * ctyp) | 
+  | `CgVal of (alident * flag * flag * ctyp)
+  | `Method of (alident * flag * ctyp) | `VirMeth of (alident * flag * ctyp)
+  | `Eq of (ctyp * ctyp) | ant] 
+and cldecl =
+  [ `ClDecl of (flag * ident * type_parameters * clexp)
+  | `ClDeclS of (flag * ident * clexp) | `And of (cldecl * cldecl) | 
     ant]
   
-and cldecl =
-  [ `ClDecl of (virtual_flag * ident * type_parameters * clexp)
-  | `ClDeclS of (virtual_flag * ident * clexp) | `And of (cldecl * cldecl)
-  | ant] 
 and clexp =
   [ `CeApp of (clexp * exp) | vid' | `ClApply of (vid * type_parameters)
-  | `CeFun of (pat * clexp) | `LetIn of (rec_flag * bind * clexp)
+  | `CeFun of (pat * clexp) | `LetIn of (flag * bind * clexp)
   | `Obj of clfield | `ObjEnd | `ObjPat of (pat * clfield)
   | `ObjPatEnd of pat | `Constraint of (clexp * cltyp) | ant] 
 and clfield =
-  [ `Sem of (clfield * clfield) | `Inherit of (override_flag * clexp)
-  | `InheritAs of (override_flag * clexp * alident)
-  | `CrVal of (alident * override_flag * mutable_flag * exp)
-  | `VirVal of (alident * mutable_flag * ctyp)
-  | `CrMth of (alident * override_flag * private_flag * exp * ctyp)
-  | `CrMthS of (alident * override_flag * private_flag * exp)
-  | `VirMeth of (alident * private_flag * ctyp) | `Eq of (ctyp * ctyp)
+  [ `Sem of (clfield * clfield) | `Inherit of (flag * clexp)
+  | `InheritAs of (flag * clexp * alident)
+  | `CrVal of (alident * flag * flag * exp)
+  | `VirVal of (alident * flag * ctyp)
+  | `CrMth of (alident * flag * flag * exp * ctyp)
+  | `CrMthS of (alident * flag * flag * exp)
+  | `VirMeth of (alident * flag * ctyp) | `Eq of (ctyp * ctyp)
   | `Initializer of exp | ant] 
 
 type ep =

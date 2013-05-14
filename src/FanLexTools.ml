@@ -396,9 +396,9 @@ let gen_definition _loc l =
     let len = Array.length states in
     match len with
     | 1 ->
-      (`ReNil _loc,states.(0))
+      (`Negative _loc,states.(0))
     | 0 -> failwithf "FanLexTools.states length = 0 "
-    | _ -> (`Recursive _loc, and_of_list (Array.to_list states))  in
+    | _ -> (`Positive _loc, and_of_list (Array.to_list states))  in
   let cases =
     bar_of_list
       (Array.to_list cases @ [{:case| _ -> raise $g.Error|}]) in

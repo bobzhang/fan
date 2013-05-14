@@ -151,7 +151,7 @@ let mk_obj class_name base body =
   (`Class
      (_loc,
        (`ClDeclS
-          (_loc, (`ViNil _loc), (`Lid (_loc, class_name)),
+          (_loc, (`Negative _loc), (`Lid (_loc, class_name)),
             (`ObjPat
                (_loc,
                  (`Constraint
@@ -160,7 +160,7 @@ let mk_obj class_name base body =
                          (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
                  (`Sem
                     (_loc,
-                      (`Inherit (_loc, (`OvNil _loc), (`Lid (_loc, base)))),
+                      (`Inherit (_loc, (`Negative _loc), (`Lid (_loc, base)))),
                       body))))))) : Ast.stru )
 
 let is_recursive ty_dcl =

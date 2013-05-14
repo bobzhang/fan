@@ -219,7 +219,7 @@ let output_byte_array v =
 
 let table (n,t) =
   (`Value
-     (_loc, (`ReNil _loc),
+     (_loc, (`Negative _loc),
        (`Bind (_loc, (`Lid (_loc, n)), (output_byte_array t)))) : Ast.stru )
 
 let bind_table (n,t) =
@@ -262,7 +262,7 @@ let partition ~counter  ~tables  (i,p) =
     gen_tree (simplify LexSet.min_code LexSet.max_code (decision_table p)) in
   let f = mk_partition_name i in
   (`Value
-     (_loc, (`ReNil _loc),
+     (_loc, (`Negative _loc),
        (`Bind
           (_loc, (`Lid (_loc, f)),
             (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "c")), body))))))) : 
@@ -400,9 +400,9 @@ let gen_definition _loc l =
   let (b,states) =
     let len = Array.length states in
     match len with
-    | 1 -> ((`ReNil _loc), (states.(0)))
+    | 1 -> ((`Negative _loc), (states.(0)))
     | 0 -> failwithf "FanLexTools.states length = 0 "
-    | _ -> ((`Recursive _loc), (and_of_list (Array.to_list states))) in
+    | _ -> ((`Positive _loc), (and_of_list (Array.to_list states))) in
   let cases =
     bar_of_list
       ((Array.to_list cases) @

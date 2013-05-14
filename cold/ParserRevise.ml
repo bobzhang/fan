@@ -1080,16 +1080,15 @@ let apply () =
            `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
            `Skeyword "=";
            `Sself;
-           `Snterm (Gram.obj (direction_flag : 'direction_flag Gram.t ));
+           `Snterm (Gram.obj (flag : 'flag Gram.t ));
            `Sself;
            `Skeyword "do";
            `Snterm (Gram.obj (sequence : 'sequence Gram.t ));
            `Skeyword "done"],
-            ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (e2 : 'exp)  (df : 'direction_flag) \n     (e1 : 'exp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`For (_loc, i, e1, e2, df, seq) : 'exp ))\n",
+            ("Gram.mk_action\n  (fun _  (seq : 'sequence)  _  (e2 : 'exp)  (df : 'flag)  (e1 : 'exp)  _ \n     (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`For (_loc, i, e1, e2, df, seq) : 'exp ))\n",
               (Gram.mk_action
-                 (fun _  (seq : 'sequence)  _  (e2 : 'exp) 
-                    (df : 'direction_flag)  (e1 : 'exp)  _  (i : 'a_lident) 
-                    _  (_loc : FanLoc.t)  ->
+                 (fun _  (seq : 'sequence)  _  (e2 : 'exp)  (df : 'flag) 
+                    (e1 : 'exp)  _  (i : 'a_lident)  _  (_loc : FanLoc.t)  ->
                     (`For (_loc, i, e1, e2, df, seq) : 'exp )))));
           ([`Skeyword "while";
            `Sself;
@@ -3766,203 +3765,203 @@ let apply () =
      (None,
        (None, None,
          [([`Skeyword "method"; `Skeyword "!"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Override _loc : 'method_opt_override ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  -> (`Positive _loc : 'method_opt_override ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
-                    (`Override _loc : 'method_opt_override )))));
+                    (`Positive _loc : 'method_opt_override )))));
          ([`Skeyword "method";
           `Stoken
             (((function | `Ant ((""|"override"),_) -> true | _ -> false)),
               (`Normal, "`Ant ((\"\"|\"override\"),_)"))],
-           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Ant ((\"\"|\"override\" as n),s) ->\n         (mk_anti _loc ~c:\"override_flag\" n s : 'method_opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"override_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Ant ((\"\"|\"override\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'method_opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `Ant ((""|"override" as n),s) ->
-                       (mk_anti _loc ~c:"override_flag" n s : 'method_opt_override )
-                   | _ -> failwith "mk_anti _loc ~c:\"override_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'method_opt_override )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([`Skeyword "method"],
-           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`OvNil _loc : 'method_opt_override ))\n",
+           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Negative _loc : 'method_opt_override ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`OvNil _loc : 'method_opt_override )))))]));
+                   (`Negative _loc : 'method_opt_override )))))]));
    Gram.extend_single (opt_override : 'opt_override Gram.t )
      (None,
        (None, None,
          [([`Skeyword "!"],
-            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Override _loc : 'opt_override ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_override ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
-                    (`Override _loc : 'opt_override )))));
+                    (`Positive _loc : 'opt_override )))));
          ([`Stoken
              (((function | `Ant (("!"|"override"),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"!\"|\"override\"),_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"!\"|\"override\" as n),s) ->\n         (mk_anti _loc ~c:\"override_flag\" n s : 'opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"override_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"!\"|\"override\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("!"|"override" as n),s) ->
-                       (mk_anti _loc ~c:"override_flag" n s : 'opt_override )
-                   | _ -> failwith "mk_anti _loc ~c:\"override_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_override )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`OvNil _loc : 'opt_override ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_override ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`OvNil _loc : 'opt_override )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_override )))))]));
    Gram.extend_single
      (value_val_opt_override : 'value_val_opt_override Gram.t )
      (None,
        (None, None,
          [([`Skeyword "val"; `Skeyword "!"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`Override _loc : 'value_val_opt_override ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (`Positive _loc : 'value_val_opt_override ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
-                    (`Override _loc : 'value_val_opt_override )))));
+                    (`Positive _loc : 'value_val_opt_override )))));
          ([`Skeyword "val";
           `Stoken
             (((function | `Ant ((""|"override"|"!"),_) -> true | _ -> false)),
               (`Normal, "`Ant ((\"\"|\"override\"|\"!\"),_)"))],
-           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Ant ((\"\"|\"override\"|\"!\" as n),s) ->\n         (mk_anti _loc ~c:\"override_flag\" n s : 'value_val_opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"override_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Ant ((\"\"|\"override\"|\"!\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'value_val_opt_override )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->
                    match __fan_1 with
                    | `Ant ((""|"override"|"!" as n),s) ->
-                       (mk_anti _loc ~c:"override_flag" n s : 'value_val_opt_override )
-                   | _ -> failwith "mk_anti _loc ~c:\"override_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'value_val_opt_override )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([`Skeyword "val"],
-           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`OvNil _loc : 'value_val_opt_override ))\n",
+           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Negative _loc : 'value_val_opt_override ))\n",
              (Gram.mk_action
                 (fun _  (_loc : FanLoc.t)  ->
-                   (`OvNil _loc : 'value_val_opt_override )))))]));
-   Gram.extend_single (direction_flag : 'direction_flag Gram.t )
+                   (`Negative _loc : 'value_val_opt_override )))))]));
+   Gram.extend_single (flag : 'flag Gram.t )
      (None,
        (None, None,
          [([`Skeyword "to"],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`To _loc : 'direction_flag ))\n",
+            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'flag ))\n",
               (Gram.mk_action
-                 (fun _  (_loc : FanLoc.t)  -> (`To _loc : 'direction_flag )))));
+                 (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'flag )))));
          ([`Skeyword "downto"],
-           ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Downto _loc : 'direction_flag ))\n",
+           ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Negative _loc : 'flag ))\n",
              (Gram.mk_action
-                (fun _  (_loc : FanLoc.t)  ->
-                   (`Downto _loc : 'direction_flag )))));
+                (fun _  (_loc : FanLoc.t)  -> (`Negative _loc : 'flag )))));
          ([`Stoken
              (((function | `Ant (("to"|""),_) -> true | _ -> false)),
                (`Normal, "`Ant ((\"to\"|\"\"),_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"to\"|\"\" as n),s) ->\n         (mk_anti _loc ~c:\"direction_flag\" n s : 'direction_flag )\n     | _ -> failwith \"mk_anti _loc ~c:\"direction_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"to\"|\"\" as n),s) -> (mk_anti _loc ~c:\"flag\" n s : 'flag )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("to"|"" as n),s) ->
-                       (mk_anti _loc ~c:"direction_flag" n s : 'direction_flag )
-                   | _ -> failwith "mk_anti _loc ~c:\"direction_flag\" n s\n"))))]));
+                       (mk_anti _loc ~c:"flag" n s : 'flag )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))))]));
    Gram.extend_single (opt_private : 'opt_private Gram.t )
      (None,
        (None, None,
          [([`Skeyword "private"],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Private _loc : 'opt_private ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_private ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
-                    (`Private _loc : 'opt_private )))));
+                    (`Positive _loc : 'opt_private )))));
          ([`Stoken
              (((function | `Ant ("private",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"private\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"private\" as n),s) ->\n         (mk_anti _loc ~c:\"private_flag\" n s : 'opt_private )\n     | _ -> failwith \"mk_anti _loc ~c:\"private_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"private\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'opt_private )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("private" as n),s) ->
-                       (mk_anti _loc ~c:"private_flag" n s : 'opt_private )
-                   | _ -> failwith "mk_anti _loc ~c:\"private_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_private )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`PrNil _loc : 'opt_private ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_private ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`PrNil _loc : 'opt_private )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_private )))))]));
    Gram.extend_single (opt_mutable : 'opt_mutable Gram.t )
      (None,
        (None, None,
          [([`Skeyword "mutable"],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Mutable _loc : 'opt_mutable ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_mutable ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
-                    (`Mutable _loc : 'opt_mutable )))));
+                    (`Positive _loc : 'opt_mutable )))));
          ([`Stoken
              (((function | `Ant ("mutable",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"mutable\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"mutable\" as n),s) ->\n         (mk_anti _loc ~c:\"mutable_flag\" n s : 'opt_mutable )\n     | _ -> failwith \"mk_anti _loc ~c:\"mutable_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"mutable\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'opt_mutable )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("mutable" as n),s) ->
-                       (mk_anti _loc ~c:"mutable_flag" n s : 'opt_mutable )
-                   | _ -> failwith "mk_anti _loc ~c:\"mutable_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_mutable )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`MuNil _loc : 'opt_mutable ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_mutable ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`MuNil _loc : 'opt_mutable )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_mutable )))))]));
    Gram.extend_single (opt_virtual : 'opt_virtual Gram.t )
      (None,
        (None, None,
          [([`Skeyword "virtual"],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Virtual _loc : 'opt_virtual ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_virtual ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
-                    (`Virtual _loc : 'opt_virtual )))));
+                    (`Positive _loc : 'opt_virtual )))));
          ([`Stoken
              (((function | `Ant ("virtual",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"virtual\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"virtual\" as n),s) ->\n         (mk_anti _loc ~c:\"virtual_flag\" n s : 'opt_virtual )\n     | _ -> failwith \"mk_anti _loc ~c:\"virtual_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"virtual\" as n),s) ->\n         (mk_anti _loc ~c:\"flag\" n s : 'opt_virtual )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("virtual" as n),s) ->
-                       (mk_anti _loc ~c:"virtual_flag" n s : 'opt_virtual )
-                   | _ -> failwith "mk_anti _loc ~c:\"virtual_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_virtual )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`ViNil _loc : 'opt_virtual ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_virtual ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`ViNil _loc : 'opt_virtual )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_virtual )))))]));
    Gram.extend_single (opt_dot_dot : 'opt_dot_dot Gram.t )
      (None,
        (None, None,
          [([`Skeyword ".."],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`RowVar _loc : 'opt_dot_dot ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_dot_dot ))\n",
               (Gram.mk_action
-                 (fun _  (_loc : FanLoc.t)  -> (`RowVar _loc : 'opt_dot_dot )))));
+                 (fun _  (_loc : FanLoc.t)  ->
+                    (`Positive _loc : 'opt_dot_dot )))));
          ([`Stoken
              (((function | `Ant ("..",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"..\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"..\" as n),s) ->\n         (mk_anti _loc ~c:\"row_var_flag\" n s : 'opt_dot_dot )\n     | _ -> failwith \"mk_anti _loc ~c:\"row_var_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"..\" as n),s) -> (mk_anti _loc ~c:\"flag\" n s : 'opt_dot_dot )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant ((".." as n),s) ->
-                       (mk_anti _loc ~c:"row_var_flag" n s : 'opt_dot_dot )
-                   | _ -> failwith "mk_anti _loc ~c:\"row_var_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_dot_dot )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`RvNil _loc : 'opt_dot_dot ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_dot_dot ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`RvNil _loc : 'opt_dot_dot )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_dot_dot )))))]));
    Gram.extend_single (opt_rec : 'opt_rec Gram.t )
      (None,
        (None, None,
          [([`Skeyword "rec"],
-            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Recursive _loc : 'opt_rec ))\n",
+            ("Gram.mk_action (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_rec ))\n",
               (Gram.mk_action
-                 (fun _  (_loc : FanLoc.t)  -> (`Recursive _loc : 'opt_rec )))));
+                 (fun _  (_loc : FanLoc.t)  -> (`Positive _loc : 'opt_rec )))));
          ([`Stoken
              (((function | `Ant ("rec",_) -> true | _ -> false)),
                (`Normal, "`Ant (\"rec\",_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"rec\" as n),s) -> (mk_anti _loc ~c:\"rec_flag\" n s : 'opt_rec )\n     | _ -> failwith \"mk_anti _loc ~c:\"rec_flag\" n s\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"rec\" as n),s) -> (mk_anti _loc ~c:\"flag\" n s : 'opt_rec )\n     | _ -> failwith \"mk_anti _loc ~c:\"flag\" n s\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
                    | `Ant (("rec" as n),s) ->
-                       (mk_anti _loc ~c:"rec_flag" n s : 'opt_rec )
-                   | _ -> failwith "mk_anti _loc ~c:\"rec_flag\" n s\n"))));
+                       (mk_anti _loc ~c:"flag" n s : 'opt_rec )
+                   | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([],
-           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`ReNil _loc : 'opt_rec ))\n",
+           ("Gram.mk_action (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_rec ))\n",
              (Gram.mk_action
-                (fun (_loc : FanLoc.t)  -> (`ReNil _loc : 'opt_rec )))))]));
+                (fun (_loc : FanLoc.t)  -> (`Negative _loc : 'opt_rec )))))]));
    Gram.extend_single (a_lident : 'a_lident Gram.t )
      (None,
        (None, None,
@@ -4064,10 +4063,10 @@ let apply () =
    Gram.extend_single (direction_flag_quot : 'direction_flag_quot Gram.t )
      (None,
        (None, None,
-         [([`Snterm (Gram.obj (direction_flag : 'direction_flag Gram.t ))],
-            ("Gram.mk_action\n  (fun (x : 'direction_flag)  (_loc : FanLoc.t)  ->\n     (x : 'direction_flag_quot ))\n",
+         [([`Snterm (Gram.obj (flag : 'flag Gram.t ))],
+            ("Gram.mk_action\n  (fun (x : 'flag)  (_loc : FanLoc.t)  -> (x : 'direction_flag_quot ))\n",
               (Gram.mk_action
-                 (fun (x : 'direction_flag)  (_loc : FanLoc.t)  ->
+                 (fun (x : 'flag)  (_loc : FanLoc.t)  ->
                     (x : 'direction_flag_quot )))))]));
    Gram.extend_single (mutable_flag_quot : 'mutable_flag_quot Gram.t )
      (None,
@@ -4785,12 +4784,13 @@ let apply () =
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> (`VirVal (_loc, l, mf, t) : Ast.clfield )\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
+           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ \n     (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `Negative _ -> (`VirVal (_loc, l, mf, t) : Ast.clfield )\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
              (Gram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ 
                    (o : 'value_val_opt_override)  (_loc : FanLoc.t)  ->
                    (match o with
-                    | `OvNil _ -> (`VirVal (_loc, l, mf, t) : Ast.clfield )
+                    | `Negative _ ->
+                        (`VirVal (_loc, l, mf, t) : Ast.clfield )
                     | _ ->
                         raise
                           (XStream.Error
@@ -4803,12 +4803,12 @@ let apply () =
           `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
           `Skeyword ":";
           `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `OvNil _ -> `VirMeth (_loc, l, pf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
+           ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ \n     (o : 'method_opt_override)  (_loc : FanLoc.t)  ->\n     (match o with\n      | `Negative _ -> `VirMeth (_loc, l, pf, t)\n      | _ ->\n          raise (XStream.Error \"override (!) is incompatible with virtual\") : \n     'clfield ))\n",
              (Gram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                    (o : 'method_opt_override)  (_loc : FanLoc.t)  ->
                    (match o with
-                    | `OvNil _ -> `VirMeth (_loc, l, pf, t)
+                    | `Negative _ -> `VirMeth (_loc, l, pf, t)
                     | _ ->
                         raise
                           (XStream.Error
@@ -5611,41 +5611,41 @@ let apply_ctyp () =
     (None,
       (None, None,
         [([`Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
-           ("Gram.mk_action\n  (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`PrNil _loc), t2) : 'type_info ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`Negative _loc), t2) : 'type_info ))\n",
              (Gram.mk_action
                 (fun (t2 : 'type_repr)  (_loc : FanLoc.t)  ->
-                   (`TyRepr (_loc, (`PrNil _loc), t2) : 'type_info )))));
+                   (`TyRepr (_loc, (`Negative _loc), t2) : 'type_info )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
          `Skeyword "=";
          `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
-          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`PrNil _loc), t2) : 'type_info ))\n",
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`Negative _loc), t2) : 'type_info ))\n",
             (Gram.mk_action
                (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                  (`TyMan (_loc, t1, (`PrNil _loc), t2) : 'type_info )))));
+                  (`TyMan (_loc, t1, (`Negative _loc), t2) : 'type_info )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`PrNil _loc), t1) : 'type_info ))\n",
+          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`Negative _loc), t1) : 'type_info ))\n",
             (Gram.mk_action
                (fun (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                  (`TyEq (_loc, (`PrNil _loc), t1) : 'type_info )))));
+                  (`TyEq (_loc, (`Negative _loc), t1) : 'type_info )))));
         ([`Skeyword "private"; `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ))],
-          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`Private _loc), t1) : 'type_info ))\n",
+          ("Gram.mk_action\n  (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->\n     (`TyEq (_loc, (`Positive _loc), t1) : 'type_info ))\n",
             (Gram.mk_action
                (fun (t1 : 'ctyp)  _  (_loc : FanLoc.t)  ->
-                  (`TyEq (_loc, (`Private _loc), t1) : 'type_info )))));
+                  (`TyEq (_loc, (`Positive _loc), t1) : 'type_info )))));
         ([`Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
          `Skeyword "=";
          `Skeyword "private";
          `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
-          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`Private _loc), t2) : 'type_info ))\n",
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`TyMan (_loc, t1, (`Positive _loc), t2) : 'type_info ))\n",
             (Gram.mk_action
                (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : FanLoc.t) 
-                  -> (`TyMan (_loc, t1, (`Private _loc), t2) : 'type_info )))));
+                  -> (`TyMan (_loc, t1, (`Positive _loc), t2) : 'type_info )))));
         ([`Skeyword "private";
          `Snterm (Gram.obj (type_repr : 'type_repr Gram.t ))],
-          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`Private _loc), t2) : 'type_info ))\n",
+          ("Gram.mk_action\n  (fun (t2 : 'type_repr)  _  (_loc : FanLoc.t)  ->\n     (`TyRepr (_loc, (`Positive _loc), t2) : 'type_info ))\n",
             (Gram.mk_action
                (fun (t2 : 'type_repr)  _  (_loc : FanLoc.t)  ->
-                  (`TyRepr (_loc, (`Private _loc), t2) : 'type_info )))))]));
+                  (`TyRepr (_loc, (`Positive _loc), t2) : 'type_info )))))]));
   Gram.extend_single (type_repr : 'type_repr Gram.t )
     (None,
       (None, None,

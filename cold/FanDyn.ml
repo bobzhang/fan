@@ -6,13 +6,7 @@ let _ = ()
 
 type 'a tag =  
   | Literal
-  | Rec_flag
-  | Direction_flag
-  | Mutable_flag
-  | Private_flag
-  | Virtual_flag
-  | Override_flag
-  | Row_var_flag
+  | Flag
   | Position_flag
   | Strings
   | Lident
@@ -67,13 +61,7 @@ type 'a tag =
 let string_of_tag =
   function
   | Literal  -> "literal"
-  | Rec_flag  -> "rec_flag"
-  | Direction_flag  -> "direction_flag"
-  | Mutable_flag  -> "mutable_flag"
-  | Private_flag  -> "private_flag"
-  | Virtual_flag  -> "virtual_flag"
-  | Override_flag  -> "override_flag"
-  | Row_var_flag  -> "row_var_flag"
+  | Flag  -> "flag"
   | Position_flag  -> "position_flag"
   | Strings  -> "strings"
   | Lident  -> "lident"
@@ -127,19 +115,7 @@ let string_of_tag =
 
 let literal_tag: literal tag = Literal
 
-let rec_flag_tag: rec_flag tag = Rec_flag
-
-let direction_flag_tag: direction_flag tag = Direction_flag
-
-let mutable_flag_tag: mutable_flag tag = Mutable_flag
-
-let private_flag_tag: private_flag tag = Private_flag
-
-let virtual_flag_tag: virtual_flag tag = Virtual_flag
-
-let override_flag_tag: override_flag tag = Override_flag
-
-let row_var_flag_tag: row_var_flag tag = Row_var_flag
+let flag_tag: flag tag = Flag
 
 let position_flag_tag: position_flag tag = Position_flag
 

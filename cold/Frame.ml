@@ -35,16 +35,14 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
    let exp = appl_of_list (base :: (id_eps :>exp list)) in
    { name_exp; info_exp = exp; id_ep; id_eps; ep0; ty } : FSig.ty_info )
 
-let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
-  simple_exp_of_ctyp (ty : ctyp) =
+let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
   (match ty with
    | `Par (_loc,t) ->
        let ls = list_of_star t [] in
        let len = List.length ls in
        let pat = (EP.mk_tuple ~arity ~number:len :>pat) in
-       let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
-       names <+
-         (currying [(`Case (_loc, pat, (mk_tuple tys)) : Ast.case )] ~arity)
+       let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
+       names <+ (currying [(`Case (_loc, pat, tys) : Ast.case )] ~arity)
    | _ ->
        let _loc = loc_of ty in
        FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
@@ -71,8 +69,8 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
             Ast.ctyp )
       | `Par _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
-            (normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple ~right_type_id
-               ~left_type_id ~right_type_variable cxt) ty
+            ~f:(normal_simple_exp_of_ctyp ?arity ?names ~mk_tuple
+                  ~right_type_id ~left_type_id ~right_type_variable cxt) ty
       | (ty : ctyp) ->
           FanLoc.errorf (loc_of ty) "normal_simple_exp_of_ctyp : %s"
             (Objs.dump_ctyp ty) in
@@ -114,8 +112,8 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
             Ast.ctyp )
       | `Par _ as ty ->
           tuple_exp_of_ctyp ?arity ?names ~mk_tuple
-            (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
-               ~right_type_variable ?names ?arity ~mk_tuple) ty
+            ~f:(obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
+                  ~right_type_variable ?names ?arity ~mk_tuple) ty
       | ty ->
           FanLoc.errorf (loc_of ty) "obj_simple_exp_of_ctyp: %s"
             (Objs.dump_ctyp ty) in
@@ -297,14 +295,16 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default
                                 (`And (_loc, x, y) : Ast.bind ))
                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
                 let _loc = loc_of bind in
-                (`Value (_loc, (`Recursive _loc), bind) : Ast.stru ))))
+                (`Value (_loc, (`Positive _loc), bind) : Ast.stru ))))
      | `Single (name,tydcl) ->
          (Hashset.add cxt name;
           (let _loc = loc_of tydcl in
-           let rec_flag =
-             if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
+           let flag =
+             if Ctyp.is_recursive tydcl
+             then `Positive _loc
+             else `Negative _loc
            and bind = mk_bind tydcl in
-           (`Value (_loc, rec_flag, bind) : Ast.stru ))) : stru ) in
+           (`Value (_loc, flag, bind) : Ast.stru ))) : stru ) in
   let item =
     match lst with
     | [] -> (`StExp (ghost, (`Uid (ghost, "()"))) : Ast.stru )
@@ -339,7 +339,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
      (let _loc = loc_of tydcl in
       let (ty,result_type) = mk_type tydcl in
       (`CrMth
-         (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
+         (_loc, (`Lid (_loc, name)), (`Negative _loc), (`Negative _loc),
            (f tydcl result_type), ty) : Ast.clfield ) : clfield ) in
    let fs (ty : types) =
      (match ty with
@@ -352,8 +352,8 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                let (ty,_) = mk_type tydcl in
                (`CrMth
-                  (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
-                    (unknown n), ty) : Ast.clfield )
+                  (_loc, (`Lid (_loc, name)), (`Negative _loc),
+                    (`Negative _loc), (unknown n), ty) : Ast.clfield )
            | None  -> mk_clfield named_type) : clfield ) in
    let (extras,lst) = Ctyp.transform_mtyps lst in
    let body = List.map fs lst in
@@ -366,8 +366,9 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                 (Obj k) in
             let () = Hashtbl.add tbl dest (Qualified dest) in
             (`CrMth
-               (ghost, (`Lid (ghost, dest)), (`OvNil ghost), (`PrNil ghost),
-                 (unknown len), ty) : Ast.clfield )) extras in
+               (ghost, (`Lid (ghost, dest)), (`Negative ghost),
+                 (`Negative ghost), (unknown len), ty) : Ast.clfield ))
+         extras in
      sem_of_list (body @ items) in
    let v = Ctyp.mk_obj class_name base body in
    Hashtbl.iter

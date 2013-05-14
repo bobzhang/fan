@@ -24,7 +24,7 @@ let base1_types =
   ("unit",
     (`Custom
        (`Value
-          (_loc, (`ReNil _loc),
+          (_loc, (`Negative _loc),
             (`Bind
                (_loc, (`Lid (_loc, "pp_print_unit")),
                  (`Constraint
@@ -59,7 +59,7 @@ let base1_types =
                                 (`Lid (_loc, "unit"))))))))))) : Ast.stru )),
     (`Custom
        (`Value
-          (_loc, (`ReNil _loc),
+          (_loc, (`Negative _loc),
             (`Bind
                (_loc, (`Lid (_loc, "eq_unit")),
                  (`Constraint
@@ -98,13 +98,13 @@ let print_base1 =
             match print with
             | `Exist ->
                 (`Value
-                   (_loc, (`ReNil _loc),
+                   (_loc, (`Negative _loc),
                      (`Bind (_loc, (`Lid (_loc, name)), (`Lid (_loc, name))))) : 
                 Ast.stru )
             | `Custom s -> s
             | `Fmt c ->
                 (`Value
-                   (_loc, (`ReNil _loc),
+                   (_loc, (`Negative _loc),
                      (`Bind
                         (_loc, (`Lid (_loc, name)),
                           (`Constraint
@@ -153,8 +153,8 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
                 (_loc,
                   (`Case (_loc, (`Lid (_loc, "x")), (`Lid (_loc, "x"))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   let v2 =
     ty_names |>
       (List.map
@@ -172,8 +172,8 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
                           (_loc,
                             (`Case (_loc, (`Any _loc), (`Lid (_loc, "x"))))))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   let v3 =
     ty_names |>
       (List.map
@@ -185,8 +185,8 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
             let exp: Ast.exp =
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   let v4 =
     ty_names |>
       (List.map
@@ -207,16 +207,16 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
                           (_loc,
                             (`Case (_loc, (`Any _loc), (`Lid (_loc, "self"))))))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   let v5 =
     ty_names |>
       (List.map
          (fun x  ->
             let exp: Ast.exp = `Lid (_loc, ("pp_print_" ^ x)) in
             (`CrMthS
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp) : 
-              Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp) : Ast.clfield ))) in
   let v6 =
     ty_names |>
       (List.map
@@ -226,8 +226,8 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
             let exp: Ast.exp =
               `Fun (_loc, (`Case (_loc, (`Any _loc), (`Uid (_loc, "()"))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   let v7 =
     ty_names |>
       (List.map
@@ -252,8 +252,8 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
                 (_loc, (`Lid (_loc, x)),
                   (`Arrow (_loc, (`Lid (_loc, x)), (`Lid (_loc, "bool"))))) in
             (`CrMth
-               (_loc, (`Lid (_loc, x)), (`OvNil _loc), (`PrNil _loc), exp,
-                 ty) : Ast.clfield ))) in
+               (_loc, (`Lid (_loc, x)), (`Negative _loc), (`Negative _loc),
+                 exp, ty) : Ast.clfield ))) in
   ((sem_of_list v1), (sem_of_list v2), (sem_of_list v3), (sem_of_list v4),
     (sem_of_list v5), (sem_of_list v6), (sem_of_list v7))
 
@@ -270,7 +270,7 @@ let eq_base1 =
             match eq with
             | `Def ->
                 (`Value
-                   (_loc, (`ReNil _loc),
+                   (_loc, (`Negative _loc),
                      (`Bind
                         (_loc, (`Lid (_loc, name)),
                           (`Constraint (_loc, (`Lid (_loc, "=")), ty))))) : 

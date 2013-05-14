@@ -34,7 +34,6 @@ let loc_of =
   | `Value (_loc,_,_) -> _loc
   | `PolyInfSup (_loc,_,_) -> _loc
   | `Try (_loc,_,_) -> _loc
-  | `Downto _loc -> _loc
   | `App (_loc,_,_) -> _loc
   | `Assign (_loc,_,_) -> _loc
   | `Normal _loc -> _loc
@@ -75,16 +74,11 @@ let loc_of =
   | `With (_loc,_,_) -> _loc
   | `TyVrnOf (_loc,_,_) -> _loc
   | `TyAbstr (_loc,_,_,_) -> _loc
-  | `Private _loc -> _loc
-  | `Virtual _loc -> _loc
-  | `RowVar _loc -> _loc
   | `IfThen (_loc,_,_) -> _loc
   | `RecBind (_loc,_,_) -> _loc
   | `Sig (_loc,_) -> _loc
-  | `Mutable _loc -> _loc
   | `PolySup (_loc,_) -> _loc
   | `Ctyp (_loc,_) -> _loc
-  | `ReNil _loc -> _loc
   | `Lazy (_loc,_) -> _loc
   | `Field (_loc,_,_) -> _loc
   | `CeFun (_loc,_,_) -> _loc
@@ -97,7 +91,6 @@ let loc_of =
   | `Int64 (_loc,_) -> _loc
   | `ModuleTypeOf (_loc,_) -> _loc
   | `TyPolEnd (_loc,_) -> _loc
-  | `To _loc -> _loc
   | `TyCol (_loc,_,_) -> _loc
   | `ObjPat (_loc,_,_) -> _loc
   | `Initializer (_loc,_) -> _loc
@@ -113,8 +106,6 @@ let loc_of =
   | `TypeEqPriv (_loc,_,_) -> _loc
   | `Label (_loc,_,_) -> _loc
   | `TyTypePol (_loc,_,_) -> _loc
-  | `RvNil _loc -> _loc
-  | `Override _loc -> _loc
   | `Include (_loc,_) -> _loc
   | `Flo (_loc,_) -> _loc
   | `Alias (_loc,_,_) -> _loc
@@ -124,7 +115,6 @@ let loc_of =
   | `TyObj (_loc,_,_) -> _loc
   | `Of (_loc,_,_) -> _loc
   | `OvrInst (_loc,_) -> _loc
-  | `OvNil _loc -> _loc
   | `ModuleSubst (_loc,_,_) -> _loc
   | `Positive _loc -> _loc
   | `CrVal (_loc,_,_,_,_) -> _loc
@@ -148,7 +138,6 @@ let loc_of =
   | `LocalTypeFun (_loc,_,_) -> _loc
   | `Package_exp (_loc,_) -> _loc
   | `CaseWhen (_loc,_,_,_) -> _loc
-  | `PrNil _loc -> _loc
   | `Int (_loc,_) -> _loc
   | `Negative _loc -> _loc
   | `Fun (_loc,_) -> _loc
@@ -160,12 +149,10 @@ let loc_of =
   | `PolyInf (_loc,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
-  | `Recursive _loc -> _loc
   | `OptLablExpr (_loc,_,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc
   | `Inherit (_loc,_,_) -> _loc
-  | `MuNil _loc -> _loc
   | `None _loc -> _loc
   | `ObjTy (_loc,_,_) -> _loc
   | `Method (_loc,_,_,_) -> _loc
@@ -175,7 +162,6 @@ let loc_of =
   | `Bar (_loc,_,_) -> _loc
   | `Open (_loc,_) -> _loc
   | `ObjTyEnd (_loc,_) -> _loc
-  | `ViNil _loc -> _loc
   | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc
 
@@ -301,7 +287,7 @@ let binds bs (e : exp) =
   | [] -> e
   | _ ->
       let binds = and_of_list bs in
-      let _loc = binds <+> e in `LetIn (_loc, (`ReNil _loc), binds, e)
+      let _loc = binds <+> e in `LetIn (_loc, (`Negative _loc), binds, e)
 
 let lid _loc n = `Lid (_loc, n)
 

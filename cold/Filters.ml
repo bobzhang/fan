@@ -16,7 +16,7 @@ let _ =
          (`StExp
             (_loc,
               (`LetIn
-                 (_loc, (`ReNil _loc),
+                 (_loc, (`Negative _loc),
                    (`Bind
                       (_loc, (`Lid (_loc, "loc")),
                         (`Dot
@@ -106,6 +106,6 @@ let _ =
          (`Sem
             (_loc, x,
               (`Value
-                 (_loc, (`ReNil _loc),
+                 (_loc, (`Negative _loc),
                    (`Bind (_loc, (`Lid (_loc, "__fan_repr_of_file")), y))))) : 
            Ast.stru )))

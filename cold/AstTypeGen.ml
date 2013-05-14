@@ -51,7 +51,7 @@ let (gen_fold,gen_fold2) =
            List.reduce_right
              (fun v  acc  ->
                 (`LetIn
-                   (_loc, (`ReNil _loc),
+                   (_loc, (`Negative _loc),
                      (`Bind (_loc, (`Lid (_loc, "self")), v)), acc) : 
                 Ast.exp )) ls) in
   let mk_tuple = mk_variant "" in
@@ -78,14 +78,15 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun { FSig.info_exp = info_exp; ep0;_}  res  ->
          (`LetIn
-            (_loc, (`ReNil _loc), (`Bind (_loc, (ep0 :>pat), info_exp)), res) : 
-         Ast.exp )) params (result :>exp) in
+            (_loc, (`Negative _loc), (`Bind (_loc, (ep0 :>pat), info_exp)),
+              res) : Ast.exp )) params (result :>exp) in
   let mk_tuple params =
     let result =
       (params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0))) |> tuple_com in
     List.fold_right
       (fun { FSig.info_exp = exp; ep0;_}  res  ->
-         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, (ep0 :>pat), exp)), res) : 
+         (`LetIn
+            (_loc, (`Negative _loc), (`Bind (_loc, (ep0 :>pat), exp)), res) : 
          Ast.exp )) params (result :>exp) in
   let mk_record cols =
     let result =
@@ -97,7 +98,7 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun { FSig.re_info = { FSig.info_exp = exp; ep0;_};_}  res  ->
          let pat0 = (ep0 :>pat) in
-         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+         (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, pat0, exp)), res) : 
            Ast.exp )) cols result in
   ((gen_object ~kind:FSig.Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" ~mk_variant ()),
@@ -128,7 +129,7 @@ let gen_strip =
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              let pat0 = (ep0 :>pat) in
-             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, pat0, exp)), res) : 
                Ast.exp )) params' result in
   let mk_tuple params =
     let result =
@@ -141,7 +142,7 @@ let gen_strip =
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              let pat0 = (ep0 :>pat) in
-             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, pat0, exp)), res) : 
                Ast.exp )) params result in
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ()
@@ -163,7 +164,7 @@ let gen_fill =
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              let pat0 = (ep0 :>pat) in
-             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, pat0, exp)), res) : 
                Ast.exp )) params result in
   let mk_tuple params =
     let result =
@@ -176,7 +177,7 @@ let gen_fill =
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
              let pat0 = (ep0 :>pat) in
-             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
+             (`LetIn (_loc, (`Negative _loc), (`Bind (_loc, pat0, exp)), res) : 
                Ast.exp )) params result in
   let mk_record _cols = assert false in
   gen_stru ~id:(`Pre "fill_loc_") ~mk_tuple ~mk_record ~mk_variant
@@ -355,7 +356,7 @@ let generate (mtyps : FSig.mtyps) =
    match case with
    | Some case ->
        (`Value
-          (_loc, (`ReNil _loc),
+          (_loc, (`Negative _loc),
             (`Bind (_loc, (`Lid (_loc, "loc_of")), (`Fun (_loc, case))))) : 
        Ast.stru )
    | None  -> failwithf "AstTypeGen.generate null case" : stru )
@@ -406,7 +407,7 @@ let generate (mtyps : FSig.mtyps) =
                   ((FanLoc.of_tuple
                       ("src/AstTypeGen.ml", 404, 13561, 13592, 404, 13561,
                         13596, false)),
-                    (`PrNil
+                    (`Negative
                        (FanLoc.of_tuple
                           ("src/AstTypeGen.ml", 404, 13561, 13592, 404,
                             13561, 13596, false))),
@@ -427,14 +428,14 @@ let generate (mtyps : FSig.mtyps) =
                   (_loc, (`Uid (_loc, (String.capitalize x))),
                     (`Str (_loc, x))) : Ast.case )) tys) in
      (`Value
-        (_loc, (`ReNil _loc),
+        (_loc, (`Negative _loc),
           (`Bind (_loc, (`Lid (_loc, "string_of_tag")), (`Fun (_loc, case))))) : 
        Ast.stru ) in
    let tags =
      List.map
        (fun x  ->
           (`Value
-             (_loc, (`ReNil _loc),
+             (_loc, (`Negative _loc),
                (`Bind
                   (_loc, (`Lid (_loc, (x ^ "_tag"))),
                     (`Constraint
@@ -451,7 +452,7 @@ let _ =
 let generate (mtyps : FSig.mtyps) =
   (let aux (f : string) =
      ((`Value
-         (_loc, (`ReNil _loc),
+         (_loc, (`Negative _loc),
            (`Bind
               (_loc, (`Lid (_loc, ("map_" ^ f))),
                 (`Fun
@@ -463,12 +464,12 @@ let generate (mtyps : FSig.mtyps) =
                                (`Sem
                                   (_loc,
                                     (`InheritAs
-                                       (_loc, (`OvNil _loc),
+                                       (_loc, (`Negative _loc),
                                          (`Lid (_loc, "map")),
                                          (`Lid (_loc, "super")))),
                                     (`CrMthS
                                        (_loc, (`Lid (_loc, f)),
-                                         (`Override _loc), (`PrNil _loc),
+                                         (`Positive _loc), (`Negative _loc),
                                          (`Fun
                                             (_loc,
                                               (`Case
@@ -496,7 +497,7 @@ let _ =
 let generate (mtyps : FSig.mtyps) =
   (let aux (f : string) =
      ((`Value
-         (_loc, (`ReNil _loc),
+         (_loc, (`Negative _loc),
            (`Bind
               (_loc, (`Lid (_loc, ("dump_" ^ f))),
                 (`App
@@ -508,7 +509,7 @@ let generate (mtyps : FSig.mtyps) =
      Ast.stru ) : stru ) in
    sem
      (`Value
-        (_loc, (`ReNil _loc),
+        (_loc, (`Negative _loc),
           (`Bind
              (_loc, (`Lid (_loc, "dump")),
                (`New (_loc, (`Lid (_loc, "print"))))))) : Ast.stru )

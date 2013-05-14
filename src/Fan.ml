@@ -100,25 +100,25 @@ let _ = begin
     ~mpat:(Filters.mp#mbind) ~exp_filter ~pat_filter;
   add_quotation (d, "ident'") ident_quot ~mexp:(Filters.me#ident)
     ~mpat:(Filters.mp#ident) ~exp_filter ~pat_filter;
-  add_quotation (d, "rec_flag'") rec_flag_quot ~mexp:(Filters.me#rec_flag)
-    ~mpat:(Filters.mp#rec_flag) ~exp_filter ~pat_filter;
+  add_quotation (d, "rec_flag'") rec_flag_quot ~mexp:(Filters.me#flag)
+    ~mpat:(Filters.mp#flag) ~exp_filter ~pat_filter;
   add_quotation (d, "private_flag'") private_flag_quot
-    ~mexp:(Filters.me#private_flag) ~mpat:(Filters.mp#private_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "row_var_flag'") row_var_flag_quot
-    ~mexp:(Filters.me#row_var_flag) ~mpat:(Filters.mp#row_var_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "mutable_flag'") mutable_flag_quot
-    ~mexp:(Filters.me#mutable_flag) ~mpat:(Filters.mp#mutable_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "virtual_flag'") virtual_flag_quot
-    ~mexp:(Filters.me#virtual_flag) ~mpat:(Filters.mp#virtual_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "override_flag'") override_flag_quot
-    ~mexp:(Filters.me#override_flag) ~mpat:(Filters.mp#override_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "direction_flag'") direction_flag_quot
-    ~mexp:(Filters.me#direction_flag) ~mpat:(Filters.mp#direction_flag)
+    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
     ~exp_filter ~pat_filter;
   add_quotation (d, "or_ctyp'") constructor_declarations
     ~mexp:(Filters.me#or_ctyp) ~mpat:(Filters.me#or_ctyp) ~exp_filter

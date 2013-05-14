@@ -83,7 +83,7 @@ let ctyp = Gram.mk "ctyp"
 
 let cvalue_bind = Gram.mk "cvalue_bind"
 
-let direction_flag = Gram.mk "direction_flag"
+let flag = Gram.mk "flag"
 
 let direction_flag_quot = Gram.mk "direction_flag_quot"
 

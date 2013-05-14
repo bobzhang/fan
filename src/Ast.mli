@@ -49,42 +49,26 @@ type literal =
   | `Nativeint of (loc * string)
   | `Str of (loc * string)]   
 
-type rec_flag =
-  [ `Recursive of loc 
-  | `ReNil of loc 
-  | ant]
-
-type direction_flag =
-  [ `To of loc
-  | `Downto of loc
-  | ant ]
-
-type mutable_flag =
-  [ `Mutable of loc 
-  | `MuNil of loc 
-  | ant ]
-
-type private_flag =
-  [ `Private of loc 
-  | `PrNil of loc 
-  | ant ]
-
-type virtual_flag =
-  [ `Virtual of loc 
-  | `ViNil of loc 
-  | ant ]
-
-
-type override_flag =
-  [ `Override of loc 
-  | `OvNil of loc 
-  | ant ]
-
-type row_var_flag =
-  [ `RowVar of loc 
-  | `RvNil of loc 
-  | ant ]
-
+(**
+   for [direction_flag]
+     [to => P; downto => N]
+   for [mutable_flag]
+     [mutable => P; immutable=>N]
+   for [private_flag]
+     [ private => P]
+   for [virtual_flag]
+     [`Virtual => P]
+   for [override_flag]
+     [`Override => P]
+   for [rec_flag]
+     [ rec => P]
+   for [row_var_flag]
+     [`RowVar => P]
+ *)      
+type flag =
+  [ `Positive of loc
+  | `Negative of loc
+  | ant]  
 type position_flag =
   [ `Positive of loc
   | `Negative of loc
@@ -172,8 +156,8 @@ type ctyp =
   | ident'
 
     (* < (t)? (..)? > *) (* < move : int -> 'a .. > as 'a  *)
-  | `TyObj of (loc * name_ctyp * row_var_flag )
-  | `TyObjEnd of (loc * row_var_flag)
+  | `TyObj of (loc * name_ctyp * flag )
+  | `TyObjEnd of (loc * flag)
 
   | `TyPol of (loc * ctyp * ctyp) (* ! t . t *) (* ! 'a . 'a list -> 'a *)
   | `TyPolEnd of (loc *ctyp) (* !. t *)  
@@ -237,10 +221,10 @@ and opt_decl_params =
  | `None of loc  ]   
 and type_info =        (* FIXME be more preicse *)
   [ (* type u = v = [A of int ] *)
-   `TyMan of (loc  * ctyp * private_flag  * type_repr)
+   `TyMan of (loc  * ctyp * flag  * type_repr)
      (* type u = A.t = {x:int} *)
-  | `TyRepr of (loc * private_flag * type_repr)
-  | `TyEq of (loc * private_flag * ctyp) (* type u = int *)
+  | `TyRepr of (loc * flag * type_repr)
+  | `TyEq of (loc * flag * ctyp) (* type u = int *)
   | ant]  
 and type_repr =
   [ `Record of (loc * name_ctyp)
@@ -311,15 +295,15 @@ and exp =
   | `Assert of (loc * exp) (* assert e *)
   | `Assign of (loc * exp * exp) (* e := e *)
         (* for s = e to/downto e do { e } *)
-  | `For of (loc * alident * exp * exp * direction_flag * exp)
+  | `For of (loc * alident * exp * exp * flag * exp)
   | `Fun of (loc * case) (* fun [ mc ] *)
   | `IfThenElse of (loc * exp * exp * exp) (* if e then e else e *)
   | `IfThen of (loc * exp * exp) (* if e then e *)
   | `LabelS of (loc * alident) (* ~s *)
   | `Label of (loc * alident * exp) (* ~s or ~s:e *)
   | `Lazy of (loc * exp) (* lazy e *)
-  | `LetIn of (loc * rec_flag * bind * exp)
-  | `LetTryInWith of (loc * rec_flag * bind * exp * case)        
+  | `LetIn of (loc * flag * bind * exp)
+  | `LetTryInWith of (loc * flag * bind * exp * case)        
   | `LetModule of (loc * auident * mexp * exp) (* let module s = me in e *)
   | `Match of (loc * exp * case) (* match e with [ mc ] *)
   | `New of (loc * ident) (* new i *)
@@ -467,7 +451,7 @@ and stru =
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `Open of (loc * ident) (* open i *)
   | `Type of (loc * typedecl) (* type t *)
-  | `Value of (loc * rec_flag * bind) (* value (rec)? bi *)
+  | `Value of (loc * flag * bind) (* value (rec)? bi *)
   | ant  ]
 
 (*
@@ -488,7 +472,7 @@ and stru =
 
 
 
-  class_type_declaration:  virtual_flag class_type_parameters
+  class_type_declaration:  flag class_type_parameters
   LIDENT EQUAL  class_signature
 
   class_signature:
@@ -499,8 +483,8 @@ and stru =
  *)
 and cltdecl =
   [ `And of (loc * cltdecl * cltdecl)
-  | `CtDecl of (loc * virtual_flag * ident * type_parameters * cltyp)
-  | `CtDeclS of (loc * virtual_flag * ident * cltyp)
+  | `CtDecl of (loc * flag * ident * type_parameters * cltyp)
+  | `CtDeclS of (loc * flag * ident * cltyp)
   | ant ]  
 and cltyp = (* class body type *)         
   [ vid'
@@ -531,17 +515,17 @@ and clsigi =
     `Sem of (loc * clsigi * clsigi)
   | `SigInherit of (loc * cltyp)
     (* val (virtual)? (mutable)? s : t *)
-  | `CgVal of (loc * alident * mutable_flag * virtual_flag * ctyp)
+  | `CgVal of (loc * alident * flag * flag * ctyp)
       (* method s : t or method private s : t *)
-  | `Method of (loc * alident * private_flag * ctyp)
+  | `Method of (loc * alident * flag * ctyp)
       (* method virtual (private)? s : t *)
-  | `VirMeth of (loc *  alident * private_flag * ctyp)
+  | `VirMeth of (loc *  alident * flag * ctyp)
   | `Eq of (loc * ctyp * ctyp)        
   | ant ]
 
 and cldecl =
-  [ `ClDecl of (loc * virtual_flag * ident * type_parameters * clexp)
-  | `ClDeclS of (loc * virtual_flag * ident * clexp )
+  [ `ClDecl of (loc * flag * ident * type_parameters * clexp)
+  | `ClDeclS of (loc * flag * ident * clexp )
   | `And of (loc * cldecl * cldecl)
   | ant ]      
 and clexp =
@@ -549,7 +533,7 @@ and clexp =
   | vid' (* class-path*)
   | `ClApply of (loc * vid * type_parameters)
   | `CeFun of (loc * pat * clexp) (* fun p -> ce *)
-  | `LetIn of (loc * rec_flag * bind * clexp) (* let (rec)? bi in ce *)
+  | `LetIn of (loc * flag * bind * clexp) (* let (rec)? bi in ce *)
   | `Obj of (loc  * clfield) (* object ((p))? (cst)? end *)
   | `ObjEnd of loc (*object end*)
   | `ObjPat of (loc * pat * clfield)(*object (p) .. end*)
@@ -563,17 +547,17 @@ and clexp =
 and clfield =
   [ `Sem of (loc * clfield * clfield)
 
-  | `Inherit of (loc * override_flag * clexp)
-  | `InheritAs of (loc * override_flag * clexp * alident)
+  | `Inherit of (loc * flag * clexp)
+  | `InheritAs of (loc * flag * clexp * alident)
 
-  | `CrVal of (loc *  alident * override_flag * mutable_flag * exp) (* value(!)? (mutable)? s = e *)
-  | `VirVal of (loc * alident * mutable_flag * ctyp) (* val virtual (mutable)? s : t *)
+  | `CrVal of (loc *  alident * flag * flag * exp) (* value(!)? (mutable)? s = e *)
+  | `VirVal of (loc * alident * flag * ctyp) (* val virtual (mutable)? s : t *)
         
         (* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)
-  | `CrMth of (loc * alident * override_flag * private_flag * exp * ctyp)
-  | `CrMthS of (loc * alident * override_flag * private_flag * exp )
+  | `CrMth of (loc * alident * flag * flag * exp * ctyp)
+  | `CrMthS of (loc * alident * flag * flag * exp )
         (* method virtual (private)? s : t *)
-  | `VirMeth of (loc * alident * private_flag * ctyp)
+  | `VirMeth of (loc * alident * flag * ctyp)
   | `Eq of (loc * ctyp * ctyp)
   | `Initializer of (loc * exp)
   | ant  ] 
