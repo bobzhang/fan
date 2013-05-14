@@ -1,7 +1,7 @@
   #default_quotation "ctyp";;
 
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
 
 open Basic

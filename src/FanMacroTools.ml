@@ -1,5 +1,5 @@
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
   
 type 'a item_or_def  =

@@ -6,7 +6,7 @@ open Location
 
 let with_loc  txt loc = Location.mkloc txt  loc
 
-let (+>) txt loc = with_loc txt loc
+(* let (+>) txt loc = with_loc txt loc *)
   
 let lident s = Lident s
 let lident_with_loc s loc = with_loc (Lident s) loc

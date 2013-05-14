@@ -2,15 +2,13 @@ open FanOps
 
 open Ast
 
-open AstLoc
+open AstLib
 
 open LibUtil
 
 open Basic
 
 open FanUtil
-
-open EP
 
 let map loc (p : pat) (e : exp) (l : exp) =
   match (p, e) with
@@ -366,7 +364,7 @@ let gen_curry_n (acc : exp) ~arity  cons n =
   (let args =
      List.init arity
        (fun i  -> List.init n (fun j  -> (xid ~off:i j : Ast.pat ))) in
-   let pat = of_str cons in
+   let pat = (EP.of_str cons :>pat) in
    List.fold_right
      (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp ))
      (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )

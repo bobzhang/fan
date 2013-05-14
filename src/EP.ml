@@ -2,9 +2,10 @@
 
 
 
-let _loc = FanLoc.ghost
+
+open Ast 
 open LibUtil
-open AstLoc
+open AstLib
 open Basic
 
 (*
@@ -24,7 +25,8 @@ open Basic
    ExId  (Lid  "&&")
    ]}
   *)
-let of_str s =
+let of_str (s:string) : ep =
+  let _loc = FanLoc.ghost in
   let len = String.length s in 
   if len = 0 then
     invalid_arg "[exp|pat]_of_str len=0"
@@ -34,31 +36,8 @@ let of_str s =
     | x when Char.is_uppercase x -> {| $uid:s |}
     | _ -> {| $lid:s |} 
 
+let _loc = FanLoc.ghost
 
-(*
-   Applied to both expession and pattern
-   {[
-    of_ident_number <:ident< X >> 3 |> eprint;
-    X a0 a1 a2
-    ]}
-*)
-let  of_ident_number  cons n = 
-  appl_of_list (cons:: List.init n xid )
-    (* {| $(id:xid i) |}  FIXME why a type annotation here?*)
-
-
-
-(*
-   For all strings, we don't do parsing at all. So keep your strings
-   input as simple as possible
-   
-   {[
-   ( {|blabla|} +> ["x0";"x1";"x2"] ) |> eprint;
-   blabla x0 x1 x2
-   ]}
- *)
-let (+>) f names  =
-  appl_of_list (f:: (List.map (fun lid -> `Lid (_loc,lid) ) names))
 
 
 (*
@@ -116,22 +95,6 @@ let tuple_of_number ast n =
   if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
   else res
 
-(*
-   @raise Invalid_argument
-   when the length of lst is less than 1
-  {[
-  tuple_of_list [ {|a|} ; {| b|};  {|c|} ] |> eprint;
-  (a, b, c)
-  ]}
- *)
-(* let tuple_of_list lst = *)
-(*   let len = List.length lst in *)
-(*   match len with *)
-(*   [ 1  ->  List.hd lst *)
-(*   | n when n > 1 ->  {| $(tup:List.reduce_left com lst) |}  *)
-(*   | _ -> invalid_arg "tuple_of_list n < 1"] ; *)
-
-
 let of_vstr_number name i =
   let items = List.init i (fun i -> {|$(id:xid i) |} ) in
   if items = [] then
@@ -176,7 +139,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
 
    ]}
  *)
-let mk_record ?(arity=1) cols  =
+let mk_record ?(arity=1) cols : ep  =
   let mk_list off = 
     List.mapi (fun i -> fun   ({FSig.col_label;_}:FSig.col) ->
       (* `RecBind (_loc, (`Lid (_loc, col_label)), (`Id (_loc, (xid ~off i)))) *)
@@ -203,14 +166,45 @@ let mk_record ?(arity=1) cols  =
    (a0, a1, a2, a3, a4)
    ]}
  *)      
-let mk_tuple ~arity ~number =
+let mk_tuple ~arity ~number  = 
   match arity with
   | 1 -> gen_tuple_first ~number ~off:0
   | n when n > 1 -> 
       let e = zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
-      {| $par:e |}
+      {:ep| $par:e |}
   | _ -> invalid_arg "mk_tuple arity < 1 " 
 
   
+
+(*
+   @raise Invalid_argument
+   when the length of lst is less than 1
+  {[
+  tuple_of_list [ {|a|} ; {| b|};  {|c|} ] |> eprint;
+  (a, b, c)
+  ]}
+ *)
+(* let tuple_of_list lst = *)
+(*   let len = List.length lst in *)
+(*   match len with *)
+(*   [ 1  ->  List.hd lst *)
+(*   | n when n > 1 ->  {| $(tup:List.reduce_left com lst) |}  *)
+(*   | _ -> invalid_arg "tuple_of_list n < 1"] ; *)
+
+
+
+
+(* (\* *)
+(*    Applied to both expession and pattern *)
+(*    {[ *)
+(*     of_ident_number <:ident< X >> 3 |> eprint; *)
+(*     X a0 a1 a2 *)
+(*     ]} *)
+(* *\) *)
+(* let  of_ident_number  cons n =  *)
+(*   appl_of_list (cons:: List.init n xid ) *)
+(*     (\* {| $(id:xid i) |}  FIXME why a type annotation here?*\) *)
+
+

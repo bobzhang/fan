@@ -1,6 +1,6 @@
 open Ast
 
-open AstLoc
+open AstLib
 
 type spat_comp =  
   | SpWhen of loc* pat* exp option

@@ -1,7 +1,7 @@
 open Ast
 open FanOps
 open Format
-open AstLoc
+open AstLib
 open LibUtil
 open FanGrammar
 

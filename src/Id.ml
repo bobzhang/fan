@@ -3,7 +3,7 @@
 
 
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
 
 (*

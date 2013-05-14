@@ -1,6 +1,6 @@
 open LibUtil
 
-open AstLoc
+open AstLib
 
 open Ast
 

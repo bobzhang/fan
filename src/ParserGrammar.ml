@@ -1,6 +1,6 @@
 
 open Ast
-open AstLoc
+open AstLib
 open FanGrammar
 open FanGrammarTools
 open PreCast.Syntax

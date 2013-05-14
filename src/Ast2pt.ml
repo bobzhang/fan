@@ -1,9 +1,10 @@
 
+(*************************************************************************)
+(** Dump the FanAst to Parsetree, this file should introduce minimal
+    dependency or only dependent on those generated files*)
 
-(*
-  Dump the FanAst to Parsetree, this file should
-  introduce minimal dependency or only dependent on those generated files
- *)  
+(*************************************************************************)  
+open AstLib
 open Parsetree
 open Longident
 open Asttypes
@@ -13,7 +14,7 @@ open ParsetreeHelper
 open FanLoc
 open FanOps
 open Ast
-open AstLoc
+
 open Objs;;
 
   
@@ -58,10 +59,6 @@ let rec normalize_acc = with ident function
 let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
   | `Field(_,e1,e2) ->
       sep_dot_exp (sep_dot_exp acc e2) e1
-        (* | `Uid(loc,s) as e -> *)
-        (*     (match acc with *)
-        (*     [[] -> [(loc,[],e)] *)
-        (*     |[(loc',sl,e) :: l] -> [(FanLoc.merge loc loc', [s::sl], e) :: l] ]) *)
   | (`Dot(_l,_,_) as i) ->
       sep_dot_exp acc (normalize_acc (i : vid :>ident)) 
   |  `Uid(loc,s) as e ->
@@ -155,7 +152,7 @@ let ident (i:ident) :  Longident.t Location.loc  =
 
 let long_lident ~err id =
     match ident_tag id with
-    | (i, `lident) -> i +> (loc_of id)
+    | (i, `lident) -> with_loc i  (loc_of id)
     | _ -> error (loc_of id) err 
 
 let long_type_ident :ident -> Longident.t Location.loc =
@@ -170,7 +167,7 @@ let long_uident_noloc  i =
     | _ -> errorf (loc_of i) "uppercase identifier expected %s" ("") 
 
 let long_uident  i =
-   long_uident_noloc  i +> loc_of i
+   with_loc (long_uident_noloc  i) (loc_of i)
 
 let rec ctyp_long_id_prefix (t:ctyp) : Longident.t =
   match t with
@@ -384,7 +381,7 @@ let quote_map x =
         |`Negative _ -> (false,true)
         |`Normal _ -> (false,false)
         |`Ant (_loc,_) -> ANT_ERROR  in
-      (Some (s+>sloc),tuple)
+      (Some ( with_loc s sloc),tuple)
   |`QuoteAny(_loc,p) ->
       let tuple =
         match p with
@@ -976,7 +973,7 @@ and mktype_decl (x:typedecl)  =
                     |`Eq(loc,t1,t2) ->
                       (ctyp t1, ctyp t2, loc)
                     | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)) in
-          (c+>sloc,
+          (with_loc c sloc,
            type_decl
              (mk_type_parameters tl)
              cl cloc td)
@@ -991,7 +988,7 @@ and mktype_decl (x:typedecl)  =
                     |`Eq(loc,t1,t2) ->
                       (ctyp t1, ctyp t2, loc)
                     | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)) in            
-            (c+>sloc,
+            (with_loc c sloc,
              mktype cloc
                (mk_type_parameters tl)
                (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *) cl

@@ -2,7 +2,7 @@ open Ast
 
 open FanUtil
 
-open AstLoc
+open AstLib
 
 let meta_loc_exp _loc loc =
   match AstQuotation.current_loc_name.contents with

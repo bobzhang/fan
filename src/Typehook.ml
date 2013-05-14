@@ -1,5 +1,5 @@
 open LibUtil
-open AstLoc
+open AstLib
 open Format
 
   

@@ -2,7 +2,7 @@ open LibUtil
 
 open Ast
 
-open AstLoc
+open AstLib
 
 let list_of_list (loc : loc) =
   let rec loop top =

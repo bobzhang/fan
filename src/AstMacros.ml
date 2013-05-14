@@ -1,5 +1,5 @@
 open Ast
-open AstLoc
+open AstLib
 (*
   {:macro|M a b c|}
 

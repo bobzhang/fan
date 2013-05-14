@@ -1,6 +1,6 @@
 
 open Ast
-open AstLoc
+open AstLib
 open Lexgen
 open LibUtil
   

@@ -1,5 +1,5 @@
 open LibUtil
-open AstLoc
+open AstLib
 open Ast
   
 let stru_from_mtyps ~f:(aux:FSig.named_type -> typedecl)

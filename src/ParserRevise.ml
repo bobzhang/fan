@@ -1,5 +1,5 @@
 open Ast
-open AstLoc
+open AstLib
 open FanOps
 open Syntax
 open LibUtil

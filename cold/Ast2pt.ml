@@ -1,3 +1,5 @@
+open AstLib
+
 open Parsetree
 
 open Longident
@@ -15,8 +17,6 @@ open FanLoc
 open FanOps
 
 open Ast
-
-open AstLoc
 
 open Objs
 
@@ -96,7 +96,7 @@ let ident (i : ident) =
 
 let long_lident ~err  id =
   match ident_tag id with
-  | (i,`lident) -> i +> (loc_of id)
+  | (i,`lident) -> with_loc i (loc_of id)
   | _ -> error (loc_of id) err
 
 let long_type_ident: ident -> Longident.t Location.loc =
@@ -111,7 +111,7 @@ let long_uident_noloc i =
   | (i,`app) -> i
   | _ -> errorf (loc_of i) "uppercase identifier expected %s" ""
 
-let long_uident i = (long_uident_noloc i) +> (loc_of i)
+let long_uident i = with_loc (long_uident_noloc i) (loc_of i)
 
 let rec ctyp_long_id_prefix (t : ctyp) =
   (match t with
@@ -305,7 +305,7 @@ let quote_map x =
         | `Negative _ -> (false, true)
         | `Normal _ -> (false, false)
         | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
-      ((Some (s +> sloc)), tuple)
+      ((Some (with_loc s sloc)), tuple)
   | `QuoteAny (_loc,p) ->
       let tuple =
         match p with
@@ -855,7 +855,7 @@ and mktype_decl (x : typedecl) =
                      | _ ->
                          errorf (loc_of x) "invalid constraint: %s"
                            (dump_type_constr cl))) in
-         ((c +> sloc), (type_decl (mk_type_parameters tl) cl cloc td))
+         ((with_loc c sloc), (type_decl (mk_type_parameters tl) cl cloc td))
      | `TyAbstr (cloc,`Lid (sloc,c),tl,cl) ->
          let cl =
            match cl with
@@ -868,7 +868,7 @@ and mktype_decl (x : typedecl) =
                      | _ ->
                          errorf (loc_of x) "invalid constraint: %s"
                            (dump_type_constr cl))) in
-         ((c +> sloc),
+         ((with_loc c sloc),
            (mktype cloc (mk_type_parameters tl) cl ~type_kind:Ptype_abstract
               ~priv:Private ~manifest:None))
      | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))

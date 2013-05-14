@@ -1,25 +1,23 @@
-let _loc = FanLoc.ghost
+open Ast
 
 open LibUtil
 
-open AstLoc
+open AstLib
 
 open Basic
 
-let of_str s =
-  let len = String.length s in
-  if len = 0
-  then invalid_arg "[exp|pat]_of_str len=0"
-  else
-    (match s.[0] with
-     | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))
-     | x when Char.is_uppercase x -> `Uid (_loc, s)
-     | _ -> `Lid (_loc, s))
+let of_str (s : string) =
+  (let _loc = FanLoc.ghost in
+   let len = String.length s in
+   if len = 0
+   then invalid_arg "[exp|pat]_of_str len=0"
+   else
+     (match s.[0] with
+      | '`' -> `Vrn (_loc, (String.sub s 1 (len - 1)))
+      | x when Char.is_uppercase x -> `Uid (_loc, s)
+      | _ -> `Lid (_loc, s)) : ep )
 
-let of_ident_number cons n = appl_of_list (cons :: (List.init n xid))
-
-let (+>) f names =
-  appl_of_list (f :: (List.map (fun lid  -> `Lid (_loc, lid)) names))
+let _loc = FanLoc.ghost
 
 let gen_tuple_first ~number  ~off  =
   match number with
@@ -59,15 +57,15 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   (List.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
 
 let mk_record ?(arity= 1)  cols =
-  let mk_list off =
-    List.mapi
-      (fun i  ({ FSig.col_label = col_label;_} : FSig.col)  ->
-         `RecBind (_loc, (`Lid (_loc, col_label)), (xid ~off i))) cols in
-  let res =
-    zfold_left ~start:1 ~until:(arity - 1)
-      ~acc:(`Record (_loc, (sem_of_list (mk_list 0))))
-      (fun acc  i  -> com acc (`Record (_loc, (sem_of_list (mk_list i))))) in
-  if arity > 1 then `Par (_loc, res) else res
+  (let mk_list off =
+     List.mapi
+       (fun i  ({ FSig.col_label = col_label;_} : FSig.col)  ->
+          `RecBind (_loc, (`Lid (_loc, col_label)), (xid ~off i))) cols in
+   let res =
+     zfold_left ~start:1 ~until:(arity - 1)
+       ~acc:(`Record (_loc, (sem_of_list (mk_list 0))))
+       (fun acc  i  -> com acc (`Record (_loc, (sem_of_list (mk_list i))))) in
+   if arity > 1 then `Par (_loc, res) else res : ep )
 
 let mk_tuple ~arity  ~number  =
   match arity with
@@ -77,5 +75,5 @@ let mk_tuple ~arity  ~number  =
         zfold_left ~start:1 ~until:(n - 1)
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
-      `Par (_loc, e)
+      (`Par (_loc, e) : Ast.ep )
   | _ -> invalid_arg "mk_tuple arity < 1 "

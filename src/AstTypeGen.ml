@@ -1,5 +1,5 @@
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
 open Easy
 open FSig
@@ -36,8 +36,7 @@ let (gen_eq,gen_eqobj) = with exp
 
 let some f  = fun x -> Some (f x)  ;;
 
-[ ("Eq",some gen_eq) ;
-  ("OEq", some gen_eqobj ) ] |> List.iter Typehook.register;;
+[ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ] |> List.iter Typehook.register;;
 
 
 
@@ -80,7 +79,7 @@ let (gen_map,gen_map2) = with exp
   let mk_variant cons params =
     let result =
       appl_of_list
-        ( EP.of_str cons ::
+        ( (EP.of_str cons :> exp) ::
           (params |> List.map (fun {FSig.exp0;_} -> exp0)) ) in 
     List.fold_right
       (fun {FSig.info_exp;pat0;_} res ->
@@ -128,7 +127,7 @@ let gen_strip = with {pat:ctyp;exp}
                params in
     let result =
       appl_of_list
-         (EP.of_str cons :: (params' |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
+         ((EP.of_str cons :> exp) :: (params' |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
     List.fold_right
       (fun {FSig.info_exp=exp;pat0;ty;_} res ->
         match (ty:ctyp) with
@@ -170,7 +169,7 @@ let gen_fill = with {pat:ctyp;exp}
   let mk_variant cons params =
     let result =
       appl_of_list
-         (EP.of_str cons ::
+         ((EP.of_str cons:>exp) ::
           {:exp|loc|} ::
           (params |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
     List.fold_right

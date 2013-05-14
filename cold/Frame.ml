@@ -1,4 +1,4 @@
-open AstLoc
+open AstLib
 
 open Ast
 
@@ -56,7 +56,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
    | `Par (_loc,t) ->
        let ls = list_of_star t [] in
        let len = List.length ls in
-       let pat = EP.mk_tuple ~arity ~number:len in
+       let pat = (EP.mk_tuple ~arity ~number:len :>pat) in
        let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
        names <+
          (currying [(`Case (_loc, pat, (mk_tuple tys)) : Ast.case )] ~arity)
@@ -137,7 +137,8 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
-     let p: pat = EP.gen_tuple_n ?cons_transform ~arity cons args_length in
+     let p: pat =
+       (EP.gen_tuple_n ?cons_transform ~arity cons args_length :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -158,7 +159,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
   ~mk_variant  ~destination  simple_exp_of_ctyp result ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
-     let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
+     let p = (EP.gen_tuple_n ?cons_transform ~arity cons len :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -213,7 +214,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match repr with
              | `Record (_loc,t) ->
                  let cols = Ctyp.list_of_record t in
-                 let pat: pat = EP.mk_record ~arity cols in
+                 let pat = (EP.mk_record ~arity cols :>pat) in
                  let info =
                    List.mapi
                      (fun i  x  ->
@@ -288,7 +289,7 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default
   ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
   let cxt = Hashset.create 50 in
-  let mk_bind =
+  let mk_bind: typedecl -> bind =
     bind_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
       ~left_type_id ~left_type_variable ~mk_record
       (simple_exp_of_ctyp_with_cxt cxt) in

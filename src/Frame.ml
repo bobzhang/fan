@@ -1,15 +1,12 @@
 
-#default_quotation "exp";;
+(* #default_quotation "exp";; *)
 
-open AstLoc
+open AstLib
 open Ast
-  
 open Format
-  
 open LibUtil
 open Basic
 open FSig
-
 open EP
 open Exp
 
@@ -17,7 +14,7 @@ open Exp
 let preserve =  ["self"; "self_type"; "unit"; "result"]
 
 let check names =
-    (* we preserve some keywords to avoid variable capture *)
+  (* we preserve some keywords to avoid variable capture *)
   List.iter (fun name ->
     if List.mem name preserve  then begin 
       eprintf "%s is not a valid name\n" name;
@@ -27,16 +24,13 @@ let check names =
     end
     else check_valid name) names
 
-(* +-----------------------------------------------------------------+
-   | utilities                                                       |
-   +-----------------------------------------------------------------+ *)
+(*************************************************************************)    
   
-(* collect the [partial evaluated Ast node]
+(** collect the [partial evaluated Ast node]
    and meta data
    The input [y] is handled by
    [simple_exp_of_ctyp], generally it will
-   be  exlcuding adt or variant type
- *)      
+   be  exlcuding adt or variant type *)      
 let mapi_exp ?(arity=1) ?(names=[])
     ~f:(f:(ctyp->exp))
     (i:int) (ty : ctyp)  :
@@ -62,7 +56,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   | `Par (_loc,t)  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
-    let pat = EP.mk_tuple ~arity ~number:len in
+    let pat = (EP.mk_tuple ~arity ~number:len :> pat) in
     let tys =
       List.mapi
         (mapi_exp ~arity ~names  ~f:simple_exp_of_ctyp) ls in
@@ -187,7 +181,7 @@ let exp_of_ctyp
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p : pat =
       (* calling gen_tuple_n*)
-      EP.gen_tuple_n ?cons_transform ~arity  cons args_length in
+      (EP.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -213,7 +207,7 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
     simple_exp_of_ctyp result ty = with {pat:ctyp;exp:case}
   let f (cons,tyargs) :  case=
     let len = List.length tyargs in
-    let p = EP.gen_tuple_n ?cons_transform ~arity cons len in
+    let p = (EP.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -244,7 +238,7 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
 
 (* add extra arguments to the generated expession node
  *)  
-let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
+let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable= with exp
   let open Transform in 
   let varf = basic_transform left_type_variable in
   let  f (var:decl_params) acc =
@@ -282,7 +276,7 @@ let fun_of_tydcl
          begin match repr with
          | `Record(_loc,t) ->       
            let cols =  Ctyp.list_of_record t  in
-           let pat = (EP.mk_record ~arity  cols  : pat)in
+           let pat = (EP.mk_record ~arity  cols  :> pat)in
            let info =
              List.mapi
                (fun i x ->  match x with
@@ -319,13 +313,15 @@ let fun_of_tydcl
    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)
 
 
-(* destination is [Str_item] generate [stru], type annotations may
-   not be needed here
+(*************************************************************************)
+(** destination is [Str_item] generate [stru], type annotations may
+    not be needed here
+    outputs  a binding
  *)          
 let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~default ~mk_variant
     ~left_type_id ~left_type_variable
-    ~mk_record = with {pat:ctyp}
+    ~mk_record = 
   let open Transform in 
   let tctor_var = basic_transform left_type_id in
   let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
@@ -336,49 +332,35 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
       fun_of_tydcl  ~destination:Str_item
         ~names ~arity ~left_type_variable ~mk_record  ~result_type
         simple_exp_of_ctyp
-        (exp_of_ctyp
-           ?cons_transform ~arity ~names ~default ~mk_variant simple_exp_of_ctyp)
-        (exp_of_variant
-           ?cons_transform 
-           ~arity ~names ~default ~mk_variant
-           ~destination:Str_item
-           simple_exp_of_ctyp) tydcl  in
-    (* {:bind| $(lid:tctor_var name) : $ty = $fun_exp |} *)
+        (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant simple_exp_of_ctyp)
+        (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant ~destination:Str_item simple_exp_of_ctyp)
+        tydcl  in
     {:bind| $(lid:tctor_var name) = $fun_exp |}
-  else begin
-    eprintf "Warning: %s as a abstract type no structure generated\n"
-      (Objs.dump_typedecl tydcl);
-    {:bind| $(lid:tctor_var  name) =
-    failwithf $(str:"Abstract data type not implemented") |};
-  end
+  else (eprintf "Warning: %s as a abstract type no structure generated\n" (Objs.dump_typedecl tydcl);
+        {:bind| $(lid:tctor_var  name) = failwithf "Abstract data type not implemented" |})
 
 let stru_of_mtyps ?module_name ?cons_transform
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
-    (* ~destination *)
     simple_exp_of_ctyp_with_cxt
     (lst:mtyps)  =
   let cxt  = Hashset.create 50 in 
-  let mk_bind (* : string -> ctyp -> bind *) =
+  let mk_bind : typedecl -> bind =
     bind_of_tydcl ?cons_transform ?arity
       ?names ~default ~mk_variant ~left_type_id ~left_type_variable ~mk_record
-      (* ~destination *)
       (simple_exp_of_ctyp_with_cxt cxt) in
   (* return new types as generated  new context *)
   let fs (ty:types) : stru=
     match ty with
     | `Mutual named_types ->
-        (* let bind = *)
         begin match named_types with
         | [] -> {:stru| let _ = ()|} (* FIXME *)
         | xs -> begin 
             List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
             let bind = List.reduce_right_with
                 ~compose:(fun x y -> {:bind| $x and $y |} )
-                ~f:(fun (_name,ty) ->begin
-                  mk_bind  ty;
-                end ) xs;
-              {:stru| let rec $bind |} 
+                ~f:(fun (_name,ty) -> mk_bind  ty ) xs in
+            {:stru| let rec $bind |} 
         end
         end
 
@@ -401,12 +383,12 @@ let stru_of_mtyps ?module_name ?cons_transform
 
             
 
-
-(*
+(*************************************************************************)
+(**
   Generate warnings for abstract data type
   and qualified data type.
-  all the types in one module will derive a class 
- *)
+  all the types in one module will derive a class  *)
+(*************************************************************************)
 let obj_of_mtyps
     ?cons_transform
     ?module_name

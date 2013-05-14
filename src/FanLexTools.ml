@@ -1,6 +1,6 @@
 (* NFA *)
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
 type node = { 
     id : int; 

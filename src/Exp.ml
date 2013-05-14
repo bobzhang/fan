@@ -7,11 +7,11 @@ open FanOps
    | the modules documented with [open Exp]                          |
    +-----------------------------------------------------------------+ *)
 open Ast
-open AstLoc
+open AstLib
 open LibUtil
 open Basic
 open FanUtil
-open EP
+
 
 
 
@@ -426,7 +426,7 @@ let eta_expand (exp:exp) number : exp =
 let gen_curry_n (acc:exp) ~arity cons n : exp =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {:pat| $(id:xid ~off:i j) |})) in
-  let pat = of_str cons in
+  let pat = (EP.of_str cons :> pat) in
   List.fold_right
     (fun p acc -> {| function | $pat:p -> $acc  |} )
     (List.map (fun lst -> appl_of_list (pat:: lst)) args) acc

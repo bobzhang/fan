@@ -1,8 +1,8 @@
 (* -*- Mode:caml; -*- *)
 
-#use "topfind";;
-#require "unix";;
-#load "unix.cma";;
+(* #use "topfind";; *)
+(* #require "unix";; *)
+(* #load "unix.cma";; *)
 open Format;;
 
 

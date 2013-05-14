@@ -2,7 +2,7 @@ open LibUtil
 
 open Ast
 
-open AstLoc
+open AstLib
 
 let meta =
   object  inherit  FanMeta.meta method! loc _loc _ = lid _loc "loc" end

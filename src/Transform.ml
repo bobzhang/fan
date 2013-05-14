@@ -2,7 +2,7 @@
 open Format
 open LibUtil
 open Ast
-open AstLoc
+open AstLib
 open FSig
 let transform :full_id_transform -> vid -> exp  =
   let _loc = FanLoc.ghost in

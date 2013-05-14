@@ -1,6 +1,6 @@
 open Ast
 
-open AstLoc
+open AstLib
 
 type key = string 
 
