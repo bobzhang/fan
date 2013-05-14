@@ -1,5 +1,3 @@
-open LibUtil
-
 open Ast
 
 type vrn =  
@@ -21,12 +19,9 @@ type ty_info =
   {
   name_exp: exp;
   info_exp: exp;
-  exp0: exp;
-  pat0: pat;
-  id_exp: exp;
-  id_pat: pat;
-  id_exps: exp list;
-  id_pats: pat list;
+  ep0: ep;
+  id_ep: ep;
+  id_eps: ep list;
   ty: ctyp} 
 
 type vbranch = [ `variant of (string * ctyp list) | `abbrev of ident] 
@@ -41,13 +36,13 @@ type record_col =  {
 type record_info = record_col list 
 
 type basic_id_transform =
-  [ `Pre of string | `Post of string | `Fun of string id] 
+  [ `Pre of string | `Post of string | `Fun of string -> string] 
 
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
 
 type full_id_transform =
   [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
-  | `Last of string -> vid | `Obj of string id] 
+  | `Last of string -> vid | `Obj of string -> string] 
 
 open StdLib
 

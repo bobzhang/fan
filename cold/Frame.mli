@@ -1,10 +1,44 @@
 open Ast
 
+
+
+(* we preserve some keywords to avoid variable capture *)
 val check : string list -> unit
+
+
+
+
+
+(** collect the [partial evaluated Ast node] and meta data
+   The input [y] is handled by [simple_exp_of_ctyp], generally it will
+   be  exlcuding adt or variant type
+
+    {[
+    Frame.mapi_exp ~arity:2 ~names:["fmt";"test"]
+    ~f:(fun {:ctyp|$lid:x|} -> {:exp|$(lid:("meta_"^x))|})   3  {:ctyp|int |};;
+    ]}
+
+    {name_exp = `Lid (, "meta_int");
+    info_exp =
+    `App
+    (,
+     `App
+       (,
+        `App
+          (, `App (, `Lid (, "meta_int"), `Lid (, "fmt")), `Lid (, "test")),
+        `Lid (, "_a3")),
+     `Lid (, "_b3"));
+    ep0 = `Lid (, "_a3");
+    id_ep = `Par (, `Com (, `Lid (, "_a3"), `Lid (, "_b3")));
+    id_eps = [`Lid (, "_a3"); `Lid (, "_b3")]; ty = `Lid (, "int")}
+ *)      
 val mapi_exp :
   ?arity:int ->
   ?names:string list ->
   f:(ctyp -> exp) -> int -> ctyp -> FSig.ty_info
+
+(** @raise Invalid_argument when type can not be handled
+ *)        
 val tuple_exp_of_ctyp :
   ?arity:int ->
   ?names:string list ->
@@ -12,6 +46,7 @@ val tuple_exp_of_ctyp :
   (ctyp -> exp ) ->
   ctyp -> exp
 
+(** return a [exp] node accept [variant types] *)  
 val exp_of_variant:
     ?cons_transform:(string -> string) ->
   ?arity:int ->
@@ -28,7 +63,8 @@ val normal_simple_exp_of_ctyp :
   right_type_id:FSig.full_id_transform ->
   left_type_id:FSig.basic_id_transform ->
   right_type_variable:FSig.rhs_basic_id_transform ->
-  (string, 'a) Hashtbl.t -> ctyp -> exp 
+  (string, 'a) Hashtbl.t -> ctyp -> exp
+      
 val obj_simple_exp_of_ctyp :
   right_type_id:FSig.full_id_transform ->
   left_type_variable:FSig.basic_id_transform ->
@@ -43,13 +79,18 @@ val exp_of_ctyp :
   ?names:string list ->
   default:(FSig.vrn * int -> case option) ->
   mk_variant:(string -> FSig.ty_info list -> exp) ->
-  (ctyp -> exp) -> or_ctyp -> exp 
+  (ctyp -> exp) -> or_ctyp -> exp
+
+
+(* add extra arguments to the generated expession node *)  
 val mk_prefix :
   opt_decl_params ->
   exp ->
   ?names:string list ->
   left_type_variable:FSig.basic_id_transform ->
   exp
+
+      
 val fun_of_tydcl :
     ?names:string list ->
     ?arity:int ->
@@ -61,6 +102,8 @@ val fun_of_tydcl :
         (or_ctyp -> exp ) ->
           (ctyp -> row_field -> exp) ->  (* labeld as variant *)
             typedecl -> exp
+
+                
 val bind_of_tydcl :
   ?cons_transform:(string -> string) ->
   (ctyp -> exp ) ->
@@ -102,3 +145,33 @@ val obj_of_mtyps :
      string ->  string ->  (ctyp -> exp ) -> 
   FSig.kind -> FSig.mtyps -> stru
   
+
+
+
+(* open Ast  *)
+
+val gen_stru :
+  ?module_name:string ->
+  ?arity:int ->
+  ?default:exp ->
+  ?cons_transform:(string -> string) ->
+  id:FSig.basic_id_transform ->
+  ?names:string list ->
+  mk_tuple:(FSig.ty_info list -> exp) ->
+  mk_record:(FSig.record_col list -> exp) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) -> unit -> 
+  FSig.mtyps -> stru
+val gen_object :
+  ?module_name:string ->
+  ?arity:int ->
+  ?default:exp ->
+  ?cons_transform:(string -> string) ->
+  kind:FSig.kind ->
+  base:string ->
+  class_name:string ->
+  ?names:string list ->
+  mk_tuple:(FSig.ty_info list -> exp) ->
+  mk_record:(FSig.record_col list -> exp) ->
+  mk_variant:(string -> FSig.ty_info list -> exp) -> unit -> 
+  FSig.mtyps -> stru
+      

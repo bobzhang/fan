@@ -1,6 +1,4 @@
 
-(* #default_quotation "exp";; *)
-
 open AstLib
 open Ast
 open Format
@@ -13,7 +11,6 @@ open Exp
 let preserve =  ["self"; "self_type"; "unit"; "result"]
 
 let check names =
-  (* we preserve some keywords to avoid variable capture *)
   List.iter (fun name ->
     if List.mem name preserve  then begin 
       eprintf "%s is not a valid name\n" name;
@@ -23,32 +20,27 @@ let check names =
     end
     else check_valid name) names
 
-(*************************************************************************)    
-  
-(** collect the [partial evaluated Ast node]
-   and meta data
-   The input [y] is handled by
-   [simple_exp_of_ctyp], generally it will
-   be  exlcuding adt or variant type *)      
+
 let mapi_exp ?(arity=1) ?(names=[])
     ~f:(f:(ctyp->exp))
     (i:int) (ty : ctyp)  :
     FSig.ty_info =
-  with {pat:ctyp;exp:exp'}
   let name_exp = f ty in 
   let base = name_exp  +> names in
-  (** FIXME as a tuple it is useful when arity> 1??? *)
-  let id_exps =
-    (List.init arity (fun index  -> {| $(id:xid ~off:index i) |} )) in 
-  let exp0 = List.hd id_exps in 
-  let id_pats = id_exps in
-  let pat0 = exp0 in
-  let id_exp = tuple_com  id_exps  in
-  let id_pat = id_exp in
-  let exp = appl_of_list (base:: id_exps)  in
-  {name_exp; info_exp=exp; id_exp; id_exps; id_pat;id_pats;exp0;pat0;ty}
+  (* FIXME as a tuple it is useful when arity> 1??? *)
+  let id_eps = List.init arity (fun index  -> xid ~off:index i ) in 
+  let ep0 = List.hd id_eps in
+  let id_ep = tuple_com  id_eps  in
+  let exp = appl_of_list (base:: (id_eps:>exp list))  in
+  {name_exp;
+   info_exp=exp;
+   id_ep;
+   id_eps;
+   ep0;
+   ty
+ }
 
-(* @raise Invalid_argument when type can not be handled *)  
+
 let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     simple_exp_of_ctyp (ty:ctyp) : exp =
   match ty with
@@ -200,9 +192,6 @@ let exp_of_ctyp
     currying ~arity res 
   end
 
-(* return a [exp] node
-   accept [variant types]
- *)  
 let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~destination
     simple_exp_of_ctyp result ty = with {pat:ctyp;exp:case}
   let f (cons,tyargs) :  case=
@@ -238,8 +227,6 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
   List.rev t in
   currying ~arity res
 
-(* add extra arguments to the generated expession node
- *)  
 let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable= with exp
   let open Transform in 
   let varf = basic_transform left_type_variable in
@@ -255,8 +242,6 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
       let vars = list_of_com xs [] in
       List.fold_right f vars (names <+ acc)
   
-  (* let xs  = list_of_com vars [] in *)
-  (* List.fold_right f vars ( names <+ acc); *)
 
 
 (* +-----------------------------------------------------------------+
@@ -471,6 +456,110 @@ let obj_of_mtyps
   
 
 (*   check S.names; *)
+
+
+
+(* open Ast *)
+open Transform
+(* open FSig *)
+
+let _loc = FanLoc.ghost 
+
+(**
+   For var, in most cases we just add a prefix
+   mf_, so we just fix it here
+
+   For Objects, tctor_var, always (`Fun (fun x -> x))
+   FIXME we may need a more flexible way to compose branches
+ *)
+let gen_stru
+    ?module_name
+    ?(arity=1)
+    ?(default= {:exp| failwith "arity >= 2 in other branches" |} )
+    ?cons_transform
+    ~id:(id:basic_id_transform)  ?(names=[])  
+    (* you must specify when arity >=2 *)
+    ~mk_tuple  ~mk_record ~mk_variant ()= 
+  let left_type_variable  = `Pre "mf_" in
+  let right_type_variable = `Pre "mf_"in
+  let left_type_id = id in
+  let right_type_id =
+    match module_name with
+    |None ->   (id:>full_id_transform)
+    |Some m ->
+        `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} )  in
+  let default (_,number)=
+    if number > 1 then
+      let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat) in 
+      Some {:case| $pat:pat -> $default |}
+    else (* {:case'| |} *) None in
+  let names = names in
+  let mk_record = mk_record in
+  let cons_transform = cons_transform in
+  let () = check names in
+  stru_of_mtyps
+           ?module_name
+           ?cons_transform
+           ~arity
+           ~names
+           ~default
+           ~mk_variant
+           ~left_type_id
+           ~left_type_variable
+           ~mk_record
+           (normal_simple_exp_of_ctyp
+              ~arity ~names ~mk_tuple
+              ~right_type_id
+              ~left_type_id ~right_type_variable)
+        
+
+
+    
+let gen_object
+    ?module_name
+    ?(arity=1)
+    ?(default={:exp| failwith "arity >= 2 in other branches" |} )
+    ?cons_transform
+    ~kind
+    ~base
+    ~class_name = 
+  let make ?(names=[]) ~mk_tuple  ~mk_record  ~mk_variant ()= 
+    begin
+      let () =  check names in
+      let left_type_variable  = `Pre "mf_" in
+      let right_type_variable =
+        `Exp (fun v -> let v = basic_transform left_type_variable v
+          in  {:exp| $lid:v self |} ) in
+      let left_type_id  = `Pre ""in
+      let right_type_id  =
+        `Obj (basic_transform left_type_id) in
+      let default (_,number)=
+        if number > 1 then
+          let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat)in 
+          Some {:case| $pat:pat -> $default |}
+        else None in
+      obj_of_mtyps
+        ?cons_transform
+        ?module_name
+        ~arity
+        ~names
+        ~default
+        ~left_type_variable
+        ~mk_record
+        ~mk_variant
+        base
+        class_name
+        (obj_simple_exp_of_ctyp
+           ~right_type_id ~left_type_variable ~right_type_variable
+           ~names ~arity ~mk_tuple  )
+        kind
+    end in
+  make
+
+
+
+
+
 
 
 

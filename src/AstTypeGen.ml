@@ -1,7 +1,7 @@
 open Ast
 open AstLib
 open LibUtil
-open Easy
+open Frame
 open FSig
 
 
@@ -79,26 +79,26 @@ let (gen_map,gen_map2) = with exp
   let mk_variant cons params =
     let result =
       appl_of_list
-        ( (EP.of_str cons :> exp) ::
-          (params |> List.map (fun {FSig.exp0;_} -> exp0)) ) in 
+        ( (EP.of_str cons (* :> exp *)) ::
+          (params |> List.map (fun {FSig.ep0;_} -> ep0)) ) in 
     List.fold_right
-      (fun {FSig.info_exp;pat0;_} res ->
-              {|let $pat:pat0 = $info_exp in $res |})  params result in
+      (fun {FSig.info_exp;ep0;_} res ->
+              {|let $(pat: (ep0:>pat)) = $info_exp in $res |})  params (result:>exp) in
   let mk_tuple params =
     let result = 
-      params |> List.map (fun {FSig.exp0; _ } -> exp0) |> tuple_com in
+      params |> List.map (fun {FSig.ep0; _ } -> ep0) |> tuple_com in
     List.fold_right
-      (fun {FSig.info_exp=exp;pat0;_} res ->
-        {| let $pat:pat0 = $exp in $res |}) params result in 
+      (fun {FSig.info_exp=exp;ep0;_} res ->
+        {| let $(pat:(ep0:>pat)) = $exp in $res |}) params (result:>exp) in 
   let mk_record cols =
     (* (->label,info.exp0) *)
     let result = 
     cols |> List.map
-      (fun  {FSig.re_label; re_info=({FSig.exp0;_ } as info) ; _ }  ->
-        let _ = Obj.repr info in
-        (re_label,exp0)  )  |> Exp.mk_record   in
+      (fun  {FSig.re_label; re_info={FSig.ep0;_ }  ; _ }  ->
+        (re_label,(ep0:>exp))  )  |> Exp.mk_record   in
     List.fold_right
-      (fun {FSig.re_info={FSig.info_exp=exp;pat0;_};_} res ->
+      (fun {FSig.re_info={FSig.info_exp=exp;ep0;_};_} res ->
+        let pat0 = (ep0 :> pat) in 
         {|let $pat:pat0 = $exp in $res |}) cols result in
   (gen_object ~kind:FSig.Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
@@ -126,35 +126,29 @@ let gen_strip = with {pat:ctyp;exp}
           | _  -> true)
                params in
     let result =
-      appl_of_list
-         ((EP.of_str cons :> exp) :: (params' |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
+      (appl_of_list
+         (EP.of_str cons  :: (params' |> List.map (fun {FSig.ep0;_} -> ep0) )) :> exp)  in 
     List.fold_right
-      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+      (fun {FSig.info_exp=exp;ep0;ty;_} res ->
         match (ty:ctyp) with
         | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
              res
-        | _ -> {|let $pat:pat0 = $exp in $res |}) params' result in
+        | _ ->
+            let pat0 = (ep0:>pat) in
+            {|let $pat:pat0 = $exp in $res |}) params' result in
   let mk_tuple params =
     let result = 
-      params |> List.map (fun {FSig.exp0; _ } -> exp0) |> tuple_com in
+      (params |> List.map (fun {FSig.ep0; _ } -> ep0) |> tuple_com  :> exp) in
     List.fold_right
-      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+      (fun {FSig.info_exp=exp;ep0;ty;_} res ->
         match ty with
         | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) ->  res
-        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in 
-  let mk_record cols =
-    let result = 
-    cols |> List.map (fun  {FSig.re_label; re_info={FSig.exp0;_ } ; _ }  ->
-          (re_label,exp0)  )  |> Exp.mk_record   in
-    List.fold_right
-      (fun {FSig.re_info={FSig.info_exp=exp;pat0;ty;_};_} res ->
-        match ty with
-        | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc")
-        | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
-          res
-        | _ -> {|let $pat:pat0 = $exp in $res |}) cols result in
+        | _ ->
+            let pat0 = (ep0 :> pat) in  
+            {|let $pat:pat0 = $exp in $res |}) params result in 
+  let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ();;
 
@@ -168,26 +162,30 @@ Typehook.register
 let gen_fill = with {pat:ctyp;exp}
   let mk_variant cons params =
     let result =
-      appl_of_list
-         ((EP.of_str cons:>exp) ::
-          {:exp|loc|} ::
-          (params |> List.map (fun {FSig.exp0;_} -> exp0) ))  in 
+      (appl_of_list
+         (EP.of_str cons ::
+          {:ep|loc|} ::
+          (params |> List.map (fun {FSig.ep0;_} -> ep0) )) :> exp)  in 
     List.fold_right
-      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+      (fun {FSig.info_exp=exp;ep0;ty;_} res ->
         match (ty:ctyp) with
         | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc"|"ant")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) -> 
              res
-        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in
+        | _ ->
+            let pat0 = (ep0:>pat) in
+            {|let $pat:pat0 = $exp in $res |}) params result in
   let mk_tuple params =
     let result = 
-      params |> List.map (fun {FSig.exp0; _ } -> exp0) |> tuple_com in
+      (params |> List.map (fun {FSig.ep0; _ } -> ep0) |> tuple_com :> exp) in
     List.fold_right
-      (fun {FSig.info_exp=exp;pat0;ty;_} res ->
+      (fun {FSig.info_exp=exp;ep0;ty;_} res ->
         match ty with
         | `Lid(_,"int" | "string" | "int32"| "nativeint" |"loc"|"ant")
         | `Dot(_,`Uid(_,"FanUtil"),`Lid(_,"anti_cxt")) ->  res
-        | _ -> {|let $pat:pat0 = $exp in $res |}) params result in 
+        | _ ->
+            let pat0 = (ep0 :> pat) in
+            {|let $pat:pat0 = $exp in $res |}) params result in 
   let mk_record _cols = assert false in
   gen_stru
     ~id:(`Pre "fill_loc_") ~mk_tuple
@@ -253,7 +251,7 @@ Typehook.register
    +-----------------------------------------------------------------+ *)
   
 let extract info = info
-    |> List.map (fun {name_exp;id_exp;_} -> [name_exp;id_exp] )
+    |> List.map (fun {name_exp;id_ep;_} -> [name_exp;(id_ep:>exp)] )
     |> List.concat 
 
 let mkfmt pre sep post fields = with exp
@@ -307,7 +305,9 @@ let mk_variant_iter _cons params :exp = with exp
   | [] -> unit _loc 
   | _ -> 
       let lst = params
-        |> List.map (fun {name_exp; id_exp;_} -> {| $name_exp $id_exp |}) in
+        |> List.map (fun {name_exp; id_ep;_} ->
+            let id_exp = (id_ep :> exp) in
+            {| $name_exp $id_exp |}) in
         seq_sem lst 
 
 let mk_tuple_iter params : exp =
@@ -317,7 +317,9 @@ let mk_record_iter cols = with exp
   let lst =
     cols |>
     List.map
-    (fun {re_info={name_exp; id_exp;_};_} -> {| $name_exp $id_exp |}) in
+    (fun {re_info={name_exp; id_ep;_};_} ->
+      let id_exp = (id_ep :> exp) in
+      {| $name_exp $id_exp |}) in
   seq_sem lst
 
 

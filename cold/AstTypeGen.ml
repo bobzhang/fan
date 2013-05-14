@@ -4,7 +4,7 @@ open AstLib
 
 open LibUtil
 
-open Easy
+open Frame
 
 open FSig
 
@@ -73,33 +73,32 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list ((EP.of_str cons :>exp) ::
-        (params |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0)))) in
+      appl_of_list ((EP.of_str cons) ::
+        (params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0)))) in
     List.fold_right
-      (fun { FSig.info_exp = info_exp; pat0;_}  res  ->
-         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, info_exp)), res) : 
-         Ast.exp )) params result in
+      (fun { FSig.info_exp = info_exp; ep0;_}  res  ->
+         (`LetIn
+            (_loc, (`ReNil _loc), (`Bind (_loc, (ep0 :>pat), info_exp)), res) : 
+         Ast.exp )) params (result :>exp) in
   let mk_tuple params =
     let result =
-      (params |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0))) |>
-        tuple_com in
+      (params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0))) |> tuple_com in
     List.fold_right
-      (fun { FSig.info_exp = exp; pat0;_}  res  ->
-         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-         Ast.exp )) params result in
+      (fun { FSig.info_exp = exp; ep0;_}  res  ->
+         (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, (ep0 :>pat), exp)), res) : 
+         Ast.exp )) params (result :>exp) in
   let mk_record cols =
     let result =
       (cols |>
          (List.map
-            (fun
-               { FSig.re_label = re_label;
-                 re_info = ({ FSig.exp0 = exp0;_} as info);_}
-                -> let _ = Obj.repr info in (re_label, exp0))))
+            (fun { FSig.re_label = re_label; re_info = { FSig.ep0 = ep0;_};_}
+                -> (re_label, (ep0 :>exp)))))
         |> Exp.mk_record in
     List.fold_right
-      (fun { FSig.re_info = { FSig.info_exp = exp; pat0;_};_}  res  ->
+      (fun { FSig.re_info = { FSig.info_exp = exp; ep0;_};_}  res  ->
+         let pat0 = (ep0 :>pat) in
          (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-         Ast.exp )) cols result in
+           Ast.exp )) cols result in
   ((gen_object ~kind:FSig.Map ~mk_tuple ~mk_record ~base:"mapbase"
       ~class_name:"map" ~mk_variant ()),
     (gen_object ~kind:FSig.Map ~mk_tuple ~mk_record ~base:"mapbase2"
@@ -119,44 +118,32 @@ let gen_strip =
         (function | { FSig.ty = `Lid (_,"loc");_} -> false | _ -> true)
         params in
     let result =
-      appl_of_list ((EP.of_str cons :>exp) ::
-        (params' |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0)))) in
+      (appl_of_list ((EP.of_str cons) ::
+         (params' |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0)))) :>
+      exp) in
     List.fold_right
-      (fun { FSig.info_exp = exp; pat0; ty;_}  res  ->
+      (fun { FSig.info_exp = exp; ep0; ty;_}  res  ->
          match (ty : ctyp ) with
          | `Lid (_,("int"|"string"|"int32"|"nativeint"|"loc"))
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
+             let pat0 = (ep0 :>pat) in
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-             Ast.exp )) params' result in
+               Ast.exp )) params' result in
   let mk_tuple params =
     let result =
-      (params |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0))) |>
-        tuple_com in
+      ((params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0))) |> tuple_com :>
+      exp) in
     List.fold_right
-      (fun { FSig.info_exp = exp; pat0; ty;_}  res  ->
+      (fun { FSig.info_exp = exp; ep0; ty;_}  res  ->
          match ty with
          | `Lid (_,("int"|"string"|"int32"|"nativeint"|"loc"))
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
+             let pat0 = (ep0 :>pat) in
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-             Ast.exp )) params result in
-  let mk_record cols =
-    let result =
-      (cols |>
-         (List.map
-            (fun
-               { FSig.re_label = re_label; re_info = { FSig.exp0 = exp0;_};_}
-                -> (re_label, exp0))))
-        |> Exp.mk_record in
-    List.fold_right
-      (fun { FSig.re_info = { FSig.info_exp = exp; pat0; ty;_};_}  res  ->
-         match ty with
-         | `Lid (_,("int"|"string"|"int32"|"nativeint"|"loc"))
-           |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
-         | _ ->
-             (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-             Ast.exp )) cols result in
+               Ast.exp )) params result in
+  let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant ()
 
 let _ =
@@ -166,28 +153,31 @@ let _ =
 let gen_fill =
   let mk_variant cons params =
     let result =
-      appl_of_list ((EP.of_str cons :>exp) :: (`Lid (_loc, "loc") : Ast.exp )
-        :: (params |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0)))) in
+      (appl_of_list ((EP.of_str cons) :: (`Lid (_loc, "loc") : Ast.ep ) ::
+         (params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0)))) :>
+      exp) in
     List.fold_right
-      (fun { FSig.info_exp = exp; pat0; ty;_}  res  ->
+      (fun { FSig.info_exp = exp; ep0; ty;_}  res  ->
          match (ty : ctyp ) with
          | `Lid (_,("int"|"string"|"int32"|"nativeint"|"loc"|"ant"))
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
+             let pat0 = (ep0 :>pat) in
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-             Ast.exp )) params result in
+               Ast.exp )) params result in
   let mk_tuple params =
     let result =
-      (params |> (List.map (fun { FSig.exp0 = exp0;_}  -> exp0))) |>
-        tuple_com in
+      ((params |> (List.map (fun { FSig.ep0 = ep0;_}  -> ep0))) |> tuple_com :>
+      exp) in
     List.fold_right
-      (fun { FSig.info_exp = exp; pat0; ty;_}  res  ->
+      (fun { FSig.info_exp = exp; ep0; ty;_}  res  ->
          match ty with
          | `Lid (_,("int"|"string"|"int32"|"nativeint"|"loc"|"ant"))
            |`Dot (_,`Uid (_,"FanUtil"),`Lid (_,"anti_cxt")) -> res
          | _ ->
+             let pat0 = (ep0 :>pat) in
              (`LetIn (_loc, (`ReNil _loc), (`Bind (_loc, pat0, exp)), res) : 
-             Ast.exp )) params result in
+               Ast.exp )) params result in
   let mk_record _cols = assert false in
   gen_stru ~id:(`Pre "fill_loc_") ~mk_tuple ~mk_record ~mk_variant
     ~names:["loc"] ()
@@ -231,8 +221,9 @@ let _ =
     ("MetaObj", (some gen_meta))
 
 let extract info =
-  (info |> (List.map (fun { name_exp; id_exp;_}  -> [name_exp; id_exp]))) |>
-    List.concat
+  (info |>
+     (List.map (fun { name_exp; id_ep;_}  -> [name_exp; (id_ep :>exp)])))
+    |> List.concat
 
 let mkfmt pre sep post fields =
   (`App
@@ -286,7 +277,8 @@ let mk_variant_iter _cons params =
        let lst =
          params |>
            (List.map
-              (fun { name_exp; id_exp;_}  ->
+              (fun { name_exp; id_ep;_}  ->
+                 let id_exp = (id_ep :>exp) in
                  (`App (_loc, name_exp, id_exp) : Ast.exp ))) in
        seq_sem lst : exp )
 
@@ -296,7 +288,8 @@ let mk_record_iter cols =
   let lst =
     cols |>
       (List.map
-         (fun { re_info = { name_exp; id_exp;_};_}  ->
+         (fun { re_info = { name_exp; id_ep;_};_}  ->
+            let id_exp = (id_ep :>exp) in
             (`App (_loc, name_exp, id_exp) : Ast.exp ))) in
   seq_sem lst
 
@@ -383,48 +376,48 @@ let generate (mtyps : FSig.mtyps) =
        bar_of_list (List.map (fun x  -> uid _loc (String.capitalize x)) tys) in
      (`Type
         ((FanLoc.of_tuple
-            ("src/AstTypeGen.ml", 402, 13662, 13679, 402, 13662, 13697,
+            ("src/AstTypeGen.ml", 404, 13561, 13578, 404, 13561, 13596,
               false)),
           (`TyDcl
              ((FanLoc.of_tuple
-                 ("src/AstTypeGen.ml", 402, 13662, 13684, 402, 13662, 13697,
+                 ("src/AstTypeGen.ml", 404, 13561, 13583, 404, 13561, 13596,
                    false)),
                (`Lid
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 402, 13662, 13687, 402, 13662,
-                        13690, false)), "tag")),
+                      ("src/AstTypeGen.ml", 404, 13561, 13586, 404, 13561,
+                        13589, false)), "tag")),
                (`Some
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 402, 13662, 13684, 402, 13662,
-                        13690, false)),
+                      ("src/AstTypeGen.ml", 404, 13561, 13583, 404, 13561,
+                        13589, false)),
                     (`Quote
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 402, 13662, 13684, 402,
-                             13662, 13686, false)),
+                           ("src/AstTypeGen.ml", 404, 13561, 13583, 404,
+                             13561, 13585, false)),
                          (`Normal
                             (FanLoc.of_tuple
-                               ("src/AstTypeGen.ml", 402, 13662, 13684, 402,
-                                 13662, 13686, false))),
+                               ("src/AstTypeGen.ml", 404, 13561, 13583, 404,
+                                 13561, 13585, false))),
                          (`Lid
                             ((FanLoc.of_tuple
-                                ("src/AstTypeGen.ml", 402, 13662, 13685, 402,
-                                  13662, 13686, false)), "a")))))),
+                                ("src/AstTypeGen.ml", 404, 13561, 13584, 404,
+                                  13561, 13585, false)), "a")))))),
                (`TyRepr
                   ((FanLoc.of_tuple
-                      ("src/AstTypeGen.ml", 402, 13662, 13693, 402, 13662,
-                        13697, false)),
+                      ("src/AstTypeGen.ml", 404, 13561, 13592, 404, 13561,
+                        13596, false)),
                     (`PrNil
                        (FanLoc.of_tuple
-                          ("src/AstTypeGen.ml", 402, 13662, 13693, 402,
-                            13662, 13697, false))),
+                          ("src/AstTypeGen.ml", 404, 13561, 13592, 404,
+                            13561, 13596, false))),
                     (`Sum
                        ((FanLoc.of_tuple
-                           ("src/AstTypeGen.ml", 402, 13662, 13693, 402,
-                             13662, 13697, false)), x)))),
+                           ("src/AstTypeGen.ml", 404, 13561, 13592, 404,
+                             13561, 13596, false)), x)))),
                (`None
                   (FanLoc.of_tuple
-                     ("src/AstTypeGen.ml", 402, 13662, 13684, 402, 13662,
-                       13697, false)))))) : Ast.stru ) in
+                     ("src/AstTypeGen.ml", 404, 13561, 13583, 404, 13561,
+                       13596, false)))))) : Ast.stru ) in
    let to_string =
      let case =
        bar_of_list

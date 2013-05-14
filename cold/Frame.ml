@@ -29,24 +29,11 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
    let base = name_exp +> names in
-   let id_exps = List.init arity (fun index  -> xid ~off:index i) in
-   let exp0 = List.hd id_exps in
-   let id_pats = id_exps in
-   let pat0 = exp0 in
-   let id_exp = tuple_com id_exps in
-   let id_pat = id_exp in
-   let exp = appl_of_list (base :: id_exps) in
-   {
-     name_exp;
-     info_exp = exp;
-     id_exp;
-     id_exps;
-     id_pat;
-     id_pats;
-     exp0;
-     pat0;
-     ty
-   } : FSig.ty_info )
+   let id_eps = List.init arity (fun index  -> xid ~off:index i) in
+   let ep0 = List.hd id_eps in
+   let id_ep = tuple_com id_eps in
+   let exp = appl_of_list (base :: (id_eps :>exp list)) in
+   { name_exp; info_exp = exp; id_ep; id_eps; ep0; ty } : FSig.ty_info )
 
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple 
   simple_exp_of_ctyp (ty : ctyp) =
@@ -390,3 +377,67 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
     | Some u ->
         (`Module (ghost, (`Uid (ghost, u)), (`Struct (ghost, v))) : Ast.stru )) : 
   stru )
+
+open Transform
+
+let _loc = FanLoc.ghost
+
+let gen_stru ?module_name  ?(arity= 1)  ?(default=
+  (`App
+     (_loc, (`Lid (_loc, "failwith")),
+       (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
+   ?cons_transform  ~id:(id : basic_id_transform)  ?(names= [])  ~mk_tuple 
+  ~mk_record  ~mk_variant  () =
+  let left_type_variable = `Pre "mf_" in
+  let right_type_variable = `Pre "mf_" in
+  let left_type_id = id in
+  let right_type_id =
+    match module_name with
+    | None  -> (id :>full_id_transform)
+    | Some m ->
+        `Last
+          ((fun s  ->
+              `Dot
+                (_loc, (`Uid (_loc, m)),
+                  (`Lid (_loc, (basic_transform id s)))))) in
+  let default (_,number) =
+    if number > 1
+    then
+      let pat = (EP.tuple_of_number (`Any _loc) arity :>pat) in
+      Some (`Case (_loc, pat, default) : Ast.case )
+    else None in
+  let names = names in
+  let mk_record = mk_record in
+  let cons_transform = cons_transform in
+  let () = check names in
+  stru_of_mtyps ?module_name ?cons_transform ~arity ~names ~default
+    ~mk_variant ~left_type_id ~left_type_variable ~mk_record
+    (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
+       ~left_type_id ~right_type_variable)
+
+let gen_object ?module_name  ?(arity= 1)  ?(default=
+  (`App
+     (_loc, (`Lid (_loc, "failwith")),
+       (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
+   ?cons_transform  ~kind  ~base  ~class_name  =
+  let make ?(names= [])  ~mk_tuple  ~mk_record  ~mk_variant  () =
+    let () = check names in
+    let left_type_variable = `Pre "mf_" in
+    let right_type_variable =
+      `Exp
+        (fun v  ->
+           let v = basic_transform left_type_variable v in
+           (`App (_loc, (`Lid (_loc, v)), (`Lid (_loc, "self"))) : Ast.exp )) in
+    let left_type_id = `Pre "" in
+    let right_type_id = `Obj (basic_transform left_type_id) in
+    let default (_,number) =
+      if number > 1
+      then
+        let pat = (EP.tuple_of_number (`Any _loc) arity :>pat) in
+        Some (`Case (_loc, pat, default) : Ast.case )
+      else None in
+    obj_of_mtyps ?cons_transform ?module_name ~arity ~names ~default
+      ~left_type_variable ~mk_record ~mk_variant base class_name
+      (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
+         ~right_type_variable ~names ~arity ~mk_tuple) kind in
+  make
