@@ -89,21 +89,17 @@ let gen_tuple_second ~number ~off =
    x
    ]}
  *)    
-let tuple_of_number ast n =
+let tuple_of_number ast n : ep =
   let res = zfold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
   if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
   else res
 
-let of_vstr_number name i =
-  let items = List.init i (fun i -> {|$(id:xid i) |} ) in
-  if items = [] then
-    (* {|`$name|} *)
-   {|$vrn:name|}
+let of_vstr_number name i : ep=
+  let items = List.init i xid  in
+  if items = [] then {|$vrn:name|}
   else
-    let item = items |> tuple_com(* tuple_of_list *) in
-    (* {| `$name $item |} *)
-    (* `App (_loc, (`Vrn (_loc, name)), item) (\* FIXME*\) *)
+    let item = tuple_com items  in
     {| $vrn:name $item |}
       
     
@@ -150,8 +146,7 @@ let mk_record ?(arity=1) cols : ep  =
       (fun acc i ->
         com acc (`Record (_loc, (sem_of_list (mk_list i))))
        (* {| { $(list:mk_list i) } |} *)  ) in
-  if arity > 1 then
-    {| $par:res |}
+  if arity > 1 then {| $par:res |}
   else res     
 
 

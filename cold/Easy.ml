@@ -1,3 +1,5 @@
+open Ast
+
 open Transform
 
 open FSig
@@ -25,7 +27,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
   let default (_,number) =
     if number > 1
     then
-      let pat = EP.tuple_of_number (`Any _loc) arity in
+      let pat = (EP.tuple_of_number (`Any _loc) arity :>pat) in
       Some (`Case (_loc, pat, default) : Ast.case )
     else None in
   let names = names in
@@ -56,7 +58,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(default=
     let default (_,number) =
       if number > 1
       then
-        let pat = EP.tuple_of_number (`Any _loc) arity in
+        let pat = (EP.tuple_of_number (`Any _loc) arity :>pat) in
         Some (`Case (_loc, pat, default) : Ast.case )
       else None in
     let open Frame in

@@ -7,7 +7,6 @@ open Format
 open LibUtil
 open Basic
 open FSig
-open EP
 open Exp
 
 (* preserved keywords for the generator *)
@@ -63,6 +62,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     names <+ (currying
                   [ {:case| $pat:pat -> $(mk_tuple tys ) |} ] ~arity)
   | _  ->
+      let _loc = loc_of ty in
       FanLoc.errorf _loc
         "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty)
   
@@ -87,7 +87,7 @@ let rec  normal_simple_exp_of_ctyp
   let left_trans = basic_transform left_type_id in 
   let tyvar = right_transform right_type_variable  in 
   let rec aux = with {pat:ctyp;exp} function
-    | `Lid(_,id) -> 
+    | `Lid(_loc,id) -> 
         if Hashset.mem cxt id then {| $(lid:left_trans id) |}
         else
           right_trans (`Lid(_loc,id))
@@ -141,20 +141,19 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
     | (#ident' as id)  -> trans (Id.to_vid id)
     | `Quote(_loc,_,`Lid(_,s)) ->   tyvar s
     | `App _  as ty ->
-        begin
-          match  list_of_app ty []  with
-          |  (#ident' as tctor) :: ls  ->
-              appl_of_list
-                (trans (Id.to_vid tctor) ::
-                 (ls |> List.map
-                   (function
-                     | `Quote (_loc,_,`Lid(_,s)) -> {:exp| $(lid:var s) |} 
-                     | t ->   {:exp| fun self -> $(aux t) |} )) )
-          | _  ->
+        (match  list_of_app ty []  with
+        | (#ident' as tctor) :: ls  ->
+            appl_of_list
+              (trans (Id.to_vid tctor) ::
+               (ls |> List.map
+                 (function
+                   | `Quote (_loc,_,`Lid(_,s)) -> {:exp| $(lid:var s) |} 
+                   | t ->   let _loc = loc_of t in {:exp| fun self -> $(aux t) |} )) )
+        | _  ->
             FanLoc.errorf  (loc_of ty)
               "list_of_app in obj_simple_exp_of_ctyp: %s"
-              (Objs.dump_ctyp ty)
-        end
+              (Objs.dump_ctyp ty))
+                
     | `Arrow(_loc,t1,t2) -> 
         aux {:ctyp| ($t1,$t2) arrow  |} 
     | `Par _  as ty ->
@@ -186,6 +185,7 @@ let exp_of_ctyp
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
     let e = mk (cons,tyargs) in
+    let _loc =  p <+>  e in 
     {:case| $pat:p -> $e |} in  begin 
     let info = (Sum, List.length (list_of_or ty [])) in 
     let res :  case list =
@@ -212,11 +212,13 @@ let exp_of_variant ?cons_transform ?(arity=1)?(names=[]) ~default ~mk_variant ~d
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
     let e = mk (cons,tyargs) in
+    let _loc = p <+> e in
     {| $pat:p -> $e |} in 
   (* for the case [`a | b ] *)
   let simple (lid:ident) :case=
     let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
     let (f,a) = view_app [] result in
+    let _loc = loc_of f in
     let annot = appl_of_list (f :: List.map (fun _ -> {:ctyp|_|}) a) in
     Case.gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
@@ -327,6 +329,7 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
   let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
   let (_ty,result_type) = Ctyp.mk_method_type_of_name
       ~number:arity ~prefix:names (name,len) Str_item in
+  let _loc = loc_of tydcl in (* be more precise later *)
   if not ( Ctyp.is_abstract tydcl) then 
     let fun_exp =
       fun_of_tydcl  ~destination:Str_item
@@ -336,8 +339,10 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant ~destination:Str_item simple_exp_of_ctyp)
         tydcl  in
     {:bind| $(lid:tctor_var name) = $fun_exp |}
-  else (eprintf "Warning: %s as a abstract type no structure generated\n" (Objs.dump_typedecl tydcl);
-        {:bind| $(lid:tctor_var  name) = failwithf "Abstract data type not implemented" |})
+  else
+    (eprintf "Warning: %s as a abstract type no structure generated\n"
+       (Objs.dump_typedecl tydcl);
+     {:bind| $(lid:tctor_var  name) = failwithf "Abstract data type not implemented" |})
 
 let stru_of_mtyps ?module_name ?cons_transform
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
@@ -354,18 +359,20 @@ let stru_of_mtyps ?module_name ?cons_transform
     match ty with
     | `Mutual named_types ->
         begin match named_types with
-        | [] -> {:stru| let _ = ()|} (* FIXME *)
+        | [] ->  {:stru@ghost| let _ = ()|} (* FIXME *)
         | xs -> begin 
             List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
             let bind = List.reduce_right_with
-                ~compose:(fun x y -> {:bind| $x and $y |} )
+                ~compose:(fun x y -> let _loc = x <+> y in {:bind| $x and $y |} )
                 ~f:(fun (_name,ty) -> mk_bind  ty ) xs in
+            let _loc = loc_of bind in
             {:stru| let rec $bind |} 
         end
         end
 
     | `Single (name,tydcl) -> begin 
         Hashset.add cxt name;
+        let _loc = loc_of tydcl in
         let rec_flag =
           if Ctyp.is_recursive tydcl then `Recursive _loc
           else `ReNil  _loc
@@ -374,11 +381,13 @@ let stru_of_mtyps ?module_name ?cons_transform
     end  in
   let item =
     match lst with
-    | [] -> {:stru|let _ = ()|}
+    | [] -> {:stru@ghost|let _ = ()|}
     | _ ->  sem_of_list (List.map fs lst )   in
       match module_name with
       | None -> item
-      | Some m -> {:stru| module $uid:m = struct $item end |} 
+      | Some m ->
+          let _loc = loc_of item in
+          {:stru| module $uid:m = struct $item end |} 
 
 
             
@@ -414,12 +423,15 @@ let obj_of_mtyps
            ~default ~mk_variant
            simple_exp_of_ctyp) ~result_type tydcl in
     let mk_type tydcl =
-        let (name,len) = Ctyp.name_length_of_tydcl tydcl in
-        let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names ({:ident| $lid:name |} ,len )
+      let _loc = loc_of tydcl in
+      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+        let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names
+            ({:ident| $lid:name |} ,len )
             (Obj k) in
         (ty,result_type) in
         
-    let mk_clfield (name,tydcl) : clfield = 
+    let mk_clfield (name,tydcl) : clfield =
+      let _loc = loc_of tydcl in
       let (ty,result_type) = mk_type tydcl in
       {:clfield| method $lid:name : $ty = $(f tydcl result_type) |}  in 
     let fs (ty:types) : clfield =
@@ -429,6 +441,7 @@ let obj_of_mtyps
       | `Single ((name,tydcl) as  named_type) ->
          match Ctyp.abstract_list tydcl with
          | Some n  -> begin
+           let _loc = loc_of tydcl in
            let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
@@ -443,7 +456,7 @@ let obj_of_mtyps
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        {:clfield| method
+        {:clfield@ghost| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
       sem_of_list (body @ items) in begin 
         let v = Ctyp.mk_obj class_name  base body;
@@ -452,7 +465,7 @@ let obj_of_mtyps
             tbl;
         match module_name with
         | None -> v
-        |Some u -> {:stru| module $uid:u = struct $v  end  |} 
+        |Some u -> {:stru@ghost| module $uid:u = struct $v  end  |} 
       end 
   
   

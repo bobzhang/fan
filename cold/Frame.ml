@@ -10,8 +10,6 @@ open Basic
 
 open FSig
 
-open EP
-
 open Exp
 
 let preserve = ["self"; "self_type"; "unit"; "result"]
@@ -60,7 +58,9 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple
        let tys = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) ls in
        names <+
          (currying [(`Case (_loc, pat, (mk_tuple tys)) : Ast.case )] ~arity)
-   | _ -> FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
+   | _ ->
+       let _loc = loc_of ty in
+       FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
   exp )
 
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
@@ -71,7 +71,7 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
     let tyvar = right_transform right_type_variable in
     let rec aux =
       function
-      | `Lid (_,id) ->
+      | `Lid (_loc,id) ->
           if Hashset.mem cxt id
           then (`Lid (_loc, (left_trans id)) : Ast.exp )
           else right_trans (`Lid (_loc, id))
@@ -111,11 +111,12 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
                         | `Quote (_loc,_,`Lid (_,s)) ->
                             (`Lid (_loc, (var s)) : Ast.exp )
                         | t ->
+                            let _loc = loc_of t in
                             (`Fun
                                (_loc,
                                  (`Case
                                     (_loc, (`Lid (_loc, "self")), (aux t)))) : 
-                            Ast.exp )))))
+                              Ast.exp )))))
            | _ ->
                FanLoc.errorf (loc_of ty)
                  "list_of_app in obj_simple_exp_of_ctyp: %s"
@@ -143,8 +144,8 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
        mk_variant cons exps in
-     let e = mk (cons, tyargs) in (`Case (_loc, p, e) : Ast.case ) : 
-    case ) in
+     let e = mk (cons, tyargs) in
+     let _loc = p <+> e in (`Case (_loc, p, e) : Ast.case ) : case ) in
   let info = (Sum, (List.length (list_of_or ty []))) in
   let res: case list = Ctyp.reduce_data_ctors ty [] f ~compose:cons in
   let res =
@@ -164,11 +165,12 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
        mk_variant cons exps in
-     let e = mk (cons, tyargs) in (`Case (_loc, p, e) : Ast.case ) : 
-    case ) in
+     let e = mk (cons, tyargs) in
+     let _loc = p <+> e in (`Case (_loc, p, e) : Ast.case ) : case ) in
   let simple (lid : ident) =
     (let e = (simple_exp_of_ctyp (lid :>ctyp)) +> names in
      let (f,a) = view_app [] result in
+     let _loc = loc_of f in
      let annot =
        appl_of_list (f :: (List.map (fun _  -> (`Any _loc : Ast.ctyp )) a)) in
      Case.gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
@@ -265,6 +267,7 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
     let (_ty,result_type) =
       Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
         Str_item in
+    let _loc = loc_of tydcl in
     if not (Ctyp.is_abstract tydcl)
     then
       let fun_exp =
@@ -297,27 +300,32 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default
     (match ty with
      | `Mutual named_types ->
          (match named_types with
-          | [] -> (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )
+          | [] -> (`StExp (ghost, (`Uid (ghost, "()"))) : Ast.stru )
           | xs ->
               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
                (let bind =
                   List.reduce_right_with
-                    ~compose:(fun x  y  -> (`And (_loc, x, y) : Ast.bind ))
+                    ~compose:(fun x  y  ->
+                                let _loc = x <+> y in
+                                (`And (_loc, x, y) : Ast.bind ))
                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+                let _loc = loc_of bind in
                 (`Value (_loc, (`Recursive _loc), bind) : Ast.stru ))))
      | `Single (name,tydcl) ->
          (Hashset.add cxt name;
-          (let rec_flag =
+          (let _loc = loc_of tydcl in
+           let rec_flag =
              if Ctyp.is_recursive tydcl then `Recursive _loc else `ReNil _loc
            and bind = mk_bind tydcl in
            (`Value (_loc, rec_flag, bind) : Ast.stru ))) : stru ) in
   let item =
     match lst with
-    | [] -> (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )
+    | [] -> (`StExp (ghost, (`Uid (ghost, "()"))) : Ast.stru )
     | _ -> sem_of_list (List.map fs lst) in
   match module_name with
   | None  -> item
   | Some m ->
+      let _loc = loc_of item in
       (`Module (_loc, (`Uid (_loc, m)), (`Struct (_loc, item))) : Ast.stru )
 
 let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= []) 
@@ -334,13 +342,15 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
        (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
           ~default ~mk_variant simple_exp_of_ctyp) ~result_type tydcl in
    let mk_type tydcl =
+     let _loc = loc_of tydcl in
      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
      let (ty,result_type) =
        Ctyp.mk_method_type ~number:arity ~prefix:names
          ((`Lid (_loc, name) : Ast.ident ), len) (Obj k) in
      (ty, result_type) in
    let mk_clfield (name,tydcl) =
-     (let (ty,result_type) = mk_type tydcl in
+     (let _loc = loc_of tydcl in
+      let (ty,result_type) = mk_type tydcl in
       (`CrMth
          (_loc, (`Lid (_loc, name)), (`OvNil _loc), (`PrNil _loc),
            (f tydcl result_type), ty) : Ast.clfield ) : clfield ) in
@@ -350,6 +360,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
       | `Single ((name,tydcl) as named_type) ->
           (match Ctyp.abstract_list tydcl with
            | Some n ->
+               let _loc = loc_of tydcl in
                let ty_str = "" in
                let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                let (ty,_) = mk_type tydcl in
@@ -368,7 +379,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                 (Obj k) in
             let () = Hashtbl.add tbl dest (Qualified dest) in
             (`CrMth
-               (_loc, (`Lid (_loc, dest)), (`OvNil _loc), (`PrNil _loc),
+               (ghost, (`Lid (ghost, dest)), (`OvNil ghost), (`PrNil ghost),
                  (unknown len), ty) : Ast.clfield )) extras in
      sem_of_list (body @ items) in
    let v = Ctyp.mk_obj class_name base body in
@@ -377,5 +388,5 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
    (match module_name with
     | None  -> v
     | Some u ->
-        (`Module (_loc, (`Uid (_loc, u)), (`Struct (_loc, v))) : Ast.stru )) : 
+        (`Module (ghost, (`Uid (ghost, u)), (`Struct (ghost, v))) : Ast.stru )) : 
   stru )

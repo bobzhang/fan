@@ -208,7 +208,7 @@ Typehook.register
 let mk_variant cons params = 
   let len = List.length params in 
   if String.ends_with cons "Ant" then
-    EP.of_vstr_number "Ant" len
+    (EP.of_vstr_number "Ant" len :> exp)
   else
     params
     |> List.map (fun  {info_exp=exp;_} -> exp )

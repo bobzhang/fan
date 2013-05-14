@@ -40,16 +40,17 @@ let gen_tuple_second ~number  ~off  =
   | _ -> invalid_arg "n < 1 in gen_tuple_first "
 
 let tuple_of_number ast n =
-  let res =
-    zfold_left ~start:1 ~until:(n - 1) ~acc:ast (fun acc  _  -> com acc ast) in
-  if n > 1 then `Par (_loc, res) else res
+  (let res =
+     zfold_left ~start:1 ~until:(n - 1) ~acc:ast (fun acc  _  -> com acc ast) in
+   if n > 1 then `Par (_loc, res) else res : ep )
 
 let of_vstr_number name i =
-  let items = List.init i (fun i  -> xid i) in
-  if items = []
-  then `Vrn (_loc, name)
-  else
-    (let item = items |> tuple_com in `App (_loc, (`Vrn (_loc, name)), item))
+  (let items = List.init i xid in
+   if items = []
+   then `Vrn (_loc, name)
+   else
+     (let item = tuple_com items in `App (_loc, (`Vrn (_loc, name)), item)) : 
+  ep )
 
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args = List.init arity (fun i  -> List.init n (fun j  -> xid ~off:i j)) in

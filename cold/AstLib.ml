@@ -207,6 +207,8 @@ let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 
 let typing a b = let _loc = a <+> b in `Constraint (_loc, a, b)
 
+let ghost = FanLoc.ghost
+
 let rec bar_of_list =
   function
   | [] -> failwithf "bar_of_list empty"

@@ -1,3 +1,4 @@
+open Ast
 open Transform
 open FSig
 
@@ -28,7 +29,7 @@ let gen_stru
         `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} )  in
   let default (_,number)=
     if number > 1 then
-      let pat = EP.tuple_of_number {:pat'| _ |} arity in 
+      let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat) in 
       Some {:case| $pat:pat -> $default |}
     else (* {:case'| |} *) None in
   let names = names in
@@ -73,7 +74,7 @@ let gen_object
         `Obj (basic_transform left_type_id) in
       let default (_,number)=
         if number > 1 then
-          let pat = EP.tuple_of_number {:pat'| _ |} arity in 
+          let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat)in 
           Some {:case| $pat:pat -> $default |}
         else None in
       Frame.(obj_of_mtyps

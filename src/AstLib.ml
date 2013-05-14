@@ -36,7 +36,7 @@ let par x =  let _loc = loc_of x in `Par (_loc,x)
 let seq a = let _loc = loc_of a in `Seq (_loc,a) 
 let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b)
 let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b)
-
+let ghost = FanLoc.ghost 
   
 (** [of_list] style function *)
 let rec bar_of_list = function
