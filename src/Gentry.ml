@@ -1,16 +1,16 @@
 
 open LibUtil
 open Format
-open Structure
-open Tools
+open Gstructure
+open Gtools
 open FanToken
 
 type 'a t  =entry
 
 let name e = e.ename
 
-let print ppf e = fprintf ppf "%a@\n" Print.text#entry e
-let dump ppf e = fprintf ppf "%a@\n" Print.dump#entry e
+let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
+let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
 
 
 let trace_parser = ref false

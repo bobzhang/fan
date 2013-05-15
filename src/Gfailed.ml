@@ -1,6 +1,6 @@
 
 
-open Structure
+open Gstructure
 
 open LibUtil
 
@@ -113,7 +113,7 @@ let rec name_of_symbol_failed entry  = function
 and name_of_tree_failed entry x =
   match x with 
   | Node ({node ; brother; son = son} as y)->
-      begin match Tools.get_terminals y  with
+      begin match Gtools.get_terminals y  with
       | None ->
           let txt = name_of_symbol_failed entry node in
           let txt =
@@ -175,7 +175,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
                   "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
                   "----------------------------------@,@]@.")
               entry.ename
-              (Print.text#rules ) (flatten_tree tree);
+              (Gprint.text#rules ) (flatten_tree tree);
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"

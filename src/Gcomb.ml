@@ -29,7 +29,7 @@ let slist1sep ~err ~f s sep =
     |  v = sep; a = (parser
         |  a = s  -> a
         | ->
-            raise (XStream.Error (err v (* Failed.symb_failed entry v sep symb *))) );
+            raise (XStream.Error (err v (* Gfailed.symb_failed entry v sep symb *))) );
       's  ->kont (a :: al) s
     |  -> al  in
   parser | a = s ; 's  ->

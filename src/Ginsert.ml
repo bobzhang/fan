@@ -1,7 +1,7 @@
 
 
 
-open Structure
+open Gstructure
 open Format
 open LibUtil
 
@@ -11,7 +11,7 @@ let higher s1 s2 =
   | (#terminal, _) -> true
   | _ -> false 
 
-(* {[ Structure.symbol -> bool ]}*)    
+(* {[ Gstructure.symbol -> bool ]}*)    
 let rec derive_eps : symbol -> bool = function
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
@@ -44,7 +44,7 @@ let find_level ?position entry  levs =
     let rec get = function
       | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename
       | lev::levs ->
-      if Tools.is_level_labelled n lev then
+      if Gtools.is_level_labelled n lev then
         match x with
         |`Level _ ->
             ([],  Some(lev,n), levs)
@@ -129,10 +129,10 @@ and using_node gram  node acc =
    {[
    Insert.add_production
    ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
-   - : Grammar.Structure.tree = `-S---"x"---"y"
+   - : Grammar.Gstructure.tree = `-S---"x"---"y"
 
    Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
-   - : Grammar.Structure.tree =
+   - : Grammar.Gstructure.tree =
    Node
    {node = `Sself;
      son =
@@ -146,7 +146,7 @@ and using_node gram  node acc =
 
    Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y";`Skeyword "z"], Action.mk (fun _ -> ""))
     (Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd);
-   - : Grammar.Structure.tree =
+   - : Grammar.Gstructure.tree =
    Node
    {node = `Sself;
    son =
@@ -171,7 +171,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
   let rec try_insert s sl tree =
     match tree with
     | Node ( {node ; son ; brother} as x) ->
-      if Tools.eq_symbol s node then
+      if Gtools.eq_symbol s node then
         Some (Node { x with son = insert sl son})
       else
         (match try_insert s sl brother with
@@ -196,7 +196,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
         | LocAct (old_action, action_list) -> begin 
             if !(FanConfig.gram_warning_verbose) then
                 eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
-                Print.dump#rule symbols;
+                Gprint.dump#rule symbols;
             LocAct anno_action (old_action::action_list)
         end
         | DeadEnd -> LocAct anno_action []   in 
@@ -217,7 +217,7 @@ let merge_level (la:level) (lb:olevel) = begin
          eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
            (StdLib.pp_print_option pp_print_string) la.lname
            (StdLib.pp_print_option pp_print_string) y
-           Print.dump#assoc la.assoc Print.dump#assoc assoc;
+           Gprint.dump#assoc la.assoc Gprint.dump#assoc assoc;
        x
      end
      |((Some _ as y),_,x)-> begin

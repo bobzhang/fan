@@ -1,5 +1,5 @@
 
-open Structure
+open Gstructure
   
 open FanToken
 

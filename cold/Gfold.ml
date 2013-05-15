@@ -20,7 +20,7 @@ let sfold1 f e _entry _symbl psymb =
 let sfold0sep f e entry symbl psymb psep =
   let failed =
     function
-    | symb::sep::[] -> Failed.symb_failed_txt entry sep symb
+    | symb::sep::[] -> Gfailed.symb_failed_txt entry sep symb
     | _ -> assert false in
   let rec kont accu (__strm : _ XStream.t) =
     match try Some (psep __strm) with | XStream.Failure  -> None with
@@ -38,7 +38,7 @@ let sfold0sep f e entry symbl psymb psep =
 let sfold1sep f e entry symbl psymb psep =
   let failed =
     function
-    | symb::sep::[] -> Failed.symb_failed_txt entry sep symb
+    | symb::sep::[] -> Gfailed.symb_failed_txt entry sep symb
     | _ -> assert false in
   let parse_top =
     function

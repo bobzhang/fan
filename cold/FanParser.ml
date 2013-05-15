@@ -1,13 +1,13 @@
-open Structure
+open Gstructure
 
 open LibUtil
 
 open FanToken
 
 let with_loc (parse_fun : 'b parse) strm =
-  let bp = Tools.get_cur_loc strm in
+  let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
-  let ep = Tools.get_prev_loc strm in
+  let ep = Gtools.get_prev_loc strm in
   let loc =
     let start_off_bp = FanLoc.start_off bp in
     let stop_off_ep = FanLoc.stop_off ep in
@@ -19,7 +19,7 @@ let level_number entry lab =
     function
     | [] -> failwithf "unknown level %s" lab
     | lev::levs ->
-        if Tools.is_level_labelled lab lev
+        if Gtools.is_level_labelled lab lev
         then levn
         else lookup (1 + levn) levs in
   match entry.edesc with
@@ -42,11 +42,11 @@ let rec parser_of_tree entry (lev,assoc)
               fun ()  -> ArgContainer.push a q; act
             with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
-        (match Tools.get_terminals y with
+        (match Gtools.get_terminals y with
          | None  ->
              let ps = parser_of_symbol entry node lev in
              (fun strm  ->
-                let bp = Tools.get_cur_loc strm in
+                let bp = Gtools.get_cur_loc strm in
                 (try
                    let a = ps strm in
                    fun ()  ->
@@ -58,12 +58,12 @@ let rec parser_of_tree entry (lev,assoc)
                           (ignore (ArgContainer.pop q);
                            (match e with
                             | XStream.Failure  ->
-                                if (Tools.get_cur_loc strm) = bp
+                                if (Gtools.get_cur_loc strm) = bp
                                 then raise XStream.Failure
                                 else
                                   raise
                                     (XStream.Error
-                                       (Failed.tree_failed entry a node son))
+                                       (Gfailed.tree_failed entry a node son))
                             | _ -> raise e)))
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
@@ -123,23 +123,23 @@ and parser_of_symbol entry s nlevn =
         Obj.magic (List.fold_left (fun act  p  -> Obj.magic act p) act pl)
     | `Slist0 s ->
         let ps = aux s in
-        Comb.slist0 ps ~f:(fun l  -> Action.mk (List.rev l))
+        Gcomb.slist0 ps ~f:(fun l  -> Action.mk (List.rev l))
     | `Slist0sep (symb,sep) ->
         let ps = aux symb and pt = aux sep in
-        Comb.slist0sep ps pt
-          ~err:(fun v  -> Failed.symb_failed entry v sep symb)
+        Gcomb.slist0sep ps pt
+          ~err:(fun v  -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l  -> Action.mk (List.rev l))
     | `Slist1 s ->
         let ps = aux s in
-        Comb.slist1 ps ~f:(fun l  -> Action.mk (List.rev l))
+        Gcomb.slist1 ps ~f:(fun l  -> Action.mk (List.rev l))
     | `Slist1sep (symb,sep) ->
         let ps = aux symb and pt = aux sep in
-        Comb.slist1sep ps pt
-          ~err:(fun v  -> Failed.symb_failed entry v sep symb)
+        Gcomb.slist1sep ps pt
+          ~err:(fun v  -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l  -> Action.mk (List.rev l))
-    | `Sopt s -> let ps = aux s in Comb.opt ps ~f:Action.mk
-    | `Stry s -> let ps = aux s in Comb.tryp ps
-    | `Speek s -> let ps = aux s in Comb.peek ps
+    | `Sopt s -> let ps = aux s in Gcomb.opt ps ~f:Action.mk
+    | `Stry s -> let ps = aux s in Gcomb.tryp ps
+    | `Speek s -> let ps = aux s in Gcomb.peek ps
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
         (fun strm  -> let (act,loc) = pt strm in Action.getf act loc)
@@ -187,7 +187,7 @@ let start_parser_of_levels entry =
 
 let start_parser_of_entry entry =
   match entry.edesc with
-  | Dlevels [] -> Tools.empty_entry entry.ename
+  | Dlevels [] -> Gtools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry elev
   | Dparser p -> (fun _  -> p)
 

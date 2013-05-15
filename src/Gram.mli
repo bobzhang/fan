@@ -15,7 +15,7 @@ type position =
 (* type token_stream = (FanToken.token * FanLoc.t) XStream.t *)
 val filter: stream -> stream      
 type gram =
-  Structure.gram = {
+  Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
   gkeywords :  SSet.t ref (* int SMap.t *) (* (string, int ref) Hashtbl.t *);
@@ -24,7 +24,7 @@ type gram =
 
 module Action :
   sig
-    type t = Structure.Action.t
+    type t = Gstructure.Action.t
     val mk : 'a -> t
     val get : t -> 'a
     val getf : t -> 'a -> 'b
@@ -39,12 +39,12 @@ type descr = description * string
 
 type token_pattern = (FanToken.t -> bool) * descr
 
-type entry = Structure.entry 
-and desc = Structure.desc
-and level =Structure.level 
-and symbol = Structure.symbol
-and tree = Structure.tree 
-and node = Structure.node 
+type entry = Gstructure.entry 
+and desc = Gstructure.desc
+and level =Gstructure.level 
+and symbol = Gstructure.symbol
+and tree = Gstructure.tree 
+and node = Gstructure.node 
 
 type anno_action = int * symbol list * string * Action.t       
 
@@ -52,7 +52,7 @@ type production = symbol list * (string * Action.t)
       
 type label = string option
 
-(* FIXME duplicate with Grammar/Structure *)      
+(* FIXME duplicate with Grammar/Gstructure *)      
 type olevel =label * assoc option * production list
 type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      

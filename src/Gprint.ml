@@ -1,4 +1,4 @@
-open Structure
+open Gstructure
 open Format
 open LibUtil
 let pp = fprintf 

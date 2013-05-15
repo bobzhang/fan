@@ -2,9 +2,9 @@ open LibUtil
 
 open Format
 
-include Entry
+include Gentry
     
-include Structure
+include Gstructure
 
 
 let default_keywords =
@@ -137,19 +137,19 @@ let wrap_stream_parser  p loc s =
 (*     parse rule (FanLoc.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
   
-let delete_rule = Delete.delete_rule
+let delete_rule = Gdelete.delete_rule
 
 (* FIXME [srules] the productions are also scanned  *)  
 let srules rl =
-    `Stree (List.fold_right Insert.add_production   rl DeadEnd)
+    `Stree (List.fold_right Ginsert.add_production   rl DeadEnd)
     
-let sfold0 = Fold.sfold0
-let sfold1 = Fold.sfold1
-let sfold0sep = Fold.sfold0sep
-let sfold1sep = Fold.sfold1sep
-let extend = Insert.extend
-let extend_single = Insert.extend_single
-let levels_of_entry = Insert.levels_of_entry
+let sfold0 = Gfold.sfold0
+let sfold1 = Gfold.sfold1
+let sfold0sep = Gfold.sfold0sep
+let sfold1sep = Gfold.sfold1sep
+let extend = Ginsert.extend
+let extend_single = Ginsert.extend_single
+let levels_of_entry = Ginsert.levels_of_entry
 
 (* [eoi_entry] could be improved *)  
 let eoi_entry entry =
@@ -163,7 +163,7 @@ let eoi_entry entry =
 let find_level ?position entry =
   match entry.edesc with
   | Dparser _ -> invalid_arg "Gram.find_level"
-  | Dlevels levs -> let (_,f,_) = Insert.find_level ?position entry levs in f
+  | Dlevels levs -> let (_,f,_) = Ginsert.find_level ?position entry levs in f
 
 
 

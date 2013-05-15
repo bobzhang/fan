@@ -1,5 +1,5 @@
 open LibUtil
-open Structure
+open Gstructure
 
 
 let empty_entry ename _ =

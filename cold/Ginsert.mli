@@ -1,7 +1,7 @@
-open Structure
+open Gstructure
 
 val higher :
-    [> Structure.terminal ] -> [> Structure.terminal ] -> bool
+    [> Gstructure.terminal ] -> [> Gstructure.terminal ] -> bool
   
 val derive_eps: symbol -> bool
 

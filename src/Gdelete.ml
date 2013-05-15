@@ -1,4 +1,4 @@
-open Structure
+open Gstructure
 
 (* Deleting a rule *)
 
@@ -14,7 +14,7 @@ let delete_rule_in_tree entry =
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with
     | (s :: sl, Node ({node;brother;son} as n)) ->
-        if Tools.logically_eq_symbols entry s node then
+        if Gtools.logically_eq_symbols entry s node then
             match delete_in_tree sl son with
             |Some (Some dsl,DeadEnd) -> Some (Some (node::dsl),brother)
             |Some (Some dsl, t) -> Some (Some (node::dsl),Node {(n) with son=t})

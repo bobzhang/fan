@@ -1,4 +1,4 @@
-open Structure
+open Gstructure
 
 open Format
 
@@ -38,7 +38,7 @@ let find_level ?position  entry levs =
           failwithf "Insert.find_level: No level labelled %S in entry %S @."
             n entry.ename
       | lev::levs ->
-          if Tools.is_level_labelled n lev
+          if Gtools.is_level_labelled n lev
           then
             (match x with
              | `Level _ -> ([], (Some (lev, n)), levs)
@@ -111,7 +111,7 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
   let rec try_insert s sl tree =
     match tree with
     | Node ({ node; son; brother } as x) ->
-        if Tools.eq_symbol s node
+        if Gtools.eq_symbol s node
         then Some (Node { x with son = (insert sl son) })
         else
           (match try_insert s sl brother with
@@ -147,7 +147,7 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
               then
                 eprintf
                   "<W> Grammar extension: in @[%a@] some rule has been masked@."
-                  Print.dump#rule symbols;
+                  Gprint.dump#rule symbols;
               LocAct (anno_action, (old_action :: action_list)))
          | DeadEnd  -> LocAct (anno_action, [])) in
   insert gsymbols tree
@@ -168,8 +168,8 @@ let merge_level (la : level) (lb : olevel) =
            eprintf
              "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
              (StdLib.pp_print_option pp_print_string) la.lname
-             (StdLib.pp_print_option pp_print_string) y Print.dump#assoc
-             la.assoc Print.dump#assoc assoc;
+             (StdLib.pp_print_option pp_print_string) y Gprint.dump#assoc
+             la.assoc Gprint.dump#assoc assoc;
          x)
     | ((Some _ as y),_,x) ->
         (if not (la.lname = y)

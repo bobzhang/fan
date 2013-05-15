@@ -1,4 +1,4 @@
-open Structure
+open Gstructure
   
 open LibUtil
   
@@ -10,9 +10,9 @@ open FanToken
    consumed areas
  *)
 let with_loc (parse_fun: 'b parse ) strm =
-  let bp = Tools.get_cur_loc strm in
+  let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
-  let ep = Tools.get_prev_loc strm in
+  let ep = Gtools.get_prev_loc strm in
   let loc =
     let start_off_bp = FanLoc.start_off bp in
     let stop_off_ep = FanLoc.stop_off ep in 
@@ -34,7 +34,7 @@ let level_number entry lab =
   let rec lookup levn = function
     | [] -> failwithf "unknown level %s"  lab
     | lev :: levs ->
-        if Tools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
+        if Gtools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
   match entry.edesc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found 
@@ -83,11 +83,11 @@ let rec parser_of_tree entry (lev,assoc) (q: (Action.t * FanLoc.t) ArgContainer.
           `-OPT [ `STR (_,_)]---OPT assoc---rule_list---.
           ]}
          *)
-        match Tools.get_terminals  y with
+        match Gtools.get_terminals  y with
         | None ->
             (* [paser_of_symbol] given a stream should always return a value  *) 
             (let ps = parser_of_symbol entry node  lev  in fun strm ->
-              let bp = Tools.get_cur_loc strm in
+              let bp = Gtools.get_cur_loc strm in
               let try a = ps strm in
               begin
                 ArgContainer.push a q;
@@ -98,8 +98,8 @@ let rec parser_of_tree entry (lev,assoc) (q: (Action.t * FanLoc.t) ArgContainer.
                         ignore (ArgContainer.pop q);
                         match e with
                         |XStream.Failure ->
-                            if Tools.get_cur_loc strm = bp then raise XStream.Failure
-                            else raise (XStream.Error (Failed.tree_failed entry a node son))
+                            if Gtools.get_cur_loc strm = bp then raise XStream.Failure
+                            else raise (XStream.Error (Gfailed.tree_failed entry a node son))
                         | _ -> raise e
                       end  
               end
@@ -175,20 +175,20 @@ and parser_of_symbol entry s nlevn =
         and pl = List.map aux symbls in
         Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
     | `Slist0 s ->
-        let ps = aux s in  Comb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))
+        let ps = aux s in  Gcomb.slist0 ps ~f:(fun l -> Action.mk (List.rev l))
     | `Slist0sep (symb, sep) ->
         let ps = aux symb and pt =  aux sep  in
-        Comb.slist0sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb)
+        Gcomb.slist0sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Action.mk (List.rev l))
     | `Slist1 s -> let ps =  aux s  in
-      Comb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
+      Gcomb.slist1 ps ~f:(fun l -> Action.mk (List.rev l))
     | `Slist1sep (symb, sep) ->
         let ps = aux symb and pt = aux sep  in
-        Comb.slist1sep ps pt ~err:(fun v -> Failed.symb_failed entry v sep symb)
+        Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Action.mk (List.rev l))
-    | `Sopt s -> let ps = aux s  in Comb.opt ps ~f:Action.mk
-    | `Stry s -> let ps = aux s in Comb.tryp ps
-    | `Speek s -> let ps = aux s in Comb.peek ps
+    | `Sopt s -> let ps = aux s  in Gcomb.opt ps ~f:Action.mk
+    | `Stry s -> let ps = aux s in Gcomb.tryp ps
+    | `Speek s -> let ps = aux s in Gcomb.peek ps
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (* FIXME*) in
         fun strm ->
@@ -242,7 +242,7 @@ let start_parser_of_levels entry =
     
 let start_parser_of_entry entry =
   match entry.edesc with
-  | Dlevels [] -> Tools.empty_entry entry.ename
+  | Dlevels [] -> Gtools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry  elev
   | Dparser p -> fun _ -> p
     

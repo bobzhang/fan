@@ -1,5 +1,5 @@
 
-open Structure
+open Gstructure
   
 val delete_rule_in_tree :
   entry ->

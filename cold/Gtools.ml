@@ -1,6 +1,6 @@
 open LibUtil
 
-open Structure
+open Gstructure
 
 let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ (ename ^ "] is empty")))
