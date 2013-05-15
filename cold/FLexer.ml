@@ -244,7 +244,7 @@ let rec comment c lexbuf =
     | 2 -> err Unterminated_comment (loc_merge c)
     | 3 -> (update_loc c; store_parse comment c)
     | 4 -> store_parse comment c
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 
 let rec string c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -382,7 +382,7 @@ let rec string c lexbuf =
     | 6 -> (update_loc c; store_parse string c)
     | 7 -> err Unterminated_string (loc_merge c)
     | 8 -> store_parse string c
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 
 let symbolchar_star beginning _c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -425,7 +425,7 @@ let symbolchar_star beginning _c lexbuf =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_curr_pos + 0) in
         `SYMBOL (beginning ^ tok)
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 
 let rec maybe_quotation_at c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -1059,7 +1059,7 @@ let rec maybe_quotation_at c lexbuf =
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
         err (Illegal_quotation (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 and maybe_quotation_colon c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
@@ -1207,67 +1207,69 @@ and maybe_quotation_colon c lexbuf =
           __ocaml_lex_state9 lexbuf)
      | 64 -> __ocaml_lex_state8 lexbuf
      | 39
-       |48
-        |49
-         |50
-          |51
-           |52
-            |53
-             |54
-              |55
-               |56
-                |57
-                 |65
-                  |66
-                   |67
-                    |68
-                     |69
-                      |70
-                       |71
-                        |72
-                         |73
-                          |74
-                           |75
-                            |76
-                             |77
-                              |78
-                               |79
-                                |80
-                                 |81
-                                  |82
-                                   |83
-                                    |84
-                                     |85
-                                      |86
-                                       |87
-                                        |88
-                                         |89
-                                          |90
-                                           |95
-                                            |97
-                                             |98
-                                              |99
-                                               |100
-                                                |101
-                                                 |102
-                                                  |103
-                                                   |104
-                                                    |105
-                                                     |106
-                                                      |107
-                                                       |108
-                                                        |109
-                                                         |110
-                                                          |111
-                                                           |112
-                                                            |113
-                                                             |114
-                                                              |115
-                                                               |116
-                                                                |117
-                                                                 |118
-                                                                  |119
-                                                                   |120
+       |45
+        |48
+         |49
+          |50
+           |51
+            |52
+             |53
+              |54
+               |55
+                |56
+                 |57
+                  |65
+                   |66
+                    |67
+                     |68
+                      |69
+                       |70
+                        |71
+                         |72
+                          |73
+                           |74
+                            |75
+                             |76
+                              |77
+                               |78
+                                |79
+                                 |80
+                                  |81
+                                   |82
+                                    |83
+                                     |84
+                                      |85
+                                       |86
+                                        |87
+                                         |88
+                                          |89
+                                           |90
+                                            |95
+                                             |97
+                                              |98
+                                               |99
+                                                |100
+                                                 |101
+                                                  |102
+                                                   |103
+                                                    |104
+                                                     |105
+                                                      |106
+                                                       |107
+                                                        |108
+                                                         |109
+                                                          |110
+                                                           |111
+                                                            |112
+                                                             |113
+                                                              |114
+                                                               |115
+                                                                |116
+                                                                 |117
+                                                                  |118
+                                                                   |119
+                                                                    |
+                                                                    120
                                                                     |
                                                                     121
                                                                     |
@@ -1725,68 +1727,70 @@ and maybe_quotation_colon c lexbuf =
          __ocaml_lex_state9 lexbuf)
     | 64 -> __ocaml_lex_state8 lexbuf
     | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
+      |45
+       |48
+        |49
+         |50
+          |51
+           |52
+            |53
+             |54
+              |55
+               |56
+                |57
+                 |65
+                  |66
+                   |67
+                    |68
+                     |69
+                      |70
+                       |71
+                        |72
+                         |73
+                          |74
+                           |75
+                            |76
+                             |77
+                              |78
+                               |79
+                                |80
+                                 |81
+                                  |82
+                                   |83
+                                    |84
+                                     |85
+                                      |86
+                                       |87
+                                        |88
+                                         |89
+                                          |90
+                                           |95
+                                            |97
+                                             |98
+                                              |99
+                                               |100
+                                                |101
+                                                 |102
+                                                  |103
+                                                   |104
+                                                    |105
+                                                     |106
+                                                      |107
+                                                       |108
+                                                        |109
+                                                         |110
+                                                          |111
+                                                           |112
+                                                            |113
+                                                             |114
+                                                              |115
+                                                               |116
+                                                                |117
+                                                                 |118
+                                                                  |119
+                                                                   |120
+                                                                    |
+                                                                    121
                                                                     |
                                                                     122
                                                                     |
@@ -2678,7 +2682,7 @@ and maybe_quotation_colon c lexbuf =
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
         err (Illegal_quotation (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 and dollar c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
@@ -4876,7 +4880,7 @@ and dollar c lexbuf =
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
         err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 and antiquot name depth c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
@@ -5710,7 +5714,7 @@ and antiquot name depth c lexbuf =
          Buffer.add_char c.buffer '"';
          parse (antiquot name depth) c)
     | 6 -> store_parse (antiquot name depth) c
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 and quotation c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
@@ -6088,68 +6092,70 @@ and quotation c lexbuf =
   and __ocaml_lex_state13 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
+      |45
+       |48
+        |49
+         |50
+          |51
+           |52
+            |53
+             |54
+              |55
+               |56
+                |57
+                 |65
+                  |66
+                   |67
+                    |68
+                     |69
+                      |70
+                       |71
+                        |72
+                         |73
+                          |74
+                           |75
+                            |76
+                             |77
+                              |78
+                               |79
+                                |80
+                                 |81
+                                  |82
+                                   |83
+                                    |84
+                                     |85
+                                      |86
+                                       |87
+                                        |88
+                                         |89
+                                          |90
+                                           |95
+                                            |97
+                                             |98
+                                              |99
+                                               |100
+                                                |101
+                                                 |102
+                                                  |103
+                                                   |104
+                                                    |105
+                                                     |106
+                                                      |107
+                                                       |108
+                                                        |109
+                                                         |110
+                                                          |111
+                                                           |112
+                                                            |113
+                                                             |114
+                                                              |115
+                                                               |116
+                                                                |117
+                                                                 |118
+                                                                  |119
+                                                                   |120
+                                                                    |
+                                                                    121
                                                                     |
                                                                     122
                                                                     |
@@ -6881,7 +6887,7 @@ and quotation c lexbuf =
     | 4 -> (show_stack (); err Unterminated_quotation (loc_merge c))
     | 5 -> (update_loc c; store_parse quotation c)
     | 6 -> store_parse quotation c
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))
 
 let token c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -8962,4 +8968,4 @@ let token c lexbuf =
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
         err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
-    | _ -> raise (Failure "lexing: empty token")))
+    | _ -> failwith "lexing: empty token"))

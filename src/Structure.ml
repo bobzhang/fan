@@ -55,15 +55,14 @@ and desc =
     (* | Dlevel of level  *)
   | Dparser of stream -> Action.t 
 and level = {
-    assoc   : assoc         ;
+    assoc   : assoc ;
     lname   : label;
     productions : production list ;
     (* the raw productions stored in the level*)
-    lsuffix : tree          ;
-    lprefix : tree          }
+    lsuffix : tree ;
+    lprefix : tree}
 and symbol =
-    [
-     `Smeta of (string list  * symbol list  * Action.t)
+    [`Smeta of (string list  * symbol list  * Action.t)
     | `Snterm of entry
     | `Snterml of (entry * string) (* the second argument is the level name *)
     | `Slist0 of symbol

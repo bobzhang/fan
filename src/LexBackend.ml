@@ -241,7 +241,7 @@ let output_entry
             {:case| $int:n ->
               let $bind in
               $act |})) @
-       [ {:case| _ -> raise (Failure "lexing: empty token") |}])  in
+       [ {:case| _ -> failwith   "lexing: empty token" |}])  in
     {:exp|
     function lexbuf ->
       let rec $binds in

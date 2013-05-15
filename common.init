@@ -39,7 +39,7 @@ open LibUtil;;
 
 
 open FanUtil;;
-open Stream;;
+(* open Stream;; *)
 (* open Grammar;; *)
 open Structure;;
 (* open OAstPrint;; *)

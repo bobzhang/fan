@@ -503,7 +503,8 @@ let apply () = begin
     {:extend|
       case:
       [ "|"; L1 case0 SEP "|"{l} -> bar_of_list l 
-      | pat{p}; "->"; exp{e} -> `Case(_loc,p,e) ]
+      | pat{p}; "->"; exp{e} -> `Case(_loc,p,e)
+      ]
       case0:
       [ `Ant (("case"|"" as n),s) ->
         mk_anti _loc ~c:"case" n s

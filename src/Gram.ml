@@ -151,7 +151,7 @@ let extend = Insert.extend
 let extend_single = Insert.extend_single
 let levels_of_entry = Insert.levels_of_entry
 
-  
+(* [eoi_entry] could be improved *)  
 let eoi_entry entry =
   let g = gram_of_entry entry in 
   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in

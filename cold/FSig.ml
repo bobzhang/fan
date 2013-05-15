@@ -68,37 +68,44 @@ type warning_type =
   | Abstract of string
   | Qualified of string 
 
-let rec pp_print_named_type fmt _a0 =
-  (fun fmt  (_a0,_a1)  ->
-     Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
-       pp_print_typedecl _a1) fmt _a0
-and pp_print_and_types fmt _a0 = pp_print_list pp_print_named_type fmt _a0
-and pp_print_types fmt =
-  function
-  | `Mutual _a0 ->
-      Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types _a0
-  | `Single _a0 ->
-      Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
-and pp_print_mtyps fmt _a0 = pp_print_list pp_print_types fmt _a0
+let rec pp_print_named_type: Format.formatter -> named_type -> unit =
+  fun fmt  _a0  ->
+    (fun fmt  (_a0,_a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
+         pp_print_typedecl _a1) fmt _a0
+and pp_print_and_types: Format.formatter -> and_types -> unit =
+  fun fmt  _a0  -> pp_print_list pp_print_named_type fmt _a0
+and pp_print_types: Format.formatter -> types -> unit =
+  fun fmt  ->
+    function
+    | `Mutual _a0 ->
+        Format.fprintf fmt "@[<1>(`Mutual@ %a)@]" pp_print_and_types _a0
+    | `Single _a0 ->
+        Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
+and pp_print_mtyps: Format.formatter -> mtyps -> unit =
+  fun fmt  _a0  -> pp_print_list pp_print_types fmt _a0
 
-let rec pp_print_destination fmt =
-  function
-  | Obj _a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_kind _a0
-  | Str_item  -> Format.fprintf fmt "Str_item"
-and pp_print_kind fmt =
-  function
-  | Fold  -> Format.fprintf fmt "Fold"
-  | Iter  -> Format.fprintf fmt "Iter"
-  | Map  -> Format.fprintf fmt "Map"
-  | Concrete _a0 ->
-      Format.fprintf fmt "@[<1>(Concrete@ %a)@]" pp_print_ctyp _a0
+let rec pp_print_destination: Format.formatter -> destination -> unit =
+  fun fmt  ->
+    function
+    | Obj _a0 -> Format.fprintf fmt "@[<1>(Obj@ %a)@]" pp_print_kind _a0
+    | Str_item  -> Format.fprintf fmt "Str_item"
+and pp_print_kind: Format.formatter -> kind -> unit =
+  fun fmt  ->
+    function
+    | Fold  -> Format.fprintf fmt "Fold"
+    | Iter  -> Format.fprintf fmt "Iter"
+    | Map  -> Format.fprintf fmt "Map"
+    | Concrete _a0 ->
+        Format.fprintf fmt "@[<1>(Concrete@ %a)@]" pp_print_ctyp _a0
 
-let pp_print_warning_type fmt =
-  function
-  | Abstract _a0 ->
-      Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
-  | Qualified _a0 ->
-      Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
+let pp_print_warning_type: Format.formatter -> warning_type -> unit =
+  fun fmt  ->
+    function
+    | Abstract _a0 ->
+        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
+    | Qualified _a0 ->
+        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
 
 type plugin_name = string 
 

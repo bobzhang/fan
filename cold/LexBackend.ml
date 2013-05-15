@@ -469,11 +469,8 @@ let output_entry
           [(`Case
               (_loc, (`Any _loc),
                 (`App
-                   (_loc, (`Lid (_loc, "raise")),
-                     (`App
-                        (_loc, (`Uid (_loc, "Failure")),
-                          (`Str (_loc, "lexing: empty token"))))))) : 
-          Ast.case )]) in
+                   (_loc, (`Lid (_loc, "failwith")),
+                     (`Str (_loc, "lexing: empty token"))))) : Ast.case )]) in
    (`Fun
       (_loc,
         (`Case

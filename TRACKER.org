@@ -114,3 +114,11 @@
     (* make `C to Vrn *)  
     `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
   #+END_SRC
+* DONE 07 Stream.Failure overrides the built-in Failure
+  open Stream is dangerous...
+  our ocamllex engine raises Failrue...
+  solution: ==> failwith instead of Failure
+  
+* generate fold type and map type in ml file and write them in mli file
+
+* Specialize [eoi_entry] and provide grammar analysis

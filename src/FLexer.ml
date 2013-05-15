@@ -200,7 +200,8 @@ let ident = (lowercase|uppercase) identchar*
 
 (* let quotation_name= ident ('.'ident)* *)
     
-let quotation_name = '.' ? (uppercase  identchar* '.') * (lowercase identchar* )
+let quotation_name = '.' ? (uppercase  identchar* '.') *
+    (lowercase (identchar | '-') * )
 let locname = ident
 let lident = lowercase identchar *
 let antifollowident =   identchar +   

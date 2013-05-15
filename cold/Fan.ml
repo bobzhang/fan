@@ -251,3 +251,11 @@ open AstTypeGen
 open CodeTemplate
 
 open OCamlLex
+
+let m = new FanAstN.meta
+
+let _ =
+  add_quotation (d, "exp-") exp_quot
+    ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
+    ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
+    ~exp_filter:(efilter "exp") ~pat_filter:(pfilter "exp")

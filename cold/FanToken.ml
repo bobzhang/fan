@@ -29,91 +29,96 @@ type error =
   | Illegal_token_pattern of (string * string)
   | Illegal_constructor of string 
 
-let pp_print_domains fmt =
-  function
-  | `Absolute _a0 ->
-      Format.fprintf fmt "@[<1>(`Absolute@ %a)@]"
-        (pp_print_list pp_print_string) _a0
-  | `Sub _a0 ->
-      Format.fprintf fmt "@[<1>(`Sub@ %a)@]" (pp_print_list pp_print_string)
-        _a0
+let pp_print_domains: Format.formatter -> domains -> unit =
+  fun fmt  ->
+    function
+    | `Absolute _a0 ->
+        Format.fprintf fmt "@[<1>(`Absolute@ %a)@]"
+          (pp_print_list pp_print_string) _a0
+    | `Sub _a0 ->
+        Format.fprintf fmt "@[<1>(`Sub@ %a)@]"
+          (pp_print_list pp_print_string) _a0
 
-let pp_print_name fmt _a0 =
-  (fun fmt  (_a0,_a1)  ->
-     Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
-       pp_print_string _a1) fmt _a0
+let pp_print_name: Format.formatter -> name -> unit =
+  fun fmt  _a0  ->
+    (fun fmt  (_a0,_a1)  ->
+       Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
+         pp_print_string _a1) fmt _a0
 
-let pp_print_quotation fmt
-  { q_name = _a0; q_loc = _a1; q_shift = _a2; q_contents = _a3 } =
-  Format.fprintf fmt
-    "@[<hv 1>{q_name:%a;@,q_loc:%a;@,q_shift:%a;@,q_contents:%a}@]"
-    pp_print_name _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string
-    _a3
+let pp_print_quotation: Format.formatter -> quotation -> unit =
+  fun fmt  { q_name = _a0; q_loc = _a1; q_shift = _a2; q_contents = _a3 }  ->
+    Format.fprintf fmt
+      "@[<hv 1>{q_name:%a;@,q_loc:%a;@,q_shift:%a;@,q_contents:%a}@]"
+      pp_print_name _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string
+      _a3
 
-let pp_print_t fmt =
-  function
-  | `KEYWORD _a0 ->
-      Format.fprintf fmt "@[<1>(`KEYWORD@ %a)@]" pp_print_string _a0
-  | `SYMBOL _a0 ->
-      Format.fprintf fmt "@[<1>(`SYMBOL@ %a)@]" pp_print_string _a0
-  | `Lid _a0 -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" pp_print_string _a0
-  | `Uid _a0 -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" pp_print_string _a0
-  | `ESCAPED_IDENT _a0 ->
-      Format.fprintf fmt "@[<1>(`ESCAPED_IDENT@ %a)@]" pp_print_string _a0
-  | `INT (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`INT@ %a@ %a)@]" pp_print_int _a0
-        pp_print_string _a1
-  | `INT32 (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`INT32@ %a@ %a)@]" pp_print_int32 _a0
-        pp_print_string _a1
-  | `INT64 (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`INT64@ %a@ %a)@]" pp_print_int64 _a0
-        pp_print_string _a1
-  | `NATIVEINT (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`NATIVEINT@ %a@ %a)@]" pp_print_nativeint _a0
-        pp_print_string _a1
-  | `Flo (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_float _a0
-        pp_print_string _a1
-  | `CHAR (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`CHAR@ %a@ %a)@]" pp_print_char _a0
-        pp_print_string _a1
-  | `STR (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`STR@ %a@ %a)@]" pp_print_string _a0
-        pp_print_string _a1
-  | `LABEL _a0 ->
-      Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" pp_print_string _a0
-  | `OPTLABEL _a0 ->
-      Format.fprintf fmt "@[<1>(`OPTLABEL@ %a)@]" pp_print_string _a0
-  | `QUOTATION _a0 ->
-      Format.fprintf fmt "@[<1>(`QUOTATION@ %a)@]" pp_print_quotation _a0
-  | `Ant (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_string _a0
-        pp_print_string _a1
-  | `COMMENT _a0 ->
-      Format.fprintf fmt "@[<1>(`COMMENT@ %a)@]" pp_print_string _a0
-  | `BLANKS _a0 ->
-      Format.fprintf fmt "@[<1>(`BLANKS@ %a)@]" pp_print_string _a0
-  | `NEWLINE -> Format.fprintf fmt "`NEWLINE"
-  | `LINE_DIRECTIVE (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" pp_print_int _a0
-        (pp_print_option pp_print_string) _a1
-  | `EOI -> Format.fprintf fmt "`EOI"
+let pp_print_t: Format.formatter -> t -> unit =
+  fun fmt  ->
+    function
+    | `KEYWORD _a0 ->
+        Format.fprintf fmt "@[<1>(`KEYWORD@ %a)@]" pp_print_string _a0
+    | `SYMBOL _a0 ->
+        Format.fprintf fmt "@[<1>(`SYMBOL@ %a)@]" pp_print_string _a0
+    | `Lid _a0 -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" pp_print_string _a0
+    | `Uid _a0 -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" pp_print_string _a0
+    | `ESCAPED_IDENT _a0 ->
+        Format.fprintf fmt "@[<1>(`ESCAPED_IDENT@ %a)@]" pp_print_string _a0
+    | `INT (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`INT@ %a@ %a)@]" pp_print_int _a0
+          pp_print_string _a1
+    | `INT32 (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`INT32@ %a@ %a)@]" pp_print_int32 _a0
+          pp_print_string _a1
+    | `INT64 (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`INT64@ %a@ %a)@]" pp_print_int64 _a0
+          pp_print_string _a1
+    | `NATIVEINT (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`NATIVEINT@ %a@ %a)@]" pp_print_nativeint
+          _a0 pp_print_string _a1
+    | `Flo (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" pp_print_float _a0
+          pp_print_string _a1
+    | `CHAR (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`CHAR@ %a@ %a)@]" pp_print_char _a0
+          pp_print_string _a1
+    | `STR (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`STR@ %a@ %a)@]" pp_print_string _a0
+          pp_print_string _a1
+    | `LABEL _a0 ->
+        Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" pp_print_string _a0
+    | `OPTLABEL _a0 ->
+        Format.fprintf fmt "@[<1>(`OPTLABEL@ %a)@]" pp_print_string _a0
+    | `QUOTATION _a0 ->
+        Format.fprintf fmt "@[<1>(`QUOTATION@ %a)@]" pp_print_quotation _a0
+    | `Ant (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_string _a0
+          pp_print_string _a1
+    | `COMMENT _a0 ->
+        Format.fprintf fmt "@[<1>(`COMMENT@ %a)@]" pp_print_string _a0
+    | `BLANKS _a0 ->
+        Format.fprintf fmt "@[<1>(`BLANKS@ %a)@]" pp_print_string _a0
+    | `NEWLINE -> Format.fprintf fmt "`NEWLINE"
+    | `LINE_DIRECTIVE (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" pp_print_int
+          _a0 (pp_print_option pp_print_string) _a1
+    | `EOI -> Format.fprintf fmt "`EOI"
 
-let pp_print_error fmt =
-  function
-  | Illegal_token _a0 ->
-      Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" pp_print_string _a0
-  | Keyword_as_label _a0 ->
-      Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" pp_print_string _a0
-  | Illegal_token_pattern _a0 ->
-      Format.fprintf fmt "@[<1>(Illegal_token_pattern@ %a)@]"
-        (fun fmt  (_a0,_a1)  ->
-           Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
-             pp_print_string _a1) _a0
-  | Illegal_constructor _a0 ->
-      Format.fprintf fmt "@[<1>(Illegal_constructor@ %a)@]" pp_print_string
-        _a0
+let pp_print_error: Format.formatter -> error -> unit =
+  fun fmt  ->
+    function
+    | Illegal_token _a0 ->
+        Format.fprintf fmt "@[<1>(Illegal_token@ %a)@]" pp_print_string _a0
+    | Keyword_as_label _a0 ->
+        Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" pp_print_string
+          _a0
+    | Illegal_token_pattern _a0 ->
+        Format.fprintf fmt "@[<1>(Illegal_token_pattern@ %a)@]"
+          (fun fmt  (_a0,_a1)  ->
+             Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_string _a0
+               pp_print_string _a1) _a0
+    | Illegal_constructor _a0 ->
+        Format.fprintf fmt "@[<1>(Illegal_constructor@ %a)@]" pp_print_string
+          _a0
 
 type 'a token = [> t] as 'a 
 

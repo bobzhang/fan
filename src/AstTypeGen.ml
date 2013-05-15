@@ -192,6 +192,9 @@ let gen_fill = with {pat:ctyp;exp}
     ~id:(`Pre "fill_loc_") ~mk_tuple
     ~mk_record ~mk_variant
     ~names:["loc"]
+    ~annot:(fun x ->
+      ({:ctyp| FanLoc.t -> AstN.$lid:x -> Ast.$lid:x |},
+       {:ctyp|Ast.$lid:x|} ))
     ();;
 
 Typehook.register
@@ -234,7 +237,7 @@ Typehook.register
    | Meta Object Generator                                           |
    +-----------------------------------------------------------------+ *)
 let gen_meta =
-  gen_object ~kind:(Concrete {:ctyp|ep|})
+  gen_object ~kind:(Concrete {:ctyp|Ast.ep|})
     ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
@@ -286,6 +289,7 @@ let mk_record_print cols =
 let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
+    ~annot:(fun s -> ({:ctyp|Format.formatter -> $lid:s -> unit|}, {:ctyp|unit|}))
     ~mk_variant:mk_variant_print ()
 
 
