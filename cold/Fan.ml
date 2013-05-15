@@ -254,8 +254,98 @@ open OCamlLex
 
 let m = new FanAstN.meta
 
+let efilter str e =
+  let e = exp_filter e in
+  let _loc = loc_of e in
+  (`Constraint
+     (_loc, e, (`Dot (_loc, (`Uid (_loc, "AstN")), (`Lid (_loc, str))))) : 
+    Ast.exp )
+
+let pfilter str e =
+  let p = pat_filter e in
+  let _loc = loc_of p in
+  (`Constraint
+     (_loc, p, (`Dot (_loc, (`Uid (_loc, "AstN")), (`Lid (_loc, str))))) : 
+    Ast.pat )
+
 let _ =
+  add_quotation (d, "sigi-") sigi_quot
+    ~mexp:(fun loc  p  -> m#sigi loc (Objs.strip_loc_sigi p))
+    ~mpat:(fun loc  p  -> m#sigi loc (Objs.strip_loc_sigi p))
+    ~exp_filter:(efilter "sigi") ~pat_filter:(pfilter "sigi");
+  add_quotation (d, "stru-") stru_quot
+    ~mexp:(fun loc  p  -> m#stru loc (Objs.strip_loc_stru p))
+    ~mpat:(fun loc  p  -> m#stru loc (Objs.strip_loc_stru p))
+    ~exp_filter:(efilter "stru") ~pat_filter:(pfilter "stru");
+  add_quotation (d, "ctyp-") ctyp_quot
+    ~mexp:(fun loc  p  -> m#ctyp loc (Objs.strip_loc_ctyp p))
+    ~mpat:(fun loc  p  -> m#ctyp loc (Objs.strip_loc_ctyp p))
+    ~exp_filter:(efilter "ctyp") ~pat_filter:(pfilter "ctyp");
+  add_quotation (d, "pat-") pat_quot
+    ~mexp:(fun loc  p  -> m#pat loc (Objs.strip_loc_pat p))
+    ~mpat:(fun loc  p  -> m#pat loc (Objs.strip_loc_pat p))
+    ~exp_filter:(efilter "pat") ~pat_filter:(pfilter "pat");
+  add_quotation (d, "ep-") exp_quot
+    ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
+    ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
+    ~exp_filter:(efilter "ep") ~pat_filter:(pfilter "ep");
   add_quotation (d, "exp-") exp_quot
     ~mexp:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
     ~mpat:(fun loc  p  -> m#exp loc (Objs.strip_loc_exp p))
-    ~exp_filter:(efilter "exp") ~pat_filter:(pfilter "exp")
+    ~exp_filter:(efilter "exp") ~pat_filter:(pfilter "exp");
+  add_quotation (d, "mtyp-") mtyp_quot
+    ~mexp:(fun loc  p  -> m#mtyp loc (Objs.strip_loc_mtyp p))
+    ~mpat:(fun loc  p  -> m#mtyp loc (Objs.strip_loc_mtyp p))
+    ~exp_filter:(efilter "mtyp") ~pat_filter:(pfilter "mtyp");
+  add_quotation (d, "mexp-") mexp_quot
+    ~mexp:(fun loc  p  -> m#mexp loc (Objs.strip_loc_mexp p))
+    ~mpat:(fun loc  p  -> m#mexp loc (Objs.strip_loc_mexp p))
+    ~exp_filter:(efilter "mexp") ~pat_filter:(pfilter "mexp");
+  add_quotation (d, "cltyp-") cltyp_quot
+    ~mexp:(fun loc  p  -> m#cltyp loc (Objs.strip_loc_cltyp p))
+    ~mpat:(fun loc  p  -> m#cltyp loc (Objs.strip_loc_cltyp p))
+    ~exp_filter:(efilter "cltyp") ~pat_filter:(pfilter "cltyp");
+  add_quotation (d, "clexp-") clexp_quot
+    ~mexp:(fun loc  p  -> m#clexp loc (Objs.strip_loc_clexp p))
+    ~mpat:(fun loc  p  -> m#clexp loc (Objs.strip_loc_clexp p))
+    ~exp_filter:(efilter "clexp") ~pat_filter:(pfilter "clexp");
+  add_quotation (d, "clsigi-") clsigi_quot
+    ~mexp:(fun loc  p  -> m#clsigi loc (Objs.strip_loc_clsigi p))
+    ~mpat:(fun loc  p  -> m#clsigi loc (Objs.strip_loc_clsigi p))
+    ~exp_filter:(efilter "clsigi") ~pat_filter:(pfilter "clsigi");
+  add_quotation (d, "clfield-") clfield_quot
+    ~mexp:(fun loc  p  -> m#clfield loc (Objs.strip_loc_clfield p))
+    ~mpat:(fun loc  p  -> m#clfield loc (Objs.strip_loc_clfield p))
+    ~exp_filter:(efilter "clfield") ~pat_filter:(pfilter "clfield");
+  add_quotation (d, "constr-") constr_quot
+    ~mexp:(fun loc  p  -> m#constr loc (Objs.strip_loc_constr p))
+    ~mpat:(fun loc  p  -> m#constr loc (Objs.strip_loc_constr p))
+    ~exp_filter:(efilter "constr") ~pat_filter:(pfilter "constr");
+  add_quotation (d, "bind-") bind_quot
+    ~mexp:(fun loc  p  -> m#bind loc (Objs.strip_loc_bind p))
+    ~mpat:(fun loc  p  -> m#bind loc (Objs.strip_loc_bind p))
+    ~exp_filter:(efilter "bind") ~pat_filter:(pfilter "bind");
+  add_quotation (d, "rec_exp-") rec_exp_quot
+    ~mexp:(fun loc  p  -> m#rec_exp loc (Objs.strip_loc_rec_exp p))
+    ~mpat:(fun loc  p  -> m#rec_exp loc (Objs.strip_loc_rec_exp p))
+    ~exp_filter:(efilter "rec_exp") ~pat_filter:(pfilter "rec_exp");
+  add_quotation (d, "case-") case_quot
+    ~mexp:(fun loc  p  -> m#case loc (Objs.strip_loc_case p))
+    ~mpat:(fun loc  p  -> m#case loc (Objs.strip_loc_case p))
+    ~exp_filter:(efilter "case") ~pat_filter:(pfilter "case");
+  add_quotation (d, "mbind-") mbind_quot
+    ~mexp:(fun loc  p  -> m#mbind loc (Objs.strip_loc_mbind p))
+    ~mpat:(fun loc  p  -> m#mbind loc (Objs.strip_loc_mbind p))
+    ~exp_filter:(efilter "mbind") ~pat_filter:(pfilter "mbind");
+  add_quotation (d, "ident-") ident_quot
+    ~mexp:(fun loc  p  -> m#ident loc (Objs.strip_loc_ident p))
+    ~mpat:(fun loc  p  -> m#ident loc (Objs.strip_loc_ident p))
+    ~exp_filter:(efilter "ident") ~pat_filter:(pfilter "ident");
+  add_quotation (d, "or_ctyp-") constructor_declarations
+    ~mexp:(fun loc  p  -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p))
+    ~mpat:(fun loc  p  -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p))
+    ~exp_filter:(efilter "or_ctyp") ~pat_filter:(pfilter "or_ctyp");
+  add_quotation (d, "row_field-") row_field
+    ~mexp:(fun loc  p  -> m#row_field loc (Objs.strip_loc_row_field p))
+    ~mpat:(fun loc  p  -> m#row_field loc (Objs.strip_loc_row_field p))
+    ~exp_filter:(efilter "row_field") ~pat_filter:(pfilter "row_field")
