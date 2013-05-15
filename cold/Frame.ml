@@ -142,7 +142,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
   currying ~arity res
 
 let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
-  ~mk_variant  ~destination  simple_exp_of_ctyp result ty =
+  ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
      let p = (EP.gen_tuple_n ?cons_transform ~arity cons len :>pat) in
@@ -192,7 +192,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
         let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
 
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
-  ~result_type  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
+  ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : typedecl ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -230,7 +230,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                  mk_prefix ~names ~left_type_variable tyvars funct
              | `PolyEq (_,t)|`PolySup (_,t)|`PolyInf (_,t)
                |`PolyInfSup (_,t,_) ->
-                 let case = exp_of_variant result_type t in
+                 let case = exp_of_variant ~result t in
                  mk_prefix ~names ~left_type_variable tyvars case
              | t ->
                  FanLoc.errorf (loc_of t) "fun_of_tydcl inner %s"
@@ -242,26 +242,32 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
        FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s"
          (Objs.dump_typedecl t) : exp )
 
-let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1) 
-  ?(names= [])  ~default  ~mk_variant  ~left_type_id  ~left_type_variable 
-  ~mk_record  =
+let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
+  [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant 
+  ~left_type_id:(left_type_id : basic_id_transform) 
+  ~left_type_variable:(left_type_variable : basic_id_transform)  ~mk_record 
+  tydcl =
   let open Transform in
     let tctor_var = basic_transform left_type_id in
     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
     let fname = tctor_var name in
-    let (_ty,result_type) =
+    let (_ty,result) =
       Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
-        Str_item in
+        destination in
+    let (annot,result) =
+      match annot with
+      | None  -> (None, result)
+      | Some f -> let (a,b) = f name in ((Some a), b) in
     let _loc = loc_of tydcl in
     let fun_exp =
       if not (Ctyp.is_abstract tydcl)
       then
-        fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record
-          ~result_type simple_exp_of_ctyp
+        fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record ~result
+          simple_exp_of_ctyp
           (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
              simple_exp_of_ctyp)
           (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
-             ~destination:Str_item simple_exp_of_ctyp) tydcl
+             ~destination simple_exp_of_ctyp) tydcl
       else
         (eprintf "Warning: %s as a abstract type no structure generated\n"
            (Objs.dump_typedecl tydcl);
@@ -269,14 +275,18 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
             (_loc, (`Lid (_loc, "failwith")),
               (`Str (_loc, "Abstract data type not implemented"))) : 
          Ast.exp )) in
-    (`Bind (_loc, (`Lid (_loc, fname)), fun_exp) : Ast.bind )
+    match annot with
+    | None  -> (`Bind (_loc, (`Lid (_loc, fname)), fun_exp) : Ast.bind )
+    | Some x ->
+        (`Bind (_loc, (`Lid (_loc, fname)), (`Constraint (_loc, fun_exp, x))) : 
+        Ast.bind )
 
-let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default 
-  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
+let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names 
+  ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
   let cxt = Hashset.create 50 in
   let mk_bind: typedecl -> bind =
-    bind_of_tydcl ?cons_transform ?arity ?names ~default ~mk_variant
+    bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
       ~left_type_id ~left_type_variable ~mk_record
       (simple_exp_of_ctyp_with_cxt cxt) in
   let fs (ty : types) =
@@ -319,13 +329,13 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
   ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp
   ~kind:(k : kind)  (lst : mtyps) =
   (let tbl = Hashtbl.create 50 in
-   let f tydcl result_type =
+   let f tydcl result =
      fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record
        simple_exp_of_ctyp
        (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
           simple_exp_of_ctyp)
        (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
-          ~default ~mk_variant simple_exp_of_ctyp) ~result_type tydcl in
+          ~default ~mk_variant simple_exp_of_ctyp) ~result tydcl in
    let mk_type tydcl =
      let _loc = loc_of tydcl in
      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
@@ -385,8 +395,8 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App
      (_loc, (`Lid (_loc, "failwith")),
        (`Str (_loc, "arity >= 2 in other branches"))) : Ast.exp ))
-   ?cons_transform  ~id:(id : basic_id_transform)  ?(names= [])  ~mk_tuple 
-  ~mk_record  ~mk_variant  () =
+   ?cons_transform  ?annot  ~id:(id : basic_id_transform)  ?(names= []) 
+  ~mk_tuple  ~mk_record  ~mk_variant  () =
   let left_type_variable = `Pre "mf_" in
   let right_type_variable = `Pre "mf_" in
   let left_type_id = id in
@@ -409,7 +419,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
   let mk_record = mk_record in
   let cons_transform = cons_transform in
   let () = check names in
-  stru_of_mtyps ?module_name ?cons_transform ~arity ~names ~default
+  stru_of_mtyps ?module_name ?cons_transform ?annot ~arity ~names ~default
     ~mk_variant ~left_type_id ~left_type_variable ~mk_record
     (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
        ~left_type_id ~right_type_variable)

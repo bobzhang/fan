@@ -87,12 +87,14 @@ and mtyps =  types list
 
 type destination =
   |Obj of kind
+  (* | Type of ctyp         *)
   |Str_item
 and kind =
   | Fold
   | Iter (* Iter style *) 
   | Map (* Map style *)
   | Concrete of ctyp
+
 
 type warning_type =
   | Abstract of string 

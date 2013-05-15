@@ -150,6 +150,7 @@ let gen_strip = with {pat:ctyp;exp}
             {|let $pat:pat0 = $exp in $res |}) params result in 
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
+    ~annot:(fun  x -> ({:ctyp| Ast.$lid:x -> AstN.$lid:x |}, {:ctyp|AstN.$lid:x|}))
     ();;
 
 Typehook.register

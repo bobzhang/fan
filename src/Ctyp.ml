@@ -142,52 +142,15 @@ let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
 let repeat_arrow_n ty n =
   List.init n (fun _ -> ty) |>  arrow_of_list
     
-(*
-  [result] is a keyword
-  {[
-  let (name,len) =
-  ( {:stru| type list 'a  'b = [A of int | B of 'a] |}
-  |>
-  fun [ {:stru|type $x |} -> name_length_of_tydcl x]);
 
-
-  let f = mk_method_type ~number:2 ~prefix:["fmt"]
-  ({:ident| $lid:name |},len);
-
-  open Fan_sig;
-  
-  f (Obj Map)|> eprint;
-  ! 'all_a0 'all_a1 'all_b0 'all_b1.
-  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
-  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'all_b1) ->
-  'fmt ->
-  list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> list 'all_b0 'all_b1
-
-  f (Obj Iter)|> eprint;
-  ! 'all_a0 'all_a1.
-  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
-  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
-  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
-  
-  f (Obj Fold) |> eprint;
-  ! 'all_a0 'all_a1.
-  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'self_type) ->
-  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'self_type) ->
-  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'self_type
-  
-  f Str_item |> eprint;
-  ! 'all_a0 'all_a1.
-  ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
-  ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
-  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
- *)
-let result_id = ref 0 (* to be clean soon *)
-
+(* to be clean soon *)
+let result_id = ref 0 
     
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   let _loc = FanLoc.ghost in
-  let prefix = List.map (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
+  let prefix = List.map
+      (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
   let result_type = (* {| 'result |} *)
@@ -200,6 +163,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     |Obj Iter -> (1, result_type)
     |Obj Fold -> (1, self_type)
     |Obj (Concrete c ) -> (1,c)
+    (* |Type c -> (1,c)  *)
     |Str_item -> (1,result_type) in 
   let params =
     List.init len
@@ -214,31 +178,18 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
                 match  u with
                 | Map -> {|  '$(lid:allx ~off:1 i) |}
                 | Iter -> result_type
-                | Concrete c -> c 
+                | Concrete c -> c
                 | Fold-> self_type  in
               (arrow self_type  (prefix <+ (app_src dst)))
-          |Str_item -> prefix <+ (app_src result_type)) in 
+          |Str_item -> prefix <+ app_src result_type
+          (* |Type _  -> prefix <+ app_src dst *)
+      ) in 
   let base = prefix <+ (app_src dst) in
   if len = 0 then
     ( `TyPolEnd (_loc, base),dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
   ({| ! $quantifiers . $(params +> base) |},dst)
 
-(* FIXME : merge with [mk_type_of] *)  
-(* let result_id = ref 0;   *)
-(* let mk_dest_type  ~destination (id,len) = *)
-(*   let result_type = *)
-(*     {|'$(lid:"result"^string_of_int !result_id)|} in *)
-(*   let _ = incr result_id in *)
-(*   let self_type = {| 'self_type |} in  *)
-(*   let (_quant,dst) = *)
-(*     match destination with *)
-(*     [Obj Map -> *)
-(*       (2, (\* apply *\) appl_of_list [ {|$id:id |} :: (List.init len (fun _ -> {|  _ |}))]) *)
-(*       (\* (2, (of_id_len ~off:1 (id,len))) *\) *)
-(*     |Obj Iter -> (1, result_type) *)
-(*     |Obj Fold -> (1, self_type) *)
-(*     |Str_item -> (1,result_type)] in dst; *)
 
 
 (* *)  

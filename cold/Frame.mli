@@ -39,6 +39,11 @@ open FSig
      The default is [`Pre "mf_"]
    [right_type_variable:rhs_basic_id_transform]
      The default is [`Pre "mf_"]
+
+   [destination]
+     It's used only in [exp_of_variant]
+     by a ad-hoc function
+     Case.gen_tuple_abbrev
  *)  
 
 
@@ -147,7 +152,7 @@ val exp_of_variant:
         ?names:string list ->
           default:(vrn * int -> case option) ->
             mk_variant:(string -> ty_info list -> exp) ->
-              destination:destination -> (ctyp -> exp) -> ctyp -> row_field ->  exp
+              destination:destination -> (ctyp -> exp) -> result:ctyp -> row_field ->  exp
                   
 
 
@@ -167,34 +172,38 @@ val mk_prefix:
 val fun_of_tydcl :
     ?names:string list ->
     ?arity:int ->
-    left_type_variable:basic_id_transform ->
-    mk_record:(record_col list -> exp) ->
-    (* destination:destination -> *)
-      result_type:ctyp -> 
-      (ctyp -> exp ) ->
-        (or_ctyp -> exp ) ->
-          (ctyp -> row_field -> exp) ->  (* labeld as variant *)
-            typedecl -> exp
+      left_type_variable:basic_id_transform ->
+        mk_record:(record_col list -> exp) ->
+          result:ctyp -> 
+            (ctyp -> exp ) ->
+              (or_ctyp -> exp ) ->
+                (result:ctyp -> row_field -> exp) ->  (* labeld as variant *)
+                  typedecl -> exp
 
 (*************************************************************************)
 (** destination is [Str_item] generate [stru], type annotations may not be
-    needed here outputs  a binding *)                          
+    needed here outputs  a binding
+    called by [stru_of_mtyps]
+ *)                          
 val bind_of_tydcl :
     ?cons_transform:(string -> string) ->
       (ctyp -> exp ) ->
-        typedecl ->
           ?arity:int ->
             ?names:string list ->
+              ?destination:destination ->
+              ?annot:(string-> (ctyp*ctyp)) ->
               default:(vrn * int -> case option) ->
                 mk_variant:(string -> ty_info list -> exp) ->
                   left_type_id:basic_id_transform ->
                     left_type_variable:basic_id_transform ->
                       mk_record:(record_col list -> exp) ->
+                        typedecl ->
                         bind
                           
 val stru_of_mtyps :
   ?module_name:string ->
-  ?cons_transform:(string -> string) ->
+    ?cons_transform:(string -> string) ->
+    ?annot:(string -> (ctyp*ctyp)) -> 
   ?arity:int ->
   ?names:string list ->
   default:(vrn * int -> case option) ->
@@ -221,16 +230,17 @@ val obj_of_mtyps :
   
 
 val gen_stru :
-  ?module_name:string ->
-  ?arity:int ->
-  ?default:exp ->
-  ?cons_transform:(string -> string) ->
-  id:basic_id_transform ->
-  ?names:string list ->
-  mk_tuple:(ty_info list -> exp) ->
-  mk_record:(record_col list -> exp) ->
-  mk_variant:(string -> ty_info list -> exp) -> unit -> 
-  mtyps -> stru
+    ?module_name:string ->
+      ?arity:int ->
+        ?default:exp ->
+          ?cons_transform:(string -> string) ->
+            ?annot:(string -> (ctyp*ctyp)) ->
+              id:basic_id_transform ->
+                ?names:string list ->
+                  mk_tuple:(ty_info list -> exp) ->
+                    mk_record:(record_col list -> exp) ->
+                      mk_variant:(string -> ty_info list -> exp) -> unit -> 
+                        mtyps -> stru
 val gen_object :
   ?module_name:string ->
   ?arity:int ->

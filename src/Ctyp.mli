@@ -25,9 +25,52 @@ val of_name_len : off:int -> string * int -> ctyp
 val list_of_record : name_ctyp -> FSig.col list
 val gen_tuple_n : ctyp -> int -> ctyp
 val repeat_arrow_n : ctyp -> int -> ctyp
+
+(**
+     [result] is a keyword
+   {[
+   let (name,len) =
+   ({:stru| type list 'a  'b = [A of int | B of 'a] |}
+     |> function {:stru|type $x |} -> name_length_of_tydcl x)
+   let f = mk_method_type ~number:2 ~prefix:["fmt"]
+   ({:ident| $lid:name |},len);
+
+   open Fan_sig
+   
+   f (Obj Map)|> eprint;
+   ! 'all_a0 'all_a1 'all_b0 'all_b1.
+  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'all_b0) ->
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'all_b1) ->
+  'fmt ->
+  list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> list 'all_b0 'all_b1
+
+  f (Obj Iter)|> eprint;
+  ! 'all_a0 'all_a1.
+  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
+  
+  f (Obj Fold) |> eprint;
+  ! 'all_a0 'all_a1.
+  ('self_type -> 'fmt -> 'all_a0 -> 'all_a0 -> 'self_type) ->
+  ('self_type -> 'fmt -> 'all_a1 -> 'all_a1 -> 'self_type) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'self_type
+  
+  f Str_item |> eprint;
+  ! 'all_a0 'all_a1.
+  ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
+  ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
+
+ *)
 val mk_method_type :
   number:int ->
   prefix:string list -> ident * int -> FSig.destination -> (ctyp*ctyp)
+
+
+(**
+   
+ *)
 val mk_method_type_of_name :
   number:int ->
   prefix:string list -> string * int -> FSig.destination -> (ctyp*ctyp)
