@@ -65,3 +65,5 @@ src/Ast.ml
 src/S.ml
 *.dsource
 a.el
+jslib/
+ulex/

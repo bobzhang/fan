@@ -1,10 +1,6 @@
-open LibUtil
-
 open StdLib
 
 open Ast
-
-let strip_loc_list f lst = List.map f lst
 
 let strip_loc_ant ant = ant
 

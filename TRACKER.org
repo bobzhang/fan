@@ -102,3 +102,15 @@
       | p -> super#pat p ]
     end
   #+END_SRC
+
+* 05 generate signatures for Objs module
+  This will enhance separate compilation for the project
+
+* 06 ast design
+
+  #+BEGIN_SRC ocaml
+    {| $vrn:cons of $par:t |}
+    
+    (* make `C to Vrn *)  
+    `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
+  #+END_SRC

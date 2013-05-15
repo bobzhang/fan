@@ -16,10 +16,8 @@ val app_arrow : ctyp list -> ctyp -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp
 val ( +> ) : ctyp list -> ctyp -> ctyp
 val name_length_of_tydcl : (* ctyp *)typedecl -> string * int
-val ty_name_of_tydcl : typedecl -> ctyp
+
 val gen_ty_of_tydcl : off:int -> typedecl -> ctyp
-    
-(* val gen_quantifiers : arity:int -> int -> ctyp *)
 val of_id_len : off:int -> ident * int -> ctyp
 val of_name_len : off:int -> string * int -> ctyp
 
@@ -57,7 +55,10 @@ val reduce_data_ctors:
     or_ctyp ->
       'a -> compose:('e -> 'a  -> 'a) -> (string -> ctyp list -> 'e) -> 'a    
 (* @raise Invalid_argument *)        
-val of_stru: stru -> typedecl
+(* val of_stru: stru -> typedecl *)
 
 val view_sum: or_ctyp -> FSig.branch list
 val view_variant: row_field -> FSig.vbranch list    
+
+(* val ty_name_of_tydcl : typedecl -> ctyp *)    
+(* val gen_quantifiers : arity:int -> int -> ctyp *)

@@ -601,6 +601,7 @@ let define_context_for_root r =
     def ("test") ["src"];
     def "testr" ["src"];
     def "llvm" ["src"];
+    def "jslib" ["src"];
     def ("testr"//"loc") ["src"];
     def ("testr"//"lex") ["src"];    
     def ("demo"//"plc") ["src"];

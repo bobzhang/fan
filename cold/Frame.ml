@@ -192,8 +192,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
         let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
 
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
-  ~destination  ~result_type  simple_exp_of_ctyp exp_of_ctyp exp_of_variant
-  tydcl =
+  ~result_type  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : typedecl ) with
    | `TyDcl (_,_,tyvars,ctyp,_constraints) ->
        (match ctyp with
@@ -249,29 +248,28 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp tydcl ?(arity= 1)
   let open Transform in
     let tctor_var = basic_transform left_type_id in
     let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+    let fname = tctor_var name in
     let (_ty,result_type) =
       Ctyp.mk_method_type_of_name ~number:arity ~prefix:names (name, len)
         Str_item in
     let _loc = loc_of tydcl in
-    if not (Ctyp.is_abstract tydcl)
-    then
-      let fun_exp =
-        fun_of_tydcl ~destination:Str_item ~names ~arity ~left_type_variable
-          ~mk_record ~result_type simple_exp_of_ctyp
+    let fun_exp =
+      if not (Ctyp.is_abstract tydcl)
+      then
+        fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record
+          ~result_type simple_exp_of_ctyp
           (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
              simple_exp_of_ctyp)
           (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
-             ~destination:Str_item simple_exp_of_ctyp) tydcl in
-      (`Bind (_loc, (`Lid (_loc, (tctor_var name))), fun_exp) : Ast.bind )
-    else
-      (eprintf "Warning: %s as a abstract type no structure generated\n"
-         (Objs.dump_typedecl tydcl);
-       (`Bind
-          (_loc, (`Lid (_loc, (tctor_var name))),
-            (`App
-               (_loc, (`Lid (_loc, "failwithf")),
-                 (`Str (_loc, "Abstract data type not implemented"))))) : 
-       Ast.bind ))
+             ~destination:Str_item simple_exp_of_ctyp) tydcl
+      else
+        (eprintf "Warning: %s as a abstract type no structure generated\n"
+           (Objs.dump_typedecl tydcl);
+         (`App
+            (_loc, (`Lid (_loc, "failwith")),
+              (`Str (_loc, "Abstract data type not implemented"))) : 
+         Ast.exp )) in
+    (`Bind (_loc, (`Lid (_loc, fname)), fun_exp) : Ast.bind )
 
 let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default 
   ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
@@ -318,12 +316,12 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?arity  ?names  ~default
 let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= []) 
   ~default 
   ~left_type_variable:(left_type_variable : FSig.basic_id_transform) 
-  ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp (k : kind)
-  (lst : mtyps) =
+  ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp
+  ~kind:(k : kind)  (lst : mtyps) =
   (let tbl = Hashtbl.create 50 in
    let f tydcl result_type =
-     fun_of_tydcl ~names ~destination:(Obj k) ~arity ~left_type_variable
-       ~mk_record simple_exp_of_ctyp
+     fun_of_tydcl ~names ~arity ~left_type_variable ~mk_record
+       simple_exp_of_ctyp
        (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant
           simple_exp_of_ctyp)
        (exp_of_variant ?cons_transform ~destination:(Obj k) ~arity ~names
@@ -440,5 +438,5 @@ let gen_object ?module_name  ?(arity= 1)  ?(default=
     obj_of_mtyps ?cons_transform ?module_name ~arity ~names ~default
       ~left_type_variable ~mk_record ~mk_variant base class_name
       (obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
-         ~right_type_variable ~names ~arity ~mk_tuple) kind in
+         ~right_type_variable ~names ~arity ~mk_tuple) ~kind in
   make

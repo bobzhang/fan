@@ -1,4 +1,4 @@
-  #default_quotation "ctyp";;
+#default_quotation "ctyp";;
 
 open Ast
 open AstLib
@@ -6,23 +6,6 @@ open LibUtil
 
 open Basic
 open FSig
-
-
-(* let rec to_var_list =  fun *)
-(*   [ {| $t1 $t2 |} -> *)
-(*     to_var_list t1 @ to_var_list t2 *)
-(*   | {| '$lid:s |} | {| + '$lid:s |} | {| - '$lid:s |}  -> [s] *)
-(*   | _ -> assert false ]; *)
-
-
-
-
-  
-
-
-(* let (|->) = arrow;   *)
-
-
 
 let arrow_of_list = List.reduce_right arrow
     
@@ -99,28 +82,6 @@ let of_name_len ~off (name,len) =
   of_id_len ~off (id,len)
 
 
-(*
-  @raise Invalid_argument  when the input is not a type declaration
-
-  {[
-  
-  (fun [ <:stru<type .$x$. >> -> ty_name_of_tydcl x  |> eprint ])
-  <:stru< type list 'a  = [A of int | B of 'a] >>;
-
-  list 'a
-  ]}
- *)  
-let ty_name_of_tydcl  (x:typedecl) =
-  let _loc = FanLoc.ghost in
-  match x with 
-  | `TyDcl (_, `Lid(_,name), tyvars, _, _) ->
-      let tyvars =
-        match tyvars with
-        | `None _ -> []
-        |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in
-      appl_of_list ( {| $lid:name |} :: tyvars)
-  | tydcl ->
-      failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
 
 (*
   {[
@@ -289,10 +250,11 @@ let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
 
 let mk_obj class_name  base body =
   let _loc = FanLoc.ghost in
-  {:stru| class $lid:class_name = object (self: 'self_type)
-    inherit $lid:base ;
-    $body;
-  end |}
+  {:stru|
+   class $lid:class_name = object (self: 'self_type)
+     inherit $lid:base ;
+     $body;
+   end |}
 
     
 let is_recursive ty_dcl =
@@ -448,26 +410,6 @@ let mk_transform_type_eq () = object(self:'self_type)
           appl_of_list ({| $lid:dest |} :: lst )
         end
     | None -> super#ctyp x
-
-          (* method! (\* ctyp *\)type_info  x = *)
-
-          (*   match x with *)
-          (*   [ `TyMan (loc , p1 , x ,p2, repr) ->  *)
-          (*       match qualified_app_list x with *)
-          (*       [ Some (i, lst) -> *)
-          (*         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in  *)
-          (*         let src = i and dest = Id.map_to_string i in begin *)
-          (*           Hashtbl.replace transformers dest (src,List.length lst); *)
-          (*           let v = appl_of_list [ {| $lid:dest |} :: lst ] ; *)
-          (*           `TyMan(loc,p1,v,p2,repr)   *)
-          (*         end *)
-          (*       | None  -> (\* match x with *\) *)
-          (*       (\* <:stru< type a =b == [A of int] >> ; *\) *)
-          (*     (\* [ `TyMan(_loc,p1,x,p2,ctyp)(\\* {| $x == $ctyp |} *\\) -> (\\* ignore x on purpose *\\) *\) *)
-          (*       `TyMan(_loc,p1,x,p2,super#type_repr repr) ] *)
-          (*       (\* {| $x == $(super#ctyp ctyp) |} *\) *)
-          (*   | _ ->   super#type_info  x  ]; *)
-
           (* dump the type declarations *)  
   method type_transformers = 
     Hashtbl.fold (fun dest (src,len) acc ->
@@ -562,7 +504,7 @@ let view_variant (t:row_field) : vbranch list  =
   let lst = list_of_or t [] in 
   List.map (
   function
-    | (* {| `$cons of $par:t |} *)
+    | (* {| $vrn:cons of $par:t |} *)
       (* `Of (_loc, (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
       `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
       ->
@@ -582,8 +524,32 @@ let view_variant (t:row_field) : vbranch list  =
           "view_variant %s" (Objs.dump_row_field u)  ) lst 
 
     
-let of_stru = function
-  |`Type(_,x) -> x
-  | t ->
-      FanLoc.errorf (loc_of t)
-        "Ctyp.of_stru %s" (Objs.dump_stru t) 
+(* let of_stru = function *)
+(*   |`Type(_,x) -> x *)
+(*   | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (Objs.dump_stru t)  *)
+
+
+
+(*
+  @raise Invalid_argument  when the input is not a type declaration
+
+  {[
+  
+  (fun [ <:stru<type .$x$. >> -> ty_name_of_tydcl x  |> eprint ])
+  <:stru< type list 'a  = [A of int | B of 'a] >>;
+
+  list 'a
+  ]}
+ *)  
+(* let ty_name_of_tydcl  (x:typedecl) = *)
+(*   let _loc = FanLoc.ghost in *)
+(*   match x with  *)
+(*   | `TyDcl (_, `Lid(_,name), tyvars, _, _) -> *)
+(*       let tyvars = *)
+(*         match tyvars with *)
+(*         | `None _ -> [] *)
+(*         |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in *)
+(*       appl_of_list ( {| $lid:name |} :: tyvars) *)
+(*   | tydcl -> *)
+(*       failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl) *)
+        

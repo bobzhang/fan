@@ -57,17 +57,6 @@ let of_name_len ~off  (name,len) =
   let _loc = FanLoc.ghost in
   let id: Ast.ident = `Lid (_loc, name) in of_id_len ~off (id, len)
 
-let ty_name_of_tydcl (x : typedecl) =
-  let _loc = FanLoc.ghost in
-  match x with
-  | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
-      let tyvars =
-        match tyvars with
-        | `None _ -> []
-        | `Some (_,xs) -> (list_of_com xs [] :>ctyp list) in
-      appl_of_list ((`Lid (_loc, name) : Ast.ctyp ) :: tyvars)
-  | tydcl -> failwithf "ctyp_of_tydcl{|%s|}\n" (Objs.dump_typedecl tydcl)
-
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 
@@ -299,8 +288,3 @@ let view_variant (t : row_field) =
       | u ->
           FanLoc.errorf (loc_of u) "view_variant %s" (Objs.dump_row_field u))
      lst : vbranch list )
-
-let of_stru =
-  function
-  | `Type (_,x) -> x
-  | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (Objs.dump_stru t)

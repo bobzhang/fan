@@ -100,7 +100,12 @@ let rec list_of_star x acc =
   match x with
   | `Sta(_,x,y) -> list_of_star x (list_of_star y acc)
   | _ -> x::acc
-    
+
+let rec list_of_bar x acc =
+  match x with
+  |`Bar(_,x,y) -> list_of_bar x (list_of_bar y acc)
+  | _ -> x::acc
+
 let rec list_of_or x acc =
   match x with
   |`Bar(_,x,y) -> list_of_or x (list_of_or y acc)

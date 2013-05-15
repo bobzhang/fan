@@ -88,7 +88,9 @@ let rec  normal_simple_exp_of_ctyp
           (Objs.dump_ctyp ty) in
   aux ty
 
-   
+(* slightly different from [normal_simple_exp_of_ctyp]
+   without context??
+ *)   
 let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_variable
     ?names ?arity ~mk_tuple ty = with {pat:ctyp}
   let open Transform in 
@@ -193,8 +195,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   let varf = basic_transform left_type_variable in
   let  f (var:decl_params) acc =
     match var with
-    | `Quote(_,_,`Lid(_loc,s)) ->
-        {| fun $(lid: varf s) -> $acc |}
+    | `Quote(_,_,`Lid(_loc,s)) -> {| fun $(lid: varf s) -> $acc |}
     | t  ->
         FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t) in
   match vars with
@@ -214,11 +215,10 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   Ast node represent the [function]
   (combine both exp_of_ctyp and simple_exp_of_ctyp) *)  
 let fun_of_tydcl
-    ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record ~destination ~result_type
+    ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record (* ~destination *) ~result_type
     simple_exp_of_ctyp exp_of_ctyp exp_of_variant  tydcl :exp = 
     match (tydcl:typedecl) with 
     | `TyDcl (_, _, tyvars, ctyp, _constraints) ->
-      (* let ctyp = *)
        begin match ctyp with
        |  `TyMan(_,_,_,repr) | `TyRepr(_,_,repr) ->
          begin match repr with
@@ -261,34 +261,31 @@ let fun_of_tydcl
    | t -> FanLoc.errorf (loc_of t) "fun_of_tydcl outer %s" (Objs.dump_typedecl t)
 
 
-(*************************************************************************)
-(** destination is [Str_item] generate [stru], type annotations may
-    not be needed here
-    outputs  a binding
- *)          
+
 let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     tydcl ?(arity=1) ?(names=[]) ~default ~mk_variant
     ~left_type_id ~left_type_variable
     ~mk_record = 
   let open Transform in 
   let tctor_var = basic_transform left_type_id in
-  let (name,len) = Ctyp.name_length_of_tydcl tydcl in 
+  let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+  let fname = tctor_var name in
   let (_ty,result_type) = Ctyp.mk_method_type_of_name
       ~number:arity ~prefix:names (name,len) Str_item in
   let _loc = loc_of tydcl in (* be more precise later *)
-  if not ( Ctyp.is_abstract tydcl) then 
-    let fun_exp =
-      fun_of_tydcl  ~destination:Str_item
+  let fun_exp =
+    if not ( Ctyp.is_abstract tydcl) then 
+      fun_of_tydcl  (* ~destination:Str_item *)
         ~names ~arity ~left_type_variable ~mk_record  ~result_type
         simple_exp_of_ctyp
         (exp_of_ctyp ?cons_transform ~arity ~names ~default ~mk_variant simple_exp_of_ctyp)
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant ~destination:Str_item simple_exp_of_ctyp)
-        tydcl  in
-    {:bind| $(lid:tctor_var name) = $fun_exp |}
-  else
-    (eprintf "Warning: %s as a abstract type no structure generated\n"
-       (Objs.dump_typedecl tydcl);
-     {:bind| $(lid:tctor_var  name) = failwithf "Abstract data type not implemented" |})
+        tydcl
+    else
+      (eprintf "Warning: %s as a abstract type no structure generated\n" (Objs.dump_typedecl tydcl);
+       {:exp| failwith "Abstract data type not implemented" |})
+  in
+  {:bind| $lid:fname = $fun_exp |}
 
 let stru_of_mtyps ?module_name ?cons_transform
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
@@ -304,18 +301,15 @@ let stru_of_mtyps ?module_name ?cons_transform
   let fs (ty:types) : stru=
     match ty with
     | `Mutual named_types ->
-        begin match named_types with
+        ( match named_types with
         | [] ->  {:stru@ghost| let _ = ()|} (* FIXME *)
-        | xs -> begin 
-            List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
+        | xs ->
+            (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
             let bind = List.reduce_right_with
                 ~compose:(fun x y -> let _loc = x <+> y in {:bind| $x and $y |} )
                 ~f:(fun (_name,ty) -> mk_bind  ty ) xs in
             let _loc = loc_of bind in
-            {:stru| let rec $bind |} 
-        end
-        end
-
+            {:stru| let rec $bind |}))
     | `Single (name,tydcl) ->
         (Hashset.add cxt name;
          let _loc = loc_of tydcl in
@@ -351,10 +345,10 @@ let obj_of_mtyps
     ~mk_record
     ~mk_variant
      base
-    class_name  simple_exp_of_ctyp (k:kind) (lst:mtyps) : stru = with {pat:ctyp}
+    class_name  simple_exp_of_ctyp ~kind:(k:kind) (lst:mtyps) : stru = with {pat:ctyp}
   let tbl = Hashtbl.create 50 in 
     let f tydcl result_type =
-      fun_of_tydcl ~names ~destination:(Obj k)
+      fun_of_tydcl ~names (* ~destination:(Obj k) *)
         ~arity ~left_type_variable
         ~mk_record 
         simple_exp_of_ctyp
@@ -387,7 +381,8 @@ let obj_of_mtyps
          match Ctyp.abstract_list tydcl with
          | Some n  -> begin
            let _loc = loc_of tydcl in
-           let ty_str =  (* (Ctyp.to_string tydcl) FIXME *) "" in
+           (* (Ctyp.to_string tydcl) FIXME *)
+           let ty_str =   "" in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
            {:clfield| method $lid:name : $ty= $(unknown n) |}
@@ -425,8 +420,7 @@ open Transform
 
 let _loc = FanLoc.ghost 
 
-(**
-   For var, in most cases we just add a prefix
+(** For var, in most cases we just add a prefix
    mf_, so we just fix it here
 
    For Objects, tctor_var, always (`Fun (fun x -> x))
@@ -450,9 +444,9 @@ let gen_stru
         `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} )  in
   let default (_,number)=
     if number > 1 then
-      let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat) in 
+      let pat = (EP.tuple_of_number (`Any _loc) arity :> pat) in 
       Some {:case| $pat:pat -> $default |}
-    else (* {:case'| |} *) None in
+    else None in
   let names = names in
   let mk_record = mk_record in
   let cons_transform = cons_transform in
@@ -484,36 +478,35 @@ let gen_object
     ~base
     ~class_name = 
   let make ?(names=[]) ~mk_tuple  ~mk_record  ~mk_variant ()= 
-    begin
-      let () =  check names in
-      let left_type_variable  = `Pre "mf_" in
-      let right_type_variable =
-        `Exp (fun v -> let v = basic_transform left_type_variable v
-          in  {:exp| $lid:v self |} ) in
-      let left_type_id  = `Pre ""in
-      let right_type_id  =
-        `Obj (basic_transform left_type_id) in
-      let default (_,number)=
-        if number > 1 then
-          let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat)in 
-          Some {:case| $pat:pat -> $default |}
-        else None in
-      obj_of_mtyps
-        ?cons_transform
-        ?module_name
-        ~arity
-        ~names
-        ~default
-        ~left_type_variable
-        ~mk_record
-        ~mk_variant
-        base
-        class_name
-        (obj_simple_exp_of_ctyp
-           ~right_type_id ~left_type_variable ~right_type_variable
-           ~names ~arity ~mk_tuple  )
-        kind
-    end in
+    let () =  check names in
+    let left_type_variable  = `Pre "mf_" in
+    let right_type_variable =
+      `Exp (fun v -> let v = basic_transform left_type_variable v
+      in  {:exp| $lid:v self |} ) in
+    let left_type_id  = `Pre ""in
+    let right_type_id  =
+      `Obj (basic_transform left_type_id) in
+    let default (_,number)=
+      if number > 1 then
+        let pat = (EP.tuple_of_number {:pat'| _ |} arity :> pat)in 
+        Some {:case| $pat:pat -> $default |}
+      else None in
+    obj_of_mtyps
+      ?cons_transform
+      ?module_name
+      ~arity
+      ~names
+      ~default
+      ~left_type_variable
+      ~mk_record
+      ~mk_variant
+      base
+      class_name
+      (obj_simple_exp_of_ctyp
+         ~right_type_id ~left_type_variable ~right_type_variable
+         ~names ~arity ~mk_tuple  )
+      ~kind
+  in
   make
 
 
