@@ -6,37 +6,33 @@ open Gtools
 open FanToken
 open Ginsert
   
-type 'a t  = entry
+type 'a t  =  entry
 
 let name e = e.ename
 
 let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
 let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
-
-
 let trace_parser = ref false
 
 
 
-(* mutate the [estart] and [econtinue]
-   The previous version is lazy. We should find a way to exploit both in the future
- *)    
-let extend entry (position, levels) =begin
-  let levels =  scan_olevels entry levels; (* for side effect *)
-  let elev = insert_olevels_in_levels entry position levels;
-  entry.edesc <- Dlevels elev;
+
+let extend entry (position, levels) =
+  let levels =  scan_olevels entry levels in (* for side effect *)
+  let elev = insert_olevels_in_levels entry position levels in
+  (entry.edesc <- Dlevels elev;
   entry.estart <-Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry;
-end
+  entry.econtinue <- Gparser.continue_parser_of_entry entry)
+
 
     
-let extend_single entry (position,level) = begin
-  let level = scan_olevel entry level;
-  let elev = insert_olevel entry position level    ;
-  entry.edesc <-Dlevels elev;
+let extend_single entry (position,level) = 
+  let level = scan_olevel entry level in
+  let elev = insert_olevel entry position level in
+  (entry.edesc <-Dlevels elev;
   entry.estart <-Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry;    
-end
+  entry.econtinue <- Gparser.continue_parser_of_entry entry)
+
     
 let mk_dynamic g n ={
   egram = g;

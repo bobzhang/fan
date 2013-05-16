@@ -44,7 +44,8 @@ val parse : 'a t -> FanLoc.t -> char XStream.t -> 'a
 val name_of_entry : 'a t -> string
 val gram_of_entry : 'a t -> gram
 
-
+(** mutate the [estart] and [econtinue]
+   The previous version is lazy. We should find a way to exploit both in the future *)    
 val extend :
   'a t -> position  option * olevel list -> unit
 
