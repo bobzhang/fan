@@ -11,7 +11,7 @@ let higher s1 s2 =
   | (#terminal, _) -> true
   | _ -> false 
 
-(* {[ Gstructure.symbol -> bool ]}*)    
+
 let rec derive_eps : symbol -> bool = function
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
@@ -22,13 +22,14 @@ let rec derive_eps : symbol -> bool = function
   | `Smeta (_, _, _) | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
         (* Approximation *)
       false 
+
 and tree_derive_eps : tree -> bool = function
   | LocAct (_, _) -> true
   | Node {node = s; brother = bro; son = son} ->
       (derive_eps s && tree_derive_eps son || tree_derive_eps bro)
   | DeadEnd -> false 
 
-(* create an empty level *)
+
 let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
@@ -38,7 +39,7 @@ let levels_of_entry  e =
   |Dlevels ls -> Some ls
   |_ -> None
     
-(* given [entry] [position] and [levs]  return [levs* (label name * assoc ) -> level  *levs]*)
+
 let find_level ?position entry  levs =
   let find x n  ls = 
     let rec get = function
@@ -97,75 +98,26 @@ let get_initial = function
   | `Sself :: symbols -> (true, symbols)
   | symbols -> (false, symbols) 
 
-(* Insert the symbol list into the gram,
-   it will create side effect which will
-   update the keyword table in the gram
- *)
-let rec using_symbols gram symbols acc  =
-  List.fold_left (fun acc symbol -> using_symbol gram symbol acc) acc symbols
-and  using_symbol gram symbol acc =
+
+let rec using_symbols  symbols acc  =
+  List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
+and  using_symbol symbol acc =
   match symbol with 
-  | `Smeta (_, sl, _) ->
-    using_symbols gram sl acc 
+  | `Smeta (_, sl, _) -> using_symbols  sl acc 
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
-      using_symbol gram s acc
-  | `Slist0sep (s, t) ->
-      using_symbol gram t (using_symbol gram s acc)
-  | `Slist1sep (s, t) ->
-      using_symbol gram t (using_symbol gram s acc)
-  | `Stree t -> using_node gram  t acc 
+      using_symbol s acc
+  | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)
+  | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
+  | `Stree t -> using_node   t acc 
   | `Skeyword kwd -> kwd :: acc
   | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc 
-and using_node gram  node acc =
+and using_node   node acc =
   match node with 
   | Node {node = s; brother = bro; son = son} ->
-      using_node gram son (using_node gram bro (using_symbol gram s acc))
+      using_node son (using_node bro (using_symbol s acc))
   | LocAct (_, _) | DeadEnd -> acc 
 
 
-(* given an [entry] , [production] and  a [tree], return a new [tree]
-   [ename] is only used for error message
-   The [tree] is used to merge the [production]
-   {[
-   Insert.add_production
-   ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
-   - : Grammar.Gstructure.tree = `-S---"x"---"y"
-
-   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd;
-   - : Grammar.Gstructure.tree =
-   Node
-   {node = `Sself;
-     son =
-     Node
-     {node = `Skeyword "x";
-       son =
-      Node
-       {node = `Skeyword "y"; son = LocAct (<abstr>, []); brother = DeadEnd};
-     brother = DeadEnd};
-   brother = DeadEnd}
-
-   Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y";`Skeyword "z"], Action.mk (fun _ -> ""))
-    (Insert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"], Action.mk (fun _ -> "")) DeadEnd);
-   - : Grammar.Gstructure.tree =
-   Node
-   {node = `Sself;
-   son =
-   Node
-    {node = `Skeyword "x";
-     son =
-      Node
-       {node = `Skeyword "y";
-        son =
-         Node
-          {node = `Skeyword "z"; son = LocAct (<abstr>, []);
-           brother = LocAct (<abstr>, [])};
-        brother = DeadEnd};
-     brother = DeadEnd};
-   brother = DeadEnd}
-   
-   `-S---"x"---"y"---"z"- : 
-   ]}
- *)
 let add_production  ((gsymbols, (annot,action)):production) tree =
   let anno_action =  (List.length gsymbols, gsymbols,annot,action) in
   let rec try_insert s sl tree =
@@ -202,45 +154,44 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
         | DeadEnd -> LocAct anno_action []   in 
   insert gsymbols tree 
   
-let add_production_in_level  e1 (symbols, action) slev =
-  if e1 then
-    {slev with lsuffix = add_production  (symbols, action) slev.lsuffix}
+let add_production_in_level  ~suffix ((symbols, action) as prod) slev =
+  if suffix then
+    {slev with
+     lsuffix = add_production  (symbols, action) slev.lsuffix;
+     productions = slev.productions @ [prod] }
   else
-    {slev with lprefix = add_production  (symbols ,action) slev.lprefix}
+    {slev with
+     lprefix = add_production  (symbols ,action) slev.lprefix;
+     productions = slev.productions @ [prod]}
 
 
-let merge_level (la:level) (lb:olevel) = begin
-    let rules1 =
-      (match lb with
-      |(y,Some assoc,x) ->begin
-       if not(la.lname= y  && la.assoc = assoc) then
-         eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
-           (StdLib.pp_print_option pp_print_string) la.lname
-           (StdLib.pp_print_option pp_print_string) y
-           Gprint.dump#assoc la.assoc Gprint.dump#assoc assoc;
-       x
-     end
-     |((Some _ as y),_,x)-> begin
-         if not (la.lname=y) then
-           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
-             (StdLib.pp_print_option pp_print_string) la.lname
-             (StdLib.pp_print_option pp_print_string) y;
-         x
-     end
-     |(None,None,x) -> x);
-   List.fold_right
-      (fun (symbols,action) lev ->
-        let (e1,symbols) = get_initial symbols in
-        add_production_in_level  e1 (symbols,action) lev)  rules1 la;
-  end
-  
+let merge_level (la:level) (lb:olevel) = 
+  let rules1 =
+    (match lb with
+    |(y,Some assoc,x) ->
+        (if not(la.lname= y  && la.assoc = assoc) then
+          eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
+            (StdLib.pp_print_option pp_print_string) la.lname
+            (StdLib.pp_print_option pp_print_string) y
+            Gprint.dump#assoc la.assoc Gprint.dump#assoc assoc;
+         x)
+    |((Some _ as y),_,x)-> 
+        (if not (la.lname=y) then
+          eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
+            (StdLib.pp_print_option pp_print_string) la.lname
+            (StdLib.pp_print_option pp_print_string) y;
+         x)
+    |(None,None,x) -> x) in
+  List.fold_right
+    (fun (symbols,action) lev ->
+      let (suffix,symbols) = get_initial symbols in
+      add_production_in_level  ~suffix (symbols,action) lev)  rules1 la
 
-let level_of_olevel (lb:olevel) = begin
-  let (lname1,assoc1,_) = lb ;
-  let la = empty_lev lname1 (Option.default `LA assoc1 );
+    
+let level_of_olevel (lb:olevel) = 
+  let (lname1,assoc1,_) = lb in
+  let la = empty_lev lname1 (Option.default `LA assoc1 )in
   merge_level la lb  
-end
-  
 
 
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
@@ -274,10 +225,7 @@ let insert_olevel entry position olevel =
   levs1 @ (l1 :: levs2)
 
             
-(* for the side effects,
-   check whether the [gram]  is identical
-   and insert the [keywords] here 
- *)    
+
 let rec scan_olevels entry (levels: olevel list ) =
   List.map  (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
@@ -285,7 +233,7 @@ and scan_olevel entry (x,y,prods) =
 and scan_product entry (symbols,x) = begin
   (List.map
      (fun symbol -> begin
-       let keywords =using_symbol entry.egram symbol [] ;
+       let keywords =using_symbol  symbol [] ;
          let diff = let open SSet in
          elements & diff (of_list keywords) !(entry.egram.gkeywords) ;
          if diff <> [] then begin
@@ -301,5 +249,21 @@ and scan_product entry (symbols,x) = begin
 end
 
     
+let extend entry (position, levels) =
+  let levels =  scan_olevels entry levels in (* for side effect *)
+  let elev = insert_olevels_in_levels entry position levels in
+  (entry.edesc <- Dlevels elev;
+   entry.estart <-Gparser.start_parser_of_entry entry;
+   entry.econtinue <- Gparser.continue_parser_of_entry entry)
 
+
+    
+let extend_single entry (position,olevel) = 
+  let olevel = scan_olevel entry olevel in
+  let elev = insert_olevel entry position olevel in
+  (entry.edesc <-Dlevels elev;
+   entry.estart <-Gparser.start_parser_of_entry entry;
+   entry.econtinue <- Gparser.continue_parser_of_entry entry)
+
+(* let eoi (e:entry) : entry = assert false *)
 

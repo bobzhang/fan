@@ -29,8 +29,6 @@ let default_keywords =
 let gkeywords = ref (SSet.of_list default_keywords)
   
 
-(* let gfilter  *)
-
 
 
 let gram =  {

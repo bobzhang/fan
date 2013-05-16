@@ -13,9 +13,7 @@ type position =
 (* the [location] and the parsed value *)
 type 'a cont_parse  = FanLoc.t -> Gaction.t -> 'a parse 
     
-type description =
-    [ `Normal
-    | `Antiquot]
+type description = [ `Normal | `Antiquot]
 
 type descr = (description * string) 
 type token_pattern = ((FanToken.t -> bool) * descr)
@@ -82,6 +80,12 @@ and anno_action = (int  * symbol list  * string  * Gaction.t)
 
 
 (* FIXME duplciate with Gram.mli*)
+
+(**
+   [olevel] is the [processed output] from the Gram DDSL, the runtime representation
+   is [level], there is a function [Ginsert.level_of_olevel] which converts the
+   processed output into the runtime
+ *)      
 type olevel = (label * assoc option  * production list )
 type extend_statment = (position option  * olevel list )
 type single_extend_statement =  (position option  * olevel)

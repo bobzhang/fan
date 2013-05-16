@@ -8,8 +8,6 @@ open Gtools
 
 open FanToken
 
-open Ginsert
-
 type 'a t = entry 
 
 let name e = e.ename
@@ -20,26 +18,13 @@ let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
-let extend entry (position,levels) =
-  let levels = scan_olevels entry levels in
-  let elev = insert_olevels_in_levels entry position levels in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry
-
-let extend_single entry (position,level) =
-  let level = scan_olevel entry level in
-  let elev = insert_olevel entry position level in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry
-
 let mk_dynamic g n =
   {
     egram = g;
     ename = n;
     estart = (empty_entry n);
-    econtinue = (fun _  _  _  _  -> raise XStream.Failure);
+    econtinue =
+      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
     edesc = (Dlevels []);
     freezed = false
   }
@@ -66,7 +51,8 @@ let of_parser g n (p : stream -> 'a) =
     egram = g;
     ename = n;
     estart = (fun _  -> f);
-    econtinue = (fun _  _  _  _  -> raise XStream.Failure);
+    econtinue =
+      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
     edesc = (Dparser f);
     freezed = true
   }
@@ -119,3 +105,7 @@ let symb_failed_txt = Gfailed.symb_failed_txt
 let parser_of_symbol = Gparser.parser_of_symbol
 
 let levels_of_entry = Ginsert.levels_of_entry
+
+let extend = Ginsert.extend
+
+let extend_single = Ginsert.extend_single

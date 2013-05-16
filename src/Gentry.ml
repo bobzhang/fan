@@ -4,69 +4,43 @@ open Format
 open Gstructure
 open Gtools
 open FanToken
-open Ginsert
+
   
 type 'a t  =  entry
 
 let name e = e.ename
-
 let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
 let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
 let trace_parser = ref false
 
 
-
-
-let extend entry (position, levels) =
-  let levels =  scan_olevels entry levels in (* for side effect *)
-  let elev = insert_olevels_in_levels entry position levels in
-  (entry.edesc <- Dlevels elev;
-  entry.estart <-Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry)
-
-
-    
-let extend_single entry (position,level) = 
-  let level = scan_olevel entry level in
-  let elev = insert_olevel entry position level in
-  (entry.edesc <-Dlevels elev;
-  entry.estart <-Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry)
-
-    
 let mk_dynamic g n ={
   egram = g;
   ename = n;
   estart = empty_entry n;
-  econtinue _ _ _ = (fun _ -> raise XStream.Failure);
+  econtinue _ _ _ = parser | ;
   edesc = Dlevels [] ;
   freezed = false;     
 }
 
 (* [estart] The main entrance to consume the parser  *)  
 let action_parse entry (ts: stream) : Gaction.t =
-  try begin
-    let p =
-      if !trace_parser then
-        Format.fprintf
-      else Format.ifprintf ;
-    p Format.err_formatter "@[<4>%s@ " entry.ename ;
+  try 
+    let p = if !trace_parser then Format.fprintf else Format.ifprintf in
+    (p Format.err_formatter "@[<4>%s@ " entry.ename ;
     let res = entry.estart 0 ts ;
     p Format.err_formatter "@]@." ;
-    res
-  end
+    res)
   with
   | XStream.Failure ->
-        FanLoc.raise (get_cur_loc ts)
-          (XStream.Error ("illegal begin of " ^ entry.ename))
-  | FanLoc.Exc_located (_, _) as exc -> begin
-      eprintf "%s@." (Printexc.to_string exc);
-      raise exc
-  end
-  | exc -> begin
-      eprintf "%s@." (Printexc.to_string exc);
-      FanLoc.raise (get_prev_loc ts) exc
-  end
+      FanLoc.raise (get_cur_loc ts)
+        (XStream.Error ("illegal begin of " ^ entry.ename))
+  | FanLoc.Exc_located (_, _) as exc -> 
+      (eprintf "%s@." (Printexc.to_string exc); raise exc)
+  | exc -> 
+      (eprintf "%s@." (Printexc.to_string exc);
+      FanLoc.raise (get_prev_loc ts) exc)
+
 
 (* stream parser is not extensible *)  
 let of_parser g n (p : stream -> 'a)   =
@@ -74,7 +48,7 @@ let of_parser g n (p : stream -> 'a)   =
   egram = g;
   ename = n;
   estart _ = f;
-  econtinue _ _ _ = fun _ -> raise XStream.Failure;
+  econtinue _ _ _ = parser |;
   edesc = Dparser f;
   freezed = true (* false *);    
 }
@@ -120,18 +94,16 @@ let parse entry loc cs =
        (glexer loc cs))
 
   
-(* [eoi_entry] could be improved *)    
-(* let eoi_entry entry = *)
-(*   let open Gstru in *)
-(*   let g = gram_of_entry entry in  *)
-(*   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in *)
-(*   begin *)
-(*     {:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ; *)
-(*     entry_eoi *)
-(*   end *)
-
+    
 let delete_rule = Gdelete.delete_rule
 let symb_failed = Gfailed.symb_failed
 let symb_failed_txt = Gfailed.symb_failed_txt
+
 let parser_of_symbol = Gparser.parser_of_symbol
-let levels_of_entry = Ginsert.levels_of_entry    
+
+
+let levels_of_entry = Ginsert.levels_of_entry
+let extend = Ginsert.extend
+let extend_single = Ginsert.extend_single
+    
+
