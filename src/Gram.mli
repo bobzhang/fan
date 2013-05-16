@@ -24,7 +24,7 @@ type gram =
 
 module Action :
   sig
-    type t = Gstructure.Action.t
+    type t = Gaction.t
     val mk : 'a -> t
     val get : t -> 'a
     val getf : t -> 'a -> 'b
@@ -58,9 +58,12 @@ type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      
 type delete_statment = symbol list
 
-type ('a,'b,'c)fold  = 'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c
+type ('a,'b,'c)fold  =
+    'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c
 
-type ('a,'b,'c) foldsep  = 'b t -> symbol list -> ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
+type ('a,'b,'c) foldsep  =
+    'b t -> symbol list -> ('a XStream.t -> 'b) ->
+      ('a XStream.t -> unit) -> 'a XStream.t -> 'c
       
 val name: 'a t -> string
 

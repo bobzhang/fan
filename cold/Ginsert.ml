@@ -240,17 +240,3 @@ and scan_product entry (symbols,x) =
          (match symbol with
           | `Snterm e when e == entry -> `Sself
           | _ -> symbol)) symbols), x)
-
-let extend entry (position,levels) =
-  let levels = scan_olevels entry levels in
-  let elev = insert_olevels_in_levels entry position levels in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- FanParser.start_parser_of_entry entry;
-  entry.econtinue <- FanParser.continue_parser_of_entry entry
-
-let extend_single entry (position,level) =
-  let level = scan_olevel entry level in
-  let elev = insert_olevel entry position level in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- FanParser.start_parser_of_entry entry;
-  entry.econtinue <- FanParser.continue_parser_of_entry entry

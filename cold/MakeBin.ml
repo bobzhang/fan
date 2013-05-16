@@ -221,7 +221,7 @@ module Make(PreCast:PRECAST) =
       ("-used-parsers", (FanArg.Unit just_print_applied_parsers),
         "Print the applied parsers.");
       ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
-        "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
+        "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
       ("-printer", (FanArg.String (rewrite_and_load "Printers")),
         "<name>  Load the printer <name>.cm(o|a|xs)");
       ("-ignore", (FanArg.String ignore), "ignore the next argument");

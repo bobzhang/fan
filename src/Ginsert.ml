@@ -301,23 +301,5 @@ and scan_product entry (symbols,x) = begin
 end
 
     
-(* mutate the [estart] and [econtinue]
-   The previous version is lazy. We should find a way to exploit both in the future
- *)    
-let extend entry (position, levels) =begin
-  let levels =  scan_olevels entry levels; (* for side effect *)
-  let elev = insert_olevels_in_levels entry position levels;
-  entry.edesc <- Dlevels elev;
-  entry.estart <-FanParser.start_parser_of_entry entry;
-  entry.econtinue <- FanParser.continue_parser_of_entry entry;
-end
 
-    
-let extend_single entry (position,level) = begin
-  let level = scan_olevel entry level;
-  let elev = insert_olevel entry position level    ;
-  entry.edesc <-Dlevels elev;
-  entry.estart <-FanParser.start_parser_of_entry entry;
-  entry.econtinue <- FanParser.continue_parser_of_entry entry;    
-end
 

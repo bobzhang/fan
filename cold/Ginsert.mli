@@ -31,8 +31,16 @@ val level_of_olevel: olevel -> level
 val insert_olevels_in_levels:
     entry -> position option -> olevel list -> level list
             
-val extend :
-  entry -> position  option * olevel list -> unit
+val scan_olevels : Gstructure.entry ->
+  Gstructure.olevel list ->
+  (Gstructure.label * Gstructure.assoc option *
+   (Gstructure.symbol list * (string * Gaction.t)) list)
+  list
+val scan_olevel : Gstructure.entry ->
+  Gstructure.olevel ->
+  Gstructure.label * Gstructure.assoc option *
+  (Gstructure.symbol list * (string * Gaction.t)) list
 
-val extend_single :
-  entry -> position  option * olevel  -> unit
+val insert_olevel : Gstructure.entry ->
+  [< `After of string | `Before of string | `First | `Last | `Level of string ]
+  option -> Gstructure.olevel -> Gstructure.level list      

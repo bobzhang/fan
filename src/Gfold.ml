@@ -16,7 +16,7 @@ let sfold1 f e _entry _symbl psymb =
 
 let sfold0sep f e entry symbl psymb psep =
   let failed = function
-    | [symb; sep] -> Gfailed.symb_failed_txt entry sep symb
+    | [symb; sep] -> Gentry.symb_failed_txt entry sep symb
     | _ -> assert false  in
   let rec kont accu = parser
     |  () = psep; a = psymb ?? failed symbl; 's  -> kont (f a accu) s
@@ -27,10 +27,10 @@ let sfold0sep f e entry symbl psymb psep =
 
 let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never used*)
   let failed = function
-    | [symb; sep] -> Gfailed.symb_failed_txt entry sep symb
+    | [symb; sep] -> Gentry.symb_failed_txt entry sep symb
     | _ -> assert false  in
   let parse_top =  function
-    | [symb; _] -> FanParser.parser_of_symbol entry symb 0 (* FIXME context *)
+    | [symb; _] -> Gentry.parser_of_symbol entry symb 0 (* FIXME context *)
     | _ -> raise XStream.Failure  in
   let rec kont accu = parser
     |  () = psep;

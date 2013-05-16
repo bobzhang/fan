@@ -2,9 +2,13 @@ open LibUtil
 
 open Format
 
+include Gstructure
+
 include Gentry
 
-include Gstructure
+include Gstru
+
+module Action = Gaction
 
 let default_keywords =
   ["&&";
@@ -139,42 +143,13 @@ let create_lexer ~annot  ~keywords  () =
     gfilter = (FanTokenFilter.mk ~is_kwd:(fun x  -> SSet.mem x v.contents))
   }
 
-let name_of_entry { ename;_} = ename
-
-let glexer = FanLexUtil.mk ()
-
-let lex loc cs = glexer loc cs
-
-let lex_string loc str = lex loc (XStream.of_string str)
-
-let parse_origin_tokens entry ts = Action.get (action_parse entry ts)
-
-let filter_and_parse_tokens entry ts =
-  parse_origin_tokens entry (FanTokenFilter.filter (entry.egram).gfilter ts)
-
-let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs)
-
-let parse_string entry loc str =
-  filter_and_parse_tokens entry (lex_string loc str)
-
-let mk = mk_dynamic gram
+let mk f = mk_dynamic gram f
 
 let of_parser name strm = of_parser gram name strm
 
 let get_filter () = gram.gfilter
 
-let lex_string loc str = lex loc (XStream.of_string str)
-
 let token_stream_of_string s = s |> (lex_string FanLoc.string_loc)
-
-let parse entry loc cs =
-  parse_origin_tokens entry
-    (FanTokenFilter.filter (entry.egram).gfilter (glexer loc cs))
-
-let parse_string ?(loc= FanLoc.string_loc)  entry str =
-  parse_origin_tokens entry
-    (FanTokenFilter.filter (entry.egram).gfilter
-       (glexer loc (XStream.of_string str)))
 
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry
@@ -198,8 +173,6 @@ let wrap_stream_parser p loc s =
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "error: %s@." (FanLoc.to_string loc); FanLoc.raise loc e)
 
-let delete_rule = Gdelete.delete_rule
-
 let srules rl = `Stree (List.fold_right Ginsert.add_production rl DeadEnd)
 
 let sfold0 = Gfold.sfold0
@@ -210,32 +183,36 @@ let sfold0sep = Gfold.sfold0sep
 
 let sfold1sep = Gfold.sfold1sep
 
-let extend = Ginsert.extend
-
-let extend_single = Ginsert.extend_single
-
-let levels_of_entry = Ginsert.levels_of_entry
-
 let eoi_entry entry =
-  let g = gram_of_entry entry in
-  let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
-  extend_single (entry_eoi : 'entry_eoi t )
-    (None,
-      (None, None,
-        [([`Snterm (obj (entry : 'entry t ));
-          `Stoken
-            (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-           ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
-             (mk_action
-                (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
-                   (_loc : FanLoc.t)  ->
-                   match __fan_1 with
-                   | `EOI -> (x : 'entry_eoi )
-                   | _ -> failwith "x\n"))))]));
-  entry_eoi
+  let open Gstru in
+    let g = gram_of_entry entry in
+    let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
+    extend_single (entry_eoi : 'entry_eoi t )
+      (None,
+        (None, None,
+          [([`Snterm (obj (entry : 'entry t ));
+            `Stoken
+              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+             ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
+               (mk_action
+                  (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
+                     (_loc : FanLoc.t)  ->
+                     match __fan_1 with
+                     | `EOI -> (x : 'entry_eoi )
+                     | _ -> failwith "x\n"))))]));
+    entry_eoi
 
 let find_level ?position  entry =
   match entry.edesc with
   | Dparser _ -> invalid_arg "Gram.find_level"
   | Dlevels levs ->
       let (_,f,_) = Ginsert.find_level ?position entry levs in f
+
+type ('a,'b,'c) fold =
+  'b t -> symbol list -> ('a XStream.t -> 'b) -> 'a XStream.t -> 'c 
+
+type ('a,'b,'c) foldsep =
+  'b t ->
+    symbol list ->
+      ('a XStream.t -> 'b) -> ('a XStream.t -> unit) -> 'a XStream.t -> 'c
+  

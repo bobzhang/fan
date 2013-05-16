@@ -108,8 +108,8 @@ let delete_rule entry sl =
   | Dlevels levs ->
       let levs = delete_rule_in_level_list entry sl levs in begin
         entry.edesc <- Dlevels levs;
-        let start = FanParser.start_parser_of_entry entry in
-        let continue = FanParser.continue_parser_of_entry entry in begin 
+        let start = Gparser.start_parser_of_entry entry in
+        let continue = Gparser.continue_parser_of_entry entry in begin 
           entry.estart <- start;
           entry.econtinue <- continue
         end

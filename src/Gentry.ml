@@ -4,8 +4,9 @@ open Format
 open Gstructure
 open Gtools
 open FanToken
-
-type 'a t  =entry
+open Ginsert
+  
+type 'a t  = entry
 
 let name e = e.ename
 
@@ -15,6 +16,28 @@ let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
 
 let trace_parser = ref false
 
+
+
+(* mutate the [estart] and [econtinue]
+   The previous version is lazy. We should find a way to exploit both in the future
+ *)    
+let extend entry (position, levels) =begin
+  let levels =  scan_olevels entry levels; (* for side effect *)
+  let elev = insert_olevels_in_levels entry position levels;
+  entry.edesc <- Dlevels elev;
+  entry.estart <-Gparser.start_parser_of_entry entry;
+  entry.econtinue <- Gparser.continue_parser_of_entry entry;
+end
+
+    
+let extend_single entry (position,level) = begin
+  let level = scan_olevel entry level;
+  let elev = insert_olevel entry position level    ;
+  entry.edesc <-Dlevels elev;
+  entry.estart <-Gparser.start_parser_of_entry entry;
+  entry.econtinue <- Gparser.continue_parser_of_entry entry;    
+end
+    
 let mk_dynamic g n ={
   egram = g;
   ename = n;
@@ -25,7 +48,7 @@ let mk_dynamic g n ={
 }
 
 (* [estart] The main entrance to consume the parser  *)  
-let action_parse entry (ts: stream) : Action.t =
+let action_parse entry (ts: stream) : Gaction.t =
   try begin
     let p =
       if !trace_parser then
@@ -51,7 +74,7 @@ let action_parse entry (ts: stream) : Action.t =
 
 (* stream parser is not extensible *)  
 let of_parser g n (p : stream -> 'a)   =
-  let f ts = Action.mk (p ts) in {
+  let f ts = Gaction.mk (p ts) in {
   egram = g;
   ename = n;
   estart _ = f;
@@ -61,7 +84,7 @@ let of_parser g n (p : stream -> 'a)   =
 }
 
 let setup_parser e (p : stream -> 'a) =
-  let f ts = Action.mk (p ts) in begin
+  let f ts = Gaction.mk (p ts) in begin
     e.estart <- fun _ -> f;
     e.econtinue <- fun _ _ _ -> fun _ -> raise XStream.Failure;
     e.edesc <- Dparser f
@@ -75,3 +98,44 @@ end
 
 let obj x = x
 let repr x = x
+
+
+let name_of_entry {ename;_} = ename
+let gram_of_entry {egram;_} = egram
+let parse_origin_tokens entry ts = Gaction.get (action_parse entry ts)
+let filter_and_parse_tokens entry ts =
+  parse_origin_tokens entry (FanTokenFilter.filter entry.egram.gfilter  ts)
+    
+let glexer = FanLexUtil.mk ()
+
+(* UNfiltered token stream *)
+let lex  loc cs =  glexer loc cs
+
+let lex_string loc str = lex  loc (XStream.of_string str)
+
+let parse_string ?(loc=FanLoc.string_loc) entry  str =
+  parse_origin_tokens entry
+    (FanTokenFilter.filter entry.egram.gfilter
+       (glexer loc (XStream.of_string str)))
+    
+let parse entry loc cs =
+  parse_origin_tokens entry
+    (FanTokenFilter.filter entry.egram.gfilter
+       (glexer loc cs))
+
+  
+(* [eoi_entry] could be improved *)    
+(* let eoi_entry entry = *)
+(*   let open Gstru in *)
+(*   let g = gram_of_entry entry in  *)
+(*   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in *)
+(*   begin *)
+(*     {:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ; *)
+(*     entry_eoi *)
+(*   end *)
+
+let delete_rule = Gdelete.delete_rule
+let symb_failed = Gfailed.symb_failed
+let symb_failed_txt = Gfailed.symb_failed_txt
+let parser_of_symbol = Gparser.parser_of_symbol
+let levels_of_entry = Ginsert.levels_of_entry    

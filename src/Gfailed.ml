@@ -175,7 +175,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
                   "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
                   "----------------------------------@,@]@.")
               entry.ename
-              (Gprint.text#rules ) (flatten_tree tree);
+              (Gprint.text#rules ) (Gstru.flatten_tree tree);
           end
         else ();
         txt ^ " (in [" ^ entry.ename ^ "])"
