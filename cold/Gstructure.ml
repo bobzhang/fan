@@ -37,8 +37,8 @@ and desc =
   | Dparser of (stream -> Gaction.t) 
 and level = 
   {
-  assoc: assoc;
   lname: label;
+  assoc: assoc;
   productions: production list;
   lsuffix: tree;
   lprefix: tree} 

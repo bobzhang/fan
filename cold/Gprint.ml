@@ -47,8 +47,8 @@ class type grammar_print
         ?last:space_formatter ->
           (formatter -> 'a -> unit) -> formatter -> 'a option -> unit
     method rule : formatter -> symbol list -> unit
-    method production : formatter -> production -> unit
-    method productions : formatter -> production list -> unit
+    method production : ?action:bool -> formatter -> production -> unit
+    method productions : ?action:bool -> formatter -> production list -> unit
     method rules : formatter -> symbol list list -> unit
     method symbol : formatter -> symbol -> unit
     method symbol1 : formatter -> symbol -> unit
@@ -66,9 +66,9 @@ class text_grammar : grammar_print =
               (Format.formatter -> 'a -> unit) ->
                 Format.formatter -> 'a list -> unit=
       fun ?sep  ?first  ?last  fu  f  xs  ->
-        let first = match first with | Some x -> x | None  -> ""
-        and last = match last with | Some x -> x | None  -> ""
-        and sep = match sep with | Some x -> x | None  -> "@ " in
+        let first = Option.default ("" : space_formatter ) first in
+        let last = Option.default ("" : space_formatter ) last in
+        let sep = Option.default ("@ " : space_formatter ) sep in
         let aux f =
           function
           | [] -> ()
@@ -130,12 +130,17 @@ class text_grammar : grammar_print =
       | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _
         |`Slist1sep (_,_)|`Sopt _|`Stry _|`Speek _ as s ->
           pp f "(%a)" self#symbol s
-    method production f ((symbols,(_annot,_action)) : production) =
-      pp f "@[<0>%a@;->@ <action>@;@]" (self#list self#symbol ~sep:";@;")
-        symbols
-    method productions f ps =
+    method production ?(action= false)  f
+      ((symbols,(annot,_action)) : production) =
+      if not action
+      then pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@;") symbols
+      else
+        pp f "@[<0>%a@;->@ @[%s@]@]" (self#list self#symbol ~sep:";@;")
+          symbols annot
+    method productions ?(action= false)  f ps =
       pp f "@[<0>%a@]"
-        (self#list self#production ~sep:"@;| " ~first:"[@;" ~last:"@;]") ps
+        (self#list (self#production ~action) ~sep:"@;| " ~first:"[ "
+           ~last:" ]") ps
     method rule f symbols =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
     method rules f rules =

@@ -134,10 +134,8 @@ let eoi_entry entry =
   let open Gstru in
   let g = gram_of_entry entry in
   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in
-  begin
-    {:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;
-    entry_eoi
-  end
+  ({:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;
+   entry_eoi)
 
 let find_level ?position entry =
   match entry.edesc with

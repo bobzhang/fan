@@ -42,9 +42,12 @@ and desc =
     (* | Dlevel of level  *)
   | Dparser of (stream -> Gaction.t )
 and level = {
-    assoc   : assoc ;
     lname   : label;
+    assoc   : assoc ;
     productions : production list ;
+   (* (assoc, lname, production) triple composes
+      olevel which can be used by [Ginsert.level_of_olevel]
+      to deduce  the whole level *)
     (* the raw productions stored in the level*)
     lsuffix : tree ;
     lprefix : tree}

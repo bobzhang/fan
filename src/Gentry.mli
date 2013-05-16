@@ -62,3 +62,5 @@ val parser_of_symbol : 'a t ->
   symbol -> int -> (Gaction.t * FanLoc.t) FanToken.parse
 val levels_of_entry : 'a t -> Gstructure.level list option      
     
+val copy : 'a t -> 'a t
+(* val eoi_entry : 'a t -> 'a t  *)

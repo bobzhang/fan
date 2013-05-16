@@ -262,3 +262,41 @@ let extend_single entry (position,olevel) =
   entry.edesc <- Dlevels elev;
   entry.estart <- Gparser.start_parser_of_entry entry;
   entry.econtinue <- Gparser.continue_parser_of_entry entry
+
+let copy (e : entry) =
+  (let result =
+     {
+       e with
+       estart = (fun _  -> assert false);
+       econtinue = (fun _  -> assert false)
+     } in
+   result.estart <- Gparser.start_parser_of_entry result;
+   result.econtinue <- Gparser.continue_parser_of_entry result;
+   result : entry )
+
+let refresh_level ~f  { assoc; lname; productions;_} =
+  level_of_olevel (lname, (Some assoc), (f productions))
+
+let rec eoi_level l =
+  let aux (prods : production list) =
+    List.map
+      (fun (symbs,(annot,act))  ->
+         ((symbs @
+             [`Stoken
+                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))]),
+           (annot, (Gaction.mk (fun _  -> act))))) prods in
+  refresh_level ~f:aux l
+and eoi_entry e =
+  let result =
+    {
+      e with
+      estart = (fun _  -> assert false);
+      econtinue = (fun _  -> assert false)
+    } in
+  match result.edesc with
+  | Dlevels ls ->
+      (result.edesc <- Dlevels (List.map eoi_level ls);
+       result.estart <- Gparser.start_parser_of_entry result;
+       result.econtinue <- Gparser.continue_parser_of_entry result;
+       result)
+  | Dparser _ -> failwith "Ginsert.eoi_entry Dparser"

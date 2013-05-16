@@ -58,8 +58,7 @@ val add_production : production -> tree -> tree
 
 (** the production is added in reverse order
     from the Gram DDSL *)    
-val add_production_in_level :
-    (* suffix:bool -> *) production -> level -> level
+val add_production_in_level : production -> level -> level
 
 
 val merge_level : level -> olevel -> level
@@ -87,3 +86,8 @@ val insert_olevel : entry -> position option -> olevel -> level list
 val extend : entry -> position option * olevel list -> unit    
 
 val extend_single : entry ->  position option * olevel -> unit    
+
+(** duplciate a grammar which the user can freely mutate without
+    worring about the side effect  *)
+val copy : entry -> entry    
+val eoi_entry : entry -> entry
