@@ -193,8 +193,8 @@ and parser_of_symbol entry s nlevn =
         let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (* FIXME*) in
         fun strm ->
           let (act,loc) = pt strm in Gaction.getf act loc 
-    | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)
     | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
+    | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)          
     | `Sself -> fun strm -> entry.estart 0 strm 
     | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm 
     | `Skeyword kwd -> fun strm ->
@@ -209,9 +209,7 @@ and parser_of_symbol entry s nlevn =
 
 
 
-(* entrance for the start
-   [clevn] is the current level 
- *)  
+(* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
   let rec aux clevn  (xs:  level list) : int ->  Gaction.t parse =
     match xs with 

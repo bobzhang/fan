@@ -17,5 +17,7 @@ val get_terminals: node ->  (terminal list * terminal * tree) option
 val eq_Stoken_ids: descr -> descr -> bool
         
 val logically_eq_symbols: entry -> symbol -> symbol -> bool
-      
+
+
+(** used in [Ginsert] *)      
 val eq_symbol:  symbol ->symbol -> bool
