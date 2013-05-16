@@ -111,3 +111,5 @@ let extend = Ginsert.extend
 let extend_single = Ginsert.extend_single
 
 let copy = Ginsert.copy
+
+let eoi_entry = Ginsert.eoi_entry

@@ -129,7 +129,7 @@ let sfold0sep = Gfold.sfold0sep
 let sfold1sep = Gfold.sfold1sep
 
 
-(* [eoi_entry] could be improved *)  
+(* [eoi_entry] could be improved   *)
 let eoi_entry entry =
   let open Gstru in
   let g = gram_of_entry entry in

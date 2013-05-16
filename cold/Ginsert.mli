@@ -89,5 +89,7 @@ val extend_single : entry ->  position option * olevel -> unit
 
 (** duplciate a grammar which the user can freely mutate without
     worring about the side effect  *)
-val copy : entry -> entry    
+val copy : entry -> entry
+
+(** [FIXME] the annotation seems to be inconsistent *)    
 val eoi_entry : entry -> entry
