@@ -1,7 +1,7 @@
 open LibUtil
 open FanToken
   
-type 'a t 
+type 'a t = 'a Gentry.t
 
 type assoc = [ `LA | `NA | `RA ]
 

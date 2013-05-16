@@ -232,20 +232,21 @@ and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
 and scan_product entry (symbols,x) = begin
   (List.map
-     (fun symbol -> begin
-       let keywords =using_symbol  symbol [] ;
-         let diff = let open SSet in
-         elements & diff (of_list keywords) !(entry.egram.gkeywords) ;
-         if diff <> [] then begin
-           failwithf
-             "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
-             (List.reduce_left (^) diff);
-         end;
-         check_gram entry symbol;
-         match symbol with
-         |`Snterm e when e == entry -> `Sself
-         | _ -> symbol
-     end) symbols,x)
+     (fun symbol -> 
+       let keywords =using_symbol  symbol [] in
+       let diff =
+         let open SSet in
+         elements & diff (of_list keywords) !(entry.egram.gkeywords) in
+       let () =
+         if diff <> [] then 
+           (failwithf
+              "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
+              (List.reduce_left (^) diff)) in
+       let () = check_gram entry symbol in
+       match symbol with
+       |`Snterm e when e == entry -> `Sself
+       | _ -> symbol
+     ) symbols,x)
 end
 
     

@@ -52,7 +52,7 @@ let create_lexer ~annot ~keywords () =
 
 (* FIXME duplicate some code from Entry *)
 
-
+(* {:exp-| 3 + 4 |} *)
 
   
 
