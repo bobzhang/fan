@@ -155,8 +155,7 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
         | DeadEnd -> LocAct anno_action []   in 
   insert gsymbols tree 
     
-let add_production_in_level  (* ~suffix *)
-    ((symbols, action) as prod) slev =
+let add_production_in_level ((symbols, action) as prod) slev =
   let (suffix,symbols1) = get_initial symbols in
   if suffix then
     {slev with
@@ -186,12 +185,7 @@ let merge_level (la:level) (lb:olevel) =
          x)
     |(None,None,x) -> x) in
   (* added in reverse order *)
-  List.fold_right
-    (fun (((* (symbols,action) as *) prod):production) lev ->
-      (* let (suffix,symbols1) = get_initial symbols in *)
-      add_production_in_level  (* ~suffix *)
-        prod
-        (* (symbols1,action) *) lev)  rules1 la
+  List.fold_right add_production_in_level rules1 la
 
     
 let level_of_olevel (lb:olevel) = 

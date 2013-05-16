@@ -78,10 +78,9 @@ let print_warning loc txt = !current_warning loc txt;;
   uident
   vid 
   astr
-  dot_namespace
-|};;
+  dot_namespace|};;
   
-  let antiquot_exp = Gram.eoi_entry exp 
+let antiquot_exp = Gram.eoi_entry exp 
 let antiquot_pat = Gram.eoi_entry pat
 let antiquot_ident = Gram.eoi_entry ident
 let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str

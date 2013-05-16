@@ -119,6 +119,20 @@
   our ocamllex engine raises Failrue...
   solution: ==> failwith instead of Failure
   
-* generate fold type and map type in ml file and write them in mli file
+* 08 generate fold type and map type in ml file and write them in mli file
 
-* Specialize [eoi_entry] and provide grammar analysis
+* 09 Specialize [eoi_entry] and provide grammar analysis
+
+* 10 EOI problem
+  The lexer feeds an EOI at the end of stream, but most entries does
+  not handle EOI, if handle EOI, some problem appears
+
+  #+BEGIN_SRC ocaml
+  exp_eoi:[ exp{e}; `EOI]
+  #+END_SRC
+  Given [`Ant; `EOI]
+  exp:[
+   `Ant  ->
+   `Ant "g"; `Ant"ghso"
+  ]
+  will not parse, since under such case, the second production has a higher priority.
