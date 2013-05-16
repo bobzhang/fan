@@ -8,4 +8,4 @@ val xid : ?off:int -> int -> [> `Lid of FanLoc.t * string ]
 val allx : ?off:int -> int -> string
 val allxid : ?off:int -> int -> [> `Lid of FanLoc.t * string ]
 val check_valid : string -> unit
-val conversion_table : (string, string) LibUtil.Hashtbl.t
+val conversion_table : (string, string) Hashtbl.t

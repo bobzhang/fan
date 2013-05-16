@@ -16,4 +16,4 @@ val revise : unit -> unit
 (* val token : unit -> unit *)
 
 (* val fake : *)
-(*   ([> FanToken.t ] * 'a) LibUtil.XStream.t -> Parsetree.toplevel_phrase *)
+(*   ([> FanToken.t ] * 'a) XStream.t -> Parsetree.toplevel_phrase *)

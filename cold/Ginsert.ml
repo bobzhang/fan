@@ -151,19 +151,20 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
          | DeadEnd  -> LocAct (anno_action, [])) in
   insert gsymbols tree
 
-let add_production_in_level ~suffix  ((symbols,action) as prod) slev =
+let add_production_in_level ((symbols,action) as prod) slev =
+  let (suffix,symbols1) = get_initial symbols in
   if suffix
   then
     {
       slev with
-      lsuffix = (add_production (symbols, action) slev.lsuffix);
-      productions = (slev.productions @ [prod])
+      lsuffix = (add_production (symbols1, action) slev.lsuffix);
+      productions = (prod :: (slev.productions))
     }
   else
     {
       slev with
-      lprefix = (add_production (symbols, action) slev.lprefix);
-      productions = (slev.productions @ [prod])
+      lprefix = (add_production (symbols1, action) slev.lprefix);
+      productions = (prod :: (slev.productions))
     }
 
 let merge_level (la : level) (lb : olevel) =
@@ -188,9 +189,8 @@ let merge_level (la : level) (lb : olevel) =
          x)
     | (None ,None ,x) -> x in
   List.fold_right
-    (fun (symbols,action)  lev  ->
-       let (suffix,symbols) = get_initial symbols in
-       add_production_in_level ~suffix (symbols, action) lev) rules1 la
+    (fun (prod : production)  lev  -> add_production_in_level prod lev)
+    rules1 la
 
 let level_of_olevel (lb : olevel) =
   let (lname1,assoc1,_) = lb in
@@ -239,14 +239,15 @@ and scan_product entry (symbols,x) =
            let open SSet in
              elements &
                (diff (of_list keywords) ((entry.egram).gkeywords).contents) in
-         if diff <> []
-         then
-           failwithf "in grammar %s: keywords introduced: [ %s ] "
-             (entry.egram).annot (List.reduce_left ( ^ ) diff);
-         check_gram entry symbol;
-         (match symbol with
-          | `Snterm e when e == entry -> `Sself
-          | _ -> symbol)) symbols), x)
+         let () =
+           if diff <> []
+           then
+             failwithf "in grammar %s: keywords introduced: [ %s ] "
+               (entry.egram).annot (List.reduce_left ( ^ ) diff) in
+         let () = check_gram entry symbol in
+         match symbol with
+         | `Snterm e when e == entry -> `Sself
+         | _ -> symbol) symbols), x)
 
 let extend entry (position,levels) =
   let levels = scan_olevels entry levels in

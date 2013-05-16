@@ -1,9 +1,9 @@
 open Ast 
 type 'a filter = 'a -> 'a
 type key = string
-val interf_filters : (key, sigi filter) LibUtil.Hashtbl.t
-val implem_filters : (key, stru filter) LibUtil.Hashtbl.t
-val topphrase_filters : (key, stru filter) LibUtil.Hashtbl.t
+val interf_filters : (key, sigi filter) Hashtbl.t
+val implem_filters : (key, stru filter) Hashtbl.t
+val topphrase_filters : (key, stru filter) Hashtbl.t
 val applied_interf_filters : (key * sigi filter) Queue.t
 val applied_implem_filters : (key * stru filter) Queue.t
 val applied_topphrase_filters : (key * stru filter) Queue.t

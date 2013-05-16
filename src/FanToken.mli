@@ -49,13 +49,13 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
-val pp_print_error: Format.formatter -> error -> unit
+val pp_print_error : Format.formatter -> error -> unit
 
-val string_of_error_msg: error -> string
+val string_of_error_msg : error -> string
 
-val token_to_string: t  -> string
+val token_to_string : t  -> string
 
-val to_string: [> t]  -> string
+val to_string : [> t]  -> string
 
 val err : error -> FanLoc.t -> 'a
 
@@ -65,30 +65,30 @@ val check_keyword : 'a -> bool
 
 val error_on_unknown_keywords : bool ref
 
-val ignore_layout:  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
+val ignore_layout :  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
 
-val print: Format.formatter -> [> t ] -> unit
+val print : Format.formatter -> [> t ] -> unit
 
-val match_keyword: 'a -> [> `KEYWORD of 'a ] -> bool
+val match_keyword : 'a -> [> `KEYWORD of 'a ] -> bool
 
-val extract_string: [> t ] -> string
+val extract_string : [> t ] -> string
 
-val keyword_conversion:  ([> t ] as 'a) ->  (string -> bool) -> 'a
+val keyword_conversion :  ([> t ] as 'a) ->  (string -> bool) -> 'a
 
-val check_keyword_as_label:
+val check_keyword_as_label :
   [> `LABEL of string | `OPTLABEL of string ] ->
   FanLoc.t -> (string -> bool) -> unit
 
-val check_unknown_keywords: [> `SYMBOL of string ] -> FanLoc.t -> unit
+val check_unknown_keywords : [> `SYMBOL of string ] -> FanLoc.t -> unit
 
 
 val string_of_domains : domains -> string
 val string_of_name : domains * string -> string
 val paths : domains list ref
 val concat_domain : domains * domains -> domains
-val empty_name: name
+val empty_name : name
 
-val name_of_string: string -> name    
-val names_tbl: (domains, LibUtil.SSet.t) LibUtil.Hashtbl.t
+val name_of_string : string -> name    
+val names_tbl : (domains, LibUtil.SSet.t) Hashtbl.t
 
-val resolve_name: name -> name    
+val resolve_name : name -> name    

@@ -28,7 +28,34 @@ and print_sons (start : string) (decomp : 'a -> (string * 'a list))
       pp f "%s%a@\n%s%a" start (print_node decomp (pref ^ "| ")) s pref
         (print_sons "|-" decomp pref) sons
 
-class text_grammar =
+class type grammar_print
+  =
+  object 
+    method assoc : formatter -> assoc -> unit
+    method description : formatter -> description -> unit
+    method entry : formatter -> entry -> unit
+    method level : formatter -> level -> unit
+    method levels : formatter -> level list -> unit
+    method list :
+      ?sep:space_formatter ->
+        ?first:space_formatter ->
+          ?last:space_formatter ->
+            (formatter -> 'a -> unit) -> formatter -> 'a list -> unit
+    method meta : string list -> formatter -> symbol list -> unit
+    method option :
+      ?first:space_formatter ->
+        ?last:space_formatter ->
+          (formatter -> 'a -> unit) -> formatter -> 'a option -> unit
+    method rule : formatter -> symbol list -> unit
+    method production : formatter -> production -> unit
+    method productions : formatter -> production list -> unit
+    method rules : formatter -> symbol list list -> unit
+    method symbol : formatter -> symbol -> unit
+    method symbol1 : formatter -> symbol -> unit
+    method tree : formatter -> tree -> unit
+  end
+
+class text_grammar : grammar_print =
   object (self : 'self)
     method tree f t = self#rules f (flatten_tree t)
     method list :
@@ -103,6 +130,12 @@ class text_grammar =
       | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _
         |`Slist1sep (_,_)|`Sopt _|`Stry _|`Speek _ as s ->
           pp f "(%a)" self#symbol s
+    method production f ((symbols,(_annot,_action)) : production) =
+      pp f "@[<0>%a@;->@ <action>@;@]" (self#list self#symbol ~sep:";@;")
+        symbols
+    method productions f ps =
+      pp f "@[<0>%a@]"
+        (self#list self#production ~sep:"@;| " ~first:"[@;" ~last:"@;]") ps
     method rule f symbols =
       pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
     method rules f rules =
@@ -133,7 +166,7 @@ let string_of_symbol s =
   text#symbol str_formatter s;
   flush_str_formatter ()
 
-class dump_grammar =
+class dump_grammar : grammar_print =
   object (self : 'self)
     inherit  text_grammar
     method! tree f tree =

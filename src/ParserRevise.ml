@@ -4,62 +4,53 @@ open FanOps
 open Syntax
 open LibUtil
 open FanUtil
-open GramLib
+open Gramlib
 
 {:create|Gram pos_exps|};;
 
 let apply () = begin 
   let list = ['!'; '?'; '~'] in
   let excl = ["!="; "??"] in
-  setup_op_parser prefixop
-    (fun x -> not (List.mem x excl) && String.length x >= 2 &&
-              List.mem x.[0] list && symbolchar x 1);
+  let () = setup_op_parser prefixop
+      (fun x -> not (List.mem x excl) && String.length x >= 2 &&
+              List.mem x.[0] list && symbolchar x 1) in
   let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
   let list_first_char_ok = ['='; '<'; '>'; '|'; '&'; '$'; '!'] in
   let excl = ["<-"; "||"; "&&"] in
-  setup_op_parser infixop2
-    (fun x -> (List.mem x list_ok) ||
-              (not (List.mem x excl) && String.length x >= 2 &&
-              List.mem x.[0] list_first_char_ok && symbolchar x 1));
-
+  let () = setup_op_parser infixop2
+      (fun x -> (List.mem x list_ok) ||
+      (not (List.mem x excl) && String.length x >= 2 &&
+       List.mem x.[0] list_first_char_ok && symbolchar x 1)) in
   let list = ['@'; '^'] in
-  setup_op_parser infixop3
-    (fun x -> String.length x >= 1 && List.mem x.[0] list &&
-              symbolchar x 1);
-
+  let () = setup_op_parser infixop3
+      (fun x -> String.length x >= 1 && List.mem x.[0] list &&
+              symbolchar x 1) in
   let list = ['+'; '-'] in
-  setup_op_parser infixop4
+  let ()  = setup_op_parser infixop4
     (fun x -> x <> "->" && String.length x >= 1 && List.mem x.[0] list &&
-              symbolchar x 1);
-
+      symbolchar x 1) in
   let list = ['*'; '/'; '%'; '\\'] in
-  setup_op_parser infixop5
+  let () = setup_op_parser infixop5
     (fun x -> String.length x >= 1 && List.mem x.[0] list &&
               (x.[0] <> '*' || String.length x < 2 || x.[1] <> '*') &&
-              symbolchar x 1);
-
-  setup_op_parser infixop6
+              symbolchar x 1) in
+  let () = setup_op_parser infixop6
     (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
-              symbolchar x 2);
-
-
-  FanTokenFilter.define_filter (Gram.get_filter ())
-    (fun f strm -> infix_kwds_filter (f strm));
-
+              symbolchar x 2) in
+  let () = FanTokenFilter.define_filter (Gram.get_filter ())
+    (fun f strm -> infix_kwds_filter (f strm)) in
   Gram.setup_parser sem_exp begin
     let symb1 = Gram.parse_origin_tokens exp in
     let symb = parser
       |  (`Ant (("list" as n), s), _loc)  ->
           mk_anti ~c:"exp;" _loc n s
       |  a = symb1  -> a  in
-    let rec kont al =
-      parser
-        |  (`KEYWORD ";", _); a = symb; 's  ->
-            let _loc =  al <+> a  in
-            kont {:exp| $al; $a |} s
-        |  -> al  in
-    parser
-      |  a = symb; 's  -> kont a s
+    let rec kont al = parser
+      |  (`KEYWORD ";", _); a = symb; 's  ->
+          let _loc =  al <+> a  in
+          kont {:exp| $al; $a |} s
+      |  -> al  in
+    parser |  a = symb; 's  -> kont a s
   end;
 
   with mexp
@@ -148,9 +139,7 @@ let apply () = begin
       | sigi{sg};";;" ; S{s} -> `Sem(_loc,sg,s)
       | sigi{sg};";;" ->sg            
       | sigi{sg}; S{s} -> `Sem(_loc,sg,s)
-      | sigi{sg} ->sg
-
-      (* | L1 [ sigi{sg}; ";" -> sg ]{l} -> sem_of_list l  *) ]
+      | sigi{sg} ->sg ]
       mtyp:
       { "top"
         [ "functor"; "("; a_uident{i}; ":"; S{t}; ")"; "->"; S{mt} ->
@@ -227,14 +216,11 @@ let apply () = begin
       [ exp{e1}; ","; comma_exp{e2} -> `Com(_loc,e1,e2)
       | exp{e1}; ";"; sem_exp{e2} -> `Sem(_loc,e1,e2)
       | exp{e} -> e]
-       (*
-       {:stru|
+       (* {:stru|
        let f (type t) () =
           let module M = struct exception E of t ; end in
           ((fun x -> M.E x), (function [M.E x -> Some x | _ -> None]))|}
-
-       {:stru| let f : ! 'a . 'a -> 'a = fun x -> x |}  
-        *)
+       {:stru| let f : ! 'a . 'a -> 'a = fun x -> x |} *)
       cvalue_bind:
       [ "="; exp{e} -> e
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; exp{e} -> 
@@ -242,7 +228,8 @@ let apply () = begin
       | ":"; ctyp{t}; "="; exp{e} -> {| ($e : $t) |}
       | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} ->
           (match t with
-          | {:ctyp| ! $_ . $_ |} -> raise (XStream.Error "unexpected polytype here")
+          | {:ctyp| ! $_ . $_ |} ->
+              raise (XStream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} )
       | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
       fun_bind:
@@ -305,9 +292,8 @@ let apply () = begin
             `While (_loc, e, seq)]  
        ":=" NA
         [ S{e1}; ":="; S{e2} ->
-          (* (`Assign (_loc,`Field(_loc,e1,`Id(_loc,`Lid(_loc,"contents"))),e2):exp) *)
           (`Assign (_loc,`Field(_loc,e1,`Lid(_loc,"contents")),e2):exp)
-          (* {| $e1 := $e2 |}  *)
+          (* {:exp| $e1 := $e2 |}  *)
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
             | Some e -> e
@@ -928,8 +914,7 @@ let apply () = begin
       | `EOI -> ([], None) ]
 
       (* used by [struct .... end]
-         constains at least one element 
-       *)
+         constains at least one element *)
       strus: (* FIXME dump seems to be incorrect *)
       [ `Ant ((""|"stri" as n),s) -> mk_anti _loc n ~c:"stru" s
       | `Ant ((""|"stri" as n),s) ;";;" -> mk_anti _loc n ~c:"stru" s          

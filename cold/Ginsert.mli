@@ -54,10 +54,12 @@ val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
     brother = DeadEnd}
    ]}
  *)
-    
 val add_production : production -> tree -> tree
 
-val add_production_in_level : suffix:bool -> production -> level -> level
+(** the production is added in reverse order
+    from the Gram DDSL *)    
+val add_production_in_level :
+    (* suffix:bool -> *) production -> level -> level
 
 
 val merge_level : level -> olevel -> level

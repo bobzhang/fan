@@ -10,70 +10,77 @@ open LibUtil
 
 open FanUtil
 
-open GramLib
+open Gramlib
 
 let pos_exps = Gram.mk "pos_exps"
 
 let apply () =
   (let list = ['!'; '?'; '~'] in
    let excl = ["!="; "??"] in
-   setup_op_parser prefixop
-     (fun x  ->
-        (not (List.mem x excl)) &&
-          (((String.length x) >= 2) &&
-             ((List.mem (x.[0]) list) && (symbolchar x 1)))));
-  (let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
+   let () =
+     setup_op_parser prefixop
+       (fun x  ->
+          (not (List.mem x excl)) &&
+            (((String.length x) >= 2) &&
+               ((List.mem (x.[0]) list) && (symbolchar x 1)))) in
+   let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
    let list_first_char_ok = ['='; '<'; '>'; '|'; '&'; '$'; '!'] in
    let excl = ["<-"; "||"; "&&"] in
-   setup_op_parser infixop2
-     (fun x  ->
-        (List.mem x list_ok) ||
-          ((not (List.mem x excl)) &&
-             (((String.length x) >= 2) &&
-                ((List.mem (x.[0]) list_first_char_ok) && (symbolchar x 1))))));
-  (let list = ['@'; '^'] in
-   setup_op_parser infixop3
-     (fun x  ->
-        ((String.length x) >= 1) &&
-          ((List.mem (x.[0]) list) && (symbolchar x 1))));
-  (let list = ['+'; '-'] in
-   setup_op_parser infixop4
-     (fun x  ->
-        (x <> "->") &&
-          (((String.length x) >= 1) &&
-             ((List.mem (x.[0]) list) && (symbolchar x 1)))));
-  (let list = ['*'; '/'; '%'; '\\'] in
-   setup_op_parser infixop5
-     (fun x  ->
-        ((String.length x) >= 1) &&
-          ((List.mem (x.[0]) list) &&
-             ((((x.[0]) <> '*') ||
-                 (((String.length x) < 2) || ((x.[1]) <> '*')))
-                && (symbolchar x 1)))));
-  setup_op_parser infixop6
-    (fun x  ->
-       ((String.length x) >= 2) &&
-         (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2))));
-  FanTokenFilter.define_filter (Gram.get_filter ())
-    (fun f  strm  -> infix_kwds_filter (f strm));
-  Gram.setup_parser sem_exp
-    (let symb1 = Gram.parse_origin_tokens exp in
-     let symb (__strm : _ XStream.t) =
-       match XStream.peek __strm with
-       | Some (`Ant (("list" as n),s),_loc) ->
-           (XStream.junk __strm; mk_anti ~c:"exp;" _loc n s)
-       | _ -> symb1 __strm in
-     let rec kont al (__strm : _ XStream.t) =
-       match XStream.peek __strm with
-       | Some (`KEYWORD ";",_) ->
-           (XStream.junk __strm;
-            (let a =
-               try symb __strm
-               with | XStream.Failure  -> raise (XStream.Error "") in
-             let s = __strm in
-             let _loc = al <+> a in kont (`Sem (_loc, al, a) : Ast.exp ) s))
-       | _ -> al in
-     fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm);
+   let () =
+     setup_op_parser infixop2
+       (fun x  ->
+          (List.mem x list_ok) ||
+            ((not (List.mem x excl)) &&
+               (((String.length x) >= 2) &&
+                  ((List.mem (x.[0]) list_first_char_ok) && (symbolchar x 1))))) in
+   let list = ['@'; '^'] in
+   let () =
+     setup_op_parser infixop3
+       (fun x  ->
+          ((String.length x) >= 1) &&
+            ((List.mem (x.[0]) list) && (symbolchar x 1))) in
+   let list = ['+'; '-'] in
+   let () =
+     setup_op_parser infixop4
+       (fun x  ->
+          (x <> "->") &&
+            (((String.length x) >= 1) &&
+               ((List.mem (x.[0]) list) && (symbolchar x 1)))) in
+   let list = ['*'; '/'; '%'; '\\'] in
+   let () =
+     setup_op_parser infixop5
+       (fun x  ->
+          ((String.length x) >= 1) &&
+            ((List.mem (x.[0]) list) &&
+               ((((x.[0]) <> '*') ||
+                   (((String.length x) < 2) || ((x.[1]) <> '*')))
+                  && (symbolchar x 1)))) in
+   let () =
+     setup_op_parser infixop6
+       (fun x  ->
+          ((String.length x) >= 2) &&
+            (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2)))) in
+   let () =
+     FanTokenFilter.define_filter (Gram.get_filter ())
+       (fun f  strm  -> infix_kwds_filter (f strm)) in
+   Gram.setup_parser sem_exp
+     (let symb1 = Gram.parse_origin_tokens exp in
+      let symb (__strm : _ XStream.t) =
+        match XStream.peek __strm with
+        | Some (`Ant (("list" as n),s),_loc) ->
+            (XStream.junk __strm; mk_anti ~c:"exp;" _loc n s)
+        | _ -> symb1 __strm in
+      let rec kont al (__strm : _ XStream.t) =
+        match XStream.peek __strm with
+        | Some (`KEYWORD ";",_) ->
+            (XStream.junk __strm;
+             (let a =
+                try symb __strm
+                with | XStream.Failure  -> raise (XStream.Error "") in
+              let s = __strm in
+              let _loc = al <+> a in kont (`Sem (_loc, al, a) : Ast.exp ) s))
+        | _ -> al in
+      fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm));
   (Gram.extend_single (mexp_quot : 'mexp_quot Gram.t )
      (None,
        (None, None,

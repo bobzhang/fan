@@ -123,16 +123,16 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
   let rec try_insert s sl tree =
     match tree with
     | Node ( {node ; son ; brother} as x) ->
-      if Gtools.eq_symbol s node then
-        Some (Node { x with son = insert sl son})
-      else
-        (match try_insert s sl brother with
-        | Some y -> Some (Node {x with brother=y})
-        | None ->
-            if higher node s || (derive_eps s && not (derive_eps node)) then
-              (* node has higher priority *)
-              Some (Node {x with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
-            else None )
+        if Gtools.eq_symbol s node then
+          Some (Node { x with son = insert sl son})
+        else
+          (match try_insert s sl brother with
+          | Some y -> Some (Node {x with brother=y})
+          | None ->
+              if higher node s || (derive_eps s && not (derive_eps node)) then
+                (* node has higher priority *)
+                Some (Node {x with brother = Node {(x) with node = s; son = insert sl DeadEnd}})
+              else None )
     | LocAct (_, _) | DeadEnd -> None 
   and  insert_in_tree s sl tree =
     match try_insert s sl tree with
@@ -144,25 +144,28 @@ let add_production  ((gsymbols, (annot,action)):production) tree =
     | [] ->
         match tree with
         | Node ({ brother;_} as x) ->
-            Node {(x) with brother = insert [] brother }
-        | LocAct (old_action, action_list) -> begin 
-            if !(FanConfig.gram_warning_verbose) then
-                eprintf "<W> Grammar extension: in @[%a@] some rule has been masked@."
+            Node {x with brother = insert [] brother }
+        | LocAct (old_action, action_list) -> 
+            (if !(FanConfig.gram_warning_verbose) then
+              eprintf
+                "<W> Grammar extension: in @[%a@] some rule has been masked@."
                 Gprint.dump#rule symbols;
-            LocAct anno_action (old_action::action_list)
-        end
+             LocAct (anno_action, (old_action::action_list)))
+              
         | DeadEnd -> LocAct anno_action []   in 
   insert gsymbols tree 
-  
-let add_production_in_level  ~suffix ((symbols, action) as prod) slev =
+    
+let add_production_in_level  (* ~suffix *)
+    ((symbols, action) as prod) slev =
+  let (suffix,symbols1) = get_initial symbols in
   if suffix then
     {slev with
-     lsuffix = add_production  (symbols, action) slev.lsuffix;
-     productions = slev.productions @ [prod] }
+     lsuffix = add_production  (symbols1, action) slev.lsuffix;
+     productions = prod::slev.productions }
   else
     {slev with
-     lprefix = add_production  (symbols ,action) slev.lprefix;
-     productions = slev.productions @ [prod]}
+     lprefix = add_production  (symbols1 ,action) slev.lprefix;
+     productions = prod::slev.productions }
 
 
 let merge_level (la:level) (lb:olevel) = 
@@ -182,10 +185,13 @@ let merge_level (la:level) (lb:olevel) =
             (StdLib.pp_print_option pp_print_string) y;
          x)
     |(None,None,x) -> x) in
+  (* added in reverse order *)
   List.fold_right
-    (fun (symbols,action) lev ->
-      let (suffix,symbols) = get_initial symbols in
-      add_production_in_level  ~suffix (symbols,action) lev)  rules1 la
+    (fun (((* (symbols,action) as *) prod):production) lev ->
+      (* let (suffix,symbols1) = get_initial symbols in *)
+      add_production_in_level  (* ~suffix *)
+        prod
+        (* (symbols1,action) *) lev)  rules1 la
 
     
 let level_of_olevel (lb:olevel) = 
