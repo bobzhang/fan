@@ -129,7 +129,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
 (*
   Example:
    {[
-  mk_record ~arity:3 (Lib.Ctyp.list_of_record {:ctyp| u:int; v:mutable float |} )
+  mk_record ~arity:3 (CtypN.list_of_record {:ctyp| u:int; v:mutable float |} )
   |> FanBasic.p_pat f;
   ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
 

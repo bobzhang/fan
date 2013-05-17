@@ -72,7 +72,7 @@ let p_type_declaration  =  AstPrint.default#type_declaration;;
 (* AstQuotation.default:="expr";; *)
 
 let env = !Toploop.toplevel_env;;
-open ParserLex;;
+(* open ParserLex;; *)
 
 (* AstQuotation.set_default "str";; *)
 (* #load "Utf8.cmo";; *)

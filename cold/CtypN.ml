@@ -22,14 +22,12 @@ let (+>) (params : ctyp list) (base : ctyp) =
 
 let name_length_of_tydcl (x : typedecl) =
   (match x with
-   | `TyDcl (_,`Lid (_,name),tyvars,_,_) ->
+   | `TyDcl (`Lid name,tyvars,_,_) ->
        (name,
          ((match tyvars with
-           | `None _ -> 0
-           | `Some (_,xs) -> List.length & (list_of_com xs []))))
-   | tydcl ->
-       failwithf "name_length_of_tydcl {|%s|}\n" (Objs.dump_typedecl tydcl) : 
-  (string * int) )
+           | `None -> 0
+           | `Some xs -> List.length & (list_of_com xs []))))
+   | tydcl -> assert false : (string * int) )
 
 let gen_quantifiers1 ~arity  n =
   (let _loc = FanLoc.ghost in
@@ -59,13 +57,11 @@ let list_of_record (ty : name_ctyp) =
    tys |>
      (List.map
         (function
-         | `TyColMut (_,`Lid (_,col_label),col_ctyp) ->
+         | `TyColMut (`Lid col_label,col_ctyp) ->
              { col_label; col_ctyp; col_mutable = true }
-         | `TyCol (_,`Lid (_,col_label),col_ctyp) ->
+         | `TyCol (`Lid col_label,col_ctyp) ->
              { col_label; col_ctyp; col_mutable = false }
-         | t0 ->
-             FanLoc.errorf (loc_of t0) "list_of_record %s"
-               (Objs.dump_name_ctyp t0))) : FSig.col list )
+         | t0 -> assert false)) : FSig.col list )
 
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
 
@@ -123,41 +119,14 @@ let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   mk_method_type ~number ~prefix (id, len) k
 
 let mk_obj class_name base body =
-  let _loc = FanLoc.ghost in
   (`Class
-     (_loc,
-       (`ClDeclS
-          (_loc, (`Negative _loc), (`Lid (_loc, class_name)),
-            (`ObjPat
-               (_loc,
-                 (`Constraint
-                    (_loc, (`Lid (_loc, "self")),
-                      (`Quote
-                         (_loc, (`Normal _loc), (`Lid (_loc, "self_type")))))),
-                 (`Sem
-                    (_loc,
-                      (`Inherit (_loc, (`Negative _loc), (`Lid (_loc, base)))),
-                      body))))))) : Ast.stru )
-
-let is_recursive ty_dcl =
-  match ty_dcl with
-  | `TyDcl (_,`Lid (_,name),_,ctyp,_) ->
-      let obj =
-        object (self : 'self_type)
-          inherit  Objs.fold as super
-          val mutable is_recursive = false
-          method! ctyp =
-            function
-            | (`Lid i : AstN.ctyp) when i = name ->
-                (is_recursive <- true; self)
-            | x -> if is_recursive then self else super#ctyp x
-          method is_recursive = is_recursive
-        end in
-      (obj#type_info ctyp)#is_recursive
-  | `And (_,_,_) -> true
-  | _ ->
-      failwithf "is_recursive not type declartion: %s"
-        (Objs.dump_typedecl ty_dcl)
+     (`ClDeclS
+        (`Negative, (`Lid class_name),
+          (`ObjPat
+             ((`Constraint
+                 ((`Lid "self"), (`Quote (`Normal, (`Lid "self_type"))))),
+               (`Sem ((`Inherit (`Negative, (`Lid base))), body)))))) : 
+  AstN.stru )
 
 let qualified_app_list x =
   (match x with
