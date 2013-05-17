@@ -123,6 +123,7 @@
 
 * 09 Specialize [eoi_entry] and provide grammar analysis
 
+
 * 10 EOI problem
   The lexer feeds an EOI at the end of stream, but most entries does
   not handle EOI, if handle EOI, some problem appears
@@ -136,3 +137,18 @@
    `Ant "g"; `Ant"ghso"
   ]
   will not parse, since under such case, the second production has a higher priority.
+* 11 inling problem again
+
+  #+BEGIN_SRC ocaml
+    pat_as_pat_opt:
+      [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
+      | pat{p} -> p ] 
+    
+    case0:
+       [ `Ant (("case"|"" as n),s) -> mk_anti _loc ~c:"case" n s
+       | pat_as_pat_opt{p}; "when"; exp{w};  "->"; exp{e} ->
+          `CaseWhen (_loc, p, w, e)
+       | pat_as_pat_opt{p}; "->";exp{e} -> `Case(_loc,p,e)]
+  #+END_SRC
+  can we simply inline [pat_as_pat_opt] here?  
+
