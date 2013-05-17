@@ -146,7 +146,7 @@ let ident_of_ctyp : ctyp -> ident =
     | #ident' as i -> if is_module_longident i then i else error x
     | _ -> error x  in
   function
-    | #ident as i (* `Id(_loc,i) *) -> i (* allow antiquot here *)
+    | #ident as i  -> i (* allow antiquot here *)
     | t -> self t 
 
 (* let ident_of_pat = *)

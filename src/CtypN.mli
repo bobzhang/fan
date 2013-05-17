@@ -40,10 +40,37 @@ val arrow_of_list : ctyp list -> ctyp
 val app_arrow : ctyp list -> ctyp -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp
 val ( +> ) : ctyp list -> ctyp -> ctyp
+
+(** {[
+    match {:stru< type 'a list  = [A of int | B of 'a] |} with
+    {:stru| type $x |} -> name_length_of_tydcl x 
+    ("list",1)  ]} *)
 val name_length_of_tydcl : typedecl -> string * int
 
+
+
 val gen_ty_of_tydcl : off:int -> typedecl -> ctyp
+
+(**
+  {[
+  of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
+  ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
 val of_id_len : off:int -> ident * int -> ctyp
+
+
+
+(**
+  {[
+  ( {:stru-| type 'a list  = [A of int | B of 'a] |} |>
+  function |  {:stru-| type $x |} -> name_length_of_tydcl x
+  |> of_name_len ~off:1  );
+  list 'all_b0
+
+  ( <:stru< type list   = [A of int | B] >> |>
+  fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
+  |> of_name_len ~off:1 |> eprint ] );
+  ]}
+ *)    
 val of_name_len : off:int -> string * int -> ctyp
 
 

@@ -1,4 +1,3 @@
-open LibUtil
 open Ast
 
 module type Id = sig

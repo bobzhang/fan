@@ -31,7 +31,7 @@ let to_string (ident : ident) =
 
 let rec to_vid (x : ident) =
   (match x with
-   | `Apply _ -> failwithf "Id.to_vid"
+   | `Apply _ -> failwith "IdN.to_vid"
    | `Dot (a,b) -> dot (to_vid a) (to_vid b)
    | `Lid _|`Uid _|`Ant _ as x -> x : vid )
 
@@ -39,7 +39,7 @@ let ident_map f (x : vid) =
   let lst = list_of_dot x [] in
   match lst with
   | [] -> invalid_arg "ident_map identifier [] "
-  | (`Lid y)::[] -> `Lid (f y)
+  | (`Lid y)::[] -> lid (f y)
   | ls ->
       let l = List.length ls in
       (match List.drop (l - 2) ls with
