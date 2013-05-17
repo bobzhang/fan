@@ -244,16 +244,15 @@ let is_recursive ty_dcl =
   ]}
   
  *)  
-let qualified_app_list x : ((ident * ctyp list ) option ) =
+let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   match x with 
   | {| $_ $_ |} as x->
-      begin match list_of_app x [] with
+      (match list_of_app x [] with
       | {| $lid:_  |} :: _  -> None
       | (#ident' as i) ::ys  ->
           Some (i,ys)
-      | _ -> None
-      end
-  | ( {| $lid:_  |} | {| $uid:_  |}) -> None
+      | _ -> None)
+  | `Lid _ | `Uid _ -> None
   | #ident'  as i  -> Some (i, [])
   | _ -> None 
 
@@ -261,7 +260,6 @@ let is_abstract (x:typedecl)=
   match x with
   | `TyAbstr _ -> true
   | _ -> false
-        (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
   match x with 

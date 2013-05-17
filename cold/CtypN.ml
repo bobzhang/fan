@@ -170,14 +170,14 @@ let is_recursive ty_dcl =
       failwithf "is_recursive not type declartion: %s"
         (ObjsN.dump_typedecl ty_dcl)
 
-let qualified_app_list x =
+let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : AstN.ctyp) as x ->
        (match list_of_app x [] with
         | (`Lid _loc : AstN.ctyp)::_ -> None
         | (#ident' as i)::ys -> Some (i, ys)
         | _ -> None)
-   | (`Lid _loc : AstN.ctyp)|(`Uid _loc : AstN.ctyp) -> None
+   | `Lid _|`Uid _ -> None
    | #ident' as i -> Some (i, [])
    | _ -> None : (ident * ctyp list) option )
 

@@ -254,7 +254,7 @@ let qualified_app_list x : ((ident * ctyp list ) option ) =
           Some (i,ys)
       | _ -> None
       end
-  | ( {| $lid:_  |} | {| $uid:_  |}) -> None
+  | `Lid _ | `Uid _  -> None
   | #ident'  as i  -> Some (i, [])
   | _ -> None 
 
