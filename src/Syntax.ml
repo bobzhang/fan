@@ -86,9 +86,14 @@ let antiquot_ident = Gram.eoi_entry ident
 let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str
 let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str
 let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
+
 let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_pat
 let exp_filter (x:ep) = (anti_filter#exp (x:>exp))
 let pat_filter (x:ep) = (anti_filter#pat (x:>pat))
+
+let anti_filter_n = AntN.antiquot_expander  ~parse_exp  ~parse_pat
+let exp_filter_n (x:ep) = anti_filter_n#exp (x:>exp)
+let pat_filter_n (x:ep) = anti_filter_n#pat (x:>pat)
 
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =

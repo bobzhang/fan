@@ -375,6 +375,12 @@ let exp_filter (x : ep) = anti_filter#exp (x :>exp)
 
 let pat_filter (x : ep) = anti_filter#pat (x :>pat)
 
+let anti_filter_n = AntN.antiquot_expander ~parse_exp ~parse_pat
+
+let exp_filter_n (x : ep) = anti_filter_n#exp (x :>exp)
+
+let pat_filter_n (x : ep) = anti_filter_n#pat (x :>pat)
+
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =
     let (pl,stopped_at_directive) = pa loc cs in

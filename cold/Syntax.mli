@@ -186,10 +186,16 @@ val parse_pat: FanLoc.t -> string -> pat
 
 val parse_ident: FanLoc.t -> string -> ident
 
-val exp_filter: ep -> exp
-val pat_filter: ep -> pat
+val exp_filter : ep -> exp
+val pat_filter : ep -> pat
 
-val dot_namespace:  string list Gram.t  
+val exp_filter_n : ep -> exp
+val pat_filter_n : ep -> pat
+
+    
+
+val dot_namespace :  string list Gram.t
+    
 module Options:sig
   type spec_list = (string * FanArg.spec * string) list 
   val init : spec_list -> unit

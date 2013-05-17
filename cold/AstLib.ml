@@ -292,7 +292,8 @@ let binds bs (e : exp) =
   | [] -> e
   | _ ->
       let binds = and_of_list bs in
-      let _loc = binds <+> e in `LetIn (_loc, (`Negative _loc), binds, e)
+      let _loc = binds <+> e in
+      (`LetIn (_loc, (`Negative _loc), binds, e) : Ast.exp )
 
 let lid _loc n = `Lid (_loc, n)
 

@@ -1,42 +1,23 @@
 
 (*************************************************************************)
-(** Ast lib for structual polymorphism *)
+(** Ast lib for structual polymorphism without quotaions *)
 (*************************************************************************)
   
 open LibUtil
-open FanLoc.Ops
-open Ast
+open AstN
 
-
-(*************************************************************************)
-(** generate [loc_of] function per type
-    for example:
-    [of_loc (e:exp)]
-    [of_loc (p:pat)] will both return the location information *)
-(*************************************************************************)  
-{:fans|keep off; derive (GenLoc);|};;
-{:ocaml|{:include|"src/Ast.mli"|}|};;
-
-
-
-
-  
-(**   connectives  *)
-let ghost = FanLoc.ghost  (* to refine *)
-let (<+>) a b = loc_of a <+> loc_of b
-let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b)
-let com a b = let _loc = a <+> b in `Com(_loc,a,b)
-let app a b = let _loc = a <+> b in `App(_loc,a,b)
-let apply a b = let _loc = a <+> b in `Apply(_loc,a,b)
-let sta a b = let _loc = a <+> b in `Sta(_loc,a,b)
-let bar a b = let _loc = a <+> b in `Bar(_loc,a,b)
-let anda a b = let _loc = a <+> b in `And(_loc,a,b)
-let dot a b = let _loc = a <+> b in `Dot (_loc,a,b)
-let par x =  let _loc = loc_of x in `Par (_loc,x)
-let seq a = let _loc = loc_of a in `Seq (_loc,a) 
-let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b)
-let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b)
-let ghost = FanLoc.ghost 
+let sem a b =  `Sem(a,b)
+let com a b =  `Com(a,b)
+let app a b =  `App(a,b)
+let apply a b =  `Apply(a,b)
+let sta a b =  `Sta(a,b)
+let bar a b =  `Bar(a,b)
+let anda a b = `And(a,b)
+let dot a b =  `Dot (a,b)
+let par x =   `Par (x)
+let seq a =  `Seq (a) 
+let arrow a b = `Arrow(a,b)
+let typing a b = `Constraint(a,b)
   
 (** [of_list] style function *)
 let rec bar_of_list = function
@@ -88,43 +69,43 @@ let rec appl_of_list x  =
   
 let rec list_of_and x acc =
   match x with
-  |`And(_,x,y) -> list_of_and x (list_of_and y acc)
+  |`And(x,y) -> list_of_and x (list_of_and y acc)
   | _ -> x::acc
 
 let rec list_of_com x acc =
   match x with
-  |`Com(_,x,y) -> list_of_com x (list_of_com y acc)
+  |`Com(x,y) -> list_of_com x (list_of_com y acc)
   | _ -> x::acc
     
 let rec list_of_star x acc =
   match x with
-  | `Sta(_,x,y) -> list_of_star x (list_of_star y acc)
+  | `Sta(x,y) -> list_of_star x (list_of_star y acc)
   | _ -> x::acc
 
 let rec list_of_bar x acc =
   match x with
-  |`Bar(_,x,y) -> list_of_bar x (list_of_bar y acc)
+  |`Bar(x,y) -> list_of_bar x (list_of_bar y acc)
   | _ -> x::acc
 
 let rec list_of_or x acc =
   match x with
-  |`Bar(_,x,y) -> list_of_or x (list_of_or y acc)
+  |`Bar(x,y) -> list_of_or x (list_of_or y acc)
   | _ -> x::acc
 
     
 let rec list_of_sem x acc =
   match x with
-  |`Sem(_,x,y) -> list_of_sem x (list_of_sem y acc)
+  |`Sem(x,y) -> list_of_sem x (list_of_sem y acc)
   | _ -> x::acc
 
 let rec list_of_dot x acc =
   match x with
-  |`Dot(_,x,y) -> list_of_dot x (list_of_dot y acc)
+  |`Dot(x,y) -> list_of_dot x (list_of_dot y acc)
   |x -> x::acc
 
 let rec list_of_app  x acc =
   match x with
-  |`App(_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
+  |`App(t1,t2) -> list_of_app t1 (list_of_app t2 acc)
   |x -> x :: acc
 
 
@@ -134,14 +115,14 @@ let rec list_of_app  x acc =
  *)    
 let rec list_of_arrow_r x acc =
   match x with
-  |`Arrow(_,t1,t2) -> list_of_arrow_r t1 (list_of_arrow_r t2 acc)
+  |`Arrow(t1,t2) -> list_of_arrow_r t1 (list_of_arrow_r t2 acc)
   | x -> x::acc
 
 (*************************************************************************)
 (*************************************************************************)
   
 let rec view_app acc = function
-  |`App (_,f,a) -> view_app (a::acc) f
+  |`App (f,a) -> view_app (a::acc) f
   | f -> (f,acc)
 
   
@@ -152,40 +133,37 @@ let binds bs (e:exp) =
   | [] -> e
   |_ ->
       let binds = and_of_list bs  in
-      let _loc = binds <+> e in
-      {:exp|let $binds in $e |} 
+      {:exp-|let $binds in $e |} 
 
 
-let lid _loc n = `Lid(_loc,n)
+let lid  n = `Lid n
     
-let uid _loc n = `Uid(_loc,n)
-let unit _loc = `Uid(_loc,"()")
+let uid  n = `Uid n
+let unit = `Uid "()"
 
-let ep_of_cons _loc n ps =
-  appl_of_list ((uid _loc n) :: ps)
+let ep_of_cons n ps =
+  appl_of_list (uid  n :: ps)
 
-let tuple_com_unit _loc = function
-  | [] -> unit _loc
+let tuple_com_unit  = function
+  | [] -> unit 
   | [p] -> p
   | y ->
-      `Par _loc (com_of_list y)
+      `Par  (com_of_list y)
 
   
 let tuple_com y=
   match y with 
   |[] -> failwith "tuple_com empty"
   |[x] -> x
-  | x::_ -> (* FIXME [x::_] still compiles *)
-      let _loc = x <+> List.last y in
-      `Par _loc (com_of_list y) 
+  | _ -> (* FIXME [x::_] still compiles *)
+      `Par (com_of_list y) 
     
 let tuple_sta y =
   match y with
   | [] -> failwith "tuple_sta empty"
   | [x] -> x
-  | x::_ ->
-       let _loc =  x <+> List.last y in 
-       `Par _loc (sta_of_list y)
+  | _ ->
+      `Par  (sta_of_list y)
 
 
 
@@ -200,6 +178,5 @@ let tuple_sta y =
    ]}
  *)
 let (+>) f names  =
-  let _loc = loc_of f in
-  appl_of_list (f:: (List.map (lid _loc) names))
+  appl_of_list (f:: (List.map lid  names))
          

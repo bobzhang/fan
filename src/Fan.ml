@@ -246,11 +246,11 @@ open OCamlLex
 let m = new FanAstN.meta ;;
 
 let efilter str e =
-    let e = exp_filter e in
+    let e = exp_filter_n e in
     let _loc = loc_of e in
     {:exp|($e : AstN.$lid:str)|}
 let pfilter str e =
-  let p = pat_filter e in
+  let p = pat_filter_n e in
   let _loc = loc_of p in
   {:pat|($p : AstN.$lid:str)|};;
 

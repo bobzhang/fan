@@ -928,7 +928,7 @@ and mklabexp (x:rec_exp)  =
 
 (* Example:
    {[
-   (Lib.Ctyp.of_stru {:stru|type u = int and v  = [A of u and b ] |})
+   (Ctyp.of_stru {:stru|type u = int and v  = [A of u and b ] |})
    ||> mktype_decl |> AstPrint.default#type_def_list f;
    type u = int 
    and v =  
