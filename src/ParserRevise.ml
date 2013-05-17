@@ -1244,12 +1244,11 @@ let apply_ctyp () = begin
         | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
          
        "apply" LA
-        [ S{t1}; S{t2} ->
-          let t = `App(_loc,t2,t1) in
-          try (ident_of_ctyp t:>ctyp)
-          with  Invalid_argument _ -> t
-               
-        ]
+        [ S{t1}; S{t2} -> `App (_loc,t2,t1)
+          (* let t = `App(_loc,t2,t1) in *)
+          (* try (ident_of_ctyp t :> ctyp) *)
+          (* with  Invalid_argument _ -> t *) ]
+
        (* [mod_ext_longident] and [type_longident]
           | type_longident
           { mktyp(Ptyp_constr(mkrhs $1 1, [])) }
@@ -1258,8 +1257,7 @@ let apply_ctyp () = begin
           | LPAREN core_type_comma_list RPAREN type_longident *)  
        "." LA
         [ S{t1}; "."; S{t2} ->
-            try
-              `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
+            try `Dot (_loc, ident_of_ctyp t1, ident_of_ctyp t2) (* FIXME*)
             with Invalid_argument s -> raise (XStream.Error s) ]
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
@@ -1269,7 +1267,8 @@ let apply_ctyp () = begin
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
         | a_lident{i}->  (i :> ctyp)
         | a_uident{i} -> (i:> ctyp)
-        | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
+        | "("; S{t}; "*"; star_ctyp{tl}; ")" ->
+            `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
             appl_of_list  ((j:>ctyp):: t::list_of_com tl [])

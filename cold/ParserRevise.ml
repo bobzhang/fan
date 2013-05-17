@@ -5795,21 +5795,16 @@ let apply_ctyp () =
                   (`OptLabl (_loc, i, t) : 'ctyp )))))]);
       ((Some "apply"), (Some `LA),
         [([`Sself; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (let t = `App (_loc, t2, t1) in\n      try (ident_of_ctyp t :>ctyp) with | Invalid_argument _ -> t : 'ctyp ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, t2, t1) : 'ctyp ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (let t = `App (_loc, t2, t1) in
-                    try (ident_of_ctyp t :>ctyp)
-                    with | Invalid_argument _ -> t : 'ctyp )))))]);
+                   (`App (_loc, t2, t1) : 'ctyp )))))]);
       ((Some "."), (Some `LA),
         [([`Sself; `Skeyword "."; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (try `Dot (_loc, (ident_of_ctyp t1 : ident ), (ident_of_ctyp t2))\n      with | Invalid_argument s -> raise (XStream.Error s) : 'ctyp ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (try `Dot (_loc, (ident_of_ctyp t1), (ident_of_ctyp t2))\n      with | Invalid_argument s -> raise (XStream.Error s) : 'ctyp ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (try
-                      `Dot
-                        (_loc, (ident_of_ctyp t1 : ident ),
-                          (ident_of_ctyp t2))
+                   (try `Dot (_loc, (ident_of_ctyp t1), (ident_of_ctyp t2))
                     with | Invalid_argument s -> raise (XStream.Error s) : 
                    'ctyp )))))]);
       ((Some "simple"), None,
