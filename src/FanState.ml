@@ -19,11 +19,10 @@ let reset () = begin
   current_filters := []
 end
   
-let gensym ?(pkg="") prefix = begin 
-  let res = "fan_" ^ prefix ^ "_" ^ pkg ^ "_" ^ (string_of_int !id);
-  incr id;
-  res  
-end
+let gensym ?(pkg="") prefix = 
+  let res = "fan_" ^ prefix ^ "_" ^ pkg ^ "_" ^ (string_of_int !id) in
+  (incr id; res  )
+
   
 
 

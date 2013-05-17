@@ -18,17 +18,16 @@ let none = None
     
 let memoize f =
   let cache = Hashtbl.create 101 in
-  fun v -> try Hashtbl.find cache v with Not_found -> begin 
-    let r = f v ;
-    Hashtbl.replace cache v r;
-    r end
+  fun v ->
+    try Hashtbl.find cache v
+    with Not_found -> 
+      let r = f v in
+      (Hashtbl.replace cache v r; r)
   
 let finally action f x  =
-  try begin 
-    let res = f x;
-    action ();
-    res 
-  end
+  try 
+    let res = f x in
+    (action (); res )
   with e -> begin action (); raise e end
     
 let with_dispose ~dispose f x =
@@ -628,11 +627,11 @@ module String = struct
 
   let map f s =
     let l = length s in
-    if l = 0 then s else begin
-      let r = create l ;
-      for i = 0 to l - 1 do unsafe_set r i (f(unsafe_get s i)) done;
-      r
-    end
+    if l = 0 then s else 
+      let r = create l in
+      (for i = 0 to l - 1 do unsafe_set r i (f(unsafe_get s i)) done;
+      r)
+
       
 
   let lowercase s = map Char.lowercase s
@@ -731,9 +730,9 @@ module Ref = struct
     let old = !r in
     try begin 
       r := v;
-      let res = body();
-      r := old;
-      res
+      let res = body() in
+      (r := old;
+      res)
     end with x -> (r := old; raise x)
         
   let safe r body =
@@ -744,9 +743,9 @@ module Ref = struct
     let o1 = !r1 and o2 = !r2 in
     try begin
       r1:= v1; r2:=v2;
-      let res = body ();
-      r1:=o1; r2:=o2;
-      res
+      let res = body () in
+      (r1:=o1; r2:=o2;
+      res)
     end
     with  e -> begin
       r1:=o1; r2:=o2;
@@ -762,9 +761,9 @@ module Ref = struct
     let olds = List.map (fun x-> !x ) refs in 
     try begin
       List.iter2 (fun ref v -> ref:=v) refs vs;
-      let res = body ();
-      List.iter2 (fun ref v -> ref:=v) refs olds;
-      res   
+      let res = body () in
+      (List.iter2 (fun ref v -> ref:=v) refs olds;
+      res)   
     end
       with e -> 
         (List.iter2 (fun ref v -> ref:=v) refs olds;
@@ -957,31 +956,32 @@ module Array = struct
        
    (* let filter_map f arr = *)
   let filter_opt t = begin 
-    let n = length t ;
-    let res_size = ref 0 ;
-    let first_some = ref None ;
-    for i = 0 to n - 1 do
-     match t.(i) with
-     | None -> ()
-     | Some _ as s -> begin 
-         if !res_size = 0 then first_some := s else () ;
-         incr res_size
-     end
+    let n = length t in
+    let res_size = ref 0 in
+    let first_some = ref None in
+    (for i = 0 to n - 1 do
+      match t.(i) with
+      | None -> ()
+      | Some _ as s -> begin 
+          if !res_size = 0 then first_some := s else () ;
+          incr res_size
+      end
     done;
-    match !first_some with
-    | None -> [||]
-    | Some el ->
-        let result = create (!res_size) el in
-        let pos = ref 0 in
-        let _ = for i = 0 to n - 1 do
-           match t.(i) with
-           | None -> ()
-           | Some x -> begin 
-               result.(!pos) <- x;
-               incr pos
-           end
-        done in 
-        result
+     match !first_some with
+     | None -> [||]
+     | Some el ->
+         let result = create (!res_size) el in
+         let pos = ref 0 in
+         let _ =
+           for i = 0 to n - 1 do
+             match t.(i) with
+             | None -> ()
+             | Some x -> begin 
+                 result.(!pos) <- x;
+                 incr pos
+             end
+           done in 
+         result)
   end
   let filter_map f a = filter_opt  (map f a)
   let filter_mapi f a = filter_opt (mapi f a)

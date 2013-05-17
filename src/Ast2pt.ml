@@ -777,7 +777,8 @@ let rec exp (x : exp) = with exp match x with
             let rec  f x =
               match x with 
               | {|$pat:p -> $e|} -> {|$pat:p -> fun () -> $e |}
-              |{|$pat:p when $c -> $e|}
+              | {|$pat:p when $c -> $e|}
+                  
                   -> {|$pat:p when $c -> fun () -> $e |}
               | {|$a1 | $a2 |} -> {|$(f a1) | $(f a2) |}
               | `Ant(_loc,_) -> ANT_ERROR  in
@@ -785,16 +786,6 @@ let rec exp (x : exp) = with exp match x with
           exp
             {:exp|
              (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |}
-            (* mkexp _loc *)
-          (*   (Pexp_apply *)
-          (*      (mkexp _loc *)
-          (*         (Pexp_try *)
-               
-          (*         (mkexp _loc *)
-          (*            (Pexp_let (mkrf rf) (bind bi []) *)
-          (*               (exp {:exp'|fun () -> $e |}))) *)
-          (*         (case a))) *)
-          (*      ((exp {:exp'|()|}))) *)
 
       | `LetModule (loc,`Uid(sloc,i),me,e) ->
           mkexp loc (Pexp_letmodule (with_loc i sloc) (mexp me) (exp e))

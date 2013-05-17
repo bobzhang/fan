@@ -246,16 +246,13 @@ let apply () = begin
        pos_exps:
        [ L1
            [ `Lid x;":";dot_lstrings{y} ->
-             ((x:string),
-              FanToken.resolve_name y
-             )
+             ((x:string), FanToken.resolve_name y)
            | `Lid x ->
                ((x:string), FanToken.resolve_name
-                  (`Sub [], x) ) ] SEP ";"{xys} -> begin
-           let old = !AstQuotation.map;
-           AstQuotation.map := SMap.add_list xys old;
-           old
-       end]
+                  (`Sub [], x) ) ] SEP ";"{xys} -> 
+                    let old = !AstQuotation.map in
+                    (AstQuotation.map := SMap.add_list xys old;
+                     old)]
        fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e ->  `LocalTypeFun (_loc, i, e)
@@ -408,8 +405,7 @@ let apply () = begin
         | "("; S{e}; ","; comma_exp{el}; ")" ->
             `Par (_loc, `Com (_loc, e, el))
         | "("; S{e}; ";"; sequence{seq}; ")" -> `Seq(_loc,`Sem(_loc,e,seq))
-              (* FanOps.mksequence ~loc:_loc {| $e; $seq |} *)
-        | "("; S{e}; ";"; ")" -> `Seq(_loc,e)(* FanOps.mksequence ~loc:_loc e *)
+        | "("; S{e}; ";"; ")" -> `Seq(_loc,e)
         | "("; S{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             `Coercion (_loc, e, t, t2)
         | "("; S{e}; ":>"; ctyp{t}; ")" -> `Subtype(_loc,e,t)
@@ -438,14 +434,13 @@ let apply () = begin
        [ "let"; opt_rec{rf}; bind{bi}; "in"; exp{e}; sequence'{k} ->
          k  (`LetIn (_loc, rf, bi, e))
        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
-         -> k (* {| let try $rec:r $bi in $x with [ $a ] |} *)
-             (`LetTryInWith(_loc,r,bi,x,a))
-       | "let"; opt_rec{rf}; bind{bi}; ";"; S{el} ->
-           `LetIn (_loc, rf, bi, (`Seq (_loc, el)))
+         -> k (`LetTryInWith(_loc,r,bi,x,a))
+       (* | "let"; opt_rec{rf}; bind{bi}; ";"; S{el} -> *)
+       (*     `LetIn (_loc, rf, bi, (`Seq (_loc, el))) *)
        | "let"; "module"; a_uident{m}; mbind0{mb}; "in";
            exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
-       | "let"; "module"; a_uident{m}; mbind0{mb}; ";"; S{el} ->
-           `LetModule (_loc, m, mb, `Seq (_loc, el))
+       (* | "let"; "module"; a_uident{m}; mbind0{mb}; ";"; S{el} -> *)
+       (*     `LetModule (_loc, m, mb, `Seq (_loc, el)) *)
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            `LetOpen (_loc, (i: vid :> ident), e)
        (* FIXME Ant should be able to be followed *)      

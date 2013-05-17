@@ -28,8 +28,8 @@ let action_parse entry (ts: stream) : Gaction.t =
   try 
     let p = if !trace_parser then Format.fprintf else Format.ifprintf in
     (p Format.err_formatter "@[<4>%s@ " entry.ename ;
-    let res = entry.estart 0 ts ;
-    p Format.err_formatter "@]@." ;
+    let res = entry.estart 0 ts in
+    let () = p Format.err_formatter "@]@." in
     res)
   with
   | XStream.Failure ->
@@ -108,4 +108,4 @@ let extend_single = Ginsert.extend_single
 let copy = Ginsert.copy    
 
 (* buggy*)
-(* let eoi_entry = Ginsert.eoi_entry *)
+let eoi_entry = Ginsert.eoi_entry

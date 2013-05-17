@@ -132,7 +132,7 @@ let parse_argv ?(current = current) argv speclist anonfun errmsg =
      else raise (Bad (Buffer.contents b)))
   in
   (incr current;
-   while !current < l do let s = argv.(!current);
+   while !current < l do let s = argv.(!current) in
      if ((String.length s) >= 1) && ((String.get s 0) = '-')
      then
        let action =

@@ -91,17 +91,17 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FanLoc.t) ArgContainer
               let try a = ps strm in
               begin
                 ArgContainer.push a q;
-                let pson = from_tree son ;
-                  try pson strm with
-                    e ->
-                      begin
-                        ignore (ArgContainer.pop q);
-                        match e with
-                        |XStream.Failure ->
-                            if Gtools.get_cur_loc strm = bp then raise XStream.Failure
+                let pson = from_tree son in
+                try pson strm with
+                  e ->
+                    begin
+                      ignore (ArgContainer.pop q);
+                      match e with
+                      |XStream.Failure ->
+                          if Gtools.get_cur_loc strm = bp then raise XStream.Failure
                             else raise (XStream.Error (Gfailed.tree_failed entry a node son))
-                        | _ -> raise e
-                      end  
+                      | _ -> raise e
+                    end  
               end
               with
                 XStream.Failure -> from_tree brother strm)
@@ -109,9 +109,9 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FanLoc.t) ArgContainer
             let try args = List.rev (parser_of_terminals tokl strm) in
             begin
               List.iter (fun a -> ArgContainer.push  a (* (Gaction.mk a ) *) q) args;
-              let len =List.length args ;              
-                let p = from_tree son ;
-                  try p strm with
+              let len =List.length args in             
+              let p = from_tree son in
+              try p strm with
                     e ->
                       begin
                         for _i =  1 to len do
@@ -125,14 +125,14 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FanLoc.t) ArgContainer
             with XStream.Failure -> from_tree brother strm   in
   let parse = from_tree x in
   fun strm -> 
-    let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in begin
-      let ans = ref parse;
-        for _i = 1 to arity do
-          let (v,_) = ArgContainer.pop q ;
-            ans:=Gaction.getf !ans v;   
-        done;
-        (!ans,loc)
-    end
+    let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
+      let ans = ref parse in
+      (for _i = 1 to arity do
+          let (v,_) = ArgContainer.pop q in
+          ans:=Gaction.getf !ans v;   
+      done;
+       (!ans,loc))
+
 
 (*
   {[

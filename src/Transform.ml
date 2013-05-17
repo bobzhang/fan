@@ -29,17 +29,15 @@ let transform :full_id_transform -> vid -> exp  =
     | `Obj f ->
         function
           | `Lid(_loc,x)  -> {| self# $(lid: f x) |}
-          | t -> begin
-              let dest =  map_to_string t;
-                let src = Objs.dump_vid t; (* FIXME *)
-                  if not (Hashtbl.mem Basic.conversion_table src) then begin 
-                    Hashtbl.add Basic.conversion_table src dest;   
-                    eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
-                  end
-                  else ();
-                  {| self# $(lid:f dest) |}
-                    (*todo  set its default let to self#unknown *)
-          end  
+          | t -> 
+              let dest =  map_to_string t in
+              let src = Objs.dump_vid t in (* FIXME *)
+              let () = if not (Hashtbl.mem Basic.conversion_table src) then begin 
+                  Hashtbl.add Basic.conversion_table src dest;   
+                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
+                end in
+              {| self# $(lid:f dest) |}
+                  (*todo  set its default let to self#unknown *)
 
 let basic_transform = function 
   | `Pre pre -> (fun x -> pre ^ x)

@@ -143,8 +143,8 @@ and parser_of_symbol entry s nlevn =
     | `Stree t ->
         let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
         (fun strm  -> let (act,loc) = pt strm in Gaction.getf act loc)
-    | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
+    | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Sself -> (fun strm  -> entry.estart 0 strm)
     | `Snext -> (fun strm  -> entry.estart (nlevn + 1) strm)
     | `Skeyword kwd ->

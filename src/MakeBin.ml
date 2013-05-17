@@ -235,13 +235,12 @@ module Make
               task process_impl  file_name;
           end
           | Str s ->
-              begin
-                let (f, o) = Filename.open_temp_file "from_string" ".ml";
-                output_string o s;
-                close_out o;
-                task process_impl  f;
-                at_exit (fun () -> Sys.remove f);
-              end
+              let (f, o) = Filename.open_temp_file "from_string" ".ml" in
+              (output_string o s;
+               close_out o;
+               task process_impl  f;
+               at_exit (fun () -> Sys.remove f))
+                
           | ModuleImpl file_name -> rewrite_and_load "" file_name
           | IncludeDir dir -> DynLoader.include_dir dyn_loader dir) ;
           !rcall_callback ();
@@ -305,23 +304,22 @@ module Make
           else raise (FanArg.Bad ("don't know what to do with " ^ name)))
       
       let main () = try
-        begin 
-          let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib () ;
-          DynLoader.instance := (fun () -> dynloader );
+        let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib () in
+          let () = DynLoader.instance := (fun () -> dynloader ) in
           let call_callback () =
             PreCast.iter_and_take_callbacks
               (fun (name, module_callback) ->
                  let () = add_to_loaded_modules name in
-                 module_callback ()) ;
-          call_callback () ; 
-          rcall_callback := call_callback;
-          FanArg.parse
-              PreCast.Syntax.Options.init_spec_list anon_fun "fan <options> <file>\nOptions are:\n";
-          call_callback ();
-          if !print_loaded_modules then begin
-            SSet.iter (eprintf "%s@.") !loaded_modules;
-          end else ()
-        end
+                 module_callback ()) in
+          let () = call_callback () in
+          let () = rcall_callback := call_callback in
+          let () =
+            FanArg.parse
+              PreCast.Syntax.Options.init_spec_list
+              anon_fun "fan <options> <file>\nOptions are:\n" in
+          let () = call_callback () in
+          if !print_loaded_modules then
+            SSet.iter (eprintf "%s@.") !loaded_modules
       with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
       main ();;
 end 

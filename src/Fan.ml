@@ -227,7 +227,6 @@ open ParserStream;;
 (** for stream expression *)
 of_exp ~name:(d,"stream") ~entry:ParserStream.stream_exp;;
 
-open ParserLex
 
 open AstInjection
 

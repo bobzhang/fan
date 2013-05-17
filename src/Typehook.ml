@@ -165,50 +165,51 @@ let traversal () : traversal  = object (self:'self_type)
   method! mexp = with stru function
     | {:mexp| struct $u end |}  ->  begin 
         self#in_module ;
-        let res = self#stru u ;
-          let mtyps = List.rev (self#get_cur_mtyps) ;
-            if !print_collect_mtyps then
-              eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps ;
-            let result =
-              List.fold_right
-                (fun (_, {FSig.position;transform;filter}) acc
-                  ->
-                    let mtyps =
-                      match filter with
-                      |Some x -> apply_filter x mtyps
-                      |None -> mtyps in
-                    let code = transform mtyps in 
-                    match (position,code) with
-                    |(Some x,Some code) ->
-                        let (name,f) = Filters.make_filter (x,code) in begin 
-                          AstFilters.register_stru_filter (name,f);
-                          AstFilters.use_implem_filter name ;
-                          acc
-                        end
-                    |(None,Some code) -> {| $acc;; $code |}
-                |(_,None) -> acc 
-          )  !FanState.current_filters 
-          (if !FanState.keep then res else {| let _ = () |} (* FIXME *) );
-      self#out_module ;
-      {:mexp| struct $result end |}  
+        let res = self#stru u in
+        let mtyps = List.rev (self#get_cur_mtyps) in
+        let () = if !print_collect_mtyps then
+          eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps in
+        let result =
+          List.fold_right
+            (fun (_, {FSig.position;transform;filter}) acc
+              ->
+                let mtyps =
+                  match filter with
+                  |Some x -> apply_filter x mtyps
+                  |None -> mtyps in
+                let code = transform mtyps in 
+                match (position,code) with
+                |(Some x,Some code) ->
+                    let (name,f) = Filters.make_filter (x,code) in begin 
+                      AstFilters.register_stru_filter (name,f);
+                      AstFilters.use_implem_filter name ;
+                      acc
+                    end
+                |(None,Some code) -> {| $acc;; $code |}
+                |(_,None) -> acc)  !FanState.current_filters 
+          (if !FanState.keep then res else {| let _ = () |} (* FIXME *) ) in
+      (self#out_module ;
+      {:mexp| struct $result end |}  )
     end
     | x -> super#mexp x 
   method! stru  = with stru function
     | {| type $_ and $_ |} as x -> begin
       self#in_and_types;
-      let _ = super#stru x ;
-      self#update_cur_mtyps
+      let _ = super#stru x in
+      (self#update_cur_mtyps
           (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
-      self#out_and_types;
-      (if !FanState.keep then x else {| let _ = () |} (* FIXME *) )
+       self#out_and_types;
+       (if !FanState.keep then x else {| let _ = () |} (* FIXME *) ))
     end
-    | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> begin
-        let item =  `Single (name,t) ;
-        if !print_collect_mtyps then eprintf "Came across @[%a@]@." FSig.pp_print_types  item ;
-        self#update_cur_mtyps (fun lst -> item :: lst);
+    | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> 
+        let item =  `Single (name,t) in
+        let () =
+          if !print_collect_mtyps then eprintf "Came across @[%a@]@."
+              FSig.pp_print_types  item in
+        (self#update_cur_mtyps (fun lst -> item :: lst);
        (* if !keep then x else {| |} *)
-       x (* always keep *)
-    end
+       x )(* always keep *)
+
     | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}
     | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
 (* {| exception $_ |} *) 

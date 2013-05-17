@@ -1794,16 +1794,6 @@ let apply () =
                    (bi : 'bind)  (r : 'opt_rec)  _  _  (_loc : FanLoc.t)  ->
                    (k (`LetTryInWith (_loc, r, bi, x, a)) : 'sequence )))));
          ([`Skeyword "let";
-          `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
-          `Snterm (Gram.obj (bind : 'bind Gram.t ));
-          `Skeyword ";";
-          `Sself],
-           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (bi : 'bind)  (rf : 'opt_rec)  _ \n     (_loc : FanLoc.t)  ->\n     (`LetIn (_loc, rf, bi, (`Seq (_loc, el))) : 'sequence ))\n",
-             (Gram.mk_action
-                (fun (el : 'sequence)  _  (bi : 'bind)  (rf : 'opt_rec)  _ 
-                   (_loc : FanLoc.t)  ->
-                   (`LetIn (_loc, rf, bi, (`Seq (_loc, el))) : 'sequence )))));
-         ([`Skeyword "let";
           `Skeyword "module";
           `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
           `Snterm (Gram.obj (mbind0 : 'mbind0 Gram.t ));
@@ -1815,17 +1805,6 @@ let apply () =
                 (fun (k : 'sequence')  (e : 'exp)  _  (mb : 'mbind0) 
                    (m : 'a_uident)  _  _  (_loc : FanLoc.t)  ->
                    (k (`LetModule (_loc, m, mb, e)) : 'sequence )))));
-         ([`Skeyword "let";
-          `Skeyword "module";
-          `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
-          `Snterm (Gram.obj (mbind0 : 'mbind0 Gram.t ));
-          `Skeyword ";";
-          `Sself],
-           ("Gram.mk_action\n  (fun (el : 'sequence)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ \n     (_loc : FanLoc.t)  ->\n     (`LetModule (_loc, m, mb, (`Seq (_loc, el))) : 'sequence ))\n",
-             (Gram.mk_action
-                (fun (el : 'sequence)  _  (mb : 'mbind0)  (m : 'a_uident)  _ 
-                   _  (_loc : FanLoc.t)  ->
-                   (`LetModule (_loc, m, mb, (`Seq (_loc, el))) : 'sequence )))));
          ([`Skeyword "let";
           `Skeyword "open";
           `Snterm (Gram.obj (module_longident : 'module_longident Gram.t ));

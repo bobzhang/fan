@@ -419,15 +419,15 @@ let obj_of_mtyps
         let () = Hashtbl.add tbl dest (Qualified dest) in
         {:clfield@ghost| method
             $lid:dest : $ty = $(unknown len) |} ) extras in
-      sem_of_list (body @ items) in begin 
-        let v = Ctyp.mk_obj class_name  base body;
-        Hashtbl.iter (fun _ v ->
+      sem_of_list (body @ items) in 
+        let v = Ctyp.mk_obj class_name  base body in
+        (Hashtbl.iter (fun _ v ->
           eprintf "@[%a@]@." FSig.pp_print_warning_type  v)
-            tbl;
-        match module_name with
-        | None -> v
-        |Some u -> {:stru@ghost| module $uid:u = struct $v  end  |} 
-      end 
+           tbl;
+         match module_name with
+         | None -> v
+         |Some u -> {:stru@ghost| module $uid:u = struct $v  end  |}) 
+
   
   
 

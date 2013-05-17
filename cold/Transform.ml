@@ -26,13 +26,13 @@ let transform: full_id_transform -> vid -> exp =
          | t ->
              let dest = map_to_string t in
              let src = Objs.dump_vid t in
-             (if not (Hashtbl.mem Basic.conversion_table src)
-              then
-                (Hashtbl.add Basic.conversion_table src dest;
-                 eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest)
-              else ();
-              (`Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, (f dest)))) : 
-              Ast.exp )))
+             let () =
+               if not (Hashtbl.mem Basic.conversion_table src)
+               then
+                 (Hashtbl.add Basic.conversion_table src dest;
+                  eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest) in
+             (`Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, (f dest)))) : 
+               Ast.exp ))
 
 let basic_transform =
   function

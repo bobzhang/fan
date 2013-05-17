@@ -230,7 +230,7 @@ let rec scan_olevels entry (levels: olevel list ) =
   List.map  (scan_olevel entry) levels
 and scan_olevel entry (x,y,prods) =
   (x,y,List.map (scan_product entry) prods)
-and scan_product entry (symbols,x) = begin
+and scan_product entry (symbols,x) = 
   (List.map
      (fun symbol -> 
        let keywords =using_symbol  symbol [] in
@@ -243,11 +243,14 @@ and scan_product entry (symbols,x) = begin
               "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
               (List.reduce_left (^) diff)) in
        let () = check_gram entry symbol in
+       (* match symbol with *)
+       (* |`Sself -> `Snterm entry *)
+       (* | _ -> symbol *)
        match symbol with
        |`Snterm e when e == entry -> `Sself
        | _ -> symbol
      ) symbols,x)
-end
+
 
     
 let extend entry (position, levels) =
@@ -279,18 +282,27 @@ let refresh_level ~f {assoc;lname;productions;_}  =
   level_of_olevel (lname,Some assoc,f productions)
 
 
-let rec eoi_level  l =
+(* buggy, it's very hard to inline recursive parsers, take care
+   with Self, and implicit Self
+ *)    
+let  eoi_entry e =
+  let eoi_level  l =
   (* FIXME: the annot seems to be inconsistent now *)
   let aux (prods:production list) =
     List.map
-      (fun (symbs,(annot,act)) -> 
+      (fun (symbs,(annot,act)) ->
+        let symbs =
+          List.map
+            (function
+              | `Sself -> `Snterm e
+              | `Snext -> assert false
+              | x  -> x) symbs in
         (symbs @
          [`Stoken
             ((function | `EOI -> true | _ -> false),
              (`Normal, "`EOI"))],
          (annot, Gaction.mk (fun _ -> act)))) prods in
-  refresh_level ~f:aux l
-and eoi_entry e =
+  refresh_level ~f:aux l in
   let result = {e with estart = fun _ -> assert false ;
     econtinue = fun _ -> assert false;} in
   (match result.edesc with

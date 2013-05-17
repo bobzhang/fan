@@ -34,7 +34,8 @@ let action_parse entry (ts : stream) =
      let p =
        if trace_parser.contents then Format.fprintf else Format.ifprintf in
      p Format.err_formatter "@[<4>%s@ " entry.ename;
-     (let res = entry.estart 0 ts in p Format.err_formatter "@]@."; res)
+     (let res = entry.estart 0 ts in
+      let () = p Format.err_formatter "@]@." in res)
    with
    | XStream.Failure  ->
        FanLoc.raise (get_cur_loc ts)

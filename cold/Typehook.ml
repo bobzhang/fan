@@ -85,30 +85,31 @@ let traversal () =
            (self#in_module;
             (let res = self#stru u in
              let mtyps = List.rev self#get_cur_mtyps in
-             if print_collect_mtyps.contents
-             then eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps;
-             (let result =
-                List.fold_right
-                  (fun (_,{ FSig.position = position; transform; filter }) 
-                     acc  ->
-                     let mtyps =
-                       match filter with
-                       | Some x -> apply_filter x mtyps
-                       | None  -> mtyps in
-                     let code = transform mtyps in
-                     match (position, code) with
-                     | (Some x,Some code) ->
-                         let (name,f) = Filters.make_filter (x, code) in
-                         (AstFilters.register_stru_filter (name, f);
-                          AstFilters.use_implem_filter name;
-                          acc)
-                     | (None ,Some code) ->
-                         (`Sem (_loc, acc, code) : Ast.stru )
-                     | (_,None ) -> acc) FanState.current_filters.contents
-                  (if FanState.keep.contents
-                   then res
-                   else (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )) in
-              self#out_module; (`Struct (_loc, result) : Ast.mexp ))))
+             let () =
+               if print_collect_mtyps.contents
+               then eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps in
+             let result =
+               List.fold_right
+                 (fun (_,{ FSig.position = position; transform; filter }) 
+                    acc  ->
+                    let mtyps =
+                      match filter with
+                      | Some x -> apply_filter x mtyps
+                      | None  -> mtyps in
+                    let code = transform mtyps in
+                    match (position, code) with
+                    | (Some x,Some code) ->
+                        let (name,f) = Filters.make_filter (x, code) in
+                        (AstFilters.register_stru_filter (name, f);
+                         AstFilters.use_implem_filter name;
+                         acc)
+                    | (None ,Some code) ->
+                        (`Sem (_loc, acc, code) : Ast.stru )
+                    | (_,None ) -> acc) FanState.current_filters.contents
+                 (if FanState.keep.contents
+                  then res
+                  else (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )) in
+             self#out_module; (`Struct (_loc, result) : Ast.mexp )))
        | x -> super#mexp x
      method! stru =
        function
@@ -125,10 +126,10 @@ let traversal () =
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Ast.stru) as x
            ->
            let item = `Single (name, t) in
-           (if print_collect_mtyps.contents
-            then eprintf "Came across @[%a@]@." FSig.pp_print_types item;
-            self#update_cur_mtyps (fun lst  -> item :: lst);
-            x)
+           let () =
+             if print_collect_mtyps.contents
+             then eprintf "Came across @[%a@]@." FSig.pp_print_types item in
+           (self#update_cur_mtyps (fun lst  -> item :: lst); x)
        | (`Value (_loc,`Negative _,_) : Ast.stru)
          |(`ModuleType (_loc,_,_) : Ast.stru)|(`Include (_loc,_) : Ast.stru)
          |(`External (_loc,_,_,_) : Ast.stru)|(`StExp (_loc,_) : Ast.stru)

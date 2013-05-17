@@ -188,9 +188,7 @@ let merge_level (la : level) (lb : olevel) =
              (StdLib.pp_print_option pp_print_string) y;
          x)
     | (None ,None ,x) -> x in
-  List.fold_right
-    (fun (prod : production)  lev  -> add_production_in_level prod lev)
-    rules1 la
+  List.fold_right add_production_in_level rules1 la
 
 let level_of_olevel (lb : olevel) =
   let (lname1,assoc1,_) = lb in
@@ -277,16 +275,23 @@ let copy (e : entry) =
 let refresh_level ~f  { assoc; lname; productions;_} =
   level_of_olevel (lname, (Some assoc), (f productions))
 
-let rec eoi_level l =
-  let aux (prods : production list) =
-    List.map
-      (fun (symbs,(annot,act))  ->
-         ((symbs @
-             [`Stoken
-                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))]),
-           (annot, (Gaction.mk (fun _  -> act))))) prods in
-  refresh_level ~f:aux l
-and eoi_entry e =
+let eoi_entry e =
+  let eoi_level l =
+    let aux (prods : production list) =
+      List.map
+        (fun (symbs,(annot,act))  ->
+           let symbs =
+             List.map
+               (function
+                | `Sself -> `Snterm e
+                | `Snext -> assert false
+                | x -> x) symbs in
+           ((symbs @
+               [`Stoken
+                  (((function | `EOI -> true | _ -> false)),
+                    (`Normal, "`EOI"))]),
+             (annot, (Gaction.mk (fun _  -> act))))) prods in
+    refresh_level ~f:aux l in
   let result =
     {
       e with

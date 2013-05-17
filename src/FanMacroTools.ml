@@ -113,11 +113,10 @@ let execute_macro_if_active_branch ~exp ~pat _loc nil cons branch macro_def =
   let _ = Format.eprintf "execute_macro_if_active_branch@."in
   let test = Stack.top stack in
   let item =
-    if (test && branch=Then) || ((not test) && branch=Else) then begin 
-      let res = execute_macro ~exp ~pat nil cons macro_def;
-      Format.eprintf "executing branch %s@." (if branch=Then then "Then" else "Else");
-      res
-    end
+    if (test && branch=Then) || ((not test) && branch=Else) then 
+      let res = execute_macro ~exp ~pat nil cons macro_def in
+      (Format.eprintf "executing branch %s@." (if branch=Then then "Then" else "Else");
+       res)
     else (* ignore the macro *)
       nil in
   Str(item) 

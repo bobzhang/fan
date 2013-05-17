@@ -245,19 +245,19 @@ module Make(PreCast:PRECAST) =
       try
         let dynloader =
           DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents) () in
-        DynLoader.instance := ((fun ()  -> dynloader));
-        (let call_callback () =
-           PreCast.iter_and_take_callbacks
-             (fun (name,module_callback)  ->
-                let () = add_to_loaded_modules name in module_callback ()) in
-         call_callback ();
-         rcall_callback := call_callback;
-         FanArg.parse PreCast.Syntax.Options.init_spec_list anon_fun
-           "fan <options> <file>\nOptions are:\n";
-         call_callback ();
-         if print_loaded_modules.contents
-         then SSet.iter (eprintf "%s@.") loaded_modules.contents
-         else ())
+        let () = DynLoader.instance := (fun ()  -> dynloader) in
+        let call_callback () =
+          PreCast.iter_and_take_callbacks
+            (fun (name,module_callback)  ->
+               let () = add_to_loaded_modules name in module_callback ()) in
+        let () = call_callback () in
+        let () = rcall_callback := call_callback in
+        let () =
+          FanArg.parse PreCast.Syntax.Options.init_spec_list anon_fun
+            "fan <options> <file>\nOptions are:\n" in
+        let () = call_callback () in
+        if print_loaded_modules.contents
+        then SSet.iter (eprintf "%s@.") loaded_modules.contents
       with | exc -> (eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2)
     let _ = main ()
   end
