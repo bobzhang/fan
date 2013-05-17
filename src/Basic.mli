@@ -1,11 +1,12 @@
-exception Unhandled of Ast.ctyp
-exception Finished of Ast.exp
+open Ast
+exception Unhandled of ctyp
+exception Finished of exp
 
-val unit_literal : [> `Uid of FanLoc.t * string ]
+val unit_literal : [> `Uid of loc * string ]
     
 val x : ?off:int -> int -> string
-val xid : ?off:int -> int -> [> `Lid of FanLoc.t * string ]
+val xid : ?off:int -> int -> [> `Lid of loc * string ]
 val allx : ?off:int -> int -> string
-val allxid : ?off:int -> int -> [> `Lid of FanLoc.t * string ]
+val allxid : ?off:int -> int -> [> `Lid of loc * string ]
 val check_valid : string -> unit
 val conversion_table : (string, string) Hashtbl.t

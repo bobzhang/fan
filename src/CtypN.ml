@@ -9,6 +9,14 @@ type col = {
     col_mutable:bool;
     col_ctyp:ctyp
   }
+type ty_info = {
+    name_exp: exp; (*  [meta_int] *)
+    info_exp: exp; (* [meta_int fmt test _a3] *)
+    ep0: ep; (* _a3*)
+    id_ep: ep; (* (_a3,_b3) *)
+    id_eps: ep list ; (* [_a3;_b3] *)
+    ty: ctyp; (* int *) 
+  }
 
 type vbranch =
    [ `variant of (string* ctyp list )

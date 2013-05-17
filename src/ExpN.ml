@@ -1,16 +1,13 @@
-open FanOps
+
   
-#default_quotation     "exp";;
+#default_quotation     "exp-";;
 
 
-(* +-----------------------------------------------------------------+
-   | the modules documented with [open Exp]                          |
-   +-----------------------------------------------------------------+ *)
-open Ast
-open AstLib
+open AstN
+open AstLibN
 open LibUtil
-open Basic
-open FanUtil
+open BasicN
+(* open FanUtil *)
 
 
 
@@ -21,41 +18,45 @@ open FanUtil
    | utilities for list comprehension                                |
    +-----------------------------------------------------------------+ *)
 (* loc -> pat -> exp -> exp -> exp     *)
-let map loc (p:pat) (e:exp) (l:exp) = with exp
-  match (p, e) with
-  | ({:pat| $lid:x |}, {@_| $lid:y |}) when x = y -> l
-  | _ ->
-      if is_irrefut_pat p then
-        {@loc| List.map (fun $p -> $e) $l |}
-      else
-        {@loc| List.fold_right
-          (function
-            | $pat:p when true -> (fun x xs -> x :: xs ) $e
-            | _ -> (fun l -> l) ) $l [] |} 
+(* let map loc (p:pat) (e:exp) (l:exp) = with exp *)
+(*   match (p, e) with *)
+(*   | ({:pat| $lid:x |}, {| $lid:y |}) when x = y -> l *)
+(*   | _ -> *)
+(*       if is_irrefut_pat p then *)
+(*         {@loc| List.map (fun $p -> $e) $l |} *)
+(*       else *)
+(*         {@loc| List.fold_right *)
+(*           (function *)
+(*             | $pat:p when true -> (fun x xs -> x :: xs ) $e *)
+(*             | _ -> (fun l -> l) ) $l [] |}  *)
 
 
-let filter loc p b l = with exp
-    if is_irrefut_pat p then
-      {@loc| List.filter (fun $p -> $b) $l |}
-    else
-      {@loc| List.filter (function | $pat:p when true -> $b | _ -> false ) $l |}
+(* let filter loc p b l = with exp *)
+(*     if is_irrefut_pat p then *)
+(*       {@loc| List.filter (fun $p -> $b) $l |} *)
+(*     else *)
+(*       {@loc| List.filter (function | $pat:p when true -> $b | _ -> false ) $l |} *)
   
-let concat _loc l = with exp {| List.concat $l |}
+(* let concat _loc l = with exp {| List.concat $l |} *)
 
 (* only this function needs to be exposed *)
-let rec compr _loc e =  function
-  | [`gen (p, l)] -> map _loc p e l
-  | `gen (p, l):: `cond b :: items ->
-      compr _loc e (`gen (p, filter _loc p b l) :: items)
-  | `gen (p, l) :: ( `gen (_, _) :: _  as is ) ->
-      concat _loc (map _loc p (compr _loc e is) l)
-  | _ -> raise Stream.Failure 
+(* let rec compr _loc e =  function *)
+(*   | [`gen (p, l)] -> map _loc p e l *)
+(*   | `gen (p, l):: `cond b :: items -> *)
+(*       compr _loc e (`gen (p, filter _loc p b l) :: items) *)
+(*   | `gen (p, l) :: ( `gen (_, _) :: _  as is ) -> *)
+(*       concat _loc (map _loc p (compr _loc e is) l) *)
+(*   | _ -> raise Stream.Failure  *)
 
 
 (* +-----------------------------------------------------------------+
    | Utiliies for macro expansion                                    |
    +-----------------------------------------------------------------+ *)
         
+let bad_pat _loc =
+  FanLoc.raise _loc
+    (Failure
+       "this macro cannot be used in a pattern (see its definition)")
 
 (* Environment is a [string*pat] pair,
 
@@ -65,10 +66,6 @@ let rec compr _loc e =  function
    has a special meaning, then that replacment will be used
  *)  
 let substp loc env =
-  let bad_pat _loc =
-    FanLoc.raise _loc
-    (Failure
-       "this macro cannot be used in a pattern (see its definition)") in
   let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     | {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
@@ -77,8 +74,9 @@ let substp loc env =
            Not_found -> {@loc| $lid:x |}
         end
     | {| $uid:x |} ->
-        (try List.assoc x env with Not_found -> {@loc| $uid:x |})
-
+        begin try List.assoc x env with
+           Not_found -> {@loc| $uid:x |}
+        end
     | {| $int:x |} -> {@loc| $int:x |}
     | {| $str:s |} -> {@loc| $str:s |}
     | {| $par:x |} -> {@loc| $(par:loop x) |}
@@ -196,9 +194,8 @@ let _loc = FanLoc.ghost
   a better name later
  *)
 let mk_record label_exps : exp=
-  let rec_exps = List.map
-      (fun (label, exp) ->
-        {:rec_exp| $lid:label = $exp |} ) label_exps in
+  let rec_exps = List.map (fun (label, exp) ->
+    {:rec_exp| $lid:label = $exp |} ) label_exps in
   `Record (_loc, (sem_of_list rec_exps))
   (* {| { $list:rec_exps } |} *)
 
@@ -216,11 +213,8 @@ let failure = with exp
   ]}
  *)
 let (<+) names acc  = with exp
-  List.fold_right
-  (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 
+  List.fold_right (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 
 
-let mkfun = (<+)
-    
 (*
   Example:
   {[
