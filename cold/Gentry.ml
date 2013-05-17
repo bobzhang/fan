@@ -44,7 +44,7 @@ let action_parse entry (ts : stream) =
        (eprintf "%s@." (Printexc.to_string exc); raise exc)
    | exc ->
        (eprintf "%s@." (Printexc.to_string exc);
-        FanLoc.raise (get_prev_loc ts) exc) : Gaction.t )
+        FanLoc.raise (get_cur_loc ts) exc) : Gaction.t )
 
 let of_parser g n (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
