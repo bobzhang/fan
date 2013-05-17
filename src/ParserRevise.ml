@@ -435,12 +435,8 @@ let apply () = begin
          k  (`LetIn (_loc, rf, bi, e))
        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          -> k (`LetTryInWith(_loc,r,bi,x,a))
-       (* | "let"; opt_rec{rf}; bind{bi}; ";"; S{el} -> *)
-       (*     `LetIn (_loc, rf, bi, (`Seq (_loc, el))) *)
        | "let"; "module"; a_uident{m}; mbind0{mb}; "in";
            exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
-       (* | "let"; "module"; a_uident{m}; mbind0{mb}; ";"; S{el} -> *)
-       (*     `LetModule (_loc, m, mb, `Seq (_loc, el)) *)
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
            `LetOpen (_loc, (i: vid :> ident), e)
        (* FIXME Ant should be able to be followed *)      
@@ -450,9 +446,7 @@ let apply () = begin
        | ";" -> fun e -> e
        | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
        infixop1:
-       [  [ "&" | "&&" ]{x} ->
-         `Lid(_loc,x)
-         (* `Id(_loc,`Lid(_loc,x)) *) ] (* FIXME *)
+       [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] (* FIXME *)
        infixop0:
        [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ]
        
