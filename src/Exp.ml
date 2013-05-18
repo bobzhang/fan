@@ -14,16 +14,6 @@ open FanUtil
 
 
         
-(* +-----------------------------------------------------------------+
-   | Utiliies for macro expansion                                    |
-   +-----------------------------------------------------------------+ *)
-(* Environment is a [string*pat] pair,
-
-   Try to convert the 
-   [exp] node into [pat] node.
-   when do the conversion, if the exp node has an identifier which
-   has a special meaning, then that replacment will be used
- *)  
 let substp loc env =
   let bad_pat _loc =
     FanLoc.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
@@ -81,7 +71,8 @@ class subst loc env =  object
     | p -> super#pat p 
 end
 
-
+(*************************************************************************)
+(* used in gram DDSL *)    
 class type antiquot_filter =object
   inherit Objs.map
   method get_captured_variables: (exp * exp) list
@@ -123,10 +114,7 @@ end
 
 let fun_args _loc args body = with exp
   if args = [] then {| fun () -> $body |}
-  else
-    List.fold_right
-      (fun arg body ->
-	{| fun $arg -> $body |}) args body
+  else List.fold_right (fun arg body ->	{| fun $arg -> $body |}) args body
   
 
 
@@ -158,144 +146,45 @@ let mee_comma x y =
   {:exp| {:exp'| $($x), $($y) |} |}(* BOOTSTRAPPING*)
 
 
+(** {:exp| {:ep| $($x) $($y) |}|}
+    both work, I did not see obvious performance difference *)
+let mee_app x y = (* BOOTSTRAPPING *)
+  {:exp| {:exp'| $($x) $($y) |}|}
 
-let mee_app x y =
-  with exp' (* BOOTSTRAPPING *)
-  {| {| $($x) $($y) |}|}
 
-
-let mee_of_str s = with exp' (*    BOOTSTRAPING *)  
+let mee_of_str s = (*    BOOTSTRAPING *)  
   let len = String.length s in
   if s.[0]='`' then
     let s = String.sub s 1 (len - 1) in 
-    {|{|$(vrn:($str:s))|}|}
+    {:exp|{:exp'|$(vrn:($str:s))|}|}
   else
-    let u = {| {:ident'| $(uid:$str:s) |} |} in
-    {| {| $(id:$u) |} |}
-    (* {| {| $(uid:$s)|}|} *)
-      (* {| A |}
-           `App
-    (_loc,
-      (`App
-         (_loc, (`Vrn (_loc, "ExId")),
-           (`ExId (_loc, (`Lid (_loc, "_loc")))))),
-      (`App
-         (_loc, (`Vrn (_loc, "Uid")),
-           (`Par
-              (_loc,
-                (`Com (_loc, (`ExId (_loc, (`Lid (_loc, "_loc")))), s)))))))
-         
-         `ExId (_loc, (`Uid (_loc, "A")))
-         {:exp| `Uid (_loc,"A") |}
-         {:exp| `ExId (_loc, (`Uid (_loc, "A"))) |}
-         {:exp| {:exp| A |}|}
-         {| {| A |}|}
-       *)
+     {:exp| {:exp'| $(uid:$str:s) |} |} 
 
 
-
-(*
-   @raise Invalid_argument
-   
-   There are 2 stages here 
-   We want to generate code  like this
-   {[
-
-    {|  {| ( $(meta_int _loc x0), $(meta_int _loc x1) ) |}  |}
-   ]}
-
-  Normal practice:
-  First print the result, then find a mechanical way to   construct
-
-  Here we should avoid singleton tuple error
-  {| $par:a |} when a is  single, it will cause error FIXME
-
- *)      
-
-  
-(*
-  Here we want to generate something like
-  
-  {[
-  ({| {| { u = $meta } |} |} );
-  ]}
-  [meta] could be parameterized
-  
-  First we need to construct this part
-  {[
-  (App 
-       (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq")))
-         (ExId  (Lid  "_loc")))
-       (App 
-         (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid")))
-           (ExId  (Lid  "_loc")))
-         (Str  "u")))
-  ]}
-  given string input u
-  we finally want to make 
-  {[
-  {| << {u = $meta_u$ ; v = $meta_v$ } |} >> 
-  ]}
-  given string input "u" and [ {| meta_u |} ]
- *)
 
 let mk_tuple_ee = function (* BOOTSTRAPPING *)
   | [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
-  | xs  ->
-      {| `Par (_loc, $(List.reduce_right mee_comma xs)) |}
+  | xs  -> {:exp| `Par (_loc, $(List.reduce_right mee_comma xs)) |}
 
   
-(**
-  Example:
-  {[
-  mee_record_col "a" {|3|} = {| {:rec_exp| a = $($({|3|})) |}|};
-  ]}
- *)
-let mee_record_col label exp =
-  {:exp'| {:rec_exp| $(lid:($str:label)) = $($exp) |}|} 
+
+let mee_record_col label exp = {:exp| {:rec_exp'| $(lid:($str:label)) = $($exp) |}|} 
 
 
-let mee_record_semi a b =
-  {:exp'| {:rec_exp| $($a);$($b) |} |}
+let mee_record_semi a b = {:exp| {:rec_exp'| $($a);$($b) |} |}
 
 
-(*
-  Example:
-  {[
-  mk_record_ee [("a",{|3|})] = {| {| { a = $($({|3|})) }|}|};
-  ]}
- *)  
 let mk_record_ee label_exps =
-  with exp'
   label_exps
   |> List.map (fun (label,exp) -> mee_record_col label exp)
-  |> (fun es -> {| {| { $($(List.reduce_right mee_record_semi es)) } |}|} )
+  |> (fun es -> {:exp| {:exp'| { $($(List.reduce_right mee_record_semi es)) } |}|} )
 
-    
-
-(* Mainly used to overcome the value restriction
-   {[
-    eta_expand {|f |} 3 |> FanBasic.p_exp f;
-    fun a0  a1  a2  -> f a0 a1 a2
-   ]}
- *)
 let eta_expand (exp:exp) number : exp =
   let names = List.init number (fun i -> x ~off:0 i ) in
   mkfun names (exp +> names )
 
 
-(*
-  Example:
-  {[
-  gen_curry_n {|3|} ~arity:2 "`X" 2 ;
-  fun [ `X (a0, a1) -> fun [ `X (b0, b1) -> 3 ] ]
-
-  gen_curry_n {|3|} ~arity:2 "X" 2 ;
-  fun (X (a0,a1))  (X (b0,b1))  -> 3
-  ]}
-  
- *)
 let gen_curry_n (acc:exp) ~arity cons n : exp =
   let args = List.init arity
       (fun i -> List.init n (fun j -> {:pat| $(id:xid ~off:i j) |})) in
@@ -304,40 +193,19 @@ let gen_curry_n (acc:exp) ~arity cons n : exp =
     (fun p acc -> {| function | $pat:p -> $acc  |} )
     (List.map (fun lst -> appl_of_list (pat:: lst)) args) acc
 
-(*
-  Example:
-  {[
-   let u  =  list_of_or' {:case|
-  (A0 (a0, a1),A0 (b0, b1)) -> 1
-  |   (A1 (a0, a1), A1 (b0, b1)) -> 2
-  |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
-
-  fun a0  b0  ->
-  match (a0, b0) with
-  | (A0 (a0,a1),A0 (b0,b1)) -> 1
-  | (A1 (a0,a1),A1 (b0,b1)) -> 2
-  | (A2 (a0,a1),A2 (b0,b1)) -> 3
-  ]}
-
-  Make Sure the names generated are shadowed by
-  gen_tuple_n
- *)
-  
 let currying cases ~arity =
-  let cases = bar_of_list cases in (* FIXME when cases is []*)
+  let cases = bar_of_list cases in
   if  arity >= 2 then 
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exps = List.map (fun s-> {| $lid:s |} ) names in
     let x = tuple_com exps in
     mkfun names  {| match $x with | $cases |} 
-    (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
   else {| function | $cases |}
-      (* {| fun [ $list:cases ] |} *)
 
 
 let unknown len =
   if len = 0 then
-    {| self# $(`Lid (_loc, "unknown")) |} (* FIXME*)
-  else {| failwith $(str:"not implemented!") |}
+    {| self#unknown  |}
+  else {| failwith "not implemented!" |}
 
   

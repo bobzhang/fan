@@ -169,27 +169,26 @@ let mee_comma x y =
             x)), y) : Ast.exp )
 
 let mee_app x y =
-  `App
-    (_loc,
-      (`App
-         (_loc, (`App (_loc, (`Vrn (_loc, "App")), (`Lid (_loc, "_loc")))),
-           x)), y)
+  (`App
+     (_loc,
+       (`App
+          (_loc, (`App (_loc, (`Vrn (_loc, "App")), (`Lid (_loc, "_loc")))),
+            x)), y) : Ast.exp )
 
 let mee_of_str s =
   let len = String.length s in
   if (s.[0]) = '`'
   then
     let s = String.sub s 1 (len - 1) in
-    `App
-      (_loc, (`Vrn (_loc, "Vrn")),
-        (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s)))))))
+    (`App
+       (_loc, (`Vrn (_loc, "Vrn")),
+         (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) : 
+      Ast.exp )
   else
-    (let u =
-       `App
-         (_loc, (`Vrn (_loc, "Uid")),
-           (`Par
-              (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) in
-     u)
+    (`App
+       (_loc, (`Vrn (_loc, "Uid")),
+         (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) : 
+    Ast.exp )
 
 let mk_tuple_ee =
   function
@@ -205,41 +204,34 @@ let mk_tuple_ee =
                      (List.reduce_right mee_comma xs)))))) : Ast.exp )
 
 let mee_record_col label exp =
-  `Constraint
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (`Lid (_loc, "_loc")))),
-                (`App
-                   (_loc, (`Vrn (_loc, "Lid")),
-                     (`Par
-                        (_loc,
-                          (`Com
-                             (_loc, (`Lid (_loc, "_loc")),
-                               (`Str (_loc, label)))))))))), exp)),
-      (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, "rec_exp")))))
+  (`App
+     (_loc,
+       (`App
+          (_loc,
+            (`App (_loc, (`Vrn (_loc, "RecBind")), (`Lid (_loc, "_loc")))),
+            (`App
+               (_loc, (`Vrn (_loc, "Lid")),
+                 (`Par
+                    (_loc,
+                      (`Com
+                         (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, label)))))))))),
+       exp) : Ast.exp )
 
 let mee_record_semi a b =
-  `Constraint
-    (_loc,
-      (`App
-         (_loc,
-           (`App
-              (_loc,
-                (`App (_loc, (`Vrn (_loc, "Sem")), (`Lid (_loc, "_loc")))),
-                a)), b)),
-      (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, "rec_exp")))))
+  (`App
+     (_loc,
+       (`App
+          (_loc, (`App (_loc, (`Vrn (_loc, "Sem")), (`Lid (_loc, "_loc")))),
+            a)), b) : Ast.exp )
 
 let mk_record_ee label_exps =
   (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
     |>
     (fun es  ->
-       `App
-         (_loc,
-           (`App (_loc, (`Vrn (_loc, "Record")), (`Lid (_loc, "_loc")))),
-           (List.reduce_right mee_record_semi es)))
+       (`App
+          (_loc,
+            (`App (_loc, (`Vrn (_loc, "Record")), (`Lid (_loc, "_loc")))),
+            (List.reduce_right mee_record_semi es)) : Ast.exp ))
 
 let eta_expand (exp : exp) number =
   (let names = List.init number (fun i  -> x ~off:0 i) in
