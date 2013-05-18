@@ -179,7 +179,7 @@ let qualified_app_list x =
         | (`Lid (_loc,_) : Ast.ctyp)::_ -> None
         | (#ident' as i)::ys -> Some (i, ys)
         | _ -> None)
-   | (`Lid (_loc,_) : Ast.ctyp)|(`Uid (_loc,_) : Ast.ctyp) -> None
+   | `Lid _|`Uid _ -> None
    | #ident' as i -> Some (i, [])
    | _ -> None : (ident * ctyp list) option )
 

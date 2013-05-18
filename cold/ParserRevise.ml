@@ -5795,23 +5795,10 @@ let apply_ctyp () =
                   (`OptLabl (_loc, i, t) : 'ctyp )))))]);
       ((Some "apply"), (Some `LA),
         [([`Sself; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (let t = `App (_loc, t2, t1) in\n      try (ident_of_ctyp t :>ctyp) with | Invalid_argument _ -> t : 'ctyp ))\n",
+           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (`App (_loc, t2, t1) : 'ctyp ))\n",
              (Gram.mk_action
                 (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (let t = `App (_loc, t2, t1) in
-                    try (ident_of_ctyp t :>ctyp)
-                    with | Invalid_argument _ -> t : 'ctyp )))))]);
-      ((Some "."), (Some `LA),
-        [([`Sself; `Skeyword "."; `Sself],
-           ("Gram.mk_action\n  (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->\n     (try `Dot (_loc, (ident_of_ctyp t1 : ident ), (ident_of_ctyp t2))\n      with | Invalid_argument s -> raise (XStream.Error s) : 'ctyp ))\n",
-             (Gram.mk_action
-                (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : FanLoc.t)  ->
-                   (try
-                      `Dot
-                        (_loc, (ident_of_ctyp t1 : ident ),
-                          (ident_of_ctyp t2))
-                    with | Invalid_argument s -> raise (XStream.Error s) : 
-                   'ctyp )))))]);
+                   (`App (_loc, t2, t1) : 'ctyp )))))]);
       ((Some "simple"), None,
         [([`Skeyword "'"; `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
            ("Gram.mk_action\n  (fun (i : 'a_lident)  _  (_loc : FanLoc.t)  ->\n     (`Quote (_loc, (`Normal _loc), i) : 'ctyp ))\n",
@@ -5843,6 +5830,29 @@ let apply_ctyp () =
                       (mk_anti _loc ~c:"ident" n s : 'ctyp )
                   | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
         ([`Stoken
+            (((function | `Ant ("id",_) -> true | _ -> false)),
+              (`Normal, "`Ant (\"id\",_)"));
+         `Skeyword ".";
+         `Sself],
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"id\" as n),s) ->\n         (((try\n              let id = ident_of_ctyp t in\n              fun ()  ->\n                (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n            with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))))\n            () : 'ctyp )\n     | _ ->\n         failwith\n           \"(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) ()\n\")\n",
+            (Gram.mk_action
+               (fun (t : 'ctyp)  _  (__fan_0 : [> FanToken.t]) 
+                  (_loc : FanLoc.t)  ->
+                  match __fan_0 with
+                  | `Ant (("id" as n),s) ->
+                      (((try
+                           let id = ident_of_ctyp t in
+                           fun ()  ->
+                             (`Dot (_loc, (mk_anti _loc ~c:"ident" n s), id) : 
+                             ctyp )
+                         with
+                         | Invalid_argument s ->
+                             (fun ()  -> raise (XStream.Error s)))) () : 
+                      'ctyp )
+                  | _ ->
+                      failwith
+                        "(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) ()\n"))));
+        ([`Stoken
             (((function | `QUOTATION _ -> true | _ -> false)),
               (`Normal, "`QUOTATION _"))],
           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `QUOTATION x -> (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'ctyp )\n     | _ -> failwith \"AstQuotation.expand _loc x FanDyn.ctyp_tag\n\")\n",
@@ -5853,15 +5863,22 @@ let apply_ctyp () =
                       (AstQuotation.expand _loc x FanDyn.ctyp_tag : 'ctyp )
                   | _ ->
                       failwith "AstQuotation.expand _loc x FanDyn.ctyp_tag\n"))));
+        ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ));
+         `Skeyword ".";
+         `Sself],
+          ("Gram.mk_action\n  (fun (t : 'ctyp)  _  (i : 'a_uident)  (_loc : FanLoc.t)  ->\n     ((try\n         let id = ident_of_ctyp t in fun ()  -> `Dot (_loc, (i :>ident), id)\n       with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) () : \n     'ctyp ))\n",
+            (Gram.mk_action
+               (fun (t : 'ctyp)  _  (i : 'a_uident)  (_loc : FanLoc.t)  ->
+                  ((try
+                      let id = ident_of_ctyp t in
+                      fun ()  -> `Dot (_loc, (i :>ident), id)
+                    with
+                    | Invalid_argument s ->
+                        (fun ()  -> raise (XStream.Error s))) () : 'ctyp )))));
         ([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
           ("Gram.mk_action\n  (fun (i : 'a_lident)  (_loc : FanLoc.t)  -> ((i :>ctyp) : 'ctyp ))\n",
             (Gram.mk_action
                (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
-                  ((i :>ctyp) : 'ctyp )))));
-        ([`Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))],
-          ("Gram.mk_action\n  (fun (i : 'a_uident)  (_loc : FanLoc.t)  -> ((i :>ctyp) : 'ctyp ))\n",
-            (Gram.mk_action
-               (fun (i : 'a_uident)  (_loc : FanLoc.t)  ->
                   ((i :>ctyp) : 'ctyp )))));
         ([`Skeyword "(";
          `Sself;

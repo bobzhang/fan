@@ -1244,32 +1244,38 @@ let apply_ctyp () = begin
         | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
          
        "apply" LA
-        [ S{t1}; S{t2} ->
-          let t = `App(_loc,t2,t1) in
-          try (ident_of_ctyp t:>ctyp)
-          with  Invalid_argument _ -> t
-               
-        ]
+        [ S{t1}; S{t2} -> `App (_loc,t2,t1) ]
+
        (* [mod_ext_longident] and [type_longident]
           | type_longident
-          { mktyp(Ptyp_constr(mkrhs $1 1, [])) }
           | simple_core_type2 type_longident
-          { mktyp(Ptyp_constr(mkrhs $2 2, [$1])) }
           | LPAREN core_type_comma_list RPAREN type_longident *)  
-       "." LA
-        [ S{t1}; "."; S{t2} ->
-            try
-              `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
-            with Invalid_argument s -> raise (XStream.Error s) ]
+       (* "." LA *)
+       (*  [ S{t1}; "."; S{t2} -> *)
+       (*      try ( *)
+       (*        prerr_endline "used"; *)
+       (*        `Dot (_loc, ident_of_ctyp t1, ident_of_ctyp t2) *)
+       (*          ) (\* FIXME*\) *)
+       (*      with Invalid_argument s -> raise (XStream.Error s) ] *)
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc
         | `Ant ((""|"typ"|"par" as n),s) -> mk_anti _loc ~c:"ctyp" n s
         | `Ant (("id" as n),s) -> mk_anti _loc ~c:"ident" n s
+        | `Ant (("id" as n),s); "."; S{t} ->
+            let try id = ident_of_ctyp t  in
+              (`Dot(_loc,mk_anti _loc ~c:"ident" n s,id) :ctyp)
+            with Invalid_argument s -> raise (XStream.Error s)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.ctyp_tag
+        | a_uident{i}; "."; S{t} ->
+            let try id = ident_of_ctyp t in
+              `Dot(_loc,(i:>ident),id)
+            with Invalid_argument s -> raise (XStream.Error s)
         | a_lident{i}->  (i :> ctyp)
-        | a_uident{i} -> (i:> ctyp)
-        | "("; S{t}; "*"; star_ctyp{tl}; ")" -> `Par (_loc, `Sta (_loc, t, tl))
+              
+        (* | a_uident{i} -> (i:> ctyp) *)
+        | "("; S{t}; "*"; star_ctyp{tl}; ")" ->
+            `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
             appl_of_list  ((j:>ctyp):: t::list_of_com tl [])

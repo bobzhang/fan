@@ -9,6 +9,14 @@ type col = {
     col_mutable:bool;
     col_ctyp:ctyp
   }
+type ty_info = {
+    name_exp: exp; (*  [meta_int] *)
+    info_exp: exp; (* [meta_int fmt test _a3] *)
+    ep0: ep; (* _a3*)
+    id_ep: ep; (* (_a3,_b3) *)
+    id_eps: ep list ; (* [_a3;_b3] *)
+    ty: ctyp; (* int *) 
+  }
 
 type vbranch =
    [ `variant of (string* ctyp list )
@@ -49,13 +57,6 @@ let (<+) (names: string list ) (ty:ctyp) =
     
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
-(*
-  {[
-  match <:stru< type 'a list  = [A of int | B of 'a] >> with
-  [ <:stru<type .$x$. >> -> name_length_of_tydcl x ];
-  ("list",1)
-  ]}
- *)
 let name_length_of_tydcl (x:typedecl) : (string * int) =
   match x with 
   | `TyDcl ( `Lid name, tyvars, _, _) ->
@@ -67,49 +68,27 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
         (ObjsN.dump_typedecl tydcl)
 
 
-
-(*
+(**
   generate universal quantifiers for object's type signatures
   {[
-
   gen_quantifiers ~arity:2 3 |> eprint;
   'all_a0 'all_a1 'all_a2 'all_b0 'all_b1 'all_b2
-  ]}
-  quantifier variables can not be unified
- *)  
+  ]}  quantifier variables can not be unified *)  
+
 let gen_quantifiers1 ~arity n  : ctyp =
   List.init arity
-    (fun i -> List.init n (fun j -> {|  '$(lid:allx ~off:i j) |} ))
+    (fun i -> List.init n
+        (fun j -> {|  '$(lid:allx ~off:i j) |} ))
   |> List.concat |> appl_of_list
 
 
-(*
-  {[
-  of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
-  Loc.t 'all_c0 'all_c1 'all_c2
-  ]}
- *)  
+ 
 let of_id_len ~off ((id:ident),len) =
-
   appl_of_list
     ((id:>ctyp) ::
      List.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))
     
-(*
-  {[
-  ( <:stru< type 'a list  = [A of int | B of 'a] >> |>
-  fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
-  |> of_name_len ~off:1 |> eprint ] );
-  list 'all_b0
-
-  ( <:stru< type list   = [A of int | B] >> |>
-  fun [ <:stru<type .$x$. >> -> name_length_of_tydcl x
-  |> of_name_len ~off:1 |> eprint ] );
-  ]}
-
- *)    
-
 let of_name_len ~off (name,len) =
   let id = lid name   in
   of_id_len ~off (id,len)
@@ -273,16 +252,15 @@ let is_recursive ty_dcl =
   ]}
   
  *)  
-let qualified_app_list x : ((ident * ctyp list ) option ) =
+let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   match x with 
   | {| $_ $_ |} as x->
-      begin match list_of_app x [] with
+      (match list_of_app x [] with
       | {| $lid:_  |} :: _  -> None
       | (#ident' as i) ::ys  ->
           Some (i,ys)
-      | _ -> None
-      end
-  | ( {| $lid:_  |} | {| $uid:_  |}) -> None
+      | _ -> None)
+  | `Lid _ | `Uid _ -> None
   | #ident'  as i  -> Some (i, [])
   | _ -> None 
 
@@ -290,7 +268,6 @@ let is_abstract (x:typedecl)=
   match x with
   | `TyAbstr _ -> true
   | _ -> false
-        (* [ `TyDcl (_, _, _, {| |}, _) -> true | _ -> false]; *)
 
 let abstract_list (x:typedecl)=
   match x with 

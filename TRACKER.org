@@ -69,7 +69,7 @@
 
 
 
-
+  
 * 03 paser merge
 
   #+BEGIN_SRC caml
@@ -137,6 +137,7 @@
    `Ant "g"; `Ant"ghso"
   ]
   will not parse, since under such case, the second production has a higher priority.
+
 * 11 inling problem again
 
   #+BEGIN_SRC ocaml
@@ -152,3 +153,34 @@
   #+END_SRC
   can we simply inline [pat_as_pat_opt] here?  
 
+
+* 12 with does not work with
+  ident-
+  with ident- is not parsed, the problem is the lexer.
+
+* 13 a even light weight syntax 
+  #+BEGIN_SRC ocaml
+  | $a . $b => ghsog
+  | ($a $b) => "ghos"
+  | $lid:x =>
+  | $uid:x => ....
+  #+END_SRC
+  
+
+* 14 ctyp can parse uid
+  
+
+  #+BEGIN_SRC caml
+    {:ctyp| A |}
+    `Uid "A"
+  #+END_SRC
+  It's not easy to fix currently due to this grammar 
+
+  #+BEGIN_SRC caml
+           "." LA
+            [ S{t1}; "."; S{t2} ->
+                try
+                  `Dot (_loc, (ident_of_ctyp t1 : ident), (ident_of_ctyp t2)) (* FIXME*)
+                with Invalid_argument s -> raise (XStream.Error s) ]
+      
+  #+END_SRC

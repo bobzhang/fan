@@ -1,33 +1,17 @@
-open Ast
-  
-(* val sep_dot_exp : *)
-(*   (loc * string list * exp) list -> *)
-(*   exp -> (loc * string list * exp) list *)
+open AstN
 
-(* val mksequence : ?loc:loc -> exp -> exp *)
+val map : loc -> pat -> exp -> exp -> exp
 
-(* val mksequence' : ?loc:loc -> exp -> exp *)
+val filter : loc -> pat -> exp -> exp -> exp
 
-(* val mkassert : loc -> exp -> exp *)
+val concat : loc -> exp -> exp
 
-(* val bigarray_get : loc -> exp -> exp -> exp *)
+val compr :
+  loc ->
+  exp ->
+  [> `cond of exp | `gen of pat * exp ] list -> exp
 
-(* val bigarray_set : loc -> exp -> exp -> exp option *)
-
-(* val pattern_eq_expression : pat -> exp -> bool *)
-
-(* val map : loc -> pat -> exp -> exp -> exp *)
-
-(* val filter : loc -> pat -> exp -> exp -> exp *)
-
-(* val concat : loc -> exp -> exp *)
-
-(* val compr : *)
-(*   loc -> *)
-(*   exp -> *)
-(*   [> `cond of exp | `gen of pat * exp ] list -> exp *)
-
-(* val bad_pat : FanLoc.t -> 'a *)
+val bad_pat : FanLoc.t -> 'a
 
 val substp : loc -> (string * pat) list -> exp -> pat
 
@@ -51,7 +35,6 @@ val fun_args : loc -> pat list -> exp -> exp
 val mk_record : (string * exp) list -> exp
 val failure : exp
 val ( <+ ) : string list -> exp -> exp
-val mkfun : string list -> exp -> exp
 val ( <+< ) : pat list -> exp -> exp
 val mee_comma : exp -> exp -> exp
 val mee_app : exp -> exp -> exp
