@@ -358,3 +358,23 @@ let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   | Obj (Map ) ->
       (`Case (pat, (`Coercion (e, (name :>ctyp), annot))) : AstN.case )
   | _ -> (`Case (pat, (`Subtype (e, annot))) : AstN.case )
+
+let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
+  (match x with
+   | [] -> None
+   | _ ->
+       let xs: stru list =
+         List.map
+           (function
+            | `Mutual tys ->
+                (`Type (and_of_list (List.map aux tys)) : AstN.stru )
+            | `Single ty -> (`Type (aux ty) : AstN.stru )) x in
+       Some (sem_of_list xs) : stru option )
+
+let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
+  (let tys: string list =
+     List.concat_map
+       (function
+        | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
+        | `Single (x,_) -> [x]) x in
+   sem_of_list (List.map f tys) : stru )

@@ -50,8 +50,8 @@ let _ =
                            ^ FanConfig.bug_main_address));
                code);
   of_exp ~name:(d, "fans") ~entry:Typehook.fan_quots;
-  of_exp ~name:(d, "save") ~entry:Typehook.save_quot;
-  of_stru ~name:(d, "include") ~entry:Typehook.include_quot
+  of_exp ~name:(d, "save") ~entry:LangSave.save_quot;
+  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot
 
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 

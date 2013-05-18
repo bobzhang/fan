@@ -34,5 +34,3 @@ val traversal: unit -> traversal
  *)
 val fan_quot : exp Gram.t
 val fan_quots : exp Gram.t
-val include_quot: stru Gram.t
-val save_quot: exp Gram.t

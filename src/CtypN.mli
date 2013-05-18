@@ -220,3 +220,9 @@ val gen_tuple_abbrev : arity:int ->
   destination:destination -> ident -> exp -> case
 
 val pp_print_warning_type: Format.formatter -> warning_type -> unit
+
+
+val stru_from_mtyps :
+    f:(named_type -> AstN.typedecl) -> mtyps -> AstN.stru option    
+val stru_from_ty :
+    f:(string -> AstN.stru) -> mtyps -> AstN.stru

@@ -41,10 +41,8 @@ let show_modules () =
     print_newline()
   end
   
-(*
-  Get all definitions from mli file
-  Entrance: sigi
- *)
+(* Get all definitions from mli file
+  Entrance: sigi *)
 
 
 let plugin_add plugin =
@@ -265,21 +263,6 @@ with exp
       [L1[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
 |};;  
 
-let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();;
-
-{:create| (g:Gram.t) include_quot |};;
-
-{:extend|
-include_quot:
-  [`STR(_,s) ->
-    let keep = FanState.keep and cf = FanState.current_filters in
-    {:save| keep cf ->  begin
-      FanState.reset ();
-      FanBasic.parse_include_file PreCast.Syntax.strus s;
-    end
-  |}
- ]
-|};;
 
 begin 
   Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
@@ -287,36 +270,4 @@ begin
 end;;
 
 
-(*************************************************************************)
-(* save DDSL *)
-{:create|Gram  save_quot|};;
-(* {:save| a b c -> begin *)
-(*   print_int a; *)
-(*   print_int b ; *)
-(*   print_int c; *)
-(* end *)
-(* |} *)
-
-    
-{:extend|save_quot:
-  [L1 [`Lid x -> x] {ls} ; "->"; Syntax.exp{b} ->
-    let symbs = List.map (fun x -> FanState.gensym x) ls in
-    let res = FanState.gensym "res" in
-    let exc = FanState.gensym "e" in
-    let binds = and_of_list
-        (List.map2 (fun x y -> {:bind| $lid:x = ! $lid:y |} ) symbs ls ) in
-    let restore =
-       seq_sem (List.map2 (fun x y -> {:exp| $lid:x := $lid:y |}) ls symbs) in
-    {:exp|
-    let $binds in
-    try begin 
-      let $lid:res = $b in
-      let _ = $restore in 
-      $lid:res    
-    end with
-    | $lid:exc -> (begin $restore ; raise $lid:exc end)
-  |}
-
- ]
-|};;
   
