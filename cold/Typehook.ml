@@ -302,6 +302,13 @@ let _ =
                        failwith
                          "let keep = FanState.keep and cf = FanState.current_filters in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file PreCast.Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
 
+let _ =
+  Syntax.Options.add
+    ("-keep", (FanArg.Set FanState.keep),
+      "Keep the included type definitions");
+  Syntax.Options.add
+    ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins")
+
 let save_quot = Gram.mk "save_quot"
 
 let _ =
@@ -374,10 +381,3 @@ let _ =
                                                   (`Lid (_loc, "raise")),
                                                   (`Lid (_loc, exc))))))))))))) : 
                       Ast.exp ) : 'save_quot )))))]))
-
-let _ =
-  PreCast.Syntax.Options.add
-    ("-keep", (FanArg.Set FanState.keep),
-      "Keep the included type definitions");
-  PreCast.Syntax.Options.add
-    ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins")

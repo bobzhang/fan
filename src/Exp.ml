@@ -155,8 +155,7 @@ let (<+<) pats acc =
   
   
 let mee_comma x y =
-  with exp'
-  {| {| $($x), $($y) |} |}(* BOOTSTRAPPING*)
+  {:exp| {:exp'| $($x), $($y) |} |}(* BOOTSTRAPPING*)
 
 
 

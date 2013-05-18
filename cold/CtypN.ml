@@ -4,12 +4,29 @@ open AstLibN
 
 open LibUtil
 
-open Basic
+open BasicN
+
+type vrn =  
+  | Sum
+  | TyVrnEq
+  | TyVrnSup
+  | TyVrnInf
+  | TyVrnInfSup
+  | TyAbstr 
 
 type col =  {
   col_label: string;
   col_mutable: bool;
   col_ctyp: ctyp} 
+
+type ty_info = 
+  {
+  name_exp: exp;
+  info_exp: exp;
+  ep0: ep;
+  id_ep: ep;
+  id_eps: ep list;
+  ty: ctyp} 
 
 type vbranch = [ `variant of (string * ctyp list) | `abbrev of ident] 
 
@@ -29,9 +46,37 @@ and kind =
   | Map
   | Concrete of ctyp 
 
+open Format
+
+let _ = ()
+
 type warning_type =  
   | Abstract of string
   | Qualified of string 
+
+let pp_print_warning_type: Format.formatter -> warning_type -> unit =
+  fun fmt  ->
+    function
+    | Abstract _a0 ->
+        Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
+    | Qualified _a0 ->
+        Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
+
+type record_col =  {
+  re_label: string;
+  re_mutable: bool;
+  re_info: ty_info} 
+
+type record_info = record_col list 
+
+type basic_id_transform =
+  [ `Pre of string | `Post of string | `Fun of string -> string] 
+
+type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
+
+type full_id_transform =
+  [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
+  | `Last of string -> vid | `Obj of string -> string] 
 
 let arrow_of_list f = List.reduce_right arrow f
 
@@ -265,3 +310,51 @@ let view_variant (t : row_field) =
       | `Ctyp (#ident' as i) -> `abbrev i
       | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)) lst : 
   vbranch list )
+
+let transform: full_id_transform -> vid -> exp =
+  let open IdN in
+    function
+    | `Pre pre -> (fun x  -> (ident_map (fun x  -> pre ^ x) x : exp ))
+    | `Post post -> (fun x  -> (ident_map (fun x  -> x ^ post) x : exp ))
+    | `Fun f -> (fun x  -> ident_map f x)
+    | `Last f -> (fun x  -> (ident_map_of_ident f x : vid  :>exp))
+    | `Id f -> (fun x  -> (f x : vid  :>exp))
+    | `Idents f -> (fun x  -> (f (list_of_dot x []) : vid  :>exp))
+    | `Obj f ->
+        (function
+         | `Lid x -> (`Send ((`Lid "self"), (`Lid (f x))) : AstN.exp )
+         | t ->
+             let dest = map_to_string t in
+             let src = ObjsN.dump_vid t in
+             let () =
+               if not (Hashtbl.mem BasicN.conversion_table src)
+               then
+                 (Hashtbl.add BasicN.conversion_table src dest;
+                  Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
+                    dest) in
+             (`Send ((`Lid "self"), (`Lid (f dest))) : AstN.exp ))
+
+let basic_transform =
+  function
+  | `Pre pre -> (fun x  -> pre ^ x)
+  | `Post post -> (fun x  -> x ^ post)
+  | `Fun f -> f
+
+let right_transform =
+  function
+  | #basic_id_transform as x ->
+      let f = basic_transform x in (fun x  -> (`Lid (f x) : AstN.exp ))
+  | `Exp f -> f
+
+let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
+  let args: pat list =
+    List.init arity
+      (fun i  ->
+         (`Alias ((`ClassPath name), (`Lid (x ~off:i 0))) : AstN.pat )) in
+  let exps = List.init arity (fun i  -> (xid ~off:i 0 : AstN.exp )) in
+  let e = appl_of_list (e :: exps) in
+  let pat = args |> tuple_com in
+  match destination with
+  | Obj (Map ) ->
+      (`Case (pat, (`Coercion (e, (name :>ctyp), annot))) : AstN.case )
+  | _ -> (`Case (pat, (`Subtype (e, annot))) : AstN.case )

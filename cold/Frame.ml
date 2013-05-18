@@ -10,8 +10,6 @@ open Basic
 
 open FSig
 
-open Exp
-
 let preserve = ["self"; "self_type"; "unit"; "result"]
 
 let check names =
@@ -42,7 +40,8 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
        let len = List.length ls in
        let pat = (EP.mk_tuple ~arity ~number:len :>pat) in
        let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
-       names <+ (currying [(`Case (_loc, pat, tys) : Ast.case )] ~arity)
+       Exp.mkfun names
+         (Exp.currying [(`Case (_loc, pat, tys) : Ast.case )] ~arity)
    | _ ->
        let _loc = loc_of ty in
        FanLoc.errorf _loc "tuple_exp_of_ctyp %s" (Objs.dump_ctyp ty) : 
@@ -139,7 +138,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
-  currying ~arity res
+  Exp.currying ~arity res
 
 let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
@@ -173,7 +172,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       then match default info with | Some x -> x :: res | None  -> res
       else res in
     List.rev t in
-  currying ~arity res
+  Exp.currying ~arity res
 
 let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
   ~left_type_variable  =
@@ -187,9 +186,10 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
       | t ->
           FanLoc.errorf (loc_of t) "mk_prefix: %s" (Objs.dump_decl_params t) in
     match vars with
-    | `None _ -> names <+ acc
+    | `None _ -> Exp.mkfun names acc
     | `Some (_,xs) ->
-        let vars = list_of_com xs [] in List.fold_right f vars (names <+ acc)
+        let vars = list_of_com xs [] in
+        List.fold_right f vars (Exp.mkfun names acc)
 
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
@@ -214,7 +214,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
                               re_mutable = col_mutable
                             }) cols in
                  mk_prefix ~names ~left_type_variable tyvars
-                   (currying ~arity
+                   (Exp.currying ~arity
                       [(`Case (_loc, pat, (mk_record info)) : Ast.case )])
              | `Sum (_,ctyp) ->
                  let funct = exp_of_ctyp ctyp in
@@ -226,7 +226,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match ctyp with
              | #ident'|`Par _|`Quote _|`Arrow _|`App _ as x ->
                  let exp = simple_exp_of_ctyp x in
-                 let funct = eta_expand (exp +> names) arity in
+                 let funct = Exp.eta_expand (exp +> names) arity in
                  mk_prefix ~names ~left_type_variable tyvars funct
              | `PolyEq (_,t)|`PolySup (_,t)|`PolyInf (_,t)
                |`PolyInfSup (_,t,_) ->
@@ -361,7 +361,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                let (ty,_) = mk_type tydcl in
                (`CrMth
                   (_loc, (`Lid (_loc, name)), (`Negative _loc),
-                    (`Negative _loc), (unknown n), ty) : Ast.clfield )
+                    (`Negative _loc), (Exp.unknown n), ty) : Ast.clfield )
            | None  -> mk_clfield named_type) : clfield ) in
    let (extras,lst) = Ctyp.transform_mtyps lst in
    let body = List.map fs lst in
@@ -375,7 +375,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
             let () = Hashtbl.add tbl dest (Qualified dest) in
             (`CrMth
                (ghost, (`Lid (ghost, dest)), (`Negative ghost),
-                 (`Negative ghost), (unknown len), ty) : Ast.clfield ))
+                 (`Negative ghost), (Exp.unknown len), ty) : Ast.clfield ))
          extras in
      sem_of_list (body @ items) in
    let v = Ctyp.mk_obj class_name base body in

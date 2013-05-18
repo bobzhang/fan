@@ -1,5 +1,3 @@
-open FanOps
-
 open Ast
 
 open AstLib
@@ -10,110 +8,10 @@ open Basic
 
 open FanUtil
 
-let map loc (p : pat) (e : exp) (l : exp) =
-  match (p, e) with
-  | ((`Lid (_loc,x) : Ast.pat),(`Lid (_,y) : Ast.exp)) when x = y -> l
-  | _ ->
-      if is_irrefut_pat p
-      then
-        (`App
-           (loc,
-             (`App
-                (loc,
-                  (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "map")))),
-                  (`Fun (loc, (`Case (loc, p, e)))))), l) : Ast.exp )
-      else
-        (`App
-           (loc,
-             (`App
-                (loc,
-                  (`App
-                     (loc,
-                       (`Dot
-                          (loc, (`Uid (loc, "List")),
-                            (`Lid (loc, "fold_right")))),
-                       (`Fun
-                          (loc,
-                            (`Bar
-                               (loc,
-                                 (`CaseWhen
-                                    (loc, p, (`Lid (loc, "true")),
-                                      (`App
-                                         (loc,
-                                           (`Fun
-                                              (loc,
-                                                (`Case
-                                                   (loc, (`Lid (loc, "x")),
-                                                     (`Fun
-                                                        (loc,
-                                                          (`Case
-                                                             (loc,
-                                                               (`Lid
-                                                                  (loc, "xs")),
-                                                               (`App
-                                                                  (loc,
-                                                                    (
-                                                                    `App
-                                                                    (loc,
-                                                                    (`Uid
-                                                                    (loc,
-                                                                    "::")),
-                                                                    (`Lid
-                                                                    (loc,
-                                                                    "x")))),
-                                                                    (
-                                                                    `Lid
-                                                                    (loc,
-                                                                    "xs")))))))))))),
-                                           e)))),
-                                 (`Case
-                                    (loc, (`Any loc),
-                                      (`Fun
-                                         (loc,
-                                           (`Case
-                                              (loc, (`Lid (loc, "l")),
-                                                (`Lid (loc, "l")))))))))))))),
-                  l)), (`Uid (loc, "[]"))) : Ast.exp )
-
-let filter loc p b l =
-  if is_irrefut_pat p
-  then
-    (`App
-       (loc,
-         (`App
-            (loc, (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))),
-              (`Fun (loc, (`Case (loc, p, b)))))), l) : Ast.exp )
-  else
-    (`App
-       (loc,
-         (`App
-            (loc, (`Dot (loc, (`Uid (loc, "List")), (`Lid (loc, "filter")))),
-              (`Fun
-                 (loc,
-                   (`Bar
-                      (loc, (`CaseWhen (loc, p, (`Lid (loc, "true")), b)),
-                        (`Case (loc, (`Any loc), (`Lid (loc, "false")))))))))),
-         l) : Ast.exp )
-
-let concat _loc l =
-  (`App
-     (_loc, (`Dot (_loc, (`Uid (_loc, "List")), (`Lid (_loc, "concat")))), l) : 
-  Ast.exp )
-
-let rec compr _loc e =
-  function
-  | (`gen (p,l))::[] -> map _loc p e l
-  | (`gen (p,l))::(`cond b)::items ->
-      compr _loc e ((`gen (p, (filter _loc p b l))) :: items)
-  | (`gen (p,l))::((`gen (_,_))::_ as is) ->
-      concat _loc (map _loc p (compr _loc e is) l)
-  | _ -> raise Stream.Failure
-
-let bad_pat _loc =
-  FanLoc.raise _loc
-    (Failure "this macro cannot be used in a pattern (see its definition)")
-
 let substp loc env =
+  let bad_pat _loc =
+    FanLoc.errorf _loc
+      "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x : exp) =
     match x with
     | (`App (_loc,e1,e2) : Ast.exp) ->
@@ -252,14 +150,7 @@ let mk_record label_exps =
        label_exps in
    `Record (_loc, (sem_of_list rec_exps)) : exp )
 
-let failure: Ast.exp =
-  `App
-    (_loc, (`Lid (_loc, "raise")),
-      (`App
-         (_loc, (`Uid (_loc, "Failure")),
-           (`Str (_loc, "metafilter: Cannot handle that kind of types ")))))
-
-let (<+) names acc =
+let mkfun names acc =
   List.fold_right
     (fun name  acc  ->
        (`Fun (_loc, (`Case (_loc, (`Lid (_loc, name)), acc))) : Ast.exp ))
@@ -271,11 +162,11 @@ let (<+<) pats acc =
     acc
 
 let mee_comma x y =
-  `App
-    (_loc,
-      (`App
-         (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (`Lid (_loc, "_loc")))),
-           x)), y)
+  (`App
+     (_loc,
+       (`App
+          (_loc, (`App (_loc, (`Vrn (_loc, "Com")), (`Lid (_loc, "_loc")))),
+            x)), y) : Ast.exp )
 
 let mee_app x y =
   `App
@@ -299,12 +190,6 @@ let mee_of_str s =
            (`Par
               (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) in
      u)
-
-let vee_of_str s =
-  (`App
-     (_loc, (`Vrn (_loc, "Vrn")),
-       (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), (`Str (_loc, s))))))) : 
-  Ast.exp )
 
 let mk_tuple_ee =
   function
@@ -358,7 +243,7 @@ let mk_record_ee label_exps =
 
 let eta_expand (exp : exp) number =
   (let names = List.init number (fun i  -> x ~off:0 i) in
-   names <+ (exp +> names) : exp )
+   mkfun names (exp +> names) : exp )
 
 let gen_curry_n (acc : exp) ~arity  cons n =
   (let args =
@@ -375,7 +260,8 @@ let currying cases ~arity  =
   then
     let names = List.init arity (fun i  -> x ~off:i 0) in
     let exps = List.map (fun s  -> (`Lid (_loc, s) : Ast.exp )) names in
-    let x = tuple_com exps in names <+ (`Match (_loc, x, cases) : Ast.exp )
+    let x = tuple_com exps in
+    mkfun names (`Match (_loc, x, cases) : Ast.exp )
   else (`Fun (_loc, cases) : Ast.exp )
 
 let unknown len =

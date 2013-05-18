@@ -331,7 +331,7 @@ and exp =
   | `Package_exp of (loc * mexp) ]
 and rec_exp =
   [ `Sem of (loc * rec_exp * rec_exp)
-  | `RecBind  of (loc * ident * exp)
+  | `RecBind  of (loc * ident * exp)   (* FIXME: label is lid, it can be more precise *)
   | any (* Faked here to be symmertric to rec_pat *)
   | ant ]
 

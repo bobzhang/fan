@@ -1,37 +1,8 @@
 open Ast
   
-(* val sep_dot_exp : *)
-(*   (loc * string list * exp) list -> *)
-(*   exp -> (loc * string list * exp) list *)
-
-(* val mksequence : ?loc:loc -> exp -> exp *)
-
-(* val mksequence' : ?loc:loc -> exp -> exp *)
-
-(* val mkassert : loc -> exp -> exp *)
-
-(* val bigarray_get : loc -> exp -> exp -> exp *)
-
-(* val bigarray_set : loc -> exp -> exp -> exp option *)
-
-(* val pattern_eq_expression : pat -> exp -> bool *)
-
-val map : loc -> pat -> exp -> exp -> exp
-
-val filter : loc -> pat -> exp -> exp -> exp
-
-val concat : loc -> exp -> exp
-
-val compr :
-  loc ->
-  exp ->
-  [> `cond of exp | `gen of pat * exp ] list -> exp
-
-val bad_pat : FanLoc.t -> 'a
-
 val substp : loc -> (string * pat) list -> exp -> pat
 
-class subst: loc -> (string * exp) list -> Objs.map
+class subst : loc -> (string * exp) list -> Objs.map
 
 class type antiquot_filter =object
   inherit Objs.map
@@ -43,22 +14,41 @@ val capture_antiquot: antiquot_filter
 
 val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list
 
+(**
+  Given [args] and [body], generate an expession
+  when [args] is nil, adding a [unit]
+  Examples:
+  {[
+  fun_args _loc [{:pat|a|};{:pat|c|};{:pat|b|}] {|c|} |> FanBasic.p_exp f;
+  fun a  c  b  -> c
+  ]}
+ *)    
 val fun_args : loc -> pat list -> exp -> exp
 
 
-(* val mkumin : loc -> string -> exp -> exp *)
-(* val mk_assert : exp -> exp *)
-val mk_record : (string * exp) list -> exp
-val failure : exp
-val ( <+ ) : string list -> exp -> exp
+
+(** Example: {[
+  ["a";"b"] <+ {|3|};
+  - : exp = fun a  b  -> 3
+  ]} *)
+val mkfun : string list -> exp -> exp
+
+(** Example: {[
+  [{:pat|a|}; {:pat|b|} ] <+< {|3|};
+  - : exp = fun a  b  -> 3
+  ]} *)  
 val ( <+< ) : pat list -> exp -> exp
+    
 val mee_comma : exp -> exp -> exp
 val mee_app : exp -> exp -> exp
-val vee_of_str : string -> exp
+(* val vee_of_str : string -> exp *)
 
+(** {[
+    mee_of_str "A" = {| {| A |}|};
+    - : bool = true
+  ]} Here [s] should be a capital alphabet *)
 val mee_of_str : string -> exp
 
-(* val meee_of_str : string -> exp *)
 
 val mk_tuple_ee : exp list -> exp
 
@@ -76,13 +66,13 @@ val currying : case list -> arity:int -> exp
 
 val unknown : int -> exp
 
-(* val of_vstr_number : string -> int  -> exp *)
-(* val of_str : string -> exp *)
-(* val of_ident_number : ident -> int -> exp *)
-(* val ( +> ) : exp -> string list -> exp *)
-(* val gen_tuple_first : number:int -> off:int -> exp *)
-(* val gen_tuple_second : number:int -> off:int -> exp *)
-(* val tuple_of_number : exp -> int -> exp *)
-(* val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> exp *)
+
+(**  Example:
+  {[mk_record [("a",{|3|});("b",{|4|})] ;
+     - : exp = { a = 3; b = 4 }  ]}
+  [mk_record] becomes a bit complex when you have to consider
+  the arity
+ *)    
+val mk_record : (string * exp) list -> exp    
 
 
