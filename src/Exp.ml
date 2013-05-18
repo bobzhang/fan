@@ -1,11 +1,8 @@
-open FanOps
+
   
 #default_quotation     "exp";;
 
 
-(* +-----------------------------------------------------------------+
-   | the modules documented with [open Exp]                          |
-   +-----------------------------------------------------------------+ *)
 open Ast
 open AstLib
 open LibUtil
@@ -18,45 +15,8 @@ open FanUtil
 
         
 (* +-----------------------------------------------------------------+
-   | utilities for list comprehension                                |
-   +-----------------------------------------------------------------+ *)
-(* loc -> pat -> exp -> exp -> exp     *)
-let map loc (p:pat) (e:exp) (l:exp) = with exp
-  match (p, e) with
-  | ({:pat| $lid:x |}, {@_| $lid:y |}) when x = y -> l
-  | _ ->
-      if is_irrefut_pat p then
-        {@loc| List.map (fun $p -> $e) $l |}
-      else
-        {@loc| List.fold_right
-          (function
-            | $pat:p when true -> (fun x xs -> x :: xs ) $e
-            | _ -> (fun l -> l) ) $l [] |} 
-
-
-let filter loc p b l = with exp
-    if is_irrefut_pat p then
-      {@loc| List.filter (fun $p -> $b) $l |}
-    else
-      {@loc| List.filter (function | $pat:p when true -> $b | _ -> false ) $l |}
-  
-let concat _loc l = with exp {| List.concat $l |}
-
-(* only this function needs to be exposed *)
-let rec compr _loc e =  function
-  | [`gen (p, l)] -> map _loc p e l
-  | `gen (p, l):: `cond b :: items ->
-      compr _loc e (`gen (p, filter _loc p b l) :: items)
-  | `gen (p, l) :: ( `gen (_, _) :: _  as is ) ->
-      concat _loc (map _loc p (compr _loc e is) l)
-  | _ -> raise Stream.Failure 
-
-
-(* +-----------------------------------------------------------------+
    | Utiliies for macro expansion                                    |
    +-----------------------------------------------------------------+ *)
-        
-
 (* Environment is a [string*pat] pair,
 
    Try to convert the 
@@ -66,9 +26,7 @@ let rec compr _loc e =  function
  *)  
 let substp loc env =
   let bad_pat _loc =
-    FanLoc.raise _loc
-    (Failure
-       "this macro cannot be used in a pattern (see its definition)") in
+    FanLoc.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     | {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
@@ -162,16 +120,7 @@ end
 
 
 
-(*
-  Given [args] and [body], generate an expession
-  when [args] is nil, adding a [unit]
 
-  Examples:
-  {[
-  fun_args _loc [{:pat|a|};{:pat|c|};{:pat|b|}] {|c|} |> FanBasic.p_exp f;
-  fun a  c  b  -> c
-  ]}
- *)
 let fun_args _loc args body = with exp
   if args = [] then {| fun () -> $body |}
   else
@@ -182,52 +131,19 @@ let fun_args _loc args body = with exp
 
 
 let _loc = FanLoc.ghost 
-(*
-  Example:
-  {[
-  mk_record [("a",{|3|});("b",{|4|})] ;
-  - : exp = { a = 3; b = 4 }
 
-  ]}
-  FIXME: label is lid, it can be more precise
-  [mk_record] becomes a bit complex when you have to consider
-  the arity
-  FIXME conflicts with the name in Easy, change
-  a better name later
- *)
 let mk_record label_exps : exp=
-  let rec_exps = List.map
+  let rec_exps =
+    List.map
       (fun (label, exp) ->
         {:rec_exp| $lid:label = $exp |} ) label_exps in
   `Record (_loc, (sem_of_list rec_exps))
-  (* {| { $list:rec_exps } |} *)
 
-
-(* TBD *)
-let failure = with exp
-  {| raise (Failure "metafilter: Cannot handle that kind of types ") |}
-
-
-(*
-  Example:
-  {[
-  ["a";"b"] <+ {|3|};
-  - : exp = fun a  b  -> 3
-  ]}
- *)
-let (<+) names acc  = with exp
+let mkfun names acc  = with exp
   List.fold_right
   (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 
 
-let mkfun = (<+)
     
-(*
-  Example:
-  {[
-  [{:pat|a|}; {:pat|b|} ] <+< {|3|};
-  - : exp = fun a  b  -> 3
-  ]}
- *)  
 let (<+<) pats acc =
   List.fold_right (fun p acc -> {| function | $pat:p -> $acc |} ) pats acc
 
@@ -241,28 +157,18 @@ let (<+<) pats acc =
 let mee_comma x y =
   with exp'
   {| {| $($x), $($y) |} |}(* BOOTSTRAPPING*)
-  (* {| `Com _loc $x $y  |}; *)
-(* let mvee_comma x y = {| `Com (_loc,$x,$y) |} *)
+
+
 
 let mee_app x y =
   with exp' (* BOOTSTRAPPING *)
   {| {| $($x) $($y) |}|}
 
-(*
-  FIXME bootstrap
-  Here [s] should be a capital alphabet
-  {[
-  mee_of_str "A" = {| {| A |}|};
-  - : bool = true
-  ]}
-  FIXME
- *)   
-let mee_of_str s = with exp'
-  (* let u = {| |} *)
+
+let mee_of_str s = with exp' (*    BOOTSTRAPING *)  
   let len = String.length s in
   if s.[0]='`' then
     let s = String.sub s 1 (len - 1) in 
-    (* {| {| `$($str:s) |} |} *)
     {|{|$(vrn:($str:s))|}|}
   else
     let u = {| {:ident'| $(uid:$str:s) |} |} in
@@ -287,34 +193,6 @@ let mee_of_str s = with exp'
          {| {| A |}|}
        *)
 
-
-(*
-  {|{|A|}|}
- *)  
-(*
-  {[
-  vee_of_str "A" = {| {|`A|} |};
-  true
-  ]}
-  BOOTSTRAPPING
-  *)
-(* let vee_of_str s = *)
-(*   {| Vrn _loc $str:s|}; *)
-
-let vee_of_str s =
-  {| `Vrn (_loc,$str:s) |}
-
-(* let vep_of_str s = *)
-(*   {| `Vrn (_loc,$str:s)|}; *)
-(*
-  Examples:
-  {[
-  meee_of_str "A" = {| {| {| A |}|}|};
-  ]}
- *)
-(* let meee_of_str s = *)
-(*   let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in  *)
-(*   {| {| {| $(id:$($u))|}|}|} *)
 
 
 (*
@@ -368,15 +246,8 @@ let mk_tuple_ee = function (* BOOTSTRAPPING *)
   | xs  ->
       {| `Par (_loc, $(List.reduce_right mee_comma xs)) |}
 
-(* let mk_tuple_vee = fun  *)
-(*   [ [] -> invalid_arg "mktupee arity is zero " *)
-(*   | [x] -> x *)
-(*   | xs  -> *)
-(*       {| `Par (_loc, $(List.reduce_right mvee_comma xs)) |}]; *)
-
   
-  
-(*
+(**
   Example:
   {[
   mee_record_col "a" {|3|} = {| {:rec_exp| a = $($({|3|})) |}|};
@@ -412,7 +283,7 @@ let mk_record_ee label_exps =
  *)
 let eta_expand (exp:exp) number : exp =
   let names = List.init number (fun i -> x ~off:0 i ) in
-  names <+ (exp +> names )
+  mkfun names (exp +> names )
 
 
 (*
@@ -459,7 +330,7 @@ let currying cases ~arity =
     let names = List.init arity (fun i -> x ~off:i 0) in
     let exps = List.map (fun s-> {| $lid:s |} ) names in
     let x = tuple_com exps in
-    names <+ {| match $x with | $cases |} 
+    mkfun names  {| match $x with | $cases |} 
     (* names <+ {| match $(tuple_com exps) with [ $list:cases ] |} *)
   else {| function | $cases |}
       (* {| fun [ $list:cases ] |} *)
