@@ -2,7 +2,19 @@
 open AstN
 open AstLibN   
 open LibUtil
-open Basic
+open BasicN
+
+
+type vrn =
+  | Sum 
+  | TyVrnEq
+  | TyVrnSup
+  | TyVrnInf
+  | TyVrnInfSup
+  | TyAbstr
+      
+
+
 
 type col = {
     col_label:string;
@@ -42,11 +54,46 @@ and kind =
   | Map (* Map style *)
   | Concrete of ctyp
 
+open Format;;
 
+{:fans| derive (Print) ; |};;
+
+{:ocaml|
 type warning_type =
   | Abstract of string 
   | Qualified of string 
+|};;
 
+
+(* Feed to user to compose an expession node *)
+type record_col = {
+    re_label: string ;
+    re_mutable: bool ;
+    re_info: ty_info;
+  }
+type record_info =  record_col list
+
+(* types below are used to tell fan how to produce
+   function of type [ident -> ident]
+ *)
+type basic_id_transform =
+    [ `Pre of string
+    | `Post of string
+    | `Fun of (string->string) ]
+
+type rhs_basic_id_transform =
+    [ basic_id_transform
+    | `Exp of string -> exp ]
+
+type full_id_transform =
+    [  basic_id_transform
+    | `Idents of  vid list  -> vid 
+    (* decompose to a list of ident and compose as an ident *)          
+    | `Id of vid -> vid
+    (* just pass the ident to user do ident transform *)
+    | `Last of string -> vid
+    (* pass the string, and << .$old$. .$return$. >>  *)      
+    | `Obj of  (string -> string) ]
         
 let arrow_of_list f = List.reduce_right arrow f
     
@@ -474,6 +521,107 @@ let view_variant (t:row_field) : vbranch list  =
         (* |  `Id (_loc,i) -> *) `abbrev i  
           (* | {|$lid:x|} -> `abbrev x  *)
     | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)  ) lst 
+
+
+(*************************************************************************)
+(* transformation function *)    
+let transform : full_id_transform -> vid -> exp  =
+  let open IdN in  function
+    | `Pre pre ->
+        fun  x ->  (ident_map (fun x -> pre ^ x) x : exp)
+            (* fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ] *)
+    | `Post post ->
+        fun x -> (ident_map (fun x-> x ^ post) x : exp )
+            (* fun [x -> {| $(id:  ident_map (fun x -> x ^ post) x ) |} ] *)
+    | `Fun f ->
+        fun x -> ident_map f x 
+            (* fun [x -> {| $(id:  ident_map f x ) |} ] *)
+    | `Last f ->
+        fun  x -> (ident_map_of_ident f x : vid :> exp)
+            (* {| $(id: ident_map_of_ident f x  ) |} *) 
+            
+    | `Id f->
+        fun x -> (f x : vid :> exp)
+            (* fun [x -> {| $(id: f x ) |} ] *)
+    | `Idents f ->
+        fun x  -> (f (list_of_dot x []) : vid :> exp )
+            (* fun [x -> {| $(id: f (list_of_dot x []) )  |}  ] *)
+    | `Obj f ->
+        function
+          | `Lid x  -> {:exp-| self# $(lid: f x) |}
+          | t -> 
+              let dest =  map_to_string t in
+              let src = ObjsN.dump_vid t in (* FIXME *)
+              let () = if not (Hashtbl.mem BasicN.conversion_table src) then begin 
+                  Hashtbl.add BasicN.conversion_table src dest;   
+                  Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
+                end in
+              {:exp-| self# $(lid:f dest) |}
+                  (*todo  set its default let to self#unknown *)
+
+let basic_transform = function 
+  | `Pre pre -> (fun x -> pre ^ x)
+  | `Post post -> (fun x -> x ^ post)
+  | `Fun f -> f 
+  
+let right_transform = function
+  | #basic_id_transform as x ->
+      (** add as here to overcome the type system *)
+      let f = basic_transform x in 
+      fun x -> {:exp-| $(lid: f x) |} 
+  | `Exp f -> f 
+          
+
+
+
+
+let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
+  let args :  pat list =
+    List.init arity (fun i -> {:pat-| (#$id:name as $(lid: x ~off:i 0 )) |})in
+  let exps = List.init arity (fun i -> {:exp-| $(id:xid ~off:i 0) |} ) in
+  let e = appl_of_list (e:: exps) in 
+  let pat = args |>tuple_com in
+  match destination with
+  | Obj(Map) ->
+     {:case-| $pat:pat -> ( $e : $((name:>ctyp)) :> $annot) |}
+  |_ -> {:case-| $pat:pat -> ( $e  :> $annot) |}
+
+ 
+
+
+(* {:pat| (#$id:x as y)|} *)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     
 (* let of_stru = function *)

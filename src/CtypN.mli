@@ -1,4 +1,11 @@
 open AstN
+type vrn =
+  | Sum 
+  | TyVrnEq
+  | TyVrnSup
+  | TyVrnInf
+  | TyVrnInfSup
+  | TyAbstr
 
 
 type col = {
@@ -44,6 +51,36 @@ type warning_type =
   | Qualified of string 
 
 
+(* Feed to user to compose an expession node *)
+type record_col = {
+    re_label: string ;
+    re_mutable: bool ;
+    re_info: ty_info;
+  }
+type record_info =  record_col list
+
+(* types below are used to tell fan how to produce
+   function of type [ident -> ident]
+ *)
+type basic_id_transform =
+    [ `Pre of string
+    | `Post of string
+    | `Fun of (string->string) ]
+
+type rhs_basic_id_transform =
+    [ basic_id_transform
+    | `Exp of string -> exp ]
+
+type full_id_transform =
+    [  basic_id_transform
+    | `Idents of  vid list  -> vid 
+    (* decompose to a list of ident and compose as an ident *)          
+    | `Id of vid -> vid
+    (* just pass the ident to user do ident transform *)
+    | `Last of string -> vid
+    (* pass the string, and << .$old$. .$return$. >>  *)      
+    | `Obj of  (string -> string) ]
+        
 val arrow_of_list : ctyp list -> ctyp
 val app_arrow : ctyp list -> ctyp -> ctyp
 val ( <+ ) : string list -> ctyp -> ctyp
@@ -165,3 +202,21 @@ val view_variant: row_field -> vbranch list
 
 (* val ty_name_of_tydcl : typedecl -> ctyp *)    
 (* val gen_quantifiers : arity:int -> int -> ctyp *)
+
+
+val transform : full_id_transform -> vid -> exp
+val basic_transform :
+  [< `Fun of string -> string | `Post of string | `Pre of string ] ->
+  string -> string
+val right_transform :
+  [< `Exp of string -> exp
+   | `Fun of string -> string
+   | `Post of string
+   | `Pre of string ] ->
+  string -> exp
+    
+val gen_tuple_abbrev : arity:int ->
+  annot:ctyp ->
+  destination:destination -> ident -> exp -> case
+
+val pp_print_warning_type: Format.formatter -> warning_type -> unit

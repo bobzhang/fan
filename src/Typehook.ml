@@ -225,8 +225,6 @@ end
 
 
 
-(* #default_quotation "exp"  ;; *)
-(* #lang_at "pat" "mexp";; *)
 
 let g = Gram.create_lexer
     ~keywords:
@@ -283,8 +281,14 @@ include_quot:
  ]
 |};;
 
+begin 
+  Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
+  Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
+end;;
 
 
+(*************************************************************************)
+(* save DDSL *)
 {:create|Gram  save_quot|};;
 (* {:save| a b c -> begin *)
 (*   print_int a; *)
@@ -316,7 +320,3 @@ include_quot:
  ]
 |};;
   
-begin 
-  PreCast.Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
-  PreCast.Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
-end;;

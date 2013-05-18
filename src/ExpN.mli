@@ -1,72 +1,41 @@
+
 open AstN
-
-val map : loc -> pat -> exp -> exp -> exp
-
-val filter : loc -> pat -> exp -> exp -> exp
-
-val concat : loc -> exp -> exp
-
-val compr :
-  loc ->
-  exp ->
-  [> `cond of exp | `gen of pat * exp ] list -> exp
-
-val bad_pat : FanLoc.t -> 'a
-
-val substp : loc -> (string * pat) list -> exp -> pat
-
-class subst: loc -> (string * exp) list -> Objs.map
-
-class type antiquot_filter =object
-  inherit Objs.map
-  method get_captured_variables: (exp * exp)list
-  method clear_captured_variables: unit
-end
-
-val capture_antiquot: antiquot_filter
-
-val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list
-
-val fun_args : loc -> pat list -> exp -> exp
+  
 
 
-(* val mkumin : loc -> string -> exp -> exp *)
-(* val mk_assert : exp -> exp *)
-val mk_record : (string * exp) list -> exp
-val failure : exp
-val ( <+ ) : string list -> exp -> exp
-val ( <+< ) : pat list -> exp -> exp
-val mee_comma : exp -> exp -> exp
-val mee_app : exp -> exp -> exp
-val vee_of_str : string -> exp
+(** {[ mkfun ["a";"b"]  {|3|};
+      - : exp = fun a  b  -> 3  ]} *)
+val mkfun : string list -> exp -> exp
 
-val mee_of_str : string -> exp
 
-(* val meee_of_str : string -> exp *)
+(**
 
-val mk_tuple_ee : exp list -> exp
+  Example:
+  {[
+   let u  =  list_of_bar {:case|
+   (A0 (a0, a1),A0 (b0, b1)) -> 1
+   |   (A1 (a0, a1), A1 (b0, b1)) -> 2
+   |   (A2 (a0, a1), A2 (b0, b1)) -> 3 |} [] in currying ~arity:2 u ;
 
-val mee_record_col : string -> exp -> exp
-
-val mee_record_semi : exp -> exp -> exp
-
-val mk_record_ee : (string * exp) list -> exp
-
-val eta_expand : exp -> int -> exp
-
-val gen_curry_n : exp -> arity:int -> string -> int -> exp
+  fun _a0  _b0  ->
+  match (_a0, _b0) with
+  | (A0 (a0,a1),A0 (b0,b1)) -> 1
+  | (A1 (a0,a1),A1 (b0,b1)) -> 2
+  | (A2 (a0,a1),A2 (b0,b1)) -> 3
+  ]}
+  Make Sure the names generated are shadowed by
+  [gen_tuple_n]
+  (* FIXME when cases is []*)
+ *)
 
 val currying : case list -> arity:int -> exp
 
-val unknown : int -> exp
 
-(* val of_vstr_number : string -> int  -> exp *)
-(* val of_str : string -> exp *)
-(* val of_ident_number : ident -> int -> exp *)
-(* val ( +> ) : exp -> string list -> exp *)
-(* val gen_tuple_first : number:int -> off:int -> exp *)
-(* val gen_tuple_second : number:int -> off:int -> exp *)
-(* val tuple_of_number : exp -> int -> exp *)
-(* val gen_tuple_n : ?cons_transform:(string->string) -> arity:int -> string -> int -> exp *)
+    
+val unknown : int -> exp    
 
-
+(** Mainly used to overcome the value restriction
+   {[
+    eta_expand {|f |} 3 |> FanBasic.p_exp f;
+    fun _a0  _a1  _a2  -> f _a0 _a1 _a2   ]} *)
+val eta_expand : exp -> int -> exp    
