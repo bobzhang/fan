@@ -98,7 +98,7 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   @raise Invalid_argument 
 
   {[
-  L.Ctyp.list_of_record {:ctyp| u:int;m:mutable int |};
+  list_of_record {:ctyp| u:int;m:mutable int |};
   - : FSig.col list =
   [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
   {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
@@ -434,7 +434,7 @@ let view_sum (t:or_ctyp) =
 
 (*
   {[
-  L.Ctyp.reduce_variant {:ctyp| [ `Chr of (loc * string) (* 'c' *)
+  reduce_variant {:ctyp| [ `Chr of (loc * string) (* 'c' *)
   | `Int of   (loc * string) (* 42 *)
   | `Int32 of (loc * string)
   | `Int64 of (loc * string)
@@ -475,9 +475,6 @@ let view_variant (t:row_field) : vbranch list  =
           "view_variant %s" (Objs.dump_row_field u)  ) lst 
 
     
-(* let of_stru = function *)
-(*   |`Type(_,x) -> x *)
-(*   | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (Objs.dump_stru t)  *)
 
 
 
