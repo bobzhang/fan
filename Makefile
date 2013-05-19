@@ -1,6 +1,25 @@
+VERSION = 0.1
+export VERSION
+ifndef PREFIX
+  PREFIX = $(shell dirname $(shell dirname `which ocamlc`))
+endif
 
-OB = ocamlbuild
+ifndef BINDIR
+  BINDIR = $(PREFIX)/bin
+endif
 
+ifndef OB
+  OB = ocamlbuild
+endif
+
+build:
+	
+install:
+	install -m 0755 fan $
+NAME = fan
+REQUIRES=
+
+TARGETS = gram.cma gram.cmx gram.cmxs rts.cma rts.cmx rts.cmxs
 
 top:
 	ocamlbuild -I src foo.otarget
