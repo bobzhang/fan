@@ -4,8 +4,6 @@ open AstN
 
 let _ = (); ()
 
-let _ = ()
-
 let pp_print_loc: Format.formatter -> loc -> unit =
   fun fmt  _a0  -> FanLoc.pp_print_t fmt _a0
 

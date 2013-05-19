@@ -2,8 +2,6 @@ open Ast
 
 let _ = (); ()
 
-let _ = ()
-
 type 'a tag =  
   | Literal
   | Flag

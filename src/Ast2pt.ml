@@ -1095,14 +1095,19 @@ and mexp (x:Ast.mexp)=
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (exp e))
   | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t) 
 and stru (s:stru) (l:structure) : structure =
-  match s with 
+  match s with
+   (* ad-hoc removing the empty statement, a more elegant way is in need*)
+  | {:stru| let _ = () |} -> l 
+  | {:stru| let _ = ();; $s |} ->  stru s l
+  | {:stru|  $s ;; let _ = () |} ->  stru s l
+  | {:stru| $st1;; $st2 |} ->  stru st1 (stru st2 l)        
   | (`Class (loc,cd) :stru) ->
     mkstr loc (Pstr_class
                   (List.map class_info_clexp (list_of_and cd []))) :: l
   | `ClassType (loc,ctd) ->
       mkstr loc (Pstr_class_type
                       (List.map class_info_cltyp (list_of_and ctd []))) :: l
-  | `Sem(_,st1,st2) -> stru st1 (stru st2 l)
+
   | `Directive _ | `DirectiveSimple _  -> l
   | `Exception(loc,`Uid(_,s)) ->
       mkstr loc (Pstr_exception (with_loc s loc) []) :: l 

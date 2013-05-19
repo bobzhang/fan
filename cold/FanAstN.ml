@@ -26,8 +26,6 @@ class primitive =
       | false  -> (`Lid (_loc, "false") : Ast.ep )
   end
 
-let _ = ()
-
 let fill_loc_nil: FanLoc.t -> AstN.nil -> Ast.nil =
   fun loc  `Nil  -> `Nil loc
 

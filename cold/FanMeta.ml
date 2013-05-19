@@ -55,8 +55,6 @@ class primitive =
 
 let _ = (); ()
 
-let _ = ()
-
 class meta =
   object (self : 'self_type)
     inherit  primitive

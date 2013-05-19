@@ -1,7 +1,5 @@
 let _ = (); ()
 
-let _ = ()
-
 type loc = FanLoc.t 
 
 type ant = [ `Ant of (loc * FanUtil.anti_cxt)] 

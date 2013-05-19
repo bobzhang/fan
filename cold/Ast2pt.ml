@@ -20,8 +20,6 @@ open Ast
 
 open Objs
 
-let _ = ()
-
 let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : Ast.ident) ->
@@ -994,6 +992,9 @@ and mexp (x : Ast.mexp) =
   | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t)
 and stru (s : stru) (l : structure) =
   (match s with
+   | (`StExp (_loc,`Uid (_,"()")) : Ast.stru) -> l
+   | (`Sem (_loc,`StExp (_,`Uid (_,"()")),s) : Ast.stru) -> stru s l
+   | (`Sem (_loc,s,`StExp (_,`Uid (_,"()"))) : Ast.stru) -> stru s l
    | (`Class (loc,cd) : stru) ->
        (mkstr loc
           (Pstr_class (List.map class_info_clexp (list_of_and cd []))))

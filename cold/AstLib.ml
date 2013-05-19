@@ -6,8 +6,6 @@ open Ast
 
 let _ = (); ()
 
-let _ = ()
-
 let loc_of =
   function
   | `CtDeclS (_loc,_,_,_) -> _loc
