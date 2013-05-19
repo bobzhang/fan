@@ -22,3 +22,6 @@ stat:
 	git_stats . stat
 
 .PHONY: top
+
+install:
+	ocamlfind install *.cmi
