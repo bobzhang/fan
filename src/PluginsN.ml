@@ -2,8 +2,8 @@ open AstN
 open AstLibN
 open LibUtil
 open DeriveN
-open CtypN;;
-
+open CtypN
+open FSigUtil;;
 #default_quotation "exp-";;
 
 
@@ -35,8 +35,8 @@ let (gen_eq,gen_eqobj) =
 
 let some f  = fun x -> Some (f x)  ;;
 
-(* [ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ] |> *)
-(* List.iter Typehook.register;; *)
+[ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ] |>
+List.iter Typehook.register;;
 
 
 
@@ -65,10 +65,10 @@ let (gen_fold,gen_fold2) =
      ~arity:2 ~default: {:exp-|invalid_arg "fold2 failure" |} () ) ;;
 
 
-(* begin   *)
-(*    [("Fold",some gen_fold); *)
-(*     ("Fold2",some gen_fold2);] |> List.iter Typehook.register; *)
-(* end;; *)
+begin
+   [("Fold",some gen_fold);
+    ("Fold2",some gen_fold2);] |> List.iter Typehook.register;
+end;;
 
 (* +-----------------------------------------------------------------+
    | Map generator                                                   |
@@ -107,11 +107,11 @@ let (gen_map,gen_map2) =
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
      ~arity:2 ~default: {|  invalid_arg "map2 failure" |} ());;
 
-(* begin *)
-(*   [("Map",some gen_map); *)
-(*    ("Map2",some gen_map2);] *)
-(*   |> List.iter Typehook.register; *)
-(* end;; *)
+begin
+  [("Map",some gen_map);
+   ("Map2",some gen_map2);]
+  |> List.iter Typehook.register;
+end;;
 
 (* +-----------------------------------------------------------------+
    | Strip generator                                                 |
@@ -154,9 +154,9 @@ let gen_strip =
       ({:ctyp-| Ast.$lid:x -> AstN.$lid:x |}, {:ctyp-|AstN.$lid:x|}))
     ();;
 
-(* Typehook.register *)
-(*     ~filter:(fun s -> not (List.mem s ["loc"; "ant"])) *)
-(*     ("Strip",some gen_strip);; *)
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
+    ("Strip",some gen_strip);;
 
 (*************************************************************************)
 (* Fill location                                                         *) 
@@ -198,9 +198,9 @@ let gen_fill =
        {:ctyp-|Ast.$lid:x|} ))
     ();;
 
-(* Typehook.register *)
-(*     ~filter:(fun s -> not (List.mem s ["loc"; "ant"])) *)
-(*     ("Fill",some gen_fill);; *)
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc"; "ant"]))
+    ("Fill",some gen_fill);;
 
   
   
@@ -247,9 +247,9 @@ let gen_meta =
     ();;
 
 
-(* Typehook.register *)
-(*     ~filter:(fun s -> not (List.mem s ["loc";"ant"])) *)
-(*     ("MetaObj", some gen_meta);; *)
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc";"ant"]))
+    ("MetaObj", some gen_meta);;
   
 
 (* +-----------------------------------------------------------------+
@@ -293,29 +293,29 @@ let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
     ~annot:(fun s ->
-      ({:ctyp-|Format.formatter -> $lid:s -> unit|}, unit))
+      ({:ctyp-|Format.formatter -> $lid:s -> unit|}, {:ctyp-|unit|}))
     ~mk_variant:mk_variant_print ()
 
 
 let gen_print_obj =
-  gen_object ~kind:(Concrete unit) ~mk_tuple:mk_tuple_print
+  gen_object ~kind:(Concrete {:ctyp-|unit|}) ~mk_tuple:mk_tuple_print
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
     ~mk_variant:mk_variant_print ();;
 
-(* [("Print",some gen_print); *)
-(*  ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;; *)
+[("Print",some gen_print);
+ ("OPrint",some gen_print_obj)] |> List.iter Typehook.register;;
 
 (* +-----------------------------------------------------------------+
    | Iter geneartor                                                  |
    +-----------------------------------------------------------------+ *)
 let mk_variant_iter _cons params :exp = 
   match params with
-  | [] -> unit
+  | [] -> (unit:>exp)
   | _ -> 
       let lst = params
         |> List.map (fun {name_exp; id_ep;_} ->
-            let id_exp = (id_ep :> exp) in
+            let id_exp = (id_ep :ep  :> exp) in
             {:exp-| $name_exp $id_exp |}) in
         seq_sem lst 
 
@@ -342,7 +342,7 @@ let gen_iter =
     ~mk_variant:mk_variant_iter
     ();;
 
-(* ("OIter",some gen_iter) |> Typehook.register;; *)
+("OIter",some gen_iter) |> Typehook.register;;
 
 (* +-----------------------------------------------------------------+
    | Get Location generator                                          |
@@ -394,8 +394,8 @@ let generate (mtyps:mtyps) : stru =
   |None -> failwithf "AstTypeGen.generate null case" ;;
 
 
-(* Typehook.register *)
-(*     ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",some generate);; *)
+Typehook.register
+    ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",some generate);;
 
 (* +-----------------------------------------------------------------+
    | DynAst generator                                                |
@@ -425,8 +425,8 @@ let generate (mtyps:mtyps) : stru =
          $(uid:String.capitalize x) |}) tys  in
        sem_of_list (typedecl::to_string::tags) ;;
   
-(* Typehook.register *)
-(*   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",some generate);; *)
+Typehook.register
+  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",some generate);;
 
 
 let generate (mtyps:mtyps) : stru =
@@ -438,8 +438,8 @@ let generate (mtyps:mtyps) : stru =
     end |} in
   stru_from_ty ~f:aux mtyps;;  
 
-(* Typehook.register *)
-(*   ~filter:(fun _ -> true) ("MapWrapper",some generate);; *)
+Typehook.register
+  ~filter:(fun _ -> true) ("MapWrapper",some generate);;
 
 
 
@@ -454,9 +454,9 @@ let generate (mtyps:mtyps) : stru =
       (stru_from_ty ~f:aux mtyps);;  
 
 
-(* Typehook.register *)
-(*   ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) *)
-(*       ("PrintWrapper",some generate);; (\* double registration should complain*\) *)
+Typehook.register
+  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"]))
+      ("PrintWrapper",some generate);; (* double registration should complain*)
 
 
     
@@ -479,4 +479,4 @@ let generate (mtyps:mtyps) : stru option =
   else ty  in
   (fun x ->  stru_from_mtyps ~f x) mtyps;;
 
-(* Typehook.register ~filter:(fun _ -> true ) ("LocType", generate);; *)
+Typehook.register ~filter:(fun _ -> true ) ("LocType", generate);;

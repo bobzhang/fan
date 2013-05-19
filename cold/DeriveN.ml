@@ -10,6 +10,8 @@ open BasicN
 
 open CtypN
 
+open FSigUtil
+
 let check_valid str =
   let len = String.length str in
   if
@@ -258,36 +260,36 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
 let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names 
   ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
-  let cxt = Hashset.create 50 in
-  let mk_bind: typedecl -> bind =
-    bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
-      ~left_type_id ~left_type_variable ~mk_record
-      (simple_exp_of_ctyp_with_cxt cxt) in
-  let fs (ty : types) =
-    (match ty with
-     | `Mutual named_types ->
-         (match named_types with
-          | [] -> (`StExp (`Uid "()") : AstN.stru )
-          | xs ->
-              (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-               (let bind =
-                  List.reduce_right_with
-                    ~compose:(fun x  y  -> (`And (x, y) : AstN.bind ))
-                    ~f:(fun (_name,ty)  -> mk_bind ty) xs in
-                (`Value (`Positive, bind) : AstN.stru ))))
-     | `Single (name,tydcl) ->
-         (Hashset.add cxt name;
-          (let flag =
-             if CtypN.is_recursive tydcl then `Positive else `Negative
-           and bind = mk_bind tydcl in (`Value (flag, bind) : AstN.stru ))) : 
-    stru ) in
-  let item =
-    match lst with
-    | [] -> (`StExp (`Uid "()") : AstN.stru )
-    | _ -> sem_of_list (List.map fs lst) in
-  match module_name with
-  | None  -> item
-  | Some m -> (`Module ((`Uid m), (`Struct item)) : AstN.stru )
+  (let cxt = Hashset.create 50 in
+   let mk_bind: typedecl -> bind =
+     bind_of_tydcl ?cons_transform ?arity ?annot ?names ~default ~mk_variant
+       ~left_type_id ~left_type_variable ~mk_record
+       (simple_exp_of_ctyp_with_cxt cxt) in
+   let fs (ty : types) =
+     (match ty with
+      | `Mutual named_types ->
+          (match named_types with
+           | [] -> (`StExp (`Uid "()") : AstN.stru )
+           | xs ->
+               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
+                (let bind =
+                   List.reduce_right_with
+                     ~compose:(fun x  y  -> (`And (x, y) : AstN.bind ))
+                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+                 (`Value (`Positive, bind) : AstN.stru ))))
+      | `Single (name,tydcl) ->
+          (Hashset.add cxt name;
+           (let flag =
+              if CtypN.is_recursive tydcl then `Positive else `Negative
+            and bind = mk_bind tydcl in (`Value (flag, bind) : AstN.stru ))) : 
+     stru ) in
+   let item =
+     match lst with
+     | [] -> (`StExp (`Uid "()") : AstN.stru )
+     | _ -> sem_of_list (List.map fs lst) in
+   match module_name with
+   | None  -> item
+   | Some m -> (`Module ((`Uid m), (`Struct item)) : AstN.stru ) : stru )
 
 let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= []) 
   ~default  ~left_type_variable:(left_type_variable : basic_id_transform) 
@@ -324,7 +326,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                   ((`Lid name), `Negative, `Negative, (ExpN.unknown n), ty) : 
                  AstN.clfield )
            | None  -> mk_clfield named_type) : clfield ) in
-   let (extras,lst) = CtypN.transform_mtyps lst in
+   let (extras,lst) = FSigUtil.transform_mtyps lst in
    let body = List.map fs lst in
    let body: clfield =
      let items =

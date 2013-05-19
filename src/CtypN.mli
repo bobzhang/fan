@@ -28,13 +28,6 @@ type vbranch =
 type branch =
    [ `branch of (string * ctyp list) ]
 
-type named_type = (string* typedecl)
-and and_types = named_type list
-and types =
-    [ `Mutual of and_types
-    | `Single of named_type ]
-
-and mtyps =  types list
 
 type destination =
   |Obj of kind
@@ -188,8 +181,8 @@ val qualified_app_list : ctyp -> (ident * ctyp list) option
 (* val mk_transform_type_eq : *)
 (*   unit -> FanAst.map *)
   
-val transform_mtyps : mtyps ->
-  (string * ident * int) list * mtyps
+(* val transform_mtyps : mtyps -> *)
+(*   (string * ident * int) list * mtyps *)
 
 val reduce_data_ctors:
     or_ctyp ->
@@ -222,7 +215,7 @@ val gen_tuple_abbrev : arity:int ->
 val pp_print_warning_type: Format.formatter -> warning_type -> unit
 
 
-val stru_from_mtyps :
-    f:(named_type -> AstN.typedecl) -> mtyps -> AstN.stru option    
-val stru_from_ty :
-    f:(string -> AstN.stru) -> mtyps -> AstN.stru
+(* val stru_from_mtyps : *)
+(*     f:(named_type -> AstN.typedecl) -> mtyps -> AstN.stru option     *)
+(* val stru_from_ty : *)
+(*     f:(string -> AstN.stru) -> mtyps -> AstN.stru *)

@@ -94,15 +94,16 @@ let ident_noloc i = fst (ident_tag i)
 let ident (i : ident) =
   (with_loc (ident_noloc i) (loc_of i) : Longident.t Location.loc )
 
-let long_lident ~err  id =
+let long_lident id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (loc_of id)
-  | _ -> error (loc_of id) err
+  | _ ->
+      FanLoc.errorf (loc_of id) "invalid long identifier %s"
+        (Objs.dump_ident id)
 
-let long_type_ident: ident -> Longident.t Location.loc =
-  long_lident ~err:"invalid long identifier type"
+let long_type_ident: ident -> Longident.t Location.loc = long_lident
 
-let long_class_ident = long_lident ~err:"invalid class name"
+let long_class_ident = long_lident
 
 let long_uident_noloc i =
   match ident_tag i with

@@ -1,37 +1,23 @@
 open LibUtil
-open AstLib
 open Format
 
-  
+open FSigUtil  
 (** A Hook To Ast Filters *)
+(* type plugin_name = string  *)
 
 
-let apply_filter f (m:FSig.mtyps) : FSig.mtyps = begin 
-  (* eprintf "applying filter@."; *)
-  let f  = (function
-    | (`Single (s,_) as x) ->
-        if f s then Some  x else None
-    | `Mutual ls ->
-        let x = List.filter_map (fun ((s,_) as x) -> if f s then Some x  else None) ls in
-        match x with
-        | [] -> None
-        | [x] -> Some (`Single  x)
-        |  y -> Some (`Mutual y)) in
-  List.filter_map  f m ;
-end
 
-
-let filters : (FSig.plugin_name, FSig.plugin) Hashtbl.t  = Hashtbl.create 30;;
+let filters : (plugin_name, plugin) Hashtbl.t  = Hashtbl.create 30;;
 
 let show_code =  ref false
 let print_collect_mtyps = ref false
   
 let register  ?filter ?position (name,transform) =
-  if Hashtbl.mem filters name
-  then eprintf "Warning:%s filter already exists!@." name
-  else begin
-   Hashtbl.add filters name {FSig.transform; position;filter} ;
-  end
+  if Hashtbl.mem filters name then
+    eprintf "Warning:%s filter already exists!@." name
+  else 
+   Hashtbl.add filters name {transform; position;filter} 
+
 
 let show_modules () =
   begin
@@ -46,13 +32,14 @@ let show_modules () =
 
 
 let plugin_add plugin =
-  let try v = Hashtbl.find filters plugin in begin
-    (* v.activate <- true; *)
-    if not (List.exists (fun (n,_) -> n=plugin) !FanState.current_filters) then
+  let try v = Hashtbl.find filters plugin in 
+    if not
+        (List.exists (fun (n,_) -> n=plugin) !FanState.current_filters)
+    then
       Ref.modify FanState.current_filters (fun x -> cons (plugin,v) x) 
     else
-      eprintf "<Warning> plugin %s has already been loaded" plugin;
-  end
+      eprintf "<Warning> plugin %s has already been loaded" plugin
+
   with
   |Not_found -> begin
     show_modules ();
@@ -66,87 +53,25 @@ let plugin_remove plugin =
 
 
 
-(* Filter type definitions from mli file
-   for simplicity, we only care about `toplevel type definitions'
-   nested type definitions in module are not considered.
-   {:sigi| type $x |}
- *)  
-(* let filter_type_defs ?qualified () = object *)
-(*   inherit Objs.map as super; *)
-(*   val mutable type_defs = None ; *)
-(*   method! sigi = with sigi fun *)
-(*     [ *)
-(*      ( {| val $_ : $_ |} | {| include $_ |} | {| external $_ : $_ = $_ |} *)
-(*      | {|exception $_ |}  | {| class $_ |}  | {| class type $_ |} *)
-(*      | {| # $_ |}  | {| module $_:$_ |}    | {| module type $_ = $_ |} *)
-(*      | {| module rec $_ |}  | {| open $_ |} ) -> *)
-(*          {| |} (\* For sigi, keep does not make sense. *\) *)
-(*      | {@_| type $((`TyDcl (_loc,name,vars, ctyp, constraints) as x)) |} -> begin *)
-(*          let res = *)
-(*            match ctyp with *)
-(*            [`TyEq(_,_,ctyp) -> Ctyp.qualified_app_list ctyp | _ -> None] in *)
-(*          let x =  *)
-(*            match (res (\* Ctyp.qualified_app_list ctyp *\), qualified)with *)
-(*            [(Some ({:ident|$i.$_ |},ls),Some q) when *)
-(*                 (Id.eq i q && Ctyp.eq_list ls vars )-> *)
-(*                    (\* type u 'a = Loc.u 'a *\)        *)
-(*                   `TyDcl _loc name vars {:ctyp||} constraints *)
-(*                |(_,_) -> super#typedecl x ] in  *)
-(*              let y = {:stru| type $x  |} in *)
-(*              let () =  type_defs <- Some {:stru| $type_defs ; $y |} in       *)
-(*              {| type $x |}   *)
-(*      end *)
-(*      | {| type $ty |} -> (\* `And case *\) begin *)
-(*          let x = super#typedecl ty in *)
-(*          let () = type_defs <- Some {:stru| $type_defs ; $({:stru|type $x |}) |} in *)
-(*          {|type $x |}  *)
-(*          end *)
-(*      | x -> super#sigi x]; *)
-(*   method! ident = fun *)
-(*     [ {:ident| $x.$y |} as i -> *)
-(*       match qualified with *)
-(*       [Some q when Id.eq q  x -> super#ident y *)
-(*       |_ -> super#ident i] *)
-(*     | i -> super#ident i]; *)
-(*   method! type_info = fun *)
-(*     [ `TyMan(_loc,_,p1,ctyp)(\* {:ctyp| $_ == $ctyp |} *\) -> *)
-(*       `TyRepr (_loc,p1,super#type_repr ctyp) *)
-(*     | ty -> super#type_info ty]; *)
-(*   method get_type_defs = type_defs; *)
-(* end; *)
 
 class type traversal = object
   inherit Objs.map
-  method get_cur_mtyps: FSig.mtyps
-  method get_cur_and_types: FSig.and_types
+  method get_cur_mtyps: mtyps
+  method get_cur_and_types: and_types
   (* method in_and_types: *)
   method update_cur_and_types:
-      (FSig.and_types -> FSig.and_types) -> unit
+      (and_types -> and_types) -> unit
   method update_cur_mtyps:
-      (FSig.mtyps -> FSig.mtyps) -> unit
+      (mtyps -> mtyps) -> unit
 
 end
 
-(*
-  Entrance is  [mexp]
-  Choose [mexp] as an entrace point to make the traversal
-  more modular.
-  Usage
-  {[
-  let v =  {:mexp| struct $s end |} in
-  let mexp =
-  (Typehook.traversal ())#mexp v 
-  ]}
-
-  This function will apply all the plugins to generate
-  the code
- *)  
 let traversal () : traversal  = object (self:'self_type)
   inherit Objs.map as super
-  val mtyps_stack : FSig.mtyps Stack.t  = Stack.create ()
-  val mutable cur_and_types : FSig.and_types= []
+  val mtyps_stack : mtyps Stack.t  = Stack.create ()
+  val mutable cur_and_types : and_types= []
   val mutable and_group = false
-  method get_cur_mtyps : FSig.mtyps =
+  method get_cur_mtyps : mtyps =
     Stack.top mtyps_stack
   method update_cur_mtyps f =
     Stack.(push (f (pop mtyps_stack)) mtyps_stack)
@@ -161,34 +86,38 @@ let traversal () : traversal  = object (self:'self_type)
     cur_and_types <-  f cur_and_types
         (* entrance *)  
   method! mexp = with stru function
-    | {:mexp| struct $u end |}  ->  begin 
-        self#in_module ;
-        let res = self#stru u in
-        let mtyps = List.rev (self#get_cur_mtyps) in
-        let () = if !print_collect_mtyps then
-          eprintf "@[%a@]@." FSig.pp_print_mtyps mtyps in
-        let result =
-          List.fold_right
-            (fun (_, {FSig.position;transform;filter}) acc
-              ->
-                let mtyps =
-                  match filter with
-                  |Some x -> apply_filter x mtyps
-                  |None -> mtyps in
-                let code = transform mtyps in 
-                match (position,code) with
-                |(Some x,Some code) ->
-                    let (name,f) = Filters.make_filter (x,code) in begin 
-                      AstFilters.register_stru_filter (name,f);
+    | {:mexp@sloc| struct $u end |}  ->
+        (self#in_module ;
+         (* extracted code *)
+         let res = self#stru u in
+         let mtyps = List.rev (self#get_cur_mtyps) in
+         let () = if !print_collect_mtyps then
+           eprintf "@[%a@]@." pp_print_mtyps mtyps in
+         let result =
+         List.fold_right
+           (fun (_, {position;transform;filter}) acc
+             ->
+               let mtyps = match filter with
+               |Some x -> FSigUtil.apply_filter x mtyps
+               |None -> mtyps in
+               let code = transform mtyps in 
+               match (position,code) with
+               |(Some x,Some code) ->
+                   let (name,f) = Filters.make_filter (x,code) in 
+                     (AstFilters.register_stru_filter (name,f);
                       AstFilters.use_implem_filter name ;
-                      acc
-                    end
-                |(None,Some code) -> {| $acc;; $code |}
+                      acc)
+                |(None,Some code) ->
+                    let code = FanAstN.fill_loc_stru sloc code in
+                    ((* prerr_endline "generated code"; *)
+                     (* Format.fprintf Format.err_formatter *)
+                     (*    "@[Generated code @; %a@]" Ast2pt.print_stru acc; *)
+                     {:stru@sloc| $acc;; $code |};
+                    )
                 |(_,None) -> acc)  !FanState.current_filters 
-          (if !FanState.keep then res else {| let _ = () |} (* FIXME *) ) in
-      (self#out_module ;
-      {:mexp| struct $result end |}  )
-    end
+             (if !FanState.keep then res else {@sloc| let _ = () |}) in
+            (self#out_module ; {:mexp@sloc| struct $result end |} ))
+
     | x -> super#mexp x 
   method! stru  = with stru function
     | {| type $_ and $_ |} as x -> begin
@@ -200,23 +129,24 @@ let traversal () : traversal  = object (self:'self_type)
        (if !FanState.keep then x else {| let _ = () |} (* FIXME *) ))
     end
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> 
-        let item =  `Single (name,t) in
+        let item =  `Single (name,Objs.strip_loc_typedecl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
-              FSig.pp_print_types  item in
+              pp_print_types  item in
         (self#update_cur_mtyps (fun lst -> item :: lst);
-       (* if !keep then x else {| |} *)
-       x )(* always keep *)
+       (* if !keep then x else {| |} *) (* always keep *)
+       x )
 
     | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}
-    | {| external $_ : $_ = $_ |} | {| $exp:_ |}   | `Exception (_loc,_)
-(* {| exception $_ |} *) 
+    | {| external $_ : $_ = $_ |} | {| $exp:_ |}
+    | {| exception $_ |} 
     | {| # $_ $_ |}  as x)  ->  x (* always keep *)
     |  x ->  super#stru x  
   method! typedecl = function
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 
       ((if self#is_in_and_types then
-        self#update_cur_and_types (fun lst -> (name,t) :: lst ));
+        self#update_cur_and_types (fun lst ->
+          (name,Objs.strip_loc_typedecl t) :: lst ));
         t)
     | t -> super#typedecl t 
 end
@@ -224,50 +154,10 @@ end
 
 
 
-let g = Gram.create_lexer
-    ~keywords:
-    ["derive";
-     "unload";
-     "clear";
-     "keep" ;
-     "on";
-     "keep";
-     "off";
-     "show_code";
-     "(";
-     ")";
-     ",";
-     ";"
-   ]
-    ~annot:"derive"
-    ();;
 
 
-{:create|(g:Gram.t)  fan_quot fan_quots|};;
-
-with exp
-{:extend|
-      fan_quot:
-      ["derive";"("; L1 [`Lid x -> x | `Uid x  -> x]{plugins}; ")" ->
-          begin List.iter plugin_add plugins; {| () |}  end
-      | "unload"; L1 [`Lid x  -> x | `Uid x -> x ] SEP ","{plugins} ->
-          begin List.iter plugin_remove plugins ; {|() |} end
-      | "clear" ->
-          begin FanState.reset_current_filters(); {|()|} end
-          (* begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end *)
-      | "keep" ; "on" -> begin FanState.keep := true; {|() |} end
-      | "keep" ; "off" -> begin FanState.keep := false; {| ()|} end
-      | "show_code"; "on" -> begin show_code := true; {| () |} end
-      | "show_code"; "off" -> begin show_code := false; {| ()|} end]
-      fan_quots:
-      [L1[fan_quot{x};";" -> x]{xs} -> seq_sem xs ]
-|};;  
 
 
-begin 
-  Syntax.Options.add ("-keep", (FanArg.Set FanState.keep), "Keep the included type definitions") ;
-  Syntax.Options.add ("-loaded-plugins", (FanArg.Unit show_modules), "Show plugins");
-end;;
 
 
-  
+
