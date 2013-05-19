@@ -43,8 +43,6 @@ and kind =
 
 open Format
 
-let _ = ()
-
 type warning_type =  
   | Abstract of string
   | Qualified of string 

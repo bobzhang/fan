@@ -713,6 +713,9 @@ and pp_print_stru: Format.formatter -> stru -> unit =
     | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" pp_print_ident _a0
     | `Type _a0 ->
         Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_typedecl _a0
+    | `TypeWith (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" pp_print_typedecl _a0
+          pp_print_strings _a1
     | `Value (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" pp_print_flag _a0
           pp_print_bind _a1
@@ -1573,6 +1576,9 @@ class print =
         | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
         | `Type _a0 ->
             Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
+        | `TypeWith (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a)@]" self#typedecl _a0
+              self#strings _a1
         | `Value (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a)@]" self#flag _a0
               self#bind _a1
@@ -2345,6 +2351,9 @@ class map =
           let _a1 = self#mtyp _a1 in `ModuleType (_a0, _a1)
       | `Open _a0 -> let _a0 = self#ident _a0 in `Open _a0
       | `Type _a0 -> let _a0 = self#typedecl _a0 in `Type _a0
+      | `TypeWith (_a0,_a1) ->
+          let _a0 = self#typedecl _a0 in
+          let _a1 = self#strings _a1 in `TypeWith (_a0, _a1)
       | `Value (_a0,_a1) ->
           let _a0 = self#flag _a0 in
           let _a1 = self#bind _a1 in `Value (_a0, _a1)
@@ -2913,6 +2922,8 @@ class fold =
       | `ModuleType (_a0,_a1) -> let self = self#auident _a0 in self#mtyp _a1
       | `Open _a0 -> self#ident _a0
       | `Type _a0 -> self#typedecl _a0
+      | `TypeWith (_a0,_a1) ->
+          let self = self#typedecl _a0 in self#strings _a1
       | `Value (_a0,_a1) -> let self = self#flag _a0 in self#bind _a1
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method cltdecl : cltdecl -> 'self_type=

@@ -631,15 +631,19 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
-  let ast = "src/Ast.mli" in 
+  let ast = "src/Ast.mli" in
+  let ast_n = "src/AstN.ml" in
+  let objs = "src/Objs.ml" in
+  let objs_n = "src/ObjsN.ml" in
   Options.ocaml_lflags :=  [ "-linkall"] ;
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
-    flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]);
-    "src/AstN.ml" |-? [ast];
-    "src/Objs.ml" |-? [ast];
+    (* flag ["ocaml"; "pp"; "use_fan"; "pp:doc"] (S[A"-printer"; A"o"]); *)
+    ast_n |-? [ast];
+    objs |-? [ast];
+    objs_n |-? [ast_n];
     "src/FanAst.ml"   |-? [ast];
-    "src/FanAstN.ml"  |-? ["src/AstN.ml"; ast];
+    "src/FanAstN.ml"  |-? [ast_n; ast];
     "src/AstLoc.ml" |-? [ast];
     "src/FanDyn.ml" |-? [ast];
     "src/FanMeta.ml" |-? [ast];

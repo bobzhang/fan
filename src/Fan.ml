@@ -214,7 +214,7 @@ of_exp ~name:(d,"stream") ~entry:ParserStream.stream_exp;;
 
 open AstInjection
 
-(* open AstTypeGen *)
+
 open PluginsN (* link the module *)  
 
 open CodeTemplate

@@ -48,6 +48,23 @@ class type traversal
     method update_cur_mtyps : (mtyps -> mtyps) -> unit
   end
 
+let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
+  let mtyps =
+    match filter with
+    | Some x -> FSigUtil.apply_filter x mtyps
+    | None  -> mtyps in
+  let code = transform mtyps in
+  match (position, code) with
+  | (Some x,Some code) ->
+      let (name,f) = Filters.make_filter (x, code) in
+      (AstFilters.register_stru_filter (name, f);
+       AstFilters.use_implem_filter name;
+       acc)
+  | (None ,Some code) ->
+      let code = FanAstN.fill_loc_stru sloc code in
+      (`Sem (sloc, acc, code) : Ast.stru )
+  | (_,None ) -> acc
+
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
@@ -74,23 +91,8 @@ let traversal () =
                if print_collect_mtyps.contents
                then eprintf "@[%a@]@." pp_print_mtyps mtyps in
              let result =
-               List.fold_right
-                 (fun (_,{ position; transform; filter })  acc  ->
-                    let mtyps =
-                      match filter with
-                      | Some x -> FSigUtil.apply_filter x mtyps
-                      | None  -> mtyps in
-                    let code = transform mtyps in
-                    match (position, code) with
-                    | (Some x,Some code) ->
-                        let (name,f) = Filters.make_filter (x, code) in
-                        (AstFilters.register_stru_filter (name, f);
-                         AstFilters.use_implem_filter name;
-                         acc)
-                    | (None ,Some code) ->
-                        let code = FanAstN.fill_loc_stru sloc code in
-                        (`Sem (sloc, acc, code) : Ast.stru )
-                    | (_,None ) -> acc) FanState.current_filters.contents
+               List.fold_right (iterate_code sloc mtyps)
+                 FanState.current_filters.contents
                  (if FanState.keep.contents
                   then res
                   else (`StExp (sloc, (`Uid (sloc, "()"))) : Ast.stru )) in
@@ -108,6 +110,7 @@ let traversal () =
              if FanState.keep.contents
              then x
              else (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )))
+       | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Ast.stru) as x
            ->
            let item = `Single (name, (Objs.strip_loc_typedecl t)) in

@@ -9,11 +9,12 @@ let filter =
       match mexp with
       | {:mexp| struct $s end |} -> s
       | _ -> failwith "can not find items back " in
-    (if Typehook.show_code.contents
-    then
+    (if !Typehook.show_code then
       (try FanBasic.p_stru Format.std_formatter code
       with
       | _ ->
           prerr_endlinef 
-          "There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to %s"
-            FanConfig.bug_main_address); code))
+          "There is a printer bug\
+           Our code generator may still work when Printer is broken\
+           Plz send bug report to %s" FanConfig.bug_main_address)
+  ; code))

@@ -5,16 +5,14 @@ open AstN
 open StdLib (* for [pp_print_list] [pp_print_string] *)
 
 let pp_print_typedecl = ObjsN.pp_print_typedecl;;  
-{:fans| derive (Print); |}  ;;
 
-{:ocaml|
-type named_type = (string* typedecl)
+type named_type = (string* typedecl) 
 and and_types = named_type list
 and types =
     [ `Mutual of and_types
     | `Single of named_type ]
 and mtyps =  types list
-|};;
+with ("Print")
 
 type plugin_name = string 
 

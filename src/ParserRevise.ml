@@ -79,8 +79,7 @@ let apply () = begin
         | "("; S{me}; ")" ->  me
         | "("; "val"; exp{e}; ")" -> `PackageModule (_loc, e)
         | "("; "val"; exp{e}; ":"; mtyp{p}; ")" ->
-             `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))
-             ] } |};
+             `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))] } |};
 
   with mbind
       {:extend|
@@ -196,6 +195,7 @@ let apply () = begin
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
     | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
     | "type"; type_declaration{t} -> `Type(_loc,t)
+
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
     | "class"; class_description{cd} ->    `Class(_loc,cd)
     | "class"; "type"; cltyp_declaration{ctd} ->  `ClassType(_loc,ctd) ]
@@ -874,7 +874,7 @@ let apply () = begin
       [ `Ant((""|"uid") as n,s) -> mk_anti _loc  ~c:"a_uident" n s
       | `Uid s  -> `Uid (_loc, s) ]
       string_list:
-      [ `Ant ((""),s) -> mk_anti _loc  "str_list" s
+      [ `Ant("",s) -> mk_anti _loc  "str_list" s
       | `Ant("",s) ; S{xs} -> `App(_loc,mk_anti _loc "" s, xs)
       | `STR (_, x) -> `Str(_loc,x)
       | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)]
@@ -941,6 +941,8 @@ let apply () = begin
             `ModuleType(_loc,i,mt)
         | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
         | "type"; type_declaration{td} -> `Type(_loc,td)
+        | "type"; type_declaration{t};"with"; "("; string_list{ns};")" ->
+            `TypeWith (_loc,t,ns)              
         | "let"; opt_rec{r}; bind{bi}; "in"; exp{x} ->
               {| let $rec:r $bi in $x |}
         | "let"; opt_rec{r}; bind{bi} ->

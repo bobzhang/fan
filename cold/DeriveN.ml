@@ -319,7 +319,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
       | `Single ((name,tydcl) as named_type) ->
           (match CtypN.abstract_list tydcl with
            | Some n ->
-               let ty_str = "" in
+               let ty_str: string = ObjsN.dump_typedecl tydcl in
                let () = Hashtbl.add tbl ty_str (Abstract ty_str) in
                let (ty,_) = mk_type tydcl in
                (`CrMth

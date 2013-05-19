@@ -451,6 +451,7 @@ and stru =
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
   | `Open of (loc * ident) (* open i *)
   | `Type of (loc * typedecl) (* type t *)
+  | `TypeWith of (loc * typedecl * strings)
   | `Value of (loc * flag * bind) (* value (rec)? bi *)
   | ant  ]
 

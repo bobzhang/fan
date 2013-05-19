@@ -725,6 +725,9 @@ and fill_loc_stru: FanLoc.t -> AstN.stru -> Ast.stru =
         let _a1 = fill_loc_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
     | `Open _a0 -> let _a0 = fill_loc_ident loc _a0 in `Open (loc, _a0)
     | `Type _a0 -> let _a0 = fill_loc_typedecl loc _a0 in `Type (loc, _a0)
+    | `TypeWith (_a0,_a1) ->
+        let _a0 = fill_loc_typedecl loc _a0 in
+        let _a1 = fill_loc_strings loc _a1 in `TypeWith (loc, _a0, _a1)
     | `Value (_a0,_a1) ->
         let _a0 = fill_loc_flag loc _a0 in
         let _a1 = fill_loc_bind loc _a1 in `Value (loc, _a0, _a1)
@@ -1970,6 +1973,12 @@ class meta =
             `App (_loc, (`Vrn (_loc, "Open")), (self#ident _loc _a0))
         | `Type _a0 ->
             `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
+        | `TypeWith (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc, (`Vrn (_loc, "TypeWith")),
+                     (self#typedecl _loc _a0))), (self#strings _loc _a1))
         | `Value (_a0,_a1) ->
             `App
               (_loc,

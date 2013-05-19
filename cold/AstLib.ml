@@ -147,6 +147,7 @@ let loc_of =
   | `PolyInf (_loc,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
+  | `TypeWith (_loc,_,_) -> _loc
   | `OptLablExpr (_loc,_,_,_) -> _loc
   | `SigInherit (_loc,_) -> _loc
   | `ModuleType (_loc,_,_) -> _loc

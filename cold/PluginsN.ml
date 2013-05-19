@@ -341,7 +341,7 @@ let generate (mtyps : mtyps) =
    | Some case ->
        (`Value (`Negative, (`Bind ((`Lid "loc_of"), (`Fun case)))) : 
        AstN.stru )
-   | None  -> failwithf "AstTypeGen.generate null case" : stru )
+   | None  -> failwithf "PluginsN.generate null case" : stru )
 
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))

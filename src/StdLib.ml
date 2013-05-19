@@ -7,7 +7,7 @@ open Format
 
 
 #import Fan.Inject;;
-(* import Fan.Inject; *)
+
 {:stru| eq_base1  |};;
 {:stru| print_base1  |};;
 

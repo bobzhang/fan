@@ -8,8 +8,6 @@ open StdLib
 
 let pp_print_typedecl = ObjsN.pp_print_typedecl
 
-let _ = ()
-
 type named_type = (string * typedecl) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 

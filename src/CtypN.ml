@@ -36,14 +36,6 @@ type vbranch =
 type branch =
    [ `branch of (string * ctyp list) ]
 
-(* type named_type = (string* typedecl) *)
-(* and and_types = named_type list *)
-(* and types = *)
-(*     [ `Mutual of and_types *)
-(*     | `Single of named_type ] *)
-
-(* and mtyps =  types list *)
-
 type destination =
   |Obj of kind
   (* | Type of ctyp         *)
@@ -56,13 +48,10 @@ and kind =
 
 open Format;;
 
-{:fans| derive (Print) ; |};;
-
-{:ocaml|
 type warning_type =
   | Abstract of string 
-  | Qualified of string 
-|};;
+  | Qualified of string  with ("Print")
+
 
 
 (* Feed to user to compose an expession node *)
@@ -158,7 +147,6 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
 
   {[
   list_of_record {:ctyp| u:int;m:mutable int |};
-  - : FSig.col list =
   [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
   {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
   ]}

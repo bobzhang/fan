@@ -191,7 +191,7 @@
 * 16 keep the code generation close with dumping
   make it easy to debug 
 
-* 17 a lesson while debug
+* DONE 17 a lesson while debug
   unit = `Uid "()"
   I used it as a type, and it type check...
   so strict type annotations are helpful
