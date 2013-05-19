@@ -230,10 +230,6 @@ let make_parser entry loc loc_name_opt s =
     (current_loc_name, loc_name_opt)
     (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
 
-let _ = ()
-
-let _ = ()
-
 let of_stru ~name  ~entry  = add name FanDyn.stru_tag (make_parser entry)
 
 let of_stru_with_filter ~name  ~entry  ~filter  =

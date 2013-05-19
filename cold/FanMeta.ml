@@ -55,8 +55,6 @@ class primitive =
 
 let _ = (); ()
 
-let _ = ()
-
 class meta =
   object (self : 'self_type)
     inherit  primitive
@@ -1669,6 +1667,15 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Type")), (self#loc _loc _a0))),
                 (self#typedecl _loc _a1))
+        | `TypeWith (_a0,_a1,_a2) ->
+            `App
+              (_loc,
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "TypeWith")),
+                          (self#loc _loc _a0))), (self#typedecl _loc _a1))),
+                (self#strings _loc _a2))
         | `Value (_a0,_a1,_a2) ->
             `App
               (_loc,

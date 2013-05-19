@@ -184,3 +184,15 @@
                 with Invalid_argument s -> raise (XStream.Error s) ]
       
   #+END_SRC
+
+* 15 print generator
+  Format.pp_print_string?
+
+* 16 keep the code generation close with dumping
+  make it easy to debug 
+
+* DONE 17 a lesson while debug
+  unit = `Uid "()"
+  I used it as a type, and it type check...
+  so strict type annotations are helpful
+   unit : ep = `Uid "()"

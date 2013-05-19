@@ -172,7 +172,8 @@ and stru =
   | `Include of (loc * mexp) | `Module of (loc * auident * mexp)
   | `RecModule of (loc * mbind) | `ModuleType of (loc * auident * mtyp)
   | `Open of (loc * ident) | `Type of (loc * typedecl)
-  | `Value of (loc * flag * bind) | ant] 
+  | `TypeWith of (loc * typedecl * strings) | `Value of (loc * flag * bind)
+  | ant] 
 and cltdecl =
   [ `And of (loc * cltdecl * cltdecl)
   | `CtDecl of (loc * flag * ident * type_parameters * cltyp)

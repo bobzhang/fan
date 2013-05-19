@@ -4362,6 +4362,17 @@ let apply () =
               (Gram.mk_action
                  (fun (td : 'type_declaration)  _  (_loc : FanLoc.t)  ->
                     (`Type (_loc, td) : 'stru )))));
+          ([`Skeyword "type";
+           `Snterm (Gram.obj (type_declaration : 'type_declaration Gram.t ));
+           `Skeyword "with";
+           `Skeyword "(";
+           `Snterm (Gram.obj (string_list : 'string_list Gram.t ));
+           `Skeyword ")"],
+            ("Gram.mk_action\n  (fun _  (ns : 'string_list)  _  _  (t : 'type_declaration)  _ \n     (_loc : FanLoc.t)  -> (`TypeWith (_loc, t, ns) : 'stru ))\n",
+              (Gram.mk_action
+                 (fun _  (ns : 'string_list)  _  _  (t : 'type_declaration) 
+                    _  (_loc : FanLoc.t)  ->
+                    (`TypeWith (_loc, t, ns) : 'stru )))));
           ([`Skeyword "let";
            `Snterm (Gram.obj (opt_rec : 'opt_rec Gram.t ));
            `Snterm (Gram.obj (bind : 'bind Gram.t ));

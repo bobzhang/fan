@@ -6,8 +6,6 @@ let strip_loc_ant ant = ant
 
 let _ = (); ()
 
-let _ = ()
-
 let pp_print_loc: Format.formatter -> loc -> unit =
   fun fmt  _a0  -> FanLoc.pp_print_t fmt _a0
 
@@ -845,6 +843,9 @@ and pp_print_stru: Format.formatter -> stru -> unit =
     | `Type (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Type@ %a@ %a)@]" pp_print_loc _a0
           pp_print_typedecl _a1
+    | `TypeWith (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_typedecl _a1 pp_print_strings _a2
     | `Value (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_flag _a1 pp_print_bind _a2
@@ -1852,6 +1853,9 @@ class print =
         | `Type (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Type@ %a@ %a)@]" self#loc _a0
               self#typedecl _a1
+        | `TypeWith (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`TypeWith@ %a@ %a@ %a)@]" self#loc _a0
+              self#typedecl _a1 self#strings _a2
         | `Value (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Value@ %a@ %a@ %a)@]" self#loc _a0
               self#flag _a1 self#bind _a2
@@ -2936,6 +2940,10 @@ class map =
       | `Type (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#typedecl _a1 in `Type (_a0, _a1)
+      | `TypeWith (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#typedecl _a1 in
+          let _a2 = self#strings _a2 in `TypeWith (_a0, _a1, _a2)
       | `Value (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#flag _a1 in
@@ -3757,6 +3765,9 @@ class fold =
           let self = self#auident _a1 in self#mtyp _a2
       | `Open (_a0,_a1) -> let self = self#loc _a0 in self#ident _a1
       | `Type (_a0,_a1) -> let self = self#loc _a0 in self#typedecl _a1
+      | `TypeWith (_a0,_a1,_a2) ->
+          let self = self#loc _a0 in
+          let self = self#typedecl _a1 in self#strings _a2
       | `Value (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#flag _a1 in self#bind _a2
@@ -4559,6 +4570,9 @@ and strip_loc_stru: Ast.stru -> AstN.stru =
       let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
   | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
   | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
+  | `TypeWith (_a0,_a1,_a2) ->
+      let _a1 = strip_loc_typedecl _a1 in
+      let _a2 = strip_loc_strings _a2 in `TypeWith (_a1, _a2)
   | `Value (_a0,_a1,_a2) ->
       let _a1 = strip_loc_flag _a1 in
       let _a2 = strip_loc_bind _a2 in `Value (_a1, _a2)

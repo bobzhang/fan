@@ -39,3 +39,15 @@ val unknown : int -> exp
     eta_expand {|f |} 3 |> FanBasic.p_exp f;
     fun _a0  _a1  _a2  -> f _a0 _a1 _a2   ]} *)
 val eta_expand : exp -> int -> exp    
+
+val mk_record : (string * exp) list -> exp
+    
+(** meta level code generation *)
+val mee_comma : exp -> exp -> exp
+val mee_app : exp -> exp -> exp
+val mee_of_str : string -> exp
+val mk_tuple_ee : exp list -> exp
+val mee_record_col : string -> exp -> exp
+val mee_record_semi : exp -> exp -> exp
+val mk_record_ee : (string * exp) list -> exp
+    

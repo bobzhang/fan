@@ -139,7 +139,7 @@ let binds bs (e:exp) =
 let lid  n = `Lid n
     
 let uid  n = `Uid n
-let unit = `Uid "()"
+let unit : ep = `Uid "()"
 
 let ep_of_cons n ps =
   appl_of_list (uid  n :: ps)

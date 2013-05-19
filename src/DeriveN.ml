@@ -6,7 +6,8 @@ open AstLibN
 open AstN
 open BasicN
 open CtypN
-
+open FSigUtil
+  
 let check_valid str =
   let len = String.length str in
   if
@@ -317,7 +318,7 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
     ~mk_record
     simple_exp_of_ctyp_with_cxt
-    (lst:mtyps)  =
+    (lst:mtyps) : stru =
   let cxt  = Hashset.create 50 in 
   let mk_bind : typedecl -> bind =
     bind_of_tydcl ?cons_transform ?arity ?annot
@@ -334,7 +335,8 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
             let bind =
               List.reduce_right_with
                 ~compose:(fun x y -> {:bind-| $x and $y |} )
-                ~f:(fun (_name,ty) -> mk_bind  ty ) xs in
+                ~f:(fun (_name,ty) ->
+                  mk_bind  ty ) xs in
             {:stru-| let rec $bind |}))
     | `Single (name,tydcl) ->
         (Hashset.add cxt name;
@@ -400,17 +402,15 @@ let obj_of_mtyps
         sem_of_list (List.map mk_clfield named_types)
       | `Single ((name,tydcl) as  named_type) ->
          match CtypN.abstract_list tydcl with
-         | Some n  -> begin
-           (* (Ctyp.to_string tydcl) FIXME *)
-           let ty_str =   "" in
+         | Some n  -> 
+           let ty_str : string =   ObjsN.dump_typedecl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
            {:clfield-| method $lid:name : $ty= $(ExpN.unknown n) |}
-         end
          | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
-    let (extras,lst) = CtypN.transform_mtyps lst in 
+    let (extras,lst) = FSigUtil.transform_mtyps lst in 
     let body = List.map fs lst in 
     let body : clfield =
       let items = List.map (fun (dest,src,len) ->
@@ -433,9 +433,8 @@ let obj_of_mtyps
 
 
 
-(* open Ast *)
-(* open Transform *)
-(* open FSig *)
+
+
 
 
 

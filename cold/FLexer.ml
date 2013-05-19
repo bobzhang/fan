@@ -173,8 +173,6 @@ let err (error : lex_error) (loc : FanLoc.t) =
 let warn error loc =
   Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
 
-let _ = ()
-
 let rec comment c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in

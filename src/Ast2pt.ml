@@ -150,14 +150,16 @@ let ident_noloc i = fst (ident_tag  i)
 let ident (i:ident) :  Longident.t Location.loc  =
   with_loc (ident_noloc  i) (loc_of i)
 
-let long_lident ~err id =
-    match ident_tag id with
-    | (i, `lident) -> with_loc i  (loc_of id)
-    | _ -> error (loc_of id) err 
+let long_lident  id =
+  match ident_tag id with
+  | (i,`lident) -> with_loc i (loc_of id)
+  | _ -> FanLoc.errorf (loc_of id)  "invalid long identifier %s"
+        (Objs.dump_ident id)
 
-let long_type_ident :ident -> Longident.t Location.loc =
-  long_lident ~err:"invalid long identifier type"
-let long_class_ident = long_lident ~err:"invalid class name"
+let long_type_ident: ident -> Longident.t Location.loc =
+  long_lident 
+
+let long_class_ident = long_lident
 
 let long_uident_noloc  i =
     match ident_tag i with
@@ -457,27 +459,17 @@ let rec mkrangepat loc c1 c2 =
          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
 
 let rec pat (x:pat) =  with pat  match x with 
-  | (* {| $(lid:("true"|"false" as txt)) |} | *)
-    `Lid(_loc,("true"|"false" as txt)) ->
+  | `Lid(_loc,("true"|"false" as txt)) ->
     let p = Ppat_construct ({txt=Lident txt;loc=_loc}) None false in
     mkpat _loc p
-  | `Lid(sloc, s) -> mkpat sloc (Ppat_var (with_loc s sloc))
-  (* | {| $(id:{:ident@sloc| $lid:s |}) |} -> mkpat sloc(\* _loc *\) (Ppat_var (with_loc s sloc)) *)
-  (* | `Lid(sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc)) *)
-  | (`Uid (_loc,_) | `Dot (_loc,_,_) as i) ->
-      let p = Ppat_construct (long_uident  (i:vid :> ident)) None false 
-      in mkpat _loc p
-  (* | `Dot( _loc,_,_) | `Uid (_loc,_) as i -> *)
-  (*     let p = Ppat_construct (long_uident  (i : vid :>ident)) None false *)
-  (*     in mkpat _loc p *)
-  (* | `Id(_loc,i) -> *)
-  (*     let p = Ppat_construct (long_uident  i ) None false *)
-  (*     in mkpat _loc p *)
+  | {|$lid:s|} -> mkpat _loc (Ppat_var (with_loc s _loc))
+  | {|$uid:_|} | {:ident'|$_ . $_|} as i ->
+      let p = Ppat_construct (long_uident  (i:vid :> ident)) None false in
+      mkpat _loc p
   |  {| ($p1 as $x )|}->
-      begin match x with
+      (match x with
       |`Lid (sloc,s) -> mkpat _loc (Ppat_alias ((pat p1), with_loc s sloc))
-      | `Ant (_loc,_) -> error _loc "invalid antiquotations"
-      end
+      | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
   | (`App (_loc,`Uid(sloc,s),`Par(_,`Any loc_any )) : Ast.pat) -> 
@@ -928,7 +920,7 @@ and mklabexp (x:rec_exp)  =
 
 (* Example:
    {[
-   (Ctyp.of_stru {:stru|type u = int and v  = [A of u and b ] |})
+   (of_stru {:stru|type u = int and v  = [A of u and b ] |})
    ||> mktype_decl |> AstPrint.default#type_def_list f;
    type u = int 
    and v =  
@@ -1093,14 +1085,17 @@ and mexp (x:Ast.mexp)=
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (exp e))
   | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t) 
 and stru (s:stru) (l:structure) : structure =
-  match s with 
+  match s with
+   (* ad-hoc removing the empty statement, a more elegant way is in need*)
+  | {:stru| let _ = () |} -> l 
+  | {:stru| $st1;; $st2 |} ->  stru st1 (stru st2 l)        
   | (`Class (loc,cd) :stru) ->
     mkstr loc (Pstr_class
                   (List.map class_info_clexp (list_of_and cd []))) :: l
   | `ClassType (loc,ctd) ->
       mkstr loc (Pstr_class_type
                       (List.map class_info_cltyp (list_of_and ctd []))) :: l
-  | `Sem(_,st1,st2) -> stru st1 (stru st2 l)
+
   | `Directive _ | `DirectiveSimple _  -> l
   | `Exception(loc,`Uid(_,s)) ->
       mkstr loc (Pstr_exception (with_loc s loc) []) :: l 
@@ -1130,6 +1125,30 @@ and stru (s:stru) (l:structure) : structure =
   | `Open (loc,id) ->
         mkstr loc (Pstr_open (long_uident id)) :: l
   | `Type (loc,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
+  | `TypeWith(_loc,tdl, ns) ->
+      (* FIXME all traversal needs to deal with TypeWith later .. *)
+      let x = {:stru| type $tdl |} in
+      let ns = list_of_app ns [ ] in
+      let filters =
+        List.map (function
+        |`Str(sloc,n) ->
+            (let try p = Hashtbl.find Typehook.filters n in
+            (n,p)
+            with Not_found ->
+              (FanLoc.errorf sloc "%s not found" n))
+        | `Ant _ -> ANT_ERROR
+        | _ -> assert false ) ns in
+      let code =
+        Ref.protect2
+        (FanState.current_filters, filters)
+        (FanState.keep, false)
+        (fun _  ->
+          match (Typehook.traversal ())#mexp {:mexp|struct $x end |} with
+          |{:mexp| struct $s end|} -> s
+          | _ -> assert false 
+        ) in
+      stru {:stru| $x;; $code |} l
+
   | `Value (loc,rf,bi) ->
       mkstr loc (Pstr_value (mkrf rf) (bind bi [])) :: l
   | x-> errorf (loc_of x) "stru : %s" (dump_stru x) 

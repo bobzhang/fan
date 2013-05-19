@@ -1,7 +1,5 @@
 let _ = (); ()
 
-let _ = ()
-
 type loc = FanLoc.t 
 
 type ant = [ `Ant of (loc * FanUtil.anti_cxt)] 
@@ -157,7 +155,7 @@ and stru =
   | `External of (alident * ctyp * strings) | `Include of mexp
   | `Module of (auident * mexp) | `RecModule of mbind
   | `ModuleType of (auident * mtyp) | `Open of ident | `Type of typedecl
-  | `Value of (flag * bind) | ant] 
+  | `TypeWith of (typedecl * strings) | `Value of (flag * bind) | ant] 
 and cltdecl =
   [ `And of (cltdecl * cltdecl)
   | `CtDecl of (flag * ident * type_parameters * cltyp)

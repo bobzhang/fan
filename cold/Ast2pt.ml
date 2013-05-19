@@ -20,8 +20,6 @@ open Ast
 
 open Objs
 
-let _ = ()
-
 let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : Ast.ident) ->
@@ -94,15 +92,16 @@ let ident_noloc i = fst (ident_tag i)
 let ident (i : ident) =
   (with_loc (ident_noloc i) (loc_of i) : Longident.t Location.loc )
 
-let long_lident ~err  id =
+let long_lident id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (loc_of id)
-  | _ -> error (loc_of id) err
+  | _ ->
+      FanLoc.errorf (loc_of id) "invalid long identifier %s"
+        (Objs.dump_ident id)
 
-let long_type_ident: ident -> Longident.t Location.loc =
-  long_lident ~err:"invalid long identifier type"
+let long_type_ident: ident -> Longident.t Location.loc = long_lident
 
-let long_class_ident = long_lident ~err:"invalid class name"
+let long_class_ident = long_lident
 
 let long_uident_noloc i =
   match ident_tag i with
@@ -381,8 +380,8 @@ let rec pat (x : pat) =
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
       mkpat _loc p
-  | `Lid (sloc,s) -> mkpat sloc (Ppat_var (with_loc s sloc))
-  | `Uid (_loc,_)|`Dot (_loc,_,_) as i ->
+  | (`Lid (_loc,s) : Ast.pat) -> mkpat _loc (Ppat_var (with_loc s _loc))
+  | (`Uid (_loc,_) : Ast.pat)|`Dot (_loc,_,_) as i ->
       let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
       mkpat _loc p
   | (`Alias (_loc,p1,x) : Ast.pat) ->
@@ -993,6 +992,8 @@ and mexp (x : Ast.mexp) =
   | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t)
 and stru (s : stru) (l : structure) =
   (match s with
+   | (`StExp (_loc,`Uid (_,"()")) : Ast.stru) -> l
+   | (`Sem (_loc,st1,st2) : Ast.stru) -> stru st1 (stru st2 l)
    | (`Class (loc,cd) : stru) ->
        (mkstr loc
           (Pstr_class (List.map class_info_clexp (list_of_and cd []))))
@@ -1001,7 +1002,6 @@ and stru (s : stru) (l : structure) =
        (mkstr loc
           (Pstr_class_type (List.map class_info_cltyp (list_of_and ctd []))))
        :: l
-   | `Sem (_,st1,st2) -> stru st1 (stru st2 l)
    | `Directive _|`DirectiveSimple _ -> l
    | `Exception (loc,`Uid (_,s)) ->
        (mkstr loc (Pstr_exception ((with_loc s loc), []))) :: l
@@ -1026,6 +1026,31 @@ and stru (s : stru) (l : structure) =
        (mkstr loc (Pstr_modtype ((with_loc n sloc), (mtyp mt)))) :: l
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
+   | `TypeWith (_loc,tdl,ns) ->
+       let x: Ast.stru = `Type (_loc, tdl) in
+       let ns = list_of_app ns [] in
+       let filters =
+         List.map
+           (function
+            | `Str (sloc,n) ->
+                ((try
+                    let p = Hashtbl.find Typehook.filters n in
+                    fun ()  -> (n, p)
+                  with
+                  | Not_found  ->
+                      (fun ()  -> FanLoc.errorf sloc "%s not found" n))) ()
+            | `Ant _ -> error _loc "antiquotation not expected here"
+            | _ -> assert false) ns in
+       let code =
+         Ref.protect2 (FanState.current_filters, filters)
+           (FanState.keep, false)
+           (fun _  ->
+              match (Typehook.traversal ())#mexp
+                      (`Struct (_loc, x) : Ast.mexp )
+              with
+              | (`Struct (_loc,s) : Ast.mexp) -> s
+              | _ -> assert false) in
+       stru (`Sem (_loc, x, code) : Ast.stru ) l
    | `Value (loc,rf,bi) -> (mkstr loc (Pstr_value ((mkrf rf), (bind bi []))))
        :: l
    | x -> errorf (loc_of x) "stru : %s" (dump_stru x) : structure )

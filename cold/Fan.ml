@@ -32,26 +32,10 @@ let d = `Absolute ["Fan"; "Lang"]
 
 let _ =
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
-    ~filter:(fun s  ->
-               let _loc = loc_of s in
-               let v = `Struct (_loc, s) in
-               let mexp = (Typehook.traversal ())#mexp v in
-               let code =
-                 match mexp with
-                 | `Struct (_loc,item) -> item
-                 | _ -> failwith "can not find items back " in
-               if Typehook.show_code.contents
-               then
-                 (try FanBasic.p_stru Format.std_formatter code
-                  with
-                  | _ ->
-                      prerr_endline &
-                        ("There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to "
-                           ^ FanConfig.bug_main_address));
-               code);
-  of_exp ~name:(d, "fans") ~entry:Typehook.fan_quots;
-  of_exp ~name:(d, "save") ~entry:Typehook.save_quot;
-  of_stru ~name:(d, "include") ~entry:Typehook.include_quot
+    ~filter:LangOcaml.filter;
+  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots;
+  of_exp ~name:(d, "save") ~entry:LangSave.save_quot;
+  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot
 
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 
@@ -244,7 +228,7 @@ let _ = of_exp ~name:(d, "stream") ~entry:ParserStream.stream_exp
 
 open AstInjection
 
-open AstTypeGen
+open PluginsN
 
 open CodeTemplate
 

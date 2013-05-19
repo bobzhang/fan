@@ -32,11 +32,6 @@ type vbranch = [ `variant of (string * ctyp list) | `abbrev of ident]
 
 type branch = [ `branch of (string * ctyp list)] 
 
-type named_type = (string * typedecl) 
-and and_types = named_type list 
-and types = [ `Mutual of and_types | `Single of named_type] 
-and mtyps = types list 
-
 type destination =  
   | Obj of kind
   | Str_item 
@@ -47,8 +42,6 @@ and kind =
   | Concrete of ctyp 
 
 open Format
-
-let _ = ()
 
 type warning_type =  
   | Abstract of string
@@ -236,50 +229,6 @@ let abstract_list (x : typedecl) =
        | `None -> Some 0
        | `Some xs -> Some (List.length & (list_of_com xs [])))
   | _ -> None
-
-let mk_transform_type_eq () =
-  object (self : 'self_type)
-    val transformers = Hashtbl.create 50
-    inherit  ObjsN.map as super
-    method! stru =
-      function
-      | (`Type `TyDcl (_name,vars,ctyp,_) : AstN.stru) as x ->
-          let r =
-            match ctyp with | `TyEq (_,t) -> qualified_app_list t | _ -> None in
-          (match r with
-           | Some (i,lst) ->
-               let vars =
-                 match vars with | `None -> [] | `Some x -> list_of_com x [] in
-               if not ((vars : decl_params list  :>ctyp list) = lst)
-               then super#stru x
-               else
-                 (let src = i and dest = IdN.to_string i in
-                  Hashtbl.replace transformers dest (src, (List.length lst));
-                  (`StExp (`Uid "()") : AstN.stru ))
-           | None  -> super#stru x)
-      | x -> super#stru x
-    method! ctyp x =
-      match qualified_app_list x with
-      | Some (i,lst) ->
-          let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
-          let src = i and dest = IdN.to_string i in
-          (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Lid dest : AstN.ctyp ) :: lst))
-      | None  -> super#ctyp x
-    method type_transformers =
-      Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)
-        transformers []
-  end
-
-let transform_mtyps (lst : mtyps) =
-  let obj = mk_transform_type_eq () in
-  let item1 =
-    List.map
-      (function
-       | `Mutual ls ->
-           `Mutual (List.map (fun (s,ty)  -> (s, (obj#typedecl ty))) ls)
-       | `Single (s,ty) -> `Single (s, (obj#typedecl ty))) lst in
-  let new_types = obj#type_transformers in (new_types, item1)
 
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =

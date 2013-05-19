@@ -161,6 +161,39 @@ let (<+<) pats acc =
     (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp )) pats
     acc
 
+let eta_expand (exp : exp) number =
+  (let names = List.init number (fun i  -> x ~off:0 i) in
+   mkfun names (exp +> names) : exp )
+
+let gen_curry_n (acc : exp) ~arity  cons n =
+  (let args =
+     List.init arity
+       (fun i  -> List.init n (fun j  -> (xid ~off:i j : Ast.pat ))) in
+   let pat = (EP.of_str cons :>pat) in
+   List.fold_right
+     (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp ))
+     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )
+
+let currying cases ~arity  =
+  let cases = bar_of_list cases in
+  if arity >= 2
+  then
+    let names = List.init arity (fun i  -> x ~off:i 0) in
+    let exps = List.map (fun s  -> (`Lid (_loc, s) : Ast.exp )) names in
+    let x = tuple_com exps in
+    mkfun names (`Match (_loc, x, cases) : Ast.exp )
+  else (`Fun (_loc, cases) : Ast.exp )
+
+let unknown len =
+  if len = 0
+  then
+    (`Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, "unknown"))) : 
+    Ast.exp )
+  else
+    (`App
+       (_loc, (`Lid (_loc, "failwith")), (`Str (_loc, "not implemented!"))) : 
+    Ast.exp )
+
 let mee_comma x y =
   (`App
      (_loc,
@@ -195,13 +228,11 @@ let mk_tuple_ee =
   | [] -> invalid_arg "mktupee arity is zero "
   | x::[] -> x
   | xs ->
+      let v = List.reduce_right mee_comma xs in
       (`App
          (_loc, (`Vrn (_loc, "Par")),
-           (`Par
-              (_loc,
-                (`Com
-                   (_loc, (`Lid (_loc, "_loc")),
-                     (List.reduce_right mee_comma xs)))))) : Ast.exp )
+           (`Par (_loc, (`Com (_loc, (`Lid (_loc, "_loc")), v))))) : 
+        Ast.exp )
 
 let mee_record_col label exp =
   (`App
@@ -232,36 +263,3 @@ let mk_record_ee label_exps =
           (_loc,
             (`App (_loc, (`Vrn (_loc, "Record")), (`Lid (_loc, "_loc")))),
             (List.reduce_right mee_record_semi es)) : Ast.exp ))
-
-let eta_expand (exp : exp) number =
-  (let names = List.init number (fun i  -> x ~off:0 i) in
-   mkfun names (exp +> names) : exp )
-
-let gen_curry_n (acc : exp) ~arity  cons n =
-  (let args =
-     List.init arity
-       (fun i  -> List.init n (fun j  -> (xid ~off:i j : Ast.pat ))) in
-   let pat = (EP.of_str cons :>pat) in
-   List.fold_right
-     (fun p  acc  -> (`Fun (_loc, (`Case (_loc, p, acc))) : Ast.exp ))
-     (List.map (fun lst  -> appl_of_list (pat :: lst)) args) acc : exp )
-
-let currying cases ~arity  =
-  let cases = bar_of_list cases in
-  if arity >= 2
-  then
-    let names = List.init arity (fun i  -> x ~off:i 0) in
-    let exps = List.map (fun s  -> (`Lid (_loc, s) : Ast.exp )) names in
-    let x = tuple_com exps in
-    mkfun names (`Match (_loc, x, cases) : Ast.exp )
-  else (`Fun (_loc, cases) : Ast.exp )
-
-let unknown len =
-  if len = 0
-  then
-    (`Send (_loc, (`Lid (_loc, "self")), (`Lid (_loc, "unknown"))) : 
-    Ast.exp )
-  else
-    (`App
-       (_loc, (`Lid (_loc, "failwith")), (`Str (_loc, "not implemented!"))) : 
-    Ast.exp )

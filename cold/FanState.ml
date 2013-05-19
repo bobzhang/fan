@@ -1,4 +1,4 @@
-open FSig
+open FSigUtil
 
 let current_filters: (plugin_name * plugin) list ref = ref []
 

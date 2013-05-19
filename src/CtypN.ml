@@ -36,14 +36,6 @@ type vbranch =
 type branch =
    [ `branch of (string * ctyp list) ]
 
-type named_type = (string* typedecl)
-and and_types = named_type list
-and types =
-    [ `Mutual of and_types
-    | `Single of named_type ]
-
-and mtyps =  types list
-
 type destination =
   |Obj of kind
   (* | Type of ctyp         *)
@@ -56,13 +48,10 @@ and kind =
 
 open Format;;
 
-{:fans| derive (Print) ; |};;
-
-{:ocaml|
 type warning_type =
   | Abstract of string 
-  | Qualified of string 
-|};;
+  | Qualified of string  with ("Print")
+
 
 
 (* Feed to user to compose an expession node *)
@@ -158,7 +147,6 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
 
   {[
   list_of_record {:ctyp| u:int;m:mutable int |};
-  - : FSig.col list =
   [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
   {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
   ]}
@@ -339,107 +327,8 @@ let abstract_list (x:typedecl)=
 (*     | (x::xs,y::ys) -> eq x y && loop (xs,ys) *)
 (*     | (_,_) -> false in loop (t1,t2) *)
     
-(*
-
-  {[
-
-  let f = mk_transform_type_eq ();
-
-  let v =
-  (f#stru
-
-  <:stru<
-  type a = Loc.t
-  and  b 'a  = [ A of LL.t 'a and LL.t 'a and Loc.t];
-  let f x = 3
-  >> );
-
-  f#type_transformers |>  opr#stru fmt;  
-
-  v |> opr#stru fmt;
-
-  type ll_t 'a0 = LL.t 'a0;
-  type loc_t = Loc.t;
-  type a = loc_t and b 'a = [ A of ll_t 'a and ll_t 'a and loc_t ];
-  let f x = 3;
-  
-  ]}
-  There are two cases:
-  The first is [Loc.t => loc_t], and record the relationship to the hashtbl.
-  It's reasonalble and sound. But it may bring some unnecessary duplicated code.
-
-  We only consider one duplicated case
-  [type u 'a = Loc.t 'a] [type u int = Loc.t int ]
-  the type variables are the same as the type definition.
-  here we record the relationship [Loc.t => u ]
-  ]}
- *)
-let mk_transform_type_eq () = object(self:'self_type)
-  val transformers = Hashtbl.create 50
-  inherit ObjsN.map as super
-  method! stru = function
-    | {:stru-| type $(`TyDcl ( _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
-        let r =
-          match ctyp with
-          | `TyEq (_,t) -> qualified_app_list t | _ -> None  in
-        begin match  r with
-        | Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
-            let vars =
-              match vars with 
-              | `None  -> []
-              | `Some x -> list_of_com x [] in
-            if  not ( (vars : decl_params list  :>  ctyp list) = lst) then 
-              super#stru x
-            else
-              (* Manual substitution
-                 [type u 'a 'b = Loc.t 'a 'b]
-                 [type u int = Loc.t int]
-                 This case can not happen [type u FanAst.int = Loc.t FanAst.int ]
-               *)
-              let src = i and dest =             
-                IdN.to_string i in begin
-                  Hashtbl.replace transformers dest (src,List.length lst);
-                  {:stru-| let _ = ()|} (* FIXME *)
-                end 
-        | None ->  super#stru x
-        end
-    | x -> super#stru x 
-  method! ctyp x =
-    match qualified_app_list x with
-    | Some (i, lst) ->
-        let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
-        let src = i and dest = IdN.to_string i in begin
-          Hashtbl.replace transformers dest (src,List.length lst);
-          appl_of_list ({| $lid:dest |} :: lst )
-        end
-    | None -> super#ctyp x
-          (* dump the type declarations *)  
-  method type_transformers = 
-    Hashtbl.fold (fun dest (src,len) acc ->
-      (dest,src,len)  :: acc) transformers []
-
-end
 
 
-
-(*
-  This is a general tranversal, which could be bootstrapped
-  using our pluggin actually
-  Preprocess mtyps, generate type equalities
-
- *)
-let transform_mtyps  (lst:mtyps) =
-  let obj = mk_transform_type_eq () in 
-  let item1 =
-    List.map (function
-      |`Mutual ls ->
-          `Mutual (List.map
-                     (fun (s,ty) ->
-                       (s, obj#typedecl ty)) ls)
-      |`Single (s,ty) ->
-          `Single (s, obj#typedecl ty)) lst in
-  let new_types = obj#type_transformers in
-  (new_types,item1)
     
 (* 
    {[
@@ -586,70 +475,4 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
      {:case-| $pat:pat -> ( $e : $((name:>ctyp)) :> $annot) |}
   |_ -> {:case-| $pat:pat -> ( $e  :> $annot) |}
 
- 
 
-
-(* {:pat| (#$id:x as y)|} *)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-(* let of_stru = function *)
-(*   |`Type(_,x) -> x *)
-(*   | t -> FanLoc.errorf (loc_of t) "Ctyp.of_stru %s" (ObjsN.dump_stru t)  *)
-
-
-
-(*
-  @raise Invalid_argument  when the input is not a type declaration
-
-  {[
-  
-  (fun [ <:stru<type .$x$. >> -> ty_name_of_tydcl x  |> eprint ])
-  <:stru< type list 'a  = [A of int | B of 'a] >>;
-
-  list 'a
-  ]}
- *)  
-(* let ty_name_of_tydcl  (x:typedecl) = *)
-(*   let _loc = FanLoc.ghost in *)
-(*   match x with  *)
-(*   | `TyDcl (_, `Lid(_,name), tyvars, _, _) -> *)
-(*       let tyvars = *)
-(*         match tyvars with *)
-(*         | `None _ -> [] *)
-(*         |`Some(_,xs) -> (list_of_com xs [] :>  ctyp list)  in *)
-(*       appl_of_list ( {| $lid:name |} :: tyvars) *)
-(*   | tydcl -> *)
-(*       failwithf "ctyp_of_tydcl{|%s|}\n" (ObjsN.dump_typedecl tydcl) *)
-        
