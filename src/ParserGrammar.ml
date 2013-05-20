@@ -3,7 +3,7 @@ open Ast
 open AstLib
 open FanGrammar
 open FanGrammarTools
-open PreCast.Syntax
+open Syntax
 open LibUtil
 open FanUtil
 

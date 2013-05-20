@@ -22,8 +22,7 @@ type plugin = {
     filter: (string->bool) option ;
 }
 
-let apply_filter f (m:mtyps) : mtyps = begin 
-  (* eprintf "applying filter@."; *)
+let apply_filter f (m:mtyps) : mtyps = 
   let f  = (function
     | (`Single (s,_) as x) ->
         if f s then Some  x else None
@@ -33,8 +32,8 @@ let apply_filter f (m:mtyps) : mtyps = begin
         | [] -> None
         | [x] -> Some (`Single  x)
         |  y -> Some (`Mutual y)) in
-  List.filter_map  f m ;
-end
+  List.filter_map  f m 
+
       
 let stru_from_mtyps  ~f:(aux:named_type -> typedecl)
     (x:mtyps) : stru option =

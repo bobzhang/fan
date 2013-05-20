@@ -1,75 +1,22 @@
 open Ast
 open AstLib
-(*
-  {:macro|M a b c|}
+open LibUtil
 
-  {:macro|fib 32 |}
-
-  {:defmacro|fib a b =
   
-  |}
-
-  challegens lie in how to extract the
-  macro name, and apply
-
-  fib 32 -->
-  fib 31 + fib 30
-
-  -- `App
-  --
-  {:stru| g |};
-
-  -- macro.exp
-  
-
-  -- macro.stru
-  `StExp ..  
-
-  1. the position where macro quotation appears
-  - clfield
-  combine with translate, this should be inferred automatically
-
-
-  2. the position where macro expander appears?
-  currently only exp
-
-  3. the type macro expander
-  - macro.clfield should generate clfield 
-
-  4. register
-
-  5. dependency
-
-  Guarantee:
-  macro.exp should return exp
-  macro.stru should return stru 
- *)
 type key = string
 
 type expander =  exp -> exp
 
-(*
-  exp -> stru
- *)
-    
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40 
 
-let register_macro (k,f) =
-  Hashtbl.replace macro_expanders k f
+
+let register_macro (k,f) =  Hashtbl.replace macro_expanders k f
 
 let rec fib = function
   | 0 | 1 ->  1
   | n when n > 0 -> fib (n-1) + fib (n-2)
   | _ -> invalid_arg "fib" 
 
-(* {:exp| f a b c|}
-   don't support currying
-   always
-   f a
-   or f (a,b,c)
-   {:exp| f (a,b,c) |}
- *)
-        
 let fibm  y =
   match y with
   | {:exp|$int:x|}  -> {:exp| $(`int:fib (int_of_string x))|}
@@ -77,7 +24,7 @@ let fibm  y =
 
 register_macro ("FIB",fibm);;      
 
-open LibUtil
+
   
 (* let generate_fibs = with exp fun *)
 (*   [ {:exp|$int:x|} -> *)
@@ -106,7 +53,7 @@ open LibUtil
   
 
 let macro_expander = object(self)
-  inherit Objs.map as super;
+  inherit Objs.map as super
   method! exp = with exp function
     |{| $uid:a $y |} ->
         (let try f = Hashtbl.find macro_expanders a in

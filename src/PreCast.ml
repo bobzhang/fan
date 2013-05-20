@@ -1,6 +1,6 @@
 open Format
   
-module Syntax = Syntax
+(* module Syntax = Syntax *)
     
 
 let sigi_parser: ( ?directive_handler: (Ast.sigi -> Ast.sigi option ) ->

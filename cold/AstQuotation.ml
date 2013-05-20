@@ -6,13 +6,22 @@ open FanToken
 
 open Format
 
-let _ = ()
-
 type quotation_error_message =  
   | Finding
   | Expanding
   | ParsingResult of FanLoc.t* string
   | NoName 
+
+let pp_print_quotation_error_message:
+  Format.formatter -> quotation_error_message -> unit =
+  fun fmt  ->
+    function
+    | Finding  -> Format.fprintf fmt "Finding"
+    | Expanding  -> Format.fprintf fmt "Expanding"
+    | ParsingResult (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(ParsingResult@ %a@ %a)@]" FanLoc.pp_print_t
+          _a0 pp_print_string _a1
+    | NoName  -> Format.fprintf fmt "NoName"
 
 type quotation_error = (name * string * quotation_error_message * exn) 
 

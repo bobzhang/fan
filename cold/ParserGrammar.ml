@@ -6,7 +6,7 @@ open FanGrammar
 
 open FanGrammarTools
 
-open PreCast.Syntax
+open Syntax
 
 open LibUtil
 

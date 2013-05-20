@@ -1,39 +1,33 @@
 open Ast
+open LibUtil
 open FanUtil
-open AstLib
 
-let meta_loc_exp _loc loc =
-  match !AstQuotation.current_loc_name with
-  | None -> lid _loc !FanLoc.name
-  | Some "here" -> FanMeta.meta_loc _loc loc
-  | Some x -> lid _loc x  
-
-(* we use [subst_first_loc] *)
-let meta_loc_pat _loc _ =  {:pat'| _ |}
-
-(*************************************************************************)
-
-(*************************************************************************)    
-(* when the antiquotation appears in the pattern position,
-   its final context is [pat] *)  
 let antiquot_expander ~parse_pat ~parse_exp = object
-  inherit Objs.map as super;
-  method! pat (x:pat)= with pat
+  inherit Objs.map as super
+  method! pat (x:pat)= 
     match x with 
     |`Ant(_loc, {cxt;sep;decorations;content=code}) ->
-      let mloc _loc =meta_loc_pat  _loc _loc in
+      let meta_loc_pat _loc _ =  {:pat| _ |} in
+      let mloc _loc = meta_loc_pat  _loc _loc in
       let e = parse_pat _loc code in
       (match (decorations,cxt,sep) with
       | (("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
-           {|$(vrn:String.capitalize x) ($(mloc _loc),$e) |}
+          let x = String.capitalize x in
+           {:pat| $vrn:x ($(mloc _loc),$e) |}
       | _ -> super#pat e)
     | e -> super#pat e 
-  method! exp (x:exp) = with exp
+  method! exp (x:exp) =  with exp
     match x with 
     |`Ant(_loc,{cxt;sep;decorations;content=code}) ->
-      let mloc _loc = (meta_loc_exp _loc _loc :> exp) in
+        let meta_loc_exp _loc loc =
+          match !AstQuotation.current_loc_name with
+          | Some "here" -> FanMeta.meta_loc _loc loc
+          | x ->
+              let x = Option.default !FanLoc.name  x in
+              {:exp|$lid:x|} in
+      let mloc _loc = meta_loc_exp _loc _loc  in
       let e = parse_exp _loc code in
       (match (decorations,cxt,sep) with
       |(("uid" | "lid" | "par" | "seq"
@@ -64,11 +58,6 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       | ("`flo",_,_) ->
           let e = {| FanUtil.float_repres $e |} in
           {| `Flo ($(mloc _loc), $e) |}
-         (* {[
-            {:exp|$`bool:x|}
-            let _ = (`Lid (_loc, (if x then "true" else "false")) : Ast.exp )
-            ]}
-          *)   
       | ("`bool",_,_) ->
             {| `Lid ($(mloc _loc), (if $e then "true" else "false" )) |}
       | _ -> super#exp e)

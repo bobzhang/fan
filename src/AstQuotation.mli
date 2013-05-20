@@ -2,11 +2,13 @@ open Ast
 
 
 (** The [loc] is the initial location. The option string is the optional name
-      for the location variable. The string is the quotation contents. *)
+    for the [location variable]. The string is the quotation contents. 
+    expand fun accepts [location] and [location label] and string   
+    to generate an arbitrary value of type ['a] *)                     
 type 'a expand_fun  = FanLoc.t -> string option  -> string -> 'a
 
 
-val current_loc_name: string option ref
+val current_loc_name : string option ref
 
 (** [add name exp] adds the quotation [name] associated with the  expander [exp]. *)
 val add : FanToken.name -> 'a FanDyn.tag  -> 'a expand_fun  -> unit

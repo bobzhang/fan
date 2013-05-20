@@ -87,7 +87,7 @@ module Make(PreCast:PRECAST) =
     let output_file = ref None
     let parse_file ?directive_handler  name pa =
       let loc = FanLoc.mk name in
-      let () = PreCast.Syntax.current_warning := print_warning in
+      let () = Syntax.current_warning := print_warning in
       let ic = if name = "-" then stdin else open_in_bin name in
       let cs = XStream.of_channel ic in
       let clear () = if name = "-" then () else close_in ic in
@@ -226,7 +226,7 @@ module Make(PreCast:PRECAST) =
         "<name>  Load the printer <name>.cm(o|a|xs)");
       ("-ignore", (FanArg.String ignore), "ignore the next argument");
       ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
-    let _ = PreCast.Syntax.Options.adds initial_spec_list
+    let _ = Syntax.Options.adds initial_spec_list
     let anon_fun name =
       input_file
         (if Filename.check_suffix name ".mli"
@@ -253,7 +253,7 @@ module Make(PreCast:PRECAST) =
         let () = call_callback () in
         let () = rcall_callback := call_callback in
         let () =
-          FanArg.parse PreCast.Syntax.Options.init_spec_list anon_fun
+          FanArg.parse Syntax.Options.init_spec_list anon_fun
             "fan <options> <file>\nOptions are:\n" in
         let () = call_callback () in
         if print_loaded_modules.contents

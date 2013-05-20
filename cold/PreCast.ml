@@ -1,7 +1,5 @@
 open Format
 
-module Syntax = Syntax
-
 let sigi_parser:
   (?directive_handler:(Ast.sigi -> Ast.sigi option) ->
      FanLoc.t -> char LibUtil.XStream.t -> Ast.sigi option)

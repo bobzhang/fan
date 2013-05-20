@@ -1,3 +1,12 @@
+
+
+(*************************************************************************)
+(** antiquot filter for Ast without locations, slightly different from [Ant] *)
+(*************************************************************************)    
+(* when the antiquotation appears in the pattern position,
+   its final context is [pat] *)  
+
+
 open Ast
   
 val antiquot_expander :

@@ -1,63 +1,17 @@
+open LibUtil
+open StdLib
 
-
-
-
-
-      
-(*
-  For some tokens the data constructor holds two representations with the
-  evaluated one and the source one. For example
-  the INT data constructor holds an integer and a string, this string can
-  contains more information that's needed for a good pretty-printing
-  ("42", "4_2", "0000042", "0b0101010"...).
-
-  The meaning of the tokens are:
-  -      [KEYWORD s] is the keyword [s].
-  -      [LidENT s] is the ident [s] starting with a lowercase letter.
-  -      [UidENT s] is the ident [s] starting with an uppercase letter.
-  -      [INT i s] (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s])
-         the integer constant [i] whose string source is [s].
-  -      [FLOAT f s] is the float constant [f] whose string source is [s].
-  -      [STRING s s'] is the string constant [s] whose string source is [s'].
-  -      [CHAR c s] is the character constant [c] whose string source is [s].
-  -      [QUOTATION q] is a quotation [q], see {!AstQuotation.t} for more information.
-  -      [ANTIQUOT n s] is an antiquotation [n] holding the string [s].
-  -      [EOI] is the end of input.
-
-  Warning: the second string associated with the constructor [STRING] is
-  the string found in the source without any interpretation. In particular,
-  the backslashes are not interpreted. For example, if the input is ["\n"]
-  the string is *not* a string with one element containing the character
-  "return", but a string of two elements: the backslash and the character
-  ["n"]. To interpret a string use the first string of the [STRING]
-  constructor (or if you need to compute it use the module
-  {!TokenEval}. Same thing for the constructor [CHAR]. *)
-{:fans|
-keep on;
-derive(Print);
-|};;
-
-
-open StdLib;;
-
-{:ocaml|
-(** The generic quotation type.
-    To see how fields are used here is an example:
-    {:q_name@q_loc|q_contents|}
-    The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
-
-(* domain is the namespace all begins with capital letters *)
-  
 type domains =
-    [ `Absolute of string list | `Sub of string list]  
-type name = (domains*string)
+    [ `Absolute of string list | `Sub of string list]  with ("Print")
+
+type name = (domains*string) with ("Print")
 
 type quotation ={
     q_name : name;
     q_loc : string;
     q_shift : int;
     q_contents : string
-  }
+  } with ("Print")
 
 type t =
   [  `KEYWORD of string
@@ -80,13 +34,13 @@ type t =
   | `BLANKS of string
   | `NEWLINE
   | `LINE_DIRECTIVE of (int * string option )
-  | `EOI]
+  | `EOI] with ("Print")
 type error = 
   | Illegal_token of string
   | Keyword_as_label of string
   | Illegal_token_pattern of (string * string)
-  | Illegal_constructor of string
-|};;
+  | Illegal_constructor of string with ("Print")
+
 
 type 'a token  = [> t] as 'a
 
@@ -98,14 +52,10 @@ type 'a estream  = ('a token  * FanLoc.t) XStream.t
 type 'a parse  = stream -> 'a
 
 type filter = stream -> stream
-
   
 exception TokenError of  error
 
-open LibUtil
-
 let string_of_error_msg = to_string_of_printer pp_print_error;;
-
 
 Printexc.register_printer (function
   |TokenError e -> Some (string_of_error_msg e)
@@ -119,7 +69,6 @@ let to_string = function
   
 let err error loc =
   raise (FanLoc.Exc_located loc (TokenError error))
-    
 
 let error_no_respect_rules p_con p_prm =
   raise (TokenError (Illegal_token_pattern p_con p_prm))
@@ -137,31 +86,22 @@ let error_on_unknown_keywords = ref false
 
 let rec ignore_layout  = parser
   | (`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _ , _); 's  ->
-    ignore_layout s
+      ignore_layout s
   |  x; 's  -> {:stream| x; 'ignore_layout s |}
   |  -> {:stream||}
       
-
-
-  
 let print ppf x = pp_print_string ppf (to_string x)
     
 let match_keyword kwd =  function
   | `KEYWORD kwd' when kwd = kwd' -> true
   | _ -> false 
 
-(*
-  {[
-  x=STRING -> extract_string x
-  ]}
- *)  
 let extract_string : [> t] -> string = function
   | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 (_, s) |
   `INT64 (_, s) | `NATIVEINT (_ ,s) | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
-      invalid_arg ("Cannot extract a string from this token: "^ to_string tok)
-
+      invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
 
 (* [SYMBOL] should all be filtered into keywords *)  
 let keyword_conversion tok is_kwd =
@@ -182,10 +122,6 @@ let check_unknown_keywords tok loc =
   match tok with
   | `SYMBOL s -> err (Illegal_token s) loc
   | _        -> () 
-  
-  
-
-
 
     
 let string_of_domains  = function
@@ -193,17 +129,14 @@ let string_of_domains  = function
   |`Sub ls -> String.concat "." ls 
   
 
-
 let string_of_name (x,y) =
   string_of_domains x ^ "." ^ y  
   
-(* [only absolute] domains can be stored
- *)  
+(* [only absolute] domains can be stored *)  
 let paths :  domains list ref  =
   ref [ `Absolute ["Fan";"Lang"];
         `Absolute ["Fan";"Lang";"Meta"];
-        `Absolute ["Fan";"Lang";"Filter"];
-      ]
+        `Absolute ["Fan";"Lang";"Filter"]]
 
 let concat_domain = function
   |(`Absolute xs,`Sub ys) -> `Absolute (xs@ys)
@@ -229,9 +162,7 @@ let name_of_string s : name =
 let names_tbl : (domains,SSet.t) Hashtbl.t =
   Hashtbl.create 30 
     
-(*
-  when no qualified path is given , it uses [Sub []]
- *)
+(**  when no qualified path is given , it uses [Sub []] *)
 let resolve_name (n:name) : name =
   match n with
   |((`Sub _ as x) ,v) ->

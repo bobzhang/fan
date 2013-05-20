@@ -2,6 +2,8 @@ open Ast
 
 open AstLib
 
+open LibUtil
+
 type key = string 
 
 type expander = exp -> exp 
@@ -25,8 +27,6 @@ let fibm y =
       (`App (_loc, (`Lid (_loc, "fib")), x) : Ast.exp )
 
 let _ = register_macro ("FIB", fibm)
-
-open LibUtil
 
 let macro_expander =
   object (self)

@@ -129,7 +129,7 @@ module Make
      let parse_file  ?directive_handler name pa = begin 
 
        let loc = FanLoc.mk name in
-       let  () = PreCast.Syntax.current_warning := print_warning in
+       let  () = Syntax.current_warning := print_warning in
        let ic = if name = "-" then stdin else open_in_bin name in
        let cs = XStream.of_channel ic in
        let clear () = if name = "-" then () else close_in ic in
@@ -292,7 +292,7 @@ module Make
          ("-ignore", FanArg.String ignore, "ignore the next argument");
          ("--", FanArg.Unit ignore, "Deprecated, does nothing")];;
       
-      PreCast.Syntax.Options.adds initial_spec_list;;
+      Syntax.Options.adds initial_spec_list;;
 
       (* handle the file name *)  
       let anon_fun name =
@@ -315,7 +315,7 @@ module Make
           let () = rcall_callback := call_callback in
           let () =
             FanArg.parse
-              PreCast.Syntax.Options.init_spec_list
+              Syntax.Options.init_spec_list
               anon_fun "fan <options> <file>\nOptions are:\n" in
           let () = call_callback () in
           if !print_loaded_modules then

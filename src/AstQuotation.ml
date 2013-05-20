@@ -4,30 +4,18 @@ open FanToken
 open Format
 
 
-(* FIXME order is in-correct  *)
-{:fans|keep on; (* derive (Print); *) |};;
 
-(* {:ocaml| *)
 type quotation_error_message =
   | Finding
   | Expanding
   | ParsingResult of FanLoc.t * string
-  | NoName;;
+  | NoName with ("Print")
 
 (* the first argument is quotation name
-   the second argument is the position tag 
- *)
+   the second argument is the position tag  *)
 type quotation_error = (name * string * quotation_error_message * exn);; 
-(* |}; *)
-
-
 
 exception QuotationError of quotation_error
-
-(* +-----------------------------------------------------------------+
-   | expand fun accepts [location] and [location label] and string   |
-   | to generate an arbitrary value of type ['a]                     |
-   +-----------------------------------------------------------------+ *)
 
 type 'a expand_fun  = FanLoc.t ->  string option -> string -> 'a
   
@@ -35,9 +23,8 @@ module ExpKey = FanDyn.Pack(struct  type 'a t  = unit end)
 
 module ExpFun = FanDyn.Pack(struct  type 'a t  = 'a expand_fun  end)
 
-
-
 let current_loc_name = ref None  
+
 let stack = Stack.create ()
   
 let current_quot () =
@@ -125,10 +112,9 @@ let add ((domain,n) as name) (tag : 'a FanDyn.tag ) (f:  'a expand_fun) =
   let s  =
     try  Hashtbl.find names_tbl domain with
     | Not_found -> SSet.empty in
-  begin
-    Hashtbl.replace names_tbl domain (SSet.add  n s);
-    expanders_table := QMap.add k v !expanders_table
-  end;;
+  (Hashtbl.replace names_tbl domain (SSet.add  n s);
+   expanders_table := QMap.add k v !expanders_table)
+        
 
 
 

@@ -1,13 +1,5 @@
 open LibUtil
 
-open AstN
-
-exception Unhandled of ctyp
-
-exception Finished of exp
-
-let unit_literal = `Uid "()"
-
 let x ?(off= 0)  (i : int) =
   if off > 25
   then invalid_arg "unsupported offset in x "

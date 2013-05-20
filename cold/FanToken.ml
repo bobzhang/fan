@@ -1,33 +1,8 @@
-let _ = (); ()
+open LibUtil
 
 open StdLib
 
 type domains = [ `Absolute of string list | `Sub of string list] 
-
-type name = (domains * string) 
-
-type quotation = 
-  {
-  q_name: name;
-  q_loc: string;
-  q_shift: int;
-  q_contents: string} 
-
-type t =
-  [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
-  | `ESCAPED_IDENT of string | `INT of (int * string)
-  | `INT32 of (int32 * string) | `INT64 of (int64 * string)
-  | `NATIVEINT of (nativeint * string) | `Flo of (float * string)
-  | `CHAR of (char * string) | `STR of (string * string) | `LABEL of string
-  | `OPTLABEL of string | `QUOTATION of quotation | `Ant of (string * string)
-  | `COMMENT of string | `BLANKS of string | `NEWLINE
-  | `LINE_DIRECTIVE of (int * string option) | `EOI] 
-
-type error =  
-  | Illegal_token of string
-  | Keyword_as_label of string
-  | Illegal_token_pattern of (string * string)
-  | Illegal_constructor of string 
 
 let pp_print_domains: Format.formatter -> domains -> unit =
   fun fmt  ->
@@ -39,11 +14,20 @@ let pp_print_domains: Format.formatter -> domains -> unit =
         Format.fprintf fmt "@[<1>(`Sub@ %a)@]"
           (pp_print_list pp_print_string) _a0
 
+type name = (domains * string) 
+
 let pp_print_name: Format.formatter -> name -> unit =
   fun fmt  _a0  ->
     (fun fmt  (_a0,_a1)  ->
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          pp_print_string _a1) fmt _a0
+
+type quotation = 
+  {
+  q_name: name;
+  q_loc: string;
+  q_shift: int;
+  q_contents: string} 
 
 let pp_print_quotation: Format.formatter -> quotation -> unit =
   fun fmt  { q_name = _a0; q_loc = _a1; q_shift = _a2; q_contents = _a3 }  ->
@@ -51,6 +35,16 @@ let pp_print_quotation: Format.formatter -> quotation -> unit =
       "@[<hv 1>{q_name:%a;@,q_loc:%a;@,q_shift:%a;@,q_contents:%a}@]"
       pp_print_name _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string
       _a3
+
+type t =
+  [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
+  | `ESCAPED_IDENT of string | `INT of (int * string)
+  | `INT32 of (int32 * string) | `INT64 of (int64 * string)
+  | `NATIVEINT of (nativeint * string) | `Flo of (float * string)
+  | `CHAR of (char * string) | `STR of (string * string) | `LABEL of string
+  | `OPTLABEL of string | `QUOTATION of quotation | `Ant of (string * string)
+  | `COMMENT of string | `BLANKS of string | `NEWLINE
+  | `LINE_DIRECTIVE of (int * string option) | `EOI] 
 
 let pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
@@ -103,6 +97,12 @@ let pp_print_t: Format.formatter -> t -> unit =
           _a0 (pp_print_option pp_print_string) _a1
     | `EOI -> Format.fprintf fmt "`EOI"
 
+type error =  
+  | Illegal_token of string
+  | Keyword_as_label of string
+  | Illegal_token_pattern of (string * string)
+  | Illegal_constructor of string 
+
 let pp_print_error: Format.formatter -> error -> unit =
   fun fmt  ->
     function
@@ -131,8 +131,6 @@ type 'a parse = stream -> 'a
 type filter = stream -> stream 
 
 exception TokenError of error
-
-open LibUtil
 
 let string_of_error_msg = to_string_of_printer pp_print_error
 
@@ -177,8 +175,8 @@ let extract_string: [> t] -> string =
     |`NATIVEINT (_,s)|`Flo (_,s)|`CHAR (_,s)|`STR (_,s)|`LABEL s|`OPTLABEL s
     |`COMMENT s|`BLANKS s|`ESCAPED_IDENT s -> s
   | tok ->
-      invalid_arg
-        ("Cannot extract a string from this token: " ^ (to_string tok))
+      invalid_argf "Cannot extract a string from this token: %s"
+        (to_string tok)
 
 let keyword_conversion tok is_kwd =
   match tok with

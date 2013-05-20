@@ -1,5 +1,5 @@
 
-open PreCast.Syntax
+open Syntax
 open FanMacroTools
 
 

@@ -1,13 +1,7 @@
 
 open LibUtil
-open AstN
-
-
-exception Unhandled of ctyp 
-exception Finished of exp
-
-let unit_literal = `Uid "()"
   
+
 let x ?(off=0) (i:int)    =
   if off > 25 then invalid_arg "unsupported offset in x "
   else
@@ -17,13 +11,6 @@ let x ?(off=0) (i:int)    =
 let xid ?(off=0) (i:int)   = `Lid(x ~off i)
 let allx ?(off=0) i =  "all" ^x ~off i 
 let allxid ?(off=0) i = `Lid (allx ~off i)
-
-  
-
-  
-
-
-
 
 let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 

@@ -1,4 +1,5 @@
-open AstN 
+open AstN
+  
 type named_type = (string* typedecl)
 and and_types = named_type list
 and types =
@@ -15,9 +16,9 @@ type plugin = {
     filter: (string->bool) option ;
 }
       
-val stru_from_mtyps : (* FanLoc.t ->  *)f:(named_type -> typedecl) -> mtyps ->stru option
+val stru_from_mtyps : f:(named_type -> typedecl) -> mtyps ->stru option
 
-val stru_from_ty : (* FanLoc.t ->     *)f:(string -> stru) -> mtyps -> stru
+val stru_from_ty : f:(string -> stru) -> mtyps -> stru
 
 val apply_filter : (string -> bool) -> mtyps -> mtyps        
 

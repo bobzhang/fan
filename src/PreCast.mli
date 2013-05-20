@@ -1,7 +1,7 @@
 
 open Sig
 open Ast
-module Syntax     : module type of Syntax 
+(* module Syntax     : module type of Syntax  *)
 val loaded_modules : string list ref 
 val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit 
 val register_stru_parser : stru parser_fun -> unit

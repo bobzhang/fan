@@ -43,9 +43,9 @@ let use_topphrase_filter s =
 let register_sigi_filter (k,f) =
   Hashtbl.replace interf_filters k f
     
-let register_stru_filter (k,f) = begin 
-  Hashtbl.replace implem_filters k f ;
-end
+let register_stru_filter (k,f) = 
+  Hashtbl.replace implem_filters k f 
+
     
 let register_topphrase_filter (k,f) =
   Hashtbl.replace topphrase_filters k f

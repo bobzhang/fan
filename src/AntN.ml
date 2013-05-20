@@ -1,16 +1,10 @@
 
-(*************************************************************************)
-(** antiquot filter for Ast without locations, slightly different from [Ant]
- *)  
 open Ast
 open FanUtil
 
-(*************************************************************************)    
-(* when the antiquotation appears in the pattern position,
-   its final context is [pat] *)  
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
-  method! pat (x:pat)= with pat
+  method! pat (x:pat)= 
     match x with 
     |`Ant(_loc, {cxt;sep;decorations;content=code}) ->
       let e = parse_pat _loc code in
@@ -18,7 +12,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       | (("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
-           {|$(vrn:String.capitalize x) $e |}
+          let x = String.capitalize x in {:pat|$vrn:x $e |}
       | _ -> super#pat e)
     | e -> super#pat e 
   method! exp (x:exp) = with exp

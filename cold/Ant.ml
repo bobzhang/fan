@@ -1,16 +1,8 @@
 open Ast
 
+open LibUtil
+
 open FanUtil
-
-open AstLib
-
-let meta_loc_exp _loc loc =
-  match AstQuotation.current_loc_name.contents with
-  | None  -> lid _loc FanLoc.name.contents
-  | Some "here" -> FanMeta.meta_loc _loc loc
-  | Some x -> lid _loc x
-
-let meta_loc_pat _loc _ = `Any _loc
 
 let antiquot_expander ~parse_pat  ~parse_exp  =
   object 
@@ -18,23 +10,28 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
     method! pat (x : pat) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
+          let meta_loc_pat _loc _ = (`Any _loc : Ast.pat ) in
           let mloc _loc = meta_loc_pat _loc _loc in
           let e = parse_pat _loc code in
           (match (decorations, cxt, sep) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
                |"nativeint"|"chr"|"str" as x),_,_)
              |(("vrn" as x),("exp"|"pat"),_) ->
-               (`App
-                  (_loc,
-                    (`App
-                       (_loc, (`Vrn (_loc, (String.capitalize x))),
-                         (mloc _loc))), e) : Ast.pat )
+               let x = String.capitalize x in
+               (`App (_loc, (`App (_loc, (`Vrn (_loc, x)), (mloc _loc))), e) : 
+                 Ast.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : exp) =
       match x with
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
-          let mloc _loc = (meta_loc_exp _loc _loc :>exp) in
+          let meta_loc_exp _loc loc =
+            match AstQuotation.current_loc_name.contents with
+            | Some "here" -> FanMeta.meta_loc _loc loc
+            | x ->
+                let x = Option.default FanLoc.name.contents x in
+                (`Lid (_loc, x) : Ast.exp ) in
+          let mloc _loc = meta_loc_exp _loc _loc in
           let e = parse_exp _loc code in
           (match (decorations, cxt, sep) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"

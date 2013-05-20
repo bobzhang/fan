@@ -11,14 +11,6 @@ open LibUtil
 open AstQuotation
 
 
-
-
-
-
-(* +-----------------------------------------------------------------+
-   | Strict version                                                  |
-   +-----------------------------------------------------------------+ *)
-
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
     {:exp|($e : Ast.$lid:str)|}
