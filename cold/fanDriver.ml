@@ -1,0 +1,1 @@
+include MakeBin.Make(Fan)
