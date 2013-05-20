@@ -17,7 +17,7 @@
 
 type 'a t = { count : int; data : 'a data; (* mutable *) last: 'a option }
 and 'a data =
-    Sempty
+  |  Sempty
   | Scons of 'a * 'a data
   | Sapp of 'a data * 'a t
   | Slazy of 'a t Lazy.t
@@ -39,7 +39,7 @@ let set_data (s : 'a t) (d : 'a data) =
 ;;
 
 let fill_buff b =
-  b.len <- input b.ic b.buff 0 (String.length b.buff); b.ind <- 0
+  (b.len <- input b.ic b.buff 0 (String.length b.buff); b.ind <- 0)
 ;;
 
 let rec get_data s d = match d with
@@ -49,13 +49,13 @@ let rec get_data s d = match d with
 
     Forcing also updates the "count" field of the delayed stream,
     in the Sapp and Slazy cases (see slazy/lapp implementation below). *)
-   Sempty | Scons (_, _) -> d
+ | Sempty | Scons (_, _) -> d
  | Sapp (d1, s2) ->
      begin match get_data s d1 with
-       Scons (a, d11) -> Scons (a, Sapp (d11, s2))
+     | Scons (a, d11) -> Scons (a, Sapp (d11, s2))
      | Sempty ->
-       set_count s s2.count;
-       get_data s s2.data
+       (set_count s s2.count;
+       get_data s s2.data)
      | _ -> assert false
      end
  | Sgen {curr = Some None; _ } -> Sempty
