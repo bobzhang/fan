@@ -33,6 +33,6 @@ end;;
 
 
 {:fans|keep off; derive (MetaObj); |};;
-{:ocaml|{:include| "src/Ast.mli"|} |};;
+{:ocaml|{:include| "src/ast.mli"|} |};;
 
   

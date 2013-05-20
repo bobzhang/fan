@@ -634,10 +634,10 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
-  let ast = "src/Ast.mli" in
-  let ast_n = "src/AstN.ml" in
-  let objs = "src/Objs.ml" in
-  let objs_n = "src/ObjsN.ml" in
+  let ast = "src/ast.mli" in
+  let ast_n = "src/astN.ml" in
+  let objs = "src/objs.ml" in
+  let objs_n = "src/objsN.ml" in
   Options.ocaml_lflags :=  [ "-linkall"] ;
   after_rules_dispatch := fun () -> begin
     flag ["ocaml"; "pp"; "use_fan"] boot_flags;
@@ -645,19 +645,19 @@ let () =
     ast_n |-? [ast];
     objs |-? [ast];
     objs_n |-? [ast_n];
-    "src/FanAst.ml"   |-? [ast];
-    "src/FanAstN.ml"  |-? [ast_n; ast];
-    "src/AstLoc.ml" |-? [ast];
-    "src/FanDyn.ml" |-? [ast];
-    "src/FanMeta.ml" |-? [ast];
+    "src/fanAst.ml"   |-? [ast];
+    "src/fanAstN.ml"  |-? [ast_n; ast];
+    "src/astLoc.ml" |-? [ast];
+    "src/fanDyn.ml" |-? [ast];
+    "src/fanMeta.ml" |-? [ast];
   end;;
 
 (* copy_rule "_build/src/FanAst.ml -> src/TAst.ml" *)
 (*   ~insert *)
-copy_rule "src/FanDriver.byte -> boot/FanDriver.byte"
-~insert:`top "src/FanDriver.byte" "boot/FanDriver.byte";;
-copy_rule "src/FanDriver.native -> boot/FanDriver.native"
-~insert:`top "src/FanDriver.native" "boot/FanDriver.native";;
+copy_rule "src/fan.byte -> boot/fan.byte"
+~insert:`top "src/fan.byte" "boot/fan.byte";;
+copy_rule "src/fan.native -> boot/fan.native"
+~insert:`top "src/fan.native" "boot/fan.native";;
 
 
 

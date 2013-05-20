@@ -8,7 +8,7 @@ let strip_loc_ant ant = ant ;;
 |};;
 
 
-{:ocaml|{:include| "src/Ast.mli"|}  |};;
+{:ocaml|{:include| "src/ast.mli"|}  |};;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

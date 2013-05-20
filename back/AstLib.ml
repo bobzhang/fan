@@ -15,7 +15,7 @@ open Ast
     [of_loc (p:pat)] will both return the location information *)
 (*************************************************************************)  
 {:fans|keep off; derive (GenLoc);|};;
-{:ocaml|{:include|"src/ast.mli"|}|};;
+{:ocaml|{:include|"src/Ast.mli"|}|};;
 
 
 

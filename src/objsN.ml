@@ -5,7 +5,7 @@ open AstN
  derive (Print OPrint Map Fold MapWrapper PrintWrapper);
 |};;
 
-{:ocaml| {:include| "src/AstN.ml" |} |};;
+{:ocaml| {:include| "src/astN.ml" |} |};;
 
 
 let wildcarder = object (self)
