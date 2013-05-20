@@ -415,3 +415,7 @@ let _ =
     ~mexp:(fun loc  p  -> m#row_field loc (Objs.strip_loc_row_field p))
     ~mpat:(fun loc  p  -> m#row_field loc (Objs.strip_loc_row_field p))
     ~exp_filter ~pat_filter
+
+let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
+
+let _ = MakeBin.main ()

@@ -55,12 +55,6 @@ let just_print_applied_parsers () =
 
 
   
-AstParsers.use_parsers
-    [ "revise";
-      "stream";
-      "macro";
-      (* "ListComprehension" *)
-    ];;
   
 type file_kind =
   | Intf of string
@@ -79,8 +73,8 @@ let task f x =
 
 module type PRECAST = module type of PreCast
     
-module Make
-     (PreCast:PRECAST) = struct
+(* module Make *)
+(*      (PreCast:PRECAST) = struct *)
 
        (* let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30 *)
        (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
@@ -321,7 +315,7 @@ module Make
           if !print_loaded_modules then
             SSet.iter (eprintf "%s@.") !loaded_modules
       with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
-      main ();;
-end 
+
+(* end  *)
     
 
