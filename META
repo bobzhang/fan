@@ -1,8 +1,13 @@
+# -*- mode:sh -*-
 name="fan"
+
 version = "0.1"
+
 description= "metaprogramming tool for OCaml"
+
 requires=""
-package "rts" {
+
+package "rts" (
   requires = ""
   version="0.1"
   description="basic runtime support for Fan, it's mainly an enhancement for stdlib"
@@ -10,24 +15,25 @@ package "rts" {
   archive(byte,plugin)="rts.cma"
   archive(native,plugin)="rts.cmxs"
   archive(native)="rts.cmxa"
-}
+)
 
-package "gram" {
+package "gram" (
   requires = "fan.rts"
   version = "0.1"
   archive(byte)="gram.cma"
   archive(byte,plugin)="gram.cma"
   archive(native)="gram.cmxa"
   archive(native,plugin)="gram.cmxs"
-}
-package "ast"{
-  requires = "fan.rts"
-  version = "0.1"
-  archive(byte)="astlib.cma"
-  archive(byte,plugin)="astlib.cma"
-  archive(native)="astlib.cmxa"
-  archive(native,plugin)="astlib.cmxs"
-}
+)
+
+# package "ast"{
+#   requires = "fan.rts"
+#   version = "0.1"
+#   archive(byte)="astlib.cma"
+#   archive(byte,plugin)="astlib.cma"
+#   archive(native)="astlib.cmxa"
+#   archive(native,plugin)="astlib.cmxs"
+# }
 
 
 

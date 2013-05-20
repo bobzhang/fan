@@ -199,5 +199,6 @@
 
 * 18 method syntax in-compatible
   #+BEGIN_SRC caml
-    method list : 'a . ?sep:space_formatter -> ?first:space_formatter ->  
+    method list : 'a . ?sep:space_formatter -> ?first:space_formatter ->
   #+END_SRC
+* 19 make quotation first class, dual to Ant

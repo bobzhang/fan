@@ -627,6 +627,9 @@ rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
 rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
   (fan  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
 
+rule "code_boot: mllib -> mllib" ~dep: "src/%.mllib" ~prod:(tmp//"%.mllib")
+  (fan  (tmp//"%.mllib") "src/%.mllib" (tmp//"%.mllib"));;
+
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 

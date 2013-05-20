@@ -1,28 +1,36 @@
 VERSION = 0.1
 export VERSION
-ifndef PREFIX
-  PREFIX = $(shell dirname $(shell dirname `which ocamlc`))
-endif
 
-ifndef BINDIR
-  BINDIR = $(PREFIX)/bin
-endif
+PREFIX ?= $(shell dirname $(shell dirname `which ocamlc`))
+BINDIR ?= $(PREFIX)/bin
+OCAMLBUILD ?= ocamlbuild
 
-ifndef OB
-  OB = ocamlbuild
-endif
+
+COLD=cold
+SRC=src
+BCOLD=_build/cold
+
+EXES=fan.byte fan.native
+
 
 build:
-	
-install:
-	install -m 0755 fan $
-NAME = fan
-REQUIRES=
+	$(OCAMLBUILD) cold/fan.byte cold/fan.native 
+
+
+bininstall:
+	install -m 0755 _build/cold/fan.byte _build/cold/fan.native $(BINDIR)
 
 TARGETS = gram.cma gram.cmx gram.cmxs rts.cma rts.cmx rts.cmxs
 
+libinstall:
+	ocamlfind install fan META $(BCOLD)/*.cmi $(BCOLD)/rts.cma $(BCOLD)/gram.cma
+
+libuninstall:
+	ocamlfind uninstall fan 
+
 top:
 	ocamlbuild -I src foo.otarget
+
 cleansrc:
 	rm -rf _build/src
 cleancold:
@@ -42,5 +50,3 @@ stat:
 
 .PHONY: top
 
-install:
-	ocamlfind install *.cmi
