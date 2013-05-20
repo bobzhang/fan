@@ -196,3 +196,8 @@
   I used it as a type, and it type check...
   so strict type annotations are helpful
    unit : ep = `Uid "()"
+
+* 18 method syntax in-compatible
+  #+BEGIN_SRC caml
+    method list : 'a . ?sep:space_formatter -> ?first:space_formatter ->  
+  #+END_SRC
