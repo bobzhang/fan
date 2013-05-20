@@ -1,7 +1,0 @@
-
-
-<**/*.{ml,mlx}>: use_fan
-# <Ast.mli>:use_fan
-<{**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8,GStream,Stream,Famlopt,Famlc,FanCompile,FanOptCompile}.{ml}>  : -use_fan
-<Ast.mli>:use_fan
-<{Utf8,Utf16,Ulexing,LexSet,MetaTemplate,PAst2pt,TAst}.ml>: -use_fan
