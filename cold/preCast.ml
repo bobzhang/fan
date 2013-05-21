@@ -1,14 +1,6 @@
 open Format
 
-let sigi_parser:
-  (?directive_handler:(Ast.sigi -> Ast.sigi option) ->
-     FanLoc.t -> char LibUtil.XStream.t -> Ast.sigi option)
-    ref
-  = ref (fun ?directive_handler:_  _  _  -> failwith "No interface parser")
-
-let stru_parser =
-  ref
-    (fun ?directive_handler:_  _  _  -> failwith "No implementation parser")
+open Ast
 
 let sigi_printer =
   ref
@@ -19,19 +11,11 @@ let stru_printer =
     (fun ?input_file:_  ?output_file:_  _  ->
        failwith "No implementation printer")
 
-let callbacks = Queue.create ()
+type 'a parser_fun =
+  ?directive_handler:('a -> 'a option) -> loc -> char XStream.t -> 'a option 
 
-let iter_and_take_callbacks f =
-  let rec loop () = loop (f (Queue.take callbacks)) in
-  try loop () with | Queue.Empty  -> ()
-
-let register_stru_printer f = stru_printer := f
-
-let register_sigi_printer f = sigi_printer := f
-
-let register_printer f g = stru_printer := f; sigi_printer := g
-
-let current_printer () = ((stru_printer.contents), (sigi_printer.contents))
+type 'a printer_fun =
+  ?input_file:string -> ?output_file:string -> 'a option -> unit 
 
 let register_text_printer () =
   let print_implem ?input_file:_  ?output_file  ast =
@@ -46,7 +30,7 @@ let register_text_printer () =
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.signature fmt pt in pp_print_flush fmt ()) in
-  register_stru_printer print_implem; register_sigi_printer print_interf
+  stru_printer := print_implem; sigi_printer := print_interf
 
 let register_bin_printer () =
   let print_interf ?(input_file= "-")  ?output_file  ast =
@@ -59,19 +43,31 @@ let register_bin_printer () =
     let open FanUtil in
       with_open_out_file output_file
         (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt) in
-  register_stru_printer print_implem; register_sigi_printer print_interf
+  stru_printer := print_implem; sigi_printer := print_interf
 
-let _ = sigi_parser := Syntax.parse_interf
+let wrap directive_handler pa init_loc cs =
+  let rec loop loc =
+    let (pl,stopped_at_directive) = pa loc cs in
+    match stopped_at_directive with
+    | Some new_loc ->
+        let pl =
+          match List.rev pl with
+          | [] -> assert false
+          | x::xs ->
+              (match directive_handler x with
+               | None  -> xs
+               | Some x -> x :: xs) in
+        (List.rev pl) @ (loop (FanLoc.join_end new_loc))
+    | None  -> pl in
+  loop init_loc
 
-let _ = stru_parser := Syntax.parse_implem
+let parse_implem ?(directive_handler= fun _  -> None)  _loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.implem) _loc cs in
+  match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 
-module CurrentParser =
-  struct
-    let parse_interf ?directive_handler  loc strm =
-      sigi_parser.contents ?directive_handler loc strm
-    let parse_implem ?directive_handler  loc strm =
-      stru_parser.contents ?directive_handler loc strm
-  end
+let parse_interf ?(directive_handler= fun _  -> None)  _loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.interf) _loc cs in
+  match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 
 module CurrentPrinter =
   struct

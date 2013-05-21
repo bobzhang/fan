@@ -2,12 +2,13 @@
 open LibUtil
 
 (** FIXME a better register mode *)
-open ParserRevise
-open ParserStream
-open ParserMacro  
+open Fan  
+(* open ParserRevise *)
+(* open ParserStream *)
+(* open ParserMacro   *)
 
 let wrap parse_fun lb =
-  let () = PreCast.iter_and_take_callbacks (fun (_, f) -> f ()) in
+  (* let () = PreCast.iter_and_take_callbacks (fun (_, f) -> f ()) in *)
   try
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
     let token_stream = Gram.filter  not_filtered_token_stream in
@@ -69,7 +70,7 @@ begin
     (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
         (Warnings.Camlp4 txt));
-  PreCast.iter_and_take_callbacks (fun (_, f) -> f ());
+  (* PreCast.iter_and_take_callbacks (fun (_, f) -> f ()); *)
   AstParsers.use_parsers
     ["revise";"stream";"macro"];
 end;;

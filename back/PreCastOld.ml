@@ -1,3 +1,84 @@
+(* let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer" *)
+
+(* let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer" *)
+(* ;; *)
+
+(* sigi_parser := parse_interf;; *)
+(* stru_parser := parse_implem;; *)
+
+(* module CurrentParser = struct *)
+(*   let parse_interf ?directive_handler loc strm = *)
+(*     !sigi_parser ?directive_handler loc strm *)
+(*   let parse_implem ?directive_handler loc strm = *)
+(*     !stru_parser ?directive_handler loc strm *)
+(* end *)
+
+
+(* let replace_printer (module Id:Sig.Id) (module P:Sig.PrinterImpl) = *)
+(*   declare_dyn_module Id.name (fun _ -> *)
+(*     register_printer P.print_implem P.print_interf) *)
+
+(* let replace_parser (module Id:Sig.Id) (module Maker: Sig.ParserImpl) = *)
+(*     declare_dyn_module Id.name *)
+(*       (fun _ ->  register_parser Maker.parse_implem Maker.parse_interf) *)
+
+(* let parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) = *)
+(*   declare_dyn_module Id.name (fun _ *)
+(*     -> let module M = Maker Syntax in *)
+(*     register_parser M.parse_implem M.parse_interf ) *)
+
+    
+
+(* let loaded_modules = ref [] *)
+(* iter and remove from the Queue *)
+(* Register callbacks here *)    
+(* let declare_dyn_module m f = begin *)
+(*   loaded_modules := m :: !loaded_modules ; *)
+(*   Queue.add (m, f) callbacks; *)
+(* end *)
+
+(* let register_stru_parser f = stru_parser := f *)
+    
+(* let register_sigi_parser f = sigi_parser := f *)
+
+(* let register_parser f g = *)
+(*   begin  stru_parser := f; sigi_parser := g  end *)
+    
+(* let current_parser () = (!stru_parser, !sigi_parser) *)
+
+
+
+
+
+(* val declare_dyn_module : string -> (unit -> unit) -> unit   *)
+(* val register_parser : *)
+(*     stru parser_fun  -> sigi parser_fun  -> unit *)
+(* val current_parser : *)
+(*     unit -> ( stru parser_fun * sigi parser_fun ) *)
+
+
+(* for dynamic loading *)
+(* include Sig.PRECAST *)
+(* module Syntax     : module type of Syntax  *)
+(* val plugin : (module Id) -> (module PLUGIN) -> unit  *)
+(* val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit *)
+(* val syntax_extension: (module Id) -> (module SyntaxExtension) -> unit *)
+(* val printer_plugin: (module Id) -> (module PrinterPlugin) -> unit *)
+(* val replace_printer: (module Id) -> (module PrinterImpl) -> unit *)
+(* val replace_parser: (module Id) -> (module ParserImpl) -> unit *)
+(* val parser_plugin: (module Id) -> (module ParserPlugin) -> unit *)
+(* val enable_null_printer: unit -> unit *)
+(* val enable_auto: (unit->bool) -> unit *)
+(* val loaded_modules : string list ref  *)
+(* val enable_ocaml_printer : unit -> unit *)
+
+(* val enable_dump_ocaml_ast_printer : unit -> unit *)
+
+(* val enable_dump_ast_printer : unit -> unit *)
+(** *)
+(* val register_stru_parser : stru parser_fun -> unit *)
+
+(* val register_sigi_parser : sigi parser_fun  -> unit *)
 
 (* let plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) = *)
 (*   declare_dyn_module Id.name (fun _ -> let module M = Maker (struct end) in ()) *)

@@ -1,14 +1,20 @@
 
-open Sig
+
 open Ast
+
 type warning = FanLoc.t -> string -> unit
+
 val default_warning: warning
+
 val current_warning: warning ref 
+
 val print_warning: warning
-include ParserImpl
-include PrinterImpl
+
+
 val interf : (sigi list  * FanLoc.t option ) Gram.t 
+
 val implem : (stru list  * FanLoc.t option ) Gram.t 
+
 val top_phrase : stru option Gram.t 
 
 val a_lident: alident  Gram.t  (* alident *)

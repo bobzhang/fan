@@ -8,7 +8,7 @@ end;;
 
 (* FIXME copied from [FanTop] *)
 let wrap parse_fun lb =
-  let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
+  (* let () = iter_and_take_callbacks (fun (_, f) -> f ()) in *)
   try
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
     let token_stream = Gram.filter  not_filtered_token_stream in
@@ -40,7 +40,7 @@ let toplevel_phrase token_stream =
   
 
 let revise_parser str _bol =
-  let () = iter_and_take_callbacks (fun (_,f) -> f ()) in  (* *)
+  (* let () = iter_and_take_callbacks (fun (_,f) -> f ()) in  (\* *\) *)
   let eof = ref false in
   let lexbuf = UTop.lexbuf_of_string eof  str in
   try

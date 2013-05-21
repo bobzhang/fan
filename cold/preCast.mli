@@ -1,57 +1,52 @@
 
-open Sig
+
+(** Unlinke Camlp4, register your own [stru_parser] is not allowed ,
+    it's generatlly a dangerous behavior, since if you do it in-consistently,
+    this may result in an in-consistent behavior *) 
+
+
+
 open Ast
 
 
 
-val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit 
+type 'a parser_fun  =
+    ?directive_handler:('a -> 'a option) -> loc
+      -> char XStream.t -> 'a option
 
+type 'a printer_fun  =
+      ?input_file:string -> ?output_file:string ->
+        'a option -> unit
+        
 
-(* val register_parser : *)
-(*     stru parser_fun  -> sigi parser_fun  -> unit *)
-(* val current_parser : *)
-(*     unit -> ( stru parser_fun * sigi parser_fun ) *)
+(** When  the parser encounter a directive it stops (since the directive may change  the
+    syntax), the given [directive_handler] function  evaluates  it  and
+    the parsing starts again. *)
+val parse_implem : stru parser_fun
+(** see [parse_implem]*)
+val parse_interf : sigi parser_fun
 
-val register_stru_printer : stru printer_fun -> unit
-
-val register_sigi_printer : sigi printer_fun  -> unit
-
+(** turn the printer to vanilla ocaml output *)
 val register_text_printer :  unit -> unit
-
+(** turn the printer to binary parsetree output *)
 val register_bin_printer :  unit -> unit     
     
-val register_printer : stru printer_fun  ->  sigi printer_fun -> unit
 
-val current_printer : unit -> ( stru printer_fun *  sigi printer_fun)
+
+
         
-(* val declare_dyn_module : string -> (unit -> unit) -> unit   *)
-
-module CurrentParser : ParserImpl
-
-module CurrentPrinter : PrinterImpl
 
 
 
-(* for dynamic loading *)
-(* include Sig.PRECAST *)
-(* module Syntax     : module type of Syntax  *)
-(* val plugin : (module Id) -> (module PLUGIN) -> unit  *)
-(* val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit *)
-(* val syntax_extension: (module Id) -> (module SyntaxExtension) -> unit *)
-(* val printer_plugin: (module Id) -> (module PrinterPlugin) -> unit *)
-(* val replace_printer: (module Id) -> (module PrinterImpl) -> unit *)
-(* val replace_parser: (module Id) -> (module ParserImpl) -> unit *)
-(* val parser_plugin: (module Id) -> (module ParserPlugin) -> unit *)
-(* val enable_null_printer: unit -> unit *)
-(* val enable_auto: (unit->bool) -> unit *)
-(* val loaded_modules : string list ref  *)
-(* val enable_ocaml_printer : unit -> unit *)
 
-(* val enable_dump_ocaml_ast_printer : unit -> unit *)
+module CurrentPrinter : 
+  sig
+    val print_interf : ?input_file:string -> ?output_file:string ->
+      sigi option   -> unit
+    val print_implem : ?input_file:string -> ?output_file:string ->
+      stru option  -> unit
+  end
 
-(* val enable_dump_ast_printer : unit -> unit *)
-(** *)
-(* val register_stru_parser : stru parser_fun -> unit *)
 
-(* val register_sigi_parser : sigi parser_fun  -> unit *)
+
 

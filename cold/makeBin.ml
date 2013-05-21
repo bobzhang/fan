@@ -36,30 +36,14 @@ let search_stdlib = ref false
 
 let print_loaded_modules = ref false
 
-let task f x = let () = FanConfig.current_input_file := x in f x
-
-let rcall_callback = ref (fun ()  -> ())
-
 let loaded_modules = ref SSet.empty
 
 let add_to_loaded_modules name =
   loaded_modules := (SSet.add name loaded_modules.contents)
 
-let real_load name =
+let require name =
   if not (SSet.mem name loaded_modules.contents)
-  then (add_to_loaded_modules name; DynLoader.load name)
-
-let _ =
-  Printexc.register_printer
-    (function
-     | FanLoc.Exc_located (loc,exn) ->
-         Some
-           (sprintf "%s:@\n%s" (FanLoc.to_string loc)
-              (Printexc.to_string exn))
-     | _ -> None)
-
-let rewrite_and_load x =
-  let y = x ^ objext in real_load y; rcall_callback.contents ()
+  then (add_to_loaded_modules name; DynLoader.load (name ^ objext))
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 
@@ -77,10 +61,9 @@ let parse_file ?directive_handler  name pa =
 let rec sig_handler: sigi -> sigi option =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->
-      (rewrite_and_load s; None)
+      (require s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.sigi) ->
-      parse_file ~directive_handler:sig_handler s
-        PreCast.CurrentParser.parse_interf
+      parse_file ~directive_handler:sig_handler s PreCast.parse_interf
   | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : Ast.sigi) ->
       (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)); None)
   | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : Ast.sigi) ->
@@ -94,10 +77,9 @@ let rec sig_handler: sigi -> sigi option =
 let rec str_handler =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru) ->
-      (rewrite_and_load s; None)
+      (require s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.stru) ->
-      parse_file ~directive_handler:str_handler s
-        PreCast.CurrentParser.parse_implem
+      parse_file ~directive_handler:str_handler s PreCast.parse_implem
   | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : Ast.stru) ->
       (AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)); None)
   | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : Ast.stru) ->
@@ -110,48 +92,53 @@ let rec str_handler =
         (XStream.Error (x ^ "bad directive Fan can not handled "))
   | _ -> None
 
-let process ?directive_handler  name pa pr clean fold_filters =
-  match parse_file ?directive_handler name pa with
-  | None  ->
-      pr ?input_file:(Some name) ?output_file:(output_file.contents) None
-  | Some x ->
-      (Some (clean (fold_filters x))) |>
-        (pr ?input_file:(Some name) ?output_file:(output_file.contents))
-
 let process_intf name =
-  process ~directive_handler:sig_handler name
-    PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-    (fun x  -> x) AstFilters.apply_interf_filters
+  match parse_file ~directive_handler:sig_handler name PreCast.parse_interf
+  with
+  | None  ->
+      PreCast.CurrentPrinter.print_interf ?input_file:(Some name)
+        ?output_file:(output_file.contents) None
+  | Some x ->
+      let x = AstFilters.apply_interf_filters x in
+      PreCast.CurrentPrinter.print_interf ?input_file:(Some name)
+        ?output_file:(output_file.contents) (Some x)
 
 let process_impl name =
-  process ~directive_handler:str_handler name
-    PreCast.CurrentParser.parse_implem PreCast.CurrentPrinter.print_implem
-    (fun x  -> x) AstFilters.apply_implem_filters
+  match parse_file ~directive_handler:str_handler name PreCast.parse_implem
+  with
+  | None  ->
+      PreCast.CurrentPrinter.print_implem ?input_file:(Some name)
+        ?output_file:(output_file.contents) None
+  | Some x ->
+      let x = AstFilters.apply_implem_filters x in
+      PreCast.CurrentPrinter.print_implem ?input_file:(Some name)
+        ?output_file:(output_file.contents) (Some x)
 
 let input_file x =
-  rcall_callback.contents ();
-  (match x with
-   | Intf file_name ->
-       (FanConfig.compilation_unit :=
-          (Some
-             (String.capitalize
-                (let open Filename in chop_extension (basename file_name))));
-        task process_intf file_name)
-   | Impl file_name ->
-       (FanConfig.compilation_unit :=
-          (Some
-             (String.capitalize
-                (let open Filename in chop_extension (basename file_name))));
-        task process_impl file_name)
-   | Str s ->
-       let (f,o) = Filename.open_temp_file "from_string" ".ml" in
-       (output_string o s;
-        close_out o;
-        task process_impl f;
-        at_exit (fun ()  -> Sys.remove f))
-   | ModuleImpl file_name -> rewrite_and_load file_name
-   | IncludeDir dir -> Ref.modify FanConfig.dynload_dirs (cons dir));
-  rcall_callback.contents ()
+  match x with
+  | Intf file_name ->
+      (FanConfig.compilation_unit :=
+         (Some
+            (String.capitalize
+               (let open Filename in chop_extension (basename file_name))));
+       FanConfig.current_input_file := file_name;
+       process_intf file_name)
+  | Impl file_name ->
+      (FanConfig.compilation_unit :=
+         (Some
+            (String.capitalize
+               (let open Filename in chop_extension (basename file_name))));
+       FanConfig.current_input_file := file_name;
+       process_impl file_name)
+  | Str s ->
+      let (f,o) = Filename.open_temp_file "from_string" ".ml" in
+      (output_string o s;
+       close_out o;
+       FanConfig.current_input_file := f;
+       process_impl f;
+       at_exit (fun ()  -> Sys.remove f))
+  | ModuleImpl file_name -> require file_name
+  | IncludeDir dir -> Ref.modify FanConfig.dynload_dirs (cons dir)
 
 let initial_spec_list =
   [("-I", (FanArg.String ((fun x  -> input_file (IncludeDir x)))),
@@ -194,8 +181,6 @@ let initial_spec_list =
     "Print the loaded parsers.");
   ("-used-parsers", (FanArg.Unit just_print_applied_parsers),
     "Print the applied parsers.");
-  ("-parser", (FanArg.String rewrite_and_load),
-    "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
   ("-printer",
     (FanArg.Symbol
        (["p"; "o"],
@@ -205,8 +190,6 @@ let initial_spec_list =
              else PreCast.register_text_printer ())))),
     "p  for binary and o  for text ");
   ("-ignore", (FanArg.String ignore), "ignore the next argument")]
-
-let () = Syntax.Options.adds initial_spec_list
 
 let anon_fun name =
   input_file
@@ -223,16 +206,19 @@ let anon_fun name =
            then ModuleImpl name
            else raise (FanArg.Bad ("don't know what to do with " ^ name)))
 
+let _ =
+  Printexc.register_printer
+    (function
+     | FanLoc.Exc_located (loc,exn) ->
+         Some
+           (sprintf "%s:@\n%s" (FanLoc.to_string loc)
+              (Printexc.to_string exn))
+     | _ -> None)
+
+let () = Syntax.Options.adds initial_spec_list
+
 let main () =
   try
-    let call_callback () =
-      PreCast.iter_and_take_callbacks
-        (fun (name,module_callback)  ->
-           add_to_loaded_modules name; module_callback ()) in
-    let () = call_callback () in
-    let () = rcall_callback := call_callback in
-    let () =
-      FanArg.parse Syntax.Options.init_spec_list anon_fun
-        "fan <options> <file>\nOptions are:\n" in
-    call_callback ()
+    FanArg.parse Syntax.Options.init_spec_list anon_fun
+      "fan <options> <file>\nOptions are:\n"
   with | exc -> (eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2)

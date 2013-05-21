@@ -1,39 +1,29 @@
 open Format
-  
-(* module Syntax = Syntax *)
-    
+open Ast   
 
-let sigi_parser: ( ?directive_handler: (Ast.sigi -> Ast.sigi option ) ->
-  FanLoc.t -> char LibUtil.XStream.t   ->  Ast.sigi option  ) ref =
-  ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser")
-    
-let stru_parser =
-  ref (fun ?directive_handler:(_)  _ _ -> failwith "No implementation parser")
+
+
+
 let sigi_printer =
   ref (fun ?input_file:(_) ?output_file:(_)  _ -> failwith "No interface printer")
 
 let stru_printer =
   ref (fun ?input_file:(_)  ?output_file:(_) _ -> failwith "No implementation printer")
-    
 
+
+
+type 'a parser_fun  =
+    ?directive_handler:('a -> 'a option) -> loc
+      -> char XStream.t -> 'a option
+
+type 'a printer_fun  =
+      ?input_file:string -> ?output_file:string ->
+        'a option -> unit
+        
 
 
 (*************************************************************************)
-let callbacks = Queue.create ()
-
-let iter_and_take_callbacks f =
-  let rec loop () = loop (f (Queue.take callbacks)) in
-  try loop () with  Queue.Empty -> () 
-
-let register_stru_printer f = stru_printer := f
-let register_sigi_printer f = sigi_printer := f
-
-let register_printer f g =
-  begin  stru_printer := f; sigi_printer := g  end
-
-let current_printer () = (!stru_printer, !sigi_printer)
-    
-    
+(** preparing for printer wrapper *)      
 let register_text_printer () =
   let print_implem ?input_file:(_)  ?output_file ast =
     let pt =
@@ -55,8 +45,8 @@ let register_text_printer () =
         let () = AstPrint.signature fmt pt in
         pp_print_flush fmt ();) in
   begin
-    register_stru_printer print_implem;
-    register_sigi_printer print_interf
+    stru_printer := print_implem;
+    sigi_printer := print_interf
   end
 
 let register_bin_printer () =
@@ -78,25 +68,51 @@ let register_bin_printer () =
                output_file
                (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt)) in
   begin
-    register_stru_printer print_implem ;
-    register_sigi_printer print_interf
+    stru_printer := print_implem;
+    sigi_printer := print_interf
   end;;
 
-  
 
 
 
-sigi_parser := Syntax.parse_interf;;
-stru_parser := Syntax.parse_implem;;
+(*************************************************************************)
+(** prepare for parsing wrapper *)
+let wrap directive_handler pa init_loc cs =
+  let rec loop loc =
+    let (pl, stopped_at_directive) = pa loc cs in
+    match stopped_at_directive with
+    | Some new_loc ->
+        (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
+        let pl =
+          match List.rev pl with
+          | [] -> assert false
+          | x :: xs ->
+              match directive_handler x with
+              | None -> xs
+              | Some x -> x :: xs
+        in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
+    | None -> pl 
+  in loop init_loc
+    
 
-module CurrentParser = struct
-  let parse_interf ?directive_handler loc strm =
-    !sigi_parser ?directive_handler loc strm
-  let parse_implem ?directive_handler loc strm =
-    !stru_parser ?directive_handler loc strm
-end
 
-module CurrentPrinter = struct
+    
+
+
+let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.implem) _loc cs in
+  match l with
+  | [] -> None
+  | l -> Some (AstLib.sem_of_list l)
+
+
+let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.interf) _loc cs in
+  match l with
+  | [] -> None   
+  | l -> Some (AstLib.sem_of_list l)
+        
+module CurrentPrinter  = struct
   let print_interf ?input_file ?output_file ast =
     !sigi_printer ?input_file ?output_file ast
   let print_implem ?input_file ?output_file ast =
@@ -104,35 +120,3 @@ module CurrentPrinter = struct
 end
 
 
-
-(* let replace_printer (module Id:Sig.Id) (module P:Sig.PrinterImpl) = *)
-(*   declare_dyn_module Id.name (fun _ -> *)
-(*     register_printer P.print_implem P.print_interf) *)
-
-(* let replace_parser (module Id:Sig.Id) (module Maker: Sig.ParserImpl) = *)
-(*     declare_dyn_module Id.name *)
-(*       (fun _ ->  register_parser Maker.parse_implem Maker.parse_interf) *)
-
-(* let parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) = *)
-(*   declare_dyn_module Id.name (fun _ *)
-(*     -> let module M = Maker Syntax in *)
-(*     register_parser M.parse_implem M.parse_interf ) *)
-
-    
-
-(* let loaded_modules = ref [] *)
-(* iter and remove from the Queue *)
-(* Register callbacks here *)    
-(* let declare_dyn_module m f = begin *)
-(*   loaded_modules := m :: !loaded_modules ; *)
-(*   Queue.add (m, f) callbacks; *)
-(* end *)
-
-(* let register_stru_parser f = stru_parser := f *)
-    
-(* let register_sigi_parser f = sigi_parser := f *)
-
-(* let register_parser f g = *)
-(*   begin  stru_parser := f; sigi_parser := g  end *)
-    
-(* let current_parser () = (!stru_parser, !sigi_parser) *)

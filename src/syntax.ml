@@ -1,8 +1,6 @@
+
+
 open Ast
-open AstLib
-open LibUtil
-
-
 
 type warning = FanLoc.t -> string -> unit
     
@@ -94,43 +92,6 @@ let pat_filter (x:ep) = (anti_filter#pat (x:>pat))
 let anti_filter_n = AntN.antiquot_expander  ~parse_exp  ~parse_pat
 let exp_filter_n (x:ep) = anti_filter_n#exp (x:>exp)
 let pat_filter_n (x:ep) = anti_filter_n#pat (x:>pat)
-
-let wrap directive_handler pa init_loc cs =
-  let rec loop loc =
-    let (pl, stopped_at_directive) = pa loc cs in
-    match stopped_at_directive with
-    | Some new_loc ->
-        (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
-        let pl =
-          match List.rev pl with
-          | [] -> assert false
-          | x :: xs ->
-              match directive_handler x with
-              | None -> xs
-              | Some x -> x :: xs
-        in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
-    | None -> pl 
-  in loop init_loc
-    
-let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
-  let l = wrap directive_handler (Gram.parse implem) _loc cs in
-  match l with
-  | [] -> None
-  | l -> Some (sem_of_list l)
-
-
-let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
-  let l = wrap directive_handler (Gram.parse interf) _loc cs in
-  match l with
-  | [] -> None   
-  | l -> Some (sem_of_list l)
-        
-let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer"
-
-let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer"
-
-
-    
 
 module Options = struct
   type spec_list = (string * FanArg.spec * string) list 
