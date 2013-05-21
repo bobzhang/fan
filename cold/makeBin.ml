@@ -65,13 +65,8 @@ let _ =
               (Printexc.to_string exn))
      | _ -> None)
 
-let rewrite_and_load n x =
-  (match (n, (String.lowercase x)) with
-   | (("Printers"|""),"o") -> PreCast.enable_ocaml_printer ()
-   | (("Printers"|""),("pr_dump.cmo"|"p")) ->
-       PreCast.enable_dump_ocaml_ast_printer ()
-   | _ -> let y = x ^ FanConfig.objext in real_load y);
-  rcall_callback.contents ()
+let rewrite_and_load _n x =
+  let y = x ^ FanConfig.objext in real_load y; rcall_callback.contents ()
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 
@@ -206,8 +201,14 @@ let initial_spec_list =
     "Print the applied parsers.");
   ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
-  ("-printer", (FanArg.String (rewrite_and_load "Printers")),
-    "<name>  Load the printer <name>.cm(o|a|xs)");
+  ("-printer",
+    (FanArg.Symbol
+       (["p"; "o"],
+         ((fun x  ->
+             if x = "p"
+             then PreCast.enable_dump_ocaml_ast_printer ()
+             else PreCast.enable_ocaml_printer ())))),
+    "[p|o] for binary or text ");
   ("-ignore", (FanArg.String ignore), "ignore the next argument")]
 
 let () = Syntax.Options.adds initial_spec_list

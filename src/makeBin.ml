@@ -71,6 +71,7 @@ let task f x =
 (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
 
 (* let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib ()  *)
+    
 let rcall_callback = ref (fun () -> ())
 let loaded_modules = ref SSet.empty
 let add_to_loaded_modules name =
@@ -90,16 +91,10 @@ Printexc.register_printer
               Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );;
       
-let rewrite_and_load n x =
-  begin 
-    (match (n, String.lowercase x) with
-    |("Printers"|"", "o" ) -> 
-        PreCast.enable_ocaml_printer ()
-    | ("Printers"|"", "pr_dump.cmo" | "p" ) -> 
-        PreCast.enable_dump_ocaml_ast_printer ()
-    | _ ->
-        let y = x ^ FanConfig.objext in
-        real_load y );
+let rewrite_and_load _n x =
+  let y = x ^ FanConfig.objext in
+  begin
+    real_load y;
     !rcall_callback ();
   end
 
@@ -280,8 +275,11 @@ let initial_spec_list =
    ("-parser", FanArg.String (rewrite_and_load "Parsers"),
     
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
-   ("-printer", FanArg.String (rewrite_and_load "Printers"),
-    "<name>  Load the printer <name>.cm(o|a|xs)");
+
+   ("-printer", FanArg.Symbol( ["p";"o"],
+    function x -> if x = "p" then PreCast.enable_dump_ocaml_ast_printer()
+        else PreCast.enable_ocaml_printer()
+   ),"[p|o] for binary or text ");
    ("-ignore", FanArg.String ignore, "ignore the next argument");
   
  ];;
