@@ -52,6 +52,10 @@ let loaded_modules = ref SSet.empty
 let add_to_loaded_modules name =
   loaded_modules := (SSet.add name loaded_modules.contents)
 
+let real_load name =
+  if not (SSet.mem name loaded_modules.contents)
+  then (add_to_loaded_modules name; DynLoader.load name)
+
 let _ =
   Printexc.register_printer
     (function
@@ -61,20 +65,12 @@ let _ =
               (Printexc.to_string exn))
      | _ -> None)
 
-module DynLoader = DynLoader.Make(struct  end)
-
 let rewrite_and_load n x =
-  let dyn_loader = DynLoader.instance.contents () in
-  let find_in_path = DynLoader.find_in_path dyn_loader in
-  let real_load name =
-    add_to_loaded_modules name; DynLoader.load dyn_loader name in
   (match (n, (String.lowercase x)) with
    | (("Printers"|""),"o") -> PreCast.enable_ocaml_printer ()
    | (("Printers"|""),("pr_dump.cmo"|"p")) ->
        PreCast.enable_dump_ocaml_ast_printer ()
-   | _ ->
-       let y = x ^ FanConfig.objext in
-       real_load (try find_in_path y with | Not_found  -> x));
+   | _ -> let y = x ^ FanConfig.objext in real_load y);
   rcall_callback.contents ()
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
@@ -94,8 +90,6 @@ let rec sig_handler: sigi -> sigi option =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->
       (rewrite_and_load "" s; None)
-  | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)) : Ast.sigi) ->
-      (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.sigi) ->
       parse_file ~directive_handler:sig_handler s
         PreCast.CurrentParser.parse_interf
@@ -113,8 +107,6 @@ let rec str_handler =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru) ->
       (rewrite_and_load "" s; None)
-  | (`Directive (_loc,`Lid (_,"directory"),`Str (_,s)) : Ast.stru) ->
-      (DynLoader.include_dir (DynLoader.instance.contents ()) s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.stru) ->
       parse_file ~directive_handler:str_handler s
         PreCast.CurrentParser.parse_implem
@@ -149,7 +141,6 @@ let process_impl name =
     (fun x  -> x) AstFilters.apply_implem_filters
 
 let input_file x =
-  let dyn_loader = DynLoader.instance.contents () in
   rcall_callback.contents ();
   (match x with
    | Intf file_name ->
@@ -171,7 +162,7 @@ let input_file x =
         task process_impl f;
         at_exit (fun ()  -> Sys.remove f))
    | ModuleImpl file_name -> rewrite_and_load "" file_name
-   | IncludeDir dir -> DynLoader.include_dir dyn_loader dir);
+   | IncludeDir dir -> Ref.modify FanConfig.dynload_dirs (cons dir));
   rcall_callback.contents ()
 
 let initial_spec_list =
@@ -238,8 +229,6 @@ let anon_fun name =
 
 let main () =
   try
-    let dynloader = DynLoader.mk ~ocaml_stdlib:(search_stdlib.contents) () in
-    let () = DynLoader.instance := (fun ()  -> dynloader) in
     let call_callback () =
       PreCast.iter_and_take_callbacks
         (fun (name,module_callback)  ->

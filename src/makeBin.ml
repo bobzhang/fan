@@ -69,36 +69,37 @@ let task f x =
     
 (* let printers : (string, (module Sig.PRECAST_PLUGIN)) Hashtbl.t   = Hashtbl.create 30 *)
 (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
+
+(* let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib ()  *)
 let rcall_callback = ref (fun () -> ())
 let loaded_modules = ref SSet.empty
 let add_to_loaded_modules name =
   loaded_modules := SSet.add name !loaded_modules;;
+
+(* no repeat loading *)
+let real_load name = 
+  if not (SSet.mem name !loaded_modules ) then begin
+    add_to_loaded_modules name;
+    DynLoader.load  name
+  end
+;;  
         
 Printexc.register_printer
         (function
           |FanLoc.Exc_located (loc, exn) ->
               Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );;
-module DynLoader = DynLoader.Make (struct end)
       
 let rewrite_and_load n x =
-  let dyn_loader = !DynLoader.instance () in 
-  let find_in_path = DynLoader.find_in_path dyn_loader in
-  let real_load name = begin
-    add_to_loaded_modules name;
-    DynLoader.load dyn_loader name
-  end in begin 
+  begin 
     (match (n, String.lowercase x) with
     |("Printers"|"", "o" ) -> 
         PreCast.enable_ocaml_printer ()
     | ("Printers"|"", "pr_dump.cmo" | "p" ) -> 
         PreCast.enable_dump_ocaml_ast_printer ()
-          (* | ("Printers"|"", "a" | "auto") -> *)
-          (*      (\* FIXME introduced dependency on Unix *\) *)
-          (*      PreCast.enable_auto (fun  () -> Unix.isatty Unix.stdout) *)
     | _ ->
         let y = x ^ FanConfig.objext in
-        real_load (try find_in_path y with  Not_found -> x ));
+        real_load y );
     !rcall_callback ();
   end
 
@@ -123,8 +124,10 @@ end
 let  rec sig_handler  : sigi -> sigi option =  with sigi
     (function
       | {| #load $str:s |}-> begin rewrite_and_load "" s; None end
-      | {| #directory $str:s |} ->
-          begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
+
+      (* | {| #directory $str:s |} -> *)
+      (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
+            
       | {| #use $str:s|} ->
           (parse_file
              ~directive_handler:sig_handler s PreCast.CurrentParser.parse_interf )
@@ -143,8 +146,10 @@ let  rec sig_handler  : sigi -> sigi option =  with sigi
 let rec str_handler = with stru
     (function
       | {| #load $str:s |} -> begin rewrite_and_load "" s; None end
-      | {| #directory $str:s |} ->
-          begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end
+
+      (* | {| #directory $str:s |} -> *)
+      (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
+            
       | {| #use $str:s |} ->
           (* Some  *)(parse_file  ~directive_handler:str_handler s
                         PreCast.CurrentParser.parse_implem )
@@ -195,7 +200,7 @@ let process_impl  name =
 
       
 let input_file x =
-  let dyn_loader = !DynLoader.instance () in 
+  (* let dyn_loader = !DynLoader.instance () in  *)
   begin
     !rcall_callback ();
     (match x with
@@ -217,7 +222,9 @@ let input_file x =
          at_exit (fun () -> Sys.remove f))
           
     | ModuleImpl file_name -> rewrite_and_load "" file_name
-    | IncludeDir dir -> DynLoader.include_dir dyn_loader dir) ;
+    | IncludeDir dir ->
+        Ref.modify FanConfig.dynload_dirs (cons dir) )
+        (* DynLoader.include_dir dyn_loader dir *) ;
     !rcall_callback ();
   end
     
@@ -259,13 +266,19 @@ let initial_spec_list =
     "Print Fan version number and exit.");
    ("-no_quot", FanArg.Clear FanConfig.quotations,
     "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
-   (* ("-parsing-strict",FanArg.Set FanConfig.strict_parsing, ""); *)
+
    (* FIXME the command line parsing sucks, it can not handle prefix problem*)
+
    ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
+   
    ("-loaded-filters", FanArg.Unit just_print_filters, "Print the registered filters.");
+   
    ("-loaded-parsers", FanArg.Unit just_print_parsers, "Print the loaded parsers.");
+   
    ("-used-parsers", FanArg.Unit just_print_applied_parsers, "Print the applied parsers.");
+   
    ("-parser", FanArg.String (rewrite_and_load "Parsers"),
+    
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
    ("-printer", FanArg.String (rewrite_and_load "Printers"),
     "<name>  Load the printer <name>.cm(o|a|xs)");
@@ -286,8 +299,8 @@ let anon_fun name =
     
 let main () =
   try
-    let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib () in
-    let () = DynLoader.instance := (fun () -> dynloader ) in
+
+    (* let () = DynLoader.instance := (fun () -> dynloader ) in *)
     let call_callback () =
       PreCast.iter_and_take_callbacks
         (fun (name, module_callback) ->

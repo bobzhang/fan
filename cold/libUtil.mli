@@ -1,36 +1,70 @@
+
+
 val cons : 'a -> 'a list -> 'a list
+
 val failwithf : ('a, unit, string, 'b) format4 -> 'a
+
 val prerr_endlinef : ('a, unit, string, unit) format4 -> 'a
+
 val invalid_argf : ('a, unit, string, 'b) format4 -> 'a
+
 val some : 'a -> 'a option
+
 val none : 'a option
+
 val memoize : ('a -> 'b) -> 'a -> 'b
+
 val finally : (unit -> 'a) -> ('b -> 'c) -> 'b -> 'c
+
 val with_dispose : dispose:('a -> 'b) -> ('a -> 'c) -> 'a -> 'c
+
 external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
+
 external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
+
 external id : 'a -> 'a = "%identity"
+
 external ( !& ) : 'a -> unit = "%ignore"
+
 (* val time : ('a -> 'b) -> 'a -> 'b * float *)
 val ( <| ) : ('a -> 'b) -> 'a -> 'b
+
 val ( |- ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
+
 val ( -| ) : ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b
+
 val flip : ('a -> 'b -> 'c) -> 'b -> 'a -> 'c
+
 val ( *** ) : ('a -> 'b) -> ('c -> 'd) -> 'a * 'c -> 'b * 'd
+
 val ( &&& ) : ('a -> 'b) -> ('a -> 'c) -> 'a -> 'b * 'c
+
 val curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c
+
 val uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
+
 val const : 'a -> 'b -> 'a
+
 val tap : ('a -> 'b) -> 'a -> 'a
+
 val is_even : int -> bool
+
 val pp : Format.formatter -> ('a, Format.formatter, unit) format -> 'a
+
 val to_string_of_printer : (Format.formatter -> 'a -> unit) -> 'a -> string
+
 val zfold_left : ?start:int -> until:int -> acc:'a -> ('a -> int -> 'a) -> 'a
+
 type 'a cont = 'a -> exn
+
 val callcc : ('a cont -> 'a) -> 'a
+
 type 'a return = { return : 'b. 'a -> 'b; }
+
 val with_return : ('a return -> 'a) -> 'a
-type 'a id = 'a -> 'a
+
+    
+(* type 'a id = 'a -> 'a *)
 module Queue :
   sig
     include module type of Queue with type 'a t = 'a Queue.t
@@ -40,6 +74,25 @@ module Queue :
     val of_list : 'a list -> 'a t
     val rev : 'a t -> 'a t
   end
+
+module Filename:
+    sig
+      include module type of Filename
+
+          (** Search a file in a list of directories. It's searched from the head to
+              tail *)          
+      val find_in_path : path:string list -> string -> string
+
+
+          (** Same, but search also for uncapitalized name, i.e.
+              if name is Foo.ml, allow /path/Foo.ml and /path/foo.ml
+              to match. *)
+      val find_in_path_uncap : path:string list -> string -> string
+
+          (** Expand a -I option: if it starts with +, make it relative to the standard
+              library directory *)
+      val expand_directory : std:string -> string -> string
+    end
 module List :
   sig
     include module type of List 
