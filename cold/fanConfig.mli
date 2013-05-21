@@ -19,3 +19,8 @@ val gram_warning_verbose : bool ref
 val compilation_unit : string option ref
 val include_dirs: string list ref
 (* val current_filters:  (plugin_name * plugin) list ref *)
+
+
+val objext : string
+val libext : string
+    

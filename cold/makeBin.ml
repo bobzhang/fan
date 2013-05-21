@@ -14,10 +14,6 @@ let just_print_compilation_unit () =
 
 let print_version () = eprintf "Fan version %s@." FanConfig.version; exit 0
 
-let warn_noassert () =
-  eprintf
-    "fan warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
-
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
@@ -43,13 +39,11 @@ type file_kind =
   | ModuleImpl of string
   | IncludeDir of string 
 
-let search_stdlib = ref true
+let search_stdlib = ref false
 
 let print_loaded_modules = ref false
 
 let task f x = let () = FanConfig.current_input_file := x in f x
-
-module type PRECAST = module type of PreCast
 
 let rcall_callback = ref (fun ()  -> ())
 
@@ -69,9 +63,6 @@ let _ =
 
 module DynLoader = DynLoader.Make(struct  end)
 
-let (objext,libext) =
-  if DynLoader.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
-
 let rewrite_and_load n x =
   let dyn_loader = DynLoader.instance.contents () in
   let find_in_path = DynLoader.find_in_path dyn_loader in
@@ -82,7 +73,7 @@ let rewrite_and_load n x =
    | (("Printers"|""),("pr_dump.cmo"|"p")) ->
        PreCast.enable_dump_ocaml_ast_printer ()
    | _ ->
-       let y = x ^ objext in
+       let y = x ^ FanConfig.objext in
        real_load (try find_in_path y with | Not_found  -> x));
   rcall_callback.contents ()
 
@@ -186,7 +177,7 @@ let input_file x =
 let initial_spec_list =
   [("-I", (FanArg.String ((fun x  -> input_file (IncludeDir x)))),
      "<directory>  Add directory in search patch for object files.");
-  ("-nolib", (FanArg.Clear search_stdlib),
+  ("-nostdlib", (FanArg.Clear search_stdlib),
     "No automatic search for object files in library directory.");
   ("-intf", (FanArg.String ((fun x  -> input_file (Intf x)))),
     "<file>  Parse <file> as an interface, whatever its extension.");
@@ -196,8 +187,6 @@ let initial_spec_list =
     "<string>  Parse <string> as an implementation.");
   ("-unsafe", (FanArg.Set FanConfig.unsafe),
     "Generate unsafe accesses to array and strings.");
-  ("-noassert", (FanArg.Unit warn_noassert),
-    "Obsolete, do not use this option.");
   ("-verbose", (FanArg.Set FanConfig.verbose),
     "More verbose in parsing errors.");
   ("-loc", (FanArg.Set_string FanLoc.name),
@@ -228,10 +217,9 @@ let initial_spec_list =
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
   ("-printer", (FanArg.String (rewrite_and_load "Printers")),
     "<name>  Load the printer <name>.cm(o|a|xs)");
-  ("-ignore", (FanArg.String ignore), "ignore the next argument");
-  ("--", (FanArg.Unit ignore), "Deprecated, does nothing")]
+  ("-ignore", (FanArg.String ignore), "ignore the next argument")]
 
-let _ = Syntax.Options.adds initial_spec_list
+let () = Syntax.Options.adds initial_spec_list
 
 let anon_fun name =
   input_file
@@ -241,10 +229,10 @@ let anon_fun name =
        if Filename.check_suffix name ".ml"
        then Impl name
        else
-         if Filename.check_suffix name objext
+         if Filename.check_suffix name FanConfig.objext
          then ModuleImpl name
          else
-           if Filename.check_suffix name libext
+           if Filename.check_suffix name FanConfig.libext
            then ModuleImpl name
            else raise (FanArg.Bad ("don't know what to do with " ^ name)))
 

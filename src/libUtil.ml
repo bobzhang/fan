@@ -5,9 +5,9 @@ let id x = x
 
 let cons x xs = x::xs
     
-let failwithf fmt = ksprintf failwith fmt
+let failwithf fmt = Format.ksprintf failwith fmt
     
-let prerr_endlinef fmt = ksprintf prerr_endline fmt
+let prerr_endlinef fmt = Format.ksprintf prerr_endline fmt
     
 let invalid_argf fmt = kprintf invalid_arg fmt
     

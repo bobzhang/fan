@@ -14,9 +14,12 @@ EXES=fan.byte fan.native
 
 
 build:
-	$(OCAMLBUILD) cold/fan.byte cold/fan.native 
+	$(OCAMLBUILD) cold/fan.byte cold/fan.native \
+	cold/gram.cma cold/rts.cma
 
-
+install:
+	make libinstall
+	make bininstall
 bininstall:
 	install -m 0755 _build/cold/fan.byte _build/cold/fan.native $(BINDIR)
 
