@@ -22,13 +22,12 @@ let from_context c =
     let loc = FanLoc.of_lexbuf c.lexbuf in Some (tok, loc) in
   XStream.from next
 
-let from_lexbuf ?(quotations= true)  lb =
+let from_lexbuf lb =
   let c =
     {
       (default_context lb) with
       loc = (Lexing.lexeme_start_p lb);
-      antiquots = (FanConfig.antiquotations.contents);
-      quotations
+      antiquots = (FanConfig.antiquotations.contents)
     } in
   from_context c
 
@@ -36,18 +35,16 @@ let setup_loc lb loc =
   let start_pos = FanLoc.start_pos loc in
   lb.lex_abs_pos <- start_pos.pos_cnum; lb.lex_curr_p <- start_pos
 
-let from_string ?quotations  loc str =
+let from_string loc str =
   let () = clear_stack () in
-  let lb = Lexing.from_string str in
-  setup_loc lb loc; from_lexbuf ?quotations lb
+  let lb = Lexing.from_string str in setup_loc lb loc; from_lexbuf lb
 
-let from_stream ?quotations  loc strm =
+let from_stream loc strm =
   let () = clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
-  setup_loc lb loc; from_lexbuf ?quotations lb
+  setup_loc lb loc; from_lexbuf lb
 
-let mk () loc strm =
-  from_stream ~quotations:(FanConfig.quotations.contents) loc strm
+let mk () loc strm = from_stream loc strm
 
 let rec clean (__strm : _ XStream.t) =
   match XStream.peek __strm with
@@ -68,19 +65,19 @@ let rec strict_clean (__strm : _ XStream.t) =
         XStream.icons x (XStream.slazy (fun _  -> strict_clean xs))))
   | _ -> XStream.sempty
 
-let debug_from_string ?quotations  str =
+let debug_from_string str =
   let loc = FanLoc.string_loc in
-  let stream = from_string ?quotations loc str in
+  let stream = from_string loc str in
   (stream |> clean) |>
     (XStream.iter
        (fun (t,loc)  ->
           fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc))
 
-let debug_from_file ?quotations  file =
+let debug_from_file file =
   let loc = FanLoc.mk file in
   let chan = open_in file in
   let stream = XStream.of_channel chan in
-  ((from_stream ?quotations loc stream) |> clean) |>
+  ((from_stream loc stream) |> clean) |>
     (XStream.iter
        (fun (t,loc)  ->
           fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc))

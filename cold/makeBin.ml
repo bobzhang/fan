@@ -4,16 +4,6 @@ open Format
 
 open LibUtil
 
-let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
-
-let just_print_compilation_unit () =
-  (match FanConfig.compilation_unit.contents with
-   | Some v -> printf "%s@." v
-   | None  -> printf "null");
-  exit 0
-
-let print_version () = eprintf "Fan version %s@." FanConfig.version; exit 0
-
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
@@ -65,7 +55,7 @@ let _ =
               (Printexc.to_string exn))
      | _ -> None)
 
-let rewrite_and_load _n x =
+let rewrite_and_load x =
   let y = x ^ FanConfig.objext in real_load y; rcall_callback.contents ()
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
@@ -84,7 +74,7 @@ let parse_file ?directive_handler  name pa =
 let rec sig_handler: sigi -> sigi option =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->
-      (rewrite_and_load "" s; None)
+      (rewrite_and_load s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.sigi) ->
       parse_file ~directive_handler:sig_handler s
         PreCast.CurrentParser.parse_interf
@@ -101,7 +91,7 @@ let rec sig_handler: sigi -> sigi option =
 let rec str_handler =
   function
   | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru) ->
-      (rewrite_and_load "" s; None)
+      (rewrite_and_load s; None)
   | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.stru) ->
       parse_file ~directive_handler:str_handler s
         PreCast.CurrentParser.parse_implem
@@ -156,7 +146,7 @@ let input_file x =
         close_out o;
         task process_impl f;
         at_exit (fun ()  -> Sys.remove f))
-   | ModuleImpl file_name -> rewrite_and_load "" file_name
+   | ModuleImpl file_name -> rewrite_and_load file_name
    | IncludeDir dir -> Ref.modify FanConfig.dynload_dirs (cons dir));
   rcall_callback.contents ()
 
@@ -171,6 +161,8 @@ let initial_spec_list =
     "<file>  Parse <file> as an implementation, whatever its extension.");
   ("-str", (FanArg.String ((fun x  -> input_file (Str x)))),
     "<string>  Parse <string> as an implementation.");
+  ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
+    "<file> Output on <file> instead of standard output.");
   ("-unsafe", (FanArg.Set FanConfig.unsafe),
     "Generate unsafe accesses to array and strings.");
   ("-verbose", (FanArg.Set FanConfig.verbose),
@@ -180,17 +172,17 @@ let initial_spec_list =
        (FanLoc.name.contents ^ ").")));
   ("-QD", (FanArg.String ((fun x  -> AstQuotation.dump_file := (Some x)))),
     "<file> Dump quotation expander result in case of syntax error.");
-  ("-o", (FanArg.String ((fun x  -> output_file := (Some x)))),
-    "<file> Output on <file> instead of standard output.");
-  ("-v", (FanArg.Unit print_version), "Print Fan version and exit.");
-  ("-version", (FanArg.Unit just_print_the_version),
-    "Print Fan version number and exit.");
-  ("-compilation-unit", (FanArg.Unit just_print_compilation_unit),
-    "Print the current compilation unit");
-  ("-vnum", (FanArg.Unit just_print_the_version),
-    "Print Fan version number and exit.");
-  ("-no_quot", (FanArg.Clear FanConfig.quotations),
-    "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
+  ("-v",
+    (FanArg.Unit
+       ((fun ()  -> eprintf "Fan version %s@." FanConfig.version; exit 0))),
+    "Print Fan version and exit.");
+  ("-compilation-unit",
+    (FanArg.Unit
+       ((fun ()  ->
+           (match FanConfig.compilation_unit.contents with
+            | Some v -> printf "%s@." v
+            | None  -> printf "null");
+           exit 0))), "Print the current compilation unit");
   ("-loaded-modules", (FanArg.Set print_loaded_modules),
     "Print the list of loaded modules.");
   ("-loaded-filters", (FanArg.Unit just_print_filters),
@@ -199,7 +191,7 @@ let initial_spec_list =
     "Print the loaded parsers.");
   ("-used-parsers", (FanArg.Unit just_print_applied_parsers),
     "Print the applied parsers.");
-  ("-parser", (FanArg.String (rewrite_and_load "Parsers")),
+  ("-parser", (FanArg.String rewrite_and_load),
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
   ("-printer",
     (FanArg.Symbol

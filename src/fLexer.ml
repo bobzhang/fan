@@ -102,7 +102,9 @@ type context =
     { loc        :  FanLoc.position ; (* FanLoc.t  ; *)
      (* only record the start position when enter into a quotation or antiquotation*)
       in_comment : bool     ;
-      quotations : bool     ;
+
+      (* quotations : bool     ; *)
+      
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }
@@ -110,7 +112,7 @@ type context =
 let default_context lb =
   { loc        = FanLoc.dummy_pos ;
     in_comment = false     ;
-    quotations = true      ;
+    (* quotations = true      ; *)
     antiquots  = false     ;
     lexbuf     = lb        ;
     buffer     = Buffer.create 256 }
@@ -127,7 +129,7 @@ let buff_contents c =
 let loc_merge c =
   FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
   (* FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf) *)
-let quotations c = c.quotations
+(* let quotations c = c.quotations *)
 let antiquots c = c.antiquots
 let is_in_comment c = c.in_comment
 let in_comment c = { (c) with in_comment = true }
@@ -496,20 +498,20 @@ let token c = {:lexer|
   | "{<" as s -> `SYMBOL s
   | ">}" as s -> `SYMBOL s
   | "{|" (extra_quot as p)? (quotchar* as beginning) ->
-            if quotations c  then
+            (* if quotations c  then *)
              (
               move_curr_p (-String.length beginning) c; (* FIX partial application*)
               Stack.push p opt_char;
               let len = 2 + opt_char_len p in 
               mk_quotation
                 quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
-           else
-             parse
-               (symbolchar_star
-                  ("{|" ^
-                   (match p with
-                   |Some x -> String.make 1 x | None -> "") ^ beginning))
-               c                       
+           (* else *)
+           (*   parse *)
+           (*     (symbolchar_star *)
+           (*        ("{|" ^ *)
+           (*         (match p with *)
+           (*         |Some x -> String.make 1 x | None -> "") ^ beginning)) *)
+           (*     c                        *)
   | "{||}" -> 
            `QUOTATION { FanToken.q_name =FanToken.empty_name ;
                              q_loc = ""; q_shift = 2; q_contents = "" }
@@ -529,12 +531,13 @@ let token c = {:lexer|
   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
   | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
   | '$' ->
-      if antiquots c then 
+      if antiquots c then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c 
       else parse (symbolchar_star "$") c 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  -> `SYMBOL x 
   | ! ->
-      let pos = lexbuf.lex_curr_p in begin
+      let pos = lexbuf.lex_curr_p in
+      begin
         lexbuf.lex_curr_p <-
           { pos with pos_bol  = pos.pos_bol  + 1 ;
             pos_cnum = pos.pos_cnum + 1 };

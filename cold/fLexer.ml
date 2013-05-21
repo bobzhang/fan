@@ -91,7 +91,6 @@ type context =
   {
   loc: FanLoc.position;
   in_comment: bool;
-  quotations: bool;
   antiquots: bool;
   lexbuf: lexbuf;
   buffer: Buffer.t} 
@@ -100,7 +99,6 @@ let default_context lb =
   {
     loc = FanLoc.dummy_pos;
     in_comment = false;
-    quotations = true;
     antiquots = false;
     lexbuf = lb;
     buffer = (Buffer.create 256)
@@ -115,8 +113,6 @@ let buff_contents c =
   let contents = Buffer.contents c.buffer in Buffer.reset c.buffer; contents
 
 let loc_merge c = FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
-
-let quotations c = c.quotations
 
 let antiquots c = c.antiquots
 
@@ -8896,19 +8892,11 @@ let token c lexbuf =
         and beginning =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
             (lexbuf.Lexing.lex_curr_pos + 0) in
-        if quotations c
-        then
-          (move_curr_p (- (String.length beginning)) c;
-           Stack.push p opt_char;
-           (let len = 2 + (opt_char_len p) in
-            mk_quotation quotation c ~name:FanToken.empty_name ~loc:""
-              ~shift:len ~retract:len))
-        else
-          parse
-            (symbolchar_star
-               ("{|" ^
-                  ((match p with | Some x -> String.make 1 x | None  -> "") ^
-                     beginning))) c
+        (move_curr_p (- (String.length beginning)) c;
+         Stack.push p opt_char;
+         (let len = 2 + (opt_char_len p) in
+          mk_quotation quotation c ~name:FanToken.empty_name ~loc:""
+            ~shift:len ~retract:len))
     | 18 ->
         `QUOTATION
           {

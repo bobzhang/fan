@@ -5,7 +5,7 @@ val version : string
 val unsafe : bool ref
 val verbose : bool ref
 val antiquotations : bool ref
-val quotations : bool ref
+(* val quotations : bool ref *)
 val inter_phrases : string option ref
 val impl_magic_number : string
 val intf_magic_number : string

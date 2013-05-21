@@ -17,7 +17,7 @@ type lex_error =
 type context =
     { loc        : FanLoc.position    ;
       in_comment : bool     ;
-      quotations : bool     ;
+      (* quotations : bool     ; *)
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }

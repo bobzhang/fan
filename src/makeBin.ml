@@ -7,21 +7,6 @@ open LibUtil
 (*be careful, since you can register your own [stru_parser],
   if you do it in-consistently, this may result in an
   in-consistent behavior *)  
-let just_print_the_version () =
-  begin  printf "%s@." FanConfig.version; exit 0 end
-    
-let just_print_compilation_unit () =
-  begin 
-    (match !FanConfig.compilation_unit with
-    | Some v -> printf "%s@." v
-    | None -> printf "null");
-    exit 0 ;  
-  end
-
-let print_version () =
-  begin eprintf "Fan version %s@." FanConfig.version; exit 0 end
-      
-      
     
 let just_print_filters () =
   let pp = eprintf (* and f = Format.std_formatter *) in 
@@ -91,7 +76,7 @@ Printexc.register_printer
               Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );;
       
-let rewrite_and_load _n x =
+let rewrite_and_load  x =
   let y = x ^ FanConfig.objext in
   begin
     real_load y;
@@ -118,7 +103,7 @@ end
 
 let  rec sig_handler  : sigi -> sigi option =  with sigi
     (function
-      | {| #load $str:s |}-> begin rewrite_and_load "" s; None end
+      | {| #load $str:s |}-> begin rewrite_and_load  s; None end
 
       (* | {| #directory $str:s |} -> *)
       (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
@@ -140,7 +125,7 @@ let  rec sig_handler  : sigi -> sigi option =  with sigi
            
 let rec str_handler = with stru
     (function
-      | {| #load $str:s |} -> begin rewrite_and_load "" s; None end
+      | {| #load $str:s |} -> begin rewrite_and_load  s; None end
 
       (* | {| #directory $str:s |} -> *)
       (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
@@ -216,20 +201,21 @@ let input_file x =
          task process_impl  f;
          at_exit (fun () -> Sys.remove f))
           
-    | ModuleImpl file_name -> rewrite_and_load "" file_name
+    | ModuleImpl file_name -> rewrite_and_load  file_name
     | IncludeDir dir ->
         Ref.modify FanConfig.dynload_dirs (cons dir) )
         (* DynLoader.include_dir dyn_loader dir *) ;
     !rcall_callback ();
   end
-    
+
+(** FIXME the command line parsing  can not handle prefix problem,
+    e.g. -p -px will cause some problem *)    
 let initial_spec_list =
   [
    ("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
     "<directory>  Add directory in search patch for object files.");
 
-   ("-nostdlib", FanArg.Clear search_stdlib,
-    "No automatic search for object files in library directory.");
+   ("-nostdlib", FanArg.Clear search_stdlib, "No automatic search for object files in library directory.");
 
    ("-intf", FanArg.String (fun x -> input_file (Intf x)),
     "<file>  Parse <file> as an interface, whatever its extension.");
@@ -240,29 +226,28 @@ let initial_spec_list =
    ("-str", FanArg.String (fun x -> input_file (Str x)),
     "<string>  Parse <string> as an implementation.");
 
+   ("-o", FanArg.String (fun x -> output_file := Some x),
+    "<file> Output on <file> instead of standard output.");
+
    ("-unsafe", FanArg.Set FanConfig.unsafe,
     "Generate unsafe accesses to array and strings.");
 
-   ("-verbose", FanArg.Set FanConfig.verbose,
-    "More verbose in parsing errors.");
-   ("-loc", FanArg.Set_string FanLoc.name,
-    "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
+   ("-verbose", FanArg.Set FanConfig.verbose, "More verbose in parsing errors.");
+
+   ("-loc", FanArg.Set_string FanLoc.name, "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
+
    ("-QD", FanArg.String (fun x -> AstQuotation.dump_file := Some x),
     "<file> Dump quotation expander result in case of syntax error.");
-   ("-o", FanArg.String (fun x -> output_file := Some x),
-    "<file> Output on <file> instead of standard output.");
-   ("-v", FanArg.Unit print_version,
+   ("-v", FanArg.Unit  (fun () -> begin eprintf "Fan version %s@." FanConfig.version; exit 0 end),
     "Print Fan version and exit.");
-   ("-version", FanArg.Unit just_print_the_version,
-    "Print Fan version number and exit.");
-   ("-compilation-unit", FanArg.Unit just_print_compilation_unit,
-    "Print the current compilation unit");
-   ("-vnum", FanArg.Unit just_print_the_version,
-    "Print Fan version number and exit.");
-   ("-no_quot", FanArg.Clear FanConfig.quotations,
-    "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
 
-   (* FIXME the command line parsing sucks, it can not handle prefix problem*)
+   ("-compilation-unit",
+    FanArg.Unit (function () -> 
+      ((match !FanConfig.compilation_unit with
+      | Some v -> printf "%s@." v
+      | None -> printf "null");
+       exit 0)), 
+    "Print the current compilation unit");
 
    ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
    
@@ -272,14 +257,14 @@ let initial_spec_list =
    
    ("-used-parsers", FanArg.Unit just_print_applied_parsers, "Print the applied parsers.");
    
-   ("-parser", FanArg.String (rewrite_and_load "Parsers"),
+   ("-parser", FanArg.String rewrite_and_load ,
     
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
 
    ("-printer", FanArg.Symbol( ["p";"o"],
     function x -> if x = "p" then PreCast.enable_dump_ocaml_ast_printer()
         else PreCast.enable_ocaml_printer()
-   ),"[p|o] for binary or text ");
+   ),"p  for binary and o  for text ");
    ("-ignore", FanArg.String ignore, "ignore the next argument");
   
  ];;

@@ -6,7 +6,7 @@ let version = Sys.ocaml_version;;
 let unsafe             = ref false;;
 let verbose            = ref false;;
 let antiquotations     = ref false;;
-let quotations         = ref true;;
+(* let quotations         = ref true;; *)
 let inter_phrases: string option ref
     = ref None;;
 let impl_magic_number = "FAN2013M002";;

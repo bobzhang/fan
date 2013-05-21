@@ -19,11 +19,11 @@ let from_context c =
     Some ((tok, loc))
   in XStream.from next
 
-let from_lexbuf ?(quotations = true) lb =
+let from_lexbuf (* ?(quotations = true)  *)lb =
   let c = { (default_context lb) with
             loc        = Lexing.lexeme_start_p lb;
             antiquots  = !FanConfig.antiquotations;
-            quotations = quotations      }
+            (* quotations = quotations *)      }
   in from_context c
 
 let setup_loc lb loc =
@@ -33,23 +33,23 @@ let setup_loc lb loc =
   end
 
 (* the stack is cleared to clear the previous error message *)          
-let from_string ?quotations loc str =
+let from_string  loc str =
   let () = clear_stack () in 
   let lb = Lexing.from_string str in begin 
     setup_loc lb loc;
-    from_lexbuf ?quotations lb
+    from_lexbuf lb
   end
 
 (* the stack is cleared to clear the previous error message *)    
-let from_stream ?quotations loc strm =
+let from_stream  loc strm =
   let () = clear_stack () in 
   let lb = Lexing.from_function (lexing_store strm) in begin 
     setup_loc lb loc;
-    from_lexbuf ?quotations lb
+    from_lexbuf  lb
   end
 
 let mk () loc strm =
-  from_stream ~quotations:!FanConfig.quotations loc strm
+  from_stream  loc strm
 
 
 (* remove trailing `EOI*)  
@@ -63,17 +63,17 @@ let rec strict_clean = parser
   | x; 'xs  -> {:stream| x; 'strict_clean xs |}
   |  -> {:stream||} 
     
-let debug_from_string ?quotations str =
+let debug_from_string  str =
   let loc = FanLoc.string_loc  in
-  let stream = from_string ?quotations loc str  in
+  let stream = from_string loc str  in
   stream |> clean |> XStream.iter
     (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc)
 
-let debug_from_file ?quotations file =
+let debug_from_file  file =
   let loc = FanLoc.mk file in
   let chan = open_in file in
   let stream = XStream.of_channel  chan in
-  from_stream ?quotations loc stream |> clean |> XStream.iter (
+  from_stream  loc stream |> clean |> XStream.iter (
   fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FanToken.print t FanLoc.print loc
  )
 
