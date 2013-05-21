@@ -3,6 +3,10 @@ open Ast
 open Format
 open LibUtil
 
+let (objext,libext) =
+  if Dynlink.is_native then
+    (".cmxs",".cmxs")
+  else (".cmo",".cma")
 
 (*be careful, since you can register your own [stru_parser],
   if you do it in-consistently, this may result in an
@@ -59,6 +63,7 @@ let task f x =
     
 let rcall_callback = ref (fun () -> ())
 let loaded_modules = ref SSet.empty
+
 let add_to_loaded_modules name =
   loaded_modules := SSet.add name !loaded_modules;;
 
@@ -77,7 +82,7 @@ Printexc.register_printer
           | _ -> None );;
       
 let rewrite_and_load  x =
-  let y = x ^ FanConfig.objext in
+  let y = x ^ objext in
   begin
     real_load y;
     !rcall_callback ();
@@ -203,8 +208,7 @@ let input_file x =
           
     | ModuleImpl file_name -> rewrite_and_load  file_name
     | IncludeDir dir ->
-        Ref.modify FanConfig.dynload_dirs (cons dir) )
-        (* DynLoader.include_dir dyn_loader dir *) ;
+        Ref.modify FanConfig.dynload_dirs (cons dir) );
     !rcall_callback ();
   end
 
@@ -262,9 +266,11 @@ let initial_spec_list =
     "<name>  Load the parser Gparsers/<name>.cm(o|a|xs)");
 
    ("-printer", FanArg.Symbol( ["p";"o"],
-    function x -> if x = "p" then PreCast.enable_dump_ocaml_ast_printer()
-        else PreCast.enable_ocaml_printer()
-   ),"p  for binary and o  for text ");
+    function x ->
+      if x = "p" then
+        PreCast.register_bin_printer ()
+      else
+        PreCast.register_text_printer ()),"p  for binary and o  for text ");
    ("-ignore", FanArg.String ignore, "ignore the next argument");
   
  ];;
@@ -276,28 +282,24 @@ let anon_fun name =
   input_file
     (if Filename.check_suffix name ".mli" then Intf name
     else if Filename.check_suffix name ".ml" then Impl name
-    else if Filename.check_suffix name FanConfig.objext then ModuleImpl name
-    else if Filename.check_suffix name FanConfig.libext then ModuleImpl name
+    else if Filename.check_suffix name objext then ModuleImpl name
+    else if Filename.check_suffix name libext then ModuleImpl name
     else raise (FanArg.Bad ("don't know what to do with " ^ name)))
     
 let main () =
   try
-
-    (* let () = DynLoader.instance := (fun () -> dynloader ) in *)
     let call_callback () =
       PreCast.iter_and_take_callbacks
         (fun (name, module_callback) ->
-          let () = add_to_loaded_modules name in
-          module_callback ()) in
+           (add_to_loaded_modules name; module_callback ())) in
     let () = call_callback () in
     let () = rcall_callback := call_callback in
     let () =
       FanArg.parse
         Syntax.Options.init_spec_list
         anon_fun "fan <options> <file>\nOptions are:\n" in
-    let () = call_callback () in
-    if !print_loaded_modules then
-      SSet.iter (eprintf "%s@.") !loaded_modules
+     call_callback () 
+
   with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
 
 

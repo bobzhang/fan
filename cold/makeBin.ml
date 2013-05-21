@@ -4,6 +4,9 @@ open Format
 
 open LibUtil
 
+let (objext,libext) =
+  if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
+
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
@@ -56,7 +59,7 @@ let _ =
      | _ -> None)
 
 let rewrite_and_load x =
-  let y = x ^ FanConfig.objext in real_load y; rcall_callback.contents ()
+  let y = x ^ objext in real_load y; rcall_callback.contents ()
 
 let print_warning = eprintf "%a:\n%s@." FanLoc.print
 
@@ -198,9 +201,9 @@ let initial_spec_list =
        (["p"; "o"],
          ((fun x  ->
              if x = "p"
-             then PreCast.enable_dump_ocaml_ast_printer ()
-             else PreCast.enable_ocaml_printer ())))),
-    "[p|o] for binary or text ");
+             then PreCast.register_bin_printer ()
+             else PreCast.register_text_printer ())))),
+    "p  for binary and o  for text ");
   ("-ignore", (FanArg.String ignore), "ignore the next argument")]
 
 let () = Syntax.Options.adds initial_spec_list
@@ -213,10 +216,10 @@ let anon_fun name =
        if Filename.check_suffix name ".ml"
        then Impl name
        else
-         if Filename.check_suffix name FanConfig.objext
+         if Filename.check_suffix name objext
          then ModuleImpl name
          else
-           if Filename.check_suffix name FanConfig.libext
+           if Filename.check_suffix name libext
            then ModuleImpl name
            else raise (FanArg.Bad ("don't know what to do with " ^ name)))
 
@@ -225,13 +228,11 @@ let main () =
     let call_callback () =
       PreCast.iter_and_take_callbacks
         (fun (name,module_callback)  ->
-           let () = add_to_loaded_modules name in module_callback ()) in
+           add_to_loaded_modules name; module_callback ()) in
     let () = call_callback () in
     let () = rcall_callback := call_callback in
     let () =
       FanArg.parse Syntax.Options.init_spec_list anon_fun
         "fan <options> <file>\nOptions are:\n" in
-    let () = call_callback () in
-    if print_loaded_modules.contents
-    then SSet.iter (eprintf "%s@.") loaded_modules.contents
+    call_callback ()
   with | exc -> (eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2)

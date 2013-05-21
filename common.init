@@ -1,6 +1,6 @@
 (* -*- Mode:caml; -*- *)
 
-#load "FanTop.cma";;
+#load "fanTop.cma";;
 #directory "+compiler-libs";;
 (* #load_rec "FanLoc.cmo";; *)
 (* #load_rec "FanBasic.cmo";; *)

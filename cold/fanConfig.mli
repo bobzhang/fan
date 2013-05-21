@@ -27,6 +27,6 @@ val dynload_dirs : string list ref
 (* val current_filters:  (plugin_name * plugin) list ref *)
 
 
-val objext : string
-val libext : string
+(* val objext : string *)
+(* val libext : string *)
     

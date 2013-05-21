@@ -35,7 +35,3 @@ let dynload_dirs = ref []
 (* let current_filters:  ref (list (plugin_name * plugin)) = ref [];; *)
 
 
-let (objext,libext) =
-  if Dynlink.is_native then
-    (".cmxs",".cmxs")
-  else (".cmo",".cma")

@@ -33,6 +33,3 @@ let compilation_unit = ref None
 let include_dirs = ref []
 
 let dynload_dirs = ref []
-
-let (objext,libext) =
-  if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")

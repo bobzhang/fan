@@ -203,4 +203,8 @@
   #+END_SRC
 * 19 make quotation first class, dual to Ant
 
-* 20 rewrite hb script to make it work under windows 
+* 20 rewrite hb script to make it work under windows
+
+* DONE 21 avoid dependency on dynlink for toplevel
+  dynlink should appear only in Fan, dynloader, makeBin
+  core has a nice trick, but it requires c stubs..
