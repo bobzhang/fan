@@ -18,12 +18,14 @@ let memoize f =
   let cache = Hashtbl.create 101 in
   fun v  ->
     try Hashtbl.find cache v
-    with | Not_found  -> let r = f v in (Hashtbl.replace cache v r; r)
+    with
+    | Not_found  -> let r = f v in begin Hashtbl.replace cache v r; r end
 
-let finally action f x =
-  try let res = f x in action (); res with | e -> (action (); raise e)
+let finally ~action  f x =
+  try let res = f x in begin action (); res end
+  with | e -> begin action (); raise e end
 
-let with_dispose ~dispose  f x = finally (fun ()  -> dispose x) f x
+let with_dispose ~dispose  f x = finally ~action:(fun ()  -> dispose x) f x
 
 external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
 
@@ -51,7 +53,7 @@ let uncurry f (x,y) = f x y
 
 let const x _ = x
 
-let tap f x = f x; x
+let tap f x = begin f x; x end
 
 let is_even x = (x mod 2) == 0
 
@@ -63,7 +65,7 @@ let to_string_of_printer printer v =
 
 let zfold_left ?(start= 0)  ~until  ~acc  f =
   let v = ref acc in
-  for x = start to until do v := (f v.contents x) done; v.contents
+  begin for x = start to until do v := (f v.contents x) done; v.contents end
 
 type 'a cont = 'a -> exn 
 
@@ -77,7 +79,8 @@ type 'a return =  {
 let with_return f =
   let module M = struct exception Return end in
     let r = ref None in
-    let return = { return = (fun x  -> r := (Some x); raise M.Return) } in
+    let return =
+      { return = (fun x  -> begin r := (Some x); raise M.Return end) } in
     try
       let rval = f return in
       match r.contents with
@@ -125,15 +128,19 @@ module Queue =
     include Queue
     let find t ~f  =
       with_return
-        (fun r  -> iter (fun x  -> if f x then r.return (Some x)) t; None)
+        (fun r  ->
+           begin iter (fun x  -> if f x then r.return (Some x)) t; None end)
     let find_map t ~f  =
       with_return
         (fun r  ->
-           iter
-             (fun x  ->
-                match f x with | None  -> () | Some _ as res -> r.return res)
-             t;
-           None)
+           begin
+             iter
+               (fun x  ->
+                  match f x with
+                  | None  -> ()
+                  | Some _ as res -> r.return res) t;
+             None
+           end)
     let to_list_rev q = fold (fun acc  v  -> v :: acc) [] q
     let of_list l =
       let q = create () in let _ = List.iter (fun x  -> push x q) l in q
@@ -268,12 +275,11 @@ module MapMake(S:Map.OrderedType) =
      let unsafe_node (l : 'a t) ((k : key),(v : 'a)) (r : 'a t) =
        let h = (max (unsafe_height l) (unsafe_height r)) + 1 in
        let o = Obj.new_block 0 4 in
-       Obj.set_field o 0 (Obj.repr l);
-       Obj.set_field o 1 (Obj.repr k);
-       Obj.set_field o 2 (Obj.repr v);
-       Obj.set_field o 3 (Obj.repr r);
-       Obj.set_field o 4 (Obj.repr h);
-       (Obj.magic o : 'a t )
+       begin
+         Obj.set_field o 0 (Obj.repr l); Obj.set_field o 1 (Obj.repr k);
+         Obj.set_field o 2 (Obj.repr v); Obj.set_field o 3 (Obj.repr r);
+         Obj.set_field o 4 (Obj.repr h); (Obj.magic o : 'a t )
+       end
      let find_opt k m = try Some (find k m) with | Not_found  -> None
    end : (MAP with type  key = S.t ))
 
@@ -319,7 +325,7 @@ module Hashset =
     let elements = Hashtbl.length
     let clear = Hashtbl.clear
     let of_list ?(size= 100)  vs =
-      let set = create size in List.iter (add set) vs; set
+      let set = create size in begin List.iter (add set) vs; set end
     let add_list set vs = List.iter (add set) vs
     let to_list set = fold (fun x  y  -> x :: y) set []
   end
@@ -369,12 +375,12 @@ module LStack =
     exception Empty
     let invariant t = assert (t.length = (List.length t.elts))
     let create () = { elts = []; length = 0 }
-    let set t elts length = t.elts <- elts; t.length <- length
+    let set t elts length = begin t.elts <- elts; t.length <- length end
     let push x t = set t (x :: (t.elts)) (t.length + 1)
     let pop_exn t =
       match t.elts with
       | [] -> raise Empty
-      | x::l -> (set t l (t.length - 1); x)
+      | x::l -> begin set t l (t.length - 1); x end
     let pop t = try Some (pop_exn t) with | Empty  -> None
     let top_exn t = match t.elts with | [] -> raise Empty | x::_ -> x
     let top t = try Some (top_exn t) with | Empty  -> None
@@ -392,7 +398,7 @@ module LStack =
     let of_list l = { elts = l; length = (List.length l) }
     let to_array t = Array.of_list t.elts
     let until_empty t f =
-      let rec loop () = if t.length > 0 then (f (pop_exn t); loop ()) in
+      let rec loop () = if t.length > 0 then begin f (pop_exn t); loop () end in
       loop ()
   end
 
@@ -401,7 +407,7 @@ module String =
     include String
     let init len f =
       let s = create len in
-      for i = 0 to len - 1 do unsafe_set s i (f i) done; s
+      begin for i = 0 to len - 1 do unsafe_set s i (f i) done; s end
     let is_empty s = s = ""
     let not_empty s = s <> ""
     let starts_with str p =
@@ -411,12 +417,13 @@ module String =
       else
         Return.label
           (fun label  ->
-             for i = 0 to len - 1 do
-               if (unsafe_get str i) <> (unsafe_get p i)
-               then Return.return label false
-               else ()
-             done;
-             true)
+             begin
+               for i = 0 to len - 1 do
+                 if (unsafe_get str i) <> (unsafe_get p i)
+                 then Return.return label false
+                 else ()
+               done; true
+             end)
     let ends_with str p =
       let el = length p and sl = length str in
       let diff = sl - el in
@@ -425,20 +432,23 @@ module String =
       else
         Return.label
           (fun label  ->
-             for i = 0 to el - 1 do
-               if (get str (diff + i)) <> (get p i)
-               then Return.return label false
-               else ()
-             done;
-             true)
+             begin
+               for i = 0 to el - 1 do
+                 if (get str (diff + i)) <> (get p i)
+                 then Return.return label false
+                 else ()
+               done; true
+             end)
     let of_char = make 1
     let drop_while f s =
       let len = length s in
       let found = ref false in
       let i = ref 0 in
-      while (i.contents < len) && (not found.contents) do
-        if not (f (s.[i.contents])) then found := true else incr i done;
-      String.sub s i.contents (len - i.contents)
+      begin
+        while (i.contents < len) && (not found.contents) do
+          if not (f (s.[i.contents])) then found := true else incr i done;
+        String.sub s i.contents (len - i.contents)
+      end
     let neg n =
       let len = String.length n in
       if (len > 0) && ((n.[0]) = '-')
@@ -450,7 +460,9 @@ module String =
       then s
       else
         (let r = create l in
-         for i = 0 to l - 1 do unsafe_set r i (f (unsafe_get s i)) done; r)
+         begin
+           for i = 0 to l - 1 do unsafe_set r i (f (unsafe_get s i)) done; r
+         end)
     let lowercase s = map Char.lowercase s
     let find_from str ofs sub =
       let sublen = length sub in
@@ -466,16 +478,19 @@ module String =
            else
              Return.label
                (fun label  ->
-                  for i = ofs to len - sublen do
-                    (let j = ref 0 in
-                     while
-                       (unsafe_get str (i + j.contents)) =
-                         (unsafe_get sub j.contents)
-                       do
-                       incr j;
-                       if j.contents = sublen then Return.return label i done)
-                  done;
-                  raise Not_found))
+                  begin
+                    for i = ofs to len - sublen do
+                      (let j = ref 0 in
+                       while
+                         (unsafe_get str (i + j.contents)) =
+                           (unsafe_get sub j.contents)
+                         do
+                         begin
+                           incr j;
+                           if j.contents = sublen then Return.return label i
+                         end done)
+                    done; raise Not_found
+                  end))
     let find str sub = find_from str 0 sub
     let split str sep =
       let p = find str sep in
@@ -495,16 +510,19 @@ module String =
           else
             Return.label
               (fun label  ->
-                 for i = (suf - sublen) + 1 downto 0 do
-                   (let j = ref 0 in
-                    while
-                      (unsafe_get str (i + j.contents)) =
-                        (unsafe_get sub j.contents)
-                      do
-                      incr j;
-                      if j.contents = sublen then Return.return label i done)
-                 done;
-                 raise Not_found)
+                 begin
+                   for i = (suf - sublen) + 1 downto 0 do
+                     (let j = ref 0 in
+                      while
+                        (unsafe_get str (i + j.contents)) =
+                          (unsafe_get sub j.contents)
+                        do
+                        begin
+                          incr j;
+                          if j.contents = sublen then Return.return label i
+                        end done)
+                   done; raise Not_found
+                 end)
     let rfind str sub = rfind_from str ((String.length str) - 1) sub
     let nsplit str sep =
       if str = ""
@@ -537,31 +555,41 @@ module Ref =
   struct
     let protect r v body =
       let old = r.contents in
-      try r := v; (let res = body () in r := old; res)
-      with | x -> (r := old; raise x)
+      try begin r := v; (let res = body () in begin r := old; res end) end
+      with | x -> begin r := old; raise x end
     let safe r body =
-      let old = r.contents in finally (fun ()  -> r := old) body ()
+      let old = r.contents in finally ~action:(fun ()  -> r := old) body ()
     let protect2 (r1,v1) (r2,v2) body =
       let o1 = r1.contents and o2 = r2.contents in
-      try r1 := v1; r2 := v2; (let res = body () in r1 := o1; r2 := o2; res)
-      with | e -> (r1 := o1; r2 := o2; raise e)
+      try
+        begin
+          r1 := v1; r2 := v2;
+          (let res = body () in begin r1 := o1; r2 := o2; res end)
+        end
+      with | e -> begin r1 := o1; r2 := o2; raise e end
     let save2 r1 r2 body =
       let o1 = r1.contents and o2 = r2.contents in
-      finally (fun ()  -> r1 := o1; r2 := o2) body ()
+      finally ~action:(fun ()  -> begin r1 := o1; r2 := o2 end) body ()
     let protects refs vs body =
       let olds = List.map (fun x  -> x.contents) refs in
       try
-        List.iter2 (fun ref  v  -> ref := v) refs vs;
-        (let res = body () in
-         List.iter2 (fun ref  v  -> ref := v) refs olds; res)
-      with | e -> (List.iter2 (fun ref  v  -> ref := v) refs olds; raise e)
+        begin
+          List.iter2 (fun ref  v  -> ref := v) refs vs;
+          (let res = body () in
+           begin List.iter2 (fun ref  v  -> ref := v) refs olds; res end)
+        end
+      with
+      | e ->
+          begin List.iter2 (fun ref  v  -> ref := v) refs olds; raise e end
     let saves (refs : 'a ref list) body =
       let olds = List.map (fun x  -> x.contents) refs in
-      finally (fun ()  -> List.iter2 (fun ref  x  -> ref := x) refs olds)
+      finally
+        ~action:(fun ()  -> List.iter2 (fun ref  x  -> ref := x) refs olds)
         body ()
-    let post r f = let old = r.contents in r := (f old); old
-    let pre r f = r := (f r.contents); r.contents
-    let swap a b = let buf = a.contents in a := b.contents; b := buf
+    let post r f = let old = r.contents in begin r := (f old); old end
+    let pre r f = begin r := (f r.contents); r.contents end
+    let swap a b =
+      let buf = a.contents in begin a := b.contents; b := buf end
     let modify x f = x := (f x.contents)
   end
 
@@ -592,8 +620,8 @@ module Option =
 module Buffer =
   struct
     include Buffer
-    let (+>) buf chr = Buffer.add_char buf chr; buf
-    let (+>>) buf str = Buffer.add_string buf str; buf
+    let (+>) buf chr = begin Buffer.add_char buf chr; buf end
+    let (+>>) buf str = begin Buffer.add_string buf str; buf end
   end
 
 module Hashtbl =
@@ -617,7 +645,10 @@ module Array =
         (let acc = ref acc in
          let rec loop i =
            if i < l1
-           then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
+           then
+             begin
+               acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1)
+             end
            else acc.contents in
          loop 0)
     let stream a = XStream.of_array a
@@ -625,25 +656,29 @@ module Array =
       let n = length t in
       let res_size = ref 0 in
       let first_some = ref None in
-      for i = 0 to n - 1 do
-        (match t.(i) with
-         | None  -> ()
-         | Some _ as s ->
-             (if res_size.contents = 0 then first_some := s else ();
-              incr res_size))
-      done;
-      (match first_some.contents with
-       | None  -> [||]
-       | Some el ->
-           let result = create res_size.contents el in
-           let pos = ref 0 in
-           let _ =
-             for i = 0 to n - 1 do
-               match t.(i) with
-               | None  -> ()
-               | Some x -> (result.(pos.contents) <- x; incr pos)
-             done in
-           result)
+      begin
+        for i = 0 to n - 1 do
+          (match t.(i) with
+           | None  -> ()
+           | Some _ as s ->
+               begin
+                 if res_size.contents = 0 then first_some := s else ();
+                 incr res_size
+               end)
+        done;
+        (match first_some.contents with
+         | None  -> [||]
+         | Some el ->
+             let result = create res_size.contents el in
+             let pos = ref 0 in
+             let _ =
+               for i = 0 to n - 1 do
+                 match t.(i) with
+                 | None  -> ()
+                 | Some x -> begin result.(pos.contents) <- x; incr pos end
+               done in
+             result)
+      end
     let filter_map f a = filter_opt (map f a)
     let filter_mapi f a = filter_opt (mapi f a)
     let for_all2 p xs ys =
@@ -721,22 +756,26 @@ module XStream =
       let rec aux (__strm : _ XStream.t) =
         match XStream.peek __strm with
         | Some x ->
-            (XStream.junk __strm;
-             (let xs = __strm in
-              XStream.lapp (fun _  -> aux xs) (XStream.ising x)))
+            begin
+              XStream.junk __strm;
+              (let xs = __strm in
+               XStream.lapp (fun _  -> aux xs) (XStream.ising x))
+            end
         | _ -> XStream.sempty in
       aux strm
     let tail (__strm : _ XStream.t) =
       match XStream.peek __strm with
-      | Some _ -> (XStream.junk __strm; __strm)
+      | Some _ -> begin XStream.junk __strm; __strm end
       | _ -> XStream.sempty
     let rec map f (__strm : _ XStream.t) =
       match XStream.peek __strm with
       | Some x ->
-          (XStream.junk __strm;
-           (let xs = __strm in
-            XStream.lcons (fun _  -> f x)
-              (XStream.slazy (fun _  -> map f xs))))
+          begin
+            XStream.junk __strm;
+            (let xs = __strm in
+             XStream.lcons (fun _  -> f x)
+               (XStream.slazy (fun _  -> map f xs)))
+          end
       | _ -> XStream.sempty
     let peek_nth strm n =
       let rec loop i =
@@ -751,11 +790,13 @@ module XStream =
     let rec filter f (__strm : _ XStream.t) =
       match XStream.peek __strm with
       | Some x ->
-          (XStream.junk __strm;
-           (let xs = __strm in
-            if f x
-            then XStream.icons x (XStream.slazy (fun _  -> filter f xs))
-            else XStream.slazy (fun _  -> filter f xs)))
+          begin
+            XStream.junk __strm;
+            (let xs = __strm in
+             if f x
+             then XStream.icons x (XStream.slazy (fun _  -> filter f xs))
+             else XStream.slazy (fun _  -> filter f xs))
+          end
       | _ -> XStream.sempty
   end
 

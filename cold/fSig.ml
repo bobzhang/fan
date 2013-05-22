@@ -48,7 +48,7 @@ open StdLib
 
 open Objs
 
-let _ = (); ()
+let _ = begin (); () end
 
 type named_type = (string * typedecl) 
 and and_types = named_type list 

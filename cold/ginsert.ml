@@ -72,17 +72,18 @@ let rec check_gram entry =
           "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
   | `Smeta (_,sl,_) -> List.iter (check_gram entry) sl
-  | `Slist0sep (s,t) -> (check_gram entry t; check_gram entry s)
-  | `Slist1sep (s,t) -> (check_gram entry t; check_gram entry s)
+  | `Slist0sep (s,t) -> begin check_gram entry t; check_gram entry s end
+  | `Slist1sep (s,t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> check_gram entry s
   | `Stree t -> tree_check_gram entry t
   | `Snext|`Sself|`Stoken _|`Skeyword _ -> ()
 and tree_check_gram entry =
   function
   | Node { node; brother; son } ->
-      (check_gram entry node;
-       tree_check_gram entry brother;
-       tree_check_gram entry son)
+      begin
+        check_gram entry node; tree_check_gram entry brother;
+        tree_check_gram entry son
+      end
   | LocAct _|DeadEnd  -> ()
 
 let get_initial =
@@ -142,12 +143,14 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
          | Node ({ brother;_} as x) ->
              Node { x with brother = (insert [] brother) }
          | LocAct (old_action,action_list) ->
-             (if FanConfig.gram_warning_verbose.contents
-              then
-                eprintf
-                  "<W> Grammar extension: in @[%a@] some rule has been masked@."
-                  Gprint.dump#rule symbols;
-              LocAct (anno_action, (old_action :: action_list)))
+             begin
+               if FanConfig.gram_warning_verbose.contents
+               then
+                 eprintf
+                   "<W> Grammar extension: in @[%a@] some rule has been masked@."
+                   Gprint.dump#rule symbols;
+               LocAct (anno_action, (old_action :: action_list))
+             end
          | DeadEnd  -> LocAct (anno_action, [])) in
   insert gsymbols tree
 
@@ -171,22 +174,26 @@ let merge_level (la : level) (lb : olevel) =
   let rules1 =
     match lb with
     | (y,Some assoc,x) ->
-        (if not ((la.lname = y) && (la.assoc = assoc))
-         then
-           eprintf
-             "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
-             (StdLib.pp_print_option pp_print_string) la.lname
-             (StdLib.pp_print_option pp_print_string) y Gprint.dump#assoc
-             la.assoc Gprint.dump#assoc assoc;
-         x)
+        begin
+          if not ((la.lname = y) && (la.assoc = assoc))
+          then
+            eprintf
+              "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
+              (StdLib.pp_print_option pp_print_string) la.lname
+              (StdLib.pp_print_option pp_print_string) y Gprint.dump#assoc
+              la.assoc Gprint.dump#assoc assoc;
+          x
+        end
     | ((Some _ as y),_,x) ->
-        (if not (la.lname = y)
-         then
-           eprintf
-             "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
-             (StdLib.pp_print_option pp_print_string) la.lname
-             (StdLib.pp_print_option pp_print_string) y;
-         x)
+        begin
+          if not (la.lname = y)
+          then
+            eprintf
+              "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
+              (StdLib.pp_print_option pp_print_string) la.lname
+              (StdLib.pp_print_option pp_print_string) y;
+          x
+        end
     | (None ,None ,x) -> x in
   List.fold_right add_production_in_level rules1 la
 
@@ -250,16 +257,20 @@ and scan_product entry (symbols,x) =
 let extend entry (position,levels) =
   let levels = scan_olevels entry levels in
   let elev = insert_olevels_in_levels entry position levels in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry
+  begin
+    entry.edesc <- Dlevels elev;
+    entry.estart <- Gparser.start_parser_of_entry entry;
+    entry.econtinue <- Gparser.continue_parser_of_entry entry
+  end
 
 let extend_single entry (position,olevel) =
   let olevel = scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  entry.edesc <- Dlevels elev;
-  entry.estart <- Gparser.start_parser_of_entry entry;
-  entry.econtinue <- Gparser.continue_parser_of_entry entry
+  begin
+    entry.edesc <- Dlevels elev;
+    entry.estart <- Gparser.start_parser_of_entry entry;
+    entry.econtinue <- Gparser.continue_parser_of_entry entry
+  end
 
 let copy (e : entry) =
   (let result =
@@ -268,9 +279,10 @@ let copy (e : entry) =
        estart = (fun _  -> assert false);
        econtinue = (fun _  -> assert false)
      } in
-   result.estart <- Gparser.start_parser_of_entry result;
-   result.econtinue <- Gparser.continue_parser_of_entry result;
-   result : entry )
+   begin
+     result.estart <- Gparser.start_parser_of_entry result;
+     result.econtinue <- Gparser.continue_parser_of_entry result; result
+   end : entry )
 
 let refresh_level ~f  { assoc; lname; productions;_} =
   level_of_olevel (lname, (Some assoc), (f productions))
@@ -300,8 +312,9 @@ let eoi_entry e =
     } in
   match result.edesc with
   | Dlevels ls ->
-      (result.edesc <- Dlevels (List.map eoi_level ls);
-       result.estart <- Gparser.start_parser_of_entry result;
-       result.econtinue <- Gparser.continue_parser_of_entry result;
-       result)
+      begin
+        result.edesc <- Dlevels (List.map eoi_level ls);
+        result.estart <- Gparser.start_parser_of_entry result;
+        result.econtinue <- Gparser.continue_parser_of_entry result; result
+      end
   | Dparser _ -> failwith "Ginsert.eoi_entry Dparser"

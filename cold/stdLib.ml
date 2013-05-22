@@ -251,7 +251,9 @@ class mapbase2 =
           (let f = mf_a self in
            let i = f (arr1.(0)) (arr2.(0)) in
            let c = Array.create lx i in
-           for i = 1 to lx - 1 do c.(i) <- f (arr1.(i)) (arr2.(i)) done; c)
+           begin
+             for i = 1 to lx - 1 do c.(i) <- f (arr1.(i)) (arr2.(i)) done; c
+           end)
     method option :
       'a0 'b0 .
         ('self_type -> 'a0 -> 'a0 -> 'b0) ->

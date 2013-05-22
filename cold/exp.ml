@@ -125,7 +125,9 @@ let capture_antiquot: antiquot_filter =
   end
 
 let filter_pat_with_captured_variables pat =
-  capture_antiquot#clear_captured_variables;
-  (let pat = capture_antiquot#pat pat in
-   let constraints = capture_antiquot#get_captured_variables in
-   (pat, constraints))
+  begin
+    capture_antiquot#clear_captured_variables;
+    (let pat = capture_antiquot#pat pat in
+     let constraints = capture_antiquot#get_captured_variables in
+     (pat, constraints))
+  end

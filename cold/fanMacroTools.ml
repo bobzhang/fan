@@ -22,127 +22,142 @@ let incorrect_number loc l1 l2 =
           (List.length l1)))
 
 let define ~exp  ~pat  eo x =
-  (match eo with
-   | Some ([],e) ->
-       (Gram.extend_single (exp : 'exp Gram.t )
-          ((Some (`Level "simple")),
-            (None, None,
-              [([`Stoken
-                   (((function
-                      | `Uid __fan__x when x = __fan__x -> true
-                      | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )\n     | _ -> failwith \"((new Objs.reloc) _loc)#exp e\n\")\n",
-                   (Gram.mk_action
-                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                         match __fan_0 with
-                         | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )
-                         | _ -> failwith "((new Objs.reloc) _loc)#exp e\n"))))]));
-        Gram.extend_single (pat : 'pat Gram.t )
-          ((Some (`Level "simple")),
-            (None, None,
-              [([`Stoken
-                   (((function
-                      | `Uid __fan__x when x = __fan__x -> true
-                      | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
-                 ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p : \n         'pat )\n     | _ ->\n         failwith\n           \"let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n\")\n",
-                   (Gram.mk_action
-                      (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                         match __fan_0 with
-                         | `Uid _ ->
-                             (let p = Exp.substp _loc [] e in
-                              ((new Objs.reloc) _loc)#pat p : 'pat )
-                         | _ ->
-                             failwith
-                               "let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n"))))])))
-   | Some (sl,e) ->
-       (Gram.extend_single (exp : 'exp Gram.t )
-          ((Some (`Level "apply")),
-            (None, None,
-              [([`Stoken
-                   (((function
-                      | `Uid __fan__x when x = __fan__x -> true
-                      | _ -> false)), (`Antiquot, "`Uid __fan__x"));
-                `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'exp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with\n            | (`Par (_loc,e) : Ast.exp) -> list_of_com e []\n            | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\n          else incorrect_number _loc el sl : 'exp )\n     | _ ->\n         failwith\n           \"let el =\n  match param with | (`Par (_loc,e) : Ast.exp) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n\")\n",
-                   (Gram.mk_action
-                      (fun (param : 'exp)  (__fan_0 : [> FanToken.t]) 
-                         (_loc : FanLoc.t)  ->
-                         match __fan_0 with
-                         | `Uid _ ->
-                             (let el =
-                                match param with
-                                | (`Par (_loc,e) : Ast.exp) ->
-                                    list_of_com e []
-                                | e -> [e] in
-                              if (List.length el) = (List.length sl)
-                              then
-                                let env = List.combine sl el in
-                                ((new Exp.subst) _loc env)#exp e
-                              else incorrect_number _loc el sl : 'exp )
-                         | _ ->
-                             failwith
-                               "let el =\n  match param with | (`Par (_loc,e) : Ast.exp) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
-        Gram.extend_single (pat : 'pat Gram.t )
-          ((Some (`Level "simple")),
-            (None, None,
-              [([`Stoken
-                   (((function
-                      | `Uid __fan__x when x = __fan__x -> true
-                      | _ -> false)), (`Antiquot, "`Uid __fan__x"));
-                `Sself],
-                 ("Gram.mk_action\n  (fun (param : 'pat)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let pl =\n            match param with\n            | (`Par (_loc,p) : Ast.pat) -> list_of_com p []\n            | p -> [p] in\n          if (List.length pl) = (List.length sl)\n          then\n            let env = List.combine sl pl in\n            let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\n          else incorrect_number _loc pl sl : 'pat )\n     | _ ->\n         failwith\n           \"let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n\")\n",
-                   (Gram.mk_action
-                      (fun (param : 'pat)  (__fan_0 : [> FanToken.t]) 
-                         (_loc : FanLoc.t)  ->
-                         match __fan_0 with
-                         | `Uid _ ->
-                             (let pl =
-                                match param with
-                                | (`Par (_loc,p) : Ast.pat) ->
-                                    list_of_com p []
-                                | p -> [p] in
-                              if (List.length pl) = (List.length sl)
-                              then
-                                let env = List.combine sl pl in
-                                let p = Exp.substp _loc env e in
-                                ((new Objs.reloc) _loc)#pat p
-                              else incorrect_number _loc pl sl : 'pat )
-                         | _ ->
-                             failwith
-                               "let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))])))
-   | None  -> ());
-  defined := ((x, eo) :: (defined.contents))
+  begin
+    (match eo with
+     | Some ([],e) ->
+         begin
+           Gram.extend_single (exp : 'exp Gram.t )
+             ((Some (`Level "simple")),
+               (None, None,
+                 [([`Stoken
+                      (((function
+                         | `Uid __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
+                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )\n     | _ -> failwith \"((new Objs.reloc) _loc)#exp e\n\")\n",
+                      (Gram.mk_action
+                         (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
+                            ->
+                            match __fan_0 with
+                            | `Uid _ ->
+                                (((new Objs.reloc) _loc)#exp e : 'exp )
+                            | _ -> failwith "((new Objs.reloc) _loc)#exp e\n"))))]));
+           Gram.extend_single (pat : 'pat Gram.t )
+             ((Some (`Level "simple")),
+               (None, None,
+                 [([`Stoken
+                      (((function
+                         | `Uid __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`Uid __fan__x"))],
+                    ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p : \n         'pat )\n     | _ ->\n         failwith\n           \"let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n\")\n",
+                      (Gram.mk_action
+                         (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
+                            ->
+                            match __fan_0 with
+                            | `Uid _ ->
+                                (let p = Exp.substp _loc [] e in
+                                 ((new Objs.reloc) _loc)#pat p : 'pat )
+                            | _ ->
+                                failwith
+                                  "let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n"))))]))
+         end
+     | Some (sl,e) ->
+         begin
+           Gram.extend_single (exp : 'exp Gram.t )
+             ((Some (`Level "apply")),
+               (None, None,
+                 [([`Stoken
+                      (((function
+                         | `Uid __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`Uid __fan__x"));
+                   `Sself],
+                    ("Gram.mk_action\n  (fun (param : 'exp)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let el =\n            match param with\n            | (`Par (_loc,e) : Ast.exp) -> list_of_com e []\n            | e -> [e] in\n          if (List.length el) = (List.length sl)\n          then\n            let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\n          else incorrect_number _loc el sl : 'exp )\n     | _ ->\n         failwith\n           \"let el =\n  match param with | (`Par (_loc,e) : Ast.exp) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n\")\n",
+                      (Gram.mk_action
+                         (fun (param : 'exp)  (__fan_0 : [> FanToken.t]) 
+                            (_loc : FanLoc.t)  ->
+                            match __fan_0 with
+                            | `Uid _ ->
+                                (let el =
+                                   match param with
+                                   | (`Par (_loc,e) : Ast.exp) ->
+                                       list_of_com e []
+                                   | e -> [e] in
+                                 if (List.length el) = (List.length sl)
+                                 then
+                                   let env = List.combine sl el in
+                                   ((new Exp.subst) _loc env)#exp e
+                                 else incorrect_number _loc el sl : 'exp )
+                            | _ ->
+                                failwith
+                                  "let el =\n  match param with | (`Par (_loc,e) : Ast.exp) -> list_of_com e [] | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
+           Gram.extend_single (pat : 'pat Gram.t )
+             ((Some (`Level "simple")),
+               (None, None,
+                 [([`Stoken
+                      (((function
+                         | `Uid __fan__x when x = __fan__x -> true
+                         | _ -> false)), (`Antiquot, "`Uid __fan__x"));
+                   `Sself],
+                    ("Gram.mk_action\n  (fun (param : 'pat)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid _ ->\n         (let pl =\n            match param with\n            | (`Par (_loc,p) : Ast.pat) -> list_of_com p []\n            | p -> [p] in\n          if (List.length pl) = (List.length sl)\n          then\n            let env = List.combine sl pl in\n            let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\n          else incorrect_number _loc pl sl : 'pat )\n     | _ ->\n         failwith\n           \"let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n\")\n",
+                      (Gram.mk_action
+                         (fun (param : 'pat)  (__fan_0 : [> FanToken.t]) 
+                            (_loc : FanLoc.t)  ->
+                            match __fan_0 with
+                            | `Uid _ ->
+                                (let pl =
+                                   match param with
+                                   | (`Par (_loc,p) : Ast.pat) ->
+                                       list_of_com p []
+                                   | p -> [p] in
+                                 if (List.length pl) = (List.length sl)
+                                 then
+                                   let env = List.combine sl pl in
+                                   let p = Exp.substp _loc env e in
+                                   ((new Objs.reloc) _loc)#pat p
+                                 else incorrect_number _loc pl sl : 'pat )
+                            | _ ->
+                                failwith
+                                  "let pl =\n  match param with | (`Par (_loc,p) : Ast.pat) -> list_of_com p [] | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n"))))]))
+         end
+     | None  -> ());
+    defined := ((x, eo) :: (defined.contents))
+  end
 
 let undef ~exp  ~pat  x =
   try
-    (let eo = List.assoc x defined.contents in
-     match eo with
-     | Some ([],_) ->
-         (Gram.delete_rule exp
-            [`Stoken
-               (((function
-                  | `Uid __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`Uid __fan__x"))];
-          Gram.delete_rule pat
-            [`Stoken
-               (((function
-                  | `Uid __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`Uid __fan__x"))])
-     | Some (_,_) ->
-         (Gram.delete_rule exp
-            [`Stoken
-               (((function
-                  | `Uid __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`Uid __fan__x"));
-            `Sself];
-          Gram.delete_rule pat
-            [`Stoken
-               (((function
-                  | `Uid __fan__x when x = __fan__x -> true
-                  | _ -> false)), (`Antiquot, "`Uid __fan__x"));
-            `Sself])
-     | None  -> ());
-    defined := (List.remove x defined.contents)
+    begin
+      (let eo = List.assoc x defined.contents in
+       match eo with
+       | Some ([],_) ->
+           begin
+             Gram.delete_rule exp
+               [`Stoken
+                  (((function
+                     | `Uid __fan__x when x = __fan__x -> true
+                     | _ -> false)), (`Antiquot, "`Uid __fan__x"))];
+             Gram.delete_rule pat
+               [`Stoken
+                  (((function
+                     | `Uid __fan__x when x = __fan__x -> true
+                     | _ -> false)), (`Antiquot, "`Uid __fan__x"))]
+           end
+       | Some (_,_) ->
+           begin
+             Gram.delete_rule exp
+               [`Stoken
+                  (((function
+                     | `Uid __fan__x when x = __fan__x -> true
+                     | _ -> false)), (`Antiquot, "`Uid __fan__x"));
+               `Sself];
+             Gram.delete_rule pat
+               [`Stoken
+                  (((function
+                     | `Uid __fan__x when x = __fan__x -> true
+                     | _ -> false)), (`Antiquot, "`Uid __fan__x"));
+               `Sself]
+           end
+       | None  -> ());
+      defined := (List.remove x defined.contents)
+    end
   with | Not_found  -> ()
 
 let parse_def ~exp  ~pat  s =
@@ -155,8 +170,8 @@ let parse_def ~exp  ~pat  s =
 let rec execute_macro ~exp  ~pat  nil cons =
   function
   | Str i -> i
-  | Def (x,eo) -> (define ~exp ~pat eo x; nil)
-  | Und x -> (undef ~exp ~pat x; nil)
+  | Def (x,eo) -> begin define ~exp ~pat eo x; nil end
+  | Und x -> begin undef ~exp ~pat x; nil end
   | ITE (b,l1,l2) ->
       execute_macro_list ~exp ~pat nil cons (if b then l1 else l2)
   | Lazy l -> Lazy.force l
@@ -184,8 +199,10 @@ let execute_macro_if_active_branch ~exp  ~pat  _loc nil cons branch macro_def
     if (test && (branch = Then)) || ((not test) && (branch = Else))
     then
       let res = execute_macro ~exp ~pat nil cons macro_def in
-      (Format.eprintf "executing branch %s@."
-         (if branch = Then then "Then" else "Else");
-       res)
+      begin
+        Format.eprintf "executing branch %s@."
+          (if branch = Then then "Then" else "Else");
+        res
+      end
     else nil in
   Str item

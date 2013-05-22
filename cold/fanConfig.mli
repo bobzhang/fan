@@ -5,7 +5,7 @@ val version : string
 val unsafe : bool ref
 val verbose : bool ref
 val antiquotations : bool ref
-(* val quotations : bool ref *)
+
 val inter_phrases : string option ref
 val impl_magic_number : string
 val intf_magic_number : string
@@ -23,10 +23,11 @@ val include_dirs : string list ref
 
 (** a list of files for dynamic loading *)
 val dynload_dirs : string list ref
+
+val fan_standard_library : string
     
 (* val current_filters:  (plugin_name * plugin) list ref *)
 
 
-(* val objext : string *)
-(* val libext : string *)
+
     

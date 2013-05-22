@@ -303,20 +303,28 @@ let output_moves (moves : (automata_move * memory_action list) array) =
    let add_move i (m,mems) =
      let (mems,r) = try Hashtbl.find t m with | Not_found  -> (mems, []) in
      Hashtbl.replace t m (mems, (i :: r)) in
-   for i = 0 to 256 do add_move i (moves.(i)) done;
-   (let most_frequent = ref Backtrack and most_mems = ref [] and size = ref 0 in
-    Hashtbl.iter
-      (fun m  (mems,pats)  ->
-         let size_m = List.length pats in
-         if size_m > size.contents
-         then (most_frequent := m; most_mems := mems; size := size_m)) t;
-    (Hashtbl.fold
-       (fun m  (mems,pats)  acc  ->
-          if m <> most_frequent.contents
-          then (output_clause (List.rev pats) mems m) :: acc
-          else acc) t [])
-      @ [output_default_clause most_mems.contents most_frequent.contents]) : 
-  case list )
+   begin
+     for i = 0 to 256 do add_move i (moves.(i)) done;
+     (let most_frequent = ref Backtrack
+      and most_mems = ref []
+      and size = ref 0 in
+      begin
+        Hashtbl.iter
+          (fun m  (mems,pats)  ->
+             let size_m = List.length pats in
+             if size_m > size.contents
+             then
+               begin
+                 most_frequent := m; most_mems := mems; size := size_m
+               end) t;
+        (Hashtbl.fold
+           (fun m  (mems,pats)  acc  ->
+              if m <> most_frequent.contents
+              then (output_clause (List.rev pats) mems m) :: acc
+              else acc) t [])
+          @ [output_default_clause most_mems.contents most_frequent.contents]
+      end)
+   end : case list )
 
 let output_tag_actions (mvs : Lexgen.tag_action list) =
   (List.map

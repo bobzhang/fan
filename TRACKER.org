@@ -208,3 +208,8 @@
 * DONE 21 avoid dependency on dynlink for toplevel
   dynlink should appear only in Fan, dynloader, makeBin
   core has a nice trick, but it requires c stubs..
+
+
+  
+* 22 synthesize the
+  meta_int,.. in the compile time? to get rid of the dependency ?

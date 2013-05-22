@@ -14,7 +14,7 @@ val none : 'a option
 
 val memoize : ('a -> 'b) -> 'a -> 'b
 
-val finally : (unit -> 'a) -> ('b -> 'c) -> 'b -> 'c
+val finally : action:(unit -> 'a) -> ('b -> 'c) -> 'b -> 'c
 
 val with_dispose : dispose:('a -> 'b) -> ('a -> 'c) -> 'a -> 'c
 

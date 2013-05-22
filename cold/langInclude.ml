@@ -9,7 +9,7 @@ let _ =
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let (keep,cf) = let open FanState in (keep, current_filters) in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               FanState.reset (); FanBasic.parse_include_file Syntax.strus s in\n             let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\n           with\n           | fan_e__3 ->\n               ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)) : \n         'include_quot )\n     | _ ->\n         failwith\n           \"let (keep,cf) = let open FanState in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n\")\n",
+           ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) ->\n         (let (keep,cf) = let open FanState in (keep, current_filters) in\n          let fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\n          (try\n             let fan_res__2 =\n               begin\n                 FanState.reset ();\n                 FanBasic.parse_include_file Syntax.strus s\n               end in\n             let _ = begin keep := fan_keep__0; cf := fan_cf__1 end in\n             fan_res__2\n           with\n           | fan_e__3 ->\n               begin\n                 begin keep := fan_keep__0; cf := fan_cf__1 end;\n                 raise fan_e__3\n               end) : 'include_quot )\n     | _ ->\n         failwith\n           \"let (keep,cf) = let open FanState in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    begin FanState.reset (); FanBasic.parse_include_file Syntax.strus s end in\n  let _ = begin keep := fan_keep__0; cf := fan_cf__1 end in fan_res__2\nwith\n| fan_e__3 ->\n    begin begin keep := fan_keep__0; cf := fan_cf__1 end; raise fan_e__3 end\n\")\n",
              (Gram.mk_action
                 (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                    match __fan_0 with
@@ -20,14 +20,19 @@ let _ =
                         and fan_cf__1 = cf.contents in
                         (try
                            let fan_res__2 =
-                             FanState.reset ();
-                             FanBasic.parse_include_file Syntax.strus s in
-                           let _ = keep := fan_keep__0; cf := fan_cf__1 in
+                             begin
+                               FanState.reset ();
+                               FanBasic.parse_include_file Syntax.strus s
+                             end in
+                           let _ =
+                             begin keep := fan_keep__0; cf := fan_cf__1 end in
                            fan_res__2
                          with
                          | fan_e__3 ->
-                             ((keep := fan_keep__0; cf := fan_cf__1);
-                              raise fan_e__3)) : 'include_quot )
+                             begin
+                               begin keep := fan_keep__0; cf := fan_cf__1 end;
+                               raise fan_e__3
+                             end) : 'include_quot )
                    | _ ->
                        failwith
-                         "let (keep,cf) = let open FanState in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    FanState.reset (); FanBasic.parse_include_file Syntax.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n"))))]))
+                         "let (keep,cf) = let open FanState in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    begin FanState.reset (); FanBasic.parse_include_file Syntax.strus s end in\n  let _ = begin keep := fan_keep__0; cf := fan_cf__1 end in fan_res__2\nwith\n| fan_e__3 ->\n    begin begin keep := fan_keep__0; cf := fan_cf__1 end; raise fan_e__3 end\n"))))]))

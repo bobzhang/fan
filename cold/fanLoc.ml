@@ -218,8 +218,10 @@ let check x msg =
                      (((stop_bol x) < 0) ||
                         (((start_off x) < 0) || ((stop_off x) < 0))))))))
   then
-    (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
-     false)
+    begin
+      eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
+      false
+    end
   else true
 
 exception Exc_located of t*exn
@@ -241,14 +243,16 @@ let _ =
 let name = ref "_loc"
 
 let error_report (loc,s) =
-  prerr_endline (to_string loc);
-  (let (start_bol,stop_bol,start_off,stop_off) =
-     ((start_bol loc), (stop_bol loc), (start_off loc), (stop_off loc)) in
-   let abs_start_off = start_bol + start_off in
-   let abs_stop_off = stop_bol + stop_off in
-   let err_location =
-     String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
-   prerr_endline (sprintf "err: ^%s^" err_location))
+  begin
+    prerr_endline (to_string loc);
+    (let (start_bol,stop_bol,start_off,stop_off) =
+       ((start_bol loc), (stop_bol loc), (start_off loc), (stop_off loc)) in
+     let abs_start_off = start_bol + start_off in
+     let abs_stop_off = stop_bol + stop_off in
+     let err_location =
+       String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
+     prerr_endline (sprintf "err: ^%s^" err_location))
+  end
 
 let string_loc = mk "<string>"
 

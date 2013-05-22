@@ -1,6 +1,6 @@
 open Ast
 
-let _ = (); ()
+let _ = begin (); () end
 
 type 'a tag =  
   | Literal

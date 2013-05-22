@@ -10,15 +10,17 @@ let pp = fprintf
 
 let rec print_node decomp pref f t =
   let (s,sons) = decomp t in
-  pp f "%s" s;
-  if sons <> []
-  then
-    (let w = String.length s in
-     let pref' = pref ^ (String.make (w + 1) ' ') in
-     match sons with
-     | t'::[] -> pp f "---%a" (print_node decomp (pref' ^ "  ")) t'
-     | _ -> pp f "-%a" (print_sons "+-" decomp pref') sons)
-  else ()
+  begin
+    pp f "%s" s;
+    if sons <> []
+    then
+      (let w = String.length s in
+       let pref' = pref ^ (String.make (w + 1) ' ') in
+       match sons with
+       | t'::[] -> pp f "---%a" (print_node decomp (pref' ^ "  ")) t'
+       | _ -> pp f "-%a" (print_sons "+-" decomp pref') sons)
+    else ()
+  end
 and print_sons (start : string) (decomp : 'a -> (string * 'a list))
   (pref : string) f =
   function
@@ -167,9 +169,10 @@ class text_grammar : grammar_print =
 let text = new text_grammar
 
 let string_of_symbol s =
-  ignore (flush_str_formatter ());
-  text#symbol str_formatter s;
-  flush_str_formatter ()
+  begin
+    ignore (flush_str_formatter ()); text#symbol str_formatter s;
+    flush_str_formatter ()
+  end
 
 class dump_grammar : grammar_print =
   object (self : 'self)

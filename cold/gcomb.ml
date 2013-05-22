@@ -52,7 +52,7 @@ let tryp ps strm =
     | XStream.Error _|FanLoc.Exc_located (_,XStream.Error _) ->
         raise XStream.Failure
     | exc -> raise exc in
-  XStream.njunk (XStream.count strm') strm; r
+  begin XStream.njunk (XStream.count strm') strm; r end
 
 let peek ps strm =
   let strm' = XStream.dup strm in

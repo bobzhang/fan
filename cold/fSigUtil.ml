@@ -92,8 +92,11 @@ let mk_transform_type_eq () =
                then super#stru x
                else
                  (let src = i and dest = IdN.to_string i in
-                  Hashtbl.replace transformers dest (src, (List.length lst));
-                  (`StExp (`Uid "()") : AstN.stru ))
+                  begin
+                    Hashtbl.replace transformers dest
+                      (src, (List.length lst));
+                    (`StExp (`Uid "()") : AstN.stru )
+                  end)
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
@@ -101,8 +104,10 @@ let mk_transform_type_eq () =
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = IdN.to_string i in
-          (Hashtbl.replace transformers dest (src, (List.length lst));
-           appl_of_list ((`Lid dest : AstN.ctyp ) :: lst))
+          begin
+            Hashtbl.replace transformers dest (src, (List.length lst));
+            appl_of_list ((`Lid dest : AstN.ctyp ) :: lst)
+          end
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)

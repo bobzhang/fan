@@ -3,29 +3,34 @@ open LibUtil
 open Format
 
 let error_report (loc,s) =
-  prerr_endline (FanLoc.to_string loc);
-  (let (start_bol,stop_bol,start_off,stop_off) =
-     let open FanLoc in
-       ((start_bol loc), (stop_bol loc), (start_off loc), (stop_off loc)) in
-   let abs_start_off = start_bol + start_off in
-   let abs_stop_off = stop_bol + stop_off in
-   let err_location =
-     String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
-   prerr_endline (sprintf "err: ^%s^" err_location))
+  begin
+    prerr_endline (FanLoc.to_string loc);
+    (let (start_bol,stop_bol,start_off,stop_off) =
+       let open FanLoc in
+         ((start_bol loc), (stop_bol loc), (start_off loc), (stop_off loc)) in
+     let abs_start_off = start_bol + start_off in
+     let abs_stop_off = stop_bol + stop_off in
+     let err_location =
+       String.sub s abs_start_off ((abs_stop_off - abs_start_off) + 1) in
+     prerr_endline (sprintf "err: ^%s^" err_location))
+  end
 
 let parse_string_of_entry ?(loc= FanLoc.mk "<string>")  entry s =
   try Gram.parse_string entry ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
-      (eprintf "%s" (Printexc.to_string e);
-       error_report (loc, s);
-       FanLoc.raise loc e)
+      begin
+        eprintf "%s" (Printexc.to_string e); error_report (loc, s);
+        FanLoc.raise loc e
+      end
 
 let wrap_stream_parser ?(loc= FanLoc.mk "<stream>")  p s =
   try p ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
-      (eprintf "error: %s" (FanLoc.to_string loc); FanLoc.raise loc e)
+      begin
+        eprintf "error: %s" (FanLoc.to_string loc); FanLoc.raise loc e
+      end
 
 let p_exp f e = pp f "@[%a@]@." AstPrint.expression (Ast2pt.exp e)
 

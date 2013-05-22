@@ -12,7 +12,7 @@ let lexing_store s buff max =
     then n
     else
       (match XStream.peek s with
-       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
+       | Some x -> begin XStream.junk s; buff.[n] <- x; n + 1 end
        | _ -> n) in
   self 0 s
 
@@ -33,36 +33,41 @@ let from_lexbuf lb =
 
 let setup_loc lb loc =
   let start_pos = FanLoc.start_pos loc in
-  lb.lex_abs_pos <- start_pos.pos_cnum; lb.lex_curr_p <- start_pos
+  begin lb.lex_abs_pos <- start_pos.pos_cnum; lb.lex_curr_p <- start_pos end
 
 let from_string loc str =
   let () = clear_stack () in
-  let lb = Lexing.from_string str in setup_loc lb loc; from_lexbuf lb
+  let lb = Lexing.from_string str in
+  begin setup_loc lb loc; from_lexbuf lb end
 
 let from_stream loc strm =
   let () = clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
-  setup_loc lb loc; from_lexbuf lb
+  begin setup_loc lb loc; from_lexbuf lb end
 
 let mk () loc strm = from_stream loc strm
 
 let rec clean (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some (`EOI,loc) ->
-      (XStream.junk __strm; XStream.lsing (fun _  -> (`EOI, loc)))
+      begin XStream.junk __strm; XStream.lsing (fun _  -> (`EOI, loc)) end
   | Some x ->
-      (XStream.junk __strm;
-       (let xs = __strm in
-        XStream.icons x (XStream.slazy (fun _  -> clean xs))))
+      begin
+        XStream.junk __strm;
+        (let xs = __strm in
+         XStream.icons x (XStream.slazy (fun _  -> clean xs)))
+      end
   | _ -> XStream.sempty
 
 let rec strict_clean (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some (`EOI,_) -> (XStream.junk __strm; XStream.sempty)
+  | Some (`EOI,_) -> begin XStream.junk __strm; XStream.sempty end
   | Some x ->
-      (XStream.junk __strm;
-       (let xs = __strm in
-        XStream.icons x (XStream.slazy (fun _  -> strict_clean xs))))
+      begin
+        XStream.junk __strm;
+        (let xs = __strm in
+         XStream.icons x (XStream.slazy (fun _  -> strict_clean xs)))
+      end
   | _ -> XStream.sempty
 
 let debug_from_string str =

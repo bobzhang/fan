@@ -1,372 +1,256 @@
-
-open FanOps
-open AstLib
-open Filters
-
-include PreCast
-
-open AstQuotation
-open Syntax
+open Ast
+open MkFan
+open Format
 open LibUtil
-open AstQuotation
 
 
-let efilter str e =
-    let e = exp_filter e in let _loc = loc_of e in
-    {:exp|($e : Ast.$lid:str)|}
-let pfilter str e =
-  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|};;
-
-
-let d = `Absolute ["Fan"; "Lang"]
-
-let _ = begin (* FIXME make the printer more restict later *)
-  of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
-    ~filter:LangOcaml.filter ;
-  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots;
-  of_exp ~name:(d, "save") ~entry:LangSave.save_quot;
-  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot
-end
+ 
     
-let d = `Absolute ["Fan"; "Lang"; "Macro"]
-
-let _ = begin 
-  of_exp_with_filter ~name:(d, "exp") ~entry:exp
-    ~filter:(AstMacros.macro_expander#exp);
-  of_clfield_with_filter ~name:(d, "clfield") ~entry:clfield
-    ~filter:(AstMacros.macro_expander#clfield);
-  of_stru_with_filter ~name:(d, "stru") ~entry:stru
-    ~filter:(AstMacros.macro_expander#stru)
-end
+let just_print_filters () =
+  let pp = eprintf (* and f = Format.std_formatter *) in 
+  let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in
+  begin
+    pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters ;
+    pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters ;
+    pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters 
+  end
+let just_print_parsers () =
+  let pp = eprintf in
+  let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in begin
+    pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
+  end
+  
+let just_print_applied_parsers () =
+  let pp = eprintf in
+  pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
+    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) AstParsers.applied_parsers
+  
+type file_kind =
+  | Intf of string
+  | Impl of string
+  | Str of string
+  | ModuleImpl of string
+  | IncludeDir of string 
+  
+(* let search_stdlib = ref false *)
     
-let d = `Absolute ["Fan"; "Lang"; "Meta"]
-
-let _ = begin 
-  add_quotation (d, "sigi'") sigi_quot ~mexp:(Filters.me#sigi)
-    ~mpat:(Filters.mp#sigi) ~exp_filter ~pat_filter;
-  add_quotation (d, "stru'") stru_quot ~mexp:(Filters.me#stru)
-    ~mpat:(Filters.mp#stru) ~exp_filter ~pat_filter;
-  add_quotation (d, "ctyp'") ctyp_quot ~mexp:(Filters.me#ctyp)
-    ~mpat:(Filters.mp#ctyp) ~exp_filter ~pat_filter;
-  add_quotation (d, "pat'") pat_quot ~mexp:(Filters.me#pat)
-    ~mpat:(Filters.mp#pat) ~exp_filter ~pat_filter;
-  add_quotation (d, "exp'") exp_quot ~mexp:(Filters.me#exp)
-    ~mpat:(Filters.mp#exp) ~exp_filter ~pat_filter;
-  add_quotation (d, "mtyp'") mtyp_quot ~mexp:(Filters.me#mtyp)
-    ~mpat:(Filters.mp#mtyp) ~exp_filter ~pat_filter;
-  add_quotation (d, "mexp'") mexp_quot ~mexp:(Filters.me#mexp)
-    ~mpat:(Filters.mp#mexp) ~exp_filter ~pat_filter;
-  add_quotation (d, "cltyp'") cltyp_quot ~mexp:(Filters.me#cltyp)
-    ~mpat:(Filters.mp#cltyp) ~exp_filter ~pat_filter;
-  add_quotation (d, "clexp'") clexp_quot ~mexp:(Filters.me#clexp)
-    ~mpat:(Filters.mp#clexp) ~exp_filter ~pat_filter;
-  add_quotation (d, "clsigi'") clsigi_quot ~mexp:(Filters.me#clsigi)
-    ~mpat:(Filters.mp#clsigi) ~exp_filter ~pat_filter;
-  add_quotation (d, "clfield'") clfield_quot ~mexp:(Filters.me#clfield)
-    ~mpat:(Filters.mp#clfield) ~exp_filter ~pat_filter;
-  add_quotation (d, "constr'") constr_quot ~mexp:(Filters.me#constr)
-    ~mpat:(Filters.mp#constr) ~exp_filter ~pat_filter;
-  add_quotation (d, "bind'") bind_quot ~mexp:(Filters.me#bind)
-    ~mpat:(Filters.mp#bind) ~exp_filter ~pat_filter;
-  add_quotation (d, "rec_exp'") rec_exp_quot ~mexp:(Filters.me#rec_exp)
-    ~mpat:(Filters.mp#rec_exp) ~exp_filter ~pat_filter;
-  add_quotation (d, "case'") case_quot ~mexp:(Filters.me#case)
-    ~mpat:(Filters.mp#case) ~exp_filter ~pat_filter;
-  add_quotation (d, "mbind'") mbind_quot ~mexp:(Filters.me#mbind)
-    ~mpat:(Filters.mp#mbind) ~exp_filter ~pat_filter;
-  add_quotation (d, "ident'") ident_quot ~mexp:(Filters.me#ident)
-    ~mpat:(Filters.mp#ident) ~exp_filter ~pat_filter;
-  add_quotation (d, "rec_flag'") rec_flag_quot ~mexp:(Filters.me#flag)
-    ~mpat:(Filters.mp#flag) ~exp_filter ~pat_filter;
-  add_quotation (d, "private_flag'") private_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "row_var_flag'") row_var_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "mutable_flag'") mutable_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "virtual_flag'") virtual_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "override_flag'") override_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "direction_flag'") direction_flag_quot
-    ~mexp:(Filters.me#flag) ~mpat:(Filters.mp#flag)
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "or_ctyp'") constructor_declarations
-    ~mexp:(Filters.me#or_ctyp) ~mpat:(Filters.me#or_ctyp) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "row_field'") row_field ~mexp:(Filters.me#row_field)
-    ~mpat:(Filters.mp#row_field) ~exp_filter ~pat_filter
-end
-
-let _ = begin
-  add_quotation (d, "sigi") sigi_quot ~mexp:(Filters.me#sigi)
-    ~mpat:(Filters.mp#sigi) ~exp_filter:(efilter "sigi")
-    ~pat_filter:(pfilter "sigi");
-  add_quotation (d, "stru") stru_quot ~mexp:(Filters.me#stru)
-    ~mpat:(Filters.mp#stru) ~exp_filter:(efilter "stru")
-    ~pat_filter:(pfilter "stru");
-  add_quotation (d, "ctyp") ctyp_quot ~mexp:(Filters.me#ctyp)
-    ~mpat:(Filters.mp#ctyp) ~exp_filter:(efilter "ctyp")
-    ~pat_filter:(pfilter "ctyp");
-  add_quotation (d, "pat") pat_quot ~mexp:(Filters.me#pat)
-    ~mpat:(Filters.mp#pat) ~exp_filter:(efilter "pat")
-    ~pat_filter:(pfilter "pat");
-  add_quotation (d, "ep") exp_quot ~mexp:(Filters.me#exp)
-    ~mpat:(Filters.mp#exp) ~exp_filter:(efilter "ep")
-    ~pat_filter:(pfilter "ep");
-  add_quotation (d, "exp") exp_quot ~mexp:(Filters.me#exp)
-    ~mpat:(Filters.mp#exp) ~exp_filter:(efilter "exp")
-    ~pat_filter:(pfilter "exp");
-  add_quotation (d, "mtyp") mtyp_quot ~mexp:(Filters.me#mtyp)
-    ~mpat:(Filters.mp#mtyp) ~exp_filter:(efilter "mtyp")
-    ~pat_filter:(pfilter "mtyp");
-  add_quotation (d, "mexp") mexp_quot ~mexp:(Filters.me#mexp)
-    ~mpat:(Filters.mp#mexp) ~exp_filter:(efilter "mexp")
-    ~pat_filter:(pfilter "mexp");
-  add_quotation (d, "cltyp") cltyp_quot ~mexp:(Filters.me#cltyp)
-    ~mpat:(Filters.mp#cltyp) ~exp_filter:(efilter "cltyp")
-    ~pat_filter:(pfilter "cltyp");
-  add_quotation (d, "clexp") clexp_quot ~mexp:(Filters.me#clexp)
-    ~mpat:(Filters.mp#clexp) ~exp_filter:(efilter "clexp")
-    ~pat_filter:(pfilter "clexp");
-  add_quotation (d, "clsigi") clsigi_quot ~mexp:(Filters.me#clsigi)
-    ~mpat:(Filters.mp#clsigi) ~exp_filter:(efilter "clsigi")
-    ~pat_filter:(pfilter "clsigi");
-  add_quotation (d, "clfield") clfield_quot ~mexp:(Filters.me#clfield)
-    ~mpat:(Filters.mp#clfield) ~exp_filter:(efilter "clfield")
-    ~pat_filter:(pfilter "clfield");
-  add_quotation (d, "constr") constr_quot ~mexp:(Filters.me#constr)
-    ~mpat:(Filters.mp#constr) ~exp_filter:(efilter "constr")
-    ~pat_filter:(pfilter "constr");
-  add_quotation (d, "bind") bind_quot ~mexp:(Filters.me#bind)
-    ~mpat:(Filters.mp#bind) ~exp_filter:(efilter "bind")
-    ~pat_filter:(pfilter "bind");
-  add_quotation (d, "rec_exp") rec_exp_quot ~mexp:(Filters.me#rec_exp)
-    ~mpat:(Filters.mp#rec_exp) ~exp_filter:(efilter "rec_exp")
-    ~pat_filter:(pfilter "rec_exp");
-  add_quotation (d, "case") case_quot ~mexp:(Filters.me#case)
-    ~mpat:(Filters.mp#case) ~exp_filter:(efilter "case")
-    ~pat_filter:(pfilter "case");
-  add_quotation (d, "mbind") mbind_quot ~mexp:(Filters.me#mbind)
-    ~mpat:(Filters.mp#mbind) ~exp_filter:(efilter "mbind")
-    ~pat_filter:(pfilter "mbind");
-  add_quotation (d, "ident") ident_quot ~mexp:(Filters.me#ident)
-    ~mpat:(Filters.mp#ident) ~exp_filter:(efilter "ident")
-    ~pat_filter:(pfilter "ident");
-  add_quotation (d, "or_ctyp") constructor_declarations
-    ~mexp:(Filters.me#or_ctyp) ~mpat:(Filters.me#or_ctyp)
-    ~exp_filter:(efilter "or_ctyp") ~pat_filter:(pfilter "or_ctyp");
-  add_quotation (d, "row_field") row_field ~mexp:(Filters.me#row_field)
-    ~mpat:(Filters.mp#row_field) ~exp_filter:(efilter "row_field")
-    ~pat_filter:(pfilter "row_field");
-  of_exp ~name:(d, "with_exp") ~entry:with_exp_lang;
-  of_stru ~name:(d, "with_stru") ~entry:with_stru_lang;
-  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.exp_tag
-    (fun _loc  _loc_option  s  -> `Str (_loc, s));
-  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.stru_tag
-    (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
-end
-let _ =
-  Options.add
-    ("-dlang",
-      (FanArg.String
-         (fun s  ->
-            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
-      " Set the default language")
-open Syntax
-{:create|Gram p|};;
+let print_loaded_modules = ref false
 
 
+let loaded_modules = ref SSet.empty
 
-{:extend|p:
-  [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true |_ -> false |}
-  |pat{p} -> {:exp'| function | $pat:p -> true | _ -> false |} ]
-|};;
+let add_to_loaded_modules name =
+  loaded_modules := SSet.add name !loaded_modules;;
 
-of_exp ~name:(d,"p") ~entry:p;;
-
-
-
-open ParserRevise
-
-open ParserMacro
-
-open ParserGrammar
-
-open ParserStream;;
-
-(** for stream expression *)
-of_exp ~name:(d,"stream") ~entry:ParserStream.stream_exp;;
+(** no repeat loading
+    FIXME? it can only load [cma] and [cmxs] files? *)
+let (objext,libext) =
+  if Dynlink.is_native then
+    (".cmxs",".cmxs")
+  else (".cmo",".cma")
+let require name = 
+  if not (SSet.mem name !loaded_modules ) then begin
+    add_to_loaded_modules name;
+    DynLoader.load  (name ^ libext)
+  end
+    
 
 
-open AstInjection
+let output_file = ref None              
 
 
-open PluginsN (* link the module *)  
+let  rec sig_handler  : sigi -> sigi option =  with sigi
+    (function
+      | {| #load $str:s |}-> (require s; None )
 
-open CodeTemplate
+      (* | {| #directory $str:s |} -> *)
+      (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
+            
+      | {| #use $str:s|} ->
+          (PreCast.parse_file
+             ~directive_handler:sig_handler s PreCast.parse_interf )
+      | {| #default_quotation $str:s |} ->
+          (AstQuotation.default :=
+            FanToken.resolve_name (`Sub [], s); None )
+      | {| #$({:ident'@_|filter|}) $str:s |} -> (* FIXME simplify later*)
+          ( AstFilters.use_interf_filter s; None)
+      | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
+      | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
+          FanLoc.raise _loc
+            (XStream.Error (x ^ " is abad directive Fan can not handled "))
+      | _ -> None (* FIXME assert false *))
 
-open OCamlLex
+           
+let rec str_handler = with stru
+    (function
+      | {| #load $str:s |} ->  (require s; None )
 
-(* let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
-   {:stream| 1 ; 2; '(f 3)|}
- *)
-
-
-(*************************************************************************)
-(** begin quotation for Ast without locations *)
-let m = new FanAstN.meta ;;
-
-let efilter str e =
-    let e = exp_filter_n e in
-    let _loc = loc_of e in
-    {:exp|($e : AstN.$lid:str)|}
-let pfilter str e =
-  let p = pat_filter_n e in
-  let _loc = loc_of p in
-  {:pat|($p : AstN.$lid:str)|};;
-
-
-begin
-    add_quotation (d, "sigi-") sigi_quot ~mexp:(fun loc p -> m#sigi loc (Objs.strip_loc_sigi p))
-    ~mpat:(fun loc p -> m#sigi loc (Objs.strip_loc_sigi p))
-     ~exp_filter:(efilter "sigi")
-    ~pat_filter:(pfilter "sigi");
-  add_quotation (d, "stru-") stru_quot ~mexp:(fun loc p -> m#stru loc (Objs.strip_loc_stru p))
-    ~mpat:(fun loc p -> m#stru loc (Objs.strip_loc_stru p)) ~exp_filter:(efilter "stru")
-    ~pat_filter:(pfilter "stru");
-  add_quotation (d, "ctyp-") ctyp_quot ~mexp:(fun loc p -> m#ctyp loc (Objs.strip_loc_ctyp p))
-    ~mpat:(fun loc p -> m#ctyp loc (Objs.strip_loc_ctyp p)) ~exp_filter:(efilter "ctyp")
-    ~pat_filter:(pfilter "ctyp");
-  add_quotation (d, "pat-") pat_quot ~mexp:(fun loc p -> m#pat loc (Objs.strip_loc_pat p))
-    ~mpat:(fun loc p -> m#pat loc (Objs.strip_loc_pat p)) ~exp_filter:(efilter "pat")
-    ~pat_filter:(pfilter "pat");
-  add_quotation (d, "ep-") exp_quot ~mexp:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_loc_exp p)) ~exp_filter:(efilter "ep")
-    ~pat_filter:(pfilter "ep");
-  add_quotation (d, "exp-") exp_quot
-    ~mexp:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~exp_filter:(efilter "exp")
-    ~pat_filter:(pfilter "exp");
-  add_quotation (d, "mtyp-") mtyp_quot ~mexp:(fun loc p -> m#mtyp loc (Objs.strip_loc_mtyp p))
-    ~mpat:(fun loc p -> m#mtyp loc (Objs.strip_loc_mtyp p)) ~exp_filter:(efilter "mtyp")
-    ~pat_filter:(pfilter "mtyp");
-  add_quotation (d, "mexp-") mexp_quot ~mexp:(fun loc p -> m#mexp loc (Objs.strip_loc_mexp p))
-    ~mpat:(fun loc p -> m#mexp loc (Objs.strip_loc_mexp p)) ~exp_filter:(efilter "mexp")
-    ~pat_filter:(pfilter "mexp");
-  add_quotation (d, "cltyp-") cltyp_quot ~mexp:(fun loc p -> m#cltyp loc (Objs.strip_loc_cltyp p))
-    ~mpat:(fun loc p -> m#cltyp loc (Objs.strip_loc_cltyp p)) ~exp_filter:(efilter "cltyp")
-    ~pat_filter:(pfilter "cltyp");
-  add_quotation (d, "clexp-") clexp_quot ~mexp:(fun loc p -> m#clexp loc (Objs.strip_loc_clexp p))
-    ~mpat:(fun loc p -> m#clexp loc (Objs.strip_loc_clexp p)) ~exp_filter:(efilter "clexp")
-    ~pat_filter:(pfilter "clexp");
-  add_quotation (d, "clsigi-") clsigi_quot ~mexp:(fun loc p -> m#clsigi loc (Objs.strip_loc_clsigi p))
-    ~mpat:(fun loc p -> m#clsigi loc (Objs.strip_loc_clsigi p)) ~exp_filter:(efilter "clsigi")
-    ~pat_filter:(pfilter "clsigi");
-  add_quotation (d, "clfield-") clfield_quot ~mexp:(fun loc p -> m#clfield loc (Objs.strip_loc_clfield p))
-    ~mpat:(fun loc p -> m#clfield loc (Objs.strip_loc_clfield p)) ~exp_filter:(efilter "clfield")
-    ~pat_filter:(pfilter "clfield");
-  add_quotation (d, "constr-") constr_quot ~mexp:(fun loc p -> m#constr loc (Objs.strip_loc_constr p))
-    ~mpat:(fun loc p -> m#constr loc (Objs.strip_loc_constr p)) ~exp_filter:(efilter "constr")
-    ~pat_filter:(pfilter "constr");
-  add_quotation (d, "bind-") bind_quot ~mexp:(fun loc p -> m#bind loc (Objs.strip_loc_bind p))
-    ~mpat:(fun loc p -> m#bind loc (Objs.strip_loc_bind p)) ~exp_filter:(efilter "bind")
-    ~pat_filter:(pfilter "bind");
-  add_quotation (d, "rec_exp-") rec_exp_quot ~mexp:(fun loc p -> m#rec_exp loc (Objs.strip_loc_rec_exp p))
-    ~mpat:(fun loc p -> m#rec_exp loc (Objs.strip_loc_rec_exp p)) ~exp_filter:(efilter "rec_exp")
-    ~pat_filter:(pfilter "rec_exp");
-  add_quotation (d, "case-") case_quot ~mexp:(fun loc p -> m#case loc (Objs.strip_loc_case p))
-    ~mpat:(fun loc p -> m#case loc (Objs.strip_loc_case p)) ~exp_filter:(efilter "case")
-    ~pat_filter:(pfilter "case");
-  add_quotation (d, "mbind-") mbind_quot ~mexp:(fun loc p -> m#mbind loc (Objs.strip_loc_mbind p))
-    ~mpat:(fun loc p -> m#mbind loc (Objs.strip_loc_mbind p)) ~exp_filter:(efilter "mbind")
-    ~pat_filter:(pfilter "mbind");
-  add_quotation (d, "ident-") ident_quot ~mexp:(fun loc p -> m#ident loc (Objs.strip_loc_ident p))
-    ~mpat:(fun loc p -> m#ident loc (Objs.strip_loc_ident p)) ~exp_filter:(efilter "ident")
-    ~pat_filter:(pfilter "ident");
-  add_quotation (d, "or_ctyp-") constructor_declarations
-    ~mexp:(fun loc p -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p)) ~mpat:(fun loc p -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p))
-    ~exp_filter:(efilter "or_ctyp") ~pat_filter:(pfilter "or_ctyp");
-  add_quotation (d, "row_field-") row_field ~mexp:(fun loc p -> m#row_field loc (Objs.strip_loc_row_field p))
-    ~mpat:(fun loc p -> m#row_field loc (Objs.strip_loc_row_field p)) ~exp_filter:(efilter "row_field")
-    ~pat_filter:(pfilter "row_field");
-end;;
+      (* | {| #directory $str:s |} -> *)
+      (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
+            
+      | {| #use $str:s |} ->
+          PreCast.parse_file  ~directive_handler:str_handler s PreCast.parse_implem 
+      | {| #default_quotation $str:s |} ->
+          begin
+            AstQuotation.default := FanToken.resolve_name (`Sub [],s) ;
+            None
+          end
+      | {| #lang_clear |} -> begin 
+          AstQuotation.clear_map ();
+          AstQuotation.clear_default ();
+          None
+      end
+      | {| #filter $str:s|} ->
+          begin AstFilters.use_implem_filter s; None ; end
+      | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None                  
+            (* | {| #import |} -> None (\* FIXME *\) *)
+      | {| #$lid:x $_ |} ->
+          (* FIXME pattern match should give _loc automatically *)
+          FanLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
+      | _ -> None (* ignored  assert false *))
 
 
-let exp_filter = exp_filter_n in
-let pat_filter = pat_filter_n in
-begin
-    add_quotation (d, "sigi-'") sigi_quot ~mexp:(fun loc p -> m#sigi loc (Objs.strip_loc_sigi p))
-    ~mpat:(fun loc p -> m#sigi loc (Objs.strip_loc_sigi p))
-     ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "stru-'") stru_quot ~mexp:(fun loc p -> m#stru loc (Objs.strip_loc_stru p))
-    ~mpat:(fun loc p -> m#stru loc (Objs.strip_loc_stru p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "ctyp-'") ctyp_quot ~mexp:(fun loc p -> m#ctyp loc (Objs.strip_loc_ctyp p))
-    ~mpat:(fun loc p -> m#ctyp loc (Objs.strip_loc_ctyp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "pat-'") pat_quot ~mexp:(fun loc p -> m#pat loc (Objs.strip_loc_pat p))
-    ~mpat:(fun loc p -> m#pat loc (Objs.strip_loc_pat p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "ep-'") exp_quot ~mexp:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_loc_exp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "exp-'") exp_quot
-    ~mexp:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~mpat:(fun loc p -> m#exp loc (Objs.strip_loc_exp p))
-    ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "mtyp-'") mtyp_quot ~mexp:(fun loc p -> m#mtyp loc (Objs.strip_loc_mtyp p))
-    ~mpat:(fun loc p -> m#mtyp loc (Objs.strip_loc_mtyp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "mexp-'") mexp_quot ~mexp:(fun loc p -> m#mexp loc (Objs.strip_loc_mexp p))
-    ~mpat:(fun loc p -> m#mexp loc (Objs.strip_loc_mexp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "cltyp-'") cltyp_quot ~mexp:(fun loc p -> m#cltyp loc (Objs.strip_loc_cltyp p))
-    ~mpat:(fun loc p -> m#cltyp loc (Objs.strip_loc_cltyp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "clexp-'") clexp_quot ~mexp:(fun loc p -> m#clexp loc (Objs.strip_loc_clexp p))
-    ~mpat:(fun loc p -> m#clexp loc (Objs.strip_loc_clexp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "clsigi-'") clsigi_quot ~mexp:(fun loc p -> m#clsigi loc (Objs.strip_loc_clsigi p))
-    ~mpat:(fun loc p -> m#clsigi loc (Objs.strip_loc_clsigi p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "clfield-'") clfield_quot ~mexp:(fun loc p -> m#clfield loc (Objs.strip_loc_clfield p))
-    ~mpat:(fun loc p -> m#clfield loc (Objs.strip_loc_clfield p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "constr-'") constr_quot ~mexp:(fun loc p -> m#constr loc (Objs.strip_loc_constr p))
-    ~mpat:(fun loc p -> m#constr loc (Objs.strip_loc_constr p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "bind-'") bind_quot ~mexp:(fun loc p -> m#bind loc (Objs.strip_loc_bind p))
-    ~mpat:(fun loc p -> m#bind loc (Objs.strip_loc_bind p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "rec_exp-'") rec_exp_quot ~mexp:(fun loc p -> m#rec_exp loc (Objs.strip_loc_rec_exp p))
-    ~mpat:(fun loc p -> m#rec_exp loc (Objs.strip_loc_rec_exp p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "case-'") case_quot ~mexp:(fun loc p -> m#case loc (Objs.strip_loc_case p))
-    ~mpat:(fun loc p -> m#case loc (Objs.strip_loc_case p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "mbind-'") mbind_quot ~mexp:(fun loc p -> m#mbind loc (Objs.strip_loc_mbind p))
-    ~mpat:(fun loc p -> m#mbind loc (Objs.strip_loc_mbind p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "ident-'") ident_quot ~mexp:(fun loc p -> m#ident loc (Objs.strip_loc_ident p))
-    ~mpat:(fun loc p -> m#ident loc (Objs.strip_loc_ident p)) ~exp_filter
-    ~pat_filter;
-  add_quotation (d, "or_ctyp-'") constructor_declarations
-    ~mexp:(fun loc p -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p)) ~mpat:(fun loc p -> m#or_ctyp loc (Objs.strip_loc_or_ctyp p))
-    ~exp_filter ~pat_filter;
-  add_quotation (d, "row_field-'") row_field ~mexp:(fun loc p -> m#row_field loc (Objs.strip_loc_row_field p))
-    ~mpat:(fun loc p -> m#row_field loc (Objs.strip_loc_row_field p)) ~exp_filter
-    ~pat_filter
-end
-;;
+(** parse the file, apply the filter and pipe it to the backend *)  
+let process_intf  name =
+  let v = 
+  match PreCast.parse_file ~directive_handler:sig_handler name PreCast.parse_interf with
+  | None ->
+        None
+  | Some x ->
+      let x = AstFilters.apply_interf_filters x in
+      Some x  in
+  PreCast.CurrentPrinter.print_interf
+    ?input_file:(Some name)
+    ?output_file:(!output_file) v 
+
+
+let process_impl name =
+  let v = 
+  match PreCast.parse_file ~directive_handler:str_handler name PreCast.parse_implem with
+  | None ->
+        None
+  |Some x ->
+      let x = AstFilters.apply_implem_filters x in
+      Some x  in
+  PreCast.CurrentPrinter.print_implem
+    ?input_file:(Some name)
+    ?output_file:(!output_file) v 
+
+          
+      
+let input_file x =
+  match x with
+  | Intf file_name ->
+      begin
+        FanConfig.compilation_unit :=
+          Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+        FanConfig.current_input_file := file_name;
+        process_intf  file_name
+      end
+  | Impl file_name ->
+      begin
+        FanConfig.compilation_unit :=
+          Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+        FanConfig.current_input_file := file_name;
+        process_impl  file_name;
+      end
+  | Str s ->
+      let (f, o) = Filename.open_temp_file "from_string" ".ml" in
+      (output_string o s;
+       close_out o;
+       FanConfig.current_input_file := f;
+       process_impl  f;
+       at_exit (fun () -> Sys.remove f))
+        
+  | ModuleImpl file_name -> require  file_name
+
+  | IncludeDir dir ->
+      Ref.modify FanConfig.dynload_dirs (cons dir) 
+
+
+(** FIXME the command line parsing  can not handle prefix problem,
+    e.g. -p -px will cause some problem *)    
+let initial_spec_list =
+  [
+   ("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
+    "<directory>  Add directory in search patch for object files.");
+
+   ("-intf", FanArg.String (fun x -> input_file (Intf x)),
+    "<file>  Parse <file> as an interface, whatever its extension.");
+
+   ("-impl", FanArg.String (fun x -> input_file (Impl x)),
+    "<file>  Parse <file> as an implementation, whatever its extension.");
+
+   ("-str", FanArg.String (fun x -> input_file (Str x)),
+    "<string>  Parse <string> as an implementation.");
+
+   ("-o", FanArg.String (fun x -> output_file := Some x),
+    "<file> Output on <file> instead of standard output.");
+
+   ("-unsafe", FanArg.Set FanConfig.unsafe,
+    "Generate unsafe accesses to array and strings.");
+
+   ("-verbose", FanArg.Set FanConfig.verbose, "More verbose in parsing errors.");
+
+   ("-where", FanArg.Unit (fun () -> (print_endline FanConfig.fan_standard_library;exit 0))
+      , " Print location of standard library and exit");
+   ("-loc", FanArg.Set_string FanLoc.name,
+    "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
+   
+   ("-v", FanArg.Unit  (fun () -> begin eprintf "Fan version %s@." FanConfig.version; exit 0 end),
+    "Print Fan version and exit.");
+
+   ("-compilation-unit",
+    FanArg.Unit (function () -> 
+      ((match !FanConfig.compilation_unit with
+      | Some v -> printf "%s@." v
+      | None -> printf "null");
+       exit 0)), 
+    "Print the current compilation unit");
+
+   ("-plugin", FanArg.String require ,   
+    "load plugin cma or cmxs files");
+
+   ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
+   
+   ("-loaded-filters", FanArg.Unit just_print_filters, "Print the registered filters.");
+   
+   ("-loaded-parsers", FanArg.Unit just_print_parsers, "Print the loaded parsers.");
+   
+   ("-used-parsers", FanArg.Unit just_print_applied_parsers, "Print the applied parsers.");
+
+   ("-printer", FanArg.Symbol( ["p";"o"],
+    function x ->
+      if x = "p" then
+        PreCast.register_bin_printer ()
+      else
+        PreCast.register_text_printer ()),"p  for binary and o  for text ");
+  
+ ];;
+      
+
+
+(** handle the file name *)  
+let anon_fun name =
+  input_file
+    (if Filename.check_suffix name ".mli" then Intf name
+    else if Filename.check_suffix name ".ml" then Impl name
+    else if Filename.check_suffix name objext then ModuleImpl name
+    else if Filename.check_suffix name libext then ModuleImpl name
+    else raise (FanArg.Bad ("don't know what to do with " ^ name)));;
+
+
+
+PreCast.register_text_printer ();; (** default *)
+Printexc.register_printer
+        (function
+          |FanLoc.Exc_located (loc, exn) ->
+              Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
+          | _ -> None );;
+
+
+Syntax.Options.adds initial_spec_list;;    
+
 AstParsers.use_parsers
     [ "revise";
       "stream";
@@ -374,4 +258,15 @@ AstParsers.use_parsers
       (* "ListComprehension" *)
     ];;
 
-MakeBin.main ();;
+
+let _ = 
+  try
+    FanArg.parse
+      Syntax.Options.init_spec_list
+      anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
+  with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
+
+
+
+
+

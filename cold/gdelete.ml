@@ -33,29 +33,34 @@ let rec decr_keyw_use gram =
   | `Skeyword kwd -> removing gram kwd
   | `Smeta (_,sl,_) -> List.iter (decr_keyw_use gram) sl
   | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> decr_keyw_use gram s
-  | `Slist0sep (s1,s2) -> (decr_keyw_use gram s1; decr_keyw_use gram s2)
-  | `Slist1sep (s1,s2) -> (decr_keyw_use gram s1; decr_keyw_use gram s2)
+  | `Slist0sep (s1,s2) ->
+      begin decr_keyw_use gram s1; decr_keyw_use gram s2 end
+  | `Slist1sep (s1,s2) ->
+      begin decr_keyw_use gram s1; decr_keyw_use gram s2 end
   | `Stree t -> decr_keyw_use_in_tree gram t
   | `Sself|`Snext|`Snterm _|`Snterml (_,_)|`Stoken _ -> ()
 and decr_keyw_use_in_tree gram =
   function
   | DeadEnd |LocAct (_,_) -> ()
   | Node n ->
-      (decr_keyw_use gram n.node;
-       decr_keyw_use_in_tree gram n.son;
-       decr_keyw_use_in_tree gram n.brother)
+      begin
+        decr_keyw_use gram n.node; decr_keyw_use_in_tree gram n.son;
+        decr_keyw_use_in_tree gram n.brother
+      end
 
 let rec delete_rule_in_suffix entry symbols =
   function
   | lev::levs ->
       (match delete_rule_in_tree entry symbols lev.lsuffix with
        | Some (dsl,t) ->
-           ((match dsl with
-             | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
-             | None  -> ());
-            (match t with
-             | DeadEnd  when lev.lprefix == DeadEnd -> levs
-             | _ -> { lev with lsuffix = t } :: levs))
+           begin
+             (match dsl with
+              | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+              | None  -> ());
+             (match t with
+              | DeadEnd  when lev.lprefix == DeadEnd -> levs
+              | _ -> { lev with lsuffix = t } :: levs)
+           end
        | None  ->
            let levs = delete_rule_in_suffix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
@@ -65,12 +70,14 @@ let rec delete_rule_in_prefix entry symbols =
   | lev::levs ->
       (match delete_rule_in_tree entry symbols lev.lprefix with
        | Some (dsl,t) ->
-           ((match dsl with
-             | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
-             | None  -> ());
-            (match t with
-             | DeadEnd  when lev.lsuffix == DeadEnd -> levs
-             | _ -> { lev with lprefix = t } :: levs))
+           begin
+             (match dsl with
+              | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+              | None  -> ());
+             (match t with
+              | DeadEnd  when lev.lsuffix == DeadEnd -> levs
+              | _ -> { lev with lprefix = t } :: levs)
+           end
        | None  ->
            let levs = delete_rule_in_prefix entry symbols levs in lev :: levs)
   | [] -> raise Not_found
@@ -86,8 +93,10 @@ let delete_rule entry sl =
   match entry.edesc with
   | Dlevels levs ->
       let levs = delete_rule_in_level_list entry sl levs in
-      (entry.edesc <- Dlevels levs;
-       (let start = Gparser.start_parser_of_entry entry in
-        let continue = Gparser.continue_parser_of_entry entry in
-        entry.estart <- start; entry.econtinue <- continue))
+      begin
+        entry.edesc <- Dlevels levs;
+        (let start = Gparser.start_parser_of_entry entry in
+         let continue = Gparser.continue_parser_of_entry entry in
+         begin entry.estart <- start; entry.econtinue <- continue end)
+      end
   | Dparser _ -> ()

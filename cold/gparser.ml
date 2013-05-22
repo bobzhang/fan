@@ -39,7 +39,7 @@ let rec parser_of_tree entry (lev,assoc)
         (fun strm  ->
            (try
               let a = with_loc (entry.estart alevn) strm in
-              fun ()  -> ArgContainer.push a q; act
+              fun ()  -> begin ArgContainer.push a q; act end
             with | XStream.Failure  -> (fun ()  -> from_tree bro strm)) ())
     | Node ({ node; son; brother } as y) ->
         (match Gtools.get_terminals y with
@@ -50,21 +50,26 @@ let rec parser_of_tree entry (lev,assoc)
                 (try
                    let a = ps strm in
                    fun ()  ->
-                     ArgContainer.push a q;
-                     (let pson = from_tree son in
-                      try pson strm
-                      with
-                      | e ->
-                          (ignore (ArgContainer.pop q);
-                           (match e with
-                            | XStream.Failure  ->
-                                if (Gtools.get_cur_loc strm) = bp
-                                then raise XStream.Failure
-                                else
-                                  raise
-                                    (XStream.Error
-                                       (Gfailed.tree_failed entry a node son))
-                            | _ -> raise e)))
+                     begin
+                       ArgContainer.push a q;
+                       (let pson = from_tree son in
+                        try pson strm
+                        with
+                        | e ->
+                            begin
+                              ignore (ArgContainer.pop q);
+                              (match e with
+                               | XStream.Failure  ->
+                                   if (Gtools.get_cur_loc strm) = bp
+                                   then raise XStream.Failure
+                                   else
+                                     raise
+                                       (XStream.Error
+                                          (Gfailed.tree_failed entry a node
+                                             son))
+                               | _ -> raise e)
+                            end)
+                     end
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())
@@ -73,17 +78,22 @@ let rec parser_of_tree entry (lev,assoc)
                 (try
                    let args = List.rev (parser_of_terminals tokl strm) in
                    fun ()  ->
-                     List.iter (fun a  -> ArgContainer.push a q) args;
-                     (let len = List.length args in
-                      let p = from_tree son in
-                      try p strm
-                      with
-                      | e ->
-                          (for _i = 1 to len do ignore (ArgContainer.pop q)
-                           done;
-                           (match e with
-                            | XStream.Failure  -> raise (XStream.Error "")
-                            | _ -> raise e)))
+                     begin
+                       List.iter (fun a  -> ArgContainer.push a q) args;
+                       (let len = List.length args in
+                        let p = from_tree son in
+                        try p strm
+                        with
+                        | e ->
+                            begin
+                              for _i = 1 to len do
+                                ignore (ArgContainer.pop q)
+                              done;
+                              (match e with
+                               | XStream.Failure  -> raise (XStream.Error "")
+                               | _ -> raise e)
+                            end)
+                     end
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())) in
@@ -91,30 +101,35 @@ let rec parser_of_tree entry (lev,assoc)
   fun strm  ->
     let ((arity,_symbols,_,parse),loc) = with_loc parse strm in
     let ans = ref parse in
-    for _i = 1 to arity do
-      (let (v,_) = ArgContainer.pop q in ans := (Gaction.getf ans.contents v))
-    done;
-    ((ans.contents), loc)
+    begin
+      for _i = 1 to arity do
+        (let (v,_) = ArgContainer.pop q in
+         ans := (Gaction.getf ans.contents v))
+      done; ((ans.contents), loc)
+    end
 and parser_of_terminals (terminals : terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in
-  (try
-     List.iteri
-       (fun i  terminal  ->
-          let (t,loc) =
-            match XStream.peek_nth strm i with
-            | Some (t,loc) -> (t, loc)
-            | None  -> invalid_arg "parser_of_terminals" in
-          acc := (((Gaction.mk t), loc) :: (acc.contents));
-          if
-            not
-              (match terminal with
-               | `Stoken (f,_) -> f t
-               | `Skeyword kwd -> FanToken.match_keyword kwd t)
-          then invalid_arg "parser_of_terminals") terminals
-   with | Invalid_argument _ -> raise XStream.Failure);
-  XStream.njunk n strm;
-  acc.contents
+  begin
+    (try
+       List.iteri
+         (fun i  terminal  ->
+            let (t,loc) =
+              match XStream.peek_nth strm i with
+              | Some (t,loc) -> (t, loc)
+              | None  -> invalid_arg "parser_of_terminals" in
+            begin
+              acc := (((Gaction.mk t), loc) :: (acc.contents));
+              if
+                not
+                  (match terminal with
+                   | `Stoken (f,_) -> f t
+                   | `Skeyword kwd -> FanToken.match_keyword kwd t)
+              then invalid_arg "parser_of_terminals"
+            end) terminals
+     with | Invalid_argument _ -> raise XStream.Failure);
+    XStream.njunk n strm; acc.contents
+  end
 and parser_of_symbol entry s nlevn =
   let rec aux s =
     match s with
@@ -151,12 +166,13 @@ and parser_of_symbol entry s nlevn =
         (fun strm  ->
            match XStream.peek strm with
            | Some (tok,_) when FanToken.match_keyword kwd tok ->
-               (XStream.junk strm; Gaction.mk tok)
+               begin XStream.junk strm; Gaction.mk tok end
            | _ -> raise XStream.Failure)
     | `Stoken (f,_) ->
         (fun strm  ->
            match XStream.peek strm with
-           | Some (tok,_) when f tok -> (XStream.junk strm; Gaction.mk tok)
+           | Some (tok,_) when f tok ->
+               begin XStream.junk strm; Gaction.mk tok end
            | _ -> raise XStream.Failure) in
   with_loc (aux s)
 

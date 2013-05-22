@@ -33,18 +33,22 @@ let action_parse entry (ts : stream) =
   (try
      let p =
        if trace_parser.contents then Format.fprintf else Format.ifprintf in
-     p Format.err_formatter "@[<4>%s@ " entry.ename;
-     (let res = entry.estart 0 ts in
-      let () = p Format.err_formatter "@]@." in res)
+     begin
+       p Format.err_formatter "@[<4>%s@ " entry.ename;
+       (let res = entry.estart 0 ts in
+        let () = p Format.err_formatter "@]@." in res)
+     end
    with
    | XStream.Failure  ->
        FanLoc.raise (get_cur_loc ts)
          (XStream.Error ("illegal begin of " ^ entry.ename))
    | FanLoc.Exc_located (_,_) as exc ->
-       (eprintf "%s@." (Printexc.to_string exc); raise exc)
+       begin eprintf "%s@." (Printexc.to_string exc); raise exc end
    | exc ->
-       (eprintf "%s@." (Printexc.to_string exc);
-        FanLoc.raise (get_cur_loc ts) exc) : Gaction.t )
+       begin
+         eprintf "%s@." (Printexc.to_string exc);
+         FanLoc.raise (get_cur_loc ts) exc
+       end : Gaction.t )
 
 let of_parser g n (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
@@ -60,14 +64,18 @@ let of_parser g n (p : stream -> 'a) =
 
 let setup_parser e (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
-  e.estart <- (fun _  -> f);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
-  e.edesc <- Dparser f
+  begin
+    e.estart <- (fun _  -> f);
+    e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
+    e.edesc <- Dparser f
+  end
 
 let clear e =
-  e.estart <- (fun _  _  -> raise XStream.Failure);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
-  e.edesc <- Dlevels []
+  begin
+    e.estart <- (fun _  _  -> raise XStream.Failure);
+    e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
+    e.edesc <- Dlevels []
+  end
 
 let obj x = x
 

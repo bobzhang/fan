@@ -163,15 +163,18 @@ let parse_string_safe ?(loc= FanLoc.string_loc)  entry s =
   try parse_string entry ~loc s
   with
   | FanLoc.Exc_located (loc,e) ->
-      (eprintf "%s" (Printexc.to_string e);
-       FanLoc.error_report (loc, s);
-       FanLoc.raise loc e)
+      begin
+        eprintf "%s" (Printexc.to_string e); FanLoc.error_report (loc, s);
+        FanLoc.raise loc e
+      end
 
 let wrap_stream_parser p loc s =
   try p loc s
   with
   | FanLoc.Exc_located (loc,e) ->
-      (eprintf "error: %s@." (FanLoc.to_string loc); FanLoc.raise loc e)
+      begin
+        eprintf "error: %s@." (FanLoc.to_string loc); FanLoc.raise loc e
+      end
 
 let srules rl = `Stree (List.fold_right Ginsert.add_production rl DeadEnd)
 
@@ -187,20 +190,22 @@ let eoi_entry entry =
   let open Gstru in
     let g = gram_of_entry entry in
     let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
-    extend_single (entry_eoi : 'entry_eoi t )
-      (None,
-        (None, None,
-          [([`Snterm (obj (entry : 'entry t ));
-            `Stoken
-              (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-             ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
-               (mk_action
-                  (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
-                     (_loc : FanLoc.t)  ->
-                     match __fan_1 with
-                     | `EOI -> (x : 'entry_eoi )
-                     | _ -> failwith "x\n"))))]));
-    entry_eoi
+    begin
+      extend_single (entry_eoi : 'entry_eoi t )
+        (None,
+          (None, None,
+            [([`Snterm (obj (entry : 'entry t ));
+              `Stoken
+                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+               ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
+                 (mk_action
+                    (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
+                       (_loc : FanLoc.t)  ->
+                       match __fan_1 with
+                       | `EOI -> (x : 'entry_eoi )
+                       | _ -> failwith "x\n"))))]));
+      entry_eoi
+    end
 
 let find_level ?position  entry =
   match entry.edesc with

@@ -280,12 +280,14 @@ let eq_base1 =
 
 let _ =
   let open AstInjection in
-    register_inject_clfield ("map_clfield_base_1", map_clfield_base_1);
-    register_inject_clfield ("map_clfield_base_2", map_clfield_base_2);
-    register_inject_clfield ("fold_clfield_base_1", fold_clfield_base_1);
-    register_inject_clfield ("fold_clfield_base_2", fold_clfield_base_2);
-    register_inject_clfield ("print_clfield_base", print_clfield_base);
-    register_inject_clfield ("iter_clfield_base_1", iter_clfield_base_1);
-    register_inject_clfield ("eq_clfield_base_2", eq_clfield_base_2);
-    register_inject_stru ("eq_base1", eq_base1);
-    register_inject_stru ("print_base1", print_base1)
+    begin
+      register_inject_clfield ("map_clfield_base_1", map_clfield_base_1);
+      register_inject_clfield ("map_clfield_base_2", map_clfield_base_2);
+      register_inject_clfield ("fold_clfield_base_1", fold_clfield_base_1);
+      register_inject_clfield ("fold_clfield_base_2", fold_clfield_base_2);
+      register_inject_clfield ("print_clfield_base", print_clfield_base);
+      register_inject_clfield ("iter_clfield_base_1", iter_clfield_base_1);
+      register_inject_clfield ("eq_clfield_base_2", eq_clfield_base_2);
+      register_inject_stru ("eq_base1", eq_base1);
+      register_inject_stru ("print_base1", print_base1)
+    end

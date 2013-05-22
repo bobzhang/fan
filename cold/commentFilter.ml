@@ -9,12 +9,16 @@ let filter (_,q) =
   let rec self (__strm : _ XStream.t) =
     match XStream.peek __strm with
     | Some (`COMMENT x,loc) ->
-        (XStream.junk __strm;
-         (let xs = __strm in Queue.add (x, loc) q; self xs))
+        begin
+          XStream.junk __strm;
+          (let xs = __strm in begin Queue.add (x, loc) q; self xs end)
+        end
     | Some x ->
-        (XStream.junk __strm;
-         (let xs = __strm in
-          XStream.icons x (XStream.slazy (fun _  -> self xs))))
+        begin
+          XStream.junk __strm;
+          (let xs = __strm in
+           XStream.icons x (XStream.slazy (fun _  -> self xs)))
+        end
     | _ -> XStream.sempty in
   self
 

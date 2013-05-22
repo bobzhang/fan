@@ -8,9 +8,9 @@ let keep = ref true
 
 let id = ref 0
 
-let reset () = keep := true; current_filters := []
+let reset () = begin keep := true; current_filters := [] end
 
 let gensym ?(pkg= "")  prefix =
   let res =
     "fan_" ^ (prefix ^ ("_" ^ (pkg ^ ("_" ^ (string_of_int id.contents))))) in
-  incr id; res
+  begin incr id; res end

@@ -159,10 +159,9 @@ let expand loc (quotation:FanToken.quotation) (tag:'a FanDyn.tag) : 'a =
   and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
   begin
     Stack.push  quotation.q_name stack;
-    finally (fun _ -> Stack.pop stack)
-            (fun _ ->
-             expand_quotation ~expander loc pos_tag quotation)
-            ()
+    finally ~action:(fun _ -> Stack.pop stack)
+      (fun _ -> expand_quotation ~expander loc pos_tag quotation)
+      ()
   end
   with
   | FanLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc

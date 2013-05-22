@@ -2,7 +2,7 @@ open AstN
 
 let fill_loc_ant _loc x = x
 
-let _ = (); ()
+let _ = begin (); () end
 
 class primitive =
   object 

@@ -53,7 +53,7 @@ let cvt_int_literal s =
 
 open StdLib
 
-let _ = (); ()
+let _ = begin (); () end
 
 type anti_cxt = 
   {
@@ -98,23 +98,28 @@ let symbolchars =
 let symbolchar s i =
   let len = String.length s in
   try
-    for j = i to len - 1 do
-      if not (List.mem (s.[j]) symbolchars) then raise Not_found else ()
-    done;
-    true
+    begin
+      for j = i to len - 1 do
+        if not (List.mem (s.[j]) symbolchars) then raise Not_found else ()
+      done; true
+    end
   with | Not_found  -> false
 
 let with_open_out_file x f =
   match x with
-  | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
-  | None  -> (set_binary_mode_out stdout true; f stdout; flush stdout)
+  | Some file ->
+      let oc = open_out_bin file in begin f oc; flush oc; close_out oc end
+  | None  ->
+      begin set_binary_mode_out stdout true; f stdout; flush stdout end
 
-let dump_ast magic ast oc = output_string oc magic; output_value oc ast
+let dump_ast magic ast oc =
+  begin output_string oc magic; output_value oc ast end
 
 let dump_pt magic fname pt oc =
-  output_string oc magic;
-  output_value oc (if fname = "-" then "" else fname);
-  output_value oc pt
+  begin
+    output_string oc magic;
+    output_value oc (if fname = "-" then "" else fname); output_value oc pt
+  end
 
 let char_of_char_token loc s =
   try TokenEval.char s with | Failure _ as exn -> FanLoc.raise loc exn

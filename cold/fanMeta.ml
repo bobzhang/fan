@@ -45,7 +45,8 @@ class primitive =
     method char _loc (i : char) =
       ((`Chr (_loc, (Char.escaped i)) : Ast.ep ) : ep )
     method unit _loc (_ : unit) = ((`Uid (_loc, "()") : Ast.ep ) : ep )
-    method loc _loc (_l : loc) = (`Lid (_loc, (FanLoc.name.contents)) : ep )
+    method loc _loc (_l : loc) =
+      (let n = FanLoc.name.contents in (`Lid (_loc, n) : Ast.ep ) : ep )
     method ant (_loc : loc) (x : ant) = ((x :>ep) : ep )
     method bool _loc x =
       (match x with
@@ -53,7 +54,7 @@ class primitive =
        | false  -> (`Lid (_loc, "false") : Ast.ep ) : ep )
   end
 
-let _ = (); ()
+let _ = begin (); () end
 
 class meta =
   object (self : 'self_type)

@@ -2,7 +2,7 @@ open StdLib
 
 open AstN
 
-let _ = (); ()
+let _ = begin (); () end
 
 let pp_print_loc: Format.formatter -> loc -> unit =
   fun fmt  _a0  -> FanLoc.pp_print_t fmt _a0

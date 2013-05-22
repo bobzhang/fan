@@ -76,8 +76,10 @@ let expanders_table = ref QMap.empty
 let add ((domain,n) as name) (tag : 'a FanDyn.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
-  Hashtbl.replace names_tbl domain (SSet.add n s);
-  expanders_table := (QMap.add k v expanders_table.contents)
+  begin
+    Hashtbl.replace names_tbl domain (SSet.add n s);
+    expanders_table := (QMap.add k v expanders_table.contents)
+  end
 
 let expand_quotation loc ~expander  pos_tag quot =
   let open FanToken in
@@ -117,9 +119,11 @@ let expand loc (quotation : FanToken.quotation) (tag : 'a FanDyn.tag) =
         let expander = find loc name tag
         and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
         fun ()  ->
-          Stack.push quotation.q_name stack;
-          finally (fun _  -> Stack.pop stack)
-            (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
+          begin
+            Stack.push quotation.q_name stack;
+            finally ~action:(fun _  -> Stack.pop stack)
+              (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
+          end
       with
       | FanLoc.Exc_located (_,QuotationError _) as exc ->
           (fun ()  -> raise exc)
@@ -144,36 +148,40 @@ let quotation_error_to_string (name,position,ctx,exn) =
   let () =
     match ctx with
     | Finding  ->
-        (pp "finding quotation";
-         bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
-         QMap.iter
-           (fun (s,t)  _  ->
-              bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                (string_of_name s) ExpKey.print_tag t)
-           expanders_table.contents;
-         bprintf ppf "@]")
+        begin
+          pp "finding quotation";
+          bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
+          QMap.iter
+            (fun (s,t)  _  ->
+               bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
+                 (string_of_name s) ExpKey.print_tag t)
+            expanders_table.contents;
+          bprintf ppf "@]"
+        end
     | Expanding  -> pp "expanding quotation"
     | ParsingResult (loc,str) ->
-        (pp "parsing result of quotation";
-         (match dump_file.contents with
-          | Some dump_file ->
-              let () = bprintf ppf " dumping result...\n" in
-              (try
-                 let oc = open_out_bin dump_file in
-                 output_string oc str;
-                 output_string oc "\n";
-                 flush oc;
-                 close_out oc;
-                 bprintf ppf "%a:" FanLoc.print
-                   (FanLoc.set_file_name dump_file loc)
-               with
-               | _ ->
-                   bprintf ppf
-                     "Error while dumping result in file %S; dump aborted"
-                     dump_file)
-          | None  ->
-              bprintf ppf
-                "\n(consider setting variable AstQuotation.dump_file, or using the -QD option)"))
+        begin
+          pp "parsing result of quotation";
+          (match dump_file.contents with
+           | Some dump_file ->
+               let () = bprintf ppf " dumping result...\n" in
+               (try
+                  let oc = open_out_bin dump_file in
+                  begin
+                    output_string oc str; output_string oc "\n"; flush oc;
+                    close_out oc;
+                    bprintf ppf "%a:" FanLoc.print
+                      (FanLoc.set_file_name dump_file loc)
+                  end
+                with
+                | _ ->
+                    bprintf ppf
+                      "Error while dumping result in file %S; dump aborted"
+                      dump_file)
+           | None  ->
+               bprintf ppf
+                 "\n(consider setting variable AstQuotation.dump_file, or using the -QD option)")
+        end
     | NoName  -> pp "No default quotation name" in
   let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn) in
   Buffer.contents ppf
@@ -230,9 +238,10 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
          | None  -> subst_first_loc FanLoc.name.contents exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
-  add name FanDyn.exp_tag expand_exp;
-  add name FanDyn.pat_tag expand_pat;
-  add name FanDyn.stru_tag expand_stru
+  begin
+    add name FanDyn.exp_tag expand_exp; add name FanDyn.pat_tag expand_pat;
+    add name FanDyn.stru_tag expand_stru
+  end
 
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FanConfig.antiquotations, true)
@@ -272,11 +281,15 @@ let of_exp ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
-  add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
+  begin
+    add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
+  end
 
 let of_exp_with_filter ~name  ~entry  ~filter  =
   let expand_fun loc loc_name_opt s =
     filter (make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
-  add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
+  begin
+    add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun
+  end

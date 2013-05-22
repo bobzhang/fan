@@ -4,7 +4,7 @@
 true: warn(-41)
 true:-traverse
 <top>:precious
-<{cold,src,debug}/fan.ml>: warn(-33)
+<{cold,src,debug}/mkFan.ml>: warn(-33)
 <{cold,src,debug}/{oAstPrint,astPrint,astEq,fanSig,fanLoc,fanConfig,ast2pt,pAst2pt,sig,parsetreeHelper,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
 
 <{cold,src,debug}/{fanTop,fanEval,famlc,famlopt,fanOptCompile,fanCompile}.{ml,mli}>: use_ocamlcommon

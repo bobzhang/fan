@@ -20,10 +20,12 @@ let check_valid str =
          ((not (Char.is_digit (str.[1]))) &&
             (not (String.starts_with str "all_"))))
   then
-    (eprintf "%s is not a valid name" str;
-     eprintf
-       "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
-     exit 2)
+    begin
+      eprintf "%s is not a valid name" str;
+      eprintf
+        "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
+      exit 2
+    end
   else ()
 
 let preserve = ["self"; "self_type"; "unit"; "result"]
@@ -33,10 +35,11 @@ let check names =
     (fun name  ->
        if List.mem name preserve
        then
-         (eprintf "%s is not a valid name\n" name;
-          eprintf "preserved keywords:\n";
-          List.iter (fun s  -> eprintf "%s\n" s) preserve;
-          exit 2)
+         begin
+           eprintf "%s is not a valid name\n" name;
+           eprintf "preserved keywords:\n";
+           List.iter (fun s  -> eprintf "%s\n" s) preserve; exit 2
+         end
        else check_valid name) names
 
 let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
@@ -249,10 +252,13 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
            ~destination simple_exp_of_ctyp) tydcl
     else
-      (eprintf "Warning: %s as a abstract type no structure generated\n"
-         (ObjsN.dump_typedecl tydcl);
-       (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) : 
-       AstN.exp )) in
+      begin
+        eprintf "Warning: %s as a abstract type no structure generated\n"
+          (ObjsN.dump_typedecl tydcl);
+        (`App
+           ((`Lid "failwith"), (`Str "Abstract data type not implemented")) : 
+        AstN.exp )
+      end in
   match annot with
   | None  -> (`Bind ((`Lid fname), fun_exp) : AstN.bind )
   | Some x -> (`Bind ((`Lid fname), (`Constraint (fun_exp, x))) : AstN.bind )
@@ -271,18 +277,21 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
           (match named_types with
            | [] -> (`StExp (`Uid "()") : AstN.stru )
            | xs ->
-               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-                (let bind =
-                   List.reduce_right_with
-                     ~compose:(fun x  y  -> (`And (x, y) : AstN.bind ))
-                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
-                 (`Value (`Positive, bind) : AstN.stru ))))
+               begin
+                 List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
+                 (let bind =
+                    List.reduce_right_with
+                      ~compose:(fun x  y  -> (`And (x, y) : AstN.bind ))
+                      ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+                  (`Value (`Positive, bind) : AstN.stru ))
+               end)
       | `Single (name,tydcl) ->
-          (Hashset.add cxt name;
-           (let flag =
-              if CtypN.is_recursive tydcl then `Positive else `Negative
-            and bind = mk_bind tydcl in (`Value (flag, bind) : AstN.stru ))) : 
-     stru ) in
+          begin
+            Hashset.add cxt name;
+            (let flag =
+               if CtypN.is_recursive tydcl then `Positive else `Negative
+             and bind = mk_bind tydcl in (`Value (flag, bind) : AstN.stru ))
+          end : stru ) in
    let item =
      match lst with
      | [] -> (`StExp (`Uid "()") : AstN.stru )
@@ -341,10 +350,13 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
               AstN.clfield )) extras in
      sem_of_list (body @ items) in
    let v = CtypN.mk_obj class_name base body in
-   Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." pp_print_warning_type v) tbl;
-   (match module_name with
-    | None  -> v
-    | Some u -> (`Module ((`Uid u), (`Struct v)) : AstN.stru )) : stru )
+   begin
+     Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." pp_print_warning_type v)
+       tbl;
+     (match module_name with
+      | None  -> v
+      | Some u -> (`Module ((`Uid u), (`Struct v)) : AstN.stru ))
+   end : stru )
 
 let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App ((`Lid "failwith"), (`Str "arity >= 2 in other branches")) : 

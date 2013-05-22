@@ -150,17 +150,18 @@ let tree_failed entry prev_symb_result prev_symb tree =
              txt1 ^ (" or " ^ (txt ^ " expected")))
     | `Stry _|`Speek _|`Sopt _|`Stree _ -> txt ^ " expected"
     | _ -> txt ^ (" expected after " ^ (name_of_symbol entry prev_symb)) in
-  if FanConfig.verbose.contents
-  then
-    (let tree = tree_in_entry prev_symb tree entry.edesc in
-     let f = err_formatter in
-     pp f
-       ("@[<v 0>@,----------------------------------@," ^^
-          ("Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
-             "----------------------------------@,@]@.")) entry.ename
-       Gprint.text#rules (Gstru.flatten_tree tree))
-  else ();
-  txt ^ (" (in [" ^ (entry.ename ^ "])"))
+  begin
+    if FanConfig.verbose.contents
+    then
+      (let tree = tree_in_entry prev_symb tree entry.edesc in
+       let f = err_formatter in
+       pp f
+         ("@[<v 0>@,----------------------------------@," ^^
+            ("Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
+               "----------------------------------@,@]@.")) entry.ename
+         Gprint.text#rules (Gstru.flatten_tree tree))
+    else (); txt ^ (" (in [" ^ (entry.ename ^ "])"))
+  end
 
 let symb_failed entry prev_symb_result prev_symb symb =
   let tree = Node { node = symb; brother = DeadEnd; son = DeadEnd } in

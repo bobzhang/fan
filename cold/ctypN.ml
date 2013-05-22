@@ -198,7 +198,7 @@ let is_recursive ty_dcl =
           method! ctyp =
             function
             | (`Lid i : AstN.ctyp) when i = name ->
-                (is_recursive <- true; self)
+                begin is_recursive <- true; self end
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
         end in
@@ -278,9 +278,11 @@ let transform: full_id_transform -> vid -> exp =
              let () =
                if not (Hashtbl.mem BasicN.conversion_table src)
                then
-                 (Hashtbl.add BasicN.conversion_table src dest;
-                  Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
-                    dest) in
+                 begin
+                   Hashtbl.add BasicN.conversion_table src dest;
+                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
+                     dest
+                 end in
              (`Send ((`Lid "self"), (`Lid (f dest))) : AstN.exp ))
 
 let basic_transform =

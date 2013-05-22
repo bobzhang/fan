@@ -48,9 +48,10 @@ let check_not_tok s =
   | _ -> ()
 
 let new_type_var =
-  let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
+  let i = ref 0 in
+  fun ()  -> begin incr i; "e__" ^ (string_of_int i.contents) end
 
-let gensym = let i = ref 0 in fun ()  -> incr i; i
+let gensym = let i = ref 0 in fun ()  -> begin incr i; i end
 
 let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
 

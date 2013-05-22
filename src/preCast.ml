@@ -1,6 +1,6 @@
 open Format
 open Ast   
-
+open LibUtil
 
 
 
@@ -77,40 +77,53 @@ let register_bin_printer () =
 
 (*************************************************************************)
 (** prepare for parsing wrapper *)
+
+
+(** when the parser stopped*)
 let wrap directive_handler pa init_loc cs =
   let rec loop loc =
     let (pl, stopped_at_directive) = pa loc cs in
     match stopped_at_directive with
     | Some new_loc ->
-        (* let _ = Format.eprintf "Stopped at %a for directive processing@." FanLoc.print new_loc in *)
         let pl =
           match List.rev pl with
           | [] -> assert false
           | x :: xs ->
               match directive_handler x with
               | None -> xs
-              | Some x -> x :: xs
-        in (List.rev pl) @ (loop (FanLoc.join_end new_loc))
-    | None -> pl 
-  in loop init_loc
+              | Some x -> x :: xs in
+        List.rev pl @ (loop (FanLoc.join_end new_loc))
+    | None -> pl in
+  loop init_loc
     
 
 
     
 
 
-let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
-  let l = wrap directive_handler (Gram.parse Syntax.implem) _loc cs in
+let parse_implem ?(directive_handler = fun _ -> None) loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.implem) loc cs in
   match l with
   | [] -> None
   | l -> Some (AstLib.sem_of_list l)
 
 
-let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
-  let l = wrap directive_handler (Gram.parse Syntax.interf) _loc cs in
+let parse_interf ?(directive_handler = fun _ -> None) loc cs =
+  let l = wrap directive_handler (Gram.parse Syntax.interf) loc cs in
   match l with
   | [] -> None   
   | l -> Some (AstLib.sem_of_list l)
+
+let parse_file  ?directive_handler name pa = begin 
+  let loc = FanLoc.mk name in
+  let print_warning = eprintf "%a:\n%s@." FanLoc.print in
+  let  () = Syntax.current_warning := print_warning in
+  let ic = if name = "-" then stdin else open_in_bin name in
+  let clear () = if name = "-" then () else close_in ic in
+  let cs = XStream.of_channel ic in
+  finally ~action:clear (pa ?directive_handler loc) cs 
+end
+
         
 module CurrentPrinter  = struct
   let print_interf ?input_file ?output_file ast =

@@ -4,7 +4,7 @@ open FanLoc.Ops
 
 open Ast
 
-let _ = (); ()
+let _ = begin (); () end
 
 let loc_of =
   function

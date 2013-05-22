@@ -1,4 +1,4 @@
-let _ = (); ()
+let _ = begin (); () end
 
 type loc = FanLoc.t 
 

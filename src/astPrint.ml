@@ -502,10 +502,18 @@ class printer  ()= object(self:'self)
     | _ -> false
   method expression f x =
     match x.pexp_desc with
-    | Pexp_function _ | Pexp_match _ | Pexp_try _ | Pexp_sequence _
+    | Pexp_sequence _ ->
+        let rec sequence_helper acc = function
+          | {pexp_desc=Pexp_sequence(e1,e2);_} ->
+              sequence_helper (e1::acc) e2
+          | v -> List.rev (v::acc) in
+        let lst = sequence_helper [] x in
+        pp f "@[<hv2>begin@;@[<0>%a@]@;<1 -2>end@]"
+          (self#list self#under_semi#expression ~sep:";@;") lst
+    | Pexp_function _ | Pexp_match _ | Pexp_try _ (* | Pexp_sequence _ *)
       when pipe || semi ->
         self#paren true self#reset#expression f x
-    | Pexp_ifthenelse _ | Pexp_sequence _ when ifthenelse ->
+    | Pexp_ifthenelse _ (* | Pexp_sequence _ *) when ifthenelse ->
         self#paren true self#reset#expression f x
     | Pexp_let _ | Pexp_letmodule _ when semi ->
         self#paren true self#reset#expression f x
@@ -581,14 +589,7 @@ class printer  ()= object(self:'self)
           (fun f eo -> match eo with
           | Some x -> pp f "@;@[<2>else@;%a@]" self#under_semi#expression  x
           | None -> () (* pp f "()" *)) eo 
-    | Pexp_sequence _ ->
-        let rec sequence_helper acc = function
-          | {pexp_desc=Pexp_sequence(e1,e2);_} ->
-              sequence_helper (e1::acc) e2
-          | v -> List.rev (v::acc) in
-        let lst = sequence_helper [] x in
-        pp f "@[<hv>%a@]"
-          (self#list self#under_semi#expression ~sep:";@;") lst
+
     | Pexp_when (_e1, _e2) ->  assert false (*FIXME handled already in pattern *)
     | Pexp_new (li) ->
         pp f "@[<hov2>new@ %a@]" self#longident_loc li;

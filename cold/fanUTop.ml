@@ -10,16 +10,21 @@ let wrap parse_fun lb =
     let token_stream = Gram.filter not_filtered_token_stream in
     let (__strm :_ XStream.t)= token_stream in
     match XStream.peek __strm with
-    | Some (`EOI,_) -> (XStream.junk __strm; raise End_of_file)
+    | Some (`EOI,_) -> begin XStream.junk __strm; raise End_of_file end
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
       as x -> raise x
   | FanLoc.Exc_located (loc,y) ->
-      (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc
-         (Printexc.to_string y);
-       raise Exit)
-  | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
+      begin
+        Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc
+          (Printexc.to_string y);
+        raise Exit
+      end
+  | x ->
+      begin
+        Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit
+      end
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
@@ -34,7 +39,7 @@ let revise_parser str _bol =
     let not_filtered_token_stream = FanLexUtil.from_lexbuf lexbuf in
     let token_stream = Gram.filter not_filtered_token_stream in
     match XStream.peek token_stream with
-    | Some (`EOI,_) -> (XStream.junk token_stream; raise End_of_file)
+    | Some (`EOI,_) -> begin XStream.junk token_stream; raise End_of_file end
     | _ -> UTop.Value (toplevel_phrase token_stream)
   with
   | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
@@ -43,8 +48,10 @@ let revise_parser str _bol =
       UTop.Error ([(0, 0)], (Printexc.to_string y))
 
 let normal () =
-  UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;
-  Toploop.parse_use_file := Parse.use_file
+  begin
+    UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;
+    Toploop.parse_use_file := Parse.use_file
+  end
 
 let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
 
@@ -55,9 +62,11 @@ let _ = revise ()
 let () = UTop_main.main ()
 
 let _ =
-  Hashtbl.replace Toploop.directive_table "revise"
-    (Toploop.Directive_none (fun ()  -> revise ()));
-  Hashtbl.replace Toploop.directive_table "pwd"
-    (Toploop.Directive_none (fun ()  -> prerr_endline (Sys.getcwd ())));
-  Hashtbl.replace Toploop.directive_table "normal"
-    (Toploop.Directive_none (fun ()  -> normal ()))
+  begin
+    Hashtbl.replace Toploop.directive_table "revise"
+      (Toploop.Directive_none (fun ()  -> revise ()));
+    Hashtbl.replace Toploop.directive_table "pwd"
+      (Toploop.Directive_none (fun ()  -> prerr_endline (Sys.getcwd ())));
+    Hashtbl.replace Toploop.directive_table "normal"
+      (Toploop.Directive_none (fun ()  -> normal ()))
+  end

@@ -62,8 +62,10 @@ let env_to_array env =
   | [] -> assert false
   | (_,x)::rem ->
       let res = Array.create 257 x in
-      (List.iter
-         (fun (c,y)  ->
-            List.iter (fun (i,j)  -> for k = i to j do res.(k) <- y done) c)
-         rem;
-       res)
+      begin
+        List.iter
+          (fun (c,y)  ->
+             List.iter (fun (i,j)  -> for k = i to j do res.(k) <- y done) c)
+          rem;
+        res
+      end
