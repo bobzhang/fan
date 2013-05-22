@@ -215,7 +215,7 @@
   meta_int,.. in the compile time? to get rid of the dependency ?
 
   
-* 23 relax ipat
+* DONE 23 relax ipat
 
   now fan accepts such function
 
