@@ -2821,39 +2821,39 @@ let apply () =
                        | _ ->
                            failwith
                              "`ModuleConstraint (_loc, m, (mk_anti _loc n s))\n"))));
-             ([`Skeyword "("; `Sself; `Skeyword ")"],
-               ("Gram.mk_action (fun _  (p : 'ipat)  _  (_loc : FanLoc.t)  -> (p : 'ipat ))\n",
-                 (Gram.mk_action
-                    (fun _  (p : 'ipat)  _  (_loc : FanLoc.t)  ->
-                       (p : 'ipat )))));
              ([`Skeyword "(";
-              `Sself;
+              `Snterm (Gram.obj (pat : 'pat Gram.t ));
+              `Skeyword ")"],
+               ("Gram.mk_action (fun _  (p : 'pat)  _  (_loc : FanLoc.t)  -> (p : 'ipat ))\n",
+                 (Gram.mk_action
+                    (fun _  (p : 'pat)  _  (_loc : FanLoc.t)  -> (p : 'ipat )))));
+             ([`Skeyword "(";
+              `Snterm (Gram.obj (pat : 'pat Gram.t ));
               `Skeyword ":";
               `Snterm (Gram.obj (ctyp : 'ctyp Gram.t ));
               `Skeyword ")"],
-               ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  (p : 'ipat)  _  (_loc : FanLoc.t)  ->\n     ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat ))\n",
+               ("Gram.mk_action\n  (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : FanLoc.t)  ->\n     ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat ))\n",
                  (Gram.mk_action
-                    (fun _  (t : 'ctyp)  _  (p : 'ipat)  _  (_loc : FanLoc.t)
-                        -> ((`Constraint (_loc, p, t) : FAst.pat ) : 
-                       'ipat )))));
+                    (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : FanLoc.t) 
+                       -> ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat )))));
              ([`Skeyword "(";
-              `Sself;
+              `Snterm (Gram.obj (pat : 'pat Gram.t ));
               `Skeyword "as";
               `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ));
               `Skeyword ")"],
-               ("Gram.mk_action\n  (fun _  (s : 'a_lident)  _  (p : 'ipat)  _  (_loc : FanLoc.t)  ->\n     ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat ))\n",
+               ("Gram.mk_action\n  (fun _  (s : 'a_lident)  _  (p : 'pat)  _  (_loc : FanLoc.t)  ->\n     ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat ))\n",
                  (Gram.mk_action
-                    (fun _  (s : 'a_lident)  _  (p : 'ipat)  _ 
+                    (fun _  (s : 'a_lident)  _  (p : 'pat)  _ 
                        (_loc : FanLoc.t)  ->
                        ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat )))));
              ([`Skeyword "(";
-              `Sself;
+              `Snterm (Gram.obj (pat : 'pat Gram.t ));
               `Skeyword ",";
               `Snterm (Gram.obj (comma_ipat : 'comma_ipat Gram.t ));
               `Skeyword ")"],
-               ("Gram.mk_action\n  (fun _  (pl : 'comma_ipat)  _  (p : 'ipat)  _  (_loc : FanLoc.t)  ->\n     ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 'ipat ))\n",
+               ("Gram.mk_action\n  (fun _  (pl : 'comma_ipat)  _  (p : 'pat)  _  (_loc : FanLoc.t)  ->\n     ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 'ipat ))\n",
                  (Gram.mk_action
-                    (fun _  (pl : 'comma_ipat)  _  (p : 'ipat)  _ 
+                    (fun _  (pl : 'comma_ipat)  _  (p : 'pat)  _ 
                        (_loc : FanLoc.t)  ->
                        ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
                        'ipat )))));
@@ -2875,6 +2875,12 @@ let apply () =
                        | _ ->
                            failwith
                              "AstQuotation.expand _loc x FanDyn.pat_tag\n"))));
+             ([`Skeyword "`";
+              `Snterm (Gram.obj (luident : 'luident Gram.t ))],
+               ("Gram.mk_action\n  (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->\n     ((`Vrn (_loc, s) : FAst.pat ) : 'ipat ))\n",
+                 (Gram.mk_action
+                    (fun (s : 'luident)  _  (_loc : FanLoc.t)  ->
+                       ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
              ([`Skeyword "_"],
                ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> ((`Any _loc : FAst.pat ) : 'ipat ))\n",
                  (Gram.mk_action

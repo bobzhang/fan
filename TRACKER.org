@@ -213,3 +213,15 @@
   
 * 22 synthesize the
   meta_int,.. in the compile time? to get rid of the dependency ?
+
+  
+* 23 relax ipat
+
+  now fan accepts such function
+
+  #+BEGIN_SRC ocaml
+    let pp_print_ant: Format.formatter -> FAst.ant -> unit =
+      function fmt  (`Ant (_a0,_a1))  ->
+        Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
+          FanUtil.pp_print_anti_cxt _a1
+  #+END_SRC

@@ -558,8 +558,6 @@ let apply () = begin
         | "-"; `NATIVEINT(_,s) -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
-
-        (* | "["; sem_pat_for_list{mk_list}; "::"; pat{last}; "]" -> mk_list last *)
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
               
         | "[|"; "|]" -> `ArrayEmpty(_loc)
@@ -608,6 +606,7 @@ let apply () = begin
             `OptLablExpr(_loc,`Lid(_loc,""),p,e)
             (* {| ? ($p = $e) |}; *)
         ] }
+
        ipat:
         [ "{"; label_pat_list{pl}; "}" ->
           {| { $pl }|}
@@ -616,18 +615,24 @@ let apply () = begin
         | "("; ")" -> {| () |}
         | "("; "module"; a_uident{m}; ")" -> `ModuleUnpack(_loc,m)
             (* {| (module $m) |} *)
-        | "("; "module"; a_uident{m}; ":"; (* package_type *)mtyp{pt}; ")" ->
+        | "("; "module"; a_uident{m}; ":";  mtyp{pt}; ")" ->
              `ModuleConstraint (_loc, m, ( (`Package (_loc, pt))))
               (* {| (module $m : $pt )|} *)
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
              `ModuleConstraint (_loc, m, mk_anti _loc  n s)
             (* {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|} *)
-        | "("; S{p}; ")" -> p (* relax? *)
-        | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
-        | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
-        | "("; S{p}; ","; comma_ipat{pl}; ")" -> {| ($p, $pl) |}
+
+        (* when change [pat], we need to take care of the following terms
+           for factorization *)      
+        | "("; pat{p}; ")" -> p
+        | "("; pat{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
+        | "("; pat{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
+        | "("; pat{p}; ","; comma_ipat{pl}; ")" -> {| ($p, $pl) |}
+              
         | a_lident{s} ->  (s: alident :> pat)
-        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.pat_tag                            
+              
+        | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.pat_tag
+        | "`"; luident{s} -> {|$vrn:s|}              
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}

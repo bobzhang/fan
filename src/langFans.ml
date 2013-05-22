@@ -20,7 +20,7 @@ let g = Gram.create_lexer
 
 
 {:create|(g:Gram.t)  fan_quot fan_quots|};;
-
+let _ = 
 with exp
 {:extend|
 fan_quot:
