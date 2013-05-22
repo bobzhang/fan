@@ -1,13 +1,13 @@
 
 
 (*************************************************************************)
-(** antiquot filter for Ast without locations, slightly different from [Ant] *)
+(** antiquot filter for FAst without locations, slightly different from [Ant] *)
 (*************************************************************************)    
 (* when the antiquotation appears in the pattern position,
    its final context is [pat] *)  
 
 
-open Ast
+open FAst
   
 val antiquot_expander :
   parse_pat:(loc -> string -> pat) ->

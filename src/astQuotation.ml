@@ -1,4 +1,4 @@
-open Ast
+open FAst
 open LibUtil
 open FanToken
 open Format
@@ -359,12 +359,12 @@ let of_case_with_filter ~name  ~entry  ~filter  =
 let of_exp ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
   (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun)
 
 let of_exp_with_filter ~name  ~entry  ~filter  =
   let expand_fun loc loc_name_opt s =
     filter (make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : Ast.stru ) in
+    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
   (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun)

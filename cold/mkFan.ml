@@ -18,15 +18,15 @@ let efilter str e =
   let e = exp_filter e in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str))))) : 
-    Ast.exp )
+     (_loc, e, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
+    FAst.exp )
 
 let pfilter str e =
   let p = pat_filter e in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "Ast")), (`Lid (_loc, str))))) : 
-    Ast.pat )
+     (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
+    FAst.pat )
 
 let d = `Absolute ["Fan"; "Lang"]
 
@@ -180,16 +180,6 @@ let _ =
       (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
   end
 
-let _ =
-  Options.add
-    ("-dlang",
-      (FanArg.String
-         (fun s  ->
-            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
-      " Set the default language")
-
-open Syntax
-
 let p = Gram.mk "p"
 
 let _ =
@@ -199,7 +189,7 @@ let _ =
         [([`Snterm (Gram.obj (pat : 'pat Gram.t ));
           `Skeyword "when";
           `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     Ast.exp ) : 'p ))\n",
+           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
              (Gram.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->
                    ((`Fun
@@ -209,7 +199,7 @@ let _ =
                               (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
                               (`Case
                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                   Ast.exp ) : 'p )))));
+                   FAst.exp ) : 'p )))));
         ([`Snterm (Gram.obj (pat : 'pat Gram.t ))],
           ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FanLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
             (Gram.mk_action
@@ -248,15 +238,15 @@ let efilter str e =
   let e = exp_filter_n e in
   let _loc = loc_of e in
   (`Constraint
-     (_loc, e, (`Dot (_loc, (`Uid (_loc, "AstN")), (`Lid (_loc, str))))) : 
-    Ast.exp )
+     (_loc, e, (`Dot (_loc, (`Uid (_loc, "FAstN")), (`Lid (_loc, str))))) : 
+    FAst.exp )
 
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
   (`Constraint
-     (_loc, p, (`Dot (_loc, (`Uid (_loc, "AstN")), (`Lid (_loc, str))))) : 
-    Ast.pat )
+     (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAstN")), (`Lid (_loc, str))))) : 
+    FAst.pat )
 
 let _ =
   begin

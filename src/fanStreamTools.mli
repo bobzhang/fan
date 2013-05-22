@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 type spat_comp =
   | SpWhen of FanLoc.t * pat * exp option

@@ -1,4 +1,4 @@
-open AstN
+open FAstN
 open CtypN
 open FSigUtil
 
@@ -54,7 +54,7 @@ val check : string list -> unit
 
 
 
-(** collect the [partial evaluated Ast node] and meta data
+(** collect the [partial evaluated FAst node] and meta data
    The input [y] is handled by [simple_exp_of_ctyp], generally it will
    be  exlcuding adt or variant type
 

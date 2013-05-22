@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 open AstLib
 
@@ -147,7 +147,7 @@ let _ =
                            match __fan_1 with
                            | `Lid x -> ((_loc, x, y, (Some t)) : 'e__3 )
                            | _ -> failwith "(_loc, x, y, (Some t))\n"))))])],
-             ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t ->\n            let t = (t : vid  :>exp) in\n            (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : Ast.exp )\n        | `dynamic (x,t) ->\n            let x = (x : vid  :>exp) in\n            let t = (t : vid  :>exp) in\n            (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n              Ast.exp ) in\n      sem_of_list &\n        (List.map\n           (fun (_loc,x,descr,ty)  ->\n              match (descr, ty) with\n              | (Some d,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, d))))))) : \n                  Ast.stru )\n              | (Some d,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, d)))),\n                                 typ))))) : Ast.stru )\n              | (None ,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, x))))))) : \n                  Ast.stru )\n              | (None ,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, x)))),\n                                 typ))))) : Ast.stru )) ls) : 'nonterminals ))\n",
+             ("Gram.mk_action\n  (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->\n     (let mk =\n        match t with\n        | `static t ->\n            let t = (t : vid  :>exp) in\n            (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n        | `dynamic (x,t) ->\n            let x = (x : vid  :>exp) in\n            let t = (t : vid  :>exp) in\n            (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n              FAst.exp ) in\n      sem_of_list &\n        (List.map\n           (fun (_loc,x,descr,ty)  ->\n              match (descr, ty) with\n              | (Some d,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, d))))))) : \n                  FAst.stru )\n              | (Some d,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, d)))),\n                                 typ))))) : FAst.stru )\n              | (None ,None ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`App (_loc, mk, (`Str (_loc, x))))))) : \n                  FAst.stru )\n              | (None ,Some typ) ->\n                  (`Value\n                     (_loc, (`Negative _loc),\n                       (`Bind\n                          (_loc, (`Lid (_loc, x)),\n                            (`Constraint\n                               (_loc, (`App (_loc, mk, (`Str (_loc, x)))),\n                                 typ))))) : FAst.stru )) ls) : 'nonterminals ))\n",
                (Gram.mk_action
                   (fun (ls : 'e__3 list)  (t : 'e__1)  (_loc : FanLoc.t)  ->
                      (let mk =
@@ -155,7 +155,7 @@ let _ =
                         | `static t ->
                             let t = (t : vid  :>exp) in
                             (`Field (_loc, t, (`Lid (_loc, "mk"))) : 
-                              Ast.exp )
+                              FAst.exp )
                         | `dynamic (x,t) ->
                             let x = (x : vid  :>exp) in
                             let t = (t : vid  :>exp) in
@@ -163,7 +163,7 @@ let _ =
                                (_loc,
                                  (`Field
                                     (_loc, t, (`Lid (_loc, "mk_dynamic")))),
-                                 x) : Ast.exp ) in
+                                 x) : FAst.exp ) in
                       sem_of_list &
                         (List.map
                            (fun (_loc,x,descr,ty)  ->
@@ -175,7 +175,7 @@ let _ =
                                           (_loc, (`Lid (_loc, x)),
                                             (`App
                                                (_loc, mk, (`Str (_loc, d))))))) : 
-                                  Ast.stru )
+                                  FAst.stru )
                               | (Some d,Some typ) ->
                                   (`Value
                                      (_loc, (`Negative _loc),
@@ -186,7 +186,7 @@ let _ =
                                                  (`App
                                                     (_loc, mk,
                                                       (`Str (_loc, d)))),
-                                                 typ))))) : Ast.stru )
+                                                 typ))))) : FAst.stru )
                               | (None ,None ) ->
                                   (`Value
                                      (_loc, (`Negative _loc),
@@ -194,7 +194,7 @@ let _ =
                                           (_loc, (`Lid (_loc, x)),
                                             (`App
                                                (_loc, mk, (`Str (_loc, x))))))) : 
-                                  Ast.stru )
+                                  FAst.stru )
                               | (None ,Some typ) ->
                                   (`Value
                                      (_loc, (`Negative _loc),
@@ -205,7 +205,7 @@ let _ =
                                                  (`App
                                                     (_loc, mk,
                                                       (`Str (_loc, x)))),
-                                                 typ))))) : Ast.stru )) ls) : 
+                                                 typ))))) : FAst.stru )) ls) : 
                      'nonterminals )))))]));
     Gram.extend_single (nonterminalsclear : 'nonterminalsclear Gram.t )
       (None,
@@ -218,7 +218,7 @@ let _ =
                       (Gram.mk_action
                          (fun (x : 'a_lident)  (_loc : FanLoc.t)  ->
                             (x : 'e__4 )))))])],
-             ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun (x : alident)  ->\n             let x = (x : alident  :>exp) in\n             let _loc = loc_of x in\n             let t = (t : vid  :>exp) in\n             (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n               Ast.exp )) ls in\n      seq_sem rest : 'nonterminalsclear ))\n",
+             ("Gram.mk_action\n  (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->\n     (let rest =\n        List.map\n          (fun (x : alident)  ->\n             let x = (x : alident  :>exp) in\n             let _loc = loc_of x in\n             let t = (t : vid  :>exp) in\n             (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n               FAst.exp )) ls in\n      seq_sem rest : 'nonterminalsclear ))\n",
                (Gram.mk_action
                   (fun (ls : 'e__4 list)  (t : 'qualuid)  (_loc : FanLoc.t) 
                      ->
@@ -231,7 +231,7 @@ let _ =
                              (`App
                                 (_loc,
                                   (`Field (_loc, t, (`Lid (_loc, "clear")))),
-                                  x) : Ast.exp )) ls in
+                                  x) : FAst.exp )) ls in
                       seq_sem rest : 'nonterminalsclear )))))]))
   end
 
@@ -459,7 +459,7 @@ let _ =
             `Skeyword ":";
             `Sopt (`Snterm (Gram.obj (position : 'position Gram.t )));
             `Snterm (Gram.obj (level_list : 'level_list Gram.t ))],
-             ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     (begin\n        (match n with | `name old -> AstQuotation.default := old | _ -> ());\n        (match (pos, levels) with\n         | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : Ast.exp),`Group _) ->\n             failwithf\n               \"For Group levels the position can not be applied to Level\"\n         | _ -> mk_entry ~name:p ~pos ~levels)\n      end : 'entry ))\n",
+             ("Gram.mk_action\n  (fun (levels : 'level_list)  (pos : 'position option)  _ \n     ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->\n     (begin\n        (match n with | `name old -> AstQuotation.default := old | _ -> ());\n        (match (pos, levels) with\n         | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n             failwithf\n               \"For Group levels the position can not be applied to Level\"\n         | _ -> mk_entry ~name:p ~pos ~levels)\n      end : 'entry ))\n",
                (Gram.mk_action
                   (fun (levels : 'level_list)  (pos : 'position option)  _ 
                      ((n,p) : 'entry_name)  (_loc : FanLoc.t)  ->
@@ -469,7 +469,7 @@ let _ =
                          | _ -> ());
                         (match (pos, levels) with
                          | (Some
-                            (`App (_loc,`Vrn (_,"Level"),_) : Ast.exp),
+                            (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),
                             `Group _) ->
                              failwithf
                                "For Group levels the position can not be applied to Level"
@@ -481,30 +481,30 @@ let _ =
           [([`Stoken
                (((function | `Uid ("First"|"Last") -> true | _ -> false)),
                  (`Normal, "`Uid (\"First\"|\"Last\")"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"First\"|\"Last\" as x) ->\n         ((`Vrn (_loc, x) : Ast.exp ) : 'position )\n     | _ -> failwith \"(`Vrn (_loc, x) : Ast.exp )\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"First\"|\"Last\" as x) ->\n         ((`Vrn (_loc, x) : FAst.exp ) : 'position )\n     | _ -> failwith \"(`Vrn (_loc, x) : FAst.exp )\n\")\n",
                (Gram.mk_action
                   (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                      match __fan_0 with
                      | `Uid ("First"|"Last" as x) ->
-                         ((`Vrn (_loc, x) : Ast.exp ) : 'position )
-                     | _ -> failwith "(`Vrn (_loc, x) : Ast.exp )\n"))));
+                         ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                     | _ -> failwith "(`Vrn (_loc, x) : FAst.exp )\n"))));
           ([`Stoken
               (((function
                  | `Uid ("Before"|"After"|"Level") -> true
                  | _ -> false)),
                 (`Normal, "`Uid (\"Before\"|\"After\"|\"Level\")"));
            `Snterm (Gram.obj (string : 'string Gram.t ))],
-            ("Gram.mk_action\n  (fun (n : 'string)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"Before\"|\"After\"|\"Level\" as x) ->\n         ((`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp ) : 'position )\n     | _ -> failwith \"(`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp )\n\")\n",
+            ("Gram.mk_action\n  (fun (n : 'string)  (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"Before\"|\"After\"|\"Level\" as x) ->\n         ((`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp ) : 'position )\n     | _ -> failwith \"(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n\")\n",
               (Gram.mk_action
                  (fun (n : 'string)  (__fan_0 : [> FanToken.t]) 
                     (_loc : FanLoc.t)  ->
                     match __fan_0 with
                     | `Uid ("Before"|"After"|"Level" as x) ->
-                        ((`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp ) : 
+                        ((`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp ) : 
                         'position )
                     | _ ->
                         failwith
-                          "(`App (_loc, (`Vrn (_loc, x)), n) : Ast.exp )\n"))));
+                          "(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
@@ -562,13 +562,13 @@ let _ =
           [([`Stoken
                (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
                  (`Normal, "`Uid (\"LA\"|\"RA\"|\"NA\")"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"LA\"|\"RA\"|\"NA\" as x) -> ((`Vrn (_loc, x) : Ast.exp ) : 'assoc )\n     | _ -> failwith \"(`Vrn (_loc, x) : Ast.exp )\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"LA\"|\"RA\"|\"NA\" as x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )\n     | _ -> failwith \"(`Vrn (_loc, x) : FAst.exp )\n\")\n",
                (Gram.mk_action
                   (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                      match __fan_0 with
                      | `Uid ("LA"|"RA"|"NA" as x) ->
-                         ((`Vrn (_loc, x) : Ast.exp ) : 'assoc )
-                     | _ -> failwith "(`Vrn (_loc, x) : Ast.exp )\n"))));
+                         ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                     | _ -> failwith "(`Vrn (_loc, x) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
@@ -773,7 +773,7 @@ let _ =
                        ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
                        ~pattern:None : 'symbol )))));
           ([`Snterm (Gram.obj (simple_pat : 'simple_pat Gram.t ))],
-            ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 (`App\n                    (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                      (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))) : \n                 Ast.exp ))\n              (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y) : \n              Ast.exp ) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
+            ("Gram.mk_action\n  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->\n     (let (p,ls) =\n        Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\n      match ls with\n      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n      | (x,y)::ys ->\n          let restrict =\n            List.fold_left\n              (fun acc  (x,y)  ->\n                 (`App\n                    (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                      (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))) : \n                 FAst.exp ))\n              (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y) : \n              FAst.exp ) ys in\n          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 'symbol ))\n",
               (Gram.mk_action
                  (fun (p : 'simple_pat)  (_loc : FanLoc.t)  ->
                     (let (p,ls) =
@@ -791,10 +791,10 @@ let _ =
                                      (`App
                                         (_loc,
                                           (`App (_loc, (`Lid (_loc, "=")), x)),
-                                          y))) : Ast.exp ))
+                                          y))) : FAst.exp ))
                              (`App
                                 (_loc, (`App (_loc, (`Lid (_loc, "=")), x)),
-                                  y) : Ast.exp ) ys in
+                                  y) : FAst.exp ) ys in
                          mk_tok _loc ~restrict ~pattern:p (`Tok _loc) : 
                     'symbol )))));
           ([`Stoken
@@ -1038,12 +1038,13 @@ let _ =
           [([`Stoken
                (((function | `STR (_,_) -> true | _ -> false)),
                  (`Normal, "`STR (_,_)"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) -> ((`Str (_loc, s) : Ast.exp ) : 'string )\n     | _ -> failwith \"(`Str (_loc, s) : Ast.exp )\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `STR (_,s) -> ((`Str (_loc, s) : FAst.exp ) : 'string )\n     | _ -> failwith \"(`Str (_loc, s) : FAst.exp )\n\")\n",
                (Gram.mk_action
                   (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
                      match __fan_0 with
-                     | `STR (_,s) -> ((`Str (_loc, s) : Ast.exp ) : 'string )
-                     | _ -> failwith "(`Str (_loc, s) : Ast.exp )\n"))));
+                     | `STR (_,s) ->
+                         ((`Str (_loc, s) : FAst.exp ) : 'string )
+                     | _ -> failwith "(`Str (_loc, s) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
                 (`Normal, "`Ant (\"\",_)"))],

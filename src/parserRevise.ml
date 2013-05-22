@@ -1,4 +1,4 @@
-open Ast
+open FAst
 open AstLib
 open FanOps
 open Syntax
@@ -622,11 +622,11 @@ let apply () = begin
         | "(";"module"; a_uident{m};":"; `Ant(("opt" as n),s ); ")" ->
              `ModuleConstraint (_loc, m, mk_anti _loc  n s)
             (* {| (module $m : $(opt: `Ant(_loc,mk_anti n s)))|} *)
-        | "("; S{p}; ")" -> p
+        | "("; S{p}; ")" -> p (* relax? *)
         | "("; S{p}; ":"; ctyp{t}; ")" -> {| ($p : $t) |}
         | "("; S{p}; "as"; a_lident{s}; ")" -> {| ($p as $s) |}
         | "("; S{p}; ","; comma_ipat{pl}; ")" -> {| ($p, $pl) |}
-        | a_lident{s} -> (* {| $(id:(s:>ident)) |} *) (s: alident :> pat)
+        | a_lident{s} ->  (s: alident :> pat)
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.pat_tag                            
         | "_" -> {| _ |}
         | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
@@ -975,8 +975,10 @@ let apply () = begin
       class_signature:
       [ `Ant ((""|"csg" as n),s) -> mk_anti _loc  ~c:"clsigi" n s
       | `Ant((""|"csg" as n),s);";" -> mk_anti _loc  ~c:"clsigi" n s
-      | `Ant ((""|"csg" as n),s); S{csg} -> (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : Ast.clsigi )            
-      | `Ant ((""|"csg" as n),s);";"; S{csg} -> (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : Ast.clsigi )
+      | `Ant ((""|"csg" as n),s); S{csg} ->
+          (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : FAst.clsigi )            
+      | `Ant ((""|"csg" as n),s);";"; S{csg} ->
+          (`Sem (_loc, mk_anti _loc ~c:"clsigi" n s, csg) : FAst.clsigi )
       | clsigi{csg} -> csg
       | clsigi{csg};";" -> csg            
       | clsigi{csg};";";S{xs} -> `Sem(_loc,csg,xs)

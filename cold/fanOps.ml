@@ -1,6 +1,6 @@
 open LibUtil
 
-open Ast
+open FAst
 
 open AstLib
 
@@ -96,11 +96,11 @@ let ident_of_ctyp: ctyp -> ident =
 let rec is_irrefut_pat (x : pat) =
   match x with
   | `Lid _ -> true
-  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Uid (_loc,"()") : Ast.pat) -> true
-  | (`Any _loc : Ast.pat) -> true
+  | `ArrayEmpty _loc|`LabelS (_loc,_)|(`Uid (_loc,"()") : FAst.pat) -> true
+  | (`Any _loc : FAst.pat) -> true
   | `Dot (_,_,y) -> is_irrefut_pat (y : vid  :>pat)
-  | (`Alias (_loc,x,_) : Ast.pat) -> is_irrefut_pat x
-  | (`Record (_loc,p) : Ast.pat) ->
+  | (`Alias (_loc,x,_) : FAst.pat) -> is_irrefut_pat x
+  | (`Record (_loc,p) : FAst.pat) ->
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
         (list_of_sem p [])
@@ -116,11 +116,11 @@ let rec is_irrefut_pat (x : pat) =
   | `Uid _ -> false
   | `ModuleUnpack _|`ModuleConstraint _ -> true
   | `Ant _ -> false
-  | `Vrn (_loc,_)|(`Str (_loc,_) : Ast.pat)|(`PaRng (_loc,_,_) : Ast.pat)
-    |(`Flo (_loc,_) : Ast.pat)|(`Nativeint (_loc,_) : Ast.pat)
-    |(`Int64 (_loc,_) : Ast.pat)|(`Int32 (_loc,_) : Ast.pat)
-    |(`Int (_loc,_) : Ast.pat)|(`Chr (_loc,_) : Ast.pat)
-    |(`ClassPath (_loc,_) : Ast.pat)|(`Array (_loc,_) : Ast.pat) -> false
+  | `Vrn (_loc,_)|(`Str (_loc,_) : FAst.pat)|(`PaRng (_loc,_,_) : FAst.pat)
+    |(`Flo (_loc,_) : FAst.pat)|(`Nativeint (_loc,_) : FAst.pat)
+    |(`Int64 (_loc,_) : FAst.pat)|(`Int32 (_loc,_) : FAst.pat)
+    |(`Int (_loc,_) : FAst.pat)|(`Chr (_loc,_) : FAst.pat)
+    |(`ClassPath (_loc,_) : FAst.pat)|(`Array (_loc,_) : FAst.pat) -> false
 
 let array_of_array arr =
   match arr with
@@ -135,8 +135,8 @@ let meta_array mf_a _loc ls =
 let bigarray_get loc arr arg =
   let coords =
     match arg with
-    | (`Par (_loc,`Com (_,e1,e2)) : Ast.exp)|(`Com (_loc,e1,e2) : Ast.exp) ->
-        list_of_com e1 (list_of_com e2 [])
+    | (`Par (_loc,`Com (_,e1,e2)) : FAst.exp)|(`Com (_loc,e1,e2) : FAst.exp)
+        -> list_of_com e1 (list_of_com e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"
@@ -148,7 +148,7 @@ let bigarray_get loc arr arg =
                 (`Dot
                    (loc, (`Uid (loc, "Bigarray")),
                      (`Dot (loc, (`Uid (loc, "Array1")), (`Lid (loc, "get")))))),
-                arr)), c1) : Ast.exp )
+                arr)), c1) : FAst.exp )
   | c1::c2::[] ->
       (`App
          (loc,
@@ -161,7 +161,7 @@ let bigarray_get loc arr arg =
                           (`Dot
                              (loc, (`Uid (loc, "Array2")),
                                (`Lid (loc, "get")))))), arr)), c1)), c2) : 
-      Ast.exp )
+      FAst.exp )
   | c1::c2::c3::[] ->
       (`App
          (loc,
@@ -176,7 +176,7 @@ let bigarray_get loc arr arg =
                                (`Dot
                                   (loc, (`Uid (loc, "Array3")),
                                     (`Lid (loc, "get")))))), arr)), c1)), c2)),
-           c3) : Ast.exp )
+           c3) : FAst.exp )
   | c1::c2::c3::coords ->
       (`App
          (loc,
@@ -192,7 +192,7 @@ let bigarray_get loc arr arg =
                 (`Sem
                    (loc, c1,
                      (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords)))))))))) : 
-      Ast.exp )
+      FAst.exp )
 
 let bigarray_set loc var newval =
   match var with
@@ -202,7 +202,7 @@ let bigarray_set loc var newval =
                     (_,`Uid (_,"Bigarray"),`Dot
                                              (_,`Uid (_,"Array1"),`Lid
                                                                     (_,"get"))),arr),c1)
-      : Ast.exp) ->
+      : FAst.exp) ->
       Some
         (`App
            (loc,
@@ -215,7 +215,7 @@ let bigarray_set loc var newval =
                             (`Dot
                                (loc, (`Uid (loc, "Array1")),
                                  (`Lid (loc, "set")))))), arr)), c1)),
-             newval) : Ast.exp )
+             newval) : FAst.exp )
   | (`App
        (_loc,`App
                (_,`App
@@ -223,7 +223,7 @@ let bigarray_set loc var newval =
                          (_,`Uid (_,"Bigarray"),`Dot
                                                   (_,`Uid (_,"Array2"),
                                                    `Lid (_,"get"))),arr),c1),c2)
-      : Ast.exp) ->
+      : FAst.exp) ->
       Some
         (`App
            (loc,
@@ -238,7 +238,7 @@ let bigarray_set loc var newval =
                                  (`Dot
                                     (loc, (`Uid (loc, "Array2")),
                                       (`Lid (loc, "set")))))), arr)), c1)),
-                  c2)), newval) : Ast.exp )
+                  c2)), newval) : FAst.exp )
   | (`App
        (_loc,`App
                (_,`App
@@ -247,7 +247,7 @@ let bigarray_set loc var newval =
                               (_,`Uid (_,"Bigarray"),`Dot
                                                        (_,`Uid (_,"Array3"),
                                                         `Lid (_,"get"))),arr),c1),c2),c3)
-      : Ast.exp) ->
+      : FAst.exp) ->
       Some
         (`Assign
            (loc,
@@ -267,7 +267,7 @@ let bigarray_set loc var newval =
                                               (loc, (`Uid (loc, "Array3")),
                                                 (`Lid (loc, "get")))))), arr)),
                                  c1)), c2)), c3)), (`Lid (loc, "contents")))),
-             newval) : Ast.exp )
+             newval) : FAst.exp )
   | (`App
        (_loc,`App
                (_,`Dot
@@ -275,7 +275,7 @@ let bigarray_set loc var newval =
                                              (_,`Uid (_,"Genarray"),`Lid
                                                                     (_,"get"))),arr),
         `Array (_,coords))
-      : Ast.exp) ->
+      : FAst.exp) ->
       Some
         (`App
            (loc,
@@ -288,7 +288,7 @@ let bigarray_set loc var newval =
                             (`Dot
                                (loc, (`Uid (loc, "Genarray")),
                                  (`Lid (loc, "set")))))), arr)),
-                  (`Array (loc, coords)))), newval) : Ast.exp )
+                  (`Array (loc, coords)))), newval) : FAst.exp )
   | _ -> None
 
 let mksequence ?loc  =
@@ -313,10 +313,12 @@ let rec to_lid =
 
 let mkumin loc prefix arg =
   match arg with
-  | (`Int (_loc,n) : Ast.exp) -> (`Int (loc, (String.neg n)) : Ast.exp )
-  | (`Int32 (_loc,n) : Ast.exp) -> (`Int32 (loc, (String.neg n)) : Ast.exp )
-  | (`Int64 (_loc,n) : Ast.exp) -> (`Int64 (loc, (String.neg n)) : Ast.exp )
-  | (`Nativeint (_loc,n) : Ast.exp) ->
-      (`Nativeint (loc, (String.neg n)) : Ast.exp )
-  | (`Flo (_loc,n) : Ast.exp) -> (`Flo (loc, (String.neg n)) : Ast.exp )
-  | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : Ast.exp )
+  | (`Int (_loc,n) : FAst.exp) -> (`Int (loc, (String.neg n)) : FAst.exp )
+  | (`Int32 (_loc,n) : FAst.exp) ->
+      (`Int32 (loc, (String.neg n)) : FAst.exp )
+  | (`Int64 (_loc,n) : FAst.exp) ->
+      (`Int64 (loc, (String.neg n)) : FAst.exp )
+  | (`Nativeint (_loc,n) : FAst.exp) ->
+      (`Nativeint (loc, (String.neg n)) : FAst.exp )
+  | (`Flo (_loc,n) : FAst.exp) -> (`Flo (loc, (String.neg n)) : FAst.exp )
+  | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : FAst.exp )

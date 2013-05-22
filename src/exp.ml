@@ -3,7 +3,7 @@
 #default_quotation     "exp";;
 
 
-open Ast
+open FAst
 open AstLib
 open LibUtil
 (* open Basic *)

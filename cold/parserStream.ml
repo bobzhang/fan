@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 open Syntax
 
@@ -140,10 +140,10 @@ let apply () =
                   (fun (i : 'a_lident)  (_loc : FanLoc.t)  ->
                      ((i : alident  :>pat) : 'parser_ipat )))));
           ([`Skeyword "_"],
-            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> ((`Any _loc : Ast.pat ) : 'parser_ipat ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  -> ((`Any _loc : FAst.pat ) : 'parser_ipat ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
-                    ((`Any _loc : Ast.pat ) : 'parser_ipat )))))]));
+                    ((`Any _loc : FAst.pat ) : 'parser_ipat )))))]));
     Gram.extend_single (parser_case_list : 'parser_case_list Gram.t )
       (None,
         (None, None,

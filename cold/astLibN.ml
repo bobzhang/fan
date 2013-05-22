@@ -1,6 +1,6 @@
 open LibUtil
 
-open AstN
+open FAstN
 
 let sem a b = `Sem (a, b)
 
@@ -123,7 +123,7 @@ let binds bs (e : exp) =
   | [] -> e
   | _ ->
       let binds = and_of_list bs in
-      (`LetIn (`Negative, binds, e) : AstN.exp )
+      (`LetIn (`Negative, binds, e) : FAstN.exp )
 
 let lid n = `Lid n
 

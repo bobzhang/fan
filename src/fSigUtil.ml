@@ -1,6 +1,6 @@
 open LibUtil
 open AstLibN
-open AstN
+open FAstN
 
 open StdLib (* for [pp_print_list] [pp_print_string] *)
 

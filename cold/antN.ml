@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 open FanUtil
 
@@ -14,7 +14,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_,_)
              |(("vrn" as x),("exp"|"pat"),_) ->
                let x = String.capitalize x in
-               (`App (_loc, (`Vrn (_loc, x)), e) : Ast.pat )
+               (`App (_loc, (`Vrn (_loc, x)), e) : FAst.pat )
            | _ -> super#pat e)
       | e -> super#pat e
     method! exp (x : exp) =
@@ -26,65 +26,65 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                |"nativeint"|"chr"|"str" as x),_,_)
              |(("vrn" as x),("exp"|"pat"),_) ->
                (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
-               Ast.exp )
+               FAst.exp )
            | ("`nativeint",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Nativeint")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Nativeint")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Nativeint")), e) : FAst.exp )
            | ("`int",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App (_loc, (`Lid (_loc, "string_of_int")), e) in
-               (`App (_loc, (`Vrn (_loc, "Int")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Int")), e) : FAst.exp )
            | ("`int32",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Int32")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Int32")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Int32")), e) : FAst.exp )
            | ("`int64",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Int64")),
                           (`Lid (_loc, "to_string")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Int64")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Int64")), e) : FAst.exp )
            | ("`chr",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Char")),
                           (`Lid (_loc, "escaped")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Chr")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Chr")), e) : FAst.exp )
            | ("`str",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "String")),
                           (`Lid (_loc, "escaped")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Str")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Str")), e) : FAst.exp )
            | ("`flo",_,_) ->
-               let e: Ast.exp =
+               let e: FAst.exp =
                  `App
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "FanUtil")),
                           (`Lid (_loc, "float_repres")))), e) in
-               (`App (_loc, (`Vrn (_loc, "Flo")), e) : Ast.exp )
+               (`App (_loc, (`Vrn (_loc, "Flo")), e) : FAst.exp )
            | ("`bool",_,_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Lid")),
                     (`IfThenElse
                        (_loc, e, (`Str (_loc, "true")),
-                         (`Str (_loc, "false"))))) : Ast.exp )
+                         (`Str (_loc, "false"))))) : FAst.exp )
            | _ -> super#exp e)
       | e -> super#exp e
   end

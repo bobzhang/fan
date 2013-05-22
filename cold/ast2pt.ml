@@ -16,18 +16,18 @@ open FanLoc
 
 open FanOps
 
-open Ast
+open FAst
 
 open Objs
 
 let rec normalize_acc =
   function
-  | (`Dot (_loc,i1,i2) : Ast.ident) ->
-      (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
+  | (`Dot (_loc,i1,i2) : FAst.ident) ->
+      (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
   | `Apply (_loc,i1,i2) ->
-      (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : Ast.exp )
-  | `Ant (_loc,_)|(`Uid (_loc,_) : Ast.ident)|(`Lid (_loc,_) : Ast.ident) as
-      i -> (i : Ast.exp )
+      (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
+  | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
+      as i -> (i : FAst.exp )
 
 let rec sep_dot_exp acc =
   (function
@@ -60,21 +60,21 @@ let mkrf: flag -> Asttypes.rec_flag =
 let ident_tag (i : ident) =
   let rec self i acc =
     match i with
-    | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : Ast.ident) ->
+    | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : FAst.ident) ->
         Some ((ldot (lident "*predef*") "option"), `lident)
-    | (`Dot (_loc,i1,i2) : Ast.ident) -> self i2 (self i1 acc)
+    | (`Dot (_loc,i1,i2) : FAst.ident) -> self i2 (self i1 acc)
     | `Apply (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
          | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i))
-    | (`Uid (_loc,s) : Ast.ident) ->
+    | (`Uid (_loc,s) : FAst.ident) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
          | _ -> errorf (loc_of i) "invalid long identifier %s" (dump_ident i))
-    | (`Lid (_loc,s) : Ast.ident) ->
+    | (`Lid (_loc,s) : FAst.ident) ->
         let x =
           match acc with
           | None  -> lident s
@@ -380,18 +380,18 @@ let rec pat (x : pat) =
       let p =
         Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) in
       mkpat _loc p
-  | (`Lid (_loc,s) : Ast.pat) -> mkpat _loc (Ppat_var (with_loc s _loc))
-  | (`Uid (_loc,_) : Ast.pat)|`Dot (_loc,_,_) as i ->
+  | (`Lid (_loc,s) : FAst.pat) -> mkpat _loc (Ppat_var (with_loc s _loc))
+  | (`Uid (_loc,_) : FAst.pat)|`Dot (_loc,_,_) as i ->
       let p = Ppat_construct ((long_uident (i : vid  :>ident)), None, false) in
       mkpat _loc p
-  | (`Alias (_loc,p1,x) : Ast.pat) ->
+  | (`Alias (_loc,p1,x) : FAst.pat) ->
       (match x with
        | `Lid (sloc,s) ->
            mkpat _loc (Ppat_alias ((pat p1), (with_loc s sloc)))
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
-  | (`Any _loc : Ast.pat) -> mkpat _loc Ppat_any
-  | (`App (_loc,`Uid (sloc,s),`Par (_,`Any loc_any)) : Ast.pat) ->
+  | (`Any _loc : FAst.pat) -> mkpat _loc Ppat_any
+  | (`App (_loc,`Uid (sloc,s),`Par (_,`Any loc_any)) : FAst.pat) ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -410,12 +410,12 @@ let rec pat (x : pat) =
        | _ ->
            error (loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
-  | (`Array (_loc,p) : Ast.pat) ->
+  | (`Array (_loc,p) : FAst.pat) ->
       mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
-  | (`ArrayEmpty _loc : Ast.pat) -> mkpat _loc (Ppat_array [])
-  | (`Chr (_loc,s) : Ast.pat) ->
+  | (`ArrayEmpty _loc : FAst.pat) -> mkpat _loc (Ppat_array [])
+  | (`Chr (_loc,s) : FAst.pat) ->
       mkpat _loc (Ppat_constant (Const_char (char_of_char_token _loc s)))
-  | (`Int (_loc,s) : Ast.pat) ->
+  | (`Int (_loc,s) : FAst.pat) ->
       let i =
         try int_of_string s
         with
@@ -423,7 +423,7 @@ let rec pat (x : pat) =
             error _loc
               "Integer literal exceeds the range of representable integers of type int" in
       mkpat _loc (Ppat_constant (Const_int i))
-  | (`Int32 (_loc,s) : Ast.pat) ->
+  | (`Int32 (_loc,s) : FAst.pat) ->
       let i32 =
         try Int32.of_string s
         with
@@ -431,7 +431,7 @@ let rec pat (x : pat) =
             error _loc
               "Integer literal exceeds the range of representable integers of type int32" in
       mkpat _loc (Ppat_constant (Const_int32 i32))
-  | (`Int64 (_loc,s) : Ast.pat) ->
+  | (`Int64 (_loc,s) : FAst.pat) ->
       let i64 =
         try Int64.of_string s
         with
@@ -439,7 +439,7 @@ let rec pat (x : pat) =
             error _loc
               "Integer literal exceeds the range of representable integers of type int64" in
       mkpat _loc (Ppat_constant (Const_int64 i64))
-  | (`Nativeint (_loc,s) : Ast.pat) ->
+  | (`Nativeint (_loc,s) : FAst.pat) ->
       let nati =
         try Nativeint.of_string s
         with
@@ -447,14 +447,14 @@ let rec pat (x : pat) =
             error _loc
               "Integer literal exceeds the range of representable integers of type nativeint" in
       mkpat _loc (Ppat_constant (Const_nativeint nati))
-  | (`Flo (_loc,s) : Ast.pat) ->
+  | (`Flo (_loc,s) : FAst.pat) ->
       mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
-  | (`Bar (_loc,p1,p2) : Ast.pat) ->
+  | (`Bar (_loc,p1,p2) : FAst.pat) ->
       mkpat _loc (Ppat_or ((pat p1), (pat p2)))
-  | (`Str (_loc,s) : Ast.pat) ->
+  | (`Str (_loc,s) : FAst.pat) ->
       mkpat _loc
         (Ppat_constant (Const_string (string_of_string_token _loc s)))
-  | (`PaRng (_loc,p1,p2) : Ast.pat) ->
+  | (`PaRng (_loc,p1,p2) : FAst.pat) ->
       (match (p1, p2) with
        | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
            let c1 = char_of_char_token loc1 c1 in
@@ -473,17 +473,17 @@ let rec pat (x : pat) =
         | `RecBind (_loc,i,p) -> ((ident i), (pat p))
         | p -> error (loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
-  | (`Par (_loc,`Com (_,p1,p2)) : Ast.pat) ->
+  | (`Par (_loc,`Com (_,p1,p2)) : FAst.pat) ->
       mkpat _loc
         (Ppat_tuple (List.map pat (list_of_com p1 (list_of_com p2 []))))
   | `Par (loc,_) -> error loc "singleton tuple pattern"
-  | (`Constraint (_loc,p,t) : Ast.pat) ->
+  | (`Constraint (_loc,p,t) : FAst.pat) ->
       mkpat _loc (Ppat_constraint ((pat p), (ctyp t)))
-  | (`ClassPath (_loc,i) : Ast.pat) ->
+  | (`ClassPath (_loc,i) : FAst.pat) ->
       mkpat _loc (Ppat_type (long_type_ident i))
-  | (`Vrn (_loc,s) : Ast.pat) -> mkpat _loc (Ppat_variant (s, None))
-  | (`Lazy (_loc,p) : Ast.pat) -> mkpat _loc (Ppat_lazy (pat p))
-  | (`ModuleUnpack (_loc,`Uid (sloc,m)) : Ast.pat) ->
+  | (`Vrn (_loc,s) : FAst.pat) -> mkpat _loc (Ppat_variant (s, None))
+  | (`Lazy (_loc,p) : FAst.pat) -> mkpat _loc (Ppat_lazy (pat p))
+  | (`ModuleUnpack (_loc,`Uid (sloc,m)) : FAst.pat) ->
       mkpat _loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (loc,`Uid (sloc,m),ty) ->
       mkpat loc
@@ -541,13 +541,13 @@ let rec exp (x : exp) =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | (`Assert (_loc,`Lid (_,"false")) : Ast.exp) ->
+  | (`Assert (_loc,`Lid (_,"false")) : FAst.exp) ->
       mkexp _loc Pexp_assertfalse
   | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =
         match e with
-        | (`Field (loc,x,`Lid (_,"contents")) : Ast.exp) ->
+        | (`Field (loc,x,`Lid (_,"contents")) : FAst.exp) ->
             Pexp_apply
               ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
                 [("", (exp x)); ("", (exp v))])
@@ -674,18 +674,18 @@ let rec exp (x : exp) =
       let cas =
         let rec f x =
           match x with
-          | (`Case (_loc,p,e) : Ast.case) ->
+          | (`Case (_loc,p,e) : FAst.case) ->
               (`Case
                  (_loc, p,
                    (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
-              Ast.case )
-          | (`CaseWhen (_loc,p,c,e) : Ast.case) ->
+              FAst.case )
+          | (`CaseWhen (_loc,p,c,e) : FAst.case) ->
               (`CaseWhen
                  (_loc, p, c,
                    (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
-              Ast.case )
-          | (`Bar (_loc,a1,a2) : Ast.case) ->
-              (`Bar (_loc, (f a1), (f a2)) : Ast.case )
+              FAst.case )
+          | (`Bar (_loc,a1,a2) : FAst.case) ->
+              (`Bar (_loc, (f a1), (f a2)) : FAst.case )
           | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
         f cas in
       exp
@@ -696,7 +696,7 @@ let rec exp (x : exp) =
                   (`LetIn
                      (_loc, rf, bi,
                        (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e)))))),
-                  cas)), (`Uid (_loc, "()"))) : Ast.exp )
+                  cas)), (`Uid (_loc, "()"))) : FAst.exp )
   | `LetModule (loc,`Uid (sloc,i),me,e) ->
       mkexp loc (Pexp_letmodule ((with_loc i sloc), (mexp me), (exp e)))
   | `Match (loc,e,a) -> mkexp loc (Pexp_match ((exp e), (case a)))
@@ -727,7 +727,7 @@ let rec exp (x : exp) =
   | `Seq (_loc,e) ->
       let rec loop =
         function
-        | [] -> exp (`Uid (_loc, "()") : Ast.exp )
+        | [] -> exp (`Uid (_loc, "()") : FAst.exp )
         | e::[] -> exp e
         | e::el ->
             let _loc = FanLoc.merge (loc_of e) _loc in
@@ -778,11 +778,11 @@ and label_exp (x : exp) =
   | e -> ("", (exp e))
 and bind (x : bind) acc =
   match x with
-  | (`And (_loc,x,y) : Ast.bind) -> bind x (bind y acc)
+  | (`And (_loc,x,y) : FAst.bind) -> bind x (bind y acc)
   | (`Bind
-       (_loc,(`Lid (sloc,bind_name) : Ast.pat),`Constraint
-                                                 (_,e,`TyTypePol (_,vs,ty)))
-      : Ast.bind) ->
+       (_loc,(`Lid (sloc,bind_name) : FAst.pat),`Constraint
+                                                  (_,e,`TyTypePol (_,vs,ty)))
+      : FAst.bind) ->
       let rec id_to_string (x : ctyp) =
         match x with
         | `Lid (_,x) -> [x]
@@ -806,25 +806,25 @@ and bind (x : bind) acc =
              ((mkpat (Ppat_var (with_loc bind_name sloc))),
                (mktyp _loc (Ptyp_poly (ampersand_vars, ty'))))) in
       let e = mk_newtypes vars in (pat, e) :: acc
-  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : Ast.bind) ->
-      ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : Ast.pat )),
+  | (`Bind (_loc,p,`Constraint (_,e,`TyPol (_,vs,ty))) : FAst.bind) ->
+      ((pat (`Constraint (_loc, p, (`TyPol (_loc, vs, ty))) : FAst.pat )),
         (exp e))
       :: acc
-  | (`Bind (_loc,p,e) : Ast.bind) -> ((pat p), (exp e)) :: acc
+  | (`Bind (_loc,p,e) : FAst.bind) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x : case) =
   let cases = list_of_or x [] in
   List.filter_map
     (function
-     | (`Case (_loc,p,e) : Ast.case) -> Some ((pat p), (exp e))
-     | (`CaseWhen (_loc,p,w,e) : Ast.case) ->
+     | (`Case (_loc,p,e) : FAst.case) -> Some ((pat p), (exp e))
+     | (`CaseWhen (_loc,p,w,e) : FAst.case) ->
          Some ((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))
      | x -> errorf (loc_of x) "case %s" (dump_case x)) cases
 and mklabexp (x : rec_exp) =
   let binds = list_of_sem x [] in
   List.filter_map
     (function
-     | (`RecBind (_loc,i,e) : Ast.rec_exp) -> Some ((ident i), (exp e))
+     | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some ((ident i), (exp e))
      | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x)) binds
 and mktype_decl (x : typedecl) =
   let type_decl tl cl loc (x : type_info) =
@@ -872,7 +872,7 @@ and mktype_decl (x : typedecl) =
               ~priv:Private ~manifest:None))
      | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))
     tys
-and mtyp: Ast.mtyp -> Parsetree.module_type =
+and mtyp: FAst.mtyp -> Parsetree.module_type =
   let mkwithc (wc : constr) =
     let mkwithtyp pwith_type loc priv id_tpl ct =
       let (id,tpl) = type_parameters_and_type_name id_tpl in
@@ -963,13 +963,13 @@ and module_sig_bind (x : mbind)
   | `Constraint (_loc,`Uid (sloc,s),mt) -> ((with_loc s sloc), (mtyp mt)) ::
       acc
   | t -> errorf (loc_of t) "module_sig_bind: %s" (dump_mbind t)
-and module_str_bind (x : Ast.mbind) acc =
+and module_str_bind (x : FAst.mbind) acc =
   match x with
   | `And (_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind (_loc,`Uid (sloc,s),mt,me) ->
       ((with_loc s sloc), (mtyp mt), (mexp me)) :: acc
   | t -> errorf (loc_of t) "module_str_bind: %s" (dump_mbind t)
-and mexp (x : Ast.mexp) =
+and mexp (x : FAst.mexp) =
   match x with
   | #vid' as i ->
       let loc = loc_of i in
@@ -992,8 +992,8 @@ and mexp (x : Ast.mexp) =
   | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t)
 and stru (s : stru) (l : structure) =
   (match s with
-   | (`StExp (_loc,`Uid (_,"()")) : Ast.stru) -> l
-   | (`Sem (_loc,st1,st2) : Ast.stru) -> stru st1 (stru st2 l)
+   | (`StExp (_loc,`Uid (_,"()")) : FAst.stru) -> l
+   | (`Sem (_loc,st1,st2) : FAst.stru) -> stru st1 (stru st2 l)
    | (`Class (loc,cd) : stru) ->
        (mkstr loc
           (Pstr_class (List.map class_info_clexp (list_of_and cd []))))
@@ -1027,7 +1027,7 @@ and stru (s : stru) (l : structure) =
    | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
    | `TypeWith (_loc,tdl,ns) ->
-       let x: Ast.stru = `Type (_loc, tdl) in
+       let x: FAst.stru = `Type (_loc, tdl) in
        let ns = list_of_app ns [] in
        let filters =
          List.map
@@ -1046,15 +1046,15 @@ and stru (s : stru) (l : structure) =
            (FanState.keep, false)
            (fun _  ->
               match (Typehook.traversal ())#mexp
-                      (`Struct (_loc, x) : Ast.mexp )
+                      (`Struct (_loc, x) : FAst.mexp )
               with
-              | (`Struct (_loc,s) : Ast.mexp) -> s
+              | (`Struct (_loc,s) : FAst.mexp) -> s
               | _ -> assert false) in
-       stru (`Sem (_loc, x, code) : Ast.stru ) l
+       stru (`Sem (_loc, x, code) : FAst.stru ) l
    | `Value (loc,rf,bi) -> (mkstr loc (Pstr_value ((mkrf rf), (bind bi []))))
        :: l
    | x -> errorf (loc_of x) "stru : %s" (dump_stru x) : structure )
-and cltyp (x : Ast.cltyp) =
+and cltyp (x : FAst.cltyp) =
   match x with
   | `ClApply (loc,id,tl) ->
       mkcty loc
@@ -1162,7 +1162,7 @@ and clsigi (c : clsigi) (l : class_type_field list) =
        (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
    | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) : class_type_field
                                                              list )
-and clexp (x : Ast.clexp) =
+and clexp (x : FAst.clexp) =
   match x with
   | (`CeApp (loc,_,_) : clexp) as c ->
       let rec view_app acc (x : clexp) =
@@ -1248,8 +1248,8 @@ let directive (x : exp) =
   match x with
   | `Str (_,s) -> Pdir_string s
   | `Int (_,i) -> Pdir_int (int_of_string i)
-  | (`Lid (_loc,"true") : Ast.exp) -> Pdir_bool true
-  | (`Lid (_loc,"false") : Ast.exp) -> Pdir_bool false
+  | (`Lid (_loc,"true") : FAst.exp) -> Pdir_bool true
+  | (`Lid (_loc,"false") : FAst.exp) -> Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_exp e))
 
 let phrase (x : stru) =

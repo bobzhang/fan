@@ -427,8 +427,8 @@ rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
-  let ast = "src/ast.mli" in
-  let ast_n = "src/astN.ml" in
+  let ast = "src/fAst.mli" in
+  let ast_n = "src/fAstN.ml" in
   let objs = "src/objs.ml" in
   let objs_n = "src/objsN.ml" in
   Options.ocaml_lflags :=  [ "-linkall"] ;
@@ -438,7 +438,7 @@ let () =
     ast_n |-? [ast];
     objs |-? [ast];
     objs_n |-? [ast_n];
-    "src/fanAst.ml"   |-? [ast];
+    (* "src/fanAst.ml"   |-? [ast]; *)
     "src/fanAstN.ml"  |-? [ast_n; ast];
     "src/astLoc.ml" |-? [ast];
     "src/fanDyn.ml" |-? [ast];

@@ -1,4 +1,4 @@
-open AstN
+open FAstN
   
 type named_type = (string* typedecl)
 and and_types = named_type list

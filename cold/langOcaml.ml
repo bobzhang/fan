@@ -4,11 +4,11 @@ open LibUtil
 
 let filter s =
   let _loc = loc_of s in
-  let v: Ast.mexp = `Struct (_loc, s) in
+  let v: FAst.mexp = `Struct (_loc, s) in
   let mexp = (Typehook.traversal ())#mexp v in
   let code =
     match mexp with
-    | (`Struct (_loc,s) : Ast.mexp) -> s
+    | (`Struct (_loc,s) : FAst.mexp) -> s
     | _ -> failwith "can not find items back " in
   begin
     if Typehook.show_code.contents

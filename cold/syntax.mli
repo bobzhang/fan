@@ -1,6 +1,6 @@
 
 
-open Ast
+open FAst
 
 type warning = FanLoc.t -> string -> unit
 

@@ -1,6 +1,6 @@
 
 #default_quotation "ep";; (* (* FIXME double semi needed before directive*) *)
-open Ast
+open FAst
 let meta_loc _loc location =
   let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
   {:exp'| FanLoc.of_tuple
@@ -34,6 +34,6 @@ end;;
 
 
 {:fans|keep off; derive (MetaObj); |};;
-{:ocaml|{:include| "src/ast.mli"|} |};;
+{:ocaml|{:include| "src/fAst.mli"|} |};;
 
   

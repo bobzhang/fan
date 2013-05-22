@@ -1,8 +1,8 @@
 
-open Ast
+open FAst
 
 {:fans|keep off; derive(DynAst); |};;
-{:ocaml|{:include| "src/ast.mli" |} |};;
+{:ocaml|{:include| "src/fAst.mli" |} |};;
 
 
 type dyn

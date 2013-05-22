@@ -502,14 +502,6 @@ class printer  ()= object(self:'self)
     | _ -> false
   method expression f x =
     match x.pexp_desc with
-    (*| Pexp_sequence _ ->
-        let rec sequence_helper acc = function
-          | {pexp_desc=Pexp_sequence(e1,e2);_} ->
-              sequence_helper (e1::acc) e2
-          | v -> List.rev (v::acc) in
-        let lst = sequence_helper [] x in
-        pp f "@[<hv>%a@]"
-          (self#list self#under_semi#expression ~sep:";@;") lst *)      
     | Pexp_sequence _ ->
         let rec sequence_helper acc = function
           | {pexp_desc=Pexp_sequence(e1,e2);_} ->
@@ -518,7 +510,6 @@ class printer  ()= object(self:'self)
         let lst = sequence_helper [] x in
         pp f "@[<hv2>begin@;@[<0>%a@]@;<1 -2>end@]"
           (self#list self#under_semi#expression ~sep:";@;") lst
-        (* self#paren true self#reset#expression f x  *)
     | Pexp_function _ | Pexp_match _ | Pexp_try _ (* | Pexp_sequence _ *)
       when pipe || semi ->
         self#paren true self#reset#expression f x

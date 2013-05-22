@@ -1,10 +1,10 @@
 open LibUtil
-open Ast
+open FAst
 open AstLib
 
 
 (* +-----------------------------------------------------------------+
-   | Common functions for Ast processing                             |
+   | Common functions for FAst processing                             |
    +-----------------------------------------------------------------+ *)
 
 

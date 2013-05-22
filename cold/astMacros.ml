@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 open AstLib
 
@@ -20,11 +20,11 @@ let rec fib =
 
 let fibm y =
   match y with
-  | (`Int (_loc,x) : Ast.exp) ->
-      (`Int (_loc, (string_of_int (fib (int_of_string x)))) : Ast.exp )
+  | (`Int (_loc,x) : FAst.exp) ->
+      (`Int (_loc, (string_of_int (fib (int_of_string x)))) : FAst.exp )
   | x ->
       let _loc = loc_of x in
-      (`App (_loc, (`Lid (_loc, "fib")), x) : Ast.exp )
+      (`App (_loc, (`Lid (_loc, "fib")), x) : FAst.exp )
 
 let _ = register_macro ("FIB", fibm)
 
@@ -33,14 +33,14 @@ let macro_expander =
     inherit  Objs.map as super
     method! exp =
       function
-      | (`App (_loc,`Uid (_,a),y) : Ast.exp) ->
+      | (`App (_loc,`Uid (_,a),y) : FAst.exp) ->
           ((try
               let f = Hashtbl.find macro_expanders a in
               fun ()  -> self#exp (f y)
             with
             | Not_found  ->
                 (fun ()  ->
-                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : Ast.exp ))))
+                   (`App (_loc, (`Uid (_loc, a)), (self#exp y)) : FAst.exp ))))
             ()
       | e -> super#exp e
   end

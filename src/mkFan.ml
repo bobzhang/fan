@@ -13,9 +13,9 @@ open AstQuotation
 
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
-    {:exp|($e : Ast.$lid:str)|}
+    {:exp|($e : FAst.$lid:str)|} (* BOOTSTRAPPING *)
 let pfilter str e =
-  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : Ast.$lid:str)|};;
+  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : FAst.$lid:str)|} (* BOOTSTRAPPING *);;
 
 
 let d = `Absolute ["Fan"; "Lang"]
@@ -171,14 +171,8 @@ let _ = begin
   add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 end
-let _ =
-  Options.add
-    ("-dlang",
-      (FanArg.String
-         (fun s  ->
-            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
-      " Set the default language")
-open Syntax
+;;
+
 {:create|Gram p|};;
 
 
@@ -213,23 +207,22 @@ open CodeTemplate
 
 open OCamlLex
 
-(* let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
-   {:stream| 1 ; 2; '(f 3)|}
- *)
+(** let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
+   {:stream| 1 ; 2; '(f 3)|} *)
 
 
 (*************************************************************************)
-(** begin quotation for Ast without locations *)
+(** begin quotation for FAst without locations *)
 let m = new FanAstN.meta ;;
 
 let efilter str e =
     let e = exp_filter_n e in
     let _loc = loc_of e in
-    {:exp|($e : AstN.$lid:str)|}
+    {:exp|($e : FAstN.$lid:str)|} (* BOOTSTRAPPING *)
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
-  {:pat|($p : AstN.$lid:str)|};;
+  {:pat|($p : FAstN.$lid:str)|};; (* BOOTSTRAPPING *)
 
 
 begin

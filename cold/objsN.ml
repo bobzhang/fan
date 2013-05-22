@@ -1,6 +1,6 @@
 open StdLib
 
-open AstN
+open FAstN
 
 let _ = begin (); () end
 
@@ -3344,7 +3344,7 @@ let wildcarder =
     inherit  map as super
     method! pat =
       function
-      | (`Lid _loc : AstN.pat) -> (`Any : AstN.pat )
-      | (`Alias (p,_) : AstN.pat) -> self#pat p
+      | (`Lid _loc : FAstN.pat) -> (`Any : FAstN.pat )
+      | (`Alias (p,_) : FAstN.pat) -> self#pat p
       | p -> super#pat p
   end

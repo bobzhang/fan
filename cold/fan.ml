@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 open MkFan
 
@@ -51,42 +51,44 @@ let output_file = ref None
 
 let rec sig_handler: sigi -> sigi option =
   function
-  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.sigi) ->
+  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : FAst.sigi) ->
       begin require s; None end
-  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.sigi) ->
+  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : FAst.sigi) ->
       PreCast.parse_file ~directive_handler:sig_handler s
         PreCast.parse_interf
-  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : Ast.sigi) ->
+  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.sigi)
+      ->
       begin
         AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)); None
       end
-  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : Ast.sigi) ->
+  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.sigi) ->
       begin AstFilters.use_interf_filter s; None end
   | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
-  | (`Directive (_loc,`Lid (_,x),_) : Ast.sigi) ->
+  | (`Directive (_loc,`Lid (_,x),_) : FAst.sigi) ->
       FanLoc.raise _loc
         (XStream.Error (x ^ " is abad directive Fan can not handled "))
   | _ -> None
 
 let rec str_handler =
   function
-  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : Ast.stru) ->
+  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : FAst.stru) ->
       begin require s; None end
-  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : Ast.stru) ->
+  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : FAst.stru) ->
       PreCast.parse_file ~directive_handler:str_handler s
         PreCast.parse_implem
-  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : Ast.stru) ->
+  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.stru)
+      ->
       begin
         AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)); None
       end
-  | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : Ast.stru) ->
+  | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : FAst.stru) ->
       begin
         AstQuotation.clear_map (); AstQuotation.clear_default (); None
       end
-  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : Ast.stru) ->
+  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.stru) ->
       begin AstFilters.use_implem_filter s; None end
   | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
-  | (`Directive (_loc,`Lid (_,x),_) : Ast.stru) ->
+  | (`Directive (_loc,`Lid (_,x),_) : FAst.stru) ->
       FanLoc.raise _loc
         (XStream.Error (x ^ "bad directive Fan can not handled "))
   | _ -> None
@@ -219,7 +221,16 @@ let _ =
               (Printexc.to_string exn))
      | _ -> None)
 
-let _ = Syntax.Options.adds initial_spec_list
+let _ =
+  begin
+    Syntax.Options.add
+      ("-dlang",
+        (FanArg.String
+           (fun s  ->
+              AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
+        " Set the default language");
+    Syntax.Options.adds initial_spec_list
+  end
 
 let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
 

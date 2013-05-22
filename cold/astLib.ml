@@ -2,7 +2,7 @@ open LibUtil
 
 open FanLoc.Ops
 
-open Ast
+open FAst
 
 let _ = begin (); () end
 
@@ -290,7 +290,7 @@ let binds bs (e : exp) =
   | _ ->
       let binds = and_of_list bs in
       let _loc = binds <+> e in
-      (`LetIn (_loc, (`Negative _loc), binds, e) : Ast.exp )
+      (`LetIn (_loc, (`Negative _loc), binds, e) : FAst.exp )
 
 let lid _loc n = `Lid (_loc, n)
 

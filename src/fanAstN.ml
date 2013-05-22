@@ -1,5 +1,5 @@
 
-open AstN
+open FAstN
 
 (** this is caused by #ant problem, which requires [fill_loc_ant] to be
     specifiied *)
@@ -18,14 +18,15 @@ class primitive =  object
   method unit _loc (_:unit) = {:ep|()|}
   (*default use [meta_loc] for expession*)   
   (* method loc _loc (_l:loc) : ep= `Lid (_loc, !FanLoc.name) *)
-  method ant (_loc:loc) (x:ant)  = (x:> Ast.ep)
+  method ant (_loc:loc) (x:ant)  = (x:> FAst.ep)
   (* FIXME bool antiquot *)
   method bool _loc x  =
     match x with
     |true -> {:ep|true|}
     | false -> {:ep| false |} 
 end;;
-{:ocaml| {:include| "src/astN.ml" |} |};;
+
+{:ocaml| {:include| "src/fAstN.ml" |} |};;
 
 
 

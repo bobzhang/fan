@@ -1,5 +1,5 @@
 #default_quotation "ctyp-";;
-open AstN
+open FAstN
 open AstLibN   
 open LibUtil
 open BasicN

@@ -3,7 +3,7 @@
 open Format
 open LibUtil
 open AstLibN
-open AstN
+open FAstN
 open BasicN
 open CtypN
 open FSigUtil
@@ -220,7 +220,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   
 (*
   Given type declarations, generate corresponding
-  Ast node represent the [function]
+  FAst node represent the [function]
   (combine both exp_of_ctyp and simple_exp_of_ctyp) *)  
 let fun_of_tydcl
     ?(names=[]) ?(arity=1) ~left_type_variable ~mk_record  ~result

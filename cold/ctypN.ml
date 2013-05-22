@@ -1,4 +1,4 @@
-open AstN
+open FAstN
 
 open AstLibN
 
@@ -78,7 +78,8 @@ let app_arrow lst acc = List.fold_right arrow lst acc
 let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
     (fun name  acc  ->
-       (`Arrow ((`Quote (`Normal, (`Lid name))), acc) : AstN.ctyp )) names ty
+       (`Arrow ((`Quote (`Normal, (`Lid name))), acc) : FAstN.ctyp )) names
+    ty
 
 let (+>) (params : ctyp list) (base : ctyp) =
   List.fold_right arrow params base
@@ -99,14 +100,14 @@ let gen_quantifiers1 ~arity  n =
        (fun i  ->
           List.init n
             (fun j  ->
-               (`Quote (`Normal, (`Lid (allx ~off:i j))) : AstN.ctyp ))))
+               (`Quote (`Normal, (`Lid (allx ~off:i j))) : FAstN.ctyp ))))
       |> List.concat)
      |> appl_of_list : ctyp )
 
 let of_id_len ~off  ((id : ident),len) =
   appl_of_list ((id :>ctyp) ::
     (List.init len
-       (fun i  -> (`Quote (`Normal, (`Lid (allx ~off i))) : AstN.ctyp ))))
+       (fun i  -> (`Quote (`Normal, (`Lid (allx ~off i))) : FAstN.ctyp ))))
 
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
@@ -137,10 +138,10 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
    let app_src =
      app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
-   let result_type: AstN.ctyp =
+   let result_type: FAstN.ctyp =
      `Quote (`Normal, (`Lid ("result" ^ (string_of_int result_id.contents)))) in
    let _ = incr result_id in
-   let self_type: AstN.ctyp = `Quote (`Normal, (`Lid "self_type")) in
+   let self_type: FAstN.ctyp = `Quote (`Normal, (`Lid "self_type")) in
    let (quant,dst) =
      match k with
      | Obj (Map ) -> (2, (of_id_len ~off:1 (id, len)))
@@ -155,13 +156,13 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
             app_arrow
               (List.init number
                  (fun _  ->
-                    (`Quote (`Normal, (`Lid (allx ~off:0 i))) : AstN.ctyp ))) in
+                    (`Quote (`Normal, (`Lid (allx ~off:0 i))) : FAstN.ctyp ))) in
           match k with
           | Obj u ->
               let dst =
                 match u with
                 | Map  ->
-                    (`Quote (`Normal, (`Lid (allx ~off:1 i))) : AstN.ctyp )
+                    (`Quote (`Normal, (`Lid (allx ~off:1 i))) : FAstN.ctyp )
                 | Iter  -> result_type
                 | Concrete c -> c
                 | Fold  -> self_type in
@@ -172,7 +173,7 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    then ((`TyPolEnd base), dst)
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
-      ((`TyPol (quantifiers, (params +> base)) : AstN.ctyp ), dst)) : 
+      ((`TyPol (quantifiers, (params +> base)) : FAstN.ctyp ), dst)) : 
   (ctyp * ctyp) )
 
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
@@ -186,7 +187,7 @@ let mk_obj class_name base body =
              ((`Constraint
                  ((`Lid "self"), (`Quote (`Normal, (`Lid "self_type"))))),
                (`Sem ((`Inherit (`Negative, (`Lid base))), body)))))) : 
-  AstN.stru )
+  FAstN.stru )
 
 let is_recursive ty_dcl =
   match ty_dcl with
@@ -197,7 +198,7 @@ let is_recursive ty_dcl =
           val mutable is_recursive = false
           method! ctyp =
             function
-            | (`Lid i : AstN.ctyp) when i = name ->
+            | (`Lid i : FAstN.ctyp) when i = name ->
                 begin is_recursive <- true; self end
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
@@ -210,9 +211,9 @@ let is_recursive ty_dcl =
 
 let qualified_app_list (x : ctyp) =
   (match x with
-   | (`App (_loc,_) : AstN.ctyp) as x ->
+   | (`App (_loc,_) : FAstN.ctyp) as x ->
        (match list_of_app x [] with
-        | (`Lid _loc : AstN.ctyp)::_ -> None
+        | (`Lid _loc : FAstN.ctyp)::_ -> None
         | (#ident' as i)::ys -> Some (i, ys)
         | _ -> None)
    | `Lid _|`Uid _ -> None
@@ -271,7 +272,7 @@ let transform: full_id_transform -> vid -> exp =
     | `Idents f -> (fun x  -> (f (list_of_dot x []) : vid  :>exp))
     | `Obj f ->
         (function
-         | `Lid x -> (`Send ((`Lid "self"), (`Lid (f x))) : AstN.exp )
+         | `Lid x -> (`Send ((`Lid "self"), (`Lid (f x))) : FAstN.exp )
          | t ->
              let dest = map_to_string t in
              let src = ObjsN.dump_vid t in
@@ -283,7 +284,7 @@ let transform: full_id_transform -> vid -> exp =
                    Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
                      dest
                  end in
-             (`Send ((`Lid "self"), (`Lid (f dest))) : AstN.exp ))
+             (`Send ((`Lid "self"), (`Lid (f dest))) : FAstN.exp ))
 
 let basic_transform =
   function
@@ -294,18 +295,18 @@ let basic_transform =
 let right_transform =
   function
   | #basic_id_transform as x ->
-      let f = basic_transform x in (fun x  -> (`Lid (f x) : AstN.exp ))
+      let f = basic_transform x in (fun x  -> (`Lid (f x) : FAstN.exp ))
   | `Exp f -> f
 
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: pat list =
     List.init arity
       (fun i  ->
-         (`Alias ((`ClassPath name), (`Lid (x ~off:i 0))) : AstN.pat )) in
-  let exps = List.init arity (fun i  -> (xid ~off:i 0 : AstN.exp )) in
+         (`Alias ((`ClassPath name), (`Lid (x ~off:i 0))) : FAstN.pat )) in
+  let exps = List.init arity (fun i  -> (xid ~off:i 0 : FAstN.exp )) in
   let e = appl_of_list (e :: exps) in
   let pat = args |> tuple_com in
   match destination with
   | Obj (Map ) ->
-      (`Case (pat, (`Coercion (e, (name :>ctyp), annot))) : AstN.case )
-  | _ -> (`Case (pat, (`Subtype (e, annot))) : AstN.case )
+      (`Case (pat, (`Coercion (e, (name :>ctyp), annot))) : FAstN.case )
+  | _ -> (`Case (pat, (`Subtype (e, annot))) : FAstN.case )

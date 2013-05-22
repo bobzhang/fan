@@ -1,9 +1,9 @@
 
 
-(** Basic module contains utility functions to manipulate Ast
+(** Basic module contains utility functions to manipulate FAst
    This module is mainly provided to generate code. For simplicity,
    we don't take care of Location. *)
-open AstN
+open FAstN
   
 
 val x : ?off:int -> int -> string

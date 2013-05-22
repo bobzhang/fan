@@ -1,5 +1,5 @@
 open FanGrammar
-open Ast
+open FAst
 val print_warning : FanLoc.t -> string -> unit
 
 val prefix : string

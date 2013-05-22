@@ -1,6 +1,6 @@
 open LibUtil
 
-open Ast
+open FAst
 
 open AstLib
 
@@ -21,7 +21,7 @@ let _ =
                       (_loc, (`Lid (_loc, "loc")),
                         (`Dot
                            (_loc, (`Uid (_loc, "FanLoc")),
-                             (`Lid (_loc, "ghost")))))), e))) : Ast.stru )))
+                             (`Lid (_loc, "ghost")))))), e))) : FAst.stru )))
 
 let _ =
   AstFilters.register_stru_filter
@@ -29,15 +29,15 @@ let _ =
 
 let map_exp =
   function
-  | (`App (_loc,e,`Uid (_,"NOTHING")) : Ast.exp)
-    |(`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) : Ast.exp) -> e
-  | (`Lid (_loc,"__FILE__") : Ast.exp) ->
-      (`Str (_loc, (String.escaped (FanLoc.file_name _loc))) : Ast.exp )
-  | (`Lid (_loc,"__PWD__") : Ast.exp) ->
+  | (`App (_loc,e,`Uid (_,"NOTHING")) : FAst.exp)
+    |(`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) : FAst.exp) -> e
+  | (`Lid (_loc,"__FILE__") : FAst.exp) ->
+      (`Str (_loc, (String.escaped (FanLoc.file_name _loc))) : FAst.exp )
+  | (`Lid (_loc,"__PWD__") : FAst.exp) ->
       (`Str
          (_loc, (String.escaped (Filename.dirname (FanLoc.file_name _loc)))) : 
-      Ast.exp )
-  | (`Lid (_loc,"__LOCATION__") : Ast.exp) ->
+      FAst.exp )
+  | (`Lid (_loc,"__LOCATION__") : FAst.exp) ->
       let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
       (`App
          (_loc,
@@ -69,9 +69,9 @@ let map_exp =
                                     (`Int (_loc, (string_of_int f))))),
                                (`Int (_loc, (string_of_int g))))),
                           (if h
-                           then (`Lid (_loc, "true") : Ast.exp )
-                           else (`Lid (_loc, "false") : Ast.exp ))))))))) : 
-        Ast.exp )
+                           then (`Lid (_loc, "true") : FAst.exp )
+                           else (`Lid (_loc, "false") : FAst.exp ))))))))) : 
+        FAst.exp )
   | e -> e
 
 let _ =
@@ -81,7 +81,7 @@ let _ =
 let make_filter (s,code) =
   let f =
     function
-    | (`StExp (_loc,`Lid (_,s')) : Ast.stru) when s = s' ->
+    | (`StExp (_loc,`Lid (_,s')) : FAst.stru) when s = s' ->
         FanAstN.fill_loc_stru _loc code
     | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
@@ -109,4 +109,4 @@ let _ =
               (`Value
                  (_loc, (`Negative _loc),
                    (`Bind (_loc, (`Lid (_loc, "__fan_repr_of_file")), y))))) : 
-           Ast.stru )))
+           FAst.stru )))

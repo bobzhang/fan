@@ -23,7 +23,7 @@ exception Memory_overflow
 
 (* Deep abstract syntax for regular expressions *)
 
-type ident = Ast.lident
+type ident = FAst.lident
 
 type tag_info = {id : string ; start : bool ; action : int}
 
@@ -47,7 +47,7 @@ type  lexer_entry =
   { (* lex_name: string; *)
     lex_regexp: regexp;
     lex_mem_tags: int ;
-    lex_actions: (int *  t_env * Ast.exp(* 'action *)) list }
+    lex_actions: (int *  t_env * FAst.exp(* 'action *)) list }
 
 
 type automata =
@@ -75,7 +75,7 @@ type  automata_entry =
     (* auto_args: string list ; *)
     auto_mem_size : int ;
     auto_initial_state: (int * memory_action list);
-    auto_actions: (int * t_env * Ast.exp) list }
+    auto_actions: (int * t_env * FAst.exp) list }
 
 
 (* A lot of sets and map structures *)

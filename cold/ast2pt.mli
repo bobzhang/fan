@@ -1,4 +1,4 @@
-open Ast
+open FAst
 open Format
   
 val mkvirtual : flag -> Asttypes.virtual_flag

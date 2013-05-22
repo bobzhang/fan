@@ -1,4 +1,4 @@
-open Ast
+open FAst
 open MkFan
 open Format
 open LibUtil
@@ -248,8 +248,16 @@ Printexc.register_printer
               Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );;
 
-
-Syntax.Options.adds initial_spec_list;;    
+let _ =
+  begin 
+    Syntax.Options.add
+      ("-dlang",
+       (FanArg.String
+          (fun s  ->
+            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
+       " Set the default language");
+    Syntax.Options.adds initial_spec_list
+  end;;    
 
 AstParsers.use_parsers
     [ "revise";

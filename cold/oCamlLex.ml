@@ -109,10 +109,10 @@ let _ =
                                 x;
                             Hashtbl.add named_regexps x r
                           end) () : (_,'e__3,'e__4) Gram.fold )))],
-             ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     ((`StExp (_loc, (`Uid (_loc, \"()\"))) : Ast.stru ) : 'declare_regexp ))\n",
+             ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     ((`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ) : 'declare_regexp ))\n",
                (Gram.mk_action
                   (fun _  (_loc : FanLoc.t)  ->
-                     ((`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru ) : 
+                     ((`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru ) : 
                      'declare_regexp )))))]));
     Gram.extend (regexp : 'regexp Gram.t )
       (None,
@@ -120,12 +120,12 @@ let _ =
            [([`Sself;
              `Skeyword "as";
              `Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-              ("Gram.mk_action\n  (fun (x : 'a_lident)  _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (match x with\n      | #Ast.lident as y -> Bind (r1, y)\n      | `Ant (_loc,_) -> assert false : 'regexp ))\n",
+              ("Gram.mk_action\n  (fun (x : 'a_lident)  _  (r1 : 'regexp)  (_loc : FanLoc.t)  ->\n     (match x with\n      | #FAst.lident as y -> Bind (r1, y)\n      | `Ant (_loc,_) -> assert false : 'regexp ))\n",
                 (Gram.mk_action
                    (fun (x : 'a_lident)  _  (r1 : 'regexp)  (_loc : FanLoc.t)
                        ->
                       (match x with
-                       | #Ast.lident as y -> Bind (r1, y)
+                       | #FAst.lident as y -> Bind (r1, y)
                        | `Ant (_loc,_) -> assert false : 'regexp )))))]);
         ((Some "#"), None,
           [([`Sself; `Skeyword "#"; `Sself],

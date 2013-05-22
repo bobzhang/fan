@@ -4,7 +4,7 @@ open Format
 open FSigUtil  
 
 
-(** A Hook To Ast Filters *)
+(** A Hook To FAst Filters *)
 (* type plugin_name = string  *)
 
 let filters : (plugin_name, plugin) Hashtbl.t  = Hashtbl.create 30;;

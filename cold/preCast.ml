@@ -1,6 +1,6 @@
 open Format
 
-open Ast
+open FAst
 
 open LibUtil
 

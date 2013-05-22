@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 let _ = begin (); () end
 

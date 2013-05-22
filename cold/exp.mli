@@ -1,4 +1,4 @@
-open Ast
+open FAst
 
 
 (** Environment is a [string*pat] pair,
@@ -89,10 +89,10 @@ val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list
 (*   First we need to construct this part *)
 (*   {[ *)
 (*   (App  *)
-(*        (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "RbEq"))) *)
+(*        (App  (ExId  (IdAcc  (Uid  "FAst") (Uid  "RbEq"))) *)
 (*          (ExId  (Lid  "_loc"))) *)
 (*        (App  *)
-(*          (App  (ExId  (IdAcc  (Uid  "Ast") (Uid  "Lid"))) *)
+(*          (App  (ExId  (IdAcc  (Uid  "FAst") (Uid  "Lid"))) *)
 (*            (ExId  (Lid  "_loc"))) *)
 (*          (Str  "u"))) *)
 (*   ]} *)

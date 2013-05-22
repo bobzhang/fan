@@ -1,5 +1,5 @@
 
-open Ast
+open FAst
 open AstLib
 open FanGrammar
 open FanGrammarTools
@@ -93,12 +93,12 @@ FanConfig.antiquotations := true;;
      be used alone
      {[
      with str t extend_header {| U.M |};
-     - : Ast.ident option * Ast.ident = (None, `Uid (, "Gram"))
+     - : FAst.ident option * FAst.ident = (None, `Uid (, "Gram"))
      with str t extend_header {| U |};
-     - : Ast.ident option * Ast.ident =
+     - : FAst.ident option * FAst.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
      with str t extend_header {| (g:U.t) |};
-     - : Ast.ident option * Ast.ident = (Some (`Lid (, "g")), `Uid (, "U"))
+     - : FAst.ident option * FAst.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features
    *)
@@ -136,9 +136,9 @@ FanConfig.antiquotations := true;;
 
      the function [text_of_functorial_extend] is the driving force
      it has type
-     {[ Ast.loc ->
-     Ast.ident option ->
-     FanGrammar.name list option -> FanGrammar.entry list -> Ast.exp
+     {[ FAst.loc ->
+     FAst.ident option ->
+     FanGrammar.name list option -> FanGrammar.entry list -> FAst.exp
      ]}
    *) 
   extend_body:
@@ -169,7 +169,7 @@ FanConfig.antiquotations := true;;
   (* parse qualified  [X.Y.g]
      {[
      with str t qualid {| A.B.g |};
-     - : Ast.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
+     - : FAst.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]}
    *)
   qualid:
@@ -179,7 +179,7 @@ FanConfig.antiquotations := true;;
   (* parse qualified path ending with [X.t]
      {[
      with str t t_qualid {| A.U.t |};
-     - : Ast.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
+     - : FAst.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
      ]}
    *)
   t_qualid:

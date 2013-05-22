@@ -1,4 +1,4 @@
-open Ast
+open FAst
 val mk_variant_eq : 'a -> FSig.ty_info list -> exp
 val mk_tuple_eq : FSig.ty_info list -> exp
 val mk_record_eq : FSig.record_col list -> exp

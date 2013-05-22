@@ -1,10 +1,10 @@
 
 (*************************************************************************)
-(** Ast lib for structual polymorphism without quotaions *)
+(** FAst lib for structual polymorphism without quotaions *)
 (*************************************************************************)
   
 open LibUtil
-open AstN
+open FAstN
 
 let sem a b =  `Sem(a,b)
 let com a b =  `Com(a,b)

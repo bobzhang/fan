@@ -66,7 +66,7 @@ let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
       end
   | (None ,Some code) ->
       let code = FanAstN.fill_loc_stru sloc code in
-      (`Sem (sloc, acc, code) : Ast.stru )
+      (`Sem (sloc, acc, code) : FAst.stru )
   | (_,None ) -> acc
 
 let traversal () =
@@ -89,7 +89,7 @@ let traversal () =
      method update_cur_and_types f = cur_and_types <- f cur_and_types
      method! mexp =
        function
-       | (`Struct (sloc,u) : Ast.mexp) ->
+       | (`Struct (sloc,u) : FAst.mexp) ->
            begin
              self#in_module;
              (let res = self#stru u in
@@ -102,13 +102,15 @@ let traversal () =
                   FanState.current_filters.contents
                   (if FanState.keep.contents
                    then res
-                   else (`StExp (sloc, (`Uid (sloc, "()"))) : Ast.stru )) in
-              begin self#out_module; (`Struct (sloc, result) : Ast.mexp ) end)
+                   else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
+              begin
+                self#out_module; (`Struct (sloc, result) : FAst.mexp )
+              end)
            end
        | x -> super#mexp x
      method! stru =
        function
-       | (`Type (_loc,`And (_,_,_)) : Ast.stru) as x ->
+       | (`Type (_loc,`And (_,_,_)) : FAst.stru) as x ->
            begin
              self#in_and_types;
              (let _ = super#stru x in
@@ -119,22 +121,23 @@ let traversal () =
                 self#out_and_types;
                 if FanState.keep.contents
                 then x
-                else (`StExp (_loc, (`Uid (_loc, "()"))) : Ast.stru )
+                else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )
               end)
            end
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
-       | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : Ast.stru) as x
-           ->
+       | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : FAst.stru) as
+           x ->
            let item = `Single (name, (Objs.strip_loc_typedecl t)) in
            let () =
              if print_collect_mtyps.contents
              then eprintf "Came across @[%a@]@." pp_print_types item in
            begin self#update_cur_mtyps (fun lst  -> item :: lst); x end
-       | (`Value (_loc,`Negative _,_) : Ast.stru)
-         |(`ModuleType (_loc,_,_) : Ast.stru)|(`Include (_loc,_) : Ast.stru)
-         |(`External (_loc,_,_,_) : Ast.stru)|(`StExp (_loc,_) : Ast.stru)
-         |(`Exception (_loc,_) : Ast.stru)|(`Directive (_loc,_,_) : Ast.stru)
-           as x -> x
+       | (`Value (_loc,`Negative _,_) : FAst.stru)
+         |(`ModuleType (_loc,_,_) : FAst.stru)
+         |(`Include (_loc,_) : FAst.stru)
+         |(`External (_loc,_,_,_) : FAst.stru)|(`StExp (_loc,_) : FAst.stru)
+         |(`Exception (_loc,_) : FAst.stru)
+         |(`Directive (_loc,_,_) : FAst.stru) as x -> x
        | x -> super#stru x
      method! typedecl =
        function

@@ -1,4 +1,4 @@
-open Ast
+open FAst
 open Syntax
 open LibUtil
 open FanStreamTools

@@ -1,4 +1,4 @@
-open AstN
+open FAstN
 
 open LibUtil
 
@@ -71,5 +71,5 @@ let mk_tuple ~arity  ~number  =
         zfold_left ~start:1 ~until:(n - 1)
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
-      (`Par e : AstN.ep )
+      (`Par e : FAstN.ep )
   | _ -> invalid_arg "mk_tuple arity < 1 "

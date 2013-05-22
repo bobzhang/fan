@@ -1,11 +1,11 @@
 open StdLib
-open AstN
+open FAstN
 
 {:fans|keep off;
  derive (Print OPrint Map Fold MapWrapper PrintWrapper);
 |};;
 
-{:ocaml| {:include| "src/astN.ml" |} |};;
+{:ocaml| {:include| "src/fAstN.ml" |} |};;
 
 
 let wildcarder = object (self)

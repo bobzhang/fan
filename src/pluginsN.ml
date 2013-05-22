@@ -1,4 +1,4 @@
-open AstN
+open FAstN
 open AstLibN
 open LibUtil
 open DeriveN
@@ -151,7 +151,9 @@ let gen_strip =
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun  x ->
-      ({:ctyp-| Ast.$lid:x -> AstN.$lid:x |}, {:ctyp-|AstN.$lid:x|}))
+      (* BOOTSTRAPING *)
+      ({:ctyp-| FAst.$lid:x -> FAstN.$lid:x |}, {:ctyp-|FAstN.$lid:x|}))
+    
     ();;
 
 Typehook.register
@@ -194,8 +196,8 @@ let gen_fill =
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
-      ({:ctyp-| FanLoc.t -> AstN.$lid:x -> Ast.$lid:x |},
-       {:ctyp-|Ast.$lid:x|} ))
+      ({:ctyp-| FanLoc.t -> FAstN.$lid:x -> FAst.$lid:x |},
+       {:ctyp-|FAst.$lid:x|} ))
     ();;
 
 Typehook.register
@@ -239,7 +241,7 @@ let gen_meta_exp =
    | Meta Object Generator                                           |
    +-----------------------------------------------------------------+ *)
 let gen_meta =
-  gen_object ~kind:(Concrete {:ctyp-|Ast.ep|})
+  gen_object ~kind:(Concrete {:ctyp-|FAst.ep|})
     ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant

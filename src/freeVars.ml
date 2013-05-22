@@ -1,7 +1,7 @@
 
 
 
-open Ast
+open FAst
 open LibUtil
 
 (* syntax error class declaration TODO FIXME *)

@@ -10,7 +10,7 @@ val filters : (plugin_name, plugin) Hashtbl.t
 (** [register] to filters *)
 val register :
     ?filter:(string->bool) -> ?position:string ->
-      plugin_name * (mtyps -> AstN.stru option) -> unit
+      plugin_name * (mtyps -> FAstN.stru option) -> unit
           
 val show_modules : unit -> unit
 

@@ -2,7 +2,7 @@ open LexSyntax
 
 exception Memory_overflow
 
-type ident = Ast.lident 
+type ident = FAst.lident 
 
 type tag_info =  {
   id: string;
@@ -36,7 +36,7 @@ type lexer_entry =
   {
   lex_regexp: regexp;
   lex_mem_tags: int;
-  lex_actions: (int * t_env * Ast.exp) list} 
+  lex_actions: (int * t_env * FAst.exp) list} 
 
 type automata =  
   | Perform of int* tag_action list
@@ -58,7 +58,7 @@ type automata_entry =
   {
   auto_mem_size: int;
   auto_initial_state: (int * memory_action list);
-  auto_actions: (int * t_env * Ast.exp) list} 
+  auto_actions: (int * t_env * FAst.exp) list} 
 
 module Ints = Set.Make(struct type t = int 
                               let compare = compare end)

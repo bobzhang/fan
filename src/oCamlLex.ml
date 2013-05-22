@@ -63,7 +63,7 @@ let as_cset = function
    "as"
    [S{r1};"as"; a_lident{x} ->
      match x with
-      | (#Ast.lident as y) ->   
+      | (#FAst.lident as y) ->   
           Bind(r1,y) (* FIXME *)
       | `Ant(_loc,_) ->
           assert false]  

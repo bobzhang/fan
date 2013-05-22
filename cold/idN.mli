@@ -1,5 +1,5 @@
 
-open AstN
+open FAstN
 
 
 (** mapping an ident to  a type variable *)  

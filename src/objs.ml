@@ -1,6 +1,6 @@
 
 open StdLib
-open Ast
+open FAst
 let strip_loc_ant ant = ant ;;
 {:fans|keep off;
  derive((* Map2 Fold2 OIter   OEq *)
@@ -8,7 +8,7 @@ let strip_loc_ant ant = ant ;;
 |};;
 
 
-{:ocaml|{:include| "src/ast.mli"|}  |};;
+{:ocaml|{:include| "src/fAst.mli"|}  |};;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

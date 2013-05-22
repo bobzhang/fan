@@ -4,7 +4,7 @@
     it's generatlly a dangerous behavior, since if you do it in-consistently,
     this may result in an in-consistent behavior *) 
 
-open Ast
+open FAst
 
 type 'a parser_fun  =
     ?directive_handler:('a -> 'a option) -> loc

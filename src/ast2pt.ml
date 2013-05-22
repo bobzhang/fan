@@ -13,7 +13,7 @@ open FanUtil
 open ParsetreeHelper
 open FanLoc
 open FanOps
-open Ast
+open FAst
 
 open Objs;;
 
@@ -472,7 +472,7 @@ let rec pat (x:pat) =  with pat  match x with
       | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
-  | (`App (_loc,`Uid(sloc,s),`Par(_,`Any loc_any )) : Ast.pat) -> 
+  | (`App (_loc,`Uid(sloc,s),`Par(_,`Any loc_any )) : FAst.pat) -> 
   (* | {| $(id:{:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} -> *)
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
@@ -979,7 +979,7 @@ and mktype_decl (x:typedecl)  =
               
         | (t:typedecl) ->
             errorf (loc_of t) "mktype_decl %s" (dump_typedecl t)) tys
-and mtyp : Ast.mtyp -> Parsetree.module_type =
+and mtyp : FAst.mtyp -> Parsetree.module_type =
   let  mkwithc (wc:constr)  =
     let mkwithtyp pwith_type loc priv id_tpl ct =
       let (id, tpl) = type_parameters_and_type_name id_tpl in
@@ -1058,13 +1058,13 @@ and module_sig_bind (x:mbind)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
       (with_loc s sloc, mtyp mt) :: acc
   | t -> errorf (loc_of t) "module_sig_bind: %s" (dump_mbind t) 
-and module_str_bind (x:Ast.mbind) acc =
+and module_str_bind (x:FAst.mbind) acc =
   match x with 
   | `And(_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
       (with_loc s sloc, mtyp mt, mexp me) :: acc
   | t -> errorf (loc_of t) "module_str_bind: %s" (dump_mbind t)
-and mexp (x:Ast.mexp)=
+and mexp (x:FAst.mexp)=
   match x with 
   | #vid'  as i ->
     let loc = loc_of i in  mkmod loc (Pmod_ident (long_uident (i:vid':>ident)))
@@ -1152,7 +1152,7 @@ and stru (s:stru) (l:structure) : structure =
   | `Value (loc,rf,bi) ->
       mkstr loc (Pstr_value (mkrf rf) (bind bi [])) :: l
   | x-> errorf (loc_of x) "stru : %s" (dump_stru x) 
-and cltyp (x:Ast.cltyp) =
+and cltyp (x:FAst.cltyp) =
   match x with
   | `ClApply(loc, id, tl) -> 
    (* `ClassCon (loc, `ViNil _, id,tl) -> *)
@@ -1243,7 +1243,7 @@ and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
     | `VirMeth (loc,`Lid(_,s),b,t) ->
         mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l
     | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) 
-and clexp  (x:Ast.clexp) =
+and clexp  (x:FAst.clexp) =
   match x with 
   | (`CeApp (loc, _, _):clexp) as c ->
       let rec view_app acc (x:clexp)  =

@@ -49,12 +49,12 @@ let _ =
                            | `Uid x -> (x : 'e__1 )
                            | _ -> failwith "x\n"))))]);
             `Skeyword ")"],
-             ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (begin\n        List.iter Typehook.plugin_add plugins; (`Uid (_loc, \"()\") : Ast.exp )\n      end : 'fan_quot ))\n",
+             ("Gram.mk_action\n  (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->\n     (begin\n        List.iter Typehook.plugin_add plugins;\n        (`Uid (_loc, \"()\") : FAst.exp )\n      end : 'fan_quot ))\n",
                (Gram.mk_action
                   (fun _  (plugins : 'e__1 list)  _  _  (_loc : FanLoc.t)  ->
                      (begin
                         List.iter Typehook.plugin_add plugins;
-                        (`Uid (_loc, "()") : Ast.exp )
+                        (`Uid (_loc, "()") : FAst.exp )
                       end : 'fan_quot )))));
           ([`Skeyword "unload";
            `Slist1sep
@@ -79,50 +79,51 @@ let _ =
                            match __fan_0 with
                            | `Uid x -> (x : 'e__2 )
                            | _ -> failwith "x\n"))))]), (`Skeyword ","))],
-            ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (begin\n        List.iter Typehook.plugin_remove plugins;\n        (`Uid (_loc, \"()\") : Ast.exp )\n      end : 'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->\n     (begin\n        List.iter Typehook.plugin_remove plugins;\n        (`Uid (_loc, \"()\") : FAst.exp )\n      end : 'fan_quot ))\n",
               (Gram.mk_action
                  (fun (plugins : 'e__2 list)  _  (_loc : FanLoc.t)  ->
                     (begin
                        List.iter Typehook.plugin_remove plugins;
-                       (`Uid (_loc, "()") : Ast.exp )
+                       (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))));
           ([`Skeyword "clear"],
-            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (begin\n        FanState.reset_current_filters (); (`Uid (_loc, \"()\") : Ast.exp )\n      end : 'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     (begin\n        FanState.reset_current_filters (); (`Uid (_loc, \"()\") : FAst.exp )\n      end : 'fan_quot ))\n",
               (Gram.mk_action
                  (fun _  (_loc : FanLoc.t)  ->
                     (begin
                        FanState.reset_current_filters ();
-                       (`Uid (_loc, "()") : Ast.exp )
+                       (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))));
           ([`Skeyword "keep"; `Skeyword "on"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin FanState.keep := true; (`Uid (_loc, \"()\") : Ast.exp ) end : \n     'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin FanState.keep := true; (`Uid (_loc, \"()\") : FAst.exp ) end : \n     'fan_quot ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
                     (begin
-                       FanState.keep := true; (`Uid (_loc, "()") : Ast.exp )
+                       FanState.keep := true; (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))));
           ([`Skeyword "keep"; `Skeyword "off"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin FanState.keep := false; (`Uid (_loc, \"()\") : Ast.exp ) end : \n     'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin FanState.keep := false; (`Uid (_loc, \"()\") : FAst.exp ) end : \n     'fan_quot ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
                     (begin
-                       FanState.keep := false; (`Uid (_loc, "()") : Ast.exp )
+                       FanState.keep := false;
+                       (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))));
           ([`Skeyword "show_code"; `Skeyword "on"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin Typehook.show_code := true; (`Uid (_loc, \"()\") : Ast.exp ) end : \n     'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin Typehook.show_code := true; (`Uid (_loc, \"()\") : FAst.exp ) end : \n     'fan_quot ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
                     (begin
                        Typehook.show_code := true;
-                       (`Uid (_loc, "()") : Ast.exp )
+                       (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))));
           ([`Skeyword "show_code"; `Skeyword "off"],
-            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin Typehook.show_code := false; (`Uid (_loc, \"()\") : Ast.exp ) end : \n     'fan_quot ))\n",
+            ("Gram.mk_action\n  (fun _  _  (_loc : FanLoc.t)  ->\n     (begin Typehook.show_code := false; (`Uid (_loc, \"()\") : FAst.exp ) end : \n     'fan_quot ))\n",
               (Gram.mk_action
                  (fun _  _  (_loc : FanLoc.t)  ->
                     (begin
                        Typehook.show_code := false;
-                       (`Uid (_loc, "()") : Ast.exp )
+                       (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))))]));
     Gram.extend_single (fan_quots : 'fan_quots Gram.t )
       (None,

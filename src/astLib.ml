@@ -1,11 +1,11 @@
 
 (*************************************************************************)
-(** Ast lib for structual polymorphism *)
+(** FAst lib for structual polymorphism *)
 (*************************************************************************)
   
 open LibUtil
 open FanLoc.Ops
-open Ast
+open FAst
 
 
 (*************************************************************************)
@@ -15,7 +15,7 @@ open Ast
     [of_loc (p:pat)] will both return the location information *)
 (*************************************************************************)  
 {:fans|keep off; derive (GenLoc);|};;
-{:ocaml|{:include|"src/ast.mli"|}|};;
+{:ocaml|{:include|"src/fAst.mli"|}|};;
 
 
 

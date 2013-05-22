@@ -1,4 +1,4 @@
-open AstN
+open FAstN
 type vrn =
   | Sum 
   | TyVrnEq
@@ -216,6 +216,6 @@ val pp_print_warning_type: Format.formatter -> warning_type -> unit
 
 
 (* val stru_from_mtyps : *)
-(*     f:(named_type -> AstN.typedecl) -> mtyps -> AstN.stru option     *)
+(*     f:(named_type -> FAstN.typedecl) -> mtyps -> FAstN.stru option     *)
 (* val stru_from_ty : *)
-(*     f:(string -> AstN.stru) -> mtyps -> AstN.stru *)
+(*     f:(string -> FAstN.stru) -> mtyps -> FAstN.stru *)

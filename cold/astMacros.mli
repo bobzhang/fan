@@ -1,5 +1,5 @@
 
-open Ast
+open FAst
 (*
   {:macro|M a b c|}
 

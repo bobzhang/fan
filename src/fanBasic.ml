@@ -42,7 +42,7 @@ let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
     end 
 
 
-(* FIXME will Ast2pt do the check, and then some partial Ast node will not be able
+(* FIXME will Ast2pt do the check, and then some partial FAst node will not be able
    to be dumped
  *)
 
