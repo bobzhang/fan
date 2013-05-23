@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Fan by bobzhang</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Fan</h1>
+        <p class="header">Programming Language Fan</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/bobzhang/Fan/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/bobzhang/Fan/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/bobzhang/Fan">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/bobzhang">bobzhang</a></p>
+
+
+      </header>
+      <section>
+        <p>Fan is a fully-featured metaprogramming system for OCaml, it's a
+superset of <a href="http://caml.inria.fr/">OCaml</a> with Lisp-like macro's features. It shares the same
+run-time with OCaml, its concrete syntax is basically the same as
+OCaml except for some minor differences, as we will explain later.</p>
+
+<h1>Why a new metaprogramming system?</h1>
+
+<p>We see that a lot of computer scientists are creating languages or
+writing mini-compilers to target their domain, but writing a
+compiler is itself a domain, Fan is targeted at this domain.</p>
+
+<p>Yes, Fan is aimed to make writing compilers easier by the
+combination of metaprogramming and strongly typed functional
+languages.</p>
+
+<h1>Why for OCaml?</h1>
+
+<p>Fan aims to make
+creating a language easier.</p>
+
+<p>There are some projects like Microsoft's Rosyln which aims to make
+"Compiler as service", but unlike Rosyln, we do not only expose the
+compiler API, but also we provide built-in language support to make
+those API easier to use instead, since for any non-trivial
+languages, the API is quite complex that average programmers will be
+frustrated ans move away.</p>
+
+<h1>Credits:</h1>
+
+<p>Fan is a successor to <a href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, which was
+mainly developed by <a href="http://pauillac.inria.fr/%7Eddr/">Daniel de Rauglaudre</a> and
+<a href="http://michel.mauny.net/index.en.php">Michel Mauny</a>, and later was largely renovated by
+<a href="http://nicolaspouillard.fr/">Nicolas Pouillard</a>.</p>
+
+<p>Unfortunately, though Camlp4 is a very powerful tool to program
+OCaml Ast and Extending OCaml language, Camlp4 is a really complex
+beast, that lately it grows out of control. Fan adopts some good
+ideas of Camlp4 and merges some new ideas.</p>
+
+<p>Fan is way more <strong>faster</strong> than <strong>Camlp4</strong>, generally 10 times faster!
+and Fan has a very robust bootstrapping system compared with Camlp4.</p>
+
+<p>Fan has all the features that Camlp4 has, and much more!</p>
+
+<h1>Status:</h1>
+
+<p>Designing a non-toy language is not easy, though Fan is already very
+powerful right now, but I have a bunch of ideas which take some time
+to implement, so it's not usable now(mostly because some API is
+unstable ).</p>
+
+<h1>Contributions</h1>
+
+<p>Fan is a non-trivial project, I have already commited millions of
+lines revisions during the last year.
+Feel free to send me a pull request</p>
+
+<h1>Install</h1>
+
+<h2>Requirements</h2>
+
+<ul>
+<li><p><a href="http://caml.inria.fr/ocaml/release.en.html">ocaml 4.00 or later</a></p></li>
+<li><p><a href="http://projects.camlcity.org/projects/findlib.html">ocamlfind or later</a></p></li>
+</ul><p>Currently we depend on <code>ocamlfind</code>, but the dependency is quite
+loose, we will remove the dependency on them when polished</p>
+
+<h2>Initial Install</h2>
+
+<p>just type</p>
+
+<pre><code>ocamlbuild cold/FanDriver.native
+</code></pre>
+
+<h2>For developers (to continue)</h2>
+
+<pre><code>./re cold FanDriver.native
+./hb FanDriver.native 
+</code></pre>
+
+<h3>What it mainly did</h3>
+
+<ul>
+<li>
+<p>Start </p>
+
+<p><code>./re cold FanDriver.native</code> will make <code>cold/FanDriver.native</code>
+the pre-processor engine.  for the cold start(compile from the
+original syntax code).</p>
+</li>
+<li><p>Bootstrap
+<code>./hb FanDriver.native</code>
+Using the generated binary to preprocess the revised syntax to
+verify <code>Fan</code> reaches a fix point now.</p></li>
+</ul><p>If it reaches fix point, then it succeeds.</p>
+
+<h3>snapshot</h3>
+
+<pre><code>./snapshot
+</code></pre>
+
+<p>Pretty print the <code>revised syntax</code> to the <code>cold</code> Directory for distribution</p>
+
+<p>Everytime, you made some nontrival changes(change the grammar,
+lexer), make sure to type <code>./hb FanDriver.native</code> or to
+verify it can be hot-bootstrapped.
+Then type <code>./snapshot</code> to snapshot your changes to cold.(This is for
+distribution purpose) </p>
+
+<h1>Directory Structure</h1>
+
+<h2>src</h2>
+
+<p>The main dev strcuture</p>
+
+<h2>cold</h2>
+
+<p>The <code>mirror</code> of src, for distribute purpose </p>
+
+<h1>Docs</h1>
+
+<p>It will be coming soon ;-)</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
