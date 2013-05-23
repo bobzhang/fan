@@ -148,8 +148,11 @@ val sigi : sigi -> Parsetree.signature_item list
 val stru : stru -> Parsetree.structure_item list
 
 val directive : exp -> Parsetree.directive_argument
-    
+
+(* translate Fan's phrase into parsetree, notice that
+   some  [directives] are passed to parsetree if not handled *)    
 val phrase : stru -> Parsetree.toplevel_phrase
+    
 val pp : formatter -> ('a, formatter, unit) format -> 'a
 
 val print_exp : formatter -> exp -> unit

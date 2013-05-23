@@ -80,7 +80,7 @@ let env = !Toploop.toplevel_env;;
 
 (* #load_rec "Ulexing.cma";; *)
 module O = Obj;;
-open Ast;;
+open FAst;;
 open Exp;;
 
 

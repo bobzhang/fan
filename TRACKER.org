@@ -225,3 +225,17 @@
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
           FanUtil.pp_print_anti_cxt _a1
   #+END_SRC
+
+  
+* 24 include fans location problem
+
+  How to avoid the location caused by include combined with filter
+  
+* DONE 25 get rid of dependency on ocamlfind
+  ocamlfind should not appear in fan, we could split it into a sub
+  package fan_utop which depends on ocamlfind
+
+  
+* 26 standard rts ?
+  =FanUtil.float_reprs= needs to put some where or
+  generated each time?

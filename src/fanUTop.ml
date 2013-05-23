@@ -1,46 +1,30 @@
 open LibUtil;;
-open Fan;;
-let _ =  begin
-  Topdirs.dir_directory "+compiler-libs"
-end;;
+open MkFan;;
 
+let print_fan_error pp exn =
+    Format.fprintf pp "@[<0>%s@]@." (Printexc.to_string exn)
 
-
-(* FIXME copied from [FanTop] *)
-let wrap parse_fun lb =
-  (* let () = iter_and_take_callbacks (fun (_, f) -> f ()) in *)
-  try
-    let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
-    let token_stream = Gram.filter  not_filtered_token_stream in
-    match token_stream with parser (* FIXME *)
-    |  (`EOI, _)  -> raise End_of_file
-    |  -> parse_fun token_stream 
-  with
-  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
-    raise x
-  | (FanLoc.Exc_located (loc, y) ) -> begin
-      Format.eprintf "@[<0>%a%s@]@."
-        Toploop.print_location loc (Printexc.to_string y);
-      raise Exit; (* commuiniation with toplevel special case here*)
+let get_fan_error_message exn =
+  let (loc, exn) =
+    match exn with
+    | FanLoc.Exc_located (loc, exn) ->
+        ((FanLoc.start_off loc, FanLoc.stop_off loc), exn)
+    | exn -> ((0, 0), exn)  in
+  let msg = UTop.get_message print_fan_error exn in
+  let idx = ref (String.length msg - 1) in
+  begin 
+    while !idx > 0 && msg.[!idx] = '\n' do
+      decr idx
+    done;
+    if !idx + 1 < String.length msg then
+      (loc, String.sub msg 0 (!idx + 1))
+    else
+      (loc, msg)
   end
-   | x ->  begin 
-      Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
-      raise Exit
-  end 
-
-let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
-  | Some stru ->
-        let stru =
-          (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
-          AstFilters.apply_implem_filters stru in
-        Ast2pt.phrase stru
-  | None -> raise End_of_file 
 
   
 
 let revise_parser str _bol =
-  (* let () = iter_and_take_callbacks (fun (_,f) -> f ()) in  (\* *\) *)
   let eof = ref false in
   let lexbuf = UTop.lexbuf_of_string eof  str in
   try
@@ -72,9 +56,14 @@ end;;
 
 
 revise();;
-let () = UTop_main.main ();;
+let _ =  begin
 
-begin 
+end;;
+
+
+
+begin
+  Topdirs.dir_directory "+compiler-libs";
   Hashtbl.replace Toploop.directive_table "revise"
     (Toploop.Directive_none (fun () -> revise ()));
 
@@ -84,5 +73,5 @@ begin
     (Toploop.Directive_none (fun () -> normal ()))
 end;;
 
-
+let () = UTop_main.main ();;
 (* ocamlfind ocamlmktop -custom -o m -thread -linkpkg -package utop FanUTop.cma *)

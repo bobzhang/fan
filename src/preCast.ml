@@ -133,3 +133,63 @@ module CurrentPrinter  = struct
 end
 
 
+(*************************************************************************)
+(** toplevel support *)    
+
+let wrap parse_fun ~print_location lb =
+  try
+    let token_stream = lb |> FanLexUtil.from_lexbuf |> Gram.filter in
+    match token_stream with parser (* FIXME *)
+    |  (`EOI, _)  -> raise End_of_file
+    |  -> parse_fun token_stream 
+  with
+  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+    raise x
+  | (FanLoc.Exc_located (loc, y) ) -> begin
+      Format.eprintf "@[<0>%a%s@]@." print_location loc (Printexc.to_string y);
+      raise Exit; (* commuiniation with toplevel special case here*)
+  end
+   | x ->  begin 
+      Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
+      raise Exit
+  end 
+
+
+let toplevel_phrase token_stream =
+  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
+  | Some stru ->
+        let stru =
+          (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
+          AstFilters.apply_implem_filters stru in
+        Ast2pt.phrase stru
+  | None -> raise End_of_file          
+
+
+
+let use_file token_stream =
+  let rec loop () =
+      let (pl, stopped_at_directive) = Gram.parse_origin_tokens Syntax.implem token_stream in
+      if stopped_at_directive <> None then (* only support [load] and [directory] *)
+        with stru match pl with
+        | [ {| #default_quotation $str:s |} ] ->
+            begin AstQuotation.set_default (FanToken.resolve_name (`Sub [],s)); loop () end 
+        | _ -> (pl, false) 
+      else (pl, true) in
+  let (pl0, eoi) = loop () in
+  let pl =
+    if eoi then []
+    else
+      let rec loop () =
+        let (pl, stopped_at_directive) =
+          Gram.parse_origin_tokens Syntax.implem  token_stream in  
+        if stopped_at_directive <> None then pl @ loop () else pl in loop () in
+  (* FIXME semantics imprecise, the filter will always be applied *)
+  List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl)
+
+        
+
+
+
+  
+
+        

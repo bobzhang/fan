@@ -1,7 +1,6 @@
 
-(* The dependency should only rely on the last version of
-  [Fan], keep its dependency only on [LibUtil]
-  *)
+(** The dependency should only rely on the last version of
+  [Fan], keep its dependency only on [LibUtil]  *)
 open LibUtil
 open Format
 

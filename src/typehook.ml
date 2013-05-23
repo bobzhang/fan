@@ -102,7 +102,8 @@ let traversal () : traversal  = object (self:'self_type)
   method get_cur_and_types = cur_and_types
   method update_cur_and_types f = 
     cur_and_types <-  f cur_and_types
-        (* entrance *)  
+
+  (** entrance *)  
   method! mexp = with stru function
     | {:mexp@sloc| struct $u end |}  ->
         (self#in_module ;

@@ -4,76 +4,6 @@ open LibUtil
 (** FIXME a better register mode *)
 open MkFan;;
 
-begin
-  Syntax.current_warning :=
-    (fun loc txt ->
-      Toploop.print_warning  loc Format.err_formatter
-        (Warnings.Camlp4 txt));
-  (* PreCast.iter_and_take_callbacks (fun (_, f) -> f ()); *)
-  AstParsers.use_parsers
-    ["revise";"stream";"macro"];
-end;;  
-
-let wrap parse_fun lb =
-  try
-    let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
-    let token_stream = Gram.filter  not_filtered_token_stream in
-    match token_stream with parser (* FIXME *)
-    | (`EOI, _)  -> raise End_of_file
-    |  -> parse_fun token_stream 
-  with
-  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
-    raise x
-  | (FanLoc.Exc_located (loc, y) ) -> begin
-      Format.eprintf "@[<0>%a%s@]@."
-        Toploop.print_location loc (Printexc.to_string y);
-      raise Exit; (* commuiniation with toplevel special case here*)
-  end
-   | x ->  begin 
-      Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
-      raise Exit
-  end 
-
-
-let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
-  | Some stru ->
-        let stru =
-          (* Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
-          AstFilters.apply_implem_filters stru in
-        Ast2pt.phrase stru
-  | None -> raise End_of_file 
-
-  
-let use_file token_stream =
-  let rec loop () =
-      let (pl, stopped_at_directive) = Gram.parse_origin_tokens Syntax.implem token_stream in
-      if stopped_at_directive <> None then (* only support [load] and [directory] *)
-        with stru match pl with
-        | [ {| #load $str:s |} ] ->
-            begin  Topdirs.dir_load Format.std_formatter s; loop ()  end
-        | [ {| #directory $str:s |} ] ->
-            begin  Topdirs.dir_directory s; loop ()  end
-        | [ {| #default_quotation $str:s |} ] ->
-            begin AstQuotation.set_default (FanToken.resolve_name (`Sub [],s)); loop () end 
-        | _ -> (pl, false) 
-      else (pl, true) in
-  let (pl0, eoi) = loop () in
-  let pl =
-    if eoi then []
-    else
-      let rec loop () =
-        let (pl, stopped_at_directive) =
-          Gram.parse_origin_tokens Syntax.implem  token_stream in  
-        if stopped_at_directive <> None then pl @ loop () else pl in loop () in
-  (* FIXME semantics imprecise, the filter will always be applied *)
-  List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl)
-
-let revise_parser =  wrap toplevel_phrase;;
-
-
-
-  
 
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
@@ -81,18 +11,25 @@ let normal () = begin
 end
     
 let revise ()  = begin
-  Toploop.parse_toplevel_phrase := revise_parser;
-  Toploop.parse_use_file := wrap use_file;
+  Toploop.parse_toplevel_phrase :=
+    wrap toplevel_phrase ~print_location:Toploop.print_location;
+  Toploop.parse_use_file :=
+    wrap use_file ~print_location:Toploop.print_location
 end;;
 
 begin 
   Hashtbl.replace Toploop.directive_table "revise"
     (Toploop.Directive_none (fun () -> revise ()));
-
   Hashtbl.replace Toploop.directive_table "normal"
-    (Toploop.Directive_none (fun () -> normal ()))
-end;;
+    (Toploop.Directive_none (fun () -> normal ()));
 
+  Syntax.current_warning :=
+    (fun loc txt ->
+      Toploop.print_warning  loc Format.err_formatter
+        (Warnings.Camlp4 txt));
+  AstParsers.use_parsers
+    ["revise";"stream";"macro"]
+end;;
 
 
 

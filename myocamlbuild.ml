@@ -47,7 +47,7 @@ module Options = struct
       (tm_mon+1) tm_mday (tm_year + 1900)
       tm_hour tm_min tm_sec
    )
-end
+end;;
 
 (* Utility modules *)    
 module Util = struct
@@ -309,38 +309,23 @@ open Driver;;
 
 
 
-let ocamlfind x = S[A"ocamlfind"; x]
+(* let ocamlfind x = S[A"ocamlfind"; x] *)
 
 module Default = struct
   let before_options () = (
-    Options.ocamlc := ocamlfind &
-      S[A"ocamlc";
-        A"-annot";
-        A "-w";
-        A "+a-4-32-30";
-        (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
-        (* A "-bin-annot"; *)
-        (* A"-warn-error"; *)
-        (* A"A" *)
-        (* A" 4-6-7-9-27..29"; *)];
-    Options.ocamlopt   :=
-      ocamlfind &
-      S[A"ocamlopt"; (* A"-annot"; *) A"-w"; A"+a-4-32-30";
-        (* A"-unsafe"; *) A"-inline"; A"100"; (* A"-4"; *)
-        (* A "-warn-error"; *)
-        (* A "A" *)
-        (* A"-bin-annot" *)];
-    Options.ocamldep   :=
-      ocamlfind &
-      A"ocamldep";
-    Options.ocamldoc   :=
-      ocamlfind &
-      A"ocamldoc";
+    (* Options.use_ocamlfind := true; *)
+    Options.ocamlc := S[A"ocamlc.opt"; A"-annot"; A"-w"; A"+a-4-32-30"];
+    Options.ocamlopt   := S[A"ocamlopt.opt"; A"-inline"; A"100" ];
+    Options.ocamldep   := A"ocamldep.opt";
+    Options.ocamldoc   := A"ocamldoc.opt";
     Options.make_links := false; (* no symlink *)
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
     (** ocamlfind does not accept -search
         ocamldoc.opt does not work on mac *)
-    Options.ocamlmktop := ocamlfind & A"ocamlmktop")
+   )
+  let after_options =
+    begin
+    end
 end 
 
 (**************************************************************)
@@ -371,6 +356,7 @@ let apply  before_options_dispatch after_rules_dispatch = (
     | Before_options -> begin
         List.iter (fun f -> f () ) !before_options;
     end
+    | After_options -> ()
     | After_rules -> begin
         List.iter (fun f -> f ()) !after_rules;
     end

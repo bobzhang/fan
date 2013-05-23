@@ -2,7 +2,13 @@ VERSION = 0.1
 export VERSION
 
 PREFIX ?= $(shell dirname $(shell dirname `ocamlc -where`))
+
+# the path to install the basic cmi files
+LIBDIR ?= `ocamlc -where`
+
+# the path to install binary
 BINDIR ?= $(PREFIX)/bin
+
 OCAMLBUILD ?= ocamlbuild
 
 
@@ -20,12 +26,16 @@ build:
 
 
 install:
-	make libinstall
+	ocamlfind install fan META $(BCOLD)/*.cmi $(BCOLD)/rts.cma $(BCOLD)/gram.cma
+	install -m 0755 _build/cold/fan.byte _build/cold/fan.native $(BINDIR)
+	install -m 0755 _build/src/fAst.cmi _build/src/fAstN.cmi $(LIBDIR)
 	make bininstall
 
+hotinstall:
+	install -m 0755 _build/src/fan.byte _build/src/fan.native $(BINDIR)
+	install -m 0755 _build/src/fAst.cmi _build/src/fAstN.cmi $(LIBDIR)
+	ocamlfind install fan META $(BHOT)/*.cmi $(BHOT)/rts.cma $(BHOT)/gram.cma
 
-bininstall:
-	install -m 0755 _build/cold/fan.byte _build/cold/fan.native $(BINDIR)
 
 
 hotworld:
@@ -36,15 +46,10 @@ hotbuild:
 	$(OCAMLBUILD) src/fan.byte src/fan.native \
 	src/gram.cma src/rts.cma
 
-hotinstall:
-	install -m 0755 _build/src/fan.byte _build/src/fan.native $(BINDIR)
-	ocamlfind install fan META $(BHOT)/*.cmi $(BHOT)/rts.cma $(BHOT)/gram.cma
 
 
 TARGETS = gram.cma gram.cmx gram.cmxs rts.cma rts.cmx rts.cmxs
 
-libinstall:
-	ocamlfind install fan META $(BCOLD)/*.cmi $(BCOLD)/rts.cma $(BCOLD)/gram.cma
 
 uninstall:
 	make libuninstall
