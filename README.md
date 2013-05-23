@@ -1,12 +1,16 @@
 
 Fan is a fully-featured metaprogramming system for OCaml, it's a
-superset of [OCaml](http://caml.inria.fr/) with Lisp-like macro's features. It shares the same
-run-time with OCaml, its concrete syntax is basically the same as
-OCaml except for some minor differences, as we will explain later.
+superset of [OCaml](http://caml.inria.fr/) with Lisp-like
+[macros](http://letoverlambda.com/). It shares the same run-time with
+OCaml, its concrete syntax is basically the same as OCaml except for
+some minor differences, as we will explain later.
 
 
 # Why a new metaprogramming system?
 
+Hmm, a good question, it's simply because writing boilerplate code is
+tedious and error prone, and being lazy is the virtue of a good programmer. And the core idea for metaprogramming: abstraction
+over code provides the ultimate abstraction power,  
 We see that a lot of computer scientists are creating languages or
 writing mini-compilers to target their domain, but writing a
 compiler is itself a domain, Fan is targeted at this domain.
