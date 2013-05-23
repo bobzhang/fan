@@ -1,3 +1,7 @@
+---
+layout: index
+title: Blogging Like a Hacker
+---
 
 Fan is a fully-featured metaprogramming system for OCaml, it's a
 superset of [OCaml](http://caml.inria.fr/) with Lisp-like
