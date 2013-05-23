@@ -87,3 +87,58 @@ module CurrentPrinter =
     let print_implem ?input_file  ?output_file  ast =
       stru_printer.contents ?input_file ?output_file ast
   end
+
+let wrap parse_fun ~print_location  lb =
+  try
+    let token_stream = (lb |> FanLexUtil.from_lexbuf) |> Gram.filter in
+    let (__strm :_ XStream.t)= token_stream in
+    match XStream.peek __strm with
+    | Some (`EOI,_) -> begin XStream.junk __strm; raise End_of_file end
+    | _ -> parse_fun token_stream
+  with
+  | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
+      as x -> raise x
+  | FanLoc.Exc_located (loc,y) ->
+      begin
+        Format.eprintf "@[<0>%a%s@]@." print_location loc
+          (Printexc.to_string y);
+        raise Exit
+      end
+  | x ->
+      begin
+        Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit
+      end
+
+let toplevel_phrase token_stream =
+  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
+  | Some stru ->
+      let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
+  | None  -> raise End_of_file
+
+let use_file token_stream =
+  let rec loop () =
+    let (pl,stopped_at_directive) =
+      Gram.parse_origin_tokens Syntax.implem token_stream in
+    if stopped_at_directive <> None
+    then
+      match pl with
+      | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
+          FAst.stru)::[] ->
+          begin
+            AstQuotation.set_default (FanToken.resolve_name ((`Sub []), s));
+            loop ()
+          end
+      | _ -> (pl, false)
+    else (pl, true) in
+  let (pl0,eoi) = loop () in
+  let pl =
+    if eoi
+    then []
+    else
+      (let rec loop () =
+         let (pl,stopped_at_directive) =
+           Gram.parse_origin_tokens Syntax.implem token_stream in
+         if stopped_at_directive <> None then pl @ (loop ()) else pl in
+       loop ()) in
+  List.map (fun x  -> Ast2pt.phrase (AstFilters.apply_implem_filters x))
+    (pl0 @ pl)

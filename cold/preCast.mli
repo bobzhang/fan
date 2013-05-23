@@ -55,3 +55,14 @@ module CurrentPrinter :
 
 
 
+(*************************************************************************)
+(** toplevel *)
+val wrap :
+    'a FanToken.parse  -> print_location:(Format.formatter -> FanLoc.t -> unit) ->
+        Lexing.lexbuf -> 'a    
+
+val toplevel_phrase : Parsetree.toplevel_phrase FanToken.parse
+
+
+(** here we only intercept some directives [at the beginning] of the file *)
+val use_file : Parsetree.toplevel_phrase list FanToken.parse

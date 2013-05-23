@@ -1,36 +1,25 @@
 open LibUtil
 
-open Fan
+open MkFan
 
-let _ = Topdirs.dir_directory "+compiler-libs"
+let print_fan_error pp exn =
+  Format.fprintf pp "@[<0>%s@]@." (Printexc.to_string exn)
 
-let wrap parse_fun lb =
-  try
-    let not_filtered_token_stream = FanLexUtil.from_lexbuf lb in
-    let token_stream = Gram.filter not_filtered_token_stream in
-    let (__strm :_ XStream.t)= token_stream in
-    match XStream.peek __strm with
-    | Some (`EOI,_) -> begin XStream.junk __strm; raise End_of_file end
-    | _ -> parse_fun token_stream
-  with
-  | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
-      as x -> raise x
-  | FanLoc.Exc_located (loc,y) ->
-      begin
-        Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc
-          (Printexc.to_string y);
-        raise Exit
-      end
-  | x ->
-      begin
-        Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit
-      end
-
-let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens Syntax.top_phrase token_stream with
-  | Some stru ->
-      let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
-  | None  -> raise End_of_file
+let get_fan_error_message exn =
+  let (loc,exn) =
+    match exn with
+    | FanLoc.Exc_located (loc,exn) ->
+        (((FanLoc.start_off loc), (FanLoc.stop_off loc)), exn)
+    | exn -> ((0, 0), exn) in
+  let msg = UTop.get_message print_fan_error exn in
+  let idx = ref ((String.length msg) - 1) in
+  begin
+    while (idx.contents > 0) && ((msg.[idx.contents]) = '\n') do decr idx
+      done;
+    if (idx.contents + 1) < (String.length msg)
+    then (loc, (String.sub msg 0 (idx.contents + 1)))
+    else (loc, msg)
+  end
 
 let revise_parser str _bol =
   let eof = ref false in
@@ -59,10 +48,9 @@ let revise () = UTop.parse_toplevel_phrase := revise_parser
 
 let _ = revise ()
 
-let () = UTop_main.main ()
-
 let _ =
   begin
+    Topdirs.dir_directory "+compiler-libs";
     Hashtbl.replace Toploop.directive_table "revise"
       (Toploop.Directive_none (fun ()  -> revise ()));
     Hashtbl.replace Toploop.directive_table "pwd"
@@ -70,3 +58,5 @@ let _ =
     Hashtbl.replace Toploop.directive_table "normal"
       (Toploop.Directive_none (fun ()  -> normal ()))
   end
+
+let () = UTop_main.main ()
