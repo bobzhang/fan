@@ -307,7 +307,7 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
   | _ -> seq_sem rest
 
 let mk_name _loc (i : vid) =
-  { exp = (i : vid  :>exp); tvar = (Id.tvar_of_ident i); loc = _loc }
+  { exp = (i :>exp); tvar = (Id.tvar_of_ident i); loc = _loc }
 
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 

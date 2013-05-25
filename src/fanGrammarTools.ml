@@ -38,11 +38,6 @@ let string_of_pat pat =
   let str = Buffer.contents buf in
   if str = "" then assert false else str
 
-(** FIXME why deprecate such syntax
-    It makes
-    [OPT STRING] invalid
-    You shoud write [OPT [x=STRING -> x] ]
- *)  
 let check_not_tok s = 
     match s with
     | {text = `Stok (_loc, _, _, _) ;_} ->
@@ -85,11 +80,6 @@ let retype_rule_list_without_patterns _loc rl =
 
 
 
-(*
-  translate [styp] into [ctyp],
-  given the assumption that the entry output [tvar] type
- *)
-        
 let make_ctyp (styp:styp) tvar : ctyp = 
   let rec aux  = with ctyp function  
     | #ident' | `Quote _ as x -> x  
@@ -104,158 +94,45 @@ let make_ctyp (styp:styp) tvar : ctyp =
 
       
 
-(* transform [text] to [exp] which represents [symbol]
-   compute the [lhs]
-   it generates code which has type [Gram.symbol]
-
-   tvar provides type informatoin
-   {[
-   `Skeyword "let"
-
-   `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))
-
-   `Smeta
-      (["FOLD1"; "SEP"],
-          [Gram.srules declare_regexp
-                [([`Stoken
-                    (((function | `Lid _ -> true | _ -> false)),
-                          (`Normal, "`Lid _"));
-                     `Skeyword ":";
-                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                      (Gram.mk_action
-                         (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
-                            (_loc : FanLoc.t)  ->
-                            match __fan_0 with
-                            | `Lid x -> ((x, r) : 'e__2 )
-                            | _ -> assert false)))];
-                `Skeyword ";"],
-               (Gram.Action.mk
-                   (Gram.sfold1sep
-                      (fun (x,r)  ()  ->
-                         if Hashtbl.mem FanLexTools.named_regexps x
-                         then
-                           Printf.eprintf
-                             "pa_ulex (warning): multiple definition of named regexp '%s'\n"
-                             x
-                         else ();
-                         Hashtbl.add FanLexTools.named_regexps x r) () : 
-                   (_,'e__2,'e__3) Gram.foldsep )))
-   `Slist0
-     (Gram.srules sigis
-                 [([`Snterm (Gram.obj (sigi : 'sigi Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    (Gram.mk_action
-                       (fun _  (sg : 'sigi)  (_loc : FanLoc.t)  ->
-                          (sg : 'e__1 ))))])
-
-   `Slist0sep
-       ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))),
-        (`Skeyword "|"))
-
-
-   `Slist1sep
-        ((Gram.srules pos_exps
-          [([`Stoken
-                        (((function | `Lid _ -> true | _ -> false)),
-                          (`Normal, "`Lid _"));
-                     `Skeyword ":";
-                     `Snterm
-                       (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
-                      (Gram.mk_action
-                         (fun (y : 'dot_lstrings)  _ 
-                            (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                            match __fan_0 with
-                            | `Lid x ->
-                                (((x : string ), (FanToken.resolve_name y)) : 
-                                'e__2 )
-                            | _ -> assert false)));
-                   ([`Stoken
-                       (((function | `Lid _ -> true | _ -> false)),
-                         (`Normal, "`Lid _"))],
-                     (Gram.mk_action
-                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
-                           ->
-                           match __fan_0 with
-                           | `Lid x ->
-                               (((x : string ),
-                                  (FanToken.resolve_name ((`Sub []), x))) : 
-                               'e__2 )
-                           | _ -> assert false)))]), (`Skeyword ";"))
-   `Snext
-   `Sself
-   `Snterml ((Gram.obj (exp : 'exp Gram.t )), "top")
-   `Stoken
-     (((function | `Ant ((""|"mexp"|"anti"|"list"),_) -> true
-        | _ -> false)),
-       (`Normal, "`Ant ((\"\"|\"mexp\"|\"anti\"|\"list\"),_)"))
-   ]}
- *)    
 let rec make_exp (tvar : string) (x:text) =
   with exp
   let rec aux tvar x =
     match x with
-    (* | `Smeta (_loc, n, tl, e, t) -> *)
-    (*   let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in  *)
-    (*   let (ns:exp) = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in *)
-    (*   let act = typing e (make_ctyp t tvar) in *)
-    (*   {| `Smeta ($ns, $el, ($((gm() : vid :> exp)).Action.mk $act )) |} *)
-      (* {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |} *)
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
-        begin match  ts with
+        (match  ts with
         |  None -> if min then  {| `Slist1 $txt |} else {| `Slist0 $txt |} 
         | Some s ->
             let x = aux tvar s.text in
-            if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |}
-        end
+            if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |})
     | `Snext _loc ->  {| `Snext |}
     | `Sself _loc ->  {| `Sself|}
     | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
     | `Snterm (_loc, n, lev) ->
         let obj =
           {| ($((gm() : vid :> exp)).obj
-                ($(n.exp) : '$(lid:n.tvar) $(id:(gm(): vid :> ident)).t ))|}
-          (* {| ($(id:gm()).obj *)
-          (*       ($(n.exp) : $(id:(gm()(\* : vid :> ident *\))).t '$(lid:n.tvar)))|} *) in 
-        begin match lev with
+                ($(n.exp) : '$(lid:n.tvar) $(id:(gm(): vid :> ident)).t ))|} in 
+        (match lev with
         | Some lab -> {| `Snterml ($obj,$str:lab)|}
         | None ->
-           if n.tvar = tvar then {| `Sself|} else {| `Snterm $obj |}
-        end
+           if n.tvar = tvar then {| `Sself|} else {| `Snterm $obj |})
     | `Sopt (_loc, t) -> {| `Sopt $(aux "" t) |}
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
         {| $((gm():vid:>exp)).srules $(make_exp_rules _loc rl "") |}
-        (* {| $(id:gm()).srules $(make_exp_rules _loc rl "") |} *)
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |}  in aux  tvar x
 
 
-(* the [rhs] was computed, compute the [lhs]
-   the generated expession has type [production]
- *)    
 and make_exp_rules (_loc:loc)  (rl : (text list  * exp) list  ) (tvar:string) =
   with exp
   list_of_list _loc
     (List.map (fun (sl,action) ->
-      (* let number = List.length sl in *)
       let action_string = Ast2pt.to_string_exp action in
-      (* let exp = (Filters.ME.meta_exp _loc action) in *)
       let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
       {| ($sl,($str:action_string,$action(* ,$exp *))) |} ) rl)
   
-(* generate action, collecting patterns into action
-   [rtvar] stands for the type of the return value
-   [tvar] refers to the current entry's type
-
-   It is in charge of generating code like this 
-   {[
-   (Gram.mk_action
-               (fun (a : 'case)  _  (e : 'exp)  _  (_loc : FanLoc.t) 
-                  -> (`Try (_loc, e, a) : 'exp )))
-   ]}
- *)
 let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
   let locid = {:pat| $(lid:!FanLoc.name) |} in 
@@ -325,29 +202,16 @@ let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
   match symbolss with
   | [] -> {| () |}
   |_ -> seq_sem rest 
-  (* seq (sem_of_list rest); *)
+
   
 (* given the entry of the name, make a name *)
 let mk_name _loc (i:vid) =
-  {exp = (i:vid :> exp) (* {:exp| $id:i |} *);
-   tvar = Id.tvar_of_ident i; loc = _loc}
+  {exp = (i :> exp) ; tvar = Id.tvar_of_ident i; loc = _loc}
   
-let mk_slist loc min sep symb = `Slist loc min symb sep 
+let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 
 
-(*
-  return [(ent,pos,txt)] the [txt] has type [olevel],
 
-  [ent] is something like
-  {[
-  (module_exp : 'mexp Gram.t )
-  ]}
-
-  
-  [pos] is something like
-  {[(Some `LA)]} it has type [position option]
-  
- *)  
 let text_of_entry (e:entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
@@ -374,22 +238,12 @@ let text_of_entry (e:entry) :exp =  with exp
     match e.levels with
     |`Single l ->
       {| $((gm():vid:>exp)).extend_single $ent ($pos, $(apply l) ) |}
-      (* {| $(id:gm()).extend_single $ent ($pos, $(apply l) ) |} *)
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
         {|$((gm():vid:>exp)).extend $ent ($pos,$txt)|}
 
   
 
-(* [gl] is the name  list option
-
-   {[
-   loc -> ident option ->exp name list option ->
-   (exp, 'a) entry list -> exp -> exp
-   ]}
-
-   This function generate some local entries
- *)   
 let let_in_of_extend _loc (gram: vid option ) locals  default =
   let entry_mk =
     match gram with
@@ -408,15 +262,6 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
       let locals = and_of_list (List.map local_bind_of_name ll)  in
       {:exp| let grammar_entry_create = $entry_mk in let $locals in $default |}    
 
-(* the [locals] is local entry name list,
-   [el] is entry list
-   [gram] is the grammar
-   [gmod] is the [Gram] module true
-   generate the extend, the main entrance
-   the [entrance] point for generating code
-
-   It call [text_of_entry]
- *)
 let text_of_functorial_extend _loc  gram locals el = 
   let args =
     let el =
@@ -427,7 +272,7 @@ let text_of_functorial_extend _loc  gram locals el =
   let_in_of_extend _loc gram locals  args
 
 
-(* generate Stok *)  
+
 let mk_tok _loc ?restrict ~pattern styp = with exp
  match restrict with
  | None ->
@@ -449,23 +294,3 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} 
    
-(* let sfold ?sep _loc  (ns:string list )  f e s = with ctyp' *)
-(*   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in *)
-(*   let suffix = *)
-(*     match sep with *)
-(*     | None -> ""|Some  _ -> "sep" in *)
-(*   let n = List.hd ns in  *)
-(*   let foldfun = *)
-(*     try List.assoc n fs ^ suffix  with Not_found -> invalid_arg "sfold" in *)
-(*   let styp = {| '$(lid:new_type_var ()) |} in *)
-(*   let e = *)
-(*     {:exp| $((gm():vid:>exp)).$lid:foldfun $f $e |} *)
-(* (\* {:exp| $(id:gm()).$lid:foldfun $f $e |} *\) in *)
-(*   let( t:styp) = *)
-(*     {| ($(s.styp), $styp) $(`Type {|  _ $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) |}) *)
-(*        |} in  *)
-(*   let text = `Smeta _loc ns (match sep with | None -> [s.text] | Some sep -> [s.text;sep.text] )  e t   in  *)
-(*   {text ; styp ; pattern = None }  *)
-
-
-
