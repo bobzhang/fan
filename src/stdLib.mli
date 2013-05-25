@@ -187,3 +187,20 @@ class foldbase2 :
     method unknown : 'a -> 'a -> 'b
   end
 
+
+
+(* class primitive : *)
+(*   object *)
+(*     method ant : FAst.loc -> FAst.ant -> FAst.ep *)
+(*     method bool : FAst.loc -> bool -> FAst.ep *)
+(*     method char : FAst.loc -> char -> FAst.ep *)
+(*     method float : FAst.loc -> float -> FAst.ep *)
+(*     method int : FAst.loc -> int -> FAst.ep *)
+(*     method int32 : FAst.loc -> int32 -> FAst.ep *)
+(*     method int64 : FAst.loc -> int64 -> FAst.ep *)
+(*     method loc : FAst.loc -> FAst.loc -> FAst.ep *)
+(*     method nativeint : FAst.loc -> nativeint -> FAst.ep *)
+(*     method string : FAst.loc -> string -> FAst.ep *)
+(*     method unit : FAst.loc -> unit -> FAst.ep *)
+(*   end *)
+    

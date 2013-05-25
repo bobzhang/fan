@@ -1,7 +1,7 @@
 
 (** The dependency should only rely on the last version of
   [Fan], keep its dependency only on [LibUtil]  *)
-open LibUtil
+(* open LibUtil *)
 open Format
 
 
@@ -132,14 +132,24 @@ class eqbase = object(self:'self)
   method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> ('a0 list -> 'a0 list -> bool) =
     fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys 
   method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> ('a0 array -> 'a0 array-> bool) =
-    fun mf_a xs ys -> Array.for_all2  (mf_a self) xs ys 
+    fun mf_a xs ys ->
+      let for_all2 p xs ys =
+        let open Array in
+        let n = length xs in
+        let _ = if length ys <> n then raise (Invalid_argument "Array.for_all2") in
+        let rec loop i =
+          if i = n then true
+          else if p xs.(i) ys.(i) then loop (succ i)
+          else false  in
+        loop 0 in 
+      for_all2  (mf_a self) xs ys 
   method option:
       ! 'a . ('self_type -> 'a -> 'a-> bool) -> ('a option -> 'a option -> bool ) =
-    fun mf_a x y->
-      match (x, y) with
-      |(None,None) -> true
-      |(Some x,Some y) -> (mf_a self x y)
-      | (_,_) -> false 
+        fun mf_a x y->
+          match (x, y) with
+          |(None,None) -> true
+          |(Some x,Some y) -> (mf_a self x y)
+          | (_,_) -> false 
 
   method arrow: ! 'a0 'a1 'b0 'b1 .
       ('self_type -> 'a0 -> bool) -> ('self_type -> 'a1 -> bool) ->
@@ -228,8 +238,22 @@ class foldbase2 = object (self:'self_type)
           List.fold_left2 mf_a self lx ly
   method array: ! 'a0.
       ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
-        'a0 array -> 'a0 array -> 'self_type =  fun mf_a lx ly -> 
-          Array.fold_left2 mf_a self lx ly
+        'a0 array -> 'a0 array -> 'self_type =  fun mf_a lx ly ->
+            let fold_left2 f acc  a1 a2 =
+              let l1 = Array.length a1
+              and l2 = Array.length a2 in
+              if l1 <> l2 then invalid_arg "Array.fold_left2 length is not equal"
+              else
+                let acc = ref acc in
+                let rec loop i =
+                  if i < l1 then begin 
+                    acc := f !acc a1.(i) a2.(i);
+                    loop (i+1);
+                  end 
+                  else
+                    !acc in
+                loop 0 in
+          fold_left2 mf_a self lx ly
   method option: ! 'a0. ('self_type -> 'a0 -> 'a0 -> 'self_type) ->
     'a0 option -> 'a0 option -> 'self_type = fun mf_a lx ly ->
       match (lx,ly) with
@@ -280,3 +304,31 @@ let float_repres f =
       valid_float_lexeme float_val
 
 *)
+
+(* open FAst  *)
+(* class primitive =  object *)
+(*   method int _loc (i:int)  =  {:ep|$`int:i|} *)
+(*   method int32 _loc (i:int32)  = {:ep|$`int32:i|} *)
+(*   method int64 _loc  (i:int64)  = {:ep|$`int64:i|} *)
+(*   method nativeint _loc (i:nativeint)  = {:ep|$`nativeint:i|} *)
+(*   method float _loc (i:float) = {:ep|$`flo:i|} *)
+(*   method string _loc (i:string)  = {:ep|$`str:i|} *)
+(*   method char _loc (i:char)  = {:ep|$`chr:i|} *)
+(*   method unit _loc (_:unit) = {:ep|()|} *)
+(*   (\*default use [meta_loc] for expession*\) *)
+(*   method loc _loc (_l: loc)  = *)
+(*     let n  = !FanLoc.name in {:ep|$lid:n|} *)
+(*   method ant (_loc:loc) (x:ant)  = (x:>ep) *)
+(*   (\* FIXME bool antiquot *\) *)
+(*   method bool _loc x = *)
+(*     match x with *)
+(*     |true -> {:ep|true|} *)
+(*     | false -> {:ep| false |} *)
+(*   (\* method unknown (_loc:loc) : ! 'a . 'a -> ep  = assert false; *)
+(*      method unknown (_loc : loc) = (assert false : 'a . 'a -> ep ) *)
+(*      a bug to be FIXED *)
+(*    *\) *)
+(* end;; *)
+
+
+    

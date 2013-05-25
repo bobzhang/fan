@@ -48,15 +48,18 @@ let as_cset = function
         LexBackend.output_entry
         (Lexgen.make_single_dfa
         {LexSyntax.shortest=true;clauses=l})]
-    declare_regexp:
-    [ FOLD1 (fun (x,r) () -> begin
-        if Hashtbl.mem named_regexps x then
-          Printf.eprintf
-            "fanlex (warning): multiple definition of named regexp '%s'\n" x;
-        Hashtbl.add named_regexps x r
-    end) (())
-        ["let"; `Lid x ; "="; regexp{r} -> (x,r)] -> {:stru|let _ = () |} (* FIXME*)
-    ]
+  declare_regexp:
+  ["let";`Lid x ; "=";regexp{r} ->
+    if Hashtbl.mem named_regexps x then begin 
+      Printf.eprintf
+        "fanlex (warning): multiple definition of named regexp '%s'\n" x;
+      exit 2 
+    end
+    else begin
+      Hashtbl.add named_regexps x r;
+      {:stru|let _ = () |}
+    end
+  | S; S{x} -> x]
   regexp:
 
   {

@@ -1,6 +1,6 @@
 open FAst
-
-(* {:fans| keep on;  derive (MetaExpr);|}; *)
+(* open StdLib *)
+(* {:fans| keep on;  derive (MetaObj);|};; *)
 {:ocaml|
 
 type name = {(* every entry has a name *)  
@@ -14,7 +14,7 @@ type name = {(* every entry has a name *)
 type styp =
  [ ident'
  | `App of (loc * styp * styp)
- | `Quote of (loc * position_flag * (* meta_option *) alident)
+ | `Quote of (loc * position_flag *  alident)
  | `Self of (loc * string)
  | `Tok of loc
  | `Type of ctyp ]

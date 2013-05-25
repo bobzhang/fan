@@ -82,38 +82,39 @@ let _ =
     Gram.extend_single (declare_regexp : 'declare_regexp Gram.t )
       (None,
         (None, None,
-          [([`Smeta
-               (["FOLD1"],
-                 [Gram.srules
-                    [([`Skeyword "let";
-                      `Stoken
-                        (((function | `Lid _ -> true | _ -> false)),
-                          (`Normal, "`Lid _"));
-                      `Skeyword "=";
-                      `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                       ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid x -> ((x, r) : 'e__3 )\n     | _ -> failwith \"(x, r)\n\")\n",
-                         (Gram.mk_action
-                            (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t])
-                                _  (_loc : FanLoc.t)  ->
-                               match __fan_1 with
-                               | `Lid x -> ((x, r) : 'e__3 )
-                               | _ -> failwith "(x, r)\n"))))]],
-                 (Gram.Action.mk
-                    (Gram.sfold1
-                       (fun (x,r)  ()  ->
-                          begin
-                            if Hashtbl.mem named_regexps x
-                            then
+          [([`Skeyword "let";
+            `Stoken
+              (((function | `Lid _ -> true | _ -> false)),
+                (`Normal, "`Lid _"));
+            `Skeyword "=";
+            `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
+             ("Gram.mk_action\n  (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t])  _  (_loc : FanLoc.t)  ->\n     match __fan_1 with\n     | `Lid x ->\n         (if Hashtbl.mem named_regexps x\n          then\n            begin\n              Printf.eprintf\n                \"fanlex (warning): multiple definition of named regexp '%s'\n\"\n                x;\n              exit 2\n            end\n          else\n            begin\n              Hashtbl.add named_regexps x r;\n              (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru )\n            end : 'declare_regexp )\n     | _ ->\n         failwith\n           \"if Hashtbl.mem named_regexps x\nthen\n  begin\n    Printf.eprintf\n      \"fanlex (warning): multiple definition of named regexp '%s'\\n\" x;\n    exit 2\n  end\nelse\n  begin\n    Hashtbl.add named_regexps x r;\n    (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru )\n  end\n\")\n",
+               (Gram.mk_action
+                  (fun (r : 'regexp)  _  (__fan_1 : [> FanToken.t])  _ 
+                     (_loc : FanLoc.t)  ->
+                     match __fan_1 with
+                     | `Lid x ->
+                         (if Hashtbl.mem named_regexps x
+                          then
+                            begin
                               Printf.eprintf
                                 "fanlex (warning): multiple definition of named regexp '%s'\n"
                                 x;
-                            Hashtbl.add named_regexps x r
-                          end) () : (_,'e__3,'e__4) Gram.fold )))],
-             ("Gram.mk_action\n  (fun _  (_loc : FanLoc.t)  ->\n     ((`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ) : 'declare_regexp ))\n",
-               (Gram.mk_action
-                  (fun _  (_loc : FanLoc.t)  ->
-                     ((`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru ) : 
-                     'declare_regexp )))))]));
+                              exit 2
+                            end
+                          else
+                            begin
+                              Hashtbl.add named_regexps x r;
+                              (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )
+                            end : 'declare_regexp )
+                     | _ ->
+                         failwith
+                           "if Hashtbl.mem named_regexps x\nthen\n  begin\n    Printf.eprintf\n      \"fanlex (warning): multiple definition of named regexp '%s'\\n\" x;\n    exit 2\n  end\nelse\n  begin\n    Hashtbl.add named_regexps x r;\n    (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru )\n  end\n"))));
+          ([`Sself; `Sself],
+            ("Gram.mk_action\n  (fun (x : 'declare_regexp)  _  (_loc : FanLoc.t)  -> (x : 'declare_regexp ))\n",
+              (Gram.mk_action
+                 (fun (x : 'declare_regexp)  _  (_loc : FanLoc.t)  ->
+                    (x : 'declare_regexp )))))]));
     Gram.extend (regexp : 'regexp Gram.t )
       (None,
         [((Some "as"), None,

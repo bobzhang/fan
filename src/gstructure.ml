@@ -29,7 +29,8 @@ type gram = {
 }
 
 type label =  string option
-  
+
+    
 type entry = {
     egram     : gram;
     ename     : string;
@@ -51,9 +52,8 @@ and level = {
     (* the raw productions stored in the level*)
     lsuffix : tree ;
     lprefix : tree}
-and symbol =
-  [`Smeta of (string list  * symbol list  * Gaction.t)
-  | `Snterm of entry
+and asymbol =
+  [ `Snterm of entry
   | `Snterml of (entry * string) (* the second argument is the level name *)
   | `Slist0 of symbol
   | `Slist0sep of (symbol * symbol)
@@ -64,8 +64,26 @@ and symbol =
   | `Speek of symbol
   | `Sself
   | `Snext
+  | terminal 
+]  
+and symbol =
+  [
+    `Snterm of entry
+  | `Snterml of (entry * string) (* the second argument is the level name *)
+  | `Slist0 of symbol
+  | `Slist0sep of (symbol * symbol)
+  | `Slist1 of symbol
+  | `Slist1sep of (symbol * symbol)
+  | `Sopt of symbol
+  | `Stry of symbol
+  | `Speek of symbol
+  | `Sself
+  | `Snext
+  | terminal
+      
   | `Stree of tree
-  | terminal ]
+  | `Smeta of (string list  * symbol list  * Gaction.t)
+ ]
 and tree = (* internal struccture *)
   | Node of node
   | LocAct of (* (int*Gaction.t) *)anno_action *  anno_action list (* (int * Action.t) *)
