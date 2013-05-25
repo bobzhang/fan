@@ -175,15 +175,8 @@ val unquoted_typevars:ctyp Gram.t
 val lang: FanToken.name Gram.t
 val with_exp_lang: exp Gram.t  
 val with_stru_lang: stru Gram.t  
-val symbol:  FanGrammar.symbol Gram.t 
-val rule:  FanGrammar.rule Gram.t
-val rule_list: FanGrammar.rule list Gram.t 
-val psymbol: FanGrammar.symbol Gram.t
-val level:  FanGrammar.level Gram.t 
-val level_list: ([ `Group of (FanGrammar.level list ) | `Single of FanGrammar.level ]) Gram.t 
-val entry: FanGrammar.entry Gram.t
-val extend_body: exp Gram.t 
-val delete_rule_body: exp Gram.t 
+(* val extend_body: exp Gram.t *)
+(* val delete_rule_body: exp Gram.t  *)
 val dot_lstrings: (FanToken.name) Gram.t 
 
 (**  generally "pat; EOI". *)    

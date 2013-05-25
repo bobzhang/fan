@@ -9,7 +9,6 @@ open Parsetree
 open Longident
 open Asttypes
 open LibUtil
-open FanUtil
 open ParsetreeHelper
 open FanLoc
 open FanOps
@@ -17,7 +16,24 @@ open FAst
 
 open Objs;;
 
-  
+(*************************************************************************)
+(* utility begin *)
+(*
+  {[remove_underscores "_a" = "a"
+  remove_underscores "__a" = "a"
+  remove_underscores "__a___b" =  "ab"
+  remove_underscores "__a___b__" = "ab"
+  ]}
+ *)    
+let remove_underscores s =
+  let l = String.length s in
+  let buf = Buffer.create l in
+  let () = String.iter (fun ch ->
+    if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
+  Buffer.contents buf 
+    
+
+        
 DEFINE ANT_ERROR = error _loc "antiquotation not expected here";;
 
 
@@ -498,7 +514,7 @@ let rec pat (x:pat) =  with pat  match x with
   | {| [| $p |] |}  -> mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
   | {| [| |]|} -> mkpat _loc (Ppat_array [])
   | {|$chr:s|} -> 
-         mkpat _loc (Ppat_constant (Const_char (char_of_char_token _loc s)))
+         mkpat _loc (Ppat_constant (Const_char (TokenEval.char_of_char_token _loc s)))
   | {|$int:s|} -> 
          let i = try int_of_string s with 
            Failure _ -> error _loc "Integer literal exceeds the range of representable integers of type int"
@@ -518,12 +534,12 @@ let rec pat (x:pat) =  with pat  match x with
   | {|$flo:s|} -> mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
   | {|$p1 | $p2 |} -> mkpat _loc (Ppat_or (pat p1) (pat p2))
   | {|$str:s|} ->
-       mkpat _loc (Ppat_constant (Const_string (string_of_string_token _loc s)))
+       mkpat _loc (Ppat_constant (Const_string (TokenEval.string_of_string_token _loc s)))
   | {| ($p1 .. $p2)  |}->
        begin match (p1, p2) with
        | (`Chr (loc1, c1), `Chr (loc2, c2)) ->
-        let c1 = char_of_char_token loc1 c1 in
-        let c2 = char_of_char_token loc2 c2 in
+        let c1 = TokenEval.char_of_char_token loc1 c1 in
+        let c2 = TokenEval.char_of_char_token loc2 c2 in
         mkrangepat _loc c1 c2
       | _ -> error _loc "range pattern allowed only for characters"
        end
@@ -671,7 +687,7 @@ let rec exp (x : exp) = with exp match x with
             | x -> errorf loc "bad left part of assignment:%s" (dump_exp x)  in
           mkexp loc e
       | `Chr (loc,s) ->
-          mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
+          mkexp loc (Pexp_constant (Const_char (TokenEval.char_of_char_token loc s)))
       | `Subtype (loc,e,t2) ->
           mkexp loc (Pexp_constraint (exp e) None (Some (ctyp t2)))
       | `Coercion (loc, e, t1, t2) ->
@@ -823,7 +839,7 @@ let rec exp (x : exp) = with exp match x with
             (Pexp_apply (mkexp loc (Pexp_ident (array_function loc "String" "get")))
                [("", exp e1); ("", exp e2)])
       | `Str (loc,s) ->
-          mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
+          mkexp loc (Pexp_constant (Const_string (TokenEval.string_of_string_token loc s)))
       | `Try (loc,e,a) -> mkexp loc (Pexp_try (exp e) (case a (* [] *)))
       | `Par (loc,e) ->
           let l = list_of_com e [] in

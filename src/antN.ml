@@ -43,7 +43,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           let e = {|String.escaped $e |} in
           {| `Str  $e |}
       | ("`flo",_,_) ->
-          let e = {| FanUtil.float_repres $e |} in
+          let e = {| string_of_float $e |} in
           {| `Flo  $e |}
       | ("`bool",_,_) ->
           {| `Lid (if $e then "true" else "false" ) |} 

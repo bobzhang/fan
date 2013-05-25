@@ -21,7 +21,7 @@ let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
 
 let meta_nativeint _loc i = `Nativeint (_loc, (Nativeint.to_string i))
 
-let meta_float _loc i = `Flo (_loc, (FanUtil.float_repres i))
+let meta_float _loc i = `Flo (_loc, (string_of_float i))
 
 let meta_string _loc i = `Str (_loc, (String.escaped i))
 

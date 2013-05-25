@@ -98,11 +98,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : FAst.exp )
            | ("`flo",_,_) ->
                let e: FAst.exp =
-                 `App
-                   (_loc,
-                     (`Dot
-                        (_loc, (`Uid (_loc, "FanUtil")),
-                          (`Lid (_loc, "float_repres")))), e) in
+                 `App (_loc, (`Lid (_loc, "string_of_float")), e) in
                (`App
                   (_loc, (`Vrn (_loc, "Flo")),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : FAst.exp )

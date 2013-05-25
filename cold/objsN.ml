@@ -12,9 +12,6 @@ let pp_print_ant: Format.formatter -> ant -> unit =
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
       FanUtil.pp_print_anti_cxt _a1
 
-let pp_print_nil: Format.formatter -> nil -> unit =
-  fun fmt  `Nil  -> Format.fprintf fmt "`Nil"
-
 let pp_print_literal: Format.formatter -> literal -> unit =
   fun fmt  ->
     function
@@ -894,8 +891,6 @@ class print =
       fun fmt  (`Ant (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc _a0
           self#fanutil_anti_cxt _a1
-    method nil : 'fmt -> nil -> unit=
-      fun fmt  `Nil  -> Format.fprintf fmt "`Nil"
     method literal : 'fmt -> literal -> unit=
       fun fmt  ->
         function
@@ -1756,7 +1751,6 @@ class map =
       fun (`Ant (_a0,_a1))  ->
         let _a0 = self#loc _a0 in
         let _a1 = self#fanutil_anti_cxt _a1 in `Ant (_a0, _a1)
-    method nil : nil -> nil= fun `Nil  -> `Nil
     method literal : literal -> literal=
       function
       | `Chr _a0 -> let _a0 = self#string _a0 in `Chr _a0
@@ -2535,7 +2529,6 @@ class fold =
     method ant : ant -> 'self_type=
       fun (`Ant (_a0,_a1))  ->
         let self = self#loc _a0 in self#fanutil_anti_cxt _a1
-    method nil : nil -> 'self_type= fun `Nil  -> self
     method literal : literal -> 'self_type=
       function
       | `Chr _a0 -> self#string _a0
@@ -3049,9 +3042,6 @@ let map_loc f =
 
 let map_ant f =
   object  inherit  map as super method! ant x = f (super#ant x) end
-
-let map_nil f =
-  object  inherit  map as super method! nil x = f (super#nil x) end
 
 let map_literal f =
   object  inherit  map as super method! literal x = f (super#literal x) end

@@ -39,7 +39,7 @@ class primitive =
     method nativeint _loc (i : nativeint) =
       ((`Nativeint (_loc, (Nativeint.to_string i)) : FAst.ep ) : ep )
     method float _loc (i : float) =
-      ((`Flo (_loc, (FanUtil.float_repres i)) : FAst.ep ) : ep )
+      ((`Flo (_loc, (string_of_float i)) : FAst.ep ) : ep )
     method string _loc (i : string) =
       ((`Str (_loc, (String.escaped i)) : FAst.ep ) : ep )
     method char _loc (i : char) =
@@ -60,9 +60,6 @@ let _ = begin (); () end
 class meta =
   object (self : 'self_type)
     inherit  primitive
-    method nil : 'loc -> nil -> FAst.ep=
-      fun _loc  (`Nil _a0)  ->
-        `App (_loc, (`Vrn (_loc, "Nil")), (self#loc _loc _a0))
     method literal : 'loc -> literal -> FAst.ep=
       fun _loc  ->
         function

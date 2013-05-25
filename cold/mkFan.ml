@@ -417,3 +417,23 @@ let _ =
       ~mpat:(fun loc  p  -> m#row_field loc (Objs.strip_loc_row_field p))
       ~exp_filter ~pat_filter
   end
+
+let normal_handler =
+  function
+  | Out_of_memory  -> Some "Out of memory"
+  | Assert_failure (file,line,char) ->
+      Some
+        (Format.sprintf "Assertion failed, file %S, line %d, char %d" file
+           line char)
+  | Match_failure (file,line,char) ->
+      Some
+        (Format.sprintf "Pattern matching failed, file %S, line %d, char %d"
+           file line char)
+  | Failure str -> Some (Format.sprintf "Failure: %S" str)
+  | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
+  | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
+  | XStream.Failure  -> Some (Format.sprintf "Parse failure")
+  | XStream.Error str -> Some (Format.sprintf "XStream.Error %s" str)
+  | _ -> None
+
+let _ = Printexc.register_printer normal_handler

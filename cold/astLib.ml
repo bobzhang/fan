@@ -81,7 +81,6 @@ let loc_of =
   | `Field (_loc,_,_) -> _loc
   | `CeFun (_loc,_,_) -> _loc
   | `ClassPath (_loc,_) -> _loc
-  | `Nil _loc -> _loc
   | `Par (_loc,_) -> _loc
   | `Com (_loc,_,_) -> _loc
   | `TyRepr (_loc,_,_) -> _loc

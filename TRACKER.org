@@ -24,6 +24,7 @@
   The problem becomes serious when handling nested quotations and
   anti-quotations:
      A sample code:
+
      #+BEGIN_SRC ocaml
        and quotation c = {:lexer|
          | '{' (':' quotation_name)? ('@' locname)? '|' (extra_quot as p)?
@@ -103,8 +104,10 @@
     end
   #+END_SRC
 
+
 * 05 generate signatures for Objs module
   This will enhance separate compilation for the project
+
 
 * 06 ast design
 
@@ -114,11 +117,13 @@
     (* make `C to Vrn *)  
     `TyVrnOf(_loc, `C(_,cons), `Par(_,t))
   #+END_SRC
+
 * DONE 07 Stream.Failure overrides the built-in Failure
   open Stream is dangerous...
   our ocamllex engine raises Failrue...
   solution: ==> failwith instead of Failure
   
+
 * 08 generate fold type and map type in ml file and write them in mli file
 
 * 09 Specialize [eoi_entry] and provide grammar analysis
@@ -137,6 +142,7 @@
    `Ant "g"; `Ant"ghso"
   ]
   will not parse, since under such case, the second production has a higher priority.
+
 
 * 11 inling problem again
 
@@ -157,6 +163,7 @@
 * 12 with does not work with
   ident-
   with ident- is not parsed, the problem is the lexer.
+
 
 * 13 a even light weight syntax 
   #+BEGIN_SRC ocaml
@@ -185,11 +192,14 @@
       
   #+END_SRC
 
+
 * 15 print generator
   Format.pp_print_string?
 
+
 * 16 keep the code generation close with dumping
   make it easy to debug 
+
 
 * DONE 17 a lesson while debug
   unit = `Uid "()"
@@ -197,10 +207,12 @@
   so strict type annotations are helpful
    unit : ep = `Uid "()"
 
+
 * 18 method syntax in-compatible
   #+BEGIN_SRC caml
     method list : 'a . ?sep:space_formatter -> ?first:space_formatter ->
   #+END_SRC
+
 * 19 make quotation first class, dual to Ant
 
 * 20 rewrite hb script to make it work under windows
@@ -231,6 +243,7 @@
 
   How to avoid the location caused by include combined with filter
   
+
 * DONE 25 get rid of dependency on ocamlfind
   ocamlfind should not appear in fan, we could split it into a sub
   package fan_utop which depends on ocamlfind

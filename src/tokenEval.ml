@@ -1,10 +1,6 @@
 
  
-(*
-  {[
-  valch '3' = 3
-  ]}
- *) 
+(*  {[valch '3' = 3  ]} *) 
 let valch x = Char.code x - Char.code '0'
 
 (*
@@ -59,8 +55,7 @@ let  backslash = parser
       ('0'..'9' | 'a'..'f' | 'A'..'F' as c2)  ->
      chr (16 * (valch_hex c1) + (valch_hex c2)) 
 
-(* follow the ocaml convention
- *)    
+(* follow the ocaml convention *)    
 let  backslash_in_string strict store = parser
   |  '\010'; 's  -> skip_indent s
   |  '\013'; 's  -> begin  skip_opt_linefeed s; skip_indent s  end
@@ -108,4 +103,11 @@ let string ?strict s =
 
 
 
+let char_of_char_token loc s =
+  try char s with
+  | Failure _ as exn -> FanLoc.raise loc exn
+        
+let string_of_string_token loc s =
+  try string s with
+  | Failure _ as exn -> FanLoc.raise loc exn 
                  

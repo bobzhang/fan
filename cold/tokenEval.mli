@@ -10,3 +10,10 @@ val string : ?strict:unit -> string -> string
       remain to be interpreted; raise [Failure] if [strict] and an
       incorrect backslash sequence is found;
       [Token.Eval.string strict (String.escaped s)] returns [s] *)
+
+
+val char_of_char_token : FanLoc.t -> string -> char
+(** see [char], raise an location aware exception *)
+
+val string_of_string_token : FanLoc.t -> string -> string
+(** see [string], raise an location aware exception*)    

@@ -1,4 +1,3 @@
-open FanUtil
 open LibUtil  
 open Format  
 open Lexing
@@ -472,7 +471,14 @@ let token c = {:lexer|
   | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
   | lowercase identchar * as x ->  `Lid x 
   | uppercase identchar * as x ->  `Uid x 
-  | int_literal  ('l'|'L'|'n')? as x -> 
+  | int_literal  ('l'|'L'|'n')? as x ->
+      let cvt_int_literal s =
+        let n = String.length s in
+        match s.[n-1] with
+        |'l' -> `INT32 (Int32.(neg (of_string ("-" ^ s))),s)
+        |'L' -> `INT64 (Int64.(neg (of_string ("-" ^ s))),s)
+        |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
+        | _  -> `INT (- int_of_string ("-" ^ s),s) in 
       (try cvt_int_literal x with
         Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf))
   | float_literal as f -> 

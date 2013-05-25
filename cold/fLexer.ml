@@ -1,5 +1,3 @@
-open FanUtil
-
 open LibUtil
 
 open Format
@@ -9577,6 +9575,17 @@ let token c lexbuf =
             let x =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
                 (lexbuf.Lexing.lex_curr_pos + 0) in
+            let cvt_int_literal s =
+              let n = String.length s in
+              match s.[n - 1] with
+              | 'l' ->
+                  `INT32 ((let open Int32 in neg (of_string ("-" ^ s))), s)
+              | 'L' ->
+                  `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
+              | 'n' ->
+                  `NATIVEINT
+                    ((let open Nativeint in neg (of_string ("-" ^ s))), s)
+              | _ -> `INT ((- (int_of_string ("-" ^ s))), s) in
             (try cvt_int_literal x
              with
              | Failure _ ->

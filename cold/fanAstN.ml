@@ -14,7 +14,7 @@ class primitive =
     method nativeint _loc (i : nativeint) =
       (`Nativeint (_loc, (Nativeint.to_string i)) : FAst.ep )
     method float _loc (i : float) =
-      (`Flo (_loc, (FanUtil.float_repres i)) : FAst.ep )
+      (`Flo (_loc, (string_of_float i)) : FAst.ep )
     method string _loc (i : string) =
       (`Str (_loc, (String.escaped i)) : FAst.ep )
     method char _loc (i : char) = (`Chr (_loc, (Char.escaped i)) : FAst.ep )
@@ -25,9 +25,6 @@ class primitive =
       | true  -> (`Lid (_loc, "true") : FAst.ep )
       | false  -> (`Lid (_loc, "false") : FAst.ep )
   end
-
-let fill_loc_nil: FanLoc.t -> FAstN.nil -> FAst.nil =
-  fun loc  `Nil  -> `Nil loc
 
 let fill_loc_literal: FanLoc.t -> FAstN.literal -> FAst.literal =
   fun loc  ->
@@ -921,8 +918,6 @@ and fill_loc_rec_bind: FanLoc.t -> FAstN.rec_bind -> FAst.rec_bind =
 class meta =
   object (self : 'self_type)
     inherit  primitive
-    method nil : 'loc -> nil -> FAst.ep=
-      fun _loc  `Nil  -> `Vrn (_loc, "Nil")
     method literal : 'loc -> literal -> FAst.ep=
       fun _loc  ->
         function

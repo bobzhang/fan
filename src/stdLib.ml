@@ -247,3 +247,36 @@ class foldbase2 = object (self:'self_type)
   method unknown: !'a. 'a -> 'a -> 'self_type = fun _ _ -> self
 end 
 
+(**
+   The difference between [float_repres] and
+   [string_of_float] is quite subtle, and meta-explode
+   [float] is generally a bad idea, here we adopt
+   [string_of_float] for simplicity
+
+let float_repres f =
+  let valid_float_lexeme s =
+    let l = String.length s in
+    let rec loop i =
+      if i >= l then s ^ "."
+      else
+        match s.[i] with
+        |'0' .. '9'
+        | '-' -> loop (i + 1)
+        | _ -> s in
+    loop 0 in
+  match classify_float f with
+  | FP_nan -> "nan"
+  | FP_infinite ->
+      if f < 0.0 then "neg_infinity" else "infinity"
+  | _ ->
+      let float_val =
+        let s1 = Printf.sprintf "%.12g" f in
+        if f = (float_of_string s1) then s1
+        else begin
+          let s2 = Printf.sprintf "%.15g" f in
+          if f = (float_of_string s2) then s2
+          else Printf.sprintf "%.18g" f
+        end in
+      valid_float_lexeme float_val
+
+*)

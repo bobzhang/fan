@@ -4,6 +4,13 @@ open FAst
 
 open LibUtil
 
+let with_open_out_file x f =
+  match x with
+  | Some file ->
+      let oc = open_out_bin file in begin f oc; flush oc; close_out oc end
+  | None  ->
+      begin set_binary_mode_out stdout true; f stdout; flush stdout end
+
 let sigi_printer =
   ref
     (fun ?input_file:_  ?output_file:_  _  -> failwith "No interface printer")
@@ -22,29 +29,33 @@ type 'a printer_fun =
 let register_text_printer () =
   let print_implem ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
-    FanUtil.with_open_out_file output_file
+    with_open_out_file output_file
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.structure fmt pt in pp_print_flush fmt ()) in
   let print_interf ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
-    FanUtil.with_open_out_file output_file
+    with_open_out_file output_file
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.signature fmt pt in pp_print_flush fmt ()) in
   begin stru_printer := print_implem; sigi_printer := print_interf end
 
+let dump_pt magic fname pt oc =
+  begin
+    output_string oc magic;
+    output_value oc (if fname = "-" then "" else fname); output_value oc pt
+  end
+
 let register_bin_printer () =
   let print_interf ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
-    let open FanUtil in
-      with_open_out_file output_file
-        (dump_pt FanConfig.ocaml_ast_intf_magic_number input_file pt) in
+    with_open_out_file output_file
+      (dump_pt FanConfig.ocaml_ast_intf_magic_number input_file pt) in
   let print_implem ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
-    let open FanUtil in
-      with_open_out_file output_file
-        (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt) in
+    with_open_out_file output_file
+      (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt) in
   begin stru_printer := print_implem; sigi_printer := print_interf end
 
 let wrap directive_handler pa init_loc cs =

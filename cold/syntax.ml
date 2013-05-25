@@ -313,28 +313,6 @@ let with_exp_lang = Gram.mk "with_exp_lang"
 
 let with_stru_lang = Gram.mk "with_stru_lang"
 
-let symbol = Gram.mk "symbol"
-
-let rule = Gram.mk "rule"
-
-let meta_rule = Gram.mk "meta_rule"
-
-let rule_list = Gram.mk "rule_list"
-
-let psymbol = Gram.mk "psymbol"
-
-let level = Gram.mk "level"
-
-let level_list = Gram.mk "level_list"
-
-let entry = Gram.mk "entry"
-
-let extend_body = Gram.mk "extend_body"
-
-let delete_rule_body = Gram.mk "delete_rule_body"
-
-let rules = Gram.mk "rules"
-
 let dot_lstrings = Gram.mk "dot_lstrings"
 
 let a_string = Gram.mk "a_string"

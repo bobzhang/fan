@@ -112,7 +112,7 @@ let gen_strip =
       (fun { info_exp = exp; ep0; ty;_}  res  ->
          match (ty : ctyp ) with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
-           |`Dot (`Uid "FanUtil",`Lid "anti_cxt") -> res
+           |(`Dot (`Uid "FanUtil",`Lid "anti_cxt") : FAstN.ctyp) -> res
          | _ ->
              let pat0 = (ep0 :>pat) in
              (`LetIn (`Negative, (`Bind (pat0, exp)), res) : FAstN.exp ))

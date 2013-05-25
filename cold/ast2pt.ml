@@ -8,8 +8,6 @@ open Asttypes
 
 open LibUtil
 
-open FanUtil
-
 open ParsetreeHelper
 
 open FanLoc
@@ -19,6 +17,15 @@ open FanOps
 open FAst
 
 open Objs
+
+let remove_underscores s =
+  let l = String.length s in
+  let buf = Buffer.create l in
+  let () =
+    String.iter
+      (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
+      s in
+  Buffer.contents buf
 
 let rec normalize_acc =
   function
@@ -414,7 +421,8 @@ let rec pat (x : pat) =
       mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
   | (`ArrayEmpty _loc : FAst.pat) -> mkpat _loc (Ppat_array [])
   | (`Chr (_loc,s) : FAst.pat) ->
-      mkpat _loc (Ppat_constant (Const_char (char_of_char_token _loc s)))
+      mkpat _loc
+        (Ppat_constant (Const_char (TokenEval.char_of_char_token _loc s)))
   | (`Int (_loc,s) : FAst.pat) ->
       let i =
         try int_of_string s
@@ -453,12 +461,14 @@ let rec pat (x : pat) =
       mkpat _loc (Ppat_or ((pat p1), (pat p2)))
   | (`Str (_loc,s) : FAst.pat) ->
       mkpat _loc
-        (Ppat_constant (Const_string (string_of_string_token _loc s)))
+        (Ppat_constant
+           (Const_string (TokenEval.string_of_string_token _loc s)))
   | (`PaRng (_loc,p1,p2) : FAst.pat) ->
       (match (p1, p2) with
        | (`Chr (loc1,c1),`Chr (loc2,c2)) ->
-           let c1 = char_of_char_token loc1 c1 in
-           let c2 = char_of_char_token loc2 c2 in mkrangepat _loc c1 c2
+           let c1 = TokenEval.char_of_char_token loc1 c1 in
+           let c2 = TokenEval.char_of_char_token loc2 c2 in
+           mkrangepat _loc c1 c2
        | _ -> error _loc "range pattern allowed only for characters")
   | `Label (loc,_,_)|`LabelS (loc,_)|`OptLablExpr (loc,_,_,_)
     |`OptLabl (loc,_,_)|`OptLablS (loc,_) ->
@@ -567,7 +577,8 @@ let rec exp (x : exp) =
         | x -> errorf loc "bad left part of assignment:%s" (dump_exp x) in
       mkexp loc e
   | `Chr (loc,s) ->
-      mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
+      mkexp loc
+        (Pexp_constant (Const_char (TokenEval.char_of_char_token loc s)))
   | `Subtype (loc,e,t2) ->
       mkexp loc (Pexp_constraint ((exp e), None, (Some (ctyp t2))))
   | `Coercion (loc,e,t1,t2) ->
@@ -740,7 +751,9 @@ let rec exp (x : exp) =
            ((mkexp loc (Pexp_ident (array_function loc "String" "get"))),
              [("", (exp e1)); ("", (exp e2))]))
   | `Str (loc,s) ->
-      mkexp loc (Pexp_constant (Const_string (string_of_string_token loc s)))
+      mkexp loc
+        (Pexp_constant
+           (Const_string (TokenEval.string_of_string_token loc s)))
   | `Try (loc,e,a) -> mkexp loc (Pexp_try ((exp e), (case a)))
   | `Par (loc,e) ->
       let l = list_of_com e [] in

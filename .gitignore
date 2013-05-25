@@ -10,6 +10,7 @@
 *.cmxs
 *.cmxa
 *.out
+
 *~
 \#*\#
 /.emacs.desktop
