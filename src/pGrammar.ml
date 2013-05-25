@@ -225,12 +225,6 @@ FanConfig.antiquotations := true;;
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
   |`Uid "N" ->
       mk_symbol  ~text:(`Snext _loc)   ~styp:(`Self _loc "N") ~pattern:None
-  (* | `Uid ("FOLD0"|"FOLD1" as x); simple_exp{f}; simple_exp{e}; S{s} -> *)
-  (*   sfold _loc [x] f e s *)
-  (* |`Uid ("FOLD0"|"FOLD1" as x ); simple_exp{f}; *)
-  (*     simple_exp{e}; S{s};`Uid ("SEP" as y); *)
-  (*   symbol{sep}  -> *)
-  (*     sfold ~sep _loc [x;y] f e s   *)
   | "["; L1 rule SEP "|"{rl}; "]" ->
       let rl = retype_rule_list_without_patterns _loc rl in
       let t = new_type_var () in

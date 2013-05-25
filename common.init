@@ -86,7 +86,7 @@ open Exp;;
 
 (* test dump *)
 let t_dump s =  t stru s |> Ast2pt.stru;;
-open ParserGrammar;;
+open PGrammar;;
 
 (* #require "inspect";; *)
 (* open Inspect;; *)
