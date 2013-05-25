@@ -46,8 +46,10 @@ and symbol ={
   pattern : pat option 
 }
 and text =
- [ `Smeta of (loc * string list  * text list  * exp * styp)
- | `Slist of (loc * bool * symbol * symbol option )
+ [
+  (* `Smeta of (loc * string list  * text list  * exp * styp) *)
+ (* | *)
+   `Slist of (loc * bool * symbol * symbol option )
  | `Snterm of (loc * name  * string option )
  | `Sopt of (loc * text )
  | `Stry of (loc * text )

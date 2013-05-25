@@ -170,10 +170,10 @@ and parser_of_terminals (terminals: terminal list) strm =
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
     match s with 
-    | `Smeta (_, symbls, act) ->
-        let act = Obj.magic act entry symbls
-        and pl = List.map aux symbls in
-        Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
+    (* | `Smeta (_, symbls, act) -> *)
+    (*     let act = Obj.magic act entry symbls *)
+    (*     and pl = List.map aux symbls in *)
+    (*     Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl) *)
     | `Slist0 s ->
         let ps = aux s in  Gcomb.slist0 ps ~f:(fun l -> Gaction.mk (List.rev l))
     | `Slist0sep (symb, sep) ->

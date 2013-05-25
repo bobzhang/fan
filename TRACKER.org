@@ -252,3 +252,8 @@
 * 26 standard rts ?
   =FanUtil.float_reprs= needs to put some where or
   generated each time?
+
+* 27 fast.mli.depends
+  It seems that when ocamlbuild build native code, it will try to pull
+  in the module fast.mli.depends when module A depends on module fast.
+  OCamlbuild bug?

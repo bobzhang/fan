@@ -62,8 +62,9 @@ val mk_tok :
   loc ->
   ?restrict:exp ->
   pattern:pat -> styp -> symbol
-val sfold :
-  ?sep:symbol ->
-  loc ->
-  string list ->
-  exp -> exp -> symbol -> symbol
+
+(* val sfold : *)
+(*   ?sep:symbol -> *)
+(*   loc -> *)
+(*   string list -> *)
+(*   exp -> exp -> symbol -> symbol *)

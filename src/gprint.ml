@@ -95,7 +95,7 @@ class text_grammar : grammar_print = object(self:'self)
         | None -> ()
         | Some x -> pp f "%(%)%a%(%)" first fu x last
   method symbol f =  function
-    | `Smeta (n, sl, _) -> self#meta n f  sl
+    (* | `Smeta (n, sl, _) -> self#meta n f  sl *)
     | `Slist0 s -> pp f "LIST0 %a" self#symbol1 s
     | `Slist0sep (s, t) ->
         pp f "LIST0 %a SEP %a" self#symbol1 s self#symbol1 t
@@ -128,7 +128,8 @@ class text_grammar : grammar_print = object(self:'self)
         pp f "%a%s" self#description description content
     | `Skeyword s -> pp f "%S" s
     | `Stree t -> self#tree f t
-    | `Smeta (_, _, _) | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
+    (* | `Smeta (_, _, _) *)
+    | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
       `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Speek _ as s ->
         pp f "(%a)" self#symbol s
   method production ?(action=false)

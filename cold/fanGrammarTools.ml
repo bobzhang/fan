@@ -110,28 +110,6 @@ let make_ctyp (styp : styp) tvar =
 let rec make_exp (tvar : string) (x : text) =
   let rec aux tvar x =
     match x with
-    | `Smeta (_loc,n,tl,e,t) ->
-        let el = list_of_list _loc (List.map (fun t  -> aux "" t) tl) in
-        let (ns :exp)=
-          list_of_list _loc
-            (List.map (fun n  -> (`Str (_loc, n) : FAst.exp )) n) in
-        let act = typing e (make_ctyp t tvar) in
-        (`App
-           (_loc, (`Vrn (_loc, "Smeta")),
-             (`Par
-                (_loc,
-                  (`Com
-                     (_loc, ns,
-                       (`Com
-                          (_loc, el,
-                            (`App
-                               (_loc,
-                                 (`Field
-                                    (_loc, (gm () : vid  :>exp),
-                                      (`Dot
-                                         (_loc, (`Uid (_loc, "Action")),
-                                           (`Lid (_loc, "mk")))))), act))))))))) : 
-          FAst.exp )
     | `Slist (_loc,min,t,ts) ->
         let txt = aux "" t.text in
         (match ts with
@@ -460,36 +438,3 @@ let mk_tok _loc ?restrict  ~pattern  styp =
       let descr = string_of_pat pattern in
       let text = `Stok (_loc, match_fun, "Antiquot", descr) in
       { text; styp; pattern = (Some p') }
-
-let sfold ?sep  _loc (ns : string list) f e s =
-  let fs = [("FOLD0", "sfold0"); ("FOLD1", "sfold1")] in
-  let suffix = match sep with | None  -> "" | Some _ -> "sep" in
-  let n = List.hd ns in
-  let foldfun =
-    try (List.assoc n fs) ^ suffix with | Not_found  -> invalid_arg "sfold" in
-  let styp = `Quote (_loc, (`Normal _loc), (`Lid (_loc, (new_type_var ())))) in
-  let e: FAst.exp =
-    `App
-      (_loc,
-        (`App
-           (_loc,
-             (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, foldfun)))),
-             f)), e) in
-  let (t :styp)=
-    `App
-      (_loc,
-        (`App
-           (_loc,
-             (`Type
-                (`App
-                   (_loc,
-                     (`Dot
-                        (_loc, (gm () : vid  :>ident),
-                          (`Lid (_loc, ("fold" ^ suffix))))), (`Any _loc)))),
-             (s.styp))), styp) in
-  let text =
-    `Smeta
-      (_loc, ns,
-        (match sep with | None  -> [s.text] | Some sep -> [s.text; sep.text]),
-        e, t) in
-  { text; styp; pattern = None }

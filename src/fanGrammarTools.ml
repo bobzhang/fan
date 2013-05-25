@@ -194,11 +194,11 @@ let rec make_exp (tvar : string) (x:text) =
   with exp
   let rec aux tvar x =
     match x with
-    | `Smeta (_loc, n, tl, e, t) ->
-      let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in 
-      let (ns:exp) = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in
-      let act = typing e (make_ctyp t tvar) in
-      {| `Smeta ($ns, $el, ($((gm() : vid :> exp)).Action.mk $act )) |}
+    (* | `Smeta (_loc, n, tl, e, t) -> *)
+    (*   let el = list_of_list _loc (List.map (fun t -> aux "" t ) tl) in  *)
+    (*   let (ns:exp) = list_of_list _loc (List.map (fun n -> {| $str:n |} ) n) in *)
+    (*   let act = typing e (make_ctyp t tvar) in *)
+    (*   {| `Smeta ($ns, $el, ($((gm() : vid :> exp)).Action.mk $act )) |} *)
       (* {| `Smeta ($ns, $el, ($(id:gm()).Action.mk $act )) |} *)
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
@@ -449,23 +449,23 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} 
    
-let sfold ?sep _loc  (ns:string list )  f e s = with ctyp'
-  let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in
-  let suffix =
-    match sep with
-    | None -> ""|Some  _ -> "sep" in
-  let n = List.hd ns in 
-  let foldfun =
-    try List.assoc n fs ^ suffix  with Not_found -> invalid_arg "sfold" in
-  let styp = {| '$(lid:new_type_var ()) |} in
-  let e =
-    {:exp| $((gm():vid:>exp)).$lid:foldfun $f $e |}
-(* {:exp| $(id:gm()).$lid:foldfun $f $e |} *) in
-  let( t:styp) =
-    {| ($(s.styp), $styp) $(`Type {|  _ $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) |})
-       |} in 
-  let text = `Smeta _loc ns (match sep with | None -> [s.text] | Some sep -> [s.text;sep.text] )  e t   in 
-  {text ; styp ; pattern = None } 
+(* let sfold ?sep _loc  (ns:string list )  f e s = with ctyp' *)
+(*   let fs = [("FOLD0","sfold0");("FOLD1","sfold1")] in *)
+(*   let suffix = *)
+(*     match sep with *)
+(*     | None -> ""|Some  _ -> "sep" in *)
+(*   let n = List.hd ns in  *)
+(*   let foldfun = *)
+(*     try List.assoc n fs ^ suffix  with Not_found -> invalid_arg "sfold" in *)
+(*   let styp = {| '$(lid:new_type_var ()) |} in *)
+(*   let e = *)
+(*     {:exp| $((gm():vid:>exp)).$lid:foldfun $f $e |} *)
+(* (\* {:exp| $(id:gm()).$lid:foldfun $f $e |} *\) in *)
+(*   let( t:styp) = *)
+(*     {| ($(s.styp), $styp) $(`Type {|  _ $(id:(gm():vid:>ident)).$(lid:"fold"^suffix) |}) *)
+(*        |} in  *)
+(*   let text = `Smeta _loc ns (match sep with | None -> [s.text] | Some sep -> [s.text;sep.text] )  e t   in  *)
+(*   {text ; styp ; pattern = None }  *)
 
 
 

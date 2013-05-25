@@ -29,8 +29,7 @@ and symbol =  {
   styp: styp;
   pattern: pat option} 
 and text =
-  [ `Smeta of (loc * string list * text list * exp * styp)
-  | `Slist of (loc * bool * symbol * symbol option)
+  [ `Slist of (loc * bool * symbol * symbol option)
   | `Snterm of (loc * name * string option) | `Sopt of (loc * text)
   | `Stry of (loc * text) | `Speek of (loc * text)
   | `Srules of (loc * (text list * exp) list) | `Sself of loc | `Snext of loc

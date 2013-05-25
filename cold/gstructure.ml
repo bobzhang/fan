@@ -51,8 +51,7 @@ and symbol =
   [ `Snterm of entry | `Snterml of (entry * string) | `Slist0 of symbol
   | `Slist0sep of (symbol * symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol * symbol) | `Sopt of symbol | `Stry of symbol
-  | `Speek of symbol | `Sself | `Snext | terminal | `Stree of tree
-  | `Smeta of (string list * symbol list * Gaction.t)] 
+  | `Speek of symbol | `Sself | `Snext | terminal | `Stree of tree] 
 and tree =  
   | Node of node
   | LocAct of anno_action* anno_action list

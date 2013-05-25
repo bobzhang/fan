@@ -12,14 +12,16 @@ let higher s1 s2 =
   | _ -> false 
 
 
-let rec derive_eps : symbol -> bool = function
+let rec derive_eps (s:symbol)  =
+  match s with 
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
   | `Stree t -> tree_derive_eps t
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
-  | `Smeta (_, _, _) | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
+  (* | `Smeta (_, _, _) *)
+  | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
         (* Approximation *)
       false 
 
@@ -77,7 +79,7 @@ let rec check_gram entry = function
         failwithf
           "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
-  | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl
+  (* | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl *)
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
@@ -103,7 +105,7 @@ let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
 and  using_symbol symbol acc =
   match symbol with 
-  | `Smeta (_, sl, _) -> using_symbols  sl acc 
+  (* | `Smeta (_, sl, _) -> using_symbols  sl acc  *)
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
       using_symbol s acc
   | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)

@@ -781,39 +781,6 @@ let _ =
                     | _ ->
                         failwith
                           "mk_symbol ~text:(`Snext _loc) ~styp:(`Self (_loc, \"N\")) ~pattern:None\n"))));
-          ([`Stoken
-              (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
-                (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
-           `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
-           `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
-           `Sself],
-            ("Gram.mk_action\n  (fun (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) \n     (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Uid (\"FOLD0\"|\"FOLD1\" as x) -> (sfold _loc [x] f e s : 'symbol )\n     | _ -> failwith \"sfold _loc [x] f e s\n\")\n",
-              (Gram.mk_action
-                 (fun (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) 
-                    (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                    match __fan_0 with
-                    | `Uid ("FOLD0"|"FOLD1" as x) ->
-                        (sfold _loc [x] f e s : 'symbol )
-                    | _ -> failwith "sfold _loc [x] f e s\n"))));
-          ([`Stoken
-              (((function | `Uid ("FOLD0"|"FOLD1") -> true | _ -> false)),
-                (`Normal, "`Uid (\"FOLD0\"|\"FOLD1\")"));
-           `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
-           `Snterm (Gram.obj (simple_exp : 'simple_exp Gram.t ));
-           `Sself;
-           `Stoken
-             (((function | `Uid "SEP" -> true | _ -> false)),
-               (`Normal, "`Uid \"SEP\""));
-           `Sself],
-            ("Gram.mk_action\n  (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t])  (s : 'symbol) \n     (e : 'simple_exp)  (f : 'simple_exp)  (__fan_0 : [> FanToken.t]) \n     (_loc : FanLoc.t)  ->\n     match (__fan_4, __fan_0) with\n     | (`Uid (\"SEP\" as y),`Uid (\"FOLD0\"|\"FOLD1\" as x)) ->\n         (sfold ~sep _loc [x; y] f e s : 'symbol )\n     | _ -> failwith \"sfold ~sep _loc [x; y] f e s\n\")\n",
-              (Gram.mk_action
-                 (fun (sep : 'symbol)  (__fan_4 : [> FanToken.t]) 
-                    (s : 'symbol)  (e : 'simple_exp)  (f : 'simple_exp) 
-                    (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
-                    match (__fan_4, __fan_0) with
-                    | (`Uid ("SEP" as y),`Uid ("FOLD0"|"FOLD1" as x)) ->
-                        (sfold ~sep _loc [x; y] f e s : 'symbol )
-                    | _ -> failwith "sfold ~sep _loc [x; y] f e s\n"))));
           ([`Skeyword "[";
            `Slist1sep
              ((`Snterm (Gram.obj (rule : 'rule Gram.t ))), (`Skeyword "|"));
