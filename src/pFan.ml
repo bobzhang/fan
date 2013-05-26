@@ -65,7 +65,7 @@ let apply () = begin
     parser |  a = symb; 's  -> kont a s
   end;
 
-  with mexp
+  (* with mexp *)
   {:extend|
       mexp_quot:
       [ mexp{x} -> x]
@@ -114,8 +114,7 @@ let apply () = begin
             mk_anti _loc ~c:"mbind" n s
         | `QUOTATION x -> AstQuotation.expand _loc x FanDyn.mbind_tag
         | a_uident{m}; ":"; mtyp{mt} -> `Constraint(_loc,m,mt) ] |};
-
-  with constr
+  (* with constr *)
       {:extend|
         constr_quot:
         [ constr{x} -> x   ]

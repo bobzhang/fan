@@ -59,7 +59,7 @@ let level = Gram.mk "level"
 
 let level_list = Gram.mk "level_list"
 
-let entry = Gram.mk "entry"
+let entry: FanGrammar.entry Gram.t = Gram.mk "entry"
 
 let pattern: action_pattern Gram.t = Gram.mk "pattern"
 

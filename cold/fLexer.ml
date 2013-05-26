@@ -94,7 +94,6 @@ let show_stack () =
 type context = 
   {
   loc: FanLoc.position;
-  in_comment: bool;
   antiquots: bool;
   lexbuf: lexbuf;
   buffer: Buffer.t} 
@@ -102,7 +101,6 @@ type context =
 let default_context lb =
   {
     loc = FanLoc.dummy_pos;
-    in_comment = false;
     antiquots = false;
     lexbuf = lb;
     buffer = (Buffer.create 256)
@@ -116,8 +114,6 @@ let buff_contents c =
 
 let loc_merge c = FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
 
-let in_comment c = { c with in_comment = true }
-
 let set_start_p c = (c.lexbuf).lex_start_p <- c.loc
 
 let move_curr_p shift c =
@@ -129,17 +125,15 @@ let move_start_p shift c =
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
 
-let parse_nested ~lexer  c =
-  begin with_curr_loc lexer c; set_start_p c; buff_contents c end
-
-type 'a lex = context -> Lexing.lexbuf -> 'a 
-
 let store_parse f c = begin store c; f c c.lexbuf end
 
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
+  let old = (c.lexbuf).lex_start_p in
   let s =
-    parse_nested ~lexer:quotation
-      { c with loc = (Lexing.lexeme_start_p c.lexbuf) } in
+    begin
+      with_curr_loc quotation c; (c.lexbuf).lex_start_p <- old;
+      buff_contents c
+    end in
   let contents = String.sub s 0 ((String.length s) - retract) in
   `QUOTATION
     {
@@ -7183,12 +7177,8 @@ and quotation c lexbuf =
             else store_parse quotation c
         | 2 ->
             begin
-              store c;
-              (try with_curr_loc string c
-               with
-               | FanLoc.Exc_located (_,Lexing_error (Unterminated_string ))
-                   -> err Unterminated_string_in_quotation (loc_merge c));
-              Buffer.add_char c.buffer '"'; quotation c c.lexbuf
+              store c; with_curr_loc string c; Buffer.add_char c.buffer '"';
+              quotation c c.lexbuf
             end
         | 3 -> store_parse quotation c
         | 4 ->
@@ -9553,12 +9543,17 @@ let token c lexbuf =
         | 12 ->
             begin
               store c;
-              `COMMENT (begin with_curr_loc comment c; buff_contents c end)
+              (let old = (c.lexbuf).lex_start_p in
+               `COMMENT
+                 (begin
+                    with_curr_loc comment c; (c.lexbuf).lex_start_p <- old;
+                    buff_contents c
+                  end))
             end
         | 13 ->
             begin
               warn Comment_start (FanLoc.of_lexbuf lexbuf);
-              comment (in_comment c) c.lexbuf; `COMMENT (buff_contents c)
+              comment c c.lexbuf; `COMMENT (buff_contents c)
             end
         | 14 ->
             begin

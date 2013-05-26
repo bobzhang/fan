@@ -95,14 +95,12 @@ end
 type context =
     { loc        :  FanLoc.position ;
      (* only record the start position when enter into a quotation or antiquotation*)
-      in_comment : bool     ;
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }
       
 let default_context lb =
   { loc        = FanLoc.dummy_pos ;
-    in_comment = false     ;
     antiquots  = false     ;
     lexbuf     = lb        ;
     buffer     = Buffer.create 256 }
@@ -119,7 +117,6 @@ let buff_contents c =
 let loc_merge c =
   FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
 
-let in_comment c = { c with in_comment = true }
 
 (* update the lexing position to the loc
   combined with [with_curr_loc]  *)    
@@ -138,20 +135,16 @@ let move_start_p shift c =
 let with_curr_loc lexer c =
   lexer {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf
     
-let parse_nested ~lexer c = begin 
-  with_curr_loc lexer c;
-  set_start_p c;
-  buff_contents c
-end
-
-type 'a lex = context -> Lexing.lexbuf -> 'a
+(* type 'a lex = context -> Lexing.lexbuf -> 'a *)
     
 let store_parse f c =  
   (store c ; f c c.lexbuf)
 
-
+(** when you return a token make sure the token's location is correct *)
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
+  let old = c.lexbuf.lex_start_p in
+  let s =
+    (with_curr_loc quotation c; c.lexbuf.lex_start_p<-old(* c.loc *);buff_contents c;) in
   let contents = String.sub s 0 (String.length s - retract) in
   `QUOTATION {FanToken.q_name     = name     ;
               q_loc      = loc      ;
@@ -226,8 +219,8 @@ let safe_delimchars = ['%' '&' '/' '@' '^']
 (* These symbols are unsafe since "[<", "[|", etc. exsist. *)
 let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
 
-let left_delims  = ['(' '[' (* '{' *)]
-let right_delims = [')' ']' (* '}' *)]
+let left_delims  = ['(' '[' ]
+let right_delims = [')' ']' ]
     
 let left_delimitor =
 (* At least a safe_delimchars *)
@@ -239,10 +232,7 @@ let left_delimitor =
    (* Old "[<","{<" and new ones *)
   | ['[' ] delimchars* '<'
   | '[' '='
-  | '[' '>' (* make polymorphic variants different from  variants *)
-   (* Old brace and new ones *)
-   (* | '{' (['|' ':'] delimchars*\)? *)
-
+  | '[' '>' 
 let right_delimitor =
   (* At least a safe_delimchars *)
   (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
@@ -411,11 +401,7 @@ and quotation c = {:lexer|
   | "\"" ->
       begin
         store c;
-        begin
-          try with_curr_loc string c
-          with FanLoc.Exc_located(_,Lexing_error Unterminated_string) ->
-                err Unterminated_string_in_quotation (loc_merge c)
-        end;
+        with_curr_loc string c;
         Buffer.add_char c.buffer '"';
         quotation c c.lexbuf
       end
@@ -462,17 +448,12 @@ let token c = {:lexer|
   | "'\\" (_ as c) -> 
            (err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf))         
   | "(*" ->
-      (* let parse_nested ~lexer c = begin  *)
-      (*   with_curr_loc lexer c; *)
-      (*   set_start_p c; *)
-      (*   buff_contents c *)
-      (* end in *)
       (store c;
-       `COMMENT((with_curr_loc comment c;buff_contents c))
-       (* `COMMENT(parse_nested ~lexer:comment (in_comment c)) *))
+       let old = c.lexbuf.lex_start_p in 
+       `COMMENT((with_curr_loc comment c;  c.lexbuf.lex_start_p <-old; buff_contents c)))
   | "(*)" -> 
            ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
-              comment (in_comment c) c.lexbuf; `COMMENT (buff_contents c))
+              comment c c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
            ( warn Comment_not_end (FanLoc.of_lexbuf lexbuf) ;
              move_curr_p (-1) c; `SYMBOL "*")
@@ -519,4 +500,4 @@ let token c = {:lexer|
   | _ as c ->  err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
 |}
 
-    
+     

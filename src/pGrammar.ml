@@ -26,7 +26,7 @@ FanConfig.antiquotations := true;;
   psymbol
   level
   level_list
-  entry
+  (entry: FanGrammar.entry Gram.t)
 
   (pattern: action_pattern Gram.t )
   extend_body
@@ -34,7 +34,6 @@ FanConfig.antiquotations := true;;
   simple_exp delete_rules
   (simple_pat: simple_pat Gram.t )
   internal_pat|}  ;;
-
 
 {:extend|
   nonterminals:
@@ -78,9 +77,7 @@ FanConfig.antiquotations := true;;
 |};;
 
 
-{:extend|
-
-
+{:extend|(* Gram *)
   extend_header:
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 

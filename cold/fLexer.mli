@@ -21,7 +21,6 @@ type lex_error =
     loc       : position of the beginning of a string, quotation and comment *)        
 type context =
     { loc        : FanLoc.position ;
-      in_comment : bool ;
       antiquots  : bool ;
       lexbuf     : lexbuf ;
       buffer     : Buffer.t }
