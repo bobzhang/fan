@@ -76,36 +76,6 @@ val entry : FanGrammar.entry Gram.t
 
 
 
-(** the main entrance
-     return an already converted expession
-     {[
-     with str t extend_body  {|
-     nonterminalsclear:
-     [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
-
-     Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
-     (None,
-     [(None, None,
-     [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
-     `Slist0
-     (Gram.srules nonterminalsclear
-     [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-     (Gram.mk_action
-     (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
-     (Gram.mk_action
-     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
-     (() : 'nonterminalsclear ))))])])
-     ]}
-
-     the function [text_of_functorial_extend] is the driving force
-     it has type
-     {[ FAst.loc ->
-     FAst.ident option ->
-     FanGrammar.name list option -> FanGrammar.entry list -> FAst.exp
-     ]} *) 
-val extend_body : exp Gram.t
-val delete_rule_body : exp Gram.t
-
 
 (** parse [position] and translate into [exp] node, fixme,
     delay the translation *)    
@@ -170,6 +140,36 @@ val level :  FanGrammar.level Gram.t
 val level_list :
     ([ `Group of (FanGrammar.level list )
      | `Single of FanGrammar.level ]) Gram.t
-val entry: FanGrammar.entry Gram.t
+
+
+(** the main entrance
+     return an already converted expession
+     {[
+     with str t extend_body  {|
+     nonterminalsclear:
+     [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
+
+     Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
+     (None,
+     [(None, None,
+     [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
+     `Slist0
+     (Gram.srules nonterminalsclear
+     [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
+     (Gram.mk_action
+     (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
+     (Gram.mk_action
+     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
+     (() : 'nonterminalsclear ))))])])
+     ]}
+
+     the function [text_of_functorial_extend] is the driving force
+     it has type
+     {[ FAst.loc ->
+     FAst.ident option ->
+     FanGrammar.name list option -> FanGrammar.entry list -> FAst.exp
+     ]} *) 
+val extend_body : exp Gram.t
+val delete_rule_body : exp Gram.t
+
     
-(* val d : [> `Absolute of string list ] *)

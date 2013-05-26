@@ -36,8 +36,7 @@ FanConfig.antiquotations := true;;
   internal_pat|}  ;;
 
 
-{:extend|Gram
-
+{:extend|
   nonterminals:
   [
    [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
@@ -79,17 +78,17 @@ FanConfig.antiquotations := true;;
 |};;
 
 
-{:extend|Gram
+{:extend|
 
 
   extend_header:
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 
-    let () = grammar_module_name := t (* (t:vid :> ident) *) in
+    let () = grammar_module_name := t  in
     (Some i,old)
   | qualuid{t}  ->
       let old = gm() in
-      let () = grammar_module_name :=  t (* (t:vid :> ident) *) in 
+      let () = grammar_module_name :=  t in 
       (None,old)
   | -> (None,gm())]
   extend_body:
@@ -125,8 +124,7 @@ FanConfig.antiquotations := true;;
   | `Lid i -> `Lid(_loc,i)]
 
   t_qualid:
-  [ `Uid x; ".";  S{xs} ->
-    {:ident'|$uid:x.$xs|}
+  [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
   | `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
 
 
@@ -154,10 +152,10 @@ FanConfig.antiquotations := true;;
         (match n with
         |`name old -> AstQuotation.default := old
         | _ -> ());
-        (match (pos,levels) with
+        match (pos,levels) with
         |(Some {:exp| `Level $_ |},`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~name:p ~pos ~levels)
+        | _ -> mk_entry ~name:p ~pos ~levels
       end
   ]
   position:
@@ -189,15 +187,15 @@ FanConfig.antiquotations := true;;
     retype_rule_list_without_patterns _loc rules ]
 
   rule:
-  [ L0 psymbol SEP ";"{psl}; OPT ["->"; exp{act}-> act]{action} ->
-    mk_rule ~prod:psl ~action ]
+  [ L0 psymbol SEP ";"{prod}; OPT ["->"; exp{act}-> act]{action} ->
+    mk_rule ~prod ~action ]
 
 
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
     match p with
     |Some _ ->
-        {(s) with pattern = (p:  action_pattern option :>  pat option) }
+        { s with pattern = (p:  action_pattern option :>  pat option) }
     | None -> s  ] 
 
 
@@ -285,7 +283,7 @@ FanConfig.antiquotations := true;;
   | "_" -> {:pat'| _ |}
   | "("; pattern{p}; ")" -> p
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
-      (* {:pat| ($p1, $list:ps)|}] *)
+
   string:
   [ `STR (_, s) -> {:exp| $str:s |}
   | `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
