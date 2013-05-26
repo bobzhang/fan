@@ -116,10 +116,6 @@ let buff_contents c =
 
 let loc_merge c = FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
 
-let antiquots c = c.antiquots
-
-let is_in_comment c = c.in_comment
-
 let in_comment c = { c with in_comment = true }
 
 let set_start_p c = (c.lexbuf).lex_start_p <- c.loc
@@ -139,8 +135,6 @@ let parse_nested ~lexer  c =
 type 'a lex = context -> Lexing.lexbuf -> 'a 
 
 let store_parse f c = begin store c; f c c.lexbuf end
-
-let parse f c = f c c.lexbuf
 
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
   let s =
@@ -433,14 +427,11 @@ let rec string c lexbuf =
         | 5 ->
             let x =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
-            if is_in_comment c
-            then store_parse string c
-            else
-              begin
-                warn (Illegal_escape (String.make 1 x))
-                  (FanLoc.of_lexbuf lexbuf);
-                store_parse string c
-              end
+            begin
+              warn (Illegal_escape (String.make 1 x))
+                (FanLoc.of_lexbuf lexbuf);
+              store_parse string c
+            end
         | 6 -> begin update_loc c; store_parse string c end
         | 7 -> err Unterminated_string (loc_merge c)
         | 8 -> store_parse string c
@@ -5943,7 +5934,7 @@ and antiquot name depth c lexbuf =
        (match __ocaml_lex_result with
         | 0 ->
             if depth = 0
-            then let () = set_start_p c in `Ant (name, (buff_contents c))
+            then begin set_start_p c; `Ant (name, (buff_contents c)) end
             else store_parse (antiquot name (depth - 1)) c
         | 1 -> store_parse (antiquot name (depth + 1)) c
         | 2 -> err Unterminated_antiquot (loc_merge c)
@@ -5952,18 +5943,14 @@ and antiquot name depth c lexbuf =
             let p =
               Lexing.sub_lexeme_char_opt lexbuf
                 (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-            let () = Stack.push p opt_char in
-            let () = store c in
-            let () = with_curr_loc quotation c in
-            antiquot name depth c c.lexbuf
+            begin
+              Stack.push p opt_char; store c; with_curr_loc quotation c;
+              antiquot name depth c c.lexbuf
+            end
         | 5 ->
             begin
-              store c;
-              (try with_curr_loc string c
-               with
-               | FanLoc.Exc_located (_,Lexing_error (Unterminated_string ))
-                   -> err Unterminated_string_in_antiquot (loc_merge c));
-              Buffer.add_char c.buffer '"'; antiquot name depth c c.lexbuf
+              store c; with_curr_loc string c; Buffer.add_char c.buffer '"';
+              antiquot name depth c c.lexbuf
             end
         | 6 -> store_parse (antiquot name depth) c
         | _ -> failwith "lexing: empty token")
@@ -9565,7 +9552,8 @@ let token c lexbuf =
             err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
         | 12 ->
             begin
-              store c; `COMMENT (parse_nested ~lexer:comment (in_comment c))
+              store c;
+              `COMMENT (begin with_curr_loc comment c; buff_contents c end)
             end
         | 13 ->
             begin
@@ -9640,7 +9628,7 @@ let token c lexbuf =
                 (lexbuf.Lexing.lex_curr_pos + 0) in
             `SYMBOL x
         | 25 ->
-            if antiquots c
+            if c.antiquots
             then with_curr_loc dollar c
             else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
         | 26 ->

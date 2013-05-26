@@ -118,11 +118,8 @@ let buff_contents c =
     
 let loc_merge c =
   FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
-  (* FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf) *)
 
-let antiquots c = c.antiquots
-let is_in_comment c = c.in_comment
-let in_comment c = { (c) with in_comment = true }
+let in_comment c = { c with in_comment = true }
 
 (* update the lexing position to the loc
   combined with [with_curr_loc]  *)    
@@ -153,8 +150,6 @@ let store_parse f c =
   (store c ; f c c.lexbuf)
 
 
-let parse f c =
-  f c c.lexbuf
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let s = parse_nested ~lexer:quotation ({c with loc = Lexing.lexeme_start_p  c.lexbuf}) in
   let contents = String.sub s 0 (String.length s - retract) in
@@ -242,7 +237,7 @@ let left_delimitor =
   (* Old brackets, no new brackets starting with "[|" or "[:" *)
   | '[' ['|' ':']?
    (* Old "[<","{<" and new ones *)
-  | ['[' (* '{' *)] delimchars* '<'
+  | ['[' ] delimchars* '<'
   | '[' '='
   | '[' '>' (* make polymorphic variants different from  variants *)
    (* Old brace and new ones *)
@@ -251,14 +246,9 @@ let left_delimitor =
 let right_delimitor =
   (* At least a safe_delimchars *)
   (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-    (* A ')' or a new super ')' without ">)" *)
    | (delimchars* ['|' ':'])? ')'
-    (* Old brackets, no new brackets ending with "|]" or ":]" *)
    | ['|' ':']? ']'
-    (* Old ">]",">}" and new ones *)
-   | '>' delimchars* [']' (* '}' *)]
-    (* Old brace and new ones *)
-   (* | (delimchars* ['|' ':'])? '}' *)
+   | '>' delimchars* [']' ]
 |};;
 
 
@@ -266,7 +256,7 @@ let rec comment c = {:lexer|
   |"(*"  ->
       begin
         store c;
-        with_curr_loc comment c;
+        with_curr_loc comment c; (* to give better error message*)
         comment c c.lexbuf
       end
   | "*)"  ->  store c 
@@ -288,9 +278,7 @@ let rec string c = {:lexer|
   | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  store_parse string c 
   | '\\' 'x' hexa_char hexa_char ->  store_parse string c 
   | '\\' (_ as x) ->
-      if is_in_comment c then
-        store_parse string c
-      else (warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
+      (warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
         store_parse string c)
   | newline ->
       begin
@@ -338,7 +326,7 @@ and maybe_quotation_colon c = {:lexer|
           ~retract:(2 + opt_char_len p)
       end
    
-  |  _ as c(* symbolchar* as tok *) ->
+  |  _ as c ->
        err (Illegal_quotation (String.make 1 c))
         (FanLoc.of_lexbuf lexbuf) 
 |}
@@ -371,9 +359,8 @@ and dollar c = {:lexer|
 (* depth makes sure the parentheses are balanced *)
 and antiquot name depth c  = {:lexer|
   | ')' ->
-      if depth = 0 then
-        let () = set_start_p c in (* only cares about FanLoc.start_pos *)
-        `Ant(name, buff_contents c)
+      if depth = 0 then (* only cares about FanLoc.start_pos *)
+        (set_start_p c ; `Ant(name, buff_contents c))
       else store_parse (antiquot name (depth-1)) c
   | '('    ->  store_parse (antiquot name (depth+1)) c
         
@@ -384,20 +371,18 @@ and antiquot name depth c  = {:lexer|
         store_parse (antiquot name depth) c
       end
   | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)? ->
-      let () = Stack.push p opt_char in
-      let () = store c in
-      let () = with_curr_loc quotation c in
-       (antiquot name depth) c c.lexbuf
+      begin 
+        Stack.push p opt_char ;
+        store c ;
+        with_curr_loc quotation c ;
+        antiquot name depth c c.lexbuf
+      end
   | "\"" ->
       begin
         store c ;
-        begin
-          try with_curr_loc string c
-          with FanLoc.Exc_located (_,Lexing_error Unterminated_string) ->
-            err Unterminated_string_in_antiquot (loc_merge c)
-        end;
+        with_curr_loc string c;
         Buffer.add_char c.buffer '"';
-        (antiquot name depth) c c.lexbuf
+        antiquot name depth c c.lexbuf
       end
 
   | _  ->  store_parse (antiquot name depth) c
@@ -477,8 +462,15 @@ let token c = {:lexer|
   | "'\\" (_ as c) -> 
            (err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf))         
   | "(*" ->
-           (store c; `COMMENT(parse_nested ~lexer:comment (in_comment c)))
-  | "(*)" ->
+      (* let parse_nested ~lexer c = begin  *)
+      (*   with_curr_loc lexer c; *)
+      (*   set_start_p c; *)
+      (*   buff_contents c *)
+      (* end in *)
+      (store c;
+       `COMMENT((with_curr_loc comment c;buff_contents c))
+       (* `COMMENT(parse_nested ~lexer:comment (in_comment c)) *))
+  | "(*)" -> 
            ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
               comment (in_comment c) c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
@@ -511,10 +503,10 @@ let token c = {:lexer|
   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
   | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
   | '$' ->
-      if antiquots c then  (* FIXME maybe always lex as antiquot?*)
+      if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c
       else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
-      (* else  (symbolchar_star "$") c c.lexbuf *)
+
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
       `SYMBOL x 
   | ! ->
