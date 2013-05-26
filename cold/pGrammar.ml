@@ -633,11 +633,10 @@ let _ =
                       (Gram.mk_action
                          (fun (act : 'exp)  _  (_loc : FanLoc.t)  ->
                             (act : 'e__8 )))))])],
-             ("Gram.mk_action\n  (fun (action : 'e__8 option)  (psl : 'psymbol list)  (_loc : FanLoc.t)  ->\n     (mk_rule ~prod:psl ~action : 'rule ))\n",
+             ("Gram.mk_action\n  (fun (action : 'e__8 option)  (prod : 'psymbol list)  (_loc : FanLoc.t)  ->\n     (mk_rule ~prod ~action : 'rule ))\n",
                (Gram.mk_action
-                  (fun (action : 'e__8 option)  (psl : 'psymbol list) 
-                     (_loc : FanLoc.t)  ->
-                     (mk_rule ~prod:psl ~action : 'rule )))))]));
+                  (fun (action : 'e__8 option)  (prod : 'psymbol list) 
+                     (_loc : FanLoc.t)  -> (mk_rule ~prod ~action : 'rule )))))]));
     Gram.extend_single (psymbol : 'psymbol Gram.t )
       (None,
         (None, None,

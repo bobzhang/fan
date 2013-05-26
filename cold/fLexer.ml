@@ -8,6 +8,7 @@ type lex_error =
   | Illegal_character of char
   | Illegal_escape of string
   | Illegal_quotation of string
+  | Illegal_antiquote
   | Unterminated_comment
   | Unterminated_string
   | Unterminated_quotation
@@ -21,8 +22,9 @@ type lex_error =
 
 exception Lexing_error of lex_error
 
-let print_lex_error ppf =
-  function
+let print_lex_error ppf e =
+  match e with
+  | Illegal_antiquote  -> fprintf ppf "Illegal_antiquote"
   | Illegal_character c ->
       fprintf ppf "Illegal character (%s)" (Char.escaped c)
   | Illegal_quotation s ->
@@ -108,9 +110,6 @@ let default_context lb =
 
 let store c = Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
 
-let istore_char c i =
-  Buffer.add_char c.buffer (Lexing.lexeme_char c.lexbuf i)
-
 let buff_contents c =
   let contents = Buffer.contents c.buffer in
   begin Buffer.reset c.buffer; contents end
@@ -136,6 +135,8 @@ let with_curr_loc lexer c =
 
 let parse_nested ~lexer  c =
   begin with_curr_loc lexer c; set_start_p c; buff_contents c end
+
+type 'a lex = context -> Lexing.lexbuf -> 'a 
 
 let store_parse f c = begin store c; f c c.lexbuf end
 
@@ -254,7 +255,7 @@ let rec comment c lexbuf =
              (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
          };
        (match __ocaml_lex_result with
-        | 0 -> begin store c; with_curr_loc comment c; parse comment c end
+        | 0 -> begin store c; with_curr_loc comment c; comment c c.lexbuf end
         | 1 -> store c
         | 2 -> err Unterminated_comment (loc_merge c)
         | 3 -> begin update_loc c; store_parse comment c end
@@ -443,61 +444,6 @@ let rec string c lexbuf =
         | 6 -> begin update_loc c; store_parse string c end
         | 7 -> err Unterminated_string (loc_merge c)
         | 8 -> store_parse string c
-        | _ -> failwith "lexing: empty token")
-     end)
-  end
-
-let symbolchar_star beginning _c lexbuf =
-  let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
-    let pos = lexbuf.Lexing.lex_curr_pos in
-    begin
-      lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
-      lexbuf.Lexing.lex_start_pos <- pos; lexbuf.Lexing.lex_last_pos <- pos;
-      lexbuf.Lexing.lex_last_action <- (-1)
-    end
-  and __ocaml_lex_next_char lexbuf =
-    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len
-    then
-      (if lexbuf.Lexing.lex_eof_reached
-       then 256
-       else
-         begin
-           lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_next_char lexbuf
-         end)
-    else
-      (let i = lexbuf.Lexing.lex_curr_pos in
-       let c = (lexbuf.Lexing.lex_buffer).[i] in
-       begin lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c end)
-  and __ocaml_lex_state0 lexbuf =
-    begin
-      lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 0;
-      (match __ocaml_lex_next_char lexbuf with
-       | 33|37|38|42|43|45|46|47|58|60|61|62|63|64|92|94|124|126 ->
-           __ocaml_lex_state0 lexbuf
-       | _ ->
-           begin
-             lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-             lexbuf.Lexing.lex_last_action
-           end)
-    end in
-  begin
-    __ocaml_lex_init_lexbuf lexbuf 0;
-    (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
-     begin
-       lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
-       lexbuf.Lexing.lex_curr_p <-
-         {
-           (lexbuf.Lexing.lex_curr_p) with
-           Lexing.pos_cnum =
-             (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
-         };
-       (match __ocaml_lex_result with
-        | 0 ->
-            let tok =
-              Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-                (lexbuf.Lexing.lex_curr_pos + 0) in
-            `SYMBOL (beginning ^ tok)
         | _ -> failwith "lexing: empty token")
      end)
   end
@@ -6009,7 +5955,7 @@ and antiquot name depth c lexbuf =
             let () = Stack.push p opt_char in
             let () = store c in
             let () = with_curr_loc quotation c in
-            parse (antiquot name depth) c
+            antiquot name depth c c.lexbuf
         | 5 ->
             begin
               store c;
@@ -6017,7 +5963,7 @@ and antiquot name depth c lexbuf =
                with
                | FanLoc.Exc_located (_,Lexing_error (Unterminated_string ))
                    -> err Unterminated_string_in_antiquot (loc_merge c));
-              Buffer.add_char c.buffer '"'; parse (antiquot name depth) c
+              Buffer.add_char c.buffer '"'; antiquot name depth c c.lexbuf
             end
         | 6 -> store_parse (antiquot name depth) c
         | _ -> failwith "lexing: empty token")
@@ -7235,7 +7181,7 @@ and quotation c lexbuf =
                 (((lexbuf.Lexing.lex_mem).(0)) + 0) in
             begin
               store c; Stack.push p opt_char; with_curr_loc quotation c;
-              parse quotation c
+              quotation c c.lexbuf
             end
         | 1 ->
             let p =
@@ -7255,7 +7201,7 @@ and quotation c lexbuf =
                with
                | FanLoc.Exc_located (_,Lexing_error (Unterminated_string ))
                    -> err Unterminated_string_in_quotation (loc_merge c));
-              Buffer.add_char c.buffer '"'; parse quotation c
+              Buffer.add_char c.buffer '"'; quotation c c.lexbuf
             end
         | 3 -> store_parse quotation c
         | 4 ->
@@ -9624,7 +9570,7 @@ let token c lexbuf =
         | 13 ->
             begin
               warn Comment_start (FanLoc.of_lexbuf lexbuf);
-              parse comment (in_comment c); `COMMENT (buff_contents c)
+              comment (in_comment c) c.lexbuf; `COMMENT (buff_contents c)
             end
         | 14 ->
             begin
@@ -9696,7 +9642,7 @@ let token c lexbuf =
         | 25 ->
             if antiquots c
             then with_curr_loc dollar c
-            else parse (symbolchar_star "$") c
+            else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
         | 26 ->
             let x =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

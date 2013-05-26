@@ -1,8 +1,10 @@
 open Lexing
 type lex_error =
+
   | Illegal_character of char
   | Illegal_escape of string
   | Illegal_quotation of string
+  | Illegal_antiquote        
   | Unterminated_comment
   | Unterminated_string
   | Unterminated_quotation
@@ -13,13 +15,15 @@ type lex_error =
   | Comment_start
   | Comment_not_end
   | Literal_overflow of string
-        
+
+
+(** To store some context information:
+    loc       : position of the beginning of a string, quotation and comment *)        
 type context =
-    { loc        : FanLoc.position    ;
-      in_comment : bool     ;
-      (* quotations : bool     ; *)
-      antiquots  : bool     ;
-      lexbuf     : lexbuf   ;
+    { loc        : FanLoc.position ;
+      in_comment : bool ;
+      antiquots  : bool ;
+      lexbuf     : lexbuf ;
       buffer     : Buffer.t }
         
 exception Lexing_error of lex_error
@@ -46,7 +50,6 @@ val comment: context -> Lexing.lexbuf -> unit
 
 val string: context -> Lexing.lexbuf -> unit
 
-val symbolchar_star:  string ->  context -> Lexing.lexbuf ->  [> FanToken.t ]
 val default_context: Lexing.lexbuf -> context   
 val with_curr_loc: (context -> Lexing.lexbuf -> 'a) -> context -> 'a
 

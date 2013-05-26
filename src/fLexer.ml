@@ -6,6 +6,7 @@ type lex_error  =
   | Illegal_character of char
   | Illegal_escape    of string
   | Illegal_quotation of string
+  | Illegal_antiquote 
   | Unterminated_comment
   | Unterminated_string
   | Unterminated_quotation
@@ -19,7 +20,10 @@ type lex_error  =
 
 exception Lexing_error  of lex_error
 
-let print_lex_error ppf =  function
+let print_lex_error ppf e =
+  match e with
+  | Illegal_antiquote ->
+      fprintf ppf "Illegal_antiquote"
   | Illegal_character c ->
       fprintf ppf "Illegal character (%s)" (Char.escaped c)
   | Illegal_quotation s ->
@@ -57,6 +61,7 @@ let _ =
 
 
 let debug = ref false
+
 let opt_char_len  = function
   | Some _ -> 1
   | None -> 0
@@ -64,6 +69,7 @@ let opt_char_len  = function
 let print_opt_char fmt = function
   | Some c ->fprintf fmt "Some %c" c
   | None -> fprintf fmt "None"
+        
 module Stack=struct   
   include Stack
   let push v stk= begin 
@@ -76,7 +82,7 @@ module Stack=struct
   end 
 end
 
-(* the trailing char after "<<" *)    
+
 let opt_char : char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug:=true
 let turn_off_quotation_debug () = debug:=false
@@ -85,25 +91,11 @@ let show_stack () = begin
   eprintf "stack expand to check the error message@.";
   Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
 end
-    
-    
-
-
-(* To store some context information:
- *   loc       : position of the beginning of a string, quotation and comment
- *   in_comment: are we in a comment?
- *   quotations: shall we lex quotation?
- *               If quotations is false it's a SYMBOL token.
- *   antiquots : shall we lex antiquotations.
- *)
 
 type context =
-    { loc        :  FanLoc.position ; (* FanLoc.t  ; *)
+    { loc        :  FanLoc.position ;
      (* only record the start position when enter into a quotation or antiquotation*)
       in_comment : bool     ;
-
-      (* quotations : bool     ; *)
-      
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }
@@ -111,16 +103,15 @@ type context =
 let default_context lb =
   { loc        = FanLoc.dummy_pos ;
     in_comment = false     ;
-    (* quotations = true      ; *)
     antiquots  = false     ;
     lexbuf     = lb        ;
     buffer     = Buffer.create 256 }
     
 
 (* To buffer string literals, quotations and antiquotations *)
-
-let store c = Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
-let istore_char c i = Buffer.add_char c.buffer (Lexing.lexeme_char c.lexbuf i)
+let store c =
+  Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
+    
 let buff_contents c =
   let contents = Buffer.contents c.buffer in
   (Buffer.reset c.buffer; contents)
@@ -128,25 +119,27 @@ let buff_contents c =
 let loc_merge c =
   FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
   (* FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf) *)
-(* let quotations c = c.quotations *)
+
 let antiquots c = c.antiquots
 let is_in_comment c = c.in_comment
 let in_comment c = { (c) with in_comment = true }
 
 (* update the lexing position to the loc
   combined with [with_curr_loc]  *)    
-let set_start_p c = c.lexbuf.lex_start_p <- (* FanLoc.start_pos *) c.loc
+let set_start_p c =
+  c.lexbuf.lex_start_p <-  c.loc
 
 (* [unsafe] shift the lexing buffer, usually shift back *)    
 let move_curr_p shift c =
   c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
+
 let move_start_p shift c =
   c.lexbuf.lex_start_p <- FanLoc.move_pos shift c.lexbuf.lex_start_p
       
 (* create a new context with  the location of the context for the lexer
    the old context was kept *)      
 let with_curr_loc lexer c =
-  lexer ({c with loc = Lexing.lexeme_start_p c.lexbuf }) c.lexbuf
+  lexer {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf
     
 let parse_nested ~lexer c = begin 
   with_curr_loc lexer c;
@@ -154,10 +147,11 @@ let parse_nested ~lexer c = begin
   buff_contents c
 end
 
+type 'a lex = context -> Lexing.lexbuf -> 'a
+    
+let store_parse f c =  
+  (store c ; f c c.lexbuf)
 
-let store_parse f c =  begin
-  store c ; f c c.lexbuf
-end
 
 let parse f c =
   f c c.lexbuf
@@ -198,8 +192,6 @@ let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
 let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
 let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
 let ident = (lowercase|uppercase) identchar*
-
-(* let quotation_name= ident ('.'ident)* *)
     
 let quotation_name = '.' ? (uppercase  identchar* '.') *
     (lowercase (identchar | '-') * )
@@ -275,15 +267,13 @@ let rec comment c = {:lexer|
       begin
         store c;
         with_curr_loc comment c;
-        parse comment c
+        comment c c.lexbuf
       end
   | "*)"  ->  store c 
   | ! ->  err Unterminated_comment (loc_merge c)                           
   | newline ->
-      begin
-        update_loc c ;
-        store_parse comment c
-      end
+      (update_loc c ; store_parse comment c)
+
   | _ ->  store_parse comment c 
 |}
 
@@ -300,10 +290,8 @@ let rec string c = {:lexer|
   | '\\' (_ as x) ->
       if is_in_comment c then
         store_parse string c
-      else begin
-           warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
-           store_parse string c
-      end 
+      else (warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
+        store_parse string c)
   | newline ->
       begin
         update_loc c ;
@@ -312,11 +300,6 @@ let rec string c = {:lexer|
   | ! ->  err Unterminated_string (loc_merge c) 
   | _ ->  store_parse string c 
 |}
-
-let  symbolchar_star beginning _c = {:lexer|
-  | symbolchar* as tok -> `SYMBOL(beginning ^ tok)
-|}
-
 
 
 let rec   maybe_quotation_at c  = {:lexer|
@@ -404,7 +387,7 @@ and antiquot name depth c  = {:lexer|
       let () = Stack.push p opt_char in
       let () = store c in
       let () = with_curr_loc quotation c in
-      parse (antiquot name depth) c
+       (antiquot name depth) c c.lexbuf
   | "\"" ->
       begin
         store c ;
@@ -414,7 +397,7 @@ and antiquot name depth c  = {:lexer|
             err Unterminated_string_in_antiquot (loc_merge c)
         end;
         Buffer.add_char c.buffer '"';
-        parse (antiquot name depth) c
+        (antiquot name depth) c c.lexbuf
       end
 
   | _  ->  store_parse (antiquot name depth) c
@@ -427,7 +410,7 @@ and quotation c = {:lexer|
           store c ;
           Stack.push p opt_char; (* take care the order matters*)
           with_curr_loc quotation c ;
-          parse quotation c
+          quotation c c.lexbuf
         end
   | (extra_quot as p)? "|}" ->
       if not (Stack.is_empty opt_char) then
@@ -449,7 +432,7 @@ and quotation c = {:lexer|
                 err Unterminated_string_in_quotation (loc_merge c)
         end;
         Buffer.add_char c.buffer '"';
-        parse quotation c
+        quotation c c.lexbuf
       end
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
@@ -497,27 +480,18 @@ let token c = {:lexer|
            (store c; `COMMENT(parse_nested ~lexer:comment (in_comment c)))
   | "(*)" ->
            ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
-             parse comment (in_comment c); `COMMENT (buff_contents c))
+              comment (in_comment c) c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
            ( warn Comment_not_end (FanLoc.of_lexbuf lexbuf) ;
              move_curr_p (-1) c; `SYMBOL "*")
   | "{<" as s -> `SYMBOL s
   | ">}" as s -> `SYMBOL s
   | "{|" (extra_quot as p)? (quotchar* as beginning) ->
-            (* if quotations c  then *)
-             (
-              move_curr_p (-String.length beginning) c; (* FIX partial application*)
-              Stack.push p opt_char;
-              let len = 2 + opt_char_len p in 
-              mk_quotation
-                quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
-           (* else *)
-           (*   parse *)
-           (*     (symbolchar_star *)
-           (*        ("{|" ^ *)
-           (*         (match p with *)
-           (*         |Some x -> String.make 1 x | None -> "") ^ beginning)) *)
-           (*     c                        *)
+      (move_curr_p (-String.length beginning) c;
+       Stack.push p opt_char;
+       let len = 2 + opt_char_len p in 
+       mk_quotation
+         quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
            `QUOTATION { FanToken.q_name =FanToken.empty_name ;
                              q_loc = ""; q_shift = 2; q_contents = "" }
@@ -538,17 +512,18 @@ let token c = {:lexer|
   | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
   | '$' ->
       if antiquots c then  (* FIXME maybe always lex as antiquot?*)
-        with_curr_loc dollar c 
-      else parse (symbolchar_star "$") c 
-  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  -> `SYMBOL x 
+        with_curr_loc dollar c
+      else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
+      (* else  (symbolchar_star "$") c c.lexbuf *)
+  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
+      `SYMBOL x 
   | ! ->
       let pos = lexbuf.lex_curr_p in
-      begin
-        lexbuf.lex_curr_p <-
-          { pos with pos_bol  = pos.pos_bol  + 1 ;
-            pos_cnum = pos.pos_cnum + 1 };
-        `EOI
-      end
+      (lexbuf.lex_curr_p <-
+        { pos with pos_bol  = pos.pos_bol  + 1 ;
+          pos_cnum = pos.pos_cnum + 1 };
+       `EOI)
+
   | _ as c ->  err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
 |}
 
