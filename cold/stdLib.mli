@@ -1,3 +1,6 @@
+
+(** Fan's runtime support for deriving *)
+  
 val eq_int : int -> int -> bool
 val eq_int32 : int32 -> int32 -> bool
 val eq_int64 : int64 -> int64 -> bool

@@ -1,3 +1,5 @@
+
+(** Fan's lexer using [lex] DDSL *)  
 open Lexing
 type lex_error =
 

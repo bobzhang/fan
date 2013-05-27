@@ -1,4 +1,6 @@
 
+(** Experimental: macro feature*)  
+
 open FAst
 (*
   {:macro|M a b c|}
@@ -58,12 +60,11 @@ val register_macro : key * expander -> unit
 
 val fib : int -> int
 
-(** {:exp| f a b c|}
-   don't support currying
-   always
-   f a
-   or f (a,b,c)
-   {:exp| f (a,b,c) |} *)
+(** {[{:exp| f a b c|}
+    don't support currying
+    always f a
+    or f (a,b,c)
+    {:exp| f (a,b,c) |} ]}*)
 val fibm : exp -> exp
 
 val macro_expander : Objs.map

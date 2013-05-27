@@ -1,3 +1,5 @@
+
+(** [stream] DDSL compiler, original Camlp4's stream extension *)
 open FAst
 
 type spat_comp =

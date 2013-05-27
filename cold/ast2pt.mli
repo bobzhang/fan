@@ -1,3 +1,6 @@
+
+(** dumping Fan's abstract syntax into OCaml's parsetree *)
+  
 open FAst
 open Format
   

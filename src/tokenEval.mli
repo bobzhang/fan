@@ -1,3 +1,5 @@
+
+(** Utilities for char and string escaping *)
 val char : string -> char
  (** Convert a char token, where the escape sequences (backslashes)
           remain to be interpreted; raise [Failure] if an

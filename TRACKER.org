@@ -257,3 +257,5 @@
   It seems that when ocamlbuild build native code, it will try to pull
   in the module fast.mli.depends when module A depends on module fast.
   OCamlbuild bug?
+
+* 28 how to get ocamldoc API for astLib

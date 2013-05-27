@@ -1,3 +1,5 @@
+
+(** Utilities for Fan's deriving mechanism *)
 open FAstN
 type vrn =
   | Sum 
@@ -89,10 +91,8 @@ val name_length_of_tydcl : typedecl -> string * int
 
 val gen_ty_of_tydcl : off:int -> typedecl -> ctyp
 
-(**
-  {[
-  of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
-  ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
+(** {[of_id_len ~off:2 (<:ident< Loc.t >> , 3 ) |> eprint;
+    ('all_c0, 'all_c1, 'all_c2) Loc.t]} *)     
 val of_id_len : off:int -> ident * int -> ctyp
 
 
@@ -150,17 +150,12 @@ val repeat_arrow_n : ctyp -> int -> ctyp
   ! 'all_a0 'all_a1.
   ('fmt -> 'all_a0 -> 'all_a0 -> 'result) ->
   ('fmt -> 'all_a1 -> 'all_a1 -> 'result) ->
-  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result
-
- *)
+  'fmt -> list 'all_a0 'all_a1 -> list 'all_a0 'all_a1 -> 'result]} *)
 val mk_method_type :
   number:int ->
   prefix:string list -> ident * int -> destination -> (ctyp*ctyp)
 
 
-(**
-   
- *)
 val mk_method_type_of_name :
   number:int ->
   prefix:string list -> string * int -> destination -> (ctyp*ctyp)

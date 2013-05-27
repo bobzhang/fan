@@ -1,3 +1,5 @@
+
+(** Fan's abstract syntax (with locations) *)
 (** Note: when you modify these types you must increment
    ast magic numbers defined in fanconfig.ml.
    Todo:   add phantom type to track some type invariants? *)
@@ -10,27 +12,45 @@
       - Map classes and functions for common kinds.
 
     == Core language ==
-    ctyp               :: Representaion of types
-    pat               :: The type of patterns
-    exp               :: The type of expressions
-    case         :: The type of cases for match/function/try constructions
-    ident              :: The type of identifiers (including path like Foo(X).Bar.y)
-    bind            :: The type of let binds
-    rec_exp        :: The type of record definitions
+   
+
+   ctyp :: Representaion of types
+
+   pat :: The type of patterns
+
+   exp :: The type of expressions
+
+   case :: The type of cases for match/function/try constructions
+
+   ident :: The type of identifiers (including path like Foo(X).Bar.y)
+
+   bind :: The type of let binds
+
+   rec_exp :: The type of record definitions
 
     == Modules ==
-    mtyp        :: The type of module types
-    sigi           :: The type of signature items
-    stru           :: The type of structure items
-    mexp        :: The type of module expressions
-    mbind     :: The type of recursive module definitions
-    constr        :: The type of `with' constraints
+
+   mtyp :: The type of module types
+
+   sigi :: The type of signature items
+
+   stru :: The type of structure items
+
+   mexp :: The type of module expressions
+
+   mbind :: The type of recursive module definitions
+
+   constr :: The type of `with' constraints
 
     == Classes ==
-    cltyp         :: The type of class types
-    class_sigi     :: The type of class signature items
-    clexp         :: The type of class expressions
-    clfield     :: The type of class structure items *)
+
+   cltyp :: The type of class types
+
+   class_sigi :: The type of class signature items
+
+   clexp :: The type of class expressions
+
+   clfield :: The type of class structure items *)
 
 
 type loc = FanLoc.t
@@ -47,26 +67,29 @@ type literal =
   | `Nativeint of (loc * string)
   | `Str of (loc * string)]   
 
+
+
+
+
 (**
-   for [direction_flag]
-     [to => P; downto => N]
-   for [mutable_flag]
-     [mutable => P; immutable=>N]
-   for [private_flag]
-     [ private => P]
-   for [virtual_flag]
-     [`Virtual => P]
-   for [override_flag]
-     [`Override => P]
-   for [rec_flag]
-     [ rec => P]
-   for [row_var_flag]
-     [`RowVar => P]
- *)      
+   for [direction_flag] [to => P; downto => N]
+
+   for [mutable_flag] [mutable => P; immutable=>N]
+
+   for [private_flag] [ private => P]
+
+   for [virtual_flag] [`Virtual => P]
+
+   for [override_flag] [`Override => P]
+
+   for [rec_flag] [ rec => P]
+
+   for [row_var_flag] [`RowVar => P] *)      
 type flag =
   [ `Positive of loc
   | `Negative of loc
-  | ant]  
+  | ant]
+      
 type position_flag =
   [ `Positive of loc
   | `Negative of loc

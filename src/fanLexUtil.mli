@@ -1,3 +1,4 @@
+(** Utilities for Fan's lexer *)
 
 val lexing_store : char XStream.t -> string -> int -> int
 (* val from_context : *)

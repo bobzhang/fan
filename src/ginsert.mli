@@ -1,3 +1,5 @@
+
+(** Internal: Handling functional insertion for Fan's entry *)
 open Gstructure
 
 val higher :

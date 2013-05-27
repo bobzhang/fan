@@ -1,12 +1,6 @@
 
 #default_quotation "ep";; (* (* FIXME double semi needed before directive*) *)
 open FAst
-let meta_loc _loc location =
-  let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
-  {:exp'| FanLoc.of_tuple
-    ($`str:a, $`int:b, $`int:c, $`int:d,
-     $`int:e, $`int:f, $`int:g,
-     $(if h then {:exp'| true |} else {:exp'| false |} )) |}
 
 class primitive =  object
   method int _loc (i:int) : ep =  {|$`int:i|}

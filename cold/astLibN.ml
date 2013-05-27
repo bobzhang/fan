@@ -149,3 +149,24 @@ let tuple_sta y =
   | _ -> `Par (sta_of_list y)
 
 let (+>) f names = appl_of_list (f :: (List.map lid names))
+
+let meta_here location =
+  let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple location in
+  `App
+    ((`Dot ((`Uid "FanLoc"), (`Lid "of_tuple"))),
+      (`Par
+         (`Com
+            ((`Str (String.escaped a)),
+              (`Com
+                 ((`Com
+                     ((`Com
+                         ((`Com
+                             ((`Com
+                                 ((`Com
+                                     ((`Int (string_of_int b)),
+                                       (`Int (string_of_int c)))),
+                                   (`Int (string_of_int d)))),
+                               (`Int (string_of_int e)))),
+                           (`Int (string_of_int f)))),
+                       (`Int (string_of_int g)))),
+                   (if h then `Lid "true" else `Lid "false")))))))

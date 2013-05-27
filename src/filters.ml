@@ -27,11 +27,7 @@ let map_exp = with exp function
   | {| __PWD__ |} ->
       {|$(`str:Filename.dirname (FanLoc.file_name _loc) ) |}
   | {| __LOCATION__ |} ->
-      let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
-      {| FanLoc.of_tuple
-        ($`str:a, $`int:b, $`int:c, $`int:d,
-         $`int:e, $`int:f, $`int:g,
-         $(if h then {| true |} else {| false |} )) |}
+      AstLib.meta_here _loc _loc
   | e -> e ;;
 
 AstFilters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;
@@ -49,7 +45,8 @@ let me = object
   method! loc _loc loc =
     match !AstQuotation.current_loc_name with
     | None -> lid _loc !FanLoc.name
-    | Some "here" -> FanMeta.meta_loc _loc loc
+    | Some "here" ->
+        meta_here _loc loc
     | Some x ->  lid  _loc x 
 end
 

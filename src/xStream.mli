@@ -1,3 +1,7 @@
+
+(** Streams and parsers. There are some bugs in OCaml's standard library
+ *)
+
 (***********************************************************************)
 (*                                                                     *)
 (*                                OCaml                                *)
@@ -10,8 +14,6 @@
 (*  the special exception on linking described in file ../LICENSE.     *)
 (*                                                                     *)
 (***********************************************************************)
-
-(** Streams and parsers. *)
 
 type 'a t
 (** The type of streams holding values of type ['a]. *)

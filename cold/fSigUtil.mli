@@ -1,3 +1,6 @@
+
+(** Utilities for deriving mechanism *)
+  
 open FAstN
   
 type named_type = (string* typedecl)

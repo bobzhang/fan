@@ -1,3 +1,5 @@
+
+(** Pretty printer for Fan's grammar *)
 open Gstructure
 open Format
 

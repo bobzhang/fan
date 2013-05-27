@@ -1,3 +1,8 @@
+
+
+(** The configuration for Fan *)
+
+  
 val ocaml_standard_library : string
 
 val version : string

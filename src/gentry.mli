@@ -1,3 +1,5 @@
+
+(** management for Fan's parser entry *)
 open Gstructure
 
 type 'a t = private entry

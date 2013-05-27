@@ -1,20 +1,7 @@
-(***********************************************************************)
-(*                                                                     *)
-(*                                OCaml                                *)
-(*                                                                     *)
-(*             Damien Doligez, projet Para, INRIA Rocquencourt         *)
-(*                                                                     *)
-(*  Copyright 1996 Institut National de Recherche en Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed    *)
-(*  under the terms of the GNU Library General Public License, with    *)
-(*  the special exception on linking described in file ../LICENSE.     *)
-(*                                                                     *)
-(***********************************************************************)
-
 (** Parsing of command line arguments.
 
    This module provides a general mechanism for extracting options and
-   arguments from the command line to the program.
+   arguments from the command line to the program. The difference from StdLib's arg module lies in that it supports dynamically changing args. 
 
    Syntax of command lines:
     A keyword is a character string starting with a [-].
@@ -29,14 +16,15 @@
     Arguments not preceded by a keyword are called anonymous arguments.
 
    Examples ([cmd] is assumed to be the command name):
--   [cmd -flag           ](a unit option)
--   [cmd -int 1          ](an int option with argument [1])
--   [cmd -string foobar  ](a string option with argument ["foobar"])
--   [cmd -float 12.34    ](a float option with argument [12.34])
--   [cmd a b c           ](three anonymous arguments: ["a"], ["b"], and ["c"])
--   [cmd a b -- c d      ](two anonymous arguments and a rest option with
+    -   [cmd -flag           ](a unit option)
+    -   [cmd -int 1          ](an int option with argument [1])
+    -   [cmd -string foobar  ](a string option with argument ["foobar"])
+    -   [cmd -float 12.34    ](a float option with argument [12.34])
+    -   [cmd a b c           ](three anonymous arguments: ["a"], ["b"], and ["c"])
+    -   [cmd a b -- c d      ](two anonymous arguments and a rest option with
                            two arguments)
 *)
+
 
 type spec =
   | Unit of (unit -> unit)     (** Call the function with unit argument *)
@@ -52,12 +40,12 @@ type spec =
   | Tuple of spec list         (** Take several arguments according to the
                                    spec list *)
   | Symbol of string list * (string -> unit)
-                               (** Take one of the symbols as argument and
-                                   call the function with the symbol *)
+        (** Take one of the symbols as argument and
+            call the function with the symbol *)
   | Rest of (string -> unit)   (** Stop interpreting keywords and call the
                                    function with each remaining argument *)
 (** The concrete type describing the behavior associated
-   with a keyword. *)
+    with a keyword. *)
 
 type key = string
 type doc = string

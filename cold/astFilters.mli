@@ -1,3 +1,5 @@
+
+(** manage filters in fan *)
 open FAst 
 
 type 'a filter = 'a -> 'a

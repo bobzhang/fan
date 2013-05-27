@@ -1,3 +1,5 @@
+
+(** internal usage *)
 open FAst
 
 type ty_meta = {

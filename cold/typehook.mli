@@ -1,4 +1,6 @@
 
+(** Typehook mechanism for deriving *)
+  
 open FSigUtil  
 
 val print_collect_mtyps: bool ref

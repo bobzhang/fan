@@ -4,8 +4,9 @@ type domains = [ `Absolute of string list | `Sub of string list]
 type name = domains * string
 
 
-(** The generic quotation type . To see how fields are used here is an example:
-    {:q_name@q_loc|q_contents|}
+(* FIXME how to put it in ocamldoc?
+   The generic quotation type . To see how fields are used here is an example:
+    "{:q_name@q_loc|q_contents|}"
     The last one, q_shift is equal to the length of "{:q_name@q_loc|"*)      
 type quotation ={
     q_name : name;

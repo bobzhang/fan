@@ -37,41 +37,7 @@ let map_exp =
       (`Str
          (_loc, (String.escaped (Filename.dirname (FanLoc.file_name _loc)))) : 
       FAst.exp )
-  | (`Lid (_loc,"__LOCATION__") : FAst.exp) ->
-      let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple _loc in
-      (`App
-         (_loc,
-           (`Dot (_loc, (`Uid (_loc, "FanLoc")), (`Lid (_loc, "of_tuple")))),
-           (`Par
-              (_loc,
-                (`Com
-                   (_loc, (`Str (_loc, (String.escaped a))),
-                     (`Com
-                        (_loc,
-                          (`Com
-                             (_loc,
-                               (`Com
-                                  (_loc,
-                                    (`Com
-                                       (_loc,
-                                         (`Com
-                                            (_loc,
-                                              (`Com
-                                                 (_loc,
-                                                   (`Int
-                                                      (_loc,
-                                                        (string_of_int b))),
-                                                   (`Int
-                                                      (_loc,
-                                                        (string_of_int c))))),
-                                              (`Int (_loc, (string_of_int d))))),
-                                         (`Int (_loc, (string_of_int e))))),
-                                    (`Int (_loc, (string_of_int f))))),
-                               (`Int (_loc, (string_of_int g))))),
-                          (if h
-                           then (`Lid (_loc, "true") : FAst.exp )
-                           else (`Lid (_loc, "false") : FAst.exp ))))))))) : 
-        FAst.exp )
+  | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> AstLib.meta_here _loc _loc
   | e -> e
 
 let _ =
@@ -92,7 +58,7 @@ let me =
     method! loc _loc loc =
       match AstQuotation.current_loc_name.contents with
       | None  -> lid _loc FanLoc.name.contents
-      | Some "here" -> FanMeta.meta_loc _loc loc
+      | Some "here" -> meta_here _loc loc
       | Some x -> lid _loc x
   end
 

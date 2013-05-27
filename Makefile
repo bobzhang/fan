@@ -77,5 +77,13 @@ stat:
 	rm -rf stat/*
 	git_stats . stat
 
-.PHONY: top
 
+
+doc:
+	ocamlbuild src/foo.docdir/index.html
+updoc:
+	make doc
+	rm -rf ~/Dropbox/fanweb/Fan/foo.docdir
+	mv _build/src/foo.docdir ~/Dropbox/fanweb/Fan/
+
+.PHONY: top doc

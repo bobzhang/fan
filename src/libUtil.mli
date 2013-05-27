@@ -1,4 +1,5 @@
 
+(** Fan's enhancement for OCaml's poor standard library *)  
 
 val cons : 'a -> 'a list -> 'a list
 

@@ -1,4 +1,6 @@
 
+
+(** Internal: Utilities for Fan's grammar *)  
 open Gstructure
   
 open FanToken
