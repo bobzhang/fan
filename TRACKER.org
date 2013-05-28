@@ -259,3 +259,6 @@
   OCamlbuild bug?
 
 * 28 how to get ocamldoc API for astLib
+  
+* DONE 29 avoid linking dependency on compiler libs
+  This is helpful for creating stand-alone binaries and toplevel

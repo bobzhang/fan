@@ -3,7 +3,7 @@
 set -e
 dest=${1:-cold}
 echo "snapshoping to $dest"
-files=$(find src | grep -v .# |  grep '\.\(ml\|mll\|mli\|mlpack\|mllib\)$' | perl -pe 's|.*?/|tmp/|')
+files=$(find src | grep -v .# |  grep '\.\(ml\|mll\|mli\|mlpack\|mlp\|mllib\)$' | perl -pe 's|.*?/|tmp/|')
 make cleantmp
 ocamlbuild -I src $files
 # needs copy mll mlpack as well

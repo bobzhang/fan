@@ -25,7 +25,11 @@ package "gram" (
   archive(native)="gram.cmxa"
   archive(native,plugin)="gram.cmxs"
 )
-
+package "top" (
+    version="0.1"
+    description="fan toplevel"
+    archive(byte)="fanTop.cma"
+)
 # package "ast"{
 #   requires = "fan.rts"
 #   version = "0.1"

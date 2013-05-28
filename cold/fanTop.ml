@@ -2,10 +2,14 @@ open LibUtil
 
 open MkFan
 
+let parse_toplevel_phrase_old = Toploop.parse_toplevel_phrase.contents
+
+let use_file_old = Toploop.parse_use_file.contents
+
 let normal () =
   begin
-    Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
-    Toploop.parse_use_file := Parse.use_file
+    Toploop.parse_toplevel_phrase := parse_toplevel_phrase_old;
+    Toploop.parse_use_file := use_file_old
   end
 
 let revise () =

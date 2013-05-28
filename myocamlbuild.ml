@@ -375,6 +375,13 @@ let root2 = "cold";;
 let root3 = "debug";;
 let tmp = "tmp"    
 
+let make_config env _ =
+  let libdir = String.trim_endline (run_and_read "ocamlc -where") in
+  let regex1 = "s|%%LIBDIR%%|"  ^ libdir ^"|" in
+  let fi = env "%.mlp" in
+  let fo = env "%.ml" in 
+  Cmd (S [A "sed"; A"-e"; Quote (Sh regex1); P fi ; Sh ">"; Px fo]);;
+    
 let define_context_for_root r =
   let def = Pathname.define_context in   begin 
     def ("test") ["src"];
@@ -397,6 +404,8 @@ let boot_flags =
   S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
     A"-printer"; A"p"];;
 
+rule "%.mlp->%.ml" ~prod: "%.ml" ~deps:["%.mlp"] make_config;;
+
 rule "src->tmp: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
   (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
 
@@ -408,6 +417,9 @@ rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
 
 rule "code_boot: mllib -> mllib" ~dep: "src/%.mllib" ~prod:(tmp//"%.mllib")
   (fan  (tmp//"%.mllib") "src/%.mllib" (tmp//"%.mllib"));;
+
+rule "code_boot: mlp -> mlp" ~dep: "src/%.mlp" ~prod:(tmp//"%.mlp")
+  (fan  (tmp//"%.mlp") "src/%.mlp" (tmp//"%.mlp"));;
 
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;

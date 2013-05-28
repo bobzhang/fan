@@ -21,6 +21,15 @@ open Location
 open Longident
 open Parsetree
 
+let none =
+  let loc = {
+    Lexing.pos_fname = "_none_";
+    pos_lnum = 1;
+    pos_bol = 0;
+    pos_cnum = -1;
+  } in
+  {loc_start=loc;loc_end=loc;loc_ghost=true}
+  
 let prefix_symbols  = [ '!'; '?'; '~' ] ;;
 let infix_symbols = [ '='; '<'; '>'; '@'; '^'; '|'; '&'; '+'; '-'; '*'; '/'; '$'; '%' ] 
 let operator_chars = [ '!'; '$'; '%'; '&'; '*'; '+'; '-'; '.'; '/';
@@ -771,7 +780,7 @@ class printer  ()= object(self:'self)
               pp f "%s :@;%a=@;%a"
                 s.txt (self#core_type) ct self#expression e
           | Pexp_poly (e,None) ->
-              self#bind f ({ppat_desc=Ppat_var s;ppat_loc=Location.none} ,e)
+              self#bind f ({ppat_desc=Ppat_var s;ppat_loc=none} ,e)
           | _ ->
               self#expression f e ) e 
     | Pcf_constr (ct1, ct2) ->

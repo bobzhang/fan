@@ -3,8 +3,9 @@ open Longident
 open LibUtil
 open Location
 
-
-let with_loc  txt loc = Location.mkloc txt  loc
+let mkloc txt loc = { txt ; loc }
+    
+let with_loc  txt loc = mkloc txt  loc
 
 (* let (+>) txt loc = with_loc txt loc *)
   

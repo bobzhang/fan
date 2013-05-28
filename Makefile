@@ -39,18 +39,18 @@ world:
 	make build
 	make uninstall
 	make install
-
-hotinstall:
-	ocamlfind install fan META $(BHOT)/*.cmi $(addprefix _build/src, $(LIBTARGETS))
-	install -m 0755 $(addprefix _build/src/, $(BINTARGETS)) $(BINDIR)
-	install -m 0755 $(addprefix _build/src/, $(STDTARGETS)) $(LIBDIR)
-
 hotworld:
 	make hotbuild
 	make uninstall
 	make hotinstall
+
+hotinstall:
+	ocamlfind install fan META $(BHOT)/*.cmi $(addprefix _build/src/, $(LIBTARGETS))
+	install -m 0755 $(addprefix _build/src/, $(BINTARGETS)) $(BINDIR)
+	install -m 0755 $(addprefix _build/src/, $(STDTARGETS)) $(LIBDIR)
+
 hotbuild:
-	$(OCAMLBUILD) 	$(OCAMLBUILD) $(addprefix src/,$(LIBTARGETS) $(BINTARGETS))
+	$(OCAMLBUILD) $(addprefix src/,$(LIBTARGETS) $(BINTARGETS))
 
 
 uninstall:
