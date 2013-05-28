@@ -57,7 +57,7 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
    | `Par t ->
        let ls = list_of_star t [] in
        let len = List.length ls in
-       let pat = (EPN.mk_tuple ~arity ~number:len :>pat) in
+       let pat = (EpN.mk_tuple ~arity ~number:len :>pat) in
        let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
        ExpN.mkfun names
          (ExpN.currying [(`Case (pat, tys) : FAstN.case )] ~arity)
@@ -123,7 +123,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
   let f (cons : string) (tyargs : ctyp list) =
     (let args_length = List.length tyargs in
      let p: pat =
-       (EPN.gen_tuple_n ?cons_transform ~arity cons args_length :>pat) in
+       (EpN.gen_tuple_n ?cons_transform ~arity cons args_length :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -143,7 +143,7 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
   ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
   let f (cons,tyargs) =
     (let len = List.length tyargs in
-     let p = (EPN.gen_tuple_n ?cons_transform ~arity cons len :>pat) in
+     let p = (EpN.gen_tuple_n ?cons_transform ~arity cons len :>pat) in
      let mk (cons,tyargs) =
        let exps =
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
@@ -192,7 +192,7 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
             (match repr with
              | `Record t ->
                  let cols = CtypN.list_of_record t in
-                 let pat = (EPN.mk_record ~arity cols :>pat) in
+                 let pat = (EpN.mk_record ~arity cols :>pat) in
                  let info =
                    List.mapi
                      (fun i  x  ->
@@ -374,7 +374,7 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
   let default (_,number) =
     if number > 1
     then
-      let pat = (EPN.tuple_of_number `Any arity :>pat) in
+      let pat = (EpN.tuple_of_number `Any arity :>pat) in
       Some (`Case (pat, default) : FAstN.case )
     else None in
   let names = names in
@@ -402,7 +402,7 @@ let gen_object ?module_name  ?(arity= 1)  ?(default=
     let default (_,number) =
       if number > 1
       then
-        let pat = (EPN.tuple_of_number `Any arity :>pat) in
+        let pat = (EpN.tuple_of_number `Any arity :>pat) in
         Some (`Case (pat, default) : FAstN.case )
       else None in
     obj_of_mtyps ?cons_transform ?module_name ~arity ~names ~default

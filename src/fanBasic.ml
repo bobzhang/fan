@@ -8,10 +8,10 @@ open LibUtil
 open Format
 
 let error_report (loc,s) = begin
-  prerr_endline (FanLoc.to_string loc);
+  prerr_endline (FLoc.to_string loc);
   let (start_bol,stop_bol,
          start_off, stop_off) =
-    FanLoc.( (start_bol loc,
+    FLoc.( (start_bol loc,
              stop_bol loc,
              start_off loc,
              stop_off loc)
@@ -23,22 +23,22 @@ let error_report (loc,s) = begin
   prerr_endline (sprintf "err: ^%s^" err_location);
 end 
 
-let parse_string_of_entry ?(loc=FanLoc.mk "<string>") entry  s =
+let parse_string_of_entry ?(loc=FLoc.mk "<string>") entry  s =
   try
     Gram.parse_string entry  ~loc s
   with
-  |FanLoc.Exc_located(loc, e) -> begin
+  |FLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
       error_report (loc,s);
-      FanLoc.raise loc e ;
+      FLoc.raise loc e ;
   end
 
-let wrap_stream_parser ?(loc=FanLoc.mk "<stream>") p s =
+let wrap_stream_parser ?(loc=FLoc.mk "<stream>") p s =
   try p ~loc s
   with
-  |FanLoc.Exc_located(loc,e) -> begin
-      eprintf "error: %s" (FanLoc.to_string loc) ;
-      FanLoc.raise loc e;
+  |FLoc.Exc_located(loc,e) -> begin
+      eprintf "error: %s" (FLoc.to_string loc) ;
+      FLoc.raise loc e;
     end 
 
 
@@ -68,15 +68,15 @@ let add_include_dir str =
     let str =
       if String.get str ((String.length str)-1) = '/'
       then str else str ^ "/"
-    in Ref.modify FanConfig.include_dirs (fun x -> cons str x)
+    in Ref.modify FConfig.include_dirs (fun x -> cons str x)
  
 let parse_include_file entry =
   let dir_ok file dir = Sys.file_exists (dir ^ file) in
   fun file ->
     let file =
-      try (List.find (dir_ok file) ( "./" :: !FanConfig.include_dirs )) ^ file
+      try (List.find (dir_ok file) ( "./" :: !FConfig.include_dirs )) ^ file
       with | Not_found -> file  in
     let ch = open_in file in
     let st = XStream.of_channel ch in
-      Gram.parse entry (FanLoc.mk file) st
+      Gram.parse entry (FLoc.mk file) st
     

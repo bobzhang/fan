@@ -3,17 +3,17 @@ open FanOps
 open Format
 open AstLib
 open LibUtil
-open FanGrammar
+open FGramDef
 
-let print_warning = eprintf "%a:\n%s@." FanLoc.print
+let print_warning = eprintf "%a:\n%s@." FLoc.print
 
   
 let prefix = "__fan_"  
-let ghost = FanLoc.ghost
+let ghost = FLoc.ghost
 let grammar_module_name = ref (`Uid (ghost,"Gram")) 
   
 let gm () : vid =
-  match !FanConfig.compilation_unit with
+  match !FConfig.compilation_unit with
   |Some "Gram" -> `Uid(ghost,"")
   |Some _ | None -> 
       !grammar_module_name
@@ -41,7 +41,7 @@ let string_of_pat pat =
 let check_not_tok s = 
     match s with
     | {text = `Stok (_loc, _, _, _) ;_} ->
-        FanLoc.raise _loc (XStream.Error
+        FLoc.raise _loc (XStream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
     | _ -> () 
@@ -86,10 +86,10 @@ let make_ctyp (styp:styp) tvar : ctyp =
     | `App(_loc,t1,t2) -> `App(_loc,aux t1,aux t2)
     | `Self (_loc, x) ->
         if tvar = "" then
-          FanLoc.raise _loc
+          FLoc.raise _loc
             (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else {| '$lid:tvar |}
-    | `Tok _loc -> {| [> FanToken.t ] |}  (* BOOTSTRAPPING*)
+    | `Tok _loc -> {| [> FToken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t  in aux styp
 
       
@@ -135,7 +135,7 @@ and make_exp_rules (_loc:loc)  (rl : (text list  * exp) list  ) (tvar:string) =
   
 let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
-  let locid = {:pat| $(lid:!FanLoc.name) |} in 
+  let locid = {:pat| $(lid:!FLoc.name) |} in 
   let act =
     match act with
     | Some act -> act | None -> {| () |}  in
@@ -151,13 +151,13 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
     let e1 = {| ($act : '$lid:rtvar ) |} in
       match tok_match_pl with
       | ([],_) ->
-          {| fun ($locid :FanLoc.t) -> $e1 |}
+          {| fun ($locid :FLoc.t) -> $e1 |} (* BOOTSTRAPING *)
       | (e,p) ->
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
-          {|fun ($locid :FanLoc.t) ->
+          {|fun ($locid :FLoc.t) ->
             match $exp with
             | $(pat:pat) -> $e1
             | _ -> failwith $`str:action_string |}  in

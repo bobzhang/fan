@@ -53,7 +53,7 @@
    clfield :: The type of class structure items *)
 
 
-type loc = FanLoc.t
+type loc = FLoc.t
 type ant = [ `Ant of (loc * FanUtil.anti_cxt)]
 
 
@@ -604,5 +604,5 @@ and rec_bind =
   | ant] 
       
       
-(* let _loc = FanLoc.ghost; *)
+(* let _loc = FLoc.ghost; *)
 (* #filter "serialize";; *)

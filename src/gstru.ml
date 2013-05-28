@@ -3,7 +3,7 @@ open LibUtil
 
 
 let mk_action=Gaction.mk
-let string_of_token=FanToken.extract_string 
+let string_of_token=FToken.extract_string 
 
 (* tree processing *)  
 let rec flatten_tree = function

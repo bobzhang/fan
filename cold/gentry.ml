@@ -6,7 +6,7 @@ open Gstructure
 
 open Gtools
 
-open FanToken
+open FToken
 
 type 'a t = entry 
 
@@ -40,14 +40,14 @@ let action_parse entry (ts : stream) =
      end
    with
    | XStream.Failure  ->
-       FanLoc.raise (get_cur_loc ts)
+       FLoc.raise (get_cur_loc ts)
          (XStream.Error ("illegal begin of " ^ entry.ename))
-   | FanLoc.Exc_located (_,_) as exc ->
+   | FLoc.Exc_located (_,_) as exc ->
        begin eprintf "%s@." (Printexc.to_string exc); raise exc end
    | exc ->
        begin
          eprintf "%s@." (Printexc.to_string exc);
-         FanLoc.raise (get_cur_loc ts) exc
+         FLoc.raise (get_cur_loc ts) exc
        end : Gaction.t )
 
 let of_parser g n (p : stream -> 'a) =
@@ -90,13 +90,13 @@ let parse_origin_tokens entry ts = Gaction.get (action_parse entry ts)
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (FanTokenFilter.filter (entry.egram).gfilter ts)
 
-let glexer = FanLexUtil.mk ()
+let glexer = FLexLib.mk ()
 
 let lex loc cs = glexer loc cs
 
 let lex_string loc str = lex loc (XStream.of_string str)
 
-let parse_string ?(loc= FanLoc.string_loc)  entry str =
+let parse_string ?(loc= FLoc.string_loc)  entry str =
   parse_origin_tokens entry
     (FanTokenFilter.filter (entry.egram).gfilter
        (glexer loc (XStream.of_string str)))

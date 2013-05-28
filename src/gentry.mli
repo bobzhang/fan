@@ -14,12 +14,12 @@ val trace_parser : bool ref
 
 val mk_dynamic : gram -> string -> 'a t
 
-val action_parse : 'a t -> FanToken.stream -> Gaction.t
+val action_parse : 'a t -> FToken.stream -> Gaction.t
 
 val of_parser :
-  gram -> string -> (FanToken.stream -> 'a) -> 'a t
+  gram -> string -> (FToken.stream -> 'a) -> 'a t
 
-val setup_parser : 'a t -> (FanToken.stream -> 'a) -> unit
+val setup_parser : 'a t -> (FToken.stream -> 'a) -> unit
 
 val clear : 'a t -> unit
 
@@ -27,21 +27,21 @@ val obj : 'a t -> entry
 
 val repr : entry -> 'a t
 
-val parse_origin_tokens : 'a t -> FanToken.stream -> 'a
+val parse_origin_tokens : 'a t -> FToken.stream -> 'a
 
-val filter_and_parse_tokens : 'a t -> (FanToken.t * FanLoc.t) XStream.t -> 'a
+val filter_and_parse_tokens : 'a t -> (FToken.t * FLoc.t) XStream.t -> 'a
 
 val glexer :
-  FanLoc.t -> char XStream.t -> (FanToken.t * FanLoc.t) XStream.t
+  FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
 val lex :
-  FanLoc.t -> char XStream.t -> (FanToken.t * FanLoc.t) XStream.t
+  FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
 
 
-val lex_string : FanLoc.t -> string -> (FanToken.t * FanLoc.t) XStream.t
+val lex_string : FLoc.t -> string -> (FToken.t * FLoc.t) XStream.t
 
-val parse_string : ?loc:FanLoc.t -> 'a t -> string -> 'a
+val parse_string : ?loc:FLoc.t -> 'a t -> string -> 'a
 
-val parse : 'a t -> FanLoc.t -> char XStream.t -> 'a
+val parse : 'a t -> FLoc.t -> char XStream.t -> 'a
     
 val name_of_entry : 'a t -> string
 val gram_of_entry : 'a t -> gram
@@ -61,7 +61,7 @@ val symb_failed :  'b t ->  'a -> symbol -> symbol -> string
 val symb_failed_txt :  'a t -> symbol -> symbol -> string
 
 val parser_of_symbol : 'a t ->
-  symbol -> int -> (Gaction.t * FanLoc.t) FanToken.parse
+  symbol -> int -> (Gaction.t * FLoc.t) FToken.parse
 val levels_of_entry : 'a t -> Gstructure.level list option      
     
 val copy : 'a t -> 'a t

@@ -2,9 +2,9 @@
 
 open FAst
 
-type warning = FanLoc.t -> string -> unit
+type warning = FLoc.t -> string -> unit
     
-let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt
+let default_warning loc txt = Format.eprintf "<W> %a: %s@." FLoc.print loc txt
     
 let current_warning = ref default_warning
     
@@ -86,7 +86,7 @@ let exp_filter_n (x:ep) = anti_filter_n#exp (x:>exp)
 let pat_filter_n (x:ep) = anti_filter_n#pat (x:>pat)
 
 module Options = struct
-  type spec_list = (string * FanArg.spec * string) list 
+  type spec_list = (string * FArg.spec * string) list 
   let init_spec_list = ref []
   let init spec_list = init_spec_list := spec_list
   let add (name, spec, descr) =

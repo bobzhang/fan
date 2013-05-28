@@ -5,6 +5,5 @@
 <{xStream,astPrint,oAstPrint}.ml>:-use_fan
 <{**/*_ppo}.ml>: -use_fan
 
-# <{**/*_ppo,AstPrint,OAstPrint,AstEq,tmp*,FanLexer,FanConfig,XStream,CharStream,OStream,Stream8,GStream,Stream,Famlopt,Famlc,FanCompile,FanOptCompile}.{ml}>  : -use_fan
 
 

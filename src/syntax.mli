@@ -3,7 +3,7 @@
 
 open FAst
 
-type warning = FanLoc.t -> string -> unit
+type warning = FLoc.t -> string -> unit
 
 val default_warning: warning
 
@@ -12,9 +12,9 @@ val current_warning: warning ref
 val print_warning: warning
 
 
-val interf : (sigi list  * FanLoc.t option ) Gram.t 
+val interf : (sigi list  * FLoc.t option ) Gram.t 
 
-val implem : (stru list  * FanLoc.t option ) Gram.t 
+val implem : (stru list  * FLoc.t option ) Gram.t 
 
 val top_phrase : stru option Gram.t 
 
@@ -173,18 +173,18 @@ val fun_def: exp Gram.t
 val method_opt_override: flag Gram.t
 val value_val_opt_override: flag Gram.t
 val unquoted_typevars:ctyp Gram.t
-val lang: FanToken.name Gram.t
+val lang: FToken.name Gram.t
 val with_exp_lang: exp Gram.t  
 val with_stru_lang: stru Gram.t  
 (* val extend_body: exp Gram.t *)
 (* val delete_rule_body: exp Gram.t  *)
-val dot_lstrings: (FanToken.name) Gram.t 
+val dot_lstrings: (FToken.name) Gram.t 
 
 (**  generally "pat; EOI". *)    
-val parse_exp: FanLoc.t -> string -> exp
-val parse_pat: FanLoc.t -> string -> pat
+val parse_exp: FLoc.t -> string -> exp
+val parse_pat: FLoc.t -> string -> pat
 
-val parse_ident: FanLoc.t -> string -> ident
+val parse_ident: FLoc.t -> string -> ident
 
 val exp_filter : ep -> exp
 val pat_filter : ep -> pat
@@ -197,9 +197,9 @@ val pat_filter_n : ep -> pat
 val dot_namespace :  string list Gram.t
     
 module Options:sig
-  type spec_list = (string * FanArg.spec * string) list 
+  type spec_list = (string * FArg.spec * string) list 
   val init : spec_list -> unit
-  val add : (string * FanArg.spec * string) -> unit
-  val adds : (string * FanArg.spec * string) list  -> unit
+  val add : (string * FArg.spec * string) -> unit
+  val adds : (string * FArg.spec * string) list  -> unit
   val init_spec_list: spec_list ref 
 end

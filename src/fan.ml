@@ -71,12 +71,12 @@ let  rec sig_handler  : sigi -> sigi option =  with sigi
              ~directive_handler:sig_handler s PreCast.parse_interf )
       | {| #default_quotation $str:s |} ->
           (AstQuotation.default :=
-            FanToken.resolve_name (`Sub [], s); None )
+            FToken.resolve_name (`Sub [], s); None )
       | {| #$({:ident'@_|filter|}) $str:s |} -> (* FIXME simplify later*)
           ( AstFilters.use_interf_filter s; None)
       | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
       | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
-          FanLoc.raise _loc
+          FLoc.raise _loc
             (XStream.Error (x ^ " is abad directive Fan can not handled "))
       | _ -> None (* FIXME assert false *))
 
@@ -92,7 +92,7 @@ let rec str_handler = with stru
           PreCast.parse_file  ~directive_handler:str_handler s PreCast.parse_implem 
       | {| #default_quotation $str:s |} ->
           begin
-            AstQuotation.default := FanToken.resolve_name (`Sub [],s) ;
+            AstQuotation.default := FToken.resolve_name (`Sub [],s) ;
             None
           end
       | {| #lang_clear |} -> begin 
@@ -106,7 +106,7 @@ let rec str_handler = with stru
             (* | {| #import |} -> None (\* FIXME *\) *)
       | {| #$lid:x $_ |} ->
           (* FIXME pattern match should give _loc automatically *)
-          FanLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
+          FLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
       | _ -> None (* ignored  assert false *))
 
 
@@ -142,84 +142,84 @@ let input_file x =
   match x with
   | Intf file_name ->
       begin
-        FanConfig.compilation_unit :=
+        FConfig.compilation_unit :=
           Some (String.capitalize (Filename.(chop_extension (basename file_name))));
-        FanConfig.current_input_file := file_name;
+        FConfig.current_input_file := file_name;
         process_intf  file_name
       end
   | Impl file_name ->
       begin
-        FanConfig.compilation_unit :=
+        FConfig.compilation_unit :=
           Some (String.capitalize (Filename.(chop_extension (basename file_name))));
-        FanConfig.current_input_file := file_name;
+        FConfig.current_input_file := file_name;
         process_impl  file_name;
       end
   | Str s ->
       let (f, o) = Filename.open_temp_file "from_string" ".ml" in
       (output_string o s;
        close_out o;
-       FanConfig.current_input_file := f;
+       FConfig.current_input_file := f;
        process_impl  f;
        at_exit (fun () -> Sys.remove f))
         
   | ModuleImpl file_name -> require  file_name
 
   | IncludeDir dir ->
-      Ref.modify FanConfig.dynload_dirs (cons dir) 
+      Ref.modify FConfig.dynload_dirs (cons dir) 
 
 
 (** FIXME the command line parsing  can not handle prefix problem,
     e.g. -p -px will cause some problem *)    
 let initial_spec_list =
   [
-   ("-I", FanArg.String (fun x -> input_file (IncludeDir x)),
+   ("-I", FArg.String (fun x -> input_file (IncludeDir x)),
     "<directory>  Add directory in search patch for object files.");
 
-   ("-intf", FanArg.String (fun x -> input_file (Intf x)),
+   ("-intf", FArg.String (fun x -> input_file (Intf x)),
     "<file>  Parse <file> as an interface, whatever its extension.");
 
-   ("-impl", FanArg.String (fun x -> input_file (Impl x)),
+   ("-impl", FArg.String (fun x -> input_file (Impl x)),
     "<file>  Parse <file> as an implementation, whatever its extension.");
 
-   ("-str", FanArg.String (fun x -> input_file (Str x)),
+   ("-str", FArg.String (fun x -> input_file (Str x)),
     "<string>  Parse <string> as an implementation.");
 
-   ("-o", FanArg.String (fun x -> output_file := Some x),
+   ("-o", FArg.String (fun x -> output_file := Some x),
     "<file> Output on <file> instead of standard output.");
 
-   ("-unsafe", FanArg.Set FanConfig.unsafe,
+   ("-unsafe", FArg.Set FConfig.unsafe,
     "Generate unsafe accesses to array and strings.");
 
-   ("-verbose", FanArg.Set FanConfig.verbose, "More verbose in parsing errors.");
+   ("-verbose", FArg.Set FConfig.verbose, "More verbose in parsing errors.");
 
-   ("-where", FanArg.Unit (fun () -> (print_endline FanConfig.fan_standard_library;exit 0))
+   ("-where", FArg.Unit (fun () -> (print_endline FConfig.fan_standard_library;exit 0))
       , " Print location of standard library and exit");
-   ("-loc", FanArg.Set_string FanLoc.name,
-    "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
+   ("-loc", FArg.Set_string FLoc.name,
+    "<name>   Name of the location variable (default: " ^ !FLoc.name ^ ").");
    
-   ("-v", FanArg.Unit  (fun () -> begin eprintf "Fan version %s@." FanConfig.version; exit 0 end),
+   ("-v", FArg.Unit  (fun () -> begin eprintf "Fan version %s@." FConfig.version; exit 0 end),
     "Print Fan version and exit.");
 
    ("-compilation-unit",
-    FanArg.Unit (function () -> 
-      ((match !FanConfig.compilation_unit with
+    FArg.Unit (function () -> 
+      ((match !FConfig.compilation_unit with
       | Some v -> printf "%s@." v
       | None -> printf "null");
        exit 0)), 
     "Print the current compilation unit");
 
-   ("-plugin", FanArg.String require ,   
+   ("-plugin", FArg.String require ,   
     "load plugin cma or cmxs files");
 
-   ("-loaded-modules", FanArg.Set print_loaded_modules, "Print the list of loaded modules.");
+   ("-loaded-modules", FArg.Set print_loaded_modules, "Print the list of loaded modules.");
    
-   ("-loaded-filters", FanArg.Unit just_print_filters, "Print the registered filters.");
+   ("-loaded-filters", FArg.Unit just_print_filters, "Print the registered filters.");
    
-   ("-loaded-parsers", FanArg.Unit just_print_parsers, "Print the loaded parsers.");
+   ("-loaded-parsers", FArg.Unit just_print_parsers, "Print the loaded parsers.");
    
-   ("-used-parsers", FanArg.Unit just_print_applied_parsers, "Print the applied parsers.");
+   ("-used-parsers", FArg.Unit just_print_applied_parsers, "Print the applied parsers.");
 
-   ("-printer", FanArg.Symbol( ["p";"o"],
+   ("-printer", FArg.Symbol( ["p";"o"],
     function x ->
       if x = "p" then
         PreCast.register_bin_printer ()
@@ -237,24 +237,24 @@ let anon_fun name =
     else if Filename.check_suffix name ".ml" then Impl name
     else if Filename.check_suffix name objext then ModuleImpl name
     else if Filename.check_suffix name libext then ModuleImpl name
-    else raise (FanArg.Bad ("don't know what to do with " ^ name)));;
+    else raise (FArg.Bad ("don't know what to do with " ^ name)));;
 
 
 
 PreCast.register_text_printer ();; (** default *)
 Printexc.register_printer
         (function
-          |FanLoc.Exc_located (loc, exn) ->
-              Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
+          |FLoc.Exc_located (loc, exn) ->
+              Some (sprintf "%s:@\n%s" (FLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );;
 
 let _ =
   begin 
     Syntax.Options.add
       ("-dlang",
-       (FanArg.String
+       (FArg.String
           (fun s  ->
-            AstQuotation.default := (FanToken.resolve_name ((`Sub []), s)))),
+            AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
        " Set the default language");
     Syntax.Options.adds initial_spec_list
   end;;    
@@ -269,7 +269,7 @@ AstParsers.use_parsers
 
 let _ = 
   try
-    FanArg.parse
+    FArg.parse
       Syntax.Options.init_spec_list
       anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
   with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;

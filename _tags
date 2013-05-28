@@ -7,7 +7,7 @@ true:-traverse
 
 <{cold,src,debug}/mkFan.ml>: warn(-33)
 
-<{cold,src,debug}/{oAstPrint,astPrint,astEq,fanLoc,preCast,ast2pt,pAst2pt,sig,parsetreeHelper,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
+<{cold,src,debug}/{oAstPrint,astPrint,astEq,fLoc,fanLoc,preCast,ast2pt,pAst2pt,sig,parsetreeHelper,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
 
 <{cold,src,debug}/{fanTop,fanEval}.{ml,mli}>: use_ocamlcommon
 

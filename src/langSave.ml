@@ -13,9 +13,9 @@ open AstLib
     
 {:extend|save_quot:
   [L1 [`Lid x -> x] {ls} ; "->"; Syntax.exp{b} ->
-    let symbs = List.map (fun x -> FanState.gensym x) ls in
-    let res = FanState.gensym "res" in
-    let exc = FanState.gensym "e" in
+    let symbs = List.map (fun x -> FState.gensym x) ls in
+    let res = FState.gensym "res" in
+    let exc = FState.gensym "e" in
     let binds = and_of_list
         (List.map2 (fun x y -> {:bind| $lid:x = ! $lid:y |} ) symbs ls ) in
     let restore =

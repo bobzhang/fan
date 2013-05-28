@@ -28,9 +28,8 @@ let plugin_add plugin =
        if
          not
            (List.exists (fun (n,_)  -> n = plugin)
-              FanState.current_filters.contents)
-       then
-         Ref.modify FanState.current_filters (fun x  -> cons (plugin, v) x)
+              FState.current_filters.contents)
+       then Ref.modify FState.current_filters (fun x  -> cons (plugin, v) x)
        else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
    | Not_found  ->
@@ -39,7 +38,7 @@ let plugin_add plugin =
     ()
 
 let plugin_remove plugin =
-  Ref.modify FanState.current_filters (fun x  -> List.remove plugin x)
+  Ref.modify FState.current_filters (fun x  -> List.remove plugin x)
 
 class type traversal
   =
@@ -99,8 +98,8 @@ let traversal () =
                 then eprintf "@[%a@]@." pp_print_mtyps mtyps in
               let result =
                 List.fold_right (iterate_code sloc mtyps)
-                  FanState.current_filters.contents
-                  (if FanState.keep.contents
+                  FState.current_filters.contents
+                  (if FState.keep.contents
                    then res
                    else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
               begin
@@ -119,7 +118,7 @@ let traversal () =
                   (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                      lst);
                 self#out_and_types;
-                if FanState.keep.contents
+                if FState.keep.contents
                 then x
                 else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )
               end)

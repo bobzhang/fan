@@ -1,6 +1,6 @@
 open FAst
 open LibUtil
-open FanToken
+open FToken
 open Format
 
 
@@ -8,7 +8,7 @@ open Format
 type quotation_error_message =
   | Finding
   | Expanding
-  | ParsingResult of FanLoc.t * string
+  | ParsingResult of FLoc.t * string
   | NoName with ("Print")
 
 (* the first argument is quotation name
@@ -17,11 +17,11 @@ type quotation_error = (name * string * quotation_error_message * exn);;
 
 exception QuotationError of quotation_error
 
-type 'a expand_fun  = FanLoc.t ->  string option -> string -> 'a
+type 'a expand_fun  = FLoc.t ->  string option -> string -> 'a
   
-module ExpKey = FanDyn.Pack(struct  type 'a t  = unit end)
+module ExpKey = FDyn.Pack(struct  type 'a t  = unit end)
 
-module ExpFun = FanDyn.Pack(struct  type 'a t  = 'a expand_fun  end)
+module ExpFun = FDyn.Pack(struct  type 'a t  = 'a expand_fun  end)
 
 let current_loc_name = ref None  
 
@@ -99,7 +99,7 @@ let expander_name ~pos:(pos:string) (name:name) =
      (* resolve default case *)
      SMap.find_default ~default:(!default) pos !map
   |(`Sub _ ,_) ->
-    FanToken.resolve_name name
+    FToken.resolve_name name
   | _ -> name  
   
 let default_at_pos pos str =  update (pos,str)
@@ -107,7 +107,7 @@ let default_at_pos pos str =  update (pos,str)
 let expanders_table =ref QMap.empty
 
 
-let add ((domain,n) as name) (tag : 'a FanDyn.tag ) (f:  'a expand_fun) =
+let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with
@@ -120,30 +120,30 @@ let add ((domain,n) as name) (tag : 'a FanDyn.tag ) (f:  'a expand_fun) =
 
 (* called by [expand] *)
 let expand_quotation loc ~expander pos_tag quot =
-  let open FanToken in
+  let open FToken in
   let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
   try expander loc loc_name_opt quot.q_contents with
-  | FanLoc.Exc_located (_, (QuotationError _)) as exc ->
+  | FLoc.Exc_located (_, (QuotationError _)) as exc ->
      raise exc
-  | FanLoc.Exc_located (iloc, exc) ->
+  | FLoc.Exc_located (iloc, exc) ->
      let exc1 = QuotationError ( quot.q_name, pos_tag, Expanding, exc) in
-     raise (FanLoc.Exc_located iloc exc1)
+     raise (FLoc.Exc_located iloc exc1)
   | exc ->
      let exc1 = QuotationError ( quot.q_name, pos_tag, Expanding, exc) in
-     raise (FanLoc.Exc_located loc exc1) ;;
+     raise (FLoc.Exc_located loc exc1) ;;
 
   
 (* The table is indexed by [quotation name] and [tag] *)
 let find loc name tag =
-  let key = (expander_name ~pos:(FanDyn.string_of_tag tag) name, ExpKey.pack tag ()) in
+  let key = (expander_name ~pos:(FDyn.string_of_tag tag) name, ExpKey.pack tag ()) in
   let try pack = QMap.find key !expanders_table in
   ExpFun.unpack tag pack
   with
   |Not_found ->
-    let pos_tag = FanDyn.string_of_tag tag in
+    let pos_tag = FDyn.string_of_tag tag in
     (match name with
     |(`Sub [],"" )->
-      (FanLoc.raise loc (QuotationError ( name,pos_tag,NoName,Not_found)))
+      (FLoc.raise loc (QuotationError ( name,pos_tag,NoName,Not_found)))
     | _ -> raise Not_found)
   | e -> raise e  ;;
 
@@ -151,12 +151,12 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (quotation:FanToken.quotation) (tag:'a FanDyn.tag) : 'a =
-  let open FanToken in
-  let pos_tag = FanDyn.string_of_tag tag in
+let expand loc (quotation:FToken.quotation) (tag:'a FDyn.tag) : 'a =
+  let open FToken in
+  let pos_tag = FDyn.string_of_tag tag in
   let name = quotation.q_name in
   let try expander = find loc name tag
-  and loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
+  and loc = FLoc.join (FLoc.move `start quotation.q_shift loc) in
   begin
     Stack.push  quotation.q_name stack;
     finally ~action:(fun _ -> Stack.pop stack)
@@ -164,14 +164,14 @@ let expand loc (quotation:FanToken.quotation) (tag:'a FanDyn.tag) : 'a =
       ()
   end
   with
-  | FanLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
-  | FanLoc.Exc_located (qloc, exc) ->
-     raise (FanLoc.Exc_located
+  | FLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
+  | FLoc.Exc_located (qloc, exc) ->
+     raise (FLoc.Exc_located
               qloc
               (QuotationError
                  ( name, pos_tag, Finding, exc)))
   | exc ->
-     raise (FanLoc.Exc_located
+     raise (FLoc.Exc_located
               loc
               (QuotationError
                  ( name, pos_tag, Finding, exc))) ;;
@@ -207,7 +207,7 @@ let quotation_error_to_string (name, position, ctx, exn) =
                 output_string oc "\n";
                 flush oc;
                 close_out oc;
-                bprintf ppf "%a:" FanLoc.print (FanLoc.set_file_name dump_file loc);
+                bprintf ppf "%a:" FLoc.print (FLoc.set_file_name dump_file loc);
               end
             with _ ->
                  bprintf ppf
@@ -225,18 +225,18 @@ Printexc.register_printer (function
   | _ -> None);;
 
 let parse_quotation_result parse loc quot pos_tag str =
-  let open FanToken in
+  let open FToken in
   try parse loc str with
-  | FanLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
+  | FLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
       let ctx = ParsingResult iloc quot.q_contents in
       let exc1 = QuotationError (n, pos_tag, ctx, exc) in
-      FanLoc.raise iloc exc1
-  | FanLoc.Exc_located (iloc, (QuotationError _ as exc)) ->
-      FanLoc.raise iloc exc
-  | FanLoc.Exc_located (iloc, exc) ->
+      FLoc.raise iloc exc1
+  | FLoc.Exc_located (iloc, (QuotationError _ as exc)) ->
+      FLoc.raise iloc exc
+  | FLoc.Exc_located (iloc, exc) ->
       let ctx = ParsingResult iloc quot.q_contents in
       let exc1 = QuotationError (quot.q_name, pos_tag, ctx, exc) in
-      FanLoc.raise iloc exc1 
+      FLoc.raise iloc exc1 
 
     
 (* [exp_filter] needs an coercion , we can not finish in one step
@@ -248,14 +248,14 @@ let parse_quotation_result parse loc quot pos_tag str =
 let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
   let entry_eoi = Gram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
-    Ref.protect2 (FanConfig.antiquotations,true) (current_loc_name, loc_name_opt)
+    Ref.protect2 (FConfig.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
         Gram.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
   let expand_pat _loc loc_name_opt s =
-    Ref.protect FanConfig.antiquotations true begin fun _ ->
+    Ref.protect FConfig.antiquotations true begin fun _ ->
       let ast = Gram.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
@@ -273,20 +273,20 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
       
       match loc_name_opt with
-      | None -> subst_first_loc (!FanLoc.name) exp_ast
+      | None -> subst_first_loc (!FLoc.name) exp_ast
       | Some "_" -> exp_ast
       | Some name -> subst_first_loc name exp_ast 
     end in begin
-      add name FanDyn.exp_tag expand_exp;
-      add name FanDyn.pat_tag expand_pat;
-      add name FanDyn.stru_tag expand_stru;
+      add name FDyn.exp_tag expand_exp;
+      add name FDyn.pat_tag expand_pat;
+      add name FDyn.stru_tag expand_stru;
     end
 
     
 let make_parser entry =
   fun loc loc_name_opt s  ->
     Ref.protect2
-      (FanConfig.antiquotations, true)
+      (FConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
       (fun _ -> Gram.parse_string (Gram.eoi_entry entry) ~loc  s);;
 
@@ -296,14 +296,14 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));;
 
   
-(* let of_stru = REGISTER(FanDyn.stru_tag); *)
-(* let of_stru_with_filter = REGISTER_FILTER(FanDyn.stru_tag); *)
-(* let of_pat  = REGISTER(FanDyn.pat_tag); *)
-(* let of_pat_with_filter  = REGISTER_FILTER(FanDyn.pat_tag); *)
-(* let of_clfield  = REGISTER(FanDyn.clfield_tag); *)
-(* let of_clfield_with_filter  = REGISTER_FILTER(FanDyn.clfield_tag); *)
-(* let of_case = REGISTER(FanDyn.case_tag); *)
-(* let of_case_with_filter = REGISTER_FILTER(FanDyn.case_tag); *)
+(* let of_stru = REGISTER(FDyn.stru_tag); *)
+(* let of_stru_with_filter = REGISTER_FILTER(FDyn.stru_tag); *)
+(* let of_pat  = REGISTER(FDyn.pat_tag); *)
+(* let of_pat_with_filter  = REGISTER_FILTER(FDyn.pat_tag); *)
+(* let of_clfield  = REGISTER(FDyn.clfield_tag); *)
+(* let of_clfield_with_filter  = REGISTER_FILTER(FDyn.clfield_tag); *)
+(* let of_case = REGISTER(FDyn.case_tag); *)
+(* let of_case_with_filter = REGISTER_FILTER(FDyn.case_tag); *)
   
 
 (* (\* both [exp] and [stru] positions are registered *\) *)
@@ -311,8 +311,8 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
 (*   let expand_fun =  make_parser entry in *)
 (*   let mk_fun loc loc_name_opt s = *)
 (*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
-(*       add name FanDyn.exp_tag expand_fun ; *)
-(*       add name FanDyn.stru_tag mk_fun ; *)
+(*       add name FDyn.exp_tag expand_fun ; *)
+(*       add name FDyn.stru_tag mk_fun ; *)
 (*     end ; *)
   
 (* let of_exp_with_filter ~name ~entry ~filter = *)
@@ -320,39 +320,39 @@ DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
 (*     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in *)
 (*   let mk_fun loc loc_name_opt s = *)
 (*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
-(*       add name FanDyn.exp_tag expand_fun ; *)
-(*       add name FanDyn.stru_tag mk_fun ; *)
+(*       add name FDyn.exp_tag expand_fun ; *)
+(*       add name FDyn.stru_tag mk_fun ; *)
 (*     end ; *)
   
 
 
 
   
-let of_stru ~name  ~entry  = add name FanDyn.stru_tag (make_parser entry)
+let of_stru ~name  ~entry  = add name FDyn.stru_tag (make_parser entry)
 
 let of_stru_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.stru_tag
+  add name FDyn.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 
-let of_pat ~name  ~entry  = add name FanDyn.pat_tag (make_parser entry)
+let of_pat ~name  ~entry  = add name FDyn.pat_tag (make_parser entry)
 
 let of_pat_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.pat_tag
+  add name FDyn.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 
-let of_clfield ~name  ~entry  = add name FanDyn.clfield_tag (make_parser entry)
+let of_clfield ~name  ~entry  = add name FDyn.clfield_tag (make_parser entry)
 
 let of_clfield_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.clfield_tag
+  add name FDyn.clfield_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 
-let of_case ~name  ~entry  = add name FanDyn.case_tag (make_parser entry)
+let of_case ~name  ~entry  = add name FDyn.case_tag (make_parser entry)
 
 let of_case_with_filter ~name  ~entry  ~filter  =
-  add name FanDyn.case_tag
+  add name FDyn.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser entry loc loc_name_opt s))
 
@@ -360,11 +360,11 @@ let of_exp ~name  ~entry  =
   let expand_fun = make_parser entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun)
+  (add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun)
 
 let of_exp_with_filter ~name  ~entry  ~filter  =
   let expand_fun loc loc_name_opt s =
     filter (make_parser entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  (add name FanDyn.exp_tag expand_fun; add name FanDyn.stru_tag mk_fun)
+  (add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun)

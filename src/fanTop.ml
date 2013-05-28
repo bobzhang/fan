@@ -51,7 +51,7 @@ end;;
 (*       if tok= `INT (3,"3") then raise Not_found *)
 (*       else *)
 (*         Format.fprintf Format.std_formatter *)
-(*           "@[%a@]@." FanToken.print tok ) token_stream *)
+(*           "@[%a@]@." FToken.print tok ) token_stream *)
 (*   with *)
 (*     [Not_found -> ()]; *)
 (*   prerr_endline "got it"; *)

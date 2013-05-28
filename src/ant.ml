@@ -25,7 +25,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           match !AstQuotation.current_loc_name with
           | Some "here" -> AstLib.meta_here _loc loc
           | x ->
-              let x = Option.default !FanLoc.name  x in
+              let x = Option.default !FLoc.name  x in
               {:exp|$lid:x|} in
       let mloc _loc = meta_loc_exp _loc _loc  in
       let e = parse_exp _loc code in

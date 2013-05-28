@@ -4,7 +4,7 @@ open AstLib
 
 open LibUtil
 
-let _loc = FanLoc.ghost
+let _loc = FLoc.ghost
 
 type ty_meta = 
   {

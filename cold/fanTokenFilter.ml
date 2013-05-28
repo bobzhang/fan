@@ -1,4 +1,4 @@
-open FanToken
+open FToken
 
 type t =  {
   is_kwd: string -> bool;

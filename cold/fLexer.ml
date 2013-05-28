@@ -93,14 +93,14 @@ let show_stack () =
 
 type context = 
   {
-  loc: FanLoc.position;
+  loc: FLoc.position;
   antiquots: bool;
   lexbuf: lexbuf;
   buffer: Buffer.t} 
 
 let default_context lb =
   {
-    loc = FanLoc.dummy_pos;
+    loc = FLoc.dummy_pos;
     antiquots = false;
     lexbuf = lb;
     buffer = (Buffer.create 256)
@@ -112,7 +112,7 @@ let buff_contents c =
   let contents = Buffer.contents c.buffer in
   begin Buffer.reset c.buffer; contents end
 
-let loc_merge c = FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
+let loc_merge c = FLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
 
 let set_start_p c = (c.lexbuf).lex_start_p <- c.loc
 
@@ -120,7 +120,7 @@ let move_curr_p shift c =
   (c.lexbuf).lex_curr_pos <- (c.lexbuf).lex_curr_pos + shift
 
 let move_start_p shift c =
-  (c.lexbuf).lex_start_p <- FanLoc.move_pos shift (c.lexbuf).lex_start_p
+  (c.lexbuf).lex_start_p <- FLoc.move_pos shift (c.lexbuf).lex_start_p
 
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
@@ -137,7 +137,7 @@ let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
   let contents = String.sub s 0 ((String.length s) - retract) in
   `QUOTATION
     {
-      FanToken.q_name = name;
+      FToken.q_name = name;
       q_loc = loc;
       q_shift = shift;
       q_contents = contents
@@ -155,11 +155,11 @@ let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  c =
       pos_bol = (pos.pos_cnum - retract)
     }
 
-let err (error : lex_error) (loc : FanLoc.t) =
-  raise (FanLoc.Exc_located (loc, (Lexing_error error)))
+let err (error : lex_error) (loc : FLoc.t) =
+  raise (FLoc.Exc_located (loc, (Lexing_error error)))
 
 let warn error loc =
-  Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
+  Format.eprintf "Warning: %a: %a@." FLoc.print loc print_lex_error error
 
 let rec comment c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -422,8 +422,7 @@ let rec string c lexbuf =
             let x =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
             begin
-              warn (Illegal_escape (String.make 1 x))
-                (FanLoc.of_lexbuf lexbuf);
+              warn (Illegal_escape (String.make 1 x)) (FLoc.of_lexbuf lexbuf);
               store_parse string c
             end
         | 6 -> begin update_loc c; store_parse string c end
@@ -1089,15 +1088,14 @@ let rec maybe_quotation_at c lexbuf =
                 (((lexbuf.Lexing.lex_mem).(1)) + 0) in
             begin
               move_start_p (-2) c; Stack.push p opt_char;
-              mk_quotation quotation c ~name:FanToken.empty_name ~loc
+              mk_quotation quotation c ~name:FToken.empty_name ~loc
                 ~shift:(((2 + 1) + (String.length loc)) + (opt_char_len p))
                 ~retract:(2 + (opt_char_len p))
             end
         | 1 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-            err (Illegal_quotation (String.make 1 c))
-              (FanLoc.of_lexbuf lexbuf)
+            err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
         | _ -> failwith "lexing: empty token")
      end)
   end
@@ -2762,7 +2760,7 @@ and maybe_quotation_colon c lexbuf =
               Lexing.sub_lexeme_char_opt lexbuf
                 (((lexbuf.Lexing.lex_mem).(1)) + 0) in
             let len = String.length name in
-            let name = FanToken.resolve_name (FanToken.name_of_string name) in
+            let name = FToken.resolve_name (FToken.name_of_string name) in
             begin
               move_start_p (-2) c; Stack.push p opt_char;
               mk_quotation quotation c ~name ~loc:""
@@ -2780,7 +2778,7 @@ and maybe_quotation_colon c lexbuf =
               Lexing.sub_lexeme_char_opt lexbuf
                 (((lexbuf.Lexing.lex_mem).(2)) + 0) in
             let len = String.length name in
-            let name = FanToken.resolve_name (FanToken.name_of_string name) in
+            let name = FToken.resolve_name (FToken.name_of_string name) in
             begin
               move_start_p (-2) c; Stack.push p opt_char;
               mk_quotation quotation c ~name ~loc
@@ -2790,8 +2788,7 @@ and maybe_quotation_colon c lexbuf =
         | 2 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-            err (Illegal_quotation (String.make 1 c))
-              (FanLoc.of_lexbuf lexbuf)
+            err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
         | _ -> failwith "lexing: empty token")
      end)
   end
@@ -5071,16 +5068,14 @@ and dollar c lexbuf =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                 (lexbuf.Lexing.lex_curr_pos + (-1)) in
             antiquot name 0
-              {
-                c with
-                loc = (FanLoc.move_pos (3 + (String.length name)) c.loc)
+              { c with loc = (FLoc.move_pos (3 + (String.length name)) c.loc)
               } c.lexbuf
         | 3 ->
-            antiquot "" 0 { c with loc = (FanLoc.move_pos 2 c.loc) } c.lexbuf
+            antiquot "" 0 { c with loc = (FLoc.move_pos 2 c.loc) } c.lexbuf
         | 4 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-            err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
+            err (Illegal_character c) (FLoc.of_lexbuf lexbuf)
         | _ -> failwith "lexing: empty token")
      end)
   end
@@ -9511,16 +9506,14 @@ let token c lexbuf =
               | _ -> `INT ((- (int_of_string ("-" ^ s))), s) in
             (try cvt_int_literal x
              with
-             | Failure _ ->
-                 err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf))
+             | Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf))
         | 7 ->
             let f =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
                 (lexbuf.Lexing.lex_curr_pos + 0) in
             (try `Flo ((float_of_string f), f)
              with
-             | Failure _ ->
-                 err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf))
+             | Failure _ -> err (Literal_overflow f) (FLoc.of_lexbuf lexbuf))
         | 8 ->
             begin
               with_curr_loc string c;
@@ -9539,7 +9532,7 @@ let token c lexbuf =
         | 11 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-            err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
+            err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
         | 12 ->
             begin
               store c;
@@ -9552,12 +9545,12 @@ let token c lexbuf =
             end
         | 13 ->
             begin
-              warn Comment_start (FanLoc.of_lexbuf lexbuf);
-              comment c c.lexbuf; `COMMENT (buff_contents c)
+              warn Comment_start (FLoc.of_lexbuf lexbuf); comment c c.lexbuf;
+              `COMMENT (buff_contents c)
             end
         | 14 ->
             begin
-              warn Comment_not_end (FanLoc.of_lexbuf lexbuf);
+              warn Comment_not_end (FLoc.of_lexbuf lexbuf);
               move_curr_p (-1) c; `SYMBOL "*"
             end
         | 15 ->
@@ -9581,13 +9574,13 @@ let token c lexbuf =
               move_curr_p (- (String.length beginning)) c;
               Stack.push p opt_char;
               (let len = 2 + (opt_char_len p) in
-               mk_quotation quotation c ~name:FanToken.empty_name ~loc:""
+               mk_quotation quotation c ~name:FToken.empty_name ~loc:""
                  ~shift:len ~retract:len)
             end
         | 18 ->
             `QUOTATION
               {
-                FanToken.q_name = FanToken.empty_name;
+                FToken.q_name = FToken.empty_name;
                 q_loc = "";
                 q_shift = 2;
                 q_contents = ""
@@ -9625,7 +9618,7 @@ let token c lexbuf =
         | 25 ->
             if c.antiquots
             then with_curr_loc dollar c
-            else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
+            else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
         | 26 ->
             let x =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
@@ -9645,7 +9638,7 @@ let token c lexbuf =
         | 28 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-            err (Illegal_character c) (FanLoc.of_lexbuf lexbuf)
+            err (Illegal_character c) (FLoc.of_lexbuf lexbuf)
         | _ -> failwith "lexing: empty token")
      end)
   end

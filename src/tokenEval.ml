@@ -105,9 +105,9 @@ let string ?strict s =
 
 let char_of_char_token loc s =
   try char s with
-  | Failure _ as exn -> FanLoc.raise loc exn
+  | Failure _ as exn -> FLoc.raise loc exn
         
 let string_of_string_token loc s =
   try string s with
-  | Failure _ as exn -> FanLoc.raise loc exn 
+  | Failure _ as exn -> FLoc.raise loc exn 
                  

@@ -1,4 +1,4 @@
-type t = ((string * FanLoc.t) XStream.t * (string * FanLoc.t) Queue.t) 
+type t = ((string * FLoc.t) XStream.t * (string * FLoc.t) Queue.t) 
 
 let mk () =
   let q = Queue.create () in

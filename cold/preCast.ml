@@ -51,11 +51,11 @@ let register_bin_printer () =
   let print_interf ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
     with_open_out_file output_file
-      (dump_pt FanConfig.ocaml_ast_intf_magic_number input_file pt) in
+      (dump_pt FConfig.ocaml_ast_intf_magic_number input_file pt) in
   let print_implem ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
     with_open_out_file output_file
-      (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt) in
+      (dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt) in
   begin stru_printer := print_implem; sigi_printer := print_interf end
 
 let wrap directive_handler pa init_loc cs =
@@ -70,7 +70,7 @@ let wrap directive_handler pa init_loc cs =
               (match directive_handler x with
                | None  -> xs
                | Some x -> x :: xs) in
-        (List.rev pl) @ (loop (FanLoc.join_end new_loc))
+        (List.rev pl) @ (loop (FLoc.join_end new_loc))
     | None  -> pl in
   loop init_loc
 
@@ -83,8 +83,8 @@ let parse_interf ?(directive_handler= fun _  -> None)  loc cs =
   match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 
 let parse_file ?directive_handler  name pa =
-  let loc = FanLoc.mk name in
-  let print_warning = eprintf "%a:\n%s@." FanLoc.print in
+  let loc = FLoc.mk name in
+  let print_warning = eprintf "%a:\n%s@." FLoc.print in
   let () = Syntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
@@ -101,15 +101,15 @@ module CurrentPrinter =
 
 let wrap parse_fun ~print_location  lb =
   try
-    let token_stream = (lb |> FanLexUtil.from_lexbuf) |> Gram.filter in
+    let token_stream = (lb |> FLexLib.from_lexbuf) |> Gram.filter in
     let (__strm :_ XStream.t)= token_stream in
     match XStream.peek __strm with
     | Some (`EOI,_) -> begin XStream.junk __strm; raise End_of_file end
     | _ -> parse_fun token_stream
   with
-  | End_of_file |Sys.Break |FanLoc.Exc_located (_,(End_of_file |Sys.Break ))
-      as x -> raise x
-  | FanLoc.Exc_located (loc,y) ->
+  | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as
+      x -> raise x
+  | FLoc.Exc_located (loc,y) ->
       begin
         Format.eprintf "@[<0>%a%s@]@." print_location loc
           (Printexc.to_string y);
@@ -136,7 +136,7 @@ let use_file token_stream =
       | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
           FAst.stru)::[] ->
           begin
-            AstQuotation.set_default (FanToken.resolve_name ((`Sub []), s));
+            AstQuotation.set_default (FToken.resolve_name ((`Sub []), s));
             loop ()
           end
       | _ -> (pl, false)

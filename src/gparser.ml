@@ -2,7 +2,7 @@ open Gstructure
   
 open LibUtil
   
-open FanToken
+open FToken
   
 (* open Format; *)
 (* [bp] means begining position, [ep] means ending position
@@ -14,11 +14,11 @@ let with_loc (parse_fun: 'b parse ) strm =
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
   let loc =
-    let start_off_bp = FanLoc.start_off bp in
-    let stop_off_ep = FanLoc.stop_off ep in 
+    let start_off_bp = FLoc.start_off bp in
+    let stop_off_ep = FLoc.stop_off ep in 
     if start_off_bp > stop_off_ep then 
-      FanLoc.join bp
-    else FanLoc.merge bp ep in
+      FLoc.join bp
+    else FLoc.merge bp ep in
   (x, loc)
 
 
@@ -50,7 +50,7 @@ module ArgContainer= Stack
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
-let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FanLoc.t) ArgContainer.t ) x =
+let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t ) x =
   let alevn =
     match assoc with
     | `LA|`NA -> lev + 1 | `RA -> lev  in
@@ -136,11 +136,11 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FanLoc.t) ArgContainer
 
 (*
   {[
-  let a : FanToken.t = Obj.magic & Gparser.parser_of_terminals
+  let a : FToken.t = Obj.magic & Gparser.parser_of_terminals
   [`Skeyword "a";`Skeyword "b"; `Skeyword "c"]
   (fun _ v _  -> Gaction.mk (fun  c b a ->  v))
   [< (`KEYWORD "a",_loc) ; (`KEYWORD "b", _loc); (`KEYWORD "c",_loc) >];
-  val a : FanToken.t = `KEYWORD "c"
+  val a : FToken.t = `KEYWORD "c"
   ]}
  *)    
 and parser_of_terminals (terminals: terminal list) strm =
@@ -158,7 +158,7 @@ and parser_of_terminals (terminals: terminal list) strm =
             if not
                 (match terminal with
                 |`Stoken(f,_) -> f t
-                |`Skeyword kwd -> FanToken.match_keyword kwd t)
+                |`Skeyword kwd -> FToken.match_keyword kwd t)
             then
               invalid_arg "parser_of_terminals"
           end) terminals
@@ -199,7 +199,7 @@ and parser_of_symbol entry s nlevn =
     | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm 
     | `Skeyword kwd -> fun strm ->
         (match XStream.peek strm with
-        | Some (tok,_) when FanToken.match_keyword kwd tok ->
+        | Some (tok,_) when FToken.match_keyword kwd tok ->
             (XStream.junk strm ; Gaction.mk tok )
         |_ -> raise XStream.Failure )
     | `Stoken (f, _) -> fun strm ->
@@ -267,7 +267,7 @@ let rec continue_parser_of_levels entry clevn = function
             with
             | XStream.Failure ->
               let (act,loc) = ccontinue strm in
-              let loc = FanLoc.merge bp loc in
+              let loc = FLoc.merge bp loc in
               let a = Gaction.getf2 act a loc in entry.econtinue levn loc a strm
 
   

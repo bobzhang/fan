@@ -10,7 +10,7 @@ open Longident
 open Asttypes
 open LibUtil
 open ParsetreeHelper
-open FanLoc
+open FLoc
 open FanOps
 open FAst
 
@@ -80,7 +80,7 @@ let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
   |  `Uid(loc,s) as e ->
       (match acc with
       | [] -> [(loc, [], e)]
-      | (loc',sl,e)::l -> (FanLoc.merge loc loc', s :: sl, e) :: l )
+      | (loc',sl,e)::l -> (FLoc.merge loc loc', s :: sl, e) :: l )
   | e -> ((loc_of e), [], e) :: acc
         
 let mkvirtual : flag  -> Asttypes.virtual_flag = function 
@@ -118,7 +118,7 @@ let mkrf : flag -> Asttypes.rec_flag = function
   (Longident.Ldot (Longident.Lident "B", "C"), `uident)
 
   ident_tag {:ident| B.u.g|}
-  Exception: FanLoc.Exc_located (, Failure "invalid long identifier").
+  Exception: FLoc.Exc_located (, Failure "invalid long identifier").
 
   ]}
 
@@ -169,7 +169,7 @@ let ident (i:ident) :  Longident.t Location.loc  =
 let long_lident  id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (loc_of id)
-  | _ -> FanLoc.errorf (loc_of id)  "invalid long identifier %s"
+  | _ -> FLoc.errorf (loc_of id)  "invalid long identifier %s"
         (Objs.dump_ident id)
 
 let long_type_ident: ident -> Longident.t Location.loc =
@@ -627,7 +627,7 @@ let rec exp (x : exp) = with exp match x with
           (fun (loc_bp, e1) (loc_ep, ml, e2) ->
             match e2 with
             | `Lid(sloc,s) ->
-                let loc = FanLoc.merge loc_bp loc_ep in
+                let loc = FLoc.merge loc_bp loc_ep in
                 (loc, mkexp loc (Pexp_field e1 (mkli sloc s ml)))
             | _ -> error (loc_of e2) "lowercase identifier expected" )
           (_loc, e) l in
@@ -829,7 +829,7 @@ let rec exp (x : exp) = with exp match x with
             | [] -> exp {| () |}
             | [e] -> exp e
             | e :: el ->
-                let _loc = FanLoc.merge (loc_of e) _loc in
+                let _loc = FLoc.merge (loc_of e) _loc in
                 mkexp _loc (Pexp_sequence (exp e) (loop el))  in
           loop (list_of_sem e []) 
       | `Send (loc,e,`Lid(_,s)) -> mkexp loc (Pexp_send (exp e) s)
@@ -1151,13 +1151,13 @@ and stru (s:stru) (l:structure) : structure =
             (let try p = Hashtbl.find Typehook.filters n in
             (n,p)
             with Not_found ->
-              (FanLoc.errorf sloc "%s not found" n))
+              (FLoc.errorf sloc "%s not found" n))
         | `Ant _ -> ANT_ERROR
         | _ -> assert false ) ns in
       let code =
         Ref.protect2
-        (FanState.current_filters, filters)
-        (FanState.keep, false)
+        (FState.current_filters, filters)
+        (FState.keep, false)
         (fun _  ->
           match (Typehook.traversal ())#mexp {:mexp|struct $x end |} with
           |{:mexp| struct $s end|} -> s

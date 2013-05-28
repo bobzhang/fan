@@ -10,7 +10,7 @@ open LibUtil
 
 open ParsetreeHelper
 
-open FanLoc
+open FLoc
 
 open FanOps
 
@@ -43,7 +43,7 @@ let rec sep_dot_exp acc =
    | `Uid (loc,s) as e ->
        (match acc with
         | [] -> [(loc, [], e)]
-        | (loc',sl,e)::l -> ((FanLoc.merge loc loc'), (s :: sl), e) :: l)
+        | (loc',sl,e)::l -> ((FLoc.merge loc loc'), (s :: sl), e) :: l)
    | e -> ((loc_of e), [], e) :: acc : exp -> (loc * string list * exp) list )
 
 let mkvirtual: flag -> Asttypes.virtual_flag =
@@ -103,7 +103,7 @@ let long_lident id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (loc_of id)
   | _ ->
-      FanLoc.errorf (loc_of id) "invalid long identifier %s"
+      FLoc.errorf (loc_of id) "invalid long identifier %s"
         (Objs.dump_ident id)
 
 let long_type_ident: ident -> Longident.t Location.loc = long_lident
@@ -523,7 +523,7 @@ let rec exp (x : exp) =
           (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
              match e2 with
              | `Lid (sloc,s) ->
-                 let loc = FanLoc.merge loc_bp loc_ep in
+                 let loc = FLoc.merge loc_bp loc_ep in
                  (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
              | _ -> error (loc_of e2) "lowercase identifier expected")
           (_loc, e) l in
@@ -741,7 +741,7 @@ let rec exp (x : exp) =
         | [] -> exp (`Uid (_loc, "()") : FAst.exp )
         | e::[] -> exp e
         | e::el ->
-            let _loc = FanLoc.merge (loc_of e) _loc in
+            let _loc = FLoc.merge (loc_of e) _loc in
             mkexp _loc (Pexp_sequence ((exp e), (loop el))) in
       loop (list_of_sem e [])
   | `Send (loc,e,`Lid (_,s)) -> mkexp loc (Pexp_send ((exp e), s))
@@ -1051,12 +1051,11 @@ and stru (s : stru) (l : structure) =
                     fun ()  -> (n, p)
                   with
                   | Not_found  ->
-                      (fun ()  -> FanLoc.errorf sloc "%s not found" n))) ()
+                      (fun ()  -> FLoc.errorf sloc "%s not found" n))) ()
             | `Ant _ -> error _loc "antiquotation not expected here"
             | _ -> assert false) ns in
        let code =
-         Ref.protect2 (FanState.current_filters, filters)
-           (FanState.keep, false)
+         Ref.protect2 (FState.current_filters, filters) (FState.keep, false)
            (fun _  ->
               match (Typehook.traversal ())#mexp
                       (`Struct (_loc, x) : FAst.mexp )

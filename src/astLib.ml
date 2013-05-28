@@ -4,7 +4,7 @@
 (*************************************************************************)
   
 open LibUtil
-open FanLoc.Ops
+open FLoc.Ops
 open FAst
 
 
@@ -22,7 +22,7 @@ open FAst
 
   
 (**   connectives  *)
-let ghost = FanLoc.ghost  (* to refine *)
+let ghost = FLoc.ghost  (* to refine *)
 let (<+>) a b = loc_of a <+> loc_of b
 let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b)
 let com a b = let _loc = a <+> b in `Com(_loc,a,b)
@@ -205,8 +205,8 @@ let (+>) f names  =
          
 (**  FIXME more precise API wanted *)
 let meta_here _loc location  =
-  let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
-  {:exp'| FanLoc.of_tuple
+  let (a, b, c, d, e, f, g, h) = FLoc.to_tuple location in
+  {:exp'| FLoc.of_tuple
      ($`str:a, $`int:b, $`int:c, $`int:d,
       $`int:e, $`int:f, $`int:g,
       $(if h then {:exp'| true |} else {:exp'| false |} )) |}

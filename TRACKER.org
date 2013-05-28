@@ -262,3 +262,5 @@
   
 * DONE 29 avoid linking dependency on compiler libs
   This is helpful for creating stand-alone binaries and toplevel
+
+* 30 adopt a new macro expansion and conditional compilation scheme, deprecated the macro parser finally

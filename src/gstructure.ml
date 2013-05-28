@@ -1,6 +1,6 @@
 
 open LibUtil
-open FanToken
+open FToken
 
 
 type assoc =
@@ -11,12 +11,12 @@ type position =
 
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = FanLoc.t -> Gaction.t -> 'a parse 
+type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a parse 
     
 type description = [ `Normal | `Antiquot]
 
 type descr = (description * string) 
-type token_pattern = ((FanToken.t -> bool) * descr)
+type token_pattern = ((FToken.t -> bool) * descr)
 
 type terminal =
     [ `Skeyword of string

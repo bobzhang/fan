@@ -34,9 +34,9 @@ let show_modules () =
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in 
     if not
-        (List.exists (fun (n,_) -> n=plugin) !FanState.current_filters)
+        (List.exists (fun (n,_) -> n=plugin) !FState.current_filters)
     then
-      Ref.modify FanState.current_filters (fun x -> cons (plugin,v) x) 
+      Ref.modify FState.current_filters (fun x -> cons (plugin,v) x) 
     else
       eprintf "<Warning> plugin %s has already been loaded" plugin
 
@@ -48,7 +48,7 @@ let plugin_add plugin =
 
     
 let plugin_remove plugin =
-    Ref.modify FanState.current_filters (fun x -> List.remove plugin x) 
+    Ref.modify FState.current_filters (fun x -> List.remove plugin x) 
   
 
 
@@ -114,8 +114,8 @@ let traversal () : traversal  = object (self:'self_type)
            eprintf "@[%a@]@." pp_print_mtyps mtyps in
          let result =
          List.fold_right (iterate_code sloc mtyps)
-             !FanState.current_filters 
-             (if !FanState.keep then res else {@sloc| let _ = () |}) in
+             !FState.current_filters 
+             (if !FState.keep then res else {@sloc| let _ = () |}) in
             (self#out_module ; {:mexp@sloc| struct $result end |} ))
 
     | x -> super#mexp x 
@@ -126,7 +126,7 @@ let traversal () : traversal  = object (self:'self_type)
       (self#update_cur_mtyps
           (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
        self#out_and_types;
-       (if !FanState.keep then x else {| let _ = () |} (* FIXME *) ))
+       (if !FState.keep then x else {| let _ = () |} (* FIXME *) ))
     end
     | `TypeWith(_loc,typedecl,_) ->
         self#stru (`Type(_loc,typedecl))

@@ -16,7 +16,7 @@ let map_to_string (ident : vid) =
     | `Dot (_loc,a,b) -> aux a ("_" ^ (aux b acc))
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
-    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t) in
+    | t -> FLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t) in
   aux ident ""
 
 let to_string (ident : ident) =
@@ -26,7 +26,7 @@ let to_string (ident : ident) =
     | `Apply (_,a,b) -> "app_" ^ ((aux a ("_to_" ^ (aux b acc))) ^ "_end")
     | `Lid (_loc,x) -> x ^ acc
     | `Uid (_loc,x) -> (String.lowercase x) ^ acc
-    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
+    | t -> FLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in
   aux ident ""
 
 let rec to_vid (x : ident) =
@@ -44,7 +44,7 @@ let ident_map f (x : vid) =
       let l = List.length ls in
       (match List.drop (l - 2) ls with
        | q::(`Lid (_loc,y))::[] -> `Dot (_loc, q, (`Lid (_loc, (f y))))
-       | _ -> FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_vid x))
+       | _ -> FLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_vid x))
 
 let ident_map_of_ident f x =
   (let lst = list_of_dot x [] in
@@ -56,5 +56,5 @@ let ident_map_of_ident f x =
        (match List.drop (l - 2) ls with
         | q::(`Lid (_loc,y))::[] -> `Dot (_loc, q, (f y))
         | _ ->
-            FanLoc.errorf (loc_of x) "ident_map_of_ident: %s"
-              (Objs.dump_vid x)) : vid )
+            FLoc.errorf (loc_of x) "ident_map_of_ident: %s" (Objs.dump_vid x)) : 
+  vid )

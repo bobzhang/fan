@@ -8,18 +8,18 @@ open AstLib
 
 open LibUtil
 
-open FanGrammar
+open FGramDef
 
-let print_warning = eprintf "%a:\n%s@." FanLoc.print
+let print_warning = eprintf "%a:\n%s@." FLoc.print
 
 let prefix = "__fan_"
 
-let ghost = FanLoc.ghost
+let ghost = FLoc.ghost
 
 let grammar_module_name = ref (`Uid (ghost, "Gram"))
 
 let gm () =
-  (match FanConfig.compilation_unit.contents with
+  (match FConfig.compilation_unit.contents with
    | Some "Gram" -> `Uid (ghost, "")
    | Some _|None  -> grammar_module_name.contents : vid )
 
@@ -41,7 +41,7 @@ let string_of_pat pat =
 let check_not_tok s =
   match s with
   | { text = `Stok (_loc,_,_,_);_} ->
-      FanLoc.raise _loc
+      FLoc.raise _loc
         (XStream.Error
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
@@ -91,7 +91,7 @@ let make_ctyp (styp : styp) tvar =
      | `Self (_loc,x) ->
          if tvar = ""
          then
-           FanLoc.raise _loc
+           FLoc.raise _loc
              (XStream.Error
                 ("'" ^ (x ^ "' illegal in anonymous entry level")))
          else
@@ -101,8 +101,7 @@ let make_ctyp (styp : styp) tvar =
             (_loc,
               (`Ctyp
                  (_loc,
-                   (`Dot
-                      (_loc, (`Uid (_loc, "FanToken")), (`Lid (_loc, "t"))))))) : 
+                   (`Dot (_loc, (`Uid (_loc, "FToken")), (`Lid (_loc, "t"))))))) : 
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
@@ -200,7 +199,7 @@ and make_exp_rules (_loc : loc) (rl : (text list * exp) list) (tvar : string)
 
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
-  (let locid: FAst.pat = `Lid (_loc, (FanLoc.name.contents)) in
+  (let locid: FAst.pat = `Lid (_loc, (FLoc.name.contents)) in
    let act =
      match act with
      | Some act -> act
@@ -226,8 +225,8 @@ let text_of_action (_loc : loc) (psl : symbol list)
                    (`Constraint
                       (_loc, locid,
                         (`Dot
-                           (_loc, (`Uid (_loc, "FanLoc")),
-                             (`Lid (_loc, "t")))))), e1))) : FAst.exp )
+                           (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "t")))))),
+                   e1))) : FAst.exp )
      | (e,p) ->
          let (exp,pat) =
            match (e, p) with
@@ -241,8 +240,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
                    (`Constraint
                       (_loc, locid,
                         (`Dot
-                           (_loc, (`Uid (_loc, "FanLoc")),
-                             (`Lid (_loc, "t")))))),
+                           (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "t")))))),
                    (`Match
                       (_loc, exp,
                         (`Bar

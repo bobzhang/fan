@@ -9,7 +9,7 @@ let list_of_list (loc : loc) =
     function
     | [] -> `Uid (ghost, "[]")
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        let _loc = if top then loc else FLoc.merge (loc_of e1) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
   loop true
 
@@ -42,7 +42,7 @@ let mklist loc =
     function
     | [] -> `Uid (loc, "[]")
     | e1::el ->
-        let _loc = if top then loc else FanLoc.merge (loc_of e1) loc in
+        let _loc = if top then loc else FLoc.merge (loc_of e1) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
   loop true
 
@@ -54,8 +54,8 @@ let meta_option mf_a _loc =
   | None  -> `Uid (_loc, "None")
   | Some x -> `App (_loc, (`Uid (_loc, "Some")), (mf_a _loc x))
 
-let meta_arrow (type t) (_mf_a : FanLoc.t -> 'a -> t)
-  (_mf_b : FanLoc.t -> 'b -> t) (_loc : FanLoc.t) (_x : 'a -> 'b) =
+let meta_arrow (type t) (_mf_a : FLoc.t -> 'a -> t)
+  (_mf_b : FLoc.t -> 'b -> t) (_loc : FLoc.t) (_x : 'a -> 'b) =
   invalid_arg "meta_arrow not implemented"
 
 let rec is_module_longident (x : ident) =
@@ -124,7 +124,7 @@ let rec is_irrefut_pat (x : pat) =
 
 let array_of_array arr =
   match arr with
-  | [||] -> `ArrayEmpty FanLoc.ghost
+  | [||] -> `ArrayEmpty FLoc.ghost
   | _ ->
       let items = (arr |> Array.to_list) |> sem_of_list in
       let _loc = loc_of items in `Array (_loc, items)

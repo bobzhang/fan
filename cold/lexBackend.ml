@@ -6,7 +6,7 @@ open Lexgen
 
 open LibUtil
 
-let _loc = FanLoc.mk "x"
+let _loc = FLoc.mk "x"
 
 let auto_binds =
   [(`Bind
@@ -386,7 +386,7 @@ let output_env (env : t_env) =
       (fun x  y  ->
          match (x, y) with
          | ((`Lid (p1,_),_),(`Lid (p2,_),_)) ->
-             if FanLoc.strictly_before p1 p2 then (-1) else 1) env in
+             if FLoc.strictly_before p1 p2 then (-1) else 1) env in
   let output_tag_access =
     function
     | Sum (Mem i,d) ->

@@ -1,7 +1,7 @@
 
 
 type context = {
-    loc        :  FanLoc.position ;
+    loc        :  FLoc.position ;
     (** record the start position when enter into a quotation or antiquotaion *)
     in_comment : bool     ;
     antiquots  : bool     ;

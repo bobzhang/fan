@@ -65,7 +65,7 @@ let _ =
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
-      appl_of_list ((EPN.of_str cons) ::
+      appl_of_list ((EpN.of_str cons) ::
         (params |> (List.map (fun { ep0;_}  -> ep0)))) in
     List.fold_right
       (fun { info_exp; ep0;_}  res  ->
@@ -106,7 +106,7 @@ let gen_strip =
       List.filter (function | { ty = `Lid "loc";_} -> false | _ -> true)
         params in
     let result =
-      (appl_of_list ((EPN.of_str cons) ::
+      (appl_of_list ((EpN.of_str cons) ::
          (params' |> (List.map (fun { ep0;_}  -> ep0)))) :>exp) in
     List.fold_right
       (fun { info_exp = exp; ep0; ty;_}  res  ->
@@ -144,7 +144,7 @@ let _ =
 let gen_fill =
   let mk_variant cons params =
     let result =
-      (appl_of_list ((EPN.of_str cons) :: (`Lid "loc" : FAstN.ep ) ::
+      (appl_of_list ((EpN.of_str cons) :: (`Lid "loc" : FAstN.ep ) ::
          (params |> (List.map (fun { ep0;_}  -> ep0)))) :>exp) in
     List.fold_right
       (fun { info_exp = exp; ep0; ty;_}  res  ->
@@ -172,7 +172,7 @@ let gen_fill =
     ~names:["loc"]
     ~annot:(fun x  ->
               ((`Arrow
-                  ((`Dot ((`Uid "FanLoc"), (`Lid "t"))),
+                  ((`Dot ((`Uid "FLoc"), (`Lid "t"))),
                     (`Arrow
                        ((`Dot ((`Uid "FAstN"), (`Lid x))),
                          (`Dot ((`Uid "FAst"), (`Lid x)))))) : FAstN.ctyp ),
@@ -185,7 +185,7 @@ let _ =
 let mk_variant cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
-  then (EPN.of_vstr_number "Ant" len :>exp)
+  then (EpN.of_vstr_number "Ant" len :>exp)
   else
     (params |> (List.map (fun { info_exp = exp;_}  -> exp))) |>
       (List.fold_left ExpN.mee_app (ExpN.mee_of_str cons))

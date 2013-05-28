@@ -61,12 +61,12 @@ val qualid : vid Gram.t
 val t_qualid : vid Gram.t
     
 val entry_name :
-    ([ `name of FanToken.name | `non ] * FanGrammar.name) Gram.t
+    ([ `name of FToken.name | `non ] * FGramDef.name) Gram.t
 
 (* get local name entry list *)
-val locals : FanGrammar.name list Gram.t
+val locals : FGramDef.name list Gram.t
 
-(** return an entry [FanGrammar.entry]
+(** return an entry [FGramDef.entry]
   {[with str t entry {| entry:
     [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
@@ -77,7 +77,7 @@ val locals : FanGrammar.name list Gram.t
     end] |}]}
    *)
 
-val entry : FanGrammar.entry Gram.t
+val entry : FGramDef.entry Gram.t
 
 
 
@@ -88,29 +88,29 @@ val position : exp Gram.t
 
 (** parse association, and translate into [exp] node. FIXME  *)    
 val assoc : exp Gram.t
-val name : FanGrammar.name Gram.t
+val name : FGramDef.name Gram.t
 val string : exp Gram.t
 
 val simple_exp : exp Gram.t
 val delete_rules : exp Gram.t
 
-val pattern : FanGrammar.action_pattern Gram.t
+val pattern : FGramDef.action_pattern Gram.t
 
 
 
-val simple_pat : FanGrammar.simple_pat Gram.t
+val simple_pat : FGramDef.simple_pat Gram.t
 
-val internal_pat : FanGrammar.simple_pat Gram.t
+val internal_pat : FGramDef.simple_pat Gram.t
 
 (** return symbol with patterns (may override inferred patterns) *)
-val psymbol : FanGrammar.symbol Gram.t
+val psymbol : FGramDef.symbol Gram.t
     
 (** return symbol with pattern(inferred) or None  *)    
-val symbol :  FanGrammar.symbol Gram.t
+val symbol :  FGramDef.symbol Gram.t
 
 (** return a [rule]
     {[with str t rule {|  `Uid ("LA"|"RA"|"NA" as x)   |};
-    - : FanGrammar.rule =
+    - : FGramDef.rule =
      {prod =
      [{text =
      `Stok
@@ -138,13 +138,13 @@ val symbol :  FanGrammar.symbol Gram.t
      `Lid (, "x"))))}];
      action = None}
      ]} *)
-val rule :  FanGrammar.rule Gram.t
-val rule_list : FanGrammar.rule list Gram.t
+val rule :  FGramDef.rule Gram.t
+val rule_list : FGramDef.rule list Gram.t
 
-val level :  FanGrammar.level Gram.t
+val level :  FGramDef.level Gram.t
 val level_list :
-    ([ `Group of (FanGrammar.level list )
-     | `Single of FanGrammar.level ]) Gram.t
+    ([ `Group of (FGramDef.level list )
+     | `Single of FGramDef.level ]) Gram.t
 
 
 (** the main entrance
@@ -162,9 +162,9 @@ val level_list :
      (Gram.srules nonterminalsclear
      [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
      (Gram.mk_action
-     (fun (x : 'a_lident)  (_loc : FanLoc.t)  -> (x : 'e__7 ))))])],
+     (fun (x : 'a_lident)  (_loc : FLoc.t)  -> (x : 'e__7 ))))])],
      (Gram.mk_action
-     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FanLoc.t)  ->
+     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FLoc.t)  ->
      (() : 'nonterminalsclear ))))])])
      ]}
 
@@ -172,7 +172,7 @@ val level_list :
      it has type
      {[ FAst.loc ->
      FAst.ident option ->
-     FanGrammar.name list option -> FanGrammar.entry list -> FAst.exp
+     FGramDef.name list option -> FGramDef.entry list -> FAst.exp
      ]} *) 
 val extend_body : exp Gram.t
 val delete_rule_body : exp Gram.t

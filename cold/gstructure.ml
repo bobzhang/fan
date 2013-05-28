@@ -1,19 +1,19 @@
 open LibUtil
 
-open FanToken
+open FToken
 
 type assoc = [ `NA | `RA | `LA] 
 
 type position =
   [ `First | `Last | `Before of string | `After of string | `Level of string] 
 
-type 'a cont_parse = FanLoc.t -> Gaction.t -> 'a parse 
+type 'a cont_parse = FLoc.t -> Gaction.t -> 'a parse 
 
 type description = [ `Normal | `Antiquot] 
 
 type descr = (description * string) 
 
-type token_pattern = ((FanToken.t -> bool) * descr) 
+type token_pattern = ((FToken.t -> bool) * descr) 
 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 

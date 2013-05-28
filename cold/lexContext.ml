@@ -1,6 +1,6 @@
 type context = 
   {
-  loc: FanLoc.position;
+  loc: FLoc.position;
   in_comment: bool;
   antiquots: bool;
   lexbuf: lexbuf;

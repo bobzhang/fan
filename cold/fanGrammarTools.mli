@@ -1,6 +1,6 @@
-open FanGrammar
+open FGramDef
 open FAst
-val print_warning : FanLoc.t -> string -> unit
+val print_warning : FLoc.t -> string -> unit
 
 val prefix : string
 
@@ -42,7 +42,7 @@ val make_ctyp : styp -> string -> ctyp
    It is in charge of generating code like this 
    {[
    (Gram.mk_action
-               (fun (a : 'case)  _  (e : 'exp)  _  (_loc : FanLoc.t) 
+               (fun (a : 'case)  _  (e : 'exp)  _  (_loc : FLoc.t) 
                   -> (`Try (_loc, e, a) : 'exp )))
    ]} *)
 
@@ -72,8 +72,8 @@ val mk_srules :
                      `Skeyword ":";
                      `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
                       (Gram.mk_action
-                         (fun (r : 'regexp)  _  (__fan_0 : [> FanToken.t]) 
-                            (_loc : FanLoc.t)  ->
+                         (fun (r : 'regexp)  _  (__fan_0 : [> FToken.t]) 
+                            (_loc : FLoc.t)  ->
                             match __fan_0 with
                             | `Lid x -> ((x, r) : 'e__2 )
                             | _ -> assert false)))];
@@ -94,7 +94,7 @@ val mk_srules :
                  [([`Snterm (Gram.obj (sigi : 'sigi Gram.t ));
                    `Snterm (Gram.obj (semi : 'semi Gram.t ))],
                     (Gram.mk_action
-                       (fun _  (sg : 'sigi)  (_loc : FanLoc.t)  ->
+                       (fun _  (sg : 'sigi)  (_loc : FLoc.t)  ->
                           (sg : 'e__1 ))))])
 
    `Slist0sep
@@ -112,22 +112,22 @@ val mk_srules :
                        (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
                       (Gram.mk_action
                          (fun (y : 'dot_lstrings)  _ 
-                            (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                            (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                             match __fan_0 with
                             | `Lid x ->
-                                (((x : string ), (FanToken.resolve_name y)) : 
+                                (((x : string ), (FToken.resolve_name y)) : 
                                 'e__2 )
                             | _ -> assert false)));
                    ([`Stoken
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
                      (Gram.mk_action
-                        (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t) 
+                        (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t) 
                            ->
                            match __fan_0 with
                            | `Lid x ->
                                (((x : string ),
-                                  (FanToken.resolve_name ((`Sub []), x))) : 
+                                  (FToken.resolve_name ((`Sub []), x))) : 
                                'e__2 )
                            | _ -> assert false)))]), (`Skeyword ";"))
    `Snext

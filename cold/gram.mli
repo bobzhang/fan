@@ -1,5 +1,5 @@
 open LibUtil
-open FanToken
+open FToken
   
 type 'a t = 'a Gentry.t
 
@@ -12,14 +12,14 @@ type position =
     | `Last
     | `Level of string ]
       
-(* type token_stream = (FanToken.token * FanLoc.t) XStream.t *)
+(* type token_stream = (FToken.token * FLoc.t) XStream.t *)
 val filter: stream -> stream      
 type gram =
   Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
   gkeywords :  SSet.t ref (* int SMap.t *) (* (string, int ref) Hashtbl.t *);
-  (* glexer : FanLoc.t -> char XStream.t -> FanToken.stream ; *)
+  (* glexer : FLoc.t -> char XStream.t -> FToken.stream ; *)
 }
 
 module Action :
@@ -37,7 +37,7 @@ type description = [ `Antiquot | `Normal ]
 
 type descr = description * string
 
-type token_pattern = (FanToken.t -> bool) * descr
+type token_pattern = (FToken.t -> bool) * descr
 
 type entry = Gstructure.entry 
 and desc = Gstructure.desc
@@ -85,7 +85,7 @@ val clear: 'a t -> unit
 
 val mk_action: 'a -> Action.t
 
-val string_of_token:[> FanToken.t ] -> string
+val string_of_token:[> FToken.t ] -> string
 
 val obj: 'a t -> entry         
 val repr: entry -> 'a t
@@ -106,20 +106,20 @@ val of_parser:  string ->  (stream -> 'a) ->  'a t
 
 val get_filter: unit -> FanTokenFilter.t
 
-val lex: FanLoc.t -> char XStream.t -> (FanToken.t * FanLoc.t) XStream.t
+val lex: FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
 
-val lex_string: FanLoc.t -> string -> (FanToken.t * FanLoc.t) XStream.t
+val lex_string: FLoc.t -> string -> (FToken.t * FLoc.t) XStream.t
 
 
-val parse:  'a t -> FanLoc.t -> char XStream.t -> 'a
+val parse:  'a t -> FLoc.t -> char XStream.t -> 'a
 
-val parse_string:  ?loc:FanLoc.t -> 'a t  -> string -> 'a
+val parse_string:  ?loc:FLoc.t -> 'a t  -> string -> 'a
       
-val debug_origin_token_stream: 'a t -> FanToken.t XStream.t -> 'a
+val debug_origin_token_stream: 'a t -> FToken.t XStream.t -> 'a
 
-val debug_filtered_token_stream: 'a t -> FanToken.t XStream.t -> 'a
+val debug_filtered_token_stream: 'a t -> FToken.t XStream.t -> 'a
 
-val parse_string_safe:  ?loc:FanLoc.t -> 'a t ->  string -> 'a
+val parse_string_safe:  ?loc:FLoc.t -> 'a t ->  string -> 'a
 
 val wrap_stream_parser: ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
 

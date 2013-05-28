@@ -6,10 +6,10 @@ let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ (ename ^ "] is empty")))
 
 let get_cur_loc strm =
-  match XStream.peek strm with | Some (_,r) -> r | None  -> FanLoc.ghost
+  match XStream.peek strm with | Some (_,r) -> r | None  -> FLoc.ghost
 
 let get_prev_loc strm =
-  match XStream.get_last strm with | Some (_,l) -> l | None  -> FanLoc.ghost
+  match XStream.get_last strm with | Some (_,l) -> l | None  -> FLoc.ghost
 
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false

@@ -94,7 +94,7 @@ let as_cset = function
    | `Lid x -> begin (* FIXME token with location *)
        try Hashtbl.find named_regexps x
        with Not_found ->
-         let p = FanLoc.start_pos _loc in begin
+         let p = FLoc.start_pos _loc in begin
            Printf.eprintf "File \"%s\", line %d, character %d:\n\
             Reference to unbound regexp name `%s'.\n" p.Lexing.pos_fname p.Lexing.pos_lnum
            (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;

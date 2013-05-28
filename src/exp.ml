@@ -16,7 +16,7 @@ open FanUtil
         
 let substp loc env =
   let bad_pat _loc =
-    FanLoc.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
+    FLoc.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     | {| $e1 $e2 |} -> {@loc| $(loop e1) $(loop e2) |} 
@@ -56,8 +56,8 @@ class subst loc env =  object
     | {| LOCATION_OF $lid:x |} | {| LOCATION_OF $uid:x |} as e ->
           (try
             let loc = loc_of (List.assoc x env) in
-            let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-            {| FanLoc.of_tuple
+            let (a, b, c, d, e, f, g, h) = FLoc.to_tuple loc in
+            {| FLoc.of_tuple
               ($`str:a, $`int:b, $`int:c, $`int:d,
                $`int:e, $`int:f, $`int:g,
                $(if h then {| true |} else {| false |} )) |}
@@ -118,7 +118,7 @@ end
   
 
 
-(* let _loc = FanLoc.ghost  *)
+(* let _loc = FLoc.ghost  *)
 
 (* let mk_record label_exps : exp= *)
 (*   let rec_exps = *)

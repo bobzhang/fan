@@ -142,7 +142,7 @@ let add_production ((gsymbols,(annot,action)) : production) tree =
              Node { x with brother = (insert [] brother) }
          | LocAct (old_action,action_list) ->
              begin
-               if FanConfig.gram_warning_verbose.contents
+               if FConfig.gram_warning_verbose.contents
                then
                  eprintf
                    "<W> Grammar extension: in @[%a@] some rule has been masked@."

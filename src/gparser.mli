@@ -1,21 +1,21 @@
 open Gstructure
 
-open FanToken
+open FToken
     
-val with_loc: 'b parse -> ('b*FanLoc.t) parse
+val with_loc: 'b parse -> ('b*FLoc.t) parse
 
 
 val level_number: entry -> string -> int
 
 val parser_of_tree:
-    entry -> int * assoc -> (Gaction.t * FanLoc.t) Stack.t ->  tree ->
-      (Gaction.t * FanLoc.t) parse
+    entry -> int * assoc -> (Gaction.t * FLoc.t) Stack.t ->  tree ->
+      (Gaction.t * FLoc.t) parse
 
 val parser_of_terminals:
-    terminal list -> (Gaction.t * FanLoc.t) list  parse
+    terminal list -> (Gaction.t * FLoc.t) list  parse
 
 val parser_of_symbol:
-    entry ->  symbol -> int  -> (Gaction.t * FanLoc.t) parse
+    entry ->  symbol -> int  -> (Gaction.t * FLoc.t) parse
     
 
 val start_parser_of_levels: entry -> level list -> int -> Gaction.t parse 

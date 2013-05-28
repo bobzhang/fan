@@ -34,7 +34,7 @@ let map_to_string (ident:vid) =  with ident'
           (* | {| ($a $b) |} -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end") *)
     | {| $lid:x |} -> x ^ acc
     | {| $uid:x |} -> String.lowercase x ^ acc
-    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t) in 
+    | t -> FLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_vid t) in 
   aux ident ""
 
 let to_string (ident:ident) = with ident'
@@ -44,7 +44,7 @@ let to_string (ident:ident) = with ident'
     | `Apply(_,a,b) -> ("app_" ^(aux a ( "_to_" ^ aux b acc)) ^ "_end")
     | {| $lid:x |} -> x ^ acc
     | {| $uid:x |} -> String.lowercase x ^ acc
-    | t -> FanLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in 
+    | t -> FLoc.errorf (loc_of t) "map_to_string: %s" (Objs.dump_ident t) in 
   aux ident ""
 
 let rec to_vid   (x:ident) : vid =
@@ -79,7 +79,7 @@ let ident_map f (x:vid) = with ident'
       | [ q; {| $lid:y |} ] ->
         {| $q.$(lid: f y) |}
       | _ ->
-          FanLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_vid x)
+          FLoc.errorf (loc_of x) "ident_map: %s" (Objs.dump_vid x)
 
 (* the same as [ident_map] except f is of type
    [string -> ident ]
@@ -94,5 +94,5 @@ let ident_map_of_ident f x  : vid =
       let l = List.length ls in
       match List.drop (l-2) ls with
       | [ q; {|$lid:y|} ] -> {|$q.$(f y) |}
-      | _ -> FanLoc.errorf (loc_of x) "ident_map_of_ident: %s" (Objs.dump_vid x)
+      | _ -> FLoc.errorf (loc_of x) "ident_map_of_ident: %s" (Objs.dump_vid x)
     

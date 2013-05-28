@@ -2,16 +2,16 @@ open Gstructure
 
 open LibUtil
 
-open FanToken
+open FToken
 
 let with_loc (parse_fun : 'b parse) strm =
   let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
   let loc =
-    let start_off_bp = FanLoc.start_off bp in
-    let stop_off_ep = FanLoc.stop_off ep in
-    if start_off_bp > stop_off_ep then FanLoc.join bp else FanLoc.merge bp ep in
+    let start_off_bp = FLoc.start_off bp in
+    let stop_off_ep = FLoc.stop_off ep in
+    if start_off_bp > stop_off_ep then FLoc.join bp else FLoc.merge bp ep in
   (x, loc)
 
 let level_number entry lab =
@@ -29,7 +29,7 @@ let level_number entry lab =
 module ArgContainer = Stack
 
 let rec parser_of_tree entry (lev,assoc)
-  (q : (Gaction.t * FanLoc.t) ArgContainer.t) x =
+  (q : (Gaction.t * FLoc.t) ArgContainer.t) x =
   let alevn = match assoc with | `LA|`NA -> lev + 1 | `RA -> lev in
   let rec from_tree tree =
     match tree with
@@ -124,7 +124,7 @@ and parser_of_terminals (terminals : terminal list) strm =
                 not
                   (match terminal with
                    | `Stoken (f,_) -> f t
-                   | `Skeyword kwd -> FanToken.match_keyword kwd t)
+                   | `Skeyword kwd -> FToken.match_keyword kwd t)
               then invalid_arg "parser_of_terminals"
             end) terminals
      with | Invalid_argument _ -> raise XStream.Failure);
@@ -162,7 +162,7 @@ and parser_of_symbol entry s nlevn =
     | `Skeyword kwd ->
         (fun strm  ->
            match XStream.peek strm with
-           | Some (tok,_) when FanToken.match_keyword kwd tok ->
+           | Some (tok,_) when FToken.match_keyword kwd tok ->
                begin XStream.junk strm; Gaction.mk tok end
            | _ -> raise XStream.Failure)
     | `Stoken (f,_) ->
@@ -223,7 +223,7 @@ let rec continue_parser_of_levels entry clevn =
                  with
                  | XStream.Failure  ->
                      let (act,loc) = ccontinue strm in
-                     let loc = FanLoc.merge bp loc in
+                     let loc = FLoc.merge bp loc in
                      let a = Gaction.getf2 act a loc in
                      entry.econtinue levn loc a strm)))
 

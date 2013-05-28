@@ -77,7 +77,7 @@ let register_bin_printer () =
       (with_open_out_file
                  output_file
                  (dump_pt
-                    FanConfig.ocaml_ast_intf_magic_number input_file pt)) in
+                    FConfig.ocaml_ast_intf_magic_number input_file pt)) in
   let print_implem ?(input_file = "-") ?output_file ast =
     let pt =
       match ast with
@@ -85,7 +85,7 @@ let register_bin_printer () =
       |Some ast -> Ast2pt.stru ast in
     with_open_out_file
       output_file
-      (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt) in
+      (dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt) in
   begin
     stru_printer := print_implem;
     sigi_printer := print_interf
@@ -111,7 +111,7 @@ let wrap directive_handler pa init_loc cs =
               match directive_handler x with
               | None -> xs
               | Some x -> x :: xs in
-        List.rev pl @ (loop (FanLoc.join_end new_loc))
+        List.rev pl @ (loop (FLoc.join_end new_loc))
     | None -> pl in
   loop init_loc
     
@@ -134,8 +134,8 @@ let parse_interf ?(directive_handler = fun _ -> None) loc cs =
   | l -> Some (AstLib.sem_of_list l)
 
 let parse_file  ?directive_handler name pa = begin 
-  let loc = FanLoc.mk name in
-  let print_warning = eprintf "%a:\n%s@." FanLoc.print in
+  let loc = FLoc.mk name in
+  let print_warning = eprintf "%a:\n%s@." FLoc.print in
   let  () = Syntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
@@ -157,14 +157,14 @@ end
 
 let wrap parse_fun ~print_location lb =
   try
-    let token_stream = lb |> FanLexUtil.from_lexbuf |> Gram.filter in
+    let token_stream = lb |> FLexLib.from_lexbuf |> Gram.filter in
     match token_stream with parser (* FIXME *)
     |  (`EOI, _)  -> raise End_of_file
     |  -> parse_fun token_stream 
   with
-  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+  | End_of_file | Sys.Break | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
-  | (FanLoc.Exc_located (loc, y) ) -> begin
+  | (FLoc.Exc_located (loc, y) ) -> begin
       Format.eprintf "@[<0>%a%s@]@." print_location loc (Printexc.to_string y);
       raise Exit; (* commuiniation with toplevel special case here*)
   end
@@ -191,7 +191,7 @@ let use_file token_stream =
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | [ {| #default_quotation $str:s |} ] ->
-            begin AstQuotation.set_default (FanToken.resolve_name (`Sub [],s)); loop () end 
+            begin AstQuotation.set_default (FToken.resolve_name (`Sub [],s)); loop () end 
         | _ -> (pl, false) 
       else (pl, true) in
   let (pl0, eoi) = loop () in

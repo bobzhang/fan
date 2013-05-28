@@ -151,7 +151,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
     | `Stry _|`Speek _|`Sopt _|`Stree _ -> txt ^ " expected"
     | _ -> txt ^ (" expected after " ^ (name_of_symbol entry prev_symb)) in
   begin
-    if FanConfig.verbose.contents
+    if FConfig.verbose.contents
     then
       (let tree = tree_in_entry prev_symb tree entry.edesc in
        let f = err_formatter in

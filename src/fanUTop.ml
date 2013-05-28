@@ -7,8 +7,8 @@ let print_fan_error pp exn =
 let get_fan_error_message exn =
   let (loc, exn) =
     match exn with
-    | FanLoc.Exc_located (loc, exn) ->
-        ((FanLoc.start_off loc, FanLoc.stop_off loc), exn)
+    | FLoc.Exc_located (loc, exn) ->
+        ((FLoc.start_off loc, FLoc.stop_off loc), exn)
     | exn -> ((0, 0), exn)  in
   let msg = UTop.get_message print_fan_error exn in
   let idx = ref (String.length msg - 1) in
@@ -28,16 +28,16 @@ let revise_parser str _bol =
   let eof = ref false in
   let lexbuf = UTop.lexbuf_of_string eof  str in
   try
-    let not_filtered_token_stream = FanLexUtil.from_lexbuf lexbuf in
+    let not_filtered_token_stream = FLexLib.from_lexbuf lexbuf in
     let token_stream = Gram.filter not_filtered_token_stream in
     match XStream.peek token_stream with
     | Some (`EOI,_) -> (XStream.junk token_stream;raise End_of_file)
     | _ -> UTop.Value (toplevel_phrase token_stream) 
   with
-  | End_of_file | Sys.Break | (FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x
+  | End_of_file | Sys.Break | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x
       ->
         raise x
-  |(FanLoc.Exc_located(_loc,y)) ->
+  |(FLoc.Exc_located(_loc,y)) ->
         (UTop.Error ([(0,0)],Printexc.to_string y))
   
 

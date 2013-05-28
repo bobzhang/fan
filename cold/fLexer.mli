@@ -22,7 +22,7 @@ type lex_error =
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
 type context =
-    { loc        : FanLoc.position ;
+    { loc        : FLoc.position ;
       antiquots  : bool ;
       lexbuf     : lexbuf ;
       buffer     : Buffer.t }
@@ -36,16 +36,16 @@ val show_stack: unit -> unit
 val mk_quotation:
   (context -> Lexing.lexbuf -> 'a) ->
   context ->
-  name:FanToken.name ->
+  name:FToken.name ->
   loc:string ->
-  shift:int -> retract:int -> [> `QUOTATION of FanToken.quotation ]
+  shift:int -> retract:int -> [> `QUOTATION of FToken.quotation ]
 val update_loc:
   ?file:string ->
   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit
-val err: lex_error -> FanLoc.t -> 'a
-val warn: lex_error -> FanLoc.t -> unit
+val err: lex_error -> FLoc.t -> 'a
+val warn: lex_error -> FLoc.t -> unit
 
-val token: context ->  Lexing.lexbuf ->  [> FanToken.t ]
+val token: context ->  Lexing.lexbuf ->  [> FToken.t ]
 
 val comment: context -> Lexing.lexbuf -> unit
 

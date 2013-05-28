@@ -93,14 +93,14 @@ let show_stack () = begin
 end
 
 type context =
-    { loc        :  FanLoc.position ;
+    { loc        :  FLoc.position ;
      (* only record the start position when enter into a quotation or antiquotation*)
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }
       
 let default_context lb =
-  { loc        = FanLoc.dummy_pos ;
+  { loc        = FLoc.dummy_pos ;
     antiquots  = false     ;
     lexbuf     = lb        ;
     buffer     = Buffer.create 256 }
@@ -115,7 +115,7 @@ let buff_contents c =
   (Buffer.reset c.buffer; contents)
     
 let loc_merge c =
-  FanLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
+  FLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
 
 
 (* update the lexing position to the loc
@@ -128,7 +128,7 @@ let move_curr_p shift c =
   c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
 
 let move_start_p shift c =
-  c.lexbuf.lex_start_p <- FanLoc.move_pos shift c.lexbuf.lex_start_p
+  c.lexbuf.lex_start_p <- FLoc.move_pos shift c.lexbuf.lex_start_p
       
 (* create a new context with  the location of the context for the lexer
    the old context was kept *)      
@@ -146,7 +146,7 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let s =
     (with_curr_loc quotation c; c.lexbuf.lex_start_p<-old(* c.loc *);buff_contents c;) in
   let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION {FanToken.q_name     = name     ;
+  `QUOTATION {FToken.q_name     = name     ;
               q_loc      = loc      ;
               q_shift    = shift    ;
               q_contents = contents }
@@ -167,10 +167,10 @@ let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
       pos_lnum = if absolute then line else pos.pos_lnum + line;
       pos_bol = pos.pos_cnum - retract;}
 	
-let err (error:lex_error) (loc:FanLoc.t) =
-  raise(FanLoc.Exc_located(loc, Lexing_error error))
+let err (error:lex_error) (loc:FLoc.t) =
+  raise(FLoc.Exc_located(loc, Lexing_error error))
 let warn error loc =
-  Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error;;
+  Format.eprintf "Warning: %a: %a@." FLoc.print loc print_lex_error error;;
 
 {:regexp|
 
@@ -268,7 +268,7 @@ let rec string c = {:lexer|
   | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  store_parse string c 
   | '\\' 'x' hexa_char hexa_char ->  store_parse string c 
   | '\\' (_ as x) ->
-      (warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
+      (warn (Illegal_escape (String.make 1 x)) (FLoc.of_lexbuf lexbuf);
         store_parse string c)
   | newline ->
       begin
@@ -285,18 +285,18 @@ let rec   maybe_quotation_at c  = {:lexer|
       begin
         move_start_p (-2) c;
         Stack.push p opt_char;
-        mk_quotation quotation c ~name:(FanToken.empty_name) ~loc
+        mk_quotation quotation c ~name:(FToken.empty_name) ~loc
            ~shift:(2 + 1 + String.length loc + (opt_char_len p))
            ~retract:(2 + opt_char_len p)
       end
   | _ as c  ->
-      err (Illegal_quotation (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)
+      err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
 |}
 
 and maybe_quotation_colon c = {:lexer|
   | (quotation_name as name)  '|' (extra_quot as p)?  ->
       let len = String.length name in
-      let name = FanToken.resolve_name (FanToken.name_of_string name) in
+      let name = FToken.resolve_name (FToken.name_of_string name) in
       begin
         move_start_p (-2) c;
         Stack.push p opt_char;
@@ -307,7 +307,7 @@ and maybe_quotation_colon c = {:lexer|
 
   | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)?  ->
        let len = String.length name in 
-       let name = FanToken.resolve_name (FanToken.name_of_string name) in
+       let name = FToken.resolve_name (FToken.name_of_string name) in
        begin
         move_start_p (-2) c ;
         Stack.push p opt_char;
@@ -318,7 +318,7 @@ and maybe_quotation_colon c = {:lexer|
    
   |  _ as c ->
        err (Illegal_quotation (String.make 1 c))
-        (FanLoc.of_lexbuf lexbuf) 
+        (FLoc.of_lexbuf lexbuf) 
 |}
 
 (*
@@ -339,17 +339,17 @@ and dollar c = {:lexer|
   | '(' ('`'? (identchar* |['.' '!']+) as name) ':' ->
 
       antiquot name 0
-        {c with loc = FanLoc.move_pos (3+String.length name) c.loc}
+        {c with loc = FLoc.move_pos (3+String.length name) c.loc}
         c.lexbuf
   | '(' ->
-       antiquot "" 0 {c with loc = FanLoc.move_pos  2 c.loc} c.lexbuf 
+       antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} c.lexbuf 
   | _ as c ->
-       err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
+       err (Illegal_character c) (FLoc.of_lexbuf lexbuf) 
 |}        
 (* depth makes sure the parentheses are balanced *)
 and antiquot name depth c  = {:lexer|
   | ')' ->
-      if depth = 0 then (* only cares about FanLoc.start_pos *)
+      if depth = 0 then (* only cares about FLoc.start_pos *)
         (set_start_p c ; `Ant(name, buff_contents c))
       else store_parse (antiquot name (depth-1)) c
   | '('    ->  store_parse (antiquot name (depth+1)) c
@@ -434,10 +434,10 @@ let token c = {:lexer|
         |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
         | _  -> `INT (- int_of_string ("-" ^ s),s) in 
       (try cvt_int_literal x with
-        Failure _ -> err (Literal_overflow x) (FanLoc.of_lexbuf lexbuf))
+        Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf))
   | float_literal as f -> 
        (try  `Flo(float_of_string f, f) with
-         Failure _ -> err (Literal_overflow f) (FanLoc.of_lexbuf lexbuf)) 
+         Failure _ -> err (Literal_overflow f) (FLoc.of_lexbuf lexbuf)) 
   | '"' -> ( with_curr_loc string c;
              let s = buff_contents c in `STR (TokenEval.string s, s))
   | "'" (newline as x) "'" ->
@@ -446,16 +446,16 @@ let token c = {:lexer|
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
       -> (`CHAR (TokenEval.char x, x))
   | "'\\" (_ as c) -> 
-           (err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf))         
+           (err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf))         
   | "(*" ->
       (store c;
        let old = c.lexbuf.lex_start_p in 
        `COMMENT((with_curr_loc comment c;  c.lexbuf.lex_start_p <-old; buff_contents c)))
   | "(*)" -> 
-           ( warn Comment_start (FanLoc.of_lexbuf lexbuf) ;
+           ( warn Comment_start (FLoc.of_lexbuf lexbuf) ;
               comment c c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
-           ( warn Comment_not_end (FanLoc.of_lexbuf lexbuf) ;
+           ( warn Comment_not_end (FLoc.of_lexbuf lexbuf) ;
              move_curr_p (-1) c; `SYMBOL "*")
   | "{<" as s -> `SYMBOL s
   | ">}" as s -> `SYMBOL s
@@ -464,9 +464,9 @@ let token c = {:lexer|
        Stack.push p opt_char;
        let len = 2 + opt_char_len p in 
        mk_quotation
-         quotation c ~name:(FanToken.empty_name) ~loc:"" ~shift:len ~retract:len)
+         quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
-           `QUOTATION { FanToken.q_name =FanToken.empty_name ;
+           `QUOTATION { FToken.q_name =FToken.empty_name ;
                              q_loc = ""; q_shift = 2; q_contents = "" }
   | "{@"  ->   with_curr_loc maybe_quotation_at c
   | "{:"  ->
@@ -486,7 +486,7 @@ let token c = {:lexer|
   | '$' ->
       if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c
-      else err Illegal_antiquote (FanLoc.of_lexbuf lexbuf)
+      else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
       `SYMBOL x 
@@ -497,7 +497,7 @@ let token c = {:lexer|
           pos_cnum = pos.pos_cnum + 1 };
        `EOI)
 
-  | _ as c ->  err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) 
+  | _ as c ->  err (Illegal_character c) (FLoc.of_lexbuf lexbuf) 
 |}
 
      

@@ -30,9 +30,9 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_exp_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_exp )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_exp_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_exp )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
                (Gram.mk_action
-                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with
                      | `Lid x ->
                          ((try Hashtbl.find inject_exp_tbl x
@@ -49,9 +49,9 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_stru_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_stru )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_stru_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_stru )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
                (Gram.mk_action
-                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with
                      | `Lid x ->
                          ((try Hashtbl.find inject_stru_tbl x
@@ -68,9 +68,9 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Gram.mk_action\n  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_clfield_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_clfield )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("Gram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_clfield_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_clfield )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
                (Gram.mk_action
-                  (fun (__fan_0 : [> FanToken.t])  (_loc : FanLoc.t)  ->
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with
                      | `Lid x ->
                          ((try Hashtbl.find inject_clfield_tbl x

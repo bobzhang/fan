@@ -1,21 +1,21 @@
 
 open FAst
 open AstLib
-open FanGrammar
+open FGramDef
 open FanGrammarTools
 open Syntax
 open LibUtil
 open FanUtil
 
 
-FanConfig.antiquotations := true;;
+FConfig.antiquotations := true;;
 
 
 
 {:create|Gram (nonterminals: stru Gram.t) (nonterminalsclear:  exp Gram.t)
   delete_rule_header extend_header  (qualuid : vid Gram.t) (qualid:vid Gram.t)
   (t_qualid:vid Gram.t )
-  (entry_name : ([`name of FanToken.name | `non] * FanGrammar.name) Gram.t )
+  (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Gram.t )
   locals entry position assoc name string
   rules
 
@@ -26,7 +26,7 @@ FanConfig.antiquotations := true;;
   psymbol
   level
   level_list
-  (entry: FanGrammar.entry Gram.t)
+  (entry: FGramDef.entry Gram.t)
 
   (pattern: action_pattern Gram.t )
   extend_body
@@ -137,7 +137,7 @@ FanConfig.antiquotations := true;;
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> 
     (match name with
     | Some x -> (let old = !AstQuotation.default in
-      (AstQuotation.default:= FanToken.resolve_name (`Sub [], x);
+      (AstQuotation.default:= FToken.resolve_name (`Sub [], x);
        `name old))
     | None -> `non, mk_name _loc il)
   ]
@@ -309,29 +309,29 @@ end;;
 (*
   AstQuotation.add_quotation
   (d,"rule") rule
-  ~mexp:FanGrammar.Exp.meta_rule
-  ~mpat:FanGrammar.Pat.meta_rule
+  ~mexp:FGramDef.Exp.meta_rule
+  ~mpat:FGramDef.Pat.meta_rule
   ~exp_filter:(fun x-> (x :ep :>exp))
   ~pat_filter:(fun x->(x : ep :> pat));
 
   AstQuotation.add_quotation
   (d,"entry") entry
-  ~mexp:FanGrammar.Expr.meta_entry
-  ~mpat:FanGrammar.Patt.meta_entry
+  ~mexp:FGramDef.Expr.meta_entry
+  ~mpat:FGramDef.Patt.meta_entry
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
   AstQuotation.add_quotation
   (d,"level") level
-  ~mexp:FanGrammar.Expr.meta_level
-  ~mpat:FanGrammar.Patt.meta_level
+  ~mexp:FGramDef.Expr.meta_level
+  ~mpat:FGramDef.Patt.meta_level
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
   AstQuotation.add_quotation
   (d,"symbol") psymbol
-  ~mexp:FanGrammar.Expr.meta_symbol
-  ~mpat:FanGrammar.Patt.meta_symbol
+  ~mexp:FGramDef.Expr.meta_symbol
+  ~mpat:FGramDef.Patt.meta_symbol
   ~exp_filter:(fun x -> (x :ep :>exp))
   ~pat_filter:(fun x->  (x :ep :>pat));
  *)  
@@ -341,17 +341,17 @@ end;;
 
 
 
-(* let _loc = FanLoc.ghost; *)
+(* let _loc = FLoc.ghost; *)
 (* let u : FanGrammar.entry= {:entry| *)
 (*   simple_exp: *)
 (*   [ a_lident{i} -> {:exp| $(id:(i:>ident)) |} *)
 (*   | "("; exp{e}; ")" -> e ] *)
 (* |};   *)
-(* let u : FanGrammar.rule = {:rule| *)
+(* let u : FGramDef.rule = {:rule| *)
 (*   a_lident{i} -> print_string i *)
 (* |};   *)
 
-(* let u : FanGrammar.symbol = {:symbol| *)
+(* let u : FGramDef.symbol = {:symbol| *)
 (*   "x" *)
 (* |}; *)
 

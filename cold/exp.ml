@@ -8,7 +8,7 @@ open FanUtil
 
 let substp loc env =
   let bad_pat _loc =
-    FanLoc.errorf _loc
+    FLoc.errorf _loc
       "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x : exp) =
     match x with
@@ -48,12 +48,11 @@ class subst loc env =
         |(`App (_loc,`Uid (_,"LOCATION_OF"),`Uid (_,x)) : FAst.exp) as e ->
           (try
              let loc = loc_of (List.assoc x env) in
-             let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
+             let (a,b,c,d,e,f,g,h) = FLoc.to_tuple loc in
              (`App
                 (_loc,
                   (`Dot
-                     (_loc, (`Uid (_loc, "FanLoc")),
-                       (`Lid (_loc, "of_tuple")))),
+                     (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "of_tuple")))),
                   (`Par
                      (_loc,
                        (`Com

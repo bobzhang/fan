@@ -3,13 +3,13 @@
 (** Internal: Utilities for Fan's grammar *)  
 open Gstructure
   
-open FanToken
+open FToken
 
 val empty_entry: string -> 'a -> 'b
 
-val get_cur_loc:  stream -> FanLoc.t
+val get_cur_loc:  stream -> FLoc.t
        
-val get_prev_loc:  stream -> FanLoc.t
+val get_prev_loc:  stream -> FLoc.t
         
 val is_level_labelled:  string -> level -> bool
         

@@ -62,7 +62,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
   | `Par t  -> 
     let ls = list_of_star t [] in
     let len = List.length ls in
-    let pat = (EPN.mk_tuple ~arity ~number:len :> pat) in
+    let pat = (EpN.mk_tuple ~arity ~number:len :> pat) in
     let tys =
       mk_tuple
         (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
@@ -144,7 +144,7 @@ let exp_of_ctyp
     let args_length = List.length tyargs in  (* ` is not needed here *)
     let p : pat =
       (* calling gen_tuple_n*)
-      (EPN.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
+      (EpN.gen_tuple_n ?cons_transform ~arity  cons args_length :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -169,7 +169,7 @@ let exp_of_variant ?cons_transform
     simple_exp_of_ctyp ~result ty =
   let f (cons,tyargs) :  case=
     let len = List.length tyargs in
-    let p = (EPN.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
+    let p = (EpN.gen_tuple_n ?cons_transform ~arity cons len :> pat) in
     let mk (cons,tyargs) =
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
@@ -232,7 +232,7 @@ let fun_of_tydcl
          begin match repr with
          | `Record t ->       
            let cols =  CtypN.list_of_record t  in
-           let pat = (EPN.mk_record ~arity  cols  :> pat)in
+           let pat = (EpN.mk_record ~arity  cols  :> pat)in
            let info =
              List.mapi
                (fun i x ->  match x with
@@ -463,7 +463,7 @@ let gen_stru
         `Last (fun s -> {:ident-'| $uid:m.$(lid:basic_transform id s) |} )  in
   let default (_,number)=
     if number > 1 then
-      let pat = (EPN.tuple_of_number `Any  arity :> pat) in 
+      let pat = (EpN.tuple_of_number `Any  arity :> pat) in 
       Some {:case-| $pat:pat -> $default |}
     else None in
   let names = names in
@@ -508,7 +508,7 @@ let gen_object
       `Obj (basic_transform left_type_id) in
     let default (_,number)=
       if number > 1 then
-        let pat = (EPN.tuple_of_number `Any arity :> pat)in 
+        let pat = (EpN.tuple_of_number `Any arity :> pat)in 
         Some {:case-| $pat:pat -> $default |}
       else None in
     obj_of_mtyps

@@ -18,9 +18,9 @@ let ldot l s = Ldot (l, s)
 
 let lapply l s = Lapply (l, s)
 
-let mkghloc loc = FanLoc.ghostify loc
+let mkghloc loc = FLoc.ghostify loc
 
-let error loc str = FanLoc.raise loc (Failure str)
+let error loc str = FLoc.raise loc (Failure str)
 
 let mksig loc d = { psig_desc = d; psig_loc = loc }
 
@@ -55,7 +55,7 @@ let mkpolytype t =
 
 let array_function_no_loc str name =
   ldot (lident str)
-    (if FanConfig.unsafe.contents then "unsafe_" ^ name else name)
+    (if FConfig.unsafe.contents then "unsafe_" ^ name else name)
 
 let array_function loc str name =
   with_loc (array_function_no_loc str name) loc

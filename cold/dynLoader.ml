@@ -22,8 +22,8 @@ let load file =
     else ();
     ((try
         let fname =
-          Filename.find_in_path ~path:("." :: FanConfig.fan_standard_library
-            :: (FanConfig.dynload_dirs.contents)) file in
+          Filename.find_in_path ~path:("." :: FConfig.fan_standard_library ::
+            (FConfig.dynload_dirs.contents)) file in
         fun ()  ->
           try Dynlink.loadfile fname
           with

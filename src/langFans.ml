@@ -29,12 +29,12 @@ fan_quot:
   | "unload"; L1 [`Lid x  -> x | `Uid x -> x ] SEP ","{plugins} ->
       (List.iter Typehook.plugin_remove plugins ; {|() |})
   | "clear" ->
-      (FanState.reset_current_filters(); {|()|})
+      (FState.reset_current_filters(); {|()|})
         (* begin Hashtbl.iter (fun _  v -> v.activate <- false) filters; {| |} end *)
   | "keep" ; "on" ->
-      (FanState.keep := true; {|() |})
+      (FState.keep := true; {|() |})
   | "keep" ; "off" -> 
-      (FanState.keep := false; {| ()|})
+      (FState.keep := false; {| ()|})
   | "show_code"; "on" ->
       (Typehook.show_code := true; {| () |})
   | "show_code"; "off" ->
@@ -48,8 +48,8 @@ fan_quot:
 begin 
   Syntax.Options.add
     ("-keep",
-     (FanArg.Set FanState.keep), "Keep the included type definitions") ;
+     (FArg.Set FState.keep), "Keep the included type definitions") ;
   Syntax.Options.add
     ("-loaded-plugins",
-     (FanArg.Unit Typehook.show_modules), "Show plugins");
+     (FArg.Unit Typehook.show_modules), "Show plugins");
 end;;

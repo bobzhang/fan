@@ -29,7 +29,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
             match AstQuotation.current_loc_name.contents with
             | Some "here" -> AstLib.meta_here _loc loc
             | x ->
-                let x = Option.default FanLoc.name.contents x in
+                let x = Option.default FLoc.name.contents x in
                 (`Lid (_loc, x) : FAst.exp ) in
           let mloc _loc = meta_loc_exp _loc _loc in
           let e = parse_exp _loc code in

@@ -166,9 +166,9 @@ let _ = begin
     ~pat_filter:(pfilter "row_field");
   of_exp ~name:(d, "with_exp") ~entry:with_exp_lang;
   of_stru ~name:(d, "with_stru") ~entry:with_stru_lang;
-  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.exp_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
-  add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.stru_tag
+  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 end
 ;;

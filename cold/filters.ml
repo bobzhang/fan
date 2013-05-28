@@ -5,7 +5,7 @@ open FAst
 open AstLib
 
 let meta =
-  object  inherit  FanMeta.meta method! loc _loc _ = lid _loc "loc" end
+  object  inherit  FMeta.meta method! loc _loc _ = lid _loc "loc" end
 
 let _ =
   AstFilters.register_stru_filter
@@ -20,22 +20,21 @@ let _ =
                    (`Bind
                       (_loc, (`Lid (_loc, "loc")),
                         (`Dot
-                           (_loc, (`Uid (_loc, "FanLoc")),
+                           (_loc, (`Uid (_loc, "FLoc")),
                              (`Lid (_loc, "ghost")))))), e))) : FAst.stru )))
 
 let _ =
   AstFilters.register_stru_filter
-    ("strip", (((new Objs.reloc) FanLoc.ghost)#stru))
+    ("strip", (((new Objs.reloc) FLoc.ghost)#stru))
 
 let map_exp =
   function
   | (`App (_loc,e,`Uid (_,"NOTHING")) : FAst.exp)
     |(`Fun (_loc,`Case (_,`Uid (_,"NOTHING"),e)) : FAst.exp) -> e
   | (`Lid (_loc,"__FILE__") : FAst.exp) ->
-      (`Str (_loc, (String.escaped (FanLoc.file_name _loc))) : FAst.exp )
+      (`Str (_loc, (String.escaped (FLoc.file_name _loc))) : FAst.exp )
   | (`Lid (_loc,"__PWD__") : FAst.exp) ->
-      (`Str
-         (_loc, (String.escaped (Filename.dirname (FanLoc.file_name _loc)))) : 
+      (`Str (_loc, (String.escaped (Filename.dirname (FLoc.file_name _loc)))) : 
       FAst.exp )
   | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> AstLib.meta_here _loc _loc
   | e -> e
@@ -54,21 +53,21 @@ let make_filter (s,code) =
 
 let me =
   object 
-    inherit  FanMeta.meta
+    inherit  FMeta.meta
     method! loc _loc loc =
       match AstQuotation.current_loc_name.contents with
-      | None  -> lid _loc FanLoc.name.contents
+      | None  -> lid _loc FLoc.name.contents
       | Some "here" -> meta_here _loc loc
       | Some x -> lid _loc x
   end
 
-let mp = object  inherit  FanMeta.meta method! loc _loc _ = `Any _loc end
+let mp = object  inherit  FMeta.meta method! loc _loc _ = `Any _loc end
 
 let _ =
   AstFilters.register_stru_filter
     ("serialize",
       (fun x  ->
-         let _loc = FanLoc.ghost in
+         let _loc = FLoc.ghost in
          let y = (me#stru _loc x : ep  :>exp) in
          (`Sem
             (_loc, x,

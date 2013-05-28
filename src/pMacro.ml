@@ -1,6 +1,6 @@
 
 open Syntax
-open FanMacroTools
+open FCMacroGen
 
 
 {:create|Gram
@@ -102,15 +102,15 @@ let apply () = begin
     | "`"; luident{s} -> {:pat| $vrn:s |} ] |};
   Options.add
     ("-D",
-     (FanArg.String (parse_def ~exp ~pat)  ),
+     (FArg.String (parse_def ~exp ~pat)  ),
      "<string> Define for IFDEF instruction.");
   Options.add
     ("-U",
-     (FanArg.String (undef ~exp ~pat)),
+     (FArg.String (undef ~exp ~pat)),
      "<string> Undefine for IFDEF instruction.");
   Options.add
     ("-I",
-     (FanArg.String FanBasic.add_include_dir),
+     (FArg.String FanBasic.add_include_dir),
      "<string> Add a directory to INCLUDE search path.");
 end;;
     

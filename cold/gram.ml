@@ -149,32 +149,30 @@ let of_parser name strm = of_parser gram name strm
 
 let get_filter () = gram.gfilter
 
-let token_stream_of_string s = s |> (lex_string FanLoc.string_loc)
+let token_stream_of_string s = s |> (lex_string FLoc.string_loc)
 
 let debug_origin_token_stream (entry : 'a t) tokens =
-  (parse_origin_tokens entry
-     (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens) : 'a )
+  (parse_origin_tokens entry (XStream.map (fun t  -> (t, FLoc.ghost)) tokens) : 
+  'a )
 
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (XStream.map (fun t  -> (t, FanLoc.ghost)) tokens)
+    (XStream.map (fun t  -> (t, FLoc.ghost)) tokens)
 
-let parse_string_safe ?(loc= FanLoc.string_loc)  entry s =
+let parse_string_safe ?(loc= FLoc.string_loc)  entry s =
   try parse_string entry ~loc s
   with
-  | FanLoc.Exc_located (loc,e) ->
+  | FLoc.Exc_located (loc,e) ->
       begin
-        eprintf "%s" (Printexc.to_string e); FanLoc.error_report (loc, s);
-        FanLoc.raise loc e
+        eprintf "%s" (Printexc.to_string e); FLoc.error_report (loc, s);
+        FLoc.raise loc e
       end
 
 let wrap_stream_parser p loc s =
   try p loc s
   with
-  | FanLoc.Exc_located (loc,e) ->
-      begin
-        eprintf "error: %s@." (FanLoc.to_string loc); FanLoc.raise loc e
-      end
+  | FLoc.Exc_located (loc,e) ->
+      begin eprintf "error: %s@." (FLoc.to_string loc); FLoc.raise loc e end
 
 let srules rl = `Stree (List.fold_right Ginsert.add_production rl DeadEnd)
 
@@ -197,10 +195,10 @@ let eoi_entry entry =
             [([`Snterm (obj (entry : 'entry t ));
               `Stoken
                 (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-               ("mk_action\n  (fun (__fan_1 : [> FanToken.t])  (x : 'entry)  (_loc : FanLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
+               ("mk_action\n  (fun (__fan_1 : [> FToken.t])  (x : 'entry)  (_loc : FLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
                  (mk_action
-                    (fun (__fan_1 : [> FanToken.t])  (x : 'entry) 
-                       (_loc : FanLoc.t)  ->
+                    (fun (__fan_1 : [> FToken.t])  (x : 'entry) 
+                       (_loc : FLoc.t)  ->
                        match __fan_1 with
                        | `EOI -> (x : 'entry_eoi )
                        | _ -> failwith "x\n"))))]));

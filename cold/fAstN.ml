@@ -1,6 +1,6 @@
 let _ = begin (); () end
 
-type loc = FanLoc.t 
+type loc = FLoc.t 
 
 type ant = [ `Ant of (loc * FanUtil.anti_cxt)] 
 

@@ -16,5 +16,5 @@ let filter =
           prerr_endlinef 
           "There is a printer bug\
            Our code generator may still work when Printer is broken\
-           Plz send bug report to %s" FanConfig.bug_main_address)
+           Plz send bug report to %s" FConfig.bug_main_address)
   ; code))

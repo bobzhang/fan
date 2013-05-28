@@ -79,7 +79,7 @@ let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
       appl_of_list
-        ( (EPN.of_str cons (* :> exp *)) ::
+        ( (EpN.of_str cons (* :> exp *)) ::
           (params |> List.map (fun {ep0;_} -> ep0)) ) in 
     List.fold_right
       (fun {info_exp;ep0;_} res ->
@@ -127,7 +127,7 @@ let gen_strip =
                params in
     let result =
       (appl_of_list
-         (EPN.of_str cons  :: (params' |> List.map (fun {ep0;_} -> ep0) )) :> exp)  in 
+         (EpN.of_str cons  :: (params' |> List.map (fun {ep0;_} -> ep0) )) :> exp)  in 
     List.fold_right
       (fun {info_exp=exp;ep0;ty;_} res ->
         match (ty:ctyp) with
@@ -167,7 +167,7 @@ let gen_fill =
   let mk_variant cons params =
     let result =
       (appl_of_list
-         (EPN.of_str cons ::
+         (EpN.of_str cons ::
           {:ep-|loc|} ::
           (params |> List.map (fun {ep0;_} -> ep0) )) :> exp)  in 
     List.fold_right
@@ -196,7 +196,7 @@ let gen_fill =
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
-      ({:ctyp-| FanLoc.t -> FAstN.$lid:x -> FAst.$lid:x |},
+      ({:ctyp-| FLoc.t -> FAstN.$lid:x -> FAst.$lid:x |},
        {:ctyp-|FAst.$lid:x|} ))
     ();;
 
@@ -213,7 +213,7 @@ Typehook.register
 let mk_variant cons params = 
   let len = List.length params in 
   if String.ends_with cons "Ant" then
-    (EPN.of_vstr_number "Ant" len :> exp)
+    (EpN.of_vstr_number "Ant" len :> exp)
   else
     params
     |> List.map (fun  {info_exp=exp;_} -> exp )

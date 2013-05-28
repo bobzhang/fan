@@ -82,39 +82,39 @@ let get_filter () = gram.gfilter
 (* let filter ts =  FanTokenFilter.filter gram.gfilter ts; *)
 
 let token_stream_of_string s =
-  s |>  lex_string FanLoc.string_loc
+  s |>  lex_string FLoc.string_loc
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry (XStream.map (fun t -> (t,FanLoc.ghost)) tokens)
+  parse_origin_tokens entry (XStream.map (fun t -> (t,FLoc.ghost)) tokens)
   
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry (XStream.map (fun t -> (t,FanLoc.ghost)) tokens)
+  filter_and_parse_tokens entry (XStream.map (fun t -> (t,FLoc.ghost)) tokens)
 
 (* with a special exception handler *)  
-let parse_string_safe ?(loc=FanLoc.string_loc) entry  s =
+let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
   try
     parse_string entry ~loc s
   with
-  | FanLoc.Exc_located(loc, e) -> begin
+  | FLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
-      FanLoc.error_report (loc,s);
-      FanLoc.raise loc e ;
+      FLoc.error_report (loc,s);
+      FLoc.raise loc e ;
   end 
     
 let wrap_stream_parser  p loc s =
   try p loc s
   with
-  | FanLoc.Exc_located(loc,e) -> begin
-      eprintf "error: %s@." (FanLoc.to_string loc) ;
-      FanLoc.raise loc e;
+  | FLoc.Exc_located(loc,e) -> begin
+      eprintf "error: %s@." (FLoc.to_string loc) ;
+      FLoc.raise loc e;
     end
     
 (* let parse_file_with ~rule file  = *)
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
 (*     let st = XStream.of_channel ch in  *)
-(*     parse rule (FanLoc.mk file) st *)
+(*     parse rule (FLoc.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
   
 

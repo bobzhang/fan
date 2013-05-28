@@ -18,6 +18,6 @@ let filter s =
        | _ ->
            prerr_endlinef
              "There is a printer bugOur code generator may still work when Printer is brokenPlz send bug report to %s"
-             FanConfig.bug_main_address);
+             FConfig.bug_main_address);
     code
   end

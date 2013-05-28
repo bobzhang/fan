@@ -1,4 +1,4 @@
-open FanToken
+open FToken
 
 
 type t = {
@@ -21,7 +21,7 @@ let filter x =
       (*   check_unknown_keywords tok loc *)
       (* else (); *)
       (* debug token "@[<hov 2>Lexer before filter:@ %a@ at@ %a@]@." *)
-      (*   print tok FanLoc.dump loc in *)
+      (*   print tok FLoc.dump loc in *)
       (tok, loc)
     end in
   (* let rec filter = parser *)
@@ -30,7 +30,7 @@ let filter x =
   (* let rec tracer = (\* FIXME add a debug block construct *\) parser *)
   (*   [ [< ((_tok, _loc) as x); 'xs >] -> *)
   (*       debug token "@[<hov 2>Lexer after filter:@ %a@ at@ %a@]@." *)
-  (*                   print _tok FanLoc.dump _loc in *)
+  (*                   print _tok FLoc.dump _loc in *)
   (*       [< x; 'tracer xs >] *)
   (*   | [< >] -> [< >] ] *)
   (* in fun strm -> tracer (x.filter (filter strm)); *)

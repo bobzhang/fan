@@ -1,7 +1,7 @@
 
 
 
-type t = ((string * FanLoc.t) XStream.t  * (string * FanLoc.t) Queue.t )
+type t = ((string * FLoc.t) XStream.t  * (string * FLoc.t) Queue.t )
 let mk () =
   let q = Queue.create () in
   let f _ =
@@ -13,11 +13,11 @@ let filter (_, q) =
   let rec self = parser
     |  (`COMMENT x, loc); 'xs  -> begin
         Queue.add (x, loc) q;
-        (* debug comments "add: %S at %a@\n" x FanLoc.dump loc in *)
+        (* debug comments "add: %S at %a@\n" x FLoc.dump loc in *)
         self xs
     end
     |  x; 'xs ->
-        (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
+        (* debug comments "Found %a at %a@." Token.print x FLoc.dump loc in *)
         {:stream|x;'self xs|}
     |  -> {:stream||}  in self
 

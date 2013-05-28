@@ -174,9 +174,9 @@ let _ =
       ~pat_filter:(pfilter "row_field");
     of_exp ~name:(d, "with_exp") ~entry:with_exp_lang;
     of_stru ~name:(d, "with_stru") ~entry:with_stru_lang;
-    add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.exp_tag
+    add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.exp_tag
       (fun _loc  _loc_option  s  -> `Str (_loc, s));
-    add ((`Absolute ["Fan"; "Lang"]), "str") FanDyn.stru_tag
+    add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
       (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
   end
 
@@ -189,9 +189,9 @@ let _ =
         [([`Snterm (Gram.obj (pat : 'pat Gram.t ));
           `Skeyword "when";
           `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
+           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
              (Gram.mk_action
-                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FanLoc.t)  ->
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
                    ((`Fun
                        (_loc,
                          (`Bar
@@ -201,9 +201,9 @@ let _ =
                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                    FAst.exp ) : 'p )))));
         ([`Snterm (Gram.obj (pat : 'pat Gram.t ))],
-          ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FanLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
+          ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
             (Gram.mk_action
-               (fun (p : 'pat)  (_loc : FanLoc.t)  ->
+               (fun (p : 'pat)  (_loc : FLoc.t)  ->
                   (`Fun
                      (_loc,
                        (`Bar
