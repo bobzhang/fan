@@ -214,15 +214,15 @@ let _ =
 
 let _ = of_exp ~name:(d, "p") ~entry:p
 
-open ParserRevise
+open PFan
 
-open ParserMacro
+open PMacro
 
 open PGrammar
 
-open ParserStream
+open PStream
 
-let _ = of_exp ~name:(d, "stream") ~entry:ParserStream.stream_exp
+let _ = of_exp ~name:(d, "stream") ~entry:PStream.stream_exp
 
 open AstInjection
 

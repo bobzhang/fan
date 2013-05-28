@@ -19,36 +19,38 @@ BCOLD=_build/cold
 BHOT=_build/src
 EXES=fan.byte fan.native
 
+LIBTARGETS = gram.cma gram.cmx gram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma
+BINTARGETS = fan.byte fan.native 
+
+
+STDTARGETS = fAst.cmi fAstN.cmi
+
+ICTARGETS=$(addprefix _build/cold,$(TARGETS))
 
 build:
-	$(OCAMLBUILD) cold/fan.byte cold/fan.native \
-	cold/gram.cma cold/rts.cma
+	$(OCAMLBUILD) $(addprefix cold/,$(LIBTARGETS) $(BINTARGETS))
 
 
 install:
-	ocamlfind install fan META $(BCOLD)/*.cmi $(BCOLD)/rts.cma $(BCOLD)/gram.cma
-	install -m 0755 _build/cold/fan.byte _build/cold/fan.native $(BINDIR)
-	install -m 0755 _build/src/fAst.cmi _build/src/fAstN.cmi $(LIBDIR)
-	make bininstall
+	ocamlfind install fan META $(BCOLD)/*.cmi $(addprefix _build/cold/, $(LIBTARGETS))
+	install -m 0755 $(addprefix _build/cold/, $(BINTARGETS)) $(BINDIR)
+	install -m 0755 $(addprefix _build/cold/, $(STDTARGETS)) $(LIBDIR)
+world:
+	make build
+	make uninstall
+	make install
 
 hotinstall:
-	install -m 0755 _build/src/fan.byte _build/src/fan.native $(BINDIR)
-	install -m 0755 _build/src/fAst.cmi _build/src/fAstN.cmi $(LIBDIR)
-	ocamlfind install fan META $(BHOT)/*.cmi $(BHOT)/rts.cma $(BHOT)/gram.cma
-
-
+	ocamlfind install fan META $(BHOT)/*.cmi $(addprefix _build/src, $(LIBTARGETS))
+	install -m 0755 $(addprefix _build/src/, $(BINTARGETS)) $(BINDIR)
+	install -m 0755 $(addprefix _build/src/, $(STDTARGETS)) $(LIBDIR)
 
 hotworld:
 	make hotbuild
 	make uninstall
 	make hotinstall
 hotbuild:
-	$(OCAMLBUILD) src/fan.byte src/fan.native \
-	src/gram.cma src/rts.cma
-
-
-
-TARGETS = gram.cma gram.cmx gram.cmxs rts.cma rts.cmx rts.cmxs
+	$(OCAMLBUILD) 	$(OCAMLBUILD) $(addprefix src/,$(LIBTARGETS) $(BINTARGETS))
 
 
 uninstall:
