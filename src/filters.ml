@@ -36,7 +36,7 @@ AstFilters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;
 let make_filter (s,code) =
   let f =  function
     | {:stru| $lid:s'|} when s =s' ->
-        FanAstN.fill_loc_stru _loc code
+        FanAstN.fill_stru _loc code
     | e -> e   in
   ("filter_"^s, (Objs.map_stru f )#stru)
 

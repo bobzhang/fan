@@ -102,13 +102,6 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
       FLoc.raise loc e ;
   end 
     
-let wrap_stream_parser  p loc s =
-  try p loc s
-  with
-  | FLoc.Exc_located(loc,e) -> begin
-      eprintf "error: %s@." (FLoc.to_string loc) ;
-      FLoc.raise loc e;
-    end
     
 (* let parse_file_with ~rule file  = *)
 (*   if Sys.file_exists file then *)
@@ -144,14 +137,57 @@ let find_level ?position entry =
 
 
 
+(*************************************************************************)
+(** utilities for parsing *)      
+let parse_include_file entry =
+  let dir_ok file dir = Sys.file_exists (dir ^ file) in
+  fun file ->
+    let file =
+      try (List.find (dir_ok file) ( "./" :: !FConfig.include_dirs )) ^ file
+      with | Not_found -> file  in
+    let ch = open_in file in
+    let st = XStream.of_channel ch in
+      parse entry (FLoc.mk file) st
+    
 
+let error_report (loc,s) = begin
+  prerr_endline (FLoc.to_string loc);
+  let (start_bol,stop_bol,
+         start_off, stop_off) =
+    FLoc.( (start_bol loc,
+             stop_bol loc,
+             start_off loc,
+             stop_off loc)
+           ) in
+  let abs_start_off = start_bol + start_off in
+  let abs_stop_off = stop_bol + stop_off in
+  let err_location = String.sub s abs_start_off
+      (abs_stop_off - abs_start_off + 1) in
+  prerr_endline (sprintf "err: ^%s^" err_location);
+end 
 
-type ('a,'b,'c)fold  =
-    'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c
+let parse_string_of_entry ?(loc=FLoc.mk "<string>") entry  s =
+  try parse_string entry  ~loc s  with
+    FLoc.Exc_located(loc, e) -> begin
+      eprintf "%s" (Printexc.to_string e);
+      error_report (loc,s);
+      FLoc.raise loc e ;
+  end
 
-type ('a,'b,'c) foldsep  =
-    'b t -> symbol list -> ('a XStream.t -> 'b) ->
-      ('a XStream.t -> unit) -> 'a XStream.t -> 'c
+let wrap_stream_parser ?(loc=FLoc.mk "<stream>") p s =
+  try p ~loc s
+  with
+  FLoc.Exc_located(loc,e) -> begin
+      eprintf "error: %s" (FLoc.to_string loc) ;
+      FLoc.raise loc e;
+    end 
+
+(* type ('a,'b,'c)fold  = *)
+(*     'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c *)
+
+(* type ('a,'b,'c) foldsep  = *)
+(*     'b t -> symbol list -> ('a XStream.t -> 'b) -> *)
+(*       ('a XStream.t -> unit) -> 'a XStream.t -> 'c *)
 
 
 

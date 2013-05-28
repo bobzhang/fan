@@ -1,17 +1,15 @@
 open FAst
 open Syntax
 open LibUtil
-open FanStreamTools
+open FStreamGen
 
 
 {:create| Gram
-parser_ipat stream_exp_comp  stream_exp_comp_list
-      stream_pat_comp stream_pat_comp_err 
-      stream_pat_comp_err_list stream_begin
+  parser_ipat stream_exp_comp  stream_exp_comp_list
+  stream_pat_comp stream_pat_comp_err 
+  stream_pat_comp_err_list stream_begin
   
-      stream_pat
-      parser_case parser_case_list
-  stream_exp
+  stream_pat parser_case parser_case_list stream_exp
 |}
 
   
@@ -24,25 +22,25 @@ let apply () =
           ->
             (match name with
             | Some o ->
-              Ref.protect FanStreamTools.grammar_module_name o (fun _ -> cparser _loc po pcl)
+              Ref.protect FStreamGen.grammar_module_name o (fun _ -> cparser _loc po pcl)
             | None -> cparser _loc po pcl)
         | "match"; S{e}; "with"; "parser";  OPT [`Uid(n) -> n ] {name}; OPT parser_ipat{po};
           parser_case_list{pcl}
           ->
             match name with
             | Some o ->
-              Ref.protect FanStreamTools.grammar_module_name o
+              Ref.protect FStreamGen.grammar_module_name o
                   (fun _ -> cparser_match _loc e po pcl)
             | None -> cparser_match _loc e po pcl ]
 
     stream_exp :
     ["!"; `Uid(n) ->
-      Ref.protect FanStreamTools.grammar_module_name n (fun _ ->
-           FanStreamTools.empty _loc )
+      Ref.protect FStreamGen.grammar_module_name n (fun _ ->
+           FStreamGen.empty _loc )
     |  "!"; `Uid(n); stream_exp_comp_list{sel}  ->
-        Ref.protect FanStreamTools.grammar_module_name n (fun _ -> cstream _loc sel)
+        Ref.protect FStreamGen.grammar_module_name n (fun _ -> cstream _loc sel)
     | stream_exp_comp_list{sel} -> cstream _loc sel
-    |  ->  FanStreamTools.empty _loc]
+    |  ->  FStreamGen.empty _loc]
 
     
      parser_ipat :

@@ -4,7 +4,7 @@ open AstLib
 
 open FGramDef
 
-open FanGrammarTools
+open FGramGen
 
 open Syntax
 

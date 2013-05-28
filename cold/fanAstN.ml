@@ -1,6 +1,6 @@
 open FAstN
 
-let fill_loc_ant _loc x = x
+let fill_ant _loc x = x
 
 let _ = begin (); () end
 
@@ -26,7 +26,7 @@ class primitive =
       | false  -> (`Lid (_loc, "false") : FAst.ep )
   end
 
-let fill_loc_literal: FLoc.t -> FAstN.literal -> FAst.literal =
+let fill_literal: FLoc.t -> FAstN.literal -> FAst.literal =
   fun loc  ->
     function
     | `Chr _a0 -> `Chr (loc, _a0)
@@ -37,883 +37,861 @@ let fill_loc_literal: FLoc.t -> FAstN.literal -> FAst.literal =
     | `Nativeint _a0 -> `Nativeint (loc, _a0)
     | `Str _a0 -> `Str (loc, _a0)
 
-let fill_loc_flag: FLoc.t -> FAstN.flag -> FAst.flag =
+let fill_flag: FLoc.t -> FAstN.flag -> FAst.flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.flag)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.flag)
 
-let fill_loc_position_flag:
-  FLoc.t -> FAstN.position_flag -> FAst.position_flag =
+let fill_position_flag: FLoc.t -> FAstN.position_flag -> FAst.position_flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
     | `Normal -> `Normal loc
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.position_flag)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.position_flag)
 
-let rec fill_loc_strings: FLoc.t -> FAstN.strings -> FAst.strings =
+let rec fill_strings: FLoc.t -> FAstN.strings -> FAst.strings =
   fun loc  ->
     function
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_strings loc _a0 in
-        let _a1 = fill_loc_strings loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_strings loc _a0 in
+        let _a1 = fill_strings loc _a1 in `App (loc, _a0, _a1)
     | `Str _a0 -> `Str (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.strings)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.strings)
 
-let fill_loc_lident: FLoc.t -> FAstN.lident -> FAst.lident =
+let fill_lident: FLoc.t -> FAstN.lident -> FAst.lident =
   fun loc  (`Lid _a0)  -> `Lid (loc, _a0)
 
-let fill_loc_alident: FLoc.t -> FAstN.alident -> FAst.alident =
+let fill_alident: FLoc.t -> FAstN.alident -> FAst.alident =
   fun loc  ->
     function
     | `Lid _a0 -> `Lid (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.alident)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.alident)
 
-let fill_loc_auident: FLoc.t -> FAstN.auident -> FAst.auident =
+let fill_auident: FLoc.t -> FAstN.auident -> FAst.auident =
   fun loc  ->
     function
     | `Uid _a0 -> `Uid (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.auident)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.auident)
 
-let fill_loc_aident: FLoc.t -> FAstN.aident -> FAst.aident =
+let fill_aident: FLoc.t -> FAstN.aident -> FAst.aident =
   fun loc  ->
     function
-    | #alident as _a0 -> (fill_loc_alident loc _a0 :>FAst.aident)
-    | #auident as _a0 -> (fill_loc_auident loc _a0 :>FAst.aident)
+    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.aident)
+    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.aident)
 
-let fill_loc_astring: FLoc.t -> FAstN.astring -> FAst.astring =
+let fill_astring: FLoc.t -> FAstN.astring -> FAst.astring =
   fun loc  ->
     function
     | `C _a0 -> `C (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.astring)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.astring)
 
-let rec fill_loc_uident: FLoc.t -> FAstN.uident -> FAst.uident =
+let rec fill_uident: FLoc.t -> FAstN.uident -> FAst.uident =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_uident loc _a0 in
-        let _a1 = fill_loc_uident loc _a1 in `Dot (loc, _a0, _a1)
+        let _a0 = fill_uident loc _a0 in
+        let _a1 = fill_uident loc _a1 in `Dot (loc, _a0, _a1)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_uident loc _a0 in
-        let _a1 = fill_loc_uident loc _a1 in `App (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_loc_auident loc _a0 :>FAst.uident)
+        let _a0 = fill_uident loc _a0 in
+        let _a1 = fill_uident loc _a1 in `App (loc, _a0, _a1)
+    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.uident)
 
-let rec fill_loc_ident: FLoc.t -> FAstN.ident -> FAst.ident =
+let rec fill_ident: FLoc.t -> FAstN.ident -> FAst.ident =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `Dot (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Dot (loc, _a0, _a1)
     | `Apply (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `Apply (loc, _a0, _a1)
-    | #alident as _a0 -> (fill_loc_alident loc _a0 :>FAst.ident)
-    | #auident as _a0 -> (fill_loc_auident loc _a0 :>FAst.ident)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
+    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.ident)
+    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.ident)
 
-let fill_loc_ident': FLoc.t -> FAstN.ident' -> FAst.ident' =
+let fill_ident': FLoc.t -> FAstN.ident' -> FAst.ident' =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `Dot (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Dot (loc, _a0, _a1)
     | `Apply (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `Apply (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
 
-let rec fill_loc_vid: FLoc.t -> FAstN.vid -> FAst.vid =
+let rec fill_vid: FLoc.t -> FAstN.vid -> FAst.vid =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_vid loc _a0 in
-        let _a1 = fill_loc_vid loc _a1 in `Dot (loc, _a0, _a1)
+        let _a0 = fill_vid loc _a0 in
+        let _a1 = fill_vid loc _a1 in `Dot (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.vid)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.vid)
 
-let fill_loc_vid': FLoc.t -> FAstN.vid' -> FAst.vid' =
+let fill_vid': FLoc.t -> FAstN.vid' -> FAst.vid' =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_vid loc _a0 in
-        let _a1 = fill_loc_vid loc _a1 in `Dot (loc, _a0, _a1)
+        let _a0 = fill_vid loc _a0 in
+        let _a1 = fill_vid loc _a1 in `Dot (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
 
-let rec fill_loc_dupath: FLoc.t -> FAstN.dupath -> FAst.dupath =
+let rec fill_dupath: FLoc.t -> FAstN.dupath -> FAst.dupath =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_dupath loc _a0 in
-        let _a1 = fill_loc_dupath loc _a1 in `Dot (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_loc_auident loc _a0 :>FAst.dupath)
+        let _a0 = fill_dupath loc _a0 in
+        let _a1 = fill_dupath loc _a1 in `Dot (loc, _a0, _a1)
+    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.dupath)
 
-let fill_loc_dlpath: FLoc.t -> FAstN.dlpath -> FAst.dlpath =
+let fill_dlpath: FLoc.t -> FAstN.dlpath -> FAst.dlpath =
   fun loc  ->
     function
     | `Dot (_a0,_a1) ->
-        let _a0 = fill_loc_dupath loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Dot (loc, _a0, _a1)
-    | #alident as _a0 -> (fill_loc_alident loc _a0 :>FAst.dlpath)
+        let _a0 = fill_dupath loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Dot (loc, _a0, _a1)
+    | #alident as _a0 -> (fill_alident loc _a0 :>FAst.dlpath)
 
-let fill_loc_any: FLoc.t -> FAstN.any -> FAst.any =
-  fun loc  `Any  -> `Any loc
+let fill_any: FLoc.t -> FAstN.any -> FAst.any = fun loc  `Any  -> `Any loc
 
-let rec fill_loc_ctyp: FLoc.t -> FAstN.ctyp -> FAst.ctyp =
+let rec fill_ctyp: FLoc.t -> FAstN.ctyp -> FAst.ctyp =
   fun loc  ->
     function
     | `Alias (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Alias (loc, _a0, _a1)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.ctyp)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Alias (loc, _a0, _a1)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.ctyp)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `App (loc, _a0, _a1)
     | `Arrow (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Arrow (loc, _a0, _a1)
-    | `ClassPath _a0 ->
-        let _a0 = fill_loc_ident loc _a0 in `ClassPath (loc, _a0)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Arrow (loc, _a0, _a1)
+    | `ClassPath _a0 -> let _a0 = fill_ident loc _a0 in `ClassPath (loc, _a0)
     | `Label (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Label (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Label (loc, _a0, _a1)
     | `OptLabl (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `OptLabl (loc, _a0, _a1)
-    | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>FAst.ctyp)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `OptLabl (loc, _a0, _a1)
+    | #ident' as _a0 -> (fill_ident' loc _a0 :>FAst.ctyp)
     | `TyObj (_a0,_a1) ->
-        let _a0 = fill_loc_name_ctyp loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in `TyObj (loc, _a0, _a1)
-    | `TyObjEnd _a0 ->
-        let _a0 = fill_loc_flag loc _a0 in `TyObjEnd (loc, _a0)
+        let _a0 = fill_name_ctyp loc _a0 in
+        let _a1 = fill_flag loc _a1 in `TyObj (loc, _a0, _a1)
+    | `TyObjEnd _a0 -> let _a0 = fill_flag loc _a0 in `TyObjEnd (loc, _a0)
     | `TyPol (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyPol (loc, _a0, _a1)
-    | `TyPolEnd _a0 ->
-        let _a0 = fill_loc_ctyp loc _a0 in `TyPolEnd (loc, _a0)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyPol (loc, _a0, _a1)
+    | `TyPolEnd _a0 -> let _a0 = fill_ctyp loc _a0 in `TyPolEnd (loc, _a0)
     | `TyTypePol (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyTypePol (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyTypePol (loc, _a0, _a1)
     | `Quote (_a0,_a1) ->
-        let _a0 = fill_loc_position_flag loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Quote (loc, _a0, _a1)
+        let _a0 = fill_position_flag loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Quote (loc, _a0, _a1)
     | `QuoteAny _a0 ->
-        let _a0 = fill_loc_position_flag loc _a0 in `QuoteAny (loc, _a0)
-    | `Par _a0 -> let _a0 = fill_loc_ctyp loc _a0 in `Par (loc, _a0)
+        let _a0 = fill_position_flag loc _a0 in `QuoteAny (loc, _a0)
+    | `Par _a0 -> let _a0 = fill_ctyp loc _a0 in `Par (loc, _a0)
     | `Sta (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Sta (loc, _a0, _a1)
-    | `PolyEq _a0 ->
-        let _a0 = fill_loc_row_field loc _a0 in `PolyEq (loc, _a0)
-    | `PolySup _a0 ->
-        let _a0 = fill_loc_row_field loc _a0 in `PolySup (loc, _a0)
-    | `PolyInf _a0 ->
-        let _a0 = fill_loc_row_field loc _a0 in `PolyInf (loc, _a0)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Sta (loc, _a0, _a1)
+    | `PolyEq _a0 -> let _a0 = fill_row_field loc _a0 in `PolyEq (loc, _a0)
+    | `PolySup _a0 -> let _a0 = fill_row_field loc _a0 in `PolySup (loc, _a0)
+    | `PolyInf _a0 -> let _a0 = fill_row_field loc _a0 in `PolyInf (loc, _a0)
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Com (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Com (loc, _a0, _a1)
     | `PolyInfSup (_a0,_a1) ->
-        let _a0 = fill_loc_row_field loc _a0 in
-        let _a1 = fill_loc_tag_names loc _a1 in `PolyInfSup (loc, _a0, _a1)
-    | `Package _a0 -> let _a0 = fill_loc_mtyp loc _a0 in `Package (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.ctyp)
-and fill_loc_type_parameters:
+        let _a0 = fill_row_field loc _a0 in
+        let _a1 = fill_tag_names loc _a1 in `PolyInfSup (loc, _a0, _a1)
+    | `Package _a0 -> let _a0 = fill_mtyp loc _a0 in `Package (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.ctyp)
+and fill_type_parameters:
   FLoc.t -> FAstN.type_parameters -> FAst.type_parameters =
   fun loc  ->
     function
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_type_parameters loc _a0 in
-        let _a1 = fill_loc_type_parameters loc _a1 in `Com (loc, _a0, _a1)
-    | `Ctyp _a0 -> let _a0 = fill_loc_ctyp loc _a0 in `Ctyp (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.type_parameters)
-and fill_loc_row_field: FLoc.t -> FAstN.row_field -> FAst.row_field =
+        let _a0 = fill_type_parameters loc _a0 in
+        let _a1 = fill_type_parameters loc _a1 in `Com (loc, _a0, _a1)
+    | `Ctyp _a0 -> let _a0 = fill_ctyp loc _a0 in `Ctyp (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_parameters)
+and fill_row_field: FLoc.t -> FAstN.row_field -> FAst.row_field =
   fun loc  ->
     function
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.row_field)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.row_field)
     | `Bar (_a0,_a1) ->
-        let _a0 = fill_loc_row_field loc _a0 in
-        let _a1 = fill_loc_row_field loc _a1 in `Bar (loc, _a0, _a1)
-    | `TyVrn _a0 -> let _a0 = fill_loc_astring loc _a0 in `TyVrn (loc, _a0)
+        let _a0 = fill_row_field loc _a0 in
+        let _a1 = fill_row_field loc _a1 in `Bar (loc, _a0, _a1)
+    | `TyVrn _a0 -> let _a0 = fill_astring loc _a0 in `TyVrn (loc, _a0)
     | `TyVrnOf (_a0,_a1) ->
-        let _a0 = fill_loc_astring loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyVrnOf (loc, _a0, _a1)
-    | `Ctyp _a0 -> let _a0 = fill_loc_ctyp loc _a0 in `Ctyp (loc, _a0)
-and fill_loc_tag_names: FLoc.t -> FAstN.tag_names -> FAst.tag_names =
+        let _a0 = fill_astring loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyVrnOf (loc, _a0, _a1)
+    | `Ctyp _a0 -> let _a0 = fill_ctyp loc _a0 in `Ctyp (loc, _a0)
+and fill_tag_names: FLoc.t -> FAstN.tag_names -> FAst.tag_names =
   fun loc  ->
     function
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.tag_names)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.tag_names)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_tag_names loc _a0 in
-        let _a1 = fill_loc_tag_names loc _a1 in `App (loc, _a0, _a1)
-    | `TyVrn _a0 -> let _a0 = fill_loc_astring loc _a0 in `TyVrn (loc, _a0)
-and fill_loc_typedecl: FLoc.t -> FAstN.typedecl -> FAst.typedecl =
+        let _a0 = fill_tag_names loc _a0 in
+        let _a1 = fill_tag_names loc _a1 in `App (loc, _a0, _a1)
+    | `TyVrn _a0 -> let _a0 = fill_astring loc _a0 in `TyVrn (loc, _a0)
+and fill_typedecl: FLoc.t -> FAstN.typedecl -> FAst.typedecl =
   fun loc  ->
     function
     | `TyDcl (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_opt_decl_params loc _a1 in
-        let _a2 = fill_loc_type_info loc _a2 in
-        let _a3 = fill_loc_opt_type_constr loc _a3 in
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_opt_decl_params loc _a1 in
+        let _a2 = fill_type_info loc _a2 in
+        let _a3 = fill_opt_type_constr loc _a3 in
         `TyDcl (loc, _a0, _a1, _a2, _a3)
     | `TyAbstr (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_opt_decl_params loc _a1 in
-        let _a2 = fill_loc_opt_type_constr loc _a2 in
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_opt_decl_params loc _a1 in
+        let _a2 = fill_opt_type_constr loc _a2 in
         `TyAbstr (loc, _a0, _a1, _a2)
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_typedecl loc _a0 in
-        let _a1 = fill_loc_typedecl loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.typedecl)
-and fill_loc_type_constr: FLoc.t -> FAstN.type_constr -> FAst.type_constr =
+        let _a0 = fill_typedecl loc _a0 in
+        let _a1 = fill_typedecl loc _a1 in `And (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.typedecl)
+and fill_type_constr: FLoc.t -> FAstN.type_constr -> FAst.type_constr =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_type_constr loc _a0 in
-        let _a1 = fill_loc_type_constr loc _a1 in `And (loc, _a0, _a1)
+        let _a0 = fill_type_constr loc _a0 in
+        let _a1 = fill_type_constr loc _a1 in `And (loc, _a0, _a1)
     | `Eq (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.type_constr)
-and fill_loc_opt_type_constr:
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_constr)
+and fill_opt_type_constr:
   FLoc.t -> FAstN.opt_type_constr -> FAst.opt_type_constr =
   fun loc  ->
     function
-    | `Some _a0 -> let _a0 = fill_loc_type_constr loc _a0 in `Some (loc, _a0)
+    | `Some _a0 -> let _a0 = fill_type_constr loc _a0 in `Some (loc, _a0)
     | `None -> `None loc
-and fill_loc_decl_param: FLoc.t -> FAstN.decl_param -> FAst.decl_param =
+and fill_decl_param: FLoc.t -> FAstN.decl_param -> FAst.decl_param =
   fun loc  ->
     function
     | `Quote (_a0,_a1) ->
-        let _a0 = fill_loc_position_flag loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Quote (loc, _a0, _a1)
+        let _a0 = fill_position_flag loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Quote (loc, _a0, _a1)
     | `QuoteAny _a0 ->
-        let _a0 = fill_loc_position_flag loc _a0 in `QuoteAny (loc, _a0)
+        let _a0 = fill_position_flag loc _a0 in `QuoteAny (loc, _a0)
     | `Any -> `Any loc
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.decl_param)
-and fill_loc_decl_params: FLoc.t -> FAstN.decl_params -> FAst.decl_params =
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.decl_param)
+and fill_decl_params: FLoc.t -> FAstN.decl_params -> FAst.decl_params =
   fun loc  ->
     function
     | `Quote (_a0,_a1) ->
-        let _a0 = fill_loc_position_flag loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Quote (loc, _a0, _a1)
+        let _a0 = fill_position_flag loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Quote (loc, _a0, _a1)
     | `QuoteAny _a0 ->
-        let _a0 = fill_loc_position_flag loc _a0 in `QuoteAny (loc, _a0)
+        let _a0 = fill_position_flag loc _a0 in `QuoteAny (loc, _a0)
     | `Any -> `Any loc
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_decl_params loc _a0 in
-        let _a1 = fill_loc_decl_params loc _a1 in `Com (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.decl_params)
-and fill_loc_opt_decl_params:
+        let _a0 = fill_decl_params loc _a0 in
+        let _a1 = fill_decl_params loc _a1 in `Com (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.decl_params)
+and fill_opt_decl_params:
   FLoc.t -> FAstN.opt_decl_params -> FAst.opt_decl_params =
   fun loc  ->
     function
-    | `Some _a0 -> let _a0 = fill_loc_decl_params loc _a0 in `Some (loc, _a0)
+    | `Some _a0 -> let _a0 = fill_decl_params loc _a0 in `Some (loc, _a0)
     | `None -> `None loc
-and fill_loc_type_info: FLoc.t -> FAstN.type_info -> FAst.type_info =
+and fill_type_info: FLoc.t -> FAstN.type_info -> FAst.type_info =
   fun loc  ->
     function
     | `TyMan (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_type_repr loc _a2 in `TyMan (loc, _a0, _a1, _a2)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_type_repr loc _a2 in `TyMan (loc, _a0, _a1, _a2)
     | `TyRepr (_a0,_a1) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_type_repr loc _a1 in `TyRepr (loc, _a0, _a1)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_type_repr loc _a1 in `TyRepr (loc, _a0, _a1)
     | `TyEq (_a0,_a1) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyEq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.type_info)
-and fill_loc_type_repr: FLoc.t -> FAstN.type_repr -> FAst.type_repr =
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyEq (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_info)
+and fill_type_repr: FLoc.t -> FAstN.type_repr -> FAst.type_repr =
   fun loc  ->
     function
-    | `Record _a0 ->
-        let _a0 = fill_loc_name_ctyp loc _a0 in `Record (loc, _a0)
-    | `Sum _a0 -> let _a0 = fill_loc_or_ctyp loc _a0 in `Sum (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.type_repr)
-and fill_loc_name_ctyp: FLoc.t -> FAstN.name_ctyp -> FAst.name_ctyp =
+    | `Record _a0 -> let _a0 = fill_name_ctyp loc _a0 in `Record (loc, _a0)
+    | `Sum _a0 -> let _a0 = fill_or_ctyp loc _a0 in `Sum (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.type_repr)
+and fill_name_ctyp: FLoc.t -> FAstN.name_ctyp -> FAst.name_ctyp =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_name_ctyp loc _a0 in
-        let _a1 = fill_loc_name_ctyp loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_name_ctyp loc _a0 in
+        let _a1 = fill_name_ctyp loc _a1 in `Sem (loc, _a0, _a1)
     | `TyCol (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyCol (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyCol (loc, _a0, _a1)
     | `TyColMut (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyColMut (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.name_ctyp)
-and fill_loc_or_ctyp: FLoc.t -> FAstN.or_ctyp -> FAst.or_ctyp =
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyColMut (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.name_ctyp)
+and fill_or_ctyp: FLoc.t -> FAstN.or_ctyp -> FAst.or_ctyp =
   fun loc  ->
     function
     | `Bar (_a0,_a1) ->
-        let _a0 = fill_loc_or_ctyp loc _a0 in
-        let _a1 = fill_loc_or_ctyp loc _a1 in `Bar (loc, _a0, _a1)
+        let _a0 = fill_or_ctyp loc _a0 in
+        let _a1 = fill_or_ctyp loc _a1 in `Bar (loc, _a0, _a1)
     | `TyCol (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TyCol (loc, _a0, _a1)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TyCol (loc, _a0, _a1)
     | `Of (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Of (loc, _a0, _a1)
-    | #auident as _a0 -> (fill_loc_auident loc _a0 :>FAst.or_ctyp)
-and fill_loc_of_ctyp: FLoc.t -> FAstN.of_ctyp -> FAst.of_ctyp =
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Of (loc, _a0, _a1)
+    | #auident as _a0 -> (fill_auident loc _a0 :>FAst.or_ctyp)
+and fill_of_ctyp: FLoc.t -> FAstN.of_ctyp -> FAst.of_ctyp =
   fun loc  ->
     function
     | `Of (_a0,_a1) ->
-        let _a0 = fill_loc_vid loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Of (loc, _a0, _a1)
-    | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>FAst.of_ctyp)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.of_ctyp)
-and fill_loc_pat: FLoc.t -> FAstN.pat -> FAst.pat =
+        let _a0 = fill_vid loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Of (loc, _a0, _a1)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.of_ctyp)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.of_ctyp)
+and fill_pat: FLoc.t -> FAstN.pat -> FAst.pat =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_loc_vid loc _a0 :>FAst.pat)
+    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.pat)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_pat loc _a1 in `App (loc, _a0, _a1)
     | `Vrn _a0 -> `Vrn (loc, _a0)
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `Com (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_pat loc _a1 in `Com (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `Sem (loc, _a0, _a1)
-    | `Par _a0 -> let _a0 = fill_loc_pat loc _a0 in `Par (loc, _a0)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.pat)
-    | `Record _a0 -> let _a0 = fill_loc_rec_pat loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_loc_literal loc _a0 :>FAst.pat)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_pat loc _a1 in `Sem (loc, _a0, _a1)
+    | `Par _a0 -> let _a0 = fill_pat loc _a0 in `Par (loc, _a0)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.pat)
+    | `Record _a0 -> let _a0 = fill_rec_pat loc _a0 in `Record (loc, _a0)
+    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.pat)
     | `Alias (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Alias (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Alias (loc, _a0, _a1)
     | `ArrayEmpty -> `ArrayEmpty loc
-    | `Array _a0 -> let _a0 = fill_loc_pat loc _a0 in `Array (loc, _a0)
-    | `LabelS _a0 -> let _a0 = fill_loc_alident loc _a0 in `LabelS (loc, _a0)
+    | `Array _a0 -> let _a0 = fill_pat loc _a0 in `Array (loc, _a0)
+    | `LabelS _a0 -> let _a0 = fill_alident loc _a0 in `LabelS (loc, _a0)
     | `Label (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `Label (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_pat loc _a1 in `Label (loc, _a0, _a1)
     | `OptLabl (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `OptLabl (loc, _a0, _a1)
-    | `OptLablS _a0 ->
-        let _a0 = fill_loc_alident loc _a0 in `OptLablS (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_pat loc _a1 in `OptLabl (loc, _a0, _a1)
+    | `OptLablS _a0 -> let _a0 = fill_alident loc _a0 in `OptLablS (loc, _a0)
     | `OptLablExpr (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in `OptLablExpr (loc, _a0, _a1, _a2)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_pat loc _a1 in
+        let _a2 = fill_exp loc _a2 in `OptLablExpr (loc, _a0, _a1, _a2)
     | `Bar (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `Bar (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_pat loc _a1 in `Bar (loc, _a0, _a1)
     | `PaRng (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `PaRng (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_pat loc _a1 in `PaRng (loc, _a0, _a1)
     | `Constraint (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | `ClassPath _a0 ->
-        let _a0 = fill_loc_ident loc _a0 in `ClassPath (loc, _a0)
-    | `Lazy _a0 -> let _a0 = fill_loc_pat loc _a0 in `Lazy (loc, _a0)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Constraint (loc, _a0, _a1)
+    | `ClassPath _a0 -> let _a0 = fill_ident loc _a0 in `ClassPath (loc, _a0)
+    | `Lazy _a0 -> let _a0 = fill_pat loc _a0 in `Lazy (loc, _a0)
     | `ModuleUnpack _a0 ->
-        let _a0 = fill_loc_auident loc _a0 in `ModuleUnpack (loc, _a0)
+        let _a0 = fill_auident loc _a0 in `ModuleUnpack (loc, _a0)
     | `ModuleConstraint (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `ModuleConstraint (loc, _a0, _a1)
-and fill_loc_rec_pat: FLoc.t -> FAstN.rec_pat -> FAst.rec_pat =
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `ModuleConstraint (loc, _a0, _a1)
+and fill_rec_pat: FLoc.t -> FAstN.rec_pat -> FAst.rec_pat =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_pat loc _a1 in `RecBind (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_pat loc _a1 in `RecBind (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_rec_pat loc _a0 in
-        let _a1 = fill_loc_rec_pat loc _a1 in `Sem (loc, _a0, _a1)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.rec_pat)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.rec_pat)
-and fill_loc_exp: FLoc.t -> FAstN.exp -> FAst.exp =
+        let _a0 = fill_rec_pat loc _a0 in
+        let _a1 = fill_rec_pat loc _a1 in `Sem (loc, _a0, _a1)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_pat)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_pat)
+and fill_exp: FLoc.t -> FAstN.exp -> FAst.exp =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_loc_vid loc _a0 :>FAst.exp)
+    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.exp)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `App (loc, _a0, _a1)
     | `Vrn _a0 -> `Vrn (loc, _a0)
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Com (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Com (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Sem (loc, _a0, _a1)
-    | `Par _a0 -> let _a0 = fill_loc_exp loc _a0 in `Par (loc, _a0)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.exp)
-    | `Record _a0 -> let _a0 = fill_loc_rec_exp loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_loc_literal loc _a0 :>FAst.exp)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Sem (loc, _a0, _a1)
+    | `Par _a0 -> let _a0 = fill_exp loc _a0 in `Par (loc, _a0)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.exp)
+    | `Record _a0 -> let _a0 = fill_rec_exp loc _a0 in `Record (loc, _a0)
+    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.exp)
     | `RecordWith (_a0,_a1) ->
-        let _a0 = fill_loc_rec_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `RecordWith (loc, _a0, _a1)
+        let _a0 = fill_rec_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `RecordWith (loc, _a0, _a1)
     | `Field (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Field (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Field (loc, _a0, _a1)
     | `ArrayDot (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `ArrayDot (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `ArrayDot (loc, _a0, _a1)
     | `ArrayEmpty -> `ArrayEmpty loc
-    | `Array _a0 -> let _a0 = fill_loc_exp loc _a0 in `Array (loc, _a0)
-    | `Assert _a0 -> let _a0 = fill_loc_exp loc _a0 in `Assert (loc, _a0)
+    | `Array _a0 -> let _a0 = fill_exp loc _a0 in `Array (loc, _a0)
+    | `Assert _a0 -> let _a0 = fill_exp loc _a0 in `Assert (loc, _a0)
     | `Assign (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Assign (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Assign (loc, _a0, _a1)
     | `For (_a0,_a1,_a2,_a3,_a4) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in
-        let _a3 = fill_loc_flag loc _a3 in
-        let _a4 = fill_loc_exp loc _a4 in `For (loc, _a0, _a1, _a2, _a3, _a4)
-    | `Fun _a0 -> let _a0 = fill_loc_case loc _a0 in `Fun (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in
+        let _a2 = fill_exp loc _a2 in
+        let _a3 = fill_flag loc _a3 in
+        let _a4 = fill_exp loc _a4 in `For (loc, _a0, _a1, _a2, _a3, _a4)
+    | `Fun _a0 -> let _a0 = fill_case loc _a0 in `Fun (loc, _a0)
     | `IfThenElse (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in `IfThenElse (loc, _a0, _a1, _a2)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in
+        let _a2 = fill_exp loc _a2 in `IfThenElse (loc, _a0, _a1, _a2)
     | `IfThen (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `IfThen (loc, _a0, _a1)
-    | `LabelS _a0 -> let _a0 = fill_loc_alident loc _a0 in `LabelS (loc, _a0)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `IfThen (loc, _a0, _a1)
+    | `LabelS _a0 -> let _a0 = fill_alident loc _a0 in `LabelS (loc, _a0)
     | `Label (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Label (loc, _a0, _a1)
-    | `Lazy _a0 -> let _a0 = fill_loc_exp loc _a0 in `Lazy (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Label (loc, _a0, _a1)
+    | `Lazy _a0 -> let _a0 = fill_exp loc _a0 in `Lazy (loc, _a0)
     | `LetIn (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_bind loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_bind loc _a1 in
+        let _a2 = fill_exp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
     | `LetTryInWith (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_bind loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in
-        let _a3 = fill_loc_case loc _a3 in
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_bind loc _a1 in
+        let _a2 = fill_exp loc _a2 in
+        let _a3 = fill_case loc _a3 in
         `LetTryInWith (loc, _a0, _a1, _a2, _a3)
     | `LetModule (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mexp loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in `LetModule (loc, _a0, _a1, _a2)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mexp loc _a1 in
+        let _a2 = fill_exp loc _a2 in `LetModule (loc, _a0, _a1, _a2)
     | `Match (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_case loc _a1 in `Match (loc, _a0, _a1)
-    | `New _a0 -> let _a0 = fill_loc_ident loc _a0 in `New (loc, _a0)
-    | `Obj _a0 -> let _a0 = fill_loc_clfield loc _a0 in `Obj (loc, _a0)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_case loc _a1 in `Match (loc, _a0, _a1)
+    | `New _a0 -> let _a0 = fill_ident loc _a0 in `New (loc, _a0)
+    | `Obj _a0 -> let _a0 = fill_clfield loc _a0 in `Obj (loc, _a0)
     | `ObjEnd -> `ObjEnd loc
     | `ObjPat (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_clfield loc _a1 in `ObjPat (loc, _a0, _a1)
-    | `ObjPatEnd _a0 ->
-        let _a0 = fill_loc_pat loc _a0 in `ObjPatEnd (loc, _a0)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_clfield loc _a1 in `ObjPat (loc, _a0, _a1)
+    | `ObjPatEnd _a0 -> let _a0 = fill_pat loc _a0 in `ObjPatEnd (loc, _a0)
     | `OptLabl (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `OptLabl (loc, _a0, _a1)
-    | `OptLablS _a0 ->
-        let _a0 = fill_loc_alident loc _a0 in `OptLablS (loc, _a0)
-    | `OvrInst _a0 ->
-        let _a0 = fill_loc_rec_exp loc _a0 in `OvrInst (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `OptLabl (loc, _a0, _a1)
+    | `OptLablS _a0 -> let _a0 = fill_alident loc _a0 in `OptLablS (loc, _a0)
+    | `OvrInst _a0 -> let _a0 = fill_rec_exp loc _a0 in `OvrInst (loc, _a0)
     | `OvrInstEmpty -> `OvrInstEmpty loc
-    | `Seq _a0 -> let _a0 = fill_loc_exp loc _a0 in `Seq (loc, _a0)
+    | `Seq _a0 -> let _a0 = fill_exp loc _a0 in `Seq (loc, _a0)
     | `Send (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_alident loc _a1 in `Send (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_alident loc _a1 in `Send (loc, _a0, _a1)
     | `StringDot (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `StringDot (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `StringDot (loc, _a0, _a1)
     | `Try (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_case loc _a1 in `Try (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_case loc _a1 in `Try (loc, _a0, _a1)
     | `Constraint (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Constraint (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Constraint (loc, _a0, _a1)
     | `Coercion (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in
-        let _a2 = fill_loc_ctyp loc _a2 in `Coercion (loc, _a0, _a1, _a2)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in
+        let _a2 = fill_ctyp loc _a2 in `Coercion (loc, _a0, _a1, _a2)
     | `Subtype (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Subtype (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Subtype (loc, _a0, _a1)
     | `While (_a0,_a1) ->
-        let _a0 = fill_loc_exp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `While (loc, _a0, _a1)
+        let _a0 = fill_exp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `While (loc, _a0, _a1)
     | `LetOpen (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `LetOpen (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `LetOpen (loc, _a0, _a1)
     | `LocalTypeFun (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `LocalTypeFun (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `LocalTypeFun (loc, _a0, _a1)
     | `Package_exp _a0 ->
-        let _a0 = fill_loc_mexp loc _a0 in `Package_exp (loc, _a0)
-and fill_loc_rec_exp: FLoc.t -> FAstN.rec_exp -> FAst.rec_exp =
+        let _a0 = fill_mexp loc _a0 in `Package_exp (loc, _a0)
+and fill_rec_exp: FLoc.t -> FAstN.rec_exp -> FAst.rec_exp =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_rec_exp loc _a0 in
-        let _a1 = fill_loc_rec_exp loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_rec_exp loc _a0 in
+        let _a1 = fill_rec_exp loc _a1 in `Sem (loc, _a0, _a1)
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `RecBind (loc, _a0, _a1)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.rec_exp)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.rec_exp)
-and fill_loc_mtyp: FLoc.t -> FAstN.mtyp -> FAst.mtyp =
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `RecBind (loc, _a0, _a1)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_exp)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_exp)
+and fill_mtyp: FLoc.t -> FAstN.mtyp -> FAst.mtyp =
   fun loc  ->
     function
-    | #ident' as _a0 -> (fill_loc_ident' loc _a0 :>FAst.mtyp)
-    | `Sig _a0 -> let _a0 = fill_loc_sigi loc _a0 in `Sig (loc, _a0)
+    | #ident' as _a0 -> (fill_ident' loc _a0 :>FAst.mtyp)
+    | `Sig _a0 -> let _a0 = fill_sigi loc _a0 in `Sig (loc, _a0)
     | `SigEnd -> `SigEnd loc
     | `Functor (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in
-        let _a2 = fill_loc_mtyp loc _a2 in `Functor (loc, _a0, _a1, _a2)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in
+        let _a2 = fill_mtyp loc _a2 in `Functor (loc, _a0, _a1, _a2)
     | `With (_a0,_a1) ->
-        let _a0 = fill_loc_mtyp loc _a0 in
-        let _a1 = fill_loc_constr loc _a1 in `With (loc, _a0, _a1)
+        let _a0 = fill_mtyp loc _a0 in
+        let _a1 = fill_constr loc _a1 in `With (loc, _a0, _a1)
     | `ModuleTypeOf _a0 ->
-        let _a0 = fill_loc_mexp loc _a0 in `ModuleTypeOf (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.mtyp)
-and fill_loc_sigi: FLoc.t -> FAstN.sigi -> FAst.sigi =
+        let _a0 = fill_mexp loc _a0 in `ModuleTypeOf (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mtyp)
+and fill_sigi: FLoc.t -> FAstN.sigi -> FAst.sigi =
   fun loc  ->
     function
     | `Val (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Val (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Val (loc, _a0, _a1)
     | `External (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in
-        let _a2 = fill_loc_strings loc _a2 in `External (loc, _a0, _a1, _a2)
-    | `Type _a0 -> let _a0 = fill_loc_typedecl loc _a0 in `Type (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in
+        let _a2 = fill_strings loc _a2 in `External (loc, _a0, _a1, _a2)
+    | `Type _a0 -> let _a0 = fill_typedecl loc _a0 in `Type (loc, _a0)
     | `Exception _a0 ->
-        let _a0 = fill_loc_of_ctyp loc _a0 in `Exception (loc, _a0)
-    | `Class _a0 -> let _a0 = fill_loc_cltdecl loc _a0 in `Class (loc, _a0)
+        let _a0 = fill_of_ctyp loc _a0 in `Exception (loc, _a0)
+    | `Class _a0 -> let _a0 = fill_cltdecl loc _a0 in `Class (loc, _a0)
     | `ClassType _a0 ->
-        let _a0 = fill_loc_cltdecl loc _a0 in `ClassType (loc, _a0)
+        let _a0 = fill_cltdecl loc _a0 in `ClassType (loc, _a0)
     | `Module (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in `Module (loc, _a0, _a1)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in `Module (loc, _a0, _a1)
     | `ModuleTypeEnd _a0 ->
-        let _a0 = fill_loc_auident loc _a0 in `ModuleTypeEnd (loc, _a0)
+        let _a0 = fill_auident loc _a0 in `ModuleTypeEnd (loc, _a0)
     | `ModuleType (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_sigi loc _a0 in
-        let _a1 = fill_loc_sigi loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_sigi loc _a0 in
+        let _a1 = fill_sigi loc _a1 in `Sem (loc, _a0, _a1)
     | `DirectiveSimple _a0 ->
-        let _a0 = fill_loc_alident loc _a0 in `DirectiveSimple (loc, _a0)
+        let _a0 = fill_alident loc _a0 in `DirectiveSimple (loc, _a0)
     | `Directive (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Directive (loc, _a0, _a1)
-    | `Open _a0 -> let _a0 = fill_loc_ident loc _a0 in `Open (loc, _a0)
-    | `Include _a0 -> let _a0 = fill_loc_mtyp loc _a0 in `Include (loc, _a0)
-    | `RecModule _a0 ->
-        let _a0 = fill_loc_mbind loc _a0 in `RecModule (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.sigi)
-and fill_loc_mbind: FLoc.t -> FAstN.mbind -> FAst.mbind =
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Directive (loc, _a0, _a1)
+    | `Open _a0 -> let _a0 = fill_ident loc _a0 in `Open (loc, _a0)
+    | `Include _a0 -> let _a0 = fill_mtyp loc _a0 in `Include (loc, _a0)
+    | `RecModule _a0 -> let _a0 = fill_mbind loc _a0 in `RecModule (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.sigi)
+and fill_mbind: FLoc.t -> FAstN.mbind -> FAst.mbind =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_mbind loc _a0 in
-        let _a1 = fill_loc_mbind loc _a1 in `And (loc, _a0, _a1)
+        let _a0 = fill_mbind loc _a0 in
+        let _a1 = fill_mbind loc _a1 in `And (loc, _a0, _a1)
     | `ModuleBind (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in
-        let _a2 = fill_loc_mexp loc _a2 in `ModuleBind (loc, _a0, _a1, _a2)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in
+        let _a2 = fill_mexp loc _a2 in `ModuleBind (loc, _a0, _a1, _a2)
     | `Constraint (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.mbind)
-and fill_loc_constr: FLoc.t -> FAstN.constr -> FAst.constr =
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mbind)
+and fill_constr: FLoc.t -> FAstN.constr -> FAst.constr =
   fun loc  ->
     function
     | `TypeEq (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TypeEq (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TypeEq (loc, _a0, _a1)
     | `ModuleEq (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `ModuleEq (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `ModuleEq (loc, _a0, _a1)
     | `TypeEqPriv (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TypeEqPriv (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TypeEqPriv (loc, _a0, _a1)
     | `TypeSubst (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `TypeSubst (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `TypeSubst (loc, _a0, _a1)
     | `ModuleSubst (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in `ModuleSubst (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ident loc _a1 in `ModuleSubst (loc, _a0, _a1)
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_constr loc _a0 in
-        let _a1 = fill_loc_constr loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.constr)
-and fill_loc_bind: FLoc.t -> FAstN.bind -> FAst.bind =
+        let _a0 = fill_constr loc _a0 in
+        let _a1 = fill_constr loc _a1 in `And (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.constr)
+and fill_bind: FLoc.t -> FAstN.bind -> FAst.bind =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_bind loc _a0 in
-        let _a1 = fill_loc_bind loc _a1 in `And (loc, _a0, _a1)
+        let _a0 = fill_bind loc _a0 in
+        let _a1 = fill_bind loc _a1 in `And (loc, _a0, _a1)
     | `Bind (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Bind (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.bind)
-and fill_loc_case: FLoc.t -> FAstN.case -> FAst.case =
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Bind (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.bind)
+and fill_case: FLoc.t -> FAstN.case -> FAst.case =
   fun loc  ->
     function
     | `Bar (_a0,_a1) ->
-        let _a0 = fill_loc_case loc _a0 in
-        let _a1 = fill_loc_case loc _a1 in `Bar (loc, _a0, _a1)
+        let _a0 = fill_case loc _a0 in
+        let _a1 = fill_case loc _a1 in `Bar (loc, _a0, _a1)
     | `Case (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Case (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Case (loc, _a0, _a1)
     | `CaseWhen (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in
-        let _a2 = fill_loc_exp loc _a2 in `CaseWhen (loc, _a0, _a1, _a2)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.case)
-and fill_loc_mexp: FLoc.t -> FAstN.mexp -> FAst.mexp =
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_exp loc _a1 in
+        let _a2 = fill_exp loc _a2 in `CaseWhen (loc, _a0, _a1, _a2)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.case)
+and fill_mexp: FLoc.t -> FAstN.mexp -> FAst.mexp =
   fun loc  ->
     function
-    | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>FAst.mexp)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.mexp)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_mexp loc _a0 in
-        let _a1 = fill_loc_mexp loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_mexp loc _a0 in
+        let _a1 = fill_mexp loc _a1 in `App (loc, _a0, _a1)
     | `Functor (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in
-        let _a2 = fill_loc_mexp loc _a2 in `Functor (loc, _a0, _a1, _a2)
-    | `Struct _a0 -> let _a0 = fill_loc_stru loc _a0 in `Struct (loc, _a0)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in
+        let _a2 = fill_mexp loc _a2 in `Functor (loc, _a0, _a1, _a2)
+    | `Struct _a0 -> let _a0 = fill_stru loc _a0 in `Struct (loc, _a0)
     | `StructEnd -> `StructEnd loc
     | `Constraint (_a0,_a1) ->
-        let _a0 = fill_loc_mexp loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
+        let _a0 = fill_mexp loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in `Constraint (loc, _a0, _a1)
     | `PackageModule _a0 ->
-        let _a0 = fill_loc_exp loc _a0 in `PackageModule (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.mexp)
-and fill_loc_stru: FLoc.t -> FAstN.stru -> FAst.stru =
+        let _a0 = fill_exp loc _a0 in `PackageModule (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.mexp)
+and fill_stru: FLoc.t -> FAstN.stru -> FAst.stru =
   fun loc  ->
     function
-    | `Class _a0 -> let _a0 = fill_loc_cldecl loc _a0 in `Class (loc, _a0)
+    | `Class _a0 -> let _a0 = fill_cldecl loc _a0 in `Class (loc, _a0)
     | `ClassType _a0 ->
-        let _a0 = fill_loc_cltdecl loc _a0 in `ClassType (loc, _a0)
+        let _a0 = fill_cltdecl loc _a0 in `ClassType (loc, _a0)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_stru loc _a0 in
-        let _a1 = fill_loc_stru loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_stru loc _a0 in
+        let _a1 = fill_stru loc _a1 in `Sem (loc, _a0, _a1)
     | `DirectiveSimple _a0 ->
-        let _a0 = fill_loc_alident loc _a0 in `DirectiveSimple (loc, _a0)
+        let _a0 = fill_alident loc _a0 in `DirectiveSimple (loc, _a0)
     | `Directive (_a0,_a1) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `Directive (loc, _a0, _a1)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_exp loc _a1 in `Directive (loc, _a0, _a1)
     | `Exception _a0 ->
-        let _a0 = fill_loc_of_ctyp loc _a0 in `Exception (loc, _a0)
-    | `StExp _a0 -> let _a0 = fill_loc_exp loc _a0 in `StExp (loc, _a0)
+        let _a0 = fill_of_ctyp loc _a0 in `Exception (loc, _a0)
+    | `StExp _a0 -> let _a0 = fill_exp loc _a0 in `StExp (loc, _a0)
     | `External (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in
-        let _a2 = fill_loc_strings loc _a2 in `External (loc, _a0, _a1, _a2)
-    | `Include _a0 -> let _a0 = fill_loc_mexp loc _a0 in `Include (loc, _a0)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in
+        let _a2 = fill_strings loc _a2 in `External (loc, _a0, _a1, _a2)
+    | `Include _a0 -> let _a0 = fill_mexp loc _a0 in `Include (loc, _a0)
     | `Module (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mexp loc _a1 in `Module (loc, _a0, _a1)
-    | `RecModule _a0 ->
-        let _a0 = fill_loc_mbind loc _a0 in `RecModule (loc, _a0)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mexp loc _a1 in `Module (loc, _a0, _a1)
+    | `RecModule _a0 -> let _a0 = fill_mbind loc _a0 in `RecModule (loc, _a0)
     | `ModuleType (_a0,_a1) ->
-        let _a0 = fill_loc_auident loc _a0 in
-        let _a1 = fill_loc_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
-    | `Open _a0 -> let _a0 = fill_loc_ident loc _a0 in `Open (loc, _a0)
-    | `Type _a0 -> let _a0 = fill_loc_typedecl loc _a0 in `Type (loc, _a0)
+        let _a0 = fill_auident loc _a0 in
+        let _a1 = fill_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
+    | `Open _a0 -> let _a0 = fill_ident loc _a0 in `Open (loc, _a0)
+    | `Type _a0 -> let _a0 = fill_typedecl loc _a0 in `Type (loc, _a0)
     | `TypeWith (_a0,_a1) ->
-        let _a0 = fill_loc_typedecl loc _a0 in
-        let _a1 = fill_loc_strings loc _a1 in `TypeWith (loc, _a0, _a1)
+        let _a0 = fill_typedecl loc _a0 in
+        let _a1 = fill_strings loc _a1 in `TypeWith (loc, _a0, _a1)
     | `Value (_a0,_a1) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_bind loc _a1 in `Value (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.stru)
-and fill_loc_cltdecl: FLoc.t -> FAstN.cltdecl -> FAst.cltdecl =
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_bind loc _a1 in `Value (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.stru)
+and fill_cltdecl: FLoc.t -> FAstN.cltdecl -> FAst.cltdecl =
   fun loc  ->
     function
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_cltdecl loc _a0 in
-        let _a1 = fill_loc_cltdecl loc _a1 in `And (loc, _a0, _a1)
+        let _a0 = fill_cltdecl loc _a0 in
+        let _a1 = fill_cltdecl loc _a1 in `And (loc, _a0, _a1)
     | `CtDecl (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in
-        let _a2 = fill_loc_type_parameters loc _a2 in
-        let _a3 = fill_loc_cltyp loc _a3 in `CtDecl (loc, _a0, _a1, _a2, _a3)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in
+        let _a2 = fill_type_parameters loc _a2 in
+        let _a3 = fill_cltyp loc _a3 in `CtDecl (loc, _a0, _a1, _a2, _a3)
     | `CtDeclS (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in
-        let _a2 = fill_loc_cltyp loc _a2 in `CtDeclS (loc, _a0, _a1, _a2)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.cltdecl)
-and fill_loc_cltyp: FLoc.t -> FAstN.cltyp -> FAst.cltyp =
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in
+        let _a2 = fill_cltyp loc _a2 in `CtDeclS (loc, _a0, _a1, _a2)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cltdecl)
+and fill_cltyp: FLoc.t -> FAstN.cltyp -> FAst.cltyp =
   fun loc  ->
     function
-    | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>FAst.cltyp)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.cltyp)
     | `ClApply (_a0,_a1) ->
-        let _a0 = fill_loc_vid loc _a0 in
-        let _a1 = fill_loc_type_parameters loc _a1 in
-        `ClApply (loc, _a0, _a1)
+        let _a0 = fill_vid loc _a0 in
+        let _a1 = fill_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
     | `CtFun (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_cltyp loc _a1 in `CtFun (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_cltyp loc _a1 in `CtFun (loc, _a0, _a1)
     | `ObjTy (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_clsigi loc _a1 in `ObjTy (loc, _a0, _a1)
-    | `ObjTyEnd _a0 ->
-        let _a0 = fill_loc_ctyp loc _a0 in `ObjTyEnd (loc, _a0)
-    | `Obj _a0 -> let _a0 = fill_loc_clsigi loc _a0 in `Obj (loc, _a0)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_clsigi loc _a1 in `ObjTy (loc, _a0, _a1)
+    | `ObjTyEnd _a0 -> let _a0 = fill_ctyp loc _a0 in `ObjTyEnd (loc, _a0)
+    | `Obj _a0 -> let _a0 = fill_clsigi loc _a0 in `Obj (loc, _a0)
     | `ObjEnd -> `ObjEnd loc
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_cltyp loc _a0 in
-        let _a1 = fill_loc_cltyp loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.cltyp)
-and fill_loc_clsigi: FLoc.t -> FAstN.clsigi -> FAst.clsigi =
+        let _a0 = fill_cltyp loc _a0 in
+        let _a1 = fill_cltyp loc _a1 in `And (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cltyp)
+and fill_clsigi: FLoc.t -> FAstN.clsigi -> FAst.clsigi =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_clsigi loc _a0 in
-        let _a1 = fill_loc_clsigi loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_clsigi loc _a0 in
+        let _a1 = fill_clsigi loc _a1 in `Sem (loc, _a0, _a1)
     | `SigInherit _a0 ->
-        let _a0 = fill_loc_cltyp loc _a0 in `SigInherit (loc, _a0)
+        let _a0 = fill_cltyp loc _a0 in `SigInherit (loc, _a0)
     | `CgVal (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_flag loc _a2 in
-        let _a3 = fill_loc_ctyp loc _a3 in `CgVal (loc, _a0, _a1, _a2, _a3)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_flag loc _a2 in
+        let _a3 = fill_ctyp loc _a3 in `CgVal (loc, _a0, _a1, _a2, _a3)
     | `Method (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_ctyp loc _a2 in `Method (loc, _a0, _a1, _a2)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_ctyp loc _a2 in `Method (loc, _a0, _a1, _a2)
     | `VirMeth (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
     | `Eq (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.clsigi)
-and fill_loc_cldecl: FLoc.t -> FAstN.cldecl -> FAst.cldecl =
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clsigi)
+and fill_cldecl: FLoc.t -> FAstN.cldecl -> FAst.cldecl =
   fun loc  ->
     function
     | `ClDecl (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in
-        let _a2 = fill_loc_type_parameters loc _a2 in
-        let _a3 = fill_loc_clexp loc _a3 in `ClDecl (loc, _a0, _a1, _a2, _a3)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in
+        let _a2 = fill_type_parameters loc _a2 in
+        let _a3 = fill_clexp loc _a3 in `ClDecl (loc, _a0, _a1, _a2, _a3)
     | `ClDeclS (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_ident loc _a1 in
-        let _a2 = fill_loc_clexp loc _a2 in `ClDeclS (loc, _a0, _a1, _a2)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in
+        let _a2 = fill_clexp loc _a2 in `ClDeclS (loc, _a0, _a1, _a2)
     | `And (_a0,_a1) ->
-        let _a0 = fill_loc_cldecl loc _a0 in
-        let _a1 = fill_loc_cldecl loc _a1 in `And (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.cldecl)
-and fill_loc_clexp: FLoc.t -> FAstN.clexp -> FAst.clexp =
+        let _a0 = fill_cldecl loc _a0 in
+        let _a1 = fill_cldecl loc _a1 in `And (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.cldecl)
+and fill_clexp: FLoc.t -> FAstN.clexp -> FAst.clexp =
   fun loc  ->
     function
     | `CeApp (_a0,_a1) ->
-        let _a0 = fill_loc_clexp loc _a0 in
-        let _a1 = fill_loc_exp loc _a1 in `CeApp (loc, _a0, _a1)
-    | #vid' as _a0 -> (fill_loc_vid' loc _a0 :>FAst.clexp)
+        let _a0 = fill_clexp loc _a0 in
+        let _a1 = fill_exp loc _a1 in `CeApp (loc, _a0, _a1)
+    | #vid' as _a0 -> (fill_vid' loc _a0 :>FAst.clexp)
     | `ClApply (_a0,_a1) ->
-        let _a0 = fill_loc_vid loc _a0 in
-        let _a1 = fill_loc_type_parameters loc _a1 in
-        `ClApply (loc, _a0, _a1)
+        let _a0 = fill_vid loc _a0 in
+        let _a1 = fill_type_parameters loc _a1 in `ClApply (loc, _a0, _a1)
     | `CeFun (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_clexp loc _a1 in `CeFun (loc, _a0, _a1)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_clexp loc _a1 in `CeFun (loc, _a0, _a1)
     | `LetIn (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_bind loc _a1 in
-        let _a2 = fill_loc_clexp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
-    | `Obj _a0 -> let _a0 = fill_loc_clfield loc _a0 in `Obj (loc, _a0)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_bind loc _a1 in
+        let _a2 = fill_clexp loc _a2 in `LetIn (loc, _a0, _a1, _a2)
+    | `Obj _a0 -> let _a0 = fill_clfield loc _a0 in `Obj (loc, _a0)
     | `ObjEnd -> `ObjEnd loc
     | `ObjPat (_a0,_a1) ->
-        let _a0 = fill_loc_pat loc _a0 in
-        let _a1 = fill_loc_clfield loc _a1 in `ObjPat (loc, _a0, _a1)
-    | `ObjPatEnd _a0 ->
-        let _a0 = fill_loc_pat loc _a0 in `ObjPatEnd (loc, _a0)
+        let _a0 = fill_pat loc _a0 in
+        let _a1 = fill_clfield loc _a1 in `ObjPat (loc, _a0, _a1)
+    | `ObjPatEnd _a0 -> let _a0 = fill_pat loc _a0 in `ObjPatEnd (loc, _a0)
     | `Constraint (_a0,_a1) ->
-        let _a0 = fill_loc_clexp loc _a0 in
-        let _a1 = fill_loc_cltyp loc _a1 in `Constraint (loc, _a0, _a1)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.clexp)
-and fill_loc_clfield: FLoc.t -> FAstN.clfield -> FAst.clfield =
+        let _a0 = fill_clexp loc _a0 in
+        let _a1 = fill_cltyp loc _a1 in `Constraint (loc, _a0, _a1)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clexp)
+and fill_clfield: FLoc.t -> FAstN.clfield -> FAst.clfield =
   fun loc  ->
     function
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_clfield loc _a0 in
-        let _a1 = fill_loc_clfield loc _a1 in `Sem (loc, _a0, _a1)
+        let _a0 = fill_clfield loc _a0 in
+        let _a1 = fill_clfield loc _a1 in `Sem (loc, _a0, _a1)
     | `Inherit (_a0,_a1) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_clexp loc _a1 in `Inherit (loc, _a0, _a1)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_clexp loc _a1 in `Inherit (loc, _a0, _a1)
     | `InheritAs (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_flag loc _a0 in
-        let _a1 = fill_loc_clexp loc _a1 in
-        let _a2 = fill_loc_alident loc _a2 in `InheritAs (loc, _a0, _a1, _a2)
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_clexp loc _a1 in
+        let _a2 = fill_alident loc _a2 in `InheritAs (loc, _a0, _a1, _a2)
     | `CrVal (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_flag loc _a2 in
-        let _a3 = fill_loc_exp loc _a3 in `CrVal (loc, _a0, _a1, _a2, _a3)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_flag loc _a2 in
+        let _a3 = fill_exp loc _a3 in `CrVal (loc, _a0, _a1, _a2, _a3)
     | `VirVal (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_ctyp loc _a2 in `VirVal (loc, _a0, _a1, _a2)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_ctyp loc _a2 in `VirVal (loc, _a0, _a1, _a2)
     | `CrMth (_a0,_a1,_a2,_a3,_a4) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_flag loc _a2 in
-        let _a3 = fill_loc_exp loc _a3 in
-        let _a4 = fill_loc_ctyp loc _a4 in
-        `CrMth (loc, _a0, _a1, _a2, _a3, _a4)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_flag loc _a2 in
+        let _a3 = fill_exp loc _a3 in
+        let _a4 = fill_ctyp loc _a4 in `CrMth (loc, _a0, _a1, _a2, _a3, _a4)
     | `CrMthS (_a0,_a1,_a2,_a3) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_flag loc _a2 in
-        let _a3 = fill_loc_exp loc _a3 in `CrMthS (loc, _a0, _a1, _a2, _a3)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_flag loc _a2 in
+        let _a3 = fill_exp loc _a3 in `CrMthS (loc, _a0, _a1, _a2, _a3)
     | `VirMeth (_a0,_a1,_a2) ->
-        let _a0 = fill_loc_alident loc _a0 in
-        let _a1 = fill_loc_flag loc _a1 in
-        let _a2 = fill_loc_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
+        let _a0 = fill_alident loc _a0 in
+        let _a1 = fill_flag loc _a1 in
+        let _a2 = fill_ctyp loc _a2 in `VirMeth (loc, _a0, _a1, _a2)
     | `Eq (_a0,_a1) ->
-        let _a0 = fill_loc_ctyp loc _a0 in
-        let _a1 = fill_loc_ctyp loc _a1 in `Eq (loc, _a0, _a1)
+        let _a0 = fill_ctyp loc _a0 in
+        let _a1 = fill_ctyp loc _a1 in `Eq (loc, _a0, _a1)
     | `Initializer _a0 ->
-        let _a0 = fill_loc_exp loc _a0 in `Initializer (loc, _a0)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.clfield)
+        let _a0 = fill_exp loc _a0 in `Initializer (loc, _a0)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clfield)
 
-let rec fill_loc_ep: FLoc.t -> FAstN.ep -> FAst.ep =
+let rec fill_ep: FLoc.t -> FAstN.ep -> FAst.ep =
   fun loc  ->
     function
-    | #vid as _a0 -> (fill_loc_vid loc _a0 :>FAst.ep)
+    | #vid as _a0 -> (fill_vid loc _a0 :>FAst.ep)
     | `App (_a0,_a1) ->
-        let _a0 = fill_loc_ep loc _a0 in
-        let _a1 = fill_loc_ep loc _a1 in `App (loc, _a0, _a1)
+        let _a0 = fill_ep loc _a0 in
+        let _a1 = fill_ep loc _a1 in `App (loc, _a0, _a1)
     | `Vrn _a0 -> `Vrn (loc, _a0)
     | `Com (_a0,_a1) ->
-        let _a0 = fill_loc_ep loc _a0 in
-        let _a1 = fill_loc_ep loc _a1 in `Com (loc, _a0, _a1)
+        let _a0 = fill_ep loc _a0 in
+        let _a1 = fill_ep loc _a1 in `Com (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_ep loc _a0 in
-        let _a1 = fill_loc_ep loc _a1 in `Sem (loc, _a0, _a1)
-    | `Par _a0 -> let _a0 = fill_loc_ep loc _a0 in `Par (loc, _a0)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.ep)
+        let _a0 = fill_ep loc _a0 in
+        let _a1 = fill_ep loc _a1 in `Sem (loc, _a0, _a1)
+    | `Par _a0 -> let _a0 = fill_ep loc _a0 in `Par (loc, _a0)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.ep)
     | `ArrayEmpty -> `ArrayEmpty loc
-    | `Array _a0 -> let _a0 = fill_loc_ep loc _a0 in `Array (loc, _a0)
-    | `Record _a0 ->
-        let _a0 = fill_loc_rec_bind loc _a0 in `Record (loc, _a0)
-    | #literal as _a0 -> (fill_loc_literal loc _a0 :>FAst.ep)
-and fill_loc_rec_bind: FLoc.t -> FAstN.rec_bind -> FAst.rec_bind =
+    | `Array _a0 -> let _a0 = fill_ep loc _a0 in `Array (loc, _a0)
+    | `Record _a0 -> let _a0 = fill_rec_bind loc _a0 in `Record (loc, _a0)
+    | #literal as _a0 -> (fill_literal loc _a0 :>FAst.ep)
+and fill_rec_bind: FLoc.t -> FAstN.rec_bind -> FAst.rec_bind =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_loc_ident loc _a0 in
-        let _a1 = fill_loc_ep loc _a1 in `RecBind (loc, _a0, _a1)
+        let _a0 = fill_ident loc _a0 in
+        let _a1 = fill_ep loc _a1 in `RecBind (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
-        let _a0 = fill_loc_rec_bind loc _a0 in
-        let _a1 = fill_loc_rec_bind loc _a1 in `Sem (loc, _a0, _a1)
-    | #any as _a0 -> (fill_loc_any loc _a0 :>FAst.rec_bind)
-    | #ant as _a0 -> (fill_loc_ant loc _a0 :>FAst.rec_bind)
+        let _a0 = fill_rec_bind loc _a0 in
+        let _a1 = fill_rec_bind loc _a1 in `Sem (loc, _a0, _a1)
+    | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_bind)
+    | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_bind)
 
 class meta =
   object (self : 'self_type)

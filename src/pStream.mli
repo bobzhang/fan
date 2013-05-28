@@ -1,5 +1,5 @@
 open FAst
-open FanStreamTools
+open FStreamGen
 val parser_ipat : pat Gram.t
 val stream_exp_comp : sexp_comp Gram.t
 val stream_exp_comp_list : sexp_comp list Gram.t

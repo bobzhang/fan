@@ -8,7 +8,7 @@ type name = domains * string
    The generic quotation type . To see how fields are used here is an example:
     "{:q_name@q_loc|q_contents|}"
     The last one, q_shift is equal to the length of "{:q_name@q_loc|"*)      
-type quotation =  FanToken.quotation = {
+type quotation  = {
     q_name : name;
     q_loc : string;
     q_shift : int;

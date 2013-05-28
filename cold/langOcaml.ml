@@ -13,7 +13,7 @@ let filter s =
   begin
     if Typehook.show_code.contents
     then
-      (try FanBasic.p_stru Format.std_formatter code
+      (try Ast2pt.print_stru Format.std_formatter code
        with
        | _ ->
            prerr_endlinef

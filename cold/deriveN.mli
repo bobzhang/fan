@@ -21,7 +21,7 @@ open FSigUtil
      for objects, the default case for [left_type_id]
      is id, for example, which could be
      [`Pre "eq_"; `Pre "strip_loc";
-      `Pre "fill_loc_"; `Pre "meta_"; `Pre "pp_print_"]
+      `Pre "fill_"; `Pre "meta_"; `Pre "pp_print_"]
 
      which means the the type is self type which
      appears in the context

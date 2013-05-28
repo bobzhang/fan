@@ -10,7 +10,7 @@ let filter =
       | {:mexp| struct $s end |} -> s
       | _ -> failwith "can not find items back " in
     (if !Typehook.show_code then
-      (try FanBasic.p_stru Format.std_formatter code
+      (try Ast2pt.print_stru Format.std_formatter code
       with
       | _ ->
           prerr_endlinef 

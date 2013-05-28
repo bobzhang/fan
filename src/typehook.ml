@@ -80,7 +80,7 @@ let iterate_code sloc mtyps =
          AstFilters.use_implem_filter name ;
          acc)
     |(None,Some code) ->
-        let code = FanAstN.fill_loc_stru sloc code in
+        let code = FanAstN.fill_stru sloc code in
         ({:stru@sloc| $acc;; $code |};)
     |(_,None) -> acc);;
  
@@ -131,7 +131,7 @@ let traversal () : traversal  = object (self:'self_type)
     | `TypeWith(_loc,typedecl,_) ->
         self#stru (`Type(_loc,typedecl))
     | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> 
-        let item =  `Single (name,Objs.strip_loc_typedecl t) in
+        let item =  `Single (name,Objs.strip_typedecl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
               pp_print_types  item in
@@ -148,7 +148,7 @@ let traversal () : traversal  = object (self:'self_type)
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 
       ((if self#is_in_and_types then
         self#update_cur_and_types (fun lst ->
-          (name,Objs.strip_loc_typedecl t) :: lst ));
+          (name,Objs.strip_typedecl t) :: lst ));
         t)
     | t -> super#typedecl t 
 end

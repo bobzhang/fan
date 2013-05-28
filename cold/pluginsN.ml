@@ -130,7 +130,7 @@ let gen_strip =
              (`LetIn (`Negative, (`Bind (pat0, exp)), res) : FAstN.exp ))
       params result in
   let mk_record _ = assert false in
-  gen_stru ~id:(`Pre "strip_loc_") ~mk_tuple ~mk_record ~mk_variant
+  gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "FAst"), (`Lid x))),
@@ -168,8 +168,8 @@ let gen_fill =
              (`LetIn (`Negative, (`Bind (pat0, exp)), res) : FAstN.exp ))
       params result in
   let mk_record _cols = assert false in
-  gen_stru ~id:(`Pre "fill_loc_") ~mk_tuple ~mk_record ~mk_variant
-    ~names:["loc"]
+  gen_stru ~id:(`Pre "fill_") ~mk_tuple ~mk_record ~mk_variant ~names:
+    ["loc"]
     ~annot:(fun x  ->
               ((`Arrow
                   ((`Dot ((`Uid "FLoc"), (`Lid "t"))),

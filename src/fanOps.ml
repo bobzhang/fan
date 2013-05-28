@@ -17,7 +17,7 @@ open AstLib
 
   Example:
   {[
-  mklist _loc [{|b|}; {|c|}; {|d|}] |> FanBasic.p_exp f;
+  mklist _loc [{|b|}; {|c|}; {|d|}] |> Ast2pt.print_exp f;
   [b; c; d]
   ]}
   (* {:exp| [1;2;3::[]]|} *)
@@ -287,7 +287,7 @@ let meta_array mf_a _loc ls =
 (*
   Examples:
   {[
-  bigarray_get _loc {|a|} {|(b,c,d)|} |> FanBasic.p_exp f;
+  bigarray_get _loc {|a|} {|(b,c,d)|} |> Ast2pt.print_exp f;
   ]}
  *)  
 let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
@@ -308,7 +308,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
 (*
   Example:
   {[
-  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> FanBasic.p_exp f;
+  bigarray_set _loc {|a.{b,c,d}|} {|3+2|} |> Option.get |> Ast2pt.print_exp f;
   a.{b,c,d} <- (3 + 2)
   ]}
   FIXME

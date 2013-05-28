@@ -22,7 +22,7 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          pp_print_string _a1) fmt _a0
 
-type quotation = FanToken.quotation =
+type quotation = 
   {
   q_name: name;
   q_loc: string;

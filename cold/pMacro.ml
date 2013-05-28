@@ -78,17 +78,16 @@ let apply () =
              `Stoken
                (((function | `STR (_,_) -> true | _ -> false)),
                  (`Normal, "`STR (_,_)"))],
-              ("Gram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (FanBasic.parse_include_file strus fname)) : 'macro_def )\n     | _ ->\n         failwith \"Lazy (lazy (FanBasic.parse_include_file strus fname))\n\")\n",
+              ("Gram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,fname) ->\n         (Lazy (lazy (Gram.parse_include_file strus fname)) : 'macro_def )\n     | _ -> failwith \"Lazy (lazy (Gram.parse_include_file strus fname))\n\")\n",
                 (Gram.mk_action
                    (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                       match __fan_1 with
                       | `STR (_,fname) ->
-                          (Lazy
-                             (lazy (FanBasic.parse_include_file strus fname)) : 
+                          (Lazy (lazy (Gram.parse_include_file strus fname)) : 
                           'macro_def )
                       | _ ->
                           failwith
-                            "Lazy (lazy (FanBasic.parse_include_file strus fname))\n"))))]));
+                            "Lazy (lazy (Gram.parse_include_file strus fname))\n"))))]));
       Gram.extend_single (uident_eval_ifdef : 'uident_eval_ifdef Gram.t )
         (None,
           (None, None,
@@ -414,7 +413,7 @@ let apply () =
       ("-U", (FArg.String (undef ~exp ~pat)),
         "<string> Undefine for IFDEF instruction.");
     Options.add
-      ("-I", (FArg.String FanBasic.add_include_dir),
+      ("-I", (FArg.String FIncludeDir.add),
         "<string> Add a directory to INCLUDE search path.")
   end
 

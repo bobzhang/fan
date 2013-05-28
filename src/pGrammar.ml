@@ -2,7 +2,7 @@
 open FAst
 open AstLib
 open FGramDef
-open FanGrammarTools
+open FGramGen
 open Syntax
 open LibUtil
 open FanUtil

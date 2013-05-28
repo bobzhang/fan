@@ -9,7 +9,7 @@ include_quot:
     let (keep,cf) = FState.((keep,current_filters)) in
     {:save| keep cf ->  begin
       FState.reset ();
-      FanBasic.parse_include_file Syntax.strus s;
+      Gram.parse_include_file Syntax.strus s;
     end
   |}
  ]

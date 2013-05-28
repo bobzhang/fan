@@ -6,7 +6,7 @@ type domains =
 
 type name = (domains*string) with ("Print")
 
-type quotation = FanToken.quotation = {
+type quotation  = {
     q_name : name;
     q_loc : string;
     q_shift : int;

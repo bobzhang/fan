@@ -47,7 +47,7 @@ let make_filter (s,code) =
   let f =
     function
     | (`StExp (_loc,`Lid (_,s')) : FAst.stru) when s = s' ->
-        FanAstN.fill_loc_stru _loc code
+        FanAstN.fill_stru _loc code
     | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
 

@@ -2,7 +2,7 @@ open StdLib
 
 open FAst
 
-let strip_loc_ant ant = ant
+let strip_ant ant = ant
 
 let _ = begin (); () end
 
@@ -3930,7 +3930,7 @@ class fold =
     method floc_t : FLoc.t -> 'self_type= self#unknown
   end
 
-let strip_loc_literal: FAst.literal -> FAstN.literal =
+let strip_literal: FAst.literal -> FAstN.literal =
   function
   | `Chr (_a0,_a1) -> `Chr _a1
   | `Int (_a0,_a1) -> `Int _a1
@@ -3940,803 +3940,764 @@ let strip_loc_literal: FAst.literal -> FAstN.literal =
   | `Nativeint (_a0,_a1) -> `Nativeint _a1
   | `Str (_a0,_a1) -> `Str _a1
 
-let strip_loc_flag: FAst.flag -> FAstN.flag =
+let strip_flag: FAst.flag -> FAstN.flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.flag)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.flag)
 
-let strip_loc_position_flag: FAst.position_flag -> FAstN.position_flag =
+let strip_position_flag: FAst.position_flag -> FAstN.position_flag =
   function
   | `Positive _a0 -> `Positive
   | `Negative _a0 -> `Negative
   | `Normal _a0 -> `Normal
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.position_flag)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.position_flag)
 
-let rec strip_loc_strings: FAst.strings -> FAstN.strings =
+let rec strip_strings: FAst.strings -> FAstN.strings =
   function
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_strings _a1 in
-      let _a2 = strip_loc_strings _a2 in `App (_a1, _a2)
+      let _a1 = strip_strings _a1 in
+      let _a2 = strip_strings _a2 in `App (_a1, _a2)
   | `Str (_a0,_a1) -> `Str _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.strings)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.strings)
 
-let strip_loc_lident: FAst.lident -> FAstN.lident =
+let strip_lident: FAst.lident -> FAstN.lident =
   fun (`Lid (_a0,_a1))  -> `Lid _a1
 
-let strip_loc_alident: FAst.alident -> FAstN.alident =
+let strip_alident: FAst.alident -> FAstN.alident =
   function
   | `Lid (_a0,_a1) -> `Lid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.alident)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.alident)
 
-let strip_loc_auident: FAst.auident -> FAstN.auident =
+let strip_auident: FAst.auident -> FAstN.auident =
   function
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.auident)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.auident)
 
-let strip_loc_aident: FAst.aident -> FAstN.aident =
+let strip_aident: FAst.aident -> FAstN.aident =
   function
-  | #alident as _a0 -> (strip_loc_alident _a0 :>FAstN.aident)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>FAstN.aident)
+  | #alident as _a0 -> (strip_alident _a0 :>FAstN.aident)
+  | #auident as _a0 -> (strip_auident _a0 :>FAstN.aident)
 
-let strip_loc_astring: FAst.astring -> FAstN.astring =
+let strip_astring: FAst.astring -> FAstN.astring =
   function
   | `C (_a0,_a1) -> `C _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.astring)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.astring)
 
-let rec strip_loc_uident: FAst.uident -> FAstN.uident =
+let rec strip_uident: FAst.uident -> FAstN.uident =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_uident _a1 in
-      let _a2 = strip_loc_uident _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_uident _a1 in
+      let _a2 = strip_uident _a2 in `Dot (_a1, _a2)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_uident _a1 in
-      let _a2 = strip_loc_uident _a2 in `App (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>FAstN.uident)
+      let _a1 = strip_uident _a1 in
+      let _a2 = strip_uident _a2 in `App (_a1, _a2)
+  | #auident as _a0 -> (strip_auident _a0 :>FAstN.uident)
 
-let rec strip_loc_ident: FAst.ident -> FAstN.ident =
+let rec strip_ident: FAst.ident -> FAstN.ident =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `Dot (_a1, _a2)
   | `Apply (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `Apply (_a1, _a2)
-  | #alident as _a0 -> (strip_loc_alident _a0 :>FAstN.ident)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>FAstN.ident)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `Apply (_a1, _a2)
+  | #alident as _a0 -> (strip_alident _a0 :>FAstN.ident)
+  | #auident as _a0 -> (strip_auident _a0 :>FAstN.ident)
 
-let strip_loc_ident': FAst.ident' -> FAstN.ident' =
+let strip_ident': FAst.ident' -> FAstN.ident' =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `Dot (_a1, _a2)
   | `Apply (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `Apply (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `Apply (_a1, _a2)
   | `Lid (_a0,_a1) -> `Lid _a1
   | `Uid (_a0,_a1) -> `Uid _a1
 
-let rec strip_loc_vid: FAst.vid -> FAstN.vid =
+let rec strip_vid: FAst.vid -> FAstN.vid =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_vid _a1 in
-      let _a2 = strip_loc_vid _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_vid _a1 in let _a2 = strip_vid _a2 in `Dot (_a1, _a2)
   | `Lid (_a0,_a1) -> `Lid _a1
   | `Uid (_a0,_a1) -> `Uid _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.vid)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.vid)
 
-let strip_loc_vid': FAst.vid' -> FAstN.vid' =
+let strip_vid': FAst.vid' -> FAstN.vid' =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_vid _a1 in
-      let _a2 = strip_loc_vid _a2 in `Dot (_a1, _a2)
+      let _a1 = strip_vid _a1 in let _a2 = strip_vid _a2 in `Dot (_a1, _a2)
   | `Lid (_a0,_a1) -> `Lid _a1
   | `Uid (_a0,_a1) -> `Uid _a1
 
-let rec strip_loc_dupath: FAst.dupath -> FAstN.dupath =
+let rec strip_dupath: FAst.dupath -> FAstN.dupath =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_dupath _a1 in
-      let _a2 = strip_loc_dupath _a2 in `Dot (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>FAstN.dupath)
+      let _a1 = strip_dupath _a1 in
+      let _a2 = strip_dupath _a2 in `Dot (_a1, _a2)
+  | #auident as _a0 -> (strip_auident _a0 :>FAstN.dupath)
 
-let strip_loc_dlpath: FAst.dlpath -> FAstN.dlpath =
+let strip_dlpath: FAst.dlpath -> FAstN.dlpath =
   function
   | `Dot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_dupath _a1 in
-      let _a2 = strip_loc_alident _a2 in `Dot (_a1, _a2)
-  | #alident as _a0 -> (strip_loc_alident _a0 :>FAstN.dlpath)
+      let _a1 = strip_dupath _a1 in
+      let _a2 = strip_alident _a2 in `Dot (_a1, _a2)
+  | #alident as _a0 -> (strip_alident _a0 :>FAstN.dlpath)
 
-let strip_loc_any: FAst.any -> FAstN.any = fun (`Any _a0)  -> `Any
+let strip_any: FAst.any -> FAstN.any = fun (`Any _a0)  -> `Any
 
-let rec strip_loc_ctyp: FAst.ctyp -> FAstN.ctyp =
+let rec strip_ctyp: FAst.ctyp -> FAstN.ctyp =
   function
   | `Alias (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.ctyp)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_alident _a2 in `Alias (_a1, _a2)
+  | #any as _a0 -> (strip_any _a0 :>FAstN.ctyp)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `App (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `App (_a1, _a2)
   | `Arrow (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Arrow (_a1, _a2)
-  | `ClassPath (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `ClassPath _a1
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `Arrow (_a1, _a2)
+  | `ClassPath (_a0,_a1) -> let _a1 = strip_ident _a1 in `ClassPath _a1
   | `Label (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Label (_a1, _a2)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in `Label (_a1, _a2)
   | `OptLabl (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `OptLabl (_a1, _a2)
-  | #ident' as _a0 -> (strip_loc_ident' _a0 :>FAstN.ctyp)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in `OptLabl (_a1, _a2)
+  | #ident' as _a0 -> (strip_ident' _a0 :>FAstN.ctyp)
   | `TyObj (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_name_ctyp _a1 in
-      let _a2 = strip_loc_flag _a2 in `TyObj (_a1, _a2)
-  | `TyObjEnd (_a0,_a1) -> let _a1 = strip_loc_flag _a1 in `TyObjEnd _a1
+      let _a1 = strip_name_ctyp _a1 in
+      let _a2 = strip_flag _a2 in `TyObj (_a1, _a2)
+  | `TyObjEnd (_a0,_a1) -> let _a1 = strip_flag _a1 in `TyObjEnd _a1
   | `TyPol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyPol (_a1, _a2)
-  | `TyPolEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `TyPolEnd _a1
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `TyPol (_a1, _a2)
+  | `TyPolEnd (_a0,_a1) -> let _a1 = strip_ctyp _a1 in `TyPolEnd _a1
   | `TyTypePol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyTypePol (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `TyTypePol (_a1, _a2)
   | `Quote (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_position_flag _a1 in
-      let _a2 = strip_loc_alident _a2 in `Quote (_a1, _a2)
-  | `QuoteAny (_a0,_a1) ->
-      let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
-  | `Par (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Par _a1
+      let _a1 = strip_position_flag _a1 in
+      let _a2 = strip_alident _a2 in `Quote (_a1, _a2)
+  | `QuoteAny (_a0,_a1) -> let _a1 = strip_position_flag _a1 in `QuoteAny _a1
+  | `Par (_a0,_a1) -> let _a1 = strip_ctyp _a1 in `Par _a1
   | `Sta (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Sta (_a1, _a2)
-  | `PolyEq (_a0,_a1) -> let _a1 = strip_loc_row_field _a1 in `PolyEq _a1
-  | `PolySup (_a0,_a1) -> let _a1 = strip_loc_row_field _a1 in `PolySup _a1
-  | `PolyInf (_a0,_a1) -> let _a1 = strip_loc_row_field _a1 in `PolyInf _a1
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `Sta (_a1, _a2)
+  | `PolyEq (_a0,_a1) -> let _a1 = strip_row_field _a1 in `PolyEq _a1
+  | `PolySup (_a0,_a1) -> let _a1 = strip_row_field _a1 in `PolySup _a1
+  | `PolyInf (_a0,_a1) -> let _a1 = strip_row_field _a1 in `PolyInf _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Com (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `Com (_a1, _a2)
   | `PolyInfSup (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_row_field _a1 in
-      let _a2 = strip_loc_tag_names _a2 in `PolyInfSup (_a1, _a2)
-  | `Package (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Package _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.ctyp)
-and strip_loc_type_parameters: FAst.type_parameters -> FAstN.type_parameters
-  =
+      let _a1 = strip_row_field _a1 in
+      let _a2 = strip_tag_names _a2 in `PolyInfSup (_a1, _a2)
+  | `Package (_a0,_a1) -> let _a1 = strip_mtyp _a1 in `Package _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.ctyp)
+and strip_type_parameters: FAst.type_parameters -> FAstN.type_parameters =
   function
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_type_parameters _a1 in
-      let _a2 = strip_loc_type_parameters _a2 in `Com (_a1, _a2)
-  | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.type_parameters)
-and strip_loc_row_field: FAst.row_field -> FAstN.row_field =
+      let _a1 = strip_type_parameters _a1 in
+      let _a2 = strip_type_parameters _a2 in `Com (_a1, _a2)
+  | `Ctyp (_a0,_a1) -> let _a1 = strip_ctyp _a1 in `Ctyp _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.type_parameters)
+and strip_row_field: FAst.row_field -> FAstN.row_field =
   function
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.row_field)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.row_field)
   | `Bar (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_row_field _a1 in
-      let _a2 = strip_loc_row_field _a2 in `Bar (_a1, _a2)
-  | `TyVrn (_a0,_a1) -> let _a1 = strip_loc_astring _a1 in `TyVrn _a1
+      let _a1 = strip_row_field _a1 in
+      let _a2 = strip_row_field _a2 in `Bar (_a1, _a2)
+  | `TyVrn (_a0,_a1) -> let _a1 = strip_astring _a1 in `TyVrn _a1
   | `TyVrnOf (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_astring _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyVrnOf (_a1, _a2)
-  | `Ctyp (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `Ctyp _a1
-and strip_loc_tag_names: FAst.tag_names -> FAstN.tag_names =
+      let _a1 = strip_astring _a1 in
+      let _a2 = strip_ctyp _a2 in `TyVrnOf (_a1, _a2)
+  | `Ctyp (_a0,_a1) -> let _a1 = strip_ctyp _a1 in `Ctyp _a1
+and strip_tag_names: FAst.tag_names -> FAstN.tag_names =
   function
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.tag_names)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.tag_names)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_tag_names _a1 in
-      let _a2 = strip_loc_tag_names _a2 in `App (_a1, _a2)
-  | `TyVrn (_a0,_a1) -> let _a1 = strip_loc_astring _a1 in `TyVrn _a1
-and strip_loc_typedecl: FAst.typedecl -> FAstN.typedecl =
+      let _a1 = strip_tag_names _a1 in
+      let _a2 = strip_tag_names _a2 in `App (_a1, _a2)
+  | `TyVrn (_a0,_a1) -> let _a1 = strip_astring _a1 in `TyVrn _a1
+and strip_typedecl: FAst.typedecl -> FAstN.typedecl =
   function
   | `TyDcl (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_opt_decl_params _a2 in
-      let _a3 = strip_loc_type_info _a3 in
-      let _a4 = strip_loc_opt_type_constr _a4 in `TyDcl (_a1, _a2, _a3, _a4)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_opt_decl_params _a2 in
+      let _a3 = strip_type_info _a3 in
+      let _a4 = strip_opt_type_constr _a4 in `TyDcl (_a1, _a2, _a3, _a4)
   | `TyAbstr (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_opt_decl_params _a2 in
-      let _a3 = strip_loc_opt_type_constr _a3 in `TyAbstr (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_opt_decl_params _a2 in
+      let _a3 = strip_opt_type_constr _a3 in `TyAbstr (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_typedecl _a1 in
-      let _a2 = strip_loc_typedecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.typedecl)
-and strip_loc_type_constr: FAst.type_constr -> FAstN.type_constr =
+      let _a1 = strip_typedecl _a1 in
+      let _a2 = strip_typedecl _a2 in `And (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.typedecl)
+and strip_type_constr: FAst.type_constr -> FAstN.type_constr =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_type_constr _a1 in
-      let _a2 = strip_loc_type_constr _a2 in `And (_a1, _a2)
+      let _a1 = strip_type_constr _a1 in
+      let _a2 = strip_type_constr _a2 in `And (_a1, _a2)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.type_constr)
-and strip_loc_opt_type_constr: FAst.opt_type_constr -> FAstN.opt_type_constr
-  =
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `Eq (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.type_constr)
+and strip_opt_type_constr: FAst.opt_type_constr -> FAstN.opt_type_constr =
   function
-  | `Some (_a0,_a1) -> let _a1 = strip_loc_type_constr _a1 in `Some _a1
+  | `Some (_a0,_a1) -> let _a1 = strip_type_constr _a1 in `Some _a1
   | `None _a0 -> `None
-and strip_loc_decl_param: FAst.decl_param -> FAstN.decl_param =
+and strip_decl_param: FAst.decl_param -> FAstN.decl_param =
   function
   | `Quote (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_position_flag _a1 in
-      let _a2 = strip_loc_alident _a2 in `Quote (_a1, _a2)
-  | `QuoteAny (_a0,_a1) ->
-      let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
+      let _a1 = strip_position_flag _a1 in
+      let _a2 = strip_alident _a2 in `Quote (_a1, _a2)
+  | `QuoteAny (_a0,_a1) -> let _a1 = strip_position_flag _a1 in `QuoteAny _a1
   | `Any _a0 -> `Any
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.decl_param)
-and strip_loc_decl_params: FAst.decl_params -> FAstN.decl_params =
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.decl_param)
+and strip_decl_params: FAst.decl_params -> FAstN.decl_params =
   function
   | `Quote (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_position_flag _a1 in
-      let _a2 = strip_loc_alident _a2 in `Quote (_a1, _a2)
-  | `QuoteAny (_a0,_a1) ->
-      let _a1 = strip_loc_position_flag _a1 in `QuoteAny _a1
+      let _a1 = strip_position_flag _a1 in
+      let _a2 = strip_alident _a2 in `Quote (_a1, _a2)
+  | `QuoteAny (_a0,_a1) -> let _a1 = strip_position_flag _a1 in `QuoteAny _a1
   | `Any _a0 -> `Any
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_decl_params _a1 in
-      let _a2 = strip_loc_decl_params _a2 in `Com (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.decl_params)
-and strip_loc_opt_decl_params: FAst.opt_decl_params -> FAstN.opt_decl_params
-  =
+      let _a1 = strip_decl_params _a1 in
+      let _a2 = strip_decl_params _a2 in `Com (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.decl_params)
+and strip_opt_decl_params: FAst.opt_decl_params -> FAstN.opt_decl_params =
   function
-  | `Some (_a0,_a1) -> let _a1 = strip_loc_decl_params _a1 in `Some _a1
+  | `Some (_a0,_a1) -> let _a1 = strip_decl_params _a1 in `Some _a1
   | `None _a0 -> `None
-and strip_loc_type_info: FAst.type_info -> FAstN.type_info =
+and strip_type_info: FAst.type_info -> FAstN.type_info =
   function
   | `TyMan (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_type_repr _a3 in `TyMan (_a1, _a2, _a3)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_type_repr _a3 in `TyMan (_a1, _a2, _a3)
   | `TyRepr (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_type_repr _a2 in `TyRepr (_a1, _a2)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_type_repr _a2 in `TyRepr (_a1, _a2)
   | `TyEq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyEq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.type_info)
-and strip_loc_type_repr: FAst.type_repr -> FAstN.type_repr =
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_ctyp _a2 in `TyEq (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.type_info)
+and strip_type_repr: FAst.type_repr -> FAstN.type_repr =
   function
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_name_ctyp _a1 in `Record _a1
-  | `Sum (_a0,_a1) -> let _a1 = strip_loc_or_ctyp _a1 in `Sum _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.type_repr)
-and strip_loc_name_ctyp: FAst.name_ctyp -> FAstN.name_ctyp =
+  | `Record (_a0,_a1) -> let _a1 = strip_name_ctyp _a1 in `Record _a1
+  | `Sum (_a0,_a1) -> let _a1 = strip_or_ctyp _a1 in `Sum _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.type_repr)
+and strip_name_ctyp: FAst.name_ctyp -> FAstN.name_ctyp =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_name_ctyp _a1 in
-      let _a2 = strip_loc_name_ctyp _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_name_ctyp _a1 in
+      let _a2 = strip_name_ctyp _a2 in `Sem (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in `TyCol (_a1, _a2)
   | `TyColMut (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyColMut (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.name_ctyp)
-and strip_loc_or_ctyp: FAst.or_ctyp -> FAstN.or_ctyp =
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in `TyColMut (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.name_ctyp)
+and strip_or_ctyp: FAst.or_ctyp -> FAstN.or_ctyp =
   function
   | `Bar (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_or_ctyp _a1 in
-      let _a2 = strip_loc_or_ctyp _a2 in `Bar (_a1, _a2)
+      let _a1 = strip_or_ctyp _a1 in
+      let _a2 = strip_or_ctyp _a2 in `Bar (_a1, _a2)
   | `TyCol (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TyCol (_a1, _a2)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_ctyp _a2 in `TyCol (_a1, _a2)
   | `Of (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
-  | #auident as _a0 -> (strip_loc_auident _a0 :>FAstN.or_ctyp)
-and strip_loc_of_ctyp: FAst.of_ctyp -> FAstN.of_ctyp =
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_ctyp _a2 in `Of (_a1, _a2)
+  | #auident as _a0 -> (strip_auident _a0 :>FAstN.or_ctyp)
+and strip_of_ctyp: FAst.of_ctyp -> FAstN.of_ctyp =
   function
   | `Of (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_vid _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Of (_a1, _a2)
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>FAstN.of_ctyp)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.of_ctyp)
-and strip_loc_pat: FAst.pat -> FAstN.pat =
+      let _a1 = strip_vid _a1 in let _a2 = strip_ctyp _a2 in `Of (_a1, _a2)
+  | #vid' as _a0 -> (strip_vid' _a0 :>FAstN.of_ctyp)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.of_ctyp)
+and strip_pat: FAst.pat -> FAstN.pat =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>FAstN.pat)
+  | #vid as _a0 -> (strip_vid _a0 :>FAstN.pat)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `App (_a1, _a2)
+      let _a1 = strip_pat _a1 in let _a2 = strip_pat _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `Com (_a1, _a2)
+      let _a1 = strip_pat _a1 in let _a2 = strip_pat _a2 in `Com (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `Sem (_a1, _a2)
-  | `Par (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.pat)
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_pat _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>FAstN.pat)
+      let _a1 = strip_pat _a1 in let _a2 = strip_pat _a2 in `Sem (_a1, _a2)
+  | `Par (_a0,_a1) -> let _a1 = strip_pat _a1 in `Par _a1
+  | #any as _a0 -> (strip_any _a0 :>FAstN.pat)
+  | `Record (_a0,_a1) -> let _a1 = strip_rec_pat _a1 in `Record _a1
+  | #literal as _a0 -> (strip_literal _a0 :>FAstN.pat)
   | `Alias (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_alident _a2 in `Alias (_a1, _a2)
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_alident _a2 in `Alias (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
-  | `Array (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Array _a1
-  | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
+  | `Array (_a0,_a1) -> let _a1 = strip_pat _a1 in `Array _a1
+  | `LabelS (_a0,_a1) -> let _a1 = strip_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_pat _a2 in `Label (_a1, _a2)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_pat _a2 in `Label (_a1, _a2)
   | `OptLabl (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_pat _a2 in `OptLabl (_a1, _a2)
-  | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_pat _a2 in `OptLabl (_a1, _a2)
+  | `OptLablS (_a0,_a1) -> let _a1 = strip_alident _a1 in `OptLablS _a1
   | `OptLablExpr (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_pat _a2 in
-      let _a3 = strip_loc_exp _a3 in `OptLablExpr (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_pat _a2 in
+      let _a3 = strip_exp _a3 in `OptLablExpr (_a1, _a2, _a3)
   | `Bar (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `Bar (_a1, _a2)
+      let _a1 = strip_pat _a1 in let _a2 = strip_pat _a2 in `Bar (_a1, _a2)
   | `PaRng (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_pat _a2 in `PaRng (_a1, _a2)
+      let _a1 = strip_pat _a1 in let _a2 = strip_pat _a2 in `PaRng (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
-  | `ClassPath (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `ClassPath _a1
-  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `Lazy _a1
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_ctyp _a2 in `Constraint (_a1, _a2)
+  | `ClassPath (_a0,_a1) -> let _a1 = strip_ident _a1 in `ClassPath _a1
+  | `Lazy (_a0,_a1) -> let _a1 = strip_pat _a1 in `Lazy _a1
   | `ModuleUnpack (_a0,_a1) ->
-      let _a1 = strip_loc_auident _a1 in `ModuleUnpack _a1
+      let _a1 = strip_auident _a1 in `ModuleUnpack _a1
   | `ModuleConstraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `ModuleConstraint (_a1, _a2)
-and strip_loc_rec_pat: FAst.rec_pat -> FAstN.rec_pat =
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_ctyp _a2 in `ModuleConstraint (_a1, _a2)
+and strip_rec_pat: FAst.rec_pat -> FAstN.rec_pat =
   function
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_pat _a2 in `RecBind (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_pat _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_pat _a1 in
-      let _a2 = strip_loc_rec_pat _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.rec_pat)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.rec_pat)
-and strip_loc_exp: FAst.exp -> FAstN.exp =
+      let _a1 = strip_rec_pat _a1 in
+      let _a2 = strip_rec_pat _a2 in `Sem (_a1, _a2)
+  | #any as _a0 -> (strip_any _a0 :>FAstN.rec_pat)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.rec_pat)
+and strip_exp: FAst.exp -> FAstN.exp =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>FAstN.exp)
+  | #vid as _a0 -> (strip_vid _a0 :>FAstN.exp)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `App (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `Com (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `Com (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `Sem (_a1, _a2)
-  | `Par (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.exp)
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>FAstN.exp)
+      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `Sem (_a1, _a2)
+  | `Par (_a0,_a1) -> let _a1 = strip_exp _a1 in `Par _a1
+  | #any as _a0 -> (strip_any _a0 :>FAstN.exp)
+  | `Record (_a0,_a1) -> let _a1 = strip_rec_exp _a1 in `Record _a1
+  | #literal as _a0 -> (strip_literal _a0 :>FAstN.exp)
   | `RecordWith (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `RecordWith (_a1, _a2)
+      let _a1 = strip_rec_exp _a1 in
+      let _a2 = strip_exp _a2 in `RecordWith (_a1, _a2)
   | `Field (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `Field (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `Field (_a1, _a2)
   | `ArrayDot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `ArrayDot (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_exp _a2 in `ArrayDot (_a1, _a2)
   | `ArrayEmpty _a0 -> `ArrayEmpty
-  | `Array (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Array _a1
-  | `Assert (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Assert _a1
+  | `Array (_a0,_a1) -> let _a1 = strip_exp _a1 in `Array _a1
+  | `Assert (_a0,_a1) -> let _a1 = strip_exp _a1 in `Assert _a1
   | `Assign (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `Assign (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_exp _a2 in `Assign (_a1, _a2)
   | `For (_a0,_a1,_a2,_a3,_a4,_a5) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in
-      let _a3 = strip_loc_exp _a3 in
-      let _a4 = strip_loc_flag _a4 in
-      let _a5 = strip_loc_exp _a5 in `For (_a1, _a2, _a3, _a4, _a5)
-  | `Fun (_a0,_a1) -> let _a1 = strip_loc_case _a1 in `Fun _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in
+      let _a3 = strip_exp _a3 in
+      let _a4 = strip_flag _a4 in
+      let _a5 = strip_exp _a5 in `For (_a1, _a2, _a3, _a4, _a5)
+  | `Fun (_a0,_a1) -> let _a1 = strip_case _a1 in `Fun _a1
   | `IfThenElse (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in
-      let _a3 = strip_loc_exp _a3 in `IfThenElse (_a1, _a2, _a3)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_exp _a2 in
+      let _a3 = strip_exp _a3 in `IfThenElse (_a1, _a2, _a3)
   | `IfThen (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `IfThen (_a1, _a2)
-  | `LabelS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `LabelS _a1
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_exp _a2 in `IfThen (_a1, _a2)
+  | `LabelS (_a0,_a1) -> let _a1 = strip_alident _a1 in `LabelS _a1
   | `Label (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in `Label (_a1, _a2)
-  | `Lazy (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Lazy _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in `Label (_a1, _a2)
+  | `Lazy (_a0,_a1) -> let _a1 = strip_exp _a1 in `Lazy _a1
   | `LetIn (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_bind _a2 in
-      let _a3 = strip_loc_exp _a3 in `LetIn (_a1, _a2, _a3)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_bind _a2 in
+      let _a3 = strip_exp _a3 in `LetIn (_a1, _a2, _a3)
   | `LetTryInWith (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_bind _a2 in
-      let _a3 = strip_loc_exp _a3 in
-      let _a4 = strip_loc_case _a4 in `LetTryInWith (_a1, _a2, _a3, _a4)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_bind _a2 in
+      let _a3 = strip_exp _a3 in
+      let _a4 = strip_case _a4 in `LetTryInWith (_a1, _a2, _a3, _a4)
   | `LetModule (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mexp _a2 in
-      let _a3 = strip_loc_exp _a3 in `LetModule (_a1, _a2, _a3)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mexp _a2 in
+      let _a3 = strip_exp _a3 in `LetModule (_a1, _a2, _a3)
   | `Match (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_case _a2 in `Match (_a1, _a2)
-  | `New (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `New _a1
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clfield _a1 in `Obj _a1
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_case _a2 in `Match (_a1, _a2)
+  | `New (_a0,_a1) -> let _a1 = strip_ident _a1 in `New _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_clfield _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_clfield _a2 in `ObjPat (_a1, _a2)
-  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_clfield _a2 in `ObjPat (_a1, _a2)
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_pat _a1 in `ObjPatEnd _a1
   | `OptLabl (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in `OptLabl (_a1, _a2)
-  | `OptLablS (_a0,_a1) -> let _a1 = strip_loc_alident _a1 in `OptLablS _a1
-  | `OvrInst (_a0,_a1) -> let _a1 = strip_loc_rec_exp _a1 in `OvrInst _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in `OptLabl (_a1, _a2)
+  | `OptLablS (_a0,_a1) -> let _a1 = strip_alident _a1 in `OptLablS _a1
+  | `OvrInst (_a0,_a1) -> let _a1 = strip_rec_exp _a1 in `OvrInst _a1
   | `OvrInstEmpty _a0 -> `OvrInstEmpty
-  | `Seq (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Seq _a1
+  | `Seq (_a0,_a1) -> let _a1 = strip_exp _a1 in `Seq _a1
   | `Send (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_alident _a2 in `Send (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_alident _a2 in `Send (_a1, _a2)
   | `StringDot (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `StringDot (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_exp _a2 in `StringDot (_a1, _a2)
   | `Try (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_case _a2 in `Try (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_case _a2 in `Try (_a1, _a2)
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Constraint (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_ctyp _a2 in `Constraint (_a1, _a2)
   | `Coercion (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `Coercion (_a1, _a2, _a3)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_ctyp _a2 in
+      let _a3 = strip_ctyp _a3 in `Coercion (_a1, _a2, _a3)
   | `Subtype (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Subtype (_a1, _a2)
+      let _a1 = strip_exp _a1 in
+      let _a2 = strip_ctyp _a2 in `Subtype (_a1, _a2)
   | `While (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_exp _a1 in
-      let _a2 = strip_loc_exp _a2 in `While (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `While (_a1, _a2)
   | `LetOpen (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_exp _a2 in `LetOpen (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_exp _a2 in `LetOpen (_a1, _a2)
   | `LocalTypeFun (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in `LocalTypeFun (_a1, _a2)
-  | `Package_exp (_a0,_a1) ->
-      let _a1 = strip_loc_mexp _a1 in `Package_exp _a1
-and strip_loc_rec_exp: FAst.rec_exp -> FAstN.rec_exp =
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in `LocalTypeFun (_a1, _a2)
+  | `Package_exp (_a0,_a1) -> let _a1 = strip_mexp _a1 in `Package_exp _a1
+and strip_rec_exp: FAst.rec_exp -> FAstN.rec_exp =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_exp _a1 in
-      let _a2 = strip_loc_rec_exp _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_rec_exp _a1 in
+      let _a2 = strip_rec_exp _a2 in `Sem (_a1, _a2)
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_exp _a2 in `RecBind (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.rec_exp)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.rec_exp)
-and strip_loc_mtyp: FAst.mtyp -> FAstN.mtyp =
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_exp _a2 in `RecBind (_a1, _a2)
+  | #any as _a0 -> (strip_any _a0 :>FAstN.rec_exp)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.rec_exp)
+and strip_mtyp: FAst.mtyp -> FAstN.mtyp =
   function
-  | #ident' as _a0 -> (strip_loc_ident' _a0 :>FAstN.mtyp)
-  | `Sig (_a0,_a1) -> let _a1 = strip_loc_sigi _a1 in `Sig _a1
+  | #ident' as _a0 -> (strip_ident' _a0 :>FAstN.mtyp)
+  | `Sig (_a0,_a1) -> let _a1 = strip_sigi _a1 in `Sig _a1
   | `SigEnd _a0 -> `SigEnd
   | `Functor (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_mtyp _a3 in `Functor (_a1, _a2, _a3)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in
+      let _a3 = strip_mtyp _a3 in `Functor (_a1, _a2, _a3)
   | `With (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mtyp _a1 in
-      let _a2 = strip_loc_constr _a2 in `With (_a1, _a2)
-  | `ModuleTypeOf (_a0,_a1) ->
-      let _a1 = strip_loc_mexp _a1 in `ModuleTypeOf _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.mtyp)
-and strip_loc_sigi: FAst.sigi -> FAstN.sigi =
+      let _a1 = strip_mtyp _a1 in
+      let _a2 = strip_constr _a2 in `With (_a1, _a2)
+  | `ModuleTypeOf (_a0,_a1) -> let _a1 = strip_mexp _a1 in `ModuleTypeOf _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.mtyp)
+and strip_sigi: FAst.sigi -> FAstN.sigi =
   function
   | `Val (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Val (_a1, _a2)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in `Val (_a1, _a2)
   | `External (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in
-      let _a3 = strip_loc_strings _a3 in `External (_a1, _a2, _a3)
-  | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
-  | `Exception (_a0,_a1) -> let _a1 = strip_loc_of_ctyp _a1 in `Exception _a1
-  | `Class (_a0,_a1) -> let _a1 = strip_loc_cltdecl _a1 in `Class _a1
-  | `ClassType (_a0,_a1) -> let _a1 = strip_loc_cltdecl _a1 in `ClassType _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in
+      let _a3 = strip_strings _a3 in `External (_a1, _a2, _a3)
+  | `Type (_a0,_a1) -> let _a1 = strip_typedecl _a1 in `Type _a1
+  | `Exception (_a0,_a1) -> let _a1 = strip_of_ctyp _a1 in `Exception _a1
+  | `Class (_a0,_a1) -> let _a1 = strip_cltdecl _a1 in `Class _a1
+  | `ClassType (_a0,_a1) -> let _a1 = strip_cltdecl _a1 in `ClassType _a1
   | `Module (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `Module (_a1, _a2)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in `Module (_a1, _a2)
   | `ModuleTypeEnd (_a0,_a1) ->
-      let _a1 = strip_loc_auident _a1 in `ModuleTypeEnd _a1
+      let _a1 = strip_auident _a1 in `ModuleTypeEnd _a1
   | `ModuleType (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in `ModuleType (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_sigi _a1 in
-      let _a2 = strip_loc_sigi _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_sigi _a1 in let _a2 = strip_sigi _a2 in `Sem (_a1, _a2)
   | `DirectiveSimple (_a0,_a1) ->
-      let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
+      let _a1 = strip_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in `Directive (_a1, _a2)
-  | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
-  | `Include (_a0,_a1) -> let _a1 = strip_loc_mtyp _a1 in `Include _a1
-  | `RecModule (_a0,_a1) -> let _a1 = strip_loc_mbind _a1 in `RecModule _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.sigi)
-and strip_loc_mbind: FAst.mbind -> FAstN.mbind =
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in `Directive (_a1, _a2)
+  | `Open (_a0,_a1) -> let _a1 = strip_ident _a1 in `Open _a1
+  | `Include (_a0,_a1) -> let _a1 = strip_mtyp _a1 in `Include _a1
+  | `RecModule (_a0,_a1) -> let _a1 = strip_mbind _a1 in `RecModule _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.sigi)
+and strip_mbind: FAst.mbind -> FAstN.mbind =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mbind _a1 in
-      let _a2 = strip_loc_mbind _a2 in `And (_a1, _a2)
+      let _a1 = strip_mbind _a1 in
+      let _a2 = strip_mbind _a2 in `And (_a1, _a2)
   | `ModuleBind (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_mexp _a3 in `ModuleBind (_a1, _a2, _a3)
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in
+      let _a3 = strip_mexp _a3 in `ModuleBind (_a1, _a2, _a3)
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.mbind)
-and strip_loc_constr: FAst.constr -> FAstN.constr =
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in `Constraint (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.mbind)
+and strip_constr: FAst.constr -> FAstN.constr =
   function
   | `TypeEq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TypeEq (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `TypeEq (_a1, _a2)
   | `ModuleEq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `ModuleEq (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `ModuleEq (_a1, _a2)
   | `TypeEqPriv (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TypeEqPriv (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `TypeEqPriv (_a1, _a2)
   | `TypeSubst (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `TypeSubst (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_ctyp _a2 in `TypeSubst (_a1, _a2)
   | `ModuleSubst (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ident _a2 in `ModuleSubst (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ident _a2 in `ModuleSubst (_a1, _a2)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_constr _a1 in
-      let _a2 = strip_loc_constr _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.constr)
-and strip_loc_bind: FAst.bind -> FAstN.bind =
+      let _a1 = strip_constr _a1 in
+      let _a2 = strip_constr _a2 in `And (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.constr)
+and strip_bind: FAst.bind -> FAstN.bind =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_bind _a1 in
-      let _a2 = strip_loc_bind _a2 in `And (_a1, _a2)
+      let _a1 = strip_bind _a1 in let _a2 = strip_bind _a2 in `And (_a1, _a2)
   | `Bind (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_exp _a2 in `Bind (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.bind)
-and strip_loc_case: FAst.case -> FAstN.case =
+      let _a1 = strip_pat _a1 in let _a2 = strip_exp _a2 in `Bind (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.bind)
+and strip_case: FAst.case -> FAstN.case =
   function
   | `Bar (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_case _a1 in
-      let _a2 = strip_loc_case _a2 in `Bar (_a1, _a2)
+      let _a1 = strip_case _a1 in let _a2 = strip_case _a2 in `Bar (_a1, _a2)
   | `Case (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_exp _a2 in `Case (_a1, _a2)
+      let _a1 = strip_pat _a1 in let _a2 = strip_exp _a2 in `Case (_a1, _a2)
   | `CaseWhen (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_exp _a2 in
-      let _a3 = strip_loc_exp _a3 in `CaseWhen (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.case)
-and strip_loc_mexp: FAst.mexp -> FAstN.mexp =
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_exp _a2 in
+      let _a3 = strip_exp _a3 in `CaseWhen (_a1, _a2, _a3)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.case)
+and strip_mexp: FAst.mexp -> FAstN.mexp =
   function
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>FAstN.mexp)
+  | #vid' as _a0 -> (strip_vid' _a0 :>FAstN.mexp)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mexp _a1 in
-      let _a2 = strip_loc_mexp _a2 in `App (_a1, _a2)
+      let _a1 = strip_mexp _a1 in let _a2 = strip_mexp _a2 in `App (_a1, _a2)
   | `Functor (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in
-      let _a3 = strip_loc_mexp _a3 in `Functor (_a1, _a2, _a3)
-  | `Struct (_a0,_a1) -> let _a1 = strip_loc_stru _a1 in `Struct _a1
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in
+      let _a3 = strip_mexp _a3 in `Functor (_a1, _a2, _a3)
+  | `Struct (_a0,_a1) -> let _a1 = strip_stru _a1 in `Struct _a1
   | `StructEnd _a0 -> `StructEnd
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_mexp _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `Constraint (_a1, _a2)
-  | `PackageModule (_a0,_a1) ->
-      let _a1 = strip_loc_exp _a1 in `PackageModule _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.mexp)
-and strip_loc_stru: FAst.stru -> FAstN.stru =
+      let _a1 = strip_mexp _a1 in
+      let _a2 = strip_mtyp _a2 in `Constraint (_a1, _a2)
+  | `PackageModule (_a0,_a1) -> let _a1 = strip_exp _a1 in `PackageModule _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.mexp)
+and strip_stru: FAst.stru -> FAstN.stru =
   function
-  | `Class (_a0,_a1) -> let _a1 = strip_loc_cldecl _a1 in `Class _a1
-  | `ClassType (_a0,_a1) -> let _a1 = strip_loc_cltdecl _a1 in `ClassType _a1
+  | `Class (_a0,_a1) -> let _a1 = strip_cldecl _a1 in `Class _a1
+  | `ClassType (_a0,_a1) -> let _a1 = strip_cltdecl _a1 in `ClassType _a1
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_stru _a1 in
-      let _a2 = strip_loc_stru _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_stru _a1 in let _a2 = strip_stru _a2 in `Sem (_a1, _a2)
   | `DirectiveSimple (_a0,_a1) ->
-      let _a1 = strip_loc_alident _a1 in `DirectiveSimple _a1
+      let _a1 = strip_alident _a1 in `DirectiveSimple _a1
   | `Directive (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_exp _a2 in `Directive (_a1, _a2)
-  | `Exception (_a0,_a1) -> let _a1 = strip_loc_of_ctyp _a1 in `Exception _a1
-  | `StExp (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `StExp _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_exp _a2 in `Directive (_a1, _a2)
+  | `Exception (_a0,_a1) -> let _a1 = strip_of_ctyp _a1 in `Exception _a1
+  | `StExp (_a0,_a1) -> let _a1 = strip_exp _a1 in `StExp _a1
   | `External (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_ctyp _a2 in
-      let _a3 = strip_loc_strings _a3 in `External (_a1, _a2, _a3)
-  | `Include (_a0,_a1) -> let _a1 = strip_loc_mexp _a1 in `Include _a1
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_ctyp _a2 in
+      let _a3 = strip_strings _a3 in `External (_a1, _a2, _a3)
+  | `Include (_a0,_a1) -> let _a1 = strip_mexp _a1 in `Include _a1
   | `Module (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mexp _a2 in `Module (_a1, _a2)
-  | `RecModule (_a0,_a1) -> let _a1 = strip_loc_mbind _a1 in `RecModule _a1
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mexp _a2 in `Module (_a1, _a2)
+  | `RecModule (_a0,_a1) -> let _a1 = strip_mbind _a1 in `RecModule _a1
   | `ModuleType (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_auident _a1 in
-      let _a2 = strip_loc_mtyp _a2 in `ModuleType (_a1, _a2)
-  | `Open (_a0,_a1) -> let _a1 = strip_loc_ident _a1 in `Open _a1
-  | `Type (_a0,_a1) -> let _a1 = strip_loc_typedecl _a1 in `Type _a1
+      let _a1 = strip_auident _a1 in
+      let _a2 = strip_mtyp _a2 in `ModuleType (_a1, _a2)
+  | `Open (_a0,_a1) -> let _a1 = strip_ident _a1 in `Open _a1
+  | `Type (_a0,_a1) -> let _a1 = strip_typedecl _a1 in `Type _a1
   | `TypeWith (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_typedecl _a1 in
-      let _a2 = strip_loc_strings _a2 in `TypeWith (_a1, _a2)
+      let _a1 = strip_typedecl _a1 in
+      let _a2 = strip_strings _a2 in `TypeWith (_a1, _a2)
   | `Value (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_bind _a2 in `Value (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.stru)
-and strip_loc_cltdecl: FAst.cltdecl -> FAstN.cltdecl =
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_bind _a2 in `Value (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.stru)
+and strip_cltdecl: FAst.cltdecl -> FAstN.cltdecl =
   function
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_cltdecl _a1 in
-      let _a2 = strip_loc_cltdecl _a2 in `And (_a1, _a2)
+      let _a1 = strip_cltdecl _a1 in
+      let _a2 = strip_cltdecl _a2 in `And (_a1, _a2)
   | `CtDecl (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_type_parameters _a3 in
-      let _a4 = strip_loc_cltyp _a4 in `CtDecl (_a1, _a2, _a3, _a4)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_ident _a2 in
+      let _a3 = strip_type_parameters _a3 in
+      let _a4 = strip_cltyp _a4 in `CtDecl (_a1, _a2, _a3, _a4)
   | `CtDeclS (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_cltyp _a3 in `CtDeclS (_a1, _a2, _a3)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.cltdecl)
-and strip_loc_cltyp: FAst.cltyp -> FAstN.cltyp =
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_ident _a2 in
+      let _a3 = strip_cltyp _a3 in `CtDeclS (_a1, _a2, _a3)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.cltdecl)
+and strip_cltyp: FAst.cltyp -> FAstN.cltyp =
   function
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>FAstN.cltyp)
+  | #vid' as _a0 -> (strip_vid' _a0 :>FAstN.cltyp)
   | `ClApply (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_vid _a1 in
-      let _a2 = strip_loc_type_parameters _a2 in `ClApply (_a1, _a2)
+      let _a1 = strip_vid _a1 in
+      let _a2 = strip_type_parameters _a2 in `ClApply (_a1, _a2)
   | `CtFun (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_cltyp _a2 in `CtFun (_a1, _a2)
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_cltyp _a2 in `CtFun (_a1, _a2)
   | `ObjTy (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_clsigi _a2 in `ObjTy (_a1, _a2)
-  | `ObjTyEnd (_a0,_a1) -> let _a1 = strip_loc_ctyp _a1 in `ObjTyEnd _a1
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clsigi _a1 in `Obj _a1
+      let _a1 = strip_ctyp _a1 in
+      let _a2 = strip_clsigi _a2 in `ObjTy (_a1, _a2)
+  | `ObjTyEnd (_a0,_a1) -> let _a1 = strip_ctyp _a1 in `ObjTyEnd _a1
+  | `Obj (_a0,_a1) -> let _a1 = strip_clsigi _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_cltyp _a1 in
-      let _a2 = strip_loc_cltyp _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.cltyp)
-and strip_loc_clsigi: FAst.clsigi -> FAstN.clsigi =
+      let _a1 = strip_cltyp _a1 in
+      let _a2 = strip_cltyp _a2 in `And (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.cltyp)
+and strip_clsigi: FAst.clsigi -> FAstN.clsigi =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_clsigi _a1 in
-      let _a2 = strip_loc_clsigi _a2 in `Sem (_a1, _a2)
-  | `SigInherit (_a0,_a1) -> let _a1 = strip_loc_cltyp _a1 in `SigInherit _a1
+      let _a1 = strip_clsigi _a1 in
+      let _a2 = strip_clsigi _a2 in `Sem (_a1, _a2)
+  | `SigInherit (_a0,_a1) -> let _a1 = strip_cltyp _a1 in `SigInherit _a1
   | `CgVal (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_flag _a3 in
-      let _a4 = strip_loc_ctyp _a4 in `CgVal (_a1, _a2, _a3, _a4)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_flag _a3 in
+      let _a4 = strip_ctyp _a4 in `CgVal (_a1, _a2, _a3, _a4)
   | `Method (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `Method (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_ctyp _a3 in `Method (_a1, _a2, _a3)
   | `VirMeth (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.clsigi)
-and strip_loc_cldecl: FAst.cldecl -> FAstN.cldecl =
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `Eq (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.clsigi)
+and strip_cldecl: FAst.cldecl -> FAstN.cldecl =
   function
   | `ClDecl (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_type_parameters _a3 in
-      let _a4 = strip_loc_clexp _a4 in `ClDecl (_a1, _a2, _a3, _a4)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_ident _a2 in
+      let _a3 = strip_type_parameters _a3 in
+      let _a4 = strip_clexp _a4 in `ClDecl (_a1, _a2, _a3, _a4)
   | `ClDeclS (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_ident _a2 in
-      let _a3 = strip_loc_clexp _a3 in `ClDeclS (_a1, _a2, _a3)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_ident _a2 in
+      let _a3 = strip_clexp _a3 in `ClDeclS (_a1, _a2, _a3)
   | `And (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_cldecl _a1 in
-      let _a2 = strip_loc_cldecl _a2 in `And (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.cldecl)
-and strip_loc_clexp: FAst.clexp -> FAstN.clexp =
+      let _a1 = strip_cldecl _a1 in
+      let _a2 = strip_cldecl _a2 in `And (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.cldecl)
+and strip_clexp: FAst.clexp -> FAstN.clexp =
   function
   | `CeApp (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_clexp _a1 in
-      let _a2 = strip_loc_exp _a2 in `CeApp (_a1, _a2)
-  | #vid' as _a0 -> (strip_loc_vid' _a0 :>FAstN.clexp)
+      let _a1 = strip_clexp _a1 in
+      let _a2 = strip_exp _a2 in `CeApp (_a1, _a2)
+  | #vid' as _a0 -> (strip_vid' _a0 :>FAstN.clexp)
   | `ClApply (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_vid _a1 in
-      let _a2 = strip_loc_type_parameters _a2 in `ClApply (_a1, _a2)
+      let _a1 = strip_vid _a1 in
+      let _a2 = strip_type_parameters _a2 in `ClApply (_a1, _a2)
   | `CeFun (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_clexp _a2 in `CeFun (_a1, _a2)
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_clexp _a2 in `CeFun (_a1, _a2)
   | `LetIn (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_bind _a2 in
-      let _a3 = strip_loc_clexp _a3 in `LetIn (_a1, _a2, _a3)
-  | `Obj (_a0,_a1) -> let _a1 = strip_loc_clfield _a1 in `Obj _a1
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_bind _a2 in
+      let _a3 = strip_clexp _a3 in `LetIn (_a1, _a2, _a3)
+  | `Obj (_a0,_a1) -> let _a1 = strip_clfield _a1 in `Obj _a1
   | `ObjEnd _a0 -> `ObjEnd
   | `ObjPat (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_pat _a1 in
-      let _a2 = strip_loc_clfield _a2 in `ObjPat (_a1, _a2)
-  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_loc_pat _a1 in `ObjPatEnd _a1
+      let _a1 = strip_pat _a1 in
+      let _a2 = strip_clfield _a2 in `ObjPat (_a1, _a2)
+  | `ObjPatEnd (_a0,_a1) -> let _a1 = strip_pat _a1 in `ObjPatEnd _a1
   | `Constraint (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_clexp _a1 in
-      let _a2 = strip_loc_cltyp _a2 in `Constraint (_a1, _a2)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.clexp)
-and strip_loc_clfield: FAst.clfield -> FAstN.clfield =
+      let _a1 = strip_clexp _a1 in
+      let _a2 = strip_cltyp _a2 in `Constraint (_a1, _a2)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.clexp)
+and strip_clfield: FAst.clfield -> FAstN.clfield =
   function
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_clfield _a1 in
-      let _a2 = strip_loc_clfield _a2 in `Sem (_a1, _a2)
+      let _a1 = strip_clfield _a1 in
+      let _a2 = strip_clfield _a2 in `Sem (_a1, _a2)
   | `Inherit (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_clexp _a2 in `Inherit (_a1, _a2)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_clexp _a2 in `Inherit (_a1, _a2)
   | `InheritAs (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_flag _a1 in
-      let _a2 = strip_loc_clexp _a2 in
-      let _a3 = strip_loc_alident _a3 in `InheritAs (_a1, _a2, _a3)
+      let _a1 = strip_flag _a1 in
+      let _a2 = strip_clexp _a2 in
+      let _a3 = strip_alident _a3 in `InheritAs (_a1, _a2, _a3)
   | `CrVal (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_flag _a3 in
-      let _a4 = strip_loc_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_flag _a3 in
+      let _a4 = strip_exp _a4 in `CrVal (_a1, _a2, _a3, _a4)
   | `VirVal (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `VirVal (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_ctyp _a3 in `VirVal (_a1, _a2, _a3)
   | `CrMth (_a0,_a1,_a2,_a3,_a4,_a5) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_flag _a3 in
-      let _a4 = strip_loc_exp _a4 in
-      let _a5 = strip_loc_ctyp _a5 in `CrMth (_a1, _a2, _a3, _a4, _a5)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_flag _a3 in
+      let _a4 = strip_exp _a4 in
+      let _a5 = strip_ctyp _a5 in `CrMth (_a1, _a2, _a3, _a4, _a5)
   | `CrMthS (_a0,_a1,_a2,_a3,_a4) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_flag _a3 in
-      let _a4 = strip_loc_exp _a4 in `CrMthS (_a1, _a2, _a3, _a4)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_flag _a3 in
+      let _a4 = strip_exp _a4 in `CrMthS (_a1, _a2, _a3, _a4)
   | `VirMeth (_a0,_a1,_a2,_a3) ->
-      let _a1 = strip_loc_alident _a1 in
-      let _a2 = strip_loc_flag _a2 in
-      let _a3 = strip_loc_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
+      let _a1 = strip_alident _a1 in
+      let _a2 = strip_flag _a2 in
+      let _a3 = strip_ctyp _a3 in `VirMeth (_a1, _a2, _a3)
   | `Eq (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ctyp _a1 in
-      let _a2 = strip_loc_ctyp _a2 in `Eq (_a1, _a2)
-  | `Initializer (_a0,_a1) -> let _a1 = strip_loc_exp _a1 in `Initializer _a1
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.clfield)
+      let _a1 = strip_ctyp _a1 in let _a2 = strip_ctyp _a2 in `Eq (_a1, _a2)
+  | `Initializer (_a0,_a1) -> let _a1 = strip_exp _a1 in `Initializer _a1
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.clfield)
 
-let rec strip_loc_ep: FAst.ep -> FAstN.ep =
+let rec strip_ep: FAst.ep -> FAstN.ep =
   function
-  | #vid as _a0 -> (strip_loc_vid _a0 :>FAstN.ep)
+  | #vid as _a0 -> (strip_vid _a0 :>FAstN.ep)
   | `App (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ep _a1 in
-      let _a2 = strip_loc_ep _a2 in `App (_a1, _a2)
+      let _a1 = strip_ep _a1 in let _a2 = strip_ep _a2 in `App (_a1, _a2)
   | `Vrn (_a0,_a1) -> `Vrn _a1
   | `Com (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ep _a1 in
-      let _a2 = strip_loc_ep _a2 in `Com (_a1, _a2)
+      let _a1 = strip_ep _a1 in let _a2 = strip_ep _a2 in `Com (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ep _a1 in
-      let _a2 = strip_loc_ep _a2 in `Sem (_a1, _a2)
-  | `Par (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Par _a1
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.ep)
+      let _a1 = strip_ep _a1 in let _a2 = strip_ep _a2 in `Sem (_a1, _a2)
+  | `Par (_a0,_a1) -> let _a1 = strip_ep _a1 in `Par _a1
+  | #any as _a0 -> (strip_any _a0 :>FAstN.ep)
   | `ArrayEmpty _a0 -> `ArrayEmpty
-  | `Array (_a0,_a1) -> let _a1 = strip_loc_ep _a1 in `Array _a1
-  | `Record (_a0,_a1) -> let _a1 = strip_loc_rec_bind _a1 in `Record _a1
-  | #literal as _a0 -> (strip_loc_literal _a0 :>FAstN.ep)
-and strip_loc_rec_bind: FAst.rec_bind -> FAstN.rec_bind =
+  | `Array (_a0,_a1) -> let _a1 = strip_ep _a1 in `Array _a1
+  | `Record (_a0,_a1) -> let _a1 = strip_rec_bind _a1 in `Record _a1
+  | #literal as _a0 -> (strip_literal _a0 :>FAstN.ep)
+and strip_rec_bind: FAst.rec_bind -> FAstN.rec_bind =
   function
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_ident _a1 in
-      let _a2 = strip_loc_ep _a2 in `RecBind (_a1, _a2)
+      let _a1 = strip_ident _a1 in
+      let _a2 = strip_ep _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
-      let _a1 = strip_loc_rec_bind _a1 in
-      let _a2 = strip_loc_rec_bind _a2 in `Sem (_a1, _a2)
-  | #any as _a0 -> (strip_loc_any _a0 :>FAstN.rec_bind)
-  | #ant as _a0 -> (strip_loc_ant _a0 :>FAstN.rec_bind)
+      let _a1 = strip_rec_bind _a1 in
+      let _a2 = strip_rec_bind _a2 in `Sem (_a1, _a2)
+  | #any as _a0 -> (strip_any _a0 :>FAstN.rec_bind)
+  | #ant as _a0 -> (strip_ant _a0 :>FAstN.rec_bind)
 
 let map_loc f =
   object  inherit  map as super method! loc x = f (super#loc x) end

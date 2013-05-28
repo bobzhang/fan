@@ -58,12 +58,12 @@ type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      
 type delete_statment = symbol list
 
-type ('a,'b,'c)fold  =
-    'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c
+(* type ('a,'b,'c)fold  = *)
+(*     'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c *)
 
-type ('a,'b,'c) foldsep  =
-    'b t -> symbol list -> ('a XStream.t -> 'b) ->
-      ('a XStream.t -> unit) -> 'a XStream.t -> 'c
+(* type ('a,'b,'c) foldsep  = *)
+(*     'b t -> symbol list -> ('a XStream.t -> 'b) -> *)
+(*       ('a XStream.t -> unit) -> 'a XStream.t -> 'c *)
       
 val name: 'a t -> string
 
@@ -121,7 +121,7 @@ val debug_filtered_token_stream: 'a t -> FToken.t XStream.t -> 'a
 
 val parse_string_safe:  ?loc:FLoc.t -> 'a t ->  string -> 'a
 
-val wrap_stream_parser: ('a -> 'b -> 'c) -> 'a -> 'b -> 'c
+val wrap_stream_parser: ?loc:FLoc.t -> (loc:FLoc.t -> 'a -> 'b) -> 'a -> 'b
 
 (* val parse_file_with: rule:'a t -> string -> 'a *)
 
@@ -157,3 +157,5 @@ val levels_of_entry: 'a t -> level list option
 val token_stream_of_string: string -> stream
 
 val name_of_entry: 'a t -> string    
+
+val parse_include_file : 'a t -> string -> 'a    
