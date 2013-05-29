@@ -5,15 +5,16 @@
 layout: index
 ---
 #+END_HTML
+
 [[https://github.com/bobzhang/Fan][Fan]] is a compile-time metaprogramming system for [[http://caml.inria.fr/][OCaml]], originally
-imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a combination of OCaml and Lisp-like
-[[http://letoverlambda.com/][Macros]]. It shares the same [[file:concrete_syntax.org][concrete syntax]] with OCaml.
+imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a combination of OCaml and Lispy
+[[http://letoverlambda.com/][Macros]]. It shares the same concrete syntax with OCaml.
 
 * The philosophy
   Unlike traditional programming languages, Fan is /a set of
-  languages/ which could /evolve/ itself incrementally. It gets started
-  from the vanilla OCaml language as Fan_{0}, with more and more new
-  languages added for each version.
+  languages/ which could /evolve/ itself incrementally. It gets
+  started from the vanilla OCaml language as Fan_{0}, with more and
+  more new languages added for each version.
 
   For example, to add a new sub-language into Fan_{n}, we would
   supply a front-end and a back-end targeted at Fan_{n}, upon being
@@ -37,9 +38,6 @@ imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
 * Get started 
   See here: [[file:start/index.org][Fan for beginners]], enjoy!
   
-
-
-  
 * Status 
   Please bear in mind that Fan is still at alpha release, so it's
   expected there would be tons of bugs. This also means that your
@@ -53,7 +51,7 @@ imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
 
   - Code repo:  https://github.com/bobzhang/Fan
 
-  - Documentation repo: https://github.com/bobzhang/fan-org
+  - Documentation repo:https://github.com/bobzhang/Fan/tree/gh-pages 
     It's written in [[http://orgmode.org/]] markup language, if you feel
     uncomfortable with it, markdown or html patches are welcome as well.
 
