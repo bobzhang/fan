@@ -7,7 +7,7 @@ layout: index
 #+END_HTML
 
 [[https://github.com/bobzhang/Fan][Fan]] is a compile-time metaprogramming system for [[http://caml.inria.fr/][OCaml]], originally
-imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a combination of OCaml and Lispy
+inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a combination of OCaml and Lispy
 [[http://letoverlambda.com/][Macros]]. It shares the same concrete syntax with OCaml.
 
 * The philosophy
