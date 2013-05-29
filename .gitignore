@@ -7,3 +7,4 @@ auto-save-list
 tramp
 .\#*
 _site/
+build/

@@ -1,0 +1,104 @@
+#+TITLE: Fan: growing languags for OCaml
+
+#+BEGIN_HTML
+---
+layout: index
+---
+#+END_HTML
+[[https://github.com/bobzhang/Fan][Fan]] is a compile-time metaprogramming system for [[http://caml.inria.fr/][OCaml]], originally
+imported from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a combination of OCaml and Lisp-like
+[[http://letoverlambda.com/][Macros]]. It shares the same [[file:concrete_syntax.org][concrete syntax]] with OCaml.
+
+* The philosophy
+  Unlike traditional programming languages, Fan is /a set of
+  languages/ which could /evolve/ itself incrementally. It gets started
+  from the vanilla OCaml language as Fan_{0}, with more and more new
+  languages added for each version.
+
+  For example, to add a new sub-language into Fan_{n}, we would
+  supply a front-end and a back-end targeted at Fan_{n}, upon being
+  integrated, Fan_{n} becomes Fan_{n+1}.
+
+  We could grow Fan endlessly in such a way, however, the main point
+  for Fan is not that me, the lead developer of Fan could keep adding
+  features to itself, its innovative point lies in the following two
+  aspects:
+
+  1. It encourages programmer to think about programming in a
+     bottom-up way.  Unlike the traditional problem-oriented approach,
+     language-oriented programming is encouraged: delimited domain
+     specific language([[file:ddsl.org][DDSL]]) is the best abstraction for a specific
+     domain.
+
+  2. Everyone, including you: the reader,  could join and develop a
+     mini-compiler and share with other people. Fan servers as a
+     platform to glue them tegother.
+
+* Get started 
+  See here: [[file:start/index.org][Fan for beginners]], enjoy!
+  
+
+
+  
+* Status 
+  Please bear in mind that Fan is still at alpha release, so it's
+  expected there would be tons of bugs. This also means that your
+  participation is particularly important, and your suggestions will
+  affect the design of Fan.
+
+
+
+* Contributions
+  Contributions are very welcome
+
+  - Code repo:  https://github.com/bobzhang/Fan
+
+  - Documentation repo: https://github.com/bobzhang/fan-org
+    It's written in [[http://orgmode.org/]] markup language, if you feel
+    uncomfortable with it, markdown or html patches are welcome as well.
+
+* TODO Roadmap  
+      
+
+   
+* COMMENT
+  It shares the same run-time
+with OCaml,
+
+  By all means, master
+   the spirit  of metaprogramming would 
+
+  for example, function
+   is the most basic concept in nearly all programming languages,
+   
+  Metaprogramming enables the possiblity for
+   the  user to write least lines of code if they like. As a
+   programmer, [[http://threevirtues.com/][being lazy]] should always be appreciated, we will show
+   you some examples that metaprogramming can turn your tens lines of
+   code into thousands of lines of code, simply put, metaprogramming
+   is so invaluable that every practical programmer should master
+   such technology. 
+
+   That said, we need a macro system for your favorite programming
+   language.  [[http://www.sbcl.org/][Common Lisp]] has been the best language for
+   metaprogramming during the last decades.  However, as one of the
+   eldest languages, there are some serious design defects for this
+   language: first, it does not support separate compilation, there is
+   no clear bound between compile-time runtime and
+   
+   Hmm, a good question, it's simply because writing
+   boilerplate code is tedious and error prone, and 
+
+   Having programming in [[http://en.wikipedia.org/wiki/Common_Lisp][Common Lisp]] for years, I
+happened to find
+[F#](http://research.microsoft.com/en-us/projects/fsharp/) when I
+was doing an internship at Microsoft.  I was fascinated by the beauty
+of functional languages, for example, the algebraic data type combined
+with pattern match is superior to s-expression in some regards, and
+strongly typed languages with type inference does help, especially
+when you write large software and do the refactorization, a type
+system is the  best tool for refactorization. XD.
+
+   
+
+   
