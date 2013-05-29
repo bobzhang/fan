@@ -20,10 +20,10 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
   supply a front-end and a back-end targeted at Fan_{n}, upon being
   integrated, Fan_{n} becomes Fan_{n+1}.
 
-  We could grow Fan endlessly in such a way, however, the main point
-  for Fan is not that me, the lead developer of Fan could keep adding
-  features to itself, its innovative point lies in the following two
-  aspects:
+  We could grow Fan endlessly in such a way, however, the main
+  interesting part for Fan is not that me, the main developer of Fan
+  could keep adding features to it, its interesting point lies in
+  the following two aspects:
 
   1. It encourages programmer to think about programming in a
      bottom-up way.  Unlike the traditional problem-oriented approach,
@@ -36,7 +36,7 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
      platform to glue them tegother.
 
 * Get started 
-  See here: [[file:start/index.org][Fan for beginners]], enjoy!
+  See here: [[file:start.org][Fan for beginners]], enjoy!
   
 * Status 
   Please bear in mind that Fan is still at alpha release, so it's
