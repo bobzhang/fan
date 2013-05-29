@@ -175,15 +175,15 @@ let merge_level (la:level) (lb:olevel) =
     |(y,Some assoc,x) ->
         (if not(la.lname= y  && la.assoc = assoc) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
-            (StdLib.pp_print_option pp_print_string) la.lname
-            (StdLib.pp_print_option pp_print_string) y
+            (StdFan.pp_print_option pp_print_string) la.lname
+            (StdFan.pp_print_option pp_print_string) y
             Gprint.dump#assoc la.assoc Gprint.dump#assoc assoc;
          x)
     |((Some _ as y),_,x)-> 
         (if not (la.lname=y) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
-            (StdLib.pp_print_option pp_print_string) la.lname
-            (StdLib.pp_print_option pp_print_string) y;
+            (StdFan.pp_print_option pp_print_string) la.lname
+            (StdFan.pp_print_option pp_print_string) y;
          x)
     |(None,None,x) -> x) in
   (* added in reverse order *)

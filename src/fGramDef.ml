@@ -1,5 +1,5 @@
 open FAst
-(* open StdLib *)
+(* open StdFan *)
 (* {:fans| keep on;  derive (MetaObj);|};; *)
 {:ocaml|
 

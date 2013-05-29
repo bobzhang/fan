@@ -6,7 +6,7 @@ open Filters
 include PreCast
 
 open AstQuotation
-open Syntax
+open Fsyntax
 open LibUtil
 open AstQuotation
 

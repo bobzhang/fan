@@ -1,7 +1,7 @@
 
 open LibUtil
 open LexSyntax
-open Syntax
+open Fsyntax
 
 let regexp_for_string s =
   let rec re_string n =

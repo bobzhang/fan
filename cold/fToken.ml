@@ -1,6 +1,6 @@
 open LibUtil
 
-open StdLib
+open StdFan
 
 type domains = [ `Absolute of string list | `Sub of string list] 
 

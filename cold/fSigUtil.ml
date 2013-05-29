@@ -4,7 +4,7 @@ open AstLibN
 
 open FAstN
 
-open StdLib
+open StdFan
 
 let pp_print_typedecl = ObjsN.pp_print_typedecl
 

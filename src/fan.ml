@@ -250,13 +250,13 @@ Printexc.register_printer
 
 let _ =
   begin 
-    Syntax.Options.add
+    Fsyntax.Options.add
       ("-dlang",
        (FArg.String
           (fun s  ->
             AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
        " Set the default language");
-    Syntax.Options.adds initial_spec_list
+    Fsyntax.Options.adds initial_spec_list
   end;;    
 
 AstParsers.use_parsers
@@ -270,7 +270,7 @@ AstParsers.use_parsers
 let _ = 
   try
     FArg.parse
-      Syntax.Options.init_spec_list
+      Fsyntax.Options.init_spec_list
       anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
   with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
 

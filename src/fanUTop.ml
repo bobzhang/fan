@@ -12,7 +12,7 @@ let get_fan_error_message exn =
     | exn -> ((0, 0), exn)  in
   let msg = UTop.get_message print_fan_error exn in
   let idx = ref (String.length msg - 1) in
-  begin 
+  begin
     while !idx > 0 && msg.[!idx] = '\n' do
       decr idx
     done;

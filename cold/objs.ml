@@ -1,4 +1,4 @@
-open StdLib
+open StdFan
 
 open FAst
 

@@ -2,7 +2,7 @@ open LibUtil
 open AstLibN
 open FAstN
 
-open StdLib (* for [pp_print_list] [pp_print_string] *)
+open StdFan (* for [pp_print_list] [pp_print_string] *)
 
 let pp_print_typedecl = ObjsN.pp_print_typedecl;;  
 

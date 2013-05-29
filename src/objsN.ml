@@ -1,4 +1,4 @@
-open StdLib
+open StdFan
 open FAstN
 
 {:fans|keep off;

@@ -8,7 +8,7 @@ include PreCast
 
 open AstQuotation
 
-open Syntax
+open Fsyntax
 
 open LibUtil
 

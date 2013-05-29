@@ -30,6 +30,12 @@ package "top" (
     description="fan toplevel"
     archive(byte)="fanTop.cma"
 )
+
+package "full" (
+    version="0.1"
+    description="the full lib"
+    archive(byte)="fan_full.cma" 
+)
 # package "ast"{
 #   requires = "fan.rts"
 #   version = "0.1"

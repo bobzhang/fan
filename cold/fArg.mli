@@ -1,9 +1,9 @@
 (** Parsing of command line arguments.
 
    This module provides a general mechanism for extracting options and
-   arguments from the command line to the program. The difference from StdLib's arg module lies in that it supports dynamically changing args. 
+   arguments from the command line to the program. The difference from StdFan's arg module lies in that it supports dynamically changing args. 
 
-   Syntax of command lines:
+   Fsyntax of command lines:
     A keyword is a character string starting with a [-].
     An option is a keyword alone or followed by an argument.
     The types of keywords are: [Unit], [Bool], [Set], [Clear],

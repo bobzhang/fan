@@ -4,6 +4,7 @@ open AstLib
 open Lexgen
 open LibUtil
   
+(** FIXME *)
 let _loc = FLoc.mk "x"
 
 let auto_binds =

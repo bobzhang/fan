@@ -139,8 +139,8 @@ let _ =
 
 let _ =
   begin
-    Syntax.Options.add
+    Fsyntax.Options.add
       ("-keep", (FArg.Set FState.keep), "Keep the included type definitions");
-    Syntax.Options.add
+    Fsyntax.Options.add
       ("-loaded-plugins", (FArg.Unit Typehook.show_modules), "Show plugins")
   end

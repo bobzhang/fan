@@ -3,7 +3,7 @@ open FAst
 open AstLib
 open FGramDef
 open FGramGen
-open Syntax
+open Fsyntax
 open LibUtil
 open FanUtil
 

@@ -4,7 +4,7 @@ open AstLib
 
 open FanOps
 
-open Syntax
+open Fsyntax
 
 open LibUtil
 

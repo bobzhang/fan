@@ -2,7 +2,7 @@
 
 (** About Fan's antiquot context management *)  
 
-open StdLib;;
+open StdFan;;
 
 
 

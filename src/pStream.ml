@@ -1,5 +1,5 @@
 open FAst
-open Syntax
+open Fsyntax
 open LibUtil
 open FStreamGen
 
@@ -11,7 +11,6 @@ open FStreamGen
   
   stream_pat parser_case parser_case_list stream_exp
 |}
-
   
 let apply () = 
   {:extend|

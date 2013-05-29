@@ -1,6 +1,6 @@
 open FAst
 
-open Syntax
+open Fsyntax
 
 open LibUtil
 

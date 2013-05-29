@@ -11,7 +11,7 @@ open FAst
    An object exported for antiquot filters.
    First the quotation is traversed by [Objs.map], the antiquotation in
    [pat] and [exp] is specially treated, they will be first parsed by
-   [parse_pat] or [parse_exp](typically [Syntax.pat] and [Syntax.exp]) and decorated
+   [parse_pat] or [parse_exp](typically [Fsyntax.pat] and [Fsyntax.exp]) and decorated
    with some code fragments, for example
    {[
       $uid:x -> `Uid(_loc,x)
