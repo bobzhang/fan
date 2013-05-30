@@ -915,9 +915,18 @@ let apply () = begin
           (FToken.paths :=  `Absolute  x :: !FToken.paths;
             ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
       | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)
-      | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped) (* FIXME merge with the above in the future*)            
+      | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped)
+         (* FIXME merge with the above in the future*)            
       | `EOI -> ([], None) ]
-
+      (** entrance for toplevel *)
+      top_phrase:
+      [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
+      | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
+      | "#";"import"; dot_namespace{x} ->
+          (FToken.paths := `Absolute  x :: !FToken.paths;
+           None)
+      | stru{st}; ";;" -> Some st
+      | `EOI -> None ]
       (* used by [struct .... end]
          constains at least one element *)
       strus: (* FIXME dump seems to be incorrect *)
@@ -930,14 +939,7 @@ let apply () = begin
       | stru{st};";;"; S{xs} -> `Sem(_loc,st,xs)            
       | stru{st}; S{xs} -> `Sem(_loc,st,xs)]
 
-      top_phrase:
-      [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
-      | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
-      | "#";"import"; dot_namespace{x} ->
-          (FToken.paths := `Absolute  x :: !FToken.paths;
-           None)
-      | stru{st}; ";;" -> Some st
-      | `EOI -> None ]
+
       stru_quot:
       [ "#"; a_lident{n}; exp{dp} -> `Directive(_loc,n,dp)
       | "#"; a_lident{n} -> `DirectiveSimple(_loc,n)

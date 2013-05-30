@@ -1,4 +1,7 @@
 
+
+(** eval the ast, only for byte code *)
+
 let s2s s : Parsetree.toplevel_phrase =(Ast2pt.phrase s)
 let eval_ast fmt ast =
   let _snap = Btype.snapshot ()  in
@@ -9,22 +12,6 @@ let eval_ast fmt ast =
       end)
     with  x -> (Errors.report_error fmt x; exit 2)
 
-        
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  

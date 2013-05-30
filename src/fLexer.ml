@@ -467,8 +467,6 @@ let token c = {:lexer|
          quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
            `QUOTATION (FToken.empty_name,"",2,"")
-        (* { FToken.q_name =FToken.empty_name ; *)
-        (*                      q_loc = ""; q_shift = 2; q_contents = "" } *)
   | "{@"  ->   with_curr_loc maybe_quotation_at c
   | "{:"  ->
              with_curr_loc maybe_quotation_colon c

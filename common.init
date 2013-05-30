@@ -12,7 +12,7 @@
 (* consult Topdirs for more utlities *)
 let fmt = std_formatter
 (* let _ = Clflags.noprompt := true;; *)
-let _loc = FanLoc.ghost;;
+let _loc = FLoc.ghost;;
 
 let (|-) f g x = g (f x );;
 
@@ -58,8 +58,8 @@ let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 
 (* #useo "./test/test_fan.ml";; *)
 (* #load_rec "FanTop.cma";; *)
-open Syntax;;
-let t e s = Gram.parse_string e  s;;
+open Fsyntax;;
+let t e s = Fgram.parse_string e  s;;
 (* module L = Lib;; *)
 (* open L.Meta;; *)
 let normal () = begin
@@ -92,8 +92,8 @@ open PGrammar;;
 (* open Inspect;; *)
 (* let view a= Dot.dump_to_file "test.dot"a;; *)
 #install_printer print_tree;;
-#install_printer Gram.dump;;
+#install_printer Fgram.dump;;
 #install_printer print_ocaml_loc;;
 (* #install_printer p_type_declaration;; *)
 
-#revise;;
+#fan;;
