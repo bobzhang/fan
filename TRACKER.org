@@ -264,3 +264,17 @@
   This is helpful for creating stand-alone binaries and toplevel
 
 * 30 adopt a new macro expansion and conditional compilation scheme, deprecated the macro parser finally
+
+* 31 a new syntax for quotation?
+
+  #+BEGIN_SRC ocaml
+    {:exp| f x |}@loc
+    
+    vs
+    
+    {:exp@loc| f x |}
+    
+    vs
+    
+    {exp|f $x|}@loc
+  #+END_SRC
