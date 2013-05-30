@@ -4366,6 +4366,48 @@ let apply () =
                       match __fan_0 with
                       | `EOI -> (([], None) : 'implem )
                       | _ -> failwith "([], None)\n"))))]));
+      Fgram.extend_single (top_phrase : 'top_phrase Fgram.t )
+        (None,
+          (None, None,
+            [([`Skeyword "#";
+              `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
+              `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
+              `Skeyword ";;"],
+               ("Fgram.mk_action\n  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (Some (`Directive (_loc, n, dp)) : 'top_phrase ))\n",
+                 (Fgram.mk_action
+                    (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t) 
+                       -> (Some (`Directive (_loc, n, dp)) : 'top_phrase )))));
+            ([`Skeyword "#";
+             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
+             `Skeyword ";;"],
+              ("Fgram.mk_action\n  (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (Some (`DirectiveSimple (_loc, n)) : 'top_phrase ))\n",
+                (Fgram.mk_action
+                   (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->
+                      (Some (`DirectiveSimple (_loc, n)) : 'top_phrase )))));
+            ([`Skeyword "#";
+             `Skeyword "import";
+             `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
+              ("Fgram.mk_action\n  (fun (x : 'dot_namespace)  _  _  (_loc : FLoc.t)  ->\n     (begin\n        FToken.paths := ((`Absolute x) :: (FToken.paths.contents)); None\n      end : 'top_phrase ))\n",
+                (Fgram.mk_action
+                   (fun (x : 'dot_namespace)  _  _  (_loc : FLoc.t)  ->
+                      (begin
+                         FToken.paths := ((`Absolute x) ::
+                           (FToken.paths.contents));
+                         None
+                       end : 'top_phrase )))));
+            ([`Snterm (Fgram.obj (stru : 'stru Fgram.t )); `Skeyword ";;"],
+              ("Fgram.mk_action\n  (fun _  (st : 'stru)  (_loc : FLoc.t)  -> (Some st : 'top_phrase ))\n",
+                (Fgram.mk_action
+                   (fun _  (st : 'stru)  (_loc : FLoc.t)  ->
+                      (Some st : 'top_phrase )))));
+            ([`Stoken
+                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
+              ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `EOI -> (None : 'top_phrase )\n     | _ -> failwith \"None\n\")\n",
+                (Fgram.mk_action
+                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      match __fan_0 with
+                      | `EOI -> (None : 'top_phrase )
+                      | _ -> failwith "None\n"))))]));
       Fgram.extend_single (strus : 'strus Fgram.t )
         (None,
           (None, None,
@@ -4441,48 +4483,6 @@ let apply () =
                 (Fgram.mk_action
                    (fun (xs : 'strus)  (st : 'stru)  (_loc : FLoc.t)  ->
                       (`Sem (_loc, st, xs) : 'strus )))))]));
-      Fgram.extend_single (top_phrase : 'top_phrase Fgram.t )
-        (None,
-          (None, None,
-            [([`Skeyword "#";
-              `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-              `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
-              `Skeyword ";;"],
-               ("Fgram.mk_action\n  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (Some (`Directive (_loc, n, dp)) : 'top_phrase ))\n",
-                 (Fgram.mk_action
-                    (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t) 
-                       -> (Some (`Directive (_loc, n, dp)) : 'top_phrase )))));
-            ([`Skeyword "#";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-             `Skeyword ";;"],
-              ("Fgram.mk_action\n  (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (Some (`DirectiveSimple (_loc, n)) : 'top_phrase ))\n",
-                (Fgram.mk_action
-                   (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->
-                      (Some (`DirectiveSimple (_loc, n)) : 'top_phrase )))));
-            ([`Skeyword "#";
-             `Skeyword "import";
-             `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
-              ("Fgram.mk_action\n  (fun (x : 'dot_namespace)  _  _  (_loc : FLoc.t)  ->\n     (begin\n        FToken.paths := ((`Absolute x) :: (FToken.paths.contents)); None\n      end : 'top_phrase ))\n",
-                (Fgram.mk_action
-                   (fun (x : 'dot_namespace)  _  _  (_loc : FLoc.t)  ->
-                      (begin
-                         FToken.paths := ((`Absolute x) ::
-                           (FToken.paths.contents));
-                         None
-                       end : 'top_phrase )))));
-            ([`Snterm (Fgram.obj (stru : 'stru Fgram.t )); `Skeyword ";;"],
-              ("Fgram.mk_action\n  (fun _  (st : 'stru)  (_loc : FLoc.t)  -> (Some st : 'top_phrase ))\n",
-                (Fgram.mk_action
-                   (fun _  (st : 'stru)  (_loc : FLoc.t)  ->
-                      (Some st : 'top_phrase )))));
-            ([`Stoken
-                (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-              ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `EOI -> (None : 'top_phrase )\n     | _ -> failwith \"None\n\")\n",
-                (Fgram.mk_action
-                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                      match __fan_0 with
-                      | `EOI -> (None : 'top_phrase )
-                      | _ -> failwith "None\n"))))]));
       Fgram.extend_single (stru_quot : 'stru_quot Fgram.t )
         (None,
           (None, None,

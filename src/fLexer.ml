@@ -280,74 +280,12 @@ let rec string c = {:lexer|
 |}
 
 
-let rec   maybe_quotation_at c  = {:lexer|
-  | (ident as loc)  '|' (extra_quot as p)? ->
-      begin
-        move_start_p (-2) c;
-        Stack.push p opt_char;
-        mk_quotation quotation c ~name:(FToken.empty_name) ~loc
-           ~shift:(2 + 1 + String.length loc + (opt_char_len p))
-           ~retract:(2 + opt_char_len p)
-      end
-  | _ as c  ->
-      err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
-|}
 
-and maybe_quotation_colon c = {:lexer|
-  | (quotation_name as name)  '|' (extra_quot as p)?  ->
-      let len = String.length name in
-      let name = FToken.resolve_name (FToken.name_of_string name) in
-      begin
-        move_start_p (-2) c;
-        Stack.push p opt_char;
-        mk_quotation quotation c
-          ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
-          ~retract:(2 + opt_char_len p)
-      end
 
-  | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)?  ->
-       let len = String.length name in 
-       let name = FToken.resolve_name (FToken.name_of_string name) in
-       begin
-        move_start_p (-2) c ;
-        Stack.push p opt_char;
-        mk_quotation quotation c ~name ~loc
-          ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
-          ~retract:(2 + opt_char_len p)
-      end
-   
-  |  _ as c ->
-       err (Illegal_quotation (String.make 1 c))
-        (FLoc.of_lexbuf lexbuf) 
-|}
 
-(*
-  $lid:ident
-  $ident
-  $(lid:ghohgosho)
-  $(....)
-  $(....)
- *)
-(* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
-and dollar c = {:lexer|
-   (* FIXME *| does not work * | work *)
-  | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) ->
-        begin
-          move_start_p (String.length name + 1) c;  `Ant(name,x)
-        end
-  | lident as x  ->   `Ant("",x) 
-  | '(' ('`'? (identchar* |['.' '!']+) as name) ':' ->
 
-      antiquot name 0
-        {c with loc = FLoc.move_pos (3+String.length name) c.loc}
-        c.lexbuf
-  | '(' ->
-       antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} c.lexbuf 
-  | _ as c ->
-       err (Illegal_character c) (FLoc.of_lexbuf lexbuf) 
-|}        
 (* depth makes sure the parentheses are balanced *)
-and antiquot name depth c  = {:lexer|
+let rec  antiquot name depth c  = {:lexer|
   | ')' ->
       if depth = 0 then (* only cares about FLoc.start_pos *)
         (set_start_p c ; `Ant(name, buff_contents c))
@@ -467,9 +405,55 @@ let token c = {:lexer|
          quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
            `QUOTATION (FToken.empty_name,"",2,"")
-  | "{@"  ->   with_curr_loc maybe_quotation_at c
+  | "{@" (ident as loc) '|' (extra_quot as p)?  ->
+      begin
+        (* move_start_p (-2) c; *)
+        Stack.push p opt_char;
+        mk_quotation quotation c ~name:(FToken.empty_name) ~loc
+          ~shift:(2 + 1 + String.length loc + (opt_char_len p))
+          ~retract:(2 + opt_char_len p)
+      end
+  | "{@" _  as c ->
+      err (Illegal_quotation c ) (FLoc.of_lexbuf lexbuf)
+  (* | "{@"  -> *)
+  (*     let   maybe_quotation_at c  = {:lexer| *)
+  (*        | (ident as loc)  '|' (extra_quot as p)? -> *)
+  (*            begin *)
+  (*              move_start_p (-2) c; *)
+  (*              Stack.push p opt_char; *)
+  (*              mk_quotation quotation c ~name:(FToken.empty_name) ~loc *)
+  (*                ~shift:(2 + 1 + String.length loc + (opt_char_len p)) *)
+  (*                ~retract:(2 + opt_char_len p) *)
+  (*            end *)
+  (*        | _ as c  -> *)
+  (*            err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)|} in *)
+  (*     with_curr_loc maybe_quotation_at c *)
   | "{:"  ->
-             with_curr_loc maybe_quotation_colon c
+      let  maybe_quotation_colon c = {:lexer|
+        | (quotation_name as name)  '|' (extra_quot as p)?  ->
+            let len = String.length name in
+            let name = FToken.resolve_name (FToken.name_of_string name) in
+            begin
+              move_start_p (-2) c;
+              Stack.push p opt_char;
+              mk_quotation quotation c
+                ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
+                ~retract:(2 + opt_char_len p)
+            end
+        | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)?  ->
+            let len = String.length name in 
+            let name = FToken.resolve_name (FToken.name_of_string name) in
+            begin
+              move_start_p (-2) c ;
+              Stack.push p opt_char;
+              mk_quotation quotation c ~name ~loc
+                ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
+                ~retract:(2 + opt_char_len p)
+            end
+        |  _ as c ->
+            err (Illegal_quotation (String.make 1 c))
+              (FLoc.of_lexbuf lexbuf) |} in
+      with_curr_loc maybe_quotation_colon c
   | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->
@@ -483,6 +467,24 @@ let token c = {:lexer|
   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
   | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
   | '$' ->
+      (*  $lid:ident $ident  $(lid:ghohgosho)  $(....)  $(....) *)
+      (* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
+      let  dollar c = {:lexer|
+      (* FIXME *| does not work * | work *)
+        | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) ->
+            begin
+              move_start_p (String.length name + 1) c;  `Ant(name,x)
+            end
+        | lident as x  ->   `Ant("",x) 
+        | '(' ('`'? (identchar* |['.' '!']+) as name) ':' ->
+
+            antiquot name 0
+              {c with loc = FLoc.move_pos (3+String.length name) c.loc}
+              c.lexbuf
+        | '(' ->
+            antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} c.lexbuf 
+        | _ as c ->
+            err (Illegal_character c) (FLoc.of_lexbuf lexbuf) |} in        
       if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c
       else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
