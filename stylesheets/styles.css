@@ -9,7 +9,7 @@ body {
     font-size: 14px;
     color: #232323;
     background-color: #FBFAF7;
-    margin: 0;
+    margin: 20pt;
     line-height: 1.8em;
     -webkit-font-smoothing: antialiased;
 
@@ -296,8 +296,8 @@ section {
     padding-bottom:50px;
 }
 
-.outline-2{
-    margin-left:30pt
-}
+/* .outline-2{ */
+/*     margin-left:30pt */
+/* } */
 
 

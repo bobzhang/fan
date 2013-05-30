@@ -21,8 +21,7 @@ programmer :-)
   See [[file:syntax.org][syntax]]
 
 * A high-level overview of Fan's architecture.
-  There is a paper, which gives a high-level priciple about how Fan
-  works, available here [[file:pdf/metaprogramming_for_ocaml.pdf]]
+  See [[file:overview.org][overview]].
 
 * Compiling with Fan
   See [[file:compilation.org][compilation]]
