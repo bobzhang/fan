@@ -74,18 +74,18 @@ cleantest:
 	rm -rf _build/test
 
 boot:
-	cd ~/fan/ && ocamlbuild -I src boot/FanDriver.native
+	cd ~/fan/ && ocamlbuild -I src boot/fan.native
 stat:
 	rm -rf stat/*
 	git_stats . stat
 
 
-
+# ls *.mli | sed s/.mli$// > foo.odocl
 doc:
 	ocamlbuild src/foo.docdir/index.html
 updoc:
 	make doc
-	rm -rf ~/Dropbox/fanweb/Fan/foo.docdir
-	mv _build/src/foo.docdir ~/Dropbox/fanweb/Fan/
+	rm -rf ~/Dropbox/fanweb/foo.docdir
+	mv _build/src/foo.docdir ~/Dropbox/fanweb/
 
 .PHONY: top doc

@@ -300,8 +300,8 @@ let apply () = begin
             `While (_loc, e, seq)]  
        ":=" NA
         [ S{e1}; ":="; S{e2} ->
-          (`Assign (_loc,`Field(_loc,e1,`Lid(_loc,"contents")),e2):exp)
-          (* {:exp| $e1 := $e2 |}  *)
+          (* (`Assign (_loc,`Field(_loc,e1,`Lid(_loc,"contents")),e2):exp) *)
+          {| $e1 := $e2 |}
         | S{e1}; "<-"; S{e2} -> (* FIXME should be deleted in original syntax later? *)
             match FanOps.bigarray_set _loc e1 e2 with
             | Some e -> e
@@ -315,10 +315,7 @@ let apply () = begin
        "^" RA
         [ S{e1}; infixop3{op}; S{e2} -> {| $op $e1 $e2 |} ]
         "::" RA
-        [ S{e1}; "::"; S{e2} ->
-           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), e2)
-          (* {:exp| [ $e1 :: $e2 ] |} *)
-        ]  
+        [ S{e1}; "::"; S{e2} -> {|  $e1 :: $e2  |} ]  
        "+" LA
         [ S{e1}; infixop4{op}; S{e2} -> {| $op $e1 $e2 |} ]
        "*" LA
@@ -905,7 +902,7 @@ let apply () = begin
       exp_eoi:  [ exp{x}; `EOI -> x ]  |};
   with stru
     {:extend|
-    (* ml entrance *)    
+    (** ml file  entrance *)    
       implem:
       [ "#"; a_lident{n}; exp{dp}; ";;" ->
         ([ `Directive(_loc,n,dp) ],  Some _loc)

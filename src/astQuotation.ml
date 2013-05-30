@@ -50,8 +50,8 @@ type key = (name * ExpKey.pack)
 
 module QMap =MapMake (struct type t =key  let compare = compare end)
 
-(*
-  [names_tbl] is used to manage the namespace and names,
+(**
+
   [map] is used
 
 

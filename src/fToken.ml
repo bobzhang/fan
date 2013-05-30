@@ -6,12 +6,6 @@ type domains =
 
 type name = (domains*string) with ("Print")
 
-(* type quotation  = { *)
-(*     q_name : name; *)
-(*     q_loc : string; *)
-(*     q_shift : int; *)
-(*     q_contents : string *)
-(*   } with ("Print") *)
 
 type t =
   [  `KEYWORD of string

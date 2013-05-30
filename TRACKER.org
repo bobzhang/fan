@@ -278,3 +278,20 @@
     
     {exp|f $x|}@loc
   #+END_SRC
+
+* COMMENT
+** rules
+  {-# RULES
+  "map/map"    forall f g xs.  map f (map g xs) = map (f.g) xs
+  "map/append" forall f xs ys. map f (xs ++ ys) = map f xs ++ map f ys
+    #-}
+
+  {:map| "row_field"
+   fun [ {|$vrn:x of loc|} -> {|$vrn:x|}
+   | $vrn:x of (loc * $y) -> 
+      match y with
+      [{:ctyp| $_ * $_ |} -> {|$vrn:x of $tup:y |}
+      |_ -> {|$vrn:x of $y|}]   ]
+   
+  |}
+  

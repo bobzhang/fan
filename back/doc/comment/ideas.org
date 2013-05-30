@@ -1,0 +1,113 @@
+#+STARTUP: indent
+#+STARTUP: overview
+#+TAGS: details(d) ideas(i) attention(t) trick(k)
+#+TAGS:  { bad(1) good(2) awesome(3) } question(q)
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+# * shortcut                                                           :awesome:
+#   Shift+Table : display overview
+#   C-c C-c : smart update 
+#   Table : cycle display
+#   C-c {C-f C-b} the same level 
+#   c-c {C-n c-p} 跨级 c-c c-u 上级
+#   M-left 将当前项升高一级 M-right (M-up M-down 将当前分支上下移动
+#   [[链接地址] [链接名称]]
+#   C-c \ 搜索标签 (a+b) (a-b 有a 没b) (a|b) (C-c C-c查询视图中退出)
+#   C-c C-o -- open link at point
+#   C-c C-t [T] todo 
+#   <s 
+
+
+This is simply a note scratch some basic ideas to explore
+
+
+
+
+* [[http://en.wikipedia.org/wiki/Macro_(computer_science)][macros]]
+** [[http://en.wikipedia.org/wiki/Anaphoric_macro][Anaphoric macros]]
+
+* people
+** Sebastian [[http://www.informatik.uni-marburg.de/~seba/publications.html][pub]]
+* language
+** Cyclone [[http://www.eecs.harvard.edu/~greg/cyclone/old_cyclone.html][cyclone]]
+** D
+** llvm [[http://llvm.org/pubs/][pubs]]
+** Dylan
+** [[http://en.wikipedia.org/wiki/Racket_(programming_language)][Racket]]
+
+** [[http://boo.codehaus.org/][boo]]
+** [[http://www.boost.org/doc/libs/1_37_0/libs/preprocessor/doc/index.html][boost Preprocessor]]
+* Books
+Three books The first 2 books are comprehensive about Lisp's macro
+system, the third book is the most interesting book about Lisp
+** [[http://www.paulgraham.com/onlisp.html][On Lisp]]
+** [[http://letoverlambda.com/][Let Over Lambda]]
+** [[http://norvig.com/paip.html][Paradigms of Artificial Intelligence Programming]]
+
+* papers
+** [[./papers/quasiquotesinlisp.pdf][Quasiquotation in Lisp]]
+** [[./papers/lal.pdf][Language as Libraries]]
+** [[./papers/automataviamacros.pdf][Automata via Macros]]
+** [[./papers/evolutionoflisp.pdf][Evolution of Lisp]]
+** [[./papers/dexprs.pdf][D-Expression: Lisp Power,Dylan Style]]
+** Compiling for Runtime code Generation
+[[./papers/compile_rtcg.pdf][rtcg]]
+*** comments
+**** Abstract
+Cyclone compiler uses a tem- plate based strategy in which
+pre-compiled code fragments are stitched together at runtime.
+** Declarative Approach to Run-Time Code Generation
+[[./papers/drtcg.pdf]]
+*** comments
+**** Abstract
+FABIUS, compiles ordinary programs written in a subset of Standard ML
+into code that generates and executes native code at runtime.
+benefit:
+Principled design: the compiler exploits previous work on partial
+evaluaton of declarative languages.
+** [[./papers/lmst.pdf][Lightweight Modular Staging]]
+** [[http://en.wikipedia.org/wiki/Code_generation_(compiler)][code generation wiki]]
+
+** [[http://en.wikipedia.org/wiki/Comparison_of_code_generation_tools][code generation tools]]
+** [[http://en.wikipedia.org/wiki/Source-to-source_compiler][source to source compiler]]
+
+** [[http://en.wikipedia.org/wiki/Compiler-compiler][Compiler Compiler]]
+** [[./papers/Modern Extensible Languages-ml.pdf][Morder Extensible Languages]]
+* links
+[[http://www.pps.univ-paris-diderot.fr/~maurel/programmation/ocamltemplates/tutorial.html][O-Template]]
+* challenges
+
+** communicating between compile-time and run-time
+Actually it's harder than JIT style code generation, since for compile
+time evaluation, there are two totally different environments. The
+data is comprehended in two totally different ways.
+
+The benefit for compile-time evaluation is that it is the most
+efficent way to generate code, even more efficent than JIT
+
+1. using "it" to communicate 
+   we can query it for type information, based on these type
+   information, generate some code as transform function, then use 
+   the generated transform function to send the value back
+
+   For built in time, it's not too hard, for custom defined type,
+   using fan's meta generator to generate.
+   
+   
+
+* [[http://pldi2013.ucombinator.org/][pldi 2013]]
+deadline Nov 11
+
+** pldi 2012
+*** [[./papers/Dubach12Compiling.pdf][Compiling a High-Level Language for GPUs]]
+*** [[./papers/pldi12-idem.pdf][Static Analysis and Compiler Design for Idempotent Processing]]
+*** [[./papers/pldi12a.pdf][A New Foundation for Generic Programming]]
+*** [[./papers/pldi12.pdf][Type-Directed Completion of Partial Expressions]]
+*** [[./papers/p121.pdf][Synthesising Graphics Card Programs from DSLs]]
+*** [[./papers/pldi12-preprint.pdf][Diderot: A Parallel DSL for Image Analysis and Visualization]]
+*** [[./papers/main.pdf][Automated Synthesis of Symbolic]]
+*** [[./papers/p347.pdf][A Compiler Framework for Extracting Superword Level Parallelism]]
+*** [[./papers/superc.pdf][SuperC: Parsing All of C by Taming the Preprocessor]]
+*** [[./papers/ChenDunfieldAcar11.pdf][Type-Directed Automatic Incrementalization]]
+*** [[./papers/testcase.pdf][Test-Case Reduction for C Compiler Bugs]]

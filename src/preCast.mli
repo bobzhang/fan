@@ -15,10 +15,13 @@ type 'a printer_fun  =
         'a option -> unit
         
 
-(** When  the parser encounter a directive it stops (since the directive may change  the
+(** When  the parser encounter a directive it stops
+    (since the directive may change  the
     syntax), the given [directive_handler] function  evaluates  it  and
     the parsing starts again. *)
 val parse_implem : stru parser_fun
+
+
 (** see [parse_implem]*)
 val parse_interf : sigi parser_fun
 
@@ -31,6 +34,7 @@ val parse_file :
     
 (** turn the printer to vanilla ocaml output *)
 val register_text_printer :  unit -> unit
+
 (** turn the printer to binary parsetree output *)
 val register_bin_printer :  unit -> unit     
     

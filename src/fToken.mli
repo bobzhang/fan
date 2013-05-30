@@ -131,6 +131,8 @@ val concat_domain : domains * domains -> domains
 val empty_name : name
 
 val name_of_string : string -> name    
+
+(** [names_tbl] is used to manage the namespace and names *)
 val names_tbl : (domains, LibUtil.SSet.t) Hashtbl.t
 
 val resolve_name : name -> name    
