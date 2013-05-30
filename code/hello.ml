@@ -1,5 +1,5 @@
 
-print_endline "hell, Fan"
+print_endline "hello, Fan"
 
   
 (* local variables: *)

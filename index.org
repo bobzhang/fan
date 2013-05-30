@@ -1,10 +1,9 @@
-#+TITLE: Fan: a set of languages for OCaml
+#+TITLE: Fan: metaprogramming for OCaml
 #+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
 #+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
 #+BEGIN_HTML
 <div class="wrapper">
 <header>
-<p class="header">Metaprogramming system: Fan</p>
 <ul>
 <li class="download"><a class="buttons" href="https://github.com/bobzhang/Fan/zipball/master">Download ZIP</a></li>
 <li class="download"><a class="buttons" href="https://github.com/bobzhang/Fan/tarball/master">Download TAR</a></li>
@@ -23,29 +22,30 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
 [[http://letoverlambda.com/][Macros]]. It shares the same concrete syntax with OCaml.
 
 * The philosophy
+
   Unlike traditional programming languages, Fan is /a set of
-  languages/ which could /evolve/ itself incrementally. It gets
+  languages/ which can /evolve/ itself incrementally. It gets
   started from the vanilla OCaml language as Fan_{0}, with more and
   more new languages added for each version.
 
-  For example, to add a new sub-language into Fan_{n}, we would
-  supply a front-end and a back-end targeted at Fan_{n}, upon being
-  integrated, Fan_{n} becomes Fan_{n+1}.
+  For example, to add a new [[http://en.wikipedia.org/wiki/Domain-specific_language][DSL]] into Fan_{n}, we would supply a
+  front-end and a back-end targeted at Fan_{n}, upon being integrated,
+  Fan_{n} becomes Fan_{n+1}.
 
-  We could grow Fan endlessly in such a way, however, the main
-  interesting part for Fan is not that me, the main developer of Fan
-  could keep adding features to it, its interesting point lies in
+  We can grow Fan endlessly in such a way, however, the main
+  interesting part for Fan is not that I, the main developer of Fan
+  can keep adding features to it, its interesting point lies in
   the following two aspects:
 
-  1. It encourages programmer to think about programming in a
+  1. It encourages the programmer to think about programming in a
      bottom-up way.  Unlike the traditional problem-oriented approach,
      language-oriented programming is encouraged: delimited domain
      specific language([[file:ddsl.org][DDSL]]) is the best abstraction for a specific
      domain.
 
-  2. Everyone, including you: the reader,  could join and develop a
+  2. Everyone, including you: the reader,  can join and develop a
      mini-compiler and share with other people. Fan servers as a
-     platform to glue them tegother.
+     platform to glue them tegether.
 
 * Getting started 
 
@@ -55,7 +55,7 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
 * Status 
 
   Please bear in mind that Fan is still at alpha release, so it's
-  expected there would be tons of bugs. This also means that your
+  expected there would be many bugs. This also means that your
   participation is particularly important, and your suggestions will
   affect the design of Fan.
 
@@ -73,8 +73,9 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
     It's written in [[http://orgmode.org/]] markup language.  If you are
     unfamiliar with org files, markdown or html patches are welcome as
     well.  Help on building the website is deeplhalso appreciated.
+    
   - [[file:foo.docdir/index.html][Ocamldoc API]]
-
+    Some modules are missing for some reasons, it would be fixed later
 
 *  TODO List 
 
@@ -94,21 +95,7 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
  - Scheme-style macros for local ast rewriting without computation
    
 * Acknowledgments
-
-  Fan is a successor to [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]], which was mainly developed by
-  [[http://pauillac.inria.fr/~ddr/][Daniel de Rauglaudre]] and [[http://michel.mauny.net/index.en.php][Michel Mauny]], and later was largely
-  renovated by [[http://nicolaspouillard.fr/][Nicolas Pouillard]].
-
-  In fall semester 2011, I had an indepedent study with [[http://www.cis.upenn.edu/~sweirich/][Stephanie]] on
-  "generic programming in Haskell", later I ported it into OCaml using
-  Camlp4 in the spring semester of 2012.
-
-  Later, I found Camlp4 too slow and verbose and it's very hard to write a plugin
-  for it, then I started Fan as a research project under the guidance
-  of [[http://www.cis.upenn.edu/~stevez/][Steve]], from July 2012.
-
-  Special thanks to [[http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)][John McCarthy]] and [[http://www.xavierleroy.com/][ Xavier Leory]] for their
-  contribution to language design.
+  See file:credits.org
 
 * COMMENT
   It shares the same run-time

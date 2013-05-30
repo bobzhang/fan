@@ -24,7 +24,7 @@ programmer :-)
   There is a paper, which gives a high-level priciple about how Fan
   works, available here [[file:pdf/metaprogramming_for_ocaml.pdf]]
 
-* Compiing with Fan
+* Compiling with Fan
   See [[file:compilation.org][compilation]]
 
 * Fan for toplevel 
