@@ -8,6 +8,32 @@ val mkvirtual : flag -> Asttypes.virtual_flag
 val mkdirection : flag -> Asttypes.direction_flag
 val mkrf : flag -> Asttypes.rec_flag
 
+
+(**
+  val ident_tag: ident -> Longident.t * [> `app | `lident | `uident ]
+  {[
+  ident_tag {:ident| $(uid:"").B.t|}
+  - : Longident.t * [> `app | `lident | `uident ] =
+  (Longident.Ldot (Longident.Lident "B", "t"), `lident)
+
+  ident_tag {:ident| A B |}
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), `app)
+
+  ident_tag {:ident| (A B).t|}
+  (Longident.Ldot
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), "t"),
+  `lident)
+
+  ident_tag {:ident| B.C |}
+  (Longident.Ldot (Longident.Lident "B", "C"), `uident)
+
+  ident_tag {:ident| B.u.g|}
+  Exception: FLoc.Exc_located (, Failure "invalid long identifier").
+  ]}
+
+  If "", just remove it, this behavior should appear in other identifier as well FIXME
+
+ *)    
 val ident_tag : ident -> Longident.t * [> `app | `lident | `uident ]
 
 val ident_noloc : ident -> Longident.t
@@ -95,6 +121,28 @@ val pat : pat -> Parsetree.pattern
 
 val flag :  loc -> flag -> Asttypes.override_flag
 
+(** {[
+  exp (`Id (_loc, ( (`Dot (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "U", "g"); loc = };
+  pexp_loc = }
+
+  exp {:exp| $(uid:"A").b |} ; ;       
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "A", "b"); loc = };
+  pexp_loc = }
+  Ast2pt.exp {:exp| $(uid:"").b |} ; 
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "", "b"); loc = };
+  pexp_loc = }
+  ]}
+ *)
 val exp : exp -> Parsetree.expression
 
 val label_exp : exp -> Asttypes.label * Parsetree.expression
@@ -111,6 +159,15 @@ val case :
 val mklabexp :
   rec_exp ->
   (Longident.t Asttypes.loc * Parsetree.expression) list
+
+
+(** Example: {[
+   (of_stru {:stru|type u = int and v  = [A of u and b ] |})
+   ||> mktype_decl |> AstPrint.default#type_def_list f;
+   type u = int 
+   and v =  
+   | A of u* b]}
+ *)    
       
 val mktype_decl :
   typedecl ->

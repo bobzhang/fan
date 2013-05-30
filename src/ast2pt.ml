@@ -99,31 +99,6 @@ let mkrf : flag -> Asttypes.rec_flag = function
   | `Ant(_loc,_) -> ANT_ERROR
 
 
-(*
-  val ident_tag: ident -> Longident.t * [> `app | `lident | `uident ]
-  {[
-  ident_tag {:ident| $(uid:"").B.t|}
-  - : Longident.t * [> `app | `lident | `uident ] =
-  (Longident.Ldot (Longident.Lident "B", "t"), `lident)
-
-  ident_tag {:ident| A B |}
-  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), `app)
-
-  ident_tag {:ident| (A B).t|}
-  (Longident.Ldot
-  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), "t"),
-  `lident)
-
-  ident_tag {:ident| B.C |}
-  (Longident.Ldot (Longident.Lident "B", "C"), `uident)
-
-  ident_tag {:ident| B.u.g|}
-  Exception: FLoc.Exc_located (, Failure "invalid long identifier").
-
-  ]}
-
-  If "", just remove it, this behavior should appear in other identifier as well FIXME
- *)
 let ident_tag (i:ident) =
   let rec self i acc = with ident
     match i with
@@ -257,7 +232,6 @@ let rec ctyp (x:ctyp) =
       mktyp loc (Ptyp_poly (to_var_list t1) (ctyp t2))
         (* QuoteAny should not appear here? *)      
   | `Quote (_loc,`Normal _, `Lid(_,s)) -> mktyp _loc (Ptyp_var s)
-        (* | `Quote (_loc, `Normal _, `Some (`Lid (_,s))) -> mktyp _loc (Ptyp_var s) *)
   | `Par(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
   | `PolyEq(_loc,t) ->
@@ -488,8 +462,7 @@ let rec pat (x:pat) =  with pat  match x with
       | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | {| _ |} -> mkpat _loc Ppat_any
-  | (`App (_loc,`Uid(sloc,s),`Par(_,`Any loc_any )) : FAst.pat) -> 
-  (* | {| $(id:{:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} -> *)
+  | {| $({:ident'@sloc| $uid:s |}) $(par:{@loc_any| _ |}) |} ->
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `App (loc, _, _) as f ->
@@ -585,35 +558,9 @@ let flag loc (x:flag) =
   | `Negative _  -> Fresh
   |  _ -> error loc "antiquotation not allowed here" 
 
-  
 
-
-(*
-  {[
-  exp (`Id (_loc, ( (`Dot (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
-  - : Parsetree.expession =
-  {Parsetree.pexp_desc =
-  Parsetree.Pexp_ident
-  {Asttypes.txt = Longident.Ldot (Longident.Lident "U", "g"); loc = };
-  pexp_loc = }
-
-  exp {:exp| $(uid:"A").b |} ; ;       
-  - : Parsetree.expession =
-  {Parsetree.pexp_desc =
-  Parsetree.Pexp_ident
-  {Asttypes.txt = Longident.Ldot (Longident.Lident "A", "b"); loc = };
-  pexp_loc = }
-  Ast2pt.exp {:exp| $(uid:"").b |} ; 
-  - : Parsetree.expession =
-  {Parsetree.pexp_desc =
-  Parsetree.Pexp_ident
-  {Asttypes.txt = Longident.Ldot (Longident.Lident "", "b"); loc = };
-  pexp_loc = }
-  ]}
- *)
 let rec exp (x : exp) = with exp match x with 
-  | `Field(_loc,_,_)|
-    (* `Id(_loc,`Dot _ ) | *) `Dot (_loc,_,_)->
+  | `Field(_loc,_,_)| `Dot (_loc,_,_)->
       let (e, l) =
         match sep_dot_exp [] x with
         | (loc, ml, `Uid(sloc,s)) :: l ->
@@ -662,10 +609,8 @@ let rec exp (x : exp) = with exp match x with
                (List.map exp (list_of_sem e []))) (* be more precise*)
       | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
       | {|assert false|} -> mkexp _loc Pexp_assertfalse
-      (* | `Assert (_loc, (`Lid (_, "false"))) -> mkexp _loc Pexp_assertfalse *)
       | `Assert(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
-      | `Assign (loc,e,v) ->
-          (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
+      | `Assign (loc,e,v) ->   (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
           let e =
             match e with
             | {@loc| $x.contents |} -> (* FIXME *)
@@ -678,8 +623,7 @@ let rec exp (x : exp) = with exp match x with
             | `ArrayDot (loc, e1, e2) ->
                     Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                       [("", exp e1); ("", exp e2); ("", exp v)]
-            | (* `Id(_,`Lid(lloc,lab)) |  *)`Lid(lloc,lab)  ->
-                Pexp_setinstvar (with_loc lab lloc) (exp v)
+            | `Lid(lloc,lab)  -> Pexp_setinstvar (with_loc lab lloc) (exp v)
             | `StringDot (loc, e1, e2) ->
                 Pexp_apply
                   (mkexp loc (Pexp_ident (array_function loc "String" "set")))
@@ -700,11 +644,7 @@ let rec exp (x : exp) = with exp match x with
                        (exp e1) (exp e2) (mkdirection df) (exp e3))
       | `Fun(loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
           mkexp loc
-            (Pexp_function lab None
-               [(* (pat (`Id(sloc,`Lid(sloc,lab))),exp e) *)
-               (pat (`Lid(sloc,lab)),exp e)
-              ])
-            
+            (Pexp_function lab None [(pat (`Lid(sloc,lab)),exp e)])
       | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
           mkexp loc
             (Pexp_function lab None
@@ -712,7 +652,7 @@ let rec exp (x : exp) = with exp match x with
       | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
           mkexp loc
             (Pexp_function lab None
-               [(pat (* `Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)),
+               [(pat (`Lid(sloc,lab)),
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
             
       | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
@@ -722,7 +662,7 @@ let rec exp (x : exp) = with exp match x with
                  mkexp (loc_of w) (Pexp_when (exp w) (exp e)))])
       | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
           mkexp loc (Pexp_function ("?"^lab) None
-                       [(pat (* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)), exp e2)])
+                       [(pat (`Lid(sloc,lab)), exp e2)])
       | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
           let lab = paolab lab p in
           mkexp loc
@@ -732,8 +672,7 @@ let rec exp (x : exp) = with exp match x with
       | `Fun (loc,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
           mkexp loc
             (Pexp_function ("?" ^ lab) None
-               [(pat (* (`Id(sloc,`Lid(sloc,lab))) *) (`Lid(sloc,lab)),
-                 mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
+               [(pat (`Lid(sloc,lab)), mkexp (loc_of w) (Pexp_when (exp w) (exp e2)))])
 
       | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
           let lab = paolab lab p in
@@ -851,15 +790,14 @@ let rec exp (x : exp) = with exp match x with
           end
       | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (exp e) (Some (ctyp t)) None)
 
-      | (* `Id(_loc,`Uid(_,"()")) |  *)`Uid(_loc,"()")->
+      | `Uid(_loc,"()")->
           mkexp _loc (Pexp_construct (lident_with_loc "()" _loc) None true)
 
-      | (* `Id(_loc,`Lid(_,("true"|"false" as s))) | *)
-        `Lid(_loc,("true"|"false" as s)) -> 
+      | `Lid(_loc,("true"|"false" as s)) -> 
           mkexp _loc (Pexp_construct (lident_with_loc s _loc) None true)
-      | (* `Id(_,`Lid(_loc,s)) | *) `Lid(_loc,s) ->
+      | `Lid(_loc,s) ->
           mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-      | (* `Id(_,`Uid(_loc,s)) | *) `Uid(_loc,s) ->
+      |  `Uid(_loc,s) ->
           mkexp _loc (Pexp_construct (lident_with_loc  s _loc) None true)
       | `Vrn (loc,s) -> mkexp loc (Pexp_variant  s None)
       | `While (loc, e1, el) ->
@@ -889,7 +827,6 @@ and bind (x:bind) acc =  match x with
   | {:bind| $x and $y |} -> bind x (bind y acc)
   | {:bind@_loc| $(pat: {:pat@sloc| $lid:bind_name |} ) =
     ($e : $(`TyTypePol (_, vs, ty))) |} ->
-
       let rec id_to_string (x:ctyp) =
         match x with
         | `Lid(_,x) -> [x]
@@ -934,16 +871,6 @@ and mklabexp (x:rec_exp)  =
         | {:rec_exp| $id:i = $e |} ->  Some (ident i, exp e)
         |  x ->errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x) ) binds
 
-(* Example:
-   {[
-   (of_stru {:stru|type u = int and v  = [A of u and b ] |})
-   ||> mktype_decl |> AstPrint.default#type_def_list f;
-   type u = int 
-   and v =  
-   | A of u* b
-   ]}
-   
- *)    
 and mktype_decl (x:typedecl)  =
   let type_decl tl cl loc (x:type_info) =
     match x with
