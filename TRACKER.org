@@ -279,6 +279,9 @@
     {exp|f $x|}@loc
   #+END_SRC
 
+* 32 gadt any type variable fails
+  file:tests/gadt_32.ml
+  
 * COMMENT
 ** rules
   {-# RULES
@@ -294,4 +297,97 @@
       |_ -> {|$vrn:x of $y|}]   ]
    
   |}
+  
+
+
+* COMMENT
+  benchmark
+  20s ~ 16s 
+
+** Diffierence compile time runtime and runtime runtime
+  compile time runtime
+
+** merged previous work
+  Quite a lot, now could adapt the ADT type easier
+
+** Nested Quotation examples
+
+  #+BEGIN_SRC ocaml
+    (*
+      Here [s] should be a capital alphabet
+      {[
+      mee_of_str "A" = {| {| A |}|};
+      - : bool = true
+      ]}
+     *)   
+    let mee_of_str s =
+      let u = {| {:ident| $(uid:$str:s) |} |} in
+      {| {| $(id:$u) |} |};
+    
+    (*
+      Examples:
+      {[
+      meee_of_str "A" = {| {| {| A |}|}|};
+      ]}
+     *)
+    let meee_of_str s =
+      let u = {| {| {:ident| $(uid:$(str:$(str:s))) |} |} |} in 
+      {| {| {| $(id:$($u))|}|}|};
+      
+  #+END_SRC
+** introducing a family of two diffierent languages
+
+** {:macro.expr||}
+   Diffierent styles macros for diffierent usage
+
+   Some macros are not used as libraries (textual replacement)
+
+   Some could 
+
+** {:inject.expr||}
+** {:inject.str_item||}
+   
+** macro taxnomy
+
+  #+BEGIN_SRC ocaml
+    #define LOG(x) cout << __FILE__ << ":" << __LINE__ << " expression: " << x << endl;  
+    #define SHOW_VARIABLE(X) cout << "Variable " << #X << " <" << (X) << ">\n";
+  #+END_SRC
+
+  from the point of the view of usage
+** substitution macros
+   #define f(x)
+   {y{x} = 3}
+   semantics is more clear?
+
+   {:subs.expr|f(x)|};
+   {:subs.str_item|f(x)};
+   {:subs.pattern|f(x)|};
+
+   swich to a slightly different lexer
+   which could recogize #, ##
+** staging macros 
+** change to diffieren lexers
+  like the macros above it needs to switch to diffierent lexers?
+
+** c11 constexpr
+  #+BEGIN_SRC c++
+  constexpr bool is_prime_recursive(size_t number, size_t c){
+  return (c*c > number) ? true : 
+           (number % c == 0) ? false : 
+              is_prime_recursive(number, c+1);
+}
+ 
+constexpr bool is_prime_func(size_t number){
+  return (number <= 1) ? false : is_prime_recursive(number, 2);
+}
+  #+END_SRC
+
+  The use of constexpr on a function imposes some limitations on what
+  that function can do. First, the function must have a non-void
+  return type. Second, the function body cannot declare variables or
+  define new types. Third, the body may contain only declarations,
+  null statements and a single return statement. There must exist
+  argument values such that, after argument substitution, the
+  expression in the return statement produces a constant expression.
   

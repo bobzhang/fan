@@ -89,7 +89,8 @@ let rec str_handler = with stru
       (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
             
       | {| #use $str:s |} ->
-          PreCast.parse_file  ~directive_handler:str_handler s PreCast.parse_implem 
+          PreCast.parse_file  ~directive_handler:str_handler s
+            PreCast.parse_implem 
       | {| #default_quotation $str:s |} ->
           begin
             AstQuotation.default := FToken.resolve_name (`Sub [],s) ;
