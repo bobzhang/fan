@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<title>Installation</title>
+<title>A brief category of domain specific languages</title>
 <!-- 2013-05-29 Wed 22:53 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
@@ -135,40 +135,51 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="content">
-<h1 class="title">Installation</h1>
-<my-body>
-
-
-
-<div id="outline-container-sec-1" class="outline-2">
-<h2 id="sec-1">Requirements</h2>
-<div class="outline-text-2" id="text-1">
-<ul class="org-ul">
-<li><a href="http://caml.inria.fr/ocaml/release.en.html">OCaml (version &gt;=4)</a>
-</li>
-</ul>
+<h1 class="title">A brief category of domain specific languages</h1>
 <p>
-Backport Fan to earlier OCaml is planned.
+According to wiki:
 </p>
-</div>
-</div>
-<div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2">Install for users</h2>
-<div class="outline-text-2" id="text-2">
-<div class="org-src-container">
+<blockquote>
+<p>
+A domain-specific language (DSL) is a type of programming language or specification language in software development and domain engineering dedicated to a particular problem domain, a particular problem representation technique, and/or a particular solution technique.
+</p>
+</blockquote>
 
-<pre class="src src-sh">$<span style="color: #a0522d;">make</span> world
-</pre>
-</div>
-</div>
-</div>
+<p>
+There are mainly three kinds of DSLs <i>e.g.</i>, embeded DSL, external
+DSL and delimited DSL.
+</p>
+<ol class="org-ol">
+<li><a href="http://www.haskell.org/haskellwiki/Embedded_domain_specific_language">Embeded DSL</a> are essentially normal functions,
+its functionality is inherently limited, due to lacking staging,
+program analysis and optimization, yet it's easy to implement in some
+expressive languages.
+</li>
+<li>External DSL are real languages targeted at a small domain, like
+other full blown programming languages, <i>i.e.</i> C, C++, it may
+include the whole pipeline of the compiler, from the front-end
+to back-end. It's more powerful compared with embeded DSL, yet
+much more difficult to build an efficient compiler, and more
+importantly, it brings problem: language inter-operation.
+</li>
 
-<div id="outline-container-sec-3" class="outline-2">
-<h2 id="sec-3">What it installed?</h2>
-<div class="outline-text-2" id="text-3">
-</my-body>
-</div>
-</div>
+<li>Delimited DSL. DDSL stands between embeded DSL and external DSL,
+it needs a front-end and backend. Since its backend is the host
+language, compared with external DSL, language inter-operation is
+much easier, learning curve is relatively low.
+</li>
+</ol>
+
+<p>
+Fan advocates DDSL, it adopts OCaml as backend, all DDSLs are
+compiled into OCaml, since OCaml is a highly portable langauge, which
+means Fan is cross-platform for free.
+</p>
+
+<p>
+Adopting a high-level language as backend is popular nowadays, some
+famous examples includes: <a href="http://haxe.org/">Haxe</a>, <a href="http://en.wikipedia.org/wiki/Cfront">Cfront</a>, and numerous <a href="http://altjs.org/">javascript backends</a>.
+</p>
 </div>
 </body>
 </html>

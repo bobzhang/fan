@@ -1,22 +1,26 @@
-#+OPTIONS: toc:nil
+#+TITLE: Installation
+#+OPTIONS: toc:nil html-postamble:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+
 #+BEGIN_HTML
----
-layout: index
-title: install
----
+<my-body>
 #+END_HTML
 
-* Installation
-** Requirements
+
+
+* Requirements
    - [[http://caml.inria.fr/ocaml/release.en.html][OCaml (version >=4)]]
    Backport Fan to earlier OCaml is planned.
 
-** Install for users
+* Install for users
 
    #+BEGIN_SRC sh
-   make world
+     $make world
    #+END_SRC
 
 
-** What it installed?
+* What it installed?
    
+#+BEGIN_HTML
+</my-body>
+#+END_HTML

@@ -1,22 +1,20 @@
-#+BEGIN_HTML
----
-layout: index
-title: Getting started
----
-#+END_HTML
-
+#+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+#+TITLE: Getting started
 #+OPTIONS: ^:{}
 #+OPTIONS: toc:t
 #+TOC:headines 2
+
 
 
 The following post assumes the reader is already familiar with OCaml.
 If you are not familiar with OCaml, http://ocaml.org/ is recommended
 for you to learn.
 
-{{{email}}}
+
 * Installation
   see [[file:install.org][Installation]]
+
 
 * What language does Fan speak?
 
@@ -137,7 +135,9 @@ for you to learn.
 
    Abot the internal of /lexer/ DDSL, see [[file:ddsl/lexer.org][DDSL:lexer]].
 
-* Playing with toplevel
+* Fan for toplevel 
+
+** Playing with toplevel
 
    If you have ocamlfind installed, the easiest way to explore fan is
    starting the toplevel:
@@ -166,8 +166,84 @@ for you to learn.
       #+END_SRC
       It will turn on the featurs of fan.
       
-** TODO Playing with utop
+      
+** Playing with utop
+  [[https://github.com/diml/utop][Utop]] is a toplevel with nice auto-completion support, it's very
+  helpful for explore some libraries which the user is not familiar
+  with.
+
+  There is adapter for fan, namely ftop, available here:
+  https://github.com/bobzhang/ftop
+  
+* Writing plugins for Fan
+
+  There is a paper, which gives a high-level priciple about how Fan
+  works, available here [[file:pdf/metaprogramming_for_ocaml.pdf]]
+
+  
+** Fan's quotation system 
+
+   Fan's metaprogramming has a quotation system [[http://brion.inria.fr/gallium/index.php/Quotation][similar to Camlp4]].
+
+   The differences lie in serveral following aspects
 
 
+***  Concrete Syntax
+     
+     - For quotation, Fan uses ~{:quot@loc| |}~, while Camlp4 uses ~<:quot@< >>~
+     - For antiquotation, Fan uses a single ~$~ or ~$(...)~, while Camlp4 uses ~$$~
+     - Fan supports nested quasiquotation, while Camlp4 does not.
+       The following quotation is legal  in Fan.
+       #+BEGIN_SRC ocaml
+       {:exp|{:exp| $($x) |}|}
+       #+END_SRC
+       Which is simliar to Common Lisp style macros.
+       #+BEGIN_SRC lisp
+         ``(,,x)       
+       #+END_SRC
+*** Abstract Syntax
 
+*** polymorphic variants
+    
+*** location handling
+    Fan encode abstract syntax using [[http://caml.inria.fr/pub/docs/manual-ocaml/manual006.html][polymorphic variants]].
+    From the user's point of view, Fan has two
+    abstract syntax representations, with or without locations. They
+    have exactly the same semantics except handling locations. The
+    abstract syntax without location is derived from abstract syntax
+    with location.
+      
+    For example, the definition of ~literal~ (in src/fAst.mli) are as follows:
 
+    #+BEGIN_SRC ocaml
+      (** literal with locations *)
+      type literal =
+        [ `Chr of (loc * string)
+        | `Int of (loc * string)
+        | `Int32 of (loc * string)
+        | `Int64 of (loc * string)
+        | `Flo of (loc * string)
+        | `Nativeint of (loc * string)
+        | `Str of (loc * string)]   
+      
+      
+      (** literal without locations *)
+      type literal =
+        [ `Chr of string
+        | `Int of  string
+        | `Int32 of  string
+        | `Int64 of string
+        | `Flo of string
+        | `Nativeint of string
+        | `Str of string]      
+      #+END_SRC
+      
+      Programming abstract syntax without caring about locations is way
+      more easier. Location is important for debugging and meaningful
+      error message, however, some scenarios, for example, code
+      generation, don't need precise location.
+      1. [ ] 
+
+** Quotation DDSL
+
+** Parser DDSL
