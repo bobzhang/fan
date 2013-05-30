@@ -428,32 +428,55 @@ let token c = {:lexer|
   (*        | _ as c  -> *)
   (*            err (Illegal_quotation (String.make 1 c)) (FLoc.of_lexbuf lexbuf)|} in *)
   (*     with_curr_loc maybe_quotation_at c *)
-  | "{:"  ->
-      let  maybe_quotation_colon c = {:lexer|
-        | (quotation_name as name)  '|' (extra_quot as p)?  ->
-            let len = String.length name in
-            let name = FToken.resolve_name (FToken.name_of_string name) in
-            begin
-              move_start_p (-2) c;
-              Stack.push p opt_char;
-              mk_quotation quotation c
-                ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
-                ~retract:(2 + opt_char_len p)
-            end
-        | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)?  ->
-            let len = String.length name in 
-            let name = FToken.resolve_name (FToken.name_of_string name) in
-            begin
-              move_start_p (-2) c ;
-              Stack.push p opt_char;
-              mk_quotation quotation c ~name ~loc
-                ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
-                ~retract:(2 + opt_char_len p)
-            end
-        |  _ as c ->
-            err (Illegal_quotation (String.make 1 c))
-              (FLoc.of_lexbuf lexbuf) |} in
-      with_curr_loc maybe_quotation_colon c
+  | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
+      let len = String.length name in
+      let name = FToken.resolve_name (FToken.name_of_string name) in
+      begin
+        (* move_start_p (-2) c; *)
+        Stack.push p opt_char;
+        mk_quotation quotation c
+          ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
+          ~retract:(2 + opt_char_len p)
+      end
+      
+  | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? -> 
+      let len = String.length name in 
+      let name = FToken.resolve_name (FToken.name_of_string name) in
+      begin
+        (* move_start_p (-2) c ; *)
+        Stack.push p opt_char;
+        mk_quotation quotation c ~name ~loc
+          ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
+          ~retract:(2 + opt_char_len p)
+      end
+  | "{:" _ as c ->
+      err (Illegal_quotation c) (FLoc.of_lexbuf lexbuf)
+  (* | "{:"  -> *)
+  (*     let  maybe_quotation_colon c = {:lexer| *)
+  (*       | (quotation_name as name)  '|' (extra_quot as p)?  -> *)
+  (*           let len = String.length name in *)
+  (*           let name = FToken.resolve_name (FToken.name_of_string name) in *)
+  (*           begin *)
+  (*             move_start_p (-2) c; *)
+  (*             Stack.push p opt_char; *)
+  (*             mk_quotation quotation c *)
+  (*               ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p)) *)
+  (*               ~retract:(2 + opt_char_len p) *)
+  (*           end *)
+  (*       | (quotation_name as name) '@' (locname as loc)  '|' (extra_quot as p)?  -> *)
+  (*           let len = String.length name in  *)
+  (*           let name = FToken.resolve_name (FToken.name_of_string name) in *)
+  (*           begin *)
+  (*             move_start_p (-2) c ; *)
+  (*             Stack.push p opt_char; *)
+  (*             mk_quotation quotation c ~name ~loc *)
+  (*               ~shift:(2 + 2 + String.length loc + len + opt_char_len p) *)
+  (*               ~retract:(2 + opt_char_len p) *)
+  (*           end *)
+  (*       |  _ as c -> *)
+  (*           err (Illegal_quotation (String.make 1 c)) *)
+  (*             (FLoc.of_lexbuf lexbuf) |} in *)
+  (*     with_curr_loc maybe_quotation_colon c *)
   | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->
