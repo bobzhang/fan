@@ -103,7 +103,7 @@ inspired from [[http://brion.inria.fr/gallium/index.php/Camlp4][Camlp4]]. It's a
   "generic programming in Haskell", later I ported it into OCaml using
   Camlp4 in the spring semester of 2012.
 
-  Later, I found Camlp4 too slow and it's very hard to write a plugin
+  Later, I found Camlp4 too slow and verbose and it's very hard to write a plugin
   for it, then I started Fan as a research project under the guidance
   of [[http://www.cis.upenn.edu/~stevez/][Steve]], from July 2012.
 

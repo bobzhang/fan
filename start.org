@@ -9,8 +9,9 @@
 
 The following post assumes the reader is already familiar with OCaml.
 If you are not familiar with OCaml, we sugget you to get started here:
-http://ocaml.org/
-for you to learn.
+http://ocaml.org/. Learning OCaml would help you become a better
+programmer :-)
+
 
 * Installation
   see [[file:install.org][Installation]]
