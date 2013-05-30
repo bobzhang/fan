@@ -72,12 +72,12 @@ let find_level ?position entry  levs =
 let rec check_gram entry = function
   | `Snterm e ->
     if e.egram != entry.egram then 
-      failwithf  "Gram.extend: entries %S and %S do not belong to the same grammar.@."
+      failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
         entry.ename e.ename
   | `Snterml (e, _) ->
       if e.egram != entry.egram then 
         failwithf
-          "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
+          "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
   (* | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl *)
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end

@@ -81,17 +81,17 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
     expanders_table := (QMap.add k v expanders_table.contents)
   end
 
-let expand_quotation loc ~expander  pos_tag quot =
-  let open FToken in
-    let loc_name_opt = if quot.q_loc = "" then None else Some (quot.q_loc) in
-    try expander loc loc_name_opt quot.q_contents
-    with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
-    | FLoc.Exc_located (iloc,exc) ->
-        let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
-        raise (FLoc.Exc_located (iloc, exc1))
-    | exc ->
-        let exc1 = QuotationError ((quot.q_name), pos_tag, Expanding, exc) in
-        raise (FLoc.Exc_located (loc, exc1))
+let expand_quotation loc ~expander  pos_tag
+  (q_name,q_loc,_q_shift,q_contents) =
+  let loc_name_opt = if q_loc = "" then None else Some q_loc in
+  try expander loc loc_name_opt q_contents
+  with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
+  | FLoc.Exc_located (iloc,exc) ->
+      let exc1 = QuotationError (q_name, pos_tag, Expanding, exc) in
+      raise (FLoc.Exc_located (iloc, exc1))
+  | exc ->
+      let exc1 = QuotationError (q_name, pos_tag, Expanding, exc) in
+      raise (FLoc.Exc_located (loc, exc1))
 
 let find loc name tag =
   let key =
@@ -111,32 +111,31 @@ let find loc name tag =
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
 
-let expand loc (quotation : FToken.quotation) (tag : 'a FDyn.tag) =
-  (let open FToken in
-     let pos_tag = FDyn.string_of_tag tag in
-     let name = quotation.q_name in
-     (try
-        let expander = find loc name tag
-        and loc = FLoc.join (FLoc.move `start quotation.q_shift loc) in
-        fun ()  ->
-          begin
-            Stack.push quotation.q_name stack;
-            finally ~action:(fun _  -> Stack.pop stack)
-              (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
-          end
-      with
-      | FLoc.Exc_located (_,QuotationError _) as exc ->
-          (fun ()  -> raise exc)
-      | FLoc.Exc_located (qloc,exc) ->
-          (fun ()  ->
-             raise
-               (FLoc.Exc_located
-                  (qloc, (QuotationError (name, pos_tag, Finding, exc)))))
-      | exc ->
-          (fun ()  ->
-             raise
-               (FLoc.Exc_located
-                  (loc, (QuotationError (name, pos_tag, Finding, exc)))))) () : 
+let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
+  (tag : 'a FDyn.tag) =
+  (let pos_tag = FDyn.string_of_tag tag in
+   let name = q_name in
+   (try
+      let expander = find loc name tag
+      and loc = FLoc.join (FLoc.move `start q_shift loc) in
+      fun ()  ->
+        begin
+          Stack.push q_name stack;
+          finally ~action:(fun _  -> Stack.pop stack)
+            (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
+        end
+    with
+    | FLoc.Exc_located (_,QuotationError _) as exc -> (fun ()  -> raise exc)
+    | FLoc.Exc_located (qloc,exc) ->
+        (fun ()  ->
+           raise
+             (FLoc.Exc_located
+                (qloc, (QuotationError (name, pos_tag, Finding, exc)))))
+    | exc ->
+        (fun ()  ->
+           raise
+             (FLoc.Exc_located
+                (loc, (QuotationError (name, pos_tag, Finding, exc)))))) () : 
   'a )
 
 let quotation_error_to_string (name,position,ctx,exn) =
@@ -192,34 +191,33 @@ let _ =
      | QuotationError x -> Some (quotation_error_to_string x)
      | _ -> None)
 
-let parse_quotation_result parse loc quot pos_tag str =
-  let open FToken in
-    try parse loc str
-    with
-    | FLoc.Exc_located (iloc,QuotationError (n,pos_tag,Expanding ,exc)) ->
-        let ctx = ParsingResult (iloc, (quot.q_contents)) in
-        let exc1 = QuotationError (n, pos_tag, ctx, exc) in
-        FLoc.raise iloc exc1
-    | FLoc.Exc_located (iloc,(QuotationError _ as exc)) ->
-        FLoc.raise iloc exc
-    | FLoc.Exc_located (iloc,exc) ->
-        let ctx = ParsingResult (iloc, (quot.q_contents)) in
-        let exc1 = QuotationError ((quot.q_name), pos_tag, ctx, exc) in
-        FLoc.raise iloc exc1
+let parse_quotation_result parse loc (q_name,_q_loc,_q_shift,q_contents)
+  pos_tag str =
+  try parse loc str
+  with
+  | FLoc.Exc_located (iloc,QuotationError (n,pos_tag,Expanding ,exc)) ->
+      let ctx = ParsingResult (iloc, q_contents) in
+      let exc1 = QuotationError (n, pos_tag, ctx, exc) in
+      FLoc.raise iloc exc1
+  | FLoc.Exc_located (iloc,(QuotationError _ as exc)) -> FLoc.raise iloc exc
+  | FLoc.Exc_located (iloc,exc) ->
+      let ctx = ParsingResult (iloc, q_contents) in
+      let exc1 = QuotationError (q_name, pos_tag, ctx, exc) in
+      FLoc.raise iloc exc1
 
 let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
-  let entry_eoi = Gram.eoi_entry entry in
+  let entry_eoi = Fgram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (FConfig.antiquotations, true)
       (current_loc_name, loc_name_opt)
       (fun _  ->
-         ((Gram.parse_string entry_eoi ~loc s) |> (mexp loc)) |> exp_filter) in
+         ((Fgram.parse_string entry_eoi ~loc s) |> (mexp loc)) |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in `StExp (loc, exp_ast) in
   let expand_pat _loc loc_name_opt s =
     Ref.protect FConfig.antiquotations true
       (fun _  ->
-         let ast = Gram.parse_string entry_eoi ~loc:_loc s in
+         let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
          let meta_ast = mpat _loc ast in
          let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name =
@@ -246,7 +244,7 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
 let make_parser entry loc loc_name_opt s =
   Ref.protect2 (FConfig.antiquotations, true)
     (current_loc_name, loc_name_opt)
-    (fun _  -> Gram.parse_string (Gram.eoi_entry entry) ~loc s)
+    (fun _  -> Fgram.parse_string (Fgram.eoi_entry entry) ~loc s)
 
 let of_stru ~name  ~entry  = add name FDyn.stru_tag (make_parser entry)
 

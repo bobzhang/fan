@@ -1,6 +1,6 @@
 
 open AstLib
-let g = Gram.create_lexer
+let g = Fgram.create_lexer
     ~keywords:
     ["derive";
      "unload";
@@ -19,7 +19,7 @@ let g = Gram.create_lexer
     ();;
 
 
-{:create|(g:Gram.t)  fan_quot fan_quots|};;
+{:create|(g:Fgram.t)  fan_quot fan_quots|};;
 let _ = 
 with exp
 {:extend|

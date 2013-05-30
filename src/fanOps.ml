@@ -29,10 +29,7 @@ let list_of_list (loc:loc) =
     | e1 :: el ->
         let _loc =
           if top then loc else FLoc.merge (loc_of e1) loc in
-        `App (_loc, `App (_loc, `Uid (_loc, "::"), e1), loop false el)
-          (* {| [$e1 :: $(loop false el)] |} *)
-(* FIXME *)
-  in
+        {| $e1 :: $(loop false el) |} (* FIXME *)  in
   loop true ;;
 
 (* FIXME  double semi colon needed before *)  

@@ -11,7 +11,7 @@ let current_warning = ref default_warning
 let print_warning loc txt = !current_warning loc txt;;
 
 
-{:create|Gram
+{:create|Fgram
   a_ident aident amp_ctyp and_ctyp case
   case0
   bind
@@ -70,12 +70,12 @@ let print_warning loc txt = !current_warning loc txt;;
   astr
   dot_namespace|};;
   
-let antiquot_exp = Gram.eoi_entry exp 
-let antiquot_pat = Gram.eoi_entry pat
-let antiquot_ident = Gram.eoi_entry ident
-let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str
-let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str
-let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
+let antiquot_exp = Fgram.eoi_entry exp 
+let antiquot_pat = Fgram.eoi_entry pat
+let antiquot_ident = Fgram.eoi_entry ident
+let parse_exp loc str = Fgram.parse_string antiquot_exp ~loc str
+let parse_pat loc str = Fgram.parse_string antiquot_pat ~loc str
+let parse_ident loc str = Fgram.parse_string antiquot_ident ~loc str
 
 let anti_filter = Ant.antiquot_expander  ~parse_exp  ~parse_pat
 let exp_filter (x:ep) = (anti_filter#exp (x:>exp))

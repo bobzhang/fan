@@ -1,7 +1,7 @@
 
-let g = Gram.create_lexer ~annot:"include" ~keywords:[] ();;
+let g = Fgram.create_lexer ~annot:"include" ~keywords:[] ();;
 
-{:create| (g:Gram.t) include_quot |};;
+{:create| (g:Fgram.t) include_quot |};;
 
 {:extend|
 include_quot:
@@ -9,7 +9,7 @@ include_quot:
     let (keep,cf) = FState.((keep,current_filters)) in
     {:save| keep cf ->  begin
       FState.reset ();
-      Gram.parse_include_file Fsyntax.strus s;
+      Fgram.parse_include_file Fsyntax.strus s;
     end
   |}
  ]

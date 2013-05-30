@@ -63,13 +63,13 @@ let rec check_gram entry =
       if e.egram != entry.egram
       then
         failwithf
-          "Gram.extend: entries %S and %S do not belong to the same grammar.@."
+          "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
   | `Snterml (e,_) ->
       if e.egram != entry.egram
       then
         failwithf
-          "Gram.extend Error: entries %S and %S do not belong to the same grammar.@."
+          "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
   | `Slist0sep (s,t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s,t) -> begin check_gram entry t; check_gram entry s end

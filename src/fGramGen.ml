@@ -10,11 +10,13 @@ let print_warning = eprintf "%a:\n%s@." FLoc.print
   
 let prefix = "__fan_"  
 let ghost = FLoc.ghost
-let grammar_module_name = ref (`Uid (ghost,"Gram")) 
-  
+
+(* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
+let grammar_module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
 let gm () : vid =
   match !FConfig.compilation_unit with
-  |Some "Gram" -> `Uid(ghost,"")
+  |Some "Fgram" (* BOOTSTRAPING*)
+    -> `Uid(ghost,"")
   |Some _ | None -> 
       !grammar_module_name
 
@@ -59,7 +61,7 @@ let gen_lid ()=  prefix^string_of_int (!(gensym ()))
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map(function
-        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
+        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.extract_string x); ... *)
       | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
           {prod =
            [{ (s) with pattern = Some {:pat| x |} }];
@@ -206,7 +208,11 @@ let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
   
 (* given the entry of the name, make a name *)
 let mk_name _loc (i:vid) =
-  {exp = (i :> exp) ; tvar = Id.tvar_of_ident i; loc = _loc}
+  let rec aux : vid -> string =  function
+    | `Lid (_,x) | `Uid(_,x) -> x
+    | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
+    | _ -> failwith "internal error in the Grammar extension" in
+  {exp = (i :> exp) ; tvar = aux i; loc = _loc}
   
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 

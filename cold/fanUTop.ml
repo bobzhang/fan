@@ -26,7 +26,7 @@ let revise_parser str _bol =
   let lexbuf = UTop.lexbuf_of_string eof str in
   try
     let not_filtered_token_stream = FLexLib.from_lexbuf lexbuf in
-    let token_stream = Gram.filter not_filtered_token_stream in
+    let token_stream = Fgram.filter not_filtered_token_stream in
     match XStream.peek token_stream with
     | Some (`EOI,_) -> begin XStream.junk token_stream; raise End_of_file end
     | _ -> UTop.Value (toplevel_phrase token_stream)

@@ -6,7 +6,7 @@ open LibUtil
 open FanUtil
 open Gramlib
 
-{:create|Gram pos_exps|};;
+{:create|Fgram pos_exps|};;
 let symbolchars =
   ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
    '@'; '^'; '|'; '~'; '\\']
@@ -49,10 +49,10 @@ let apply () = begin
   let () = setup_op_parser infixop6
     (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
               symbolchar x 2) in
-  let () = FanTokenFilter.define_filter (Gram.get_filter ())
+  let () = FanTokenFilter.define_filter (Fgram.get_filter ())
     (fun f strm -> infix_kwds_filter (f strm)) in
-  Gram.setup_parser sem_exp begin
-    let symb1 = Gram.parse_origin_tokens exp in
+  Fgram.setup_parser sem_exp begin
+    let symb1 = Fgram.parse_origin_tokens exp in
     let symb = parser
       |  (`Ant (("list" as n), s), _loc)  ->
           mk_anti ~c:"exp;" _loc n s

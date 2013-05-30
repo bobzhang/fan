@@ -1,6 +1,6 @@
 type regular_expression =  
   | Epsilon
-  | Characters of Cset.t
+  | Characters of Fcset.t
   | Eof
   | Sequence of regular_expression* regular_expression
   | Alternative of regular_expression* regular_expression

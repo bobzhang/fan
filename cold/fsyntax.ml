@@ -9,339 +9,339 @@ let current_warning = ref default_warning
 
 let print_warning loc txt = current_warning.contents loc txt
 
-let a_ident = Gram.mk "a_ident"
+let a_ident = Fgram.mk "a_ident"
 
-let aident = Gram.mk "aident"
+let aident = Fgram.mk "aident"
 
-let amp_ctyp = Gram.mk "amp_ctyp"
+let amp_ctyp = Fgram.mk "amp_ctyp"
 
-let and_ctyp = Gram.mk "and_ctyp"
+let and_ctyp = Fgram.mk "and_ctyp"
 
-let case = Gram.mk "case"
+let case = Fgram.mk "case"
 
-let case0 = Gram.mk "case0"
+let case0 = Fgram.mk "case0"
 
-let bind = Gram.mk "bind"
+let bind = Fgram.mk "bind"
 
-let class_declaration = Gram.mk "class_declaration"
+let class_declaration = Fgram.mk "class_declaration"
 
-let class_description = Gram.mk "class_description"
+let class_description = Fgram.mk "class_description"
 
-let clexp = Gram.mk "clexp"
+let clexp = Fgram.mk "clexp"
 
-let class_fun_bind = Gram.mk "class_fun_bind"
+let class_fun_bind = Fgram.mk "class_fun_bind"
 
-let class_fun_def = Gram.mk "class_fun_def"
+let class_fun_def = Fgram.mk "class_fun_def"
 
-let class_info_for_cltyp = Gram.mk "class_info_for_cltyp"
+let class_info_for_cltyp = Fgram.mk "class_info_for_cltyp"
 
-let class_longident = Gram.mk "class_longident"
+let class_longident = Fgram.mk "class_longident"
 
-let class_name_and_param = Gram.mk "class_name_and_param"
+let class_name_and_param = Fgram.mk "class_name_and_param"
 
-let clsigi = Gram.mk "clsigi"
+let clsigi = Fgram.mk "clsigi"
 
-let class_signature = Gram.mk "class_signature"
+let class_signature = Fgram.mk "class_signature"
 
-let clfield = Gram.mk "clfield"
+let clfield = Fgram.mk "clfield"
 
-let class_structure = Gram.mk "class_structure"
+let class_structure = Fgram.mk "class_structure"
 
-let cltyp = Gram.mk "cltyp"
+let cltyp = Fgram.mk "cltyp"
 
-let cltyp_declaration = Gram.mk "cltyp_declaration"
+let cltyp_declaration = Fgram.mk "cltyp_declaration"
 
-let cltyp_longident = Gram.mk "cltyp_longident"
+let cltyp_longident = Fgram.mk "cltyp_longident"
 
-let cltyp_plus = Gram.mk "cltyp_plus"
+let cltyp_plus = Fgram.mk "cltyp_plus"
 
-let com_ctyp = Gram.mk "com_ctyp"
+let com_ctyp = Fgram.mk "com_ctyp"
 
-let comma_ctyp = Gram.mk "comma_ctyp"
+let comma_ctyp = Fgram.mk "comma_ctyp"
 
-let comma_exp = Gram.mk "comma_exp"
+let comma_exp = Fgram.mk "comma_exp"
 
-let comma_ipat = Gram.mk "comma_ipat"
+let comma_ipat = Fgram.mk "comma_ipat"
 
-let comma_pat = Gram.mk "comma_pat"
+let comma_pat = Fgram.mk "comma_pat"
 
-let comma_type_parameter = Gram.mk "comma_type_parameter"
+let comma_type_parameter = Fgram.mk "comma_type_parameter"
 
-let constrain = Gram.mk "constrain"
+let constrain = Fgram.mk "constrain"
 
-let constructor_arg_list = Gram.mk "constructor_arg_list"
+let constructor_arg_list = Fgram.mk "constructor_arg_list"
 
-let constructor_declaration = Gram.mk "constructor_declaration"
+let constructor_declaration = Fgram.mk "constructor_declaration"
 
-let constructor_declarations = Gram.mk "constructor_declarations"
+let constructor_declarations = Fgram.mk "constructor_declarations"
 
-let ctyp = Gram.mk "ctyp"
+let ctyp = Fgram.mk "ctyp"
 
-let cvalue_bind = Gram.mk "cvalue_bind"
+let cvalue_bind = Fgram.mk "cvalue_bind"
 
-let flag = Gram.mk "flag"
+let flag = Fgram.mk "flag"
 
-let direction_flag_quot = Gram.mk "direction_flag_quot"
+let direction_flag_quot = Fgram.mk "direction_flag_quot"
 
-let dummy = Gram.mk "dummy"
+let dummy = Fgram.mk "dummy"
 
-let eq_exp = Gram.mk "eq_exp"
+let eq_exp = Fgram.mk "eq_exp"
 
-let exp = Gram.mk "exp"
+let exp = Fgram.mk "exp"
 
-let exp_eoi = Gram.mk "exp_eoi"
+let exp_eoi = Fgram.mk "exp_eoi"
 
-let field_exp = Gram.mk "field_exp"
+let field_exp = Fgram.mk "field_exp"
 
-let field_exp_list = Gram.mk "field_exp_list"
+let field_exp_list = Fgram.mk "field_exp_list"
 
-let fun_bind = Gram.mk "fun_bind"
+let fun_bind = Fgram.mk "fun_bind"
 
-let fun_def = Gram.mk "fun_def"
+let fun_def = Fgram.mk "fun_def"
 
-let ident = Gram.mk "ident"
+let ident = Fgram.mk "ident"
 
-let implem = Gram.mk "implem"
+let implem = Fgram.mk "implem"
 
-let interf = Gram.mk "interf"
+let interf = Fgram.mk "interf"
 
-let ipat = Gram.mk "ipat"
+let ipat = Fgram.mk "ipat"
 
-let ipat_tcon = Gram.mk "ipat_tcon"
+let ipat_tcon = Fgram.mk "ipat_tcon"
 
-let pat_tcon = Gram.mk "pat_tcon"
+let pat_tcon = Fgram.mk "pat_tcon"
 
-let label_declaration = Gram.mk "label_declaration"
+let label_declaration = Fgram.mk "label_declaration"
 
-let label_declaration_list = Gram.mk "label_declaration_list"
+let label_declaration_list = Fgram.mk "label_declaration_list"
 
-let label_exp = Gram.mk "label_exp"
+let label_exp = Fgram.mk "label_exp"
 
-let label_exp_list = Gram.mk "label_exp_list"
+let label_exp_list = Fgram.mk "label_exp_list"
 
-let label_pat_list = Gram.mk "label_pat_list"
+let label_pat_list = Fgram.mk "label_pat_list"
 
-let label_pat = Gram.mk "label_pat"
+let label_pat = Fgram.mk "label_pat"
 
-let label_longident = Gram.mk "label_longident"
+let label_longident = Fgram.mk "label_longident"
 
-let let_bind = Gram.mk "let_bind"
+let let_bind = Fgram.mk "let_bind"
 
-let meth_list = Gram.mk "meth_list"
+let meth_list = Fgram.mk "meth_list"
 
-let meth_decl = Gram.mk "meth_decl"
+let meth_decl = Fgram.mk "meth_decl"
 
-let mbind = Gram.mk "mbind"
+let mbind = Fgram.mk "mbind"
 
-let mbind = Gram.mk "mbind"
+let mbind = Fgram.mk "mbind"
 
-let mbind0 = Gram.mk "mbind0"
+let mbind0 = Fgram.mk "mbind0"
 
-let mexp = Gram.mk "mexp"
+let mexp = Fgram.mk "mexp"
 
-let module_longident = Gram.mk "module_longident"
+let module_longident = Fgram.mk "module_longident"
 
-let module_longident_with_app = Gram.mk "module_longident_with_app"
+let module_longident_with_app = Fgram.mk "module_longident_with_app"
 
-let module_rec_declaration = Gram.mk "module_rec_declaration"
+let module_rec_declaration = Fgram.mk "module_rec_declaration"
 
-let mtyp = Gram.mk "mtyp"
+let mtyp = Fgram.mk "mtyp"
 
-let name_tags = Gram.mk "name_tags"
+let name_tags = Fgram.mk "name_tags"
 
-let opt_class_self_pat = Gram.mk "opt_class_self_pat"
+let opt_class_self_pat = Fgram.mk "opt_class_self_pat"
 
-let opt_class_self_type = Gram.mk "opt_class_self_type"
+let opt_class_self_type = Fgram.mk "opt_class_self_type"
 
-let opt_comma_ctyp = Gram.mk "opt_comma_ctyp"
+let opt_comma_ctyp = Fgram.mk "opt_comma_ctyp"
 
-let opt_dot_dot = Gram.mk "opt_dot_dot"
+let opt_dot_dot = Fgram.mk "opt_dot_dot"
 
-let row_var_flag_quot = Gram.mk "row_var_flag_quot"
+let row_var_flag_quot = Fgram.mk "row_var_flag_quot"
 
-let opt_exp = Gram.mk "opt_exp"
+let opt_exp = Fgram.mk "opt_exp"
 
-let opt_meth_list = Gram.mk "opt_meth_list"
+let opt_meth_list = Fgram.mk "opt_meth_list"
 
-let opt_mutable = Gram.mk "opt_mutable"
+let opt_mutable = Fgram.mk "opt_mutable"
 
-let mutable_flag_quot = Gram.mk "mutable_flag_quot"
+let mutable_flag_quot = Fgram.mk "mutable_flag_quot"
 
-let opt_polyt = Gram.mk "opt_polyt"
+let opt_polyt = Fgram.mk "opt_polyt"
 
-let opt_private = Gram.mk "opt_private"
+let opt_private = Fgram.mk "opt_private"
 
-let private_flag_quot = Gram.mk "private_flag_quot"
+let private_flag_quot = Fgram.mk "private_flag_quot"
 
-let opt_rec = Gram.mk "opt_rec"
+let opt_rec = Fgram.mk "opt_rec"
 
-let rec_flag_quot = Gram.mk "rec_flag_quot"
+let rec_flag_quot = Fgram.mk "rec_flag_quot"
 
-let opt_virtual = Gram.mk "opt_virtual"
+let opt_virtual = Fgram.mk "opt_virtual"
 
-let virtual_flag_quot = Gram.mk "virtual_flag_quot"
+let virtual_flag_quot = Fgram.mk "virtual_flag_quot"
 
-let opt_override = Gram.mk "opt_override"
+let opt_override = Fgram.mk "opt_override"
 
-let override_flag_quot = Gram.mk "override_flag_quot"
+let override_flag_quot = Fgram.mk "override_flag_quot"
 
-let pat = Gram.mk "pat"
+let pat = Fgram.mk "pat"
 
-let pat_as_pat_opt = Gram.mk "pat_as_pat_opt"
+let pat_as_pat_opt = Fgram.mk "pat_as_pat_opt"
 
-let pat_eoi = Gram.mk "pat_eoi"
+let pat_eoi = Fgram.mk "pat_eoi"
 
-let row_field = Gram.mk "row_field"
+let row_field = Fgram.mk "row_field"
 
-let sem_exp = Gram.mk "sem_exp"
+let sem_exp = Fgram.mk "sem_exp"
 
-let sem_exp_for_list = Gram.mk "sem_exp_for_list"
+let sem_exp_for_list = Fgram.mk "sem_exp_for_list"
 
-let sem_pat = Gram.mk "sem_pat"
+let sem_pat = Fgram.mk "sem_pat"
 
-let sem_pat_for_list = Gram.mk "sem_pat_for_list"
+let sem_pat_for_list = Fgram.mk "sem_pat_for_list"
 
-let semi = Gram.mk "semi"
+let semi = Fgram.mk "semi"
 
-let sequence = Gram.mk "sequence"
+let sequence = Fgram.mk "sequence"
 
-let sigi = Gram.mk "sigi"
+let sigi = Fgram.mk "sigi"
 
-let sigis = Gram.mk "sigis"
+let sigis = Fgram.mk "sigis"
 
-let star_ctyp = Gram.mk "star_ctyp"
+let star_ctyp = Fgram.mk "star_ctyp"
 
-let stru = Gram.mk "stru"
+let stru = Fgram.mk "stru"
 
-let strus = Gram.mk "strus"
+let strus = Fgram.mk "strus"
 
-let top_phrase = Gram.mk "top_phrase"
+let top_phrase = Fgram.mk "top_phrase"
 
-let type_declaration = Gram.mk "type_declaration"
+let type_declaration = Fgram.mk "type_declaration"
 
-let type_ident_and_parameters = Gram.mk "type_ident_and_parameters"
+let type_ident_and_parameters = Fgram.mk "type_ident_and_parameters"
 
-let type_longident = Gram.mk "type_longident"
+let type_longident = Fgram.mk "type_longident"
 
-let type_longident_and_parameters = Gram.mk "type_longident_and_parameters"
+let type_longident_and_parameters = Fgram.mk "type_longident_and_parameters"
 
-let type_parameter = Gram.mk "type_parameter"
+let type_parameter = Fgram.mk "type_parameter"
 
-let type_parameters = Gram.mk "type_parameters"
+let type_parameters = Fgram.mk "type_parameters"
 
-let typevars = Gram.mk "typevars"
+let typevars = Fgram.mk "typevars"
 
-let val_longident = Gram.mk "val_longident"
+let val_longident = Fgram.mk "val_longident"
 
-let constr = Gram.mk "constr"
+let constr = Fgram.mk "constr"
 
-let exp_quot = Gram.mk "exp_quot"
+let exp_quot = Fgram.mk "exp_quot"
 
-let pat_quot = Gram.mk "pat_quot"
+let pat_quot = Fgram.mk "pat_quot"
 
-let ctyp_quot = Gram.mk "ctyp_quot"
+let ctyp_quot = Fgram.mk "ctyp_quot"
 
-let stru_quot = Gram.mk "stru_quot"
+let stru_quot = Fgram.mk "stru_quot"
 
-let sigi_quot = Gram.mk "sigi_quot"
+let sigi_quot = Fgram.mk "sigi_quot"
 
-let clfield_quot = Gram.mk "clfield_quot"
+let clfield_quot = Fgram.mk "clfield_quot"
 
-let clsigi_quot = Gram.mk "clsigi_quot"
+let clsigi_quot = Fgram.mk "clsigi_quot"
 
-let mexp_quot = Gram.mk "mexp_quot"
+let mexp_quot = Fgram.mk "mexp_quot"
 
-let mtyp_quot = Gram.mk "mtyp_quot"
+let mtyp_quot = Fgram.mk "mtyp_quot"
 
-let cltyp_quot = Gram.mk "cltyp_quot"
+let cltyp_quot = Fgram.mk "cltyp_quot"
 
-let clexp_quot = Gram.mk "clexp_quot"
+let clexp_quot = Fgram.mk "clexp_quot"
 
-let constr_quot = Gram.mk "constr_quot"
+let constr_quot = Fgram.mk "constr_quot"
 
-let bind_quot = Gram.mk "bind_quot"
+let bind_quot = Fgram.mk "bind_quot"
 
-let rec_exp_quot = Gram.mk "rec_exp_quot"
+let rec_exp_quot = Fgram.mk "rec_exp_quot"
 
-let module_declaration = Gram.mk "module_declaration"
+let module_declaration = Fgram.mk "module_declaration"
 
-let type_info = Gram.mk "type_info"
+let type_info = Fgram.mk "type_info"
 
-let type_repr = Gram.mk "type_repr"
+let type_repr = Fgram.mk "type_repr"
 
-let infixop0 = Gram.mk "or ||"
+let infixop0 = Fgram.mk "or ||"
 
-let infixop1 = Gram.mk "& &&"
+let infixop1 = Fgram.mk "& &&"
 
 let infixop2 =
-  Gram.mk "infix operator (level 2) (comparison operators, and some others)"
+  Fgram.mk "infix operator (level 2) (comparison operators, and some others)"
 
-let infixop3 = Gram.mk "infix operator (level 3) (start with '^', '@')"
+let infixop3 = Fgram.mk "infix operator (level 3) (start with '^', '@')"
 
-let infixop4 = Gram.mk "infix operator (level 4) (start with '+', '-')"
+let infixop4 = Fgram.mk "infix operator (level 4) (start with '+', '-')"
 
-let infixop5 = Gram.mk "infix operator (level 5) (start with '*', '/', '%')"
+let infixop5 = Fgram.mk "infix operator (level 5) (start with '*', '/', '%')"
 
 let infixop6 =
-  Gram.mk "infix operator (level 6) (start with \"**\") (right assoc)"
+  Fgram.mk "infix operator (level 6) (start with \"**\") (right assoc)"
 
-let prefixop = Gram.mk "prefix operator (start with '!', '?', '~')"
+let prefixop = Fgram.mk "prefix operator (start with '!', '?', '~')"
 
-let case_quot = Gram.mk "quotation of case (try/match/function case)"
+let case_quot = Fgram.mk "quotation of case (try/match/function case)"
 
-let module_longident_dot_lparen = Gram.mk "module_longident_dot_lparen"
+let module_longident_dot_lparen = Fgram.mk "module_longident_dot_lparen"
 
-let sequence' = Gram.mk "sequence'"
+let sequence' = Fgram.mk "sequence'"
 
-let fun_def = Gram.mk "fun_def"
+let fun_def = Fgram.mk "fun_def"
 
-let mbind_quot = Gram.mk "mbind_quot"
+let mbind_quot = Fgram.mk "mbind_quot"
 
-let ident_quot = Gram.mk "ident_quot"
+let ident_quot = Fgram.mk "ident_quot"
 
-let string_list = Gram.mk "string_list"
+let string_list = Fgram.mk "string_list"
 
-let method_opt_override = Gram.mk "method_opt_override"
+let method_opt_override = Fgram.mk "method_opt_override"
 
-let value_val_opt_override = Gram.mk "value_val_opt_override"
+let value_val_opt_override = Fgram.mk "value_val_opt_override"
 
-let unquoted_typevars = Gram.mk "unquoted_typevars"
+let unquoted_typevars = Fgram.mk "unquoted_typevars"
 
-let lang = Gram.mk "lang"
+let lang = Fgram.mk "lang"
 
-let with_exp_lang = Gram.mk "with_exp_lang"
+let with_exp_lang = Fgram.mk "with_exp_lang"
 
-let with_stru_lang = Gram.mk "with_stru_lang"
+let with_stru_lang = Fgram.mk "with_stru_lang"
 
-let dot_lstrings = Gram.mk "dot_lstrings"
+let dot_lstrings = Fgram.mk "dot_lstrings"
 
-let a_string = Gram.mk "a_string"
+let a_string = Fgram.mk "a_string"
 
-let a_lident = Gram.mk "a_lident"
+let a_lident = Fgram.mk "a_lident"
 
-let a_uident = Gram.mk "a_uident"
+let a_uident = Fgram.mk "a_uident"
 
-let luident = Gram.mk "luident"
+let luident = Fgram.mk "luident"
 
-let uident = Gram.mk "uident"
+let uident = Fgram.mk "uident"
 
-let vid = Gram.mk "vid"
+let vid = Fgram.mk "vid"
 
-let astr = Gram.mk "astr"
+let astr = Fgram.mk "astr"
 
-let dot_namespace = Gram.mk "dot_namespace"
+let dot_namespace = Fgram.mk "dot_namespace"
 
-let antiquot_exp = Gram.eoi_entry exp
+let antiquot_exp = Fgram.eoi_entry exp
 
-let antiquot_pat = Gram.eoi_entry pat
+let antiquot_pat = Fgram.eoi_entry pat
 
-let antiquot_ident = Gram.eoi_entry ident
+let antiquot_ident = Fgram.eoi_entry ident
 
-let parse_exp loc str = Gram.parse_string antiquot_exp ~loc str
+let parse_exp loc str = Fgram.parse_string antiquot_exp ~loc str
 
-let parse_pat loc str = Gram.parse_string antiquot_pat ~loc str
+let parse_pat loc str = Fgram.parse_string antiquot_pat ~loc str
 
-let parse_ident loc str = Gram.parse_string antiquot_ident ~loc str
+let parse_ident loc str = Fgram.parse_string antiquot_ident ~loc str
 
 let anti_filter = Ant.antiquot_expander ~parse_exp ~parse_pat
 

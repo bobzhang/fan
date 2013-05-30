@@ -15,7 +15,7 @@ open FAst
     It is very simple, may be improved to a depend on a simple engine
     It is used by DDSL [create]
  *)  
-val nonterminals : stru Gram.t
+val nonterminals : stru Fgram.t
 
 (** {[
      with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_exp f;
@@ -23,8 +23,8 @@ val nonterminals : stru Gram.t
     ]}
     It's used by DDSL [clear]   
  *)    
-val nonterminalsclear : exp Gram.t
-val delete_rule_header : vid Gram.t
+val nonterminalsclear : exp Fgram.t
+val delete_rule_header : vid Fgram.t
 
 
 (**  parse the header, return the current [grammar] and
@@ -32,7 +32,7 @@ val delete_rule_header : vid Gram.t
      be used alone
      {[
      with str t extend_header {| U.M |};
-     - : FAst.ident option * FAst.ident = (None, `Uid (, "Gram"))
+     - : FAst.ident option * FAst.ident = (None, `Uid (, "Fgram"))
      with str t extend_header {| U |};
      - : FAst.ident option * FAst.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
@@ -40,9 +40,9 @@ val delete_rule_header : vid Gram.t
      - : FAst.ident option * FAst.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features *)    
-val extend_header : (vid option * vid) Gram.t
+val extend_header : (vid option * vid) Fgram.t
     
-val qualuid : vid Gram.t
+val qualuid : vid Fgram.t
 
 
 (** parse qualified  [X.Y.g]
@@ -51,20 +51,20 @@ val qualuid : vid Gram.t
      - : FAst.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]} *)
 
-val qualid : vid Gram.t
+val qualid : vid Fgram.t
 
 (** parse qualified path ending with [X.t]
      {[
      with str t t_qualid {| A.U.t |};
      - : FAst.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
      ]} *)
-val t_qualid : vid Gram.t
+val t_qualid : vid Fgram.t
     
 val entry_name :
-    ([ `name of FToken.name | `non ] * FGramDef.name) Gram.t
+    ([ `name of FToken.name | `non ] * FGramDef.name) Fgram.t
 
 (* get local name entry list *)
-val locals : FGramDef.name list Gram.t
+val locals : FGramDef.name list Fgram.t
 
 (** return an entry [FGramDef.entry]
   {[with str t entry {| entry:
@@ -77,36 +77,36 @@ val locals : FGramDef.name list Gram.t
     end] |}]}
    *)
 
-val entry : FGramDef.entry Gram.t
+val entry : FGramDef.entry Fgram.t
 
 
 
 
 (** parse [position] and translate into [exp] node, fixme,
     delay the translation *)    
-val position : exp Gram.t
+val position : exp Fgram.t
 
 (** parse association, and translate into [exp] node. FIXME  *)    
-val assoc : exp Gram.t
-val name : FGramDef.name Gram.t
-val string : exp Gram.t
+val assoc : exp Fgram.t
+val name : FGramDef.name Fgram.t
+val string : exp Fgram.t
 
-val simple_exp : exp Gram.t
-val delete_rules : exp Gram.t
+val simple_exp : exp Fgram.t
+val delete_rules : exp Fgram.t
 
-val pattern : FGramDef.action_pattern Gram.t
+val pattern : FGramDef.action_pattern Fgram.t
 
 
 
-val simple_pat : FGramDef.simple_pat Gram.t
+val simple_pat : FGramDef.simple_pat Fgram.t
 
-val internal_pat : FGramDef.simple_pat Gram.t
+val internal_pat : FGramDef.simple_pat Fgram.t
 
 (** return symbol with patterns (may override inferred patterns) *)
-val psymbol : FGramDef.symbol Gram.t
+val psymbol : FGramDef.symbol Fgram.t
     
 (** return symbol with pattern(inferred) or None  *)    
-val symbol :  FGramDef.symbol Gram.t
+val symbol :  FGramDef.symbol Fgram.t
 
 (** return a [rule]
     {[with str t rule {|  `Uid ("LA"|"RA"|"NA" as x)   |};
@@ -138,13 +138,13 @@ val symbol :  FGramDef.symbol Gram.t
      `Lid (, "x"))))}];
      action = None}
      ]} *)
-val rule :  FGramDef.rule Gram.t
-val rule_list : FGramDef.rule list Gram.t
+val rule :  FGramDef.rule Fgram.t
+val rule_list : FGramDef.rule list Fgram.t
 
-val level :  FGramDef.level Gram.t
+val level :  FGramDef.level Fgram.t
 val level_list :
     ([ `Group of (FGramDef.level list )
-     | `Single of FGramDef.level ]) Gram.t
+     | `Single of FGramDef.level ]) Fgram.t
 
 
 (** the main entrance
@@ -154,16 +154,16 @@ val level_list :
      nonterminalsclear:
      [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
 
-     Gram.extend (nonterminalsclear : 'nonterminalsclear Gram.t )
+     Fgram.extend (nonterminalsclear : 'nonterminalsclear Fgram.t )
      (None,
      [(None, None,
-     [([`Snterm (Gram.obj (qualuid : 'qualuid Gram.t ));
+     [([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ));
      `Slist0
-     (Gram.srules nonterminalsclear
-     [([`Snterm (Gram.obj (a_lident : 'a_lident Gram.t ))],
-     (Gram.mk_action
+     (Fgram.srules nonterminalsclear
+     [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
+     (Fgram.mk_action
      (fun (x : 'a_lident)  (_loc : FLoc.t)  -> (x : 'e__7 ))))])],
-     (Gram.mk_action
+     (Fgram.mk_action
      (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FLoc.t)  ->
      (() : 'nonterminalsclear ))))])])
      ]}
@@ -174,7 +174,7 @@ val level_list :
      FAst.ident option ->
      FGramDef.name list option -> FGramDef.entry list -> FAst.exp
      ]} *) 
-val extend_body : exp Gram.t
-val delete_rule_body : exp Gram.t
+val extend_body : exp Fgram.t
+val delete_rule_body : exp Fgram.t
 
     

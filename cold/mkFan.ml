@@ -180,17 +180,17 @@ let _ =
       (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
   end
 
-let p = Gram.mk "p"
+let p = Fgram.mk "p"
 
 let _ =
-  Gram.extend_single (p : 'p Gram.t )
+  Fgram.extend_single (p : 'p Fgram.t )
     (None,
       (None, None,
-        [([`Snterm (Gram.obj (pat : 'pat Gram.t ));
+        [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
           `Skeyword "when";
-          `Snterm (Gram.obj (exp : 'exp Gram.t ))],
-           ("Gram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
-             (Gram.mk_action
+          `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+           ("Fgram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
+             (Fgram.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
                    ((`Fun
                        (_loc,
@@ -200,9 +200,9 @@ let _ =
                               (`Case
                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                    FAst.exp ) : 'p )))));
-        ([`Snterm (Gram.obj (pat : 'pat Gram.t ))],
-          ("Gram.mk_action\n  (fun (p : 'pat)  (_loc : FLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
-            (Gram.mk_action
+        ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
+          ("Fgram.mk_action\n  (fun (p : 'pat)  (_loc : FLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
+            (Fgram.mk_action
                (fun (p : 'pat)  (_loc : FLoc.t)  ->
                   (`Fun
                      (_loc,
@@ -230,7 +230,7 @@ open PluginsN
 
 open CodeTemplate
 
-open OCamlLex
+open FLexGen
 
 let m = new FanAstN.meta
 

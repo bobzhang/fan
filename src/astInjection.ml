@@ -20,11 +20,9 @@ let register_inject_clfield (k,f) =
 ;;
 
 
-{:create|Gram
-  inject_exp inject_stru inject_clfield
-|};;
+{:create|Fgram  inject_exp inject_stru inject_clfield|};;
   
-{:extend| Gram
+{:extend| 
   inject_exp:
   [`Lid x ->
      try Hashtbl.find inject_exp_tbl x 

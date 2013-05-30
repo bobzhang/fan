@@ -146,10 +146,10 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let s =
     (with_curr_loc quotation c; c.lexbuf.lex_start_p<-old(* c.loc *);buff_contents c;) in
   let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION {FToken.q_name     = name     ;
-              q_loc      = loc      ;
-              q_shift    = shift    ;
-              q_contents = contents }
+  `QUOTATION (name,loc,shift,contents)(* {FToken.q_name     = name     ; *)
+              (* q_loc      = loc      ; *)
+              (* q_shift    = shift    ; *)
+              (* q_contents = contents } *)
     
 
 
@@ -466,8 +466,9 @@ let token c = {:lexer|
        mk_quotation
          quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
-           `QUOTATION { FToken.q_name =FToken.empty_name ;
-                             q_loc = ""; q_shift = 2; q_contents = "" }
+           `QUOTATION (FToken.empty_name,"",2,"")
+        (* { FToken.q_name =FToken.empty_name ; *)
+        (*                      q_loc = ""; q_shift = 2; q_contents = "" } *)
   | "{@"  ->   with_curr_loc maybe_quotation_at c
   | "{:"  ->
              with_curr_loc maybe_quotation_colon c

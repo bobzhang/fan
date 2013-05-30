@@ -22,29 +22,15 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          pp_print_string _a1) fmt _a0
 
-type quotation = 
-  {
-  q_name: name;
-  q_loc: string;
-  q_shift: int;
-  q_contents: string} 
-
-let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  { q_name = _a0; q_loc = _a1; q_shift = _a2; q_contents = _a3 }  ->
-    Format.fprintf fmt
-      "@[<hv 1>{q_name:%a;@,q_loc:%a;@,q_shift:%a;@,q_contents:%a}@]"
-      pp_print_name _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string
-      _a3
-
 type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `INT of (int * string)
   | `INT32 of (int32 * string) | `INT64 of (int64 * string)
   | `NATIVEINT of (nativeint * string) | `Flo of (float * string)
   | `CHAR of (char * string) | `STR of (string * string) | `LABEL of string
-  | `OPTLABEL of string | `QUOTATION of quotation | `Ant of (string * string)
-  | `COMMENT of string | `BLANKS of string | `NEWLINE
-  | `LINE_DIRECTIVE of (int * string option) | `EOI] 
+  | `OPTLABEL of string | `QUOTATION of (name * string * int * string)
+  | `Ant of (string * string) | `COMMENT of string | `BLANKS of string
+  | `NEWLINE | `LINE_DIRECTIVE of (int * string option) | `EOI] 
 
 let pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
@@ -82,8 +68,10 @@ let pp_print_t: Format.formatter -> t -> unit =
         Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" pp_print_string _a0
     | `OPTLABEL _a0 ->
         Format.fprintf fmt "@[<1>(`OPTLABEL@ %a)@]" pp_print_string _a0
-    | `QUOTATION _a0 ->
-        Format.fprintf fmt "@[<1>(`QUOTATION@ %a)@]" pp_print_quotation _a0
+    | `QUOTATION (_a0,_a1,_a2,_a3) ->
+        Format.fprintf fmt "@[<1>(`QUOTATION@ %a@ %a@ %a@ %a)@]"
+          pp_print_name _a0 pp_print_string _a1 pp_print_int _a2
+          pp_print_string _a3
     | `Ant (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_string _a0
           pp_print_string _a1

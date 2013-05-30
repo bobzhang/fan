@@ -3,14 +3,14 @@ open Fsyntax
 open FCMacroGen
 
 
-{:create|Gram
+{:create|Fgram
   macro_def (* macro_def_sig *) uident_eval_ifdef uident_eval_ifndef
   else_macro_def (* else_macro_def_sig *) else_exp smlist_then smlist_else (* sglist_then *)
   (* sglist_else *) endif opt_macro_value uident 
 |};;
 
 let apply () = begin 
-  {:extend|Gram
+  {:extend|Fgram
 
     stru: First
     [ macro_def{x} -> execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
@@ -25,7 +25,7 @@ let apply () = begin
         make_ITE_result st1 st2
     | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
         make_ITE_result st1 st2
-    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (Gram.parse_include_file strus fname)) ]
+    | "INCLUDE"; `STR (_, fname) -> Lazy (lazy (Fgram.parse_include_file strus fname)) ]
       
     (* macro_def_sig: *)
     (* [ "DEFINE"; uident{i} -> Def i None *)
@@ -35,7 +35,7 @@ let apply () = begin
     (* | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} -> *)
     (*     make_ITE_result sg1 sg2 *)
     (* | "INCLUDE"; `STR (_, fname) -> *)
-    (*     Lazy (lazy (Gram.parse_include_file sigis fname)) ] *)
+    (*     Lazy (lazy (Fgram.parse_include_file sigis fname)) ] *)
 
     uident_eval_ifdef:
     [ uident{i} -> Stack.push (is_defined i) stack ]

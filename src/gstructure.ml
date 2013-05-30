@@ -100,10 +100,10 @@ and anno_action = (int  * symbol list  * string  * Gaction.t)
 
 
 
-(* FIXME duplciate with Gram.mli*)
+(* FIXME duplciate with Fgram.mli*)
 
 (**
-   [olevel] is the [processed output] from the Gram DDSL, the runtime representation
+   [olevel] is the [processed output] from the Fgram DDSL, the runtime representation
    is [level], there is a function [Ginsert.level_of_olevel] which converts the
    processed output into the runtime
  *)      

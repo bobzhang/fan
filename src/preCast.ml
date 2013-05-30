@@ -121,14 +121,14 @@ let wrap directive_handler pa init_loc cs =
 
 
 let parse_implem ?(directive_handler = fun _ -> None) loc cs =
-  let l = wrap directive_handler (Gram.parse Fsyntax.implem) loc cs in
+  let l = wrap directive_handler (Fgram.parse Fsyntax.implem) loc cs in
   match l with
   | [] -> None
   | l -> Some (AstLib.sem_of_list l)
 
 
 let parse_interf ?(directive_handler = fun _ -> None) loc cs =
-  let l = wrap directive_handler (Gram.parse Fsyntax.interf) loc cs in
+  let l = wrap directive_handler (Fgram.parse Fsyntax.interf) loc cs in
   match l with
   | [] -> None   
   | l -> Some (AstLib.sem_of_list l)
@@ -157,7 +157,7 @@ end
 
 let wrap parse_fun ~print_location lb =
   try
-    let token_stream = lb |> FLexLib.from_lexbuf |> Gram.filter in
+    let token_stream = lb |> FLexLib.from_lexbuf |> Fgram.filter in
     match token_stream with parser (* FIXME *)
     |  (`EOI, _)  -> raise End_of_file
     |  -> parse_fun token_stream 
@@ -175,7 +175,7 @@ let wrap parse_fun ~print_location lb =
 
 
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens Fsyntax.top_phrase token_stream with
+  match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
   | Some stru ->
         let stru =
           (* Fsyntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
@@ -187,7 +187,7 @@ let toplevel_phrase token_stream =
 
 let use_file token_stream =
   let rec loop () =
-      let (pl, stopped_at_directive) = Gram.parse_origin_tokens Fsyntax.implem token_stream in
+      let (pl, stopped_at_directive) = Fgram.parse_origin_tokens Fsyntax.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | [ {| #default_quotation $str:s |} ] ->
@@ -200,7 +200,7 @@ let use_file token_stream =
     else
       let rec loop () =
         let (pl, stopped_at_directive) =
-          Gram.parse_origin_tokens Fsyntax.implem  token_stream in  
+          Fgram.parse_origin_tokens Fsyntax.implem  token_stream in  
         if stopped_at_directive <> None then pl @ loop () else pl in loop () in
   (* FIXME semantics imprecise, the filter will always be applied *)
   List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl)

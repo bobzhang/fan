@@ -41,7 +41,7 @@ val make_ctyp : styp -> string -> ctyp
    [tvar] refers to the current entry's type
    It is in charge of generating code like this 
    {[
-   (Gram.mk_action
+   (Fgram.mk_action
                (fun (a : 'case)  _  (e : 'exp)  _  (_loc : FLoc.t) 
                   -> (`Try (_loc, e, a) : 'exp )))
    ]} *)
@@ -56,30 +56,30 @@ val mk_srules :
 
 (** transform [text] to [exp] which represents [symbol]
    compute the [lhs]
-   it generates code which has type [Gram.symbol]
+   it generates code which has type [Fgram.symbol]
    tvar provides type informatoin
    {[
    `Skeyword "let"
 
-   `Snterm (Gram.obj (a_uident : 'a_uident Gram.t ))
+   `Snterm (Fgram.obj (a_uident : 'a_uident Fgram.t ))
 
    `Smeta
       (["FOLD1"; "SEP"],
-          [Gram.srules declare_regexp
+          [Fgram.srules declare_regexp
                 [([`Stoken
                     (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
                      `Skeyword ":";
-                     `Snterm (Gram.obj (regexp : 'regexp Gram.t ))],
-                      (Gram.mk_action
+                     `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
+                      (Fgram.mk_action
                          (fun (r : 'regexp)  _  (__fan_0 : [> FToken.t]) 
                             (_loc : FLoc.t)  ->
                             match __fan_0 with
                             | `Lid x -> ((x, r) : 'e__2 )
                             | _ -> assert false)))];
                 `Skeyword ";"],
-               (Gram.Action.mk
-                   (Gram.sfold1sep
+               (Fgram.Action.mk
+                   (Fgram.sfold1sep
                       (fun (x,r)  ()  ->
                          if Hashtbl.mem FanLexTools.named_regexps x
                          then
@@ -88,29 +88,29 @@ val mk_srules :
                              x
                          else ();
                          Hashtbl.add FanLexTools.named_regexps x r) () : 
-                   (_,'e__2,'e__3) Gram.foldsep )))
+                   (_,'e__2,'e__3) Fgram.foldsep )))
    `Slist0
-     (Gram.srules sigis
-                 [([`Snterm (Gram.obj (sigi : 'sigi Gram.t ));
-                   `Snterm (Gram.obj (semi : 'semi Gram.t ))],
-                    (Gram.mk_action
+     (Fgram.srules sigis
+                 [([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t ));
+                   `Snterm (Fgram.obj (semi : 'semi Fgram.t ))],
+                    (Fgram.mk_action
                        (fun _  (sg : 'sigi)  (_loc : FLoc.t)  ->
                           (sg : 'e__1 ))))])
 
    `Slist0sep
-       ((`Snterm (Gram.obj (case0 : 'case0 Gram.t ))),
+       ((`Snterm (Fgram.obj (case0 : 'case0 Fgram.t ))),
         (`Skeyword "|"))
 
 
    `Slist1sep
-        ((Gram.srules pos_exps
+        ((Fgram.srules pos_exps
           [([`Stoken
                         (((function | `Lid _ -> true | _ -> false)),
                           (`Normal, "`Lid _"));
                      `Skeyword ":";
                      `Snterm
-                       (Gram.obj (dot_lstrings : 'dot_lstrings Gram.t ))],
-                      (Gram.mk_action
+                       (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
+                      (Fgram.mk_action
                          (fun (y : 'dot_lstrings)  _ 
                             (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                             match __fan_0 with
@@ -121,7 +121,7 @@ val mk_srules :
                    ([`Stoken
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
-                     (Gram.mk_action
+                     (Fgram.mk_action
                         (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t) 
                            ->
                            match __fan_0 with
@@ -132,7 +132,7 @@ val mk_srules :
                            | _ -> assert false)))]), (`Skeyword ";"))
    `Snext
    `Sself
-   `Snterml ((Gram.obj (exp : 'exp Gram.t )), "top")
+   `Snterml ((Fgram.obj (exp : 'exp Fgram.t )), "top")
    `Stoken
      (((function | `Ant ((""|"mexp"|"anti"|"list"),_) -> true
         | _ -> false)),
@@ -158,7 +158,7 @@ val mk_slist :
   return [(ent,pos,txt)] the [txt] has type [olevel],
   [ent] is something like
   {[
-  (module_exp : 'mexp Gram.t )
+  (module_exp : 'mexp Fgram.t )
   ]}
   [pos] is something like
   {[(Some `LA)]} it has type [position option] *)        
@@ -178,7 +178,7 @@ val let_in_of_extend :  loc ->vid option -> name list option -> exp -> exp
 (** the [locals] is local entry name list,
    [el] is entry list
    [gram] is the grammar
-   [gmod] is the [Gram] module true
+   [gmod] is the [Fgram] module true
    generate the extend, the main entrance
    the [entrance] point for generating code
 

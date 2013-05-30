@@ -173,11 +173,12 @@ let _ = begin
 end
 ;;
 
-{:create|Gram p|};;
+{:create|Fgram p|};;
 
 
 
-{:extend|p:
+{:extend|
+  p:
   [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true |_ -> false |}
   |pat{p} -> {:exp'| function | $pat:p -> true | _ -> false |} ]
 |};;
@@ -205,7 +206,7 @@ open PluginsN (* link the module *)
 
 open CodeTemplate
 
-open OCamlLex
+open FLexGen
 
 (** let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
    {:stream| 1 ; 2; '(f 3)|} *)

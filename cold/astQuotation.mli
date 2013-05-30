@@ -42,18 +42,23 @@ val clear_default: unit -> unit
     
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
-val parse_quotation_result:
-    (FLoc.t -> string -> 'a) -> FLoc.t -> FToken.quotation -> string -> string -> 'a
+(* val parse_quotation_result: *)
+(*     (FLoc.t -> string -> 'a) -> FLoc.t -> FToken.quotation -> string -> string -> 'a *)
 
 (** function translating quotation names; default = identity *)
 (* val translate : (string -> string) ref *)
 
-val expand : FLoc.t -> FToken.quotation -> 'a FDyn.tag  -> 'a
-
+(* val expand : FLoc.t -> FToken.quotation -> 'a FDyn.tag  -> 'a *)
+val expand :
+    FLoc.t -> FToken.name * string * int * string -> 'a FDyn.tag -> 'a
 val expand_quotation :
     FLoc.t ->
-      expander:(FLoc.t -> string option -> string -> 'a) ->
-        string -> FToken.quotation -> 'a
+      expander:(FLoc.t -> string option -> 'a -> 'b) ->
+        string -> FToken.name * string * 'c * 'a -> 'b
+(* val expand_quotation : *)
+(*     FLoc.t -> *)
+(*       expander:(FLoc.t -> string option -> string -> 'a) -> *)
+(*         string -> FToken.quotation -> 'a *)
 
 (** [dump_file] optionally tells Fan to dump the
     result of an expander if this result is syntactically incorrect.
@@ -69,39 +74,39 @@ val add_quotation:
     exp_filter:(ep(* 'a *) -> exp) ->
       pat_filter:(ep(* 'b *) -> pat) ->
         mexp:(FLoc.t -> 'c -> ep(* 'a *)) ->
-          mpat:(FLoc.t -> 'c -> ep(* 'b *)) -> FToken.name -> 'c Gram.t -> unit
+          mpat:(FLoc.t -> 'c -> ep(* 'b *)) -> FToken.name -> 'c Fgram.t -> unit
 
 
 
 (* BUG, revised parser can not parse name:string -> unit*)
-val of_exp: name:FToken.name -> entry: exp Gram.t  -> unit
+val of_exp: name:FToken.name -> entry: exp Fgram.t  -> unit
 
-val of_pat: name:FToken.name -> entry: pat Gram.t  -> unit
+val of_pat: name:FToken.name -> entry: pat Fgram.t  -> unit
 
-val of_clfield: name:FToken.name -> entry: clfield Gram.t  -> unit
+val of_clfield: name:FToken.name -> entry: clfield Fgram.t  -> unit
 
-val of_case: name:FToken.name -> entry: case Gram.t  -> unit
+val of_case: name:FToken.name -> entry: case Fgram.t  -> unit
 
-val of_stru: name:FToken.name -> entry: stru Gram.t  -> unit
+val of_stru: name:FToken.name -> entry: stru Fgram.t  -> unit
 
-val make_parser: 'a Gram.t -> FLoc.t -> string option -> string -> 'a
+val make_parser: 'a Fgram.t -> FLoc.t -> string option -> string -> 'a
 
 
 val of_stru_with_filter: name:FToken.name ->
-  entry:stru Gram.t -> filter:(stru -> stru) -> unit
+  entry:stru Fgram.t -> filter:(stru -> stru) -> unit
 
 val of_pat_with_filter :
-  name:FToken.name -> entry:pat Gram.t -> filter:(pat -> pat) -> unit
+  name:FToken.name -> entry:pat Fgram.t -> filter:(pat -> pat) -> unit
 
 val of_clfield_with_filter :
   name:FToken.name
-  -> entry:clfield Gram.t -> filter:(clfield -> clfield) -> unit
+  -> entry:clfield Fgram.t -> filter:(clfield -> clfield) -> unit
 
 val of_case_with_filter :
   name:FToken.name
-  -> entry:case Gram.t -> filter:(case -> case) -> unit
+  -> entry:case Fgram.t -> filter:(case -> case) -> unit
 
 val of_exp_with_filter :
     name:FToken.name
-  -> entry:exp Gram.t -> filter:(exp -> exp) -> unit
+  -> entry:exp Fgram.t -> filter:(exp -> exp) -> unit
         

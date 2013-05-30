@@ -4,7 +4,7 @@ open LibUtil
 open FStreamGen
 
 
-{:create| Gram
+{:create| Fgram
   parser_ipat stream_exp_comp  stream_exp_comp_list
   stream_pat_comp stream_pat_comp_err 
   stream_pat_comp_err_list stream_begin

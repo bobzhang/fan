@@ -59,7 +59,7 @@ val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
 val add_production : production -> tree -> tree
 
 (** the production is added in reverse order
-    from the Gram DDSL *)    
+    from the Fgram DDSL *)    
 val add_production_in_level : production -> level -> level
 
 

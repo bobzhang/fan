@@ -16,11 +16,11 @@ let prefix = "__fan_"
 
 let ghost = FLoc.ghost
 
-let grammar_module_name = ref (`Uid (ghost, "Gram"))
+let grammar_module_name = ref (`Uid (ghost, "Fgram"))
 
 let gm () =
   (match FConfig.compilation_unit.contents with
-   | Some "Gram" -> `Uid (ghost, "")
+   | Some "Fgram" -> `Uid (ghost, "")
    | Some _|None  -> grammar_module_name.contents : vid )
 
 let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
@@ -305,7 +305,12 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
   | _ -> seq_sem rest
 
 let mk_name _loc (i : vid) =
-  { exp = (i :>exp); tvar = (Id.tvar_of_ident i); loc = _loc }
+  let rec aux: vid -> string =
+    function
+    | `Lid (_,x)|`Uid (_,x) -> x
+    | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
+    | _ -> failwith "internal error in the Grammar extension" in
+  { exp = (i :>exp); tvar = (aux i); loc = _loc }
 
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 

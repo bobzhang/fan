@@ -2,7 +2,7 @@
 (** management for Fan's parser entry *)
 open Gstructure
 
-type 'a t = private entry
+type 'a t (* = private entry *)
 
 val name : 'a t -> string
 

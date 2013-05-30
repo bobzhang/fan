@@ -270,7 +270,7 @@ let find_chars e =
 (* From shallow to deep syntax *)
 (*******************************)
 
-let chars = ref ([] : Cset.t list)
+let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
 
@@ -284,7 +284,7 @@ let rec encode_regexp char_vars act = function
       end
   | Eof ->
       let n = !chars_count in begin
-        chars := Cset.eof :: !chars;
+        chars := Fcset.eof :: !chars;
         incr chars_count;
         Chars(n,true)
       end
@@ -783,14 +783,14 @@ let next_state_num = ref 0
 let next_mem_cell = ref 0
 let temp_pending = ref false
 let tag_cells = Hashtbl.create 17
-let state_table = Table.create dfa_state_empty
+let state_table = Ftable.create dfa_state_empty
 
 
 (* Initial reset of state *)
 let reset_state () =
   (Stack.clear todo;
   next_state_num := 0 ;
-  let _ = Table.trim state_table in
+  let _ = Ftable.trim state_table in
   ())
 
 (* Reset state before processing a given automata.
@@ -984,12 +984,12 @@ let get_state st =
   let key = get_key st in
   try
     let num = StateMap.find key !state_map in
-    (num,move_to key.kmem st (Table.get state_table num))
+    (num,move_to key.kmem st (Ftable.get state_table num))
   with Not_found ->
     let num = !next_state_num in begin
       incr next_state_num;
       let (st,mvs) = create_new_state st in
-      (Table.emit state_table st ;
+      (Ftable.emit state_table st ;
       state_map := StateMap.add key num !state_map;
       Stack.push (st, num) todo;
       (num,mvs))
@@ -1061,19 +1061,19 @@ let rec split_env gen follow pos m s = function
   | [] -> (* Can occur ! because of non-matching regexp ([^'\000'-'\255']) *)
       []
   | ((s1,st1) as p)::rem ->
-      let here = Cset.inter s s1 in
-      if Cset.is_empty here then
+      let here = Fcset.inter s s1 in
+      if Fcset.is_empty here then
         p::split_env gen follow pos m s rem
       else
-        let rest = Cset.diff s here in
+        let rest = Fcset.diff s here in
         let rem =
-          if Cset.is_empty rest then
+          if Fcset.is_empty rest then
             rem
           else
             split_env gen follow pos m rest rem
         and new_st = apply_transitions gen st1 pos m follow in
-        let stay = Cset.diff s1 here in
-        if Cset.is_empty stay then
+        let stay = Fcset.diff s1 here in
+        if Fcset.is_empty stay then
           (here, new_st)::rem
         else
           (stay, st1)::(here, new_st)::rem
@@ -1083,7 +1083,7 @@ let rec split_env gen follow pos m s = function
 let comp_shift gen chars follow st =
   MemMap.fold
     (fun pos (_,m) env -> split_env gen follow.(pos) pos m chars.(pos) env)
-    st [(Cset.all_chars_eof,dfa_state_empty)]
+    st [(Fcset.all_chars_eof,dfa_state_empty)]
 
 
 let reachs chars follow st =
@@ -1095,7 +1095,7 @@ let reachs chars follow st =
     List.map
       (fun (s,dfa_state) -> (s,goto_state dfa_state)) env in
 (* finally build the char indexed array -> new state num *)
-  let shift = Cset.env_to_array env in
+  let shift = Fcset.env_to_array env in
   shift
 
 
@@ -1222,7 +1222,7 @@ let make_single_dfa (lexdef:LexSyntax.entry) :
   prerr_endline "** states **" ;
   for i = 0 to !next_state_num-1 do
   Printf.eprintf "+++ %d +++\n" i ;
-  dstate (Table.get state_table i) ;
+  dstate (Ftable.get state_table i) ;
   prerr_endline ""
   done ;
   Printf.eprintf "%d states\n" !next_state_num ;
@@ -1270,7 +1270,7 @@ let make_dfa (lexdef:LexSyntax.entry list) :
   prerr_endline "** states **" ;
   for i = 0 to !next_state_num-1 do
   Printf.eprintf "+++ %d +++\n" i ;
-  dstate (Table.get state_table i) ;
+  dstate (Ftable.get state_table i) ;
   prerr_endline ""
   done ;
   Printf.eprintf "%d states\n" !next_state_num ;

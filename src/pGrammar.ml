@@ -12,10 +12,10 @@ FConfig.antiquotations := true;;
 
 
 
-{:create|Gram (nonterminals: stru Gram.t) (nonterminalsclear:  exp Gram.t)
-  delete_rule_header extend_header  (qualuid : vid Gram.t) (qualid:vid Gram.t)
-  (t_qualid:vid Gram.t )
-  (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Gram.t )
+{:create|Fgram (nonterminals: stru Fgram.t) (nonterminalsclear:  exp Fgram.t)
+  delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
+  (t_qualid:vid Fgram.t )
+  (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
   locals entry position assoc name string
   rules
 
@@ -26,13 +26,13 @@ FConfig.antiquotations := true;;
   psymbol
   level
   level_list
-  (entry: FGramDef.entry Gram.t)
+  (entry: FGramDef.entry Fgram.t)
 
-  (pattern: action_pattern Gram.t )
+  (pattern: action_pattern Fgram.t )
   extend_body
   delete_rule_body
   simple_exp delete_rules
-  (simple_pat: simple_pat Gram.t )
+  (simple_pat: simple_pat Fgram.t )
   internal_pat|}  ;;
 
 {:extend|
@@ -77,7 +77,7 @@ FConfig.antiquotations := true;;
 |};;
 
 
-{:extend|(* Gram *)
+{:extend|(* Fgram *)
   extend_header:
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 
@@ -170,7 +170,7 @@ FConfig.antiquotations := true;;
   level:
   [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
     mk_level ~label ~assoc ~rules ]
-  (* FIXME a conflict {:extend|Gram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
+  (* FIXME a conflict {:extend|Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
 
 
@@ -244,7 +244,12 @@ FConfig.antiquotations := true;;
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
   | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
         let i = parse_ident _loc s in
-        let n = mk_name _loc (Id.to_vid i) in (* FIXME  *)
+        let rec to_vid   (x:ident) : vid =
+          match x with
+          |`Apply _ -> failwithf "Id.to_vid" (* FIXME type system may help*)
+          |`Dot(_loc,a,b) -> `Dot(_loc, to_vid a, to_vid b)
+          | `Lid _ | `Uid _ | `Ant _ as x -> x in 
+        let n = mk_name _loc (to_vid i) in
         mk_symbol ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
   | "("; S{s}; ")" -> s ]

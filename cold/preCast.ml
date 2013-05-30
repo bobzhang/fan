@@ -75,11 +75,11 @@ let wrap directive_handler pa init_loc cs =
   loop init_loc
 
 let parse_implem ?(directive_handler= fun _  -> None)  loc cs =
-  let l = wrap directive_handler (Gram.parse Fsyntax.implem) loc cs in
+  let l = wrap directive_handler (Fgram.parse Fsyntax.implem) loc cs in
   match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 
 let parse_interf ?(directive_handler= fun _  -> None)  loc cs =
-  let l = wrap directive_handler (Gram.parse Fsyntax.interf) loc cs in
+  let l = wrap directive_handler (Fgram.parse Fsyntax.interf) loc cs in
   match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 
 let parse_file ?directive_handler  name pa =
@@ -101,7 +101,7 @@ module CurrentPrinter =
 
 let wrap parse_fun ~print_location  lb =
   try
-    let token_stream = (lb |> FLexLib.from_lexbuf) |> Gram.filter in
+    let token_stream = (lb |> FLexLib.from_lexbuf) |> Fgram.filter in
     let (__strm :_ XStream.t)= token_stream in
     match XStream.peek __strm with
     | Some (`EOI,_) -> begin XStream.junk __strm; raise End_of_file end
@@ -121,7 +121,7 @@ let wrap parse_fun ~print_location  lb =
       end
 
 let toplevel_phrase token_stream =
-  match Gram.parse_origin_tokens Fsyntax.top_phrase token_stream with
+  match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
   | Some stru ->
       let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
@@ -129,7 +129,7 @@ let toplevel_phrase token_stream =
 let use_file token_stream =
   let rec loop () =
     let (pl,stopped_at_directive) =
-      Gram.parse_origin_tokens Fsyntax.implem token_stream in
+      Fgram.parse_origin_tokens Fsyntax.implem token_stream in
     if stopped_at_directive <> None
     then
       match pl with
@@ -148,7 +148,7 @@ let use_file token_stream =
     else
       (let rec loop () =
          let (pl,stopped_at_directive) =
-           Gram.parse_origin_tokens Fsyntax.implem token_stream in
+           Fgram.parse_origin_tokens Fsyntax.implem token_stream in
          if stopped_at_directive <> None then pl @ (loop ()) else pl in
        loop ()) in
   List.map (fun x  -> Ast2pt.phrase (AstFilters.apply_implem_filters x))

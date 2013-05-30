@@ -135,13 +135,7 @@ let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
       buff_contents c
     end in
   let contents = String.sub s 0 ((String.length s) - retract) in
-  `QUOTATION
-    {
-      FToken.q_name = name;
-      q_loc = loc;
-      q_shift = shift;
-      q_contents = contents
-    }
+  `QUOTATION (name, loc, shift, contents)
 
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  c =
   let lexbuf = c.lexbuf in
@@ -9577,14 +9571,7 @@ let token c lexbuf =
                mk_quotation quotation c ~name:FToken.empty_name ~loc:""
                  ~shift:len ~retract:len)
             end
-        | 18 ->
-            `QUOTATION
-              {
-                FToken.q_name = FToken.empty_name;
-                q_loc = "";
-                q_shift = 2;
-                q_contents = ""
-              }
+        | 18 -> `QUOTATION (FToken.empty_name, "", 2, "")
         | 19 -> with_curr_loc maybe_quotation_at c
         | 20 -> with_curr_loc maybe_quotation_colon c
         | 21 ->

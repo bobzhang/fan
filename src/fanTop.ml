@@ -38,12 +38,12 @@ end;;
 begin
   Topdirs.dir_install_printer
     Format.std_formatter
-    (Longident.Ldot ((Longident.Lident "Gram"),"dump"));
+    (Longident.Ldot ((Longident.Lident "Fgram"),"dump"));
   fan ()
 end;;
 
 
-(* Gram.dump Format.std_formatter Fsyntax.exp;; *)
+(* Fgram.dump Format.std_formatter Fsyntax.exp;; *)
 
 
 

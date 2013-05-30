@@ -175,7 +175,7 @@ let rec do_find_chars sz =
 
 let find_chars e = let (c,s,_) = do_find_chars (Some 0) e in IdSet.diff c s
 
-let chars = ref ([] : Cset.t list )
+let chars = ref ([] : Fcset.t list )
 
 let chars_count = ref 0
 
@@ -190,7 +190,7 @@ let rec encode_regexp char_vars act =
   | Eof  ->
       let n = chars_count.contents in
       begin
-        chars := (Cset.eof :: (chars.contents)); incr chars_count;
+        chars := (Fcset.eof :: (chars.contents)); incr chars_count;
         Chars (n, true)
       end
   | Sequence (r1,r2) ->
@@ -580,12 +580,12 @@ let temp_pending = ref false
 
 let tag_cells = Hashtbl.create 17
 
-let state_table = Table.create dfa_state_empty
+let state_table = Ftable.create dfa_state_empty
 
 let reset_state () =
   begin
     Stack.clear todo; next_state_num := 0;
-    (let _ = Table.trim state_table in ())
+    (let _ = Ftable.trim state_table in ())
   end
 
 let reset_state_partial ntags =
@@ -735,7 +735,7 @@ let get_state st =
   let key = get_key st in
   try
     let num = StateMap.find key state_map.contents in
-    (num, (move_to key.kmem st (Table.get state_table num)))
+    (num, (move_to key.kmem st (Ftable.get state_table num)))
   with
   | Not_found  ->
       let num = next_state_num.contents in
@@ -743,7 +743,7 @@ let get_state st =
         incr next_state_num;
         (let (st,mvs) = create_new_state st in
          begin
-           Table.emit state_table st;
+           Ftable.emit state_table st;
            state_map := (StateMap.add key num state_map.contents);
            Stack.push (st, num) todo; (num, mvs)
          end)
@@ -803,18 +803,18 @@ let rec split_env gen follow pos m s =
   function
   | [] -> []
   | ((s1,st1) as p)::rem ->
-      let here = Cset.inter s s1 in
-      if Cset.is_empty here
+      let here = Fcset.inter s s1 in
+      if Fcset.is_empty here
       then p :: (split_env gen follow pos m s rem)
       else
-        (let rest = Cset.diff s here in
+        (let rest = Fcset.diff s here in
          let rem =
-           if Cset.is_empty rest
+           if Fcset.is_empty rest
            then rem
            else split_env gen follow pos m rest rem
          and new_st = apply_transitions gen st1 pos m follow in
-         let stay = Cset.diff s1 here in
-         if Cset.is_empty stay
+         let stay = Fcset.diff s1 here in
+         if Fcset.is_empty stay
          then (here, new_st) :: rem
          else (stay, st1) :: (here, new_st) :: rem)
 
@@ -822,13 +822,13 @@ let comp_shift gen chars follow st =
   MemMap.fold
     (fun pos  (_,m)  env  ->
        split_env gen (follow.(pos)) pos m (chars.(pos)) env) st
-    [(Cset.all_chars_eof, dfa_state_empty)]
+    [(Fcset.all_chars_eof, dfa_state_empty)]
 
 let reachs chars follow st =
   let gen = create_new_addr_gen () in
   let env = comp_shift gen chars follow st in
   let env = List.map (fun (s,dfa_state)  -> (s, (goto_state dfa_state))) env in
-  let shift = Cset.env_to_array env in shift
+  let shift = Fcset.env_to_array env in shift
 
 let get_tag_mem n env t =
   try TagMap.find t (env.(n)) with | Not_found  -> assert false

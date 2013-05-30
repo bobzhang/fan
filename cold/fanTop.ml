@@ -36,6 +36,6 @@ let _ =
 let _ =
   begin
     Topdirs.dir_install_printer Format.std_formatter
-      (Longident.Ldot ((Longident.Lident "Gram"), "dump"));
+      (Longident.Ldot ((Longident.Lident "Fgram"), "dump"));
     fan ()
   end

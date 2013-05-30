@@ -17,13 +17,13 @@ package "rts" (
   archive(native)="rts.cmxa"
 )
 
-package "gram" (
+package "fgram" (
   requires = "fan.rts"
   version = "0.1"
-  archive(byte)="gram.cma"
-  archive(byte,plugin)="gram.cma"
-  archive(native)="gram.cmxa"
-  archive(native,plugin)="gram.cmxs"
+  archive(byte)="fgram.cma"
+  archive(byte,plugin)="fgram.cma"
+  archive(native)="fgram.cmxa"
+  archive(native,plugin)="fgram.cmxs"
 )
 package "top" (
     version="0.1"

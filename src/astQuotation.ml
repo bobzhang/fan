@@ -119,17 +119,16 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 
 (* called by [expand] *)
-let expand_quotation loc ~expander pos_tag quot =
-  let open FToken in
-  let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
-  try expander loc loc_name_opt quot.q_contents with
+let expand_quotation loc ~expander pos_tag (q_name,q_loc,_q_shift,q_contents) =
+  let loc_name_opt = if q_loc = "" then None else Some q_loc in
+  try expander loc loc_name_opt q_contents with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
      raise exc
   | FLoc.Exc_located (iloc, exc) ->
-     let exc1 = QuotationError ( quot.q_name, pos_tag, Expanding, exc) in
+     let exc1 = QuotationError ( q_name, pos_tag, Expanding, exc) in
      raise (FLoc.Exc_located iloc exc1)
   | exc ->
-     let exc1 = QuotationError ( quot.q_name, pos_tag, Expanding, exc) in
+     let exc1 = QuotationError ( q_name, pos_tag, Expanding, exc) in
      raise (FLoc.Exc_located loc exc1) ;;
 
   
@@ -151,14 +150,14 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (quotation:FToken.quotation) (tag:'a FDyn.tag) : 'a =
-  let open FToken in
+let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
+    (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
-  let name = quotation.q_name in
+  let name = q_name in
   let try expander = find loc name tag
-  and loc = FLoc.join (FLoc.move `start quotation.q_shift loc) in
+  and loc = FLoc.join (FLoc.move `start q_shift loc) in
   begin
-    Stack.push  quotation.q_name stack;
+    Stack.push  q_name stack;
     finally ~action:(fun _ -> Stack.pop stack)
       (fun _ -> expand_quotation ~expander loc pos_tag quotation)
       ()
@@ -167,14 +166,14 @@ let expand loc (quotation:FToken.quotation) (tag:'a FDyn.tag) : 'a =
   | FLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
   | FLoc.Exc_located (qloc, exc) ->
      raise (FLoc.Exc_located
-              qloc
+              (qloc,
               (QuotationError
-                 ( name, pos_tag, Finding, exc)))
+                 ( name, pos_tag, Finding, exc))))
   | exc ->
      raise (FLoc.Exc_located
-              loc
+              (loc,
               (QuotationError
-                 ( name, pos_tag, Finding, exc))) ;;
+                 ( name, pos_tag, Finding, exc))))
 
 let quotation_error_to_string (name, position, ctx, exn) =
   let ppf = Buffer.create 30 in
@@ -224,18 +223,18 @@ Printexc.register_printer (function
   | QuotationError x -> Some (quotation_error_to_string x )
   | _ -> None);;
 
-let parse_quotation_result parse loc quot pos_tag str =
-  let open FToken in
+let parse_quotation_result parse loc (q_name,_q_loc,_q_shift,q_contents)
+    pos_tag str =
   try parse loc str with
   | FLoc.Exc_located (iloc, (QuotationError (n, pos_tag, Expanding, exc))) ->
-      let ctx = ParsingResult iloc quot.q_contents in
+      let ctx = ParsingResult iloc q_contents in
       let exc1 = QuotationError (n, pos_tag, ctx, exc) in
       FLoc.raise iloc exc1
   | FLoc.Exc_located (iloc, (QuotationError _ as exc)) ->
       FLoc.raise iloc exc
   | FLoc.Exc_located (iloc, exc) ->
-      let ctx = ParsingResult iloc quot.q_contents in
-      let exc1 = QuotationError (quot.q_name, pos_tag, ctx, exc) in
+      let ctx = ParsingResult iloc q_contents in
+      let exc1 = QuotationError (q_name, pos_tag, ctx, exc) in
       FLoc.raise iloc exc1 
 
     
@@ -246,17 +245,17 @@ let parse_quotation_result parse loc quot pos_tag str =
    it expands differently when in exp or pat... 
  *)
 let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
-  let entry_eoi = Gram.eoi_entry entry in
+  let entry_eoi = Fgram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (FConfig.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
-        Gram.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
+        Fgram.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
   let expand_pat _loc loc_name_opt s =
     Ref.protect FConfig.antiquotations true begin fun _ ->
-      let ast = Gram.parse_string entry_eoi ~loc:_loc s in
+      let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
       (* BOOTSTRAPPING *)
@@ -288,7 +287,7 @@ let make_parser entry =
     Ref.protect2
       (FConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
-      (fun _ -> Gram.parse_string (Gram.eoi_entry entry) ~loc  s);;
+      (fun _ -> Fgram.parse_string (Fgram.eoi_entry entry) ~loc  s);;
 
 DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);;
 

@@ -23,7 +23,7 @@ Gdelete
 Ginsert
 Gentry
 Gfold
-Gram
+Fgram
 AstQuotation
 AstInjection
 AstLib
@@ -56,12 +56,12 @@ ParsetreeHelper
 Ast2pt
 LangOcaml
 LangSave
-Cset
+Fcset
 LexSyntax
-Table
+Ftable
 Lexgen
 LexBackend
-OCamlLex
+FLexGen
 Gramlib
 PFan
 Exp

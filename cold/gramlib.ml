@@ -1,7 +1,7 @@
 open LibUtil
 
 let setup_op_parser entry p =
-  Gram.setup_parser entry
+  Fgram.setup_parser entry
     (fun (__strm : _ XStream.t)  ->
        match XStream.peek __strm with
        | Some ((`KEYWORD x|`SYMBOL x),_loc) when p x ->

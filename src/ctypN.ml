@@ -147,8 +147,8 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
 
   {[
   list_of_record {:ctyp| u:int;m:mutable int |};
-  [{label = "u"; is_mutable = false; ctyp = Id (, Lid (, "int"))};
-  {label = "m"; is_mutable = true; ctyp = Id (, Lid (, "int"))}]
+  [{label = "u"; is_mutable = false; ctyp = `Id (, `Lid (, "int"))};
+  {label = "m"; is_mutable = true; ctyp = `Id (, `Lid (, "int"))}]
   ]}
   
  *)
@@ -338,9 +338,9 @@ let abstract_list (x:typedecl)=
    (prerr_endline s;  [xs :: acc] ))  ;
    A
    B
-   Id  (Lid  "float");
-   App  (Id  (Lid  "option")) (Id  (Lid  "int"));
-   Id  (Lid  "float")
+   `Id  (`Lid  "float");
+   `App  (`Id  (`Lid  "option")) (`Id  (`Lid  "int"));
+   `Id  (`Lid  "float")
    ]}
    @return result type to indicate error
    FIXME a good  support for arrow types?

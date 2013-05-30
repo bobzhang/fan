@@ -2,7 +2,7 @@
 open AstLib
 (*************************************************************************)
 (* save DDSL *)
-{:create|Gram  save_quot|};;
+{:create|Fgram  save_quot|};;
 (* {:save| a b c -> begin *)
 (*   print_int a; *)
 (*   print_int b ; *)

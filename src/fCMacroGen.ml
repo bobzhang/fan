@@ -68,8 +68,8 @@ let undef ~exp ~pat x =
     begin
       (let eo = List.assoc x !defined in
       match eo with
-      | Some ([], _) -> {:delete| Gram exp: [`Uid $x ]  pat: [`Uid $x ] |}
-      | Some (_, _) ->  {:delete| Gram exp: [`Uid $x; S ] pat: [`Uid $x; S] |}
+      | Some ([], _) -> {:delete| Fgram exp: [`Uid $x ]  pat: [`Uid $x ] |}
+      | Some (_, _) ->  {:delete| Fgram exp: [`Uid $x; S ] pat: [`Uid $x; S] |}
       | None -> ()) ;
       defined := List.remove x !defined;
     end
@@ -77,7 +77,7 @@ let undef ~exp ~pat x =
   | Not_found -> () 
 
 let parse_def ~exp ~pat s =
-  match Gram.parse_string exp ~loc:(FLoc.mk "<command line>") s with
+  match Fgram.parse_string exp ~loc:(FLoc.mk "<command line>") s with
   | {:exp| $uid:n |} -> define ~exp ~pat None n
   | {:exp| $uid:n = $e |} -> define ~exp ~pat (Some ([],e)) n
   | _ -> invalid_arg s 
