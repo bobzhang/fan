@@ -1,0 +1,247 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ant" rel="Chapter" href="Ant.html">
+<link title="AntN" rel="Chapter" href="AntN.html">
+<link title="Ast2pt" rel="Chapter" href="Ast2pt.html">
+<link title="AstFilters" rel="Chapter" href="AstFilters.html">
+<link title="AstLibN" rel="Chapter" href="AstLibN.html">
+<link title="AstMacros" rel="Chapter" href="AstMacros.html">
+<link title="AstParsers" rel="Chapter" href="AstParsers.html">
+<link title="AstPrint" rel="Chapter" href="AstPrint.html">
+<link title="AstQuotation" rel="Chapter" href="AstQuotation.html">
+<link title="BasicN" rel="Chapter" href="BasicN.html">
+<link title="CodeTemplate" rel="Chapter" href="CodeTemplate.html">
+<link title="CommentFilter" rel="Chapter" href="CommentFilter.html">
+<link title="CtypN" rel="Chapter" href="CtypN.html">
+<link title="DeriveN" rel="Chapter" href="DeriveN.html">
+<link title="DynLoader" rel="Chapter" href="DynLoader.html">
+<link title="EpN" rel="Chapter" href="EpN.html">
+<link title="Exp" rel="Chapter" href="Exp.html">
+<link title="ExpN" rel="Chapter" href="ExpN.html">
+<link title="FanUtil" rel="Chapter" href="FanUtil.html">
+<link title="FArg" rel="Chapter" href="FArg.html">
+<link title="FAst" rel="Chapter" href="FAst.html">
+<link title="FCMacroGen" rel="Chapter" href="FCMacroGen.html">
+<link title="FConfig" rel="Chapter" href="FConfig.html">
+<link title="FGramGen" rel="Chapter" href="FGramGen.html">
+<link title="Fgram" rel="Chapter" href="Fgram.html">
+<link title="Filters" rel="Chapter" href="Filters.html">
+<link title="FLexer" rel="Chapter" href="FLexer.html">
+<link title="FLexGen" rel="Chapter" href="FLexGen.html">
+<link title="FLexLib" rel="Chapter" href="FLexLib.html">
+<link title="FLoc" rel="Chapter" href="FLoc.html">
+<link title="FSigUtil" rel="Chapter" href="FSigUtil.html">
+<link title="FState" rel="Chapter" href="FState.html">
+<link title="FStreamGen" rel="Chapter" href="FStreamGen.html">
+<link title="Fsyntax" rel="Chapter" href="Fsyntax.html">
+<link title="FToken" rel="Chapter" href="FToken.html">
+<link title="Gcomb" rel="Chapter" href="Gcomb.html">
+<link title="Gdelete" rel="Chapter" href="Gdelete.html">
+<link title="Gentry" rel="Chapter" href="Gentry.html">
+<link title="Gfailed" rel="Chapter" href="Gfailed.html">
+<link title="Ginsert" rel="Chapter" href="Ginsert.html">
+<link title="Gparser" rel="Chapter" href="Gparser.html">
+<link title="Gprint" rel="Chapter" href="Gprint.html">
+<link title="Gramlib" rel="Chapter" href="Gramlib.html">
+<link title="Gstru" rel="Chapter" href="Gstru.html">
+<link title="Gtools" rel="Chapter" href="Gtools.html">
+<link title="IdN" rel="Chapter" href="IdN.html">
+<link title="LangFans" rel="Chapter" href="LangFans.html">
+<link title="LangInclude" rel="Chapter" href="LangInclude.html">
+<link title="LangOcaml" rel="Chapter" href="LangOcaml.html">
+<link title="LangSave" rel="Chapter" href="LangSave.html">
+<link title="LexBackend" rel="Chapter" href="LexBackend.html">
+<link title="LibUtil" rel="Chapter" href="LibUtil.html">
+<link title="ParsetreeHelper" rel="Chapter" href="ParsetreeHelper.html">
+<link title="PGrammar" rel="Chapter" href="PGrammar.html">
+<link title="PreCast" rel="Chapter" href="PreCast.html">
+<link title="PStream" rel="Chapter" href="PStream.html">
+<link title="StdFan" rel="Chapter" href="StdFan.html">
+<link title="TokenEval" rel="Chapter" href="TokenEval.html">
+<link title="Typehook" rel="Chapter" href="Typehook.html">
+<link title="XStream" rel="Chapter" href="XStream.html"><title>Fsyntax</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span><br>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;warning&nbsp;=&nbsp;<span class="constructor">FLoc</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;default_warning&nbsp;:&nbsp;<span class="constructor">Fsyntax</span>.warning<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;current_warning&nbsp;:&nbsp;<span class="constructor">Fsyntax</span>.warning&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;print_warning&nbsp;:&nbsp;<span class="constructor">Fsyntax</span>.warning<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;interf&nbsp;:&nbsp;(<span class="constructor">FAst</span>.sigi&nbsp;list&nbsp;*&nbsp;<span class="constructor">FLoc</span>.t&nbsp;option)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;implem&nbsp;:&nbsp;(<span class="constructor">FAst</span>.stru&nbsp;list&nbsp;*&nbsp;<span class="constructor">FLoc</span>.t&nbsp;option)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;top_phrase&nbsp;:&nbsp;<span class="constructor">FAst</span>.stru&nbsp;option&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;a_lident&nbsp;:&nbsp;<span class="constructor">FAst</span>.alident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;a_uident&nbsp;:&nbsp;<span class="constructor">FAst</span>.auident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;aident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;astr&nbsp;:&nbsp;<span class="constructor">FAst</span>.astring&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;luident&nbsp;:&nbsp;string&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uident&nbsp;:&nbsp;<span class="constructor">FAst</span>.uident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;amp_ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;and_ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;case&nbsp;:&nbsp;<span class="constructor">FAst</span>.case&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;case0&nbsp;:&nbsp;<span class="constructor">FAst</span>.case&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;case_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.case&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;bind&nbsp;:&nbsp;<span class="constructor">FAst</span>.bind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;bind_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.bind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rec_exp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.cldecl&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_description&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltdecl&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clexp&nbsp;:&nbsp;<span class="constructor">FAst</span>.clexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clexp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.clexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_fun_bind&nbsp;:&nbsp;<span class="constructor">FAst</span>.clexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_fun_def&nbsp;:&nbsp;<span class="constructor">FAst</span>.clexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_info_for_cltyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clsigi&nbsp;:&nbsp;<span class="constructor">FAst</span>.clsigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clsigi_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.clsigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_signature&nbsp;:&nbsp;<span class="constructor">FAst</span>.clsigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clfield&nbsp;:&nbsp;<span class="constructor">FAst</span>.clfield&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clfield_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.clfield&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;class_structure&nbsp;:&nbsp;<span class="constructor">FAst</span>.clfield&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cltyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cltyp_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltdecl&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cltyp_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cltyp_plus&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cltyp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.cltyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;comma_ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.type_parameters&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vid&nbsp;:&nbsp;<span class="constructor">FAst</span>.vid&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;comma_exp&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;comma_ipat&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;comma_pat&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;comma_type_parameter&nbsp;:&nbsp;<span class="constructor">FAst</span>.type_parameters&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constrain&nbsp;:&nbsp;<span class="constructor">FAst</span>.type_constr&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constructor_arg_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constructor_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.of_ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constructor_declarations&nbsp;:&nbsp;<span class="constructor">FAst</span>.or_ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ctyp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cvalue_bind&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;flag&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;direction_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dummy&nbsp;:&nbsp;unit&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eq_exp&nbsp;:&nbsp;(<span class="constructor">FAst</span>.alident&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp_eoi&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;field_exp&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;field_exp_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fun_bind&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ident_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ipat&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ipat_tcon&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_tcon&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.name_ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_declaration_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.name_ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_exp&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_exp_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_pat&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;label_pat_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.rec_pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;let_bind&nbsp;:&nbsp;<span class="constructor">FAst</span>.bind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;meth_list&nbsp;:&nbsp;(<span class="constructor">FAst</span>.name_ctyp&nbsp;*&nbsp;<span class="constructor">FAst</span>.flag)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;meth_decl&nbsp;:&nbsp;<span class="constructor">FAst</span>.name_ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mbind&nbsp;:&nbsp;<span class="constructor">FAst</span>.mbind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mbind0&nbsp;:&nbsp;<span class="constructor">FAst</span>.mexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mbind_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.mbind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;module_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.mtyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mexp&nbsp;:&nbsp;<span class="constructor">FAst</span>.mexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mexp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.mexp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;module_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.vid&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;module_longident_with_app&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;module_rec_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.mbind&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mtyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.mtyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mtyp_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.mtyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;name_tags&nbsp;:&nbsp;<span class="constructor">FAst</span>.tag_names&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_class_self_type&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_dot_dot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_var_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_meth_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_mutable&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mutable_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_override&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;override_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_private&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;private_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_rec&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rec_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;opt_virtual&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;virtual_flag_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_as_pat_opt&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_eoi&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_field&nbsp;:&nbsp;<span class="constructor">FAst</span>.row_field&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sem_exp&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sem_exp_for_list&nbsp;:&nbsp;(<span class="constructor">FAst</span>.exp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.exp)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sem_pat&nbsp;:&nbsp;<span class="constructor">FAst</span>.pat&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sem_pat_for_list&nbsp;:&nbsp;(<span class="constructor">FAst</span>.pat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sequence&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sigi&nbsp;:&nbsp;<span class="constructor">FAst</span>.sigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sigi_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.sigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sigis&nbsp;:&nbsp;<span class="constructor">FAst</span>.sigi&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;star_ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;com_ctyp&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stru&nbsp;:&nbsp;<span class="constructor">FAst</span>.stru&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;stru_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.stru&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;strus&nbsp;:&nbsp;<span class="constructor">FAst</span>.stru&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_declaration&nbsp;:&nbsp;<span class="constructor">FAst</span>.typedecl&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_ident_and_parameters&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">FAst</span>.alident&nbsp;*&nbsp;<span class="constructor">FAst</span>.opt_decl_params)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_info&nbsp;:&nbsp;<span class="constructor">FAst</span>.type_info&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_repr&nbsp;:&nbsp;<span class="constructor">FAst</span>.type_repr&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_longident_and_parameters&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_parameter&nbsp;:&nbsp;<span class="constructor">FAst</span>.decl_param&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;type_parameters&nbsp;:&nbsp;(<span class="constructor">FAst</span>.ctyp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.ctyp)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;typevars&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;val_longident&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constr&nbsp;:&nbsp;<span class="constructor">FAst</span>.constr&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;constr_quot&nbsp;:&nbsp;<span class="constructor">FAst</span>.constr&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;prefixop&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop0&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop1&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop2&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop3&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop4&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;string_list&nbsp;:&nbsp;<span class="constructor">FAst</span>.strings&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop5&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;infixop6&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;module_longident_dot_lparen&nbsp;:&nbsp;<span class="constructor">FAst</span>.ident&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sequence'&nbsp;:&nbsp;(<span class="constructor">FAst</span>.exp&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.exp)&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fun_def&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;method_opt_override&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;value_val_opt_override&nbsp;:&nbsp;<span class="constructor">FAst</span>.flag&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;unquoted_typevars&nbsp;:&nbsp;<span class="constructor">FAst</span>.ctyp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;lang&nbsp;:&nbsp;<span class="constructor">FToken</span>.name&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;with_exp_lang&nbsp;:&nbsp;<span class="constructor">FAst</span>.exp&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;with_stru_lang&nbsp;:&nbsp;<span class="constructor">FAst</span>.stru&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dot_lstrings&nbsp;:&nbsp;<span class="constructor">FToken</span>.name&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_exp&nbsp;:&nbsp;<span class="constructor">FLoc</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.exp<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_pat&nbsp;:&nbsp;<span class="constructor">FLoc</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_ident&nbsp;:&nbsp;<span class="constructor">FLoc</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.ident<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp_filter&nbsp;:&nbsp;<span class="constructor">FAst</span>.ep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.exp<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_filter&nbsp;:&nbsp;<span class="constructor">FAst</span>.ep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp_filter_n&nbsp;:&nbsp;<span class="constructor">FAst</span>.ep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.exp<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pat_filter_n&nbsp;:&nbsp;<span class="constructor">FAst</span>.ep&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">FAst</span>.pat<br>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dot_namespace&nbsp;:&nbsp;string&nbsp;list&nbsp;<span class="constructor">Fgram</span>.t<br>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Options</span>&nbsp;:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;spec_list&nbsp;=&nbsp;(string&nbsp;*&nbsp;<span class="constructor">FArg</span>.spec&nbsp;*&nbsp;string)&nbsp;list<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;init&nbsp;:&nbsp;<span class="constructor">Fsyntax</span>.<span class="constructor">Options</span>.spec_list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add&nbsp;:&nbsp;string&nbsp;*&nbsp;<span class="constructor">FArg</span>.spec&nbsp;*&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;adds&nbsp;:&nbsp;(string&nbsp;*&nbsp;<span class="constructor">FArg</span>.spec&nbsp;*&nbsp;string)&nbsp;list&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;init_spec_list&nbsp;:&nbsp;<span class="constructor">Fsyntax</span>.<span class="constructor">Options</span>.spec_list&nbsp;<span class="constructor">Pervasives</span>.ref<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span><br>
+<span class="keyword">end</span></code></body></html>

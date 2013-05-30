@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Fan: a set of languages for OCaml</title>
-<!-- 2013-05-29 Wed 22:53 -->
+<!-- 2013-05-30 Thu 12:48 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="author" content="Hongbo Zhang"/>
@@ -196,13 +196,14 @@ platform to glue them tegother.
 </div>
 </div>
 <div id="outline-container-sec-2" class="outline-2">
-<h2 id="sec-2">Get started</h2>
+<h2 id="sec-2">Getting started</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 See here: <a href="start.html">Fan for beginners</a>, enjoy!
 </p>
 </div>
 </div>
+
 <div id="outline-container-sec-3" class="outline-2">
 <h2 id="sec-3">Status</h2>
 <div class="outline-text-2" id="text-3">
@@ -227,17 +228,75 @@ Contributions are very welcome
 <li>Code repo:  <a href="https://github.com/bobzhang/Fan">https://github.com/bobzhang/Fan</a>
 </li>
 
-<li>Documentation repo:<a href="https://github.com/bobzhang/Fan/tree/gh-pages">https://github.com/bobzhang/Fan/tree/gh-pages</a> 
-It's written in <a href="http://orgmode.org/">http://orgmode.org/</a> markup language, if you feel
-uncomfortable with it, markdown or html patches are welcome as
-well.
-Help on building the website is also appreciated.
+<li>Documentation repo available:
+    <a href="https://github.com/bobzhang/Fan/tree/gh-pages">https://github.com/bobzhang/Fan/tree/gh-pages</a> 
+
+<p>
+It's written in <a href="http://orgmode.org/">http://orgmode.org/</a> markup language.  If you are
+unfamiliar with org files, markdown or html patches are welcome as
+well.  Help on building the website is deeplhalso appreciated.
+</p>
+</li>
+<li><a href="foo.docdir/index.html">Ocamldoc API</a>
 </li>
 </ul>
 </div>
 </div>
+
 <div id="outline-container-sec-5" class="outline-2">
-<h2 id="sec-5"><span class="todo TODO">TODO</span> Roadmap</h2>
+<h2 id="sec-5"><span class="todo TODO">TODO</span> List</h2>
+<div class="outline-text-2" id="text-5">
+<ul class="org-ul">
+<li>Porting Documentation on Camlp4 to Fan   
+</li>
+
+<li>Native conditional compilation
+</li>
+
+<li>Direct support for type-conv, or meta-conv 
+It's already in the repo, undocumented though.
+</li>
+
+<li>Add eval support for byte code
+</li>
+
+<li>Adding a directive language at the beginning of files
+</li>
+
+<li>Backport Fan to OCaml 3.12
+</li>
+
+<li>Scheme-style macros for local ast rewriting without computation
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6">Acknowledgments</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Fan is a successor to <a href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>, which was mainly developed by
+<a href="http://pauillac.inria.fr/~ddr/">Daniel de Rauglaudre</a> and <a href="http://michel.mauny.net/index.en.php">Michel Mauny</a>, and later was largely
+renovated by <a href="http://nicolaspouillard.fr/">Nicolas Pouillard</a>.
+</p>
+
+<p>
+In fall semester 2011, I had an indepedent study with <a href="http://www.cis.upenn.edu/~sweirich/">Stephanie</a> on
+"generic programming in Haskell", later I ported it into OCaml using
+Camlp4 in the spring semester of 2012.
+</p>
+
+<p>
+Later, I found Camlp4 too slow and it's very hard to write a plugin
+for it, then I started Fan as a research project under the guidance
+of <a href="http://www.cis.upenn.edu/~stevez/">Steve</a>, from July 2012.
+</p>
+
+<p>
+Special thanks to <a href="http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)">John McCarthy</a> and <a href="http://www.xavierleroy.com/"> Xavier Leory</a> for their
+contribution to language design.
+</p>
+</div>
 </div>
 </div>
 </body>

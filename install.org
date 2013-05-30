@@ -10,7 +10,7 @@
 
 * Requirements
    - [[http://caml.inria.fr/ocaml/release.en.html][OCaml (version >=4)]]
-   Backport Fan to earlier OCaml is planned.
+   - OCamlfind  
 
 * Install for users
 
@@ -18,8 +18,12 @@
      $make world
    #+END_SRC
 
-
-* What it installed?
+** What it installed?
+   It installed two exectuables, fan.byte fan.native into the path:
+   ~`ocamlc -where`/bin~ and two signature files ~fAst.cmi,
+   fAstN.cmi~ into ~`ocamlc -where`~. Other installation files follow
+   the same convention of other ocaml libraries. Please read META
+   file for more details.
    
 #+BEGIN_HTML
 </my-body>

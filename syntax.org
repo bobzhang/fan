@@ -1,0 +1,69 @@
+#+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+#+TITLE: Fan's syntax 
+#+OPTIONS: ^:{}
+#+OPTIONS: toc:nil
+
+Fan speaks OCaml natively, plus a few addons. 
+
+There are some minor differences between Fan's concrete syntax and
+OCaml though, the major differences is that Fan is more strict than
+OCaml.
+
+Three particular points to be noticed:
+  1. Parens are necessary for tuples
+     #+BEGIN_SRC ocaml
+       (** illegal *)
+       a,b 
+       let a,b = f in
+           body
+     #+END_SRC
+     
+     #+BEGIN_SRC ocaml
+       (** correct syntax *)
+       (a,b )
+       let (a,b) = f in
+           body
+     #+END_SRC
+  2. Parens or "begin" "end" necessary for semis
+     #+BEGIN_SRC ocaml
+       (* illegal *)
+       print_endline "a"; print_endline "b" 
+     #+END_SRC
+     #+BEGIN_SRC ocaml
+       (** correct *)
+       (print_endline "a"; print_endline "b")
+       begin print_endline "a"; print_endline "b" end
+     #+END_SRC
+  3. First vertical bar is necessary for algebraic data type, pattern
+     match.
+     #+BEGIN_SRC ocaml
+       (** illegal *)
+       type u = A | B
+       let f = function
+           A -> "a"
+         | B -> "b"
+       let f =
+         match c with
+           A -> "a"
+         | B -> "b"
+     #+END_SRC
+     
+     #+BEGIN_SRC ocaml
+       (** correct *)
+       type u =
+         | A
+         | B 
+       
+       let f = function
+         | A -> "a"
+         | B -> "b" 
+       
+       let f =
+         match c with
+         | A -> "a"
+         | B -> "b"
+           
+     #+END_SRC
+  4. $ is a reserved operator, please don't take it as a function.
+

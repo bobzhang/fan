@@ -1,0 +1,47 @@
+#+OPTIONS: toc:nil html-postamble:nil html-preamble:nil
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="stylesheets/styles.css" />
+#+TITLE: Toplevel support 
+#+OPTIONS: ^:{}
+#+OPTIONS: toc:nil
+#+TOC:headines 2
+
+
+* Playing with toplevel
+
+   If you have ocamlfind installed, the easiest way to explore fan is
+   starting the toplevel:
+
+   #+BEGIN_SRC ocaml
+     # #require "fan.top";;
+     /Users/bobzhang1988/.opam/4.00.1/lib/fan: added to search path
+     /Users/bobzhang1988/.opam/4.00.1/lib/fan/fanTop.cma: loaded
+     # let a = {:exp-|3|};;
+     val a : FAstN.exp = `Int "3"
+   #+END_SRC
+   Here "exp-" is a built-in DDSL for quasiquotation, see [[file:ddsl/quotation.org][DDSL:quotation]]
+   
+   There are two  directives added,
+
+   1. normal
+      #+BEGIN_SRC ocaml
+        #normal;;      
+      #+END_SRC
+      This directive would restore the toplevel to the default
+      behavior, it's useful sometimes, for examlpe, you want to load
+      a normal ocaml file instead of file pre-processed by Fan.
+   2. fan
+      #+BEGIN_SRC ocaml
+        #fan;;
+      #+END_SRC
+      It will turn on the featurs of fan.
+      
+      
+* Playing with utop
+  [[https://github.com/diml/utop][Utop]] is a toplevel with nice auto-completion support, it's very
+  helpful for explore some libraries which the user is not familiar
+  with.
+
+  There is adapter for fan, namely ftop, available here:
+  https://github.com/bobzhang/ftop
+  
+

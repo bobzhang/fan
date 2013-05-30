@@ -1,0 +1,101 @@
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#sec-1">The philosophy</a></li>
+<li><a href="#sec-2">Get started</a></li>
+<li><a href="#sec-3">Status</a></li>
+<li><a href="#sec-4">Contributions</a></li>
+<li><a href="#sec-5">Roadmap</a></li>
+</ul>
+</div>
+</div>
+<p>
+<a href="https://github.com/bobzhang/Fan">Fan</a> is a compile-time metaprogramming system for <a href="http://caml.inria.fr/">OCaml</a>, originally
+imported from <a href="http://brion.inria.fr/gallium/index.php/Camlp4">Camlp4</a>. It's a combination of OCaml and Lisp-like
+<a href="http://letoverlambda.com/">Macros</a>. It shares the same <a href="concrete_syntax.html">concrete syntax</a> with OCaml.
+</p>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">The philosophy</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Unlike traditional programming languages, Fan is <i>a set of
+languages</i> which could <i>evolve</i> itself incrementally. It gets started
+from the vanilla OCaml language as Fan<sub>0</sub>, with more and more new
+languages added for each version.
+</p>
+
+<p>
+For example, to add a new sub-language into Fan<sub>n</sub>, we would
+supply a front-end and a back-end targeted at Fan<sub>n</sub>, upon being
+integrated, Fan<sub>n</sub> becomes Fan<sub>n+1</sub>.
+</p>
+
+<p>
+We could grow Fan endlessly in such a way, however, the main point
+for Fan is not that me, the lead developer of Fan could keep adding
+features to itself, its innovative point lies in the following two
+aspects:
+</p>
+
+<ol class="org-ol">
+<li>It encourages programmer to think about programming in a
+bottom-up way.  Unlike the traditional problem-oriented approach,
+language-oriented programming is encouraged: delimited domain
+specific language(<a href="ddsl.html">DDSL</a>) is the best abstraction for a specific
+domain.
+</li>
+
+<li>Everyone, including you: the reader,  could join and develop a
+mini-compiler and share with other people. Fan servers as a
+platform to glue them tegother.
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Get started</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+See here: <a href="start/index.html">Fan for beginners</a>, enjoy!
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Status</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Please bear in mind that Fan is still at alpha release, so it's
+expected there would be tons of bugs. This also means that your
+participation is particularly important, and your suggestions will
+affect the design of Fan.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">Contributions</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Contributions are very welcome
+</p>
+
+<ul class="org-ul">
+<li>Code repo:  <a href="https://github.com/bobzhang/Fan">https://github.com/bobzhang/Fan</a>
+</li>
+
+<li>Documentation repo: <a href="https://github.com/bobzhang/fan-org">https://github.com/bobzhang/fan-org</a>
+It's written in <a href="http://orgmode.org/">http://orgmode.org/</a> markup language, if you feel
+uncomfortable with it, markdown or html patches are welcome as well.
+</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="todo TODO">TODO</span> Roadmap</h2>
+</div>

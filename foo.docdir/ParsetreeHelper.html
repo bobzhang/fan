@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="LibUtil.html">
+<link rel="next" href="PGrammar.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ant" rel="Chapter" href="Ant.html">
+<link title="AntN" rel="Chapter" href="AntN.html">
+<link title="Ast2pt" rel="Chapter" href="Ast2pt.html">
+<link title="AstFilters" rel="Chapter" href="AstFilters.html">
+<link title="AstLibN" rel="Chapter" href="AstLibN.html">
+<link title="AstMacros" rel="Chapter" href="AstMacros.html">
+<link title="AstParsers" rel="Chapter" href="AstParsers.html">
+<link title="AstPrint" rel="Chapter" href="AstPrint.html">
+<link title="AstQuotation" rel="Chapter" href="AstQuotation.html">
+<link title="BasicN" rel="Chapter" href="BasicN.html">
+<link title="CodeTemplate" rel="Chapter" href="CodeTemplate.html">
+<link title="CommentFilter" rel="Chapter" href="CommentFilter.html">
+<link title="CtypN" rel="Chapter" href="CtypN.html">
+<link title="DeriveN" rel="Chapter" href="DeriveN.html">
+<link title="DynLoader" rel="Chapter" href="DynLoader.html">
+<link title="EpN" rel="Chapter" href="EpN.html">
+<link title="Exp" rel="Chapter" href="Exp.html">
+<link title="ExpN" rel="Chapter" href="ExpN.html">
+<link title="FanUtil" rel="Chapter" href="FanUtil.html">
+<link title="FArg" rel="Chapter" href="FArg.html">
+<link title="FAst" rel="Chapter" href="FAst.html">
+<link title="FCMacroGen" rel="Chapter" href="FCMacroGen.html">
+<link title="FConfig" rel="Chapter" href="FConfig.html">
+<link title="FGramGen" rel="Chapter" href="FGramGen.html">
+<link title="Fgram" rel="Chapter" href="Fgram.html">
+<link title="Filters" rel="Chapter" href="Filters.html">
+<link title="FLexer" rel="Chapter" href="FLexer.html">
+<link title="FLexGen" rel="Chapter" href="FLexGen.html">
+<link title="FLexLib" rel="Chapter" href="FLexLib.html">
+<link title="FLoc" rel="Chapter" href="FLoc.html">
+<link title="FSigUtil" rel="Chapter" href="FSigUtil.html">
+<link title="FState" rel="Chapter" href="FState.html">
+<link title="FStreamGen" rel="Chapter" href="FStreamGen.html">
+<link title="Fsyntax" rel="Chapter" href="Fsyntax.html">
+<link title="FToken" rel="Chapter" href="FToken.html">
+<link title="Gcomb" rel="Chapter" href="Gcomb.html">
+<link title="Gdelete" rel="Chapter" href="Gdelete.html">
+<link title="Gentry" rel="Chapter" href="Gentry.html">
+<link title="Gfailed" rel="Chapter" href="Gfailed.html">
+<link title="Ginsert" rel="Chapter" href="Ginsert.html">
+<link title="Gparser" rel="Chapter" href="Gparser.html">
+<link title="Gprint" rel="Chapter" href="Gprint.html">
+<link title="Gramlib" rel="Chapter" href="Gramlib.html">
+<link title="Gstru" rel="Chapter" href="Gstru.html">
+<link title="Gtools" rel="Chapter" href="Gtools.html">
+<link title="IdN" rel="Chapter" href="IdN.html">
+<link title="LangFans" rel="Chapter" href="LangFans.html">
+<link title="LangInclude" rel="Chapter" href="LangInclude.html">
+<link title="LangOcaml" rel="Chapter" href="LangOcaml.html">
+<link title="LangSave" rel="Chapter" href="LangSave.html">
+<link title="LexBackend" rel="Chapter" href="LexBackend.html">
+<link title="LibUtil" rel="Chapter" href="LibUtil.html">
+<link title="ParsetreeHelper" rel="Chapter" href="ParsetreeHelper.html">
+<link title="PGrammar" rel="Chapter" href="PGrammar.html">
+<link title="PreCast" rel="Chapter" href="PreCast.html">
+<link title="PStream" rel="Chapter" href="PStream.html">
+<link title="StdFan" rel="Chapter" href="StdFan.html">
+<link title="TokenEval" rel="Chapter" href="TokenEval.html">
+<link title="Typehook" rel="Chapter" href="Typehook.html">
+<link title="XStream" rel="Chapter" href="XStream.html"><title>ParsetreeHelper</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="LibUtil.html" title="LibUtil">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="PGrammar.html" title="PGrammar">Next</a>
+</div>
+<h1>Module <a href="type_ParsetreeHelper.html">ParsetreeHelper</a></h1>
+<pre><span class="keyword">module</span> ParsetreeHelper: <code class="code">sig</code> <a href="ParsetreeHelper.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<pre><span id="VALwith_loc"><span class="keyword">val</span> with_loc</span> : <code class="type">'a -> Location.t -> 'a Location.loc</code></pre><pre><span id="VALlident"><span class="keyword">val</span> lident</span> : <code class="type">string -> Longident.t</code></pre><pre><span id="VALlident_with_loc"><span class="keyword">val</span> lident_with_loc</span> : <code class="type">string -> Location.t -> Longident.t Location.loc</code></pre><pre><span id="VALldot"><span class="keyword">val</span> ldot</span> : <code class="type">Longident.t -> string -> Longident.t</code></pre><pre><span id="VALlapply"><span class="keyword">val</span> lapply</span> : <code class="type">Longident.t -> Longident.t -> Longident.t</code></pre><pre><span id="VALmkghloc"><span class="keyword">val</span> mkghloc</span> : <code class="type"><a href="FLoc.html#TYPEt">FLoc.t</a> -> <a href="FLoc.html#TYPEt">FLoc.t</a></code></pre><pre><span id="VALerror"><span class="keyword">val</span> error</span> : <code class="type"><a href="FLoc.html#TYPEt">FLoc.t</a> -> string -> 'a</code></pre><pre><span id="VALmksig"><span class="keyword">val</span> mksig</span> : <code class="type">Location.t -> Parsetree.signature_item_desc -> Parsetree.signature_item</code></pre><pre><span id="VALmkmod"><span class="keyword">val</span> mkmod</span> : <code class="type">Location.t -> Parsetree.module_expr_desc -> Parsetree.module_expr</code></pre><pre><span id="VALmkexp"><span class="keyword">val</span> mkexp</span> : <code class="type">Location.t -> Parsetree.expression_desc -> Parsetree.expression</code></pre><pre><span id="VALmkstr"><span class="keyword">val</span> mkstr</span> : <code class="type">Location.t -> Parsetree.structure_item_desc -> Parsetree.structure_item</code></pre><pre><span id="VALmkfield"><span class="keyword">val</span> mkfield</span> : <code class="type">Location.t -> Parsetree.core_field_desc -> Parsetree.core_field_type</code></pre><pre><span id="VALmkcty"><span class="keyword">val</span> mkcty</span> : <code class="type">Location.t -> Parsetree.class_type_desc -> Parsetree.class_type</code></pre><pre><span id="VALmkcl"><span class="keyword">val</span> mkcl</span> : <code class="type">Location.t -> Parsetree.class_expr_desc -> Parsetree.class_expr</code></pre><pre><span id="VALmkcf"><span class="keyword">val</span> mkcf</span> : <code class="type">Location.t -> Parsetree.class_field_desc -> Parsetree.class_field</code></pre><pre><span id="VALmkctf"><span class="keyword">val</span> mkctf</span> : <code class="type">Location.t -> Parsetree.class_type_field_desc -> Parsetree.class_type_field</code></pre><pre><span id="VALmktyp"><span class="keyword">val</span> mktyp</span> : <code class="type">Location.t -> Parsetree.core_type_desc -> Parsetree.core_type</code></pre><pre><span id="VALmkpat"><span class="keyword">val</span> mkpat</span> : <code class="type">Location.t -> Parsetree.pattern_desc -> Parsetree.pattern</code></pre><pre><span id="VALmkghpat"><span class="keyword">val</span> mkghpat</span> : <code class="type"><a href="FLoc.html#TYPEt">FLoc.t</a> -> Parsetree.pattern_desc -> Parsetree.pattern</code></pre><pre><span id="VALmkmty"><span class="keyword">val</span> mkmty</span> : <code class="type">Location.t -> Parsetree.module_type_desc -> Parsetree.module_type</code></pre><pre><span id="VALmkpolytype"><span class="keyword">val</span> mkpolytype</span> : <code class="type">Parsetree.core_type -> Parsetree.core_type</code></pre><pre><span id="VALarray_function_no_loc"><span class="keyword">val</span> array_function_no_loc</span> : <code class="type">string -> string -> Longident.t</code></pre><pre><span id="VALarray_function"><span class="keyword">val</span> array_function</span> : <code class="type">Location.t -> string -> string -> Longident.t Location.loc</code></pre><pre><span id="VALmkli"><span class="keyword">val</span> mkli</span> : <code class="type">Location.t -> string -> string list -> Longident.t Location.loc</code></pre><pre><span id="VALvarify_constructors"><span class="keyword">val</span> varify_constructors</span> : <code class="type">string list -> Parsetree.core_type -> Parsetree.core_type</code></pre></body></html>

@@ -1,0 +1,303 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="FanUtil.html">
+<link rel="next" href="FAst.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ant" rel="Chapter" href="Ant.html">
+<link title="AntN" rel="Chapter" href="AntN.html">
+<link title="Ast2pt" rel="Chapter" href="Ast2pt.html">
+<link title="AstFilters" rel="Chapter" href="AstFilters.html">
+<link title="AstLibN" rel="Chapter" href="AstLibN.html">
+<link title="AstMacros" rel="Chapter" href="AstMacros.html">
+<link title="AstParsers" rel="Chapter" href="AstParsers.html">
+<link title="AstPrint" rel="Chapter" href="AstPrint.html">
+<link title="AstQuotation" rel="Chapter" href="AstQuotation.html">
+<link title="BasicN" rel="Chapter" href="BasicN.html">
+<link title="CodeTemplate" rel="Chapter" href="CodeTemplate.html">
+<link title="CommentFilter" rel="Chapter" href="CommentFilter.html">
+<link title="CtypN" rel="Chapter" href="CtypN.html">
+<link title="DeriveN" rel="Chapter" href="DeriveN.html">
+<link title="DynLoader" rel="Chapter" href="DynLoader.html">
+<link title="EpN" rel="Chapter" href="EpN.html">
+<link title="Exp" rel="Chapter" href="Exp.html">
+<link title="ExpN" rel="Chapter" href="ExpN.html">
+<link title="FanUtil" rel="Chapter" href="FanUtil.html">
+<link title="FArg" rel="Chapter" href="FArg.html">
+<link title="FAst" rel="Chapter" href="FAst.html">
+<link title="FCMacroGen" rel="Chapter" href="FCMacroGen.html">
+<link title="FConfig" rel="Chapter" href="FConfig.html">
+<link title="FGramGen" rel="Chapter" href="FGramGen.html">
+<link title="Fgram" rel="Chapter" href="Fgram.html">
+<link title="Filters" rel="Chapter" href="Filters.html">
+<link title="FLexer" rel="Chapter" href="FLexer.html">
+<link title="FLexGen" rel="Chapter" href="FLexGen.html">
+<link title="FLexLib" rel="Chapter" href="FLexLib.html">
+<link title="FLoc" rel="Chapter" href="FLoc.html">
+<link title="FSigUtil" rel="Chapter" href="FSigUtil.html">
+<link title="FState" rel="Chapter" href="FState.html">
+<link title="FStreamGen" rel="Chapter" href="FStreamGen.html">
+<link title="Fsyntax" rel="Chapter" href="Fsyntax.html">
+<link title="FToken" rel="Chapter" href="FToken.html">
+<link title="Gcomb" rel="Chapter" href="Gcomb.html">
+<link title="Gdelete" rel="Chapter" href="Gdelete.html">
+<link title="Gentry" rel="Chapter" href="Gentry.html">
+<link title="Gfailed" rel="Chapter" href="Gfailed.html">
+<link title="Ginsert" rel="Chapter" href="Ginsert.html">
+<link title="Gparser" rel="Chapter" href="Gparser.html">
+<link title="Gprint" rel="Chapter" href="Gprint.html">
+<link title="Gramlib" rel="Chapter" href="Gramlib.html">
+<link title="Gstru" rel="Chapter" href="Gstru.html">
+<link title="Gtools" rel="Chapter" href="Gtools.html">
+<link title="IdN" rel="Chapter" href="IdN.html">
+<link title="LangFans" rel="Chapter" href="LangFans.html">
+<link title="LangInclude" rel="Chapter" href="LangInclude.html">
+<link title="LangOcaml" rel="Chapter" href="LangOcaml.html">
+<link title="LangSave" rel="Chapter" href="LangSave.html">
+<link title="LexBackend" rel="Chapter" href="LexBackend.html">
+<link title="LibUtil" rel="Chapter" href="LibUtil.html">
+<link title="ParsetreeHelper" rel="Chapter" href="ParsetreeHelper.html">
+<link title="PGrammar" rel="Chapter" href="PGrammar.html">
+<link title="PreCast" rel="Chapter" href="PreCast.html">
+<link title="PStream" rel="Chapter" href="PStream.html">
+<link title="StdFan" rel="Chapter" href="StdFan.html">
+<link title="TokenEval" rel="Chapter" href="TokenEval.html">
+<link title="Typehook" rel="Chapter" href="Typehook.html">
+<link title="XStream" rel="Chapter" href="XStream.html"><title>FArg</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="FanUtil.html" title="FanUtil">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="FAst.html" title="FAst">Next</a>
+</div>
+<h1>Module <a href="type_FArg.html">FArg</a></h1>
+<pre><span class="keyword">module</span> FArg: <code class="code">sig</code> <a href="FArg.html">..</a> <code class="code">end</code></pre><div class="info">
+Parsing of command line arguments.
+<p>
+
+   This module provides a general mechanism for extracting options and
+   arguments from the command line to the program. The difference from StdFan's arg module lies in that it supports dynamically changing args. 
+<p>
+
+   Fsyntax of command lines:
+    A keyword is a character string starting with a <code class="code">-</code>.
+    An option is a keyword alone or followed by an argument.
+    The types of keywords are: <code class="code">Unit</code>, <code class="code">Bool</code>, <code class="code">Set</code>, <code class="code">Clear</code>,
+    <code class="code">String</code>, <code class="code">Set_string</code>, <code class="code">Int</code>, <code class="code">Set_int</code>, <code class="code">Float</code>, <code class="code">Set_float</code>,
+    <code class="code">Tuple</code>, <code class="code">Symbol</code>, and <code class="code">Rest</code>.
+    <code class="code">Unit</code>, <code class="code">Set</code> and <code class="code">Clear</code> keywords take no argument. A <code class="code">Rest</code>
+    keyword takes the remaining of the command line as arguments.
+    Every other keyword takes the following word on the command line
+    as argument.
+    Arguments not preceded by a keyword are called anonymous arguments.
+<p>
+
+   Examples (<code class="code">cmd</code> is assumed to be the command name):<ul>
+<li>  <code class="code">cmd -flag           </code>(a unit option)</li>
+<li>  <code class="code">cmd -int 1          </code>(an int option with argument <code class="code">1</code>)</li>
+<li>  <code class="code">cmd -string foobar  </code>(a string option with argument <code class="code">"foobar"</code>)</li>
+<li>  <code class="code">cmd -float 12.34    </code>(a float option with argument <code class="code">12.34</code>)</li>
+<li>  <code class="code">cmd a b c           </code>(three anonymous arguments: <code class="code">"a"</code>, <code class="code">"b"</code>, and <code class="code">"c"</code>)</li>
+<li>  <code class="code">cmd a b -- c d      </code>(two anonymous arguments and a rest option with
+                           two arguments)</li>
+</ul>
+<br>
+</div>
+<hr width="100%">
+<pre><code><span id="TYPEspec"><span class="keyword">type</span> <code class="type"></code>spec</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Unit"><span class="constructor">Unit</span></span> <span class="keyword">of</span> <code class="type">(unit -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Call the function with unit argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Bool"><span class="constructor">Bool</span></span> <span class="keyword">of</span> <code class="type">(bool -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Call the function with a bool argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set"><span class="constructor">Set</span></span> <span class="keyword">of</span> <code class="type">bool Pervasives.ref</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Set the reference to true</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Clear"><span class="constructor">Clear</span></span> <span class="keyword">of</span> <code class="type">bool Pervasives.ref</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Set the reference to false</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.String"><span class="constructor">String</span></span> <span class="keyword">of</span> <code class="type">(string -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Call the function with a string argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_string"><span class="constructor">Set_string</span></span> <span class="keyword">of</span> <code class="type">string Pervasives.ref</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Set the reference to the string argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Int"><span class="constructor">Int</span></span> <span class="keyword">of</span> <code class="type">(int -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Call the function with an int argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_int"><span class="constructor">Set_int</span></span> <span class="keyword">of</span> <code class="type">int Pervasives.ref</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Set the reference to the int argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Float"><span class="constructor">Float</span></span> <span class="keyword">of</span> <code class="type">(float -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Call the function with a float argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Set_float"><span class="constructor">Set_float</span></span> <span class="keyword">of</span> <code class="type">float Pervasives.ref</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Set the reference to the float argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Tuple"><span class="constructor">Tuple</span></span> <span class="keyword">of</span> <code class="type"><a href="FArg.html#TYPEspec">spec</a> list</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Take several arguments according to the
+                                   spec list</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Symbol"><span class="constructor">Symbol</span></span> <span class="keyword">of</span> <code class="type">string list * (string -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Take one of the symbols as argument and
+            call the function with the symbol</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTspec.Rest"><span class="constructor">Rest</span></span> <span class="keyword">of</span> <code class="type">(string -> unit)</code></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" >Stop interpreting keywords and call the
+                                   function with each remaining argument</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+<div class="info">
+The concrete type describing the behavior associated
+    with a keyword.<br>
+</div>
+
+<pre><span id="TYPEkey"><span class="keyword">type</span> <code class="type"></code>key</span> = <code class="type">string</code> </pre>
+
+<pre><span id="TYPEdoc"><span class="keyword">type</span> <code class="type"></code>doc</span> = <code class="type">string</code> </pre>
+
+<pre><span id="TYPEusage_msg"><span class="keyword">type</span> <code class="type"></code>usage_msg</span> = <code class="type">string</code> </pre>
+
+<pre><span id="TYPEanon_fun"><span class="keyword">type</span> <code class="type"></code>anon_fun</span> = <code class="type">string -> unit</code> </pre>
+
+<pre><span id="VALparse"><span class="keyword">val</span> parse</span> : <code class="type">(<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list Pervasives.ref -><br>       <a href="FArg.html#TYPEanon_fun">anon_fun</a> -> <a href="FArg.html#TYPEusage_msg">usage_msg</a> -> unit</code></pre><div class="info">
+<code class="code">Arg.parse speclist anon_fun usage_msg</code> parses the command line.
+    <code class="code">speclist</code> is a list of triples <code class="code">(key, spec, doc)</code>.
+    <code class="code">key</code> is the option keyword, it must start with a <code class="code">'-'</code> character.
+    <code class="code">spec</code> gives the option type and the function to call when this option
+    is found on the command line.
+    <code class="code">doc</code> is a one-line description of this option.
+    <code class="code">anon_fun</code> is called on anonymous arguments.
+    The functions in <code class="code">spec</code> and <code class="code">anon_fun</code> are called in the same order
+    as their arguments appear on the command line.
+<p>
+
+    If an error occurs, <code class="code">Arg.parse</code> exits the program, after printing
+    to standard error an error message as follows:<ul>
+<li>  The reason for the error: unknown option, invalid or missing argument, etc.</li>
+<li>  <code class="code">usage_msg</code></li>
+<li>  The list of options, each followed by the corresponding <code class="code">doc</code> string.
+    Beware: options that have an empty <code class="code">doc</code> string will not be included in the
+    list.</li>
+</ul>
+
+    For the user to be able to specify anonymous arguments starting with a
+    <code class="code">-</code>, include for example <code class="code">("-", String anon_fun, doc)</code> in <code class="code">speclist</code>.
+<p>
+
+    By default, <code class="code">parse</code> recognizes two unit options, <code class="code">-help</code> and <code class="code">--help</code>,
+    which will print to standard output <code class="code">usage_msg</code> and the list of
+    options, and exit the program.  You can override this behaviour
+    by specifying your own <code class="code">-help</code> and <code class="code">--help</code> options in <code class="code">speclist</code>.<br>
+</div>
+<pre><span id="VALparse_argv"><span class="keyword">val</span> parse_argv</span> : <code class="type">?current:int Pervasives.ref -><br>       string array -><br>       (<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list Pervasives.ref -><br>       <a href="FArg.html#TYPEanon_fun">anon_fun</a> -> <a href="FArg.html#TYPEusage_msg">usage_msg</a> -> unit</code></pre><div class="info">
+<code class="code">Arg.parse_argv ~current args speclist anon_fun usage_msg</code> parses
+  the array <code class="code">args</code> as if it were the command line.  It uses and updates
+  the value of <code class="code">~current</code> (if given), or <code class="code">Arg.current</code>.  You must set
+  it before calling <code class="code">parse_argv</code>.  The initial value of <code class="code">current</code>
+  is the index of the program name (argument 0) in the array.
+  If an error occurs, <code class="code">Arg.parse_argv</code> raises <code class="code">Arg.Bad</code> with
+  the error message as argument.  If option <code class="code">-help</code> or <code class="code">--help</code> is
+  given, <code class="code">Arg.parse_argv</code> raises <code class="code">Arg.Help</code> with the help message
+  as argument.<br>
+</div>
+<pre><span id="EXCEPTIONHelp"><span class="keyword">exception</span> Help</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+Raised by <code class="code">Arg.parse_argv</code> when the user asks for help.<br>
+</div>
+<pre><span id="EXCEPTIONBad"><span class="keyword">exception</span> Bad</span> <span class="keyword">of</span> <code class="type">string</code></pre>
+<div class="info">
+Functions in <code class="code">spec</code> or <code class="code">anon_fun</code> can raise <code class="code">Arg.Bad</code> with an error
+    message to reject invalid arguments.
+    <code class="code">Arg.Bad</code> is also raised by <code class="code">Arg.parse_argv</code> in case of an error.<br>
+</div>
+<pre><span id="VALusage"><span class="keyword">val</span> usage</span> : <code class="type">(<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list -> <a href="FArg.html#TYPEusage_msg">usage_msg</a> -> unit</code></pre><div class="info">
+<code class="code">Arg.usage speclist usage_msg</code> prints to standard error
+    an error message that includes the list of valid options.  This is
+    the same message that <code class="code">Arg.parse</code> prints in case of error.
+    <code class="code">speclist</code> and <code class="code">usage_msg</code> are the same as for <code class="code">Arg.parse</code>.<br>
+</div>
+<pre><span id="VALusage_string"><span class="keyword">val</span> usage_string</span> : <code class="type">(<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list -> <a href="FArg.html#TYPEusage_msg">usage_msg</a> -> string</code></pre><div class="info">
+Returns the message that would have been printed by <code class="code">Arg.usage</code>,
+    if provided with the same parameters.<br>
+</div>
+<pre><span id="VALalign"><span class="keyword">val</span> align</span> : <code class="type">(<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list -><br>       (<a href="FArg.html#TYPEkey">key</a> * <a href="FArg.html#TYPEspec">spec</a> * <a href="FArg.html#TYPEdoc">doc</a>) list</code></pre><div class="info">
+Align the documentation strings by inserting spaces at the first
+    space, according to the length of the keyword.  Use a
+    space as the first character in a doc string if you want to
+    align the whole string.  The doc strings corresponding to
+    <code class="code">Symbol</code> arguments are aligned on the next line.<br>
+</div>
+<pre><span id="VALcurrent"><span class="keyword">val</span> current</span> : <code class="type">int Pervasives.ref</code></pre><div class="info">
+Position (in <code class="code">Sys.argv</code>) of the argument being processed.  You can
+    change this value, e.g. to force <code class="code">Arg.parse</code> to skip some arguments.
+    <code class="code">Arg.parse</code> uses the initial value of <code class="code">Arg.current</code> as the index of
+    argument 0 (the program name) and starts parsing arguments
+    at the next element.<br>
+</div>
+</body></html>

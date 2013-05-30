@@ -1,0 +1,149 @@
+---
+layout: default
+title: 'Get Started'
+---
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">Where to begin?</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>The <a href="use_fan_bin.html">using Fan</a> page describes how to use Fan as a command line
+</li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Compiing with Fan</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">Hello world <a id="hello" name="hello"></a></h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+Create a file <a href="code/hello.ml">hello.ml</a> as follows:
+The compile is quite simple(make sure fan.byte or fan.native) is
+in your search path
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">$ ocamlc -pp <span style="color: #8b2252;">'fan.native'</span> hello.ml -o test
+$ ./test
+</pre>
+</div>
+
+<p>
+As you may notice, adding ~-pp 'fan.native'~ flag is enough to
+switching to Fan. Using <code>fan.byte</code> or <code>fan.native</code> is up to you,
+for the time being, only the performance matters here. So,
+compiling with the following command line does also work.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">$ ocamlc -pp <span style="color: #8b2252;">'fan.native'</span> hello.ml -o test
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">First class lexer</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+Writing hello world is not very interesting, for the following
+example, we show you how DDSL fits into Fan. Suppose we want to
+write a lexical analyzier to filter nested comments in OCaml, the
+traditional way is to write a complex regex expression, or start a
+new file to write a lexer. The first way is hackish, inefficient,
+unmaintainable in the long run while the second way is too heavy
+weight, since lexer generator is a standard alone external DDSL which
+introduces another staging phase.
+</p>
+
+<p>
+Within Fan,  we show how easy it is now:
+</p>
+
+<p>
+Compiling is the same as the previous example <a href="#hello">2.1</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-sh">ocamlc -annot -pp <span style="color: #8b2252;">'fan.native'</span> comment.ml -o comment
+</pre>
+</div>
+
+<p>
+Here we see the lexer DDSL is first class construct in Fan, the
+user don't need to create a new file to isolate their lexer, it's
+as convenient as regex expression in perl. So it works in
+toplevel, it works with module system, and objects, that said, the
+user could make lexer reusable by using <a href="http://caml.inria.fr/pub/docs/manual-ocaml/manual005.html">objects</a> instead of
+functions.
+</p>
+
+<p>
+Abot the internal of <i>lexer</i> DDSL, see <a href="ddsl/lexer.html">DDSL:lexer</a>.
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">Playing with toplevel</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+If you have ocamlfind installed, the easiest way to explore fan is
+starting the toplevel:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>require <span style="color: #8b2252;">"fan.top"</span><span style="color: #a52a2a;">;;</span>
+<span style="color: #a52a2a;">/</span>Users<span style="color: #a52a2a;">/</span>bobzhang1988<span style="color: #a52a2a;">/.</span>opam<span style="color: #a52a2a;">/</span>4.00.1<span style="color: #a52a2a;">/</span>lib<span style="color: #a52a2a;">/</span><span style="color: #a0522d;">fan</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">added </span><span style="color: #a020f0;">to</span><span style="color: #228b22;"> search path</span>
+<span style="color: #a52a2a;">/</span>Users<span style="color: #a52a2a;">/</span>bobzhang1988<span style="color: #a52a2a;">/.</span>opam<span style="color: #a52a2a;">/</span>4.00.1<span style="color: #a52a2a;">/</span>lib<span style="color: #a52a2a;">/</span>fan<span style="color: #a52a2a;">/</span>fanTop.<span style="color: #a0522d;">cma</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">loaded</span>
+<span style="color: #a52a2a;">#</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|};;</span>
+<span style="color: #0000ff; font-weight: bold;">val</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">=</span> `Int <span style="color: #8b2252;">"3"</span>
+</pre>
+</div>
+<p>
+Here "exp-" is a built-in DDSL for quasiquotation, see <a href="ddsl/quotation.html">DDSL:quotation</a>
+</p>
+
+<p>
+There are two  directives added,
+</p>
+
+<ol class="org-ol">
+<li>normal
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #7a378b;">#normal</span><span style="color: #a52a2a;">;;</span>
+</pre>
+</div>
+<p>
+This directive would restore the toplevel to the default
+behavior, it's useful sometimes, for examlpe, you want to load
+a normal ocaml file instead of file pre-processed by Fan.
+</p>
+</li>
+<li>fan
+<div class="org-src-container">
+
+<pre class="src src-ocaml"><span style="color: #7a378b;">#fan</span><span style="color: #a52a2a;">;;</span>
+</pre>
+</div>
+<p>
+It will turn on the featurs of fan.
+</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4"><span class="todo TODO">TODO</span> Playing with utop</h3>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">Write your first DDSL</h2>
+</div>

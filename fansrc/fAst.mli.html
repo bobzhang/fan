@@ -1,0 +1,694 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+  <title>
+fAst.mli</title>
+  <meta name="GENERATOR" content="caml2html 1.4.3">
+<style type="text/css">
+code,pre { color:black;background-color:white }a.Cannot { color:black;text-decoration:none }.Cstring { color: #aa4444; }
+.Craise { color: red; }
+.Cconstructor { color: #0033cc; }
+.Ccomment { color: #990000; }
+.Cassert,
+.Cinclude,
+.Copen { color: #cc9900; }
+.Cbar,
+.Cdo,
+.Cdone,
+.Cdownto,
+.Celse,
+.Cfor,
+.Cif,
+.Clazy,
+.Cmatch,
+.Cnew,
+.Cor,
+.Cthen,
+.Cto,
+.Ctry,
+.Cwhen,
+.Cwhile,
+.Cwith { color: #77aaaa; }
+.Cbegin,
+.Cend,
+.Cobject,
+.Csig,
+.Cstruct { color: #990099; }
+.Clinenum { color: black; background-color: silver; }
+.Cbackground { background-color: white; }
+.Cannot:hover { background-color: #b4eeb4; }
+.Calphakeyword,
+.Casr,
+.Cland,
+.Clor,
+.Clsl,
+.Clsr,
+.Clxor,
+.Cmod { color: #808080; }
+.Cfalse,
+.Cnonalphakeyword,
+.Cquotation,
+.Ctrue { }
+.Cand,
+.Cas,
+.Cclass,
+.Cconstraint,
+.Cexception,
+.Cexternal,
+.Cfun,
+.Cfunction,
+.Cfunctor,
+.Cin,
+.Cinherit,
+.Cinitializer,
+.Clet,
+.Cmethod,
+.Cmodule,
+.Cmutable,
+.Cof,
+.Cprivate,
+.Crec,
+.Ctype,
+.Cval,
+.Cvirtual { color: green; }
+</style>
+</head>
+<body>
+
+<pre><a name="fAst.mli"></a>
+<span class="Ccomment">(** Fan's abstract syntax (with locations) *)</span>
+<span class="Ccomment">(** Note: when you modify these types you must increment</span>
+<span class="Ccomment">   ast magic numbers defined in fanconfig.ml.</span>
+<span class="Ccomment">   Todo:   add phantom type to track some type invariants? *)</span>
+
+<span class="Ccomment">(**</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">    It provides:</span>
+<span class="Ccomment">      - Types for all kinds of structure.</span>
+<span class="Ccomment">      - Map: A base class for map traversals.</span>
+<span class="Ccomment">      - Map classes and functions for common kinds.</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">    == Core language ==</span>
+<span class="Ccomment">   </span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   ctyp :: Representaion of types</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   pat :: The type of patterns</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   exp :: The type of expressions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   case :: The type of cases for match/function/try constructions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   ident :: The type of identifiers (including path like Foo(X).Bar.y)</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   bind :: The type of let binds</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   rec_exp :: The type of record definitions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">    == Modules ==</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   mtyp :: The type of module types</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   sigi :: The type of signature items</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   stru :: The type of structure items</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   mexp :: The type of module expressions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   mbind :: The type of recursive module definitions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   constr :: The type of `with' constraints</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">    == Classes ==</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   cltyp :: The type of class types</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   class_sigi :: The type of class signature items</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   clexp :: The type of class expressions</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   clfield :: The type of class structure items *)</span>
+
+
+<span class="Ctype">type</span> loc <span class="Cnonalphakeyword">=</span> <span class="Cconstructor">FLoc</span><span class="Cnonalphakeyword">.</span>t
+<span class="Ctype">type</span> ant <span class="Cnonalphakeyword">=</span> <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Ant</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> <span class="Cconstructor">FanUtil</span><span class="Cnonalphakeyword">.</span>anti_cxt<span class="Cnonalphakeyword">)</span><span class="Cnonalphakeyword">]</span>
+
+
+
+<span class="Ctype">type</span> literal <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Chr</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Int</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Int32</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Int64</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Flo</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Nativeint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Str</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span><span class="Cnonalphakeyword">]</span>   
+
+
+
+
+
+<span class="Ccomment">(**</span>
+<span class="Ccomment">   for [direction_flag] [to =&gt; P; downto =&gt; N]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [mutable_flag] [mutable =&gt; P; immutable=&gt;N]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [private_flag] [ private =&gt; P]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [virtual_flag] [`Virtual =&gt; P]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [override_flag] [`Override =&gt; P]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [rec_flag] [ rec =&gt; P]</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">   for [row_var_flag] [`RowVar =&gt; P] *)</span>      
+<span class="Ctype">type</span> flag <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Positive</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Negative</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+      
+<span class="Ctype">type</span> position_flag <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Positive</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Negative</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Normal</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span>ant<span class="Cnonalphakeyword">]</span>
+
+
+<span class="Ctype">type</span> strings <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> strings <span class="Cnonalphakeyword">*</span> strings<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Str</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+      
+<span class="Ctype">type</span> lident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span> <span class="Cnonalphakeyword">]</span>
+      
+<span class="Ctype">type</span> alident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> auident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Uid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> aident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> alident
+  <span class="Cbar">|</span> auident <span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> astring <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">C</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> uident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> uident <span class="Cnonalphakeyword">*</span> uident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> uident <span class="Cnonalphakeyword">*</span> uident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> auident<span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> ident <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Apply</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span> 
+  <span class="Cbar">|</span> alident
+  <span class="Cbar">|</span> auident<span class="Cnonalphakeyword">]</span>
+
+<span class="Ccomment">(* same as ident except without [outer-ant] *)</span>
+<span class="Ctype">type</span> ident'<span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Apply</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Uid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span><span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> vid <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> vid <span class="Cnonalphakeyword">*</span> vid<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Uid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span> <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> vid'<span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> vid <span class="Cnonalphakeyword">*</span> vid<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Uid</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span> <span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> dupath <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> dupath <span class="Cnonalphakeyword">*</span> dupath<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> auident<span class="Cnonalphakeyword">]</span>
+
+<span class="Ctype">type</span> dlpath<span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Dot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> dupath <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> alident<span class="Cnonalphakeyword">]</span>
+
+
+<span class="Ctype">type</span> any <span class="Cnonalphakeyword">=</span> <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Any</span> <span class="Cof">of</span> loc<span class="Cnonalphakeyword">]</span>
+<span class="Ccomment">(* type type_quote = *)</span>
+<span class="Ccomment">(*   [ `Quote of (loc * position_flag * alident) *)</span>
+<span class="Ccomment">(*   | `QuoteAny of (loc * position_flag) | any | ant ] *)</span>
+
+<span class="Ccomment">(* type sid = [ `Id of (loc * ident)] *)</span>
+
+
+<span class="Ctype">type</span> ctyp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Alias</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* t t *)</span> <span class="Ccomment">(* 'a list *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Arrow</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClassPath</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* #i *)</span> <span class="Ccomment">(* #point *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Label</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ~s:t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLabl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ?s:t *)</span>
+  <span class="Cbar">|</span> ident'
+
+    <span class="Ccomment">(* &lt; (t)? (..)? &gt; *)</span> <span class="Ccomment">(* &lt; move : int -&gt; 'a .. &gt; as 'a  *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyObj</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> name_ctyp <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyObjEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag<span class="Cnonalphakeyword">)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyPol</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ! t . t *)</span> <span class="Ccomment">(* ! 'a . 'a list -&gt; 'a *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyPolEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* !. t *)</span>  
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyTypePol</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* type t . t *)</span> <span class="Ccomment">(* type a . list a -&gt; a *)</span>
+
+  <span class="Ccomment">(*  +'s -'s 's +_ -_ *)</span>      
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Quote</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">QuoteAny</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Par</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ( t ) *)</span> <span class="Ccomment">(* (int * string) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sta</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* t * t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PolyEq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> row_field<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PolySup</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> row_field <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PolyInf</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> row_field<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PolyInfSup</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> row_field <span class="Cnonalphakeyword">*</span> tag_names<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Package</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* (module S) *)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> type_parameters <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> type_parameters <span class="Cnonalphakeyword">*</span> type_parameters<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Ctyp</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>  
+<span class="Cand">and</span> row_field <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> ant
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Bar</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> row_field <span class="Cnonalphakeyword">*</span> row_field <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyVrn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> astring<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyVrnOf</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> astring <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Ctyp</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span><span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> tag_names <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> ant
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> tag_names <span class="Cnonalphakeyword">*</span> tag_names<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyVrn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> astring <span class="Cnonalphakeyword">)</span><span class="Cnonalphakeyword">]</span>   
+<span class="Cand">and</span> typedecl <span class="Cnonalphakeyword">=</span>
+    <span class="Ccomment">(* {:stru| type  ('a, 'b, 'c) t = t |} *)</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyDcl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> opt_decl_params <span class="Cnonalphakeyword">*</span> type_info <span class="Cnonalphakeyword">*</span> opt_type_constr<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyAbstr</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> opt_decl_params <span class="Cnonalphakeyword">*</span> opt_type_constr <span class="Cnonalphakeyword">)</span> 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> typedecl <span class="Cnonalphakeyword">*</span> typedecl<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+<span class="Ccomment">(* original syntax</span>
+<span class="Ccomment">   {[ type v = u = A of int ]}</span>
+<span class="Ccomment">   revise syntax</span>
+<span class="Ccomment">   {[ type v = u = [A of int]]} *)</span>
+<span class="Cand">and</span> type_constr <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> type_constr <span class="Cnonalphakeyword">*</span> type_constr<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Eq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> opt_type_constr <span class="Cnonalphakeyword">=</span>
+ <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Some</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> type_constr<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* changed to some and None later *)</span>
+ <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">None</span> <span class="Cof">of</span> loc <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> decl_param <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>  <span class="Cconstructor">`</span><span class="Cconstructor">Quote</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">QuoteAny</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Any</span> <span class="Cof">of</span> loc <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> decl_params <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Quote</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">QuoteAny</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> position_flag <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Any</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc  <span class="Cnonalphakeyword">*</span> decl_params <span class="Cnonalphakeyword">*</span> decl_params<span class="Cnonalphakeyword">)</span> <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+      
+<span class="Cand">and</span> opt_decl_params <span class="Cnonalphakeyword">=</span>
+ <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Some</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> decl_params<span class="Cnonalphakeyword">)</span>
+ <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">None</span> <span class="Cof">of</span> loc  <span class="Cnonalphakeyword">]</span>   
+<span class="Cand">and</span> type_info <span class="Cnonalphakeyword">=</span>        <span class="Ccomment">(* FIXME be more preicse *)</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Ccomment">(* type u = v = [A of int ] *)</span>
+   <span class="Cconstructor">`</span><span class="Cconstructor">TyMan</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc  <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> flag  <span class="Cnonalphakeyword">*</span> type_repr<span class="Cnonalphakeyword">)</span>
+     <span class="Ccomment">(* type u = A.t = {x:int} *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyRepr</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> type_repr<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyEq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* type u = int *)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>  
+<span class="Cand">and</span> type_repr <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Record</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> name_ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sum</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> or_ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> name_ctyp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> name_ctyp <span class="Cnonalphakeyword">*</span> name_ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyCol</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyColMut</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> or_ctyp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Bar</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> or_ctyp <span class="Cnonalphakeyword">*</span> or_ctyp <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TyCol</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Of</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> auident  <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> of_ctyp <span class="Cnonalphakeyword">=</span> <span class="Ccomment">(* For exception definition*)</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Of</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> vid <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> vid'
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> pat <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>  vid
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Vrn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Par</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Record</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> literal
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Alias</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ArrayEmpty</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Array</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* [| p |] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LabelS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ~s *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Label</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ~s or ~s:(p) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLabl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ?s or ?s:(p)   *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLablS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+    <span class="Ccomment">(* ?s:(p = e) or ?(p = e) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLablExpr</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Bar</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* p | p *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PaRng</span> <span class="Ccomment">(* `Range  *)</span><span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* p .. p *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Constraint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* (p : t) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClassPath</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* #i *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lazy</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* lazy p *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleUnpack</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleConstraint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> rec_pat <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">RecBind</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc  <span class="Cnonalphakeyword">*</span> rec_pat <span class="Cnonalphakeyword">*</span> rec_pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span>  
+<span class="Cand">and</span> exp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>  vid
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Vrn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Par</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Record</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> literal
+      <span class="Ccomment">(* { (e) with rb }  *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">RecordWith</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_exp  <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+        <span class="Ccomment">(* FIXME give more restrict for the e *)</span>         
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Field</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* e.e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ArrayDot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* e.(e) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ArrayEmpty</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Array</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* [| e |] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Assert</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* assert e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Assign</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* e := e *)</span>
+        <span class="Ccomment">(* for s = e to/downto e do { e } *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">For</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Fun</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> case<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* fun [ mc ] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">IfThenElse</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* if e then e else e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">IfThen</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* if e then e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LabelS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ~s *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Label</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ~s or ~s:e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Lazy</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* lazy e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LetIn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> bind <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LetTryInWith</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> bind <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> case<span class="Cnonalphakeyword">)</span>        
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LetModule</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mexp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* let module s = me in e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Match</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> case<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* match e with [ mc ] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">New</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* new i *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Obj</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clfield<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* object ((p))? (cst)? end *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjEnd</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjPat</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> clfield<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjPatEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLabl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>alident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ?s or ?s:e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OptLablS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OvrInst</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* {&lt; rb &gt;} *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">OvrInstEmpty</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Seq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* do { e } *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Send</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* e#s *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">StringDot</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* e.[e] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Try</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> case<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* try e with [ mc ] *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Constraint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(*(e : t) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Coercion</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* or (e : t :&gt; t) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Subtype</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* (e :&gt; t) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">While</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LetOpen</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+        <span class="Ccomment">(* fun (type t) -&gt; e *)</span>
+        <span class="Ccomment">(* let f x (type t) y z = e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LocalTypeFun</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>  alident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+        <span class="Ccomment">(* (module ME : S) which is represented as (module (ME : S)) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Package_exp</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span> <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> rec_exp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_exp <span class="Cnonalphakeyword">*</span> rec_exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">RecBind</span>  <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>   <span class="Ccomment">(* FIXME: label is lid, it can be more precise *)</span>
+  <span class="Cbar">|</span> any <span class="Ccomment">(* Faked here to be symmertric to rec_pat *)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+<span class="Ccomment">(*</span>
+<span class="Ccomment">  http://caml.inria.fr/pub/docs/manual-ocaml/manual018.html</span>
+<span class="Ccomment"> *)</span>          
+<span class="Cand">and</span> mtyp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> ident'
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sig</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> sigi<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">SigEnd</span> <span class="Cof">of</span> loc
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Functor</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">With</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mtyp <span class="Cnonalphakeyword">*</span> constr<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* mt with wc *)</span>
+
+  <span class="Ccomment">(*</span>
+<span class="Ccomment">    http://caml.inria.fr/pub/docs/manual-ocaml/manual021.html#toc82</span>
+<span class="Ccomment">   *)</span>      
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleTypeOf</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> sigi <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>
+      <span class="Cconstructor">`</span><span class="Cconstructor">Val</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+    <span class="Ccomment">(* BNF for external_declaration is missing in OCaml manual</span>
+<span class="Ccomment">       primitive_declaration:</span>
+<span class="Ccomment">       | STRING                                      { [$1] }</span>
+<span class="Ccomment">       | STRING primitive_declaration                { $1 :: $2 } *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">External</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident  <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> strings<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* external s : t = s ... s *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Type</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> typedecl<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Exception</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> of_ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* exception t *)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Class</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> <span class="Ccomment">(* cltyp *)</span>cltdecl<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClassType</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> <span class="Ccomment">(* cltyp *)</span>cltdecl<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* class type cict *)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Module</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* module s : mt *)</span>
+
+    <span class="Ccomment">(*</span>
+<span class="Ccomment">      Support in parser [module_declaration]</span>
+<span class="Ccomment">      | `ModuleApp of (loc * auident * mtbind * mtyp) *)</span>
+        
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleTypeEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleType</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* module type s = mt *)</span>
+
+        
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> sigi <span class="Cnonalphakeyword">*</span> sigi<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">DirectiveSimple</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* # s or # s e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Directive</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* semantics *)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Open</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Include</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">RecModule</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mbind<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* module rec mb *)</span>
+        
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Ccomment">(*</span>
+<span class="Ccomment">and mtbind =</span>
+<span class="Ccomment">  [ `App of (loc * mtbind * mtbind )</span>
+<span class="Ccomment">  | `Col of (auident * mtyp)</span>
+<span class="Ccomment">  | ant ]</span>
+<span class="Ccomment">*)</span>          
+<span class="Cand">and</span> mbind <span class="Cnonalphakeyword">=</span>
+<span class="Ccomment">(* module rec (s : mt) = me and (s : mt) = me *)</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mbind <span class="Cnonalphakeyword">*</span> mbind<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleBind</span>  <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>  auident <span class="Cnonalphakeyword">*</span> mtyp <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* s : mt = me *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Constraint</span>  <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* s : mt *)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+          
+<span class="Cand">and</span> constr <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>
+   <span class="Cconstructor">`</span><span class="Cconstructor">TypeEq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleEq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span>
+        
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TypeEqPriv</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TypeSubst</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+        
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleSubst</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> constr <span class="Cnonalphakeyword">*</span> constr<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Ccomment">(* let-binding</span>        <span class="Ccomment">::=</span>        <span class="Ccomment">pattern =  exp  </span>
+<span class="Ccomment">    value-name  { parameter }  [: typexp] =  exp  </span>
+<span class="Ccomment">   value-name : type  { typeconstr } .  typexp =  exp</span>
+<span class="Ccomment">   *)</span>           
+<span class="Cand">and</span> bind <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>  <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> bind <span class="Cnonalphakeyword">*</span> bind<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Bind</span>  <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> case <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Bar</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> case <span class="Cnonalphakeyword">*</span> case<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Case</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CaseWhen</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> mexp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> vid' 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mexp <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* me me *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Functor</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Struct</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> stru<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">StructEnd</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Constraint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mexp <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* (me : mt) *)</span>
+        <span class="Ccomment">(* (value e) *)</span>
+        <span class="Ccomment">(* (value e : S) which is represented as (value (e : S)) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">PackageModule</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> stru <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Class</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> cldecl<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* class cice *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClassType</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> <span class="Ccomment">(* cltyp *)</span>cltdecl<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* class type cict *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> stru <span class="Cnonalphakeyword">*</span> stru<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">DirectiveSimple</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Directive</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Ccomment">(* exception t or exception t = i *)</span>
+  <span class="Ccomment">(* | `Exception of ( loc * ctyp * meta_option(\*FIXME*\) ident) *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Exception</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span> loc <span class="Cnonalphakeyword">*</span> of_ctyp<span class="Cnonalphakeyword">)</span>
+        <span class="Ccomment">(* TODO ExceptionRebind</span>
+<span class="Ccomment">           http://caml.inria.fr/pub/docs/manual-ocaml/manual016.html</span>
+<span class="Ccomment">         *)</span>     
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">StExp</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">External</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident  <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span>  strings<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Include</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Module</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">RecModule</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> mbind<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ModuleType</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> auident <span class="Cnonalphakeyword">*</span> mtyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* module type s = mt *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Open</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* open i *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Type</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> typedecl<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* type t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">TypeWith</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> typedecl <span class="Cnonalphakeyword">*</span> strings<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Value</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> bind<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* value (rec)? bi *)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span>
+
+<span class="Ccomment">(*</span>
+<span class="Ccomment">  classtype-definition ::=</span>
+<span class="Ccomment">    class type classtype-def {and classtype-def}</span>
+<span class="Ccomment">  </span>
+<span class="Ccomment">  classtype-def ::=</span>
+<span class="Ccomment">    [virtual] [[type-parameters]] class-name = class-body-type</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">  class-type ::=</span>
+<span class="Ccomment">      class-body-type</span>
+<span class="Ccomment">    | [[?]label-name:] typexpr -&gt; class-type</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">  class-body-type</span>
+<span class="Ccomment">      ::= object [(typexpr)] {class-field-spec} end</span>
+<span class="Ccomment">      | class-path</span>
+<span class="Ccomment">      | [ typexpr {,typexpr} ] class-path</span>
+<span class="Ccomment"></span>
+<span class="Ccomment"></span>
+<span class="Ccomment"></span>
+<span class="Ccomment">  class_type_declaration:  flag class_type_parameters</span>
+<span class="Ccomment">  LIDENT EQUAL  class_signature</span>
+<span class="Ccomment"></span>
+<span class="Ccomment">  class_signature:</span>
+<span class="Ccomment">    LBRACKET core_type_comma_list RBRACKET clty_longident</span>
+<span class="Ccomment">  | clty_longident</span>
+<span class="Ccomment">  | OBJECT class_sig_body END</span>
+<span class="Ccomment">  class_sig_body: class_self_type class_sig_fields</span>
+<span class="Ccomment"> *)</span>
+<span class="Cand">and</span> cltdecl <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> cltdecl <span class="Cnonalphakeyword">*</span> cltdecl<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CtDecl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> type_parameters <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CtDeclS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>  
+<span class="Cand">and</span> cltyp <span class="Cnonalphakeyword">=</span> <span class="Ccomment">(* class body type *)</span>         
+  <span class="Cnonalphakeyword">[</span> vid'
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClApply</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> vid <span class="Cnonalphakeyword">*</span> type_parameters<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CtFun</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* [t] -&gt; ct *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjTy</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> clsigi<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(*object (ty) ..  end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjTyEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(*object (ty) end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Obj</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clsigi<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* object ... end *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* object end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> cltyp <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* FIXME  constraint typexpr = typeexpr missing *)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+<span class="Ccomment">(* and clfun = [`Fun of (loc * ctyp * cltyp)]</span>
+<span class="Ccomment">   class_signature:</span>
+<span class="Ccomment">    LBRACKET core_type_comma_list RBRACKET clty_longident</span>
+<span class="Ccomment">  | clty_longident</span>
+<span class="Ccomment">  | OBJECT class_sig_body END</span>
+<span class="Ccomment">  | OBJECT class_sig_body error</span>
+<span class="Ccomment">   class-field-sec </span>
+<span class="Ccomment">   ::= inherit class-type</span>
+<span class="Ccomment">   | val [mutable] [virtual] inst-var-name : typexpr</span>
+<span class="Ccomment">   | method [private] method-name : poly-typeexpr</span>
+<span class="Ccomment">   | method [private] virtual method-name : poly-typexpr</span>
+<span class="Ccomment">   | constraint typeexpr = typeexpr </span>
+<span class="Ccomment"> *)</span>
+<span class="Cand">and</span> clsigi <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> 
+    <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clsigi <span class="Cnonalphakeyword">*</span> clsigi<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">SigInherit</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span>
+    <span class="Ccomment">(* val (virtual)? (mutable)? s : t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CgVal</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+      <span class="Ccomment">(* method s : t or method private s : t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Method</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+      <span class="Ccomment">(* method virtual (private)? s : t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">VirMeth</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>  alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Eq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>        
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+<span class="Cand">and</span> cldecl <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClDecl</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> type_parameters <span class="Cnonalphakeyword">*</span> clexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClDeclS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> clexp <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">And</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> cldecl <span class="Cnonalphakeyword">*</span> cldecl<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>      
+<span class="Cand">and</span> clexp <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">CeApp</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clexp <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>   <span class="Ccomment">(* ce e  [class-expr {argument}+] *)</span>
+  <span class="Cbar">|</span> vid' <span class="Ccomment">(* class-path*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ClApply</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> vid <span class="Cnonalphakeyword">*</span> type_parameters<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CeFun</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> clexp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* fun p -&gt; ce *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">LetIn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> bind <span class="Cnonalphakeyword">*</span> clexp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* let (rec)? bi in ce *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Obj</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc  <span class="Cnonalphakeyword">*</span> clfield<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* object ((p))? (cst)? end *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjEnd</span> <span class="Cof">of</span> loc <span class="Ccomment">(*object end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjPat</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat <span class="Cnonalphakeyword">*</span> clfield<span class="Cnonalphakeyword">)</span><span class="Ccomment">(*object (p) .. end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ObjPatEnd</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> pat<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* object (p) end*)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Constraint</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clexp <span class="Cnonalphakeyword">*</span> cltyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* ce : ct *)</span>
+  <span class="Cbar">|</span> ant <span class="Cnonalphakeyword">]</span>
+
+ <span class="Ccomment">(* http://caml.inria.fr/pub/docs/manual-ocaml/manual017.html#toc57</span>
+<span class="Ccomment">      [clfield]</span>
+<span class="Ccomment">    *)</span>       
+<span class="Cand">and</span> clfield <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> clfield <span class="Cnonalphakeyword">*</span> clfield<span class="Cnonalphakeyword">)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Inherit</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> clexp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">InheritAs</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> clexp <span class="Cnonalphakeyword">*</span> alident<span class="Cnonalphakeyword">)</span>
+
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CrVal</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span>  alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* value(!)? (mutable)? s = e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">VirVal</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span> <span class="Ccomment">(* val virtual (mutable)? s : t *)</span>
+        
+        <span class="Ccomment">(* method(!)? (private)? s : t = e or method(!)? (private)? s = e *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CrMth</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">CrMthS</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> exp <span class="Cnonalphakeyword">)</span>
+        <span class="Ccomment">(* method virtual (private)? s : t *)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">VirMeth</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> alident <span class="Cnonalphakeyword">*</span> flag <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Eq</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ctyp <span class="Cnonalphakeyword">*</span> ctyp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Initializer</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> exp<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> ant  <span class="Cnonalphakeyword">]</span> 
+<span class="Ccomment">(* Any is necessary, since sometimes you want to [meta_loc_pat] to [_]</span>
+<span class="Ccomment">   Faked here to make a common subtyp of exp pat to be expnessive enough *)</span>
+<span class="Ctype">type</span> ep <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span> vid
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">App</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ep <span class="Cnonalphakeyword">*</span> ep<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Vrn</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> string<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Com</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ep <span class="Cnonalphakeyword">*</span> ep<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ep <span class="Cnonalphakeyword">*</span> ep<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Par</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ep<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">ArrayEmpty</span> <span class="Cof">of</span> loc 
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Array</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ep <span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Record</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_bind<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> literal <span class="Cnonalphakeyword">]</span>
+<span class="Cand">and</span> rec_bind <span class="Cnonalphakeyword">=</span>
+  <span class="Cnonalphakeyword">[</span>  <span class="Cconstructor">`</span><span class="Cconstructor">RecBind</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> ident <span class="Cnonalphakeyword">*</span> ep<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> <span class="Cconstructor">`</span><span class="Cconstructor">Sem</span> <span class="Cof">of</span> <span class="Cnonalphakeyword">(</span>loc <span class="Cnonalphakeyword">*</span> rec_bind <span class="Cnonalphakeyword">*</span> rec_bind<span class="Cnonalphakeyword">)</span>
+  <span class="Cbar">|</span> any
+  <span class="Cbar">|</span> ant<span class="Cnonalphakeyword">]</span> 
+      
+      
+<span class="Ccomment">(* let _loc = FLoc.ghost; *)</span>
+<span class="Ccomment">(* #filter "serialize";; *)</span>
+</pre>
+
+<hr>
+<p>
+<em>This document was generated using 
+<a href="http://martin.jambon.free.fr/caml2html.html">caml2html</a></em>
+</body>
+</html>

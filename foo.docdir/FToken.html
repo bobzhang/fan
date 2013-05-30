@@ -1,0 +1,175 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Fsyntax.html">
+<link rel="next" href="Gcomb.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of class attributes" rel=Appendix href="index_attributes.html">
+<link title="Index of class methods" rel=Appendix href="index_methods.html">
+<link title="Index of classes" rel=Appendix href="index_classes.html">
+<link title="Index of class types" rel=Appendix href="index_class_types.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Index of module types" rel=Appendix href="index_module_types.html">
+<link title="Ant" rel="Chapter" href="Ant.html">
+<link title="AntN" rel="Chapter" href="AntN.html">
+<link title="Ast2pt" rel="Chapter" href="Ast2pt.html">
+<link title="AstFilters" rel="Chapter" href="AstFilters.html">
+<link title="AstLibN" rel="Chapter" href="AstLibN.html">
+<link title="AstMacros" rel="Chapter" href="AstMacros.html">
+<link title="AstParsers" rel="Chapter" href="AstParsers.html">
+<link title="AstPrint" rel="Chapter" href="AstPrint.html">
+<link title="AstQuotation" rel="Chapter" href="AstQuotation.html">
+<link title="BasicN" rel="Chapter" href="BasicN.html">
+<link title="CodeTemplate" rel="Chapter" href="CodeTemplate.html">
+<link title="CommentFilter" rel="Chapter" href="CommentFilter.html">
+<link title="CtypN" rel="Chapter" href="CtypN.html">
+<link title="DeriveN" rel="Chapter" href="DeriveN.html">
+<link title="DynLoader" rel="Chapter" href="DynLoader.html">
+<link title="EpN" rel="Chapter" href="EpN.html">
+<link title="Exp" rel="Chapter" href="Exp.html">
+<link title="ExpN" rel="Chapter" href="ExpN.html">
+<link title="FanUtil" rel="Chapter" href="FanUtil.html">
+<link title="FArg" rel="Chapter" href="FArg.html">
+<link title="FAst" rel="Chapter" href="FAst.html">
+<link title="FCMacroGen" rel="Chapter" href="FCMacroGen.html">
+<link title="FConfig" rel="Chapter" href="FConfig.html">
+<link title="FGramGen" rel="Chapter" href="FGramGen.html">
+<link title="Fgram" rel="Chapter" href="Fgram.html">
+<link title="Filters" rel="Chapter" href="Filters.html">
+<link title="FLexer" rel="Chapter" href="FLexer.html">
+<link title="FLexGen" rel="Chapter" href="FLexGen.html">
+<link title="FLexLib" rel="Chapter" href="FLexLib.html">
+<link title="FLoc" rel="Chapter" href="FLoc.html">
+<link title="FSigUtil" rel="Chapter" href="FSigUtil.html">
+<link title="FState" rel="Chapter" href="FState.html">
+<link title="FStreamGen" rel="Chapter" href="FStreamGen.html">
+<link title="Fsyntax" rel="Chapter" href="Fsyntax.html">
+<link title="FToken" rel="Chapter" href="FToken.html">
+<link title="Gcomb" rel="Chapter" href="Gcomb.html">
+<link title="Gdelete" rel="Chapter" href="Gdelete.html">
+<link title="Gentry" rel="Chapter" href="Gentry.html">
+<link title="Gfailed" rel="Chapter" href="Gfailed.html">
+<link title="Ginsert" rel="Chapter" href="Ginsert.html">
+<link title="Gparser" rel="Chapter" href="Gparser.html">
+<link title="Gprint" rel="Chapter" href="Gprint.html">
+<link title="Gramlib" rel="Chapter" href="Gramlib.html">
+<link title="Gstru" rel="Chapter" href="Gstru.html">
+<link title="Gtools" rel="Chapter" href="Gtools.html">
+<link title="IdN" rel="Chapter" href="IdN.html">
+<link title="LangFans" rel="Chapter" href="LangFans.html">
+<link title="LangInclude" rel="Chapter" href="LangInclude.html">
+<link title="LangOcaml" rel="Chapter" href="LangOcaml.html">
+<link title="LangSave" rel="Chapter" href="LangSave.html">
+<link title="LexBackend" rel="Chapter" href="LexBackend.html">
+<link title="LibUtil" rel="Chapter" href="LibUtil.html">
+<link title="ParsetreeHelper" rel="Chapter" href="ParsetreeHelper.html">
+<link title="PGrammar" rel="Chapter" href="PGrammar.html">
+<link title="PreCast" rel="Chapter" href="PreCast.html">
+<link title="PStream" rel="Chapter" href="PStream.html">
+<link title="StdFan" rel="Chapter" href="StdFan.html">
+<link title="TokenEval" rel="Chapter" href="TokenEval.html">
+<link title="Typehook" rel="Chapter" href="Typehook.html">
+<link title="XStream" rel="Chapter" href="XStream.html"><title>FToken</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Fsyntax.html" title="Fsyntax">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Gcomb.html" title="Gcomb">Next</a>
+</div>
+<h1>Module <a href="type_FToken.html">FToken</a></h1>
+<pre><span class="keyword">module</span> FToken: <code class="code">sig</code> <a href="FToken.html">..</a> <code class="code">end</code></pre><div class="info">
+domain is the namespace all begins with capital letters<br>
+</div>
+<hr width="100%">
+<pre><span id="TYPEdomains"><span class="keyword">type</span> <code class="type"></code>domains</span> = <code class="type">[ `Absolute of string list | `Sub of string list ]</code> </pre>
+
+<pre><span id="TYPEname"><span class="keyword">type</span> <code class="type"></code>name</span> = <code class="type"><a href="FToken.html#TYPEdomains">domains</a> * string</code> </pre>
+
+<pre><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = <code class="type">[ `Ant of string * string<br>       | `BLANKS of string<br>       | `CHAR of char * string<br>       | `COMMENT of string<br>       | `EOI<br>       | `ESCAPED_IDENT of string<br>       | `Flo of float * string<br>       | `INT of int * string<br>       | `INT32 of int32 * string<br>       | `INT64 of int64 * string<br>       | `KEYWORD of string<br>       | `LABEL of string<br>       | `LINE_DIRECTIVE of int * string option<br>       | `Lid of string<br>       | `NATIVEINT of nativeint * string<br>       | `NEWLINE<br>       | `OPTLABEL of string<br>       | `QUOTATION of <a href="FToken.html#TYPEname">name</a> * string * int * string<br>       | `STR of string * string<br>       | `SYMBOL of string<br>       | `Uid of string ]</code> </pre>
+<div class="info">
+For some tokens the data constructor holds two representations with the
+  evaluated one and the source one. For example
+  the INT data constructor holds an integer and a string, this string can
+  contains more information that's needed for a good pretty-printing
+  ("42", "4_2", "0000042", "0b0101010"...).
+<p>
+
+  <code class="code">KEYWORD s</code> is the keyword <code class="code">s</code>.
+  <code class="code">LidENT s</code> is the ident <code class="code">s</code> starting with a lowercase letter.
+  <code class="code">UidENT s</code> is the ident <code class="code">s</code> starting with an uppercase letter.
+  <code class="code">INT i s</code>
+   (resp. <code class="code">INT32 i s</code>, <code class="code">INT64 i s</code> and <code class="code">NATIVEINT i s</code>)
+   the integer constant <code class="code">i</code> whose string source is <code class="code">s</code>.
+  <code class="code">FLOAT f s</code> is the float constant <code class="code">f</code> whose string source is <code class="code">s</code>.
+  <code class="code">STRING s s'</code> is the string constant <code class="code">s</code> whose string source is <code class="code">s'</code>.
+  <code class="code">CHAR c s</code> is the character constant <code class="code">c</code> whose string source is <code class="code">s</code>.
+  <code class="code">QUOTATION q</code> is a quotation <code class="code">q</code>, see <code class="code">AstQuotation.t</code> for more information.
+  <code class="code">ANTIQUOT n s</code> is an antiquotation <code class="code">n</code> holding the string <code class="code">s</code>.
+  <code class="code">EOI</code> is the end of input.
+<p>
+
+  Warning: the second string associated with the constructor <code class="code">STRING</code> is
+  the string found in the source without any interpretation. In particular,
+  the backslashes are not interpreted. For example, if the input is <code class="code">"\n"</code>
+  the string is *not* a string with one element containing the character
+  "return", but a string of two elements: the backslash and the character
+  <code class="code">"n"</code>. To interpret a string use the first string of the <code class="code">STRING</code>
+  constructor (or if you need to compute it use the module
+  <a href="TokenEval.html"><code class="code">TokenEval</code></a>. Same thing for the constructor <code class="code">CHAR</code>.<br>
+</div>
+
+<pre><code><span id="TYPEerror"><span class="keyword">type</span> <code class="type"></code>error</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.Illegal_token"><span class="constructor">Illegal_token</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.Keyword_as_label"><span class="constructor">Keyword_as_label</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.Illegal_token_pattern"><span class="constructor">Illegal_token_pattern</span></span> <span class="keyword">of</span> <code class="type">(string * string)</code></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTerror.Illegal_constructor"><span class="constructor">Illegal_constructor</span></span> <span class="keyword">of</span> <code class="type">string</code></code></td>
+
+</tr></table>
+
+
+<pre><span id="EXCEPTIONTokenError"><span class="keyword">exception</span> TokenError</span> <span class="keyword">of</span> <code class="type"><a href="FToken.html#TYPEerror">error</a></code></pre>
+<pre><span id="TYPEstream"><span class="keyword">type</span> <code class="type"></code>stream</span> = <code class="type">(<a href="FToken.html#TYPEt">t</a> * <a href="FLoc.html#TYPEt">FLoc.t</a>) <a href="XStream.html#TYPEt">XStream.t</a></code> </pre>
+
+<pre><span id="TYPEtoken"><span class="keyword">type</span> <code class="type">[> <a href="FToken.html#TYPEt">t</a> ]</code> token</span> = <code class="type">[> <a href="FToken.html#TYPEt">t</a> ] as 'a</code> </pre>
+
+<pre><span id="TYPEestream"><span class="keyword">type</span> <code class="type">[> <a href="FToken.html#TYPEt">t</a> ]</code> estream</span> = <code class="type">(([> <a href="FToken.html#TYPEt">t</a> ] as 'a) <a href="FToken.html#TYPEtoken">token</a> * <a href="FLoc.html#TYPEt">FLoc.t</a>) <a href="XStream.html#TYPEt">XStream.t</a></code> </pre>
+
+<pre><span id="TYPEparse"><span class="keyword">type</span> <code class="type">'a</code> parse</span> = <code class="type"><a href="FToken.html#TYPEstream">stream</a> -> 'a</code> </pre>
+
+<pre><span id="TYPEfilter"><span class="keyword">type</span> <code class="type"></code>filter</span> = <code class="type"><a href="FToken.html#TYPEstream">stream</a> -> <a href="FToken.html#TYPEstream">stream</a></code> </pre>
+
+<pre><span id="VALpp_print_error"><span class="keyword">val</span> pp_print_error</span> : <code class="type">Format.formatter -> <a href="FToken.html#TYPEerror">error</a> -> unit</code></pre><pre><span id="VALstring_of_error_msg"><span class="keyword">val</span> string_of_error_msg</span> : <code class="type"><a href="FToken.html#TYPEerror">error</a> -> string</code></pre><pre><span id="VALtoken_to_string"><span class="keyword">val</span> token_to_string</span> : <code class="type"><a href="FToken.html#TYPEt">t</a> -> string</code></pre><pre><span id="VALto_string"><span class="keyword">val</span> to_string</span> : <code class="type">[> <a href="FToken.html#TYPEt">t</a> ] -> string</code></pre><pre><span id="VALerr"><span class="keyword">val</span> err</span> : <code class="type"><a href="FToken.html#TYPEerror">error</a> -> <a href="FLoc.html#TYPEt">FLoc.t</a> -> 'a</code></pre><pre><span id="VALerror_no_respect_rules"><span class="keyword">val</span> error_no_respect_rules</span> : <code class="type">string -> string -> 'a</code></pre><pre><span id="VALcheck_keyword"><span class="keyword">val</span> check_keyword</span> : <code class="type">'a -> bool</code></pre><pre><span id="VALerror_on_unknown_keywords"><span class="keyword">val</span> error_on_unknown_keywords</span> : <code class="type">bool Pervasives.ref</code></pre><pre><span id="VALignore_layout"><span class="keyword">val</span> ignore_layout</span> : <code class="type">(([> <a href="FToken.html#TYPEt">t</a> ] as 'a) * 'e) <a href="XStream.html#TYPEt">XStream.t</a> -> ('a * 'e) <a href="XStream.html#TYPEt">XStream.t</a></code></pre><pre><span id="VALprint"><span class="keyword">val</span> print</span> : <code class="type">Format.formatter -> [> <a href="FToken.html#TYPEt">t</a> ] -> unit</code></pre><pre><span id="VALmatch_keyword"><span class="keyword">val</span> match_keyword</span> : <code class="type">'a -> [> `KEYWORD of 'a ] -> bool</code></pre><pre><span id="VALextract_string"><span class="keyword">val</span> extract_string</span> : <code class="type">[> <a href="FToken.html#TYPEt">t</a> ] -> string</code></pre><div class="info">
+<pre class="codepre"><code class="code">x=STRING -&gt; extract_string x  </code></pre><br>
+</div>
+<pre><span id="VALkeyword_conversion"><span class="keyword">val</span> keyword_conversion</span> : <code class="type">([> <a href="FToken.html#TYPEt">t</a> ] as 'a) -> (string -> bool) -> 'a</code></pre><pre><span id="VALcheck_keyword_as_label"><span class="keyword">val</span> check_keyword_as_label</span> : <code class="type">[> `LABEL of string | `OPTLABEL of string ] -><br>       <a href="FLoc.html#TYPEt">FLoc.t</a> -> (string -> bool) -> unit</code></pre><pre><span id="VALcheck_unknown_keywords"><span class="keyword">val</span> check_unknown_keywords</span> : <code class="type">[> `SYMBOL of string ] -> <a href="FLoc.html#TYPEt">FLoc.t</a> -> unit</code></pre><pre><span id="VALstring_of_domains"><span class="keyword">val</span> string_of_domains</span> : <code class="type"><a href="FToken.html#TYPEdomains">domains</a> -> string</code></pre><pre><span id="VALstring_of_name"><span class="keyword">val</span> string_of_name</span> : <code class="type"><a href="FToken.html#TYPEdomains">domains</a> * string -> string</code></pre><pre><span id="VALpaths"><span class="keyword">val</span> paths</span> : <code class="type"><a href="FToken.html#TYPEdomains">domains</a> list Pervasives.ref</code></pre><pre><span id="VALconcat_domain"><span class="keyword">val</span> concat_domain</span> : <code class="type"><a href="FToken.html#TYPEdomains">domains</a> * <a href="FToken.html#TYPEdomains">domains</a> -> <a href="FToken.html#TYPEdomains">domains</a></code></pre><pre><span id="VALempty_name"><span class="keyword">val</span> empty_name</span> : <code class="type"><a href="FToken.html#TYPEname">name</a></code></pre><pre><span id="VALname_of_string"><span class="keyword">val</span> name_of_string</span> : <code class="type">string -> <a href="FToken.html#TYPEname">name</a></code></pre><pre><span id="VALnames_tbl"><span class="keyword">val</span> names_tbl</span> : <code class="type">(<a href="FToken.html#TYPEdomains">domains</a>, LibUtil.SSet.t) Hashtbl.t</code></pre><div class="info">
+<code class="code">names_tbl</code> is used to manage the namespace and names<br>
+</div>
+<pre><span id="VALresolve_name"><span class="keyword">val</span> resolve_name</span> : <code class="type"><a href="FToken.html#TYPEname">name</a> -> <a href="FToken.html#TYPEname">name</a></code></pre></body></html>
