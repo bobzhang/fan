@@ -3,6 +3,7 @@
 # true:use_unix
 true: warn(-41)
 true:-traverse
+<cold/fLexer.ml>:warn(-27)
 <top>:precious
 
 <{cold,src,debug}/mkFan.ml>: warn(-33)
