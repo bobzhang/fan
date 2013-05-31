@@ -47,57 +47,27 @@ let require name =
   if not (SSet.mem name loaded_modules.contents)
   then begin add_to_loaded_modules name; DynLoader.load (name ^ libext) end
 
+let _ =
+  let open FControl in
+    Fgram.unsafe_extend_single (item : 'item Fgram.t )
+      (None,
+        (None, None,
+          [([`Skeyword "require";
+            `Stoken
+              (((function | `STR (_,_) -> true | _ -> false)),
+                (`Normal, "`STR (_,_)"))],
+             ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,s) -> (require s : 'item )\n     | _ -> failwith \"require s\n\")\n",
+               (Fgram.mk_action
+                  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                     match __fan_1 with
+                     | `STR (_,s) -> (require s : 'item )
+                     | _ -> failwith "require s\n"))))]))
+
 let output_file = ref None
-
-let rec sig_handler: sigi -> sigi option =
-  function
-  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : FAst.sigi) ->
-      begin require s; None end
-  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : FAst.sigi) ->
-      PreCast.parse_file ~directive_handler:sig_handler s
-        PreCast.parse_interf
-  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.sigi)
-      ->
-      begin
-        AstQuotation.default := (FToken.resolve_name _loc ((`Sub []), s));
-        None
-      end
-  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.sigi) ->
-      begin AstFilters.use_interf_filter s; None end
-  | (`Directive (_loc,`Lid (_,x),_) : FAst.sigi) ->
-      FLoc.raise _loc
-        (XStream.Error (x ^ " is abad directive Fan can not handled "))
-  | _ -> None
-
-let rec str_handler =
-  function
-  | (`Directive (_loc,`Lid (_,"load"),`Str (_,s)) : FAst.stru) ->
-      begin require s; None end
-  | (`Directive (_loc,`Lid (_,"use"),`Str (_,s)) : FAst.stru) ->
-      PreCast.parse_file ~directive_handler:str_handler s
-        PreCast.parse_implem
-  | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.stru)
-      ->
-      begin
-        AstQuotation.default := (FToken.resolve_name _loc ((`Sub []), s));
-        None
-      end
-  | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : FAst.stru) ->
-      begin
-        AstQuotation.clear_map (); AstQuotation.clear_default (); None
-      end
-  | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.stru) ->
-      begin AstFilters.use_implem_filter s; None end
-  | (`Directive (_loc,`Lid (_,x),_) : FAst.stru) ->
-      FLoc.raise _loc
-        (XStream.Error (x ^ "bad directive Fan can not handled "))
-  | _ -> None
 
 let process_intf name =
   let v =
-    match PreCast.parse_file ~directive_handler:sig_handler name
-            PreCast.parse_interf
-    with
+    match PreCast.parse_file name PreCast.parse_interf with
     | None  -> None
     | Some x -> let x = AstFilters.apply_interf_filters x in Some x in
   PreCast.CurrentPrinter.print_interf ?input_file:(Some name)
@@ -105,9 +75,7 @@ let process_intf name =
 
 let process_impl name =
   let v =
-    match PreCast.parse_file ~directive_handler:str_handler name
-            PreCast.parse_implem
-    with
+    match PreCast.parse_file name PreCast.parse_implem with
     | None  -> None
     | Some x -> let x = AstFilters.apply_implem_filters x in Some x in
   PreCast.CurrentPrinter.print_implem ?input_file:(Some name)

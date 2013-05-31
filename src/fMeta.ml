@@ -1,5 +1,5 @@
+#{:control| default "ep"; |}
 
-#default_quotation "ep";; (* (* FIXME double semi needed before directive*) *)
 open FAst
 
 class primitive =  object

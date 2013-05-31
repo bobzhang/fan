@@ -1,10 +1,13 @@
+
+#{:control| default "exp-" ; |}
+
 open FAstN
 open AstLibN
 open LibUtil
 open DeriveN
 open CtypN
 open FSigUtil;;
-#default_quotation "exp-";;
+
 
 
 (* +-----------------------------------------------------------------+

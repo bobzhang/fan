@@ -20,9 +20,7 @@ let stru_printer =
 
 
 
-type 'a parser_fun  =
-    ?directive_handler:('a -> 'a option) -> loc
-      -> char XStream.t -> 'a option
+type 'a parser_fun  = loc -> char XStream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
@@ -114,29 +112,39 @@ let wrap directive_handler pa init_loc cs =
         List.rev pl @ (loop (FLoc.join_end new_loc))
     | None -> pl in
   loop init_loc
-    
 
-let parse_implem ?(directive_handler = fun _ -> None) loc cs =
-  let l = wrap directive_handler (Fgram.parse Fsyntax.implem) loc cs in
+
+let simple_wrap  pa init_loc cs =
+  let rec loop loc =
+    let (pl, stopped_at_directive) = pa loc cs in
+    match stopped_at_directive with
+    | Some new_loc ->
+        if pl = [] then  (loop (FLoc.join_end new_loc))
+        else  pl @ (loop (FLoc.join_end new_loc))
+    | None -> pl in
+  loop init_loc
+
+let parse_implem loc cs =
+  let l =simple_wrap (Fgram.parse Fsyntax.implem) loc cs in
   match l with
   | [] -> None
   | l -> Some (AstLib.sem_of_list l)
 
 
-let parse_interf ?(directive_handler = fun _ -> None) loc cs =
-  let l = wrap directive_handler (Fgram.parse Fsyntax.interf) loc cs in
+let parse_interf loc cs =
+  let l = simple_wrap (Fgram.parse Fsyntax.interf) loc cs in
   match l with
   | [] -> None   
   | l -> Some (AstLib.sem_of_list l)
 
-let parse_file  ?directive_handler name pa = begin 
+let parse_file  name pa = begin 
   let loc = FLoc.mk name in
   let print_warning = eprintf "%a:\n%s@." FLoc.print in
   let  () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
   let cs = XStream.of_channel ic in
-  finally ~action:clear (pa ?directive_handler loc) cs 
+  finally ~action:clear (pa loc) cs 
 end
 
         
@@ -186,12 +194,10 @@ let toplevel_phrase token_stream =
 
 
 let use_file token_stream =
-  let rec loop () =
+  let loop () =
       let (pl, stopped_at_directive) = Fgram.parse_origin_tokens Fsyntax.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
-        | [ {| #default_quotation $str:s |} ] ->
-            begin AstQuotation.set_default (FToken.resolve_name _loc (`Sub [],s)); loop () end 
         | _ -> (pl, false) 
       else (pl, true) in
   let (pl0, eoi) = loop () in

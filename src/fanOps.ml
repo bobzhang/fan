@@ -1,3 +1,5 @@
+#{:control| default "exp'" ;|}
+
 open LibUtil
 open FAst
 open AstLib
@@ -33,7 +35,7 @@ let list_of_list (loc:loc) =
   loop true ;;
 
 (* FIXME  double semi colon needed before *)  
-#default_quotation "exp'";;
+
 
 let meta_int _loc i =  {|$`int:i|}
 

@@ -1,4 +1,5 @@
-#default_quotation "ctyp-";;
+#{:control|default "ctyp-";|}
+
 open FAstN
 open AstLibN   
 open LibUtil

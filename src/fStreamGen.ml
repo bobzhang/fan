@@ -1,3 +1,5 @@
+#{:control|default "exp";|}
+
 open FAst
 open AstLib
 
@@ -10,7 +12,7 @@ open AstLib
 *)
 
 
-#default_quotation "exp";;
+
 type spat_comp =
   | SpWhen of loc * pat * exp option  (* pat with predicate *)
 

@@ -7,8 +7,7 @@
 open FAst
 
 type 'a parser_fun  =
-    ?directive_handler:('a -> 'a option) -> loc
-      -> char XStream.t -> 'a option
+     loc -> char XStream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
@@ -28,7 +27,6 @@ val parse_interf : sigi parser_fun
 
 (** it will pass [directive_handler] to [parse_file] *)    
 val parse_file :
-    ?directive_handler:('a->'a option) ->
       string -> 'a parser_fun -> 'a option
 
     

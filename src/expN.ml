@@ -1,10 +1,13 @@
 
+
+#{:control| default "exp-";|}
+(* FIXME more  precise location for [resolve_name]*)
 open LibUtil
 open FAstN
 open AstLibN
 open BasicN
 
-#default_quotation "exp-";;
+
 
 let mkfun names acc  =
   List.fold_right  (fun name acc ->  {| function | $lid:name -> $acc |}) names acc 

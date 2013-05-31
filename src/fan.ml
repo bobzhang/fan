@@ -54,65 +54,66 @@ let require name =
     DynLoader.load  (name ^ libext)
   end
     
+;;
 
+let open FControl in
+{:unsafe_extend|
+  item:
+  [ "require"; `STR(_,s) -> require s ]
+|};;
 
 let output_file = ref None              
 
 
-let  rec sig_handler  : sigi -> sigi option =  with sigi
-    (function
-      | {| #load $str:s |}-> (require s; None )
+(* let  rec sig_handler  : sigi -> sigi option =  with sigi *)
+(*     (function *)
+(*       (\* | {| #load $str:s |}-> (require s; None ) *\) *)
 
-      (* | {| #directory $str:s |} -> *)
-      (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
+(*       (\* | {| #directory $str:s |} -> *\) *)
+(*       (\*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *\) *)
             
-      | {| #use $str:s|} ->
-          (PreCast.parse_file
-             ~directive_handler:sig_handler s PreCast.parse_interf )
-      | {| #default_quotation $str:s |} ->
-          (AstQuotation.default :=
-            FToken.resolve_name _loc (`Sub [], s); None )
-      | {| #$({:ident'@_|filter|}) $str:s |} -> (* FIXME simplify later*)
-          ( AstFilters.use_interf_filter s; None)
+(*       | {| #use $str:s|} -> *)
+(*           (PreCast.parse_file *)
+(*              ~directive_handler:sig_handler s PreCast.parse_interf ) *)
+(*       (\* | {| #default_quotation $str:s |} -> *\) *)
+(*       (\*     (AstQuotation.default := *\) *)
+(*       (\*       FToken.resolve_name _loc (`Sub [], s); None ) *\) *)
+(*       | {| #$({:ident'@_|filter|}) $str:s |} -> (\* FIXME simplify later*\) *)
+(*           ( AstFilters.use_interf_filter s; None) *)
 
-      | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
-          FLoc.raise _loc
-            (XStream.Error (x ^ " is abad directive Fan can not handled "))
-      | _ -> None (* FIXME assert false *))
+(*       | {| #$lid:x $_|} -> (\* FIXME pattern match should give _loc automatically *\) *)
+(*           FLoc.raise _loc *)
+(*             (XStream.Error (x ^ " is abad directive Fan can not handled ")) *)
+(*       | _ -> None (\* FIXME assert false *\)) *)
 
            
-let rec str_handler = with stru
-    (function
-      | {| #load $str:s |} ->  (require s; None )
+(* let rec str_handler = with stru *)
+(*     (function *)
+      (* | {| #load $str:s |} ->  (require s; None ) *)
 
       (* | {| #directory $str:s |} -> *)
       (*     begin DynLoader.include_dir (!DynLoader.instance ()) s ; None end *)
             
-      | {| #use $str:s |} ->
-          PreCast.parse_file  ~directive_handler:str_handler s
-            PreCast.parse_implem 
-      | {| #default_quotation $str:s |} ->
-          begin
-            AstQuotation.default := FToken.resolve_name _loc (`Sub [],s) ;
-            None
-          end
-      | {| #lang_clear |} -> begin 
-          AstQuotation.clear_map ();
-          AstQuotation.clear_default ();
-          None
-      end
-      | {| #filter $str:s|} ->
-          begin AstFilters.use_implem_filter s; None ; end
-      | {| #$lid:x $_ |} ->
-          (* FIXME pattern match should give _loc automatically *)
-          FLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
-      | _ -> None (* ignored  assert false *))
+      (* | {| #use $str:s |} -> *)
+      (*     PreCast.parse_file  ~directive_handler:str_handler s *)
+      (*       PreCast.parse_implem  *)
+      (* | {| #lang_clear |} -> begin  *)
+      (*     AstQuotation.clear_map (); *)
+      (*     AstQuotation.clear_default (); *)
+      (*     None *)
+      (* end *)
+      (* | {| #filter $str:s|} -> *)
+      (*     begin AstFilters.use_implem_filter s; None ; end *)
+      (* | {| #$lid:x $_ |} -> *)
+      (*     (\* FIXME pattern match should give _loc automatically *\) *)
+      (*     FLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled ")) *)
+      (* | _ -> None (\* ignored  assert false *\)) *)
 
 
 (** parse the file, apply the filter and pipe it to the backend *)  
 let process_intf  name =
   let v = 
-  match PreCast.parse_file ~directive_handler:sig_handler name PreCast.parse_interf with
+  match PreCast.parse_file name PreCast.parse_interf with
   | None ->
         None
   | Some x ->
@@ -125,10 +126,9 @@ let process_intf  name =
 
 let process_impl name =
   let v = 
-  match PreCast.parse_file ~directive_handler:str_handler name PreCast.parse_implem with
-  | None ->
-        None
-  |Some x ->
+  match PreCast.parse_file name PreCast.parse_implem with
+  | None -> None
+  | Some x ->
       let x = AstFilters.apply_implem_filters x in
       Some x  in
   PreCast.CurrentPrinter.print_implem

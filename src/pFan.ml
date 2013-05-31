@@ -764,8 +764,6 @@ let apply () = begin
       |`Ant((""|"id"|"uid" as n),s) ;"." ; S{i} ->
           dot (mk_anti _loc ~c:"uident" n s) i]
 
-
-      
       (* parse [a.b.c] no antiquot *)
       dot_lstrings:
       [ `Lid i -> (`Sub[],i)

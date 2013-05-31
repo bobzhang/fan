@@ -32,7 +32,25 @@ let _ =
               (Fgram.mk_action
                  (fun (xs : 'dot_namespace)  _  (_loc : FLoc.t)  ->
                     (FToken.paths := ((`Absolute xs) ::
-                       (FToken.paths.contents)) : 'item )))))]));
+                       (FToken.paths.contents)) : 'item )))));
+          ([`Skeyword "filter";
+           `Stoken
+             (((function | `STR (_,_) -> true | _ -> false)),
+               (`Normal, "`STR (_,_)"))],
+            ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,s) -> (AstFilters.use_implem_filter s : 'item )\n     | _ -> failwith \"AstFilters.use_implem_filter s\n\")\n",
+              (Fgram.mk_action
+                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                    match __fan_1 with
+                    | `STR (_,s) -> (AstFilters.use_implem_filter s : 'item )
+                    | _ -> failwith "AstFilters.use_implem_filter s\n"))));
+          ([`Skeyword "lang_clear"],
+            ("Fgram.mk_action\n  (fun _  (_loc : FLoc.t)  ->\n     (begin AstQuotation.clear_map (); AstQuotation.clear_default () end : \n     'item ))\n",
+              (Fgram.mk_action
+                 (fun _  (_loc : FLoc.t)  ->
+                    (begin
+                       AstQuotation.clear_map ();
+                       AstQuotation.clear_default ()
+                     end : 'item )))))]));
     Fgram.unsafe_extend_single (dot_namespace : 'dot_namespace Fgram.t )
       (None,
         (None, None,
