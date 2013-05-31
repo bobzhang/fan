@@ -1,5 +1,26 @@
+let set_paths () =
+  begin
+    Config.load_path :=
+      (Config.load_path.contents @ [FConfig.fan_standard_library]);
+    Config.load_path := ("" :: (Config.load_path.contents));
+    Dll.add_path Config.load_path.contents
+  end
+
+let initial_env () =
+  begin
+    Ident.reinit ();
+    Toploop.toplevel_env :=
+      (Env.open_pers_signature "Pervasives" Env.initial)
+  end
+
 let _ =
   begin
+    set_paths (); initial_env ();
+    Fdir.register
+      ("eval",
+        (fun loc  c  ->
+           let s = Fgram.parse_string ~loc Fsyntax.strus c in
+           FEval.eval_ast Format.err_formatter s));
     Printexc.register_printer MkFan.normal_handler;
     PreCast.register_text_printer ();
     Printexc.register_printer

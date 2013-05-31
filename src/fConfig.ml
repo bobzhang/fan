@@ -35,9 +35,17 @@ let include_dirs = ref []
 let dynload_dirs = ref []
 
 let fan_standard_library =
-  try Sys.getenv "FAN_LIB_DIR"
+  try Sys.getenv "FAN_DIR"
   with Not_found -> 
     Filename.concat ocaml_standard_library "fan"
+
+      
+let fan_plugins_library =
+  try
+    Sys.getenv "FAN_LIB_DIR"
+  with Not_found ->
+    Filename.concat ocaml_standard_library "fanplugin"
+      
 (* when you do the iteration, you should do it in reverse order *)  
 (* let current_filters:  ref (list (plugin_name * plugin)) = ref [];; *)
 

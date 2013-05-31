@@ -313,9 +313,9 @@ open Driver;;
 
 module Default = struct
   let before_options () = (
-    (* Options.use_ocamlfind := true; *)
+
     Options.ocamlc := S[A"ocamlc.opt"; A"-annot"; A"-w"; A"+a-4-32-30"];
-    Options.ocamlopt   := S[A"ocamlopt.opt"; A"-inline"; A"100" ];
+    Options.ocamlopt   := S[A"ocamlopt.opt";  A"-inline"; A"100" ];
     Options.ocamldep   := A"ocamldep.opt";
     Options.ocamldoc   := A"ocamldoc.opt";
     Options.make_links := false; (* no symlink *)
@@ -437,6 +437,7 @@ let () =
     objs |-? [ast];
     objs_n |-? [ast_n];
     (* "src/fanAst.ml"   |-? [ast]; *)
+    "src/astLib.ml" |-? [ast];
     "src/fanAstN.ml"  |-? [ast_n; ast];
     "src/astLoc.ml" |-? [ast];
     "src/fanDyn.ml" |-? [ast];

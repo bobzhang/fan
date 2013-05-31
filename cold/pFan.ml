@@ -4311,23 +4311,6 @@ let apply () =
                        | _ ->
                            failwith
                              "let (shift,name,contents) = x in\nlet _loc = FLoc.move `start shift _loc in\nbegin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end\n"))));
-            ([`Skeyword "#";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-             `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
-             `Skeyword ";;"],
-              ("Fgram.mk_action\n  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (([`Directive (_loc, n, dp)], (Some _loc)) : 'implem ))\n",
-                (Fgram.mk_action
-                   (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t) 
-                      ->
-                      (([`Directive (_loc, n, dp)], (Some _loc)) : 'implem )))));
-            ([`Skeyword "#";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-             `Skeyword ";;"],
-              ("Fgram.mk_action\n  (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (([`DirectiveSimple (_loc, n)], (Some _loc)) : 'implem ))\n",
-                (Fgram.mk_action
-                   (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->
-                      (([`DirectiveSimple (_loc, n)], (Some _loc)) : 
-                      'implem )))));
             ([`Snterm (Fgram.obj (stru : 'stru Fgram.t ));
              `Skeyword ";;";
              `Sself],

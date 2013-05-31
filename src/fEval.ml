@@ -10,7 +10,7 @@ let eval_ast fmt ast =
     try
       ( (* begin *)
         (* Env.reset_cache (); *)
-        ignore (Toploop.execute_phrase true fmt (s2s ast))
+        ignore (Toploop.execute_phrase false fmt (s2s ast))
       )
     with  x -> (Errors.report_error fmt x; exit 2)
 

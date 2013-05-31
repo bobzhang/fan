@@ -29,9 +29,12 @@ val include_dirs : string list ref
 (** a list of files for dynamic loading *)
 val dynload_dirs : string list ref
 
+(** [$FAN_DIR] if set, otherwise +fan *)    
 val fan_standard_library : string
-    
-(* val current_filters:  (plugin_name * plugin) list ref *)
+
+(** [$FAN_LIB_DIR] if set, otherwise +fanplugin*)    
+val fan_plugins_library : string    
+
 
 
 

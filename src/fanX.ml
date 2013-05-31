@@ -1,7 +1,24 @@
 
+
+
+let set_paths () =
+  begin
+    Config.load_path := !Config.load_path @ [FConfig.fan_standard_library];
+    Config.load_path := "" :: !Config.load_path;
+    Dll.add_path !Config.load_path;
+  end
+
+(** see {!Compile.initial_env} and {!Toploop.init_toplevel}*)    
+let initial_env  () =
+  begin
+    Ident.reinit();
+    Toploop.toplevel_env := Env.open_pers_signature "Pervasives" Env.initial;
+  end
 let _ =
   begin
-    Toploop.set_paths();
+    set_paths ();
+    initial_env ();
+    (* Toploop.set_paths(); *)
     (* Toploop.initialize_toplevel_env (); *)
     Fdir.register
       ("eval",fun loc c ->

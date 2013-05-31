@@ -4,6 +4,7 @@ name="fan"
 version = "0.1"
 
 description= "metaprogramming tool for OCaml"
+directory= "+fan"
 
 requires=""
 
