@@ -1,7 +1,7 @@
 let _ =
   begin
     Printexc.register_printer MkFan.normal_handler;
-    PreCast.register_text_printer ();
+    PreCast.register_bin_printer ();
     Printexc.register_printer
       (function
        | FLoc.Exc_located (loc,exn) ->

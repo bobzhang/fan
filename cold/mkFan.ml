@@ -597,9 +597,9 @@ let initial_spec_list =
     (FArg.Symbol
        (["p"; "o"],
          ((fun x  ->
-             if x = "p"
-             then PreCast.register_bin_printer ()
-             else PreCast.register_text_printer ())))),
+             if x = "o"
+             then PreCast.register_text_printer ()
+             else PreCast.register_bin_printer ())))),
     "p  for binary and o  for text ")]
 
 let anon_fun name =
