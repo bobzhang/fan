@@ -11,9 +11,9 @@ In the fall semester of 2011, I had an indepedent study with [[http://www.cis.up
 "generic programming in Haskell", later I ported it into OCaml using
 Camlp4 in the spring semester of 2012.
 
-Later, I found Camlp4 too slow and verbose and it's very hard to write a plugin
+Later, I found Camlp4 too slow and verbose, and it's very hard to write a plugin
 for it, then I started Fan as a research project under the guidance
 of [[http://www.cis.upenn.edu/~stevez/][Steve Zdancewic]], from July 2012.
 
-Special thanks to [[http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)][John McCarthy]] and [[http://www.xavierleroy.com/][ Xavier Leory]] for their
+Special thanks to [[http://en.wikipedia.org/wiki/John_McCarthy_(computer_scientist)][John McCarthy]] and [[http://gallium.inria.fr/~xleroy/][Xavier Leory]] for their
 contribution to language design.
