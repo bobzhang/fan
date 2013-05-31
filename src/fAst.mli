@@ -159,11 +159,12 @@ type dlpath=
 
 
 type any = [ `Any of loc]
+
 (* type type_quote = *)
 (*   [ `Quote of (loc * position_flag * alident) *)
 (*   | `QuoteAny of (loc * position_flag) | any | ant ] *)
 
-(* type sid = [ `Id of (loc * ident)] *)
+
 
 
 type ctyp =
@@ -216,6 +217,7 @@ and typedecl =
   | `TyAbstr of (loc * alident * opt_decl_params * opt_type_constr ) 
   | `And of (loc * typedecl * typedecl)
   | ant ]
+
 (* original syntax
    {[ type v = u = A of int ]}
    revise syntax
@@ -238,8 +240,9 @@ and decl_params =
   | `Com of (loc  * decl_params * decl_params) | ant]
       
 and opt_decl_params =
- [ `Some of (loc * decl_params)
- | `None of loc  ]   
+  [ `Some of (loc * decl_params)
+  | `None of loc  ]   
+
 and type_info =        (* FIXME be more preicse *)
   [ (* type u = v = [A of int ] *)
    `TyMan of (loc  * ctyp * flag  * type_repr)
@@ -345,15 +348,17 @@ and exp =
   | `Subtype of (loc * exp * ctyp) (* (e :> t) *)
   | `While of (loc * exp * exp)
   | `LetOpen of (loc * ident * exp)
+
         (* fun (type t) -> e *)
         (* let f x (type t) y z = e *)
   | `LocalTypeFun of (loc *  alident * exp)
+
         (* (module ME : S) which is represented as (module (ME : S)) *)
   | `Package_exp of (loc * mexp) ]
 and rec_exp =
   [ `Sem of (loc * rec_exp * rec_exp)
   | `RecBind  of (loc * ident * exp)   (* FIXME: label is lid, it can be more precise *)
-  | any (* Faked here to be symmertric to rec_pat *)
+  | any (* Introduced  here to be symmertric to rec_pat *)
   | ant ]
 
 (*
@@ -374,18 +379,22 @@ and mtyp =
 and sigi =
   [
       `Val of (loc * alident * ctyp)
-    (* BNF for external_declaration is missing in OCaml manual
+
+       (* BNF for external_declaration is missing in OCaml manual
        primitive_declaration:
        | STRING                                      { [$1] }
        | STRING primitive_declaration                { $1 :: $2 } *)
+
   | `External of (loc * alident  * ctyp * strings) (* external s : t = s ... s *)
+
   | `Type of (loc * typedecl)
-  | `Exception of (loc * of_ctyp) (* exception t *)
 
-  | `Class of (loc * (* cltyp *)cltdecl)
-  | `ClassType of (loc * (* cltyp *)cltdecl) (* class type cict *)
+  | `Exception of (loc * of_ctyp) 
 
-  | `Module of (loc * auident * mtyp) (* module s : mt *)
+  | `Class of (loc * cltdecl)
+  | `ClassType of (loc * cltdecl) 
+
+  | `Module of (loc * auident * mtyp)
 
     (*
       Support in parser [module_declaration]
@@ -411,7 +420,7 @@ and mtbind =
   | ant ]
 *)          
 and mbind =
-(* module rec (s : mt) = me and (s : mt) = me *)
+  (* module rec (s : mt) = me and (s : mt) = me *)
   [ `And of (loc * mbind * mbind)
   | `ModuleBind  of (loc *  auident * mtyp * mexp) (* s : mt = me *)
   | `Constraint  of (loc * auident * mtyp) (* s : mt *)
@@ -428,6 +437,7 @@ and constr =
   | `ModuleSubst of (loc * ident * ident)
   | `And of (loc * constr * constr)
   | ant  ]
+
 (* let-binding	::=	pattern =  exp  
     value-name  { parameter }  [: typexp] =  exp  
    value-name : type  { typeconstr } .  typexp =  exp

@@ -87,12 +87,9 @@ let (map_clfield_base_1,
   (sem_of_list v1, sem_of_list v2, sem_of_list v3,sem_of_list v4,sem_of_list v5,
    sem_of_list v6, sem_of_list v7)
 
-  (* ({|$list:v1|},{|$list:v2|},{|$list:v3|}, *)
-  (*  {|$list:v4|},{|$list:v5|},{|$list:v6|},{|$list:v7|}) *)
 
 let eq_base1 =
   with stru
-  (* let open stru in  *)
   let items =
     ty_metas |> List.map
       (fun 
@@ -103,7 +100,7 @@ let eq_base1 =
           |`Def -> {| let $lid:name : $ty = (=) |}
           |`Custom s -> s ) in
             sem_of_list items
-              (* {| $list:items |} *) 
+
 
 let open AstInjection in begin 
   register_inject_clfield

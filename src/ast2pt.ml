@@ -45,43 +45,7 @@ let rec normalize_acc = with ident function
   | `Ant (_loc,_) | {@_loc| $uid:_ |} |
     {@_loc| $lid:_ |} as i -> {:exp| $id:i |} 
 
-(*
-  The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
-  the type of return value and [acc] is
-  [(loc* string list * exp) list]
 
-  The [string list] is generally a module path, the [exp] is the last field
-
-  Examples:
-
-  {[
-  sep_dot_exp [] {|A.B.g.U.E.h.i|};
-  - : (loc * string list * exp) list =
-  [(, ["A"; "B"], ExId (, Lid (, "g")));
-  (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
-
-  sep_dot_exp [] {|A.B.g.i|};
-  - : (loc * string list * exp) list =
-  [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
-
-  sep_dot_exp [] {|$(uid:"").i|};
-  - : (loc * string list * exp) list =
-  [(, [""], ExId (, Lid (, "i")))]
-
-  ]}
- *)
-
-
-let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
-  | `Field(_,e1,e2) ->
-      sep_dot_exp (sep_dot_exp acc e2) e1
-  | (`Dot(_l,_,_) as i) ->
-      sep_dot_exp acc (normalize_acc (i : vid :>ident)) 
-  |  `Uid(loc,s) as e ->
-      (match acc with
-      | [] -> [(loc, [], e)]
-      | (loc',sl,e)::l -> (FLoc.merge loc loc', s :: sl, e) :: l )
-  | e -> ((loc_of e), [], e) :: acc
         
 let mkvirtual : flag  -> Asttypes.virtual_flag = function 
   | `Positive _ -> Virtual
@@ -280,9 +244,7 @@ and package_type (x : mtyp) =
   | (`With(_loc,(#ident' as i),wc) :mtyp) ->
       (long_uident i, package_type_constraints wc [])
   | #ident' as i  -> (long_uident i, [])
-  | mt -> errorf (loc_of mt)
-        "unexpected package type: %s"
-        (dump_mtyp mt)
+  | mt -> errorf (loc_of mt) "unexpected package type: %s" (dump_mtyp mt)
 
 let mktype loc tl cl ~type_kind ~priv ~manifest =
   let (params, variance) = List.split tl in
@@ -387,18 +349,17 @@ let quote_map x =
   
 let optional_type_parameters (t:ctyp) = 
   List.map quote_map (list_of_app t [])
-(* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *)
+
 let mk_type_parameters (tl:opt_decl_params)
     :  ( (string Asttypes.loc ) option   * (bool * bool))list  =
   match tl with
   | `None _ -> []
   | `Some(_,x) ->
-      let xs = list_of_com x [] in
       List.map
         (function
           | #decl_param as x ->
              quote_map (x:>ctyp)
-          |  _ -> assert false) xs
+          |  _ -> assert false) (list_of_com x [])
 
 
   
@@ -481,8 +442,7 @@ let rec pat (x:pat) =  with pat  match x with
              | _ -> mkpat loc (Ppat_tuple al)  in
          mkpat loc (Ppat_variant s (Some a))
      | _ ->
-         error (loc_of f)
-           "this is not a constructor, it cannot be applied in a pattern"
+         error (loc_of f) "this is not a constructor, it cannot be applied in a pattern"
      end
   | {| [| $p |] |}  -> mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
   | {| [| |]|} -> mkpat _loc (Ppat_array [])
@@ -562,6 +522,37 @@ let flag loc (x:flag) =
 let rec exp (x : exp) = with exp match x with 
   | `Field(_loc,_,_)| `Dot (_loc,_,_)->
       let (e, l) =
+        (*
+          The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
+          the type of return value and [acc] is
+          [(loc* string list * exp) list]
+
+          The [string list] is generally a module path, the [exp] is the last field
+
+          Examples:
+          {[
+          sep_dot_exp [] {|A.B.g.U.E.h.i|};
+          - : (loc * string list * exp) list =
+          [(, ["A"; "B"], ExId (, Lid (, "g")));
+          (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
+          
+          sep_dot_exp [] {|A.B.g.i|};
+          - : (loc * string list * exp) list =
+          [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
+          
+          sep_dot_exp [] {|$(uid:"").i|};
+          - : (loc * string list * exp) list =
+          [(, [""], ExId (, Lid (, "i")))]  ]} *)
+        let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
+          | `Field(_,e1,e2) ->
+              sep_dot_exp (sep_dot_exp acc e2) e1
+          | (`Dot(_l,_,_) as i) ->
+              sep_dot_exp acc (normalize_acc (i : vid :>ident)) 
+          |  `Uid(loc,s) as e ->
+              (match acc with
+              | [] -> [(loc, [], e)]
+              | (loc',sl,e)::l -> (FLoc.merge loc loc', s :: sl, e) :: l )
+          | e -> ((loc_of e), [], e) :: acc in
         match sep_dot_exp [] x with
         | (loc, ml, `Uid(sloc,s)) :: l ->
             (mkexp loc (Pexp_construct (mkli sloc  s ml) None false), l)
@@ -916,8 +907,7 @@ and mktype_decl (x:typedecl)  =
                     | _ -> errorf (loc_of x) "invalid constraint: %s" (dump_type_constr cl)) in            
             (with_loc c sloc,
              mktype cloc
-               (mk_type_parameters tl)
-               (* (List.fold_right (fun x acc -> optional_type_parameters x @ acc) tl []) *) cl
+               (mk_type_parameters tl) cl
                ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
               
         | (t:typedecl) ->
@@ -977,7 +967,7 @@ and sigi (s:sigi) (l:signature) :signature =
   | `External (loc, `Lid(sloc,n), t, sl) ->
       mksig loc
         (Psig_value (with_loc n sloc)
-           (mkvalue_desc loc t (list_of_app(* list_of_meta_list *) sl []))) :: l
+           (mkvalue_desc loc t (list_of_app sl []))) :: l
   | `Include (loc,mt) -> mksig loc (Psig_include (mtyp mt)) :: l
   | `Module (loc,`Uid(sloc,n),mt) ->
       mksig loc (Psig_module (with_loc n sloc) (mtyp mt)) :: l
@@ -1098,13 +1088,11 @@ and stru (s:stru) (l:structure) : structure =
 and cltyp (x:FAst.cltyp) =
   match x with
   | `ClApply(loc, id, tl) -> 
-   (* `ClassCon (loc, `ViNil _, id,tl) -> *)
     mkcty loc
         (Pcty_constr (long_class_ident (id:>ident))
            (List.map (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false) (list_of_com tl [])))
   | #vid' as id ->
       let loc = loc_of id in
-  (* | `ClassConS(loc,`ViNil _, id) -> *)
       mkcty loc (Pcty_constr (long_class_ident (id:vid' :> ident)) [])
   | `CtFun (loc, (`Label (_, `Lid(_,lab), t)), ct) ->
       mkcty loc (Pcty_fun lab (ctyp t) (cltyp ct))
@@ -1130,7 +1118,6 @@ and cltyp (x:FAst.cltyp) =
 and class_info_clexp (ci:cldecl) =
   match ci with 
   | (`ClDecl(loc,vir,`Lid(nloc,name),params,ce) : cldecl) -> 
-   (* `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ce) -> *)
     let (loc_params, (params, variance)) =
       (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
@@ -1140,7 +1127,6 @@ and class_info_clexp (ci:cldecl) =
          pci_loc =  loc;
          pci_variance = variance}
   | `ClDeclS(loc,vir,`Lid(nloc,name),ce) -> 
-  (* | `Eq(_loc,`ClassConS(loc,vir,`Lid(nloc,name)),ce) -> *)
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
@@ -1148,12 +1134,9 @@ and class_info_clexp (ci:cldecl) =
          pci_loc =  loc;
          pci_variance = []}
   | ce -> errorf  (loc_of ce) "class_info_clexp: %s" (dump_cldecl ce) 
-and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
+and class_info_cltyp (ci:cltdecl)  =
   match ci with 
-  | (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) :cltdecl)
-  (*  `Eq (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct) *)
-  (* | `CtCol (_, (`ClassCon (loc, vir, (`Lid (nloc, name)), params)), ct) *)
-    ->
+  | (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) :cltdecl) ->
         let (loc_params, (params, variance)) =
           (loc_of params, List.split (class_parameters params)) in
         {pci_virt = mkvirtual vir;
@@ -1163,16 +1146,13 @@ and class_info_cltyp (ci:cltdecl)(* (ci:cltyp) *) =
          pci_loc =  loc;
          pci_variance = variance}
   | (`CtDeclS (loc,vir,`Lid(nloc,name),ct) : cltdecl) -> 
-  (* | `Eq (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) *)
-  (* | `CtCol (_, (`ClassConS (loc, vir, (`Lid (nloc, name)))), ct) -> *)
         {pci_virt = mkvirtual vir;
          pci_params = ([],  loc);
          pci_name = with_loc name nloc;
          pci_expr = cltyp ct;
          pci_loc =  loc;
          pci_variance = []}
-  | ct -> errorf (loc_of ct)
-          "bad class/class type declaration/definition %s " (dump_cltdecl ct)
+  | ct -> errorf (loc_of ct) "bad class/class type declaration/definition %s " (dump_cltdecl ct)
   and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
     match c with 
     |`Eq (loc, t1, t2) ->
@@ -1198,17 +1178,14 @@ and clexp  (x:FAst.clexp) =
       mkcl loc (Pcl_apply (clexp ce) el)
 
   | ( `ClApply (loc,id,tl):clexp) -> 
-  (* | `ClassCon (loc, `ViNil _, id,tl) -> *)
       mkcl loc
         (Pcl_constr (long_class_ident (id:>ident))
            (List.map (function |`Ctyp (_loc,x) -> ctyp x | _ -> assert false)
               (list_of_com tl [])))
-        
   | #vid' as id  ->
       let _loc = loc_of id in 
-  (* | `ClassConS(loc,`ViNil _, id) -> *)
-      mkcl _loc
-        (Pcl_constr (long_class_ident (id : vid' :>ident)) [])
+      mkcl _loc (Pcl_constr (long_class_ident (id : vid' :>ident)) [])
+        
   | `CeFun (loc, (`Label (_,`Lid(_loc,lab), po)), ce) ->
       mkcl loc
         (Pcl_fun lab None (pat po ) (clexp ce))

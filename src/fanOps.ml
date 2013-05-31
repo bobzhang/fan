@@ -25,7 +25,7 @@ open AstLib
  *)
 let list_of_list (loc:loc) =
   let rec loop top =  with exp' function
-    | [] ->   {@ghost| [] |}
+    | [] ->   let ghost = FLoc.ghost in {@ghost| [] |}
     | e1 :: el ->
         let _loc =
           if top then loc else FLoc.merge (loc_of e1) loc in

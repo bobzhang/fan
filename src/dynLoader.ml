@@ -1,8 +1,11 @@
 open LibUtil
 
 exception Error of string * string
+
+
 (* we should delay the initialization to make [fan] available to
-   more platforms *)    
+   more platforms. Since in some cases, this function will not be triggered
+ *)    
 let _initialized = ref false 
 
 

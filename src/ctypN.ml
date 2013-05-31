@@ -21,13 +21,14 @@ type col = {
     col_mutable:bool;
     col_ctyp:ctyp
   }
+
 type ty_info = {
-    name_exp: exp; (*  [meta_int] *)
-    info_exp: exp; (* [meta_int fmt test _a3] *)
-    ep0: ep; (* _a3*)
-    id_ep: ep; (* (_a3,_b3) *)
-    id_eps: ep list ; (* [_a3;_b3] *)
-    ty: ctyp; (* int *) 
+    name_exp: exp;
+    info_exp: exp; 
+    ep0: ep;
+    id_ep: ep; 
+    id_eps: ep list ;
+    ty: ctyp;
   }
 
 type vbranch =
@@ -60,11 +61,12 @@ type record_col = {
     re_mutable: bool ;
     re_info: ty_info;
   }
+      
 type record_info =  record_col list
 
-(* types below are used to tell fan how to produce
-   function of type [ident -> ident]
- *)
+
+(** types below are used to tell fan how to produce
+   function of type [ident -> ident] *)
 type basic_id_transform =
     [ `Pre of string
     | `Post of string

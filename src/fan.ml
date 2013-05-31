@@ -7,7 +7,7 @@ open LibUtil
  
     
 let just_print_filters () =
-  let pp = eprintf (* and f = Format.std_formatter *) in 
+  let pp = eprintf  in 
   let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in
   begin
     pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters ;
@@ -242,39 +242,33 @@ let anon_fun name =
 
 
 
-PreCast.register_text_printer ();; (** default *)
-Printexc.register_printer
+
+
+
+
+let _ =
+  begin
+    PreCast.register_text_printer (); (** default *)
+    Printexc.register_printer
         (function
           |FLoc.Exc_located (loc, exn) ->
               Some (sprintf "%s:@\n%s" (FLoc.to_string loc) (Printexc.to_string exn))
-          | _ -> None );;
+          | _ -> None );
 
-let _ =
-  begin 
     Fsyntax.Options.add
       ("-dlang",
        (FArg.String
           (fun s  ->
             AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
        " Set the default language");
-    Fsyntax.Options.adds initial_spec_list
-  end;;    
-
-AstParsers.use_parsers
-    [ "revise";
-      "stream";
-      "macro";
-      (* "ListComprehension" *)
-    ];;
-
-
-let _ = 
-  try
-    FArg.parse
-      Fsyntax.Options.init_spec_list
-      anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
-  with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end;;
-
+    Fsyntax.Options.adds initial_spec_list;
+    AstParsers.use_parsers [ "revise"; "stream"; "macro";];
+    try
+      FArg.parse
+        Fsyntax.Options.init_spec_list
+        anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
+    with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end
+  end
 
 
 

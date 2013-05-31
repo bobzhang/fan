@@ -1,19 +1,24 @@
 
-(*************************************************************************)
-(** FAst lib for structual polymorphism *)
-(*************************************************************************)
+
+(** FAst a module for processing abstract syntax.
+
+    It makes use of  structual polymorphism aggresively,
+    the signature is quite complex due the use of [loc_of],
+    see [astLibN] for the same functionality but processing ast without locations
+    and hence a much simplified signature *)
+  
+
   
 open LibUtil
 open FLoc.Ops
 open FAst
 
 
-(*************************************************************************)
+
 (** generate [loc_of] function per type
     for example:
-    [of_loc (e:exp)]
-    [of_loc (p:pat)] will both return the location information *)
-(*************************************************************************)  
+    [loc_of (e:exp)]
+    [loc_of (p:pat)] will both return the location information *)
 {:fans|keep off; derive (GenLoc);|};;
 {:ocaml|{:include|"src/fAst.mli"|}|};;
 
@@ -22,7 +27,7 @@ open FAst
 
   
 (**   connectives  *)
-let ghost = FLoc.ghost  (* to refine *)
+
 let (<+>) a b = loc_of a <+> loc_of b
 let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b)
 let com a b = let _loc = a <+> b in `Com(_loc,a,b)

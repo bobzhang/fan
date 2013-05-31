@@ -1,7 +1,7 @@
 
-(*************************************************************************)
+
 (** FAst lib for structual polymorphism without quotaions *)
-(*************************************************************************)
+
   
 open LibUtil
 open FAstN
@@ -155,8 +155,7 @@ let tuple_com y=
   match y with 
   |[] -> failwith "tuple_com empty"
   |[x] -> x
-  | _ -> (* FIXME [x::_] still compiles *)
-      `Par (com_of_list y) 
+  | _ -> `Par (com_of_list y) 
     
 let tuple_sta y =
   match y with

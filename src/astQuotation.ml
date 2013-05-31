@@ -119,7 +119,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 
 (* called by [expand] *)
-let expand_quotation loc ~expander pos_tag (q_name,q_loc,_q_shift,q_contents) =
+let expand_quotation loc ~expander pos_tag (q_name,q_loc,q_contents) =
   let loc_name_opt = if q_loc = "" then None else Some q_loc in
   try expander loc loc_name_opt q_contents with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
@@ -150,8 +150,7 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
-    (tag:'a FDyn.tag) : 'a =
+let expand loc (q_name,q_loc,q_shift,q_contents)    (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
   let name = q_name in
   let try expander = find loc name tag
@@ -159,7 +158,7 @@ let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
   begin
     Stack.push  q_name stack;
     finally ~action:(fun _ -> Stack.pop stack)
-      (fun _ -> expand_quotation ~expander loc pos_tag quotation)
+      (fun _ -> expand_quotation ~expander loc pos_tag (q_name,q_loc,q_contents))
       ()
   end
   with

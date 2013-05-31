@@ -182,7 +182,7 @@ val fun_of_tydcl :
                 (result:ctyp -> row_field -> exp) ->  (* labeld as variant *)
                   typedecl -> exp
 
-(*************************************************************************)
+
 (** destination is [Str_item] generate [stru], type annotations may not be
     needed here outputs  a binding
     called by [stru_of_mtyps]

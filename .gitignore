@@ -64,6 +64,7 @@ src.stat
 src/A.ml
 src/Ast.ml
 src/S.ml
+src/tmp.ml
 *.dsource
 a.el
 jslib/

@@ -171,17 +171,11 @@ val abstract_list : typedecl -> int option
 val qualified_app_list : ctyp -> (ident * ctyp list) option
 
 
-(* val eq : ctyp -> ctyp -> bool *)
-(* val eq_list : ctyp list -> ctyp list -> bool *)
-(* val mk_transform_type_eq : *)
-(*   unit -> FanAst.map *)
-  
-(* val transform_mtyps : mtyps -> *)
-(*   (string * ident * int) list * mtyps *)
 
 val reduce_data_ctors:
     or_ctyp ->
       'a -> compose:('e -> 'a  -> 'a) -> (string -> ctyp list -> 'e) -> 'a    
+
 (* @raise Invalid_argument *)        
 (* val of_stru: stru -> typedecl *)
 
@@ -210,7 +204,3 @@ val gen_tuple_abbrev : arity:int ->
 val pp_print_warning_type: Format.formatter -> warning_type -> unit
 
 
-(* val stru_from_mtyps : *)
-(*     f:(named_type -> FAstN.typedecl) -> mtyps -> FAstN.stru option     *)
-(* val stru_from_ty : *)
-(*     f:(string -> FAstN.stru) -> mtyps -> FAstN.stru *)

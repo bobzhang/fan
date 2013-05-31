@@ -164,15 +164,5 @@ let mk_tuple ~arity ~number  =
 
 
 
-(* (\* *)
-(*    Applied to both expession and pattern *)
-(*    {[ *)
-(*     of_ident_number <:ident< X >> 3 |> eprint; *)
-(*     X a0 a1 a2 *)
-(*     ]} *)
-(* *\) *)
-(* let  of_ident_number  cons n =  *)
-(*   appl_of_list (cons:: List.init n xid ) *)
-(*     (\* {| $(id:xid i) |}  FIXME why a type annotation here?*\) *)
 
 
