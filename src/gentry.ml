@@ -105,7 +105,9 @@ let parser_of_symbol = Gparser.parser_of_symbol
 let levels_of_entry = Ginsert.levels_of_entry
 let extend = Ginsert.extend
 let extend_single = Ginsert.extend_single
-let copy = Ginsert.copy    
+let copy = Ginsert.copy
+let unsafe_extend = Ginsert.unsafe_extend
+let unsafe_extend_single = Ginsert.unsafe_extend_single    
 
 (* buggy*)
 let eoi_entry = Ginsert.eoi_entry

@@ -149,31 +149,17 @@ val make_exp_rules :
 val exp_delete_rule:
   loc -> name -> symbol list list  -> exp
       
-val mk_name : loc -> (* ident *)vid -> name
+val mk_name : loc ->vid -> name
+
 val mk_slist :
   loc ->
   bool -> symbol option -> symbol -> text
 
-(**
-  return [(ent,pos,txt)] the [txt] has type [olevel],
-  [ent] is something like
-  {[
-  (module_exp : 'mexp Fgram.t )
-  ]}
-  [pos] is something like
-  {[(Some `LA)]} it has type [position option] *)        
-val text_of_entry :   entry -> exp
 
-(** [gl] is the name  list option
 
-   {[
-   loc -> ident option ->exp name list option ->
-   (exp, 'a) entry list -> exp -> exp
-   ]}
 
-   This function generate some local entries
- *)   
-val let_in_of_extend :  loc ->vid option -> name list option -> exp -> exp
+
+
 
 (** the [locals] is local entry name list,
    [el] is entry list
@@ -184,7 +170,8 @@ val let_in_of_extend :  loc ->vid option -> name list option -> exp -> exp
 
    It call [text_of_entry]
  *)
-val text_of_functorial_extend :  loc ->vid option ->  name list option -> entry list -> exp
+val text_of_functorial_extend :  ?safe:bool ->
+  loc ->vid option ->  name list option -> entry list -> exp
 
 (** generate Stok *)  
 val mk_tok :  loc ->  ?restrict:exp ->  pattern:pat -> styp -> symbol

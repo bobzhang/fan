@@ -1,9 +1,9 @@
 
-let g = Fgram.create_lexer ~annot:"include" ~keywords:[] ();;
 
-{:create| (g:Fgram.t) include_quot |};;
 
-{:extend|
+{:new| (g:Fgram.t) include_quot |};;
+
+{:unsafe_extend|
 include_quot:
   [`STR(_,s) ->
     let (keep,cf) = FState.((keep,current_filters)) in

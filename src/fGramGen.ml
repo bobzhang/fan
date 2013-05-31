@@ -217,8 +217,15 @@ let mk_name _loc (i:vid) =
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 
 
-
-let text_of_entry (e:entry) :exp =  with exp
+(*
+  return [(ent,pos,txt)] the [txt] has type [olevel],
+  [ent] is something like
+  {[
+  (module_exp : 'mexp Fgram.t )
+  ]}
+  [pos] is something like
+  {[(Some `LA)]} it has type [position option] *)        
+let text_of_entry ?(safe=true) (e:entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
     let x = e.name in
@@ -243,13 +250,26 @@ let text_of_entry (e:entry) :exp =  with exp
           {| ($lab, $ass, $prod) |}) in
     match e.levels with
     |`Single l ->
-      {| $((gm():vid:>exp)).extend_single $ent ($pos, $(apply l) ) |}
+        if safe then
+          {| $(id:(gm())).extend_single $ent ($pos, $(apply l) ) |}
+        else
+          {| $(id:(gm())).unsafe_extend_single $ent ($pos, $(apply l) ) |}
+        (* else *)
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
-        {|$((gm():vid:>exp)).extend $ent ($pos,$txt)|}
+        if safe then 
+          {|$(id:(gm())).extend $ent ($pos,$txt)|}
+        else 
+          {|$(id:(gm())).unsafe_extend $ent ($pos,$txt)|}
 
-  
+(** [gl] is the name  list option
 
+   {[
+   loc -> ident option ->exp name list option ->
+   (exp, 'a) entry list -> exp -> exp
+   ]}
+
+   This function generate some local entries *)               
 let let_in_of_extend _loc (gram: vid option ) locals  default =
   let entry_mk =
     match gram with
@@ -268,10 +288,11 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
       let locals = and_of_list (List.map local_bind_of_name ll)  in
       {:exp| let grammar_entry_create = $entry_mk in let $locals in $default |}    
 
-let text_of_functorial_extend _loc  gram locals el = 
+(** entrance *)        
+let text_of_functorial_extend ?safe _loc   gram locals el = 
   let args =
     let el =
-      List.map  text_of_entry el  in
+      List.map  (text_of_entry ?safe)  el  in
     match el with
     | [] -> {:exp| () |}
     | _ -> seq_sem el    in

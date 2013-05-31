@@ -220,6 +220,11 @@ let initial_spec_list =
    
    ("-used-parsers", FArg.Unit just_print_applied_parsers, "Print the applied parsers.");
 
+   ("-dlang",
+       (FArg.String
+          (fun s  ->
+            AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
+       " Set the default language");
    ("-printer", FArg.Symbol( ["p";"o"],
     function x ->
       if x = "p" then
@@ -255,12 +260,6 @@ let _ =
               Some (sprintf "%s:@\n%s" (FLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );
 
-    Foptions.add
-      ("-dlang",
-       (FArg.String
-          (fun s  ->
-            AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
-       " Set the default language");
     Foptions.adds initial_spec_list;
     AstParsers.use_parsers [ "revise"; "stream"; "macro";];
     try

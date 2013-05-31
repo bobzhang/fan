@@ -6,7 +6,8 @@ type domains =
 
 type name = (domains*string) with ("Print")
 
-
+type quotation = [ `QUOTATION of (name * string * int * string) ] with ("Print")
+  
 type t =
   [  `KEYWORD of string
   | `SYMBOL of string
@@ -23,7 +24,8 @@ type t =
   | `LABEL of string
   | `OPTLABEL of string
         (* (name,loc,shift,contents) *)
-  | `QUOTATION of (name*string*int*string)(* quotation *)
+  (* | `QUOTATION of (name*string*int*string)(\* quotation *\) *)
+  | quotation
         
   | `Ant of (string * string )
   | `COMMENT of string

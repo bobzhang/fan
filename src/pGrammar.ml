@@ -30,13 +30,15 @@ FConfig.antiquotations := true;;
 
   (pattern: action_pattern Fgram.t )
   extend_body
+  newterminals
+  unsafe_extend_body
   delete_rule_body
   simple_exp delete_rules
   (simple_pat: simple_pat Fgram.t )
   internal_pat|}  ;;
 
 {:extend|
-  nonterminals:
+  nonterminals :
   [
    [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
    |  qualuid{t} -> `static(t) ]{t};
@@ -54,7 +56,8 @@ FConfig.antiquotations := true;;
           let x = (x : vid :> exp) in
           let t = (t : vid :> exp ) in 
           {:exp|$t.mk_dynamic $x |}  in   
-    sem_of_list & List.map
+    sem_of_list
+      ( List.map
       (fun (_loc,x,descr,ty) ->
         match (descr,ty) with
         |(Some d,None) ->
@@ -64,9 +67,38 @@ FConfig.antiquotations := true;;
         |(None,None) ->
             {| let $lid:x = $mk $str:x  |}
         | (None,Some typ) ->
-            {| let $lid:x : $typ = $mk $str:x  |}  ) ls ]
+            {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
 
-  nonterminalsclear:
+  newterminals :
+  [ "("; qualid{x}; ":";t_qualid{t};")";
+    L1
+      [ `Lid x  -> (_loc,x,None,None)
+      | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
+      | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+    ->
+      
+      let mk  =
+        let x = (x : vid :> exp) in
+        (* let t = (t : vid :> exp ) in  *)
+        {:exp|$id:t.mk_dynamic $x |}  in
+      sem_of_list
+        ({:stru| let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()|} ::
+         ( List.map
+            (fun (_loc,x,descr,ty) ->
+              match (descr,ty) with
+              |(Some d,None) ->
+                  {:stru| let $lid:x = $mk $str:d |}
+              | (Some d,Some typ) ->
+                  {:stru| let $lid:x : $typ = $mk $str:d |}
+              |(None,None) ->
+                  {:stru| let $lid:x = $mk $str:x  |}
+              | (None,Some typ) ->
+                  {:stru| let $lid:x : $typ = $mk $str:x  |}  ) ls)) ]
+
+
+  
+  nonterminalsclear :
   [ qualuid{t}; L1 [a_lident{x}->x ]{ls} ->
     let rest = List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 
@@ -88,12 +120,18 @@ FConfig.antiquotations := true;;
       let () = grammar_module_name :=  t in 
       (None,old)
   | -> (None,gm())]
-  extend_body:
+
+  extend_body :
   [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
     let res = text_of_functorial_extend _loc  gram locals el in 
     let () = grammar_module_name := old in
     res      ]
 
+  unsafe_extend_body :
+  [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
+    let res = text_of_functorial_extend ~safe:false _loc  gram locals el in 
+    let () = grammar_module_name := old in
+    res      ]
   (*for side effets, parser action *)
   delete_rule_header:
   [ qualuid{g} ->
@@ -302,12 +340,16 @@ begin
   AstQuotation.of_exp
     ~name:((d,  "extend")) ~entry:extend_body;
   AstQuotation.of_exp
+    ~name:((d,  "unsafe_extend")) ~entry:unsafe_extend_body;
+  AstQuotation.of_stru
+    ~name:((d,"create")) ~entry:nonterminals;
+  AstQuotation.of_stru
+    ~name:((d,"new")) ~entry:newterminals;
+
+  AstQuotation.of_exp
     ~name:((d,"delete")) ~entry:delete_rule_body;
   AstQuotation.of_exp
     ~name:((d,"clear")) ~entry:nonterminalsclear;
-  AstQuotation.of_stru
-    ~name:((d,"create")) ~entry:nonterminals;
-  
 end;;
 
 

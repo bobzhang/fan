@@ -904,7 +904,13 @@ let apply () = begin
     {:extend|
     (** ml file  entrance *)    
       implem:
-      [ "#"; a_lident{n}; exp{dp}; ";;" ->
+      [
+       "#"; `QUOTATION x ->
+         begin
+           (Fdir.handle _loc (`QUOTATION x ));
+           ([],Some _loc)
+         end
+      | "#"; a_lident{n}; exp{dp}; ";;" ->
         ([ `Directive(_loc,n,dp) ],  Some _loc)
       | "#"; a_lident{n}; ";;" ->
         ([`DirectiveSimple(_loc,n)], Some _loc)
