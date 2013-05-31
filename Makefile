@@ -17,7 +17,7 @@ SRC=src
 
 BCOLD=_build/cold
 BHOT=_build/src
-EXES=fan.byte fan.native
+EXES=fan.byte fan.native fanX.byte
 
 LIBTARGETS = fgram.cma fgram.cmx fgram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma fan_full.cma
 BINTARGETS = fan.byte fan.native 
@@ -27,6 +27,21 @@ STDTARGETS = fAst.cmi fAstN.cmi
 
 ICTARGETS=$(addprefix _build/cold,$(TARGETS))
 
+byteX:
+	ocamlbuild src/mkFan.cma src/fEval.cmo src/fanX.cmo
+	cd _build/src;	ocamlc.opt -linkall -I +compiler-libs dynlink.cma mkFan.cma  ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma fEval.cmo fanX.cmo -o fanX.byte
+
+_build/cold/fanX.byte: _build/cold/fanX.cma
+	ocamlc.opt -linkall -I +compiler-libs dynlink.cma cold/fanX.cma  ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma
+
+_build/src/mkFan.cma:src/mkFan.ml
+	ocamlbuild src/mkFan.cma
+
+_build/src/fanX.cmo:src/fanX.ml
+	ocamlbuild src/fanX.cmo
+
+_build/cold/mkFan.cma:
+	ocamlbuild cold/fanX.cma
 build:
 	$(OCAMLBUILD) $(addprefix cold/,$(LIBTARGETS) $(BINTARGETS))
 
@@ -88,4 +103,4 @@ updoc:
 	rm -rf ~/Dropbox/fanweb/foo.docdir
 	mv _build/src/foo.docdir ~/Dropbox/fanweb/
 
-.PHONY: top doc
+.PHONY: top doc byteX

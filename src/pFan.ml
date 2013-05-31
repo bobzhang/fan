@@ -908,10 +908,6 @@ let apply () = begin
            (Fdir.handle_dir _loc (name,contents));
            ([],Some _loc)
          end
-      | "#"; a_lident{n}; exp{dp}; ";;" ->
-        ([ `Directive(_loc,n,dp) ],  Some _loc)
-      | "#"; a_lident{n}; ";;" ->
-        ([`DirectiveSimple(_loc,n)], Some _loc)
       | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)
       | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped)
          (* FIXME merge with the above in the future*)            
