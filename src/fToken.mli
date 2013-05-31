@@ -14,6 +14,8 @@ type name = domains * string
  *)
 type quotation = [ `QUOTATION of (name * string * int * string) ]      
 
+(** (name,contents) *)
+type dir_quotation = [`DirQuotation of (int * string * string) ] 
 (**
   For some tokens the data constructor holds two representations with the
   evaluated one and the source one. For example
@@ -61,8 +63,8 @@ type t =
   | `OPTLABEL of string
 
         (* . *)
-  | `QUOTATION of (name*string*int*string)(* quotation *)        
-
+  | quotation
+  | dir_quotation
   | `Ant of (string * string )
   | `COMMENT of string
   | `BLANKS of string
@@ -134,4 +136,4 @@ val name_of_string : string -> name
 (** [names_tbl] is used to manage the namespace and names *)
 val names_tbl : (domains, LibUtil.SSet.t) Hashtbl.t
 
-val resolve_name : name -> name    
+val resolve_name : FLoc.t -> name -> name    

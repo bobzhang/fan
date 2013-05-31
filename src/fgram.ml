@@ -12,7 +12,7 @@ let default_keywords =
   ["&&"; "functor"; "||"; "private"; "sig"; "include";
    "exception"; "inherit"; "<"; "~"; "and"; "ELSE";
    "when"; ","; "mod"; "then"; "|]"; "initializer";
-   "#"; "import"; "!"; "-." ; "_"; ">]" ; "??" ; "in"
+   "#";  "!"; "-." ; "_"; ">]" ; "??" ; "in"
      ; "->"; "downto"; "lsr"; "as"; "function"; "begin";
    ".."; ")"; "="; ":"; "|"; "[<"; "ENDIF";
    "class"; "=="; "."; "{<"; "land"; ">}"; "lxor"; "do";

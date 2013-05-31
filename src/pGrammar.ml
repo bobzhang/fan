@@ -175,7 +175,7 @@ FConfig.antiquotations := true;;
   [ qualid{il}; OPT[`STR(_,x)->x]{name} -> 
     (match name with
     | Some x -> (let old = !AstQuotation.default in
-      (AstQuotation.default:= FToken.resolve_name (`Sub [], x);
+      (AstQuotation.default:= FToken.resolve_name _loc (`Sub [], x);
        `name old))
     | None -> `non, mk_name _loc il)
   ]

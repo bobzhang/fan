@@ -93,6 +93,7 @@ val repr: entry -> 'a t
 (* val removing: gram -> string -> unit *)
 
 val gram: gram
+
 (* create a standalone gram *)
 val create_lexer: annot:string -> keywords: string list -> unit -> gram
 
@@ -144,8 +145,12 @@ val sfold1sep:
       (stream -> unit) ->
         stream -> 'b
             
+
 val extend:  'a t -> extend_statment -> unit
+val unsafe_extend:  'a t -> extend_statment -> unit
+
 val extend_single: 'a t -> single_extend_statement -> unit
+val unsafe_extend_single: 'a t -> single_extend_statement -> unit    
 
 val eoi_entry: 'a t -> 'a t
 

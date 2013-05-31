@@ -1,7 +1,8 @@
 
   
-#default_quotation     "exp";;
+(* #default_quotation     "exp";; *)
 
+#{:control| default "exp"; |}
 
 open FAst
 open AstLib

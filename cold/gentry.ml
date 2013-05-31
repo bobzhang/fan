@@ -121,4 +121,8 @@ let extend_single = Ginsert.extend_single
 
 let copy = Ginsert.copy
 
+let unsafe_extend = Ginsert.unsafe_extend
+
+let unsafe_extend_single = Ginsert.unsafe_extend_single
+
 let eoi_entry = Ginsert.eoi_entry

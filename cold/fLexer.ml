@@ -2695,12 +2695,12 @@ let token c lexbuf =
     | 58 -> __ocaml_lex_state12 lexbuf
     | 256 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 31
-  and __ocaml_lex_state2 lexbuf = 30
+  and __ocaml_lex_state1 lexbuf = 32
+  and __ocaml_lex_state2 lexbuf = 31
   and __ocaml_lex_state3 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|37|38|42|43|45|46|47|58|60|61|62|63|64|92|94|124|126 ->
            __ocaml_lex_state3 lexbuf
@@ -2710,11 +2710,11 @@ let token c lexbuf =
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state4 lexbuf = 28
+  and __ocaml_lex_state4 lexbuf = 29
   and __ocaml_lex_state5 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|47|64|94 -> __ocaml_lex_state105 lexbuf
        | 41|46|58|60|61|62|93|124 -> __ocaml_lex_state98 lexbuf
@@ -2727,13 +2727,13 @@ let token c lexbuf =
   and __ocaml_lex_state6 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state6 lexbuf
        | 37|38|47|64|94 -> __ocaml_lex_state8 lexbuf
+       | 58|124 -> __ocaml_lex_state133 lexbuf
        | 41|93 -> __ocaml_lex_state98 lexbuf
-       | 58|124 -> __ocaml_lex_state126 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -2743,13 +2743,13 @@ let token c lexbuf =
   and __ocaml_lex_state7 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state6 lexbuf
        | 37|38|47|64|94 -> __ocaml_lex_state8 lexbuf
+       | 58|124 -> __ocaml_lex_state133 lexbuf
        | 41|93 -> __ocaml_lex_state5 lexbuf
-       | 58|124 -> __ocaml_lex_state126 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -2759,12 +2759,12 @@ let token c lexbuf =
   and __ocaml_lex_state8 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state8 lexbuf
-       | 58|124 -> __ocaml_lex_state125 lexbuf
        | 41|93 -> __ocaml_lex_state103 lexbuf
+       | 58|124 -> __ocaml_lex_state132 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -2774,22 +2774,22 @@ let token c lexbuf =
   and __ocaml_lex_state9 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
-       | 58|60|61|62|124 -> __ocaml_lex_state123 lexbuf
-       | 46 -> __ocaml_lex_state122 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state124 lexbuf
+       | 46 -> __ocaml_lex_state129 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state131 lexbuf
+       | 58|60|61|62|124 -> __ocaml_lex_state130 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state10 lexbuf = 27
+  and __ocaml_lex_state10 lexbuf = 28
   and __ocaml_lex_state11 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 59 -> __ocaml_lex_state10 lexbuf
        | _ ->
@@ -2801,14 +2801,14 @@ let token c lexbuf =
   and __ocaml_lex_state12 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
-       | 61|62 -> __ocaml_lex_state119 lexbuf
-       | 46|60 -> __ocaml_lex_state116 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
+       | 46|60 -> __ocaml_lex_state123 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
        | 41|93 -> __ocaml_lex_state5 lexbuf
-       | 58 -> __ocaml_lex_state121 lexbuf
-       | 124 -> __ocaml_lex_state117 lexbuf
+       | 124 -> __ocaml_lex_state124 lexbuf
+       | 61|62 -> __ocaml_lex_state126 lexbuf
+       | 58 -> __ocaml_lex_state128 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -2818,13 +2818,13 @@ let token c lexbuf =
   and __ocaml_lex_state13 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
-       | 46 -> __ocaml_lex_state119 lexbuf
-       | 60|61|62 -> __ocaml_lex_state116 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
+       | 60|61|62 -> __ocaml_lex_state123 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
+       | 58|124 -> __ocaml_lex_state124 lexbuf
        | 41|93 -> __ocaml_lex_state98 lexbuf
-       | 58|124 -> __ocaml_lex_state117 lexbuf
+       | 46 -> __ocaml_lex_state126 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -2834,8 +2834,9 @@ let token c lexbuf =
   and __ocaml_lex_state14 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
+       | 123 -> __ocaml_lex_state108 lexbuf
        | 9|32 ->
            begin
              (lexbuf.Lexing.lex_mem).(4) <- lexbuf.Lexing.lex_curr_pos;
@@ -2855,7 +2856,7 @@ let token c lexbuf =
   and __ocaml_lex_state15 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state99 lexbuf
@@ -2873,7 +2874,7 @@ let token c lexbuf =
   and __ocaml_lex_state16 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 64 -> __ocaml_lex_state73 lexbuf
        | 60 -> __ocaml_lex_state75 lexbuf
@@ -2893,7 +2894,7 @@ let token c lexbuf =
   and __ocaml_lex_state17 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|37|38|42|43|45|46|47|58|60|61|62|63|64|92|94|124|126 ->
            __ocaml_lex_state3 lexbuf
@@ -2907,7 +2908,7 @@ let token c lexbuf =
   and __ocaml_lex_state18 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|47|64|94 ->
            begin
@@ -2944,7 +2945,7 @@ let token c lexbuf =
   and __ocaml_lex_state19 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 10 -> __ocaml_lex_state48 lexbuf
        | 92 -> __ocaml_lex_state45 lexbuf
@@ -3397,7 +3398,7 @@ let token c lexbuf =
   and __ocaml_lex_state25 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|37|38|42|43|45|46|47|58|60|61|62|63|64|92|94|124|126 ->
            __ocaml_lex_state3 lexbuf
@@ -3468,7 +3469,7 @@ let token c lexbuf =
   and __ocaml_lex_state26 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|37|38|42|43|45|46|47|58|60|61|62|63|64|92|94|124|126 ->
            __ocaml_lex_state3 lexbuf
@@ -4216,7 +4217,7 @@ let token c lexbuf =
   and __ocaml_lex_state60 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|47|64|94 ->
            begin
@@ -4244,7 +4245,7 @@ let token c lexbuf =
   and __ocaml_lex_state61 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|46|47|58|60|61|62|64|94|124 ->
            begin
@@ -4281,7 +4282,7 @@ let token c lexbuf =
   and __ocaml_lex_state64 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|40|46|47|58|60|61|62|64|91|94|124 ->
            __ocaml_lex_state64 lexbuf
@@ -4292,7 +4293,7 @@ let token c lexbuf =
            end)
     end
   and __ocaml_lex_state65 lexbuf =
-    begin (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(6); 25 end
+    begin (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(6); 26 end
   and __ocaml_lex_state66 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 9|12|32 -> __ocaml_lex_state66 lexbuf
@@ -4305,7 +4306,7 @@ let token c lexbuf =
   and __ocaml_lex_state67 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|46|47|58|60|61|62|64|94|124 ->
            begin
@@ -4343,7 +4344,7 @@ let token c lexbuf =
   and __ocaml_lex_state69 lexbuf =
     begin
       (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(5);
-      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(7); 26
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(7); 27
     end
   and __ocaml_lex_state70 lexbuf =
     match __ocaml_lex_next_char lexbuf with
@@ -5161,11 +5162,11 @@ let token c lexbuf =
       (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(11);
       (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(10); 19
     end
-  and __ocaml_lex_state85 lexbuf = 23
+  and __ocaml_lex_state85 lexbuf = 24
   and __ocaml_lex_state86 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 23;
+      lexbuf.Lexing.lex_last_action <- 24;
       (match __ocaml_lex_next_char lexbuf with
        | 64 -> __ocaml_lex_state92 lexbuf
        | 124 ->
@@ -5380,7 +5381,7 @@ let token c lexbuf =
   and __ocaml_lex_state87 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 23;
+      lexbuf.Lexing.lex_last_action <- 24;
       (match __ocaml_lex_next_char lexbuf with
        | 46 -> __ocaml_lex_state91 lexbuf
        | 39
@@ -5583,7 +5584,7 @@ let token c lexbuf =
   and __ocaml_lex_state88 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 23;
+      lexbuf.Lexing.lex_last_action <- 24;
       (match __ocaml_lex_next_char lexbuf with
        | 95
          |97
@@ -6641,7 +6642,7 @@ let token c lexbuf =
       (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(13);
       (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(15);
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 22;
+      lexbuf.Lexing.lex_last_action <- 23;
       (match __ocaml_lex_next_char lexbuf with
        | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
            __ocaml_lex_state97 lexbuf
@@ -6655,7 +6656,7 @@ let token c lexbuf =
     begin
       (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(16);
       (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(13);
-      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(15); 22
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(15); 23
     end
   and __ocaml_lex_state98 lexbuf =
     match __ocaml_lex_next_char lexbuf with
@@ -6669,7 +6670,7 @@ let token c lexbuf =
   and __ocaml_lex_state99 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state99 lexbuf
@@ -6686,7 +6687,7 @@ let token c lexbuf =
   and __ocaml_lex_state100 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state99 lexbuf
@@ -6702,7 +6703,7 @@ let token c lexbuf =
   and __ocaml_lex_state101 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 58|124 -> __ocaml_lex_state104 lexbuf
@@ -6718,7 +6719,7 @@ let token c lexbuf =
   and __ocaml_lex_state103 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
        | 37|38|46|47|58|60|61|62|64|94|124 -> __ocaml_lex_state105 lexbuf
        | 41|93 -> __ocaml_lex_state103 lexbuf
@@ -6731,7 +6732,7 @@ let token c lexbuf =
   and __ocaml_lex_state104 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 58|124 -> __ocaml_lex_state104 lexbuf
@@ -6754,15 +6755,14 @@ let token c lexbuf =
         end
   and __ocaml_lex_state106 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 9|32 -> __ocaml_lex_state112 lexbuf
-    | 13 -> __ocaml_lex_state108 lexbuf
+    | 9|32 -> __ocaml_lex_state119 lexbuf
+    | 10 -> __ocaml_lex_state116 lexbuf
     | 34 ->
         begin
-          (lexbuf.Lexing.lex_mem).(19) <- lexbuf.Lexing.lex_curr_pos;
-          (lexbuf.Lexing.lex_mem).(18) <- lexbuf.Lexing.lex_curr_pos;
-          __ocaml_lex_state111 lexbuf
+          (lexbuf.Lexing.lex_mem).(21) <- lexbuf.Lexing.lex_curr_pos;
+          (lexbuf.Lexing.lex_mem).(20) <- lexbuf.Lexing.lex_curr_pos;
+          __ocaml_lex_state118 lexbuf
         end
-    | 10 -> __ocaml_lex_state109 lexbuf
     | 256 ->
         begin
           lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -6773,7 +6773,8 @@ let token c lexbuf =
           (lexbuf.Lexing.lex_mem).(17) <- lexbuf.Lexing.lex_curr_pos;
           __ocaml_lex_state106 lexbuf
         end
-    | _ -> __ocaml_lex_state110 lexbuf
+    | 13 -> __ocaml_lex_state115 lexbuf
+    | _ -> __ocaml_lex_state117 lexbuf
   and __ocaml_lex_state107 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 9|32 ->
@@ -6792,169 +6793,761 @@ let token c lexbuf =
           lexbuf.Lexing.lex_last_action
         end
   and __ocaml_lex_state108 lexbuf =
-    begin
-      (lexbuf.Lexing.lex_mem).(3) <- (-1);
-      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
-      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17);
-      lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 24;
-      (match __ocaml_lex_next_char lexbuf with
-       | 10 -> __ocaml_lex_state109 lexbuf
-       | _ ->
-           begin
-             lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-             lexbuf.Lexing.lex_last_action
-           end)
-    end
-  and __ocaml_lex_state109 lexbuf =
-    begin
-      (lexbuf.Lexing.lex_mem).(3) <- (-1);
-      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
-      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17); 24
-    end
-  and __ocaml_lex_state110 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 13 -> __ocaml_lex_state108 lexbuf
-    | 10 -> __ocaml_lex_state109 lexbuf
-    | 256 ->
+    | 58 -> __ocaml_lex_state109 lexbuf
+    | _ ->
         begin
           lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action
         end
-    | _ -> __ocaml_lex_state110 lexbuf
-  and __ocaml_lex_state111 lexbuf =
+  and __ocaml_lex_state109 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 13 -> __ocaml_lex_state108 lexbuf
-    | 10 -> __ocaml_lex_state109 lexbuf
-    | 34 -> __ocaml_lex_state113 lexbuf
-    | 256 ->
+    | 46 -> __ocaml_lex_state112 lexbuf
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state111 lexbuf
+    | 95
+      |97
+       |98
+        |99
+         |100
+          |101
+           |102
+            |103
+             |104
+              |105
+               |106
+                |107
+                 |108
+                  |109
+                   |110
+                    |111
+                     |112
+                      |113
+                       |114
+                        |115
+                         |116
+                          |117
+                           |118
+                            |119
+                             |120
+                              |121
+                               |122
+                                |223
+                                 |224
+                                  |225
+                                   |226
+                                    |227
+                                     |228
+                                      |229
+                                       |230
+                                        |231
+                                         |232
+                                          |233
+                                           |234
+                                            |235
+                                             |236
+                                              |237
+                                               |238
+                                                |239
+                                                 |240
+                                                  |241
+                                                   |242
+                                                    |243
+                                                     |244
+                                                      |245
+                                                       |246
+                                                        |248
+                                                         |249
+                                                          |250
+                                                           |251
+                                                            |252|253|254|255
+        ->
         begin
-          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action
+          (lexbuf.Lexing.lex_mem).(18) <- lexbuf.Lexing.lex_curr_pos;
+          __ocaml_lex_state110 lexbuf
         end
     | _ ->
         begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state110 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 124 ->
+        begin
           (lexbuf.Lexing.lex_mem).(19) <- lexbuf.Lexing.lex_curr_pos;
-          __ocaml_lex_state111 lexbuf
+          __ocaml_lex_state113 lexbuf
+        end
+    | 39
+      |45
+       |48
+        |49
+         |50
+          |51
+           |52
+            |53
+             |54
+              |55
+               |56
+                |57
+                 |65
+                  |66
+                   |67
+                    |68
+                     |69
+                      |70
+                       |71
+                        |72
+                         |73
+                          |74
+                           |75
+                            |76
+                             |77
+                              |78
+                               |79
+                                |80
+                                 |81
+                                  |82
+                                   |83
+                                    |84
+                                     |85
+                                      |86
+                                       |87
+                                        |88
+                                         |89
+                                          |90
+                                           |95
+                                            |97
+                                             |98
+                                              |99
+                                               |100
+                                                |101
+                                                 |102
+                                                  |103
+                                                   |104
+                                                    |105
+                                                     |106
+                                                      |107
+                                                       |108
+                                                        |109
+                                                         |110
+                                                          |111
+                                                           |112
+                                                            |113
+                                                             |114
+                                                              |115
+                                                               |116
+                                                                |117
+                                                                 |118
+                                                                  |119
+                                                                   |120
+                                                                    |
+                                                                    121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
+        ->
+        begin
+          (lexbuf.Lexing.lex_mem).(18) <- lexbuf.Lexing.lex_curr_pos;
+          __ocaml_lex_state110 lexbuf
+        end
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state111 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 46 -> __ocaml_lex_state112 lexbuf
+    | 39
+      |48
+       |49
+        |50
+         |51
+          |52
+           |53
+            |54
+             |55
+              |56
+               |57
+                |65
+                 |66
+                  |67
+                   |68
+                    |69
+                     |70
+                      |71
+                       |72
+                        |73
+                         |74
+                          |75
+                           |76
+                            |77
+                             |78
+                              |79
+                               |80
+                                |81
+                                 |82
+                                  |83
+                                   |84
+                                    |85
+                                     |86
+                                      |87
+                                       |88
+                                        |89
+                                         |90
+                                          |95
+                                           |97
+                                            |98
+                                             |99
+                                              |100
+                                               |101
+                                                |102
+                                                 |103
+                                                  |104
+                                                   |105
+                                                    |106
+                                                     |107
+                                                      |108
+                                                       |109
+                                                        |110
+                                                         |111
+                                                          |112
+                                                           |113
+                                                            |114
+                                                             |115
+                                                              |116
+                                                               |117
+                                                                |118
+                                                                 |119
+                                                                  |120
+                                                                   |121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
+        -> __ocaml_lex_state111 lexbuf
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
         end
   and __ocaml_lex_state112 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 9|32 -> __ocaml_lex_state112 lexbuf
-    | 13 -> __ocaml_lex_state108 lexbuf
-    | 34 ->
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state111 lexbuf
+    | 95
+      |97
+       |98
+        |99
+         |100
+          |101
+           |102
+            |103
+             |104
+              |105
+               |106
+                |107
+                 |108
+                  |109
+                   |110
+                    |111
+                     |112
+                      |113
+                       |114
+                        |115
+                         |116
+                          |117
+                           |118
+                            |119
+                             |120
+                              |121
+                               |122
+                                |223
+                                 |224
+                                  |225
+                                   |226
+                                    |227
+                                     |228
+                                      |229
+                                       |230
+                                        |231
+                                         |232
+                                          |233
+                                           |234
+                                            |235
+                                             |236
+                                              |237
+                                               |238
+                                                |239
+                                                 |240
+                                                  |241
+                                                   |242
+                                                    |243
+                                                     |244
+                                                      |245
+                                                       |246
+                                                        |248
+                                                         |249
+                                                          |250
+                                                           |251
+                                                            |252|253|254|255
+        ->
         begin
           (lexbuf.Lexing.lex_mem).(18) <- lexbuf.Lexing.lex_curr_pos;
-          (lexbuf.Lexing.lex_mem).(19) <- lexbuf.Lexing.lex_curr_pos;
-          __ocaml_lex_state111 lexbuf
+          __ocaml_lex_state110 lexbuf
         end
-    | 10 -> __ocaml_lex_state109 lexbuf
-    | 256 ->
+    | _ ->
         begin
           lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action
         end
-    | _ -> __ocaml_lex_state110 lexbuf
   and __ocaml_lex_state113 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 256 ->
-        begin
-          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action
-        end
-    | 13 -> __ocaml_lex_state114 lexbuf
-    | 10 -> __ocaml_lex_state115 lexbuf
-    | _ -> __ocaml_lex_state113 lexbuf
-  and __ocaml_lex_state114 lexbuf =
     begin
-      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
-      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17);
-      (lexbuf.Lexing.lex_mem).(3) <- (lexbuf.Lexing.lex_mem).(18);
-      (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(19);
+      (lexbuf.Lexing.lex_mem).(1) <- (-1);
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(18);
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 24;
+      lexbuf.Lexing.lex_last_action <- 22;
       (match __ocaml_lex_next_char lexbuf with
-       | 10 -> __ocaml_lex_state115 lexbuf
+       | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
+           __ocaml_lex_state114 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
              lexbuf.Lexing.lex_last_action
            end)
+    end
+  and __ocaml_lex_state114 lexbuf =
+    begin
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(19);
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(18); 22
     end
   and __ocaml_lex_state115 lexbuf =
     begin
+      (lexbuf.Lexing.lex_mem).(3) <- (-1);
       (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
       (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17);
-      (lexbuf.Lexing.lex_mem).(3) <- (lexbuf.Lexing.lex_mem).(18);
-      (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(19); 24
-    end
-  and __ocaml_lex_state116 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 46|60|61|62 -> __ocaml_lex_state116 lexbuf
-    | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
-    | 41|93 -> __ocaml_lex_state98 lexbuf
-    | 58|124 -> __ocaml_lex_state117 lexbuf
-    | _ ->
-        begin
-          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action
-        end
-  and __ocaml_lex_state117 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 46|60|61|62 -> __ocaml_lex_state116 lexbuf
-    | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
-    | 41 -> __ocaml_lex_state5 lexbuf
-    | 93 -> __ocaml_lex_state98 lexbuf
-    | 58|124 -> __ocaml_lex_state117 lexbuf
-    | _ ->
-        begin
-          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action
-        end
-  and __ocaml_lex_state118 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state118 lexbuf
-    | 41|93 -> __ocaml_lex_state103 lexbuf
-    | 58|124 -> __ocaml_lex_state120 lexbuf
-    | _ ->
-        begin
-          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action
-        end
-  and __ocaml_lex_state119 lexbuf =
-    begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 25;
       (match __ocaml_lex_next_char lexbuf with
-       | 46|60|61|62 -> __ocaml_lex_state116 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
-       | 41|93 -> __ocaml_lex_state98 lexbuf
-       | 58|124 -> __ocaml_lex_state117 lexbuf
+       | 10 -> __ocaml_lex_state116 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state120 lexbuf =
+  and __ocaml_lex_state116 lexbuf =
+    begin
+      (lexbuf.Lexing.lex_mem).(3) <- (-1);
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17); 25
+    end
+  and __ocaml_lex_state117 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state118 lexbuf
-    | 41|93 -> __ocaml_lex_state103 lexbuf
-    | 58|124 -> __ocaml_lex_state120 lexbuf
-    | _ ->
+    | 10 -> __ocaml_lex_state116 lexbuf
+    | 256 ->
         begin
           lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action
         end
+    | 13 -> __ocaml_lex_state115 lexbuf
+    | _ -> __ocaml_lex_state117 lexbuf
+  and __ocaml_lex_state118 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 10 -> __ocaml_lex_state116 lexbuf
+    | 256 ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+    | 13 -> __ocaml_lex_state115 lexbuf
+    | 34 -> __ocaml_lex_state120 lexbuf
+    | _ ->
+        begin
+          (lexbuf.Lexing.lex_mem).(21) <- lexbuf.Lexing.lex_curr_pos;
+          __ocaml_lex_state118 lexbuf
+        end
+  and __ocaml_lex_state119 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 9|32 -> __ocaml_lex_state119 lexbuf
+    | 10 -> __ocaml_lex_state116 lexbuf
+    | 34 ->
+        begin
+          (lexbuf.Lexing.lex_mem).(20) <- lexbuf.Lexing.lex_curr_pos;
+          (lexbuf.Lexing.lex_mem).(21) <- lexbuf.Lexing.lex_curr_pos;
+          __ocaml_lex_state118 lexbuf
+        end
+    | 256 ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+    | 13 -> __ocaml_lex_state115 lexbuf
+    | _ -> __ocaml_lex_state117 lexbuf
+  and __ocaml_lex_state120 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 10 -> __ocaml_lex_state122 lexbuf
+    | 13 -> __ocaml_lex_state121 lexbuf
+    | 256 ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+    | _ -> __ocaml_lex_state120 lexbuf
   and __ocaml_lex_state121 lexbuf =
     begin
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17);
+      (lexbuf.Lexing.lex_mem).(3) <- (lexbuf.Lexing.lex_mem).(20);
+      (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(21);
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 25;
       (match __ocaml_lex_next_char lexbuf with
-       | 46|60|61|62 -> __ocaml_lex_state116 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state118 lexbuf
-       | 41 -> __ocaml_lex_state5 lexbuf
-       | 93 -> __ocaml_lex_state98 lexbuf
-       | 58|124 -> __ocaml_lex_state117 lexbuf
+       | 10 -> __ocaml_lex_state122 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -6962,35 +7555,116 @@ let token c lexbuf =
            end)
     end
   and __ocaml_lex_state122 lexbuf =
+    begin
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
+      (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(17);
+      (lexbuf.Lexing.lex_mem).(3) <- (lexbuf.Lexing.lex_mem).(20);
+      (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(21); 25
+    end
+  and __ocaml_lex_state123 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 60 -> __ocaml_lex_state123 lexbuf
-    | 46|58|61|62|124 -> __ocaml_lex_state122 lexbuf
-    | 37|38|47|64|94 -> __ocaml_lex_state124 lexbuf
+    | 46|60|61|62 -> __ocaml_lex_state123 lexbuf
+    | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
+    | 58|124 -> __ocaml_lex_state124 lexbuf
+    | 41|93 -> __ocaml_lex_state98 lexbuf
     | _ ->
         begin
           lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action
         end
-  and __ocaml_lex_state123 lexbuf =
+  and __ocaml_lex_state124 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 46|60|61|62 -> __ocaml_lex_state123 lexbuf
+    | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
+    | 41 -> __ocaml_lex_state5 lexbuf
+    | 58|124 -> __ocaml_lex_state124 lexbuf
+    | 93 -> __ocaml_lex_state98 lexbuf
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state125 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 58|124 -> __ocaml_lex_state127 lexbuf
+    | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state125 lexbuf
+    | 41|93 -> __ocaml_lex_state103 lexbuf
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state126 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
-       | 60 -> __ocaml_lex_state123 lexbuf
-       | 46|58|61|62|124 -> __ocaml_lex_state122 lexbuf
-       | 37|38|47|64|94 -> __ocaml_lex_state124 lexbuf
+       | 46|60|61|62 -> __ocaml_lex_state123 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
+       | 58|124 -> __ocaml_lex_state124 lexbuf
+       | 41|93 -> __ocaml_lex_state98 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state124 lexbuf =
+  and __ocaml_lex_state127 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 58|124 -> __ocaml_lex_state127 lexbuf
+    | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state125 lexbuf
+    | 41|93 -> __ocaml_lex_state103 lexbuf
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state128 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 27;
+      lexbuf.Lexing.lex_last_action <- 28;
       (match __ocaml_lex_next_char lexbuf with
-       | 37|38|46|47|58|60|61|62|64|94|124 -> __ocaml_lex_state124 lexbuf
+       | 46|60|61|62 -> __ocaml_lex_state123 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state125 lexbuf
+       | 41 -> __ocaml_lex_state5 lexbuf
+       | 58|124 -> __ocaml_lex_state124 lexbuf
+       | 93 -> __ocaml_lex_state98 lexbuf
+       | _ ->
+           begin
+             lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+             lexbuf.Lexing.lex_last_action
+           end)
+    end
+  and __ocaml_lex_state129 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 46|58|61|62|124 -> __ocaml_lex_state129 lexbuf
+    | 37|38|47|64|94 -> __ocaml_lex_state131 lexbuf
+    | 60 -> __ocaml_lex_state130 lexbuf
+    | _ ->
+        begin
+          lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action
+        end
+  and __ocaml_lex_state130 lexbuf =
+    begin
+      lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+      lexbuf.Lexing.lex_last_action <- 28;
+      (match __ocaml_lex_next_char lexbuf with
+       | 46|58|61|62|124 -> __ocaml_lex_state129 lexbuf
+       | 37|38|47|64|94 -> __ocaml_lex_state131 lexbuf
+       | 60 -> __ocaml_lex_state130 lexbuf
+       | _ ->
+           begin
+             lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+             lexbuf.Lexing.lex_last_action
+           end)
+    end
+  and __ocaml_lex_state131 lexbuf =
+    begin
+      lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+      lexbuf.Lexing.lex_last_action <- 28;
+      (match __ocaml_lex_next_char lexbuf with
+       | 37|38|46|47|58|60|61|62|64|94|124 -> __ocaml_lex_state131 lexbuf
        | 40|91 -> __ocaml_lex_state64 lexbuf
        | _ ->
            begin
@@ -6998,32 +7672,32 @@ let token c lexbuf =
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state125 lexbuf =
+  and __ocaml_lex_state132 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 37|38|46|47|60|61|62|64|94 -> __ocaml_lex_state8 lexbuf
-       | 58|124 -> __ocaml_lex_state125 lexbuf
        | 41|93 -> __ocaml_lex_state103 lexbuf
+       | 58|124 -> __ocaml_lex_state132 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
              lexbuf.Lexing.lex_last_action
            end)
     end
-  and __ocaml_lex_state126 lexbuf =
+  and __ocaml_lex_state133 lexbuf =
     begin
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-      lexbuf.Lexing.lex_last_action <- 29;
+      lexbuf.Lexing.lex_last_action <- 30;
       (match __ocaml_lex_next_char lexbuf with
        | 33|42|43|45|63|92|126 -> __ocaml_lex_state3 lexbuf
        | 46|60|61|62 -> __ocaml_lex_state6 lexbuf
        | 37|38|47|64|94 -> __ocaml_lex_state8 lexbuf
+       | 58|124 -> __ocaml_lex_state133 lexbuf
        | 41 -> __ocaml_lex_state5 lexbuf
        | 93 -> __ocaml_lex_state98 lexbuf
-       | 58|124 -> __ocaml_lex_state126 lexbuf
        | _ ->
            begin
              lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
@@ -7031,7 +7705,7 @@ let token c lexbuf =
            end)
     end in
   begin
-    __ocaml_lex_init_lexbuf lexbuf 20;
+    __ocaml_lex_init_lexbuf lexbuf 22;
     (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
      begin
        lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
@@ -7183,7 +7857,9 @@ let token c lexbuf =
               Lexing.sub_lexeme_char_opt lexbuf
                 (((lexbuf.Lexing.lex_mem).(1)) + 0) in
             let len = String.length name in
-            let name = FToken.resolve_name (FToken.name_of_string name) in
+            let name =
+              FToken.resolve_name (FLoc.of_lexbuf lexbuf)
+                (FToken.name_of_string name) in
             begin
               Stack.push p opt_char;
               mk_quotation quotation c ~name ~loc:""
@@ -7191,6 +7867,25 @@ let token c lexbuf =
                 ~retract:(2 + (opt_char_len p))
             end
         | 22 ->
+            let name =
+              Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 3)
+                (((lexbuf.Lexing.lex_mem).(0)) + 0)
+            and p =
+              Lexing.sub_lexeme_char_opt lexbuf
+                (((lexbuf.Lexing.lex_mem).(1)) + 0) in
+            let len = String.length name in
+            let () = Stack.push p opt_char in
+            let retract = (opt_char_len p) + 2 in
+            let old = (c.lexbuf).lex_start_p in
+            let s =
+              begin
+                with_curr_loc quotation c; (c.lexbuf).lex_start_p <- old;
+                buff_contents c
+              end in
+            let contents = String.sub s 0 ((String.length s) - retract) in
+            `DirQuotation
+              ((((3 + 1) + len) + (opt_char_len p)), name, contents)
+        | 23 ->
             let name =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2)
                 (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -7201,19 +7896,21 @@ let token c lexbuf =
               Lexing.sub_lexeme_char_opt lexbuf
                 (((lexbuf.Lexing.lex_mem).(2)) + 0) in
             let len = String.length name in
-            let name = FToken.resolve_name (FToken.name_of_string name) in
+            let name =
+              FToken.resolve_name (FLoc.of_lexbuf lexbuf)
+                (FToken.name_of_string name) in
             begin
               Stack.push p opt_char;
               mk_quotation quotation c ~name ~loc
                 ~shift:((((2 + 2) + (String.length loc)) + len) +
                           (opt_char_len p)) ~retract:(2 + (opt_char_len p))
             end
-        | 23 ->
+        | 24 ->
             let c =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
                 (lexbuf.Lexing.lex_start_pos + 3) in
             err (Illegal_quotation c) (FLoc.of_lexbuf lexbuf)
-        | 24 ->
+        | 25 ->
             let num =
               Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
                 (((lexbuf.Lexing.lex_mem).(1)) + 0)
@@ -7226,22 +7923,22 @@ let token c lexbuf =
               update_loc c ?file:name ~line:inum ~absolute:true;
               `LINE_DIRECTIVE (inum, name)
             end
-        | 25 ->
+        | 26 ->
             let op =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                 (((lexbuf.Lexing.lex_mem).(0)) + 0) in
             `ESCAPED_IDENT op
-        | 26 ->
+        | 27 ->
             let op =
               Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
                 (((lexbuf.Lexing.lex_mem).(1)) + 0) in
             `ESCAPED_IDENT op
-        | 27 ->
+        | 28 ->
             let x =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
                 (lexbuf.Lexing.lex_curr_pos + 0) in
             `SYMBOL x
-        | 28 ->
+        | 29 ->
             let dollar c lexbuf =
               let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
                 let pos = lexbuf.Lexing.lex_curr_pos in
@@ -9705,12 +10402,12 @@ let token c lexbuf =
             if c.antiquots
             then with_curr_loc dollar c
             else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
-        | 29 ->
+        | 30 ->
             let x =
               Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
                 (lexbuf.Lexing.lex_curr_pos + 0) in
             `SYMBOL x
-        | 30 ->
+        | 31 ->
             let pos = lexbuf.lex_curr_p in
             begin
               lexbuf.lex_curr_p <-
@@ -9721,7 +10418,7 @@ let token c lexbuf =
                 };
               `EOI
             end
-        | 31 ->
+        | 32 ->
             let c =
               Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
             err (Illegal_character c) (FLoc.of_lexbuf lexbuf)

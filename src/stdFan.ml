@@ -1,11 +1,12 @@
 
 (** The dependency should only rely on the last version of
   [Fan], keep its dependency only on [LibUtil]  *)
-(* open LibUtil *)
+#{:control|import Fan.Inject; default "stru";|}
+  
 open Format
 
 
-#import Fan.Inject;;
+
 
 {:stru| eq_base1  |};;
 {:stru| print_base1  |};;

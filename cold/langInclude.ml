@@ -1,9 +1,9 @@
-let g = Fgram.create_lexer ~annot:"include" ~keywords:[] ()
+let g = Fgram.create_lexer ~annot:"" ~keywords:[] ()
 
 let include_quot = Fgram.mk_dynamic g "include_quot"
 
 let _ =
-  Fgram.extend_single (include_quot : 'include_quot Fgram.t )
+  Fgram.unsafe_extend_single (include_quot : 'include_quot Fgram.t )
     (None,
       (None, None,
         [([`Stoken

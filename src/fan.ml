@@ -71,10 +71,10 @@ let  rec sig_handler  : sigi -> sigi option =  with sigi
              ~directive_handler:sig_handler s PreCast.parse_interf )
       | {| #default_quotation $str:s |} ->
           (AstQuotation.default :=
-            FToken.resolve_name (`Sub [], s); None )
+            FToken.resolve_name _loc (`Sub [], s); None )
       | {| #$({:ident'@_|filter|}) $str:s |} -> (* FIXME simplify later*)
           ( AstFilters.use_interf_filter s; None)
-      | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None
+
       | {| #$lid:x $_|} -> (* FIXME pattern match should give _loc automatically *)
           FLoc.raise _loc
             (XStream.Error (x ^ " is abad directive Fan can not handled "))
@@ -93,7 +93,7 @@ let rec str_handler = with stru
             PreCast.parse_implem 
       | {| #default_quotation $str:s |} ->
           begin
-            AstQuotation.default := FToken.resolve_name (`Sub [],s) ;
+            AstQuotation.default := FToken.resolve_name _loc (`Sub [],s) ;
             None
           end
       | {| #lang_clear |} -> begin 
@@ -103,8 +103,6 @@ let rec str_handler = with stru
       end
       | {| #filter $str:s|} ->
           begin AstFilters.use_implem_filter s; None ; end
-      | (* {|#import|} *) `DirectiveSimple(_loc,`Lid(_,"import")) -> None                  
-            (* | {| #import |} -> None (\* FIXME *\) *)
       | {| #$lid:x $_ |} ->
           (* FIXME pattern match should give _loc automatically *)
           FLoc.raise _loc (XStream.Error (x ^ "bad directive Fan can not handled "))
@@ -223,7 +221,7 @@ let initial_spec_list =
    ("-dlang",
        (FArg.String
           (fun s  ->
-            AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
+            AstQuotation.default := (FToken.resolve_name (FLoc.ghost) ((`Sub []), s)))),
        " Set the default language");
    ("-printer", FArg.Symbol( ["p";"o"],
     function x ->

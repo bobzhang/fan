@@ -7,7 +7,7 @@ open AstLib
 let list_of_list (loc : loc) =
   let rec loop top =
     function
-    | [] -> `Uid (ghost, "[]")
+    | [] -> let ghost = FLoc.ghost in `Uid (ghost, "[]")
     | e1::el ->
         let _loc = if top then loc else FLoc.merge (loc_of e1) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in

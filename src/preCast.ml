@@ -106,7 +106,7 @@ let wrap directive_handler pa init_loc cs =
     | Some new_loc ->
         let pl =
           match List.rev pl with
-          | [] -> assert false
+          | [] -> [] (* assert false *)
           | x :: xs ->
               match directive_handler x with
               | None -> xs
@@ -191,7 +191,7 @@ let use_file token_stream =
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | [ {| #default_quotation $str:s |} ] ->
-            begin AstQuotation.set_default (FToken.resolve_name (`Sub [],s)); loop () end 
+            begin AstQuotation.set_default (FToken.resolve_name _loc (`Sub [],s)); loop () end 
         | _ -> (pl, false) 
       else (pl, true) in
   let (pl0, eoi) = loop () in

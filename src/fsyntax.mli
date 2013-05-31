@@ -194,5 +194,5 @@ val pat_filter_n : ep -> pat
 
     
 
-val dot_namespace :  string list Fgram.t
+
     

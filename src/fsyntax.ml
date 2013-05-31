@@ -68,7 +68,7 @@ let print_warning loc txt = !current_warning loc txt;;
   uident
   vid 
   astr
-  dot_namespace|};;
+  |};;
   
 let antiquot_exp = Fgram.eoi_entry exp 
 let antiquot_pat = Fgram.eoi_entry pat

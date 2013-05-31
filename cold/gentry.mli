@@ -46,14 +46,20 @@ val parse : 'a t -> FLoc.t -> char XStream.t -> 'a
 val name_of_entry : 'a t -> string
 val gram_of_entry : 'a t -> gram
 
+
 (** mutate the [estart] and [econtinue]
    The previous version is lazy. We should find a way to exploit both in the future *)    
 val extend :
   'a t -> position  option * olevel list -> unit
+val unsafe_extend :
+    'a t -> position  option * olevel list -> unit
 
 val extend_single :
   'a t -> position  option * olevel  -> unit
-    
+
+val unsafe_extend_single :
+  'a t -> position  option * olevel  -> unit
+      
 val delete_rule : 'a t -> symbol list -> unit
 
 val symb_failed :  'b t ->  'a -> symbol -> symbol -> string

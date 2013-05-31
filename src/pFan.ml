@@ -252,14 +252,14 @@ let apply () = begin
        lang:
        [ dot_lstrings{ls} -> 
          let old = !AstQuotation.default in (
-         AstQuotation.default := FToken.resolve_name ls;
+         AstQuotation.default := FToken.resolve_name _loc ls;
          old)]
        pos_exps:
        [ L1
            [ `Lid x;":";dot_lstrings{y} ->
-             ((x:string), FToken.resolve_name y)
+             ((x:string), FToken.resolve_name _loc y)
            | `Lid x ->
-               ((x:string), FToken.resolve_name
+               ((x:string), FToken.resolve_name _loc
                   (`Sub [], x) ) ] SEP ";"{xys} -> 
                     let old = !AstQuotation.map in
                     (AstQuotation.map := SMap.add_list xys old;
@@ -765,9 +765,7 @@ let apply () = begin
           dot (mk_anti _loc ~c:"uident" n s) i]
 
 
-      dot_namespace:
-      [ `Uid i; "."; S{xs} -> i::xs
-      | `Uid i -> [i]]
+      
       (* parse [a.b.c] no antiquot *)
       dot_lstrings:
       [ `Lid i -> (`Sub[],i)
@@ -905,18 +903,17 @@ let apply () = begin
     (** ml file  entrance *)    
       implem:
       [
-       "#"; `QUOTATION x ->
+        `DirQuotation x -> (* FIXME (a,b,c) pattern broken *)
+          let (shift,name, contents ) = x in
+          let _loc = FLoc.move `start shift _loc in
          begin
-           (Fdir.handle _loc (`QUOTATION x ));
+           (Fdir.handle_dir _loc (name,contents));
            ([],Some _loc)
          end
       | "#"; a_lident{n}; exp{dp}; ";;" ->
         ([ `Directive(_loc,n,dp) ],  Some _loc)
       | "#"; a_lident{n}; ";;" ->
         ([`DirectiveSimple(_loc,n)], Some _loc)
-      | "#";"import"; dot_namespace{x};";;" -> 
-          (FToken.paths :=  `Absolute  x :: !FToken.paths;
-            ([`DirectiveSimple(_loc,`Lid(_loc,"import"))],Some _loc))
       | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)
       | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped)
          (* FIXME merge with the above in the future*)            
@@ -925,9 +922,6 @@ let apply () = begin
       top_phrase:
       [ "#"; a_lident{n}; exp{dp}; ";;" -> Some (`Directive(_loc,n,dp))
       | "#"; a_lident{n}; ";;" -> Some (`DirectiveSimple(_loc,n))
-      | "#";"import"; dot_namespace{x} ->
-          (FToken.paths := `Absolute  x :: !FToken.paths;
-           None)
       | stru{st}; ";;" -> Some st
       | `EOI -> None ]
       (* used by [struct .... end]

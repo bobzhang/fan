@@ -8,6 +8,32 @@ val mkvirtual : flag -> Asttypes.virtual_flag
 val mkdirection : flag -> Asttypes.direction_flag
 val mkrf : flag -> Asttypes.rec_flag
 
+
+(**
+  val ident_tag: ident -> Longident.t * [> `app | `lident | `uident ]
+  {[
+  ident_tag {:ident| $(uid:"").B.t|}
+  - : Longident.t * [> `app | `lident | `uident ] =
+  (Longident.Ldot (Longident.Lident "B", "t"), `lident)
+
+  ident_tag {:ident| A B |}
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), `app)
+
+  ident_tag {:ident| (A B).t|}
+  (Longident.Ldot
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), "t"),
+  `lident)
+
+  ident_tag {:ident| B.C |}
+  (Longident.Ldot (Longident.Lident "B", "C"), `uident)
+
+  ident_tag {:ident| B.u.g|}
+  Exception: FLoc.Exc_located (, Failure "invalid long identifier").
+  ]}
+
+  If "", just remove it, this behavior should appear in other identifier as well FIXME
+
+ *)    
 val ident_tag : ident -> Longident.t * [> `app | `lident | `uident ]
 
 val ident_noloc : ident -> Longident.t
@@ -32,7 +58,7 @@ val predef_option : loc -> ctyp
 
 val ctyp : ctyp -> Parsetree.core_type
 
-val row_field : (* ctyp *) row_field -> Parsetree.row_field list -> Parsetree.row_field list
+val row_field :  row_field -> Parsetree.row_field list -> Parsetree.row_field list
 
 val meth_list :
     name_ctyp ->
@@ -40,8 +66,9 @@ val meth_list :
 
 val package_type_constraints :
   constr ->
-  (Longident.t Asttypes.loc * Parsetree.core_type) list ->
-  (Longident.t Asttypes.loc * Parsetree.core_type) list
+    (Longident.t Asttypes.loc * Parsetree.core_type) list ->
+      (Longident.t Asttypes.loc * Parsetree.core_type) list
+
 val package_type : mtyp -> Parsetree.package_type
 
 val mkprivate' : bool -> Asttypes.private_flag
@@ -57,10 +84,6 @@ val mkvariant :
   string Location.loc * Parsetree.core_type list *
   Parsetree.core_type option * loc
 
-(* val type_decl : *)
-(*   (string Asttypes.loc option * (bool * bool)) list -> *)
-(*   (Parsetree.core_type * Parsetree.core_type * Location.t) list -> *)
-(*   loc -> type_info   -> Parsetree.type_declaration *)
 
 val mkvalue_desc :
   Location.t -> ctyp -> strings list -> Parsetree.value_description
@@ -95,6 +118,28 @@ val pat : pat -> Parsetree.pattern
 
 val flag :  loc -> flag -> Asttypes.override_flag
 
+(** {[
+  exp (`Id (_loc, ( (`Dot (_loc, `Uid (_loc, "U"), `Lid(_loc,"g"))) )));;
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "U", "g"); loc = };
+  pexp_loc = }
+
+  exp {:exp| $(uid:"A").b |} ; ;       
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "A", "b"); loc = };
+  pexp_loc = }
+  Ast2pt.exp {:exp| $(uid:"").b |} ; 
+  - : Parsetree.expession =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "", "b"); loc = };
+  pexp_loc = }
+  ]}
+ *)
 val exp : exp -> Parsetree.expression
 
 val label_exp : exp -> Asttypes.label * Parsetree.expression
@@ -111,6 +156,15 @@ val case :
 val mklabexp :
   rec_exp ->
   (Longident.t Asttypes.loc * Parsetree.expression) list
+
+
+(** Example: {[
+   (of_stru {:stru|type u = int and v  = [A of u and b ] |})
+   ||> mktype_decl |> AstPrint.default#type_def_list f;
+   type u = int 
+   and v =  
+   | A of u* b]}
+ *)    
       
 val mktype_decl :
   typedecl ->
@@ -134,7 +188,7 @@ val cltyp : cltyp -> Parsetree.class_type
 
 val class_info_clexp : cldecl -> Parsetree.class_declaration
 
-val class_info_cltyp : cltdecl(* cltyp  *)-> Parsetree.class_description
+val class_info_cltyp : cltdecl -> Parsetree.class_description
 
 val clsigi :
   clsigi ->
@@ -152,14 +206,14 @@ val stru : stru -> Parsetree.structure_item list
 
 val directive : exp -> Parsetree.directive_argument
 
-(* translate Fan's phrase into parsetree, notice that
+(** translate Fan's phrase into parsetree, notice that
    some  [directives] are passed to parsetree if not handled *)    
 val phrase : stru -> Parsetree.toplevel_phrase
     
 val pp : formatter -> ('a, formatter, unit) format -> 'a
 
 val print_exp : formatter -> exp -> unit
-val to_string_exp: exp -> string
+val to_string_exp : exp -> string
     
 val print_pat : formatter -> pat -> unit
 

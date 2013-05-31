@@ -7,6 +7,9 @@ type domains =
 type name = (domains*string) with ("Print")
 
 type quotation = [ `QUOTATION of (name * string * int * string) ] with ("Print")
+
+(** (name,contents)  *)
+type dir_quotation = [`DirQuotation of (int * string * string) ] with ("Print")
   
 type t =
   [  `KEYWORD of string
@@ -26,7 +29,7 @@ type t =
         (* (name,loc,shift,contents) *)
   (* | `QUOTATION of (name*string*int*string)(\* quotation *\) *)
   | quotation
-        
+  | dir_quotation
   | `Ant of (string * string )
   | `COMMENT of string
   | `BLANKS of string
@@ -161,7 +164,7 @@ let names_tbl : (domains,SSet.t) Hashtbl.t =
   Hashtbl.create 30 
     
 (**  when no qualified path is given , it uses [Sub []] *)
-let resolve_name (n:name) : name =
+let resolve_name loc (n:name) : name =
   match n with
   |((`Sub _ as x) ,v) ->
       (let try r =
@@ -171,5 +174,6 @@ let resolve_name (n:name) : name =
             SSet.mem v set
             with Not_found -> false) !paths in
       (concat_domain (r, x),v)
-      with Not_found -> failwithf "resolve_name %s" v)
+      with Not_found ->
+        FLoc.errorf loc "resolve_name %s" v)
   | x ->  x

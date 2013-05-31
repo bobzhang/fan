@@ -59,11 +59,11 @@ let rec sig_handler: sigi -> sigi option =
   | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.sigi)
       ->
       begin
-        AstQuotation.default := (FToken.resolve_name ((`Sub []), s)); None
+        AstQuotation.default := (FToken.resolve_name _loc ((`Sub []), s));
+        None
       end
   | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.sigi) ->
       begin AstFilters.use_interf_filter s; None end
-  | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
   | (`Directive (_loc,`Lid (_,x),_) : FAst.sigi) ->
       FLoc.raise _loc
         (XStream.Error (x ^ " is abad directive Fan can not handled "))
@@ -79,7 +79,8 @@ let rec str_handler =
   | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) : FAst.stru)
       ->
       begin
-        AstQuotation.default := (FToken.resolve_name ((`Sub []), s)); None
+        AstQuotation.default := (FToken.resolve_name _loc ((`Sub []), s));
+        None
       end
   | (`DirectiveSimple (_loc,`Lid (_,"lang_clear")) : FAst.stru) ->
       begin
@@ -87,7 +88,6 @@ let rec str_handler =
       end
   | (`Directive (_loc,`Lid (_,"filter"),`Str (_,s)) : FAst.stru) ->
       begin AstFilters.use_implem_filter s; None end
-  | `DirectiveSimple (_loc,`Lid (_,"import")) -> None
   | (`Directive (_loc,`Lid (_,x),_) : FAst.stru) ->
       FLoc.raise _loc
         (XStream.Error (x ^ "bad directive Fan can not handled "))
@@ -185,6 +185,12 @@ let initial_spec_list =
     "Print the loaded parsers.");
   ("-used-parsers", (FArg.Unit just_print_applied_parsers),
     "Print the applied parsers.");
+  ("-dlang",
+    (FArg.String
+       ((fun s  ->
+           AstQuotation.default :=
+             (FToken.resolve_name FLoc.ghost ((`Sub []), s))))),
+    " Set the default language");
   ("-printer",
     (FArg.Symbol
        (["p"; "o"],
@@ -209,32 +215,22 @@ let anon_fun name =
            then ModuleImpl name
            else raise (FArg.Bad ("don't know what to do with " ^ name)))
 
-let _ = PreCast.register_text_printer ()
-
-let _ =
-  Printexc.register_printer
-    (function
-     | FLoc.Exc_located (loc,exn) ->
-         Some
-           (sprintf "%s:@\n%s" (FLoc.to_string loc) (Printexc.to_string exn))
-     | _ -> None)
-
 let _ =
   begin
-    Fsyntax.Options.add
-      ("-dlang",
-        (FArg.String
-           (fun s  ->
-              AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
-        " Set the default language");
-    Fsyntax.Options.adds initial_spec_list
+    PreCast.register_text_printer ();
+    Printexc.register_printer
+      (function
+       | FLoc.Exc_located (loc,exn) ->
+           Some
+             (sprintf "%s:@\n%s" (FLoc.to_string loc)
+                (Printexc.to_string exn))
+       | _ -> None);
+    Foptions.adds initial_spec_list;
+    AstParsers.use_parsers ["revise"; "stream"; "macro"];
+    (try
+       FArg.parse Foptions.init_spec_list anon_fun
+         "fan <options> <file>\nOptions are:\n"
+     with
+     | exc ->
+         begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end)
   end
-
-let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
-
-let _ =
-  try
-    FArg.parse Fsyntax.Options.init_spec_list anon_fun
-      "fan <options> <file>\nOptions are:\n"
-  with
-  | exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end

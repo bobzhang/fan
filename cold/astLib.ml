@@ -163,8 +163,6 @@ let loc_of =
   | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc
 
-let ghost = FLoc.ghost
-
 let (<+>) a b = (loc_of a) <+> (loc_of b)
 
 let sem a b = let _loc = a <+> b in `Sem (_loc, a, b)

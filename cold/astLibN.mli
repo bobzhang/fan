@@ -1,3 +1,6 @@
+
+(**
+  A module for handling abstract syntax without locations *)
 open FAstN
 
 val sem : 'a -> 'b -> [> `Sem of 'a * 'b ]

@@ -409,13 +409,13 @@ let apply () =
                    (fun (s : 'luident)  _  (_loc : FLoc.t)  ->
                       ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))))]))
     end;
-    Options.add
+    Foptions.add
       ("-D", (FArg.String (parse_def ~exp ~pat)),
         "<string> Define for IFDEF instruction.");
-    Options.add
+    Foptions.add
       ("-U", (FArg.String (undef ~exp ~pat)),
         "<string> Undefine for IFDEF instruction.");
-    Options.add
+    Foptions.add
       ("-I", (FArg.String FIncludeDir.add),
         "<string> Add a directory to INCLUDE search path.")
   end

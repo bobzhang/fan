@@ -85,10 +85,20 @@ val insert_olevels_in_levels : entry -> position option -> olevel list -> level 
  *)    
 val insert_olevel : entry -> position option -> olevel -> level list      
 
-val extend : entry -> position option * olevel list -> unit    
+val extend : entry -> position option * olevel list -> unit
+
+
+(** see {extend}, it would promote the keywords automatically *)    
+val unsafe_extend : entry -> position option * olevel list -> unit    
 
 val extend_single : entry ->  position option * olevel -> unit    
 
+(** see {extend_single} and {unsafe_extend} *)    
+val unsafe_extend_single : entry ->  position option * olevel -> unit    
+
+
+
+    
 (** duplciate a grammar which the user can freely mutate without
     worring about the side effect  *)
 val copy : entry -> entry

@@ -23,7 +23,7 @@ let pp_print_quotation_error_message:
           _a0 pp_print_string _a1
     | NoName  -> Format.fprintf fmt "NoName"
 
-type quotation_error = (name * string * quotation_error_message * exn) 
+type quotation_error = (loc * name * string * quotation_error_message * exn) 
 
 exception QuotationError of quotation_error
 
@@ -62,11 +62,11 @@ let clear_map () = map := SMap.empty
 
 let clear_default () = default := fan_default
 
-let expander_name ~pos:(pos : string)  (name : name) =
+let expander_name loc ~pos:(pos : string)  (name : name) =
   match name with
   | (`Sub [],"") ->
       SMap.find_default ~default:(default.contents) pos map.contents
-  | (`Sub _,_) -> FToken.resolve_name name
+  | (`Sub _,_) -> FToken.resolve_name loc name
   | _ -> name
 
 let default_at_pos pos str = update (pos, str)
@@ -81,21 +81,20 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
     expanders_table := (QMap.add k v expanders_table.contents)
   end
 
-let expand_quotation loc ~expander  pos_tag
-  (q_name,q_loc,_q_shift,q_contents) =
+let expand_quotation loc ~expander  pos_tag (q_name,q_loc,q_contents) =
   let loc_name_opt = if q_loc = "" then None else Some q_loc in
   try expander loc loc_name_opt q_contents
   with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
   | FLoc.Exc_located (iloc,exc) ->
-      let exc1 = QuotationError (q_name, pos_tag, Expanding, exc) in
+      let exc1 = QuotationError (iloc, q_name, pos_tag, Expanding, exc) in
       raise (FLoc.Exc_located (iloc, exc1))
   | exc ->
-      let exc1 = QuotationError (q_name, pos_tag, Expanding, exc) in
+      let exc1 = QuotationError (loc, q_name, pos_tag, Expanding, exc) in
       raise (FLoc.Exc_located (loc, exc1))
 
 let find loc name tag =
   let key =
-    ((expander_name ~pos:(FDyn.string_of_tag tag) name),
+    ((expander_name loc ~pos:(FDyn.string_of_tag tag) name),
       (ExpKey.pack tag ())) in
   (try
      let pack = QMap.find key expanders_table.contents in
@@ -107,12 +106,11 @@ let find loc name tag =
           match name with
           | (`Sub [],"") ->
               FLoc.raise loc
-                (QuotationError (name, pos_tag, NoName, Not_found))
+                (QuotationError (loc, name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
 
-let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
-  (tag : 'a FDyn.tag) =
+let expand loc (q_name,q_loc,q_shift,q_contents) (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in
    let name = q_name in
    (try
@@ -122,7 +120,9 @@ let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
         begin
           Stack.push q_name stack;
           finally ~action:(fun _  -> Stack.pop stack)
-            (fun _  -> expand_quotation ~expander loc pos_tag quotation) ()
+            (fun _  ->
+               expand_quotation ~expander loc pos_tag
+                 (q_name, q_loc, q_contents)) ()
         end
     with
     | FLoc.Exc_located (_,QuotationError _) as exc -> (fun ()  -> raise exc)
@@ -130,17 +130,17 @@ let expand loc ((q_name,_q_loc,q_shift,_q_contents) as quotation)
         (fun ()  ->
            raise
              (FLoc.Exc_located
-                (qloc, (QuotationError (name, pos_tag, Finding, exc)))))
+                (qloc, (QuotationError (qloc, name, pos_tag, Finding, exc)))))
     | exc ->
         (fun ()  ->
            raise
              (FLoc.Exc_located
-                (loc, (QuotationError (name, pos_tag, Finding, exc)))))) () : 
-  'a )
+                (loc, (QuotationError (loc, name, pos_tag, Finding, exc))))))
+     () : 'a )
 
-let quotation_error_to_string (name,position,ctx,exn) =
+let quotation_error_to_string (loc,name,position,ctx,exn) =
   let ppf = Buffer.create 30 in
-  let name = expander_name ~pos:position name in
+  let name = expander_name loc ~pos:position name in
   let pp x =
     bprintf ppf "@?@[<2>While %s %S in a position of %S:" x
       (string_of_name name) position in
@@ -195,14 +195,14 @@ let parse_quotation_result parse loc (q_name,_q_loc,_q_shift,q_contents)
   pos_tag str =
   try parse loc str
   with
-  | FLoc.Exc_located (iloc,QuotationError (n,pos_tag,Expanding ,exc)) ->
+  | FLoc.Exc_located (iloc,QuotationError (_,n,pos_tag,Expanding ,exc)) ->
       let ctx = ParsingResult (iloc, q_contents) in
-      let exc1 = QuotationError (n, pos_tag, ctx, exc) in
+      let exc1 = QuotationError (iloc, n, pos_tag, ctx, exc) in
       FLoc.raise iloc exc1
   | FLoc.Exc_located (iloc,(QuotationError _ as exc)) -> FLoc.raise iloc exc
   | FLoc.Exc_located (iloc,exc) ->
       let ctx = ParsingResult (iloc, q_contents) in
-      let exc1 = QuotationError (q_name, pos_tag, ctx, exc) in
+      let exc1 = QuotationError (iloc, q_name, pos_tag, ctx, exc) in
       FLoc.raise iloc exc1
 
 let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =

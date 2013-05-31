@@ -65,7 +65,7 @@ let wrap directive_handler pa init_loc cs =
     | Some new_loc ->
         let pl =
           match List.rev pl with
-          | [] -> assert false
+          | [] -> []
           | x::xs ->
               (match directive_handler x with
                | None  -> xs
@@ -136,7 +136,8 @@ let use_file token_stream =
       | (`Directive (_loc,`Lid (_,"default_quotation"),`Str (_,s)) :
           FAst.stru)::[] ->
           begin
-            AstQuotation.set_default (FToken.resolve_name ((`Sub []), s));
+            AstQuotation.set_default
+              (FToken.resolve_name _loc ((`Sub []), s));
             loop ()
           end
       | _ -> (pl, false)

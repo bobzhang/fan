@@ -1,19 +1,6 @@
 open AstLib
 
-let g =
-  Fgram.create_lexer
-    ~keywords:["derive";
-              "unload";
-              "clear";
-              "keep";
-              "on";
-              "keep";
-              "off";
-              "show_code";
-              "(";
-              ")";
-              ",";
-              ";"] ~annot:"derive" ()
+let g = Fgram.create_lexer ~annot:"" ~keywords:[] ()
 
 let fan_quot = Fgram.mk_dynamic g "fan_quot"
 
@@ -21,7 +8,7 @@ let fan_quots = Fgram.mk_dynamic g "fan_quots"
 
 let _ =
   begin
-    Fgram.extend_single (fan_quot : 'fan_quot Fgram.t )
+    Fgram.unsafe_extend_single (fan_quot : 'fan_quot Fgram.t )
       (None,
         (None, None,
           [([`Skeyword "derive";
@@ -120,7 +107,7 @@ let _ =
                        Typehook.show_code := false;
                        (`Uid (_loc, "()") : FAst.exp )
                      end : 'fan_quot )))))]));
-    Fgram.extend_single (fan_quots : 'fan_quots Fgram.t )
+    Fgram.unsafe_extend_single (fan_quots : 'fan_quots Fgram.t )
       (None,
         (None, None,
           [([`Slist1
@@ -139,8 +126,8 @@ let _ =
 
 let _ =
   begin
-    Fsyntax.Options.add
+    Foptions.add
       ("-keep", (FArg.Set FState.keep), "Keep the included type definitions");
-    Fsyntax.Options.add
+    Foptions.add
       ("-loaded-plugins", (FArg.Unit Typehook.show_modules), "Show plugins")
   end

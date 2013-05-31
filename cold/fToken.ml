@@ -22,13 +22,27 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          pp_print_string _a1) fmt _a0
 
+type quotation = [ `QUOTATION of (name * string * int * string)] 
+
+let pp_print_quotation: Format.formatter -> quotation -> unit =
+  fun fmt  (`QUOTATION (_a0,_a1,_a2,_a3))  ->
+    Format.fprintf fmt "@[<1>(`QUOTATION@ %a@ %a@ %a@ %a)@]" pp_print_name
+      _a0 pp_print_string _a1 pp_print_int _a2 pp_print_string _a3
+
+type dir_quotation = [ `DirQuotation of (int * string * string)] 
+
+let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
+  fun fmt  (`DirQuotation (_a0,_a1,_a2))  ->
+    Format.fprintf fmt "@[<1>(`DirQuotation@ %a@ %a@ %a)@]" pp_print_int _a0
+      pp_print_string _a1 pp_print_string _a2
+
 type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `INT of (int * string)
   | `INT32 of (int32 * string) | `INT64 of (int64 * string)
   | `NATIVEINT of (nativeint * string) | `Flo of (float * string)
   | `CHAR of (char * string) | `STR of (string * string) | `LABEL of string
-  | `OPTLABEL of string | `QUOTATION of (name * string * int * string)
+  | `OPTLABEL of string | quotation | dir_quotation
   | `Ant of (string * string) | `COMMENT of string | `BLANKS of string
   | `NEWLINE | `LINE_DIRECTIVE of (int * string option) | `EOI] 
 
@@ -68,10 +82,8 @@ let pp_print_t: Format.formatter -> t -> unit =
         Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" pp_print_string _a0
     | `OPTLABEL _a0 ->
         Format.fprintf fmt "@[<1>(`OPTLABEL@ %a)@]" pp_print_string _a0
-    | `QUOTATION (_a0,_a1,_a2,_a3) ->
-        Format.fprintf fmt "@[<1>(`QUOTATION@ %a@ %a@ %a@ %a)@]"
-          pp_print_name _a0 pp_print_string _a1 pp_print_int _a2
-          pp_print_string _a3
+    | #quotation as _a0 -> (pp_print_quotation fmt _a0 :>unit)
+    | #dir_quotation as _a0 -> (pp_print_dir_quotation fmt _a0 :>unit)
     | `Ant (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_string _a0
           pp_print_string _a1
@@ -217,7 +229,7 @@ let name_of_string s =
 
 let names_tbl: (domains,SSet.t) Hashtbl.t = Hashtbl.create 30
 
-let resolve_name (n : name) =
+let resolve_name loc (n : name) =
   (match n with
    | ((`Sub _ as x),v) ->
        ((try
@@ -231,5 +243,7 @@ let resolve_name (n : name) =
                    with | Not_found  -> (fun ()  -> false)) ())
                paths.contents in
            fun ()  -> ((concat_domain (r, x)), v)
-         with | Not_found  -> (fun ()  -> failwithf "resolve_name %s" v))) ()
+         with
+         | Not_found  -> (fun ()  -> FLoc.errorf loc "resolve_name %s" v)))
+         ()
    | x -> x : name )

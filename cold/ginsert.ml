@@ -235,22 +235,56 @@ let rec scan_olevels entry (levels : olevel list) =
 and scan_olevel entry (x,y,prods) =
   (x, y, (List.map (scan_product entry) prods))
 and scan_product entry (symbols,x) =
-  ((List.map
-      (fun symbol  ->
-         let keywords = using_symbol symbol [] in
-         let diff =
-           let open SSet in
-             elements &
-               (diff (of_list keywords) ((entry.egram).gkeywords).contents) in
-         let () =
-           if diff <> []
-           then
-             failwithf "in grammar %s: keywords introduced: [ %s ] "
-               (entry.egram).annot (List.reduce_left ( ^ ) diff) in
-         let () = check_gram entry symbol in
-         match symbol with
-         | `Snterm e when e == entry -> `Sself
-         | _ -> symbol) symbols), x)
+  (((List.map
+       (fun symbol  ->
+          let keywords = using_symbol symbol [] in
+          let diff =
+            let open SSet in
+              elements &
+                (diff (of_list keywords) ((entry.egram).gkeywords).contents) in
+          let () =
+            if diff <> []
+            then
+              failwithf "in grammar %s: keywords introduced: [ %s ] "
+                (entry.egram).annot (List.reduce_left ( ^ ) diff) in
+          let () = check_gram entry symbol in
+          match symbol with
+          | `Snterm e when e == entry -> `Sself
+          | _ -> symbol) symbols), x) : production )
+
+let rec unsafe_scan_olevels entry (levels : olevel list) =
+  List.map (unsafe_scan_olevel entry) levels
+and unsafe_scan_olevel entry (x,y,prods) =
+  (x, y, (List.map (unsafe_scan_product entry) prods))
+and unsafe_scan_product entry (symbols,x) =
+  (((List.map
+       (fun symbol  ->
+          let keywords = using_symbol symbol [] in
+          let () =
+            (entry.egram).gkeywords :=
+              (SSet.add_list ((entry.egram).gkeywords).contents keywords) in
+          let () = check_gram entry symbol in
+          match symbol with
+          | `Snterm e when e == entry -> `Sself
+          | _ -> symbol) symbols), x) : production )
+
+let unsafe_extend entry (position,levels) =
+  let levels = unsafe_scan_olevels entry levels in
+  let elev = insert_olevels_in_levels entry position levels in
+  begin
+    entry.edesc <- Dlevels elev;
+    entry.estart <- Gparser.start_parser_of_entry entry;
+    entry.econtinue <- Gparser.continue_parser_of_entry entry
+  end
+
+let unsafe_extend_single entry (position,olevel) =
+  let olevel = unsafe_scan_olevel entry olevel in
+  let elev = insert_olevel entry position olevel in
+  begin
+    entry.edesc <- Dlevels elev;
+    entry.estart <- Gparser.start_parser_of_entry entry;
+    entry.econtinue <- Gparser.continue_parser_of_entry entry
+  end
 
 let extend entry (position,levels) =
   let levels = scan_olevels entry levels in

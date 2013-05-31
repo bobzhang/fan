@@ -30,7 +30,6 @@ let default_keywords =
   "|]";
   "initializer";
   "#";
-  "import";
   "!";
   "-.";
   "_";

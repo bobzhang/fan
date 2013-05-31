@@ -36,16 +36,6 @@ let rec normalize_acc =
   | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
       as i -> (i : FAst.exp )
 
-let rec sep_dot_exp acc =
-  (function
-   | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
-   | `Dot (_l,_,_) as i -> sep_dot_exp acc (normalize_acc (i : vid  :>ident))
-   | `Uid (loc,s) as e ->
-       (match acc with
-        | [] -> [(loc, [], e)]
-        | (loc',sl,e)::l -> ((FLoc.merge loc loc'), (s :: sl), e) :: l)
-   | e -> ((loc_of e), [], e) :: acc : exp -> (loc * string list * exp) list )
-
 let mkvirtual: flag -> Asttypes.virtual_flag =
   function
   | `Positive _ -> Virtual
@@ -329,12 +319,12 @@ let mk_type_parameters (tl : opt_decl_params) =
   (match tl with
    | `None _ -> []
    | `Some (_,x) ->
-       let xs = list_of_com x [] in
        List.map
          (function
           | #decl_param as x -> quote_map (x :>ctyp)
-          | _ -> assert false) xs : (string Asttypes.loc option * (bool *
-                                      bool)) list )
+          | _ -> assert false) (list_of_com x []) : (string Asttypes.loc
+                                                      option * (bool * bool))
+                                                      list )
 
 let class_parameters (t : type_parameters) =
   List.filter_map
@@ -398,7 +388,8 @@ let rec pat (x : pat) =
        | `Ant (_loc,_) -> error _loc "invalid antiquotations")
   | `Ant (loc,_) -> error loc "antiquotation not allowed here"
   | (`Any _loc : FAst.pat) -> mkpat _loc Ppat_any
-  | (`App (_loc,`Uid (sloc,s),`Par (_,`Any loc_any)) : FAst.pat) ->
+  | (`App (_loc,`Uid (sloc,s),`Par (_,(`Any loc_any : FAst.pat))) : FAst.pat)
+      ->
       mkpat _loc
         (Ppat_construct
            ((lident_with_loc s sloc), (Some (mkpat loc_any Ppat_any)), false))
@@ -511,6 +502,19 @@ let rec exp (x : exp) =
   match x with
   | `Field (_loc,_,_)|`Dot (_loc,_,_) ->
       let (e,l) =
+        let rec sep_dot_exp acc =
+          (function
+           | `Field (_,e1,e2) -> sep_dot_exp (sep_dot_exp acc e2) e1
+           | `Dot (_l,_,_) as i ->
+               sep_dot_exp acc (normalize_acc (i : vid  :>ident))
+           | `Uid (loc,s) as e ->
+               (match acc with
+                | [] -> [(loc, [], e)]
+                | (loc',sl,e)::l -> ((FLoc.merge loc loc'), (s :: sl), e) ::
+                    l)
+           | e -> ((loc_of e), [], e) :: acc : exp ->
+                                                 (loc * string list * exp)
+                                                   list ) in
         match sep_dot_exp [] x with
         | (loc,ml,`Uid (sloc,s))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)

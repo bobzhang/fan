@@ -48,17 +48,11 @@ val clear_default: unit -> unit
 (** function translating quotation names; default = identity *)
 (* val translate : (string -> string) ref *)
 
-(* val expand : FLoc.t -> FToken.quotation -> 'a FDyn.tag  -> 'a *)
+
 val expand :
     FLoc.t -> FToken.name * string * int * string -> 'a FDyn.tag -> 'a
-val expand_quotation :
-    FLoc.t ->
-      expander:(FLoc.t -> string option -> 'a -> 'b) ->
-        string -> FToken.name * string * 'c * 'a -> 'b
-(* val expand_quotation : *)
-(*     FLoc.t -> *)
-(*       expander:(FLoc.t -> string option -> string -> 'a) -> *)
-(*         string -> FToken.quotation -> 'a *)
+
+
 
 (** [dump_file] optionally tells Fan to dump the
     result of an expander if this result is syntactically incorrect.
@@ -78,7 +72,7 @@ val add_quotation:
 
 
 
-(* BUG, revised parser can not parse name:string -> unit*)
+(* FIXME revised parser can not parse name:string -> unit*)
 val of_exp: name:FToken.name -> entry: exp Fgram.t  -> unit
 
 val of_pat: name:FToken.name -> entry: pat Fgram.t  -> unit

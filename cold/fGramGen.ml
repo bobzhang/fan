@@ -314,7 +314,7 @@ let mk_name _loc (i : vid) =
 
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 
-let text_of_entry (e : entry) =
+let text_of_entry ?(safe= true)  (e : entry) =
   (let _loc = (e.name).loc in
    let ent =
      let x = e.name in
@@ -345,23 +345,40 @@ let text_of_entry (e : entry) =
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
    match e.levels with
    | `Single l ->
-       (`App
-          (_loc,
-            (`App
-               (_loc,
-                 (`Field
-                    (_loc, (gm () : vid  :>exp),
-                      (`Lid (_loc, "extend_single")))), ent)),
-            (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : FAst.exp )
+       if safe
+       then
+         (`App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))),
+                   ent)), (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : 
+         FAst.exp )
+       else
+         (`App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`Dot
+                      (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single")))),
+                   ent)), (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : 
+         FAst.exp )
    | `Group ls ->
        let txt = list_of_list _loc (List.map apply ls) in
-       (`App
-          (_loc,
-            (`App
-               (_loc,
-                 (`Field
-                    (_loc, (gm () : vid  :>exp), (`Lid (_loc, "extend")))),
-                 ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : 
+       if safe
+       then
+         (`App
+            (_loc,
+              (`App
+                 (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))), ent)),
+              (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp )
+       else
+         (`App
+            (_loc,
+              (`App
+                 (_loc,
+                   (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend")))),
+                   ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : 
   exp )
 
 let let_in_of_extend _loc (gram : vid option) locals default =
@@ -404,9 +421,9 @@ let let_in_of_extend _loc (gram : vid option) locals default =
            (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
 
-let text_of_functorial_extend _loc gram locals el =
+let text_of_functorial_extend ?safe  _loc gram locals el =
   let args =
-    let el = List.map text_of_entry el in
+    let el = List.map (text_of_entry ?safe) el in
     match el with | [] -> (`Uid (_loc, "()") : FAst.exp ) | _ -> seq_sem el in
   let_in_of_extend _loc gram locals args
 
