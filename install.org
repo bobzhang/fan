@@ -10,20 +10,33 @@
 
 * Requirements
    - [[http://caml.inria.fr/ocaml/release.en.html][OCaml (version >=4)]]
-   - OCamlfind  
+   - [[http://projects.camlcity.org/projects/findlib.html][OCamlfind]] (optional)  
 
 * Install for users
 
    #+BEGIN_SRC sh
      $make world
    #+END_SRC
+  if you have ocamlfind installed, try
 
+  #+BEGIN_SRC sh
+  make metainstall
+  #+END_SRC
+  
 ** What it installed?
-   It installed two exectuables, fan.byte fan.native into the path:
-   ~`ocamlc -where`/bin~ and two signature files ~fAst.cmi,
-   fAstN.cmi~ into ~`ocamlc -where`~. Other installation files follow
-   the same convention of other ocaml libraries. Please read META
-   file for more details.
+   It installed three exectuables: =fan.byte=, =fan.native=,
+   =fanX.byte= into the path: ~`ocamlc -where`/bin~ and all the
+   library files into ~`ocamlc -where`/fan~.
+   
+   Please read META file for more details.
+
+   fan.byte, fan.native have exactly the same functionality, they are
+   stand alone without linking any external libraries (no
+   compiler-libs linked).
+
+   fanX.byte links the whole byte-code compiler, it provides *eval*
+   functionality, we will talk about it later.
+
    
 #+BEGIN_HTML
 </my-body>

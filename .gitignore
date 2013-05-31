@@ -8,3 +8,8 @@ tramp
 .\#*
 _site/
 build/
+*.cmi
+*.annot
+*.cmo
+*.cma
+*.out
