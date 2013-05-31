@@ -22,7 +22,7 @@ let _ =
            let s = Fgram.parse_string ~loc Fsyntax.strus c in
            FEval.eval_ast Format.err_formatter s));
     Printexc.register_printer MkFan.normal_handler;
-    PreCast.register_text_printer ();
+    PreCast.register_bin_printer ();
     Printexc.register_printer
       (function
        | FLoc.Exc_located (loc,exn) ->

@@ -559,10 +559,10 @@ let initial_spec_list =
        " Set the default language");
    ("-printer", FArg.Symbol( ["p";"o"],
     function x ->
-      if x = "p" then
-        PreCast.register_bin_printer ()
+      if x = "o" then
+        PreCast.register_text_printer ()
       else
-        PreCast.register_text_printer ()),"p  for binary and o  for text ");
+        PreCast.register_bin_printer ()),"p  for binary and o  for text ");
   
  ];;
       

@@ -26,7 +26,7 @@ let _ =
           FEval.eval_ast Format.err_formatter s 
         );
     Printexc.register_printer MkFan.normal_handler;
-    PreCast.register_text_printer (); (** default *)
+    PreCast.register_bin_printer (); (** default *)
     Printexc.register_printer
         (function
           |FLoc.Exc_located (loc, exn) ->

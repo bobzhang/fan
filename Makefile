@@ -48,7 +48,10 @@ _build/src/fanX.cmo:src/fanX.ml
 	ocamlbuild src/fanX.cmo
 
 _build/cold/mkFan.cma:
-	ocamlbuild cold/fanX.cma
+	ocamlbuild cold/mkFan.cma
+
+_build/src/fEval.cmo:
+	ocamlbuild src/fEval.cmo
 build:
 	$(OCAMLBUILD) $(addprefix cold/,$(LIBTARGETS) $(BINTARGETS))
 	make cbyteX
@@ -66,12 +69,12 @@ metainstall:
 
 world:
 	make build
-	make uninstall
+	# make uninstall
 	make install
 
 hotworld:
 	make hotbuild
-	make uninstall
+	# make uninstall
 	make hotinstall
 
 hotinstall:
