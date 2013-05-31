@@ -85,14 +85,5 @@ let anti_filter_n = AntN.antiquot_expander  ~parse_exp  ~parse_pat
 let exp_filter_n (x:ep) = anti_filter_n#exp (x:>exp)
 let pat_filter_n (x:ep) = anti_filter_n#pat (x:>pat)
 
-module Options = struct
-  type spec_list = (string * FArg.spec * string) list 
-  let init_spec_list = ref []
-  let init spec_list = init_spec_list := spec_list
-  let add (name, spec, descr) =
-    init_spec_list := !init_spec_list @ [(name, spec, descr)]
-  let adds ls =
-    init_spec_list := !init_spec_list @ ls 
-end
 
 

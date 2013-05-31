@@ -46,10 +46,10 @@ fan_quot:
 
 
 begin 
-  Fsyntax.Options.add
+  Foptions.add
     ("-keep",
      (FArg.Set FState.keep), "Keep the included type definitions") ;
-  Fsyntax.Options.add
+  Foptions.add
     ("-loaded-plugins",
      (FArg.Unit Typehook.show_modules), "Show plugins");
 end;;

@@ -255,17 +255,17 @@ let _ =
               Some (sprintf "%s:@\n%s" (FLoc.to_string loc) (Printexc.to_string exn))
           | _ -> None );
 
-    Fsyntax.Options.add
+    Foptions.add
       ("-dlang",
        (FArg.String
           (fun s  ->
             AstQuotation.default := (FToken.resolve_name ((`Sub []), s)))),
        " Set the default language");
-    Fsyntax.Options.adds initial_spec_list;
+    Foptions.adds initial_spec_list;
     AstParsers.use_parsers [ "revise"; "stream"; "macro";];
     try
       FArg.parse
-        Fsyntax.Options.init_spec_list
+        Foptions.init_spec_list
         anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
     with exc -> begin eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end
   end

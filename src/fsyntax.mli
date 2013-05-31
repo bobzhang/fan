@@ -5,11 +5,11 @@ open FAst
 
 type warning = FLoc.t -> string -> unit
 
-val default_warning: warning
+val default_warning : warning
 
-val current_warning: warning ref 
+val current_warning : warning ref 
 
-val print_warning: warning
+val print_warning : warning
 
 
 val interf : (sigi list  * FLoc.t option ) Fgram.t 
@@ -196,10 +196,3 @@ val pat_filter_n : ep -> pat
 
 val dot_namespace :  string list Fgram.t
     
-module Options:sig
-  type spec_list = (string * FArg.spec * string) list 
-  val init : spec_list -> unit
-  val add : (string * FArg.spec * string) -> unit
-  val adds : (string * FArg.spec * string) list  -> unit
-  val init_spec_list: spec_list ref 
-end

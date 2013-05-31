@@ -100,15 +100,15 @@ let apply () = begin
     [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
       {:pat| $vrn:kwd |}
     | "`"; luident{s} -> {:pat| $vrn:s |} ] |};
-  Options.add
+  Foptions.add
     ("-D",
      (FArg.String (parse_def ~exp ~pat)  ),
      "<string> Define for IFDEF instruction.");
-  Options.add
+  Foptions.add
     ("-U",
      (FArg.String (undef ~exp ~pat)),
      "<string> Undefine for IFDEF instruction.");
-  Options.add
+  Foptions.add
     ("-I",
      (FArg.String FIncludeDir.add),
      "<string> Add a directory to INCLUDE search path.");
