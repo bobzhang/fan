@@ -1,6 +1,8 @@
+open Mktop
+
 let _ =
   begin
-    Printexc.register_printer MkFan.normal_handler;
+    Printexc.register_printer Mktop.normal_handler;
     PreCast.register_bin_printer ();
     Printexc.register_printer
       (function

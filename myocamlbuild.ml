@@ -424,18 +424,23 @@ rule "code_boot: mlp -> mlp" ~dep: "src/%.mlp" ~prod:(tmp//"%.mlp")
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
   (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
-rule "fane.byte" ~deps:["%/fanX.cmo";"%/mkFan.cma";"%/fEval.cmo"]
+rule "fane.byte"
+~deps:["%/fanX.cmo";"%/mktop.cma"; "%/mkFan.cmo";"%/fEval.cmo";"%/dynLoader.cmo"]
   ~prod:"%/fane.byte"
   (fun env _build ->
     let t = env "%/fane.byte" in
     let fe = env "%/fEval.cmo" in
     let fx = env "%/fanX.cmo" in
-    let mkFan = env "%/mkFan.cma" in 
+    let mktop = env "%/mktop.cma" in 
+    let mkFan = env "%/mkFan.cmo" in
+    let dynload = env "%/dynLoader.cmo" in 
     Cmd(S[A"ocamlc.opt";
           A"-linkall";
           A"-I";
           A"+compiler-libs";
           A"dynlink.cma";
+          A mktop;
+          A dynload;
           A mkFan;
           A"ocamlcommon.cma";
           A"ocamlbytecomp.cma";

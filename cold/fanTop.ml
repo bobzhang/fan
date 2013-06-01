@@ -1,6 +1,6 @@
 open LibUtil
 
-open MkFan
+open Mktop
 
 let parse_toplevel_phrase_old = Toploop.parse_toplevel_phrase.contents
 
@@ -22,6 +22,7 @@ let fan () =
 
 let _ =
   begin
+    Printexc.register_printer Mktop.normal_handler;
     Hashtbl.replace Toploop.directive_table "fan"
       (Toploop.Directive_none (fun ()  -> fan ()));
     Hashtbl.replace Toploop.directive_table "normal"

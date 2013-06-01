@@ -2,7 +2,7 @@
 open LibUtil
 
 (** FIXME a better register mode *)
-open MkFan;;
+open Mktop;;
 
 (* avoid dependency on [Parse] module  *)
 let parse_toplevel_phrase_old = !Toploop.parse_toplevel_phrase;;
@@ -20,7 +20,8 @@ let fan ()  = begin
     wrap use_file ~print_location:Toploop.print_location
 end;;
 
-begin 
+begin
+  Printexc.register_printer Mktop.normal_handler;
   Hashtbl.replace Toploop.directive_table "fan"
     (Toploop.Directive_none (fun () -> fan ()));
   Hashtbl.replace Toploop.directive_table "normal"
@@ -43,24 +44,6 @@ begin
 end;;
 
 
-(* Fgram.dump Format.std_formatter Fsyntax.exp;; *)
 
-
-
-(* let token() = begin *)
-(*   Toploop.parse_toplevel_phrase := wrap fake ; *)
-(* end; *)
-(* let fake token_stream = begin  *)
-(*   try *)
-(*     XStream.iter (fun (tok,_) -> *)
-(*       if tok= `INT (3,"3") then raise Not_found *)
-(*       else *)
-(*         Format.fprintf Format.std_formatter *)
-(*           "@[%a@]@." FToken.print tok ) token_stream *)
-(*   with *)
-(*     [Not_found -> ()]; *)
-(*   prerr_endline "got it"; *)
-(*   Parsetree.Ptop_dir "pwd" Parsetree.Pdir_none; *)
-(* end; *)
 
 

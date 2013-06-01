@@ -29,26 +29,18 @@ STDTARGETS = fAst.cmi fAstN.cmi
 
 ICTARGETS=$(addprefix _build/cold,$(TARGETS))
 
-BYTEXLIBS = mkFan.cma fEval.cmo fanX.cmo
-
-sbyteX: $(addprefix $(BHOT),$(BYTEXLIBS))
-	ocamlbuild $(addprefix src/, $(BYTEXLIBS))
-	cd $(BHOT);	ocamlc.opt -linkall -I +compiler-libs dynlink.cma mkFan.cma  ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma fEval.cmo fanX.cmo -o fanX.byte
+BYTEXLIBS = mkFan.cma fEval.cmo 
 
 
-cbyteX:  $(addprefix $(BCOLD),$(BYTEXLIBS))
-	ocamlbuild $(addprefix cold/, $(BYTEXLIBS))
-	cd $(BCOLD);	ocamlc.opt -linkall -I +compiler-libs dynlink.cma mkFan.cma  ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma fEval.cmo fanX.cmo -o fanX.byte
 
 
 build:
 	$(OCAMLBUILD) $(addprefix cold/,$(LIBTARGETS) $(BINTARGETS))
-	make cbyteX
+
 
 
 install:
-	install -m 0755 $(addprefix $(BCOLD), $(BINTARGETS)) $(addprefix $(BCOLD), fanX.byte) \
-	$(BINDIR)
+	install -m 0755 $(addprefix $(BCOLD), $(BINTARGETS)) $(BINDIR)
 	@[ -f `which ocamlfind` ] && make metainstall
 	if ! [ -a $(LIBDIR) ]; then mkdir $(LIBDIR); fi;
 	echo "installing to " $(LIBDIR)
@@ -69,8 +61,7 @@ hotworld:
 	make hotinstall
 
 hotinstall:
-	install -m 0755 $(addprefix $(BHOT), $(BINTARGETS)) $(addprefix $(BHOT), fanX.byte) \
-	$(BINDIR)
+	install -m 0755 $(addprefix $(BHOT), $(BINTARGETS)) $(BINDIR)
 	@[ -f `which ocamlfind` ] && make metainstall
 	if ! [ -a $(LIBDIR) ]; then mkdir $(LIBDIR); fi;
 	echo "installing to " $(LIBDIR)
@@ -79,7 +70,7 @@ hotinstall:
 
 hotbuild:
 	$(OCAMLBUILD) $(addprefix src/,$(LIBTARGETS) $(BINTARGETS))
-	make sbyteX
+
 
 uninstall:
 	make libuninstall
