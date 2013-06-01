@@ -5,4 +5,6 @@ superset of [OCaml](http://caml.inria.fr/) with Lispy
 
 Homepage: http://bobzhang.github.io/Fan/
 
+See install.org 
+
 

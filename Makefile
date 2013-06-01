@@ -19,10 +19,10 @@ OCAMLBUILD ?= ocamlbuild
 
 BCOLD=_build/cold/
 BHOT=_build/src/
-EXES=fan.byte fan.native fanX.byte
+EXES=fan.byte fan.native fane.byte
 
-LIBTARGETS = fgram.cma fgram.cmx fgram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma fan_full.cma
-BINTARGETS = fan.byte fan.native 
+LIBTARGETS = fgram.cma fgram.cmx fgram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma mkFan.cma
+BINTARGETS = fan.byte fan.native fane.byte
 
 
 STDTARGETS = fAst.cmi fAstN.cmi
@@ -41,17 +41,6 @@ cbyteX:  $(addprefix $(BCOLD),$(BYTEXLIBS))
 	cd $(BCOLD);	ocamlc.opt -linkall -I +compiler-libs dynlink.cma mkFan.cma  ocamlcommon.cma ocamlbytecomp.cma ocamltoplevel.cma fEval.cmo fanX.cmo -o fanX.byte
 
 
-_build/src/mkFan.cma:src/mkFan.ml
-	ocamlbuild src/mkFan.cma
-
-_build/src/fanX.cmo:src/fanX.ml
-	ocamlbuild src/fanX.cmo
-
-_build/cold/mkFan.cma:
-	ocamlbuild cold/mkFan.cma
-
-_build/src/fEval.cmo:
-	ocamlbuild src/fEval.cmo
 build:
 	$(OCAMLBUILD) $(addprefix cold/,$(LIBTARGETS) $(BINTARGETS))
 	make cbyteX
@@ -60,13 +49,15 @@ build:
 install:
 	install -m 0755 $(addprefix $(BCOLD), $(BINTARGETS)) $(addprefix $(BCOLD), fanX.byte) \
 	$(BINDIR)
+	@[ -f `which ocamlfind` ] && make metainstall
 	if ! [ -a $(LIBDIR) ]; then mkdir $(LIBDIR); fi;
 	echo "installing to " $(LIBDIR)
 	install -m 0755 $(addprefix $(BCOLD), FAstN.cmi FAst.cmi) $(LIBPREFIX)
 	install -m 0755 $(BCOLD)*.cmi $(addprefix $(BCOLD), $(LIBTARGETS)) $(LIBDIR)
-metainstall:
-	ocamlfind install fan META
 
+metainstall:
+	@[ -d `ocamlfind query fan` ] && ocamlfind remove fan
+	ocamlfind install fan META
 world:
 	make build
 	# make uninstall
@@ -80,6 +71,7 @@ hotworld:
 hotinstall:
 	install -m 0755 $(addprefix $(BHOT), $(BINTARGETS)) $(addprefix $(BHOT), fanX.byte) \
 	$(BINDIR)
+	@[ -f `which ocamlfind` ] && make metainstall
 	if ! [ -a $(LIBDIR) ]; then mkdir $(LIBDIR); fi;
 	echo "installing to " $(LIBDIR)
 	install -m 0755 $(addprefix $(BHOT), FAstN.cmi FAst.cmi) $(LIBPREFIX)

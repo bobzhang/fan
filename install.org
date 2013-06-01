@@ -1,0 +1,14 @@
+
+
+
+* Requirements
+  ocaml (>=4.00.1)
+  ocamlfind (optional)
+
+
+* Install
+
+  =make world=
+
+  if you have ocamlfind installed, try
+  =make metainstall= to install the META file
