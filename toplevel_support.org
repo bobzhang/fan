@@ -36,7 +36,10 @@
       #+END_SRC
       It will turn on the featurs of fan.
       
-      
+    *Note*: Don't fire the toplevel in the sourceree, as you may
+      notice, there's a ~.ocamlinit~ file there which requires a
+      customized toplevel, so fire the toplevel in any other place
+      you like. 
 * Playing with utop
   [[https://github.com/diml/utop][Utop]] is a toplevel with nice auto-completion support, it's very
   helpful for explore some libraries which the user is not familiar
