@@ -212,10 +212,10 @@ let apply () = begin
     | "class"; "type"; cltyp_declaration{ctd} ->  `ClassType(_loc,ctd) ]
     (* mli entrance *)    
     interf:
-    [ "#"; a_lident{n};  ";;" ->
-      ([ `DirectiveSimple(_loc,n) ],  Some _loc)
-    | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc) 
-    | sigi{si}; ";;";  S{(sil, stopped)} -> (si :: sil, stopped)
+    [(*  "#"; a_lident{n};  ";;" -> *)
+    (*   ([ `DirectiveSimple(_loc,n) ],  Some _loc) *)
+    (* | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc)  *)
+     sigi{si}; ";;";  S{(sil, stopped)} -> (si :: sil, stopped)
     | sigi{si}; S{(sil,stopped)} -> (si :: sil, stopped)
     | `EOI -> ([], None) ]
  |};
@@ -489,8 +489,15 @@ let apply () = begin
       | pat{p}; "->"; exp{e} -> `Case(_loc,p,e)
       ]
       case0:
-      [ `Ant (("case"|"" as n),s) ->
-        mk_anti _loc ~c:"case" n s
+      [ `Ant ("case" as n, s) -> mk_anti _loc ~c:"case" n s
+
+      | `Ant ("" as n ,s) -> mk_anti _loc ~c:"case" n s
+
+      | `Ant ("" as n,s) ;"when";exp{w};"->"; exp{e} ->
+          `CaseWhen(_loc,mk_anti _loc ~c:"case" n s, w,e )
+      | `Ant ("" as n,s); "->"; exp {e} ->
+          `Case(_loc,mk_anti _loc ~c:"case" n s ,e)
+            
       | pat_as_pat_opt{p}; "when"; exp{w};  "->"; exp{e} ->
            `CaseWhen (_loc, p, w, e)
       | pat_as_pat_opt{p}; "->";exp{e} -> `Case(_loc,p,e)]

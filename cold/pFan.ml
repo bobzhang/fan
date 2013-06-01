@@ -819,30 +819,14 @@ let apply () =
       Fgram.extend_single (interf : 'interf Fgram.t )
         (None,
           (None, None,
-            [([`Skeyword "#";
-              `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-              `Skeyword ";;"],
-               ("Fgram.mk_action\n  (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (([`DirectiveSimple (_loc, n)], (Some _loc)) : 'interf ))\n",
+            [([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t ));
+              `Skeyword ";;";
+              `Sself],
+               ("Fgram.mk_action\n  (fun ((sil,stopped) : 'interf)  _  (si : 'sigi)  (_loc : FLoc.t)  ->\n     (((si :: sil), stopped) : 'interf ))\n",
                  (Fgram.mk_action
-                    (fun _  (n : 'a_lident)  _  (_loc : FLoc.t)  ->
-                       (([`DirectiveSimple (_loc, n)], (Some _loc)) : 
-                       'interf )))));
-            ([`Skeyword "#";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
-             `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
-             `Skeyword ";;"],
-              ("Fgram.mk_action\n  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t)  ->\n     (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf ))\n",
-                (Fgram.mk_action
-                   (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : FLoc.t) 
-                      ->
-                      (([`Directive (_loc, n, dp)], (Some _loc)) : 'interf )))));
-            ([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t ));
-             `Skeyword ";;";
-             `Sself],
-              ("Fgram.mk_action\n  (fun ((sil,stopped) : 'interf)  _  (si : 'sigi)  (_loc : FLoc.t)  ->\n     (((si :: sil), stopped) : 'interf ))\n",
-                (Fgram.mk_action
-                   (fun ((sil,stopped) : 'interf)  _  (si : 'sigi) 
-                      (_loc : FLoc.t)  -> (((si :: sil), stopped) : 'interf )))));
+                    (fun ((sil,stopped) : 'interf)  _  (si : 'sigi) 
+                       (_loc : FLoc.t)  ->
+                       (((si :: sil), stopped) : 'interf )))));
             ([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t )); `Sself],
               ("Fgram.mk_action\n  (fun ((sil,stopped) : 'interf)  (si : 'sigi)  (_loc : FLoc.t)  ->\n     (((si :: sil), stopped) : 'interf ))\n",
                 (Fgram.mk_action
@@ -2118,15 +2102,60 @@ let apply () =
         (None,
           (None, None,
             [([`Stoken
-                 (((function | `Ant (("case"|""),_) -> true | _ -> false)),
-                   (`Normal, "`Ant ((\"case\"|\"\"),_)"))],
-               ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"case\"|\"\" as n),s) -> (mk_anti _loc ~c:\"case\" n s : 'case0 )\n     | _ -> failwith \"mk_anti _loc ~c:\"case\" n s\n\")\n",
+                 (((function | `Ant ("case",_) -> true | _ -> false)),
+                   (`Normal, "`Ant (\"case\",_)"))],
+               ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"case\" as n),s) -> (mk_anti _loc ~c:\"case\" n s : 'case0 )\n     | _ -> failwith \"mk_anti _loc ~c:\"case\" n s\n\")\n",
                  (Fgram.mk_action
                     (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                        match __fan_0 with
-                       | `Ant (("case"|"" as n),s) ->
+                       | `Ant (("case" as n),s) ->
                            (mk_anti _loc ~c:"case" n s : 'case0 )
                        | _ -> failwith "mk_anti _loc ~c:\"case\" n s\n"))));
+            ([`Stoken
+                (((function | `Ant ("",_) -> true | _ -> false)),
+                  (`Normal, "`Ant (\"\",_)"))],
+              ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\" as n),s) -> (mk_anti _loc ~c:\"case\" n s : 'case0 )\n     | _ -> failwith \"mk_anti _loc ~c:\"case\" n s\n\")\n",
+                (Fgram.mk_action
+                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      match __fan_0 with
+                      | `Ant (("" as n),s) ->
+                          (mk_anti _loc ~c:"case" n s : 'case0 )
+                      | _ -> failwith "mk_anti _loc ~c:\"case\" n s\n"))));
+            ([`Stoken
+                (((function | `Ant ("",_) -> true | _ -> false)),
+                  (`Normal, "`Ant (\"\",_)"));
+             `Skeyword "when";
+             `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
+             `Skeyword "->";
+             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+              ("Fgram.mk_action\n  (fun (e : 'exp)  _  (w : 'exp)  _  (__fan_0 : [> FToken.t]) \n     (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\" as n),s) ->\n         (`CaseWhen (_loc, (mk_anti _loc ~c:\"case\" n s), w, e) : 'case0 )\n     | _ ->\n         failwith \"`CaseWhen (_loc, (mk_anti _loc ~c:\"case\" n s), w, e)\n\")\n",
+                (Fgram.mk_action
+                   (fun (e : 'exp)  _  (w : 'exp)  _ 
+                      (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      match __fan_0 with
+                      | `Ant (("" as n),s) ->
+                          (`CaseWhen
+                             (_loc, (mk_anti _loc ~c:"case" n s), w, e) : 
+                          'case0 )
+                      | _ ->
+                          failwith
+                            "`CaseWhen (_loc, (mk_anti _loc ~c:\"case\" n s), w, e)\n"))));
+            ([`Stoken
+                (((function | `Ant ("",_) -> true | _ -> false)),
+                  (`Normal, "`Ant (\"\",_)"));
+             `Skeyword "->";
+             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+              ("Fgram.mk_action\n  (fun (e : 'exp)  _  (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Ant ((\"\" as n),s) ->\n         (`Case (_loc, (mk_anti _loc ~c:\"case\" n s), e) : 'case0 )\n     | _ -> failwith \"`Case (_loc, (mk_anti _loc ~c:\"case\" n s), e)\n\")\n",
+                (Fgram.mk_action
+                   (fun (e : 'exp)  _  (__fan_0 : [> FToken.t]) 
+                      (_loc : FLoc.t)  ->
+                      match __fan_0 with
+                      | `Ant (("" as n),s) ->
+                          (`Case (_loc, (mk_anti _loc ~c:"case" n s), e) : 
+                          'case0 )
+                      | _ ->
+                          failwith
+                            "`Case (_loc, (mk_anti _loc ~c:\"case\" n s), e)\n"))));
             ([`Snterm (Fgram.obj (pat_as_pat_opt : 'pat_as_pat_opt Fgram.t ));
              `Skeyword "when";
              `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
