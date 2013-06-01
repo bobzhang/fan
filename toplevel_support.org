@@ -8,19 +8,20 @@
 
 * Playing with toplevel
 
-   If you have ocamlfind installed, the easiest way to explore fan is
-   starting the toplevel:
-
+  If you have fan installed successfully, start your toplevel, and
+  try the next phrase
+  
    #+BEGIN_SRC ocaml
-     # #require "fan.top";;
-     /Users/bobzhang1988/.opam/4.00.1/lib/fan: added to search path
-     /Users/bobzhang1988/.opam/4.00.1/lib/fan/fanTop.cma: loaded
+     # #directory "+fan";;
+     # #load "fanTop.cma";;
      # let a = {:exp-|3|};;
      val a : FAstN.exp = `Int "3"
    #+END_SRC
-   Here "exp-" is a built-in DDSL for quasiquotation, see [[file:ddsl/quotation.org][DDSL:quotation]]
+
+  Here "exp-" is a built-in DDSL for quasiquotation, it's the same as
+  exp DDSL except without locations, see [[file:ddsl/quotation.org][DDSL:quotation]]
    
-   There are two  directives added,
+  There are two  directives added,
 
    1. normal
       #+BEGIN_SRC ocaml
@@ -44,4 +45,20 @@
   There is adapter for fan, namely ftop, available here:
   https://github.com/bobzhang/ftop
   
+  To install ftop
+  #+BEGIN_SRC sh
+    make clean
+    make
+    make install
+  #+END_SRC
 
+  Then you would have ftop in your path.
+  Since ftop already linked fan in, so it works out of the box.
+
+  #+BEGIN_SRC ocaml
+    ftop$ let a = {:exp-|3|};;
+    val a: FAstN.exp = `Int "3"  
+  #+END_SRC
+  However, you still have to type "#directory "+fan"" to get access
+  to Fan's typing environment /i.e./ cmi files.
+  

@@ -10,7 +10,8 @@ There are some minor differences between Fan's concrete syntax and
 OCaml though, the major differences is that Fan is more strict than
 OCaml.
 
-Three particular points to be noticed:
+* Difference from Caml syntax
+  Three particular points to be noticed:
   1. Parens are necessary for tuples
      #+BEGIN_SRC ocaml
        (** illegal *)
@@ -67,3 +68,65 @@ Three particular points to be noticed:
      #+END_SRC
   4. $ is a reserved operator, please don't take it as a function.
 
+
+* Introduced syntax
+
+  It mainly introduce two syntaxes, we call them delimited domain
+  specific languages(DDSL).
+
+  1. compile time quotation
+
+     #+BEGIN_SRC ocaml
+     #{:quot| |}     
+     #+END_SRC
+
+     Such quotation is purely compile time control language, it's a
+     general view of such directives:
+
+     #+BEGIN_SRC ocaml
+       #load "xx.cmo";;
+       #use "xx.ml"  ;;
+     #+END_SRC
+
+     It can be used to interact with the Fan compiler, the user can
+     register different compile time quotation language to make the
+     whole file self-explainable, this helps simplify the build
+     system a lot.
+     
+     For example, there is a built-in control language
+
+     #+BEGIN_SRC ocaml
+       #{:control|
+         default "exp"; (* set the default quotation *)
+         require "ulex"; (* require the feature*)
+         import "Tutorial"; (* import the language namespace*)
+         filter "serialize"; (* apply the filter serialize to the whole file *)
+         |}     
+     #+END_SRC
+     
+     Another language eval, could eval all legal ocaml code at
+     compile-time.
+
+     #+BEGIN_SRC ocaml
+       #{:eval|
+       let v = 3
+       let b = 3
+       |}          
+     #+END_SRC
+     
+     This would help test the syntax extension on-the-fly.
+     
+     *Note*: all the compile time DDSL should be put in the
+     beginning, this is intentional, to work better  with IDE.
+
+  2. Rewrite DDSL.
+
+     The syntax is the same with compile-time DDSL  except without
+     hash sign, one sample is as follows:
+     
+     #+BEGIN_SRC ocaml
+     {:exp| 3 |}
+     #+END_SRC
+
+     It  can appear in most places (detail later)
+  

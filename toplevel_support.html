@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Toplevel support</title>
-<!-- 2013-05-31 Fri 18:29 -->
+<!-- 2013-05-31 Fri 22:40 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="author" content="bobzhang"/>
@@ -142,21 +142,22 @@ for the JavaScript code in this tag.
 <h2 id="sec-1">Playing with toplevel</h2>
 <div class="outline-text-2" id="text-1">
 <p>
-If you have ocamlfind installed, the easiest way to explore fan is
-starting the toplevel:
+If you have fan installed successfully, start your toplevel, and
+try the next phrase
 </p>
 
 <div class="org-src-container">
 
-<pre class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>require <span style="color: #8b2252;">"fan.top"</span><span style="color: #a52a2a;">;;</span>
-<span style="color: #a52a2a;">/</span>Users<span style="color: #a52a2a;">/</span>bobzhang1988<span style="color: #a52a2a;">/.</span>opam<span style="color: #a52a2a;">/</span>4.00.1<span style="color: #a52a2a;">/</span>lib<span style="color: #a52a2a;">/</span><span style="color: #a0522d;">fan</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">added </span><span style="color: #a020f0;">to</span><span style="color: #228b22;"> search path</span>
-<span style="color: #a52a2a;">/</span>Users<span style="color: #a52a2a;">/</span>bobzhang1988<span style="color: #a52a2a;">/.</span>opam<span style="color: #a52a2a;">/</span>4.00.1<span style="color: #a52a2a;">/</span>lib<span style="color: #a52a2a;">/</span>fan<span style="color: #a52a2a;">/</span>fanTop.<span style="color: #a0522d;">cma</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">loaded</span>
+<pre class="src src-ocaml"><span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>directory <span style="color: #8b2252;">"+fan"</span><span style="color: #a52a2a;">;;</span>
+<span style="color: #a52a2a;">#</span> <span style="color: #a52a2a;">#</span>load <span style="color: #8b2252;">"fanTop.cma"</span><span style="color: #a52a2a;">;;</span>
 <span style="color: #a52a2a;">#</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|};;</span>
 <span style="color: #0000ff; font-weight: bold;">val</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">=</span> `Int <span style="color: #8b2252;">"3"</span>
 </pre>
 </div>
+
 <p>
-Here "exp-" is a built-in DDSL for quasiquotation, see <a href="ddsl/quotation.html">DDSL:quotation</a>
+Here "exp-" is a built-in DDSL for quasiquotation, it's the same as
+exp DDSL except without locations, see <a href="ddsl/quotation.html">DDSL:quotation</a>
 </p>
 
 <p>
@@ -202,6 +203,33 @@ with.
 <p>
 There is adapter for fan, namely ftop, available here:
 <a href="https://github.com/bobzhang/ftop">https://github.com/bobzhang/ftop</a>
+</p>
+
+<p>
+To install ftop
+</p>
+<div class="org-src-container">
+
+<pre class="src src-sh">make clean
+make
+make install
+</pre>
+</div>
+
+<p>
+Then you would have ftop in your path.
+Since ftop already linked fan in, so it works out of the box.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-ocaml">ftop<span style="color: #a52a2a;">$</span> <span style="color: #0000ff; font-weight: bold;">let</span> <span style="color: #a0522d;">a </span><span style="color: #a52a2a;">=</span> <span style="color: #a52a2a;">{:</span><span style="color: #228b22;">exp</span><span style="color: #a52a2a;">-|</span>3<span style="color: #a52a2a;">|};;</span>
+<span style="color: #0000ff; font-weight: bold;">val</span> <span style="color: #a0522d;">a</span><span style="color: #a52a2a;">:</span> <span style="color: #228b22;">FAstN.exp </span><span style="color: #a52a2a;">=</span> `Int <span style="color: #8b2252;">"3"</span>
+</pre>
+</div>
+<p>
+However, you still have to type "#directory "+fan"" to get access
+to Fan's typing environment <i>i.e.</i> cmi files.
 </p>
 </div>
 </div>

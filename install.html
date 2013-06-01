@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
 <title>Installation</title>
-<!-- 2013-05-31 Fri 18:29 -->
+<!-- 2013-05-31 Fri 22:16 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 <meta name="generator" content="Org-mode"/>
 <meta name="author" content="bobzhang"/>
@@ -136,7 +136,7 @@ for the JavaScript code in this tag.
 <body>
 <div id="content">
 <h1 class="title">Installation</h1>
-<my-body>
+
 
 
 
@@ -146,11 +146,14 @@ for the JavaScript code in this tag.
 <ul class="org-ul">
 <li><a href="http://caml.inria.fr/ocaml/release.en.html">OCaml (version &gt;=4)</a>
 </li>
+
 <li><a href="http://projects.camlcity.org/projects/findlib.html">OCamlfind</a> (optional)  
 </li>
 </ul>
 </div>
 </div>
+
+
 <div id="outline-container-sec-2" class="outline-2">
 <h2 id="sec-2">Install for users</h2>
 <div class="outline-text-2" id="text-2">
@@ -160,23 +163,27 @@ for the JavaScript code in this tag.
 </pre>
 </div>
 <p>
-if you have ocamlfind installed, try
+If you have ocamlfind installed, it will install a META file will be
+installed to the corresponding place, otherwise no META file installed
 </p>
-
-<div class="org-src-container">
-
-<pre class="src src-sh">make metainstall
-</pre>
 </div>
-</div>
+
 
 <div id="outline-container-sec-2-1" class="outline-3">
 <h3 id="sec-2-1">What it installed?</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 It installed three exectuables: <code>fan.byte</code>, <code>fan.native</code>,
-<code>fanX.byte</code> into the path: <code>`ocamlc -where`/bin</code> and all the
-library files into <code>`ocamlc -where`/fan</code>.
+<code>fane.byte</code> into the path: <code>`ocamlc -where`/bin</code>.
+</p>
+
+<p>
+All the library files are installed into <code>`ocamlc -where`/fan</code>.
+</p>
+
+<p>
+FAst.cmi and FAstN.cmi two signature files are installed to the
+path of standard library.
 </p>
 
 <p>
@@ -186,16 +193,13 @@ Please read META file for more details.
 <p>
 fan.byte, fan.native have exactly the same functionality, they are
 stand alone without linking any external libraries (no
-compiler-libs linked).
+compiler-libs linked, no dynlink).
 </p>
 
 <p>
-fanX.byte links the whole byte-code compiler, it provides <b>eval</b>
-functionality, we will talk about it later.
+fane.byte links the whole byte-code compiler and toplevel, it
+provides <b>eval</b> functionality, which we will talk about later.
 </p>
-
-
-</my-body>
 </div>
 </div>
 </div>
