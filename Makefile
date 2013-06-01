@@ -21,7 +21,7 @@ BCOLD=_build/cold/
 BHOT=_build/src/
 EXES=fan.byte fan.native fane.byte
 
-LIBTARGETS = fgram.cma fgram.cmx fgram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma mkFan.cma
+LIBTARGETS = fgram.cma fgram.cmx fgram.cmxs rts.cma rts.cmxa rts.cmxs fanTop.cma mktop.cma mkFan.cma
 BINTARGETS = fan.byte fan.native fane.byte
 
 

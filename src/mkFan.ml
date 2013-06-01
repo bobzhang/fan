@@ -141,7 +141,7 @@ let initial_spec_list =
 
    ("-verbose", FArg.Set FConfig.verbose, "More verbose in parsing errors.");
 
-   ("-where", FArg.Unit (fun () -> (print_endline FConfig.fan_standard_library;exit 0))
+   ("-where", FArg.Unit (fun () -> (print_endline FConfig.fan_plugins_library;exit 0))
       , " Print location of standard library and exit");
    ("-loc", FArg.Set_string FLoc.name,
     "<name>   Name of the location variable (default: " ^ !FLoc.name ^ ").");

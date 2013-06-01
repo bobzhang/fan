@@ -121,7 +121,7 @@ let initial_spec_list =
   ("-where",
     (FArg.Unit
        ((fun ()  ->
-           begin print_endline FConfig.fan_standard_library; exit 0 end))),
+           begin print_endline FConfig.fan_plugins_library; exit 0 end))),
     " Print location of standard library and exit");
   ("-loc", (FArg.Set_string FLoc.name),
     ("<name>   Name of the location variable (default: " ^
