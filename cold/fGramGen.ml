@@ -165,10 +165,6 @@ let rec make_exp (tvar : string) (x : text) =
         (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
     | `Speek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Srules (_loc,rl) ->
-        (`App
-           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))),
-             (make_exp_rules _loc rl "")) : FAst.exp )
     | `Stok (_loc,match_fun,attr,descr) ->
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),

@@ -152,9 +152,6 @@ and parser_of_symbol entry s nlevn =
     | `Sopt s -> let ps = aux s in Gcomb.opt ps ~f:Gaction.mk
     | `Stry s -> let ps = aux s in Gcomb.tryp ps
     | `Speek s -> let ps = aux s in Gcomb.peek ps
-    | `Stree t ->
-        let pt = parser_of_tree entry (0, `RA) (ArgContainer.create ()) t in
-        (fun strm  -> let (act,loc) = pt strm in Gaction.getf act loc)
     | `Snterml (e,l) -> (fun strm  -> e.estart (level_number e l) strm)
     | `Snterm e -> (fun strm  -> e.estart 0 strm)
     | `Sself -> (fun strm  -> entry.estart 0 strm)

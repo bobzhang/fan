@@ -891,19 +891,6 @@ let _ =
                     | _ ->
                         failwith
                           "mk_symbol ~text:(`Snext _loc) ~styp:(`Self (_loc, \"N\")) ~pattern:None\n"))));
-          ([`Skeyword "[";
-           `Slist1sep
-             ((`Snterm (Fgram.obj (rule : 'rule Fgram.t ))), (`Skeyword "|"));
-           `Skeyword "]"],
-            ("let rl = retype_rule_list_without_patterns _loc rl in\nlet t = new_type_var () in\nmk_symbol ~text:(`Srules (_loc, (mk_srules _loc t rl \"\")))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t)))) ~pattern:None\n",
-              (Fgram.mk_action
-                 (fun _  (rl : 'rule list)  _  (_loc : FLoc.t)  ->
-                    (let rl = retype_rule_list_without_patterns _loc rl in
-                     let t = new_type_var () in
-                     mk_symbol
-                       ~text:(`Srules (_loc, (mk_srules _loc t rl "")))
-                       ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, t))))
-                       ~pattern:None : 'symbol )))));
           ([`Snterm (Fgram.obj (simple_pat : 'simple_pat Fgram.t ))],
             ("let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\nmatch ls with\n| [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n| (x,y)::ys ->\n    let restrict =\n      List.fold_left\n        (fun acc  (x,y)  ->\n           (`App\n              (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))) : \n           FAst.exp ))\n        (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y) : FAst.exp ) ys in\n    mk_tok _loc ~restrict ~pattern:p (`Tok _loc)\n",
               (Fgram.mk_action

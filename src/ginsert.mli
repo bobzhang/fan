@@ -8,7 +8,7 @@ val higher :
 (** {[ symbol -> bool ]}*)      
 val derive_eps : symbol -> bool
 
-val tree_derive_eps : tree -> bool
+(* val tree_derive_eps : tree -> bool *)
 
 
 (** create an empty level *)

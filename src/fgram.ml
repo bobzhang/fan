@@ -113,8 +113,8 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
 
 
 (* FIXME [srules] the productions are also scanned  *)  
-let srules rl =
-    `Stree (List.fold_right Ginsert.add_production   rl DeadEnd)
+(* let srules rl = *)
+(*     `Stree (List.fold_right Ginsert.add_production   rl DeadEnd) *)
     
 let sfold0 = Gfold.sfold0
 let sfold1 = Gfold.sfold1

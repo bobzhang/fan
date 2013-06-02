@@ -167,8 +167,6 @@ let parse_string_safe ?(loc= FLoc.string_loc)  entry s =
         FLoc.raise loc e
       end
 
-let srules rl = `Stree (List.fold_right Ginsert.add_production rl DeadEnd)
-
 let sfold0 = Gfold.sfold0
 
 let sfold1 = Gfold.sfold1

@@ -81,7 +81,7 @@ and symbol =
   | `Snext
   | terminal
       
-  | `Stree of tree
+  (* | `Stree of tree *)
   (* | `Smeta of (string list  * symbol list  * Gaction.t) *)
  ]
 and tree = (* internal struccture *)

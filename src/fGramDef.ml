@@ -55,7 +55,7 @@ and text =
  | `Sopt of (loc * text )
  | `Stry of (loc * text )
  | `Speek of (loc * text)
- | `Srules of (loc * (text list  * exp * exp option) list )
+ (* | `Srules of (loc * (text list  * exp * exp option) list ) *)
  | `Sself of loc
  | `Snext of loc       
  | `Skeyword of (loc * string)

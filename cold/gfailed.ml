@@ -45,8 +45,8 @@ let tree_in_entry prev_symb tree =
       and search_symbol symb =
         match symb with
         | `Snterm _|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _
-          |`Slist1sep (_,_)|`Sopt _|`Stry _|`Stoken _|`Stree _|`Skeyword _
-          |`Speek _ when symb == prev_symb -> Some symb
+          |`Slist1sep (_,_)|`Sopt _|`Stry _|`Stoken _|`Skeyword _|`Speek _
+            when symb == prev_symb -> Some symb
         | `Slist0 symb ->
             (match search_symbol symb with
              | Some symb -> Some (`Slist0 symb)
@@ -81,10 +81,6 @@ let tree_in_entry prev_symb tree =
             (match search_symbol symb with
              | Some symb -> Some (`Speek symb)
              | None  -> None)
-        | `Stree t ->
-            (match search_tree t with
-             | Some t -> Some (`Stree t)
-             | None  -> None)
         | _ -> None in
       (try List.find_map search_level levels with | Not_found  -> tree)
   | Dparser _ -> tree
@@ -93,7 +89,6 @@ let rec name_of_symbol_failed entry =
   function
   | `Slist0 s|`Slist0sep (s,_)|`Slist1 s|`Slist1sep (s,_)|`Sopt s|`Stry s
     |`Speek s -> name_of_symbol_failed entry s
-  | `Stree t -> name_of_tree_failed entry t
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
   match x with
@@ -148,7 +143,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
          | _ ->
              let txt1 = name_of_symbol_failed entry sep in
              txt1 ^ (" or " ^ (txt ^ " expected")))
-    | `Stry _|`Speek _|`Sopt _|`Stree _ -> txt ^ " expected"
+    | `Stry _|`Speek _|`Sopt _ -> txt ^ " expected"
     | _ -> txt ^ (" expected after " ^ (name_of_symbol entry prev_symb)) in
   begin
     if FConfig.verbose.contents

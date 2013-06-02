@@ -268,12 +268,12 @@ FConfig.antiquotations := true;;
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
   |`Uid "N" ->
       mk_symbol  ~text:(`Snext _loc)   ~styp:(`Self _loc "N") ~pattern:None
-  | "["; L1 rule SEP "|"{rl}; "]" ->
-      let rl = retype_rule_list_without_patterns _loc rl in
-      let t = new_type_var () in
-      mk_symbol  ~text:(`Srules _loc (mk_srules _loc t rl ""))
-        ~styp:({:ctyp'|'$lid:t |} )
-        ~pattern:None
+  (* | "["; L1 rule SEP "|"{rl}; "]" -> *)
+  (*     let rl = retype_rule_list_without_patterns _loc rl in *)
+  (*     let t = new_type_var () in *)
+  (*     mk_symbol  ~text:(`Srules _loc (mk_srules _loc t rl "")) *)
+  (*       ~styp:({:ctyp'|'$lid:t |} ) *)
+  (*       ~pattern:None *)
   | simple_pat{p} -> 
       let (p,ls) =
         Exp.filter_pat_with_captured_variables
