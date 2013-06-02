@@ -300,11 +300,8 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
          (`App
             (_loc,
               (`App
-                 (_loc,
-                   (`Field
-                      (_loc, (gm () : vid  :>exp),
-                        (`Lid (_loc, "delete_rule")))), e)), b) : FAst.exp ))
-      symbolss in
+                 (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))),
+                   e)), b) : FAst.exp )) symbolss in
   match symbolss with
   | [] -> (`Uid (_loc, "()") : FAst.exp )
   | _ -> seq_sem rest

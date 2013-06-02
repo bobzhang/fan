@@ -1138,16 +1138,11 @@ let _ =
              ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
                (`Skeyword ","));
            `Skeyword ")"],
-            ("Fgram.mk_action\n  (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _  (_loc : FLoc.t)  ->\n     (match v with\n      | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)\n      | x::xs ->\n          let xs = com_of_list xs in\n          `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), xs)\n      | [] -> assert false : 'simple_pat ))\n",
+            ("Fgram.mk_action\n  (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _  (_loc : FLoc.t)  ->\n     (AstLib.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat ))\n",
               (Fgram.mk_action
                  (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _ 
                     (_loc : FLoc.t)  ->
-                    (match v with
-                     | x::[] -> `App (_loc, (`Vrn (_loc, s)), x)
-                     | x::xs ->
-                         let xs = com_of_list xs in
-                         `App (_loc, (`App (_loc, (`Vrn (_loc, s)), x)), xs)
-                     | [] -> assert false : 'simple_pat )))))]));
+                    (AstLib.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat )))))]));
     Fgram.extend (internal_pat : 'internal_pat Fgram.t )
       (None,
         [((Some "as"), None,

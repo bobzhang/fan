@@ -4324,22 +4324,21 @@ let apply () =
         (None,
           (None, None,
             [([`Stoken
-                 (((function | `DirQuotation _ -> true | _ -> false)),
-                   (`Normal, "`DirQuotation _"))],
-               ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `DirQuotation x ->\n         (let (shift,name,contents) = x in\n          let _loc = FLoc.move `start shift _loc in\n          begin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end : \n         'implem )\n     | _ ->\n         failwith\n           \"let (shift,name,contents) = x in\nlet _loc = FLoc.move `start shift _loc in\nbegin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end\n\")\n",
+                 (((function | `DirQuotation (_,_,_) -> true | _ -> false)),
+                   (`Normal, "`DirQuotation (_,_,_)"))],
+               ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `DirQuotation (shift,name,contents) ->\n         (let _loc = FLoc.move `start shift _loc in\n          begin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end : \n         'implem )\n     | _ ->\n         failwith\n           \"let _loc = FLoc.move `start shift _loc in\nbegin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end\n\")\n",
                  (Fgram.mk_action
                     (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                        match __fan_0 with
-                       | `DirQuotation x ->
-                           (let (shift,name,contents) = x in
-                            let _loc = FLoc.move `start shift _loc in
+                       | `DirQuotation (shift,name,contents) ->
+                           (let _loc = FLoc.move `start shift _loc in
                             begin
                               Fdir.handle_dir _loc (name, contents);
                               ([], (Some _loc))
                             end : 'implem )
                        | _ ->
                            failwith
-                             "let (shift,name,contents) = x in\nlet _loc = FLoc.move `start shift _loc in\nbegin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end\n"))));
+                             "let _loc = FLoc.move `start shift _loc in\nbegin Fdir.handle_dir _loc (name, contents); ([], (Some _loc)) end\n"))));
             ([`Snterm (Fgram.obj (stru : 'stru Fgram.t ));
              `Skeyword ";;";
              `Sself],
