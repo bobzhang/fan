@@ -4,8 +4,6 @@ open FAst
 
 let strip_ant ant = ant
 
-let _ = begin (); () end
-
 let pp_print_loc: Format.formatter -> loc -> unit =
   fun fmt  _a0  -> FLoc.pp_print_t fmt _a0
 

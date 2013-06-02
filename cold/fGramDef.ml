@@ -15,6 +15,7 @@ type attr = string
 type entry =  {
   name: name;
   pos: exp option;
+  local: bool;
   levels: levels} 
 and levels = [ `Group of level list | `Single of level] 
 and level =  {
@@ -31,8 +32,7 @@ and symbol =  {
 and text =
   [ `Slist of (loc * bool * symbol * symbol option)
   | `Snterm of (loc * name * string option) | `Sopt of (loc * text)
-  | `Stry of (loc * text) | `Speek of (loc * text)
-  | `Srules of (loc * (text list * exp * exp option) list) | `Sself of loc
+  | `Stry of (loc * text) | `Speek of (loc * text) | `Sself of loc
   | `Snext of loc | `Skeyword of (loc * string)
   | `Stok of (loc * exp * attr * string)] 
 

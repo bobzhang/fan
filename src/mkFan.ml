@@ -52,7 +52,7 @@ let require name =
 ;;
 
 let open FControl in
-{:unsafe_extend|
+{:unsafe_extend| (g:Fgram.t)
   item:
   [ "require"; `STR(_,s) -> require s ]
 |};;

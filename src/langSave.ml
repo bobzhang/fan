@@ -12,7 +12,7 @@ open AstLib
 
     
 {:extend|save_quot:
-  [L1 [`Lid x -> x] {ls} ; "->"; Fsyntax.exp{b} ->
+  [L1 lid {ls} ; "->"; Fsyntax.exp{b} ->
     let symbs = List.map (fun x -> FState.gensym x) ls in
     let res = FState.gensym "res" in
     let exc = FState.gensym "e" in
@@ -31,4 +31,5 @@ open AstLib
   |}
 
  ]
+  let lid: [`Lid x -> x ]
 |};;

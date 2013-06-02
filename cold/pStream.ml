@@ -18,8 +18,6 @@ let stream_pat_comp_err = Fgram.mk "stream_pat_comp_err"
 
 let stream_pat_comp_err_list = Fgram.mk "stream_pat_comp_err_list"
 
-let stream_begin = Fgram.mk "stream_begin"
-
 let stream_pat = Fgram.mk "stream_pat"
 
 let parser_case = Fgram.mk "parser_case"
@@ -29,29 +27,33 @@ let parser_case_list = Fgram.mk "parser_case_list"
 let stream_exp = Fgram.mk "stream_exp"
 
 let apply () =
+  let grammar_entry_create x = Fgram.mk x in
+  let uid: 'uid Fgram.t = grammar_entry_create "uid" in
   begin
+    Fgram.extend_single (uid : 'uid Fgram.t )
+      (None,
+        (None, None,
+          [([`Stoken
+               (((function | `Uid _ -> true | _ -> false)),
+                 (`Normal, "`Uid _"))],
+             ("n\n",
+               (Fgram.mk_action
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                     match __fan_0 with
+                     | `Uid n -> (n : 'uid )
+                     | _ -> failwith "n\n"))))]));
     Fgram.extend_single (exp : 'exp Fgram.t )
       ((Some (`Level "top")),
         (None, None,
           [([`Skeyword "parser";
-            `Sopt
-              (Fgram.srules
-                 [([`Stoken
-                      (((function | `Uid _ -> true | _ -> false)),
-                        (`Normal, "`Uid _"))],
-                    ("n\n",
-                      (Fgram.mk_action
-                         (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                            match __fan_0 with
-                            | `Uid n -> (n : 'e__1 )
-                            | _ -> failwith "n\n"))))]);
+            `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
             `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
             `Snterm
               (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
              ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser _loc po pcl)\n| None  -> cparser _loc po pcl\n",
                (Fgram.mk_action
                   (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
-                     (name : 'e__1 option)  _  (_loc : FLoc.t)  ->
+                     (name : 'uid option)  _  (_loc : FLoc.t)  ->
                      (match name with
                       | Some o ->
                           Ref.protect FStreamGen.grammar_module_name o
@@ -61,24 +63,14 @@ let apply () =
            `Sself;
            `Skeyword "with";
            `Skeyword "parser";
-           `Sopt
-             (Fgram.srules
-                [([`Stoken
-                     (((function | `Uid _ -> true | _ -> false)),
-                       (`Normal, "`Uid _"))],
-                   ("n\n",
-                     (Fgram.mk_action
-                        (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                           match __fan_0 with
-                           | `Uid n -> (n : 'e__2 )
-                           | _ -> failwith "n\n"))))]);
+           `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
            `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
            `Snterm
              (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
             ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser_match _loc e po pcl)\n| None  -> cparser_match _loc e po pcl\n",
               (Fgram.mk_action
                  (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
-                    (name : 'e__2 option)  _  _  (e : 'exp)  _ 
+                    (name : 'uid option)  _  _  (e : 'exp)  _ 
                     (_loc : FLoc.t)  ->
                     (match name with
                      | Some o ->
@@ -166,27 +158,6 @@ let apply () =
                (Fgram.mk_action
                   (fun (e : 'exp)  _  (sp : 'stream_pat)  (_loc : FLoc.t)  ->
                      ((sp, None, e) : 'parser_case )))))]));
-    Fgram.extend_single (stream_begin : 'stream_begin Fgram.t )
-      (None,
-        (None, None,
-          [([`Skeyword "[<";
-            `Sopt
-              (Fgram.srules
-                 [([`Skeyword "!";
-                   `Stoken
-                     (((function | `Uid _ -> true | _ -> false)),
-                       (`Normal, "`Uid _"))],
-                    ("n\n",
-                      (Fgram.mk_action
-                         (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t) 
-                            ->
-                            match __fan_1 with
-                            | `Uid n -> (n : 'e__3 )
-                            | _ -> failwith "n\n"))))])],
-             ("name\n",
-               (Fgram.mk_action
-                  (fun (name : 'e__3 option)  _  (_loc : FLoc.t)  ->
-                     (name : 'stream_begin )))))]));
     Fgram.extend_single (stream_pat : 'stream_pat Fgram.t )
       (None,
         (None, None,

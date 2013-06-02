@@ -3,7 +3,7 @@ open FStreamGen
 val parser_ipat : pat Fgram.t
 val stream_exp_comp : sexp_comp Fgram.t
 val stream_exp_comp_list : sexp_comp list Fgram.t
-val stream_begin : string option Fgram.t
+(* val stream_begin : string option Fgram.t *)
 
 val stream_pat : stream_pats Fgram.t
 val stream_pat_comp : spat_comp Fgram.t

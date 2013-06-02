@@ -222,7 +222,6 @@ let apply () = begin
 
     with exp
     {:extend|
-      local:  fun_def_pat;
       exp_quot:
       [ exp{e1}; ","; comma_exp{e2} -> `Com(_loc,e1,e2)
       | exp{e1}; ";"; sem_exp{e2} -> `Sem(_loc,e1,e2)
@@ -255,16 +254,17 @@ let apply () = begin
          AstQuotation.default := FToken.resolve_name _loc ls;
          old)]
        pos_exps:
-       [ L1
-           [ `Lid x;":";dot_lstrings{y} ->
-             ((x:string), FToken.resolve_name _loc y)
-           | `Lid x ->
-               ((x:string), FToken.resolve_name _loc
-                  (`Sub [], x) ) ] SEP ";"{xys} -> 
+       [ L1 name_space SEP ";"{xys} -> 
                     let old = !AstQuotation.map in
                     (AstQuotation.map := SMap.add_list xys old;
                      old)]
-       fun_def_pat:
+      let name_space:
+       [ `Lid x;":";dot_lstrings{y} ->
+             ((x:string), FToken.resolve_name _loc y)
+           | `Lid x ->
+               ((x:string), FToken.resolve_name _loc
+                  (`Sub [], x) ) ]  
+       let fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e ->  `LocalTypeFun (_loc, i, e)
        | ipat{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
@@ -445,12 +445,24 @@ let apply () = begin
        sequence':
        [ -> fun e -> e
        | ";" -> fun e -> e
-       | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
+       | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]
+
+
+       (* FIXME: more succinct form *)    
+       (* infixop1: *)
+       (* [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] *)
+
        infixop1:
-       [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] (* FIXME *)
+       [ "&"  -> `Lid (_loc,"&")
+       | "&&" -> `Lid (_loc,"&&")]    
+
+       (* infixop0: *)
+       (* [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ] *)
+           
        infixop0:
-       [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ]
-       
+       ["or" -> `Lid(_loc,"or")
+       |"||" -> `Lid(_loc,"||") ]
+           
        comma_exp:
        [ S{e1}; ","; S{e2} -> `Com(_loc,e1,e2)
        | exp Level "top"{e} -> e ]
@@ -519,7 +531,7 @@ let apply () = begin
         | field_exp{b1}; ";"            -> b1
         | field_exp{b1}                 -> b1  ] |};
   with pat
-    {:extend| local: pat_constr;
+    {:extend| 
        pat_quot:
        [ pat{x}; ","; comma_pat{y} -> `Com(_loc,x,y)
        | pat{x}; ";"; sem_pat{y} -> `Sem(_loc,x,y)
@@ -527,7 +539,7 @@ let apply () = begin
        pat_as_pat_opt:
        [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
        | pat{p} -> p ]
-       pat_constr:
+       let pat_constr:
        [module_longident{i} -> (* `Id(_loc,i) *) (i :vid :> pat)
        |"`"; luident{s}  -> (`Vrn(_loc,s) :pat)
        |`Ant ((""|"pat"|"vrn" as n), s) -> mk_anti _loc ~c:"pat" n s]

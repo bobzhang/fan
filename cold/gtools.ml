@@ -46,16 +46,8 @@ let logically_eq_symbols entry =
     | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
       |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
         (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
-    | (`Stree t1,`Stree t2) -> eq_tree t1 t2
     | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
-    | _ -> s1 = s2
-  and eq_tree t1 t2 =
-    match (t1, t2) with
-    | (Node n1,Node n2) ->
-        (eq_symbol n1.node n2.node) &&
-          ((eq_tree n1.son n2.son) && (eq_tree n1.brother n2.brother))
-    | ((LocAct (_,_)|DeadEnd ),(LocAct (_,_)|DeadEnd )) -> true
-    | _ -> false in
+    | _ -> s1 = s2 in
   eq_symbol
 
 let rec eq_symbol (s1 : symbol) (s2 : symbol) =
@@ -67,7 +59,5 @@ let rec eq_symbol (s1 : symbol) (s2 : symbol) =
   | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
     |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
       (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
-  | (`Stree s1,`Stree s2) -> eq_tree s1 s2
   | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
   | _ -> s1 = s2
-and eq_tree _t1 _t2 = false

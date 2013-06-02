@@ -26,8 +26,6 @@ class primitive =
        | false  -> (`Lid (_loc, "false") : FAst.ep ) : ep )
   end
 
-let _ = begin (); () end
-
 class meta =
   object (self : 'self_type)
     inherit  primitive

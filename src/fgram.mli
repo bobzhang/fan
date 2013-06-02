@@ -128,7 +128,7 @@ val wrap_stream_parser: ?loc:FLoc.t -> (loc:FLoc.t -> 'a -> 'b) -> 'a -> 'b
 
 val delete_rule:  'a t -> symbol list -> unit
 
-val srules: production list  ->  [> `Stree of tree ]
+(* val srules: production list  ->  [> `Stree of tree ] *)
 
 val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
 

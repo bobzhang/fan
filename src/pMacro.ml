@@ -37,28 +37,28 @@ let apply () = begin
     (* | "INCLUDE"; `STR (_, fname) -> *)
     (*     Lazy (lazy (Fgram.parse_include_file sigis fname)) ] *)
 
-    uident_eval_ifdef:
+    uident_eval_ifdef :
     [ uident{i} -> Stack.push (is_defined i) stack ]
-    uident_eval_ifndef:
+    uident_eval_ifndef :
     [ uident{i} -> Stack.push (not (is_defined i)) stack ]
-    else_macro_def:
+    else_macro_def :
     [ "ELSE"; smlist_else{st}; endif -> st | endif -> [] ]
     (* else_macro_def_sig: *)
     (* [ "ELSE"; sglist_else{st}; endif -> st | endif -> [] ] *)
-    else_exp:
+    else_exp :
     [ "ELSE"; exp{e}; endif -> e | endif -> {:exp| () |} ]
-    smlist_then:
-    [ L1
-        [ macro_def{d}; ";" ->
-          execute_macro_if_active_branch ~exp ~pat _loc
-            {:stru|let _ = ()|} (* FIXME *)
-            (fun a b -> {:stru| $a;; $b |}) Then d
-        | stru{si}; ";" -> Str si ]{sml} -> sml ]
-    smlist_else:
-    [ L1 [ macro_def{d}; ";" ->
-           execute_macro_if_active_branch ~exp ~pat  _loc
-           {:stru|let _ = ()|} (*FIXME*) (fun a b -> {:stru| $a;; $b |}) Else d
-         | stru{si}; ";" -> Str si ]{sml} -> sml ]
+    smlist_then :
+    [ L1 macro_semi {sml} -> sml ]
+
+    let macro_semi :
+    [ macro_def{d}; ";" ->
+      execute_macro_if_active_branch ~exp ~pat _loc
+        {:stru|let _ = ()|} (* FIXME *)
+        (fun a b -> {:stru| $a;; $b |}) Then d
+    | stru{si}; ";" -> Str si ]
+        
+    smlist_else :
+    [ L1 macro_semi {sml} -> sml ]
     (* sglist_then: *)
     (* [ L1 [ macro_def_sig{d}; semi -> *)
     (*        execute_macro_if_active_branch ~exp ~pat *)
@@ -71,10 +71,10 @@ let apply () = begin
     (* | sigi{si}; semi -> Str si ]{sgl} -> sgl ]   *)
     endif: [ "END" -> () | "ENDIF" -> () ]
     opt_macro_value:
-    [ "("; L1 [ `Lid x -> x ] SEP ","{pl}; ")"; "="; exp{e} -> Some (pl, e)
+    [ "("; L1 lid SEP ","{pl}; ")"; "="; exp{e} -> Some (pl, e)
     | "="; exp{e} -> Some ([], e)
     | -> None ]
-
+    let lid : [`Lid x -> x ]    
     exp: Level "top"
     [ "IFDEF"; uident{i}; "THEN"; exp{e1}; else_exp{e2} ->
       if is_defined i then e1 else e2
@@ -91,13 +91,25 @@ let apply () = begin
     [ `Uid i -> i ]
     (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
 
+    (** FIXME later *)    
+    (* let kwd: *)
+    (* [ `KEYWORD ("IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN"){x}->x ] *)
+    let kwd:
+    ["IFDEF" -> "IFDEF" 
+    |"IFNDEF"-> "IFNDEF" 
+    |"THEN" ->  "THEN"
+    |"ELSE" -> "ELSE"
+    |"END"  -> "END"
+    |"ENDIF" -> "ENDIF"
+    |"DEFINE" -> "DEFINE"
+    |"IN" ->  "IN" ]    
     exp: Before "simple"
-    [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN" ]{kwd}
+    [ "`";  kwd{kwd}
       -> {:exp| $vrn:kwd |}
     | "`"; luident{s} -> {:exp| $vrn:s |} ]
-
+    
     pat: Before "simple"
-    [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
+    [ "`"; kwd{kwd} ->
       {:pat| $vrn:kwd |}
     | "`"; luident{s} -> {:pat| $vrn:s |} ] |};
   Foptions.add

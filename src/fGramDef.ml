@@ -25,6 +25,7 @@ type entry   = {
   name : name ;
   (*position expession node *)    
   pos : exp option ;
+  local : bool ;  (* mark whether the grammar is local or not*)
   levels : levels(* list level *);
 }
 and levels =
@@ -54,7 +55,7 @@ and text =
  | `Sopt of (loc * text )
  | `Stry of (loc * text )
  | `Speek of (loc * text)
- | `Srules of (loc * (text list  * exp * exp option) list )
+ (* | `Srules of (loc * (text list  * exp * exp option) list ) *)
  | `Sself of loc
  | `Snext of loc       
  | `Skeyword of (loc * string)

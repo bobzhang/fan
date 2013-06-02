@@ -16,7 +16,7 @@ FConfig.antiquotations := true;;
   delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
   (t_qualid:vid Fgram.t )
   (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
-  locals entry position assoc name string
+   entry position assoc name string
   rules
 
   symbol
@@ -38,16 +38,12 @@ FConfig.antiquotations := true;;
   internal_pat|}  ;;
 
 {:extend|
+  let ty:
+  [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
+   |  qualuid{t} -> `static(t) ]    
+
   nonterminals :
-  [
-   [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
-   |  qualuid{t} -> `static(t) ]{t};
-    L1
-      [ `Lid x  -> (_loc,x,None,None)
-      | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-      | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
-    ->
+  [ ty {t}; L1 type_entry {ls} ->
     with stru
     let mk =
       match t with
@@ -69,13 +65,16 @@ FConfig.antiquotations := true;;
         | (None,Some typ) ->
             {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
 
-  newterminals :
-  [ "("; qualid{x}; ":";t_qualid{t};")";
-    L1
+  let str : [`STR(_,y) -> y]
+      
+  let type_entry:
       [ `Lid x  -> (_loc,x,None,None)
       | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+      | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" -> (_loc,x,y,Some t) ]
+
+  newterminals :
+  [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
     ->
       
       let mk  =
@@ -99,18 +98,15 @@ FConfig.antiquotations := true;;
 
   
   nonterminalsclear :
-  [ qualuid{t}; L1 [a_lident{x}->x ]{ls} ->
+  [ qualuid{t}; L1 a_lident {ls} ->
     let rest = List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
       let t = (t:vid :> exp) in
       {:exp| $t.clear $x |}) ls in
     seq_sem rest ]
-|};;
 
-
-{:extend|(* Fgram *)
-  extend_header:
+  extend_header :
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 
     let () = grammar_module_name := t  in
@@ -122,20 +118,21 @@ FConfig.antiquotations := true;;
   | -> (None,gm())]
 
   extend_body :
-  [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
-    let res = text_of_functorial_extend _loc  gram locals el in 
+  [ extend_header{(gram,old)};   L1 entry {el} -> 
+    let res = text_of_functorial_extend _loc  gram  el in 
     let () = grammar_module_name := old in
     res      ]
+  (* see [extend_body] *)
 
   unsafe_extend_body :
-  [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
-    let res = text_of_functorial_extend ~safe:false _loc  gram locals el in 
+  [ extend_header{(gram,old)};   L1 entry {el} -> 
+    let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
     let () = grammar_module_name := old in
     res      ]
   (*for side effets, parser action *)
   delete_rule_header:
   [ qualuid{g} ->
-    let old = gm () in let () = grammar_module_name := g (* (g:vid :> ident) *) in old  ]
+    let old = gm () in let () = grammar_module_name := g  in old  ]
 
   delete_rule_body:
   [ delete_rule_header{old};  L1 delete_rules {es} ->
@@ -145,10 +142,11 @@ FConfig.antiquotations := true;;
     end]
 
   delete_rules:
-  [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls};
+  [ name{n} ;":"; "["; L1  psymbols SEP "|" {sls};
     "]" ->
     exp_delete_rule _loc n sls ]
-
+  let psymbols:
+  [ L0 psymbol SEP ";"{sl} -> sl  ] 
   (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
@@ -164,15 +162,13 @@ FConfig.antiquotations := true;;
 
 
 
-  locals:
-  [ `Lid "local"; ":"; L1 name{sl}; ";" -> sl ]
-
+  
   (* stands for the non-terminal  *)
   name:[ qualid{il} -> mk_name _loc il] 
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid{il}; OPT[`STR(_,x)->x]{name} -> 
+  [ qualid{il}; OPT  str {name} -> 
     (match name with
     | Some x -> (let old = !AstQuotation.default in
       (AstQuotation.default:= FToken.resolve_name _loc (`Sub [], x);
@@ -190,7 +186,17 @@ FConfig.antiquotations := true;;
         match (pos,levels) with
         |(Some {:exp| `Level $_ |},`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~name:p ~pos ~levels
+        | _ -> mk_entry ~local:false ~name:p ~pos ~levels
+      end
+  |  "let"; entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels} ->
+      begin
+        (match n with
+        |`name old -> AstQuotation.default := old
+        | _ -> ());
+        match (pos,levels) with
+        |(Some {:exp| `Level $_ |},`Group _) ->
+            failwithf "For Group levels the position can not be applied to Level"
+        | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end
   ]
   position :
@@ -206,7 +212,7 @@ FConfig.antiquotations := true;;
   | level {l} -> `Single l] (* FIXME L1 does not work here *)
 
   level :
-  [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
+  [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} ->
     mk_level ~label ~assoc ~rules ]
   (* FIXME a conflict {:extend|Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
@@ -216,26 +222,30 @@ FConfig.antiquotations := true;;
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:exp| $vrn:x |} 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
+      
   rule_list :
   [ "["; "]" -> []
   | "["; L1 rule SEP "|"{rules}; "]" ->
     retype_rule_list_without_patterns _loc rules ]
 
   rule :
-  [ L0 psymbol SEP ";"{prod}; OPT ["->"; exp{act}-> act]{action} ->
+  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} ->
     mk_rule ~prod ~action ]
+  let opt_action : ["->"; exp{act}-> act]
 
+  let brace_pattern : ["{";pattern{p};"}"->p]
 
-  psymbol:
-  [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
+  psymbol :
+  [ symbol{s} ; OPT  brace_pattern {p} ->
     match p with
     |Some _ ->
         { s with pattern = (p:  action_pattern option :>  pat option) }
     | None -> s  ] 
 
-
+  let sep_symbol: [`Uid "SEP"; symbol{t}->t]
+  let level_str:  [`Uid "Level"; `STR (_, s) -> s ]
   symbol:
-  [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
+  [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } ->
     let () = check_not_tok s in
     let styp = {:ctyp'| $(s.styp) list   |} in 
     let text = mk_slist _loc
@@ -258,12 +268,6 @@ FConfig.antiquotations := true;;
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
   |`Uid "N" ->
       mk_symbol  ~text:(`Snext _loc)   ~styp:(`Self _loc "N") ~pattern:None
-  | "["; L1 rule SEP "|"{rl}; "]" ->
-      let rl = retype_rule_list_without_patterns _loc rl in
-      let t = new_type_var () in
-      mk_symbol  ~text:(`Srules _loc (mk_srules _loc t rl ""))
-        ~styp:({:ctyp'|'$lid:t |} )
-        ~pattern:None
   | simple_pat{p} -> 
       let (p,ls) =
         Exp.filter_pat_with_captured_variables
@@ -277,10 +281,10 @@ FConfig.antiquotations := true;;
         mk_tok _loc ~restrict ~pattern:p (`Tok _loc) )
   | `STR (_, s) ->
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
-  | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+  | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
-  | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+  | `Ant(("nt"|""),s); OPT level_str{lev} ->
         let i = parse_ident _loc s in
         let rec to_vid   (x:ident) : vid =
           match x with

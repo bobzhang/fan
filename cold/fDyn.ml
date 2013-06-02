@@ -1,7 +1,5 @@
 open FAst
 
-let _ = begin (); () end
-
 type 'a tag =  
   | Literal
   | Flag

@@ -23,7 +23,7 @@ let gm () =
    | Some "Fgram" -> `Uid (ghost, "")
    | Some _|None  -> grammar_module_name.contents : vid )
 
-let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
+let mk_entry ~local  ~name  ~pos  ~levels  = { name; pos; levels; local }
 
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 
@@ -165,10 +165,6 @@ let rec make_exp (tvar : string) (x : text) =
         (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
     | `Speek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Srules (_loc,rl) ->
-        (`App
-           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))),
-             (make_exp_rules _loc rl "")) : FAst.exp )
     | `Stok (_loc,match_fun,attr,descr) ->
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
@@ -275,10 +271,8 @@ let text_of_action (_loc : loc) (psl : symbol list)
                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
                   (make_ctyp s.styp tvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )) e psl in
-   (`App
-      (_loc,
-        (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk_action")))),
-        txt) : FAst.exp ) : exp )
+   (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
+     FAst.exp ) : exp )
 
 let mk_srule loc (t : string) (tvar : string) (r : rule) =
   (let sl = List.map (fun s  -> s.text) r.prod in
@@ -409,18 +403,27 @@ let let_in_of_extend _loc (gram : vid option) locals default =
         failwithf "internal error in the Grammar extension %s"
           (Objs.dump_exp exp) in
   match locals with
-  | None |Some [] -> default
-  | Some ll ->
+  | [] -> default
+  | ll ->
       let locals = and_of_list (List.map local_bind_of_name ll) in
       (`LetIn
          (_loc, (`Negative _loc),
-           (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),
+           (`Bind
+              (_loc, (`Lid (_loc, "grammar_entry_create")),
+                (`Fun
+                   (_loc,
+                     (`Case
+                        (_loc, (`Lid (_loc, "x")),
+                          (`App (_loc, entry_mk, (`Lid (_loc, "x")))))))))),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
 
-let text_of_functorial_extend ?safe  _loc gram locals el =
+let text_of_functorial_extend ?safe  _loc gram el =
   let args =
     let el = List.map (text_of_entry ?safe) el in
     match el with | [] -> (`Uid (_loc, "()") : FAst.exp ) | _ -> seq_sem el in
+  let locals =
+    List.filter_map
+      (fun { name; local;_}  -> if local then Some name else None) el in
   let_in_of_extend _loc gram locals args
 
 let mk_tok _loc ?restrict  ~pattern  styp =

@@ -16,7 +16,7 @@ let rec derive_eps (s:symbol)  =
   match s with 
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
-  | `Stree t -> tree_derive_eps t
+  (* | `Stree t -> tree_derive_eps t *)
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
@@ -25,11 +25,11 @@ let rec derive_eps (s:symbol)  =
         (* Approximation *)
       false 
 
-and tree_derive_eps : tree -> bool = function
-  | LocAct (_, _) -> true
-  | Node {node = s; brother = bro; son = son} ->
-      (derive_eps s && tree_derive_eps son || tree_derive_eps bro)
-  | DeadEnd -> false 
+(* and tree_derive_eps : tree -> bool = function *)
+(*   | LocAct (_, _) -> true *)
+(*   | Node {node = s; brother = bro; son = son} -> *)
+(*       (derive_eps s && tree_derive_eps son || tree_derive_eps bro) *)
+(*   | DeadEnd -> false  *)
 
 
 let empty_lev lname assoc =
@@ -83,7 +83,7 @@ let rec check_gram entry = function
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
-  | `Stree t -> tree_check_gram entry t
+  (* | `Stree t -> tree_check_gram entry t *)
   | `Snext | `Sself | `Stoken _ | `Skeyword _ -> ()
         
 and tree_check_gram entry = function
@@ -110,7 +110,7 @@ and  using_symbol symbol acc =
       using_symbol s acc
   | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)
   | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
-  | `Stree t -> using_node   t acc 
+  (* | `Stree t -> using_node   t acc  *)
   | `Skeyword kwd -> kwd :: acc
   | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc 
 and using_node   node acc =
