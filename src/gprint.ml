@@ -67,14 +67,14 @@ let pp_assoc f  = function
     | `NA -> pp f "NA"           
 
 class type grammar_print  = object
-
+  method set_action : bool -> unit
   method description : formatter -> description -> unit
   method entry : formatter -> entry -> unit
   method level : formatter -> level -> unit
   method levels : formatter -> level list -> unit
   method rule : formatter -> symbol list -> unit
-  method production : ?action:bool -> formatter -> production -> unit
-  method productions : ?action:bool -> formatter -> production list -> unit      
+  method production :  formatter -> production -> unit
+  method productions : formatter -> production list -> unit      
   method rules : formatter -> symbol list list -> unit
   method symbol : formatter -> symbol -> unit
   method symbol1 : formatter -> symbol -> unit
@@ -83,7 +83,10 @@ end
 
 
 class text_grammar : grammar_print = object(self:'self)
-  val mutable action = false  
+  val mutable action = true
+
+  method set_action v = action <- v
+      
   method symbol f =  function
     | `Slist0 s -> pp f "L0 %a" self#symbol1 s
     | `Slist0sep (s, t) ->
@@ -97,9 +100,11 @@ class text_grammar : grammar_print = object(self:'self)
     | `Snterml (e, l) -> pp f "%s Level %S" e.ename l
     | `Snterm _ | `Snext | `Sself | `Stree _ | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 f s 
+
   method description f = function
     | `Normal -> ()
     | `Antiquot -> pp f "$"
+          
   method symbol1 f = function
     | `Snterm e -> pp f "%s" e.ename
     | `Sself -> pp f "%s" "S"
@@ -111,7 +116,7 @@ class text_grammar : grammar_print = object(self:'self)
     | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
       `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Speek _ as s ->
         pp f "(%a)" self#symbol s
-  method production ?(action=false)
+  method production 
       f ((symbols,(annot,_action)):production) =
     if not action then 
       pp f "@[<0>%a@]" (* action ignored*)
@@ -122,9 +127,9 @@ class text_grammar : grammar_print = object(self:'self)
         (pp_list self#symbol ~sep:";@;") symbols
         annot
         
-  method productions ?(action=false) f ps =
+  method productions f ps =
     pp f "@[<hv0>%a@]"
-      (pp_list (self#production ~action) ~sep:"@;| "
+      (pp_list (self#production ) ~sep:"@;| "
          ~first:"[ " ~last:" ]") ps
   (* the same as production, but only print lhs, i.e. symbols*)    
   method rule f symbols= 
@@ -135,7 +140,7 @@ class text_grammar : grammar_print = object(self:'self)
   method level f {assoc; lname;productions;_} =
     pp f "%a %a@;%a"
       (pp_option (fun f s -> pp f "%S" s)) lname
-      pp_assoc assoc (self#productions ~action:true) productions
+      pp_assoc assoc (self#productions ) productions
  
           
   method levels f elev:unit =

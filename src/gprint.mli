@@ -11,8 +11,10 @@ class type grammar_print  = object
   method level : formatter -> level -> unit
   method levels : formatter -> level list -> unit
 
-  method production : ?action:bool -> formatter -> production -> unit
-  method productions : ?action:bool -> formatter -> production list -> unit
+  method set_action : bool -> unit
+      
+  method production : formatter -> production -> unit
+  method productions : formatter -> production list -> unit
 
   method rule : formatter -> symbol list -> unit      
   method rules : formatter -> symbol list list -> unit
