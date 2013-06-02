@@ -283,12 +283,27 @@
   file:tests/gadt_32.ml
 
   
-* 33 illegal pattern constructed
+* DONE 33 illegal pattern constructed
 
   #+BEGIN_SRC ocaml
   {:pat|`A(_,_,_)|}
   (`App  (`App  (`Vrn  \"A\") (`Any )) (`Com  (`Any ) (`Any )))
   #+END_SRC
+
+  This is wrong
+  #+BEGIN_SRC ocaml
+    with str t simple_pat {|`a(a,b,c)|};;
+    - : FGramDef.simple_pat =
+    `App
+      (, `App (, `Vrn (, "a"), `Lid (, "a")),
+       `Com (, `Lid (, "b"), `Lid (, "c")))  
+  #+END_SRC
+
+  expected:
+  #+BEGIN_SRC ocaml
+      {:pat|`a (a,b,c)|}  
+  #+END_SRC
+  
 * COMMENT
 ** rules
   {-# RULES

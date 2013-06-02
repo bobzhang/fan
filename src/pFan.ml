@@ -908,8 +908,7 @@ let apply () = begin
     (** ml file  entrance *)    
       implem:
       [
-        `DirQuotation x -> (* FIXME (a,b,c) pattern broken *)
-          let (shift,name, contents ) = x in
+        `DirQuotation (shift,name,contents) -> (* FIXME (a,b,c) pattern broken *)
           let _loc = FLoc.move `start shift _loc in
          begin
            (Fdir.handle_dir _loc (name,contents));

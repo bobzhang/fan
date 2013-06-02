@@ -205,7 +205,7 @@ let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
   let rest = List.map
       (fun sl  ->
           let (e,b) = f _loc n sl in
-          {:exp| $((gm():vid:>exp)).delete_rule $e $b |}) symbolss in
+          {:exp| $(id:gm()).delete_rule $e $b |}) symbolss in
   match symbolss with
   | [] -> {| () |}
   |_ -> seq_sem rest 

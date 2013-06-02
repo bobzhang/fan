@@ -300,12 +300,17 @@ FConfig.antiquotations := true;;
   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
-    match v with
-    | [x] ->  {:pat'| $vrn:s $x |}
-    | x::xs ->
-        let xs = com_of_list xs in
-        {:pat'|$vrn:s ($x,$xs)|}
-    | [] -> assert false]
+      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v))
+        (* here
+           we have to guarantee
+           {[
+           {:pat-|`a(a,b,c)|};;
+           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
+           ]}
+           is dumped correctly
+         *)
+    (* | [] -> assert false *)
+ ]
   internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
