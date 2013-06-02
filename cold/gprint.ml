@@ -64,13 +64,14 @@ let pp_assoc f =
 class type grammar_print
   =
   object 
+    method set_action : bool -> unit
     method description : formatter -> description -> unit
     method entry : formatter -> entry -> unit
     method level : formatter -> level -> unit
     method levels : formatter -> level list -> unit
     method rule : formatter -> symbol list -> unit
-    method production : ?action:bool -> formatter -> production -> unit
-    method productions : ?action:bool -> formatter -> production list -> unit
+    method production : formatter -> production -> unit
+    method productions : formatter -> production list -> unit
     method rules : formatter -> symbol list list -> unit
     method symbol : formatter -> symbol -> unit
     method symbol1 : formatter -> symbol -> unit
@@ -79,7 +80,8 @@ class type grammar_print
 
 class text_grammar : grammar_print =
   object (self : 'self)
-    val mutable action = false
+    val mutable action = true
+    method set_action v = action <- v
     method symbol f =
       function
       | `Slist0 s -> pp f "L0 %a" self#symbol1 s
@@ -104,24 +106,22 @@ class text_grammar : grammar_print =
       | `Stree t -> self#tree f t
       | `Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|`Slist1sep (_,_)
         |`Sopt _|`Stry _|`Speek _ as s -> pp f "(%a)" self#symbol s
-    method production ?(action= false)  f
-      ((symbols,(annot,_action)) : production) =
+    method production f ((symbols,(annot,_action)) : production) =
       if not action
       then pp f "@[<0>%a@]" (pp_list self#symbol ~sep:";@;") symbols
       else
         pp f "@[<0>%a@;->@ @[%s@]@]" (pp_list self#symbol ~sep:";@;") symbols
           annot
-    method productions ?(action= false)  f ps =
+    method productions f ps =
       pp f "@[<hv0>%a@]"
-        (pp_list (self#production ~action) ~sep:"@;| " ~first:"[ " ~last:" ]")
-        ps
+        (pp_list self#production ~sep:"@;| " ~first:"[ " ~last:" ]") ps
     method rule f symbols =
       pp f "@[<0>%a@]" (pp_list self#symbol ~sep:";@ ") symbols
     method rules f rules =
       pp f "@[<hv0>[ %a]@]" (pp_list self#rule ~sep:"@;| ") rules
     method level f { assoc; lname; productions;_} =
       pp f "%a %a@;%a" (pp_option (fun f  s  -> pp f "%S" s)) lname pp_assoc
-        assoc (self#productions ~action:true) productions
+        assoc self#productions productions
     method levels f elev =
       (pp f "@[<hv0>  %a@]" (pp_list self#level ~sep:"@;| ") elev : unit )
     method entry f e =

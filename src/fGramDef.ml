@@ -25,6 +25,7 @@ type entry   = {
   name : name ;
   (*position expession node *)    
   pos : exp option ;
+  local : bool ;  (* mark whether the grammar is local or not*)
   levels : levels(* list level *);
 }
 and levels =

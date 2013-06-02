@@ -304,6 +304,42 @@
       {:pat|`a (a,b,c)|}  
   #+END_SRC
   
+
+
+* 34 Ident mixed with field access.
+  #+BEGIN_SRC ocaml
+    # A.B.c.d;;
+    Error: Unbound module A
+    # A.B.C.d;;
+    Ptop_def
+      [
+        structure_item (//toplevel//[1,0+0]..//toplevel//[1,0+7]) ghost
+          Pstr_eval
+          expression (//toplevel//[1,0+0]..//toplevel//[1,0+7])
+            Pexp_ident "A.B.C.d"
+      ]
+    # A.B.C.d;;
+    Error: Unbound module A
+    # a.b.c.d;;
+    Ptop_def
+      [
+        structure_item (//toplevel//[1,0+0]..//toplevel//[1,0+7]) ghost
+          Pstr_eval
+          expression (//toplevel//[1,0+0]..//toplevel//[1,0+7])
+            Pexp_field
+            expression (//toplevel//[1,0+0]..//toplevel//[1,0+5])
+              Pexp_field
+              expression (//toplevel//[1,0+0]..//toplevel//[1,0+3])
+                Pexp_field
+                expression (//toplevel//[1,0+0]..//toplevel//[1,0+1])
+                  Pexp_ident "a"
+                "b"
+              "c"
+            "d"
+      ]
+    # a.b.c.d;;
+    Error: Unbound value a
+  #+END_SRC
 * COMMENT
 ** rules
   {-# RULES

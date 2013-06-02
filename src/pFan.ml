@@ -222,7 +222,6 @@ let apply () = begin
 
     with exp
     {:extend|
-      local:  fun_def_pat;
       exp_quot:
       [ exp{e1}; ","; comma_exp{e2} -> `Com(_loc,e1,e2)
       | exp{e1}; ";"; sem_exp{e2} -> `Sem(_loc,e1,e2)
@@ -264,7 +263,7 @@ let apply () = begin
                     let old = !AstQuotation.map in
                     (AstQuotation.map := SMap.add_list xys old;
                      old)]
-       fun_def_pat:
+       let fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e ->  `LocalTypeFun (_loc, i, e)
        | ipat{p} -> fun e -> `Fun(_loc,`Case(_loc,p,e))(* {| fun $p -> $e |} *)
@@ -519,7 +518,7 @@ let apply () = begin
         | field_exp{b1}; ";"            -> b1
         | field_exp{b1}                 -> b1  ] |};
   with pat
-    {:extend| local: pat_constr;
+    {:extend| 
        pat_quot:
        [ pat{x}; ","; comma_pat{y} -> `Com(_loc,x,y)
        | pat{x}; ";"; sem_pat{y} -> `Sem(_loc,x,y)
@@ -527,7 +526,7 @@ let apply () = begin
        pat_as_pat_opt:
        [ pat{p1}; "as"; a_lident{s} ->  `Alias (_loc, p1, s)
        | pat{p} -> p ]
-       pat_constr:
+       let pat_constr:
        [module_longident{i} -> (* `Id(_loc,i) *) (i :vid :> pat)
        |"`"; luident{s}  -> (`Vrn(_loc,s) :pat)
        |`Ant ((""|"pat"|"vrn" as n), s) -> mk_anti _loc ~c:"pat" n s]

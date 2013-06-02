@@ -31,8 +31,6 @@ let t_qualid: vid Fgram.t = Fgram.mk "t_qualid"
 let entry_name: ([ `name of FToken.name | `non] * FGramDef.name) Fgram.t =
   Fgram.mk "entry_name"
 
-let locals = Fgram.mk "locals"
-
 let entry = Fgram.mk "entry"
 
 let position = Fgram.mk "position"
@@ -444,27 +442,24 @@ let _ =
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
-            `Sopt (`Snterm (Fgram.obj (locals : 'locals Fgram.t )));
             `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-             ("let res = text_of_functorial_extend _loc gram locals el in\nlet () = grammar_module_name := old in res\n",
+             ("let res = text_of_functorial_extend _loc gram el in\nlet () = grammar_module_name := old in res\n",
                (Fgram.mk_action
-                  (fun (el : 'entry list)  (locals : 'locals option) 
-                     ((gram,old) : 'extend_header)  (_loc : FLoc.t)  ->
-                     (let res = text_of_functorial_extend _loc gram locals el in
+                  (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
+                     (_loc : FLoc.t)  ->
+                     (let res = text_of_functorial_extend _loc gram el in
                       let () = grammar_module_name := old in res : 'extend_body )))))]));
     Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
-            `Sopt (`Snterm (Fgram.obj (locals : 'locals Fgram.t )));
             `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-             ("let res = text_of_functorial_extend ~safe:false _loc gram locals el in\nlet () = grammar_module_name := old in res\n",
+             ("let res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = grammar_module_name := old in res\n",
                (Fgram.mk_action
-                  (fun (el : 'entry list)  (locals : 'locals option) 
-                     ((gram,old) : 'extend_header)  (_loc : FLoc.t)  ->
+                  (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
+                     (_loc : FLoc.t)  ->
                      (let res =
-                        text_of_functorial_extend ~safe:false _loc gram
-                          locals el in
+                        text_of_functorial_extend ~safe:false _loc gram el in
                       let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
     Fgram.extend_single (delete_rule_header : 'delete_rule_header Fgram.t )
       (None,
@@ -589,22 +584,6 @@ let _ =
                     match (__fan_2, __fan_0) with
                     | (`Lid "t",`Uid x) -> (`Uid (_loc, x) : 't_qualid )
                     | _ -> failwith "`Uid (_loc, x)\n"))))]));
-    Fgram.extend_single (locals : 'locals Fgram.t )
-      (None,
-        (None, None,
-          [([`Stoken
-               (((function | `Lid "local" -> true | _ -> false)),
-                 (`Normal, "`Lid \"local\""));
-            `Skeyword ":";
-            `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
-            `Skeyword ";"],
-             ("sl\n",
-               (Fgram.mk_action
-                  (fun _  (sl : 'name list)  _  (__fan_0 : [> FToken.t]) 
-                     (_loc : FLoc.t)  ->
-                     match __fan_0 with
-                     | `Lid "local" -> (sl : 'locals )
-                     | _ -> failwith "sl\n"))))]));
     Fgram.extend_single (name : 'name Fgram.t )
       (None,
         (None, None,
@@ -648,7 +627,7 @@ let _ =
             `Skeyword ":";
             `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
             `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-             ("begin\n  (match n with | `name old -> AstQuotation.default := old | _ -> ());\n  (match (pos, levels) with\n   | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n       failwithf \"For Group levels the position can not be applied to Level\"\n   | _ -> mk_entry ~name:p ~pos ~levels)\nend\n",
+             ("begin\n  (match n with | `name old -> AstQuotation.default := old | _ -> ());\n  (match (pos, levels) with\n   | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n       failwithf \"For Group levels the position can not be applied to Level\"\n   | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\nend\n",
                (Fgram.mk_action
                   (fun (levels : 'level_list)  (pos : 'position option)  _ 
                      ((n,p) : 'entry_name)  (_loc : FLoc.t)  ->
@@ -662,8 +641,29 @@ let _ =
                             `Group _) ->
                              failwithf
                                "For Group levels the position can not be applied to Level"
-                         | _ -> mk_entry ~name:p ~pos ~levels)
-                      end : 'entry )))))]));
+                         | _ -> mk_entry ~local:false ~name:p ~pos ~levels)
+                      end : 'entry )))));
+          ([`Skeyword "let";
+           `Snterm (Fgram.obj (entry_name : 'entry_name Fgram.t ));
+           `Skeyword ":";
+           `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
+           `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
+            ("begin\n  (match n with | `name old -> AstQuotation.default := old | _ -> ());\n  (match (pos, levels) with\n   | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n       failwithf \"For Group levels the position can not be applied to Level\"\n   | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\nend\n",
+              (Fgram.mk_action
+                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
+                    ((n,p) : 'entry_name)  _  (_loc : FLoc.t)  ->
+                    (begin
+                       (match n with
+                        | `name old -> AstQuotation.default := old
+                        | _ -> ());
+                       (match (pos, levels) with
+                        | (Some
+                           (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),
+                           `Group _) ->
+                            failwithf
+                              "For Group levels the position can not be applied to Level"
+                        | _ -> mk_entry ~local:true ~name:p ~pos ~levels)
+                     end : 'entry )))))]));
     Fgram.extend_single (position : 'position Fgram.t )
       (None,
         (None, None,

@@ -16,7 +16,7 @@ FConfig.antiquotations := true;;
   delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
   (t_qualid:vid Fgram.t )
   (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
-  locals entry position assoc name string
+   entry position assoc name string
   rules
 
   symbol
@@ -122,20 +122,21 @@ FConfig.antiquotations := true;;
   | -> (None,gm())]
 
   extend_body :
-  [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
-    let res = text_of_functorial_extend _loc  gram locals el in 
+  [ extend_header{(gram,old)};   L1 entry {el} -> 
+    let res = text_of_functorial_extend _loc  gram  el in 
     let () = grammar_module_name := old in
     res      ]
+  (* see [extend_body] *)
 
   unsafe_extend_body :
-  [ extend_header{(gram,old)};  OPT locals{locals}; L1 entry {el} -> 
-    let res = text_of_functorial_extend ~safe:false _loc  gram locals el in 
+  [ extend_header{(gram,old)};   L1 entry {el} -> 
+    let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
     let () = grammar_module_name := old in
     res      ]
   (*for side effets, parser action *)
   delete_rule_header:
   [ qualuid{g} ->
-    let old = gm () in let () = grammar_module_name := g (* (g:vid :> ident) *) in old  ]
+    let old = gm () in let () = grammar_module_name := g  in old  ]
 
   delete_rule_body:
   [ delete_rule_header{old};  L1 delete_rules {es} ->
@@ -164,9 +165,7 @@ FConfig.antiquotations := true;;
 
 
 
-  locals:
-  [ `Lid "local"; ":"; L1 name{sl}; ";" -> sl ]
-
+  
   (* stands for the non-terminal  *)
   name:[ qualid{il} -> mk_name _loc il] 
 
@@ -190,7 +189,17 @@ FConfig.antiquotations := true;;
         match (pos,levels) with
         |(Some {:exp| `Level $_ |},`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~name:p ~pos ~levels
+        | _ -> mk_entry ~local:false ~name:p ~pos ~levels
+      end
+  |  "let"; entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels} ->
+      begin
+        (match n with
+        |`name old -> AstQuotation.default := old
+        | _ -> ());
+        match (pos,levels) with
+        |(Some {:exp| `Level $_ |},`Group _) ->
+            failwithf "For Group levels the position can not be applied to Level"
+        | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end
   ]
   position :

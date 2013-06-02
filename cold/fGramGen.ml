@@ -23,7 +23,7 @@ let gm () =
    | Some "Fgram" -> `Uid (ghost, "")
    | Some _|None  -> grammar_module_name.contents : vid )
 
-let mk_entry ~name  ~pos  ~levels  = { name; pos; levels }
+let mk_entry ~local  ~name  ~pos  ~levels  = { name; pos; levels; local }
 
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
 
@@ -409,18 +409,21 @@ let let_in_of_extend _loc (gram : vid option) locals default =
         failwithf "internal error in the Grammar extension %s"
           (Objs.dump_exp exp) in
   match locals with
-  | None |Some [] -> default
-  | Some ll ->
+  | [] -> default
+  | ll ->
       let locals = and_of_list (List.map local_bind_of_name ll) in
       (`LetIn
          (_loc, (`Negative _loc),
            (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
 
-let text_of_functorial_extend ?safe  _loc gram locals el =
+let text_of_functorial_extend ?safe  _loc gram el =
   let args =
     let el = List.map (text_of_entry ?safe) el in
     match el with | [] -> (`Uid (_loc, "()") : FAst.exp ) | _ -> seq_sem el in
+  let locals =
+    List.filter_map
+      (fun { name; local;_}  -> if local then Some name else None) el in
   let_in_of_extend _loc gram locals args
 
 let mk_tok _loc ?restrict  ~pattern  styp =

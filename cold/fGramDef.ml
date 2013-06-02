@@ -15,6 +15,7 @@ type attr = string
 type entry =  {
   name: name;
   pos: exp option;
+  local: bool;
   levels: levels} 
 and levels = [ `Group of level list | `Single of level] 
 and level =  {

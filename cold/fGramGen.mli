@@ -6,9 +6,12 @@ val prefix : string
 
 val grammar_module_name : vid ref
 val gm : unit -> vid
+
 val mk_entry :
-  name:name ->
-  pos:exp option -> levels:levels -> entry
+    local:bool->
+      name:name ->
+        pos:exp option -> levels:levels -> entry
+            
 val mk_level :
   label:string option ->
   assoc:exp option -> rules:rule list -> level
@@ -171,7 +174,7 @@ val mk_slist :
    It call [text_of_entry]
  *)
 val text_of_functorial_extend :  ?safe:bool ->
-  loc ->vid option ->  name list option -> entry list -> exp
+  loc ->vid option  -> entry list -> exp
 
 (** generate Stok *)  
 val mk_tok :  loc ->  ?restrict:exp ->  pattern:pat -> styp -> symbol
