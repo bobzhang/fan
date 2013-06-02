@@ -44,7 +44,7 @@ install:
 	@[ -f `which ocamlfind` ] && make metainstall
 	if ! [ -a $(LIBDIR) ]; then mkdir $(LIBDIR); fi;
 	echo "installing to " $(LIBDIR)
-	install -m 0755 $(addprefix $(BCOLD), FAstN.cmi FAst.cmi) $(LIBPREFIX)
+	install -m 0755 $(addprefix $(BCOLD), $(STDTARGETS)) $(LIBPREFIX)
 	install -m 0755 $(BCOLD)*.cmi $(addprefix $(BCOLD), $(LIBTARGETS)) $(LIBDIR)
 
 metainstall:
