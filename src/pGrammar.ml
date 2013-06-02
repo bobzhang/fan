@@ -309,7 +309,6 @@ FConfig.antiquotations := true;;
            ]}
            is dumped correctly
          *)
-    (* | [] -> assert false *)
  ]
   internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {

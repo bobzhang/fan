@@ -426,16 +426,9 @@ let apply () = begin
             `Package_exp (_loc, `Constraint (_loc, me, pt))  ] }
        sem_exp_for_list:
        [ exp{e}; ";"; S{el} ->
-         fun acc ->
-           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), (el acc))
-             (* {| [ $e :: $(el acc) ] |} (\* FIXME *\) *)
-       | exp{e}; ";" -> fun acc ->
-           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc)
-           (* {| [ $e :: $acc ] |} *)
-       | exp{e} -> fun acc ->
-           `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc)
-           (* {| [ $e :: $acc ] |} *)
-       ]
+         fun acc -> {:exp| $e :: $(el acc)|}
+       | exp{e}; ";" -> fun acc -> {:exp| $e :: $acc |}
+       | exp{e} -> fun acc -> {:exp| $e :: $acc |}]
 
 
        sequence: (*FIXME*)

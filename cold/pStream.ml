@@ -39,7 +39,7 @@ let apply () =
                  [([`Stoken
                       (((function | `Uid _ -> true | _ -> false)),
                         (`Normal, "`Uid _"))],
-                    ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__1 ) | _ -> failwith \"n\n\")\n",
+                    ("n\n",
                       (Fgram.mk_action
                          (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                             match __fan_0 with
@@ -48,7 +48,7 @@ let apply () =
             `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
             `Snterm
               (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) \n     (name : 'e__1 option)  _  (_loc : FLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FStreamGen.grammar_module_name o\n            (fun _  -> cparser _loc po pcl)\n      | None  -> cparser _loc po pcl : 'exp ))\n",
+             ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser _loc po pcl)\n| None  -> cparser _loc po pcl\n",
                (Fgram.mk_action
                   (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
                      (name : 'e__1 option)  _  (_loc : FLoc.t)  ->
@@ -66,7 +66,7 @@ let apply () =
                 [([`Stoken
                      (((function | `Uid _ -> true | _ -> false)),
                        (`Normal, "`Uid _"))],
-                   ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with | `Uid n -> (n : 'e__2 ) | _ -> failwith \"n\n\")\n",
+                   ("n\n",
                      (Fgram.mk_action
                         (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                            match __fan_0 with
@@ -75,7 +75,7 @@ let apply () =
            `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
            `Snterm
              (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) \n     (name : 'e__2 option)  _  _  (e : 'exp)  _  (_loc : FLoc.t)  ->\n     (match name with\n      | Some o ->\n          Ref.protect FStreamGen.grammar_module_name o\n            (fun _  -> cparser_match _loc e po pcl)\n      | None  -> cparser_match _loc e po pcl : 'exp ))\n",
+            ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser_match _loc e po pcl)\n| None  -> cparser_match _loc e po pcl\n",
               (Fgram.mk_action
                  (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
                     (name : 'e__2 option)  _  _  (e : 'exp)  _ 
@@ -92,7 +92,7 @@ let apply () =
             `Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
-             ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `Uid n ->\n         (Ref.protect FStreamGen.grammar_module_name n\n            (fun _  -> FStreamGen.empty _loc) : 'stream_exp )\n     | _ ->\n         failwith\n           \"Ref.protect FStreamGen.grammar_module_name n\n  (fun _  -> FStreamGen.empty _loc)\n\")\n",
+             ("Ref.protect FStreamGen.grammar_module_name n\n  (fun _  -> FStreamGen.empty _loc)\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                      match __fan_1 with
@@ -109,7 +109,7 @@ let apply () =
            `Snterm
              (Fgram.obj
                 (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FToken.t])  _ \n     (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `Uid n ->\n         (Ref.protect FStreamGen.grammar_module_name n\n            (fun _  -> cstream _loc sel) : 'stream_exp )\n     | _ ->\n         failwith\n           \"Ref.protect FStreamGen.grammar_module_name n (fun _  -> cstream _loc sel)\n\")\n",
+            ("Ref.protect FStreamGen.grammar_module_name n (fun _  -> cstream _loc sel)\n",
               (Fgram.mk_action
                  (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FToken.t])
                      _  (_loc : FLoc.t)  ->
@@ -123,12 +123,12 @@ let apply () =
           ([`Snterm
               (Fgram.obj
                  (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (sel : 'stream_exp_comp_list)  (_loc : FLoc.t)  ->\n     (cstream _loc sel : 'stream_exp ))\n",
+            ("cstream _loc sel\n",
               (Fgram.mk_action
                  (fun (sel : 'stream_exp_comp_list)  (_loc : FLoc.t)  ->
                     (cstream _loc sel : 'stream_exp )))));
           ([],
-            ("Fgram.mk_action\n  (fun (_loc : FLoc.t)  -> (FStreamGen.empty _loc : 'stream_exp ))\n",
+            ("FStreamGen.empty _loc\n",
               (Fgram.mk_action
                  (fun (_loc : FLoc.t)  ->
                     (FStreamGen.empty _loc : 'stream_exp )))))]));
@@ -136,12 +136,12 @@ let apply () =
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (i : 'a_lident)  (_loc : FLoc.t)  ->\n     ((i : alident  :>pat) : 'parser_ipat ))\n",
+             ("(i : alident  :>pat)\n",
                (Fgram.mk_action
                   (fun (i : 'a_lident)  (_loc : FLoc.t)  ->
                      ((i : alident  :>pat) : 'parser_ipat )))));
           ([`Skeyword "_"],
-            ("Fgram.mk_action\n  (fun _  (_loc : FLoc.t)  -> ((`Any _loc : FAst.pat ) : 'parser_ipat ))\n",
+            ("(`Any _loc : FAst.pat )\n",
               (Fgram.mk_action
                  (fun _  (_loc : FLoc.t)  ->
                     ((`Any _loc : FAst.pat ) : 'parser_ipat )))))]));
@@ -152,7 +152,7 @@ let apply () =
             `Slist0sep
               ((`Snterm (Fgram.obj (parser_case : 'parser_case Fgram.t ))),
                 (`Skeyword "|"))],
-             ("Fgram.mk_action\n  (fun (pcl : 'parser_case list)  _  (_loc : FLoc.t)  ->\n     (pcl : 'parser_case_list ))\n",
+             ("pcl\n",
                (Fgram.mk_action
                   (fun (pcl : 'parser_case list)  _  (_loc : FLoc.t)  ->
                      (pcl : 'parser_case_list )))))]));
@@ -162,7 +162,7 @@ let apply () =
           [([`Snterm (Fgram.obj (stream_pat : 'stream_pat Fgram.t ));
             `Skeyword "->";
             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (e : 'exp)  _  (sp : 'stream_pat)  (_loc : FLoc.t)  ->\n     ((sp, None, e) : 'parser_case ))\n",
+             ("(sp, None, e)\n",
                (Fgram.mk_action
                   (fun (e : 'exp)  _  (sp : 'stream_pat)  (_loc : FLoc.t)  ->
                      ((sp, None, e) : 'parser_case )))))]));
@@ -176,14 +176,14 @@ let apply () =
                    `Stoken
                      (((function | `Uid _ -> true | _ -> false)),
                        (`Normal, "`Uid _"))],
-                    ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with | `Uid n -> (n : 'e__3 ) | _ -> failwith \"n\n\")\n",
+                    ("n\n",
                       (Fgram.mk_action
                          (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t) 
                             ->
                             match __fan_1 with
                             | `Uid n -> (n : 'e__3 )
                             | _ -> failwith "n\n"))))])],
-             ("Fgram.mk_action\n  (fun (name : 'e__3 option)  _  (_loc : FLoc.t)  -> (name : 'stream_begin ))\n",
+             ("name\n",
                (Fgram.mk_action
                   (fun (name : 'e__3 option)  _  (_loc : FLoc.t)  ->
                      (name : 'stream_begin )))))]));
@@ -192,7 +192,7 @@ let apply () =
         (None, None,
           [([`Snterm
                (Fgram.obj (stream_pat_comp : 'stream_pat_comp Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->\n     ([(spc, None)] : 'stream_pat ))\n",
+             ("[(spc, None)]\n",
                (Fgram.mk_action
                   (fun (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->
                      ([(spc, None)] : 'stream_pat )))));
@@ -201,13 +201,13 @@ let apply () =
            `Snterm
              (Fgram.obj
                 (stream_pat_comp_err_list : 'stream_pat_comp_err_list Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (sp : 'stream_pat_comp_err_list)  _  (spc : 'stream_pat_comp) \n     (_loc : FLoc.t)  -> ((spc, None) :: sp : 'stream_pat ))\n",
+            ("(spc, None) :: sp\n",
               (Fgram.mk_action
                  (fun (sp : 'stream_pat_comp_err_list)  _ 
                     (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->
                     ((spc, None) :: sp : 'stream_pat )))));
           ([],
-            ("Fgram.mk_action (fun (_loc : FLoc.t)  -> ([] : 'stream_pat ))\n",
+            ("[]\n",
               (Fgram.mk_action (fun (_loc : FLoc.t)  -> ([] : 'stream_pat )))))]));
     Fgram.extend_single (stream_pat_comp : 'stream_pat_comp Fgram.t )
       (None,
@@ -215,24 +215,24 @@ let apply () =
           [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
             `Skeyword "when";
             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     (SpWhen (_loc, p, (Some e)) : 'stream_pat_comp ))\n",
+             ("SpWhen (_loc, p, (Some e))\n",
                (Fgram.mk_action
                   (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
                      (SpWhen (_loc, p, (Some e)) : 'stream_pat_comp )))));
           ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (p : 'pat)  (_loc : FLoc.t)  ->\n     (SpWhen (_loc, p, None) : 'stream_pat_comp ))\n",
+            ("SpWhen (_loc, p, None)\n",
               (Fgram.mk_action
                  (fun (p : 'pat)  (_loc : FLoc.t)  ->
                     (SpWhen (_loc, p, None) : 'stream_pat_comp )))));
           ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
            `Skeyword "=";
            `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     (SpMatch (_loc, p, e) : 'stream_pat_comp ))\n",
+            ("SpMatch (_loc, p, e)\n",
               (Fgram.mk_action
                  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
                     (SpMatch (_loc, p, e) : 'stream_pat_comp )))));
           ([`Skeyword "'"; `Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (p : 'pat)  _  (_loc : FLoc.t)  ->\n     (SpStr (_loc, p) : 'stream_pat_comp ))\n",
+            ("SpStr (_loc, p)\n",
               (Fgram.mk_action
                  (fun (p : 'pat)  _  (_loc : FLoc.t)  ->
                     (SpStr (_loc, p) : 'stream_pat_comp )))))]));
@@ -243,13 +243,13 @@ let apply () =
                (Fgram.obj (stream_pat_comp : 'stream_pat_comp Fgram.t ));
             `Skeyword "??";
             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (e : 'exp)  _  (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->\n     ((spc, (Some e)) : 'stream_pat_comp_err ))\n",
+             ("(spc, (Some e))\n",
                (Fgram.mk_action
                   (fun (e : 'exp)  _  (spc : 'stream_pat_comp) 
                      (_loc : FLoc.t)  ->
                      ((spc, (Some e)) : 'stream_pat_comp_err )))));
           ([`Snterm (Fgram.obj (stream_pat_comp : 'stream_pat_comp Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->\n     ((spc, None) : 'stream_pat_comp_err ))\n",
+            ("(spc, None)\n",
               (Fgram.mk_action
                  (fun (spc : 'stream_pat_comp)  (_loc : FLoc.t)  ->
                     ((spc, None) : 'stream_pat_comp_err )))))]));
@@ -260,7 +260,7 @@ let apply () =
           [([`Snterm
                (Fgram.obj
                   (stream_pat_comp_err : 'stream_pat_comp_err Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (spc : 'stream_pat_comp_err)  (_loc : FLoc.t)  ->\n     ([spc] : 'stream_pat_comp_err_list ))\n",
+             ("[spc]\n",
                (Fgram.mk_action
                   (fun (spc : 'stream_pat_comp_err)  (_loc : FLoc.t)  ->
                      ([spc] : 'stream_pat_comp_err_list )))));
@@ -268,7 +268,7 @@ let apply () =
               (Fgram.obj
                  (stream_pat_comp_err : 'stream_pat_comp_err Fgram.t ));
            `Skeyword ";"],
-            ("Fgram.mk_action\n  (fun _  (spc : 'stream_pat_comp_err)  (_loc : FLoc.t)  ->\n     ([spc] : 'stream_pat_comp_err_list ))\n",
+            ("[spc]\n",
               (Fgram.mk_action
                  (fun _  (spc : 'stream_pat_comp_err)  (_loc : FLoc.t)  ->
                     ([spc] : 'stream_pat_comp_err_list )))));
@@ -277,7 +277,7 @@ let apply () =
                  (stream_pat_comp_err : 'stream_pat_comp_err Fgram.t ));
            `Skeyword ";";
            `Sself],
-            ("Fgram.mk_action\n  (fun (sp : 'stream_pat_comp_err_list)  _  (spc : 'stream_pat_comp_err) \n     (_loc : FLoc.t)  -> (spc :: sp : 'stream_pat_comp_err_list ))\n",
+            ("spc :: sp\n",
               (Fgram.mk_action
                  (fun (sp : 'stream_pat_comp_err_list)  _ 
                     (spc : 'stream_pat_comp_err)  (_loc : FLoc.t)  -> (spc ::
@@ -286,12 +286,12 @@ let apply () =
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-             ("Fgram.mk_action\n  (fun (e : 'exp)  (_loc : FLoc.t)  -> (SeTrm (_loc, e) : 'stream_exp_comp ))\n",
+             ("SeTrm (_loc, e)\n",
                (Fgram.mk_action
                   (fun (e : 'exp)  (_loc : FLoc.t)  ->
                      (SeTrm (_loc, e) : 'stream_exp_comp )))));
           ([`Skeyword "'"; `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (e : 'exp)  _  (_loc : FLoc.t)  ->\n     (SeNtr (_loc, e) : 'stream_exp_comp ))\n",
+            ("SeNtr (_loc, e)\n",
               (Fgram.mk_action
                  (fun (e : 'exp)  _  (_loc : FLoc.t)  ->
                     (SeNtr (_loc, e) : 'stream_exp_comp )))))]));
@@ -303,19 +303,19 @@ let apply () =
                (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ));
             `Skeyword ";";
             `Sself],
-             ("Fgram.mk_action\n  (fun (sel : 'stream_exp_comp_list)  _  (se : 'stream_exp_comp) \n     (_loc : FLoc.t)  -> (se :: sel : 'stream_exp_comp_list ))\n",
+             ("se :: sel\n",
                (Fgram.mk_action
                   (fun (sel : 'stream_exp_comp_list)  _ 
                      (se : 'stream_exp_comp)  (_loc : FLoc.t)  -> (se ::
                      sel : 'stream_exp_comp_list )))));
           ([`Snterm (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ));
            `Skeyword ";"],
-            ("Fgram.mk_action\n  (fun _  (se : 'stream_exp_comp)  (_loc : FLoc.t)  ->\n     ([se] : 'stream_exp_comp_list ))\n",
+            ("[se]\n",
               (Fgram.mk_action
                  (fun _  (se : 'stream_exp_comp)  (_loc : FLoc.t)  ->
                     ([se] : 'stream_exp_comp_list )))));
           ([`Snterm (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (se : 'stream_exp_comp)  (_loc : FLoc.t)  ->\n     ([se] : 'stream_exp_comp_list ))\n",
+            ("[se]\n",
               (Fgram.mk_action
                  (fun (se : 'stream_exp_comp)  (_loc : FLoc.t)  ->
                     ([se] : 'stream_exp_comp_list )))))]))

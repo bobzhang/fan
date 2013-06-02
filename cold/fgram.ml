@@ -188,7 +188,7 @@ let eoi_entry entry =
             [([`Snterm (obj (entry : 'entry t ));
               `Stoken
                 (((function | `EOI -> true | _ -> false)), (`Normal, "`EOI"))],
-               ("mk_action\n  (fun (__fan_1 : [> FToken.t])  (x : 'entry)  (_loc : FLoc.t)  ->\n     match __fan_1 with | `EOI -> (x : 'entry_eoi ) | _ -> failwith \"x\n\")\n",
+               ("x\n",
                  (mk_action
                     (fun (__fan_1 : [> FToken.t])  (x : 'entry) 
                        (_loc : FLoc.t)  ->

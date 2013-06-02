@@ -30,24 +30,44 @@ and print_sons (start : string) (decomp : 'a -> (string * 'a list))
       pp f "%s%a@\n%s%a" start (print_node decomp (pref ^ "| ")) s pref
         (print_sons "|-" decomp pref) sons
 
+let pp_list ?sep  ?first  ?last  fu f xs =
+  let first = Option.default ("" : space_formatter ) first in
+  let last = Option.default ("" : space_formatter ) last in
+  let sep = Option.default ("@ " : space_formatter ) sep in
+  let aux f =
+    function
+    | [] -> ()
+    | x::[] -> fu f x
+    | xs ->
+        let rec loop f =
+          function
+          | x::[] -> fu f x
+          | x::xs -> pp f "%a%(%)%a" fu x sep loop xs
+          | _ -> assert false in
+        pp f "%(%)%a%(%)" first loop xs last in
+  aux f xs
+
+let pp_option:
+  ?first:space_formatter ->
+    ?last:space_formatter ->
+      (Format.formatter -> 'a -> unit) ->
+        Format.formatter -> 'a option -> unit
+  =
+  fun ?first  ?last  fu  f  a  ->
+    let first = match first with | Some x -> x | None  -> ""
+    and last = match last with | Some x -> x | None  -> "" in
+    match a with | None  -> () | Some x -> pp f "%(%)%a%(%)" first fu x last
+
+let pp_assoc f =
+  function | `LA -> pp f "LA" | `RA -> pp f "RA" | `NA -> pp f "NA"
+
 class type grammar_print
   =
   object 
-    method assoc : formatter -> assoc -> unit
     method description : formatter -> description -> unit
     method entry : formatter -> entry -> unit
     method level : formatter -> level -> unit
     method levels : formatter -> level list -> unit
-    method list :
-      ?sep:space_formatter ->
-        ?first:space_formatter ->
-          ?last:space_formatter ->
-            (formatter -> 'a -> unit) -> formatter -> 'a list -> unit
-    method meta : string list -> formatter -> symbol list -> unit
-    method option :
-      ?first:space_formatter ->
-        ?last:space_formatter ->
-          (formatter -> 'a -> unit) -> formatter -> 'a option -> unit
     method rule : formatter -> symbol list -> unit
     method production : ?action:bool -> formatter -> production -> unit
     method productions : ?action:bool -> formatter -> production list -> unit
@@ -59,65 +79,19 @@ class type grammar_print
 
 class text_grammar : grammar_print =
   object (self : 'self)
-    method tree f t = self#rules f (flatten_tree t)
-    method list :
-      'a .
-        ?sep:space_formatter ->
-          ?first:space_formatter ->
-            ?last:space_formatter ->
-              (Format.formatter -> 'a -> unit) ->
-                Format.formatter -> 'a list -> unit=
-      fun ?sep  ?first  ?last  fu  f  xs  ->
-        let first = Option.default ("" : space_formatter ) first in
-        let last = Option.default ("" : space_formatter ) last in
-        let sep = Option.default ("@ " : space_formatter ) sep in
-        let aux f =
-          function
-          | [] -> ()
-          | x::[] -> fu f x
-          | xs ->
-              let rec loop f =
-                function
-                | x::[] -> fu f x
-                | x::xs -> pp f "%a%(%)%a" fu x sep loop xs
-                | _ -> assert false in
-              pp f "%(%)%a%(%)" first loop xs last in
-        aux f xs
-    method option :
-      'a .
-        ?first:space_formatter ->
-          ?last:space_formatter ->
-            (Format.formatter -> 'a -> unit) ->
-              Format.formatter -> 'a option -> unit=
-      fun ?first  ?last  fu  f  a  ->
-        let first = match first with | Some x -> x | None  -> ""
-        and last = match last with | Some x -> x | None  -> "" in
-        match a with
-        | None  -> ()
-        | Some x -> pp f "%(%)%a%(%)" first fu x last
+    val mutable action = false
     method symbol f =
       function
-      | `Slist0 s -> pp f "LIST0 %a" self#symbol1 s
-      | `Slist0sep (s,t) ->
-          pp f "LIST0 %a SEP %a" self#symbol1 s self#symbol1 t
-      | `Slist1 s -> pp f "LIST1 %a" self#symbol1 s
-      | `Slist1sep (s,t) ->
-          pp f "LIST1 %a SEP %a" self#symbol1 s self#symbol1 t
+      | `Slist0 s -> pp f "L0 %a" self#symbol1 s
+      | `Slist0sep (s,t) -> pp f "L0 %a SEP %a" self#symbol1 s self#symbol1 t
+      | `Slist1 s -> pp f "L1 %a" self#symbol1 s
+      | `Slist1sep (s,t) -> pp f "L1 %a SEP %a" self#symbol1 s self#symbol1 t
       | `Sopt s -> pp f "OPT %a" self#symbol1 s
       | `Stry s -> pp f "TRY %a" self#symbol1 s
       | `Speek s -> pp f "PEEK %a" self#symbol1 s
       | `Snterml (e,l) -> pp f "%s Level %S" e.ename l
       | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
           self#symbol1 f s
-    method meta ns f sl =
-      match ns with
-      | x::[] -> pp f "%s@;%a" x (self#list self#symbol) sl
-      | x::y::[] ->
-          let l = List.length sl in
-          let (a,b) = List.split_at (l - 1) sl in
-          pp f "%s@;%a@;%s@;%a" x (self#list self#symbol) a y
-            (self#list self#symbol) b
-      | _ -> invalid_arg "meta in print"
     method description f = function | `Normal -> () | `Antiquot -> pp f "$"
     method symbol1 f =
       function
@@ -133,35 +107,30 @@ class text_grammar : grammar_print =
     method production ?(action= false)  f
       ((symbols,(annot,_action)) : production) =
       if not action
-      then pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@;") symbols
+      then pp f "@[<0>%a@]" (pp_list self#symbol ~sep:";@;") symbols
       else
-        pp f "@[<0>%a@;->@ @[%s@]@]" (self#list self#symbol ~sep:";@;")
-          symbols annot
+        pp f "@[<0>%a@;->@ @[%s@]@]" (pp_list self#symbol ~sep:";@;") symbols
+          annot
     method productions ?(action= false)  f ps =
-      pp f "@[<0>%a@]"
-        (self#list (self#production ~action) ~sep:"@;| " ~first:"[ "
-           ~last:" ]") ps
+      pp f "@[<hv0>%a@]"
+        (pp_list (self#production ~action) ~sep:"@;| " ~first:"[ " ~last:" ]")
+        ps
     method rule f symbols =
-      pp f "@[<0>%a@]" (self#list self#symbol ~sep:";@ ") symbols
+      pp f "@[<0>%a@]" (pp_list self#symbol ~sep:";@ ") symbols
     method rules f rules =
-      pp f "@[<hv0>[ %a]@]" (self#list self#rule ~sep:"@;| ") rules
-    method level f { assoc; lname; lsuffix; lprefix;_} =
-      let rules =
-        (List.map (fun t  -> `Sself :: t) (flatten_tree lsuffix)) @
-          (flatten_tree lprefix) in
-      pp f "%a %a@;%a" (self#option (fun f  s  -> pp f "%S" s)) lname
-        self#assoc assoc self#rules rules
-    method assoc f =
-      function | `LA -> pp f "LA" | `RA -> pp f "RA" | `NA -> pp f "NA"
+      pp f "@[<hv0>[ %a]@]" (pp_list self#rule ~sep:"@;| ") rules
+    method level f { assoc; lname; productions;_} =
+      pp f "%a %a@;%a" (pp_option (fun f  s  -> pp f "%S" s)) lname pp_assoc
+        assoc (self#productions ~action:true) productions
     method levels f elev =
-      (pp f "@[<hv0>  %a@]" (self#list self#level ~sep:"@;| ") elev : 
-      unit )
+      (pp f "@[<hv0>  %a@]" (pp_list self#level ~sep:"@;| ") elev : unit )
     method entry f e =
       (pp f "@[<2>%s:@;[%a]@]" e.ename
          (fun f  e  ->
             match e.edesc with
             | Dlevels elev -> self#levels f elev
             | Dparser _ -> pp f "<parser>") e : unit )
+    method tree f t = self#rules f (flatten_tree t)
   end
 
 let text = new text_grammar
@@ -181,9 +150,9 @@ class dump_grammar : grammar_print =
          | Bro (s,ls) -> ((string_of_symbol s), ls)
          | End  -> (".", [])) "" f (get_brothers tree)
     method! level f { assoc; lname; lsuffix; lprefix;_} =
-      pp f "%a %a@;@[<hv2>suffix:@\n%a@]@;@[<hv2>prefix:@\n%a@]"
-        (self#option (fun f  s  -> pp f "%S" s)) lname self#assoc assoc
-        self#tree lsuffix self#tree lprefix
+      pp f "%a %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
+        (pp_option (fun f  s  -> pp f "%S" s)) lname pp_assoc assoc self#tree
+        lsuffix self#tree lprefix
   end
 
 let dump = new dump_grammar

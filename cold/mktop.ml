@@ -193,7 +193,7 @@ let _ =
         [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
           `Skeyword "when";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-           ("Fgram.mk_action\n  (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->\n     ((`Fun\n         (_loc,\n           (`Bar\n              (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n                (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     FAst.exp ) : 'p ))\n",
+           ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
                    ((`Fun
@@ -205,7 +205,7 @@ let _ =
                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                    FAst.exp ) : 'p )))));
         ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
-          ("Fgram.mk_action\n  (fun (p : 'pat)  (_loc : FLoc.t)  ->\n     (`Fun\n        (_loc,\n          (`Bar\n             (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n               (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : \n     'p ))\n",
+          ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
             (Fgram.mk_action
                (fun (p : 'pat)  (_loc : FLoc.t)  ->
                   (`Fun

@@ -15,7 +15,7 @@ let _ =
             `Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
                 (`Normal, "`STR (_,_)"))],
-             ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,s) ->\n         (AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s)) : \n         'item )\n     | _ ->\n         failwith\n           \"AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s))\n\")\n",
+             ("AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s))\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                      match __fan_1 with
@@ -28,7 +28,7 @@ let _ =
                            "AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s))\n"))));
           ([`Skeyword "import";
            `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
-            ("Fgram.mk_action\n  (fun (xs : 'dot_namespace)  _  (_loc : FLoc.t)  ->\n     (FToken.paths := ((`Absolute xs) :: (FToken.paths.contents)) : 'item ))\n",
+            ("FToken.paths := ((`Absolute xs) :: (FToken.paths.contents))\n",
               (Fgram.mk_action
                  (fun (xs : 'dot_namespace)  _  (_loc : FLoc.t)  ->
                     (FToken.paths := ((`Absolute xs) ::
@@ -37,14 +37,14 @@ let _ =
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
                (`Normal, "`STR (_,_)"))],
-            ("Fgram.mk_action\n  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->\n     match __fan_1 with\n     | `STR (_,s) -> (AstFilters.use_implem_filter s : 'item )\n     | _ -> failwith \"AstFilters.use_implem_filter s\n\")\n",
+            ("AstFilters.use_implem_filter s\n",
               (Fgram.mk_action
                  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                     match __fan_1 with
                     | `STR (_,s) -> (AstFilters.use_implem_filter s : 'item )
                     | _ -> failwith "AstFilters.use_implem_filter s\n"))));
           ([`Skeyword "lang_clear"],
-            ("Fgram.mk_action\n  (fun _  (_loc : FLoc.t)  ->\n     (begin AstQuotation.clear_map (); AstQuotation.clear_default () end : \n     'item ))\n",
+            ("begin AstQuotation.clear_map (); AstQuotation.clear_default () end\n",
               (Fgram.mk_action
                  (fun _  (_loc : FLoc.t)  ->
                     (begin
@@ -59,7 +59,7 @@ let _ =
                  (`Normal, "`Uid _"));
             `Skeyword ".";
             `Sself],
-             ("Fgram.mk_action\n  (fun (xs : 'dot_namespace)  _  (__fan_0 : [> FToken.t])  (_loc : FLoc.t) \n     ->\n     match __fan_0 with\n     | `Uid i -> (i :: xs : 'dot_namespace )\n     | _ -> failwith \"i :: xs\n\")\n",
+             ("i :: xs\n",
                (Fgram.mk_action
                   (fun (xs : 'dot_namespace)  _  (__fan_0 : [> FToken.t]) 
                      (_loc : FLoc.t)  ->
@@ -69,7 +69,7 @@ let _ =
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
                 (`Normal, "`Uid _"))],
-            ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Uid i -> ([i] : 'dot_namespace )\n     | _ -> failwith \"[i]\n\")\n",
+            ("[i]\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
@@ -79,17 +79,17 @@ let _ =
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (item : 'item Fgram.t )); `Skeyword ";"],
-             ("Fgram.mk_action (fun _  _  (_loc : FLoc.t)  -> (() : 'items ))\n",
+             ("()\n",
                (Fgram.mk_action
                   (fun _  _  (_loc : FLoc.t)  -> (() : 'items )))));
           ([`Snterm (Fgram.obj (item : 'item Fgram.t ));
            `Skeyword ";";
            `Sself],
-            ("Fgram.mk_action (fun _  _  _  (_loc : FLoc.t)  -> (() : 'items ))\n",
+            ("()\n",
               (Fgram.mk_action
                  (fun _  _  _  (_loc : FLoc.t)  -> (() : 'items )))));
           ([],
-            ("Fgram.mk_action (fun (_loc : FLoc.t)  -> (() : 'items ))\n",
+            ("()\n",
               (Fgram.mk_action (fun (_loc : FLoc.t)  -> (() : 'items )))))]))
   end
 

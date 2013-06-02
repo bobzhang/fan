@@ -30,7 +30,7 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_exp_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_exp )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with
@@ -49,7 +49,7 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_stru_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_stru )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with
@@ -68,7 +68,7 @@ let _ =
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
                  (`Normal, "`Lid _"))],
-             ("Fgram.mk_action\n  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->\n     match __fan_0 with\n     | `Lid x ->\n         ((try Hashtbl.find inject_clfield_tbl x\n           with | Not_found  -> failwithf \"inject.exp %s not found\" x) : \n         'inject_clfield )\n     | _ ->\n         failwith\n           \"try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n\")\n",
+             ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                      match __fan_0 with

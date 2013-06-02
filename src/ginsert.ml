@@ -177,7 +177,7 @@ let merge_level (la:level) (lb:olevel) =
           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
             (StdFan.pp_print_option pp_print_string) la.lname
             (StdFan.pp_print_option pp_print_string) y
-            Gprint.dump#assoc la.assoc Gprint.dump#assoc assoc;
+            Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
          x)
     |((Some _ as y),_,x)-> 
         (if not (la.lname=y) then

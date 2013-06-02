@@ -73,9 +73,8 @@ let retype_rule_list_without_patterns _loc rl =
                (Some
                   (`App
                      (_loc,
-                       (`Field
-                          (_loc, (gm () : vid  :>exp),
-                            (`Lid (_loc, "string_of_token")))),
+                       (`Dot
+                          (_loc, (gm ()), (`Lid (_loc, "string_of_token")))),
                        (`Lid (_loc, "x"))) : FAst.exp ))
            }
        | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
@@ -168,8 +167,7 @@ let rec make_exp (tvar : string) (x : text) =
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
     | `Srules (_loc,rl) ->
         (`App
-           (_loc,
-             (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "srules")))),
+           (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "srules")))),
              (make_exp_rules _loc rl "")) : FAst.exp )
     | `Stok (_loc,match_fun,attr,descr) ->
         (`App
@@ -185,12 +183,13 @@ let rec make_exp (tvar : string) (x : text) =
                                  (`Str (_loc, (String.escaped descr)))))))))))) : 
         FAst.exp ) in
   aux tvar x
-and make_exp_rules (_loc : loc) (rl : (text list * exp) list) (tvar : string)
-  =
+and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
+  (tvar : string) =
   list_of_list _loc
     (List.map
-       (fun (sl,action)  ->
-          let action_string = Ast2pt.to_string_exp action in
+       (fun (sl,action,raw)  ->
+          let action_string =
+            match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
           let sl =
             list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
           (`Par
@@ -283,11 +282,11 @@ let text_of_action (_loc : loc) (psl : symbol list)
 
 let mk_srule loc (t : string) (tvar : string) (r : rule) =
   (let sl = List.map (fun s  -> s.text) r.prod in
-   let ac = text_of_action loc r.prod t ?action:(r.action) tvar in (sl, ac) : 
-  (text list * exp) )
+   let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
+   (sl, ac, (r.action)) : (text list * exp * exp option) )
 
 let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-  (List.map (mk_srule loc t tvar) rl : (text list * exp) list )
+  List.map (mk_srule loc t tvar) rl
 
 let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
@@ -388,13 +387,9 @@ let let_in_of_extend _loc (gram : vid option) locals default =
     match gram with
     | Some g ->
         let g = (g : vid  :>exp) in
-        (`App
-           (_loc,
-             (`Field
-                (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk_dynamic")))),
-             g) : FAst.exp )
-    | None  ->
-        (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk"))) : FAst.exp ) in
+        (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))), g) : 
+          FAst.exp )
+    | None  -> (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) : FAst.exp ) in
   let local_bind_of_name =
     function
     | { exp = (`Lid (_,i) : FAst.exp); tvar = x; loc = _loc } ->
@@ -407,8 +402,7 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                        (`Str (_loc, i)))),
                   (`App
                      (_loc,
-                       (`Dot
-                          (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
+                       (`Dot (_loc, (gm () :>ident), (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
         FAst.bind )
     | { exp;_} ->

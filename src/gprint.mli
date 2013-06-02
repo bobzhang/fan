@@ -3,36 +3,27 @@
 open Gstructure
 open Format
 
-
+(**  signature for printing grammar *)
 class type grammar_print  = object
-  method assoc : formatter -> assoc -> unit
+
   method description : formatter -> description -> unit
   method entry : formatter -> entry -> unit
   method level : formatter -> level -> unit
   method levels : formatter -> level list -> unit
-  method list :
-      ?sep:space_formatter ->
-        ?first:space_formatter ->
-          ?last:space_formatter ->
-            (formatter -> 'a -> unit) -> formatter -> 'a list -> unit
-  method meta :
-      string list -> formatter -> symbol list -> unit
-  method option :
-      ?first:space_formatter ->
-        ?last:space_formatter ->
-          (formatter -> 'a -> unit) ->
-            formatter -> 'a option -> unit
-  method rule : formatter -> symbol list -> unit
+
   method production : ?action:bool -> formatter -> production -> unit
-  method productions : ?action:bool -> formatter -> production list -> unit      
+  method productions : ?action:bool -> formatter -> production list -> unit
+
+  method rule : formatter -> symbol list -> unit      
   method rules : formatter -> symbol list list -> unit
+
   method symbol : formatter -> symbol -> unit
   method symbol1 : formatter -> symbol -> unit
   method tree : formatter -> tree -> unit
 end
       
       
-
+val pp_assoc : Format.formatter -> assoc -> unit
       
 class text_grammar : grammar_print
 

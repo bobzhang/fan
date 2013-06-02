@@ -66,18 +66,17 @@ let gen_lid ()=  prefix^string_of_int (!(gensym ()))
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map(function
-        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.extract_string x); ... *)
+        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.string_of_token x); ... *)
       | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
           {prod =
            [{ (s) with pattern = Some {:pat| x |} }];
            action =
-           Some {:exp|$((gm() : vid :> exp)).string_of_token x |}
-             (* {:exp| $(id:gm()).string_of_token x |} *)
+           Some {:exp|$(id:gm()).string_of_token x |}
          }
             (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
       | {prod = [({pattern = None; _ } as s)]; action = None} ->
 
-          {prod = [{ (s) with pattern = Some {:pat| x |} }];
+          {prod = [{ s with pattern = Some {:pat| x |} }];
            action = Some {:exp| x |}}
             (* ...; ([] -> a); ... *)
       | {prod = []; action = Some _} as r -> r
@@ -127,16 +126,19 @@ let rec make_exp (tvar : string) (x:text) =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Srules (_loc, rl) ->
-        {| $((gm():vid:>exp)).srules $(make_exp_rules _loc rl "") |}
+        {| $(id:(gm())).srules $(make_exp_rules _loc rl "") |}
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |}  in aux  tvar x
 
 
-and make_exp_rules (_loc:loc)  (rl : (text list  * exp) list  ) (tvar:string) =
+and make_exp_rules (_loc:loc)  (rl : (text list  * exp * exp option) list  ) (tvar:string) =
   with exp
   list_of_list _loc
-    (List.map (fun (sl,action) ->
-      let action_string = Ast2pt.to_string_exp action in
+    (List.map (fun (sl,action,raw) ->
+      let action_string =
+        match raw with
+        | None -> ""
+        |Some e -> Ast2pt.to_string_exp e in
       let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
       {| ($sl,($str:action_string,$action(* ,$exp *))) |} ) rl)
   
@@ -187,13 +189,13 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
             {| fun $p -> $txt |} )  e psl in
   {| $((gm():vid:>exp)).mk_action $txt |}
 
-let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp) =
+let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp * exp option) =
   let sl = List.map (fun s  -> s.text) r.prod in
   let ac = text_of_action loc r.prod t ?action:r.action tvar in
-  (sl, ac)
+  (sl, ac,r.action)
   
 (* the [rhs] was already computed, the [lhs] was left *)
-let mk_srules loc ( t : string) (rl:rule list ) (tvar:string) : (text list  * exp)list  =
+let mk_srules loc ( t : string) (rl:rule list ) (tvar:string)  =
   List.map (mk_srule loc t tvar) rl
     
 
@@ -259,7 +261,6 @@ let text_of_entry ?(safe=true) (e:entry) :exp =  with exp
           {| $(id:(gm())).extend_single $ent ($pos, $(apply l) ) |}
         else
           {| $(id:(gm())).unsafe_extend_single $ent ($pos, $(apply l) ) |}
-        (* else *)
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
         if safe then 
@@ -279,13 +280,13 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
   let entry_mk =
     match gram with
     | Some g -> let g = (g:vid :> exp) in
-    {:exp| $((gm():vid:>exp)).mk_dynamic $g |}
-    (* {:exp| $(id:gm()).mk_dynamic $g |} *)
-    | None   -> (* {:exp| $(id:gm()).mk |} *)
-        {:exp| $((gm():vid:>exp)).mk |} in
+    {:exp| $(id:gm()).mk_dynamic $g |}
+
+    | None -> 
+        {:exp| $(id:gm()).mk |} in
   let local_bind_of_name = function
     | {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
-      {:bind| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) |}
+      {:bind| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():>ident)).t ) |}
     | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
   match locals with
   | None | Some [] -> default

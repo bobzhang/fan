@@ -52,7 +52,7 @@ val text_of_action :
 val mk_srules :
   loc ->
   string ->
-  rule list -> string -> (text list * exp) list
+  rule list -> string -> (text list * exp * exp option) list
 
 (** transform [text] to [exp] which represents [symbol]
    compute the [lhs]
@@ -143,9 +143,9 @@ val make_exp : string -> text -> exp
 (** the [rhs] was computed, compute the [lhs]
    the generated expession has type [production] *)        
 val make_exp_rules :
-    loc -> (text list * exp) list -> string -> exp
+    loc -> (text list * exp * exp option) list -> string -> exp
 
-(* val exp_of_delete_rule : *)
+(** deprecated *)
 val exp_delete_rule:
   loc -> name -> symbol list list  -> exp
       

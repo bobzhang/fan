@@ -6,8 +6,9 @@ type 'a t (* = private entry *)
 
 val name : 'a t -> string
 
+(** *)
 val print : Format.formatter -> 'a t -> unit
-
+(** *)
 val dump : Format.formatter -> 'a t -> unit
 
 val trace_parser : bool ref
