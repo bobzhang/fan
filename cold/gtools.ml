@@ -61,4 +61,3 @@ let rec eq_symbol (s1 : symbol) (s2 : symbol) =
       (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
   | (`Stoken (_,s1),`Stoken (_,s2)) -> eq_Stoken_ids s1 s2
   | _ -> s1 = s2
-and eq_tree _t1 _t2 = false
