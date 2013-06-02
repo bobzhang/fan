@@ -4,8 +4,6 @@ open FLoc.Ops
 
 open FAst
 
-let _ = begin (); () end
-
 let loc_of =
   function
   | `CtDeclS (_loc,_,_,_) -> _loc

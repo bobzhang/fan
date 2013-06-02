@@ -2,8 +2,6 @@ open FAstN
 
 let fill_ant _loc x = x
 
-let _ = begin (); () end
-
 class primitive =
   object 
     method int _loc (i : int) = (`Int (_loc, (string_of_int i)) : FAst.ep )

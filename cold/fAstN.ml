@@ -1,5 +1,3 @@
-let _ = begin (); () end
-
 type loc = FLoc.t 
 
 type ant = [ `Ant of (loc * FanUtil.anti_cxt)] 

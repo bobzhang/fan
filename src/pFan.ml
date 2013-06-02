@@ -254,15 +254,16 @@ let apply () = begin
          AstQuotation.default := FToken.resolve_name _loc ls;
          old)]
        pos_exps:
-       [ L1
-           [ `Lid x;":";dot_lstrings{y} ->
-             ((x:string), FToken.resolve_name _loc y)
-           | `Lid x ->
-               ((x:string), FToken.resolve_name _loc
-                  (`Sub [], x) ) ] SEP ";"{xys} -> 
+       [ L1 name_space SEP ";"{xys} -> 
                     let old = !AstQuotation.map in
                     (AstQuotation.map := SMap.add_list xys old;
                      old)]
+      let name_space:
+       [ `Lid x;":";dot_lstrings{y} ->
+             ((x:string), FToken.resolve_name _loc y)
+           | `Lid x ->
+               ((x:string), FToken.resolve_name _loc
+                  (`Sub [], x) ) ]  
        let fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e ->  `LocalTypeFun (_loc, i, e)

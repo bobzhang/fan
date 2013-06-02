@@ -293,7 +293,8 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
   (* | None | Some [] -> default *)
   | (* Some *) ll ->
       let locals = and_of_list (List.map local_bind_of_name ll)  in
-      {:exp| let grammar_entry_create = $entry_mk in let $locals in $default |}    
+      (** eta-expansion to avoid specialized types here  *)
+      {:exp| let grammar_entry_create x = $entry_mk  x in let $locals in $default |}    
 
 (** entrance *)        
 let text_of_functorial_extend ?safe _loc   gram  el = 
@@ -304,7 +305,7 @@ let text_of_functorial_extend ?safe _loc   gram  el =
     | [] -> {:exp| () |}
     | _ -> seq_sem el    in
   (* let_in_of_extend _loc gram locals  args *)
-  let locals  =
+  let locals  = (** FIXME the order matters here, check duplication later!!! *)
     List.filter_map (fun {name;local;_} -> if local then Some name else None ) el in
   let_in_of_extend _loc gram locals args 
 

@@ -3,7 +3,7 @@
 {:new|(g:Fgram.t) item dot_namespace items |};;
 
 
-{:unsafe_extend|
+{:unsafe_extend| (g:Fgram.t)
   item:
   ["default"; `STR(_,s) ->
     AstQuotation.set_default (FToken.resolve_name _loc (`Sub[],s))

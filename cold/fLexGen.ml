@@ -40,44 +40,43 @@ let lex = Fgram.mk "lex"
 let declare_regexp = Fgram.mk "declare_regexp"
 
 let _ =
+  let grammar_entry_create x = Fgram.mk x in
+  let case: 'case Fgram.t = grammar_entry_create "case" in
   begin
     Fgram.extend_single (lex : 'lex Fgram.t )
       (None,
         (None, None,
           [([`Skeyword "|";
             `Slist0sep
-              ((Fgram.srules
-                  [([`Snterm (Fgram.obj (regexp : 'regexp Fgram.t ));
-                    `Skeyword "->";
-                    `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-                     ("(r, a)\n",
-                       (Fgram.mk_action
-                          (fun (a : 'exp)  _  (r : 'regexp)  (_loc : FLoc.t) 
-                             -> ((r, a) : 'e__1 )))))]), (`Skeyword "|"))],
+              ((`Snterm (Fgram.obj (case : 'case Fgram.t ))),
+                (`Skeyword "|"))],
              ("LexBackend.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = false; clauses = l })\n",
                (Fgram.mk_action
-                  (fun (l : 'e__1 list)  _  (_loc : FLoc.t)  ->
+                  (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
                      (LexBackend.output_entry
                         (Lexgen.make_single_dfa
                            { LexSyntax.shortest = false; clauses = l }) : 
                      'lex )))));
           ([`Skeyword "<";
            `Slist0sep
-             ((Fgram.srules
-                 [([`Snterm (Fgram.obj (regexp : 'regexp Fgram.t ));
-                   `Skeyword "->";
-                   `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-                    ("(r, a)\n",
-                      (Fgram.mk_action
-                         (fun (a : 'exp)  _  (r : 'regexp)  (_loc : FLoc.t) 
-                            -> ((r, a) : 'e__2 )))))]), (`Skeyword "|"))],
+             ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
             ("LexBackend.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = true; clauses = l })\n",
               (Fgram.mk_action
-                 (fun (l : 'e__2 list)  _  (_loc : FLoc.t)  ->
+                 (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
                     (LexBackend.output_entry
                        (Lexgen.make_single_dfa
                           { LexSyntax.shortest = true; clauses = l }) : 
                     'lex )))))]));
+    Fgram.extend_single (case : 'case Fgram.t )
+      (None,
+        (None, None,
+          [([`Snterm (Fgram.obj (regexp : 'regexp Fgram.t ));
+            `Skeyword "->";
+            `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+             ("(r, a)\n",
+               (Fgram.mk_action
+                  (fun (a : 'exp)  _  (r : 'regexp)  (_loc : FLoc.t)  ->
+                     ((r, a) : 'case )))))]));
     Fgram.extend_single (declare_regexp : 'declare_regexp Fgram.t )
       (None,
         (None, None,

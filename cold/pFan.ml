@@ -841,8 +841,9 @@ let apply () =
                       | `EOI -> (([], None) : 'interf )
                       | _ -> failwith "([], None)\n"))))]))
     end;
-    (let grammar_entry_create = Fgram.mk in
-     let fun_def_pat: 'fun_def_pat Fgram.t =
+    (let grammar_entry_create x = Fgram.mk x in
+     let name_space: 'name_space Fgram.t = grammar_entry_create "name_space"
+     and fun_def_pat: 'fun_def_pat Fgram.t =
        grammar_entry_create "fun_def_pat" in
      begin
        Fgram.extend_single (exp_quot : 'exp_quot Fgram.t )
@@ -959,49 +960,48 @@ let apply () =
          (None,
            (None, None,
              [([`Slist1sep
-                  ((Fgram.srules
-                      [([`Stoken
-                           (((function | `Lid _ -> true | _ -> false)),
-                             (`Normal, "`Lid _"));
-                        `Skeyword ":";
-                        `Snterm
-                          (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-                         ("((x : string ), (FToken.resolve_name _loc y))\n",
-                           (Fgram.mk_action
-                              (fun (y : 'dot_lstrings)  _ 
-                                 (__fan_0 : [> FToken.t])  (_loc : FLoc.t) 
-                                 ->
-                                 match __fan_0 with
-                                 | `Lid x ->
-                                     (((x : string ),
-                                        (FToken.resolve_name _loc y)) : 
-                                     'e__1 )
-                                 | _ ->
-                                     failwith
-                                       "((x : string ), (FToken.resolve_name _loc y))\n"))));
-                      ([`Stoken
-                          (((function | `Lid _ -> true | _ -> false)),
-                            (`Normal, "`Lid _"))],
-                        ("((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n",
-                          (Fgram.mk_action
-                             (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t) 
-                                ->
-                                match __fan_0 with
-                                | `Lid x ->
-                                    (((x : string ),
-                                       (FToken.resolve_name _loc
-                                          ((`Sub []), x))) : 'e__1 )
-                                | _ ->
-                                    failwith
-                                      "((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n"))))]),
+                  ((`Snterm (Fgram.obj (name_space : 'name_space Fgram.t ))),
                     (`Skeyword ";"))],
                 ("let old = AstQuotation.map.contents in\nbegin AstQuotation.map := (SMap.add_list xys old); old end\n",
                   (Fgram.mk_action
-                     (fun (xys : 'e__1 list)  (_loc : FLoc.t)  ->
+                     (fun (xys : 'name_space list)  (_loc : FLoc.t)  ->
                         (let old = AstQuotation.map.contents in
                          begin
                            AstQuotation.map := (SMap.add_list xys old); old
                          end : 'pos_exps )))))]));
+       Fgram.extend_single (name_space : 'name_space Fgram.t )
+         (None,
+           (None, None,
+             [([`Stoken
+                  (((function | `Lid _ -> true | _ -> false)),
+                    (`Normal, "`Lid _"));
+               `Skeyword ":";
+               `Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
+                ("((x : string ), (FToken.resolve_name _loc y))\n",
+                  (Fgram.mk_action
+                     (fun (y : 'dot_lstrings)  _  (__fan_0 : [> FToken.t]) 
+                        (_loc : FLoc.t)  ->
+                        match __fan_0 with
+                        | `Lid x ->
+                            (((x : string ), (FToken.resolve_name _loc y)) : 
+                            'name_space )
+                        | _ ->
+                            failwith
+                              "((x : string ), (FToken.resolve_name _loc y))\n"))));
+             ([`Stoken
+                 (((function | `Lid _ -> true | _ -> false)),
+                   (`Normal, "`Lid _"))],
+               ("((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n",
+                 (Fgram.mk_action
+                    (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                       match __fan_0 with
+                       | `Lid x ->
+                           (((x : string ),
+                              (FToken.resolve_name _loc ((`Sub []), x))) : 
+                           'name_space )
+                       | _ ->
+                           failwith
+                             "((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n"))))]));
        Fgram.extend_single (fun_def_pat : 'fun_def_pat Fgram.t )
          (None,
            (None, None,
@@ -1945,15 +1945,15 @@ let apply () =
                      ("Fgram.string_of_token x\n",
                        (Fgram.mk_action
                           (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                             (Fgram.string_of_token x : 'e__2 )))));
+                             (Fgram.string_of_token x : 'e__1 )))));
                   ([`Skeyword "&&"],
                     ("Fgram.string_of_token x\n",
                       (Fgram.mk_action
                          (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__2 )))))]],
+                            (Fgram.string_of_token x : 'e__1 )))))]],
                 ("`Lid (_loc, x)\n",
                   (Fgram.mk_action
-                     (fun (x : 'e__2)  (_loc : FLoc.t)  ->
+                     (fun (x : 'e__1)  (_loc : FLoc.t)  ->
                         (`Lid (_loc, x) : 'infixop1 )))))]));
        Fgram.extend_single (infixop0 : 'infixop0 Fgram.t )
          (None,
@@ -1963,15 +1963,15 @@ let apply () =
                      ("Fgram.string_of_token x\n",
                        (Fgram.mk_action
                           (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                             (Fgram.string_of_token x : 'e__3 )))));
+                             (Fgram.string_of_token x : 'e__2 )))));
                   ([`Skeyword "||"],
                     ("Fgram.string_of_token x\n",
                       (Fgram.mk_action
                          (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__3 )))))]],
+                            (Fgram.string_of_token x : 'e__2 )))))]],
                 ("`Lid (_loc, x)\n",
                   (Fgram.mk_action
-                     (fun (x : 'e__3)  (_loc : FLoc.t)  ->
+                     (fun (x : 'e__2)  (_loc : FLoc.t)  ->
                         (`Lid (_loc, x) : 'infixop0 )))))]));
        Fgram.extend_single (comma_exp : 'comma_exp Fgram.t )
          (None,
@@ -2287,7 +2287,7 @@ let apply () =
                    (fun (b1 : 'field_exp)  (_loc : FLoc.t)  ->
                       (b1 : 'field_exp_list )))))]))
     end;
-    (let grammar_entry_create = Fgram.mk in
+    (let grammar_entry_create x = Fgram.mk x in
      let pat_constr: 'pat_constr Fgram.t = grammar_entry_create "pat_constr" in
      begin
        Fgram.extend_single (pat_quot : 'pat_quot Fgram.t )

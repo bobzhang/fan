@@ -40,14 +40,16 @@ let as_cset = function
 
 {:extend|Fgram
     lex:
-    [ "|"; L0[regexp{r};"->"; exp{a} -> (r, a) ] SEP "|"{l} ->
+    [ "|"; L0 case SEP "|"{l} ->
       LexBackend.output_entry
         (Lexgen.make_single_dfa
         {LexSyntax.shortest=false;clauses=l})
-    | "<";L0[regexp{r};"->"; exp{a} -> (r, a) ] SEP "|"{l} ->
+    | "<";L0 case SEP "|"{l} ->
         LexBackend.output_entry
         (Lexgen.make_single_dfa
         {LexSyntax.shortest=true;clauses=l})]
+  let case:
+    [ regexp{r};"->";exp{a} -> (r,a)]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} ->
     if Hashtbl.mem named_regexps x then begin 

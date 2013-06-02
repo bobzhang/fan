@@ -3,7 +3,7 @@
 
 {:new| (g:Fgram.t) include_quot |};;
 
-{:unsafe_extend|
+{:unsafe_extend| (g:Fgram.t)
 include_quot:
   [`STR(_,s) ->
     let (keep,cf) = FState.((keep,current_filters)) in

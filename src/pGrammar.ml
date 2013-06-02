@@ -42,11 +42,7 @@ FConfig.antiquotations := true;;
   [
    [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
    |  qualuid{t} -> `static(t) ]{t};
-    L1
-      [ `Lid x  -> (_loc,x,None,None)
-      | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-      | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+    L1 type_entry {ls}
     ->
     with stru
     let mk =
@@ -68,14 +64,14 @@ FConfig.antiquotations := true;;
             {| let $lid:x = $mk $str:x  |}
         | (None,Some typ) ->
             {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
-
-  newterminals :
-  [ "("; qualid{x}; ":";t_qualid{t};")";
-    L1
+  let type_entry:
       [ `Lid x  -> (_loc,x,None,None)
       | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ] {ls}
+      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ]
+
+  newterminals :
+  [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
     ->
       
       let mk  =
@@ -99,7 +95,7 @@ FConfig.antiquotations := true;;
 
   
   nonterminalsclear :
-  [ qualuid{t}; L1 [a_lident{x}->x ]{ls} ->
+  [ qualuid{t}; L1 a_lident {ls} ->
     let rest = List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
@@ -146,10 +142,11 @@ FConfig.antiquotations := true;;
     end]
 
   delete_rules:
-  [ name{n} ;":"; "["; L1 [ L0 psymbol SEP ";"{sl} -> sl  ] SEP "|" {sls};
+  [ name{n} ;":"; "["; L1  psymbols SEP "|" {sls};
     "]" ->
     exp_delete_rule _loc n sls ]
-
+  let psymbols:
+  [ L0 psymbol SEP ";"{sl} -> sl  ] 
   (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
@@ -231,10 +228,9 @@ FConfig.antiquotations := true;;
     retype_rule_list_without_patterns _loc rules ]
 
   rule :
-  [ L0 psymbol SEP ";"{prod}; OPT ["->"; exp{act}-> act]{action} ->
+  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} ->
     mk_rule ~prod ~action ]
-
-
+  let opt_action : ["->"; exp{act}-> act]      
   psymbol:
   [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
     match p with

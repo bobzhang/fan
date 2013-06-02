@@ -414,7 +414,13 @@ let let_in_of_extend _loc (gram : vid option) locals default =
       let locals = and_of_list (List.map local_bind_of_name ll) in
       (`LetIn
          (_loc, (`Negative _loc),
-           (`Bind (_loc, (`Lid (_loc, "grammar_entry_create")), entry_mk)),
+           (`Bind
+              (_loc, (`Lid (_loc, "grammar_entry_create")),
+                (`Fun
+                   (_loc,
+                     (`Case
+                        (_loc, (`Lid (_loc, "x")),
+                          (`App (_loc, entry_mk, (`Lid (_loc, "x")))))))))),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
 
 let text_of_functorial_extend ?safe  _loc gram el =
