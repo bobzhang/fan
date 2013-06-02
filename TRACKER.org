@@ -281,7 +281,14 @@
 
 * 32 gadt any type variable fails
   file:tests/gadt_32.ml
+
   
+* 33 illegal pattern constructed
+
+  #+BEGIN_SRC ocaml
+  {:pat|`A(_,_,_)|}
+  (`App  (`App  (`Vrn  \"A\") (`Any )) (`Com  (`Any ) (`Any )))
+  #+END_SRC
 * COMMENT
 ** rules
   {-# RULES

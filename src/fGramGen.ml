@@ -34,9 +34,14 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 
 let string_of_pat pat = 
   let buf = Buffer.create 42 in
-  let () =
+  let  _ =
+    try 
     Format.bprintf buf "%a@?"
-      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
+      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.pat p)) pat
+    with
+      FLoc.Exc_located(loc,_) ->
+        FLoc.errorf loc "invalid pattern when printing %s" (Objs.dump_pat pat)
+  in
   let str = Buffer.contents buf in
   if str = "" then assert false else str
 
@@ -307,8 +312,8 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
    let match_fun =
      if is_irrefut_pat no_variable
      then 
-       {| function | $pat:no_variable -> true  |}
-     else {| function | $pat:no_variable -> true | _ -> false  |} in 
+       {| function | $no_variable -> true  |}
+     else {| function | $no_variable -> true | _ -> false  |} in 
    let descr = string_of_pat no_variable in
    let text = `Stok (_loc, match_fun, "Normal", descr) in
    {text; styp; pattern = Some pattern }
@@ -316,7 +321,7 @@ let mk_tok _loc ?restrict ~pattern styp = with exp
  | Some restrict ->
      let p'= Objs.wildcarder#pat pattern in
      let match_fun = 
-       {| function | $pat:pattern when $restrict -> true | _ -> false  |}  in
+       {| function | $pattern when $restrict -> true | _ -> false  |}  in
      let descr = string_of_pat pattern in
      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
      {text; styp; pattern = Some p'} 

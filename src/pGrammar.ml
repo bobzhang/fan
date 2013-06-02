@@ -193,7 +193,7 @@ FConfig.antiquotations := true;;
         | _ -> mk_entry ~name:p ~pos ~levels
       end
   ]
-  position:
+  position :
   [ `Uid ("First"|"Last" as x ) ->   {:exp| $vrn:x |}
   | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->
       {:exp| $vrn:x  $n |}
@@ -201,27 +201,27 @@ FConfig.antiquotations := true;;
       failwithf
         "%s is not the right position:(First|Last) or (Before|After|Level)" x]
 
-  level_list:
+  level_list :
   [ "{"; L1 level {ll}; "}" -> `Group ll
   | level {l} -> `Single l] (* FIXME L1 does not work here *)
 
-  level:
+  level :
   [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
     mk_level ~label ~assoc ~rules ]
   (* FIXME a conflict {:extend|Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
 
 
-  assoc:
+  assoc :
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:exp| $vrn:x |} 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
-  rule_list:
+  rule_list :
   [ "["; "]" -> []
   | "["; L1 rule SEP "|"{rules}; "]" ->
     retype_rule_list_without_patterns _loc rules ]
 
-  rule:
+  rule :
   [ L0 psymbol SEP ";"{prod}; OPT ["->"; exp{act}-> act]{action} ->
     mk_rule ~prod ~action ]
 
