@@ -445,12 +445,24 @@ let apply () = begin
        sequence':
        [ -> fun e -> e
        | ";" -> fun e -> e
-       | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]       
+       | ";"; sequence{el} -> fun e -> `Sem(_loc,e,el) ]
+
+
+       (* FIXME: more succinct form *)    
+       (* infixop1: *)
+       (* [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] *)
+
        infixop1:
-       [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] (* FIXME *)
+       [ "&"  -> `Lid (_loc,"&")
+       | "&&" -> `Lid (_loc,"&&")]    
+
+       (* infixop0: *)
+       (* [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ] *)
+           
        infixop0:
-       [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ]
-       
+       ["or" -> `Lid(_loc,"or")
+       |"||" -> `Lid(_loc,"||") ]
+           
        comma_exp:
        [ S{e1}; ","; S{e2} -> `Com(_loc,e1,e2)
        | exp Level "top"{e} -> e ]

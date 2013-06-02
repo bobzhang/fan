@@ -26,7 +26,8 @@ let apply () =
   begin
     (let grammar_entry_create x = Fgram.mk x in
      let macro_semi: 'macro_semi Fgram.t = grammar_entry_create "macro_semi"
-     and lid: 'lid Fgram.t = grammar_entry_create "lid" in
+     and lid: 'lid Fgram.t = grammar_entry_create "lid"
+     and kwd: 'kwd Fgram.t = grammar_entry_create "kwd" in
      begin
        Fgram.extend_single (stru : 'stru Fgram.t )
          ((Some `First),
@@ -302,54 +303,47 @@ let apply () =
                         match __fan_0 with
                         | `Uid i -> (i : 'uident )
                         | _ -> failwith "i\n"))))]));
+       Fgram.extend_single (kwd : 'kwd Fgram.t )
+         (None,
+           (None, None,
+             [([`Skeyword "IFDEF"],
+                ("\"IFDEF\"\n",
+                  (Fgram.mk_action
+                     (fun _  (_loc : FLoc.t)  -> ("IFDEF" : 'kwd )))));
+             ([`Skeyword "IFNDEF"],
+               ("\"IFNDEF\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("IFNDEF" : 'kwd )))));
+             ([`Skeyword "THEN"],
+               ("\"THEN\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("THEN" : 'kwd )))));
+             ([`Skeyword "ELSE"],
+               ("\"ELSE\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("ELSE" : 'kwd )))));
+             ([`Skeyword "END"],
+               ("\"END\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("END" : 'kwd )))));
+             ([`Skeyword "ENDIF"],
+               ("\"ENDIF\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("ENDIF" : 'kwd )))));
+             ([`Skeyword "DEFINE"],
+               ("\"DEFINE\"\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  -> ("DEFINE" : 'kwd )))));
+             ([`Skeyword "IN"],
+               ("\"IN\"\n",
+                 (Fgram.mk_action (fun _  (_loc : FLoc.t)  -> ("IN" : 'kwd )))))]));
        Fgram.extend_single (exp : 'exp Fgram.t )
          ((Some (`Before "simple")),
            (None, None,
-             [([`Skeyword "`";
-               Fgram.srules
-                 [([`Skeyword "IFDEF"],
-                    ("Fgram.string_of_token x\n",
-                      (Fgram.mk_action
-                         (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "IFNDEF"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "THEN"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "ELSE"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "END"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "ENDIF"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "DEFINE"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))));
-                 ([`Skeyword "IN"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__1 )))))]],
+             [([`Skeyword "`"; `Snterm (Fgram.obj (kwd : 'kwd Fgram.t ))],
                 ("(`Vrn (_loc, kwd) : FAst.exp )\n",
                   (Fgram.mk_action
-                     (fun (kwd : 'e__1)  _  (_loc : FLoc.t)  ->
+                     (fun (kwd : 'kwd)  _  (_loc : FLoc.t)  ->
                         ((`Vrn (_loc, kwd) : FAst.exp ) : 'exp )))));
              ([`Skeyword "`";
               `Snterm (Fgram.obj (luident : 'luident Fgram.t ))],
@@ -360,41 +354,10 @@ let apply () =
        Fgram.extend_single (pat : 'pat Fgram.t )
          ((Some (`Before "simple")),
            (None, None,
-             [([`Skeyword "`";
-               Fgram.srules
-                 [([`Skeyword "IFDEF"],
-                    ("Fgram.string_of_token x\n",
-                      (Fgram.mk_action
-                         (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__2 )))));
-                 ([`Skeyword "IFNDEF"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__2 )))));
-                 ([`Skeyword "THEN"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__2 )))));
-                 ([`Skeyword "ELSE"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__2 )))));
-                 ([`Skeyword "END"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__2 )))));
-                 ([`Skeyword "ENDIF"],
-                   ("Fgram.string_of_token x\n",
-                     (Fgram.mk_action
-                        (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                           (Fgram.string_of_token x : 'e__2 )))))]],
+             [([`Skeyword "`"; `Snterm (Fgram.obj (kwd : 'kwd Fgram.t ))],
                 ("(`Vrn (_loc, kwd) : FAst.pat )\n",
                   (Fgram.mk_action
-                     (fun (kwd : 'e__2)  _  (_loc : FLoc.t)  ->
+                     (fun (kwd : 'kwd)  _  (_loc : FLoc.t)  ->
                         ((`Vrn (_loc, kwd) : FAst.pat ) : 'pat )))));
              ([`Skeyword "`";
               `Snterm (Fgram.obj (luident : 'luident Fgram.t ))],

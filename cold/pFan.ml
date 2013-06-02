@@ -1940,39 +1940,29 @@ let apply () =
        Fgram.extend_single (infixop1 : 'infixop1 Fgram.t )
          (None,
            (None, None,
-             [([Fgram.srules
-                  [([`Skeyword "&"],
-                     ("Fgram.string_of_token x\n",
-                       (Fgram.mk_action
-                          (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                             (Fgram.string_of_token x : 'e__1 )))));
-                  ([`Skeyword "&&"],
-                    ("Fgram.string_of_token x\n",
-                      (Fgram.mk_action
-                         (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__1 )))))]],
-                ("`Lid (_loc, x)\n",
+             [([`Skeyword "&"],
+                ("`Lid (_loc, \"&\")\n",
                   (Fgram.mk_action
-                     (fun (x : 'e__1)  (_loc : FLoc.t)  ->
-                        (`Lid (_loc, x) : 'infixop1 )))))]));
+                     (fun _  (_loc : FLoc.t)  ->
+                        (`Lid (_loc, "&") : 'infixop1 )))));
+             ([`Skeyword "&&"],
+               ("`Lid (_loc, \"&&\")\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  ->
+                       (`Lid (_loc, "&&") : 'infixop1 )))))]));
        Fgram.extend_single (infixop0 : 'infixop0 Fgram.t )
          (None,
            (None, None,
-             [([Fgram.srules
-                  [([`Skeyword "or"],
-                     ("Fgram.string_of_token x\n",
-                       (Fgram.mk_action
-                          (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                             (Fgram.string_of_token x : 'e__2 )))));
-                  ([`Skeyword "||"],
-                    ("Fgram.string_of_token x\n",
-                      (Fgram.mk_action
-                         (fun (x : [> FToken.t])  (_loc : FLoc.t)  ->
-                            (Fgram.string_of_token x : 'e__2 )))))]],
-                ("`Lid (_loc, x)\n",
+             [([`Skeyword "or"],
+                ("`Lid (_loc, \"or\")\n",
                   (Fgram.mk_action
-                     (fun (x : 'e__2)  (_loc : FLoc.t)  ->
-                        (`Lid (_loc, x) : 'infixop0 )))))]));
+                     (fun _  (_loc : FLoc.t)  ->
+                        (`Lid (_loc, "or") : 'infixop0 )))));
+             ([`Skeyword "||"],
+               ("`Lid (_loc, \"||\")\n",
+                 (Fgram.mk_action
+                    (fun _  (_loc : FLoc.t)  ->
+                       (`Lid (_loc, "||") : 'infixop0 )))))]));
        Fgram.extend_single (comma_exp : 'comma_exp Fgram.t )
          (None,
            (None, None,

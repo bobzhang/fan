@@ -275,10 +275,8 @@ let text_of_action (_loc : loc) (psl : symbol list)
                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
                   (make_ctyp s.styp tvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )) e psl in
-   (`App
-      (_loc,
-        (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "mk_action")))),
-        txt) : FAst.exp ) : exp )
+   (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
+     FAst.exp ) : exp )
 
 let mk_srule loc (t : string) (tvar : string) (r : rule) =
   (let sl = List.map (fun s  -> s.text) r.prod in

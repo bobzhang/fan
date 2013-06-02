@@ -91,13 +91,25 @@ let apply () = begin
     [ `Uid i -> i ]
     (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)
 
+    (** FIXME later *)    
+    (* let kwd: *)
+    (* [ `KEYWORD ("IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN"){x}->x ] *)
+    let kwd:
+    ["IFDEF" -> "IFDEF" 
+    |"IFNDEF"-> "IFNDEF" 
+    |"THEN" ->  "THEN"
+    |"ELSE" -> "ELSE"
+    |"END"  -> "END"
+    |"ENDIF" -> "ENDIF"
+    |"DEFINE" -> "DEFINE"
+    |"IN" ->  "IN" ]    
     exp: Before "simple"
-    [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"| "DEFINE" | "IN" ]{kwd}
+    [ "`";  kwd{kwd}
       -> {:exp| $vrn:kwd |}
     | "`"; luident{s} -> {:exp| $vrn:s |} ]
-
+    
     pat: Before "simple"
-    [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
+    [ "`"; kwd{kwd} ->
       {:pat| $vrn:kwd |}
     | "`"; luident{s} -> {:pat| $vrn:s |} ] |};
   Foptions.add

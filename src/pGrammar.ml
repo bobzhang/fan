@@ -38,12 +38,12 @@ FConfig.antiquotations := true;;
   internal_pat|}  ;;
 
 {:extend|
+  let ty:
+  [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
+   |  qualuid{t} -> `static(t) ]    
+
   nonterminals :
-  [
-   [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
-   |  qualuid{t} -> `static(t) ]{t};
-    L1 type_entry {ls}
-    ->
+  [ ty {t}; L1 type_entry {ls} ->
     with stru
     let mk =
       match t with
@@ -64,11 +64,14 @@ FConfig.antiquotations := true;;
             {| let $lid:x = $mk $str:x  |}
         | (None,Some typ) ->
             {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
+
+  let str : [`STR(_,y) -> y]
+      
   let type_entry:
       [ `Lid x  -> (_loc,x,None,None)
       | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
-      | "("; `Lid x; ":"; ctyp{t}; OPT [`STR(_,y) -> y ]{y};  ")" -> (_loc,x,y,Some t) ]
+      | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" -> (_loc,x,y,Some t) ]
 
   newterminals :
   [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
@@ -102,11 +105,8 @@ FConfig.antiquotations := true;;
       let t = (t:vid :> exp) in
       {:exp| $t.clear $x |}) ls in
     seq_sem rest ]
-|};;
 
-
-{:extend|(* Fgram *)
-  extend_header:
+  extend_header :
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
     let old=gm() in 
     let () = grammar_module_name := t  in
@@ -168,7 +168,7 @@ FConfig.antiquotations := true;;
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid{il}; OPT[`STR(_,x)->x]{name} -> 
+  [ qualid{il}; OPT  str {name} -> 
     (match name with
     | Some x -> (let old = !AstQuotation.default in
       (AstQuotation.default:= FToken.resolve_name _loc (`Sub [], x);
@@ -212,7 +212,7 @@ FConfig.antiquotations := true;;
   | level {l} -> `Single l] (* FIXME L1 does not work here *)
 
   level :
-  [  OPT [`STR (_, x)  -> x ]{label};  OPT assoc{assoc}; rule_list{rules} ->
+  [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} ->
     mk_level ~label ~assoc ~rules ]
   (* FIXME a conflict {:extend|Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
 
@@ -222,6 +222,7 @@ FConfig.antiquotations := true;;
   [ `Uid ("LA"|"RA"|"NA" as x) ->     {:exp| $vrn:x |} 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
+      
   rule_list :
   [ "["; "]" -> []
   | "["; L1 rule SEP "|"{rules}; "]" ->
@@ -230,17 +231,21 @@ FConfig.antiquotations := true;;
   rule :
   [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} ->
     mk_rule ~prod ~action ]
-  let opt_action : ["->"; exp{act}-> act]      
-  psymbol:
-  [ symbol{s} ; OPT ["{"; pattern{p} ; "}" -> p ] {p} ->
+  let opt_action : ["->"; exp{act}-> act]
+
+  let brace_pattern : ["{";pattern{p};"}"->p]
+
+  psymbol :
+  [ symbol{s} ; OPT  brace_pattern {p} ->
     match p with
     |Some _ ->
         { s with pattern = (p:  action_pattern option :>  pat option) }
     | None -> s  ] 
 
-
+  let sep_symbol: [`Uid "SEP"; symbol{t}->t]
+  let level_str:  [`Uid "Level"; `STR (_, s) -> s ]
   symbol:
-  [ `Uid ("L0"| "L1" as x); S{s}; OPT [`Uid "SEP"; symbol{t} -> t ]{sep } ->
+  [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } ->
     let () = check_not_tok s in
     let styp = {:ctyp'| $(s.styp) list   |} in 
     let text = mk_slist _loc
@@ -282,10 +287,10 @@ FConfig.antiquotations := true;;
         mk_tok _loc ~restrict ~pattern:p (`Tok _loc) )
   | `STR (_, s) ->
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
-  | name{n};  OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+  | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
-  | `Ant(("nt"|""),s); OPT [`Uid "Level"; `STR (_, s) -> s ]{lev} ->
+  | `Ant(("nt"|""),s); OPT level_str{lev} ->
         let i = parse_ident _loc s in
         let rec to_vid   (x:ident) : vid =
           match x with

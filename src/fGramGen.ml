@@ -187,7 +187,7 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
             let p =
               typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
             {| fun $p -> $txt |} )  e psl in
-  {| $((gm():vid:>exp)).mk_action $txt |}
+  {| $(id:(gm())).mk_action $txt |}
 
 let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp * exp option) =
   let sl = List.map (fun s  -> s.text) r.prod in

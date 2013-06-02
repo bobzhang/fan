@@ -7,15 +7,16 @@ open FStreamGen
 {:create| Fgram
   parser_ipat stream_exp_comp  stream_exp_comp_list
   stream_pat_comp stream_pat_comp_err 
-  stream_pat_comp_err_list stream_begin
+  stream_pat_comp_err_list (* stream_begin *)
   
   stream_pat parser_case parser_case_list stream_exp
 |}
   
 let apply () = 
   {:extend|
+    let  uid: [`Uid(n) -> n]
     exp : Level "top"
-        [ "parser";  OPT [ `Uid(n) -> n]  {name}
+        [ "parser";  OPT uid  {name}
             ; OPT parser_ipat{po}
             ; parser_case_list{pcl}
           ->
@@ -23,7 +24,7 @@ let apply () =
             | Some o ->
               Ref.protect FStreamGen.grammar_module_name o (fun _ -> cparser _loc po pcl)
             | None -> cparser _loc po pcl)
-        | "match"; S{e}; "with"; "parser";  OPT [`Uid(n) -> n ] {name}; OPT parser_ipat{po};
+        | "match"; S{e}; "with"; "parser";  OPT uid {name}; OPT parser_ipat{po};
           parser_case_list{pcl}
           ->
             match name with
@@ -51,8 +52,8 @@ let apply () =
     
     parser_case :
     [stream_pat{sp}; "->"; exp{e} ->   (sp, None, e) ] 
-    stream_begin :
-    [ "[<"; OPT [ "!"; `Uid(n)->n]{name} -> name  ]   
+    (* stream_begin : *)
+    (* [ "[<"; OPT [ "!"; `Uid(n)->n]{name} -> name  ]    *)
 
     stream_pat :
     [ stream_pat_comp{spc} -> [(spc, None)]
