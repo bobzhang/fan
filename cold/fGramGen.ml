@@ -33,9 +33,14 @@ let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
 
 let string_of_pat pat =
   let buf = Buffer.create 42 in
-  let () =
-    Format.bprintf buf "%a@?"
-      (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.pat p)) pat in
+  let _ =
+    try
+      Format.bprintf buf "%a@?"
+        (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.pat p)) pat
+    with
+    | FLoc.Exc_located (loc,_) ->
+        FLoc.errorf loc "invalid pattern when printing %s"
+          (Objs.dump_pat pat) in
   let str = Buffer.contents buf in if str = "" then assert false else str
 
 let check_not_tok s =
