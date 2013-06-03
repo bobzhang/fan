@@ -48,16 +48,12 @@ and symbol ={
 }
 and text =
  [
-  (* `Smeta of (loc * string list  * text list  * exp * styp) *)
- (* | *)
    `Slist of (loc * bool * symbol * symbol option )
  | `Snterm of (loc * name  * string option )
  | `Sopt of (loc * text )
  | `Stry of (loc * text )
  | `Speek of (loc * text)
- (* | `Srules of (loc * (text list  * exp * exp option) list ) *)
  | `Sself of loc
- (* | `Snext of loc        *)
  | `Skeyword of (loc * string)
  | `Stok of (loc * exp * attr * string)
 (** The first is the match function exp(predicate),

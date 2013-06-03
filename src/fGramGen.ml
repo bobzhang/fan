@@ -111,7 +111,6 @@ let rec make_exp (tvar : string) (x:text) =
         | Some s ->
             let x = aux tvar s.text in
             if min then {| `Slist1sep ($txt,$x)|} else {| `Slist0sep ($txt,$x) |})
-    (* | `Snext _loc ->  {| `Snext |} *)
     | `Sself _loc ->  {| `Sself|}
     | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
     | `Snterm (_loc, n, lev) ->
@@ -125,8 +124,6 @@ let rec make_exp (tvar : string) (x:text) =
     | `Sopt (_loc, t) -> {| `Sopt $(aux "" t) |}
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
-    (* | `Srules (_loc, rl) -> *)
-    (*     {| $(id:(gm())).srules $(make_exp_rules _loc rl "") |} *)
     | `Stok (_loc, match_fun, attr, descr) ->
       {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |}  in aux  tvar x
 
