@@ -70,7 +70,7 @@ val ctyp_quot : ctyp Fgram.t
 val cvalue_bind : exp Fgram.t
 val flag : flag Fgram.t
 val direction_flag_quot : flag Fgram.t
-val dummy : unit Fgram.t
+
 val eq_exp : (alident -> pat -> pat) Fgram.t 
 val exp : exp Fgram.t
 val exp_eoi : exp Fgram.t

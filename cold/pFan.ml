@@ -1972,16 +1972,10 @@ let apply () =
                      (fun (e2 : 'comma_exp)  _  (e1 : 'comma_exp) 
                         (_loc : FLoc.t)  ->
                         (`Com (_loc, e1, e2) : 'comma_exp )))));
-             ([`Snterml ((Fgram.obj (exp : 'exp Fgram.t )), "top")],
+             ([`Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
                ("e\n",
                  (Fgram.mk_action
-                    (fun (e : 'exp)  (_loc : FLoc.t)  -> (e : 'comma_exp )))))]));
-       Fgram.extend_single (dummy : 'dummy Fgram.t )
-         (None,
-           (None, None,
-             [([],
-                ("()\n",
-                  (Fgram.mk_action (fun (_loc : FLoc.t)  -> (() : 'dummy )))))]))
+                    (fun (e : 'exp)  (_loc : FLoc.t)  -> (e : 'comma_exp )))))]))
      end);
     Fgram.extend_single (with_exp_lang : 'with_exp_lang Fgram.t )
       (None,
@@ -2227,7 +2221,7 @@ let apply () =
                        | _ -> failwith "mk_anti _loc ~c:\"rec_exp\" n s\n"))));
             ([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
              `Skeyword "=";
-             `Snterml ((Fgram.obj (exp : 'exp Fgram.t )), "top")],
+             `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
               ("`RecBind (_loc, (l :>ident), e)\n",
                 (Fgram.mk_action
                    (fun (e : 'exp)  _  (l : 'a_lident)  (_loc : FLoc.t)  ->

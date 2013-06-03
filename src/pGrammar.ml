@@ -79,7 +79,6 @@ FConfig.antiquotations := true;;
       
       let mk  =
         let x = (x : vid :> exp) in
-        (* let t = (t : vid :> exp ) in  *)
         {:exp|$id:t.mk_dynamic $x |}  in
       sem_of_list
         ({:stru| let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()|} ::
@@ -266,8 +265,6 @@ FConfig.antiquotations := true;;
       mk_symbol ~text ~styp:(s.styp) ~pattern:None
   | `Uid "S" ->
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
-  (* |`Uid "N" -> *)
-  (*     mk_symbol  ~text:(`Snext _loc)   ~styp:(`Self _loc "N") ~pattern:None *)
   | simple_pat{p} -> 
       let (p,ls) =
         Exp.filter_pat_with_captured_variables

@@ -83,8 +83,6 @@ let flag = Fgram.mk "flag"
 
 let direction_flag_quot = Fgram.mk "direction_flag_quot"
 
-let dummy = Fgram.mk "dummy"
-
 let eq_exp = Fgram.mk "eq_exp"
 
 let exp = Fgram.mk "exp"

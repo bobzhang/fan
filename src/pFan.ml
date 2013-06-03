@@ -465,9 +465,8 @@ let apply () = begin
            
        comma_exp:
        [ S{e1}; ","; S{e2} -> `Com(_loc,e1,e2)
-       | exp Level "top"{e} -> e ]
-       dummy:
-       [ -> () ] |};
+       | exp {e} -> e ]
+      |};
   {:extend| with_exp_lang:
     [ lang{old}; ":"; exp{x} -> (AstQuotation.default := old; x)] |} ;
   {:extend| with_stru_lang:
@@ -518,9 +517,9 @@ let apply () = begin
         | label_longident{i}; fun_bind{e} -> {| $id:i = $e |}
         | label_longident{i} ->  (*FIXME*)
             `RecBind (_loc, i, `Lid (_loc, FanOps.to_lid i))]
-        field_exp:
+        field_exp :
         [ `Ant ((""|"bi" as n),s) -> mk_anti _loc ~c:"rec_exp" n s
-        | a_lident{l}; "=";  exp Level "top"{e} ->
+        | a_lident{l}; "=";  exp {e} ->
             `RecBind (_loc, (l:>ident), e) (* {| $lid:l = $e |} *) ]
         label_exp_list:
         [ label_exp{b1}; ";"; S{b2} ->`Sem (_loc, b1, b2)

@@ -56,18 +56,14 @@ and asymbol =
   [ `Snterm of entry
   | `Snterml of (entry * string) (* the second argument is the level name *)
   | `Slist0 of symbol
-  
   | `Slist1 of symbol
-  
   | `Sopt of symbol
   | `Stry of symbol
   | `Speek of symbol
   | `Sself
-  (* | `Snext *)
   | `Slist0sep of (symbol * symbol)        
   | `Slist1sep of (symbol * symbol)      
-  | terminal 
-]  
+  | terminal ]  
 and symbol =
   [
     `Snterm of entry
@@ -80,7 +76,6 @@ and symbol =
   | `Stry of symbol
   | `Speek of symbol
   | `Sself
-  (* | `Snext *)
   | terminal
  ]
       

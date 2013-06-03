@@ -15,11 +15,12 @@ let higher s1 s2 =
 let rec derive_eps (s:symbol)  =
   match s with 
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
-  | `Stry s -> derive_eps s
+
+  | `Stry s -> derive_eps s (* it would consume if succeed *)
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
-  | `Snterm _ | `Snterml (_, _) (* | `Snext *) | `Sself ->
+  | `Snterm _ | `Snterml (_, _) | `Sself ->
         (* Approximation *)
       false 
 
@@ -102,14 +103,12 @@ let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
 and  using_symbol symbol acc =
   match symbol with 
-  (* | `Smeta (_, sl, _) -> using_symbols  sl acc  *)
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
       using_symbol s acc
   | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)
   | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
-  (* | `Stree t -> using_node   t acc  *)
   | `Skeyword kwd -> kwd :: acc
-  | `Snterm _ | `Snterml _ (* | `Snext *) | `Sself | `Stoken _ -> acc 
+  | `Snterm _ | `Snterml _ | `Sself | `Stoken _ -> acc 
 and using_node   node acc =
   match node with 
   | Node {node = s; brother = bro; son = son} ->
