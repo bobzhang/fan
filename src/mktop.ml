@@ -182,8 +182,6 @@ end
 
 {:create|Fgram p|};;
 
-
-
 {:extend|
   p:
   [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true |_ -> false |}
@@ -221,7 +219,7 @@ open FLexGen
 
 (*************************************************************************)
 (** begin quotation for FAst without locations *)
-let m = new FanAstN.meta ;;
+let m = FanAstN.m (* new FanAstN.meta ;; *)
 
 let efilter str e =
     let e = exp_filter_n e in
