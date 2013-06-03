@@ -12,7 +12,7 @@ let name_of_symbol entry =
   (function
    | `Snterm e -> "[" ^ (e.ename ^ "]")
    | `Snterml (e,l) -> "[" ^ (e.ename ^ (" level " ^ (l ^ "]")))
-   | `Sself|`Snext -> "[" ^ (entry.ename ^ "]")
+   | `Sself -> "[" ^ (entry.ename ^ "]")
    | `Stoken (_,descr) -> name_of_descr descr
    | `Skeyword kwd -> "\"" ^ (kwd ^ "\"")
    | _ -> "???" : [> symbol] -> string )

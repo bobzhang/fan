@@ -16,7 +16,7 @@ let name_of_descr = function
 let  name_of_symbol entry : [> symbol] -> string  =  function
   | `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
-  | `Sself | `Snext -> "[" ^ entry.ename ^ "]"
+  | `Sself (* | `Snext *) -> "[" ^ entry.ename ^ "]"
   | `Stoken (_, descr) -> name_of_descr descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 

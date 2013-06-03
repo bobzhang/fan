@@ -131,7 +131,6 @@ let rec make_exp (tvar : string) (x : text) =
                (`App
                   (_loc, (`Vrn (_loc, "Slist0sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp ))
-    | `Snext _loc -> (`Vrn (_loc, "Snext") : FAst.exp )
     | `Sself _loc -> (`Vrn (_loc, "Sself") : FAst.exp )
     | `Skeyword (_loc,kwd) ->
         (`App (_loc, (`Vrn (_loc, "Skeyword")), (`Str (_loc, kwd))) : 

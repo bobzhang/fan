@@ -57,7 +57,7 @@ and text =
  | `Speek of (loc * text)
  (* | `Srules of (loc * (text list  * exp * exp option) list ) *)
  | `Sself of loc
- | `Snext of loc       
+ (* | `Snext of loc        *)
  | `Skeyword of (loc * string)
  | `Stok of (loc * exp * attr * string)
 (** The first is the match function exp(predicate),

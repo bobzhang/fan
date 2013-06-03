@@ -16,12 +16,10 @@ let rec derive_eps (s:symbol)  =
   match s with 
   | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
   | `Stry s -> derive_eps s
-  (* | `Stree t -> tree_derive_eps t *)
   | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
-  (* | `Smeta (_, _, _) *)
-  | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
+  | `Snterm _ | `Snterml (_, _) (* | `Snext *) | `Sself ->
         (* Approximation *)
       false 
 
@@ -79,12 +77,11 @@ let rec check_gram entry = function
         failwithf
           "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.ename e.ename
-  (* | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl *)
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
-  (* | `Stree t -> tree_check_gram entry t *)
-  | `Snext | `Sself | `Stoken _ | `Skeyword _ -> ()
+
+  (* | `Snext *) | `Sself | `Stoken _ | `Skeyword _ -> ()
         
 and tree_check_gram entry = function
   | Node {node ; brother; son } -> begin 
@@ -112,7 +109,7 @@ and  using_symbol symbol acc =
   | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
   (* | `Stree t -> using_node   t acc  *)
   | `Skeyword kwd -> kwd :: acc
-  | `Snterm _ | `Snterml _ | `Snext | `Sself | `Stoken _ -> acc 
+  | `Snterm _ | `Snterml _ (* | `Snext *) | `Sself | `Stoken _ -> acc 
 and using_node   node acc =
   match node with 
   | Node {node = s; brother = bro; son = son} ->
@@ -325,7 +322,7 @@ let  eoi_entry e =
           List.map
             (function
               | `Sself -> `Snterm e
-              | `Snext -> assert false
+              (* | `Snext -> assert false *)
               | x  -> x) symbs in
         (symbs @
          [`Stoken

@@ -54,6 +54,7 @@ let rec eq_symbol (s1 : symbol) (s2 : symbol) =
   match (s1, s2) with
   | (`Snterm e1,`Snterm e2) -> e1 == e2
   | (`Snterml (e1,l1),`Snterml (e2,l2)) -> (e1 == e2) && (l1 = l2)
+  | (`Sself,`Sself) -> true
   | (`Slist0 s1,`Slist0 s2)|(`Slist1 s1,`Slist1 s2)|(`Sopt s1,`Sopt s2)
     |(`Speek s1,`Speek s2)|(`Stry s1,`Stry s2) -> eq_symbol s1 s2
   | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))

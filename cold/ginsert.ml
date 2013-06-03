@@ -15,7 +15,7 @@ let rec derive_eps (s : symbol) =
   | `Slist0 _|`Slist0sep (_,_)|`Sopt _|`Speek _ -> true
   | `Stry s -> derive_eps s
   | `Slist1 _|`Slist1sep (_,_)|`Stoken _|`Skeyword _ -> false
-  | `Snterm _|`Snterml (_,_)|`Snext|`Sself -> false
+  | `Snterm _|`Snterml (_,_)|`Sself -> false
 
 let empty_lev lname assoc =
   { assoc; lname; lsuffix = DeadEnd; lprefix = DeadEnd; productions = [] }
@@ -67,7 +67,7 @@ let rec check_gram entry =
   | `Slist0sep (s,t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s,t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s|`Slist1 s|`Sopt s|`Stry s|`Speek s -> check_gram entry s
-  | `Snext|`Sself|`Stoken _|`Skeyword _ -> ()
+  | `Sself|`Stoken _|`Skeyword _ -> ()
 and tree_check_gram entry =
   function
   | Node { node; brother; son } ->
@@ -88,7 +88,7 @@ and using_symbol symbol acc =
   | `Slist0sep (s,t) -> using_symbol t (using_symbol s acc)
   | `Slist1sep (s,t) -> using_symbol t (using_symbol s acc)
   | `Skeyword kwd -> kwd :: acc
-  | `Snterm _|`Snterml _|`Snext|`Sself|`Stoken _ -> acc
+  | `Snterm _|`Snterml _|`Sself|`Stoken _ -> acc
 and using_node node acc =
   match node with
   | Node { node = s; brother = bro; son } ->
@@ -316,11 +316,7 @@ let eoi_entry e =
       List.map
         (fun (symbs,(annot,act))  ->
            let symbs =
-             List.map
-               (function
-                | `Sself -> `Snterm e
-                | `Snext -> assert false
-                | x -> x) symbs in
+             List.map (function | `Sself -> `Snterm e | x -> x) symbs in
            ((symbs @
                [`Stoken
                   (((function | `EOI -> true | _ -> false)),

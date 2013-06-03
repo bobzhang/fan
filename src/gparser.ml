@@ -170,10 +170,6 @@ and parser_of_terminals (terminals: terminal list) strm =
 and parser_of_symbol entry s nlevn =
   let rec aux s = 
     match s with 
-    (* | `Smeta (_, symbls, act) -> *)
-    (*     let act = Obj.magic act entry symbls *)
-    (*     and pl = List.map aux symbls in *)
-    (*     Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl) *)
     | `Slist0 s ->
         let ps = aux s in  Gcomb.slist0 ps ~f:(fun l -> Gaction.mk (List.rev l))
     | `Slist0sep (symb, sep) ->
@@ -189,14 +185,10 @@ and parser_of_symbol entry s nlevn =
     | `Sopt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk
     | `Stry s -> let ps = aux s in Gcomb.tryp ps
     | `Speek s -> let ps = aux s in Gcomb.peek ps
-    (* | `Stree t -> *)
-    (*     let pt = parser_of_tree entry (0, `RA)  (ArgContainer.create ())t (\* FIXME*\) in *)
-    (*     fun strm -> *)
-    (*       let (act,loc) = pt strm in Gaction.getf act loc  *)
     | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
     | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)          
     | `Sself -> fun strm -> entry.estart 0 strm 
-    | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm 
+    (* | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm  *)
     | `Skeyword kwd -> fun strm ->
         (match XStream.peek strm with
         | Some (tok,_) when FToken.match_keyword kwd tok ->

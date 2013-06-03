@@ -45,6 +45,7 @@ let get_terminals x =
      (aux [] x son)
   | _ -> None 
 
+(** a better version is in need *)        
 let eq_Stoken_ids s1 s2 =
   match (s1,s2) with
   | ((`Antiquot,_),_) -> false
@@ -59,6 +60,7 @@ let logically_eq_symbols entry =
     | (`Snterm e1, `Snterm e2) -> e1.ename = e2.ename
     | (`Snterm e1, `Sself) -> e1.ename = entry.ename
     | (`Sself, `Snterm e2) -> entry.ename = e2.ename
+    (* | (`Sself, `Sself) -> true *)
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.ename = e2.ename && l1 = l2
     | (`Slist0 s1, `Slist0 s2) |
       (`Slist1 s1, `Slist1 s2) |
@@ -77,6 +79,7 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
   match (s1, s2) with
   | (`Snterm e1, `Snterm e2) -> e1 == e2
   | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1 == e2 && l1 = l2
+  | (`Sself, `Sself) -> true
   | (`Slist0 s1, `Slist0 s2) |
     (`Slist1 s1, `Slist1 s2) |
     (`Sopt s1, `Sopt s2) |

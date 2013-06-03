@@ -33,8 +33,7 @@ and text =
   [ `Slist of (loc * bool * symbol * symbol option)
   | `Snterm of (loc * name * string option) | `Sopt of (loc * text)
   | `Stry of (loc * text) | `Speek of (loc * text) | `Sself of loc
-  | `Snext of loc | `Skeyword of (loc * string)
-  | `Stok of (loc * exp * attr * string)] 
+  | `Skeyword of (loc * string) | `Stok of (loc * exp * attr * string)] 
 
 type used =  
   | Unused

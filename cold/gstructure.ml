@@ -44,14 +44,14 @@ and level =
   lprefix: tree} 
 and asymbol =
   [ `Snterm of entry | `Snterml of (entry * string) | `Slist0 of symbol
-  | `Slist0sep of (symbol * symbol) | `Slist1 of symbol
-  | `Slist1sep of (symbol * symbol) | `Sopt of symbol | `Stry of symbol
-  | `Speek of symbol | `Sself | `Snext | terminal] 
+  | `Slist1 of symbol | `Sopt of symbol | `Stry of symbol | `Speek of symbol
+  | `Sself | `Slist0sep of (symbol * symbol)
+  | `Slist1sep of (symbol * symbol) | terminal] 
 and symbol =
   [ `Snterm of entry | `Snterml of (entry * string) | `Slist0 of symbol
   | `Slist0sep of (symbol * symbol) | `Slist1 of symbol
   | `Slist1sep of (symbol * symbol) | `Sopt of symbol | `Stry of symbol
-  | `Speek of symbol | `Sself | `Snext | terminal] 
+  | `Speek of symbol | `Sself | terminal] 
 and tree =  
   | Node of node
   | LocAct of anno_action* anno_action list

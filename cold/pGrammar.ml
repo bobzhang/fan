@@ -877,20 +877,6 @@ let _ =
                     | _ ->
                         failwith
                           "mk_symbol ~text:(`Sself _loc) ~styp:(`Self (_loc, \"S\")) ~pattern:None\n"))));
-          ([`Stoken
-              (((function | `Uid "N" -> true | _ -> false)),
-                (`Normal, "`Uid \"N\""))],
-            ("mk_symbol ~text:(`Snext _loc) ~styp:(`Self (_loc, \"N\")) ~pattern:None\n",
-              (Fgram.mk_action
-                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                    match __fan_0 with
-                    | `Uid "N" ->
-                        (mk_symbol ~text:(`Snext _loc)
-                           ~styp:(`Self (_loc, "N")) ~pattern:None : 
-                        'symbol )
-                    | _ ->
-                        failwith
-                          "mk_symbol ~text:(`Snext _loc) ~styp:(`Self (_loc, \"N\")) ~pattern:None\n"))));
           ([`Snterm (Fgram.obj (simple_pat : 'simple_pat Fgram.t ))],
             ("let (p,ls) = Exp.filter_pat_with_captured_variables (p : simple_pat  :>pat) in\nmatch ls with\n| [] -> mk_tok _loc ~pattern:p (`Tok _loc)\n| (x,y)::ys ->\n    let restrict =\n      List.fold_left\n        (fun acc  (x,y)  ->\n           (`App\n              (_loc, (`App (_loc, (`Lid (_loc, \"&&\")), acc)),\n                (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y))) : \n           FAst.exp ))\n        (`App (_loc, (`App (_loc, (`Lid (_loc, \"=\")), x)), y) : FAst.exp ) ys in\n    mk_tok _loc ~restrict ~pattern:p (`Tok _loc)\n",
               (Fgram.mk_action

@@ -36,7 +36,7 @@ let rec decr_keyw_use gram =
       begin decr_keyw_use gram s1; decr_keyw_use gram s2 end
   | `Slist1sep (s1,s2) ->
       begin decr_keyw_use gram s1; decr_keyw_use gram s2 end
-  | `Sself|`Snext|`Snterm _|`Snterml (_,_)|`Stoken _ -> ()
+  | `Sself|`Snterm _|`Snterml (_,_)|`Stoken _ -> ()
 and decr_keyw_use_in_tree gram =
   function
   | DeadEnd |LocAct (_,_) -> ()
