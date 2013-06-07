@@ -31,18 +31,6 @@ let mk_rule ~prod  ~action  = { prod; action }
 
 let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
 
-let string_of_pat pat =
-  let buf = Buffer.create 42 in
-  let _ =
-    try
-      Format.bprintf buf "%a@?"
-        (fun fmt  p  -> AstPrint.pattern fmt (Ast2pt.pat p)) pat
-    with
-    | FLoc.Exc_located (loc,_) ->
-        FLoc.errorf loc "invalid pattern when printing %s"
-          (Objs.dump_pat pat) in
-  let str = Buffer.contents buf in if str = "" then assert false else str
-
 let check_not_tok s =
   match s with
   | { text = `Stok (_loc,_,_);_} ->
@@ -88,16 +76,16 @@ let retype_rule_list_without_patterns _loc rl =
   with | Exit  -> rl
 
 let make_ctyp (styp : styp) tvar =
-  (let rec aux =
-     function
-     | #ident'|`Quote _ as x -> x
-     | `App (_loc,t1,t2) -> `App (_loc, (aux t1), (aux t2))
-     | `Self (_loc,x) ->
+  (let rec aux v =
+     match (v : styp ) with
+     | #vid' as x -> (x : vid'  :>ctyp)
+     | `Quote _ as x -> x
+     | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
+     | `Self _loc ->
          if tvar = ""
          then
            FLoc.raise _loc
-             (XStream.Error
-                ("'" ^ (x ^ "' illegal in anonymous entry level")))
+             (XStream.Error "S: illegal in anonymous entry level")
          else
            (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
      | `Tok _loc ->
@@ -198,10 +186,7 @@ and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (FLoc.name.contents)) in
-   let act =
-     match act with
-     | Some act -> act
-     | None  -> (`Uid (_loc, "()") : FAst.exp ) in
+   let act = Option.default (`Uid (_loc, "()") : FAst.exp ) act in
    let (_,tok_match_pl) =
      List.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
@@ -272,14 +257,6 @@ let text_of_action (_loc : loc) (psl : symbol list)
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
 
-let mk_srule loc (t : string) (tvar : string) (r : rule) =
-  (let sl = List.map (fun s  -> s.text) r.prod in
-   let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-   (sl, ac, (r.action)) : (text list * exp * exp option) )
-
-let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-  List.map (mk_srule loc t tvar) rl
-
 let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
     let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
@@ -333,6 +310,12 @@ let text_of_entry ?(safe= true)  (e : entry) =
        match level.assoc with
        | Some ass -> (`App (_loc, (`Uid (_loc, "Some")), ass) : FAst.exp )
        | None  -> (`Uid (_loc, "None") : FAst.exp ) in
+     let mk_srule loc (t : string) (tvar : string) (r : rule) =
+       (let sl = List.map (fun s  -> s.text) r.prod in
+        let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
+        (sl, ac, (r.action)) : (text list * exp * exp option) ) in
+     let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
+       List.map (mk_srule loc t tvar) rl in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
      let prod = make_exp_rules _loc rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in

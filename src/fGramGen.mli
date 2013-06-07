@@ -20,7 +20,7 @@ val mk_rule :
 val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol
-val string_of_pat : pat -> string
+
 
 (** FIXME why deprecate such syntax
     It makes [OPT STRING] invalid
@@ -52,10 +52,11 @@ val make_ctyp : styp -> string -> ctyp
 val text_of_action :
   loc ->
   symbol list -> ?action:exp -> string   -> string -> exp
-val mk_srules :
-  loc ->
-  string ->
-  rule list -> string -> (text list * exp * exp option) list
+
+(* val mk_srules : *)
+(*   loc -> *)
+(*   string -> *)
+(*   rule list -> string -> (text list * exp * exp option) list *)
 
 (** transform [text] to [exp] which represents [symbol]
    compute the [lhs]

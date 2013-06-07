@@ -6,9 +6,9 @@ type name =  {
   loc: loc} 
 
 type styp =
-  [ ident' | `App of (loc * styp * styp)
-  | `Quote of (loc * position_flag * alident) | `Self of (loc * string)
-  | `Tok of loc | `Type of ctyp] 
+  [ vid' | `App of (loc * styp * styp)
+  | `Quote of (loc * position_flag * alident) | `Self of loc | `Tok of loc
+  | `Type of ctyp] 
 
 type entry =  {
   name: name;

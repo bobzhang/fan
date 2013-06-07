@@ -872,17 +872,16 @@ let _ =
           ([`Stoken
               (((function | `Uid "S" -> true | _ -> false)),
                 (`App ((`Vrn "Uid"), (`Str "S"))))],
-            ("mk_symbol ~text:(`Sself _loc) ~styp:(`Self (_loc, \"S\")) ~pattern:None\n",
+            ("mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Uid "S" ->
-                        (mk_symbol ~text:(`Sself _loc)
-                           ~styp:(`Self (_loc, "S")) ~pattern:None : 
-                        'symbol )
+                        (mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc)
+                           ~pattern:None : 'symbol )
                     | _ ->
                         failwith
-                          "mk_symbol ~text:(`Sself _loc) ~styp:(`Self (_loc, \"S\")) ~pattern:None\n"))));
+                          "mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n"))));
           ([`Snterm (Fgram.obj (simple_pat : 'simple_pat Fgram.t ))],
             ("token_of_simple_pat _loc p\n",
               (Fgram.mk_action

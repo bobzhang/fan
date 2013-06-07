@@ -12,10 +12,11 @@ type name = {(* every entry has a name *)
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)
 type styp =
- [ ident'
+ [ (* ident' *) vid'
  | `App of (loc * styp * styp)
  | `Quote of (loc * position_flag *  alident)
- | `Self of (loc * string)
+ (* | `Self of (loc * string) *)
+ | `Self of loc
  | `Tok of loc
  | `Type of ctyp ]
 
@@ -38,6 +39,7 @@ and rule = {
   prod : symbol list ;
   action : exp option 
 }
+      
 and symbol ={
   text : text;
   styp : styp;

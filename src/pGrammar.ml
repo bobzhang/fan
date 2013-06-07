@@ -264,7 +264,7 @@ FConfig.antiquotations := true;;
       let text = `Speek _loc s.text in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None
   | `Uid "S" ->
-      mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
+      mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None
   | simple_pat{p} ->
       token_of_simple_pat _loc p 
   | `STR (_, s) ->

@@ -32,18 +32,6 @@ let mk_rule ~prod ~action =
 let mk_symbol  ?(pattern=None)  ~text ~styp =
   { text;styp;pattern}
 
-let string_of_pat pat = 
-  let buf = Buffer.create 42 in
-  let  _ =
-    try 
-    Format.bprintf buf "%a@?"
-      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.pat p)) pat
-    with
-      FLoc.Exc_located(loc,_) ->
-        FLoc.errorf loc "invalid pattern when printing %s" (Objs.dump_pat pat)
-  in
-  let str = Buffer.contents buf in
-  if str = "" then assert false else str
 
 let check_not_tok s = 
     match s with
@@ -69,7 +57,7 @@ let retype_rule_list_without_patterns _loc rl =
         (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.string_of_token x); ... *)
       | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
           {prod =
-           [{ (s) with pattern = Some {:pat| x |} }];
+           [{ s with pattern = Some {:pat| x |} }];
            action =
            Some {:exp|$(id:gm()).string_of_token x |}
          }
@@ -87,15 +75,17 @@ let retype_rule_list_without_patterns _loc rl =
 
 
 let make_ctyp (styp:styp) tvar : ctyp = 
-  let rec aux  = with ctyp function  
-    | #ident' | `Quote _ as x -> x  
-    | `App(_loc,t1,t2) -> `App(_loc,aux t1,aux t2)
-    | `Self (_loc, x) ->
+  let rec aux  v = 
+    match (v:styp) with
+    | #vid' as x -> (x : vid' :>ctyp) 
+    | `Quote _ as x -> x
+    | {:ctyp'| $t2 $t1|}-> {:ctyp|$(aux t2) $(aux t1)|}
+    | `Self (_loc) ->
         if tvar = "" then
           FLoc.raise _loc
-            (XStream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
-        else {| '$lid:tvar |}
-    | `Tok _loc -> {| [> FToken.t ] |}  (* BOOTSTRAPPING*)
+            (XStream.Error ("S: illegal in anonymous entry level"))
+        else {:ctyp| '$lid:tvar |}
+    | `Tok _loc -> {:ctyp| [> FToken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t  in aux styp
 
       
@@ -143,14 +133,12 @@ and make_exp_rules (_loc:loc)  (rl : (text list  * exp * exp option) list  ) (tv
         | None -> ""
         |Some e -> Ast2pt.to_string_exp e in
       let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
-      {| ($sl,($str:action_string,$action(* ,$exp *))) |} ) rl)
+      {| ($sl,($str:action_string,$action)) |} ) rl)
   
-let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
+let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
   let locid = {:pat| $(lid:!FLoc.name) |} in 
-  let act =
-    match act with
-    | Some act -> act | None -> {| () |}  in
+  let act = Option.default {|()|} act in
   (* collect the patterns *)
   let (_,tok_match_pl) =
     List.fold_lefti
@@ -192,14 +180,6 @@ let text_of_action (_loc:loc)  (psl:  symbol list) ?action:(act: exp option)
             {| fun $p -> $txt |} )  e psl in
   {| $(id:(gm())).mk_action $txt |}
 
-let mk_srule loc (t : string)  (tvar : string) (r : rule) : (text list  *  exp * exp option) =
-  let sl = List.map (fun s  -> s.text) r.prod in
-  let ac = text_of_action loc r.prod t ?action:r.action tvar in
-  (sl, ac,r.action)
-  
-(* the [rhs] was already computed, the [lhs] was left *)
-let mk_srules loc ( t : string) (rl:rule list ) (tvar:string)  =
-  List.map (mk_srule loc t tvar) rl
     
 
 
@@ -254,10 +234,18 @@ let text_of_entry ?(safe=true) (e:entry) :exp =  with exp
           match level.assoc with
           | Some ass ->   {| Some $ass |}
           | None ->    {|None|}   in
-          let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
-          let prod = make_exp_rules _loc rl e.name.tvar in
-          (* generated code of type [olevel] *)
-          {| ($lab, $ass, $prod) |}) in
+        let mk_srule loc (t : string)  (tvar : string) (r : rule) :
+            (text list  *  exp * exp option) =
+          let sl = List.map (fun s  -> s.text) r.prod in
+          let ac = text_of_action loc r.prod t ?action:r.action tvar in
+          (sl, ac,r.action) in
+        (* the [rhs] was already computed, the [lhs] was left *)
+        let mk_srules loc ( t : string) (rl:rule list ) (tvar:string)  =
+          List.map (mk_srule loc t tvar) rl in
+        let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
+        let prod = make_exp_rules _loc rl e.name.tvar in
+        (* generated code of type [olevel] *)
+        {| ($lab, $ass, $prod) |}) in
     match e.levels with
     |`Single l ->
         if safe then
