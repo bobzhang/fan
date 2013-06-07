@@ -58,7 +58,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
-                 (`Normal, "`Lid _"))],
+                 (`App ((`Vrn "Lid"), `Any)))],
              ("x\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -67,7 +67,7 @@ let _ =
                      | _ -> failwith "x\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`Normal, "`Uid _"))],
+                (`App ((`Vrn "Uid"), `Any)))],
             ("x\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

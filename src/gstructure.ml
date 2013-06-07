@@ -15,7 +15,8 @@ type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a parse
     
 type description = [ `Normal | `Antiquot]
 
-type descr = (description * string) 
+type descr = (* (description * string)  *)
+    FAstN.pat
 type token_pattern = ((FToken.t -> bool) * descr)
 
 type terminal =

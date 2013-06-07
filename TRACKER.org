@@ -340,6 +340,9 @@
     # a.b.c.d;;
     Error: Unbound value a
   #+END_SRC
+  
+* mask rule better error message
+  
 * COMMENT
 ** rules
   {-# RULES

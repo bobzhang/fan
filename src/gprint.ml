@@ -105,12 +105,14 @@ class text_grammar : grammar_print = object(self:'self)
     | `Normal -> ()
     | `Antiquot -> pp f "$"
           
-  method symbol1 f = function
+  method symbol1 f x =
+    match (x:symbol) with 
     | `Snterm e -> pp f "%s" e.ename
     | `Sself -> pp f "%s" "S"
     (* | `Snext -> pp f "%s" "N"  *)
-    | `Stoken (_, (description,content)) ->
-        pp f "%a%s" self#description description content
+    | `Stoken _ (* (_, (\* (description,content) *\)) *) ->
+        (* pp f "%a%s" self#description description content *)
+        pp f "Stoken" (* FIXME *)
     | `Skeyword s -> pp f "%S" s
     | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
       `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Speek _ as s ->

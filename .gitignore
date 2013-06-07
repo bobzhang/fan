@@ -10,8 +10,17 @@
 *.cmxs
 *.cmxa
 *.out
-
+*.txt
+*.plg
+*.stat
 *~
+*_archive
+*.bak*
+*.html
+*.js
+*.css
+temp*
+.nfs*
 \#*\#
 /.emacs.desktop
 /.emacs.desktop.lock
@@ -22,17 +31,12 @@ tramp
 
 # Org-mode
 .org-id-locations
-*_archive
-*.bak*
 _build
 meta_filter
 trash
-.nfs*
+
 TAGS
 scratch.ml
-*.html
-*.js
-*.css
 report
 astdefs
 .syntax_lib_file_cache
@@ -49,7 +53,7 @@ poly/
 op4/
 *.dot
 debug/
-temp*
+
 olvm
 *.s
 *.ll
@@ -58,9 +62,7 @@ os
 top/
 src/test.ml
 src.stat
-*.txt
-*.plg
-*.stat
+
 src/A.ml
 src/Ast.ml
 src/S.ml

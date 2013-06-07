@@ -326,7 +326,9 @@ let  eoi_entry e =
         (symbs @
          [`Stoken
             ((function | `EOI -> true | _ -> false),
-             (`Normal, "`EOI"))],
+             (* (`Normal, "`EOI") *)
+             (`Vrn "EOI")
+            )],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in
   let result = {e with estart = fun _ -> assert false ;
@@ -343,3 +345,4 @@ let  eoi_entry e =
 (* let eoi (e:entry) : entry = *)
     
 
+(* {:extend| a: [b ; `EOI ]|} *)

@@ -176,6 +176,5 @@ val mk_slist :
 val text_of_functorial_extend :  ?safe:bool ->
   loc ->vid option  -> entry list -> exp
 
-(** generate Stok *)  
-val mk_tok :  loc ->  ?restrict:exp ->  pattern:pat -> styp -> symbol
-
+(** generate Stoken *)  
+val token_of_simple_pat : loc ->simple_pat  -> symbol

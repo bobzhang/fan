@@ -10,8 +10,6 @@ type styp =
   | `Quote of (loc * position_flag * alident) | `Self of (loc * string)
   | `Tok of loc | `Type of ctyp] 
 
-type attr = string 
-
 type entry =  {
   name: name;
   pos: exp option;
@@ -33,7 +31,7 @@ and text =
   [ `Slist of (loc * bool * symbol * symbol option)
   | `Snterm of (loc * name * string option) | `Sopt of (loc * text)
   | `Stry of (loc * text) | `Speek of (loc * text) | `Sself of loc
-  | `Skeyword of (loc * string) | `Stok of (loc * exp * attr * string)] 
+  | `Skeyword of (loc * string) | `Stok of (loc * exp * FAstN.pat)] 
 
 type used =  
   | Unused

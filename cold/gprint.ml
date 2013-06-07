@@ -94,12 +94,11 @@ class text_grammar : grammar_print =
       | `Snterml (e,l) -> pp f "%s Level %S" e.ename l
       | `Snterm _|`Sself|`Stoken _|`Skeyword _ as s -> self#symbol1 f s
     method description f = function | `Normal -> () | `Antiquot -> pp f "$"
-    method symbol1 f =
-      function
+    method symbol1 f x =
+      match (x : symbol ) with
       | `Snterm e -> pp f "%s" e.ename
       | `Sself -> pp f "%s" "S"
-      | `Stoken (_,(description,content)) ->
-          pp f "%a%s" self#description description content
+      | `Stoken _ -> pp f "Stoken"
       | `Skeyword s -> pp f "%S" s
       | `Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|`Slist1sep (_,_)
         |`Sopt _|`Stry _|`Speek _ as s -> pp f "(%a)" self#symbol s

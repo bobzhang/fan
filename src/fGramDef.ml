@@ -18,9 +18,7 @@ type styp =
  | `Self of (loc * string)
  | `Tok of loc
  | `Type of ctyp ]
-(* Normal, Antiquot, etc. translated to
-   `Normal `Antiquot *)
-type attr = string
+
 type entry   = {
   name : name ;
   (*position expession node *)    
@@ -55,7 +53,7 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * attr * string)
+ | `Stok of (loc * exp * FAstN.pat )
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for

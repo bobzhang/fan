@@ -44,7 +44,7 @@ let rec parser_of_tree entry (lev,assoc)
     | Node ({ node; son; brother } as y) ->
         (match Gtools.get_terminals y with
          | None  ->
-             let ps = parser_of_symbol entry node lev in
+             let ps = parser_of_symbol entry node in
              (fun strm  ->
                 let bp = Gtools.get_cur_loc strm in
                 (try
@@ -130,7 +130,7 @@ and parser_of_terminals (terminals : terminal list) strm =
      with | Invalid_argument _ -> raise XStream.Failure);
     XStream.njunk n strm; acc.contents
   end
-and parser_of_symbol entry s nlevn =
+and parser_of_symbol entry s =
   let rec aux s =
     match s with
     | `Slist0 s ->

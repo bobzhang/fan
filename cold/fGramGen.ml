@@ -45,7 +45,7 @@ let string_of_pat pat =
 
 let check_not_tok s =
   match s with
-  | { text = `Stok (_loc,_,_,_);_} ->
+  | { text = `Stok (_loc,_,_);_} ->
       FLoc.raise _loc
         (XStream.Error
            ("Deprecated syntax, use a sub rule. " ^
@@ -111,7 +111,7 @@ let make_ctyp (styp : styp) tvar =
    aux styp : ctyp )
 
 let rec make_exp (tvar : string) (x : text) =
-  let rec aux tvar x =
+  let rec aux tvar (x : text) =
     match x with
     | `Slist (_loc,min,t,ts) ->
         let txt = aux "" t.text in
@@ -164,19 +164,18 @@ let rec make_exp (tvar : string) (x : text) =
         (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
     | `Speek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Stok (_loc,match_fun,attr,descr) ->
+    | `Stok (_loc,match_fun,descr) ->
+        let v =
+          object 
+            inherit  FanAstN.meta
+            method! ant _loc _ =
+              (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, "x"))) : 
+              FAst.ep )
+          end in
+        let mdescr = (v#pat _loc descr :>exp) in
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
-             (`Par
-                (_loc,
-                  (`Com
-                     (_loc, match_fun,
-                       (`Par
-                          (_loc,
-                            (`Com
-                               (_loc, (`Vrn (_loc, attr)),
-                                 (`Str (_loc, (String.escaped descr)))))))))))) : 
-        FAst.exp ) in
+             (`Par (_loc, (`Com (_loc, match_fun, mdescr))))) : FAst.exp ) in
   aux tvar x
 and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
   (tvar : string) =
@@ -425,10 +424,12 @@ let text_of_functorial_extend ?safe  _loc gram el =
       (fun { name; local;_}  -> if local then Some name else None) el in
   let_in_of_extend _loc gram locals args
 
-let mk_tok _loc ?restrict  ~pattern  styp =
-  match restrict with
-  | None  ->
-      let no_variable = Objs.wildcarder#pat pattern in
+let token_of_simple_pat _loc (p : simple_pat) =
+  let p_pat = (p : simple_pat  :>pat) in
+  let (po,ls) = Exp.filter_pat_with_captured_variables p_pat in
+  match ls with
+  | [] ->
+      let no_variable = Objs.wildcarder#pat p_pat in
       let match_fun =
         if is_irrefut_pat no_variable
         then
@@ -441,18 +442,25 @@ let mk_tok _loc ?restrict  ~pattern  styp =
                   (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true")))),
                     (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
           FAst.exp ) in
-      let descr = string_of_pat no_variable in
-      let text = `Stok (_loc, match_fun, "Normal", descr) in
-      { text; styp; pattern = (Some pattern) }
-  | Some restrict ->
-      let p' = Objs.wildcarder#pat pattern in
+      let descr = Objs.strip_pat no_variable in
+      let text = `Stok (_loc, match_fun, descr) in
+      { text; styp = (`Tok _loc); pattern = (Some p_pat) }
+  | (x,y)::ys ->
+      let guard =
+        List.fold_left
+          (fun acc  (x,y)  ->
+             (`App
+                (_loc, (`App (_loc, (`Lid (_loc, "&&")), acc)),
+                  (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y))) : 
+             FAst.exp ))
+          (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y) : FAst.exp )
+          ys in
       let match_fun: FAst.exp =
         `Fun
           (_loc,
             (`Bar
-               (_loc,
-                 (`CaseWhen (_loc, pattern, restrict, (`Lid (_loc, "true")))),
+               (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                  (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-      let descr = string_of_pat pattern in
-      let text = `Stok (_loc, match_fun, "Antiquot", descr) in
-      { text; styp; pattern = (Some p') }
+      let descr = Objs.strip_pat (Objs.wildcarder#pat po) in
+      let text = `Stok (_loc, match_fun, descr) in
+      { text; styp = (`Tok _loc); pattern = (Some (Objs.wildcarder#pat po)) }

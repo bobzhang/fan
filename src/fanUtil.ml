@@ -13,6 +13,7 @@ type anti_cxt = {
     content:string;
   } with ("Print")
 
+let dummy = {cxt="";sep=None;decorations="";content=""}
     
 let mk_anti ?(c="") ?sep loc n s =
   let c = {

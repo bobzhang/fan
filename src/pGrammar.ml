@@ -265,17 +265,8 @@ FConfig.antiquotations := true;;
       mk_symbol ~text ~styp:(s.styp) ~pattern:None
   | `Uid "S" ->
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc "S") ~pattern:None
-  | simple_pat{p} -> 
-      let (p,ls) =
-        Exp.filter_pat_with_captured_variables
-          (p : simple_pat :>pat) in
-      (match ls with
-      | [] -> mk_tok _loc ~pattern:p (`Tok _loc)
-      | (x,y)::ys ->
-        let restrict =
-          List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
-            {:exp| $x = $y |} ys  in  (* FIXME *)
-        mk_tok _loc ~restrict ~pattern:p (`Tok _loc) )
+  | simple_pat{p} ->
+      token_of_simple_pat _loc p 
   | `STR (_, s) ->
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
   | name{n};  OPT level_str{lev} ->

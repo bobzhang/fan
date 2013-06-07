@@ -35,8 +35,9 @@ module Action :
 
 type description = [ `Antiquot | `Normal ]
 
-type descr = description * string
-
+(* type descr = description * string *)
+type descr = FAstN.pat
+      
 type token_pattern = (FToken.t -> bool) * descr
 
 type entry = Gstructure.entry 

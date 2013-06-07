@@ -6,14 +6,12 @@ open Format
 
 let pp = fprintf
 
-let name_of_descr = function | (`Antiquot,s) -> "$" ^ s | (_,s) -> s
-
 let name_of_symbol entry =
   (function
    | `Snterm e -> "[" ^ (e.ename ^ "]")
    | `Snterml (e,l) -> "[" ^ (e.ename ^ (" level " ^ (l ^ "]")))
    | `Sself -> "[" ^ (entry.ename ^ "]")
-   | `Stoken (_,descr) -> name_of_descr descr
+   | `Stoken (_,descr) -> "Stoken"
    | `Skeyword kwd -> "\"" ^ (kwd ^ "\"")
    | _ -> "???" : [> symbol] -> string )
 
@@ -111,7 +109,7 @@ and name_of_tree_failed entry x =
              (fun s  tok  ->
                 (if s = "" then "" else s ^ " then ") ^
                   (match tok with
-                   | `Stoken (_,descr) -> name_of_descr descr
+                   | `Stoken (_,descr) -> "Stoken"
                    | `Skeyword kwd -> kwd)) "" tokl)
   | DeadEnd |LocAct (_,_) -> "???"
 

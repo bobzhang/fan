@@ -55,7 +55,7 @@ let eq_Stoken_ids s1 s2 =
 (* used in [Delete], the delete API may be deprecated in the future
  *)        
 let logically_eq_symbols entry =
-  let rec eq_symbol s1 s2 =
+  let rec eq_symbol (s1:symbol) (s2:symbol) =
     match (s1, s2) with
     | (`Snterm e1, `Snterm e2) -> e1.ename = e2.ename
     | (`Snterm e1, `Sself) -> e1.ename = entry.ename
@@ -70,7 +70,9 @@ let logically_eq_symbols entry =
     | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
       (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2
+    (* | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2 *)
+    | (`Stoken (_,s1),`Stoken (_,s2)) ->
+        s1 = s2 
     | _ -> s1 = s2 
   in eq_symbol
 
@@ -88,7 +90,11 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
   | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
     (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
-  | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2
+  (* | (`Stoken (_, s1), `Stoken (_, s2)) -> *)
+  (*     eq_Stoken_ids s1 s2 *)
+  | (`Stoken (_,s1), `Stoken (_,s2)) ->
+      let eq_pat  x y = x =y in
+      eq_pat s1 s2 
   | _ -> s1 = s2
       
 

@@ -15,7 +15,7 @@ val parser_of_terminals:
     terminal list -> (Gaction.t * FLoc.t) list  parse
 
 val parser_of_symbol:
-    entry ->  symbol -> int  -> (Gaction.t * FLoc.t) parse
+    entry ->  symbol -> (Gaction.t * FLoc.t) parse
     
 
 val start_parser_of_levels: entry -> level list -> int -> Gaction.t parse 

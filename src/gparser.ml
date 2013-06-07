@@ -86,7 +86,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
         match Gtools.get_terminals  y with
         | None ->
             (* [paser_of_symbol] given a stream should always return a value  *) 
-            (let ps = parser_of_symbol entry node  lev  in fun strm ->
+            (let ps = parser_of_symbol entry node  in fun strm ->
               let bp = Gtools.get_cur_loc strm in
               let try a = ps strm in
               begin
@@ -167,7 +167,7 @@ and parser_of_terminals (terminals: terminal list) strm =
     !acc
   end          
 (* only for [Smeta] it might not be functional *)
-and parser_of_symbol entry s nlevn =
+and parser_of_symbol entry s (* _nlevn *) =
   let rec aux s = 
     match s with 
     | `Slist0 s ->

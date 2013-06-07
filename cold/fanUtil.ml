@@ -14,6 +14,8 @@ let pp_print_anti_cxt: Format.formatter -> anti_cxt -> unit =
       pp_print_string _a0 (pp_print_option pp_print_string) _a1
       pp_print_string _a2 pp_print_string _a3
 
+let dummy = { cxt = ""; sep = None; decorations = ""; content = "" }
+
 let mk_anti ?(c= "")  ?sep  loc n s =
   let c = { cxt = c; decorations = n; content = s; sep } in `Ant (loc, c)
 

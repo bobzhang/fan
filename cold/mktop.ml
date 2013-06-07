@@ -236,7 +236,7 @@ open CodeTemplate
 
 open FLexGen
 
-let m = new FanAstN.meta
+let m = FanAstN.m
 
 let efilter str e =
   let e = exp_filter_n e in

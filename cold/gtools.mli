@@ -16,7 +16,7 @@ val is_level_labelled:  string -> level -> bool
     
 val get_terminals: node ->  (terminal list * terminal * tree) option
       
-val eq_Stoken_ids: descr -> descr -> bool
+(* val eq_Stoken_ids: descr -> descr -> bool *)
         
 val logically_eq_symbols: entry -> symbol -> symbol -> bool
 

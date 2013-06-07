@@ -35,7 +35,7 @@ let apply () =
         (None, None,
           [([`Stoken
                (((function | `Uid _ -> true | _ -> false)),
-                 (`Normal, "`Uid _"))],
+                 (`App ((`Vrn "Uid"), `Any)))],
              ("n\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -83,7 +83,7 @@ let apply () =
           [([`Skeyword "!";
             `Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`Normal, "`Uid _"))],
+                (`App ((`Vrn "Uid"), `Any)))],
              ("Ref.protect FStreamGen.grammar_module_name n\n  (fun _  -> FStreamGen.empty _loc)\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
@@ -97,7 +97,7 @@ let apply () =
           ([`Skeyword "!";
            `Stoken
              (((function | `Uid _ -> true | _ -> false)),
-               (`Normal, "`Uid _"));
+               (`App ((`Vrn "Uid"), `Any)));
            `Snterm
              (Fgram.obj
                 (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],

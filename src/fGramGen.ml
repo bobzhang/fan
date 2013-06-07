@@ -47,7 +47,7 @@ let string_of_pat pat =
 
 let check_not_tok s = 
     match s with
-    | {text = `Stok (_loc, _, _, _) ;_} ->
+    | {text = `Stok (_loc,  _, _) ;_} ->
         FLoc.raise _loc (XStream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
@@ -102,7 +102,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
 
 let rec make_exp (tvar : string) (x:text) =
   with exp
-  let rec aux tvar x =
+  let rec aux tvar (x:text) =
     match x with
     | `Slist (_loc, min, t, ts) ->
         let txt = aux "" t.text in
@@ -124,8 +124,14 @@ let rec make_exp (tvar : string) (x:text) =
     | `Sopt (_loc, t) -> {| `Sopt $(aux "" t) |}
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
-    | `Stok (_loc, match_fun, attr, descr) ->
-      {| `Stoken ($match_fun, ($vrn:attr, $`str:descr)) |}  in aux  tvar x
+    | `Stok (_loc, match_fun,  descr) ->
+        let v = object
+          inherit FanAstN.meta
+          method! ant _loc _ = {:ep| `Str x |}
+        end in 
+        let mdescr = (v#pat _loc descr :> exp) in (* FIXME [_loc] is not necessary?*)
+        {|`Stoken ($match_fun, $mdescr)|}
+  in aux  tvar x
 
 
 and make_exp_rules (_loc:loc)  (rl : (text list  * exp * exp option) list  ) (tvar:string) =
@@ -301,31 +307,31 @@ let text_of_functorial_extend ?safe _loc   gram  el =
     match el with
     | [] -> {:exp| () |}
     | _ -> seq_sem el    in
-  (* let_in_of_extend _loc gram locals  args *)
   let locals  = (** FIXME the order matters here, check duplication later!!! *)
     List.filter_map (fun {name;local;_} -> if local then Some name else None ) el in
   let_in_of_extend _loc gram locals args 
 
 
-
-let mk_tok _loc ?restrict ~pattern styp = with exp
- match restrict with
- | None ->
-   let no_variable = Objs.wildcarder#pat pattern in
-   let match_fun =
-     if is_irrefut_pat no_variable
-     then 
-       {| function | $no_variable -> true  |}
-     else {| function | $no_variable -> true | _ -> false  |} in 
-   let descr = string_of_pat no_variable in
-   let text = `Stok (_loc, match_fun, "Normal", descr) in
-   {text; styp; pattern = Some pattern }
-     
- | Some restrict ->
-     let p'= Objs.wildcarder#pat pattern in
-     let match_fun = 
-       {| function | $pattern when $restrict -> true | _ -> false  |}  in
-     let descr = string_of_pat pattern in
-     let text = `Stok (_loc, match_fun, "Antiquot", descr) in
-     {text; styp; pattern = Some p'} 
-   
+let token_of_simple_pat _loc (p:simple_pat)  =
+  let p_pat = (p:simple_pat :> pat) in 
+  let (po,ls) = Exp.filter_pat_with_captured_variables p_pat in
+  match ls with
+  | [] ->
+      let no_variable = Objs.wildcarder#pat p_pat in (*po is the same as [p_pat]*)
+      let match_fun =
+        if is_irrefut_pat no_variable then
+          {:exp|function | $no_variable -> true |}
+        else
+          {:exp|function | $no_variable -> true | _ -> false  |} in
+      let descr = Objs.strip_pat no_variable in
+      let text = `Stok(_loc,match_fun,descr) in
+      {text;styp=`Tok _loc;pattern = Some p_pat}
+  | (x,y)::ys ->
+      let guard =
+          List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
+            {:exp| $x = $y |} ys  in
+      let match_fun = {:exp| function |$po when $guard -> true | _ -> false |} in
+      let descr = Objs.strip_pat (Objs.wildcarder#pat po) in
+      let text = `Stok(_loc,match_fun,descr) in
+      {text;styp = `Tok _loc;pattern= Some (Objs.wildcarder#pat po) }
+        

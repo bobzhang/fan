@@ -30,7 +30,7 @@ let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never use
     | [symb; sep] -> Gentry.symb_failed_txt entry sep symb
     | _ -> assert false  in
   let parse_top =  function
-    | [symb; _] -> Gentry.parser_of_symbol entry symb 0 (* FIXME context *)
+    | [symb; _] -> Gentry.parser_of_symbol entry symb  (* FIXME context *)
     | _ -> raise XStream.Failure  in
   let rec kont accu = parser
     |  () = psep;

@@ -42,7 +42,7 @@ let sfold1sep f e entry symbl psymb psep =
     | _ -> assert false in
   let parse_top =
     function
-    | symb::_::[] -> Gentry.parser_of_symbol entry symb 0
+    | symb::_::[] -> Gentry.parser_of_symbol entry symb
     | _ -> raise XStream.Failure in
   let rec kont accu (__strm : _ XStream.t) =
     match try Some (psep __strm) with | XStream.Failure  -> None with
