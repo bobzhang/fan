@@ -167,7 +167,7 @@ and parser_of_terminals (terminals: terminal list) strm =
     !acc
   end          
 (* only for [Smeta] it might not be functional *)
-and parser_of_symbol entry s (* _nlevn *) =
+and parser_of_symbol entry s  =
   let rec aux s = 
     match s with 
     | `Slist0 s ->

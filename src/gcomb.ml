@@ -32,8 +32,8 @@ let slist1sep ~err ~f s sep =
             raise (XStream.Error (err v (* Gfailed.symb_failed entry v sep symb *))) );
       's  ->kont (a :: al) s
     |  -> al  in
-  parser | a = s ; 's  ->
-    f (kont [a] s)
+  parser
+    | a = s ; 's  -> f (kont [a] s)
     (* Action.mk (List.rev (kont [a] s)) *)
 
 

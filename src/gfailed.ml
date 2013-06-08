@@ -9,10 +9,6 @@ open Format
 let pp = fprintf 
 
   
-(* let name_of_descr = function *)
-(*   |(`Antiquot,s) -> "$"^s *)
-(*   |(_,s) -> s  *)
-  
 let  name_of_symbol entry : [> symbol] -> string  =  function
   | `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
@@ -92,11 +88,6 @@ let tree_in_entry prev_symb tree = function
             | Some symb -> Some (`Speek symb)
             | None -> None
             end
-        (* | `Stree t -> *)
-        (*     begin match search_tree t with *)
-        (*     | Some t -> Some (`Stree t) *)
-        (*     | None -> None *)
-        (*     end *)
         | _ -> None  in
       (try List.find_map search_level  levels with Not_found -> tree)
   | Dparser _ -> tree 
