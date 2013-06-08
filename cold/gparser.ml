@@ -73,7 +73,7 @@ let rec parser_of_tree entry (lev,assoc)
                  with
                  | XStream.Failure  -> (fun ()  -> from_tree brother strm))
                   ())
-         | Some (tokl,_node,son) ->
+         | Some (tokl,node,son) ->
              (fun strm  ->
                 (try
                    let args = List.rev (parser_of_terminals tokl strm) in
@@ -90,7 +90,11 @@ let rec parser_of_tree entry (lev,assoc)
                                 ignore (ArgContainer.pop q)
                               done;
                               (match e with
-                               | XStream.Failure  -> raise (XStream.Error "")
+                               | XStream.Failure  ->
+                                   raise
+                                     (XStream.Error
+                                        (Gfailed.tree_failed entry e
+                                           (node :>symbol) son))
                                | _ -> raise e)
                             end)
                      end

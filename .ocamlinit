@@ -6,7 +6,11 @@
 open Format;;
 
 
-let paths = ["+compiler-libs"; "_build"; "_build/src" ];;
+let paths =
+  ["+compiler-libs";
+   "_build";
+   "_build/cold";
+   (* "_build/src" *) ];;
 List.iter Topdirs.dir_directory paths;;
 #use "common.init";;
 

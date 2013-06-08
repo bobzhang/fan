@@ -9,12 +9,13 @@ let slist0 ~f ps  =
   parser
     |  a = loop []  -> f a 
 
-let slist1 ~f ps =
-  let rec loop al = parser
-    | a = ps; 's  -> loop (a::al) s
-    | -> al  in
-  parser
-    | a = ps; 's -> f (loop [a] s)
+let slist1 ~f  ps =
+  let rec loop al (s : _ XStream.t) =
+    match try Some (ps s) with  XStream.Failure  -> None with
+    | Some a -> loop (a :: al) s
+    | _ -> al in
+  fun (s : _ XStream.t)  ->
+    let a = ps s in f (loop [a] s)
     
 let slist0sep ~err ~f s sep  =
   let rec kont al = parser

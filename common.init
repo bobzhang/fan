@@ -2,16 +2,7 @@
 
 #load "fanTop.cma";;
 #directory "+compiler-libs";;
-(* #load_rec "FanLoc.cmo";; *)
-(* #load_rec "FanBasic.cmo";; *)
-(* #load_rec "Query.cmo";; *)
-
-(* #load_rec "FanLexUtil.cmo";; *)
-
-(* #load_rec "OAstPrint.cmo";; *)
-(* consult Topdirs for more utlities *)
 let fmt = std_formatter
-(* let _ = Clflags.noprompt := true;; *)
 let _loc = FLoc.ghost;;
 
 let (|-) f g x = g (f x );;
@@ -39,29 +30,13 @@ open LibUtil;;
 
 
 open FanUtil;;
-(* open Stream;; *)
-(* open Grammar;; *)
-open Gstructure;;
-(* open OAstPrint;; *)
-(* Toploop.print_out_value := loose#out_value;; *)
-(* Toploop.print_out_type := loose#out_type;; *)
 
-(* Toploop.print_out_class_type := loose#class_type;; *)
-(* Toploop.print_out_module_type := loose#module_type;; *)
-(* Toploop.print_out_sig_item := loose#sig_item;; *)
-(* Toploop.print_out_signature := loose#signature;; *)
-(* Toploop.print_out_phrase := loose#phrase;; *)
+open Gstructure;;
+
 let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
 
-
-
-
-(* #useo "./test/test_fan.ml";; *)
-(* #load_rec "FanTop.cma";; *)
 open Fsyntax;;
 let t e s = Fgram.parse_string e  s;;
-(* module L = Lib;; *)
-(* open L.Meta;; *)
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 end;;
@@ -69,16 +44,9 @@ end;;
 let print_tree f x  = pp f "@[%a@]@." Gprint.dump#tree x ;; 
 let p_type_declaration  =  AstPrint.default#type_declaration;;
 
-(* AstQuotation.default:="expr";; *)
 
 let env = !Toploop.toplevel_env;;
-(* open ParserLex;; *)
 
-(* AstQuotation.set_default "str";; *)
-(* #load "Utf8.cmo";; *)
-(* #load "Utf16.cmo";; *)
-
-(* #load_rec "Ulexing.cma";; *)
 module O = Obj;;
 open FAst;;
 open Exp;;

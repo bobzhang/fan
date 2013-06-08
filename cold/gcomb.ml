@@ -8,11 +8,11 @@ let slist0 ~f  ps =
   fun (__strm : _ XStream.t)  -> let a = loop [] __strm in f a
 
 let slist1 ~f  ps =
-  let rec loop al (__strm : _ XStream.t) =
-    match try Some (ps __strm) with | XStream.Failure  -> None with
-    | Some a -> loop (a :: al) __strm
+  let rec loop al (s : _ XStream.t) =
+    match try Some (ps s) with | XStream.Failure  -> None with
+    | Some a -> loop (a :: al) s
     | _ -> al in
-  fun (__strm : _ XStream.t)  -> let a = ps __strm in f (loop [a] __strm)
+  fun (s : _ XStream.t)  -> let a = ps s in f (loop [a] s)
 
 let slist0sep ~err  ~f  s sep =
   let rec kont al (__strm : _ XStream.t) =
