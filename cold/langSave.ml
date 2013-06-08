@@ -71,7 +71,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Lid"), `Any)))],
+                 (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
              ("x\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

@@ -8,7 +8,7 @@ let _ =
       (None, None,
         [([`Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
            ("let (keep,cf) = let open FState in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 =\n    begin FState.reset (); Fgram.parse_include_file Fsyntax.strus s end in\n  let _ = begin keep := fan_keep__0; cf := fan_cf__1 end in fan_res__2\nwith\n| fan_e__3 ->\n    begin begin keep := fan_keep__0; cf := fan_cf__1 end; raise fan_e__3 end\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

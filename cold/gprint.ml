@@ -30,34 +30,6 @@ and print_sons (start : string) (decomp : 'a -> (string * 'a list))
       pp f "%s%a@\n%s%a" start (print_node decomp (pref ^ "| ")) s pref
         (print_sons "|-" decomp pref) sons
 
-let pp_list ?sep  ?first  ?last  fu f xs =
-  let first = Option.default ("" : space_formatter ) first in
-  let last = Option.default ("" : space_formatter ) last in
-  let sep = Option.default ("@ " : space_formatter ) sep in
-  let aux f =
-    function
-    | [] -> ()
-    | x::[] -> fu f x
-    | xs ->
-        let rec loop f =
-          function
-          | x::[] -> fu f x
-          | x::xs -> pp f "%a%(%)%a" fu x sep loop xs
-          | _ -> assert false in
-        pp f "%(%)%a%(%)" first loop xs last in
-  aux f xs
-
-let pp_option:
-  ?first:space_formatter ->
-    ?last:space_formatter ->
-      (Format.formatter -> 'a -> unit) ->
-        Format.formatter -> 'a option -> unit
-  =
-  fun ?first  ?last  fu  f  a  ->
-    let first = match first with | Some x -> x | None  -> ""
-    and last = match last with | Some x -> x | None  -> "" in
-    match a with | None  -> () | Some x -> pp f "%(%)%a%(%)" first fu x last
-
 let pp_assoc f =
   function | `LA -> pp f "LA" | `RA -> pp f "RA" | `NA -> pp f "NA"
 
@@ -98,7 +70,7 @@ class text_grammar : grammar_print =
       match (x : symbol ) with
       | `Snterm e -> pp f "%s" e.ename
       | `Sself -> pp f "%s" "S"
-      | `Stoken _ -> pp f "Stoken"
+      | `Stoken (_,_,descr) -> pp f "%s" descr
       | `Skeyword s -> pp f "%S" s
       | `Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|`Slist1sep (_,_)
         |`Sopt _|`Stry _|`Speek _ as s -> pp f "(%a)" self#symbol s

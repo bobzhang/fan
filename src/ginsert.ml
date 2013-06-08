@@ -326,7 +326,7 @@ let  eoi_entry e =
          [`Stoken
             ((function | `EOI -> true | _ -> false),
              (* (`Normal, "`EOI") *)
-             (`Vrn "EOI")
+             (`Vrn "EOI"), "`EOI"
             )],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in
@@ -340,6 +340,9 @@ let  eoi_entry e =
        result)
   | Dparser _ -> failwith "Ginsert.eoi_entry Dparser")
 
+(**
+   {:extend|g:[g{x};`EOI -> x]|}
+ *)
     
 (* let eoi (e:entry) : entry = *)
     

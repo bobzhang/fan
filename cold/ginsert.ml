@@ -319,8 +319,8 @@ let eoi_entry e =
              List.map (function | `Sself -> `Snterm e | x -> x) symbs in
            ((symbs @
                [`Stoken
-                  (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"))]),
-             (annot, (Gaction.mk (fun _  -> act))))) prods in
+                  (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"),
+                    "`EOI")]), (annot, (Gaction.mk (fun _  -> act))))) prods in
     refresh_level ~f:aux l in
   let result =
     {

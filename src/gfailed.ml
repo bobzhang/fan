@@ -17,8 +17,10 @@ let  name_of_symbol entry : [> symbol] -> string  =  function
   | `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | `Sself  -> "[" ^ entry.ename ^ "]"
-  | `Stoken (_, descr) -> (* FIXME error message important *)
-      (* name_of_descr descr *) "Stoken" 
+  | `Stoken (_, _,descr) ->
+      (* FGramDef.string_of_simple_pat descr *)
+(* (\* FIXME error message important *\) *)
+      (* name_of_descr descr *) descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
 
@@ -132,7 +134,7 @@ and name_of_tree_failed entry x =
               ((if s = "" then "" else s ^ " then ") ^
                (match tok with
                  (* FIXME important *)(* name_of_descr descr *)
-               | `Stoken (_, descr) ->  "Stoken" 
+               | `Stoken (_, _,descr) ->  descr
                | `Skeyword kwd -> kwd))) "" tokl 
       end
   | DeadEnd | LocAct (_, _) -> "???" 

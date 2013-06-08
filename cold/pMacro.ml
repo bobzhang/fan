@@ -83,7 +83,7 @@ let apply () =
              ([`Skeyword "INCLUDE";
               `Stoken
                 (((function | `STR (_,_) -> true | _ -> false)),
-                  (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                  (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
                ("Lazy (lazy (Fgram.parse_include_file strus fname))\n",
                  (Fgram.mk_action
                     (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
@@ -215,7 +215,7 @@ let apply () =
            (None, None,
              [([`Stoken
                   (((function | `Lid _ -> true | _ -> false)),
-                    (`App ((`Vrn "Lid"), `Any)))],
+                    (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
                 ("x\n",
                   (Fgram.mk_action
                      (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -248,7 +248,7 @@ let apply () =
              ([`Skeyword "DEFINE";
               `Stoken
                 (((function | `Lid _ -> true | _ -> false)),
-                  (`App ((`Vrn "Lid"), `Any)));
+                  (`App ((`Vrn "Lid"), `Any)), "`Lid _");
               `Skeyword "=";
               `Sself;
               `Skeyword "IN";
@@ -296,7 +296,7 @@ let apply () =
            (None, None,
              [([`Stoken
                   (((function | `Uid _ -> true | _ -> false)),
-                    (`App ((`Vrn "Uid"), `Any)))],
+                    (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
                 ("i\n",
                   (Fgram.mk_action
                      (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

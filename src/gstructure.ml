@@ -15,9 +15,29 @@ type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a parse
     
 type description = [ `Normal | `Antiquot]
 
+
+(* open FAst *)
+
+(** Duplication with fGramDef *)  
+(* type lident = *)
+(*     [ `Lid of (loc * string )] *)
+(* and simple_pat = *)
+(*   [ *)
+(*    `Vrn of (loc * string) *)
+(*   |`App of (loc * simple_pat * simple_pat ) *)
+(*   | vid (\* contains ant *\) *)
+(*   |`Com of (loc * simple_pat * simple_pat) *)
+(*   |`Alias of (loc * simple_pat * alident) *)
+(*   |`Bar of (loc * simple_pat * simple_pat) *)
+(*   |`Str of (loc * string) *)
+(*   |`Any of loc] (\* with ("Print" ) *\) *)
+  
 type descr = (* (description * string)  *)
     FAstN.pat
-type token_pattern = ((FToken.t -> bool) * descr)
+    (* (FAstN.pat * string) *)
+      
+      (* ATTENTION: the type system can not guarantee it would compile *)
+type token_pattern = ((FToken.t -> bool) * descr * string)
 
 type terminal =
     [ `Skeyword of string
@@ -111,5 +131,5 @@ type single_extend_statement =  (position option  * olevel)
 type delete_statment = symbol list 
 
 
-type space_formatter =  (unit, Format.formatter, unit )format 
+
   

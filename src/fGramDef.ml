@@ -1,6 +1,49 @@
 open FAst
+open LibUtil
 (* open StdFan *)
 (* {:fans| keep on;  derive (MetaObj);|};; *)
+
+let pp_print_loc _f _loc  = ()
+(* open StdFan (\* FIXME later *\) *)
+;;
+{:import|
+StdFan:
+  pp_print_string;
+Objs:
+  pp_print_vid'
+  pp_print_vid
+  pp_print_alident
+  pp_print_ant;
+|};;  
+
+class mapbase = object
+  method loc (x:loc) =  x
+  method string (x:string) = x
+  method ant (x:ant) = x
+end
+
+type lident =
+  [ `Lid of (loc * string) ]  
+and simple_pat =
+  [
+   `Vrn of (loc * string)
+  |`App of (loc * simple_pat * simple_pat )
+  |`Lid of (loc * string)
+  | ant 
+  |`Com of (loc * simple_pat * simple_pat)
+  |`Alias of (loc * simple_pat * lident)
+  |`Bar of (loc * simple_pat * simple_pat)
+  |`Str of (loc * string)
+  |`Any of loc] with ("Print" "Map")
+
+let wildcarder = object (self)
+  inherit map as super
+  method! simple_pat = function
+    | `Lid (_loc,_) -> `Any _loc
+    | {:pat'| ($p as $_) |} -> self#simple_pat p
+    | p  -> super#simple_pat p 
+end;;
+
 {:ocaml|
 
 type name = {(* every entry has a name *)  
@@ -54,7 +97,7 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * FAstN.pat )
+ | `Stok of (loc * exp * simple_pat(* FAstN.pat *) )
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for
@@ -62,20 +105,9 @@ and text =
     Keep this string [normalized] and well comparable. *) ]
   |};;
 
-type used =
-  | Unused | UsedScanned | UsedNotScanned 
+(* type used = *)
+(*   | Unused | UsedScanned | UsedNotScanned  *)
 
-let pp_print_loc _f _loc  = ()
-(* open StdFan (\* FIXME later *\) *)
-;;
-{:import|
-StdFan:
-  pp_print_string;
-Objs:
-  pp_print_vid
-  pp_print_alident
-  pp_print_ant;
-|};;  
 
 
 
@@ -85,16 +117,6 @@ Objs:
 (*   method loc (x:loc) = x  *)
 (* end *)
 
-type simple_pat =
-  [
-   `Vrn of (loc * string)
-  |`App of (loc * simple_pat * simple_pat )
-  | vid (* contains ant *)
-  |`Com of (loc * simple_pat * simple_pat)
-  |`Alias of (loc * simple_pat * alident)
-  |`Bar of (loc * simple_pat * simple_pat)
-  |`Str of (loc * string)
-  |`Any of loc] with ("Print" )
 
 (* make [S] a keyword ? *) 
 type action_pattern =
@@ -132,7 +154,7 @@ open Fsyntax;;
   let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
-     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
+     [S{p1} ; "as";`Lid s  -> {| ($p1 as $lid:s) |} ]
      "|"
      [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
      "simple"
@@ -140,19 +162,37 @@ open Fsyntax;;
      | "_" -> {| _ |}
      | `Lid x   ->  {| $lid:x|}
      | "("; S{p}; ")" -> p] }
-  (* [ L1 simple SEP "|"{ls} -> AstLib.bar_of_list ls *)
-  (* | L1 simple SEP "|"{ls}; "as"; a_lident{s} -> *)
-  (*     let p = AstLib.bar_of_list ls in *)
-  (*     {:pat'| ($p as $s ) |}]     *)
-  (* let simple: *)
-  (*    [ `STR(_,s) -> {:pat'| $str:s|} *)
-  (*    | "_" -> {:pat'| _ |} *)
-  (*    | `Lid x   ->  {:pat'| $lid:x|} *)
-  (*    ] *)
 |};;
 
 open Format
 let p = fprintf
+
+let rec unparse_simple_pat  f (x:simple_pat)=
+  match x with
+  | `Vrn (_,s) -> p f "`%s" s
+  | `App _ ->
+      let l = AstLib.list_of_app x [] in
+      begin match l with
+      | [ (`Vrn _ as x) ]  -> unparse_simple_pat  f x
+      | [ (`Vrn _ as  x) ; v ] ->
+          p f "%a %a" unparse_simple_pat x unparse_simple_pat v
+      | (`Vrn _ as x) :: rest ->
+          p f "%a (%a)"
+            unparse_simple_pat x (pp_list unparse_simple_pat ~sep:",") rest 
+      | _ ->
+          (p Format.err_formatter  "impossible pattern %a@." pp_print_simple_pat x ;
+          invalid_arg "unparse_simple_pat")
+      end
+  | `Com(_,a,b) -> p f "%a, %a" unparse_simple_pat a unparse_simple_pat b
+  | `Alias (_,p,_) -> unparse_simple_pat f  p
+
+  | `Bar (_,a,b) -> p f "%a| %a" unparse_simple_pat a unparse_simple_pat b
+  | `Str(_,s) -> p f "%S" s
+  | `Any _ -> p f "_"
+  | `Lid (_,s) -> p f "%s" s 
+  | `Ant (_, {FanUtil.content=s;_}) -> p f "$%s" s
+
+let string_of_simple_pat = to_string_of_printer unparse_simple_pat
 (**
    `a
    `a $x

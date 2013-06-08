@@ -123,7 +123,7 @@ and parser_of_terminals (terminals : terminal list) strm =
               if
                 not
                   (match terminal with
-                   | `Stoken (f,_) -> f t
+                   | `Stoken (f,_,_) -> f t
                    | `Skeyword kwd -> FToken.match_keyword kwd t)
               then invalid_arg "parser_of_terminals"
             end) terminals
@@ -161,7 +161,7 @@ and parser_of_symbol entry s =
            | Some (tok,_) when FToken.match_keyword kwd tok ->
                begin XStream.junk strm; Gaction.mk tok end
            | _ -> raise XStream.Failure)
-    | `Stoken (f,_) ->
+    | `Stoken (f,_,_) ->
         (fun strm  ->
            match XStream.peek strm with
            | Some (tok,_) when f tok ->

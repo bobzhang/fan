@@ -185,7 +185,8 @@ let eoi_entry entry =
           (None, None,
             [([`Snterm (obj (entry : 'entry t ));
               `Stoken
-                (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"))],
+                (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"),
+                  "`EOI")],
                ("x\n",
                  (mk_action
                     (fun (__fan_1 : [> FToken.t])  (x : 'entry) 

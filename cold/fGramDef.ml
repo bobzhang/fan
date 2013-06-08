@@ -1,5 +1,113 @@
 open FAst
 
+open LibUtil
+
+let pp_print_loc _f _loc = ()
+
+let pp_print_string = StdFan.pp_print_string
+
+let pp_print_vid' = Objs.pp_print_vid'
+
+let pp_print_vid = Objs.pp_print_vid
+
+let pp_print_alident = Objs.pp_print_alident
+
+let pp_print_ant = Objs.pp_print_ant
+
+class mapbase =
+  object 
+    method loc (x : loc) = x
+    method string (x : string) = x
+    method ant (x : ant) = x
+  end
+
+type lident = [ `Lid of (loc * string)] 
+and simple_pat =
+  [ `Vrn of (loc * string) | `App of (loc * simple_pat * simple_pat)
+  | `Lid of (loc * string) | ant | `Com of (loc * simple_pat * simple_pat)
+  | `Alias of (loc * simple_pat * lident)
+  | `Bar of (loc * simple_pat * simple_pat) | `Str of (loc * string)
+  | `Any of loc] 
+
+class map =
+  object (self : 'self_type)
+    inherit  mapbase
+    method lident : lident -> lident=
+      fun (`Lid (_a0,_a1))  ->
+        let _a0 = self#loc _a0 in
+        let _a1 = self#string _a1 in `Lid (_a0, _a1)
+    method simple_pat : simple_pat -> simple_pat=
+      function
+      | `Vrn (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#string _a1 in `Vrn (_a0, _a1)
+      | `App (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#simple_pat _a1 in
+          let _a2 = self#simple_pat _a2 in `App (_a0, _a1, _a2)
+      | `Lid (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#string _a1 in `Lid (_a0, _a1)
+      | #ant as _a0 -> (self#ant _a0 : ant  :>simple_pat)
+      | `Com (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#simple_pat _a1 in
+          let _a2 = self#simple_pat _a2 in `Com (_a0, _a1, _a2)
+      | `Alias (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#simple_pat _a1 in
+          let _a2 = self#lident _a2 in `Alias (_a0, _a1, _a2)
+      | `Bar (_a0,_a1,_a2) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#simple_pat _a1 in
+          let _a2 = self#simple_pat _a2 in `Bar (_a0, _a1, _a2)
+      | `Str (_a0,_a1) ->
+          let _a0 = self#loc _a0 in
+          let _a1 = self#string _a1 in `Str (_a0, _a1)
+      | `Any _a0 -> let _a0 = self#loc _a0 in `Any _a0
+  end
+
+let rec pp_print_lident: Format.formatter -> lident -> unit =
+  fun fmt  (`Lid (_a0,_a1))  ->
+    Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
+      pp_print_string _a1
+and pp_print_simple_pat: Format.formatter -> simple_pat -> unit =
+  fun fmt  ->
+    function
+    | `Vrn (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_string _a1
+    | `App (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | `Lid (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Lid@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_string _a1
+    | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
+    | `Com (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | `Alias (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_lident _a2
+    | `Bar (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | `Str (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_string _a1
+    | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
+
+let wildcarder =
+  object (self)
+    inherit  map as super
+    method! simple_pat =
+      function
+      | `Lid (_loc,_) -> `Any _loc
+      | `Alias (_loc,p,_) -> self#simple_pat p
+      | p -> super#simple_pat p
+  end
+
 type name =  {
   exp: exp;
   tvar: string;
@@ -31,54 +139,7 @@ and text =
   [ `Slist of (loc * bool * symbol * symbol option)
   | `Snterm of (loc * name * string option) | `Sopt of (loc * text)
   | `Stry of (loc * text) | `Speek of (loc * text) | `Sself of loc
-  | `Skeyword of (loc * string) | `Stok of (loc * exp * FAstN.pat)] 
-
-type used =  
-  | Unused
-  | UsedScanned
-  | UsedNotScanned 
-
-let pp_print_loc _f _loc = ()
-
-let pp_print_string = StdFan.pp_print_string
-
-let pp_print_vid = Objs.pp_print_vid
-
-let pp_print_alident = Objs.pp_print_alident
-
-let pp_print_ant = Objs.pp_print_ant
-
-type simple_pat =
-  [ `Vrn of (loc * string) | `App of (loc * simple_pat * simple_pat) | 
-    vid
-  | `Com of (loc * simple_pat * simple_pat)
-  | `Alias of (loc * simple_pat * alident)
-  | `Bar of (loc * simple_pat * simple_pat) | `Str of (loc * string)
-  | `Any of loc] 
-
-let rec pp_print_simple_pat: Format.formatter -> simple_pat -> unit =
-  fun fmt  ->
-    function
-    | `Vrn (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
-    | `App (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_simple_pat _a1 pp_print_simple_pat _a2
-    | #vid as _a0 -> (pp_print_vid fmt _a0 :>unit)
-    | `Com (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_simple_pat _a1 pp_print_simple_pat _a2
-    | `Alias (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_simple_pat _a1 pp_print_alident _a2
-    | `Bar (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_simple_pat _a1 pp_print_simple_pat _a2
-    | `Str (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_string _a1
-    | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
+  | `Skeyword of (loc * string) | `Stok of (loc * exp * simple_pat)] 
 
 type action_pattern =
   [ vid | `Com of (loc * action_pattern * action_pattern)
@@ -110,7 +171,7 @@ let _ =
              (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
                (`App
                   ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "anti"))))),
-                    `Any)))],
+                    `Any)), "`Ant (\"\"| \"anti\",_)")],
             ("`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n",
               (Fgram.mk_action
                  (fun (__fan_2 : [> FToken.t])  (v : 'luident)  _ 
@@ -127,7 +188,7 @@ let _ =
            `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
             ("`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n",
               (Fgram.mk_action
                  (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
@@ -143,7 +204,7 @@ let _ =
            `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
            `Stoken
              (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)))],
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n",
               (Fgram.mk_action
                  (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
@@ -179,12 +240,17 @@ let _ =
         [((Some "as"), None,
            [([`Sself;
              `Skeyword "as";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-              ("`Alias (_loc, p1, s)\n",
+             `Stoken
+               (((function | `Lid _ -> true | _ -> false)),
+                 (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+              ("`Alias (_loc, p1, (`Lid (_loc, s)))\n",
                 (Fgram.mk_action
-                   (fun (s : 'a_lident)  _  (p1 : 'internal_pat) 
+                   (fun (__fan_2 : [> FToken.t])  _  (p1 : 'internal_pat) 
                       (_loc : FLoc.t)  ->
-                      (`Alias (_loc, p1, s) : 'internal_pat )))))]);
+                      match __fan_2 with
+                      | `Lid s ->
+                          (`Alias (_loc, p1, (`Lid (_loc, s))) : 'internal_pat )
+                      | _ -> failwith "`Alias (_loc, p1, (`Lid (_loc, s)))\n"))))]);
         ((Some "|"), None,
           [([`Sself; `Skeyword "|"; `Sself],
              ("`Bar (_loc, p1, p2)\n",
@@ -195,7 +261,7 @@ let _ =
         ((Some "simple"), None,
           [([`Stoken
                (((function | `STR (_,_) -> true | _ -> false)),
-                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("`Str (_loc, s)\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -208,7 +274,7 @@ let _ =
                  (fun _  (_loc : FLoc.t)  -> (`Any _loc : 'internal_pat )))));
           ([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)))],
+                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("`Lid (_loc, x)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -225,3 +291,31 @@ let _ =
 open Format
 
 let p = fprintf
+
+let rec unparse_simple_pat f (x : simple_pat) =
+  match x with
+  | `Vrn (_,s) -> p f "`%s" s
+  | `App _ ->
+      let l = AstLib.list_of_app x [] in
+      (match l with
+       | (`Vrn _ as x)::[] -> unparse_simple_pat f x
+       | (`Vrn _ as x)::v::[] ->
+           p f "%a %a" unparse_simple_pat x unparse_simple_pat v
+       | (`Vrn _ as x)::rest ->
+           p f "%a (%a)" unparse_simple_pat x
+             (pp_list unparse_simple_pat ~sep:",") rest
+       | _ ->
+           begin
+             p Format.err_formatter "impossible pattern %a@."
+               pp_print_simple_pat x;
+             invalid_arg "unparse_simple_pat"
+           end)
+  | `Com (_,a,b) -> p f "%a, %a" unparse_simple_pat a unparse_simple_pat b
+  | `Alias (_,p,_) -> unparse_simple_pat f p
+  | `Bar (_,a,b) -> p f "%a| %a" unparse_simple_pat a unparse_simple_pat b
+  | `Str (_,s) -> p f "%S" s
+  | `Any _ -> p f "_"
+  | `Lid (_,s) -> p f "%s" s
+  | `Ant (_,{ FanUtil.content = s;_}) -> p f "$%s" s
+
+let string_of_simple_pat = to_string_of_printer unparse_simple_pat

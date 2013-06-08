@@ -41,6 +41,9 @@ external id : 'a -> 'a = "%identity"
 external (!&) : _ -> unit = "%ignore"
 
 
+
+    
+
 let ( <| ) f x = f x
 
 let ( |- ) f g x = g (f x)
@@ -1193,7 +1196,38 @@ module ErrorMonad = struct
     in aux 0 xs
 end
 
-    
+type space_formatter =  (unit, Format.formatter, unit )format     
+(** duplicated *)      
+let pp_list ?sep ?first  ?last fu f xs = 
+
+      let first = Option.default ("":space_formatter) first in
+      let last = Option.default ("":space_formatter) last in
+      let sep = Option.default ("@ ":space_formatter) sep in
+      let aux f = function
+        | [] -> ()
+        | [x] -> fu f x
+        | xs ->
+            let rec loop  f = function
+              | [x] -> fu f x
+              | x::xs ->  pp f "%a%(%)%a" fu x sep loop xs 
+              | _ -> assert false  in 
+            pp f "%(%)%a%(%)" first loop xs last in
+      aux f xs
+let pp_option :
+    ?first:space_formatter -> ?last:space_formatter ->
+    (Format.formatter -> 'a -> unit) -> Format.formatter ->  'a option -> unit
+        = fun  ?first  ?last fu f a ->
+     let first =
+       match first with
+       | Some x -> x
+       | None -> ""
+     and last =
+       match last with
+       | Some x -> x
+       | None -> ""  in
+     match a with
+     | None -> ()
+     | Some x -> pp f "%(%)%a%(%)" first fu x last
   
 
 (* module File = struct *)

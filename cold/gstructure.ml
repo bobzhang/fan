@@ -13,7 +13,7 @@ type description = [ `Normal | `Antiquot]
 
 type descr = FAstN.pat 
 
-type token_pattern = ((FToken.t -> bool) * descr) 
+type token_pattern = ((FToken.t -> bool) * descr * string) 
 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 
@@ -70,5 +70,3 @@ type extend_statment = (position option * olevel list)
 type single_extend_statement = (position option * olevel) 
 
 type delete_statment = symbol list 
-
-type space_formatter = (unit,Format.formatter,unit) format 

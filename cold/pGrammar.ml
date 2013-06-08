@@ -173,7 +173,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `STR (_,_) -> true | _ -> false)),
-                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("y\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -185,7 +185,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Lid"), `Any)))],
+                 (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
              ("(_loc, x, None, None)\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -195,10 +195,10 @@ let _ =
           ([`Skeyword "(";
            `Stoken
              (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)));
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)));
+               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)");
            `Skeyword ")"],
             ("(_loc, x, (Some y), None)\n",
               (Fgram.mk_action
@@ -211,10 +211,10 @@ let _ =
           ([`Skeyword "(";
            `Stoken
              (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)));
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)));
+               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)");
            `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ));
            `Skeyword ")"],
             ("(_loc, x, (Some y), (Some t))\n",
@@ -228,7 +228,7 @@ let _ =
           ([`Skeyword "(";
            `Stoken
              (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)));
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Skeyword ":";
            `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ));
            `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )));
@@ -448,7 +448,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), `Any)));
+                 (`App ((`Vrn "Uid"), `Any)), "`Uid _");
             `Skeyword ".";
             `Sself],
              ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -461,7 +461,7 @@ let _ =
                      | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)))],
+                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
             ("`Uid (_loc, x)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -473,7 +473,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), `Any)));
+                 (`App ((`Vrn "Uid"), `Any)), "`Uid _");
             `Skeyword ".";
             `Sself],
              ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -486,7 +486,7 @@ let _ =
                      | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
           ([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)))],
+                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("`Lid (_loc, i)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -498,7 +498,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), `Any)));
+                 (`App ((`Vrn "Uid"), `Any)), "`Uid _");
             `Skeyword ".";
             `Sself],
              ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -511,11 +511,11 @@ let _ =
                      | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)));
+                (`App ((`Vrn "Uid"), `Any)), "`Uid _");
            `Skeyword ".";
            `Stoken
              (((function | `Lid "t" -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), (`Str "t"))))],
+               (`App ((`Vrn "Lid"), (`Str "t"))), "`Lid \"t\"")],
             ("`Uid (_loc, x)\n",
               (Fgram.mk_action
                  (fun (__fan_2 : [> FToken.t])  _  (__fan_0 : [> FToken.t]) 
@@ -598,7 +598,8 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid ("First"|"Last") -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), (`Bar ((`Str "First"), (`Str "Last"))))))],
+                 (`App ((`Vrn "Uid"), (`Bar ((`Str "First"), (`Str "Last"))))),
+                 "`Uid \"First\"| \"Last\"")],
              ("(`Vrn (_loc, x) : FAst.exp )\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -614,7 +615,8 @@ let _ =
                    ((`Vrn "Uid"),
                      (`Bar
                         ((`Bar ((`Str "Before"), (`Str "After"))),
-                          (`Str "Level"))))));
+                          (`Str "Level"))))),
+                "`Uid \"Before\"| \"After\"| \"Level\"");
            `Snterm (Fgram.obj (string : 'string Fgram.t ))],
             ("(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n",
               (Fgram.mk_action
@@ -629,7 +631,7 @@ let _ =
                           "(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)))],
+                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
             ("failwithf \"%s is not the right position:(First|Last) or (Before|After|Level)\"\n  x\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -674,7 +676,8 @@ let _ =
                (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
                  (`App
                     ((`Vrn "Uid"),
-                      (`Bar ((`Bar ((`Str "LA"), (`Str "RA"))), (`Str "NA"))))))],
+                      (`Bar ((`Bar ((`Str "LA"), (`Str "RA"))), (`Str "NA"))))),
+                 "`Uid \"LA\"| \"RA\"| \"NA\"")],
              ("(`Vrn (_loc, x) : FAst.exp )\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -684,7 +687,7 @@ let _ =
                      | _ -> failwith "(`Vrn (_loc, x) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)))],
+                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
             ("failwithf \"%s is not a correct associativity:(LA|RA|NA)\" x\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -735,7 +738,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Lid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Lid"), `Any)))],
+                 (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
              ("`Lid (_loc, i)\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -793,7 +796,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid "SEP" -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), (`Str "SEP"))));
+                 (`App ((`Vrn "Uid"), (`Str "SEP"))), "`Uid \"SEP\"");
             `Snterm (Fgram.obj (symbol : 'symbol Fgram.t ))],
              ("t\n",
                (Fgram.mk_action
@@ -807,10 +810,10 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid "Level" -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), (`Str "Level"))));
+                 (`App ((`Vrn "Uid"), (`Str "Level"))), "`Uid \"Level\"");
             `Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("s\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  (__fan_0 : [> FToken.t]) 
@@ -823,7 +826,8 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid ("L0"|"L1") -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), (`Bar ((`Str "L0"), (`Str "L1"))))));
+                 (`App ((`Vrn "Uid"), (`Bar ((`Str "L0"), (`Str "L1"))))),
+                 "`Uid \"L0\"| \"L1\"");
             `Sself;
             `Sopt (`Snterm (Fgram.obj (sep_symbol : 'sep_symbol Fgram.t )))],
              ("let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text =\n  mk_slist _loc\n    (match x with\n     | \"L0\" -> false\n     | \"L1\" -> true\n     | _ -> failwithf \"only (L0|L1) allowed here\") sep s in\nmk_symbol ~text ~styp ~pattern:None\n",
@@ -848,7 +852,7 @@ let _ =
                            "let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text =\n  mk_slist _loc\n    (match x with\n     | \"L0\" -> false\n     | \"L1\" -> true\n     | _ -> failwithf \"only (L0|L1) allowed here\") sep s in\nmk_symbol ~text ~styp ~pattern:None\n"))));
           ([`Stoken
               (((function | `Uid "OPT" -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), (`Str "OPT"))));
+                (`App ((`Vrn "Uid"), (`Str "OPT"))), "`Uid \"OPT\"");
            `Sself],
             ("let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n",
               (Fgram.mk_action
@@ -866,7 +870,7 @@ let _ =
                           "let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n"))));
           ([`Stoken
               (((function | `Uid "TRY" -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), (`Str "TRY"))));
+                (`App ((`Vrn "Uid"), (`Str "TRY"))), "`Uid \"TRY\"");
            `Sself],
             ("let text = `Stry (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n",
               (Fgram.mk_action
@@ -882,7 +886,7 @@ let _ =
                           "let text = `Stry (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n"))));
           ([`Stoken
               (((function | `Uid "PEEK" -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), (`Str "PEEK"))));
+                (`App ((`Vrn "Uid"), (`Str "PEEK"))), "`Uid \"PEEK\"");
            `Sself],
             ("let text = `Speek (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n",
               (Fgram.mk_action
@@ -898,7 +902,7 @@ let _ =
                           "let text = `Speek (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n"))));
           ([`Stoken
               (((function | `Uid "S" -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), (`Str "S"))))],
+                (`App ((`Vrn "Uid"), (`Str "S"))), "`Uid \"S\"")],
             ("mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -916,7 +920,7 @@ let _ =
                     (token_of_simple_pat _loc p : 'symbol )))));
           ([`Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
             ("mk_symbol ~text:(`Skeyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -947,7 +951,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `STR (_,_) -> true | _ -> false)),
-                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("(`Str (_loc, s) : FAst.exp )\n",
                (Fgram.mk_action
                   (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -957,7 +961,8 @@ let _ =
                      | _ -> failwith "(`Str (_loc, s) : FAst.exp )\n"))));
           ([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)))],
+                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
+                "`Ant (\"\",_)")],
             ("parse_exp _loc s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

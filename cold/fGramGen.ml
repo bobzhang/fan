@@ -162,10 +162,17 @@ let rec make_exp (tvar : string) (x : text) =
                   (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, x))) : 
                   FAst.ep )
           end in
-        let mdescr = (v#pat _loc descr :>exp) in
+        let descr' = Objs.strip_pat (descr :>pat) in
+        let mdescr = (v#pat _loc descr' :>exp) in
+        let mstr = FGramDef.string_of_simple_pat descr in
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
-             (`Par (_loc, (`Com (_loc, match_fun, mdescr))))) : FAst.exp ) in
+             (`Par
+                (_loc,
+                  (`Com
+                     (_loc, match_fun,
+                       (`Com (_loc, mdescr, (`Str (_loc, mstr))))))))) : 
+          FAst.exp ) in
   aux tvar x
 and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
   (tvar : string) =
@@ -441,20 +448,20 @@ let token_of_simple_pat _loc (p : simple_pat) =
   let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
-      let no_variable = Objs.wildcarder#pat p_pat in
+      let no_variable = FGramDef.wildcarder#simple_pat p in
       let match_fun =
-        if is_irrefut_pat no_variable
+        let v = (no_variable :>pat) in
+        if is_irrefut_pat v
         then
-          (`Fun (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true"))))) : 
-          FAst.exp )
+          (`Fun (_loc, (`Case (_loc, v, (`Lid (_loc, "true"))))) : FAst.exp )
         else
           (`Fun
              (_loc,
                (`Bar
-                  (_loc, (`Case (_loc, no_variable, (`Lid (_loc, "true")))),
+                  (_loc, (`Case (_loc, v, (`Lid (_loc, "true")))),
                     (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
           FAst.exp ) in
-      let descr = Objs.strip_pat no_variable in
+      let descr = no_variable in
       let text = `Stok (_loc, match_fun, descr) in
       { text; styp = (`Tok _loc); pattern = (Some p_pat) }
   | (x,y)::ys ->
@@ -473,6 +480,6 @@ let token_of_simple_pat _loc (p : simple_pat) =
             (`Bar
                (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                  (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-      let descr = Objs.strip_pat (Objs.wildcarder#pat p_pat) in
+      let descr = FGramDef.wildcarder#simple_pat p in
       let text = `Stok (_loc, match_fun, descr) in
       { text; styp = (`Tok _loc); pattern = (Some (Objs.wildcarder#pat po)) }

@@ -51,7 +51,7 @@ let _ =
           [([`Skeyword "require";
             `Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("require s\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->

@@ -334,3 +334,15 @@ module LStack: sig
   val until_empty : 'a t -> ('a -> 'b) -> unit
   val topn_rev: int -> 'a t -> 'a list    
 end
+
+
+type space_formatter =  (unit, Format.formatter, unit )format
+
+val pp_list : ?sep:space_formatter ->
+  ?first:space_formatter ->
+  ?last:space_formatter ->
+  (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a list -> unit
+      
+val pp_option : ?first:space_formatter ->
+  ?last:space_formatter ->
+  (Format.formatter -> 'a -> unit) -> Format.formatter -> 'a option -> unit

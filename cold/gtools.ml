@@ -27,12 +27,6 @@ let get_terminals x =
   | { node = (#terminal as x); son;_} -> aux [] x son
   | _ -> None
 
-let eq_Stoken_ids s1 s2 =
-  match (s1, s2) with
-  | ((`Antiquot,_),_) -> false
-  | (_,(`Antiquot,_)) -> false
-  | ((_,s1),(_,s2)) -> s1 = s2
-
 let logically_eq_symbols entry =
   let rec eq_symbol (s1 : symbol) (s2 : symbol) =
     match (s1, s2) with
@@ -46,7 +40,7 @@ let logically_eq_symbols entry =
     | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
       |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
         (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
-    | (`Stoken (_,s1),`Stoken (_,s2)) -> s1 = s2
+    | (`Stoken (_,s1,_),`Stoken (_,s2,_)) -> s1 = s2
     | _ -> s1 = s2 in
   eq_symbol
 
@@ -60,5 +54,6 @@ let rec eq_symbol (s1 : symbol) (s2 : symbol) =
   | (`Slist0sep (s1,sep1),`Slist0sep (s2,sep2))
     |(`Slist1sep (s1,sep1),`Slist1sep (s2,sep2)) ->
       (eq_symbol s1 s2) && (eq_symbol sep1 sep2)
-  | (`Stoken (_,s1),`Stoken (_,s2)) -> let eq_pat x y = x = y in eq_pat s1 s2
+  | (`Stoken (_,s1,_),`Stoken (_,s2,_)) ->
+      let eq_pat x y = x = y in eq_pat s1 s2
   | _ -> s1 = s2

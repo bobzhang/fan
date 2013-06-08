@@ -115,15 +115,17 @@ let rec make_exp (tvar : string) (x:text) =
     | `Stry (_loc, t) -> {| `Stry $(aux "" t) |}
     | `Speek (_loc, t) -> {| `Speek $(aux "" t) |}
     | `Stok (_loc, match_fun,  descr) ->
-        let v = object
+        let v = object (* to be improved *)
           inherit FanAstN.meta
           method! ant _loc x =
             match x with
             | `Ant(_loc,{FanUtil.content=x;_}) ->
                 {:ep| `Str $lid:x |}
-        end in 
-        let mdescr = (v#pat _loc descr :> exp) in (* FIXME [_loc] is not necessary?*)
-        {|`Stoken ($match_fun, $mdescr)|}
+        end in
+        let descr' = Objs.strip_pat (descr :> pat) in  
+        let mdescr = (v#pat _loc descr' :> exp) in (* FIXME [_loc] is not necessary?*)
+        let mstr = FGramDef.string_of_simple_pat descr in
+        {|`Stoken ($match_fun, $mdescr, $str:mstr)|}
   in aux  tvar x
 
 
@@ -338,13 +340,15 @@ let token_of_simple_pat _loc (p:simple_pat)  =
   let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
-      let no_variable = Objs.wildcarder#pat p_pat in (*po is the same as [p_pat]*)
+      let no_variable = FGramDef.wildcarder#simple_pat p
+          (* Objs.wildcarder#pat p_pat *) in (*po is the same as [p_pat]*)
       let match_fun =
-        if is_irrefut_pat no_variable then
-          {:exp|function | $no_variable -> true |}
+        let v = (no_variable :> pat) in  
+        if is_irrefut_pat v  then
+          {:exp|function | $v -> true |}
         else
-          {:exp|function | $no_variable -> true | _ -> false  |} in
-      let descr = Objs.strip_pat no_variable in
+          {:exp|function | $v -> true | _ -> false  |} in
+      let descr = (* Objs.strip_pat *) no_variable in
       let text = `Stok(_loc,match_fun,descr) in
       {text;styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
@@ -352,7 +356,9 @@ let token_of_simple_pat _loc (p:simple_pat)  =
           List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
             {:exp| $x = $y |} ys  in
       let match_fun = {:exp| function |$po when $guard -> true | _ -> false |} in
-      let descr = Objs.strip_pat (Objs.wildcarder#pat p_pat) in
+      let descr =
+        FGramDef.wildcarder#simple_pat p  in
+        (* Objs.strip_pat (Objs.wildcarder#pat p_pat) in *)
       let text = `Stok(_loc,match_fun,descr) in
       {text;styp = `Tok _loc;pattern= Some (Objs.wildcarder#pat po) }
         

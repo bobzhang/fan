@@ -14,7 +14,7 @@ let _ =
           [([`Skeyword "default";
             `Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
              ("AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s))\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
@@ -36,7 +36,7 @@ let _ =
           ([`Skeyword "filter";
            `Stoken
              (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
             ("AstFilters.use_implem_filter s\n",
               (Fgram.mk_action
                  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
@@ -56,7 +56,7 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `Uid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Uid"), `Any)));
+                 (`App ((`Vrn "Uid"), `Any)), "`Uid _");
             `Skeyword ".";
             `Sself],
              ("i :: xs\n",
@@ -68,7 +68,7 @@ let _ =
                      | _ -> failwith "i :: xs\n"))));
           ([`Stoken
               (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)))],
+                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
             ("[i]\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

@@ -83,7 +83,7 @@ let _ =
           [([`Skeyword "let";
             `Stoken
               (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)));
+                (`App ((`Vrn "Lid"), `Any)), "`Lid _");
             `Skeyword "=";
             `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
              ("if Hashtbl.mem named_regexps x\nthen\n  begin\n    Printf.eprintf\n      \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n    exit 2\n  end\nelse\n  begin\n    Hashtbl.add named_regexps x r;\n    (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru )\n  end\n",
@@ -157,7 +157,7 @@ let _ =
               (Fgram.mk_action (fun _  (_loc : FLoc.t)  -> (Eof : 'regexp )))));
           ([`Stoken
               (((function | `CHAR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)")],
             ("Characters (Fcset.singleton (Char.code c))\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -170,7 +170,7 @@ let _ =
                           "Characters (Fcset.singleton (Char.code c))\n"))));
           ([`Stoken
               (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
             ("regexp_for_string s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -206,7 +206,7 @@ let _ =
                     (r1 : 'regexp )))));
           ([`Stoken
               (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)))],
+                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    begin\n      Printf.eprintf\n        \"File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n\"\n        p.Lexing.pos_fname p.Lexing.pos_lnum\n        (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n      exit 2\n    end\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -245,11 +245,11 @@ let _ =
         (None, None,
           [([`Stoken
                (((function | `CHAR (_,_) -> true | _ -> false)),
-                 (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)));
+                 (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)");
             `Skeyword "-";
             `Stoken
               (((function | `CHAR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)")],
              ("let c1 = Char.code c1 in let c2 = Char.code c2 in Fcset.interval c1 c2\n",
                (Fgram.mk_action
                   (fun (__fan_2 : [> FToken.t])  _  (__fan_0 : [> FToken.t]) 
@@ -264,7 +264,7 @@ let _ =
                            "let c1 = Char.code c1 in let c2 = Char.code c2 in Fcset.interval c1 c2\n"))));
           ([`Stoken
               (((function | `CHAR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)))],
+                (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)")],
             ("Fcset.singleton (Char.code c1)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->

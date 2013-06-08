@@ -32,7 +32,8 @@ let define ~exp  ~pat  eo y =
                  [([`Stoken
                       (((function
                          | `Uid __fan__y when y = __fan__y -> true
-                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))))],
+                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
+                        "`Uid $y")],
                     ("((new Objs.reloc) _loc)#exp e\n",
                       (Fgram.mk_action
                          (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -46,7 +47,8 @@ let define ~exp  ~pat  eo y =
                  [([`Stoken
                       (((function
                          | `Uid __fan__y when y = __fan__y -> true
-                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))))],
+                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
+                        "`Uid $y")],
                     ("let p = Exp.substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n",
                       (Fgram.mk_action
                          (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
@@ -66,7 +68,8 @@ let define ~exp  ~pat  eo y =
                  [([`Stoken
                       (((function
                          | `Uid __fan__y when y = __fan__y -> true
-                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))));
+                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
+                        "`Uid $y");
                    `Sself],
                     ("let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new Exp.subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
                       (Fgram.mk_action
@@ -93,7 +96,8 @@ let define ~exp  ~pat  eo y =
                  [([`Stoken
                       (((function
                          | `Uid __fan__y when y = __fan__y -> true
-                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))));
+                         | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
+                        "`Uid $y");
                    `Sself],
                     ("let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = Exp.substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
                       (Fgram.mk_action
@@ -131,12 +135,14 @@ let undef ~exp  ~pat  x =
                [`Stoken
                   (((function
                      | `Uid __fan__x when x = __fan__x -> true
-                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))))];
+                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))),
+                    "`Uid $x")];
              Fgram.delete_rule pat
                [`Stoken
                   (((function
                      | `Uid __fan__x when x = __fan__x -> true
-                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))))]
+                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))),
+                    "`Uid $x")]
            end
        | Some (_,_) ->
            begin
@@ -144,13 +150,15 @@ let undef ~exp  ~pat  x =
                [`Stoken
                   (((function
                      | `Uid __fan__x when x = __fan__x -> true
-                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))));
+                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))),
+                    "`Uid $x");
                `Sself];
              Fgram.delete_rule pat
                [`Stoken
                   (((function
                      | `Uid __fan__x when x = __fan__x -> true
-                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))));
+                     | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))),
+                    "`Uid $x");
                `Sself]
            end
        | None  -> ());

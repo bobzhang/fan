@@ -11,7 +11,7 @@ let name_of_symbol entry =
    | `Snterm e -> "[" ^ (e.ename ^ "]")
    | `Snterml (e,l) -> "[" ^ (e.ename ^ (" level " ^ (l ^ "]")))
    | `Sself -> "[" ^ (entry.ename ^ "]")
-   | `Stoken (_,descr) -> "Stoken"
+   | `Stoken (_,_,descr) -> descr
    | `Skeyword kwd -> "\"" ^ (kwd ^ "\"")
    | _ -> "???" : [> symbol] -> string )
 
@@ -109,7 +109,7 @@ and name_of_tree_failed entry x =
              (fun s  tok  ->
                 (if s = "" then "" else s ^ " then ") ^
                   (match tok with
-                   | `Stoken (_,descr) -> "Stoken"
+                   | `Stoken (_,_,descr) -> descr
                    | `Skeyword kwd -> kwd)) "" tokl)
   | DeadEnd |LocAct (_,_) -> "???"
 
