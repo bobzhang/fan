@@ -220,9 +220,10 @@ let extract info =
     |> List.concat
 
 let mkfmt pre sep post fields =
+  let s = pre ^ ((String.concat sep fields) ^ post) in
   (`App
      ((`App ((`Dot ((`Uid "Format"), (`Lid "fprintf"))), (`Lid "fmt"))),
-       (`Str (pre ^ ((String.concat sep fields) ^ post)))) : FAstN.exp )
+       (`Str s)) : FAstN.exp )
 
 let mk_variant_print cons params =
   let len = List.length params in

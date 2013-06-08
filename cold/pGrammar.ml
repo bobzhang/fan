@@ -89,30 +89,35 @@ let _ =
             `Skeyword ":";
             `Snterm (Fgram.obj (t_qualid : 't_qualid Fgram.t ));
             `Skeyword ")"],
-             ("`dynamic (x, t)\n",
+             ("`Dyn (x, t)\n",
                (Fgram.mk_action
                   (fun _  (t : 't_qualid)  _  (x : 'qualid)  _ 
-                     (_loc : FLoc.t)  -> (`dynamic (x, t) : 'ty )))));
+                     (_loc : FLoc.t)  -> (`Dyn (x, t) : 'ty )))));
           ([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
-            ("`static t\n",
+            ("`Static t\n",
               (Fgram.mk_action
-                 (fun (t : 'qualuid)  (_loc : FLoc.t)  -> (`static t : 'ty )))))]));
+                 (fun (t : 'qualuid)  (_loc : FLoc.t)  -> (`Static t : 'ty )))));
+          ([],
+            ("`Static (`Uid (_loc, \"Fgram\"))\n",
+              (Fgram.mk_action
+                 (fun (_loc : FLoc.t)  ->
+                    (`Static (`Uid (_loc, "Fgram")) : 'ty )))))]));
     Fgram.extend_single (nonterminals : 'nonterminals Fgram.t )
       (None,
         (None, None,
           [([`Snterm (Fgram.obj (ty : 'ty Fgram.t ));
             `Slist1 (`Snterm (Fgram.obj (type_entry : 'type_entry Fgram.t )))],
-             ("let mk =\n  match t with\n  | `static t ->\n      let t = (t : vid  :>exp) in\n      (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `dynamic (x,t) ->\n      let x = (x : vid  :>exp) in\n      let t = (t : vid  :>exp) in\n      (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n",
+             ("let mk =\n  match t with\n  | `Static t ->\n      let t = (t : vid  :>exp) in\n      (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      let t = (t : vid  :>exp) in\n      (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n",
                (Fgram.mk_action
                   (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : FLoc.t) 
                      ->
                      (let mk =
                         match t with
-                        | `static t ->
+                        | `Static t ->
                             let t = (t : vid  :>exp) in
                             (`Field (_loc, t, (`Lid (_loc, "mk"))) : 
                               FAst.exp )
-                        | `dynamic (x,t) ->
+                        | `Dyn (x,t) ->
                             let x = (x : vid  :>exp) in
                             let t = (t : vid  :>exp) in
                             (`App

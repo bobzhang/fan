@@ -16,39 +16,25 @@ open LibUtil
   delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
   (t_qualid:vid Fgram.t )
   (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
-   entry position assoc name string
-  rules
-
-  symbol
-  rule
-  meta_rule
-  rule_list
-  psymbol
-  level
-  level_list
-  (entry: FGramDef.entry Fgram.t)
-
-  (pattern: action_pattern Fgram.t )
-  extend_body
-  newterminals
-  unsafe_extend_body
-  delete_rule_body
-  simple_exp delete_rules
-  (* (simple_pat: simple_pat Fgram.t ) *)
-  (* internal_pat *)|}  ;;
+   entry position assoc name string rules
+  symbol rule meta_rule rule_list psymbol level level_list
+  (entry: FGramDef.entry Fgram.t) (pattern: action_pattern Fgram.t )
+  extend_body  newterminals  unsafe_extend_body  delete_rule_body
+  simple_exp delete_rules |} ;;
 
 {:extend|
   let ty:
-  [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `dynamic(x,t)
-   |  qualuid{t} -> `static(t) ]    
+  [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `Dyn(x,t)
+  |  qualuid{t} -> `Static t
+  | -> `Static (`Uid(_loc,"Fgram")) (* Bootstrap*)]    
 
   nonterminals :
   [ ty {t}; L1 type_entry {ls} ->
     with stru
     let mk =
       match t with
-      |`static t -> let t = (t : vid :> exp ) in {:exp| $t.mk |}
-      |`dynamic(x,t) ->
+      |`Static t -> let t = (t : vid :> exp ) in {:exp| $t.mk |}
+      |`Dyn(x,t) ->
           let x = (x : vid :> exp) in
           let t = (t : vid :> exp ) in 
           {:exp|$t.mk_dynamic $x |}  in   
@@ -67,7 +53,7 @@ open LibUtil
 
   let str : [`STR(_,y) -> y]
       
-  let type_entry:
+  let type_entry :
       [ `Lid x  -> (_loc,x,None,None)
       | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
       | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)

@@ -156,9 +156,11 @@ let rec make_exp (tvar : string) (x : text) =
         let v =
           object 
             inherit  FanAstN.meta
-            method! ant _loc _ =
-              (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, "x"))) : 
-              FAst.ep )
+            method! ant _loc x =
+              match x with
+              | `Ant (_loc,{ FanUtil.content = x;_}) ->
+                  (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, x))) : 
+                  FAst.ep )
           end in
         let mdescr = (v#pat _loc descr :>exp) in
         (`App
@@ -398,6 +400,33 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                           (`App (_loc, entry_mk, (`Lid (_loc, "x")))))))))),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
 
+let capture_antiquot =
+  object 
+    inherit  Objs.map as super
+    val mutable constraints = ([] : (exp * exp) list )
+    method! pat =
+      function
+      | `Ant (_loc,s) ->
+          (match s with
+           | { FanUtil.content = code;_} ->
+               let cons: FAst.exp = `Lid (_loc, code) in
+               let code' = "__fan__" ^ code in
+               let cons': FAst.exp = `Lid (_loc, code') in
+               let () = constraints <- (cons, cons') :: constraints in
+               (`Lid (_loc, code') : FAst.pat ))
+      | p -> super#pat p
+    method get_captured_variables = constraints
+    method clear_captured_variables = constraints <- []
+  end
+
+let filter_pat_with_captured_variables pat =
+  begin
+    capture_antiquot#clear_captured_variables;
+    (let pat = capture_antiquot#pat pat in
+     let constraints = capture_antiquot#get_captured_variables in
+     (pat, constraints))
+  end
+
 let text_of_functorial_extend ?safe  _loc gram el =
   let args =
     let el = List.map (text_of_entry ?safe) el in
@@ -409,7 +438,7 @@ let text_of_functorial_extend ?safe  _loc gram el =
 
 let token_of_simple_pat _loc (p : simple_pat) =
   let p_pat = (p : simple_pat  :>pat) in
-  let (po,ls) = Exp.filter_pat_with_captured_variables p_pat in
+  let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
       let no_variable = Objs.wildcarder#pat p_pat in
@@ -444,6 +473,6 @@ let token_of_simple_pat _loc (p : simple_pat) =
             (`Bar
                (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                  (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-      let descr = Objs.strip_pat (Objs.wildcarder#pat po) in
+      let descr = Objs.strip_pat (Objs.wildcarder#pat p_pat) in
       let text = `Stok (_loc, match_fun, descr) in
       { text; styp = (`Tok _loc); pattern = (Some (Objs.wildcarder#pat po)) }

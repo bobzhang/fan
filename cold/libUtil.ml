@@ -29,7 +29,7 @@ let with_dispose ~dispose  f x = finally ~action:(fun ()  -> dispose x) f x
 
 external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
 
-external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
+external ( @@ ) : ('a -> 'b) -> 'a -> 'b = "%apply"
 
 external id : 'a -> 'a = "%identity"
 

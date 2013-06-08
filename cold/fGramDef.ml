@@ -38,13 +38,47 @@ type used =
   | UsedScanned
   | UsedNotScanned 
 
+let pp_print_loc _f _loc = ()
+
+let pp_print_string = StdFan.pp_print_string
+
+let pp_print_vid = Objs.pp_print_vid
+
+let pp_print_alident = Objs.pp_print_alident
+
+let pp_print_ant = Objs.pp_print_ant
+
 type simple_pat =
   [ `Vrn of (loc * string) | `App of (loc * simple_pat * simple_pat) | 
     vid
   | `Com of (loc * simple_pat * simple_pat)
   | `Alias of (loc * simple_pat * alident)
   | `Bar of (loc * simple_pat * simple_pat) | `Str of (loc * string)
-  | `Any of loc | ant] 
+  | `Any of loc] 
+
+let rec pp_print_simple_pat: Format.formatter -> simple_pat -> unit =
+  fun fmt  ->
+    function
+    | `Vrn (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Vrn@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_string _a1
+    | `App (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`App@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | #vid as _a0 -> (pp_print_vid fmt _a0 :>unit)
+    | `Com (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Com@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | `Alias (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_alident _a2
+    | `Bar (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_simple_pat _a1 pp_print_simple_pat _a2
+    | `Str (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
+          pp_print_string _a1
+    | `Any _a0 -> Format.fprintf fmt "@[<1>(`Any@ %a)@]" pp_print_loc _a0
 
 type action_pattern =
   [ vid | `Com of (loc * action_pattern * action_pattern)
@@ -187,3 +221,7 @@ let _ =
                  (fun _  (p : 'internal_pat)  _  (_loc : FLoc.t)  ->
                     (p : 'internal_pat )))))])])
   end
+
+open Format
+
+let p = fprintf

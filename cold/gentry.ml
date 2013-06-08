@@ -105,14 +105,6 @@ let parse entry loc cs =
   parse_origin_tokens entry
     (FanTokenFilter.filter (entry.egram).gfilter (glexer loc cs))
 
-let delete_rule = Gdelete.delete_rule
-
-let symb_failed = Gfailed.symb_failed
-
-let symb_failed_txt = Gfailed.symb_failed_txt
-
-let parser_of_symbol = Gparser.parser_of_symbol
-
 let levels_of_entry = Ginsert.levels_of_entry
 
 let extend = Ginsert.extend
@@ -121,8 +113,18 @@ let extend_single = Ginsert.extend_single
 
 let copy = Ginsert.copy
 
+let extend = Ginsert.extend
+
 let unsafe_extend = Ginsert.unsafe_extend
 
 let unsafe_extend_single = Ginsert.unsafe_extend_single
+
+let delete_rule = Gdelete.delete_rule
+
+let symb_failed = Gfailed.symb_failed
+
+let symb_failed_txt = Gfailed.symb_failed_txt
+
+let parser_of_symbol = Gparser.parser_of_symbol
 
 let eoi_entry = Ginsert.eoi_entry

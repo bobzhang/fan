@@ -347,7 +347,32 @@
   in the future, we should keep each ast nodes with Quotation instead
   of Ant node, that said, we need not handle antiquot node any more?
   no lexing antiquot in the toplevel?
+
   
+* 37 with language
+
+  #+BEGIN_SRC ocaml
+    with
+      [
+       {:print| |}, (* in this area resorts to [Fan.Derive.Eq]  *)
+       eq,
+       {:loctype|
+         in-module : N;
+         with : [ {:print| |} ];
+           
+       |},  
+     ]  
+  #+END_SRC
+  
+* 38 Fold needs super
+
+  #+BEGIN_SRC ocaml
+    inherit foldbase
+    self#string
+    
+    inherit foldbase as super
+    super#          
+  #+END_SRC
 * COMMENT
 ** rules
   {-# RULES

@@ -184,40 +184,6 @@ let _ =
       (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
   end
 
-let p = Fgram.mk "p"
-
-let _ =
-  Fgram.extend_single (p : 'p Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
-          `Skeyword "when";
-          `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-           ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
-             (Fgram.mk_action
-                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
-                   ((`Fun
-                       (_loc,
-                         (`Bar
-                            (_loc,
-                              (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
-                              (`Case
-                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                   FAst.exp ) : 'p )))));
-        ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
-          ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
-            (Fgram.mk_action
-               (fun (p : 'pat)  (_loc : FLoc.t)  ->
-                  (`Fun
-                     (_loc,
-                       (`Bar
-                          (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
-                            (`Case
-                               (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                  'p )))))]))
-
-let _ = of_exp ~name:(d, "p") ~entry:p
-
 open PFan
 
 open PMacro
@@ -439,3 +405,95 @@ let normal_handler =
   | XStream.Failure  -> Some (Format.sprintf "Parse failure")
   | XStream.Error str -> Some (Format.sprintf "XStream.Error %s" str)
   | _ -> None
+
+let p = Fgram.mk "p"
+
+let _ =
+  Fgram.extend_single (p : 'p Fgram.t )
+    (None,
+      (None, None,
+        [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
+          `Skeyword "when";
+          `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+           ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
+             (Fgram.mk_action
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
+                   ((`Fun
+                       (_loc,
+                         (`Bar
+                            (_loc,
+                              (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
+                              (`Case
+                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                   FAst.exp ) : 'p )))));
+        ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
+          ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
+            (Fgram.mk_action
+               (fun (p : 'pat)  (_loc : FLoc.t)  ->
+                  (`Fun
+                     (_loc,
+                       (`Bar
+                          (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
+                            (`Case
+                               (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                  'p )))))]))
+
+let _ = of_exp ~name:(d, "p") ~entry:p
+
+let import = Fgram.mk "import"
+
+let _ =
+  let grammar_entry_create x = Fgram.mk x in
+  let a: 'a Fgram.t = grammar_entry_create "a"
+  and name: 'name Fgram.t = grammar_entry_create "name" in
+  begin
+    Fgram.extend_single (a : 'a Fgram.t )
+      (None,
+        (None, None,
+          [([`Stoken
+               (((function | `Uid _ -> true | _ -> false)),
+                 (`App ((`Vrn "Uid"), `Any)));
+            `Skeyword ":";
+            `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
+            `Skeyword ";"],
+             ("AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
+               (Fgram.mk_action
+                  (fun _  (ns : 'name list)  _  (__fan_0 : [> FToken.t]) 
+                     (_loc : FLoc.t)  ->
+                     match __fan_0 with
+                     | `Uid m ->
+                         (AstLib.sem_of_list
+                            (List.map
+                               (fun l  ->
+                                  (`Value
+                                     (_loc, (`Negative _loc),
+                                       (`Bind
+                                          (_loc, (l :>FAst.pat),
+                                            (`Dot (_loc, (`Uid (_loc, m)), l))))) : 
+                                  FAst.stru )) ns) : 'a )
+                     | _ ->
+                         failwith
+                           "AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n"))))]));
+    Fgram.extend_single (import : 'import Fgram.t )
+      (None,
+        (None, None,
+          [([`Slist1 (`Snterm (Fgram.obj (a : 'a Fgram.t )))],
+             ("AstLib.sem_of_list xs\n",
+               (Fgram.mk_action
+                  (fun (xs : 'a list)  (_loc : FLoc.t)  ->
+                     (AstLib.sem_of_list xs : 'import )))))]));
+    Fgram.extend_single (name : 'name Fgram.t )
+      (None,
+        (None, None,
+          [([`Stoken
+               (((function | `Lid _ -> true | _ -> false)),
+                 (`App ((`Vrn "Lid"), `Any)))],
+             ("`Lid (_loc, x)\n",
+               (Fgram.mk_action
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                     match __fan_0 with
+                     | `Lid x -> (`Lid (_loc, x) : 'name )
+                     | _ -> failwith "`Lid (_loc, x)\n"))))]))
+  end
+
+let _ = of_stru ~name:(d, "import") ~entry:import

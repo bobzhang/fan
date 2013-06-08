@@ -265,16 +265,15 @@ let extract info = info
     |> List.map (fun {name_exp;id_ep;_} -> [name_exp;(id_ep:>exp)] )
     |> List.concat 
 
-let mkfmt pre sep post fields = 
-    {:exp-| Format.fprintf fmt
-      $(str: pre^ String.concat sep fields ^ post) |} 
+let mkfmt pre sep post fields =
+  let s =  pre^ String.concat sep fields ^ post in
+  {:exp-| Format.fprintf fmt $str:s |} 
   
 let mk_variant_print cons params =
     let len = List.length params in
     let pre =
         if len >= 1 then
-          mkfmt ("@[<1>("^cons^"@ ")
-            "@ " ")@]" (List.init len (fun _ -> "%a"))
+          mkfmt ("@[<1>("^cons^"@ ") "@ " ")@]" (List.init len (fun _ -> "%a"))
         else
           mkfmt cons "" "" [] in
     appl_of_list (pre :: extract params)

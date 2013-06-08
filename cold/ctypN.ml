@@ -90,7 +90,7 @@ let name_length_of_tydcl (x : typedecl) =
        (name,
          ((match tyvars with
            | `None -> 0
-           | `Some xs -> List.length & (list_of_com xs []))))
+           | `Some xs -> List.length @@ (list_of_com xs []))))
    | tydcl ->
        failwithf "name_length_of_tydcl {|%s|}\n" (ObjsN.dump_typedecl tydcl) : 
   (string * int) )
@@ -228,7 +228,7 @@ let abstract_list (x : typedecl) =
   | `TyAbstr (_,lst,_) ->
       (match lst with
        | `None -> Some 0
-       | `Some xs -> Some (List.length & (list_of_com xs [])))
+       | `Some xs -> Some (List.length @@ (list_of_com xs [])))
   | _ -> None
 
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 

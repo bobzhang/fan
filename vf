@@ -1,4 +1,7 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
 
+set -e
 # byte code fixpoint seems to reach faster compared with native code?
 ocamlbuild src/fan.native src/fan.byte
 ./re src fan.native

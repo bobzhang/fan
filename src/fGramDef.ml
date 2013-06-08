@@ -15,7 +15,6 @@ type styp =
  [ (* ident' *) vid'
  | `App of (loc * styp * styp)
  | `Quote of (loc * position_flag *  alident)
- (* | `Self of (loc * string) *)
  | `Self of loc
  | `Tok of loc
  | `Type of ctyp ]
@@ -66,18 +65,36 @@ and text =
 type used =
   | Unused | UsedScanned | UsedNotScanned 
 
+let pp_print_loc _f _loc  = ()
+(* open StdFan (\* FIXME later *\) *)
+;;
+{:import|
+StdFan:
+  pp_print_string;
+Objs:
+  pp_print_vid
+  pp_print_alident
+  pp_print_ant;
+|};;  
+
+
+
+
+(* class foldbase = object *)
+(*   inherit StdFan.foldbase *)
+(*   method loc (x:loc) = x  *)
+(* end *)
+
 type simple_pat =
   [
    `Vrn of (loc * string)
   |`App of (loc * simple_pat * simple_pat )
-  | vid 
+  | vid (* contains ant *)
   |`Com of (loc * simple_pat * simple_pat)
   |`Alias of (loc * simple_pat * alident)
   |`Bar of (loc * simple_pat * simple_pat)
   |`Str of (loc * string)
-  |`Any of loc
-  | ant
-   ]
+  |`Any of loc] with ("Print" )
 
 (* make [S] a keyword ? *) 
 type action_pattern =
@@ -85,6 +102,8 @@ type action_pattern =
   |`Com of (loc * action_pattern * action_pattern)
   |`Par of (loc * action_pattern )
   |`Any of loc ];;
+
+
 
 FConfig.antiquotations := true;;
 open Fsyntax;;
@@ -94,6 +113,7 @@ open Fsyntax;;
 {:extend|
   simple_pat "pat'":
   ["`"; luident{s}  ->  {|$vrn:s|}
+
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
     {| $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)|}
   |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
@@ -108,9 +128,7 @@ open Fsyntax;;
            - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
            ]}
            is dumped correctly
-         *)
- ]
-
+         *) ]
   let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
@@ -122,4 +140,47 @@ open Fsyntax;;
      | "_" -> {| _ |}
      | `Lid x   ->  {| $lid:x|}
      | "("; S{p}; ")" -> p] }
+  (* [ L1 simple SEP "|"{ls} -> AstLib.bar_of_list ls *)
+  (* | L1 simple SEP "|"{ls}; "as"; a_lident{s} -> *)
+  (*     let p = AstLib.bar_of_list ls in *)
+  (*     {:pat'| ($p as $s ) |}]     *)
+  (* let simple: *)
+  (*    [ `STR(_,s) -> {:pat'| $str:s|} *)
+  (*    | "_" -> {:pat'| _ |} *)
+  (*    | `Lid x   ->  {:pat'| $lid:x|} *)
+  (*    ] *)
 |};;
+
+open Format
+let p = fprintf
+(**
+   `a
+   `a $x
+   `a "gh"
+   `a x
+   `a _
+   `a ( v as y)
+   `
+ *)    
+(* type imm = *)
+(*   | Ant of string *)
+(*   | I of string  *)
+(* let unparse_simple_pat  (x : simple_pat)= *)
+(*   match x with *)
+(*   | `Vrn (_,s) -> {:ep|$`str:s|} *)
+(*   | `App (_loc, `Vrn(_,v),`Ant(_,{FanUtil.contents=c;_})) -> *)
+(*       {:ep| $`str:v ^ "$" ^ $lid:c |} *)
+(*   | `App _  -> *)
+(*       let l = AstLib.appl_of_list x in *)
+(*       begin match l with *)
+(*       | `Vrn(_,x) ::xs -> *)
+          
+(*       | _ -> assert false *)
+(*       end *)
+(*   | `Alias (_,p,_) -> unparse_simple_pat f p *)
+(*   | *)
+(* ;; *)
+(* let t = object *)
+(*   inherit Objs.fold as super; *)
+(*   method  *)
+(* end *)

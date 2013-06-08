@@ -92,22 +92,26 @@ let parse entry loc cs =
   parse_origin_tokens entry
     (FanTokenFilter.filter entry.egram.gfilter
        (glexer loc cs))
+;;
 
-  
-    
-let delete_rule = Gdelete.delete_rule
-let symb_failed = Gfailed.symb_failed
-let symb_failed_txt = Gfailed.symb_failed_txt
+{:import|
+Ginsert:
+  levels_of_entry
+  extend
+  extend_single
+  copy extend
+  unsafe_extend
+  unsafe_extend_single;
+Gdelete:
+  delete_rule;
+Gfailed: 
+  symb_failed
+  symb_failed_txt;
+Gparser:
+   parser_of_symbol;
+Ginsert:
+   (* buggy *)
+   eoi_entry;
+|};;
 
-let parser_of_symbol = Gparser.parser_of_symbol
 
-
-let levels_of_entry = Ginsert.levels_of_entry
-let extend = Ginsert.extend
-let extend_single = Ginsert.extend_single
-let copy = Ginsert.copy
-let unsafe_extend = Ginsert.unsafe_extend
-let unsafe_extend_single = Ginsert.unsafe_extend_single    
-
-(* buggy*)
-let eoi_entry = Ginsert.eoi_entry

@@ -230,9 +230,9 @@ and scan_product entry (symbols,x) =
        (fun symbol  ->
           let keywords = using_symbol symbol [] in
           let diff =
-            let open SSet in
-              elements &
-                (diff (of_list keywords) ((entry.egram).gkeywords).contents) in
+            SSet.elements @@
+              (SSet.diff (SSet.of_list keywords)
+                 ((entry.egram).gkeywords).contents) in
           let () =
             if diff <> []
             then

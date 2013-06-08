@@ -35,7 +35,8 @@ let with_dispose ~dispose f x =
 
 (** {6 Operators}*)
 external (|>) : 'a -> ('a -> 'b) -> 'b =  "%revapply"  
-external (&) : ('a -> 'b) -> 'a -> 'b = "%apply"
+(* external (&) : ('a -> 'b) -> 'a -> 'b = "%apply" *)
+external (@@) : ('a -> 'b) -> 'a -> 'b = "%apply"    
 external id : 'a -> 'a = "%identity"
 external (!&) : _ -> unit = "%ignore"
 

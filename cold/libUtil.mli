@@ -21,8 +21,9 @@ val with_dispose : dispose:('a -> 'b) -> ('a -> 'c) -> 'a -> 'c
 
 external ( |> ) : 'a -> ('a -> 'b) -> 'b = "%revapply"
 
-external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply"
-
+(* external ( & ) : ('a -> 'b) -> 'a -> 'b = "%apply" *)
+external (@@) : ('a -> 'b) -> 'a -> 'b = "%apply"
+    
 external id : 'a -> 'a = "%identity"
 
 external ( !& ) : 'a -> unit = "%ignore"

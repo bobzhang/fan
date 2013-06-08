@@ -4,8 +4,6 @@ open AstLib
 
 open LibUtil
 
-open FanUtil
-
 let substp loc env =
   let bad_pat _loc =
     FLoc.errorf _loc
@@ -96,39 +94,4 @@ class subst loc env =
           (try substp loc [] (List.assoc x env)
            with | Not_found  -> super#pat p)
       | p -> super#pat p
-  end
-
-class type antiquot_filter
-  =
-  object 
-    inherit Objs.map
-    method get_captured_variables : (exp * exp) list
-    method clear_captured_variables : unit
-  end
-
-let capture_antiquot: antiquot_filter =
-  object 
-    inherit  Objs.map as super
-    val mutable constraints = []
-    method! pat =
-      function
-      | `Ant (_loc,s) ->
-          (match s with
-           | { content = code;_} ->
-               let cons: FAst.exp = `Lid (_loc, code) in
-               let code' = "__fan__" ^ code in
-               let cons': FAst.exp = `Lid (_loc, code') in
-               let () = constraints <- (cons, cons') :: constraints in
-               (`Lid (_loc, code') : FAst.pat ))
-      | p -> super#pat p
-    method get_captured_variables = constraints
-    method clear_captured_variables = constraints <- []
-  end
-
-let filter_pat_with_captured_variables pat =
-  begin
-    capture_antiquot#clear_captured_variables;
-    (let pat = capture_antiquot#pat pat in
-     let constraints = capture_antiquot#get_captured_variables in
-     (pat, constraints))
   end

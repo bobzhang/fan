@@ -101,7 +101,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   | `TyDcl ( `Lid name, tyvars, _, _) ->
       (name, match tyvars with
       | `None  -> 0
-      | `Some xs -> List.length & list_of_com  xs [])
+      | `Some xs -> List.length @@ list_of_com  xs [])
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n"
         (ObjsN.dump_typedecl tydcl)
@@ -313,7 +313,7 @@ let abstract_list (x:typedecl)=
       begin match lst with
       | `None  -> Some 0
       |`Some xs ->
-          Some (List.length & list_of_com xs [])
+          Some (List.length @@ list_of_com xs [])
       end
         (* Some (List.length lst) *)
   | _ -> None
