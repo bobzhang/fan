@@ -105,10 +105,10 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
               end
               with
                 XStream.Failure -> from_tree brother strm)
-        | Some (tokl, _node, son) -> fun strm ->
+        | Some (tokl, node, son) -> fun strm ->
             let try args = List.rev (parser_of_terminals tokl strm) in
             begin
-              List.iter (fun a -> ArgContainer.push  a (* (Gaction.mk a ) *) q) args;
+              List.iter (fun a -> ArgContainer.push  a q) args;
               let len =List.length args in             
               let p = from_tree son in
               try p strm with
@@ -118,7 +118,8 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
                           ignore (ArgContainer.pop q);
                         done;
                         match e with
-                        |XStream.Failure -> raise (XStream.Error "")
+                        |XStream.Failure -> raise
+                              (XStream.Error (Gfailed.tree_failed entry e (node:>symbol) son))
                         |_ -> raise e
                       end
             end
