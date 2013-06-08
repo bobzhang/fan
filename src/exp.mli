@@ -13,13 +13,13 @@ val substp : loc -> (string * pat) list -> exp -> pat
 
 class subst : loc -> (string * exp) list -> Objs.map
 
-class type antiquot_filter =object
-  inherit Objs.map
-  method get_captured_variables: (exp * exp)list
-  method clear_captured_variables: unit
-end
+(* class type antiquot_filter =object *)
+(*   inherit Objs.map *)
+(*   method get_captured_variables: (exp * exp)list *)
+(*   method clear_captured_variables: unit *)
+(* end *)
 
-val capture_antiquot: antiquot_filter
+(* val capture_antiquot: antiquot_filter *)
 
-val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list
+(* val filter_pat_with_captured_variables:  pat -> pat * (exp * exp) list *)
 

@@ -117,7 +117,10 @@ let rec make_exp (tvar : string) (x:text) =
     | `Stok (_loc, match_fun,  descr) ->
         let v = object
           inherit FanAstN.meta
-          method! ant _loc _ = {:ep| `Str x |}
+          method! ant _loc x =
+            match x with
+            | `Ant(_loc,{FanUtil.content=x;_}) ->
+                {:ep| `Str $lid:x |}
         end in 
         let mdescr = (v#pat _loc descr :> exp) in (* FIXME [_loc] is not necessary?*)
         {|`Stoken ($match_fun, $mdescr)|}
@@ -185,7 +188,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
 
 let exp_delete_rule _loc n (symbolss:symbol list list ) = with exp
   let f _loc n sl =  
-   let sl = list_of_list _loc (List.map (fun  s -> make_exp (* n *) "" s.text) sl) in 
+   let sl = list_of_list _loc (List.map (fun  s -> make_exp "" s.text) sl) in 
    ({| $(n.exp) |}, sl)  in
   let rest = List.map
       (fun sl  ->
@@ -287,6 +290,36 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
       (** eta-expansion to avoid specialized types here  *)
       {:exp| let grammar_entry_create x = $entry_mk  x in let $locals in $default |}    
 
+
+      
+(* We don't do any parsing for antiquots here, so it's parser-independent *)  
+let capture_antiquot  = object
+  inherit Objs.map as super
+  val mutable constraints : (exp * exp) list  =[]
+  method! pat = function
+    | `Ant(_loc,s) -> 
+        begin match s with
+        {FanUtil.content=code;_} ->
+          let cons = {:exp| $lid:code |} in
+          let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
+          let cons' = {:exp| $lid:code' |} in 
+          let () = constraints <- (cons,cons')::constraints in 
+          {:pat| $lid:code' |} (* only allows lidentifiers here *)
+        end
+    | p -> super#pat p 
+  method get_captured_variables =
+    constraints
+  method clear_captured_variables =
+    constraints <- []
+end
+
+let filter_pat_with_captured_variables pat= begin 
+  capture_antiquot#clear_captured_variables;
+  let pat=capture_antiquot#pat pat in
+  let constraints = capture_antiquot#get_captured_variables in
+  (pat,constraints)
+end
+        
 (** entrance *)        
 let text_of_functorial_extend ?safe _loc   gram  el = 
   let args =
@@ -302,7 +335,7 @@ let text_of_functorial_extend ?safe _loc   gram  el =
 
 let token_of_simple_pat _loc (p:simple_pat)  =
   let p_pat = (p:simple_pat :> pat) in 
-  let (po,ls) = Exp.filter_pat_with_captured_variables p_pat in
+  let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
       let no_variable = Objs.wildcarder#pat p_pat in (*po is the same as [p_pat]*)
@@ -319,7 +352,7 @@ let token_of_simple_pat _loc (p:simple_pat)  =
           List.fold_left (fun acc (x,y) -> {:exp| $acc && ( $x = $y ) |} )
             {:exp| $x = $y |} ys  in
       let match_fun = {:exp| function |$po when $guard -> true | _ -> false |} in
-      let descr = Objs.strip_pat (Objs.wildcarder#pat po) in
+      let descr = Objs.strip_pat (Objs.wildcarder#pat p_pat) in
       let text = `Stok(_loc,match_fun,descr) in
       {text;styp = `Tok _loc;pattern= Some (Objs.wildcarder#pat po) }
         

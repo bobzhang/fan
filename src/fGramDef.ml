@@ -84,4 +84,42 @@ type action_pattern =
   [ vid
   |`Com of (loc * action_pattern * action_pattern)
   |`Par of (loc * action_pattern )
-  |`Any of loc ]
+  |`Any of loc ];;
+
+FConfig.antiquotations := true;;
+open Fsyntax;;
+
+{:create| Fgram (simple_pat : simple_pat Fgram.t) |};;
+
+{:extend|
+  simple_pat "pat'":
+  ["`"; luident{s}  ->  {|$vrn:s|}
+  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
+    {| $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)|}
+  |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
+  |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
+  |"`"; luident{s}; "_" -> {|$vrn:s _|}
+  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
+      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v))
+        (* here
+           we have to guarantee
+           {[
+           {:pat-|`a(a,b,c)|};;
+           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
+           ]}
+           is dumped correctly
+         *)
+ ]
+
+  let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
+  {
+   "as"
+     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
+     "|"
+     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
+     "simple"
+     [ `STR(_,s) -> {| $str:s|}
+     | "_" -> {| _ |}
+     | `Lid x   ->  {| $lid:x|}
+     | "("; S{p}; ")" -> p] }
+|};;

@@ -23,21 +23,21 @@ let incorrect_number loc l1 l2 =
 
 
 
-let define ~exp ~pat eo x  = 
+let define ~exp ~pat eo y  = 
   begin
     (match eo with
     | Some ([], e) ->
         {:extend|
           exp: Level "simple"
-          [ `Uid $x -> (new Objs.reloc _loc)#exp e ]
+          [ `Uid $y -> (new Objs.reloc _loc)#exp e ]
           pat: Level "simple"
-          [ `Uid $x ->
-            let p = Exp.substp _loc [] e
-            in (new Objs.reloc _loc)#pat p ] |}
+          [ `Uid $y ->
+            let p = Exp.substp _loc [] e in
+            (new Objs.reloc _loc)#pat p ] |}
     | Some (sl, e) ->
         {:extend| 
           exp: Level "apply"
-          [ `Uid $x; S{param} ->
+          [ `Uid $y; S{param} ->
             let el =
               match param with 
               | {:exp| ($par:e) |} -> list_of_com e []
@@ -48,7 +48,7 @@ let define ~exp ~pat eo x  =
           else
             incorrect_number _loc el sl ]
         pat: Level "simple"
-        [ `Uid $x; S{param} ->
+        [ `Uid $y; S{param} ->
           let pl =
             match param with
             | {:pat| ($par:p) |} -> list_of_com p [] (* precise *)
@@ -60,7 +60,7 @@ let define ~exp ~pat eo x  =
           else
             incorrect_number _loc pl sl ] |}
     | None -> ());
-  defined := (x, eo) :: !defined
+  defined := (y, eo) :: !defined
 end
 
 let undef ~exp ~pat x =

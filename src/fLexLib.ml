@@ -19,11 +19,11 @@ let from_context c =
     Some ((tok, loc))
   in XStream.from next
 
-let from_lexbuf (* ?(quotations = true)  *)lb =
+let from_lexbuf lb =
   let c = { (default_context lb) with
             loc        = Lexing.lexeme_start_p lb;
             antiquots  = !FConfig.antiquotations;
-            (* quotations = quotations *)      }
+          }
   in from_context c
 
 let setup_loc lb loc =

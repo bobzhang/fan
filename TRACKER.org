@@ -341,7 +341,12 @@
     Error: Unbound value a
   #+END_SRC
   
-* mask rule better error message
+* 35 mask rule better error message
+
+* 36 always lexing $
+  in the future, we should keep each ast nodes with Quotation instead
+  of Ant node, that said, we need not handle antiquot node any more?
+  no lexing antiquot in the toplevel?
   
 * COMMENT
 ** rules

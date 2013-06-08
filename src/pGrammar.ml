@@ -5,10 +5,10 @@ open FGramDef
 open FGramGen
 open Fsyntax
 open LibUtil
-open FanUtil
 
 
-FConfig.antiquotations := true;;
+
+
 
 
 
@@ -34,8 +34,8 @@ FConfig.antiquotations := true;;
   unsafe_extend_body
   delete_rule_body
   simple_exp delete_rules
-  (simple_pat: simple_pat Fgram.t )
-  internal_pat|}  ;;
+  (* (simple_pat: simple_pat Fgram.t ) *)
+  (* internal_pat *)|}  ;;
 
 {:extend|
   let ty:
@@ -80,7 +80,7 @@ FConfig.antiquotations := true;;
       let mk  =
         let x = (x : vid :> exp) in
         {:exp|$id:t.mk_dynamic $x |}  in
-      sem_of_list
+      sem_of_list (* FIXME improve *)
         ({:stru| let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()|} ::
          ( List.map
             (fun (_loc,x,descr,ty) ->
@@ -232,6 +232,12 @@ FConfig.antiquotations := true;;
     mk_rule ~prod ~action ]
   let opt_action : ["->"; exp{act}-> act]
 
+  pattern :
+  [ `Lid i -> {:pat'| $lid:i |}
+  | "_" -> {:pat'| _ |}
+  | "("; pattern{p}; ")" -> p
+  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
+      
   let brace_pattern : ["{";pattern{p};"}"->p]
 
   psymbol :
@@ -241,8 +247,8 @@ FConfig.antiquotations := true;;
         { s with pattern = (p:  action_pattern option :>  pat option) }
     | None -> s  ] 
 
-  let sep_symbol: [`Uid "SEP"; symbol{t}->t]
-  let level_str:  [`Uid "Level"; `STR (_, s) -> s ]
+  let sep_symbol : [`Uid "SEP"; symbol{t}->t]
+  let level_str :  [`Uid "Level"; `STR (_, s) -> s ]
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } ->
     let () = check_not_tok s in
@@ -272,53 +278,49 @@ FConfig.antiquotations := true;;
   | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
-  | `Ant(("nt"|""),s); OPT level_str{lev} ->
-        let i = parse_ident _loc s in
-        let rec to_vid   (x:ident) : vid =
-          match x with
-          |`Apply _ -> failwithf "Id.to_vid" (* FIXME type system may help*)
-          |`Dot(_loc,a,b) -> `Dot(_loc, to_vid a, to_vid b)
-          | `Lid _ | `Uid _ | `Ant _ as x -> x in 
-        let n = mk_name _loc (to_vid i) in
-        mk_symbol ~text:(`Snterm _loc n lev)
-          ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
+  (* | `Ant(("nt"|""),s); OPT level_str{lev} -> *)
+  (*       let i = parse_ident _loc s in *)
+  (*       let rec to_vid   (x:ident) : vid = *)
+  (*         match x with *)
+  (*         |`Apply _ -> failwithf "Id.to_vid" (\* FIXME type system may help*\) *)
+  (*         |`Dot(_loc,a,b) -> `Dot(_loc, to_vid a, to_vid b) *)
+  (*         | `Lid _ | `Uid _ | `Ant _ as x -> x in  *)
+  (*       let n = mk_name _loc (to_vid i) in *)
+  (*       mk_symbol ~text:(`Snterm _loc n lev) *)
+  (*         ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None *)
   | "("; S{s}; ")" -> s ]
 
-  simple_pat "pat'":
-  ["`"; luident{s}  ->  {|$vrn:s|}
-  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-    {| $vrn:v $(mk_anti _loc ~c:"pat" n s)|}
-  |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|}
-  |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
-  |"`"; luident{s}; "_" -> {|$vrn:s _|}
-  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
-      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v))
-        (* here
-           we have to guarantee
-           {[
-           {:pat-|`a(a,b,c)|};;
-           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
-           ]}
-           is dumped correctly
-         *)
- ]
-  internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
-  {
-   "as"
-     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ]
-     "|"
-     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
-     "simple"
-     [ `STR(_,s) -> {| $str:s|}
-     | "_" -> {| _ |}
-     | `Lid x   ->  {| $lid:x|}
-     | "("; S{p}; ")" -> p] }
+ (*  simple_pat "pat'": *)
+ (*  ["`"; luident{s}  ->  {|$vrn:s|} *)
+ (*  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) -> *)
+ (*    {| $vrn:v $(mk_anti _loc ~c:"pat" n s)|} *)
+ (*  |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|} *)
+ (*  |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |} *)
+ (*  |"`"; luident{s}; "_" -> {|$vrn:s _|} *)
+ (*  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" -> *)
+ (*      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v)) *)
+ (*        (\* here *)
+ (*           we have to guarantee *)
+ (*           {[ *)
+ (*           {:pat-|`a(a,b,c)|};; *)
+ (*           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c") *)
+ (*           ]} *)
+ (*           is dumped correctly *)
+ (*         *\) *)
+ (* ] *)
+ (*  internal_pat "pat'": (\* FIXME such grammar should be deprecated soon*\) *)
+ (*  { *)
+ (*   "as" *)
+ (*     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ] *)
+ (*     "|" *)
+ (*     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ] *)
+ (*     "simple" *)
+ (*     [ `STR(_,s) -> {| $str:s|} *)
+ (*     | "_" -> {| _ |} *)
+ (*     | `Lid x   ->  {| $lid:x|} *)
+ (*     | "("; S{p}; ")" -> p] } *)
 
-  pattern:
-  [ `Lid i -> {:pat'| $lid:i |}
-  | "_" -> {:pat'| _ |}
-  | "("; pattern{p}; ")" -> p
-  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
+  
 
   string:
   [ `STR (_, s) -> {:exp| $str:s |}

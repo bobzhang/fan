@@ -97,9 +97,6 @@ val pattern : FGramDef.action_pattern Fgram.t
 
 
 
-val simple_pat : FGramDef.simple_pat Fgram.t
-
-val internal_pat : FGramDef.simple_pat Fgram.t
 
 (** return symbol with patterns (may override inferred patterns) *)
 val psymbol : FGramDef.symbol Fgram.t

@@ -280,7 +280,6 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       add name FDyn.stru_tag expand_stru;
     end
 
-    
 let make_parser entry =
   fun loc loc_name_opt s  ->
     Ref.protect2

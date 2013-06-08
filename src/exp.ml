@@ -76,41 +76,6 @@ end
 
 
 
-(* used in gram DDSL *)    
-class type antiquot_filter =object
-  inherit Objs.map
-  method get_captured_variables: (exp * exp) list
-  method clear_captured_variables: unit
-end
-      
-(* We don't do any parsing for antiquots here, so it's parser-independent *)  
-let capture_antiquot : antiquot_filter = object
-  inherit Objs.map as super
-  val mutable constraints =[]
-  method! pat = function
-    | `Ant(_loc,s) -> 
-        begin match s with {content=code;_} ->
-          (* begin  *)
-          (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
-          let cons = {| $lid:code |} in
-          let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
-          let cons' = {| $lid:code' |} in 
-          let () = constraints <- (cons,cons')::constraints in 
-          {:pat| $lid:code' |} (* only allows lidentifiers here *)
-        end
-    | p -> super#pat p 
-  method get_captured_variables =
-    constraints
-  method clear_captured_variables =
-    constraints <- []
-end
-
-let filter_pat_with_captured_variables pat= begin 
-  capture_antiquot#clear_captured_variables;
-  let pat=capture_antiquot#pat pat in
-  let constraints = capture_antiquot#get_captured_variables in
-  (pat,constraints)
-end
 
 
 

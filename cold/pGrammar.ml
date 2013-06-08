@@ -10,10 +10,6 @@ open Fsyntax
 
 open LibUtil
 
-open FanUtil
-
-let _ = FConfig.antiquotations := true
-
 let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
 
 let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"
@@ -72,10 +68,6 @@ let delete_rule_body = Fgram.mk "delete_rule_body"
 let simple_exp = Fgram.mk "simple_exp"
 
 let delete_rules = Fgram.mk "delete_rules"
-
-let simple_pat: simple_pat Fgram.t = Fgram.mk "simple_pat"
-
-let internal_pat = Fgram.mk "internal_pat"
 
 let _ =
   let grammar_entry_create x = Fgram.mk x in
@@ -733,6 +725,36 @@ let _ =
                (Fgram.mk_action
                   (fun (act : 'exp)  _  (_loc : FLoc.t)  ->
                      (act : 'opt_action )))))]));
+    Fgram.extend_single (pattern : 'pattern Fgram.t )
+      (None,
+        (None, None,
+          [([`Stoken
+               (((function | `Lid _ -> true | _ -> false)),
+                 (`App ((`Vrn "Lid"), `Any)))],
+             ("`Lid (_loc, i)\n",
+               (Fgram.mk_action
+                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                     match __fan_0 with
+                     | `Lid i -> (`Lid (_loc, i) : 'pattern )
+                     | _ -> failwith "`Lid (_loc, i)\n"))));
+          ([`Skeyword "_"],
+            ("`Any _loc\n",
+              (Fgram.mk_action
+                 (fun _  (_loc : FLoc.t)  -> (`Any _loc : 'pattern )))));
+          ([`Skeyword "("; `Sself; `Skeyword ")"],
+            ("p\n",
+              (Fgram.mk_action
+                 (fun _  (p : 'pattern)  _  (_loc : FLoc.t)  ->
+                    (p : 'pattern )))));
+          ([`Skeyword "(";
+           `Sself;
+           `Skeyword ",";
+           `Slist1sep (`Sself, (`Skeyword ","));
+           `Skeyword ")"],
+            ("tuple_com (p1 :: ps)\n",
+              (Fgram.mk_action
+                 (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
+                    (_loc : FLoc.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
     Fgram.extend_single (brace_pattern : 'brace_pattern Fgram.t )
       (None,
         (None, None,
@@ -911,193 +933,10 @@ let _ =
                                 (_loc, (`Normal _loc),
                                   (`Lid (_loc, (n.tvar))))) ~pattern:None : 
                     'symbol )))));
-          ([`Stoken
-              (((function | `Ant (("nt"|""),_) -> true | _ -> false)),
-                (`App
-                   ((`App ((`Vrn "Ant"), (`Bar ((`Str "nt"), (`Str ""))))),
-                     `Any)));
-           `Sopt (`Snterm (Fgram.obj (level_str : 'level_str Fgram.t )))],
-            ("let i = parse_ident _loc s in\nlet rec to_vid (x : ident) =\n  (match x with\n   | `Apply _ -> failwithf \"Id.to_vid\"\n   | `Dot (_loc,a,b) -> `Dot (_loc, (to_vid a), (to_vid b))\n   | `Lid _|`Uid _|`Ant _ as x -> x : vid ) in\nlet n = mk_name _loc (to_vid i) in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n",
-              (Fgram.mk_action
-                 (fun (lev : 'level_str option)  (__fan_0 : [> FToken.t]) 
-                    (_loc : FLoc.t)  ->
-                    match __fan_0 with
-                    | `Ant (("nt"|""),s) ->
-                        (let i = parse_ident _loc s in
-                         let rec to_vid (x : ident) =
-                           (match x with
-                            | `Apply _ -> failwithf "Id.to_vid"
-                            | `Dot (_loc,a,b) ->
-                                `Dot (_loc, (to_vid a), (to_vid b))
-                            | `Lid _|`Uid _|`Ant _ as x -> x : vid ) in
-                         let n = mk_name _loc (to_vid i) in
-                         mk_symbol ~text:(`Snterm (_loc, n, lev))
-                           ~styp:(`Quote
-                                    (_loc, (`Normal _loc),
-                                      (`Lid (_loc, (n.tvar))))) ~pattern:None : 
-                        'symbol )
-                    | _ ->
-                        failwith
-                          "let i = parse_ident _loc s in\nlet rec to_vid (x : ident) =\n  (match x with\n   | `Apply _ -> failwithf \"Id.to_vid\"\n   | `Dot (_loc,a,b) -> `Dot (_loc, (to_vid a), (to_vid b))\n   | `Lid _|`Uid _|`Ant _ as x -> x : vid ) in\nlet n = mk_name _loc (to_vid i) in\nmk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n"))));
           ([`Skeyword "("; `Sself; `Skeyword ")"],
             ("s\n",
               (Fgram.mk_action
                  (fun _  (s : 'symbol)  _  (_loc : FLoc.t)  -> (s : 'symbol )))))]));
-    Fgram.extend_single (simple_pat : 'simple_pat Fgram.t )
-      (None,
-        (None, None,
-          [([`Skeyword "`";
-            `Snterm (Fgram.obj (luident : 'luident Fgram.t ))],
-             ("`Vrn (_loc, s)\n",
-               (Fgram.mk_action
-                  (fun (s : 'luident)  _  (_loc : FLoc.t)  ->
-                     (`Vrn (_loc, s) : 'simple_pat )))));
-          ([`Skeyword "`";
-           `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-           `Stoken
-             (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
-               (`App
-                  ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "anti"))))),
-                    `Any)))],
-            ("`App (_loc, (`Vrn (_loc, v)), (mk_anti _loc ~c:\"pat\" n s))\n",
-              (Fgram.mk_action
-                 (fun (__fan_2 : [> FToken.t])  (v : 'luident)  _ 
-                    (_loc : FLoc.t)  ->
-                    match __fan_2 with
-                    | `Ant ((""|"anti" as n),s) ->
-                        (`App
-                           (_loc, (`Vrn (_loc, v)),
-                             (mk_anti _loc ~c:"pat" n s)) : 'simple_pat )
-                    | _ ->
-                        failwith
-                          "`App (_loc, (`Vrn (_loc, v)), (mk_anti _loc ~c:\"pat\" n s))\n"))));
-          ([`Skeyword "`";
-           `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-           `Stoken
-             (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
-            ("`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n",
-              (Fgram.mk_action
-                 (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
-                    (_loc : FLoc.t)  ->
-                    match __fan_2 with
-                    | `STR (_,v) ->
-                        (`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v))) : 
-                        'simple_pat )
-                    | _ ->
-                        failwith
-                          "`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n"))));
-          ([`Skeyword "`";
-           `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-           `Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)))],
-            ("`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n",
-              (Fgram.mk_action
-                 (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
-                    (_loc : FLoc.t)  ->
-                    match __fan_2 with
-                    | `Lid x ->
-                        (`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x))) : 
-                        'simple_pat )
-                    | _ ->
-                        failwith
-                          "`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n"))));
-          ([`Skeyword "`";
-           `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-           `Skeyword "_"],
-            ("`App (_loc, (`Vrn (_loc, s)), (`Any _loc))\n",
-              (Fgram.mk_action
-                 (fun _  (s : 'luident)  _  (_loc : FLoc.t)  ->
-                    (`App (_loc, (`Vrn (_loc, s)), (`Any _loc)) : 'simple_pat )))));
-          ([`Skeyword "`";
-           `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-           `Skeyword "(";
-           `Slist1sep
-             ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
-               (`Skeyword ","));
-           `Skeyword ")"],
-            ("AstLib.appl_of_list ((`Vrn (_loc, s)) :: v)\n",
-              (Fgram.mk_action
-                 (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _ 
-                    (_loc : FLoc.t)  ->
-                    (AstLib.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat )))))]));
-    Fgram.extend (internal_pat : 'internal_pat Fgram.t )
-      (None,
-        [((Some "as"), None,
-           [([`Sself;
-             `Skeyword "as";
-             `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-              ("`Alias (_loc, p1, s)\n",
-                (Fgram.mk_action
-                   (fun (s : 'a_lident)  _  (p1 : 'internal_pat) 
-                      (_loc : FLoc.t)  ->
-                      (`Alias (_loc, p1, s) : 'internal_pat )))))]);
-        ((Some "|"), None,
-          [([`Sself; `Skeyword "|"; `Sself],
-             ("`Bar (_loc, p1, p2)\n",
-               (Fgram.mk_action
-                  (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat) 
-                     (_loc : FLoc.t)  ->
-                     (`Bar (_loc, p1, p2) : 'internal_pat )))))]);
-        ((Some "simple"), None,
-          [([`Stoken
-               (((function | `STR (_,_) -> true | _ -> false)),
-                 (`App ((`App ((`Vrn "STR"), `Any)), `Any)))],
-             ("`Str (_loc, s)\n",
-               (Fgram.mk_action
-                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                     match __fan_0 with
-                     | `STR (_,s) -> (`Str (_loc, s) : 'internal_pat )
-                     | _ -> failwith "`Str (_loc, s)\n"))));
-          ([`Skeyword "_"],
-            ("`Any _loc\n",
-              (Fgram.mk_action
-                 (fun _  (_loc : FLoc.t)  -> (`Any _loc : 'internal_pat )))));
-          ([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)))],
-            ("`Lid (_loc, x)\n",
-              (Fgram.mk_action
-                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                    match __fan_0 with
-                    | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
-                    | _ -> failwith "`Lid (_loc, x)\n"))));
-          ([`Skeyword "("; `Sself; `Skeyword ")"],
-            ("p\n",
-              (Fgram.mk_action
-                 (fun _  (p : 'internal_pat)  _  (_loc : FLoc.t)  ->
-                    (p : 'internal_pat )))))])]);
-    Fgram.extend_single (pattern : 'pattern Fgram.t )
-      (None,
-        (None, None,
-          [([`Stoken
-               (((function | `Lid _ -> true | _ -> false)),
-                 (`App ((`Vrn "Lid"), `Any)))],
-             ("`Lid (_loc, i)\n",
-               (Fgram.mk_action
-                  (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                     match __fan_0 with
-                     | `Lid i -> (`Lid (_loc, i) : 'pattern )
-                     | _ -> failwith "`Lid (_loc, i)\n"))));
-          ([`Skeyword "_"],
-            ("`Any _loc\n",
-              (Fgram.mk_action
-                 (fun _  (_loc : FLoc.t)  -> (`Any _loc : 'pattern )))));
-          ([`Skeyword "("; `Sself; `Skeyword ")"],
-            ("p\n",
-              (Fgram.mk_action
-                 (fun _  (p : 'pattern)  _  (_loc : FLoc.t)  ->
-                    (p : 'pattern )))));
-          ([`Skeyword "(";
-           `Sself;
-           `Skeyword ",";
-           `Slist1sep (`Sself, (`Skeyword ","));
-           `Skeyword ")"],
-            ("tuple_com (p1 :: ps)\n",
-              (Fgram.mk_action
-                 (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
-                    (_loc : FLoc.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
     Fgram.extend_single (string : 'string Fgram.t )
       (None,
         (None, None,
