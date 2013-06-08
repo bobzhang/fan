@@ -79,7 +79,7 @@ let char s =
   else if String.length s = 0 then failwith "invalid char token"
   else
     match XStream.of_string s with parser
-    | '\\'; x = backslash  -> x
+    | '\\'; x = backslash  ?? "Invalid char token"-> x
     |  -> failwith "invalid char token" 
 
 (*

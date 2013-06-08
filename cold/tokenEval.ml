@@ -93,7 +93,9 @@ let char s =
            begin
              XStream.junk __strm;
              (try backslash __strm
-              with | XStream.Failure  -> raise (XStream.Error ""))
+              with
+              | XStream.Failure  ->
+                  raise (XStream.Error "Invalid char token"))
            end
        | _ -> failwith "invalid char token")
 

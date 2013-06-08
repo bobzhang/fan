@@ -373,6 +373,9 @@
     inherit foldbase as super
     super#          
   #+END_SRC
+
+  
+* 39 remove all XStream.Error ""
 * COMMENT
 ** rules
   {-# RULES
