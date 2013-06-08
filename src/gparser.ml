@@ -188,7 +188,6 @@ and parser_of_symbol entry s (* _nlevn *) =
     | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
     | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)          
     | `Sself -> fun strm -> entry.estart 0 strm 
-    (* | `Snext -> fun strm -> entry.estart (nlevn + 1 ) strm  *)
     | `Skeyword kwd -> fun strm ->
         (match XStream.peek strm with
         | Some (tok,_) when FToken.match_keyword kwd tok ->

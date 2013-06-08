@@ -81,8 +81,7 @@ let rec check_gram entry = function
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
-
-  (* | `Snext *) | `Sself | `Stoken _ | `Skeyword _ -> ()
+  | `Sself | `Stoken _ | `Skeyword _ -> ()
         
 and tree_check_gram entry = function
   | Node {node ; brother; son } -> begin 
@@ -325,7 +324,6 @@ let  eoi_entry e =
         (symbs @
          [`Stoken
             ((function | `EOI -> true | _ -> false),
-             (* (`Normal, "`EOI") *)
              (`Vrn "EOI"), "`EOI"
             )],
          (annot, Gaction.mk (fun _ -> act)))) prods in

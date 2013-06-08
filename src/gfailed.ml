@@ -17,10 +17,7 @@ let  name_of_symbol entry : [> symbol] -> string  =  function
   | `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | `Sself  -> "[" ^ entry.ename ^ "]"
-  | `Stoken (_, _,descr) ->
-      (* FGramDef.string_of_simple_pat descr *)
-(* (\* FIXME error message important *\) *)
-      (* name_of_descr descr *) descr
+  | `Stoken (_, _,descr) -> descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
 
@@ -50,7 +47,7 @@ let tree_in_entry prev_symb tree = function
       and search_symbol symb =
         match symb with
         | `Snterm _ | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
-          `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Stoken _ (* | `Stree _ *) | `Skeyword _
+          `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Stoken _ | `Skeyword _
         | `Speek _
           when symb == prev_symb ->
             Some symb
@@ -111,7 +108,6 @@ let rec name_of_symbol_failed entry  = function
     `Slist1 s | `Slist1sep (s, _) |
     `Sopt s | `Stry s | `Speek s  ->
       name_of_symbol_failed entry s
-  (* | `Stree t -> name_of_tree_failed entry t *)
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
   match x with 
@@ -133,7 +129,6 @@ and name_of_tree_failed entry x =
             (fun s tok ->
               ((if s = "" then "" else s ^ " then ") ^
                (match tok with
-                 (* FIXME important *)(* name_of_descr descr *)
                | `Stoken (_, _,descr) ->  descr
                | `Skeyword kwd -> kwd))) "" tokl 
       end
