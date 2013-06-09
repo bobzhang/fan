@@ -264,55 +264,11 @@ open LibUtil
   | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
           ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
-  (* | `Ant(("nt"|""),s); OPT level_str{lev} -> *)
-  (*       let i = parse_ident _loc s in *)
-  (*       let rec to_vid   (x:ident) : vid = *)
-  (*         match x with *)
-  (*         |`Apply _ -> failwithf "Id.to_vid" (\* FIXME type system may help*\) *)
-  (*         |`Dot(_loc,a,b) -> `Dot(_loc, to_vid a, to_vid b) *)
-  (*         | `Lid _ | `Uid _ | `Ant _ as x -> x in  *)
-  (*       let n = mk_name _loc (to_vid i) in *)
-  (*       mk_symbol ~text:(`Snterm _loc n lev) *)
-  (*         ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None *)
   | "("; S{s}; ")" -> s ]
-
- (*  simple_pat "pat'": *)
- (*  ["`"; luident{s}  ->  {|$vrn:s|} *)
- (*  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) -> *)
- (*    {| $vrn:v $(mk_anti _loc ~c:"pat" n s)|} *)
- (*  |"`"; luident{s}; `STR(_,v) -> {| $vrn:s $str:v|} *)
- (*  |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |} *)
- (*  |"`"; luident{s}; "_" -> {|$vrn:s _|} *)
- (*  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" -> *)
- (*      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v)) *)
- (*        (\* here *)
- (*           we have to guarantee *)
- (*           {[ *)
- (*           {:pat-|`a(a,b,c)|};; *)
- (*           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c") *)
- (*           ]} *)
- (*           is dumped correctly *)
- (*         *\) *)
- (* ] *)
- (*  internal_pat "pat'": (\* FIXME such grammar should be deprecated soon*\) *)
- (*  { *)
- (*   "as" *)
- (*     [S{p1} ; "as";a_lident{s} -> {| ($p1 as $s) |} ] *)
- (*     "|" *)
- (*     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ] *)
- (*     "simple" *)
- (*     [ `STR(_,s) -> {| $str:s|} *)
- (*     | "_" -> {| _ |} *)
- (*     | `Lid x   ->  {| $lid:x|} *)
- (*     | "("; S{p}; ")" -> p] } *)
-
-  
 
   string:
   [ `STR (_, s) -> {:exp| $str:s |}
   | `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
-
-
 
   simple_exp:
   [ a_lident{i} -> (i : alident :>exp) 

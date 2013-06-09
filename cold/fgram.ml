@@ -48,7 +48,6 @@ let default_keywords =
   ":";
   "|";
   "[<";
-  "ENDIF";
   "class";
   "==";
   ".";
@@ -60,7 +59,6 @@ let default_keywords =
   "end";
   "assert";
   "external";
-  "THEN";
   "+";
   "virtual";
   "to";
@@ -71,7 +69,6 @@ let default_keywords =
   "else";
   "*";
   "val";
-  "IFNDEF";
   "constraint";
   "type";
   "new";
@@ -104,7 +101,6 @@ let default_keywords =
   "if";
   "while";
   "IN";
-  "IFDEF";
   "END";
   "rec";
   "parser";
@@ -115,7 +111,6 @@ let default_keywords =
   "match";
   "open";
   "module";
-  "INCLUDE";
   "?";
   ">";
   "let";

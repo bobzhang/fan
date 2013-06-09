@@ -14,17 +14,17 @@ let default_keywords =
    "when"; ","; "mod"; "then"; "|]"; "initializer";
    "#";  "!"; "-." ; "_"; ">]" ; "??" ; "in"
      ; "->"; "downto"; "lsr"; "as"; "function"; "begin";
-   ".."; ")"; "="; ":"; "|"; "[<"; "ENDIF";
+   ".."; ")"; "="; ":"; "|"; "[<"; 
    "class"; "=="; "."; "{<"; "land"; ">}"; "lxor"; "do";
-   "end"; "assert"; "external"; "THEN"; "+"; "virtual";
+   "end"; "assert"; "external";  "+"; "virtual";
    "to"; "try"; ":>"; "lsl"; "struct"; "else"; "*"; "val"
-     ; "IFNDEF"; "constraint"; "type"; "new"; "of";
+     ;  "constraint"; "type"; "new"; "of";
    "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
      ; "'"; ";"; "mutable"; "UNDEF"; "lazy"; "["; "}";
    "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
-   ":="; "DEFINE"; "if"; "while"; "IN"; "IFDEF"; "END"
+   ":="; "DEFINE"; "if"; "while"; "IN";  "END"
      ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
-     ; "open"; "module"; "INCLUDE"; "?"; ">"; "let"; "lor"; "["]
+     ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
 
 let gkeywords = ref (SSet.of_list default_keywords)
   
@@ -95,8 +95,7 @@ let debug_filtered_token_stream entry tokens =
 let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
   try
     parse_string entry ~loc s
-  with
-  | FLoc.Exc_located(loc, e) -> begin
+  with FLoc.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
       FLoc.error_report (loc,s);
       FLoc.raise loc e ;
@@ -182,12 +181,6 @@ let wrap_stream_parser ?(loc=FLoc.mk "<stream>") p s =
       FLoc.raise loc e;
     end 
 
-(* type ('a,'b,'c)fold  = *)
-(*     'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c *)
-
-(* type ('a,'b,'c) foldsep  = *)
-(*     'b t -> symbol list -> ('a XStream.t -> 'b) -> *)
-(*       ('a XStream.t -> unit) -> 'a XStream.t -> 'c *)
 
 
 

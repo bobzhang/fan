@@ -11,8 +11,7 @@ let apply () = begin
   {:extend|
 
     stru: First
-    [ macro_def{x} -> FCMacroGen.execute_macro ~exp ~pat {:stru|let _ = () |} (*FIXME*)
-        (fun a b -> {:stru| $a;; $b |}) x ]
+    [ macro_def{x} -> FCMacroGen.execute_macro ~exp ~pat {:stru|let _ = () |}  x ]
     macro_def:
     [ "DEFINE"; `Uid i; opt_macro_value{def} -> FCMacroGen.Def i def
     | "UNDEF";  uident{i} -> FCMacroGen.Und i]
@@ -25,8 +24,6 @@ let apply () = begin
     exp: Level "top"
     [ "DEFINE"; `Lid i; "="; exp{def}; "IN"; exp{body} ->
         (new Exp.subst _loc [(i, def)])#exp body ] 
-
-
     let kwd:
     [ `KEYWORD ("DEFINE" | "UNDEF"|"IN" as x) -> x ]
     (* dirty hack to allow polymorphic variants using the introduced keywords.FIXME *)        
@@ -36,18 +33,6 @@ let apply () = begin
     pat: Before "simple"
     [ "`"; kwd{kwd} -> {:pat| $vrn:kwd |}
     | "`"; luident{s} -> {:pat| $vrn:s |} ] |};
-  Foptions.add
-    ("-D",
-     (FArg.String (FCMacroGen.parse_def ~exp ~pat)  ),
-     "<string> Define for IFDEF instruction.");
-  Foptions.add
-    ("-U",
-     (FArg.String (FCMacroGen.undef ~exp ~pat)),
-     "<string> Undefine for IFDEF instruction.");
-  Foptions.add
-    ("-I",
-     (FArg.String FIncludeDir.add),
-     "<string> Add a directory to INCLUDE search path.");
 end;;
     
 
