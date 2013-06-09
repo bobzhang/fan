@@ -376,6 +376,32 @@
 
   
 * 39 remove all XStream.Error ""
+
+* 40 bug keyword
+
+  #+BEGIN_SRC ocaml
+    {:extend|
+     let kwd:
+           [`KEYWORD("DEFINE"|"UNDEF"|"IN"){x} -> x]
+     |}
+    
+    Fgram.extend_single (kwd : 'kwd Fgram.t )
+          (None,
+            (None, None,
+              [([`Stoken
+                   (((function
+                      | `KEYWORD ("DEFINE"|"UNDEF"|"IN") -> true
+                      | _ -> false)),
+                     (`App
+                        ((`Vrn "KEYWORD"),
+                          (`Bar
+                             ((`Bar ((`Str "DEFINE"), (`Str "UNDEF"))),
+                               (`Str "IN"))))),
+                     "`KEYWORD \"DEFINE\"| \"UNDEF\"| \"IN\"")],
+                 ("x\n",
+                   (Fgram.mk_action
+                      (fun (x : [> FToken.t])  (_loc : FLoc.t)  -> (x : 'kwd )))))]))  
+  #+END_SRC
 * COMMENT
 ** rules
   {-# RULES

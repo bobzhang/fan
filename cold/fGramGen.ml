@@ -19,9 +19,9 @@ let ghost = FLoc.ghost
 let grammar_module_name = ref (`Uid (ghost, "Fgram"))
 
 let gm () =
-  (match FConfig.compilation_unit.contents with
-   | Some "Fgram" -> `Uid (ghost, "")
-   | Some _|None  -> grammar_module_name.contents : vid )
+  match FConfig.compilation_unit.contents with
+  | Some "Fgram" -> `Uid (ghost, "")
+  | Some _|None  -> grammar_module_name.contents
 
 let mk_entry ~local  ~name  ~pos  ~levels  = { name; pos; levels; local }
 
@@ -126,8 +126,7 @@ let rec make_exp (tvar : string) (x : text) =
     | `Snterm (_loc,n,lev) ->
         let obj: FAst.exp =
           `App
-            (_loc,
-              (`Field (_loc, (gm () : vid  :>exp), (`Lid (_loc, "obj")))),
+            (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
               (`Constraint
                  (_loc, (n.exp),
                    (`App
@@ -200,7 +199,8 @@ let text_of_action (_loc : loc) (psl : symbol list)
      List.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
           match x with
-          | { pattern = Some p; text = `Stok _;_} ->
+          | { pattern = Some p; text = `Stok _;_} when not (is_irrefut_pat p)
+              ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
           | _ -> ep) ([], []) psl in
@@ -255,14 +255,15 @@ let text_of_action (_loc : loc) (psl : symbol list)
           | Some p when is_irrefut_pat p ->
               let p = typing p (make_ctyp s.styp tvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
-          | None  ->
-              (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp )
           | Some _ ->
               let p =
                 typing
                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
                   (make_ctyp s.styp tvar) in
-              (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )) e psl in
+              (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
+          | None  ->
+              (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp )) e
+       psl in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
 
@@ -386,7 +387,8 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                        (`Str (_loc, i)))),
                   (`App
                      (_loc,
-                       (`Dot (_loc, (gm () :>ident), (`Lid (_loc, "t")))),
+                       (`Dot
+                          (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
         FAst.bind )
     | { exp;_} ->

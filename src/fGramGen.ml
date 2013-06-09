@@ -13,7 +13,7 @@ let ghost = FLoc.ghost
 
 (* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
 let grammar_module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
-let gm () : vid =
+let gm () =
   match !FConfig.compilation_unit with
   |Some "Fgram" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
@@ -105,7 +105,7 @@ let rec make_exp (tvar : string) (x:text) =
     | `Skeyword (_loc, kwd) ->  {| `Skeyword $str:kwd |}
     | `Snterm (_loc, n, lev) ->
         let obj =
-          {| ($((gm() : vid :> exp)).obj
+          {| ($(id:(gm() (* : vid :> exp *))).obj
                 ($(n.exp) : '$(lid:n.tvar) $(id:(gm(): vid :> ident)).t ))|} in 
         (match lev with
         | Some lab -> {| `Snterml ($obj,$str:lab)|}
@@ -148,7 +148,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
   let (_,tok_match_pl) =
     List.fold_lefti
       (fun i ((oe,op) as ep)  x -> match x with 
-      | {pattern=Some p ; text=`Stok _;_ } ->
+      | {pattern=Some p ; text=`Stok _;_ } when not (is_irrefut_pat p)->
           let id = prefix ^ string_of_int i in
           ( {|$lid:id|} :: oe, p:: op)
       | _ ->  ep   ) ([],[])  psl in
@@ -164,7 +164,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
           let action_string = Ast2pt.to_string_exp act in
           {|fun ($locid :FLoc.t) ->
             match $exp with
-            | $(pat:pat) -> $e1
+            | $pat -> $e1
             | _ -> failwith $`str:action_string |}  in
   let (_,txt) =
     List.fold_lefti
@@ -178,11 +178,12 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
         | Some p when is_irrefut_pat p ->
             let p = typing p (make_ctyp s.styp tvar) in
             {| fun $p -> $txt |}
-        | None -> {| fun _ -> $txt |}
         | Some _ ->
             let p =
               typing {:pat| $(lid:prefix^string_of_int i) |} (make_ctyp s.styp tvar)  in
-            {| fun $p -> $txt |} )  e psl in
+            {| fun $p -> $txt |}
+        | None -> {| fun _ -> $txt |}
+      )  e psl in
   {| $(id:(gm())).mk_action $txt |}
 
     
@@ -282,7 +283,7 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
         {:exp| $(id:gm()).mk |} in
   let local_bind_of_name = function
     | {exp = {:exp@_| $lid:i |} ; tvar = x; loc = _loc} ->
-      {:bind| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():>ident)).t ) |}
+      {:bind| $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) |}
     | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
   match locals with
   | [] -> default 
