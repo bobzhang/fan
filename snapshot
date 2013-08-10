@@ -1,5 +1,10 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
+
+# e.g, snapshot tmp
+# default to cold
+
+
 set -e
 dest=${1:-cold}
 echo "snapshoping to $dest"

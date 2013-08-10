@@ -208,9 +208,7 @@ let quotation_error_to_string (loc,name, position, ctx, exn) =
                 bprintf ppf "%a:" FLoc.print (FLoc.set_file_name dump_file loc);
               end
             with _ ->
-                 bprintf ppf
-                         "Error while dumping result in file %S; dump aborted"
-                         dump_file)
+                 bprintf ppf "Error while dumping result in file %S; dump aborted"  dump_file)
          | None ->
             bprintf ppf
                     "\n(consider setting variable AstQuotation.dump_file, or using the -QD option)"
@@ -267,9 +265,7 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
         | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
               (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
         |p -> p  in
-
       (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
-      
       match loc_name_opt with
       | None -> subst_first_loc (!FLoc.name) exp_ast
       | Some "_" -> exp_ast
@@ -286,43 +282,6 @@ let make_parser entry =
       (FConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
       (fun _ -> Fgram.parse_string (Fgram.eoi_entry entry) ~loc  s);;
-
-(* DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);; *)
-
-(* DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> *)
-(*   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));; *)
-
-  
-(* let of_stru = REGISTER(FDyn.stru_tag); *)
-(* let of_stru_with_filter = REGISTER_FILTER(FDyn.stru_tag); *)
-(* let of_pat  = REGISTER(FDyn.pat_tag); *)
-(* let of_pat_with_filter  = REGISTER_FILTER(FDyn.pat_tag); *)
-(* let of_clfield  = REGISTER(FDyn.clfield_tag); *)
-(* let of_clfield_with_filter  = REGISTER_FILTER(FDyn.clfield_tag); *)
-(* let of_case = REGISTER(FDyn.case_tag); *)
-(* let of_case_with_filter = REGISTER_FILTER(FDyn.case_tag); *)
-  
-
-(* (\* both [exp] and [stru] positions are registered *\) *)
-(* let of_exp ~name ~entry = *)
-(*   let expand_fun =  make_parser entry in *)
-(*   let mk_fun loc loc_name_opt s = *)
-(*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
-(*       add name FDyn.exp_tag expand_fun ; *)
-(*       add name FDyn.stru_tag mk_fun ; *)
-(*     end ; *)
-  
-(* let of_exp_with_filter ~name ~entry ~filter = *)
-(*   let expand_fun = *)
-(*     fun loc loc_name_opt s -> filter ( make_parser entry loc loc_name_opt s) in *)
-(*   let mk_fun loc loc_name_opt s = *)
-(*     {:stru'@loc| $(exp:expand_fun loc loc_name_opt s) |} in begin *)
-(*       add name FDyn.exp_tag expand_fun ; *)
-(*       add name FDyn.stru_tag mk_fun ; *)
-(*     end ; *)
-  
-
-
 
   
 let of_stru ~name  ~entry  = add name FDyn.stru_tag (make_parser entry)

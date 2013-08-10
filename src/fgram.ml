@@ -10,7 +10,7 @@ module Action = Gaction
 
 let default_keywords =
   ["&&"; "functor"; "||"; "private"; "sig"; "include";
-   "exception"; "inherit"; "<"; "~"; "and"; "ELSE";
+   "exception"; "inherit"; "<"; "~"; "and"; (* "ELSE"; *)
    "when"; ","; "mod"; "then"; "|]"; "initializer";
    "#";  "!"; "-." ; "_"; ">]" ; "??" ; "in"
      ; "->"; "downto"; "lsr"; "as"; "function"; "begin";
@@ -20,9 +20,9 @@ let default_keywords =
    "to"; "try"; ":>"; "lsl"; "struct"; "else"; "*"; "val"
      ;  "constraint"; "type"; "new"; "of";
    "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
-     ; "'"; ";"; "mutable"; "UNDEF"; "lazy"; "["; "}";
+     ; "'"; ";"; "mutable"(* ; "UNDEF" *); "lazy"; "["; "}";
    "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
-   ":="; "DEFINE"; "if"; "while"; "IN";  "END"
+   ":="; (* "DEFINE"; *) "if"; "while"(* ; "IN";  "END" *)
      ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
      ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
 
