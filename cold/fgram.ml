@@ -22,7 +22,6 @@ let default_keywords =
   "<";
   "~";
   "and";
-  "ELSE";
   "when";
   ",";
   "mod";
@@ -84,7 +83,6 @@ let default_keywords =
   "'";
   ";";
   "mutable";
-  "UNDEF";
   "lazy";
   "[";
   "}";
@@ -97,11 +95,8 @@ let default_keywords =
   "asr";
   "[>";
   ":=";
-  "DEFINE";
   "if";
   "while";
-  "IN";
-  "END";
   "rec";
   "parser";
   "object";
