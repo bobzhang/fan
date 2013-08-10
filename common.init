@@ -50,7 +50,7 @@ let env = !Toploop.toplevel_env;;
 
 module O = Obj;;
 open FAst;;
-open Exp;;
+
 
 
 (* test dump *)
