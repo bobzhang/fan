@@ -795,7 +795,7 @@ let rec exp (x : exp) = with exp match x with
           let e2 = `Seq loc el in
           mkexp loc (Pexp_while (exp e1) (exp e2))
       | `LetOpen(_loc,i,e) ->
-              mkexp _loc (Pexp_open (long_uident i) (exp e))
+              mkexp _loc (Pexp_open Fresh (long_uident i) (exp e))
       | `Package_exp (_loc,`Constraint(_,me,pt)) -> 
           mkexp _loc
             (Pexp_constraint
@@ -979,7 +979,7 @@ and sigi (s:sigi) (l:signature) :signature =
       let si =  Pmodtype_manifest (mtyp mt)  in
       mksig loc (Psig_modtype (with_loc n sloc) si) :: l
   | `Open (loc,id) ->
-      mksig loc (Psig_open (long_uident id)) :: l
+      mksig loc (Psig_open Fresh (long_uident id)) :: l
   | `Type (loc,tdl) -> mksig loc (Psig_type (mktype_decl tdl )) :: l
   | `Val (loc,`Lid(sloc,n),t) ->
       mksig loc (Psig_value (with_loc n sloc) (mkvalue_desc loc t [])) :: l
@@ -1056,7 +1056,7 @@ and stru (s:stru) (l:structure) : structure =
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
         mkstr loc (Pstr_modtype (with_loc n sloc) (mtyp mt)) :: l
   | `Open (loc,id) ->
-        mkstr loc (Pstr_open (long_uident id)) :: l
+        mkstr loc (Pstr_open Fresh (long_uident id)) :: l
   | `Type (loc,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
   | `TypeWith(_loc,tdl, ns) ->
       (* FIXME all traversal needs to deal with TypeWith later .. *)
