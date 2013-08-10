@@ -1,7 +1,7 @@
 
 (** Ast Utilities for [FAst.exp] *)
   
-open FAst
+(* open FAst *)
 
 
 (** Environment is a [string*pat] pair,
@@ -9,9 +9,9 @@ open FAst
    [exp] node into [pat] node.
    when do the conversion, if the exp node has an identifier which
    has a special meaning, then that replacment will be used  *)  
-val substp : loc -> (string * pat) list -> exp -> pat
+(* val substp : loc -> (string * pat) list -> exp -> pat *)
 
-class subst : loc -> (string * exp) list -> Objs.map
+(* class subst : loc -> (string * exp) list -> Objs.map *)
 
 (* class type antiquot_filter =object *)
 (*   inherit Objs.map *)

@@ -25,9 +25,14 @@ temp*
 /.emacs.desktop
 /.emacs.desktop.lock
 .elc
+.\#*
+*.s
+*.ll
+
+
+
 auto-save-list
 tramp
-.\#*
 
 # Org-mode
 .org-id-locations
@@ -55,8 +60,6 @@ op4/
 debug/
 
 olvm
-*.s
-*.ll
 o
 os
 top/

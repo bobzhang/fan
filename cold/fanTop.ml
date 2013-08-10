@@ -31,7 +31,7 @@ let _ =
       ((fun loc  txt  ->
           Toploop.print_warning loc Format.err_formatter
             (Warnings.Camlp4 txt)));
-    AstParsers.use_parsers ["revise"; "stream"; "macro"]
+    AstParsers.use_parsers ["revise"; "stream"]
   end
 
 let _ =

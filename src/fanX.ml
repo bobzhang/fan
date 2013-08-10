@@ -34,7 +34,7 @@ let _ =
           | _ -> None );
 
     Foptions.adds MkFan.initial_spec_list;
-    AstParsers.use_parsers [ "revise"; "stream"; "macro";];
+    AstParsers.use_parsers [ "revise"; "stream"; (* "macro"; *)];
     try
       FArg.parse
         Foptions.init_spec_list

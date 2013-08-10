@@ -186,8 +186,6 @@ let _ =
 
 open PFan
 
-open PMacro
-
 open PGrammar
 
 open PStream

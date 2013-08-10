@@ -27,6 +27,8 @@ let remove_underscores s =
       s in
   Buffer.contents buf
 
+let ant_error loc = error loc "antiquotation not expected here"
+
 let rec normalize_acc =
   function
   | (`Dot (_loc,i1,i2) : FAst.ident) ->
@@ -40,19 +42,19 @@ let mkvirtual: flag -> Asttypes.virtual_flag =
   function
   | `Positive _ -> Virtual
   | `Negative _ -> Concrete
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let mkdirection: flag -> Asttypes.direction_flag =
   function
   | `Positive _ -> Upto
   | `Negative _ -> Downto
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let mkrf: flag -> Asttypes.rec_flag =
   function
   | `Positive _ -> Recursive
   | `Negative _ -> Nonrecursive
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let ident_tag (i : ident) =
   let rec self i acc =
@@ -153,14 +155,14 @@ let rec ctyp (x : ctyp) =
         match row with
         | `Negative _ -> []
         | `Positive _ -> [mkfield _loc Pfield_var]
-        | `Ant _ -> error _loc "antiquotation not expected here" in
+        | `Ant _ -> ant_error _loc in
       mktyp _loc (Ptyp_object xs)
   | `TyObj (_loc,fl,row) ->
       let xs =
         match row with
         | `Negative _ -> []
         | `Positive _ -> [mkfield _loc Pfield_var]
-        | `Ant _ -> error _loc "antiquotation not expected here" in
+        | `Ant _ -> ant_error _loc in
       mktyp _loc (Ptyp_object (meth_list fl xs))
   | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
   | `Package (_loc,pt) ->
@@ -199,7 +201,7 @@ and row_field (x : row_field) acc =
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
   | `TyVrnOf (_loc,`C (_,i),t) -> (Rtag (i, false, [ctyp t])) :: acc
   | `Bar (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
   | `Ctyp (_,t) -> (Rinherit (ctyp t)) :: acc
   | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
 and meth_list (fl : name_ctyp) acc =
@@ -243,7 +245,7 @@ let mkprivate (x : flag) =
   match x with
   | `Positive _ -> Private
   | `Negative _ -> Public
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let mktrecord (x : name_ctyp) =
   match x with
@@ -271,7 +273,7 @@ let type_kind (x : type_repr) =
   match x with
   | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem t []))
   | `Sum (_loc,t) -> Ptype_variant (List.map mkvariant (list_of_or t []))
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let mkvalue_desc loc t (p : strings list) =
   let ps =
@@ -284,7 +286,7 @@ let mkmutable (x : flag) =
   match x with
   | `Positive _ -> Mutable
   | `Negative _ -> Immutable
-  | `Ant (_loc,_) -> error _loc "antiquotation not expected here"
+  | `Ant (_loc,_) -> ant_error _loc
 
 let paolab (lab : string) (p : pat) =
   (match (lab, p) with
@@ -300,7 +302,7 @@ let quote_map x =
         | `Positive _ -> (true, false)
         | `Negative _ -> (false, true)
         | `Normal _ -> (false, false)
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+        | `Ant (_loc,_) -> ant_error _loc in
       ((Some (with_loc s sloc)), tuple)
   | `QuoteAny (_loc,p) ->
       let tuple =
@@ -308,7 +310,7 @@ let quote_map x =
         | `Positive _ -> (true, false)
         | `Negative _ -> (false, true)
         | `Normal _ -> (false, false)
-        | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+        | `Ant (_loc,_) -> ant_error _loc in
       (None, tuple)
   | _ -> errorf (loc_of x) "quote_map %s" (dump_ctyp x)
 
@@ -701,7 +703,7 @@ let rec exp (x : exp) =
               FAst.case )
           | (`Bar (_loc,a1,a2) : FAst.case) ->
               (`Bar (_loc, (f a1), (f a2)) : FAst.case )
-          | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+          | `Ant (_loc,_) -> ant_error _loc in
         f cas in
       exp
         (`App
@@ -855,7 +857,7 @@ and mktype_decl (x : typedecl) =
     | `TyEq (_loc,p1,t1) ->
         mktype loc tl cl ~type_kind:Ptype_abstract ~priv:(mkprivate p1)
           ~manifest:(Some (ctyp t1))
-    | `Ant (_loc,_) -> error _loc "antiquotation not expected here" in
+    | `Ant (_loc,_) -> ant_error _loc in
   let tys = list_of_and x [] in
   List.map
     (function
@@ -1056,7 +1058,7 @@ and stru (s : stru) (l : structure) =
                   with
                   | Not_found  ->
                       (fun ()  -> FLoc.errorf sloc "%s not found" n))) ()
-            | `Ant _ -> error _loc "antiquotation not expected here"
+            | `Ant _ -> ant_error _loc
             | _ -> assert false) ns in
        let code =
          Ref.protect2 (FState.current_filters, filters) (FState.keep, false)

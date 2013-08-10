@@ -175,11 +175,10 @@ let parse_string_of_entry ?(loc=FLoc.mk "<string>") entry  s =
 
 let wrap_stream_parser ?(loc=FLoc.mk "<stream>") p s =
   try p ~loc s
-  with
-  FLoc.Exc_located(loc,e) -> begin
-      eprintf "error: %s" (FLoc.to_string loc) ;
-      FLoc.raise loc e;
-    end 
+  with FLoc.Exc_located(loc,e) -> begin
+    eprintf "error: %s" (FLoc.to_string loc) ;
+    FLoc.raise loc e;
+  end 
 
 
 

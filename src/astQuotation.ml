@@ -287,10 +287,10 @@ let make_parser entry =
       (current_loc_name,loc_name_opt)
       (fun _ -> Fgram.parse_string (Fgram.eoi_entry entry) ~loc  s);;
 
-DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);;
+(* DEFINE REGISTER(tag) = fun  ~name ~entry -> add name tag (make_parser entry);; *)
 
-DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter ->
-  add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));;
+(* DEFINE REGISTER_FILTER(tag) = fun ~name ~entry ~filter -> *)
+(*   add name tag (fun loc loc_name_opt s -> filter (make_parser entry loc loc_name_opt s));; *)
 
   
 (* let of_stru = REGISTER(FDyn.stru_tag); *)

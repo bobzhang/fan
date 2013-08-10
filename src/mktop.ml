@@ -185,7 +185,7 @@ end
 
 open PFan
 
-open PMacro
+(* open PMacro *)
 
 open PGrammar
 

@@ -12,7 +12,7 @@ let _ =
                 (Printexc.to_string exn))
        | _ -> None);
     Foptions.adds MkFan.initial_spec_list;
-    AstParsers.use_parsers ["revise"; "stream"; "macro"];
+    AstParsers.use_parsers ["revise"; "stream"];
     (try
        FArg.parse Foptions.init_spec_list MkFan.anon_fun
          "fan <options> <file>\nOptions are:\n"
