@@ -30,9 +30,13 @@ if cmp _build/src/$target _build/boot/$target
 then
     echo fixpoint for $target
     # ocamlbuild -quiet foo.otarget
-else
-    echo $target is different, you should rebootstrap it by cleaning, building and call this script  
-fi
+    
+    mv _build/boot/$target _build/boot/$target.old #store as old 
+    mv _build/src/$target _build/boot/$target
 
-mv _build/boot/$target _build/boot/$target.old #store as old 
-mv _build/src/$target _build/boot/$target
+else
+    echo $target is different, you should rebootstrap it by cleaning, building and call this script
+    mv _build/boot/$target _build/boot/$target.old #store as old 
+    mv _build/src/$target _build/boot/$target
+    ./hb $target
+fi

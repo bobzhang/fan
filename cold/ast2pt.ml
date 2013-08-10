@@ -779,7 +779,7 @@ let rec exp (x : exp) =
   | `Vrn (loc,s) -> mkexp loc (Pexp_variant (s, None))
   | `While (loc,e1,el) ->
       let e2 = `Seq (loc, el) in mkexp loc (Pexp_while ((exp e1), (exp e2)))
-  | `LetOpen (_loc,i,e) -> mkexp _loc (Pexp_open ( Fresh,(long_uident i), (exp e)))
+  | `LetOpen (_loc,i,e) -> mkexp _loc (Pexp_open ((long_uident i), (exp e)))
   | `Package_exp (_loc,`Constraint (_,me,pt)) ->
       mkexp _loc
         (Pexp_constraint
@@ -969,7 +969,7 @@ and sigi (s : sigi) (l : signature) =
    | `ModuleType (loc,`Uid (sloc,n),mt) ->
        let si = Pmodtype_manifest (mtyp mt) in
        (mksig loc (Psig_modtype ((with_loc n sloc), si))) :: l
-   | `Open (loc,id) -> (mksig loc (Psig_open (Fresh,long_uident id))) :: l
+   | `Open (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl))) :: l
    | `Val (loc,`Lid (sloc,n),t) ->
        (mksig loc (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
@@ -1043,7 +1043,7 @@ and stru (s : stru) (l : structure) =
        (mkstr loc (Pstr_recmodule (module_str_bind mb []))) :: l
    | `ModuleType (loc,`Uid (sloc,n),mt) ->
        (mkstr loc (Pstr_modtype ((with_loc n sloc), (mtyp mt)))) :: l
-   | `Open (loc,id) -> (mkstr loc (Pstr_open (Fresh,long_uident id))) :: l
+   | `Open (loc,id) -> (mkstr loc (Pstr_open (long_uident id))) :: l
    | `Type (loc,tdl) -> (mkstr loc (Pstr_type (mktype_decl tdl))) :: l
    | `TypeWith (_loc,tdl,ns) ->
        let x: FAst.stru = `Type (_loc, tdl) in
