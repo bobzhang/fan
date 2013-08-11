@@ -39,8 +39,8 @@ with exp
 begin 
   Foptions.add
     ("-keep",
-     (FArg.Set FState.keep), "Keep the included type definitions") ;
+     (Arg.Set FState.keep), "Keep the included type definitions") ;
   Foptions.add
     ("-loaded-plugins",
-     (FArg.Unit Typehook.show_modules), "Show plugins");
+     (Arg.Unit Typehook.show_modules), "Show plugins");
 end;;

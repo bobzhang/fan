@@ -86,54 +86,54 @@ let input_file x =
   | ModuleImpl file_name -> require file_name
   | IncludeDir dir -> Ref.modify FConfig.dynload_dirs (cons dir)
 let initial_spec_list =
-  [("-I", (FArg.String ((fun x  -> input_file (IncludeDir x)))),
+  [("-I", (Arg.String ((fun x  -> input_file (IncludeDir x)))),
      "<directory>  Add directory in search patch for object files.");
-  ("-intf", (FArg.String ((fun x  -> input_file (Intf x)))),
+  ("-intf", (Arg.String ((fun x  -> input_file (Intf x)))),
     "<file>  Parse <file> as an interface, whatever its extension.");
-  ("-impl", (FArg.String ((fun x  -> input_file (Impl x)))),
+  ("-impl", (Arg.String ((fun x  -> input_file (Impl x)))),
     "<file>  Parse <file> as an implementation, whatever its extension.");
-  ("-str", (FArg.String ((fun x  -> input_file (Str x)))),
+  ("-str", (Arg.String ((fun x  -> input_file (Str x)))),
     "<string>  Parse <string> as an implementation.");
-  ("-o", (FArg.String ((fun x  -> output_file := (Some x)))),
+  ("-o", (Arg.String ((fun x  -> output_file := (Some x)))),
     "<file> Output on <file> instead of standard output.");
-  ("-unsafe", (FArg.Set FConfig.unsafe),
+  ("-unsafe", (Arg.Set FConfig.unsafe),
     "Generate unsafe accesses to array and strings.");
-  ("-verbose", (FArg.Set FConfig.verbose), "More verbose in parsing errors.");
+  ("-verbose", (Arg.Set FConfig.verbose), "More verbose in parsing errors.");
   ("-where",
-    (FArg.Unit
+    (Arg.Unit
        ((fun ()  -> print_endline FConfig.fan_plugins_library; exit 0))),
     " Print location of standard library and exit");
-  ("-loc", (FArg.Set_string FLoc.name),
+  ("-loc", (Arg.Set_string FLoc.name),
     ("<name>   Name of the location variable (default: " ^
        (FLoc.name.contents ^ ").")));
   ("-v",
-    (FArg.Unit
+    (Arg.Unit
        ((fun ()  -> eprintf "Fan version %s@." FConfig.version; exit 0))),
     "Print Fan version and exit.");
   ("-compilation-unit",
-    (FArg.Unit
+    (Arg.Unit
        ((fun ()  ->
            (match FConfig.compilation_unit.contents with
             | Some v -> printf "%s@." v
             | None  -> printf "null");
            exit 0))), "Print the current compilation unit");
-  ("-plugin", (FArg.String require), "load plugin cma or cmxs files");
-  ("-loaded-modules", (FArg.Set print_loaded_modules),
+  ("-plugin", (Arg.String require), "load plugin cma or cmxs files");
+  ("-loaded-modules", (Arg.Set print_loaded_modules),
     "Print the list of loaded modules.");
-  ("-loaded-filters", (FArg.Unit just_print_filters),
+  ("-loaded-filters", (Arg.Unit just_print_filters),
     "Print the registered filters.");
-  ("-loaded-parsers", (FArg.Unit just_print_parsers),
+  ("-loaded-parsers", (Arg.Unit just_print_parsers),
     "Print the loaded parsers.");
-  ("-used-parsers", (FArg.Unit just_print_applied_parsers),
+  ("-used-parsers", (Arg.Unit just_print_applied_parsers),
     "Print the applied parsers.");
   ("-dlang",
-    (FArg.String
+    (Arg.String
        ((fun s  ->
            AstQuotation.default :=
              (FToken.resolve_name FLoc.ghost ((`Sub []), s))))),
     " Set the default language");
   ("-printer",
-    (FArg.Symbol
+    (Arg.Symbol
        (["p"; "o"],
          ((fun x  ->
              if x = "o"
@@ -153,4 +153,4 @@ let anon_fun name =
          else
            if Filename.check_suffix name libext
            then ModuleImpl name
-           else raise (FArg.Bad ("don't know what to do with " ^ name)))
+           else raise (Arg.Bad ("don't know what to do with " ^ name)))

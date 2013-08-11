@@ -36,7 +36,7 @@ let _ =
     Foptions.adds MkFan.initial_spec_list;
     AstParsers.use_parsers [ "revise"; "stream"; (* "macro"; *)];
     try
-      FArg.parse
+      Arg.parse_dynamic
         Foptions.init_spec_list
         MkFan.anon_fun "fan <options> <file>\nOptions are:\n" (* in *)
     with exc -> begin Format.eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 end
