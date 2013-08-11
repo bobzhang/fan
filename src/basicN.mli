@@ -1,7 +1,7 @@
 (** Basic module for Fan's deriving mechanism *)
 
 
-open FAstN
+
   
 
 val x : ?off:int -> int -> string
