@@ -35,11 +35,6 @@ let slist1sep ~err ~f s sep =
     |  -> al  in
   parser
     | a = s ; 's  -> f (kont [a] s)
-    (* Action.mk (List.rev (kont [a] s)) *)
-
-
-      
-(* let slist1sep ~err ~f s sep = *)
   
 let opt ps ~f = parser
   |  a = ps  -> f (Some a)
