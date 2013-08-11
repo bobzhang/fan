@@ -1,26 +1,16 @@
 open LibUtil
-
 open Format
-
 open FSigUtil
-
 let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
-
 let show_code = ref false
-
 let print_collect_mtyps = ref false
-
 let register ?filter  ?position  (name,transform) =
   if Hashtbl.mem filters name
   then eprintf "Warning:%s filter already exists!@." name
   else Hashtbl.add filters name { transform; position; filter }
-
 let show_modules () =
-  begin
-    Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
-    print_newline ()
-  end
-
+  Hashtbl.iter (fun key  _  -> Format.printf "%s@ " key) filters;
+  print_newline ()
 let plugin_add plugin =
   (try
      let v = Hashtbl.find filters plugin in
@@ -33,13 +23,10 @@ let plugin_add plugin =
        else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
    | Not_found  ->
-       (fun ()  ->
-          begin show_modules (); failwithf "plugins %s not found " plugin end))
+       (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
-
 let plugin_remove plugin =
   Ref.modify FState.current_filters (fun x  -> List.remove plugin x)
-
 class type traversal
   =
   object 
@@ -49,7 +36,6 @@ class type traversal
     method update_cur_and_types : (and_types -> and_types) -> unit
     method update_cur_mtyps : (mtyps -> mtyps) -> unit
   end
-
 let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
   let mtyps =
     match filter with
@@ -59,15 +45,13 @@ let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
   match (position, code) with
   | (Some x,Some code) ->
       let (name,f) = Filters.make_filter (x, code) in
-      begin
-        AstFilters.register_stru_filter (name, f);
-        AstFilters.use_implem_filter name; acc
-      end
+      (AstFilters.register_stru_filter (name, f);
+       AstFilters.use_implem_filter name;
+       acc)
   | (None ,Some code) ->
       let code = FanAstN.fill_stru sloc code in
       (`Sem (sloc, acc, code) : FAst.stru )
   | (_,None ) -> acc
-
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
@@ -79,50 +63,40 @@ let traversal () =
        let open Stack in push (f (pop mtyps_stack)) mtyps_stack
      method private in_module = Stack.push [] mtyps_stack
      method private out_module = ignore (Stack.pop mtyps_stack)
-     method private in_and_types =
-       begin and_group <- true; cur_and_types <- [] end
-     method private out_and_types =
-       begin and_group <- false; cur_and_types <- [] end
+     method private in_and_types = and_group <- true; cur_and_types <- []
+     method private out_and_types = and_group <- false; cur_and_types <- []
      method private is_in_and_types = and_group
      method get_cur_and_types = cur_and_types
      method update_cur_and_types f = cur_and_types <- f cur_and_types
      method! mexp =
        function
        | (`Struct (sloc,u) : FAst.mexp) ->
-           begin
-             self#in_module;
-             (let res = self#stru u in
-              let mtyps = List.rev self#get_cur_mtyps in
-              let () =
-                if print_collect_mtyps.contents
-                then eprintf "@[%a@]@." pp_print_mtyps mtyps in
-              let result =
-                List.fold_right (iterate_code sloc mtyps)
-                  FState.current_filters.contents
-                  (if FState.keep.contents
-                   then res
-                   else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
-              begin
-                self#out_module; (`Struct (sloc, result) : FAst.mexp )
-              end)
-           end
+           (self#in_module;
+            (let res = self#stru u in
+             let mtyps = List.rev self#get_cur_mtyps in
+             let () =
+               if print_collect_mtyps.contents
+               then eprintf "@[%a@]@." pp_print_mtyps mtyps in
+             let result =
+               List.fold_right (iterate_code sloc mtyps)
+                 FState.current_filters.contents
+                 (if FState.keep.contents
+                  then res
+                  else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
+             self#out_module; (`Struct (sloc, result) : FAst.mexp )))
        | x -> super#mexp x
      method! stru =
        function
        | (`Type (_loc,`And (_,_,_)) : FAst.stru) as x ->
-           begin
-             self#in_and_types;
-             (let _ = super#stru x in
-              begin
-                self#update_cur_mtyps
-                  (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
-                     lst);
-                self#out_and_types;
-                if FState.keep.contents
-                then x
-                else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )
-              end)
-           end
+           (self#in_and_types;
+            (let _ = super#stru x in
+             self#update_cur_mtyps
+               (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
+                  lst);
+             self#out_and_types;
+             if FState.keep.contents
+             then x
+             else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
        | (`Type (_loc,(`TyDcl (_,`Lid (_,name),_,_,_) as t)) : FAst.stru) as
            x ->
@@ -130,7 +104,7 @@ let traversal () =
            let () =
              if print_collect_mtyps.contents
              then eprintf "Came across @[%a@]@." pp_print_types item in
-           begin self#update_cur_mtyps (fun lst  -> item :: lst); x end
+           (self#update_cur_mtyps (fun lst  -> item :: lst); x)
        | (`Value (_loc,`Negative _,_) : FAst.stru)
          |(`ModuleType (_loc,_,_) : FAst.stru)
          |(`Include (_loc,_) : FAst.stru)
@@ -141,12 +115,10 @@ let traversal () =
      method! typedecl =
        function
        | `TyDcl (_,`Lid (_,name),_,_,_) as t ->
-           begin
-             if self#is_in_and_types
-             then
-               self#update_cur_and_types
-                 (fun lst  -> (name, (Objs.strip_typedecl t)) :: lst);
-             t
-           end
+           (if self#is_in_and_types
+            then
+              self#update_cur_and_types
+                (fun lst  -> (name, (Objs.strip_typedecl t)) :: lst);
+            t)
        | t -> super#typedecl t
    end : traversal )

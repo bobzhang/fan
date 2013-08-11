@@ -1,17 +1,12 @@
 open FAst
-
 open AstLib
-
 open LibUtil
-
 let _loc = FLoc.ghost
-
 type ty_meta = 
   {
   str: string;
   print: [ `Exist | `Custom of stru | `Fmt of string];
   eq: [ `Def | `Custom of stru]} 
-
 let base1_types =
   [("int", `Exist, `Def);
   ("int32", (`Fmt "%ld"), `Def);
@@ -78,10 +73,8 @@ let base1_types =
                            (`Arrow
                               (_loc, (`Lid (_loc, "unit")),
                                 (`Lid (_loc, "bool"))))))))))) : FAst.stru )))]
-
 let ty_metas =
   base1_types |> (List.map (fun (str,print,eq)  -> { str; print; eq }))
-
 let print_base1 =
   let items =
     ty_metas |>
@@ -138,7 +131,6 @@ let print_base1 =
                                                         (`Lid (_loc, "a")))))))))))),
                                ty))))) : FAst.stru ))) in
   sem_of_list items
-
 let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base_2,print_clfield_base,iter_clfield_base_1,eq_clfield_base_2)
   =
   let ty_names = ty_metas |> (List.map (fun { str;_}  -> str)) in
@@ -256,7 +248,6 @@ let (map_clfield_base_1,map_clfield_base_2,fold_clfield_base_1,fold_clfield_base
                  exp, ty) : FAst.clfield ))) in
   ((sem_of_list v1), (sem_of_list v2), (sem_of_list v3), (sem_of_list v4),
     (sem_of_list v5), (sem_of_list v6), (sem_of_list v7))
-
 let eq_base1 =
   let items =
     ty_metas |>
@@ -277,17 +268,14 @@ let eq_base1 =
                 FAst.stru )
             | `Custom s -> s)) in
   sem_of_list items
-
 let _ =
   let open AstInjection in
-    begin
-      register_inject_clfield ("map_clfield_base_1", map_clfield_base_1);
-      register_inject_clfield ("map_clfield_base_2", map_clfield_base_2);
-      register_inject_clfield ("fold_clfield_base_1", fold_clfield_base_1);
-      register_inject_clfield ("fold_clfield_base_2", fold_clfield_base_2);
-      register_inject_clfield ("print_clfield_base", print_clfield_base);
-      register_inject_clfield ("iter_clfield_base_1", iter_clfield_base_1);
-      register_inject_clfield ("eq_clfield_base_2", eq_clfield_base_2);
-      register_inject_stru ("eq_base1", eq_base1);
-      register_inject_stru ("print_base1", print_base1)
-    end
+    register_inject_clfield ("map_clfield_base_1", map_clfield_base_1);
+    register_inject_clfield ("map_clfield_base_2", map_clfield_base_2);
+    register_inject_clfield ("fold_clfield_base_1", fold_clfield_base_1);
+    register_inject_clfield ("fold_clfield_base_2", fold_clfield_base_2);
+    register_inject_clfield ("print_clfield_base", print_clfield_base);
+    register_inject_clfield ("iter_clfield_base_1", iter_clfield_base_1);
+    register_inject_clfield ("eq_clfield_base_2", eq_clfield_base_2);
+    register_inject_stru ("eq_base1", eq_base1);
+    register_inject_stru ("print_base1", print_base1)

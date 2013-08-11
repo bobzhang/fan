@@ -1,19 +1,13 @@
 open LibUtil
-
 open Gstructure
-
 let empty_entry ename _ =
   raise (XStream.Error ("entry [" ^ (ename ^ "] is empty")))
-
 let get_cur_loc strm =
   match XStream.peek strm with | Some (_,r) -> r | None  -> FLoc.ghost
-
 let get_prev_loc strm =
   match XStream.get_last strm with | Some (_,l) -> l | None  -> FLoc.ghost
-
 let is_level_labelled n =
   function | { lname = Some n1;_} -> n = n1 | _ -> false
-
 let get_terminals x =
   let rec aux tokl last_tok =
     function
@@ -26,7 +20,6 @@ let get_terminals x =
   match x with
   | { node = (#terminal as x); son;_} -> aux [] x son
   | _ -> None
-
 let logically_eq_symbols entry =
   let rec eq_symbol (s1 : symbol) (s2 : symbol) =
     match (s1, s2) with
@@ -43,7 +36,6 @@ let logically_eq_symbols entry =
     | (`Stoken (_,s1,_),`Stoken (_,s2,_)) -> s1 = s2
     | _ -> s1 = s2 in
   eq_symbol
-
 let rec eq_symbol (s1 : symbol) (s2 : symbol) =
   match (s1, s2) with
   | (`Snterm e1,`Snterm e2) -> e1 == e2

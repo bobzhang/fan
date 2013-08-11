@@ -1,15 +1,11 @@
 open FAstN
-
 open AstLibN
-
 open LibUtil
-
 let rec tvar_of_ident: vid -> string =
   function
   | `Lid x|`Uid x -> x
   | `Dot (`Uid x,xs) -> x ^ ("__" ^ (tvar_of_ident xs))
   | _ -> failwith "internal error in the Grammar extension"
-
 let map_to_string (ident : vid) =
   let rec aux i acc =
     match i with
@@ -18,7 +14,6 @@ let map_to_string (ident : vid) =
     | `Uid x -> (String.lowercase x) ^ acc
     | t -> failwithf "map_to_string: %s" (ObjsN.dump_vid t) in
   aux ident ""
-
 let to_string (ident : ident) =
   let rec aux i acc =
     match i with
@@ -28,13 +23,11 @@ let to_string (ident : ident) =
     | `Uid x -> (String.lowercase x) ^ acc
     | t -> failwithf "map_to_string: %s" (ObjsN.dump_ident t) in
   aux ident ""
-
 let rec to_vid (x : ident) =
   (match x with
    | `Apply _ -> failwith "IdN.to_vid"
    | `Dot (a,b) -> dot (to_vid a) (to_vid b)
    | `Lid _|`Uid _|`Ant _ as x -> x : vid )
-
 let ident_map f (x : vid) =
   let lst = list_of_dot x [] in
   match lst with
@@ -45,7 +38,6 @@ let ident_map f (x : vid) =
       (match List.drop (l - 2) ls with
        | q::(`Lid y)::[] -> `Dot (q, (`Lid (f y)))
        | _ -> failwithf "ident_map: %s" (ObjsN.dump_vid x))
-
 let ident_map_of_ident f x =
   (let lst = list_of_dot x [] in
    match lst with

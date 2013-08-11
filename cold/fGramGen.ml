@@ -1,36 +1,21 @@
 open FAst
-
 open FanOps
-
 open Format
-
 open AstLib
-
 open LibUtil
-
 open FGramDef
-
 let print_warning = eprintf "%a:\n%s@." FLoc.print
-
 let prefix = "__fan_"
-
 let ghost = FLoc.ghost
-
 let grammar_module_name = ref (`Uid (ghost, "Fgram"))
-
 let gm () =
   match FConfig.compilation_unit.contents with
   | Some "Fgram" -> `Uid (ghost, "")
   | Some _|None  -> grammar_module_name.contents
-
 let mk_entry ~local  ~name  ~pos  ~levels  = { name; pos; levels; local }
-
 let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
-
 let mk_rule ~prod  ~action  = { prod; action }
-
 let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
-
 let check_not_tok s =
   match s with
   | { text = `Stok (_loc,_,_);_} ->
@@ -39,15 +24,10 @@ let check_not_tok s =
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
   | _ -> ()
-
 let new_type_var =
-  let i = ref 0 in
-  fun ()  -> begin incr i; "e__" ^ (string_of_int i.contents) end
-
-let gensym = let i = ref 0 in fun ()  -> begin incr i; i end
-
+  let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
+let gensym = let i = ref 0 in fun ()  -> incr i; i
 let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
-
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map
@@ -74,7 +54,6 @@ let retype_rule_list_without_patterns _loc rl =
        | { prod = []; action = Some _ } as r -> r
        | _ -> raise Exit) rl
   with | Exit  -> rl
-
 let make_ctyp (styp : styp) tvar =
   (let rec aux v =
      match (v : styp ) with
@@ -97,7 +76,6 @@ let make_ctyp (styp : styp) tvar =
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
-
 let rec make_exp (tvar : string) (x : text) =
   let rec aux tvar (x : text) =
     match x with
@@ -173,7 +151,7 @@ let rec make_exp (tvar : string) (x : text) =
                        (`Com (_loc, mdescr, (`Str (_loc, mstr))))))))) : 
           FAst.exp ) in
   aux tvar x
-and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
+and make_exp_rules (_loc : loc) (rl : (text list* exp* exp option) list)
   (tvar : string) =
   list_of_list _loc
     (List.map
@@ -190,7 +168,6 @@ and make_exp_rules (_loc : loc) (rl : (text list * exp * exp option) list)
                        (_loc,
                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
             FAst.exp )) rl)
-
 let text_of_action (_loc : loc) (psl : symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (FLoc.name.contents)) in
@@ -266,7 +243,6 @@ let text_of_action (_loc : loc) (psl : symbol list)
        psl in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
-
 let exp_delete_rule _loc n (symbolss : symbol list list) =
   let f _loc n sl =
     let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
@@ -283,7 +259,6 @@ let exp_delete_rule _loc n (symbolss : symbol list list) =
   match symbolss with
   | [] -> (`Uid (_loc, "()") : FAst.exp )
   | _ -> seq_sem rest
-
 let mk_name _loc (i : vid) =
   let rec aux: vid -> string =
     function
@@ -291,9 +266,7 @@ let mk_name _loc (i : vid) =
     | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
     | _ -> failwith "internal error in the Grammar extension" in
   { exp = (i :>exp); tvar = (aux i); loc = _loc }
-
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
-
 let text_of_entry ?(safe= true)  (e : entry) =
   (let _loc = (e.name).loc in
    let ent =
@@ -323,7 +296,7 @@ let text_of_entry ?(safe= true)  (e : entry) =
      let mk_srule loc (t : string) (tvar : string) (r : rule) =
        (let sl = List.map (fun s  -> s.text) r.prod in
         let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-        (sl, ac, (r.action)) : (text list * exp * exp option) ) in
+        (sl, ac, (r.action)) : (text list* exp* exp option) ) in
      let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
        List.map (mk_srule loc t tvar) rl in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
@@ -366,7 +339,6 @@ let text_of_entry ?(safe= true)  (e : entry) =
                    (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend")))),
                    ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : 
   exp )
-
 let let_in_of_extend _loc (gram : vid option) locals default =
   let entry_mk =
     match gram with
@@ -408,11 +380,10 @@ let let_in_of_extend _loc (gram : vid option) locals default =
                         (_loc, (`Lid (_loc, "x")),
                           (`App (_loc, entry_mk, (`Lid (_loc, "x")))))))))),
            (`LetIn (_loc, (`Negative _loc), locals, default))) : FAst.exp )
-
 let capture_antiquot =
   object 
     inherit  Objs.map as super
-    val mutable constraints = ([] : (exp * exp) list )
+    val mutable constraints = ([] : (exp* exp) list )
     method! pat =
       function
       | `Ant (_loc,s) ->
@@ -427,15 +398,11 @@ let capture_antiquot =
     method get_captured_variables = constraints
     method clear_captured_variables = constraints <- []
   end
-
 let filter_pat_with_captured_variables pat =
-  begin
-    capture_antiquot#clear_captured_variables;
-    (let pat = capture_antiquot#pat pat in
-     let constraints = capture_antiquot#get_captured_variables in
-     (pat, constraints))
-  end
-
+  capture_antiquot#clear_captured_variables;
+  (let pat = capture_antiquot#pat pat in
+   let constraints = capture_antiquot#get_captured_variables in
+   (pat, constraints))
 let text_of_functorial_extend ?safe  _loc gram el =
   let args =
     let el = List.map (text_of_entry ?safe) el in
@@ -444,7 +411,6 @@ let text_of_functorial_extend ?safe  _loc gram el =
     List.filter_map
       (fun { name; local;_}  -> if local then Some name else None) el in
   let_in_of_extend _loc gram locals args
-
 let token_of_simple_pat _loc (p : simple_pat) =
   let p_pat = (p : simple_pat  :>pat) in
   let (po,ls) = filter_pat_with_captured_variables p_pat in

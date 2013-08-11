@@ -1,5 +1,4 @@
 open FAst
-
 class primitive =
   object 
     method int _loc (i : int) =
@@ -25,7 +24,6 @@ class primitive =
        | true  -> (`Lid (_loc, "true") : FAst.ep )
        | false  -> (`Lid (_loc, "false") : FAst.ep ) : ep )
   end
-
 class meta =
   object (self : 'self_type)
     inherit  primitive

@@ -1,12 +1,8 @@
 open LibUtil
-
 open FAst
-
 open AstLib
-
 let meta =
   object  inherit  FMeta.meta method! loc _loc _ = lid _loc "loc" end
-
 let _ =
   AstFilters.register_stru_filter
     ("lift",
@@ -22,11 +18,9 @@ let _ =
                         (`Dot
                            (_loc, (`Uid (_loc, "FLoc")),
                              (`Lid (_loc, "ghost")))))), e))) : FAst.stru )))
-
 let _ =
   AstFilters.register_stru_filter
     ("strip", (((new Objs.reloc) FLoc.ghost)#stru))
-
 let map_exp =
   function
   | (`App (_loc,e,`Uid (_,"NOTHING")) : FAst.exp)
@@ -38,11 +32,9 @@ let map_exp =
       FAst.exp )
   | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> AstLib.meta_here _loc _loc
   | e -> e
-
 let _ =
   AstFilters.register_stru_filter
     ("trash_nothing", ((Objs.map_exp map_exp)#stru))
-
 let make_filter (s,code) =
   let f =
     function
@@ -50,7 +42,6 @@ let make_filter (s,code) =
         FanAstN.fill_stru _loc code
     | e -> e in
   (("filter_" ^ s), ((Objs.map_stru f)#stru))
-
 let me =
   object 
     inherit  FMeta.meta
@@ -60,9 +51,7 @@ let me =
       | Some "here" -> meta_here _loc loc
       | Some x -> lid _loc x
   end
-
 let mp = object  inherit  FMeta.meta method! loc _loc _ = `Any _loc end
-
 let _ =
   AstFilters.register_stru_filter
     ("serialize",

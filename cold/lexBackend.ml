@@ -1,13 +1,8 @@
 open FAst
-
 open AstLib
-
 open Lexgen
-
 open LibUtil
-
 let _loc = FLoc.mk "x"
-
 let auto_binds =
   [(`Bind
       (_loc, (`Lid (_loc, "__ocaml_lex_init_lexbuf")),
@@ -234,11 +229,9 @@ let auto_binds =
                                                          (`Lid (_loc, "code")))),
                                                     (`Lid (_loc, "c"))))))))))))))))))))) : 
   FAst.bind )]
-
 let output_pats (pats : int list) =
   bar_of_list
     (List.map (fun x  -> (`Int (_loc, (string_of_int x)) : FAst.pat )) pats)
-
 let output_mem_access (i : int) =
   (`ArrayDot
      (_loc,
@@ -246,31 +239,25 @@ let output_mem_access (i : int) =
           (_loc, (`Lid (_loc, "lexbuf")),
             (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_mem")))))),
        (`Int (_loc, (string_of_int i)))) : FAst.exp )
-
 let curr_pos: FAst.exp =
   `Field
     (_loc, (`Lid (_loc, "lexbuf")),
       (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_curr_pos")))))
-
 let last_pos: FAst.exp =
   `Field
     (_loc, (`Lid (_loc, "lexbuf")),
       (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_pos")))))
-
 let last_action: FAst.exp =
   `Field
     (_loc, (`Lid (_loc, "lexbuf")),
       (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_action")))))
-
 let start_pos: FAst.exp =
   `Field
     (_loc, (`Lid (_loc, "lexbuf")),
       (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_start_pos")))))
-
 let lex_state i =
   let state = "__ocaml_lex_state" ^ (string_of_int i) in
   (`App (_loc, (`Lid (_loc, state)), (`Lid (_loc, "lexbuf"))) : FAst.exp )
-
 let output_memory_actions (mvs : memory_action list) =
   (List.map
      (function
@@ -280,52 +267,39 @@ let output_memory_actions (mvs : memory_action list) =
       | Set tgt ->
           let u = output_mem_access tgt in
           (`Assign (_loc, u, curr_pos) : FAst.exp )) mvs : exp list )
-
 let output_action (mems : memory_action list) (r : automata_move) =
   ((output_memory_actions mems) @
      (match r with
       | Backtrack  ->
           [(`Assign (_loc, curr_pos, last_pos) : FAst.exp ); last_action]
       | Goto n -> [lex_state n]) : exp list )
-
 let output_clause (pats : int list) (mems : memory_action list)
   (r : automata_move) =
   let pat = output_pats pats in
   let action = seq_sem (output_action mems r) in
   (`Case (_loc, pat, action) : FAst.case )
-
 let output_default_clause mems r =
   let action = seq_sem (output_action mems r) in
   (`Case (_loc, (`Any _loc), action) : FAst.case )
-
-let output_moves (moves : (automata_move * memory_action list) array) =
+let output_moves (moves : (automata_move* memory_action list) array) =
   (let t = Hashtbl.create 17 in
    let add_move i (m,mems) =
      let (mems,r) = try Hashtbl.find t m with | Not_found  -> (mems, []) in
      Hashtbl.replace t m (mems, (i :: r)) in
-   begin
-     for i = 0 to 256 do add_move i (moves.(i)) done;
-     (let most_frequent = ref Backtrack
-      and most_mems = ref []
-      and size = ref 0 in
-      begin
-        Hashtbl.iter
-          (fun m  (mems,pats)  ->
-             let size_m = List.length pats in
-             if size_m > size.contents
-             then
-               begin
-                 most_frequent := m; most_mems := mems; size := size_m
-               end) t;
-        (Hashtbl.fold
-           (fun m  (mems,pats)  acc  ->
-              if m <> most_frequent.contents
-              then (output_clause (List.rev pats) mems m) :: acc
-              else acc) t [])
-          @ [output_default_clause most_mems.contents most_frequent.contents]
-      end)
-   end : case list )
-
+   for i = 0 to 256 do add_move i (moves.(i)) done;
+   (let most_frequent = ref Backtrack and most_mems = ref [] and size = ref 0 in
+    Hashtbl.iter
+      (fun m  (mems,pats)  ->
+         let size_m = List.length pats in
+         if size_m > size.contents
+         then (most_frequent := m; most_mems := mems; size := size_m)) t;
+    (Hashtbl.fold
+       (fun m  (mems,pats)  acc  ->
+          if m <> most_frequent.contents
+          then (output_clause (List.rev pats) mems m) :: acc
+          else acc) t [])
+      @ [output_default_clause most_mems.contents most_frequent.contents]) : 
+  case list )
 let output_tag_actions (mvs : Lexgen.tag_action list) =
   (List.map
      (function
@@ -336,7 +310,6 @@ let output_tag_actions (mvs : Lexgen.tag_action list) =
           let u = output_mem_access t in
           (`Assign (_loc, u, (`Int (_loc, "-1"))) : FAst.exp )) mvs : 
   exp list )
-
 let output_trans (i : int) (trans : automata) =
   let state = "__ocaml_lex_state" ^ (string_of_int i) in
   let e =
@@ -369,17 +342,14 @@ let output_trans (i : int) (trans : automata) =
   (`Bind
      (_loc, (`Lid (_loc, state)),
        (`Fun (_loc, (`Case (_loc, (`Lid (_loc, "lexbuf")), e))))) : FAst.bind )
-
 let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
        (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), b))) : FAst.exp )) args e
-
 let output_automata (transitions : Lexgen.automata array) =
   (Array.to_list
      (Array.mapi (fun i  auto  -> output_trans i auto) transitions) : 
   bind list )
-
 let output_env (env : t_env) =
   let env =
     List.sort
@@ -443,7 +413,6 @@ let output_env (env : t_env) =
                 (`App
                    (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
                      nstart))) : FAst.bind )) env
-
 let output_entry
   ({ auto_mem_size; auto_initial_state = (init_num,init_moves); auto_actions
      },(transitions : automata array))

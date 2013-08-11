@@ -1,17 +1,10 @@
 open Format
-
 open LibUtil
-
 open AstLibN
-
 open FAstN
-
 open BasicN
-
 open CtypN
-
 open FSigUtil
-
 let check_valid str =
   let len = String.length str in
   if
@@ -20,28 +13,22 @@ let check_valid str =
          ((not (Char.is_digit (str.[1]))) &&
             (not (String.starts_with str "all_"))))
   then
-    begin
-      eprintf "%s is not a valid name" str;
-      eprintf
-        "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
-      exit 2
-    end
+    (eprintf "%s is not a valid name" str;
+     eprintf
+       "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
+     exit 2)
   else ()
-
 let preserve = ["self"; "self_type"; "unit"; "result"]
-
 let check names =
   List.iter
     (fun name  ->
        if List.mem name preserve
        then
-         begin
-           eprintf "%s is not a valid name\n" name;
-           eprintf "preserved keywords:\n";
-           List.iter (fun s  -> eprintf "%s\n" s) preserve; exit 2
-         end
+         (eprintf "%s is not a valid name\n" name;
+          eprintf "preserved keywords:\n";
+          List.iter (fun s  -> eprintf "%s\n" s) preserve;
+          exit 2)
        else check_valid name) names
-
 let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
@@ -51,7 +38,6 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
    let id_ep = tuple_com id_eps in
    let exp = appl_of_list (base :: (id_eps :>exp list)) in
    { name_exp; info_exp = exp; id_ep; id_eps; ep0; ty } : ty_info )
-
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
   (match ty with
    | `Par t ->
@@ -62,7 +48,6 @@ let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
        ExpN.mkfun names
          (ExpN.currying [(`Case (pat, tys) : FAstN.case )] ~arity)
    | _ -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty) : exp )
-
 let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id 
   ~left_type_id  ~right_type_variable  cxt (ty : ctyp) =
   let right_trans = transform right_type_id in
@@ -86,7 +71,6 @@ let rec normal_simple_exp_of_ctyp ?arity  ?names  ~mk_tuple  ~right_type_id
     | (ty : ctyp) ->
         failwithf "normal_simple_exp_of_ctyp : %s" (ObjsN.dump_ctyp ty) in
   aux ty
-
 let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable 
   ~right_type_variable  ?names  ?arity  ~mk_tuple  ty =
   let trans = transform right_type_id in
@@ -117,7 +101,6 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
                 ~right_type_variable ?names ?arity ~mk_tuple) ty
     | ty -> failwithf "obj_simple_exp_of_ctyp: %s" (ObjsN.dump_ctyp ty) in
   aux ty
-
 let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  simple_exp_of_ctyp (ty : or_ctyp) =
   let f (cons : string) (tyargs : ctyp list) =
@@ -138,7 +121,6 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   ExpN.currying ~arity res
-
 let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default 
   ~mk_variant  ~destination  simple_exp_of_ctyp ~result  ty =
   let f (cons,tyargs) =
@@ -169,7 +151,6 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
       else res in
     List.rev t in
   ExpN.currying ~arity res
-
 let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= []) 
   ~left_type_variable  =
   let varf = basic_transform left_type_variable in
@@ -182,7 +163,6 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
   | `Some xs ->
       let vars = list_of_com xs [] in
       List.fold_right f vars (ExpN.mkfun names acc)
-
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =
   (match (tydcl : typedecl ) with
@@ -226,7 +206,6 @@ let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record
         | t -> failwithf "fun_of_tydcl middle %s" (ObjsN.dump_type_info t))
    | t -> failwithf "fun_of_tydcl outer %s" (ObjsN.dump_typedecl t) : 
   exp )
-
 let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
   [])  ?(destination= Str_item)  ?annot  ~default  ~mk_variant 
   ~left_type_id:(left_type_id : basic_id_transform) 
@@ -252,18 +231,14 @@ let bind_of_tydcl ?cons_transform  simple_exp_of_ctyp ?(arity= 1)  ?(names=
         (exp_of_variant ?cons_transform ~arity ~names ~default ~mk_variant
            ~destination simple_exp_of_ctyp) tydcl
     else
-      begin
-        eprintf "Warning: %s as a abstract type no structure generated\n"
-          (ObjsN.dump_typedecl tydcl);
-        (`App
-           ((`Lid "failwith"), (`Str "Abstract data type not implemented")) : 
-        FAstN.exp )
-      end in
+      (eprintf "Warning: %s as a abstract type no structure generated\n"
+         (ObjsN.dump_typedecl tydcl);
+       (`App ((`Lid "failwith"), (`Str "Abstract data type not implemented")) : 
+       FAstN.exp )) in
   match annot with
   | None  -> (`Bind ((`Lid fname), fun_exp) : FAstN.bind )
   | Some x ->
       (`Bind ((`Lid fname), (`Constraint (fun_exp, x))) : FAstN.bind )
-
 let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names 
   ~default  ~mk_variant  ~left_type_id  ~left_type_variable  ~mk_record 
   simple_exp_of_ctyp_with_cxt (lst : mtyps) =
@@ -278,21 +253,18 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
           (match named_types with
            | [] -> (`StExp (`Uid "()") : FAstN.stru )
            | xs ->
-               begin
-                 List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
-                 (let bind =
-                    List.reduce_right_with
-                      ~compose:(fun x  y  -> (`And (x, y) : FAstN.bind ))
-                      ~f:(fun (_name,ty)  -> mk_bind ty) xs in
-                  (`Value (`Positive, bind) : FAstN.stru ))
-               end)
+               (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
+                (let bind =
+                   List.reduce_right_with
+                     ~compose:(fun x  y  -> (`And (x, y) : FAstN.bind ))
+                     ~f:(fun (_name,ty)  -> mk_bind ty) xs in
+                 (`Value (`Positive, bind) : FAstN.stru ))))
       | `Single (name,tydcl) ->
-          begin
-            Hashset.add cxt name;
-            (let flag =
-               if CtypN.is_recursive tydcl then `Positive else `Negative
-             and bind = mk_bind tydcl in (`Value (flag, bind) : FAstN.stru ))
-          end : stru ) in
+          (Hashset.add cxt name;
+           (let flag =
+              if CtypN.is_recursive tydcl then `Positive else `Negative
+            and bind = mk_bind tydcl in (`Value (flag, bind) : FAstN.stru ))) : 
+     stru ) in
    let item =
      match lst with
      | [] -> (`StExp (`Uid "()") : FAstN.stru )
@@ -300,7 +272,6 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
    match module_name with
    | None  -> item
    | Some m -> (`Module ((`Uid m), (`Struct item)) : FAstN.stru ) : stru )
-
 let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= []) 
   ~default  ~left_type_variable:(left_type_variable : basic_id_transform) 
   ~mk_record  ~mk_variant  base class_name simple_exp_of_ctyp
@@ -351,14 +322,10 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
               FAstN.clfield )) extras in
      sem_of_list (body @ items) in
    let v = CtypN.mk_obj class_name base body in
-   begin
-     Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." pp_print_warning_type v)
-       tbl;
-     (match module_name with
-      | None  -> v
-      | Some u -> (`Module ((`Uid u), (`Struct v)) : FAstN.stru ))
-   end : stru )
-
+   Hashtbl.iter (fun _  v  -> eprintf "@[%a@]@." pp_print_warning_type v) tbl;
+   (match module_name with
+    | None  -> v
+    | Some u -> (`Module ((`Uid u), (`Struct v)) : FAstN.stru )) : stru )
 let gen_stru ?module_name  ?(arity= 1)  ?(default=
   (`App ((`Lid "failwith"), (`Str "arity >= 2 in other branches")) : 
   FAstN.exp ))  ?cons_transform  ?annot  ~id:(id : basic_id_transform) 
@@ -385,7 +352,6 @@ let gen_stru ?module_name  ?(arity= 1)  ?(default=
     ~mk_variant ~left_type_id ~left_type_variable ~mk_record
     (normal_simple_exp_of_ctyp ~arity ~names ~mk_tuple ~right_type_id
        ~left_type_id ~right_type_variable)
-
 let gen_object ?module_name  ?(arity= 1)  ?(default=
   (`App ((`Lid "failwith"), (`Str "arity >= 2 in other branches")) : 
   FAstN.exp ))  ?cons_transform  ~kind  ~base  ~class_name  =

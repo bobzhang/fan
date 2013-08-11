@@ -6,7 +6,6 @@ type regular_expression =
   | Alternative of regular_expression* regular_expression
   | Repetition of regular_expression
   | Bind of regular_expression* FAst.lident 
-
 type entry =  {
   shortest: bool;
-  clauses: (regular_expression * FAst.exp) list} 
+  clauses: (regular_expression* FAst.exp) list} 

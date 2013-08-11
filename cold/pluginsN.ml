@@ -1,15 +1,9 @@
 open FAstN
-
 open AstLibN
-
 open LibUtil
-
 open DeriveN
-
 open CtypN
-
 open FSigUtil
-
 let mk_variant _cons =
   (function
    | [] -> (`Lid "true" : FAstN.exp )
@@ -18,26 +12,20 @@ let mk_variant _cons =
          ~compose:(fun x  y  ->
                      (`App ((`App ((`Lid "&&"), x)), y) : FAstN.exp ))
          ~project:(fun { info_exp;_}  -> info_exp) ls : ty_info list -> exp )
-
 let mk_tuple exps = mk_variant "" exps
-
 let mk_record: record_col list -> exp =
   fun cols  ->
     (cols |> (List.map (fun { re_info;_}  -> re_info))) |> (mk_variant "")
-
 let (gen_eq,gen_eqobj) =
   ((gen_stru ~id:(`Pre "eq_") ~arity:2 ~mk_tuple ~mk_record ~mk_variant
       ~default:(`Lid "false" : FAstN.exp ) ()),
     (gen_object ~kind:Iter ~mk_tuple ~mk_record ~base:"eqbase"
        ~class_name:"eq" ~mk_variant ~arity:2
        ~default:(`Lid "false" : FAstN.exp ) ()))
-
 let some f x = Some (f x)
-
 let _ =
   [("Eq", (some gen_eq)); ("OEq", (some gen_eqobj))] |>
     (List.iter Typehook.register)
-
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun { info_exp;_}  -> info_exp))) |>
@@ -57,11 +45,9 @@ let (gen_fold,gen_fold2) =
        ~class_name:"fold2" ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) : 
        FAstN.exp ) ()))
-
 let _ =
   [("Fold", (some gen_fold)); ("Fold2", (some gen_fold2))] |>
     (List.iter Typehook.register)
-
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =
@@ -95,11 +81,9 @@ let (gen_map,gen_map2) =
        ~class_name:"map2" ~mk_variant ~arity:2
        ~default:(`App ((`Lid "invalid_arg"), (`Str "map2 failure")) : 
        FAstN.exp ) ()))
-
 let _ =
   [("Map", (some gen_map)); ("Map2", (some gen_map2))] |>
     (List.iter Typehook.register)
-
 let gen_strip =
   let mk_variant cons params =
     let params' =
@@ -136,11 +120,9 @@ let gen_strip =
                   ((`Dot ((`Uid "FAst"), (`Lid x))),
                     (`Dot ((`Uid "FAstN"), (`Lid x)))) : FAstN.ctyp ),
                 (`Dot ((`Uid "FAstN"), (`Lid x)) : FAstN.ctyp ))) ()
-
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Strip", (some gen_strip))
-
 let gen_fill =
   let mk_variant cons params =
     let result =
@@ -177,11 +159,9 @@ let gen_fill =
                        ((`Dot ((`Uid "FAstN"), (`Lid x))),
                          (`Dot ((`Uid "FAst"), (`Lid x)))))) : FAstN.ctyp ),
                 (`Dot ((`Uid "FAst"), (`Lid x)) : FAstN.ctyp ))) ()
-
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("Fill", (some gen_fill))
-
 let mk_variant cons params =
   let len = List.length params in
   if String.ends_with cons "Ant"
@@ -189,42 +169,34 @@ let mk_variant cons params =
   else
     (params |> (List.map (fun { info_exp = exp;_}  -> exp))) |>
       (List.fold_left ExpN.mee_app (ExpN.mee_of_str cons))
-
 let mk_record cols =
   (cols |>
      (List.map
         (fun { re_label; re_info = { info_exp = exp;_};_}  -> (re_label, exp))))
     |> ExpN.mk_record_ee
-
 let mk_tuple params =
   (params |> (List.map (fun { info_exp = exp;_}  -> exp))) |>
     ExpN.mk_tuple_ee
-
 let gen_meta_exp =
   gen_stru ~id:(`Pre "meta_") ~names:["_loc"] ~mk_tuple ~mk_record
     ~mk_variant ()
-
 let gen_meta =
   gen_object
     ~kind:(Concrete (`Dot ((`Uid "FAst"), (`Lid "ep")) : FAstN.ctyp ))
     ~mk_tuple ~mk_record ~base:"primitive" ~class_name:"meta" ~mk_variant
     ~names:["_loc"] ()
-
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"; "ant"]))
     ("MetaObj", (some gen_meta))
-
 let extract info =
   (info |>
      (List.map (fun { name_exp; id_ep;_}  -> [name_exp; (id_ep :>exp)])))
     |> List.concat
-
 let mkfmt pre sep post fields =
   let s = pre ^ ((String.concat sep fields) ^ post) in
   (`App
      ((`App ((`Dot ((`Uid "Format"), (`Lid "fprintf"))), (`Lid "fmt"))),
        (`Str s)) : FAstN.exp )
-
 let mk_variant_print cons params =
   let len = List.length params in
   let pre =
@@ -234,19 +206,16 @@ let mk_variant_print cons params =
         (List.init len (fun _  -> "%a"))
     else mkfmt cons "" "" [] in
   appl_of_list (pre :: (extract params))
-
 let mk_tuple_print params =
   let len = List.length params in
   let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _  -> "%a")) in
   appl_of_list (pre :: (extract params))
-
 let mk_record_print cols =
   let pre =
     (cols |> (List.map (fun { re_label;_}  -> re_label ^ ":%a"))) |>
       (mkfmt "@[<hv 1>{" ";@," "}@]") in
   appl_of_list (pre ::
     ((cols |> (List.map (fun { re_info;_}  -> re_info))) |> extract))
-
 let gen_print =
   gen_stru ~id:(`Pre "pp_print_") ~names:["fmt"] ~mk_tuple:mk_tuple_print
     ~mk_record:mk_record_print
@@ -255,16 +224,13 @@ let gen_print =
                   ((`Dot ((`Uid "Format"), (`Lid "formatter"))),
                     (`Arrow ((`Lid s), (`Lid "unit")))) : FAstN.ctyp ),
                 (`Lid "unit" : FAstN.ctyp ))) ~mk_variant:mk_variant_print ()
-
 let gen_print_obj =
   gen_object ~kind:(Concrete (`Lid "unit" : FAstN.ctyp ))
     ~mk_tuple:mk_tuple_print ~base:"printbase" ~class_name:"print"
     ~names:["fmt"] ~mk_record:mk_record_print ~mk_variant:mk_variant_print ()
-
 let _ =
   [("Print", (some gen_print)); ("OPrint", (some gen_print_obj))] |>
     (List.iter Typehook.register)
-
 let mk_variant_iter _cons params =
   (match params with
    | [] -> (unit :>exp)
@@ -276,9 +242,7 @@ let mk_variant_iter _cons params =
                  let id_exp = (id_ep : ep  :>exp) in
                  (`App (name_exp, id_exp) : FAstN.exp ))) in
        seq_sem lst : exp )
-
 let mk_tuple_iter params = (mk_variant_iter "" params : exp )
-
 let mk_record_iter cols =
   let lst =
     cols |>
@@ -287,14 +251,11 @@ let mk_record_iter cols =
             let id_exp = (id_ep :>exp) in
             (`App (name_exp, id_exp) : FAstN.exp ))) in
   seq_sem lst
-
 let gen_iter =
   gen_object ~kind:Iter ~base:"iterbase" ~class_name:"iter" ~names:[]
     ~mk_tuple:mk_tuple_iter ~mk_record:mk_record_iter
     ~mk_variant:mk_variant_iter ()
-
 let _ = ("OIter", (some gen_iter)) |> Typehook.register
-
 let generate (mtyps : mtyps) =
   (let tbl = Hashtbl.create 30 in
    let aux (_,ty) =
@@ -344,11 +305,9 @@ let generate (mtyps : mtyps) =
        (`Value (`Negative, (`Bind ((`Lid "loc_of"), (`Fun case)))) : 
        FAstN.stru )
    | None  -> failwithf "PluginsN.generate null case" : stru )
-
 let _ =
   Typehook.register ~filter:(fun s  -> not (List.mem s ["loc"]))
     ("GenLoc", (some generate))
-
 let generate (mtyps : mtyps) =
   (let tys: string list =
      List.concat_map
@@ -383,12 +342,10 @@ let generate (mtyps : mtyps) =
                          (`App ((`Lid "tag"), (`Lid x)))))))) : FAstN.stru ))
        tys in
    sem_of_list (typedecl :: to_string :: tags) : stru )
-
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
     ("DynAst", (some generate))
-
 let generate (mtyps : mtyps) =
   (let aux (f : string) =
      ((`Value
@@ -416,10 +373,8 @@ let generate (mtyps : mtyps) =
                                                        (`Lid "x"))))))))))))))))))) : 
      FAstN.stru ) : stru ) in
    stru_from_ty ~f:aux mtyps : stru )
-
 let _ =
   Typehook.register ~filter:(fun _  -> true) ("MapWrapper", (some generate))
-
 let generate (mtyps : mtyps) =
   (let aux (f : string) =
      ((`Value
@@ -433,12 +388,10 @@ let generate (mtyps : mtyps) =
    sem
      (`Value (`Negative, (`Bind ((`Lid "dump"), (`New (`Lid "print"))))) : 
      FAstN.stru ) (stru_from_ty ~f:aux mtyps) : stru )
-
 let _ =
   Typehook.register
     ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
     ("PrintWrapper", (some generate))
-
 let generate (mtyps : mtyps) =
   (let f (name,ty) =
      if name <> "ant"
@@ -457,5 +410,4 @@ let generate (mtyps : mtyps) =
        obj#typedecl ty
      else ty in
    (fun x  -> stru_from_mtyps ~f x) mtyps : stru option )
-
 let _ = Typehook.register ~filter:(fun _  -> true) ("LocType", generate)

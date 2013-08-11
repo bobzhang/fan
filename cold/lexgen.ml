@@ -1,14 +1,10 @@
 open LexSyntax
-
 exception Memory_overflow
-
 type ident = FAst.lident 
-
 type tag_info =  {
   id: string;
   start: bool;
   action: int} 
-
 type regexp =  
   | Empty
   | Chars of int* bool
@@ -17,30 +13,24 @@ type regexp =
   | Seq of regexp* regexp
   | Alt of regexp* regexp
   | Star of regexp 
-
 type tag_base =  
   | Start
   | End
   | Mem of int 
-
 type tag_addr =  
-  | Sum of (tag_base * int) 
-
+  | Sum of (tag_base* int) 
 type ident_info =  
   | Ident_string of bool* tag_addr* tag_addr
   | Ident_char of bool* tag_addr 
-
-type t_env = (ident * ident_info) list 
-
+type t_env = (ident* ident_info) list 
 type lexer_entry = 
   {
   lex_regexp: regexp;
   lex_mem_tags: int;
-  lex_actions: (int * t_env * FAst.exp) list} 
-
+  lex_actions: (int* t_env* FAst.exp) list} 
 type automata =  
   | Perform of int* tag_action list
-  | Shift of automata_trans* (automata_move * memory_action list) array 
+  | Shift of automata_trans* (automata_move* memory_action list) array 
 and automata_trans =  
   | No_remember
   | Remember of int* tag_action list 
@@ -53,26 +43,20 @@ and memory_action =
 and tag_action =  
   | SetTag of int* int
   | EraseTag of int 
-
 type automata_entry = 
   {
   auto_mem_size: int;
-  auto_initial_state: (int * memory_action list);
-  auto_actions: (int * t_env * FAst.exp) list} 
-
+  auto_initial_state: (int* memory_action list);
+  auto_actions: (int* t_env* FAst.exp) list} 
 module Ints = Set.Make(struct type t = int 
                               let compare = compare end)
-
 let tag_compare t1 t2 = Pervasives.compare t1 t2
-
 module Tags =
   Set.Make(struct type t = tag_info 
                   let compare = tag_compare end)
-
 module TagMap =
   Map.Make(struct type t = tag_info 
                   let compare = tag_compare end)
-
 module IdSet =
   Set.Make(struct
              type t = ident 
@@ -80,7 +64,6 @@ module IdSet =
                match (x, y) with
                | (`Lid (_,id1),`Lid (_,id2)) -> String.compare id1 id2
            end)
-
 module IdMap =
   Map.Make(struct
              type t = ident 
@@ -88,7 +71,6 @@ module IdMap =
                match (x, y) with
                | (`Lid (_,id1),`Lid (_,id2)) -> String.compare id1 id2
            end)
-
 let rec do_remove_nested to_remove =
   function
   | Bind (e,x) ->
@@ -103,11 +85,8 @@ let rec do_remove_nested to_remove =
       Alternative
         ((do_remove_nested to_remove e1), (do_remove_nested to_remove e2))
   | Repetition e -> Repetition (do_remove_nested to_remove e)
-
 let remove_nested_as e = do_remove_nested IdSet.empty e
-
 let stringset_delta s1 s2 = IdSet.union (IdSet.diff s1 s2) (IdSet.diff s2 s1)
-
 let rec find_all_vars =
   function
   | Characters _|Epsilon |Eof  -> IdSet.empty
@@ -115,7 +94,6 @@ let rec find_all_vars =
   | Sequence (e1,e2)|Alternative (e1,e2) ->
       IdSet.union (find_all_vars e1) (find_all_vars e2)
   | Repetition e -> find_all_vars e
-
 let rec do_find_opt =
   function
   | Characters _|Epsilon |Eof  -> (IdSet.empty, IdSet.empty)
@@ -128,9 +106,7 @@ let rec do_find_opt =
       ((IdSet.union (IdSet.union opt1 opt2) (stringset_delta all1 all2)),
         (IdSet.union all1 all2))
   | Repetition e -> let r = find_all_vars e in (r, r)
-
 let find_optional e = let (r,_) = do_find_opt e in r
-
 let rec do_find_double =
   function
   | Characters _|Epsilon |Eof  -> (IdSet.empty, IdSet.empty)
@@ -145,14 +121,10 @@ let rec do_find_double =
       let (dbl1,all1) = do_find_double e1 and (dbl2,all2) = do_find_double e2 in
       ((IdSet.union dbl1 dbl2), (IdSet.union all1 all2))
   | Repetition e -> let r = find_all_vars e in (r, r)
-
 let find_double e = do_find_double e
-
 let add_some x = function | Some i -> Some (x + i) | None  -> None
-
 let add_some_some x y =
   match (x, y) with | (Some i,Some j) -> Some (i + j) | (_,_) -> None
-
 let rec do_find_chars sz =
   function
   | Epsilon |Eof  -> (IdSet.empty, IdSet.empty, sz)
@@ -172,27 +144,20 @@ let rec do_find_chars sz =
       ((IdSet.union c1 c2), (IdSet.union s1 s2),
         (if sz1 = sz2 then sz1 else None))
   | Repetition e -> do_find_chars None e
-
 let find_chars e = let (c,s,_) = do_find_chars (Some 0) e in IdSet.diff c s
-
 let chars = ref ([] : Fcset.t list )
-
 let chars_count = ref 0
-
 let rec encode_regexp char_vars act =
   function
   | Epsilon  -> Empty
   | Characters cl ->
       let n = chars_count.contents in
-      begin
-        chars := (cl :: (chars.contents)); incr chars_count; Chars (n, false)
-      end
+      (chars := (cl :: (chars.contents)); incr chars_count; Chars (n, false))
   | Eof  ->
       let n = chars_count.contents in
-      begin
-        chars := (Fcset.eof :: (chars.contents)); incr chars_count;
-        Chars (n, true)
-      end
+      (chars := (Fcset.eof :: (chars.contents));
+       incr chars_count;
+       Chars (n, true))
   | Sequence (r1,r2) ->
       let r1 = encode_regexp char_vars act r1 in
       let r2 = encode_regexp char_vars act r2 in Seq (r1, r2)
@@ -208,25 +173,18 @@ let rec encode_regexp char_vars act =
         Seq
           ((Tag { id = name; start = true; action = act }),
             (Seq (r, (Tag { id = name; start = false; action = act }))))
-
 let incr_pos = function | None  -> None | Some i -> Some (i + 1)
-
 let decr_pos = function | None  -> None | Some i -> Some (i - 1)
-
 let opt = true
-
 let mk_seq r1 r2 =
   match (r1, r2) with
   | (Empty ,_) -> r2
   | (_,Empty ) -> r1
   | (_,_) -> Seq (r1, r2)
-
 let add_pos p i =
   match p with | Some (Sum (a,n)) -> Some (Sum (a, (n + i))) | None  -> None
-
 let mem_name name id_set =
   IdSet.exists (fun (`Lid (_,id_name))  -> name = id_name) id_set
-
 let opt_regexp all_vars char_vars optional_vars double_vars r =
   let env = Hashtbl.create 17 in
   let rec size_forward pos =
@@ -248,10 +206,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
         if mem_name n.id double_vars
         then (r, (Some pos))
         else
-          begin
-            Hashtbl.add env ((n.id), (n.start)) (Sum (Start, pos));
-            (Empty, (Some pos))
-          end
+          (Hashtbl.add env ((n.id), (n.start)) (Sum (Start, pos));
+           (Empty, (Some pos)))
     | Empty  -> (r, (Some pos))
     | Chars (_,is_eof) -> (r, (Some (if is_eof then pos else pos + 1)))
     | Seq (r1,r2) ->
@@ -284,10 +240,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
         if mem_name n.id double_vars
         then (r, (Some pos))
         else
-          begin
-            Hashtbl.add env ((n.id), (n.start)) (Sum (End, pos));
-            (Empty, (Some pos))
-          end
+          (Hashtbl.add env ((n.id), (n.start)) (Sum (End, pos));
+           (Empty, (Some pos)))
     | Empty  -> (r, (Some pos))
     | Chars (_,is_eof) -> (r, (Some (if is_eof then pos else pos - 1)))
     | Seq (r1,r2) ->
@@ -312,10 +266,9 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
     with
     | Not_found  ->
         let n = loc_count.contents in
-        begin
-          incr loc_count; Hashtbl.add env t (Sum ((Mem n), 0));
-          Sum ((Mem n), 0)
-        end in
+        (incr loc_count;
+         Hashtbl.add env t (Sum ((Mem n), 0));
+         Sum ((Mem n), 0)) in
   let rec alloc_exp pos r =
     match r with
     | Tag n ->
@@ -323,8 +276,7 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
         then (r, pos)
         else
           (match pos with
-           | Some a ->
-               begin Hashtbl.add env ((n.id), (n.start)) a; (Empty, pos) end
+           | Some a -> (Hashtbl.add env ((n.id), (n.start)) a; (Empty, pos))
            | None  ->
                let a = get_tag_addr ((n.id), (n.start)) in (r, (Some a)))
     | Empty  -> (r, pos)
@@ -354,7 +306,6 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
                      (get_tag_addr (name, false))) in
              (x, v) :: r) all_vars [] in
   (m, r, (loc_count.contents))
-
 let encode_casedef casedef =
   let r =
     List.fold_left
@@ -370,54 +321,45 @@ let encode_casedef casedef =
            actions), (succ count), (max loc_ntags ntags))) (Empty, [], 0, 0)
       casedef in
   r
-
 let encode_lexdef def =
-  begin
-    chars := []; chars_count := 0;
-    (let (entry_list :(lexer_entry * bool) list)=
-       List.map
-         (fun { shortest; clauses = casedef }  ->
-            let (re,actions,_,ntags) = encode_casedef casedef in
-            ({
-               lex_regexp = re;
-               lex_mem_tags = ntags;
-               lex_actions = (List.rev actions)
-             }, shortest)) def in
-     let chr = Array.of_list (List.rev chars.contents) in
-     begin chars := []; (chr, entry_list) end)
-  end
-
+  chars := [];
+  chars_count := 0;
+  (let (entry_list :(lexer_entry* bool) list)=
+     List.map
+       (fun { shortest; clauses = casedef }  ->
+          let (re,actions,_,ntags) = encode_casedef casedef in
+          ({
+             lex_regexp = re;
+             lex_mem_tags = ntags;
+             lex_actions = (List.rev actions)
+           }, shortest)) def in
+   let chr = Array.of_list (List.rev chars.contents) in
+   chars := []; (chr, entry_list))
 let encode_single_lexdef def =
-  begin
-    chars := []; chars_count := 0;
-    (let result: (lexer_entry * bool) =
-       match def with
-       | { shortest; clauses = casedef } ->
-           let (re,actions,_,ntags) = encode_casedef casedef in
-           ({
-              lex_regexp = re;
-              lex_mem_tags = ntags;
-              lex_actions = (List.rev actions)
-            }, shortest) in
-     let chr = Array.of_list (List.rev chars.contents) in
-     begin chars := []; (chr, result) end)
-  end
-
+  chars := [];
+  chars_count := 0;
+  (let result: (lexer_entry* bool) =
+     match def with
+     | { shortest; clauses = casedef } ->
+         let (re,actions,_,ntags) = encode_casedef casedef in
+         ({
+            lex_regexp = re;
+            lex_mem_tags = ntags;
+            lex_actions = (List.rev actions)
+          }, shortest) in
+   let chr = Array.of_list (List.rev chars.contents) in
+   chars := []; (chr, result))
 type t_transition =  
   | OnChars of int
   | ToAction of int 
-
-type transition = (t_transition * Tags.t) 
-
+type transition = (t_transition* Tags.t) 
 let trans_compare (t1,tags1) (t2,tags2) =
   match Pervasives.compare t1 t2 with
   | 0 -> Tags.compare tags1 tags2
   | r -> r
-
 module TransSet =
   Set.Make(struct type t = transition 
                   let compare = trans_compare end)
-
 let rec nullable =
   function
   | Empty |Tag _ -> true
@@ -425,7 +367,6 @@ let rec nullable =
   | Seq (r1,r2) -> (nullable r1) && (nullable r2)
   | Alt (r1,r2) -> (nullable r1) || (nullable r2)
   | Star _r -> true
-
 let rec emptymatch =
   function
   | Empty |Chars (_,_)|Action _ -> Tags.empty
@@ -433,12 +374,10 @@ let rec emptymatch =
   | Seq (r1,r2) -> Tags.union (emptymatch r1) (emptymatch r2)
   | Alt (r1,r2) -> if nullable r1 then emptymatch r1 else emptymatch r2
   | Star r -> if nullable r then emptymatch r else Tags.empty
-
 let addtags transs tags =
   TransSet.fold
     (fun (t,tags_t)  r  -> TransSet.add (t, (Tags.union tags tags_t)) r)
     transs TransSet.empty
-
 let rec firstpos =
   function
   | Empty |Tag _ -> TransSet.empty
@@ -451,57 +390,44 @@ let rec firstpos =
       else firstpos r1
   | Alt (r1,r2) -> TransSet.union (firstpos r1) (firstpos r2)
   | Star r -> firstpos r
-
 let followpos size entry_list =
   let v = Array.create size TransSet.empty in
   let rec fill s =
     function
     | Empty |Action _|Tag _ -> ()
     | Chars (n,_) -> v.(n) <- s
-    | Alt (r1,r2) -> begin fill s r1; fill s r2 end
+    | Alt (r1,r2) -> (fill s r1; fill s r2)
     | Seq (r1,r2) ->
-        begin
-          fill
-            (if nullable r2
-             then TransSet.union (firstpos r2) (addtags s (emptymatch r2))
-             else firstpos r2) r1;
-          fill s r2
-        end
+        (fill
+           (if nullable r2
+            then TransSet.union (firstpos r2) (addtags s (emptymatch r2))
+            else firstpos r2) r1;
+         fill s r2)
     | Star r -> fill (TransSet.union (firstpos r) s) r in
-  begin
-    List.iter (fun (entry,_)  -> fill TransSet.empty entry.lex_regexp)
-      entry_list;
-    v
-  end
-
+  List.iter (fun (entry,_)  -> fill TransSet.empty entry.lex_regexp)
+    entry_list;
+  v
 let no_action = max_int
-
 module StateSet =
   Set.Make(struct type t = t_transition 
                   let compare = Pervasives.compare end)
-
 module MemMap =
   Map.Make(struct type t = int 
                   let compare = Pervasives.compare end)
-
 type 'a dfa_state = 
   {
-  final: (int * ('a * int TagMap.t));
-  others: ('a * int TagMap.t) MemMap.t} 
-
+  final: (int* ('a* int TagMap.t));
+  others: ('a* int TagMap.t) MemMap.t} 
 let dfa_state_empty =
   { final = (no_action, (max_int, TagMap.empty)); others = MemMap.empty }
 and dfa_state_is_empty { final = (act,_); others = o } =
   (act = no_action) && (o = MemMap.empty)
-
 module StateSetSet =
   Set.Make(struct type t = StateSet.t 
                   let compare = StateSet.compare end)
-
 type t_equiv =  {
   tag: tag_info;
   equiv: StateSetSet.t} 
-
 module MemKey =
   Set.Make(struct
              type t = t_equiv 
@@ -510,11 +436,9 @@ module MemKey =
                | 0 -> StateSetSet.compare e1.equiv e2.equiv
                | r -> r
            end)
-
 type dfa_key =  {
   kstate: StateSet.t;
   kmem: MemKey.t} 
-
 let env_to_class m =
   let env1 =
     MemMap.fold
@@ -529,23 +453,18 @@ let env_to_class m =
       TagMap.empty in
   TagMap.fold (fun tag  ss  r  -> MemKey.add { tag; equiv = ss } r) env1
     MemKey.empty
-
 let inverse_mem_map trans m r =
   TagMap.fold
     (fun tag  addr  r  ->
        try
          let (otag,s) = MemMap.find addr r in
-         begin
-           assert (tag = otag);
-           (let r = MemMap.remove addr r in
-            MemMap.add addr (tag, (StateSet.add trans s)) r)
-         end
+         assert (tag = otag);
+         (let r = MemMap.remove addr r in
+          MemMap.add addr (tag, (StateSet.add trans s)) r)
        with
        | Not_found  ->
            MemMap.add addr (tag, (StateSet.add trans StateSet.empty)) r) m r
-
 let inverse_mem_map_other n (_,m) r = inverse_mem_map (OnChars n) m r
-
 let get_key { final = (act,(_,m_act)); others = o } =
   let env =
     MemMap.fold inverse_mem_map_other o
@@ -558,67 +477,47 @@ let get_key { final = (act,(_,m_act)); others = o } =
        then StateSet.empty
        else StateSet.add (ToAction act) StateSet.empty) in
   let mem_key = env_to_class env in { kstate = state_key; kmem = mem_key }
-
 let key_compare k1 k2 =
   match StateSet.compare k1.kstate k2.kstate with
   | 0 -> MemKey.compare k1.kmem k2.kmem
   | r -> r
-
 module StateMap =
   Map.Make(struct type t = dfa_key 
                   let compare = key_compare end)
-
 let state_map = ref (StateMap.empty : int StateMap.t )
-
 let todo = Stack.create ()
-
 let next_state_num = ref 0
-
 let next_mem_cell = ref 0
-
 let temp_pending = ref false
-
 let tag_cells = Hashtbl.create 17
-
 let state_table = Ftable.create dfa_state_empty
-
 let reset_state () =
-  begin
-    Stack.clear todo; next_state_num := 0;
-    (let _ = Ftable.trim state_table in ())
-  end
-
+  Stack.clear todo;
+  next_state_num := 0;
+  (let _ = Ftable.trim state_table in ())
 let reset_state_partial ntags =
-  begin
-    next_mem_cell := ntags; Hashtbl.clear tag_cells; temp_pending := false;
-    state_map := StateMap.empty
-  end
-
+  next_mem_cell := ntags;
+  Hashtbl.clear tag_cells;
+  temp_pending := false;
+  state_map := StateMap.empty
 let do_alloc_temp () =
-  begin temp_pending := true; (let n = next_mem_cell.contents in n) end
-
+  temp_pending := true; (let n = next_mem_cell.contents in n)
 let do_alloc_cell used t =
   let available =
     try Hashtbl.find tag_cells t with | Not_found  -> Ints.empty in
   try Ints.choose (Ints.diff available used)
   with
   | Not_found  ->
-      begin
-        temp_pending := false;
-        (let n = next_mem_cell.contents in
-         begin
-           if n >= 255 then raise Memory_overflow;
-           Hashtbl.replace tag_cells t (Ints.add n available);
-           incr next_mem_cell; n
-         end)
-      end
-
+      (temp_pending := false;
+       (let n = next_mem_cell.contents in
+        if n >= 255 then raise Memory_overflow;
+        Hashtbl.replace tag_cells t (Ints.add n available);
+        incr next_mem_cell;
+        n))
 let is_old_addr a = a >= 0 and is_new_addr a = a < 0
-
 let old_in_map m r =
   TagMap.fold
     (fun _  addr  r  -> if is_old_addr addr then Ints.add addr r else r) m r
-
 let alloc_map used m mvs =
   TagMap.fold
     (fun tag  a  (r,mvs)  ->
@@ -627,7 +526,6 @@ let alloc_map used m mvs =
          then let a = do_alloc_cell used tag in (a, (Ints.add a mvs))
          else (a, mvs) in
        ((TagMap.add tag a r), mvs)) m (TagMap.empty, mvs)
-
 let create_new_state { final = (act,(_,m_act)); others = o } =
   let used =
     MemMap.fold (fun _  (_,m)  r  -> old_in_map m r) o
@@ -640,24 +538,19 @@ let create_new_state { final = (act,(_,m_act)); others = o } =
       o (MemMap.empty, mvs) in
   ({ final = (act, (0, new_m_act)); others = new_o },
     (Ints.fold (fun x  r  -> (Set x) :: r) mvs []))
-
 type new_addr_gen =  {
   mutable count: int;
   mutable env: int TagMap.t} 
-
 let create_new_addr_gen () = { count = (-1); env = TagMap.empty }
-
 let alloc_new_addr tag r =
   try TagMap.find tag r.env
   with
   | Not_found  ->
       let a = r.count in
-      begin r.count <- a - 1; r.env <- TagMap.add tag a r.env; a end
-
+      (r.count <- a - 1; r.env <- TagMap.add tag a r.env; a)
 let create_mem_map tags gen =
   Tags.fold (fun tag  r  -> TagMap.add tag (alloc_new_addr tag gen) r) tags
     TagMap.empty
-
 let create_init_state pos =
   let gen = create_new_addr_gen () in
   let st =
@@ -679,15 +572,12 @@ let create_init_state pos =
                       (MemMap.add n (0, (create_mem_map tags gen)) st.others)
                   })) pos dfa_state_empty in
   st
-
 let get_map t st =
   match t with
   | ToAction _ -> let (_,(_,m)) = st.final in m
   | OnChars n -> let (_,m) = MemMap.find n st.others in m
-
 let dest (Copy (d,_)|Set d) = d
 and orig = function | Copy (_,o) -> o | Set _ -> (-1)
-
 let sort_mvs mvs =
   let rec do_rec r mvs =
     match mvs with
@@ -711,7 +601,6 @@ let sort_mvs mvs =
               | _ -> assert false)
          | _ -> do_rec (here @ r) rem) in
   do_rec [] mvs
-
 let move_to mem_key src tgt =
   let mvs =
     MemKey.fold
@@ -730,7 +619,6 @@ let move_to mem_key src tgt =
                 else r
               with | Not_found  -> assert false) m r) mem_key [] in
   sort_mvs mvs
-
 let get_state st =
   let key = get_key st in
   try
@@ -739,38 +627,29 @@ let get_state st =
   with
   | Not_found  ->
       let num = next_state_num.contents in
-      begin
-        incr next_state_num;
-        (let (st,mvs) = create_new_state st in
-         begin
-           Ftable.emit state_table st;
-           state_map := (StateMap.add key num state_map.contents);
-           Stack.push (st, num) todo; (num, mvs)
-         end)
-      end
-
+      (incr next_state_num;
+       (let (st,mvs) = create_new_state st in
+        Ftable.emit state_table st;
+        state_map := (StateMap.add key num state_map.contents);
+        Stack.push (st, num) todo;
+        (num, mvs)))
 let map_on_all_states f old_res =
   let res = ref old_res in
-  begin
-    (try
-       while true do
-         let (st,i) = Stack.pop todo in
-         let r = f st in res := ((r, i) :: (res.contents)) done
-     with | Stack.Empty  -> ());
-    res.contents
-  end
-
+  (try
+     while true do
+       let (st,i) = Stack.pop todo in
+       let r = f st in res := ((r, i) :: (res.contents)) done
+   with | Stack.Empty  -> ());
+  res.contents
 let goto_state st =
   if dfa_state_is_empty st
   then (Backtrack, [])
   else (let (n,moves) = get_state st in ((Goto n), moves))
-
 let add_tags_to_map gen tags m =
   Tags.fold
     (fun tag  m  ->
        let m = TagMap.remove tag m in
        TagMap.add tag (alloc_new_addr tag gen) m) tags m
-
 let apply_transition gen r pri m =
   function
   | (ToAction n,tags) ->
@@ -795,10 +674,8 @@ let apply_transition gen r pri m =
        | Not_found  ->
            let m = add_tags_to_map gen tags m in
            { r with others = (MemMap.add n (pri, m) r.others) })
-
 let apply_transitions gen r pri m ts =
   TransSet.fold (fun t  r  -> apply_transition gen r pri m t) ts r
-
 let rec split_env gen follow pos m s =
   function
   | [] -> []
@@ -817,22 +694,18 @@ let rec split_env gen follow pos m s =
          if Fcset.is_empty stay
          then (here, new_st) :: rem
          else (stay, st1) :: (here, new_st) :: rem)
-
 let comp_shift gen chars follow st =
   MemMap.fold
     (fun pos  (_,m)  env  ->
        split_env gen (follow.(pos)) pos m (chars.(pos)) env) st
     [(Fcset.all_chars_eof, dfa_state_empty)]
-
 let reachs chars follow st =
   let gen = create_new_addr_gen () in
   let env = comp_shift gen chars follow st in
   let env = List.map (fun (s,dfa_state)  -> (s, (goto_state dfa_state))) env in
   let shift = Fcset.env_to_array env in shift
-
 let get_tag_mem n env t =
   try TagMap.find t (env.(n)) with | Not_found  -> assert false
-
 let do_tag_actions n env m =
   let (used,r) =
     TagMap.fold
@@ -846,7 +719,6 @@ let do_tag_actions n env m =
          then ((Ints.add m used), ((EraseTag m) :: r))
          else (used, r)) (env.(n)) (used, r) in
   r
-
 let translate_state shortest_match tags chars follow st =
   let (n,(_,m)) = st.final in
   if MemMap.empty = st.others
@@ -863,29 +735,24 @@ let translate_state shortest_match tags chars follow st =
           then No_remember
           else Remember (n, (do_tag_actions n tags m))),
           (reachs chars follow st.others))
-
 let make_tag_entry id start act a r =
   match a with
   | Sum (Mem m,0) -> TagMap.add { id; start; action = act } m r
   | _ -> r
-
-let extract_tags (l : (int * (ident * ident_info) list * 'b) list) =
+let extract_tags (l : (int* (ident* ident_info) list* 'b) list) =
   (let envs = Array.create (List.length l) TagMap.empty in
-   begin
-     List.iter
-       (fun (act,m,_)  ->
-          envs.(act) <-
-          List.fold_right
-            (fun (x,v)  r  ->
-               let name = match x with | `Lid (_,name) -> name in
-               match v with
-               | Ident_char (_,t) -> make_tag_entry name true act t r
-               | Ident_string (_,t1,t2) ->
-                   make_tag_entry name true act t1
-                     (make_tag_entry name false act t2 r)) m TagMap.empty) l;
-     envs
-   end : int TagMap.t array )
-
+   List.iter
+     (fun (act,m,_)  ->
+        envs.(act) <-
+        List.fold_right
+          (fun (x,v)  r  ->
+             let name = match x with | `Lid (_,name) -> name in
+             match v with
+             | Ident_char (_,t) -> make_tag_entry name true act t r
+             | Ident_string (_,t1,t2) ->
+                 make_tag_entry name true act t1
+                   (make_tag_entry name false act t2 r)) m TagMap.empty) l;
+   envs : int TagMap.t array )
 let make_single_dfa (lexdef : LexSyntax.entry) =
   (let (chars,entry) = encode_single_lexdef lexdef in
    let follow = followpos (Array.length chars) [entry] in
@@ -895,33 +762,27 @@ let make_single_dfa (lexdef : LexSyntax.entry) =
      match entry with
      | (le,shortest) ->
          let tags = extract_tags le.lex_actions in
-         begin
-           reset_state_partial le.lex_mem_tags;
-           (let pos_set = firstpos le.lex_regexp in
-            let init_state = create_init_state pos_set in
-            let init_num = get_state init_state in
-            begin
-              r_states :=
-                (map_on_all_states
-                   (translate_state shortest tags chars follow)
-                   r_states.contents);
-              {
-                auto_mem_size =
-                  (if temp_pending.contents
-                   then next_mem_cell.contents + 1
-                   else next_mem_cell.contents);
-                auto_initial_state = init_num;
-                auto_actions = (le.lex_actions)
-              }
-            end)
-         end in
+         (reset_state_partial le.lex_mem_tags;
+          (let pos_set = firstpos le.lex_regexp in
+           let init_state = create_init_state pos_set in
+           let init_num = get_state init_state in
+           r_states :=
+             (map_on_all_states (translate_state shortest tags chars follow)
+                r_states.contents);
+           {
+             auto_mem_size =
+               (if temp_pending.contents
+                then next_mem_cell.contents + 1
+                else next_mem_cell.contents);
+             auto_initial_state = init_num;
+             auto_actions = (le.lex_actions)
+           })) in
    let states = r_states.contents in
    let actions = Array.create next_state_num.contents (Perform (0, [])) in
-   begin
-     List.iter (fun (act,i)  -> actions.(i) <- act) states; reset_state ();
-     reset_state_partial 0; (initial_states, actions)
-   end : (automata_entry * automata array) )
-
+   List.iter (fun (act,i)  -> actions.(i) <- act) states;
+   reset_state ();
+   reset_state_partial 0;
+   (initial_states, actions) : (automata_entry* automata array) )
 let make_dfa (lexdef : LexSyntax.entry list) =
   (let (chars,entry_list) = encode_lexdef lexdef in
    let follow = followpos (Array.length chars) entry_list in
@@ -931,29 +792,24 @@ let make_dfa (lexdef : LexSyntax.entry list) =
      List.map
        (fun (le,shortest)  ->
           let tags = extract_tags le.lex_actions in
-          begin
-            reset_state_partial le.lex_mem_tags;
-            (let pos_set = firstpos le.lex_regexp in
-             let init_state = create_init_state pos_set in
-             let init_num = get_state init_state in
-             begin
-               r_states :=
-                 (map_on_all_states
-                    (translate_state shortest tags chars follow)
-                    r_states.contents);
-               {
-                 auto_mem_size =
-                   (if temp_pending.contents
-                    then next_mem_cell.contents + 1
-                    else next_mem_cell.contents);
-                 auto_initial_state = init_num;
-                 auto_actions = (le.lex_actions)
-               }
-             end)
-          end) entry_list in
+          reset_state_partial le.lex_mem_tags;
+          (let pos_set = firstpos le.lex_regexp in
+           let init_state = create_init_state pos_set in
+           let init_num = get_state init_state in
+           r_states :=
+             (map_on_all_states (translate_state shortest tags chars follow)
+                r_states.contents);
+           {
+             auto_mem_size =
+               (if temp_pending.contents
+                then next_mem_cell.contents + 1
+                else next_mem_cell.contents);
+             auto_initial_state = init_num;
+             auto_actions = (le.lex_actions)
+           })) entry_list in
    let states = r_states.contents in
    let actions = Array.create next_state_num.contents (Perform (0, [])) in
-   begin
-     List.iter (fun (act,i)  -> actions.(i) <- act) states; reset_state ();
-     reset_state_partial 0; (initial_states, actions)
-   end : (automata_entry list * automata array) )
+   List.iter (fun (act,i)  -> actions.(i) <- act) states;
+   reset_state ();
+   reset_state_partial 0;
+   (initial_states, actions) : (automata_entry list* automata array) )
