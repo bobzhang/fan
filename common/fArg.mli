@@ -1,9 +1,22 @@
+(***********************************************************************)
+(*                                                                     *)
+(*                                OCaml                                *)
+(*                                                                     *)
+(*             Damien Doligez, projet Para, INRIA Rocquencourt         *)
+(*                                                                     *)
+(*  Copyright 1996 Institut National de Recherche en Informatique et   *)
+(*  en Automatique.  All rights reserved.  This file is distributed    *)
+(*  under the terms of the GNU Library General Public License, with    *)
+(*  the special exception on linking described in file ../LICENSE.     *)
+(*                                                                     *)
+(***********************************************************************)
+
 (** Parsing of command line arguments.
 
    This module provides a general mechanism for extracting options and
-   arguments from the command line to the program. The difference from StdFan's arg module lies in that it supports dynamically changing args. 
+   arguments from the command line to the program.
 
-   Fsyntax of command lines:
+   Syntax of command lines:
     A keyword is a character string starting with a [-].
     An option is a keyword alone or followed by an argument.
     The types of keywords are: [Unit], [Bool], [Set], [Clear],
@@ -16,15 +29,14 @@
     Arguments not preceded by a keyword are called anonymous arguments.
 
    Examples ([cmd] is assumed to be the command name):
-    -   [cmd -flag           ](a unit option)
-    -   [cmd -int 1          ](an int option with argument [1])
-    -   [cmd -string foobar  ](a string option with argument ["foobar"])
-    -   [cmd -float 12.34    ](a float option with argument [12.34])
-    -   [cmd a b c           ](three anonymous arguments: ["a"], ["b"], and ["c"])
-    -   [cmd a b -- c d      ](two anonymous arguments and a rest option with
+-   [cmd -flag           ](a unit option)
+-   [cmd -int 1          ](an int option with argument [1])
+-   [cmd -string foobar  ](a string option with argument ["foobar"])
+-   [cmd -float 12.34    ](a float option with argument [12.34])
+-   [cmd a b c           ](three anonymous arguments: ["a"], ["b"], and ["c"])
+-   [cmd a b -- c d      ](two anonymous arguments and a rest option with
                            two arguments)
 *)
-
 
 type spec =
   | Unit of (unit -> unit)     (** Call the function with unit argument *)
@@ -40,12 +52,12 @@ type spec =
   | Tuple of spec list         (** Take several arguments according to the
                                    spec list *)
   | Symbol of string list * (string -> unit)
-        (** Take one of the symbols as argument and
-            call the function with the symbol *)
+                               (** Take one of the symbols as argument and
+                                   call the function with the symbol *)
   | Rest of (string -> unit)   (** Stop interpreting keywords and call the
                                    function with each remaining argument *)
 (** The concrete type describing the behavior associated
-    with a keyword. *)
+   with a keyword. *)
 
 type key = string
 type doc = string
@@ -53,7 +65,7 @@ type usage_msg = string
 type anon_fun = (string -> unit)
 
 val parse :
-  (key * spec * doc) list ref -> anon_fun -> usage_msg -> unit
+  (key * spec * doc) list -> anon_fun -> usage_msg -> unit
 (** [Arg.parse speclist anon_fun usage_msg] parses the command line.
     [speclist] is a list of triples [(key, spec, doc)].
     [key] is the option keyword, it must start with a ['-'] character.
@@ -81,8 +93,17 @@ val parse :
     by specifying your own [-help] and [--help] options in [speclist].
 *)
 
+val parse_dynamic :
+  (string * spec * string) list ref -> anon_fun -> string -> unit
+(** Same as {!Arg.parse}, except that the [speclist] argument is a reference
+    and may be updated during the parsing. A typical use for this feature
+    is to parse command lines of the form:
+-     command subcommand [options]
+    where the list of options depends on the value of the subcommand argument.
+*)
+
 val parse_argv : ?current: int ref -> string array ->
-  (key * spec * doc) list ref -> anon_fun -> usage_msg -> unit
+  (key * spec * doc) list -> anon_fun -> usage_msg -> unit
 (** [Arg.parse_argv ~current args speclist anon_fun usage_msg] parses
   the array [args] as if it were the command line.  It uses and updates
   the value of [~current] (if given), or [Arg.current].  You must set
@@ -92,6 +113,13 @@ val parse_argv : ?current: int ref -> string array ->
   the error message as argument.  If option [-help] or [--help] is
   given, [Arg.parse_argv] raises [Arg.Help] with the help message
   as argument.
+*)
+
+val parse_argv_dynamic : ?current:int ref -> string array ->
+  (string * spec * string) list ref -> anon_fun -> string -> unit
+(** Same as {!Arg.parse_argv}, except that the [speclist] argument is a
+    reference and may be updated during the parsing.
+    See {!Arg.parse_dynamic}.
 *)
 
 exception Help of string
