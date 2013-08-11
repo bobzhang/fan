@@ -1097,33 +1097,34 @@ end
 
   
 module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
-  (* include BatStream; *)
   include XStream
-  let rev strm=
-    let rec aux =
-      fun (__strm : _ XStream.t)  ->
-    match XStream.peek __strm with
-    | Some x ->
-        (XStream.junk __strm;
-         (let xs = __strm in
-          XStream.lapp (fun _  -> aux xs) (XStream.ising x)))
-    | _ -> XStream.sempty in
-    aux strm
+  let njunk  n strm  =
+    for _i = 1 to n do
+      junk strm
+    done (* FIXME unsed  index i*)
       
-  let tail = 
-    fun (__strm : _ XStream.t)  ->
-    match XStream.peek __strm with
-    | Some _ -> (XStream.junk __strm; __strm)
-    | _ -> XStream.sempty
+  let tail s = 
+    match peek s with
+    | Some _ -> (junk s; s)
+    | _ -> sempty
         
-  let rec map f  = 
-  fun (__strm : _ XStream.t)  ->
-    match XStream.peek __strm with
+
+  let rev strm=
+    let rec aux s =
+      match peek s with
+      | Some x ->
+          (junk s;
+           (let xs = s in
+           lapp (fun _  -> aux xs) (ising x)))
+      | _ -> sempty in aux strm
+      
+  let rec map f  s = 
+    match peek s with
     | Some x ->
-        (XStream.junk __strm;
-         (let xs = __strm in
-          XStream.lcons (fun _  -> f x) (XStream.slazy (fun _  -> map f xs))))
-    | _ -> XStream.sempty
+        (junk s;
+         (let xs = s in
+          lcons (fun _  -> f x) (slazy (fun _  -> map f xs))))
+    | _ -> sempty
 
   (* the minimual [n] is 0 *)
   let peek_nth strm n   =
@@ -1132,26 +1133,21 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
       | [] -> None  in
     if n < 0 then
       invalid_arg "XStream.peek_nth"
-    else loop n (XStream.npeek (n+1) strm)
+    else loop n (npeek (n+1) strm)
 
   (*  Used by [try_parser], very in-efficient 
       This version of peek_nth is off-by-one from XStream.peek_nth *)      
-  let dup strm = 
-    XStream.from (peek_nth strm)
+  let dup strm = from (peek_nth strm)
   
-  let njunk  n strm  =
-    for _i = 1 to n do XStream.junk strm done (* FIXME unsed  index i*)
-      
-  let rec filter f =
-  fun (__strm : _ XStream.t)  ->
-    match XStream.peek __strm with
+  let rec filter f s =
+    match peek s with
     | Some x ->
-        (XStream.junk __strm;
-         (let xs = __strm in
+        (junk s;
+         (let xs = s in
           if f x
-          then XStream.icons x (XStream.slazy (fun _  -> filter f xs))
-          else XStream.slazy (fun _  -> filter f xs)))
-    | _ -> XStream.sempty
+          then icons x (slazy (fun _  -> filter f xs))
+          else slazy (fun _  -> filter f xs)))
+    | _ -> sempty
         
 end
 
