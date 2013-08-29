@@ -1,7 +1,7 @@
 
 {:fans|keep off; derive (LocType);|};;
 
-{:ocaml| {:include| "src/fAst.mli"|} |};;
+{:ocaml| {:include| "common/fAst.mli"|} |};;
 
 
 
