@@ -28,4 +28,7 @@ let wildcarder = object (self)
 end
 
 
-    
+
+(* let () =     begin *)
+(*   Ast2pt.dump_ident := dump_ident; *)
+(* end;; *)
