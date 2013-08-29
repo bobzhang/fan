@@ -12,9 +12,9 @@ true:-traverse
 
 <{cold,src,debug}/mktop.ml>: warn(-33)
 
-<{common}/{astPrint,fLoc}.{ml,mli}>:use_ocamlcommon
+<{common}/{astPrint,parsetreeHelper,fLoc}.{ml,mli}>:use_ocamlcommon
 
-<{cold,src,debug}/{oAstPrint,astPrint,astEq,fLoc,fanLoc,preCast,fanX,ast2pt,pAst2pt,sig,parsetreeHelper,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
+<{cold,src,debug}/{oAstPrint,astPrint,astEq,fLoc,fanLoc,preCast,fanX,ast2pt,pAst2pt,sig,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
 
 <{cold,src,debug}/{fanTop,fEval}.{ml,mli}>: use_ocamlcommon
 
