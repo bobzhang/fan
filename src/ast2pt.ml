@@ -633,15 +633,15 @@ let rec exp (x : exp) = with exp match x with
             match al with
             | [a] -> a
             | _ -> mkexp loc (Pexp_tuple al)  in
-          mkexp loc (Pexp_construct li (Some a) false)
+          mkexp loc (Pexp_construct (li, (Some a), false))
       | Pexp_variant (s, None) ->
           let al = List.map snd al in
           let a =
             match al with
             | [a] -> a
-            | _ -> mkexp loc (Pexp_tuple al) 
-          in mkexp loc (Pexp_variant s (Some a))
-      | _ -> mkexp loc (Pexp_apply (exp f) al)
+            | _ -> mkexp loc (Pexp_tuple al) in
+          mkexp loc (Pexp_variant (s, (Some a)))
+      | _ -> mkexp loc (Pexp_apply ((exp f), al))
       end
   | `ArrayDot (loc, e1, e2) ->
           mkexp loc
