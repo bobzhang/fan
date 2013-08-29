@@ -4,41 +4,52 @@ open Asttypes
 open LibUtil
 open ParsetreeHelper
 open FAst
-let loc_of = AstLib.loc_of
-let view_app = AstLib.view_app
-let list_of_star = AstLib.list_of_star
-let list_of_arrow_r = AstLib.list_of_arrow_r
-let list_of_sem = AstLib.list_of_sem
-let list_of_or = AstLib.list_of_or
-let list_of_app = AstLib.list_of_app
-let list_of_com = AstLib.list_of_com
-let list_of_and = AstLib.list_of_and
+open Ast_basic
 let errorf = FLoc.errorf
-let dump_ident = Objs.dump_ident
-let dump_ctyp = Objs.dump_ctyp
-let dump_row_field = Objs.dump_row_field
-let dump_name_ctyp = Objs.dump_name_ctyp
-let dump_constr = Objs.dump_constr
-let dump_mtyp = Objs.dump_mtyp
-let dump_ctyp = Objs.dump_ctyp
-let dump_or_ctyp = Objs.dump_or_ctyp
-let dump_pat = Objs.dump_pat
-let dump_type_parameters = Objs.dump_type_parameters
-let dump_exp = Objs.dump_exp
-let dump_case = Objs.dump_case
-let dump_rec_exp = Objs.dump_rec_exp
-let dump_type_constr = Objs.dump_type_constr
-let dump_typedecl = Objs.dump_typedecl
-let dump_sigi = Objs.dump_sigi
-let dump_mbind = Objs.dump_mbind
-let dump_mexp = Objs.dump_mexp
-let dump_stru = Objs.dump_stru
-let dump_cltyp = Objs.dump_cltyp
-let dump_cldecl = Objs.dump_cldecl
-let dump_cltdecl = Objs.dump_cltdecl
-let dump_clsigi = Objs.dump_clsigi
-let dump_clexp = Objs.dump_clexp
-let dump_clfield = Objs.dump_clfield
+let unsafe_loc_of node =
+  let open Obj in
+    let u = field (repr node) 1 in
+    let size = Obj.size u in
+    if size = 1
+    then (magic u : FLoc.t )
+    else (magic @@ (field u 0) : FLoc.t )
+let dump_ident = ref (fun _  -> failwith "Ast2pt.dump_ident not implemented")
+let dump_ctyp = ref (fun _  -> failwith "Ast2pt.dump_ctyp not implemented")
+let dump_row_field =
+  ref (fun _  -> failwith "Ast2pt.dump_row_field not implemented")
+let dump_name_ctyp =
+  ref (fun _  -> failwith "Ast2pt.dump_name_ctyp not implemented")
+let dump_constr =
+  ref (fun _  -> failwith "Ast2pt.dump_constr not implemented")
+let dump_mtyp = ref (fun _  -> failwith "Ast2pt.dump_mtyp not implemented")
+let dump_ctyp = ref (fun _  -> failwith "Ast2pt.dump_ctyp not implemented")
+let dump_or_ctyp =
+  ref (fun _  -> failwith "Ast2pt.dump_or_ctyp not implemented")
+let dump_pat = ref (fun _  -> failwith "Ast2pt.dump_pat not implemented")
+let dump_type_parameters =
+  ref (fun _  -> failwith "Ast2pt.dump_type_parameters not implemented")
+let dump_exp = ref (fun _  -> failwith "Ast2pt.dump_exp not implemented")
+let dump_case = ref (fun _  -> failwith "Ast2pt.dump_case not implemented")
+let dump_rec_exp =
+  ref (fun _  -> failwith "Ast2pt.dump_rec_exp not implemented")
+let dump_type_constr =
+  ref (fun _  -> failwith "Ast2pt.dump_type_constr not implemented")
+let dump_typedecl =
+  ref (fun _  -> failwith "Ast2pt.dump_typedecl not implemented")
+let dump_sigi = ref (fun _  -> failwith "Ast2pt.dump_sigi not implemented")
+let dump_mbind = ref (fun _  -> failwith "Ast2pt.dump_mbind not implemented")
+let dump_mexp = ref (fun _  -> failwith "Ast2pt.dump_mexp not implemented")
+let dump_stru = ref (fun _  -> failwith "Ast2pt.dump_stru not implemented")
+let dump_cltyp = ref (fun _  -> failwith "Ast2pt.dump_cltyp not implemented")
+let dump_cldecl =
+  ref (fun _  -> failwith "Ast2pt.dump_cldecl not implemented")
+let dump_cltdecl =
+  ref (fun _  -> failwith "Ast2pt.dump_cltdecl not implemented")
+let dump_clsigi =
+  ref (fun _  -> failwith "Ast2pt.dump_clsigi not implemented")
+let dump_clexp = ref (fun _  -> failwith "Ast2pt.dump_clexp not implemented")
+let dump_clfield =
+  ref (fun _  -> failwith "Ast2pt.dump_clfield not implemented")
 let ident_of_exp: exp -> ident =
   let error () =
     invalid_arg "ident_of_exp: this expession is not an identifier" in
@@ -94,35 +105,40 @@ let ident_tag (i : FAst.ident) =
     | `Apply (_loc,i1,i2) ->
         (match ((self i1 None), (self i2 None), acc) with
          | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
-         | _ -> errorf (loc_of i) "invalid long identifer %s" (dump_ident i))
+         | _ ->
+             errorf (unsafe_loc_of i) "invalid long identifer %s"
+               (dump_ident.contents i))
     | (`Uid (_loc,s) : FAst.ident) ->
         (match (acc, s) with
          | (None ,"") -> None
          | (None ,s) -> Some ((lident s), `uident)
          | (Some (_,(`uident|`app)),"") -> acc
          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
-         | _ -> errorf (loc_of i) "invalid long identifier %s" (dump_ident i))
+         | _ ->
+             errorf (unsafe_loc_of i) "invalid long identifier %s"
+               (dump_ident.contents i))
     | (`Lid (_loc,s) : FAst.ident) ->
         let x =
           match acc with
           | None  -> lident s
           | Some (acc,(`uident|`app)) -> ldot acc s
           | _ ->
-              errorf (loc_of i) "invalid long identifier %s" (dump_ident i) in
+              errorf (unsafe_loc_of i) "invalid long identifier %s"
+                (dump_ident.contents i) in
         Some (x, `lident)
-    | `Ant (_,_) -> error (loc_of i) "invalid long identifier" in
+    | `Ant (_,_) -> error (unsafe_loc_of i) "invalid long identifier" in
   match self i None with
   | Some x -> x
-  | None  -> error (loc_of i) "invalid long identifier "
+  | None  -> error (unsafe_loc_of i) "invalid long identifier "
 let ident_noloc i = fst (ident_tag i)
 let ident (i : FAst.ident) =
-  (with_loc (ident_noloc i) (loc_of i) : Longident.t Location.loc )
+  (with_loc (ident_noloc i) (unsafe_loc_of i) : Longident.t Location.loc )
 let long_lident id =
   match ident_tag id with
-  | (i,`lident) -> with_loc i (loc_of id)
+  | (i,`lident) -> with_loc i (unsafe_loc_of id)
   | _ ->
-      FLoc.errorf (loc_of id) "invalid long identifier %s"
-        (Objs.dump_ident id)
+      FLoc.errorf (unsafe_loc_of id) "invalid long identifier %s"
+        (dump_ident.contents id)
 let long_type_ident: FAst.ident -> Longident.t Location.loc = long_lident
 let long_class_ident = long_lident
 let long_uident_noloc i =
@@ -130,30 +146,30 @@ let long_uident_noloc i =
   | (Ldot (i,s),`uident) -> ldot i s
   | (Lident s,`uident) -> lident s
   | (i,`app) -> i
-  | _ -> errorf (loc_of i) "uppercase identifier expected %s" ""
-let long_uident i = with_loc (long_uident_noloc i) (loc_of i)
+  | _ -> errorf (unsafe_loc_of i) "uppercase identifier expected %s" ""
+let long_uident i = with_loc (long_uident_noloc i) (unsafe_loc_of i)
 let rec ctyp_long_id_prefix (t : FAst.ctyp) =
   (match t with
    | #FAst.ident' as i -> ident_noloc i
    | `App (_loc,m1,m2) ->
        let li1 = ctyp_long_id_prefix m1 in
        let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
-   | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) : 
-  Longident.t )
+   | t ->
+       errorf (unsafe_loc_of t) "invalid module expression %s"
+         (dump_ctyp.contents t) : Longident.t )
 let ctyp_long_id (t : FAst.ctyp) =
   (match t with
    | #FAst.ident' as i -> (false, (long_type_ident i))
    | `ClassPath (_,i) -> (true, (ident i))
-   | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) : (bool*
-                                                                Longident.t
-                                                                Location.loc) )
+   | t -> errorf (unsafe_loc_of t) "invalid type %s" (dump_ctyp.contents t) : 
+  (bool* Longident.t Location.loc) )
 let predef_option loc =
   (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))) : FAst.ctyp )
 let rec ctyp (x : FAst.ctyp) =
   match x with
   | #FAst.ident' as i ->
       let li = long_type_ident (i :>FAst.ident) in
-      let _loc = loc_of i in mktyp _loc (Ptyp_constr (li, []))
+      let _loc = unsafe_loc_of i in mktyp _loc (Ptyp_constr (li, []))
   | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc,_,_) as f ->
@@ -213,7 +229,7 @@ let rec ctyp (x : FAst.ctyp) =
         | _ -> assert false in
       mktyp _loc
         (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
-  | x -> errorf (loc_of x) "ctyp: %s" (dump_ctyp x)
+  | x -> errorf (unsafe_loc_of x) "ctyp: %s" (dump_ctyp.contents x)
 and row_field (x : row_field) acc =
   match x with
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
@@ -221,14 +237,15 @@ and row_field (x : row_field) acc =
   | `Bar (_loc,t1,t2) -> row_field t1 (row_field t2 acc)
   | `Ant (_loc,_) -> ant_error _loc
   | `Ctyp (_,t) -> (Rinherit (ctyp t)) :: acc
-  | t -> errorf (loc_of t) "row_field: %s" (dump_row_field t)
+  | t -> errorf (unsafe_loc_of t) "row_field: %s" (dump_row_field.contents t)
 and meth_list (fl : name_ctyp) acc =
   (match fl with
    | `Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
    | `TyCol (_loc,`Lid (_,lab),t) ->
        (mkfield _loc (Pfield (lab, (mkpolytype (ctyp t))))) :: acc
-   | x -> errorf (loc_of x) "meth_list: %s" (dump_name_ctyp x) : core_field_type
-                                                                   list )
+   | x ->
+       errorf (unsafe_loc_of x) "meth_list: %s" (dump_name_ctyp.contents x) : 
+  core_field_type list )
 and package_type_constraints (wc : constr)
   (acc : (Longident.t Asttypes.loc* core_type) list) =
   (match wc with
@@ -236,14 +253,18 @@ and package_type_constraints (wc : constr)
    | `And (_loc,wc1,wc2) ->
        package_type_constraints wc1 (package_type_constraints wc2 acc)
    | x ->
-       errorf (loc_of x) "unexpected `with constraint:%s' for a package type"
-         (dump_constr x) : (Longident.t Asttypes.loc* core_type) list )
+       errorf (unsafe_loc_of x)
+         "unexpected `with constraint:%s' for a package type"
+         (dump_constr.contents x) : (Longident.t Asttypes.loc* core_type)
+                                      list )
 and package_type (x : mtyp) =
   match x with
   | (`With (_loc,(#ident' as i),wc) : mtyp) ->
       ((long_uident i), (package_type_constraints wc []))
   | #ident' as i -> ((long_uident i), [])
-  | mt -> errorf (loc_of mt) "unexpected package type: %s" (dump_mtyp mt)
+  | mt ->
+      errorf (unsafe_loc_of mt) "unexpected package type: %s"
+        (dump_mtyp.contents mt)
 let mktype loc tl cl ~type_kind  ~priv  ~manifest  =
   let (params,variance) = List.split tl in
   {
@@ -267,7 +288,7 @@ let mktrecord (x : name_ctyp) =
       ((with_loc s sloc), Mutable, (mkpolytype (ctyp t)), _loc)
   | `TyCol (_loc,`Lid (sloc,s),t) ->
       ((with_loc s sloc), Immutable, (mkpolytype (ctyp t)), _loc)
-  | t -> errorf (loc_of t) "mktrecord %s " (dump_name_ctyp t)
+  | t -> errorf (unsafe_loc_of t) "mktrecord %s " (dump_name_ctyp.contents t)
 let mkvariant (x : or_ctyp) =
   match x with
   | `Uid (sloc,s) -> ((with_loc s sloc), [], None, sloc)
@@ -280,7 +301,7 @@ let mkvariant (x : or_ctyp) =
        | [] -> assert false)
   | `TyCol (_loc,`Uid (sloc,s),t) ->
       ((with_loc s sloc), [], (Some (ctyp t)), _loc)
-  | t -> errorf (loc_of t) "mkvariant %s " (dump_or_ctyp t)
+  | t -> errorf (unsafe_loc_of t) "mkvariant %s " (dump_or_ctyp.contents t)
 let type_kind (x : type_repr) =
   match x with
   | `Record (_loc,t) -> Ptype_record (List.map mktrecord (list_of_sem t []))
@@ -300,7 +321,7 @@ let mkmutable (x : flag) =
 let paolab (lab : string) (p : pat) =
   (match (lab, p) with
    | ("",(`Lid (_loc,i)|`Constraint (_loc,`Lid (_,i),_))) -> i
-   | ("",p) -> errorf (loc_of p) "paolab %s" (dump_pat p)
+   | ("",p) -> errorf (unsafe_loc_of p) "paolab %s" (dump_pat.contents p)
    | _ -> lab : string )
 let quote_map x =
   match x with
@@ -320,7 +341,7 @@ let quote_map x =
         | `Normal _ -> (false, false)
         | `Ant (_loc,_) -> ant_error _loc in
       (None, tuple)
-  | _ -> errorf (loc_of x) "quote_map %s" (dump_ctyp x)
+  | _ -> errorf (unsafe_loc_of x) "quote_map %s" (dump_ctyp.contents x)
 let optional_type_parameters (t : ctyp) =
   List.map quote_map (list_of_app t [])
 let mk_type_parameters (tl : opt_decl_params) =
@@ -340,17 +361,20 @@ let class_parameters (t : type_parameters) =
          (match quote_map x with
           | (Some x,v) -> Some (x, v)
           | (None ,_) ->
-              errorf (loc_of t) "class_parameters %s"
-                (dump_type_parameters t))
-     | _ -> errorf (loc_of t) "class_parameters %s" (dump_type_parameters t))
-    (list_of_com t [])
+              errorf (unsafe_loc_of t) "class_parameters %s"
+                (dump_type_parameters.contents t))
+     | _ ->
+         errorf (unsafe_loc_of t) "class_parameters %s"
+           (dump_type_parameters.contents t)) (list_of_com t [])
 let type_parameters_and_type_name (t : ctyp) =
   let rec aux (t : ctyp) acc =
     match t with
     | `App (_loc,t1,t2) ->
         aux (t1 :>ctyp) ((optional_type_parameters (t2 :>ctyp)) @ acc)
     | #ident' as i -> ((ident i), acc)
-    | x -> errorf (loc_of x) "type_parameters_and_type_name %s" (dump_ctyp x) in
+    | x ->
+        errorf (unsafe_loc_of x) "type_parameters_and_type_name %s"
+          (dump_ctyp.contents x) in
   aux t []
 let rec pat_fa (al : pat list) (x : pat) =
   match x with | `App (_,f,a) -> pat_fa (a :: al) f | f -> (f, al)
@@ -408,7 +432,7 @@ let rec pat (x : pat) =
              match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al) in
            mkpat loc (Ppat_variant (s, (Some a)))
        | _ ->
-           error (loc_of f)
+           error (unsafe_loc_of f)
              "this is not a constructor, it cannot be applied in a pattern")
   | (`Array (_loc,p) : FAst.pat) ->
       mkpat _loc (Ppat_array (List.map pat (list_of_sem p [])))
@@ -474,7 +498,7 @@ let rec pat (x : pat) =
       let mklabpat (p : rec_pat) =
         match p with
         | `RecBind (_loc,i,p) -> ((ident i), (pat p))
-        | p -> error (loc_of p) "invalid pattern" in
+        | p -> error (unsafe_loc_of p) "invalid pattern" in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
   | (`Par (_loc,`Com (_,p1,p2)) : FAst.pat) ->
       mkpat _loc
@@ -492,7 +516,7 @@ let rec pat (x : pat) =
       mkpat loc
         (Ppat_constraint
            ((mkpat sloc (Ppat_unpack (with_loc m sloc))), (ctyp ty)))
-  | p -> errorf (loc_of p) "invalid pattern %s" (dump_pat p)
+  | p -> errorf (unsafe_loc_of p) "invalid pattern %s" (dump_pat.contents p)
 let flag loc (x : flag) =
   match x with
   | `Positive _ -> Override
@@ -512,15 +536,16 @@ let rec exp (x : exp) =
                 | [] -> [(loc, [], e)]
                 | (loc',sl,e)::l -> ((FLoc.merge loc loc'), (s :: sl), e) ::
                     l)
-           | e -> ((loc_of e), [], e) :: acc : exp ->
-                                                 (loc* string list* exp) list ) in
+           | e -> ((unsafe_loc_of e), [], e) :: acc : exp ->
+                                                        (loc* string list*
+                                                          exp) list ) in
         match sep_dot_exp [] x with
         | (loc,ml,`Uid (sloc,s))::l ->
             ((mkexp loc (Pexp_construct ((mkli sloc s ml), None, false))), l)
         | (loc,ml,`Lid (sloc,s))::l ->
             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
         | (_,[],e)::l -> ((exp e), l)
-        | _ -> errorf (loc_of x) "exp: %s" (dump_exp x) in
+        | _ -> errorf (unsafe_loc_of x) "exp: %s" (dump_exp.contents x) in
       let (_,e) =
         List.fold_left
           (fun (loc_bp,e1)  (loc_ep,ml,e2)  ->
@@ -528,7 +553,7 @@ let rec exp (x : exp) =
              | `Lid (sloc,s) ->
                  let loc = FLoc.merge loc_bp loc_ep in
                  (loc, (mkexp loc (Pexp_field (e1, (mkli sloc s ml)))))
-             | _ -> error (loc_of e2) "lowercase identifier expected")
+             | _ -> error (unsafe_loc_of e2) "lowercase identifier expected")
           (_loc, e) l in
       e
   | `App (loc,_,_) as f ->
@@ -577,7 +602,8 @@ let rec exp (x : exp) =
             Pexp_apply
               ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
                 [("", (exp e1)); ("", (exp e2)); ("", (exp v))])
-        | x -> errorf loc "bad left part of assignment:%s" (dump_exp x) in
+        | x ->
+            errorf loc "bad left part of assignment:%s" (dump_exp.contents x) in
       mkexp loc e
   | `Chr (loc,s) ->
       mkexp loc
@@ -605,12 +631,13 @@ let rec exp (x : exp) =
         (Pexp_function
            (lab, None,
              [((pat (`Lid (sloc, lab))),
-                (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))]))
+                (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e)))))]))
   | `Fun (loc,`CaseWhen (_,`Label (_,`Lid (_,lab),po),w,e)) ->
       mkexp loc
         (Pexp_function
            (lab, None,
-             [((pat po), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))]))
+             [((pat po),
+                (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e)))))]))
   | `Fun (loc,`Case (_,`OptLablS (_,`Lid (sloc,lab)),e2)) ->
       mkexp loc
         (Pexp_function
@@ -623,13 +650,14 @@ let rec exp (x : exp) =
         (Pexp_function
            (("?" ^ lab), None,
              [((pat (`Lid (sloc, lab))),
-                (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
+                (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,`CaseWhen (_,`OptLabl (_,`Lid (_,lab),p),w,e2)) ->
       let lab = paolab lab p in
       mkexp loc
         (Pexp_function
            (("?" ^ lab), None,
-             [((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
+             [((pat p),
+                (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,`Case (_,`OptLablExpr (_,`Lid (_,lab),p,e1),e2)) ->
       let lab = paolab lab p in
       mkexp loc
@@ -639,7 +667,8 @@ let rec exp (x : exp) =
       mkexp loc
         (Pexp_function
            (("?" ^ lab), (Some (exp e1)),
-             [((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
+             [((pat p),
+                (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e2)))))]))
   | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None, (case a)))
   | `IfThenElse (loc,e1,e2,e3) ->
       mkexp loc (Pexp_ifthenelse ((exp e1), (exp e2), (Some (exp e3))))
@@ -744,7 +773,7 @@ let rec exp (x : exp) =
         | [] -> exp (`Uid (_loc, "()") : FAst.exp )
         | e::[] -> exp e
         | e::el ->
-            let _loc = FLoc.merge (loc_of e) _loc in
+            let _loc = FLoc.merge (unsafe_loc_of e) _loc in
             mkexp _loc (Pexp_sequence ((exp e), (loop el))) in
       loop (list_of_sem e [])
   | `Send (loc,e,`Lid (_,s)) -> mkexp loc (Pexp_send ((exp e), s))
@@ -762,7 +791,8 @@ let rec exp (x : exp) =
       let l = list_of_com e [] in
       (match l with
        | []|_::[] ->
-           errorf loc "tuple should have at least two items" (dump_exp x)
+           errorf loc "tuple should have at least two items"
+             (dump_exp.contents x)
        | _ -> mkexp loc (Pexp_tuple (List.map exp l)))
   | `Constraint (loc,e,t) ->
       mkexp loc (Pexp_constraint ((exp e), (Some (ctyp t)), None))
@@ -785,7 +815,7 @@ let rec exp (x : exp) =
              (Some (mktyp _loc (Ptyp_package (package_type pt)))), None))
   | `Package_exp (loc,me) -> mkexp loc (Pexp_pack (mexp me))
   | `LocalTypeFun (loc,`Lid (_,i),e) -> mkexp loc (Pexp_newtype (i, (exp e)))
-  | x -> errorf (loc_of x) "exp:%s" (dump_exp x)
+  | x -> errorf (unsafe_loc_of x) "exp:%s" (dump_exp.contents x)
 and label_exp (x : exp) =
   match x with
   | `Label (_loc,`Lid (_,lab),eo) -> (lab, (exp eo))
@@ -804,7 +834,8 @@ and bind (x : bind) acc =
         match x with
         | `Lid (_,x) -> [x]
         | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
-        | x -> errorf (loc_of x) "id_to_string %s" (dump_ctyp x) in
+        | x ->
+            errorf (unsafe_loc_of x) "id_to_string %s" (dump_ctyp.contents x) in
       let vars = id_to_string vs in
       let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
@@ -835,14 +866,18 @@ and case (x : case) =
     (function
      | (`Case (_loc,p,e) : FAst.case) -> Some ((pat p), (exp e))
      | (`CaseWhen (_loc,p,w,e) : FAst.case) ->
-         Some ((pat p), (mkexp (loc_of w) (Pexp_when ((exp w), (exp e)))))
-     | x -> errorf (loc_of x) "case %s" (dump_case x)) cases
+         Some
+           ((pat p),
+             (mkexp (unsafe_loc_of w) (Pexp_when ((exp w), (exp e)))))
+     | x -> errorf (unsafe_loc_of x) "case %s" (dump_case.contents x)) cases
 and mklabexp (x : rec_exp) =
   let binds = list_of_sem x [] in
   List.filter_map
     (function
      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some ((ident i), (exp e))
-     | x -> errorf (loc_of x) "mklabexp : %s" (dump_rec_exp x)) binds
+     | x ->
+         errorf (unsafe_loc_of x) "mklabexp : %s" (dump_rec_exp.contents x))
+    binds
 and mktype_decl (x : typedecl) =
   let type_decl tl cl loc (x : type_info) =
     match x with
@@ -869,8 +904,8 @@ and mktype_decl (x : typedecl) =
                     (function
                      | `Eq (loc,t1,t2) -> ((ctyp t1), (ctyp t2), loc)
                      | _ ->
-                         errorf (loc_of x) "invalid constraint: %s"
-                           (dump_type_constr cl))) in
+                         errorf (unsafe_loc_of x) "invalid constraint: %s"
+                           (dump_type_constr.contents cl))) in
          ((with_loc c sloc), (type_decl (mk_type_parameters tl) cl cloc td))
      | `TyAbstr (cloc,`Lid (sloc,c),tl,cl) ->
          let cl =
@@ -882,12 +917,13 @@ and mktype_decl (x : typedecl) =
                     (function
                      | `Eq (loc,t1,t2) -> ((ctyp t1), (ctyp t2), loc)
                      | _ ->
-                         errorf (loc_of x) "invalid constraint: %s"
-                           (dump_type_constr cl))) in
+                         errorf (unsafe_loc_of x) "invalid constraint: %s"
+                           (dump_type_constr.contents cl))) in
          ((with_loc c sloc),
            (mktype cloc (mk_type_parameters tl) cl ~type_kind:Ptype_abstract
               ~priv:Private ~manifest:None))
-     | (t : typedecl) -> errorf (loc_of t) "mktype_decl %s" (dump_typedecl t))
+     | (t : typedecl) ->
+         errorf (unsafe_loc_of t) "mktype_decl %s" (dump_typedecl.contents t))
     tys
 and mtyp: FAst.mtyp -> Parsetree.module_type =
   let mkwithc (wc : constr) =
@@ -920,18 +956,19 @@ and mtyp: FAst.mtyp -> Parsetree.module_type =
        | `ModuleSubst (_loc,i1,i2) ->
            Some ((long_uident i1), (Pwith_modsubst (long_uident i2)))
        | t ->
-           errorf (loc_of t) "bad with constraint (antiquotation) : %s"
-             (dump_constr t)) constrs in
+           errorf (unsafe_loc_of t)
+             "bad with constraint (antiquotation) : %s"
+             (dump_constr.contents t)) constrs in
   function
   | #ident' as i ->
-      let loc = loc_of i in mkmty loc (Pmty_ident (long_uident i))
+      let loc = unsafe_loc_of i in mkmty loc (Pmty_ident (long_uident i))
   | `Functor (loc,`Uid (sloc,n),nt,mt) ->
       mkmty loc (Pmty_functor ((with_loc n sloc), (mtyp nt), (mtyp mt)))
   | `Sig (loc,sl) -> mkmty loc (Pmty_signature (sigi sl []))
   | `SigEnd loc -> mkmty loc (Pmty_signature [])
   | `With (loc,mt,wc) -> mkmty loc (Pmty_with ((mtyp mt), (mkwithc wc)))
   | `ModuleTypeOf (_loc,me) -> mkmty _loc (Pmty_typeof (mexp me))
-  | t -> errorf (loc_of t) "mtyp: %s" (dump_mtyp t)
+  | t -> errorf (unsafe_loc_of t) "mtyp: %s" (dump_mtyp.contents t)
 and sigi (s : sigi) (l : signature) =
   (match s with
    | `Class (loc,cd) ->
@@ -972,24 +1009,27 @@ and sigi (s : sigi) (l : signature) =
    | `Val (loc,`Lid (sloc,n),t) ->
        (mksig loc (Psig_value ((with_loc n sloc), (mkvalue_desc loc t []))))
        :: l
-   | t -> errorf (loc_of t) "sigi: %s" (dump_sigi t) : signature )
+   | t -> errorf (unsafe_loc_of t) "sigi: %s" (dump_sigi.contents t) : 
+  signature )
 and module_sig_bind (x : mbind)
   (acc : (string Asttypes.loc* Parsetree.module_type) list) =
   match x with
   | `And (_,x,y) -> module_sig_bind x (module_sig_bind y acc)
   | `Constraint (_loc,`Uid (sloc,s),mt) -> ((with_loc s sloc), (mtyp mt)) ::
       acc
-  | t -> errorf (loc_of t) "module_sig_bind: %s" (dump_mbind t)
+  | t ->
+      errorf (unsafe_loc_of t) "module_sig_bind: %s" (dump_mbind.contents t)
 and module_str_bind (x : FAst.mbind) acc =
   match x with
   | `And (_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind (_loc,`Uid (sloc,s),mt,me) ->
       ((with_loc s sloc), (mtyp mt), (mexp me)) :: acc
-  | t -> errorf (loc_of t) "module_str_bind: %s" (dump_mbind t)
+  | t ->
+      errorf (unsafe_loc_of t) "module_str_bind: %s" (dump_mbind.contents t)
 and mexp (x : FAst.mexp) =
   match x with
   | #vid' as i ->
-      let loc = loc_of i in
+      let loc = unsafe_loc_of i in
       mkmod loc (Pmod_ident (long_uident (i : vid'  :>ident)))
   | `App (loc,me1,me2) -> mkmod loc (Pmod_apply ((mexp me1), (mexp me2)))
   | `Functor (loc,`Uid (sloc,n),mt,me) ->
@@ -1006,7 +1046,7 @@ and mexp (x : FAst.mexp) =
                  ((exp e),
                    (Some (mktyp loc (Ptyp_package (package_type pt)))), None))))
   | `PackageModule (loc,e) -> mkmod loc (Pmod_unpack (exp e))
-  | t -> errorf (loc_of t) "mexp: %s" (dump_mexp t)
+  | t -> errorf (unsafe_loc_of t) "mexp: %s" (dump_mexp.contents t)
 and stru (s : stru) (l : structure) =
   (match s with
    | (`StExp (_loc,`Uid (_,"()")) : FAst.stru) -> l
@@ -1069,7 +1109,8 @@ and stru (s : stru) (l : structure) =
        stru (`Sem (_loc, x, code) : FAst.stru ) l
    | `Value (loc,rf,bi) -> (mkstr loc (Pstr_value ((mkrf rf), (bind bi []))))
        :: l
-   | x -> errorf (loc_of x) "stru : %s" (dump_stru x) : structure )
+   | x -> errorf (unsafe_loc_of x) "stru : %s" (dump_stru.contents x) : 
+  structure )
 and cltyp (x : FAst.cltyp) =
   match x with
   | `ClApply (loc,id,tl) ->
@@ -1080,7 +1121,7 @@ and cltyp (x : FAst.cltyp) =
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com tl []))))
   | #vid' as id ->
-      let loc = loc_of id in
+      let loc = unsafe_loc_of id in
       mkcty loc (Pcty_constr ((long_class_ident (id : vid'  :>ident)), []))
   | `CtFun (loc,`Label (_,`Lid (_,lab),t),ct) ->
       mkcty loc (Pcty_fun (lab, (ctyp t), (cltyp ct)))
@@ -1114,12 +1155,12 @@ and cltyp (x : FAst.cltyp) =
       mkcty loc
         (Pcty_signature
            { pcsig_self = (ctyp t); pcsig_fields = cil; pcsig_loc = loc })
-  | x -> errorf (loc_of x) "class type: %s" (dump_cltyp x)
+  | x -> errorf (unsafe_loc_of x) "class type: %s" (dump_cltyp.contents x)
 and class_info_clexp (ci : cldecl) =
   match ci with
   | (`ClDecl (loc,vir,`Lid (nloc,name),params,ce) : cldecl) ->
       let (loc_params,(params,variance)) =
-        ((loc_of params), (List.split (class_parameters params))) in
+        ((unsafe_loc_of params), (List.split (class_parameters params))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
@@ -1137,12 +1178,14 @@ and class_info_clexp (ci : cldecl) =
         pci_loc = loc;
         pci_variance = []
       }
-  | ce -> errorf (loc_of ce) "class_info_clexp: %s" (dump_cldecl ce)
+  | ce ->
+      errorf (unsafe_loc_of ce) "class_info_clexp: %s"
+        (dump_cldecl.contents ce)
 and class_info_cltyp (ci : cltdecl) =
   match ci with
   | (`CtDecl (loc,vir,`Lid (nloc,name),params,ct) : cltdecl) ->
       let (loc_params,(params,variance)) =
-        ((loc_of params), (List.split (class_parameters params))) in
+        ((unsafe_loc_of params), (List.split (class_parameters params))) in
       {
         pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
@@ -1161,8 +1204,9 @@ and class_info_cltyp (ci : cltdecl) =
         pci_variance = []
       }
   | ct ->
-      errorf (loc_of ct) "bad class/class type declaration/definition %s "
-        (dump_cltdecl ct)
+      errorf (unsafe_loc_of ct)
+        "bad class/class type declaration/definition %s "
+        (dump_cltdecl.contents ct)
 and clsigi (c : clsigi) (l : class_type_field list) =
   (match c with
    | `Eq (loc,t1,t2) -> (mkctf loc (Pctf_cstr ((ctyp t1), (ctyp t2)))) :: l
@@ -1176,8 +1220,8 @@ and clsigi (c : clsigi) (l : class_type_field list) =
        l
    | `VirMeth (loc,`Lid (_,s),b,t) ->
        (mkctf loc (Pctf_virt (s, (mkprivate b), (mkpolytype (ctyp t))))) :: l
-   | t -> errorf (loc_of t) "clsigi :%s" (dump_clsigi t) : class_type_field
-                                                             list )
+   | t -> errorf (unsafe_loc_of t) "clsigi :%s" (dump_clsigi.contents t) : 
+  class_type_field list )
 and clexp (x : FAst.clexp) =
   match x with
   | (`CeApp (loc,_,_) : clexp) as c ->
@@ -1195,7 +1239,7 @@ and clexp (x : FAst.clexp) =
                 (function | `Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                 (list_of_com tl []))))
   | #vid' as id ->
-      let _loc = loc_of id in
+      let _loc = unsafe_loc_of id in
       mkcl _loc (Pcl_constr ((long_class_ident (id : vid'  :>ident)), []))
   | `CeFun (loc,`Label (_,`Lid (_loc,lab),po),ce) ->
       mkcl loc (Pcl_fun (lab, None, (pat po), (clexp ce)))
@@ -1222,7 +1266,7 @@ and clexp (x : FAst.clexp) =
       mkcl loc (Pcl_structure { pcstr_pat = (pat p); pcstr_fields = cil })
   | `Constraint (loc,ce,ct) ->
       mkcl loc (Pcl_constraint ((clexp ce), (cltyp ct)))
-  | t -> errorf (loc_of t) "clexp: %s" (dump_clexp t)
+  | t -> errorf (unsafe_loc_of t) "clexp: %s" (dump_clexp.contents t)
 and clfield (c : clfield) l =
   match c with
   | `Eq (loc,t1,t2) -> (mkcf loc (Pcf_constr ((ctyp t1), (ctyp t2)))) :: l
@@ -1254,7 +1298,7 @@ and clfield (c : clfield) l =
   | `VirVal (loc,`Lid (sloc,s),mf,t) ->
       (mkcf loc (Pcf_valvirt ((with_loc s sloc), (mkmutable mf), (ctyp t))))
       :: l
-  | x -> errorf (loc_of x) "clfield: %s" (dump_clfield x)
+  | x -> errorf (unsafe_loc_of x) "clfield: %s" (dump_clfield.contents x)
 let sigi (ast : sigi) = (sigi ast [] : signature )
 let stru ast = stru ast []
 let directive (x : exp) =
