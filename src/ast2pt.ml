@@ -24,6 +24,23 @@ let unsafe_loc_of node =
     (magic u : FLoc.t)
   else
     (magic @@ field u 0 : FLoc.t)
+
+
+(*************************************************************************)
+(* utility begin *)
+(*
+  {[remove_underscores "_a" = "a"
+  remove_underscores "__a" = "a"
+  remove_underscores "__a___b" =  "ab"
+  remove_underscores "__a___b__" = "ab"
+  ]}
+ *)    
+let remove_underscores s =
+  let l = String.length s in
+  let buf = Buffer.create l in
+  let () = String.iter (fun ch ->
+    if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
+  Buffer.contents buf 
       
 let dump_ident           = ref (fun _ -> failwith "Ast2pt.dump_ident not implemented")
 let dump_ctyp            = ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
@@ -67,91 +84,72 @@ let ident_of_exp : exp -> ident =
     | #vid as i ->  (i:vid :>ident)
     | `App _ -> error ()
     | t -> self t 
-
-(*************************************************************************)
-(* utility begin *)
-(*
-  {[remove_underscores "_a" = "a"
-  remove_underscores "__a" = "a"
-  remove_underscores "__a___b" =  "ab"
-  remove_underscores "__a___b__" = "ab"
-  ]}
- *)    
-let remove_underscores s =
-  let l = String.length s in
-  let buf = Buffer.create l in
-  let () = String.iter (fun ch ->
-    if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
-  Buffer.contents buf 
-    
-
         
 
 let ant_error loc = error loc "antiquotation not expected here";; 
 
-let rec normalize_acc = with ident function
-  | {| $i1.$i2 |} ->
-    {:exp| $(normalize_acc i1).$(normalize_acc i2) |}
-  | `Apply(_loc,i1,i2) ->
-      {:exp| $(normalize_acc i1) $(normalize_acc i2) |}
-  | `Ant (_loc,_) | {@_loc| $uid:_ |} |
-    {@_loc| $lid:_ |} as i -> {:exp| $id:i |} 
-
-
+let rec normalize_acc (x:FAst.ident) : FAst.exp=
+  match x with 
+  | (`Dot (_loc,i1,i2) : FAst.ident) ->
+      (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
+  | `Apply (_loc,i1,i2) ->
+      (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
+  | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
+      as i -> (i : FAst.exp )
         
-let mkvirtual : FAst.flag  -> Asttypes.virtual_flag = function 
+let mkvirtual  (x:FAst.flag)  : Asttypes.virtual_flag =
+  match x with 
   | `Positive _ -> Virtual
   | `Negative _  -> Concrete
   | `Ant (_loc,_) -> ant_error _loc 
 
-let mkdirection : FAst.flag -> Asttypes.direction_flag = function
+let mkdirection (x: FAst.flag) : Asttypes.direction_flag =
+  match x with 
   | `Positive _ -> Upto
   | `Negative _ -> Downto
   | `Ant (_loc,_) -> ant_error _loc 
 
-let mkrf : FAst.flag -> Asttypes.rec_flag = function
+let mkrf (x: FAst.flag) : Asttypes.rec_flag =
+  match x with 
   | `Positive _  -> Recursive
   | `Negative _  -> Nonrecursive
   | `Ant(_loc,_) -> ant_error _loc
 
 
-let ident_tag (i:FAst.ident) =
-  let rec self i acc = with ident
+let ident_tag (i : FAst.ident) =
+  let rec self i acc =
     match i with
-    | {| $(lid:"*predef*").$(lid:"option") |} ->
-      (Some ((ldot (lident "*predef*") "option"), `lident))
-    | {| $i1.$i2 |} ->
-        self i2 (self i1 acc) (* take care of the order *)
-    | `Apply(_loc,i1,i2) ->
-        begin match ((self i1 None), (self i2 None),acc) with
-        (* FIXME uid required here, more precise *)
-        | (Some (l,_),Some (r,_),None) ->
-          Some(Lapply l r,`app)
-        | _ -> errorf (unsafe_loc_of i) "invalid long identifer %s" (!dump_ident i)
-        end
-    | {| $uid:s |} ->
-        begin match (acc,s) with
-        | (None,"") -> None 
-        | (None,s) -> Some (lident s ,`uident) 
-        | (Some (_, `uident | `app) ,"") -> acc
-        | (Some (x, `uident | `app), s) -> Some (ldot x s, `uident)
-        | _ ->
-            errorf (unsafe_loc_of i) "invalid long identifier %s"
-              (!dump_ident i)
-        end
-    | {| $lid:s |} ->
-          let x =
-            match acc with
-            | None -> lident s 
-            | Some (acc, `uident | `app) -> ldot acc s
-            | _ ->
-                errorf (unsafe_loc_of i) "invalid long identifier %s" (!dump_ident i)  in
-          Some (x, `lident)
-    | `Ant(_,_) -> error (unsafe_loc_of i) "invalid long identifier"   in
-  match self i None  with
+    | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : FAst.ident) ->
+        Some ((ldot (lident "*predef*") "option"), `lident)
+    | (`Dot (_loc,i1,i2) : FAst.ident) -> self i2 (self i1 acc)
+    | `Apply (_loc,i1,i2) ->
+        (match ((self i1 None), (self i2 None), acc) with
+         | (Some (l,_),Some (r,_),None ) -> Some ((Lapply (l, r)), `app)
+         | _ ->
+             errorf (unsafe_loc_of i) "invalid long identifer %s"
+               (dump_ident.contents i))
+    | (`Uid (_loc,s) : FAst.ident) ->
+        (match (acc, s) with
+         | (None ,"") -> None
+         | (None ,s) -> Some ((lident s), `uident)
+         | (Some (_,(`uident|`app)),"") -> acc
+         | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
+         | _ ->
+             errorf (unsafe_loc_of i) "invalid long identifier %s"
+               (dump_ident.contents i))
+    | (`Lid (_loc,s) : FAst.ident) ->
+        let x =
+          match acc with
+          | None  -> lident s
+          | Some (acc,(`uident|`app)) -> ldot acc s
+          | _ ->
+              errorf (unsafe_loc_of i) "invalid long identifier %s"
+                (dump_ident.contents i) in
+        Some (x, `lident)
+    | `Ant (_,_) -> error (unsafe_loc_of i) "invalid long identifier" in
+  match self i None with
   | Some x -> x
-  | None -> error (unsafe_loc_of i) "invalid long identifier "
-
+  | None  -> error (unsafe_loc_of i) "invalid long identifier "        
 let ident_noloc i = fst (ident_tag  i)
 
 let ident (i:FAst.ident) :  Longident.t Location.loc  =
@@ -160,20 +158,20 @@ let ident (i:FAst.ident) :  Longident.t Location.loc  =
 let long_lident  id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (unsafe_loc_of id)
-  | _ -> FLoc.errorf (unsafe_loc_of id)  "invalid long identifier %s"
-        (!dump_ident id)
+  | _ ->
+      FLoc.errorf (unsafe_loc_of id)  "invalid long identifier %s" (!dump_ident id)
 
 let long_type_ident: FAst.ident -> Longident.t Location.loc =
   long_lident 
 
 let long_class_ident = long_lident
 
-let long_uident_noloc  i =
+let long_uident_noloc  (i:ident) =
     match ident_tag i with
     | (Ldot (i, s), `uident) -> ldot i s
     | (Lident s, `uident) -> lident s
     | (i, `app) -> i
-    | _ -> errorf (unsafe_loc_of i) "uppercase identifier expected %s" ("") 
+    | _ -> errorf (unsafe_loc_of i) "uppercase identifier expected %s" (!dump_ident i) 
 
 let long_uident  i =
    with_loc (long_uident_noloc  i) (unsafe_loc_of i)
@@ -184,7 +182,7 @@ let rec ctyp_long_id_prefix (t:FAst.ctyp) : Longident.t =
   | `App(_loc,m1,m2) ->
       let li1 = ctyp_long_id_prefix m1 in
       let li2 = ctyp_long_id_prefix m2 in
-      Lapply li1 li2
+      Lapply (li1, li2)
   | t -> errorf (unsafe_loc_of t) "invalid module expression %s" (!dump_ctyp t) 
 
 let ctyp_long_id (t:FAst.ctyp) : (bool *   Longident.t Location.loc) =
@@ -196,33 +194,33 @@ let ctyp_long_id (t:FAst.ctyp) : (bool *   Longident.t Location.loc) =
 let predef_option loc : FAst.ctyp =
   `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"))
 
-let rec ctyp (x:FAst.ctyp) =
+let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
   match x with 
   |  (#FAst.ident' as i) ->
       let li = long_type_ident (i:>FAst.ident) in
       let _loc = unsafe_loc_of i in 
-      mktyp _loc (Ptyp_constr li [])
+      mktyp _loc (Ptyp_constr (li, []))
   | `Alias(_loc,t1,`Lid(_,s)) -> 
-      mktyp _loc (Ptyp_alias (ctyp t1) s)
+      mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any
   | `App (_loc, _, _) as f ->
       let (f, al) =view_app [] f in
       let (is_cls, li) = ctyp_long_id f in
-      if is_cls then mktyp _loc (Ptyp_class li (List.map ctyp al) [])
-      else mktyp _loc (Ptyp_constr li (List.map ctyp al))
+      if is_cls then mktyp _loc (Ptyp_class (li, (List.map ctyp al), []))
+      else mktyp _loc (Ptyp_constr (li, (List.map ctyp al)))
   | `Arrow (loc, (`Label (_,  `Lid(_,lab), t1)), t2) ->
       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
   | `Arrow (loc, (`OptLabl (loc1, `Lid(_,lab), t1)), t2) ->
       let t1 = `App loc1 (predef_option loc1) t1 in
-      mktyp loc (Ptyp_arrow ("?" ^ lab) (ctyp t1) (ctyp t2))
-  | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow "" (ctyp t1) (ctyp t2))
+      mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
+  | `Arrow (loc, t1, t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
   | `TyObjEnd(_loc,row) ->
       let xs =
         match row with
         |`Negative _ -> []
         | `Positive _ -> [mkfield _loc Pfield_var]
         | `Ant _ -> ant_error _loc in
-      mktyp _loc (Ptyp_object (xs))
+      mktyp _loc (Ptyp_object xs)
   | `TyObj(_loc,fl,row) ->
       let xs  =
         match row with
@@ -234,9 +232,9 @@ let rec ctyp (x:FAst.ctyp) =
   | `ClassPath (loc, id) -> mktyp loc (Ptyp_class (ident id) [] [])
   | `Package(_loc,pt) ->
       let (i, cs) = package_type pt in
-      mktyp _loc (Ptyp_package i cs)
+      mktyp _loc (Ptyp_package (i, cs))
   | `TyPolEnd (loc,t2) ->
-      mktyp loc (Ptyp_poly [] (ctyp t2))
+      mktyp loc (Ptyp_poly ([], (ctyp t2)))
   | `TyPol (loc, t1, t2) ->
       let rec to_var_list  =
         function
@@ -245,31 +243,31 @@ let rec ctyp (x:FAst.ctyp) =
           |`Quote (_loc,`Positive _, `Lid (_,s))
           |`Quote (_loc,`Negative _, `Lid (_,s)) -> [s]
           | _ -> assert false in 
-      mktyp loc (Ptyp_poly (to_var_list t1) (ctyp t2))
+      mktyp loc (Ptyp_poly ((to_var_list t1), (ctyp t2)))
         (* QuoteAny should not appear here? *)      
   | `Quote (_loc,`Normal _, `Lid(_,s)) -> mktyp _loc (Ptyp_var s)
   | `Par(loc,`Sta(_,t1,t2)) ->
       mktyp loc (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
   | `PolyEq(_loc,t) ->
-      mktyp _loc (Ptyp_variant (row_field t []) true None)
+      mktyp _loc (Ptyp_variant ((row_field t []), true, None))
   | `PolySup(_loc,t) ->
-      mktyp _loc (Ptyp_variant (row_field t []) false None)
+      mktyp _loc (Ptyp_variant ((row_field t []), false, None))
   | `PolyInf(_loc,t) ->
-      mktyp _loc (Ptyp_variant (row_field t []) true (Some []))
+      mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
   | `PolyInfSup(_loc,t,t') ->
       let rec name_tags (x:tag_names) =
         match x with 
         | `App(_,t1,t2) -> name_tags t1 @ name_tags t2
         | `TyVrn (_, `C (_,s))    -> [s]
         | _ -> assert false  in 
-      mktyp _loc (Ptyp_variant (row_field t []) true (Some (name_tags t')))
+      mktyp _loc (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
   |  x -> errorf (unsafe_loc_of x) "ctyp: %s" (!dump_ctyp x)
         
 and row_field (x:row_field) acc =
   match x with 
-  |`TyVrn (_loc,`C(_,i)) -> Rtag i true [] :: acc
+  |`TyVrn (_loc,`C(_,i)) -> Rtag (i, true, []) :: acc
   | `TyVrnOf(_loc,`C(_,i),t) ->
-      Rtag i false [ctyp t] :: acc 
+      Rtag (i, false, [ctyp t]) :: acc 
   | `Bar(_loc,t1,t2) -> row_field t1 ( row_field t2 acc)
   | `Ant(_loc,_) -> ant_error _loc
   | `Ctyp(_,t) -> Rinherit (ctyp t) :: acc
@@ -278,17 +276,19 @@ and meth_list (fl:name_ctyp) acc : core_field_type list   =
   match fl with
   |`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Lid(_,lab),t) ->
-      mkfield _loc (Pfield lab (mkpolytype (ctyp t))) :: acc
+      mkfield _loc (Pfield (lab, (mkpolytype (ctyp t)))) :: acc
   | x -> errorf (unsafe_loc_of x) "meth_list: %s" (!dump_name_ctyp x )
         
-and package_type_constraints (wc:constr)
+and package_type_constraints
+    (wc:constr)
     (acc: (Longident.t Asttypes.loc  *core_type) list )
     : (Longident.t Asttypes.loc   *core_type) list  =
   match wc with
   | `TypeEq(_loc, (#ident' as id),ct) -> (ident id, ctyp ct) :: acc
   | `And(_loc,wc1,wc2) ->
       package_type_constraints wc1 (package_type_constraints wc2 acc)
-  | x -> errorf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
+  | x ->
+      errorf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
         (!dump_constr x) 
 
 and package_type (x : mtyp) =
@@ -479,6 +479,7 @@ let rec pat (x:pat) =  with pat  match x with
       mkpat _loc (Ppat_construct (lident_with_loc  s sloc)
                    (Some (mkpat loc_any Ppat_any)) false)
   | `App (loc, _, _) as f ->
+
      let (f, al) = pat_fa [] f in
      let al = List.map pat al in
      begin match (pat f).ppat_desc with

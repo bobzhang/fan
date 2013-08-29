@@ -13,6 +13,14 @@ let unsafe_loc_of node =
     if size = 1
     then (magic u : FLoc.t )
     else (magic @@ (field u 0) : FLoc.t )
+let remove_underscores s =
+  let l = String.length s in
+  let buf = Buffer.create l in
+  let () =
+    String.iter
+      (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
+      s in
+  Buffer.contents buf
 let dump_ident = ref (fun _  -> failwith "Ast2pt.dump_ident not implemented")
 let dump_ctyp = ref (fun _  -> failwith "Ast2pt.dump_ctyp not implemented")
 let dump_row_field =
@@ -64,38 +72,30 @@ let ident_of_exp: exp -> ident =
   | #vid as i -> (i : vid  :>ident)
   | `App _ -> error ()
   | t -> self t
-let remove_underscores s =
-  let l = String.length s in
-  let buf = Buffer.create l in
-  let () =
-    String.iter
-      (fun ch  -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ())
-      s in
-  Buffer.contents buf
 let ant_error loc = error loc "antiquotation not expected here"
-let rec normalize_acc =
-  function
-  | (`Dot (_loc,i1,i2) : FAst.ident) ->
-      (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
-  | `Apply (_loc,i1,i2) ->
-      (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
-  | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
-      as i -> (i : FAst.exp )
-let mkvirtual: FAst.flag -> Asttypes.virtual_flag =
-  function
-  | `Positive _ -> Virtual
-  | `Negative _ -> Concrete
-  | `Ant (_loc,_) -> ant_error _loc
-let mkdirection: FAst.flag -> Asttypes.direction_flag =
-  function
-  | `Positive _ -> Upto
-  | `Negative _ -> Downto
-  | `Ant (_loc,_) -> ant_error _loc
-let mkrf: FAst.flag -> Asttypes.rec_flag =
-  function
-  | `Positive _ -> Recursive
-  | `Negative _ -> Nonrecursive
-  | `Ant (_loc,_) -> ant_error _loc
+let rec normalize_acc (x : FAst.ident) =
+  (match x with
+   | (`Dot (_loc,i1,i2) : FAst.ident) ->
+       (`Field (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
+   | `Apply (_loc,i1,i2) ->
+       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
+   | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
+       as i -> (i : FAst.exp ) : FAst.exp )
+let mkvirtual (x : FAst.flag) =
+  (match x with
+   | `Positive _ -> Virtual
+   | `Negative _ -> Concrete
+   | `Ant (_loc,_) -> ant_error _loc : Asttypes.virtual_flag )
+let mkdirection (x : FAst.flag) =
+  (match x with
+   | `Positive _ -> Upto
+   | `Negative _ -> Downto
+   | `Ant (_loc,_) -> ant_error _loc : Asttypes.direction_flag )
+let mkrf (x : FAst.flag) =
+  (match x with
+   | `Positive _ -> Recursive
+   | `Negative _ -> Nonrecursive
+   | `Ant (_loc,_) -> ant_error _loc : Asttypes.rec_flag )
 let ident_tag (i : FAst.ident) =
   let rec self i acc =
     match i with
@@ -141,12 +141,14 @@ let long_lident id =
         (dump_ident.contents id)
 let long_type_ident: FAst.ident -> Longident.t Location.loc = long_lident
 let long_class_ident = long_lident
-let long_uident_noloc i =
+let long_uident_noloc (i : ident) =
   match ident_tag i with
   | (Ldot (i,s),`uident) -> ldot i s
   | (Lident s,`uident) -> lident s
   | (i,`app) -> i
-  | _ -> errorf (unsafe_loc_of i) "uppercase identifier expected %s" ""
+  | _ ->
+      errorf (unsafe_loc_of i) "uppercase identifier expected %s"
+        (dump_ident.contents i)
 let long_uident i = with_loc (long_uident_noloc i) (unsafe_loc_of i)
 let rec ctyp_long_id_prefix (t : FAst.ctyp) =
   (match t with
@@ -166,70 +168,71 @@ let ctyp_long_id (t : FAst.ctyp) =
 let predef_option loc =
   (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))) : FAst.ctyp )
 let rec ctyp (x : FAst.ctyp) =
-  match x with
-  | #FAst.ident' as i ->
-      let li = long_type_ident (i :>FAst.ident) in
-      let _loc = unsafe_loc_of i in mktyp _loc (Ptyp_constr (li, []))
-  | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
-  | `Any _loc -> mktyp _loc Ptyp_any
-  | `App (_loc,_,_) as f ->
-      let (f,al) = view_app [] f in
-      let (is_cls,li) = ctyp_long_id f in
-      if is_cls
-      then mktyp _loc (Ptyp_class (li, (List.map ctyp al), []))
-      else mktyp _loc (Ptyp_constr (li, (List.map ctyp al)))
-  | `Arrow (loc,`Label (_,`Lid (_,lab),t1),t2) ->
-      mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
-  | `Arrow (loc,`OptLabl (loc1,`Lid (_,lab),t1),t2) ->
-      let t1 = `App (loc1, (predef_option loc1), t1) in
-      mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
-  | `Arrow (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
-  | `TyObjEnd (_loc,row) ->
-      let xs =
-        match row with
-        | `Negative _ -> []
-        | `Positive _ -> [mkfield _loc Pfield_var]
-        | `Ant _ -> ant_error _loc in
-      mktyp _loc (Ptyp_object xs)
-  | `TyObj (_loc,fl,row) ->
-      let xs =
-        match row with
-        | `Negative _ -> []
-        | `Positive _ -> [mkfield _loc Pfield_var]
-        | `Ant _ -> ant_error _loc in
-      mktyp _loc (Ptyp_object (meth_list fl xs))
-  | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
-  | `Package (_loc,pt) ->
-      let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
-  | `TyPolEnd (loc,t2) -> mktyp loc (Ptyp_poly ([], (ctyp t2)))
-  | `TyPol (loc,t1,t2) ->
-      let rec to_var_list =
-        function
-        | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
-        | `Quote (_loc,`Normal _,`Lid (_,s))
-          |`Quote (_loc,`Positive _,`Lid (_,s))
-          |`Quote (_loc,`Negative _,`Lid (_,s)) -> [s]
-        | _ -> assert false in
-      mktyp loc (Ptyp_poly ((to_var_list t1), (ctyp t2)))
-  | `Quote (_loc,`Normal _,`Lid (_,s)) -> mktyp _loc (Ptyp_var s)
-  | `Par (loc,`Sta (_,t1,t2)) ->
-      mktyp loc
-        (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
-  | `PolyEq (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t []), true, None))
-  | `PolySup (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t []), false, None))
-  | `PolyInf (_loc,t) ->
-      mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
-  | `PolyInfSup (_loc,t,t') ->
-      let rec name_tags (x : tag_names) =
-        match x with
-        | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
-        | `TyVrn (_,`C (_,s)) -> [s]
-        | _ -> assert false in
-      mktyp _loc
-        (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
-  | x -> errorf (unsafe_loc_of x) "ctyp: %s" (dump_ctyp.contents x)
+  (match x with
+   | #FAst.ident' as i ->
+       let li = long_type_ident (i :>FAst.ident) in
+       let _loc = unsafe_loc_of i in mktyp _loc (Ptyp_constr (li, []))
+   | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
+   | `Any _loc -> mktyp _loc Ptyp_any
+   | `App (_loc,_,_) as f ->
+       let (f,al) = view_app [] f in
+       let (is_cls,li) = ctyp_long_id f in
+       if is_cls
+       then mktyp _loc (Ptyp_class (li, (List.map ctyp al), []))
+       else mktyp _loc (Ptyp_constr (li, (List.map ctyp al)))
+   | `Arrow (loc,`Label (_,`Lid (_,lab),t1),t2) ->
+       mktyp loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
+   | `Arrow (loc,`OptLabl (loc1,`Lid (_,lab),t1),t2) ->
+       let t1 = `App (loc1, (predef_option loc1), t1) in
+       mktyp loc (Ptyp_arrow (("?" ^ lab), (ctyp t1), (ctyp t2)))
+   | `Arrow (loc,t1,t2) -> mktyp loc (Ptyp_arrow ("", (ctyp t1), (ctyp t2)))
+   | `TyObjEnd (_loc,row) ->
+       let xs =
+         match row with
+         | `Negative _ -> []
+         | `Positive _ -> [mkfield _loc Pfield_var]
+         | `Ant _ -> ant_error _loc in
+       mktyp _loc (Ptyp_object xs)
+   | `TyObj (_loc,fl,row) ->
+       let xs =
+         match row with
+         | `Negative _ -> []
+         | `Positive _ -> [mkfield _loc Pfield_var]
+         | `Ant _ -> ant_error _loc in
+       mktyp _loc (Ptyp_object (meth_list fl xs))
+   | `ClassPath (loc,id) -> mktyp loc (Ptyp_class ((ident id), [], []))
+   | `Package (_loc,pt) ->
+       let (i,cs) = package_type pt in mktyp _loc (Ptyp_package (i, cs))
+   | `TyPolEnd (loc,t2) -> mktyp loc (Ptyp_poly ([], (ctyp t2)))
+   | `TyPol (loc,t1,t2) ->
+       let rec to_var_list =
+         function
+         | `App (_loc,t1,t2) -> (to_var_list t1) @ (to_var_list t2)
+         | `Quote (_loc,`Normal _,`Lid (_,s))
+           |`Quote (_loc,`Positive _,`Lid (_,s))
+           |`Quote (_loc,`Negative _,`Lid (_,s)) -> [s]
+         | _ -> assert false in
+       mktyp loc (Ptyp_poly ((to_var_list t1), (ctyp t2)))
+   | `Quote (_loc,`Normal _,`Lid (_,s)) -> mktyp _loc (Ptyp_var s)
+   | `Par (loc,`Sta (_,t1,t2)) ->
+       mktyp loc
+         (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
+   | `PolyEq (_loc,t) ->
+       mktyp _loc (Ptyp_variant ((row_field t []), true, None))
+   | `PolySup (_loc,t) ->
+       mktyp _loc (Ptyp_variant ((row_field t []), false, None))
+   | `PolyInf (_loc,t) ->
+       mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
+   | `PolyInfSup (_loc,t,t') ->
+       let rec name_tags (x : tag_names) =
+         match x with
+         | `App (_,t1,t2) -> (name_tags t1) @ (name_tags t2)
+         | `TyVrn (_,`C (_,s)) -> [s]
+         | _ -> assert false in
+       mktyp _loc
+         (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
+   | x -> errorf (unsafe_loc_of x) "ctyp: %s" (dump_ctyp.contents x) : 
+  Parsetree.core_type )
 and row_field (x : row_field) acc =
   match x with
   | `TyVrn (_loc,`C (_,i)) -> (Rtag (i, true, [])) :: acc
