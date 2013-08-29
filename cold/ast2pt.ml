@@ -1,13 +1,58 @@
-open AstLib
 open Parsetree
 open Longident
 open Asttypes
 open LibUtil
 open ParsetreeHelper
-open FLoc
-open FanOps
 open FAst
-open Objs
+let loc_of = AstLib.loc_of
+let view_app = AstLib.view_app
+let list_of_star = AstLib.list_of_star
+let list_of_arrow_r = AstLib.list_of_arrow_r
+let list_of_sem = AstLib.list_of_sem
+let list_of_or = AstLib.list_of_or
+let list_of_app = AstLib.list_of_app
+let list_of_com = AstLib.list_of_com
+let list_of_and = AstLib.list_of_and
+let errorf = FLoc.errorf
+let dump_ident = Objs.dump_ident
+let dump_ctyp = Objs.dump_ctyp
+let dump_row_field = Objs.dump_row_field
+let dump_name_ctyp = Objs.dump_name_ctyp
+let dump_constr = Objs.dump_constr
+let dump_mtyp = Objs.dump_mtyp
+let dump_ctyp = Objs.dump_ctyp
+let dump_or_ctyp = Objs.dump_or_ctyp
+let dump_pat = Objs.dump_pat
+let dump_type_parameters = Objs.dump_type_parameters
+let dump_exp = Objs.dump_exp
+let dump_case = Objs.dump_case
+let dump_rec_exp = Objs.dump_rec_exp
+let dump_type_constr = Objs.dump_type_constr
+let dump_typedecl = Objs.dump_typedecl
+let dump_sigi = Objs.dump_sigi
+let dump_mbind = Objs.dump_mbind
+let dump_mexp = Objs.dump_mexp
+let dump_stru = Objs.dump_stru
+let dump_cltyp = Objs.dump_cltyp
+let dump_cldecl = Objs.dump_cldecl
+let dump_cltdecl = Objs.dump_cltdecl
+let dump_clsigi = Objs.dump_clsigi
+let dump_clexp = Objs.dump_clexp
+let dump_clfield = Objs.dump_clfield
+let ident_of_exp: exp -> ident =
+  let error () =
+    invalid_arg "ident_of_exp: this expession is not an identifier" in
+  let rec self (x : exp) =
+    (match x with
+     | `App (_loc,e1,e2) -> `Apply (_loc, (self e1), (self e2))
+     | `Field (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
+     | `Lid _ -> error ()
+     | `Uid _|`Dot _ as i -> (i : vid  :>ident)
+     | _ -> error () : ident ) in
+  function
+  | #vid as i -> (i : vid  :>ident)
+  | `App _ -> error ()
+  | t -> self t
 let remove_underscores s =
   let l = String.length s in
   let buf = Buffer.create l in
@@ -25,22 +70,22 @@ let rec normalize_acc =
       (`App (_loc, (normalize_acc i1), (normalize_acc i2)) : FAst.exp )
   | `Ant (_loc,_)|(`Uid (_loc,_) : FAst.ident)|(`Lid (_loc,_) : FAst.ident)
       as i -> (i : FAst.exp )
-let mkvirtual: flag -> Asttypes.virtual_flag =
+let mkvirtual: FAst.flag -> Asttypes.virtual_flag =
   function
   | `Positive _ -> Virtual
   | `Negative _ -> Concrete
   | `Ant (_loc,_) -> ant_error _loc
-let mkdirection: flag -> Asttypes.direction_flag =
+let mkdirection: FAst.flag -> Asttypes.direction_flag =
   function
   | `Positive _ -> Upto
   | `Negative _ -> Downto
   | `Ant (_loc,_) -> ant_error _loc
-let mkrf: flag -> Asttypes.rec_flag =
+let mkrf: FAst.flag -> Asttypes.rec_flag =
   function
   | `Positive _ -> Recursive
   | `Negative _ -> Nonrecursive
   | `Ant (_loc,_) -> ant_error _loc
-let ident_tag (i : ident) =
+let ident_tag (i : FAst.ident) =
   let rec self i acc =
     match i with
     | (`Dot (_loc,`Lid (_,"*predef*"),`Lid (_,"option")) : FAst.ident) ->
@@ -70,7 +115,7 @@ let ident_tag (i : ident) =
   | Some x -> x
   | None  -> error (loc_of i) "invalid long identifier "
 let ident_noloc i = fst (ident_tag i)
-let ident (i : ident) =
+let ident (i : FAst.ident) =
   (with_loc (ident_noloc i) (loc_of i) : Longident.t Location.loc )
 let long_lident id =
   match ident_tag id with
@@ -78,7 +123,7 @@ let long_lident id =
   | _ ->
       FLoc.errorf (loc_of id) "invalid long identifier %s"
         (Objs.dump_ident id)
-let long_type_ident: ident -> Longident.t Location.loc = long_lident
+let long_type_ident: FAst.ident -> Longident.t Location.loc = long_lident
 let long_class_ident = long_lident
 let long_uident_noloc i =
   match ident_tag i with
@@ -87,27 +132,27 @@ let long_uident_noloc i =
   | (i,`app) -> i
   | _ -> errorf (loc_of i) "uppercase identifier expected %s" ""
 let long_uident i = with_loc (long_uident_noloc i) (loc_of i)
-let rec ctyp_long_id_prefix (t : ctyp) =
+let rec ctyp_long_id_prefix (t : FAst.ctyp) =
   (match t with
-   | #ident' as i -> ident_noloc i
+   | #FAst.ident' as i -> ident_noloc i
    | `App (_loc,m1,m2) ->
        let li1 = ctyp_long_id_prefix m1 in
        let li2 = ctyp_long_id_prefix m2 in Lapply (li1, li2)
    | t -> errorf (loc_of t) "invalid module expression %s" (dump_ctyp t) : 
   Longident.t )
-let ctyp_long_id (t : ctyp) =
+let ctyp_long_id (t : FAst.ctyp) =
   (match t with
-   | #ident' as i -> (false, (long_type_ident i))
+   | #FAst.ident' as i -> (false, (long_type_ident i))
    | `ClassPath (_,i) -> (true, (ident i))
    | t -> errorf (loc_of t) "invalid type %s" (dump_ctyp t) : (bool*
                                                                 Longident.t
                                                                 Location.loc) )
 let predef_option loc =
-  (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))) : ctyp )
-let rec ctyp (x : ctyp) =
+  (`Dot (loc, (`Lid (loc, "*predef*")), (`Lid (loc, "option"))) : FAst.ctyp )
+let rec ctyp (x : FAst.ctyp) =
   match x with
-  | #ident' as i ->
-      let li = long_type_ident (i :>ident) in
+  | #FAst.ident' as i ->
+      let li = long_type_ident (i :>FAst.ident) in
       let _loc = loc_of i in mktyp _loc (Ptyp_constr (li, []))
   | `Alias (_loc,t1,`Lid (_,s)) -> mktyp _loc (Ptyp_alias ((ctyp t1), s))
   | `Any _loc -> mktyp _loc Ptyp_any

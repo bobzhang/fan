@@ -46,20 +46,6 @@ let rec is_module_longident (x : ident) =
   | `Apply (_,i1,i2) -> (is_module_longident i1) && (is_module_longident i2)
   | `Uid _ -> true
   | _ -> false
-let ident_of_exp: exp -> ident =
-  let error () =
-    invalid_arg "ident_of_exp: this expession is not an identifier" in
-  let rec self (x : exp) =
-    (match x with
-     | `App (_loc,e1,e2) -> `Apply (_loc, (self e1), (self e2))
-     | `Field (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
-     | `Lid _ -> error ()
-     | `Uid _|`Dot _ as i -> (i : vid  :>ident)
-     | _ -> error () : ident ) in
-  function
-  | #vid as i -> (i : vid  :>ident)
-  | `App _ -> error ()
-  | t -> self t
 let ident_of_ctyp: ctyp -> ident =
   let error x =
     invalid_argf "ident_of_ctyp: this type %s is not an identifier"
