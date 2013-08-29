@@ -14,7 +14,8 @@ let rec infix_kwds_filter (__strm : _ XStream.t) =
         let (__strm :_ XStream.t)= xs in
         match XStream.peek __strm with
         | Some
-            (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i),_loc)
+            (`KEYWORD
+               ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i),_loc)
             ->
             (XStream.junk __strm;
              (match XStream.peek __strm with
