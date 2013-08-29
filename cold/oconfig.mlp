@@ -1,9 +1,0 @@
-
-let standard_library = "%%LIBDIR%%"
-
-(* WARNING, WARNING, WARNING
-   make sure to update for each compiler release *)
-let cmi_magic_number = "Caml1999I014"
-and ast_impl_magic_number = "Caml1999M015"
-and ast_intf_magic_number = "Caml1999N014"
-

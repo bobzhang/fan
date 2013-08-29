@@ -1,42 +1,28 @@
 open FAst
-
 open AstLib
-
 type spat_comp =  
   | SpWhen of loc* pat* exp option
   | SpMatch of loc* pat* exp
   | SpStr of loc* pat 
-
-type stream_pat = (spat_comp * exp option) 
-
+type stream_pat = (spat_comp* exp option) 
 type stream_pats = stream_pat list 
-
-type stream_case = (stream_pats * pat option * exp) 
-
+type stream_case = (stream_pats* pat option* exp) 
 type stream_cases = stream_case list 
-
 let grammar_module_name = ref "XStream"
-
 let gm () = grammar_module_name.contents
-
 let strm_n = "__strm"
-
 let peek_fun _loc =
   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "peek"))) : FAst.exp )
-
 let junk_fun _loc =
   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "junk"))) : FAst.exp )
-
 let empty _loc =
   (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "sempty"))) : FAst.exp )
-
 let rec is_constr_apply a =
   match a with
   | (`Uid (_loc,_) : FAst.exp) -> true
   | (`App (_loc,x,_) : FAst.exp) -> is_constr_apply x
   | (`Lid (_loc,_) : FAst.exp) -> false
   | _ -> false
-
 let rec handle_failure e =
   match e with
   | (`Try (_loc,_,`Case (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure")),e)) :
@@ -65,7 +51,6 @@ let rec handle_failure e =
   | (`App (_loc,f,x) : FAst.exp) ->
       (is_constr_apply f) && ((handle_failure f) && (handle_failure x))
   | _ -> false
-
 let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
   (match (x : spat_comp ) with
    | SpWhen (_loc,p,None ) ->
@@ -234,7 +219,6 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                (_loc, (`Negative _loc),
                  (`Bind (_loc, p, (`Lid (_loc, strm_n)))), skont) : FAst.exp )) : 
   exp )
-
 let rec stream_pattern _loc (x,epo,e) (ekont : exp option -> exp) =
   match x with
   | [] ->
@@ -267,14 +251,12 @@ let rec stream_pattern _loc (x,epo,e) (ekont : exp option -> exp) =
                     str))) : FAst.exp ) in
         stream_pattern _loc (spcl, epo, e) ekont0 in
       let ckont = ekont err in stream_pattern_component skont ckont spc
-
 let rec group_terms (xs : stream_cases) =
   match xs with
   | ((SpWhen (_loc,p,w),None )::spcl,epo,e)::spel ->
       let (tspel,spel) = group_terms spel in
       (((p, w, _loc, spcl, epo, e) :: tspel), spel)
   | spel -> ([], spel)
-
 let stream_patterns_term _loc (ekont : unit -> exp) tspel =
   (let pel =
      List.fold_right
@@ -307,7 +289,6 @@ let stream_patterns_term _loc (ekont : unit -> exp) tspel =
        tspel (`Case (_loc, (`Any _loc), (ekont ())) : FAst.case ) in
    (`Match (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))), pel) : 
      FAst.exp ) : exp )
-
 let rec parser_cases _loc (x : stream_cases) =
   match x with
   | [] ->
@@ -321,7 +302,6 @@ let rec parser_cases _loc (x : stream_cases) =
            stream_pattern _loc x (fun _  -> parser_cases _loc spel)
        | (tspel,spel) ->
            stream_patterns_term _loc (fun _  -> parser_cases _loc spel) tspel)
-
 let cparser _loc bpo pc =
   let e = parser_cases _loc pc in
   let e =
@@ -345,7 +325,6 @@ let cparser _loc bpo pc =
            (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))),
              (`Any _loc)))) in
   (`Fun (_loc, (`Case (_loc, p, e))) : FAst.exp )
-
 let cparser_match _loc me bpo pc =
   let pc = parser_cases _loc pc in
   let e =
@@ -377,11 +356,9 @@ let cparser_match _loc me bpo pc =
                              (_loc, (`Uid (_loc, (gm ()))),
                                (`Lid (_loc, "t")))), (`Any _loc))))), me)),
            e) : FAst.exp )
-
 type sexp_comp =  
   | SeTrm of loc* exp
   | SeNtr of loc* exp 
-
 let not_computing x =
   let rec aux x =
     match x with
@@ -398,7 +375,6 @@ let not_computing x =
         (is_cons_apply_not_computing x) && (aux y)
     | _ -> false in
   aux x
-
 let slazy _loc e =
   match e with
   | (`App (_loc,f,`Uid (_,"()")) : FAst.exp) ->
@@ -406,7 +382,6 @@ let slazy _loc e =
        | (`Lid (_loc,_) : FAst.exp) -> f
        | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : FAst.exp ))
   | _ -> (`Fun (_loc, (`Case (_loc, (`Any _loc), e))) : FAst.exp )
-
 let rec cstream gloc =
   function
   | [] ->

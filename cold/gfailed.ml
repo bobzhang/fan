@@ -1,11 +1,7 @@
 open Gstructure
-
 open LibUtil
-
 open Format
-
 let pp = fprintf
-
 let name_of_symbol entry =
   (function
    | `Snterm e -> "[" ^ (e.ename ^ "]")
@@ -14,7 +10,6 @@ let name_of_symbol entry =
    | `Stoken (_,_,descr) -> descr
    | `Skeyword kwd -> "\"" ^ (kwd ^ "\"")
    | _ -> "???" : [> symbol] -> string )
-
 let tree_in_entry prev_symb tree =
   function
   | Dlevels levels ->
@@ -82,7 +77,6 @@ let tree_in_entry prev_symb tree =
         | _ -> None in
       (try List.find_map search_level levels with | Not_found  -> tree)
   | Dparser _ -> tree
-
 let rec name_of_symbol_failed entry =
   function
   | `Slist0 s|`Slist0sep (s,_)|`Slist1 s|`Slist1sep (s,_)|`Sopt s|`Stry s
@@ -112,9 +106,7 @@ and name_of_tree_failed entry x =
                    | `Stoken (_,_,descr) -> descr
                    | `Skeyword kwd -> kwd)) "" tokl)
   | DeadEnd |LocAct (_,_) -> "???"
-
 let magic _s x = Obj.magic x
-
 let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt =
@@ -143,21 +135,18 @@ let tree_failed entry prev_symb_result prev_symb tree =
              txt1 ^ (" or " ^ (txt ^ " expected")))
     | `Stry _|`Speek _|`Sopt _ -> txt ^ " expected"
     | _ -> txt ^ (" expected after " ^ (name_of_symbol entry prev_symb)) in
-  begin
-    if FConfig.verbose.contents
-    then
-      (let tree = tree_in_entry prev_symb tree entry.edesc in
-       let f = err_formatter in
-       pp f
-         ("@[<v 0>@,----------------------------------@," ^^
-            ("Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
-               "----------------------------------@,@]@.")) entry.ename
-         Gprint.text#rules (Gstru.flatten_tree tree))
-    else (); txt ^ (" (in [" ^ (entry.ename ^ "])"))
-  end
-
+  if FConfig.verbose.contents
+  then
+    (let tree = tree_in_entry prev_symb tree entry.edesc in
+     let f = err_formatter in
+     pp f
+       ("@[<v 0>@,----------------------------------@," ^^
+          ("Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
+             "----------------------------------@,@]@.")) entry.ename
+       Gprint.text#rules (Gstru.flatten_tree tree))
+  else ();
+  txt ^ (" (in [" ^ (entry.ename ^ "])"))
 let symb_failed entry prev_symb_result prev_symb symb =
   let tree = Node { node = symb; brother = DeadEnd; son = DeadEnd } in
   tree_failed entry prev_symb_result prev_symb tree
-
 let symb_failed_txt e s1 s2 = symb_failed e 0 s1 s2

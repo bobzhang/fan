@@ -13,8 +13,8 @@ let lident s = Lident s
 let lident_with_loc s loc = with_loc (Lident s) loc
 
 
-let ldot l s = Ldot l s
-let lapply l s = Lapply l s
+let ldot l s = Ldot (l, s) (* FIXME in Fan Ldot l s*)
+let lapply l s = Lapply (l, s)
 let mkghloc loc = FLoc.ghostify loc
 
 
@@ -42,7 +42,7 @@ let mkmty loc d = {pmty_desc = d; pmty_loc =  loc}
 let mkpolytype t =
   match t.ptyp_desc with
   | Ptyp_poly (_, _) -> t
-  | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } 
+  | _ -> { (t) with ptyp_desc = Ptyp_poly ([], t) } 
 
 (* convert to unsafe
    {[
@@ -84,12 +84,12 @@ let varify_constructors var_names = (* string list -> Parsetree.core_type -> Par
       | Ptyp_any -> Ptyp_any
       | Ptyp_var x -> Ptyp_var x
       | Ptyp_arrow (label, core_type, core_type') ->
-          Ptyp_arrow label (loop core_type) (loop core_type')
+          Ptyp_arrow (label, (loop core_type), (loop core_type'))
       | Ptyp_tuple lst -> Ptyp_tuple (List.map loop lst)
       | Ptyp_constr (({ txt = Lident s ; _}), []) when List.mem s var_names ->
           Ptyp_var ("&" ^ s)
       | Ptyp_constr (longident, lst) ->
-          Ptyp_constr longident (List.map loop lst)
+          Ptyp_constr (longident, (List.map loop lst))
       | Ptyp_object lst ->
           Ptyp_object (List.map loop_core_field lst)
       | Ptyp_class (longident, lst, lbl_list) ->

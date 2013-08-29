@@ -6,7 +6,7 @@
 open FAst
 
 {:fans|keep off; derive(DynAst); |};;
-{:ocaml|{:include| "src/fAst.mli" |} |};;
+{:ocaml|{:include| "common/fAst.mli" |} |};;
 
 
 type dyn

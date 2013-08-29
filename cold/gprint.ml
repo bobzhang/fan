@@ -1,27 +1,20 @@
 open Gstructure
-
 open Format
-
 open LibUtil
-
 open Gstru
-
 let pp = fprintf
-
 let rec print_node decomp pref f t =
   let (s,sons) = decomp t in
-  begin
-    pp f "%s" s;
-    if sons <> []
-    then
-      (let w = String.length s in
-       let pref' = pref ^ (String.make (w + 1) ' ') in
-       match sons with
-       | t'::[] -> pp f "---%a" (print_node decomp (pref' ^ "  ")) t'
-       | _ -> pp f "-%a" (print_sons "+-" decomp pref') sons)
-    else ()
-  end
-and print_sons (start : string) (decomp : 'a -> (string * 'a list))
+  pp f "%s" s;
+  if sons <> []
+  then
+    (let w = String.length s in
+     let pref' = pref ^ (String.make (w + 1) ' ') in
+     match sons with
+     | t'::[] -> pp f "---%a" (print_node decomp (pref' ^ "  ")) t'
+     | _ -> pp f "-%a" (print_sons "+-" decomp pref') sons)
+  else ()
+and print_sons (start : string) (decomp : 'a -> (string* 'a list))
   (pref : string) f =
   function
   | [] -> ()
@@ -29,10 +22,8 @@ and print_sons (start : string) (decomp : 'a -> (string * 'a list))
   | s::sons ->
       pp f "%s%a@\n%s%a" start (print_node decomp (pref ^ "| ")) s pref
         (print_sons "|-" decomp pref) sons
-
 let pp_assoc f =
   function | `LA -> pp f "LA" | `RA -> pp f "RA" | `NA -> pp f "NA"
-
 class type grammar_print
   =
   object 
@@ -49,7 +40,6 @@ class type grammar_print
     method symbol1 : formatter -> symbol -> unit
     method tree : formatter -> tree -> unit
   end
-
 class text_grammar : grammar_print =
   object (self : 'self)
     val mutable action = true
@@ -100,15 +90,11 @@ class text_grammar : grammar_print =
             | Dparser _ -> pp f "<parser>") e : unit )
     method tree f t = self#rules f (flatten_tree t)
   end
-
 let text = new text_grammar
-
 let string_of_symbol s =
-  begin
-    ignore (flush_str_formatter ()); text#symbol str_formatter s;
-    flush_str_formatter ()
-  end
-
+  ignore (flush_str_formatter ());
+  text#symbol str_formatter s;
+  flush_str_formatter ()
 class dump_grammar : grammar_print =
   object (self : 'self)
     inherit  text_grammar
@@ -122,5 +108,4 @@ class dump_grammar : grammar_print =
         (pp_option (fun f  s  -> pp f "%S" s)) lname pp_assoc assoc self#tree
         lsuffix self#tree lprefix
   end
-
 let dump = new dump_grammar

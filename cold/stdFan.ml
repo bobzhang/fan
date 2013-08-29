@@ -1,68 +1,43 @@
 open Format
-
 let eq_int: int -> int -> bool = ( = )
-
 let eq_int32: int32 -> int32 -> bool = ( = )
-
 let eq_int64: int64 -> int64 -> bool = ( = )
-
 let eq_nativeint: nativeint -> nativeint -> bool = ( = )
-
 let eq_float: float -> float -> bool = ( = )
-
 let eq_string: string -> string -> bool = ( = )
-
 let eq_bool: bool -> bool -> bool = ( = )
-
 let eq_char: char -> char -> bool = ( = )
-
 let eq_unit: unit -> unit -> bool = fun _  _  -> true
-
 let pp_print_int = pp_print_int
-
 let pp_print_int32: Format.formatter -> int32 -> unit =
   fun fmt  a  -> Format.fprintf fmt "%ld" a
-
 let pp_print_int64: Format.formatter -> int64 -> unit =
   fun fmt  a  -> Format.fprintf fmt "%Ld" a
-
 let pp_print_nativeint: Format.formatter -> nativeint -> unit =
   fun fmt  a  -> Format.fprintf fmt "%nd" a
-
 let pp_print_float = pp_print_float
-
 let pp_print_string: Format.formatter -> string -> unit =
   fun fmt  a  -> Format.fprintf fmt "%S" a
-
 let pp_print_bool = pp_print_bool
-
 let pp_print_char = pp_print_char
-
 let pp_print_unit: Format.formatter -> unit -> unit =
   fun fmt  _  -> Format.fprintf fmt "()"
-
 let eq_option mf_a x y =
   match (x, y) with
   | (None ,None ) -> true
   | (Some x,Some y) -> mf_a x y
   | (_,_) -> false
-
 let eq_ref mf_a x y = mf_a x.contents y.contents
-
 let pp_print_option mf_a fmt v =
   match v with
   | None  -> fprintf fmt "None"
   | Some v -> fprintf fmt "Some @[%a@]" mf_a v
-
 let pp_print_ref mf_a fmt v = fprintf fmt "@[{contents=%a}@]" mf_a v.contents
-
 let pp_print_list mf_a fmt lst =
   let open List in
     fprintf fmt "@[<1>[%a]@]"
       (fun fmt  -> iter (fun x  -> fprintf fmt "%a@ " mf_a x)) lst
-
 let pp_print_exn fmt (e : exn) = fprintf fmt "%s" (Printexc.to_string e)
-
 let eq_list mf_a xs ys =
   let rec loop =
     function
@@ -70,7 +45,6 @@ let eq_list mf_a xs ys =
     | (x::xs,y::ys) -> (mf_a x y) && (loop (xs, ys))
     | (_,_) -> false in
   loop (xs, ys)
-
 let eq_array mf_a xs ys =
   let lx = Array.length xs and ly = Array.length ys in
   if lx <> ly
@@ -81,16 +55,12 @@ let eq_array mf_a xs ys =
        then true
        else if mf_a (xs.(i)) (ys.(i)) then loop (i + 1) else false in
      loop 0)
-
 let pp_print_array mf_a fmt lst =
   let open Array in
     fprintf fmt "@[<1>[|%a|]@]"
       (fun fmt  -> iter (fun x  -> fprintf fmt "%a@ " mf_a x)) lst
-
 let eq_arrow _mf_a _mf_b _a _b = false
-
 let pp_print_arrow _mf_a _f_b fmt _v = fprintf fmt "<<<function>>>"
-
 class printbase =
   object (self : 'self_type)
     method int = pp_print_int
@@ -122,7 +92,6 @@ class printbase =
       fun mf_a  fmt  v  -> pp_print_ref (mf_a self) fmt v
     method unknown : 'a . Format.formatter -> 'a -> unit= fun _fmt  _x  -> ()
   end
-
 class mapbase =
   object (self : 'self_type)
     method int : int -> int= fun x  -> x
@@ -153,7 +122,6 @@ class mapbase =
       fun mf_a  x  -> ref (mf_a self x.contents)
     method unknown : 'a . 'a -> 'a= fun x  -> x
   end
-
 class iterbase =
   object (self : 'self)
     method int : int -> unit= fun _  -> ()
@@ -180,7 +148,6 @@ class iterbase =
       fun mf_a  x  -> mf_a self x.contents
     method unknown : 'a . 'a -> unit= fun _  -> ()
   end
-
 class eqbase =
   object (self : 'self)
     method int : int -> int -> bool= fun x  y  -> x = y
@@ -229,7 +196,6 @@ class eqbase =
       fun mf_a  x  y  -> mf_a self x.contents y.contents
     method unknown : 'a . 'a -> 'a -> bool= fun _  _  -> true
   end
-
 class mapbase2 =
   object (self : 'self_type)
     method int : int -> int -> int= fun x  _  -> x
@@ -261,9 +227,7 @@ class mapbase2 =
           (let f = mf_a self in
            let i = f (arr1.(0)) (arr2.(0)) in
            let c = Array.create lx i in
-           begin
-             for i = 1 to lx - 1 do c.(i) <- f (arr1.(i)) (arr2.(i)) done; c
-           end)
+           for i = 1 to lx - 1 do c.(i) <- f (arr1.(i)) (arr2.(i)) done; c)
     method option :
       'a0 'b0 .
         ('self_type -> 'a0 -> 'a0 -> 'b0) ->
@@ -285,11 +249,8 @@ class mapbase2 =
       fun _  _  _  -> invalid_arg "map2 arrow is not implemented"
     method unknown : 'a . 'a -> 'a -> 'a= fun x  _  -> x
   end
-
 class monadbase = mapbase
-
 class monadbase2 = mapbase2
-
 class foldbase =
   object (self : 'self_type)
     method int : int -> 'self_type= fun _  -> self
@@ -320,7 +281,6 @@ class foldbase =
       fun _  _  _  -> invalid_arg "fold arrow is not implemented"
     method unknown : 'a . 'a -> 'self_type= fun _  -> self
   end
-
 class foldbase2 =
   object (self : 'self_type)
     method int : int -> int -> 'self_type= fun _  _  -> self
@@ -351,10 +311,7 @@ class foldbase2 =
             (let acc = ref acc in
              let rec loop i =
                if i < l1
-               then
-                 begin
-                   acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1)
-                 end
+               then (acc := (f acc.contents (a1.(i)) (a2.(i))); loop (i + 1))
                else acc.contents in
              loop 0) in
         fold_left2 mf_a self lx ly

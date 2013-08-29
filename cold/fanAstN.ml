@@ -1,7 +1,5 @@
 open FAstN
-
 let fill_ant _loc x = x
-
 class primitive =
   object 
     method int _loc (i : int) = (`Int (_loc, (string_of_int i)) : FAst.ep )
@@ -23,7 +21,6 @@ class primitive =
       | true  -> (`Lid (_loc, "true") : FAst.ep )
       | false  -> (`Lid (_loc, "false") : FAst.ep )
   end
-
 let fill_literal: FLoc.t -> FAstN.literal -> FAst.literal =
   fun loc  ->
     function
@@ -34,14 +31,12 @@ let fill_literal: FLoc.t -> FAstN.literal -> FAst.literal =
     | `Flo _a0 -> `Flo (loc, _a0)
     | `Nativeint _a0 -> `Nativeint (loc, _a0)
     | `Str _a0 -> `Str (loc, _a0)
-
 let fill_flag: FLoc.t -> FAstN.flag -> FAst.flag =
   fun loc  ->
     function
     | `Positive -> `Positive loc
     | `Negative -> `Negative loc
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.flag)
-
 let fill_position_flag: FLoc.t -> FAstN.position_flag -> FAst.position_flag =
   fun loc  ->
     function
@@ -49,7 +44,6 @@ let fill_position_flag: FLoc.t -> FAstN.position_flag -> FAst.position_flag =
     | `Negative -> `Negative loc
     | `Normal -> `Normal loc
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.position_flag)
-
 let rec fill_strings: FLoc.t -> FAstN.strings -> FAst.strings =
   fun loc  ->
     function
@@ -58,34 +52,28 @@ let rec fill_strings: FLoc.t -> FAstN.strings -> FAst.strings =
         let _a1 = fill_strings loc _a1 in `App (loc, _a0, _a1)
     | `Str _a0 -> `Str (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.strings)
-
 let fill_lident: FLoc.t -> FAstN.lident -> FAst.lident =
   fun loc  (`Lid _a0)  -> `Lid (loc, _a0)
-
 let fill_alident: FLoc.t -> FAstN.alident -> FAst.alident =
   fun loc  ->
     function
     | `Lid _a0 -> `Lid (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.alident)
-
 let fill_auident: FLoc.t -> FAstN.auident -> FAst.auident =
   fun loc  ->
     function
     | `Uid _a0 -> `Uid (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.auident)
-
 let fill_aident: FLoc.t -> FAstN.aident -> FAst.aident =
   fun loc  ->
     function
     | #alident as _a0 -> (fill_alident loc _a0 :>FAst.aident)
     | #auident as _a0 -> (fill_auident loc _a0 :>FAst.aident)
-
 let fill_astring: FLoc.t -> FAstN.astring -> FAst.astring =
   fun loc  ->
     function
     | `C _a0 -> `C (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.astring)
-
 let rec fill_uident: FLoc.t -> FAstN.uident -> FAst.uident =
   fun loc  ->
     function
@@ -96,7 +84,6 @@ let rec fill_uident: FLoc.t -> FAstN.uident -> FAst.uident =
         let _a0 = fill_uident loc _a0 in
         let _a1 = fill_uident loc _a1 in `App (loc, _a0, _a1)
     | #auident as _a0 -> (fill_auident loc _a0 :>FAst.uident)
-
 let rec fill_ident: FLoc.t -> FAstN.ident -> FAst.ident =
   fun loc  ->
     function
@@ -108,7 +95,6 @@ let rec fill_ident: FLoc.t -> FAstN.ident -> FAst.ident =
         let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
     | #alident as _a0 -> (fill_alident loc _a0 :>FAst.ident)
     | #auident as _a0 -> (fill_auident loc _a0 :>FAst.ident)
-
 let fill_ident': FLoc.t -> FAstN.ident' -> FAst.ident' =
   fun loc  ->
     function
@@ -120,7 +106,6 @@ let fill_ident': FLoc.t -> FAstN.ident' -> FAst.ident' =
         let _a1 = fill_ident loc _a1 in `Apply (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-
 let rec fill_vid: FLoc.t -> FAstN.vid -> FAst.vid =
   fun loc  ->
     function
@@ -130,7 +115,6 @@ let rec fill_vid: FLoc.t -> FAstN.vid -> FAst.vid =
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.vid)
-
 let fill_vid': FLoc.t -> FAstN.vid' -> FAst.vid' =
   fun loc  ->
     function
@@ -139,7 +123,6 @@ let fill_vid': FLoc.t -> FAstN.vid' -> FAst.vid' =
         let _a1 = fill_vid loc _a1 in `Dot (loc, _a0, _a1)
     | `Lid _a0 -> `Lid (loc, _a0)
     | `Uid _a0 -> `Uid (loc, _a0)
-
 let rec fill_dupath: FLoc.t -> FAstN.dupath -> FAst.dupath =
   fun loc  ->
     function
@@ -147,7 +130,6 @@ let rec fill_dupath: FLoc.t -> FAstN.dupath -> FAst.dupath =
         let _a0 = fill_dupath loc _a0 in
         let _a1 = fill_dupath loc _a1 in `Dot (loc, _a0, _a1)
     | #auident as _a0 -> (fill_auident loc _a0 :>FAst.dupath)
-
 let fill_dlpath: FLoc.t -> FAstN.dlpath -> FAst.dlpath =
   fun loc  ->
     function
@@ -155,9 +137,7 @@ let fill_dlpath: FLoc.t -> FAstN.dlpath -> FAst.dlpath =
         let _a0 = fill_dupath loc _a0 in
         let _a1 = fill_alident loc _a1 in `Dot (loc, _a0, _a1)
     | #alident as _a0 -> (fill_alident loc _a0 :>FAst.dlpath)
-
 let fill_any: FLoc.t -> FAstN.any -> FAst.any = fun loc  `Any  -> `Any loc
-
 let rec fill_ctyp: FLoc.t -> FAstN.ctyp -> FAst.ctyp =
   fun loc  ->
     function
@@ -858,7 +838,6 @@ and fill_clfield: FLoc.t -> FAstN.clfield -> FAst.clfield =
     | `Initializer _a0 ->
         let _a0 = fill_exp loc _a0 in `Initializer (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.clfield)
-
 let rec fill_ep: FLoc.t -> FAstN.ep -> FAst.ep =
   fun loc  ->
     function
@@ -890,7 +869,6 @@ and fill_rec_bind: FLoc.t -> FAstN.rec_bind -> FAst.rec_bind =
         let _a1 = fill_rec_bind loc _a1 in `Sem (loc, _a0, _a1)
     | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_bind)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_bind)
-
 class meta =
   object (self : 'self_type)
     inherit  primitive
@@ -2266,5 +2244,4 @@ class meta =
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
   end
-
 let m = new meta

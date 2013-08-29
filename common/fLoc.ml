@@ -332,7 +332,7 @@ exception Exc_located of t * exn
 let raise loc exc =
   match exc with
   | Exc_located (_, _) -> raise exc
-  | _ -> raise (Exc_located loc exc) 
+  | _ -> raise (Exc_located (loc, exc)) 
 
 let _ = begin
   Printexc.register_printer (function

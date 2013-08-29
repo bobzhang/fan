@@ -28,6 +28,6 @@ end;;
 
 
 {:fans|keep off; derive (MetaObj); |};;
-{:ocaml|{:include| "src/fAst.mli"|} |};;
+{:ocaml|{:include| "common/fAst.mli"|} |};;
 
   

@@ -1,18 +1,12 @@
 open LibUtil
-
 open AstLibN
-
 open FAstN
-
 open StdFan
-
 let pp_print_typedecl = ObjsN.pp_print_typedecl
-
-type named_type = (string * typedecl) 
+type named_type = (string* typedecl) 
 and and_types = named_type list 
 and types = [ `Mutual of and_types | `Single of named_type] 
 and mtyps = types list 
-
 let rec pp_print_named_type: Format.formatter -> named_type -> unit =
   fun fmt  _a0  ->
     (fun fmt  (_a0,_a1)  ->
@@ -29,15 +23,12 @@ and pp_print_types: Format.formatter -> types -> unit =
         Format.fprintf fmt "@[<1>(`Single@ %a)@]" pp_print_named_type _a0
 and pp_print_mtyps: Format.formatter -> mtyps -> unit =
   fun fmt  _a0  -> pp_print_list pp_print_types fmt _a0
-
 type plugin_name = string 
-
 type plugin = 
   {
   transform: mtyps -> stru option;
   position: string option;
   filter: (string -> bool) option} 
-
 let apply_filter f (m : mtyps) =
   (let f =
      function
@@ -51,7 +42,6 @@ let apply_filter f (m : mtyps) =
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
    List.filter_map f m : mtyps )
-
 let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
   (match x with
    | [] -> None
@@ -64,7 +54,6 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
                 (`Type v : FAstN.stru )
             | `Single ty -> let v = aux ty in (`Type v : FAstN.stru )) x in
        Some (sem_of_list xs) : stru option )
-
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
      List.concat_map
@@ -72,7 +61,6 @@ let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
         | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
         | `Single (x,_) -> [x]) x in
    sem_of_list (List.map f tys) : stru )
-
 let mk_transform_type_eq () =
   object (self : 'self_type)
     val transformers = Hashtbl.create 50
@@ -92,11 +80,8 @@ let mk_transform_type_eq () =
                then super#stru x
                else
                  (let src = i and dest = IdN.to_string i in
-                  begin
-                    Hashtbl.replace transformers dest
-                      (src, (List.length lst));
-                    (`StExp (`Uid "()") : FAstN.stru )
-                  end)
+                  Hashtbl.replace transformers dest (src, (List.length lst));
+                  (`StExp (`Uid "()") : FAstN.stru ))
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
@@ -104,16 +89,13 @@ let mk_transform_type_eq () =
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = IdN.to_string i in
-          begin
-            Hashtbl.replace transformers dest (src, (List.length lst));
-            appl_of_list ((`Lid dest : FAstN.ctyp ) :: lst)
-          end
+          (Hashtbl.replace transformers dest (src, (List.length lst));
+           appl_of_list ((`Lid dest : FAstN.ctyp ) :: lst))
       | None  -> super#ctyp x
     method type_transformers =
       Hashtbl.fold (fun dest  (src,len)  acc  -> (dest, src, len) :: acc)
         transformers []
   end
-
 let transform_mtyps (lst : mtyps) =
   let obj = mk_transform_type_eq () in
   let item1 =

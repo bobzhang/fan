@@ -1,9 +1,6 @@
 open LibUtil
-
 open FAst
-
 open AstLib
-
 let list_of_list (loc : loc) =
   let rec loop top =
     function
@@ -12,31 +9,20 @@ let list_of_list (loc : loc) =
         let _loc = if top then loc else FLoc.merge (loc_of e1) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
   loop true
-
 let meta_int _loc i = `Int (_loc, (string_of_int i))
-
 let meta_int32 _loc i = `Int32 (_loc, (Int32.to_string i))
-
 let meta_int64 _loc i = `Int64 (_loc, (Int64.to_string i))
-
 let meta_nativeint _loc i = `Nativeint (_loc, (Nativeint.to_string i))
-
 let meta_float _loc i = `Flo (_loc, (string_of_float i))
-
 let meta_string _loc i = `Str (_loc, (String.escaped i))
-
 let meta_char _loc i = `Chr (_loc, (Char.escaped i))
-
 let meta_unit _loc _ = `Uid (_loc, "()")
-
 let meta_bool _loc =
   function | true  -> `Lid (_loc, "true") | false  -> `Lid (_loc, "false")
-
 let meta_ref mf_a _loc i =
   `Record
     (_loc,
       (`RecBind (_loc, (`Lid (_loc, "contents")), (mf_a _loc i.contents))))
-
 let mklist loc =
   let rec loop top =
     function
@@ -45,41 +31,21 @@ let mklist loc =
         let _loc = if top then loc else FLoc.merge (loc_of e1) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el)) in
   loop true
-
 let meta_list mf_a _loc ls =
   mklist _loc (List.map (fun x  -> mf_a _loc x) ls)
-
 let meta_option mf_a _loc =
   function
   | None  -> `Uid (_loc, "None")
   | Some x -> `App (_loc, (`Uid (_loc, "Some")), (mf_a _loc x))
-
 let meta_arrow (type t) (_mf_a : FLoc.t -> 'a -> t)
   (_mf_b : FLoc.t -> 'b -> t) (_loc : FLoc.t) (_x : 'a -> 'b) =
   invalid_arg "meta_arrow not implemented"
-
 let rec is_module_longident (x : ident) =
   match x with
   | `Dot (_,_,i) -> is_module_longident i
   | `Apply (_,i1,i2) -> (is_module_longident i1) && (is_module_longident i2)
   | `Uid _ -> true
   | _ -> false
-
-let ident_of_exp: exp -> ident =
-  let error () =
-    invalid_arg "ident_of_exp: this expession is not an identifier" in
-  let rec self (x : exp) =
-    (match x with
-     | `App (_loc,e1,e2) -> `Apply (_loc, (self e1), (self e2))
-     | `Field (_loc,e1,e2) -> `Dot (_loc, (self e1), (self e2))
-     | `Lid _ -> error ()
-     | `Uid _|`Dot _ as i -> (i : vid  :>ident)
-     | _ -> error () : ident ) in
-  function
-  | #vid as i -> (i : vid  :>ident)
-  | `App _ -> error ()
-  | t -> self t
-
 let ident_of_ctyp: ctyp -> ident =
   let error x =
     invalid_argf "ident_of_ctyp: this type %s is not an identifier"
@@ -92,7 +58,6 @@ let ident_of_ctyp: ctyp -> ident =
     | #ident' as i -> if is_module_longident i then i else error x
     | _ -> error x in
   function | #ident as i -> i | t -> self t
-
 let rec is_irrefut_pat (x : pat) =
   match x with
   | `Lid _ -> true
@@ -121,17 +86,14 @@ let rec is_irrefut_pat (x : pat) =
     |(`Int64 (_loc,_) : FAst.pat)|(`Int32 (_loc,_) : FAst.pat)
     |(`Int (_loc,_) : FAst.pat)|(`Chr (_loc,_) : FAst.pat)
     |(`ClassPath (_loc,_) : FAst.pat)|(`Array (_loc,_) : FAst.pat) -> false
-
 let array_of_array arr =
   match arr with
   | [||] -> `ArrayEmpty FLoc.ghost
   | _ ->
       let items = (arr |> Array.to_list) |> sem_of_list in
       let _loc = loc_of items in `Array (_loc, items)
-
 let meta_array mf_a _loc ls =
   array_of_array (Array.map (fun x  -> mf_a _loc x) ls)
-
 let bigarray_get loc arr arg =
   let coords =
     match arg with
@@ -193,7 +155,6 @@ let bigarray_get loc arr arg =
                    (loc, c1,
                      (`Sem (loc, c2, (`Sem (loc, c3, (sem_of_list coords)))))))))) : 
       FAst.exp )
-
 let bigarray_set loc var newval =
   match var with
   | (`App
@@ -290,27 +251,23 @@ let bigarray_set loc var newval =
                                  (`Lid (loc, "set")))))), arr)),
                   (`Array (loc, coords)))), newval) : FAst.exp )
   | _ -> None
-
 let mksequence ?loc  =
   function
   | `Sem (_loc,_,_)|`Ant (_loc,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
   | e -> e
-
 let mksequence' ?loc  =
   function
   | `Sem (_loc,_,_) as e ->
       let _loc = match loc with | Some x -> x | None  -> _loc in
       `Seq (_loc, e)
   | e -> e
-
 let rec to_lid =
   function
   | `Dot (_loc,_,i) -> to_lid i
   | `Lid (_loc,lid) -> lid
   | _ -> assert false
-
 let mkumin loc prefix arg =
   match arg with
   | (`Int (_loc,n) : FAst.exp) -> (`Int (loc, (String.neg n)) : FAst.exp )

@@ -15,7 +15,6 @@ include PreCast
 open AstQuotation
 open Fsyntax
 open LibUtil
-open AstQuotation
 open FControl
 
 let efilter str e =

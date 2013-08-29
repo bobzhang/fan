@@ -1,11 +1,7 @@
 open FAstN
-
 open AstLibN
-
 open LibUtil
-
 open BasicN
-
 type vrn =  
   | Sum
   | TyVrnEq
@@ -13,12 +9,10 @@ type vrn =
   | TyVrnInf
   | TyVrnInfSup
   | TyAbstr 
-
 type col =  {
   col_label: string;
   col_mutable: bool;
   col_ctyp: ctyp} 
-
 type ty_info = 
   {
   name_exp: exp;
@@ -27,11 +21,8 @@ type ty_info =
   id_ep: ep;
   id_eps: ep list;
   ty: ctyp} 
-
-type vbranch = [ `variant of (string * ctyp list) | `abbrev of ident] 
-
-type branch = [ `branch of (string * ctyp list)] 
-
+type vbranch = [ `variant of (string* ctyp list) | `abbrev of ident] 
+type branch = [ `branch of (string* ctyp list)] 
 type destination =  
   | Obj of kind
   | Str_item 
@@ -40,13 +31,10 @@ and kind =
   | Iter
   | Map
   | Concrete of ctyp 
-
 open Format
-
 type warning_type =  
   | Abstract of string
   | Qualified of string 
-
 let pp_print_warning_type: Format.formatter -> warning_type -> unit =
   fun fmt  ->
     function
@@ -54,36 +42,26 @@ let pp_print_warning_type: Format.formatter -> warning_type -> unit =
         Format.fprintf fmt "@[<1>(Abstract@ %a)@]" pp_print_string _a0
     | Qualified _a0 ->
         Format.fprintf fmt "@[<1>(Qualified@ %a)@]" pp_print_string _a0
-
 type record_col =  {
   re_label: string;
   re_mutable: bool;
   re_info: ty_info} 
-
 type record_info = record_col list 
-
 type basic_id_transform =
   [ `Pre of string | `Post of string | `Fun of string -> string] 
-
 type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp] 
-
 type full_id_transform =
   [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
   | `Last of string -> vid | `Obj of string -> string] 
-
 let arrow_of_list f = List.reduce_right arrow f
-
 let app_arrow lst acc = List.fold_right arrow lst acc
-
 let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
     (fun name  acc  ->
        (`Arrow ((`Quote (`Normal, (`Lid name))), acc) : FAstN.ctyp )) names
     ty
-
 let (+>) (params : ctyp list) (base : ctyp) =
   List.fold_right arrow params base
-
 let name_length_of_tydcl (x : typedecl) =
   (match x with
    | `TyDcl (`Lid name,tyvars,_,_) ->
@@ -93,8 +71,7 @@ let name_length_of_tydcl (x : typedecl) =
            | `Some xs -> List.length @@ (list_of_com xs []))))
    | tydcl ->
        failwithf "name_length_of_tydcl {|%s|}\n" (ObjsN.dump_typedecl tydcl) : 
-  (string * int) )
-
+  (string* int) )
 let gen_quantifiers1 ~arity  n =
   (((List.init arity
        (fun i  ->
@@ -103,18 +80,14 @@ let gen_quantifiers1 ~arity  n =
                (`Quote (`Normal, (`Lid (allx ~off:i j))) : FAstN.ctyp ))))
       |> List.concat)
      |> appl_of_list : ctyp )
-
 let of_id_len ~off  ((id : ident),len) =
   appl_of_list ((id :>ctyp) ::
     (List.init len
        (fun i  -> (`Quote (`Normal, (`Lid (allx ~off i))) : FAstN.ctyp ))))
-
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
-
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
-
 let list_of_record (ty : name_ctyp) =
   (let (tys :name_ctyp list)= list_of_sem ty [] in
    tys |>
@@ -126,13 +99,9 @@ let list_of_record (ty : name_ctyp) =
              { col_label; col_ctyp; col_mutable = false }
          | t0 -> failwithf "list_of_record %s" (ObjsN.dump_name_ctyp t0))) : 
   col list )
-
 let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
-
 let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
-
 let result_id = ref 0
-
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let prefix =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
@@ -174,11 +143,9 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
    else
      (let quantifiers = gen_quantifiers1 ~arity:quant len in
       ((`TyPol (quantifiers, (params +> base)) : FAstN.ctyp ), dst)) : 
-  (ctyp * ctyp) )
-
+  (ctyp* ctyp) )
 let mk_method_type_of_name ~number  ~prefix  (name,len) (k : destination) =
   let id = lid name in mk_method_type ~number ~prefix (id, len) k
-
 let mk_obj class_name base body =
   (`Class
      (`ClDeclS
@@ -188,7 +155,6 @@ let mk_obj class_name base body =
                  ((`Lid "self"), (`Quote (`Normal, (`Lid "self_type"))))),
                (`Sem ((`Inherit (`Negative, (`Lid base))), body)))))) : 
   FAstN.stru )
-
 let is_recursive ty_dcl =
   match ty_dcl with
   | `TyDcl (`Lid name,_,ctyp,_) ->
@@ -199,7 +165,7 @@ let is_recursive ty_dcl =
           method! ctyp =
             function
             | (`Lid i : FAstN.ctyp) when i = name ->
-                begin is_recursive <- true; self end
+                (is_recursive <- true; self)
             | x -> if is_recursive then self else super#ctyp x
           method is_recursive = is_recursive
         end in
@@ -208,7 +174,6 @@ let is_recursive ty_dcl =
   | _ ->
       failwithf "is_recursive not type declartion: %s"
         (ObjsN.dump_typedecl ty_dcl)
-
 let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : FAstN.ctyp) as x ->
@@ -218,11 +183,9 @@ let qualified_app_list (x : ctyp) =
         | _ -> None)
    | `Lid _|`Uid _ -> None
    | #ident' as i -> Some (i, [])
-   | _ -> None : (ident * ctyp list) option )
-
+   | _ -> None : (ident* ctyp list) option )
 let is_abstract (x : typedecl) =
   match x with | `TyAbstr _ -> true | _ -> false
-
 let abstract_list (x : typedecl) =
   match x with
   | `TyAbstr (_,lst,_) ->
@@ -230,7 +193,6 @@ let abstract_list (x : typedecl) =
        | `None -> Some 0
        | `Some xs -> Some (List.length @@ (list_of_com xs [])))
   | _ -> None
-
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
   let branches = list_of_or ty [] in
@@ -241,7 +203,6 @@ let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose
        | `Uid cons -> compose (f cons []) acc
        | t -> failwithf "reduce_data_ctors: %s" (ObjsN.dump_or_ctyp t)) init
     branches
-
 let view_sum (t : or_ctyp) =
   let bs = list_of_or t [] in
   List.map
@@ -249,7 +210,6 @@ let view_sum (t : or_ctyp) =
      | `Uid cons -> `branch (cons, [])
      | `Of (`Uid cons,t) -> `branch (cons, (list_of_star t []))
      | _ -> assert false) bs
-
 let view_variant (t : row_field) =
   (let lst = list_of_or t [] in
    List.map
@@ -260,7 +220,6 @@ let view_variant (t : row_field) =
       | `Ctyp (#ident' as i) -> `abbrev i
       | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)) lst : 
   vbranch list )
-
 let transform: full_id_transform -> vid -> exp =
   let open IdN in
     function
@@ -279,25 +238,20 @@ let transform: full_id_transform -> vid -> exp =
              let () =
                if not (Hashtbl.mem BasicN.conversion_table src)
                then
-                 begin
-                   Hashtbl.add BasicN.conversion_table src dest;
-                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
-                     dest
-                 end in
+                 (Hashtbl.add BasicN.conversion_table src dest;
+                  Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
+                    dest) in
              (`Send ((`Lid "self"), (`Lid (f dest))) : FAstN.exp ))
-
 let basic_transform =
   function
   | `Pre pre -> (fun x  -> pre ^ x)
   | `Post post -> (fun x  -> x ^ post)
   | `Fun f -> f
-
 let right_transform =
   function
   | #basic_id_transform as x ->
       let f = basic_transform x in (fun x  -> (`Lid (f x) : FAstN.exp ))
   | `Exp f -> f
-
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: pat list =
     List.init arity

@@ -20,7 +20,7 @@ open FAst
     [loc_of (e:exp)]
     [loc_of (p:pat)] will both return the location information *)
 {:fans|keep off; derive (GenLoc);|};;
-{:ocaml|{:include|"src/fAst.mli"|}|};;
+{:ocaml|{:include|"common/fAst.mli"|}|};;
 
 
 

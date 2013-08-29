@@ -6,13 +6,15 @@
 true: warn(-41)
 <cold/fLexer.ml>:warn(-27)
 <{cold,src}/fan.ml>:warn(-33)
-
+<common>:include
 true:-traverse
 <top>:precious
 
 <{cold,src,debug}/mktop.ml>: warn(-33)
 
-<{cold,src,debug}/{oAstPrint,astPrint,astEq,fLoc,fanLoc,preCast,fanX,ast2pt,pAst2pt,sig,parsetreeHelper,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
+<{common}/{astPrint,parsetreeHelper,fLoc,ast2pt}.{ml,mli}>:use_ocamlcommon
+
+<{cold,src,debug}/{ast2pt,oAstPrint,astPrint,astEq,fLoc,fanLoc,preCast,fanX,pAst2pt,sig,ast2Fan,extract}{_ppo,}.{ml,mli}> : use_ocamlcommon
 
 <{cold,src,debug}/{fanTop,fEval}.{ml,mli}>: use_ocamlcommon
 

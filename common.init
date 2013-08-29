@@ -1,6 +1,7 @@
 (* -*- Mode:caml; -*- *)
 
 #load "fanTop.cma";;
+#directory "_build/common";;
 #directory "+compiler-libs";;
 #load "ocamlcommon.cma";;
 let fmt = std_formatter
@@ -50,7 +51,7 @@ let env = !Toploop.toplevel_env;;
 
 module O = Obj;;
 open FAst;;
-open Exp;;
+
 
 
 (* test dump *)

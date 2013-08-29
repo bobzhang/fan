@@ -34,9 +34,6 @@ let with_dispose ~dispose f x =
   finally ~action:(fun () -> dispose x) f x
 
 (** {6 Operators}*)
-external (|>) : 'a -> ('a -> 'b) -> 'b =  "%revapply"  
-(* external (&) : ('a -> 'b) -> 'a -> 'b = "%apply" *)
-external (@@) : ('a -> 'b) -> 'a -> 'b = "%apply"    
 external id : 'a -> 'a = "%identity"
 external (!&) : _ -> unit = "%ignore"
 
@@ -102,7 +99,7 @@ let callcc  (type u) (f: u cont  -> u)  =
   
 
 
-type  'a return  = { return : ! 'b. 'a -> 'b }
+type  'a return  = { return :  'b. 'a -> 'b }
 
 let with_return f =
   let module M = struct
@@ -355,10 +352,10 @@ module type MAP = sig
   val of_hashtbl:(key,'a) Hashtbl.t  -> 'a t
   val elements: 'a t -> (key * 'a) list 
   val add_list: (key * 'a) list  -> 'a t -> 'a t
-  val find_default: ~default :'a -> key -> 'a t -> 'a 
+  val find_default: default :'a -> key -> 'a t -> 'a 
   val find_opt: key -> 'a t -> 'a option
     (* FIXME  [~default:] [~default :] *)
-  val add_with: ~f :('a -> 'a -> 'a) -> key ->
+  val add_with: f :('a -> 'a -> 'a) -> key ->
     'a ->  'a t ->
       ('a t * [ `NotExist | `Exist])
 
@@ -368,7 +365,7 @@ end
 
       
 module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
-  include Map.Make S
+  include Map.Make (S) (* TODO: the same syntax with original *)
   let of_list lst =
     List.fold_left (fun acc (k,v)  -> add k v acc) empty lst
   let add_list lst base =
@@ -416,15 +413,15 @@ module type SET = sig
   val add_array: t ->  elt array -> t 
 end
 module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
-  include Set.Make S
+  include Set.Make (S)
   let of_list = List.fold_left (flip add) empty
   let add_list c = List.fold_left (flip add) c
   let of_array = Array.fold_left (flip add) empty
   let add_array c = Array.fold_left (flip add) c
 end
 (* module SSet = Set.Make String; *)
-module SSet =SetMake String
-module SMap = MapMake String
+module SSet =SetMake (String)
+module SMap = MapMake (String)
 
   
 module IMap = MapMake (struct
@@ -461,15 +458,16 @@ end
 
 let mk_set (type s) ~cmp =
   let module M = struct type t = s let compare = cmp end in
-  (module Set.Make M :Set.S with type elt = s)
+  (module Set.Make (M) :Set.S with type elt = s)
 
 let mk_map (type s) ~cmp=
   let module M = struct type t = s let compare = cmp end in
-  (module Map.Make M : Map.S with type key = s)
+  (module Map.Make (M) : Map.S with type key = s)
   
 let mk_hashtbl (type s) ~eq ~hash =
-  let module M=struct type t = s let equal = eq let hash = hash end
-  in  (module Hashtbl.Make M  :Hashtbl.S with type key = s)
+  let module M =
+    struct type t = s let equal = eq let hash = hash end in
+  (module Hashtbl.Make (M)  :Hashtbl.S with type key = s)
   
 module Char = struct
   include Char
@@ -1098,24 +1096,35 @@ module type STREAM = sig
 end
 
   
-(* module Trie = struct *)
-(* end; *)
 module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
-  (* include BatStream; *)
   include XStream
-  let rev strm=
-    let rec aux = parser
-      |  x ; 'xs -> {:stream| 'aux xs; x|}
-      |  ->  {:stream||} in
-    aux strm
+  let njunk  n strm  =
+    for _i = 1 to n do
+      junk strm
+    done (* FIXME unsed  index i*)
       
-  let tail = parser
-    |  _; 'xs  -> xs 
-    |  -> {:stream||} 
+  let tail s = 
+    match peek s with
+    | Some _ -> (junk s; s)
+    | _ -> sempty
         
-  let rec map f  = parser
-    |  x; 'xs  -> {:stream| f x ; 'map f xs |}
-    |  -> {:stream||} 
+
+  let rev strm=
+    let rec aux s =
+      match peek s with
+      | Some x ->
+          (junk s;
+           (let xs = s in
+           lapp (fun _  -> aux xs) (ising x)))
+      | _ -> sempty in aux strm
+      
+  let rec map f  s = 
+    match peek s with
+    | Some x ->
+        (junk s;
+         (let xs = s in
+          lcons (fun _  -> f x) (slazy (fun _  -> map f xs))))
+    | _ -> sempty
 
   (* the minimual [n] is 0 *)
   let peek_nth strm n   =
@@ -1124,21 +1133,21 @@ module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
       | [] -> None  in
     if n < 0 then
       invalid_arg "XStream.peek_nth"
-    else loop n (XStream.npeek (n+1) strm)
+    else loop n (npeek (n+1) strm)
 
   (*  Used by [try_parser], very in-efficient 
       This version of peek_nth is off-by-one from XStream.peek_nth *)      
-  let dup strm = 
-    XStream.from (peek_nth strm)
+  let dup strm = from (peek_nth strm)
   
-  let njunk  n strm  =
-    for _i = 1 to n do XStream.junk strm done (* FIXME unsed  index i*)
-      
-  let rec filter f = parser
-    |  x; 'xs  ->
-        if f x then {:stream| x; 'filter f xs|}
-        else {:stream| 'filter f xs|}
-    |  -> {:stream||} 
+  let rec filter f s =
+    match peek s with
+    | Some x ->
+        (junk s;
+         (let xs = s in
+          if f x
+          then icons x (slazy (fun _  -> filter f xs))
+          else slazy (fun _  -> filter f xs)))
+    | _ -> sempty
         
 end
 

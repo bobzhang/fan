@@ -221,3 +221,4 @@ val print_stru : formatter -> stru -> unit
 
 val print_ctyp : formatter -> ctyp -> unit
   
+val generate_type_code: (FAst.loc -> FAst.typedecl -> FAst.strings -> FAst.stru) ref

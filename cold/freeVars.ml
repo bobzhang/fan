@@ -1,7 +1,5 @@
 open FAst
-
 open LibUtil
-
 class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
   object 
     inherit  Objs.fold as super
@@ -13,17 +11,14 @@ class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
         |(`OptLablS (_loc,`Lid (_,s)) : FAst.pat) -> {<acc = f s acc>}
       | p -> super#pat p
   end
-
 let fold_pattern_vars f p init =
   (((new c_fold_pattern_vars) f init)#pat p)#acc
-
 let rec fold_bind_vars f bi acc =
   match bi with
   | (`And (_loc,bi1,bi2) : FAst.bind) ->
       fold_bind_vars f bi1 (fold_bind_vars f bi2 acc)
   | (`Bind (_loc,p,_) : FAst.bind) -> fold_pattern_vars f p acc
   | `Ant _ -> assert false
-
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
   SSet.empty) free_init =
   object (o)
@@ -88,7 +83,6 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | (`Struct (_loc,st) : FAst.mexp) -> (o#stru st)#set_env env
       | me -> super#mexp me
   end
-
 let free_vars env_init e =
   let fold = (new fold_free_vars) SSet.add ~env_init SSet.empty in
   (fold#exp e)#free
