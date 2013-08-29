@@ -582,8 +582,7 @@ let rec exp (x : exp) =
   | `Array (loc,e) ->
       mkexp loc (Pexp_array (List.map exp (list_of_sem e [])))
   | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | (`Assert (_loc,`Lid (_,"false")) : FAst.exp) ->
-      mkexp _loc Pexp_assertfalse
+  | `Assert (_loc,`Lid (_,"false")) -> mkexp _loc Pexp_assertfalse
   | `Assert (_loc,e) -> mkexp _loc (Pexp_assert (exp e))
   | `Assign (loc,e,v) ->
       let e =
@@ -1052,8 +1051,8 @@ and mexp (x : FAst.mexp) =
   | t -> errorf (unsafe_loc_of t) "mexp: %s" (dump_mexp.contents t)
 and stru (s : stru) (l : structure) =
   (match s with
-   | (`StExp (_loc,`Uid (_,"()")) : FAst.stru) -> l
-   | (`Sem (_loc,st1,st2) : FAst.stru) -> stru st1 (stru st2 l)
+   | `StExp (_,`Uid (_,"()")) -> l
+   | `Sem (_,st1,st2) -> stru st1 (stru st2 l)
    | (`Class (loc,cd) : stru) ->
        (mkstr loc
           (Pstr_class (List.map class_info_clexp (list_of_and cd []))))
@@ -1109,7 +1108,7 @@ and stru (s : stru) (l : structure) =
               with
               | (`Struct (_loc,s) : FAst.mexp) -> s
               | _ -> assert false) in
-       stru (`Sem (_loc, x, code) : FAst.stru ) l
+       stru (`Sem (_loc, x, code)) l
    | `Value (loc,rf,bi) -> (mkstr loc (Pstr_value ((mkrf rf), (bind bi []))))
        :: l
    | x -> errorf (unsafe_loc_of x) "stru : %s" (dump_stru.contents x) : 
@@ -1308,8 +1307,8 @@ let directive (x : exp) =
   match x with
   | `Str (_,s) -> Pdir_string s
   | `Int (_,i) -> Pdir_int (int_of_string i)
-  | (`Lid (_loc,"true") : FAst.exp) -> Pdir_bool true
-  | (`Lid (_loc,"false") : FAst.exp) -> Pdir_bool false
+  | `Lid (_loc,("true"|"false" as x)) ->
+      if x = "true" then Pdir_bool true else Pdir_bool false
   | e -> Pdir_ident (ident_noloc (ident_of_exp e))
 let phrase (x : stru) =
   match x with
