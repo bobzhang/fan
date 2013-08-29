@@ -11,7 +11,7 @@ let setup_op_parser entry p =
 let rec infix_kwds_filter = parser
   | ((`KEYWORD "(", _) as tok); 'xs  ->
       (match xs with parser
-      |(`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+      |(`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i), _loc);
          (`KEYWORD ")", _); 'xs  ->
            {:stream| (`Lid i, _loc); '(infix_kwds_filter xs) |}
       |  'xs  ->
