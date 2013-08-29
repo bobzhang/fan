@@ -67,7 +67,13 @@ let dump_cltdecl         = ref (fun _ -> failwith "Ast2pt.dump_cltdecl not imple
 let dump_clsigi          = ref (fun _ -> failwith "Ast2pt.dump_clsigi not implemented")
 let dump_clexp           = ref (fun _ -> failwith "Ast2pt.dump_clexp not implemented")
 let dump_clfield         = ref (fun _ -> failwith "Ast2pt.dump_clfield not implemented")
-      
+
+let ant_error loc = error loc "antiquotation not expected here"
+
+let generate_type_code :
+    (FAst.loc -> FAst.typedecl -> FAst.strings -> FAst.stru) ref =
+  ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
+
 
 (* let ident_of_exp = FanOps.ident_of_exp;; *)
 let ident_of_exp : exp -> ident =
@@ -86,7 +92,7 @@ let ident_of_exp : exp -> ident =
     | t -> self t 
         
 
-let ant_error loc = error loc "antiquotation not expected here";; 
+
 
 let rec normalize_acc (x:FAst.ident) : FAst.exp=
   match x with 
@@ -1171,25 +1177,8 @@ and stru (s:stru) (l:structure) : structure =
   | `Type (loc,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
   | `TypeWith(_loc,tdl, ns) ->
       (* FIXME all traversal needs to deal with TypeWith later .. *)
-      let x : FAst.stru = `Type(_loc,tdl)  in
-      let ns = list_of_app ns [ ] in
-      let filters =
-        List.map (function
-        |`Str(sloc,n) ->
-            (try let p = Hashtbl.find Typehook.filters n in fun ()  -> (n, p)
-            with  Not_found  -> (fun ()  -> FLoc.errorf sloc "%s not found" n)) ()
-            
-        | `Ant _ -> ant_error _loc
-        | _ -> assert false ) ns in
-      let code =
-        Ref.protect2
-        (FState.current_filters, filters)
-        (FState.keep, false)
-        (fun _  ->
-          match (Typehook.traversal ())#mexp (`Struct(_loc,x): FAst.mexp) with
-          | (`Struct(_loc,s):FAst.mexp) -> s
-          | _ -> assert false) in
-      stru (`Sem(_loc,x,code)) l
+      stru (!generate_type_code _loc tdl ns) l
+      (* stru (`Sem(_loc,x,code)) l *)
 
   | `Value (loc,rf,bi) ->
       mkstr loc (Pstr_value (mkrf rf,bind bi [])) :: l

@@ -2,7 +2,7 @@ open LibUtil
 open Format
 
 open FSigUtil  
-
+open Ast_basic
 
 (** A Hook To FAst Filters *)
 (* type plugin_name = string  *)
@@ -163,3 +163,27 @@ end
 
 
 
+let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru = 
+  let x : FAst.stru = `Type(_loc,tdl)  in
+  let ns = list_of_app ns [ ] in
+  let filters =
+    List.map (function
+      |`Str(sloc,n) ->
+          (try let p = Hashtbl.find filters n in fun ()  -> (n, p)
+          with  Not_found  -> (fun ()  -> FLoc.errorf sloc "%s not found" n)) ()
+            
+      | `Ant _ -> FLoc.raise _loc (Failure"antiquotation not expected here")
+      | _ -> assert false ) ns in
+  let code =
+    Ref.protect2
+      (FState.current_filters, filters)
+      (FState.keep, false)
+      (fun _  ->
+        match (traversal ())#mexp (`Struct(_loc,x): FAst.mexp) with
+        | (`Struct(_loc,s):FAst.mexp) -> s
+        | _ -> assert false) in
+  `Sem(_loc,x,code) 
+
+let () = begin
+  Ast2pt.generate_type_code := genenrate_type_code
+end
