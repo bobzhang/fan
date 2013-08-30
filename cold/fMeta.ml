@@ -1176,14 +1176,17 @@ class meta =
                      (`App
                         (_loc, (`Vrn (_loc, "While")), (self#loc _loc _a0))),
                      (self#exp _loc _a1))), (self#exp _loc _a2))
-        | `LetOpen (_a0,_a1,_a2) ->
+        | `LetOpen (_a0,_a1,_a2,_a3) ->
             `App
               (_loc,
                 (`App
                    (_loc,
                      (`App
-                        (_loc, (`Vrn (_loc, "LetOpen")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#exp _loc _a2))
+                        (_loc,
+                          (`App
+                             (_loc, (`Vrn (_loc, "LetOpen")),
+                               (self#loc _loc _a0))), (self#flag _loc _a1))),
+                     (self#ident _loc _a2))), (self#exp _loc _a3))
         | `LocalTypeFun (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1343,11 +1346,13 @@ class meta =
                         (_loc, (`Vrn (_loc, "Directive")),
                           (self#loc _loc _a0))), (self#alident _loc _a1))),
                 (self#exp _loc _a2))
-        | `Open (_a0,_a1) ->
+        | `Open (_a0,_a1,_a2) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Open")), (self#loc _loc _a0))),
-                (self#ident _loc _a1))
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Open")), (self#loc _loc _a0))),
+                     (self#flag _loc _a1))), (self#ident _loc _a2))
         | `Include (_a0,_a1) ->
             `App
               (_loc,
@@ -1623,11 +1628,13 @@ class meta =
                         (_loc, (`Vrn (_loc, "ModuleType")),
                           (self#loc _loc _a0))), (self#auident _loc _a1))),
                 (self#mtyp _loc _a2))
-        | `Open (_a0,_a1) ->
+        | `Open (_a0,_a1,_a2) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "Open")), (self#loc _loc _a0))),
-                (self#ident _loc _a1))
+                (`App
+                   (_loc,
+                     (`App (_loc, (`Vrn (_loc, "Open")), (self#loc _loc _a0))),
+                     (self#flag _loc _a1))), (self#ident _loc _a2))
         | `Type (_a0,_a1) ->
             `App
               (_loc,

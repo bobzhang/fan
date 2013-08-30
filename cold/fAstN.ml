@@ -93,8 +93,9 @@ and exp =
   | `OvrInst of rec_exp | `OvrInstEmpty | `Seq of exp
   | `Send of (exp* alident) | `StringDot of (exp* exp) | `Try of (exp* case)
   | `Constraint of (exp* ctyp) | `Coercion of (exp* ctyp* ctyp)
-  | `Subtype of (exp* ctyp) | `While of (exp* exp) | `LetOpen of (ident* exp)
-  | `LocalTypeFun of (alident* exp) | `Package_exp of mexp] 
+  | `Subtype of (exp* ctyp) | `While of (exp* exp)
+  | `LetOpen of (flag* ident* exp) | `LocalTypeFun of (alident* exp)
+  | `Package_exp of mexp] 
 and rec_exp =
   [ `Sem of (rec_exp* rec_exp) | `RecBind of (ident* exp) | any | ant] 
 and mtyp =
@@ -106,7 +107,7 @@ and sigi =
   | `ClassType of cltdecl | `Module of (auident* mtyp)
   | `ModuleTypeEnd of auident | `ModuleType of (auident* mtyp)
   | `Sem of (sigi* sigi) | `DirectiveSimple of alident
-  | `Directive of (alident* exp) | `Open of ident | `Include of mtyp
+  | `Directive of (alident* exp) | `Open of (flag* ident) | `Include of mtyp
   | `RecModule of mbind | ant] 
 and mbind =
   [ `And of (mbind* mbind) | `ModuleBind of (auident* mtyp* mexp)
@@ -129,8 +130,9 @@ and stru =
   | `Exception of of_ctyp | `StExp of exp
   | `External of (alident* ctyp* strings) | `Include of mexp
   | `Module of (auident* mexp) | `RecModule of mbind
-  | `ModuleType of (auident* mtyp) | `Open of ident | `Type of typedecl
-  | `TypeWith of (typedecl* strings) | `Value of (flag* bind) | ant] 
+  | `ModuleType of (auident* mtyp) | `Open of (flag* ident)
+  | `Type of typedecl | `TypeWith of (typedecl* strings)
+  | `Value of (flag* bind) | ant] 
 and cltdecl =
   [ `And of (cltdecl* cltdecl)
   | `CtDecl of (flag* ident* type_parameters* cltyp)

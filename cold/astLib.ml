@@ -137,7 +137,7 @@ let loc_of =
   | `Eq (_loc,_,_) -> _loc
   | `LetTryInWith (_loc,_,_,_,_) -> _loc
   | `LetModule (_loc,_,_,_) -> _loc
-  | `LetOpen (_loc,_,_) -> _loc
+  | `LetOpen (_loc,_,_,_) -> _loc
   | `PolyInf (_loc,_) -> _loc
   | `StringDot (_loc,_,_) -> _loc
   | `For (_loc,_,_,_,_,_) -> _loc
@@ -153,7 +153,7 @@ let loc_of =
   | `PackageModule (_loc,_) -> _loc
   | `PolyEq (_loc,_) -> _loc
   | `Bar (_loc,_,_) -> _loc
-  | `Open (_loc,_) -> _loc
+  | `Open (_loc,_,_) -> _loc
   | `ObjTyEnd (_loc,_) -> _loc
   | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc

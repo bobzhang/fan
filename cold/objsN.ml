@@ -501,9 +501,9 @@ and pp_print_exp: Format.formatter -> exp -> unit =
     | `While (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`While@ %a@ %a)@]" pp_print_exp _a0
           pp_print_exp _a1
-    | `LetOpen (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a)@]" pp_print_ident _a0
-          pp_print_exp _a1
+    | `LetOpen (_a0,_a1,_a2) ->
+        Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" pp_print_flag _a0
+          pp_print_ident _a1 pp_print_exp _a2
     | `LocalTypeFun (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a)@]" pp_print_alident
           _a0 pp_print_exp _a1
@@ -569,7 +569,9 @@ and pp_print_sigi: Format.formatter -> sigi -> unit =
     | `Directive (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Directive@ %a@ %a)@]" pp_print_alident _a0
           pp_print_exp _a1
-    | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" pp_print_ident _a0
+    | `Open (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" pp_print_flag _a0
+          pp_print_ident _a1
     | `Include _a0 ->
         Format.fprintf fmt "@[<1>(`Include@ %a)@]" pp_print_mtyp _a0
     | `RecModule _a0 ->
@@ -684,7 +686,9 @@ and pp_print_stru: Format.formatter -> stru -> unit =
     | `ModuleType (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" pp_print_auident
           _a0 pp_print_mtyp _a1
-    | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" pp_print_ident _a0
+    | `Open (_a0,_a1) ->
+        Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" pp_print_flag _a0
+          pp_print_ident _a1
     | `Type _a0 ->
         Format.fprintf fmt "@[<1>(`Type@ %a)@]" pp_print_typedecl _a0
     | `TypeWith (_a0,_a1) ->
@@ -1360,9 +1364,9 @@ class print =
         | `While (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`While@ %a@ %a)@]" self#exp _a0
               self#exp _a1
-        | `LetOpen (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a)@]" self#ident _a0
-              self#exp _a1
+        | `LetOpen (_a0,_a1,_a2) ->
+            Format.fprintf fmt "@[<1>(`LetOpen@ %a@ %a@ %a)@]" self#flag _a0
+              self#ident _a1 self#exp _a2
         | `LocalTypeFun (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`LocalTypeFun@ %a@ %a)@]" self#alident
               _a0 self#exp _a1
@@ -1428,7 +1432,9 @@ class print =
         | `Directive (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Directive@ %a@ %a)@]" self#alident _a0
               self#exp _a1
-        | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
+        | `Open (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" self#flag _a0
+              self#ident _a1
         | `Include _a0 ->
             Format.fprintf fmt "@[<1>(`Include@ %a)@]" self#mtyp _a0
         | `RecModule _a0 ->
@@ -1543,7 +1549,9 @@ class print =
         | `ModuleType (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ModuleType@ %a@ %a)@]" self#auident
               _a0 self#mtyp _a1
-        | `Open _a0 -> Format.fprintf fmt "@[<1>(`Open@ %a)@]" self#ident _a0
+        | `Open (_a0,_a1) ->
+            Format.fprintf fmt "@[<1>(`Open@ %a@ %a)@]" self#flag _a0
+              self#ident _a1
         | `Type _a0 ->
             Format.fprintf fmt "@[<1>(`Type@ %a)@]" self#typedecl _a0
         | `TypeWith (_a0,_a1) ->
@@ -2154,9 +2162,10 @@ class map =
       | `While (_a0,_a1) ->
           let _a0 = self#exp _a0 in
           let _a1 = self#exp _a1 in `While (_a0, _a1)
-      | `LetOpen (_a0,_a1) ->
-          let _a0 = self#ident _a0 in
-          let _a1 = self#exp _a1 in `LetOpen (_a0, _a1)
+      | `LetOpen (_a0,_a1,_a2) ->
+          let _a0 = self#flag _a0 in
+          let _a1 = self#ident _a1 in
+          let _a2 = self#exp _a2 in `LetOpen (_a0, _a1, _a2)
       | `LocalTypeFun (_a0,_a1) ->
           let _a0 = self#alident _a0 in
           let _a1 = self#exp _a1 in `LocalTypeFun (_a0, _a1)
@@ -2214,7 +2223,9 @@ class map =
       | `Directive (_a0,_a1) ->
           let _a0 = self#alident _a0 in
           let _a1 = self#exp _a1 in `Directive (_a0, _a1)
-      | `Open _a0 -> let _a0 = self#ident _a0 in `Open _a0
+      | `Open (_a0,_a1) ->
+          let _a0 = self#flag _a0 in
+          let _a1 = self#ident _a1 in `Open (_a0, _a1)
       | `Include _a0 -> let _a0 = self#mtyp _a0 in `Include _a0
       | `RecModule _a0 -> let _a0 = self#mbind _a0 in `RecModule _a0
       | #ant as _a0 -> (self#ant _a0 : ant  :>sigi)
@@ -2317,7 +2328,9 @@ class map =
       | `ModuleType (_a0,_a1) ->
           let _a0 = self#auident _a0 in
           let _a1 = self#mtyp _a1 in `ModuleType (_a0, _a1)
-      | `Open _a0 -> let _a0 = self#ident _a0 in `Open _a0
+      | `Open (_a0,_a1) ->
+          let _a0 = self#flag _a0 in
+          let _a1 = self#ident _a1 in `Open (_a0, _a1)
       | `Type _a0 -> let _a0 = self#typedecl _a0 in `Type _a0
       | `TypeWith (_a0,_a1) ->
           let _a0 = self#typedecl _a0 in
@@ -2788,7 +2801,9 @@ class fold =
           let self = self#ctyp _a1 in self#ctyp _a2
       | `Subtype (_a0,_a1) -> let self = self#exp _a0 in self#ctyp _a1
       | `While (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
-      | `LetOpen (_a0,_a1) -> let self = self#ident _a0 in self#exp _a1
+      | `LetOpen (_a0,_a1,_a2) ->
+          let self = self#flag _a0 in
+          let self = self#ident _a1 in self#exp _a2
       | `LocalTypeFun (_a0,_a1) ->
           let self = self#alident _a0 in self#exp _a1
       | `Package_exp _a0 -> self#mexp _a0
@@ -2825,7 +2840,7 @@ class fold =
       | `Sem (_a0,_a1) -> let self = self#sigi _a0 in self#sigi _a1
       | `DirectiveSimple _a0 -> self#alident _a0
       | `Directive (_a0,_a1) -> let self = self#alident _a0 in self#exp _a1
-      | `Open _a0 -> self#ident _a0
+      | `Open (_a0,_a1) -> let self = self#flag _a0 in self#ident _a1
       | `Include _a0 -> self#mtyp _a0
       | `RecModule _a0 -> self#mbind _a0
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -2886,7 +2901,7 @@ class fold =
       | `Module (_a0,_a1) -> let self = self#auident _a0 in self#mexp _a1
       | `RecModule _a0 -> self#mbind _a0
       | `ModuleType (_a0,_a1) -> let self = self#auident _a0 in self#mtyp _a1
-      | `Open _a0 -> self#ident _a0
+      | `Open (_a0,_a1) -> let self = self#flag _a0 in self#ident _a1
       | `Type _a0 -> self#typedecl _a0
       | `TypeWith (_a0,_a1) ->
           let self = self#typedecl _a0 in self#strings _a1

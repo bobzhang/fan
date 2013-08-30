@@ -14,8 +14,10 @@ open! FAst (* FIXME later*)
 open Ast_basic
 let errorf = FLoc.errorf 
 
-    (** An unsafe version introduced is mainly for reducing
-unnecessary dependency when bootstrapping *)
+(** An unsafe version introduced is mainly for reducing
+    unnecessary dependency when bootstrapping
+    relies on the fact:
+    Location.t and Lexing.position have different sizes *)
 let unsafe_loc_of node =
   let open Obj in
   let u = field (repr node) 1 in

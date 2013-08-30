@@ -503,9 +503,10 @@ and fill_exp: FLoc.t -> FAstN.exp -> FAst.exp =
     | `While (_a0,_a1) ->
         let _a0 = fill_exp loc _a0 in
         let _a1 = fill_exp loc _a1 in `While (loc, _a0, _a1)
-    | `LetOpen (_a0,_a1) ->
-        let _a0 = fill_ident loc _a0 in
-        let _a1 = fill_exp loc _a1 in `LetOpen (loc, _a0, _a1)
+    | `LetOpen (_a0,_a1,_a2) ->
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in
+        let _a2 = fill_exp loc _a2 in `LetOpen (loc, _a0, _a1, _a2)
     | `LocalTypeFun (_a0,_a1) ->
         let _a0 = fill_alident loc _a0 in
         let _a1 = fill_exp loc _a1 in `LocalTypeFun (loc, _a0, _a1)
@@ -570,7 +571,9 @@ and fill_sigi: FLoc.t -> FAstN.sigi -> FAst.sigi =
     | `Directive (_a0,_a1) ->
         let _a0 = fill_alident loc _a0 in
         let _a1 = fill_exp loc _a1 in `Directive (loc, _a0, _a1)
-    | `Open _a0 -> let _a0 = fill_ident loc _a0 in `Open (loc, _a0)
+    | `Open (_a0,_a1) ->
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Open (loc, _a0, _a1)
     | `Include _a0 -> let _a0 = fill_mtyp loc _a0 in `Include (loc, _a0)
     | `RecModule _a0 -> let _a0 = fill_mbind loc _a0 in `RecModule (loc, _a0)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.sigi)
@@ -682,7 +685,9 @@ and fill_stru: FLoc.t -> FAstN.stru -> FAst.stru =
     | `ModuleType (_a0,_a1) ->
         let _a0 = fill_auident loc _a0 in
         let _a1 = fill_mtyp loc _a1 in `ModuleType (loc, _a0, _a1)
-    | `Open _a0 -> let _a0 = fill_ident loc _a0 in `Open (loc, _a0)
+    | `Open (_a0,_a1) ->
+        let _a0 = fill_flag loc _a0 in
+        let _a1 = fill_ident loc _a1 in `Open (loc, _a0, _a1)
     | `Type _a0 -> let _a0 = fill_typedecl loc _a0 in `Type (loc, _a0)
     | `TypeWith (_a0,_a1) ->
         let _a0 = fill_typedecl loc _a0 in
@@ -1627,11 +1632,15 @@ class meta =
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "While")), (self#exp _loc _a0))),
                 (self#exp _loc _a1))
-        | `LetOpen (_a0,_a1) ->
+        | `LetOpen (_a0,_a1,_a2) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "LetOpen")), (self#ident _loc _a0))),
-                (self#exp _loc _a1))
+                (`App
+                   (_loc,
+                     (`App
+                        (_loc, (`Vrn (_loc, "LetOpen")),
+                          (self#flag _loc _a0))), (self#ident _loc _a1))),
+                (self#exp _loc _a2))
         | `LocalTypeFun (_a0,_a1) ->
             `App
               (_loc,
@@ -1733,8 +1742,11 @@ class meta =
                 (`App
                    (_loc, (`Vrn (_loc, "Directive")),
                      (self#alident _loc _a0))), (self#exp _loc _a1))
-        | `Open _a0 ->
-            `App (_loc, (`Vrn (_loc, "Open")), (self#ident _loc _a0))
+        | `Open (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Open")), (self#flag _loc _a0))),
+                (self#ident _loc _a1))
         | `Include _a0 ->
             `App (_loc, (`Vrn (_loc, "Include")), (self#mtyp _loc _a0))
         | `RecModule _a0 ->
@@ -1920,8 +1932,11 @@ class meta =
                 (`App
                    (_loc, (`Vrn (_loc, "ModuleType")),
                      (self#auident _loc _a0))), (self#mtyp _loc _a1))
-        | `Open _a0 ->
-            `App (_loc, (`Vrn (_loc, "Open")), (self#ident _loc _a0))
+        | `Open (_a0,_a1) ->
+            `App
+              (_loc,
+                (`App (_loc, (`Vrn (_loc, "Open")), (self#flag _loc _a0))),
+                (self#ident _loc _a1))
         | `Type _a0 ->
             `App (_loc, (`Vrn (_loc, "Type")), (self#typedecl _loc _a0))
         | `TypeWith (_a0,_a1) ->
