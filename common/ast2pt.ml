@@ -19,10 +19,10 @@ unnecessary dependency when bootstrapping *)
 let unsafe_loc_of node =
   let open Obj in
   let u = field (repr node) 1 in
-  let size  = Obj.size u in
-    if size = 1 then
-      (magic u : FLoc.t)
-    else
+  let s  = Obj.size u in
+    if s = 3 && size (field u 0) = 4 then
+      (magic u : FLoc.t) (* `a loc *)
+    else (* `a (loc,...)  => size (field u 0) = 3 *)
       (magic @@ field u 0 : FLoc.t)
 
 
