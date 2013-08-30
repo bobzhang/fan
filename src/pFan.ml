@@ -204,7 +204,7 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration{mb} ->  `RecModule (_loc, mb)
     | "module"; "type"; a_uident{i}; "="; mtyp{mt} -> `ModuleType(_loc,i,mt)
     | "module"; "type"; a_uident{i} -> `ModuleTypeEnd(_loc,i)
-    | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
+    | "open"; module_longident{i} -> `Open(_loc,`Negative _loc, (i: vid :> ident))
     | "type"; type_declaration{t} -> `Type(_loc,t)
 
     | "val"; a_lident{i}; ":"; ctyp{t} -> `Val(_loc,i,t)
@@ -282,7 +282,7 @@ let apply () = begin
         | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; S{e} ->
             `LetModule (_loc, m, mb, e)
         | "let"; "open"; module_longident{i}; "in"; S{e} ->
-            `LetOpen (_loc, (i:vid :> ident), e)
+            `LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)
         | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a} ->
               `LetTryInWith(_loc,r,bi,x,a)
         | "match"; S{e}; "with"; case{a} -> `Match (_loc, e, a)
@@ -387,7 +387,7 @@ let apply () = begin
         | `STR(_,s) -> `Str (_loc, s)
         | `NATIVEINT(_,s) -> `Nativeint (_loc, s)
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
-            `LetOpen (_loc, i, e)
+            `LetOpen (_loc,`Negative _loc, i, e)
         (* | TRY val_longident{i} -> {| $id:i |} *)
         (* | ident{i} -> i  (\* FIXME logic was splitted here *\) *)
         | vid{i} -> (i :vid :>exp) 
@@ -439,7 +439,7 @@ let apply () = begin
        | "let"; "module"; a_uident{m}; mbind0{mb}; "in";
            exp{e}; sequence'{k} -> k  (`LetModule (_loc, m, mb, e))
        | "let"; "open"; module_longident{i}; "in"; S{e} ->
-           `LetOpen (_loc, (i: vid :> ident), e)
+           `LetOpen (_loc, `Negative _loc, (i: vid :> ident), e)
        (* FIXME Ant should be able to be followed *)      
        | exp{e}; sequence'{k} -> k e ]
        sequence':
@@ -958,7 +958,7 @@ let apply () = begin
         | "module"; "rec"; mbind{mb} -> `RecModule(_loc,mb)
         | "module"; "type"; a_uident{i}; "="; mtyp{mt} ->
             `ModuleType(_loc,i,mt)
-        | "open"; module_longident{i} -> `Open(_loc,(i: vid :> ident))
+        | "open"; module_longident{i} -> `Open(_loc, `Negative _loc , (i: vid :> ident))
         | "type"; type_declaration{td} -> `Type(_loc,td)
         | "type"; type_declaration{t};"with"; "("; string_list{ns};")" ->
             `TypeWith (_loc,t,ns)              
@@ -971,8 +971,9 @@ let apply () = begin
         | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; exp{e} ->
               {| let module $m = $mb in $e |}
         | "let"; "open"; module_longident{i}; "in"; exp{e} ->
-            let i = (i:vid :> ident) in 
-            {| let open $id:i in $e |}
+            let i = (i:vid :> ident) in
+             (`StExp (_loc, (`LetOpen (_loc,`Negative _loc, i, e))) : FAst.stru )
+            (* {| let open $id:i in $e |} *)
         | "let"; "try"; opt_rec{r}; bind{bi}; "in"; exp{x}; "with"; case{a}
           -> `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))
         | "class"; class_declaration{cd} ->  `Class(_loc,cd)

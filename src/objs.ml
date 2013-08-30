@@ -1,4 +1,3 @@
-
 open StdFan
 open FAst
 let strip_ant ant = ant ;;

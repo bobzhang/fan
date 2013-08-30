@@ -110,6 +110,12 @@ let mkvirtual  (x:FAst.flag)  : Asttypes.virtual_flag =
   | `Negative _  -> Concrete
   | `Ant (_loc,_) -> ant_error _loc 
 
+let flag loc (x:flag) =
+  match x with
+  | `Positive _ -> Override
+  | `Negative _  -> Fresh
+  |  _ -> error loc "antiquotation not allowed here" 
+
 let mkdirection (x: FAst.flag) : Asttypes.direction_flag =
   match x with 
   | `Positive _ -> Upto
@@ -592,11 +598,6 @@ let rec pat (x : pat) : Parsetree.pattern =
          (mkpat sloc (Ppat_unpack (with_loc m sloc)), ctyp ty))
   | p -> errorf _loc "invalid pattern %s" @@ !dump_pat p
 
-let flag loc (x:flag) =
-  match x with
-  | `Positive _ -> Override
-  | `Negative _  -> Fresh
-  |  _ -> error loc "antiquotation not allowed here" 
 
 (**
    The input is either {|$_.$_|} or {|$(id:{:ident| $_.$_|})|}
@@ -620,11 +621,13 @@ let flag loc (x:flag) =
      - : (loc * string list * exp) list =
      [(, [""], ExId (, Lid (, "i")))]  ]} *)
 
-let rec exp (x : exp) =
+let rec exp (x : exp) : Parsetree.expression =
+  let _loc = unsafe_loc_of x in
   match x with 
-  | `Field(_loc,_,_)| `Dot (_loc,_,_)->
+  | `Field(_,_,_)| `Dot (_,_,_)->
     let (e, l) =
-      let rec sep_dot_exp acc : exp -> (loc * string list  * exp ) list = function
+      let rec sep_dot_exp acc (x: exp) : (loc * string list  * exp ) list =
+        match x with
         | `Field(_,e1,e2) ->
           sep_dot_exp (sep_dot_exp acc e2) e1
         | (`Dot(_l,_,_) as i) ->
@@ -651,7 +654,7 @@ let rec exp (x : exp) =
            | _ -> error (unsafe_loc_of e2) "lowercase identifier expected" )
         (_loc, e) l in e
 
-  | `App (loc, _, _) as f ->
+  | `App _ as f ->
     let (f, al) = view_app [] f in
     let al = List.map label_exp al in
     begin match (exp f).pexp_desc with
@@ -660,32 +663,32 @@ let rec exp (x : exp) =
         let a =
           match al with
           | [a] -> a
-          | _ -> mkexp loc (Pexp_tuple al)  in
-        mkexp loc (Pexp_construct (li, (Some a), false))
+          | _ -> mkexp _loc (Pexp_tuple al)  in
+        mkexp _loc (Pexp_construct (li, (Some a), false))
       | Pexp_variant (s, None) ->
         let al = List.map snd al in
         let a =
           match al with
           | [a] -> a
-          | _ -> mkexp loc (Pexp_tuple al) in
-        mkexp loc (Pexp_variant (s, (Some a)))
-      | _ -> mkexp loc (Pexp_apply ((exp f), al))
+          | _ -> mkexp _loc (Pexp_tuple al) in
+        mkexp _loc (Pexp_variant (s, (Some a)))
+      | _ -> mkexp _loc @@ Pexp_apply (exp f, al)
     end
-  | `ArrayDot (loc, e1, e2) ->
-    mkexp loc
+  | `ArrayDot (_, e1, e2) ->
+    mkexp _loc
       (Pexp_apply
-         ((mkexp loc (Pexp_ident (array_function loc "Array" "get"))),
+         (mkexp _loc @@ Pexp_ident (array_function _loc "Array" "get"),
           [("", exp e1); ("", exp e2)]))
   | `Array (loc,e) -> mkexp loc
                         (Pexp_array
                            (List.map exp (list_of_sem e []))) (* be more precise*)
-  | `ArrayEmpty loc -> mkexp loc (Pexp_array [])
-  | `Assert(_loc,`Lid(_,"false")) -> mkexp _loc Pexp_assertfalse
-  | `Assert(_loc,e) -> mkexp _loc (Pexp_assert (exp e)) 
-  | `Assign (loc,e,v) ->   (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
+  | `ArrayEmpty _ -> mkexp _loc (Pexp_array [])
+  | `Assert(_,`Lid(_,"false")) -> mkexp _loc Pexp_assertfalse
+  | `Assert(_,e) -> mkexp _loc (Pexp_assert (exp e)) 
+  | `Assign (_,e,v) ->   (* {:exp| $e :=  $v|} *) (* FIXME refine to differentiate *)
     let e =
-      match e with
-      | (`Field (loc,x,`Lid (_,"contents")) : FAst.exp) ->
+      match (e:exp) with
+      | `Field (loc,x,`Lid (_,"contents")) ->
         Pexp_apply
           ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
            [("", (exp x)); ("", (exp v))])
@@ -698,122 +701,125 @@ let rec exp (x : exp) =
           ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
            [("", exp e1); ("", exp e2); ("", exp v)])
       | `Lid(lloc,lab)  ->
-        Pexp_setinstvar ((with_loc lab lloc), (exp v))
+        Pexp_setinstvar (with_loc lab lloc, exp v)
       | `StringDot (loc, e1, e2) ->
         Pexp_apply
           ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
            [("", exp e1); ("", exp e2); ("", exp v)])
-      | x -> errorf loc "bad left part of assignment:%s" (!dump_exp x)  in
-    mkexp loc e
-  | `Chr (loc,s) ->
-    mkexp loc (Pexp_constant (Const_char (TokenEval.char_of_char_token loc s)))
-  | `Subtype (loc,e,t2) ->
-    mkexp loc (Pexp_constraint ((exp e), None, (Some (ctyp t2))))
-  | `Coercion (loc, e, t1, t2) ->
+      | x -> errorf _loc "bad left part of assignment:%s" (!dump_exp x)  in
+    mkexp _loc e
+  | `Chr (_,s) ->
+    mkexp _loc (Pexp_constant (Const_char (TokenEval.char_of_char_token _loc s)))
+  | `Subtype (_,e,t2) ->
+    mkexp _loc (Pexp_constraint (exp e, None, (Some (ctyp t2))))
+  | `Coercion (_, e, t1, t2) ->
     let t1 = Some (ctyp t1) in
-    mkexp loc (Pexp_constraint ((exp e), t1, (Some (ctyp t2))))
-  | `Flo (loc,s) -> mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
-  | `For (loc, `Lid(sloc,i), e1, e2, df, el) ->
-    let e3 = `Seq (loc, el) in
-    mkexp loc
+    mkexp _loc (Pexp_constraint (exp e, t1, (Some (ctyp t2))))
+  | `Flo (_,s) -> mkexp _loc (Pexp_constant (Const_float (remove_underscores s)))
+  | `For (_loc, `Lid(sloc,i), e1, e2, df, el) ->
+    let e3 = `Seq (_loc, el) in
+    mkexp _loc
       (Pexp_for
          (with_loc i sloc,
           exp e1, exp e2, mkdirection df, exp e3))
-  | `Fun(loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
-    mkexp loc
-      (Pexp_function (lab, None, [(pat (`Lid(sloc,lab)),exp e)]))
-  | `Fun(loc,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
-    mkexp loc
-      (Pexp_function (lab, None, [(pat po, exp e)]))
-  | `Fun(loc,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
-    mkexp loc
-      (Pexp_function
+  | `Fun(_loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
+    mkexp _loc @@
+      Pexp_function (lab, None, [(pat (`Lid(sloc,lab)),exp e)])
+  | `Fun(_,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
+    mkexp _loc @@
+      Pexp_function (lab, None, [(pat po, exp e)])
+  | `Fun(_,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
+    mkexp _loc @@
+      Pexp_function
          (lab, None,
           [(pat (`Lid(sloc,lab)),
-            mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))]))
+            mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))])
 
-  | `Fun(loc,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
-    mkexp loc
-      (Pexp_function (lab, None,
+  | `Fun(_,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
+    mkexp _loc @@
+      Pexp_function (lab, None,
                       [(pat po,
-                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e)))]))
-  | `Fun (loc,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
-    mkexp loc
-      (Pexp_function (("?"^lab), None, [(pat (`Lid(sloc,lab)), exp e2)]))
-  | `Fun (loc,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
+                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e)))])
+  | `Fun (_,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
+    mkexp _loc @@
+      Pexp_function ("?"^lab, None, [(pat (`Lid(sloc,lab)), exp e2)])
+  | `Fun (_,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
     let lab = paolab lab p in
-    mkexp loc
-      (Pexp_function
-         (("?" ^ lab), None,
-          [(pat p,
-            exp e2)]))
-  | `Fun (loc,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
-    mkexp loc
-      (Pexp_function
+    mkexp _loc @@
+      Pexp_function
+         ("?" ^ lab, None, [(pat p, exp e2)])
+  | `Fun (_,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
+    mkexp _loc @@
+      Pexp_function
          (("?" ^ lab), None,
           [(pat (`Lid(sloc,lab)),
-            mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))]))
+            mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
 
-  | `Fun (loc,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
+  | `Fun (_,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
     let lab = paolab lab p in
-    mkexp loc
-      (Pexp_function
+    mkexp _loc @@
+      Pexp_function
          (("?" ^ lab), None,
           [( pat p,
-             mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))]))
-  | `Fun (loc,`Case(_,`OptLablExpr(_,`Lid(_,lab),p,e1),e2)) -> 
-    let lab = paolab lab p in
-    mkexp loc
-      (Pexp_function ("?" ^ lab,Some (exp e1),[(pat p,exp e2)]))
-  | `Fun (loc,`CaseWhen(_,`OptLablExpr(_,`Lid(_,lab),p,e1),w,e2)) -> 
-    let lab = paolab lab p in
-    mkexp loc
-      (Pexp_function ("?" ^ lab,Some (exp e1),
-                      [(pat p,
-                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))]))
+             mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
 
-  | `Fun (loc,a) -> mkexp loc (Pexp_function ("", None ,case a ))
-  | `IfThenElse (loc, e1, e2, e3) ->
-    mkexp loc (Pexp_ifthenelse (exp e1,exp e2,Some (exp e3)))
-  | `IfThen (loc,e1,e2) ->
-    mkexp loc (Pexp_ifthenelse (exp e1,exp e2, None))
-  | `Int (loc,s) ->
-    let i = try int_of_string s with 
-        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int"
-    in
-    mkexp loc (Pexp_constant (Const_int i))
-  | `Int32 (loc, s) ->
-    let i32 = try Int32.of_string s with 
-        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int32"
-    in mkexp loc (Pexp_constant (Const_int32 i32))
-  | `Int64 (loc, s) ->
+  | `Fun (_,`Case(_,`OptLablExpr(_,`Lid(_,lab),p,e1),e2)) -> 
+    let lab = paolab lab p in
+    mkexp _loc @@
+      Pexp_function ("?" ^ lab,Some (exp e1),[(pat p,exp e2)])
+
+  | `Fun (_,`CaseWhen(_,`OptLablExpr(_,`Lid(_,lab),p,e1),w,e2)) -> 
+    let lab = paolab lab p in
+    mkexp _loc @@
+      Pexp_function ("?" ^ lab,Some (exp e1),
+                      [(pat p,
+                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
+
+  | `Fun (_,a) -> mkexp _loc (Pexp_function ("", None ,case a ))
+
+  | `IfThenElse (_, e1, e2, e3) ->
+    mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2,Some (exp e3))
+
+  | `IfThen (_,e1,e2) ->
+    mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2, None)
+  | `Int (_,s) ->
+    let i =
+      try int_of_string s with Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int"
+    in mkexp _loc (Pexp_constant (Const_int i))
+  | `Int32 (_, s) ->
+    let i32 =
+      try Int32.of_string s with 
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int32"
+    in mkexp _loc (Pexp_constant (Const_int32 i32))
+  | `Int64 (_, s) ->
     let i64 = try Int64.of_string s with 
-        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type int64"
-    in mkexp loc (Pexp_constant (Const_int64 i64))
-  | `Nativeint (loc,s) ->
-    let nati = try Nativeint.of_string s with 
-        Failure _ -> error loc "Integer literal exceeds the range of representable integers of type nativeint"
-    in mkexp loc (Pexp_constant (Const_nativeint nati))
-  | `Any (_loc) -> errorf _loc "Any should not appear in the position of expression"
-  | `Label (loc,_,_) | `LabelS(loc,_) -> error loc "labeled expression not allowed here"
-  | `Lazy (loc,e) -> mkexp loc (Pexp_lazy (exp e))
-  | `LetIn (loc,rf,bi,e) ->
-    mkexp loc (Pexp_let (mkrf rf,bind bi [], exp e))
-  | `LetTryInWith(_loc,rf,bi,e,cas) ->
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int64"
+    in mkexp _loc (Pexp_constant (Const_int64 i64))
+  | `Nativeint (_,s) ->
+    let nati =
+      try Nativeint.of_string s with 
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type nativeint"
+    in mkexp _loc (Pexp_constant (Const_nativeint nati))
+  | `Any _ -> errorf _loc "Any should not appear in the position of expression"
+  | `Label _ | `LabelS _ -> error _loc "labeled expression not allowed here"
+  | `Lazy (_loc,e) -> mkexp _loc @@ Pexp_lazy (exp e)
+  | `LetIn (_,rf,bi,e) ->
+    mkexp _loc @@ Pexp_let (mkrf rf,bind bi [], exp e)
+  | `LetTryInWith(_,rf,bi,e,cas) ->
     let cas =
-      let rec f x =
+      let rec f (x:case)  : case=
         match x with
-        | (`Case (_loc,p,e) : FAst.case) ->
-          (`Case
-             (_loc, p, (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
-             FAst.case )
-        | (`CaseWhen (_loc,p,c,e) : FAst.case) ->
-          (`CaseWhen
-             (_loc, p, c,
-              (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) : 
-             FAst.case )
-        | (`Bar (_loc,a1,a2) : FAst.case) ->
-          (`Bar (_loc, (f a1), (f a2)) : FAst.case )
+        | `Case (_loc,p,e)  ->
+          `Case (_loc, p, `Fun (_loc, (`Case (_loc, `Uid (_loc, "()"), e))))
+        | `CaseWhen (_loc,p,c,e) -> 
+          `CaseWhen
+            (_loc, p, c,
+              (`Fun (_loc, (`Case (_loc, (`Uid (_loc, "()")), e))))) 
+        | `Bar (_loc,a1,a2) -> `Bar (_loc, f a1, f a2)
         | `Ant (_loc,_) -> ant_error _loc in
       f cas in  
     exp
@@ -828,36 +834,40 @@ let rec exp (x : exp) =
   (* {:exp| *)
   (*  (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |} *)
 
-  | `LetModule (loc,`Uid(sloc,i),me,e) ->
-    mkexp loc (Pexp_letmodule (with_loc i sloc,mexp me,exp e))
-  | `Match (loc,e,a) -> mkexp loc (Pexp_match (exp e,case a (* [] *)))
-  | `New (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
+  | `LetModule (_,`Uid(sloc,i),me,e) ->
+    mkexp _loc (Pexp_letmodule (with_loc i sloc,mexp me,exp e))
 
-  | `ObjEnd(loc) ->
-    mkexp loc (Pexp_object{pcstr_pat= pat (`Any loc); pcstr_fields=[]})
-  | `Obj(loc,cfl) ->
-    let p = `Any loc in 
-    let cil = clfield cfl [] in
-    mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
-  | `ObjPatEnd(loc,p) ->
-    mkexp loc (Pexp_object{pcstr_pat=pat p; pcstr_fields=[]})
+  | `Match (_,e,a) -> mkexp _loc (Pexp_match (exp e,case a ))
 
-  | `ObjPat (loc,p,cfl) ->
+  | `New (_,id) -> mkexp _loc (Pexp_new (long_type_ident id))
+
+  | `ObjEnd _ ->
+    mkexp _loc (Pexp_object{pcstr_pat= pat (`Any _loc); pcstr_fields=[]})
+
+  | `Obj(_,cfl) ->
+    let p = `Any _loc in 
     let cil = clfield cfl [] in
-    mkexp loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
-  | `OvrInstEmpty(loc) -> mkexp loc (Pexp_override [])
-  | `OvrInst (loc,iel) ->
+    mkexp _loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
+  | `ObjPatEnd(_,p) ->
+    mkexp _loc (Pexp_object{pcstr_pat=pat p; pcstr_fields=[]})
+
+  | `ObjPat (_,p,cfl) ->
+    let cil = clfield cfl [] in
+    mkexp _loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
+      
+  | `OvrInstEmpty _ -> mkexp _loc (Pexp_override [])
+  | `OvrInst (_,iel) ->
     let rec mkideexp (x:rec_exp) acc  = 
       match x with 
       |`Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
       | `RecBind(_,`Lid(sloc,s),e) -> (with_loc s sloc, exp e) :: acc
       | _ -> assert false  in
-    mkexp loc (Pexp_override (mkideexp iel []))
-  | `Record (loc,lel) ->
-    mkexp loc (Pexp_record (mklabexp lel, None))
-  | `RecordWith(loc,lel,eo) ->
-    mkexp loc (Pexp_record (mklabexp lel,Some (exp eo)))
-  | `Seq (_loc,e) ->
+    mkexp _loc (Pexp_override (mkideexp iel []))
+  | `Record (_,lel) ->
+    mkexp _loc (Pexp_record (mklabexp lel, None))
+  | `RecordWith(_loc,lel,eo) ->
+    mkexp _loc (Pexp_record (mklabexp lel,Some (exp eo)))
+  | `Seq (_,e) ->
     let rec loop = function
       | [] -> exp (`Uid (_loc, "()") : FAst.exp )
       | [e] -> exp e
@@ -865,58 +875,57 @@ let rec exp (x : exp) =
         let _loc = FLoc.merge (unsafe_loc_of e) _loc in
         mkexp _loc (Pexp_sequence (exp e,loop el))  in
     loop (list_of_sem e []) 
-  | `Send (loc,e,`Lid(_,s)) ->
-    mkexp loc (Pexp_send (exp e, s))
+  | `Send (_,e,`Lid(_,s)) ->
+    mkexp _loc (Pexp_send (exp e, s))
 
-  | `StringDot (loc, e1, e2) ->
-    mkexp loc
+  | `StringDot (_, e1, e2) ->
+    mkexp _loc
       (Pexp_apply
-         (mkexp loc (Pexp_ident (array_function loc "String" "get")),
+         (mkexp _loc (Pexp_ident (array_function _loc "String" "get")),
           [("", exp e1); ("", exp e2)]))
-  | `Str (loc,s) ->
-    mkexp loc (Pexp_constant (Const_string (TokenEval.string_of_string_token loc s)))
-  | `Try (loc,e,a) -> mkexp loc (Pexp_try (exp e,case a ))
-  | `Par (loc,e) ->
+  | `Str (_,s) ->
+    mkexp _loc @@ Pexp_constant (Const_string (TokenEval.string_of_string_token _loc s))
+  | `Try (_,e,a) -> mkexp _loc @@ Pexp_try (exp e,case a )
+  | `Par (_,e) ->
     let l = list_of_com e [] in
     begin match l with
       | []
-      | [_] -> errorf loc "tuple should have at least two items" (!dump_exp x)
+      | [_] -> errorf _loc "tuple should have at least two items" (!dump_exp x)
       | _ -> 
-        mkexp loc (Pexp_tuple (List.map exp l))
+        mkexp _loc (Pexp_tuple (List.map exp l))
     end
-  | `Constraint (loc,e,t) -> mkexp loc (Pexp_constraint (exp e,Some (ctyp t), None))
+  | `Constraint (_,e,t) -> mkexp _loc (Pexp_constraint (exp e,Some (ctyp t), None))
 
-  | `Uid(_loc,"()")->
+  | `Uid(_,"()")->
     mkexp _loc (Pexp_construct (lident_with_loc "()" _loc, None, true))
 
-  | `Lid(_loc,("true"|"false" as s)) -> 
+  | `Lid(_,("true"|"false" as s)) -> 
     mkexp _loc (Pexp_construct (lident_with_loc s _loc,None, true))
-  | `Lid(_loc,s) ->
+  | `Lid(_,s) ->
     mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-  |  `Uid(_loc,s) ->
+  |  `Uid(_,s) ->
     mkexp _loc (Pexp_construct (lident_with_loc  s _loc, None, true))
-  | `Vrn (loc,s) -> mkexp loc (Pexp_variant  (s, None))
-  | `While (loc, e1, el) ->
-    let e2 = `Seq (loc, el) in
-    mkexp loc (Pexp_while (exp e1,exp e2))
-  | `LetOpen(_loc,i,e) ->
-    mkexp _loc (Pexp_open (Fresh, long_uident i,exp e))
-  | `Package_exp (_loc,`Constraint(_,me,pt)) -> 
+  | `Vrn (_,s) -> mkexp _loc (Pexp_variant  (s, None))
+  | `While (_, e1, el) ->
+    let e2 = `Seq (_loc, el) in
+    mkexp _loc @@ Pexp_while (exp e1,exp e2)
+  | `LetOpen(_,f, i,e) ->
+    mkexp _loc (Pexp_open (flag _loc f, long_uident i,exp e))
+  | `Package_exp (_,`Constraint(_,me,pt)) -> 
     mkexp _loc
       (Pexp_constraint
          (mkexp _loc (Pexp_pack (mexp me)),
           Some (mktyp _loc (Ptyp_package (package_type pt))), None))
-  | `Package_exp(loc,me) -> 
-    mkexp loc (Pexp_pack (mexp me))
-  | `LocalTypeFun (loc,`Lid(_,i),e) -> mkexp loc (Pexp_newtype (i, exp e))
-  | x -> errorf (unsafe_loc_of x ) "exp:%s" (!dump_exp x)
+  | `Package_exp(_,me) -> 
+    mkexp _loc @@ Pexp_pack (mexp me)
+  | `LocalTypeFun (_,`Lid(_,i),e) -> mkexp _loc @@ Pexp_newtype (i, exp e)
+  | x -> errorf _loc "exp:%s" @@ !dump_exp x
 and label_exp (x : exp) =
   match x with 
-  | `Label (_loc,`Lid(_,lab),eo) -> (lab,  exp eo)
-  | `LabelS(_loc,`Lid(sloc,lab)) -> (lab,exp (`Lid(sloc,lab)))
-  | `OptLabl (_loc,`Lid(_,lab),eo) -> ("?" ^ lab, exp eo)
-  | `OptLablS(loc,`Lid(_,lab)) ->
-    ("?"^lab, exp (`Lid(loc,lab)))
+  | `Label (_,`Lid(_,lab),eo) -> (lab,  exp eo)
+  | `LabelS(_,`Lid(sloc,lab)) -> (lab,exp (`Lid(sloc,lab)))
+  | `OptLabl (_,`Lid(_,lab),eo) -> ("?" ^ lab, exp eo)
+  | `OptLablS(loc,`Lid(_,lab)) -> ("?"^lab, exp (`Lid(loc,lab)))
   | e -> ("", exp e) 
 
 and bind (x:bind) acc =
@@ -1096,8 +1105,8 @@ and sigi (s:sigi) (l:signature) :signature =
   | `ModuleType (loc,`Uid(sloc,n),mt) ->
     let si =  Pmodtype_manifest (mtyp mt)  in
     mksig loc (Psig_modtype (with_loc n sloc, si)) :: l
-  | `Open (loc,id) ->
-    mksig loc (Psig_open (Fresh, long_uident id)) :: l
+  | `Open (loc,g,id) ->
+    mksig loc (Psig_open (flag loc g, long_uident id)) :: l
   | `Type (loc,tdl) -> mksig loc (Psig_type (mktype_decl tdl )) :: l
   | `Val (loc,`Lid(sloc,n),t) ->
     mksig loc (Psig_value (with_loc n sloc,mkvalue_desc loc t [])) :: l
@@ -1136,6 +1145,7 @@ and mexp (x:FAst.mexp)=
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (exp e))
   | t -> errorf (unsafe_loc_of t) "mexp: %s" (!dump_mexp t) 
 and stru (s:stru) (l:structure) : structure =
+  let loc = unsafe_loc_of s in
   match s with
   (* ad-hoc removing the empty statement, a more elegant way is in need*)
   | (`StExp (_, (`Uid (_, "()")))) -> l 
@@ -1143,15 +1153,14 @@ and stru (s:stru) (l:structure) : structure =
   | (`Class (loc,cd) :stru) ->
     mkstr loc (Pstr_class
                  (List.map class_info_clexp (list_of_and cd []))) :: l
-  | `ClassType (loc,ctd) ->
+  | `ClassType (_,ctd) ->
     mkstr loc (Pstr_class_type
                  (List.map class_info_cltyp (list_of_and ctd []))) :: l
 
   | `Directive _ | `DirectiveSimple _  -> l
-  | `Exception(loc,`Uid(_,s)) ->
+  | `Exception(_,`Uid(_,s)) ->
     mkstr loc (Pstr_exception (with_loc s loc, [])) :: l 
-  | `Exception (loc, `Of (_,  `Uid (_, s), t))
-    ->
+  | `Exception (_, `Of (_,  `Uid (_, s), t)) ->
     mkstr loc
       (Pstr_exception
          (with_loc s loc,
@@ -1162,30 +1171,30 @@ and stru (s:stru) (l:structure) : structure =
   (* | {@loc| exception $uid:_ of $_ = $_ |} -> *)
   (*     error loc "type in exception alias" *)
   | `Exception (_,_) -> assert false (*FIXME*)
-  | `StExp (loc,e) -> mkstr loc (Pstr_eval (exp e)) :: l
-  | `External(loc,`Lid(sloc,n),t,sl) ->
+  | `StExp (_,e) -> mkstr loc (Pstr_eval (exp e)) :: l
+  | `External(_,`Lid(sloc,n),t,sl) ->
     mkstr loc
       (Pstr_primitive
          (with_loc n sloc,
           mkvalue_desc loc t (list_of_app sl [] ))) :: l
-  | `Include (loc,me) -> mkstr loc (Pstr_include (mexp me)) :: l
-  | `Module (loc,`Uid(sloc,n),me) ->
+  | `Include (_,me) -> mkstr loc (Pstr_include (mexp me)) :: l
+  | `Module (_,`Uid(sloc,n),me) ->
     mkstr loc (Pstr_module (with_loc n sloc,mexp me)) :: l
-  | `RecModule (loc,mb) ->
+  | `RecModule (_,mb) ->
     mkstr loc (Pstr_recmodule (module_str_bind mb [])) :: l
-  | `ModuleType (loc,`Uid(sloc,n),mt) ->
+  | `ModuleType (_,`Uid(sloc,n),mt) ->
     mkstr loc (Pstr_modtype (with_loc n sloc,mtyp mt)) :: l
-  | `Open (loc,id) ->
-    mkstr loc (Pstr_open (Fresh ,long_uident id)) :: l
-  | `Type (loc,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
+  | `Open (_,g,id) ->
+    mkstr loc (Pstr_open (flag loc g ,long_uident id)) :: l
+  | `Type (_,tdl) -> mkstr loc (Pstr_type (mktype_decl tdl )) :: l
   | `TypeWith(_loc,tdl, ns) ->
     (* FIXME all traversal needs to deal with TypeWith later .. *)
     stru (!generate_type_code _loc tdl ns) l
   (* stru (`Sem(_loc,x,code)) l *)
 
-  | `Value (loc,rf,bi) ->
+  | `Value (_,rf,bi) ->
     mkstr loc (Pstr_value (mkrf rf,bind bi [])) :: l
-  | x-> errorf (unsafe_loc_of x) "stru : %s" (!dump_stru x) 
+  | x-> errorf loc "stru : %s" (!dump_stru x) 
 and cltyp (x:FAst.cltyp) =
   match x with
   | `ClApply(loc, id, tl) -> 

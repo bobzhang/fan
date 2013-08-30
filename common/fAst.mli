@@ -347,8 +347,9 @@ and exp =
   | `Coercion of (loc * exp * ctyp * ctyp) (* or (e : t :> t) *)
   | `Subtype of (loc * exp * ctyp) (* (e :> t) *)
   | `While of (loc * exp * exp)
-  | `LetOpen of (loc * ident * exp)
 
+  (* | `LetOpen of (loc * ident * exp) *)
+  | `LetOpen of (loc * flag * ident * exp)
         (* fun (type t) -> e *)
         (* let f x (type t) y z = e *)
   | `LocalTypeFun of (loc *  alident * exp)
@@ -408,7 +409,8 @@ and sigi =
   | `DirectiveSimple of (loc * alident) (* # s or # s e *)
   | `Directive of (loc * alident * exp) (* semantics *)
 
-  | `Open of (loc * ident)
+  (* | `Open of (loc * ident) *)
+  | `Open of (loc * flag * ident)
   | `Include of (loc * mtyp)
   | `RecModule of (loc * mbind) (* module rec mb *)
         
@@ -480,7 +482,8 @@ and stru =
   | `Module of (loc * auident * mexp)
   | `RecModule of (loc * mbind)
   | `ModuleType of (loc * auident * mtyp) (* module type s = mt *)
-  | `Open of (loc * ident) (* open i *)
+  (* | `Open of (loc * ident) (\* open i *\) *)
+  | `Open of (loc * flag * ident) (* open i | open! i*)
   | `Type of (loc * typedecl) (* type t *)
   | `TypeWith of (loc * typedecl * strings)
   | `Value of (loc * flag * bind) (* value (rec)? bi *)
