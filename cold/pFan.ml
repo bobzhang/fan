@@ -759,6 +759,14 @@ let apply () =
                 (fun (i : 'module_longident)  _  (_loc : FLoc.t)  ->
                    (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
                    'sigi )))));
+         ([`Skeyword "open";
+          `Skeyword "!";
+          `Snterm (Fgram.obj (module_longident : 'module_longident Fgram.t ))],
+           ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
+             (Fgram.mk_action
+                (fun (i : 'module_longident)  _  _  (_loc : FLoc.t)  ->
+                   (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
+                   'sigi )))));
          ([`Skeyword "type";
           `Snterm (Fgram.obj (type_declaration : 'type_declaration Fgram.t ))],
            ("`Type (_loc, t)\n",
@@ -1039,6 +1047,19 @@ let apply () =
                  (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
                     (_loc : FLoc.t)  ->
                     (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
+                    'exp )))));
+          ([`Skeyword "let";
+           `Skeyword "open";
+           `Skeyword "!";
+           `Snterm
+             (Fgram.obj (module_longident : 'module_longident Fgram.t ));
+           `Skeyword "in";
+           `Sself],
+            ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
+              (Fgram.mk_action
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
+                    (_loc : FLoc.t)  ->
+                    (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
                     'exp )))));
           ([`Skeyword "let";
            `Skeyword "try";
@@ -1898,6 +1919,18 @@ let apply () =
                 (fun (e : 'sequence)  _  (i : 'module_longident)  _  _ 
                    (_loc : FLoc.t)  ->
                    (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
+                   'sequence )))));
+         ([`Skeyword "let";
+          `Skeyword "open";
+          `Skeyword "!";
+          `Snterm (Fgram.obj (module_longident : 'module_longident Fgram.t ));
+          `Skeyword "in";
+          `Sself],
+           ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
+             (Fgram.mk_action
+                (fun (e : 'sequence)  _  (i : 'module_longident)  _  _  _ 
+                   (_loc : FLoc.t)  ->
+                   (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
                    'sequence )))));
          ([`Snterm (Fgram.obj (exp : 'exp Fgram.t ));
           `Snterm (Fgram.obj (sequence' : 'sequence' Fgram.t ))],
@@ -4613,6 +4646,15 @@ let apply () =
                  (fun (i : 'module_longident)  _  (_loc : FLoc.t)  ->
                     (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
                     'stru )))));
+          ([`Skeyword "open";
+           `Skeyword "!";
+           `Snterm
+             (Fgram.obj (module_longident : 'module_longident Fgram.t ))],
+            ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
+              (Fgram.mk_action
+                 (fun (i : 'module_longident)  _  _  (_loc : FLoc.t)  ->
+                    (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
+                    'stru )))));
           ([`Skeyword "type";
            `Snterm
              (Fgram.obj (type_declaration : 'type_declaration Fgram.t ))],
@@ -4677,6 +4719,21 @@ let apply () =
                     (let i = (i : vid  :>ident) in
                      (`StExp
                         (_loc, (`LetOpen (_loc, (`Negative _loc), i, e))) : 
+                       FAst.stru ) : 'stru )))));
+          ([`Skeyword "let";
+           `Skeyword "open";
+           `Skeyword "!";
+           `Snterm
+             (Fgram.obj (module_longident : 'module_longident Fgram.t ));
+           `Skeyword "in";
+           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+            ("let i = (i : vid  :>ident) in\n(`StExp (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : FAst.stru )\n",
+              (Fgram.mk_action
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
+                    (_loc : FLoc.t)  ->
+                    (let i = (i : vid  :>ident) in
+                     (`StExp
+                        (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : 
                        FAst.stru ) : 'stru )))));
           ([`Skeyword "let";
            `Skeyword "try";
