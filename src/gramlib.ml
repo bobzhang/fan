@@ -20,14 +20,6 @@ let rec infix_kwds_filter = parser
       {:stream| x; ' infix_kwds_filter xs |}
   |  -> {:stream||}
 
-  
-
-
-
-
-
-
-
 
 
 (* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)

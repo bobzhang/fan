@@ -85,6 +85,8 @@ cleansrc:
 	rm -rf _build/src
 cleancold:
 	rm -rf _build/cold
+cleantreeparser:
+	rm -rf _build/treeparser
 cleantmp:
 	rm -rf _build/tmp
 cleandemo:
