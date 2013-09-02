@@ -5,7 +5,25 @@ type position =
   [ `First | `Last | `Before of string | `After of string | `Level of string] 
 type 'a cont_parse = FLoc.t -> Gaction.t -> 'a parse 
 type description = [ `Normal | `Antiquot] 
-type descr = FAstN.pat 
+type loc = FLoc.t 
+type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
+type vid = [ `Dot of (vid* vid) | `Lid of string | `Uid of string | ant] 
+type any = [ `Any] 
+type alident = [ `Lid of string | ant] 
+type auident = [ `Uid of string | ant] 
+type ident =
+  [ `Dot of (ident* ident) | `Apply of (ident* ident) | alident | auident] 
+type literal =
+  [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
+  | `Flo of string | `Nativeint of string | `Str of string] 
+type pat =
+  [ vid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
+  | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | literal
+  | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
+  | `Bar of (pat* pat) | `PaRng of (pat* pat)] 
+and rec_pat =
+  [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
+type descr = pat 
 type token_pattern = ((FToken.t -> bool)* descr* string) 
 type terminal = [ `Skeyword of string | `Stoken of token_pattern] 
 type gram =  {

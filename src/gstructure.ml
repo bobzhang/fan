@@ -17,23 +17,33 @@ type description = [ `Normal | `Antiquot]
 
 
 (* open FAst *)
+(** Duplicated in fgram.mli *)
+type loc = FLoc.t
+type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
+type vid = [ `Dot of (vid* vid) | `Lid of string | `Uid of string | ant] 
+type any = [ `Any]
+type alident = [ `Lid of string | ant] 
+type auident = [ `Uid of string | ant] 
+type ident =
+  [ `Dot of (ident* ident) | `Apply of (ident* ident) | alident | auident] 
+type literal =
+  [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
+  | `Flo of string | `Nativeint of string | `Str of string]
+(** a simplified pattern compared with [FAstN.pat] *)      
+type pat =
+  [ vid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
+  | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | literal
+  | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
+  | `Bar of (pat* pat)
+  | `PaRng of (pat* pat) ] 
 
-(** Duplication with fGramDef *)  
-(* type lident = *)
-(*     [ `Lid of (loc * string )] *)
-(* and simple_pat = *)
-(*   [ *)
-(*    `Vrn of (loc * string) *)
-(*   |`App of (loc * simple_pat * simple_pat ) *)
-(*   | vid (\* contains ant *\) *)
-(*   |`Com of (loc * simple_pat * simple_pat) *)
-(*   |`Alias of (loc * simple_pat * alident) *)
-(*   |`Bar of (loc * simple_pat * simple_pat) *)
-(*   |`Str of (loc * string) *)
-(*   |`Any of loc] (\* with ("Print" ) *\) *)
-  
+and rec_pat =
+  [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
+      
+      
 type descr = (* (description * string)  *)
-    FAstN.pat
+    pat
+    (* FAstN.pat *)
     (* (FAstN.pat * string) *)
       
       (* ATTENTION: the type system can not guarantee it would compile *)
