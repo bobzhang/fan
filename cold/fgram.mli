@@ -33,7 +33,7 @@ module Action :
 
 
 
-type description = [ `Antiquot | `Normal ]
+(* type description = [ `Antiquot | `Normal ] *)
 
 type loc = FLoc.t
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)]

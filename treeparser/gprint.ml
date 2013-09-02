@@ -36,7 +36,7 @@ let pp_assoc f  = function
 
 class type grammar_print  = object
   method set_action : bool -> unit
-  method description : formatter -> description -> unit
+  (* method description : formatter -> description -> unit *)
   method entry : formatter -> entry -> unit
   method level : formatter -> level -> unit
   method levels : formatter -> level list -> unit
@@ -69,9 +69,9 @@ class text_grammar : grammar_print = object(self:'self)
     | `Snterm _ (* | `Snext *) | `Sself  | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 f s 
 
-  method description f = function
-    | `Normal -> ()
-    | `Antiquot -> pp f "$"
+  (* method description f = function *)
+  (*   | `Normal -> () *)
+  (*   | `Antiquot -> pp f "$" *)
           
   method symbol1 f x =
     match (x:symbol) with 

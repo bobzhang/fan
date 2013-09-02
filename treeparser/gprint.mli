@@ -6,7 +6,7 @@ open Format
 (**  signature for printing grammar *)
 class type grammar_print  = object
 
-  method description : formatter -> description -> unit
+  (* method description : formatter -> description -> unit *)
   method entry : formatter -> entry -> unit
   method level : formatter -> level -> unit
   method levels : formatter -> level list -> unit

@@ -1,6 +1,6 @@
 
 open LibUtil
-(* open FToken *)
+
 
 
 type assoc =
@@ -13,7 +13,7 @@ type position =
 (* the [location] and the parsed value *)
 type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a FToken.parse 
     
-type description = [ `Normal | `Antiquot]
+(* type description = [ `Normal | `Antiquot] *)
 
 
 
@@ -41,13 +41,10 @@ and rec_pat =
   [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
       
       
-type descr = (* (description * string)  *)
-    pat
-    (* FAstN.pat *)
-    (* (FAstN.pat * string) *)
-      
-      (* ATTENTION: the type system can not guarantee it would compile *)
-type token_pattern = ((FToken.t -> bool) * descr * string)
+(* ATTENTION: the type system can not guarantee it would compile *)      
+type descr = pat
+
+type token_pattern = (FToken.t -> bool) * descr * string
 
 type terminal =
     [ `Skeyword of string
