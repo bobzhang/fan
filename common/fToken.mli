@@ -111,7 +111,7 @@ val ignore_layout :  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
 
 val print : Format.formatter -> [> t ] -> unit
 
-val match_keyword : 'a -> [> `KEYWORD of 'a ] -> bool
+(* val match_keyword : 'a -> [> `KEYWORD of 'a ] -> bool *)
 
 (**  {[x=STRING -> extract_string x  ]} *)  
 val extract_string : [> t ] -> string

@@ -68,10 +68,6 @@ class text_grammar : grammar_print = object(self:'self)
     | `Snterml (e, l) -> pp f "%s Level %S" e.ename l
     | `Snterm _ (* | `Snext *) | `Sself  | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 f s 
-
-  (* method description f = function *)
-  (*   | `Normal -> () *)
-  (*   | `Antiquot -> pp f "$" *)
           
   method symbol1 f x =
     match (x:symbol) with 

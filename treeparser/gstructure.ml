@@ -13,10 +13,6 @@ type position =
 (* the [location] and the parsed value *)
 type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a FToken.parse 
     
-(* type description = [ `Normal | `Antiquot] *)
-
-
-
 (** Duplicated in fgram.mli *)
 type loc = FLoc.t
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
@@ -109,16 +105,13 @@ and symbol =
       
 and tree = (* internal struccture *)
   | Node of node
-  | LocAct of (* (int*Gaction.t) *)anno_action *  anno_action list (* (int * Action.t) *)
-    (* | EarlyAction of Gaction.t and node (\* This action was only used to produce side effect *\) *)
-    (* | ReplaceAction of Gaction.t and node  *)
-    (* | LocActAppend of anno_action and list anno_action and tree  *)
+  | LocAct of anno_action *  anno_action list
   | DeadEnd 
 and node = {
     node    : symbol ;
     son     : tree   ;
     brother : tree   }
-and production= (symbol list  *  (* Gaction.t *) (string * Gaction.t))
+and production= symbol list  *   (string * Gaction.t)
 
 (* number * symbols * action_as_tring * action *)
 and anno_action = (int  * symbol list  * string  * Gaction.t) 
