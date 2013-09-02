@@ -1,6 +1,6 @@
 
 open LibUtil
-open FToken
+(* open FToken *)
 
 
 type assoc =
@@ -11,7 +11,7 @@ type position =
 
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a parse 
+type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a FToken.parse 
     
 type description = [ `Normal | `Antiquot]
 
@@ -65,14 +65,14 @@ type label =  string option
 type entry = {
     egram     : gram;
     ename     : string;
-    mutable estart    :  int -> Gaction.t parse ;
+    mutable estart    :  int -> Gaction.t FToken.parse ;
     mutable econtinue : int -> Gaction.t cont_parse ;
     mutable edesc     :  desc;
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 
     (* | Dlevel of level  *)
-  | Dparser of (stream -> Gaction.t )
+  | Dparser of (FToken.stream -> Gaction.t )
 and level = {
     lname   : label;
     assoc   : assoc ;

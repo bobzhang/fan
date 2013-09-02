@@ -1,0 +1,22 @@
+# -*- ruby -*-
+ast2pt
+astPrint
+ast_basic
+dynLoader
+fConfig
+fEval
+fLoc
+fToken
+fanTokenFilter
+fanUtil
+fdir
+foptions
+libUtil
+oconfig
+parsetreeHelper
+tokenEval
+xStream
+
+# local variables:
+# compile-command: "cd .. && ocamlbuild common/common.cma"
+# end:

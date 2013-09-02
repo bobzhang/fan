@@ -2,14 +2,14 @@ open Gstructure
   
 open LibUtil
   
-open FToken
+
   
 (* open Format; *)
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let with_loc (parse_fun: 'b parse ) strm =
+let with_loc (parse_fun: 'b FToken.parse ) strm =
   let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
@@ -190,7 +190,7 @@ and parser_of_terminals (terminals: terminal list) strm =
     !acc
   end          
 (* only for [Smeta] it might not be functional *)
-and parser_of_symbol entry s  =
+and parser_of_symbol (entry:Gstructure.entry) s  =
   let rec aux s = 
     match s with 
     | `Slist0 s ->
@@ -225,7 +225,7 @@ and parser_of_symbol entry s  =
 
 (* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs:  level list) : int ->  Gaction.t parse =
+  let rec aux clevn  (xs:  level list) : int ->  Gaction.t FToken.parse =
     match xs with 
     | [] -> fun _ -> fun _ -> raise XStream.Failure  
     | lev :: levs ->
