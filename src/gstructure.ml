@@ -16,7 +16,7 @@ type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a parse
 type description = [ `Normal | `Antiquot]
 
 
-(* open FAst *)
+
 (** Duplicated in fgram.mli *)
 type loc = FLoc.t
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
