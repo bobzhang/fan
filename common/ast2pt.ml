@@ -1,9 +1,9 @@
 
-(*************************************************************************)
-    (** Dump the FanAst to Parsetree, this file should introduce minimal
-dependency or only dependent on those generated files*)
 
-(*************************************************************************)  
+(** Dump the FanAst to Parsetree, this file should introduce minimal
+    dependency or only dependent on those generated files*)
+
+
 
 open Parsetree
 open Longident
@@ -30,12 +30,12 @@ let unsafe_loc_of node =
 
 (*************************************************************************)
 (* utility begin *)
-   (*
-       {[remove_underscores "_a" = "a"
+
+(*
+   {[remove_underscores "_a" = "a"
        remove_underscores "__a" = "a"
        remove_underscores "__a___b" =  "ab"
-   remove_underscores "__a___b__" = "ab"
-]}
+       remove_underscores "__a___b__" = "ab"]}
 *)    
 let remove_underscores s =
   let l = String.length s in
@@ -44,6 +44,8 @@ let remove_underscores s =
       if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
   Buffer.contents buf 
 
+
+(** Forward declarations *)
 let dump_ident           = ref (fun _ -> failwith "Ast2pt.dump_ident not implemented")
 let dump_ctyp            = ref (fun _ -> failwith "Ast2pt.dump_ctyp not implemented")
 let dump_row_field       = ref (fun _ -> failwith "Ast2pt.dump_row_field not implemented")
@@ -76,37 +78,13 @@ let generate_type_code :
   (FAst.loc -> FAst.typedecl -> FAst.strings -> FAst.stru) ref =
   ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
 
+
+
+
+
 let ant_error loc = error loc "antiquotation not expected here"
 
-let ident_of_exp : FAst.exp -> FAst.ident =
-  let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
-  let rec self (x:FAst.exp) : ident =
-    let _loc = unsafe_loc_of x in
-    match x with 
-    | `App(_,e1,e2) -> `Apply(_loc,self e1, self e2)
-    | `Field(_,e1,e2) -> `Dot(_loc,self e1,self e2)
-    | `Lid _  -> error ()
-    | `Uid _ | `Dot _ as i -> (i:vid:>ident)
-    (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
-    | _ -> error ()  in 
-  function
-  | #vid as i ->  (i:vid :>ident)
-  | `App _ -> error ()
-  | t -> self t 
-
-
-
-
-let rec normalize_acc (x:FAst.ident) : FAst.exp=
-  let _loc = unsafe_loc_of x in
-  match x with 
-  | `Dot (_,i1,i2) ->
-    `Field (_loc, normalize_acc i1, normalize_acc i2)
-  | `Apply (_,i1,i2) ->
-    `App (_loc, normalize_acc i1, normalize_acc i2)
-  | `Ant _ | `Uid _ | `Lid _ as i ->  i
-
-let mkvirtual  (x:FAst.flag)  : Asttypes.virtual_flag =
+let mkvirtual  (x:flag)  : Asttypes.virtual_flag =
   match x with 
   | `Positive _ -> Virtual
   | `Negative _  -> Concrete
@@ -277,7 +255,7 @@ let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
     mktyp _loc (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
   |  x -> errorf _loc "ctyp: %s" @@ !dump_ctyp x
 
-and row_field (x:row_field) acc =
+and row_field (x:row_field) acc : Parsetree.row_field list =
   match x with 
   |`TyVrn (_loc,`C(_,i)) -> Rtag (i, true, []) :: acc
   | `TyVrnOf(_loc,`C(_,i),t) ->
@@ -306,7 +284,9 @@ and package_type_constraints
     errorf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
       (!dump_constr x) 
 
-and package_type (x : mtyp) =
+and package_type (x : mtyp) :
+  Longident.t Asttypes.loc *
+    (Longident.t Asttypes.loc * Parsetree.core_type) list  =
   match x with 
   | `With(_loc,(#ident' as i),wc) ->
     (long_uident i, package_type_constraints wc [])
@@ -323,18 +303,14 @@ let mktype loc tl cl ~type_kind ~priv ~manifest =
     ptype_loc =  loc;
     ptype_variance = variance} 
 
-let mkprivate' m = if m then Private else Public
-
 let mkprivate (x:flag)=
   match x with 
   | `Positive _ -> Private
   | `Negative _ -> Public
   | `Ant(_loc,_)-> ant_error _loc 
 
-
-
-
-let mktrecord (x: name_ctyp)=
+let mktrecord (x: name_ctyp) :
+  string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc=
   match x with 
   |`TyColMut(_loc,`Lid(sloc,s),t) ->
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
@@ -343,7 +319,8 @@ let mktrecord (x: name_ctyp)=
   | t -> errorf (unsafe_loc_of t) "mktrecord %s "
            (!dump_name_ctyp t)
 
-let mkvariant (x:or_ctyp) =
+let mkvariant (x:or_ctyp) :
+  string Location.loc * Parsetree.core_type list *  Parsetree.core_type option * FLoc.t =
   let _loc = unsafe_loc_of x in
   match x with
   | `Uid(_,s) -> (with_loc  s _loc, [], None,  _loc)
@@ -365,14 +342,14 @@ let mkvariant (x:or_ctyp) =
 let type_kind (x:type_repr) : Parsetree.type_kind  =
   match x with
   | `Record (_,t) ->
-    (Parsetree.Ptype_record (List.map mktrecord (list_of_sem t [])))
+    Parsetree.Ptype_record (List.map mktrecord (list_of_sem t []))
   | `Sum(_,t) ->
-    (Ptype_variant (List.map mkvariant (list_of_or t [])))
+    Ptype_variant (List.map mkvariant (list_of_or t []))
   | `Ant(_loc,_) -> ant_error _loc
 
 
 
-let mkvalue_desc loc t (p:  strings list) =
+let mkvalue_desc loc t (p:  strings list) : Parsetree.value_description =
   let ps = List.map (fun p ->
       match p with
       | `Str (_,p) -> p
@@ -483,9 +460,85 @@ let rec mkrangepat loc c1 c2 =
          ((mkghpat loc (Ppat_constant (Const_char c1))),
           (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2)))
 
+let  pat_literal _loc (x:literal) : Parsetree.pattern =
+  match x with 
+  | `Chr (_,s) ->
+    mkpat _loc @@ Ppat_constant (Const_char (TokenEval.char_of_char_token _loc s))
+  | `Int (_,s) ->
+    let i =
+      try int_of_string s
+      with Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int" in
+    mkpat _loc @@ Ppat_constant (Const_int i)
+  | `Int32 (_,s) ->
+    let i32 =
+      try Int32.of_string s
+      with Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int32" in
+    mkpat _loc  @@ Ppat_constant (Const_int32 i32)
+  | `Int64 (_,s) ->
+    let i64 =
+      try Int64.of_string s
+      with
+        Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type int64" in
+    mkpat _loc  @@ Ppat_constant (Const_int64 i64)
+  | `Nativeint (_,s) ->
+    let nati =
+      try Nativeint.of_string s
+      with
+        Failure _ ->
+        error _loc
+          "Integer literal exceeds the range of representable integers of type nativeint" in
+    mkpat _loc @@ Ppat_constant (Const_nativeint nati)
+  | `Flo (_,s) ->
+    mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
+  | `Str (_,s) ->
+    mkpat _loc @@
+      Ppat_constant
+        (Const_string (TokenEval.string_of_string_token _loc s))
+
+
+
+let exp_literal _loc (x:literal) : Parsetree.expression =
+  match x with
+  | `Chr (_,s) ->
+    mkexp _loc (Pexp_constant (Const_char (TokenEval.char_of_char_token _loc s)))
+  | `Int (_,s) ->
+    let i =
+      try int_of_string s with Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int"
+    in mkexp _loc (Pexp_constant (Const_int i))
+  | `Int32 (_, s) ->
+    let i32 =
+      try Int32.of_string s with 
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int32"
+    in mkexp _loc (Pexp_constant (Const_int32 i32))
+  | `Int64 (_, s) ->
+    let i64 = try Int64.of_string s with 
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type int64"
+    in mkexp _loc (Pexp_constant (Const_int64 i64))
+  | `Flo (_,s) -> mkexp _loc (Pexp_constant (Const_float (remove_underscores s)))      
+  | `Nativeint (_,s) ->
+    let nati =
+      try Nativeint.of_string s with 
+        Failure _ ->
+        error _loc "Integer literal exceeds the range of representable integers of type nativeint"
+    in mkexp _loc (Pexp_constant (Const_nativeint nati))
+  | `Str (_,s) ->
+    mkexp _loc @@ Pexp_constant (Const_string (TokenEval.string_of_string_token _loc s))
+
+
+
 let rec pat (x : pat) : Parsetree.pattern =
   let _loc = unsafe_loc_of x in 
   match x with
+  | #literal as x -> pat_literal _loc x 
   | `Lid (_,("true"|"false" as txt)) ->
     mkpat _loc @@ Ppat_construct ({ txt = (Lident txt); loc = _loc }, None, false) 
   | `Lid (_,s) ->
@@ -522,46 +575,7 @@ let rec pat (x : pat) : Parsetree.pattern =
   | `Array (_,p)  ->
     mkpat _loc @@ Ppat_array (List.map pat (list_of_sem p []))
   | `ArrayEmpty _ -> mkpat _loc @@ Ppat_array []
-  | `Chr (_,s) ->
-    mkpat _loc @@ Ppat_constant (Const_char (TokenEval.char_of_char_token _loc s))
-  | `Int (_,s) ->
-    let i =
-      try int_of_string s
-      with Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int" in
-    mkpat _loc @@ Ppat_constant (Const_int i)
-  | `Int32 (_,s) ->
-    let i32 =
-      try Int32.of_string s
-      with Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int32" in
-    mkpat _loc  @@ Ppat_constant (Const_int32 i32)
-  | `Int64 (_,s) ->
-    let i64 =
-      try Int64.of_string s
-      with
-        Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type int64" in
-    mkpat _loc  @@ Ppat_constant (Const_int64 i64)
-  | `Nativeint (_,s) ->
-    let nati =
-      try Nativeint.of_string s
-      with
-        Failure _ ->
-        error _loc
-          "Integer literal exceeds the range of representable integers of type nativeint" in
-    mkpat _loc @@ Ppat_constant (Const_nativeint nati)
-  | `Flo (_,s) ->
-    mkpat _loc (Ppat_constant (Const_float (remove_underscores s)))
-  | `Bar (_,p1,p2) ->
-    mkpat _loc  @@ Ppat_or (pat p1, pat p2)
-  | `Str (_,s) ->
-    mkpat _loc @@
-      Ppat_constant
-        (Const_string (TokenEval.string_of_string_token _loc s))
+  | `Bar (_,p1,p2) -> mkpat _loc  @@ Ppat_or (pat p1, pat p2)
   | `PaRng (_,p1,p2) ->
     (match p1, p2 with
      | `Chr (loc1,c1),`Chr (loc2,c2) ->
@@ -588,16 +602,15 @@ let rec pat (x : pat) : Parsetree.pattern =
   | `Par (_,_) -> error _loc "singleton tuple pattern"
   | `Constraint (_loc,p,t) ->
     mkpat _loc (Ppat_constraint ((pat p), (ctyp t)))
-  | `ClassPath (_,i) ->
-    mkpat _loc (Ppat_type (long_type_ident i))
-  | `Vrn (_,s)  -> mkpat _loc (Ppat_variant (s, None))
-  | `Lazy (_,p) -> mkpat _loc (Ppat_lazy (pat p))
+  | `ClassPath (_,i) -> mkpat _loc @@ Ppat_type (long_type_ident i)
+  | `Vrn (_,s)  -> mkpat _loc @@ Ppat_variant (s, None)
+  | `Lazy (_,p) -> mkpat _loc @@ Ppat_lazy (pat p)
   | `ModuleUnpack (_,`Uid (sloc,m)) ->
     mkpat _loc (Ppat_unpack (with_loc m sloc))
   | `ModuleConstraint (_,`Uid (sloc,m),ty) ->
-    mkpat _loc
-      (Ppat_constraint
-         (mkpat sloc (Ppat_unpack (with_loc m sloc)), ctyp ty))
+    mkpat _loc @@
+      Ppat_constraint
+        (mkpat sloc (Ppat_unpack (with_loc m sloc)), ctyp ty)
   | p -> errorf _loc "invalid pattern %s" @@ !dump_pat p
 
 
@@ -628,6 +641,14 @@ let rec exp (x : exp) : Parsetree.expression =
   match x with 
   | `Field(_,_,_)| `Dot (_,_,_)->
     let (e, l) =
+      let rec normalize_acc (x:FAst.ident) : FAst.exp=
+            let _loc = unsafe_loc_of x in
+            match x with 
+            | `Dot (_,i1,i2) ->
+              `Field (_loc, normalize_acc i1, normalize_acc i2)
+            | `Apply (_,i1,i2) ->
+              `App (_loc, normalize_acc i1, normalize_acc i2)
+            | `Ant _ | `Uid _ | `Lid _ as i ->  i in
       let rec sep_dot_exp acc (x: exp) : (loc * string list  * exp ) list =
         match x with
         | `Field(_,e1,e2) ->
@@ -710,102 +731,62 @@ let rec exp (x : exp) : Parsetree.expression =
            [("", exp e1); ("", exp e2); ("", exp v)])
       | x -> errorf _loc "bad left part of assignment:%s" (!dump_exp x)  in
     mkexp _loc e
-  | `Chr (_,s) ->
-    mkexp _loc (Pexp_constant (Const_char (TokenEval.char_of_char_token _loc s)))
   | `Subtype (_,e,t2) ->
     mkexp _loc (Pexp_constraint (exp e, None, (Some (ctyp t2))))
   | `Coercion (_, e, t1, t2) ->
     let t1 = Some (ctyp t1) in
     mkexp _loc (Pexp_constraint (exp e, t1, (Some (ctyp t2))))
-  | `Flo (_,s) -> mkexp _loc (Pexp_constant (Const_float (remove_underscores s)))
+
   | `For (_loc, `Lid(sloc,i), e1, e2, df, el) ->
     let e3 = `Seq (_loc, el) in
-    mkexp _loc
-      (Pexp_for
-         (with_loc i sloc,
-          exp e1, exp e2, mkdirection df, exp e3))
-  | `Fun(_loc,`Case(_,`LabelS(_,`Lid(sloc,lab)),e)) ->
     mkexp _loc @@
-      Pexp_function (lab, None, [(pat (`Lid(sloc,lab)),exp e)])
-  | `Fun(_,`Case(_,`Label(_,`Lid(_,lab),po),e)) ->
-    mkexp _loc @@
-      Pexp_function (lab, None, [(pat po, exp e)])
-  | `Fun(_,`CaseWhen(_,`LabelS(_,`Lid(sloc,lab)),w,e)) ->
-    mkexp _loc @@
-      Pexp_function
-         (lab, None,
-          [(pat (`Lid(sloc,lab)),
-            mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))])
+      Pexp_for
+         (with_loc i sloc, exp e1, exp e2, mkdirection df, exp e3)
 
-  | `Fun(_,`CaseWhen(_,`Label(_,`Lid(_,lab),po),w,e)) ->  (*M*)
+  | `Fun(_loc,
+         `Case(_,
+               (`LabelS _ | `Label _ | `OptLablS _
+               | `OptLabl _ | `OptLablExpr _  as l)  ,e)) ->
+    let lab, p,e1  =
+      match l with
+      |`LabelS(_,(`Lid (_,lab) as l)) ->
+        lab,pat l,None
+      |`OptLablS(_,(`Lid(_,lab) as l)) ->
+        "?"^lab, pat l,None
+      |`Label(_,`Lid(_,lab),po) -> lab,pat po,None
+      |`OptLabl(_,`Lid(_,lab),po) ->
+        "?" ^ paolab lab po, pat po,None
+      |`OptLablExpr(_,`Lid(_,lab),po,e1) ->
+        "?" ^ paolab lab po, pat po, Some (exp e1)
+      | _ -> assert false in
     mkexp _loc @@
-      Pexp_function (lab, None,
-                      [(pat po,
-                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e)))])
-  | `Fun (_,`Case(_,`OptLablS(_,`Lid(sloc,lab)),e2)) ->
-    mkexp _loc @@
-      Pexp_function ("?"^lab, None, [(pat (`Lid(sloc,lab)), exp e2)])
-  | `Fun (_,`Case(_,`OptLabl(_,`Lid(_,lab),p),e2)) -> 
-    let lab = paolab lab p in
-    mkexp _loc @@
-      Pexp_function
-         ("?" ^ lab, None, [(pat p, exp e2)])
-  | `Fun (_,`CaseWhen(_,`OptLablS(_,`Lid(sloc,lab)),w,e2)) ->
-    mkexp _loc @@
-      Pexp_function
-         (("?" ^ lab), None,
-          [(pat (`Lid(sloc,lab)),
-            mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
-
-  | `Fun (_,`CaseWhen(_,`OptLabl(_,`Lid(_,lab),p),w,e2)) -> 
-    let lab = paolab lab p in
-    mkexp _loc @@
-      Pexp_function
-         (("?" ^ lab), None,
-          [( pat p,
-             mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
-
-  | `Fun (_,`Case(_,`OptLablExpr(_,`Lid(_,lab),p,e1),e2)) -> 
-    let lab = paolab lab p in
-    mkexp _loc @@
-      Pexp_function ("?" ^ lab,Some (exp e1),[(pat p,exp e2)])
-
-  | `Fun (_,`CaseWhen(_,`OptLablExpr(_,`Lid(_,lab),p,e1),w,e2)) -> 
-    let lab = paolab lab p in
-    mkexp _loc @@
-      Pexp_function ("?" ^ lab,Some (exp e1),
-                      [(pat p,
-                        mkexp (unsafe_loc_of w) (Pexp_when (exp w,exp e2)))])
-
-  | `Fun (_,a) -> mkexp _loc (Pexp_function ("", None ,case a ))
+      Pexp_function (lab, e1, [(p,exp e)])
+  | `Fun(_,
+         `CaseWhen(_,
+                   (`LabelS _ | `Label _ | `OptLablS _  | `OptLablExpr _ | `OptLabl _ as l ),
+                   w,e)) ->
+    let lab,p,e1 =
+      match l with
+      |`LabelS(_,(`Lid(_,lab) as l)) ->
+        lab,pat l,None
+      |`Label (_,`Lid(_,lab),po) ->
+        lab, pat po,None
+      |`OptLablS(_,(`Lid(_,lab) as l)) ->
+        "?"^lab, pat l,None
+      |`OptLabl(_,`Lid(_,lab),po) ->
+        "?"^paolab lab po, pat po,None
+      |`OptLablExpr(_,`Lid(_,lab),po,e1) ->
+        "?"^ paolab lab po, pat po, Some (exp e1)
+      | _ -> assert false in
+    mkexp _loc @@ Pexp_function
+        (lab, e1, [( p, mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))])
+  | `Fun (_,a) -> mkexp _loc @@ Pexp_function ("", None ,case a )
 
   | `IfThenElse (_, e1, e2, e3) ->
     mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2,Some (exp e3))
 
-  | `IfThen (_,e1,e2) ->
-    mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2, None)
-  | `Int (_,s) ->
-    let i =
-      try int_of_string s with Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int"
-    in mkexp _loc (Pexp_constant (Const_int i))
-  | `Int32 (_, s) ->
-    let i32 =
-      try Int32.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int32"
-    in mkexp _loc (Pexp_constant (Const_int32 i32))
-  | `Int64 (_, s) ->
-    let i64 = try Int64.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type int64"
-    in mkexp _loc (Pexp_constant (Const_int64 i64))
-  | `Nativeint (_,s) ->
-    let nati =
-      try Nativeint.of_string s with 
-        Failure _ ->
-        error _loc "Integer literal exceeds the range of representable integers of type nativeint"
-    in mkexp _loc (Pexp_constant (Const_nativeint nati))
+  | `IfThen (_,e1,e2) -> mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2, None)
+  | #literal as x -> exp_literal _loc x 
   | `Any _ -> errorf _loc "Any should not appear in the position of expression"
   | `Label _ | `LabelS _ -> error _loc "labeled expression not allowed here"
   | `Lazy (_loc,e) -> mkexp _loc @@ Pexp_lazy (exp e)
@@ -837,38 +818,34 @@ let rec exp (x : exp) : Parsetree.expression =
   (*  (try let $rec:rf $bi in fun () -> $e with | $cas  ) () |} *)
 
   | `LetModule (_,`Uid(sloc,i),me,e) ->
-    mkexp _loc (Pexp_letmodule (with_loc i sloc,mexp me,exp e))
-
-  | `Match (_,e,a) -> mkexp _loc (Pexp_match (exp e,case a ))
-
-  | `New (_,id) -> mkexp _loc (Pexp_new (long_type_ident id))
-
+    mkexp _loc @@ Pexp_letmodule (with_loc i sloc,mexp me,exp e)
+  | `Match (_,e,a) -> mkexp _loc @@ Pexp_match (exp e,case a )
+  | `New (_,id) -> mkexp _loc @@ Pexp_new (long_type_ident id)
   | `ObjEnd _ ->
-    mkexp _loc (Pexp_object{pcstr_pat= pat (`Any _loc); pcstr_fields=[]})
-
+    mkexp _loc @@ Pexp_object{pcstr_pat= pat (`Any _loc); pcstr_fields=[]}
   | `Obj(_,cfl) ->
     let p = `Any _loc in 
     let cil = clfield cfl [] in
-    mkexp _loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
+    mkexp _loc @@ Pexp_object { pcstr_pat = pat p; pcstr_fields = cil }
   | `ObjPatEnd(_,p) ->
-    mkexp _loc (Pexp_object{pcstr_pat=pat p; pcstr_fields=[]})
+    mkexp _loc @@ Pexp_object{pcstr_pat=pat p; pcstr_fields=[]}
 
   | `ObjPat (_,p,cfl) ->
     let cil = clfield cfl [] in
-    mkexp _loc (Pexp_object { pcstr_pat = pat p; pcstr_fields = cil })
+    mkexp _loc @@ Pexp_object { pcstr_pat = pat p; pcstr_fields = cil }
       
-  | `OvrInstEmpty _ -> mkexp _loc (Pexp_override [])
+  | `OvrInstEmpty _ -> mkexp _loc @@ Pexp_override []
   | `OvrInst (_,iel) ->
     let rec mkideexp (x:rec_exp) acc  = 
       match x with 
       |`Sem(_,x,y) ->  mkideexp x (mkideexp y acc)
       | `RecBind(_,`Lid(sloc,s),e) -> (with_loc s sloc, exp e) :: acc
       | _ -> assert false  in
-    mkexp _loc (Pexp_override (mkideexp iel []))
+    mkexp _loc @@ Pexp_override (mkideexp iel [])
   | `Record (_,lel) ->
-    mkexp _loc (Pexp_record (mklabexp lel, None))
+    mkexp _loc @@ Pexp_record (mklabexp lel, None)
   | `RecordWith(_loc,lel,eo) ->
-    mkexp _loc (Pexp_record (mklabexp lel,Some (exp eo)))
+    mkexp _loc @@ Pexp_record (mklabexp lel,Some (exp eo))
   | `Seq (_,e) ->
     let rec loop = function
       | [] -> exp (`Uid (_loc, "()") : FAst.exp )
@@ -879,14 +856,12 @@ let rec exp (x : exp) : Parsetree.expression =
     loop (list_of_sem e []) 
   | `Send (_,e,`Lid(_,s)) ->
     mkexp _loc (Pexp_send (exp e, s))
-
   | `StringDot (_, e1, e2) ->
     mkexp _loc
       (Pexp_apply
          (mkexp _loc (Pexp_ident (array_function _loc "String" "get")),
           [("", exp e1); ("", exp e2)]))
-  | `Str (_,s) ->
-    mkexp _loc @@ Pexp_constant (Const_string (TokenEval.string_of_string_token _loc s))
+
   | `Try (_,e,a) -> mkexp _loc @@ Pexp_try (exp e,case a )
   | `Par (_,e) ->
     let l = list_of_com e [] in
@@ -1365,7 +1340,23 @@ let directive (x:exp) =
   |`Lid(_loc,("true"|"false" as x)) ->
     if x ="true" then Pdir_bool true
     else Pdir_bool false
-  | e -> Pdir_ident (ident_noloc (ident_of_exp e)) 
+  | e ->
+    let ident_of_exp : FAst.exp -> FAst.ident =
+      let error () = invalid_arg "ident_of_exp: this expession is not an identifier" in
+      let rec self (x:FAst.exp) : ident =
+        let _loc = unsafe_loc_of x in
+        match x with 
+        | `App(_,e1,e2) -> `Apply(_loc,self e1, self e2)
+        | `Field(_,e1,e2) -> `Dot(_loc,self e1,self e2)
+        | `Lid _  -> error ()
+        | `Uid _ | `Dot _ as i -> (i:vid:>ident)
+        (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
+        | _ -> error ()  in 
+      function
+      | #vid as i ->  (i:vid :>ident)
+      | `App _ -> error ()
+      | t -> self t  in
+    Pdir_ident (ident_noloc (ident_of_exp e)) 
 
 let phrase (x: stru) =
   match x with 

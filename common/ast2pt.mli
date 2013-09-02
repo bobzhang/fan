@@ -1,5 +1,5 @@
 
-(** dumping Fan's abstract syntax into OCaml's parsetree *)
+(** Dumping Fan's abstract syntax into OCaml's parsetree *)
   
 open FAst
 open Format
@@ -71,47 +71,7 @@ val package_type_constraints :
 
 val package_type : mtyp -> Parsetree.package_type
 
-val mkprivate' : bool -> Asttypes.private_flag
-
-val mkprivate : flag -> Asttypes.private_flag
-
-val mktrecord :
-  name_ctyp ->
-  string Location.loc * Asttypes.mutable_flag * Parsetree.core_type *  loc
-
-val mkvariant :
-  or_ctyp ->
-  string Location.loc * Parsetree.core_type list *
-  Parsetree.core_type option * loc
-
-
-val mkvalue_desc :
-  Location.t -> ctyp -> strings list -> Parsetree.value_description
-
-val mkmutable : flag -> Asttypes.mutable_flag
-
-val paolab : string -> pat -> string
-
-
-
-val optional_type_parameters :
-  ctyp ->
-  (string Asttypes.loc option * (bool * bool)) list
       
-val class_parameters :
-  type_parameters -> (string Asttypes.loc * (bool * bool)) list
-      
-val type_parameters_and_type_name :
-  ctyp ->
-  Longident.t Asttypes.loc *
-  (string Asttypes.loc option * (bool * bool)) list
-
-      
-val pat_fa :  pat list -> pat -> pat * pat list
-      
-val deep_mkrangepat : loc -> char -> char -> Parsetree.pattern
-
-val mkrangepat : loc -> char -> char -> Parsetree.pattern
 
 val pat : pat -> Parsetree.pattern
 
