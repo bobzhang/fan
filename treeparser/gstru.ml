@@ -25,7 +25,7 @@ let get_brothers x =
     | DeadEnd -> List.rev acc 
     | LocAct _ -> List.rev (End:: acc)
     | Node {node = n; brother = b; son = s} ->
-        aux  (Bro n (aux [] s) :: acc) b  in aux [] x 
+        aux  (Bro (n, aux [] s) :: acc) b  in aux [] x 
 let get_children x = 
   let rec aux acc =  function
     | [] -> List.rev acc

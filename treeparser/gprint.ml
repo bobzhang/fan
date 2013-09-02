@@ -133,7 +133,7 @@ let string_of_symbol s = begin
 end
   
 class dump_grammar : grammar_print  = object(self:'self)
-  inherit text_grammar ;
+  inherit text_grammar 
   method! tree f tree = (* see FIXME #a*)
     print_sons "|-"
       (function

@@ -32,7 +32,7 @@ let delete_rule_in_tree entry =
         | None -> None )
     | ([], DeadEnd) -> None
     | ([], LocAct (_, [])) -> Some (Some [], DeadEnd)
-    | ([], LocAct (_, action :: list)) -> Some (None, LocAct action list)  in
+    | ([], LocAct (_, action :: list)) -> Some (None, LocAct (action, list))  in
   delete_in_tree
 
 

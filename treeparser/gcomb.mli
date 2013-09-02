@@ -1,7 +1,14 @@
 
+
+
+(**  the output is reversed, you have to reverse the list output
+   if you care about the order *)  
 val slist0 :
   f:('a list -> 'b) ->
   ('c XStream.t -> 'a) -> 'c XStream.t -> 'b
+
+
+      
 val slist1 :
   f:('a list -> 'b) ->
   ('c XStream.t -> 'a) -> 'c XStream.t -> 'b

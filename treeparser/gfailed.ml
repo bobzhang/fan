@@ -67,10 +67,10 @@ let tree_in_entry prev_symb tree = function
             end
         | `Slist1sep (symb, sep) ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Slist1sep symb sep)
+            | Some symb -> Some (`Slist1sep (symb, sep))
             | None ->
                 match search_symbol sep with
-                | Some sep -> Some (`Slist1sep symb sep)
+                | Some sep -> Some (`Slist1sep (symb, sep))
                 | None -> None 
             end
         | `Sopt symb ->

@@ -1239,6 +1239,34 @@ let pp_option :
      | Some x -> pp f "%(%)%a%(%)" first fu x last
   
 
+
+(** Format enhancement *)
+module Format = struct
+  include Format
+  let pp_print_list mf_a  fmt  lst =
+    let open List in 
+    fprintf fmt "@[<1>[%a]@]"
+      (fun fmt  -> iter (fun x ->
+        fprintf fmt "%a@ " mf_a x )) lst
+
+  let pp_print_option mf_a fmt v =
+    match v with
+    | None -> fprintf fmt "None"
+    | Some v -> fprintf fmt "Some @[%a@]" mf_a v 
+  let pp_print_int32: Format.formatter -> int32 -> unit =
+    fun fmt  a  -> Format.fprintf fmt "%ld" a
+  let pp_print_int64: Format.formatter -> int64 -> unit =
+    fun fmt  a  -> Format.fprintf fmt "%Ld" a
+  let pp_print_nativeint: Format.formatter -> nativeint -> unit =
+    fun fmt  a  -> Format.fprintf fmt "%nd" a
+  let pp_print_float = pp_print_float
+  let pp_print_string: Format.formatter -> string -> unit =
+    fun fmt  a  -> Format.fprintf fmt "%S" a
+  let pp_print_bool = pp_print_bool
+  let pp_print_char = pp_print_char
+  let pp_print_unit: Format.formatter -> unit -> unit =
+    fun fmt  _  -> Format.fprintf fmt "()"
+end
 (* module File = struct *)
   
 (* end *)
