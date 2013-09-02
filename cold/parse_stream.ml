@@ -1,7 +1,7 @@
 open FAst
 open Fsyntax
 open LibUtil
-open FStreamGen
+open Compile_stream
 let parser_ipat = Fgram.mk "parser_ipat"
 let stream_exp_comp = Fgram.mk "stream_exp_comp"
 let stream_exp_comp_list = Fgram.mk "stream_exp_comp_list"
@@ -34,13 +34,13 @@ let apply () =
           `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
           `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
           `Snterm (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-           ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser _loc po pcl)\n| None  -> cparser _loc po pcl\n",
+           ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc po pcl)\n| None  -> cparser _loc po pcl\n",
              (Fgram.mk_action
                 (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
                    (name : 'uid option)  _  (_loc : FLoc.t)  ->
                    (match name with
                     | Some o ->
-                        Ref.protect FStreamGen.grammar_module_name o
+                        Ref.protect Compile_stream.grammar_module_name o
                           (fun _  -> cparser _loc po pcl)
                     | None  -> cparser _loc po pcl : 'exp )))));
         ([`Skeyword "match";
@@ -50,14 +50,14 @@ let apply () =
          `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
          `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
          `Snterm (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-          ("match name with\n| Some o ->\n    Ref.protect FStreamGen.grammar_module_name o\n      (fun _  -> cparser_match _loc e po pcl)\n| None  -> cparser_match _loc e po pcl\n",
+          ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser_match _loc e po pcl)\n| None  -> cparser_match _loc e po pcl\n",
             (Fgram.mk_action
                (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
                   (name : 'uid option)  _  _  (e : 'exp)  _  (_loc : FLoc.t) 
                   ->
                   (match name with
                    | Some o ->
-                       Ref.protect FStreamGen.grammar_module_name o
+                       Ref.protect Compile_stream.grammar_module_name o
                          (fun _  -> cparser_match _loc e po pcl)
                    | None  -> cparser_match _loc e po pcl : 'exp )))))]));
   Fgram.extend_single (stream_exp : 'stream_exp Fgram.t )
@@ -67,33 +67,33 @@ let apply () =
           `Stoken
             (((function | `Uid _ -> true | _ -> false)),
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
-           ("Ref.protect FStreamGen.grammar_module_name n\n  (fun _  -> FStreamGen.empty _loc)\n",
+           ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Uid n ->
-                       (Ref.protect FStreamGen.grammar_module_name n
-                          (fun _  -> FStreamGen.empty _loc) : 'stream_exp )
+                       (Ref.protect Compile_stream.grammar_module_name n
+                          (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
                    | _ ->
                        failwith
-                         "Ref.protect FStreamGen.grammar_module_name n\n  (fun _  -> FStreamGen.empty _loc)\n"))));
+                         "Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n"))));
         ([`Skeyword "!";
          `Stoken
            (((function | `Uid _ -> true | _ -> false)),
              (`App ((`Vrn "Uid"), `Any)), "`Uid _");
          `Snterm
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
-          ("Ref.protect FStreamGen.grammar_module_name n (fun _  -> cstream _loc sel)\n",
+          ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
             (Fgram.mk_action
                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FToken.t]) 
                   _  (_loc : FLoc.t)  ->
                   match __fan_1 with
                   | `Uid n ->
-                      (Ref.protect FStreamGen.grammar_module_name n
+                      (Ref.protect Compile_stream.grammar_module_name n
                          (fun _  -> cstream _loc sel) : 'stream_exp )
                   | _ ->
                       failwith
-                        "Ref.protect FStreamGen.grammar_module_name n (fun _  -> cstream _loc sel)\n"))));
+                        "Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n"))));
         ([`Snterm
             (Fgram.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
@@ -102,10 +102,10 @@ let apply () =
                (fun (sel : 'stream_exp_comp_list)  (_loc : FLoc.t)  ->
                   (cstream _loc sel : 'stream_exp )))));
         ([],
-          ("FStreamGen.empty _loc\n",
+          ("Compile_stream.empty _loc\n",
             (Fgram.mk_action
                (fun (_loc : FLoc.t)  ->
-                  (FStreamGen.empty _loc : 'stream_exp )))))]));
+                  (Compile_stream.empty _loc : 'stream_exp )))))]));
   Fgram.extend_single (parser_ipat : 'parser_ipat Fgram.t )
     (None,
       (None, None,

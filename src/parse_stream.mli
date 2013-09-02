@@ -1,5 +1,5 @@
 open FAst
-open FStreamGen
+open Compile_stream
 val parser_ipat : pat Fgram.t
 val stream_exp_comp : sexp_comp Fgram.t
 val stream_exp_comp_list : sexp_comp list Fgram.t

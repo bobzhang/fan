@@ -182,16 +182,16 @@ end
 
 
 
-open PFan
+open Parse_fan
 
 (* open PMacro *)
 
-open PGrammar
+open Parse_grammar
 
-open PStream;;
+open Parse_stream;;
 
 (** for stream expression *)
-of_exp ~name:(d,"stream") ~entry:PStream.stream_exp;;
+of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp;;
 
 
 open AstInjection
