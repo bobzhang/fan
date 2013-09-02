@@ -872,27 +872,23 @@ let rec exp (x : exp) : Parsetree.expression =
         mkexp _loc (Pexp_tuple (List.map exp l))
     end
   | `Constraint (_,e,t) -> mkexp _loc (Pexp_constraint (exp e,Some (ctyp t), None))
-
-  | `Uid(_,"()")->
-    mkexp _loc (Pexp_construct (lident_with_loc "()" _loc, None, true))
-
+  | `Uid(_,s) ->
+    mkexp _loc @@ Pexp_construct (lident_with_loc  s _loc, None, true)
   | `Lid(_,("true"|"false" as s)) -> 
-    mkexp _loc (Pexp_construct (lident_with_loc s _loc,None, true))
+    mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
   | `Lid(_,s) ->
-    mkexp _loc (Pexp_ident (lident_with_loc s _loc))
-  |  `Uid(_,s) ->
-    mkexp _loc (Pexp_construct (lident_with_loc  s _loc, None, true))
-  | `Vrn (_,s) -> mkexp _loc (Pexp_variant  (s, None))
+    mkexp _loc @@ Pexp_ident (lident_with_loc s _loc)
+  | `Vrn (_,s) -> mkexp _loc @@ Pexp_variant  (s, None)
   | `While (_, e1, el) ->
     let e2 = `Seq (_loc, el) in
     mkexp _loc @@ Pexp_while (exp e1,exp e2)
   | `LetOpen(_,f, i,e) ->
     mkexp _loc (Pexp_open (flag _loc f, long_uident i,exp e))
   | `Package_exp (_,`Constraint(_,me,pt)) -> 
-    mkexp _loc
-      (Pexp_constraint
+    mkexp _loc @@
+      Pexp_constraint
          (mkexp _loc (Pexp_pack (mexp me)),
-          Some (mktyp _loc (Ptyp_package (package_type pt))), None))
+          Some (mktyp _loc (Ptyp_package (package_type pt))), None)
   | `Package_exp(_,me) -> 
     mkexp _loc @@ Pexp_pack (mexp me)
   | `LocalTypeFun (_,`Lid(_,i),e) -> mkexp _loc @@ Pexp_newtype (i, exp e)
@@ -1260,25 +1256,24 @@ and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
 and clexp  (x:FAst.clexp) :  Parsetree.class_expr =
   let loc = unsafe_loc_of x in
   match x with 
-  | (`CeApp (_, _, _):clexp) as c ->
+  | `CeApp _ ->
     let rec view_app acc (x:clexp)  =
       match x  with 
-      | (`CeApp (_loc,ce,(a:exp)) :clexp) -> view_app (a :: acc) ce
+      | `CeApp (_loc,ce,(a:exp)) -> view_app (a :: acc) ce
       | ce -> (ce, acc) in
-    let (ce, el) = view_app [] c in
+    let (ce, el) = view_app [] x in
     let el = List.map label_exp el in
     mkcl loc (Pcl_apply (clexp ce, el))
 
-  | ( `ClApply (_,id,tl):clexp) -> 
+  | `ClApply (_,id,tl) ->
     mkcl loc
       (Pcl_constr (long_class_ident (id:>ident),
                    (List.map (function |`Ctyp (_loc,x) -> ctyp x | _ -> assert false)
                        (list_of_com tl []))))
   | #vid' as id  ->
-    mkcl loc (Pcl_constr (long_class_ident (id : vid' :>ident), []))
-
+    mkcl loc @@ Pcl_constr (long_class_ident (id : vid' :>ident), [])
   | `CeFun (_, (`Label (_,`Lid(_,lab), po)), ce) ->
-    mkcl loc (Pcl_fun (lab, None, pat po , clexp ce))
+    mkcl loc @@ Pcl_fun (lab, None, pat po , clexp ce)
   | `CeFun(_,`OptLablExpr(_,`Lid(_loc,lab),p,e),ce) ->
     let lab = paolab lab p in
     mkcl loc (Pcl_fun ("?" ^ lab,Some (exp e), pat p, clexp ce))
