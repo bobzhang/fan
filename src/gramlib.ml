@@ -68,7 +68,7 @@ let rec infix_kwds_filter = parser
 (*               skip_pat (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some (`KEYWORD ("as" | "::" | "," | "_"),_) *)
 (*           | Some (`Lid _ | `Uid _, _) -> skip_pat (n + 1) *)
-(*           | Some _ | None -> raise XStream.Failure ] *)
+(*           | Some _ | None -> raise XStream.NotConsumed ] *)
 (*         and ignore_upto end_kwd n = *)
 (*           match XStream.peek_nth n strm with *)
 (*           [ Some (`KEYWORD prm,_) when prm = end_kwd -> n *)
@@ -79,7 +79,7 @@ let rec infix_kwds_filter = parser
 (*           | Some (`KEYWORD "{",_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some _ -> ignore_upto end_kwd (n + 1) *)
-(*           | None -> raise XStream.Failure ] *)
+(*           | None -> raise XStream.NotConsumed ] *)
 (*         in *)
 (*         skip_pat 1); *)
 

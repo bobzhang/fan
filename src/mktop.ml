@@ -369,7 +369,7 @@ let normal_handler = function
   | Failure str -> Some (Format.sprintf "Failure: %S" str)
   | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | XStream.Failure -> Some (Format.sprintf "Parse failure")
+  | XStream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
   | XStream.Error str -> Some (Format.sprintf  "XStream.Error %s" str)
   | _ -> None;;
 

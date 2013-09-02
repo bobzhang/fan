@@ -32,7 +32,7 @@ let action_parse entry (ts: stream) : Gaction.t =
     let () = p Format.err_formatter "@]@." in
     res)
   with
-  | XStream.Failure ->
+  | XStream.NotConsumed ->
       FLoc.raise (get_cur_loc ts)
         (XStream.Error ("illegal begin of " ^ entry.ename))
   | FLoc.Exc_located (_, _) as exc -> 
@@ -56,13 +56,13 @@ let of_parser g n (p : stream -> 'a)   =
 let setup_parser e (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in begin
     e.estart <- fun _ -> f;
-    e.econtinue <- fun _ _ _ -> fun _ -> raise XStream.Failure;
+    e.econtinue <- fun _ _ _ -> fun _ -> raise XStream.NotConsumed;
     e.edesc <- Dparser f
   end
 
 let clear e = begin 
-  e.estart <- fun _ -> fun _ -> raise XStream.Failure;
-  e.econtinue <- fun _ _ _ -> fun _-> raise XStream.Failure;
+  e.estart <- fun _ -> fun _ -> raise XStream.NotConsumed;
+  e.econtinue <- fun _ _ _ -> fun _-> raise XStream.NotConsumed;
   e.edesc <- Dlevels []
 end
 

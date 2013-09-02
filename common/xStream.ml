@@ -27,7 +27,7 @@ and 'a gen = { mutable curr : 'a option option; func : int -> 'a option }
 and buffio =
   { ic : in_channel; buff : string; mutable len : int; mutable ind : int }
 ;;
-exception Failure;;
+exception NotConsumed;;
 exception Error of string;;
 
 external count : 'a t -> int = "%field0";;
@@ -172,12 +172,12 @@ let npeek n s =
 let next s =
   match peek s with
     Some a -> junk s; a
-  | None -> raise Failure
+  | None -> raise NotConsumed
 ;;
 
 let empty s =
   match peek s with
-    Some _ -> raise Failure
+    Some _ -> raise NotConsumed
   | None -> ()
 ;;
 

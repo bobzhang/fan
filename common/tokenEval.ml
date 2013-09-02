@@ -86,7 +86,7 @@ let backslash (__strm : _ XStream.t) =
                    chr ((16 * (valch_hex c1)) + (valch_hex c2)))
               | _ -> raise (XStream.Error "")))
         | _ -> raise (XStream.Error "")))
-  | _ -> raise XStream.Failure          
+  | _ -> raise XStream.NotConsumed
 
 
 (* follow the ocaml convention *)    
@@ -103,7 +103,7 @@ let backslash_in_string strict store (__strm : _ XStream.t) =
       (XStream.junk __strm;
        (let s = __strm in skip_opt_linefeed s; skip_indent s))
   | _ ->
-      (match try Some (backslash __strm) with | XStream.Failure  -> None with
+      (match try Some (backslash __strm) with  XStream.NotConsumed  -> None with
        | Some x -> store x
        | _ ->
            (match XStream.peek __strm with
@@ -130,7 +130,7 @@ let char s =
     | Some '\\' ->
         (XStream.junk __strm;
          (try backslash __strm
-         with  XStream.Failure  -> raise (XStream.Error "Invalid char token")))
+         with  XStream.NotConsumed  -> raise (XStream.Error "Invalid char token")))
     | _ -> failwith "invalid char token"
     (* match XStream.of_string s with parser *)
     (* | '\\'; x = backslash  ?? "Invalid char token"-> x *)
@@ -154,7 +154,7 @@ let string ?strict s =
         (XStream.junk __strm;
          (let _ =
             try backslash_in_string (strict <> None) store __strm
-            with | XStream.Failure  -> raise (XStream.Error "") in
+            with | XStream.NotConsumed  -> raise (XStream.Error "") in
           parse __strm))
     | Some c -> (XStream.junk __strm; (let s = __strm in store c; parse s))
     | _ -> Buffer.contents buf

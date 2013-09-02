@@ -14,7 +14,7 @@ let mk_dynamic g n =
     ename = n;
     estart = (empty_entry n);
     econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
     edesc = (Dlevels []);
     freezed = false
   }
@@ -26,7 +26,7 @@ let action_parse entry (ts : stream) =
      (let res = entry.estart 0 ts in
       let () = p Format.err_formatter "@]@." in res)
    with
-   | XStream.Failure  ->
+   | XStream.NotConsumed  ->
        FLoc.raise (get_cur_loc ts)
          (XStream.Error ("illegal begin of " ^ entry.ename))
    | FLoc.Exc_located (_,_) as exc ->
@@ -41,18 +41,18 @@ let of_parser g n (p : stream -> 'a) =
     ename = n;
     estart = (fun _  -> f);
     econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.Failure);
+      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
     edesc = (Dparser f);
     freezed = true
   }
 let setup_parser e (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
   e.estart <- (fun _  -> f);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
+  e.econtinue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
   e.edesc <- Dparser f
 let clear e =
-  e.estart <- (fun _  _  -> raise XStream.Failure);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.Failure);
+  e.estart <- (fun _  _  -> raise XStream.NotConsumed);
+  e.econtinue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
   e.edesc <- Dlevels []
 let obj x = x
 let repr x = x

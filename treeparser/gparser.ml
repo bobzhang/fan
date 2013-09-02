@@ -62,7 +62,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
    *)
   let rec from_tree tree =
     match tree  with
-    |DeadEnd -> raise XStream.Failure (* FIXME be more preicse *)
+    |DeadEnd -> raise XStream.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
           (* | LocActAppend(act,_,n) -> *)
           (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
@@ -72,7 +72,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
         (try
           let a = with_loc (entry.estart alevn) strm in
           fun ()  -> ArgContainer.push a q; act
-        with  XStream.Failure  -> (fun ()  -> from_tree bro strm)) ()
+        with  XStream.NotConsumed  -> (fun ()  -> from_tree bro strm)) ()
 
           (* [son] will never be [DeadEnd] *)        
     | Node ({ node ; son; brother } as y) ->
@@ -98,14 +98,14 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
                   | e ->
                       (ignore (ArgContainer.pop q);
                        (match e with
-                       | XStream.Failure  ->
+                       | XStream.NotConsumed  ->
                            if (Gtools.get_cur_loc strm) = bp
-                           then raise XStream.Failure
+                           then raise XStream.NotConsumed
                            else
                              raise
                                (XStream.Error (Gfailed.tree_failed entry a node son))
                        | _ -> raise e)))
-              with | XStream.Failure  -> (fun ()  -> from_tree brother strm)) ())
+              with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
 
         | Some (tokl, node, son) -> fun strm ->
             (* let try args = List.rev (parser_of_terminals tokl strm) in *)
@@ -120,12 +120,12 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
             (*               ignore (ArgContainer.pop q); *)
             (*             done; *)
             (*             match e with *)
-            (*             |XStream.Failure -> raise *)
+            (*             |XStream.NotConsumed -> raise *)
             (*                   (XStream.Error (Gfailed.tree_failed entry e (node:>symbol) son)) *)
             (*             |_ -> raise e *)
             (*           end *)
             (* end *)
-            (* with XStream.Failure -> from_tree brother strm *)
+            (* with XStream.NotConsumed -> from_tree brother strm *)
 
   (try
      let args = List.rev (parser_of_terminals tokl strm) in
@@ -138,12 +138,12 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
         | e ->
             (for _i = 1 to len do ignore (ArgContainer.pop q) done;
              (match e with
-              | XStream.Failure  ->
+              | XStream.NotConsumed  ->
                   raise
                     (XStream.Error
                        (Gfailed.tree_failed entry e (node :>symbol) son))
               | _ -> raise e)))
-   with | XStream.Failure  -> (fun ()  -> from_tree brother strm)) ()
+   with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) ()
                 
   in
   let parse = from_tree x in
@@ -185,7 +185,7 @@ and parser_of_terminals (terminals: terminal list) strm =
             then
               invalid_arg "parser_of_terminals"
           end) terminals
-    with Invalid_argument _ -> raise XStream.Failure);
+    with Invalid_argument _ -> raise XStream.NotConsumed);
     XStream.njunk n strm;
     !acc
   end          
@@ -215,11 +215,11 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
         (match XStream.peek strm with
         | Some (tok,_) when FToken.match_keyword kwd tok ->
             (XStream.junk strm ; Gaction.mk tok )
-        |_ -> raise XStream.Failure )
+        |_ -> raise XStream.NotConsumed )
     | `Stoken (f, _,_) -> fun strm ->
         match XStream.peek strm with
         |Some (tok,_) when f tok -> (XStream.junk strm; Gaction.mk tok)
-        |_ -> raise XStream.Failure in with_loc (aux s)
+        |_ -> raise XStream.NotConsumed in with_loc (aux s)
 
 
 
@@ -227,7 +227,7 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
 let start_parser_of_levels entry =
   let rec aux clevn  (xs:  level list) : int ->  Gaction.t FToken.parse =
     match xs with 
-    | [] -> fun _ -> fun _ -> raise XStream.Failure  
+    | [] -> fun _ -> fun _ -> raise XStream.NotConsumed  
     | lev :: levs ->
         let hstart = aux  (clevn+1) levs in
         match lev.lprefix with
@@ -250,11 +250,11 @@ let start_parser_of_levels entry =
                   let (act,loc) = cstart strm in
                   fun ()  ->
                     let a = Gaction.getf act loc in entry.econtinue levn loc a strm
-                with  XStream.Failure  -> (fun ()  -> hstart levn strm)) ()
+                with  XStream.NotConsumed  -> (fun ()  -> hstart levn strm)) ()
                   (* let try (act,loc) =  cstart strm in *)
                   (* let a = Gaction.getf act loc in *)
                   (* entry.econtinue levn loc a strm *)
-                  (* with XStream.Failure -> hstart levn strm  *)in
+                  (* with XStream.NotConsumed -> hstart levn strm  *)in
   aux 0
     
 let start_parser_of_entry entry =
@@ -266,7 +266,7 @@ let start_parser_of_entry entry =
 
 
 let rec continue_parser_of_levels entry clevn = function
-  | [] -> fun _ _ _ ->  fun _ -> raise XStream.Failure
+  | [] -> fun _ _ _ ->  fun _ -> raise XStream.NotConsumed
   | lev :: levs ->
       let hcontinue = continue_parser_of_levels entry  (clevn+1) levs in
       match lev.lsuffix with
@@ -284,7 +284,7 @@ let rec continue_parser_of_levels entry clevn = function
           else
             try hcontinue levn bp a strm
             with
-            | XStream.Failure ->
+            | XStream.NotConsumed ->
               let (act,loc) = ccontinue strm in
               let loc = FLoc.merge bp loc in
               let a = Gaction.getf2 act a loc in entry.econtinue levn loc a strm
@@ -295,6 +295,6 @@ let continue_parser_of_entry entry =
   match entry.edesc with
   | Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in
-    (fun levn bp a strm -> try p levn bp a strm with XStream.Failure -> a )
-  | Dparser _ -> fun _ _ _ _ -> raise XStream.Failure  
+    (fun levn bp a strm -> try p levn bp a strm with XStream.NotConsumed -> a )
+  | Dparser _ -> fun _ _ _ _ -> raise XStream.NotConsumed  
 

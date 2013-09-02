@@ -25,7 +25,7 @@ let rec is_constr_apply a =
   | _ -> false
 let rec handle_failure e =
   match e with
-  | (`Try (_loc,_,`Case (_,`Dot (_,`Uid (_,m),`Uid (_,"Failure")),e)) :
+  | (`Try (_loc,_,`Case (_,`Dot (_,`Uid (_,m),`Uid (_,"NotConsumed")),e)) :
       FAst.exp) when m = (gm ()) -> handle_failure e
   | (`Match (_loc,me,a) : FAst.exp) ->
       let rec case_handle_failure =
@@ -45,8 +45,8 @@ let rec handle_failure e =
       (bind_handle_failure bi) && (handle_failure e)
   | #literal|#vid' -> true
   | (`Fun (_loc,_) : FAst.exp) -> true
-  | (`App (_loc,`Lid (_,"raise"),`Dot (_,`Uid (_,m),`Uid (_,"Failure"))) :
-      FAst.exp) -> m <> (gm ())
+  | (`App (_loc,`Lid (_,"raise"),`Dot (_,`Uid (_,m),`Uid (_,"NotConsumed")))
+      : FAst.exp) -> m <> (gm ())
   | (`App (_loc,`Lid (_,"raise"),_) : FAst.exp) -> true
   | (`App (_loc,f,x) : FAst.exp) ->
       (is_constr_apply f) && ((handle_failure f) && (handle_failure x))
@@ -108,7 +108,8 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
             ((function
               | (`App
                    (_loc,`Lid (_,"raise"),`Dot
-                                            (_,`Uid (_,m),`Uid (_,"Failure")))
+                                            (_,`Uid (_,m),`Uid
+                                                            (_,"NotConsumed")))
                   : FAst.exp) when m = (gm ()) -> true
               | _ -> false) ckont) || (handle_failure e)
           then e
@@ -119,13 +120,15 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                     (_loc,
                       (`Dot
                          (_loc, (`Uid (_loc, (gm ()))),
-                           (`Uid (_loc, "Failure")))), ckont))) : FAst.exp ))
+                           (`Uid (_loc, "NotConsumed")))), ckont))) : 
+            FAst.exp ))
        else
          if
            ((function
              | (`App
                   (_loc,`Lid (_,"raise"),`Dot
-                                           (_,`Uid (_,m),`Uid (_,"Failure")))
+                                           (_,`Uid (_,m),`Uid
+                                                           (_,"NotConsumed")))
                  : FAst.exp) when m = (gm ()) -> true
              | _ -> false)) ckont
          then
@@ -142,7 +145,8 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                      (_loc,
                        (`Dot
                           (_loc, (`Uid (_loc, (gm ()))),
-                            (`Uid (_loc, "Failure")))), ckont))) : FAst.exp )
+                            (`Uid (_loc, "NotConsumed")))), ckont))) : 
+             FAst.exp )
            else
              if
                ((function
@@ -159,7 +163,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                             (_loc,
                               (`Dot
                                  (_loc, (`Uid (_loc, (gm ()))),
-                                   (`Uid (_loc, "Failure")))), ckont))) : 
+                                   (`Uid (_loc, "NotConsumed")))), ckont))) : 
                     FAst.exp ) in
                 (`LetIn
                    (_loc, (`Negative _loc), (`Bind (_loc, p, tst)), skont) : 
@@ -173,7 +177,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                             (_loc,
                               (`Dot
                                  (_loc, (`Uid (_loc, (gm ()))),
-                                   (`Uid (_loc, "Failure")))),
+                                   (`Uid (_loc, "NotConsumed")))),
                               (`Uid (_loc, "None")))))),
                     (`Bar
                        (_loc,
@@ -294,7 +298,7 @@ let rec parser_cases _loc (x : stream_cases) =
   | [] ->
       (`App
          (_loc, (`Lid (_loc, "raise")),
-           (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Uid (_loc, "Failure"))))) : 
+           (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Uid (_loc, "NotConsumed"))))) : 
       FAst.exp )
   | spel ->
       (match group_terms spel with

@@ -96,7 +96,7 @@ let apply () =
             (XStream.junk __strm;
              (let a =
                 try symb __strm
-                with | XStream.Failure  -> raise (XStream.Error "") in
+                with | XStream.NotConsumed  -> raise (XStream.Error "") in
               let s = __strm in
               let _loc = al <+> a in kont (`Sem (_loc, al, a) : FAst.exp ) s))
         | _ -> al in
@@ -544,21 +544,21 @@ let apply () =
                     (`With (_loc, mt, wc) : 'mtyp )))))]);
        ((Some "apply"), None,
          [([`Sself; `Sself],
-            ("match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise XStream.Failure\n",
+            ("match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise XStream.NotConsumed\n",
               (Fgram.mk_action
                  (fun (mt2 : 'mtyp)  (mt1 : 'mtyp)  (_loc : FLoc.t)  ->
                     (match (mt1, mt2) with
                      | ((#ident as i1),(#ident as i2)) -> apply i1 i2
-                     | _ -> raise XStream.Failure : 'mtyp )))))]);
+                     | _ -> raise XStream.NotConsumed : 'mtyp )))))]);
        ((Some "."), None,
          [([`Sself; `Skeyword "."; `Sself],
-            ("let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise XStream.Failure in\nacc0 mt1 mt2\n",
+            ("let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise XStream.NotConsumed in\nacc0 mt1 mt2\n",
               (Fgram.mk_action
                  (fun (mt2 : 'mtyp)  _  (mt1 : 'mtyp)  (_loc : FLoc.t)  ->
                     (let acc0 mt1 mt2 =
                        match (mt1, mt2) with
                        | ((#ident as i1),(#ident as i2)) -> dot i1 i2
-                       | _ -> raise XStream.Failure in
+                       | _ -> raise XStream.NotConsumed in
                      acc0 mt1 mt2 : 'mtyp )))))]);
        ((Some "sig"), None,
          [([`Skeyword "sig";

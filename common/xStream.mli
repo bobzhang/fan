@@ -18,7 +18,7 @@
 type 'a t
 (** The type of streams holding values of type ['a]. *)
 
-exception Failure
+exception NotConsumed
 (** Raised by parsers when none of the first components of the stream
    patterns is accepted. *)
 
@@ -59,10 +59,10 @@ val iter : ('a -> unit) -> 'a t -> unit
 
 val next : 'a t -> 'a
 (** Return the first element of the stream and remove it from the
-   stream. Raise XStream.Failure if the stream is empty. *)
+   stream. Raise XStream.NotConsumed if the stream is empty. *)
 
 val empty : 'a t -> unit
-(** Return [()] if the stream is empty, else raise [XStream.Failure]. *)
+(** Return [()] if the stream is empty, else raise [XStream.NotConsumed]. *)
 
 
 (** {6 Useful functions} *)

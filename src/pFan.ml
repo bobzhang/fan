@@ -160,14 +160,14 @@ let apply () = begin
         [ S{mt1}; S{mt2} ->
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) -> apply i1 i2 
-            | _ -> raise XStream.Failure ] (* FIXME *)
+            | _ -> raise XStream.NotConsumed ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) ->
               dot i1 i2 
-            | _ -> raise XStream.Failure  in
+            | _ -> raise XStream.NotConsumed  in
           acc0 mt1 mt2 ] (*FIXME*)
         "sig"
         [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)

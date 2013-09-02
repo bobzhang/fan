@@ -6,7 +6,7 @@ open AstLib
 (*
   identifiers referenced:
   {[
-   peek junk sempty Failure count Error  t ising lsing icons lcons iapp lapp slazy sempty
+   peek junk sempty NotConsumed count Error  t ising lsing icons lcons iapp lapp slazy sempty
   ]}
 
 *)
@@ -55,10 +55,10 @@ let rec  is_constr_apply a =
 
 
 (** Approximation
-   whether expression  e would raise expression [Failure] *)  
+   whether expression  e would raise expression [NotConsumed] *)  
 let rec handle_failure e =
   match e with
-  | {| try $_ with | $(uid:m).Failure -> $e |} when m = gm()
+  | {| try $_ with | $(uid:m).NotConsumed -> $e |} when m = gm()
     ->  handle_failure e
   | {| match $me with | $a  |} ->
       let rec case_handle_failure = function
@@ -76,7 +76,7 @@ let rec handle_failure e =
       bind_handle_failure bi && handle_failure e
   | #literal | #vid'-> true
   |  {| function | $_  |}  -> true
-  | {|raise $uid:m.Failure|} -> m <> gm()
+  | {|raise $uid:m.NotConsumed|} -> m <> gm()
   | {|raise $_ |} -> true 
   | {| $f $x |} ->
       is_constr_apply f && handle_failure f && handle_failure x
@@ -112,25 +112,25 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
         | _ -> {| $e $lid:strm_n |}  in
       (* Simplify it *)
       if pat_eq_exp p skont then
-        if {:p|{|raise $uid:m.Failure|} when m = gm() |}  ckont || handle_failure e then
+        if {:p|{|raise $uid:m.NotConsumed|} when m = gm() |}  ckont || handle_failure e then
           e
         else
-          {| try $e with | $(uid:gm()).Failure -> $ckont  |}
+          {| try $e with | $(uid:gm()).NotConsumed -> $ckont  |}
       else
-        if {:p|{|raise $uid:m.Failure|} when m = gm() |} ckont then
+        if {:p|{|raise $uid:m.NotConsumed|} when m = gm() |} ckont then
           {| let $p = $e in $skont |}
         else
           if pat_eq_exp {:pat| Some $p |} skont then
-            {| try Some $e with | $(uid:gm()).Failure -> $ckont  |}
+            {| try Some $e with | $(uid:gm()).NotConsumed -> $ckont  |}
           else
             if {:p| {|raise $_|}|}  ckont then
               let tst =
                 if handle_failure e then e
-                else {| try $e with | $(uid:gm()).Failure -> $ckont  |}  in
+                else {| try $e with | $(uid:gm()).NotConsumed -> $ckont  |}  in
               {| let $p = $tst in $skont |}
             else
               {|
-              match (try Some $e with | $(uid:gm()).Failure -> None)  with
+              match (try Some $e with | $(uid:gm()).NotConsumed -> None)  with
               | Some $p -> $skont
               | _ -> $ckont  |}
   | SpStr (_loc, p) ->
@@ -218,7 +218,7 @@ let stream_patterns_term _loc (ekont:unit -> exp) tspel : exp =
   
 let rec parser_cases _loc (x:stream_cases) =
   match x with 
-  | [] -> {| raise $(uid:gm()).Failure |}
+  | [] -> {| raise $(uid:gm()).NotConsumed |}
   | spel ->
       match group_terms spel with
       | ([], x :: spel) ->
