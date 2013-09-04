@@ -11,11 +11,6 @@ open Automata_def
 
 
 
-let tag_compare t1 t2 = Pervasives.compare t1 t2
-
-module Tags = Set.Make(struct type t = tag_info let compare = tag_compare end)
-
-module TagMap = Map.Make (struct type t = tag_info let compare = tag_compare end)
 module Id =   struct
   type t = ident
   let compare (x:t) y =
@@ -31,7 +26,8 @@ module IdSet = Set.Make (Id)
 
 (* Silently eliminate nested variables *)
 
-let rec do_remove_nested to_remove = function
+let rec do_remove_nested (to_remove:IdSet.t) x : concrete_regexp =
+  match x with
   | Bind (e,x) ->
       if IdSet.mem x to_remove then
         do_remove_nested to_remove e
@@ -47,7 +43,7 @@ let rec do_remove_nested to_remove = function
   | Repetition e ->
       Repetition (do_remove_nested to_remove  e)
 
-let remove_nested_as e = do_remove_nested IdSet.empty e
+
 
 (*********************)
 (* Variable analysis *)
@@ -63,42 +59,44 @@ let remove_nested_as e = do_remove_nested IdSet.empty e
 *)
 
 let stringset_delta s1 s2 =
-  IdSet.union
-    (IdSet.diff s1 s2)
-    (IdSet.diff s2 s1)
+  let open IdSet in
+  union (diff s1 s2) (diff s2 s1)
 
-let rec find_all_vars = function
-  | Characters _|Epsilon|Eof ->
-      IdSet.empty
+let rec find_all_vars (x:concrete_regexp) : IdSet.t=
+  let open IdSet in
+  match x with 
+  | Characters _ | Epsilon |Eof ->
+      empty
   | Bind (e,x) ->
-      IdSet.add x (find_all_vars e)
+      add x (find_all_vars e)
   | Sequence (e1,e2)|Alternative (e1,e2) ->
-      IdSet.union (find_all_vars e1) (find_all_vars e2)
+      union (find_all_vars e1) (find_all_vars e2)
   | Repetition e -> find_all_vars e
 
+let remove_nested_as e = do_remove_nested IdSet.empty e
 
-let rec do_find_opt = function
-  | Characters _|Epsilon|Eof -> (IdSet.empty, IdSet.empty)
+let rec do_find_opt x : IdSet.t * IdSet.t =
+  let open IdSet in
+  match x with 
+  | Characters _|Epsilon|Eof -> (empty, empty)
   | Bind (e,x) ->
       let (opt,all) = do_find_opt e in
-      (opt, IdSet.add x all)
+      (opt, add x all)
   | Sequence (e1,e2) ->
       let (opt1,all1) = do_find_opt e1
       and (opt2,all2) = do_find_opt e2 in
-      (IdSet.union opt1 opt2, IdSet.union all1 all2)
+      (union opt1 opt2, union all1 all2)
   | Alternative (e1,e2) ->
       let (opt1,all1) = do_find_opt e1
       and (opt2,all2) = do_find_opt e2 in
-      (IdSet.union
-         (IdSet.union opt1 opt2)
-         (stringset_delta all1 all2),
-       IdSet.union all1 all2)
+      (union (union opt1 opt2) (stringset_delta all1 all2),
+       union all1 all2)
   | Repetition e  ->
       let r = find_all_vars e in
       (r,r)
 
-let find_optional e =
-  let (r,_) = do_find_opt e in r
+let find_optional e = fst @@ do_find_opt e 
+
 
 (*
    Double variables
@@ -109,27 +107,25 @@ let find_optional e =
 
 *)
 
-let rec do_find_double = function
-  | Characters _|Epsilon|Eof -> (IdSet.empty, IdSet.empty)
+let rec do_find_double x : IdSet.t * IdSet.t =
+  let open IdSet in
+  match x with 
+  | Characters _|Epsilon|Eof -> (empty, empty)
   | Bind (e,x) ->
       let (dbl,all) = do_find_double e in
-      ((if IdSet.mem x all then
-        IdSet.add x dbl
+      ((if mem x all then
+        add x dbl
       else
         dbl),
-      IdSet.add x all)
+      add x all)
   | Sequence (e1,e2) ->
       let (dbl1, all1) = do_find_double e1
       and (dbl2, all2) = do_find_double e2 in
-      (IdSet.union
-        (IdSet.inter all1 all2)
-        (IdSet.union dbl1 dbl2),
-      IdSet.union all1 all2)
+      (union (inter all1 all2) (union dbl1 dbl2), union all1 all2)
   | Alternative (e1,e2) ->
       let (dbl1, all1) = do_find_double e1
       and (dbl2, all2) = do_find_double e2 in
-      (IdSet.union dbl1 dbl2,
-      IdSet.union all1 all2)
+      (union dbl1 dbl2, union all1 all2)
   | Repetition e ->
       let r = find_all_vars e in
       (r,r)
@@ -149,33 +145,36 @@ let add_some x = function
   | None   -> None
 
 let add_some_some x y =
-  match (x,y) with
+  match x,y with
   | (Some i, Some j) -> Some (i+j)
   | (_,_)            -> None
+let tag_compare t1 t2 = Pervasives.compare t1 t2
 
-let rec do_find_chars sz = function
-  | Epsilon|Eof    -> (IdSet.empty, IdSet.empty, sz)
-  | Characters _ -> (IdSet.empty, IdSet.empty, add_some 1 sz)
+let rec do_find_chars sz x : IdSet.t * IdSet.t * int option =
+  let open IdSet in
+  match x with 
+  | Epsilon|Eof    -> (empty, empty, sz)
+  | Characters _ -> (empty, empty, add_some 1 sz)
   | Bind (e,x)   ->
       let (c,s,e_sz) = do_find_chars (Some 0) e in
       begin match e_sz  with
       | Some 1 ->
-          (IdSet.add x c,s,add_some 1 sz)
+          (add x c,s,add_some 1 sz)
       | _ ->
-          (c, IdSet.add x s, add_some_some sz e_sz)
+          (c, add x s, add_some_some sz e_sz)
       end
   | Sequence (e1,e2) ->
       let (c1,s1,sz1) = do_find_chars sz e1 in
       let (c2,s2,sz2) = do_find_chars sz1 e2 in
-      (IdSet.union c1 c2,
-       IdSet.union s1 s2,
+      (union c1 c2,
+       union s1 s2,
        sz2)
   | Alternative (e1,e2) ->
       let (c1,s1,sz1) = do_find_chars sz e1
       and (c2,s2,sz2) = do_find_chars sz e2 in
-      (IdSet.union c1 c2,
-      IdSet.union s1 s2,
-      (if sz1 = sz2 then sz1 else None))
+      (union c1 c2,
+       union s1 s2,
+       (if sz1 = sz2 then sz1 else None))
   | Repetition e -> do_find_chars None e
 
 
@@ -183,6 +182,10 @@ let rec do_find_chars sz = function
 let find_chars e =
   let (c,s,_) = do_find_chars (Some 0) e in
   IdSet.diff c s
+
+module Tags = Set.Make(struct type t = tag_info let compare = tag_compare end)
+module TagMap = Map.Make (struct type t = tag_info let compare = tag_compare end)
+
 
 (*******************************)
 (* From shallow to deep syntax *)
@@ -192,7 +195,8 @@ let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
 
-let rec encode_regexp char_vars act = function
+let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
+  match x with
   | Epsilon -> Empty
   | Characters cl ->
       let n = !chars_count in begin
@@ -206,17 +210,16 @@ let rec encode_regexp char_vars act = function
         incr chars_count;
         Chars(n,true)
       end
-  | Sequence(r1,r2) ->
+  | Sequence(r1,r2)  ->
       let r1 = encode_regexp char_vars act r1 in
       let r2 = encode_regexp char_vars act r2 in
       Seq (r1, r2)
-  | Alternative(r1,r2) ->
+  | Alternative(r1,r2) -> 
       let r1 = encode_regexp char_vars act r1 in
       let r2 = encode_regexp char_vars act r2 in
-      Alt(r1, r2)
+      Alt (r1, r2)
   | Repetition r ->
-      let r = encode_regexp char_vars act r in
-      Star r
+      Star ( encode_regexp char_vars act r )
   | Bind (r,(`Lid(_,name) as x)) ->
       let r = encode_regexp char_vars act r in
       if IdSet.mem x char_vars then
@@ -246,10 +249,10 @@ let decr_pos = function
 
 let opt = true
 
-let mk_seq r1 r2 =
-  match (r1,r2)  with
-  | (Empty,_) -> r2
-  | (_,Empty) -> r1
+let mk_seq (r1:regexp) (r2:regexp) : regexp=
+  match r1,r2  with
+  | Empty,_ -> r2
+  | _,Empty -> r1
   | (_,_)     -> Seq (r1,r2)
 
 let add_pos p i =
@@ -257,31 +260,49 @@ let add_pos p i =
   | Some (Sum (a,n)) -> Some (Sum (a,n+i))
   | None -> None
 
-let mem_name name id_set =
-  IdSet.exists (function | (`Lid(_,id_name)) -> name = id_name) id_set (* FIXME*)
+let mem_name name (id_set:IdSet.t) : bool =
+  IdSet.exists (function (`Lid(_,id_name)) -> name = id_name) id_set (* FIXME*)
 
-let opt_regexp all_vars char_vars optional_vars double_vars r =
-
-(* From removed tags to their addresses *)
-  let env = Hashtbl.create 17 in
 
 (* First static optimizations, from start position *)
-  let rec size_forward pos = function
-    | Empty|Chars (_,true)|Tag _ -> Some pos
-    | Chars (_,false) -> Some (pos+1)
-    | Seq (r1,r2) ->
-        begin match size_forward pos r1 with
-        | None -> None
-        | Some pos  -> size_forward pos r2
-        end
-    | Alt (r1,r2) ->
-        let pos1 = size_forward pos r1
-        and pos2 = size_forward pos r2 in
-        if pos1=pos2 then pos1 else None
-    | Star _ -> None
-    | Action _ -> assert false in
+let rec size_forward pos x : int option =
+  match x with 
+  | Empty|Chars (_,true)|Tag _ -> Some pos
+  | Chars (_,false) -> Some (pos+1)
+  | Seq (r1,r2) ->
+      begin match size_forward pos r1 with
+      | None -> None
+      | Some pos  -> size_forward pos r2
+      end
+  | Alt (r1,r2) ->
+      let pos1 = size_forward pos r1
+      and pos2 = size_forward pos r2 in
+      if pos1=pos2 then pos1 else None
+  | Star _ -> None
+  | Action _ -> assert false 
 
-  let rec simple_forward pos r = match r with
+(* Then static optimizations, from end position *)
+let rec size_backward pos = function
+  | Empty|Chars (_,true)|Tag _ -> Some pos
+  | Chars (_,false) -> Some (pos-1)
+  | Seq (r1,r2) ->
+      begin match size_backward pos r2 with
+      | None -> None
+      | Some pos  -> size_backward pos r1
+      end
+  | Alt (r1,r2) ->
+      let pos1 = size_backward pos r1
+      and pos2 = size_backward pos r2 in
+      if pos1=pos2 then pos1 else None
+  | Star _ -> None
+  | Action _ -> assert false
+
+(* type dir = Backward | Forward          *)
+let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp) =
+(* From removed tags to their addresses *)
+  let env = Hashtbl.create 17 in
+  let rec simple_forward pos r =
+    match r with
     | Tag n ->
         if mem_name n.id double_vars then
           (r,Some pos)
@@ -293,38 +314,20 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
     | Chars (_,is_eof) ->
         (r,Some (if is_eof then  pos else pos+1))
     | Seq (r1,r2) ->
-        let (r1,pos) = simple_forward pos r1 in
-        begin match pos with
-        | None -> (mk_seq r1 r2,None)
-        | Some pos ->
+        begin match simple_forward pos r1 with
+        | r1,None -> (mk_seq r1 r2,None)
+        | r1,Some pos ->
             let (r2,pos) = simple_forward pos r2 in
             (mk_seq r1 r2,pos)
         end
     | Alt (r1,r2) ->
         let pos1 = size_forward pos r1
         and pos2 = size_forward pos r2 in
-        (r,(if pos1=pos2 then pos1 else None))
+        (r,if pos1=pos2 then pos1 else None)
     | Star _ -> (r,None)
     | Action _ -> assert false in
-
-(* Then static optimizations, from end position *)
-  let rec size_backward pos = function
-    | Empty|Chars (_,true)|Tag _ -> Some pos
-    | Chars (_,false) -> Some (pos-1)
-    | Seq (r1,r2) ->
-        begin match size_backward pos r2 with
-        | None -> None
-        | Some pos  -> size_backward pos r1
-        end
-    | Alt (r1,r2) ->
-        let pos1 = size_backward pos r1
-        and pos2 = size_backward pos r2 in
-        if pos1=pos2 then pos1 else None
-    | Star _ -> None
-    | Action _ -> assert false in
-
-
-  let rec simple_backward pos r = match r with
+  let rec simple_backward pos r =
+    match r with
     | Tag n ->
         if mem_name n.id double_vars then
           (r,Some pos)
@@ -336,41 +339,38 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
     | Chars (_,is_eof) ->
         (r,Some (if is_eof then pos else pos-1))
     | Seq (r1,r2) ->
-        let (r2,pos) = simple_backward pos r2 in
-        begin match pos with
-        | None -> (mk_seq r1 r2,None)
-        | Some pos ->
+        begin match simple_backward pos r2 with
+        | r2,None -> (mk_seq r1 r2,None)
+        | r2,Some pos ->
             let (r1,pos) = simple_backward pos r1 in
             (mk_seq r1 r2,pos)
         end
     | Alt (r1,r2) ->
         let pos1 = size_backward pos r1
         and pos2 = size_backward pos r2 in
-        (r,(if pos1=pos2 then pos1 else None))
+        (r,if pos1=pos2 then pos1 else None)
     | Star _ -> (r,None)
     | Action _ -> assert false in
 
   let r =
     if opt then
-      let (r,_) = simple_forward 0 r in
-      let (r,_) = simple_backward 0 r in
+      let r,_ = simple_forward 0 r in
+      let r,_ = simple_backward 0 r in
       r
-    else
-      r in
-
+    else r in
   let loc_count = ref 0 in
   let get_tag_addr t =
     try
-     Hashtbl.find env t
-    with
-    | Not_found ->
-        let n = !loc_count in begin
-          incr loc_count ;
-          Hashtbl.add env t (Sum (Mem n,0)) ;
-          Sum (Mem n,0)
-        end in
+      Hashtbl.find env t
+    with Not_found ->
+      let n = !loc_count in begin
+        incr loc_count ;
+        Hashtbl.add env t (Sum (Mem n,0)) ;
+        Sum (Mem n,0)
+      end in
 
-  let rec alloc_exp pos r = match r with
+  let rec alloc_exp pos r =
+    match r with
     | Tag n ->
         if mem_name n.id double_vars then
           (r,pos)
@@ -398,7 +398,6 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
         end
     | Star _ -> (r,None)
     | Action _ -> assert false in
-
   let (r,_) = alloc_exp None r in
   let m =
     IdSet.fold
@@ -406,16 +405,16 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
         match x with
         | `Lid(_,name) -> 
 
-        let v =
-          if IdSet.mem x char_vars then
-            Ident_char
-              (IdSet.mem x optional_vars, get_tag_addr (name,true))
-          else
-            Ident_string
-              (IdSet.mem x optional_vars,
-               get_tag_addr (name,true),
-               get_tag_addr (name,false)) in
-        (x,v)::r)
+            let v =
+              if IdSet.mem x char_vars then
+                Ident_char
+                  (IdSet.mem x optional_vars, get_tag_addr (name,true))
+              else
+                Ident_string
+                  (IdSet.mem x optional_vars,
+                   get_tag_addr (name,true),
+                   get_tag_addr (name,false)) in
+            (x,v)::r)
       all_vars [] in
   (m,r, !loc_count)
 

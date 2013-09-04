@@ -20,7 +20,7 @@ module IdSet = Set.Make (Id)
 
 (* Silently eliminate nested variables *)
 
-let rec do_remove_nested (to_remove:IdSet.t) (x:regular_expression) =
+let rec do_remove_nested (to_remove:IdSet.t) (x:concrete_regexp) =
   match x with 
   | Bind (e,x) ->
       if IdSet.mem x to_remove then
