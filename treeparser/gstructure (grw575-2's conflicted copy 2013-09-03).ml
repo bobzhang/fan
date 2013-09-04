@@ -27,9 +27,16 @@ type literal =
   | `Flo of string | `Nativeint of string | `Str of string]
 (** a simplified pattern compared with [FAstN.pat] *)      
 type pat =
-  [ vid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
-  | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | literal
-  | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
+  [ vid
+  | `App of (pat* pat)
+  | `Vrn of string
+  | `Com of (pat* pat)
+  | `Sem of (pat* pat)
+  | `Par of pat
+  | any
+  | `Record of rec_pat
+  | literal
+  | `Alias of (pat* alident) (* | `ArrayEmpty | `Array of pat *)
   | `Bar of (pat* pat)
   | `PaRng of (pat* pat) ] 
 
@@ -40,7 +47,8 @@ and rec_pat =
 (* ATTENTION: the type system can not guarantee it would compile *)      
 type descr = pat
 
-type token_pattern = (FToken.t -> bool) * descr * string
+type token_pattern =
+  (FToken.t -> bool) * descr * string
     (* [arg1] is used for runtime parsing
        [arg2] is used for runtime insertion
        [arg3] is used for runtime error message

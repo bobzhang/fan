@@ -176,9 +176,6 @@ let rec ignore_layout (__strm : _ XStream.t) =
         
 let print ppf x = Format.pp_print_string ppf (to_string x)
     
-let match_keyword kwd =  function
-  | `KEYWORD kwd' when kwd = kwd' -> true
-  | _ -> false 
 
 let extract_string : [> t] -> string = function
   | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 (_, s) |

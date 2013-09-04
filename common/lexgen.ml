@@ -783,14 +783,14 @@ let next_state_num = ref 0
 let next_mem_cell = ref 0
 let temp_pending = ref false
 let tag_cells = Hashtbl.create 17
-let state_table = Ftable.create dfa_state_empty
+let state_table = Dyn_array.create dfa_state_empty
 
 
 (* Initial reset of state *)
 let reset_state () =
   (Stack.clear todo;
   next_state_num := 0 ;
-  let _ = Ftable.trim state_table in
+  let _ = Dyn_array.to_array' state_table in
   ())
 
 (* Reset state before processing a given automata.
@@ -984,12 +984,12 @@ let get_state st =
   let key = get_key st in
   try
     let num = StateMap.find key !state_map in
-    (num,move_to key.kmem st (Ftable.get state_table num))
+    (num,move_to key.kmem st (Dyn_array.get state_table num))
   with Not_found ->
     let num = !next_state_num in begin
       incr next_state_num;
       let (st,mvs) = create_new_state st in
-      (Ftable.emit state_table st ;
+      (Dyn_array.add state_table st ;
       state_map := StateMap.add key num !state_map;
       Stack.push (st, num) todo;
       (num,mvs))
@@ -1222,7 +1222,7 @@ let make_single_dfa (lexdef:LexSyntax.entry) :
   prerr_endline "** states **" ;
   for i = 0 to !next_state_num-1 do
   Printf.eprintf "+++ %d +++\n" i ;
-  dstate (Ftable.get state_table i) ;
+  dstate (Dyn_array.get state_table i) ;
   prerr_endline ""
   done ;
   Printf.eprintf "%d states\n" !next_state_num ;
@@ -1270,7 +1270,7 @@ let make_dfa (lexdef:LexSyntax.entry list) :
   prerr_endline "** states **" ;
   for i = 0 to !next_state_num-1 do
   Printf.eprintf "+++ %d +++\n" i ;
-  dstate (Ftable.get state_table i) ;
+  dstate (Dyn_array.get state_table i) ;
   prerr_endline ""
   done ;
   Printf.eprintf "%d states\n" !next_state_num ;
