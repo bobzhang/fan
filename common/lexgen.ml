@@ -484,7 +484,7 @@ let opt_regexp all_vars char_vars optional_vars double_vars r =
   let (r,_) = alloc_exp None r in
   let m =
     IdSet.fold
-      (function x r ->
+      (fun x r ->
         match x with
         | `Lid(_,name) -> 
 

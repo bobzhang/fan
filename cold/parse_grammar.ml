@@ -2,7 +2,7 @@ open FAst
 open AstLib
 open FGramDef
 open FGramGen
-open Fsyntax
+open! Fsyntax
 open LibUtil
 let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
 let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"

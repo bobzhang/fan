@@ -1,5 +1,5 @@
 open FAst
-open Fsyntax
+open! Fsyntax
 open LibUtil
 open Compile_stream
 let parser_ipat = Fgram.mk "parser_ipat"

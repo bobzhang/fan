@@ -13,7 +13,7 @@ open AstLib
 open Filters
 include PreCast
 open AstQuotation
-open Fsyntax
+open! Fsyntax
 open LibUtil
 open FControl
 
@@ -201,7 +201,7 @@ open PluginsN (* link the module *)
 
 open CodeTemplate
 
-open FLexGen
+open Parse_lex
 
 (** let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
    {:stream| 1 ; 2; '(f 3)|} *)

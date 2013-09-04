@@ -123,7 +123,7 @@ let sfold1sep = Gfold.sfold1sep
 
 (* [eoi_entry] could be improved   *)
 let eoi_entry entry =
-  let open Gstru in
+  let open! Gstru in
   let g = gram_of_entry entry in
   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in
   ({:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;

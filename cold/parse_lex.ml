@@ -1,6 +1,6 @@
 open LibUtil
 open LexSyntax
-open Fsyntax
+open! Fsyntax
 let regexp_for_string s =
   let rec re_string n =
     if n >= (String.length s)

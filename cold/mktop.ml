@@ -4,7 +4,7 @@ open AstLib
 open Filters
 include PreCast
 open AstQuotation
-open Fsyntax
+open! Fsyntax
 open LibUtil
 open FControl
 let efilter str e =
@@ -163,7 +163,7 @@ let _ = of_exp ~name:(d, "stream") ~entry:Parse_stream.stream_exp
 open AstInjection
 open PluginsN
 open CodeTemplate
-open FLexGen
+open Parse_lex
 let m = FanAstN.m
 let efilter str e =
   let e = exp_filter_n e in

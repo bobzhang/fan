@@ -1,7 +1,7 @@
 open FAst
 open AstLib
 open FanOps
-open Fsyntax
+open! Fsyntax
 open LibUtil
 open FanUtil
 open Gramlib

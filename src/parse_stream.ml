@@ -1,5 +1,5 @@
 open FAst
-open Fsyntax
+open! Fsyntax
 open LibUtil
 open Compile_stream
 
