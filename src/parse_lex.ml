@@ -1,6 +1,6 @@
 
 open LibUtil
-open LexSyntax
+open Automata_def
 open! Fsyntax
 
 let regexp_for_string s =
@@ -43,11 +43,11 @@ let as_cset = function
     [ "|"; L0 case SEP "|"{l} ->
       Compile_lex.output_entry
         (Lexgen.make_single_dfa
-        {LexSyntax.shortest=false;clauses=l})
+        {shortest=false;clauses=l})
     | "<";L0 case SEP "|"{l} ->
         Compile_lex.output_entry
         (Lexgen.make_single_dfa
-        {LexSyntax.shortest=true;clauses=l})]
+        {shortest=true;clauses=l})]
   let case:
     [ regexp{r};"->";exp{a} -> (r,a)]  
   declare_regexp:

@@ -1,35 +1,12 @@
 
 (* Compiling a lexer definition *)
 
-open LexSyntax
 
+open LibUtil
 
 exception Memory_overflow
 open Automata_def
 (* Deep abstract syntax for regular expressions *)
-
-type ident = FAst.lident
-
-type tag_info = {id : string ; start : bool ; action : int}
-
-type regexp =
-  | Empty
-  | Chars of int * bool
-  | Action of int
-  | Tag of tag_info
-  | Seq of regexp * regexp
-  | Alt of regexp * regexp
-  | Star of regexp
-
-type  lexer_entry =
-  { 
-    lex_regexp: regexp;
-    lex_mem_tags: int ;
-    lex_actions: (int *  t_env * FAst.exp(* 'action *)) list }
-
-(* A lot of sets and map structures *)
-
-module Ints = Set.Make(struct type t = int let compare = compare end)
 
 
 
@@ -37,8 +14,7 @@ let tag_compare t1 t2 = Pervasives.compare t1 t2
 
 module Tags = Set.Make(struct type t = tag_info let compare = tag_compare end)
 
-module TagMap =
-  Map.Make (struct type t = tag_info let compare = tag_compare end)
+module TagMap = Map.Make (struct type t = tag_info let compare = tag_compare end)
 module Id =   struct
   type t = ident
   let compare (x:t) y =
@@ -47,7 +23,6 @@ end
   
 module IdSet = Set.Make (Id)
 
-module IdMap = Map.Make(Id)
 
 (*********************)
 (* Variable cleaning *)
@@ -755,15 +730,15 @@ let do_alloc_temp () =
 
 let do_alloc_cell used t =
   let available =
-    try Hashtbl.find tag_cells t with Not_found -> Ints.empty in
+    try Hashtbl.find tag_cells t with Not_found -> ISet.empty in
   try
-    Ints.choose (Ints.diff available used)
+    ISet.choose (ISet.diff available used)
   with
   | Not_found ->
       (temp_pending := false ;
       let n = !next_mem_cell in
       (if n >= 255 then raise Memory_overflow ;
-      Hashtbl.replace tag_cells t (Ints.add n available) ;
+      Hashtbl.replace tag_cells t (ISet.add n available) ;
       incr next_mem_cell ;
       n))
 
@@ -774,7 +749,7 @@ let old_in_map m r =
   TagMap.fold
     (fun _ addr r ->
       if is_old_addr addr then
-        Ints.add addr r
+        ISet.add addr r
       else
         r)
     m r
@@ -785,7 +760,7 @@ let alloc_map used m mvs =
       let (a,mvs) =
         if is_new_addr a then
           let a = do_alloc_cell used tag in
-          (a,Ints.add a mvs)
+          (a,ISet.add a mvs)
         else (a,mvs) in
       (TagMap.add tag a r,mvs))
     m (TagMap.empty,mvs)
@@ -793,16 +768,16 @@ let alloc_map used m mvs =
 let create_new_state {final=(act,(_,m_act)) ; others=o} =
   let used =
     MemMap.fold (fun _ (_,m) r -> old_in_map m r)
-      o (old_in_map m_act Ints.empty) in
+      o (old_in_map m_act ISet.empty) in
 
-  let (new_m_act,mvs)  = alloc_map used m_act Ints.empty in
+  let (new_m_act,mvs)  = alloc_map used m_act ISet.empty in
   let (new_o,mvs) =
     MemMap.fold (fun k (x,m) (r,mvs) ->
       let (m,mvs) = alloc_map used m mvs in
       (MemMap.add k (x,m) r,mvs))
       o (MemMap.empty,mvs) in
   ({final=(act,(0,new_m_act)) ; others=new_o},
-  Ints.fold (fun x r -> Set x::r) mvs [])
+  ISet.fold (fun x r -> Set x::r) mvs [])
 
 type new_addr_gen = {mutable count : int ; mutable env : int TagMap.t}
 
@@ -872,11 +847,11 @@ let sort_mvs mvs =
   | _  ->
       let dests =
         List.fold_left
-          (fun r mv -> Ints.add (dest mv) r)
-          Ints.empty mvs in
+          (fun r mv -> ISet.add (dest mv) r)
+          ISet.empty mvs in
       let (rem,here) =
         List.partition
-          (fun mv -> Ints.mem (orig mv) dests)
+          (fun mv -> ISet.mem (orig mv) dests)
           mvs in
       match here with
       | [] ->
@@ -1052,12 +1027,12 @@ let do_tag_actions n env  m =
   let (used,r) =
     TagMap.fold (fun t m (used,r) ->
       let a = get_tag_mem n env t in
-      (Ints.add a used,SetTag (a,m)::r)) m (Ints.empty,[]) in
+      (ISet.add a used,SetTag (a,m)::r)) m (ISet.empty,[]) in
   let (_,r) =
     TagMap.fold
       (fun tag m (used,r) ->
-        if not (Ints.mem m used) && tag.start then
-          (Ints.add m used, EraseTag m::r)
+        if not (ISet.mem m used) && tag.start then
+          (ISet.add m used, EraseTag m::r)
         else
           (used,r))
       env.(n) (used,r) in
@@ -1130,7 +1105,7 @@ let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
   envs)
 
 
-let make_single_dfa (lexdef:LexSyntax.entry) :
+let make_single_dfa (lexdef:entry) :
     (automata_entry  * automata array) = begin
   let (chars, entry) = encode_single_lexdef lexdef in
   let follow = followpos (Array.length chars) [entry] in
@@ -1140,7 +1115,7 @@ let make_single_dfa (lexdef:LexSyntax.entry) :
   let _ = reset_state () in
   let r_states = ref [] in
   let initial_states =
-    match entry with  (le,(* args, *)shortest) ->
+    match entry with  (le,shortest) ->
       let tags = extract_tags le.lex_actions in
       (reset_state_partial le.lex_mem_tags ;
        let pos_set = firstpos le.lex_regexp in
@@ -1177,7 +1152,7 @@ let make_single_dfa (lexdef:LexSyntax.entry) :
    (initial_states, actions))
 end
     
-let make_dfa (lexdef:LexSyntax.entry list) :
+let make_dfa (lexdef:entry list) :
     (automata_entry list * automata array) = begin
   let (chars, entry_list) = encode_lexdef lexdef in
   let follow = followpos (Array.length chars) entry_list in
