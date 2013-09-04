@@ -41,11 +41,11 @@ let as_cset = function
 {:extend|Fgram
     lex:
     [ "|"; L0 case SEP "|"{l} ->
-      LexBackend.output_entry
+      Compile_lex.output_entry
         (Lexgen.make_single_dfa
         {LexSyntax.shortest=false;clauses=l})
     | "<";L0 case SEP "|"{l} ->
-        LexBackend.output_entry
+        Compile_lex.output_entry
         (Lexgen.make_single_dfa
         {LexSyntax.shortest=true;clauses=l})]
   let case:

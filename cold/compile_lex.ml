@@ -1,6 +1,6 @@
 open FAst
 open AstLib
-open Lexgen
+open Automata_def
 open LibUtil
 let _loc = FLoc.mk "x"
 let auto_binds =
@@ -239,34 +239,39 @@ let output_mem_access (i : int) =
           (_loc, (`Lid (_loc, "lexbuf")),
             (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_mem")))))),
        (`Int (_loc, (string_of_int i)))) : FAst.exp )
-let curr_pos: FAst.exp =
-  `Field
-    (_loc, (`Lid (_loc, "lexbuf")),
-      (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_curr_pos")))))
-let last_pos: FAst.exp =
-  `Field
-    (_loc, (`Lid (_loc, "lexbuf")),
-      (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_pos")))))
-let last_action: FAst.exp =
-  `Field
-    (_loc, (`Lid (_loc, "lexbuf")),
-      (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_action")))))
-let start_pos: FAst.exp =
-  `Field
-    (_loc, (`Lid (_loc, "lexbuf")),
-      (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_start_pos")))))
+let (curr_pos,last_pos,last_action,start_pos) =
+  ((`Field
+      (_loc, (`Lid (_loc, "lexbuf")),
+        (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_curr_pos"))))) : 
+    FAst.exp ),
+    (`Field
+       (_loc, (`Lid (_loc, "lexbuf")),
+         (`Dot (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_pos"))))) : 
+    FAst.exp ),
+    (`Field
+       (_loc, (`Lid (_loc, "lexbuf")),
+         (`Dot
+            (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_last_action"))))) : 
+    FAst.exp ),
+    (`Field
+       (_loc, (`Lid (_loc, "lexbuf")),
+         (`Dot
+            (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lex_start_pos"))))) : 
+    FAst.exp ))
 let lex_state i =
   let state = "__ocaml_lex_state" ^ (string_of_int i) in
   (`App (_loc, (`Lid (_loc, state)), (`Lid (_loc, "lexbuf"))) : FAst.exp )
 let output_memory_actions (mvs : memory_action list) =
   (List.map
-     (function
-      | Copy (tgt,src) ->
-          let u = output_mem_access tgt in
-          let v = output_mem_access src in (`Assign (_loc, u, v) : FAst.exp )
-      | Set tgt ->
-          let u = output_mem_access tgt in
-          (`Assign (_loc, u, curr_pos) : FAst.exp )) mvs : exp list )
+     (fun x  ->
+        match x with
+        | Copy (tgt,src) ->
+            let u = output_mem_access tgt in
+            let v = output_mem_access src in
+            (`Assign (_loc, u, v) : FAst.exp )
+        | Set tgt ->
+            let u = output_mem_access tgt in
+            (`Assign (_loc, u, curr_pos) : FAst.exp )) mvs : exp list )
 let output_action (mems : memory_action list) (r : automata_move) =
   ((output_memory_actions mems) @
      (match r with
@@ -300,13 +305,13 @@ let output_moves (moves : (automata_move* memory_action list) array) =
           else acc) t [])
       @ [output_default_clause most_mems.contents most_frequent.contents]) : 
   case list )
-let output_tag_actions (mvs : Lexgen.tag_action list) =
+let output_tag_actions (mvs : tag_action list) =
   (List.map
      (function
-      | Lexgen.SetTag (t,m) ->
+      | SetTag (t,m) ->
           let u = output_mem_access t in
           let v = output_mem_access m in (`Assign (_loc, u, v) : FAst.exp )
-      | Lexgen.EraseTag t ->
+      | EraseTag t ->
           let u = output_mem_access t in
           (`Assign (_loc, u, (`Int (_loc, "-1"))) : FAst.exp )) mvs : 
   exp list )
@@ -346,7 +351,7 @@ let output_args (args : string list) e =
   List.fold_right
     (fun a  b  ->
        (`Fun (_loc, (`Case (_loc, (`Lid (_loc, a)), b))) : FAst.exp )) args e
-let output_automata (transitions : Lexgen.automata array) =
+let output_automata (transitions : automata array) =
   (Array.to_list
      (Array.mapi (fun i  auto  -> output_trans i auto) transitions) : 
   bind list )

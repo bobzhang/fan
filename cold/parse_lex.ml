@@ -36,20 +36,20 @@ let _ =
         [([`Skeyword "|";
           `Slist0sep
             ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-           ("LexBackend.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = false; clauses = l })\n",
+           ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = false; clauses = l })\n",
              (Fgram.mk_action
                 (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
-                   (LexBackend.output_entry
+                   (Compile_lex.output_entry
                       (Lexgen.make_single_dfa
                          { LexSyntax.shortest = false; clauses = l }) : 
                    'lex )))));
         ([`Skeyword "<";
          `Slist0sep
            ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-          ("LexBackend.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = true; clauses = l })\n",
+          ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = true; clauses = l })\n",
             (Fgram.mk_action
                (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
-                  (LexBackend.output_entry
+                  (Compile_lex.output_entry
                      (Lexgen.make_single_dfa
                         { LexSyntax.shortest = true; clauses = l }) : 
                   'lex )))))]));

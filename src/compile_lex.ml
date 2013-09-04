@@ -1,7 +1,8 @@
 
 open FAst
 open AstLib
-open Lexgen
+open Automata_def 
+
 open LibUtil
   
 (** FIXME *)
@@ -64,10 +65,17 @@ let output_pats (pats:int list) =
 
 
 let output_mem_access (i:int) = {:exp|lexbuf.Lexing.lex_mem.($`int:i)|}
-let curr_pos  = {:exp|lexbuf.Lexing.lex_curr_pos |}
-let last_pos = {:exp|lexbuf.Lexing.lex_last_pos |}
-let last_action = {:exp|lexbuf.Lexing.lex_last_action |}
-let start_pos = {:exp| lexbuf.Lexing.lex_start_pos |}
+
+let (curr_pos,
+     last_pos,
+     last_action,
+     start_pos
+    )  =
+  ( {:exp|lexbuf.Lexing.lex_curr_pos |},
+    {:exp|lexbuf.Lexing.lex_last_pos |},
+    {:exp|lexbuf.Lexing.lex_last_action |},
+    {:exp| lexbuf.Lexing.lex_start_pos |}
+   )
     
 let lex_state i =
   let state = "__ocaml_lex_state"^string_of_int i in
@@ -75,7 +83,8 @@ let lex_state i =
     
 let output_memory_actions (mvs:memory_action list) : exp list =
   List.map
-    (function
+    (fun x ->
+      match x with
       | Copy(tgt,src) ->
           let u = output_mem_access tgt in
           let v = output_mem_access src in 
@@ -92,9 +101,7 @@ let output_action (mems:memory_action list) (r:automata_move) : exp list  =
   | Backtrack ->
       [ {:exp|$curr_pos <- $last_pos |};
         last_action]
-  | Goto n ->
-      [lex_state n]
-   )
+  | Goto n -> [lex_state n])
 let output_clause
     (pats:int list)
     (mems:memory_action list)
@@ -138,14 +145,14 @@ let output_moves (moves: (automata_move * memory_action list) array) : case list
         ) t []) @ [output_default_clause !most_mems !most_frequent])
   end
     
-let output_tag_actions (mvs:Lexgen.tag_action list) : exp list =
+let output_tag_actions (mvs:tag_action list) : exp list =
   List.map
     (function
-      | Lexgen.SetTag(t,m) ->
+      | SetTag(t,m) ->
           let u = output_mem_access t in
           let v = output_mem_access m in 
           {:exp| $u <- $v |}
-      | Lexgen.EraseTag(t) ->
+      | EraseTag(t) ->
           let u = output_mem_access t in 
           {:exp| $u <- -1 |}) mvs
 
@@ -176,7 +183,7 @@ let output_trans (i:int) (trans:automata)=
 let output_args (args:string list) e =
   List.fold_right (fun a b -> {:exp| fun $lid:a -> $b |}) args e
     
-let output_automata (transitions:Lexgen.automata array) : bind list = 
+let output_automata (transitions:automata array) : bind list = 
   (Array.to_list (Array.mapi (fun i auto -> output_trans i auto) transitions))
 
   
@@ -261,28 +268,4 @@ let output_entry
   |}
 
 
-    
-(* (\* let output_def *\) *)
-(* (\*     (tr:Common.line_tracker) *\) *)
-(* (\*     (header:LexSyntax.location) *\) *)
-(* (\*     (entry_points: Lexgen.automata_entry list) *\) *)
-(* (\*     (transitions:Lexgen.automata array) *\) *)
-(* (\*     (trailer:LexSyntax.location) = begin *\) *)
-(* (\*       output_automata transitions; *\) *)
-(* (\*       match entry_points with *\) *)
-(* (\*       | [] -> () *\) *)
-(* (\*       | e::es -> *\) *)
-          
-             
-(* (\*     end *\) *)
-
-  
-    
-
-    
-    
-
-    
-(* (\* let output_mem_access i = *\) *)
-(* (\*   {:exp|lexbuf.Lexing.lex_mem.($`int:i)|} *\) *)
     
