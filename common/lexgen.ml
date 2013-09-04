@@ -5,6 +5,7 @@
 open LibUtil
 
 exception Memory_overflow
+
 open Automata_def
 (* Deep abstract syntax for regular expressions *)
 

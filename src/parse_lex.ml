@@ -15,7 +15,7 @@ let regexp_for_string s =
   in re_string 0
     
 let named_regexps =
-  (Hashtbl.create 13 : (string, regular_expression) Hashtbl.t)
+  (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
 
 let rec remove_as = function
   | Bind (e,_) -> remove_as e

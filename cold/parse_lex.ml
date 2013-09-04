@@ -1,5 +1,5 @@
 open LibUtil
-open LexSyntax
+open Automata_def
 open! Fsyntax
 let regexp_for_string s =
   let rec re_string n =
@@ -13,7 +13,7 @@ let regexp_for_string s =
           ((Characters (Fcset.singleton (Char.code (s.[n])))),
             (re_string (succ n))) in
   re_string 0
-let named_regexps: (string,regular_expression) Hashtbl.t = Hashtbl.create 13
+let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13
 let rec remove_as =
   function
   | Bind (e,_) -> remove_as e
@@ -36,22 +36,20 @@ let _ =
         [([`Skeyword "|";
           `Slist0sep
             ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-           ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = false; clauses = l })\n",
+           ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
              (Fgram.mk_action
                 (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
                    (Compile_lex.output_entry
                       (Lexgen.make_single_dfa
-                         { LexSyntax.shortest = false; clauses = l }) : 
-                   'lex )))));
+                         { shortest = false; clauses = l }) : 'lex )))));
         ([`Skeyword "<";
          `Slist0sep
            ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-          ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { LexSyntax.shortest = true; clauses = l })\n",
+          ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
             (Fgram.mk_action
                (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
                   (Compile_lex.output_entry
-                     (Lexgen.make_single_dfa
-                        { LexSyntax.shortest = true; clauses = l }) : 
+                     (Lexgen.make_single_dfa { shortest = true; clauses = l }) : 
                   'lex )))))]));
   Fgram.extend_single (case : 'case Fgram.t )
     (None,

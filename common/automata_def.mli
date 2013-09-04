@@ -36,18 +36,18 @@ type  automata_entry =
     auto_actions: (int * t_env * FAst.exp) list }
 
 
-type regular_expression =
+type concrete_regexp =
   | Epsilon
   | Characters of Fcset.t
   | Eof
-  | Sequence of regular_expression * regular_expression
-  | Alternative of regular_expression * regular_expression
-  | Repetition of regular_expression
-  | Bind of regular_expression * FAst.lident 
+  | Sequence of concrete_regexp * concrete_regexp
+  | Alternative of concrete_regexp * concrete_regexp
+  | Repetition of concrete_regexp
+  | Bind of concrete_regexp * FAst.lident 
 
 type  entry =
   {shortest : bool ;
-   clauses : (regular_expression * FAst.exp) list}
+   clauses : (concrete_regexp * FAst.exp) list}
 
 type tag_info = {id : string ; start : bool ; action : int}
 
