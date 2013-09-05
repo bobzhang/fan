@@ -14,5 +14,5 @@ module TransSet : Set.S with type elt = transition
 
 val firstpos : Automata_def.regexp -> TransSet.t
 
-val followpos :
-  int -> (Automata_def.lexer_entry * 'a) list -> TransSet.t array
+val followpos : int ->
+  ('a Automata_def.lexer_entry * 'b) list -> TransSet.t array

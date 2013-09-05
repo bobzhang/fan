@@ -555,8 +555,8 @@ let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
   envs)
 
 
-let make_single_dfa (lexdef:entry) :
-    (automata_entry  * automata array) = begin
+let make_single_dfa (lexdef :'a entry) :
+    ('a automata_entry  * automata array) = begin
   let (chars, entry) = encode_single_lexdef lexdef in
   let follow = followpos (Array.length chars) [entry] in
 (*
@@ -602,8 +602,8 @@ let make_single_dfa (lexdef:entry) :
    (initial_states, actions))
 end
     
-let make_dfa (lexdef:entry list) :
-    (automata_entry list * automata array) = begin
+let make_dfa (lexdef:'a entry list) :
+    ('a automata_entry list * automata array) = begin
   let (chars, entry_list) = encode_lexdef lexdef in
   let follow = followpos (Array.length chars) entry_list in
 (*

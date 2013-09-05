@@ -1,12 +1,16 @@
 
 
 
-open Automata_def
+
 
 val encode_lexdef :
-  entry list ->
-  Fcset.t array * (lexer_entry * bool) list
+    'a Automata_def.entry list ->
+      Fcset.t array * ('a Automata_def.lexer_entry * bool) list
+
 
 val encode_single_lexdef :
-  entry -> Fcset.t array * (lexer_entry * bool)
-      
+    'a Automata_def.entry ->
+  Fcset.t array * ('a Automata_def.lexer_entry * bool)
+
+
+        

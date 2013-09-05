@@ -20,7 +20,7 @@ type automata =
   | Perform of int * tag_action list
   | Shift of automata_trans * (automata_move * memory_action list) array
 
-type ident = (* FAst.lident *) FLoc.t * string
+type ident = FLoc.t * string
 
 (* Representation of entry points *)
 type tag_base =
@@ -32,10 +32,10 @@ type ident_info =
 
 type t_env = (ident * ident_info) list
 
-type  automata_entry =
+type 'a automata_entry =
   { auto_mem_size : int ;
     auto_initial_state: (int * memory_action list);
-    auto_actions: (int * t_env * FAst.exp) list }
+    auto_actions: (int * t_env * 'a) list }
 
 
 type concrete_regexp =
@@ -47,9 +47,9 @@ type concrete_regexp =
   | Repetition of concrete_regexp
   | Bind of concrete_regexp * ident
 
-type  entry =
+type 'a entry =
   {shortest : bool ;
-   clauses : (concrete_regexp * FAst.exp) list}
+   clauses : (concrete_regexp * 'a) list}
 
 type tag_info = {id : string ; start : bool ; action : int}
 
@@ -62,10 +62,10 @@ type regexp =
   | Alt of regexp * regexp
   | Star of regexp
 
-type  lexer_entry = { 
+type 'a lexer_entry = { 
     lex_regexp: regexp;
     lex_mem_tags: int ;
-    lex_actions: (int *  t_env * FAst.exp) list
+    lex_actions: (int *  t_env * 'a) list
   }
 
 
