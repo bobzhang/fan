@@ -7,9 +7,6 @@ open LibUtil
 exception Memory_overflow
 
 open Automata_def
-(* Deep abstract syntax for regular expressions *)
-
-
 open Lex_util
 open Translate_lex  
 
@@ -105,7 +102,7 @@ let env_to_class m =
             TagMap.add tag (StateSetSet.add s StateSetSet.empty) r)
       m TagMap.empty in
   TagMap.fold
-    (fun tag ss r -> MemKey.add {tag=tag ; equiv=ss} r)
+    (fun tag equiv r -> MemKey.add {tag ; equiv} r)
     env1 MemKey.empty
 
 
@@ -189,7 +186,7 @@ let do_alloc_cell used t =
   try
     ISet.choose (ISet.diff available used)
   with
-  | Not_found ->
+    Not_found ->
       (temp_pending := false ;
       let n = !next_mem_cell in
       (if n >= 255 then raise Memory_overflow ;
@@ -224,9 +221,8 @@ let create_new_state {final=(act,(_,m_act)) ; others=o} =
   let used =
     MemMap.fold (fun _ (_,m) r -> old_in_map m r)
       o (old_in_map m_act ISet.empty) in
-
-  let (new_m_act,mvs)  = alloc_map used m_act ISet.empty in
-  let (new_o,mvs) =
+  let new_m_act,mvs  = alloc_map used m_act ISet.empty in
+  let new_o,mvs =
     MemMap.fold (fun k (x,m) (r,mvs) ->
       let (m,mvs) = alloc_map used m mvs in
       (MemMap.add k (x,m) r,mvs))
@@ -242,7 +238,7 @@ let alloc_new_addr tag r =
   try
     TagMap.find tag r.env
   with
-  | Not_found ->
+    Not_found ->
       let a = r.count in begin
         r.count <- a-1 ;
         r.env <- TagMap.add tag a r.env ;
@@ -548,7 +544,7 @@ let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
       envs.(act) <-
          List.fold_right
            (fun (x,v) r ->
-             let name = match x with | `Lid(_,name) -> name in
+             let name = snd x  in
              match v with
            | Ident_char (_,t) -> make_tag_entry name true act t r
            | Ident_string (_,t1,t2) ->

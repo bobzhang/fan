@@ -1,24 +1,26 @@
 (* Representation of automata *)
 
-
-type automata =
-  | Perform of int * tag_action list
-  | Shift of automata_trans * (automata_move * memory_action list) array
-and automata_trans =
-  | No_remember
-  | Remember of int * tag_action list
-and automata_move =
-  | Backtrack
-  | Goto of int
-and memory_action =
-  | Copy of int * int
-  | Set of int
-
-and tag_action =
+type tag_action =
   | SetTag of int * int
   | EraseTag of int
 
-type ident = FAst.lident
+type memory_action =
+  | Copy of int * int
+  | Set of int
+
+type automata_move =
+  | Backtrack
+  | Goto of int
+
+type automata_trans =
+  | No_remember
+  | Remember of int * tag_action list
+        
+type automata =
+  | Perform of int * tag_action list
+  | Shift of automata_trans * (automata_move * memory_action list) array
+
+type ident = (* FAst.lident *) FLoc.t * string
 
 (* Representation of entry points *)
 type tag_base =
@@ -43,7 +45,7 @@ type concrete_regexp =
   | Sequence of concrete_regexp * concrete_regexp
   | Alternative of concrete_regexp * concrete_regexp
   | Repetition of concrete_regexp
-  | Bind of concrete_regexp * FAst.lident 
+  | Bind of concrete_regexp * ident
 
 type  entry =
   {shortest : bool ;

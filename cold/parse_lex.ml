@@ -100,11 +100,11 @@ let _ =
          [([`Sself;
            `Skeyword "as";
            `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-            ("match x with\n| #FAst.lident as y -> Bind (r1, y)\n| `Ant (_loc,_) -> assert false\n",
+            ("match x with\n| `Lid (loc,y) -> Bind (r1, (loc, y))\n| `Ant (_loc,_) -> assert false\n",
               (Fgram.mk_action
                  (fun (x : 'a_lident)  _  (r1 : 'regexp)  (_loc : FLoc.t)  ->
                     (match x with
-                     | #FAst.lident as y -> Bind (r1, y)
+                     | `Lid (loc,y) -> Bind (r1, (loc, y))
                      | `Ant (_loc,_) -> assert false : 'regexp )))))]);
       ((Some "#"), None,
         [([`Sself; `Skeyword "#"; `Sself],

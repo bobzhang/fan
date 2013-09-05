@@ -356,68 +356,68 @@ let output_automata (transitions : automata array) =
      (Array.mapi (fun i  auto  -> output_trans i auto) transitions) : 
   bind list )
 let output_env (env : t_env) =
-  let env =
-    List.sort
-      (fun x  y  ->
-         match (x, y) with
-         | ((`Lid (p1,_),_),(`Lid (p2,_),_)) ->
-             if FLoc.strictly_before p1 p2 then (-1) else 1) env in
-  let output_tag_access =
-    function
-    | Sum (Mem i,d) ->
-        (`App
-           (_loc, (`App (_loc, (`Lid (_loc, "+")), (output_mem_access i))),
-             (`Int (_loc, (string_of_int d)))) : FAst.exp )
-    | Sum (Start ,d) ->
-        (`App
-           (_loc, (`App (_loc, (`Lid (_loc, "+")), start_pos)),
-             (`Int (_loc, (string_of_int d)))) : FAst.exp )
-    | Sum (End ,d) ->
-        (`App
-           (_loc, (`App (_loc, (`Lid (_loc, "+")), curr_pos)),
-             (`Int (_loc, (string_of_int d)))) : FAst.exp ) in
-  List.map
-    (fun (id,v)  ->
-       let id = (id :>pat) in
-       match v with
-       | Ident_string (o,nstart,nend) ->
-           let sub =
-             if o
-             then
-               (`Dot
-                  (_loc, (`Uid (_loc, "Lexing")),
-                    (`Lid (_loc, "sub_lexeme_opt"))) : FAst.exp )
-             else
-               (`Dot
-                  (_loc, (`Uid (_loc, "Lexing")),
-                    (`Lid (_loc, "sub_lexeme"))) : FAst.exp ) in
-           let nstart = output_tag_access nstart in
-           let nend = output_tag_access nend in
-           (`Bind
-              (_loc, id,
-                (`App
-                   (_loc,
-                     (`App
-                        (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                          nstart)), nend))) : FAst.bind )
-       | Ident_char (o,nstart) ->
-           let sub =
-             if o
-             then
-               (`Dot
-                  (_loc, (`Uid (_loc, "Lexing")),
-                    (`Lid (_loc, "sub_lexeme_char_opt"))) : FAst.exp )
-             else
-               (`Dot
-                  (_loc, (`Uid (_loc, "Lexing")),
-                    (`Lid (_loc, "sub_lexeme_char"))) : FAst.exp ) in
-           let nstart = output_tag_access nstart in
-           let _loc = loc_of id in
-           (`Bind
-              (_loc, id,
-                (`App
-                   (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
-                     nstart))) : FAst.bind )) env
+  (let env =
+     List.sort
+       (fun x  y  ->
+          match (x, y) with
+          | (((p1,_),_),((p2,_),_)) ->
+              if FLoc.strictly_before p1 p2 then (-1) else 1) env in
+   let output_tag_access =
+     function
+     | Sum (Mem i,d) ->
+         (`App
+            (_loc, (`App (_loc, (`Lid (_loc, "+")), (output_mem_access i))),
+              (`Int (_loc, (string_of_int d)))) : FAst.exp )
+     | Sum (Start ,d) ->
+         (`App
+            (_loc, (`App (_loc, (`Lid (_loc, "+")), start_pos)),
+              (`Int (_loc, (string_of_int d)))) : FAst.exp )
+     | Sum (End ,d) ->
+         (`App
+            (_loc, (`App (_loc, (`Lid (_loc, "+")), curr_pos)),
+              (`Int (_loc, (string_of_int d)))) : FAst.exp ) in
+   List.map
+     (fun (id,v)  ->
+        let (id :pat)= `Lid id in
+        match v with
+        | Ident_string (o,nstart,nend) ->
+            let sub =
+              if o
+              then
+                (`Dot
+                   (_loc, (`Uid (_loc, "Lexing")),
+                     (`Lid (_loc, "sub_lexeme_opt"))) : FAst.exp )
+              else
+                (`Dot
+                   (_loc, (`Uid (_loc, "Lexing")),
+                     (`Lid (_loc, "sub_lexeme"))) : FAst.exp ) in
+            let nstart = output_tag_access nstart in
+            let nend = output_tag_access nend in
+            (`Bind
+               (_loc, id,
+                 (`App
+                    (_loc,
+                      (`App
+                         (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
+                           nstart)), nend))) : FAst.bind )
+        | Ident_char (o,nstart) ->
+            let sub =
+              if o
+              then
+                (`Dot
+                   (_loc, (`Uid (_loc, "Lexing")),
+                     (`Lid (_loc, "sub_lexeme_char_opt"))) : FAst.exp )
+              else
+                (`Dot
+                   (_loc, (`Uid (_loc, "Lexing")),
+                     (`Lid (_loc, "sub_lexeme_char"))) : FAst.exp ) in
+            let nstart = output_tag_access nstart in
+            let _loc = loc_of id in
+            (`Bind
+               (_loc, id,
+                 (`App
+                    (_loc, (`App (_loc, sub, (`Lid (_loc, "lexbuf")))),
+                      nstart))) : FAst.bind )) env : bind list )
 let output_entry
   ({ auto_mem_size; auto_initial_state = (init_num,init_moves); auto_actions
      },(transitions : automata array))

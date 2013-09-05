@@ -3,8 +3,7 @@
 open Automata_def
 module Id =   struct
   type t = ident
-  let compare (x:t) y =
-    match x,y with `Lid(_,id1),`Lid(_,id2) -> String.compare id1 id2
+  let compare (_,x) (_,y) = String.compare x  y
 end
   
 module IdSet = Set.Make (Id)
@@ -206,7 +205,7 @@ let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
       Alt (r1, r2)
   | Repetition r ->
       Star ( encode_regexp char_vars act r )
-  | Bind (r,(`Lid(_,name) as x)) ->
+  | Bind (r,((_,name) as x)) ->
       let r = encode_regexp char_vars act r in
       if IdSet.mem x char_vars then
         Seq (Tag {id=name ; start=true ; action=act},r)
@@ -224,14 +223,6 @@ let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
       a previous similar tag.
 *)
 
-let incr_pos = function
-  | None   -> None
-  | Some i -> Some (i+1)
-
-let decr_pos = function
-  | None -> None
-  | Some i -> Some (i-1)
-
 
 let opt = true
 
@@ -239,7 +230,7 @@ let mk_seq (r1:regexp) (r2:regexp) : regexp=
   match r1,r2  with
   | Empty,_ -> r2
   | _,Empty -> r1
-  | (_,_)     -> Seq (r1,r2)
+  | _     -> Seq (r1,r2)
 
 let add_pos p i =
   match p with
@@ -247,7 +238,7 @@ let add_pos p i =
   | None -> None
 
 let mem_name name (id_set:IdSet.t) : bool =
-  IdSet.exists (function (`Lid(_,id_name)) -> name = id_name) id_set (* FIXME*)
+  IdSet.exists (function (_,id_name) -> name = id_name) id_set (* FIXME*)
 
 
 (* First static optimizations, from start position *)
@@ -286,7 +277,7 @@ let rec size_backward pos (x:regexp) =
 
 (* type dir = Backward | Forward          *)
 let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
-  (IdSet.elt * ident_info) list * regexp * int=
+    (IdSet.elt * ident_info) list * regexp * int=
 (* From removed tags to their addresses *)
   let env = Hashtbl.create 17 in
   let rec simple_forward pos r double_vars=
@@ -387,20 +378,17 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
   let (r,_) = alloc_exp None r in
   let m =
     IdSet.fold
-      (fun x r ->
-        match x with
-        | `Lid(_,name) -> 
-
-            let v =
-              if IdSet.mem x char_vars then
-                Ident_char
-                  (IdSet.mem x optional_vars, get_tag_addr (name,true))
-              else
-                Ident_string
-                  (IdSet.mem x optional_vars,
-                   get_tag_addr (name,true),
-                   get_tag_addr (name,false)) in
-            (x,v)::r)
+      (fun ((_,name) as x) r ->
+        let v =
+          if IdSet.mem x char_vars then
+            Ident_char
+              (IdSet.mem x optional_vars, get_tag_addr (name,true))
+          else
+            Ident_string
+              (IdSet.mem x optional_vars,
+               get_tag_addr (name,true),
+               get_tag_addr (name,false)) in
+        (x,v)::r)
       all_vars [] in
   (m,r, !loc_count)
 

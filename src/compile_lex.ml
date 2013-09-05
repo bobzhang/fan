@@ -188,12 +188,12 @@ let output_automata (transitions:automata array) : bind list =
 
   
     
-let output_env (env:t_env) =
+let output_env (env:t_env) : bind list =
   let env =
     List.sort
       (function x y ->
         match (x,y) with
-        | ((`Lid(p1,_),_), (`Lid(p2,_),_)) ->
+        | (((p1,_),_), ((p2,_),_)) ->
             if FLoc.strictly_before p1 p2 then -1 else 1) env in
   let output_tag_access = function
     | Sum (Mem i,d) ->
@@ -204,7 +204,7 @@ let output_env (env:t_env) =
         {:exp| ($curr_pos + $`int:d) |} in
   List.map
     (fun (id,v) ->
-      let id = (id:>pat) in
+      let (id : pat) = `Lid id  in
       match v with
       | Ident_string (o,nstart,nend) ->
           let sub =
