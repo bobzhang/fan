@@ -224,7 +224,6 @@ let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
 *)
 
 
-let opt = true
 
 let mk_seq (r1:regexp) (r2:regexp) : regexp=
   match r1,r2  with
@@ -330,12 +329,10 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
         (r,if pos1=pos2 then pos1 else None)
     | Star _ -> (r,None)
     | Action _ -> assert false in
-  let r =
-    if opt then
-      let r,_ = simple_forward 0 r double_vars in
-      let r,_ = simple_backward 0 r double_vars in
-      r
-    else r in
+  let r = (* optimization *)
+    let r,_ = simple_forward 0 r double_vars in
+    let r,_ = simple_backward 0 r double_vars in
+    r in
   let loc_count = ref 0 in
   let get_tag_addr t =
     try
