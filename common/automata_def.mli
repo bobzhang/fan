@@ -38,19 +38,6 @@ type 'a automata_entry =
     auto_actions: (int * t_env * 'a) list }
 
 
-type concrete_regexp =
-  | Epsilon
-  | Characters of Fcset.t
-  | Eof
-  | Sequence of concrete_regexp * concrete_regexp
-  | Alternative of concrete_regexp * concrete_regexp
-  | Repetition of concrete_regexp
-  | Bind of concrete_regexp * ident
-
-type 'a entry =
-  {shortest : bool ;
-   clauses : (concrete_regexp * 'a) list}
-
 type tag_info = {id : string ; start : bool ; action : int}
 
 type regexp =

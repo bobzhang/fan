@@ -3,10 +3,10 @@ exception Memory_overflow
 
 
 
-
+open Translate_lex
 val make_single_dfa :
-    'a Automata_def.entry ->
+    'a entry ->
       'a Automata_def.automata_entry * Automata_def.automata array
 val make_dfa :
-    'a Automata_def.entry list ->
+    'a entry list ->
       'a Automata_def.automata_entry list * Automata_def.automata array 

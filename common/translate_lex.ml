@@ -1,8 +1,22 @@
 
 
 open Automata_def
+
+type concrete_regexp =
+  | Epsilon
+  | Characters of Fcset.t
+  | Eof
+  | Sequence of concrete_regexp * concrete_regexp
+  | Alternative of concrete_regexp * concrete_regexp
+  | Repetition of concrete_regexp
+  | Bind of concrete_regexp * (FLoc.t * string)
+
+type 'a entry =
+  {shortest : bool ;
+   clauses : (concrete_regexp * 'a) list}
+  
 module Id =   struct
-  type t = ident
+  type t = (FLoc.t * string)
   let compare (_,x) (_,y) = String.compare x  y
 end
   
@@ -180,7 +194,7 @@ let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
 
-let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
+let rec encode_regexp (char_vars:IdSet.t) (act:int) x : Automata_def.regexp =
   match x with
   | Epsilon -> Empty
   | Characters cl ->
@@ -225,14 +239,14 @@ let rec encode_regexp (char_vars:IdSet.t) (act:int) x : regexp =
 
 
 
-let mk_seq (r1:regexp) (r2:regexp) : regexp=
+let mk_seq (r1: Automata_def.regexp) (r2 : Automata_def.regexp) : Automata_def.regexp=
   match r1,r2  with
   | Empty,_ -> r2
   | _,Empty -> r1
   | _     -> Seq (r1,r2)
 
 let add_pos p i =
-  match p with
+  match (p:Automata_def.tag_addr option) with
   | Some (Sum (a,n)) -> Some (Sum (a,n+i))
   | None -> None
 

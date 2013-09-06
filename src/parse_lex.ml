@@ -1,6 +1,6 @@
 
 open LibUtil
-open Automata_def
+open Translate_lex
 open! Fsyntax
 
 let regexp_for_string s =

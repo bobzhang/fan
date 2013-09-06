@@ -1,6 +1,7 @@
 open FAst
-open Automata_def
-  
+open Translate_lex
+
+
 val regexp_for_string : string -> concrete_regexp
 
 val named_regexps : (string, concrete_regexp) LibUtil.Hashtbl.t
