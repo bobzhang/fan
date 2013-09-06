@@ -25,7 +25,9 @@ type ident = FLoc.t * string
 (* Representation of entry points *)
 type tag_base =
   | Start | End | Mem of int
+
 type tag_addr = Sum of (tag_base * int)
+
 type ident_info =
   | Ident_string of bool * tag_addr * tag_addr
   | Ident_char of bool * tag_addr

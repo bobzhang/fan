@@ -4,8 +4,8 @@ open Automata_def
 
 type concrete_regexp =
   | Epsilon
+  | Eof      
   | Characters of Fcset.t
-  | Eof
   | Sequence of concrete_regexp * concrete_regexp
   | Alternative of concrete_regexp * concrete_regexp
   | Repetition of concrete_regexp
@@ -14,6 +14,33 @@ type concrete_regexp =
 type 'a entry =
   {shortest : bool ;
    clauses : (concrete_regexp * 'a) list}
+
+let regexp_for_string s =
+  let rec re_string n =
+    let len = String.length s in
+    if n >= len then Epsilon
+    else if  n + 1 = len then
+      Characters (Fcset.singleton (Char.code s.[n]))
+    else
+      Sequence
+        (Characters(Fcset.singleton (Char.code s.[n])),
+         re_string (n+1)) in re_string 0
+    
+
+let rec remove_as x =
+  match x with 
+  | Bind (e,_) -> remove_as e
+  | Epsilon|Eof|Characters _ as e -> e
+  | Sequence (e1, e2) -> Sequence (remove_as e1, remove_as e2)
+  | Alternative (e1, e2) -> Alternative (remove_as e1, remove_as e2)
+  | Repetition e -> Repetition (remove_as e)
+
+exception Bad        
+
+let as_cset = function
+  | Characters s -> s
+  | _ -> raise Bad
+        
   
 module Id =   struct
   type t = (FLoc.t * string)
@@ -23,28 +50,28 @@ end
 module IdSet = Set.Make (Id)
 
 
-(*********************)
-(* Variable cleaning *)
-(*********************)
 
 (* Silently eliminate nested variables *)
-
-let rec do_remove_nested (to_remove:IdSet.t) x : concrete_regexp =
-  match x with
-  | Bind (e,x) ->
-      if IdSet.mem x to_remove then
-        do_remove_nested to_remove e
-      else
-        Bind (do_remove_nested (IdSet.add x to_remove) e, x)
-  | Epsilon|Eof|Characters _ as e -> e
-  | Sequence (e1, e2) ->
-      Sequence
-        (do_remove_nested to_remove  e1, do_remove_nested to_remove  e2)
-  | Alternative (e1, e2) ->
-      Alternative
-        (do_remove_nested to_remove  e1, do_remove_nested to_remove  e2)
-  | Repetition e ->
-      Repetition (do_remove_nested to_remove  e)
+let remove_nested_as e : concrete_regexp = 
+  let rec do_remove_nested (to_remove:IdSet.t) x : concrete_regexp =
+    match x with
+    | Bind (e,x) ->
+        if IdSet.mem x to_remove then
+          do_remove_nested to_remove e
+        else
+          Bind (do_remove_nested (IdSet.add x to_remove) e, x)
+    | Epsilon
+    | Eof
+    | Characters _ as e -> e
+    | Sequence (e1, e2) ->
+        Sequence
+          (do_remove_nested to_remove  e1, do_remove_nested to_remove  e2)
+    | Alternative (e1, e2) ->
+        Alternative
+          (do_remove_nested to_remove  e1, do_remove_nested to_remove  e2)
+    | Repetition e ->
+        Repetition (do_remove_nested to_remove  e) in
+  do_remove_nested IdSet.empty e    
 
 
 
@@ -52,18 +79,8 @@ let rec do_remove_nested (to_remove:IdSet.t) x : concrete_regexp =
 (* Variable analysis *)
 (*********************)
 
-(*
-  Optional variables.
-   A variable is optional when matching of regexp does not
-   implies it binds.
-     The typical case is:
-       ("" | 'a' as x) -> optional
-       ("" as x | 'a' as x) -> non-optional
-*)
 
-let stringset_delta s1 s2 =
-  let open IdSet in
-  union (diff s1 s2) (diff s2 s1)
+
 
 let rec find_all_vars (x:concrete_regexp) : IdSet.t=
   let open IdSet in
@@ -76,39 +93,49 @@ let rec find_all_vars (x:concrete_regexp) : IdSet.t=
       union (find_all_vars e1) (find_all_vars e2)
   | Repetition e -> find_all_vars e
 
-let remove_nested_as e = do_remove_nested IdSet.empty e
-
-let rec do_find_opt x : IdSet.t * IdSet.t =
-  let open IdSet in
-  match x with 
-  | Characters _|Epsilon|Eof -> (empty, empty)
-  | Bind (e,x) ->
-      let (opt,all) = do_find_opt e in
-      (opt, add x all)
-  | Sequence (e1,e2) ->
-      let (opt1,all1) = do_find_opt e1
-      and (opt2,all2) = do_find_opt e2 in
-      (union opt1 opt2, union all1 all2)
-  | Alternative (e1,e2) ->
-      let (opt1,all1) = do_find_opt e1
-      and (opt2,all2) = do_find_opt e2 in
-      (union (union opt1 opt2) (stringset_delta all1 all2),
-       union all1 all2)
-  | Repetition e  ->
-      let r = find_all_vars e in
-      (r,r)
-
-let find_optional e = fst @@ do_find_opt e 
+(*
+  Optional variables.
+  A variable is optional when matching of regexp does not
+  implies it binds.
+  The typical case is:
+  ("" | 'a' as x) -> optional
+  ("" as x | 'a' as x) -> non-optional
+ *)
+let find_optional e = 
+  let rec do_find_opt x : IdSet.t * IdSet.t =
+    let open IdSet in
+    match x with 
+    | Characters _|Epsilon|Eof -> (empty, empty)
+    | Bind (e,x) ->
+        let (opt,all) = do_find_opt e in
+        (opt, add x all)
+    | Sequence (e1,e2) ->
+        let (opt1,all1) = do_find_opt e1
+        and (opt2,all2) = do_find_opt e2 in
+        (union opt1 opt2, union all1 all2)
+    | Alternative (e1,e2) ->
+        (* let stringset_delta s1 s2 = *)
+        (*   union (diff s1 s2) (diff s2 s1) in *)
+        let (opt1,all1) = do_find_opt e1
+        and (opt2,all2) = do_find_opt e2 in
+        (union (union opt1 opt2)
+           (union (diff all1 all2) (diff all2 all1))
+         (* (stringset_delta all1 all2) *),
+         union all1 all2)
+    | Repetition e  ->
+        let r = find_all_vars e in
+        (r,r) in
+  fst @@ do_find_opt e 
 
 
 (*
-   Double variables
-   A variable is double when it can be bound more than once
-   in a single matching
-     The typical case is:
-       (e1 as x) (e2 as x)
+  Double variables
+  A variable is double when it can be bound more than once
+  in a single matching
+  The typical case is:
+  (e1 as x) (e2 as x)
 
-*)
+ *)
 
 let rec do_find_double x : IdSet.t * IdSet.t =
   let open IdSet in
@@ -130,10 +157,9 @@ let rec do_find_double x : IdSet.t * IdSet.t =
       and (dbl2, all2) = do_find_double e2 in
       (union dbl1 dbl2, union all1 all2)
   | Repetition e ->
-      let r = find_all_vars e in
-      (r,r)
-
+      let r = find_all_vars e in (r,r)
 let find_double e = do_find_double e
+
 
 (*
    Type of variables:

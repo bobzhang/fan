@@ -1,25 +1,9 @@
-(***********************************************************************)
-(*                                                                     *)
-(*                                OCaml                                *)
-(*                                                                     *)
-(*            Luc Maranget, Jerome Vouillon projet Cristal,            *)
-(*                         INRIA Rocquencourt                          *)
-(*                                                                     *)
-(*  Copyright 2002 Institut National de Recherche en Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed    *)
-(*  under the terms of the Q Public License version 1.0.               *)
-(*                                                                     *)
-(***********************************************************************)
 
-(* $Id: cset.ml 11156 2011-07-27 14:17:02Z doligez $ *)
-
-
-exception Bad
 
 type t = (int * int) list
 
-
 let empty = []
+
 let is_empty = function
   | [] -> true
   | _  -> false
@@ -79,22 +63,31 @@ let rec diff l l' =
 
 
 let eof = singleton 256
-and all_chars = interval 0 255
-and all_chars_eof = interval 0 256
+
+let all_chars = interval 0 255
+let all_chars_eof = interval 0 256
 
 let complement s = diff all_chars s
 
-let env_to_array env = match env with
-| []         -> assert false
-| (_,x)::rem ->
-    let res = Array.create 257 x in
-    (List.iter
-      (fun (c,y) ->
-        List.iter
-          (fun (i,j) ->
-            for k=i to j do
-              res.(k) <- y
-            done)
-          c)
-      rem ;
-    res)
+let env_to_array env =
+  match env with
+  | []         -> assert false
+  | (_,x)::rem ->
+      let res = Array.create 257 x in
+      (List.iter
+         (fun (c,y) ->
+           List.iter
+             (fun (i,j) ->
+               for k=i to j do
+                 res.(k) <- y
+               done)
+             c)
+         rem ;
+       res)
+
+
+let to_string (set:t) =
+  let x  =
+    String.concat ";"
+    @@ List.map (fun (x,y) -> Printf.sprintf "%d,%d" x y) set in
+  "[ " ^ x ^ " ]"

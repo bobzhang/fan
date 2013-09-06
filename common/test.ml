@@ -1,0 +1,1 @@
+Translate_lex.regexp_for_string
