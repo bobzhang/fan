@@ -587,7 +587,7 @@ let make_single_dfa (lexdef :'a entry) :
  *)
       let actions = Array.create !next_state_num (Perform (0,[])) in
       (List.iter (fun (act, i) -> actions.(i) <- act) states;
-(* Useless state reset, so as to restrict GC roots *)
+      (* Useless state reset, so as to restrict GC roots *)
        reset_state  () ;
        reset_state_partial  0 ;
        (initial_states, actions))
@@ -602,7 +602,7 @@ let make_dfa (lexdef:'a entry list) :
   let r_states = ref [] in
   let initial_states =
     List.map
-      (fun (le,(* args, *)shortest) ->
+      (fun (le,shortest) ->
         let tags = extract_tags le.lex_actions in
         (reset_state_partial le.lex_mem_tags ;
          let pos_set = firstpos le.lex_regexp in
@@ -614,9 +614,7 @@ let make_dfa (lexdef:'a entry list) :
          (r_states :=
            map_on_all_states
              (translate_state shortest tags chars follow) !r_states ;
-          { (* auto_name = le.lex_name; *)
-            (* auto_args = args ; *)
-            auto_mem_size =
+          {auto_mem_size =
             (if !temp_pending then !next_mem_cell+1 else !next_mem_cell) ;
             auto_initial_state = init_num ;
             auto_actions = le.lex_actions })))
