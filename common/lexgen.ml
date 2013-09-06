@@ -528,7 +528,7 @@ let translate_state shortest_match tags chars follow st =
 (* end *)
 
 let make_tag_entry id start act a r = match a with
-  | Sum (Mem m,0) ->
+  |(Mem m,0) ->
       TagMap.add {id=id ; start=start ; action=act} m r
   | _ -> r
 

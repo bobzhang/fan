@@ -364,15 +364,15 @@ let output_env (env : t_env) =
               if FLoc.strictly_before p1 p2 then (-1) else 1) env in
    let output_tag_access =
      function
-     | Sum (Mem i,d) ->
+     | (Mem i,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), (output_mem_access i))),
               (`Int (_loc, (string_of_int d)))) : FAst.exp )
-     | Sum (Start ,d) ->
+     | (Start ,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), start_pos)),
               (`Int (_loc, (string_of_int d)))) : FAst.exp )
-     | Sum (End ,d) ->
+     | (End ,d) ->
          (`App
             (_loc, (`App (_loc, (`Lid (_loc, "+")), curr_pos)),
               (`Int (_loc, (string_of_int d)))) : FAst.exp ) in

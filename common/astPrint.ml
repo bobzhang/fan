@@ -18,7 +18,7 @@
 
 open Asttypes
 open Format
-open Location
+open! Location (* FIXME*)
 open Longident
 open Parsetree
 

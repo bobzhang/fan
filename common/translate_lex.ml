@@ -114,13 +114,10 @@ let find_optional e =
         and (opt2,all2) = do_find_opt e2 in
         (union opt1 opt2, union all1 all2)
     | Alternative (e1,e2) ->
-        (* let stringset_delta s1 s2 = *)
-        (*   union (diff s1 s2) (diff s2 s1) in *)
         let (opt1,all1) = do_find_opt e1
         and (opt2,all2) = do_find_opt e2 in
         (union (union opt1 opt2)
-           (union (diff all1 all2) (diff all2 all1))
-         (* (stringset_delta all1 all2) *),
+           (union (diff all1 all2) (diff all2 all1)),
          union all1 all2)
     | Repetition e  ->
         let r = find_all_vars e in
@@ -161,13 +158,7 @@ let rec do_find_double x : IdSet.t * IdSet.t =
 let find_double e = do_find_double e
 
 
-(*
-   Type of variables:
-    A variable is bound to a char when all its occurences
-    bind a pattern of length 1.
-     The typical case is:
-       (_ as x) -> char
-*)
+
 
 let add_some x = function
   | Some i -> Some (x+i)
@@ -178,39 +169,41 @@ let add_some_some x y =
   | (Some i, Some j) -> Some (i+j)
   | (_,_)            -> None
 
-
-let rec do_find_chars sz x : IdSet.t * IdSet.t * int option =
-  let open IdSet in
-  match x with 
-  | Epsilon|Eof    -> (empty, empty, sz)
-  | Characters _ -> (empty, empty, add_some 1 sz)
-  | Bind (e,x)   ->
-      let (c,s,e_sz) = do_find_chars (Some 0) e in
-      begin match e_sz  with
-      | Some 1 ->
-          (add x c,s,add_some 1 sz)
-      | _ ->
-          (c, add x s, add_some_some sz e_sz)
-      end
-  | Sequence (e1,e2) ->
-      let (c1,s1,sz1) = do_find_chars sz e1 in
-      let (c2,s2,sz2) = do_find_chars sz1 e2 in
-      (union c1 c2,
-       union s1 s2,
-       sz2)
-  | Alternative (e1,e2) ->
-      let (c1,s1,sz1) = do_find_chars sz e1
-      and (c2,s2,sz2) = do_find_chars sz e2 in
-      (union c1 c2,
-       union s1 s2,
-       (if sz1 = sz2 then sz1 else None))
-  | Repetition e -> do_find_chars None e
-
-
-
+(*
+   Type of variables:
+    A variable is bound to a char when all its occurences
+    bind a pattern of length 1.
+     The typical case is:
+       (_ as x) -> char *)        
 let find_chars e =
+  let open IdSet in
+  let rec do_find_chars (sz : int option) x =
+    match x with 
+    | Epsilon|Eof    -> (empty, empty, sz)
+    | Characters _ -> (empty, empty, add_some 1 sz)
+    | Bind (e,x)   ->
+        let (c,s,e_sz) = do_find_chars (Some 0) e in
+        begin match e_sz  with
+        | Some 1 ->
+            (add x c,s, add_some 1 sz)
+        | _ ->
+            (c, add x s, add_some_some sz e_sz)
+        end
+    | Sequence (e1,e2) ->
+        let (c1,s1,sz1) = do_find_chars sz e1 in
+        let (c2,s2,sz2) = do_find_chars sz1 e2 in
+        (union c1 c2, union s1 s2, sz2)
+    | Alternative (e1,e2) ->
+        let (c1,s1,sz1) = do_find_chars sz e1
+        and (c2,s2,sz2) = do_find_chars sz e2 in
+        (union c1 c2, union s1 s2,
+         if sz1 = sz2 then sz1 else None)
+    | Repetition e -> do_find_chars None e in
   let (c,s,_) = do_find_chars (Some 0) e in
-  IdSet.diff c s
+  diff c s
+
+
+
 
 (*******************************)
 (* From shallow to deep syntax *)
@@ -219,8 +212,8 @@ let find_chars e =
 let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
-
-let rec encode_regexp (char_vars:IdSet.t) (act:int) x : Automata_def.regexp =
+(* the first argument [char_vars] is produced by [find_chars] *)
+let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : Automata_def.regexp =
   match x with
   | Epsilon -> Empty
   | Characters cl ->
@@ -245,9 +238,9 @@ let rec encode_regexp (char_vars:IdSet.t) (act:int) x : Automata_def.regexp =
       Alt (r1, r2)
   | Repetition r ->
       Star ( encode_regexp char_vars act r )
-  | Bind (r,((_,name) as x)) ->
+  | Bind (r,((_,name) as y)) ->
       let r = encode_regexp char_vars act r in
-      if IdSet.mem x char_vars then
+      if IdSet.mem y char_vars then
         Seq (Tag {id=name ; start=true ; action=act},r)
       else
         Seq (Tag {id=name ; start=true ; action=act},
@@ -273,11 +266,11 @@ let mk_seq (r1: Automata_def.regexp) (r2 : Automata_def.regexp) : Automata_def.r
 
 let add_pos p i =
   match (p:Automata_def.tag_addr option) with
-  | Some (Sum (a,n)) -> Some (Sum (a,n+i))
+  | Some (a,n) -> Some (a,n+i)
   | None -> None
 
 let mem_name name (id_set:IdSet.t) : bool =
-  IdSet.exists (function (_,id_name) -> name = id_name) id_set (* FIXME*)
+  IdSet.exists (function (_,id_name) -> name = id_name) id_set 
 
 
 (* First static optimizations, from start position *)
@@ -325,7 +318,7 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
         if mem_name n.id double_vars then
           (r,Some pos)
         else begin
-          Hashtbl.add env (n.id,n.start) (Sum (Start, pos)) ;
+          Hashtbl.add env (n.id,n.start) (Start, pos) ;
           (Empty,Some pos)
         end
     | Empty -> (r, Some pos)
@@ -350,7 +343,7 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
         if mem_name n.id double_vars then
           (r,Some pos)
         else begin
-          Hashtbl.add env (n.id,n.start) (Sum (End, pos)) ;
+          Hashtbl.add env (n.id,n.start)  (End, pos) ;
           (Empty,Some pos)
         end
     | Empty -> (r,Some pos)
@@ -380,8 +373,8 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
     with Not_found ->
       let n = !loc_count in begin
         incr loc_count ;
-        Hashtbl.add env t (Sum (Mem n,0)) ;
-        Sum (Mem n,0)
+        Hashtbl.add env t  (Mem n,0) ;
+        (Mem n,0)
       end in
   let rec alloc_exp pos r =
     match r with

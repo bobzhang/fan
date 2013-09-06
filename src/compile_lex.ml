@@ -196,11 +196,11 @@ let output_env (env:t_env) : bind list =
         | (((p1,_),_), ((p2,_),_)) ->
             if FLoc.strictly_before p1 p2 then -1 else 1) env in
   let output_tag_access = function
-    | Sum (Mem i,d) ->
+    |(Mem i,d) ->
         {:exp| ($(output_mem_access i) + $`int:d) |}
-    | Sum(Start,d) ->
+    |(Start,d) ->
         {:exp| ($start_pos+ $`int:d) |}
-    | Sum (End,d) ->
+    | (End,d) ->
         {:exp| ($curr_pos + $`int:d) |} in
   List.map
     (fun (id,v) ->
