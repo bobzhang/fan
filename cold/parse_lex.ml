@@ -1,27 +1,7 @@
 open LibUtil
-open Automata_def
+open Translate_lex
 open! Fsyntax
-let regexp_for_string s =
-  let rec re_string n =
-    if n >= (String.length s)
-    then Epsilon
-    else
-      if (succ n) = (String.length s)
-      then Characters (Fcset.singleton (Char.code (s.[n])))
-      else
-        Sequence
-          ((Characters (Fcset.singleton (Char.code (s.[n])))),
-            (re_string (succ n))) in
-  re_string 0
 let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13
-let rec remove_as =
-  function
-  | Bind (e,_) -> remove_as e
-  | Epsilon |Eof |Characters _ as e -> e
-  | Sequence (e1,e2) -> Sequence ((remove_as e1), (remove_as e2))
-  | Alternative (e1,e2) -> Alternative ((remove_as e1), (remove_as e2))
-  | Repetition e -> Repetition (remove_as e)
-let as_cset = function | Characters s -> s | _ -> raise Fcset.Bad
 let regexp = Fgram.mk "regexp"
 let char_class = Fgram.mk "char_class"
 let char_class1 = Fgram.mk "char_class1"
