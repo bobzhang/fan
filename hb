@@ -23,6 +23,7 @@ ln -s $target _build/boot/fan # now use the new one  as preprocessor
 
 echo "Cleaning for the second round building"
 make cleansrc
+make cleancommon
 $OB -quiet src/$target
 echo "Second round building finished; now do the comparison"
 

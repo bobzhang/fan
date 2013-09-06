@@ -425,54 +425,58 @@ let opt_regexp all_vars char_vars optional_vars double_vars (r:regexp):
 
 
 
-let encode_casedef (casedef:(concrete_regexp * 'a) list) =
+let encode_casedef (regexps :(concrete_regexp * 'a) list) =
   List.fold_left
     (fun (reg,actions,count,ntags) (expr, act) ->
       let expr = remove_nested_as expr in
       let char_vars = find_chars expr in
-      let r = encode_regexp char_vars count expr
-      and opt_vars = find_optional expr
-      and (double_vars,all_vars) = find_double expr in
+      let opt_vars = find_optional expr in
+      let (double_vars,all_vars) = find_double expr in
+
+      let r = encode_regexp char_vars count expr in
       let (m,r,loc_ntags) =
         opt_regexp all_vars char_vars opt_vars double_vars r in
 
-      (Alt(reg, Seq(r, Action count)),
+      (Alt(reg,
+           Seq(r, Action count)),
        (count, m ,act) :: actions,
-       count + 1, max loc_ntags ntags))
+       count + 1,
+       max loc_ntags ntags))
     (Empty, [], 0, 0)
-    casedef 
+    regexps
 
+
+let reset () =
+  chars := [];
+  chars_count := 0
+      
 let encode_lexdef (def:' a entry list) :
     Fcset.t array * ('a Automata_def.lexer_entry * bool) list
     =
-  (chars := [];
-   chars_count := 0;
-   let entry_list =
-     List.map
-       (fun {shortest=shortest ; clauses= casedef} ->
-         let (re,actions,_,ntags) = encode_casedef casedef in
-         ({lex_regexp = re;
-            lex_mem_tags = ntags ;
-            lex_actions = List.rev actions },
-          shortest))
-       def in
-   let chr = Array.of_list (List.rev !chars) in
-   (chars := [];
-    (chr, entry_list)))
+  reset ();
+  let entry_list =
+    List.map
+      (fun {shortest ; clauses } ->
+        let (lex_regexp,actions,_,lex_mem_tags) = encode_casedef clauses in
+        ({lex_regexp ;
+          lex_mem_tags ;
+          lex_actions = List.rev actions },
+         shortest))
+      def in
+  Array.of_list (List.rev !chars), entry_list
+
     
 let encode_single_lexdef (def:'a entry) :
     Fcset.t array * ('a Automata_def.lexer_entry * bool) = 
-  (chars := [];
-   chars_count := 0;
+  reset ();
    let result =
      match def with
-       {shortest=shortest ; clauses= casedef} ->
-         let (re,actions,_,ntags) = encode_casedef casedef in
-         ({lex_regexp = re;
-           lex_mem_tags = ntags ;
+       {shortest ; clauses} ->
+         let (lex_regexp,actions,_,lex_mem_tags) = encode_casedef clauses in
+         ({lex_regexp;
+           lex_mem_tags;
            lex_actions = List.rev actions },
           shortest) in
-   let chr = Array.of_list (List.rev !chars) in
-   (chars := [];
-    (chr, result)))
+    Array.of_list (List.rev !chars),result
+
 
