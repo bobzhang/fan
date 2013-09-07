@@ -2,6 +2,7 @@ open LibUtil
 open Translate_lex
 open! Fsyntax
 let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13
+exception UnboundRegexp
 let regexp = Fgram.mk "regexp"
 let char_class = Fgram.mk "char_class"
 let char_class1 = Fgram.mk "char_class1"
@@ -164,7 +165,7 @@ let _ =
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)),
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     exit 2)\n",
+          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
@@ -177,10 +178,10 @@ let _ =
                                "File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n"
                                p.Lexing.pos_fname p.Lexing.pos_lnum
                                (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;
-                             exit 2)) : 'regexp )
+                             raise UnboundRegexp)) : 'regexp )
                   | _ ->
                       failwith
-                        "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \\\"%s\\\", line %d, character %d:\\nReference to unbound regexp name `%s'.\\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     exit 2)\n"))))])]);
+                        "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \\\"%s\\\", line %d, character %d:\\nReference to unbound regexp name `%s'.\\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     raise UnboundRegexp)\n"))))])]);
   Fgram.extend_single (char_class : 'char_class Fgram.t )
     (None,
       (None, None,

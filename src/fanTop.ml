@@ -2,7 +2,7 @@
 open LibUtil
 
 (** FIXME a better register mode *)
-open Mktop;;
+(* open Mktop;; *)
 
 (* avoid dependency on [Parse] module  *)
 let parse_toplevel_phrase_old = !Toploop.parse_toplevel_phrase;;
@@ -15,9 +15,9 @@ end
     
 let fan ()  = begin
   Toploop.parse_toplevel_phrase :=
-    wrap toplevel_phrase ~print_location:Toploop.print_location;
+    Mktop.wrap Mktop.toplevel_phrase ~print_location:Toploop.print_location;
   Toploop.parse_use_file :=
-    wrap use_file ~print_location:Toploop.print_location
+    Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location
 end;;
 
 begin

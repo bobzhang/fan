@@ -1,9 +1,8 @@
 (* -*- Mode:caml; -*- *)
 
 #load "fanTop.cma";;
-#directory "./_build/common";;
-#directory "+compiler-libs";;
 #load "ocamlcommon.cma";;
+
 let fmt = std_formatter
 let _loc = FLoc.ghost;;
 
@@ -56,7 +55,7 @@ open FAst;;
 
 (* test dump *)
 let t_dump s =  t stru s |> Ast2pt.stru;;
-open PGrammar;;
+open Parse_fan;;
 
 (* #require "inspect";; *)
 (* open Inspect;; *)

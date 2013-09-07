@@ -1,5 +1,4 @@
 open LibUtil
-open Mktop
 let parse_toplevel_phrase_old = Toploop.parse_toplevel_phrase.contents
 let use_file_old = Toploop.parse_use_file.contents
 let normal () =
@@ -7,9 +6,9 @@ let normal () =
   Toploop.parse_use_file := use_file_old
 let fan () =
   Toploop.parse_toplevel_phrase :=
-    (wrap toplevel_phrase ~print_location:Toploop.print_location);
+    (Mktop.wrap Mktop.toplevel_phrase ~print_location:Toploop.print_location);
   Toploop.parse_use_file :=
-    (wrap use_file ~print_location:Toploop.print_location)
+    (Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location)
 let _ =
   Printexc.register_printer Mktop.normal_handler;
   Hashtbl.replace Toploop.directive_table "fan"

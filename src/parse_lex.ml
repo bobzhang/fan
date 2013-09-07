@@ -5,7 +5,8 @@ open! Fsyntax
 
 let named_regexps =
   (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
-;;
+
+exception UnboundRegexp;;
 
 {:create|Fgram
   regexp
@@ -77,7 +78,7 @@ let named_regexps =
            Printf.eprintf "File \"%s\", line %d, character %d:\n\
             Reference to unbound regexp name `%s'.\n" p.Lexing.pos_fname p.Lexing.pos_lnum
            (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;
-           exit 2
+           raise UnboundRegexp
         end
     end
   ] (* FIXME rule mask more friendly error message *)

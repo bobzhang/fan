@@ -8,9 +8,10 @@ open Format;;
 
 let paths =
   ["+compiler-libs";
-   "_build";
+   "_build/common";
    "_build/cold";
-   (* "_build/src" *) ];;
+   "_build/treeparser"
+    ];;
 List.iter Topdirs.dir_directory paths;;
 #use "common.init";;
 
