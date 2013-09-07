@@ -1,18 +1,4 @@
 
-
-(* To generate directly a NFA from a regular expression.
-   Confer Aho-Sethi-Ullman, dragon book, chap. 3
-   Extension to tagged automata.
-   Confer
-   Ville Larikari
-   ``NFAs with Tagged Transitions, their Conversion to Deterministic
-   Automata and Application to Regular Expressions''.
-   Symposium on String Processing and Information Retrieval (SPIRE 2000),
-   http://kouli.iki.fi/~vlaurika/spire2000-tnfa.ps
-   (See also)
-   http://kouli.iki.fi/~vlaurika/regex-submatch.ps.gz
- *)
-
 open Automata_def
 (* exception Memory_overflow *)
 
@@ -20,7 +6,7 @@ let rec nullable (x:regexp) =
   match x with 
   | Empty|Tag _ -> true
   | Chars (_,_)
-  |Action _ -> false
+  | Action _ -> false
   | Seq(r1,r2) -> nullable r1 && nullable r2
   | Alt(r1,r2) -> nullable r1 || nullable r2
   | Star _r     -> true

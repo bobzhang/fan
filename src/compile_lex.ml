@@ -2,7 +2,7 @@
 open FAst
 open AstLib
 open Automata_def 
-
+open Lexgen
 open LibUtil
   
 (** FIXME *)
