@@ -1,6 +1,5 @@
 
-open Automata_def
-(* exception Memory_overflow *)
+open Tag_regexp
 
 let rec nullable (x:regexp) =
   match x with 
@@ -11,24 +10,35 @@ let rec nullable (x:regexp) =
   | Alt(r1,r2) -> nullable r1 || nullable r2
   | Star _r     -> true
 
-
-let tag_compare t1 t2 = Pervasives.compare t1 t2
+  
 type t_transition =
   | OnChars of int
   | ToAction of int
 
-module Tags = Set.Make(struct type t = tag_info let compare = tag_compare end)
-module TagMap = Map.Make (struct type t = tag_info let compare = tag_compare end)
-type transition = (t_transition * Tags.t)
 
-let trans_compare (t1,tags1) (t2,tags2) =
-  match Pervasives.compare  t1 t2 with
-  | 0 -> Tags.compare tags1 tags2
-  | r -> r
+module Tag = struct
+  type t = tag_info
+  let compare (t1:tag_info) t2 = Pervasives.compare t1 t2        
+end
+    
+module Tags = Set.Make(Tag)
+
+type transition = t_transition * Tags.t
+      
+
+module TagMap = Map.Make (Tag)
 
 
-module TransSet =
-  Set.Make(struct type t = transition let compare = trans_compare end)
+
+module Trans = struct
+  type t = transition
+  let compare (t1,tags1) (t2,tags2) =
+    match Pervasives.compare  t1 t2 with
+    | 0 -> Tags.compare tags1 tags2
+    | r -> r
+end
+    
+module TransSet =  Set.Make(Trans)
 
 
 let rec emptymatch (x:regexp) : Tags.t =
@@ -56,8 +66,8 @@ let addtags (transs:TransSet.t) (tags:Tags.t) : TransSet.t =
 let rec firstpos x : TransSet.t =
   match x with
   | Empty|Tag _ -> TransSet.empty
-  | Chars (pos,_) -> TransSet.add (OnChars pos,Tags.empty) TransSet.empty
-  | Action act -> TransSet.add (ToAction act,Tags.empty) TransSet.empty
+  | Chars (pos,_) -> TransSet.singleton (OnChars pos,Tags.empty)
+  | Action act -> TransSet.singleton (ToAction act,Tags.empty)
   | Seq(r1,r2) ->
       if nullable r1 then
         TransSet.union (firstpos r1) (addtags (firstpos r2) (emptymatch r1))
@@ -76,13 +86,15 @@ let followpos size entry_list =
         (fill s r1 ; fill s r2)
     | Seq (r1,r2) ->
         (fill
-          (if nullable r2 then
-            TransSet.union (firstpos r2) (addtags s (emptymatch r2))
-          else
-            (firstpos r2))
-          r1 ;
-        fill s r2)
+           (if nullable r2 then
+             TransSet.union (firstpos r2) (addtags s (emptymatch r2))
+           else
+             (firstpos r2))
+           r1 ;
+         fill s r2)
     | Star r ->
         fill (TransSet.union (firstpos r) s) r in
-  (List.iter (fun (entry,_) -> fill TransSet.empty entry.lex_regexp) entry_list ;
-  v)
+  (List.iter
+     (fun (entry,_) -> fill TransSet.empty entry.Translate_lex.lex_regexp)
+     entry_list ;
+   v)

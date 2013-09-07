@@ -5,8 +5,9 @@ exception Memory_overflow
 
 open Automata_def
 open Lex_util
+  
 open Translate_lex  
-
+open Tag_regexp
 type tag_action =
   | SetTag of int * int
   | EraseTag of int
@@ -27,11 +28,6 @@ type automata =
   | Perform of int * tag_action list
   | Shift of automata_trans * (automata_move * memory_action list) array
 
-type 'a automata_entry = {
-    auto_mem_size : int ;
-    auto_initial_state : (int * memory_action list);
-    auto_actions : (int * t_env * 'a) list
-  }
         
 (************************)
 (* The algorithm itself *)
@@ -558,7 +554,7 @@ let make_tag_entry id start act a r = match a with
   | _ -> r
 
         
-let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
+let extract_tags (l:(int * ((FLoc.t * string) * ident_info) list * 'b) list)
     : int TagMap.t array =
   let envs = Array.create (List.length l) TagMap.empty in
   (List.iter
@@ -576,6 +572,11 @@ let extract_tags (l:(int * (ident * ident_info) list * 'b) list)
     l ;
   envs)
 
+type 'a automata_entry = {
+    auto_mem_size : int ;
+    auto_initial_state : int * memory_action list;
+    auto_actions : (int * t_env * 'a) list
+  }
 
 let make_single_dfa (lexdef :'a entry) :
     ('a automata_entry  * automata array) = begin

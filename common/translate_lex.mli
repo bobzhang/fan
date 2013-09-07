@@ -2,8 +2,8 @@
 
 
 
-(* open Automata_def *)
-
+open Automata_def
+open Tag_regexp
 type concrete_regexp
       =
   | Epsilon
@@ -13,6 +13,12 @@ type concrete_regexp
   | Alternative of concrete_regexp * concrete_regexp
   | Repetition of concrete_regexp
   | Bind of concrete_regexp * (FLoc.t * string)
+
+type 'a lexer_entry = { 
+    lex_regexp: regexp;
+    lex_mem_tags: int ;
+    lex_actions: (int *  t_env * 'a) list
+  }        
 (**
    {[
    regexp_for_string "abcd";;
@@ -37,11 +43,11 @@ type 'a entry = {
   
 val encode_lexdef :
     'a entry list ->
-      Fcset.t array * ('a Automata_def.lexer_entry * bool) list
+      Fcset.t array * ('a lexer_entry * bool) list
 
 
 val encode_single_lexdef :
-    'a entry -> Fcset.t array * ('a Automata_def.lexer_entry * bool)
+    'a entry -> Fcset.t array * ('a lexer_entry * bool)
 
 
         

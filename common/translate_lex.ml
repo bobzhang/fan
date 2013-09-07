@@ -1,7 +1,7 @@
 
 
 open Automata_def
-
+open Tag_regexp
 type concrete_regexp =
   | Epsilon
   | Eof      
@@ -15,6 +15,8 @@ type 'a entry =
   {shortest : bool ;
    clauses : (concrete_regexp * 'a) list}
 
+
+      
 let regexp_for_string s =
   let rec re_string n =
     let len = String.length s in
@@ -213,7 +215,7 @@ let chars = ref ([] : Fcset.t list)
 let chars_count = ref 0
 
 (* the first argument [char_vars] is produced by [find_chars] *)
-let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : Automata_def.regexp =
+let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : regexp =
   match x with
   | Epsilon -> Empty
   | Characters cl ->
@@ -258,7 +260,7 @@ let rec encode_regexp (char_vars : IdSet.t) ( act : int) x : Automata_def.regexp
 
 
 
-let mk_seq (r1: Automata_def.regexp) (r2 : Automata_def.regexp) : Automata_def.regexp=
+let mk_seq (r1: regexp) (r2 : regexp) : regexp=
   match r1,r2  with
   | Empty,_ -> r2
   | _,Empty -> r1
@@ -449,9 +451,15 @@ let encode_casedef (regexps :(concrete_regexp * 'a) list) =
 let reset () =
   chars := [];
   chars_count := 0
+
+type 'a lexer_entry = { 
+    lex_regexp: regexp;
+    lex_mem_tags: int ;
+    lex_actions: (int *  t_env * 'a) list
+  }
       
 let encode_lexdef (def:' a entry list) :
-    Fcset.t array * ('a Automata_def.lexer_entry * bool) list
+    Fcset.t array * ('a lexer_entry * bool) list
     =
   reset ();
   let entry_list =
@@ -467,7 +475,7 @@ let encode_lexdef (def:' a entry list) :
 
     
 let encode_single_lexdef (def:'a entry) :
-    Fcset.t array * ('a Automata_def.lexer_entry * bool) = 
+    Fcset.t array * ('a lexer_entry * bool) = 
   reset ();
    let result =
      match def with
