@@ -5,7 +5,7 @@
 
 {:unsafe_extend| (g:Fgram.t)
 include_quot:
-  [`STR(_,s) ->
+  [`STR s -> (* FIXME *)
     let (keep,cf) = FState.((keep,current_filters)) in
     {:save| keep cf ->  begin
       FState.reset ();

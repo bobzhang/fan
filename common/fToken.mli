@@ -56,9 +56,9 @@ type t =
   | `INT32 of string 
   | `INT64 of string 
   | `NATIVEINT of string 
-  | `Flo of (float * string )
-  | `CHAR of (char * string )
-  | `STR of (string * string )
+  | `Flo of  string 
+  | `CHAR of  string 
+  | `STR of  string 
   | `LABEL of string
   | `OPTLABEL of string
         (* . *)

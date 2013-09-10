@@ -374,16 +374,16 @@ let  token c = {:lexer|
        *)
       (* (try cvt_int_literal x with *)
       (*   Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf)) *)
-  | float_literal as f -> 
-       (try  `Flo(float_of_string f, f) with
-         Failure _ -> err (Literal_overflow f) (FLoc.of_lexbuf lexbuf)) 
+  | float_literal as f ->
+      (** FIXME safety check *)
+      `Flo f 
   | '"' -> ( with_curr_loc string c;
-             let s = buff_contents c in `STR (TokenEval.string s, s))
+             let s = buff_contents c in `STR s (* (TokenEval.string s, s) *))
   | "'" (newline as x) "'" ->
-           ( update_loc c  ~retract:1; `CHAR (TokenEval.char x, x))
+           ( update_loc c  ~retract:1; `CHAR x (* (TokenEval.char x, x) *))
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
-      -> (`CHAR (TokenEval.char x, x))
+      -> `CHAR x (* (TokenEval.char x, x) *)
   | "'\\" (_ as c) -> 
            (err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf))         
   | "(*" ->

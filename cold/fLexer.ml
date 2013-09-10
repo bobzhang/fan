@@ -7088,21 +7088,18 @@ let token c lexbuf =
         let f =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_curr_pos + 0) in
-        (try `Flo ((float_of_string f), f)
-         with | Failure _ -> err (Literal_overflow f) (FLoc.of_lexbuf lexbuf))
-    | 8 ->
-        (with_curr_loc string c;
-         (let s = buff_contents c in `STR ((TokenEval.string s), s)))
+        `Flo f
+    | 8 -> (with_curr_loc string c; (let s = buff_contents c in `STR s))
     | 9 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
             (lexbuf.Lexing.lex_curr_pos + (-1)) in
-        (update_loc c ~retract:1; `CHAR ((TokenEval.char x), x))
+        (update_loc c ~retract:1; `CHAR x)
     | 10 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
             (lexbuf.Lexing.lex_curr_pos + (-1)) in
-        `CHAR ((TokenEval.char x), x)
+        `CHAR x
     | 11 ->
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in

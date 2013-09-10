@@ -55,12 +55,12 @@ open LibUtil
         | (None,Some typ) ->
             {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
 
-  let str : [`STR(_,y) -> y]
+  let str : [`STR y -> y]
       
   let type_entry :
       [ `Lid x  -> (_loc,x,None,None)
-      | "("; `Lid x ;`STR(_,y); ")" ->(_loc,x,Some y,None)
-      | "(";`Lid x ;`STR(_,y);ctyp{t};  ")" -> (_loc,x,Some y,Some t)
+      | "("; `Lid x ;`STR y; ")" ->(_loc,x,Some y,None)
+      | "(";`Lid x ;`STR y;ctyp{t};  ")" -> (_loc,x,Some y,Some t)
       | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" -> (_loc,x,y,Some t) ]
 
   newterminals :
@@ -227,7 +227,7 @@ open LibUtil
     | None -> s  ] 
 
   let sep_symbol : [`Uid "SEP"; symbol{t}->t]
-  let level_str :  [`Uid "Level"; `STR (_, s) -> s ]
+  let level_str :  [`Uid "Level"; `STR  s -> s ]
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } ->
     let () = check_not_tok s in
@@ -252,7 +252,7 @@ open LibUtil
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None
   | simple_pat{p} ->
       token_of_simple_pat _loc p 
-  | `STR (_, s) ->
+  | `STR s ->
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
   | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
@@ -260,7 +260,7 @@ open LibUtil
   | "("; S{s}; ")" -> s ]
 
   string:
-  [ `STR (_, s) -> {:exp| $str:s |}
+  [ `STR  s -> {:exp| $str:s |}
   | `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
 
   simple_exp:

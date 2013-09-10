@@ -366,9 +366,9 @@ let apply () = begin
         | `INT32 s -> `Int32(_loc,s)
         | `INT64 s -> `Int64(_loc,s)
         | `NATIVEINT s -> `Nativeint (_loc, s)              
-        | `Flo(_,s) -> `Flo (_loc, s)
-        | `CHAR(_,s) -> `Chr (_loc, s)
-        | `STR(_,s) -> `Str (_loc, s)
+        | `Flo s -> `Flo (_loc, s)
+        | `CHAR s -> `Chr (_loc, s)
+        | `STR s -> `Str (_loc, s)
 
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             `LetOpen (_loc,`Negative _loc, i, e)
@@ -555,14 +555,14 @@ let apply () = begin
         | `INT s ->  `Int (_loc, s)
         | `INT32 s ->  `Int32 (_loc, s)
         | `INT64 s ->  `Int64 (_loc, s)
-        | `Flo(_,s) ->  `Flo (_loc, s)
-        | `CHAR(_,s) -> `Chr(_loc,s)
-        | `STR(_,s) -> `Str(_loc,s)
+        | `Flo s ->  `Flo (_loc, s)
+        | `CHAR s -> `Chr(_loc,s)
+        | `STR s -> `Str(_loc,s)
         | "-"; `INT s ->  `Int (_loc, String.neg s)
         | "-"; `INT32 s -> `Int32(_loc, String.neg s) 
         | "-"; `INT64 s -> `Int64(_loc,String.neg s)
         | "-"; `NATIVEINT s -> `Nativeint(_loc,String.neg s)
-        | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)
+        | "-"; `Flo s -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
               
@@ -883,8 +883,8 @@ let apply () = begin
       string_list:
       [ `Ant("",s) -> mk_anti _loc  "str_list" s
       | `Ant("",s) ; S{xs} -> `App(_loc,mk_anti _loc "" s, xs)
-      | `STR (_, x) -> `Str(_loc,x)
-      | `STR (_, x); S{xs} -> `App(_loc,`Str(_loc,x),xs)]
+      | `STR  x -> `Str(_loc,x)
+      | `STR x; S{xs} -> `App(_loc,`Str(_loc,x),xs)]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 

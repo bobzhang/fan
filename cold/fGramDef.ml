@@ -165,14 +165,14 @@ let _ =
         ([`Skeyword "`";
          `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
          `Stoken
-           (((function | `STR (_,_) -> true | _ -> false)),
-             (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
+           (((function | `STR _ -> true | _ -> false)),
+             (`App ((`Vrn "STR"), `Any)), "`STR _")],
           ("`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n",
             (Fgram.mk_action
                (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
                   (_loc : FLoc.t)  ->
                   match __fan_2 with
-                  | `STR (_,v) ->
+                  | `STR v ->
                       (`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v))) : 
                       'simple_pat )
                   | _ ->
@@ -237,13 +237,13 @@ let _ =
                    (_loc : FLoc.t)  -> (`Bar (_loc, p1, p2) : 'internal_pat )))))]);
       ((Some "simple"), None,
         [([`Stoken
-             (((function | `STR (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
+             (((function | `STR _ -> true | _ -> false)),
+               (`App ((`Vrn "STR"), `Any)), "`STR _")],
            ("`Str (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `STR (_,s) -> (`Str (_loc, s) : 'internal_pat )
+                   | `STR s -> (`Str (_loc, s) : 'internal_pat )
                    | _ -> failwith "`Str (_loc, s)\n"))));
         ([`Skeyword "_"],
           ("`Any _loc\n",

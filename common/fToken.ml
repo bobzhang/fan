@@ -39,8 +39,8 @@ type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `INT of string
   | `INT32 of string | `INT64 of  string
-  | `NATIVEINT of  string | `Flo of (float* string)
-  | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
+  | `NATIVEINT of  string | `Flo of  string
+  | `CHAR of  string | `STR of string | `LABEL of string
   | `OPTLABEL of string | quotation | dir_quotation
   | `Ant of (string* string) | `COMMENT of string | `BLANKS of string
   | `NEWLINE | `LINE_DIRECTIVE of (int* string option) | `EOI] 
@@ -66,14 +66,14 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `NATIVEINT _a1 ->
         Format.fprintf fmt "@[<1>(`NATIVEINT@ %a)@]" 
            Format.pp_print_string _a1
-    | `Flo (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" Format.pp_print_float _a0
+    | `Flo _a1 ->
+        Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
           Format.pp_print_string _a1
-    | `CHAR (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`CHAR@ %a@ %a)@]" Format.pp_print_char _a0
+    | `CHAR (_a1) ->
+        Format.fprintf fmt "@[<1>(`CHAR@ %a)@]" 
           Format.pp_print_string _a1
-    | `STR (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`STR@ %a@ %a)@]" Format.pp_print_string _a0
+    | `STR _a1 ->
+        Format.fprintf fmt "@[<1>(`STR@ %a)@]" 
           Format.pp_print_string _a1
     | `LABEL _a0 ->
         Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" Format.pp_print_string _a0
@@ -169,7 +169,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 
 let extract_string : [> t] -> string = function
   | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT  s | `INT32  s |
-  `INT64  s | `NATIVEINT  s | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
+  `INT64  s | `NATIVEINT  s | `Flo  s | `CHAR  s | `STR  s |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)

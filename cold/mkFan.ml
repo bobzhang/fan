@@ -37,13 +37,13 @@ let _ =
         (None, None,
           [([`Skeyword "require";
             `Stoken
-              (((function | `STR (_,_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "STR"), `Any)), `Any)), "`STR (_,_)")],
+              (((function | `STR _ -> true | _ -> false)),
+                (`App ((`Vrn "STR"), `Any)), "`STR _")],
              ("require s\n",
                (Fgram.mk_action
                   (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                      match __fan_1 with
-                     | `STR (_,s) -> (require s : 'item )
+                     | `STR s -> (require s : 'item )
                      | _ -> failwith "require s\n"))))]))
 let output_file = ref None
 let process_intf name =
