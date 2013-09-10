@@ -7,18 +7,6 @@ let setup_op_parser entry p =
     (parser
       | (`KEYWORD x | `SYMBOL x,_loc) when p x  -> {:exp| $lid:x |})
 
-(* [infix_kwds_filter]  *)  
-let rec infix_kwds_filter = parser
-  | ((`KEYWORD "(", _) as tok); 'xs  ->
-      (match xs with parser
-      |(`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i), _loc);
-         (`KEYWORD ")", _); 'xs  ->
-           {:stream| (`Lid i, _loc); '(infix_kwds_filter xs) |}
-      |  'xs  ->
-          {:stream| tok; 'infix_kwds_filter xs |}) 
-  |  x; 'xs  ->
-      {:stream| x; ' infix_kwds_filter xs |}
-  |  -> {:stream||}
 
 let symbolchars =
   ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';

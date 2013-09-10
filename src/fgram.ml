@@ -28,31 +28,52 @@ let default_keywords =
 let gkeywords = ref (SSet.of_list default_keywords)
   
 
+let rec fan_filter = parser
+  | ((`KEYWORD "(", _) as tok); 'xs  ->
+      (match xs with parser
+      |(`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i), _loc);
+         (`KEYWORD ")", _); 'xs  ->
+           {:stream| (`Lid i, _loc); '(fan_filter xs) |}
+      |  'xs  ->
+          {:stream| tok; 'fan_filter xs |})
+  | ((`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _),_); 'xs ->
+      fan_filter xs
+  |  x; 'xs  ->
+      {:stream| x; ' fan_filter xs |}
+  |  -> {:stream||}
 
+let rec ignore_layout : FToken.filter =
+  parser
+    | ((`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _),_); 'xs ->
+        ignore_layout  xs
+    | x ; 'xs  ->
+        {:stream|x; 'ignore_layout xs |}
+    | -> {:stream||}
+          
 let gram =  {
   annot="Fan";
   gkeywords;
-  gfilter =  FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !gkeywords);
+  gfilter =
+  { is_kwd =  fun x -> SSet.mem x !gkeywords;
+    filter = fan_filter;  }
 }
 
 let filter = FanTokenFilter.filter gram.gfilter
   
-let create_lexer ~annot ~keywords () =
-  let v = ref (SSet.of_list keywords) in
-  {annot;
-   gkeywords = v ;
-   gfilter = FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !v)
-   }
-
-
-
+let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () =
+  let v = ref (SSet.of_list keywords) in {
+  annot;
+  gkeywords = v ;
+  gfilter = {
+  is_kwd = (fun x -> SSet.mem x !v);
+  filter;  
+  }
+ }
 
 
 (* FIXME duplicate some code from Entry *)
 
 (* {:exp-| 3 + 4 |} *)
-
-  
 
 
 (* filter *)

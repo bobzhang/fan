@@ -6,83 +6,39 @@ open LibUtil
 open FanUtil
 open Gramlib
 let pos_exps = Fgram.mk "pos_exps"
-let symbolchars =
-  ['$';
-  '!';
-  '%';
-  '&';
-  '*';
-  '+';
-  '-';
-  '.';
-  '/';
-  ':';
-  '<';
-  '=';
-  '>';
-  '?';
-  '@';
-  '^';
-  '|';
-  '~';
-  '\\']
-let symbolchar s i =
-  let len = String.length s in
-  try
-    for j = i to len - 1 do
-      if not (List.mem (s.[j]) symbolchars) then raise Not_found
-    done;
-    true
-  with | Not_found  -> false
 let apply () =
-  (let list = ['!'; '?'; '~'] in
-   let excl = ["!="; "??"] in
-   let () =
-     setup_op_parser prefixop
-       (fun x  ->
-          (not (List.mem x excl)) &&
-            (((String.length x) >= 2) &&
-               ((List.mem (x.[0]) list) && (symbolchar x 1)))) in
-   let list_ok = ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"] in
-   let list_first_char_ok = ['='; '<'; '>'; '|'; '&'; '$'; '!'] in
-   let excl = ["<-"; "||"; "&&"] in
-   let () =
-     setup_op_parser infixop2
-       (fun x  ->
-          (List.mem x list_ok) ||
-            ((not (List.mem x excl)) &&
-               (((String.length x) >= 2) &&
-                  ((List.mem (x.[0]) list_first_char_ok) && (symbolchar x 1))))) in
-   let list = ['@'; '^'] in
-   let () =
-     setup_op_parser infixop3
-       (fun x  ->
-          ((String.length x) >= 1) &&
-            ((List.mem (x.[0]) list) && (symbolchar x 1))) in
-   let list = ['+'; '-'] in
-   let () =
-     setup_op_parser infixop4
-       (fun x  ->
-          (x <> "->") &&
-            (((String.length x) >= 1) &&
-               ((List.mem (x.[0]) list) && (symbolchar x 1)))) in
-   let list = ['*'; '/'; '%'; '\\'] in
-   let () =
-     setup_op_parser infixop5
-       (fun x  ->
-          ((String.length x) >= 1) &&
-            ((List.mem (x.[0]) list) &&
-               ((((x.[0]) <> '*') ||
-                   (((String.length x) < 2) || ((x.[1]) <> '*')))
-                  && (symbolchar x 1)))) in
-   let () =
-     setup_op_parser infixop6
-       (fun x  ->
-          ((String.length x) >= 2) &&
-            (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2)))) in
-   let () =
-     FanTokenFilter.set_filter (Fgram.get_filter ())
-       (fun f  strm  -> infix_kwds_filter (f strm)) in
+  (setup_op_parser prefixop
+     (fun x  ->
+        (not (List.mem x ["!="; "??"])) &&
+          (((String.length x) >= 2) &&
+             ((List.mem (x.[0]) ['!'; '?'; '~']) && (symbolchar x 1))));
+   setup_op_parser infixop2
+     (fun x  ->
+        (List.mem x ["<"; ">"; "<="; ">="; "="; "<>"; "=="; "!="; "$"]) ||
+          ((not (List.mem x ["<-"; "||"; "&&"])) &&
+             (((String.length x) >= 2) &&
+                ((List.mem (x.[0]) ['='; '<'; '>'; '|'; '&'; '$'; '!']) &&
+                   (symbolchar x 1)))));
+   setup_op_parser infixop3
+     (fun x  ->
+        ((String.length x) >= 1) &&
+          ((List.mem (x.[0]) ['@'; '^']) && (symbolchar x 1)));
+   setup_op_parser infixop4
+     (fun x  ->
+        (x <> "->") &&
+          (((String.length x) >= 1) &&
+             ((List.mem (x.[0]) ['+'; '-']) && (symbolchar x 1))));
+   setup_op_parser infixop5
+     (fun x  ->
+        ((String.length x) >= 1) &&
+          ((List.mem (x.[0]) ['*'; '/'; '%'; '\\']) &&
+             ((((x.[0]) <> '*') ||
+                 (((String.length x) < 2) || ((x.[1]) <> '*')))
+                && (symbolchar x 1))));
+   setup_op_parser infixop6
+     (fun x  ->
+        ((String.length x) >= 2) &&
+          (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2))));
    Fgram.setup_parser sem_exp
      (let symb1 = Fgram.parse_origin_tokens exp in
       let symb (__strm : _ XStream.t) =

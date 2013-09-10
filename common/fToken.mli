@@ -107,7 +107,7 @@ val check_keyword : 'a -> bool
 
 val error_on_unknown_keywords : bool ref
 
-val ignore_layout :  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t
+(* val ignore_layout :  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t *)
 
 val print : Format.formatter -> [> t ] -> unit
 
