@@ -365,11 +365,15 @@ let  token c = {:lexer|
         let n = String.length s in
         match s.[n-1] with
         |'l' -> `INT32 s
-        |'L' -> `INT64 (Int64.(neg (of_string ("-" ^ s))),s)
-        |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
-        | _  -> `INT (- int_of_string ("-" ^ s),s) in 
-      (try cvt_int_literal x with
-        Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf))
+        |'L' -> `INT64 s
+        |'n' -> `NATIVEINT s
+        | _  -> `INT s in
+      cvt_int_literal x 
+      (* FIXME - int_of_string ("-" ^ s) ??
+         safety check
+       *)
+      (* (try cvt_int_literal x with *)
+      (*   Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf)) *)
   | float_literal as f -> 
        (try  `Flo(float_of_string f, f) with
          Failure _ -> err (Literal_overflow f) (FLoc.of_lexbuf lexbuf)) 

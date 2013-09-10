@@ -1548,13 +1548,13 @@ let apply () =
                        -> (mk_anti _loc ~c:"exp" n s : 'exp )
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
-             (((function | `INT (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT"), `Any)), `Any)), "`INT (_,_)")],
+             (((function | `INT _ -> true | _ -> false)),
+               (`App ((`Vrn "INT"), `Any)), "`INT _")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT (_,s) -> (`Int (_loc, s) : 'exp )
+                   | `INT s -> (`Int (_loc, s) : 'exp )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
              (((function | `INT32 _ -> true | _ -> false)),
@@ -1566,14 +1566,23 @@ let apply () =
                    | `INT32 s -> (`Int32 (_loc, s) : 'exp )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
-             (((function | `INT64 (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT64"), `Any)), `Any)), "`INT64 (_,_)")],
+             (((function | `INT64 _ -> true | _ -> false)),
+               (`App ((`Vrn "INT64"), `Any)), "`INT64 _")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT64 (_,s) -> (`Int64 (_loc, s) : 'exp )
+                   | `INT64 s -> (`Int64 (_loc, s) : 'exp )
                    | _ -> failwith "`Int64 (_loc, s)\n"))));
+         ([`Stoken
+             (((function | `NATIVEINT _ -> true | _ -> false)),
+               (`App ((`Vrn "NATIVEINT"), `Any)), "`NATIVEINT _")],
+           ("`Nativeint (_loc, s)\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                   match __fan_0 with
+                   | `NATIVEINT s -> (`Nativeint (_loc, s) : 'exp )
+                   | _ -> failwith "`Nativeint (_loc, s)\n"))));
          ([`Stoken
              (((function | `Flo (_,_) -> true | _ -> false)),
                (`App ((`App ((`Vrn "Flo"), `Any)), `Any)), "`Flo (_,_)")],
@@ -1601,16 +1610,6 @@ let apply () =
                    match __fan_0 with
                    | `STR (_,s) -> (`Str (_loc, s) : 'exp )
                    | _ -> failwith "`Str (_loc, s)\n"))));
-         ([`Stoken
-             (((function | `NATIVEINT (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "NATIVEINT"), `Any)), `Any)),
-               "`NATIVEINT (_,_)")],
-           ("`Nativeint (_loc, s)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                   match __fan_0 with
-                   | `NATIVEINT (_,s) -> (`Nativeint (_loc, s) : 'exp )
-                   | _ -> failwith "`Nativeint (_loc, s)\n"))));
          ([`Stry
              (`Snterm
                 (Fgram.obj
@@ -2417,13 +2416,13 @@ let apply () =
                 (fun (i : 'vid)  (_loc : FLoc.t)  ->
                    ((i : vid  :>pat) : 'pat )))));
          ([`Stoken
-             (((function | `INT (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT"), `Any)), `Any)), "`INT (_,_)")],
+             (((function | `INT _ -> true | _ -> false)),
+               (`App ((`Vrn "INT"), `Any)), "`INT _")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT (_,s) -> (`Int (_loc, s) : 'pat )
+                   | `INT s -> (`Int (_loc, s) : 'pat )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
              (((function | `INT32 _ -> true | _ -> false)),
@@ -2435,13 +2434,13 @@ let apply () =
                    | `INT32 s -> (`Int32 (_loc, s) : 'pat )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
-             (((function | `INT64 (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT64"), `Any)), `Any)), "`INT64 (_,_)")],
+             (((function | `INT64 _ -> true | _ -> false)),
+               (`App ((`Vrn "INT64"), `Any)), "`INT64 _")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT64 (_,s) -> (`Int64 (_loc, s) : 'pat )
+                   | `INT64 s -> (`Int64 (_loc, s) : 'pat )
                    | _ -> failwith "`Int64 (_loc, s)\n"))));
          ([`Stoken
              (((function | `Flo (_,_) -> true | _ -> false)),
@@ -2472,13 +2471,13 @@ let apply () =
                    | _ -> failwith "`Str (_loc, s)\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `INT (_,_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "INT"), `Any)), `Any)), "`INT (_,_)")],
+            (((function | `INT _ -> true | _ -> false)),
+              (`App ((`Vrn "INT"), `Any)), "`INT _")],
            ("`Int (_loc, (String.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `INT (_,s) -> (`Int (_loc, (String.neg s)) : 'pat )
+                   | `INT s -> (`Int (_loc, (String.neg s)) : 'pat )
                    | _ -> failwith "`Int (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
@@ -2492,24 +2491,23 @@ let apply () =
                    | _ -> failwith "`Int32 (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `INT64 (_,_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "INT64"), `Any)), `Any)), "`INT64 (_,_)")],
+            (((function | `INT64 _ -> true | _ -> false)),
+              (`App ((`Vrn "INT64"), `Any)), "`INT64 _")],
            ("`Int64 (_loc, (String.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `INT64 (_,s) -> (`Int64 (_loc, (String.neg s)) : 'pat )
+                   | `INT64 s -> (`Int64 (_loc, (String.neg s)) : 'pat )
                    | _ -> failwith "`Int64 (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `NATIVEINT (_,_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "NATIVEINT"), `Any)), `Any)),
-              "`NATIVEINT (_,_)")],
+            (((function | `NATIVEINT _ -> true | _ -> false)),
+              (`App ((`Vrn "NATIVEINT"), `Any)), "`NATIVEINT _")],
            ("`Nativeint (_loc, (String.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `NATIVEINT (_,s) ->
+                   | `NATIVEINT s ->
                        (`Nativeint (_loc, (String.neg s)) : 'pat )
                    | _ -> failwith "`Nativeint (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";

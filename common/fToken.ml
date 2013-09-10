@@ -37,9 +37,9 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
       Format.pp_print_string _a1 Format.pp_print_string _a2
 type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
-  | `ESCAPED_IDENT of string | `INT of (int* string)
-  | `INT32 of string | `INT64 of (int64* string)
-  | `NATIVEINT of (nativeint* string) | `Flo of (float* string)
+  | `ESCAPED_IDENT of string | `INT of string
+  | `INT32 of string | `INT64 of  string
+  | `NATIVEINT of  string | `Flo of (float* string)
   | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
   | `OPTLABEL of string | quotation | dir_quotation
   | `Ant of (string* string) | `COMMENT of string | `BLANKS of string
@@ -55,18 +55,17 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `Uid _a0 -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string _a0
     | `ESCAPED_IDENT _a0 ->
         Format.fprintf fmt "@[<1>(`ESCAPED_IDENT@ %a)@]" Format.pp_print_string _a0
-    | `INT (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`INT@ %a@ %a)@]" Format.pp_print_int _a0
+    | `INT _a1 ->
+        Format.fprintf fmt "@[<1>(`INT@ %a)@]"
           Format.pp_print_string _a1
-    | `INT32 ((* _a0, *)_a1) ->
+    | `INT32 _a1 ->
         Format.fprintf fmt "@[<1>(`INT32@ %a)@]" (* Format.pp_print_int32 _a0 *)
           Format.pp_print_string _a1
-    | `INT64 (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`INT64@ %a@ %a)@]" Format.pp_print_int64 _a0
-          Format.pp_print_string _a1
-    | `NATIVEINT (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`NATIVEINT@ %a@ %a)@]" Format.pp_print_nativeint
-          _a0 Format.pp_print_string _a1
+    | `INT64 _a1 ->
+        Format.fprintf fmt "@[<1>(`INT6@ %a)@]" Format.pp_print_string _a1
+    | `NATIVEINT _a1 ->
+        Format.fprintf fmt "@[<1>(`NATIVEINT@ %a)@]" 
+           Format.pp_print_string _a1
     | `Flo (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Flo@ %a@ %a)@]" Format.pp_print_float _a0
           Format.pp_print_string _a1
@@ -169,8 +168,8 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 ( s) |
-  `INT64 (_, s) | `NATIVEINT (_ ,s) | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
+  | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT  s | `INT32  s |
+  `INT64  s | `NATIVEINT  s | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)

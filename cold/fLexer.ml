@@ -7080,13 +7080,10 @@ let token c lexbuf =
           let n = String.length s in
           match s.[n - 1] with
           | 'l' -> `INT32 s
-          | 'L' -> `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
-          | 'n' ->
-              `NATIVEINT
-                ((let open Nativeint in neg (of_string ("-" ^ s))), s)
-          | _ -> `INT ((- (int_of_string ("-" ^ s))), s) in
-        (try cvt_int_literal x
-         with | Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf))
+          | 'L' -> `INT64 s
+          | 'n' -> `NATIVEINT s
+          | _ -> `INT s in
+        cvt_int_literal x
     | 7 ->
         let f =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

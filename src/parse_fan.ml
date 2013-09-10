@@ -362,13 +362,14 @@ let apply () = begin
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
                     mk_anti _loc ~c:"exp" n s
-        | `INT(_,s) ->  `Int(_loc,s)
+        | `INT s ->  `Int(_loc,s)
         | `INT32 s -> `Int32(_loc,s)
-        | `INT64(_,s) -> `Int64(_loc,s)
+        | `INT64 s -> `Int64(_loc,s)
+        | `NATIVEINT s -> `Nativeint (_loc, s)              
         | `Flo(_,s) -> `Flo (_loc, s)
         | `CHAR(_,s) -> `Chr (_loc, s)
         | `STR(_,s) -> `Str (_loc, s)
-        | `NATIVEINT(_,s) -> `Nativeint (_loc, s)
+
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             `LetOpen (_loc,`Negative _loc, i, e)
         (* | TRY val_longident{i} -> {| $id:i |} *)
@@ -551,16 +552,16 @@ let apply () = begin
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> mk_anti _loc ~c:"pat" n s
         | vid{i} -> (i : vid :> pat)
-        | `INT(_,s) ->  `Int (_loc, s)
+        | `INT s ->  `Int (_loc, s)
         | `INT32 s ->  `Int32 (_loc, s)
-        | `INT64(_,s) ->  `Int64 (_loc, s)
+        | `INT64 s ->  `Int64 (_loc, s)
         | `Flo(_,s) ->  `Flo (_loc, s)
         | `CHAR(_,s) -> `Chr(_loc,s)
         | `STR(_,s) -> `Str(_loc,s)
-        | "-"; `INT(_,s) ->  `Int (_loc, String.neg s)
+        | "-"; `INT s ->  `Int (_loc, String.neg s)
         | "-"; `INT32 s -> `Int32(_loc, String.neg s) 
-        | "-"; `INT64(_,s) -> `Int64(_loc,String.neg s)
-        | "-"; `NATIVEINT(_,s) -> `Nativeint(_loc,String.neg s)
+        | "-"; `INT64 s -> `Int64(_loc,String.neg s)
+        | "-"; `NATIVEINT s -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}

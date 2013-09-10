@@ -52,10 +52,10 @@ type t =
   | `Lid of string
   | `Uid of string
   | `ESCAPED_IDENT of string (* (+)*)
-  | `INT of (int * string )
-  | `INT32 of ((* int32 *  *)string )
-  | `INT64 of (int64 * string )
-  | `NATIVEINT of (nativeint * string )
+  | `INT of string 
+  | `INT32 of string 
+  | `INT64 of string 
+  | `NATIVEINT of string 
   | `Flo of (float * string )
   | `CHAR of (char * string )
   | `STR of (string * string )
