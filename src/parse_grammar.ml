@@ -6,12 +6,6 @@ open FGramGen
 open! Fsyntax
 open LibUtil
 
-
-
-
-
-
-
 {:create|Fgram (nonterminals: stru Fgram.t) (nonterminalsclear:  exp Fgram.t)
   delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
   (t_qualid:vid Fgram.t )
@@ -26,7 +20,7 @@ open LibUtil
   let ty:
   [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `Dyn(x,t)
   |  qualuid{t} -> `Static t
-  | -> `Static (`Uid(_loc,"Fgram")) (* Bootstrap*)]    
+  | -> `Static (`Uid(_loc,"Fgram")) (** BOOTSTRAP*)]    
 
   nonterminals :
   [ ty {t}; L1 type_entry {ls} ->
@@ -62,7 +56,6 @@ open LibUtil
   newterminals :
   [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
     ->
-      
       let mk  =
         let x = (x : vid :> exp) in
         {:exp|$id:t.mk_dynamic $x |}  in
@@ -79,9 +72,6 @@ open LibUtil
                   {:stru| let $lid:x = $mk $str:x  |}
               | (None,Some typ) ->
                   {:stru| let $lid:x : $typ = $mk $str:x  |}  ) ls)) ]
-
-
-  
   nonterminalsclear :
   [ qualuid{t}; L1 a_lident {ls} ->
     let rest = List.map (fun (x:alident) ->
@@ -116,8 +106,7 @@ open LibUtil
     res      ]
   (*for side effets, parser action *)
   delete_rule_header:
-  [ qualuid{g} ->
-    let old = gm () in let () = grammar_module_name := g  in old  ]
+  [ qualuid{g} -> let old = gm () in let () = grammar_module_name := g  in old  ]
 
   delete_rule_body:
   [ delete_rule_header{old};  L1 delete_rules {es} ->
@@ -127,8 +116,7 @@ open LibUtil
     end]
 
   delete_rules:
-  [ name{n} ;":"; "["; L1  psymbols SEP "|" {sls};
-    "]" ->
+  [ name{n} ;":"; "["; L1  psymbols SEP "|" {sls}; "]" ->
     exp_delete_rule _loc n sls ]
   let psymbols:
   [ L0 psymbol SEP ";"{sl} -> sl  ] 
@@ -145,9 +133,6 @@ open LibUtil
   [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
   | `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
 
-
-
-  
   (* stands for the non-terminal  *)
   name:[ qualid{il} -> mk_name _loc il] 
 
@@ -158,8 +143,7 @@ open LibUtil
     | Some x -> (let old = !AstQuotation.default in
       (AstQuotation.default:= FToken.resolve_name _loc (`Sub [], x);
        `name old))
-    | None -> `non, mk_name _loc il)
-  ]
+    | None -> `non, mk_name _loc il)]
 
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
@@ -182,8 +166,7 @@ open LibUtil
         |(Some {:exp| `Level $_ |},`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> mk_entry ~local:true ~name:p ~pos ~levels
-      end
-  ]
+      end  ]
   position :
   [ `Uid ("First"|"Last" as x ) ->   {:exp| $vrn:x |}
   | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->

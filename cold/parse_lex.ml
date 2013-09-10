@@ -117,6 +117,15 @@ let _ =
           ("Eof\n",
             (Fgram.mk_action (fun _  (_loc : FLoc.t)  -> (Eof : 'regexp )))));
         ([`Stoken
+            (((function | `Lid "eof" -> true | _ -> false)),
+              (`App ((`Vrn "Lid"), (`Str "eof"))), "`Lid \"eof\"")],
+          ("Eof\n",
+            (Fgram.mk_action
+               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                  match __fan_0 with
+                  | `Lid "eof" -> (Eof : 'regexp )
+                  | _ -> failwith "Eof\n"))));
+        ([`Stoken
             (((function | `CHAR (_,_) -> true | _ -> false)),
               (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)")],
           ("Characters (Fcset.singleton (Char.code c))\n",

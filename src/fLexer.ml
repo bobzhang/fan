@@ -479,7 +479,7 @@ let  token c = {:lexer|
 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
       `SYMBOL x 
-  | ! ->
+  | eof ->
       let pos = lexbuf.lex_curr_p in
       (lexbuf.lex_curr_p <-
         { pos with pos_bol  = pos.pos_bol  + 1 ;

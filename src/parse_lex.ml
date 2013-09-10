@@ -63,6 +63,7 @@ exception UnboundRegexp;;
    "basic"  
    [ "_" -> Characters Fcset.all_chars
    | "!" -> Eof (* eof *)
+   | `Lid "eof" -> Eof 
    | `CHAR(c,_) -> (Characters (Fcset.singleton (Char.code c)))
    | `STR(s,_) -> regexp_for_string s
    | "["; char_class{cc}; "]" -> Characters cc
