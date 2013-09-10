@@ -20,6 +20,18 @@ let rec infix_kwds_filter = parser
       {:stream| x; ' infix_kwds_filter xs |}
   |  -> {:stream||}
 
+let symbolchars =
+  ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
+   '@'; '^'; '|'; '~'; '\\']
+    
+let symbolchar s i =
+  let len = String.length s in
+  try
+    (for j = i to len - 1 do
+      if not (List.mem s.[j] symbolchars) then
+        raise Not_found
+    done; true)
+  with  Not_found -> false
 
 
 (* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)
