@@ -58,8 +58,8 @@ exception UnboundRegexp;;
    [ S{r1};S{r2} -> Sequence(r1,r2)]  
    "basic"  
    [ "_" -> Characters Fcset.all_chars
-   | `CHAR c -> Characters (Fcset.singleton (Char.code @@ TokenEval.char c))
-   | `STR s -> regexp_for_string @@ TokenEval.string s (* FIXME *)
+   | `Chr c -> Characters (Fcset.singleton (Char.code @@ TokenEval.char c))
+   | `Str s -> regexp_for_string @@ TokenEval.string s (* FIXME *)
    | "["; char_class{cc}; "]" -> Characters cc
    | S{r1};"*" -> Repetition r1
    | S{r1};"?" -> Alternative (Epsilon,r1)
@@ -84,11 +84,11 @@ exception UnboundRegexp;;
   | char_class1{r} -> r ]
 
   char_class1:
-  [ `CHAR c1; "-"; `CHAR c2 ->
+  [ `Chr c1; "-"; `Chr c2 ->
     let c1 = Char.code @@ TokenEval.char c1 in
     let c2 = Char.code @@ TokenEval.char c2 in
     Fcset.interval c1 c2
-  | `CHAR c1   -> Fcset.singleton (Char.code @@ TokenEval.char c1)
+  | `Chr c1   -> Fcset.singleton (Char.code @@ TokenEval.char c1)
   | S{cc1}; S{cc2} -> Fcset.union cc1 cc2 
   ]
 |};;  

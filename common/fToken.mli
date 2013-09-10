@@ -52,13 +52,13 @@ type t =
   | `Lid of string
   | `Uid of string
   | `ESCAPED_IDENT of string (* (+)*)
-  | `INT of string 
-  | `INT32 of string 
-  | `INT64 of string 
+  | `Int of string 
+  | `Int32 of string 
+  | `Int64 of string 
   | `NATIVEINT of string 
   | `Flo of  string 
-  | `CHAR of  string 
-  | `STR of  string 
+  | `Chr of  string 
+  | `Str of  string 
   | `LABEL of string
   | `OPTLABEL of string
   | `COMMENT of string

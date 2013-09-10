@@ -8,13 +8,13 @@ let _ =
       (None, None,
         [([`Skeyword "default";
           `Stoken
-            (((function | `STR _ -> true | _ -> false)),
-              (`App ((`Vrn "STR"), `Any)), "`STR _")],
+            (((function | `Str _ -> true | _ -> false)),
+              (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("AstQuotation.set_default (FToken.resolve_name _loc ((`Sub []), s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `STR s ->
+                   | `Str s ->
                        (AstQuotation.set_default
                           (FToken.resolve_name _loc ((`Sub []), s)) : 
                        'item )
@@ -30,13 +30,13 @@ let _ =
                      (FToken.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
-           (((function | `STR _ -> true | _ -> false)),
-             (`App ((`Vrn "STR"), `Any)), "`STR _")],
+           (((function | `Str _ -> true | _ -> false)),
+             (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("AstFilters.use_implem_filter s\n",
             (Fgram.mk_action
                (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                   match __fan_1 with
-                  | `STR s -> (AstFilters.use_implem_filter s : 'item )
+                  | `Str s -> (AstFilters.use_implem_filter s : 'item )
                   | _ -> failwith "AstFilters.use_implem_filter s\n"))));
         ([`Skeyword "lang_clear"],
           ("AstQuotation.clear_map (); AstQuotation.clear_default ()\n",

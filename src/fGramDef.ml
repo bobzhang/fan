@@ -137,7 +137,7 @@ open Fsyntax;;
 
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
     {| $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)|}
-  |"`"; luident{s}; `STR v -> {| $vrn:s $str:v|}
+  |"`"; luident{s}; `Str v -> {| $vrn:s $str:v|}
   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
@@ -157,7 +157,7 @@ open Fsyntax;;
      "|"
      [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
      "simple"
-     [ `STR s -> {| $str:s|}
+     [ `Str s -> {| $str:s|}
      | "_" -> {| _ |}
      | `Lid x   ->  {| $lid:x|}
      | "("; S{p}; ")" -> p] }

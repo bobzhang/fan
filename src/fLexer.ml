@@ -362,10 +362,10 @@ let  token c = {:lexer|
   | uppercase identchar * as x ->  `Uid x 
   | int_literal  (('l'|'L'|'n' as s ) ?) as x ->
       (match s with
-      | Some 'l' -> `INT32 x
-      | Some 'L' -> `INT64 x
+      | Some 'l' -> `Int32 x
+      | Some 'L' -> `Int64 x
       | Some 'n' -> `NATIVEINT x
-      | _ -> `INT x )
+      | _ -> `Int x )
       (* FIXME - int_of_string ("-" ^ s) ??
          safety check
        *)
@@ -375,12 +375,12 @@ let  token c = {:lexer|
       (** FIXME safety check *)
       `Flo f 
   | '"' -> ( with_curr_loc string c;
-             let s = buff_contents c in `STR s (* (TokenEval.string s, s) *))
+             let s = buff_contents c in `Str s (* (TokenEval.string s, s) *))
   | "'" (newline as x) "'" ->
-           ( update_loc c  ~retract:1; `CHAR x (* (TokenEval.char x, x) *))
+           ( update_loc c  ~retract:1; `Chr x (* (TokenEval.char x, x) *))
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
-      -> `CHAR x (* (TokenEval.char x, x) *)
+      -> `Chr x (* (TokenEval.char x, x) *)
   | "'\\" (_ as c) -> 
            (err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf))         
   | "(*" ->

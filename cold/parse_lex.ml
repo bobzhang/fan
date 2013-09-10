@@ -115,13 +115,13 @@ let _ =
                 (fun _  (_loc : FLoc.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
         ([`Stoken
-            (((function | `CHAR _ -> true | _ -> false)),
-              (`App ((`Vrn "CHAR"), `Any)), "`CHAR _")],
+            (((function | `Chr _ -> true | _ -> false)),
+              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
-                  | `CHAR c ->
+                  | `Chr c ->
                       (Characters
                          (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
                       'regexp )
@@ -129,13 +129,13 @@ let _ =
                       failwith
                         "Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n"))));
         ([`Stoken
-            (((function | `STR _ -> true | _ -> false)),
-              (`App ((`Vrn "STR"), `Any)), "`STR _")],
+            (((function | `Str _ -> true | _ -> false)),
+              (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
-                  | `STR s ->
+                  | `Str s ->
                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
                   | _ ->
                       failwith "regexp_for_string @@ (TokenEval.string s)\n"))));
@@ -203,18 +203,18 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `CHAR _ -> true | _ -> false)),
-               (`App ((`Vrn "CHAR"), `Any)), "`CHAR _");
+             (((function | `Chr _ -> true | _ -> false)),
+               (`App ((`Vrn "Chr"), `Any)), "`Chr _");
           `Skeyword "-";
           `Stoken
-            (((function | `CHAR _ -> true | _ -> false)),
-              (`App ((`Vrn "CHAR"), `Any)), "`CHAR _")],
+            (((function | `Chr _ -> true | _ -> false)),
+              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
              (Fgram.mk_action
                 (fun (__fan_2 : [> FToken.t])  _  (__fan_0 : [> FToken.t]) 
                    (_loc : FLoc.t)  ->
                    match (__fan_2, __fan_0) with
-                   | (`CHAR c2,`CHAR c1) ->
+                   | (`Chr c2,`Chr c1) ->
                        (let c1 = Char.code @@ (TokenEval.char c1) in
                         let c2 = Char.code @@ (TokenEval.char c2) in
                         Fcset.interval c1 c2 : 'char_class1 )
@@ -222,13 +222,13 @@ let _ =
                        failwith
                          "let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n"))));
         ([`Stoken
-            (((function | `CHAR _ -> true | _ -> false)),
-              (`App ((`Vrn "CHAR"), `Any)), "`CHAR _")],
+            (((function | `Chr _ -> true | _ -> false)),
+              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
-                  | `CHAR c1 ->
+                  | `Chr c1 ->
                       (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
                       'char_class1 )
                   | _ ->

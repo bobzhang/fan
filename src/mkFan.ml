@@ -54,7 +54,7 @@ let require name =
 let open FControl in
 {:unsafe_extend| (g:Fgram.t)
   item:
-  [ "require"; `STR s -> require s ]
+  [ "require"; `Str s -> require s ]
 |};;
 
 let output_file = ref None              

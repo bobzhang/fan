@@ -362,13 +362,13 @@ let apply () = begin
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
                     mk_anti _loc ~c:"exp" n s
-        | `INT s ->  `Int(_loc,s)
-        | `INT32 s -> `Int32(_loc,s)
-        | `INT64 s -> `Int64(_loc,s)
+        | `Int s ->  `Int(_loc,s)
+        | `Int32 s -> `Int32(_loc,s)
+        | `Int64 s -> `Int64(_loc,s)
         | `NATIVEINT s -> `Nativeint (_loc, s)              
         | `Flo s -> `Flo (_loc, s)
-        | `CHAR s -> `Chr (_loc, s)
-        | `STR s -> `Str (_loc, s)
+        | `Chr s -> `Chr (_loc, s)
+        | `Str s -> `Str (_loc, s)
 
         | TRY module_longident_dot_lparen{i};S{e}; ")" ->
             `LetOpen (_loc,`Negative _loc, i, e)
@@ -552,15 +552,15 @@ let apply () = begin
                 |"nativeint"|"`nativeint"|"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
           -> mk_anti _loc ~c:"pat" n s
         | vid{i} -> (i : vid :> pat)
-        | `INT s ->  `Int (_loc, s)
-        | `INT32 s ->  `Int32 (_loc, s)
-        | `INT64 s ->  `Int64 (_loc, s)
+        | `Int s ->  `Int (_loc, s)
+        | `Int32 s ->  `Int32 (_loc, s)
+        | `Int64 s ->  `Int64 (_loc, s)
         | `Flo s ->  `Flo (_loc, s)
-        | `CHAR s -> `Chr(_loc,s)
-        | `STR s -> `Str(_loc,s)
-        | "-"; `INT s ->  `Int (_loc, String.neg s)
-        | "-"; `INT32 s -> `Int32(_loc, String.neg s) 
-        | "-"; `INT64 s -> `Int64(_loc,String.neg s)
+        | `Chr s -> `Chr(_loc,s)
+        | `Str s -> `Str(_loc,s)
+        | "-"; `Int s ->  `Int (_loc, String.neg s)
+        | "-"; `Int32 s -> `Int32(_loc, String.neg s) 
+        | "-"; `Int64 s -> `Int64(_loc,String.neg s)
         | "-"; `NATIVEINT s -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo s -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
@@ -883,8 +883,8 @@ let apply () = begin
       string_list:
       [ `Ant("",s) -> mk_anti _loc  "str_list" s
       | `Ant("",s) ; S{xs} -> `App(_loc,mk_anti _loc "" s, xs)
-      | `STR  x -> `Str(_loc,x)
-      | `STR x; S{xs} -> `App(_loc,`Str(_loc,x),xs)]
+      | `Str  x -> `Str(_loc,x)
+      | `Str x; S{xs} -> `App(_loc,`Str(_loc,x),xs)]
       rec_flag_quot:  [ opt_rec{x} -> x ]
       direction_flag_quot:  [ flag{x} -> x ] 
       mutable_flag_quot: [  opt_mutable{x} -> x ] 
