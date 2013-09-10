@@ -25,7 +25,11 @@ type ident =
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
   | `Flo of string | `Nativeint of string | `Str of string]
-(** a simplified pattern compared with [FAstN.pat] *)      
+
+
+
+(** a simplified pattern compared with [FAstN.pat], used as
+    runtime description for token *)      
 type pat =
   [ vid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
   | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | literal
@@ -41,8 +45,8 @@ and rec_pat =
 type descr = pat
 
 type token_pattern = (FToken.t -> bool) * descr * string
-    (* [arg1] is used for runtime parsing
-       [arg2] is used for runtime insertion
+    (* [arg1] is used for runtime parsing, generated at compile time
+       [arg2] is used for runtime merging, generated at compile time
        [arg3] is used for runtime error message
     *)
 
@@ -68,7 +72,6 @@ type entry = {
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 
-    (* | Dlevel of level  *)
   | Dparser of (FToken.stream -> Gaction.t )
 and level = {
     lname   : label;

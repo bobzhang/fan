@@ -364,7 +364,7 @@ let  token c = {:lexer|
       let cvt_int_literal s =
         let n = String.length s in
         match s.[n-1] with
-        |'l' -> `INT32 (Int32.(neg (of_string ("-" ^ s))),s)
+        |'l' -> `INT32 s
         |'L' -> `INT64 (Int64.(neg (of_string ("-" ^ s))),s)
         |'n' -> `NATIVEINT (Nativeint.(neg (of_string ("-" ^ s))),s)
         | _  -> `INT (- int_of_string ("-" ^ s),s) in 

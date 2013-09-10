@@ -6,15 +6,25 @@ open FGramGen
 open! Fsyntax
 open LibUtil
 
-{:create|Fgram (nonterminals: stru Fgram.t) (nonterminalsclear:  exp Fgram.t)
-  delete_rule_header extend_header  (qualuid : vid Fgram.t) (qualid:vid Fgram.t)
-  (t_qualid:vid Fgram.t )
-  (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
-   entry position assoc name string rules
-  symbol rule meta_rule rule_list psymbol level level_list
-  (entry: FGramDef.entry Fgram.t) (pattern: action_pattern Fgram.t )
-  extend_body  newterminals  unsafe_extend_body  delete_rule_body
-  simple_exp delete_rules |} ;;
+{:create|Fgram (* FIXME can not ignore Fgram here*)
+   (nonterminals: stru Fgram.t)
+   (nonterminalsclear:  exp Fgram.t)
+   delete_rule_header
+   extend_header
+   (qualuid : vid Fgram.t)
+   (qualid:vid Fgram.t)
+   (t_qualid:vid Fgram.t )
+   (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
+    entry position assoc name string rules
+    symbol rule meta_rule rule_list psymbol level level_list
+   (entry: FGramDef.entry Fgram.t)
+   (pattern: action_pattern Fgram.t )
+   extend_body
+   newterminals
+   unsafe_extend_body
+   delete_rule_body
+   simple_exp
+   delete_rules |} ;;
 
 {:extend|
   let ty:

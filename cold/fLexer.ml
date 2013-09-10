@@ -7079,7 +7079,7 @@ let token c lexbuf =
         let cvt_int_literal s =
           let n = String.length s in
           match s.[n - 1] with
-          | 'l' -> `INT32 ((let open Int32 in neg (of_string ("-" ^ s))), s)
+          | 'l' -> `INT32 s
           | 'L' -> `INT64 ((let open Int64 in neg (of_string ("-" ^ s))), s)
           | 'n' ->
               `NATIVEINT

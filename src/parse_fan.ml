@@ -363,7 +363,7 @@ let apply () = begin
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n),s) ->
                     mk_anti _loc ~c:"exp" n s
         | `INT(_,s) ->  `Int(_loc,s)
-        | `INT32(_,s) -> `Int32(_loc,s)
+        | `INT32 s -> `Int32(_loc,s)
         | `INT64(_,s) -> `Int64(_loc,s)
         | `Flo(_,s) -> `Flo (_loc, s)
         | `CHAR(_,s) -> `Chr (_loc, s)
@@ -552,13 +552,13 @@ let apply () = begin
           -> mk_anti _loc ~c:"pat" n s
         | vid{i} -> (i : vid :> pat)
         | `INT(_,s) ->  `Int (_loc, s)
-        | `INT32(_,s) ->  `Int32 (_loc, s)
+        | `INT32 s ->  `Int32 (_loc, s)
         | `INT64(_,s) ->  `Int64 (_loc, s)
         | `Flo(_,s) ->  `Flo (_loc, s)
         | `CHAR(_,s) -> `Chr(_loc,s)
         | `STR(_,s) -> `Str(_loc,s)
         | "-"; `INT(_,s) ->  `Int (_loc, String.neg s)
-        | "-"; `INT32(_,s) -> `Int32(_loc, String.neg s) 
+        | "-"; `INT32 s -> `Int32(_loc, String.neg s) 
         | "-"; `INT64(_,s) -> `Int64(_loc,String.neg s)
         | "-"; `NATIVEINT(_,s) -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo(_,s) -> `Flo(_loc,String.neg s)

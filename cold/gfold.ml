@@ -1,4 +1,3 @@
-open LibUtil
 let sfold0 f e _entry _symbl psymb =
   let rec fold accu (__strm : _ XStream.t) =
     match try Some (psymb __strm) with | XStream.NotConsumed  -> None with

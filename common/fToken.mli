@@ -47,13 +47,13 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
 
  *)
 type t =
-  [  `KEYWORD of string
+  [ `KEYWORD of string
   | `SYMBOL of string
   | `Lid of string
   | `Uid of string
   | `ESCAPED_IDENT of string (* (+)*)
   | `INT of (int * string )
-  | `INT32 of (int32 * string )
+  | `INT32 of ((* int32 *  *)string )
   | `INT64 of (int64 * string )
   | `NATIVEINT of (nativeint * string )
   | `Flo of (float * string )
@@ -61,15 +61,14 @@ type t =
   | `STR of (string * string )
   | `LABEL of string
   | `OPTLABEL of string
-
         (* . *)
   | quotation
   | dir_quotation
-  | `Ant of (string * string )
   | `COMMENT of string
   | `BLANKS of string
-  | `NEWLINE
+  | `Ant of (string * string )        
   | `LINE_DIRECTIVE of (int *  string option )
+  | `NEWLINE
   | `EOI]
       
 type error =

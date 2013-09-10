@@ -10,24 +10,19 @@ let _ = begin
 end
 exception UnboundRegexp;;
 
-{:create|Fgram
-  regexp
-  char_class
-  char_class1
-  lex
-  declare_regexp
+{:create|
+  regexp  char_class  char_class1  lex  declare_regexp
 |};;
 
 {:extend|Fgram
     lex:
     [ "|"; L0 case SEP "|"{l} ->
-      Compile_lex.output_entry
-        (Lexgen.make_single_dfa
-        {shortest=false;clauses=l})
+      Compile_lex.output_entry @@
+        Lexgen.make_single_dfa {shortest=false;clauses=l}
     | "<";L0 case SEP "|"{l} ->
-        Compile_lex.output_entry
-        (Lexgen.make_single_dfa
-        {shortest=true;clauses=l})]
+        Compile_lex.output_entry @@ 
+        Lexgen.make_single_dfa {shortest=true;clauses=l}
+    ]
   let case:
     [ regexp{r};"->";exp{a} -> (r,a)]  
   declare_regexp:
@@ -42,16 +37,15 @@ exception UnboundRegexp;;
       {:stru|let _ = () |}
     end
   | S; S{x} -> x]
-  regexp:
 
+  regexp:
   {
    "as"
    [S{r1};"as"; a_lident{x} ->
      match x with
       | `Lid(loc,y) (* (#FAst.lident as y) *) ->   
           Bind(r1,(loc,y)) (* FIXME *)
-      | `Ant(_loc,_) ->
-          assert false]  
+      | `Ant(_loc,_) -> assert false]  
    "#"
    [S{r1}; "#" ; S{r2} ->
       let s1 = as_cset r1 in

@@ -28,9 +28,12 @@ val pp_assoc : Format.formatter -> assoc -> unit
       
 class text_grammar : grammar_print
 
+
+
+
+
 (** inherit from [text_grammar] with customized behavior for
-    [tree] and [level]
- *)    
+    [tree] and [level] *)    
 class dump_grammar : grammar_print 
     
 val text : text_grammar

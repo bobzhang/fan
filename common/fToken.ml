@@ -38,7 +38,7 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
 type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `INT of (int* string)
-  | `INT32 of (int32* string) | `INT64 of (int64* string)
+  | `INT32 of string | `INT64 of (int64* string)
   | `NATIVEINT of (nativeint* string) | `Flo of (float* string)
   | `CHAR of (char* string) | `STR of (string* string) | `LABEL of string
   | `OPTLABEL of string | quotation | dir_quotation
@@ -58,8 +58,8 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `INT (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`INT@ %a@ %a)@]" Format.pp_print_int _a0
           Format.pp_print_string _a1
-    | `INT32 (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`INT32@ %a@ %a)@]" Format.pp_print_int32 _a0
+    | `INT32 ((* _a0, *)_a1) ->
+        Format.fprintf fmt "@[<1>(`INT32@ %a)@]" (* Format.pp_print_int32 _a0 *)
           Format.pp_print_string _a1
     | `INT64 (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`INT64@ %a@ %a)@]" Format.pp_print_int64 _a0
@@ -163,22 +163,13 @@ let check_keyword _ = true
 
 let error_on_unknown_keywords = ref false
 
-(* let rec ignore_layout (__strm : _ XStream.t) = *)
-(*   match XStream.peek __strm with *)
-(*   | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) -> *)
-(*       (XStream.junk __strm; ignore_layout __strm) *)
-(*   | Some x -> *)
-(*       (XStream.junk __strm; *)
-(*        (let s = __strm in *)
-(*         XStream.icons x (XStream.slazy (fun _  -> ignore_layout s)))) *)
-(*   | _ -> XStream.sempty *)
 
         
 let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 (_, s) |
+  | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `INT (_, s) | `INT32 ( s) |
   `INT64 (_, s) | `NATIVEINT (_ ,s) | `Flo (_, s) | `CHAR (_, s) | `STR (_, s) |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->

@@ -18,19 +18,19 @@ let _ =
         [([`Skeyword "|";
           `Slist0sep
             ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-           ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
+           ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
              (Fgram.mk_action
                 (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
-                   (Compile_lex.output_entry
+                   (Compile_lex.output_entry @@
                       (Lexgen.make_single_dfa
                          { shortest = false; clauses = l }) : 'lex )))));
         ([`Skeyword "<";
          `Slist0sep
            ((`Snterm (Fgram.obj (case : 'case Fgram.t ))), (`Skeyword "|"))],
-          ("Compile_lex.output_entry\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
+          ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
             (Fgram.mk_action
                (fun (l : 'case list)  _  (_loc : FLoc.t)  ->
-                  (Compile_lex.output_entry
+                  (Compile_lex.output_entry @@
                      (Lexgen.make_single_dfa { shortest = true; clauses = l }) : 
                   'lex )))))]));
   Fgram.extend_single (case : 'case Fgram.t )

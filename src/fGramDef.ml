@@ -1,8 +1,7 @@
 open FAst
 open LibUtil
-(* open StdFan *)
-(* {:fans| keep on;  derive (MetaObj);|};; *)
 
+  
 let pp_print_loc _f _loc  = ()
 (* open StdFan (\* FIXME later *\) *)
 ;;

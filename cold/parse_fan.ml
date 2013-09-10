@@ -1557,13 +1557,13 @@ let apply () =
                    | `INT (_,s) -> (`Int (_loc, s) : 'exp )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
-             (((function | `INT32 (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT32"), `Any)), `Any)), "`INT32 (_,_)")],
+             (((function | `INT32 _ -> true | _ -> false)),
+               (`App ((`Vrn "INT32"), `Any)), "`INT32 _")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT32 (_,s) -> (`Int32 (_loc, s) : 'exp )
+                   | `INT32 s -> (`Int32 (_loc, s) : 'exp )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
              (((function | `INT64 (_,_) -> true | _ -> false)),
@@ -2426,13 +2426,13 @@ let apply () =
                    | `INT (_,s) -> (`Int (_loc, s) : 'pat )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
-             (((function | `INT32 (_,_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "INT32"), `Any)), `Any)), "`INT32 (_,_)")],
+             (((function | `INT32 _ -> true | _ -> false)),
+               (`App ((`Vrn "INT32"), `Any)), "`INT32 _")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `INT32 (_,s) -> (`Int32 (_loc, s) : 'pat )
+                   | `INT32 s -> (`Int32 (_loc, s) : 'pat )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
              (((function | `INT64 (_,_) -> true | _ -> false)),
@@ -2482,13 +2482,13 @@ let apply () =
                    | _ -> failwith "`Int (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `INT32 (_,_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "INT32"), `Any)), `Any)), "`INT32 (_,_)")],
+            (((function | `INT32 _ -> true | _ -> false)),
+              (`App ((`Vrn "INT32"), `Any)), "`INT32 _")],
            ("`Int32 (_loc, (String.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `INT32 (_,s) -> (`Int32 (_loc, (String.neg s)) : 'pat )
+                   | `INT32 s -> (`Int32 (_loc, (String.neg s)) : 'pat )
                    | _ -> failwith "`Int32 (_loc, (String.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
