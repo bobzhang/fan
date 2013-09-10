@@ -1,7 +1,7 @@
 
 type t = {
     is_kwd : string -> bool;
-     mutable filter : FToken.filter;
+      mutable filter : FToken.filter;
   }
 
 open LibUtil
@@ -34,10 +34,7 @@ let filter x =
   (* in fun strm -> tracer (x.filter (filter strm)); *)
   fun strm -> x.filter (XStream.map f strm)
 
-let define_filter x f = x.filter <- f x.filter
+let set_filter x f = x.filter <- f x.filter
 
-(* keyword added hook FIXME gives an warning later*)  
-let keyword_added _ _ _ = ()
-let keyword_removed _ _ = ()
 
 

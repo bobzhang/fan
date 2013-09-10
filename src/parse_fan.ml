@@ -49,7 +49,7 @@ let apply () = begin
   let () = setup_op_parser infixop6
     (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
               symbolchar x 2) in
-  let () = FanTokenFilter.define_filter (Fgram.get_filter ())
+  let () = FanTokenFilter.set_filter (Fgram.get_filter ())
     (fun f strm -> infix_kwds_filter (f strm)) in
   Fgram.setup_parser sem_exp begin
     let symb1 = Fgram.parse_origin_tokens exp in

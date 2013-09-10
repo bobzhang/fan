@@ -10,7 +10,7 @@ module Action = Gaction
 
 let default_keywords =
   ["&&"; "functor"; "||"; "private"; "sig"; "include";
-   "exception"; "inherit"; "<"; "~"; "and"; (* "ELSE"; *)
+   "exception"; "inherit"; "<"; "~"; "and"; 
    "when"; ","; "mod"; "then"; "|]"; "initializer";
    "#";  "!"; "-." ; "_"; ">]" ; "??" ; "in"
      ; "->"; "downto"; "lsr"; "as"; "function"; "begin";
@@ -20,15 +20,13 @@ let default_keywords =
    "to"; "try"; ":>"; "lsl"; "struct"; "else"; "*"; "val"
      ;  "constraint"; "type"; "new"; "of";
    "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
-     ; "'"; ";"; "mutable"(* ; "UNDEF" *); "lazy"; "["; "}";
+     ; "'"; ";"; "mutable"; "lazy"; "["; "}";
    "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
-   ":="; (* "DEFINE"; *) "if"; "while"(* ; "IN";  "END" *)
-     ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
+   ":=";  "if"; "while" ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
      ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
 
 let gkeywords = ref (SSet.of_list default_keywords)
   
-
 
 
 let gram =  {
@@ -43,7 +41,7 @@ let create_lexer ~annot ~keywords () =
   let v = ref (SSet.of_list keywords) in
   {annot;
    gkeywords = v ;
-     gfilter = FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !v)
+   gfilter = FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x !v)
    }
 
 

@@ -21,5 +21,5 @@ let take_list (_,q) =
   self []
 let take_stream = fst
 let define token_fiter comments_strm =
-  FanTokenFilter.define_filter token_fiter
+  FanTokenFilter.set_filter token_fiter
     (fun previous  strm  -> previous (filter comments_strm strm))

@@ -81,7 +81,7 @@ let apply () =
           ((String.length x) >= 2) &&
             (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2)))) in
    let () =
-     FanTokenFilter.define_filter (Fgram.get_filter ())
+     FanTokenFilter.set_filter (Fgram.get_filter ())
        (fun f  strm  -> infix_kwds_filter (f strm)) in
    Fgram.setup_parser sem_exp
      (let symb1 = Fgram.parse_origin_tokens exp in
