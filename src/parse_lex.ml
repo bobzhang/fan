@@ -5,7 +5,9 @@ open! Fsyntax
 
 let named_regexps =
   (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
-
+let _ = begin
+  Hashtbl.add named_regexps "eof" Eof 
+end
 exception UnboundRegexp;;
 
 {:create|Fgram
@@ -62,8 +64,6 @@ exception UnboundRegexp;;
    [ S{r1};S{r2} -> Sequence(r1,r2)]  
    "basic"  
    [ "_" -> Characters Fcset.all_chars
-   | "!" -> Eof (* eof *)
-   | `Lid "eof" -> Eof 
    | `CHAR(c,_) -> (Characters (Fcset.singleton (Char.code c)))
    | `STR(s,_) -> regexp_for_string s
    | "["; char_class{cc}; "]" -> Characters cc

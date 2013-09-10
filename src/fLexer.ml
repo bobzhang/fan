@@ -247,7 +247,7 @@ let rec comment c = {:lexer|
         comment c c.lexbuf
       end
   | "*)"  ->  store c 
-  | ! ->  err Unterminated_comment (loc_merge c)                           
+  | eof ->  err Unterminated_comment (loc_merge c)                           
   | newline ->
       (update_loc c ; store_parse comment c)
 
@@ -272,7 +272,7 @@ let rec string c = {:lexer|
         update_loc c ;
         store_parse string c
       end
-  | ! ->  err Unterminated_string (loc_merge c) 
+  | eof ->  err Unterminated_string (loc_merge c) 
   | _ ->  store_parse string c 
 |}
 
@@ -289,7 +289,7 @@ let rec  antiquot name depth c  = {:lexer|
       else store_parse (antiquot name (depth-1)) c
   | '('    ->  store_parse (antiquot name (depth+1)) c
         
-  | !  -> err Unterminated_antiquot (loc_merge c)
+  | eof  -> err Unterminated_antiquot (loc_merge c)
   | newline   ->
       begin
         update_loc c ;
@@ -343,7 +343,7 @@ and quotation c = {:lexer|
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
            -> store_parse quotation c 
-  | ! ->  (show_stack (); err Unterminated_quotation (loc_merge c))
+  | eof ->  (show_stack (); err Unterminated_quotation (loc_merge c))
   | newline ->
       begin
         update_loc c ;

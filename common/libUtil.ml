@@ -1096,60 +1096,6 @@ module type STREAM = sig
 end
 
   
-module XStream (* : STREAM with type 'a t = XStream.'a t *) = struct
-  include XStream
-  let njunk  n strm  =
-    for _i = 1 to n do
-      junk strm
-    done (* FIXME unsed  index i*)
-      
-  let tail s = 
-    match peek s with
-    | Some _ -> (junk s; s)
-    | _ -> sempty
-        
-
-  let rev strm=
-    let rec aux s =
-      match peek s with
-      | Some x ->
-          (junk s;
-           (let xs = s in
-           lapp (fun _  -> aux xs) (ising x)))
-      | _ -> sempty in aux strm
-      
-  let rec map f  s = 
-    match peek s with
-    | Some x ->
-        (junk s;
-         (let xs = s in
-          lcons (fun _  -> f x) (slazy (fun _  -> map f xs))))
-    | _ -> sempty
-
-  (* the minimual [n] is 0 *)
-  let peek_nth strm n   =
-    let rec loop i = function
-      | x :: xs -> if i = 0 then Some x else loop (i - 1) xs
-      | [] -> None  in
-    if n < 0 then
-      invalid_arg "XStream.peek_nth"
-    else loop n (npeek (n+1) strm)
-
-  (*  Used by [try_parser], very in-efficient 
-      This version of peek_nth is off-by-one from XStream.peek_nth *)      
-  let dup strm = from (peek_nth strm)
-  
-  let rec filter f s =
-    match peek s with
-    | Some x ->
-        (junk s;
-         (let xs = s in
-          if f x
-          then icons x (slazy (fun _  -> filter f xs))
-          else slazy (fun _  -> filter f xs)))
-    | _ -> sempty
-        
-end
 
     
 (* ugly module, removed it later *)  

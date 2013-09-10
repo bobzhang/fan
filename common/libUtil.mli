@@ -264,17 +264,10 @@ module Array :
     val filter_mapi :(int -> 'h -> 'i option) -> 'h array -> 'i array    
     val for_all2 : ('a -> 'b -> bool) -> 'a array -> 'b array -> bool
   end
-module XStream :
-  sig
-    include module type of XStream  with type 'a t = 'a XStream.t 
-    val rev : 'a t -> 'a t
-    val tail : 'a t -> 'a t
-    val map : ('a -> 'b) -> 'a t -> 'b t
-    val peek_nth : 'a t -> int -> 'a option
-    val dup : 'a t -> 'a t
-    val njunk : int -> 'a t -> unit
-    val filter : ('a -> bool) -> 'a t -> 'a t
-  end
+(* module XStream : *)
+(*   sig *)
+(*     include module type of XStream  with type 'a t = 'a XStream.t  *)
+(*   end *)
 module ErrorMonad :
   sig
     type log = string

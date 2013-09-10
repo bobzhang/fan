@@ -4,13 +4,6 @@ type t = {
       mutable filter : FToken.filter;
   }
 
-open LibUtil
-
-(* let mk ~is_kwd ={ *)
-(*   is_kwd ; *)
-(*   filter = FToken.ignore_layout *)
-(* } *)
-    
 let filter x =
   let f (tok, loc) = 
     let tok = FToken.keyword_conversion tok x.is_kwd in begin 

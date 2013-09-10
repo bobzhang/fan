@@ -102,3 +102,15 @@ val slazy : (unit -> 'a t) -> 'a t
 val dump : ('a -> unit) -> 'a t -> unit
 val get_last: 'a t -> 'a option
 val fake_junk: 'a t -> unit
+
+
+
+
+val rev : 'a t -> 'a t
+val tail : 'a t -> 'a t
+val map : ('a -> 'b) -> 'a t -> 'b t
+val peek_nth : 'a t -> int -> 'a option
+val dup : 'a t -> 'a t
+val njunk : int -> 'a t -> unit
+val filter : ('a -> bool) -> 'a t -> 'a t
+    

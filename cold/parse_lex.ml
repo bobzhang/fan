@@ -2,6 +2,7 @@ open LibUtil
 open Translate_lex
 open! Fsyntax
 let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13
+let _ = Hashtbl.add named_regexps "eof" Eof
 exception UnboundRegexp
 let regexp = Fgram.mk "regexp"
 let char_class = Fgram.mk "char_class"
@@ -113,18 +114,6 @@ let _ =
              (Fgram.mk_action
                 (fun _  (_loc : FLoc.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
-        ([`Skeyword "!"],
-          ("Eof\n",
-            (Fgram.mk_action (fun _  (_loc : FLoc.t)  -> (Eof : 'regexp )))));
-        ([`Stoken
-            (((function | `Lid "eof" -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), (`Str "eof"))), "`Lid \"eof\"")],
-          ("Eof\n",
-            (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
-                  match __fan_0 with
-                  | `Lid "eof" -> (Eof : 'regexp )
-                  | _ -> failwith "Eof\n"))));
         ([`Stoken
             (((function | `CHAR (_,_) -> true | _ -> false)),
               (`App ((`App ((`Vrn "CHAR"), `Any)), `Any)), "`CHAR (_,_)")],
