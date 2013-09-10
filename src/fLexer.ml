@@ -366,12 +366,6 @@ let  token c = {:lexer|
       | Some 'L' -> `INT64 x
       | Some 'n' -> `NATIVEINT x
       | _ -> `INT x )
-        (* let n = String.length x in *)
-        (* (match x.[n-1] with *)
-        (* |'l' -> `INT32 x *)
-        (* |'L' -> `INT64 x *)
-        (* |'n' -> `NATIVEINT x *)
-        (* | _  -> `INT x ) *)
       (* FIXME - int_of_string ("-" ^ s) ??
          safety check
        *)
