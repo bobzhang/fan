@@ -61,14 +61,15 @@ type t =
   | `STR of  string 
   | `LABEL of string
   | `OPTLABEL of string
-        (* . *)
-  | quotation
-  | dir_quotation
   | `COMMENT of string
   | `BLANKS of string
-  | `Ant of (string * string )        
   | `LINE_DIRECTIVE of (int *  string option )
-  | `NEWLINE
+  | `NEWLINE        
+
+   (* . *)
+  | quotation
+  | dir_quotation
+  | `Ant of (string * string )        
   | `EOI]
       
 type error =

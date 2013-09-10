@@ -360,15 +360,18 @@ let  token c = {:lexer|
   | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
   | lowercase identchar * as x ->  `Lid x 
   | uppercase identchar * as x ->  `Uid x 
-  | int_literal  ('l'|'L'|'n')? as x ->
-      let cvt_int_literal s =
-        let n = String.length s in
-        match s.[n-1] with
-        |'l' -> `INT32 s
-        |'L' -> `INT64 s
-        |'n' -> `NATIVEINT s
-        | _  -> `INT s in
-      cvt_int_literal x 
+  | int_literal  (('l'|'L'|'n' as s ) ?) as x ->
+      (match s with
+      | Some 'l' -> `INT32 x
+      | Some 'L' -> `INT64 x
+      | Some 'n' -> `NATIVEINT x
+      | _ -> `INT x )
+        (* let n = String.length x in *)
+        (* (match x.[n-1] with *)
+        (* |'l' -> `INT32 x *)
+        (* |'L' -> `INT64 x *)
+        (* |'n' -> `NATIVEINT x *)
+        (* | _  -> `INT x ) *)
       (* FIXME - int_of_string ("-" ^ s) ??
          safety check
        *)
