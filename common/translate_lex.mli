@@ -40,7 +40,8 @@ type 'a entry = {
     shortest : bool ;
     clauses : (concrete_regexp * 'a) list
   }
-  
+
+(* val encode_regexp : IdSet.t -> int -> concrete_regexp -> Tag_regexp.regexp       *)
 val encode_lexdef :
     'a entry list ->
       Fcset.t array * ('a lexer_entry * bool) list

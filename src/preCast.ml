@@ -170,9 +170,10 @@ let wrap parse_fun ~print_location lb =
     |  (`EOI, _)  -> raise End_of_file
     |  -> parse_fun token_stream 
   with
-  | End_of_file | Sys.Break | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+  | End_of_file | Sys.Break
+  | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
     raise x
-  | (FLoc.Exc_located (loc, y) ) -> begin
+  | FLoc.Exc_located (loc, y)  -> begin
       Format.eprintf "@[<0>%a%s@]@." print_location loc (Printexc.to_string y);
       raise Exit; (* commuiniation with toplevel special case here*)
   end
