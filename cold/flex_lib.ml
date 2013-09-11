@@ -1,5 +1,5 @@
 open Format
-open FLexer
+open Flexer
 open LibUtil
 open Lexing
 let lexing_store s buff max =

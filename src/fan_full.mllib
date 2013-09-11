@@ -10,8 +10,8 @@ FToken
 FanTokenFilter
 Gaction
 TokenEval
-FLexer
-FLexLib
+fan_lex
+flex_lib
 Gcomb
 Gstructure
 Gstru

@@ -1,5 +1,5 @@
 open Format
-open FLexer  
+open Fan_lex
 open LibUtil
 open Lexing
 
@@ -15,12 +15,7 @@ let lexing_store s buff max =
    self 0 s
 
 
-(** In initial stage
-    [Lexing.lexeme_start_p] returns
-    {[ Lexing.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 ]}
-    for a string input or a channel input (from_string, from_channel).
 
- *)    
 let from_lexbuf lb =
   (** lexing entry *)
   let c = {
@@ -36,7 +31,6 @@ let from_lexbuf lb =
   XStream.from next
 
 
-(* the stack is cleared to clear the previous error message *)          
 let from_string  {FLoc.loc_start;_} str =
   let () = clear_stack () in 
   let lb = Lexing.from_string str in begin 
@@ -45,7 +39,6 @@ let from_string  {FLoc.loc_start;_} str =
     from_lexbuf lb
   end
 
-(* the stack is cleared to clear the previous error message *)    
 let from_stream  {FLoc.loc_start;_} strm =
   let () = clear_stack () in 
   let lb = Lexing.from_function (lexing_store strm) in begin
@@ -65,7 +58,7 @@ let rec strict_clean = parser
   | (`EOI,_)  -> {:stream||}
   | x; 'xs  -> {:stream| x; 'strict_clean xs |}
   |  -> {:stream||} 
-    
+
 let debug_from_string  str =
   let loc = FLoc.string_loc  in
   let stream = from_string loc str  in
