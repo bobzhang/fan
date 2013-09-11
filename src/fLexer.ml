@@ -1,7 +1,75 @@
+{:regexp|
+
+let newline = ('\010' | '\013' | "\013\010")
+let blank = [' ' '\009' '\012']
+let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
+let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
+let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
+let ident = (lowercase|uppercase) identchar*
+    
+let quotation_name = '.' ? (uppercase  identchar* '.') *
+    (lowercase (identchar | '-') * )
+let locname = ident
+let lident = lowercase identchar *
+let antifollowident =   identchar +   
+let uident = uppercase identchar *
+let not_star_symbolchar =
+  [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
+let symbolchar = '*' | not_star_symbolchar
+let quotchar =
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
+let extra_quot =
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\']
+    (* FIX remove the '\' as extra quot*)
+let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
+let decimal_literal =
+  ['0'-'9'] ['0'-'9' '_']*
+let hex_literal =
+  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
+let oct_literal =
+  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
+let bin_literal =
+  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
+let int_literal =
+  decimal_literal | hex_literal | oct_literal | bin_literal
+let float_literal =
+  ['0'-'9'] ['0'-'9' '_']*
+    ('.' ['0'-'9' '_']* )?
+    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?
+  
+(* Delimitors are extended (from 3.09) in a conservative way *)
+
+(* These chars that can't start an expession or a pattern: *)
+let safe_delimchars = ['%' '&' '/' '@' '^']
+    
+(* These symbols are unsafe since "[<", "[|", etc. exsist. *)
+let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
+
+let left_delims  = ['(' '[' ]
+let right_delims = [')' ']' ]
+    
+let left_delimitor = (* At least a safe_delimchars *)
+  left_delims delimchars* safe_delimchars (delimchars|left_delims)*
+   (* A '(' or a new super '(' without "(<" *)
+  | '(' (['|' ':'] delimchars* )?
+  (* Old brackets, no new brackets starting with "[|" or "[:" *)
+  | '[' ['|' ':']?
+   (* Old "[<","{<" and new ones *)
+  | ['[' ] delimchars* '<'
+  | '[' '='
+  | '[' '>' 
+let right_delimitor =
+  (* At least a safe_delimchars *)
+  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
+   | (delimchars* ['|' ':'])? ')'
+   | ['|' ':']? ']'
+   | '>' delimchars* [']' ]
+|};;
+
+
 open LibUtil  
 open Format  
 open Lexing
-
 type lex_error  =
   | Illegal_character of char
   | Illegal_escape    of string
@@ -55,9 +123,9 @@ let print_lex_error ppf e =
 let lex_error_to_string = to_string_of_printer print_lex_error
 
 let _ =
-  Printexc.register_printer (function
+  Printexc.register_printer @@ function
     | Lexing_error e -> Some (lex_error_to_string e)
-    | _ -> None )    
+    | _ -> None     
 
 
 let debug = ref false
@@ -81,8 +149,6 @@ module Stack=struct
     pop stk
   end 
 end
-
-
 let opt_char : char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug:=true
 let turn_off_quotation_debug () = debug:=false
@@ -92,6 +158,9 @@ let show_stack () = begin
   Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
 end
 
+
+
+    
 type context =
     { loc        :  FLoc.position ;
      (* only record the start position when enter into a quotation or antiquotation*)
@@ -108,14 +177,23 @@ let default_context lb =
 
 (* To buffer string literals, quotations and antiquotations *)
 let store c =
-  Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
-    
+  Buffer.add_string c.buffer @@ Lexing.lexeme c.lexbuf
+
+let store_parse f c =  
+  begin
+    store c ;
+    f c c.lexbuf
+  end
+                                  
 let buff_contents c =
   let contents = Buffer.contents c.buffer in
-  (Buffer.reset c.buffer; contents)
+  begin
+    Buffer.reset c.buffer;
+    contents
+  end
     
 let loc_merge c =
-  FLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
+  FLoc.of_positions c.loc @@ Lexing.lexeme_end_p c.lexbuf
 
 
 (* update the lexing position to the loc
@@ -135,16 +213,16 @@ let move_start_p shift c =
 let with_curr_loc lexer c =
   lexer {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf
     
-(* type 'a lex = context -> Lexing.lexbuf -> 'a *)
-    
-let store_parse f c =  
-  (store c ; f c c.lexbuf)
 
 (** when you return a token make sure the token's location is correct *)
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
   let old = c.lexbuf.lex_start_p in
   let s =
-    (with_curr_loc quotation c; c.lexbuf.lex_start_p<-old;buff_contents c;) in
+    begin
+      with_curr_loc quotation c;
+      c.lexbuf.lex_start_p<-old;
+      buff_contents c
+    end in
   let contents = String.sub s 0 (String.length s - retract) in
   `QUOTATION (name,loc,shift,contents)
     
@@ -152,7 +230,7 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
 
 (* Update the current location with file name and line number. *)
 
-let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
+let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let lexbuf = c.lexbuf in
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with
@@ -166,77 +244,11 @@ let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
 	
 let err (error:lex_error) (loc:FLoc.t) =
   raise(FLoc.Exc_located(loc, Lexing_error error))
+    
 let warn error loc =
   Format.eprintf "Warning: %a: %a@." FLoc.print loc print_lex_error error;;
 
-{:regexp|
 
-let newline = ('\010' | '\013' | "\013\010")
-let blank = [' ' '\009' '\012']
-let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
-let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
-let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
-let ident = (lowercase|uppercase) identchar*
-    
-let quotation_name = '.' ? (uppercase  identchar* '.') *
-    (lowercase (identchar | '-') * )
-let locname = ident
-let lident = lowercase identchar *
-let antifollowident =   identchar +   
-let uident = uppercase identchar *
-let not_star_symbolchar =
-  [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
-let symbolchar = '*' | not_star_symbolchar
-let quotchar =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\']
-    (* FIX remove the '\' as extra quot*)
-let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
-let decimal_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-let hex_literal =
-  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
-let oct_literal =
-  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
-let bin_literal =
-  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
-let int_literal =
-  decimal_literal | hex_literal | oct_literal | bin_literal
-let float_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-    ('.' ['0'-'9' '_']* )?
-    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?
-  
-(* Delimitors are extended (from 3.09) in a conservative way *)
-
-(* These chars that can't start an expession or a pattern: *)
-let safe_delimchars = ['%' '&' '/' '@' '^']
-    
-(* These symbols are unsafe since "[<", "[|", etc. exsist. *)
-let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
-
-let left_delims  = ['(' '[' ]
-let right_delims = [')' ']' ]
-    
-let left_delimitor =
-(* At least a safe_delimchars *)
-  left_delims delimchars* safe_delimchars (delimchars|left_delims)*
-   (* A '(' or a new super '(' without "(<" *)
-  | '(' (['|' ':'] delimchars* )?
-  (* Old brackets, no new brackets starting with "[|" or "[:" *)
-  | '[' ['|' ':']?
-   (* Old "[<","{<" and new ones *)
-  | ['[' ] delimchars* '<'
-  | '[' '='
-  | '[' '>' 
-let right_delimitor =
-  (* At least a safe_delimchars *)
-  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-   | (delimchars* ['|' ':'])? ')'
-   | ['|' ':']? ']'
-   | '>' delimchars* [']' ]
-|};;
 
 
 let rec comment c = {:lexer|
@@ -265,7 +277,9 @@ let rec string c = {:lexer|
   | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  store_parse string c 
   | '\\' 'x' hexa_char hexa_char ->  store_parse string c 
   | '\\' (_ as x) ->
-      (warn (Illegal_escape (String.make 1 x)) (FLoc.of_lexbuf lexbuf);
+      (warn
+         (Illegal_escape (String.make 1 x))
+         (Location_util.from_lexbuf lexbuf);
         store_parse string c)
   | newline ->
       begin
@@ -369,29 +383,25 @@ let  token c = {:lexer|
       (* FIXME - int_of_string ("-" ^ s) ??
          safety check
        *)
-      (* (try cvt_int_literal x with *)
-      (*   Failure _ -> err (Literal_overflow x) (FLoc.of_lexbuf lexbuf)) *)
-  | float_literal as f ->
-      (** FIXME safety check *)
-      `Flo f 
-  | '"' -> ( with_curr_loc string c;
-             let s = buff_contents c in `Str s (* (TokenEval.string s, s) *))
+  | float_literal as f -> `Flo f       (** FIXME safety check *)
+  | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
   | "'" (newline as x) "'" ->
-           ( update_loc c  ~retract:1; `Chr x (* (TokenEval.char x, x) *))
+           ( update_loc c  ~retract:1; `Chr x )
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
-      -> `Chr x (* (TokenEval.char x, x) *)
+      -> `Chr x 
   | "'\\" (_ as c) -> 
-           (err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf))         
+           (err (Illegal_escape (String.make 1 c))
+              (Location_util.from_lexbuf lexbuf))         
   | "(*" ->
       (store c;
        let old = c.lexbuf.lex_start_p in 
        `COMMENT((with_curr_loc comment c;  c.lexbuf.lex_start_p <-old; buff_contents c)))
   | "(*)" -> 
-           ( warn Comment_start (FLoc.of_lexbuf lexbuf) ;
+           ( warn Comment_start (Location_util.from_lexbuf lexbuf) ;
               comment c c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
-           ( warn Comment_not_end (FLoc.of_lexbuf lexbuf) ;
+           ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
              move_curr_p (-1) c; `SYMBOL "*")
   | "{<" as s -> `SYMBOL s
   | ">}" as s -> `SYMBOL s
@@ -411,10 +421,10 @@ let  token c = {:lexer|
           ~retract:(2 + opt_char_len p)
       end
   | "{@" _  as c ->
-      err (Illegal_quotation c ) (FLoc.of_lexbuf lexbuf)
+      err (Illegal_quotation c ) (Location_util.from_lexbuf lexbuf)
   | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
       let len = String.length name in
-      let name = FToken.resolve_name (FLoc.of_lexbuf lexbuf)(FToken.name_of_string name) in
+      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)(FToken.name_of_string name) in
       begin
         Stack.push p opt_char;
         mk_quotation quotation c
@@ -434,7 +444,7 @@ let  token c = {:lexer|
         `DirQuotation(3+1 +len +(opt_char_len p), name,contents)
   | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? -> 
       let len = String.length name in 
-      let name = FToken.resolve_name (FLoc.of_lexbuf lexbuf) (FToken.name_of_string name) in
+      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf) (FToken.name_of_string name) in
       begin
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
@@ -442,7 +452,7 @@ let  token c = {:lexer|
           ~retract:(2 + opt_char_len p)
       end
   | "{:" _ as c ->
-      err (Illegal_quotation c) (FLoc.of_lexbuf lexbuf)
+      err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
   | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->
@@ -473,10 +483,10 @@ let  token c = {:lexer|
         | '(' ->
             antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} c.lexbuf 
         | _ as c ->
-            err (Illegal_character c) (FLoc.of_lexbuf lexbuf) |} in        
+            err (Illegal_character c) (Location_util.from_lexbuf lexbuf) |} in        
       if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c
-      else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
+      else err Illegal_antiquote (Location_util.from_lexbuf lexbuf)
 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
       `SYMBOL x 
@@ -487,7 +497,7 @@ let  token c = {:lexer|
           pos_cnum = pos.pos_cnum + 1 };
        `EOI)
 
-  | _ as c ->  err (Illegal_character c) (FLoc.of_lexbuf lexbuf) 
+  | _ as c ->  err (Illegal_character c) (Location_util.from_lexbuf lexbuf) 
 |}
 
      

@@ -44,7 +44,7 @@ let print_lex_error ppf e =
   | Comment_not_end  -> fprintf ppf "this is not the end of a comment"
 let lex_error_to_string = to_string_of_printer print_lex_error
 let _ =
-  Printexc.register_printer
+  Printexc.register_printer @@
     (function | Lexing_error e -> Some (lex_error_to_string e) | _ -> None)
 let debug = ref false
 let opt_char_len = function | Some _ -> 1 | None  -> 0
@@ -83,10 +83,11 @@ let default_context lb =
     lexbuf = lb;
     buffer = (Buffer.create 256)
   }
-let store c = Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
+let store c = (Buffer.add_string c.buffer) @@ (Lexing.lexeme c.lexbuf)
+let store_parse f c = store c; f c c.lexbuf
 let buff_contents c =
   let contents = Buffer.contents c.buffer in Buffer.reset c.buffer; contents
-let loc_merge c = FLoc.of_positions c.loc (Lexing.lexeme_end_p c.lexbuf)
+let loc_merge c = (FLoc.of_positions c.loc) @@ (Lexing.lexeme_end_p c.lexbuf)
 let set_start_p c = (c.lexbuf).lex_start_p <- c.loc
 let move_curr_p shift c =
   (c.lexbuf).lex_curr_pos <- (c.lexbuf).lex_curr_pos + shift
@@ -94,7 +95,6 @@ let move_start_p shift c =
   (c.lexbuf).lex_start_p <- FLoc.move_pos shift (c.lexbuf).lex_start_p
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
-let store_parse f c = store c; f c c.lexbuf
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
   let old = (c.lexbuf).lex_start_p in
   let s =
@@ -314,7 +314,8 @@ let rec string c lexbuf =
     | 5 ->
         let x =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
-        (warn (Illegal_escape (String.make 1 x)) (FLoc.of_lexbuf lexbuf);
+        (warn (Illegal_escape (String.make 1 x))
+           (Location_util.from_lexbuf lexbuf);
          store_parse string c)
     | 6 -> (update_loc c; store_parse string c)
     | 7 -> err Unterminated_string (loc_merge c)
@@ -7128,7 +7129,8 @@ let token c lexbuf =
     | 11 ->
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-        err (Illegal_escape (String.make 1 c)) (FLoc.of_lexbuf lexbuf)
+        err (Illegal_escape (String.make 1 c))
+          (Location_util.from_lexbuf lexbuf)
     | 12 ->
         (store c;
          (let old = (c.lexbuf).lex_start_p in
@@ -7137,11 +7139,11 @@ let token c lexbuf =
              (c.lexbuf).lex_start_p <- old;
              buff_contents c)))
     | 13 ->
-        (warn Comment_start (FLoc.of_lexbuf lexbuf);
+        (warn Comment_start (Location_util.from_lexbuf lexbuf);
          comment c c.lexbuf;
          `COMMENT (buff_contents c))
     | 14 ->
-        (warn Comment_not_end (FLoc.of_lexbuf lexbuf);
+        (warn Comment_not_end (Location_util.from_lexbuf lexbuf);
          move_curr_p (-1) c;
          `SYMBOL "*")
     | 15 ->
@@ -7182,7 +7184,7 @@ let token c lexbuf =
         let c =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_start_pos + 3) in
-        err (Illegal_quotation c) (FLoc.of_lexbuf lexbuf)
+        err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
     | 21 ->
         let name =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2)
@@ -7192,7 +7194,7 @@ let token c lexbuf =
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
         let len = String.length name in
         let name =
-          FToken.resolve_name (FLoc.of_lexbuf lexbuf)
+          FToken.resolve_name (Location_util.from_lexbuf lexbuf)
             (FToken.name_of_string name) in
         (Stack.push p opt_char;
          mk_quotation quotation c ~name ~loc:""
@@ -7227,7 +7229,7 @@ let token c lexbuf =
             (((lexbuf.Lexing.lex_mem).(2)) + 0) in
         let len = String.length name in
         let name =
-          FToken.resolve_name (FLoc.of_lexbuf lexbuf)
+          FToken.resolve_name (Location_util.from_lexbuf lexbuf)
             (FToken.name_of_string name) in
         (Stack.push p opt_char;
          mk_quotation quotation c ~name ~loc
@@ -7237,7 +7239,7 @@ let token c lexbuf =
         let c =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_start_pos + 3) in
-        err (Illegal_quotation c) (FLoc.of_lexbuf lexbuf)
+        err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
     | 25 ->
         let num =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -9561,11 +9563,11 @@ let token c lexbuf =
                 let c =
                   Lexing.sub_lexeme_char lexbuf
                     (lexbuf.Lexing.lex_start_pos + 0) in
-                err (Illegal_character c) (FLoc.of_lexbuf lexbuf)
+                err (Illegal_character c) (Location_util.from_lexbuf lexbuf)
             | _ -> failwith "lexing: empty token")) in
         if c.antiquots
         then with_curr_loc dollar c
-        else err Illegal_antiquote (FLoc.of_lexbuf lexbuf)
+        else err Illegal_antiquote (Location_util.from_lexbuf lexbuf)
     | 30 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
@@ -9583,5 +9585,5 @@ let token c lexbuf =
     | 32 ->
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
-        err (Illegal_character c) (FLoc.of_lexbuf lexbuf)
+        err (Illegal_character c) (Location_util.from_lexbuf lexbuf)
     | _ -> failwith "lexing: empty token"))

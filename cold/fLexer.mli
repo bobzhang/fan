@@ -52,5 +52,5 @@ val comment: context -> Lexing.lexbuf -> unit
 val string: context -> Lexing.lexbuf -> unit
 
 val default_context: Lexing.lexbuf -> context   
-val with_curr_loc: (context -> Lexing.lexbuf -> 'a) -> context -> 'a
+
 

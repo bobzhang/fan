@@ -11,19 +11,19 @@ let lexing_store s buff max =
        | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
        | _ -> n) in
   self 0 s
-let from_context c =
-  let next _ =
-    let tok = with_curr_loc token c in
-    let loc = FLoc.of_lexbuf c.lexbuf in Some (tok, loc) in
-  XStream.from next
 let from_lexbuf lb =
   let c =
     {
-      (default_context lb) with
       loc = (Lexing.lexeme_start_p lb);
-      antiquots = (FConfig.antiquotations.contents)
+      antiquots = (FConfig.antiquotations.contents);
+      lexbuf = lb;
+      buffer = (Buffer.create 256)
     } in
-  from_context c
+  let next _ =
+    let tok =
+      token { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf in
+    let loc = Location_util.from_lexbuf c.lexbuf in Some (tok, loc) in
+  XStream.from next
 let setup_loc lb loc =
   let start_pos = FLoc.start_pos loc in
   lb.lex_abs_pos <- start_pos.pos_cnum; lb.lex_curr_p <- start_pos

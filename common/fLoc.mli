@@ -23,12 +23,15 @@ val dump : formatter -> t -> unit
 val ghost_name : string
 val ghost : t
 val mk : string -> t
+
 val of_tuple :
   string * int * int * int * int * int * int * bool -> t
+
 val to_tuple :
   t -> string * int * int * int * int * int * int * bool
+
 val better_file_name : string -> string -> string
-val of_lexbuf : Lexing.lexbuf -> t
+
 
 val start_pos: t -> position
 val stop_pos: t -> position

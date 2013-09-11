@@ -3,6 +3,8 @@ open FLexer
 open LibUtil
 open Lexing
 
+
+(** put elements from stream to string with offset 0 and [max] elements *)  
 let lexing_store s buff max =
    let  self n s =
      if n >= max then n
@@ -12,19 +14,27 @@ let lexing_store s buff max =
        | _ -> n in 
    self 0 s
 
-let from_context c =
-  let next _ =
-    let tok = with_curr_loc token c in (* entry *)
-    let loc = FLoc.of_lexbuf c.lexbuf in
-    Some ((tok, loc))
-  in XStream.from next
 
+(** In initial stage
+    [Lexing.lexeme_start_p] returns
+    {[ Lexing.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 ]}
+    for a string input or a channel input (from_string, from_channel).
+
+ *)    
 let from_lexbuf lb =
-  let c = { (default_context lb) with
-            loc        = Lexing.lexeme_start_p lb;
-            antiquots  = !FConfig.antiquotations;
-          }
-  in from_context c
+  (** lexing entry *)
+  let c = {
+    loc = Lexing.lexeme_start_p lb;
+    antiquots = !FConfig.antiquotations;
+    lexbuf = lb;
+    buffer = Buffer.create 256
+  } in
+  let next _ =
+    let tok =  token {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf in
+    let loc = Location_util.from_lexbuf c.lexbuf in
+    Some ((tok, loc)) in
+  XStream.from next
+
 
 let setup_loc lb loc =
   let start_pos = FLoc.start_pos loc in begin 
@@ -73,7 +83,8 @@ let debug_from_file  file =
   let loc = FLoc.mk file in
   let chan = open_in file in
   let stream = XStream.of_channel  chan in
-  from_stream  loc stream |> clean |> XStream.iter (
-  fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc
- )
+  from_stream  loc stream |> clean |>
+  XStream.iter
+    (fun (t,loc) ->
+      fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc)
 
