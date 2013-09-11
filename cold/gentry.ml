@@ -61,7 +61,7 @@ let gram_of_entry { egram;_} = egram
 let parse_origin_tokens entry ts = Gaction.get (action_parse entry ts)
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (FanTokenFilter.filter (entry.egram).gfilter ts)
-let glexer = FLexLib.mk ()
+let glexer = Flex_lib.from_stream
 let lex loc cs = glexer loc cs
 let lex_string loc str = lex loc (XStream.of_string str)
 let parse_string ?(loc= FLoc.string_loc)  entry str =

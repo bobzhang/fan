@@ -36,30 +36,23 @@ let from_lexbuf lb =
   XStream.from next
 
 
-let setup_loc lb loc =
-  let start_pos = FLoc.start_pos loc in begin 
-    lb.lex_abs_pos <- start_pos.pos_cnum;
-    lb.lex_curr_p  <- start_pos
-  end
-
 (* the stack is cleared to clear the previous error message *)          
-let from_string  loc str =
+let from_string  {FLoc.loc_start;_} str =
   let () = clear_stack () in 
   let lb = Lexing.from_string str in begin 
-    setup_loc lb loc;
+    lb.lex_abs_pos <- loc_start.pos_cnum;
+    lb.lex_curr_p <- loc_start;
     from_lexbuf lb
   end
 
 (* the stack is cleared to clear the previous error message *)    
-let from_stream  loc strm =
+let from_stream  {FLoc.loc_start;_} strm =
   let () = clear_stack () in 
-  let lb = Lexing.from_function (lexing_store strm) in begin 
-    setup_loc lb loc;
+  let lb = Lexing.from_function (lexing_store strm) in begin
+    lb.lex_abs_pos <- loc_start.pos_cnum;
+    lb.lex_curr_p <- loc_start;
     from_lexbuf  lb
   end
-
-let mk () loc strm =
-  from_stream  loc strm
 
 
 (* remove trailing `EOI*)  
@@ -76,8 +69,10 @@ let rec strict_clean = parser
 let debug_from_string  str =
   let loc = FLoc.string_loc  in
   let stream = from_string loc str  in
-  stream |> clean |> XStream.iter
-    (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc)
+  stream
+  |> clean
+  |> XStream.iter
+      (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc)
 
 let debug_from_file  file =
   let loc = FLoc.mk file in

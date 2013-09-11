@@ -28,7 +28,7 @@ let revise_parser str _bol =
   let eof = ref false in
   let lexbuf = UTop.lexbuf_of_string eof  str in
   try
-    let not_filtered_token_stream = FLexLib.from_lexbuf lexbuf in
+    let not_filtered_token_stream = Flex_lib.from_lexbuf lexbuf in
     let token_stream = Fgram.filter not_filtered_token_stream in
     match XStream.peek token_stream with
     | Some (`EOI,_) -> (XStream.junk token_stream;raise End_of_file)

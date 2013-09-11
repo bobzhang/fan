@@ -24,17 +24,18 @@ let from_lexbuf lb =
       token { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf in
     let loc = Location_util.from_lexbuf c.lexbuf in Some (tok, loc) in
   XStream.from next
-let setup_loc lb loc =
-  let start_pos = FLoc.start_pos loc in
-  lb.lex_abs_pos <- start_pos.pos_cnum; lb.lex_curr_p <- start_pos
-let from_string loc str =
+let from_string { FLoc.loc_start = loc_start;_} str =
   let () = clear_stack () in
-  let lb = Lexing.from_string str in setup_loc lb loc; from_lexbuf lb
-let from_stream loc strm =
+  let lb = Lexing.from_string str in
+  lb.lex_abs_pos <- loc_start.pos_cnum;
+  lb.lex_curr_p <- loc_start;
+  from_lexbuf lb
+let from_stream { FLoc.loc_start = loc_start;_} strm =
   let () = clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
-  setup_loc lb loc; from_lexbuf lb
-let mk () loc strm = from_stream loc strm
+  lb.lex_abs_pos <- loc_start.pos_cnum;
+  lb.lex_curr_p <- loc_start;
+  from_lexbuf lb
 let rec clean (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some (`EOI,loc) ->

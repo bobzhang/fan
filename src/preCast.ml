@@ -165,7 +165,7 @@ end
 
 let wrap parse_fun ~print_location lb =
   try
-    let token_stream = lb |> FLexLib.from_lexbuf |> Fgram.filter in
+    let token_stream = lb |> Flex_lib.from_lexbuf |> Fgram.filter in
     match token_stream with parser (* FIXME *)
     |  (`EOI, _)  -> raise End_of_file
     |  -> parse_fun token_stream 

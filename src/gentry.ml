@@ -76,7 +76,7 @@ let parse_origin_tokens entry ts = Gaction.get (action_parse entry ts)
 let filter_and_parse_tokens entry ts =
   parse_origin_tokens entry (FanTokenFilter.filter entry.egram.gfilter  ts)
     
-let glexer = FLexLib.mk ()
+let glexer = Flex_lib.from_stream 
 
 (* UNfiltered token stream *)
 let lex  loc cs =  glexer loc cs
