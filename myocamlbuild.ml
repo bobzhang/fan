@@ -386,7 +386,7 @@ let define_context_for_root r =
   let def = Pathname.define_context in   begin 
     def ("test") ["src"];
     def "testr" ["src"];
-    (* def "unitest" ["common";"src";"treeparser"]; *)
+    def "unitest" ["common";"src";"treeparser"];
     (* def "src"   ["treeparser"]; *)
     def "llvm" ["src"];
     def "jslib" ["src"];

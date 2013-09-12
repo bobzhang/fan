@@ -95,7 +95,8 @@ cleandemo:
 	rm -rf _build/demo
 cleantest:
 	rm -rf _build/test
-
+test:
+	ocamlbuild -use-ocamlfind -quiet -I src unitest/main.byte --
 boot:
 	cd ~/fan/ && ocamlbuild -I src boot/fan.native
 stat:
@@ -111,4 +112,4 @@ updoc:
 	rm -rf ~/Dropbox/fanweb/foo.docdir
 	mv _build/src/foo.docdir ~/Dropbox/fanweb/
 
-.PHONY: top doc byteX
+.PHONY: top doc byteX test

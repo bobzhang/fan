@@ -2,11 +2,10 @@
 
 # true:use_unix
 
-
+<common> or <treeparser> :include
 true: warn(-41)
 <cold/fLexer.ml>:warn(-27)
 <{cold,src}/fan.ml>:warn(-33)
-<common> or <treeparser> :include
 true:-traverse
 <top>:precious
 
