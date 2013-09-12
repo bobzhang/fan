@@ -3,7 +3,7 @@
 # true:use_unix
 
 <common> or <treeparser> :include
-true: warn(-41)
+true: warn(-41),warn(-40),warn(-42)
 <cold/fLexer.ml>:warn(-27)
 <{cold,src}/fan.ml>:warn(-33)
 true:-traverse

@@ -233,9 +233,8 @@ let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
 	
 let err (error:lex_error) (loc:FLoc.t) =
   raise (FLoc.Exc_located(loc, Lexing_error error))
-    
-let warn error loc =
-  Format.eprintf "Warning: %a: %a@." FLoc.print loc print_lex_error error;;
+let warn error (loc:FLoc.t) =
+  Fan_warnings.emitf loc.loc_start "Warning: %s"   (lex_error_to_string error)
 
 
 
@@ -350,7 +349,7 @@ and quotation c = {:lexer|
         quotation c c.lexbuf
       end
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
+          | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
            -> store_parse quotation c 
   | eof ->
      begin
@@ -422,8 +421,8 @@ let  token c = {:lexer|
         move_curr_p (-1) c; `SYMBOL "*")
 
   (* quotation handling *)      
-  | "{|" (extra_quot as p)? (quotchar* as beginning) ->
-      (move_curr_p (-String.length beginning) c;
+  | "{|" (extra_quot as p)? (* (quotchar* as beginning) *) ->
+      ((* move_curr_p (-String.length beginning) c; *)
        Stack.push p opt_char;
        let len = 2 + opt_char_len p in 
        mk_quotation

@@ -168,7 +168,7 @@ let _ =
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)),
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     raise UnboundRegexp)\n",
+          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
@@ -177,14 +177,12 @@ let _ =
                         with
                         | Not_found  ->
                             let p = FLoc.start_pos _loc in
-                            (Printf.eprintf
-                               "File \"%s\", line %d, character %d:\nReference to unbound regexp name `%s'.\n"
-                               p.Lexing.pos_fname p.Lexing.pos_lnum
-                               (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;
+                            (Fan_warnings.emitf p
+                               "Reference to unbound regexp name `%s'" x;
                              raise UnboundRegexp)) : 'regexp )
                   | _ ->
                       failwith
-                        "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Printf.eprintf\n       \"File \\\"%s\\\", line %d, character %d:\\nReference to unbound regexp name `%s'.\\n\"\n       p.Lexing.pos_fname p.Lexing.pos_lnum\n       (p.Lexing.pos_cnum - p.Lexing.pos_bol) x;\n     raise UnboundRegexp)\n"))))])]);
+                        "try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n"))))])]);
   Fgram.extend_single (char_class : 'char_class Fgram.t )
     (None,
       (None, None,

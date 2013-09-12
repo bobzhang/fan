@@ -1,0 +1,3 @@
+#+begin_src ocaml
+#+include: /Users/bobzhang/Dropbox/fan/common/fan_warnings.ml
+#+end_src
