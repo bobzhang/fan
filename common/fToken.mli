@@ -12,7 +12,13 @@ type name = domains * string
 
    (name,loc,shift,contents)
  *)
-type quotation = [ `QUOTATION of (name * string * int * string) ]      
+type quot = {
+    name:name;
+    loc:string;
+    shift:int;
+    content:string;
+  }
+type quotation = [ `QUOTATION of quot ]      
 
 (** (name,contents) *)
 type dir_quotation = [`DirQuotation of (int * string * string) ] 

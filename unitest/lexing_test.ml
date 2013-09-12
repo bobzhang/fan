@@ -23,3 +23,11 @@ let test_comment_string _ =
   get_tokens {:str|(*(**)*)|}
     ===
   [`COMMENT"(*(**)*)";`EOI]
+
+(* This can not be made an unittest
+   since our lexer depends on the context which is bad
+let test_quotation _ =
+  get_tokens {:str|{:exp||}|}
+    ===
+  [`QUOTATION ((`Absolute ["Fan"; "Lang"; "Meta"], "exp"), "", 6, ""); `EOI]
+*)

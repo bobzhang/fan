@@ -50,7 +50,7 @@ val clear_default: unit -> unit
 
 
 val expand :
-    FLoc.t -> FToken.name * string * int * string -> 'a FDyn.tag -> 'a
+    FLoc.t -> FToken.quot -> 'a FDyn.tag -> 'a
 
 
 
@@ -65,10 +65,10 @@ val dump_file : string option  ref
 (** theoretically you can use [mexp] which lift it into any type you can
    but we made a restriction here *)
 val add_quotation:
-    exp_filter:(ep(* 'a *) -> exp) ->
-      pat_filter:(ep(* 'b *) -> pat) ->
-        mexp:(FLoc.t -> 'c -> ep(* 'a *)) ->
-          mpat:(FLoc.t -> 'c -> ep(* 'b *)) -> FToken.name -> 'c Fgram.t -> unit
+    exp_filter:(ep -> exp) ->
+      pat_filter:(ep -> pat) ->
+        mexp:(FLoc.t -> 'c -> ep) ->
+          mpat:(FLoc.t -> 'c -> ep) -> FToken.name -> 'c Fgram.t -> unit
 
 
 

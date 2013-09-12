@@ -22,12 +22,23 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          Format.pp_print_string _a1) fmt _a0
 
-type quotation = [ `QUOTATION of (name* string* int* string)] 
+      
+type quot = {
+    name:name;
+    loc:string;
+    shift:int;
+    content:string;
+  }
 
+      
+type quotation = [ `QUOTATION of quot ] 
+
+(* FIXME *)      
 let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  (`QUOTATION (_a0,_a1,_a2,_a3))  ->
-    Format.fprintf fmt "@[<1>(`QUOTATION@ %a@ %a@ %a@ %a)@]" pp_print_name
-      _a0 Format.pp_print_string _a1 Format.pp_print_int _a2 Format.pp_print_string _a3
+  fun fmt  (`QUOTATION {name;loc;shift;content} )  ->
+    Format.fprintf fmt "@[<1>(`QUOTATION {name=%a;@;loc=%a;@;shift=%a@;content=%a})@]"
+      pp_print_name
+      name Format.pp_print_string loc Format.pp_print_int shift Format.pp_print_string content
 
 (** (name,contents)  *)
 type dir_quotation = [ `DirQuotation of (int* string* string)] 
@@ -35,6 +46,7 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
   fun fmt  (`DirQuotation (_a0,_a1,_a2))  ->
     Format.fprintf fmt "@[<1>(`DirQuotation@ %a@ %a@ %a)@]" Format.pp_print_int _a0
       Format.pp_print_string _a1 Format.pp_print_string _a2
+
 type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `Int of string

@@ -78,7 +78,10 @@ let find loc name tag =
                 (QuotationError (loc, name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
-let expand loc (q_name,q_loc,q_shift,q_contents) (tag : 'a FDyn.tag) =
+let expand loc
+  { FToken.name = q_name; loc = q_loc; shift = q_shift; content = q_contents
+    }
+  (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in
    let name = q_name in
    (try

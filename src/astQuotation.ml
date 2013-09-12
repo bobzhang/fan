@@ -150,7 +150,7 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (q_name,q_loc,q_shift,q_contents)    (tag:'a FDyn.tag) : 'a =
+let expand loc {FToken.name=q_name;loc=q_loc;shift=q_shift;content=q_contents}    (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
   let name = q_name in
   let try expander = find loc name tag

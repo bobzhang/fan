@@ -211,8 +211,8 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
       with_curr_loc quotation c;
       buff_contents c
     end in
-  let contents = String.sub s 0 (String.length s - retract) in
-  `QUOTATION (name,loc,shift,contents)
+  let content = String.sub s 0 (String.length s - retract) in
+  `QUOTATION {FToken.name;loc;shift;content}
     
 
 
@@ -427,7 +427,7 @@ let  token c = {:lexer|
        mk_quotation
          quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
-           `QUOTATION (FToken.empty_name,"",2,"")
+           `QUOTATION { FToken.name=FToken.empty_name; loc=""; shift=2; content="" }
   | "{@" (ident as loc) '|' (extra_quot as p)?  ->
       begin
         Stack.push p opt_char;
