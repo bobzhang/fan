@@ -402,6 +402,19 @@ let  token c = {:lexer|
       -> `Chr x 
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
+  
+
+  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
+  | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op
+
+  (* | ("{<" | ">}") as s -> `SYMBOL s         *)
+  | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
+    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
+    | left_delimitor | right_delimitor | "{<" |">}") as x  ->  `SYMBOL x 
+  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
+      `SYMBOL x 
+
+  (* comment *)      
   | "(*" ->
       (store c;
        (with_curr_loc comment c;  `COMMENT ( buff_contents c)))
@@ -411,7 +424,8 @@ let  token c = {:lexer|
   | "*)" ->
       ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
         move_curr_p (-1) c; `SYMBOL "*")
-  | ("{<" | ">}") as s -> `SYMBOL s
+
+  (* quotation handling *)      
   | "{|" (extra_quot as p)? (quotchar* as beginning) ->
       (move_curr_p (-String.length beginning) c;
        Stack.push p opt_char;
@@ -431,7 +445,8 @@ let  token c = {:lexer|
       err (Illegal_quotation c ) (Location_util.from_lexbuf lexbuf)
   | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
       let len = String.length name in
-      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)(FToken.name_of_string name) in
+      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)
+          (FToken.name_of_string name) in
       begin
         Stack.push p opt_char;
         mk_quotation quotation c
@@ -451,7 +466,8 @@ let  token c = {:lexer|
         `DirQuotation(3+1 +len +(opt_char_len p), name,contents)
   | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? -> 
       let len = String.length name in 
-      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf) (FToken.name_of_string name) in
+      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)
+          (FToken.name_of_string name) in
       begin
         Stack.push p opt_char;
         mk_quotation quotation c ~name ~loc
@@ -467,11 +483,7 @@ let  token c = {:lexer|
           update_loc c ?file:name ~line:inum ~absolute:true ;
           `LINE_DIRECTIVE(inum, name)
         end
-  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
-  | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op 
-  | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
-  | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
-  | left_delimitor | right_delimitor ) as x  ->  `SYMBOL x 
+  (* Antiquotation handling *)        
   | '$' ->
       (*  $lid:ident $ident  $(lid:ghohgosho)  $(....)  $(....) *)
       (* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
@@ -496,16 +508,12 @@ let  token c = {:lexer|
       if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
         with_curr_loc dollar c
       else err Illegal_antiquote (Location_util.from_lexbuf lexbuf)
-
-  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
-      `SYMBOL x 
   | eof ->
       let pos = lexbuf.lex_curr_p in
       (lexbuf.lex_curr_p <-
         { pos with pos_bol  = pos.pos_bol  + 1 ;
           pos_cnum = pos.pos_cnum + 1 };
        `EOI)
-
   | _ as c ->  err (Illegal_character c) (Location_util.from_lexbuf lexbuf) 
 |}
 
