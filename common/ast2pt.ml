@@ -79,9 +79,6 @@ let generate_type_code :
   ref (fun _ -> failwith "Ast2pt.generate_type_code not implemented")
 
 
-
-
-
 let ant_error loc = error loc "antiquotation not expected here"
 
 let mkvirtual  (x:flag)  : Asttypes.virtual_flag =
@@ -649,6 +646,7 @@ let rec exp (x : exp) : Parsetree.expression =
             | `Apply (_,i1,i2) ->
               `App (_loc, normalize_acc i1, normalize_acc i2)
             | `Ant _ | `Uid _ | `Lid _ as i ->  i in
+      
       let rec sep_dot_exp acc (x: exp) : (loc * string list  * exp ) list =
         match x with
         | `Field(_,e1,e2) ->
@@ -659,12 +657,12 @@ let rec exp (x : exp) : Parsetree.expression =
           (match acc with
            | [] -> [(loc, [], e)]
            | (loc',sl,e)::l -> (FLoc.merge loc loc', s :: sl, e) :: l )
-        | e -> ((unsafe_loc_of e), [], e) :: acc in
+        | e -> (unsafe_loc_of e, [], e) :: acc in
       match sep_dot_exp [] x with
-      | (loc, ml, `Uid(sloc,s)) :: l ->
-        (mkexp loc (Pexp_construct ((mkli sloc  s ml), None, false)), l)
-      | (loc, ml, `Lid(sloc,s)) :: l ->
-        (mkexp loc (Pexp_ident (mkli sloc s ml)), l)
+      | (loc, ml, `Uid(_,s)) :: l ->
+        (mkexp loc (Pexp_construct (mkli loc  s ml, None, false)), l)
+      | (loc, ml, `Lid(_,s)) :: l ->
+        (mkexp loc (Pexp_ident (mkli loc s ml)), l)
       | (_, [], e) :: l -> (exp e, l)
       | _ -> errorf (unsafe_loc_of x) "exp: %s" (!dump_exp x) in
     let (_, e) =

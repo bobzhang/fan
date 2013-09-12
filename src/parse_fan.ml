@@ -377,14 +377,9 @@ let apply () = begin
         | vid{i} -> (i :vid :>exp) 
         | "`"; luident{s} -> `Vrn(_loc,s)
         | "["; "]" -> {| [] |} (* FIXME *)
-              
-        (* | "[";sem_exp_for_list{mk_list}; "::"; exp{last}; "]" -> mk_list last *)
         | "["; sem_exp_for_list{mk_list}; "]" -> mk_list {| [] |}
         | "[|"; "|]" -> `ArrayEmpty(_loc)
         | "[|"; sem_exp{el}; "|]" -> `Array (_loc, el)
-
-        (* | "{"; a_lident{x} ; "with"; label_exp_list{el}; "}" -> *)
-        (*     `RecordWith (_loc, el, `Id (_loc,(x:>ident))) *)
         | "{"; `Lid x ; "with"; label_exp_list{el}; "}" ->
             {| { ($lid:x) with $el }|} (* FIXME add antiquot support *)
         | "{"; label_exp_list{el}; "}" -> `Record (_loc, el)
@@ -1344,9 +1339,19 @@ let apply_ctyp () = begin
   |};
 end;;
 
-  
+let fill_parsers =
+  let  applied = ref false in
+  fun () ->
+    if not !applied then
+      begin
+        apply ();
+        apply_ctyp ();
+        applied := true 
+      end
+        
+let () = 
 AstParsers.register_parser
-    ("revise",fun () -> begin apply (); apply_ctyp () end);;
+    ("revise", fill_parsers);;
 
 
 

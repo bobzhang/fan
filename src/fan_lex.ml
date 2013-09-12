@@ -192,9 +192,7 @@ let loc_merge c =
   FLoc.of_positions c.loc @@ Lexing.lexeme_end_p c.lexbuf
 
 
-(** update the lexing position to the loc combined with [with_curr_loc]  *)    
-let set_start_p c =
-  c.lexbuf.lex_start_p <-  c.loc
+
 
 (** [unsafe] shift the lexing buffer, usually shift back *)    
 let move_curr_p shift c =
@@ -300,7 +298,7 @@ let rec string c = {:lexer|
 let rec  antiquot name depth c  = {:lexer|
   | ')' ->
       if depth = 0 then (* only cares about FLoc.start_pos *)
-        (set_start_p c ; `Ant(name, buff_contents c))
+        (c.lexbuf.lex_start_p <-  c.loc ; `Ant(name, buff_contents c))
       else store_parse (antiquot name (depth-1)) c
   | '('    ->  store_parse (antiquot name (depth+1)) c
         
@@ -371,8 +369,6 @@ and quotation c = {:lexer|
 let  token c = {:lexer|
   | newline -> (update_loc c; `NEWLINE)
 
-  | blank + as x ->  `BLANKS x 
-
   | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
 
   | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
@@ -402,18 +398,15 @@ let  token c = {:lexer|
       -> `Chr x 
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
-  
-
   | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
   | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op
-
-  (* | ("{<" | ">}") as s -> `SYMBOL s         *)
   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
     | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
     | left_delimitor | right_delimitor | "{<" |">}") as x  ->  `SYMBOL x 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
       `SYMBOL x 
-
+  (* blanks *)      
+  | blank + as x ->  `BLANKS x 
   (* comment *)      
   | "(*" ->
       (store c;

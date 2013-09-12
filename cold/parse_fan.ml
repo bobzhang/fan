@@ -6517,5 +6517,8 @@ let apply_ctyp () =
             (Fgram.mk_action
                (fun (t : 'type_parameter)  (_loc : FLoc.t)  ->
                   (`Ctyp (_loc, (t :>ctyp)) : 'comma_type_parameter )))))]))
-let _ =
-  AstParsers.register_parser ("revise", (fun ()  -> apply (); apply_ctyp ()))
+let fill_parsers =
+  let applied = ref false in
+  fun ()  ->
+    if not applied.contents then (apply (); apply_ctyp (); applied := true)
+let () = AstParsers.register_parser ("revise", fill_parsers)
