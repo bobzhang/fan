@@ -76,7 +76,8 @@ type context =
   antiquots: bool;
   lexbuf: lexbuf;
   buffer: Buffer.t} 
-let store c = (Buffer.add_string c.buffer) @@ (Lexing.lexeme c.lexbuf)
+let (++) = Buffer.add_string
+let store c = c.buffer ++ (Lexing.lexeme c.lexbuf)
 let store_parse f c = store c; f c c.lexbuf
 let buff_contents c =
   let contents = Buffer.contents c.buffer in Buffer.reset c.buffer; contents
@@ -85,9 +86,7 @@ let move_curr_p shift c =
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
-  let old = (c.lexbuf).lex_start_p in
-  let s =
-    with_curr_loc quotation c; (c.lexbuf).lex_start_p <- old; buff_contents c in
+  let s = with_curr_loc quotation c; buff_contents c in
   let contents = String.sub s 0 ((String.length s) - retract) in
   `QUOTATION (name, loc, shift, contents)
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  c =
@@ -7146,7 +7145,7 @@ let token c lexbuf =
         let c =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_start_pos + 3) in
-        err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
+        (err (Illegal_quotation c)) @@ (Location_util.from_lexbuf lexbuf)
     | 22 ->
         let name =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2)

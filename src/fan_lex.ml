@@ -170,10 +170,11 @@ type context =
       antiquots  : bool     ;
       lexbuf     : lexbuf   ;
       buffer     : Buffer.t }
-      
+
+let (++) = Buffer.add_string       
 (* To buffer string literals, quotations and antiquotations *)
 let store c =
-  Buffer.add_string c.buffer @@ Lexing.lexeme c.lexbuf
+  c.buffer ++ Lexing.lexeme c.lexbuf
 
 let store_parse f c =  
   begin
@@ -205,11 +206,11 @@ let with_curr_loc lexer c =
 
 (** when you return a token make sure the token's location is correct *)
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  let old = c.lexbuf.lex_start_p in
+  (* let old = c.lexbuf.lex_start_p in *)
   let s =
     begin
       with_curr_loc quotation c;
-      c.lexbuf.lex_start_p<-old;
+      (* c.lexbuf.lex_start_p<-old; *)
       buff_contents c
     end in
   let contents = String.sub s 0 (String.length s - retract) in
@@ -421,8 +422,8 @@ let  token c = {:lexer|
         move_curr_p (-1) c; `SYMBOL "*")
 
   (* quotation handling *)      
-  | "{|" (extra_quot as p)? (* (quotchar* as beginning) *) ->
-      ((* move_curr_p (-String.length beginning) c; *)
+  | "{|" (extra_quot as p)?  ->
+      (
        Stack.push p opt_char;
        let len = 2 + opt_char_len p in 
        mk_quotation
@@ -437,7 +438,7 @@ let  token c = {:lexer|
           ~retract:(2 + opt_char_len p)
       end
   | "{@" _  as c ->
-      err (Illegal_quotation c ) (Location_util.from_lexbuf lexbuf)
+      err (Illegal_quotation c ) @@ Location_util.from_lexbuf lexbuf
   | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
       let len = String.length name in
       let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)

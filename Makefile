@@ -96,7 +96,8 @@ cleandemo:
 cleantest:
 	rm -rf _build/test
 test:
-	ocamlbuild -use-ocamlfind -quiet -I src unitest/main.byte -- -verbose
+	ocamlbuild -use-ocamlfind -quiet -I src unitest/main.byte
+	./_build/unitest/main.byte -verbose
 boot:
 	cd ~/fan/ && ocamlbuild -I src boot/fan.native
 stat:
