@@ -206,11 +206,9 @@ let with_curr_loc lexer c =
 
 (** when you return a token make sure the token's location is correct *)
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  (* let old = c.lexbuf.lex_start_p in *)
   let s =
     begin
       with_curr_loc quotation c;
-      (* c.lexbuf.lex_start_p<-old; *)
       buff_contents c
     end in
   let contents = String.sub s 0 (String.length s - retract) in
