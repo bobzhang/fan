@@ -188,8 +188,6 @@ let buff_contents c =
     contents
   end
     
-let loc_merge c =
-  FLoc.of_positions c.loc @@ Lexing.lexeme_end_p c.lexbuf
 
 
 
@@ -220,8 +218,7 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
 
 
 (* Update the current location with file name and line number.
-   change [pos_fname] [pos_lnum] and [pos_bol]
- *)
+   change [pos_fname] [pos_lnum] and [pos_bol] *)
 let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let lexbuf = c.lexbuf in
   let pos = lexbuf.lex_curr_p in
@@ -235,11 +232,10 @@ let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
       pos_bol = pos.pos_cnum - retract;}
 	
 let err (error:lex_error) (loc:FLoc.t) =
-  raise(FLoc.Exc_located(loc, Lexing_error error))
+  raise (FLoc.Exc_located(loc, Lexing_error error))
     
 let warn error loc =
   Format.eprintf "Warning: %a: %a@." FLoc.print loc print_lex_error error;;
-
 
 
 
@@ -258,7 +254,7 @@ let rec comment c = {:lexer|
         update_loc c ;
         store_parse comment c
       end
-  | eof ->  err Unterminated_comment (loc_merge c)                           
+  | eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc c.lexbuf.lex_curr_p
   | _ ->  store_parse comment c 
 |}
 
@@ -288,7 +284,7 @@ let rec string c = {:lexer|
         update_loc c ;
         store_parse string c
       end
-  | eof ->  err Unterminated_string (loc_merge c) 
+  | eof ->  err Unterminated_string @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
   | _ ->  store_parse string c 
 |}
 
@@ -302,7 +298,7 @@ let rec  antiquot name depth c  = {:lexer|
       else store_parse (antiquot name (depth-1)) c
   | '('    ->  store_parse (antiquot name (depth+1)) c
         
-  | eof  -> err Unterminated_antiquot (loc_merge c)
+  | eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
   | newline   ->
       begin
         update_loc c ;
@@ -356,7 +352,11 @@ and quotation c = {:lexer|
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
            -> store_parse quotation c 
-  | eof ->  (show_stack (); err Unterminated_quotation (loc_merge c))
+  | eof ->
+     begin
+      show_stack ();
+      err Unterminated_quotation @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
+     end
   | newline ->
       begin
         update_loc c ;
@@ -392,20 +392,23 @@ let  token c = {:lexer|
   | "'" (newline as x) "'" ->
            ( update_loc c  ~retract:1; `Chr x )
 
-  | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-
-  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+  | "'"
+      ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+      | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
       -> `Chr x 
+
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
+
   | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
   | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op
+
   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
     | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
-    | left_delimitor | right_delimitor | "{<" |">}") as x  ->  `SYMBOL x 
-  | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * as x  ->
-      `SYMBOL x 
-  (* blanks *)      
+    | left_delimitor | right_delimitor | "{<" |">}"
+    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
+    as x  ->  `SYMBOL x 
+
   | blank + as x ->  `BLANKS x 
   (* comment *)      
   | "(*" ->

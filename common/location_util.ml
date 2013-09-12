@@ -9,3 +9,5 @@ let from_lexbuf lb =
    loc_end   ;
    loc_ghost  = false }
 
+let of_positions s e =
+  {FLoc.loc_start = s; loc_end = e ; loc_ghost = false}

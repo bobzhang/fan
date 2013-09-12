@@ -127,18 +127,8 @@ let better_file_name a b =
   | (x, "-") -> x
   | (x, _)   -> x 
     
-(* (\** Return a location from ocamllex buffer. *\) *)
-(* let of_lexbuf lb = *)
-(*   let loc_start = Lexing.lexeme_start_p lb *)
-(*   and loc_end  = Lexing.lexeme_end_p lb in *)
-(*   let loc = *)
-(*   { loc_start  ; *)
-(*     loc_end   ; *)
-(*     loc_ghost  = false } in *)
-(*   (\* debug loc "of_lexbuf: %a@\n" dump loc in *\) *)
-(*   loc *)
 
-let of_positions s e = {loc_start = s; loc_end = e ; loc_ghost = false}
+
     
 let dummy_pos = Lexing.dummy_pos
     
