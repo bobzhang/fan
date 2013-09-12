@@ -192,17 +192,17 @@ let loc_merge c =
   FLoc.of_positions c.loc @@ Lexing.lexeme_end_p c.lexbuf
 
 
-(* update the lexing position to the loc combined with [with_curr_loc]  *)    
+(** update the lexing position to the loc combined with [with_curr_loc]  *)    
 let set_start_p c =
   c.lexbuf.lex_start_p <-  c.loc
 
-(* [unsafe] shift the lexing buffer, usually shift back *)    
+(** [unsafe] shift the lexing buffer, usually shift back *)    
 let move_curr_p shift c =
   c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
 
       
-(* create a new context with  the location of the context for the lexer
-   the old context was kept *)      
+(** create a new context with  the location of the context for the lexer
+   the old context was untouched  *)      
 let with_curr_loc lexer c =
   lexer {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf
     
@@ -221,8 +221,9 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
     
 
 
-(* Update the current location with file name and line number. *)
-
+(* Update the current location with file name and line number.
+   change [pos_fname] [pos_lnum] and [pos_bol]
+ *)
 let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let lexbuf = c.lexbuf in
   let pos = lexbuf.lex_curr_p in
@@ -248,19 +249,29 @@ let rec comment c = {:lexer|
   |"(*"  ->
       begin
         store c;
-        with_curr_loc comment c; (* to give better error message*)
+        with_curr_loc comment c;
+        (* to give better error message, put the current location here *)
         comment c c.lexbuf
       end
-  | "*)"  ->  store c 
-  | eof ->  err Unterminated_comment (loc_merge c)                           
-  | newline ->
-      (update_loc c ; store_parse comment c)
+  | "*)"  ->  store c (* finished *)
 
+  | newline ->
+      begin
+        update_loc c ;
+        store_parse comment c
+      end
+  | eof ->  err Unterminated_comment (loc_merge c)                           
   | _ ->  store_parse comment c 
 |}
 
+
+(** called by another lexer
+      | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
+    c.loc keeps the start position of "ghosgho"
+    c.buffer keeps the lexed result 
+ *)    
 let rec string c = {:lexer|
-  | '"' ->  set_start_p c 
+  | '"' ->    c.lexbuf.lex_start_p <-  c.loc (* finished *)
   | '\\' newline ([' ' '\t'] * as space) ->
       begin
         update_loc c  ~retract:(String.length space);
@@ -362,11 +373,17 @@ and quotation c = {:lexer|
     
 let  token c = {:lexer|
   | newline -> (update_loc c; `NEWLINE)
+
   | blank + as x ->  `BLANKS x 
+
   | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
+
   | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
+
   | lowercase identchar * as x ->  `Lid x 
+
   | uppercase identchar * as x ->  `Uid x 
+
   | int_literal  (('l'|'L'|'n' as s ) ?) as x ->
       (match s with
       | Some 'l' -> `Int32 x
@@ -377,16 +394,28 @@ let  token c = {:lexer|
          safety check
        *)
   | float_literal as f -> `Flo f       (** FIXME safety check *)
+
   | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
+        (* Flex_lib.list_of_string {:str|""|};;
+           [(`Str "", ); (`EOI, )]
+
+           Flex_lib.list_of_string {:str|"a\n"|};;
+           [(`Str "a\n", ); (`EOI, )]
+         *)
+        
   | "'" (newline as x) "'" ->
            ( update_loc c  ~retract:1; `Chr x )
+
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+
   | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
       -> `Chr x 
   | "'\\" (_ as c) -> 
-           (err (Illegal_escape (String.make 1 c))
-              (Location_util.from_lexbuf lexbuf))         
+      err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
   | "(*" ->
+      (* Flex_lib.list_of_string {:str|(*(**)*)|};;
+         [(`COMMENT "(*(**)*)", ); (`EOI, )]
+       *)
       (store c;
        let old = c.lexbuf.lex_start_p in
        let cmt = (with_curr_loc comment c;  c.lexbuf.lex_start_p <-old; buff_contents c) in

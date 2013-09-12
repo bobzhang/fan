@@ -76,13 +76,6 @@ type context =
   antiquots: bool;
   lexbuf: lexbuf;
   buffer: Buffer.t} 
-let default_context lb =
-  {
-    loc = FLoc.dummy_pos;
-    antiquots = false;
-    lexbuf = lb;
-    buffer = (Buffer.create 256)
-  }
 let store c = (Buffer.add_string c.buffer) @@ (Lexing.lexeme c.lexbuf)
 let store_parse f c = store c; f c c.lexbuf
 let buff_contents c =
@@ -91,8 +84,6 @@ let loc_merge c = (FLoc.of_positions c.loc) @@ (Lexing.lexeme_end_p c.lexbuf)
 let set_start_p c = (c.lexbuf).lex_start_p <- c.loc
 let move_curr_p shift c =
   (c.lexbuf).lex_curr_pos <- (c.lexbuf).lex_curr_pos + shift
-let move_start_p shift c =
-  (c.lexbuf).lex_start_p <- FLoc.move_pos shift (c.lexbuf).lex_start_p
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
@@ -135,22 +126,22 @@ let rec comment c lexbuf =
        lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
   and __ocaml_lex_state0 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 10 -> __ocaml_lex_state3 lexbuf
+    | 13 -> __ocaml_lex_state3 lexbuf
     | 40 -> __ocaml_lex_state6 lexbuf
-    | 256 -> __ocaml_lex_state4 lexbuf
+    | 10 -> __ocaml_lex_state4 lexbuf
     | 42 -> __ocaml_lex_state5 lexbuf
-    | 13 -> __ocaml_lex_state2 lexbuf
+    | 256 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
   and __ocaml_lex_state1 lexbuf = 4
-  and __ocaml_lex_state2 lexbuf =
+  and __ocaml_lex_state2 lexbuf = 3
+  and __ocaml_lex_state3 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 3;
+    lexbuf.Lexing.lex_last_action <- 2;
     (match __ocaml_lex_next_char lexbuf with
-     | 10 -> __ocaml_lex_state3 lexbuf
+     | 10 -> __ocaml_lex_state4 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state3 lexbuf = 3
   and __ocaml_lex_state4 lexbuf = 2
   and __ocaml_lex_state5 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
@@ -182,8 +173,8 @@ let rec comment c lexbuf =
    (match __ocaml_lex_result with
     | 0 -> (store c; with_curr_loc comment c; comment c c.lexbuf)
     | 1 -> store c
-    | 2 -> err Unterminated_comment (loc_merge c)
-    | 3 -> (update_loc c; store_parse comment c)
+    | 2 -> (update_loc c; store_parse comment c)
+    | 3 -> err Unterminated_comment (loc_merge c)
     | 4 -> store_parse comment c
     | _ -> failwith "lexing: empty token"))
 let rec string c lexbuf =
@@ -302,7 +293,7 @@ let rec string c lexbuf =
          (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
      };
    (match __ocaml_lex_result with
-    | 0 -> set_start_p c
+    | 0 -> (c.lexbuf).lex_start_p <- c.loc
     | 1 ->
         let space =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -7129,15 +7120,16 @@ let token c lexbuf =
     | 11 ->
         let c =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
-        err (Illegal_escape (String.make 1 c))
+        (err (Illegal_escape (String.make 1 c))) @@
           (Location_util.from_lexbuf lexbuf)
     | 12 ->
         (store c;
          (let old = (c.lexbuf).lex_start_p in
-          `COMMENT
-            (with_curr_loc comment c;
-             (c.lexbuf).lex_start_p <- old;
-             buff_contents c)))
+          let cmt =
+            with_curr_loc comment c;
+            (c.lexbuf).lex_start_p <- old;
+            buff_contents c in
+          `COMMENT cmt))
     | 13 ->
         (warn Comment_start (Location_util.from_lexbuf lexbuf);
          comment c c.lexbuf;
@@ -9541,7 +9533,11 @@ let token c lexbuf =
                   Lexing.sub_lexeme lexbuf
                     (((lexbuf.Lexing.lex_mem).(0)) + 1)
                     (lexbuf.Lexing.lex_curr_pos + 0) in
-                (move_start_p ((String.length name) + 1) c; `Ant (name, x))
+                ((let move_start_p shift c =
+                    (c.lexbuf).lex_start_p <-
+                      FLoc.move_pos shift (c.lexbuf).lex_start_p in
+                  move_start_p ((String.length name) + 1) c);
+                 `Ant (name, x))
             | 1 ->
                 let x =
                   Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

@@ -42,7 +42,9 @@ val mk_quotation:
 val update_loc:
   ?file:string ->
   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit
+
 val err: lex_error -> FLoc.t -> 'a
+
 val warn: lex_error -> FLoc.t -> unit
 
 val token: context ->  Lexing.lexbuf ->  [> FToken.t ]
