@@ -34,4 +34,4 @@ val strict_clean :  (([> `EOI ] as 'a) * 'b) XStream.t -> ('a * 'b) XStream.t
 val debug_from_string :  string -> unit
 
 val debug_from_file : string -> unit
-val list_of_string : string -> ([> FToken.t ] * FLoc.t) list
+val list_of_string : ?verbose:bool -> string -> ([> FToken.t ] * FLoc.t) list

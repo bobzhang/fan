@@ -296,9 +296,6 @@ let rec string c = {:lexer|
 
 
 
-
-
-
 (* depth makes sure the parentheses are balanced *)
 let rec  antiquot name depth c  = {:lexer|
   | ')' ->
