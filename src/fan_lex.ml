@@ -393,13 +393,6 @@ let  token c = {:lexer|
   | float_literal as f -> `Flo f       (** FIXME safety check *)
 
   | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
-        (* Flex_lib.list_of_string {:str|""|};;
-           [(`Str "", ); (`EOI, )]
-
-           Flex_lib.list_of_string {:str|"a\n"|};;
-           [(`Str "a\n", ); (`EOI, )]
-         *)
-        
   | "'" (newline as x) "'" ->
            ( update_loc c  ~retract:1; `Chr x )
 
@@ -410,21 +403,15 @@ let  token c = {:lexer|
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
   | "(*" ->
-      (* Flex_lib.list_of_string {:str|(*(**)*)|};;
-         [(`COMMENT "(*(**)*)", ); (`EOI, )]
-       *)
       (store c;
-       let old = c.lexbuf.lex_start_p in
-       let cmt = (with_curr_loc comment c;  c.lexbuf.lex_start_p <-old; buff_contents c) in
-       `COMMENT cmt)
+       (with_curr_loc comment c;  `COMMENT ( buff_contents c)))
   | "(*)" -> 
-           ( warn Comment_start (Location_util.from_lexbuf lexbuf) ;
-              comment c c.lexbuf; `COMMENT (buff_contents c))
+      ( warn Comment_start (Location_util.from_lexbuf lexbuf) ;
+        comment c c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
-           ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
-             move_curr_p (-1) c; `SYMBOL "*")
-  | "{<" as s -> `SYMBOL s
-  | ">}" as s -> `SYMBOL s
+      ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
+        move_curr_p (-1) c; `SYMBOL "*")
+  | ("{<" | ">}") as s -> `SYMBOL s
   | "{|" (extra_quot as p)? (quotchar* as beginning) ->
       (move_curr_p (-String.length beginning) c;
        Stack.push p opt_char;
