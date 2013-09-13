@@ -264,4 +264,7 @@ let apply () =
             (Fgram.mk_action
                (fun (se : 'stream_exp_comp)  (_loc : FLoc.t)  ->
                   ([se] : 'stream_exp_comp_list )))))]))
-let _ = AstParsers.register_parser ("stream", apply)
+let fill_parsers =
+  let applied = ref false in
+  fun ()  -> if not applied.contents then (apply (); applied := true)
+let () = AstParsers.register_parser ("stream", fill_parsers)

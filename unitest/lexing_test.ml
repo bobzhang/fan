@@ -26,8 +26,24 @@ let test_comment_string _ =
 
 (* This can not be made an unittest
    since our lexer depends on the context which is bad
+*)   
 let test_quotation _ =
-  get_tokens {:str|{:exp||}|}
-    ===
-  [`QUOTATION ((`Absolute ["Fan"; "Lang"; "Meta"], "exp"), "", 6, ""); `EOI]
-*)
+  let open Fan in (* should be FIXED *)
+  Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|}
+  ===
+  [(`QUOTATION
+    {FToken.name = (`Absolute ["Fan"; "Lang"], "lexer"); loc = ""; shift = 8;
+     content = "abcdef"},
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+   loc_ghost = false});
+ (`EOI,
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
+   loc_ghost = false})]
+
+

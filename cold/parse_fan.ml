@@ -6520,5 +6520,5 @@ let apply_ctyp () =
 let fill_parsers =
   let applied = ref false in
   fun ()  ->
-    if not applied.contents then (apply (); apply_ctyp (); applied := true)
+    if not applied.contents then (applied := true; apply (); apply_ctyp ())
 let () = AstParsers.register_parser ("revise", fill_parsers)

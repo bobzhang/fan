@@ -1344,10 +1344,10 @@ let fill_parsers =
   fun () ->
     if not !applied then
       begin
+        applied := true; 
         apply ();
         apply_ctyp ();
-        applied := true 
-      end
+      end ;;
         
 let () = 
 AstParsers.register_parser

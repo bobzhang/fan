@@ -102,59 +102,39 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
                            if (Gtools.get_cur_loc strm) = bp
                            then raise XStream.NotConsumed
                            else
-                             raise
-                               (XStream.Error (Gfailed.tree_failed entry a node son))
+                             raise @@
+                               XStream.Error
+                               (Gfailed.tree_failed  entry a node son)
                        | _ -> raise e)))
               with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
 
         | Some (tokl, node, son) -> fun strm ->
-            (* let try args = List.rev (parser_of_terminals tokl strm) in *)
-            (* begin *)
-            (*   List.iter (fun a -> ArgContainer.push  a q) args; *)
-            (*   let len =List.length args in              *)
-            (*   let p = from_tree son in *)
-            (*   try p strm with *)
-            (*         e -> *)
-            (*           begin *)
-            (*             for _i =  1 to len do *)
-            (*               ignore (ArgContainer.pop q); *)
-            (*             done; *)
-            (*             match e with *)
-            (*             |XStream.NotConsumed -> raise *)
-            (*                   (XStream.Error (Gfailed.tree_failed entry e (node:>symbol) son)) *)
-            (*             |_ -> raise e *)
-            (*           end *)
-            (* end *)
-            (* with XStream.NotConsumed -> from_tree brother strm *)
-
-  (try
-     let args = List.rev (parser_of_terminals tokl strm) in
-     fun ()  ->
-       List.iter (fun a  -> ArgContainer.push a q) args;
-       (let len = List.length args in
-        let p = from_tree son in
-        try p strm
-        with
-        | e ->
-            (for _i = 1 to len do ignore (ArgContainer.pop q) done;
-             (match e with
-              | XStream.NotConsumed  ->
-                  raise
-                    (XStream.Error
-                       (Gfailed.tree_failed entry e (node :>symbol) son))
-              | _ -> raise e)))
-   with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) ()
-                
-  in
+            (try
+              let args = List.rev (parser_of_terminals tokl strm) in
+              fun ()  ->
+                List.iter (fun a  -> ArgContainer.push a q) args;
+                (let len = List.length args in
+                let p = from_tree son in
+                try p strm
+                with
+                | e ->
+                    (for _i = 1 to len do ignore (ArgContainer.pop q) done;
+                     (match e with
+                     | XStream.NotConsumed  ->
+                         raise
+                           (XStream.Error
+                              (Gfailed.tree_failed  entry e (node :>symbol) son))
+                     | _ -> raise e)))
+            with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
   let parse = from_tree x in
   fun strm -> 
     let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
-      let ans = ref parse in
-      (for _i = 1 to arity do
-          let (v,_) = ArgContainer.pop q in
-          ans:=Gaction.getf !ans v;   
-      done;
-       (!ans,loc))
+    let ans = ref parse in
+    (for _i = 1 to arity do
+      let (v,_) = ArgContainer.pop q in
+      ans:=Gaction.getf !ans v;   
+    done;
+     (!ans,loc))
 
 
 (*
@@ -182,10 +162,10 @@ and parser_of_terminals (terminals: terminal list) strm =
                 (match terminal with
                 |`Stoken(f,_,_) -> f t
                 |`Skeyword kwd ->
-                  begin match t with
-                  |`KEYWORD kwd' when kwd = kwd' -> true
-                  | _ -> false
-                end)
+                    begin match t with
+                    |`KEYWORD kwd' when kwd = kwd' -> true
+                    | _ -> false
+                    end)
             then
               invalid_arg "parser_of_terminals"
           end) terminals
@@ -254,11 +234,7 @@ let start_parser_of_levels entry =
                   let (act,loc) = cstart strm in
                   fun ()  ->
                     let a = Gaction.getf act loc in entry.econtinue levn loc a strm
-                with  XStream.NotConsumed  -> (fun ()  -> hstart levn strm)) ()
-                  (* let try (act,loc) =  cstart strm in *)
-                  (* let a = Gaction.getf act loc in *)
-                  (* entry.econtinue levn loc a strm *)
-                  (* with XStream.NotConsumed -> hstart levn strm  *)in
+                with  XStream.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
   aux 0
     
 let start_parser_of_entry entry =

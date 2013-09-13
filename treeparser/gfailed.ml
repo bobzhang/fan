@@ -128,7 +128,7 @@ and name_of_tree_failed entry x =
 let magic _s x = (* debug magic "Obj.magic: %s@." _s in *) Obj.magic x
 
 (* [prev_symb_result] is cast by [Obj.magic] *)
-let tree_failed entry prev_symb_result prev_symb tree =
+let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt =
     match prev_symb with
@@ -157,20 +157,21 @@ let tree_failed entry prev_symb_result prev_symb tree =
             txt1 ^ " or " ^ txt ^ " expected"
         end
     | `Stry _ | `Speek _ (*NP: not sure about this*) | `Sopt _ (* | `Stree _ *) -> txt ^ " expected"
-    | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in begin
-        if !(FConfig.verbose) then 
-          let tree = tree_in_entry prev_symb tree entry.edesc in 
-          let f = err_formatter in begin
-            pp f ("@[<v 0>@,----------------------------------@,"^^
-                  "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
-                  "----------------------------------@,@]@.")
-              entry.ename
-              (Gprint.text#rules ) (Gstru.flatten_tree tree);
-          end
-        else ();
-        txt ^ " (in [" ^ entry.ename ^ "])"
-    end
-  
+    | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in
+  begin
+    (* it may not necessary fail when  we use try somewhere*)
+    if verbose then
+      let tree = tree_in_entry prev_symb tree entry.edesc in
+      pp err_formatter
+        ("@[<v 0>@,----------------------------------@,"^^
+         "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
+         "----------------------------------@,@]@.")
+        entry.ename
+        (Gprint.text#rules ) (Gstru.flatten_tree tree);
+    else ();
+    txt ^ " (in [" ^ entry.ename ^ "])"
+  end
+    
 let symb_failed entry prev_symb_result prev_symb symb =
   let tree = Node {node = symb; brother = DeadEnd; son = DeadEnd} in
   tree_failed entry prev_symb_result prev_symb tree

@@ -8,7 +8,7 @@ val ocaml_standard_library : string
 val version : string
 
 val unsafe : bool ref
-val verbose : bool ref
+(* val verbose : bool ref *)
 val antiquotations : bool ref
 
 val inter_phrases : string option ref

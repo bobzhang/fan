@@ -18,4 +18,6 @@ val stream_exp : exp Fgram.t
 val parser_case : stream_case Fgram.t
 
 val parser_case_list : stream_cases Fgram.t
-val apply : unit -> unit
+
+val fill_parsers: unit -> unit    
+

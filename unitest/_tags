@@ -1,2 +1,2 @@
 true:package(oUnit), use_fan
-true:use_ocamlcommon
+true:use_ocamlcommon, use_dynlink

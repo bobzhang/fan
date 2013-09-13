@@ -9,7 +9,7 @@ val name_of_tree_failed :  entry -> tree -> string
 
 val magic : 'a -> 'b -> 'c
 
-val tree_failed :  entry ->  'a -> symbol -> tree -> string
+val tree_failed :  ?verbose:bool -> entry ->  'a -> symbol -> tree -> string
 
 val symb_failed :  entry ->  'a -> symbol -> symbol -> string
 

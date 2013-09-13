@@ -6,9 +6,9 @@ let ocaml_standard_library = Oconfig.standard_library;;
 
 let version = Sys.ocaml_version;;
 let unsafe             = ref false;;
-let verbose            = ref false;;
+(* let verbose            = ref false;; *)
 let antiquotations     = ref false;;
-let inter_phrases: string option ref
+let inter_phrases : string option ref
     = ref None;;
 let impl_magic_number = "FAN2013M002";;
 let intf_magic_number = "FAN2013N002";;

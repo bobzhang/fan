@@ -84,7 +84,21 @@ let apply () =
     | stream_exp_comp{se} -> [se] ] 
 |};;
 
-AstParsers.register_parser ("stream",apply)  ;;
+
+let fill_parsers =
+  let  applied = ref false in
+  fun () ->
+    if not !applied then
+      begin
+        apply ();
+        applied := true 
+      end
+        
+let () = 
+AstParsers.register_parser
+    ("stream", fill_parsers);;
+
+
 
 
 

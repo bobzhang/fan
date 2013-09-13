@@ -206,9 +206,11 @@ let with_curr_loc lexer c =
 
 (** when you return a token make sure the token's location is correct *)
 let mk_quotation quotation c ~name ~loc ~shift ~retract =
+  let old = c.lexbuf.lex_start_p in
   let s =
     begin
       with_curr_loc quotation c;
+      c.lexbuf.lex_start_p <- old;
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
@@ -512,3 +514,16 @@ let  token c = {:lexer|
 |}
 
      
+let from_lexbuf lb =
+  (** lexing entry *)
+  let c = {
+    loc = Lexing.lexeme_start_p lb;
+    antiquots = !FConfig.antiquotations;
+    lexbuf = lb;
+    buffer = Buffer.create 256
+  } in
+  let next _ =
+    let tok =  token {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf in
+    let loc = Location_util.from_lexbuf c.lexbuf in
+    Some ((tok, loc)) in (* this requires the [lexeme_start_p] to be correct ...  *)
+  XStream.from next

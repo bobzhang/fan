@@ -86,7 +86,9 @@ let move_curr_p shift c =
 let with_curr_loc lexer c =
   lexer { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf
 let mk_quotation quotation c ~name  ~loc  ~shift  ~retract  =
-  let s = with_curr_loc quotation c; buff_contents c in
+  let old = (c.lexbuf).lex_start_p in
+  let s =
+    with_curr_loc quotation c; (c.lexbuf).lex_start_p <- old; buff_contents c in
   let content = String.sub s 0 ((String.length s) - retract) in
   `QUOTATION { FToken.name = name; loc; shift; content }
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  c =
@@ -9539,3 +9541,16 @@ let token c lexbuf =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
         err (Illegal_character c) (Location_util.from_lexbuf lexbuf)
     | _ -> failwith "lexing: empty token"))
+let from_lexbuf lb =
+  let c =
+    {
+      loc = (Lexing.lexeme_start_p lb);
+      antiquots = (FConfig.antiquotations.contents);
+      lexbuf = lb;
+      buffer = (Buffer.create 256)
+    } in
+  let next _ =
+    let tok =
+      token { c with loc = (Lexing.lexeme_start_p c.lexbuf) } c.lexbuf in
+    let loc = Location_util.from_lexbuf c.lexbuf in Some (tok, loc) in
+  XStream.from next

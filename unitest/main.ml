@@ -12,7 +12,7 @@ let suite =
   "Lexing_test.test_empty_string" >:: Lexing_test.test_empty_string;
   "Lexing_test.test_escaped_string" >:: Lexing_test.test_escaped_string;
   "Lexing_test.test_comment_string" >:: Lexing_test.test_comment_string;
-  (* "Lexing_test.test_quotation" >:: Lexing_test.test_quotation; *)
+  "Lexing_test.test_quotation" >:: Lexing_test.test_quotation;
   "Location_ident.test_ident_location" >:: Location_ident.test_ident_location
  ]
 ;;

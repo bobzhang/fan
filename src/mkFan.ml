@@ -139,7 +139,7 @@ let initial_spec_list =
    ("-unsafe", Arg.Set FConfig.unsafe,
     "Generate unsafe accesses to array and strings.");
 
-   ("-verbose", Arg.Set FConfig.verbose, "More verbose in parsing errors.");
+   (* ("-verbose", Arg.Set FConfig.verbose, "More verbose in parsing errors."); *)
 
    ("-where", Arg.Unit (fun () -> (print_endline FConfig.fan_plugins_library;exit 0))
       , " Print location of standard library and exit");
