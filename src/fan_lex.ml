@@ -64,6 +64,11 @@ let right_delimitor =
    | (delimchars* ['|' ':'])? ')'
    | ['|' ':']? ']'
    | '>' delimchars* [']' ]
+
+let ocaml_char =
+  ( [! '\\' '\010' '\013'] | '\\'
+    (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+     | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char))       
 |};;
 
 
@@ -218,8 +223,18 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
     
 
 
-(* Update the current location with file name and line number.
-   change [pos_fname] [pos_lnum] and [pos_bol] *)
+(** Update the current location with file name and line number.
+   change [pos_fname] [pos_lnum] and [pos_bol],
+   default behavior is adding a newline
+    [retract] is only used for ocaml convention
+    for example
+
+    {[
+    '
+    '
+    bol would require retract one chars  when parsing it as a whole
+    ]}
+ *)
 let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
   let lexbuf = c.lexbuf in
   let pos = lexbuf.lex_curr_p in
@@ -392,16 +407,14 @@ let  token c = {:lexer|
   | "'" (newline as x) "'" ->
            ( update_loc c  ~retract:1; `Chr x )
 
-  | "'"
-      ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-      | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+  | "'" (ocaml_char as x ) "'"
       -> `Chr x 
 
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
 
-  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `ESCAPED_IDENT op 
-  | '(' blank+ (symbolchar+ as op) blank* ')' -> `ESCAPED_IDENT op
+  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `Eident op 
+  | '(' blank+ (symbolchar+ as op) blank* ')' -> `Eident op
 
   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
     | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"

@@ -57,7 +57,7 @@ type t =
   | `SYMBOL of string
   | `Lid of string
   | `Uid of string
-  | `ESCAPED_IDENT of string (* (+)*)
+  | `Eident of string (* (+)*)
   | `Int of string 
   | `Int32 of string 
   | `Int64 of string 
@@ -78,15 +78,6 @@ type t =
   | `Ant of (string * string )        
   | `EOI]
       
-type error =
-  | Illegal_token of string
-  | Keyword_as_label of string
-  | Illegal_token_pattern of (string * string)
-  | Illegal_constructor of string
-
-exception TokenError of error
-
-
 type stream = (t * FLoc.t) XStream.t 
 
 type 'a token  = [> t] as 'a
@@ -97,38 +88,15 @@ type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
-val pp_print_error : Format.formatter -> error -> unit
-
-val string_of_error_msg : error -> string
-
 val token_to_string : t  -> string
 
 val to_string : [> t]  -> string
 
-val err : error -> FLoc.t -> 'a
-
-val error_no_respect_rules : string -> string -> 'a
-
-val check_keyword : 'a -> bool
-
-val error_on_unknown_keywords : bool ref
-
-(* val ignore_layout :  (([>  t ] as 'a) * 'e) XStream.t -> ('a * 'e) XStream.t *)
-
 val print : Format.formatter -> [> t ] -> unit
 
-(* val match_keyword : 'a -> [> `KEYWORD of 'a ] -> bool *)
 
 (**  {[x=STRING -> extract_string x  ]} *)  
 val extract_string : [> t ] -> string
-
-val keyword_conversion :  ([> t ] as 'a) ->  (string -> bool) -> 'a
-
-val check_keyword_as_label :
-  [> `LABEL of string | `OPTLABEL of string ] ->
-  FLoc.t -> (string -> bool) -> unit
-
-val check_unknown_keywords : [> `SYMBOL of string ] -> FLoc.t -> unit
 
 
 

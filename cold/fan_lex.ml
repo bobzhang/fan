@@ -7098,12 +7098,12 @@ let token c lexbuf =
         let op =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-        `ESCAPED_IDENT op
+        `Eident op
     | 12 ->
         let op =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-        `ESCAPED_IDENT op
+        `Eident op
     | 13 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

@@ -7,7 +7,7 @@ let fmt = std_formatter
 let _loc = FLoc.ghost;;
 
 let (|-) f g x = g (f x );;
-
+let (!!) = Sys.command;;
 let _ = begin
   Hashtbl.replace Toploop.directive_table "useo"
     (Toploop.Directive_string (fun file ->

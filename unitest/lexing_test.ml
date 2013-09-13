@@ -24,6 +24,12 @@ let test_comment_string _ =
     ===
   [`COMMENT"(*(**)*)";`EOI]
 
+let test_char _ =
+  get_tokens {:str|'
+'|}
+    ===
+  [`Chr "\n"; `EOI]
+;;  
 (* This can not be made an unittest
    since our lexer depends on the context which is bad
 *)   

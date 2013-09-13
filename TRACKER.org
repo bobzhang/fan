@@ -511,3 +511,19 @@ constexpr bool is_prime_func(size_t number){
   argument values such that, after argument substitution, the
   expression in the return statement produces a constant expression.
   
+
+
+
+* BUGS
+** PR001  ! is a keyword, behaves weird 
+  #+BEGIN_SRC ocaml
+      let (!) = Sys.command;;
+    val ( ! ) : string -> int = <fun>
+      ! "pwd";;
+    Characters 2-7:
+      ! "pwd";;
+        ^^^^^
+    Error: This expression has type string but an expression was expected of type
+             'a ref
+      
+  #+END_SRC
