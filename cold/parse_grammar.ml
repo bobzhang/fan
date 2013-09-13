@@ -489,7 +489,7 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )))],
-           ("((match name with\n  | Some x ->\n      let old = AstQuotation.default.contents in\n      (AstQuotation.default := (FToken.resolve_name _loc ((`Sub []), x));\n       `name old)\n  | None  -> `non), (mk_name _loc il))\n",
+           ("((match name with\n  | Some x ->\n      let old = AstQuotation.default.contents in\n      (AstQuotation.default :=\n         (AstQuotation.resolve_name _loc ((`Sub []), x));\n       `name old)\n  | None  -> `non), (mk_name _loc il))\n",
              (Fgram.mk_action
                 (fun (name : 'str option)  (il : 'qualid)  (_loc : FLoc.t) 
                    ->
@@ -497,7 +497,7 @@ let _ =
                       | Some x ->
                           let old = AstQuotation.default.contents in
                           (AstQuotation.default :=
-                             (FToken.resolve_name _loc ((`Sub []), x));
+                             (AstQuotation.resolve_name _loc ((`Sub []), x));
                            `name old)
                       | None  -> `non), (mk_name _loc il)) : 'entry_name )))))]));
   Fgram.extend_single (entry : 'entry Fgram.t )

@@ -4,6 +4,12 @@
 open FAst
 
 
+
+
+val resolve_name : FLoc.t -> FToken.name -> FToken.name
+
+val paths : FToken.domains list ref
+    
 (** The [loc] is the initial location. The option string is the optional name
     for the [location variable]. The string is the quotation contents. 
     expand fun accepts [location] and [location label] and string   

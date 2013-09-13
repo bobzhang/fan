@@ -878,11 +878,12 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("let old = AstQuotation.default.contents in\nAstQuotation.default := (FToken.resolve_name _loc ls); old\n",
+            ("let old = AstQuotation.default.contents in\nAstQuotation.default := (AstQuotation.resolve_name _loc ls); old\n",
               (Fgram.mk_action
                  (fun (ls : 'dot_lstrings)  (_loc : FLoc.t)  ->
                     (let old = AstQuotation.default.contents in
-                     AstQuotation.default := (FToken.resolve_name _loc ls);
+                     AstQuotation.default :=
+                       (AstQuotation.resolve_name _loc ls);
                      old : 'lang )))))]));
    Fgram.extend_single (pos_exps : 'pos_exps Fgram.t )
      (None,
@@ -904,31 +905,31 @@ let apply () =
                 (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Skeyword ":";
            `Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("((x : string ), (FToken.resolve_name _loc y))\n",
+            ("((x : string ), (AstQuotation.resolve_name _loc y))\n",
               (Fgram.mk_action
                  (fun (y : 'dot_lstrings)  _  (__fan_0 : [> FToken.t]) 
                     (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Lid x ->
-                        (((x : string ), (FToken.resolve_name _loc y)) : 
+                        (((x : string ), (AstQuotation.resolve_name _loc y)) : 
                         'name_space )
                     | _ ->
                         failwith
-                          "((x : string ), (FToken.resolve_name _loc y))\n"))));
+                          "((x : string ), (AstQuotation.resolve_name _loc y))\n"))));
          ([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-           ("((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n",
+           ("((x : string ), (AstQuotation.resolve_name _loc ((`Sub []), x)))\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
                        (((x : string ),
-                          (FToken.resolve_name _loc ((`Sub []), x))) : 
+                          (AstQuotation.resolve_name _loc ((`Sub []), x))) : 
                        'name_space )
                    | _ ->
                        failwith
-                         "((x : string ), (FToken.resolve_name _loc ((`Sub []), x)))\n"))))]));
+                         "((x : string ), (AstQuotation.resolve_name _loc ((`Sub []), x)))\n"))))]));
    Fgram.extend_single (fun_def_pat : 'fun_def_pat Fgram.t )
      (None,
        (None, None,

@@ -2,6 +2,36 @@ open FAst
 open LibUtil
 open FToken
 open Format
+let paths: domains list ref =
+  ref
+    [`Absolute ["Fan"; "Lang"];
+    `Absolute ["Fan"; "Lang"; "Meta"];
+    `Absolute ["Fan"; "Lang"; "Filter"]]
+let concat_domain =
+  function
+  | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
+  | _ -> invalid_arg "concat_domain"
+let names_tbl: (domains,SSet.t) Hashtbl.t = Hashtbl.create 30
+let resolve_name loc (n : name) =
+  (match n with
+   | ((`Sub _ as x),v) ->
+       ((try
+           let r =
+             List.find
+               (fun path  ->
+                  (try
+                     let set =
+                       Hashtbl.find names_tbl (concat_domain (path, x)) in
+                     fun ()  -> SSet.mem v set
+                   with | Not_found  -> (fun ()  -> false)) ())
+               paths.contents in
+           fun ()  -> ((concat_domain (r, x)), v)
+         with
+         | Not_found  ->
+             (fun ()  ->
+                (FLoc.errorf loc "resolve_name `%s' failed") @@
+                  (string_of_name n)))) ()
+   | x -> x : name )
 type quotation_error_message =  
   | Finding
   | Expanding
@@ -42,7 +72,7 @@ let expander_name loc ~pos:(pos : string)  (name : name) =
   match name with
   | (`Sub [],"") ->
       SMap.find_default ~default:(default.contents) pos map.contents
-  | (`Sub _,_) -> FToken.resolve_name loc name
+  | (`Sub _,_) -> resolve_name loc name
   | _ -> name
 let default_at_pos pos str = update (pos, str)
 let expanders_table = ref QMap.empty

@@ -151,7 +151,7 @@ open LibUtil
   [ qualid{il}; OPT  str {name} -> 
     (match name with
     | Some x -> (let old = !AstQuotation.default in
-      (AstQuotation.default:= FToken.resolve_name _loc (`Sub [], x);
+      (AstQuotation.default:=AstQuotation.resolve_name _loc (`Sub [], x);
        `name old))
     | None -> `non, mk_name _loc il)]
 

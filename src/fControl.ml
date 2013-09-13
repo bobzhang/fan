@@ -5,9 +5,9 @@
 {:unsafe_extend| (g:Fgram.t)
   item:
   ["default"; `Str s -> (* FIXME*)
-    AstQuotation.set_default (FToken.resolve_name _loc (`Sub[],s))
+    AstQuotation.set_default (AstQuotation.resolve_name _loc (`Sub[],s))
   |"import"; dot_namespace{xs} ->
-      FToken.paths := `Absolute  xs :: !FToken.paths
+      AstQuotation.paths := `Absolute  xs :: !AstQuotation.paths
   | "filter"; `Str s ->
       AstFilters.use_implem_filter s
   | "lang_clear" ->

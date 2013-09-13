@@ -131,15 +131,10 @@ val check_keyword_as_label :
 val check_unknown_keywords : [> `SYMBOL of string ] -> FLoc.t -> unit
 
 
-val string_of_domains : domains -> string
-val string_of_name : domains * string -> string
-val paths : domains list ref
-val concat_domain : domains * domains -> domains
+
+val string_of_name : name -> string
+
 val empty_name : name
 
-val name_of_string : string -> name    
+val name_of_string : string -> name
 
-(** [names_tbl] is used to manage the namespace and names *)
-val names_tbl : (domains, LibUtil.SSet.t) Hashtbl.t
-
-val resolve_name : FLoc.t -> name -> name    

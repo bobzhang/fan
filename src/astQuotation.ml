@@ -4,6 +4,43 @@ open FToken
 open Format
 
 
+(*********************************)
+(* name table                    *)        
+(*********************************)
+        
+(* [only absolute] domains can be stored *)  
+let paths :  domains list ref  =
+  ref [ `Absolute ["Fan";"Lang"];
+        `Absolute ["Fan";"Lang";"Meta"];
+        `Absolute ["Fan";"Lang";"Filter"]]
+
+let concat_domain = function
+  |(`Absolute xs,`Sub ys) -> `Absolute (xs@ys)
+  | _ -> invalid_arg "concat_domain"
+
+
+
+(** [names_tbl] is used to manage the namespace and names *)
+let names_tbl : (domains,SSet.t) Hashtbl.t =
+  Hashtbl.create 30 
+    
+(**  when no qualified path is given , it uses [Sub []] *)
+let resolve_name loc (n:name) : name =
+  match n with
+  | ((`Sub _ as x) , v) ->
+      (try
+        let r =
+          List.find
+            (fun path  ->
+              (try
+                let set = Hashtbl.find names_tbl (concat_domain (path, x)) in
+                fun ()  -> SSet.mem v set
+              with | Not_found  -> (fun ()  -> false)) ()) paths.contents in
+        fun ()  -> ((concat_domain (r, x)), v)
+      with  Not_found  ->
+        fun ()  -> FLoc.errorf loc "resolve_name `%s' failed" @@ string_of_name n)
+        ()
+  | x ->  x
 
 type quotation_error_message =
   | Finding
@@ -99,7 +136,7 @@ let expander_name loc ~pos:(pos:string) (name:name) =
      (* resolve default case *)
      SMap.find_default ~default:(!default) pos !map
   |(`Sub _ ,_) ->
-    FToken.resolve_name loc name
+    resolve_name loc name
   | _ -> name  
   
 let default_at_pos pos str =  update (pos,str)
