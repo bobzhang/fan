@@ -108,8 +108,7 @@ let default_keywords =
 let gkeywords = ref (SSet.of_list default_keywords)
 let rec fan_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
-      (XStream.junk __strm; fan_filter __strm)
+  | Some (#FToken.space_token,_) -> (XStream.junk __strm; fan_filter __strm)
   | Some x ->
       (XStream.junk __strm;
        (let xs = __strm in
@@ -118,7 +117,7 @@ let rec fan_filter (__strm : _ XStream.t) =
 let rec ignore_layout: FToken.filter =
   fun (__strm : _ XStream.t)  ->
     match XStream.peek __strm with
-    | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
+    | Some (#FToken.space_token,_) ->
         (XStream.junk __strm; ignore_layout __strm)
     | Some x ->
         (XStream.junk __strm;
@@ -128,21 +127,11 @@ let rec ignore_layout: FToken.filter =
 let gram =
   {
     annot = "Fan";
-    gkeywords;
-    gfilter =
-      {
-        is_kwd = (fun x  -> SSet.mem x gkeywords.contents);
-        filter = fan_filter
-      }
+    gfilter = { kwds = (SSet.of_list default_keywords); filter = fan_filter }
   }
 let filter = FanTokenFilter.filter gram.gfilter
 let create_lexer ?(filter= ignore_layout)  ~annot  ~keywords  () =
-  let v = ref (SSet.of_list keywords) in
-  {
-    annot;
-    gkeywords = v;
-    gfilter = { is_kwd = (fun x  -> SSet.mem x v.contents); filter }
-  }
+  { annot; gfilter = { kwds = (SSet.of_list keywords); filter } }
 let mk f = mk_dynamic gram f
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter

@@ -1,5 +1,5 @@
 
-open LibUtil
+(* open LibUtil *)
 
 
 
@@ -57,7 +57,7 @@ type terminal =
 type gram = {
     annot : string;
     gfilter         : FanTokenFilter.t;
-    gkeywords :   SSet.t ref;
+    (* gkeywords :   SSet.t ref; *)
 }
 
 type label =  string option

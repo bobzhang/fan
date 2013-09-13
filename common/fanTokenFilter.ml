@@ -1,9 +1,8 @@
-
+open LibUtil
 type t = {
-    is_kwd : string -> bool;
-      mutable filter : FToken.filter;
+    mutable kwds : SSet.t;
+    mutable filter : FToken.filter;
   }
-
 
 type error =  
   | Illegal_token of string
@@ -28,15 +27,15 @@ let string_of_error_msg = LibUtil.to_string_of_printer pp_print_error;;
 
 
 (* [Sym] should all be filtered into keywords *)  
-let keyword_conversion tok is_kwd =
+let keyword_conversion tok kwds =
   match tok with
-  | `Sym s | `Lid s | `Uid s when is_kwd s -> `KEYWORD s
-  | `Eident s -> `Lid s (* Eident *)
+  | `Sym s | `Lid s | `Uid s when SSet.mem s  kwds -> `KEYWORD s
+  | `Eident s -> `Lid s 
   | _ -> tok 
 
-let check_keyword_as_label tok loc is_kwd =
+let check_keyword_as_label tok loc kwds =
   match tok with
-  |`LABEL s | `OPTLABEL s when is_kwd s -> err (Keyword_as_label s) loc 
+  |`LABEL s | `OPTLABEL s when SSet.mem s kwds -> err (Keyword_as_label s) loc 
   | _               -> ()  
 
         
@@ -48,8 +47,8 @@ let check_unknown_keywords tok loc =
 
 let filter x =
   let f (tok, loc) = 
-    let tok = keyword_conversion tok x.is_kwd in begin 
-      check_keyword_as_label tok loc x.is_kwd ;
+    let tok = keyword_conversion tok x.kwds in begin 
+      check_keyword_as_label tok loc x.kwds ;
       (* if !error_on_unknown_keywords  then *)
       (*   check_unknown_keywords tok loc *)
       (* else (); *)

@@ -2,7 +2,10 @@
 
 
 
-type t = { is_kwd : string -> bool; mutable filter : FToken.filter; }
+type t = {
+    mutable kwds : LibUtil.SSet.t;
+    mutable filter : FToken.filter;
+  }
 
 (* val mk : is_kwd:(string -> bool) -> t *)
 

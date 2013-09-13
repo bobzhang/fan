@@ -18,7 +18,7 @@ type gram =
   Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
-  gkeywords :  SSet.t ref (* int SMap.t *) (* (string, int ref) Hashtbl.t *);
+  (* gkeywords :  SSet.t ref; *) (* int SMap.t *) (* (string, int ref) Hashtbl.t *)
   (* glexer : FLoc.t -> char XStream.t -> FToken.stream ; *)
 }
 

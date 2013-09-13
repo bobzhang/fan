@@ -43,20 +43,17 @@ let rec ignore_layout : FToken.filter =
           
 let gram =  {
   annot="Fan";
-  gkeywords;
   gfilter =
-  { is_kwd =  fun x -> SSet.mem x !gkeywords;
+  { kwds =   SSet.of_list default_keywords ;
     filter = fan_filter;  }
 }
 
 let filter = FanTokenFilter.filter gram.gfilter
   
-let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () =
-  let v = ref (SSet.of_list keywords) in {
+let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () = {
   annot;
-  gkeywords = v ;
   gfilter = {
-  is_kwd = (fun x -> SSet.mem x !v);
+  kwds = SSet.of_list keywords;
   filter;  
   }
  }
