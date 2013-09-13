@@ -51,6 +51,13 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
   constructor (or if you need to compute it use the module
   {!TokenEval}. Same thing for the constructor [CHAR].
 
+   [Eident] is the identifier which function the same as Lid but does not expect it to
+   be lifted to keyworkds
+   example:
+   {[
+   let f = (=)
+   ]}
+   the first =  is a keyword, while the latter is not
  *)
 type t =
   [ `KEYWORD of string
