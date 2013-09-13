@@ -48,22 +48,32 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
     Format.fprintf fmt "@[<1>(`DirQuotation@ %a@ %a@ %a)@]" Format.pp_print_int _a0
       Format.pp_print_string _a1 Format.pp_print_string _a2
 
+type space_token =
+   [ `COMMENT of string
+   | `BLANKS of string
+   | `NEWLINE
+   | `LINE_DIRECTIVE of (int * string option) ]
+      
 type t =
-  [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
+  [ `KEYWORD of string | `Sym of string | `Lid of string | `Uid of string
   | `Eident of string | `Int of string
   | `Int32 of string | `Int64 of  string
   | `Nativeint of  string | `Flo of  string
   | `Chr of  string | `Str of string | `LABEL of string
   | `OPTLABEL of string | quotation | dir_quotation
-  | `Ant of (string* string) | `COMMENT of string | `BLANKS of string
-  | `NEWLINE | `LINE_DIRECTIVE of (int* string option) | `EOI] 
+  | `Ant of (string* string)
+  | space_token
+  | `EOI]
+
+
+      
 let pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
     function
     | `KEYWORD _a0 ->
         Format.fprintf fmt "@[<1>(`KEYWORD@ %a)@]" Format.pp_print_string _a0
-    | `SYMBOL _a0 ->
-        Format.fprintf fmt "@[<1>(`SYMBOL@ %a)@]" Format.pp_print_string _a0
+    | `Sym _a0 ->
+        Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string _a0
     | `Lid _a0 -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string _a0
     | `Uid _a0 -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string _a0
     | `Eident _a0 ->
@@ -134,7 +144,7 @@ let to_string = function
      let next () = token default_context lb in
      try
      match next () with
-     [ SYMBOL _ | UidENT _ | LidENT _ -> (next () = EOI)
+     [ Sym _ | UidENT _ | LidENT _ -> (next () = EOI)
      | _ -> false ]
      with [ XStream.Error _ -> false ];                        *)
 
@@ -143,7 +153,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `Int  s | `Int32  s |
+  | `KEYWORD s | `Sym s | `Lid s | `Uid s | `Int  s | `Int32  s |
   `Int64  s | `Nativeint  s | `Flo  s | `Chr  s | `Str  s |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `Eident s-> s
   | tok ->

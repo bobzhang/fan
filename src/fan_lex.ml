@@ -407,20 +407,20 @@ let  token c = {:lexer|
   | "'" (newline as x) "'" ->
            ( update_loc c  ~retract:1; `Chr x )
 
-  | "'" (ocaml_char as x ) "'"
-      -> `Chr x 
+  | "'" (ocaml_char as x ) "'" -> `Chr x 
 
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
 
   | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `Eident op 
   | '(' blank+ (symbolchar+ as op) blank* ')' -> `Eident op
-
+  | '(' blank* ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) blank* ')' ->
+      `Eident op
   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
     | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
     | left_delimitor | right_delimitor | "{<" |">}"
     | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
-    as x  ->  `SYMBOL x 
+    as x  ->  `Sym x 
 
   | blank + as x ->  `BLANKS x 
   (* comment *)      
@@ -432,7 +432,7 @@ let  token c = {:lexer|
         comment c c.lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
       ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
-        move_curr_p (-1) c; `SYMBOL "*")
+        move_curr_p (-1) c; `Sym "*")
 
   (* quotation handling *)      
   | "{|" (extra_quot as p)?  ->

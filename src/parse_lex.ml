@@ -5,9 +5,22 @@ open! Fsyntax
 
 let named_regexps =
   (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
+
 let _ = begin
-  Hashtbl.add named_regexps "eof" Eof 
+  Hashtbl.add named_regexps "eof" Eof ;
 end
+
+      
+(* type concrete_regexp *)
+(*       = *)
+(*   | Epsilon *)
+(*   | Eof       *)
+(*   | Characters of Fcset.t *)
+(*   | Sequence of concrete_regexp * concrete_regexp *)
+(*   | Alternative of concrete_regexp * concrete_regexp *)
+(*   | Repetition of concrete_regexp *)
+(*   | Bind of concrete_regexp * (FLoc.t * string) with ("Print") *)
+
 exception UnboundRegexp;;
 
 {:create|
@@ -95,7 +108,7 @@ let d = `Absolute ["Fan";"Lang"];;
 begin
   AstQuotation.of_exp
   ~name:(d,"lexer") ~entry:lex ;
-AstQuotation.of_stru
+  AstQuotation.of_stru
     ~name:(d,"regexp")
     ~entry:declare_regexp;  
 end;;

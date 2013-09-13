@@ -29,23 +29,14 @@ let gkeywords = ref (SSet.of_list default_keywords)
   
 
 let rec fan_filter = parser
-  | ((`KEYWORD "(", _) as tok); 'xs  ->
-      (match xs with parser
-      |(`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i), _loc);
-         (`KEYWORD ")", _); 'xs  ->
-           {:stream| (`Lid i, _loc); '(fan_filter xs) |}
-      |  'xs  ->
-          {:stream| tok; 'fan_filter xs |})
-  | ((`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _),_); 'xs ->
-      fan_filter xs
+  | ( #FToken.space_token,_); 'xs -> fan_filter xs
   |  x; 'xs  ->
       {:stream| x; ' fan_filter xs |}
   |  -> {:stream||}
 
 let rec ignore_layout : FToken.filter =
   parser
-    | ((`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _),_); 'xs ->
-        ignore_layout  xs
+    | (#FToken.space_token,_); 'xs -> ignore_layout  xs
     | x ; 'xs  ->
         {:stream|x; 'ignore_layout xs |}
     | -> {:stream||}

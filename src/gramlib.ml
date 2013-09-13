@@ -5,7 +5,7 @@ open LibUtil
 let setup_op_parser entry p =
   Fgram.setup_parser entry
     (parser
-      | (`KEYWORD x | `SYMBOL x,_loc) when p x  -> {:exp| $lid:x |})
+      | (`KEYWORD x | `Sym x,_loc) when p x  -> {:exp| $lid:x |})
 
 
 let symbolchars =

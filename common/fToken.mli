@@ -58,31 +58,37 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
    let f = (=)
    ]}
    the first =  is a keyword, while the latter is not
- *)
-type t =
-  [ `KEYWORD of string
-  | `SYMBOL of string
-  | `Lid of string
-  | `Uid of string
-  | `Eident of string (* (+)*)
-  | `Int of string 
-  | `Int32 of string 
-  | `Int64 of string 
-  | `Nativeint of string 
-  | `Flo of  string 
-  | `Chr of  string 
-  | `Str of  string 
-  | `LABEL of string
-  | `OPTLABEL of string
-  | `COMMENT of string
-  | `BLANKS of string
-  | `LINE_DIRECTIVE of (int *  string option )
-  | `NEWLINE        
 
+   [Sym] works specially in grammars [infixop*] and [prefixop]. Some of them will be lifted to
+   keyword. for example [/] is not a keyword.
+   
+ *)
+type space_token =
+   [ `COMMENT        of string
+   | `BLANKS         of string
+   | `NEWLINE
+   | `LINE_DIRECTIVE of (int * string option) ]
+      
+type t =
+  [ `KEYWORD        of string
+  | `Sym            of string
+  | `Lid            of string
+  | `Uid            of string
+  | `Eident         of string (* (+)*)
+  | `Int            of string 
+  | `Int32          of string 
+  | `Int64          of string 
+  | `Nativeint      of string 
+  | `Flo            of string 
+  | `Chr            of string 
+  | `Str            of string 
+  | `LABEL          of string
+  | `OPTLABEL       of string
+  | space_token
    (* . *)
   | quotation
   | dir_quotation
-  | `Ant of (string * string )        
+  | `Ant            of (string * string )        
   | `EOI]
       
 type stream = (t * FLoc.t) XStream.t 

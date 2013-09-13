@@ -108,26 +108,6 @@ let default_keywords =
 let gkeywords = ref (SSet.of_list default_keywords)
 let rec fan_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some ((`KEYWORD "(",_) as tok) ->
-      (XStream.junk __strm;
-       (let xs = __strm in
-        let (__strm :_ XStream.t)= xs in
-        match XStream.peek __strm with
-        | Some
-            (`KEYWORD
-               ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr"|"*" as i),_loc)
-            ->
-            (XStream.junk __strm;
-             (match XStream.peek __strm with
-              | Some (`KEYWORD ")",_) ->
-                  (XStream.junk __strm;
-                   (let xs = __strm in
-                    XStream.lcons (fun _  -> ((`Lid i), _loc))
-                      (XStream.slazy (fun _  -> fan_filter xs))))
-              | _ -> raise (XStream.Error "")))
-        | _ ->
-            let xs = __strm in
-            XStream.icons tok (XStream.slazy (fun _  -> fan_filter xs))))
   | Some ((`COMMENT _|`BLANKS _|`NEWLINE|`LINE_DIRECTIVE _),_) ->
       (XStream.junk __strm; fan_filter __strm)
   | Some x ->

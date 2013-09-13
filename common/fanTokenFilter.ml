@@ -27,10 +27,10 @@ let string_of_error_msg = LibUtil.to_string_of_printer pp_print_error;;
 
 
 
-(* [SYMBOL] should all be filtered into keywords *)  
+(* [Sym] should all be filtered into keywords *)  
 let keyword_conversion tok is_kwd =
   match tok with
-  | `SYMBOL s | `Lid s | `Uid s when is_kwd s -> `KEYWORD s
+  | `Sym s | `Lid s | `Uid s when is_kwd s -> `KEYWORD s
   | `Eident s -> `Lid s (* Eident *)
   | _ -> tok 
 
@@ -42,7 +42,7 @@ let check_keyword_as_label tok loc is_kwd =
         
 let check_unknown_keywords tok loc =
   match tok with
-  | `SYMBOL s -> err (Illegal_token s) loc
+  | `Sym s -> err (Illegal_token s) loc
   | _        -> () 
 
 
