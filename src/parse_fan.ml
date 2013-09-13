@@ -365,7 +365,7 @@ let apply () = begin
         | `Int s ->  `Int(_loc,s)
         | `Int32 s -> `Int32(_loc,s)
         | `Int64 s -> `Int64(_loc,s)
-        | `NATIVEINT s -> `Nativeint (_loc, s)              
+        | `Nativeint s -> `Nativeint (_loc, s)              
         | `Flo s -> `Flo (_loc, s)
         | `Chr s -> `Chr (_loc, s)
         | `Str s -> `Str (_loc, s)
@@ -556,7 +556,7 @@ let apply () = begin
         | "-"; `Int s ->  `Int (_loc, String.neg s)
         | "-"; `Int32 s -> `Int32(_loc, String.neg s) 
         | "-"; `Int64 s -> `Int64(_loc,String.neg s)
-        | "-"; `NATIVEINT s -> `Nativeint(_loc,String.neg s)
+        | "-"; `Nativeint s -> `Nativeint(_loc,String.neg s)
         | "-"; `Flo s -> `Flo(_loc,String.neg s)
         | "["; "]" -> {| [] |}
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}

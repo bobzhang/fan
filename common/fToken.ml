@@ -52,7 +52,7 @@ type t =
   [ `KEYWORD of string | `SYMBOL of string | `Lid of string | `Uid of string
   | `ESCAPED_IDENT of string | `Int of string
   | `Int32 of string | `Int64 of  string
-  | `NATIVEINT of  string | `Flo of  string
+  | `Nativeint of  string | `Flo of  string
   | `Chr of  string | `Str of string | `LABEL of string
   | `OPTLABEL of string | quotation | dir_quotation
   | `Ant of (string* string) | `COMMENT of string | `BLANKS of string
@@ -76,8 +76,8 @@ let pp_print_t: Format.formatter -> t -> unit =
           Format.pp_print_string _a1
     | `Int64 _a1 ->
         Format.fprintf fmt "@[<1>(`Int6@ %a)@]" Format.pp_print_string _a1
-    | `NATIVEINT _a1 ->
-        Format.fprintf fmt "@[<1>(`NATIVEINT@ %a)@]" 
+    | `Nativeint _a1 ->
+        Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" 
            Format.pp_print_string _a1
     | `Flo _a1 ->
         Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
@@ -182,7 +182,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 
 let extract_string : [> t] -> string = function
   | `KEYWORD s | `SYMBOL s | `Lid s | `Uid s | `Int  s | `Int32  s |
-  `Int64  s | `NATIVEINT  s | `Flo  s | `Chr  s | `Str  s |
+  `Int64  s | `Nativeint  s | `Flo  s | `Chr  s | `Str  s |
   `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `ESCAPED_IDENT s-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)

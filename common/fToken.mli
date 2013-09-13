@@ -33,7 +33,7 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
   [LidENT s] is the ident [s] starting with a lowercase letter.
   [UidENT s] is the ident [s] starting with an uppercase letter.
   [INT i s]
-   (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s])
+   (resp. [INT32 i s], [INT64 i s] and [Nativeint i s])
    the integer constant [i] whose string source is [s].
   [FLOAT f s] is the float constant [f] whose string source is [s].
   [STRING s s'] is the string constant [s] whose string source is [s'].
@@ -61,7 +61,7 @@ type t =
   | `Int of string 
   | `Int32 of string 
   | `Int64 of string 
-  | `NATIVEINT of string 
+  | `Nativeint of string 
   | `Flo of  string 
   | `Chr of  string 
   | `Str of  string 

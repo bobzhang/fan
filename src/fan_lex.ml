@@ -381,7 +381,7 @@ let  token c = {:lexer|
       (match s with
       | Some 'l' -> `Int32 x
       | Some 'L' -> `Int64 x
-      | Some 'n' -> `NATIVEINT x
+      | Some 'n' -> `Nativeint x
       | _ -> `Int x )
       (* FIXME - int_of_string ("-" ^ s) ??
          safety check
