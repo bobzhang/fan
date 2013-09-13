@@ -4596,7 +4596,7 @@ let token c lexbuf =
     (lexbuf.Lexing.lex_mem).(1) <- (-1);
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(10);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 23;
+    lexbuf.Lexing.lex_last_action <- 25;
     (match __ocaml_lex_next_char lexbuf with
      | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
          __ocaml_lex_state79 lexbuf
@@ -4606,7 +4606,7 @@ let token c lexbuf =
   and __ocaml_lex_state79 lexbuf =
     (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(11);
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(10);
-    23
+    25
   and __ocaml_lex_state80 lexbuf =
     (lexbuf.Lexing.lex_mem).(3) <- (-1);
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(4);
@@ -5491,10 +5491,10 @@ let token c lexbuf =
     (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(16);
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(15);
     20
-  and __ocaml_lex_state108 lexbuf = 25
+  and __ocaml_lex_state108 lexbuf = 24
   and __ocaml_lex_state109 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 25;
+    lexbuf.Lexing.lex_last_action <- 24;
     (match __ocaml_lex_next_char lexbuf with
      | 39
        |45
@@ -5699,7 +5699,7 @@ let token c lexbuf =
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state110 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 25;
+    lexbuf.Lexing.lex_last_action <- 24;
     (match __ocaml_lex_next_char lexbuf with
      | 39
        |48
@@ -5896,7 +5896,7 @@ let token c lexbuf =
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state111 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 25;
+    lexbuf.Lexing.lex_last_action <- 24;
     (match __ocaml_lex_next_char lexbuf with
      | 95
        |97
@@ -6919,7 +6919,7 @@ let token c lexbuf =
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(18);
     (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(20);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 24;
+    lexbuf.Lexing.lex_last_action <- 23;
     (match __ocaml_lex_next_char lexbuf with
      | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
          __ocaml_lex_state120 lexbuf
@@ -6930,7 +6930,7 @@ let token c lexbuf =
     (lexbuf.Lexing.lex_mem).(2) <- (lexbuf.Lexing.lex_mem).(21);
     (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(18);
     (lexbuf.Lexing.lex_mem).(1) <- (lexbuf.Lexing.lex_mem).(20);
-    24
+    23
   and __ocaml_lex_state121 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 37|38|47|64|94 -> __ocaml_lex_state123 lexbuf
@@ -7163,14 +7163,33 @@ let token c lexbuf =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
         let len = String.length name in
-        let name =
-          FToken.resolve_name (Location_util.from_lexbuf lexbuf)
-            (FToken.name_of_string name) in
+        let name = FToken.name_of_string name in
         (Stack.push p opt_char;
          mk_quotation quotation c ~name ~loc:""
            ~shift:(((2 + 1) + len) + (opt_char_len p))
            ~retract:(2 + (opt_char_len p)))
     | 23 ->
+        let name =
+          Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2)
+            (((lexbuf.Lexing.lex_mem).(0)) + 0)
+        and loc =
+          Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 1)
+            (((lexbuf.Lexing.lex_mem).(1)) + 0)
+        and p =
+          Lexing.sub_lexeme_char_opt lexbuf
+            (((lexbuf.Lexing.lex_mem).(2)) + 0) in
+        let len = String.length name in
+        let name = FToken.name_of_string name in
+        (Stack.push p opt_char;
+         mk_quotation quotation c ~name ~loc
+           ~shift:((((2 + 2) + (String.length loc)) + len) + (opt_char_len p))
+           ~retract:(2 + (opt_char_len p)))
+    | 24 ->
+        let c =
+          Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+            (lexbuf.Lexing.lex_start_pos + 3) in
+        (err (Illegal_quotation c)) @@ (Location_util.from_lexbuf lexbuf)
+    | 25 ->
         let name =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 3)
             (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -7187,29 +7206,6 @@ let token c lexbuf =
           buff_contents c in
         let contents = String.sub s 0 ((String.length s) - retract) in
         `DirQuotation ((((3 + 1) + len) + (opt_char_len p)), name, contents)
-    | 24 ->
-        let name =
-          Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 2)
-            (((lexbuf.Lexing.lex_mem).(0)) + 0)
-        and loc =
-          Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 1)
-            (((lexbuf.Lexing.lex_mem).(1)) + 0)
-        and p =
-          Lexing.sub_lexeme_char_opt lexbuf
-            (((lexbuf.Lexing.lex_mem).(2)) + 0) in
-        let len = String.length name in
-        let name =
-          FToken.resolve_name (Location_util.from_lexbuf lexbuf)
-            (FToken.name_of_string name) in
-        (Stack.push p opt_char;
-         mk_quotation quotation c ~name ~loc
-           ~shift:((((2 + 2) + (String.length loc)) + len) + (opt_char_len p))
-           ~retract:(2 + (opt_char_len p)))
-    | 25 ->
-        let c =
-          Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
-            (lexbuf.Lexing.lex_start_pos + 3) in
-        err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
     | 26 ->
         let num =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)

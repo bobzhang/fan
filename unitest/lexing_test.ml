@@ -28,11 +28,10 @@ let test_comment_string _ =
    since our lexer depends on the context which is bad
 *)   
 let test_quotation _ =
-  let open Fan in (* should be FIXED *)
   Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|}
   ===
-  [(`QUOTATION
-    {FToken.name = (`Absolute ["Fan"; "Lang"], "lexer"); loc = ""; shift = 8;
+  [(`Quot
+    {FToken.name = (`Sub [], "lexer"); loc = ""; shift = 8;
      content = "abcdef"},
   {FLoc.loc_start =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
@@ -47,3 +46,7 @@ let test_quotation _ =
    loc_ghost = false})]
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && make test" *)
+(* end: *)

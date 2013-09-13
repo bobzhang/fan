@@ -150,15 +150,20 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc {FToken.name=q_name;loc=q_loc;shift=q_shift;content=q_contents}    (tag:'a FDyn.tag) : 'a =
+let expand loc
+    {FToken.name=q_name;loc=q_loc;shift=q_shift;content=q_contents}
+    (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
-  let name = q_name in
+  let name = (* FToken.resolve_name loc *) q_name in
+  (* resolve name when expansion*)
   let try expander = find loc name tag
   and loc = FLoc.join (FLoc.move `start q_shift loc) in
   begin
     Stack.push  q_name stack;
     finally ~action:(fun _ -> Stack.pop stack)
-      (fun _ -> expand_quotation ~expander loc pos_tag (q_name,q_loc,q_contents))
+      (fun _ ->
+        expand_quotation ~expander loc pos_tag
+          (q_name,q_loc,q_contents))
       ()
   end
   with

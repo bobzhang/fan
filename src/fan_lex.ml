@@ -441,14 +441,24 @@ let  token c = {:lexer|
       err (Illegal_quotation c ) @@ Location_util.from_lexbuf lexbuf
   | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
       let len = String.length name in
-      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)
-          (FToken.name_of_string name) in
+      let name = FToken.name_of_string name in
       begin
         Stack.push p opt_char;
         mk_quotation quotation c
           ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
+
+  | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? -> 
+      let len = String.length name in 
+      let name = FToken.name_of_string name in
+      begin
+        Stack.push p opt_char;
+        mk_quotation quotation c ~name ~loc
+          ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
+          ~retract:(2 + opt_char_len p)
+      end
+  | "{:" _ as c -> err (Illegal_quotation c) @@ Location_util.from_lexbuf lexbuf
 
   |"#{:" (quotation_name as name) '|'  (extra_quot as p)? ->
       let len = String.length name in
@@ -460,18 +470,6 @@ let  token c = {:lexer|
 
         let contents = String.sub s 0 (String.length s - retract) in
         `DirQuotation(3+1 +len +(opt_char_len p), name,contents)
-  | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? -> 
-      let len = String.length name in 
-      let name = FToken.resolve_name (Location_util.from_lexbuf lexbuf)
-          (FToken.name_of_string name) in
-      begin
-        Stack.push p opt_char;
-        mk_quotation quotation c ~name ~loc
-          ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
-          ~retract:(2 + opt_char_len p)
-      end
-  | "{:" _ as c ->
-      err (Illegal_quotation c) (Location_util.from_lexbuf lexbuf)
   | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->

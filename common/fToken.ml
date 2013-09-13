@@ -22,6 +22,7 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          Format.pp_print_string _a1) fmt _a0
 
+let string_of_name = to_string_of_printer pp_print_name
       
 type quot = {
     name:name;
@@ -212,8 +213,6 @@ let string_of_domains  = function
   |`Sub ls -> String.concat "." ls 
   
 
-let string_of_name (x,y) =
-  string_of_domains x ^ "." ^ y  
   
 (* [only absolute] domains can be stored *)  
 let paths :  domains list ref  =
@@ -250,7 +249,7 @@ let names_tbl : (domains,SSet.t) Hashtbl.t =
 (**  when no qualified path is given , it uses [Sub []] *)
 let resolve_name loc (n:name) : name =
   match n with
-  |(`Sub _ as x) ,v ->
+  | `Sub _ as x ,v ->
       (try
         let r =
           List.find
@@ -260,5 +259,7 @@ let resolve_name loc (n:name) : name =
                 fun ()  -> SSet.mem v set
               with | Not_found  -> (fun ()  -> false)) ()) paths.contents in
         fun ()  -> ((concat_domain (r, x)), v)
-      with  Not_found  -> (fun ()  -> FLoc.errorf loc "resolve_name %s" v)) ()
+      with  Not_found  ->
+        fun ()  -> FLoc.errorf loc "resolve_name `%s' failed" @@ string_of_name n)
+        ()
   | x ->  x
