@@ -31,12 +31,12 @@ type quot = {
   }
 
       
-type quotation = [ `QUOTATION of quot ] 
+type quotation = [ `Quot of quot ] 
 
 (* FIXME *)      
 let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  (`QUOTATION {name;loc;shift;content} )  ->
-    Format.fprintf fmt "@[<1>(`QUOTATION {name=%a;@;loc=%a;@;shift=%a@;content=%a})@]"
+  fun fmt  (`Quot {name;loc;shift;content} )  ->
+    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a;@;shift=%a@;content=%a})@]"
       pp_print_name
       name Format.pp_print_string loc Format.pp_print_int shift Format.pp_print_string content
 

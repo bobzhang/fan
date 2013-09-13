@@ -38,7 +38,7 @@ val mk_quotation:
   context ->
   name:FToken.name ->
   loc:string ->
-  shift:int -> retract:int -> [> `QUOTATION of FToken.quot ]
+  shift:int -> retract:int -> [> `Quot of FToken.quot ]
 val update_loc:
   ?file:string ->
   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit

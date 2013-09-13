@@ -8,7 +8,7 @@ let dir_table =
 
 (* let handle (loc:FLoc.t) (v: quotation ) : unit = *)
 (*   match v with *)
-(*   | `QUOTATION( (_,base),_,_,contents) -> *)
+(*   | `Quot( (_,base),_,_,contents) -> *)
 (*       let try handler = Hashtbl.find dir_table base in *)
 (*       handler loc contents *)
 (*       with Not_found ->  *)

@@ -18,7 +18,7 @@ type quot = {
     shift:int;
     content:string;
   }
-type quotation = [ `QUOTATION of quot ]      
+type quotation = [ `Quot of quot ]      
 
 (** (name,contents) *)
 type dir_quotation = [`DirQuotation of (int * string * string) ] 
@@ -38,7 +38,7 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
   [FLOAT f s] is the float constant [f] whose string source is [s].
   [STRING s s'] is the string constant [s] whose string source is [s'].
   [CHAR c s] is the character constant [c] whose string source is [s].
-  [QUOTATION q] is a quotation [q], see {!AstQuotation.t} for more information.
+  [Quot q] is a quotation [q], see {!AstQuotation.t} for more information.
   [ANTIQUOT n s] is an antiquotation [n] holding the string [s].
   [EOI] is the end of input.
 
