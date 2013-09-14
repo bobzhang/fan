@@ -1381,7 +1381,7 @@ let rec antiquot depth c lexbuf =
    (match __ocaml_lex_result with
     | 0 ->
         if depth = 0
-        then (lexbuf.lex_start_p <- c.loc; buff_contents c)
+        then lexbuf.lex_start_p <- c.loc
         else with_store (antiquot (depth - 1)) c lexbuf
     | 1 -> with_store (antiquot (depth + 1)) c lexbuf
     | 2 ->
@@ -9878,19 +9878,17 @@ let token c lexbuf =
                 let name =
                   Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                     (lexbuf.Lexing.lex_curr_pos + (-1)) in
-                `Ant
-                  (name,
-                    (antiquot 0
-                       {
-                         c with
-                         loc =
-                           (FLoc.move_pos (3 + (String.length name)) c.loc)
-                       } lexbuf))
+                let () =
+                  antiquot 0
+                    {
+                      c with
+                      loc = (FLoc.move_pos (3 + (String.length name)) c.loc)
+                    } lexbuf in
+                `Ant (name, (buff_contents c))
             | 3 ->
-                `Ant
-                  ("",
-                    (antiquot 0 { c with loc = (FLoc.move_pos 2 c.loc) }
-                       lexbuf))
+                let () =
+                  antiquot 0 { c with loc = (FLoc.move_pos 2 c.loc) } lexbuf in
+                `Ant ("", (buff_contents c))
             | 4 ->
                 let c =
                   Lexing.sub_lexeme_char lexbuf

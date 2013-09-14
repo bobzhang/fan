@@ -312,7 +312,7 @@ let rec string c = {:lexer|
 let rec  antiquot  depth c  = {:lexer|
   | ')' ->
       if depth = 0 then (* only cares about FLoc.start_pos *)
-        (lexbuf.lex_start_p <-  c.loc ; buff_contents c)
+        (lexbuf.lex_start_p <-  c.loc (* ; buff_contents c *))
       else with_store (antiquot  (depth-1)) c lexbuf
   | '('    ->  with_store (antiquot  (depth+1)) c lexbuf
         
@@ -506,12 +506,15 @@ let  token c = {:lexer|
             end
         | lident as x  ->   `Ant("",x)  (* $lid *)
         | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
-            `Ant(name,
-                 antiquot  0
-                   {c with loc = FLoc.move_pos (3+String.length name) c.loc}
-                   lexbuf)
+            let () =
+              antiquot  0
+                {c with loc = FLoc.move_pos (3+String.length name) c.loc}
+                lexbuf in 
+            `Ant(name,buff_contents c)
         | '(' ->     (* $(xxxx)*)
-            `Ant("",antiquot  0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf) 
+            let () =
+              antiquot  0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf in
+            `Ant("", buff_contents c ) 
         | _ as c ->
             err (Illegal_character c) (Location_util.from_lexbuf lexbuf) |} in        
       if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
