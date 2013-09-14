@@ -235,7 +235,7 @@ let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
     bol would require retract one chars  when parsing it as a whole
     ]}
  *)
-let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c lexbuf  =
+let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)   lexbuf  =
   (* let lexbuf = lexbuf in *)
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with
@@ -266,7 +266,7 @@ let rec comment c = {:lexer|
 
   | newline ->
       begin
-        update_loc c lexbuf ;
+        update_loc  lexbuf ;
         store_parse comment c lexbuf;
       end
   | eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc lexbuf.lex_curr_p
@@ -283,7 +283,7 @@ let rec string c = {:lexer|
   | '"' ->    lexbuf.lex_start_p <-  c.loc (* FIXME finished *)
   | '\\' newline ([' ' '\t'] * as space) ->
       begin
-        update_loc c lexbuf  ~retract:(String.length space);
+        update_loc  lexbuf  ~retract:(String.length space);
         store_parse string c lexbuf
       end
   | '\\' ['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] -> store_parse string c lexbuf
@@ -296,7 +296,7 @@ let rec string c = {:lexer|
         store_parse string c lexbuf)
   | newline ->
       begin
-        update_loc c lexbuf;
+        update_loc  lexbuf;
         store_parse string c lexbuf
       end
   | eof ->  err Unterminated_string @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
@@ -317,7 +317,7 @@ let rec  antiquot name depth c  = {:lexer|
       err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
   | newline   ->
       begin
-        update_loc c lexbuf;
+        update_loc  lexbuf;
         store_parse (antiquot name depth) c lexbuf
       end
   | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)? ->
@@ -375,7 +375,7 @@ and quotation c = {:lexer|
      end
   | newline ->
       begin
-        update_loc c lexbuf ;
+        update_loc  lexbuf ;
         store_parse quotation c lexbuf
       end
   | _ -> store_parse quotation c lexbuf
@@ -383,7 +383,7 @@ and quotation c = {:lexer|
 |}
     
 let  token c = {:lexer|
-  | newline -> (update_loc c lexbuf; `NEWLINE)
+  | newline -> (update_loc  lexbuf; `NEWLINE)
 
   | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
 
@@ -406,7 +406,7 @@ let  token c = {:lexer|
 
   | '"' -> ( with_curr_loc string c lexbuf; let s = buff_contents c in `Str s )
   | "'" (newline as x) "'" ->
-           ( update_loc c  lexbuf ~retract:1; `Chr x )
+           ( update_loc   lexbuf ~retract:1; `Chr x )
 
   | "'" (ocaml_char as x ) "'" -> `Chr x 
 
@@ -488,7 +488,7 @@ let  token c = {:lexer|
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->
         let inum = int_of_string num in begin 
-          update_loc c lexbuf ?file:name ~line:inum ~absolute:true ;
+          update_loc  lexbuf ?file:name ~line:inum ~absolute:true ;
           `LINE_DIRECTIVE(inum, name)
         end
   (* Antiquotation handling *)        
