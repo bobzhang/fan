@@ -151,9 +151,7 @@ let stop_pos x =  x.loc_end
 (** [merge loc1 loc2] Return a location that starts at [loc1] and end at
             [loc2]. *)  
 let merge a b =
-  if a == b then
-    (* debug loc "trivial merge@\n" in *)
-    a
+  if a == b then a
   else
     let r =
       match (a.loc_ghost, b.loc_ghost) with
@@ -166,15 +164,10 @@ let merge a b =
           { (a) with loc_end = b.loc_end }
       | (true, true) -> { (a) with loc_end = b.loc_end }
       | (true, _) -> { (a) with loc_end = b.loc_end }
-      | (_, true) -> { (b) with loc_start = a.loc_start } 
-    in
-    (* debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in *)
+      | (_, true) -> { (b) with loc_start = a.loc_start } in
     r
 
-(** The stop pos becomes equal to the start pos. *)
-let join x = { x with loc_end = x.loc_start }
-    
-let join_end x = {x with loc_start = x.loc_end}
+
     
 let map f start_stop_both x =
   match start_stop_both with
@@ -182,14 +175,13 @@ let map f start_stop_both x =
   | `stop  -> { x with loc_end  = f x.loc_end }
   | `both  -> { x with loc_start = f x.loc_start; loc_end  = f x.loc_end } 
 
-let move_pos chars x = { (x) with pos_cnum = x.pos_cnum + chars }
+let move_pos chars x = { x with pos_cnum = x.pos_cnum + chars }
   
 (** [move selector n loc]
     Return the location where positions are moved.
     Affected positions are chosen with [selector].
     Returned positions have their character offset plus [n]. *)
 let move s chars x =
-  (* debug loc "move %a %d %a@\n" dump_sel s chars dump x in *)
   map (move_pos chars) s x
 
 (** [move_line n loc] Return the location with the old line count plus [n].
@@ -238,7 +230,6 @@ let is_ghost   x = x.loc_ghost
 
 (** Return the location with the give file name *)
 let set_file_name s x =
-  (* debug loc "set_file_name: %a@\n" dump x in *)
   { x with
     loc_start = {(x.loc_start) with pos_fname = s };
     loc_end = {(x.loc_end) with pos_fname = s }
@@ -246,12 +237,10 @@ let set_file_name s x =
 
 (** Return the associated ghost location. *)
 let ghostify x =
-  (* debug loc "ghostify: %a@\n" dump x in *)
   { x with loc_ghost = true }
 
 (** Return the location with an absolute file name. *)
 let make_absolute x =
-  (* debug loc "make_absolute: %a@\n" dump x in *)
   let pwd = Sys.getcwd () in
   let old_name = x.loc_start.pos_fname in 
   if Filename.is_relative old_name then
@@ -267,7 +256,6 @@ let make_absolute x =
  *)
 let strictly_before x y =
   let b = x.loc_end.pos_cnum < y.loc_start.pos_cnum && x.loc_end.pos_fname = y.loc_start.pos_fname in
-  (* debug loc "%a [strictly_before] %a => %b@\n" dump x dump y b in *)
   b
 
 (** Same as {!print} but return a string instead of printting it. *)

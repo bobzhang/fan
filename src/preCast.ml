@@ -109,7 +109,7 @@ let wrap directive_handler pa init_loc cs =
               match directive_handler x with
               | None -> xs
               | Some x -> x :: xs in
-        List.rev pl @ (loop (FLoc.join_end new_loc))
+        List.rev pl @ (loop (Location_util.join_end new_loc))
     | None -> pl in
   loop init_loc
 
@@ -119,8 +119,8 @@ let simple_wrap  pa init_loc cs =
     let (pl, stopped_at_directive) = pa loc cs in
     match stopped_at_directive with
     | Some new_loc ->
-        if pl = [] then  (loop (FLoc.join_end new_loc))
-        else  pl @ (loop (FLoc.join_end new_loc))
+        if pl = [] then  (loop (Location_util.join_end new_loc))
+        else  pl @ (loop (Location_util.join_end new_loc))
     | None -> pl in
   loop init_loc
 

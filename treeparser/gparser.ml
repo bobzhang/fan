@@ -17,7 +17,7 @@ let with_loc (parse_fun: 'b FToken.parse ) strm =
     let start_off_bp = FLoc.start_off bp in
     let stop_off_ep = FLoc.stop_off ep in 
     if start_off_bp > stop_off_ep then 
-      FLoc.join bp
+      Location_util.join bp
     else FLoc.merge bp ep in
   (x, loc)
 

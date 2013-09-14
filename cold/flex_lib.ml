@@ -59,6 +59,7 @@ let list_of_string ?(verbose= true)  str =
           then
             fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc));
   List.rev result.contents
+let get_tokens s = List.map fst (list_of_string ~verbose:false s)
 let debug_from_file file =
   let loc = FLoc.mk file in
   let chan = open_in file in

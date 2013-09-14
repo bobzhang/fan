@@ -309,36 +309,36 @@ let rec string c = {:lexer|
 
 
 (* depth makes sure the parentheses are balanced *)
-let rec  antiquot name depth c  = {:lexer|
+let rec  antiquot  depth c  = {:lexer|
   | ')' ->
       if depth = 0 then (* only cares about FLoc.start_pos *)
-        (lexbuf.lex_start_p <-  c.loc ; `Ant(name, buff_contents c))
-      else with_store (antiquot name (depth-1)) c lexbuf
-  | '('    ->  with_store (antiquot name (depth+1)) c lexbuf
+        (lexbuf.lex_start_p <-  c.loc ; buff_contents c)
+      else with_store (antiquot  (depth-1)) c lexbuf
+  | '('    ->  with_store (antiquot  (depth+1)) c lexbuf
         
   | eof  ->
       err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
   | newline   ->
       begin
         update_loc  lexbuf;
-        with_store (antiquot name depth) c lexbuf
+        with_store (antiquot  depth) c lexbuf
       end
   | quotation_prefix (extra_quot as p)? ->
       begin 
         Stack.push p opt_char ;
         store c lexbuf;
         with_curr_loc quotation c lexbuf;
-        antiquot name depth c lexbuf
+        antiquot  depth c lexbuf
       end
   | "\"" ->
       begin
         store c lexbuf;
         with_curr_loc string c lexbuf;
         Buffer.add_char c.buffer '"';
-        antiquot name depth c lexbuf
+        antiquot  depth c lexbuf
       end
 
-  | _  ->  with_store (antiquot name depth) c lexbuf
+  | _  ->  with_store (antiquot  depth) c lexbuf
 |}
 
 and quotation c = {:lexer|
@@ -361,29 +361,26 @@ and quotation c = {:lexer|
         end
       else
         with_store quotation c lexbuf
-  | "\"" ->
+  | newline ->
+      begin
+        update_loc  lexbuf ;
+        with_store quotation c lexbuf
+      end          
+  | "\"" -> (* treat string specially, like {| "{|"|} should be accepted *)
       begin
         store c lexbuf;
         with_curr_loc string c lexbuf;
         Buffer.add_char c.buffer '"';
         quotation c lexbuf
       end
-  | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-          | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
-           -> with_store quotation c lexbuf 
   | eof ->
      begin
       show_stack ();
       err Unterminated_quotation @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
      end
-  | newline ->
-      begin
-        update_loc  lexbuf ;
-        with_store quotation c lexbuf
-      end
-  | _ -> with_store quotation c lexbuf
-          
-|}
+  | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
+      with_store quotation c lexbuf
+  | _ -> with_store quotation c lexbuf |}
     
 let  token c = {:lexer|
   | newline -> (update_loc  lexbuf; `NEWLINE)
@@ -500,24 +497,21 @@ let  token c = {:lexer|
         end
   (* Antiquotation handling *)        
   | '$' ->
-      (*  $lid:ident $ident  $(lid:ghohgosho)  $(....)  $(....) *)
-      (* FIXME should support more flexible syntax ${:str|x hgoshgo|} $"Aghioho" *)
       let  dollar c = {:lexer|
       (* FIXME *| does not work * | work *)
-        | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) ->
+        | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
             begin
-              let move_start_p shift  =
-                lexbuf.lex_start_p <- FLoc.move_pos shift lexbuf.lex_start_p in
-              move_start_p (String.length name + 1) ;  `Ant(name,x)
+              lexbuf.lex_start_p <- FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p ;
+              `Ant(name,x)
             end
-        | lident as x  ->   `Ant("",x) 
-        | '(' ('`'? (identchar* |['.' '!']+) as name) ':' ->
-
-            antiquot name 0
-              {c with loc = FLoc.move_pos (3+String.length name) c.loc}
-              lexbuf
-        | '(' ->
-            antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf 
+        | lident as x  ->   `Ant("",x)  (* $lid *)
+        | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
+            `Ant(name,
+                 antiquot  0
+                   {c with loc = FLoc.move_pos (3+String.length name) c.loc}
+                   lexbuf)
+        | '(' ->     (* $(xxxx)*)
+            `Ant("",antiquot  0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf) 
         | _ as c ->
             err (Illegal_character c) (Location_util.from_lexbuf lexbuf) |} in        
       if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
@@ -529,16 +523,13 @@ let  token c = {:lexer|
         { pos with pos_bol  = pos.pos_bol  + 1 ;
           pos_cnum = pos.pos_cnum + 1 };
        `EOI)
-  | _ as c ->  err (Illegal_character c) (Location_util.from_lexbuf lexbuf) 
-|}
+  | _ as c ->  err (Illegal_character c) @@ Location_util.from_lexbuf lexbuf |}
 
      
 let from_lexbuf lb =
   (** lexing entry *)
   let c = {
     loc = Lexing.lexeme_start_p lb;
-    (* antiquots = !FConfig.antiquotations; *)
-    (* lexbuf = lb; *)
     buffer = Buffer.create 256
   } in
   let next _ =

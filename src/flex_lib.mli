@@ -29,3 +29,4 @@ val debug_from_string :  string -> unit
 val debug_from_file : string -> unit
 
 val list_of_string : ?verbose:bool -> string -> ( FToken.t  * FLoc.t) list
+val get_tokens : string ->  FToken.t  list

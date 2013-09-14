@@ -23,6 +23,10 @@ let test_ident_location  _ =
               pos_cnum = 4};
              loc_ghost = false}});;
 
+
+let suite =
+  "Location_ident" >:::
+  [ "test_ident_location" >:: test_ident_location ]
 (* local variables: *)
-(* compile-command: "cd ~/fan/ && make test" *)
+(* compile-command: "cd .. && make test" *)
 (* end: *)

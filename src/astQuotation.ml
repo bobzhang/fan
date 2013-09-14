@@ -194,7 +194,7 @@ let expand loc
   let name = (* FToken.resolve_name loc *) q_name in
   (* resolve name when expansion*)
   let try expander = find loc name tag
-  and loc = FLoc.join (FLoc.move `start q_shift loc) in
+  and loc = Location_util.join (FLoc.move `start q_shift loc) in
   begin
     Stack.push  q_name stack;
     finally ~action:(fun _ -> Stack.pop stack)

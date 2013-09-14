@@ -1,5 +1,5 @@
 
-
+open LibUtil
 open OUnit
 let (===) = assert_equal
 
@@ -61,8 +61,40 @@ let test_quotation _ =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
    loc_ghost = false})]
 
+let test_ant _ =
+  Ref.protect FConfig.antiquotations true @@ fun _ ->
+    Flex_lib.list_of_string ~verbose:false "$aa:a"
+      ===
+  [(`Ant ("aa", "a"),
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+   loc_ghost = false});
+ (`EOI,
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
+   loc_ghost = false})]  
 
+let suite =
+  "Lexing_test" >:::
+  [  "test_empty_string" >:: test_empty_string;
 
+     "test_escaped_string" >:: test_escaped_string;
+
+     "test_comment_string" >:: test_comment_string;
+
+     "test_quotation" >:: test_quotation;
+
+     "test_quotation" >:: test_string;
+     
+     "test_char" >:: test_char;
+     "test_ant" >:: test_ant;
+   ]
+
+    
 (* local variables: *)
 (* compile-command: "cd .. && make test" *)
 (* end: *)

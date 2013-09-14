@@ -116,7 +116,7 @@ let expand loc
    let name = q_name in
    (try
       let expander = find loc name tag
-      and loc = FLoc.join (FLoc.move `start q_shift loc) in
+      and loc = Location_util.join (FLoc.move `start q_shift loc) in
       fun ()  ->
         Stack.push q_name stack;
         finally ~action:(fun _  -> Stack.pop stack)

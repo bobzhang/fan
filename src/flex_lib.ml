@@ -66,6 +66,10 @@ let list_of_string ?(verbose=true) str =
         end) ;
    List.rev !result 
   end
+
+let get_tokens s =
+  List.map fst
+    (list_of_string ~verbose:false s )
   
   
 let debug_from_file  file =
