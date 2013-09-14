@@ -285,8 +285,8 @@ let rec lex_comment c = {:lexer|
     c.buffer keeps the lexed result
  *)    
 let rec lex_string c = {:lexer|
-  | '"' -> (* FIXME finished *)
-      lexbuf.lex_start_p <-  c.loc
+  | '"' -> (* FIXME finished *) () (* lexbuf.lex_start_p <-  c.loc *)
+      
   | '\\' newline ([' ' '\t'] * as space) ->
       (* Follow the ocaml convention, these characters does not take positions *)
       begin
@@ -415,8 +415,10 @@ let  token  = {:lexer|
   | float_literal as f -> `Flo f       (** FIXME safety check *)
   | '"' ->
       let c = default_cxt lexbuf in
+      let old = lexbuf.lex_start_p in
       begin
         with_curr_loc lex_string c  lexbuf;
+        lexbuf.lex_start_p <- old;
         `Str (buff_contents c)
       end
 

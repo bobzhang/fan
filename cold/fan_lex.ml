@@ -282,7 +282,7 @@ let rec lex_string c lexbuf =
          (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
      };
    (match __ocaml_lex_result with
-    | 0 -> lexbuf.lex_start_p <- c.loc
+    | 0 -> ()
     | 1 ->
         let space =
           Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -7488,7 +7488,10 @@ let token lexbuf =
         `Flo f
     | 7 ->
         let c = default_cxt lexbuf in
-        (with_curr_loc lex_string c lexbuf; `Str (buff_contents c))
+        let old = lexbuf.lex_start_p in
+        (with_curr_loc lex_string c lexbuf;
+         lexbuf.lex_start_p <- old;
+         `Str (buff_contents c))
     | 8 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
