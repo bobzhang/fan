@@ -35,7 +35,7 @@ val clear_stack: unit -> unit
 val show_stack: unit -> unit
 
 
-val token: context ->  Lexing.lexbuf ->  [> FToken.t ]
+val token:  Lexing.lexbuf ->  [> FToken.t ]
 
 val comment: context -> Lexing.lexbuf -> unit
 

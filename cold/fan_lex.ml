@@ -73,6 +73,8 @@ let show_stack () =
 type context =  {
   loc: FLoc.position;
   buffer: Buffer.t} 
+let default_cxt lb =
+  { loc = (Lexing.lexeme_start_p lb); buffer = (Buffer.create 256) }
 let (++) = Buffer.add_string
 let store c lexbuf = c.buffer ++ (Lexing.lexeme lexbuf)
 let with_store f c lexbuf = store c lexbuf; f c lexbuf
@@ -2632,7 +2634,7 @@ and quotation c lexbuf =
     | 5 -> with_store quotation c lexbuf
     | 6 -> with_store quotation c lexbuf
     | _ -> failwith "lexing: empty token"))
-let token c lexbuf =
+let token lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -2801,7 +2803,7 @@ let token c lexbuf =
   and __ocaml_lex_state3 lexbuf = 28
   and __ocaml_lex_state4 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 15;
+    lexbuf.Lexing.lex_last_action <- 16;
     (match __ocaml_lex_next_char lexbuf with
      | 9|12|32 -> __ocaml_lex_state4 lexbuf
      | _ ->
@@ -4114,7 +4116,7 @@ let token c lexbuf =
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state57 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 16;
+    lexbuf.Lexing.lex_last_action <- 17;
     (match __ocaml_lex_next_char lexbuf with
      | 41 -> __ocaml_lex_state84 lexbuf
      | _ ->
@@ -4350,7 +4352,7 @@ let token c lexbuf =
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state84 lexbuf = 17
+  and __ocaml_lex_state84 lexbuf = 18
   and __ocaml_lex_state85 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57 ->
@@ -7450,7 +7452,7 @@ let token c lexbuf =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state144 lexbuf = 18 in
+  and __ocaml_lex_state144 lexbuf = 15 in
   __ocaml_lex_init_lexbuf lexbuf 24;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
    lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
@@ -7499,7 +7501,9 @@ let token c lexbuf =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_curr_pos + 0) in
         `Flo f
-    | 7 -> (with_curr_loc string c lexbuf; `Str (buff_contents c))
+    | 7 ->
+        let c = default_cxt lexbuf in
+        (with_curr_loc string c lexbuf; `Str (buff_contents c))
     | 8 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -7536,26 +7540,29 @@ let token c lexbuf =
             (lexbuf.Lexing.lex_curr_pos + 0) in
         `Sym x
     | 15 ->
+        (warn Comment_not_end (Location_util.from_lexbuf lexbuf);
+         move_curr_p (-1) lexbuf;
+         `Sym "*")
+    | 16 ->
         let x =
           Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
             (lexbuf.Lexing.lex_curr_pos + 0) in
         `BLANKS x
-    | 16 ->
+    | 17 ->
+        let c = default_cxt lexbuf in
         (store c lexbuf;
          with_curr_loc comment c lexbuf;
          `COMMENT (buff_contents c))
-    | 17 ->
+    | 18 ->
+        let c = default_cxt lexbuf in
         (warn Comment_start (Location_util.from_lexbuf lexbuf);
          comment c lexbuf;
          `COMMENT (buff_contents c))
-    | 18 ->
-        (warn Comment_not_end (Location_util.from_lexbuf lexbuf);
-         move_curr_p (-1) lexbuf;
-         `Sym "*")
     | 19 ->
         let p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
+        let c = default_cxt lexbuf in
         (Stack.push p opt_char;
          (let len = 2 + (opt_char_len p) in
           mk_quotation quotation c lexbuf ~name:FToken.empty_name ~loc:""
@@ -7575,6 +7582,7 @@ let token c lexbuf =
         and p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
+        let c = default_cxt lexbuf in
         (Stack.push p opt_char;
          mk_quotation quotation c lexbuf ~name:FToken.empty_name ~loc
            ~shift:(((2 + 1) + (String.length loc)) + (opt_char_len p))
@@ -7591,6 +7599,7 @@ let token c lexbuf =
         and p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
+        let c = default_cxt lexbuf in
         let len = String.length name in
         let name = FToken.name_of_string name in
         (Stack.push p opt_char;
@@ -7607,6 +7616,7 @@ let token c lexbuf =
         and p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(2)) + 0) in
+        let c = default_cxt lexbuf in
         let len = String.length name in
         let name = FToken.name_of_string name in
         (Stack.push p opt_char;
@@ -7625,6 +7635,7 @@ let token c lexbuf =
         and p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
+        let c = default_cxt lexbuf in
         let len = String.length name in
         let () = Stack.push p opt_char in
         let retract = (opt_char_len p) + 2 in
@@ -9956,6 +9967,7 @@ let token c lexbuf =
                     (lexbuf.Lexing.lex_start_pos + 0) in
                 err (Illegal_character c) (Location_util.from_lexbuf lexbuf)
             | _ -> failwith "lexing: empty token")) in
+        let c = default_cxt lexbuf in
         if FConfig.antiquotations.contents
         then with_curr_loc dollar c lexbuf
         else err Illegal_antiquote (Location_util.from_lexbuf lexbuf)
@@ -9974,8 +9986,7 @@ let token c lexbuf =
         (err (Illegal_character c)) @@ (Location_util.from_lexbuf lexbuf)
     | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb =
-  let c = { loc = (Lexing.lexeme_start_p lb); buffer = (Buffer.create 256) } in
   let next _ =
-    let tok = token { c with loc = (Lexing.lexeme_start_p lb) } lb in
+    let tok = token lb in
     let loc = Location_util.from_lexbuf lb in Some (tok, loc) in
   XStream.from next
