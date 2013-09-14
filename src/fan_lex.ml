@@ -90,12 +90,12 @@ type lex_error  =
   | Unterminated_string
   | Unterminated_quotation
   | Unterminated_antiquot
-  | Unterminated_string_in_comment
-  | Unterminated_string_in_quotation
-  | Unterminated_string_in_antiquot
+  (* | Unterminated_string_in_comment *)
+  (* | Unterminated_string_in_quotation *)
+  (* | Unterminated_string_in_antiquot *)
   | Comment_start
   | Comment_not_end
-  | Literal_overflow of string
+  (* | Literal_overflow of string *)
 
 exception Lexing_error  of lex_error
 
@@ -113,18 +113,18 @@ let print_lex_error ppf e =
       fprintf ppf "Comment not terminated"
   | Unterminated_string ->
       fprintf ppf "String literal not terminated"
-  | Unterminated_string_in_comment ->
-      fprintf ppf "This comment contains an unterminated string literal"
-  | Unterminated_string_in_quotation ->
-      fprintf ppf "This quotation contains an unterminated string literal"
-  | Unterminated_string_in_antiquot ->
-      fprintf ppf "This antiquotaion contains an unterminated string literal"
+  (* | Unterminated_string_in_comment -> *)
+  (*     fprintf ppf "This comment contains an unterminated string literal" *)
+  (* | Unterminated_string_in_quotation -> *)
+  (*     fprintf ppf "This quotation contains an unterminated string literal" *)
+  (* | Unterminated_string_in_antiquot -> *)
+  (*     fprintf ppf "This antiquotaion contains an unterminated string literal" *)
   | Unterminated_quotation ->
       fprintf ppf "Quotation not terminated"
   | Unterminated_antiquot ->
       fprintf ppf "Antiquotation not terminated"
-  | Literal_overflow ty ->
-      fprintf ppf "Integer literal exceeds the range of representable integers of type %s" ty
+  (* | Literal_overflow ty -> *)
+  (*     fprintf ppf "Integer literal exceeds the range of representable integers of type %s" ty *)
   | Comment_start ->
       fprintf ppf "this is the start of a comment"
   | Comment_not_end ->
@@ -314,7 +314,7 @@ let rec lex_string c = {:lexer|
 
 
 (* depth makes sure the parentheses are balanced *)
-let rec  antiquot c  = {:lexer|
+let rec  lex_antiquot c  = {:lexer|
   | ')' ->
       begin
         store c lexbuf;
@@ -323,31 +323,31 @@ let rec  antiquot c  = {:lexer|
   | '('    ->
       begin 
         store c lexbuf;
-        with_curr_loc antiquot  c lexbuf;
-        antiquot c  lexbuf;
-      end
-  | newline   ->
-      begin
-        update_loc  lexbuf;
-        with_store antiquot c lexbuf
+        with_curr_loc lex_antiquot  c lexbuf;
+        lex_antiquot c  lexbuf;
       end
   | quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
       begin 
         Stack.push p opt_char ;
         store c lexbuf;
         with_curr_loc lex_quotation c lexbuf;
-        antiquot c lexbuf
+        lex_antiquot c lexbuf
+      end
+  | newline   ->
+      begin
+        update_loc  lexbuf;
+        with_store lex_antiquot c lexbuf
       end
   | "\"" -> (* $(")")*)
       begin
         store c lexbuf;
         with_curr_loc lex_string c lexbuf;
         c.buffer +> '"';
-        antiquot  c lexbuf
+        lex_antiquot  c lexbuf
       end
   | eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
-  | "'" ocaml_char "'" -> with_store antiquot c lexbuf (* $( ')' ) *)
-  | _  ->  with_store antiquot c lexbuf
+  | "'" ocaml_char "'" -> with_store lex_antiquot c lexbuf (* $( ')' ) *)
+  | _  ->  with_store lex_antiquot c lexbuf
 |}
 
 and lex_quotation c = {:lexer|
@@ -447,15 +447,20 @@ let  token  = {:lexer|
   (* comment *)      
   | "(*" ->
       let c = default_cxt lexbuf in
+      let old = lexbuf.lex_start_p in
        begin
          store c lexbuf;
-         with_curr_loc lex_comment c lexbuf;  `COMMENT ( buff_contents c)
+         with_curr_loc lex_comment c lexbuf;
+         lexbuf.lex_start_p <- old;
+         `COMMENT ( buff_contents c)
        end
   | "(*)" ->
       let c = default_cxt lexbuf in
+      let old = lexbuf.lex_start_p in
       begin 
         warn Comment_start (Location_util.from_lexbuf lexbuf) ;
         lex_comment c lexbuf;
+        lexbuf.lex_start_p <- old;
         `COMMENT (buff_contents c)
       end
   (* quotation handling *)      
@@ -536,7 +541,7 @@ let  token  = {:lexer|
               (* the first char is faked '(' to match the last ')', so we mvoe
                  backwards one character *)
                c.buffer +> '(';
-              antiquot
+              lex_antiquot
                 (* FIXME c.loc *)
                 {c with loc = FLoc.move_pos (1+1+1+String.length name - 1) c.loc}
                 lexbuf ;
@@ -545,7 +550,7 @@ let  token  = {:lexer|
         | '(' ->     (* $(xxxx)*)
             begin
               c.buffer +> '(';
-              antiquot   {c with loc = FLoc.move_pos  (1+1-1) c.loc} lexbuf ;
+              lex_antiquot   {c with loc = FLoc.move_pos  (1+1-1) c.loc} lexbuf ;
               `Ant("", buff_contents c )
             end
         | _ as c ->

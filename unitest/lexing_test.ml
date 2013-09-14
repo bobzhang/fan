@@ -121,25 +121,44 @@ let test_ant_chr _ =
   Ref.protect FConfig.antiquotations true @@ fun _ -> Flex_lib.get_tokens {:str|$(')')|}
       ===
     [`Ant("","(')')"); `EOI ]
-      
+
+let test_comment_pos _ =
+  Flex_lib.list_of_string ~verbose:false {:str|(*    (**) *)|}
+    ===
+  [(`COMMENT "(*    (**) *)",
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
+   loc_ghost = false});
+   (`EOI,
+    {FLoc.loc_start =
+     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
+     loc_end =
+     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 14};
+     loc_ghost = false})]
+
 let suite =
   "Lexing_test" >:::
-  [  "test_empty_string" >:: test_empty_string;
+  [
+  "test_comment_pos" >:: test_comment_pos;
+   "test_ant_chr" >:: test_ant_chr;
+   "test_empty_string" >:: test_empty_string;
 
-     "test_escaped_string" >:: test_escaped_string;
+   "test_escaped_string" >:: test_escaped_string;
 
-     "test_comment_string" >:: test_comment_string;
+   "test_comment_string" >:: test_comment_string;
 
-     "test_quotation" >:: test_quotation;
+   "test_quotation" >:: test_quotation;
 
-     "test_quotation" >:: test_string;
-     
-     "test_char" >:: test_char;
-     "test_ant" >:: test_ant;
-     "test_ant_quot" >:: test_ant_quot;
-     "test_ant_paren" >:: test_ant_paren;
-     "test_ant_str" >:: test_ant_str
-   ]
+   "test_quotation" >:: test_string;
+   
+   "test_char" >:: test_char;
+   "test_ant" >:: test_ant;
+   "test_ant_quot" >:: test_ant_quot;
+   "test_ant_paren" >:: test_ant_paren;
+   "test_ant_str" >:: test_ant_str
+ ]
 
     
 (* local variables: *)

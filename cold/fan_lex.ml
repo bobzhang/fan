@@ -10,12 +10,8 @@ type lex_error =
   | Unterminated_string
   | Unterminated_quotation
   | Unterminated_antiquot
-  | Unterminated_string_in_comment
-  | Unterminated_string_in_quotation
-  | Unterminated_string_in_antiquot
   | Comment_start
-  | Comment_not_end
-  | Literal_overflow of string 
+  | Comment_not_end 
 exception Lexing_error of lex_error
 let print_lex_error ppf e =
   match e with
@@ -28,18 +24,8 @@ let print_lex_error ppf e =
       fprintf ppf "Illegal backslash escape in string or character (%s)" s
   | Unterminated_comment  -> fprintf ppf "Comment not terminated"
   | Unterminated_string  -> fprintf ppf "String literal not terminated"
-  | Unterminated_string_in_comment  ->
-      fprintf ppf "This comment contains an unterminated string literal"
-  | Unterminated_string_in_quotation  ->
-      fprintf ppf "This quotation contains an unterminated string literal"
-  | Unterminated_string_in_antiquot  ->
-      fprintf ppf "This antiquotaion contains an unterminated string literal"
   | Unterminated_quotation  -> fprintf ppf "Quotation not terminated"
   | Unterminated_antiquot  -> fprintf ppf "Antiquotation not terminated"
-  | Literal_overflow ty ->
-      fprintf ppf
-        "Integer literal exceeds the range of representable integers of type %s"
-        ty
   | Comment_start  -> fprintf ppf "this is the start of a comment"
   | Comment_not_end  -> fprintf ppf "this is not the end of a comment"
 let lex_error_to_string = to_string_of_printer print_lex_error
@@ -318,7 +304,7 @@ let rec lex_string c lexbuf =
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
     | 8 -> with_store lex_string c lexbuf
     | _ -> failwith "lexing: empty token"))
-let rec antiquot c lexbuf =
+let rec lex_antiquot c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -337,13 +323,13 @@ let rec antiquot c lexbuf =
        lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
   and __ocaml_lex_state0 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 13 -> __ocaml_lex_state6 lexbuf
+    | 10 -> __ocaml_lex_state6 lexbuf
     | 256 -> __ocaml_lex_state3 lexbuf
     | 41 -> __ocaml_lex_state9 lexbuf
     | 34 -> __ocaml_lex_state4 lexbuf
     | 40 -> __ocaml_lex_state8 lexbuf
-    | 123 -> __ocaml_lex_state5 lexbuf
-    | 10 -> __ocaml_lex_state7 lexbuf
+    | 13 -> __ocaml_lex_state5 lexbuf
+    | 123 -> __ocaml_lex_state7 lexbuf
     | 39 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
   and __ocaml_lex_state1 lexbuf = 7
@@ -360,6 +346,15 @@ let rec antiquot c lexbuf =
   and __ocaml_lex_state4 lexbuf = 4
   and __ocaml_lex_state5 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 3;
+    (match __ocaml_lex_next_char lexbuf with
+     | 10 -> __ocaml_lex_state6 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state6 lexbuf = 3
+  and __ocaml_lex_state7 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 7;
     (match __ocaml_lex_next_char lexbuf with
      | 64 -> __ocaml_lex_state11 lexbuf
@@ -370,21 +365,12 @@ let rec antiquot c lexbuf =
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state6 lexbuf =
-    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 2;
-    (match __ocaml_lex_next_char lexbuf with
-     | 10 -> __ocaml_lex_state7 lexbuf
-     | _ ->
-         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state7 lexbuf = 2
   and __ocaml_lex_state8 lexbuf = 1
   and __ocaml_lex_state9 lexbuf = 0
   and __ocaml_lex_state10 lexbuf =
     (lexbuf.Lexing.lex_mem).(0) <- (-1);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 3;
+    lexbuf.Lexing.lex_last_action <- 2;
     (match __ocaml_lex_next_char lexbuf with
      | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
          __ocaml_lex_state17 lexbuf
@@ -1383,7 +1369,7 @@ let rec antiquot c lexbuf =
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state17 lexbuf =
-    (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 3
+    (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 2
   and __ocaml_lex_state18 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state22 lexbuf
@@ -1437,26 +1423,28 @@ let rec antiquot c lexbuf =
    (match __ocaml_lex_result with
     | 0 -> (store c lexbuf; lexbuf.lex_start_p <- c.loc)
     | 1 ->
-        (store c lexbuf; with_curr_loc antiquot c lexbuf; antiquot c lexbuf)
-    | 2 -> (update_loc lexbuf; with_store antiquot c lexbuf)
-    | 3 ->
+        (store c lexbuf;
+         with_curr_loc lex_antiquot c lexbuf;
+         lex_antiquot c lexbuf)
+    | 2 ->
         let p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
         (Stack.push p opt_char;
          store c lexbuf;
          with_curr_loc lex_quotation c lexbuf;
-         antiquot c lexbuf)
+         lex_antiquot c lexbuf)
+    | 3 -> (update_loc lexbuf; with_store lex_antiquot c lexbuf)
     | 4 ->
         (store c lexbuf;
          with_curr_loc lex_string c lexbuf;
          c.buffer +> '"';
-         antiquot c lexbuf)
+         lex_antiquot c lexbuf)
     | 5 ->
         (err Unterminated_antiquot) @@
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 6 -> with_store antiquot c lexbuf
-    | 7 -> with_store antiquot c lexbuf
+    | 6 -> with_store lex_antiquot c lexbuf
+    | 7 -> with_store lex_antiquot c lexbuf
     | _ -> failwith "lexing: empty token"))
 and lex_quotation c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -7547,13 +7535,17 @@ let token lexbuf =
         `BLANKS x
     | 17 ->
         let c = default_cxt lexbuf in
+        let old = lexbuf.lex_start_p in
         (store c lexbuf;
          with_curr_loc lex_comment c lexbuf;
+         lexbuf.lex_start_p <- old;
          `COMMENT (buff_contents c))
     | 18 ->
         let c = default_cxt lexbuf in
+        let old = lexbuf.lex_start_p in
         (warn Comment_start (Location_util.from_lexbuf lexbuf);
          lex_comment c lexbuf;
+         lexbuf.lex_start_p <- old;
          `COMMENT (buff_contents c))
     | 19 ->
         let p =
@@ -9943,7 +9935,7 @@ let token lexbuf =
                   Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                     (lexbuf.Lexing.lex_curr_pos + (-1)) in
                 (c.buffer +> '(';
-                 antiquot
+                 lex_antiquot
                    {
                      c with
                      loc =
@@ -9954,7 +9946,7 @@ let token lexbuf =
                  `Ant (name, (buff_contents c)))
             | 3 ->
                 (c.buffer +> '(';
-                 antiquot
+                 lex_antiquot
                    { c with loc = (FLoc.move_pos ((1 + 1) - 1) c.loc) }
                    lexbuf;
                  `Ant ("", (buff_contents c)))
