@@ -323,7 +323,7 @@ let rec  antiquot  depth c  = {:lexer|
         update_loc  lexbuf;
         with_store (antiquot  depth) c lexbuf
       end
-  | quotation_prefix (extra_quot as p)? ->
+  | quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
       begin 
         Stack.push p opt_char ;
         store c lexbuf;

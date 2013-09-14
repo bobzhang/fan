@@ -65,19 +65,36 @@ let test_ant _ =
   Ref.protect FConfig.antiquotations true @@ fun _ ->
     Flex_lib.list_of_string ~verbose:false "$aa:a"
       ===
-  [(`Ant ("aa", "a"),
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
-   loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-   loc_ghost = false});
- (`EOI,
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-   loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
-   loc_ghost = false})]  
+    [(`Ant ("aa", "a"),
+      {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
+       loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+       loc_ghost = false});
+     (`EOI,
+      {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+       loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
+       loc_ghost = false})]
 
+let test_ant_quot _ =       
+  Ref.protect FConfig.antiquotations true @@ fun _ ->
+    Flex_lib.list_of_string ~verbose:false "$(lid:{|)|})"
+      ===
+    [(`Ant ("lid", "{|)|}"),
+      {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+       loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+       loc_ghost = false});
+     (`EOI,
+      {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+       loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 13};
+       loc_ghost = false})]
+      
 let suite =
   "Lexing_test" >:::
   [  "test_empty_string" >:: test_empty_string;
@@ -92,6 +109,7 @@ let suite =
      
      "test_char" >:: test_char;
      "test_ant" >:: test_ant;
+     "test_ant_quot" >:: test_ant_quot
    ]
 
     
