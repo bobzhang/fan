@@ -37,6 +37,7 @@ tramp
 # Org-mode
 .org-id-locations
 _build
+_obuild
 meta_filter
 trash
 
@@ -74,3 +75,4 @@ src/tmp.ml
 a.el
 jslib/
 ulex/
+*.old
