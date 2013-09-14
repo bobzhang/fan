@@ -9,7 +9,13 @@ let ident = (lowercase|uppercase) identchar*
     
 let quotation_name = '.' ? (uppercase  identchar* '.') *
     (lowercase (identchar | '-') * )
+
 let locname = ident
+
+let quotation_prefix =
+  '{' (':' quotation_name)? ('@' locname)? '|'
+    
+
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
 let uident = uppercase identchar *
@@ -273,7 +279,7 @@ let rec comment c = {:lexer|
 (** called by another lexer
       | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
     c.loc keeps the start position of "ghosgho"
-    c.buffer keeps the lexed result 
+    c.buffer keeps the lexed result
  *)    
 let rec string c = {:lexer|
   | '"' ->    lexbuf.lex_start_p <-  c.loc (* FIXME finished *)
@@ -286,10 +292,11 @@ let rec string c = {:lexer|
   | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  with_store string c lexbuf
   | '\\' 'x' hexa_char hexa_char ->  with_store string c lexbuf
   | '\\' (_ as x) ->
-      (warn
-         (Illegal_escape (String.make 1 x))
-         (Location_util.from_lexbuf lexbuf);
-        with_store string c lexbuf)
+      begin
+        warn
+          (Illegal_escape (String.make 1 x)) @@ Location_util.from_lexbuf lexbuf;
+        with_store string c lexbuf
+      end
   | newline ->
       begin
         update_loc  lexbuf;
@@ -316,7 +323,7 @@ let rec  antiquot name depth c  = {:lexer|
         update_loc  lexbuf;
         with_store (antiquot name depth) c lexbuf
       end
-  | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)? ->
+  | quotation_prefix (extra_quot as p)? ->
       begin 
         Stack.push p opt_char ;
         store c lexbuf;
@@ -335,7 +342,7 @@ let rec  antiquot name depth c  = {:lexer|
 |}
 
 and quotation c = {:lexer|
-  | '{' (':' quotation_name)? ('@' locname)? '|' (extra_quot as p)?
+  | quotation_prefix (extra_quot as p)?
       ->
         begin
           store c lexbuf ;
