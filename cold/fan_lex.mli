@@ -44,7 +44,7 @@ val lex_comment : context -> Lexing.lexbuf -> unit
 
    For context, its buffer contains the comment string, its location is
    *not valid* anymore.
-   The "\"" should not be there *)    
+   The "\"" should not be there, and the trailing "\"" is not counted.  *)    
 val lex_string : context -> Lexing.lexbuf -> unit
 
 val lex_antiquot : context -> Lexing.lexbuf -> unit

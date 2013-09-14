@@ -70,11 +70,10 @@ let right_delimitor =
    | (delimchars* ['|' ':'])? ')'
    | ['|' ':']? ']'
    | '>' delimchars* [']' ]
-
+let ocaml_escaped_char =
+  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
 let ocaml_char =
-  ( [! '\\' '\010' '\013'] | '\\'
-    (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-     | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char))       
+  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)       
 |};;
 
 
@@ -285,7 +284,7 @@ let rec lex_comment c = {:lexer|
     c.buffer keeps the lexed result
  *)    
 let rec lex_string c = {:lexer|
-  | '"' -> (* FIXME finished *) () (* lexbuf.lex_start_p <-  c.loc *)
+  | '"' ->  () 
       
   | '\\' newline ([' ' '\t'] * as space) ->
       (* Follow the ocaml convention, these characters does not take positions *)
@@ -293,9 +292,7 @@ let rec lex_string c = {:lexer|
         update_loc  lexbuf  ~retract:(String.length space);
         lex_string c lexbuf
       end
-  | '\\' ['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] -> with_store lex_string c lexbuf
-  | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  with_store lex_string c lexbuf
-  | '\\' 'x' hexa_char hexa_char ->  with_store lex_string c lexbuf
+  | ocaml_escaped_char -> with_store lex_string c lexbuf
   | '\\' (_ as x) ->
       begin
         warn

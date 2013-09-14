@@ -191,20 +191,20 @@ let rec lex_string c lexbuf =
     | 92 -> __ocaml_lex_state5 lexbuf
     | 256 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 8
-  and __ocaml_lex_state2 lexbuf = 7
+  and __ocaml_lex_state1 lexbuf = 6
+  and __ocaml_lex_state2 lexbuf = 5
   and __ocaml_lex_state3 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 6;
+    lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
      | 10 -> __ocaml_lex_state4 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state4 lexbuf = 6
+  and __ocaml_lex_state4 lexbuf = 4
   and __ocaml_lex_state5 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 8;
+    lexbuf.Lexing.lex_last_action <- 6;
     (match __ocaml_lex_next_char lexbuf with
      | 13 ->
          ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
@@ -220,19 +220,19 @@ let rec lex_string c lexbuf =
           __ocaml_lex_state12 lexbuf)
      | _ -> __ocaml_lex_state7 lexbuf)
   and __ocaml_lex_state6 lexbuf = 0
-  and __ocaml_lex_state7 lexbuf = 5
+  and __ocaml_lex_state7 lexbuf = 3
   and __ocaml_lex_state8 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 5;
+    lexbuf.Lexing.lex_last_action <- 3;
     (match __ocaml_lex_next_char lexbuf with
      | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102
-         -> __ocaml_lex_state15 lexbuf
+         -> __ocaml_lex_state14 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state9 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 5;
+    lexbuf.Lexing.lex_last_action <- 3;
     (match __ocaml_lex_next_char lexbuf with
      | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state13 lexbuf
      | _ ->
@@ -259,19 +259,17 @@ let rec lex_string c lexbuf =
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state13 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state14 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state10 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state14 lexbuf = 3
-  and __ocaml_lex_state15 lexbuf =
+  and __ocaml_lex_state14 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
-        __ocaml_lex_state16 lexbuf
+        __ocaml_lex_state10 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state16 lexbuf = 4 in
+         lexbuf.Lexing.lex_last_action) in
   __ocaml_lex_init_lexbuf lexbuf 2;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
    lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
@@ -290,19 +288,17 @@ let rec lex_string c lexbuf =
         (update_loc lexbuf ~retract:(String.length space);
          lex_string c lexbuf)
     | 2 -> with_store lex_string c lexbuf
-    | 3 -> with_store lex_string c lexbuf
-    | 4 -> with_store lex_string c lexbuf
-    | 5 ->
+    | 3 ->
         let x =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
         ((warn (Illegal_escape (String.make 1 x))) @@
            (Location_util.from_lexbuf lexbuf);
          with_store lex_string c lexbuf)
-    | 6 -> (update_loc lexbuf; with_store lex_string c lexbuf)
-    | 7 ->
+    | 4 -> (update_loc lexbuf; with_store lex_string c lexbuf)
+    | 5 ->
         (err Unterminated_string) @@
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 8 -> with_store lex_string c lexbuf
+    | 6 -> with_store lex_string c lexbuf
     | _ -> failwith "lexing: empty token"))
 let rec lex_antiquot c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
