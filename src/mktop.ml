@@ -394,7 +394,7 @@ of_exp ~name:(d,"p") ~entry:p;;
 let a:
   [`Uid m ; ":"; L1 name {ns} ; ";" ->
     AstLib.sem_of_list (* add antiquotation automatically ?? *)
-      (List.map  (fun l -> {:stru| let $((l:>FAst.pat)) = $uid:m.$l |} )
+      (List.map  (fun l -> {:stru| let $(l :> FAst.pat) = $uid:m.$l |} )
       ns)
  ]
 import:

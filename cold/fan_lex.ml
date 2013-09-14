@@ -313,7 +313,7 @@ let rec string c lexbuf =
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
     | 8 -> with_store string c lexbuf
     | _ -> failwith "lexing: empty token"))
-let rec antiquot depth c lexbuf =
+let rec antiquot c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -332,51 +332,61 @@ let rec antiquot depth c lexbuf =
        lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
   and __ocaml_lex_state0 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 123 -> __ocaml_lex_state3 lexbuf
-    | 256 -> __ocaml_lex_state6 lexbuf
-    | 13 -> __ocaml_lex_state4 lexbuf
-    | 41 -> __ocaml_lex_state8 lexbuf
-    | 10 -> __ocaml_lex_state5 lexbuf
-    | 40 -> __ocaml_lex_state7 lexbuf
-    | 34 -> __ocaml_lex_state2 lexbuf
+    | 13 -> __ocaml_lex_state6 lexbuf
+    | 256 -> __ocaml_lex_state3 lexbuf
+    | 41 -> __ocaml_lex_state9 lexbuf
+    | 34 -> __ocaml_lex_state4 lexbuf
+    | 40 -> __ocaml_lex_state8 lexbuf
+    | 123 -> __ocaml_lex_state5 lexbuf
+    | 10 -> __ocaml_lex_state7 lexbuf
+    | 39 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 6
-  and __ocaml_lex_state2 lexbuf = 5
-  and __ocaml_lex_state3 lexbuf =
+  and __ocaml_lex_state1 lexbuf = 7
+  and __ocaml_lex_state2 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 6;
+    lexbuf.Lexing.lex_last_action <- 7;
     (match __ocaml_lex_next_char lexbuf with
-     | 58 -> __ocaml_lex_state11 lexbuf
+     | 92 -> __ocaml_lex_state18 lexbuf
+     | 10|13|256 ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action)
+     | _ -> __ocaml_lex_state19 lexbuf)
+  and __ocaml_lex_state3 lexbuf = 5
+  and __ocaml_lex_state4 lexbuf = 4
+  and __ocaml_lex_state5 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 7;
+    (match __ocaml_lex_next_char lexbuf with
+     | 64 -> __ocaml_lex_state11 lexbuf
      | 124 ->
          ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
-          __ocaml_lex_state9 lexbuf)
-     | 64 -> __ocaml_lex_state10 lexbuf
+          __ocaml_lex_state10 lexbuf)
+     | 58 -> __ocaml_lex_state12 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state4 lexbuf =
+  and __ocaml_lex_state6 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 2;
+    (match __ocaml_lex_next_char lexbuf with
+     | 10 -> __ocaml_lex_state7 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state7 lexbuf = 2
+  and __ocaml_lex_state8 lexbuf = 1
+  and __ocaml_lex_state9 lexbuf = 0
+  and __ocaml_lex_state10 lexbuf =
+    (lexbuf.Lexing.lex_mem).(0) <- (-1);
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 3;
     (match __ocaml_lex_next_char lexbuf with
-     | 10 -> __ocaml_lex_state5 lexbuf
-     | _ ->
-         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state5 lexbuf = 3
-  and __ocaml_lex_state6 lexbuf = 2
-  and __ocaml_lex_state7 lexbuf = 1
-  and __ocaml_lex_state8 lexbuf = 0
-  and __ocaml_lex_state9 lexbuf =
-    (lexbuf.Lexing.lex_mem).(0) <- (-1);
-    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 4;
-    (match __ocaml_lex_next_char lexbuf with
      | 33|37|38|43|45|46|47|58|61|63|64|92|94|126 ->
-         __ocaml_lex_state16 lexbuf
+         __ocaml_lex_state17 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state10 lexbuf =
+  and __ocaml_lex_state11 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 65
       |66
@@ -543,66 +553,12 @@ let rec antiquot depth c lexbuf =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state15 lexbuf
+        -> __ocaml_lex_state16 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state11 lexbuf =
+  and __ocaml_lex_state12 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 65
-      |66
-       |67
-        |68
-         |69
-          |70
-           |71
-            |72
-             |73
-              |74
-               |75
-                |76
-                 |77
-                  |78
-                   |79
-                    |80
-                     |81
-                      |82
-                       |83
-                        |84
-                         |85
-                          |86
-                           |87
-                            |88
-                             |89
-                              |90
-                               |192
-                                |193
-                                 |194
-                                  |195
-                                   |196
-                                    |197
-                                     |198
-                                      |199
-                                       |200
-                                        |201
-                                         |202
-                                          |203
-                                           |204
-                                            |205
-                                             |206
-                                              |207
-                                               |208
-                                                |209
-                                                 |210
-                                                  |211
-                                                   |212
-                                                    |213
-                                                     |214
-                                                      |216
-                                                       |217
-                                                        |218|219|220|221|222
-        -> __ocaml_lex_state13 lexbuf
-    | 46 -> __ocaml_lex_state14 lexbuf
     | 95
       |97
        |98
@@ -659,16 +615,66 @@ let rec antiquot depth c lexbuf =
                                                           |250
                                                            |251
                                                             |252|253|254|255
-        -> __ocaml_lex_state12 lexbuf
+        -> __ocaml_lex_state13 lexbuf
+    | 46 -> __ocaml_lex_state15 lexbuf
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state14 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state12 lexbuf =
+  and __ocaml_lex_state13 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 124 ->
-        ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
-         __ocaml_lex_state9 lexbuf)
-    | 64 -> __ocaml_lex_state10 lexbuf
     | 39
       |45
        |48
@@ -858,12 +864,17 @@ let rec antiquot depth c lexbuf =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state12 lexbuf
+        -> __ocaml_lex_state13 lexbuf
+    | 64 -> __ocaml_lex_state11 lexbuf
+    | 124 ->
+        ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
+         __ocaml_lex_state10 lexbuf)
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state13 lexbuf =
+  and __ocaml_lex_state14 lexbuf =
     match __ocaml_lex_next_char lexbuf with
+    | 46 -> __ocaml_lex_state15 lexbuf
     | 39
       |48
        |49
@@ -1051,66 +1062,12 @@ let rec antiquot depth c lexbuf =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state13 lexbuf
-    | 46 -> __ocaml_lex_state14 lexbuf
+        -> __ocaml_lex_state14 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state14 lexbuf =
+  and __ocaml_lex_state15 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 65
-      |66
-       |67
-        |68
-         |69
-          |70
-           |71
-            |72
-             |73
-              |74
-               |75
-                |76
-                 |77
-                  |78
-                   |79
-                    |80
-                     |81
-                      |82
-                       |83
-                        |84
-                         |85
-                          |86
-                           |87
-                            |88
-                             |89
-                              |90
-                               |192
-                                |193
-                                 |194
-                                  |195
-                                   |196
-                                    |197
-                                     |198
-                                      |199
-                                       |200
-                                        |201
-                                         |202
-                                          |203
-                                           |204
-                                            |205
-                                             |206
-                                              |207
-                                               |208
-                                                |209
-                                                 |210
-                                                  |211
-                                                   |212
-                                                    |213
-                                                     |214
-                                                      |216
-                                                       |217
-                                                        |218|219|220|221|222
-        -> __ocaml_lex_state13 lexbuf
     | 95
       |97
        |98
@@ -1167,15 +1124,65 @@ let rec antiquot depth c lexbuf =
                                                           |250
                                                            |251
                                                             |252|253|254|255
-        -> __ocaml_lex_state12 lexbuf
+        -> __ocaml_lex_state13 lexbuf
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state14 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state15 lexbuf =
+  and __ocaml_lex_state16 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 124 ->
-        ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
-         __ocaml_lex_state9 lexbuf)
     | 39
       |48
        |49
@@ -1363,12 +1370,62 @@ let rec antiquot depth c lexbuf =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state15 lexbuf
+        -> __ocaml_lex_state16 lexbuf
+    | 124 ->
+        ((lexbuf.Lexing.lex_mem).(1) <- lexbuf.Lexing.lex_curr_pos;
+         __ocaml_lex_state10 lexbuf)
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state16 lexbuf =
-    (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 4 in
+  and __ocaml_lex_state17 lexbuf =
+    (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 3
+  and __ocaml_lex_state18 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 120 -> __ocaml_lex_state22 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state23 lexbuf
+    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state19 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state19 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39 -> __ocaml_lex_state20 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state20 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39 -> __ocaml_lex_state21 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state21 lexbuf = 6
+  and __ocaml_lex_state22 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
+        __ocaml_lex_state25 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state23 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state24 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state24 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state19 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state25 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
+        __ocaml_lex_state19 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action) in
   __ocaml_lex_init_lexbuf lexbuf 2;
   (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
    lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
@@ -1379,29 +1436,28 @@ let rec antiquot depth c lexbuf =
          (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
      };
    (match __ocaml_lex_result with
-    | 0 ->
-        if depth = 0
-        then lexbuf.lex_start_p <- c.loc
-        else with_store (antiquot (depth - 1)) c lexbuf
-    | 1 -> with_store (antiquot (depth + 1)) c lexbuf
-    | 2 ->
-        (err Unterminated_antiquot) @@
-          (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 3 -> (update_loc lexbuf; with_store (antiquot depth) c lexbuf)
-    | 4 ->
+    | 0 -> (store c lexbuf; lexbuf.lex_start_p <- c.loc)
+    | 1 ->
+        (store c lexbuf; with_curr_loc antiquot c lexbuf; antiquot c lexbuf)
+    | 2 -> (update_loc lexbuf; with_store antiquot c lexbuf)
+    | 3 ->
         let p =
           Lexing.sub_lexeme_char_opt lexbuf
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
         (Stack.push p opt_char;
          store c lexbuf;
          with_curr_loc quotation c lexbuf;
-         antiquot depth c lexbuf)
-    | 5 ->
+         antiquot c lexbuf)
+    | 4 ->
         (store c lexbuf;
          with_curr_loc string c lexbuf;
          Buffer.add_char c.buffer '"';
-         antiquot depth c lexbuf)
-    | 6 -> with_store (antiquot depth) c lexbuf
+         antiquot c lexbuf)
+    | 5 ->
+        (err Unterminated_antiquot) @@
+          (Location_util.of_positions c.loc lexbuf.lex_curr_p)
+    | 6 -> with_store antiquot c lexbuf
+    | 7 -> with_store antiquot c lexbuf
     | _ -> failwith "lexing: empty token"))
 and quotation c lexbuf =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -9878,17 +9934,22 @@ let token c lexbuf =
                 let name =
                   Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                     (lexbuf.Lexing.lex_curr_pos + (-1)) in
-                let () =
-                  antiquot 0
-                    {
-                      c with
-                      loc = (FLoc.move_pos (3 + (String.length name)) c.loc)
-                    } lexbuf in
-                `Ant (name, (buff_contents c))
+                (Buffer.add_char c.buffer '(';
+                 antiquot
+                   {
+                     c with
+                     loc =
+                       (FLoc.move_pos
+                          ((((1 + 1) + 1) + (String.length name)) - 1) 
+                          c.loc)
+                   } lexbuf;
+                 `Ant (name, (buff_contents c)))
             | 3 ->
-                let () =
-                  antiquot 0 { c with loc = (FLoc.move_pos 2 c.loc) } lexbuf in
-                `Ant ("", (buff_contents c))
+                (Buffer.add_char c.buffer '(';
+                 antiquot
+                   { c with loc = (FLoc.move_pos ((1 + 1) - 1) c.loc) }
+                   lexbuf;
+                 `Ant ("", (buff_contents c)))
             | 4 ->
                 let c =
                   Lexing.sub_lexeme_char lexbuf

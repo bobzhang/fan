@@ -7,7 +7,7 @@ open OUnit
 
 
 let suite = 
-"suite">:::
+"main">:::
  [
   Lexing_test.suite;
   Location_ident.suite;

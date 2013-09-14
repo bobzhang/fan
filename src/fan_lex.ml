@@ -309,36 +309,40 @@ let rec string c = {:lexer|
 
 
 (* depth makes sure the parentheses are balanced *)
-let rec  antiquot  depth c  = {:lexer|
+let rec  antiquot c  = {:lexer|
   | ')' ->
-      if depth = 0 then (* only cares about FLoc.start_pos *)
-        (lexbuf.lex_start_p <-  c.loc (* ; buff_contents c *))
-      else with_store (antiquot  (depth-1)) c lexbuf
-  | '('    ->  with_store (antiquot  (depth+1)) c lexbuf
-        
-  | eof  ->
-      err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+      begin
+        store c lexbuf;
+        lexbuf.lex_start_p <-  c.loc (* finish *)
+      end
+  | '('    ->
+      begin 
+        store c lexbuf;
+        with_curr_loc antiquot  c lexbuf;
+        antiquot c  lexbuf;
+      end
   | newline   ->
       begin
         update_loc  lexbuf;
-        with_store (antiquot  depth) c lexbuf
+        with_store antiquot c lexbuf
       end
   | quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
       begin 
         Stack.push p opt_char ;
         store c lexbuf;
         with_curr_loc quotation c lexbuf;
-        antiquot  depth c lexbuf
+        antiquot c lexbuf
       end
   | "\"" ->
       begin
         store c lexbuf;
         with_curr_loc string c lexbuf;
         Buffer.add_char c.buffer '"';
-        antiquot  depth c lexbuf
+        antiquot  c lexbuf
       end
-
-  | _  ->  with_store (antiquot  depth) c lexbuf
+  | eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+  | "'" ocaml_char "''" -> with_store antiquot c lexbuf (* $( ')' ) *)
+  | _  ->  with_store antiquot c lexbuf
 |}
 
 and quotation c = {:lexer|
@@ -506,15 +510,23 @@ let  token c = {:lexer|
             end
         | lident as x  ->   `Ant("",x)  (* $lid *)
         | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
-            let () =
-              antiquot  0
-                {c with loc = FLoc.move_pos (3+String.length name) c.loc}
-                lexbuf in 
-            `Ant(name,buff_contents c)
+
+            begin
+              (* the first char is faked '(' to match the last ')', so we mvoe
+                 backwards one character *)
+              Buffer.add_char c.buffer '(';
+              antiquot
+                (* FIXME c.loc *)
+                {c with loc = FLoc.move_pos (1+1+1+String.length name - 1) c.loc}
+                lexbuf ;
+              `Ant(name,buff_contents c)
+            end
         | '(' ->     (* $(xxxx)*)
-            let () =
-              antiquot  0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf in
-            `Ant("", buff_contents c ) 
+            begin
+              Buffer.add_char c.buffer '(';
+              antiquot   {c with loc = FLoc.move_pos  (1+1-1) c.loc} lexbuf ;
+              `Ant("", buff_contents c )
+            end
         | _ as c ->
             err (Illegal_character c) (Location_util.from_lexbuf lexbuf) |} in        
       if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
