@@ -1,8 +1,4 @@
 
-(* open LibUtil *)
-
-
-
 type assoc =
     [ `NA|`RA|`LA]
 type position =
@@ -57,7 +53,6 @@ type terminal =
 type gram = {
     annot : string;
     gfilter         : FanTokenFilter.t;
-    (* gkeywords :   SSet.t ref; *)
 }
 
 type label =  string option
