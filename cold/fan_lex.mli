@@ -34,6 +34,8 @@ val token :  Lexing.lexbuf ->  [> FToken.t ]
     *not valid* anymore.
 
     The "(*" prefix should not be there
+
+    (* shgo *) is returned 
  *)    
 val lex_comment : context -> Lexing.lexbuf -> unit
 
@@ -44,9 +46,24 @@ val lex_comment : context -> Lexing.lexbuf -> unit
 
    For context, its buffer contains the comment string, its location is
    *not valid* anymore.
-   The "\"" should not be there, and the trailing "\"" is not counted.  *)    
+   The "\"" should not be there,.
+
+   remember it return a raw string, which would be evaled in the ast level
+
+   abho is returned without trailing "\""
+ *)    
 val lex_string : context -> Lexing.lexbuf -> unit
 
+(**
+   called by [token]
+   argument [context] contains a raw [buffer] and  the [loc] is pointed to the
+   starting [position].
+
+   For context, its buffer contains the comment string, its location is
+   *not valid* anymore.
+   The "$" should not be there. "()" is returned for $()
+   
+ *)    
 val lex_antiquot : context -> Lexing.lexbuf -> unit
 
 val lex_quotation : context -> Lexing.lexbuf -> unit    

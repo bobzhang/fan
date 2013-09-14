@@ -1417,7 +1417,7 @@ let rec lex_antiquot c lexbuf =
          (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
      };
    (match __ocaml_lex_result with
-    | 0 -> (store c lexbuf; lexbuf.lex_start_p <- c.loc)
+    | 0 -> store c lexbuf
     | 1 ->
         (store c lexbuf;
          with_curr_loc lex_antiquot c lexbuf;
@@ -9933,21 +9933,18 @@ let token lexbuf =
                 let name =
                   Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
                     (lexbuf.Lexing.lex_curr_pos + (-1)) in
+                let old =
+                  FLoc.move_pos ((((1 + 1) + 1) + (String.length name)) - 1)
+                    c.loc in
                 (c.buffer +> '(';
-                 lex_antiquot
-                   {
-                     c with
-                     loc =
-                       (FLoc.move_pos
-                          ((((1 + 1) + 1) + (String.length name)) - 1) 
-                          c.loc)
-                   } lexbuf;
+                 lex_antiquot { c with loc = old } lexbuf;
+                 lexbuf.lex_start_p <- old;
                  `Ant (name, (buff_contents c)))
             | 3 ->
+                let old = FLoc.move_pos ((1 + 1) - 1) c.loc in
                 (c.buffer +> '(';
-                 lex_antiquot
-                   { c with loc = (FLoc.move_pos ((1 + 1) - 1) c.loc) }
-                   lexbuf;
+                 lex_antiquot { c with loc = old } lexbuf;
+                 lexbuf.lex_start_p <- old;
                  `Ant ("", (buff_contents c)))
             | 4 ->
                 let c =
