@@ -29,7 +29,17 @@ let test_char _ =
 '|}
     ===
   [`Chr "\n"; `EOI]
-;;  
+;;
+
+(** maybe a bug. Quotation should be loyal to its
+    layout *)
+let test_string _ =
+  get_tokens {:str|"hsoghsogho\n
+    haha\
+    hahah"|}
+    ===
+  [`Str "hsoghsogho\n\n    hahahahah"; `EOI]
+    
 (* This can not be made an unittest
    since our lexer depends on the context which is bad
 *)   

@@ -21,31 +21,19 @@ type lex_error =
 
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
-type context =
-    { loc        : FLoc.position ;
-      antiquots  : bool ;
-      (* lexbuf     : lexbuf ; *)
-      buffer     : Buffer.t }
-        
+type context = {
+    loc        : FLoc.position ;
+    (* only record the start position when enter into a quotation or antiquotation
+       everytime token is used, the loc is updated to be [lexeme_start_p] *)
+    buffer     : Buffer.t
+  }
+
 exception Lexing_error of lex_error
 val turn_on_quotation_debug: unit -> unit
 val turn_off_quotation_debug: unit -> unit
 val clear_stack: unit -> unit
 val show_stack: unit -> unit
 
-(* val mk_quotation: *)
-(*   (context -> Lexing.lexbuf -> 'a) -> *)
-(*   context -> *)
-(*   name:FToken.name -> *)
-(*   loc:string -> *)
-(*   shift:int -> retract:int -> [> `Quot of FToken.quot ] *)
-(* val update_loc: *)
-(*   ?file:string -> *)
-(*   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit *)
-
-(* val err: lex_error -> FLoc.t -> 'a *)
-
-(* val warn: lex_error -> FLoc.t -> unit *)
 
 val token: context ->  Lexing.lexbuf ->  [> FToken.t ]
 
