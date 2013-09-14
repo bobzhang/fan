@@ -173,18 +173,18 @@ type context =
        everytime token is used, the loc is updated to be [lexeme_start_p]
       *)
       antiquots  : bool     ;
-      lexbuf     : lexbuf   ;
+      (* lexbuf     : lexbuf   ; *)
       buffer     : Buffer.t }
 
 let (++) = Buffer.add_string       
 (* To buffer string literals, quotations and antiquotations *)
-let store c =
-  c.buffer ++ Lexing.lexeme c.lexbuf
+let store c lexbuf =
+  c.buffer ++ Lexing.lexeme lexbuf
 
-let store_parse f c =  
+let store_parse f c lexbuf =  
   begin
-    store c ;
-    f c c.lexbuf
+    store c  lexbuf;
+    f c lexbuf
   end
                                   
 let buff_contents c =
@@ -199,23 +199,23 @@ let buff_contents c =
 
 
 (** [unsafe] shift the lexing buffer, usually shift back *)    
-let move_curr_p shift c =
-  c.lexbuf.lex_curr_pos <- c.lexbuf.lex_curr_pos + shift
+let move_curr_p shift  lexbuf  =
+  lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 
       
 (** create a new context with  the location of the context for the lexer
    the old context was untouched  *)      
-let with_curr_loc lexer c =
-  lexer {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf
+let with_curr_loc lexer c lexbuf =
+  lexer {c with loc = Lexing.lexeme_start_p lexbuf } lexbuf
     
 
 (** when you return a token make sure the token's location is correct *)
-let mk_quotation quotation c ~name ~loc ~shift ~retract =
-  let old = c.lexbuf.lex_start_p in
+let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
+  let old = lexbuf.lex_start_p in
   let s =
     begin
-      with_curr_loc quotation c;
-      c.lexbuf.lex_start_p <- old;
+      with_curr_loc quotation c lexbuf;
+      lexbuf.lex_start_p <- old;
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
@@ -235,8 +235,8 @@ let mk_quotation quotation c ~name ~loc ~shift ~retract =
     bol would require retract one chars  when parsing it as a whole
     ]}
  *)
-let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
-  let lexbuf = c.lexbuf in
+let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)  c lexbuf  =
+  (* let lexbuf = lexbuf in *)
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with
   | None -> pos.pos_fname
@@ -257,20 +257,20 @@ let warn error (loc:FLoc.t) =
 let rec comment c = {:lexer|
   |"(*"  ->
       begin
-        store c;
-        with_curr_loc comment c;
+        store c lexbuf ;
+        with_curr_loc comment c lexbuf;
         (* to give better error message, put the current location here *)
-        comment c c.lexbuf
+        comment c lexbuf
       end
-  | "*)"  ->  store c (* finished *)
+  | "*)"  ->  store c lexbuf(* finished *)
 
   | newline ->
       begin
-        update_loc c ;
-        store_parse comment c
+        update_loc c lexbuf ;
+        store_parse comment c lexbuf;
       end
-  | eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc c.lexbuf.lex_curr_p
-  | _ ->  store_parse comment c 
+  | eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc lexbuf.lex_curr_p
+  | _ ->  store_parse comment c lexbuf 
 |}
 
 
@@ -280,27 +280,27 @@ let rec comment c = {:lexer|
     c.buffer keeps the lexed result 
  *)    
 let rec string c = {:lexer|
-  | '"' ->    c.lexbuf.lex_start_p <-  c.loc (* finished *)
+  | '"' ->    lexbuf.lex_start_p <-  c.loc (* FIXME finished *)
   | '\\' newline ([' ' '\t'] * as space) ->
       begin
-        update_loc c  ~retract:(String.length space);
-        store_parse string c
+        update_loc c lexbuf  ~retract:(String.length space);
+        store_parse string c lexbuf
       end
-  | '\\' ['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] -> store_parse string c 
-  | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  store_parse string c 
-  | '\\' 'x' hexa_char hexa_char ->  store_parse string c 
+  | '\\' ['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] -> store_parse string c lexbuf
+  | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9'] ->  store_parse string c lexbuf
+  | '\\' 'x' hexa_char hexa_char ->  store_parse string c lexbuf
   | '\\' (_ as x) ->
       (warn
          (Illegal_escape (String.make 1 x))
          (Location_util.from_lexbuf lexbuf);
-        store_parse string c)
+        store_parse string c lexbuf)
   | newline ->
       begin
-        update_loc c ;
-        store_parse string c
+        update_loc c lexbuf;
+        store_parse string c lexbuf
       end
-  | eof ->  err Unterminated_string @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
-  | _ ->  store_parse string c 
+  | eof ->  err Unterminated_string @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+  | _ ->  store_parse string c lexbuf
 |}
 
 
@@ -309,80 +309,81 @@ let rec string c = {:lexer|
 let rec  antiquot name depth c  = {:lexer|
   | ')' ->
       if depth = 0 then (* only cares about FLoc.start_pos *)
-        (c.lexbuf.lex_start_p <-  c.loc ; `Ant(name, buff_contents c))
-      else store_parse (antiquot name (depth-1)) c
-  | '('    ->  store_parse (antiquot name (depth+1)) c
+        (lexbuf.lex_start_p <-  c.loc ; `Ant(name, buff_contents c))
+      else store_parse (antiquot name (depth-1)) c lexbuf
+  | '('    ->  store_parse (antiquot name (depth+1)) c lexbuf
         
-  | eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
+  | eof  ->
+      err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
   | newline   ->
       begin
-        update_loc c ;
-        store_parse (antiquot name depth) c
+        update_loc c lexbuf;
+        store_parse (antiquot name depth) c lexbuf
       end
   | '{' (':' ident)? ('@' locname)? '|' (extra_quot as p)? ->
       begin 
         Stack.push p opt_char ;
-        store c ;
-        with_curr_loc quotation c ;
-        antiquot name depth c c.lexbuf
+        store c lexbuf;
+        with_curr_loc quotation c lexbuf;
+        antiquot name depth c lexbuf
       end
   | "\"" ->
       begin
-        store c ;
-        with_curr_loc string c;
+        store c lexbuf;
+        with_curr_loc string c lexbuf;
         Buffer.add_char c.buffer '"';
-        antiquot name depth c c.lexbuf
+        antiquot name depth c lexbuf
       end
 
-  | _  ->  store_parse (antiquot name depth) c
+  | _  ->  store_parse (antiquot name depth) c lexbuf
 |}
 
 and quotation c = {:lexer|
   | '{' (':' quotation_name)? ('@' locname)? '|' (extra_quot as p)?
       ->
         begin
-          store c ;
+          store c lexbuf ;
           Stack.push p opt_char; (* take care the order matters*)
-          with_curr_loc quotation c ;
-          quotation c c.lexbuf
+          with_curr_loc quotation c lexbuf;
+          quotation c lexbuf
         end
   | (extra_quot as p)? "|}" ->
       if not (Stack.is_empty opt_char) then
         let top = Stack.top opt_char in
         if p <> top then
-          store_parse quotation c (*move on*)
+          store_parse quotation c lexbuf (*move on*)
         else begin
           ignore (Stack.pop opt_char);
-          store c
+          store c lexbuf
         end
       else
-        store_parse quotation c
+        store_parse quotation c lexbuf
   | "\"" ->
       begin
-        store c;
-        with_curr_loc string c;
+        store c lexbuf;
+        with_curr_loc string c lexbuf;
         Buffer.add_char c.buffer '"';
-        quotation c c.lexbuf
+        quotation c lexbuf
       end
   | "'" ( [! '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
           | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  ) "'"
-           -> store_parse quotation c 
+           -> store_parse quotation c lexbuf 
   | eof ->
      begin
       show_stack ();
-      err Unterminated_quotation @@  Location_util.of_positions c.loc c.lexbuf.lex_curr_p
+      err Unterminated_quotation @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
      end
   | newline ->
       begin
-        update_loc c ;
-        store_parse quotation c
+        update_loc c lexbuf ;
+        store_parse quotation c lexbuf
       end
-  | _ -> store_parse quotation c
+  | _ -> store_parse quotation c lexbuf
           
 |}
     
 let  token c = {:lexer|
-  | newline -> (update_loc c; `NEWLINE)
+  | newline -> (update_loc c lexbuf; `NEWLINE)
 
   | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
 
@@ -403,9 +404,9 @@ let  token c = {:lexer|
        *)
   | float_literal as f -> `Flo f       (** FIXME safety check *)
 
-  | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
+  | '"' -> ( with_curr_loc string c lexbuf; let s = buff_contents c in `Str s )
   | "'" (newline as x) "'" ->
-           ( update_loc c  ~retract:1; `Chr x )
+           ( update_loc c  lexbuf ~retract:1; `Chr x )
 
   | "'" (ocaml_char as x ) "'" -> `Chr x 
 
@@ -425,14 +426,14 @@ let  token c = {:lexer|
   | blank + as x ->  `BLANKS x 
   (* comment *)      
   | "(*" ->
-      (store c;
-       (with_curr_loc comment c;  `COMMENT ( buff_contents c)))
+      (store c lexbuf;
+       (with_curr_loc comment c lexbuf;  `COMMENT ( buff_contents c)))
   | "(*)" -> 
       ( warn Comment_start (Location_util.from_lexbuf lexbuf) ;
-        comment c c.lexbuf; `COMMENT (buff_contents c))
+        comment c lexbuf; `COMMENT (buff_contents c))
   | "*)" ->
       ( warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
-        move_curr_p (-1) c; `Sym "*")
+        move_curr_p (-1) lexbuf; `Sym "*")
 
   (* quotation handling *)      
   | "{|" (extra_quot as p)?  ->
@@ -440,13 +441,13 @@ let  token c = {:lexer|
        Stack.push p opt_char;
        let len = 2 + opt_char_len p in 
        mk_quotation
-         quotation c ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
+         quotation c lexbuf ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len)
   | "{||}" -> 
            `Quot { FToken.name=FToken.empty_name; loc=""; shift=2; content="" }
   | "{@" (ident as loc) '|' (extra_quot as p)?  ->
       begin
         Stack.push p opt_char;
-        mk_quotation quotation c ~name:(FToken.empty_name) ~loc
+        mk_quotation quotation c lexbuf ~name:(FToken.empty_name) ~loc
           ~shift:(2 + 1 + String.length loc + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
@@ -457,7 +458,7 @@ let  token c = {:lexer|
       let name = FToken.name_of_string name in
       begin
         Stack.push p opt_char;
-        mk_quotation quotation c
+        mk_quotation quotation c lexbuf
           ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
@@ -467,7 +468,7 @@ let  token c = {:lexer|
       let name = FToken.name_of_string name in
       begin
         Stack.push p opt_char;
-        mk_quotation quotation c ~name ~loc
+        mk_quotation quotation c lexbuf ~name ~loc
           ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
           ~retract:(2 + opt_char_len p)
       end
@@ -477,9 +478,9 @@ let  token c = {:lexer|
       let len = String.length name in
       let () = Stack.push p opt_char in
       let retract = opt_char_len p + 2 in  (*/|} *)
-      let old = c.lexbuf.lex_start_p in
+      let old = lexbuf.lex_start_p in
         let s =
-          (with_curr_loc quotation c; c.lexbuf.lex_start_p<-old;buff_contents c;) in
+          (with_curr_loc quotation c lexbuf; lexbuf.lex_start_p<-old;buff_contents c;) in
 
         let contents = String.sub s 0 (String.length s - retract) in
         `DirQuotation(3+1 +len +(opt_char_len p), name,contents)
@@ -487,7 +488,7 @@ let  token c = {:lexer|
       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
       [! '\010' '\013'] * newline ->
         let inum = int_of_string num in begin 
-          update_loc c ?file:name ~line:inum ~absolute:true ;
+          update_loc c lexbuf ?file:name ~line:inum ~absolute:true ;
           `LINE_DIRECTIVE(inum, name)
         end
   (* Antiquotation handling *)        
@@ -499,7 +500,7 @@ let  token c = {:lexer|
         | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) ->
             begin
               let move_start_p shift c =
-                c.lexbuf.lex_start_p <- FLoc.move_pos shift c.lexbuf.lex_start_p in
+                lexbuf.lex_start_p <- FLoc.move_pos shift lexbuf.lex_start_p in
               move_start_p (String.length name + 1) c;  `Ant(name,x)
             end
         | lident as x  ->   `Ant("",x) 
@@ -507,16 +508,16 @@ let  token c = {:lexer|
 
             antiquot name 0
               {c with loc = FLoc.move_pos (3+String.length name) c.loc}
-              c.lexbuf
+              lexbuf
         | '(' ->
-            antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} c.lexbuf 
+            antiquot "" 0 {c with loc = FLoc.move_pos  2 c.loc} lexbuf 
         | _ as c ->
             err (Illegal_character c) (Location_util.from_lexbuf lexbuf) |} in        
       if  c.antiquots then  (* FIXME maybe always lex as antiquot?*)
-        with_curr_loc dollar c
+        with_curr_loc dollar c lexbuf
       else err Illegal_antiquote (Location_util.from_lexbuf lexbuf)
   | eof ->
-      let pos = lexbuf.lex_curr_p in
+      let pos = lexbuf.lex_curr_p in (* FIXME *)
       (lexbuf.lex_curr_p <-
         { pos with pos_bol  = pos.pos_bol  + 1 ;
           pos_cnum = pos.pos_cnum + 1 };
@@ -530,11 +531,11 @@ let from_lexbuf lb =
   let c = {
     loc = Lexing.lexeme_start_p lb;
     antiquots = !FConfig.antiquotations;
-    lexbuf = lb;
+    (* lexbuf = lb; *)
     buffer = Buffer.create 256
   } in
   let next _ =
-    let tok =  token {c with loc = Lexing.lexeme_start_p c.lexbuf } c.lexbuf in
-    let loc = Location_util.from_lexbuf c.lexbuf in
+    let tok =  token {c with loc = Lexing.lexeme_start_p lb } lb in
+    let loc = Location_util.from_lexbuf lb in
     Some ((tok, loc)) in (* this requires the [lexeme_start_p] to be correct ...  *)
   XStream.from next

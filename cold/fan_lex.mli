@@ -1,6 +1,6 @@
 
 (** Fan's lexer using [lex] DDSL *)  
-open Lexing
+(* open Lexing *)
 type lex_error =
 
   | Illegal_character of char
@@ -24,7 +24,7 @@ type lex_error =
 type context =
     { loc        : FLoc.position ;
       antiquots  : bool ;
-      lexbuf     : lexbuf ;
+      (* lexbuf     : lexbuf ; *)
       buffer     : Buffer.t }
         
 exception Lexing_error of lex_error
@@ -33,19 +33,19 @@ val turn_off_quotation_debug: unit -> unit
 val clear_stack: unit -> unit
 val show_stack: unit -> unit
 
-val mk_quotation:
-  (context -> Lexing.lexbuf -> 'a) ->
-  context ->
-  name:FToken.name ->
-  loc:string ->
-  shift:int -> retract:int -> [> `Quot of FToken.quot ]
-val update_loc:
-  ?file:string ->
-  ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit
+(* val mk_quotation: *)
+(*   (context -> Lexing.lexbuf -> 'a) -> *)
+(*   context -> *)
+(*   name:FToken.name -> *)
+(*   loc:string -> *)
+(*   shift:int -> retract:int -> [> `Quot of FToken.quot ] *)
+(* val update_loc: *)
+(*   ?file:string -> *)
+(*   ?absolute:bool -> ?retract:int -> ?line:int -> context -> unit *)
 
-val err: lex_error -> FLoc.t -> 'a
+(* val err: lex_error -> FLoc.t -> 'a *)
 
-val warn: lex_error -> FLoc.t -> unit
+(* val warn: lex_error -> FLoc.t -> unit *)
 
 val token: context ->  Lexing.lexbuf ->  [> FToken.t ]
 
