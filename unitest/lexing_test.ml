@@ -111,6 +111,16 @@ let test_ant_paren _ =
        loc_end =
        {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
        loc_ghost = false})]
+
+let test_ant_str _ =
+  Ref.protect FConfig.antiquotations true @@ fun _ -> Flex_lib.get_tokens {:str|$(")")|}
+      ===
+    [`Ant ("", "(\")\")"); `EOI]
+
+let test_ant_chr _ = 
+  Ref.protect FConfig.antiquotations true @@ fun _ -> Flex_lib.get_tokens {:str|$(')')|}
+      ===
+    [`Ant("","(')')"); `EOI ]
       
 let suite =
   "Lexing_test" >:::
@@ -128,6 +138,7 @@ let suite =
      "test_ant" >:: test_ant;
      "test_ant_quot" >:: test_ant_quot;
      "test_ant_paren" >:: test_ant_paren;
+     "test_ant_str" >:: test_ant_str
    ]
 
     

@@ -37,10 +37,11 @@ val show_stack: unit -> unit
 
 val token:  Lexing.lexbuf ->  [> FToken.t ]
 
-val comment: context -> Lexing.lexbuf -> unit
+val lex_comment: context -> Lexing.lexbuf -> unit
 
-val string: context -> Lexing.lexbuf -> unit
+val lex_string: context -> Lexing.lexbuf -> unit
 
+val lex_quotation: context -> Lexing.lexbuf -> unit    
 
 (** In initial stage
     [Lexing.lexeme_start_p] returns
