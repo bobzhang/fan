@@ -41,7 +41,7 @@ let _ =
                 (`App ((`Vrn "Str"), `Any)), "`Str _")],
              ("require s\n",
                (Fgram.mk_action
-                  (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                  (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                      match __fan_1 with
                      | `Str s -> (require s : 'item )
                      | _ -> failwith "require s\n"))))]))

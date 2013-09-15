@@ -75,7 +75,7 @@ let mk_quotation quotation c lexbuf ~name  ~loc  ~shift  ~retract  =
     lexbuf.lex_start_p <- old;
     buff_contents c in
   let content = String.sub s 0 ((String.length s) - retract) in
-  `Quot { FToken.name = name; loc; shift; content }
+  `Quot { Ftoken.name = name; loc; shift; content }
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  lexbuf =
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with | None  -> pos.pos_fname | Some s -> s in
@@ -7548,7 +7548,7 @@ let token lexbuf =
     | 19 ->
         `Quot
           {
-            FToken.name = FToken.empty_name;
+            Ftoken.name = Ftoken.empty_name;
             loc = None;
             shift = 2;
             content = ""
@@ -7560,7 +7560,7 @@ let token lexbuf =
         let c = default_cxt lexbuf in
         let len = 2 + (opt_char_len p) in
         (Stack.push p opt_char;
-         mk_quotation lex_quotation c lexbuf ~name:FToken.empty_name
+         mk_quotation lex_quotation c lexbuf ~name:Ftoken.empty_name
            ~loc:None ~shift:len ~retract:len)
     | 21 ->
         let loc =
@@ -7571,7 +7571,7 @@ let token lexbuf =
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
         let c = default_cxt lexbuf in
         (Stack.push p opt_char;
-         mk_quotation lex_quotation c lexbuf ~name:FToken.empty_name
+         mk_quotation lex_quotation c lexbuf ~name:Ftoken.empty_name
            ~loc:(Some loc)
            ~shift:(((2 + 1) + (String.length loc)) + (opt_char_len p))
            ~retract:(2 + (opt_char_len p)))
@@ -7584,7 +7584,7 @@ let token lexbuf =
             (((lexbuf.Lexing.lex_mem).(1)) + 0) in
         let c = default_cxt lexbuf in
         let len = String.length name in
-        let name = FToken.name_of_string name in
+        let name = Ftoken.name_of_string name in
         (Stack.push p opt_char;
          mk_quotation lex_quotation c lexbuf ~name ~loc:None
            ~shift:(((2 + 1) + len) + (opt_char_len p))
@@ -7601,7 +7601,7 @@ let token lexbuf =
             (((lexbuf.Lexing.lex_mem).(2)) + 0) in
         let c = default_cxt lexbuf in
         let len = String.length name in
-        let name = FToken.name_of_string name in
+        let name = Ftoken.name_of_string name in
         (Stack.push p opt_char;
          mk_quotation lex_quotation c lexbuf ~name ~loc:(Some loc)
            ~shift:((((2 + 2) + (String.length loc)) + len) + (opt_char_len p))

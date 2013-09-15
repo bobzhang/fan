@@ -1,6 +1,6 @@
 open FAst
 open LibUtil
-open FToken
+open Ftoken
 open Format
 
 
@@ -156,7 +156,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 
 (* called by [expand] *)
-let expand_quotation loc ~expander pos_tag (x:FToken.quot) =
+let expand_quotation loc ~expander pos_tag (x:Ftoken.quot) =
   try expander loc x.loc x.content with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
      raise exc
@@ -186,7 +186,7 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (x:FToken.quot) (tag:'a FDyn.tag) : 'a =
+let expand loc (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
   (* resolve name when expansion*)
   let try expander = find loc x.name tag

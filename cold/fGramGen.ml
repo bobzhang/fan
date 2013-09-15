@@ -72,7 +72,7 @@ let make_ctyp (styp : styp) tvar =
             (_loc,
               (`Ctyp
                  (_loc,
-                   (`Dot (_loc, (`Uid (_loc, "FToken")), (`Lid (_loc, "t"))))))) : 
+                   (`Dot (_loc, (`Uid (_loc, "Ftoken")), (`Lid (_loc, "t"))))))) : 
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )

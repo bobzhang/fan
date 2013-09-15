@@ -23,7 +23,7 @@ let apply () =
                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
            ("n\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid n -> (n : 'uid )
                    | _ -> failwith "n\n"))))]));
@@ -69,7 +69,7 @@ let apply () =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Uid n ->
                        (Ref.protect Compile_stream.grammar_module_name n
@@ -85,7 +85,7 @@ let apply () =
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
           ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
             (Fgram.mk_action
-               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> FToken.t]) 
+               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> Ftoken.t]) 
                   _  (_loc : FLoc.t)  ->
                   match __fan_1 with
                   | `Uid n ->

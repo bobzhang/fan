@@ -4,12 +4,12 @@
 
 type t = {
     mutable kwds : LibUtil.SSet.t;
-    mutable filter : FToken.filter;
+    mutable filter : Ftoken.filter;
   }
 
 (* val mk : is_kwd:(string -> bool) -> t *)
 
-val filter : t -> (FToken.t * FLoc.t) XStream.t -> FToken.stream
+val filter : t -> (Ftoken.t * FLoc.t) XStream.t -> Ftoken.stream
 
-val set_filter : t -> (FToken.filter -> FToken.filter) -> unit
+val set_filter : t -> (Ftoken.filter -> Ftoken.filter) -> unit
 

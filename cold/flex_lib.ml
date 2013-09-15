@@ -46,7 +46,7 @@ let debug_from_string str =
   (stream |> clean) |>
     (XStream.iter
        (fun (t,loc)  ->
-          fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc))
+          fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc))
 let list_of_string ?(verbose= true)  str =
   let result = ref [] in
   let loc = FLoc.string_loc in
@@ -57,7 +57,7 @@ let list_of_string ?(verbose= true)  str =
           result := ((t, loc) :: (result.contents));
           if verbose
           then
-            fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc));
+            fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc));
   List.rev result.contents
 let get_tokens s = List.map fst (list_of_string ~verbose:false s)
 let debug_from_file file =
@@ -67,4 +67,4 @@ let debug_from_file file =
   ((from_stream loc stream) |> clean) |>
     (XStream.iter
        (fun (t,loc)  ->
-          fprintf std_formatter "%a@;%a@\n" FToken.print t FLoc.print loc))
+          fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc))

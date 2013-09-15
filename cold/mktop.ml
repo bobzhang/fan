@@ -406,7 +406,7 @@ let _ =
           `Skeyword ";"],
            ("AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Fgram.mk_action
-                (fun _  (ns : 'name list)  _  (__fan_0 : [> FToken.t]) 
+                (fun _  (ns : 'name list)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid m ->
@@ -438,7 +438,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x -> (`Lid (_loc, x) : 'name )
                    | _ -> failwith "`Lid (_loc, x)\n"))))]))

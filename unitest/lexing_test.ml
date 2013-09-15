@@ -47,7 +47,7 @@ let test_quotation _ =
   Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|}
   ===
   [(`Quot
-    {FToken.name = (`Sub [], "lexer"); loc = ""; shift = 8;
+    {Ftoken.name = (`Sub [], "lexer"); loc = ""; shift = 8;
      content = "abcdef"},
   {FLoc.loc_start =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};

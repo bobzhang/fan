@@ -76,7 +76,7 @@ val text_of_action :
                      `Skeyword ":";
                      `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
                       (Fgram.mk_action
-                         (fun (r : 'regexp)  _  (__fan_0 : [> FToken.t]) 
+                         (fun (r : 'regexp)  _  (__fan_0 : [> Ftoken.t]) 
                             (_loc : FLoc.t)  ->
                             match __fan_0 with
                             | `Lid x -> ((x, r) : 'e__2 )
@@ -116,22 +116,22 @@ val text_of_action :
                        (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
                       (Fgram.mk_action
                          (fun (y : 'dot_lstrings)  _ 
-                            (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                            (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                             match __fan_0 with
                             | `Lid x ->
-                                (((x : string ), (FToken.resolve_name y)) : 
+                                (((x : string ), (Ftoken.resolve_name y)) : 
                                 'e__2 )
                             | _ -> assert false)));
                    ([`Stoken
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
                      (Fgram.mk_action
-                        (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t) 
+                        (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                            ->
                            match __fan_0 with
                            | `Lid x ->
                                (((x : string ),
-                                  (FToken.resolve_name ((`Sub []), x))) : 
+                                  (Ftoken.resolve_name ((`Sub []), x))) : 
                                'e__2 )
                            | _ -> assert false)))]), (`Skeyword ";"))
    `Snext

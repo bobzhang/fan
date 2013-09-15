@@ -12,7 +12,7 @@ let _ =
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("AstQuotation.set_default (AstQuotation.resolve_name _loc ((`Sub []), s))\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Str s ->
                        (AstQuotation.set_default
@@ -34,7 +34,7 @@ let _ =
              (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("AstFilters.use_implem_filter s\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                   match __fan_1 with
                   | `Str s -> (AstFilters.use_implem_filter s : 'item )
                   | _ -> failwith "AstFilters.use_implem_filter s\n"))));
@@ -54,7 +54,7 @@ let _ =
           `Sself],
            ("i :: xs\n",
              (Fgram.mk_action
-                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> FToken.t]) 
+                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid i -> (i :: xs : 'dot_namespace )
@@ -64,7 +64,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("[i]\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Uid i -> ([i] : 'dot_namespace )
                   | _ -> failwith "[i]\n"))))]));

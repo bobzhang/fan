@@ -224,7 +224,7 @@ let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
-  `Quot {FToken.name;loc;shift;content}
+  `Quot {Ftoken.name;loc;shift;content}
     
 
 
@@ -459,27 +459,27 @@ let  token  = {:lexer|
         `COMMENT (buff_contents c)
       end
   (* quotation handling *)
-  | "{||}" -> `Quot { FToken.name=FToken.empty_name; loc=None; shift=2; content="" }        
+  | "{||}" -> `Quot { Ftoken.name=Ftoken.empty_name; loc=None; shift=2; content="" }        
   | "{|" (extra_quot as p)?  ->
       let c  = default_cxt lexbuf in
       let len = 2 + opt_char_len p in 
       begin 
         Stack.push p opt_char;
         mk_quotation
-          lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc:None ~shift:len ~retract:len
+          lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc:None ~shift:len ~retract:len
       end
   | "{@" (ident as loc) '|' (extra_quot as p)?  ->
       let c = default_cxt lexbuf in
       begin
         Stack.push p opt_char;
-        mk_quotation lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc:(Some loc)
+        mk_quotation lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc:(Some loc)
           ~shift:(2 + 1 + String.length loc + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
   | "{" ":" (quotation_name as name) '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
       let len = String.length name in
-      let name = FToken.name_of_string name in
+      let name = Ftoken.name_of_string name in
       begin
         Stack.push p opt_char;
         mk_quotation lex_quotation c lexbuf
@@ -489,7 +489,7 @@ let  token  = {:lexer|
   | "{" ":" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
       let len = String.length name in 
-      let name = FToken.name_of_string name in
+      let name = Ftoken.name_of_string name in
       begin
         Stack.push p opt_char;
         mk_quotation lex_quotation c lexbuf ~name ~loc:(Some loc)

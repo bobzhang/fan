@@ -114,7 +114,7 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y")],
                  ("((new Objs.reloc) _loc)#exp e\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )
                          | _ -> failwith "((new Objs.reloc) _loc)#exp e\n"))))]));
@@ -128,7 +128,7 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y")],
                  ("let p = substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
                              (let p = substp _loc [] e in
@@ -151,7 +151,7 @@ let define ~exp  ~pat  eo y =
                 `Sself],
                  ("let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
                    (Fgram.mk_action
-                      (fun (param : 'exp)  (__fan_0 : [> FToken.t]) 
+                      (fun (param : 'exp)  (__fan_0 : [> Ftoken.t]) 
                          (_loc : FLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
@@ -186,7 +186,7 @@ let define ~exp  ~pat  eo y =
                      (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
                  ("x\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                          match __fan_0 with
                          | `Lid x -> (x : 'param )
                          | _ -> failwith "x\n"))))]));
@@ -201,7 +201,7 @@ let define ~exp  ~pat  eo y =
                 `Sself],
                  ("let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
                    (Fgram.mk_action
-                      (fun (param : 'pat)  (__fan_0 : [> FToken.t]) 
+                      (fun (param : 'pat)  (__fan_0 : [> Ftoken.t]) 
                          (_loc : FLoc.t)  ->
                          match __fan_0 with
                          | `Uid _ ->

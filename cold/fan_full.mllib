@@ -6,7 +6,7 @@ FConfig
 FDyn
 FLoc
 StdFan
-FToken
+Ftoken
 FanTokenFilter
 Gaction
 TokenEval

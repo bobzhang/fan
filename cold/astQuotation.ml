@@ -1,6 +1,6 @@
 open FAst
 open LibUtil
-open FToken
+open Ftoken
 open Format
 let paths: domains list ref =
   ref
@@ -81,7 +81,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
-let expand_quotation loc ~expander  pos_tag (x : FToken.quot) =
+let expand_quotation loc ~expander  pos_tag (x : Ftoken.quot) =
   try expander loc x.loc x.content
   with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
   | FLoc.Exc_located (iloc,exc) ->
@@ -107,7 +107,7 @@ let find loc name tag =
                 (QuotationError (loc, name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
-let expand loc (x : FToken.quot) (tag : 'a FDyn.tag) =
+let expand loc (x : Ftoken.quot) (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in
    (try
       let expander = find loc x.name tag

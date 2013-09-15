@@ -62,7 +62,7 @@ val qualid : vid Fgram.t
 val t_qualid : vid Fgram.t
     
 val entry_name :
-    ([ `name of FToken.name | `non ] * FGramDef.name) Fgram.t
+    ([ `name of Ftoken.name | `non ] * FGramDef.name) Fgram.t
 
 
 (** return an entry [FGramDef.entry]

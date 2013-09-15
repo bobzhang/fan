@@ -1,7 +1,7 @@
 open LibUtil
 type t = {
     mutable kwds : SSet.t;
-    mutable filter : FToken.filter;
+    mutable filter : Ftoken.filter;
   }
 
 type error =  

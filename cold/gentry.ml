@@ -2,7 +2,7 @@ open LibUtil
 open Format
 open Gstructure
 open Gtools
-open FToken
+open Ftoken
 type 'a t = entry 
 let name e = e.ename
 let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e

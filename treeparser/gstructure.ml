@@ -7,7 +7,7 @@ type position =
 
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a FToken.parse 
+type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a Ftoken.parse 
     
 (** Duplicated in fgram.mli *)
 type loc = FLoc.t
@@ -40,7 +40,7 @@ and rec_pat =
 (* ATTENTION: the type system can not guarantee it would compile *)      
 type descr = pat
 
-type token_pattern = (FToken.t -> bool) * descr * string
+type token_pattern = (Ftoken.t -> bool) * descr * string
     (* [arg1] is used for runtime parsing, generated at compile time
        [arg2] is used for runtime merging, generated at compile time
        [arg3] is used for runtime error message
@@ -61,13 +61,13 @@ type label =  string option
 type entry = {
     egram     : gram;
     ename     : string;
-    mutable estart    :  int -> Gaction.t FToken.parse ;
+    mutable estart    :  int -> Gaction.t Ftoken.parse ;
     mutable econtinue : int -> Gaction.t cont_parse ;
     mutable edesc     :  desc;
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 
-  | Dparser of (FToken.stream -> Gaction.t )
+  | Dparser of (Ftoken.stream -> Gaction.t )
 and level = {
     lname   : label;
     assoc   : assoc ;

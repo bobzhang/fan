@@ -14,7 +14,7 @@ open LibUtil
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
    (t_qualid:vid Fgram.t )
-   (entry_name : ([`name of FToken.name | `non] * FGramDef.name) Fgram.t )
+   (entry_name : ([`name of Ftoken.name | `non] * FGramDef.name) Fgram.t )
     entry position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
    (entry: FGramDef.entry Fgram.t)

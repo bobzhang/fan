@@ -15,12 +15,12 @@ val trace_parser : bool ref
 
 val mk_dynamic : gram -> string -> 'a t
 
-val action_parse : 'a t -> FToken.stream -> Gaction.t
+val action_parse : 'a t -> Ftoken.stream -> Gaction.t
 
 val of_parser :
-  gram -> string -> (FToken.stream -> 'a) -> 'a t
+  gram -> string -> (Ftoken.stream -> 'a) -> 'a t
 
-val setup_parser : 'a t -> (FToken.stream -> 'a) -> unit
+val setup_parser : 'a t -> (Ftoken.stream -> 'a) -> unit
 
 val clear : 'a t -> unit
 
@@ -28,17 +28,17 @@ val obj : 'a t -> entry
 
 val repr : entry -> 'a t
 
-val parse_origin_tokens : 'a t -> FToken.stream -> 'a
+val parse_origin_tokens : 'a t -> Ftoken.stream -> 'a
 
-val filter_and_parse_tokens : 'a t -> (FToken.t * FLoc.t) XStream.t -> 'a
+val filter_and_parse_tokens : 'a t -> (Ftoken.t * FLoc.t) XStream.t -> 'a
 
 val glexer :
-  FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
+  FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
 val lex :
-  FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
+  FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
 
 
-val lex_string : FLoc.t -> string -> (FToken.t * FLoc.t) XStream.t
+val lex_string : FLoc.t -> string -> (Ftoken.t * FLoc.t) XStream.t
 
 val parse_string : ?loc:FLoc.t -> 'a t -> string -> 'a
 
@@ -67,7 +67,7 @@ val symb_failed :  'b t ->  'a -> symbol -> symbol -> string
 
 val symb_failed_txt :  'a t -> symbol -> symbol -> string
 
-val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * FLoc.t) FToken.parse
+val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * FLoc.t) Ftoken.parse
 val levels_of_entry : 'a t -> Gstructure.level list option      
     
 val copy : 'a t -> 'a t
