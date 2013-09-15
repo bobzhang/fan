@@ -47,7 +47,7 @@ let test_quotation _ =
   Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|}
   ===
   [(`Quot
-    {Ftoken.name = (`Sub [], "lexer"); loc = ""; shift = 8;
+    {Ftoken.name = (`Sub [], "lexer"); loc = None; shift = 8;
      content = "abcdef"},
   {FLoc.loc_start =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
@@ -142,7 +142,9 @@ let suite =
   "Lexing_test" >:::
   [
   "test_comment_pos" >:: test_comment_pos;
+
    "test_ant_chr" >:: test_ant_chr;
+
    "test_empty_string" >:: test_empty_string;
 
    "test_escaped_string" >:: test_escaped_string;
@@ -151,7 +153,7 @@ let suite =
 
    "test_quotation" >:: test_quotation;
 
-   "test_quotation" >:: test_string;
+   "test_string" >:: test_string;
    
    "test_char" >:: test_char;
    "test_ant" >:: test_ant;
