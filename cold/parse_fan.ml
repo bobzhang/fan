@@ -48,7 +48,7 @@ let apply () =
         | _ -> symb1 __strm in
       let rec kont al (__strm : _ XStream.t) =
         match XStream.peek __strm with
-        | Some (`KEYWORD ";",_) ->
+        | Some (`Key ";",_) ->
             (XStream.junk __strm;
              (let a =
                 try symb __strm

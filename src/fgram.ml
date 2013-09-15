@@ -136,8 +136,8 @@ let eoi_entry entry =
   ({:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;
    entry_eoi)
 
-let find_level ?position entry =
-  match entry.edesc with
+let find_level ?position (entry:Gstructure.entry) =
+  match entry.desc with
   | Dparser _ -> invalid_arg "Fgram.find_level"
   | Dlevels levs -> let (_,f,_) = Ginsert.find_level ?position entry levs in f
 

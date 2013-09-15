@@ -63,7 +63,7 @@ let rec delete_rule_in_suffix entry symbols = function
       (match delete_rule_in_tree entry symbols lev.lsuffix with
       | Some (dsl, t) ->begin 
         (match dsl with
-        | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+        | Some dsl -> List.iter (decr_keyw_use entry.gram) dsl
         | None -> () );
         match t with
         | DeadEnd when lev.lprefix == DeadEnd -> levs
@@ -81,7 +81,7 @@ let rec delete_rule_in_prefix entry symbols = function
       (match delete_rule_in_tree entry symbols lev.lprefix with
       | Some (dsl, t) -> begin 
           (match dsl with
-          | Some dsl -> List.iter (decr_keyw_use entry.egram) dsl
+          | Some dsl -> List.iter (decr_keyw_use entry.gram) dsl
           | None -> ()) ;
           match t with
           | DeadEnd when lev.lsuffix == DeadEnd -> levs
@@ -102,14 +102,14 @@ let  delete_rule_in_level_list entry symbols levs =
 
 
 let delete_rule entry sl =
-  match entry.edesc with
+  match entry.desc with
   | Dlevels levs ->
       let levs = delete_rule_in_level_list entry sl levs in begin
-        entry.edesc <- Dlevels levs;
+        entry.desc <- Dlevels levs;
         let start = Gparser.start_parser_of_entry entry in
         let continue = Gparser.continue_parser_of_entry entry in begin 
-          entry.estart <- start;
-          entry.econtinue <- continue
+          entry.start <- start;
+          entry.continue <- continue
         end
       end
   | Dparser _ -> ()

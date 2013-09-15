@@ -3,7 +3,7 @@ let setup_op_parser entry p =
   Fgram.setup_parser entry
     (fun (__strm : _ XStream.t)  ->
        match XStream.peek __strm with
-       | Some ((`KEYWORD x|`Sym x),_loc) when p x ->
+       | Some ((`Key x|`Sym x),_loc) when p x ->
            (XStream.junk __strm; (`Lid (_loc, x) : FAst.exp ))
        | _ -> raise XStream.NotConsumed)
 let symbolchars =

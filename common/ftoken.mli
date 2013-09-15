@@ -29,7 +29,7 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
   contains more information that's needed for a good pretty-printing
   ("42", "4_2", "0000042", "0b0101010"...).
 
-  [KEYWORD s] is the keyword [s].
+  [Key s] is the keyword [s].
   [LidENT s] is the ident [s] starting with a lowercase letter.
   [UidENT s] is the ident [s] starting with an uppercase letter.
   [INT i s]
@@ -70,7 +70,7 @@ type space_token =
    | `LINE_DIRECTIVE of (int * string option) ]
       
 type t =
-  [ `KEYWORD        of string
+  [ `Key        of string
   | `Sym            of string
   | `Lid            of string
   | `Uid            of string
@@ -90,7 +90,11 @@ type t =
   | dir_quotation
   | `Ant            of (string * string )        
   | `EOI]
-      
+
+
+(**
+   [Ftoken.stram]
+ *)      
 type stream = (t * FLoc.t) XStream.t 
 
 type 'a token  = [> t] as 'a

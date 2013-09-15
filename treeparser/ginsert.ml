@@ -35,16 +35,16 @@ let empty_lev lname assoc =
   {assoc ; lname ; lsuffix = DeadEnd; lprefix = DeadEnd;productions=[]}
 
 
-let levels_of_entry  e =
-  match e.edesc with
+let levels_of_entry  (e: Gstructure.entry) =
+  match e.desc with
   |Dlevels ls -> Some ls
   |_ -> None
     
 
-let find_level ?position entry  levs =
+let find_level ?position (entry:Gstructure.entry)  levs =
   let find x n  ls = 
     let rec get = function
-      | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.ename
+      | [] -> failwithf "Insert.find_level: No level labelled %S in entry %S @." n entry.name
       | lev::levs ->
       if Gtools.is_level_labelled n lev then
         match x with
@@ -68,16 +68,16 @@ let find_level ?position entry  levs =
       | lev :: levs -> ([], Some (lev, "<top>"), levs)
       | [] -> ([], None, []) 
 
-let rec check_gram entry = function
+let rec check_gram (entry : Gstructure.entry) = function
   | `Snterm e ->
-    if e.egram != entry.egram then 
+    if entry.gram  != e.gram  then 
       failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
-        entry.ename e.ename
+        entry.name e.name
   | `Snterml (e, _) ->
-      if e.egram != entry.egram then 
+      if e.gram != entry.gram then 
         failwithf
           "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
-          entry.ename e.ename
+          entry.name e.name
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
@@ -194,26 +194,26 @@ let level_of_olevel (lb:olevel) =
 (* given an [entry] [position] and [rules] return a new list of [levels]*)  
 let insert_olevels_in_levels entry position olevels =
   let elev =
-    match entry.edesc with
+    match entry.desc with
     | Dlevels elev -> elev
     | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename  in
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.name  in
   match olevels with
   | [] -> elev
   | _::_ -> 
       let (levs1, make_lev, levs2) = find_level ?position entry  elev in
       match make_lev with
       | Some (_lev,_n) ->
-          failwithf "Insert group levels in to a specific lev:%s" entry.ename
+          failwithf "Insert group levels in to a specific lev:%s" entry.name
       | None -> levs1 @ List.map level_of_olevel olevels @ levs2 
 
 
-let insert_olevel entry position olevel =
+let insert_olevel (entry:Gstructure.entry) position olevel =
   let elev =
-    match entry.edesc with
+    match entry.desc with
     | Dlevels elev -> elev
     | Dparser _ ->
-        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.ename  in
+        failwithf "Grammar.extend: Error: entry not extensible: %S@." entry.name  in
   let (levs1,v,levs2) = find_level ?position entry elev in
   let l1 =
     match v with
@@ -233,12 +233,12 @@ and scan_product entry (symbols,x) : production  =
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
        let diff =
-         SSet.elements @@ SSet.diff (SSet.of_list keywords) entry.egram.gfilter.kwds
+         SSet.elements @@ SSet.diff (SSet.of_list keywords) entry.gram.gfilter.kwds
        in
        let () =
          if diff <> [] then 
            (failwithf
-              "in grammar %s: keywords introduced: [ %s ] " entry.egram.annot
+              "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot
               (List.reduce_left (^) diff)) in
        let () = check_gram entry symbol in
        match symbol with
@@ -255,8 +255,8 @@ and unsafe_scan_product entry (symbols,x) : production  =
   (List.map
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
-       let () = entry.egram.gfilter.kwds <-
-         SSet.add_list entry.egram.gfilter.kwds keywords in
+       let () = entry.gram.gfilter.kwds <-
+         SSet.add_list entry.gram.gfilter.kwds keywords in
        let () = check_gram entry symbol in
        match symbol with
        |`Snterm e when e == entry -> `Sself
@@ -267,40 +267,40 @@ and unsafe_scan_product entry (symbols,x) : production  =
 let unsafe_extend entry (position,levels) =
   let levels =  unsafe_scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.edesc <- Dlevels elev;
-   entry.estart <-Gparser.start_parser_of_entry entry;
-   entry.econtinue <- Gparser.continue_parser_of_entry entry)
+  (entry.desc <- Dlevels elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
 
 let unsafe_extend_single entry (position,olevel) = 
   let olevel = unsafe_scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.edesc <-Dlevels elev;
-   entry.estart <-Gparser.start_parser_of_entry entry;
-   entry.econtinue <- Gparser.continue_parser_of_entry entry)
+  (entry.desc <-Dlevels elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
     
 let extend entry (position, levels) =
   let levels =  scan_olevels entry levels in (* for side effect *)
   let elev = insert_olevels_in_levels entry position levels in
-  (entry.edesc <- Dlevels elev;
-   entry.estart <-Gparser.start_parser_of_entry entry;
-   entry.econtinue <- Gparser.continue_parser_of_entry entry)
+  (entry.desc <- Dlevels elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
 
 
     
 let extend_single entry (position,olevel) = 
   let olevel = scan_olevel entry olevel in
   let elev = insert_olevel entry position olevel in
-  (entry.edesc <-Dlevels elev;
-   entry.estart <-Gparser.start_parser_of_entry entry;
-   entry.econtinue <- Gparser.continue_parser_of_entry entry)
+  (entry.desc <-Dlevels elev;
+   entry.start <-Gparser.start_parser_of_entry entry;
+   entry.continue <- Gparser.continue_parser_of_entry entry)
 
 let copy (e:entry) : entry =
   let result =
-    {e with estart =  (fun _ -> assert false );
-      econtinue= fun _ -> assert false;
+    {e with start =  (fun _ -> assert false );
+     continue= fun _ -> assert false;
    } in
-  (result.estart <- Gparser.start_parser_of_entry result;
-   result.econtinue <- Gparser.continue_parser_of_entry result;
+  (result.start <- Gparser.start_parser_of_entry result;
+   result.continue <- Gparser.continue_parser_of_entry result;
    result)
 
 let refresh_level ~f {assoc;lname;productions;_}  =
@@ -329,13 +329,15 @@ let  eoi_entry e =
             )],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in
-  let result = {e with estart = (fun _ -> assert false) ;
-    econtinue = fun _ -> assert false;} in
-  (match result.edesc with
+  let result =
+    {e with
+     start = (fun _ -> assert false) ;
+     continue = fun _ -> assert false;} in
+  (match result.desc with
   | Dlevels ls ->
-      (result.edesc <- Dlevels (List.map eoi_level ls);
-       result.estart <- Gparser.start_parser_of_entry result;
-       result.econtinue <- Gparser.continue_parser_of_entry result;
+      (result.desc <- Dlevels (List.map eoi_level ls);
+       result.start <- Gparser.start_parser_of_entry result;
+       result.continue <- Gparser.continue_parser_of_entry result;
        result)
   | Dparser _ -> failwith "Ginsert.eoi_entry Dparser")
 

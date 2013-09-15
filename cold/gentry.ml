@@ -4,73 +4,73 @@ open Gstructure
 open Gtools
 open Ftoken
 type 'a t = entry 
-let name e = e.ename
+let name (e : 'a t) = e.name
 let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
 let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
 let trace_parser = ref false
 let mk_dynamic g n =
-  {
-    egram = g;
-    ename = n;
-    estart = (empty_entry n);
-    econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
-    edesc = (Dlevels []);
-    freezed = false
-  }
-let action_parse entry (ts : stream) =
+  ({
+     gram = g;
+     name = n;
+     start = (empty_entry n);
+     continue =
+       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
+     desc = (Dlevels []);
+     freezed = false
+   } : 'a t )
+let action_parse (entry : 'a t) (ts : stream) =
   (try
      let p =
        if trace_parser.contents then Format.fprintf else Format.ifprintf in
-     p Format.err_formatter "@[<4>%s@ " entry.ename;
-     (let res = entry.estart 0 ts in
+     p Format.err_formatter "@[<4>%s@ " entry.name;
+     (let res = entry.start 0 ts in
       let () = p Format.err_formatter "@]@." in res)
    with
    | XStream.NotConsumed  ->
        FLoc.raise (get_cur_loc ts)
-         (XStream.Error ("illegal begin of " ^ entry.ename))
+         (XStream.Error ("illegal begin of " ^ entry.name))
    | FLoc.Exc_located (_,_) as exc ->
        (eprintf "%s@." (Printexc.to_string exc); raise exc)
    | exc ->
        (eprintf "%s@." (Printexc.to_string exc);
         FLoc.raise (get_cur_loc ts) exc) : Gaction.t )
 let of_parser g n (p : stream -> 'a) =
+  (let f ts = Gaction.mk (p ts) in
+   {
+     gram = g;
+     name = n;
+     start = (fun _  -> f);
+     continue =
+       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
+     desc = (Dparser f);
+     freezed = true
+   } : 'a t )
+let setup_parser (e : 'a t) (p : stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
-  {
-    egram = g;
-    ename = n;
-    estart = (fun _  -> f);
-    econtinue =
-      (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
-    edesc = (Dparser f);
-    freezed = true
-  }
-let setup_parser e (p : stream -> 'a) =
-  let f ts = Gaction.mk (p ts) in
-  e.estart <- (fun _  -> f);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
-  e.edesc <- Dparser f
-let clear e =
-  e.estart <- (fun _  _  -> raise XStream.NotConsumed);
-  e.econtinue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
-  e.edesc <- Dlevels []
+  e.start <- (fun _  -> f);
+  e.continue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
+  e.desc <- Dparser f
+let clear (e : 'a t) =
+  e.start <- (fun _  _  -> raise XStream.NotConsumed);
+  e.continue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
+  e.desc <- Dlevels []
 let obj x = x
 let repr x = x
-let name_of_entry { ename;_} = ename
-let gram_of_entry { egram;_} = egram
+let name_of_entry (e : 'a t) = e.name
+let gram_of_entry (e : 'a t) = e.gram
 let parse_origin_tokens entry ts = Gaction.get (action_parse entry ts)
-let filter_and_parse_tokens entry ts =
-  parse_origin_tokens entry (FanTokenFilter.filter (entry.egram).gfilter ts)
+let filter_and_parse_tokens (entry : 'a t) ts =
+  parse_origin_tokens entry (FanTokenFilter.filter (entry.gram).gfilter ts)
 let glexer = Flex_lib.from_stream
 let lex loc cs = glexer loc cs
 let lex_string loc str = lex loc (XStream.of_string str)
-let parse_string ?(loc= FLoc.string_loc)  entry str =
+let parse_string ?(loc= FLoc.string_loc)  (entry : 'a t) str =
   parse_origin_tokens entry
-    (FanTokenFilter.filter (entry.egram).gfilter
+    (FanTokenFilter.filter (entry.gram).gfilter
        (glexer loc (XStream.of_string str)))
-let parse entry loc cs =
+let parse (entry : 'a t) loc cs =
   parse_origin_tokens entry
-    (FanTokenFilter.filter (entry.egram).gfilter (glexer loc cs))
+    (FanTokenFilter.filter (entry.gram).gfilter (glexer loc cs))
 let levels_of_entry = Ginsert.levels_of_entry
 let extend = Ginsert.extend
 let extend_single = Ginsert.extend_single

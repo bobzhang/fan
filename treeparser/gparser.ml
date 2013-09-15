@@ -1,4 +1,4 @@
-open Gstructure
+
   
 open LibUtil
   
@@ -30,12 +30,12 @@ let with_loc (parse_fun: 'b Ftoken.parse ) strm =
    - : int = 16
    ]}
  *)  
-let level_number entry lab =
+let level_number (entry:Gstructure.entry) lab =
   let rec lookup levn = function
     | [] -> failwithf "unknown level %s"  lab
     | lev :: levs ->
         if Gtools.is_level_labelled lab lev then levn else lookup (1 + levn) levs  in
-  match entry.edesc with
+  match entry.desc with
   | Dlevels elev -> lookup 0 elev
   | Dparser _ -> raise Not_found 
         
@@ -50,7 +50,8 @@ module ArgContainer= Stack
 (*
   It outputs a stateful parser, but it is functional itself
  *)    
-let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t ) x =
+let rec parser_of_tree (entry:Gstructure.entry)
+    (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t ) x =
   let alevn =
     match assoc with
     | `LA|`NA -> lev + 1 | `RA -> lev  in
@@ -60,7 +61,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
     so the action returned by son is a function,
     it is to be applied by the value returned by node.
    *)
-  let rec from_tree tree =
+  let rec from_tree (tree:Gstructure.tree) =
     match tree  with
     |DeadEnd -> raise XStream.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
@@ -70,7 +71,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
              verified by [start_parser_of_levels]) *)      
     | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
         (try
-          let a = with_loc (entry.estart alevn) strm in
+          let a = with_loc (entry.start alevn) strm in
           fun ()  -> ArgContainer.push a q; act
         with  XStream.NotConsumed  -> (fun ()  -> from_tree bro strm)) ()
 
@@ -123,7 +124,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
                      | XStream.NotConsumed  ->
                          raise
                            (XStream.Error
-                              (Gfailed.tree_failed  entry e (node :>symbol) son))
+                              (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
                      | _ -> raise e)))
             with | XStream.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
   let parse = from_tree x in
@@ -137,16 +138,7 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
      (!ans,loc))
 
 
-(*
-  {[
-  let a : Ftoken.t = Obj.magic & Gparser.parser_of_terminals
-  [`Skeyword "a";`Skeyword "b"; `Skeyword "c"]
-  (fun _ v _  -> Gaction.mk (fun  c b a ->  v))
-  [< (`KEYWORD "a",_loc) ; (`KEYWORD "b", _loc); (`KEYWORD "c",_loc) >];
-  val a : Ftoken.t = `KEYWORD "c"
-  ]}
- *)    
-and parser_of_terminals (terminals: terminal list) strm =
+and parser_of_terminals (terminals: Gstructure.terminal list) strm =
   let n = List.length terminals in
   let acc = ref [] in begin
     (try
@@ -163,7 +155,7 @@ and parser_of_terminals (terminals: terminal list) strm =
                 |`Stoken(f,_,_) -> f t
                 |`Skeyword kwd ->
                     begin match t with
-                    |`KEYWORD kwd' when kwd = kwd' -> true
+                    |`Key kwd' when kwd = kwd' -> true
                     | _ -> false
                     end)
             then
@@ -192,24 +184,29 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
     | `Sopt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk
     | `Stry s -> let ps = aux s in Gcomb.tryp ps
     | `Speek s -> let ps = aux s in Gcomb.peek ps
-    | `Snterml (e, l) -> fun strm -> e.estart (level_number e l) strm
-    | `Snterm e -> fun strm -> e.estart 0 strm  (* No filter any more *)          
-    | `Sself -> fun strm -> entry.estart 0 strm 
+    | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
+    | `Snterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
+    | `Sself -> fun strm -> entry.start 0 strm 
     | `Skeyword kwd -> fun strm ->
-        (match XStream.peek strm with
-        | Some (`KEYWORD tok,_) when tok = kwd ->
-            (XStream.junk strm ; Gaction.mk tok )
-        |_ -> raise XStream.NotConsumed )
+        begin  (* interaction with stream *)
+          match XStream.peek strm with
+          | Some (`Key tok,_) when tok = kwd ->
+              (XStream.junk strm ; Gaction.mk tok )
+          |_ -> raise XStream.NotConsumed
+        end
     | `Stoken (f, _,_) -> fun strm ->
-        match XStream.peek strm with
-        |Some (tok,_) when f tok -> (XStream.junk strm; Gaction.mk tok)
-        |_ -> raise XStream.NotConsumed in with_loc (aux s)
+        begin  (* interaction with stream *)
+          match XStream.peek strm with
+          |Some (tok,_) when f tok -> (XStream.junk strm; Gaction.mk tok)
+          |_ -> raise XStream.NotConsumed
+        end in with_loc (aux s)
+
 
 
 
 (* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs:  level list) : int ->  Gaction.t Ftoken.parse =
+  let rec aux clevn  (xs:  Gstructure.level list) : int ->  Gaction.t Ftoken.parse =
     match xs with 
     | [] -> fun _ -> fun _ -> raise XStream.NotConsumed  
     | lev :: levs ->
@@ -233,19 +230,20 @@ let start_parser_of_levels entry =
                 (try
                   let (act,loc) = cstart strm in
                   fun ()  ->
-                    let a = Gaction.getf act loc in entry.econtinue levn loc a strm
+                    let a = Gaction.getf act loc in entry.continue levn loc a strm
                 with  XStream.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
   aux 0
     
-let start_parser_of_entry entry =
-  match entry.edesc with
-  | Dlevels [] -> Gtools.empty_entry entry.ename
+let start_parser_of_entry (entry:Gstructure.entry) =
+  match entry.desc with
+  | Dlevels [] -> Gtools.empty_entry entry.name
   | Dlevels elev -> start_parser_of_levels entry  elev
   | Dparser p -> fun _ -> p
     
 
 
-let rec continue_parser_of_levels entry clevn = function
+let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
+  match xs with 
   | [] -> fun _ _ _ ->  fun _ -> raise XStream.NotConsumed
   | lev :: levs ->
       let hcontinue = continue_parser_of_levels entry  (clevn+1) levs in
@@ -267,12 +265,12 @@ let rec continue_parser_of_levels entry clevn = function
             | XStream.NotConsumed ->
               let (act,loc) = ccontinue strm in
               let loc = FLoc.merge bp loc in
-              let a = Gaction.getf2 act a loc in entry.econtinue levn loc a strm
+              let a = Gaction.getf2 act a loc in entry.continue levn loc a strm
 
   
-let continue_parser_of_entry entry =
+let continue_parser_of_entry (entry:Gstructure.entry) =
   (* debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in *)
-  match entry.edesc with
+  match entry.desc with
   | Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in
     (fun levn bp a strm -> try p levn bp a strm with XStream.NotConsumed -> a )

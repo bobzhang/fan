@@ -50,11 +50,11 @@ let get_terminals x =
 let logically_eq_symbols entry =
   let rec eq_symbol (s1:symbol) (s2:symbol) =
     match (s1, s2) with
-    | (`Snterm e1, `Snterm e2) -> e1.ename = e2.ename
-    | (`Snterm e1, `Sself) -> e1.ename = entry.ename
-    | (`Sself, `Snterm e2) -> entry.ename = e2.ename
+    | (`Snterm e1, `Snterm e2) -> e1.name = e2.name
+    | (`Snterm e1, `Sself) -> e1.name = entry.name
+    | (`Sself, `Snterm e2) -> entry.name = e2.name
     (* | (`Sself, `Sself) -> true *)
-    | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.ename = e2.ename && l1 = l2
+    | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.name = e2.name && l1 = l2
     | (`Slist0 s1, `Slist0 s2) |
       (`Slist1 s1, `Slist1 s2) |
       (`Sopt s1, `Sopt s2) |

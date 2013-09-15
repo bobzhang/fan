@@ -65,13 +65,13 @@ class text_grammar : grammar_print = object(self:'self)
     | `Sopt s -> pp f "OPT %a" self#symbol1 s
     | `Stry s -> pp f "TRY %a" self#symbol1 s
     | `Speek s -> pp f "PEEK %a" self#symbol1 s 
-    | `Snterml (e, l) -> pp f "%s Level %S" e.ename l
+    | `Snterml (e, l) -> pp f "%s Level %S" e.name l
     | `Snterm _ (* | `Snext *) | `Sself  | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 f s 
           
   method symbol1 f x =
     match (x:symbol) with 
-    | `Snterm e -> pp f "%s" e.ename
+    | `Snterm e -> pp f "%s" e.name
     | `Sself -> pp f "%s" "S"
     | `Stoken (_,_,descr) -> pp f "%s" descr
     | `Skeyword s -> pp f "%S" s
@@ -108,9 +108,9 @@ class text_grammar : grammar_print = object(self:'self)
   method levels f elev:unit =
     pp f "@[<hv0>  %a@]" (pp_list self#level ~sep:"@;| ") elev
   method entry f e :unit= begin
-    pp f "@[<2>%s:@;[%a]@]" e.ename
+    pp f "@[<2>%s:@;[%a]@]" e.name
       (fun f e ->
-        match e.edesc with
+        match e.desc with
         |Dlevels elev -> self#levels f elev
         |Dparser _ -> pp f "<parser>"
       ) e

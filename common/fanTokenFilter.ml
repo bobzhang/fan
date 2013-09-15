@@ -29,7 +29,7 @@ let string_of_error_msg = LibUtil.to_string_of_printer pp_print_error;;
 (* [Sym] should all be filtered into keywords *)  
 let keyword_conversion tok kwds =
   match tok with
-  | `Sym s | `Lid s | `Uid s when SSet.mem s  kwds -> `KEYWORD s
+  | `Sym s | `Lid s | `Uid s when SSet.mem s  kwds -> `Key s
   | `Eident s -> `Lid s 
   | _ -> tok 
 

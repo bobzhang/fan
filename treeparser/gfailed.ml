@@ -10,9 +10,9 @@ let pp = fprintf
 
   
 let  name_of_symbol entry : [> symbol] -> string  =  function
-  | `Snterm e -> "[" ^ e.ename ^ "]"
-  | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
-  | `Sself  -> "[" ^ entry.ename ^ "]"
+  | `Snterm e -> "[" ^ e.name ^ "]"
+  | `Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
+  | `Sself  -> "[" ^ entry.name ^ "]"
   | `Stoken (_, _,descr) -> descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
@@ -161,15 +161,15 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
   begin
     (* it may not necessary fail when  we use try somewhere*)
     if verbose then
-      let tree = tree_in_entry prev_symb tree entry.edesc in
+      let tree = tree_in_entry prev_symb tree entry.desc in
       pp err_formatter
         ("@[<v 0>@,----------------------------------@,"^^
          "Parse error in entry [%s], rule:@;<0 2>@[%a@]@," ^^
          "----------------------------------@,@]@.")
-        entry.ename
+        entry.name
         (Gprint.text#rules ) (Gstru.flatten_tree tree);
     else ();
-    txt ^ " (in [" ^ entry.ename ^ "])"
+    txt ^ " (in [" ^ entry.name ^ "])"
   end
     
 let symb_failed entry prev_symb_result prev_symb symb =

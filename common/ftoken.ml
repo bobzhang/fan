@@ -55,7 +55,7 @@ type space_token =
    | `LINE_DIRECTIVE of (int * string option) ]
       
 type t =
-  [ `KEYWORD of string | `Sym of string | `Lid of string | `Uid of string
+  [ `Key of string | `Sym of string | `Lid of string | `Uid of string
   | `Eident of string | `Int of string
   | `Int32 of string | `Int64 of  string
   | `Nativeint of  string | `Flo of  string
@@ -70,8 +70,8 @@ type t =
 let pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
     function
-    | `KEYWORD _a0 ->
-        Format.fprintf fmt "@[<1>(`KEYWORD@ %a)@]" Format.pp_print_string _a0
+    | `Key _a0 ->
+        Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string _a0
     | `Sym _a0 ->
         Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string _a0
     | `Lid _a0 -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string _a0
@@ -153,7 +153,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `KEYWORD s | `Sym s | `Lid s | `Uid s | `Int  s | `Int32  s |
+  | `Key s | `Sym s | `Lid s | `Uid s | `Int  s | `Int32  s |
   `Int64  s | `Nativeint  s | `Flo  s | `Chr  s | `Str  s |
   `Label s | `Optlabel s | `Comment s | `Blank s | `Eident s-> s
   | tok ->

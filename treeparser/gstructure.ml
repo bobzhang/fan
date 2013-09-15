@@ -46,6 +46,8 @@ type token_pattern = (Ftoken.t -> bool) * descr * string
        [arg3] is used for runtime error message
     *)
 
+(** all variants [Ftoken.t] is normalized into two patterns, either a keyword or
+    a generalized token *)      
 type terminal =
     [ `Skeyword of string
     | `Stoken of token_pattern ]
@@ -53,17 +55,17 @@ type terminal =
 type gram = {
     annot : string;
     gfilter         : FanTokenFilter.t;
-}
+  }
 
 type label =  string option
 
     
 type entry = {
-    egram     : gram;
-    ename     : string;
-    mutable estart    :  int -> Gaction.t Ftoken.parse ;
-    mutable econtinue : int -> Gaction.t cont_parse ;
-    mutable edesc     :  desc;
+    gram     : gram;
+    name     : string;
+    mutable start    :  int -> Gaction.t Ftoken.parse ;
+    mutable continue : int -> Gaction.t cont_parse ;
+    mutable desc     :  desc;
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 

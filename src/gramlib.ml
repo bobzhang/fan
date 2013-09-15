@@ -5,7 +5,7 @@ open LibUtil
 let setup_op_parser entry p =
   Fgram.setup_parser entry
     (parser
-      | (`KEYWORD x | `Sym x,_loc) when p x  -> {:exp| $lid:x |})
+      | (`Key x | `Sym x,_loc) when p x  -> {:exp| $lid:x |})
 
 
 let symbolchars =
@@ -59,24 +59,24 @@ let symbolchar s i =
 (*       (fun strm -> *)
 (*         let rec skip_pat n = *)
 (*           match XStream.peek_nth n strm with *)
-(*           [ Some (`KEYWORD "<-",_) -> n *)
-(*           | Some (`KEYWORD ("[" | "[<"),_) -> *)
+(*           [ Some (`Key "<-",_) -> n *)
+(*           | Some (`Key ("[" | "[<"),_) -> *)
 (*               skip_pat (ignore_upto "]" (n + 1) + 1) *)
-(*           | Some (`KEYWORD "(",_) -> *)
+(*           | Some (`Key "(",_) -> *)
 (*               skip_pat (ignore_upto ")" (n + 1) + 1) *)
-(*           | Some (`KEYWORD "{",_) -> *)
+(*           | Some (`Key "{",_) -> *)
 (*               skip_pat (ignore_upto "}" (n + 1) + 1) *)
-(*           | Some (`KEYWORD ("as" | "::" | "," | "_"),_) *)
+(*           | Some (`Key ("as" | "::" | "," | "_"),_) *)
 (*           | Some (`Lid _ | `Uid _, _) -> skip_pat (n + 1) *)
 (*           | Some _ | None -> raise XStream.NotConsumed ] *)
 (*         and ignore_upto end_kwd n = *)
 (*           match XStream.peek_nth n strm with *)
-(*           [ Some (`KEYWORD prm,_) when prm = end_kwd -> n *)
-(*           | Some (`KEYWORD ("[" | "[<"),_) -> *)
+(*           [ Some (`Key prm,_) when prm = end_kwd -> n *)
+(*           | Some (`Key ("[" | "[<"),_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1) *)
-(*           | Some (`KEYWORD "(",_) -> *)
+(*           | Some (`Key "(",_) -> *)
 (*               ignore_upto end_kwd (ignore_upto ")" (n + 1) + 1) *)
-(*           | Some (`KEYWORD "{",_) -> *)
+(*           | Some (`Key "{",_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some _ -> ignore_upto end_kwd (n + 1) *)
 (*           | None -> raise XStream.NotConsumed ] *)
