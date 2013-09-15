@@ -49,8 +49,8 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
       Format.pp_print_string _a1 Format.pp_print_string _a2
 
 type space_token =
-   [ `COMMENT of string
-   | `BLANKS of string
+   [ `Comment of string
+   | `Blank of string
    | `NEWLINE
    | `LINE_DIRECTIVE of (int * string option) ]
       
@@ -59,8 +59,8 @@ type t =
   | `Eident of string | `Int of string
   | `Int32 of string | `Int64 of  string
   | `Nativeint of  string | `Flo of  string
-  | `Chr of  string | `Str of string | `LABEL of string
-  | `OPTLABEL of string | quotation | dir_quotation
+  | `Chr of  string | `Str of string | `Label of string
+  | `Optlabel of string | quotation | dir_quotation
   | `Ant of (string* string)
   | space_token
   | `EOI]
@@ -98,19 +98,19 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `Str _a1 ->
         Format.fprintf fmt "@[<1>(`Str@ %a)@]" 
           Format.pp_print_string _a1
-    | `LABEL _a0 ->
-        Format.fprintf fmt "@[<1>(`LABEL@ %a)@]" Format.pp_print_string _a0
-    | `OPTLABEL _a0 ->
-        Format.fprintf fmt "@[<1>(`OPTLABEL@ %a)@]" Format.pp_print_string _a0
+    | `Label _a0 ->
+        Format.fprintf fmt "@[<1>(`Label@ %a)@]" Format.pp_print_string _a0
+    | `Optlabel _a0 ->
+        Format.fprintf fmt "@[<1>(`Optlabel@ %a)@]" Format.pp_print_string _a0
     | #quotation as _a0 -> (pp_print_quotation fmt _a0 :>unit)
     | #dir_quotation as _a0 -> (pp_print_dir_quotation fmt _a0 :>unit)
     | `Ant (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string _a0
           Format.pp_print_string _a1
-    | `COMMENT _a0 ->
-        Format.fprintf fmt "@[<1>(`COMMENT@ %a)@]" Format.pp_print_string _a0
-    | `BLANKS _a0 ->
-        Format.fprintf fmt "@[<1>(`BLANKS@ %a)@]" Format.pp_print_string _a0
+    | `Comment _a0 ->
+        Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string _a0
+    | `Blank _a0 ->
+        Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string _a0
     | `NEWLINE -> Format.fprintf fmt "`NEWLINE"
     | `LINE_DIRECTIVE (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
@@ -155,7 +155,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 let extract_string : [> t] -> string = function
   | `KEYWORD s | `Sym s | `Lid s | `Uid s | `Int  s | `Int32  s |
   `Int64  s | `Nativeint  s | `Flo  s | `Chr  s | `Str  s |
-  `LABEL s | `OPTLABEL s | `COMMENT s | `BLANKS s | `Eident s-> s
+  `Label s | `Optlabel s | `Comment s | `Blank s | `Eident s-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
 

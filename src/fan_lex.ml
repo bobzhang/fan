@@ -400,9 +400,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       update_loc  lexbuf;
       (`NEWLINE, !! lexbuf )
     end
-| "~" (ocaml_lid as x) ':' -> (`LABEL x, !! lexbuf ) 
+| "~" (ocaml_lid as x) ':' -> (`Label x, !! lexbuf ) 
 
-| "?" (ocaml_lid as x) ':' -> (`OPTLABEL x, !! lexbuf)
+| "?" (ocaml_lid as x) ':' -> (`Optlabel x, !! lexbuf)
       
 | ocaml_lid as x -> (`Lid x, !! lexbuf )
 
@@ -457,7 +457,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       move_curr_p (-1) lexbuf;
       (`Sym "*", !! lexbuf)
     end
-| ocaml_blank + as x -> (`BLANKS x, !! lexbuf)
+| ocaml_blank + as x -> (`Blank x, !! lexbuf)
       
       (* comment *)      
 | "(*" ->
@@ -466,7 +466,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     begin
       store c lexbuf;
       with_curr_loc lex_comment c lexbuf;
-      (`COMMENT ( buff_contents c),
+      (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
 | "(*)" ->
@@ -475,7 +475,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     begin 
       warn Comment_start (!! lexbuf) ;
       lex_comment c lexbuf;
-      ( `COMMENT (buff_contents c),
+      ( `Comment (buff_contents c),
         old -- lexbuf.lex_curr_p)
     end
       (* quotation handling *)

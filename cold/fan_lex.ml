@@ -92,7 +92,7 @@ let err (error : lex_error) (loc : FLoc.t) =
 let warn error (loc : FLoc.t) =
   (Fan_warnings.emitf loc.loc_start "Warning: %s") @@
     (lex_error_to_string error)
-let rec lex_comment c lexbuf =
+let rec lex_comment c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -167,7 +167,7 @@ let rec lex_comment c lexbuf =
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
     | 4 -> with_store lex_comment c lexbuf
     | _ -> failwith "lexing: empty token"))
-let rec lex_string c lexbuf =
+let rec lex_string c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -301,7 +301,7 @@ let rec lex_string c lexbuf =
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
     | 6 -> with_store lex_string c lexbuf
     | _ -> failwith "lexing: empty token"))
-let rec lex_antiquot c lexbuf =
+let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -1443,7 +1443,7 @@ let rec lex_antiquot c lexbuf =
     | 6 -> with_store lex_antiquot c lexbuf
     | 7 -> with_store lex_antiquot c lexbuf
     | _ -> failwith "lexing: empty token"))
-and lex_quotation c lexbuf =
+and lex_quotation c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
     let pos = lexbuf.Lexing.lex_curr_pos in
     lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -2617,7 +2617,7 @@ and lex_quotation c lexbuf =
     | 6 -> with_store lex_quotation c lexbuf
     | _ -> failwith "lexing: empty token"))
 let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
-  fun lexbuf  ->
+  fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
       lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
@@ -7518,12 +7518,12 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`LABEL x), (!! lexbuf))
+          ((`Label x), (!! lexbuf))
       | 2 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`OPTLABEL x), (!! lexbuf))
+          ((`Optlabel x), (!! lexbuf))
       | 3 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
@@ -7600,19 +7600,19 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`BLANKS x), (!! lexbuf))
+          ((`Blank x), (!! lexbuf))
       | 17 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (store c lexbuf;
            with_curr_loc lex_comment c lexbuf;
-           ((`COMMENT (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 18 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (warn Comment_start (!! lexbuf);
            lex_comment c lexbuf;
-           ((`COMMENT (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 19 ->
           ((`Quot
               {
@@ -7677,7 +7677,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           (update_loc lexbuf ?file:name ~line ~absolute:true;
            ((`LINE_DIRECTIVE (line, name)), (!! lexbuf)))
       | 24 ->
-          let dollar c lexbuf =
+          let dollar c (lexbuf : Lexing.lexbuf) =
             let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
               let pos = lexbuf.Lexing.lex_curr_pos in
               lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);

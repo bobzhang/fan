@@ -341,9 +341,9 @@ let apply () = begin
         [ "~"; a_lident{i}; ":"; S{e} -> `Label (_loc, i, e)
         | "~"; a_lident{i} -> `LabelS(_loc,i)
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
-        | `LABEL i; S{e} -> {| ~ $lid:i : $e |}
+        | `Label i; S{e} -> {| ~ $lid:i : $e |}
         (* Same remark for ?a:b *)
-        | `OPTLABEL i; S{e} ->  `OptLabl(_loc,`Lid(_loc,i),e)
+        | `Optlabel i; S{e} ->  `OptLabl(_loc,`Lid(_loc,i),e)
         | "?"; a_lident{i}; ":"; S{e} -> `OptLabl(_loc,i,e)
         | "?"; a_lident{i} -> `OptLablS(_loc,i) ] 
        "." LA
@@ -582,13 +582,13 @@ let apply () = begin
         | "#"; type_longident{i} -> {| # $i |}
         | `Quot x -> Ast_quotation.expand _loc x FDyn.pat_tag
         | "_" -> {| _ |}
-        | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
+        | `Label i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i}; ":"; S{p} -> (* CHANGE *) {| ~$i : $p|}
         | "~"; a_lident{i} -> `LabelS(_loc,i)
-        | `OPTLABEL i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
+        | `Optlabel i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)
-        | `OPTLABEL i; "("; pat_tcon{p}; ")"  ->
+        | `Optlabel i; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,`Lid(_loc,i),p)
             (* {| ? $lid:i : ($p)|} *)
         | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; exp{e}; ")" ->
@@ -635,13 +635,13 @@ let apply () = begin
         | `Quot x -> Ast_quotation.expand _loc x FDyn.pat_tag
         | "`"; luident{s} -> {|$vrn:s|}              
         | "_" -> {| _ |}
-        | `LABEL i; S{p} -> {| ~ $lid:i : $p |}
+        | `Label i; S{p} -> {| ~ $lid:i : $p |}
         | "~"; a_lident{i};":";S{p} -> {| ~$i : $p|}
         | "~"; a_lident{i} ->  `LabelS(_loc,i)
-        | `OPTLABEL i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
+        | `Optlabel i; "("; pat_tcon{p}; "="; exp{e}; ")" ->
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)
             (* {| ?$lid:i : ($p=$e)|} *)
-        | `OPTLABEL i; "("; pat_tcon{p}; ")"  ->
+        | `Optlabel i; "("; pat_tcon{p}; ")"  ->
             `OptLabl(_loc,`Lid(_loc,i),p)
             (* {| ? $lid:i : ($p)|} *)
         | "?"; a_lident{i};":"; "("; pat_tcon{p}; "="; exp{e}; ")" ->
@@ -1248,8 +1248,8 @@ let apply_ctyp () = begin
         [ S{t1}; "->"; S{t2} ->  `Arrow(_loc,t1,t2) ]
        "label" NA
         [ "~"; a_lident{i}; ":"; S{t} -> `Label (_loc, i, t)
-        | `LABEL s ; ":"; S{t} -> `Label (_loc, (`Lid (_loc, s)), t) (* FIXME *)
-        | `OPTLABEL s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
+        | `Label s ; ":"; S{t} -> `Label (_loc, (`Lid (_loc, s)), t) (* FIXME *)
+        | `Optlabel s ; S{t} -> `OptLabl(_loc,`Lid(_loc,s),t)
         | "?"; a_lident{i}; ":"; S{t} -> `OptLabl(_loc,i,t)]
          
        "apply" LA

@@ -64,8 +64,8 @@ type dir_quotation = [`DirQuotation of (int * string * string) ]
    
  *)
 type space_token =
-   [ `COMMENT        of string
-   | `BLANKS         of string
+   [ `Comment        of string
+   | `Blank         of string
    | `NEWLINE
    | `LINE_DIRECTIVE of (int * string option) ]
       
@@ -82,8 +82,8 @@ type t =
   | `Flo            of string 
   | `Chr            of string 
   | `Str            of string 
-  | `LABEL          of string
-  | `OPTLABEL       of string
+  | `Label          of string
+  | `Optlabel       of string
   | space_token
    (* . *)
   | quotation

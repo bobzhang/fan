@@ -1387,30 +1387,30 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : FLoc.t)  ->
                    (`LabelS (_loc, i) : 'exp )))));
          ([`Stoken
-             (((function | `LABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "LABEL"), `Any)), "`LABEL _");
+             (((function | `Label _ -> true | _ -> false)),
+               (`App ((`Vrn "Label"), `Any)), "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                    ->
                    match __fan_0 with
-                   | `LABEL i ->
+                   | `Label i ->
                        ((`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp ) : 
                        'exp )
                    | _ ->
                        failwith
                          "(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n"))));
          ([`Stoken
-             (((function | `OPTLABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+             (((function | `Optlabel _ -> true | _ -> false)),
+               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
           `Sself],
            ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                    ->
                    match __fan_0 with
-                   | `OPTLABEL i ->
+                   | `Optlabel i ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), e) : 'exp )
                    | _ -> failwith "`OptLabl (_loc, (`Lid (_loc, i)), e)\n"))));
          ([`Skeyword "?";
@@ -2660,15 +2660,15 @@ let apply () =
              (Fgram.mk_action
                 (fun _  (_loc : FLoc.t)  -> ((`Any _loc : FAst.pat ) : 'pat )))));
          ([`Stoken
-             (((function | `LABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "LABEL"), `Any)), "`LABEL _");
+             (((function | `Label _ -> true | _ -> false)),
+               (`App ((`Vrn "Label"), `Any)), "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
                 (fun (p : 'pat)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                    ->
                    match __fan_0 with
-                   | `LABEL i ->
+                   | `Label i ->
                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                        'pat )
                    | _ ->
@@ -2689,8 +2689,8 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : FLoc.t)  ->
                    (`LabelS (_loc, i) : 'pat )))));
          ([`Stoken
-             (((function | `OPTLABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+             (((function | `Optlabel _ -> true | _ -> false)),
+               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -2701,15 +2701,15 @@ let apply () =
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
                    (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `OPTLABEL i ->
+                   | `Optlabel i ->
                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
                        'pat )
                    | _ ->
                        failwith
                          "`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n"))));
          ([`Stoken
-             (((function | `OPTLABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+             (((function | `Optlabel _ -> true | _ -> false)),
+               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -2718,7 +2718,7 @@ let apply () =
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `OPTLABEL i ->
+                   | `Optlabel i ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'pat )
                    | _ -> failwith "`OptLabl (_loc, (`Lid (_loc, i)), p)\n"))));
          ([`Skeyword "?";
@@ -2923,15 +2923,15 @@ let apply () =
                 (fun _  (_loc : FLoc.t)  ->
                    ((`Any _loc : FAst.pat ) : 'ipat )))));
          ([`Stoken
-             (((function | `LABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "LABEL"), `Any)), "`LABEL _");
+             (((function | `Label _ -> true | _ -> false)),
+               (`App ((`Vrn "Label"), `Any)), "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
                 (fun (p : 'ipat)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                    ->
                    match __fan_0 with
-                   | `LABEL i ->
+                   | `Label i ->
                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                        'ipat )
                    | _ ->
@@ -2952,8 +2952,8 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : FLoc.t)  ->
                    (`LabelS (_loc, i) : 'ipat )))));
          ([`Stoken
-             (((function | `OPTLABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+             (((function | `Optlabel _ -> true | _ -> false)),
+               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -2964,15 +2964,15 @@ let apply () =
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
                    (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `OPTLABEL i ->
+                   | `Optlabel i ->
                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
                        'ipat )
                    | _ ->
                        failwith
                          "`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n"))));
          ([`Stoken
-             (((function | `OPTLABEL _ -> true | _ -> false)),
-               (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+             (((function | `Optlabel _ -> true | _ -> false)),
+               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -2981,7 +2981,7 @@ let apply () =
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
-                   | `OPTLABEL i ->
+                   | `Optlabel i ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'ipat )
                    | _ -> failwith "`OptLabl (_loc, (`Lid (_loc, i)), p)\n"))));
          ([`Skeyword "?";
@@ -6095,8 +6095,8 @@ let apply_ctyp () =
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : FLoc.t)  ->
                    (`Label (_loc, i, t) : 'ctyp )))));
         ([`Stoken
-            (((function | `LABEL _ -> true | _ -> false)),
-              (`App ((`Vrn "LABEL"), `Any)), "`LABEL _");
+            (((function | `Label _ -> true | _ -> false)),
+              (`App ((`Vrn "Label"), `Any)), "`Label _");
          `Skeyword ":";
          `Sself],
           ("`Label (_loc, (`Lid (_loc, s)), t)\n",
@@ -6104,18 +6104,18 @@ let apply_ctyp () =
                (fun (t : 'ctyp)  _  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)
                    ->
                   match __fan_0 with
-                  | `LABEL s -> (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )
+                  | `Label s -> (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                   | _ -> failwith "`Label (_loc, (`Lid (_loc, s)), t)\n"))));
         ([`Stoken
-            (((function | `OPTLABEL _ -> true | _ -> false)),
-              (`App ((`Vrn "OPTLABEL"), `Any)), "`OPTLABEL _");
+            (((function | `Optlabel _ -> true | _ -> false)),
+              (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
          `Sself],
           ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
             (Fgram.mk_action
                (fun (t : 'ctyp)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
                   ->
                   match __fan_0 with
-                  | `OPTLABEL s ->
+                  | `Optlabel s ->
                       (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                   | _ -> failwith "`OptLabl (_loc, (`Lid (_loc, s)), t)\n"))));
         ([`Skeyword "?";

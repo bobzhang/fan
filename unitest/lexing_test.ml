@@ -22,7 +22,7 @@ let test_escaped_string _ =
 let test_comment_string _ =
   get_tokens {:str|(*(**)*)|}
     ===
-  [`COMMENT"(*(**)*)";`EOI]
+  [`Comment"(*(**)*)";`EOI]
 
 let test_char _ =
   get_tokens {:str|'
@@ -125,7 +125,7 @@ let test_ant_chr _ =
 let test_comment_pos _ =
   Flex_lib.list_of_string ~verbose:false {:str|(*    (**) *)|}
     ===
-  [(`COMMENT "(*    (**) *)",
+  [(`Comment "(*    (**) *)",
   {FLoc.loc_start =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
    loc_end =

@@ -6,7 +6,7 @@ let mk () =
 let filter (_,q) =
   let rec self (__strm : _ XStream.t) =
     match XStream.peek __strm with
-    | Some (`COMMENT x,loc) ->
+    | Some (`Comment x,loc) ->
         (XStream.junk __strm;
          (let xs = __strm in Queue.add (x, loc) q; self xs))
     | Some x ->

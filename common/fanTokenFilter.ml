@@ -35,7 +35,7 @@ let keyword_conversion tok kwds =
 
 let check_keyword_as_label tok loc kwds =
   match tok with
-  |`LABEL s | `OPTLABEL s when SSet.mem s kwds -> err (Keyword_as_label s) loc 
+  |`Label s | `Optlabel s when SSet.mem s kwds -> err (Keyword_as_label s) loc 
   | _               -> ()  
 
         
