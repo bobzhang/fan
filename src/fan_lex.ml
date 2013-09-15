@@ -1,7 +1,7 @@
 {:regexp|
 
 let newline = ('\010' | '\013' | "\013\010")
-let blank = [' ' '\009' '\012']
+let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
 let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
 let identchar = ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
@@ -73,7 +73,11 @@ let right_delimitor =
 let ocaml_escaped_char =
   '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
 let ocaml_char =
-  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)       
+  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
+let ocaml_lid =
+  lowercase identchar *
+let ocaml_uid =
+  uppercase identchar * 
 |};;
 
 
@@ -387,13 +391,13 @@ and lex_quotation c = {:lexer|
 let  token  = {:lexer|
   | newline -> (update_loc  lexbuf; `NEWLINE)
 
-  | "~" (lowercase identchar * as x) ':' ->  `LABEL x 
+  | "~" (ocaml_lid as x) ':' ->  `LABEL x 
 
-  | "?" (lowercase identchar * as x) ':' -> `OPTLABEL x 
+  | "?" (ocaml_lid as x) ':' -> `OPTLABEL x 
 
-  | lowercase identchar * as x ->  `Lid x 
+  | ocaml_lid as x ->  `Lid x 
 
-  | uppercase identchar * as x ->  `Uid x 
+  | ocaml_uid as x ->  `Uid x 
 
   | int_literal  (('l'|'L'|'n' as s ) ?) as x ->
     (* FIXME - int_of_string ("-" ^ s) ??
@@ -422,9 +426,9 @@ let  token  = {:lexer|
   | "'\\" (_ as c) -> 
       err (Illegal_escape (String.make 1 c)) @@ Location_util.from_lexbuf lexbuf
 
-  | '(' (not_star_symbolchar symbolchar* as op) blank* ')' -> `Eident op 
-  | '(' blank+ (symbolchar+ as op) blank* ')' -> `Eident op
-  | '(' blank* ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) blank* ')' ->
+  | '(' (not_star_symbolchar symbolchar* as op) ocaml_blank* ')' -> `Eident op 
+  | '(' ocaml_blank+ (symbolchar+ as op) ocaml_blank* ')' -> `Eident op
+  | '(' ocaml_blank* ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) ocaml_blank* ')' ->
       `Eident op
   | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
     | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
@@ -437,7 +441,7 @@ let  token  = {:lexer|
         warn Comment_not_end (Location_util.from_lexbuf lexbuf) ;
         move_curr_p (-1) lexbuf; `Sym "*"
       end
-  | blank + as x ->  `BLANKS x
+  | ocaml_blank + as x ->  `BLANKS x
         
   (* comment *)      
   | "(*" ->
@@ -466,15 +470,12 @@ let  token  = {:lexer|
         match name with
         | Some name -> (Ftoken.name_of_string name,1 + String.length name)
         | None -> (Ftoken.empty_name,0)  in 
-      (* let name = Ftoken.name_of_string name in *)
       let v = opt_char_len p in
-      let shift = 2 + (* (1 + len) *) len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
+      let shift = 2 + len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
       let retract = 2 + v in
       begin
         Stack.push p opt_char;
-        mk_quotation lex_quotation c lexbuf ~name ~loc
-          ~shift
-          ~retract
+        mk_quotation lex_quotation c lexbuf ~name ~loc ~shift ~retract
       end
   | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@ Location_util.from_lexbuf lexbuf
 
