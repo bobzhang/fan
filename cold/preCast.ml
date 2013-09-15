@@ -80,7 +80,7 @@ let parse_file name pa =
   let () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = XStream.of_channel ic in finally ~action:clear (pa loc) cs
+  let cs = XStream.of_channel ic in finally ~action:clear cs (pa loc)
 module CurrentPrinter =
   struct
     let print_interf ?input_file  ?output_file  ast =

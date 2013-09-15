@@ -66,6 +66,9 @@ val lex_string : context -> Lexing.lexbuf -> unit
  *)    
 val lex_antiquot : context -> Lexing.lexbuf -> unit
 
+(**
+   called by [lex_antiquot], [token]
+ *)    
 val lex_quotation : context -> Lexing.lexbuf -> unit    
 
 (** In initial stage

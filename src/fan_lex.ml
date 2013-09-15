@@ -458,49 +458,45 @@ let  token  = {:lexer|
         lexbuf.lex_start_p <- old;
         `COMMENT (buff_contents c)
       end
-  (* quotation handling *)      
+  (* quotation handling *)
+  | "{||}" -> `Quot { FToken.name=FToken.empty_name; loc=None; shift=2; content="" }        
   | "{|" (extra_quot as p)?  ->
       let c  = default_cxt lexbuf in
+      let len = 2 + opt_char_len p in 
       begin 
         Stack.push p opt_char;
-        let len = 2 + opt_char_len p in 
         mk_quotation
-          lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc:"" ~shift:len ~retract:len
+          lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc:None ~shift:len ~retract:len
       end
-  | "{||}" -> 
-           `Quot { FToken.name=FToken.empty_name; loc=""; shift=2; content="" }
   | "{@" (ident as loc) '|' (extra_quot as p)?  ->
       let c = default_cxt lexbuf in
       begin
         Stack.push p opt_char;
-        mk_quotation lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc
+        mk_quotation lex_quotation c lexbuf ~name:(FToken.empty_name) ~loc:(Some loc)
           ~shift:(2 + 1 + String.length loc + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
-  | "{@" _  as c ->
-      err (Illegal_quotation c ) @@ Location_util.from_lexbuf lexbuf
-  | "{:" (quotation_name as name) '|' (extra_quot as p)? ->
+  | "{" ":" (quotation_name as name) '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
       let len = String.length name in
       let name = FToken.name_of_string name in
       begin
         Stack.push p opt_char;
         mk_quotation lex_quotation c lexbuf
-          ~name ~loc:""  ~shift:(2 + 1 + len + (opt_char_len p))
+          ~name ~loc:None  ~shift:(2 + 1 + len + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
       end
-
-  | "{:" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? ->
+  | "{" ":" (quotation_name as name) '@' (locname as loc) '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
       let len = String.length name in 
       let name = FToken.name_of_string name in
       begin
         Stack.push p opt_char;
-        mk_quotation lex_quotation c lexbuf ~name ~loc
+        mk_quotation lex_quotation c lexbuf ~name ~loc:(Some loc)
           ~shift:(2 + 2 + String.length loc + len + opt_char_len p)
           ~retract:(2 + opt_char_len p)
       end
-  | "{:" _ as c -> err (Illegal_quotation c) @@ Location_util.from_lexbuf lexbuf
+  | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@ Location_util.from_lexbuf lexbuf
 
   |"#{:" (quotation_name as name) '|'  (extra_quot as p)? ->
       let c  = default_cxt lexbuf in
@@ -565,7 +561,6 @@ let  token  = {:lexer|
 
      
 let from_lexbuf lb =
-  (** lexing entry *)
   let next _ =
     let tok =  token lb in
     let loc = Location_util.from_lexbuf lb in

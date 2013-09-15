@@ -15,9 +15,9 @@ val none : 'a option
 
 val memoize : ('a -> 'b) -> 'a -> 'b
 
-val finally : action:(unit -> 'a) -> ('b -> 'c) -> 'b -> 'c
+val finally : action:(unit -> 'a) -> 'b -> ('b -> 'c)  -> 'c
 
-val with_dispose : dispose:('a -> 'b) -> ('a -> 'c) -> 'a -> 'c
+val with_dispose : dispose:('a -> 'b)  -> 'a -> ('a -> 'c) -> 'c
 
     
 external id : 'a -> 'a = "%identity"

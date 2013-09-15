@@ -14,7 +14,7 @@ type name = domains * string
  *)
 type quot = {
     name:name;
-    loc:string;
+    loc:string option;
     shift:int;
     content:string;
   }

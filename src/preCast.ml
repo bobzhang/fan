@@ -144,7 +144,7 @@ let parse_file  name pa = begin
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
   let cs = XStream.of_channel ic in
-  finally ~action:clear (pa loc) cs 
+  finally ~action:clear  cs (pa loc)
 end
 
         

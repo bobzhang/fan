@@ -81,15 +81,14 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
-let expand_quotation loc ~expander  pos_tag (q_name,q_loc,q_contents) =
-  let loc_name_opt = if q_loc = "" then None else Some q_loc in
-  try expander loc loc_name_opt q_contents
+let expand_quotation loc ~expander  pos_tag (x : FToken.quot) =
+  try expander loc x.loc x.content
   with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
   | FLoc.Exc_located (iloc,exc) ->
-      let exc1 = QuotationError (iloc, q_name, pos_tag, Expanding, exc) in
+      let exc1 = QuotationError (iloc, (x.name), pos_tag, Expanding, exc) in
       raise (FLoc.Exc_located (iloc, exc1))
   | exc ->
-      let exc1 = QuotationError (loc, q_name, pos_tag, Expanding, exc) in
+      let exc1 = QuotationError (loc, (x.name), pos_tag, Expanding, exc) in
       raise (FLoc.Exc_located (loc, exc1))
 let find loc name tag =
   let key =
@@ -108,33 +107,29 @@ let find loc name tag =
                 (QuotationError (loc, name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
-let expand loc
-  { FToken.name = q_name; loc = q_loc; shift = q_shift; content = q_contents
-    }
-  (tag : 'a FDyn.tag) =
+let expand loc (x : FToken.quot) (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in
-   let name = q_name in
    (try
-      let expander = find loc name tag
-      and loc = Location_util.join (FLoc.move `start q_shift loc) in
+      let expander = find loc x.name tag
+      and loc = Location_util.join (FLoc.move `start x.shift loc) in
       fun ()  ->
-        Stack.push q_name stack;
-        finally ~action:(fun _  -> Stack.pop stack)
-          (fun _  ->
-             expand_quotation ~expander loc pos_tag
-               (q_name, q_loc, q_contents)) ()
+        Stack.push x.name stack;
+        (finally ~action:(fun _  -> Stack.pop stack) ()) @@
+          ((fun _  -> expand_quotation ~expander loc pos_tag x))
     with
     | FLoc.Exc_located (_,QuotationError _) as exc -> (fun ()  -> raise exc)
     | FLoc.Exc_located (qloc,exc) ->
         (fun ()  ->
            raise
              (FLoc.Exc_located
-                (qloc, (QuotationError (qloc, name, pos_tag, Finding, exc)))))
+                (qloc,
+                  (QuotationError (qloc, (x.name), pos_tag, Finding, exc)))))
     | exc ->
         (fun ()  ->
            raise
              (FLoc.Exc_located
-                (loc, (QuotationError (loc, name, pos_tag, Finding, exc))))))
+                (loc,
+                  (QuotationError (loc, (x.name), pos_tag, Finding, exc))))))
      () : 'a )
 let quotation_error_to_string (loc,name,position,ctx,exn) =
   let ppf = Buffer.create 30 in
