@@ -187,8 +187,8 @@ let toplevel_phrase token_stream =
   match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
   | Some stru ->
         let stru =
-          (* Fsyntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
-          AstFilters.apply_implem_filters stru in
+          (* Fsyntax.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
+          Ast_filters.apply_implem_filters stru in
         Ast2pt.phrase stru
   | None -> raise End_of_file          
 
@@ -210,7 +210,7 @@ let use_file token_stream =
           Fgram.parse_origin_tokens Fsyntax.implem  token_stream in  
         if stopped_at_directive <> None then pl @ loop () else pl in loop () in
   (* FIXME semantics imprecise, the filter will always be applied *)
-  List.map (fun x -> Ast2pt.phrase (AstFilters.apply_implem_filters x) ) (pl0 @ pl)
+  List.map (fun x -> Ast2pt.phrase (Ast_filters.apply_implem_filters x) ) (pl0 @ pl)
 
         
 

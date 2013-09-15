@@ -95,7 +95,7 @@ let fill_parsers =
       end
         
 let () = 
-AstParsers.register_parser
+Ast_parsers.register_parser
     ("stream", fill_parsers);;
 
 

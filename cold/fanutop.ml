@@ -31,7 +31,7 @@ let revise_parser str _bol =
 let normal () =
   UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;
   Toploop.parse_use_file := Parse.use_file
-let _ = AstParsers.use_parsers ["revise"; "stream"; "macro"]
+let _ = Ast_parsers.use_parsers ["revise"; "stream"; "macro"]
 let revise () = UTop.parse_toplevel_phrase := revise_parser
 let _ = revise ()
 let _ =

@@ -1,5 +1,5 @@
 open LibUtil
-open Format
+open! Format (* shadows print_newline *)
 
 open FSigUtil  
 open Ast_basic
@@ -76,8 +76,8 @@ let iterate_code sloc mtyps =
     match (position,code) with
     |(Some x,Some code) ->
         let (name,f) = Filters.make_filter (x,code) in 
-        (AstFilters.register_stru_filter (name,f);
-         AstFilters.use_implem_filter name ;
+        (Ast_filters.register_stru_filter (name,f);
+         Ast_filters.use_implem_filter name ;
          acc)
     |(None,Some code) ->
         let code = FanAstN.fill_stru sloc code in

@@ -139,14 +139,14 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.mexp_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.mexp_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.mexp_tag : 'mexp )
+                       (Ast_quotation.expand _loc x FDyn.mexp_tag : 'mexp )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.mexp_tag\n"))));
+                       failwith "Ast_quotation.expand _loc x FDyn.mexp_tag\n"))));
          ([`Snterm
              (Fgram.obj (module_longident : 'module_longident Fgram.t ))],
            ("(i :>mexp)\n",
@@ -246,14 +246,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.mbind_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.mbind_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.mbind_tag : 'mbind )
+                       (Ast_quotation.expand _loc x FDyn.mbind_tag : 
+                       'mbind )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.mbind_tag\n"))));
+                       failwith
+                         "Ast_quotation.expand _loc x FDyn.mbind_tag\n"))));
          ([`Snterm (Fgram.obj (a_uident : 'a_uident Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (mtyp : 'mtyp Fgram.t ));
@@ -289,14 +291,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.mbind_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.mbind_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.mbind_tag : 'module_rec_declaration )
+                       (Ast_quotation.expand _loc x FDyn.mbind_tag : 
+                       'module_rec_declaration )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.mbind_tag\n"))));
+                       failwith
+                         "Ast_quotation.expand _loc x FDyn.mbind_tag\n"))));
          ([`Snterm (Fgram.obj (a_uident : 'a_uident Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (mtyp : 'mtyp Fgram.t ))],
@@ -334,16 +338,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.constr_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.constr_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.constr_tag : 
+                       (Ast_quotation.expand _loc x FDyn.constr_tag : 
                        'constr )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x FDyn.constr_tag\n"))));
+                         "Ast_quotation.expand _loc x FDyn.constr_tag\n"))));
          ([`Skeyword "type";
           `Snterm
             (Fgram.obj
@@ -544,14 +548,14 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.mtyp_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.mtyp_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.mtyp_tag : 'mtyp )
+                       (Ast_quotation.expand _loc x FDyn.mtyp_tag : 'mtyp )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.mtyp_tag\n"))));
+                       failwith "Ast_quotation.expand _loc x FDyn.mtyp_tag\n"))));
          ([`Snterm
              (Fgram.obj
                 (module_longident_with_app : 'module_longident_with_app
@@ -643,14 +647,14 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.sigi_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.sigi_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.sigi_tag : 'sigi )
+                       (Ast_quotation.expand _loc x FDyn.sigi_tag : 'sigi )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.sigi_tag\n"))));
+                       failwith "Ast_quotation.expand _loc x FDyn.sigi_tag\n"))));
          ([`Skeyword "exception";
           `Snterm
             (Fgram.obj
@@ -878,12 +882,12 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("let old = AstQuotation.default.contents in\nAstQuotation.default := (AstQuotation.resolve_name _loc ls); old\n",
+            ("let old = Ast_quotation.default.contents in\nAst_quotation.default := (Ast_quotation.resolve_name _loc ls); old\n",
               (Fgram.mk_action
                  (fun (ls : 'dot_lstrings)  (_loc : FLoc.t)  ->
-                    (let old = AstQuotation.default.contents in
-                     AstQuotation.default :=
-                       (AstQuotation.resolve_name _loc ls);
+                    (let old = Ast_quotation.default.contents in
+                     Ast_quotation.default :=
+                       (Ast_quotation.resolve_name _loc ls);
                      old : 'lang )))))]));
    Fgram.extend_single (pos_exps : 'pos_exps Fgram.t )
      (None,
@@ -891,11 +895,11 @@ let apply () =
          [([`Slist1sep
               ((`Snterm (Fgram.obj (name_space : 'name_space Fgram.t ))),
                 (`Skeyword ";"))],
-            ("let old = AstQuotation.map.contents in\nAstQuotation.map := (SMap.add_list xys old); old\n",
+            ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (SMap.add_list xys old); old\n",
               (Fgram.mk_action
                  (fun (xys : 'name_space list)  (_loc : FLoc.t)  ->
-                    (let old = AstQuotation.map.contents in
-                     AstQuotation.map := (SMap.add_list xys old); old : 
+                    (let old = Ast_quotation.map.contents in
+                     Ast_quotation.map := (SMap.add_list xys old); old : 
                     'pos_exps )))))]));
    Fgram.extend_single (name_space : 'name_space Fgram.t )
      (None,
@@ -905,31 +909,31 @@ let apply () =
                 (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Skeyword ":";
            `Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("((x : string ), (AstQuotation.resolve_name _loc y))\n",
+            ("((x : string ), (Ast_quotation.resolve_name _loc y))\n",
               (Fgram.mk_action
                  (fun (y : 'dot_lstrings)  _  (__fan_0 : [> Ftoken.t]) 
                     (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Lid x ->
-                        (((x : string ), (AstQuotation.resolve_name _loc y)) : 
+                        (((x : string ), (Ast_quotation.resolve_name _loc y)) : 
                         'name_space )
                     | _ ->
                         failwith
-                          "((x : string ), (AstQuotation.resolve_name _loc y))\n"))));
+                          "((x : string ), (Ast_quotation.resolve_name _loc y))\n"))));
          ([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-           ("((x : string ), (AstQuotation.resolve_name _loc ((`Sub []), x)))\n",
+           ("((x : string ), (Ast_quotation.resolve_name _loc ((`Sub []), x)))\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
                        (((x : string ),
-                          (AstQuotation.resolve_name _loc ((`Sub []), x))) : 
+                          (Ast_quotation.resolve_name _loc ((`Sub []), x))) : 
                        'name_space )
                    | _ ->
                        failwith
-                         "((x : string ), (AstQuotation.resolve_name _loc ((`Sub []), x)))\n"))))]));
+                         "((x : string ), (Ast_quotation.resolve_name _loc ((`Sub []), x)))\n"))))]));
    Fgram.extend_single (fun_def_pat : 'fun_def_pat Fgram.t )
      (None,
        (None, None,
@@ -1073,19 +1077,19 @@ let apply () =
           ([`Skeyword "with";
            `Snterm (Fgram.obj (lang : 'lang Fgram.t ));
            `Sself],
-            ("AstQuotation.default := old; x\n",
+            ("Ast_quotation.default := old; x\n",
               (Fgram.mk_action
                  (fun (x : 'exp)  (old : 'lang)  _  (_loc : FLoc.t)  ->
-                    (AstQuotation.default := old; x : 'exp )))));
+                    (Ast_quotation.default := old; x : 'exp )))));
           ([`Skeyword "with";
            `Skeyword "{";
            `Snterm (Fgram.obj (pos_exps : 'pos_exps Fgram.t ));
            `Skeyword "}";
            `Sself],
-            ("AstQuotation.map := old; x\n",
+            ("Ast_quotation.map := old; x\n",
               (Fgram.mk_action
                  (fun (x : 'exp)  _  (old : 'pos_exps)  _  _  (_loc : FLoc.t)
-                     -> (AstQuotation.map := old; x : 'exp )))));
+                     -> (Ast_quotation.map := old; x : 'exp )))));
           ([`Skeyword "for";
            `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
            `Skeyword "=";
@@ -1470,14 +1474,14 @@ let apply () =
          [([`Stoken
               (((function | `Quot _ -> true | _ -> false)),
                 (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-            ("AstQuotation.expand _loc x FDyn.exp_tag\n",
+            ("Ast_quotation.expand _loc x FDyn.exp_tag\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Quot x ->
-                        (AstQuotation.expand _loc x FDyn.exp_tag : 'exp )
+                        (Ast_quotation.expand _loc x FDyn.exp_tag : 'exp )
                     | _ ->
-                        failwith "AstQuotation.expand _loc x FDyn.exp_tag\n"))));
+                        failwith "Ast_quotation.expand _loc x FDyn.exp_tag\n"))));
          ([`Stoken
              (((function
                 | `Ant
@@ -1951,20 +1955,20 @@ let apply () =
         [([`Snterm (Fgram.obj (lang : 'lang Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-           ("AstQuotation.default := old; x\n",
+           ("Ast_quotation.default := old; x\n",
              (Fgram.mk_action
                 (fun (x : 'exp)  _  (old : 'lang)  (_loc : FLoc.t)  ->
-                   (AstQuotation.default := old; x : 'with_exp_lang )))))]));
+                   (Ast_quotation.default := old; x : 'with_exp_lang )))))]));
   Fgram.extend_single (with_stru_lang : 'with_stru_lang Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (lang : 'lang Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (stru : 'stru Fgram.t ))],
-           ("AstQuotation.default := old; x\n",
+           ("Ast_quotation.default := old; x\n",
              (Fgram.mk_action
                 (fun (x : 'stru)  _  (old : 'lang)  (_loc : FLoc.t)  ->
-                   (AstQuotation.default := old; x : 'with_stru_lang )))))]));
+                   (Ast_quotation.default := old; x : 'with_stru_lang )))))]));
   (Fgram.extend_single (bind_quot : 'bind_quot Fgram.t )
      (None,
        (None, None,
@@ -2643,14 +2647,14 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.pat_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.pat_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.pat_tag : 'pat )
+                       (Ast_quotation.expand _loc x FDyn.pat_tag : 'pat )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.pat_tag\n"))));
+                       failwith "Ast_quotation.expand _loc x FDyn.pat_tag\n"))));
          ([`Skeyword "_"],
            ("(`Any _loc : FAst.pat )\n",
              (Fgram.mk_action
@@ -2900,14 +2904,14 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.pat_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.pat_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.pat_tag : 'ipat )
+                       (Ast_quotation.expand _loc x FDyn.pat_tag : 'ipat )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.pat_tag\n"))));
+                       failwith "Ast_quotation.expand _loc x FDyn.pat_tag\n"))));
          ([`Skeyword "`"; `Snterm (Fgram.obj (luident : 'luident Fgram.t ))],
            ("(`Vrn (_loc, s) : FAst.pat )\n",
              (Fgram.mk_action
@@ -4734,14 +4738,16 @@ let apply () =
           ([`Stoken
               (((function | `Quot _ -> true | _ -> false)),
                 (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-            ("AstQuotation.expand _loc x FDyn.stru_tag\n",
+            ("Ast_quotation.expand _loc x FDyn.stru_tag\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Quot x ->
-                        (AstQuotation.expand _loc x FDyn.stru_tag : 'stru )
+                        (Ast_quotation.expand _loc x FDyn.stru_tag : 
+                        'stru )
                     | _ ->
-                        failwith "AstQuotation.expand _loc x FDyn.stru_tag\n"))));
+                        failwith
+                          "Ast_quotation.expand _loc x FDyn.stru_tag\n"))));
           ([`Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
             ("`StExp (_loc, e)\n",
               (Fgram.mk_action
@@ -4866,16 +4872,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.clsigi_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.clsigi_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.clsigi_tag : 
+                       (Ast_quotation.expand _loc x FDyn.clsigi_tag : 
                        'clsigi )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x FDyn.clsigi_tag\n"))));
+                         "Ast_quotation.expand _loc x FDyn.clsigi_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Fgram.obj (cltyp : 'cltyp Fgram.t ))],
            ("`SigInherit (_loc, cs)\n",
@@ -5027,16 +5033,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.clfield_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.clfield_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.clfield_tag : 
+                       (Ast_quotation.expand _loc x FDyn.clfield_tag : 
                        'clfield )
                    | _ ->
                        failwith
-                         "AstQuotation.expand _loc x FDyn.clfield_tag\n"))));
+                         "Ast_quotation.expand _loc x FDyn.clfield_tag\n"))));
          ([`Skeyword "inherit";
           `Snterm (Fgram.obj (opt_override : 'opt_override Fgram.t ));
           `Snterm (Fgram.obj (clexp : 'clexp Fgram.t ))],
@@ -5290,14 +5296,16 @@ let apply () =
          ([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("AstQuotation.expand _loc x FDyn.clexp_tag\n",
+           ("Ast_quotation.expand _loc x FDyn.clexp_tag\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Quot x ->
-                       (AstQuotation.expand _loc x FDyn.clexp_tag : 'clexp )
+                       (Ast_quotation.expand _loc x FDyn.clexp_tag : 
+                       'clexp )
                    | _ ->
-                       failwith "AstQuotation.expand _loc x FDyn.clexp_tag\n"))));
+                       failwith
+                         "Ast_quotation.expand _loc x FDyn.clexp_tag\n"))));
          ([`Snterm (Fgram.obj (vid : 'vid Fgram.t ));
           `Skeyword "[";
           `Snterm (Fgram.obj (comma_ctyp : 'comma_ctyp Fgram.t ));
@@ -5507,14 +5515,14 @@ let apply () =
         ([`Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-          ("AstQuotation.expand _loc x FDyn.cltyp_tag\n",
+          ("Ast_quotation.expand _loc x FDyn.cltyp_tag\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Quot x ->
-                      (AstQuotation.expand _loc x FDyn.cltyp_tag : 'cltyp )
+                      (Ast_quotation.expand _loc x FDyn.cltyp_tag : 'cltyp )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x FDyn.cltyp_tag\n"))));
+                      failwith "Ast_quotation.expand _loc x FDyn.cltyp_tag\n"))));
         ([`Snterm (Fgram.obj (vid : 'vid Fgram.t ));
          `Skeyword "[";
          `Snterm (Fgram.obj (comma_ctyp : 'comma_ctyp Fgram.t ));
@@ -5595,14 +5603,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-          ("AstQuotation.expand _loc x FDyn.ctyp_tag\n",
+          ("Ast_quotation.expand _loc x FDyn.ctyp_tag\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Quot x ->
-                      (AstQuotation.expand _loc x FDyn.ctyp_tag : 'unquoted_typevars )
+                      (Ast_quotation.expand _loc x FDyn.ctyp_tag : 'unquoted_typevars )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x FDyn.ctyp_tag\n"))));
+                      failwith "Ast_quotation.expand _loc x FDyn.ctyp_tag\n"))));
         ([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
           ("(i :>ctyp)\n",
             (Fgram.mk_action
@@ -6038,14 +6046,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-          ("AstQuotation.expand _loc x FDyn.ctyp_tag\n",
+          ("Ast_quotation.expand _loc x FDyn.ctyp_tag\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Quot x ->
-                      (AstQuotation.expand _loc x FDyn.ctyp_tag : 'typevars )
+                      (Ast_quotation.expand _loc x FDyn.ctyp_tag : 'typevars )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x FDyn.ctyp_tag\n"))));
+                      failwith "Ast_quotation.expand _loc x FDyn.ctyp_tag\n"))));
         ([`Skeyword "'"; `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
           ("`Quote (_loc, (`Normal _loc), i)\n",
             (Fgram.mk_action
@@ -6187,14 +6195,14 @@ let apply_ctyp () =
         ([`Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-          ("AstQuotation.expand _loc x FDyn.ctyp_tag\n",
+          ("Ast_quotation.expand _loc x FDyn.ctyp_tag\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Quot x ->
-                      (AstQuotation.expand _loc x FDyn.ctyp_tag : 'ctyp )
+                      (Ast_quotation.expand _loc x FDyn.ctyp_tag : 'ctyp )
                   | _ ->
-                      failwith "AstQuotation.expand _loc x FDyn.ctyp_tag\n"))));
+                      failwith "Ast_quotation.expand _loc x FDyn.ctyp_tag\n"))));
         ([`Snterm (Fgram.obj (a_uident : 'a_uident Fgram.t ));
          `Skeyword ".";
          `Sself],
@@ -6522,4 +6530,4 @@ let fill_parsers =
   let applied = ref false in
   fun ()  ->
     if not applied.contents then (applied := true; apply (); apply_ctyp ())
-let () = AstParsers.register_parser ("revise", fill_parsers)
+let () = Ast_parsers.register_parser ("revise", fill_parsers)

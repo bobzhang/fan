@@ -70,7 +70,7 @@ val entry_name :
     [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
      match n with
-     |`name old -> AstQuotation.default := old
+     |`name old -> Ast_quotation.default := old
      | _ -> () ;  
     mk_entry ~name:p ~pos ~levels
     end] |}]}

@@ -4,7 +4,7 @@ open AstLib
 let meta =
   object  inherit  FMeta.meta method! loc _loc _ = lid _loc "loc" end
 let _ =
-  AstFilters.register_stru_filter
+  Ast_filters.register_stru_filter
     ("lift",
       (fun ast  ->
          let _loc = loc_of ast in
@@ -19,7 +19,7 @@ let _ =
                            (_loc, (`Uid (_loc, "FLoc")),
                              (`Lid (_loc, "ghost")))))), e))) : FAst.stru )))
 let _ =
-  AstFilters.register_stru_filter
+  Ast_filters.register_stru_filter
     ("strip", (((new Objs.reloc) FLoc.ghost)#stru))
 let map_exp =
   function
@@ -33,7 +33,7 @@ let map_exp =
   | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> AstLib.meta_here _loc _loc
   | e -> e
 let _ =
-  AstFilters.register_stru_filter
+  Ast_filters.register_stru_filter
     ("trash_nothing", ((Objs.map_exp map_exp)#stru))
 let make_filter (s,code) =
   let f =
@@ -46,14 +46,14 @@ let me =
   object 
     inherit  FMeta.meta
     method! loc _loc loc =
-      match AstQuotation.current_loc_name.contents with
+      match Ast_quotation.current_loc_name.contents with
       | None  -> lid _loc FLoc.name.contents
       | Some "here" -> meta_here _loc loc
       | Some x -> lid _loc x
   end
 let mp = object  inherit  FMeta.meta method! loc _loc _ = `Any _loc end
 let _ =
-  AstFilters.register_stru_filter
+  Ast_filters.register_stru_filter
     ("serialize",
       (fun x  ->
          let _loc = FLoc.ghost in

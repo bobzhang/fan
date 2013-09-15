@@ -3,7 +3,7 @@ open FanOps
 open AstLib
 open Filters
 include PreCast
-open AstQuotation
+open Ast_quotation
 open! Fsyntax
 open LibUtil
 open FControl
@@ -29,11 +29,11 @@ let _ =
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
   of_exp_with_filter ~name:(d, "exp") ~entry:exp
-    ~filter:(AstMacros.macro_expander#exp);
+    ~filter:(Ast_macros.macro_expander#exp);
   of_clfield_with_filter ~name:(d, "clfield") ~entry:clfield
-    ~filter:(AstMacros.macro_expander#clfield);
+    ~filter:(Ast_macros.macro_expander#clfield);
   of_stru_with_filter ~name:(d, "stru") ~entry:stru
-    ~filter:(AstMacros.macro_expander#stru)
+    ~filter:(Ast_macros.macro_expander#stru)
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 let _ =
   add_quotation (d, "sigi'") sigi_quot ~mexp:(Filters.me#sigi)

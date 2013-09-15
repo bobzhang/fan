@@ -267,4 +267,4 @@ let apply () =
 let fill_parsers =
   let applied = ref false in
   fun ()  -> if not applied.contents then (apply (); applied := true)
-let () = AstParsers.register_parser ("stream", fill_parsers)
+let () = Ast_parsers.register_parser ("stream", fill_parsers)

@@ -10,7 +10,7 @@ let meta = object
 end;;
 
     
-AstFilters.register_stru_filter
+Ast_filters.register_stru_filter
 ("lift",
  (fun ast ->
    let _loc = loc_of ast in
@@ -18,7 +18,7 @@ AstFilters.register_stru_filter
    {:stru| let loc = FLoc.ghost in $e |}));;
 
 
-AstFilters.register_stru_filter ("strip",(new Objs.reloc  FLoc.ghost)#stru);;
+Ast_filters.register_stru_filter ("strip",(new Objs.reloc  FLoc.ghost)#stru);;
 
 
 let map_exp = with exp function
@@ -30,7 +30,7 @@ let map_exp = with exp function
       AstLib.meta_here _loc _loc
   | e -> e ;;
 
-AstFilters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;
+Ast_filters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;
   
 (* [s] should starts with __ *)
 let make_filter (s,code) =
@@ -43,7 +43,7 @@ let make_filter (s,code) =
 let me = object
   inherit FMeta.meta;
   method! loc _loc loc =
-    match !AstQuotation.current_loc_name with
+    match !Ast_quotation.current_loc_name with
     | None -> lid _loc !FLoc.name
     | Some "here" ->
         meta_here _loc loc
@@ -58,7 +58,7 @@ end;;
 
 
   
-AstFilters.register_stru_filter
+Ast_filters.register_stru_filter
     ("serialize",
      (fun x ->
         let _loc = FLoc.ghost in 

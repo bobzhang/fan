@@ -489,15 +489,15 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )))],
-           ("((match name with\n  | Some x ->\n      let old = AstQuotation.default.contents in\n      (AstQuotation.default :=\n         (AstQuotation.resolve_name _loc ((`Sub []), x));\n       `name old)\n  | None  -> `non), (mk_name _loc il))\n",
+           ("((match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (Ast_quotation.default :=\n         (Ast_quotation.resolve_name _loc ((`Sub []), x));\n       `name old)\n  | None  -> `non), (mk_name _loc il))\n",
              (Fgram.mk_action
                 (fun (name : 'str option)  (il : 'qualid)  (_loc : FLoc.t) 
                    ->
                    (((match name with
                       | Some x ->
-                          let old = AstQuotation.default.contents in
-                          (AstQuotation.default :=
-                             (AstQuotation.resolve_name _loc ((`Sub []), x));
+                          let old = Ast_quotation.default.contents in
+                          (Ast_quotation.default :=
+                             (Ast_quotation.resolve_name _loc ((`Sub []), x));
                            `name old)
                       | None  -> `non), (mk_name _loc il)) : 'entry_name )))))]));
   Fgram.extend_single (entry : 'entry Fgram.t )
@@ -507,12 +507,12 @@ let _ =
           `Skeyword ":";
           `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
           `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-           ("(match n with | `name old -> AstQuotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
+           ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
              (Fgram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
                    ((n,p) : 'entry_name)  (_loc : FLoc.t)  ->
                    ((match n with
-                     | `name old -> AstQuotation.default := old
+                     | `name old -> Ast_quotation.default := old
                      | _ -> ());
                     (match (pos, levels) with
                      | (Some
@@ -527,12 +527,12 @@ let _ =
          `Skeyword ":";
          `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
          `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-          ("(match n with | `name old -> AstQuotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
+          ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
             (Fgram.mk_action
                (fun (levels : 'level_list)  (pos : 'position option)  _ 
                   ((n,p) : 'entry_name)  _  (_loc : FLoc.t)  ->
                   ((match n with
-                    | `name old -> AstQuotation.default := old
+                    | `name old -> Ast_quotation.default := old
                     | _ -> ());
                    (match (pos, levels) with
                     | (Some
@@ -930,9 +930,9 @@ let _ =
                (fun _  (e : 'exp)  _  (_loc : FLoc.t)  -> (e : 'simple_exp )))))]))
 let _ =
   let d = `Absolute ["Fan"; "Lang"] in
-  AstQuotation.of_exp ~name:(d, "extend") ~entry:extend_body;
-  AstQuotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body;
-  AstQuotation.of_stru ~name:(d, "create") ~entry:nonterminals;
-  AstQuotation.of_stru ~name:(d, "new") ~entry:newterminals;
-  AstQuotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body;
-  AstQuotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear
+  Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body;
+  Ast_quotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body;
+  Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals;
+  Ast_quotation.of_stru ~name:(d, "new") ~entry:newterminals;
+  Ast_quotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body;
+  Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear

@@ -150,8 +150,8 @@ open LibUtil
   entry_name:
   [ qualid{il}; OPT  str {name} -> 
     (match name with
-    | Some x -> (let old = !AstQuotation.default in
-      (AstQuotation.default:=AstQuotation.resolve_name _loc (`Sub [], x);
+    | Some x -> (let old = !Ast_quotation.default in
+      (Ast_quotation.default:=Ast_quotation.resolve_name _loc (`Sub [], x);
        `name old))
     | None -> `non, mk_name _loc il)]
 
@@ -160,7 +160,7 @@ open LibUtil
     ->
       begin 
         (match n with
-        |`name old -> AstQuotation.default := old
+        |`name old -> Ast_quotation.default := old
         | _ -> ());
         match (pos,levels) with
         |(Some {:exp| `Level $_ |},`Group _) ->
@@ -170,7 +170,7 @@ open LibUtil
   |  "let"; entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels} ->
       begin
         (match n with
-        |`name old -> AstQuotation.default := old
+        |`name old -> Ast_quotation.default := old
         | _ -> ());
         match (pos,levels) with
         |(Some {:exp| `Level $_ |},`Group _) ->
@@ -270,45 +270,45 @@ open LibUtil
 
 let d = `Absolute["Fan";"Lang"] in
 begin
-  AstQuotation.of_exp
+  Ast_quotation.of_exp
     ~name:((d,  "extend")) ~entry:extend_body;
-  AstQuotation.of_exp
+  Ast_quotation.of_exp
     ~name:((d,  "unsafe_extend")) ~entry:unsafe_extend_body;
-  AstQuotation.of_stru
+  Ast_quotation.of_stru
     ~name:((d,"create")) ~entry:nonterminals;
-  AstQuotation.of_stru
+  Ast_quotation.of_stru
     ~name:((d,"new")) ~entry:newterminals;
 
-  AstQuotation.of_exp
+  Ast_quotation.of_exp
     ~name:((d,"delete")) ~entry:delete_rule_body;
-  AstQuotation.of_exp
+  Ast_quotation.of_exp
     ~name:((d,"clear")) ~entry:nonterminalsclear;
 end;;
 
 
 (*
-  AstQuotation.add_quotation
+  Ast_quotation.add_quotation
   (d,"rule") rule
   ~mexp:FGramDef.Exp.meta_rule
   ~mpat:FGramDef.Pat.meta_rule
   ~exp_filter:(fun x-> (x :ep :>exp))
   ~pat_filter:(fun x->(x : ep :> pat));
 
-  AstQuotation.add_quotation
+  Ast_quotation.add_quotation
   (d,"entry") entry
   ~mexp:FGramDef.Expr.meta_entry
   ~mpat:FGramDef.Patt.meta_entry
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
-  AstQuotation.add_quotation
+  Ast_quotation.add_quotation
   (d,"level") level
   ~mexp:FGramDef.Expr.meta_level
   ~mpat:FGramDef.Patt.meta_level
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
-  AstQuotation.add_quotation
+  Ast_quotation.add_quotation
   (d,"symbol") psymbol
   ~mexp:FGramDef.Expr.meta_symbol
   ~mpat:FGramDef.Patt.meta_symbol
