@@ -85,7 +85,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
           FLoc.raise _loc
             (XStream.Error ("S: illegal in anonymous entry level"))
         else {:ctyp| '$lid:tvar |}
-    | `Tok _loc -> {:ctyp| [> FToken.t ] |}  (* BOOTSTRAPPING*)
+    | `Tok _loc -> {:ctyp| [> Ftoken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t  in aux styp
 
       
