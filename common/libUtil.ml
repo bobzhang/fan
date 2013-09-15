@@ -24,14 +24,14 @@ let memoize f =
       let r = f v in
       (Hashtbl.replace cache v r; r)
   
-let finally ~action f x  =
+let finally ~action x f   =
   try 
     let res = f x in
     (action (); res )
   with e -> begin action (); raise e end
     
-let with_dispose ~dispose f x =
-  finally ~action:(fun () -> dispose x) f x
+let with_dispose ~dispose x f  =
+  finally ~action:(fun () -> dispose x) x f 
 
 (** {6 Operators}*)
 external id : 'a -> 'a = "%identity"
@@ -776,7 +776,7 @@ module Ref = struct
         
   let safe r body =
     let old = !r in
-    finally ~action:(fun () -> r:=old) body ()
+    finally ~action:(fun () -> r:=old) () body 
     
   let protect2 (r1,v1) (r2,v2) body =
     let o1 = !r1 and o2 = !r2 in
@@ -794,7 +794,7 @@ module Ref = struct
         
   let save2 r1 r2 body =
       let o1 = !r1 and o2 = !r2 in
-      finally ~action:(fun () -> (r1:=o1; r2:=o2)) body ()
+      finally ~action:(fun () -> (r1:=o1; r2:=o2)) () body 
       
   let protects refs vs body =
     let olds = List.map (fun x-> !x ) refs in 
@@ -813,7 +813,7 @@ module Ref = struct
    *)      
   let saves (refs: 'a ref list ) body =
     let olds = List.map (fun x -> !x) refs in
-    finally ~action:(fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) body ()
+    finally ~action:(fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) () body 
 
 
   let post r f =

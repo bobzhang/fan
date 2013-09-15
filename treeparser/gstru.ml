@@ -3,7 +3,7 @@ open LibUtil
 
 
 let mk_action=Gaction.mk
-let string_of_token=FToken.extract_string (* Confirm used or not?*)
+let string_of_token=Ftoken.extract_string (* Confirm used or not?*)
 
 (* tree processing *)  
 let rec flatten_tree = function

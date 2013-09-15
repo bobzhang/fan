@@ -3,7 +3,7 @@
 (** Internal: Utilities for Fan's grammar *)  
 open Gstructure
   
-open FToken
+open Ftoken
 
 val empty_entry: string -> 'a -> 'b
 

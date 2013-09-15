@@ -1,7 +1,7 @@
 open Gstructure
 (* val gram_of_entry : entry -> gram *)
 val mk_action : 'a -> Gaction.t
-val string_of_token : [> FToken.t ] -> string
+val string_of_token : [> Ftoken.t ] -> string
 val flatten_tree : tree -> symbol list list
 
 type brothers = private

@@ -19,7 +19,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
                        ((try Hashtbl.find inject_exp_tbl x
@@ -38,7 +38,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
                        ((try Hashtbl.find inject_stru_tbl x
@@ -57,7 +57,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
                        ((try Hashtbl.find inject_clfield_tbl x
@@ -69,7 +69,7 @@ let _ =
                        failwith
                          "try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n"))))]))
 let _ =
-  let open AstQuotation in
+  let open Ast_quotation in
     of_exp ~name:((`Absolute ["Fan"; "Inject"]), "exp") ~entry:inject_exp;
     of_stru ~name:((`Absolute ["Fan"; "Inject"]), "stru") ~entry:inject_stru;
     of_clfield ~name:((`Absolute ["Fan"; "Inject"]), "clfield")

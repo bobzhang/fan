@@ -80,7 +80,7 @@ let parse_file name pa =
   let () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = XStream.of_channel ic in finally ~action:clear (pa loc) cs
+  let cs = XStream.of_channel ic in finally ~action:clear cs (pa loc)
 module CurrentPrinter =
   struct
     let print_interf ?input_file  ?output_file  ast =
@@ -106,7 +106,7 @@ let wrap parse_fun ~print_location  lb =
 let toplevel_phrase token_stream =
   match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
   | Some stru ->
-      let stru = AstFilters.apply_implem_filters stru in Ast2pt.phrase stru
+      let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
 let use_file token_stream =
   let loop () =
@@ -125,5 +125,5 @@ let use_file token_stream =
            Fgram.parse_origin_tokens Fsyntax.implem token_stream in
          if stopped_at_directive <> None then pl @ (loop ()) else pl in
        loop ()) in
-  List.map (fun x  -> Ast2pt.phrase (AstFilters.apply_implem_filters x))
+  List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))
     (pl0 @ pl)

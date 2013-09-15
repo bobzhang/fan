@@ -3,7 +3,7 @@ open FanOps
 open AstLib
 open Filters
 include PreCast
-open AstQuotation
+open Ast_quotation
 open! Fsyntax
 open LibUtil
 open FControl
@@ -29,11 +29,11 @@ let _ =
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
   of_exp_with_filter ~name:(d, "exp") ~entry:exp
-    ~filter:(AstMacros.macro_expander#exp);
+    ~filter:(Ast_macros.macro_expander#exp);
   of_clfield_with_filter ~name:(d, "clfield") ~entry:clfield
-    ~filter:(AstMacros.macro_expander#clfield);
+    ~filter:(Ast_macros.macro_expander#clfield);
   of_stru_with_filter ~name:(d, "stru") ~entry:stru
-    ~filter:(AstMacros.macro_expander#stru)
+    ~filter:(Ast_macros.macro_expander#stru)
 let d = `Absolute ["Fan"; "Lang"; "Meta"]
 let _ =
   add_quotation (d, "sigi'") sigi_quot ~mexp:(Filters.me#sigi)
@@ -406,7 +406,7 @@ let _ =
           `Skeyword ";"],
            ("AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Fgram.mk_action
-                (fun _  (ns : 'name list)  _  (__fan_0 : [> FToken.t]) 
+                (fun _  (ns : 'name list)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid m ->
@@ -438,7 +438,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x -> (`Lid (_loc, x) : 'name )
                    | _ -> failwith "`Lid (_loc, x)\n"))))]))

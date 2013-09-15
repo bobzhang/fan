@@ -54,7 +54,7 @@ let _ =
           `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
            ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
              (Fgram.mk_action
-                (fun (r : 'regexp)  _  (__fan_1 : [> FToken.t])  _ 
+                (fun (r : 'regexp)  _  (__fan_1 : [> Ftoken.t])  _ 
                    (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Lid x ->
@@ -119,7 +119,7 @@ let _ =
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Chr c ->
                       (Characters
@@ -133,7 +133,7 @@ let _ =
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Str s ->
                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
@@ -170,7 +170,7 @@ let _ =
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = FLoc.start_pos _loc in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Lid x ->
                       ((try Hashtbl.find named_regexps x
@@ -209,7 +209,7 @@ let _ =
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
              (Fgram.mk_action
-                (fun (__fan_2 : [> FToken.t])  _  (__fan_0 : [> FToken.t]) 
+                (fun (__fan_2 : [> Ftoken.t])  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match (__fan_2, __fan_0) with
                    | (`Chr c2,`Chr c1) ->
@@ -224,7 +224,7 @@ let _ =
               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Chr c1 ->
                       (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
@@ -239,5 +239,5 @@ let _ =
                   (_loc : FLoc.t)  -> (Fcset.union cc1 cc2 : 'char_class1 )))))]))
 let d = `Absolute ["Fan"; "Lang"]
 let _ =
-  AstQuotation.of_exp ~name:(d, "lexer") ~entry:lex;
-  AstQuotation.of_stru ~name:(d, "regexp") ~entry:declare_regexp
+  Ast_quotation.of_exp ~name:(d, "lexer") ~entry:lex;
+  Ast_quotation.of_stru ~name:(d, "regexp") ~entry:declare_regexp

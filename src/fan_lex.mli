@@ -1,24 +1,8 @@
 
 (** Fan's lexer using [lex] DDSL *)  
-(* open Lexing *)
-type lex_error =
-
-  | Illegal_character of char
-  | Illegal_escape of string
-  | Illegal_quotation of string
-  | Illegal_antiquote        
-  | Unterminated_comment
-  | Unterminated_string
-  | Unterminated_quotation
-  | Unterminated_antiquot
-  | Unterminated_string_in_comment
-  | Unterminated_string_in_quotation
-  | Unterminated_string_in_antiquot
-  | Comment_start
-  | Comment_not_end
-  | Literal_overflow of string
 
 
+  
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
 type context = {
@@ -28,26 +12,71 @@ type context = {
     buffer     : Buffer.t
   }
 
-exception Lexing_error of lex_error
+
+
 val turn_on_quotation_debug: unit -> unit
+
 val turn_off_quotation_debug: unit -> unit
+
 val clear_stack: unit -> unit
+
 val show_stack: unit -> unit
 
 
-val token:  Lexing.lexbuf ->  [> FToken.t ]
 
-val comment: context -> Lexing.lexbuf -> unit
+val token :  Lexing.lexbuf ->  [> Ftoken.t ]
 
-val string: context -> Lexing.lexbuf -> unit
+(** called by [token]
+    argument [context] contains a raw [buffer] and  the [loc] is pointed to the
+    starting [position].
 
+    For context, its buffer contains the comment string, its location is
+    *not valid* anymore.
+
+    The "(*" prefix should not be there
+
+    (* shgo *) is returned 
+ *)    
+val lex_comment : context -> Lexing.lexbuf -> unit
+
+(**
+   called by [lex_antiquot], [lex_quotation], [token]
+   argument [context] contains a raw [buffer] and  the [loc] is pointed to the
+   starting [position].
+
+   For context, its buffer contains the comment string, its location is
+   *not valid* anymore.
+   The "\"" should not be there,.
+
+   remember it return a raw string, which would be evaled in the ast level
+
+   abho is returned without trailing "\""
+ *)    
+val lex_string : context -> Lexing.lexbuf -> unit
+
+(**
+   called by [token]
+   argument [context] contains a raw [buffer] and  the [loc] is pointed to the
+   starting [position].
+
+   For context, its buffer contains the comment string, its location is
+   *not valid* anymore.
+   The "$" should not be there. "()" is returned for $()
+   
+ *)    
+val lex_antiquot : context -> Lexing.lexbuf -> unit
+
+(**
+   called by [lex_antiquot], [token]
+ *)    
+val lex_quotation : context -> Lexing.lexbuf -> unit    
 
 (** In initial stage
     [Lexing.lexeme_start_p] returns
     {[ Lexing.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 ]}
     for a string input or a channel input (from_string, from_channel).
  *)    
-val from_lexbuf : Lexing.lexbuf -> ([> FToken.t ] * FLoc.t) XStream.t
+val from_lexbuf : Lexing.lexbuf -> ([> Ftoken.t ] * FLoc.t) XStream.t
 
 
 

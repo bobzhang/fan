@@ -5,20 +5,20 @@ let just_print_filters () =
   let pp = eprintf  in 
   let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in
   begin
-    pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl AstFilters.interf_filters ;
-    pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.implem_filters ;
-    pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl AstFilters.topphrase_filters 
+    pp  "@[for interface:@[<hv2>%a@]@]@." p_tbl Ast_filters.interf_filters ;
+    pp  "@[for phrase:@[<hv2>%a@]@]@." p_tbl Ast_filters.implem_filters ;
+    pp  "@[for top_phrase:@[<hv2>%a@]@]@." p_tbl Ast_filters.topphrase_filters 
   end
 let just_print_parsers () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k _v -> fprintf f "%s@;" k) tbl in begin
-    pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl AstParsers.registered_parsers
+    pp "@[Loaded Parsers:@;@[<hv2>%a@]@]@." p_tbl Ast_parsers.registered_parsers
   end
   
 let just_print_applied_parsers () =
   let pp = eprintf in
   pp "@[Applied Parsers:@;@[<hv2>%a@]@]@."
-    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) AstParsers.applied_parsers
+    (fun f q -> Queue.iter (fun (k,_) -> fprintf f "%s@;" k) q  ) Ast_parsers.applied_parsers
   
 type file_kind =
   | Intf of string
@@ -67,7 +67,7 @@ let process_intf  name =
   | None ->
         None
   | Some x ->
-      let x = AstFilters.apply_interf_filters x in
+      let x = Ast_filters.apply_interf_filters x in
       Some x  in
   PreCast.CurrentPrinter.print_interf
     ?input_file:(Some name)
@@ -79,7 +79,7 @@ let process_impl name =
   match PreCast.parse_file name PreCast.parse_implem with
   | None -> None
   | Some x ->
-      let x = AstFilters.apply_implem_filters x in
+      let x = Ast_filters.apply_implem_filters x in
       Some x  in
   PreCast.CurrentPrinter.print_implem
     ?input_file:(Some name)
@@ -171,8 +171,8 @@ let initial_spec_list =
    ("-dlang",
        (Arg.String
           (fun s  ->
-            AstQuotation.default :=
-              (AstQuotation.resolve_name FLoc.ghost (`Sub [], s)))),
+            Ast_quotation.default :=
+              (Ast_quotation.resolve_name FLoc.ghost (`Sub [], s)))),
        " Set the default language");
    ("-printer", Arg.Symbol( ["p";"o"],
     function x ->

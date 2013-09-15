@@ -29,14 +29,14 @@ let gkeywords = ref (SSet.of_list default_keywords)
   
 
 let rec fan_filter = parser
-  | ( #FToken.space_token,_); 'xs -> fan_filter xs
+  | ( #Ftoken.space_token,_); 'xs -> fan_filter xs
   |  x; 'xs  ->
       {:stream| x; ' fan_filter xs |}
   |  -> {:stream||}
 
-let rec ignore_layout : FToken.filter =
+let rec ignore_layout : Ftoken.filter =
   parser
-    | (#FToken.space_token,_); 'xs -> ignore_layout  xs
+    | (#Ftoken.space_token,_); 'xs -> ignore_layout  xs
     | x ; 'xs  ->
         {:stream|x; 'ignore_layout xs |}
     | -> {:stream||}

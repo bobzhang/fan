@@ -152,7 +152,7 @@ let _ =
                   `Any)), "`Ant (\"\"| \"anti\",_)")],
           ("`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> FToken.t])  (v : 'luident)  _ 
+               (fun (__fan_2 : [> Ftoken.t])  (v : 'luident)  _ 
                   (_loc : FLoc.t)  ->
                   match __fan_2 with
                   | `Ant ((""|"anti" as n),s) ->
@@ -169,7 +169,7 @@ let _ =
              (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
+               (fun (__fan_2 : [> Ftoken.t])  (s : 'luident)  _ 
                   (_loc : FLoc.t)  ->
                   match __fan_2 with
                   | `Str v ->
@@ -185,7 +185,7 @@ let _ =
              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> FToken.t])  (s : 'luident)  _ 
+               (fun (__fan_2 : [> Ftoken.t])  (s : 'luident)  _ 
                   (_loc : FLoc.t)  ->
                   match __fan_2 with
                   | `Lid x ->
@@ -223,7 +223,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("`Alias (_loc, p1, (`Lid (_loc, s)))\n",
               (Fgram.mk_action
-                 (fun (__fan_2 : [> FToken.t])  _  (p1 : 'internal_pat) 
+                 (fun (__fan_2 : [> Ftoken.t])  _  (p1 : 'internal_pat) 
                     (_loc : FLoc.t)  ->
                     match __fan_2 with
                     | `Lid s ->
@@ -241,7 +241,7 @@ let _ =
                (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("`Str (_loc, s)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Str s -> (`Str (_loc, s) : 'internal_pat )
                    | _ -> failwith "`Str (_loc, s)\n"))));
@@ -254,7 +254,7 @@ let _ =
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("`Lid (_loc, x)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
                   | _ -> failwith "`Lid (_loc, x)\n"))));

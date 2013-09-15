@@ -108,16 +108,16 @@ let default_keywords =
 let gkeywords = ref (SSet.of_list default_keywords)
 let rec fan_filter (__strm : _ XStream.t) =
   match XStream.peek __strm with
-  | Some (#FToken.space_token,_) -> (XStream.junk __strm; fan_filter __strm)
+  | Some (#Ftoken.space_token,_) -> (XStream.junk __strm; fan_filter __strm)
   | Some x ->
       (XStream.junk __strm;
        (let xs = __strm in
         XStream.icons x (XStream.slazy (fun _  -> fan_filter xs))))
   | _ -> XStream.sempty
-let rec ignore_layout: FToken.filter =
+let rec ignore_layout: Ftoken.filter =
   fun (__strm : _ XStream.t)  ->
     match XStream.peek __strm with
-    | Some (#FToken.space_token,_) ->
+    | Some (#Ftoken.space_token,_) ->
         (XStream.junk __strm; ignore_layout __strm)
     | Some x ->
         (XStream.junk __strm;
@@ -166,7 +166,7 @@ let eoi_entry entry =
                 "`EOI")],
              ("x\n",
                (mk_action
-                  (fun (__fan_1 : [> FToken.t])  (x : 'entry) 
+                  (fun (__fan_1 : [> Ftoken.t])  (x : 'entry) 
                      (_loc : FLoc.t)  ->
                      match __fan_1 with
                      | `EOI -> (x : 'entry_eoi )

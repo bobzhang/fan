@@ -46,7 +46,7 @@ let normal () = begin
   Toploop.parse_use_file := Parse.use_file;
 end;;
 
-AstParsers.use_parsers
+Ast_parsers.use_parsers
     ["revise";"stream";"macro"];;
 
 let revise () = begin

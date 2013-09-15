@@ -10,39 +10,39 @@ let _ =
           `Stoken
             (((function | `Str _ -> true | _ -> false)),
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
-           ("AstQuotation.set_default (AstQuotation.resolve_name _loc ((`Sub []), s))\n",
+           ("Ast_quotation.set_default (Ast_quotation.resolve_name _loc ((`Sub []), s))\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Str s ->
-                       (AstQuotation.set_default
-                          (AstQuotation.resolve_name _loc ((`Sub []), s)) : 
+                       (Ast_quotation.set_default
+                          (Ast_quotation.resolve_name _loc ((`Sub []), s)) : 
                        'item )
                    | _ ->
                        failwith
-                         "AstQuotation.set_default (AstQuotation.resolve_name _loc ((`Sub []), s))\n"))));
+                         "Ast_quotation.set_default (Ast_quotation.resolve_name _loc ((`Sub []), s))\n"))));
         ([`Skeyword "import";
          `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
-          ("AstQuotation.paths := ((`Absolute xs) :: (AstQuotation.paths.contents))\n",
+          ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
             (Fgram.mk_action
                (fun (xs : 'dot_namespace)  _  (_loc : FLoc.t)  ->
-                  (AstQuotation.paths := ((`Absolute xs) ::
-                     (AstQuotation.paths.contents)) : 'item )))));
+                  (Ast_quotation.paths := ((`Absolute xs) ::
+                     (Ast_quotation.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
            (((function | `Str _ -> true | _ -> false)),
              (`App ((`Vrn "Str"), `Any)), "`Str _")],
-          ("AstFilters.use_implem_filter s\n",
+          ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> FToken.t])  _  (_loc : FLoc.t)  ->
+               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                   match __fan_1 with
-                  | `Str s -> (AstFilters.use_implem_filter s : 'item )
-                  | _ -> failwith "AstFilters.use_implem_filter s\n"))));
+                  | `Str s -> (Ast_filters.use_implem_filter s : 'item )
+                  | _ -> failwith "Ast_filters.use_implem_filter s\n"))));
         ([`Skeyword "lang_clear"],
-          ("AstQuotation.clear_map (); AstQuotation.clear_default ()\n",
+          ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
             (Fgram.mk_action
                (fun _  (_loc : FLoc.t)  ->
-                  (AstQuotation.clear_map (); AstQuotation.clear_default () : 
+                  (Ast_quotation.clear_map (); Ast_quotation.clear_default () : 
                   'item )))))]));
   Fgram.unsafe_extend_single (dot_namespace : 'dot_namespace Fgram.t )
     (None,
@@ -54,7 +54,7 @@ let _ =
           `Sself],
            ("i :: xs\n",
              (Fgram.mk_action
-                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> FToken.t]) 
+                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid i -> (i :: xs : 'dot_namespace )
@@ -64,7 +64,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("[i]\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Uid i -> ([i] : 'dot_namespace )
                   | _ -> failwith "[i]\n"))))]));

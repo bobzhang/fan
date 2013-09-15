@@ -9,7 +9,7 @@ open LibUtil
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let with_loc (parse_fun: 'b FToken.parse ) strm =
+let with_loc (parse_fun: 'b Ftoken.parse ) strm =
   let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
@@ -139,11 +139,11 @@ let rec parser_of_tree entry (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t
 
 (*
   {[
-  let a : FToken.t = Obj.magic & Gparser.parser_of_terminals
+  let a : Ftoken.t = Obj.magic & Gparser.parser_of_terminals
   [`Skeyword "a";`Skeyword "b"; `Skeyword "c"]
   (fun _ v _  -> Gaction.mk (fun  c b a ->  v))
   [< (`KEYWORD "a",_loc) ; (`KEYWORD "b", _loc); (`KEYWORD "c",_loc) >];
-  val a : FToken.t = `KEYWORD "c"
+  val a : Ftoken.t = `KEYWORD "c"
   ]}
  *)    
 and parser_of_terminals (terminals: terminal list) strm =
@@ -209,7 +209,7 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
 
 (* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs:  level list) : int ->  Gaction.t FToken.parse =
+  let rec aux clevn  (xs:  level list) : int ->  Gaction.t Ftoken.parse =
     match xs with 
     | [] -> fun _ -> fun _ -> raise XStream.NotConsumed  
     | lev :: levs ->

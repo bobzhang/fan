@@ -1,5 +1,5 @@
 open LibUtil
-open FToken
+open Ftoken
   
 type 'a t = 'a Gentry.t
 
@@ -12,14 +12,14 @@ type position =
     | `Last
     | `Level of string ]
       
-(* type token_stream = (FToken.token * FLoc.t) XStream.t *)
+(* type token_stream = (Ftoken.token * FLoc.t) XStream.t *)
 val filter: stream -> stream      
 type gram =
   Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
   (* gkeywords :  SSet.t ref; *) (* int SMap.t *) (* (string, int ref) Hashtbl.t *)
-  (* glexer : FLoc.t -> char XStream.t -> FToken.stream ; *)
+  (* glexer : FLoc.t -> char XStream.t -> Ftoken.stream ; *)
 }
 
 module Action :
@@ -62,7 +62,7 @@ type descr = pat
       
 
       
-type token_pattern = ((FToken.t -> bool) * descr * string )
+type token_pattern = ((Ftoken.t -> bool) * descr * string )
 
 type entry = Gstructure.entry 
 and desc = Gstructure.desc
@@ -110,7 +110,7 @@ val clear: 'a t -> unit
 
 val mk_action: 'a -> Action.t
 
-val string_of_token:[> FToken.t ] -> string
+val string_of_token:[> Ftoken.t ] -> string
 
 val obj: 'a t -> entry         
 val repr: entry -> 'a t
@@ -120,7 +120,7 @@ val repr: entry -> 'a t
 val gram: gram
 
 (* create a standalone gram *)
-val create_lexer: ?filter:FToken.filter ->
+val create_lexer: ?filter:Ftoken.filter ->
   annot:string -> keywords: string list -> unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
@@ -133,18 +133,18 @@ val of_parser:  string ->  (stream -> 'a) ->  'a t
 
 val get_filter: unit -> FanTokenFilter.t
 
-val lex: FLoc.t -> char XStream.t -> (FToken.t * FLoc.t) XStream.t
+val lex: FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
 
-val lex_string: FLoc.t -> string -> (FToken.t * FLoc.t) XStream.t
+val lex_string: FLoc.t -> string -> (Ftoken.t * FLoc.t) XStream.t
 
 
 val parse:  'a t -> FLoc.t -> char XStream.t -> 'a
 
 val parse_string:  ?loc:FLoc.t -> 'a t  -> string -> 'a
       
-val debug_origin_token_stream: 'a t -> FToken.t XStream.t -> 'a
+val debug_origin_token_stream: 'a t -> Ftoken.t XStream.t -> 'a
 
-val debug_filtered_token_stream: 'a t -> FToken.t XStream.t -> 'a
+val debug_filtered_token_stream: 'a t -> Ftoken.t XStream.t -> 'a
 
 val parse_string_safe:  ?loc:FLoc.t -> 'a t ->  string -> 'a
 

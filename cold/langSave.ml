@@ -69,7 +69,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x -> (x : 'lid )
                    | _ -> failwith "x\n"))))]))

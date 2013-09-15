@@ -1,6 +1,6 @@
 open Gstructure
 
-open FToken
+open Ftoken
     
 val with_loc: 'b parse -> ('b*FLoc.t) parse
 

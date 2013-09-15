@@ -5,14 +5,14 @@
 {:unsafe_extend| (g:Fgram.t)
   item:
   ["default"; `Str s -> (* FIXME*)
-    AstQuotation.set_default (AstQuotation.resolve_name _loc (`Sub[],s))
+    Ast_quotation.set_default (Ast_quotation.resolve_name _loc (`Sub[],s))
   |"import"; dot_namespace{xs} ->
-      AstQuotation.paths := `Absolute  xs :: !AstQuotation.paths
+      Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths
   | "filter"; `Str s ->
-      AstFilters.use_implem_filter s
+      Ast_filters.use_implem_filter s
   | "lang_clear" ->
-      (AstQuotation.clear_map();
-       AstQuotation.clear_default())
+      (Ast_quotation.clear_map();
+       Ast_quotation.clear_default())
   ]
   dot_namespace:
   [ `Uid i; "."; S{xs} -> i::xs

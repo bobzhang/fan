@@ -57,7 +57,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x -> (x : 'id )
                    | _ -> failwith "x\n"))));
@@ -66,7 +66,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("x\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> FToken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                   match __fan_0 with
                   | `Uid x -> (x : 'id )
                   | _ -> failwith "x\n"))))]));

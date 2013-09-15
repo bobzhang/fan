@@ -62,12 +62,12 @@ module CurrentPrinter :
 
 
 val wrap :
-    'a FToken.parse  -> print_location:(Format.formatter -> FLoc.t -> unit) ->
+    'a Ftoken.parse  -> print_location:(Format.formatter -> FLoc.t -> unit) ->
         Lexing.lexbuf -> 'a    
 
-val toplevel_phrase : Parsetree.toplevel_phrase FToken.parse
+val toplevel_phrase : Parsetree.toplevel_phrase Ftoken.parse
 
 
 (** Here we only *intercept* directives [at the beginning] of the file. 
     toplevel has a differen semantics for [use_file] *)
-val use_file : Parsetree.toplevel_phrase list FToken.parse
+val use_file : Parsetree.toplevel_phrase list Ftoken.parse

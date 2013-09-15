@@ -13,7 +13,7 @@ let _ =
           | _ -> None );
 
     Foptions.adds MkFan.initial_spec_list;
-    AstParsers.use_parsers [ "revise"; "stream"];
+    Ast_parsers.use_parsers [ "revise"; "stream"];
     try
       Arg.parse_dynamic
         Foptions.init_spec_list

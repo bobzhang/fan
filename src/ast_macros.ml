@@ -38,4 +38,4 @@ let macro_expander = object(self)
     | e -> super#exp e 
 end
 
-(* AstFilters.register_stru_filter ("macro", macro_expander#stru);   *)
+(* Ast_filters.register_stru_filter ("macro", macro_expander#stru);   *)

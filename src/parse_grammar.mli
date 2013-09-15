@@ -62,7 +62,7 @@ val qualid : vid Fgram.t
 val t_qualid : vid Fgram.t
     
 val entry_name :
-    ([ `name of FToken.name | `non ] * FGramDef.name) Fgram.t
+    ([ `name of Ftoken.name | `non ] * FGramDef.name) Fgram.t
 
 
 (** return an entry [FGramDef.entry]
@@ -70,7 +70,7 @@ val entry_name :
     [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
      match n with
-     |`name old -> AstQuotation.default := old
+     |`name old -> Ast_quotation.default := old
      | _ -> () ;  
     mk_entry ~name:p ~pos ~levels
     end] |}]}
