@@ -24,7 +24,7 @@ val show_stack: unit -> unit
 
 
 
-val token :  Lexing.lexbuf ->  [> Ftoken.t ]
+val token :  Lexing.lexbuf ->   (Ftoken.t * FLoc.t )
 
 (** called by [token]
     argument [context] contains a raw [buffer] and  the [loc] is pointed to the
@@ -76,7 +76,7 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
     {[ Lexing.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 ]}
     for a string input or a channel input (from_string, from_channel).
  *)    
-val from_lexbuf : Lexing.lexbuf -> ([> Ftoken.t ] * FLoc.t) XStream.t
+val from_lexbuf : Lexing.lexbuf -> ( Ftoken.t * FLoc.t   ) XStream.t
 
 
 
