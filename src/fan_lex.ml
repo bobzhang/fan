@@ -460,23 +460,15 @@ let  token  = {:lexer|
       end
   (* quotation handling *)
   | "{||}" -> `Quot { Ftoken.name=Ftoken.empty_name; loc=None; shift=2; content="" }        
-
-  | "{" ("@" (ident as loc))? "|" (extra_quot as p)?  ->
-      let c  = default_cxt lexbuf in
-      let v = opt_char_len p in
-      let shift = 2 + v  + (match loc with | None -> 0 | Some x -> 1 + String.length x) in
-      let retract = 2 + v in
-      begin 
-        Stack.push p opt_char;
-        mk_quotation
-          lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc ~shift ~retract
-      end
-  | "{" ":" (quotation_name as name) ('@' (locname as loc))? '|' (extra_quot as p)? ->
+  | "{" (":" (quotation_name as name))? ('@' (locname as loc))? '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
-      let len = String.length name in 
-      let name = Ftoken.name_of_string name in
+      let (name,len) =
+        match name with
+        | Some name -> (Ftoken.name_of_string name,1 + String.length name)
+        | None -> (Ftoken.empty_name,0)  in 
+      (* let name = Ftoken.name_of_string name in *)
       let v = opt_char_len p in
-      let shift = 2 + 1 + len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
+      let shift = 2 + (* (1 + len) *) len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
       let retract = 2 + v in
       begin
         Stack.push p opt_char;
