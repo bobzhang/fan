@@ -460,32 +460,17 @@ let  token  = {:lexer|
       end
   (* quotation handling *)
   | "{||}" -> `Quot { Ftoken.name=Ftoken.empty_name; loc=None; shift=2; content="" }        
-  | "{|" (extra_quot as p)?  ->
+
+  | "{" ("@" (ident as loc))? "|" (extra_quot as p)?  ->
       let c  = default_cxt lexbuf in
-      let len = 2 + opt_char_len p in 
+      let v = opt_char_len p in
+      let shift = 2 + v  + (match loc with | None -> 0 | Some x -> 1 + String.length x) in
+      let retract = 2 + v in
       begin 
         Stack.push p opt_char;
         mk_quotation
-          lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc:None ~shift:len ~retract:len
+          lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc ~shift ~retract
       end
-  | "{@" (ident as loc) '|' (extra_quot as p)?  ->
-      let c = default_cxt lexbuf in
-      begin
-        Stack.push p opt_char;
-        mk_quotation lex_quotation c lexbuf ~name:(Ftoken.empty_name) ~loc:(Some loc)
-          ~shift:(2 + 1 + String.length loc + (opt_char_len p))
-          ~retract:(2 + opt_char_len p)
-      end
-  (* | "{" ":" (quotation_name as name) '|' (extra_quot as p)? -> *)
-  (*     let c = default_cxt lexbuf in *)
-  (*     let len = String.length name in *)
-  (*     let name = Ftoken.name_of_string name in *)
-  (*     begin *)
-  (*       Stack.push p opt_char; *)
-  (*       mk_quotation lex_quotation c lexbuf *)
-  (*         ~name ~loc:None  ~shift:(2 + 1 + len + opt_char_len p) *)
-  (*         ~retract:(2 + opt_char_len p) *)
-  (*     end *)
   | "{" ":" (quotation_name as name) ('@' (locname as loc))? '|' (extra_quot as p)? ->
       let c = default_cxt lexbuf in
       let len = String.length name in 
