@@ -1,6 +1,5 @@
 open LibUtil
 open Format
-open Lexing
 type lex_error =  
   | Illegal_character of char
   | Illegal_escape of string
@@ -66,17 +65,19 @@ let store c lexbuf = c.buffer ++ (Lexing.lexeme lexbuf)
 let with_store f c lexbuf = store c lexbuf; f c lexbuf
 let buff_contents c =
   let contents = Buffer.contents c.buffer in Buffer.reset c.buffer; contents
-let move_curr_p shift lexbuf =
+let move_curr_p shift (lexbuf : Lexing.lexbuf) =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 let with_curr_loc lexer c lexbuf =
   lexer { c with loc = (Lexing.lexeme_start_p lexbuf) } lexbuf
-let mk_quotation quotation c lexbuf ~name  ~loc  ~shift  ~retract  =
+let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~loc  ~shift 
+  ~retract  =
   let old = lexbuf.lex_start_p in
   let s = with_curr_loc quotation c lexbuf; buff_contents c in
   let content = String.sub s 0 ((String.length s) - retract) in
   ((`Quot { Ftoken.name = name; loc; shift; content }),
-    (old -- (Lexing.lexeme_end_p lexbuf)))
-let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1)  lexbuf =
+    (old -- lexbuf.lex_curr_p))
+let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1) 
+  (lexbuf : Lexing.lexbuf) =
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with | None  -> pos.pos_fname | Some s -> s in
   lexbuf.lex_curr_p <-
@@ -7556,7 +7557,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (with_curr_loc lex_string c lexbuf;
-           ((`Str (buff_contents c)), (old -- (Lexing.lexeme_end_p lexbuf))))
+           ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 8 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -7605,15 +7606,13 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let old = lexbuf.lex_start_p in
           (store c lexbuf;
            with_curr_loc lex_comment c lexbuf;
-           ((`COMMENT (buff_contents c)),
-             (old -- (Lexing.lexeme_end_p lexbuf))))
+           ((`COMMENT (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 18 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (warn Comment_start (!! lexbuf);
            lex_comment c lexbuf;
-           ((`COMMENT (buff_contents c)),
-             (old -- (Lexing.lexeme_end_p lexbuf))))
+           ((`COMMENT (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 19 ->
           ((`Quot
               {
@@ -7666,7 +7665,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let contents = String.sub s 0 ((String.length s) - retract) in
           ((`DirQuotation
               ((((3 + 1) + len) + (opt_char_len p)), name, contents)),
-            (old -- (Lexing.lexeme_end_p lexbuf)))
+            (old -- lexbuf.lex_curr_p))
       | 23 ->
           let num =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
@@ -9981,7 +9980,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                   let old =
                     FLoc.move_pos ((String.length name) + 1)
                       lexbuf.lex_start_p in
-                  ((`Ant (name, x)), (old -- (Lexing.lexeme_end_p lexbuf)))
+                  ((`Ant (name, x)), (old -- lexbuf.lex_curr_p))
               | 1 ->
                   let x =
                     Lexing.sub_lexeme lexbuf

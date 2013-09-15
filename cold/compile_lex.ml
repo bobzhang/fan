@@ -457,7 +457,11 @@ let output_entry
    (`Fun
       (_loc,
         (`Case
-           (_loc, (`Lid (_loc, "lexbuf")),
+           (_loc,
+             (`Constraint
+                (_loc, (`Lid (_loc, "lexbuf")),
+                  (`Dot
+                     (_loc, (`Uid (_loc, "Lexing")), (`Lid (_loc, "lexbuf")))))),
              (`LetIn
                 (_loc, (`Positive _loc), binds,
                   (`Seq

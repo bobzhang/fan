@@ -80,10 +80,8 @@ let ocaml_uid =
   uppercase identchar * 
 |};;
 
-
 open LibUtil  
 open Format  
-open Lexing
 type lex_error  =
   | Illegal_character of char
   | Illegal_escape    of string
@@ -215,7 +213,7 @@ let buff_contents c =
 
 
 (** [unsafe] shift the lexing buffer, usually shift back *)    
-let move_curr_p shift  lexbuf  =
+let move_curr_p shift  (lexbuf:Lexing.lexbuf)  =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 
       
@@ -227,7 +225,7 @@ let with_curr_loc lexer c lexbuf =
 
 (** when you return a token make sure the token's location is correct
  *)
-let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
+let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~loc ~shift ~retract =
   let old = lexbuf.lex_start_p in
   let s =
     begin
@@ -235,7 +233,7 @@ let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
-  (`Quot {Ftoken.name;loc;shift;content}, old -- Lexing.lexeme_end_p lexbuf)
+  (`Quot {Ftoken.name;loc;shift;content}, old -- lexbuf.lex_curr_p)
     
 
 
@@ -251,7 +249,7 @@ let mk_quotation quotation c lexbuf ~name ~loc ~shift ~retract =
     bol would require retract one chars  when parsing it as a whole
     ]}
  *)
-let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)   lexbuf  =
+let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)   (lexbuf:Lexing.lexbuf)  =
   let pos = lexbuf.lex_curr_p in
   let new_file = match file with
   | None -> pos.pos_fname
@@ -427,7 +425,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let old = lexbuf.lex_start_p in
     begin
       with_curr_loc lex_string c  lexbuf;
-      (`Str (buff_contents c), old -- Lexing.lexeme_end_p lexbuf )
+      (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
     end
 | "'" (newline as x) "'" ->
     begin
@@ -469,7 +467,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       store c lexbuf;
       with_curr_loc lex_comment c lexbuf;
       (`COMMENT ( buff_contents c),
-       old -- Lexing.lexeme_end_p lexbuf)
+       old -- lexbuf.lex_curr_p)
     end
 | "(*)" ->
     let c = default_cxt lexbuf in
@@ -478,7 +476,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       warn Comment_start (!! lexbuf) ;
       lex_comment c lexbuf;
       ( `COMMENT (buff_contents c),
-        old -- Lexing.lexeme_end_p lexbuf)
+        old -- lexbuf.lex_curr_p)
     end
       (* quotation handling *)
 | "{||}" ->
@@ -512,7 +510,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 
     let contents = String.sub s 0 (String.length s - retract) in
     (`DirQuotation(3+1 +len +(opt_char_len p), name,contents),
-     old -- Lexing.lexeme_end_p lexbuf)
+     old -- lexbuf.lex_curr_p)
 | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
     ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
     [! '\010' '\013'] * newline ->
@@ -527,7 +525,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
   | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
       begin
         let old = FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p in
-        (`Ant(name,x), old -- Lexing.lexeme_end_p lexbuf)
+        (`Ant(name,x), old -- lexbuf.lex_curr_p)
       end
   | lident as x  ->   (`Ant("",x), !!lexbuf)  (* $lid *)
   | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)

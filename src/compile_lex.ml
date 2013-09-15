@@ -251,7 +251,7 @@ let output_entry
               $act |})) @
        [ {:case| _ -> failwith   "lexing: empty token" |}])  in
     {:exp|
-    function lexbuf ->
+    function (lexbuf:Lexing.lexbuf) ->
       let rec $binds in
       begin
       $actions;
