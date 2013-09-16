@@ -253,37 +253,39 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       end
         (* Antiquotation handling *)        
 | '$' ->
-    let  dollar (c:Lexing_util.context) = {:lexer|
-    (* FIXME *| does not work * | work *)
-  | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
-      begin
-        let old = FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p in
-        (`Ant(name,x), old -- lexbuf.lex_curr_p)
-      end
-  | lident as x  ->   (`Ant("",x), !!lexbuf)  (* $lid *)
-  | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
-      (* the first char is faked '(' to match the last ')', so we mvoe
-         backwards one character *)
-      let old = FLoc.move_pos (1+1+1+String.length name - 1) c.loc in
-      begin
-        c.buffer +> '(';
-        lex_antiquot {c with loc = old} lexbuf ;
-        (`Ant(name,buff_contents c),
-         old -- Lexing.lexeme_end_p lexbuf)
-      end
-  | '(' ->     (* $(xxxx)*)
-      let old = FLoc.move_pos  (1+1-1) c.loc in
-      begin
-        c.buffer +> '(';
-        lex_antiquot   {c with loc = old } lexbuf ;
-        (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
-      end
-  | _ as c ->
-      err (Illegal_character c) (!! lexbuf) |} in
+    let  dollar (c:Lexing_util.context) =
+      {:lexer|
+      (* FIXME *| does not work * | work *)
+    | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
+        begin
+          let old = FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p in
+          (`Ant(name,x), old -- lexbuf.lex_curr_p)
+        end
+    | lident as x  ->   (`Ant("",x), !!lexbuf)  (* $lid *)
+    | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
+        (* the first char is faked '(' to match the last ')', so we mvoe
+           backwards one character *)
+        let old = FLoc.move_pos (1+1+1+String.length name - 1) c.loc in
+        begin
+          c.buffer +> '(';
+          lex_antiquot {c with loc = old} lexbuf ;
+          (`Ant(name,buff_contents c),
+           old -- Lexing.lexeme_end_p lexbuf)
+        end
+    | '(' ->     (* $(xxxx)*)
+        let old = FLoc.move_pos  (1+1-1) c.loc in
+        begin
+          c.buffer +> '(';
+          lex_antiquot   {c with loc = old } lexbuf ;
+          (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
+        end
+    | _ as c ->
+        err (Illegal_character c) (!! lexbuf) |} in
     let c = default_cxt lexbuf in
     if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
       with_curr_loc dollar c lexbuf
     else err Illegal_antiquote (!! lexbuf)
+
 | eof ->
     let pos = lexbuf.lex_curr_p in (* FIXME *)
     (lexbuf.lex_curr_p <-
@@ -295,7 +297,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 
 
     
-let from_lexbuf lb : (Ftoken.t * FLoc.t ) XStream.t =
+let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
   let next _ = Some (token lb)  in (* this requires the [lexeme_start_p] to be correct ...  *)
-  XStream.from next
+  Fstream.from next
 

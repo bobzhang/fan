@@ -20,7 +20,7 @@ let stru_printer =
 
 
 
-type 'a parser_fun  = loc -> char XStream.t -> 'a option
+type 'a parser_fun  = loc -> char Fstream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
@@ -143,7 +143,7 @@ let parse_file  name pa = begin
   let  () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = XStream.of_channel ic in
+  let cs = Fstream.of_channel ic in
   finally ~action:clear  cs (pa loc)
 end
 

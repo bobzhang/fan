@@ -95,11 +95,11 @@ type t =
 (**
    [Ftoken.stram]
  *)      
-type stream = (t * FLoc.t) XStream.t 
+type stream = (t * FLoc.t) Fstream.t 
 
 type 'a token  = [> t] as 'a
       
-type 'a estream  = ('a token * FLoc.t) XStream.t
+type 'a estream  = ('a token * FLoc.t) Fstream.t
       
 type 'a parse = stream -> 'a
 

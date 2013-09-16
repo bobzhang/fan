@@ -36,7 +36,7 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 let check_not_tok s = 
     match s with
     | {text = `Stok (_loc,  _, _) ;_} ->
-        FLoc.raise _loc (XStream.Error
+        FLoc.raise _loc (Fstream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
     | _ -> () 
@@ -83,7 +83,7 @@ let make_ctyp (styp:styp) tvar : ctyp =
     | `Self (_loc) ->
         if tvar = "" then
           FLoc.raise _loc
-            (XStream.Error ("S: illegal in anonymous entry level"))
+            (Fstream.Error ("S: illegal in anonymous entry level"))
         else {:ctyp| '$lid:tvar |}
     | `Tok _loc -> {:ctyp| [> Ftoken.t ] |}  (* BOOTSTRAPPING*)
     | `Type t -> t  in aux styp
@@ -162,7 +162,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
-          {|fun ($locid :FLoc.t) ->
+          {|fun ($locid :FLoc.t) -> (* BOOTSTRAPING *)
             match $exp with
             | $pat -> $e1
             | _ -> failwith $`str:action_string |}  in

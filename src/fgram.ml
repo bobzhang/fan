@@ -72,10 +72,10 @@ let token_stream_of_string s =
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry (XStream.map (fun t -> (t,FLoc.ghost)) tokens)
+  parse_origin_tokens entry (Fstream.map (fun t -> (t,FLoc.ghost)) tokens)
   
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry (XStream.map (fun t -> (t,FLoc.ghost)) tokens)
+  filter_and_parse_tokens entry (Fstream.map (fun t -> (t,FLoc.ghost)) tokens)
 
 (* with a special exception handler *)  
 let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
@@ -92,7 +92,7 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
 (* let parse_file_with ~rule file  = *)
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
-(*     let st = XStream.of_channel ch in  *)
+(*     let st = Fstream.of_channel ch in  *)
 (*     parse rule (FLoc.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
   
@@ -136,7 +136,7 @@ let parse_include_file entry =
       try (List.find (dir_ok file) ( "./" :: !FConfig.include_dirs )) ^ file
       with | Not_found -> file  in
     let ch = open_in file in
-    let st = XStream.of_channel ch in
+    let st = Fstream.of_channel ch in
       parse entry (FLoc.mk file) st
     
 

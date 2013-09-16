@@ -140,14 +140,14 @@ let apply () = begin
         [ S{mt1}; S{mt2} ->
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) -> apply i1 i2 
-            | _ -> raise XStream.NotConsumed ] (* FIXME *)
+            | _ -> raise Fstream.NotConsumed ] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} ->
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) ->
               dot i1 i2 
-            | _ -> raise XStream.NotConsumed  in
+            | _ -> raise Fstream.NotConsumed  in
           acc0 mt1 mt2 ] (*FIXME*)
         "sig"
         [ "sig"; sigis{sg}; "end" -> `Sig(_loc,sg)
@@ -220,7 +220,7 @@ let apply () = begin
       | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} ->
           (match t with
           | {:ctyp| ! $_ . $_ |} ->
-              raise (XStream.Error "unexpected polytype here")
+              raise (Fstream.Error "unexpected polytype here")
           | _ -> {| ($e : $t :> $t2) |} )
       | ":>"; ctyp{t}; "="; exp{e} ->`Subtype(_loc,e,t) ]
       fun_bind:
@@ -763,12 +763,12 @@ let apply () = begin
       | `Uid i ; "." ; S {xs} ->
           (match xs with
           |(`Sub xs,v) -> (`Sub (i::xs),v)
-          | _ -> raise (XStream.Error "impossible dot_lstrings"))
+          | _ -> raise (Fstream.Error "impossible dot_lstrings"))
 
       | "."; `Uid i; "."; S{xs} ->
           match xs with
           |(`Sub xs,v) -> (`Absolute (i::xs),v)
-          | _ -> raise (XStream.Error "impossible dot_lstrings") ]
+          | _ -> raise (Fstream.Error "impossible dot_lstrings") ]
 
       (* parse [A.B.(] *)
       module_longident_dot_lparen:
@@ -1031,12 +1031,12 @@ let apply () = begin
                 ctyp{t} ->
                 (match o with
                 | `Negative _ ->{| val virtual $mutable:mf $l : $t |}
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))                    
+                | _ -> raise (Fstream.Error "override (!) is incompatible with virtual"))                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                   ctyp{t} ->
                 (match o with
                 | `Negative _ -> `VirMeth (_loc, l, pf, t)
-                | _ -> raise (XStream.Error "override (!) is incompatible with virtual"))  
+                | _ -> raise (Fstream.Error "override (!) is incompatible with virtual"))  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
                 fun_bind{e} ->
@@ -1265,7 +1265,7 @@ let apply_ctyp () = begin
        (*        prerr_endline "used"; *)
        (*        `Dot (_loc, ident_of_ctyp t1, ident_of_ctyp t2) *)
        (*          ) (\* FIXME*\) *)
-       (*      with Invalid_argument s -> raise (XStream.Error s) ] *)
+       (*      with Invalid_argument s -> raise (Fstream.Error s) ] *)
        "simple"
         [ "'"; a_lident{i} ->  `Quote (_loc, `Normal _loc,  i)
         | "_" -> `Any _loc
@@ -1274,12 +1274,12 @@ let apply_ctyp () = begin
         | `Ant (("id" as n),s); "."; S{t} ->
             let try id = ident_of_ctyp t  in
               (`Dot(_loc,mk_anti _loc ~c:"ident" n s,id) :ctyp)
-            with Invalid_argument s -> raise (XStream.Error s)
+            with Invalid_argument s -> raise (Fstream.Error s)
         | `Quot x -> Ast_quotation.expand _loc x FDyn.ctyp_tag
         | a_uident{i}; "."; S{t} ->
             let try id = ident_of_ctyp t in
               `Dot(_loc,(i:>ident),id)
-            with Invalid_argument s -> raise (XStream.Error s)
+            with Invalid_argument s -> raise (Fstream.Error s)
         | a_lident{i}->  (i :> ctyp)
               
         (* | a_uident{i} -> (i:> ctyp) *)

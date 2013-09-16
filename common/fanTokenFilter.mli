@@ -9,7 +9,7 @@ type t = {
 
 (* val mk : is_kwd:(string -> bool) -> t *)
 
-val filter : t -> (Ftoken.t * FLoc.t) XStream.t -> Ftoken.stream
+val filter : t -> (Ftoken.t * FLoc.t) Fstream.t -> Ftoken.stream
 
 val set_filter : t -> (Ftoken.filter -> Ftoken.filter) -> unit
 

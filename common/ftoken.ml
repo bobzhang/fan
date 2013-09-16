@@ -122,9 +122,9 @@ let pp_print_t: Format.formatter -> t -> unit =
 type 'a token  = [> t] as 'a
 
 
-type stream = (t * FLoc.t) XStream.t 
+type stream = (t * FLoc.t) Fstream.t 
 
-type 'a estream  = ('a token  * FLoc.t) XStream.t 
+type 'a estream  = ('a token  * FLoc.t) Fstream.t 
 
 type 'a parse  = stream -> 'a
 
@@ -146,7 +146,7 @@ let to_string = function
      match next () with
      [ Sym _ | UidENT _ | LidENT _ -> (next () = EOI)
      | _ -> false ]
-     with [ XStream.Error _ -> false ];                        *)
+     with [ Fstream.Error _ -> false ];                        *)
 
         
 let print ppf x = Format.pp_print_string ppf (to_string x)

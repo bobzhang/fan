@@ -135,15 +135,15 @@ val get_filter: unit -> FanTokenFilter.t
 val lex_string: FLoc.t -> string -> Ftoken.stream
 
 
-val parse:  'a t -> FLoc.t -> char XStream.t -> 'a
+val parse:  'a t -> FLoc.t -> char Fstream.t -> 'a
 
 val parse_string:
-    ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream ) -> 
+    ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream ) -> 
     ?loc:FLoc.t -> 'a t  -> string -> 'a
       
-val debug_origin_token_stream: 'a t -> Ftoken.t XStream.t -> 'a
+val debug_origin_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
 
-val debug_filtered_token_stream: 'a t -> Ftoken.t XStream.t -> 'a
+val debug_filtered_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
 
 val parse_string_safe:  ?loc:FLoc.t -> 'a t ->  string -> 'a
 
@@ -155,15 +155,15 @@ val delete_rule:  'a t -> symbol list -> unit
 
 (* val srules: production list  ->  [> `Stree of tree ] *)
 
-val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
+val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Fstream.t -> 'a) -> 'e Fstream.t -> 'b
 
 
-val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e XStream.t -> 'a) -> 'e XStream.t -> 'b
+val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Fstream.t -> 'a) -> 'e Fstream.t -> 'b
       
 val sfold0sep:
-    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c XStream.t -> 'a) ->
-      ('c XStream.t -> unit) ->
-        'c XStream.t -> 'b
+    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c Fstream.t -> 'a) ->
+      ('c Fstream.t -> unit) ->
+        'c Fstream.t -> 'b
 
 val sfold1sep:
     ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> (stream -> 'a) ->

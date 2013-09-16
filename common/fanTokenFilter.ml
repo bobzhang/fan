@@ -55,7 +55,7 @@ let filter x =
       (tok, loc)
     end in
 
-  fun strm -> x.filter (XStream.map f strm)
+  fun strm -> x.filter (Fstream.map f strm)
 
 let set_filter x f = x.filter <- f x.filter
 

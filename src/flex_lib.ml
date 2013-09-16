@@ -47,7 +47,7 @@ let debug_from_string  str =
   let stream = from_string loc str  in
   stream
   |> clean
-  |> XStream.iter
+  |> Fstream.iter
       (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc)
 
 let list_of_string ?(verbose=true) str =
@@ -57,7 +57,7 @@ let list_of_string ?(verbose=true) str =
   begin 
     stream
     |> clean
-    |> XStream.iter
+    |> Fstream.iter
         (fun (t,loc) -> begin 
           result := (t,loc):: !result ;
           if verbose then 
@@ -74,9 +74,9 @@ let get_tokens s =
 let debug_from_file  file =
   let loc = FLoc.mk file in
   let chan = open_in file in
-  let stream = XStream.of_channel  chan in
+  let stream = Fstream.of_channel  chan in
   from_stream  loc stream |> clean |>
-  XStream.iter
+  Fstream.iter
     (fun (t,loc) ->
       fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc)
 

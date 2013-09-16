@@ -991,7 +991,7 @@ module Array = struct
    (* let of_stream s = *)
      
    let stream a =
-     XStream.of_array a
+     Fstream.of_array a
        
    (* let filter_map f arr = *)
   let filter_opt t = begin 

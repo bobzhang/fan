@@ -208,11 +208,6 @@ open PluginsN (* link the module *)
 
 open CodeTemplate
 open Parse_lex
-(* open Parse_lex2,
-   it will suck eof handling, to be investigated
- *)
-
-
 
 
 (*************************************************************************)
@@ -377,8 +372,8 @@ let normal_handler = function
   | Failure str -> Some (Format.sprintf "Failure: %S" str)
   | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | XStream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
-  | XStream.Error str -> Some (Format.sprintf  "XStream.Error %s" str)
+  | Fstream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
+  | Fstream.Error str -> Some (Format.sprintf  "Fstream.Error %s" str)
   | _ -> None;;
 
 
