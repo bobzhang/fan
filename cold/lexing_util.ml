@@ -1,5 +1,14 @@
 let fprintf = Format.fprintf
 let eprintf = Format.eprintf
+let lexing_store s buff max =
+  let self n s =
+    if n >= max
+    then n
+    else
+      (match XStream.peek s with
+       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
+       | _ -> n) in
+  self 0 s
 type lex_error =  
   | Illegal_character of char
   | Illegal_escape of string

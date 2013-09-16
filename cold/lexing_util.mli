@@ -14,6 +14,9 @@ type lex_error  =
       
 exception Lexing_error of lex_error
 
+
+val lexing_store : char XStream.t -> string -> int -> int
+    
 val print_lex_error : Format.formatter -> lex_error -> unit
 
 val lex_error_to_string : lex_error -> string

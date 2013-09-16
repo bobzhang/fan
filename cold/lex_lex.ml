@@ -16,6 +16,8 @@ let err = Lexing_util.err
 let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
+let clear_stack = Lexing_util.clear_stack
+let lexing_store = Lexing_util.lexing_store
 let (--) = Location_util.( -- ) 
 let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
   fun (lexbuf : Lexing.lexbuf)  ->
@@ -3997,3 +3999,9 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           (err (Illegal_character c)) @@ (!! lexbuf)
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb = XStream.from (fun _  -> Some (token lb))
+let from_stream (loc : FLoc.t) strm =
+  let () = Lexing_util.clear_stack () in
+  let lb = Lexing.from_function (lexing_store strm) in
+  lb.lex_abs_pos <- (loc.loc_start).pos_cnum;
+  lb.lex_curr_p <- loc.loc_start;
+  from_lexbuf lb

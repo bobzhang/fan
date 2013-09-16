@@ -1,15 +1,7 @@
 let clear_stack = Lexing_util.clear_stack
+let lexing_store = Lexing_util.lexing_store
 let fprintf = Format.fprintf
 let std_formatter = Format.std_formatter
-let lexing_store s buff max =
-  let self n s =
-    if n >= max
-    then n
-    else
-      (match XStream.peek s with
-       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
-       | _ -> n) in
-  self 0 s
 let from_string { FLoc.loc_start = loc_start;_} str =
   let () = clear_stack () in
   let lb = Lexing.from_string str in

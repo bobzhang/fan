@@ -208,9 +208,11 @@ open PluginsN (* link the module *)
 
 open CodeTemplate
 open Parse_lex
-open Parse_lex2
-(** let d = `Absolute ["Fan"; "Lang"; "Meta"; "N"]
-   {:stream| 1 ; 2; '(f 3)|} *)
+(* open Parse_lex2,
+   it will suck eof handling, to be investigated
+ *)
+
+
 
 
 (*************************************************************************)
