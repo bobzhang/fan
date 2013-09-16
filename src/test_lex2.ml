@@ -161,7 +161,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
   end}
 | "'" (newline as x) "'"
     {begin
-      update_loc   lexbuf ~retract:1;
+      update_loc   lexbuf ~retract:1; 
       (`Chr x, !! lexbuf)
     end}
 

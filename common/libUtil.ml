@@ -412,6 +412,7 @@ module type SET = sig
   val of_array: elt array  -> t
   val add_array: t ->  elt array -> t 
 end
+
 module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
   include Set.Make (S)
   let of_list = List.fold_left (flip add) empty
@@ -419,8 +420,9 @@ module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
   let of_array = Array.fold_left (flip add) empty
   let add_array c = Array.fold_left (flip add) c
 end
-(* module SSet = Set.Make String; *)
+
 module SSet =SetMake (String)
+
 module SMap = MapMake (String)
 
   
@@ -1213,6 +1215,3 @@ module Format = struct
   let pp_print_unit: Format.formatter -> unit -> unit =
     fun fmt  _  -> Format.fprintf fmt "()"
 end
-(* module File = struct *)
-  
-(* end *)

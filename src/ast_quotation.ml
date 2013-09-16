@@ -141,8 +141,7 @@ let expander_name loc ~pos:(pos:string) (name:Ftoken.name) =
   | (`Sub [],"") ->
      (* resolve default case *)
      SMap.find_default ~default:(!default) pos !map
-  |(`Sub _ ,_) ->
-    resolve_name loc name
+  |(`Sub _ ,_) -> resolve_name loc name
   | _ -> name  
   
 let default_at_pos pos str =  update (pos,str)
@@ -162,8 +161,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 
 (* called by [expand] *)
-let expand_quotation (* loc *) ~expander pos_tag (x:Ftoken.quot) =
-  (* let loc = x.loc in *)
+let expand_quotation ~expander pos_tag (x:Ftoken.quot) =
   let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
   try expander loc x.meta x.content with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
@@ -194,14 +192,14 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand (* loc *) (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
+let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
   (* resolve name when expansion*)
   let try expander = find x.loc x.name tag in
   begin
     Stack.push  x.name stack;
     finally ~action:(fun _ -> Stack.pop stack) () @@ fun _ ->
-      expand_quotation ~expander (* loc *) pos_tag x
+      expand_quotation ~expander  pos_tag x
   end
   with
   | FLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
@@ -257,10 +255,6 @@ let quotation_error_to_string (loc,name, position, ctx, exn) =
        end
     | NoName -> pp "No default quotation name"  in
   let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn)in Buffer.contents ppf;;
-
-Printexc.register_printer (function
-  | QuotationError x -> Some (quotation_error_to_string x )
-  | _ -> None);;
 
 let parse_quotation_result parse loc (q_name,_q_loc,_q_shift,q_contents)
     pos_tag str =
@@ -380,3 +374,9 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
     add name FDyn.exp_tag expand_fun;
     add name FDyn.stru_tag mk_fun
   end
+    
+let () =
+  Printexc.register_printer (function
+  | QuotationError x -> Some (quotation_error_to_string x )
+  | _ -> None);;
+
