@@ -7,7 +7,7 @@
 open FAst
 
 type 'a parser_fun  =
-     loc -> char XStream.t -> 'a option
+     loc -> char Fstream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->

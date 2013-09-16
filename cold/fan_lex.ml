@@ -7431,5 +7431,5 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           (err (Illegal_character c)) @@ (!! lexbuf)
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb =
-  (let next _ = Some (token lb) in XStream.from next : (Ftoken.t* FLoc.t)
-                                                         XStream.t )
+  (let next _ = Some (token lb) in Fstream.from next : (Ftoken.t* FLoc.t)
+                                                         Fstream.t )

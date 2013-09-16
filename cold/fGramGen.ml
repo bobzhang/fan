@@ -20,7 +20,7 @@ let check_not_tok s =
   match s with
   | { text = `Stok (_loc,_,_);_} ->
       FLoc.raise _loc
-        (XStream.Error
+        (Fstream.Error
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
   | _ -> ()
@@ -64,7 +64,7 @@ let make_ctyp (styp : styp) tvar =
          if tvar = ""
          then
            FLoc.raise _loc
-             (XStream.Error "S: illegal in anonymous entry level")
+             (Fstream.Error "S: illegal in anonymous entry level")
          else
            (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
      | `Tok _loc ->

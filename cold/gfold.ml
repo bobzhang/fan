@@ -1,33 +1,33 @@
 let sfold0 f e _entry _symbl psymb =
-  let rec fold accu (__strm : _ XStream.t) =
-    match try Some (psymb __strm) with | XStream.NotConsumed  -> None with
+  let rec fold accu (__strm : _ Fstream.t) =
+    match try Some (psymb __strm) with | Fstream.NotConsumed  -> None with
     | Some a -> fold (f a accu) __strm
     | _ -> accu in
-  fun (__strm : _ XStream.t)  -> fold e __strm
+  fun (__strm : _ Fstream.t)  -> fold e __strm
 let sfold1 f e _entry _symbl psymb =
-  let rec fold accu (__strm : _ XStream.t) =
-    match try Some (psymb __strm) with | XStream.NotConsumed  -> None with
+  let rec fold accu (__strm : _ Fstream.t) =
+    match try Some (psymb __strm) with | Fstream.NotConsumed  -> None with
     | Some a -> fold (f a accu) __strm
     | _ -> accu in
-  fun (__strm : _ XStream.t)  ->
+  fun (__strm : _ Fstream.t)  ->
     let a = psymb __strm in
     try fold (f a e) __strm
-    with | XStream.NotConsumed  -> raise (XStream.Error "")
+    with | Fstream.NotConsumed  -> raise (Fstream.Error "")
 let sfold0sep f e entry symbl psymb psep =
   let failed =
     function
     | symb::sep::[] -> Gentry.symb_failed_txt entry sep symb
     | _ -> assert false in
-  let rec kont accu (__strm : _ XStream.t) =
-    match try Some (psep __strm) with | XStream.NotConsumed  -> None with
+  let rec kont accu (__strm : _ Fstream.t) =
+    match try Some (psep __strm) with | Fstream.NotConsumed  -> None with
     | Some () ->
         let a =
           try psymb __strm
-          with | XStream.NotConsumed  -> raise (XStream.Error (failed symbl)) in
+          with | Fstream.NotConsumed  -> raise (Fstream.Error (failed symbl)) in
         kont (f a accu) __strm
     | _ -> accu in
-  fun (__strm : _ XStream.t)  ->
-    match try Some (psymb __strm) with | XStream.NotConsumed  -> None with
+  fun (__strm : _ Fstream.t)  ->
+    match try Some (psymb __strm) with | Fstream.NotConsumed  -> None with
     | Some a -> kont (f a e) __strm
     | _ -> e
 let sfold1sep f e entry symbl psymb psep =
@@ -38,22 +38,22 @@ let sfold1sep f e entry symbl psymb psep =
   let parse_top =
     function
     | symb::_::[] -> Gentry.parser_of_symbol entry symb
-    | _ -> raise XStream.NotConsumed in
-  let rec kont accu (__strm : _ XStream.t) =
-    match try Some (psep __strm) with | XStream.NotConsumed  -> None with
+    | _ -> raise Fstream.NotConsumed in
+  let rec kont accu (__strm : _ Fstream.t) =
+    match try Some (psep __strm) with | Fstream.NotConsumed  -> None with
     | Some () ->
         let a =
           try
             try psymb __strm
             with
-            | XStream.NotConsumed  ->
+            | Fstream.NotConsumed  ->
                 let a =
                   try parse_top symbl __strm
                   with
-                  | XStream.NotConsumed  ->
-                      raise (XStream.Error (failed symbl)) in
+                  | Fstream.NotConsumed  ->
+                      raise (Fstream.Error (failed symbl)) in
                 Obj.magic a
-          with | XStream.NotConsumed  -> raise (XStream.Error "") in
+          with | Fstream.NotConsumed  -> raise (Fstream.Error "") in
         kont (f a accu) __strm
     | _ -> accu in
-  fun (__strm : _ XStream.t)  -> let a = psymb __strm in kont (f a e) __strm
+  fun (__strm : _ Fstream.t)  -> let a = psymb __strm in kont (f a e) __strm

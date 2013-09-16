@@ -1,11 +1,11 @@
 open LibUtil
 let setup_op_parser entry p =
   Fgram.setup_parser entry
-    (fun (__strm : _ XStream.t)  ->
-       match XStream.peek __strm with
+    (fun (__strm : _ Fstream.t)  ->
+       match Fstream.peek __strm with
        | Some ((`Key x|`Sym x),_loc) when p x ->
-           (XStream.junk __strm; (`Lid (_loc, x) : FAst.exp ))
-       | _ -> raise XStream.NotConsumed)
+           (Fstream.junk __strm; (`Lid (_loc, x) : FAst.exp ))
+       | _ -> raise Fstream.NotConsumed)
 let symbolchars =
   ['$';
   '!';

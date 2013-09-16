@@ -41,22 +41,22 @@ let apply () =
           (((x.[0]) == '*') && (((x.[1]) == '*') && (symbolchar x 2))));
    Fgram.setup_parser sem_exp
      (let symb1 = Fgram.parse_origin_tokens exp in
-      let symb (__strm : _ XStream.t) =
-        match XStream.peek __strm with
+      let symb (__strm : _ Fstream.t) =
+        match Fstream.peek __strm with
         | Some (`Ant (("list" as n),s),_loc) ->
-            (XStream.junk __strm; mk_anti ~c:"exp;" _loc n s)
+            (Fstream.junk __strm; mk_anti ~c:"exp;" _loc n s)
         | _ -> symb1 __strm in
-      let rec kont al (__strm : _ XStream.t) =
-        match XStream.peek __strm with
+      let rec kont al (__strm : _ Fstream.t) =
+        match Fstream.peek __strm with
         | Some (`Key ";",_) ->
-            (XStream.junk __strm;
+            (Fstream.junk __strm;
              (let a =
                 try symb __strm
-                with | XStream.NotConsumed  -> raise (XStream.Error "") in
+                with | Fstream.NotConsumed  -> raise (Fstream.Error "") in
               let s = __strm in
               let _loc = al <+> a in kont (`Sem (_loc, al, a) : FAst.exp ) s))
         | _ -> al in
-      fun (__strm : _ XStream.t)  -> let a = symb __strm in kont a __strm));
+      fun (__strm : _ Fstream.t)  -> let a = symb __strm in kont a __strm));
   (Fgram.extend_single (mexp_quot : 'mexp_quot Fgram.t )
      (None,
        (None, None,
@@ -504,21 +504,21 @@ let apply () =
                     (`With (_loc, mt, wc) : 'mtyp )))))]);
        ((Some "apply"), None,
          [([`Sself; `Sself],
-            ("match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise XStream.NotConsumed\n",
+            ("match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise Fstream.NotConsumed\n",
               (Fgram.mk_action
                  (fun (mt2 : 'mtyp)  (mt1 : 'mtyp)  (_loc : FLoc.t)  ->
                     (match (mt1, mt2) with
                      | ((#ident as i1),(#ident as i2)) -> apply i1 i2
-                     | _ -> raise XStream.NotConsumed : 'mtyp )))))]);
+                     | _ -> raise Fstream.NotConsumed : 'mtyp )))))]);
        ((Some "."), None,
          [([`Sself; `Skeyword "."; `Sself],
-            ("let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise XStream.NotConsumed in\nacc0 mt1 mt2\n",
+            ("let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise Fstream.NotConsumed in\nacc0 mt1 mt2\n",
               (Fgram.mk_action
                  (fun (mt2 : 'mtyp)  _  (mt1 : 'mtyp)  (_loc : FLoc.t)  ->
                     (let acc0 mt1 mt2 =
                        match (mt1, mt2) with
                        | ((#ident as i1),(#ident as i2)) -> dot i1 i2
-                       | _ -> raise XStream.NotConsumed in
+                       | _ -> raise Fstream.NotConsumed in
                      acc0 mt1 mt2 : 'mtyp )))))]);
        ((Some "sig"), None,
          [([`Skeyword "sig";
@@ -838,13 +838,13 @@ let apply () =
           `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ));
           `Skeyword "=";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-           ("match t with\n| (`TyPol (_loc,_,_) : FAst.ctyp) ->\n    raise (XStream.Error \"unexpected polytype here\")\n| _ -> (`Coercion (_loc, e, t, t2) : FAst.exp )\n",
+           ("match t with\n| (`TyPol (_loc,_,_) : FAst.ctyp) ->\n    raise (Fstream.Error \"unexpected polytype here\")\n| _ -> (`Coercion (_loc, e, t, t2) : FAst.exp )\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  _  (t2 : 'ctyp)  _  (t : 'ctyp)  _ 
                    (_loc : FLoc.t)  ->
                    (match t with
                     | (`TyPol (_loc,_,_) : FAst.ctyp) ->
-                        raise (XStream.Error "unexpected polytype here")
+                        raise (Fstream.Error "unexpected polytype here")
                     | _ -> (`Coercion (_loc, e, t, t2) : FAst.exp ) : 
                    'cvalue_bind )))));
          ([`Skeyword ":>";
@@ -3621,7 +3621,7 @@ let apply () =
                (`App ((`Vrn "Uid"), `Any)), "`Uid _");
           `Skeyword ".";
           `Sself],
-           ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (XStream.Error \"impossible dot_lstrings\")\n",
+           ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
              (Fgram.mk_action
                 (fun (xs : 'dot_lstrings)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
@@ -3630,18 +3630,18 @@ let apply () =
                        ((match xs with
                          | (`Sub xs,v) -> ((`Sub (i :: xs)), v)
                          | _ ->
-                             raise (XStream.Error "impossible dot_lstrings")) : 
+                             raise (Fstream.Error "impossible dot_lstrings")) : 
                        'dot_lstrings )
                    | _ ->
                        failwith
-                         "match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (XStream.Error \"impossible dot_lstrings\")\n"))));
+                         "match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n"))));
          ([`Skeyword ".";
           `Stoken
             (((function | `Uid _ -> true | _ -> false)),
               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
           `Skeyword ".";
           `Sself],
-           ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (XStream.Error \"impossible dot_lstrings\")\n",
+           ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
              (Fgram.mk_action
                 (fun (xs : 'dot_lstrings)  _  (__fan_1 : [> Ftoken.t])  _ 
                    (_loc : FLoc.t)  ->
@@ -3650,11 +3650,11 @@ let apply () =
                        ((match xs with
                          | (`Sub xs,v) -> ((`Absolute (i :: xs)), v)
                          | _ ->
-                             raise (XStream.Error "impossible dot_lstrings")) : 
+                             raise (Fstream.Error "impossible dot_lstrings")) : 
                        'dot_lstrings )
                    | _ ->
                        failwith
-                         "match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (XStream.Error \"impossible dot_lstrings\")\n"))))]));
+                         "match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n"))))]));
    Fgram.extend_single
      (module_longident_dot_lparen : 'module_longident_dot_lparen Fgram.t )
      (None,
@@ -5081,7 +5081,7 @@ let apply () =
           `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ))],
-           ("match o with\n| `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )\n| _ -> raise (XStream.Error \"override (!) is incompatible with virtual\")\n",
+           ("match o with\n| `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )\n| _ -> raise (Fstream.Error \"override (!) is incompatible with virtual\")\n",
              (Fgram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ 
                    (o : 'value_val_opt_override)  (_loc : FLoc.t)  ->
@@ -5090,7 +5090,7 @@ let apply () =
                         (`VirVal (_loc, l, mf, t) : FAst.clfield )
                     | _ ->
                         raise
-                          (XStream.Error
+                          (Fstream.Error
                              "override (!) is incompatible with virtual") : 
                    'clfield )))));
          ([`Snterm
@@ -5100,7 +5100,7 @@ let apply () =
           `Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ));
           `Skeyword ":";
           `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ))],
-           ("match o with\n| `Negative _ -> `VirMeth (_loc, l, pf, t)\n| _ -> raise (XStream.Error \"override (!) is incompatible with virtual\")\n",
+           ("match o with\n| `Negative _ -> `VirMeth (_loc, l, pf, t)\n| _ -> raise (Fstream.Error \"override (!) is incompatible with virtual\")\n",
              (Fgram.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                    (o : 'method_opt_override)  (_loc : FLoc.t)  ->
@@ -5108,7 +5108,7 @@ let apply () =
                     | `Negative _ -> `VirMeth (_loc, l, pf, t)
                     | _ ->
                         raise
-                          (XStream.Error
+                          (Fstream.Error
                              "override (!) is incompatible with virtual") : 
                    'clfield )))));
          ([`Snterm
@@ -6174,7 +6174,7 @@ let apply_ctyp () =
               "`Ant (\"id\",_)");
          `Skeyword ".";
          `Sself],
-          ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) ()\n",
+          ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Fstream.Error s))) ()\n",
             (Fgram.mk_action
                (fun (t : 'ctyp)  _  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)
                    ->
@@ -6187,11 +6187,11 @@ let apply_ctyp () =
                              ctyp )
                          with
                          | Invalid_argument s ->
-                             (fun ()  -> raise (XStream.Error s)))) () : 
+                             (fun ()  -> raise (Fstream.Error s)))) () : 
                       'ctyp )
                   | _ ->
                       failwith
-                        "(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) ()\n"))));
+                        "(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Fstream.Error s))) ()\n"))));
         ([`Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
@@ -6206,7 +6206,7 @@ let apply_ctyp () =
         ([`Snterm (Fgram.obj (a_uident : 'a_uident Fgram.t ));
          `Skeyword ".";
          `Sself],
-          ("(try let id = ident_of_ctyp t in fun ()  -> `Dot (_loc, (i :>ident), id)\n with | Invalid_argument s -> (fun ()  -> raise (XStream.Error s))) ()\n",
+          ("(try let id = ident_of_ctyp t in fun ()  -> `Dot (_loc, (i :>ident), id)\n with | Invalid_argument s -> (fun ()  -> raise (Fstream.Error s))) ()\n",
             (Fgram.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_uident)  (_loc : FLoc.t)  ->
                   ((try
@@ -6214,7 +6214,7 @@ let apply_ctyp () =
                       fun ()  -> `Dot (_loc, (i :>ident), id)
                     with
                     | Invalid_argument s ->
-                        (fun ()  -> raise (XStream.Error s))) () : 'ctyp )))));
+                        (fun ()  -> raise (Fstream.Error s))) () : 'ctyp )))));
         ([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
           ("(i :>ctyp)\n",
             (Fgram.mk_action

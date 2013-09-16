@@ -11,7 +11,7 @@ let mk_dynamic g n =
      name = n;
      start = (Gtools.empty_entry n);
      continue =
-       (fun _  _  _  (__strm : _ XStream.t)  -> raise XStream.NotConsumed);
+       (fun _  _  _  (__strm : _ Fstream.t)  -> raise Fstream.NotConsumed);
      desc = (Dlevels []);
      freezed = false
    } : 'a t )
@@ -21,18 +21,18 @@ let of_parser g n (p : Ftoken.stream -> 'a) =
      gram = g;
      name = n;
      start = (fun _  -> f);
-     continue = (fun _  _  _  _  -> raise XStream.NotConsumed);
+     continue = (fun _  _  _  _  -> raise Fstream.NotConsumed);
      desc = (Dparser f);
      freezed = true
    } : 'a t )
 let setup_parser (e : 'a t) (p : Ftoken.stream -> 'a) =
   let f ts = Gaction.mk (p ts) in
   e.start <- (fun _  -> f);
-  e.continue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
+  e.continue <- (fun _  _  _  _  -> raise Fstream.NotConsumed);
   e.desc <- Dparser f
 let clear (e : 'a t) =
-  e.start <- (fun _  _  -> raise XStream.NotConsumed);
-  e.continue <- (fun _  _  _  _  -> raise XStream.NotConsumed);
+  e.start <- (fun _  _  -> raise Fstream.NotConsumed);
+  e.continue <- (fun _  _  _  _  -> raise Fstream.NotConsumed);
   e.desc <- Dlevels []
 let obj x = x
 let repr x = x
@@ -45,9 +45,9 @@ let action_parse (entry : 'a t) (ts : Ftoken.stream) =
      (let res = entry.start 0 ts in
       let () = p Format.err_formatter "@]@." in res)
    with
-   | XStream.NotConsumed  ->
+   | Fstream.NotConsumed  ->
        FLoc.raise (Gtools.get_cur_loc ts)
-         (XStream.Error ("illegal begin of " ^ entry.name))
+         (Fstream.Error ("illegal begin of " ^ entry.name))
    | FLoc.Exc_located (_,_) as exc ->
        (eprintf "%s@." (Printexc.to_string exc); raise exc)
    | exc ->
@@ -57,10 +57,10 @@ let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
 let filter_and_parse_tokens (entry : 'a t) ts =
   parse_origin_tokens entry (FanTokenFilter.filter (entry.gram).gfilter ts)
-let lex_string loc str = Flex_lib.from_stream loc (XStream.of_string str)
+let lex_string loc str = Flex_lib.from_stream loc (Fstream.of_string str)
 let parse_string ?(lexer= Flex_lib.from_stream)  ?(loc= FLoc.string_loc) 
   (entry : 'a t) str =
-  (((str |> XStream.of_string) |> (lexer loc)) |>
+  (((str |> Fstream.of_string) |> (lexer loc)) |>
      (FanTokenFilter.filter (entry.gram).gfilter))
     |> (parse_origin_tokens entry)
 let parse (entry : 'a t) loc cs =

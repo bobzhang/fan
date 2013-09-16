@@ -106,24 +106,24 @@ let default_keywords =
   "lor";
   "["]
 let gkeywords = ref (SSet.of_list default_keywords)
-let rec fan_filter (__strm : _ XStream.t) =
-  match XStream.peek __strm with
-  | Some (#Ftoken.space_token,_) -> (XStream.junk __strm; fan_filter __strm)
+let rec fan_filter (__strm : _ Fstream.t) =
+  match Fstream.peek __strm with
+  | Some (#Ftoken.space_token,_) -> (Fstream.junk __strm; fan_filter __strm)
   | Some x ->
-      (XStream.junk __strm;
+      (Fstream.junk __strm;
        (let xs = __strm in
-        XStream.icons x (XStream.slazy (fun _  -> fan_filter xs))))
-  | _ -> XStream.sempty
+        Fstream.icons x (Fstream.slazy (fun _  -> fan_filter xs))))
+  | _ -> Fstream.sempty
 let rec ignore_layout: Ftoken.filter =
-  fun (__strm : _ XStream.t)  ->
-    match XStream.peek __strm with
+  fun (__strm : _ Fstream.t)  ->
+    match Fstream.peek __strm with
     | Some (#Ftoken.space_token,_) ->
-        (XStream.junk __strm; ignore_layout __strm)
+        (Fstream.junk __strm; ignore_layout __strm)
     | Some x ->
-        (XStream.junk __strm;
+        (Fstream.junk __strm;
          (let xs = __strm in
-          XStream.icons x (XStream.slazy (fun _  -> ignore_layout xs))))
-    | _ -> XStream.sempty
+          Fstream.icons x (Fstream.slazy (fun _  -> ignore_layout xs))))
+    | _ -> Fstream.sempty
 let gram =
   {
     annot = "Fan";
@@ -137,11 +137,11 @@ let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let token_stream_of_string s = lex_string FLoc.string_loc s
 let debug_origin_token_stream (entry : 'a t) tokens =
-  (parse_origin_tokens entry (XStream.map (fun t  -> (t, FLoc.ghost)) tokens) : 
+  (parse_origin_tokens entry (Fstream.map (fun t  -> (t, FLoc.ghost)) tokens) : 
   'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (XStream.map (fun t  -> (t, FLoc.ghost)) tokens)
+    (Fstream.map (fun t  -> (t, FLoc.ghost)) tokens)
 let parse_string_safe ?(loc= FLoc.string_loc)  entry s =
   try parse_string entry ~loc s
   with
@@ -186,7 +186,7 @@ let parse_include_file entry =
           file
       with | Not_found  -> file in
     let ch = open_in file in
-    let st = XStream.of_channel ch in parse entry (FLoc.mk file) st
+    let st = Fstream.of_channel ch in parse entry (FLoc.mk file) st
 let error_report (loc,s) =
   prerr_endline (FLoc.to_string loc);
   (let (start_bol,stop_bol,start_off,stop_off) =

@@ -20,8 +20,8 @@ let revise_parser str _bol =
   try
     let not_filtered_token_stream = Flex_lib.from_lexbuf lexbuf in
     let token_stream = Fgram.filter not_filtered_token_stream in
-    match XStream.peek token_stream with
-    | Some (`EOI,_) -> (XStream.junk token_stream; raise End_of_file)
+    match Fstream.peek token_stream with
+    | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> UTop.Value (toplevel_phrase token_stream)
   with
   | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as

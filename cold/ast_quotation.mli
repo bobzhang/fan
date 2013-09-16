@@ -77,50 +77,50 @@ val add_quotation:
 (* FIXME revised parser *cannot* parse name:string -> unit*)
 
 val of_stru :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.stru Gentry.t ->
     unit -> unit
 val of_stru_with_filter :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.stru)
     -> unit -> unit
 val of_pat :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.pat Gentry.t
     -> unit -> unit
         
 val of_pat_with_filter :
-    ?lexer:(loc -> char XStream.t -> Ftoken.stream) ->
+    ?lexer:(loc -> char Fstream.t -> Ftoken.stream) ->
       name:Ftoken.domains * string -> entry:'a Gentry.t -> filter:('a -> pat)
         -> unit -> unit 
 
 val of_clfield :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.clfield Gentry.t
     -> unit -> unit
         
 val of_clfield_with_filter :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.clfield)
     -> unit -> unit 
 val of_case :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.case Gentry.t
     -> unit -> unit 
 val of_case_with_filter :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.case)
     -> unit -> unit
         
 val of_exp :
-  ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.exp Gentry.t
     -> unit -> unit 
 val of_exp_with_filter :
-  ?lexer:(loc -> char XStream.t -> Ftoken.stream) ->
+  ?lexer:(loc -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:'a Gentry.t -> filter:('a -> exp)
     -> unit -> unit
               

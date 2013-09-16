@@ -52,14 +52,14 @@ val lex_string : FLoc.t -> string -> Ftoken.stream
 (** It would call the default lexer [gfilter], however, the filter
     is parameterized by the entry *)    
 val parse_string :
-    ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream ) ->
+    ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream ) ->
       ?loc:FLoc.t -> 'a t -> string -> 'b
 
 
 
     
 (** call the [gfilter], and use [glexer] *)
-val parse : 'a t -> FLoc.t -> char XStream.t -> 'a
+val parse : 'a t -> FLoc.t -> char Fstream.t -> 'a
     
 
 

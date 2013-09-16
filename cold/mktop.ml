@@ -358,9 +358,9 @@ let normal_handler =
   | Failure str -> Some (Format.sprintf "Failure: %S" str)
   | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | XStream.NotConsumed  ->
+  | Fstream.NotConsumed  ->
       Some (Format.sprintf "Parse failure(NotConsumed)")
-  | XStream.Error str -> Some (Format.sprintf "XStream.Error %s" str)
+  | Fstream.Error str -> Some (Format.sprintf "Fstream.Error %s" str)
   | _ -> None
 let p = Fgram.mk "p"
 let _ =

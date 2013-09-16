@@ -12,7 +12,7 @@ let stru_printer =
   ref
     (fun ?input_file:_  ?output_file:_  _  ->
        failwith "No implementation printer")
-type 'a parser_fun = loc -> char XStream.t -> 'a option 
+type 'a parser_fun = loc -> char Fstream.t -> 'a option 
 type 'a printer_fun =
   ?input_file:string -> ?output_file:string -> 'a option -> unit 
 let register_text_printer () =
@@ -80,7 +80,7 @@ let parse_file name pa =
   let () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = XStream.of_channel ic in finally ~action:clear cs (pa loc)
+  let cs = Fstream.of_channel ic in finally ~action:clear cs (pa loc)
 module CurrentPrinter =
   struct
     let print_interf ?input_file  ?output_file  ast =
@@ -91,9 +91,9 @@ module CurrentPrinter =
 let wrap parse_fun ~print_location  lb =
   try
     let token_stream = (lb |> Fan_lex.from_lexbuf) |> Fgram.filter in
-    let (__strm :_ XStream.t)= token_stream in
-    match XStream.peek __strm with
-    | Some (`EOI,_) -> (XStream.junk __strm; raise End_of_file)
+    let (__strm :_ Fstream.t)= token_stream in
+    match Fstream.peek __strm with
+    | Some (`EOI,_) -> (Fstream.junk __strm; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as
