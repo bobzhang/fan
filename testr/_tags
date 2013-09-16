@@ -1,4 +1,0 @@
-# -*- Mode:Shell-script -*-
-# true:pkg_compiler-libs.toplevel, pkg_batteries
-<**/*.{ml,mli,mlx}>: use_fan
-<**/*_ppo.{ml,mli,mlx}>:-use_fan
