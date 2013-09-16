@@ -225,7 +225,7 @@ let with_curr_loc lexer c lexbuf =
 
 (** when you return a token make sure the token's location is correct
  *)
-let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~loc ~shift ~retract =
+let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~meta ~shift ~retract =
   let old = lexbuf.lex_start_p in
   let s =
     begin
@@ -233,7 +233,8 @@ let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~loc ~shift ~retract =
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
-  (`Quot {Ftoken.name;loc;shift;content}, old -- lexbuf.lex_curr_p)
+  let loc = old -- lexbuf.lex_curr_p in
+  (`Quot {Ftoken.name;meta;shift;content;loc}, loc)
     
 
 

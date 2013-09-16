@@ -78,13 +78,13 @@ let move_curr_p shift (lexbuf : Lexing.lexbuf) =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 let with_curr_loc lexer c lexbuf =
   lexer { c with loc = (Lexing.lexeme_start_p lexbuf) } lexbuf
-let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~loc  ~shift 
+let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~meta  ~shift 
   ~retract  =
   let old = lexbuf.lex_start_p in
   let s = with_curr_loc quotation c lexbuf; buff_contents c in
   let content = String.sub s 0 ((String.length s) - retract) in
-  ((`Quot { Ftoken.name = name; loc; shift; content }),
-    (old -- lexbuf.lex_curr_p))
+  let loc = old -- lexbuf.lex_curr_p in
+  ((`Quot { Ftoken.name = name; meta; shift; content; loc }), loc)
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1) 
   (lexbuf : Lexing.lexbuf) =
   let pos = lexbuf.lex_curr_p in

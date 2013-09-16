@@ -1,7 +1,5 @@
-(* open FAst *)
 
 open LibUtil
-
 
 {:import|
 Format:
@@ -165,7 +163,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 (* called by [expand] *)
 let expand_quotation loc ~expander pos_tag (x:Ftoken.quot) =
-  try expander loc x.loc x.content with
+  try expander loc x.meta x.content with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
      raise exc
   | FLoc.Exc_located (iloc, exc) ->

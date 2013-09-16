@@ -213,21 +213,21 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     end
       (* quotation handling *)
 | "{||}" ->
-    (`Quot { Ftoken.name=Ftoken.empty_name; loc=None; shift=2; content="" },
-    !! lexbuf)
+    let loc  =     !! lexbuf in
+    (`Quot { Ftoken.name=Ftoken.empty_name; meta=None; shift=2; content="";loc },loc)
       
-| "{" (":" (quotation_name as name))? ('@' (locname as loc))? '|' (extra_quot as p)? ->
+| "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? ->
     let c = default_cxt lexbuf in
     let (name,len) =
       match name with
       | Some name -> (Ftoken.name_of_string name,1 + String.length name)
       | None -> (Ftoken.empty_name,0)  in 
     let v = opt_char_len p in
-    let shift = 2 + len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
+    let shift = 2 + len + v  + (match meta with  | Some x -> String.length x + 1 | None -> 0) in
     let retract = 2 + v in
     begin
       Stack.push p opt_char;
-      mk_quotation lex_quotation c lexbuf ~name ~loc ~shift ~retract 
+      mk_quotation lex_quotation c lexbuf ~name ~meta ~shift ~retract 
     end
 | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 

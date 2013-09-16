@@ -44,22 +44,24 @@ let test_string _ =
    since our lexer depends on the context which is bad
 *)   
 let test_quotation _ =
-  Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|}
+  (Flex_lib.list_of_string ~verbose:false {:str|{:lexer|abcdef|}|} |> List.hd)
   ===
-  [(`Quot
-    {Ftoken.name = (`Sub [], "lexer"); loc = None; shift = 8;
-     content = "abcdef"},
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-   loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-   loc_ghost = false});
- (`EOI,
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-   loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
-   loc_ghost = false})]
+  (`Quot
+   {Ftoken.name = (`Sub [], "lexer");
+    loc =
+     {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+      loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
+        pos_cnum = 16};
+      loc_ghost = false};
+    meta = None; shift = 8; content = "abcdef"},
+ {FLoc.loc_start =
+   {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+  loc_end =
+   {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+  loc_ghost = false})
+
 
 let test_ant _ =
   Ref.protect FConfig.antiquotations true @@ fun _ ->

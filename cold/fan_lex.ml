@@ -5015,18 +5015,20 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
            lex_comment c lexbuf;
            ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 19 ->
+          let loc = !! lexbuf in
           ((`Quot
               {
                 Ftoken.name = Ftoken.empty_name;
-                loc = None;
+                meta = None;
                 shift = 2;
-                content = ""
-              }), (!! lexbuf))
+                content = "";
+                loc
+              }), loc)
       | 20 ->
           let name =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(3)) + 0)
               (((lexbuf.Lexing.lex_mem).(2)) + 0)
-          and loc =
+          and meta =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(1)) + 0)
               (((lexbuf.Lexing.lex_mem).(0)) + 0)
           and p =
@@ -5041,10 +5043,10 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let v = opt_char_len p in
           let shift =
             ((2 + len) + v) +
-              (match loc with | Some x -> (String.length x) + 1 | None  -> 0) in
+              (match meta with | Some x -> (String.length x) + 1 | None  -> 0) in
           let retract = 2 + v in
           (Stack.push p opt_char;
-           mk_quotation lex_quotation c lexbuf ~name ~loc ~shift ~retract)
+           mk_quotation lex_quotation c lexbuf ~name ~meta ~shift ~retract)
       | 21 ->
           let c =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

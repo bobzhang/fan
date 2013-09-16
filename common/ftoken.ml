@@ -26,7 +26,8 @@ let string_of_name = to_string_of_printer pp_print_name
       
 type quot = {
     name:name;
-    loc:string option;
+    loc:FLoc.t; (* the starting location of the quot *) 
+    meta:string option;(* a piece of small meta data, like loc name*)
     shift:int;
     content:string;
   }
@@ -36,10 +37,13 @@ type quotation = [ `Quot of quot ]
 
 (* FIXME *)      
 let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  (`Quot {name;loc;shift;content} )  ->
-    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a;@;shift=%a@;content=%a})@]"
-      pp_print_name
-      name (Format.pp_print_option Format.pp_print_string) loc Format.pp_print_int shift Format.pp_print_string content
+  fun fmt  (`Quot {name;meta;shift;content;loc} )  ->
+    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;content=%a})@]"
+      pp_print_name name
+      (Format.pp_print_option Format.pp_print_string) meta
+      FLoc.pp_print_t loc
+      Format.pp_print_int shift
+      Format.pp_print_string content
 
 (** (name,contents)  *)
 type dir_quotation = [ `DirQuotation of (int* string* string)] 

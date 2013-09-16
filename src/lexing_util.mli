@@ -66,7 +66,7 @@ val mk_quotation :
   context ->
   Lexing.lexbuf ->
   name:Ftoken.name ->
-  loc:string option ->
+  meta:string option ->
   shift:int -> retract:int -> [> `Quot of Ftoken.quot ] * FLoc.t
 
 val update_loc :

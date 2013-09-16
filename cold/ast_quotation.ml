@@ -82,7 +82,7 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
   Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
 let expand_quotation loc ~expander  pos_tag (x : Ftoken.quot) =
-  try expander loc x.loc x.content
+  try expander loc x.meta x.content
   with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
   | FLoc.Exc_located (iloc,exc) ->
       let exc1 = QuotationError (iloc, (x.name), pos_tag, Expanding, exc) in
