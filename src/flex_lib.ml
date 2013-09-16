@@ -1,8 +1,14 @@
-open Format
-open Fan_lex
-open LibUtil
-open Lexing
+  
+{:import|
 
+Lexing_util:
+  clear_stack;
+
+Format:
+  fprintf
+   std_formatter
+   ; 
+|};;
 
 (** put elements from stream to string with offset 0 and [max] elements *)  
 let lexing_store s buff max =
@@ -20,7 +26,7 @@ let from_string  {FLoc.loc_start;_} str =
   let lb = Lexing.from_string str in begin 
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
-    from_lexbuf lb
+    Fan_lex.from_lexbuf lb
   end
 
 let from_stream  {FLoc.loc_start;_} strm =
@@ -28,7 +34,7 @@ let from_stream  {FLoc.loc_start;_} strm =
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
-    from_lexbuf  lb
+    Fan_lex.from_lexbuf  lb
   end
 
 

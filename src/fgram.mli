@@ -11,15 +11,12 @@ type position =
     | `First
     | `Last
     | `Level of string ]
-      
-(* type token_stream = (Ftoken.token * FLoc.t) XStream.t *)
+
 val filter: stream -> stream      
-type gram =
-  Gstructure.gram = {
+
+type gram = Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
-  (* gkeywords :  SSet.t ref; *) (* int SMap.t *) (* (string, int ref) Hashtbl.t *)
-  (* glexer : FLoc.t -> char XStream.t -> Ftoken.stream ; *)
 }
 
 module Action :
@@ -83,12 +80,6 @@ type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      
 type delete_statment = symbol list
 
-(* type ('a,'b,'c)fold  = *)
-(*     'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c *)
-
-(* type ('a,'b,'c) foldsep  = *)
-(*     'b t -> symbol list -> ('a XStream.t -> 'b) -> *)
-(*       ('a XStream.t -> unit) -> 'a XStream.t -> 'c *)
       
 val name: 'a t -> string
 
@@ -119,7 +110,14 @@ val repr: entry -> 'a t
 
 val gram: gram
 
-(* create a standalone gram *)
+(** create a standalone gram
+    {[
+
+    {:new| (g:Fgram.t)
+    include_quot
+    |}
+    ]}
+ *)
 val create_lexer: ?filter:Ftoken.filter ->
   annot:string -> keywords: string list -> unit -> gram
 

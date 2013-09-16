@@ -32,10 +32,11 @@ val parse_origin_tokens : 'a t -> Ftoken.stream -> 'a
 
 val filter_and_parse_tokens : 'a t -> (Ftoken.t * FLoc.t) XStream.t -> 'a
 
-val glexer :
-  FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
-val lex :
-  FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
+(** set the default lexer *)    
+val glexer : FLoc.t -> char XStream.t -> Ftoken.stream 
+
+    
+val lex : FLoc.t -> char XStream.t -> Ftoken.stream
 
 
 val lex_string : FLoc.t -> string -> (Ftoken.t * FLoc.t) XStream.t
