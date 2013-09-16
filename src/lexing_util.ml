@@ -84,6 +84,19 @@ let ocaml_uid =
 
 let fprintf = Format.fprintf
 let eprintf = Format.eprintf
+
+
+
+(** put elements from stream to string with offset 0 and [max] elements *)  
+let lexing_store s buff max =
+   let  self n s =
+     if n >= max then n
+     else
+       match XStream.peek s with
+       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
+       | _ -> n in 
+   self 0 s
+    
 type lex_error  =
   | Illegal_character of char
   | Illegal_escape    of string
@@ -123,6 +136,7 @@ let print_lex_error ppf e =
             
 let lex_error_to_string = LibUtil.to_string_of_printer print_lex_error
 
+    
 let debug = ref false
 
 let opt_char_len  = function

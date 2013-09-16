@@ -2,7 +2,9 @@
 {:import|
 
 Lexing_util:
-  clear_stack;
+  clear_stack
+  lexing_store
+  ;
 
 Format:
   fprintf
@@ -10,15 +12,6 @@ Format:
    ; 
 |};;
 
-(** put elements from stream to string with offset 0 and [max] elements *)  
-let lexing_store s buff max =
-   let  self n s =
-     if n >= max then n
-     else
-       match XStream.peek s with
-       | Some x -> (XStream.junk s; buff.[n] <- x; n + 1)
-       | _ -> n in 
-   self 0 s
 
 
 let from_string  {FLoc.loc_start;_} str =

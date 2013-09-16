@@ -1,5 +1,4 @@
 
-open LibUtil
 open Translate_lex
 open! Fsyntax
 
@@ -16,17 +15,19 @@ exception UnboundRegexp;;
   regexp  char_class  char_class1  lex  declare_regexp
 |};;
 
-{:extend|Fgram
+{:unsafe_extend|Fgram
     lex:
-    [ "|"; L0 case SEP "|"{l} ->
+    [  "|" ; L0 case SEP "|" {l} ->
       Compile_lex.output_entry @@
         Lexgen.make_single_dfa {shortest=false;clauses=l}
-    | "<";L0 case SEP "|"{l} ->
+    | "<";L0 case SEP "|" {l} ->
         Compile_lex.output_entry @@ 
-        Lexgen.make_single_dfa {shortest=true;clauses=l}
-    ]
+        Lexgen.make_single_dfa {shortest=true;clauses=l}]
   let case:
-    [ regexp{r};"->";exp{a} -> (r,a)]  
+    [ regexp{r}; "->"; `Quot x  ->
+      (* The loc maybe imprecise, FIXME *)
+      let e = Fgram.parse_string ~loc:_loc Fsyntax.exp x.content in
+      (r,e)]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} ->
     if Hashtbl.mem named_regexps x then begin 
@@ -68,6 +69,7 @@ exception UnboundRegexp;;
    | S{r1};"+" -> Sequence (Repetition (remove_as r1), r1)
 
    | "("; S{r1}; ")" -> r1
+   | "eof" -> Eof
    | `Lid x -> begin (* FIXME token with location *)
        try Hashtbl.find named_regexps x
        with Not_found ->
@@ -80,7 +82,7 @@ exception UnboundRegexp;;
  }
   
   char_class:
-  [ "!"; char_class1{r} -> Fcset.complement r
+  [ "^"; char_class1{r} -> Fcset.complement r
   | char_class1{r} -> r ]
 
   char_class1:
@@ -94,11 +96,14 @@ exception UnboundRegexp;;
 |};;  
 
 let d = `Absolute ["Fan";"Lang"];;
-begin
-  Ast_quotation.of_exp
-  ~name:(d,"lexer") ~entry:lex ;
-  Ast_quotation.of_stru
-    ~name:(d,"regexp")
-    ~entry:declare_regexp;  
-end;;
+
+let () =
+  begin
+    Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
+      ~name:(d,"lex2") ~entry:lex ();
+    Ast_quotation.of_stru
+      ~lexer:Lex_lex.from_stream
+      ~name:(d,"regex2")
+      ~entry:declare_regexp ();  
+  end;;
 

@@ -106,6 +106,8 @@ Lexing_util:
   warn
   move_curr_p
   store
+  clear_stack
+  lexing_store
   ;
 Location_util:
    (--)
@@ -184,4 +186,13 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     
 | _ as c ->  err (Illegal_character c) @@  !!lexbuf |}
   
+
 let from_lexbuf lb = XStream.from (fun _ -> Some (token lb))
+
+let from_stream (loc:FLoc.t) strm =
+  let () = Lexing_util.clear_stack () in
+  let lb = Lexing.from_function (lexing_store strm) in begin
+    lb.lex_abs_pos <- loc.loc_start.pos_cnum;
+    lb.lex_curr_p <- loc.loc_start;
+    from_lexbuf  lb
+  end
