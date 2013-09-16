@@ -1,0 +1,3 @@
+#+begin_src ocaml
+#+include: /Users/bobzhang/camlp4/test/fmt.ml
+#+end_src
