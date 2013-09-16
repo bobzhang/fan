@@ -930,9 +930,10 @@ let _ =
                (fun _  (e : 'exp)  _  (_loc : FLoc.t)  -> (e : 'simple_exp )))))]))
 let _ =
   let d = `Absolute ["Fan"; "Lang"] in
-  Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body;
-  Ast_quotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body;
-  Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals;
-  Ast_quotation.of_stru ~name:(d, "new") ~entry:newterminals;
-  Ast_quotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body;
-  Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear
+  Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();
+  Ast_quotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body
+    ();
+  Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals ();
+  Ast_quotation.of_stru ~name:(d, "new") ~entry:newterminals ();
+  Ast_quotation.of_exp ~name:(d, "delete") ~entry:delete_rule_body ();
+  Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()

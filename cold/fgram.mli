@@ -11,15 +11,13 @@ type position =
     | `First
     | `Last
     | `Level of string ]
-      
-(* type token_stream = (Ftoken.token * FLoc.t) XStream.t *)
+
 val filter: stream -> stream      
-type gram =
-  Gstructure.gram = {
+
+(** Basially a filter attached to the stream lexer *)    
+type gram = Gstructure.gram = {
   annot:string;
   gfilter : FanTokenFilter.t;
-  (* gkeywords :  SSet.t ref; *) (* int SMap.t *) (* (string, int ref) Hashtbl.t *)
-  (* glexer : FLoc.t -> char XStream.t -> Ftoken.stream ; *)
 }
 
 module Action :
@@ -83,12 +81,6 @@ type extend_statment = position option * olevel list
 type single_extend_statement = position option * olevel      
 type delete_statment = symbol list
 
-(* type ('a,'b,'c)fold  = *)
-(*     'b t-> symbol list-> ('a XStream.t  -> 'b) -> 'a XStream.t  -> 'c *)
-
-(* type ('a,'b,'c) foldsep  = *)
-(*     'b t -> symbol list -> ('a XStream.t -> 'b) -> *)
-(*       ('a XStream.t -> unit) -> 'a XStream.t -> 'c *)
       
 val name: 'a t -> string
 
@@ -97,8 +89,6 @@ val print: Format.formatter -> 'a t -> unit
 val dump: Format.formatter -> 'a t -> unit
 
 val trace_parser: bool ref
-
-val action_parse:  'a t ->  stream -> Action.t
 
 val parse_origin_tokens:  'a t -> stream -> 'a
       
@@ -119,9 +109,17 @@ val repr: entry -> 'a t
 
 val gram: gram
 
-(* create a standalone gram *)
-val create_lexer: ?filter:Ftoken.filter ->
-  annot:string -> keywords: string list -> unit -> gram
+(** create a standalone gram
+    {[
+
+    {:new| (g:Fgram.t)
+    include_quot
+    |}
+    ]}
+ *)
+val create_lexer:
+    ?filter:Ftoken.filter ->
+      annot:string -> keywords: string list -> unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
 
@@ -133,14 +131,15 @@ val of_parser:  string ->  (stream -> 'a) ->  'a t
 
 val get_filter: unit -> FanTokenFilter.t
 
-val lex: FLoc.t -> char XStream.t -> (Ftoken.t * FLoc.t) XStream.t
 
-val lex_string: FLoc.t -> string -> (Ftoken.t * FLoc.t) XStream.t
+val lex_string: FLoc.t -> string -> Ftoken.stream
 
 
 val parse:  'a t -> FLoc.t -> char XStream.t -> 'a
 
-val parse_string:  ?loc:FLoc.t -> 'a t  -> string -> 'a
+val parse_string:
+    ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream ) -> 
+    ?loc:FLoc.t -> 'a t  -> string -> 'a
       
 val debug_origin_token_stream: 'a t -> Ftoken.t XStream.t -> 'a
 
@@ -185,8 +184,8 @@ val levels_of_entry: 'a t -> level list option
 
 (* val find_level: ?position:position ->  'a t -> level *)
     
-val token_stream_of_string: string -> stream
+val token_stream_of_string : string -> stream
 
-val name_of_entry: 'a t -> string    
+
 
 val parse_include_file : 'a t -> string -> 'a    

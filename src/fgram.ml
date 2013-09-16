@@ -60,36 +60,15 @@ let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () = {
 
 
 (* FIXME duplicate some code from Entry *)
-
-(* {:exp-| 3 + 4 |} *)
-
-
-(* filter *)
-(* let filter keywords ts = *)
-(*   (FanTokenFilter.filter *)
-(*      (FanTokenFilter.mk ~is_kwd:(fun x -> SSet.mem x keywords)) ts); *)
-
-(* filtering using the [entrance entry]'s filter '*)
-
-(* let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs) *)
-
-(* let parse_string entry loc str = *)
-(*   filter_and_parse_tokens entry (lex_string loc str) *)
-  
 let mk f = mk_dynamic gram f
 
 let of_parser name strm = of_parser gram name strm
 
 let get_filter () = gram.gfilter
 
-(* let lex loc cs = gram.glexer loc cs; *)
-  
-(* let lex_string loc str = lex loc (XStream.of_string str) *)
-  
-(* let filter ts =  FanTokenFilter.filter gram.gfilter ts; *)
 
 let token_stream_of_string s =
-  s |>  lex_string FLoc.string_loc
+    lex_string FLoc.string_loc s
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
@@ -107,6 +86,7 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
       FLoc.error_report (loc,s);
       FLoc.raise loc e ;
   end 
+;;
     
     
 (* let parse_file_with ~rule file  = *)
@@ -121,11 +101,15 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
 (* FIXME [srules] the productions are also scanned  *)  
 (* let srules rl = *)
 (*     `Stree (List.fold_right Ginsert.add_production   rl DeadEnd) *)
-    
-let sfold0 = Gfold.sfold0
-let sfold1 = Gfold.sfold1
-let sfold0sep = Gfold.sfold0sep
-let sfold1sep = Gfold.sfold1sep
+
+{:import|
+Gfold:
+  sfold0
+  sfold1
+  sfold0sep
+  sfold1sep
+  ;
+|};;    
 
 
 (* [eoi_entry] could be improved   *)

@@ -4,22 +4,28 @@ open Gstructure
 
 type 'a t (* = private entry *)
 
+(** get the name of the entry *)
 val name : 'a t -> string
 
-(** *)
+(** print the entry *)
 val print : Format.formatter -> 'a t -> unit
-(** *)
+(** dump the entry *)
 val dump : Format.formatter -> 'a t -> unit
 
 val trace_parser : bool ref
 
+(** the entry would not share the lexer filter with [glexer] used by fan *)    
 val mk_dynamic : gram -> string -> 'a t
 
-val action_parse : 'a t -> Ftoken.stream -> Gaction.t
 
+
+(** given a stream parser, name and filter,  craft a new entry,
+    note that such stream parser is not extensible *)
 val of_parser :
   gram -> string -> (Ftoken.stream -> 'a) -> 'a t
 
+(** given an entry, clear it to set it as a stream parser
+ *)      
 val setup_parser : 'a t -> (Ftoken.stream -> 'a) -> unit
 
 val clear : 'a t -> unit
@@ -28,25 +34,35 @@ val obj : 'a t -> entry
 
 val repr : entry -> 'a t
 
+val gram_of_entry : 'a t -> gram
+
+
+(**  The main entrance to consume the parser,
+     it call [action_parse] internally, which would call [entry.start 0 ],
+     the filter of the gram is not applied  *)  
 val parse_origin_tokens : 'a t -> Ftoken.stream -> 'a
 
-val filter_and_parse_tokens : 'a t -> (Ftoken.t * FLoc.t) XStream.t -> 'a
+(** The same as [parse_origin_tokens] except that filter is applied *)    
+val filter_and_parse_tokens : 'a t -> Ftoken.stream -> 'a
 
-(** set the default lexer *)    
-val glexer : FLoc.t -> char XStream.t -> Ftoken.stream 
+(** The default lexer, i.e, [Flex_lib.form_stream],
+     *)
+val lex_string : FLoc.t -> string -> Ftoken.stream
+
+(** It would call the default lexer [gfilter], however, the filter
+    is parameterized by the entry *)    
+val parse_string :
+    ?lexer:(FLoc.t -> char XStream.t -> Ftoken.stream ) ->
+      ?loc:FLoc.t -> 'a t -> string -> 'b
+
+
 
     
-val lex : FLoc.t -> char XStream.t -> Ftoken.stream
-
-
-val lex_string : FLoc.t -> string -> (Ftoken.t * FLoc.t) XStream.t
-
-val parse_string : ?loc:FLoc.t -> 'a t -> string -> 'a
-
+(** call the [gfilter], and use [glexer] *)
 val parse : 'a t -> FLoc.t -> char XStream.t -> 'a
     
-val name_of_entry : 'a t -> string
-val gram_of_entry : 'a t -> gram
+
+
 
 
 (** mutate the [estart] and [econtinue]

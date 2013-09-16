@@ -6,16 +6,25 @@
     mktop + dynloader + mkFan  + fanX.ml -> fane 
  *)
 
-    
-open Format
-open FanOps
-open AstLib
-open Filters
+{:import|
+Ast_quotation:
+  of_exp
+  of_stru_with_filter
+  of_stru
+  of_exp_with_filter
+  of_clfield_with_filter
+  add_quotation
+  add
+  ;
+AstLib:
+   loc_of
+   ;
+|} ;;
+
+
 include PreCast
-open Ast_quotation
+
 open! Fsyntax
-open LibUtil
-open FControl
 
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
@@ -28,19 +37,19 @@ let d = `Absolute ["Fan"; "Lang"]
 
 let _ = begin (* FIXME make the printer more restict later *)
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
-    ~filter:LangOcaml.filter ;
-  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots;
-  of_exp ~name:(d, "save") ~entry:LangSave.save_quot;
-  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot
+    ~filter:LangOcaml.filter () ;
+  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots ();
+  of_exp ~name:(d, "save") ~entry:LangSave.save_quot ();
+  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot ()
 end
     
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 
 let _ = begin 
   of_exp_with_filter ~name:(d, "exp") ~entry:exp
-    ~filter:(Ast_macros.macro_expander#exp);
+    ~filter:(Ast_macros.macro_expander#exp) ();
   of_clfield_with_filter ~name:(d, "clfield") ~entry:clfield
-    ~filter:(Ast_macros.macro_expander#clfield);
+    ~filter:(Ast_macros.macro_expander#clfield) ();
   of_stru_with_filter ~name:(d, "stru") ~entry:stru
     ~filter:(Ast_macros.macro_expander#stru)
 end
@@ -170,8 +179,8 @@ let _ = begin
   add_quotation (d, "row_field") row_field ~mexp:(Filters.me#row_field)
     ~mpat:(Filters.mp#row_field) ~exp_filter:(efilter "row_field")
     ~pat_filter:(pfilter "row_field");
-  of_exp ~name:(d, "with_exp") ~entry:with_exp_lang;
-  of_stru ~name:(d, "with_stru") ~entry:with_stru_lang;
+  of_exp ~name:(d, "with_exp") ~entry:with_exp_lang ();
+  of_stru ~name:(d, "with_stru") ~entry:with_stru_lang ();
   add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
   add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
@@ -179,19 +188,17 @@ let _ = begin
 end
 ;;
 
-
-
-
+(****************************************)
+(* side effect                          *)
+(****************************************)
+open Filters
+open FControl
 open Parse_fan
-
-(* open PMacro *)
-
 open Parse_grammar
-
 open Parse_stream;;
 
 (** for stream expression *)
-of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp;;
+let () = of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp ();;
 
 
 open AstInjection
@@ -386,7 +393,10 @@ let normal_handler = function
   |pat{p} -> {:exp'| function | $pat:p -> true | _ -> false |} ]
 |};;
 
-of_exp ~name:(d,"p") ~entry:p;;
+let ()  =
+  of_exp ~name:(d,"p") ~entry:p () ;;
+
+
 
 {:create|import|} ;;
 
@@ -400,12 +410,12 @@ let a:
 import:
   [ L1 a  {xs} -> AstLib.sem_of_list xs ]  
 let name :
-  [`Lid x -> `Lid(_loc,x)]  
-|};;
+  [`Lid x -> `Lid(_loc,x)]  |};;
 
 (* such simple macro would be replaced by cmacros later *)
 
-of_stru ~name:(d,"import") ~entry:import;;
+let () =
+  of_stru ~name:(d,"import") ~entry:import ();;
 
 
     

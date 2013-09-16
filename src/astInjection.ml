@@ -41,11 +41,11 @@ let register_inject_clfield (k,f) =
 
 let open Ast_quotation in begin
   of_exp
-    ~name:((`Absolute ["Fan";"Inject"], "exp")) ~entry:inject_exp;
+    ~name:((`Absolute ["Fan";"Inject"], "exp")) ~entry:inject_exp ();
   of_stru
     ~name:((`Absolute ["Fan";"Inject"],"stru"))
-    ~entry:inject_stru;
+    ~entry:inject_stru ();
   of_clfield
     ~name:((`Absolute ["Fan";"Inject"], "clfield"))
-     ~entry:inject_clfield; 
+     ~entry:inject_clfield ();  
 end

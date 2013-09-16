@@ -70,7 +70,8 @@ let _ =
                          "try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n"))))]))
 let _ =
   let open Ast_quotation in
-    of_exp ~name:((`Absolute ["Fan"; "Inject"]), "exp") ~entry:inject_exp;
-    of_stru ~name:((`Absolute ["Fan"; "Inject"]), "stru") ~entry:inject_stru;
+    of_exp ~name:((`Absolute ["Fan"; "Inject"]), "exp") ~entry:inject_exp ();
+    of_stru ~name:((`Absolute ["Fan"; "Inject"]), "stru") ~entry:inject_stru
+      ();
     of_clfield ~name:((`Absolute ["Fan"; "Inject"]), "clfield")
-      ~entry:inject_clfield
+      ~entry:inject_clfield ()

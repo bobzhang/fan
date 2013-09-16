@@ -1,19 +1,20 @@
-open Gstructure
-open LibUtil  
+(* open Gstructure *)
+open LibUtil
 
 
 let mk_action=Gaction.mk
 let string_of_token=Ftoken.extract_string (* Confirm used or not?*)
 
 (* tree processing *)  
-let rec flatten_tree = function
+let rec flatten_tree (x: Gstructure.tree ) =
+  match x with 
   | DeadEnd -> []
   | LocAct (_, _) -> [[]]
   | Node {node = n; brother = b; son = s} ->
       List.map (fun l -> n::l) (flatten_tree s) @ flatten_tree b 
 
 type brothers =
-  | Bro of symbol * brothers list
+  | Bro of Gstructure.symbol * brothers list
   | End
 
 
@@ -21,7 +22,8 @@ type brothers =
 
 
 let get_brothers x =
-  let rec aux acc =  function
+  let rec aux acc (x:Gstructure.tree) =
+    match x with
     | DeadEnd -> List.rev acc 
     | LocAct _ -> List.rev (End:: acc)
     | Node {node = n; brother = b; son = s} ->
@@ -34,15 +36,18 @@ let get_children x =
 
 (* level -> lprefix -> *)  
 let get_first =
-  let rec aux acc = function
+  let rec aux acc (x:Gstructure.tree) =
+    match x with 
     |Node {node;brother;_} ->
         aux (node::acc) brother
     |LocAct (_,_) | DeadEnd -> acc  in
   aux []
 
 let get_first_from levels set =
+  levels |>
   List.iter
-    (fun level -> level.lprefix |> get_first |> Hashset.add_list set)
-    levels
+    (fun (level:Gstructure.level) ->
+      level.lprefix |> get_first |> Hashset.add_list set)
+    
 
   

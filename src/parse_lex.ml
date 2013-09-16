@@ -107,9 +107,9 @@ exception UnboundRegexp;;
 let d = `Absolute ["Fan";"Lang"];;
 begin
   Ast_quotation.of_exp
-  ~name:(d,"lexer") ~entry:lex ;
+  ~name:(d,"lexer") ~entry:lex ();
   Ast_quotation.of_stru
     ~name:(d,"regexp")
-    ~entry:declare_regexp;  
+    ~entry:declare_regexp ();  
 end;;
 

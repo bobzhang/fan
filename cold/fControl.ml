@@ -81,5 +81,5 @@ let _ =
         ([],
           ("()\n",
             (Fgram.mk_action (fun (_loc : FLoc.t)  -> (() : 'items )))))]))
-let _ =
+let () =
   Fdir.register ("control", (fun loc  c  -> Fgram.parse_string ~loc items c))

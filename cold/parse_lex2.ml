@@ -239,5 +239,5 @@ let _ =
                   (_loc : FLoc.t)  -> (Fcset.union cc1 cc2 : 'char_class1 )))))]))
 let d = `Absolute ["Fan"; "Lang"]
 let _ =
-  Ast_quotation.of_exp ~name:(d, "lexer") ~entry:lex ();
-  Ast_quotation.of_stru ~name:(d, "regexp") ~entry:declare_regexp ()
+  Ast_quotation.of_exp ~name:(d, "lexer") ~entry:lex;
+  Ast_quotation.of_stru ~name:(d, "regexp") ~entry:declare_regexp

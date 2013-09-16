@@ -1,7 +1,6 @@
-open Format
-open Fan_lex
-open LibUtil
-open Lexing
+let clear_stack = Lexing_util.clear_stack
+let fprintf = Format.fprintf
+let std_formatter = Format.std_formatter
 let lexing_store s buff max =
   let self n s =
     if n >= max
@@ -16,13 +15,13 @@ let from_string { FLoc.loc_start = loc_start;_} str =
   let lb = Lexing.from_string str in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
-  from_lexbuf lb
+  Fan_lex.from_lexbuf lb
 let from_stream { FLoc.loc_start = loc_start;_} strm =
   let () = clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
-  from_lexbuf lb
+  Fan_lex.from_lexbuf lb
 let rec clean (__strm : _ XStream.t) =
   match XStream.peek __strm with
   | Some (`EOI,loc) ->

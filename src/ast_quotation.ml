@@ -1,15 +1,21 @@
-open FAst
-open LibUtil
-open Ftoken
-open Format
+(* open FAst *)
 
+open LibUtil
+
+
+{:import|
+Format:
+  pp_print_string
+  bprintf
+  ;
+|};;
 
 (*********************************)
 (* name table                    *)        
 (*********************************)
         
 (* [only absolute] domains can be stored *)  
-let paths :  domains list ref  =
+let paths :  Ftoken.domains list ref  =
   ref [ `Absolute ["Fan";"Lang"];
         `Absolute ["Fan";"Lang";"Meta"];
         `Absolute ["Fan";"Lang";"Filter"]]
@@ -21,11 +27,11 @@ let concat_domain = function
 
 
 (** [names_tbl] is used to manage the namespace and names *)
-let names_tbl : (domains,SSet.t) Hashtbl.t =
+let names_tbl : (Ftoken.domains,SSet.t) Hashtbl.t =
   Hashtbl.create 30 
     
 (**  when no qualified path is given , it uses [Sub []] *)
-let resolve_name loc (n:name) : name =
+let resolve_name loc (n:Ftoken.name) : Ftoken.name =
   match n with
   | ((`Sub _ as x) , v) ->
       (try
@@ -38,7 +44,9 @@ let resolve_name loc (n:name) : name =
               with | Not_found  -> (fun ()  -> false)) ()) paths.contents in
         fun ()  -> ((concat_domain (r, x)), v)
       with  Not_found  ->
-        fun ()  -> FLoc.errorf loc "resolve_name `%s' failed" @@ string_of_name n)
+        fun ()  ->
+          FLoc.errorf loc "resolve_name `%s' failed"
+          @@ Ftoken.string_of_name n)
         ()
   | x ->  x
 
@@ -50,7 +58,7 @@ type quotation_error_message =
 
 (* the first argument is quotation name
    the second argument is the position tag  *)
-type quotation_error = (loc * name * string * quotation_error_message * exn);; 
+type quotation_error = (FLoc.t * Ftoken.name * string * quotation_error_message * exn);; 
 
 exception QuotationError of quotation_error
 
@@ -83,7 +91,7 @@ let dump_file = ref None
 
 
   
-type key = (name * ExpKey.pack)
+type key = (Ftoken.name * ExpKey.pack)
 
 module QMap =MapMake (struct type t =key  let compare = compare end)
 
@@ -104,7 +112,7 @@ module QMap =MapMake (struct type t =key  let compare = compare end)
 let map = ref SMap.empty
 
   
-let update (pos,(str:name)) =
+let update (pos,(str:Ftoken.name)) =
   map := SMap.add pos str !map
 
 (* create a table mapping from  (string_of_tag tag) to default
@@ -113,7 +121,7 @@ let update (pos,(str:name)) =
  *)  
 let fan_default = (`Absolute ["Fan"],"")
   
-let default: name ref = ref fan_default
+let default: Ftoken.name ref = ref fan_default
 
 let set_default s =  default := s
   
@@ -130,7 +138,7 @@ let clear_default () = default:= fan_default
 
    The output should be an [absolute name]
  *)
-let expander_name loc ~pos:(pos:string) (name:name) =
+let expander_name loc ~pos:(pos:string) (name:Ftoken.name) =
   match name with
   | (`Sub [],"") ->
      (* resolve default case *)
@@ -213,7 +221,7 @@ let quotation_error_to_string (loc,name, position, ctx, exn) =
   let ppf = Buffer.create 30 in
   let name = expander_name loc ~pos:position name in
   let pp x = bprintf ppf "@?@[<2>While %s %S in a position of %S:" x
-                     (string_of_name name) position in
+                     (Ftoken.string_of_name name) position in
   let () =
     match ctx with
     | Finding ->
@@ -222,7 +230,7 @@ let quotation_error_to_string (loc,name, position, ctx, exn) =
          bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
          QMap.iter  (fun (s,t) _ ->
                      bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                             (string_of_name s) ExpKey.print_tag t)
+                             (Ftoken.string_of_name s) ExpKey.print_tag t)
                     !expanders_table;
          bprintf ppf "@]";
        end
@@ -291,7 +299,8 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
       (* BOOTSTRAPPING *)
-      let rec subst_first_loc name : pat -> pat =  with pat function
+      let rec subst_first_loc name (x : FAst.pat) : FAst.pat =
+        match x with 
         | `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->
             `App(loc, `Vrn(loc,u),(`Par (loc,`Com(loc,`Lid (_loc,name),rest))))
         | `App(_loc,`Vrn(_,u),`Any _) ->
@@ -311,51 +320,64 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       add name FDyn.stru_tag expand_stru;
     end
 
-let make_parser entry =
+
+
+
+let make_parser ?(lexer=Flex_lib.from_stream) entry =
   fun loc loc_name_opt s  ->
     Ref.protect2
       (FConfig.antiquotations, true)
       (current_loc_name,loc_name_opt)
-      (fun _ -> Fgram.parse_string (Fgram.eoi_entry entry) ~loc  s);;
+      (fun _ -> Fgram.parse_string ~lexer (Fgram.eoi_entry entry) ~loc  s);;
 
   
-let of_stru ~name  ~entry  = add name FDyn.stru_tag (make_parser entry)
+let of_stru ?lexer ~name  ~entry ()  =
+  add name FDyn.stru_tag (make_parser ?lexer entry)
 
-let of_stru_with_filter ~name  ~entry  ~filter  =
+let of_stru_with_filter ?lexer ~name  ~entry  ~filter ()  =
   add name FDyn.stru_tag
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser entry loc loc_name_opt s))
+       filter (make_parser ?lexer entry loc loc_name_opt s))
 
-let of_pat ~name  ~entry  = add name FDyn.pat_tag (make_parser entry)
+let of_pat ?lexer ~name  ~entry  () =
+  add name FDyn.pat_tag (make_parser ?lexer  entry)
 
-let of_pat_with_filter ~name  ~entry  ~filter  =
+let of_pat_with_filter ?lexer ~name  ~entry  ~filter ()  =
   add name FDyn.pat_tag
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser entry loc loc_name_opt s))
+       filter (make_parser ?lexer entry loc loc_name_opt s))
 
-let of_clfield ~name  ~entry  = add name FDyn.clfield_tag (make_parser entry)
+let of_clfield ?lexer ~name  ~entry ()  =
+  add name FDyn.clfield_tag (make_parser ?lexer entry)
 
-let of_clfield_with_filter ~name  ~entry  ~filter  =
-  add name FDyn.clfield_tag
-    (fun loc  loc_name_opt  s  ->
-       filter (make_parser entry loc loc_name_opt s))
+let of_clfield_with_filter ?lexer ~name  ~entry  ~filter ()  =
+  add name FDyn.clfield_tag @@
+    fun loc  loc_name_opt  s  ->
+       filter (make_parser ?lexer entry loc loc_name_opt s)
 
-let of_case ~name  ~entry  = add name FDyn.case_tag (make_parser entry)
+let of_case ?lexer ~name  ~entry  () =
+  add name FDyn.case_tag (make_parser ?lexer entry)
 
-let of_case_with_filter ~name  ~entry  ~filter  =
+let of_case_with_filter ?lexer ~name  ~entry  ~filter ()=
   add name FDyn.case_tag
     (fun loc  loc_name_opt  s  ->
-       filter (make_parser entry loc loc_name_opt s))
+       filter (make_parser ?lexer entry loc loc_name_opt s))
 
-let of_exp ~name  ~entry  =
-  let expand_fun = make_parser entry in
+let of_exp ?lexer ~name  ~entry () =
+  let expand_fun = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
-    (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  (add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun)
+    (`StExp (loc, expand_fun loc loc_name_opt s) : FAst.stru ) in
+  begin
+    add name FDyn.exp_tag expand_fun;
+    add name FDyn.stru_tag mk_fun
+  end
 
-let of_exp_with_filter ~name  ~entry  ~filter  =
+let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
   let expand_fun loc loc_name_opt s =
-    filter (make_parser entry loc loc_name_opt s) in
+    filter (make_parser ?lexer entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  (add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun)
+  begin
+    add name FDyn.exp_tag expand_fun;
+    add name FDyn.stru_tag mk_fun
+  end

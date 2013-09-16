@@ -314,7 +314,7 @@ open Driver;;
 module Default = struct
   let before_options () = (
 
-    Options.ocamlc := S[A"ocamlc.opt"; A"-annot"; A"-w"; A"+a-4-32-30"];
+    Options.ocamlc := S[A"ocamlc.opt"; A"-annot"; A"-w"; A"+a-4-32-30"; A"-short-paths"];
     Options.ocamlopt   := S[A"ocamlopt.opt";  A"-inline"; A"100" ];
     Options.ocamldep   := A"ocamldep.opt";
     Options.ocamldoc   := A"ocamldoc.opt";

@@ -135,7 +135,7 @@ let create_lexer ?(filter= ignore_layout)  ~annot  ~keywords  () =
 let mk f = mk_dynamic gram f
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
-let token_stream_of_string s = s |> (lex_string FLoc.string_loc)
+let token_stream_of_string s = lex_string FLoc.string_loc s
 let debug_origin_token_stream (entry : 'a t) tokens =
   (parse_origin_tokens entry (XStream.map (fun t  -> (t, FLoc.ghost)) tokens) : 
   'a )

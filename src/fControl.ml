@@ -23,5 +23,6 @@
   | -> ()]
 |};;
 
-Fdir.register
-("control",(fun loc c -> Fgram.parse_string ~loc  items c ));;
+let () =
+  Fdir.register
+    ("control",(fun loc c -> Fgram.parse_string ~loc  items c ));;
