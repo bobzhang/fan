@@ -40,10 +40,11 @@ let g =
   let case:
     [ regexp{r};  `Quot x  ->
       (* The loc maybe imprecise, FIXME *)
+      let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
       let e =
-        try Fgram.parse_string ~loc:_loc Fsyntax.exp x.content
-        with _ -> (prerr_endline "parser failure" ; exit 2)
-        in
+         try Fgram.parse_string ~loc Fsyntax.exp x.content
+         with e -> (Format.eprintf "%s" x.content; raise e)
+      in
       (r,e)]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} ->

@@ -395,31 +395,38 @@ and lex_quotation c = {:lexer|
 | _ -> with_store lex_quotation c lexbuf |}
 
 
-let rec lex_simple_quotation c =   {:lexer|
-| "}" -> store c lexbuf
+let rec lex_simple_quotation depth c =   {:lexer|
+| "}" ->
+    if depth > 0 then
+      with_store (lex_simple_quotation (depth - 1)) c lexbuf
+    else ()
 | "{" ->
     begin
       store c lexbuf;
-      with_curr_loc lex_simple_quotation c lexbuf;
-      lex_simple_quotation c lexbuf
+      with_curr_loc (lex_simple_quotation  (depth+1)) c lexbuf;
     end
-| "(*" -> with_store lex_comment c lexbuf
+| "(*" ->
+    begin
+      with_store lex_comment c lexbuf;
+      lex_simple_quotation depth c lexbuf
+    end
 | newline ->
     begin
       update_loc lexbuf;
-      with_store lex_simple_quotation c lexbuf;
+      with_store (lex_simple_quotation depth) c lexbuf;
     end
 | "\"" ->
     begin
       store c lexbuf;
       with_curr_loc lex_string c lexbuf;
       Buffer.add_char c.buffer '"';
-      lex_quotation c lexbuf
+      lex_simple_quotation depth c lexbuf
     end
 | eof -> err Unterminated_quotation @@ c.loc -- lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store lex_quotation c lexbuf
-| _  -> with_store lex_comment c lexbuf
+    with_store (lex_simple_quotation depth) c lexbuf
+        (* FIXME lexing error, weird error message *)
+| _  -> with_store (lex_simple_quotation depth ) c lexbuf
 |}
     
 let _ =

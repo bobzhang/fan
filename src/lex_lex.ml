@@ -159,11 +159,11 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       token lexbuf 
     end
       (* quotation handling *)
-| "{" ->
+| "{" -> (* border not included *)
     let old = lexbuf.lex_start_p in
     let c  = default_cxt lexbuf in
     begin
-      with_store lex_simple_quotation c lexbuf;
+      lex_simple_quotation 0  c lexbuf;
       let loc=old--lexbuf.lex_curr_p in
       (`Quot {Ftoken.name=Ftoken.empty_name;
               meta=None;
