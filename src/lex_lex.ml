@@ -108,6 +108,8 @@ Lexing_util:
   store
   clear_stack
   lexing_store
+  with_store
+  lex_simple_quotation
   ;
 Location_util:
    (--)
@@ -122,7 +124,6 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`NEWLINE, !! lexbuf )
     end
 | ocaml_lid as x -> (`Lid x, !! lexbuf )
-| ocaml_uid as x -> (`Uid x , !! lexbuf )
 | '"' ->
     let c = default_cxt lexbuf in
     let old = lexbuf.lex_start_p in
@@ -136,12 +137,11 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`Chr x, !! lexbuf)
     end
 | "'" (ocaml_char as x ) "'" -> (`Chr x , !! lexbuf )
-
 | "'\\" (_ as c) -> 
     err (Illegal_escape (String.make 1 c)) @@ !! lexbuf
-| "as" | "eof" | "let" | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
+| "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
 |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x ->
-    (`Key x, !! lexbuf)
+    (`Sym x, !! lexbuf)
 | ocaml_blank + -> token lexbuf 
       (* comment *)      
 | "(*" ->
@@ -159,24 +159,18 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       token lexbuf 
     end
       (* quotation handling *)
-| "{||}" ->
-    (`Quot { Ftoken.name=Ftoken.empty_name; loc=None; shift=2; content="" },
-    !! lexbuf)
-      
-| "{" (":" (quotation_name as name))? ('@' (locname as loc))? '|' (extra_quot as p)? ->
-    let c = default_cxt lexbuf in
-    let (name,len) =
-      match name with
-      | Some name -> (Ftoken.name_of_string name,1 + String.length name)
-      | None -> (Ftoken.empty_name,0)  in 
-    let v = opt_char_len p in
-    let shift = 2 + len + v  + (match loc with  | Some x -> String.length x + 1 | None -> 0) in
-    let retract = 2 + v in
+| "{" ->
+    let old = lexbuf.lex_start_p in
+    let c  = default_cxt lexbuf in
     begin
-      Stack.push p opt_char;
-      mk_quotation lex_quotation c lexbuf ~name ~loc ~shift ~retract 
+      with_store lex_simple_quotation c lexbuf;
+      let loc=old--lexbuf.lex_curr_p in
+      (`Quot {Ftoken.name=Ftoken.empty_name;
+              meta=None;
+              content = buff_contents c ;
+              shift = 1;
+              loc},loc)
     end
-| ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 | eof ->
     let pos = lexbuf.lex_curr_p in (* FIXME *)
     (lexbuf.lex_curr_p <-
@@ -187,7 +181,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 | _ as c ->  err (Illegal_character c) @@  !!lexbuf |}
   
 
-let from_lexbuf lb = XStream.from (fun _ -> Some (token lb))
+let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
 
 let from_stream (loc:FLoc.t) strm =
   let () = Lexing_util.clear_stack () in

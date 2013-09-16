@@ -208,7 +208,7 @@ open PluginsN (* link the module *)
 
 open CodeTemplate
 open Parse_lex
-
+open Parse_lex2
 
 (*************************************************************************)
 (** begin quotation for FAst without locations *)

@@ -394,6 +394,33 @@ and lex_quotation c = {:lexer|
     with_store lex_quotation c lexbuf
 | _ -> with_store lex_quotation c lexbuf |}
 
+
+let rec lex_simple_quotation c =   {:lexer|
+| "}" -> store c lexbuf
+| "{" ->
+    begin
+      store c lexbuf;
+      with_curr_loc lex_simple_quotation c lexbuf;
+      lex_simple_quotation c lexbuf
+    end
+| "(*" -> with_store lex_comment c lexbuf
+| newline ->
+    begin
+      update_loc lexbuf;
+      with_store lex_simple_quotation c lexbuf;
+    end
+| "\"" ->
+    begin
+      store c lexbuf;
+      with_curr_loc lex_string c lexbuf;
+      Buffer.add_char c.buffer '"';
+      lex_quotation c lexbuf
+    end
+| eof -> err Unterminated_quotation @@ c.loc -- lexbuf.lex_curr_p
+| "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
+    with_store lex_quotation c lexbuf
+| _  -> with_store lex_comment c lexbuf
+|}
     
 let _ =
   Printexc.register_printer @@ function

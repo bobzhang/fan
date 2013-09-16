@@ -1,7 +1,5 @@
 
 open Translate_lex
-open! Fsyntax
-
 let named_regexps =
   (Hashtbl.create 13 : (string, concrete_regexp) Hashtbl.t)
 
@@ -11,7 +9,18 @@ end
 
 exception UnboundRegexp;;
 
+let g =
+  Fgram.create_lexer ~annot:"Lexer's lexer"
+    ~keywords:["as";"eof";"let";
+               "#" ; "|" ; "^" ;
+               "<" ; "->" ;"=" ;
+               "_" ; "*" ; "[" ;
+               "]" ; "*" ; "?" ;
+               "+" ; "(" ; ")" ;
+               "-"] ();;
+
 {:create|
+  (g:Fgram.t)
   regexp  char_class  char_class1  lex  declare_regexp
 |};;
 
@@ -20,7 +29,7 @@ exception UnboundRegexp;;
    since we do unsafe_extend on top of Fgram...
  *)
 
-{:unsafe_extend|Fgram
+{:extend|(g:Fgram.t) 
     lex:
     [  "|" ; L0 case SEP "|" {l} ->
       Compile_lex.output_entry @@
@@ -29,9 +38,12 @@ exception UnboundRegexp;;
         Compile_lex.output_entry @@ 
         Lexgen.make_single_dfa {shortest=true;clauses=l}]
   let case:
-    [ regexp{r}; "->"; `Quot x  ->
+    [ regexp{r};  `Quot x  ->
       (* The loc maybe imprecise, FIXME *)
-      let e = Fgram.parse_string ~loc:_loc Fsyntax.exp x.content in
+      let e =
+        try Fgram.parse_string ~loc:_loc Fsyntax.exp x.content
+        with _ -> (prerr_endline "parser failure" ; exit 2)
+        in
       (r,e)]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} ->
@@ -46,14 +58,12 @@ exception UnboundRegexp;;
     end
   | S; S{x} -> x]
 
+  let lid:
+    [`Lid y -> (_loc, y) ]  
   regexp:
   {
    "as"
-   [S{r1};"as"; a_lident{x} ->
-     match x with
-      | `Lid(loc,y) (* (#FAst.lident as y) *) ->   
-          Bind(r1,(loc,y)) (* FIXME *)
-      | `Ant(_loc,_) -> assert false]  
+   [S{r1};"as"; lid {z} -> Bind(r1,(z)) ] 
    "#"
    [S{r1}; "#" ; S{r2} ->
       let s1 = as_cset r1 in
