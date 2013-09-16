@@ -177,10 +177,6 @@ let map f start_stop_both x =
 
 let move_pos chars x = { x with pos_cnum = x.pos_cnum + chars }
   
-(** [move selector n loc]
-    Return the location where positions are moved.
-    Affected positions are chosen with [selector].
-    Returned positions have their character offset plus [n]. *)
 let move s chars x =
   map (move_pos chars) s x
 

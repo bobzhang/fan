@@ -52,7 +52,7 @@ val clear_default: unit -> unit
 (* val translate : (string -> string) ref *)
 
 
-val expand : FLoc.t -> Ftoken.quot -> 'a FDyn.tag -> 'a
+val expand : (* FLoc.t ->  *)Ftoken.quot -> 'a FDyn.tag -> 'a
 
 
 

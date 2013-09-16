@@ -81,7 +81,8 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
   let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
   Hashtbl.replace names_tbl domain (SSet.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
-let expand_quotation loc ~expander  pos_tag (x : Ftoken.quot) =
+let expand_quotation ~expander  pos_tag (x : Ftoken.quot) =
+  let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
   try expander loc x.meta x.content
   with | FLoc.Exc_located (_,QuotationError _) as exc -> raise exc
   | FLoc.Exc_located (iloc,exc) ->
@@ -107,15 +108,14 @@ let find loc name tag =
                 (QuotationError (loc, name, pos_tag, NoName, Not_found))
           | _ -> raise Not_found)
    | e -> (fun ()  -> raise e)) ()
-let expand loc (x : Ftoken.quot) (tag : 'a FDyn.tag) =
+let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in
    (try
-      let expander = find loc x.name tag
-      and loc = Location_util.join (FLoc.move `start x.shift loc) in
+      let expander = find x.loc x.name tag in
       fun ()  ->
         Stack.push x.name stack;
         (finally ~action:(fun _  -> Stack.pop stack) ()) @@
-          ((fun _  -> expand_quotation ~expander loc pos_tag x))
+          ((fun _  -> expand_quotation ~expander pos_tag x))
     with
     | FLoc.Exc_located (_,QuotationError _) as exc -> (fun ()  -> raise exc)
     | FLoc.Exc_located (qloc,exc) ->
@@ -128,8 +128,8 @@ let expand loc (x : Ftoken.quot) (tag : 'a FDyn.tag) =
         (fun ()  ->
            raise
              (FLoc.Exc_located
-                (loc,
-                  (QuotationError (loc, (x.name), pos_tag, Finding, exc))))))
+                ((x.loc),
+                  (QuotationError ((x.loc), (x.name), pos_tag, Finding, exc))))))
      () : 'a )
 let quotation_error_to_string (loc,name,position,ctx,exn) =
   let ppf = Buffer.create 30 in

@@ -162,7 +162,9 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
 
 
 (* called by [expand] *)
-let expand_quotation loc ~expander pos_tag (x:Ftoken.quot) =
+let expand_quotation (* loc *) ~expander pos_tag (x:Ftoken.quot) =
+  (* let loc = x.loc in *)
+  let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
   try expander loc x.meta x.content with
   | FLoc.Exc_located (_, (QuotationError _)) as exc ->
      raise exc
@@ -192,15 +194,14 @@ let find loc name tag =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand loc (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
+let expand (* loc *) (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
   (* resolve name when expansion*)
-  let try expander = find loc x.name tag
-  and loc = Location_util.join (FLoc.move `start x.shift loc) in
+  let try expander = find x.loc x.name tag in
   begin
     Stack.push  x.name stack;
     finally ~action:(fun _ -> Stack.pop stack) () @@ fun _ ->
-      expand_quotation ~expander loc pos_tag x
+      expand_quotation ~expander (* loc *) pos_tag x
   end
   with
   | FLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
@@ -211,9 +212,9 @@ let expand loc (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
                  (qloc, x.name, pos_tag, Finding, exc))))
   | exc ->
      raise (FLoc.Exc_located
-              (loc,
+              (x.loc,
               (QuotationError
-                 (loc, x.name, pos_tag, Finding, exc))))
+                 (x.loc, x.name, pos_tag, Finding, exc))))
 
 let quotation_error_to_string (loc,name, position, ctx, exn) =
   let ppf = Buffer.create 30 in

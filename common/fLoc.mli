@@ -41,7 +41,14 @@ val map:
   (position -> position) ->
   [< `both | `start | `stop ] -> t -> t
 val move_pos: int -> position -> position
+
+(** [move selector n loc]
+    Return the location where positions are moved.
+    Affected positions are chosen with [selector].
+    Returned positions have their character offset plus [n]. *)
 val move: [< `both | `start | `stop ] -> int -> t -> t
+
+    
 val move_line: int -> t -> t
 val shift: int -> t -> t
 val file_name: t -> string
