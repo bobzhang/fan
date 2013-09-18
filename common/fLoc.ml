@@ -301,6 +301,8 @@ let check x msg =
     Do not raise this exception directly: rather use the following
     function [FLoc.raise]. *)
 exception Exc_located of t * exn
+
+
 (** [raise loc e], if [e] is already an [Exc_located] exception,
     re-raise it, else raise the exception [Exc_located loc e]. *)
 let raise loc exc =
@@ -340,7 +342,7 @@ end
 
 let string_loc = mk "<string>"
     
-let errorf loc fmt =
+let failf loc fmt =
   Format.ksprintf (fun s -> raise loc (Failure s))   fmt 
 
 module Ops = struct 

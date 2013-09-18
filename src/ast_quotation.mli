@@ -3,7 +3,7 @@
   
 open FAst
 
-val resolve_name : FLoc.t -> Ftoken.name -> Ftoken.name
+val resolve_name : (* FLoc.t -> *) Ftoken.name -> Ftoken.name option
 
 val paths : Ftoken.domains list ref
     
@@ -25,11 +25,11 @@ val add : Ftoken.name -> 'a FDyn.tag  -> 'a expand_fun  -> unit
 
     
 (** [default] holds the default quotation name. *)
-val default: Ftoken.name ref
+val default: Ftoken.name option ref
 
 val set_default: Ftoken.name -> unit
 
-(* val resolve_name: Ftoken.name -> Ftoken.name     *)
+
 (** [default_tbl] mapping [position] to the default quotation name
     it has higher precedence over default  *)
 (* val default_tbl : (string, string)Hashtbl.t   *)

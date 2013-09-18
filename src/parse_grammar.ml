@@ -14,7 +14,7 @@ open LibUtil
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
    (t_qualid:vid Fgram.t )
-   (entry_name : ([`name of Ftoken.name | `non] * FGramDef.name) Fgram.t )
+   (entry_name : ([`name of Ftoken.name option | `non] * FGramDef.name) Fgram.t )
     entry position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
    (entry: FGramDef.entry Fgram.t)
@@ -150,10 +150,15 @@ open LibUtil
   entry_name:
   [ qualid{il}; OPT  str {name} -> 
     (match name with
-    | Some x -> (let old = !Ast_quotation.default in
-      (Ast_quotation.default:=Ast_quotation.resolve_name _loc (`Sub [], x);
-       `name old))
-    | None -> `non, mk_name _loc il)]
+    | Some x ->
+        let old = !Ast_quotation.default in
+        begin 
+          match Ast_quotation.resolve_name (`Sub [], x)
+          with
+          | None -> FLoc.failf _loc "DDSL `%s' not resolved" x 
+          | Some x -> (Ast_quotation.default:= Some x; `name old)
+        end
+  | None -> `non, mk_name _loc il)]
 
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}

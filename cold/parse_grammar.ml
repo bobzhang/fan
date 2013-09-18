@@ -11,7 +11,8 @@ let extend_header = Fgram.mk "extend_header"
 let qualuid: vid Fgram.t = Fgram.mk "qualuid"
 let qualid: vid Fgram.t = Fgram.mk "qualid"
 let t_qualid: vid Fgram.t = Fgram.mk "t_qualid"
-let entry_name: ([ `name of Ftoken.name | `non]* FGramDef.name) Fgram.t =
+let entry_name:
+  ([ `name of Ftoken.name option | `non]* FGramDef.name) Fgram.t =
   Fgram.mk "entry_name"
 let entry = Fgram.mk "entry"
 let position = Fgram.mk "position"
@@ -489,16 +490,19 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )))],
-           ("((match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (Ast_quotation.default :=\n         (Ast_quotation.resolve_name _loc ((`Sub []), x));\n       `name old)\n  | None  -> `non), (mk_name _loc il))\n",
+           ("((match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> FLoc.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non), (mk_name _loc il))\n",
              (Fgram.mk_action
                 (fun (name : 'str option)  (il : 'qualid)  (_loc : FLoc.t) 
                    ->
                    (((match name with
                       | Some x ->
                           let old = Ast_quotation.default.contents in
-                          (Ast_quotation.default :=
-                             (Ast_quotation.resolve_name _loc ((`Sub []), x));
-                           `name old)
+                          (match Ast_quotation.resolve_name ((`Sub []), x)
+                           with
+                           | None  ->
+                               FLoc.failf _loc "DDSL `%s' not resolved" x
+                           | Some x ->
+                               (Ast_quotation.default := (Some x); `name old))
                       | None  -> `non), (mk_name _loc il)) : 'entry_name )))))]));
   Fgram.extend_single (entry : 'entry Fgram.t )
     (None,

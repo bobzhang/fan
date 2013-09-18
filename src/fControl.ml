@@ -5,7 +5,14 @@
 {:unsafe_extend| (g:Fgram.t)
   item:
   ["default"; `Str s -> (* FIXME*)
-    Ast_quotation.set_default (Ast_quotation.resolve_name _loc (`Sub[],s))
+    begin 
+      match Ast_quotation.resolve_name  (`Sub[],s)
+      with
+      | None ->
+          FLoc.failf _loc "DDSL `%s' can not be resolved" s
+      | Some x -> 
+          Ast_quotation.set_default x
+    end
   |"import"; dot_namespace{xs} ->
       Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths
   | "filter"; `Str s ->

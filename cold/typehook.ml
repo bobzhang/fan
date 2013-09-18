@@ -132,7 +132,7 @@ let genenrate_type_code _loc tdl (ns : FAst.strings) =
         | `Str (sloc,n) ->
             ((try let p = Hashtbl.find filters n in fun ()  -> (n, p)
               with
-              | Not_found  -> (fun ()  -> FLoc.errorf sloc "%s not found" n)))
+              | Not_found  -> (fun ()  -> FLoc.failf sloc "%s not found" n)))
               ()
         | `Ant _ ->
             FLoc.raise _loc (Failure "antiquotation not expected here")

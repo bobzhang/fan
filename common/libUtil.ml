@@ -343,6 +343,9 @@ module List = struct
     if n <0 then invalid_arg "List.take_rev n<0"
     else if n = 0 then []
     else aux n lst []
+  let find_opt p l =
+    try Some(find p l)
+    with Not_found -> None
 end
     
 

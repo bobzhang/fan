@@ -12,7 +12,7 @@ open LibUtil
 open ParsetreeHelper
 open! FAst (* FIXME later*)
 open Ast_basic
-let errorf = FLoc.errorf 
+
 
 (** An unsafe version introduced is mainly for reducing
     unnecessary dependency when bootstrapping
@@ -117,7 +117,7 @@ let ident_tag (i : FAst.ident) :  Longident.t * [> `app | `lident | `uident ] =
       (match (self i1 None, self i2 None, acc) with
        | Some (l,_),Some (r,_),None  -> Some ((Lapply (l, r)), `app)
        | _ ->
-         errorf  _loc "invalid long identifer %s" @@ !dump_ident i)
+         FLoc.failf  _loc "invalid long identifer %s" @@ !dump_ident i)
     | `Uid (_,s) ->
       (match acc, s with
        | (None ,"") -> None
@@ -125,14 +125,14 @@ let ident_tag (i : FAst.ident) :  Longident.t * [> `app | `lident | `uident ] =
        | (Some (_,(`uident|`app)),"") -> acc
        | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
        | _ ->
-         errorf _loc "invalid long identifier %s" @@ !dump_ident i)
+         FLoc.failf _loc "invalid long identifier %s" @@ !dump_ident i)
     | `Lid (_,s) ->
       let x =
         match acc with
         | None  -> lident s
         | Some (acc,(`uident|`app)) -> ldot acc s
         | _ ->
-          errorf _loc "invalid long identifier %s" @@ !dump_ident i in
+          FLoc.failf _loc "invalid long identifier %s" @@ !dump_ident i in
       Some (x, `lident)
     | `Ant (_,_) -> error _loc "invalid long identifier" in
   match self i None with
@@ -148,7 +148,7 @@ let long_lident  id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (unsafe_loc_of id)
   | _ ->
-    FLoc.errorf (unsafe_loc_of id)  "invalid long identifier %s" (!dump_ident id)
+    FLoc.failf (unsafe_loc_of id)  "invalid long identifier %s" (!dump_ident id)
 
 let long_type_ident: FAst.ident -> Longident.t Location.loc =
   long_lident 
@@ -160,7 +160,7 @@ let long_uident_noloc  (i:ident) =
   | (Ldot (i, s), `uident) -> ldot i s
   | (Lident s, `uident) -> lident s
   | (i, `app) -> i
-  | _ -> errorf (unsafe_loc_of i) "uppercase identifier expected %s" (!dump_ident i) 
+  | _ -> FLoc.failf (unsafe_loc_of i) "uppercase identifier expected %s" (!dump_ident i) 
 
 let long_uident  i =
   with_loc (long_uident_noloc  i) (unsafe_loc_of i)
@@ -172,13 +172,13 @@ let rec ctyp_long_id_prefix (t:FAst.ctyp) : Longident.t =
     let li1 = ctyp_long_id_prefix m1 in
     let li2 = ctyp_long_id_prefix m2 in
     Lapply (li1, li2)
-  | t -> errorf (unsafe_loc_of t) "invalid module expression %s" (!dump_ctyp t) 
+  | t -> FLoc.failf (unsafe_loc_of t) "invalid module expression %s" (!dump_ctyp t) 
 
 let ctyp_long_id (t:FAst.ctyp) : (bool *   Longident.t Location.loc) =
   match t with
   | #FAst.ident' as i -> false, long_type_ident i
   | `ClassPath (_, i) -> true, ident i
-  | t -> errorf (unsafe_loc_of t) "invalid type %s" @@ !dump_ctyp t
+  | t -> FLoc.failf (unsafe_loc_of t) "invalid type %s" @@ !dump_ctyp t
 
 let predef_option loc : FAst.ctyp =
   `Dot (loc, `Lid (loc, "*predef*"), `Lid (loc, "option"))
@@ -250,7 +250,7 @@ let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
       | `TyVrn (_, `C (_,s))    -> [s]
       | _ -> assert false  in 
     mktyp _loc (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
-  |  x -> errorf _loc "ctyp: %s" @@ !dump_ctyp x
+  |  x -> FLoc.failf _loc "ctyp: %s" @@ !dump_ctyp x
 
 and row_field (x:row_field) acc : Parsetree.row_field list =
   match x with 
@@ -260,14 +260,14 @@ and row_field (x:row_field) acc : Parsetree.row_field list =
   | `Bar(_,t1,t2) -> row_field t1 ( row_field t2 acc)
   | `Ant(_loc,_) -> ant_error _loc
   | `Ctyp(_,t) -> Rinherit (ctyp t) :: acc
-  | t -> errorf (unsafe_loc_of t) "row_field: %s" (!dump_row_field t)
+  | t -> FLoc.failf (unsafe_loc_of t) "row_field: %s" (!dump_row_field t)
 
 and meth_list (fl:name_ctyp) acc : Parsetree.core_field_type list   =
   match fl with
   |`Sem (_loc,t1,t2) -> meth_list t1 (meth_list t2 acc)
   | `TyCol(_loc,`Lid(_,lab),t) ->
     mkfield _loc (Pfield (lab, (mkpolytype (ctyp t)))) :: acc
-  | x -> errorf (unsafe_loc_of x) "meth_list: %s" (!dump_name_ctyp x )
+  | x -> FLoc.failf (unsafe_loc_of x) "meth_list: %s" (!dump_name_ctyp x )
 
 and package_type_constraints
     (wc:constr)
@@ -278,7 +278,7 @@ and package_type_constraints
   | `And(_,wc1,wc2) ->
     package_type_constraints wc1 (package_type_constraints wc2 acc)
   | x ->
-    errorf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
+    FLoc.failf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
       (!dump_constr x) 
 
 and package_type (x : mtyp) :
@@ -288,7 +288,7 @@ and package_type (x : mtyp) :
   | `With(_loc,(#ident' as i),wc) ->
     (long_uident i, package_type_constraints wc [])
   | #ident' as i  -> (long_uident i, [])
-  | mt -> errorf (unsafe_loc_of mt) "unexpected package type: %s" @@ !dump_mtyp mt
+  | mt -> FLoc.failf (unsafe_loc_of mt) "unexpected package type: %s" @@ !dump_mtyp mt
 
 let mktype loc tl cl ~type_kind ~priv ~manifest =
   let (params, variance) = List.split tl in
@@ -313,7 +313,7 @@ let mktrecord (x: name_ctyp) :
     (with_loc s sloc, Mutable, mkpolytype (ctyp t),  _loc)
   | `TyCol(_loc,`Lid(sloc,s),t) ->
     (with_loc s sloc, Immutable, mkpolytype (ctyp t),  _loc)
-  | t -> errorf (unsafe_loc_of t) "mktrecord %s "
+  | t -> FLoc.failf (unsafe_loc_of t) "mktrecord %s "
            (!dump_name_ctyp t)
 
 let mkvariant (x:or_ctyp) :
@@ -332,7 +332,7 @@ let mkvariant (x:or_ctyp) :
 
   | `TyCol(_,`Uid(sloc,s),t) ->
     (with_loc  s sloc, [], Some (ctyp t),  _loc)
-  | t -> errorf _loc "mkvariant %s " @@ !dump_or_ctyp t
+  | t -> FLoc.failf _loc "mkvariant %s " @@ !dump_or_ctyp t
 
 
 
@@ -365,7 +365,7 @@ let paolab (lab:string) (p:pat) : string =
   | ("",(`Lid(_loc,i) | `Constraint(_loc,`Lid(_,i),_)))
     -> i
   | ("", p) ->
-    errorf (unsafe_loc_of p) "paolab %s" (!dump_pat p)
+    FLoc.failf (unsafe_loc_of p) "paolab %s" (!dump_pat p)
   | _ -> lab 
 
 
@@ -388,7 +388,7 @@ let quote_map x =
       |`Ant (_loc,_) -> ant_error _loc  in
     (None,tuple)
   | _ ->
-    errorf (unsafe_loc_of x) "quote_map %s" (!dump_ctyp x)
+    FLoc.failf (unsafe_loc_of x) "quote_map %s" (!dump_ctyp x)
 
 let optional_type_parameters (t:ctyp) = 
   List.map quote_map (list_of_app t [])
@@ -416,9 +416,9 @@ let  class_parameters (t:type_parameters) =
         begin match quote_map x with
           |(Some x,v) -> Some (x,v)
           | (None,_) ->
-            errorf _loc  "class_parameters %s" @@ !dump_type_parameters t
+            FLoc.failf _loc  "class_parameters %s" @@ !dump_type_parameters t
         end
-      | _ ->  errorf _loc "class_parameters %s" @@ !dump_type_parameters t) 
+      | _ ->  FLoc.failf _loc "class_parameters %s" @@ !dump_type_parameters t) 
     (list_of_com t [])
 
 
@@ -429,7 +429,7 @@ let type_parameters_and_type_name (t:ctyp)  =
       aux (t1:>ctyp) (optional_type_parameters (t2:>ctyp) @ acc)
     | #ident' as i  -> (ident i, acc)
     | x ->
-      errorf (unsafe_loc_of x) "type_parameters_and_type_name %s"
+      FLoc.failf (unsafe_loc_of x) "type_parameters_and_type_name %s"
       @@ !dump_ctyp x  in
   aux t []
 
@@ -608,7 +608,7 @@ let rec pat (x : pat) : Parsetree.pattern =
     mkpat _loc @@
       Ppat_constraint
         (mkpat sloc (Ppat_unpack (with_loc m sloc)), ctyp ty)
-  | p -> errorf _loc "invalid pattern %s" @@ !dump_pat p
+  | p -> FLoc.failf _loc "invalid pattern %s" @@ !dump_pat p
 
 
 (**
@@ -664,7 +664,7 @@ let rec exp (x : exp) : Parsetree.expression =
       | (loc, ml, `Lid(_,s)) :: l ->
         (mkexp loc (Pexp_ident (mkli loc s ml)), l)
       | (_, [], e) :: l -> (exp e, l)
-      | _ -> errorf (unsafe_loc_of x) "exp: %s" (!dump_exp x) in
+      | _ -> FLoc.failf (unsafe_loc_of x) "exp: %s" (!dump_exp x) in
     let (_, e) =
       List.fold_left
         (fun (loc_bp, e1) (loc_ep, ml, e2) ->
@@ -727,7 +727,7 @@ let rec exp (x : exp) : Parsetree.expression =
         Pexp_apply
           ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
            [("", exp e1); ("", exp e2); ("", exp v)])
-      | x -> errorf _loc "bad left part of assignment:%s" (!dump_exp x)  in
+      | x -> FLoc.failf _loc "bad left part of assignment:%s" (!dump_exp x)  in
     mkexp _loc e
   | `Subtype (_,e,t2) ->
     mkexp _loc (Pexp_constraint (exp e, None, (Some (ctyp t2))))
@@ -785,7 +785,7 @@ let rec exp (x : exp) : Parsetree.expression =
 
   | `IfThen (_,e1,e2) -> mkexp _loc @@ Pexp_ifthenelse (exp e1,exp e2, None)
   | #literal as x -> exp_literal _loc x 
-  | `Any _ -> errorf _loc "Any should not appear in the position of expression"
+  | `Any _ -> FLoc.failf _loc "Any should not appear in the position of expression"
   | `Label _ | `LabelS _ -> error _loc "labeled expression not allowed here"
   | `Lazy (_loc,e) -> mkexp _loc @@ Pexp_lazy (exp e)
   | `LetIn (_,rf,bi,e) ->
@@ -865,7 +865,7 @@ let rec exp (x : exp) : Parsetree.expression =
     let l = list_of_com e [] in
     begin match l with
       | []
-      | [_] -> errorf _loc "tuple should have at least two items" (!dump_exp x)
+      | [_] -> FLoc.failf _loc "tuple should have at least two items" (!dump_exp x)
       | _ -> 
         mkexp _loc (Pexp_tuple (List.map exp l))
     end
@@ -890,7 +890,7 @@ let rec exp (x : exp) : Parsetree.expression =
   | `Package_exp(_,me) -> 
     mkexp _loc @@ Pexp_pack (mexp me)
   | `LocalTypeFun (_,`Lid(_,i),e) -> mkexp _loc @@ Pexp_newtype (i, exp e)
-  | x -> errorf _loc "exp:%s" @@ !dump_exp x
+  | x -> FLoc.failf _loc "exp:%s" @@ !dump_exp x
 and label_exp (x : exp) =
   match x with 
   | `Label (_,`Lid(_,lab),eo) -> (lab,  exp eo)
@@ -911,7 +911,7 @@ and bind (x:bind) acc =
       | `Lid (_,x) -> [x]
       | `App (_loc,x,y) -> (id_to_string x) @ (id_to_string y)
       | x ->
-        errorf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in
+        FLoc.failf (unsafe_loc_of x) "id_to_string %s" @@ !dump_ctyp x in
     let vars = id_to_string vs in
     let ampersand_vars = List.map (fun x  -> "&" ^ x) vars in
     let ty' = varify_constructors vars (ctyp ty) in
@@ -946,7 +946,7 @@ and case (x:case) =
        | `CaseWhen (_,p,w,e) ->
          Some
            (pat p, mkexp (unsafe_loc_of w) (Pexp_when (exp w, exp e)))
-       | x -> errorf _loc "case %s" @@ !dump_case x)
+       | x -> FLoc.failf _loc "case %s" @@ !dump_case x)
     cases
 
 and mklabexp (x:rec_exp)  =
@@ -954,7 +954,7 @@ and mklabexp (x:rec_exp)  =
   List.filter_map
     (function
       | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some ((ident i), (exp e))
-      | x -> errorf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
+      | x -> FLoc.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 
 and mktype_decl (x:typedecl)  =
@@ -984,7 +984,7 @@ and mktype_decl (x:typedecl)  =
               (function
                 |`Eq(loc,t1,t2) ->
                   (ctyp t1, ctyp t2, loc)
-                | _ -> errorf (unsafe_loc_of x) "invalid constraint: %s" (!dump_type_constr cl)) in
+                | _ -> FLoc.failf (unsafe_loc_of x) "invalid constraint: %s" (!dump_type_constr cl)) in
         (with_loc c sloc,
          type_decl
            (mk_type_parameters tl)
@@ -999,14 +999,14 @@ and mktype_decl (x:typedecl)  =
               (function
                 |`Eq(loc,t1,t2) ->
                   (ctyp t1, ctyp t2, loc)
-                | _ -> errorf (unsafe_loc_of x) "invalid constraint: %s" (!dump_type_constr cl)) in            
+                | _ -> FLoc.failf (unsafe_loc_of x) "invalid constraint: %s" (!dump_type_constr cl)) in            
         (with_loc c sloc,
          mktype cloc
            (mk_type_parameters tl) cl
            ~type_kind:Ptype_abstract ~priv:Private ~manifest:None)
 
       | (t:typedecl) ->
-        errorf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
+        FLoc.failf (unsafe_loc_of t) "mktype_decl %s" (!dump_typedecl t)) tys
 and mtyp : FAst.mtyp -> Parsetree.module_type =
   let  mkwithc (wc:constr)  =
     let mkwithtyp pwith_type loc priv id_tpl ct =
@@ -1030,7 +1030,7 @@ and mtyp : FAst.mtyp -> Parsetree.module_type =
           Some (mkwithtyp (fun x -> Pwith_typesubst x) _loc Public id_tpl ct )
         | `ModuleSubst(_loc,i1,i2) ->
           Some (long_uident i1, Pwith_modsubst (long_uident i2))
-        | t -> errorf (unsafe_loc_of t) "bad with constraint (antiquotation) : %s" (!dump_constr t)) constrs in
+        | t -> FLoc.failf (unsafe_loc_of t) "bad with constraint (antiquotation) : %s" (!dump_constr t)) constrs in
   function 
   | #ident' as i  -> let loc = unsafe_loc_of i in mkmty loc (Pmty_ident (long_uident i))
   | `Functor(loc,`Uid(sloc,n),nt,mt) ->
@@ -1041,7 +1041,7 @@ and mtyp : FAst.mtyp -> Parsetree.module_type =
   | `With(loc,mt,wc) -> mkmty loc (Pmty_with (mtyp mt,mkwithc wc ))
   | `ModuleTypeOf(_loc,me) ->
     mkmty _loc (Pmty_typeof (mexp me))
-  | t -> errorf (unsafe_loc_of t) "mtyp: %s" (!dump_mtyp t) 
+  | t -> FLoc.failf (unsafe_loc_of t) "mtyp: %s" (!dump_mtyp t) 
 and sigi (s:sigi) (l:signature) :signature =
   match s with 
   | `Class (loc,cd) ->
@@ -1081,20 +1081,20 @@ and sigi (s:sigi) (l:signature) :signature =
   | `Type (loc,tdl) -> mksig loc (Psig_type (mktype_decl tdl )) :: l
   | `Val (loc,`Lid(sloc,n),t) ->
     mksig loc (Psig_value (with_loc n sloc,mkvalue_desc loc t [])) :: l
-  | t -> errorf (unsafe_loc_of t) "sigi: %s" (!dump_sigi t)
+  | t -> FLoc.failf (unsafe_loc_of t) "sigi: %s" (!dump_sigi t)
 and module_sig_bind (x:mbind) 
     (acc: (string Asttypes.loc * Parsetree.module_type) list )  =
   match x with 
   | `And(_,x,y) -> module_sig_bind x (module_sig_bind y acc)
   | `Constraint(_loc,`Uid(sloc,s),mt) ->
     (with_loc s sloc, mtyp mt) :: acc
-  | t -> errorf (unsafe_loc_of t) "module_sig_bind: %s" (!dump_mbind t) 
+  | t -> FLoc.failf (unsafe_loc_of t) "module_sig_bind: %s" (!dump_mbind t) 
 and module_str_bind (x:FAst.mbind) acc =
   match x with 
   | `And(_,x,y) -> module_str_bind x (module_str_bind y acc)
   | `ModuleBind(_loc,`Uid(sloc,s),mt,me)->
     (with_loc s sloc, mtyp mt, mexp me) :: acc
-  | t -> errorf (unsafe_loc_of t) "module_str_bind: %s" (!dump_mbind t)
+  | t -> FLoc.failf (unsafe_loc_of t) "module_str_bind: %s" (!dump_mbind t)
 and mexp (x:FAst.mexp)=
   match x with 
   | #vid'  as i ->
@@ -1114,7 +1114,7 @@ and mexp (x:FAst.mexp)=
             (Pexp_constraint
                (exp e, Some (mktyp loc (Ptyp_package (package_type pt))), None))))
   | `PackageModule(loc,e) -> mkmod loc (Pmod_unpack (exp e))
-  | t -> errorf (unsafe_loc_of t) "mexp: %s" (!dump_mexp t) 
+  | t -> FLoc.failf (unsafe_loc_of t) "mexp: %s" (!dump_mexp t) 
 and stru (s:stru) (l:structure) : structure =
   let loc = unsafe_loc_of s in
   match s with
@@ -1165,7 +1165,7 @@ and stru (s:stru) (l:structure) : structure =
 
   | `Value (_,rf,bi) ->
     mkstr loc (Pstr_value (mkrf rf,bind bi [])) :: l
-  | x-> errorf loc "stru : %s" (!dump_stru x) 
+  | x-> FLoc.failf loc "stru : %s" (!dump_stru x) 
 and cltyp (x:FAst.cltyp) =
   match x with
   | `ClApply(loc, id, tl) -> 
@@ -1197,7 +1197,7 @@ and cltyp (x:FAst.cltyp) =
   | `ObjTy (loc,t,ctfl) ->
     let cil = clsigi ctfl [] in
     mkcty loc (Pcty_signature {pcsig_self = ctyp t; pcsig_fields = cil; pcsig_loc =  loc;})
-  |  x -> errorf (unsafe_loc_of x) "class type: %s" (!dump_cltyp x) 
+  |  x -> FLoc.failf (unsafe_loc_of x) "class type: %s" (!dump_cltyp x) 
 
 and class_info_clexp (ci:cldecl) =
   match ci with 
@@ -1217,7 +1217,7 @@ and class_info_clexp (ci:cldecl) =
      pci_expr = clexp ce;
      pci_loc =  loc;
      pci_variance = []}
-  | ce -> errorf  (unsafe_loc_of ce) "class_info_clexp: %s" (!dump_cldecl ce) 
+  | ce -> FLoc.failf  (unsafe_loc_of ce) "class_info_clexp: %s" (!dump_cldecl ce) 
 and class_info_cltyp (ci:cltdecl)  =
   match ci with 
   | (`CtDecl(loc, vir,`Lid(nloc,name),params,ct) :cltdecl) ->
@@ -1236,7 +1236,7 @@ and class_info_cltyp (ci:cltdecl)  =
      pci_expr = cltyp ct;
      pci_loc =  loc;
      pci_variance = []}
-  | ct -> errorf (unsafe_loc_of ct) "bad class/class type declaration/definition %s " (!dump_cltdecl ct)
+  | ct -> FLoc.failf (unsafe_loc_of ct) "bad class/class type declaration/definition %s " (!dump_cltdecl ct)
 and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
   match c with 
   |`Eq (loc, t1, t2) ->
@@ -1249,7 +1249,7 @@ and clsigi (c:clsigi) (l:  class_type_field list) : class_type_field list =
     mkctf loc (Pctf_val (s, mkmutable b, mkvirtual v, ctyp t)) :: l
   | `VirMeth (loc,`Lid(_,s),b,t) ->
     mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l
-  | t -> errorf (unsafe_loc_of t) "clsigi :%s" (!dump_clsigi t) 
+  | t -> FLoc.failf (unsafe_loc_of t) "clsigi :%s" (!dump_clsigi t) 
 
 and clexp  (x:FAst.clexp) :  Parsetree.class_expr =
   let loc = unsafe_loc_of x in
@@ -1296,7 +1296,7 @@ and clexp  (x:FAst.clexp) :  Parsetree.class_expr =
     mkcl loc (Pcl_structure {pcstr_pat = pat p; pcstr_fields = cil;})
   | `Constraint (_,ce,ct) ->
     mkcl loc (Pcl_constraint (clexp ce,cltyp ct))
-  | t -> errorf (unsafe_loc_of t) "clexp: %s" (!dump_clexp t)
+  | t -> FLoc.failf (unsafe_loc_of t) "clexp: %s" (!dump_clexp t)
 
 and clfield (c:clfield) l =
   let loc = unsafe_loc_of c in 
@@ -1321,7 +1321,7 @@ and clfield (c:clfield) l =
     mkcf loc (Pcf_virt (with_loc s sloc, mkprivate pf, mkpolytype (ctyp t))) :: l
   | `VirVal (_,`Lid(sloc,s),mf,t) ->
     mkcf loc (Pcf_valvirt (with_loc s sloc, mkmutable mf, ctyp t)) :: l
-  | x  -> errorf  loc "clfield: %s" @@ !dump_clfield x
+  | x  -> FLoc.failf  loc "clfield: %s" @@ !dump_clfield x
 
 let sigi (ast:sigi) : signature = sigi ast []
 let stru ast = stru ast []

@@ -173,11 +173,10 @@ val fun_def: exp Fgram.t
 val method_opt_override: flag Fgram.t
 val value_val_opt_override: flag Fgram.t
 val unquoted_typevars:ctyp Fgram.t
-val lang: Ftoken.name Fgram.t
+val lang: Ftoken.name option Fgram.t
 val with_exp_lang: exp Fgram.t  
-val with_stru_lang: stru Fgram.t  
-(* val extend_body: exp Fgram.t *)
-(* val delete_rule_body: exp Fgram.t  *)
+val with_stru_lang: stru Fgram.t
+    
 val dot_lstrings: (Ftoken.name) Fgram.t 
 
 (**  generally "pat; EOI". *)    

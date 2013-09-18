@@ -78,7 +78,7 @@ val string_loc: t
 val dummy_pos: position
 
 (** raise [Failure] exception *)    
-val errorf: t -> ('a, unit, string, 'b) format4 -> 'a
+val failf: t -> ('a, unit, string, 'b) format4 -> 'a
 module Ops : sig
   val (<+>): t -> t -> t     
 end

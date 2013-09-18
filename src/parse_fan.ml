@@ -231,9 +231,15 @@ let apply () = begin
           | cvalue_bind{bi} -> bi  ] }
        lang:
        [ dot_lstrings{ls} -> 
-         let old = !Ast_quotation.default in (
-         Ast_quotation.default := Ast_quotation.resolve_name _loc ls;
-         old)]
+         let old = !Ast_quotation.default in
+         begin 
+           match  Ast_quotation.resolve_name  ls
+           with
+           | Some x -> (Ast_quotation.default := Some x; old)
+           | None ->
+               FLoc.failf _loc "DDSL `%s' can not be resolved"
+                 (Ftoken.string_of_name ls)
+         end]
        pos_exps:
        [ L1 name_space SEP ";"{xys} -> 
                     let old = !Ast_quotation.map in
@@ -241,10 +247,20 @@ let apply () = begin
                      old)]
       let name_space:
        [ `Lid x;":";dot_lstrings{y} ->
-             ((x:string), Ast_quotation.resolve_name _loc y)
-           | `Lid x ->
-               ((x:string), Ast_quotation.resolve_name _loc
-                  (`Sub [], x) ) ]  
+             (x,
+              match Ast_quotation.resolve_name  y with
+              |None ->
+                  FLoc.failf _loc "DDSL `%s' can not be resolved"
+                    (Ftoken.string_of_name y)
+              | Some x -> x
+             )
+       | `Lid x ->
+           (x,
+            match Ast_quotation.resolve_name (`Sub [],x)
+            with 
+            |None ->
+                FLoc.failf _loc "DDSL `%s' can not be resolved" x
+            | Some  x -> x) ]  
        let fun_def_pat:
        ["(";"type";a_lident{i};")" ->
          fun e ->  `LocalTypeFun (_loc, i, e)

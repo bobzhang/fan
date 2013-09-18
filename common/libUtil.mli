@@ -117,7 +117,8 @@ module List :
     val init : int -> (int -> 'a) -> 'a list
     val concat_map : ('a -> 'b list) -> 'a list -> 'b list
     val filter_map : ('a -> 'b option) -> 'a list -> 'b list
-    val take_rev: int -> 'a list -> 'a list
+    val take_rev : int -> 'a list -> 'a list
+    val find_opt : ('a -> bool) -> 'a list -> 'a option
   end
 module type MAP = sig
   include Map.S

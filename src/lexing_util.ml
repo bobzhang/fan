@@ -407,7 +407,8 @@ let rec lex_simple_quotation depth c =   {:lexer|
     end
 | "(*" ->
     begin
-      with_store lex_comment c lexbuf;
+      with_store lex_comment {c with loc = lexbuf.lex_start_p}  lexbuf;
+      (* more precise error message, FIXME other places *)
       lex_simple_quotation depth c lexbuf
     end
 | newline ->

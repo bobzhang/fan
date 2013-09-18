@@ -10,17 +10,19 @@ let _ =
           `Stoken
             (((function | `Str _ -> true | _ -> false)),
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
-           ("Ast_quotation.set_default (Ast_quotation.resolve_name _loc ((`Sub []), s))\n",
+           ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> FLoc.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Str s ->
-                       (Ast_quotation.set_default
-                          (Ast_quotation.resolve_name _loc ((`Sub []), s)) : 
-                       'item )
+                       ((match Ast_quotation.resolve_name ((`Sub []), s) with
+                         | None  ->
+                             FLoc.failf _loc "DDSL `%s' can not be resolved"
+                               s
+                         | Some x -> Ast_quotation.set_default x) : 'item )
                    | _ ->
                        failwith
-                         "Ast_quotation.set_default (Ast_quotation.resolve_name _loc ((`Sub []), s))\n"))));
+                         "match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> FLoc.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n"))));
         ([`Skeyword "import";
          `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
           ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",

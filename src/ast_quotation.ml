@@ -8,6 +8,7 @@ Format:
   ;
 |};;
 
+
 (*********************************)
 (* name table                    *)        
 (*********************************)
@@ -27,39 +28,26 @@ let concat_domain = function
 (** [names_tbl] is used to manage the namespace and names *)
 let names_tbl : (Ftoken.domains,SSet.t) Hashtbl.t =
   Hashtbl.create 30 
-    
+
 (**  when no qualified path is given , it uses [Sub []] *)
-let resolve_name loc (n:Ftoken.name) : Ftoken.name =
+let resolve_name (n:Ftoken.name) =
   match n with
   | ((`Sub _ as x) , v) ->
-      (try
-        let r =
-          List.find
+      begin 
+        match List.find_opt
             (fun path  ->
-              (try
-                let set = Hashtbl.find names_tbl (concat_domain (path, x)) in
-                fun ()  -> SSet.mem v set
-              with | Not_found  -> (fun ()  -> false)) ()) paths.contents in
-        fun ()  -> ((concat_domain (r, x)), v)
-      with  Not_found  ->
-        fun ()  ->
-          FLoc.errorf loc "resolve_name `%s' failed"
-          @@ Ftoken.string_of_name n)
-        ()
-  | x ->  x
+              match Hashtbl.find_opt names_tbl @@ concat_domain (path,x)
+              with
+              | None -> false
+              | Some set -> SSet.mem v set ) !paths
+        with
+        | None ->  None
+        | Some r ->
+              Some (concat_domain (r,x),v)
+      end
+  | x -> Some x (* absolute *)
 
-type quotation_error_message =
-  | Finding
-  | Expanding
-  | ParsingResult of FLoc.t * string
-  | NoName with ("Print")
-
-(* the first argument is quotation name
-   the second argument is the position tag  *)
-type quotation_error = (FLoc.t * Ftoken.name * string * quotation_error_message * exn);; 
-
-exception QuotationError of quotation_error
-
+(** expand function *)
 type 'a expand_fun  = FLoc.t ->  string option -> string -> 'a
   
 module ExpKey = FDyn.Pack(struct  type 'a t  = unit end)
@@ -93,184 +81,76 @@ type key = (Ftoken.name * ExpKey.pack)
 
 module QMap =MapMake (struct type t =key  let compare = compare end)
 
-(**
-
-  [map] is used
-
-
-  [map]  and [default] is used to help resolve default case {[ {||} ]}
-
-  for example, you can register [Fan.Meta.exp] with [exp] and [stru] positions,
-  but when you call {[ with {exp:pat} ]} here, first the name of pat will be resolved
-  to be [Fan.Meta.pat], then when you parse {[ {| |} ]} in a position, because its
-  name is "", so it will first turn to help from [map], then to default
-  
- *)
+(** [map] is used
+    [map]  and [default] is used to help resolve default case {[ {||} ]}
+    for example, you can register [Fan.Meta.exp] with [exp] and [stru] positions,
+    but when you call {[ with {exp:pat} ]} here, first the name of pat will be resolved
+    to be [Fan.Meta.pat], then when you parse {[ {| |} ]} in a position, because its
+    name is "", so it will first turn to help from [map], then to default *)
 
 let map = ref SMap.empty
-
-  
 let update (pos,(str:Ftoken.name)) =
   map := SMap.add pos str !map
 
+let default_at_pos pos str =  update (pos,str)
 (* create a table mapping from  (string_of_tag tag) to default
    quotation expander intentionaly make its value a string to
-   be more flexibile to incorporating more tags in the future
- *)  
-let fan_default = (`Absolute ["Fan"],"")
-  
-let default: Ftoken.name ref = ref fan_default
-
-let set_default s =  default := s
-  
+   be more flexibile to incorporating more tags in the future *)  
+(* let fan_default = (`Absolute ["Fan"],"") *)
+let default : Ftoken.name option ref = ref None
+let set_default s =  default := Some s
 let clear_map () =  map := SMap.empty
-
-let clear_default () = default:= fan_default
+let clear_default () = default:= None
+    
   
-(* If the quotation has a name, it has a higher precedence,
-   otherwise the [position table] has a precedence, otherwise
-   the default is used
-   the quotation name returned by the parser can only be
-
-   Absolute, Sub, and (Sub [],"")
-
-   The output should be an [absolute name]
- *)
-let expander_name loc ~pos:(pos:string) (name:Ftoken.name) =
+(**   The output should be an [`Absolute name] *)
+let expander_name  ~pos (name:Ftoken.name) =
   match name with
   | (`Sub [],"") ->
-     (* resolve default case *)
-     SMap.find_default ~default:(!default) pos !map
-  |(`Sub _ ,_) -> resolve_name loc name
-  | _ -> name  
+      try Some (SMap.find  pos !map)
+      with Not_found -> !default
+  | (`Sub _ ,_) -> resolve_name  name
+  | (`Absolute _,_) -> Some name  
   
-let default_at_pos pos str =  update (pos,str)
-
 let expanders_table =ref QMap.empty
-
 
 let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with
-    | Not_found -> SSet.empty in
-  (Hashtbl.replace names_tbl domain (SSet.add  n s);
-   expanders_table := QMap.add k v !expanders_table)
-        
+      Not_found -> SSet.empty in
+  begin
+    Hashtbl.replace names_tbl domain (SSet.add  n s);
+    expanders_table := QMap.add k v !expanders_table
+  end
 
 
-
-(* called by [expand] *)
-let expand_quotation ~expander pos_tag (x:Ftoken.quot) =
-  let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
-  try expander loc x.meta x.content with
-  | FLoc.Exc_located (_, (QuotationError _)) as exc ->
-     raise exc
-  | FLoc.Exc_located (iloc, exc) ->
-     let exc1 = QuotationError (iloc, x.name, pos_tag, Expanding, exc) in
-     raise (FLoc.Exc_located iloc exc1)
-  | exc ->
-     let exc1 = QuotationError (loc, x.name, pos_tag, Expanding, exc) in
-     raise (FLoc.Exc_located loc exc1) ;;
-
-  
-(* The table is indexed by [quotation name] and [tag] *)
-let find loc name tag =
-  let key = (expander_name loc ~pos:(FDyn.string_of_tag tag) name, ExpKey.pack tag ()) in
-  let try pack = QMap.find key !expanders_table in
-  ExpFun.unpack tag pack
-  with
-  |Not_found ->
-    let pos_tag = FDyn.string_of_tag tag in
-    (match name with
-    |(`Sub [],"" )->
-      (FLoc.raise loc (QuotationError (loc, name,pos_tag,NoName,Not_found)))
-    | _ -> raise Not_found)
-  | e -> raise e  ;;
-
-(*
+(**
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
 let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   let pos_tag = FDyn.string_of_tag tag in
+  let name = x.name in
   (* resolve name when expansion*)
-  let try expander = find x.loc x.name tag in
-  begin
-    Stack.push  x.name stack;
-    finally ~action:(fun _ -> Stack.pop stack) () @@ fun _ ->
-      expand_quotation ~expander  pos_tag x
-  end
-  with
-  | FLoc.Exc_located (_, (QuotationError _)) as exc -> raise exc
-  | FLoc.Exc_located (qloc, exc) ->
-     raise (FLoc.Exc_located
-              (qloc,
-              (QuotationError
-                 (qloc, x.name, pos_tag, Finding, exc))))
-  | exc ->
-     raise (FLoc.Exc_located
-              (x.loc,
-              (QuotationError
-                 (x.loc, x.name, pos_tag, Finding, exc))))
+  (* The table is indexed by [quotation name] and [tag] *)
+  match expander_name ~pos:pos_tag name with
+  | None ->
+      FLoc.failf x.loc "DDSL `%s' not found" @@ Ftoken.string_of_name name
+  | Some absolute_name ->
+      begin 
+        let pack =
+          try QMap.find (absolute_name, ExpKey.pack tag ()) !expanders_table with
+            Not_found -> FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found"
+                (Ftoken.string_of_name name) pos_tag  in
+        let expander = ExpFun.unpack tag pack in
+        (* let expand_quotation ~expander pos_tag (x:Ftoken.quot) = *)
+        let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
+        expander loc x.meta x.content
+        (* FIXME: control the stack of quotation explosion *)
+      end
 
-let quotation_error_to_string (loc,name, position, ctx, exn) =
-  let ppf = Buffer.create 30 in
-  let name = expander_name loc ~pos:position name in
-  let pp x = bprintf ppf "@?@[<2>While %s %S in a position of %S:" x
-                     (Ftoken.string_of_name name) position in
-  let () =
-    match ctx with
-    | Finding ->
-       begin
-         pp "finding quotation";
-         bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
-         QMap.iter  (fun (s,t) _ ->
-                     bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                             (Ftoken.string_of_name s) ExpKey.print_tag t)
-                    !expanders_table;
-         bprintf ppf "@]";
-       end
-    | Expanding ->  pp "expanding quotation"
-    | ParsingResult (loc, str) ->
-       begin
-         pp "parsing result of quotation" ;
-         match !dump_file with
-         | Some dump_file ->
-            let () = bprintf ppf " dumping result...\n" in
-            (try
-              let oc = open_out_bin dump_file in
-              begin
-                output_string oc str;
-                output_string oc "\n";
-                flush oc;
-                close_out oc;
-                bprintf ppf "%a:" FLoc.print (FLoc.set_file_name dump_file loc);
-              end
-            with _ ->
-                 bprintf ppf "Error while dumping result in file %S; dump aborted"  dump_file)
-         | None ->
-            bprintf ppf
-                    "\n(consider setting variable Ast_quotation.dump_file, or using the -QD option)"
-       end
-    | NoName -> pp "No default quotation name"  in
-  let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn)in Buffer.contents ppf;;
-
-let parse_quotation_result parse loc (q_name,_q_loc,_q_shift,q_contents)
-    pos_tag str =
-  try parse loc str with
-  | FLoc.Exc_located (iloc, (QuotationError (_,n, pos_tag, Expanding, exc))) ->
-      let ctx = ParsingResult iloc q_contents in
-      let exc1 = QuotationError (iloc,n, pos_tag, ctx, exc) in
-      FLoc.raise iloc exc1
-  | FLoc.Exc_located (iloc, (QuotationError _ as exc)) ->
-      FLoc.raise iloc exc
-  | FLoc.Exc_located (iloc, exc) ->
-      let ctx = ParsingResult iloc q_contents in
-      let exc1 = QuotationError (iloc,q_name, pos_tag, ctx, exc) in
-      FLoc.raise iloc exc1 
-
-    
+        
 (* [exp_filter] needs an coercion , we can not finish in one step
    by mexp, since 1. the type has to be relaxed not only to ep, since
    [parse_pat] or [parse_exp] could introduce any type.
@@ -313,7 +193,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       add name FDyn.stru_tag expand_stru;
     end
 
-
+(*****************************************)
+(* register function                     *)    
+(*****************************************)    
 
 
 let make_parser ?(lexer=Flex_lib.from_stream) entry =
@@ -375,8 +257,8 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
     add name FDyn.stru_tag mk_fun
   end
     
-let () =
-  Printexc.register_printer (function
-  | QuotationError x -> Some (quotation_error_to_string x )
-  | _ -> None);;
+(* let () = *)
+(*   Printexc.register_printer (function *)
+(*   | QuotationError x -> Some (quotation_error_to_string x ) *)
+(*   | _ -> None);; *)
 

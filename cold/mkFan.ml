@@ -130,7 +130,7 @@ let initial_spec_list =
     (Arg.String
        ((fun s  ->
            Ast_quotation.default :=
-             (Ast_quotation.resolve_name FLoc.ghost ((`Sub []), s))))),
+             (Ast_quotation.resolve_name ((`Sub []), s))))),
     " Set the default language");
   ("-printer",
     (Arg.Symbol

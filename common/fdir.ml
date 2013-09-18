@@ -20,7 +20,7 @@ let handle_dir (loc:FLoc.t) (base,contents ) : unit =
      fun ()  -> handler loc contents
    with
    | Not_found  ->
-       (fun ()  -> FLoc.errorf loc "Unfound directive language %s" base)) ()
+       (fun ()  -> FLoc.failf loc "Unfound directive language %s" base)) ()
 
 
 

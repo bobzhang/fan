@@ -142,7 +142,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
 
 | int_literal  (('l'|'L'|'n' as s ) ?) as x
     {
-    begin
+    begin 
       let x = match s with
       | Some 'l' -> `Int32 x
       | Some 'L' -> `Int64 x
@@ -202,7 +202,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
        old -- lexbuf.lex_curr_p)
     end}
 | "(*)" 
-    {let c = default_cxt lexbuf in
+    {let c = default_cxt lexbuf in 
     let old = lexbuf.lex_start_p in
     begin 
       warn Comment_start (!! lexbuf) ;
@@ -297,7 +297,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
         pos_cnum = pos.pos_cnum + 1 };
      (`EOI, !!lexbuf ))}
     
-| _ as c  { err (Illegal_character c) @@  !!lexbuf } |}
+| _ as c  {   err   (Illegal_character c) @@  !!lexbuf } |}
 
 
     

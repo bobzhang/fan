@@ -2625,6 +2625,138 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
     | 5 -> with_store lex_quotation c lexbuf
     | 6 -> with_store lex_quotation c lexbuf
     | _ -> failwith "lexing: empty token"))
+let rec lex_simple_quotation depth c (lexbuf : Lexing.lexbuf) =
+  let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
+    let pos = lexbuf.Lexing.lex_curr_pos in
+    lexbuf.Lexing.lex_mem <- Array.create mem_size (-1);
+    lexbuf.Lexing.lex_start_pos <- pos;
+    lexbuf.Lexing.lex_last_pos <- pos;
+    lexbuf.Lexing.lex_last_action <- (-1)
+  and __ocaml_lex_next_char lexbuf =
+    if lexbuf.Lexing.lex_curr_pos >= lexbuf.Lexing.lex_buffer_len
+    then
+      (if lexbuf.Lexing.lex_eof_reached
+       then 256
+       else (lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_next_char lexbuf))
+    else
+      (let i = lexbuf.Lexing.lex_curr_pos in
+       let c = (lexbuf.Lexing.lex_buffer).[i] in
+       lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
+  and __ocaml_lex_state0 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 10 -> __ocaml_lex_state6 lexbuf
+    | 256 -> __ocaml_lex_state3 lexbuf
+    | 125 -> __ocaml_lex_state9 lexbuf
+    | 34 -> __ocaml_lex_state4 lexbuf
+    | 123 -> __ocaml_lex_state8 lexbuf
+    | 13 -> __ocaml_lex_state5 lexbuf
+    | 40 -> __ocaml_lex_state7 lexbuf
+    | 39 -> __ocaml_lex_state2 lexbuf
+    | _ -> __ocaml_lex_state1 lexbuf
+  and __ocaml_lex_state1 lexbuf = 7
+  and __ocaml_lex_state2 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 7;
+    (match __ocaml_lex_next_char lexbuf with
+     | 92 -> __ocaml_lex_state11 lexbuf
+     | 10|13|256 ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action)
+     | _ -> __ocaml_lex_state12 lexbuf)
+  and __ocaml_lex_state3 lexbuf = 5
+  and __ocaml_lex_state4 lexbuf = 4
+  and __ocaml_lex_state5 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 3;
+    (match __ocaml_lex_next_char lexbuf with
+     | 10 -> __ocaml_lex_state6 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state6 lexbuf = 3
+  and __ocaml_lex_state7 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 7;
+    (match __ocaml_lex_next_char lexbuf with
+     | 42 -> __ocaml_lex_state10 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state8 lexbuf = 1
+  and __ocaml_lex_state9 lexbuf = 0
+  and __ocaml_lex_state10 lexbuf = 2
+  and __ocaml_lex_state11 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state15 lexbuf
+    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state12 lexbuf
+    | 120 -> __ocaml_lex_state14 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state12 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39 -> __ocaml_lex_state13 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state13 lexbuf = 6
+  and __ocaml_lex_state14 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
+        __ocaml_lex_state17 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state15 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state16 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state16 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state12 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state17 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
+        __ocaml_lex_state12 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action) in
+  __ocaml_lex_init_lexbuf lexbuf 0;
+  (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
+   lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
+   lexbuf.Lexing.lex_curr_p <-
+     {
+       (lexbuf.Lexing.lex_curr_p) with
+       Lexing.pos_cnum =
+         (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
+     };
+   (match __ocaml_lex_result with
+    | 0 ->
+        if depth > 0
+        then with_store (lex_simple_quotation (depth - 1)) c lexbuf
+        else ()
+    | 1 ->
+        (store c lexbuf;
+         with_curr_loc (lex_simple_quotation (depth + 1)) c lexbuf)
+    | 2 ->
+        (with_store lex_comment { c with loc = (lexbuf.lex_start_p) } lexbuf;
+         lex_simple_quotation depth c lexbuf)
+    | 3 ->
+        (update_loc lexbuf; with_store (lex_simple_quotation depth) c lexbuf)
+    | 4 ->
+        (store c lexbuf;
+         with_curr_loc lex_string c lexbuf;
+         Buffer.add_char c.buffer '"';
+         lex_simple_quotation depth c lexbuf)
+    | 5 -> (err Unterminated_quotation) @@ (c.loc -- lexbuf.lex_curr_p)
+    | 6 -> with_store (lex_simple_quotation depth) c lexbuf
+    | 7 -> with_store (lex_simple_quotation depth) c lexbuf
+    | _ -> failwith "lexing: empty token"))
 let _ =
   Printexc.register_printer @@
     (function | Lexing_error e -> Some (lex_error_to_string e) | _ -> None)

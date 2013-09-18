@@ -870,13 +870,15 @@ let apply () =
      (None,
        (None, None,
          [([`Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("let old = Ast_quotation.default.contents in\nAst_quotation.default := (Ast_quotation.resolve_name _loc ls); old\n",
+            ("let old = Ast_quotation.default.contents in\nmatch Ast_quotation.resolve_name ls with\n| Some x -> (Ast_quotation.default := (Some x); old)\n| None  ->\n    FLoc.failf _loc \"DDSL `%s' can not be resolved\"\n      (Ftoken.string_of_name ls)\n",
               (Fgram.mk_action
                  (fun (ls : 'dot_lstrings)  (_loc : FLoc.t)  ->
                     (let old = Ast_quotation.default.contents in
-                     Ast_quotation.default :=
-                       (Ast_quotation.resolve_name _loc ls);
-                     old : 'lang )))))]));
+                     match Ast_quotation.resolve_name ls with
+                     | Some x -> (Ast_quotation.default := (Some x); old)
+                     | None  ->
+                         FLoc.failf _loc "DDSL `%s' can not be resolved"
+                           (Ftoken.string_of_name ls) : 'lang )))))]));
    Fgram.extend_single (pos_exps : 'pos_exps Fgram.t )
      (None,
        (None, None,
@@ -897,31 +899,40 @@ let apply () =
                 (`App ((`Vrn "Lid"), `Any)), "`Lid _");
            `Skeyword ":";
            `Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
-            ("((x : string ), (Ast_quotation.resolve_name _loc y))\n",
+            ("(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       FLoc.failf _loc \"DDSL `%s' can not be resolved\"\n         (Ftoken.string_of_name y)\n   | Some x -> x))\n",
               (Fgram.mk_action
                  (fun (y : 'dot_lstrings)  _  (__fan_0 : [> Ftoken.t]) 
                     (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `Lid x ->
-                        (((x : string ), (Ast_quotation.resolve_name _loc y)) : 
-                        'name_space )
+                        ((x,
+                           ((match Ast_quotation.resolve_name y with
+                             | None  ->
+                                 FLoc.failf _loc
+                                   "DDSL `%s' can not be resolved"
+                                   (Ftoken.string_of_name y)
+                             | Some x -> x))) : 'name_space )
                     | _ ->
                         failwith
-                          "((x : string ), (Ast_quotation.resolve_name _loc y))\n"))));
+                          "(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       FLoc.failf _loc \"DDSL `%s' can not be resolved\"\n         (Ftoken.string_of_name y)\n   | Some x -> x))\n"))));
          ([`Stoken
              (((function | `Lid _ -> true | _ -> false)),
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-           ("((x : string ), (Ast_quotation.resolve_name _loc ((`Sub []), x)))\n",
+           ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> FLoc.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Lid x ->
-                       (((x : string ),
-                          (Ast_quotation.resolve_name _loc ((`Sub []), x))) : 
-                       'name_space )
+                       ((x,
+                          ((match Ast_quotation.resolve_name ((`Sub []), x)
+                            with
+                            | None  ->
+                                FLoc.failf _loc
+                                  "DDSL `%s' can not be resolved" x
+                            | Some x -> x))) : 'name_space )
                    | _ ->
                        failwith
-                         "((x : string ), (Ast_quotation.resolve_name _loc ((`Sub []), x)))\n"))))]));
+                         "(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> FLoc.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n"))))]));
    Fgram.extend_single (fun_def_pat : 'fun_def_pat Fgram.t )
      (None,
        (None, None,

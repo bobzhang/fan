@@ -167,6 +167,7 @@ open AstInjection
 open PluginsN
 open CodeTemplate
 open Parse_lex
+open Parse_lex2
 let m = FanAstN.m
 let efilter str e =
   let e = exp_filter_n e in
