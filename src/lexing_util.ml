@@ -403,7 +403,8 @@ let rec lex_simple_quotation depth c =   {:lexer|
 | "{" ->
     begin
       store c lexbuf;
-      with_curr_loc (lex_simple_quotation  (depth+1)) c lexbuf;
+      with_curr_loc (lex_simple_quotation  (depth+1))
+        c lexbuf;
     end
 | "(*" ->
     begin

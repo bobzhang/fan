@@ -290,14 +290,15 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
       with_curr_loc dollar c lexbuf
     else err Illegal_antiquote (!! lexbuf)
    }
-| eof 
-    { let pos = lexbuf.lex_curr_p in (* FIXME *)
-    (lexbuf.lex_curr_p <-
-      { pos with pos_bol  = pos.pos_bol  + 1 ;
-        pos_cnum = pos.pos_cnum + 1 };
-     (`EOI, !!lexbuf ))}
+| eof { 
+  let pos = lexbuf.lex_curr_p in (* FIXME *)
+  (lexbuf.lex_curr_p <-
+    { pos with pos_bol  = pos.pos_bol  + 1 ;
+      pos_cnum = pos.pos_cnum + 1 }; 
+   (`EOI, !!lexbuf ))}
     
-| _ as c  {   err   (Illegal_character c) @@  !!lexbuf } |}
+| _ as c { 
+  err (Illegal_character c) @@  !!lexbuf } |}
 
 
     
