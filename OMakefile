@@ -22,7 +22,7 @@ FILES[] =
 NATIVE_ENABLED = true
 
 
-# .SUBDIRS: common treeparser cold
+.SUBDIRS: common treeparser cold
 # OCAMLINCLUDES += $(dir common treeparser cold)
 # .PHONY: common/clean
 # .PHONY: clean
