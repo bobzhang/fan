@@ -1,1 +1,1 @@
-omake common/libcommon.cma -j 8 && omake treeparser/libtreeparser.cma -j 8 && omake cold/libcold.cma -j 8 
+omake common/libcommon.cma treeparser/libtreeparser.cma -j 8 && omake cold/libcold.cma -j 8 
