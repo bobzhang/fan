@@ -1,0 +1,78 @@
+
+OCAMLINCLUDES += ../common ../treeparser
+OCAMLFLAGS += -I ../common -I ../treeparser -I +compiler-libs -w a 
+
+OCAMLPACKS[] =
+	ocamlcommon
+
+FILES[] =
+	ant
+	antN
+	astInjection
+	astLib
+	astLibN
+	ast_filters
+	ast_macros
+	ast_parsers
+	ast_quotation
+	basicN
+	codeTemplate
+	commentFilter
+	compile_lex
+	compile_stream
+	ctypN
+	deriveN
+	dynLoader
+	epN
+	expN
+	fAstN
+	# fCMacroGen unused file
+	fControl
+	fDyn
+	fEval
+	fGramDef
+	fGramGen
+	fIncludeDir
+	fMeta
+	fQuotDir
+	fSigUtil
+	fState
+	fan
+	fanAstN
+	fanOps
+	fanTop
+	fanX
+	fan_lex
+	# fanutop
+	fgram
+	filters
+	flex_lib
+	freeVars
+	fsyntax
+	gentry
+	gfold
+	gramlib
+	idN
+	langFans
+	langInclude
+	langOcaml
+	langSave
+	lex_lex
+	lexing_util
+	mkFan
+	mktop
+	objs
+	objsN
+	parse_fan
+	parse_grammar
+	parse_lex
+	parse_lex2
+	parse_stream
+	pluginsN
+	preCast
+	stdFan
+	tmp
+	typehook
+
+
+OCamlLibrary(libcold, $(FILES))

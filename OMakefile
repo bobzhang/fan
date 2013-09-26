@@ -4,12 +4,30 @@
 BYTE_ENABLED = true
 
 PROGRAM = fan
+STDLIBPATH = /Users/bobzhang1988/.opam/4.01.0dev+trunk/lib/ocaml
+
+
+# STDLIBPATH = ocamlc -where
+common/oconfig.ml: common/oconfig.mlp
+	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
+OCAMLDEP_MODULES_ENABLED=false ## necessary!
+OCamlGeneratedFiles(common/oconfig.ml)
+
 
 FILES[] =
 
 
-.SUBDIRS: common
 
+
+NATIVE_ENABLED = true
+
+
+# .SUBDIRS: common treeparser cold
+# OCAMLINCLUDES += $(dir common treeparser cold)
+# .PHONY: common/clean
+# .PHONY: clean
+# clean:common/clean
 clean:
 	rm -f $(filter-proper-targets $(glob $(addsuffix .*, $(FILES)))) \
 	$(PROGRAM).run $(PROGRAM).opt
+

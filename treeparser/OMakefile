@@ -1,0 +1,20 @@
+
+
+# These files depend on the interfaces in ../lib
+# OCAMLINCLUDES += ../common
+OCAMLFLAGS += -I ../common -w a 
+TREEPARSER_FILES[]=
+	gaction
+	gcomb
+	gdelete	
+	gfailed	
+	ginsert	
+	gparser
+	gprint
+	gstru
+	gstructure
+	gtools
+
+OCamlLibrary(libtreeparser, $(TREEPARSER_FILES))
+
+.PHONY: clean

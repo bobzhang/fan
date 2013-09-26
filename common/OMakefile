@@ -1,3 +1,4 @@
+
 OCAMLPACKS[]=
 	ocamlcommon
 OCAMLFLAGS = -w a
@@ -11,7 +12,7 @@ STDLIBPATH = /Users/bobzhang1988/.opam/4.01.0dev+trunk/lib/ocaml
 oconfig.ml: oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
 
-OCAMLDEP_MODULES_ENABLED=false
+OCAMLDEP_MODULES_ENABLED=false ## necessary!
 OCamlGeneratedFiles(oconfig.ml)
 
 COMMON_FILES[] =
@@ -39,8 +40,9 @@ COMMON_FILES[] =
 	tokenEval
 	translate_lex
 
-OCamlLibrary(libbar, $(COMMON_FILES))
+OCamlLibrary(libcommon, $(COMMON_FILES))
 
+.PHONY: clean
 clean:
 	rm -rf *.cmo *.cmi
-.PHONY: clean
+
