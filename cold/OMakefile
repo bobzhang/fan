@@ -28,7 +28,7 @@ FILES[] =
 	# fCMacroGen unused file
 	fControl
 	fDyn
-	fEval
+	# fEval
 	fGramDef
 	fGramGen
 	fIncludeDir
@@ -39,10 +39,10 @@ FILES[] =
 	fan
 	fanAstN
 	fanOps
-	fanTop
-	fanX
 	fan_lex
 	# fanutop
+	# fanX
+	# fanTop
 	fgram
 	filters
 	flex_lib

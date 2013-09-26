@@ -85,3 +85,4 @@ common/oconfig.ml
 *.opt
 fan
 dummy.ml
+fan.run

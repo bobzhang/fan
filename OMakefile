@@ -25,16 +25,27 @@ COLD_INCLUDES[]=
 	$(TREEPARSER_INCLUDES)
 
 FILES[] =
+	dummy
 
-
-
+OCAML_LINK_FLAGS+= -I +compiler-libs -linkall
 
 NATIVE_ENABLED = true
 
+OCAML_BYTE_LINK_FLAGS += dynlink.cma
+OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
+# USE_OCAMLFIND=true
+# OCAMLPACKS[] =
+# 	dynlink
+
+OCAML_LIBS[] =
+	# dynlink
+	common/libcommon
+	treeparser/libtreeparser
+	cold/libcold
 
 .SUBDIRS: common treeparser cold
 
-
+.DEFAULT: $(OCamlProgram fan, $(FILES))
 clean:
 	rm -f $(filter-proper-targets $(glob $(addsuffix .*, $(FILES)))) \
 	$(PROGRAM).run $(PROGRAM).opt
