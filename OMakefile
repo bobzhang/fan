@@ -13,6 +13,16 @@ common/oconfig.ml: common/oconfig.mlp
 OCAMLDEP_MODULES_ENABLED=false ## necessary!
 OCamlGeneratedFiles(common/oconfig.ml)
 
+COMMON_INCLUDES[] =
+	$(dir common)
+
+TREEPARSER_INCLUDES[]=
+	$(dir treeparser)
+	$(COMMON_INCLUDES)
+
+COLD_INCLUDES[]=
+	$(dir cold)
+	$(TREEPARSER_INCLUDES)
 
 FILES[] =
 
@@ -23,10 +33,8 @@ NATIVE_ENABLED = true
 
 
 .SUBDIRS: common treeparser cold
-# OCAMLINCLUDES += $(dir common treeparser cold)
-# .PHONY: common/clean
-# .PHONY: clean
-# clean:common/clean
+
+
 clean:
 	rm -f $(filter-proper-targets $(glob $(addsuffix .*, $(FILES)))) \
 	$(PROGRAM).run $(PROGRAM).opt

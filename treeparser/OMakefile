@@ -1,8 +1,8 @@
 
 
 # These files depend on the interfaces in ../lib
-# OCAMLINCLUDES += ../common
-OCAMLFLAGS += -I ../common -w a 
+OCAMLINCLUDES += ../common
+OCAMLFLAGS =  -w a 
 TREEPARSER_FILES[]=
 	gaction
 	gcomb
