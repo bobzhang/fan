@@ -82,3 +82,6 @@ ulex/
 
 ############### possible generated files ########################
 common/oconfig.ml
+*.opt
+fan
+dummy.ml
