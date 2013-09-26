@@ -1,10 +1,8 @@
 
 # OCAMLINCLUDES += ../common ../treeparser
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-OCAMLFLAGS += -I ../common -I ../treeparser -I +compiler-libs -w a 
+OCAMLFLAGS +=  -I +compiler-libs -w a 
 
-# OCAMLPACKS[] =
-# 	ocamlcommon
 
 FILES[] =
 	ant
