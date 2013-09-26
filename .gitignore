@@ -28,7 +28,9 @@ temp*
 .\#*
 *.s
 *.ll
-
+*.omc
+*.loc
+*omakedb*
 
 derived
 auto-save-list
@@ -77,3 +79,6 @@ a.el
 jslib/
 ulex/
 *.old
+
+############### possible generated files ########################
+common/oconfig.ml

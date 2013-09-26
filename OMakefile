@@ -1,0 +1,15 @@
+
+
+
+BYTE_ENABLED = true
+
+PROGRAM = fan
+
+FILES[] =
+
+
+.SUBDIRS: common
+
+clean:
+	rm -f $(filter-proper-targets $(glob $(addsuffix .*, $(FILES)))) \
+	$(PROGRAM).run $(PROGRAM).opt
