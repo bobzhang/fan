@@ -84,5 +84,6 @@ ulex/
 common/oconfig.ml
 *.opt
 fan
+fan_hot
 dummy.ml
 fan.run
