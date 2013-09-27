@@ -9,7 +9,7 @@
 OCAMLFLAGS = 
 BYTE_ENABLED = true
 
-OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o
 
 COMMON_INCLUDES[] =
     $(dir common)
@@ -49,7 +49,8 @@ section
 # .DEFAULT: $(PROGRAM)
 
 section
-    vmount(l,hot,hot2)
+    vmount(-l,hot,hot2)
+    COLD_PP = $(file $(PROGRAM))
     .SUBDIRS: hot2
     OCAML_LIBS[] += hot2/libhot
     OCamlProgram($(HOT_PROGRAM), $(FILES))
@@ -57,7 +58,8 @@ section
 HOT2_PROGRAM=fan_hot2    
 
 section
-    vmount(l,hot,hot3)
+    vmount(-l,hot,hot3)
+    COLD_PP = $(file $(HOT_PROGRAM)) # use hot to preprocess hot
     .SUBDIRS: hot3
     OCAML_LIBS[] += hot3/libhot
     OCamlProgram($(HOT2_PROGRAM), $(FILES))

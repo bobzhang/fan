@@ -89,3 +89,4 @@ dummy.ml
 fan.run
 src/hot2
 src/hot3
+src/fan_hot2
