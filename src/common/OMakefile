@@ -9,9 +9,6 @@ $(LocalFiles): oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" $< > $@
 
 
-OCAMLDEP_MODULES_ENABLED=false ## necessary!
-OCamlGeneratedFiles(oconfig.ml)
-
 FILES[] =
     libUtil
     ast2pt

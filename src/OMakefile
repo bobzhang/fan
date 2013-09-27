@@ -8,8 +8,9 @@
 ## compile flags
 OCAMLFLAGS = 
 BYTE_ENABLED = true
-# STDLIBPATH = $(shell $(OCAMLC) -where)
+
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot
+
 COMMON_INCLUDES[] =
     $(dir common)
 TREEPARSER_INCLUDES[]=
@@ -22,43 +23,44 @@ SRC_INCLUDES[]=
     $(dir src)
     $(TREEPARSER_INCLUDES)
 
-OCAMLINCLUDES += $(dir cold)    
-
-
+NATIVE_ENABLED = true
 FILES[] =
     # fan
 PROGRAM = fan
 HOT_PROGRAM = fan_hot
 
 COLD_PP = $(file $(PROGRAM))
-
-OCAML_LINK_FLAGS += -linkall
-
-NATIVE_ENABLED = true
-
-OCAML_BYTE_LINK_FLAGS += dynlink.cma
-OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
+HOT_PP = $(file $(HOT_PROGRAM))
 
 
 
+OCAML_OTHER_LIBS += dynlink
+OCAML_LIBS[] =
+    common/libcommon
+    treeparser/libtreeparser
+OCAML_LINK_FLAGS += -linkall    
 
+
+.SUBDIRS: common treeparser
 section
-    .SUBDIRS: common treeparser cold 
-    OCAML_LIBS[] =
-        common/libcommon
-        treeparser/libtreeparser
-        cold/libcold
+    .SUBDIRS: cold 
+    OCAML_LIBS[] += cold/libcold
     OCamlProgram ($(PROGRAM), $(FILES))
-.DEFAULT: $(PROGRAM)
-    
+# .DEFAULT: $(PROGRAM)
+
 section
-    .SUBDIRS: common treeparser  hot
-    OCAML_LIBS[] =
-        common/libcommon
-        treeparser/libtreeparser
-        hot/libhot
+    vmount(l,hot,hot2)
+    .SUBDIRS: hot2
+    OCAML_LIBS[] += hot2/libhot
     OCamlProgram($(HOT_PROGRAM), $(FILES))
 
+HOT2_PROGRAM=fan_hot2    
+
+section
+    vmount(l,hot,hot3)
+    .SUBDIRS: hot3
+    OCAML_LIBS[] += hot3/libhot
+    OCamlProgram($(HOT2_PROGRAM), $(FILES))
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

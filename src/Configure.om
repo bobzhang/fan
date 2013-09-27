@@ -1,26 +1,23 @@
 #
 # Configuration utilities
 #
-# \begin{doc}
-# \chapter{Autoconfiguration functions and variables}
-# \label{chapter:autoconf}
-# \cutname{omake-autoconf.html}
-# \OMake{} standard library provides a number of functions and variables intended to help one write
+# Autoconfiguration functions and variables
+# OMake standard library provides a number of functions and variables intended to help one write
 # build specifications that need to be capable of autoconfiguring itself to adjust to different
 # build environments.
 #
-# \section{General-purpose autoconfiguration functions}
+
 # The following general-purpose functions can be used to discover the properties of your build
 # environment in a fashion similar to the one used by GNU autoconf tool you may be familiar with.
 # It is recommended that these function be used from an appropriate \verb+static.+ block (see
-# Section~\ref{section:static.} for more information).
+# section:static for more information).
 #
 # In order to use the following general-purpose functions, you need to have the line
-# \begin{verbatim}
+# verbatim
 # open configure/Configure
-# \end{verbatim}
-# included in your \verb+OMakefile+ or \verb+OMakeroot+.
-# \end{doc}
+# verbatim
+# included in your OMakefile or OMakeroot.
+# doc
 
 open build/Common
 
@@ -38,28 +35,28 @@ open build/Common
 #
 # A number of helper functions, using the autoconf names, when appropriate.
 #
-# \begin{doc}
-# \twofuns{ConfMsgChecking}{ConfMsgResult}
-# \begin{verbatim}
+
+# ConfMsgChecking
+
 # ConfMsgChecking(<msg>)
 # ...
 # ConfMsgResult(<msg>)
-# \end{verbatim}
-# The \verb+ConfMsgChecking+ function output message of the form \verb+--- Checking <msg>... +
-# \emph{without} any trailing newline. After the test advertized by \verb+ConfMsgChecking+ is
-# performed, the \verb+ConfMsgResult+ function should be used to output the result.
+
+# The ConfMsgChecking function output message of the form \verb+--- Checking <msg>... +
+# without any trailing newline. After the test advertized by ConfMsgChecking is
+# performed, the ConfMsgResult function should be used to output the result.
 #
 # In certain cases users may want to redefine these function --- for example, to use a different
 # output formatting and/or to copy the messages to a log file.
 #
 # Example:
-# \begin{verbatim}
+# verbatim
 # static. =
 #    ConfMsgChecking(which foo to use)
 #    foo = ...
 #    ConfMsgResult($(foo))
-# \end{verbatim}
-# \end{doc}
+# verbatim
+# doc
 #
 ConfMsgChecking(msg) =
     print($"--- Checking $(msg)... ")
@@ -68,15 +65,15 @@ ConfMsgResult(msg) =
     println($"($(msg))")
     value $(msg)
 
-# \begin{doc}
-# \twofuns{ConfMsgWarn}{ConfMsgError}
-# \begin{verbatim}
+# doc
+# ConfMsgWarn
+# verbatim
 # ConfMsgWarn(<msg>)
 # ConfMsgError(<msg>)
-# \end{verbatim}
+# verbatim
 # 
-# Print a warning or an error message respectively. \verb+ConfMsgError+ would then abort \OMake.
-# \end{doc}
+# Print a warning or an error message respectively. ConfMsgError would then abort \OMake.
+# doc
 ConfMsgWarn(msg) =
     msg[] = $(split $(nl), $(msg))
     print($(concat $(EMPTY), $(add-wrapper $'--- *** ', $(nl), $(msg))))
@@ -87,21 +84,20 @@ ConfMsgError(msg) =
     exit(1)
   
 #
-# \begin{doc}
-# \twofuns{ConfMsgYesNo}{ConfMsgFound}
-# \begin{verbatim}
+# doc
+# ConfMsgYesNo
+
 # flag = $(ConfMsgYesNo <bool expr>
 # flag = $(ConfMsgFound <bool expr>
-# \end{verbatim}
-#
-# The \verb+ConfMsgFound+ function expects to receive a boolean flag describing whether a test
-# previously announced using the \hyperfun{ConfMsgChecking} found what it
-# was looking for. \verb+ConfMsgFound+ will output the appropriate result (``found'' or ``NOT found'')
-# using the \hyperfun{ConfMsgResult} and return its argument back.
-#
-# The \verb+ConfMsgYesNo+ function is similar, outputting a simple (``yes'' or ``NO'').
-# \end{doc}
-#
+
+
+# The ConfMsgFound function expects to receive a boolean flag describing whether a test
+# previously announced using the ConfMsgChecking found what it
+# was looking for. ConfMsgFound will output the appropriate result (``found'' or ``NOT found'')
+# using the ConfMsgResult and return its argument back.
+
+# The ConfMsgYesNo function is similar, outputting a simple (``yes'' or ``NO'').
+
 ConfMsgYesNo(found) =
    ConfMsgResult($(if $(found), yes, NO))
    return $(found)
@@ -110,26 +106,26 @@ ConfMsgFound(found) =
    ConfMsgResult($(if $(found), found, NOT found))
    return $(found)
    
-# \begin{doc}
-# \threefuns{TryCompileC}{TryLinkC}{TryRunC}
-# \begin{verbatim}
+# doc
+# TryCompileC{TryRunC}
+# verbatim
 # success = $(TryCompileC <prog_text>)
 # success = $(TryLinkC <prog_text>)
 # success = $(TryRunC <prog_text>)
-# \end{verbatim}
+# verbatim
 #
-# Given the \emph{text} of a C program, the \verb+TryCompileC+, \verb+TryLinkC+, and \verb+TryRunC+
+# Given the text of a C program, the TryCompileC, TryLinkC, and TryRunC
 # functions would try to compile / compile and link / compile, link, and run, the given program and return a boolean flag
 # indicating whether the attempt was successful.
 #
-# \verb+TryCompileC+ will use the \hypervarn{CC}, \hypervarn{CFLAGS} and \hypervarn{INCLUDES} variables 
-# to run the C compiler. \verb+TryLinkC+ and \verb+TryRunC+ will also use the \hypervar{LDFLAGS}
+# TryCompileC will use the CC, CFLAGS and INCLUDES variables 
+# to run the C compiler. TryLinkC and TryRunC will also use the LDFLAGS
 # to run the C compiler and linker. However, the flags like \verb+/WX+, \verb+-Werror+ and \verb+-warn-error+
-# will be not be passed to the compiler, even if they occur in \verb+CFLAGS+.
+# will be not be passed to the compiler, even if they occur in CFLAGS.
 #
 # These functions are silent and should normally be used with an appropriate
-# \hyperfunn{ConfMsgChecking} $\ldots$ \hyperfunn{ConfMsgResult}.
-# \end{doc}
+# ConfMsgChecking $\ldots$ ConfMsgResult.
+# doc
 
 ConfCleanCFLAGS(cflags) =
     value $(filter-out /WX -Werror --warn-error, $(cflags))
@@ -183,16 +179,16 @@ TryLinkC(prog) =
 TryRunC(prog) =
     return $(TryCompilingC $(CC) $(ConfCleanCFLAGS $(CFLAGS)) $(PREFIXED_INCLUDES), $(LDFLAGS), $(EXE), $(prog), Runs)
 
-# \begin{doc}
-# \fun{RunCProg}
-# \begin{verbatim}
+# doc
+# RunCProg
+# verbatim
 # output = $(RunCProg <prog>)
-# \end{verbatim}
+# verbatim
 #
-# \verb+RunCProg+ is similar to the \hyperfun{RunCProg}, except that it
-# returns the output of the function (will return \verb+false+ if the program fails to compile
+# RunCProg is similar to the RunCProg, except that it
+# returns the output of the function (will return false if the program fails to compile
 # or run).
-# \end{doc}
+# doc
 
 RunCProg(prog) =
     return $(TryCompilingC $(CC) $(ConfCleanCFLAGS $(CFLAGS)) $(PREFIXED_INCLUDES), $(LDFLAGS), $(EXE), $(prog), Output)
@@ -201,27 +197,27 @@ RunCProg(prog) =
 # Check whether a header file exists.
 # We call the C compiler.
 #
-# \begin{doc}
-# \twofuns{CheckCHeader}{VerboseCheckCHeader}
-# \begin{verbatim}
+# doc
+# CheckCHeader
+# verbatim
 # success = $(CheckCHeader <files>)
 # success = $(VerboseCheckCHeader <files>)
-# \end{verbatim}
+# verbatim
 #
-# Use the \hyperfun{TryCompileC} to check whether your C compiler can locate
+# Use the TryCompileC to check whether your C compiler can locate
 # and process the specified headers files.
 # Will incude \verb+<stdio.h>+ before including the header files.
 #
-# Both functions return a boolean value. The \verb+CheckCHeader+ function is silent; the
-# \verb+VerboseCheckCHeader+ function will use the \hyperfunn{ConfMsgChecking} and
-# \hyperfunn{ConfMsgResult} functions to describe the test and the outcome.
+# Both functions return a boolean value. The CheckCHeader function is silent; the
+# VerboseCheckCHeader function will use the ConfMsgChecking and
+# ConfMsgResult functions to describe the test and the outcome.
 #
 # Example:
-# \begin{verbatim}
+# verbatim
 # static. =
 #    NCURSES_H_AVAILABLE = $(VerboseCheckCHeader ncurses.h)
-# \end{verbatim}
-# \end{doc}
+# verbatim
+# doc
 #
 public.CheckCHeader(files) =
     return $(TryCompileC $"""
@@ -243,27 +239,27 @@ public.VerboseCheckCHeader(files) =
 #
 # Check whether the libraries have the given functions
 #
-# \begin{doc}
-# \twofuns{CheckCLib}{VerboseCheckCLib}
-# \begin{verbatim}
+# doc
+# CheckCLib
+# verbatim
 # success = $(CheckCLib <libs>, <functions>)
 # success = $(VerboseCheckCLib <libs>, <functions>)
-# \end{verbatim}
+# verbatim
 #
-# Use the \hyperfun{TryLinkC} to check whether your C compiler and linker can
+# Use the TryLinkC to check whether your C compiler and linker can
 # find the named functions when linking with the named libraries.  Will pass the \verb+<libs>+ to
 # the compiler using the \verb+-l+ flag.
 #
-# Both functions return a boolean value. The \verb+CheckCLib+ function is silent; the
-# \verb+VerboseCheckCHeader+ function will use the \hyperfunn{ConfMsgChecking} and
-# \hyperfunn{ConfMsgResult} functions to describe the test and the outcome.
+# Both functions return a boolean value. The CheckCLib function is silent; the
+# VerboseCheckCHeader function will use the ConfMsgChecking and
+# ConfMsgResult functions to describe the test and the outcome.
 #
 # Example:
-# \begin{verbatim}
+# verbatim
 # static. =
 #     NCURSES_LIB_AVAILABLE = $(VerboseCheckCLib ncurses, initscr setupterm tigetstr)
-# \end{verbatim}
-# \end{doc}
+# verbatim
+# doc
 #
 public.CheckCLib(libs, funs) =
     CFLAGS += $(addprefix -l, $(libs))
@@ -302,15 +298,15 @@ public.VerboseCheckHeader = $(VerboseCheckCHeader)
 #
 # Check whether a program exists in the PATH
 #
-# \begin{doc}
-# \fun{CheckProg}
+# doc
+# CheckProg
 # \verb+success = $(CheckProg <prog>)+
 #
 # Checks whether the program \verb+<prog>+ exists in your path. Will use the
-# \hyperfunn{ConfMsgChecking} and
-# \hyperfunn{ConfMsgResult} functions to describe the test and the outcome.
+# ConfMsgChecking and
+# ConfMsgResult functions to describe the test and the outcome.
 #
-# \end{doc}
+# doc
 #
 public.CheckProg(prog) =
    ConfMsgChecking(for $(prog))
@@ -323,26 +319,26 @@ public.CheckProg(prog) =
       return false
 
 #
-# \begin{doc}
-# \section{Translating \code{autoconf} scripts}
-# Some of the functions described above are very similar to the ones present in \verb+autoconf+.
+# doc
+# \section{Translating autoconf scripts}
+# Some of the functions described above are very similar to the ones present in autoconf.
 # Below is a brief translation table for such functions.
-# \begin{description}
-# \itemidx{AC\_MSG\_CHECKING} is very similar to \hyperfun{ConfMsgChecking}.
-# \itemidx{AC\_MSG\_RESULT} is very similar to \hyperfun{ConfMsgResult}.
-# \itemidx{AC\_MSG\_WARN} is very similar to \hyperfun{ConfMsgWarn}.
-# \itemidx{AC\_MSG\_ERROR} is very similar to \hyperfun{ConfMsgError}.
-# \itemidx{AC\_TRY\_COMPILE} is somewhat similar to \hyperfun{TryCompileC},
-#     except the \hyperfun{TryCompileC} returns a boolean value and only works for \verb+C+. Similarly,
-# \itemidx{AC\_TRY\_LINK} is approximated by \hyperfun{TryLinkC}, and
-# \itemidx{AC\_TRY\_RUN} is approximated by \hyperfun{TryRunC}.
-# \end{description}
+# description
+# \itemidx{AC\_MSG\_CHECKING} is very similar to ConfMsgChecking.
+# \itemidx{AC\_MSG\_RESULT} is very similar to ConfMsgResult.
+# \itemidx{AC\_MSG\_WARN} is very similar to ConfMsgWarn.
+# \itemidx{AC\_MSG\_ERROR} is very similar to ConfMsgError.
+# \itemidx{AC\_TRY\_COMPILE} is somewhat similar to TryCompileC,
+#     except the TryCompileC returns a boolean value and only works for C. Similarly,
+# \itemidx{AC\_TRY\_LINK} is approximated by TryLinkC, and
+# \itemidx{AC\_TRY\_RUN} is approximated by TryRunC.
+# description
 #
 # \section{Predefined configuration tests}
 # A number of configuration tests are already included in the standard library.
-# In order to use them in your project, simply \verb+open+ (see Section~\ref{section:include}) the
-# corresponding build file in your \verb+OMakefile+ and the tests will run the first time \OMake{}
-# is executed. Note that it is not a problem to \verb+open+ these files from more than one place in
+# In order to use them in your project, simply open (see Section~\ref{section:include}) the
+# corresponding build file in your OMakefile and the tests will run the first time \OMake{}
+# is executed. Note that it is not a problem to open these files from more than one place in
 # your project --- if you do that, the test will still run only once.
-# \end{doc}
+
 #

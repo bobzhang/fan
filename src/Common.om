@@ -1,43 +1,9 @@
-########################################################################
-# General configuration.
-#
-# Copyright (C) 2003-2005 Jason Hickey and Mojave Group
-#
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this file, to deal in the File without
-# restriction, including without limitation the rights to use,
-# copy, modify, merge, publish, distribute, sublicense, and/or
-# sell copies of the File, and to permit persons to whom the File
-# is furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the File.
-#
-# THE FILE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-# FILE OR THE USE OR OTHER DEALINGS IN THE FILE.
-
-########################################################################
 # Mention a few of the other standard variables here.
-#
-# \begin{doc}
-# \section{The OMakeroot file}
-# \index{OMakeroot}
-#
-# The standard \File{OMakeroot} file defines the functions are rules
-# for building standard projects.
-#
-# \subsection{Variables}
-# \var{ROOT} The root directory of the current project.
-# \var{CWD} The current working directory (the directory is set for each \File{OMakefile} in the project).
-# \var{EMPTY} The empty string.
-# \var{STDROOT} The name of the standard installed \File{OMakeroot} file.
-# \end{doc}
-#
+# ROOT The root directory of the current project.
+# CWD The current working directory (the directory is set for each OMakefile in the project).
+# EMPTY The empty string.
+# STDROOT The name of the standard installed \File{OMakeroot} file.
+
 ROOT  = $(dir .)
 LIB   = $(dir lib)
 BIN   = $(dir bin)
@@ -48,8 +14,7 @@ BIN   = $(dir bin)
 .ORDER: .BUILDORDER
 
 #
-# \begin{doc}
-# \varlabel{ABORT_ON_COMMAND_ERROR}{ABORT\_ON\_COMMAND\_ERROR} If set to true, the construction of a target should
+# ABORT_ON_COMMAND_ERROR If set to true, the construction of a target should
 #   be aborted whenever one of the commands to build it fail.  This defaults to true,
 #   and should normally be left that way.
 #
@@ -78,19 +43,17 @@ BIN   = $(dir bin)
 #
 
 #
-# \begin{doc}
-# \subsection{System variables}
+
+
 #
-# \var{INSTALL} The command to install a program (\verb+install+ on \verb+Unix+, \verb+cp+ on \verb+Win32+).
-# \var{PATHSEP} The normal path separator (\verb+:+ on \verb+Unix+, \verb+;+ on \verb+Win32+).
-# \var{DIRSEP} The normal directory separator (\verb+/+ on \verb+Unix+, \verb+\+ on \verb+Win32+).
-# \varlabel{EXT_OBJ}{EXT\_OBJ} File suffix for an object file (default is \verb+.o+ on \verb+Unix+, and \verb+.obj+ on \verb+Win32+).
-# \varlabel{EXT_LIB}{EXT\_LIB} File suffix for a static library (default is \verb+.a+ on \verb+Unix+, and \verb+.lib+ on \verb+Win32+).
-# \varlabel{EXT_DLL}{EXT\_DLL} File suffix for a shared library (default is \verb+.so+ on \verb+Unix+, and \verb+.dll+ on \verb+Win32+).
-# \varlabel{EXT_ASM}{EXT\_ASM} File suffix for an assembly file (default is \verb+.s+ on \verb+Unix+, and \verb+.asm+ on \verb+Win32+).
-# \var{EXE} File suffix for executables (default is empty for \verb+Unix+, and \verb+.exe+ on \verb+Win32+ and \verb+Cygwin+).
-# \end{doc}
-#
+# INSTALL The command to install a program (install on Unix, cp on Win32).
+# PATHSEP The normal path separator (: on Unix, ; on Win32).
+# DIRSEP The normal directory separator (/ on Unix, \ on Win32).
+# EXT_OBJ  File suffix for an object file (default is .o on Unix, and .obj on Win32).
+# EXT_LIB File suffix for a static library (default is .a on Unix, and .lib on Win32).
+# EXT_DLL File suffix for a shared library (default is .so on Unix, and .dll on Win32).
+# EXT_ASM File suffix for an assembly file (default is .s on Unix, and .asm on Win32).
+# EXE File suffix for executables (default is empty for Unix, and .exe on Win32 and Cygwin).
 
 #
 # These commands are builtin, and they are the same on all platforms.

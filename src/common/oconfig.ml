@@ -1,5 +1,5 @@
 
-let standard_library = "/Users/bobzhang1988/.opam/4.01.0dev+trunk/lib/ocaml"
+let standard_library = "/Users/bobzhang/.opam/4.01.0dev+trunk/lib/ocaml"
 
 (* WARNING, WARNING, WARNING
    make sure to update for each compiler release *)
