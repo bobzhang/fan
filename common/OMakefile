@@ -1,12 +1,12 @@
 
-OCAMLPACKS[]=
-	ocamlcommon
 OCAMLFLAGS = -w a
-# OCAMLFLAGS += -I +compiler-libs
+
+
 OCAMLINCLUDES += +compiler-libs
 
 oconfig.ml: oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
+
 
 OCAMLDEP_MODULES_ENABLED=false ## necessary!
 OCamlGeneratedFiles(oconfig.ml)

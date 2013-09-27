@@ -1,39 +1,35 @@
 
 
+# USE_OCAMLFIND=true
+# we don't depend on ocamlfind here
 
 BYTE_ENABLED = true
-
 PROGRAM = fan
-
 STDLIBPATH = $(shell $(OCAMLC) -where)
 
-
 COMMON_INCLUDES[] =
-	$(dir common)
-
+    $(dir common)
 TREEPARSER_INCLUDES[]=
-	$(dir treeparser)
-	$(COMMON_INCLUDES)
-
+    $(dir treeparser)
+    $(COMMON_INCLUDES)
 COLD_INCLUDES[]=
-	$(dir cold)
-	$(TREEPARSER_INCLUDES)
-
+    $(dir cold)
+    $(TREEPARSER_INCLUDES)
+SRC_INCLUDES[]=
+    $(dir src)
+    $(TREEPARSER_INCLUDES)
+    
 FILES[] =
-	dummy
+    dummy
 
-OCAML_LINK_FLAGS+= -I +compiler-libs -linkall
+OCAML_LINK_FLAGS += -linkall
 
 NATIVE_ENABLED = true
 
 OCAML_BYTE_LINK_FLAGS += dynlink.cma
 OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
-# USE_OCAMLFIND=true
-# OCAMLPACKS[] =
-# 	dynlink
 
 OCAML_LIBS[] =
-	# dynlink
 	common/libcommon
 	treeparser/libtreeparser
 	cold/libcold
