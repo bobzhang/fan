@@ -5,7 +5,7 @@ open FAstN
  derive (Print OPrint Map Fold MapWrapper PrintWrapper);
 |};;
 
-{:ocaml| {:include| "src/fAstN.ml" |} |};;
+{:ocaml| {:include| "fAstN.ml" |} |};;
 
 
 let wildcarder = object (self)
@@ -19,3 +19,7 @@ end
 
     
 
+
+(* local variables: *)
+(* compile-command: "pmake objsN.cmo" *)
+(* end: *)

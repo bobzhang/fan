@@ -7,7 +7,7 @@ let strip_ant ant = ant ;;
 |};;
 
 
-{:ocaml|{:include| "common/fAst.mli"|}  |};;
+{:ocaml|{:include| "../common/fAst.mli"|}  |};;
 
 (* change all the [loc] to [ghost] *)    
 class reloc _loc = object

@@ -4,9 +4,12 @@
 # we don't depend on ocamlfind here
 
 # OMakeFlags(--verbose)
+
+## compile flags
+OCAMLFLAGS = 
 BYTE_ENABLED = true
 STDLIBPATH = $(shell $(OCAMLC) -where)
-OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot
 COMMON_INCLUDES[] =
     $(dir common)
 TREEPARSER_INCLUDES[]=
@@ -18,10 +21,14 @@ COLD_INCLUDES[]=
 SRC_INCLUDES[]=
     $(dir src)
     $(TREEPARSER_INCLUDES)
-    
+
+OCAMLINCLUDES += $(dir cold)    
 FILES[] =
-    dummy
+    # fan
+
 PROGRAM = fan
+
+COLD_PP = $(file $(PROGRAM))
 
 OCAML_LINK_FLAGS += -linkall
 
@@ -35,7 +42,7 @@ OCAML_LIBS[] =
     treeparser/libtreeparser
     cold/libcold
 
-.SUBDIRS: common treeparser cold
+.SUBDIRS: common treeparser cold hot
 
 .DEFAULT: $(OCamlProgram fan, $(FILES))
     
