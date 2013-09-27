@@ -8,7 +8,7 @@
 ## compile flags
 OCAMLFLAGS = 
 BYTE_ENABLED = true
-STDLIBPATH = $(shell $(OCAMLC) -where)
+# STDLIBPATH = $(shell $(OCAMLC) -where)
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot
 COMMON_INCLUDES[] =
     $(dir common)
@@ -23,9 +23,10 @@ SRC_INCLUDES[]=
     $(TREEPARSER_INCLUDES)
 
 OCAMLINCLUDES += $(dir cold)    
+
+
 FILES[] =
     # fan
-
 PROGRAM = fan
 HOT_PROGRAM = fan_hot
 
@@ -40,22 +41,24 @@ OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
 
 
 
-.SUBDIRS: common treeparser cold hot
+
 section
+    .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] =
         common/libcommon
         treeparser/libtreeparser
         cold/libcold
     OCamlProgram ($(PROGRAM), $(FILES))
+.DEFAULT: $(PROGRAM)
+    
 section
+    .SUBDIRS: common treeparser  hot
     OCAML_LIBS[] =
         common/libcommon
         treeparser/libtreeparser
         hot/libhot
-    OCamlProgram ($(HOT_PROGRAM), $(FILES))
+    OCamlProgram($(HOT_PROGRAM), $(FILES))
 
-.DEFAULT: $(PROGRAM) $(HOT_PROGRAM)
-    
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

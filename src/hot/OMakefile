@@ -5,6 +5,8 @@ OCAMLDEPPPFLAGS = -pp $(COLD_PP) # only useful for ml file
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
 
+OCAMLDEP_MODULES_ENABLED = false
+LocalOCamlGeneratedFiles($(COLD_PP))
 FILES[] =
     ant
     antN
@@ -73,6 +75,8 @@ FILES[] =
     # fanX
     # fanTop
 
+## not as default, it depends on the preprocessor     
+# TARGETS = OCamlLibrary(libhot, $(FILES))
 .DEFAULT: $(OCamlLibrary libhot, $(FILES))
 
 clean:
