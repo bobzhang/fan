@@ -3,10 +3,10 @@
 # USE_OCAMLFIND=true
 # we don't depend on ocamlfind here
 
+# OMakeFlags(--verbose)
 BYTE_ENABLED = true
-PROGRAM = fan
 STDLIBPATH = $(shell $(OCAMLC) -where)
-
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt
 COMMON_INCLUDES[] =
     $(dir common)
 TREEPARSER_INCLUDES[]=
@@ -21,6 +21,7 @@ SRC_INCLUDES[]=
     
 FILES[] =
     dummy
+PROGRAM = fan
 
 OCAML_LINK_FLAGS += -linkall
 
@@ -30,14 +31,14 @@ OCAML_BYTE_LINK_FLAGS += dynlink.cma
 OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
 
 OCAML_LIBS[] =
-	common/libcommon
-	treeparser/libtreeparser
-	cold/libcold
+    common/libcommon
+    treeparser/libtreeparser
+    cold/libcold
 
 .SUBDIRS: common treeparser cold
 
 .DEFAULT: $(OCamlProgram fan, $(FILES))
+    
 clean:
-	rm -f $(filter-proper-targets $(glob $(addsuffix .*, $(FILES)))) \
-	$(PROGRAM).run $(PROGRAM).opt
+    rm -rf $(OCAMLBIN_EXT)
 

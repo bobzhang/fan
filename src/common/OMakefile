@@ -4,7 +4,8 @@ OCAMLFLAGS = -w a
 
 OCAMLINCLUDES += +compiler-libs
 
-oconfig.ml: oconfig.mlp
+LocalFiles=oconfig.ml
+$(LocalFiles): oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
 
 
@@ -40,5 +41,6 @@ OCamlLibrary(libcommon, $(COMMON_FILES))
 
 .PHONY: clean
 clean:
-	rm -rf *.cmo *.cmi
+    rm -rf $(OCAMLBIN_EXT)
+    rm -rf $(LocalFiles)
 
