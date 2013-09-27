@@ -21,8 +21,8 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # FILE OR THE USE OR OTHER DEALINGS IN THE FILE.
 
-open build/Common
-open configure/Configure
+open Common
+open Configure
 
 ########################################################################
 # OCaml section

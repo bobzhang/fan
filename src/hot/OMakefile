@@ -5,20 +5,6 @@ OCAMLDEPPPFLAGS = -pp $(COLD_PP) # only useful for ml file
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
 
-# FAN(module) =
-#     section
-#         OCAMLPPFLAGS = -pp $(COLD_PP)
-#         $(module).cmo:
-#         $(module).o:
-#         $(module).cmx:
-#         .SCANNER: scan-ocaml-%.mli: %.mli /.PHONY/OCamlGeneratedFilesTarget :value: $(OCamlScannerTargets $&)
-#             $(OCamlScanner $<)
-            
-#         OCAMLDEPFLAGS = -pp $(COLD_PP)
-#         .SCANNER: scan-ocaml-%.ml: %.ml /.PHONY/OCamlGeneratedFilesTarget :exists: %.mli :value: $(OCamlScannerTargets $&)
-#            $(OCamlScanner $<)
-
-# FAN(ant)
 FILES[] =
     ant
     antN

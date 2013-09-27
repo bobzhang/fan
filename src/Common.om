@@ -1,0 +1,164 @@
+########################################################################
+# General configuration.
+#
+# Copyright (C) 2003-2005 Jason Hickey and Mojave Group
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this file, to deal in the File without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the File, and to permit persons to whom the File
+# is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the File.
+#
+# THE FILE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+# CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+# FILE OR THE USE OR OTHER DEALINGS IN THE FILE.
+
+########################################################################
+# Mention a few of the other standard variables here.
+#
+# \begin{doc}
+# \section{The OMakeroot file}
+# \index{OMakeroot}
+#
+# The standard \File{OMakeroot} file defines the functions are rules
+# for building standard projects.
+#
+# \subsection{Variables}
+# \var{ROOT} The root directory of the current project.
+# \var{CWD} The current working directory (the directory is set for each \File{OMakefile} in the project).
+# \var{EMPTY} The empty string.
+# \var{STDROOT} The name of the standard installed \File{OMakeroot} file.
+# \end{doc}
+#
+ROOT  = $(dir .)
+LIB   = $(dir lib)
+BIN   = $(dir bin)
+
+#
+# A default sort rule
+#
+.ORDER: .BUILDORDER
+
+#
+# \begin{doc}
+# \varlabel{ABORT_ON_COMMAND_ERROR}{ABORT\_ON\_COMMAND\_ERROR} If set to true, the construction of a target should
+#   be aborted whenever one of the commands to build it fail.  This defaults to true,
+#   and should normally be left that way.
+#
+# \varlabel{SCANNER_MODE}{SCANNER\_MODE} This variable should be defined as one of four values
+#    (defaults to \verb+enabled+).
+# \begin{description}
+# \item[enabled] Allow the use of default \verb+.SCANNER+ rules.  Whenever a rule does
+#    not specify a \verb+:scanner:+ dependency explicitly, try to find a
+#    \verb+.SCANNER+ with the same target name.
+# \item[disabled] Never use default \verb+.SCANNER+ rules.
+# \item[warning] Allow the use of default \verb+.SCANNER+ rules, but print a warning
+#    whenever one is selected.
+# \item[error] Do not allow the use of default \verb+.SCANNER+ rules.  If a rule
+#    does not specify a \verb+:scanner:+ dependency, and there is a default
+#    \verb+.SCANNER+ rule, the build will terminate abnormally.
+# \end{description}
+# \end{doc}
+#
+
+# These are defined in Omake_builtin_base
+# ABORT_ON_COMMAND_ERROR = true
+# SCANNER_MODE = enabled
+
+########################################################################
+# Generic Unix section
+#
+
+#
+# \begin{doc}
+# \subsection{System variables}
+#
+# \var{INSTALL} The command to install a program (\verb+install+ on \verb+Unix+, \verb+cp+ on \verb+Win32+).
+# \var{PATHSEP} The normal path separator (\verb+:+ on \verb+Unix+, \verb+;+ on \verb+Win32+).
+# \var{DIRSEP} The normal directory separator (\verb+/+ on \verb+Unix+, \verb+\+ on \verb+Win32+).
+# \varlabel{EXT_OBJ}{EXT\_OBJ} File suffix for an object file (default is \verb+.o+ on \verb+Unix+, and \verb+.obj+ on \verb+Win32+).
+# \varlabel{EXT_LIB}{EXT\_LIB} File suffix for a static library (default is \verb+.a+ on \verb+Unix+, and \verb+.lib+ on \verb+Win32+).
+# \varlabel{EXT_DLL}{EXT\_DLL} File suffix for a shared library (default is \verb+.so+ on \verb+Unix+, and \verb+.dll+ on \verb+Win32+).
+# \varlabel{EXT_ASM}{EXT\_ASM} File suffix for an assembly file (default is \verb+.s+ on \verb+Unix+, and \verb+.asm+ on \verb+Win32+).
+# \var{EXE} File suffix for executables (default is empty for \verb+Unix+, and \verb+.exe+ on \verb+Win32+ and \verb+Cygwin+).
+# \end{doc}
+#
+
+#
+# These commands are builtin, and they are the same on all platforms.
+# The uppercase variables are defined for backwards compatibility only,
+# their usage is deprecated.
+#
+CP = cp
+MV = mv
+RM = rm -f
+MKDIR = mkdir
+RMDIR = rmdir
+CHMOD = chmod
+
+if $(equal $(OSTYPE), Win32)
+    #
+    # Command names
+    #
+    INSTALL = cp
+    PATHSEP = ;
+    DIRSEP = \\
+
+    #
+    # Common suffixes for files
+    #
+    EXT_LIB = .lib
+    EXT_DLL = .dll
+    EXT_OBJ = .obj
+    EXT_ASM = .asm
+    EXE = .exe
+
+    export
+else
+    #
+    # Command names
+    #
+    INSTALL = install
+    PATHSEP = :
+    DIRSEP = /
+
+    #
+    # Common suffixes for files
+    #
+    EXT_LIB = .a
+    EXT_DLL = .so
+    EXT_OBJ = .o
+    EXT_ASM = .s
+    EXE =
+
+    export
+
+if $(equal $(OSTYPE), Cygwin)
+    EXE = .exe
+    export
+
+declare LN
+if $(not $(defined USE_SYSTEM_COMMANDS))
+    if $(not $(equal $(OSTYPE), Win32))
+        LN = ln -sf
+        export
+    export
+else
+    LN = ln-or-cp
+    export
+
+# XXX: JYH: this is a total hack.
+# It should be the case the :scanner: $(EMPTY) turns off scanners.
+#
+NOSCANNER = /scan-dummy
+
+.SCANNER: $(NOSCANNER)
+    @

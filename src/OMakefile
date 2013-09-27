@@ -27,6 +27,7 @@ FILES[] =
     # fan
 
 PROGRAM = fan
+HOT_PROGRAM = fan_hot
 
 COLD_PP = $(file $(PROGRAM))
 
@@ -37,14 +38,23 @@ NATIVE_ENABLED = true
 OCAML_BYTE_LINK_FLAGS += dynlink.cma
 OCAML_NATIVE_LINK_FLAGS += dynlink.cmxa
 
-OCAML_LIBS[] =
-    common/libcommon
-    treeparser/libtreeparser
-    cold/libcold
+
 
 .SUBDIRS: common treeparser cold hot
+section
+    OCAML_LIBS[] =
+        common/libcommon
+        treeparser/libtreeparser
+        cold/libcold
+    OCamlProgram ($(PROGRAM), $(FILES))
+section
+    OCAML_LIBS[] =
+        common/libcommon
+        treeparser/libtreeparser
+        hot/libhot
+    OCamlProgram ($(HOT_PROGRAM), $(FILES))
 
-.DEFAULT: $(OCamlProgram fan, $(FILES))
+.DEFAULT: $(PROGRAM) $(HOT_PROGRAM)
     
 clean:
     rm -rf $(OCAMLBIN_EXT)
