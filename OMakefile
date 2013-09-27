@@ -4,14 +4,9 @@
 BYTE_ENABLED = true
 
 PROGRAM = fan
-STDLIBPATH = /Users/bobzhang1988/.opam/4.01.0dev+trunk/lib/ocaml
 
+STDLIBPATH = $(shell $(OCAMLC) -where)
 
-# STDLIBPATH = ocamlc -where
-common/oconfig.ml: common/oconfig.mlp
-	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
-OCAMLDEP_MODULES_ENABLED=false ## necessary!
-OCamlGeneratedFiles(common/oconfig.ml)
 
 COMMON_INCLUDES[] =
 	$(dir common)

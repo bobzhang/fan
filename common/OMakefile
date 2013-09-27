@@ -2,13 +2,9 @@
 OCAMLPACKS[]=
 	ocamlcommon
 OCAMLFLAGS = -w a
-OCAMLFLAGS += -I +compiler-libs
+# OCAMLFLAGS += -I +compiler-libs
+OCAMLINCLUDES += +compiler-libs
 
-
-STDLIBPATH = /Users/bobzhang1988/.opam/4.01.0dev+trunk/lib/ocaml
-
-
-# STDLIBPATH = ocamlc -where
 oconfig.ml: oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(STDLIBPATH)|" $< > $@
 
