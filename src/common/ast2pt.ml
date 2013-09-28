@@ -1382,3 +1382,7 @@ let print_ctyp f e =
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/ast2pt.cmo" *)
+(* end: *)

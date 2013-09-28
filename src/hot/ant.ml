@@ -12,9 +12,10 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       let e = parse_pat _loc code in
       (match (decorations,cxt,sep) with
       | (("uid" | "lid" | "par" | "seq"
-      |"flo" |"int" | "int32" | "int64" |"nativeint"
-      |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
-          let x = String.capitalize x in
+         |"flo" |"int" | "int32" | "int64" |"nativeint"
+         |"chr" |"str" as x),_,_) |
+         (("vrn" as x), ("exp" |"pat"),_) ->
+           let x = String.capitalize x in
            {:pat| $vrn:x ($(mloc _loc),$e) |}
       | _ -> super#pat e)
     | e -> super#pat e 
@@ -64,3 +65,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
     | e -> super#exp e
   end
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake _build/hot/ant.cmo --verbose" *)
+(* end: *)

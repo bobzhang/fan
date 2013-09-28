@@ -1,10 +1,11 @@
 
 
-OCAMLPPFLAGS = -pp $(COLD_PP)
-OCAMLDEPPPFLAGS = -pp $(COLD_PP) # only useful for ml file 
+OCAMLPPFLAGS = -pp $(PP_FAN)
+OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
-AdditionalDependency($(COLD_PP))
+
+AdditionalDependency($(PP_FAN))
 FILES[] =
     ant
     antN

@@ -8,7 +8,7 @@
 ## compile flags
 OCAMLFLAGS = 
 BYTE_ENABLED = true
-
+NATIVE_ENABLED = true
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o
 
 COMMON_INCLUDES[] =
@@ -26,11 +26,15 @@ SRC_INCLUDES[]=
 NATIVE_ENABLED = true
 FILES[] =
     # fan
-PROGRAM = fan
-HOT_PROGRAM = fan_hot
 
-COLD_PP = $(file $(PROGRAM))
-HOT_PP = $(file $(HOT_PROGRAM))
+
+COLD = fan
+
+# hot preprocessed by cold
+HOT_COLD = fan_hot_cold
+# hot preprocessed by hot
+HOT_HOT = fan_hot_hot
+
 
 
 
@@ -42,27 +46,28 @@ OCAML_LINK_FLAGS += -linkall
 
 
 .SUBDIRS: common treeparser
+
+    
 section
     .SUBDIRS: cold 
     OCAML_LIBS[] += cold/libcold
-    OCamlProgram ($(PROGRAM), $(FILES))
-# .DEFAULT: $(PROGRAM)
+    OCamlProgram ($(COLD), $(FILES))
 
 section
-    vmount(-l,hot,hot2)
-    COLD_PP = $(file $(PROGRAM))
-    .SUBDIRS: hot2
-    OCAML_LIBS[] += hot2/libhot
-    OCamlProgram($(HOT_PROGRAM), $(FILES))
-
-HOT2_PROGRAM=fan_hot2    
+    VMOUNTDIR = _build/hot # simulate ocamlbuild to interact well with annotation
+    vmount(-l,hot,$(VMOUNTDIR))
+    PP_FAN = $(file $(COLD))
+    .SUBDIRS: $(VMOUNTDIR)
+    OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+    OCamlProgram($(HOT_COLD), $(FILES))
 
 section
     vmount(-l,hot,hot3)
-    COLD_PP = $(file $(HOT_PROGRAM)) # use hot to preprocess hot
+    PP_FAN = $(file $(HOT_COLD)) # use hot to preprocess hot
     .SUBDIRS: hot3
     OCAML_LIBS[] += hot3/libhot
-    OCamlProgram($(HOT2_PROGRAM), $(FILES))
+    OCamlProgram($(HOT_HOT), $(FILES))
+    
 clean:
     rm -rf $(OCAMLBIN_EXT)
 
