@@ -67,5 +67,5 @@ let antiquot_expander ~parse_pat ~parse_exp = object
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake _build/hot/ant.cmo --verbose" *)
+(* compile-command: "cd .. && pmake hot_annot/ant.cmo --verbose" *)
 (* end: *)

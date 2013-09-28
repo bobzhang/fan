@@ -44,17 +44,15 @@ OCAML_LIBS[] =
     treeparser/libtreeparser
 OCAML_LINK_FLAGS += -linkall    
 
-
-.SUBDIRS: common treeparser
-
-    
 section
-    .SUBDIRS: cold 
+    OCAMLCFLAGS += -annot 
+    .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] += cold/libcold
     OCamlProgram ($(COLD), $(FILES))
 
 section
-    VMOUNTDIR = _build/hot # simulate ocamlbuild to interact well with annotation
+    OCAMLCFLAGS += -annot
+    VMOUNTDIR = hot_annot # simulate ocamlbuild to interact well with annotation
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file $(COLD))
     .SUBDIRS: $(VMOUNTDIR)
@@ -62,10 +60,11 @@ section
     OCamlProgram($(HOT_COLD), $(FILES))
 
 section
-    vmount(-l,hot,hot3)
+    VMOUNTDIR = hot3 
+    vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file $(HOT_COLD)) # use hot to preprocess hot
-    .SUBDIRS: hot3
-    OCAML_LIBS[] += hot3/libhot
+    .SUBDIRS: $(VMOUNTDIR)
+    OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     OCamlProgram($(HOT_HOT), $(FILES))
     
 clean:

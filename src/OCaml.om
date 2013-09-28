@@ -157,7 +157,7 @@ public.PREFIXED_OCAMLPACKS =\
 declare OCAMLDEPFLAGS
 public.OCAMLPPFLAGS  =
 public.OCAMLFLAGS    = 
-public.OCAMLCFLAGS   =  -annot -w +a-4-32-30 -short-paths
+public.OCAMLCFLAGS   =   -w +a-4-32-30 -short-paths
 public.OCAMLOPTFLAGS =
 public.OCAMLCPPFLAGS =
 public.OCAML_LINK_FLAGS = $`(if $(and $(USE_OCAMLFIND) $(gt $(length $(OCAMLPACKS)), 0)), -linkpkg, $(EMPTY))
