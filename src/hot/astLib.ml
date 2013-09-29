@@ -10,7 +10,7 @@
 
   
 open LibUtil
-open FLoc.Ops
+
 open FAst
 
 
@@ -23,9 +23,7 @@ open FAst
 {:ocaml|{:include|"../common/fAst.mli"|}|};;
 
 
-
-
-  
+let (<+>) = FLoc.Ops.((<+>))
 (**   connectives  *)
 
 let (<+>) a b = loc_of a <+> loc_of b
@@ -215,3 +213,7 @@ let meta_here _loc location  =
      ($`str:a, $`int:b, $`int:c, $`int:d,
       $`int:e, $`int:f, $`int:g,
       $(if h then {:exp'| true |} else {:exp'| false |} )) |}
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/astLib.cmo" *)
+(* end: *)

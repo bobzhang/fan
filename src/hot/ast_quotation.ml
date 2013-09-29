@@ -8,6 +8,10 @@ Format:
   ;
 |};;
 
+(** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
+  It's a parser wrapper, this function handles the error reporting for you. *)
+(* val parse_quotation_result: *)
+(*     (FLoc.t -> string -> 'a) -> FLoc.t -> Ftoken.quotation -> string -> string -> 'a *)
 
 (*********************************)
 (* name table                    *)        
@@ -262,3 +266,7 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
 (*   | QuotationError x -> Some (quotation_error_to_string x ) *)
 (*   | _ -> None);; *)
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/ast_quotation.cmo" *)
+(* end: *)

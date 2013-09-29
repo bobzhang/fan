@@ -1,5 +1,5 @@
 
-OCAMLFLAGS = -w a
+
 OCAMLINCLUDES += +compiler-libs
 LocalFiles=oconfig.ml
 $(LocalFiles): oconfig.mlp

@@ -7,7 +7,6 @@ type t = {
     mutable filter : Ftoken.filter;
   }
 
-(* val mk : is_kwd:(string -> bool) -> t *)
 
 val filter : t -> (Ftoken.t * FLoc.t) Fstream.t -> Ftoken.stream
 

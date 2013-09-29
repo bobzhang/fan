@@ -19,10 +19,6 @@ val current_loc_name : string option ref
 (** [add name exp] adds the quotation [name] associated with the  expander [exp]. *)
 val add : Ftoken.name -> 'a FDyn.tag  -> 'a expand_fun  -> unit
 
-
-(** [find name] returns the expander of the given quotation name. *)
-(* val find : string -> 'a FDyn.tag  -> 'a expand_fun  *)
-
     
 (** [default] holds the default quotation name. *)
 val default: Ftoken.name option ref
@@ -32,7 +28,7 @@ val set_default: Ftoken.name -> unit
 
 (** [default_tbl] mapping [position] to the default quotation name
     it has higher precedence over default  *)
-(* val default_tbl : (string, string)Hashtbl.t   *)
+
 val map: Ftoken.name LibUtil.SMap.t ref
 
     
@@ -43,16 +39,7 @@ val clear_map: unit -> unit
     
 val clear_default: unit -> unit
     
-(** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
-  It's a parser wrapper, this function handles the error reporting for you. *)
-(* val parse_quotation_result: *)
-(*     (FLoc.t -> string -> 'a) -> FLoc.t -> Ftoken.quotation -> string -> string -> 'a *)
-
-(** function translating quotation names; default = identity *)
-(* val translate : (string -> string) ref *)
-
-
-val expand : (* FLoc.t ->  *)Ftoken.quot -> 'a FDyn.tag -> 'a
+val expand : Ftoken.quot -> 'a FDyn.tag -> 'a
 
 
 
@@ -63,9 +50,14 @@ val expand : (* FLoc.t ->  *)Ftoken.quot -> 'a FDyn.tag -> 'a
 val dump_file : string option  ref
 
 
-    
+
+(** The raw quotation expander, register its type, laguage namespace and
+    an expansion function *)
+val add : Ftoken.domains * string -> 'a FDyn.tag -> 'a expand_fun -> unit    
 (** theoretically you can use [mexp] which lift it into any type you can
-   but we made a restriction here *)
+   but we made a restriction here.
+   [exp_filter] and [pat_filter] default to an id 
+*)
 val add_quotation:
     exp_filter:(ep -> exp) ->
       pat_filter:(ep -> pat) ->
@@ -75,50 +67,54 @@ val add_quotation:
 
 
 (* FIXME revised parser *cannot* parse name:string -> unit*)
-
+(*************************************************************)
+(* Registration: requies  optional lexer, domain name and    *)
+(*   parser entry                                            *)
+(*************************************************************)    
 val of_stru :
   ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:FAst.stru Gentry.t ->
     unit -> unit
+val of_pat :
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
+  name:Ftoken.domains * string -> entry:FAst.pat Gentry.t
+    -> unit -> unit
+val of_clfield :
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
+  name:Ftoken.domains * string -> entry:FAst.clfield Gentry.t
+    -> unit -> unit
+val of_case :
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
+  name:Ftoken.domains * string -> entry:FAst.case Gentry.t
+    -> unit -> unit 
+val of_exp :
+  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
+  name:Ftoken.domains * string -> entry:FAst.exp Gentry.t
+    -> unit -> unit 
+
+
+(*************************************************************)
+(* the same as above, allows a filter plugin though          *)    
+(*************************************************************)        
+val of_pat_with_filter :
+    ?lexer:(loc -> char Fstream.t -> Ftoken.stream) ->
+      name:Ftoken.domains * string -> entry:'a Gentry.t -> filter:('a -> pat)
+        -> unit -> unit 
 val of_stru_with_filter :
   ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.stru)
     -> unit -> unit
-val of_pat :
-  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
-  name:Ftoken.domains * string -> entry:FAst.pat Gentry.t
-    -> unit -> unit
-        
-val of_pat_with_filter :
-    ?lexer:(loc -> char Fstream.t -> Ftoken.stream) ->
-      name:Ftoken.domains * string -> entry:'a Gentry.t -> filter:('a -> pat)
-        -> unit -> unit 
-
-val of_clfield :
-  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
-  name:Ftoken.domains * string -> entry:FAst.clfield Gentry.t
-    -> unit -> unit
-        
 val of_clfield_with_filter :
   ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.clfield)
-    -> unit -> unit 
-val of_case :
-  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
-  name:Ftoken.domains * string -> entry:FAst.case Gentry.t
     -> unit -> unit 
 val of_case_with_filter :
   ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string ->
   entry:'a Gentry.t -> filter:('a -> FAst.case)
     -> unit -> unit
-        
-val of_exp :
-  ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream) ->
-  name:Ftoken.domains * string -> entry:FAst.exp Gentry.t
-    -> unit -> unit 
 val of_exp_with_filter :
   ?lexer:(loc -> char Fstream.t -> Ftoken.stream) ->
   name:Ftoken.domains * string -> entry:'a Gentry.t -> filter:('a -> exp)

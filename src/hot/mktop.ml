@@ -349,22 +349,7 @@ end
 ;;
 
 
-let normal_handler = function
-  | Out_of_memory ->  Some "Out of memory"
-  | Assert_failure ((file, line, char)) ->
-      Some (Format.sprintf "Assertion failed, file %S, line %d, char %d" file line
-              char)
-  | Match_failure ((file, line, char)) ->
-      Some (Format.sprintf "Pattern matching failed, file %S, line %d, char %d" file
-              line char)
-  | Failure str -> Some (Format.sprintf "Failure: %S" str)
-  | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
-  | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | Fstream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
-  | Fstream.Error str -> Some (Format.sprintf  "Fstream.Error %s" str)
-  | _ -> None;;
 
-let () = Printexc.register_printer normal_handler;;
 
 
 
@@ -389,18 +374,60 @@ let ()  =
 let a:
   [`Uid m ; ":"; L1 name {ns} ; ";" ->
     AstLib.sem_of_list (* add antiquotation automatically ?? *)
-      (List.map  (fun l -> {:stru| let $(l :> FAst.pat) = $uid:m.$l |} )
-      ns)
- ]
+      (List.map
+         (fun l -> {:stru| let $(l :> FAst.pat) = $uid:m.$l |} ) ns)]
 import:
   [ L1 a  {xs} -> AstLib.sem_of_list xs ]  
 let name :
   [`Lid x -> `Lid(_loc,x)]  |};;
+(**
+   improved
+   --- alias
+   --- nested modules
+   --- operators 
+*)
 
 (* such simple macro would be replaced by cmacros later *)
 
 let () =
   of_stru ~name:(d,"import") ~entry:import ();;
+
+(***********************************)
+(*   simple error qq               *)
+(***********************************)
+
+
+
+
+
+(*** poor man's here expansion available for expr and stru*)
+let () =
+  let f  = fun (loc:FLoc.t) _meta _content ->
+    let s = FLoc.to_string loc in
+    {:exp@loc|$str:s|} in
+  let f2 = fun (loc:FLoc.t) _meta _content ->
+    let s = FLoc.to_string loc in
+    {:stru@loc|$str:s|} in
+  begin 
+    Ast_quotation.add (d,"here") FDyn.exp_tag f;
+    Ast_quotation.add (d,"here") FDyn.stru_tag f2
+  end
+    
+let () =
+  Printexc.register_printer @@ function
+  | Out_of_memory ->  Some "Out of memory"
+  | Assert_failure ((file, line, char)) ->
+      Some (Format.sprintf "Assertion failed, file %S, line %d, char %d" file line
+              char)
+  | Match_failure ((file, line, char)) ->
+      Some (Format.sprintf "Pattern matching failed, file %S, line %d, char %d" file
+              line char)
+  | Failure str -> Some (Format.sprintf "Failure: %S" str)
+  | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
+  | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
+  | Fstream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
+  | Fstream.Error str -> Some (Format.sprintf  "Fstream.Error %s" str)
+  | _ -> None;;
 
 
     
