@@ -95,7 +95,16 @@ fixed: $(TARGET1) $(TARGET2)
     elseif
         println(bootstrapped failure)
 
-# snapshot:
+snapshot:fan_hot_cold
+    section
+        cd hot_annot
+        foreach(f => ..., $(FAN_FILES))
+            if($file-exists $f.ml)
+                ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml
+            if $(file-exists $f.mli)
+                cp $f.mli ../cold/$f.mli
+    # $(cd hot_annot, $(foreach f => ... $(shell ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml ) , $(FAN_FILES)))
+
     
 clean:
     rm -rf $(OCAMLBIN_EXT)
