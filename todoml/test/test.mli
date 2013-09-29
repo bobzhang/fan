@@ -1,1 +1,0 @@
-exception A of int

@@ -1,5 +1,0 @@
-#! /bin/sh 
-# -*- Mode:Shell-script -*-
-ocamlbuild test/PprintastDriver.d.byte && _build/test/PprintastDriver.d.byte test/$1.ml
-otags src/AstPrint.ml
-# echo -e '\n'

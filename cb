@@ -1,5 +1,0 @@
-snapshot
-echo "verifying it can be bootstrapped"
-
-ocamlbuild -quiet cold/Fan.byte # quiet
-reset_cold Fan.byte
