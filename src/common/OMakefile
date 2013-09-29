@@ -1,38 +1,14 @@
 
 OCAMLFLAGS = -w a
-
-
 OCAMLINCLUDES += +compiler-libs
-
 LocalFiles=oconfig.ml
 $(LocalFiles): oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" $< > $@
 
-
-FILES[] =
-    libUtil
-    ast2pt
-    oconfig
-    astPrint
-    ast_basic
-    dyn_array
-    fConfig
-    fLoc
-    fanTokenFilter
-    fanUtil
-    fan_warnings
-    fcset
-    fdir
-    foptions
-    fstream
-    ftoken
-    lex_util
-    lexgen
-    libUtil
-    location_util
-    parsetreeHelper
-    tokenEval
-    translate_lex
+FILES = libUtil ast2pt oconfig astPrint ast_basic dyn_array fConfig\
+    fLoc fanTokenFilter fanUtil fan_warnings fcset fdir foptions\
+    fstream ftoken lex_util lexgen libUtil\
+    location_util parsetreeHelper tokenEval translate_lex
 
 OCamlLibrary(libcommon, $(FILES))
 

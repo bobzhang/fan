@@ -26,68 +26,17 @@ SRC_INCLUDES[]=
 NATIVE_ENABLED = true
 
 ##
-FAN_FILES[]=
-    ant
-    antN
-    astInjection
-    astLib
-    astLibN
-    ast_filters
-    ast_macros
-    ast_parsers
-    ast_quotation
-    basicN
-    codeTemplate
-    commentFilter
-    compile_lex
-    compile_stream
-    ctypN
-    deriveN
-    dynLoader
-    epN
-    expN
-    fAstN
-    fControl
-    fDyn
-    fGramDef
-    fGramGen
-    fIncludeDir
-    fMeta
-    fQuotDir
-    fSigUtil
-    fState
-    fanAstN
-    fanOps
-    fan_lex
-    fgram
-    filters
-    flex_lib
-    freeVars
-    fsyntax
-    gentry
-    gfold
-    gramlib
-    idN
-    langFans
-    langInclude
-    langOcaml
-    langSave
-    lex_lex
-    lexing_util
-    mkFan
-    mktop
-    objs
-    objsN
-    parse_fan
-    parse_grammar
-    parse_lex
-    parse_lex2
-    parse_stream
-    pluginsN
-    preCast
-    stdFan
-    typehook
-    fan
+FAN_FILES = \
+    ant antN astInjection astLib astLibN ast_filters ast_macros\
+    ast_parsers ast_quotation \
+    basicN codeTemplate commentFilter compile_lex compile_stream ctypN \
+    deriveN dynLoader epN \
+    expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
+    fSigUtil fState fanAstN fanOps fan_lex fgram\
+    filters flex_lib freeVars fsyntax gentry gfold gramlib\
+    idN langFans langInclude langOcaml langSave lex_lex lexing_util\
+    mkFan mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
+    parse_stream pluginsN preCast stdFan typehook fan 
 
 FILES[] =
     # fan
@@ -99,8 +48,6 @@ COLD = fan
 HOT_COLD = fan_hot_cold
 # hot preprocessed by hot
 HOT_HOT = fan_hot_hot
-
-
 
 
 OCAML_OTHER_LIBS += dynlink
@@ -125,7 +72,7 @@ section
     OCamlProgram($(HOT_COLD), $(FILES))
 
 section
-    VMOUNTDIR = hot3 
+    VMOUNTDIR = hot_hot
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file $(HOT_COLD)) # use hot to preprocess hot
     .SUBDIRS: $(VMOUNTDIR)

@@ -11,7 +11,8 @@ AdditionalDependency($(PP_FAN))
 
 ## not as default, it depends on the preprocessor     
 # TARGETS = OCamlLibrary(libhot, $(FILES))
-.DEFAULT: $(OCamlLibrary libhot, $(FAN_FILES))
+# .DEFAULT: $(OCamlLibrary libhot, $(FAN_FILES))
 
+OCamlLibrary(libhot, $(FAN_FILES))
 clean:
     rm -rf $(OCAMLBIN_EXT)
