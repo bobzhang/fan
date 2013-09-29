@@ -1,4 +1,4 @@
-open Mktop
+
 let _ =
   begin
     Printexc.register_printer Mktop.normal_handler;

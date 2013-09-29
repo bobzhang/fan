@@ -191,24 +191,11 @@ end
 (****************************************)
 (* side effect                          *)
 (****************************************)
-open Filters
-open FControl
-open Parse_fan
-open Parse_grammar
-open Parse_stream;;
 
 (** for stream expression *)
 let () = of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp ();;
 
 
-open AstInjection
-
-
-open PluginsN (* link the module *)  
-
-open CodeTemplate
-open Parse_lex
-open Parse_lex2
 
 (*************************************************************************)
 (** begin quotation for FAst without locations *)

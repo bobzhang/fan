@@ -157,17 +157,7 @@ let _ =
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
   add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
-open Filters
-open FControl
-open Parse_fan
-open Parse_grammar
-open Parse_stream
 let () = of_exp ~name:(d, "stream") ~entry:Parse_stream.stream_exp ()
-open AstInjection
-open PluginsN
-open CodeTemplate
-open Parse_lex
-open Parse_lex2
 let m = FanAstN.m
 let efilter str e =
   let e = exp_filter_n e in
