@@ -1,6 +1,7 @@
 
 open OUnit
-
+let () =
+  Ast_parsers.use_parsers ["revise"; "stream"]
 let test_ident_location  _ =
   let open Fan in
   let result =
@@ -28,5 +29,5 @@ let suite =
   "Location_ident" >:::
   [ "test_ident_location" >:: test_ident_location ]
 (* local variables: *)
-(* compile-command: "cd .. && make test" *)
+(* compile-command: "cd .. && pmake unitest/test" *)
 (* end: *)

@@ -11,16 +11,22 @@ BYTE_ENABLED = true
 NATIVE_ENABLED = true
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o
 
+DIR_HOT_ANNOT  = $(dir hot_annot)
+DIR_HOT_HOT    = $(dir hot_hot)
+DIR_COMMON     = $(dir common)
+DIR_TREEPARSER = $(dir treeparser)
+DIR_COLD       = $(dir cold)  
+
 COMMON_INCLUDES[] =
-    $(dir common)
+    $(DIR_COMMON)
 TREEPARSER_INCLUDES[]=
-    $(dir treeparser)
+    $(DIR_TREEPARSER)
     $(COMMON_INCLUDES)
 COLD_INCLUDES[]=
-    $(dir cold)
+    $(DIR_COLD)
     $(TREEPARSER_INCLUDES)
 HOT_ANNOT_INCLUDES[]=
-    $(dir hot_annot)
+    $(DIR_HOT_ANNOT)
     $(TREEPARSER_INCLUDES)
 
 NATIVE_ENABLED = true
@@ -37,8 +43,10 @@ FAN_FILES = \
     filters flex_lib freeVars fsyntax gentry gfold gramlib\
     idN langFans langInclude langOcaml langSave lex_lex lexing_util\
     mkFan mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
-    parse_stream pluginsN preCast stdFan typehook fan 
-
+    parse_stream pluginsN preCast stdFan typehook
+##################################################################
+    
+# FAN_DRIVER= fan
 FILES[] =
     # fan
 
@@ -49,8 +57,6 @@ LIB_COMMON = $(file common/libcommon)
 LIB_PARSER_RT = $(file treeparser/libtreeparser)
 LIB_COLD = $(file cold/libcold)
 
-HOT_ANNOT = $(dir hot_annot)
-HOT_HOT   = $(dir hot_hot)
 
 
 OCAML_LIBS[] =
@@ -65,32 +71,39 @@ section
     OCAMLCFLAGS += -annot 
     .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
-    OCamlProgram (fan, $(FILES))
+    OCamlProgram (fan, $(DIR_COLD)/fan)
 #####################
 # hot preprocessed by cold fan
 section
     OCAMLCFLAGS += -annot
-    VMOUNTDIR = $(HOT_ANNOT) # simulate ocamlbuild to interact well with annotation
+    VMOUNTDIR = $(DIR_HOT_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file fan)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
-    OCamlProgram(fan_hot_cold, $(FILES))
+    OCamlProgram(fan_hot_cold, $(VMOUNTDIR)/fan)
 
 #######################
 # hot preprocessed by hot fan
 section
-    VMOUNTDIR = $(HOT_HOT)
+    VMOUNTDIR = $(DIR_HOT_HOT)
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
-    OCamlProgram(fan_hot_hot, $(FILES))
+    OCamlProgram(fan_hot_hot, $(VMOUNTDIR)/fan)
 
 ########################
-section
-    PP_FAN = $(file fan)
-    .SUBDIRS: unitest
+# test
+.PHONY: test 
+test:$(DIR_HOT_ANNOT)/libhot.cma $(file fan)
+    section
+        NATIVE_ENABLED = false
+        BYTE_ENABLED = true
+        PP_FAN = $(file fan)
+        OCAML_LIBS[]+= $(DIR_HOT_ANNOT)/libhot
+        .SUBDIRS: unitest
+        unitest/test -verbose    
 
 # unitest
 # section
