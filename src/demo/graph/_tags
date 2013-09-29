@@ -1,0 +1,3 @@
+true: pkg_ocamlgraph, pkg_compiler-libs.common
+<**/*.{ml,mlx}>: use_fan
+<*_ppo.ml>: -use_fan

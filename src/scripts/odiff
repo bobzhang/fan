@@ -1,0 +1,8 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
+set -e
+file=${1}
+
+rm -rf _build/tmp/$file
+ocamlbuild -I src tmp/$file
+cp -rf _build/tmp/$file cold/

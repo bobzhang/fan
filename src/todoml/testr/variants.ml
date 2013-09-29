@@ -1,0 +1,22 @@
+
+
+type u = [ `a of int | `b of bool > `a ]  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

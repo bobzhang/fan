@@ -2,5 +2,9 @@
 
 
 USE_OCAMLFIND = true
-OCAMLPACKS = oUnit
-# FILES
+OCAMLPACKS =
+
+FILES[] =
+    lexing_test
+    location_ident
+    main
