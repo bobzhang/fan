@@ -56,12 +56,16 @@ OCAML_LIBS[] =
     treeparser/libtreeparser
 OCAML_LINK_FLAGS += -linkall    
 
+
+#####################
+# cold binary
 section
     OCAMLCFLAGS += -annot 
     .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] += cold/libcold
     OCamlProgram ($(COLD), $(FILES))
-
+#####################
+# hot preprocessed by cold fan
 section
     OCAMLCFLAGS += -annot
     VMOUNTDIR = hot_annot # simulate ocamlbuild to interact well with annotation
@@ -71,6 +75,8 @@ section
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     OCamlProgram($(HOT_COLD), $(FILES))
 
+#####################
+# hot preprocessed by hot fan
 section
     VMOUNTDIR = hot_hot
     vmount(-l,hot,$(VMOUNTDIR))
@@ -78,6 +84,18 @@ section
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     OCamlProgram($(HOT_HOT), $(FILES))
+
+.PHONY: fixed snapshot
+TARGET1 = hot_annot/libhot.cma
+TARGET2 =  hot_hot/libhot.cma
+
+fixed: $(TARGET1) $(TARGET2) 
+    if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
+        println(bootstrapped success)
+    elseif
+        println(bootstrapped failure)
+
+# snapshot:
     
 clean:
     rm -rf $(OCAMLBIN_EXT)

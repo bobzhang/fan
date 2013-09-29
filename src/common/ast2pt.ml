@@ -1373,9 +1373,6 @@ let print_pat f e =
 let print_stru f e =
   pp f "@[%a@]@." AstPrint.structure (stru e)
 
-(* FIXME allow more interfaces later *)  
-(* let p_ident f e = *)
-(*   eprintf "@[%a@]@." Pprintast.fmt_longident (ident e) ;     *)
 let print_ctyp f e =
   pp f "@[%a@]@." AstPrint.core_type (ctyp e)
 

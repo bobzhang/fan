@@ -93,3 +93,4 @@ src/fan_hot2
 src/fan_hot_cold
 src/hot_annot
 src/common/oconfig.ml
+src/hot_hot
