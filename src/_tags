@@ -1,9 +1,0 @@
-
-
-<**/*.{ml,mlx}>: use_fan
-
-<{xStream,astPrint,oAstPrint}.ml>:-use_fan
-<{**/*_ppo}.ml>: -use_fan
-
-
-
