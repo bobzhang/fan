@@ -2,12 +2,11 @@
 
 OCAMLPPFLAGS = -pp $(PP_FAN)
 OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
-OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
-
 # requires a preprocessor first 
 AdditionalDependency($(PP_FAN))
 
+OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCamlLibrary(libhot, $(FAN_FILES))
 clean:
     rm -rf $(OCAMLBIN_EXT)

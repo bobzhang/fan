@@ -30,7 +30,8 @@ let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
     {:exp|($e : FAst.$lid:str)|} (* BOOTSTRAPPING *)
 let pfilter str e =
-  let p = pat_filter e in let _loc = loc_of p in {:pat|($p : FAst.$lid:str)|} (* BOOTSTRAPPING *);;
+  let p = pat_filter e in let _loc = loc_of p in
+  {:pat|($p : FAst.$lid:str)|} (* BOOTSTRAPPING *);;
 
 
 let d = `Absolute ["Fan"; "Lang"]
@@ -363,6 +364,7 @@ let normal_handler = function
   | Fstream.Error str -> Some (Format.sprintf  "Fstream.Error %s" str)
   | _ -> None;;
 
+let () = Printexc.register_printer normal_handler;;
 
 
 
@@ -402,3 +404,7 @@ let () =
 
 
     
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/mktop.cmo" *)
+(* end: *)

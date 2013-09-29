@@ -19,13 +19,14 @@ TREEPARSER_INCLUDES[]=
 COLD_INCLUDES[]=
     $(dir cold)
     $(TREEPARSER_INCLUDES)
-SRC_INCLUDES[]=
-    $(dir src)
+HOT_ANNOT_INCLUDES[]=
+    $(dir hot_annot)
     $(TREEPARSER_INCLUDES)
 
 NATIVE_ENABLED = true
 
-##
+##############
+# files shared between cold and hot directory
 FAN_FILES = \
     ant antN astInjection astLib astLibN ast_filters ast_macros\
     ast_parsers ast_quotation \
@@ -42,18 +43,19 @@ FILES[] =
     # fan
 
 
-COLD = fan
-
-# hot preprocessed by cold
-HOT_COLD = fan_hot_cold
-# hot preprocessed by hot
-HOT_HOT = fan_hot_hot
-
-
 OCAML_OTHER_LIBS += dynlink
+
+LIB_COMMON = $(file common/libcommon)
+LIB_PARSER_RT = $(file treeparser/libtreeparser)
+LIB_COLD = $(file cold/libcold)
+
+HOT_ANNOT = $(dir hot_annot)
+HOT_HOT   = $(dir hot_hot)
+
+
 OCAML_LIBS[] =
-    common/libcommon
-    treeparser/libtreeparser
+    $(LIB_COMMON)
+    $(LIB_PARSER_RT)
 OCAML_LINK_FLAGS += -linkall    
 
 
@@ -62,29 +64,40 @@ OCAML_LINK_FLAGS += -linkall
 section
     OCAMLCFLAGS += -annot 
     .SUBDIRS: common treeparser cold 
-    OCAML_LIBS[] += cold/libcold
-    OCamlProgram ($(COLD), $(FILES))
+    OCAML_LIBS[] += $(LIB_COLD)
+    OCamlProgram (fan, $(FILES))
 #####################
 # hot preprocessed by cold fan
 section
     OCAMLCFLAGS += -annot
-    VMOUNTDIR = hot_annot # simulate ocamlbuild to interact well with annotation
+    VMOUNTDIR = $(HOT_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,hot,$(VMOUNTDIR))
-    PP_FAN = $(file $(COLD))
+    PP_FAN = $(file fan)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
-    OCamlProgram($(HOT_COLD), $(FILES))
+    OCamlProgram(fan_hot_cold, $(FILES))
 
-#####################
+#######################
 # hot preprocessed by hot fan
 section
-    VMOUNTDIR = hot_hot
+    VMOUNTDIR = $(HOT_HOT)
     vmount(-l,hot,$(VMOUNTDIR))
-    PP_FAN = $(file $(HOT_COLD)) # use hot to preprocess hot
+    PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
-    OCamlProgram($(HOT_HOT), $(FILES))
+    OCamlProgram(fan_hot_hot, $(FILES))
 
+########################
+section
+    PP_FAN = $(file fan)
+    .SUBDIRS: unitest
+
+# unitest
+# section
+#     OCamlProgram(test, $(FILES))
+#     .SUBDIRS: unitest
+#########################
+# fix point and snapshot 
 .PHONY: fixed snapshot
 TARGET1 = hot_annot/libhot.cma
 TARGET2 =  hot_hot/libhot.cma
@@ -103,9 +116,7 @@ snapshot:fan_hot_cold
                 ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
-    # $(cd hot_annot, $(foreach f => ... $(shell ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml ) , $(FAN_FILES)))
-
-    
+        
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

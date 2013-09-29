@@ -21,12 +21,12 @@ let fan ()  = begin
 end;;
 
 begin
-  Printexc.register_printer Mktop.normal_handler;
   Hashtbl.replace Toploop.directive_table "fan"
     (Toploop.Directive_none (fun () -> fan ()));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun () -> normal ()));
-
+  Hashtbl.replace Toploop.directive_table "pwd"
+    (Toploop.Directive_none (fun () -> Sys.command "pwd"));
   Fsyntax.current_warning :=
     (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
@@ -46,3 +46,7 @@ end;;
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/fanTop.cmo" *)
+(* end: *)

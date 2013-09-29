@@ -65,7 +65,9 @@ let dump_pt magic fname pt oc =
     output_string oc magic;
     output_value oc (if fname = "-" then "" else fname);
     output_value oc pt
-  end    
+  end
+
+(** used by flag -printer p *)    
 let register_bin_printer () =
   let print_interf ?(input_file = "-") ?output_file ast =
       let pt =

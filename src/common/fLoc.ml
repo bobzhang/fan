@@ -349,4 +349,14 @@ module Ops = struct
   let (<+>) = merge
 end
 
-    
+let () =     
+  Printexc.register_printer @@
+    function
+      | Exc_located (loc, exn) ->
+          Some (Format.sprintf "%s:@\n%s" (to_string loc) (Printexc.to_string exn))
+      | _ -> None 
+
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/fLoc.cmo" *)
+(* end: *)

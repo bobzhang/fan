@@ -1,10 +1,21 @@
 
 
+OCAMLPPFLAGS = -pp $(PP_FAN)
+OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
 
+OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
+# requires a preprocessor first 
+AdditionalDependency($(PP_FAN))
+
+
+OCAMLINCLUDES += $(HOT_ANNOT_INCLUDES)
 USE_OCAMLFIND = true
-OCAMLPACKS =
+OCAMLPACKS[] =
+    oUnit
 
 FILES[] =
     lexing_test
     location_ident
     main
+
+OCamlProgram(test, $(FILES))    
