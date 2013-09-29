@@ -71,8 +71,8 @@ section
     VMOUNTDIR = hot_annot # simulate ocamlbuild to interact well with annotation
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file $(COLD))
-    .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+    .SUBDIRS: $(VMOUNTDIR)
     OCamlProgram($(HOT_COLD), $(FILES))
 
 #####################

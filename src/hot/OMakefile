@@ -6,12 +6,7 @@ OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
 
 # requires a preprocessor first 
-AdditionalDependency($(PP_FAN))
-
-
-## not as default, it depends on the preprocessor     
-# TARGETS = OCamlLibrary(libhot, $(FILES))
-# .DEFAULT: $(OCamlLibrary libhot, $(FAN_FILES))
+# AdditionalDependency($(PP_FAN))
 
 OCamlLibrary(libhot, $(FAN_FILES))
 clean:
