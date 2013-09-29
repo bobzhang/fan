@@ -1,8 +1,0 @@
-
-
-
-1. indentation is  a mess :-(
-
-2. location for each token --(todo next )
-
-3. keywords table .... all unsafe_extend????   
