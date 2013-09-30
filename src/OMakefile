@@ -81,6 +81,7 @@ section
     VMOUNTDIR = $(DIR_HOT_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file fan)
+    OCamlAdditionalExistDependency($(PP_FAN))
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
     OCamlProgram(fan_hot_cold, $(VMOUNTDIR)/fan)
@@ -91,6 +92,7 @@ section
     VMOUNTDIR = $(DIR_HOT_HOT)
     vmount(-l,hot,$(VMOUNTDIR))
     PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
+    AdditionalDependency($(PP_FAN))
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     OCamlProgram(fan_hot_hot, $(VMOUNTDIR)/fan)
@@ -124,6 +126,7 @@ fixed: $(TARGET1) $(TARGET2)
     elseif
         println(bootstrapped failure)
 
+PMAKE = $(file pmake)
         
 snapshot:fan_hot_cold
     section
@@ -133,7 +136,7 @@ snapshot:fan_hot_cold
                 ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
-        
+        # $(PMAKE) fan -- cause a project lock
 clean:
     rm -rf $(OCAMLBIN_EXT)
 
