@@ -98,7 +98,6 @@ Lexing_util:
   opt_char_len
   update_loc
   default_cxt
-  with_curr_loc
   lex_string
   lex_comment
   lex_quotation

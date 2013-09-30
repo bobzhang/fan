@@ -6,7 +6,8 @@ let mk_quotation = Lexing_util.mk_quotation
 let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let default_cxt = Lexing_util.default_cxt
-let with_curr_loc = Lexing_util.with_curr_loc
+let push_loc_cont = Lexing_util.push_loc_cont
+let pop_loc = Lexing_util.pop_loc
 let lex_string = Lexing_util.lex_string
 let lex_comment = Lexing_util.lex_comment
 let lex_quotation = Lexing_util.lex_quotation
@@ -455,7 +456,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 2 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
-          (with_curr_loc c lexbuf lex_string;
+          (push_loc_cont c lexbuf lex_string;
            ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 3 ->
           let x =
@@ -479,14 +480,14 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 7 -> token lexbuf
       | 8 ->
           let c = default_cxt lexbuf in
-          (store c lexbuf; with_curr_loc c lexbuf lex_comment; token lexbuf)
+          (store c lexbuf; push_loc_cont c lexbuf lex_comment; token lexbuf)
       | 9 ->
           let c = default_cxt lexbuf in
           (warn Comment_start (!! lexbuf); lex_comment c lexbuf; token lexbuf)
       | 10 ->
           let old = lexbuf.lex_start_p in
           let c = default_cxt lexbuf in
-          (lex_simple_quotation 0 c lexbuf;
+          (lex_simple_quotation c lexbuf;
            (let loc = old -- lexbuf.lex_curr_p in
             ((`Quot
                 {

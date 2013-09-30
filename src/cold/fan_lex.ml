@@ -6,7 +6,8 @@ let mk_quotation = Lexing_util.mk_quotation
 let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let default_cxt = Lexing_util.default_cxt
-let with_curr_loc = Lexing_util.with_curr_loc
+let push_loc_cont = Lexing_util.push_loc_cont
+let pop_loc = Lexing_util.pop_loc
 let lex_string = Lexing_util.lex_string
 let lex_comment = Lexing_util.lex_comment
 let lex_quotation = Lexing_util.lex_quotation
@@ -4957,7 +4958,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 7 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
-          (with_curr_loc c lexbuf lex_string;
+          (push_loc_cont c lexbuf lex_string;
            ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 8 ->
           let x =
@@ -5006,7 +5007,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (store c lexbuf;
-           with_curr_loc c lexbuf lex_comment;
+           push_loc_cont c lexbuf lex_comment;
            ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 18 ->
           let c = default_cxt lexbuf in
@@ -5064,7 +5065,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let () = Stack.push p opt_char in
           let retract = (opt_char_len p) + 2 in
           let old = lexbuf.lex_start_p in
-          let s = with_curr_loc c lexbuf lex_quotation; buff_contents c in
+          let s = push_loc_cont c lexbuf lex_quotation; buff_contents c in
           let contents = String.sub s 0 ((String.length s) - retract) in
           ((`DirQuotation
               ((((3 + 1) + len) + (opt_char_len p)), name, contents)),
@@ -7417,7 +7418,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
               | _ -> failwith "lexing: empty token")) in
           let c = default_cxt lexbuf in
           if FConfig.antiquotations.contents
-          then with_curr_loc c lexbuf dollar
+          then push_loc_cont c lexbuf dollar
           else err Illegal_antiquote (!! lexbuf)
       | 25 ->
           let pos = lexbuf.lex_curr_p in

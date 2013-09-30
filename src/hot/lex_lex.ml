@@ -96,7 +96,8 @@ Lexing_util:
   opt_char_len
   update_loc
   default_cxt
-  with_curr_loc
+  push_loc_cont
+  pop_loc
   lex_string
   lex_comment
   lex_quotation
@@ -128,7 +129,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let c = default_cxt lexbuf in
     let old = lexbuf.lex_start_p in
     begin
-      with_curr_loc c  lexbuf lex_string;
+      push_loc_cont c lexbuf lex_string;
       (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
     end
 | "'" (newline as x) "'" ->
@@ -148,7 +149,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let c = default_cxt lexbuf in
     begin
       store c lexbuf;
-      with_curr_loc c lexbuf lex_comment;
+      push_loc_cont c lexbuf lex_comment;
       token lexbuf 
     end
 | "(*)" ->

@@ -217,8 +217,6 @@ let move_curr_p shift  (lexbuf:Lexing.lexbuf)  =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 
       
-let with_curr_loc c lexbuf lexer  =
-  lexer {c with loc = [Lexing.lexeme_start_p lexbuf] } lexbuf
 
 let push_loc_cont c lexbuf lexer =
   begin
@@ -237,7 +235,7 @@ let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~meta ~shift ~retract 
   let old = lexbuf.lex_start_p in
   let s =
     begin
-      with_curr_loc c lexbuf quotation;
+      push_loc_cont c lexbuf quotation;
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
@@ -286,8 +284,6 @@ let rec lex_comment c = {:lexer|
     begin
       store c lexbuf ;
       push_loc_cont c lexbuf lex_comment;
-      (* with_curr_loc c lexbuf lex_comment ; *)
-      (* to give better error message, put the current location here *)
       lex_comment c lexbuf
     end
 | "*)"  ->
@@ -295,11 +291,6 @@ let rec lex_comment c = {:lexer|
       store c lexbuf;
       pop_loc c ;
     end
-    (*   if not null_loc c then *)
-    (*     lex_comment c lexbuf *)
-    (* end *)
-    (* store c lexbuf(\* finished *\) *)
-
 | newline ->
     begin
       update_loc  lexbuf ;
@@ -318,7 +309,7 @@ let rec lex_comment c = {:lexer|
     c.buffer keeps the lexed result
  *)    
 let rec lex_string c = {:lexer|
-| '"' ->  () 
+| '"' ->  pop_loc c
 | '\\' newline ([' ' '\t'] * as space) ->
     (* Follow the ocaml convention, these characters does not take positions *)
     begin
@@ -344,20 +335,24 @@ let rec lex_string c = {:lexer|
 
 
 
-
+(** Then prefix is something like "$(" *)
 let rec  lex_antiquot c  = {:lexer|
-| ')' -> store c lexbuf
+| ')' ->
+    begin
+      pop_loc c;
+      store c lexbuf
+    end
 | '(' ->
     begin 
       store c lexbuf;
-      with_curr_loc c lexbuf lex_antiquot ;
+      push_loc_cont c lexbuf lex_antiquot;
       lex_antiquot c  lexbuf;
     end
 | quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
     begin 
       Stack.push p opt_char ;
       store c lexbuf;
-      with_curr_loc c lexbuf lex_quotation;
+      push_loc_cont c lexbuf lex_quotation;
       lex_antiquot c lexbuf
     end
 | newline   ->
@@ -368,7 +363,7 @@ let rec  lex_antiquot c  = {:lexer|
 | "\"" -> (* $(")")*)
     begin
       store c lexbuf;
-      with_curr_loc  c lexbuf lex_string;
+      push_loc_cont c lexbuf lex_string;
       c.buffer +> '"';
       lex_antiquot  c lexbuf
     end
@@ -385,7 +380,7 @@ and lex_quotation c = {:lexer|
     begin
       store c lexbuf ;
       Stack.push p opt_char; (* take care the order matters*)
-      with_curr_loc c lexbuf lex_quotation;
+      push_loc_cont c lexbuf lex_quotation;
       lex_quotation c lexbuf
     end
 | (extra_quot as p)? "|}" ->
@@ -407,7 +402,7 @@ and lex_quotation c = {:lexer|
 | "\"" -> (* treat string specially, like {| "{|"|} should be accepted *)
     begin
       store c lexbuf;
-      with_curr_loc c lexbuf lex_string;
+      push_loc_cont c lexbuf lex_string;
       Buffer.add_char c.buffer '"';
       lex_quotation c lexbuf
     end
@@ -448,6 +443,7 @@ let rec lex_simple_quotation c =   {:lexer|
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
+      pop_loc c;
       Buffer.add_char c.buffer '"';
       lex_simple_quotation  c lexbuf
     end
