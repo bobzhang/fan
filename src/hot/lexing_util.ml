@@ -219,8 +219,18 @@ let move_curr_p shift  (lexbuf:Lexing.lexbuf)  =
       
 let with_curr_loc c lexbuf lexer  =
   lexer {c with loc = [Lexing.lexeme_start_p lexbuf] } lexbuf
-    
 
+let push_loc_cont c lexbuf lexer =
+  begin
+    c.loc <- Lexing.lexeme_start_p lexbuf :: c.loc;
+    lexer c lexbuf
+  end
+(** unsafe, [@raise Failure] *)
+let pop_loc c =
+    c.loc <- List.tl c.loc
+let null_loc c =
+  c.loc = []
+    
 (** when you return a token make sure the token's location is correct
  *)
 let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~meta ~shift ~retract =
@@ -271,11 +281,20 @@ let rec lex_comment c = {:lexer|
 |"(*"  ->
     begin
       store c lexbuf ;
-      with_curr_loc c lexbuf lex_comment ;
+      push_loc_cont c lexbuf lex_comment;
+      (* with_curr_loc c lexbuf lex_comment ; *)
       (* to give better error message, put the current location here *)
       lex_comment c lexbuf
     end
-| "*)"  ->  store c lexbuf(* finished *)
+| "*)"  ->
+    begin
+      store c lexbuf;
+      pop_loc c ;
+    end
+    (*   if not null_loc c then *)
+    (*     lex_comment c lexbuf *)
+    (* end *)
+    (* store c lexbuf(\* finished *\) *)
 
 | newline ->
     begin
@@ -401,19 +420,27 @@ and lex_quotation c = {:lexer|
 
 let rec lex_simple_quotation depth c =   {:lexer|
 | "}" ->
-    if depth > 0 then
-      with_store c lexbuf @@ lex_simple_quotation (depth - 1)
-    else ()
+    begin 
+      pop_loc c ;
+      if not @@ null_loc c then
+        with_store c lexbuf @@ lex_simple_quotation (depth - 1)
+    end
+    (* if depth > 0 then *)
+    (*   with_store c lexbuf @@ lex_simple_quotation (depth - 1) *)
+    (* else () *)
 | "{" ->
     begin
       store c lexbuf;
-      with_curr_loc c lexbuf @@ lex_simple_quotation  (depth+1) ;
+      push_loc_cont c lexbuf @@ lex_simple_quotation  (depth+1) ;
+      (* with_curr_loc c lexbuf @@ lex_simple_quotation  (depth+1) ; *)
     end
 | "(*" ->
     begin
-      with_store  {c with loc = [lexbuf.lex_start_p]} lexbuf lex_comment;
-      (* more precise error message, FIXME other places *)
+      push_loc_cont c lexbuf lex_comment;
       lex_simple_quotation depth c lexbuf
+      (* with_store  {c with loc = [lexbuf.lex_start_p]} lexbuf lex_comment; *)
+      (* more precise error message, FIXME other places *)
+      (* lex_simple_quotation depth c lexbuf *)
     end
 | newline ->
     begin
@@ -423,7 +450,8 @@ let rec lex_simple_quotation depth c =   {:lexer|
 | "\"" ->
     begin
       store c lexbuf;
-      with_curr_loc c lexbuf lex_string;
+      push_loc_cont c lexbuf lex_string;
+      (* with_curr_loc c lexbuf lex_string; *)
       Buffer.add_char c.buffer '"';
       lex_simple_quotation depth c lexbuf
     end

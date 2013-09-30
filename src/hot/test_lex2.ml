@@ -308,5 +308,5 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
 
 
 (* local variables: *)
-(* compile-command: "fan -printer o test_lex2.ml" *)
+(* compile-command: "fan_hot_cold -printer o test_lex2.ml" *)
 (* end: *)

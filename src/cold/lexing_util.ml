@@ -78,6 +78,10 @@ let move_curr_p shift (lexbuf : Lexing.lexbuf) =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 let with_curr_loc c lexbuf lexer =
   lexer { c with loc = [Lexing.lexeme_start_p lexbuf] } lexbuf
+let push_loc_cont c lexbuf lexer =
+  c.loc <- (Lexing.lexeme_start_p lexbuf) :: (c.loc); lexer c lexbuf
+let pop_loc c = c.loc <- List.tl c.loc
+let null_loc c = c.loc = []
 let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~meta  ~shift 
   ~retract  =
   let old = lexbuf.lex_start_p in
@@ -167,9 +171,9 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
    (match __ocaml_lex_result with
     | 0 ->
         (store c lexbuf;
-         with_curr_loc c lexbuf lex_comment;
+         push_loc_cont c lexbuf lex_comment;
          lex_comment c lexbuf)
-    | 1 -> store c lexbuf
+    | 1 -> (store c lexbuf; pop_loc c)
     | 2 -> (update_loc lexbuf; with_store c lexbuf lex_comment)
     | 3 ->
         (err Unterminated_comment) @@
@@ -2737,21 +2741,21 @@ let rec lex_simple_quotation depth c (lexbuf : Lexing.lexbuf) =
      };
    (match __ocaml_lex_result with
     | 0 ->
-        if depth > 0
-        then (with_store c lexbuf) @@ (lex_simple_quotation (depth - 1))
-        else ()
+        (pop_loc c;
+         if not @@ (null_loc c)
+         then (with_store c lexbuf) @@ (lex_simple_quotation (depth - 1)))
     | 1 ->
         (store c lexbuf;
-         (with_curr_loc c lexbuf) @@ (lex_simple_quotation (depth + 1)))
+         (push_loc_cont c lexbuf) @@ (lex_simple_quotation (depth + 1)))
     | 2 ->
-        (with_store { c with loc = [lexbuf.lex_start_p] } lexbuf lex_comment;
+        (push_loc_cont c lexbuf lex_comment;
          lex_simple_quotation depth c lexbuf)
     | 3 ->
         (update_loc lexbuf;
          (with_store c lexbuf) @@ (lex_simple_quotation depth))
     | 4 ->
         (store c lexbuf;
-         with_curr_loc c lexbuf lex_string;
+         push_loc_cont c lexbuf lex_string;
          Buffer.add_char c.buffer '"';
          lex_simple_quotation depth c lexbuf)
     | 5 ->
