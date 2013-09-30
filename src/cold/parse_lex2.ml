@@ -60,22 +60,19 @@ let _ =
           `Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("let loc = Location_util.join (FLoc.move `start x.shift x.loc) in\nlet e =\n  try Fgram.parse_string ~loc Fsyntax.exp x.content\n  with | e -> (Format.eprintf \"%s\" x.content; raise e) in\n(r, e)\n",
+           ("let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  (r : 'regexp)  (_loc : FLoc.t)
                     ->
                    match __fan_1 with
                    | `Quot x ->
-                       (let loc =
-                          Location_util.join (FLoc.move `start x.shift x.loc) in
-                        let e =
-                          try Fgram.parse_string ~loc Fsyntax.exp x.content
-                          with
-                          | e -> (Format.eprintf "%s" x.content; raise e) in
-                        (r, e) : 'case )
+                       (let expander loc _ s =
+                          Fgram.parse_string ~loc Fsyntax.exp s in
+                        let e = Ftoken.quot_expand expander x in (r, e) : 
+                       'case )
                    | _ ->
                        failwith
-                         "let loc = Location_util.join (FLoc.move `start x.shift x.loc) in\nlet e =\n  try Fgram.parse_string ~loc Fsyntax.exp x.content\n  with | e -> (Format.eprintf \"%s\" x.content; raise e) in\n(r, e)\n"))))]));
+                         "let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n"))))]));
   Fgram.extend_single (declare_regexp : 'declare_regexp Fgram.t )
     (None,
       (None, None,

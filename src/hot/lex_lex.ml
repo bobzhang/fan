@@ -163,6 +163,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let old = lexbuf.lex_start_p in
     let c  = default_cxt lexbuf in
     begin
+      store c lexbuf;
       lex_simple_quotation   c lexbuf;
       let loc=old--lexbuf.lex_curr_p in
       (`Quot {Ftoken.name=Ftoken.empty_name;

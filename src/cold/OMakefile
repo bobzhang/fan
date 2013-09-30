@@ -3,7 +3,8 @@
 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
-OCamlLibrary(libcold, $(FAN_FILES))
 
+OCamlLibrary(libcold, $(FAN_FILES))
+OCamlLibrary(libcold_top, $(FAN_FILES) fanTop)
 clean:
     rm -rf $(OCAMLBIN_EXT)

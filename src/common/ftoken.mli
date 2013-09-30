@@ -22,7 +22,14 @@ type quot = {
     retract : int
     (* the letter to be retracted *)
   }
-type quotation = [ `Quot of quot ]      
+
+(** extract the quot information for expanding
+    mainly remove the border
+ *)      
+val quot_expand : (FLoc.t -> string option -> string -> 'a) -> quot -> 'a
+    
+type quotation = [ `Quot of quot ]
+      
 
 (** (name,contents) *)
 type dir_quotation = [`DirQuotation of (int * string * string) ] 

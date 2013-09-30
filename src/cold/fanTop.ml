@@ -10,11 +10,12 @@ let fan () =
   Toploop.parse_use_file :=
     (Mktop.wrap Mktop.use_file ~print_location:Toploop.print_location)
 let _ =
-  Printexc.register_printer Mktop.normal_handler;
   Hashtbl.replace Toploop.directive_table "fan"
     (Toploop.Directive_none (fun ()  -> fan ()));
   Hashtbl.replace Toploop.directive_table "normal"
     (Toploop.Directive_none (fun ()  -> normal ()));
+  Hashtbl.replace Toploop.directive_table "pwd"
+    (Toploop.Directive_none (fun ()  -> ignore @@ (Sys.command "pwd")));
   Fsyntax.current_warning :=
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));

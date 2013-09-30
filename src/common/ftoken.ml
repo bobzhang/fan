@@ -33,7 +33,12 @@ type quot = {
     retract:int; 
   }
 
-      
+let quot_expand expander (x:quot) =
+  let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
+  let content =
+    String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
+  expander loc x.meta content
+
 type quotation = [ `Quot of quot ] 
 
 (* FIXME *)      
@@ -183,3 +188,7 @@ let name_of_string s : name =
       | x::xs -> (`Sub (List.rev xs),x )
       | _ -> assert false)
   | _ -> (`Sub [],s)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/ftoken.cmo" *)
+(* end: *)

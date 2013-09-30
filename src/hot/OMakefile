@@ -7,5 +7,7 @@ OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with topleve
 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCamlLibrary(libhot, $(FAN_FILES))
+OCamlLibrary(libhot_top, $(FAN_FILES) fanTop)
+
 clean:
     rm -rf $(OCAMLBIN_EXT)

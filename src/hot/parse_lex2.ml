@@ -29,23 +29,16 @@ let g =
    since we do unsafe_extend on top of Fgram...
  *)
 
-{:extend|(g:Fgram.t) 
+{:extend|(g:Fgram.t)  (* FIXME location wrong *)
     lex:
     [  "|" ; L0 case SEP "|" {l} ->
-      Compile_lex.output_entry @@
-        Lexgen.make_single_dfa {shortest=false;clauses=l}
+      Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}
     | "<";L0 case SEP "|" {l} ->
-        Compile_lex.output_entry @@ 
-        Lexgen.make_single_dfa {shortest=true;clauses=l}]
+        Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}]
   let case:
     [ regexp{r};  `Quot x  ->
-      (* The loc maybe imprecise, FIXME *)
-      let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
-      let e =
-         try Fgram.parse_string ~loc Fsyntax.exp x.content
-         with e -> (Format.eprintf "%s" x.content; raise e)
-      in
-      (r,e)]  
+      let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+      let e = Ftoken.quot_expand expander x in (r,e)]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} ->
     if Hashtbl.mem named_regexps x then begin 
@@ -123,3 +116,7 @@ let () =
       ~entry:declare_regexp ();  
   end;;
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/parse_lex2.cmo" *)
+(* end: *)

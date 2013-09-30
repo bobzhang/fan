@@ -90,7 +90,7 @@ let (+>) = Buffer.add_char
 (** get the location of current the lexeme *)
 let (!!)  = Location_util.from_lexbuf ;;
 
-(* let opt_char_len = Lexing_util;; *)
+
 {:import|
 Lexing_util:
   opt_char

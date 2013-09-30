@@ -45,7 +45,10 @@ FAN_FILES = \
     mkFan mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
     parse_stream pluginsN preCast stdFan typehook
 
-DRIVER_FILES = fan    
+##################################################################
+# driver files also need to be synced up with 
+DRIVER_FILES = fan fanTop
+
 ##################################################################
     
 # FAN_DRIVER= fan
@@ -138,6 +141,10 @@ snapshot:fan_hot_cold
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
         # $(PMAKE) fan -- cause a project lock
+
+.PHONY: coldtop
+coldtop:common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma
+    
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

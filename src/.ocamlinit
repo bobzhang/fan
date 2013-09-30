@@ -1,0 +1,10 @@
+
+(* -*- mode:caml -*- *)
+#directory "common";;
+#directory "treeparser";;
+#directory "cold";;
+
+#load "dynlink.cma";;
+#load "libcommon.cma";;
+#load "libtreeparser.cma";;
+#load "libcold_top.cma";;

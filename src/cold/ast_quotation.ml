@@ -73,12 +73,8 @@ let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
          | Not_found  ->
              FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found"
                (Ftoken.string_of_name name) pos_tag in
-       let expander = ExpFun.unpack tag pack in
-       let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
-       let content =
-         String.sub x.content x.shift
-           (((String.length x.content) - x.retract) - x.shift) in
-       expander loc x.meta content : 'a )
+       let expander = ExpFun.unpack tag pack in Ftoken.quot_expand expander x : 
+  'a )
 let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
   let entry_eoi = Fgram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =

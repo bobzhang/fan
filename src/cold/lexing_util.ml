@@ -2731,17 +2731,17 @@ let rec lex_simple_quotation c (lexbuf : Lexing.lexbuf) =
          (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
      };
    (match __ocaml_lex_result with
-    | 0 ->
-        (pop_loc c;
-         if not @@ (null_loc c) then with_store c lexbuf lex_simple_quotation)
-    | 1 -> (store c lexbuf; (push_loc_cont c lexbuf) @@ lex_simple_quotation)
+    | 0 -> (store c lexbuf; pop_loc c)
+    | 1 ->
+        (store c lexbuf;
+         push_loc_cont c lexbuf lex_simple_quotation;
+         lex_simple_quotation c lexbuf)
     | 2 ->
         (push_loc_cont c lexbuf lex_comment; lex_simple_quotation c lexbuf)
-    | 3 -> (update_loc lexbuf; (with_store c lexbuf) @@ lex_simple_quotation)
+    | 3 -> (update_loc lexbuf; with_store c lexbuf lex_simple_quotation)
     | 4 ->
         (store c lexbuf;
          push_loc_cont c lexbuf lex_string;
-         pop_loc c;
          Buffer.add_char c.buffer '"';
          lex_simple_quotation c lexbuf)
     | 5 ->
