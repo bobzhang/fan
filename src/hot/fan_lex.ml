@@ -157,7 +157,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let c = default_cxt lexbuf in
     let old = lexbuf.lex_start_p in
     begin
-      with_curr_loc lex_string c  lexbuf;
+      with_curr_loc c lexbuf lex_string;
       (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
     end
 | "'" (newline as x) "'" ->
@@ -198,7 +198,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let old = lexbuf.lex_start_p in
     begin
       store c lexbuf;
-      with_curr_loc lex_comment c lexbuf;
+      with_curr_loc c lexbuf lex_comment ;
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
@@ -238,7 +238,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let retract = opt_char_len p + 2 in  (*/|} *)
     let old = lexbuf.lex_start_p in
     let s =
-      (with_curr_loc lex_quotation c lexbuf;
+      (with_curr_loc c lexbuf lex_quotation;
        buff_contents c) in
 
     let contents = String.sub s 0 (String.length s - retract) in
@@ -283,7 +283,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         err (Illegal_character c) (!! lexbuf) |} in
     let c = default_cxt lexbuf in
     if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
-      with_curr_loc dollar c lexbuf
+      with_curr_loc c lexbuf  dollar
     else err Illegal_antiquote (!! lexbuf)
 
 | eof ->
@@ -301,3 +301,7 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
   let next _ = Some (token lb)  in (* this requires the [lexeme_start_p] to be correct ...  *)
   Fstream.from next
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/fan_lex.cmo" *)
+(* end: *)

@@ -128,7 +128,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let c = default_cxt lexbuf in
     let old = lexbuf.lex_start_p in
     begin
-      with_curr_loc lex_string c  lexbuf;
+      with_curr_loc c  lexbuf lex_string;
       (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
     end
 | "'" (newline as x) "'" ->
@@ -148,7 +148,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     let c = default_cxt lexbuf in
     begin
       store c lexbuf;
-      with_curr_loc lex_comment c lexbuf;
+      with_curr_loc c lexbuf lex_comment;
       token lexbuf 
     end
 | "(*)" ->
@@ -190,3 +190,7 @@ let from_stream (loc:FLoc.t) strm =
     lb.lex_curr_p <- loc.loc_start;
     from_lexbuf  lb
   end
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/lex_lex.cmo" *)
+(* end: *)

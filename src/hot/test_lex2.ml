@@ -295,10 +295,10 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
   (lexbuf.lex_curr_p <-
     { pos with pos_bol  = pos.pos_bol  + 1 ;
       pos_cnum = pos.pos_cnum + 1 }; 
-   (`EOI, !!lexbuf ))}
+   (`EOI, !!lexbuf ))
     
 | _ as c { 
-  err (Illegal_character c) @@  !!lexbuf  |}
+  err (Illegal_character c) @@  !!lexbuf } |}
 
 
     
@@ -306,3 +306,7 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
   let next _ = Some (token lb)  in (* this requires the [lexeme_start_p] to be correct ...  *)
   Fstream.from next
 
+
+(* local variables: *)
+(* compile-command: "fan -printer o test_lex2.ml" *)
+(* end: *)

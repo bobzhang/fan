@@ -52,14 +52,19 @@ val default_cxt : Lexing.lexbuf -> context
 val store : context -> Lexing.lexbuf -> unit
 
 val with_store :
-    (context -> Lexing.lexbuf -> 'a) -> context -> Lexing.lexbuf -> 'a
+     context -> Lexing.lexbuf ->
+       (context -> Lexing.lexbuf -> 'a) -> 'a
 
 val buff_contents : context -> string
 
 val move_curr_p : int -> Lexing.lexbuf -> unit
 
+
+(** create a new context with  the location of the context for the lexer
+   the old context was untouched  *)      
 val with_curr_loc :
-    (context -> Lexing.lexbuf -> 'a) -> context -> Lexing.lexbuf -> 'a
+     context -> Lexing.lexbuf ->
+       (context -> Lexing.lexbuf -> 'a) -> 'a
 
 val mk_quotation :
   (context -> Lexing.lexbuf -> 'a) ->

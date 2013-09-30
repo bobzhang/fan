@@ -71,17 +71,17 @@ let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
 let (--) = Location_util.( -- ) 
 let store c lexbuf = c.buffer ++ (Lexing.lexeme lexbuf)
-let with_store f c lexbuf = store c lexbuf; f c lexbuf
+let with_store c lexbuf f = store c lexbuf; f c lexbuf
 let buff_contents c =
   let contents = Buffer.contents c.buffer in Buffer.reset c.buffer; contents
 let move_curr_p shift (lexbuf : Lexing.lexbuf) =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
-let with_curr_loc lexer c lexbuf =
+let with_curr_loc c lexbuf lexer =
   lexer { c with loc = (Lexing.lexeme_start_p lexbuf) } lexbuf
 let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~meta  ~shift 
   ~retract  =
   let old = lexbuf.lex_start_p in
-  let s = with_curr_loc quotation c lexbuf; buff_contents c in
+  let s = with_curr_loc c lexbuf quotation; buff_contents c in
   let content = String.sub s 0 ((String.length s) - retract) in
   let loc = old -- lexbuf.lex_curr_p in
   ((`Quot { Ftoken.name = name; meta; shift; content; loc }), loc)
@@ -167,14 +167,14 @@ let rec lex_comment c (lexbuf : Lexing.lexbuf) =
    (match __ocaml_lex_result with
     | 0 ->
         (store c lexbuf;
-         with_curr_loc lex_comment c lexbuf;
+         with_curr_loc c lexbuf lex_comment;
          lex_comment c lexbuf)
     | 1 -> store c lexbuf
-    | 2 -> (update_loc lexbuf; with_store lex_comment c lexbuf)
+    | 2 -> (update_loc lexbuf; with_store c lexbuf lex_comment)
     | 3 ->
         (err Unterminated_comment) @@
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 4 -> with_store lex_comment c lexbuf
+    | 4 -> with_store c lexbuf lex_comment
     | _ -> failwith "lexing: empty token"))
 let rec lex_string c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -297,18 +297,18 @@ let rec lex_string c (lexbuf : Lexing.lexbuf) =
             (lexbuf.Lexing.lex_curr_pos + 0) in
         (update_loc lexbuf ~retract:(String.length space);
          lex_string c lexbuf)
-    | 2 -> with_store lex_string c lexbuf
+    | 2 -> with_store c lexbuf lex_string
     | 3 ->
         let x =
           Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 1) in
         ((warn (Illegal_escape (String.make 1 x))) @@
            (Location_util.from_lexbuf lexbuf);
-         with_store lex_string c lexbuf)
-    | 4 -> (update_loc lexbuf; with_store lex_string c lexbuf)
+         with_store c lexbuf lex_string)
+    | 4 -> (update_loc lexbuf; with_store c lexbuf lex_string)
     | 5 ->
         (err Unterminated_string) @@
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 6 -> with_store lex_string c lexbuf
+    | 6 -> with_store c lexbuf lex_string
     | _ -> failwith "lexing: empty token"))
 let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -1430,7 +1430,7 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
     | 0 -> store c lexbuf
     | 1 ->
         (store c lexbuf;
-         with_curr_loc lex_antiquot c lexbuf;
+         with_curr_loc c lexbuf lex_antiquot;
          lex_antiquot c lexbuf)
     | 2 ->
         let p =
@@ -1438,19 +1438,19 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
         (Stack.push p opt_char;
          store c lexbuf;
-         with_curr_loc lex_quotation c lexbuf;
+         with_curr_loc c lexbuf lex_quotation;
          lex_antiquot c lexbuf)
-    | 3 -> (update_loc lexbuf; with_store lex_antiquot c lexbuf)
+    | 3 -> (update_loc lexbuf; with_store c lexbuf lex_antiquot)
     | 4 ->
         (store c lexbuf;
-         with_curr_loc lex_string c lexbuf;
+         with_curr_loc c lexbuf lex_string;
          c.buffer +> '"';
          lex_antiquot c lexbuf)
     | 5 ->
         (err Unterminated_antiquot) @@
           (Location_util.of_positions c.loc lexbuf.lex_curr_p)
-    | 6 -> with_store lex_antiquot c lexbuf
-    | 7 -> with_store lex_antiquot c lexbuf
+    | 6 -> with_store c lexbuf lex_antiquot
+    | 7 -> with_store c lexbuf lex_antiquot
     | _ -> failwith "lexing: empty token"))
 and lex_quotation c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -2599,7 +2599,7 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
             (((lexbuf.Lexing.lex_mem).(0)) + 0) in
         (store c lexbuf;
          Stack.push p opt_char;
-         with_curr_loc lex_quotation c lexbuf;
+         with_curr_loc c lexbuf lex_quotation;
          lex_quotation c lexbuf)
     | 1 ->
         let p =
@@ -2609,21 +2609,21 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
         then
           let top = Stack.top opt_char in
           (if p <> top
-           then with_store lex_quotation c lexbuf
+           then with_store c lexbuf lex_quotation
            else (ignore (Stack.pop opt_char); store c lexbuf))
-        else with_store lex_quotation c lexbuf
-    | 2 -> (update_loc lexbuf; with_store lex_quotation c lexbuf)
+        else with_store c lexbuf lex_quotation
+    | 2 -> (update_loc lexbuf; with_store c lexbuf lex_quotation)
     | 3 ->
         (store c lexbuf;
-         with_curr_loc lex_string c lexbuf;
+         with_curr_loc c lexbuf lex_string;
          Buffer.add_char c.buffer '"';
          lex_quotation c lexbuf)
     | 4 ->
         (show_stack ();
          (err Unterminated_quotation) @@
            (Location_util.of_positions c.loc lexbuf.lex_curr_p))
-    | 5 -> with_store lex_quotation c lexbuf
-    | 6 -> with_store lex_quotation c lexbuf
+    | 5 -> with_store c lexbuf lex_quotation
+    | 6 -> with_store c lexbuf lex_quotation
     | _ -> failwith "lexing: empty token"))
 let rec lex_simple_quotation depth c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
@@ -2738,24 +2738,25 @@ let rec lex_simple_quotation depth c (lexbuf : Lexing.lexbuf) =
    (match __ocaml_lex_result with
     | 0 ->
         if depth > 0
-        then with_store (lex_simple_quotation (depth - 1)) c lexbuf
+        then (with_store c lexbuf) @@ (lex_simple_quotation (depth - 1))
         else ()
     | 1 ->
         (store c lexbuf;
-         with_curr_loc (lex_simple_quotation (depth + 1)) c lexbuf)
+         (with_curr_loc c lexbuf) @@ (lex_simple_quotation (depth + 1)))
     | 2 ->
-        (with_store lex_comment { c with loc = (lexbuf.lex_start_p) } lexbuf;
+        (with_store { c with loc = (lexbuf.lex_start_p) } lexbuf lex_comment;
          lex_simple_quotation depth c lexbuf)
     | 3 ->
-        (update_loc lexbuf; with_store (lex_simple_quotation depth) c lexbuf)
+        (update_loc lexbuf;
+         (with_store c lexbuf) @@ (lex_simple_quotation depth))
     | 4 ->
         (store c lexbuf;
-         with_curr_loc lex_string c lexbuf;
+         with_curr_loc c lexbuf lex_string;
          Buffer.add_char c.buffer '"';
          lex_simple_quotation depth c lexbuf)
     | 5 -> (err Unterminated_quotation) @@ (c.loc -- lexbuf.lex_curr_p)
-    | 6 -> with_store (lex_simple_quotation depth) c lexbuf
-    | 7 -> with_store (lex_simple_quotation depth) c lexbuf
+    | 6 -> (with_store c lexbuf) @@ (lex_simple_quotation depth)
+    | 7 -> (with_store c lexbuf) @@ (lex_simple_quotation depth)
     | _ -> failwith "lexing: empty token"))
 let _ =
   Printexc.register_printer @@

@@ -195,7 +195,7 @@ let (--) = Location_util.(--)
 let store c lexbuf =
   c.buffer ++ Lexing.lexeme lexbuf
 
-let with_store f c lexbuf =  
+let with_store c lexbuf f =  
   begin
     store c  lexbuf;
     f c lexbuf
@@ -217,9 +217,7 @@ let move_curr_p shift  (lexbuf:Lexing.lexbuf)  =
   lexbuf.lex_curr_pos <- lexbuf.lex_curr_pos + shift
 
       
-(** create a new context with  the location of the context for the lexer
-   the old context was untouched  *)      
-let with_curr_loc lexer c lexbuf =
+let with_curr_loc c lexbuf lexer  =
   lexer {c with loc = Lexing.lexeme_start_p lexbuf } lexbuf
     
 
@@ -229,7 +227,7 @@ let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~meta ~shift ~retract 
   let old = lexbuf.lex_start_p in
   let s =
     begin
-      with_curr_loc quotation c lexbuf;
+      with_curr_loc c lexbuf quotation;
       buff_contents c
     end in
   let content = String.sub s 0 (String.length s - retract) in
@@ -273,7 +271,7 @@ let rec lex_comment c = {:lexer|
 |"(*"  ->
     begin
       store c lexbuf ;
-      with_curr_loc lex_comment c lexbuf;
+      with_curr_loc c lexbuf lex_comment ;
       (* to give better error message, put the current location here *)
       lex_comment c lexbuf
     end
@@ -282,15 +280,15 @@ let rec lex_comment c = {:lexer|
 | newline ->
     begin
       update_loc  lexbuf ;
-      with_store lex_comment c lexbuf;
+      with_store  c lexbuf lex_comment;
     end
 | eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc lexbuf.lex_curr_p
-| _ ->  with_store lex_comment c lexbuf 
+| _ ->  with_store c lexbuf lex_comment  
 |}
 
 
 (** called by another lexer
-    | '"' -> ( with_curr_loc string c; let s = buff_contents c in `Str s )
+    | '"' -> ( with_curr_loc  c string; let s = buff_contents c in `Str s )
     c.loc keeps the start position of "ghosgho"
     c.buffer keeps the lexed result
  *)    
@@ -302,20 +300,20 @@ let rec lex_string c = {:lexer|
       update_loc  lexbuf  ~retract:(String.length space);
       lex_string c lexbuf
     end
-| ocaml_escaped_char -> with_store lex_string c lexbuf         
+| ocaml_escaped_char -> with_store  c lexbuf lex_string
 | '\\' (_ as x) ->
     begin
       warn
         (Illegal_escape (String.make 1 x)) @@ Location_util.from_lexbuf lexbuf;
-      with_store lex_string c lexbuf
+      with_store c lexbuf lex_string
     end
 | newline ->
     begin
       update_loc  lexbuf;
-      with_store lex_string c lexbuf
+      with_store  c lexbuf lex_string
     end
 | eof ->  err Unterminated_string @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
-| _ ->  with_store lex_string c lexbuf
+| _ ->  with_store  c lexbuf lex_string
 |}
 
 
@@ -326,31 +324,31 @@ let rec  lex_antiquot c  = {:lexer|
 | '(' ->
     begin 
       store c lexbuf;
-      with_curr_loc lex_antiquot  c lexbuf;
+      with_curr_loc c lexbuf lex_antiquot ;
       lex_antiquot c  lexbuf;
     end
 | quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
     begin 
       Stack.push p opt_char ;
       store c lexbuf;
-      with_curr_loc lex_quotation c lexbuf;
+      with_curr_loc c lexbuf lex_quotation;
       lex_antiquot c lexbuf
     end
 | newline   ->
     begin
       update_loc  lexbuf;
-      with_store lex_antiquot c lexbuf
+      with_store c lexbuf lex_antiquot 
     end
 | "\"" -> (* $(")")*)
     begin
       store c lexbuf;
-      with_curr_loc lex_string c lexbuf;
+      with_curr_loc  c lexbuf lex_string;
       c.buffer +> '"';
       lex_antiquot  c lexbuf
     end
 | eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
-| "'" ocaml_char "'" -> with_store lex_antiquot c lexbuf (* $( ')' ) *)
-| _  ->  with_store lex_antiquot c lexbuf
+| "'" ocaml_char "'" -> with_store  c lexbuf lex_antiquot (* $( ')' ) *)
+| _  ->  with_store c lexbuf lex_antiquot 
 |}
 
 and lex_quotation c = {:lexer|
@@ -359,29 +357,29 @@ and lex_quotation c = {:lexer|
     begin
       store c lexbuf ;
       Stack.push p opt_char; (* take care the order matters*)
-      with_curr_loc lex_quotation c lexbuf;
+      with_curr_loc c lexbuf lex_quotation;
       lex_quotation c lexbuf
     end
 | (extra_quot as p)? "|}" ->
     if not (Stack.is_empty opt_char) then
       let top = Stack.top opt_char in
       if p <> top then
-        with_store lex_quotation c lexbuf (*move on*)
+        with_store  c lexbuf lex_quotation (*move on*)
       else begin
         ignore (Stack.pop opt_char);
         store c lexbuf
       end
     else
-      with_store lex_quotation c lexbuf
+      with_store  c lexbuf lex_quotation
 | newline ->
     begin
       update_loc  lexbuf ;
-      with_store lex_quotation c lexbuf
+      with_store c lexbuf lex_quotation 
     end          
 | "\"" -> (* treat string specially, like {| "{|"|} should be accepted *)
     begin
       store c lexbuf;
-      with_curr_loc lex_string c lexbuf;
+      with_curr_loc c lexbuf lex_string;
       Buffer.add_char c.buffer '"';
       lex_quotation c lexbuf
     end
@@ -391,47 +389,52 @@ and lex_quotation c = {:lexer|
       err Unterminated_quotation @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
     end
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store lex_quotation c lexbuf
-| _ -> with_store lex_quotation c lexbuf |}
+    with_store c lexbuf lex_quotation 
+| _ -> with_store c lexbuf  lex_quotation |}
 
 
 let rec lex_simple_quotation depth c =   {:lexer|
 | "}" ->
     if depth > 0 then
-      with_store (lex_simple_quotation (depth - 1)) c lexbuf
+      with_store c lexbuf @@ lex_simple_quotation (depth - 1)
     else ()
 | "{" ->
     begin
       store c lexbuf;
-      with_curr_loc (lex_simple_quotation  (depth+1))
-        c lexbuf;
+      with_curr_loc c lexbuf @@ lex_simple_quotation  (depth+1) ;
     end
 | "(*" ->
     begin
-      with_store lex_comment {c with loc = lexbuf.lex_start_p}  lexbuf;
+      with_store  {c with loc = lexbuf.lex_start_p} lexbuf lex_comment;
       (* more precise error message, FIXME other places *)
       lex_simple_quotation depth c lexbuf
     end
 | newline ->
     begin
       update_loc lexbuf;
-      with_store (lex_simple_quotation depth) c lexbuf;
+      with_store c lexbuf @@ lex_simple_quotation depth ;
     end
 | "\"" ->
     begin
       store c lexbuf;
-      with_curr_loc lex_string c lexbuf;
+      with_curr_loc c lexbuf lex_string;
       Buffer.add_char c.buffer '"';
       lex_simple_quotation depth c lexbuf
     end
 | eof -> err Unterminated_quotation @@ c.loc -- lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store (lex_simple_quotation depth) c lexbuf
+    with_store c lexbuf @@ lex_simple_quotation depth
         (* FIXME lexing error, weird error message *)
-| _  -> with_store (lex_simple_quotation depth ) c lexbuf
+| _  -> with_store  c lexbuf @@ lex_simple_quotation depth 
 |}
     
+
+
 let _ =
   Printexc.register_printer @@ function
     | Lexing_error e -> Some (lex_error_to_string e)
     | _ -> None   
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake hot_annot/lexing_util.cmo" *)
+(* end: *)

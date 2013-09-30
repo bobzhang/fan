@@ -455,7 +455,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 2 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
-          (with_curr_loc lex_string c lexbuf;
+          (with_curr_loc c lexbuf lex_string;
            ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 3 ->
           let x =
@@ -479,7 +479,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 7 -> token lexbuf
       | 8 ->
           let c = default_cxt lexbuf in
-          (store c lexbuf; with_curr_loc lex_comment c lexbuf; token lexbuf)
+          (store c lexbuf; with_curr_loc c lexbuf lex_comment; token lexbuf)
       | 9 ->
           let c = default_cxt lexbuf in
           (warn Comment_start (!! lexbuf); lex_comment c lexbuf; token lexbuf)

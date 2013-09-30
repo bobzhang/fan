@@ -4957,7 +4957,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 7 ->
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
-          (with_curr_loc lex_string c lexbuf;
+          (with_curr_loc c lexbuf lex_string;
            ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 8 ->
           let x =
@@ -5006,7 +5006,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let c = default_cxt lexbuf in
           let old = lexbuf.lex_start_p in
           (store c lexbuf;
-           with_curr_loc lex_comment c lexbuf;
+           with_curr_loc c lexbuf lex_comment;
            ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 18 ->
           let c = default_cxt lexbuf in
@@ -5064,7 +5064,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let () = Stack.push p opt_char in
           let retract = (opt_char_len p) + 2 in
           let old = lexbuf.lex_start_p in
-          let s = with_curr_loc lex_quotation c lexbuf; buff_contents c in
+          let s = with_curr_loc c lexbuf lex_quotation; buff_contents c in
           let contents = String.sub s 0 ((String.length s) - retract) in
           ((`DirQuotation
               ((((3 + 1) + len) + (opt_char_len p)), name, contents)),
@@ -7416,7 +7416,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
               | _ -> failwith "lexing: empty token")) in
           let c = default_cxt lexbuf in
           if FConfig.antiquotations.contents
-          then with_curr_loc dollar c lexbuf
+          then with_curr_loc c lexbuf dollar
           else err Illegal_antiquote (!! lexbuf)
       | 25 ->
           let pos = lexbuf.lex_curr_p in
