@@ -265,18 +265,18 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
         (* the first char is faked '(' to match the last ')', so we mvoe
            backwards one character *)
-        let old = FLoc.move_pos (1+1+1+String.length name - 1) c.loc in
+        let old = FLoc.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
         begin
           c.buffer +> '(';
-          lex_antiquot {c with loc = old} lexbuf ;
+          lex_antiquot {c with loc = [old]} lexbuf ;
           (`Ant(name,buff_contents c),
            old -- Lexing.lexeme_end_p lexbuf)
         end
     | '(' ->     (* $(xxxx)*)
-        let old = FLoc.move_pos  (1+1-1) c.loc in
+        let old = FLoc.move_pos  (1+1-1) (List.hd c.loc) in
         begin
           c.buffer +> '(';
-          lex_antiquot   {c with loc = old } lexbuf ;
+          lex_antiquot   {c with loc = [old] } lexbuf ;
           (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
         end
     | _ as c ->

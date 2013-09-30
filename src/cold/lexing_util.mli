@@ -37,7 +37,7 @@ val opt_char : char option Stack.t
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
 type context = {
-    loc        : FLoc.position ;
+    mutable loc        : FLoc.position list ;
     (* only record the start position when enter into a quotation or antiquotation
        everytime token is used, the loc is updated to be [lexeme_start_p] *)
     buffer     : Buffer.t
@@ -60,8 +60,9 @@ val buff_contents : context -> string
 val move_curr_p : int -> Lexing.lexbuf -> unit
 
 
-(** create a new context with  the location of the context for the lexer
-   the old context was untouched  *)      
+(** create a new context with  the location updated as the beginning of
+    the current lexeme. Note that the buffer is shared across context 
+*)      
 val with_curr_loc :
      context -> Lexing.lexbuf ->
        (context -> Lexing.lexbuf -> 'a) -> 'a

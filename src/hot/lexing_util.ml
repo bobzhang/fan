@@ -168,10 +168,10 @@ let show_stack () = begin
 end
 
 
-type context = { loc : FLoc.position; buffer : Buffer.t; }
+type context = { mutable loc : FLoc.position list; buffer : Buffer.t; }
 
 let default_cxt lb = {
-    loc = Lexing.lexeme_start_p lb;
+    loc = [ Lexing.lexeme_start_p lb];
     buffer = Buffer.create 256
   }
       
@@ -218,7 +218,7 @@ let move_curr_p shift  (lexbuf:Lexing.lexbuf)  =
 
       
 let with_curr_loc c lexbuf lexer  =
-  lexer {c with loc = Lexing.lexeme_start_p lexbuf } lexbuf
+  lexer {c with loc = [Lexing.lexeme_start_p lexbuf] } lexbuf
     
 
 (** when you return a token make sure the token's location is correct
@@ -282,7 +282,9 @@ let rec lex_comment c = {:lexer|
       update_loc  lexbuf ;
       with_store  c lexbuf lex_comment;
     end
-| eof ->  err Unterminated_comment  @@ Location_util.of_positions c.loc lexbuf.lex_curr_p
+| eof ->
+    err Unterminated_comment  @@ (* FIXME *)
+    Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | _ ->  with_store c lexbuf lex_comment  
 |}
 
@@ -312,7 +314,8 @@ let rec lex_string c = {:lexer|
       update_loc  lexbuf;
       with_store  c lexbuf lex_string
     end
-| eof ->  err Unterminated_string @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+| eof ->  err Unterminated_string @@
+    Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | _ ->  with_store  c lexbuf lex_string
 |}
 
@@ -346,7 +349,9 @@ let rec  lex_antiquot c  = {:lexer|
       c.buffer +> '"';
       lex_antiquot  c lexbuf
     end
-| eof  -> err Unterminated_antiquot @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+| eof  ->
+    err Unterminated_antiquot
+    @@  Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> with_store  c lexbuf lex_antiquot (* $( ')' ) *)
 | _  ->  with_store c lexbuf lex_antiquot 
 |}
@@ -386,7 +391,8 @@ and lex_quotation c = {:lexer|
 | eof ->
     begin
       show_stack ();
-      err Unterminated_quotation @@  Location_util.of_positions c.loc lexbuf.lex_curr_p
+      err Unterminated_quotation @@
+      Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
     end
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
     with_store c lexbuf lex_quotation 
@@ -405,7 +411,7 @@ let rec lex_simple_quotation depth c =   {:lexer|
     end
 | "(*" ->
     begin
-      with_store  {c with loc = lexbuf.lex_start_p} lexbuf lex_comment;
+      with_store  {c with loc = [lexbuf.lex_start_p]} lexbuf lex_comment;
       (* more precise error message, FIXME other places *)
       lex_simple_quotation depth c lexbuf
     end
@@ -421,7 +427,7 @@ let rec lex_simple_quotation depth c =   {:lexer|
       Buffer.add_char c.buffer '"';
       lex_simple_quotation depth c lexbuf
     end
-| eof -> err Unterminated_quotation @@ c.loc -- lexbuf.lex_curr_p
+| eof -> err Unterminated_quotation @@ List.hd c.loc -- lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
     with_store c lexbuf @@ lex_simple_quotation depth
         (* FIXME lexing error, weird error message *)
