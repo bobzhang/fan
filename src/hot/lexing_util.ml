@@ -276,7 +276,11 @@ let warn error (loc:FLoc.t) =
   Fan_warnings.emitf loc.loc_start "Warning: %s"  @@ lex_error_to_string error
 
 
-(** return unit. All the comments are stored in the buffer *)
+(** return unit. All the comments are stored in the buffer
+    Note that comment is isolate to quotation and antiquotation.
+    The function itself already simulate its stack, and it will not distrub the stack
+    since when comment token is lexed. The stack is returned back to normal
+ *)
 let rec lex_comment c = {:lexer|
 |"(*"  ->
     begin
@@ -340,7 +344,7 @@ let rec lex_string c = {:lexer|
 
 
 
-(* depth makes sure the parentheses are balanced *)
+
 let rec  lex_antiquot c  = {:lexer|
 | ')' -> store c lexbuf
 | '(' ->
@@ -418,48 +422,40 @@ and lex_quotation c = {:lexer|
 | _ -> with_store c lexbuf  lex_quotation |}
 
 
-let rec lex_simple_quotation depth c =   {:lexer|
+let rec lex_simple_quotation c =   {:lexer|
 | "}" ->
     begin 
       pop_loc c ;
       if not @@ null_loc c then
-        with_store c lexbuf @@ lex_simple_quotation (depth - 1)
+        with_store c lexbuf lex_simple_quotation 
     end
-    (* if depth > 0 then *)
-    (*   with_store c lexbuf @@ lex_simple_quotation (depth - 1) *)
-    (* else () *)
 | "{" ->
     begin
       store c lexbuf;
-      push_loc_cont c lexbuf @@ lex_simple_quotation  (depth+1) ;
-      (* with_curr_loc c lexbuf @@ lex_simple_quotation  (depth+1) ; *)
+      push_loc_cont c lexbuf @@ lex_simple_quotation ;
     end
 | "(*" ->
     begin
       push_loc_cont c lexbuf lex_comment;
-      lex_simple_quotation depth c lexbuf
-      (* with_store  {c with loc = [lexbuf.lex_start_p]} lexbuf lex_comment; *)
-      (* more precise error message, FIXME other places *)
-      (* lex_simple_quotation depth c lexbuf *)
+      lex_simple_quotation c lexbuf
     end
 | newline ->
     begin
       update_loc lexbuf;
-      with_store c lexbuf @@ lex_simple_quotation depth ;
+      with_store c lexbuf @@ lex_simple_quotation  ;
     end
 | "\"" ->
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
-      (* with_curr_loc c lexbuf lex_string; *)
       Buffer.add_char c.buffer '"';
-      lex_simple_quotation depth c lexbuf
+      lex_simple_quotation  c lexbuf
     end
 | eof -> err Unterminated_quotation @@ List.hd c.loc -- lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store c lexbuf @@ lex_simple_quotation depth
+    with_store c lexbuf  lex_simple_quotation 
         (* FIXME lexing error, weird error message *)
-| _  -> with_store  c lexbuf @@ lex_simple_quotation depth 
+| _  -> with_store  c lexbuf lex_simple_quotation 
 |}
     
 

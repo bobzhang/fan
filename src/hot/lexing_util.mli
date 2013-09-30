@@ -132,4 +132,4 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
    simple quotation "{}".
    It handles internally ocaml string, ocaml char and comments
  *)
-val lex_simple_quotation : int -> context -> Lexing.lexbuf -> unit    
+val lex_simple_quotation :   context -> Lexing.lexbuf -> unit    
