@@ -1,5 +1,4 @@
 open LibUtil
-open FLoc.Ops
 open FAst
 let loc_of =
   function
@@ -157,6 +156,7 @@ let loc_of =
   | `ObjTyEnd (_loc,_) -> _loc
   | `TyObjEnd (_loc,_) -> _loc
   | `Sum (_loc,_) -> _loc
+let (<+>) = let open FLoc.Ops in ( <+> )
 let (<+>) a b = (loc_of a) <+> (loc_of b)
 let sem a b = let _loc = a <+> b in `Sem (_loc, a, b)
 let com a b = let _loc = a <+> b in `Com (_loc, a, b)

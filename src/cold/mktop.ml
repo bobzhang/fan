@@ -335,24 +335,6 @@ let _ =
     ~mexp:(fun loc  p  -> m#row_field loc (Objs.strip_row_field p))
     ~mpat:(fun loc  p  -> m#row_field loc (Objs.strip_row_field p))
     ~exp_filter ~pat_filter
-let normal_handler =
-  function
-  | Out_of_memory  -> Some "Out of memory"
-  | Assert_failure (file,line,char) ->
-      Some
-        (Format.sprintf "Assertion failed, file %S, line %d, char %d" file
-           line char)
-  | Match_failure (file,line,char) ->
-      Some
-        (Format.sprintf "Pattern matching failed, file %S, line %d, char %d"
-           file line char)
-  | Failure str -> Some (Format.sprintf "Failure: %S" str)
-  | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
-  | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | Fstream.NotConsumed  ->
-      Some (Format.sprintf "Parse failure(NotConsumed)")
-  | Fstream.Error str -> Some (Format.sprintf "Fstream.Error %s" str)
-  | _ -> None
 let p = Fgram.mk "p"
 let _ =
   Fgram.extend_single (p : 'p Fgram.t )
@@ -437,3 +419,32 @@ let _ =
                    | `Lid x -> (`Lid (_loc, x) : 'name )
                    | _ -> failwith "`Lid (_loc, x)\n"))))]))
 let () = of_stru ~name:(d, "import") ~entry:import ()
+let () =
+  let f (loc : FLoc.t) _meta _content =
+    let s = FLoc.to_string loc in (`Str (loc, s) : FAst.exp ) in
+  let f2 (loc : FLoc.t) _meta _content =
+    let s = FLoc.to_string loc in
+    (`StExp (loc, (`Str (loc, s))) : FAst.stru ) in
+  Ast_quotation.add (d, "here") FDyn.exp_tag f;
+  Ast_quotation.add (d, "here") FDyn.stru_tag f2
+let () =
+  Printexc.register_printer @@
+    (function
+     | Out_of_memory  -> Some "Out of memory"
+     | Assert_failure (file,line,char) ->
+         Some
+           (Format.sprintf "Assertion failed, file %S, line %d, char %d" file
+              line char)
+     | Match_failure (file,line,char) ->
+         Some
+           (Format.sprintf
+              "Pattern matching failed, file %S, line %d, char %d" file line
+              char)
+     | Failure str -> Some (Format.sprintf "Failure: %S" str)
+     | Invalid_argument str ->
+         Some (Format.sprintf "Invalid argument: %S" str)
+     | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
+     | Fstream.NotConsumed  ->
+         Some (Format.sprintf "Parse failure(NotConsumed)")
+     | Fstream.Error str -> Some (Format.sprintf "Fstream.Error %s" str)
+     | _ -> None)

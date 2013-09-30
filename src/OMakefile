@@ -44,6 +44,8 @@ FAN_FILES = \
     idN langFans langInclude langOcaml langSave lex_lex lexing_util\
     mkFan mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
     parse_stream pluginsN preCast stdFan typehook
+
+DRIVER_FILES = fan    
 ##################################################################
     
 # FAN_DRIVER= fan
@@ -122,11 +124,12 @@ fixed: $(TARGET1) $(TARGET2)
     elseif
         println(bootstrapped failure)
 
+        
 snapshot:fan_hot_cold
     section
-        cd hot_annot
-        foreach(f => ..., $(FAN_FILES))
-            if($file-exists $f.ml)
+        cd hot
+        foreach(f => ..., $(FAN_FILES) $(DRIVER_FILES))
+            if $(file-exists $f.ml)
                 ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
