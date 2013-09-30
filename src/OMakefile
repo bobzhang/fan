@@ -127,7 +127,7 @@ TARGET2 =  hot_hot/libhot.cma
 fixed: $(TARGET1) $(TARGET2) 
     if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
         println(bootstrapped success)
-    elseif
+    else
         println(bootstrapped failure)
 
 PMAKE = $(file pmake)
