@@ -75,13 +75,10 @@ let action_parse (entry:'a t) (ts: Ftoken.stream) : Gaction.t =
     res)
   with
   | Fstream.NotConsumed ->
-      FLoc.raise (Gtools.get_cur_loc ts)
-        (Fstream.Error ("illegal begin of " ^ entry.name))
-  | FLoc.Exc_located (_, _) as exc -> 
-      (eprintf "%s@." (Printexc.to_string exc); raise exc)
+      FLoc.raise (Gtools.get_cur_loc ts) (Fstream.Error ("illegal begin of " ^ entry.name))
+  | FLoc.Exc_located (_, _) as exc -> raise exc
   | exc -> 
-      (eprintf "%s@." (Printexc.to_string exc);
-      FLoc.raise (Gtools.get_cur_loc ts) exc)
+      FLoc.raise (Gtools.get_cur_loc ts) exc
     
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)

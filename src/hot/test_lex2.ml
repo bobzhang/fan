@@ -298,7 +298,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
    (`EOI, !!lexbuf ))}
     
 | _ as c { 
-  err (Illegal_character c) @@  !!lexbuf } |}
+  err (Illegal_character c) @@  !!lexbuf  |}
 
 
     

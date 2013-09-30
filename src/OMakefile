@@ -95,15 +95,16 @@ section
 
 ########################
 # test
-.PHONY: test 
-test:$(DIR_HOT_ANNOT)/libhot.cma $(file fan)
-    section
-        NATIVE_ENABLED = false
-        BYTE_ENABLED = true
-        PP_FAN = $(file fan)
-        OCAML_LIBS[]+= $(DIR_HOT_ANNOT)/libhot
-        .SUBDIRS: unitest
-        unitest/test -verbose    
+
+section
+    NATIVE_ENABLED = false
+    BYTE_ENABLED = true
+    PP_FAN = $(file fan)
+    OCAML_LIBS[]+= $(DIR_HOT_ANNOT)/libhot
+    .SUBDIRS: unitest
+.PHONY: test
+test:unitest/test
+    unitest/test -verbose    
 
 # unitest
 # section
