@@ -142,6 +142,23 @@ let test_comment_pos _ =
      {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 14};
      loc_ghost = false})]
 
+let test_lex_simple_quot _ =
+  fst @@ Lex_lex.token (Lexing.from_string {:str|{ (** gshoghso *) bhgo "ghos" }|})
+    ===
+  `Quot {
+         Ftoken.name = (`Sub [], "");
+         loc =
+         {FLoc.loc_start =
+          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+          loc_end =
+          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 31};
+          loc_ghost = false};
+         meta = None; shift = 1; content = "{ * gshoghso *) bhgo \"ghos\" }";
+         retract = 1}
+
+(* let test_simple_arith _ = *)
+(*   assert_equal ~msg:("\n" ^ {:here||}) 3 4 *)
+           
 let suite =
   "Lexing_test" >:::
   [
@@ -163,10 +180,12 @@ let suite =
    "test_ant" >:: test_ant;
    "test_ant_quot" >:: test_ant_quot;
    "test_ant_paren" >:: test_ant_paren;
-   "test_ant_str" >:: test_ant_str
+   "test_ant_str" >:: test_ant_str;
+   "test_lex_simple_quot" >:: test_lex_simple_quot;
+   (* "test_simple_arith" >:: test_simple_arith *)
  ]
 
     
 (* local variables: *)
-(* compile-command: "cd .. && make test" *)
+(* compile-command: "cd .. && pmake test" *)
 (* end: *)
