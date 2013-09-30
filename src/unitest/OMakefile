@@ -5,7 +5,7 @@ OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
 
 OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
 # requires a preprocessor first 
-AdditionalDependency($(PP_FAN))
+
 
 
 OCAMLINCLUDES += $(HOT_ANNOT_INCLUDES)

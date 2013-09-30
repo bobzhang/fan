@@ -2,7 +2,6 @@ let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
 let opt_char = Lexing_util.opt_char
-let mk_quotation = Lexing_util.mk_quotation
 let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let default_cxt = Lexing_util.default_cxt
@@ -495,6 +494,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                   meta = None;
                   content = (buff_contents c);
                   shift = 1;
+                  retract = 1;
                   loc
                 }), loc)))
       | 11 ->

@@ -30,6 +30,7 @@ type quot = {
     meta:string option;(* a piece of small meta data, like loc name*)
     shift:int;
     content:string;
+    retract:int; 
   }
 
       
@@ -37,12 +38,13 @@ type quotation = [ `Quot of quot ]
 
 (* FIXME *)      
 let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  (`Quot {name;meta;shift;content;loc} )  ->
-    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;content=%a})@]"
+  fun fmt  (`Quot {name;meta;shift;content;loc;retract} )  ->
+    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
       pp_print_name name
       (Format.pp_print_option Format.pp_print_string) meta
       FLoc.pp_print_t loc
       Format.pp_print_int shift
+      Format.pp_print_int retract
       Format.pp_print_string content
 
 (** (name,contents)  *)

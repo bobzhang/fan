@@ -912,6 +912,7 @@ let apply () = begin
       [
         `DirQuotation (shift,name,contents) -> (* FIXME (a,b,c) pattern broken *)
           let _loc = FLoc.move `start shift _loc in
+          (* let contents = String.sub contents 0 (String.length contents - retract) in FIXME *)
          begin
            (Fdir.handle_dir _loc (name,contents));
            ([],Some _loc)

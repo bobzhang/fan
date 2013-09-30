@@ -2,7 +2,6 @@ let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
 let opt_char = Lexing_util.opt_char
-let mk_quotation = Lexing_util.mk_quotation
 let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let default_cxt = Lexing_util.default_cxt
@@ -5023,7 +5022,8 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                 meta = None;
                 shift = 2;
                 content = "";
-                loc
+                loc;
+                retract = 2
               }), loc)
       | 20 ->
           let name =
@@ -5034,20 +5034,27 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
               (((lexbuf.Lexing.lex_mem).(0)) + 0)
           and p =
             Lexing.sub_lexeme_char_opt lexbuf
-              (((lexbuf.Lexing.lex_mem).(4)) + 0) in
+              (((lexbuf.Lexing.lex_mem).(4)) + 0)
+          and shift =
+            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+              (lexbuf.Lexing.lex_curr_pos + 0) in
           let c = default_cxt lexbuf in
-          let (name,len) =
+          let name =
             match name with
-            | Some name ->
-                ((Ftoken.name_of_string name), (1 + (String.length name)))
-            | None  -> (Ftoken.empty_name, 0) in
-          let v = opt_char_len p in
-          let shift =
-            ((2 + len) + v) +
-              (match meta with | Some x -> (String.length x) + 1 | None  -> 0) in
-          let retract = 2 + v in
+            | Some name -> Ftoken.name_of_string name
+            | None  -> Ftoken.empty_name in
+          let shift = String.length shift in
+          let retract = 2 + (opt_char_len p) in
           (Stack.push p opt_char;
-           mk_quotation lex_quotation c lexbuf ~name ~meta ~shift ~retract)
+           (let old = lexbuf.lex_start_p in
+            let content =
+              store c lexbuf;
+              push_loc_cont c lexbuf lex_quotation;
+              buff_contents c in
+            let loc = old -- lexbuf.lex_curr_p in
+            ((`Quot
+                { Ftoken.name = name; meta; shift; content; loc; retract }),
+              loc)))
       | 21 ->
           let c =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

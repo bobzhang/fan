@@ -13,11 +13,14 @@ type name = domains * string
    (name,loc,shift,contents)
  *)
 type quot = {
-    name:name;
-    loc:FLoc.t;
-    meta:string option;
-    shift:int;
-    content:string;
+    name    :name;
+    loc     : FLoc.t;
+    meta    : string option;
+    shift   : int;
+
+    content : string;
+    retract : int
+    (* the letter to be retracted *)
   }
 type quotation = [ `Quot of quot ]      
 

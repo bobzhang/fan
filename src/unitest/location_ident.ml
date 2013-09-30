@@ -3,7 +3,6 @@ open OUnit
 let () =
   Ast_parsers.use_parsers ["revise"; "stream"]
 let test_ident_location  _ =
-  let open Fan in
   let result =
     try Some
         (Ast2pt.exp (Fgram.parse_string Fsyntax.exp {:str| X.x|})).pexp_desc

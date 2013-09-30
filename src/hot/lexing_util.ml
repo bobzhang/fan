@@ -229,19 +229,6 @@ let pop_loc c =
 let null_loc c =
   c.loc = []
     
-(** when you return a token make sure the token's location is correct
- *)
-let mk_quotation quotation c (lexbuf:Lexing.lexbuf) ~name ~meta ~shift ~retract =
-  let old = lexbuf.lex_start_p in
-  let s =
-    begin
-      push_loc_cont c lexbuf quotation;
-      buff_contents c
-    end in
-  let content = String.sub s 0 (String.length s - retract) in
-  let loc = old -- lexbuf.lex_curr_p in
-  (`Quot {Ftoken.name;meta;shift;content;loc}, loc)
-    
 
 
 (** Update the current location with file name and line number.

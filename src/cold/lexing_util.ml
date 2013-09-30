@@ -80,13 +80,6 @@ let push_loc_cont c lexbuf lexer =
   c.loc <- (Lexing.lexeme_start_p lexbuf) :: (c.loc); lexer c lexbuf
 let pop_loc c = c.loc <- List.tl c.loc
 let null_loc c = c.loc = []
-let mk_quotation quotation c (lexbuf : Lexing.lexbuf) ~name  ~meta  ~shift 
-  ~retract  =
-  let old = lexbuf.lex_start_p in
-  let s = push_loc_cont c lexbuf quotation; buff_contents c in
-  let content = String.sub s 0 ((String.length s) - retract) in
-  let loc = old -- lexbuf.lex_curr_p in
-  ((`Quot { Ftoken.name = name; meta; shift; content; loc }), loc)
 let update_loc ?file  ?(absolute= false)  ?(retract= 0)  ?(line= 1) 
   (lexbuf : Lexing.lexbuf) =
   let pos = lexbuf.lex_curr_p in

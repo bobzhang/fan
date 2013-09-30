@@ -57,7 +57,7 @@ let test_quotation _ =
        {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
         pos_cnum = 16};
       loc_ghost = false};
-    meta = None; shift = 8; content = "abcdef"},
+    meta = None; shift = 8; content = "{:lexer|abcdef|}";retract=2},
  {FLoc.loc_start =
    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
   loc_end =

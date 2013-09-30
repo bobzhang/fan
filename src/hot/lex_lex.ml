@@ -92,7 +92,6 @@ let (!!)  = Location_util.from_lexbuf ;;
 {:import|
 Lexing_util:
   opt_char
-  mk_quotation
   opt_char_len
   update_loc
   default_cxt
@@ -170,6 +169,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
               meta=None;
               content = buff_contents c ;
               shift = 1;
+              retract = 1;
               loc},loc)
     end
 | eof ->

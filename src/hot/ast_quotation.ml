@@ -148,9 +148,10 @@ let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
             Not_found -> FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found"
                 (Ftoken.string_of_name name) pos_tag  in
         let expander = ExpFun.unpack tag pack in
-        (* let expand_quotation ~expander pos_tag (x:Ftoken.quot) = *)
         let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
-        expander loc x.meta x.content
+        let content =
+          String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
+        expander loc x.meta content
         (* FIXME: control the stack of quotation explosion *)
       end
 

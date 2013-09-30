@@ -103,7 +103,8 @@ section
 section
     NATIVE_ENABLED = false
     BYTE_ENABLED = true
-    PP_FAN = $(file fan)
+    PP_FAN = $(file fan_hot_cold)
+    AdditionalDependency($(PP_FAN))
     OCAML_LIBS[]+= $(DIR_HOT_ANNOT)/libhot
     .SUBDIRS: unitest
 .PHONY: test

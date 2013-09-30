@@ -72,13 +72,6 @@ val push_loc_cont :
 val pop_loc :
     context -> unit
         
-val mk_quotation :
-  (context -> Lexing.lexbuf -> 'a) ->
-  context ->
-  Lexing.lexbuf ->
-  name:Ftoken.name ->
-  meta:string option ->
-  shift:int -> retract:int -> [> `Quot of Ftoken.quot ] * FLoc.t
 
 val update_loc :
   ?file:string ->
