@@ -91,15 +91,17 @@ let input_file x =
   match x with
   | Intf file_name ->
       begin
-        FConfig.compilation_unit :=
-          Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+        if file_name <> "-" then 
+          FConfig.compilation_unit :=
+            Some (String.capitalize (Filename.(chop_extension (basename file_name))));
         FConfig.current_input_file := file_name;
         process_intf  file_name
       end
   | Impl file_name ->
       begin
-        FConfig.compilation_unit :=
-          Some (String.capitalize (Filename.(chop_extension (basename file_name))));
+        if file_name <> "-" then 
+          FConfig.compilation_unit :=
+            Some (String.capitalize (Filename.(chop_extension (basename file_name))));
         FConfig.current_input_file := file_name;
         process_impl  file_name;
       end
@@ -188,7 +190,9 @@ let initial_spec_list =
 let anon_fun name =
   let check = Filename.check_suffix name in
   input_file
-  (if check ".mli" then Intf name
+  (
+   (* if name = "-" then *)
+   if check ".mli" then Intf name
   else if check ".ml" then Impl name
   else if check objext then ModuleImpl name
   else if check libext then ModuleImpl name
@@ -201,5 +205,5 @@ let anon_fun name =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/mkFan.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/fan_args.cmo" *)
 (* end: *)

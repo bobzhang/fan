@@ -14,9 +14,13 @@ type 'a parser_fun  =
      loc -> char Fstream.t -> 'a option
 
 
-(** type [printer_fun] define the interface for the Fan's printer *)         
+(** type [printer_fun] define the interface for the Fan's printer
+    The [input_file] is required for the backend to mark its original source
+    [input_file] is specified by flag [-impl], the major name if not
+    [output_file] is specified by flag [-o], stdout if not
+ *)         
 type 'a printer_fun  =
-      (* ?input_file:string -> *) ?output_file:string ->
+      ?input_file:string -> ?output_file:string ->
         'a option -> unit
         
 

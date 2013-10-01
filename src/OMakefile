@@ -169,10 +169,10 @@ PMAKE = $(file pmake)
         
 snapshot:fan0
     section
-        cd hot
+        cd $(DIR_MAIN)
         foreach(f => ..., $(FAN_FILES) $(DRIVER_FILES))
             if $(file-exists $f.ml)
-                ../fan_hot_cold.opt -printer o $f.ml > ../cold/$f.ml
+                ../fan0 -printer o $f.ml > ../cold/$f.ml
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
         # $(PMAKE) fan -- cause a project lock

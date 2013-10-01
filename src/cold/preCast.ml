@@ -1,10 +1,11 @@
 open Format
-open FAst
 open LibUtil
-let with_open_out_file x f =
-  match x with
-  | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
-  | None  -> (set_binary_mode_out stdout true; f stdout; flush stdout)
+let with_open_out_file = Fan_util.with_open_out_file
+let dump_pt = Fan_util.dump_pt
+let simple_wrap = Fan_util.simple_wrap
+type 'a parser_fun = FLoc.t -> char Fstream.t -> 'a option 
+type 'a printer_fun =
+  ?input_file:string -> ?output_file:string -> 'a option -> unit 
 let sigi_printer =
   ref
     (fun ?input_file:_  ?output_file:_  _  -> failwith "No interface printer")
@@ -12,9 +13,6 @@ let stru_printer =
   ref
     (fun ?input_file:_  ?output_file:_  _  ->
        failwith "No implementation printer")
-type 'a parser_fun = loc -> char Fstream.t -> 'a option 
-type 'a printer_fun =
-  ?input_file:string -> ?output_file:string -> 'a option -> unit 
 let register_text_printer () =
   let print_implem ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
@@ -29,50 +27,21 @@ let register_text_printer () =
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.signature fmt pt in pp_print_flush fmt ()) in
   stru_printer := print_implem; sigi_printer := print_interf
-let dump_pt magic fname pt oc =
-  output_string oc magic;
-  output_value oc (if fname = "-" then "" else fname);
-  output_value oc pt
 let register_bin_printer () =
   let print_interf ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
-    with_open_out_file output_file
+    (with_open_out_file output_file) @@
       (dump_pt FConfig.ocaml_ast_intf_magic_number input_file pt) in
   let print_implem ?(input_file= "-")  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
-    with_open_out_file output_file
+    (with_open_out_file output_file) @@
       (dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt) in
   stru_printer := print_implem; sigi_printer := print_interf
-let wrap directive_handler pa init_loc cs =
-  let rec loop loc =
-    let (pl,stopped_at_directive) = pa loc cs in
-    match stopped_at_directive with
-    | Some new_loc ->
-        let pl =
-          match List.rev pl with
-          | [] -> []
-          | x::xs ->
-              (match directive_handler x with
-               | None  -> xs
-               | Some x -> x :: xs) in
-        (List.rev pl) @ (loop (Location_util.join_end new_loc))
-    | None  -> pl in
-  loop init_loc
-let simple_wrap pa init_loc cs =
-  let rec loop loc =
-    let (pl,stopped_at_directive) = pa loc cs in
-    match stopped_at_directive with
-    | Some new_loc ->
-        if pl = []
-        then loop (Location_util.join_end new_loc)
-        else pl @ (loop (Location_util.join_end new_loc))
-    | None  -> pl in
-  loop init_loc
 let parse_implem loc cs =
-  let l = simple_wrap (Fgram.parse Fsyntax.implem) loc cs in
+  let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.implem) in
   match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 let parse_interf loc cs =
-  let l = simple_wrap (Fgram.parse Fsyntax.interf) loc cs in
+  let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.interf) in
   match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
 let parse_file name pa =
   let loc = FLoc.mk name in
@@ -91,9 +60,8 @@ module CurrentPrinter =
 let wrap parse_fun ~print_location  lb =
   try
     let token_stream = (lb |> Fan_lex.from_lexbuf) |> Fgram.filter in
-    let (__strm :_ Fstream.t)= token_stream in
-    match Fstream.peek __strm with
-    | Some (`EOI,_) -> (Fstream.junk __strm; raise End_of_file)
+    match Fstream.peek token_stream with
+    | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as

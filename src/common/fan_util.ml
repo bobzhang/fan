@@ -16,11 +16,16 @@ let with_open_out_file x f =
    filename;
    ast
    }
+   when [fname] is "-" it means the file is from an standard input or pipe.
+   An empty name would marshallized.
+
+   Use case cat - | fan -printer -impl -
+   redirect the standard input to fan
  *)
 let dump_pt magic fname pt oc =
   begin
     output_string oc magic;
-    output_value oc fname;
+    output_value oc (if fname="-" then "" else fname);
     output_value oc pt
   end
 

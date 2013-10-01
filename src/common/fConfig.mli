@@ -21,6 +21,10 @@ val bug_main_address : string
 val fan_debug : bool ref
 val conversion_table : (string, string) Hashtbl.t
 val gram_warning_verbose : bool ref
+
+(** The name of current translation unit
+    when set [-] or toplevel , it's None
+ *)
 val compilation_unit : string option ref
 
 (** This is a list of directories to search for INCLUDE statements. *)

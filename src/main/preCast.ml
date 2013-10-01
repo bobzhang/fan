@@ -1,36 +1,36 @@
 open Format
-open FAst   
 open LibUtil
 
 
 {:import| Fan_util:
   with_open_out_file
   dump_pt
-  (* wrap *)
   simple_wrap
   ;
 |};;
 
-let sigi_printer =
-  ref (fun (* ?input_file:(_) *) ?output_file:(_)  _ -> failwith "No interface printer")
-
-let stru_printer =
-  ref (fun (* ?input_file:(_) *)
-      ?output_file:(_) _ -> failwith "No implementation printer")
-
-type 'a parser_fun  = loc -> char Fstream.t -> 'a option
+type 'a parser_fun  = FLoc.t -> char Fstream.t -> 'a option
 
 type 'a printer_fun  =
-      (* ?input_file:string -> *)
+      ?input_file:string ->
         ?output_file:string ->
         'a option -> unit
+
+
+let sigi_printer =
+  ref (fun ?input_file:(_) ?output_file:(_)  _ -> failwith "No interface printer")
+
+let stru_printer =
+  ref (fun ?input_file:(_)
+      ?output_file:(_) _ -> failwith "No implementation printer")
+
         
 
 
 (*************************************************************************)
 (** preparing for printer wrapper *)      
 let register_text_printer () =
-  let print_implem (* ?input_file:(_) *)  ?output_file ast =
+  let print_implem ?input_file:(_)  ?output_file ast =
     let pt =
       match ast with
       |None -> [] | Some ast ->  Ast2pt.stru ast in
@@ -39,7 +39,7 @@ let register_text_printer () =
         let fmt = Format.formatter_of_out_channel oc in
         let () = AstPrint.structure fmt pt in 
         pp_print_flush fmt ();) in
-  let print_interf (* ?input_file:(_)  *) ?output_file ast =
+  let print_interf ?input_file:(_) ?output_file ast =
     let pt =
       match ast with
       |None -> []
@@ -57,23 +57,21 @@ let register_text_printer () =
         
 (** used by flag -printer p *)    
 let register_bin_printer () =
-  let print_interf (* ?(input_file = "-")  *)?output_file ast =
+  let print_interf ?(input_file = "-") ?output_file ast =
       let pt =
         match ast with
         |None -> []
         |Some ast -> Ast2pt.sigi ast in
-      (with_open_out_file
-                 output_file
-                 (dump_pt
-                    FConfig.ocaml_ast_intf_magic_number (* input_file *) pt)) in
-  let print_implem (* ?(input_file = "-") *) ?output_file ast =
+      with_open_out_file output_file @@
+      dump_pt
+        FConfig.ocaml_ast_intf_magic_number input_file pt in
+  let print_implem ?(input_file = "-") ?output_file ast =
     let pt =
       match ast with
       |None -> []  
       |Some ast -> Ast2pt.stru ast in
-    with_open_out_file
-      output_file
-      (dump_pt FConfig.ocaml_ast_impl_magic_number (* input_file *) pt) in
+    with_open_out_file output_file @@
+    dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt in
   begin
     stru_printer := print_implem;
     sigi_printer := print_interf
@@ -111,16 +109,13 @@ end
 
         
 module CurrentPrinter  = struct
-  let print_interf (* ?input_file *) ?output_file ast =
-    !sigi_printer (* ?input_file *) ?output_file ast
-  let print_implem (* ?input_file *) ?output_file ast =
-    !stru_printer (* ?input_file *) ?output_file ast
+  let print_interf ?input_file ?output_file ast =
+    !sigi_printer ?input_file ?output_file ast
+  let print_implem ?input_file ?output_file ast =
+    !stru_printer ?input_file ?output_file ast
 end
 
 
-
-
-    
 
 (*************************************************************************)
 (** toplevel support *)    
@@ -128,13 +123,13 @@ end
 let wrap parse_fun ~print_location lb =
   try
     let token_stream = lb |> Fan_lex.from_lexbuf |> Fgram.filter in
-    match token_stream with parser (* FIXME *)
-    |  (`EOI, _)  -> raise End_of_file
-    |  -> parse_fun token_stream 
+    match Fstream.peek token_stream with
+    | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
+    | _ -> parse_fun token_stream
   with
   | End_of_file | Sys.Break
   | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
-    raise x
+      raise x
   | FLoc.Exc_located (loc, y)  -> begin
       Format.eprintf "@[<0>%a%s@]@." print_location loc (Printexc.to_string y);
       raise Exit; (* commuiniation with toplevel special case here*)
@@ -158,7 +153,8 @@ let toplevel_phrase token_stream =
 
 let use_file token_stream =
   let loop () =
-      let (pl, stopped_at_directive) = Fgram.parse_origin_tokens Fsyntax.implem token_stream in
+      let (pl, stopped_at_directive) =
+        Fgram.parse_origin_tokens Fsyntax.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | _ -> (pl, false) 
