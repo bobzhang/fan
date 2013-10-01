@@ -159,8 +159,7 @@ let initial_spec_list =
        exit 0)), 
     "Print the current compilation unit");
 
-   ("-plugin", Arg.String require ,   
-    "load plugin cma or cmxs files");
+   ("-plugin", Arg.String require , "load plugin cma or cmxs files");
 
    ("-loaded-modules", Arg.Set print_loaded_modules, "Print the list of loaded modules.");
    

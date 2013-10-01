@@ -1,1 +1,1 @@
-for x in hot_annot/*.cmo; do  cmp  $x hot_hot/$(basename $x) ; done
+for x in main_annot/*.cmo; do  cmp  $x hot1/$(basename $x) ; done
