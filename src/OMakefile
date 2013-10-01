@@ -11,12 +11,30 @@ BYTE_ENABLED = true
 NATIVE_ENABLED = true
 OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o
 
-DIR_HOT_ANNOT  = $(dir hot_annot)
-DIR_HOT_HOT    = $(dir hot_hot)
+######################################
+# This direcotry is preprocessed by cold
+# The develop is mainly here
+# produce fan0 
+DIR_MAIN_ANNOT  = $(dir main_annot)
+
+
+####################################
+# preprocessed by fan0
+# produce fan1
+DIR_HOT1 = $(dir hot1)
+####################################
+# fan1 -> fan2
+DIR_HOT2 = $(dir hot2)
+
+####################################
+# fan2 -> fan3 
+DIR_HOT3 = $(dir hot3)
+
+
 DIR_COMMON     = $(dir common)
 DIR_TREEPARSER = $(dir treeparser)
 DIR_COLD       = $(dir cold)  
-
+DIR_MAIN       = $(dir main)
 COMMON_INCLUDES[] =
     $(DIR_COMMON)
 TREEPARSER_INCLUDES[]=
@@ -26,7 +44,7 @@ COLD_INCLUDES[]=
     $(DIR_COLD)
     $(TREEPARSER_INCLUDES)
 HOT_ANNOT_INCLUDES[]=
-    $(DIR_HOT_ANNOT)
+    $(DIR_MAIN_ANNOT)
     $(TREEPARSER_INCLUDES)
 
 NATIVE_ENABLED = true
@@ -71,35 +89,73 @@ OCAML_LINK_FLAGS += -linkall
 
 
 #####################
-# cold binary
+# cold binary -> fan
 section
     OCAMLCFLAGS += -annot 
     .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
+    
 #####################
 # hot preprocessed by cold fan
 section
     OCAMLCFLAGS += -annot
-    VMOUNTDIR = $(DIR_HOT_ANNOT) # simulate ocamlbuild to interact well with annotation
-    vmount(-l,hot,$(VMOUNTDIR))
+    VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
+    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(file fan)
     OCamlAdditionalExistDependency($(PP_FAN))
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
-    OCamlProgram(fan_hot_cold, $(VMOUNTDIR)/fan)
+    OCamlProgram(fan0, $(VMOUNTDIR)/fan)
 
-#######################
-# hot preprocessed by hot fan
-section
-    VMOUNTDIR = $(DIR_HOT_HOT)
-    vmount(-l,hot,$(VMOUNTDIR))
-    PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
-    AdditionalDependency($(PP_FAN))
+MakeFix(mountdir,pp,exe) =
+    VMOUNTDIR = $(mountdir)
+    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+    PP_FAN = $(pp) # use hot to preprocess hot
+    AdditionalDependency($(pp))
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
-    OCamlProgram(fan_hot_hot, $(VMOUNTDIR)/fan)
+    OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
+MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
+MakeFix($(DIR_HOT2),$(file fan1), $(file fan2))
+MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
+
+
+#########################
+# fix point and snapshot 
+# .PHONY: fixed snapshot
+# TARGET1 = hot_annot/libhot.cma
+# TARGET2 =  hot_hot/libhot.cma
+
+# fixed: $(TARGET1) $(TARGET2) 
+#     if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
+#         println(bootstrapped success)
+#     else
+#         println(bootstrapped failure)
+
+
+# #######################
+# # hot preprocessed by hot fan
+# section
+#     VMOUNTDIR = $(DIR_HOT_HOT)
+#     vmount(-l,hot,$(VMOUNTDIR))
+#     PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
+#     AdditionalDependency($(PP_FAN))
+#     .SUBDIRS: $(VMOUNTDIR)
+#     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+#     OCamlProgram(fan_hot_hot, $(VMOUNTDIR)/fan)
+
+# section
+#     VMOUNTDIR = $(DIR_HOT_HOT_HOT)
+#     vmount(-l,hot, $(VMOUNTDIR))
+#     PP_FAN = $(file fan_hot_hot)
+#     AdditionalDependency($(PP_FAN))
+#     .SUBDIRS: $(VMOUNTDIR)
+#     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+#     OCamlProgram(fan_hot_hot_hot, $(VMOUNTDIR)/fan)
+
+    
 ########################
 # test
 
@@ -108,7 +164,7 @@ section
     BYTE_ENABLED = true
     PP_FAN = $(file fan_hot_cold)
     AdditionalDependency($(PP_FAN))
-    OCAML_LIBS[]+= $(DIR_HOT_ANNOT)/libhot
+    OCAML_LIBS[]+= $(DIR_MAIN_ANNOT)/libhot
     .SUBDIRS: unitest
 .PHONY: test
 test:unitest/test
@@ -118,18 +174,6 @@ test:unitest/test
 # section
 #     OCamlProgram(test, $(FILES))
 #     .SUBDIRS: unitest
-#########################
-# fix point and snapshot 
-.PHONY: fixed snapshot
-TARGET1 = hot_annot/libhot.cma
-TARGET2 =  hot_hot/libhot.cma
-
-fixed: $(TARGET1) $(TARGET2) 
-    if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
-        println(bootstrapped success)
-    else
-        println(bootstrapped failure)
-
 PMAKE = $(file pmake)
         
 snapshot:fan_hot_cold

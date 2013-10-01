@@ -1,0 +1,7 @@
+
+
+FILES[] = dump_ast
+
+
+
+OCamlProgram(dump_ast, $(FILES))
