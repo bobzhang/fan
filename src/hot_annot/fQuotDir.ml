@@ -1,1 +1,0 @@
-../hot/fQuotDir.ml
