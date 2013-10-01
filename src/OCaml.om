@@ -498,6 +498,10 @@ if you really want to build this file.
             %.cmi %.cmx %$(EXT_OBJ): %.ml :scanner: scan-ocaml-%.ml
                 $(OCamlOpt) -c $<
 
+### generate inferred interface
+%.inferred.mli: %.ml :scanner: scan-ocaml-%.ml
+    $(OCamlC) -i $< > $@
+
 %.cmi: %.mli :scanner: scan-ocaml-%.mli
     $(OCamlCNoPP) -c $<
 

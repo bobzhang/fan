@@ -8,7 +8,8 @@ $(LocalFiles): oconfig.mlp
 FILES = libUtil ast2pt oconfig astPrint ast_basic dyn_array fConfig\
     fLoc fanTokenFilter fanUtil fan_warnings fcset fdir foptions\
     fstream ftoken lex_util lexgen libUtil\
-    location_util parsetreeHelper tokenEval translate_lex
+    location_util parsetreeHelper tokenEval translate_lex \
+    fan_util
 
 OCamlLibrary(libcommon, $(FILES))
 

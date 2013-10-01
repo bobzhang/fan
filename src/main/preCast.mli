@@ -6,11 +6,17 @@
 
 open FAst
 
+(** type [parser_fun] defines the interface for Fan's parser
+    for example, the exported function [parse_implem] has type
+    [stru parse_fun]
+ *)
 type 'a parser_fun  =
      loc -> char Fstream.t -> 'a option
 
+
+(** type [printer_fun] define the interface for the Fan's printer *)         
 type 'a printer_fun  =
-      ?input_file:string -> ?output_file:string ->
+      (* ?input_file:string -> *) ?output_file:string ->
         'a option -> unit
         
 
@@ -37,21 +43,12 @@ val register_text_printer :  unit -> unit
 val register_bin_printer :  unit -> unit     
     
 
-
-
-        
-
-
-
-
 module CurrentPrinter : 
   sig
     (** the last argument is the [ast] to be printed, if it is None, then
         generally it will print nothing *)
-    val print_interf : ?input_file:string -> ?output_file:string ->
-      sigi option   -> unit
-    val print_implem : ?input_file:string -> ?output_file:string ->
-      stru option  -> unit
+    val print_interf : sigi printer_fun
+    val print_implem : stru printer_fun
   end
 
 
