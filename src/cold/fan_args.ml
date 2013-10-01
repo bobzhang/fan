@@ -59,7 +59,7 @@ let process_impl name =
     match PreCast.parse_file name PreCast.parse_implem with
     | None  -> None
     | Some x -> let x = Ast_filters.apply_implem_filters x in Some x in
-  PreCast.CurrentPrinter.print_implem ?input_file:(Some name)
+  PreCast.CurrentPrinter.print_implem ~input_file:name
     ?output_file:(output_file.contents) v
 let input_file x =
   match x with
@@ -138,12 +138,15 @@ let initial_spec_list =
     " Set the default language");
   ("-printer",
     (Arg.Symbol
-       (["p"; "o"],
+       (["p"; "o"; "dparsetree"],
          ((fun x  ->
              if x = "o"
              then PreCast.register_text_printer ()
-             else PreCast.register_bin_printer ())))),
-    "p  for binary and o  for text ")]
+             else
+               if x = "p"
+               then PreCast.register_bin_printer ()
+               else PreCast.register_parsetree_printer ())))),
+    "choose different backends according to the option")]
 let anon_fun name =
   let check = Filename.check_suffix name in
   input_file

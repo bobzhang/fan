@@ -82,7 +82,7 @@ let process_impl name =
       let x = Ast_filters.apply_implem_filters x in
       Some x  in
   PreCast.CurrentPrinter.print_implem
-    ?input_file:(Some name)
+    ~input_file:name
     ?output_file:(!output_file) v 
 
           
@@ -176,12 +176,15 @@ let initial_spec_list =
             Ast_quotation.default :=
               (Ast_quotation.resolve_name (`Sub [], s)))),
        " Set the default language");
-   ("-printer", Arg.Symbol( ["p";"o"],
+   ("-printer",
+    Arg.Symbol( ["p";"o";"dparsetree"],
     function x ->
       if x = "o" then
         PreCast.register_text_printer ()
-      else
-        PreCast.register_bin_printer ()),"p  for binary and o  for text ");
+      else if x = "p" then
+        PreCast.register_bin_printer ()
+      else PreCast.register_parsetree_printer ()),
+    "choose different backends according to the option");
  ];;
       
 

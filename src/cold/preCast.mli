@@ -46,7 +46,9 @@ val register_text_printer :  unit -> unit
 (** turn the printer to binary parsetree output *)
 val register_bin_printer :  unit -> unit     
     
-
+(** make use of OCaml's [-dsource] option *)
+val register_parsetree_printer : unit -> unit
+    
 module CurrentPrinter : 
   sig
     (** the last argument is the [ast] to be printed, if it is None, then

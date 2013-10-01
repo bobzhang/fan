@@ -34,21 +34,21 @@ let register_text_printer () =
     let pt =
       match ast with
       |None -> [] | Some ast ->  Ast2pt.stru ast in
-    with_open_out_file output_file
-      (fun oc ->
-        let fmt = Format.formatter_of_out_channel oc in
-        let () = AstPrint.structure fmt pt in 
-        pp_print_flush fmt ();) in
+    with_open_out_file output_file @@
+    fun oc ->
+      let fmt = Format.formatter_of_out_channel oc in
+      let () = AstPrint.structure fmt pt in 
+      pp_print_flush fmt () in
   let print_interf ?input_file:(_) ?output_file ast =
     let pt =
       match ast with
       |None -> []
       | Some ast -> Ast2pt.sigi ast in
-    with_open_out_file output_file
-      (fun oc ->
-        let fmt = Format.formatter_of_out_channel oc in
-        let () = AstPrint.signature fmt pt in
-        pp_print_flush fmt ()) in
+    with_open_out_file output_file @@
+    fun oc ->
+      let fmt = Format.formatter_of_out_channel oc in
+      let () = AstPrint.signature fmt pt in
+      pp_print_flush fmt () in
   begin
     stru_printer := print_implem;
     sigi_printer := print_interf
@@ -77,6 +77,33 @@ let register_bin_printer () =
     sigi_printer := print_interf
   end;;
 
+
+
+let register_parsetree_printer () =
+  let print_interf ?input_file:(_) ?output_file ast =
+      let pt =
+        match ast with
+        |None -> []
+        |Some ast -> Ast2pt.sigi ast in
+      with_open_out_file output_file @@
+      fun oc ->
+        let fmt = Format.formatter_of_out_channel oc in
+        Printast.interface fmt pt in
+      (* dump_pt *)
+      (*   FConfig.ocaml_ast_intf_magic_number input_file pt in *)
+  let print_implem ?input_file:(_) ?output_file ast =
+    let pt =
+      match ast with
+      |None -> []  
+      |Some ast -> Ast2pt.stru ast in
+    with_open_out_file output_file @@
+    fun oc ->
+      let fmt = Format.formatter_of_out_channel oc in
+      Printast.implementation fmt pt in
+  begin
+    stru_printer := print_implem;
+    sigi_printer := print_interf
+  end;;
 
 
 

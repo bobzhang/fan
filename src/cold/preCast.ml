@@ -16,13 +16,13 @@ let stru_printer =
 let register_text_printer () =
   let print_implem ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
-    with_open_out_file output_file
+    (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.structure fmt pt in pp_print_flush fmt ()) in
   let print_interf ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
-    with_open_out_file output_file
+    (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
          let () = AstPrint.signature fmt pt in pp_print_flush fmt ()) in
@@ -36,6 +36,20 @@ let register_bin_printer () =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
     (with_open_out_file output_file) @@
       (dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt) in
+  stru_printer := print_implem; sigi_printer := print_interf
+let register_parsetree_printer () =
+  let print_interf ?input_file:_  ?output_file  ast =
+    let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
+    (with_open_out_file output_file) @@
+      (fun oc  ->
+         let fmt = Format.formatter_of_out_channel oc in
+         Printast.interface fmt pt) in
+  let print_implem ?input_file:_  ?output_file  ast =
+    let pt = match ast with | None  -> [] | Some ast -> Ast2pt.stru ast in
+    (with_open_out_file output_file) @@
+      (fun oc  ->
+         let fmt = Format.formatter_of_out_channel oc in
+         Printast.implementation fmt pt) in
   stru_printer := print_implem; sigi_printer := print_interf
 let parse_implem loc cs =
   let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.implem) in

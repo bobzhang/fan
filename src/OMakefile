@@ -85,7 +85,7 @@ FILES[] =
     # fan
 
 
-OCAML_OTHER_LIBS += dynlink
+OCAML_OTHER_LIBS += dynlink ocamlcommon
 
 LIB_COMMON = $(file common/libcommon)
 LIB_PARSER_RT = $(file treeparser/libtreeparser)
@@ -96,7 +96,7 @@ LIB_COLD = $(file cold/libcold)
 OCAML_LIBS[] =
     $(LIB_COMMON)
     $(LIB_PARSER_RT)
-OCAML_LINK_FLAGS += -linkall    
+OCAML_LINK_FLAGS += -I +compiler-libs -linkall    
 
 
 #####################
@@ -153,7 +153,7 @@ fixed: $(TARGET1) $(TARGET2)
 section
     NATIVE_ENABLED = false
     BYTE_ENABLED = true
-    PP_FAN = $(file fan_hot_cold)
+    PP_FAN = $(file fan)
     AdditionalDependency($(PP_FAN))
     OCAML_LIBS[]+= $(DIR_MAIN_ANNOT)/libhot
     .SUBDIRS: unitest
