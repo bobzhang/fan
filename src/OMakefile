@@ -47,6 +47,17 @@ HOT_ANNOT_INCLUDES[]=
     $(DIR_MAIN_ANNOT)
     $(TREEPARSER_INCLUDES)
 
+# CreateDirIfNotExist(dir) =
+#     if $(not $(file-exists $(dir)))
+#         println($"--- creating directory $(dir) ---")
+#         mkdir $(dir)
+#         export
+# static.=
+#     foreach(dir => ..., $(DIR_MAIN_ANNOT) $(DIR_HOT1) $(DIR_HOT2) $(DIR_HOT3))
+#         CreateDirIfNotExist($(dir))
+    
+
+    
 NATIVE_ENABLED = true
 
 ##############
@@ -60,7 +71,7 @@ FAN_FILES = \
     fSigUtil fState fanAstN fanOps fan_lex fgram\
     filters flex_lib freeVars fsyntax gentry gfold gramlib\
     idN langFans langInclude langOcaml langSave lex_lex lexing_util\
-    mkFan mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
+    fan_args mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
     parse_stream pluginsN preCast stdFan typehook
 
 ##################################################################
@@ -124,36 +135,16 @@ MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 
 #########################
 # fix point and snapshot 
-# .PHONY: fixed snapshot
-# TARGET1 = hot_annot/libhot.cma
-# TARGET2 =  hot_hot/libhot.cma
+.PHONY: fixed snapshot
+TARGET1 = $(DIR_HOT1)/libhot.cma
+TARGET2 = $(DIR_HOT2)/libhot.cma
 
-# fixed: $(TARGET1) $(TARGET2) 
-#     if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
-#         println(bootstrapped success)
-#     else
-#         println(bootstrapped failure)
+fixed: $(TARGET1) $(TARGET2) 
+    if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
+        println(bootstrapped success)
+    else
+        println(bootstrapped failure)
 
-
-# #######################
-# # hot preprocessed by hot fan
-# section
-#     VMOUNTDIR = $(DIR_HOT_HOT)
-#     vmount(-l,hot,$(VMOUNTDIR))
-#     PP_FAN = $(file fan_hot_cold) # use hot to preprocess hot
-#     AdditionalDependency($(PP_FAN))
-#     .SUBDIRS: $(VMOUNTDIR)
-#     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
-#     OCamlProgram(fan_hot_hot, $(VMOUNTDIR)/fan)
-
-# section
-#     VMOUNTDIR = $(DIR_HOT_HOT_HOT)
-#     vmount(-l,hot, $(VMOUNTDIR))
-#     PP_FAN = $(file fan_hot_hot)
-#     AdditionalDependency($(PP_FAN))
-#     .SUBDIRS: $(VMOUNTDIR)
-#     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
-#     OCamlProgram(fan_hot_hot_hot, $(VMOUNTDIR)/fan)
 
     
 ########################
@@ -176,7 +167,7 @@ test:unitest/test
 #     .SUBDIRS: unitest
 PMAKE = $(file pmake)
         
-snapshot:fan_hot_cold
+snapshot:fan0
     section
         cd hot
         foreach(f => ..., $(FAN_FILES) $(DRIVER_FILES))

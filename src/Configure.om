@@ -1,63 +1,9 @@
-#
-# Configuration utilities
-#
-# Autoconfiguration functions and variables
-# OMake standard library provides a number of functions and variables intended to help one write
-# build specifications that need to be capable of autoconfiguring itself to adjust to different
-# build environments.
-#
 
-# The following general-purpose functions can be used to discover the properties of your build
-# environment in a fashion similar to the one used by GNU autoconf tool you may be familiar with.
-# It is recommended that these function be used from an appropriate \verb+static.+ block (see
-# section:static for more information).
-#
-# In order to use the following general-purpose functions, you need to have the line
-# verbatim
-# open configure/Configure
-# verbatim
-# included in your OMakefile or OMakeroot.
-# doc
+# It is recommended that these function be used from an appropriate static. block 
 
 open build/Common
 
-# 
-# As of 0.9.9, all external variables mut be declared.
-# Since this module uses the C compiler, we must open build/C.
-# However, build/C also uses configuration, so we have a
-# circular dependency.  The solution is to "autoload" C,
-# which means we load it on demand, breaking the cycle.
-#
-# In 0.9.8 this is a no-op.
-#
-# autoload build/C
 
-#
-# A number of helper functions, using the autoconf names, when appropriate.
-#
-
-# ConfMsgChecking
-
-# ConfMsgChecking(<msg>)
-# ...
-# ConfMsgResult(<msg>)
-
-# The ConfMsgChecking function output message of the form \verb+--- Checking <msg>... +
-# without any trailing newline. After the test advertized by ConfMsgChecking is
-# performed, the ConfMsgResult function should be used to output the result.
-#
-# In certain cases users may want to redefine these function --- for example, to use a different
-# output formatting and/or to copy the messages to a log file.
-#
-# Example:
-# verbatim
-# static. =
-#    ConfMsgChecking(which foo to use)
-#    foo = ...
-#    ConfMsgResult($(foo))
-# verbatim
-# doc
-#
 ConfMsgChecking(msg) =
     print($"--- Checking $(msg)... ")
 
@@ -65,15 +11,6 @@ ConfMsgResult(msg) =
     println($"($(msg))")
     value $(msg)
 
-# doc
-# ConfMsgWarn
-# verbatim
-# ConfMsgWarn(<msg>)
-# ConfMsgError(<msg>)
-# verbatim
-# 
-# Print a warning or an error message respectively. ConfMsgError would then abort \OMake.
-# doc
 ConfMsgWarn(msg) =
     msg[] = $(split $(nl), $(msg))
     print($(concat $(EMPTY), $(add-wrapper $'--- *** ', $(nl), $(msg))))
@@ -83,13 +20,8 @@ ConfMsgError(msg) =
     eprintln($"""*** ERROR: $(concat '$(nl)---        ', $(msg))""")
     exit(1)
   
-#
-# doc
-# ConfMsgYesNo
-
-# flag = $(ConfMsgYesNo <bool expr>
-# flag = $(ConfMsgFound <bool expr>
-
+# flag = $(ConfMsgYesNo <bool expr>)
+# flag = $(ConfMsgFound <bool expr>)
 
 # The ConfMsgFound function expects to receive a boolean flag describing whether a test
 # previously announced using the ConfMsgChecking found what it
@@ -106,13 +38,13 @@ ConfMsgFound(found) =
    ConfMsgResult($(if $(found), found, NOT found))
    return $(found)
    
-# doc
+
 # TryCompileC{TryRunC}
-# verbatim
+
 # success = $(TryCompileC <prog_text>)
 # success = $(TryLinkC <prog_text>)
 # success = $(TryRunC <prog_text>)
-# verbatim
+
 #
 # Given the text of a C program, the TryCompileC, TryLinkC, and TryRunC
 # functions would try to compile / compile and link / compile, link, and run, the given program and return a boolean flag
@@ -179,16 +111,16 @@ TryLinkC(prog) =
 TryRunC(prog) =
     return $(TryCompilingC $(CC) $(ConfCleanCFLAGS $(CFLAGS)) $(PREFIXED_INCLUDES), $(LDFLAGS), $(EXE), $(prog), Runs)
 
-# doc
+
 # RunCProg
-# verbatim
+
 # output = $(RunCProg <prog>)
-# verbatim
+
 #
 # RunCProg is similar to the RunCProg, except that it
 # returns the output of the function (will return false if the program fails to compile
 # or run).
-# doc
+
 
 RunCProg(prog) =
     return $(TryCompilingC $(CC) $(ConfCleanCFLAGS $(CFLAGS)) $(PREFIXED_INCLUDES), $(LDFLAGS), $(EXE), $(prog), Output)
@@ -306,7 +238,7 @@ public.VerboseCheckHeader = $(VerboseCheckCHeader)
 # ConfMsgChecking and
 # ConfMsgResult functions to describe the test and the outcome.
 #
-# doc
+
 #
 public.CheckProg(prog) =
    ConfMsgChecking(for $(prog))
@@ -319,7 +251,7 @@ public.CheckProg(prog) =
       return false
 
 #
-# doc
+
 # \section{Translating autoconf scripts}
 # Some of the functions described above are very similar to the ones present in autoconf.
 # Below is a brief translation table for such functions.

@@ -2,15 +2,8 @@
 open Common
 open Configure
 
-########################################################################
-# OCaml section
-#
-# OMake provides extensive support for building OCaml code, including support for tools like
-# ocamlfind,ocamlyacc and menhir. In order to use the functions
-# defined in this section, you need to make sure the line
-# open OCaml
-# is present in your OMakeroot file.
-#
+
+
 # These variables will get defined based on the ``autoconf-style'' tests executed when you
 # run OMake for the first time. You can use them to configure your project accordingly,
 # and you should not redefine them.
@@ -18,39 +11,16 @@ open Configure
 # You can use the --configure command line option  to force  re-execution of all the tests.
 # omake --configure
 
-# OCAMLOPT_EXISTS  True when ocamlopt (or ocamlopt.opt) is
-#    available on your machine.
-# OCAMLFIND_EXISTS True when the ocamlfind is available on your  machines.
 # OCAMLDEP_MODULES_AVAILABLE True when a version of
 #    ocamldep that understands the  -modules option is available on your machine.
 # ocamldep -modules
 
-# MENHIR_AVAILABLE True when the Menhir parser-generator is available
-#    on your machine.
 
 # OCAMLLIB The location of OCaml library directory. Empty when no
 #    ocamlc is found.
 # ocamlc -where
 #
 
-# The following variables can be redefined in your project.
-# USE_OCAMLFIND Whether to use the ocamlfind utility (default false)
-
-# OCAMLC The OCaml bytecode compiler (default ocamlc.opt if it exists
-#    and USE_OCAMLFIND is not set, otherwise ocamlc).
-
-# OCAMLOPT The OCaml native-code compiler (default ocamlopt.opt if it
-#    exists and USE_OCAMLFIND is not set, otherwise ocamlopt).
-
-# OCAMLLEX The OCaml lexer generator (default ocamllex).
-
-# OCAMLLEXFLAGS The flags to pass to ocamllex (default -q).
-
-# OCAMLYACC The OCaml parser generator (default ocamlyacc).
-
-# OCAMLYACCFLAGS Additional options to pass to $(OCAMLYACC).
-
-# OCAMLDEP The OCaml dependency analyzer (default ocamldep.opt).
 
 # OCAMLDEP_MODULES_ENABLED Instead of using OCAMLDEP
 #    in a traditional make-style fashion, run  $(OCAMLDEP) -modules and then
@@ -59,7 +29,6 @@ open Configure
 #    interactions between \OMake, OCAMLDEP and generated files. Set to
 #    $(OCAMLDEP_MODULES_AVAILABLE) by default.
 
-# OCAMLMKTOP The OCaml toploop compiler (default ocamlmktop).
 
 # OCAMLLINK The OCaml bytecode linker (default OCAMLC).
 
@@ -69,26 +38,17 @@ open Configure
 #    The search path with the -I prefix is defined by the PREFIXED_OCAMLINCLUDES
 #    variable.
 
-# OCAMLFIND The ocamlfind utility (default ocamlfind if
-#     USE_OCAMLFIND is set, otherwise empty).
 
 # OCAMLFINDFLAGS The flags to pass to ocamlfind (default empty, USE_OCAMLFIND must be set).
 
 # OCAMLPACKS Package names to pass to ocamlfind (USE_OCAMLFIND must be set).
 
-# BYTE_ENABLED Flag indicating whether to use the bytecode compiler (default true, when no ocamlopt found, false otherwise).
-
-# NATIVE_ENABLED Flag indicating whether to use the native-code compiler (default true, when ocamlopt is found, false otherwise).
-#    Both BYTE_ENABLED and NATIVE_ENABLED can be set to true;
-#    at least one should be set to true.
-
-# MENHIR_ENABLED Define this as true if you wish to use
-#    menhir instead of ocamlyacc (default false).
 
 
 public.USE_OCAMLFIND = false
 
 .STATIC: :value: $(PATH)
+
     OCAMLFIND_EXISTS = $(CheckProg ocamlfind)
     OCAMLC_OPT_EXISTS = $(CheckProg ocamlc.opt)
     OCAMLDEP_OPT_EXISTS = $(CheckProg ocamldep.opt)
@@ -99,7 +59,7 @@ public.USE_OCAMLFIND = false
     OCAMLOPT = $(if $(OCAMLOPT_OPT_EXISTS), $`(if $(USE_OCAMLFIND), ocamlopt, ocamlopt.opt), ocamlopt)
     OCAMLDEP = $(if $(OCAMLDEP_OPT_EXISTS), $`(if $(USE_OCAMLFIND), ocamldep, ocamldep.opt), ocamldep)
     NATIVE_ENABLED = $(OCAMLOPT_EXISTS)
-    BYTE_ENABLED = $(not $(OCAMLOPT_EXISTS))
+    BYTE_ENABLED = $(OCAMLC_EXISTS)
     OCAMLLIB =
         if $(OCAMLC_EXISTS)
             ConfMsgChecking(for OCaml library location)
@@ -136,29 +96,31 @@ public.PREFIXED_OCAMLPACKS =\
          -package $(string $(concat \,, $(OCAMLPACKS))),\
          $(EMPTY))
 
-#
-# Various options
-# OCaml command flags
-#
-# The following variables specify additional options to be passed to
-# the OCaml tools.
 
 # OCAMLDEPFLAGS Flags to pass to OCAMLDEP.
+
 # OCAMLPPFLAGS Flags 
+
 # OCAMLCFLAGS Flags to pass to the byte-code compiler.
+
 # OCAMLOPTFLAGS Flags to pass to the native-code compiler 
+
 # OCAMLFLAGS Flags to pass to either compiler
+
 # OCAML_BYTE_LINK_FLAGS Flags to pass to the byte-code linker (default empty).
+
 # OCAML_NATIVE_LINK_FLAGS Flags to pass to the native-code linker (default empty).
+
 # OCAML_LINK_FLAGS Flags to pass to either linker.
+
 # MENHIR_FLAGS Additional flags to pass to menhir.
 #
 
 declare OCAMLDEPFLAGS
 public.OCAMLPPFLAGS  =
 public.OCAMLFLAGS    = 
-public.OCAMLCFLAGS   =   -w +a-4-32-30-42-40 -short-paths
-public.OCAMLOPTFLAGS =
+public.OCAMLCFLAGS   =  -w +a-4-32-30-42-40 -short-paths
+public.OCAMLOPTFLAGS =  -w +a-4-32-30-42-40 -short-paths
 public.OCAMLCPPFLAGS =
 public.OCAML_LINK_FLAGS = $`(if $(and $(USE_OCAMLFIND) $(gt $(length $(OCAMLPACKS)), 0)), -linkpkg, $(EMPTY))
 public.OCAML_BYTE_LINK_FLAGS = -custom
