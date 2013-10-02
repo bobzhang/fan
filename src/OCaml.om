@@ -247,9 +247,9 @@ public.AdditionalDependency(files) =
     export
 
 public.OCamlAdditionalExistDependency(files) =
-    .SCANNER: scan-ocaml-%: :value: $(files)
-    .SCANNER: %.cmi: :value: $(files)
-    .SCANNER: %.cmx %.cmo: :value: $(files)
+    .SCANNER: scan-ocaml-%: :exists: $(files)
+    .SCANNER: %.cmi: :exists: $(files)
+    .SCANNER: %.cmx %.cmo: :exists: $(files)
     export
     
 #

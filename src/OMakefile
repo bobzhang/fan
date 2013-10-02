@@ -116,7 +116,8 @@ section
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(file fan)
-    OCamlAdditionalExistDependency($(PP_FAN))
+    # OCamlAdditionalExistDependency($(PP_FAN))
+    AdditionalDependency($(PP_FAN))
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
     OCamlProgram(fan0, $(VMOUNTDIR)/fan)
@@ -192,4 +193,4 @@ coldtop:common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma
     
 clean:
     rm -rf $(OCAMLBIN_EXT)
-
+    rm -rf fan fan0 fan1
