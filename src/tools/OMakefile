@@ -1,7 +1,28 @@
 
+USE_OCAMLFIND = true
 
-FILES[] = dump_ast
+###############################
+## OCAMLPACKS only works in
+## toplevel, it does not work
+## in section
+## google: Changing OCAMLPACKS in a section fails    
+OCAMLPACKS[] = 
+    compiler-libs.toplevel
+    utop
+    
+NATIVE_ENABLED = false
+BYTE_ENABLED = true
+section
+    OCAML_LIBS =
+    OCAMLFINDFLAGS += -predicates create_toploop
+    OCAML_BYTE_LINK_FLAGS += -thread 
+    FILES[] =
+        buildtop
+    OCamlProgram(buildtop, $(FILES))
 
 
 
-OCamlProgram(dump_ast, $(FILES))
+clean:
+    rm -rf $(OCAMLBIN_EXT)
+
+# OCamlProgram(dump_ast, $(FILES))

@@ -85,7 +85,7 @@ FILES[] =
     # fan
 
 
-OCAML_OTHER_LIBS += dynlink ocamlcommon
+
 
 LIB_COMMON = $(file common/libcommon)
 LIB_PARSER_RT = $(file treeparser/libtreeparser)
@@ -102,14 +102,16 @@ OCAML_LINK_FLAGS += -I +compiler-libs -linkall
 #####################
 # cold binary -> fan
 section
+    OCAML_OTHER_LIBS += dynlink ocamlcommon
     OCAMLCFLAGS += -annot 
     .SUBDIRS: common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
     
 #####################
-# hot preprocessed by cold fan
+# fan -> fan0
 section
+    OCAML_OTHER_LIBS += dynlink ocamlcommon
     OCAMLCFLAGS += -annot
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
@@ -120,6 +122,7 @@ section
     OCamlProgram(fan0, $(VMOUNTDIR)/fan)
 
 MakeFix(mountdir,pp,exe) =
+    OCAML_OTHER_LIBS += dynlink ocamlcommon
     VMOUNTDIR = $(mountdir)
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(pp) # use hot to preprocess hot
@@ -145,18 +148,24 @@ fixed: $(TARGET1) $(TARGET2)
     else
         println(bootstrapped failure)
 
-
-    
+.SUBDIRS: main_dparsetree
+# fixpoint: $(add)
 ########################
 # test
 
 section
+    OCAML_OTHER_LIBS += dynlink ocamlcommon
     NATIVE_ENABLED = false
     BYTE_ENABLED = true
     PP_FAN = $(file fan)
     AdditionalDependency($(PP_FAN))
     OCAML_LIBS[]+= $(DIR_MAIN_ANNOT)/libhot
     .SUBDIRS: unitest
+
+section
+    OCAML_LIBS = 
+    .SUBDIRS: tools
+        
 .PHONY: test
 test:unitest/test
     unitest/test -verbose    
@@ -176,6 +185,7 @@ snapshot:fan0
             if $(file-exists $f.mli)
                 cp $f.mli ../cold/$f.mli
         # $(PMAKE) fan -- cause a project lock
+
 
 .PHONY: coldtop
 coldtop:common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma

@@ -482,6 +482,7 @@ if you really want to build this file.
                 $(OCamlOpt) -c $<
         else
             %.cmo %.cmi: %.ml :scanner: scan-ocaml-%.ml
+                # echo fuck $(OCamlC) -c $< 
                 $(OCamlC) -c $<
 
 %.cmi: %.ml

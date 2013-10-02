@@ -10,7 +10,9 @@ OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 OCamlLibrary(libhot, $(FAN_FILES))
 OCamlLibrary(libhot_top, $(FAN_FILES) fanTop)
 
-%.dparsetree:%.ml
-    $(PP_FAN) -printer dparsetree $< > $@
+# %.dparsetree:%.ml
+#     $(PP_FAN) -printer dparsetree $< > $@
+
+
 clean:
     rm -rf $(OCAMLBIN_EXT)

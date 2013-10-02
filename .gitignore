@@ -100,3 +100,5 @@ src/unitest/test
 src/fan*
 hot*
 main_annot
+src/tools/buildtop
+src/main_dparsetree
