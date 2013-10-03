@@ -96,7 +96,7 @@ Lexing_util:
   opt_char
   opt_char_len
   update_loc
-  default_cxt
+  new_cxt
   push_loc_cont
   pop_loc
   lex_string
@@ -117,7 +117,6 @@ Location_util:
     {:import|
     Lexing_util:
     with_curr_loc
-    default_cxt 
     update_loc ;
    Location_util:
     (--)
@@ -154,7 +153,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     end
 | float_literal as f -> (`Flo f, !! lexbuf )       (** FIXME safety check *)
 | '"' ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
@@ -194,7 +193,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       
       (* comment *)      
 | "(*" ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     let old = lexbuf.lex_start_p in
     begin
       store c lexbuf;
@@ -203,11 +202,12 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
        old -- lexbuf.lex_curr_p)
     end
 | "(*)" ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     let old = lexbuf.lex_start_p in
     begin 
       warn Comment_start (!! lexbuf) ;
-      lex_comment c lexbuf;
+      store c lexbuf;
+      push_loc_cont c lexbuf lex_comment;
       ( `Comment (buff_contents c),
         old -- lexbuf.lex_curr_p)
     end
@@ -219,7 +219,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
      loc)
       
 | "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? as shift ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     let name =
       match name with
       | Some name -> Ftoken.name_of_string name
@@ -241,7 +241,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 
 |"#{:" (quotation_name as name) '|'  (extra_quot as p)? ->
-    let c  = default_cxt lexbuf in
+    let c  =  new_cxt () in
     let len = String.length name in
     let () = Stack.push p opt_char in
     let retract = opt_char_len p + 2 in  (*/|} *)
@@ -290,7 +290,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         end
     | _ as c ->
         err (Illegal_character c) (!! lexbuf) |} in
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
       push_loc_cont c lexbuf  dollar
     else err Illegal_antiquote (!! lexbuf)

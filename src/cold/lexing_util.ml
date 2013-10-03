@@ -66,6 +66,7 @@ type context =  {
   buffer: Buffer.t} 
 let default_cxt lb =
   { loc = [Lexing.lexeme_start_p lb]; buffer = (Buffer.create 256) }
+let new_cxt () = { loc = []; buffer = (Buffer.create 256) }
 let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf

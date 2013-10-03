@@ -4,7 +4,7 @@ let (!!) = Location_util.from_lexbuf
 let opt_char = Lexing_util.opt_char
 let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
-let default_cxt = Lexing_util.default_cxt
+let new_cxt = Lexing_util.new_cxt
 let push_loc_cont = Lexing_util.push_loc_cont
 let pop_loc = Lexing_util.pop_loc
 let lex_string = Lexing_util.lex_string
@@ -4955,7 +4955,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
               (lexbuf.Lexing.lex_curr_pos + 0) in
           ((`Flo f), (!! lexbuf))
       | 7 ->
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
            ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
@@ -5003,16 +5003,17 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
               (lexbuf.Lexing.lex_curr_pos + 0) in
           ((`Blank x), (!! lexbuf))
       | 17 ->
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (store c lexbuf;
            push_loc_cont c lexbuf lex_comment;
            ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 18 ->
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (warn Comment_start (!! lexbuf);
-           lex_comment c lexbuf;
+           store c lexbuf;
+           push_loc_cont c lexbuf lex_comment;
            ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
       | 19 ->
           let loc = !! lexbuf in
@@ -5038,7 +5039,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           and shift =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           let name =
             match name with
             | Some name -> Ftoken.name_of_string name
@@ -5067,7 +5068,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           and p =
             Lexing.sub_lexeme_char_opt lexbuf
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           let len = String.length name in
           let () = Stack.push p opt_char in
           let retract = (opt_char_len p) + 2 in
@@ -7423,7 +7424,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                       (lexbuf.Lexing.lex_start_pos + 0) in
                   err (Illegal_character c) (!! lexbuf)
               | _ -> failwith "lexing: empty token")) in
-          let c = default_cxt lexbuf in
+          let c = new_cxt () in
           if FConfig.antiquotations.contents
           then push_loc_cont c lexbuf dollar
           else err Illegal_antiquote (!! lexbuf)

@@ -94,7 +94,7 @@ Lexing_util:
   opt_char
   opt_char_len
   update_loc
-  default_cxt
+  new_cxt
   push_loc_cont
   pop_loc
   lex_string
@@ -125,7 +125,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     end
 | ocaml_lid as x -> (`Lid x, !! lexbuf )
 | '"' ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
@@ -145,26 +145,28 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 | ocaml_blank + -> token lexbuf 
       (* comment *)      
 | "(*" ->
-    let c = default_cxt lexbuf in
+    let c = new_cxt () in
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_comment;
       token lexbuf 
     end
 | "(*)" ->
-    let c = default_cxt lexbuf in
+    let c =  new_cxt () in
     begin 
       warn Comment_start (!! lexbuf) ;
-      lex_comment c lexbuf;
+      store c lexbuf;
+      push_loc_cont c lexbuf lex_comment; (* A bug fix*)
+      (* lex_comment c lexbuf; *)
       token lexbuf 
     end
       (* quotation handling *)
 | "{" -> (* border not included *)
     let old = lexbuf.lex_start_p in
-    let c  = default_cxt lexbuf in
+    let c  = new_cxt () in
     begin
       store c lexbuf;
-      lex_simple_quotation   c lexbuf;
+      push_loc_cont c lexbuf lex_simple_quotation;
       let loc=old--lexbuf.lex_curr_p in
       (`Quot {Ftoken.name=Ftoken.empty_name;
               meta=None;

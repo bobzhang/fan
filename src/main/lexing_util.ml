@@ -170,11 +170,10 @@ end
 
 type context = { mutable loc : FLoc.position list; buffer : Buffer.t; }
 
-let default_cxt lb = {
-    loc = [ Lexing.lexeme_start_p lb];
-    buffer = Buffer.create 256
-  }
-      
+let new_cxt () = {
+  loc = [];
+  buffer = Buffer.create 256;
+}      
 
 
 
@@ -448,5 +447,5 @@ let _ =
     | _ -> None   
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/lexing_util.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lexing_util.cmo" *)
 (* end: *)

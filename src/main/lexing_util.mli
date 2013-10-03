@@ -46,9 +46,10 @@ type context = {
 
 
 
-val default_cxt : Lexing.lexbuf -> context
+(* val default_cxt : Lexing.lexbuf -> context *)
     
-
+val new_cxt : unit -> context
+    
 val store : context -> Lexing.lexbuf -> unit
 
 val with_store :
@@ -131,3 +132,8 @@ val lex_quotation : context -> Lexing.lexbuf -> unit
    It handles internally ocaml string, ocaml char and comments
  *)
 val lex_simple_quotation :   context -> Lexing.lexbuf -> unit    
+
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/lexing_util.cmo" *)
+(* end: *)
