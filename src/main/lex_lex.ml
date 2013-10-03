@@ -144,20 +144,12 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     (`Sym x, !! lexbuf)
 | ocaml_blank + -> token lexbuf 
       (* comment *)      
-| "(*" ->
+| "(*"(')' as x) ? ->
     let c = new_cxt () in
     begin
+      if x <> None then warn Comment_start (!! lexbuf);
       store c lexbuf;
       push_loc_cont c lexbuf lex_comment;
-      token lexbuf 
-    end
-| "(*)" ->
-    let c =  new_cxt () in
-    begin 
-      warn Comment_start (!! lexbuf) ;
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_comment; (* A bug fix*)
-      (* lex_comment c lexbuf; *)
       token lexbuf 
     end
       (* quotation handling *)
@@ -196,5 +188,5 @@ let from_stream (loc:FLoc.t) strm =
   end
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/lex_lex.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lex_lex.cmo" *)
 (* end: *)

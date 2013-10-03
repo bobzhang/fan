@@ -192,26 +192,17 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 | ocaml_blank + as x -> (`Blank x, !! lexbuf)
       
       (* comment *)      
-| "(*" ->
+| "(*" (')' as x) ? ->
     let c = new_cxt () in
     let old = lexbuf.lex_start_p in
     begin
+      if x <> None then warn Comment_start (!!lexbuf);
       store c lexbuf;
       push_loc_cont c lexbuf lex_comment;
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
-| "(*)" ->
-    let c = new_cxt () in
-    let old = lexbuf.lex_start_p in
-    begin 
-      warn Comment_start (!! lexbuf) ;
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_comment;
-      ( `Comment (buff_contents c),
-        old -- lexbuf.lex_curr_p)
-    end
-      (* quotation handling *)
+ (* quotation handling *)
 | "{||}" ->
     let loc  =     !! lexbuf in
     (`Quot
@@ -312,5 +303,5 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/fan_lex.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/fan_lex.cmo" *)
 (* end: *)
