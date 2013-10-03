@@ -9,7 +9,7 @@
 OCAMLFLAGS = 
 BYTE_ENABLED = true
 NATIVE_ENABLED = true
-OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree
 
 ######################################
 # This direcotry is preprocessed by cold
@@ -139,17 +139,68 @@ MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 
 #########################
 # fix point and snapshot 
-.PHONY: fixed snapshot
+.PHONY: fixed snapshot fixpoint fixpoint1
 TARGET1 = $(DIR_HOT1)/libhot.cma
 TARGET2 = $(DIR_HOT2)/libhot.cma
 
-fixed: $(TARGET1) $(TARGET2) 
-    if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
-        println(bootstrapped success)
-    else
-        println(bootstrapped failure)
+# fixed: $(TARGET1) $(TARGET2) 
+#     if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
+#         println(bootstrapped success)
+#     else
+#         println(bootstrapped failure)
 
-.SUBDIRS: main_dparsetree
+
+FAN_ML_FILES =
+    value $(filter-exists $(addprefix main/, $(addsuffix .ml,  $(FAN_FILES) $(DRIVER_FILES))))
+
+
+
+
+MakeRules(pp) =
+    foreach(f=> ..., $(FAN_ML_FILES) )
+        private.F = $f
+        private.obj_file = $(file dparsetree/$(basename $f).$(basename $(pp)).dparsetree)
+        # println ("$(obj_file)")
+        $(obj_file): $F $(pp)
+            section
+                cd main
+                $(pp) -printer dparsetree $F > $(obj_file)
+MakeRules($(file fan))
+MakeRules($(file fan0))
+MakeRules($(file fan1))
+
+MakeDParseFiles(pp) =
+    value $(addprefix dparsetree/, $(addsuffix .$(pp).dparsetree, $(basename $(FAN_ML_FILES))))
+
+FAN_ML_FILES_P =
+    MakeDParseFiles(fan)
+FAN0_ML_FILES_P =
+    MakeDParseFiles(fan0)
+FAN1_ML_FILES_P =
+    MakeDParseFiles(fan1)
+
+fixpoint:  $(FAN_ML_FILES_P) $(FAN0_ML_FILES_P)
+    foreach(f=> ..., $(FAN_ML_FILES))
+        private.X = dparsetree/$(basename $f).fan.dparsetree
+        private.Y = dparsetree/$(basename $f).fan0.dparsetree
+        if $(not $(shell-success-null diff $X $Y))
+            println($"*************fan fan0 diff on file $X $Y*****************")
+            FLAG = false
+fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
+    foreach(f=> ..., $(FAN_ML_FILES))
+        private.X = dparsetree/$(basename $f).fan0.dparsetree
+        private.Y = dparsetree/$(basename $f).fan1.dparsetree
+        if $(not $(shell-success-null diff $X $Y))
+            println($"************fan0 fan1 diff on file $f*****************")            
+# .SUBDIRS: main_dparsetree
+
+
+
+
+
+
+
+    
 # fixpoint: $(add)
 ########################
 # test
