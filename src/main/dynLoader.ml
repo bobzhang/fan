@@ -1,4 +1,4 @@
-open LibUtil
+
 
 exception Error of string * string
 
@@ -22,7 +22,7 @@ let load file =
                    (Dynlink.error_message e))));
     (try
       let fname =
-        Filename.find_in_path
+        Filenamef.find_in_path
           ~path: ("." :: FConfig.fan_plugins_library ::
                   (FConfig.dynload_dirs.contents)) file in
       fun ()  ->

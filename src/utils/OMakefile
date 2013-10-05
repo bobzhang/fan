@@ -1,6 +1,7 @@
 
 
-FILES = fchar fstring fstream return flist libUtil dyn_array fan_warnings
+FILES = fchar fstring fstream return flist libUtil dyn_array fan_warnings mapf setf hashset \
+    filenamef hashtblf ref stackf
 
 lib: $(OCamlLibrary libutils, $(FILES))
 

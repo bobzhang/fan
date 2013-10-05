@@ -26,8 +26,6 @@ val remove : 'a -> ('a * 'b) list -> ('a * 'b) list
 
 val iteri : (int -> 'a -> unit) -> 'a list -> unit
 
-type dir = [ `Left | `Right ]
-
 val reduce_left : ('a -> 'a -> 'a) -> 'a list -> 'a
 
 val reduce_left_with :

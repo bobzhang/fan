@@ -1,7 +1,6 @@
 
-open Format
 
-let id x = x
+
 
 let cons x xs = x::xs
     
@@ -9,9 +8,10 @@ let failwithf fmt = Format.ksprintf failwith fmt
     
 let prerr_endlinef fmt = Format.ksprintf prerr_endline fmt
     
-let invalid_argf fmt = kprintf invalid_arg fmt
+let invalid_argf fmt = Format.kprintf invalid_arg fmt
     
-(* let undefined = failwith "undefined"; *)
+let undef () = failwith "undefined"
+    
 let some x = Some x
     
 let none = None
@@ -65,7 +65,7 @@ let tap f x = begin f x; x end
 let is_even x = x mod 2 == 0
 
 
-let pp = fprintf
+let pp = Format.fprintf
 (*
   {[
   to_string_of_printer pp_print_int 32;
@@ -125,344 +125,16 @@ let with_return f =
 
 
 
-(* type 'a id  = 'a -> 'a *)
 
 
 
-module Filename = struct
-  include Filename
-
-  let find_in_path ~path name =
-    if not (Filename.is_implicit name) then
-      if Sys.file_exists name then name else raise Not_found
-    else begin
-      let rec try_dir = function
-        | [] -> raise Not_found
-        | dir::rem ->
-            let fullname = Filename.concat dir name in
-            if Sys.file_exists fullname then fullname else try_dir rem
-      in try_dir path
-    end
-
-  let find_in_path_uncap ~path name =
-    let uname = String.uncapitalize name in
-    let rec try_dir =
-      function
-      | [] -> raise Not_found
-      | dir::rem ->
-          let fullname = Filename.concat dir name
-          and ufullname = Filename.concat dir uname in
-          if Sys.file_exists ufullname then ufullname
-          else if Sys.file_exists fullname then fullname
-          else try_dir rem
-    in try_dir path
-
-  let expand_directory ~std s =
-    if String.length s > 0 && s.[0] = '+'
-    then Filename.concat std
-        (String.sub s 1 (String.length s - 1))
-    else s
-
-end
-module Queue = struct
-  include Queue
-      
-  let find t ~f =
-    with_return (fun r -> (iter(fun x -> if f x then r.return (Some x)) t; None))
-      
-  let find_map t ~f =
-    with_return (fun r ->
-      (iter (fun x -> match f x with | None -> () | Some _ as res -> r.return res) t;
-       None))
-      (* the first element is in the bottom *)  
-  let to_list_rev q =
-    fold (fun acc v -> v::acc) [] q 
-
-  let of_list l =
-    let q = create () in
-    let _ = List.iter (fun x -> push x q) l in 
-    q
-      
-  let rev q=
-    of_list (to_list_rev q )
-      
-end
 
 
 
-    
-
-module type MAP = sig
-  include Map.S
-  val of_list: (key * 'a) list -> 'a t
-  val of_hashtbl:(key,'a) Hashtbl.t  -> 'a t
-  val elements: 'a t -> (key * 'a) list 
-  val add_list: (key * 'a) list  -> 'a t -> 'a t
-  val find_default: default :'a -> key -> 'a t -> 'a 
-  val find_opt: key -> 'a t -> 'a option
-    (* FIXME  [~default:] [~default :] *)
-  val add_with: f :('a -> 'a -> 'a) -> key ->
-    'a ->  'a t ->
-      ('a t * [ `NotExist | `Exist])
-
-  val unsafe_height: 'a t -> int
-  val unsafe_node:  'a t -> (key * 'a) ->  'a t ->  'a t
-end
-
-      
-module MapMake(S:Map.OrderedType) : MAP with type key = S.t = struct
-  include Map.Make (S) (* TODO: the same syntax with original *)
-  let of_list lst =
-    List.fold_left (fun acc (k,v)  -> add k v acc) empty lst
-  let add_list lst base =
-    List.fold_left (fun acc (k,v) -> add k v acc) base lst
-  let of_hashtbl tbl =
-    Hashtbl.fold (fun k v acc -> add k v acc) tbl empty
-  let elements map =
-    fold (fun k v acc ->  (k,v) :: acc ) map [] 
-  let find_default ~default k m =
-    try find k m with Not_found -> default
-
-  (* can be more efficient if we break the abstraction *)    
-  let add_with ~f k v s =
-     try (add k (f  (find k s) v) s, `Exist) with Not_found -> (add k v s,`NotExist)
-
-  let unsafe_height (l:'a t) : int =
-    if l = empty then 0
-    else (Obj.magic (Obj.field (Obj.repr l)  4) :int)  
-
-  (* this is unsafe, since the difference between the height of [l] and
-     the height of [r] may exceed 1
-   *)  
-  let unsafe_node (l:'a t) ((k:key),(v:'a)) (r:'a t) =
-    let h = max (unsafe_height l) (unsafe_height  r) + 1 in
-    let o = Obj.new_block 0 4 in begin 
-      Obj.set_field o 0 (Obj.repr l);
-      Obj.set_field o 1 (Obj.repr k);
-      Obj.set_field o 2 (Obj.repr v);
-      Obj.set_field o 3 (Obj.repr r);
-      Obj.set_field o 4 (Obj.repr h);
-      (Obj.magic o : 'a t)
-    end
-    
-  let find_opt k m =
-    try Some (find k m) with Not_found -> None
-end 
-
-
-
-module type SET = sig
-  include Set.S
-  val of_list: elt list  -> t 
-  val add_list: t ->  elt list -> t 
-  val of_array: elt array  -> t
-  val add_array: t ->  elt array -> t 
-end
-
-module SetMake(S:Set.OrderedType) : SET with type elt = S.t = struct
-  include Set.Make (S)
-  let of_list = List.fold_left (flip add) empty
-  let add_list c = List.fold_left (flip add) c
-  let of_array = Array.fold_left (flip add) empty
-  let add_array c = Array.fold_left (flip add) c
-end
-
-module SSet =SetMake (String)
-
-module SMap = MapMake (String)
-
-  
-module IMap = MapMake (struct
-  type t = int
-  let compare = Pervasives.compare  
-end)
-
-module ISet = SetMake(struct
- type t = int
- let compare = Pervasives.compare
-end)
-
-
-module Hashset = struct
-  type 'a t  =  ('a,unit)Hashtbl.t
-  let create = Hashtbl.create
-  let add set x = Hashtbl.replace set x ()
-  let remove = Hashtbl.remove
-  let mem = Hashtbl.mem
-  let iter f = Hashtbl.iter (fun v () -> f v)
-  let fold f = Hashtbl.fold (fun v () st -> f v st)
-  let elements = Hashtbl.length
-  let clear = Hashtbl.clear
-  let of_list ?(size=100) vs = 
-    let set = create size in begin
-      List.iter (add set) vs;
-      set
-    end
-  let add_list set vs =
-    List.iter (add set) vs
-  let to_list set = fold (fun x y -> x::y) set []
-  (* let empty = Hashtbl.create 30 ; *)
-end 
-
-let mk_set (type s) ~cmp =
-  let module M = struct type t = s let compare = cmp end in
-  (module Set.Make (M) :Set.S with type elt = s)
-
-let mk_map (type s) ~cmp=
-  let module M = struct type t = s let compare = cmp end in
-  (module Map.Make (M) : Map.S with type key = s)
-  
-let mk_hashtbl (type s) ~eq ~hash =
-  let module M =
-    struct type t = s let equal = eq let hash = hash end in
-  (module Hashtbl.Make (M)  :Hashtbl.S with type key = s)
-  
-
-
-module LStack = struct
-  type 'a t  = {
-      mutable elts : 'a list;
-      mutable length :  int;
-    }
-
-  exception Empty
-
-  let invariant t =
-    assert (t.length = List.length t.elts)
-
-  let create () = { elts = []; length = 0; }
-
- (* We always want to set elts and length at the same time.  Having a function
-  * to do so helps us to remember. *)
-  let set t elts length =
-    begin
-      t.elts <- elts;
-      t.length <- length
-    end
-
-  let push x t = set t (x :: t.elts) (t.length + 1)
-
-  let pop_exn t =
-    match t.elts with
-    | [] -> raise Empty
-    | x :: l -> (set t l (t.length - 1); x)
-
-  let pop t = try Some (pop_exn t) with |Empty -> None
-
-  let top_exn t =
-    match t.elts with
-    | [] -> raise Empty
-    | x :: _ -> x
-
-  let top t = try Some (top_exn t) with |Empty -> None
-
-  let clear t = set t [] 0
-
-  let copy t = { elts = t.elts; length = t.length; }
-
-  let length t = t.length
-
-  let is_empty t = t.length = 0
-
-  let iter t ~f = List.iter f t.elts 
-
-  let fold t ~init ~f = List.fold_left f init t.elts
-
-  (* let fold_n_pop n ~init ~f = *)
-  (*   let aux n *)
-
-  let topn_rev n t =
-    Flist.take_rev n t.elts
-      
-  let exists t ~f = List.exists f t.elts 
-
-  let for_all t ~f = List.for_all f t.elts 
-
-  let find_map t ~f = Flist.find_map f t.elts 
-
-  let to_list t = t.elts
-
-  let of_list l = { elts = l; length = List.length l }
-
-  let to_array t = Array.of_list t.elts
-
-  let until_empty t f =
-    let rec loop () = if t.length > 0 then (f (pop_exn t); loop ()) in
-    loop ()
-
-end
 
     
   
-module Ref = struct
-  (* treat [r]'s state as [v] in [body] *)
-  let protect r v body =
-    let old = !r in
-    try begin 
-      r := v;
-      let res = body() in
-      (r := old;
-      res)
-    end with x -> (r := old; raise x)
-        
-  let safe r body =
-    let old = !r in
-    finally ~action:(fun () -> r:=old) () body 
-    
-  let protect2 (r1,v1) (r2,v2) body =
-    let o1 = !r1 and o2 = !r2 in
-    try begin
-      r1:= v1; r2:=v2;
-      let res = body () in
-      (r1:=o1; r2:=o2;
-      res)
-    end
-    with  e -> begin
-      r1:=o1; r2:=o2;
-      raise e
-    end
 
-        
-  let save2 r1 r2 body =
-      let o1 = !r1 and o2 = !r2 in
-      finally ~action:(fun () -> (r1:=o1; r2:=o2)) () body 
-      
-  let protects refs vs body =
-    let olds = List.map (fun x-> !x ) refs in 
-    try begin
-      List.iter2 (fun ref v -> ref:=v) refs vs;
-      let res = body () in
-      (List.iter2 (fun ref v -> ref:=v) refs olds;
-      res)   
-    end
-      with e -> 
-        (List.iter2 (fun ref v -> ref:=v) refs olds;
-        raise e)
-
-  (* The state [itself] should be [persistent],
-     otherwise it does not make sense to restore
-   *)      
-  let saves (refs: 'a ref list ) body =
-    let olds = List.map (fun x -> !x) refs in
-    finally ~action:(fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) () body 
-
-
-  let post r f =
-    let old = !r in 
-    (r := f old; old)
-
-   let pre r f =
-     (r := f !r; !r)
-
-  let swap a b =
-    let buf = !a in
-    (a := !b; b := buf)
-    
-  let modify x f =
-    x := f !x
-
-end
-    
 
     
 module Option = struct
@@ -593,15 +265,7 @@ module Buffer = struct
   let (+>>) buf str = begin Buffer.add_string buf str; buf end  
 end
 
-module Hashtbl = struct
-  include Hashtbl
-  let keys tbl = fold (fun k _ acc -> k::acc) tbl []
-  let values tbl = fold (fun _ v acc -> v::acc ) tbl []
-  let find_default ~default tbl k =
-    try find tbl k with Not_found -> default 
-  let find_opt tbl k =
-    try Some (find tbl k) with Not_found -> None
-end
+
 
 module Array = struct
   include Array

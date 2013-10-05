@@ -32,10 +32,10 @@ type file_kind =
 let print_loaded_modules = ref false
 
 
-let loaded_modules = ref SSet.empty
+let loaded_modules = ref Setf.String.empty
 
 let add_to_loaded_modules name =
-  loaded_modules := SSet.add name !loaded_modules;;
+  loaded_modules := Setf.String.add name !loaded_modules;;
 
 (** no repeat loading
     FIXME? it can only load [cma] and [cmxs] files? *)
@@ -44,7 +44,7 @@ let (objext,libext) =
     (".cmxs",".cmxs")
   else (".cmo",".cma")
 let require name = 
-  if not (SSet.mem name !loaded_modules ) then begin
+  if not (Setf.String.mem name !loaded_modules ) then begin
     add_to_loaded_modules name;
     DynLoader.load  (name ^ libext)
   end

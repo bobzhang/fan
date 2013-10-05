@@ -1,5 +1,4 @@
 open FAst
-open LibUtil
 class ['accu] c_fold_pattern_vars (f : string -> 'accu -> 'accu) init =
   object 
     inherit  Objs.fold as super
@@ -20,21 +19,21 @@ let rec fold_bind_vars f bi acc =
   | (`Bind (_loc,p,_) : FAst.bind) -> fold_pattern_vars f p acc
   | `Ant _ -> assert false
 class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
-  SSet.empty) free_init =
+  Setf.String.empty) free_init =
   object (o)
     inherit  Objs.fold as super
     val free = (free_init : 'accu )
-    val env = (env_init : SSet.t )
+    val env = (env_init : Setf.String.t )
     method free = free
     method set_env env = {<env = env>}
-    method add_atom s = {<env = SSet.add s env>}
-    method add_pat p = {<env = fold_pattern_vars SSet.add p env>}
-    method add_bind bi = {<env = fold_bind_vars SSet.add bi env>}
+    method add_atom s = {<env = Setf.String.add s env>}
+    method add_pat p = {<env = fold_pattern_vars Setf.String.add p env>}
+    method add_bind bi = {<env = fold_bind_vars Setf.String.add bi env>}
     method! exp =
       function
       | (`Lid (_loc,s) : FAst.exp)|(`LabelS (_loc,`Lid (_,s)) : FAst.exp)
         |(`OptLablS (_loc,`Lid (_,s)) : FAst.exp) ->
-          if SSet.mem s env then o else {<free = f s free>}
+          if Setf.String.mem s env then o else {<free = f s free>}
       | (`LetIn (_loc,`Negative _,bi,e) : FAst.exp) ->
           (((o#add_bind bi)#exp e)#set_env env)#bind bi
       | (`LetIn (_loc,`Positive _,bi,e) : FAst.exp) ->
@@ -84,5 +83,5 @@ class ['accu] fold_free_vars (f : string -> 'accu -> 'accu) ?(env_init=
       | me -> super#mexp me
   end
 let free_vars env_init e =
-  let fold = (new fold_free_vars) SSet.add ~env_init SSet.empty in
+  let fold = (new fold_free_vars) Setf.String.add ~env_init Setf.String.empty in
   (fold#exp e)#free

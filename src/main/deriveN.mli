@@ -111,7 +111,7 @@ val normal_simple_exp_of_ctyp :
   right_type_id:full_id_transform ->
   left_type_id:basic_id_transform ->
   right_type_variable:rhs_basic_id_transform ->
-  (string, 'a) Hashtbl.t -> ctyp -> exp
+  string Hashset.t -> ctyp -> exp
 
 
 (**
@@ -214,7 +214,7 @@ val stru_of_mtyps :
   left_type_variable:basic_id_transform ->
   mk_record:(record_col list -> exp) ->
   (* destination:destination ->  *)
-  ((string, unit) Hashtbl.t -> ctyp -> exp ) ->
+  (string Hashset.t -> ctyp -> exp ) ->
   mtyps -> stru
       
 val obj_of_mtyps :

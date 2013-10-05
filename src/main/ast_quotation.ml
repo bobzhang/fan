@@ -30,7 +30,7 @@ let concat_domain = function
 
 
 (** [names_tbl] is used to manage the namespace and names *)
-let names_tbl : (Ftoken.domains,SSet.t) Hashtbl.t =
+let names_tbl : (Ftoken.domains,Setf.String.t) Hashtbl.t =
   Hashtbl.create 30 
 
 (**  when no qualified path is given , it uses [Sub []] *)
@@ -40,10 +40,10 @@ let resolve_name (n:Ftoken.name) =
       begin 
         match Flist.find_opt
             (fun path  ->
-              match Hashtbl.find_opt names_tbl @@ concat_domain (path,x)
+              match Hashtblf.find_opt names_tbl @@ concat_domain (path,x)
               with
               | None -> false
-              | Some set -> SSet.mem v set ) !paths
+              | Some set -> Setf.String.mem v set ) !paths
         with
         | None ->  None
         | Some r ->
@@ -83,7 +83,7 @@ let dump_file = ref None
   
 type key = (Ftoken.name * ExpKey.pack)
 
-module QMap =MapMake (struct type t =key  let compare = compare end)
+module QMap =Mapf.Make (struct type t =key  let compare = compare end)
 
 (** [map] is used
     [map]  and [default] is used to help resolve default case {[ {||} ]}
@@ -92,9 +92,9 @@ module QMap =MapMake (struct type t =key  let compare = compare end)
     to be [Fan.Meta.pat], then when you parse {[ {| |} ]} in a position, because its
     name is "", so it will first turn to help from [map], then to default *)
 
-let map = ref SMap.empty
+let map = ref Mapf.String.empty
 let update (pos,(str:Ftoken.name)) =
-  map := SMap.add pos str !map
+  map := Mapf.String.add pos str !map
 
 let default_at_pos pos str =  update (pos,str)
 (* create a table mapping from  (string_of_tag tag) to default
@@ -103,7 +103,7 @@ let default_at_pos pos str =  update (pos,str)
 (* let fan_default = (`Absolute ["Fan"],"") *)
 let default : Ftoken.name option ref = ref None
 let set_default s =  default := Some s
-let clear_map () =  map := SMap.empty
+let clear_map () =  map := Mapf.String.empty
 let clear_default () = default:= None
     
   
@@ -111,7 +111,7 @@ let clear_default () = default:= None
 let expander_name  ~pos (name:Ftoken.name) =
   match name with
   | (`Sub [],"") ->
-      try Some (SMap.find  pos !map)
+      try Some (Mapf.String.find  pos !map)
       with Not_found -> !default
   | (`Sub _ ,_) -> resolve_name  name
   | (`Absolute _,_) -> Some name  
@@ -122,9 +122,9 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with
-      Not_found -> SSet.empty in
+      Not_found -> Setf.String.empty in
   begin
-    Hashtbl.replace names_tbl domain (SSet.add  n s);
+    Hashtbl.replace names_tbl domain (Setf.String.add  n s);
     expanders_table := QMap.add k v !expanders_table
   end
 
@@ -270,5 +270,5 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/ast_quotation.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/ast_quotation.cmo" *)
 (* end: *)

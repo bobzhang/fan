@@ -49,7 +49,7 @@ let last ls =
   | [] -> failwith "last empty"
   | _ -> List.hd (List.rev ls)
         
-        (* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
+(* split_at 3 [1;2;3;4;5;6] = ([1;2;3],[4;5;6])*)    
 let  split_at n xs =
   let rec aux  n acc xs = 
     match xs with 
@@ -72,13 +72,13 @@ let rec find_map f v =
       | Some y -> y
       | None -> find_map f xs
 
-            (* include BatList;
-               return a pair [(int,acc)]
-             *)
+(* include BatList;
+   return a pair [(int,acc)]
+ *)
 let fold_lefti f acc ls =
   fold_left (fun (i,acc) x -> (i+1,f i acc x) ) (0,acc) ls
     
-    (* let fold_righti f ls acc = *)
+(* let fold_righti f ls acc = *)
     (*   fold_right (fun x (acc ) *)
 let rec remove x v =
   match v with 
@@ -92,7 +92,7 @@ let iteri f lst =
     (fun x -> 
       let () = f !i x in  incr i) lst
 
-type dir = [ `Left | `Right]
+
 
 let reduce_left f lst =
   match lst with

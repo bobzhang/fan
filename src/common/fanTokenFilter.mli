@@ -3,7 +3,7 @@
 
 
 type t = {
-    mutable kwds : LibUtil.SSet.t;
+    mutable kwds : Setf.String.t;
     mutable filter : Ftoken.filter;
   }
 

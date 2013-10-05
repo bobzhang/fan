@@ -2,7 +2,7 @@ open FAst
 open Translate_lex
 
 
-val named_regexps : (string, concrete_regexp) LibUtil.Hashtbl.t
+val named_regexps : (string, concrete_regexp) Hashtblf.t
 
 val regexp : concrete_regexp Fgram.t
 

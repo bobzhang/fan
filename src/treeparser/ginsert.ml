@@ -233,7 +233,8 @@ and scan_product entry (symbols,x) : production  =
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
        let diff =
-         SSet.elements @@ SSet.diff (SSet.of_list keywords) entry.gram.gfilter.kwds
+         Setf.String.elements @@
+         Setf.String.diff (Setf.String.of_list keywords) entry.gram.gfilter.kwds
        in
        let () =
          if diff <> [] then 
@@ -256,7 +257,7 @@ and unsafe_scan_product entry (symbols,x) : production  =
      (fun symbol -> 
        let keywords = using_symbol  symbol [] in
        let () = entry.gram.gfilter.kwds <-
-         SSet.add_list entry.gram.gfilter.kwds keywords in
+         Setf.String.add_list entry.gram.gfilter.kwds keywords in
        let () = check_gram entry symbol in
        match symbol with
        |`Snterm e when e == entry -> `Sself

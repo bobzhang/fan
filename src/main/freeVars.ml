@@ -2,7 +2,7 @@
 
 
 open FAst
-open LibUtil
+
 
 (* syntax error class declaration TODO FIXME *)
 class c_fold_pattern_vars ['accu] (f:string -> 'accu->'accu) init =  object
@@ -25,20 +25,20 @@ let rec fold_bind_vars f bi acc =
   | `Ant _ -> assert false 
 
 
-class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.empty) free_init =  object (o)
+class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = Setf.String.empty) free_init =  object (o)
   inherit Objs.fold as super
   val free : 'accu = free_init
-  val env : SSet.t = env_init
+  val env : Setf.String.t = env_init
       
   method free = free
   method set_env env = {< env = env >}
-  method add_atom s = {< env = SSet.add s env >}
-  method add_pat p = {< env = fold_pattern_vars SSet.add p env >}
-  method add_bind bi = {< env = fold_bind_vars SSet.add bi env >}
+  method add_atom s = {< env = Setf.String.add s env >}
+  method add_pat p = {< env = fold_pattern_vars Setf.String.add p env >}
+  method add_bind bi = {< env = fold_bind_vars Setf.String.add bi env >}
 
   method! exp = function
     | {:exp| $lid:s |} | {:exp| ~ $lid:s |} | {:exp| ? $lid:s |} ->
-        if SSet.mem s env then o else {< free = f s free >}
+        if Setf.String.mem s env then o else {< free = f s free >}
           
     | {:exp| let $bi in $e |} ->
         (((o#add_bind bi)#exp e)#set_env env)#bind bi
@@ -98,5 +98,5 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
 end
 
 let free_vars env_init e =
-  let fold = new fold_free_vars SSet.add ~env_init SSet.empty in (fold#exp e)#free
+  let fold = new fold_free_vars Setf.String.add ~env_init Setf.String.empty in (fold#exp e)#free
 

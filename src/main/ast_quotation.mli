@@ -29,7 +29,7 @@ val set_default: Ftoken.name -> unit
 (** [default_tbl] mapping [position] to the default quotation name
     it has higher precedence over default  *)
 
-val map: Ftoken.name LibUtil.SMap.t ref
+val map: Ftoken.name Mapf.String.t ref
 
     
 (** [default_at_pos] set the default quotation name for specific pos*)

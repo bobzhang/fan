@@ -1,6 +1,5 @@
 open FAst
 open AstLib
-open LibUtil
 type key = string 
 type expander = exp -> exp 
 let macro_expanders: (key,expander) Hashtbl.t = Hashtbl.create 40

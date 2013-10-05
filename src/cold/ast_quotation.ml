@@ -10,17 +10,17 @@ let concat_domain =
   function
   | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
   | _ -> invalid_arg "concat_domain"
-let names_tbl: (Ftoken.domains,SSet.t) Hashtbl.t = Hashtbl.create 30
+let names_tbl: (Ftoken.domains,Setf.String.t) Hashtbl.t = Hashtbl.create 30
 let resolve_name (n : Ftoken.name) =
   match n with
   | ((`Sub _ as x),v) ->
       (match Flist.find_opt
                (fun path  ->
-                  match (Hashtbl.find_opt names_tbl) @@
+                  match (Hashtblf.find_opt names_tbl) @@
                           (concat_domain (path, x))
                   with
                   | None  -> false
-                  | Some set -> SSet.mem v set) paths.contents
+                  | Some set -> Setf.String.mem v set) paths.contents
        with
        | None  -> None
        | Some r -> Some ((concat_domain (r, x)), v))
@@ -35,27 +35,29 @@ let current_quot () =
   with | Stack.Empty  -> failwith "it's not in a quotation context"
 let dump_file = ref None
 type key = (Ftoken.name* ExpKey.pack) 
-module QMap = MapMake(struct type t = key 
-                             let compare = compare end)
-let map = ref SMap.empty
-let update (pos,(str : Ftoken.name)) = map := (SMap.add pos str map.contents)
+module QMap = Mapf.Make(struct type t = key 
+                               let compare = compare end)
+let map = ref Mapf.String.empty
+let update (pos,(str : Ftoken.name)) =
+  map := (Mapf.String.add pos str map.contents)
 let default_at_pos pos str = update (pos, str)
 let default: Ftoken.name option ref = ref None
 let set_default s = default := (Some s)
-let clear_map () = map := SMap.empty
+let clear_map () = map := Mapf.String.empty
 let clear_default () = default := None
 let expander_name ~pos  (name : Ftoken.name) =
   match name with
   | (`Sub [],"") ->
-      (try Some (SMap.find pos map.contents)
+      (try Some (Mapf.String.find pos map.contents)
        with | Not_found  -> default.contents)
   | (`Sub _,_) -> resolve_name name
   | (`Absolute _,_) -> Some name
 let expanders_table = ref QMap.empty
 let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
-  let s = try Hashtbl.find names_tbl domain with | Not_found  -> SSet.empty in
-  Hashtbl.replace names_tbl domain (SSet.add n s);
+  let s =
+    try Hashtbl.find names_tbl domain with | Not_found  -> Setf.String.empty in
+  Hashtbl.replace names_tbl domain (Setf.String.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
 let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
   (let pos_tag = FDyn.string_of_tag tag in

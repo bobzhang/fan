@@ -200,15 +200,15 @@ let do_alloc_temp () =
 
 let do_alloc_cell used t =
   let available =
-    try Hashtbl.find tag_cells t with Not_found -> ISet.empty in
+    try Hashtbl.find tag_cells t with Not_found -> Setf.Int.empty in
   try
-    ISet.choose (ISet.diff available used)
+    Setf.Int.choose (Setf.Int.diff available used)
   with
     Not_found ->
       (temp_pending := false ;
       let n = !next_mem_cell in
       (if n >= 255 then raise Memory_overflow ;
-      Hashtbl.replace tag_cells t (ISet.add n available) ;
+      Hashtbl.replace tag_cells t (Setf.Int.add n available) ;
       incr next_mem_cell ;
       n))
 
@@ -219,7 +219,7 @@ let old_in_map m r =
   TagMap.fold
     (fun _ addr r ->
       if is_old_addr addr then
-        ISet.add addr r
+        Setf.Int.add addr r
       else
         r)
     m r
@@ -230,7 +230,7 @@ let alloc_map used m mvs =
       let (a,mvs) =
         if is_new_addr a then
           let a = do_alloc_cell used tag in
-          (a,ISet.add a mvs)
+          (a,Setf.Int.add a mvs)
         else (a,mvs) in
       (TagMap.add tag a r,mvs))
     m (TagMap.empty,mvs)
@@ -238,15 +238,15 @@ let alloc_map used m mvs =
 let create_new_state {final=(act,(_,m_act)) ; others=o} =
   let used =
     MemMap.fold (fun _ (_,m) r -> old_in_map m r)
-      o (old_in_map m_act ISet.empty) in
-  let new_m_act,mvs  = alloc_map used m_act ISet.empty in
+      o (old_in_map m_act Setf.Int.empty) in
+  let new_m_act,mvs  = alloc_map used m_act Setf.Int.empty in
   let new_o,mvs =
     MemMap.fold (fun k (x,m) (r,mvs) ->
       let (m,mvs) = alloc_map used m mvs in
       (MemMap.add k (x,m) r,mvs))
       o (MemMap.empty,mvs) in
   ({final=(act,(0,new_m_act)) ; others=new_o},
-  ISet.fold (fun x r -> Set x::r) mvs [])
+  Setf.Int.fold (fun x r -> Set x::r) mvs [])
 
 type new_addr_gen = {mutable count : int ; mutable env : int TagMap.t}
 
@@ -316,11 +316,11 @@ let sort_mvs mvs =
   | _  ->
       let dests =
         List.fold_left
-          (fun r mv -> ISet.add (dest mv) r)
-          ISet.empty mvs in
+          (fun r mv -> Setf.Int.add (dest mv) r)
+          Setf.Int.empty mvs in
       let (rem,here) =
         List.partition
-          (fun mv -> ISet.mem (orig mv) dests)
+          (fun mv -> Setf.Int.mem (orig mv) dests)
           mvs in
       match here with
       | [] ->
@@ -495,12 +495,12 @@ let do_tag_actions n env  m =
   let (used,r) =
     TagMap.fold (fun t m (used,r) ->
       let a = get_tag_mem n env t in
-      (ISet.add a used,SetTag (a,m)::r)) m (ISet.empty,[]) in
+      (Setf.Int.add a used,SetTag (a,m)::r)) m (Setf.Int.empty,[]) in
   let (_,r) =
     TagMap.fold
       (fun tag m (used,r) ->
-        if not (ISet.mem m used) && tag.start then
-          (ISet.add m used, EraseTag m::r)
+        if not (Setf.Int.mem m used) && tag.start then
+          (Setf.Int.add m used, EraseTag m::r)
         else
           (used,r))
       env.(n) (used,r) in
@@ -662,3 +662,7 @@ let make_dfa (lexdef:'a entry list) :
    reset_state_partial  0 ;
    (initial_states, actions))
 end
+
+(* local variables: *)
+(* compile-command: "pmake lexgen.cmo" *)
+(* end: *)

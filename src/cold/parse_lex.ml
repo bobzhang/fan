@@ -1,4 +1,3 @@
-open LibUtil
 open Translate_lex
 open! Fsyntax
 let named_regexps: (string,concrete_regexp) Hashtbl.t = Hashtbl.create 13

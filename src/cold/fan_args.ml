@@ -23,13 +23,13 @@ type file_kind =
   | ModuleImpl of string
   | IncludeDir of string 
 let print_loaded_modules = ref false
-let loaded_modules = ref SSet.empty
+let loaded_modules = ref Setf.String.empty
 let add_to_loaded_modules name =
-  loaded_modules := (SSet.add name loaded_modules.contents)
+  loaded_modules := (Setf.String.add name loaded_modules.contents)
 let (objext,libext) =
   if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
 let require name =
-  if not (SSet.mem name loaded_modules.contents)
+  if not (Setf.String.mem name loaded_modules.contents)
   then (add_to_loaded_modules name; DynLoader.load (name ^ libext))
 let _ =
   let open FControl in

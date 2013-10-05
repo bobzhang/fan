@@ -63,104 +63,11 @@ val with_return : ('a return -> 'a) -> 'a
 
     
 (* type 'a id = 'a -> 'a *)
-module Queue :
-  sig
-    include module type of Queue with type 'a t = 'a Queue.t
-    val find : 'a t -> f:('a -> bool) -> 'a option
-    val find_map : 'a t -> f:('a -> 'b option) -> 'b option
-    val to_list_rev : 'a t -> 'a list
-    val of_list : 'a list -> 'a t
-    val rev : 'a t -> 'a t
-  end
-
-module Filename:
-    sig
-      include module type of Filename
-
-          (** Search a file in a list of directories. It's searched from the head to
-              tail *)          
-      val find_in_path : path:string list -> string -> string
-
-
-          (** Same, but search also for uncapitalized name, i.e.
-              if name is Foo.ml, allow /path/Foo.ml and /path/foo.ml
-              to match. *)
-      val find_in_path_uncap : path:string list -> string -> string
-
-          (** Expand a -I option: if it starts with +, make it relative to the standard
-              library directory *)
-      val expand_directory : std:string -> string -> string
-    end
-module type MAP = sig
-  include Map.S
-  val of_list: (key * 'a) list -> 'a t 
-  val of_hashtbl: (key, 'a) Hashtbl.t -> 'a t 
-  val elements: 'a t  -> (key * 'a) list 
-  val add_list: (key * 'a) list  -> 'a t  ->  'a t
-  val find_default: default :'a -> key -> 'a t  -> 'a
-  val find_opt : key -> 'a t -> 'a option
-  val add_with: f :('a -> 'a -> 'a) -> key -> 'a ->  'a t  ->
-    ('a t*[`NotExist | `Exist])
-    (* FIXME  [~default:] [~default :] *)
-
-  val unsafe_height: 'a t  -> int
-  val unsafe_node:  'a t  -> (key * 'a) ->  'a t  ->  'a t 
-      
-end
-      
-module type SET = sig
-  include Set.S
-  val of_list: elt list -> t
-  val add_list: t ->  elt list -> t 
-  val of_array: elt array -> t
-  val add_array: t -> elt array -> t 
-end
-      
-module MapMake :
-  functor (S : Map.OrderedType) -> MAP with type key= S.t
-module SetMake :
-  functor (S : Set.OrderedType) -> SET with type elt = S.t
         
 
-module SMap : MAP with type key = string
-module IMap : MAP with type key = int
-module ISet : SET with type elt = int
-module SSet : SET with type elt = string       
-module Hashset :
-  sig
-    type 'a t = ('a, unit) Hashtbl.t
-    val create : ?random:bool -> int -> ('a, 'b) Hashtbl.t
-    val add : ('a, unit) Hashtbl.t -> 'a -> unit
-    val remove : ('a, 'b) Hashtbl.t -> 'a -> unit
-    val mem : ('a, 'b) Hashtbl.t -> 'a -> bool
-    val iter : ('a -> unit) -> ('a, unit) Hashtbl.t -> unit
-    val fold : ('a -> 'b -> 'b) -> ('a, unit) Hashtbl.t -> 'b -> 'b
-    val elements : ('a, 'b) Hashtbl.t -> int
-    val clear : ('a, 'b) Hashtbl.t -> unit
-    val of_list : ?size:int -> 'a list -> ('a, unit) Hashtbl.t
-    val add_list : ('a, unit) Hashtbl.t -> 'a list -> unit
-    val to_list : ('a, unit) Hashtbl.t -> 'a list
-  end
-val mk_set : cmp:('a -> 'a -> int) -> (module Set.S with type elt = 'a)
-val mk_map : cmp:('a -> 'a -> int) -> (module Map.S with type key = 'a)
-val mk_hashtbl :
-  eq:('a -> 'a -> bool) ->
-  hash:('a -> int) -> (module Hashtbl.S with type key = 'a)
 
 
-module Ref :
-  sig
-    val protect : 'a ref -> 'a -> (unit -> 'b) -> 'b
-    val safe : 'a ref -> (unit -> 'b) -> 'b
-    val protect2 : 'a ref * 'a -> 'b ref * 'b -> (unit -> 'c) -> 'c
-    val save2 : 'a ref -> 'b ref -> (unit -> 'c) -> 'c
-    val protects : 'a ref list -> 'a list -> (unit -> 'b) -> 'b
-    val saves : 'a ref list -> (unit -> 'b) -> 'b
-    val post : 'a ref -> ('a -> 'a) -> 'a
-    val pre : 'a ref -> ('a -> 'a) -> 'a
-    val swap : 'a ref -> 'a ref -> unit
-    val modify : 'a ref -> ('a -> 'a) -> unit
-  end
+
 module Option :
   sig
     val may : ('a -> unit) -> 'a option -> unit
@@ -182,14 +89,6 @@ module Buffer :
     include module type of Buffer with type t = Buffer.t
     val ( +> ) : t -> char -> t
     val ( +>> ) : t -> string -> t
-  end
-module Hashtbl :
-  sig
-    include module type of Hashtbl with type ('a,'b) t = ('a,'b) Hashtbl.t
-    val keys : ('a, 'b) t -> 'a list
-    val values : ('a, 'b) t -> 'b list
-    val find_default : default:'a -> ('b, 'a) t -> 'b -> 'a
-    val find_opt : ('b,'a) t -> 'b -> 'a option        
   end
 module Array :
   sig
@@ -234,34 +133,6 @@ module ErrorMonad :
 (*     val open_shell_process_full : *)
 (*       string -> int * (file_descr * file_descr * file_descr) *)
 (*   end *)
-
-module LStack: sig
-  type 'a t = { mutable elts : 'a list; mutable length : int; }
-  exception Empty
-  val invariant : 'a t -> unit
-  val create : unit -> 'a t
-  val set : 'a t -> 'a list -> int -> unit
-  val push : 'a -> 'a t -> unit
-  val pop_exn : 'a t -> 'a
-  val pop : 'a t -> 'a option
-  val top_exn : 'a t -> 'a
-  val top : 'a t -> 'a option
-  val clear : 'a t -> unit
-  val copy : 'a t -> 'a t
-  val length : 'a t -> int
-  val is_empty : 'a t -> bool
-  val iter : 'a t -> f:('a -> unit) -> unit
-  val fold : 'a t -> init:'b -> f:('b -> 'a -> 'b) -> 'b
-  val exists : 'a t -> f:('a -> bool) -> bool
-  val for_all : 'a t -> f:('a -> bool) -> bool
-  val find_map : 'a t -> f:('a -> 'b option) -> 'b
-  val to_list : 'a t -> 'a list
-  val of_list : 'a list -> 'a t
-  val to_array : 'a t -> 'a array
-  val until_empty : 'a t -> ('a -> 'b) -> unit
-  val topn_rev: int -> 'a t -> 'a list    
-end
-
 
 type space_formatter =  (unit, Format.formatter, unit )format
 

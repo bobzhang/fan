@@ -2,7 +2,6 @@ open FAst
 open AstLib
 open FanOps
 open! Fsyntax
-open LibUtil
 open FanUtil
 open Gramlib
 let pos_exps = Fgram.mk "pos_exps"
@@ -885,11 +884,11 @@ let apply () =
          [([`Slist1sep
               ((`Snterm (Fgram.obj (name_space : 'name_space Fgram.t ))),
                 (`Skeyword ";"))],
-            ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (SMap.add_list xys old); old\n",
+            ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n",
               (Fgram.mk_action
                  (fun (xys : 'name_space list)  (_loc : FLoc.t)  ->
                     (let old = Ast_quotation.map.contents in
-                     Ast_quotation.map := (SMap.add_list xys old); old : 
+                     Ast_quotation.map := (Mapf.String.add_list xys old); old : 
                     'pos_exps )))))]));
    Fgram.extend_single (name_space : 'name_space Fgram.t )
      (None,

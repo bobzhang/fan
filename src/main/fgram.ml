@@ -25,7 +25,7 @@ let default_keywords =
    ":=";  "if"; "while" ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
      ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
 
-let gkeywords = ref (SSet.of_list default_keywords)
+let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
 let rec fan_filter = parser
@@ -44,7 +44,7 @@ let rec ignore_layout : Ftoken.filter =
 let gram =  {
   annot="Fan";
   gfilter =
-  { kwds =   SSet.of_list default_keywords ;
+  { kwds =   Setf.String.of_list default_keywords ;
     filter = fan_filter;  }
 }
 
@@ -53,7 +53,7 @@ let filter = FanTokenFilter.filter gram.gfilter
 let create_lexer ?(filter=ignore_layout) ~annot ~keywords   () = {
   annot;
   gfilter = {
-  kwds = SSet.of_list keywords;
+  kwds = Setf.String.of_list keywords;
   filter;  
   }
  }

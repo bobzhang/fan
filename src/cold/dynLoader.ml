@@ -1,4 +1,3 @@
-open LibUtil
 exception Error of string*string
 let _initialized = ref false
 let load file =
@@ -16,7 +15,7 @@ let load file =
                 (Dynlink.error_message e))));
   ((try
       let fname =
-        Filename.find_in_path ~path:("." :: FConfig.fan_plugins_library ::
+        Filenamef.find_in_path ~path:("." :: FConfig.fan_plugins_library ::
           (FConfig.dynload_dirs.contents)) file in
       fun ()  ->
         try Dynlink.loadfile fname

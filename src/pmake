@@ -1,2 +1,2 @@
 #!/usr/bin/env sh
-omake --absname -w -j 6 "$@"
+omake --absname -k -w -j 6 "$@"

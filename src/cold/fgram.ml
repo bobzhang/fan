@@ -105,7 +105,7 @@ let default_keywords =
   "let";
   "lor";
   "["]
-let gkeywords = ref (SSet.of_list default_keywords)
+let gkeywords = ref (Setf.String.of_list default_keywords)
 let rec fan_filter (__strm : _ Fstream.t) =
   match Fstream.peek __strm with
   | Some (#Ftoken.space_token,_) -> (Fstream.junk __strm; fan_filter __strm)
@@ -127,11 +127,12 @@ let rec ignore_layout: Ftoken.filter =
 let gram =
   {
     annot = "Fan";
-    gfilter = { kwds = (SSet.of_list default_keywords); filter = fan_filter }
+    gfilter =
+      { kwds = (Setf.String.of_list default_keywords); filter = fan_filter }
   }
 let filter = FanTokenFilter.filter gram.gfilter
 let create_lexer ?(filter= ignore_layout)  ~annot  ~keywords  () =
-  { annot; gfilter = { kwds = (SSet.of_list keywords); filter } }
+  { annot; gfilter = { kwds = (Setf.String.of_list keywords); filter } }
 let mk f = mk_dynamic gram f
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter

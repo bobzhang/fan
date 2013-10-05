@@ -2,7 +2,7 @@ open FAst
 open AstLib
 open FanOps
 open! Fsyntax
-open LibUtil
+
 open FanUtil
 open Gramlib
 
@@ -243,7 +243,7 @@ let apply () = begin
        pos_exps:
        [ L1 name_space SEP ";"{xys} -> 
                     let old = !Ast_quotation.map in
-                    (Ast_quotation.map := SMap.add_list xys old;
+                    (Ast_quotation.map := Mapf.String.add_list xys old;
                      old)]
       let name_space:
        [ `Lid x;":";dot_lstrings{y} ->
@@ -1378,3 +1378,7 @@ Ast_parsers.register_parser
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/parse_fan.cmo" *)
+(* end: *)

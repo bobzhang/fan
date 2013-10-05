@@ -1,6 +1,6 @@
 open LibUtil
 type t = {
-    mutable kwds : SSet.t;
+    mutable kwds : Setf.String.t;
     mutable filter : Ftoken.filter;
   }
 
@@ -29,13 +29,13 @@ let string_of_error_msg = LibUtil.to_string_of_printer pp_print_error;;
 (* [Sym] should all be filtered into keywords *)  
 let keyword_conversion tok kwds =
   match tok with
-  | `Sym s | `Lid s | `Uid s when SSet.mem s  kwds -> `Key s
+  | `Sym s | `Lid s | `Uid s when Setf.String.mem s  kwds -> `Key s
   | `Eident s -> `Lid s 
   | _ -> tok 
 
 let check_keyword_as_label tok loc kwds =
   match tok with
-  |`Label s | `Optlabel s when SSet.mem s kwds -> err (Keyword_as_label s) loc 
+  |`Label s | `Optlabel s when Setf.String.mem s kwds -> err (Keyword_as_label s) loc 
   | _               -> ()  
 
         
