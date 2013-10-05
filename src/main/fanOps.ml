@@ -1,6 +1,6 @@
 #{:control| default "exp'" ;|}
 
-open LibUtil
+open Util
 open FAst
 open AstLib
 

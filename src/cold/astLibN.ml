@@ -1,4 +1,4 @@
-open LibUtil
+open Util
 open FAstN
 let sem a b = `Sem (a, b)
 let com a b = `Com (a, b)

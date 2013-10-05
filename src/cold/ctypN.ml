@@ -1,6 +1,6 @@
 open FAstN
 open AstLibN
-open LibUtil
+open Util
 open Fid
 type vrn =  
   | Sum

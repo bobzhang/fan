@@ -1,4 +1,4 @@
-open LibUtil
+open Util
   
 type domains =
     [ `Absolute of string list | `Sub of string list]
@@ -9,10 +9,10 @@ let pp_print_domains: Format.formatter -> domains -> unit =
     function
     | `Absolute (_a0:string list) ->
         Format.fprintf fmt "@[<1>(`Absolute@ %a)@]"
-          (Format.pp_print_list Format.pp_print_string) _a0
+          (Formatf.pp_print_list Formatf.pp_print_string) _a0
     | `Sub _a0 ->
         Format.fprintf fmt "@[<1>(`Sub@ %a)@]"
-          (Format.pp_print_list Format.pp_print_string) _a0
+          (Formatf.pp_print_list Formatf.pp_print_string) _a0
 
 type name = (domains* string) 
 
@@ -46,7 +46,7 @@ let pp_print_quotation: Format.formatter -> quotation -> unit =
   fun fmt  (`Quot {name;meta;shift;content;loc;retract} )  ->
     Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
       pp_print_name name
-      (Format.pp_print_option Format.pp_print_string) meta
+      (Formatf.pp_print_option Formatf.pp_print_string) meta
       FLoc.pp_print_t loc
       Format.pp_print_int shift
       Format.pp_print_int retract
@@ -125,7 +125,7 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `NEWLINE -> Format.fprintf fmt "`NEWLINE"
     | `LINE_DIRECTIVE (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
-          _a0 (Format.pp_print_option Format.pp_print_string) _a1
+          _a0 (Formatf.pp_print_option Format.pp_print_string) _a1
     | `EOI -> Format.fprintf fmt "`EOI"
 
           

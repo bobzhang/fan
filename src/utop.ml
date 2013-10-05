@@ -1,4 +1,4 @@
-open LibUtil;;
+open Util;;
 open MkFan;;
 
 let print_fan_error pp exn =

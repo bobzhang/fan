@@ -3,7 +3,7 @@
 
 open Gstructure
 
-open LibUtil
+open Util
 open Format
 let higher s1 s2 =
   match (s1, s2) with
@@ -170,15 +170,15 @@ let merge_level (la:level) (lb:olevel) =
     |(y,Some assoc,x) ->
         (if not(la.lname= y  && la.assoc = assoc) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a) (%a:%a)@."
-            (pp_print_option pp_print_string) la.lname
-            (pp_print_option pp_print_string) y
+            (Formatf.pp_print_option Formatf.pp_print_string) la.lname
+            (Formatf.pp_print_option Formatf.pp_print_string) y
             Gprint.pp_assoc la.assoc Gprint.pp_assoc assoc;
          x)
     |((Some _ as y),_,x)-> 
         (if not (la.lname=y) then
           eprintf "<W> Grammar level merging: merge_level does not agree (%a:%a)@."
-            (pp_print_option pp_print_string) la.lname
-            (pp_print_option pp_print_string) y;
+            (Formatf.pp_print_option Formatf.pp_print_string) la.lname
+            (Formatf.pp_print_option Formatf.pp_print_string) y;
          x)
     |(None,None,x) -> x) in
   (* added in reverse order *)

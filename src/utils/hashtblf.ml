@@ -16,7 +16,14 @@ let mk (type s) ~eq ~hash =
     struct type t = s let equal = eq let hash = hash end in
   (module Hashtbl.Make (M)  : S with type key = s)
   
-
+let memoize f =
+  let cache = create 101 in
+  fun v ->
+    try find cache v
+    with Not_found -> 
+      let r = f v in
+      (replace cache v r; r)
+  
       
 
 (* local variables: *)

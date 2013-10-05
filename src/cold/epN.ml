@@ -15,7 +15,7 @@ let gen_tuple_first ~number  ~off  =
   | 1 -> xid ~off 0
   | n when n > 1 ->
       let lst =
-        LibUtil.zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off 0)
+        Util.zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off 0)
           (fun acc  i  -> com acc (xid ~off i)) in
       `Par lst
   | _ -> invalid_arg "n < 1 in gen_tuple_first"
@@ -24,13 +24,13 @@ let gen_tuple_second ~number  ~off  =
   | 1 -> xid ~off:0 off
   | n when n > 1 ->
       let lst =
-        LibUtil.zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off:0 off)
+        Util.zfold_left ~start:1 ~until:(number - 1) ~acc:(xid ~off:0 off)
           (fun acc  i  -> com acc (xid ~off:i off)) in
       `Par lst
   | _ -> invalid_arg "n < 1 in gen_tuple_first "
 let tuple_of_number ast n =
   (let res =
-     LibUtil.zfold_left ~start:1 ~until:(n - 1) ~acc:ast
+     Util.zfold_left ~start:1 ~until:(n - 1) ~acc:ast
        (fun acc  _  -> com acc ast) in
    if n > 1 then `Par res else res : ep )
 let of_vstr_number name i =
@@ -49,7 +49,7 @@ let mk_record ?(arity= 1)  cols =
        (fun i  { CtypN.col_label = col_label;_}  ->
           `RecBind ((`Lid col_label), (xid ~off i))) cols in
    let res =
-     LibUtil.zfold_left ~start:1 ~until:(arity - 1)
+     Util.zfold_left ~start:1 ~until:(arity - 1)
        ~acc:(`Record (sem_of_list (mk_list 0)))
        (fun acc  i  -> com acc (`Record (sem_of_list (mk_list i)))) in
    if arity > 1 then `Par res else res : ep )
@@ -58,7 +58,7 @@ let mk_tuple ~arity  ~number  =
   | 1 -> gen_tuple_first ~number ~off:0
   | n when n > 1 ->
       let e =
-        LibUtil.zfold_left ~start:1 ~until:(n - 1)
+        Util.zfold_left ~start:1 ~until:(n - 1)
           ~acc:(gen_tuple_first ~number ~off:0)
           (fun acc  i  -> com acc (gen_tuple_first ~number ~off:i)) in
       (`Par e : FAstN.ep )

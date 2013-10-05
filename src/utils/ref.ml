@@ -11,7 +11,7 @@ let protect r v body =
       
 let safe r body =
   let old = !r in
-  LibUtil.finally ~action:(fun () -> r:=old) () body 
+  Util.finally ~action:(fun () -> r:=old) () body 
     
 let protect2 (r1,v1) (r2,v2) body =
   let o1 = !r1 and o2 = !r2 in
@@ -29,7 +29,7 @@ let protect2 (r1,v1) (r2,v2) body =
       
 let save2 r1 r2 body =
   let o1 = !r1 and o2 = !r2 in
-  LibUtil.finally ~action:(fun () -> (r1:=o1; r2:=o2)) () body 
+  Util.finally ~action:(fun () -> (r1:=o1; r2:=o2)) () body 
     
 let protects refs vs body =
   let olds = List.map (fun x-> !x ) refs in 
@@ -48,7 +48,7 @@ let protects refs vs body =
        *)      
 let saves (refs: 'a ref list ) body =
   let olds = List.map (fun x -> !x) refs in
-  LibUtil.finally ~action:(fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) () body 
+  Util.finally ~action:(fun () ->   List.iter2 (fun ref x -> ref :=x ) refs olds) () body 
 
 
 let post r f =

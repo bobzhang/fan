@@ -1,5 +1,5 @@
 open AstLib
-open LibUtil
+open Util
 let filter =
   (fun s  ->
     let _loc = loc_of s in

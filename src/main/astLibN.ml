@@ -3,7 +3,7 @@
 (** FAst lib for structual polymorphism without quotaions *)
 
   
-open LibUtil
+open Util
 open FAstN
 
 let sem a b =  `Sem(a,b)

@@ -4,7 +4,7 @@ open AstLib
 open FGramDef
 open FGramGen
 open! Fsyntax
-open LibUtil
+open Util
 
 {:create|Fgram (* FIXME can not ignore Fgram here*)
    (nonterminals: stru Fgram.t)

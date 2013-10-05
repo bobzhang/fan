@@ -1,4 +1,3 @@
-open LibUtil
 open Format
 include Gstructure
 include Gentry

@@ -1,6 +1,6 @@
 
 
-open LibUtil
+
 exception Memory_overflow
 
 open Automata_def

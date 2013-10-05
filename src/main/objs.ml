@@ -55,3 +55,7 @@ let () =     begin
   Ast2pt.dump_clexp := dump_clexp ;           
   Ast2pt.dump_clfield := dump_clfield 
 end    
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/objs.cmo" *)
+(* end: *)

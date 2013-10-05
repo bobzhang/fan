@@ -8,7 +8,7 @@
 open Parsetree
 open Longident
 open Asttypes
-open LibUtil
+open Util
 open ParsetreeHelper
 open! FAst (* FIXME later*)
 open Ast_basic

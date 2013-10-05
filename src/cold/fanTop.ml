@@ -1,4 +1,4 @@
-open LibUtil
+open Util
 let parse_toplevel_phrase_old = Toploop.parse_toplevel_phrase.contents
 let use_file_old = Toploop.parse_use_file.contents
 let normal () =

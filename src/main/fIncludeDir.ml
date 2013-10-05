@@ -1,4 +1,4 @@
-open LibUtil
+open Util
 (* Add something to the above, make sure it ends with a slash. *)
 let add str =
   if str <> "" then

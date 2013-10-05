@@ -2,7 +2,6 @@ open FAst
 open AstLib
 open Automata_def
 open Lexgen
-open LibUtil
 let _loc = FLoc.mk "x"
 let auto_binds =
   [(`Bind

@@ -1,5 +1,5 @@
 open Format
-open LibUtil
+open Util
 let with_open_out_file = Fan_util.with_open_out_file
 let dump_pt = Fan_util.dump_pt
 let simple_wrap = Fan_util.simple_wrap

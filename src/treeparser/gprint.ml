@@ -1,6 +1,5 @@
 open Gstructure
 open Format
-open LibUtil
 open Gstru
 
 let pp = fprintf 
@@ -82,31 +81,31 @@ class text_grammar : grammar_print = object(self:'self)
       f ((symbols,(annot,_action)):production) =
     if not action then
       pp f "@[<0>%a@]" (* action ignored*)
-        (pp_list self#symbol ~sep:";@;") symbols
+        (Formatf.pp_list self#symbol ~sep:";@;") symbols
     else
       pp f
         "@[<0>%a@;->@ @[%s@]@]"
-        (pp_list self#symbol ~sep:";@;") symbols
+        (Formatf.pp_list self#symbol ~sep:";@;") symbols
         annot
         
   method productions f ps =
     pp f "@[<hv0>%a@]"
-      (pp_list (self#production ) ~sep:"@;| "
+      (Formatf.pp_list (self#production ) ~sep:"@;| "
          ~first:"[ " ~last:" ]") ps
   (* the same as production, but only print lhs, i.e. symbols*)    
   method rule f symbols= 
-    pp f "@[<0>%a@]" (pp_list self#symbol ~sep:";@ ") symbols
+    pp f "@[<0>%a@]" (Formatf.pp_list self#symbol ~sep:";@ ") symbols
   method rules f  rules= 
-    pp f "@[<hv0>[ %a]@]" (pp_list self#rule ~sep:("@;| ")) rules
+    pp f "@[<hv0>[ %a]@]" (Formatf.pp_list self#rule ~sep:("@;| ")) rules
       
   method level f {assoc; lname;productions;_} =
     pp f "%a %a@;%a"
-      (pp_option (fun f s -> pp f "%S" s)) lname
+      (Formatf.pp_option (fun f s -> pp f "%S" s)) lname
       pp_assoc assoc (self#productions ) productions
  
           
   method levels f elev:unit =
-    pp f "@[<hv0>  %a@]" (pp_list self#level ~sep:"@;| ") elev
+    pp f "@[<hv0>  %a@]" (Formatf.pp_list self#level ~sep:"@;| ") elev
   method entry f e :unit= begin
     pp f "@[<2>%s:@;[%a]@]" e.name
       (fun f e ->
@@ -137,7 +136,7 @@ class dump_grammar : grammar_print  = object(self:'self)
       (get_brothers tree)
   method! level f {assoc;lname;lsuffix;lprefix;_} =
     pp f "%a %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
-      (pp_option (fun f s -> pp f "%S" s)) lname
+      (Formatf.pp_option (fun f s -> pp f "%S" s)) lname
       pp_assoc assoc
       self#tree lsuffix
       self#tree lprefix 
@@ -145,3 +144,7 @@ end
 
 let dump = new dump_grammar
     
+
+(* local variables: *)
+(* compile-command: "pmake gprint.cmo" *)
+(* end: *)

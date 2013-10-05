@@ -2,7 +2,7 @@
 
 open FAst
 open AstLib
-open LibUtil
+open Util
   
 type 'a item_or_def  =
   | Str of 'a

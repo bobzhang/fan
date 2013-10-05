@@ -3,7 +3,7 @@
 
 open FAstN
 open AstLibN
-open LibUtil
+open Util
 open DeriveN
 open CtypN
 open FSigUtil
@@ -450,8 +450,8 @@ Typehook.register
 
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
-    {:stru-|
-    let $(lid:"dump_"^f)  = LibUtil.to_string_of_printer dump#$lid:f
+    {:stru-|  (** BOOTSTRAPING*)
+    let $(lid:"dump_"^f)  = Util.to_string_of_printer dump#$lid:f
   |} in
     sem
       {:stru-|let dump = new print|}

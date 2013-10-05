@@ -1,5 +1,5 @@
 open FAst
-open LibUtil
+open Util
 
 type key = string
 

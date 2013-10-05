@@ -3,7 +3,7 @@ open FAst
 open AstLib
 open Automata_def 
 open Lexgen
-open LibUtil
+
   
 (** FIXME *)
 let _loc = FLoc.mk "x"

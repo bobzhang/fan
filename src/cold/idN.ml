@@ -1,6 +1,6 @@
 open FAstN
 open AstLibN
-open LibUtil
+open Util
 let rec tvar_of_ident: vid -> string =
   function
   | `Lid x|`Uid x -> x

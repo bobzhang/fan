@@ -3,7 +3,7 @@ open AstLib
 open FGramDef
 open FGramGen
 open! Fsyntax
-open LibUtil
+open Util
 let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
 let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"
 let delete_rule_header = Fgram.mk "delete_rule_header"

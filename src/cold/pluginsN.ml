@@ -1,6 +1,6 @@
 open FAstN
 open AstLibN
-open LibUtil
+open Util
 open DeriveN
 open CtypN
 open FSigUtil
@@ -382,7 +382,7 @@ let generate (mtyps : mtyps) =
            (`Bind
               ((`Lid ("dump_" ^ f)),
                 (`App
-                   ((`Dot ((`Uid "LibUtil"), (`Lid "to_string_of_printer"))),
+                   ((`Dot ((`Uid "Util"), (`Lid "to_string_of_printer"))),
                      (`Send ((`Lid "dump"), (`Lid f)))))))) : FAstN.stru ) : 
      stru ) in
    sem

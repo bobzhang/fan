@@ -12,3 +12,4 @@ val mk :
     eq:('a -> 'a -> bool) ->
       hash:('a -> int) -> (module S with type key = 'a)
     
+val memoize : ('a -> 'b) -> 'a -> 'b

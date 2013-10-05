@@ -1,4 +1,4 @@
-open LibUtil
+
 type t = {
     mutable kwds : Setf.String.t;
     mutable filter : Ftoken.filter;
@@ -22,7 +22,7 @@ let pp_print_error: Format.formatter -> error -> unit =
     | Keyword_as_label _a0 ->
         Format.fprintf fmt "@[<1>(Keyword_as_label@ %a)@]" Format.pp_print_string
           _a0
-let string_of_error_msg = LibUtil.to_string_of_printer pp_print_error;;
+let string_of_error_msg = Util.to_string_of_printer pp_print_error;;
 
 
 

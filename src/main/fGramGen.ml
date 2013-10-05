@@ -2,7 +2,7 @@ open FAst
 open FanOps
 open Format
 open AstLib
-open LibUtil
+open Util
 open FGramDef
 
 let print_warning = eprintf "%a:\n%s@." FLoc.print

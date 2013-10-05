@@ -1,5 +1,5 @@
 open FAst
-open LibUtil
+open Util
 type key = string 
 let inject_exp_tbl: (key,exp) Hashtbl.t = Hashtbl.create 40
 let inject_stru_tbl: (key,stru) Hashtbl.t = Hashtbl.create 40

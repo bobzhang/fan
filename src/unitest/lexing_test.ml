@@ -1,6 +1,6 @@
 
 (** *)    
-open LibUtil
+open Util
 open OUnit
 
 let (===) = assert_equal

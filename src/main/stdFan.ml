@@ -333,3 +333,7 @@ let float_repres f =
 
 
     
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/stdFan.cmo " *)
+(* end: *)

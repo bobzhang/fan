@@ -1,5 +1,5 @@
 open Format
-open LibUtil
+open Util
 
 
 {:import| Fan_util:

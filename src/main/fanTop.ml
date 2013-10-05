@@ -1,5 +1,5 @@
 
-open LibUtil
+open Util
 
 (** FIXME a better register mode *)
 (* open Mktop;; *)

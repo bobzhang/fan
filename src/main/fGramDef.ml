@@ -1,5 +1,5 @@
 open FAst
-open LibUtil
+open Util
 
   
 let pp_print_loc _f _loc  = ()
@@ -177,7 +177,7 @@ let rec unparse_simple_pat  f (x:simple_pat)=
           p f "%a %a" unparse_simple_pat x unparse_simple_pat v
       | (`Vrn _ as x) :: rest ->
           p f "%a (%a)"
-            unparse_simple_pat x (pp_list unparse_simple_pat ~sep:",") rest 
+            unparse_simple_pat x (Formatf.pp_list unparse_simple_pat ~sep:",") rest 
       | _ ->
           (p Format.err_formatter  "impossible pattern %a@." pp_print_simple_pat x ;
           invalid_arg "unparse_simple_pat")
