@@ -378,16 +378,10 @@ Shell. +=
         OCamlScannerPostproc()
 
 public.OCamlScanner(src_file) =
-    if $(OCAMLDEP_MODULES_ENABLED)
-        if $(equal $(suffix $(src_file)), .mli) # no pp for mli
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) -modules $(src_file) | ocamldep-postproc
-        else
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(OCAMLDEPPPFLAGS) -modules $(src_file) | ocamldep-postproc
+    if $(equal $(suffix $(src_file)), .mli) # no pp for mli
+        value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) -modules $(src_file) | ocamldep-postproc
     else
-        if $(equal $(suffix $(src_file)), .mli) # no pp for mli
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS)  $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(src_file)
-        else
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS)  $(OCAMLDEPPPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(src_file)
+        value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(OCAMLDEPPPFLAGS) -modules $(src_file) | ocamldep-postproc
 
 
 
