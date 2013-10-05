@@ -1,6 +1,5 @@
 open FAst
 open AstLib
-open LibUtil
 let _loc = FLoc.ghost
 type ty_meta = 
   {

@@ -2,7 +2,7 @@
 
 open FAst
 open AstLib
-open LibUtil
+
 
 let _loc =FLoc.ghost 
 
@@ -125,6 +125,6 @@ end
 
 
 
-
-
-
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/codeTemplate.cmo" *)
+(* end: *)

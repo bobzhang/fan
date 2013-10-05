@@ -30,16 +30,23 @@ DIR_HOT2 = $(dir hot2)
 # fan2 -> fan3 
 DIR_HOT3 = $(dir hot3)
 
-
+DIR_UTILS      = $(dir utils)
 DIR_COMMON     = $(dir common)
 DIR_TREEPARSER = $(dir treeparser)
 DIR_COLD       = $(dir cold)  
 DIR_MAIN       = $(dir main)
+
+UTILS_INCLUDES[] =
+    $(DIR_UTILS)
+
 COMMON_INCLUDES[] =
+    $(UTILS_INCLUDES)
     $(DIR_COMMON)
+    
 TREEPARSER_INCLUDES[]=
     $(DIR_TREEPARSER)
     $(COMMON_INCLUDES)
+    
 COLD_INCLUDES[]=
     $(DIR_COLD)
     $(TREEPARSER_INCLUDES)
@@ -72,7 +79,7 @@ FAN_FILES = \
     filters flex_lib freeVars fsyntax gentry gfold gramlib\
     idN langFans langInclude langOcaml langSave lex_lex lexing_util\
     fan_args mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
-    parse_stream pluginsN preCast stdFan typehook
+    parse_stream pluginsN preCast stdFan typehook 
 
 ##################################################################
 # driver files also need to be synced up with 
@@ -86,7 +93,7 @@ FILES[] =
 
 
 
-
+LIB_UTILS  = $(file utils/libutils)
 LIB_COMMON = $(file common/libcommon)
 LIB_PARSER_RT = $(file treeparser/libtreeparser)
 LIB_COLD = $(file cold/libcold)
@@ -94,6 +101,7 @@ LIB_COLD = $(file cold/libcold)
 
 
 OCAML_LIBS[] =
+    $(LIB_UTILS)
     $(LIB_COMMON)
     $(LIB_PARSER_RT)
 OCAML_LINK_FLAGS += -I +compiler-libs -linkall    
@@ -104,7 +112,7 @@ OCAML_LINK_FLAGS += -I +compiler-libs -linkall
 section
     OCAML_OTHER_LIBS += dynlink ocamlcommon
     OCAMLCFLAGS += -annot 
-    .SUBDIRS: common treeparser cold 
+    .SUBDIRS: utils common treeparser cold 
     OCAML_LIBS[] += $(LIB_COLD)
     OCamlProgram (fan, $(DIR_COLD)/fan)
     

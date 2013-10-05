@@ -215,7 +215,7 @@ Typehook.register
   
 let mk_variant cons params = 
   let len = List.length params in 
-  if String.ends_with cons "Ant" then
+  if Fstring.ends_with cons "Ant" then
     (EpN.of_vstr_number "Ant" len :> exp)
   else
     params

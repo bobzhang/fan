@@ -198,7 +198,7 @@ let result_id = ref 0
 let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   (** FIXME A type variable name need to be valid *)
   let prefix = List.map
-      (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
+      (fun s -> Fstring.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow @@ Flist.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let result_type = (* {| 'result |} *)

@@ -1,4 +1,3 @@
-open LibUtil
 let setup_op_parser entry p =
   Fgram.setup_parser entry
     (fun (__strm : _ Fstream.t)  ->

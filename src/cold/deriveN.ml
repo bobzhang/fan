@@ -10,14 +10,13 @@ let check_valid str =
   if
     not
       ((len > 1) &&
-         ((not (Char.is_digit (str.[1]))) &&
-            (not (String.starts_with str "all_"))))
+         ((not @@ (Fchar.is_digit (str.[1]))) &&
+            (not @@ (Fstring.starts_with str "all_"))))
   then
     (eprintf "%s is not a valid name" str;
      eprintf
        "For valid name its length should be more than 1\ncan not be a-[digit], can not start with [all_]";
      exit 2)
-  else ()
 let preserve = ["self"; "self_type"; "unit"; "result"]
 let check names =
   List.iter

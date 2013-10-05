@@ -569,11 +569,11 @@ let apply () = begin
         | `Flo s ->  `Flo (_loc, s)
         | `Chr s -> `Chr(_loc,s)
         | `Str s -> `Str(_loc,s)
-        | "-"; `Int s ->  `Int (_loc, String.neg s)
-        | "-"; `Int32 s -> `Int32(_loc, String.neg s) 
-        | "-"; `Int64 s -> `Int64(_loc,String.neg s)
-        | "-"; `Nativeint s -> `Nativeint(_loc,String.neg s)
-        | "-"; `Flo s -> `Flo(_loc,String.neg s)
+        | "-"; `Int s ->  `Int (_loc, Fstring.neg s)
+        | "-"; `Int32 s -> `Int32(_loc, Fstring.neg s) 
+        | "-"; `Int64 s -> `Int64(_loc,Fstring.neg s)
+        | "-"; `Nativeint s -> `Nativeint(_loc,Fstring.neg s)
+        | "-"; `Flo s -> `Flo(_loc,Fstring.neg s)
         | "["; "]" -> {| [] |}
         | "["; sem_pat_for_list{mk_list}; "]" -> mk_list {| [] |}
               

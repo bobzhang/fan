@@ -13,14 +13,14 @@ let check_valid str =
   if
     not
       (len > 1 &&
-       (not (Char.is_digit str.[1]))
-         && (not (String.starts_with str "all_"))) then begin
+       (not @@ Fchar.is_digit str.[1])
+         && (not @@ Fstring.starts_with str "all_")) then begin
            eprintf "%s is not a valid name" str;
            eprintf "For valid name its length should be more than 1\n\
              can not be a-[digit], can not start with [all_]";
            exit 2;
          end 
-  else ()
+
 
 (* preserved keywords for the generator *)
 let preserve =  ["self"; "self_type"; "unit"; "result"]

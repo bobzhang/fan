@@ -164,7 +164,7 @@ let _ =
     ("Fill", (some gen_fill))
 let mk_variant cons params =
   let len = List.length params in
-  if String.ends_with cons "Ant"
+  if Fstring.ends_with cons "Ant"
   then (EpN.of_vstr_number "Ant" len :>exp)
   else
     (params |> (List.map (fun { info_exp = exp;_}  -> exp))) |>

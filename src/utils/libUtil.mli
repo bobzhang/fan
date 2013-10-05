@@ -91,35 +91,6 @@ module Filename:
               library directory *)
       val expand_directory : std:string -> string -> string
     end
-(* module List : *)
-(*   sig *)
-(*     include module type of List  *)
-(*     val rev_len : 'a list -> int * 'a list *)
-(*     val hd : 'a list -> 'a *)
-(*     val tl : 'a list -> 'a list *)
-(*     val safe_tl : 'a list -> 'a list *)
-(*     val null : 'a list -> bool *)
-(*     val drop : int -> 'a list -> 'a list *)
-(*     val lastbut1 : 'a list -> 'a list * 'a *)
-(*     val last : 'a list -> 'a *)
-(*     val split_at : int -> 'a list -> 'a list * 'a list *)
-(*     val find_map : ('a -> 'b option) -> 'a list -> 'b *)
-(*     val fold_lefti : (int -> 'a -> 'b -> 'a) -> 'a -> 'b list -> int * 'a *)
-(*     val remove : 'a -> ('a * 'b) list -> ('a * 'b) list *)
-(*     val iteri : (int -> 'a -> unit) -> 'a list -> unit *)
-(*     type dir = [ `Left | `Right ] *)
-(*     val reduce_left : ('a -> 'a -> 'a) -> 'a list -> 'a *)
-(*     val reduce_left_with : *)
-(*       compose:('a -> 'a -> 'a) -> project:('b -> 'a) -> 'b list -> 'a *)
-(*     val reduce_right_with : *)
-(*       compose:('a -> 'a -> 'a) -> f:('b -> 'a) -> 'b list -> 'a *)
-(*     val reduce_right : ('a -> 'a -> 'a) -> 'a list -> 'a *)
-(*     val init : int -> (int -> 'a) -> 'a list *)
-(*     val concat_map : ('a -> 'b list) -> 'a list -> 'b list *)
-(*     val filter_map : ('a -> 'b option) -> 'a list -> 'b list *)
-(*     val take_rev : int -> 'a list -> 'a list *)
-(*     val find_opt : ('a -> bool) -> 'a list -> 'a option *)
-(*   end *)
 module type MAP = sig
   include Map.S
   val of_list: (key * 'a) list -> 'a t 
@@ -175,42 +146,8 @@ val mk_map : cmp:('a -> 'a -> int) -> (module Map.S with type key = 'a)
 val mk_hashtbl :
   eq:('a -> 'a -> bool) ->
   hash:('a -> int) -> (module Hashtbl.S with type key = 'a)
-module Char :
-  sig
-    include module type of Char
-    val is_whitespace : char -> bool
-    val is_newline : char -> bool
-    val is_digit : char -> bool
-    val is_uppercase : char -> bool
-    val is_lowercase : char -> bool
-  end
-module Return :
-  sig
-    type 'a t = 'a -> exn
-    val return : ('a -> exn) -> 'a -> 'b
-    val label : ('a t -> 'a) -> 'a
-    val with_label : ('a t -> 'a) -> 'a
-  end
-module String :
-  sig
-    include module type of String
-    val init : int -> (int -> char) -> string
-    val is_empty : string -> bool
-    val not_empty : string -> bool
-    val starts_with : string -> string -> bool
-    val ends_with : string -> string -> bool
-    val of_char : char -> string
-    val drop_while : (char -> bool) -> string -> string
-    val neg : string -> string
-    val map : (char -> char) -> string -> string
-    val lowercase : string -> string
-    val find_from : string -> int -> string -> int
-    val find : string -> string -> int
-    val split : string -> string -> string * string
-    val rfind_from : string -> int -> string -> int
-    val rfind : string -> string -> int
-    val nsplit : string -> string -> string list
-  end
+
+
 module Ref :
   sig
     val protect : 'a ref -> 'a -> (unit -> 'b) -> 'b

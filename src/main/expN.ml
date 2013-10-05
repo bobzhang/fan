@@ -2,7 +2,7 @@
 
 #{:control| default "exp-";|}
 (* FIXME more  precise location for [resolve_name]*)
-open LibUtil
+
 open FAstN
 open AstLibN
 open Fid

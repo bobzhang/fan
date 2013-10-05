@@ -2476,53 +2476,53 @@ let apply () =
           `Stoken
             (((function | `Int _ -> true | _ -> false)),
               (`App ((`Vrn "Int"), `Any)), "`Int _")],
-           ("`Int (_loc, (String.neg s))\n",
+           ("`Int (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `Int s -> (`Int (_loc, (String.neg s)) : 'pat )
-                   | _ -> failwith "`Int (_loc, (String.neg s))\n"))));
+                   | `Int s -> (`Int (_loc, (Fstring.neg s)) : 'pat )
+                   | _ -> failwith "`Int (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
             (((function | `Int32 _ -> true | _ -> false)),
               (`App ((`Vrn "Int32"), `Any)), "`Int32 _")],
-           ("`Int32 (_loc, (String.neg s))\n",
+           ("`Int32 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `Int32 s -> (`Int32 (_loc, (String.neg s)) : 'pat )
-                   | _ -> failwith "`Int32 (_loc, (String.neg s))\n"))));
+                   | `Int32 s -> (`Int32 (_loc, (Fstring.neg s)) : 'pat )
+                   | _ -> failwith "`Int32 (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
             (((function | `Int64 _ -> true | _ -> false)),
               (`App ((`Vrn "Int64"), `Any)), "`Int64 _")],
-           ("`Int64 (_loc, (String.neg s))\n",
+           ("`Int64 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `Int64 s -> (`Int64 (_loc, (String.neg s)) : 'pat )
-                   | _ -> failwith "`Int64 (_loc, (String.neg s))\n"))));
+                   | `Int64 s -> (`Int64 (_loc, (Fstring.neg s)) : 'pat )
+                   | _ -> failwith "`Int64 (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
             (((function | `Nativeint _ -> true | _ -> false)),
               (`App ((`Vrn "Nativeint"), `Any)), "`Nativeint _")],
-           ("`Nativeint (_loc, (String.neg s))\n",
+           ("`Nativeint (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
                    | `Nativeint s ->
-                       (`Nativeint (_loc, (String.neg s)) : 'pat )
-                   | _ -> failwith "`Nativeint (_loc, (String.neg s))\n"))));
+                       (`Nativeint (_loc, (Fstring.neg s)) : 'pat )
+                   | _ -> failwith "`Nativeint (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
             (((function | `Flo _ -> true | _ -> false)),
               (`App ((`Vrn "Flo"), `Any)), "`Flo _")],
-           ("`Flo (_loc, (String.neg s))\n",
+           ("`Flo (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
                    match __fan_1 with
-                   | `Flo s -> (`Flo (_loc, (String.neg s)) : 'pat )
-                   | _ -> failwith "`Flo (_loc, (String.neg s))\n"))));
+                   | `Flo s -> (`Flo (_loc, (Fstring.neg s)) : 'pat )
+                   | _ -> failwith "`Flo (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "["; `Skeyword "]"],
            ("(`Uid (_loc, \"[]\") : FAst.pat )\n",
              (Fgram.mk_action
