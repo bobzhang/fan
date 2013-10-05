@@ -2,7 +2,7 @@ open Format
 open LibUtil
 open AstLibN
 open FAstN
-open BasicN
+open Fid
 open CtypN
 open FSigUtil
 let check_valid str =
@@ -33,7 +33,7 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
   (ty : ctyp) =
   (let name_exp = f ty in
    let base = name_exp +> names in
-   let id_eps = List.init arity (fun index  -> xid ~off:index i) in
+   let id_eps = (Flist.init arity) @@ (fun index  -> xid ~off:index i) in
    let ep0 = List.hd id_eps in
    let id_ep = tuple_com id_eps in
    let exp = appl_of_list (base :: (id_eps :>exp list)) in
@@ -255,7 +255,7 @@ let stru_of_mtyps ?module_name  ?cons_transform  ?annot  ?arity  ?names
            | xs ->
                (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs;
                 (let bind =
-                   List.reduce_right_with
+                   Flist.reduce_right_with
                      ~compose:(fun x  y  -> (`And (x, y) : FAstN.bind ))
                      ~f:(fun (_name,ty)  -> mk_bind ty) xs in
                  (`Value (`Positive, bind) : FAstN.stru ))))

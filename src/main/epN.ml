@@ -4,9 +4,9 @@
 
 
 open FAstN 
-open LibUtil
+(* open LibUtil *)
 open AstLibN
-open BasicN
+open Fid
 
 let of_str (s:string) : ep =
   let len = String.length s in 
@@ -15,7 +15,7 @@ let of_str (s:string) : ep =
   else
     match s.[0] with
     | '`'-> {|  $(vrn: String.sub s 1 (len - 1)) |}
-    | x when Char.is_uppercase x -> {| $uid:s |}
+    | x when Fchar.is_uppercase x -> {| $uid:s |}
     | _ -> {| $lid:s |} 
 
 
@@ -26,7 +26,7 @@ let gen_tuple_first ~number ~off =
   | 1 -> xid ~off 0 
   | n when n > 1 -> 
     let lst =
-      zfold_left ~start:1 ~until:(number-1)
+      LibUtil.zfold_left ~start:1 ~until:(number-1)
         ~acc:(xid ~off 0 )
         (fun acc i -> com acc (xid ~off i) ) in
     {| $par:lst |}
@@ -45,7 +45,7 @@ let gen_tuple_second ~number ~off =
       
   | n when n > 1 -> 
     let lst =
-      zfold_left ~start:1 ~until:(number - 1)
+      LibUtil.zfold_left ~start:1 ~until:(number - 1)
         ~acc:({| $(id:xid ~off:0 off) |})
         (fun acc i -> com acc {| $(id:xid ~off:i off ) |} ) in
     {| $par:lst |}
@@ -65,13 +65,13 @@ let gen_tuple_second ~number ~off =
    ]}
  *)    
 let tuple_of_number ast n : ep =
-  let res = zfold_left ~start:1 ~until:(n-1) ~acc:ast
+  let res = LibUtil.zfold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
   if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
   else res
 
 let of_vstr_number name i : ep=
-  let items = List.init i xid  in
+  let items = Flist.init i xid  in
   if items = [] then {|$vrn:name|}
   else
     let item = tuple_com items  in
@@ -92,10 +92,10 @@ let of_vstr_number name i : ep=
   
 *)
 let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
-  let args = List.init arity
-      (fun i -> List.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
+  let args = Flist.init arity
+      (fun i -> Flist.init n (fun j -> {| $(id:xid ~off:i j) |} )) in
   let pat = of_str (cons_transform cons) in 
-  List.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
+  Flist.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
     
 
   
@@ -112,10 +112,10 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
  *)
 let mk_record ?(arity=1) cols : ep  =
   let mk_list off = 
-    List.mapi
+    Flist.mapi
       (fun i {CtypN.col_label;_} ->
         {:rec_exp-'| $lid:col_label = $(xid ~off i) |} ) cols in
-  let res = zfold_left
+  let res = LibUtil.zfold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )
       (fun acc i -> com acc (`Record (sem_of_list (mk_list i))) ) in
@@ -138,7 +138,7 @@ let mk_tuple ~arity ~number  =
   match arity with
   | 1 -> gen_tuple_first ~number ~off:0
   | n when n > 1 -> 
-      let e = zfold_left
+      let e = LibUtil.zfold_left
         ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
       {:ep-| $par:e |}
@@ -155,7 +155,7 @@ let mk_tuple ~arity ~number  =
   ]}
  *)
 (* let tuple_of_list lst = *)
-(*   let len = List.length lst in *)
+(*   let len = Flist.length lst in *)
 (*   match len with *)
 (*   [ 1  ->  List.hd lst *)
 (*   | n when n > 1 ->  {| $(tup:List.reduce_left com lst) |}  *)

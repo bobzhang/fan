@@ -237,9 +237,9 @@ and scan_product entry (symbols,x) : production  =
        in
        let () =
          if diff <> [] then 
-           (failwithf
-              "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot
-              (List.reduce_left (^) diff)) in
+           failwithf
+             "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot
+           @@ Flist.reduce_left (^) diff in
        let () = check_gram entry symbol in
        match symbol with
        |`Snterm e when e == entry -> `Sself
@@ -349,3 +349,7 @@ let  eoi_entry e =
     
 
 (* {:extend| a: [b ; `EOI ]|} *)
+
+(* local variables: *)
+(* compile-command: "pmake ginsert.cmo" *)
+(* end: *)

@@ -27,7 +27,7 @@ let plugin_add plugin =
        (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
 let plugin_remove plugin =
-  Ref.modify FState.current_filters (fun x  -> List.remove plugin x)
+  Ref.modify FState.current_filters (fun x  -> Flist.remove plugin x)
 class type traversal
   =
   object 

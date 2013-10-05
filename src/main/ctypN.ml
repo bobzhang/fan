@@ -3,7 +3,7 @@
 open FAstN
 open AstLibN   
 open LibUtil
-open BasicN
+open Fid
 
 
 type vrn =
@@ -87,7 +87,7 @@ type full_id_transform =
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of  (string -> string) ]
         
-let arrow_of_list f = List.reduce_right arrow f
+let arrow_of_list f = Flist.reduce_right arrow f
     
 let app_arrow lst acc = List.fold_right arrow lst acc
     
@@ -115,8 +115,8 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   ]}  quantifier variables can not be unified *)  
 
 let gen_quantifiers1 ~arity n  : ctyp =
-  List.init arity
-    (fun i -> List.init n
+  Flist.init arity
+    (fun i -> Flist.init n
         (fun j -> {|  '$(lid:allx ~off:i j) |} ))
   |> List.concat |> appl_of_list
 
@@ -125,7 +125,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
 let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
-     List.init len
+     Flist.init len
        (fun i -> {|  '$(lid:allx ~off i) |}))
     
 let of_name_len ~off (name,len) =
@@ -180,7 +180,7 @@ let list_of_record (ty:name_ctyp) : col list  =
   int
   ]}
  *)
-let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
+let gen_tuple_n ty n = Flist.init n (fun _ -> ty) |> tuple_sta
 
 (*
   {[
@@ -189,7 +189,7 @@ let gen_tuple_n ty n = List.init n (fun _ -> ty) |> tuple_sta
   ]}
  *)
 let repeat_arrow_n ty n =
-  List.init n (fun _ -> ty) |>  arrow_of_list
+  Flist.init n (fun _ -> ty) |>  arrow_of_list
     
 
 (* to be clean soon *)
@@ -200,7 +200,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let prefix = List.map
       (fun s -> String.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
-    app_arrow (List.init number (fun _ -> (of_id_len ~off:0 (id,len)))) in
+    app_arrow @@ Flist.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let result_type = (* {| 'result |} *)
     {|'$(lid:"result"^string_of_int !result_id)|} in
   let _ = incr result_id in
@@ -214,25 +214,22 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     (* |Type c -> (1,c)  *)
     |Str_item -> (1,result_type) in 
   let params =
-    List.init len
-      (fun i
-        ->
-          let app_src = app_arrow
-              (List.init number
-                 (fun _ -> {|  '$(lid:allx ~off:0 i)  |} )) in
-          match k with
-          |Obj u  ->
-              let dst =
-                match  u with
-                | Map -> {|  '$(lid:allx ~off:1 i) |}
-                | Iter -> result_type
-                | Concrete c -> c
-                | Fold-> self_type  in
-              (arrow self_type  (prefix <+ (app_src dst)))
-          |Str_item -> prefix <+ app_src result_type
-          (* |Type _  -> prefix <+ app_src dst *)
-      ) in 
-  let base = prefix <+ (app_src dst) in
+    Flist.init len @@
+    fun i ->
+      let app_src = app_arrow @@
+        Flist.init number @@ fun _ -> {| '$(lid:allx ~off:0 i)|} in
+      match k with
+      |Obj u  ->
+          let dst =
+            match  u with
+            | Map -> let x  = allx ~off:1 i in {|  '$lid:x |}
+            | Iter -> result_type
+            | Concrete c -> c
+            | Fold-> self_type  in
+          arrow self_type  @@ (prefix <+ app_src dst)
+      |Str_item -> prefix <+ app_src result_type
+            (* |Type _  -> prefix <+ app_src dst *)  in 
+  let base = prefix <+ app_src dst in
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
@@ -414,7 +411,7 @@ let view_variant (t:row_field) : vbranch list  =
           (* | {|$lid:x|} -> `abbrev x  *)
     | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)  ) lst 
 
-
+let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
 (*************************************************************************)
 (* transformation function *)    
 let transform : full_id_transform -> vid -> exp  =
@@ -444,8 +441,9 @@ let transform : full_id_transform -> vid -> exp  =
           | t -> 
               let dest =  map_to_string t in
               let src = ObjsN.dump_vid t in (* FIXME *)
-              let () = if not (Hashtbl.mem BasicN.conversion_table src) then begin 
-                  Hashtbl.add BasicN.conversion_table src dest;   
+              let () =
+                if not @@ Hashtbl.mem conversion_table src then begin 
+                  Hashtbl.add conversion_table src dest;   
                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
                 end in
               {:exp-| self# $(lid:f dest) |}
@@ -469,8 +467,8 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    List.init arity (fun i -> {:pat-| (#$id:name as $(lid: x ~off:i 0 )) |})in
-  let exps = List.init arity (fun i -> {:exp-| $(id:xid ~off:i 0) |} ) in
+    Flist.init arity @@ fun i -> {:pat-| (#$id:name as $(lid: x ~off:i 0 )) |}in
+  let exps = Flist.init arity @@ fun i -> {:exp-| $(id:xid ~off:i 0) |}  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with

@@ -89,7 +89,7 @@ let tree_in_entry prev_symb tree = function
             | None -> None
             end
         | _ -> None  in
-      (try List.find_map search_level  levels with Not_found -> tree)
+      (try Flist.find_map search_level  levels with Not_found -> tree)
   | Dparser _ -> tree 
 
         
@@ -180,3 +180,7 @@ let symb_failed_txt e s1 s2 =
   symb_failed e 0 s1 s2
 
 
+
+(* local variables: *)
+(* compile-command: "pmake gfailed.cmo" *)
+(* end: *)

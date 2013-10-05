@@ -24,7 +24,9 @@ val mk_tuple : arity:int -> number:int -> ep
 (**
    A very naive lifting. It does not do any parsing at all
    It is applied to both exp and pat
-   {[of_str "`A";
+
+   {[
+   of_str "`A";
    Vrn  "A" || Vrn "A"
    
    of_str "A";
@@ -35,6 +37,7 @@ val mk_tuple : arity:int -> number:int -> ep
 
    of_str "&&";
    ExId  (Lid  "&&")
-   ]}  *)
+   ]}
+ *)
 
 val of_str: string -> ep

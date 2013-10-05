@@ -5,7 +5,7 @@
 open LibUtil
 open FAstN
 open AstLibN
-open BasicN
+open Fid
 
 
 
@@ -17,15 +17,15 @@ let mkfun names acc  =
 let currying cases ~arity =
   let cases = bar_of_list cases in 
   if  arity >= 2 then 
-    let names = List.init arity (fun i -> x ~off:i 0) in
-    let exps = List.map (fun s-> {| $lid:s |} ) names in
+    let names = Flist.init arity (fun i -> x ~off:i 0) in
+    let exps = Flist.map (fun s-> {| $lid:s |} ) names in
     let x = tuple_com exps in
     mkfun names  {| match $x with | $cases |} 
   else {| function | $cases |}
 
 
 let eta_expand (exp:exp) number : exp =
-  let names = List.init number (fun i -> x ~off:0 i ) in
+  let names = Flist.init number (fun i -> x ~off:0 i ) in
   mkfun names (exp +> names )
       
 
@@ -70,7 +70,7 @@ let mk_tuple_ee = function (* BOOTSTRAPPING *)
   | [] -> invalid_arg "mktupee arity is zero "
   | [x] -> x
   | xs  ->
-      let v = List.reduce_right mee_comma xs in
+      let v = Flist.reduce_right mee_comma xs in
       {:exp-| {:exp'| $(par:($v))|}|}
 
 
@@ -87,6 +87,11 @@ let mk_record_ee label_exps =
   label_exps
   |> List.map (fun (label,exp) -> mee_record_col label exp)
   |> (fun es ->
-      {:exp-| {:exp'| { $($(List.reduce_right mee_record_semi es)) } |}|} )
+      let x = Flist.reduce_right mee_record_semi es in
+      {:exp-| {:exp'| { $($x) } |}|} )
 
       
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/expN.cmo" *)
+(* end: *)

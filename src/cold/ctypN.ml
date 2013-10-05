@@ -1,7 +1,7 @@
 open FAstN
 open AstLibN
 open LibUtil
-open BasicN
+open Fid
 type vrn =  
   | Sum
   | TyVrnEq
@@ -53,7 +53,7 @@ type rhs_basic_id_transform = [ basic_id_transform | `Exp of string -> exp]
 type full_id_transform =
   [ basic_id_transform | `Idents of vid list -> vid | `Id of vid -> vid
   | `Last of string -> vid | `Obj of string -> string] 
-let arrow_of_list f = List.reduce_right arrow f
+let arrow_of_list f = Flist.reduce_right arrow f
 let app_arrow lst acc = List.fold_right arrow lst acc
 let (<+) (names : string list) (ty : ctyp) =
   List.fold_right
@@ -73,16 +73,16 @@ let name_length_of_tydcl (x : typedecl) =
        failwithf "name_length_of_tydcl {|%s|}\n" (ObjsN.dump_typedecl tydcl) : 
   (string* int) )
 let gen_quantifiers1 ~arity  n =
-  (((List.init arity
+  (((Flist.init arity
        (fun i  ->
-          List.init n
+          Flist.init n
             (fun j  ->
                (`Quote (`Normal, (`Lid (allx ~off:i j))) : FAstN.ctyp ))))
       |> List.concat)
      |> appl_of_list : ctyp )
 let of_id_len ~off  ((id : ident),len) =
   appl_of_list ((id :>ctyp) ::
-    (List.init len
+    (Flist.init len
        (fun i  -> (`Quote (`Normal, (`Lid (allx ~off i))) : FAstN.ctyp ))))
 let of_name_len ~off  (name,len) =
   let id = lid name in of_id_len ~off (id, len)
@@ -99,14 +99,14 @@ let list_of_record (ty : name_ctyp) =
              { col_label; col_ctyp; col_mutable = false }
          | t0 -> failwithf "list_of_record %s" (ObjsN.dump_name_ctyp t0))) : 
   col list )
-let gen_tuple_n ty n = (List.init n (fun _  -> ty)) |> tuple_sta
-let repeat_arrow_n ty n = (List.init n (fun _  -> ty)) |> arrow_of_list
+let gen_tuple_n ty n = (Flist.init n (fun _  -> ty)) |> tuple_sta
+let repeat_arrow_n ty n = (Flist.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let prefix =
      List.map (fun s  -> String.drop_while (fun c  -> c = '_') s) prefix in
    let app_src =
-     app_arrow (List.init number (fun _  -> of_id_len ~off:0 (id, len))) in
+     app_arrow @@ (Flist.init number (fun _  -> of_id_len ~off:0 (id, len))) in
    let result_type: FAstN.ctyp =
      `Quote (`Normal, (`Lid ("result" ^ (string_of_int result_id.contents)))) in
    let _ = incr result_id in
@@ -119,11 +119,11 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
      | Obj (Concrete c) -> (1, c)
      | Str_item  -> (1, result_type) in
    let params =
-     List.init len
+     (Flist.init len) @@
        (fun i  ->
           let app_src =
-            app_arrow
-              (List.init number
+            app_arrow @@
+              ((Flist.init number) @@
                  (fun _  ->
                     (`Quote (`Normal, (`Lid (allx ~off:0 i))) : FAstN.ctyp ))) in
           match k with
@@ -131,11 +131,12 @@ let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
               let dst =
                 match u with
                 | Map  ->
-                    (`Quote (`Normal, (`Lid (allx ~off:1 i))) : FAstN.ctyp )
+                    let x = allx ~off:1 i in
+                    (`Quote (`Normal, (`Lid x)) : FAstN.ctyp )
                 | Iter  -> result_type
                 | Concrete c -> c
                 | Fold  -> self_type in
-              arrow self_type (prefix <+ (app_src dst))
+              (arrow self_type) @@ (prefix <+ (app_src dst))
           | Str_item  -> prefix <+ (app_src result_type)) in
    let base = prefix <+ (app_src dst) in
    if len = 0
@@ -220,6 +221,7 @@ let view_variant (t : row_field) =
       | `Ctyp (#ident' as i) -> `abbrev i
       | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)) lst : 
   vbranch list )
+let conversion_table: (string,string) Hashtbl.t = Hashtbl.create 50
 let transform: full_id_transform -> vid -> exp =
   let open IdN in
     function
@@ -236,9 +238,9 @@ let transform: full_id_transform -> vid -> exp =
              let dest = map_to_string t in
              let src = ObjsN.dump_vid t in
              let () =
-               if not (Hashtbl.mem BasicN.conversion_table src)
+               if not @@ (Hashtbl.mem conversion_table src)
                then
-                 (Hashtbl.add BasicN.conversion_table src dest;
+                 (Hashtbl.add conversion_table src dest;
                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src
                     dest) in
              (`Send ((`Lid "self"), (`Lid (f dest))) : FAstN.exp ))
@@ -254,10 +256,10 @@ let right_transform =
   | `Exp f -> f
 let gen_tuple_abbrev ~arity  ~annot  ~destination  name e =
   let args: pat list =
-    List.init arity
+    (Flist.init arity) @@
       (fun i  ->
          (`Alias ((`ClassPath name), (`Lid (x ~off:i 0))) : FAstN.pat )) in
-  let exps = List.init arity (fun i  -> (xid ~off:i 0 : FAstN.exp )) in
+  let exps = (Flist.init arity) @@ (fun i  -> (xid ~off:i 0 : FAstN.exp )) in
   let e = appl_of_list (e :: exps) in
   let pat = args |> tuple_com in
   match destination with

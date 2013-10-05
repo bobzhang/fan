@@ -65,7 +65,7 @@ NATIVE_ENABLED = true
 FAN_FILES = \
     ant antN astInjection astLib astLibN ast_filters ast_macros\
     ast_parsers ast_quotation \
-    basicN codeTemplate commentFilter compile_lex compile_stream ctypN \
+    fid codeTemplate commentFilter compile_lex compile_stream ctypN \
     deriveN dynLoader epN \
     expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
     fSigUtil fState fanAstN fanOps fan_lex fgram\
@@ -116,8 +116,9 @@ section
     VMOUNTDIR = $(DIR_MAIN_ANNOT) # simulate ocamlbuild to interact well with annotation
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(file fan)
-    # OCamlAdditionalExistDependency($(PP_FAN))
-    AdditionalDependency($(PP_FAN))
+    OCamlAdditionalExistDependency($(PP_FAN))
+    # AdditionalDependency($(PP_FAN))
+    # weaker dependency require snapshot from time to time however
     OCAML_LIBS[] += $(VMOUNTDIR)/libhot
     .SUBDIRS: $(VMOUNTDIR)
     OCamlProgram(fan0, $(VMOUNTDIR)/fan)

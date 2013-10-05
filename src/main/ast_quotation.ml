@@ -38,7 +38,7 @@ let resolve_name (n:Ftoken.name) =
   match n with
   | ((`Sub _ as x) , v) ->
       begin 
-        match List.find_opt
+        match Flist.find_opt
             (fun path  ->
               match Hashtbl.find_opt names_tbl @@ concat_domain (path,x)
               with

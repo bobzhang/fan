@@ -8,7 +8,7 @@ let mk_variant _cons =
   (function
    | [] -> (`Lid "true" : FAstN.exp )
    | ls ->
-       List.reduce_left_with
+       Flist.reduce_left_with
          ~compose:(fun x  y  ->
                      (`App ((`App ((`Lid "&&"), x)), y) : FAstN.exp ))
          ~project:(fun { info_exp;_}  -> info_exp) ls : ty_info list -> exp )
@@ -32,7 +32,7 @@ let (gen_fold,gen_fold2) =
       (function
        | [] -> (`Lid "self" : FAstN.exp )
        | ls ->
-           List.reduce_right
+           Flist.reduce_right
              (fun v  acc  ->
                 (`LetIn (`Negative, (`Bind ((`Lid "self"), v)), acc) : 
                 FAstN.exp )) ls) in
@@ -202,13 +202,13 @@ let mk_variant_print cons params =
   let pre =
     if len >= 1
     then
-      mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]"
-        (List.init len (fun _  -> "%a"))
+      (mkfmt ("@[<1>(" ^ (cons ^ "@ ")) "@ " ")@]") @@
+        (Flist.init len (fun _  -> "%a"))
     else mkfmt cons "" "" [] in
   appl_of_list (pre :: (extract params))
 let mk_tuple_print params =
   let len = List.length params in
-  let pre = mkfmt "@[<1>(" ",@," ")@]" (List.init len (fun _  -> "%a")) in
+  let pre = (mkfmt "@[<1>(" ",@," ")@]") @@ (Flist.init len (fun _  -> "%a")) in
   appl_of_list (pre :: (extract params))
 let mk_record_print cols =
   let pre =
@@ -293,7 +293,7 @@ let generate (mtyps : mtyps) =
             if arity > 1
             then
               (let pats = (`Lid "_loc" : FAstN.pat ) ::
-                 (List.init (arity - 1) (fun _  -> (`Any : FAstN.pat ))) in
+                 (Flist.init (arity - 1) (const (`Any : FAstN.pat ))) in
                let case: FAstN.case =
                  `Case ((`App ((`Vrn key), (tuple_com pats))), (`Lid "_loc")) in
                match acc with
@@ -310,7 +310,7 @@ let _ =
     ("GenLoc", (some generate))
 let generate (mtyps : mtyps) =
   (let tys: string list =
-     List.concat_map
+     Flist.concat_map
        (fun x  ->
           match x with
           | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys

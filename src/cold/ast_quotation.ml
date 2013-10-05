@@ -14,7 +14,7 @@ let names_tbl: (Ftoken.domains,SSet.t) Hashtbl.t = Hashtbl.create 30
 let resolve_name (n : Ftoken.name) =
   match n with
   | ((`Sub _ as x),v) ->
-      (match List.find_opt
+      (match Flist.find_opt
                (fun path  ->
                   match (Hashtbl.find_opt names_tbl) @@
                           (concat_domain (path, x))

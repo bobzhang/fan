@@ -179,7 +179,7 @@ let tuple_com y=
   |[] -> failwith "tuple_com empty"
   |[x] -> x
   | x::_ -> (* FIXME [x::_] still compiles *)
-      let _loc = x <+> List.last y in
+      let _loc = x <+> Flist.last y in
       `Par _loc (com_of_list y) 
     
 let tuple_sta y =
@@ -187,7 +187,7 @@ let tuple_sta y =
   | [] -> failwith "tuple_sta empty"
   | [x] -> x
   | x::_ ->
-       let _loc =  x <+> List.last y in 
+       let _loc =  x <+> Flist.last y in 
        `Par _loc (sta_of_list y)
 
 
@@ -215,5 +215,5 @@ let meta_here _loc location  =
       $(if h then {:exp'| true |} else {:exp'| false |} )) |}
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/astLib.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/astLib.cmo" *)
 (* end: *)

@@ -48,7 +48,7 @@ let plugin_add plugin =
 
     
 let plugin_remove plugin =
-    Ref.modify FState.current_filters (fun x -> List.remove plugin x) 
+    Ref.modify FState.current_filters (fun x -> Flist.remove plugin x) 
   
 
 
@@ -187,3 +187,7 @@ let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru =
 let () = begin
   Ast2pt.generate_type_code := genenrate_type_code
 end
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/typehook.cmo" *)
+(* end: *)

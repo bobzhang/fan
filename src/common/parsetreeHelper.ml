@@ -1,6 +1,5 @@
 open Parsetree
 open Longident
-open LibUtil
 open Location
 
 let mkloc txt loc = { txt ; loc }
