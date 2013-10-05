@@ -1,19 +1,19 @@
 
 
 OCAMLINCLUDES += +compiler-libs
+OCAMLINCLUDES += $(UTILS_INCLUDES)
 LocalFiles=oconfig.ml
 $(LocalFiles): oconfig.mlp
 	sed -e "s|%%LIBDIR%%|$(OCAMLLIB)|" $< > $@
 
 FILES =  ast2pt oconfig astPrint ast_basic  fConfig\
-    fLoc fanTokenFilter fanUtil fan_warnings fcset fdir foptions\
-    ftoken lex_util lexgen \
-    location_util parsetreeHelper tokenEval translate_lex \
-    fan_util 
+    fLoc fanTokenFilter fanUtil  fcset fdir foptions\
+    ftoken lex_util lexgen location_util parsetreeHelper\
+    tokenEval translate_lex fan_util 
 
 lib: $(OCamlLibrary libcommon, $(FILES))
 
-.PHONY: clean
+.PHONY: clean lib
 clean:
     rm -rf $(OCAMLBIN_EXT)
     rm -rf $(LocalFiles)

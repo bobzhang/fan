@@ -1,5 +1,6 @@
 
-FILES[] = fchar fstring fstream return flist libUtil dyn_array fan_warnings
+
+FILES = fchar fstring fstream return flist libUtil dyn_array fan_warnings
 
 lib: $(OCamlLibrary libutils, $(FILES))
 

@@ -380,9 +380,9 @@ Shell. +=
 public.OCamlScanner(src_file) =
     if $(OCAMLDEP_MODULES_ENABLED)
         if $(equal $(suffix $(src_file)), .mli) # no pp for mli
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) -modules $(src_file) | ocamldep-postproc
+            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) -modules $(src_file) | ocamldep-postproc
         else
-            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(OCAMLDEPPPFLAGS) -modules $(src_file) | ocamldep-postproc
+            value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(OCAMLDEPPPFLAGS) -modules $(src_file) | ocamldep-postproc
     else
         if $(equal $(suffix $(src_file)), .mli) # no pp for mli
             value $(OCAMLFIND) $(OCAMLDEP) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS)  $(OCAMLDEPFLAGS) $(PREFIXED_OCAMLINCLUDES) $(src_file)
