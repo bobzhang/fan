@@ -36,7 +36,7 @@ let print_lex_error ppf e =
   | Unterminated_antiquot  -> fprintf ppf "Antiquotation not terminated"
   | Comment_start  -> fprintf ppf "this is the start of a comment"
   | Comment_not_end  -> fprintf ppf "this is not the end of a comment"
-let lex_error_to_string = Util.to_string_of_printer print_lex_error
+let lex_error_to_string = Formatf.to_string print_lex_error
 let debug = ref false
 let opt_char_len = function | Some _ -> 1 | None  -> 0
 let print_opt_char fmt =

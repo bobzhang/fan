@@ -1,5 +1,4 @@
 open FAst
-open Util
 let pp_print_loc _f _loc = ()
 let pp_print_string = StdFan.pp_print_string
 let pp_print_vid' = Objs.pp_print_vid'
@@ -288,4 +287,4 @@ let rec unparse_simple_pat f (x : simple_pat) =
   | `Any _ -> p f "_"
   | `Lid (_,s) -> p f "%s" s
   | `Ant (_,{ FanUtil.content = s;_}) -> p f "$%s" s
-let string_of_simple_pat = to_string_of_printer unparse_simple_pat
+let string_of_simple_pat = Formatf.to_string unparse_simple_pat
