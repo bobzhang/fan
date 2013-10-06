@@ -1,7 +1,7 @@
 
 
 FILES = fchar fstring fstream return flist dyn_array fan_warnings mapf setf hashset \
-    filenamef hashtblf ref stackf option bufferf arrayf formatf util
+    filenamef hashtblf ref stackf option bufferf arrayf formatf int util
 
 lib: $(OCamlLibrary libutils, $(FILES))
 

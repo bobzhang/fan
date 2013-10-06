@@ -1364,8 +1364,9 @@ let pp = fprintf
 
 let print_exp f  e =
   pp f "@[%a@]@." AstPrint.expression (exp e)
-let to_string_exp = to_string_of_printer print_exp
-(* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
+
+let to_string_exp = Formatf.to_string  print_exp
+
 
 let print_pat f e =
   pp f "@[%a@]@." AstPrint.pattern (pat e)

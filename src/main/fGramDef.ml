@@ -1,10 +1,9 @@
 open FAst
-open Util
+
 
   
-let pp_print_loc _f _loc  = ()
-(* open StdFan (\* FIXME later *\) *)
-;;
+let pp_print_loc _f _loc  = () ;;
+
 {:import|
 StdFan:
   pp_print_string;
@@ -191,7 +190,7 @@ let rec unparse_simple_pat  f (x:simple_pat)=
   | `Lid (_,s) -> p f "%s" s 
   | `Ant (_, {FanUtil.content=s;_}) -> p f "$%s" s
 
-let string_of_simple_pat = to_string_of_printer unparse_simple_pat
+let string_of_simple_pat = Formatf.to_string unparse_simple_pat
 (**
    `a
    `a $x

@@ -382,7 +382,7 @@ let generate (mtyps : mtyps) =
            (`Bind
               ((`Lid ("dump_" ^ f)),
                 (`App
-                   ((`Dot ((`Uid "Util"), (`Lid "to_string_of_printer"))),
+                   ((`Dot ((`Uid "Formatf"), (`Lid "to_string"))),
                      (`Send ((`Lid "dump"), (`Lid f)))))))) : FAstN.stru ) : 
      stru ) in
    sem

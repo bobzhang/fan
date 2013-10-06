@@ -25,7 +25,7 @@ let gen_tuple_first ~number ~off =
   | 1 -> xid ~off 0 
   | n when n > 1 -> 
     let lst =
-      Util.zfold_left ~start:1 ~until:(number-1)
+      Int.fold_left ~start:1 ~until:(number-1)
         ~acc:(xid ~off 0 )
         (fun acc i -> com acc (xid ~off i) ) in
     {| $par:lst |}
@@ -44,7 +44,7 @@ let gen_tuple_second ~number ~off =
       
   | n when n > 1 -> 
     let lst =
-      Util.zfold_left ~start:1 ~until:(number - 1)
+      Int.fold_left ~start:1 ~until:(number - 1)
         ~acc:({| $(id:xid ~off:0 off) |})
         (fun acc i -> com acc {| $(id:xid ~off:i off ) |} ) in
     {| $par:lst |}
@@ -64,7 +64,7 @@ let gen_tuple_second ~number ~off =
    ]}
  *)    
 let tuple_of_number ast n : ep =
-  let res = Util.zfold_left ~start:1 ~until:(n-1) ~acc:ast
+  let res = Int.fold_left ~start:1 ~until:(n-1) ~acc:ast
    (fun acc _ -> com acc ast) in
   if n > 1 then {| $par:res |} (* FIXME why {| $par:x |} cause an ghost location error*)
   else res
@@ -114,7 +114,7 @@ let mk_record ?(arity=1) cols : ep  =
     Flist.mapi
       (fun i {CtypN.col_label;_} ->
         {:rec_exp-'| $lid:col_label = $(xid ~off i) |} ) cols in
-  let res = Util.zfold_left
+  let res = Int.fold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(sem_of_list (mk_list  0))
         (* {| { $(list:mk_list 0) } |} *) )
       (fun acc i -> com acc (`Record (sem_of_list (mk_list i))) ) in
@@ -137,8 +137,8 @@ let mk_tuple ~arity ~number  =
   match arity with
   | 1 -> gen_tuple_first ~number ~off:0
   | n when n > 1 -> 
-      let e = Util.zfold_left
-        ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
+      let e =
+        Int.fold_left ~start:1 ~until:(n-1) ~acc:(gen_tuple_first ~number ~off:0)
         (fun acc i -> com acc (gen_tuple_first ~number ~off:i)) in
       {:ep-| $par:e |}
   | _ -> invalid_arg "mk_tuple arity < 1 " 

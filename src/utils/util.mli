@@ -1,5 +1,5 @@
 
-(** Fan's enhancement for OCaml's poor standard library *)  
+(** Enhancement to the {!Pervasives} module  *)  
 
 val cons : 'a -> 'a list -> 'a list
 
@@ -13,18 +13,15 @@ val some : 'a -> 'a option
 
 val none : 'a option
 
-
-
 val finally : action:(unit -> 'a) -> 'b -> ('b -> 'c)  -> 'c
 
 val with_dispose : dispose:('a -> 'b)  -> 'a -> ('a -> 'c) -> 'c
 
-    
 external id : 'a -> 'a = "%identity"
 
 external ( !& ) : 'a -> unit = "%ignore"
 
-(* val time : ('a -> 'b) -> 'a -> 'b * float *)
+
 val ( <| ) : ('a -> 'b) -> 'a -> 'b
 
 val ( |- ) : ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c
@@ -43,25 +40,15 @@ val uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
 
 val const : 'a -> 'b -> 'a
 
-val tap : ('a -> 'b) -> 'a -> 'a
+(** [tap x f] apply f to x and then discard its result  *)
+val tap : 'a -> ('a -> 'b) -> 'a
 
-val is_even : int -> bool
 
-val pp : Format.formatter -> ('a, Format.formatter, unit) format -> 'a
 
-val to_string_of_printer : (Format.formatter -> 'a -> unit) -> 'a -> string
 
-val zfold_left : ?start:int -> until:int -> acc:'a -> ('a -> int -> 'a) -> 'a
 
-type 'a cont = 'a -> exn
 
-val callcc : ('a cont -> 'a) -> 'a
 
-type 'a return = { return : 'b. 'a -> 'b; }
-
-val with_return : ('a return -> 'a) -> 'a
-
-    
 
 module ErrorMonad :
   sig

@@ -134,7 +134,7 @@ let print_lex_error ppf e =
   | Comment_not_end ->
       fprintf ppf "this is not the end of a comment"
             
-let lex_error_to_string = Util.to_string_of_printer print_lex_error
+let lex_error_to_string = Formatf.to_string print_lex_error
 
     
 let debug = ref false

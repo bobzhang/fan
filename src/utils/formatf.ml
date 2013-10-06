@@ -1,5 +1,5 @@
 include Format
-
+type 'a t  = formatter -> 'a -> unit 
 let pp_print_list mf_a  fmt  lst =
   fprintf fmt "@[<1>[%a]@]"
     (fun fmt  -> List.iter (fun x ->
@@ -56,7 +56,12 @@ let pp_option :
      | None -> ()
      | Some x -> fprintf f "%(%)%a%(%)" first fu x last
   
-      
+(** BOOTSTRAPING, used by [objsN] and [objs] to generate [to_string] function from
+    [printer] *)
+let to_string printer v =            
+  let buf = Buffer.create 30 in
+  let () = Format.bprintf buf "@[%a@]" printer v in
+  Buffer.contents buf
 
 (* local variables: *)
 (* compile-command: "pmake formatf.cmo" *)

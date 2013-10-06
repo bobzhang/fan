@@ -22,7 +22,7 @@ let pp_print_name: Format.formatter -> name -> unit =
        Format.fprintf fmt "@[<1>(%a,@,%a)@]" pp_print_domains _a0
          Format.pp_print_string _a1) fmt _a0
 
-let string_of_name = to_string_of_printer pp_print_name
+let string_of_name = Formatf.to_string pp_print_name
       
 type quot = {
     name:name;
@@ -144,7 +144,7 @@ type filter = stream -> stream
 
 
 
-let token_to_string = to_string_of_printer pp_print_t
+let token_to_string = Formatf.to_string pp_print_t
 
 let to_string = function
   | #t as x -> token_to_string x

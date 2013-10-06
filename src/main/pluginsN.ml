@@ -451,7 +451,7 @@ Typehook.register
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
     {:stru-|  (** BOOTSTRAPING*)
-    let $(lid:"dump_"^f)  = Util.to_string_of_printer dump#$lid:f
+    let $(lid:"dump_"^f)  = Formatf.to_string dump#$lid:f
   |} in
     sem
       {:stru-|let dump = new print|}

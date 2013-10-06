@@ -26,12 +26,11 @@ let starts_with str p =
   let len = length p in
   if length str < len then false
   else
-    Return.label
-      (fun label -> begin 
+    Return.cc
+      (fun id -> begin 
         for i = 0 to len - 1 do
           if unsafe_get str i <> unsafe_get p i then
-            Return.return label false
-          else ()
+            Return.k id false
         done;
         true end)
 
@@ -51,15 +50,14 @@ let ends_with str p =
   let diff = sl - el in
   if diff < 0 then false (*string is too short*)
   else
-    Return.label
-      (fun label -> begin 
+    Return.cc @@ fun id ->
+      begin 
         for i = 0 to el - 1 do
           if get str (diff + i) <> get p i then
-            Return.return label false
-          else ()
+            Return.k id false
         done;
         true
-      end)
+      end
       
 let of_char = make 1
 
@@ -106,12 +104,12 @@ let find_from str ofs sub =
     if len = 0 then raise Not_found else
     if 0 > ofs || ofs >= len then raise (Invalid_argument "index out of bounds")
     else
-      Return.label (fun label -> begin
+      Return.cc (fun id  -> begin
   	for i = ofs to len - sublen do
 	  let j = ref 0 in
 	  while unsafe_get str (i + !j) = unsafe_get sub !j do
 	    incr j;
-	    if !j = sublen then Return.return label i
+	    if !j = sublen then Return.k id i
 	  done;
 	done;
 	raise Not_found
@@ -134,13 +132,13 @@ let rfind_from str suf sub =
     if len = 0 then raise Not_found else
     if 0 > suf || suf >= len then raise (Invalid_argument "index out of bounds")
     else
-      Return.label (fun label -> begin
+      Return.cc (fun id -> begin
   	for i = suf - sublen + 1 downto 0 do
 	  (*Printf.printf "i:%i/suf:%i/sublen:%i/len:%i\n" i suf sublen len;*)
 	  let j = ref 0 in
 	  while unsafe_get str ( i + !j ) = unsafe_get sub !j do
 	    incr j;
-	    if !j = sublen then Return.return label i
+	    if !j = sublen then Return.k id i
 	  done;
 	done;
 	raise Not_found
