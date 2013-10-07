@@ -1,4 +1,51 @@
 
+
+(** Ast processing library with minimial dependency while not
+    complex type signature
+ *)  
+
+
+(** connecting a list of nodes from right to the left
+  It assumes that the associativity is right.
+
+  For example,
+  {[
+   com_of_list [ `Int(_loc,2 ); `Int (_loc,3); `Int (_loc,4) ]
+   `Com (, `Int (, 2), `Com (, `Int (, 3), `Int (, 4)))
+   ]}
+  
+  Note that [com_of_list] is making use of [of_listr]
+
+  *)
+let rec of_listr f xs =
+  match xs with
+  | [] -> invalid_arg "of_listr empty"
+  | [t] -> t
+  | t :: ts -> f t (of_listr f ts)
+
+(**
+   connecting a list of nodes from left to right.
+   It assumes that the associativity is to the left.
+   {[
+   Ast_gen.appl_of_list [`Int(_loc,2); `Int (_loc,3); `Int (_loc,4) ];;
+   `App (, `App (, `Int (, 2), `Int (, 3)), `Int (, 4))
+   ]}
+ *)
+let rec of_listl f xs =
+  match xs with
+  | [] -> invalid_arg "of_listl empty"
+  | [t] -> t
+  | x::y::xs -> of_listl f (f x y :: xs)
+
+(** collapse the intemediate nodes, it does not care about the associativity
+ *)
+let rec list_of a acc =
+  match a with
+  | `And(_,x,y)|`Com(_,x,y)|`Sta(_,x,y)|`Bar(_,x,y)
+  | `Sem(_,x,y)|`Dot(_,x,y)|`App(_,x,y) ->
+      list_of x (list_of y acc)
+  | _ -> a :: acc
+
 let rec list_of_and x acc =
   match x with
   |`And(_,x,y) -> list_of_and x (list_of_and y acc)
@@ -19,11 +66,6 @@ let rec list_of_bar x acc =
   |`Bar(_,x,y) -> list_of_bar x (list_of_bar y acc)
   | _ -> x::acc
 
-let rec list_of_or x acc =
-  match x with
-  |`Bar(_,x,y) -> list_of_or x (list_of_or y acc)
-  | _ -> x::acc
-
     
 let rec list_of_sem x acc =
   match x with
@@ -39,21 +81,28 @@ let rec list_of_app  x acc =
   match x with
   |`App(_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
   |x -> x :: acc
-
-
-(*
-  t1 -> t2 -> t3 =>
+        
+(**
+  (t1 -> (t2 -> t3)) =>
   [t1::t2::t3::acc]
  *)    
-let rec list_of_arrow_r x acc =
+let rec listr_of_arrow x acc =
   match x with
-  |`Arrow(_,t1,t2) -> list_of_arrow_r t1 (list_of_arrow_r t2 acc)
+  |`Arrow(_,t1,t2) -> listr_of_arrow t1 (listr_of_arrow t2 acc)
   | x -> x::acc
 
-(*************************************************************************)
-(*************************************************************************)
-  
+(** destruct app
+    for example
+    {[
+    view_app {| f a b c d|}
+    
+    ]}
+ *)
 let rec view_app acc = function
   |`App (_,f,a) -> view_app (a::acc) f
   | f -> (f,acc)
-        
+
+
+(* local variables: *)
+(* compile-command: "pmake ast_basic.cmo" *)
+(* end: *)

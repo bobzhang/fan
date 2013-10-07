@@ -79,7 +79,7 @@ a.el
 jslib/
 ulex/
 *.old
-
+*.i.mli
 ############### possible generated files ########################
 common/oconfig.ml
 *.opt

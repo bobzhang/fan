@@ -553,7 +553,7 @@ let apply () = begin
           (match p2 with
           | {| ($par:p) |} ->
               List.fold_left (fun p1 p2 -> {| $p1 $p2 |}) p1
-                (list_of_com p []) (* precise *)
+                (Ast_basic.list_of_com p []) (* precise *)
           | _ -> {|$p1 $p2 |})  
         | pat_constr{p1} -> p1
         | "lazy"; S{p} -> `Lazy (_loc, p)  ]
@@ -1304,7 +1304,7 @@ let apply_ctyp () = begin
             `Par (_loc, `Sta (_loc, t, tl))
         | "("; S{t}; ")" -> t
         | "("; S{t}; ","; com_ctyp{tl}; ")" ; type_longident{j} ->
-            appl_of_list  ((j:>ctyp):: t::list_of_com tl [])
+            appl_of_list  ((j:>ctyp):: t:: Ast_basic.list_of_com tl [])
         | "["; row_field{rfl}; "]" -> `PolyEq(_loc,rfl)
         (* | "[>"; "]" -> `PolySup (_loc, (`Nil _loc)) *) (* FIXME add later*)
         | "[>"; row_field{rfl}; "]" ->   `PolySup (_loc, rfl)

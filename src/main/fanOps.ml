@@ -223,7 +223,7 @@ let rec is_irrefut_pat (x: pat) = with pat
     | {| ($x as $_) |} -> is_irrefut_pat x
     | {| { $p } |} ->
         List.for_all (function |`RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
-          (list_of_sem  p [])
+          (Ast_basic.list_of_sem  p [])
     | `Sem(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
     | `Com(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2
     | `Bar(_,p1,p2) -> is_irrefut_pat p1 && is_irrefut_pat p2 (* could be more fine grained *)
@@ -280,7 +280,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
   let coords =
     match arg with
     | {| ($e1, $e2) |} | {| $e1, $e2 |} ->
-      list_of_com e1 (list_of_com e2 [])
+      Ast_basic.list_of_com e1 (Ast_basic.list_of_com e2 [])
     | _ -> [arg]  in
   match coords with
   | [] -> failwith "bigarray_get null list"

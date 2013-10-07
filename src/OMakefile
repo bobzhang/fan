@@ -70,7 +70,7 @@ NATIVE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_FILES = \
-    ast_gen ant antN ast_loc ast_helper astInjection  astLibN ast_filters ast_macros\
+    ast_gen ant antN ast_loc  astInjection  astLibN ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid codeTemplate commentFilter compile_lex compile_stream ctypN \
     deriveN dynLoader epN \

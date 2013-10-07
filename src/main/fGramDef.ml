@@ -169,7 +169,7 @@ let rec unparse_simple_pat  f (x:simple_pat)=
   match x with
   | `Vrn (_,s) -> p f "`%s" s
   | `App _ ->
-      let l = Ast_gen.list_of_app x [] in
+      let l = Ast_basic.list_of_app x [] in
       begin match l with
       | [ (`Vrn _ as x) ]  -> unparse_simple_pat  f x
       | [ (`Vrn _ as  x) ; v ] ->

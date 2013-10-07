@@ -2330,14 +2330,14 @@ let apply () =
                     'pat )))))]);
        ((Some "apply"), (Some `LA),
          [([`Snterm (Fgram.obj (pat_constr : 'pat_constr Fgram.t )); `Sself],
-            ("match p2 with\n| (`Par (_loc,p) : FAst.pat) ->\n    List.fold_left (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat )) p1\n      (list_of_com p [])\n| _ -> (`App (_loc, p1, p2) : FAst.pat )\n",
+            ("match p2 with\n| (`Par (_loc,p) : FAst.pat) ->\n    List.fold_left (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat )) p1\n      (Ast_basic.list_of_com p [])\n| _ -> (`App (_loc, p1, p2) : FAst.pat )\n",
               (Fgram.mk_action
                  (fun (p2 : 'pat)  (p1 : 'pat_constr)  (_loc : FLoc.t)  ->
                     (match p2 with
                      | (`Par (_loc,p) : FAst.pat) ->
                          List.fold_left
                            (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat ))
-                           p1 (list_of_com p [])
+                           p1 (Ast_basic.list_of_com p [])
                      | _ -> (`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
          ([`Snterm (Fgram.obj (pat_constr : 'pat_constr Fgram.t ))],
            ("p1\n",
@@ -6218,12 +6218,12 @@ let apply_ctyp () =
          `Snterm (Fgram.obj (com_ctyp : 'com_ctyp Fgram.t ));
          `Skeyword ")";
          `Snterm (Fgram.obj (type_longident : 'type_longident Fgram.t ))],
-          ("appl_of_list ((j :>ctyp) :: t :: (list_of_com tl []))\n",
+          ("appl_of_list ((j :>ctyp) :: t :: (Ast_basic.list_of_com tl []))\n",
             (Fgram.mk_action
                (fun (j : 'type_longident)  _  (tl : 'com_ctyp)  _ 
                   (t : 'ctyp)  _  (_loc : FLoc.t)  ->
-                  (appl_of_list ((j :>ctyp) :: t :: (list_of_com tl [])) : 
-                  'ctyp )))));
+                  (appl_of_list ((j :>ctyp) :: t ::
+                     (Ast_basic.list_of_com tl [])) : 'ctyp )))));
         ([`Skeyword "[";
          `Snterm (Fgram.obj (row_field : 'row_field Fgram.t ));
          `Skeyword "]"],

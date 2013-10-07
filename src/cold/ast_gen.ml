@@ -1,4 +1,3 @@
-open Util
 let loc_of = Ast_loc.loc_of
 let (<+>) = let open FLoc.Ops in ( <+> )
 let (<+>) a b = (loc_of a) <+> (loc_of b)
@@ -14,79 +13,13 @@ let par x = let _loc = loc_of x in `Par (_loc, x)
 let seq a = let _loc = loc_of a in `Seq (_loc, a)
 let arrow a b = let _loc = a <+> b in `Arrow (_loc, a, b)
 let typing a b = let _loc = a <+> b in `Constraint (_loc, a, b)
-let rec bar_of_list =
-  function
-  | [] -> failwithf "bar_of_list empty"
-  | t::[] -> t
-  | t::ts -> bar t (bar_of_list ts)
-let rec and_of_list =
-  function
-  | [] -> failwithf "and_of_list empty"
-  | t::[] -> t
-  | t::ts -> anda t (and_of_list ts)
-let rec sem_of_list =
-  function
-  | [] -> failwithf "sem_of_list empty"
-  | t::[] -> t
-  | t::ts -> sem t (sem_of_list ts)
-let rec com_of_list =
-  function
-  | [] -> failwithf "com_of_list empty"
-  | t::[] -> t
-  | t::ts -> com t (com_of_list ts)
-let rec sta_of_list =
-  function
-  | [] -> failwithf "sta_of_list empty"
-  | t::[] -> t
-  | t::ts -> sta t (sta_of_list ts)
-let rec dot_of_list =
-  function
-  | [] -> failwithf "dot_of_list empty"
-  | t::[] -> t
-  | t::ts -> dot t (dot_of_list ts)
-let rec appl_of_list x =
-  match x with
-  | [] -> failwithf "appl_of_list empty"
-  | x::[] -> x
-  | x::y::xs -> appl_of_list ((app x y) :: xs)
-let rec list_of_and x acc =
-  match x with
-  | `And (_,x,y) -> list_of_and x (list_of_and y acc)
-  | _ -> x :: acc
-let rec list_of_com x acc =
-  match x with
-  | `Com (_,x,y) -> list_of_com x (list_of_com y acc)
-  | _ -> x :: acc
-let rec list_of_star x acc =
-  match x with
-  | `Sta (_,x,y) -> list_of_star x (list_of_star y acc)
-  | _ -> x :: acc
-let rec list_of_bar x acc =
-  match x with
-  | `Bar (_,x,y) -> list_of_bar x (list_of_bar y acc)
-  | _ -> x :: acc
-let rec list_of_or x acc =
-  match x with
-  | `Bar (_,x,y) -> list_of_or x (list_of_or y acc)
-  | _ -> x :: acc
-let rec list_of_sem x acc =
-  match x with
-  | `Sem (_,x,y) -> list_of_sem x (list_of_sem y acc)
-  | _ -> x :: acc
-let rec list_of_dot x acc =
-  match x with
-  | `Dot (_,x,y) -> list_of_dot x (list_of_dot y acc)
-  | x -> x :: acc
-let rec list_of_app x acc =
-  match x with
-  | `App (_,t1,t2) -> list_of_app t1 (list_of_app t2 acc)
-  | x -> x :: acc
-let rec list_of_arrow_r x acc =
-  match x with
-  | `Arrow (_,t1,t2) -> list_of_arrow_r t1 (list_of_arrow_r t2 acc)
-  | x -> x :: acc
-let rec view_app acc =
-  function | `App (_,f,a) -> view_app (a :: acc) f | f -> (f, acc)
+let bar_of_list xs = Ast_basic.of_listr bar xs
+let and_of_list xs = Ast_basic.of_listr anda xs
+let sem_of_list xs = Ast_basic.of_listr sem xs
+let com_of_list xs = Ast_basic.of_listr com xs
+let sta_of_list xs = Ast_basic.of_listr sta xs
+let dot_of_list xs = Ast_basic.of_listr dot xs
+let appl_of_list xs = Ast_basic.of_listl app xs
 let seq_sem ls = seq (sem_of_list ls)
 let binds bs (e : FAst.exp) =
   match bs with

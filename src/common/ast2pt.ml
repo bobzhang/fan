@@ -325,7 +325,7 @@ let mkvariant (x:or_ctyp) :
     (with_loc  s sloc, List.map ctyp (list_of_star t []), None,  _loc)
 
   | `TyCol(_,`Uid(sloc,s),( `Arrow _  as t )) -> (*GADT*)
-    (match List.rev (list_of_arrow_r t []) with
+    (match List.rev (listr_of_arrow t []) with
      | u::t ->
        (with_loc s sloc, List.map ctyp t, Some (ctyp u),  _loc)  
      | [] -> assert false)
@@ -341,7 +341,7 @@ let type_kind (x:type_repr) : Parsetree.type_kind  =
   | `Record (_,t) ->
     Parsetree.Ptype_record (List.map mktrecord (list_of_sem t []))
   | `Sum(_,t) ->
-    Ptype_variant (List.map mkvariant (list_of_or t []))
+    Ptype_variant (List.map mkvariant (list_of_bar t []))
   | `Ant(_loc,_) -> ant_error _loc
 
 
@@ -937,7 +937,7 @@ and bind (x:bind) acc =
   | (`Bind (_loc,p,e) : FAst.bind) -> ((pat p), (exp e)) :: acc
   | _ -> assert false
 and case (x:case) = 
-  let cases = list_of_or x [] in
+  let cases = list_of_bar x [] in
   Flist.filter_map 
     (fun (x:case) ->
        let _loc = unsafe_loc_of x in
@@ -1382,5 +1382,5 @@ let print_ctyp f e =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake common/ast2pt.cmo" *)
+(* compile-command: "pmake lib" *)
 (* end: *)

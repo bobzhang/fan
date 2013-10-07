@@ -68,7 +68,7 @@ let rec is_irrefut_pat (x : pat) =
   | (`Record (_loc,p) : FAst.pat) ->
       List.for_all
         (function | `RecBind (_,_,p) -> is_irrefut_pat p | _ -> true)
-        (list_of_sem p [])
+        (Ast_basic.list_of_sem p [])
   | `Sem (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
   | `Com (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
   | `Bar (_,p1,p2) -> (is_irrefut_pat p1) && (is_irrefut_pat p2)
@@ -98,7 +98,7 @@ let bigarray_get loc arr arg =
   let coords =
     match arg with
     | (`Par (_loc,`Com (_,e1,e2)) : FAst.exp)|(`Com (_loc,e1,e2) : FAst.exp)
-        -> list_of_com e1 (list_of_com e2 [])
+        -> Ast_basic.list_of_com e1 (Ast_basic.list_of_com e2 [])
     | _ -> [arg] in
   match coords with
   | [] -> failwith "bigarray_get null list"
