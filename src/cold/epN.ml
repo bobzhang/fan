@@ -1,5 +1,5 @@
 open FAstN
-open AstLibN
+open Astn_util
 open Fid
 let of_str (s : string) =
   (let len = String.length s in

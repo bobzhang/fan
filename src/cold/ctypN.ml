@@ -1,5 +1,5 @@
 open FAstN
-open AstLibN
+open Astn_util
 open Util
 open Fid
 type vrn =  
@@ -68,7 +68,7 @@ let name_length_of_tydcl (x : typedecl) =
        (name,
          ((match tyvars with
            | `None -> 0
-           | `Some xs -> List.length @@ (list_of_com xs []))))
+           | `Some xs -> List.length @@ (Ast_basic.N.list_of_com xs []))))
    | tydcl ->
        failwithf "name_length_of_tydcl {|%s|}\n" (ObjsN.dump_typedecl tydcl) : 
   (string* int) )
@@ -89,7 +89,7 @@ let of_name_len ~off  (name,len) =
 let gen_ty_of_tydcl ~off  (tydcl : typedecl) =
   (tydcl |> name_length_of_tydcl) |> (of_name_len ~off)
 let list_of_record (ty : name_ctyp) =
-  (let (tys :name_ctyp list)= list_of_sem ty [] in
+  (let (tys :name_ctyp list)= Ast_basic.N.list_of_sem ty [] in
    tys |>
      (List.map
         (function
@@ -178,7 +178,7 @@ let is_recursive ty_dcl =
 let qualified_app_list (x : ctyp) =
   (match x with
    | (`App (_loc,_) : FAstN.ctyp) as x ->
-       (match list_of_app x [] with
+       (match Ast_basic.N.list_of_app x [] with
         | (`Lid _loc : FAstN.ctyp)::_ -> None
         | (#ident' as i)::ys -> Some (i, ys)
         | _ -> None)
@@ -192,30 +192,32 @@ let abstract_list (x : typedecl) =
   | `TyAbstr (_,lst,_) ->
       (match lst with
        | `None -> Some 0
-       | `Some xs -> Some (List.length @@ (list_of_com xs [])))
+       | `Some xs -> Some (List.length @@ (Ast_basic.N.list_of_com xs [])))
   | _ -> None
 let reduce_data_ctors (ty : or_ctyp) (init : 'a) ~compose 
   (f : string -> ctyp list -> 'e) =
-  let branches = list_of_or ty [] in
+  let branches = Ast_basic.N.list_of_bar ty [] in
   List.fold_left
     (fun acc  x  ->
        match (x : or_ctyp ) with
-       | `Of (`Uid cons,tys) -> compose (f cons (list_of_star tys [])) acc
+       | `Of (`Uid cons,tys) ->
+           compose (f cons (Ast_basic.N.list_of_star tys [])) acc
        | `Uid cons -> compose (f cons []) acc
        | t -> failwithf "reduce_data_ctors: %s" (ObjsN.dump_or_ctyp t)) init
     branches
 let view_sum (t : or_ctyp) =
-  let bs = list_of_or t [] in
+  let bs = Ast_basic.N.list_of_bar t [] in
   List.map
     (function
      | `Uid cons -> `branch (cons, [])
-     | `Of (`Uid cons,t) -> `branch (cons, (list_of_star t []))
+     | `Of (`Uid cons,t) -> `branch (cons, (Ast_basic.N.list_of_star t []))
      | _ -> assert false) bs
 let view_variant (t : row_field) =
-  (let lst = list_of_or t [] in
+  (let lst = Ast_basic.N.list_of_bar t [] in
    List.map
      (function
-      | `TyVrnOf (`C cons,`Par t) -> `variant (cons, (list_of_star t []))
+      | `TyVrnOf (`C cons,`Par t) ->
+          `variant (cons, (Ast_basic.N.list_of_star t []))
       | `TyVrnOf (`C cons,t) -> `variant (cons, [t])
       | `TyVrn `C cons -> `variant (cons, [])
       | `Ctyp (#ident' as i) -> `abbrev i
@@ -230,7 +232,8 @@ let transform: full_id_transform -> vid -> exp =
     | `Fun f -> (fun x  -> ident_map f x)
     | `Last f -> (fun x  -> (ident_map_of_ident f x : vid  :>exp))
     | `Id f -> (fun x  -> (f x : vid  :>exp))
-    | `Idents f -> (fun x  -> (f (list_of_dot x []) : vid  :>exp))
+    | `Idents f ->
+        (fun x  -> (f (Ast_basic.N.list_of_dot x []) : vid  :>exp))
     | `Obj f ->
         (function
          | `Lid x -> (`Send ((`Lid "self"), (`Lid (f x))) : FAstN.exp )

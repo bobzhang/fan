@@ -1,6 +1,6 @@
 open Format
 open Util
-open AstLibN
+open Astn_util
 open FAstN
 open Fid
 open CtypN
@@ -40,7 +40,7 @@ let mapi_exp ?(arity= 1)  ?(names= [])  ~f:(f : ctyp -> exp)  (i : int)
 let tuple_exp_of_ctyp ?(arity= 1)  ?(names= [])  ~mk_tuple  ~f  (ty : ctyp) =
   (match ty with
    | `Par t ->
-       let ls = list_of_star t [] in
+       let ls = Ast_basic.N.list_of_star t [] in
        let len = List.length ls in
        let pat = (EpN.mk_tuple ~arity ~number:len :>pat) in
        let tys = mk_tuple (List.mapi (mapi_exp ~arity ~names ~f) ls) in
@@ -80,7 +80,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id  ~left_type_variable
     | #ident' as id -> trans (IdN.to_vid id)
     | `Quote (_,`Lid s) -> tyvar s
     | `App _ as ty ->
-        (match list_of_app ty [] with
+        (match Ast_basic.N.list_of_app ty [] with
          | (#ident' as tctor)::ls ->
              appl_of_list ((trans (IdN.to_vid tctor)) ::
                (ls |>
@@ -111,7 +111,7 @@ let exp_of_ctyp ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
          List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
        mk_variant cons exps in
      let e = mk (cons, tyargs) in (`Case (p, e) : FAstN.case ) : case ) in
-  let info = (Sum, (List.length (list_of_or ty []))) in
+  let info = (Sum, (List.length (Ast_basic.N.list_of_bar ty []))) in
   let res: case list = CtypN.reduce_data_ctors ty [] f ~compose:cons in
   let res =
     let t =
@@ -132,10 +132,10 @@ let exp_of_variant ?cons_transform  ?(arity= 1)  ?(names= [])  ~default
      let e = mk (cons, tyargs) in (`Case (p, e) : FAstN.case ) : case ) in
   let simple (lid : ident) =
     (let e = (simple_exp_of_ctyp (lid :>ctyp)) +> names in
-     let (f,a) = view_app [] result in
+     let (f,a) = Ast_basic.N.view_app [] result in
      let annot = appl_of_list (f :: (List.map (fun _  -> `Any) a)) in
      gen_tuple_abbrev ~arity ~annot ~destination lid e : case ) in
-  let info = (TyVrnEq, (List.length (list_of_or ty []))) in
+  let info = (TyVrnEq, (List.length (Ast_basic.N.list_of_bar ty []))) in
   let ls = CtypN.view_variant ty in
   let res =
     let res =
@@ -160,7 +160,7 @@ let mk_prefix (vars : opt_decl_params) (acc : exp) ?(names= [])
   match vars with
   | `None -> ExpN.mkfun names acc
   | `Some xs ->
-      let vars = list_of_com xs [] in
+      let vars = Ast_basic.N.list_of_com xs [] in
       List.fold_right f vars (ExpN.mkfun names acc)
 let fun_of_tydcl ?(names= [])  ?(arity= 1)  ~left_type_variable  ~mk_record 
   ~result  simple_exp_of_ctyp exp_of_ctyp exp_of_variant tydcl =

@@ -4,7 +4,7 @@
 (* FIXME more  precise location for [resolve_name]*)
 
 open FAstN
-open AstLibN
+open Astn_util
 open Fid
 
 

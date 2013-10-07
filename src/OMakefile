@@ -70,9 +70,9 @@ NATIVE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_FILES = \
-    ast_gen ant antN ast_loc  astInjection  astLibN ast_filters ast_macros\
+    ast_gen ant antN ast_loc  ast_inject  astn_util ast_filters ast_macros\
     ast_parsers ast_quotation \
-    fid codeTemplate commentFilter compile_lex compile_stream ctypN \
+    fid code_template comment_filter compile_lex compile_stream ctypN \
     deriveN dynLoader epN \
     expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
     fSigUtil fState fanAstN fanOps fan_lex fgram\
@@ -257,3 +257,7 @@ coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma col
 clean:
     rm -rf $(OCAMLBIN_EXT)
     rm -rf fan fan0 fan1
+
+# local variables:
+# compile-command: "pmake fan0.run"
+# end:

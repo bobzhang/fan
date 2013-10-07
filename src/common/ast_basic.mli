@@ -35,3 +35,19 @@ val list_of_app : ([> `App of 'b * 'a * 'a ] as 'a) -> 'a list -> 'a list
 val listr_of_arrow :
   ([> `Arrow of 'b * 'a * 'a ] as 'a) -> 'a list -> 'a list
 val view_app : 'a list -> ([> `App of 'c * 'b * 'a ] as 'b) -> 'b * 'a list
+
+
+module N : sig
+  val list_of_and : ([> `And of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_com : ([> `Com of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_star : ([> `Sta of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_bar : ([> `Bar of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_or : ([> `Bar of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_sem : ([> `Sem of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_dot : ([> `Dot of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val list_of_app : ([> `App of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val listr_of_arrow :
+      ([> `Arrow of 'a * 'a ] as 'a) -> 'a list -> 'a list
+  val view_app : 'a list -> ([> `App of 'b * 'a ] as 'b) -> 'b * 'a list          
+end
+    

@@ -1,4 +1,4 @@
-open AstLibN
+open Astn_util
 open FAstN
 open StdFan
 let pp_print_typedecl = ObjsN.pp_print_typedecl
@@ -74,7 +74,9 @@ let mk_transform_type_eq () =
           (match r with
            | Some (i,lst) ->
                let vars =
-                 match vars with | `None -> [] | `Some x -> list_of_com x [] in
+                 match vars with
+                 | `None -> []
+                 | `Some x -> Ast_basic.N.list_of_com x [] in
                if not ((vars : decl_params list  :>ctyp list) = lst)
                then super#stru x
                else

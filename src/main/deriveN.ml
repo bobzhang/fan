@@ -2,7 +2,7 @@
 
 open Format
 open Util
-open AstLibN
+open Astn_util
 open FAstN
 open Fid
 open CtypN
@@ -60,7 +60,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     ~f (ty:ctyp) : exp =
   match ty with
   | `Par t  -> 
-    let ls = list_of_star t [] in
+    let ls = Ast_basic.N.list_of_star t [] in
     let len = List.length ls in
     let pat = (EpN.mk_tuple ~arity ~number:len :> pat) in
     let tys =
@@ -115,7 +115,7 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
     | (#ident' as id)  -> trans (IdN.to_vid id)
     | `Quote(_,`Lid s) ->   tyvar s
     | `App _  as ty ->
-        (match  list_of_app ty []  with
+        (match Ast_basic.N.list_of_app ty []  with
         | (#ident' as tctor) :: ls  ->
             appl_of_list
               (trans (IdN.to_vid tctor) ::
@@ -150,7 +150,7 @@ let exp_of_ctyp
       mk_variant cons exps in
     let e = mk (cons,tyargs) in
     {:case-| $pat:p -> $e |} in  begin 
-    let info = (Sum, List.length (list_of_or ty [])) in 
+    let info = (Sum, List.length (Ast_basic.N.list_of_bar ty [])) in 
     let res :  case list =
       CtypN.reduce_data_ctors ty  [] f ~compose:cons  in
     let res =
@@ -178,11 +178,11 @@ let exp_of_variant ?cons_transform
   (* for the case [`a | b ] *)
   let simple (lid:ident) :case=
     let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
-    let (f,a) = view_app [] result in
+    let (f,a) = Ast_basic.N.view_app [] result in
     let annot = appl_of_list (f :: List.map (fun _ -> `Any) a) in
     gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
-  let info = (TyVrnEq, List.length (list_of_or ty [])) in
+  let info = (TyVrnEq, List.length (Ast_basic.N.list_of_bar ty [])) in
   let ls = CtypN.view_variant ty in
   let res =
     let res = List.fold_left
@@ -209,7 +209,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   match vars with
   |`None  -> ExpN.mkfun names  acc
   |`Some xs ->
-      let vars = list_of_com xs [] in
+      let vars = Ast_basic.N.list_of_com xs [] in
       List.fold_right f vars (ExpN.mkfun names  acc)
   
 

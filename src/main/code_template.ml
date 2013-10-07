@@ -102,7 +102,7 @@ let eq_base1 =
             sem_of_list items
 
 
-let open AstInjection in begin 
+let open Ast_inject in begin 
   register_inject_clfield
     ("map_clfield_base_1",map_clfield_base_1);
   register_inject_clfield

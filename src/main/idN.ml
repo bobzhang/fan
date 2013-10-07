@@ -3,7 +3,7 @@
 
 
 open FAstN
-open AstLibN
+open Astn_util
 open Util
 
 let rec tvar_of_ident : vid -> string =
@@ -39,7 +39,7 @@ let rec to_vid   (x:ident) : vid =
 
 
 let ident_map f (x:vid) = 
-  let lst = list_of_dot x [] in
+  let lst = Ast_basic.N.list_of_dot x [] in
   match lst with
   | [] ->  invalid_arg "ident_map identifier [] "
   | [`Lid y ]  -> lid (f y)
@@ -52,7 +52,7 @@ let ident_map f (x:vid) =
           failwithf "ident_map: %s" (ObjsN.dump_vid x)
 
 let ident_map_of_ident f x  : vid =
-  let lst = list_of_dot x [] in
+  let lst = Ast_basic.N.list_of_dot x [] in
   match lst with
   | [] ->  invalid_arg "ident_map identifier [] "
   | [ `Lid y ]  -> f y 

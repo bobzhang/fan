@@ -494,7 +494,7 @@ if you really want to build this file.
                 $(OCamlOpt) -c $<
 
 ### generate inferred interface
-%.inferred.mli: %.ml :scanner: scan-ocaml-%.ml
+%.i.mli: %.ml :scanner: scan-ocaml-%.ml
     $(OCamlC) -i $< > $@
 
 %.cmi: %.mli :scanner: scan-ocaml-%.mli

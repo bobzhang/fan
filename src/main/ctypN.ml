@@ -1,7 +1,7 @@
 #{:control|default "ctyp-";|}
 
 open FAstN
-open AstLibN   
+open Astn_util
 open Util
 open Fid
 
@@ -101,7 +101,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   | `TyDcl ( `Lid name, tyvars, _, _) ->
       (name, match tyvars with
       | `None  -> 0
-      | `Some xs -> List.length @@ list_of_com  xs [])
+      | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
   | tydcl ->
       failwithf "name_length_of_tydcl {|%s|}\n"
         (ObjsN.dump_typedecl tydcl)
@@ -156,7 +156,7 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   
  *)
 let list_of_record (ty:name_ctyp) : col list  =
-  let (tys : name_ctyp list )  = list_of_sem ty [] in
+  let (tys : name_ctyp list )  = Ast_basic.N.list_of_sem ty [] in
   tys|> List.map
     (
      function
@@ -290,7 +290,7 @@ let is_recursive ty_dcl =
 let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   match x with 
   | {| $_ $_ |} as x->
-      (match list_of_app x [] with
+      (match Ast_basic.N.list_of_app x [] with
       | {| $lid:_  |} :: _  -> None
       | (#ident' as i) ::ys  ->
           Some (i,ys)
@@ -310,7 +310,7 @@ let abstract_list (x:typedecl)=
       begin match lst with
       | `None  -> Some 0
       |`Some xs ->
-          Some (List.length @@ list_of_com xs [])
+          Some (List.length @@ Ast_basic.N.list_of_com xs [])
       end
         (* Some (List.length lst) *)
   | _ -> None
@@ -349,25 +349,25 @@ let abstract_list (x:typedecl)=
  *)
 let reduce_data_ctors (ty:or_ctyp)  (init:'a) ~compose
     (f:  string -> ctyp list  -> 'e)  =
-  let branches = list_of_or ty [] in
+  let branches = Ast_basic.N.list_of_bar ty [] in
   List.fold_left
     (fun acc x ->
       match (x:or_ctyp) with
       |  `Of (`Uid cons, tys) ->
-          compose (f cons (list_of_star tys [])) acc  
+          compose (f cons (Ast_basic.N.list_of_star tys [])) acc  
       | `Uid  cons -> compose  (f cons [] ) acc
       | t->
           failwithf
             "reduce_data_ctors: %s" (ObjsN.dump_or_ctyp t)) init  branches
     
 let view_sum (t:or_ctyp) =
-  let bs = list_of_or t [] in
+  let bs = Ast_basic.N.list_of_bar t [] in
   List.map
     (function
       | (* {|$uid:cons|} *) `Uid cons ->
           `branch (cons,[])
       | `Of(`Uid cons,t) (* {|$uid:cons of $t|} *) ->
-          `branch (cons,  list_of_star  t [])
+          `branch (cons,  Ast_basic.N.list_of_star  t [])
       | _ -> assert false ) bs 
 
 (*
@@ -390,14 +390,14 @@ let view_sum (t:or_ctyp) =
   ]}
  *)    
 let view_variant (t:row_field) : vbranch list  =
-  let lst = list_of_or t [] in 
+  let lst = Ast_basic.N.list_of_bar t [] in 
   List.map (
   function
     | (* {| $vrn:cons of $par:t |} *)
       (* `Of ( (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
       `TyVrnOf( `C cons, `Par t)
       ->
-        `variant (cons, list_of_star t [])
+        `variant (cons, Ast_basic.N.list_of_star t [])
     | (* {| `$cons of $t |} *)
       (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
       `TyVrnOf(`C cons,t)
@@ -433,7 +433,7 @@ let transform : full_id_transform -> vid -> exp  =
         fun x -> (f x : vid :> exp)
             (* fun [x -> {| $(id: f x ) |} ] *)
     | `Idents f ->
-        fun x  -> (f (list_of_dot x []) : vid :> exp )
+        fun x  -> (f (Ast_basic.N.list_of_dot x []) : vid :> exp )
             (* fun [x -> {| $(id: f (list_of_dot x []) )  |}  ] *)
     | `Obj f ->
         function

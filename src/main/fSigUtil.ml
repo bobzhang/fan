@@ -1,5 +1,5 @@
 
-open AstLibN
+open Astn_util
 open FAstN
 
 open StdFan (* for [pp_print_list] [pp_print_string] *)
@@ -110,7 +110,7 @@ let mk_transform_type_eq () = object(self:'self_type)
             let vars =
               match vars with 
               | `None  -> []
-              | `Some x -> list_of_com x [] in
+              | `Some x -> Ast_basic.N.list_of_com x [] in
             if  not ( (vars : decl_params list  :>  ctyp list) = lst) then 
               super#stru x
             else
