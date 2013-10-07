@@ -1,6 +1,6 @@
 
 open FAst
-open AstLib
+open Ast_gen
 
 
   
@@ -27,7 +27,7 @@ let map_exp = with exp function
   | {| __PWD__ |} ->
       {|$(`str:Filename.dirname (FLoc.file_name _loc) ) |}
   | {| __LOCATION__ |} ->
-      AstLib.meta_here _loc _loc
+      Ast_gen.meta_here _loc _loc
   | e -> e ;;
 
 Ast_filters.register_stru_filter ("trash_nothing",(Objs.map_exp map_exp)#stru);;

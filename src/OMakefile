@@ -70,7 +70,7 @@ NATIVE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_FILES = \
-    ant antN astInjection astLib astLibN ast_filters ast_macros\
+    ast_gen ant antN ast_loc ast_helper astInjection  astLibN ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid codeTemplate commentFilter compile_lex compile_stream ctypN \
     deriveN dynLoader epN \
@@ -80,6 +80,7 @@ FAN_FILES = \
     idN langFans langInclude langOcaml langSave lex_lex lexing_util\
     fan_args mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
     parse_stream pluginsN preCast stdFan typehook 
+
 
 ##################################################################
 # driver files also need to be synced up with 
@@ -251,7 +252,7 @@ snapshot: :exists: fan
 
 
 .PHONY: coldtop
-coldtop:common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma
+coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma
     
 clean:
     rm -rf $(OCAMLBIN_EXT)

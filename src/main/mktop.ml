@@ -16,7 +16,7 @@ Ast_quotation:
   add_quotation
   add
   ;
-AstLib:
+Ast_gen:
    loc_of
    ;
 |} ;;
@@ -373,11 +373,11 @@ let ()  =
 {:extend|
 let a:
   [`Uid m ; ":"; L1 name {ns} ; ";" ->
-    AstLib.sem_of_list (* add antiquotation automatically ?? *)
+    Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map
          (fun l -> {:stru| let $(l :> FAst.pat) = $uid:m.$l |} ) ns)]
 import:
-  [ L1 a  {xs} -> AstLib.sem_of_list xs ]  
+  [ L1 a  {xs} -> Ast_gen.sem_of_list xs ]  
 let name :
   [`Lid x -> `Lid(_loc,x)]  |};;
 (**

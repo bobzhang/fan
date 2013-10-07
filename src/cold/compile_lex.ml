@@ -1,5 +1,5 @@
 open FAst
-open AstLib
+open Ast_gen
 open Automata_def
 open Lexgen
 let _loc = FLoc.mk "x"

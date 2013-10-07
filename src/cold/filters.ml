@@ -1,5 +1,5 @@
 open FAst
-open AstLib
+open Ast_gen
 let meta =
   object  inherit  FMeta.meta method! loc _loc _ = lid _loc "loc" end
 let _ =
@@ -29,7 +29,7 @@ let map_exp =
   | (`Lid (_loc,"__PWD__") : FAst.exp) ->
       (`Str (_loc, (String.escaped (Filename.dirname (FLoc.file_name _loc)))) : 
       FAst.exp )
-  | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> AstLib.meta_here _loc _loc
+  | (`Lid (_loc,"__LOCATION__") : FAst.exp) -> Ast_gen.meta_here _loc _loc
   | e -> e
 let _ =
   Ast_filters.register_stru_filter

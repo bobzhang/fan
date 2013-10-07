@@ -24,7 +24,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
     |`Ant(_loc,{cxt;sep;decorations;content=code}) ->
         let meta_loc_exp _loc loc =
           match !Ast_quotation.current_loc_name with
-          | Some "here" -> AstLib.meta_here _loc loc
+          | Some "here" -> Ast_gen.meta_here _loc loc
           | x ->
               let x = Option.default !FLoc.name  x in
               {:exp|$lid:x|} in
@@ -67,5 +67,5 @@ let antiquot_expander ~parse_pat ~parse_exp = object
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/ant.cmo --verbose" *)
+(* compile-command: "cd .. && pmake main_annot/ant.cmo" *)
 (* end: *)

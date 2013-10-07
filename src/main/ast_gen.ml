@@ -5,86 +5,66 @@
     It makes use of  structual polymorphism aggresively,
     the signature is quite complex due the use of [loc_of],
     see [astLibN] for the same functionality but processing ast without locations
-    and hence a much simplified signature *)
+    and hence a much simplified signature
+
+    This module is not recommended to be used aggresively, since it complexes type system.
+    It's recommended to use the ast processing library [ast_libn] without location considered.
+    
+ *)
   
 
   
 open Util
 
-open FAst
+(* open FAst *)
 
-
-
-(** generate [loc_of] function per type
-    for example:
-    [loc_of (e:exp)]
-    [loc_of (p:pat)] will both return the location information *)
-{:fans|keep off; derive (GenLoc);|};;
-{:ocaml|{:include|"../common/fAst.mli"|}|};;
-
+(** Re-export *)  
+let loc_of = Ast_loc.loc_of
 
 let (<+>) = FLoc.Ops.((<+>))
 (**   connectives  *)
 
 let (<+>) a b = loc_of a <+> loc_of b
-let sem a b = let _loc =  a <+> b in `Sem(_loc,a,b)
+
+let sem (a:'a) (b:'a) = let _loc =  a <+> b in `Sem(_loc,a,b)
+
 let com a b = let _loc = a <+> b in `Com(_loc,a,b)
+
 let app a b = let _loc = a <+> b in `App(_loc,a,b)
+
 let apply a b = let _loc = a <+> b in `Apply(_loc,a,b)
+
 let sta a b = let _loc = a <+> b in `Sta(_loc,a,b)
+
 let bar a b = let _loc = a <+> b in `Bar(_loc,a,b)
+
 let anda a b = let _loc = a <+> b in `And(_loc,a,b)
+
 let dot a b = let _loc = a <+> b in `Dot (_loc,a,b)
+
 let par x =  let _loc = loc_of x in `Par (_loc,x)
+
 let seq a = let _loc = loc_of a in `Seq (_loc,a) 
+
 let arrow a b = let _loc = a <+> b in `Arrow(_loc,a,b)
+
 let typing a b = let _loc = a<+> b in `Constraint(_loc,a,b)
 
   
 (** [of_list] style function *)
-let rec bar_of_list = function
-  | [] -> failwithf "bar_of_list empty"
-  | [t] -> t
-  | t::ts -> bar t (bar_of_list ts)
+let bar_of_list xs = Ast_helper.of_listr bar xs 
 
-let rec and_of_list = function
-  | [] -> failwithf "and_of_list empty"
-  | [t] -> t
-  | t::ts -> anda t (and_of_list ts) 
+let and_of_list xs = Ast_helper.of_listr anda xs
 
+let sem_of_list xs = Ast_helper.of_listr sem xs 
 
-let rec sem_of_list = function
-  | [] -> failwithf "sem_of_list empty"
-  | [t] -> t
-  | t::ts -> sem t (sem_of_list ts)
+let com_of_list xs = Ast_helper.of_listr com xs   
+
+let sta_of_list xs = Ast_helper.of_listr sta xs     
+
+let dot_of_list xs = Ast_helper.of_listr dot xs 
   
-let rec com_of_list = function
-  | [] -> failwithf "com_of_list empty"
-  | [t] -> t
-  | t::ts -> com t (com_of_list ts)
-  
-let rec sta_of_list = function
-  | [] -> failwithf "sta_of_list empty"
-  | [t] -> t
-  | t::ts -> sta t (sta_of_list ts)
-
-let rec dot_of_list = function
-  | [] -> failwithf "dot_of_list empty"
-  | [t] -> t
-  | t::ts -> dot t (dot_of_list ts)
-  
-
-(*
-  {[
-  with exp appl_of_list [{|f|}; {|a|}; {|b|}] |> Ast2pt.print_exp f;
-  f a b
-  ]}
- *)
-let rec appl_of_list x  =
-  match x with
-  | [] -> failwithf "appl_of_list empty"
-  | [x] -> x
-  | x::y::xs -> appl_of_list ((app x y)::xs)
+let appl_of_list xs = Ast_helper.of_listl app xs     
 
     
     
@@ -150,7 +130,7 @@ let rec view_app acc = function
   
 let seq_sem ls = seq (sem_of_list ls)
 
-let binds bs (e:exp) =
+let binds bs (e: FAst.exp) =
   match bs with
   | [] -> e
   |_ ->

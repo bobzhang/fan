@@ -53,10 +53,10 @@ let register_parsetree_printer () =
   stru_printer := print_implem; sigi_printer := print_interf
 let parse_implem loc cs =
   let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.implem) in
-  match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
+  match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_interf loc cs =
   let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.interf) in
-  match l with | [] -> None | l -> Some (AstLib.sem_of_list l)
+  match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_file name pa =
   let loc = FLoc.mk name in
   let print_warning = eprintf "%a:\n%s@." FLoc.print in

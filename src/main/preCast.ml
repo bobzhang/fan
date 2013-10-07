@@ -115,14 +115,14 @@ let parse_implem loc cs =
   let l =simple_wrap loc cs  @@ Fgram.parse Fsyntax.implem  in
   match l with
   | [] -> None
-  | l -> Some (AstLib.sem_of_list l)
+  | l -> Some (Ast_gen.sem_of_list l)
 
 
 let parse_interf loc cs =
   let l = simple_wrap loc cs @@ Fgram.parse Fsyntax.interf  in
   match l with
   | [] -> None   
-  | l -> Some (AstLib.sem_of_list l)
+  | l -> Some (Ast_gen.sem_of_list l)
 
 let parse_file  name pa = begin 
   let loc = FLoc.mk name in

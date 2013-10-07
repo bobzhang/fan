@@ -207,11 +207,11 @@ let _ =
            ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
              (`Skeyword ","));
          `Skeyword ")"],
-          ("AstLib.appl_of_list ((`Vrn (_loc, s)) :: v)\n",
+          ("Ast_gen.appl_of_list ((`Vrn (_loc, s)) :: v)\n",
             (Fgram.mk_action
                (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _ 
                   (_loc : FLoc.t)  ->
-                  (AstLib.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat )))))]));
+                  (Ast_gen.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat )))))]));
   Fgram.extend (internal_pat : 'internal_pat Fgram.t )
     (None,
       [((Some "as"), None,
@@ -268,7 +268,7 @@ let rec unparse_simple_pat f (x : simple_pat) =
   match x with
   | `Vrn (_,s) -> p f "`%s" s
   | `App _ ->
-      let l = AstLib.list_of_app x [] in
+      let l = Ast_gen.list_of_app x [] in
       (match l with
        | (`Vrn _ as x)::[] -> unparse_simple_pat f x
        | (`Vrn _ as x)::v::[] ->

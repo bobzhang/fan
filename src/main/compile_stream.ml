@@ -1,7 +1,7 @@
 #{:control|default "exp";|}
 
 open FAst
-open AstLib
+open Ast_gen
 
 (*
   identifiers referenced:

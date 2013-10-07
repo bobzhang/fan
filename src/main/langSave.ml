@@ -1,5 +1,5 @@
 
-open AstLib
+open Ast_gen
 (*************************************************************************)
 (* save DDSL *)
 {:create|Fgram  save_quot|};;

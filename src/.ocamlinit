@@ -1,6 +1,7 @@
 
 (* -*- mode:caml -*- *)
 let paths = [
+  "utils";
   "common";
   "treeparser";
   "cold";
@@ -9,14 +10,16 @@ let paths = [
 
 let () =
   List.iter Topdirs.dir_directory paths
-;;    
+;;
+
 #load "ocamlcommon.cma";;
 #load "dynlink.cma";;
+#load "libutils.cma";;
 #load "libcommon.cma";;
 #load "libtreeparser.cma";;
 #load "libcold_top.cma";;
 
-open LibUtil;;
+open Util;;
 open Format;;
 let fmt = std_formatter
 let _loc = FLoc.ghost;;
@@ -25,7 +28,7 @@ let (!!) = Sys.command;;
 let _ = begin
   Hashtbl.replace Toploop.directive_table "useo"
     (Toploop.Directive_string (fun file ->
-      LibUtil.Ref.protect Toploop.parse_use_file Parse.use_file
+      Ref.protect Toploop.parse_use_file Parse.use_file
         (fun _ -> ignore(Toploop.use_file Format.std_formatter file))))
 end;;
 

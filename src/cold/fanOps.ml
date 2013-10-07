@@ -1,6 +1,6 @@
 open Util
 open FAst
-open AstLib
+open Ast_gen
 let list_of_list (loc : loc) =
   let rec loop top =
     function

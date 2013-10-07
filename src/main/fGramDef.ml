@@ -140,7 +140,7 @@ open Fsyntax;;
   |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
   |"`"; luident{s}; "_" -> {|$vrn:s _|}
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
-      (AstLib.appl_of_list ({:pat'|$vrn:s|} :: v))
+      (Ast_gen.appl_of_list ({:pat'|$vrn:s|} :: v))
         (* here
            we have to guarantee
            {[
@@ -169,7 +169,7 @@ let rec unparse_simple_pat  f (x:simple_pat)=
   match x with
   | `Vrn (_,s) -> p f "`%s" s
   | `App _ ->
-      let l = AstLib.list_of_app x [] in
+      let l = Ast_gen.list_of_app x [] in
       begin match l with
       | [ (`Vrn _ as x) ]  -> unparse_simple_pat  f x
       | [ (`Vrn _ as  x) ; v ] ->
@@ -209,7 +209,7 @@ let string_of_simple_pat = Formatf.to_string unparse_simple_pat
 (*   | `App (_loc, `Vrn(_,v),`Ant(_,{FanUtil.contents=c;_})) -> *)
 (*       {:ep| $`str:v ^ "$" ^ $lid:c |} *)
 (*   | `App _  -> *)
-(*       let l = AstLib.appl_of_list x in *)
+(*       let l = Ast_gen.appl_of_list x in *)
 (*       begin match l with *)
 (*       | `Vrn(_,x) ::xs -> *)
           

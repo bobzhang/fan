@@ -1,4 +1,4 @@
-open AstLib
+open Ast_gen
 open Util
 let filter s =
   let _loc = loc_of s in

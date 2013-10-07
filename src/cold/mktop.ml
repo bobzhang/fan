@@ -5,7 +5,7 @@ let of_exp_with_filter = Ast_quotation.of_exp_with_filter
 let of_clfield_with_filter = Ast_quotation.of_clfield_with_filter
 let add_quotation = Ast_quotation.add_quotation
 let add = Ast_quotation.add
-let loc_of = AstLib.loc_of
+let loc_of = Ast_gen.loc_of
 include PreCast
 open! Fsyntax
 let efilter str e =
@@ -380,13 +380,13 @@ let _ =
           `Skeyword ":";
           `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
           `Skeyword ";"],
-           ("AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
+           ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Fgram.mk_action
                 (fun _  (ns : 'name list)  _  (__fan_0 : [> Ftoken.t]) 
                    (_loc : FLoc.t)  ->
                    match __fan_0 with
                    | `Uid m ->
-                       (AstLib.sem_of_list
+                       (Ast_gen.sem_of_list
                           (List.map
                              (fun l  ->
                                 (`Value
@@ -397,15 +397,15 @@ let _ =
                                 FAst.stru )) ns) : 'a )
                    | _ ->
                        failwith
-                         "AstLib.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n"))))]));
+                         "Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n"))))]));
   Fgram.extend_single (import : 'import Fgram.t )
     (None,
       (None, None,
         [([`Slist1 (`Snterm (Fgram.obj (a : 'a Fgram.t )))],
-           ("AstLib.sem_of_list xs\n",
+           ("Ast_gen.sem_of_list xs\n",
              (Fgram.mk_action
                 (fun (xs : 'a list)  (_loc : FLoc.t)  ->
-                   (AstLib.sem_of_list xs : 'import )))))]));
+                   (Ast_gen.sem_of_list xs : 'import )))))]));
   Fgram.extend_single (name : 'name Fgram.t )
     (None,
       (None, None,

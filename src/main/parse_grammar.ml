@@ -1,6 +1,6 @@
 
 open FAst
-open AstLib
+open Ast_gen
 open FGramDef
 open FGramGen
 open! Fsyntax

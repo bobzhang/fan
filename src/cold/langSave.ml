@@ -1,4 +1,4 @@
-open AstLib
+open Ast_gen
 let save_quot = Fgram.mk "save_quot"
 let _ =
   let grammar_entry_create x = Fgram.mk x in

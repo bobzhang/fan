@@ -1,5 +1,5 @@
 open FAst
-open AstLib
+open Ast_gen
 type spat_comp =  
   | SpWhen of loc* pat* exp option
   | SpMatch of loc* pat* exp

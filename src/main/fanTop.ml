@@ -1,8 +1,8 @@
 
-open Util
+
 
 (** FIXME a better register mode *)
-(* open Mktop;; *)
+
 
 (* avoid dependency on [Parse] module  *)
 let parse_toplevel_phrase_old = !Toploop.parse_toplevel_phrase;;

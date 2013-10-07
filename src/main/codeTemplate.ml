@@ -1,7 +1,7 @@
 
 
 open FAst
-open AstLib
+open Ast_gen
 
 
 let _loc =FLoc.ghost 

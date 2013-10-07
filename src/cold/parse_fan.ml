@@ -1,5 +1,5 @@
 open FAst
-open AstLib
+open Ast_gen
 open FanOps
 open! Fsyntax
 open FanUtil

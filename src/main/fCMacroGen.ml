@@ -1,7 +1,7 @@
 
 
 open FAst
-open AstLib
+open Ast_gen
 open Util
   
 type 'a item_or_def  =

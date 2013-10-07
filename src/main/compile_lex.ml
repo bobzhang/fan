@@ -1,6 +1,6 @@
 
 open FAst
-open AstLib
+open Ast_gen
 open Automata_def 
 open Lexgen
 

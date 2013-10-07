@@ -1,7 +1,7 @@
 open FAst
 open FanOps
 open Format
-open AstLib
+open Ast_gen
 open Util
 open FGramDef
 

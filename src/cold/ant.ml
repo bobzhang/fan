@@ -23,7 +23,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
       | `Ant (_loc,{ cxt; sep; decorations; content = code }) ->
           let meta_loc_exp _loc loc =
             match Ast_quotation.current_loc_name.contents with
-            | Some "here" -> AstLib.meta_here _loc loc
+            | Some "here" -> Ast_gen.meta_here _loc loc
             | x ->
                 let x = Option.default FLoc.name.contents x in
                 (`Lid (_loc, x) : FAst.exp ) in
