@@ -51,21 +51,34 @@ let left_delims  = ['(' '[' ]
 let right_delims = [')' ']' ]
     
 let left_delimitor = (* At least a safe_delimchars *)
-  left_delims delimchars* safe_delimchars (delimchars|left_delims)*
-   (* A '(' or a new super '(' without "(<" *)
-  | '(' (['|' ':'] delimchars* )?
-  (* Old brackets, no new brackets starting with "[|" or "[:" *)
+  '[' delimchars* safe_delimchars (delimchars | left_delims ) *
+  | '('
   | '[' ['|' ':']?
-   (* Old "[<","{<" and new ones *)
-  | ['[' ] delimchars* '<'
+  | '['  delimchars * '<'
   | '[' '='
-  | '[' '>' 
+  | '[' '>'
+    
+  (* left_delims delimchars* safe_delimchars (delimchars|left_delims)* *)
+  (*  (\* A '(' or a new super '(' without "(<" *\) *)
+  (* | '(' (['|' ':'] delimchars* )? *)
+  (* (\* Old brackets, no new brackets starting with "[|" or "[:" *\) *)
+  (* | '[' ['|' ':']? *)
+  (*  (\* Old "[<","{<" and new ones *\) *)
+  (* | ['[' ] delimchars* '<' *)
+  (* | '[' '=' *)
+  (* | '[' '>' *)
 let right_delimitor =
+   (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* ']'
+  | ')'
+  | [ '|' ':']? ']'
+  | '>' delimchars * ']'
+  
   (* At least a safe_delimchars *)
-  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-   | (delimchars* ['|' ':'])? ')'
-   | ['|' ':']? ']'
-   | '>' delimchars* [']' ]
+  (* (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims *)
+  (*  | (delimchars* ['|' ':'])? ')' *)
+  (*  | ['|' ':']? ']' *)
+  (*  | '>' delimchars* [']' ] *)
+      
 let ocaml_escaped_char =
   '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
 let ocaml_char =
@@ -174,7 +187,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     (`Eident op, !! lexbuf)
 | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
   | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
-  | left_delimitor | right_delimitor | "{<" |">}"
+  | "{<" |">}"
+  | left_delimitor | right_delimitor 
   | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
     as x  ->
       (`Sym x  , !! lexbuf)
