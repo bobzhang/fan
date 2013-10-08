@@ -264,7 +264,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         let old = FLoc.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
         begin
           c.buffer +> '(';
-          lex_antiquot {c with loc = [old]} lexbuf ;
+          push_loc_cont c lexbuf lex_antiquot;
+          (* lex_antiquot {c with loc = [old]} lexbuf ; *)
           (`Ant(name,buff_contents c),
            old -- Lexing.lexeme_end_p lexbuf)
         end
@@ -272,7 +273,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         let old = FLoc.move_pos  (1+1-1) (List.hd c.loc) in
         begin
           c.buffer +> '(';
-          lex_antiquot   {c with loc = [old] } lexbuf ;
+          push_loc_cont c lexbuf lex_antiquot;
+          (* lex_antiquot   {c with loc = [old] } lexbuf ; *)
           (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
         end
     | _ as c ->

@@ -7410,13 +7410,13 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                       ((((1 + 1) + 1) + (String.length name)) - 1)
                       (List.hd c.loc) in
                   (c.buffer +> '(';
-                   lex_antiquot { c with loc = [old] } lexbuf;
+                   push_loc_cont c lexbuf lex_antiquot;
                    ((`Ant (name, (buff_contents c))),
                      (old -- (Lexing.lexeme_end_p lexbuf))))
               | 3 ->
                   let old = FLoc.move_pos ((1 + 1) - 1) (List.hd c.loc) in
                   (c.buffer +> '(';
-                   lex_antiquot { c with loc = [old] } lexbuf;
+                   push_loc_cont c lexbuf lex_antiquot;
                    ((`Ant ("", (buff_contents c))),
                      (old -- (Lexing.lexeme_end_p lexbuf))))
               | 4 ->
