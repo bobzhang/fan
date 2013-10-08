@@ -88,7 +88,7 @@ let (!!)  = Location_util.from_lexbuf ;;
 
 
 {:import|
-Lexing_util:
+Lexing_util2:
   opt_char
   opt_char_len
   update_loc
@@ -123,7 +123,7 @@ Location_util:
     add_char -> (+>) ;
    |}  *)    
 let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
-| newline -> 
+| newline ->
     begin
       update_loc  lexbuf;
       (`NEWLINE, !! lexbuf )
@@ -199,22 +199,22 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
        old -- lexbuf.lex_curr_p)
     end
  (* quotation handling *)
-| "{||}" ->
-    let loc  =     !! lexbuf in
-    (`Quot
-       { Ftoken.name=Ftoken.empty_name; meta=None; shift=2; content="";loc; retract=2 },
-     loc)
+
+(* | "%{}" -> *)
+(*     let loc  =     !! lexbuf in *)
+(*     (`Quot *)
+(*        { Ftoken.name=Ftoken.empty_name; meta=None; shift=2; content="";loc; retract=2 }, *)
+(*      loc) *)
+
       
-| "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? as shift ->
+| "%" (quotation_name as name) ? "{"  as shift ->
     let c = new_cxt () in
     let name =
       match name with
       | Some name -> Ftoken.name_of_string name
       | None -> Ftoken.empty_name  in 
     let shift = String.length shift in
-    let retract = 2 + opt_char_len p in
     begin
-      Stack.push p opt_char;
       let old = lexbuf.lex_start_p in
       let content =
         begin
@@ -223,8 +223,29 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
           buff_contents c 
         end in
       let loc = old -- lexbuf.lex_curr_p in
-      (`Quot{Ftoken.name;meta;shift;content;loc;retract},loc)
+      (`Quot{Ftoken.name;meta;shift;content;loc;retract=1},loc)
     end
+      
+(* | "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? as shift -> *)
+(*     let c = new_cxt () in *)
+(*     let name = *)
+(*       match name with *)
+(*       | Some name -> Ftoken.name_of_string name *)
+(*       | None -> Ftoken.empty_name  in  *)
+(*     let shift = String.length shift in *)
+(*     let retract = 2 + opt_char_len p in *)
+(*     begin *)
+(*       Stack.push p opt_char; *)
+(*       let old = lexbuf.lex_start_p in *)
+(*       let content = *)
+(*         begin *)
+(*           store c lexbuf; *)
+(*           push_loc_cont c lexbuf lex_quotation; *)
+(*           buff_contents c  *)
+(*         end in *)
+(*       let loc = old -- lexbuf.lex_curr_p in *)
+(*       (`Quot{Ftoken.name;meta;shift;content;loc;retract},loc) *)
+(*     end *)
 | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 
 |"#{:" (quotation_name as name) '|'  (extra_quot as p)? ->
@@ -249,7 +270,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       end
         (* Antiquotation handling *)        
 | '$' ->
-    let  dollar (c:Lexing_util.context) =
+    let  dollar (c:Lexing_util2.context) =
       {:lexer|
       (* FIXME *| does not work * | work *)
     | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
@@ -299,5 +320,5 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
 
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake fan_lex.cmo" *)
+(* compile-command: "cd ../main_annot && pmake fan_lex2.cmo" *)
 (* end: *)
