@@ -136,7 +136,7 @@ Location_util:
     add_char -> (+>) ;
    |}  *)    
 let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
-| newline -> 
+| newline -> (* |} *)
     begin
       update_loc  lexbuf;
       (`NEWLINE, !! lexbuf )

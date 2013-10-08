@@ -380,6 +380,12 @@ and lex_quotation c = {:lexer|
       end
     else
       with_store  c lexbuf lex_quotation
+| "(*" ->
+    begin
+      store c lexbuf;
+      push_loc_cont c lexbuf lex_comment;
+      lex_quotation c lexbuf
+    end
 | newline ->
     begin
       update_loc  lexbuf ;
