@@ -198,13 +198,6 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
- (* quotation handling *)
-| "{||}" ->
-    let loc  =     !! lexbuf in
-    (`Quot
-       { Ftoken.name=Ftoken.empty_name; meta=None; shift=2; content="";loc; retract=2 },
-     loc)
-      
 | "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? as shift ->
     let c = new_cxt () in
     let name =
