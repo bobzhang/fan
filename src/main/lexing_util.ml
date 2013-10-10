@@ -26,8 +26,8 @@ let not_star_symbolchar =
 let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\']
+(* let extra_quot = *)
+(*   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] *)
     (* FIX remove the '\' as extra quot*)
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
@@ -334,9 +334,9 @@ let rec  lex_antiquot c  = {:lexer|
       push_loc_cont c lexbuf lex_antiquot;
       lex_antiquot c  lexbuf;
     end
-| quotation_prefix (extra_quot as p)? -> (* $(lid:{|)|})*)
+| quotation_prefix (* (extra_quot as p)? *) -> (* $(lid:{|)|})*)
     begin 
-      Stack.push p opt_char ;
+      (* Stack.push p opt_char ; *)
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       lex_antiquot c lexbuf
@@ -361,35 +361,34 @@ let rec  lex_antiquot c  = {:lexer|
 |}
 
 and lex_quotation c = {:lexer|
-| quotation_prefix (extra_quot as p)?
+| quotation_prefix (* (extra_quot as p)? *)
   ->
     begin
       store c lexbuf ;
-      Stack.push p opt_char; (* take care the order matters*)
+      (* Stack.push p opt_char; (\* take care the order matters*\) *)
       push_loc_cont c lexbuf lex_quotation;
       lex_quotation c lexbuf
     end
-| (extra_quot as p)? "|}" ->
-    let top = Stack.top opt_char in
-    if p <> top then
-      with_store  c lexbuf lex_quotation (*move on*)
-    else begin
-      ignore (Stack.pop opt_char);
+| (* (extra_quot as p)? *) "|}" ->
+    (* let top = Stack.top opt_char in *)
+    (* if p <> top then *)
+    (*   with_store  c lexbuf lex_quotation (\*move on*\) *)
+    (* else begin *)
+    (*   ignore (Stack.pop opt_char); *)
       store c lexbuf
+    (* end *)
+| "}" ->
+    begin
+      store c lexbuf;
+      pop_loc c
     end
-
-
-(* | "}" -> *)
-(*     begin *)
-(*       store c lexbuf; *)
-(*       pop_loc c *)
-(*     end *)
-(* | "{" -> *)
-(*     begin *)
-(*       store c lexbuf; *)
-(*       push_loc_cont c lexbuf lex_simple_quotation; *)
-(*       lex_quotation c lexbuf *)
-(*     end *)
+| "{" ->
+    begin
+      store c lexbuf;
+      push_loc_cont c lexbuf lex_quotation;
+      lex_quotation c lexbuf
+    end
+      
 | "(*" ->
     begin
       store c lexbuf;

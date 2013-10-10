@@ -20,8 +20,8 @@ let not_star_symbolchar =
 let symbolchar = '*' | not_star_symbolchar
 let quotchar =
   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-let extra_quot =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\']
+(* let extra_quot = *)
+(*   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] *)
     (* FIX remove the '\' as extra quot*)
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
@@ -212,16 +212,16 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
-| "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (extra_quot as p)? as shift ->
+| "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|' (* (extra_quot as p)? *) as shift ->
     let c = new_cxt () in
     let name =
       match name with
       | Some name -> Ftoken.name_of_string name
       | None -> Ftoken.empty_name  in 
     let shift = String.length shift in
-    let retract = 2 + opt_char_len p in
+    let retract = 2 (* + opt_char_len p *) in
     begin
-      Stack.push p opt_char;
+      (* Stack.push p opt_char; *)
       let old = lexbuf.lex_start_p in
       let content =
         begin
@@ -234,19 +234,21 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
     end
 | ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 
-|"#{:" (quotation_name as name) '|'  (extra_quot as p)? ->
+|"#{:" (quotation_name as name) '|'  (* (extra_quot as p)? *) ->
     let c  =  new_cxt () in
     let len = String.length name in
-    let () = Stack.push p opt_char in
-    let retract = opt_char_len p + 2 in  (*/|} *)
+    (* let () = Stack.push p opt_char in *)
+    let retract = (* opt_char_len p + *)  2 in  (*/|} *)
     let old = lexbuf.lex_start_p in
     let s =
       (push_loc_cont c lexbuf lex_quotation;
        buff_contents c) in
 
     let contents = String.sub s 0 (String.length s - retract) in (* FIXME later*)
-    (`DirQuotation(3+1 +len +(opt_char_len p), name,contents),
+    (`DirQuotation(3+1 +len (* +(opt_char_len p) *), name,contents),
      old -- lexbuf.lex_curr_p)
+
+      
 | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
     ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
     [! '\010' '\013'] * newline ->

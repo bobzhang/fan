@@ -238,7 +238,7 @@ MakeTest(maindir,mountdir,pp) =
     # OCAML_LIBS[]+= $(MAINDIR)/libmain
     .SUBDIRS: $(mountdir)
 
-MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan0))        
+MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
 MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
 
 section
