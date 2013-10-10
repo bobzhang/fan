@@ -70,15 +70,19 @@ NATIVE_ENABLED = true
 
 ##############
 # files shared between cold and hot directory
+FAN_LEX_LIB_FILES = \
+    fan_lex lexing_util 
+    
 FAN_FILES = \
-    ast_gen ant antN ast_loc  ast_inject  astn_util ast_filters ast_macros\
+    $(FAN_LEX_LIB_FILES) ast_gen ant antN ast_loc  ast_inject  astn_util \
+    ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid code_template comment_filter compile_lex compile_stream ctypN \
     deriveN dynLoader epN \
     expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
-    fSigUtil fState fanAstN fanOps fan_lex fgram\
+    fSigUtil fState fanAstN fanOps fgram\
     filters flex_lib freeVars fsyntax gentry gfold gramlib\
-    idN langFans langInclude langOcaml langSave lex_lex lexing_util\
+    idN langFans langInclude langOcaml langSave lex_lex \
     fan_args mktop objs objsN parse_fan parse_grammar parse_lex parse_lex2\
     parse_stream pluginsN preCast stdFan typehook\
     # lexing_util2 fan_lex2
@@ -221,10 +225,13 @@ DIR_UNIT3      = $(dir unitest3)
 # test
 
 MakeTest(maindir,mountdir,pp) =
+    OCAMLCFLAGS += -annot
     OCAML_OTHER_LIBS += dynlink ocamlcommon
     NATIVE_ENABLED = false
     BYTE_ENABLED = true
     PP_FAN = $(pp)
+    OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
+    OCAMLINCLUDES += $(maindir)
     vmount(-l, $(DIR_UNIT), $(mountdir))
     AdditionalDependency($(PP_FAN))
     OCAML_LIBS[]+= $(maindir)/libmain

@@ -14,7 +14,7 @@ let get_tokens s =
 let test_empty_string _ =
   get_tokens {:str|""|}
     ===
-  [`Str ""; `EOI]  
+  [ `Str "" ; `EOI]  
 
 let test_escaped_string _ =
   get_tokens {:str|"a\n"|}
@@ -223,5 +223,5 @@ let suite =
 
     
 (* local variables: *)
-(* compile-command: "cd .. && pmake test" *)
+(* compile-command: "cd ../unitest_annot && pmake lexing_test.cmo" *)
 (* end: *)

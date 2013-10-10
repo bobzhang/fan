@@ -5,18 +5,17 @@ OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
 
 # requires a preprocessor first 
 
-OCAMLINCLUDES += $(HOT_ANNOT_INCLUDES)
+# OCAMLINCLUDES += $(HOT_ANNOT_INCLUDES)
+
 USE_OCAMLFIND = true
+
 OCAMLPACKS[] =
     oUnit
     compiler-libs
 
-FILES[] =
-    lexing_test
-    location_ident
-    main
+OCamlProgram(test_parse, location_ident main_parse)
 
-OCamlProgram(test, $(FILES))
+OCamlProgram(test_lex, lexing_test main_lex )
 
 clean:
     rm -rf $(OCAMLBIN_EXT)

@@ -99,7 +99,7 @@ src/fan_hot_hot
 src/unitest/test
 src/unitest1
 src/unitest2
-src/unitest_main
+src/unitest_annot
 *.run
 src/fan*
 hot*

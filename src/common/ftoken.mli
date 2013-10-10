@@ -81,25 +81,25 @@ type space_token =
    | `LINE_DIRECTIVE of (int * string option) ]
       
 type t =
-  [ `Key        of string
-  | `Sym            of string
-  | `Lid            of string
-  | `Uid            of string
-  | `Eident         of string (* (+)*)
-  | `Int            of string 
-  | `Int32          of string 
-  | `Int64          of string 
-  | `Nativeint      of string 
-  | `Flo            of string 
-  | `Chr            of string 
-  | `Str            of string 
-  | `Label          of string
-  | `Optlabel       of string
+  [ `Key       of string
+  | `Sym       of string
+  | `Lid       of string
+  | `Uid       of string
+  | `Eident    of string (* (+)*)
+  | `Int       of string 
+  | `Int32     of string 
+  | `Int64     of string 
+  | `Nativeint of string 
+  | `Flo       of string 
+  | `Chr       of string 
+  | `Str       of string 
+  | `Label     of string
+  | `Optlabel  of string
   | space_token
    (* . *)
   | quotation
   | dir_quotation
-  | `Ant            of (string * string )        
+  | `Ant       of (string * string )        
   | `EOI]
 
 

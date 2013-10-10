@@ -2,7 +2,9 @@
 
 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-OCAMLFLAGS +=  -I +compiler-libs -w a  # for PreCast to communicate with toplevel 
+OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel
+
+
 
 OCamlLibrary(libmain, $(FAN_FILES))
 OCamlLibrary(libmain_top, $(FAN_FILES) fanTop)
