@@ -9,7 +9,8 @@
 OCAMLFLAGS = 
 BYTE_ENABLED = true
 NATIVE_ENABLED = true
-OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree
+OCAMLBIN_EXT = *.cmo *.cmi *.cmx *.cma *.cmxa *.cmxs *.run *.opt *.annot *.o *.dparsetree \
+   *.omc
 
 ######################################
 # This direcotry is preprocessed by cold
@@ -98,7 +99,7 @@ FILES[] =
 LIB_UTILS  = $(file utils/libutils)
 LIB_COMMON = $(file common/libcommon)
 LIB_PARSER_RT = $(file treeparser/libtreeparser)
-LIB_COLD = $(file cold/libcold)
+LIB_COLD = $(file cold/libmain)
 
 
 
@@ -129,7 +130,7 @@ section
     OCamlAdditionalExistDependency($(PP_FAN))
     # AdditionalDependency($(PP_FAN))
     # weaker dependency require snapshot from time to time however
-    OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
     .SUBDIRS: $(VMOUNTDIR)
     OCamlProgram(fan0, $(VMOUNTDIR)/fan)
 
@@ -140,7 +141,7 @@ MakeFix(mountdir,pp,exe) =
     PP_FAN = $(pp) # use hot to preprocess hot
     AdditionalDependency($(pp))
     .SUBDIRS: $(VMOUNTDIR)
-    OCAML_LIBS[] += $(VMOUNTDIR)/libhot
+    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
     OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
 MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
@@ -151,8 +152,8 @@ MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 #########################
 # fix point and snapshot 
 .PHONY:  snapshot fixpoint fixpoint1
-TARGET1 = $(DIR_HOT1)/libhot.cma
-TARGET2 = $(DIR_HOT2)/libhot.cma
+TARGET1 = $(DIR_HOT1)/libmain.cma
+TARGET2 = $(DIR_HOT2)/libmain.cma
 
 # fixed: $(TARGET1) $(TARGET2) 
 #     if $(shell-success-null cmp $(TARGET1) $(TARGET2) )
@@ -209,30 +210,41 @@ fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
 
 
 
+DIR_UNIT       = $(dir unitest)
+DIR_UNIT_ANNOT = $(dir unitest_annot)
+DIR_UNIT1      = $(dir unitest1)
+DIR_UNIT2      = $(dir unitest2)
+DIR_UNIT3      = $(dir unitest3)
 
-
-    
 # fixpoint: $(add)
 ########################
 # test
 
-section
+MakeTest(maindir,mountdir,pp) =
     OCAML_OTHER_LIBS += dynlink ocamlcommon
     NATIVE_ENABLED = false
     BYTE_ENABLED = true
-    PP_FAN = $(file fan)
+    PP_FAN = $(pp)
+    vmount(-l, $(DIR_UNIT), $(mountdir))
     AdditionalDependency($(PP_FAN))
-    OCAML_LIBS[]+= $(DIR_MAIN_ANNOT)/libhot
-    .SUBDIRS: unitest
+    OCAML_LIBS[]+= $(maindir)/libmain
+    .SUBDIRS: $(mountdir)
+
+MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
+MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
 
 section
     OCAML_LIBS = 
     .SUBDIRS: tools
         
-.PHONY: test
-test:unitest/test
-    unitest/test -verbose    
-
+.PHONY: test_hot test_cold
+    
+test_hot: $(DIR_UNIT_ANNOT)/test
+    $< -verbose
+    
+test_cold: $(DIR_UNIT1)/test
+    $< -verbose    
+    
 # unitest
 # section
 #     OCamlProgram(test, $(FILES))
@@ -253,7 +265,7 @@ snapshot: :exists: fan
 
 
 .PHONY: coldtop
-coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/libcold_top.cma
+coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/libmain_top.cma
     
 clean:
     rm -rf $(OCAMLBIN_EXT)
