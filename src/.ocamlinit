@@ -17,7 +17,7 @@ let () =
 #load "libutils.cma";;
 #load "libcommon.cma";;
 #load "libtreeparser.cma";;
-#load "libcold_top.cma";;
+#load "libmain_top.cma";;
 
 open Util;;
 open Format;;
