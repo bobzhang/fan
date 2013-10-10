@@ -4,6 +4,8 @@ OCAMLPPFLAGS = -pp $(PP_FAN)
 OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
 
 
+#########################################################################
+### shared with cold
 OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 

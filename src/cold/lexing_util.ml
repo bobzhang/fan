@@ -2615,7 +2615,7 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
           (if p <> top
            then with_store c lexbuf lex_quotation
            else (ignore (Stack.pop opt_char); store c lexbuf))
-        else with_store c lexbuf lex_quotation
+        else assert false
     | 2 ->
         (store c lexbuf;
          push_loc_cont c lexbuf lex_comment;

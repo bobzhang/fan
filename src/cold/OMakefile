@@ -1,12 +1,17 @@
-
-
-
+#########################################################################
+### shared with cold
+OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel
 
-
-
+OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
 OCamlLibrary(libmain, $(FAN_FILES))
 OCamlLibrary(libmain_top, $(FAN_FILES) fanTop)
+
+# %.dparsetree:%.ml
+#     $(PP_FAN) -printer dparsetree $< > $@
+
+
 clean:
     rm -rf $(OCAMLBIN_EXT)
+
+

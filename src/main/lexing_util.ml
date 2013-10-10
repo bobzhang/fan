@@ -370,16 +370,15 @@ and lex_quotation c = {:lexer|
       lex_quotation c lexbuf
     end
 | (extra_quot as p)? "|}" ->
-    if not (Stack.is_empty opt_char) then
-      let top = Stack.top opt_char in
-      if p <> top then
-        with_store  c lexbuf lex_quotation (*move on*)
-      else begin
-        ignore (Stack.pop opt_char);
-        store c lexbuf
-      end
-    else
-      with_store  c lexbuf lex_quotation
+    let top = Stack.top opt_char in
+    if p <> top then
+      with_store  c lexbuf lex_quotation (*move on*)
+    else begin
+      ignore (Stack.pop opt_char);
+      store c lexbuf
+    end
+
+
 (* | "}" -> *)
 (*     begin *)
 (*       store c lexbuf; *)
