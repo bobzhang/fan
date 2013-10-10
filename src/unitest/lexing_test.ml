@@ -1,6 +1,6 @@
 
 (** *)    
-open Util
+
 open OUnit
 
 let (===) = assert_equal
@@ -156,6 +156,41 @@ let test_lex_simple_quot _ =
          meta = None; shift = 1; content = "{ * gshoghso *) bhgo \"ghos\" }";
          retract = 1}
 
+let test_symb _ =
+  Flex_lib.list_of_string ~verbose:false "(%***{)"
+    ===
+  [(`Sym "(",
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+   loc_ghost = false});
+ (`Sym "%***",
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+   loc_ghost = false});
+ (`Sym "{",
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+   loc_ghost = false});
+ (`Sym ")",
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
+   loc_ghost = false});
+ (`EOI,
+  {FLoc.loc_start =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
+   loc_end =
+    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
+   loc_ghost = false})]
+
+    
 (* let test_simple_arith _ = *)
 (*   assert_equal ~msg:("\n" ^ {:here||}) 3 4 *)
            
@@ -182,6 +217,7 @@ let suite =
    "test_ant_paren" >:: test_ant_paren;
    "test_ant_str" >:: test_ant_str;
    "test_lex_simple_quot" >:: test_lex_simple_quot;
+   "test_symb" >:: test_symb
    (* "test_simple_arith" >:: test_simple_arith *)
  ]
 
