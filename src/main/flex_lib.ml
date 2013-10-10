@@ -2,7 +2,6 @@
 {:import|
 
 Lexing_util:
-  clear_stack
   lexing_store
   ;
 
@@ -15,7 +14,6 @@ Format:
 
 
 let from_string  {FLoc.loc_start;_} str =
-  let () = clear_stack () in 
   let lb = Lexing.from_string str in begin 
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
@@ -23,7 +21,6 @@ let from_string  {FLoc.loc_start;_} str =
   end
 
 let from_stream  {FLoc.loc_start;_} strm =
-  let () = clear_stack () in 
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
@@ -76,7 +73,11 @@ let debug_from_file  file =
   let chan = open_in file in
   let stream = Fstream.of_channel  chan in
   from_stream  loc stream |> clean |>
-  Fstream.iter
-    (fun (t,loc) ->
-      fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc)
+  Fstream.iter @@
+  fun (t,loc) ->
+    fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc
 
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake flex_lib.cmo" *)
+(* end: *)

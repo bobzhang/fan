@@ -147,25 +147,8 @@ let print_opt_char fmt = function
   | Some c ->fprintf fmt "Some %c" c
   | None -> fprintf fmt "None"
         
-module CStack=struct   
-  include Stack
-  let push v stk= begin 
-    if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
-    push v stk
-  end 
-  let pop stk = begin
-    if !debug then Format.eprintf "Pop %a@." print_opt_char (top stk);
-    pop stk
-  end 
-end
-let opt_char : char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug:=true
 let turn_off_quotation_debug () = debug:=false
-let clear_stack () = Stack.clear opt_char 
-let show_stack () = begin
-  eprintf "stack expand to check the error message@.";
-  Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
-end
 
 
 type context = { mutable loc : FLoc.position list; buffer : Buffer.t; }
@@ -334,9 +317,8 @@ let rec  lex_antiquot c  = {:lexer|
       push_loc_cont c lexbuf lex_antiquot;
       lex_antiquot c  lexbuf;
     end
-| quotation_prefix (* (extra_quot as p)? *) -> (* $(lid:{|)|})*)
+| quotation_prefix  -> 
     begin 
-      (* Stack.push p opt_char ; *)
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       lex_antiquot c lexbuf
@@ -361,22 +343,16 @@ let rec  lex_antiquot c  = {:lexer|
 |}
 
 and lex_quotation c = {:lexer|
-| quotation_prefix (* (extra_quot as p)? *)
-  ->
+| quotation_prefix ->
     begin
       store c lexbuf ;
-      (* Stack.push p opt_char; (\* take care the order matters*\) *)
       push_loc_cont c lexbuf lex_quotation;
       lex_quotation c lexbuf
     end
-| (* (extra_quot as p)? *) "|}" ->
-    (* let top = Stack.top opt_char in *)
-    (* if p <> top then *)
-    (*   with_store  c lexbuf lex_quotation (\*move on*\) *)
-    (* else begin *)
-    (*   ignore (Stack.pop opt_char); *)
-      store c lexbuf
-    (* end *)
+      
+| "|}" ->
+    store c lexbuf
+  
 | "}" ->
     begin
       store c lexbuf;
@@ -409,7 +385,7 @@ and lex_quotation c = {:lexer|
     end
 | eof ->
     begin
-      show_stack ();
+
       err Unterminated_quotation @@
       Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
     end

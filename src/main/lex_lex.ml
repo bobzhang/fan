@@ -91,8 +91,6 @@ let (!!)  = Location_util.from_lexbuf ;;
 (* let opt_char_len = Lexing_util;; *)
 {:import|
 Lexing_util:
-  opt_char
-  opt_char_len
   update_loc
   new_cxt
   push_loc_cont
@@ -106,7 +104,6 @@ Lexing_util:
   warn
   move_curr_p
   store
-  clear_stack
   lexing_store
   with_store
   lex_simple_quotation
@@ -180,7 +177,6 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
 let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
 
 let from_stream (loc:FLoc.t) strm =
-  let () = Lexing_util.clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc.loc_start.pos_cnum;
     lb.lex_curr_p <- loc.loc_start;

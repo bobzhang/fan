@@ -21,19 +21,6 @@ val print_lex_error : Format.formatter -> lex_error -> unit
 
 val lex_error_to_string : lex_error -> string
 
-val opt_char_len : 'a option -> int
-val print_opt_char : Format.formatter -> char option -> unit
-val clear_stack : unit -> unit
-module CStack : sig
-  type 'a t
-  val push : char option -> char option t -> unit
-  val pop : char option t -> char option
-end
-
-(** FIXME: here only one copy of opt_char which makes it to call multiple lexers
-    impossible *)    
-val opt_char : char option Stack.t 
-
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
 type context = {
@@ -43,10 +30,6 @@ type context = {
     buffer     : Buffer.t
   }
 
-
-
-
-(* val default_cxt : Lexing.lexbuf -> context *)
     
 val new_cxt : unit -> context
     
@@ -135,5 +118,5 @@ val lex_simple_quotation :   context -> Lexing.lexbuf -> unit
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/lexing_util.cmo" *)
+(* compile-command: "cd ../main_annot && pmake lexing_util.cmo" *)
 (* end: *)
