@@ -7,14 +7,6 @@ let dir_table : (Ftoken.name , FLoc.t -> string option -> string -> unit) Hashtb
 
 
 
-let handle_dir (loc:FLoc.t) ((base:Ftoken.name),contents ) : unit =
-  (try
-     let handler = Hashtbl.find dir_table base in
-     fun ()  -> handler loc None contents
-   with
-   | Not_found  ->
-       (fun ()  -> FLoc.failf loc "Unfound directive language %s" @@ Ftoken.string_of_name base)
-  ) ()
 
 let handle_quot (x:Ftoken.quot) : unit =
   let handler =
