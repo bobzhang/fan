@@ -2,11 +2,11 @@
 (**
    register 
  *)
-val dir_table : (Ftoken.name , FLoc.t -> string option -> string -> unit) Hashtbl.t
+val dir_table : (Ftoken.name , unit Ftoken.expand_fun ) Hashtbl.t
 
 
 
-val register : Ftoken.name * (FLoc.t -> string option -> string -> unit) -> unit
+val register : Ftoken.name * unit Ftoken.expand_fun -> unit
 
 val handle_quot : Ftoken.quot -> unit    
 

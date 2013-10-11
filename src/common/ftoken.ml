@@ -33,7 +33,19 @@ type quot = {
     retract:int; 
   }
 
-let quot_expand expander (x:quot) =
+let pp_print_quot : Format.formatter -> quot -> unit =
+  fun fmt {name;meta;shift;content;loc;retract}  ->
+    Format.fprintf fmt "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
+      pp_print_name name
+      (Formatf.pp_print_option Formatf.pp_print_string) meta
+      FLoc.pp_print_t loc
+      Format.pp_print_int shift
+      Format.pp_print_int retract
+      Format.pp_print_string content
+  
+
+type 'a expand_fun = FLoc.t -> string option -> string -> 'a
+let quot_expand (expander:'a expand_fun) (x:quot) =
   let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
   let content =
     String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
@@ -43,29 +55,20 @@ type quotation = [ `Quot of quot ]
 
 
 let pp_print_quotation: Format.formatter -> quotation -> unit =
-  fun fmt  (`Quot {name;meta;shift;content;loc;retract} )  ->
-    Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
-      pp_print_name name
-      (Formatf.pp_print_option Formatf.pp_print_string) meta
-      FLoc.pp_print_t loc
-      Format.pp_print_int shift
-      Format.pp_print_int retract
-      Format.pp_print_string content
+  fun fmt  (`Quot x)  ->
+    Format.fprintf fmt "@[<1>(`Quot %a)@]"
+      pp_print_quot x 
 
 (** (name,contents)  *)
 type dir_quotation =
     [`DirQuotation of quot]
-    (* [ `DirQuotation of (int* string* string)]  *)
+
 
 let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
-  fun fmt  (`DirQuotation {name;meta;shift;content;loc;retract} )  ->
-    Format.fprintf fmt "@[<1>(`DirQuotation {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
-      pp_print_name name
-      (Formatf.pp_print_option Formatf.pp_print_string) meta
-      FLoc.pp_print_t loc
-      Format.pp_print_int shift
-      Format.pp_print_int retract
-      Format.pp_print_string content
+  fun fmt  (`DirQuotation x)  ->
+    Format.fprintf fmt "@[<1>(`DirQuotation %a)@]"
+      pp_print_quot x 
+
 
   
 type space_token =

@@ -7,17 +7,10 @@ val resolve_name : (* FLoc.t -> *) Ftoken.name -> Ftoken.name option
 
 val paths : Ftoken.domains list ref
     
-(** The [loc] is the initial location. The option string is the optional name
-    for the [location variable]. The string is the quotation contents. 
-    expand fun accepts [location] and [location label] and string   
-    to generate an arbitrary value of type ['a] *)                     
-type 'a expand_fun  = FLoc.t -> string option  -> string -> 'a
-
-
 val current_loc_name : string option ref
 
 (** [add name exp] adds the quotation [name] associated with the  expander [exp]. *)
-val add : Ftoken.name -> 'a FDyn.tag  -> 'a expand_fun  -> unit
+val add : Ftoken.name -> 'a FDyn.tag  -> 'a Ftoken.expand_fun  -> unit
 
     
 (** [default] holds the default quotation name. *)
@@ -53,7 +46,7 @@ val dump_file : string option  ref
 
 (** The raw quotation expander, register its type, laguage namespace and
     an expansion function *)
-val add : Ftoken.domains * string -> 'a FDyn.tag -> 'a expand_fun -> unit    
+val add : Ftoken.domains * string -> 'a FDyn.tag -> 'a Ftoken.expand_fun -> unit    
 (** theoretically you can use [mexp] which lift it into any type you can
    but we made a restriction here.
    [exp_filter] and [pat_filter] default to an id 

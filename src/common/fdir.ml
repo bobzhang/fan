@@ -1,7 +1,7 @@
 
 
 
-let dir_table : (Ftoken.name , FLoc.t -> string option -> string -> unit) Hashtbl.t =
+let dir_table : (Ftoken.name , unit Ftoken.expand_fun) Hashtbl.t =
   Hashtbl.create 50
     
 

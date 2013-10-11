@@ -51,12 +51,10 @@ let resolve_name (n:Ftoken.name) =
       end
   | x -> Some x (* absolute *)
 
-(** expand function *)
-type 'a expand_fun  = FLoc.t ->  string option -> string -> 'a
   
 module ExpKey = FDyn.Pack(struct  type 'a t  = unit end)
 
-module ExpFun = FDyn.Pack(struct  type 'a t  = 'a expand_fun  end)
+module ExpFun = FDyn.Pack(struct  type 'a t  = 'a Ftoken.expand_fun  end)
 
 let current_loc_name = ref None  
 
@@ -118,7 +116,7 @@ let expander_name  ~pos (name:Ftoken.name) =
   
 let expanders_table =ref QMap.empty
 
-let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a expand_fun) =
+let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a Ftoken.expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with

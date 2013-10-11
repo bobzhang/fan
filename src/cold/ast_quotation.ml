@@ -24,9 +24,8 @@ let resolve_name (n : Ftoken.name) =
        | None  -> None
        | Some r -> Some ((concat_domain (r, x)), v))
   | x -> Some x
-type 'a expand_fun = FLoc.t -> string option -> string -> 'a 
 module ExpKey = FDyn.Pack(struct type 'a t = unit  end)
-module ExpFun = FDyn.Pack(struct type 'a t = 'a expand_fun  end)
+module ExpFun = FDyn.Pack(struct type 'a t = 'a Ftoken.expand_fun  end)
 let current_loc_name = ref None
 let stack = Stack.create ()
 let current_quot () =
@@ -52,7 +51,7 @@ let expander_name ~pos  (name : Ftoken.name) =
   | (`Sub _,_) -> resolve_name name
   | (`Absolute _,_) -> Some name
 let expanders_table = ref QMap.empty
-let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a expand_fun) =
+let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a Ftoken.expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s =
     try Hashtbl.find names_tbl domain with | Not_found  -> Setf.String.empty in

@@ -23,10 +23,16 @@ type quot = {
     (* the letter to be retracted *)
   }
 
+(** The [loc] is the initial location. The option string is the meta-data
+    for example, the [location variable]. The string is the quotation contents. 
+    expand fun accepts [location] and [location label] and string   
+    to generate an arbitrary value of type ['a] *)                     
+type 'a expand_fun = FLoc.t -> string option -> string -> 'a
+    
 (** extract the quot information for expanding
     mainly remove the border
  *)      
-val quot_expand : (FLoc.t -> string option -> string -> 'a) -> quot -> 'a
+val quot_expand : 'a expand_fun -> quot -> 'a
     
 type quotation = [ `Quot of quot ]
       
