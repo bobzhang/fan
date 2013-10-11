@@ -4372,21 +4372,19 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `DirQuotation (_,_,_) -> true | _ -> false)),
-                (`App
-                   ((`App ((`App ((`Vrn "DirQuotation"), `Any)), `Any)),
-                     `Any)), "`DirQuotation (_,_,_)")],
-            ("let _loc = FLoc.move `start shift _loc in\nFdir.handle_dir _loc (name, contents); ([], (Some _loc))\n",
+              (((function | `DirQuotation _ -> true | _ -> false)),
+                (`App ((`Vrn "DirQuotation"), `Any)), "`DirQuotation _")],
+            ("let _loc = FLoc.move `start x.shift _loc in\nFdir.handle_dir _loc ((x.name), (x.content)); ([], (Some _loc))\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
-                    | `DirQuotation (shift,name,contents) ->
-                        (let _loc = FLoc.move `start shift _loc in
-                         (Fdir.handle_dir _loc (name, contents);
+                    | `DirQuotation x ->
+                        (let _loc = FLoc.move `start x.shift _loc in
+                         (Fdir.handle_dir _loc ((x.name), (x.content));
                           ([], (Some _loc))) : 'implem )
                     | _ ->
                         failwith
-                          "let _loc = FLoc.move `start shift _loc in\nFdir.handle_dir _loc (name, contents); ([], (Some _loc))\n"))));
+                          "let _loc = FLoc.move `start x.shift _loc in\nFdir.handle_dir _loc ((x.name), (x.content)); ([], (Some _loc))\n"))));
          ([`Snterm (Fgram.obj (stru : 'stru Fgram.t ));
           `Skeyword ";;";
           `Sself],

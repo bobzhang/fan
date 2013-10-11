@@ -41,7 +41,7 @@ let quot_expand expander (x:quot) =
 
 type quotation = [ `Quot of quot ] 
 
-(* FIXME *)      
+
 let pp_print_quotation: Format.formatter -> quotation -> unit =
   fun fmt  (`Quot {name;meta;shift;content;loc;retract} )  ->
     Format.fprintf fmt "@[<1>(`Quot {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
@@ -53,12 +53,21 @@ let pp_print_quotation: Format.formatter -> quotation -> unit =
       Format.pp_print_string content
 
 (** (name,contents)  *)
-type dir_quotation = [ `DirQuotation of (int* string* string)] 
-let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
-  fun fmt  (`DirQuotation (_a0,_a1,_a2))  ->
-    Format.fprintf fmt "@[<1>(`DirQuotation@ %a@ %a@ %a)@]" Format.pp_print_int _a0
-      Format.pp_print_string _a1 Format.pp_print_string _a2
+type dir_quotation =
+    [`DirQuotation of quot]
+    (* [ `DirQuotation of (int* string* string)]  *)
 
+let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
+  fun fmt  (`DirQuotation {name;meta;shift;content;loc;retract} )  ->
+    Format.fprintf fmt "@[<1>(`DirQuotation {name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a})@]"
+      pp_print_name name
+      (Formatf.pp_print_option Formatf.pp_print_string) meta
+      FLoc.pp_print_t loc
+      Format.pp_print_int shift
+      Format.pp_print_int retract
+      Format.pp_print_string content
+
+  
 type space_token =
    [ `Comment of string
    | `Blank of string

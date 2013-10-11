@@ -84,4 +84,6 @@ let _ =
           ("()\n",
             (Fgram.mk_action (fun (_loc : FLoc.t)  -> (() : 'items )))))]))
 let () =
-  Fdir.register ("control", (fun loc  c  -> Fgram.parse_string ~loc items c))
+  Fdir.register
+    ((Ftoken.name_of_string "control"),
+      (fun loc  c  -> Fgram.parse_string ~loc items c))

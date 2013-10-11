@@ -41,26 +41,8 @@ let debug = ref false
 let opt_char_len = function | Some _ -> 1 | None  -> 0
 let print_opt_char fmt =
   function | Some c -> fprintf fmt "Some %c" c | None  -> fprintf fmt "None"
-module CStack =
-  struct
-    include Stack
-    let push v stk =
-      if debug.contents
-      then Format.eprintf "Push %a@." print_opt_char v
-      else ();
-      push v stk
-    let pop stk =
-      if debug.contents
-      then Format.eprintf "Pop %a@." print_opt_char (top stk);
-      pop stk
-  end
-let opt_char: char option Stack.t = Stack.create ()
 let turn_on_quotation_debug () = debug := true
 let turn_off_quotation_debug () = debug := false
-let clear_stack () = Stack.clear opt_char
-let show_stack () =
-  eprintf "stack expand to check the error message@.";
-  Stack.iter (Format.eprintf "%a@." print_opt_char) opt_char
 type context =  {
   mutable loc: FLoc.position list;
   buffer: Buffer.t} 
@@ -2564,9 +2546,8 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
          Buffer.add_char c.buffer '"';
          lex_quotation c lexbuf)
     | 7 ->
-        (show_stack ();
-         (err Unterminated_quotation) @@
-           (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p))
+        (err Unterminated_quotation) @@
+          (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p)
     | 8 -> with_store c lexbuf lex_quotation
     | 9 -> with_store c lexbuf lex_quotation
     | _ -> failwith "lexing: empty token"))

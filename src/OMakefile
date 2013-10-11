@@ -177,6 +177,19 @@ MakeRules(pp) =
         private.F = $f
         private.obj_file = $(file dparsetree/$(basename $f).$(basename $(pp)).dparsetree)
         # println ("$(obj_file)")
+
+        # notice that =:exists:= is not enough
+        # however, sometimes the cold is broken
+        # we use exists
+        # so here comes: for fan
+        # it should be :exists:
+        # other preprocessor it should be it self
+        # if $(equal $(pp) $(file fan))
+        #     $(obj_file): $F :exists: $(pp)
+        #         section
+        #             cd main
+        #             $(pp) -printer dparsetree $F > $(obj_file)
+        # else
         $(obj_file): $F $(pp)
             section
                 cd main

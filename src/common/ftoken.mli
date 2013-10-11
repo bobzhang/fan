@@ -32,7 +32,7 @@ type quotation = [ `Quot of quot ]
       
 
 (** (name,contents) *)
-type dir_quotation = [`DirQuotation of (int * string * string) ] 
+type dir_quotation = [`DirQuotation of quot  ] 
 (**
   For some tokens the data constructor holds two representations with the
   evaluated one and the source one. For example

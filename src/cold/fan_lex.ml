@@ -1,8 +1,6 @@
 let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
-let opt_char = Lexing_util.opt_char
-let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let new_cxt = Lexing_util.new_cxt
 let push_loc_cont = Lexing_util.push_loc_cont
@@ -4763,15 +4761,25 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | 20 ->
           let name =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 3)
-              (lexbuf.Lexing.lex_curr_pos + (-1)) in
+              (lexbuf.Lexing.lex_curr_pos + (-1))
+          and shift =
+            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+              (lexbuf.Lexing.lex_curr_pos + 0) in
           let c = new_cxt () in
-          let len = String.length name in
           let retract = 2 in
           let old = lexbuf.lex_start_p in
           let s = push_loc_cont c lexbuf lex_quotation; buff_contents c in
           let contents = String.sub s 0 ((String.length s) - retract) in
-          ((`DirQuotation (((3 + 1) + len), name, contents)),
-            (old -- lexbuf.lex_curr_p))
+          let loc = old -- lexbuf.lex_curr_p in
+          ((`DirQuotation
+              {
+                shift = (String.length shift);
+                meta = None;
+                Ftoken.name = (Ftoken.name_of_string name);
+                content = contents;
+                loc;
+                retract = 2
+              }), loc)
       | 21 ->
           let num =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)

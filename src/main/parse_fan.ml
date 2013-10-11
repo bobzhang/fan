@@ -910,11 +910,11 @@ let apply () = begin
     (** ml file  entrance *)    
       implem:
       [
-        `DirQuotation (shift,name,contents) -> (* FIXME (a,b,c) pattern broken *)
-          let _loc = FLoc.move `start shift _loc in
+        `DirQuotation x  -> (* FIXME (a,b,c) pattern broken *)
+          let _loc = FLoc.move `start x.shift _loc in
           (* let contents = String.sub contents 0 (String.length contents - retract) in FIXME *)
          begin
-           (Fdir.handle_dir _loc (name,contents));
+           (Fdir.handle_dir _loc (x.name,x.content));
            ([],Some _loc)
          end
       | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)

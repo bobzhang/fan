@@ -1,8 +1,6 @@
 let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 let (!!) = Location_util.from_lexbuf
-let opt_char = Lexing_util.opt_char
-let opt_char_len = Lexing_util.opt_char_len
 let update_loc = Lexing_util.update_loc
 let new_cxt = Lexing_util.new_cxt
 let push_loc_cont = Lexing_util.push_loc_cont
@@ -16,7 +14,6 @@ let err = Lexing_util.err
 let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
-let clear_stack = Lexing_util.clear_stack
 let lexing_store = Lexing_util.lexing_store
 let with_store = Lexing_util.with_store
 let lex_simple_quotation = Lexing_util.lex_simple_quotation
@@ -521,7 +518,6 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb = Fstream.from (fun _  -> Some (token lb))
 let from_stream (loc : FLoc.t) strm =
-  let () = Lexing_util.clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;
   lb.lex_curr_p <- loc.loc_start;

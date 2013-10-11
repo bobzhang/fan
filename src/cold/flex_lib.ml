@@ -1,15 +1,12 @@
-let clear_stack = Lexing_util.clear_stack
 let lexing_store = Lexing_util.lexing_store
 let fprintf = Format.fprintf
 let std_formatter = Format.std_formatter
 let from_string { FLoc.loc_start = loc_start;_} str =
-  let () = clear_stack () in
   let lb = Lexing.from_string str in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
   Fan_lex.from_lexbuf lb
 let from_stream { FLoc.loc_start = loc_start;_} strm =
-  let () = clear_stack () in
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
@@ -56,6 +53,6 @@ let debug_from_file file =
   let chan = open_in file in
   let stream = Fstream.of_channel chan in
   ((from_stream loc stream) |> clean) |>
-    (Fstream.iter
+    (Fstream.iter @@
        (fun (t,loc)  ->
           fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc))
