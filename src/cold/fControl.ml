@@ -86,4 +86,4 @@ let _ =
 let () =
   Fdir.register
     ((Ftoken.name_of_string "control"),
-      (fun loc  c  -> Fgram.parse_string ~loc items c))
+      (fun loc  _  c  -> Fgram.parse_string ~loc items c))

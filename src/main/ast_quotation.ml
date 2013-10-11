@@ -144,15 +144,13 @@ let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   | Some absolute_name ->
       begin 
         let pack =
-          try QMap.find (absolute_name, ExpKey.pack tag ()) !expanders_table with
-            Not_found -> FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found"
+          try QMap.find (absolute_name, ExpKey.pack tag ()) !expanders_table
+          with
+            Not_found ->
+              FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found" 
                 (Ftoken.string_of_name name) pos_tag  in
         let expander = ExpFun.unpack tag pack in
         Ftoken.quot_expand expander x 
-        (* let loc = Location_util.join (FLoc.move `start x.shift x.loc) in *)
-        (* let content = *)
-        (*   String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in  *)
-        (* expander loc x.meta content *)
         (* FIXME: control the stack of quotation explosion *)
       end
 

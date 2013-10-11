@@ -305,3 +305,7 @@ let rec cstream gloc =  function
       if not_computing e then {| $(uid:gm()).iapp $e $(cstream gloc secl) |}
       else {| $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) |} 
           
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake compile_stream.cmo" *)
+(* end: *)

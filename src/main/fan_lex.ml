@@ -229,28 +229,26 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       let loc = old -- lexbuf.lex_curr_p in
       (`Quot{Ftoken.name;meta;shift;content;loc;retract},loc)
     end
-| ("{:" | "{@" ) _ as c -> err (Illegal_quotation c) @@  !!lexbuf
 
 |"#{:" (quotation_name as name) '|' as shift ->
     let c  =  new_cxt () in
-    (* let len = String.length name in *)
     let retract =   2 in
     let old = lexbuf.lex_start_p in
     let s =
-      (push_loc_cont c lexbuf lex_quotation;
-       buff_contents c) in
+      begin
+        store c lexbuf;
+        push_loc_cont c lexbuf lex_quotation;
+        buff_contents c
+      end in
 
-    let contents = String.sub s 0 (String.length s - retract) in (* FIXME later*)
+    (* let contents = String.sub s 0 (String.length s - retract) in (\* FIXME later*\) *)
     let loc = old -- lexbuf.lex_curr_p in
     (`DirQuotation {shift = String.length shift ;
                     meta = None;
                     Ftoken.name = Ftoken.name_of_string name;
-                    content = contents;
-                    loc; retract = 2  },
+                    content = s (* contents *);
+                    loc; retract},
      loc)
-    (* (`DirQuotation(3+1 +len , name,contents), *)
-    (*  old -- lexbuf.lex_curr_p) *)
-
       
 | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
     ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?

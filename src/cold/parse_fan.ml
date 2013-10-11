@@ -4374,17 +4374,13 @@ let apply () =
          [([`Stoken
               (((function | `DirQuotation _ -> true | _ -> false)),
                 (`App ((`Vrn "DirQuotation"), `Any)), "`DirQuotation _")],
-            ("let _loc = FLoc.move `start x.shift _loc in\nFdir.handle_dir _loc ((x.name), (x.content)); ([], (Some _loc))\n",
+            ("Fdir.handle_quot x; ([], (Some _loc))\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
                     match __fan_0 with
                     | `DirQuotation x ->
-                        (let _loc = FLoc.move `start x.shift _loc in
-                         (Fdir.handle_dir _loc ((x.name), (x.content));
-                          ([], (Some _loc))) : 'implem )
-                    | _ ->
-                        failwith
-                          "let _loc = FLoc.move `start x.shift _loc in\nFdir.handle_dir _loc ((x.name), (x.content)); ([], (Some _loc))\n"))));
+                        ((Fdir.handle_quot x; ([], (Some _loc))) : 'implem )
+                    | _ -> failwith "Fdir.handle_quot x; ([], (Some _loc))\n"))));
          ([`Snterm (Fgram.obj (stru : 'stru Fgram.t ));
           `Skeyword ";;";
           `Sself],

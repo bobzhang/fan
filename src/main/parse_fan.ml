@@ -911,12 +911,10 @@ let apply () = begin
       implem:
       [
         `DirQuotation x  -> (* FIXME (a,b,c) pattern broken *)
-          let _loc = FLoc.move `start x.shift _loc in
-          (* let contents = String.sub contents 0 (String.length contents - retract) in FIXME *)
-         begin
-           (Fdir.handle_dir _loc (x.name,x.content));
-           ([],Some _loc)
-         end
+          begin
+            Fdir.handle_quot x;
+            ([], Some _loc)
+          end
       | stru{si}; ";;"; S{(sil, stopped)} -> (si :: sil, stopped)
       | stru{si};  S{(sil, stopped)} -> (si :: sil, stopped)
          (* FIXME merge with the above in the future*)            
