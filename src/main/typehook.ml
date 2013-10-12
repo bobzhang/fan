@@ -81,7 +81,7 @@ let iterate_code sloc mtyps =
          acc)
     |(None,Some code) ->
         let code = FanAstN.fill_stru sloc code in
-        ({:stru@sloc| $acc;; $code |};)
+        (%stru@sloc{ $acc;; $code };)
     |(_,None) -> acc);;
  
 let traversal () : traversal  = object (self:'self_type)
@@ -105,7 +105,7 @@ let traversal () : traversal  = object (self:'self_type)
 
   (** entrance *)  
   method! mexp = with stru function
-    | {:mexp@sloc| struct $u end |}  ->
+    | %mexp@sloc{ struct $u end }  ->
         (self#in_module ;
          (* extracted code *)
          let res = self#stru u in
@@ -115,34 +115,34 @@ let traversal () : traversal  = object (self:'self_type)
          let result =
          List.fold_right (iterate_code sloc mtyps)
              !FState.current_filters 
-             (if !FState.keep then res else {@sloc| let _ = () |}) in
-            (self#out_module ; {:mexp@sloc| struct $result end |} ))
+             (if !FState.keep then res else %@sloc{ let _ = () }) in
+            (self#out_module ; %mexp@sloc{ struct $result end } ))
 
     | x -> super#mexp x 
   method! stru  = with stru function
-    | {| type $_ and $_ |} as x -> begin
+    | %{ type $_ and $_ } as x -> begin
       self#in_and_types;
       let _ = super#stru x in
       (self#update_cur_mtyps
           (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
        self#out_and_types;
-       (if !FState.keep then x else {| let _ = () |} (* FIXME *) ))
+       (if !FState.keep then x else %{ let _ = () } (* FIXME *) ))
     end
     | `TypeWith(_loc,typedecl,_) ->
         self#stru (`Type(_loc,typedecl))
-    | {| type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) |} as x -> 
+    | %{ type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) } as x -> 
         let item =  `Single (name,Objs.strip_typedecl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."
               pp_print_types  item in
         (self#update_cur_mtyps (fun lst -> item :: lst);
-       (* if !keep then x else {| |} *) (* always keep *)
+       (* if !keep then x else %{ } *) (* always keep *)
        x )
 
-    | ( {| let $_ |}  | {| module type $_ = $_ |}  | {| include $_ |}
-    | {| external $_ : $_ = $_ |} | {| $exp:_ |}
-    | {| exception $_ |} 
-    | {| # $_ $_ |}  as x)  ->  x (* always keep *)
+    | ( %{ let $_ }  | %{ module type $_ = $_ }  | %{ include $_ }
+    | %{ external $_ : $_ = $_ } | %{ $exp:_ }
+    | %{ exception $_ } 
+    | %{ # $_ $_ }  as x)  ->  x (* always keep *)
     |  x ->  super#stru x  
   method! typedecl = function
     | `TyDcl (_, `Lid(_,name), _, _, _) as t -> 

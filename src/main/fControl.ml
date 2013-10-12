@@ -1,8 +1,8 @@
 
 
-{:new|(g:Fgram.t) item dot_namespace items |};;
+%new{(g:Fgram.t) item dot_namespace items };;
 
-{:unsafe_extend| (g:Fgram.t)
+%unsafe_extend{ (g:Fgram.t)
   item:
   ["default"; `Str s -> (* FIXME*)
     begin 
@@ -28,7 +28,7 @@
   [item; ";" -> ()
   |item; ";"; S -> ()
   | -> ()]
-|};;
+};;
 
 let () =
   Fdir.register

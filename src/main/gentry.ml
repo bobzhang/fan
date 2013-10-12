@@ -1,11 +1,11 @@
 
-{:import|
+%import{
 Format:
   fprintf
   eprintf
   ;
  
-|};;
+};;
 
 
 
@@ -104,7 +104,7 @@ let parse (entry:'a t) loc cs =
        (Flex_lib.from_stream loc cs))
 ;;
 
-{:import|
+%import{
 Ginsert:
   levels_of_entry
   extend
@@ -122,4 +122,4 @@ Gparser:
 Ginsert:
    (* buggy *)
    eoi_entry;
-|};;
+};;

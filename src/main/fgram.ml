@@ -31,15 +31,15 @@ let gkeywords = ref (Setf.String.of_list default_keywords)
 let rec fan_filter = parser
   | ( #Ftoken.space_token,_); 'xs -> fan_filter xs
   |  x; 'xs  ->
-      {:stream| x; ' fan_filter xs |}
-  |  -> {:stream||}
+      %stream{ x; ' fan_filter xs }
+  |  -> %stream{}
 
 let rec ignore_layout : Ftoken.filter =
   parser
     | (#Ftoken.space_token,_); 'xs -> ignore_layout  xs
     | x ; 'xs  ->
-        {:stream|x; 'ignore_layout xs |}
-    | -> {:stream||}
+        %stream{x; 'ignore_layout xs }
+    | -> %stream{}
           
 let gram =  {
   annot="Fan";
@@ -102,14 +102,14 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
 (* let srules rl = *)
 (*     `Stree (List.fold_right Ginsert.add_production   rl DeadEnd) *)
 
-{:import|
+%import{
 Gfold:
   sfold0
   sfold1
   sfold0sep
   sfold1sep
   ;
-|};;    
+};;    
 
 
 (* [eoi_entry] could be improved   *)
@@ -117,7 +117,7 @@ let eoi_entry entry =
   let open! Gstru in
   let g = gram_of_entry entry in
   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in
-  ({:extend| entry_eoi: [  entry{x}; `EOI -> x ] |} ;
+  (%extend{ entry_eoi: [  entry{x}; `EOI -> x ] } ;
    entry_eoi)
 
 let find_level ?position (entry:Gstructure.entry) =

@@ -1,4 +1,4 @@
-{:regexp| (** FIXME remove duplication later see lexing_util.cmo *)
+%regexp{ (** FIXME remove duplication later see lexing_util.cmo *)
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -77,7 +77,7 @@ let ocaml_lid =
   lowercase identchar *
 let ocaml_uid =
   uppercase identchar * 
-|};;
+};;
 
 
 (*************************************)
@@ -89,7 +89,7 @@ let (+>) = Buffer.add_char
 let (!!)  = Location_util.from_lexbuf ;;
 
 (* let opt_char_len = Lexing_util;; *)
-{:import|
+%import{
 Lexing_util:
   update_loc
   new_cxt
@@ -111,10 +111,10 @@ Lexing_util:
 Location_util:
    (--)
    ;
-|};;    
+};;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
+let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lexer{
 | newline ->
     begin
       update_loc  lexbuf;
@@ -171,7 +171,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         pos_cnum = pos.pos_cnum + 1 };
      (`EOI, !!lexbuf ))
     
-| _ as c ->  err (Illegal_character c) @@  !!lexbuf |}
+| _ as c ->  err (Illegal_character c) @@  !!lexbuf }
   
 
 let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))

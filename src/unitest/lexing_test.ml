@@ -12,7 +12,7 @@ let get_tokens s =
     (Flex_lib.list_of_string ~verbose:false s )
     
 let test_empty_string _ =
-  get_tokens {:str|""|}
+  get_tokens %str{""}
     ===
   [ `Str "" ; `EOI]  
 

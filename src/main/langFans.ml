@@ -2,13 +2,13 @@
 
 
 
-{:new| (g:Fgram.t) fan_quot fan_quots|};;
+%new{ (g:Fgram.t) fan_quot fan_quots};;
 
 
 (* when have local grammars created, g should be specified otherwise, the default
    lexer will mismatch *)
 with exp
-{:unsafe_extend| (g:Fgram.t)
+%unsafe_extend{ (g:Fgram.t)
   fan_quot:
   ["derive";"("; L1 id {plugins}; ")" ->
     (List.iter Typehook.plugin_add plugins)
@@ -30,10 +30,10 @@ with exp
   let fan_quot_semi:
   [ fan_quot;";" ]
   fan_quots:
-  [L1 fan_quot_semi  -> {| ()|} ]
+  [L1 fan_quot_semi  -> %{ ()} ]
 
  
-|};;  
+};;  
 
 
 begin 
@@ -44,3 +44,7 @@ begin
     ("-loaded-plugins",
      (Arg.Unit Typehook.show_modules), "Show plugins");
 end;;
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake langFans.cmo" *)
+(* end: *)

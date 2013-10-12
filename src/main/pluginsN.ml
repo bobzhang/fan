@@ -1,5 +1,5 @@
 
-#{:control| default "exp-" ; |}
+%%control{ default "exp-" ; }
 
 open FAstN
 open Astn_util
@@ -16,9 +16,9 @@ open FSigUtil
 
 let mk_variant _cons : ty_info list   -> exp  =
   function 
-  | [] -> {:exp-|true|}
+  | [] -> %exp-{true}
   | ls -> Flist.reduce_left_with
-        ~compose:(fun x y -> {:exp-| $x && $y|}  )
+        ~compose:(fun x y -> %exp-{ $x && $y}  )
         ~project:(fun {info_exp;_} -> info_exp) ls
   
 let mk_tuple exps = mk_variant "" exps
@@ -30,11 +30,11 @@ let mk_record : record_col list  -> exp  = fun cols ->
 let (gen_eq,gen_eqobj) = 
   (gen_stru ~id:(`Pre "eq_")
     ~arity:2 ~mk_tuple ~mk_record ~mk_variant
-    ~default: {:exp-|false|} (),
+    ~default: %exp-{false} (),
    gen_object ~kind:Iter ~mk_tuple ~mk_record
      ~base:"eqbase" ~class_name:"eq"
      ~mk_variant:mk_variant
-     ~arity:2 ~default: {:exp-|false|} ()) ;;
+     ~arity:2 ~default: %exp-{false} ()) ;;
 
 let some f  = fun x -> Some (f x)  ;;
 
@@ -53,9 +53,9 @@ let (gen_fold,gen_fold2) =
     params
     |> List.map (fun {info_exp;_} -> info_exp)
     |> (function
-        | [] -> {:exp-|self|}
+        | [] -> %exp-{self}
         | ls ->
-            Flist.reduce_right (fun v acc -> {:exp-| let self = $v in $acc |}) ls ) in
+            Flist.reduce_right (fun v acc -> %exp-{ let self = $v in $acc }) ls ) in
   let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
     cols |> List.map (fun  {re_info ; _ } -> re_info  )
@@ -65,7 +65,7 @@ let (gen_fold,gen_fold2) =
    gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
      ~mk_variant
-     ~arity:2 ~default: {:exp-|invalid_arg "fold2 failure" |} () ) ;;
+     ~arity:2 ~default: %exp-{invalid_arg "fold2 failure" } () ) ;;
 
 
 begin
@@ -86,13 +86,13 @@ let (gen_map,gen_map2) =
           (params |> List.map (fun {ep0;_} -> ep0)) ) in 
     List.fold_right
       (fun {info_exp;ep0;_} res ->
-              {:exp-|let $(pat: (ep0:>pat)) = $info_exp in $res |})  params (result:>exp) in
+              %exp-{let $(pat: (ep0:>pat)) = $info_exp in $res })  params (result:>exp) in
   let mk_tuple params =
     let result = 
       params |> List.map (fun {ep0; _ } -> ep0) |> tuple_com in
     List.fold_right
       (fun {info_exp=exp;ep0;_} res ->
-        {:exp-| let $(pat:(ep0:>pat)) = $exp in $res |}) params (result:>exp) in 
+        %exp-{ let $(pat:(ep0:>pat)) = $exp in $res }) params (result:>exp) in 
   let mk_record cols =
     (* (->label,info.exp0) *)
     let result = 
@@ -102,13 +102,13 @@ let (gen_map,gen_map2) =
     List.fold_right
       (fun {re_info={info_exp=exp;ep0;_};_} res ->
         let pat0 = (ep0 :> pat) in 
-        {|let $pat:pat0 = $exp in $res |}) cols result in
+        %{let $pat:pat0 = $exp in $res }) cols result in
   (gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase" ~class_name:"map"
      ~mk_variant  (),
    gen_object ~kind:Map ~mk_tuple ~mk_record
      ~base:"mapbase2" ~class_name:"map2" ~mk_variant 
-     ~arity:2 ~default: {|  invalid_arg "map2 failure" |} ());;
+     ~arity:2 ~default: %{  invalid_arg "map2 failure" } ());;
 
 begin
   [("Map",some gen_map);
@@ -135,11 +135,11 @@ let gen_strip =
       (fun {info_exp=exp;ep0;ty;_} res ->
         match (ty:ctyp) with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | {:ctyp-|FanUtil.anti_cxt|} -> (** BOOTSTRAPING *)
+        | %ctyp-{FanUtil.anti_cxt} -> (** BOOTSTRAPING *)
              res
         | _ ->
             let pat0 = (ep0:>pat) in
-            {:exp-|let $pat:pat0 = $exp in $res |}) params' result in
+            %exp-{let $pat:pat0 = $exp in $res }) params' result in
   let mk_tuple params =
     let result = 
       (params |> List.map (fun {ep0; _ } -> ep0) |> tuple_com  :> exp) in
@@ -150,12 +150,12 @@ let gen_strip =
         | `Dot(`Uid "FanUtil",`Lid "anti_cxt") ->  res
         | _ ->
             let pat0 = (ep0 :> pat) in  
-            {:exp-|let $pat:pat0 = $exp in $res |}) params result in 
+            %exp-{let $pat:pat0 = $exp in $res }) params result in 
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun  x ->
       (* BOOTSTRAPING *)
-      ({:ctyp-| FAst.$lid:x -> FAstN.$lid:x |}, {:ctyp-|FAstN.$lid:x|}))
+      (%ctyp-{ FAst.$lid:x -> FAstN.$lid:x }, %ctyp-{FAstN.$lid:x}))
     
     ();;
 
@@ -171,7 +171,7 @@ let gen_fill =
     let result =
       (appl_of_list
          (EpN.of_str cons ::
-          {:ep-|loc|} ::
+          %ep-{loc} ::
           (params |> List.map (fun {ep0;_} -> ep0) )) :> exp)  in 
     List.fold_right
       (fun {info_exp=exp;ep0;ty;_} res ->
@@ -181,7 +181,7 @@ let gen_fill =
              res
         | _ ->
             let pat0 = (ep0:>pat) in
-            {:exp-|let $pat:pat0 = $exp in $res |}) params result in
+            %exp-{let $pat:pat0 = $exp in $res }) params result in
   let mk_tuple params =
     let result = 
       (params |> List.map (fun {ep0; _ } -> ep0) |> tuple_com :> exp) in
@@ -192,15 +192,15 @@ let gen_fill =
         | `Dot(`Uid "FanUtil",`Lid "anti_cxt") ->  res
         | _ ->
             let pat0 = (ep0 :> pat) in
-            {:exp-|let $pat:pat0 = $exp in $res |}) params result in 
+            %exp-{let $pat:pat0 = $exp in $res }) params result in 
   let mk_record _cols = assert false in
   gen_stru
     ~id:(`Pre "fill_") ~mk_tuple
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
-      ({:ctyp-| FLoc.t -> FAstN.$lid:x -> FAst.$lid:x |},
-       {:ctyp-|FAst.$lid:x|} ))
+      (%ctyp-{ FLoc.t -> FAstN.$lid:x -> FAst.$lid:x },
+       %ctyp-{FAst.$lid:x} ))
     ();;
 
 Typehook.register
@@ -244,7 +244,7 @@ let gen_meta_exp =
    | Meta Object Generator                                           |
    +-----------------------------------------------------------------+ *)
 let gen_meta =
-  gen_object ~kind:(Concrete {:ctyp-|FAst.ep|})
+  gen_object ~kind:(Concrete %ctyp-{FAst.ep})
     ~mk_tuple
     ~mk_record
     ~base:"primitive" ~class_name:"meta" ~mk_variant:mk_variant
@@ -267,7 +267,7 @@ let extract info = info
 
 let mkfmt pre sep post fields =
   let s =  pre^ String.concat sep fields ^ post in
-  {:exp-| Format.fprintf fmt $str:s |} 
+  %exp-{ Format.fprintf fmt $str:s } 
   
 let mk_variant_print cons params =
     let len = List.length params in
@@ -297,12 +297,12 @@ let gen_print =
   gen_stru  ~id:(`Pre "pp_print_")  ~names:["fmt"] 
     ~mk_tuple:mk_tuple_print  ~mk_record:mk_record_print
     ~annot:(fun s ->
-      ({:ctyp-|Format.formatter -> $lid:s -> unit|}, {:ctyp-|unit|}))
+      (%ctyp-{Format.formatter -> $lid:s -> unit}, %ctyp-{unit}))
     ~mk_variant:mk_variant_print ()
 
 
 let gen_print_obj =
-  gen_object ~kind:(Concrete {:ctyp-|unit|}) ~mk_tuple:mk_tuple_print
+  gen_object ~kind:(Concrete %ctyp-{unit}) ~mk_tuple:mk_tuple_print
     ~base:"printbase" ~class_name:"print"
     ~names:["fmt"]  ~mk_record:mk_record_print
     ~mk_variant:mk_variant_print ();;
@@ -320,7 +320,7 @@ let mk_variant_iter _cons params :exp =
       let lst = params
         |> List.map (fun {name_exp; id_ep;_} ->
             let id_exp = (id_ep :ep  :> exp) in
-            {:exp-| $name_exp $id_exp |}) in
+            %exp-{ $name_exp $id_exp }) in
         seq_sem lst 
 
 let mk_tuple_iter params : exp =
@@ -332,7 +332,7 @@ let mk_record_iter cols =
     List.map
     (fun {re_info={name_exp; id_ep;_};_} ->
       let id_exp = (id_ep :> exp) in
-      {:exp-| $name_exp $id_exp |}) in
+      %exp-{ $name_exp $id_exp }) in
   seq_sem lst
 
 
@@ -377,24 +377,24 @@ let generate (mtyps:mtyps) : stru =
   let case = Hashtbl.fold
     (fun key arity acc ->
       if arity= 1 then
-        let case = {:case-| $vrn:key _loc -> _loc |} in
+        let case = %case-{ $vrn:key _loc -> _loc } in
         match acc with
         |None ->   Some case 
         |Some acc ->
-          Some ({:case-| $case | $acc |}) 
+          Some (%case-{ $case | $acc }) 
       else if arity > 1 then 
         let pats =
-          ({:pat-| _loc|} :: Flist.init (arity - 1) (const {:pat-|_|}) ) in
+          (%pat-{ _loc} :: Flist.init (arity - 1) (const %pat-{_}) ) in
         let case =
-          {:case-| $vrn:key $(pat:(tuple_com pats)) -> _loc |} in
+          %case-{ $vrn:key $(pat:(tuple_com pats)) -> _loc } in
         match acc with
         |None -> Some case
-        |Some acc -> Some({:case-| $case | $acc |})
+        |Some acc -> Some(%case-{ $case | $acc })
       else failwithf "arity=0 key:%s" key
     ) tbl None  in
   match case with
   |Some case ->   
-    {:stru-| let loc_of  = function | $case |}
+    %stru-{ let loc_of  = function | $case }
   |None -> failwithf "PluginsN.generate null case" ;;
 
 
@@ -413,20 +413,18 @@ let generate (mtyps:mtyps) : stru =
         |`Single (x,_) -> [x] ) mtyps in
   let typedecl =
     let x  = bar_of_list (List.map (fun x -> uid  (String.capitalize x)) tys) in (* FIXME *)
-    {:stru-| type 'a tag = | $x  |}in
+    %stru-{ type 'a tag = | $x  }in
   let to_string =
     let case =
       bar_of_list
         (List.map
            (fun x ->
-             {:case-| $(uid:String.capitalize x) -> $str:x |}) tys) in 
-    {:stru-| let string_of_tag = function | $case  |} in
+             %case-{ $(uid:String.capitalize x) -> $str:x }) tys) in 
+    %stru-{ let string_of_tag = function | $case  } in
  let tags  =
    List.map
      (fun x->
-       {:stru-|
-       let $(lid: x^"_tag") :  $lid:x tag =
-         $(uid:String.capitalize x) |}) tys  in
+       %stru-{let $(lid: x^"_tag") :  $lid:x tag = $(uid:String.capitalize x) }) tys  in
        sem_of_list (typedecl::to_string::tags) ;;
   
 Typehook.register
@@ -435,11 +433,11 @@ Typehook.register
 
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
-    {:stru-|
+    %stru-{
     let $(lid:"map_"^f) f = object
       inherit map as super
       method! $lid:f x = f (super#$lid:f x)
-    end |} in
+    end } in
   stru_from_ty ~f:aux mtyps;;  
 
 Typehook.register
@@ -450,11 +448,10 @@ Typehook.register
 
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
-    {:stru-|  (** BOOTSTRAPING*)
-    let $(lid:"dump_"^f)  = Formatf.to_string dump#$lid:f
-  |} in
+    %stru-{  (** BOOTSTRAPING*)
+    let $(lid:"dump_"^f)  = Formatf.to_string dump#$lid:f  } in
     sem
-      {:stru-|let dump = new print|}
+      %stru-{let dump = new print}
       (stru_from_ty ~f:aux mtyps);;  
 
 
@@ -472,11 +469,11 @@ let generate (mtyps:mtyps) : stru option =
   let f (name,ty) =
     if  name <> "ant" then 
      let obj = ObjsN.map_row_field begin function
-       | {:row_field-| $vrn:x of loc |} -> {:row_field-| $vrn:x |}
-       | {:row_field-| $vrn:x of (loc * $y ) |}->
+       | %row_field-{ $vrn:x of loc } -> %row_field-{ $vrn:x }
+       | %row_field-{ $vrn:x of (loc * $y ) }->
            (match y with
-           | {:ctyp-| $_ * $_ |} -> {:row_field-| $vrn:x of $par:y |}
-           | _ -> {:row_field-| $vrn:x of $y |})
+           | %ctyp-{ $_ * $_ } -> %row_field-{ $vrn:x of $par:y }
+           | _ -> %row_field-{ $vrn:x of $y })
        | x -> x 
      end in 
      obj#typedecl ty

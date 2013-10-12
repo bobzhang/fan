@@ -20,8 +20,8 @@ let rec fib = function
 
 let fibm  y =
   match y with
-  | {:exp|$int:x|}  -> {:exp| $(`int:fib (int_of_string x))|}
-  |  x -> let _loc = loc_of x in {:exp| fib $x |} ;;
+  | %exp{$int:x}  -> %exp{ $(`int:fib (int_of_string x))}
+  |  x -> let _loc = loc_of x in %exp{ fib $x } ;;
 
 register_macro ("FIB",fibm);;      
 
@@ -31,11 +31,15 @@ register_macro ("FIB",fibm);;
 let macro_expander = object(self)
   inherit Objs.map as super
   method! exp = with exp function
-    |{| $uid:a $y |} ->
+    | %{ $uid:a $y } ->
         (let try f = Hashtbl.find macro_expanders a in
         self#exp (f y)
-        with Not_found -> {| $uid:a $(self#exp y)|})
+        with Not_found -> %{ $uid:a $(self#exp y)})
     | e -> super#exp e 
 end
 
 (* Ast_filters.register_stru_filter ("macro", macro_expander#stru);   *)
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake ast_macros.cmo" *)
+(* end: *)

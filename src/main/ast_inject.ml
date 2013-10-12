@@ -20,9 +20,9 @@ let register_inject_clfield (k,f) =
 ;;
 
 
-{:create|Fgram  inject_exp inject_stru inject_clfield|};;
+%create{Fgram  inject_exp inject_stru inject_clfield};;
   
-{:extend| 
+%extend{
   inject_exp:
   [`Lid x ->
      try Hashtbl.find inject_exp_tbl x 
@@ -37,7 +37,7 @@ let register_inject_clfield (k,f) =
   [`Lid x ->
      try Hashtbl.find inject_clfield_tbl x
      with Not_found -> failwithf "inject.exp %s not found" x ]
-|};;
+};;
 
 let open Ast_quotation in begin
   of_exp

@@ -83,7 +83,7 @@ val ( <+ ) : string list -> ctyp -> ctyp
 
 (** {[
     match {:stru< type 'a list  = [A of int | B of 'a] |} with
-    {:stru| type $x |} -> name_length_of_tydcl x 
+    %stru{ type $x } -> name_length_of_tydcl x 
     ("list",1)  ]} *)
 val name_length_of_tydcl : typedecl -> string * int
 
@@ -99,8 +99,8 @@ val of_id_len : off:int -> ident * int -> ctyp
 
 (**
   {[
-  ( {:stru-| type 'a list  = [A of int | B of 'a] |} |>
-  function |  {:stru-| type $x |} -> name_length_of_tydcl x
+  ( %stru-{ type 'a list  = [A of int | B of 'a] } |>
+  function |  %stru-{ type $x } -> name_length_of_tydcl x
   |> of_name_len ~off:1  );
   list 'all_b0
 
@@ -120,10 +120,10 @@ val repeat_arrow_n : ctyp -> int -> ctyp
      [result] is a keyword
    {[
    let (name,len) =
-   ({:stru| type list 'a  'b = [A of int | B of 'a] |}
-     |> function {:stru|type $x |} -> name_length_of_tydcl x)
+   (%stru{ type list 'a  'b = [A of int | B of 'a] }
+     |> function %stru{type $x } -> name_length_of_tydcl x)
    let f = mk_method_type ~number:2 ~prefix:["fmt"]
-   ({:ident| $lid:name |},len);
+   (%ident{ $lid:name },len);
 
    open Fan_sig
    

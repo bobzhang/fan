@@ -121,7 +121,7 @@ Location_util:
    Location_util:
     (--)
     from_lexbuf as  (!!)
-    lex_antiquot : {| a -> b -> c|}  as xx ;
+    lex_antiquot : %{ a -> b -> c}  as xx ;
    Buffer:
     add_string -> (++)
     add_char -> (+>) ;
@@ -210,7 +210,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
         old -- lexbuf.lex_curr_p)
     end}
       (* quotation handling *)
-| "{||}"
+| "%{}"
     {let loc  =     !! lexbuf in
     (`Quot { Ftoken.name=Ftoken.empty_name; meta=None; shift=2; content="";loc },loc)}
       

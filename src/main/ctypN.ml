@@ -1,4 +1,4 @@
-#{:control|default "ctyp-";|}
+%%control{default "ctyp-";}
 
 open FAstN
 open Astn_util
@@ -92,7 +92,7 @@ let arrow_of_list f = Flist.reduce_right arrow f
 let app_arrow lst acc = List.fold_right arrow lst acc
     
 let (<+) (names: string list ) (ty:ctyp) =
-  List.fold_right (fun name acc -> {| '$lid:name -> $acc |}) names ty
+  List.fold_right (fun name acc -> %{ '$lid:name -> $acc }) names ty
     
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
@@ -103,7 +103,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
       | `None  -> 0
       | `Some xs -> List.length @@ Ast_basic.N.list_of_com  xs [])
   | tydcl ->
-      failwithf "name_length_of_tydcl {|%s|}\n"
+      failwithf "name_length_of_tydcl  %s \n"
         (ObjsN.dump_typedecl tydcl)
 
 
@@ -117,7 +117,7 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
 let gen_quantifiers1 ~arity n  : ctyp =
   Flist.init arity
     (fun i -> Flist.init n
-        (fun j -> {|  '$(lid:allx ~off:i j) |} ))
+        (fun j -> %{  '$(lid:allx ~off:i j) } ))
   |> List.concat |> appl_of_list
 
 
@@ -126,7 +126,7 @@ let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
      Flist.init len
-       (fun i -> {|  '$(lid:allx ~off i) |}))
+       (fun i -> %{  '$(lid:allx ~off i) }))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -149,7 +149,7 @@ let gen_ty_of_tydcl ~off (tydcl:typedecl) =
   @raise Invalid_argument 
 
   {[
-  list_of_record {:ctyp| u:int;m:mutable int |};
+  list_of_record %ctyp{ u:int;m:mutable int };
   [{label = "u"; is_mutable = false; ctyp = `Id (, `Lid (, "int"))};
   {label = "m"; is_mutable = true; ctyp = `Id (, `Lid (, "int"))}]
   ]}
@@ -160,10 +160,10 @@ let list_of_record (ty:name_ctyp) : col list  =
   tys|> List.map
     (
      function
-       | (* {| $lid:label : mutable $ctyp  |} *)
+       | (* %{ $lid:label : mutable $ctyp  } *)
          `TyColMut(`Lid col_label,col_ctyp) ->
            {col_label; col_ctyp; col_mutable=true}
-       | (* {| $lid:label :  $ctyp  |} *)
+       | (* %{ $lid:label :  $ctyp  } *)
          `TyCol (`Lid col_label, col_ctyp) -> 
           {col_label; col_ctyp; col_mutable=false}
     | t0 ->
@@ -174,9 +174,9 @@ let list_of_record (ty:name_ctyp) : col list  =
 (*
   @raise Invalid_argument 
   {[
-  gen_tuple_n {| int |} 3  |> eprint;
+  gen_tuple_n %{ int } 3  |> eprint;
   (int * int * int)
-  gen_tuple_n {| int |} 1  |> eprint;
+  gen_tuple_n %{ int } 1  |> eprint;
   int
   ]}
  *)
@@ -201,10 +201,10 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
       (fun s -> Fstring.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
     app_arrow @@ Flist.init number (fun _ -> of_id_len ~off:0 (id,len)) in
-  let result_type = (* {| 'result |} *)
-    {|'$(lid:"result"^string_of_int !result_id)|} in
+  let result_type = (* %{ 'result } *)
+    %{'$(lid:"result"^string_of_int !result_id)} in
   let _ = incr result_id in
-  let self_type = {| 'self_type |}  in 
+  let self_type = %{ 'self_type }  in 
   let (quant,dst) =
     match k with
     |Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -217,12 +217,12 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     Flist.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Flist.init number @@ fun _ -> {| '$(lid:allx ~off:0 i)|} in
+        Flist.init number @@ fun _ -> %{ '$(lid:allx ~off:0 i)} in
       match k with
       |Obj u  ->
           let dst =
             match  u with
-            | Map -> let x  = allx ~off:1 i in {|  '$lid:x |}
+            | Map -> let x  = allx ~off:1 i in %{  '$lid:x }
             | Iter -> result_type
             | Concrete c -> c
             | Fold-> self_type  in
@@ -233,7 +233,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-  ({| ! $quantifiers . $(params +> base) |},dst)
+  (%{ ! $quantifiers . $(params +> base) },dst)
 
 
 
@@ -244,11 +244,11 @@ let mk_method_type_of_name ~number ~prefix (name,len) (k:destination)  =
 
 
 let mk_obj class_name  base body =
-  {:stru-|
+  %stru-{
    class $lid:class_name = object (self: 'self_type)
      inherit $lid:base ;
      $body;
-   end |}
+   end }
 
     
 let is_recursive ty_dcl =
@@ -258,7 +258,7 @@ let is_recursive ty_dcl =
         inherit ObjsN.fold as super;
         val mutable is_recursive = false;
         method! ctyp = function
-          | {| $lid:i |} when i = name -> begin
+          | %{ $lid:i } when i = name -> begin
               is_recursive <- true;
               self
           end
@@ -280,7 +280,7 @@ let is_recursive ty_dcl =
   detect patterns like [List.t int ] or [List.t]
   Here the order matters
   {[
-  ( {:sigi| type 'a tbl  = Ident.tbl 'a |} |> fun
+  ( %sigi{ type 'a tbl  = Ident.tbl 'a } |> fun
   [ <:sigi< type .$FanAst.TyDcl _loc _ _ x _ $. >>
   -> qualified_app_list x ]);
   Some (IdAcc  (Uid  "Ident") (Lid  "tbl"), [TyQuo  "a"])
@@ -289,9 +289,9 @@ let is_recursive ty_dcl =
  *)  
 let qualified_app_list (x:ctyp) : ((ident * ctyp list ) option ) =
   match x with 
-  | {| $_ $_ |} as x->
+  | %{ $_ $_ } as x->
       (match Ast_basic.N.list_of_app x [] with
-      | {| $lid:_  |} :: _  -> None
+      | %{ $lid:_  } :: _  -> None
       | (#ident' as i) ::ys  ->
           Some (i,ys)
       | _ -> None)
@@ -333,7 +333,7 @@ let abstract_list (x:typedecl)=
 (* 
    {[
    reduce_data_ctors
-   {:ctyp| A of option int and float | B of float |} []
+   %ctyp{ A of option int and float | B of float } []
    (fun  s xs acc ->
    (prerr_endline s;  [xs :: acc] ))  ;
    A
@@ -364,9 +364,9 @@ let view_sum (t:or_ctyp) =
   let bs = Ast_basic.N.list_of_bar t [] in
   List.map
     (function
-      | (* {|$uid:cons|} *) `Uid cons ->
+      | (* %{$uid:cons} *) `Uid cons ->
           `branch (cons,[])
-      | `Of(`Uid cons,t) (* {|$uid:cons of $t|} *) ->
+      | `Of(`Uid cons,t) (* %{$uid:cons of $t} *) ->
           `branch (cons,  Ast_basic.N.list_of_star  t [])
       | _ -> assert false ) bs 
 
@@ -393,22 +393,22 @@ let view_variant (t:row_field) : vbranch list  =
   let lst = Ast_basic.N.list_of_bar t [] in 
   List.map (
   function
-    | (* {| $vrn:cons of $par:t |} *)
+    | (* %{ $vrn:cons of $par:t } *)
       (* `Of ( (`TyVrn (_, `C (_,cons))), (`Par (_, t))) *)
       `TyVrnOf( `C cons, `Par t)
       ->
         `variant (cons, Ast_basic.N.list_of_star t [])
-    | (* {| `$cons of $t |} *)
+    | (* %{ `$cons of $t } *)
       (* `Of (_loc, (`TyVrn (_, `C(_,cons))), t) *)
       `TyVrnOf(`C cons,t)
       -> `variant (cons, [t])
-    | (* {| `$cons |} *)
+    | (* %{ `$cons } *)
       `TyVrn (`C cons)
       ->
         `variant (cons, [])
     | `Ctyp ((#ident' as i)) -> 
         (* |  `Id (_loc,i) -> *) `abbrev i  
-          (* | {|$lid:x|} -> `abbrev x  *)
+          (* | %{$lid:x} -> `abbrev x  *)
     | u -> failwithf "view_variant %s" (ObjsN.dump_row_field u)  ) lst 
 
 let conversion_table : (string,string) Hashtbl.t = Hashtbl.create 50
@@ -418,26 +418,26 @@ let transform : full_id_transform -> vid -> exp  =
   let open IdN in  function
     | `Pre pre ->
         fun  x ->  (ident_map (fun x -> pre ^ x) x : exp)
-            (* fun [x -> {| $(id: ident_map (fun x ->  pre ^ x) x ) |} ] *)
+            (* fun [x -> %{ $(id: ident_map (fun x ->  pre ^ x) x ) } ] *)
     | `Post post ->
         fun x -> (ident_map (fun x-> x ^ post) x : exp )
-            (* fun [x -> {| $(id:  ident_map (fun x -> x ^ post) x ) |} ] *)
+            (* fun [x -> %{ $(id:  ident_map (fun x -> x ^ post) x ) } ] *)
     | `Fun f ->
         fun x -> ident_map f x 
-            (* fun [x -> {| $(id:  ident_map f x ) |} ] *)
+            (* fun [x -> %{ $(id:  ident_map f x ) } ] *)
     | `Last f ->
         fun  x -> (ident_map_of_ident f x : vid :> exp)
-            (* {| $(id: ident_map_of_ident f x  ) |} *) 
+            (* %{ $(id: ident_map_of_ident f x  ) } *) 
             
     | `Id f->
         fun x -> (f x : vid :> exp)
-            (* fun [x -> {| $(id: f x ) |} ] *)
+            (* fun [x -> %{ $(id: f x ) } ] *)
     | `Idents f ->
         fun x  -> (f (Ast_basic.N.list_of_dot x []) : vid :> exp )
-            (* fun [x -> {| $(id: f (list_of_dot x []) )  |}  ] *)
+            (* fun [x -> %{ $(id: f (list_of_dot x []) )  }  ] *)
     | `Obj f ->
         function
-          | `Lid x  -> {:exp-| self# $(lid: f x) |}
+          | `Lid x  -> %exp-{ self# $(lid: f x) }
           | t -> 
               let dest =  map_to_string t in
               let src = ObjsN.dump_vid t in (* FIXME *)
@@ -446,7 +446,7 @@ let transform : full_id_transform -> vid -> exp  =
                   Hashtbl.add conversion_table src dest;   
                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
                 end in
-              {:exp-| self# $(lid:f dest) |}
+              %exp-{ self# $(lid:f dest) }
                   (*todo  set its default let to self#unknown *)
 
 let basic_transform = function 
@@ -458,7 +458,7 @@ let right_transform = function
   | #basic_id_transform as x ->
       (** add as here to overcome the type system *)
       let f = basic_transform x in 
-      fun x -> {:exp-| $(lid: f x) |} 
+      fun x -> %exp-{ $(lid: f x) } 
   | `Exp f -> f 
           
 
@@ -467,14 +467,14 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    Flist.init arity @@ fun i -> {:pat-| (#$id:name as $(lid: x ~off:i 0 )) |}in
-  let exps = Flist.init arity @@ fun i -> {:exp-| $(id:xid ~off:i 0) |}  in
+    Flist.init arity @@ fun i -> %pat-{ (#$id:name as $(lid: x ~off:i 0 )) }in
+  let exps = Flist.init arity @@ fun i -> %exp-{ $(id:xid ~off:i 0) }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with
   | Obj(Map) ->
-     {:case-| $pat:pat -> ( $e : $(name :> ctyp) :> $annot) |}
-  |_ -> {:case-| $pat:pat -> ( $e  :> $annot) |}
+     %case-{ $pat:pat -> ( $e : $(name :> ctyp) :> $annot) }
+  |_ -> %case-{ $pat:pat -> ( $e  :> $annot) }
 
 
 

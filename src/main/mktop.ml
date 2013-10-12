@@ -6,7 +6,7 @@
     mktop + dynloader + mkFan  + fanX.ml -> fane 
  *)
 
-{:import|
+%import{
 Ast_quotation:
   of_exp
   of_stru_with_filter
@@ -19,7 +19,7 @@ Ast_quotation:
 Ast_gen:
    loc_of
    ;
-|} ;;
+} ;;
 
 
 include PreCast
@@ -28,10 +28,10 @@ open! Fsyntax
 
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
-    {:exp|($e : FAst.$lid:str)|} (* BOOTSTRAPPING *)
+    %exp{($e : FAst.$lid:str)} (* BOOTSTRAPPING *)
 let pfilter str e =
   let p = pat_filter e in let _loc = loc_of p in
-  {:pat|($p : FAst.$lid:str)|} (* BOOTSTRAPPING *);;
+  %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING *);;
 
 
 let d = `Absolute ["Fan"; "Lang"]
@@ -205,11 +205,11 @@ let m = FanAstN.m (* new FanAstN.meta ;; *)
 let efilter str e =
     let e = exp_filter_n e in
     let _loc = loc_of e in
-    {:exp|($e : FAstN.$lid:str)|} (* BOOTSTRAPPING *)
+    %exp{($e : FAstN.$lid:str)} (* BOOTSTRAPPING *)
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
-  {:pat|($p : FAstN.$lid:str)|};; (* BOOTSTRAPPING *)
+  %pat{($p : FAstN.$lid:str)};; (* BOOTSTRAPPING *)
 
 
 begin
@@ -355,31 +355,30 @@ end
 
 (** Small languages for convenience *)
 
-{:create| p|};;
+%create{ p};;
 
-{:extend|
+%extend{
   p:
-  [pat{p};"when"; exp{e} -> {:exp| function | $pat:p when $e -> true |_ -> false |}
-  |pat{p} -> {:exp'| function | $pat:p -> true | _ -> false |} ]
-|};;
+  [pat{p};"when"; exp{e} -> %exp{ function | $pat:p when $e -> true |_ -> false }
+  |pat{p} -> %exp'{ function | $pat:p -> true | _ -> false } ] };;
 
 let ()  =
   of_exp ~name:(d,"p") ~entry:p () ;;
 
 
 
-{:create|import|} ;;
+%create{import} ;;
 
-{:extend|
+%extend{
 let a:
   [`Uid m ; ":"; L1 name {ns} ; ";" ->
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map
-         (fun l -> {:stru| let $(l :> FAst.pat) = $uid:m.$l |} ) ns)]
+         (fun l -> %stru{ let $(l :> FAst.pat) = $uid:m.$l } ) ns)]
 import:
   [ L1 a  {xs} -> Ast_gen.sem_of_list xs ]  
 let name :
-  [`Lid x -> `Lid(_loc,x)]  |};;
+  [`Lid x -> `Lid(_loc,x)]  };;
 (**
    improved
    --- alias
@@ -404,10 +403,10 @@ let () =
 let () =
   let f  = fun (loc:FLoc.t) _meta _content ->
     let s = FLoc.to_string loc in
-    {:exp@loc|$str:s|} in
+    %exp@loc{$str:s} in
   let f2 = fun (loc:FLoc.t) _meta _content ->
     let s = FLoc.to_string loc in
-    {:stru@loc|$str:s|} in
+    %stru@loc{$str:s} in
   begin 
     Ast_quotation.add (d,"here") FDyn.exp_tag f;
     Ast_quotation.add (d,"here") FDyn.stru_tag f2

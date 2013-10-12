@@ -2,12 +2,12 @@ open Format
 open Util
 
 
-{:import| Fan_util:
+%import{ Fan_util:
   with_open_out_file
   dump_pt
   simple_wrap
   ;
-|};;
+};;
 
 type 'a parser_fun  = FLoc.t -> char Fstream.t -> 'a option
 

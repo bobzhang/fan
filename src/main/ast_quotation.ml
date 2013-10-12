@@ -1,12 +1,12 @@
 
 
 
-{:import|
+%import{
 Format:
   pp_print_string
   bprintf
   ;
-|};;
+};;
 
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
@@ -84,10 +84,10 @@ type key = (Ftoken.name * ExpKey.pack)
 module QMap =Mapf.Make (struct type t =key  let compare = compare end)
 
 (** [map] is used
-    [map]  and [default] is used to help resolve default case {[ {||} ]}
+    [map]  and [default] is used to help resolve default case {[ %{} ]}
     for example, you can register [Fan.Meta.exp] with [exp] and [stru] positions,
     but when you call {[ with {exp:pat} ]} here, first the name of pat will be resolved
-    to be [Fan.Meta.pat], then when you parse {[ {| |} ]} in a position, because its
+    to be [Fan.Meta.pat], then when you parse {[ %{ } ]} in a position, because its
     name is "", so it will first turn to help from [map], then to default *)
 
 let map = ref Mapf.String.empty
@@ -182,9 +182,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
             `App(_loc, `Vrn(_loc,u), `Lid(_loc,name))
         | `App(_loc,a,b) -> `App (_loc, subst_first_loc name a , b)
         | `Constraint(_loc,a,ty) -> `Constraint(_loc,subst_first_loc name a,ty)      
-              (* | {| $a $b |} -> {| $(subst_first_loc name a) $b |} *)
+              (* | %{ $a $b } -> %{ $(subst_first_loc name a) $b } *)
         |p -> p  in
-      (* fun [{:pat| `a ($loc,b,c)|} -> b] *)
+      (* fun [%pat{ `a ($loc,b,c)} -> b] *)
       match loc_name_opt with
       | None -> subst_first_loc (!FLoc.name) exp_ast
       | Some "_" -> exp_ast

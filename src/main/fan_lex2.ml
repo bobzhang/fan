@@ -117,7 +117,7 @@ Location_util:
    Location_util:
     (--)
     from_lexbuf as  (!!)
-    lex_antiquot : {| a -> b -> c|}  as xx ;
+    lex_antiquot : %{ a -> b -> c}  as xx ;
    Buffer:
     add_string -> (++)
     add_char -> (+>) ;

@@ -45,10 +45,10 @@ let stru_from_mtyps  ~f:(aux:named_type -> typedecl)
            (function
              |`Mutual tys ->
                  let v = (and_of_list (List.map aux tys)) in
-                 {:stru-| type $v |}
+                 %stru-{ type $v }
              |`Single ty ->
                  let v = aux ty in
-                 {:stru-| type $v|} ) x ) in
+                 %stru-{ type $v} ) x ) in
       Some (sem_of_list xs )
 
 let stru_from_ty  ~f:(f:string -> stru) (x:mtyps) : stru  =     
@@ -101,7 +101,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50
   inherit ObjsN.map as super
   method! stru = function
-    | {:stru-| type $(`TyDcl ( _name, vars, ctyp, _) ) |} as x -> (* FIXME why tuple?*)
+    | %stru-{ type $(`TyDcl ( _name, vars, ctyp, _) ) } as x -> (* FIXME why tuple?*)
         let r =
           match ctyp with
           | `TyEq (_,t) -> CtypN.qualified_app_list t | _ -> None  in
@@ -122,7 +122,7 @@ let mk_transform_type_eq () = object(self:'self_type)
               let src = i and dest =             
                 IdN.to_string i in begin
                   Hashtbl.replace transformers dest (src,List.length lst);
-                  {:stru-| let _ = ()|} (* FIXME *)
+                  %stru-{ let _ = ()} (* FIXME *)
                 end 
         | None ->  super#stru x
         end
@@ -133,7 +133,7 @@ let mk_transform_type_eq () = object(self:'self_type)
         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
         let src = i and dest = IdN.to_string i in begin
           Hashtbl.replace transformers dest (src,List.length lst);
-          appl_of_list ({:ctyp-| $lid:dest |} :: lst )
+          appl_of_list (%ctyp-{ $lid:dest } :: lst )
         end
     | None -> super#ctyp x
           (* dump the type declarations *)  

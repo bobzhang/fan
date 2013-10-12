@@ -5,7 +5,7 @@
 let setup_op_parser entry p =
   Fgram.setup_parser entry
     (parser
-      | (`Key x | `Sym x,_loc) when p x  -> {:exp| $lid:x |})
+      | (`Key x | `Sym x,_loc) when p x  -> %exp{ $lid:x })
 
 
 let symbolchars =
@@ -26,7 +26,7 @@ let symbolchar s i =
 (*   EXTEND Fgram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
-(*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> {:exp| begin $list:strs end |} ] ] *)
+(*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> %exp{ begin $list:strs end } ] ] *)
 (*   fan_quot: *)
 (*     ["top" *)
 (*        [ "lang"; STRING{quot}-> begin      Ast_quotation.default:= quot;  unit_literal _loc end  *)
@@ -49,7 +49,7 @@ let symbolchar s i =
   (* let mk_semi_list nt nts = *)
   (*   with rec_exp *)
   (*   {:extend|Fgram *)
-  (*     nts:[ nt{b1};";";S{b2} -> {|$b1;$b2|} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
+  (*     nts:[ nt{b1};";";S{b2} -> %{$b1;$b2} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
   (*   |}; *)
     
   

@@ -23,11 +23,11 @@ end
 
 exception UnboundRegexp;;
 
-{:create|
+%create{
   regexp  char_class  char_class1  lex  declare_regexp
-|};;
+};;
 
-{:extend|Fgram
+%extend{Fgram
     lex:
     [ "|"; L0 case SEP "|"{l} ->
       Compile_lex.output_entry @@
@@ -47,7 +47,7 @@ exception UnboundRegexp;;
     end
     else begin
       Hashtbl.add named_regexps x r;
-      {:stru|let _ = () |}
+      %stru{let _ = () }
     end
   | S; S{x} -> x]
 
@@ -102,7 +102,7 @@ exception UnboundRegexp;;
   | `Chr c1   -> Fcset.singleton (Char.code @@ TokenEval.char c1)
   | S{cc1}; S{cc2} -> Fcset.union cc1 cc2 
   ]
-|};;  
+};;  
 
 let d = `Absolute ["Fan";"Lang"];;
 begin
@@ -113,3 +113,7 @@ begin
     ~entry:declare_regexp ();  
 end;;
 
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake parse_lex.cmo" *)
+(* end: *)

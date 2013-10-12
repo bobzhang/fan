@@ -1,5 +1,5 @@
 
-{:regexp| (** FIXME remove duplication later see lexing_util.cmo *)
+%regexp{ (** FIXME remove duplication later see lexing_util.cmo *)
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -79,7 +79,7 @@ let ocaml_lid =
   lowercase identchar *
 let ocaml_uid =
   uppercase identchar * 
-|};;
+};;
 
 
 
@@ -92,7 +92,7 @@ let (+>) = Buffer.add_char
 let (!!)  = Location_util.from_lexbuf ;;
 
 
-{:import|
+%import{
 Lexing_util:
   update_loc
   new_cxt
@@ -111,7 +111,7 @@ Lexing_util:
 Location_util:
    (--)
    ;
-|};;    
+};;    
 (** It could also import regex in the future
     {:import|
     Lexing_util:
@@ -120,12 +120,12 @@ Location_util:
    Location_util:
     (--)
     from_lexbuf as  (!!)
-    lex_antiquot : {| a -> b -> c|}  as xx ;
+    lex_antiquot : %{ a -> b -> c}  as xx ;
    Buffer:
     add_string -> (++)
     add_char -> (+>) ;
    |}  *)    
-let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
+let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lexer{
 | newline -> (* |} *)
     begin
       update_loc  lexbuf;
@@ -235,7 +235,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         (* Antiquotation handling *)        
 | '$' ->
     let  dollar (c:Lexing_util.context) =
-      {:lexer|
+      %lexer{
       (* FIXME *| does not work * | work *)
     | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
         begin
@@ -263,7 +263,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
           (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
         end
     | _ as c ->
-        err (Illegal_character c) (!! lexbuf) |} in
+        err (Illegal_character c) (!! lexbuf) } in
     let c = new_cxt () in
     if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
       push_loc_cont c lexbuf  dollar
@@ -276,7 +276,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         pos_cnum = pos.pos_cnum + 1 };
      (`EOI, !!lexbuf ))
     
-| _ as c ->  err (Illegal_character c) @@  !!lexbuf |}
+| _ as c ->  err (Illegal_character c) @@  !!lexbuf }
 
 
     

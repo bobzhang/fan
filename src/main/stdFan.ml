@@ -1,15 +1,15 @@
 
 (** The dependency should only rely on the last version of
   [Fan], keep its dependency only on [LibUtil]  *)
-#{:control|import Fan.Inject; default "stru";|}
+%%control{import Fan.Inject; default "stru";}
   
 open Format
 
 
 
 
-{:stru| eq_base1  |};;
-{:stru| print_base1  |};;
+%stru{ eq_base1  };;
+%stru{ print_base1  };;
 
 let eq_option mf_a x y =
   match (x,y) with
@@ -67,7 +67,7 @@ let pp_print_arrow _mf_a _f_b fmt _v =
 
 
 class printbase = object(self:'self_type)
-  {:clfield| print_clfield_base|};  
+  %clfield{ print_clfield_base};  
   method list: ! 'a.  ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> 'a list -> unit =
     fun mf_a fmt lst -> pp_print_list (fun a -> mf_a self a) fmt lst 
   method array: ! 'a. ('self_type -> 'fmt -> 'a -> unit) -> 'fmt -> 'a array -> unit =
@@ -84,7 +84,7 @@ class printbase = object(self:'self_type)
 end
 
 class mapbase = object (self:'self_type)
-  {:clfield|map_clfield_base_1|};  
+  %clfield{map_clfield_base_1};  
   method list: ! 'a0 'b0. ('self_type -> 'a0 -> 'b0) -> ('a0 list -> 'b0 list) =
     fun mf_a -> function
       | [] -> []
@@ -107,7 +107,7 @@ end
 
   
 class iterbase = object(self:'self)
-  {:clfield| iter_clfield_base_1 |};
+  %clfield{ iter_clfield_base_1 };
   method list: ! 'a0. ('self_type -> 'a0 -> 'unit) -> ('a0 list -> unit) =
     fun mf_a ls -> List.iter (mf_a self) ls 
   method array: ! 'a0 . ('self_type -> 'a0 -> unit) -> ('a0 array -> unit) =
@@ -129,7 +129,7 @@ end
 
 
 class eqbase = object(self:'self)
-  {:clfield| eq_clfield_base_2 |};
+  %clfield{ eq_clfield_base_2 };
   method list: ! 'a0. ('self_type -> 'a0 -> 'a0 -> bool) -> ('a0 list -> 'a0 list -> bool) =
     fun mf_a xs ys -> List.for_all2  (mf_a self) xs ys 
   method array: ! 'a0 . ('self_type -> 'a0 ->'a0 -> bool) -> ('a0 array -> 'a0 array-> bool) =
@@ -163,7 +163,7 @@ end
 
 
 class mapbase2 = object (self:'self_type)
-  {:clfield|map_clfield_base_2|};  
+  %clfield{map_clfield_base_2};  
   method list:! 'a0 'b0.
             ('self_type -> 'a0 -> 'a0 -> 'b0) ->
               'a0 list  -> 'a0 list  -> 'b0 list =
@@ -209,7 +209,7 @@ class monadbase = mapbase
 class monadbase2 = mapbase2
   
 class foldbase = object (self:'self_type)
-  {:clfield|fold_clfield_base_1|}
+  %clfield{fold_clfield_base_1}
   method list : ! 'a0. ('self_type -> 'a0 -> 'self_type) ->
     ('a0 list -> 'self_type) = fun mf_a ->
       List.fold_left (fun self v -> (mf_a self v)) self 
@@ -232,7 +232,7 @@ class foldbase = object (self:'self_type)
 end 
     
 class foldbase2 = object (self:'self_type)
-  {:clfield|fold_clfield_base_2|}
+  %clfield{fold_clfield_base_2}
   method list: ! 'a0.
       ('self_type -> 'a0 ->  'a0 -> 'self_type) ->
         'a0 list -> 'a0 list -> 'self_type =  fun mf_a lx ly->
@@ -308,23 +308,23 @@ let float_repres f =
 
 (* open FAst  *)
 (* class primitive =  object *)
-(*   method int _loc (i:int)  =  {:ep|$`int:i|} *)
-(*   method int32 _loc (i:int32)  = {:ep|$`int32:i|} *)
-(*   method int64 _loc  (i:int64)  = {:ep|$`int64:i|} *)
-(*   method nativeint _loc (i:nativeint)  = {:ep|$`nativeint:i|} *)
-(*   method float _loc (i:float) = {:ep|$`flo:i|} *)
-(*   method string _loc (i:string)  = {:ep|$`str:i|} *)
-(*   method char _loc (i:char)  = {:ep|$`chr:i|} *)
-(*   method unit _loc (_:unit) = {:ep|()|} *)
+(*   method int _loc (i:int)  =  %ep{$`int:i} *)
+(*   method int32 _loc (i:int32)  = %ep{$`int32:i} *)
+(*   method int64 _loc  (i:int64)  = %ep{$`int64:i} *)
+(*   method nativeint _loc (i:nativeint)  = %ep{$`nativeint:i} *)
+(*   method float _loc (i:float) = %ep{$`flo:i} *)
+(*   method string _loc (i:string)  = %ep{$`str:i} *)
+(*   method char _loc (i:char)  = %ep{$`chr:i} *)
+(*   method unit _loc (_:unit) = %ep{()} *)
 (*   (\*default use [meta_loc] for expession*\) *)
 (*   method loc _loc (_l: loc)  = *)
-(*     let n  = !FLoc.name in {:ep|$lid:n|} *)
+(*     let n  = !FLoc.name in %ep{$lid:n} *)
 (*   method ant (_loc:loc) (x:ant)  = (x:>ep) *)
 (*   (\* FIXME bool antiquot *\) *)
 (*   method bool _loc x = *)
 (*     match x with *)
-(*     |true -> {:ep|true|} *)
-(*     | false -> {:ep| false |} *)
+(*     |true -> %ep{true} *)
+(*     | false -> %ep{ false } *)
 (*   (\* method unknown (_loc:loc) : ! 'a . 'a -> ep  = assert false; *)
 (*      method unknown (_loc : loc) = (assert false : 'a . 'a -> ep ) *)
 (*      a bug to be FIXED *)

@@ -19,17 +19,16 @@ let g =
                "+" ; "(" ; ")" ;
                "-"] ();;
 
-{:create|
-  (g:Fgram.t)
-  regexp  char_class  char_class1  lex  declare_regexp
-|};;
+%create{(g:Fgram.t)
+          regexp  char_class  char_class1  lex  declare_regexp
+      };;
 
 (* open Parse_lex2,
    it will suck eof handling, to be investigated.
    since we do unsafe_extend on top of Fgram...
  *)
 
-{:extend|(g:Fgram.t)  (* FIXME location wrong *)
+%extend{(g:Fgram.t)  (* FIXME location wrong *)
     lex:
     [  "|" ; L0 case SEP "|" {l} ->
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}
@@ -48,7 +47,7 @@ let g =
     end
     else begin
       Hashtbl.add named_regexps x r;
-      {:stru|let _ = () |}
+      %stru{let _ = () }
     end
   | S; S{x} -> x]
 
@@ -102,7 +101,7 @@ let g =
   | `Chr c1   -> Fcset.singleton (Char.code @@ TokenEval.char c1)
   | S{cc1}; S{cc2} -> Fcset.union cc1 cc2 
   ]
-|};;  
+};;  
 
 let d = `Absolute ["Fan";"Lang"];;
 
@@ -118,5 +117,5 @@ let () =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/parse_lex2.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/parse_lex2.cmo" *)
 (* end: *)

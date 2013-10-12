@@ -11,7 +11,7 @@ let current_warning = ref default_warning
 let print_warning loc txt = !current_warning loc txt;;
 
 
-{:create|Fgram
+%create{ Fgram
   a_ident aident amp_ctyp and_ctyp case
   case0
   bind
@@ -68,7 +68,7 @@ let print_warning loc txt = !current_warning loc txt;;
   uident
   vid 
   astr
-  |};;
+  };;
   
 let antiquot_exp = Fgram.eoi_entry exp 
 let antiquot_pat = Fgram.eoi_entry pat

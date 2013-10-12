@@ -4,7 +4,7 @@ open FAst
   
 let pp_print_loc _f _loc  = () ;;
 
-{:import|
+%import{
 StdFan:
   pp_print_string;
 Objs:
@@ -12,7 +12,7 @@ Objs:
   pp_print_vid
   pp_print_alident
   pp_print_ant;
-|};;  
+};;  
 
 class mapbase = object
   method loc (x:loc) =  x
@@ -38,11 +38,11 @@ let wildcarder = object (self)
   inherit map as super
   method! simple_pat = function
     | `Lid (_loc,_) -> `Any _loc
-    | {:pat'| ($p as $_) |} -> self#simple_pat p
+    | %pat'{ ($p as $_) } -> self#simple_pat p
     | p  -> super#simple_pat p 
 end;;
 
-{:ocaml|
+%ocaml{
 
 type name = {(* every entry has a name *)  
     exp : exp;
@@ -101,7 +101,7 @@ and text =
     The description string will be used for
     grammar insertion and left factoring.
     Keep this string [normalized] and well comparable. *) ]
-  |};;
+  };;
 
 (* type used = *)
 (*   | Unused | UsedScanned | UsedNotScanned  *)
@@ -128,23 +128,23 @@ type action_pattern =
 FConfig.antiquotations := true;;
 open Fsyntax;;
 
-{:create| Fgram (simple_pat : simple_pat Fgram.t) |};;
+%create{ Fgram (simple_pat : simple_pat Fgram.t) };;
 
-{:extend|
+%extend{
   simple_pat "pat'":
-  ["`"; luident{s}  ->  {|$vrn:s|}
+  ["`"; luident{s}  ->  %{$vrn:s}
 
   |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-    {| $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)|}
-  |"`"; luident{s}; `Str v -> {| $vrn:s $str:v|}
-  |"`"; luident{s}; `Lid x  -> {| $vrn:s $lid:x |}
-  |"`"; luident{s}; "_" -> {|$vrn:s _|}
+    %{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
+  |"`"; luident{s}; `Str v -> %{ $vrn:s $str:v}
+  |"`"; luident{s}; `Lid x  -> %{ $vrn:s $lid:x }
+  |"`"; luident{s}; "_" -> %{$vrn:s _}
   |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
-      (Ast_gen.appl_of_list ({:pat'|$vrn:s|} :: v))
+      (Ast_gen.appl_of_list (%pat'{$vrn:s} :: v))
         (* here
            we have to guarantee
            {[
-           {:pat-|`a(a,b,c)|};;
+           %pat-{`a(a,b,c)};;
            - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
            ]}
            is dumped correctly
@@ -152,15 +152,15 @@ open Fsyntax;;
   let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
-     [S{p1} ; "as";`Lid s  -> {| ($p1 as $lid:s) |} ]
+     [S{p1} ; "as";`Lid s  -> %{ ($p1 as $lid:s) } ]
      "|"
-     [S{p1}; "|"; S{p2}  -> {|$p1 | $p2 |} ]
+     [S{p1}; "|"; S{p2}  -> %{$p1 | $p2 } ]
      "simple"
-     [ `Str s -> {| $str:s|}
-     | "_" -> {| _ |}
-     | `Lid x   ->  {| $lid:x|}
+     [ `Str s -> %{ $str:s}
+     | "_" -> %{ _ }
+     | `Lid x   ->  %{ $lid:x}
      | "("; S{p}; ")" -> p] }
-|};;
+};;
 
 open Format
 let p = fprintf
@@ -205,9 +205,9 @@ let string_of_simple_pat = Formatf.to_string unparse_simple_pat
 (*   | I of string  *)
 (* let unparse_simple_pat  (x : simple_pat)= *)
 (*   match x with *)
-(*   | `Vrn (_,s) -> {:ep|$`str:s|} *)
+(*   | `Vrn (_,s) -> %ep{$`str:s} *)
 (*   | `App (_loc, `Vrn(_,v),`Ant(_,{FanUtil.contents=c;_})) -> *)
-(*       {:ep| $`str:v ^ "$" ^ $lid:c |} *)
+(*       %ep{ $`str:v ^ "$" ^ $lid:c } *)
 (*   | `App _  -> *)
 (*       let l = Ast_gen.appl_of_list x in *)
 (*       begin match l with *)

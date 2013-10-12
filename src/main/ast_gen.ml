@@ -80,7 +80,7 @@ let binds bs (e: FAst.exp) =
   |_ ->
       let binds = and_of_list bs  in
       let _loc = binds <+> e in
-      {:exp|let $binds in $e |} 
+      %exp{let $binds in $e } 
 
 
 let lid _loc n = `Lid(_loc,n)
@@ -122,7 +122,7 @@ let tuple_sta y =
    input as simple as possible
    
    {[
-   ( {|blabla|} +> ["x0";"x1";"x2"] ) |> eprint;
+   ( %{blabla} +> ["x0";"x1";"x2"] ) |> eprint;
    blabla x0 x1 x2
    ]}
  *)
@@ -133,11 +133,11 @@ let (+>) f names  =
 (**  FIXME more precise API wanted *)
 let meta_here _loc location  =
   let (a, b, c, d, e, f, g, h) = FLoc.to_tuple location in
-  {:exp'| FLoc.of_tuple
+  %exp'{ FLoc.of_tuple
      ($`str:a, $`int:b, $`int:c, $`int:d,
       $`int:e, $`int:f, $`int:g,
-      $(if h then {:exp'| true |} else {:exp'| false |} )) |}
+      $(if h then %exp'{ true } else %exp'{ false } )) }
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/astLib.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/ast_gen.cmo" *)
 (* end: *)

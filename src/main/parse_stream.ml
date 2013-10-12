@@ -4,15 +4,15 @@ open! Fsyntax
 open Compile_stream
 
 
-{:create| Fgram
+%create{ Fgram
   parser_ipat stream_exp_comp  stream_exp_comp_list
   stream_pat_comp stream_pat_comp_err 
   stream_pat_comp_err_list
   stream_pat parser_case parser_case_list stream_exp
-|}
+}
   
 let apply () = 
-  {:extend|
+  %extend{
     let  uid: [`Uid(n) -> n]
     exp : Level "top"
         [ "parser";  OPT uid  {name}
@@ -44,7 +44,7 @@ let apply () =
     
      parser_ipat :
      [ a_lident{i} -> (i: alident:> pat)
-     | "_" -> {:pat| _ |}  ]         
+     | "_" -> %pat{ _ }  ]         
 
      parser_case_list :
      ["|"; L0 parser_case SEP "|"{pcl} -> pcl]
@@ -82,7 +82,7 @@ let apply () =
     [ stream_exp_comp{se}; ";"; stream_exp_comp_list{sel} -> se :: sel
     | stream_exp_comp{se}; ";" -> [se]
     | stream_exp_comp{se} -> [se] ] 
-|};;
+};;
 
 
 let fill_parsers =

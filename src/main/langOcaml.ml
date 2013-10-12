@@ -3,11 +3,11 @@ open Util
 let filter =
   (fun s  ->
     let _loc = loc_of s in
-    let v = {:mexp| struct $s end |} in
+    let v = %mexp{ struct $s end } in
     let mexp = (Typehook.traversal ())#mexp v in
     let code =
       match mexp with
-      | {:mexp| struct $s end |} -> s
+      | %mexp{ struct $s end } -> s
       | _ -> failwith "can not find items back " in
     (if !Typehook.show_code then
       (try Ast2pt.print_stru Format.std_formatter code

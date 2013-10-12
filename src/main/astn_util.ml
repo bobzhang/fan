@@ -46,7 +46,7 @@ let binds bs (e:exp) =
   | [] -> e
   |_ ->
       let binds = and_of_list bs  in
-      {:exp-|let $binds in $e |} 
+      %exp-{let $binds in $e } 
 
 
 let lid  n = `Lid n
@@ -85,7 +85,7 @@ let tuple_sta y =
    input as simple as possible
    
    {[
-   ( {|blabla|} +> ["x0";"x1";"x2"] ) |> eprint;
+   ( %{blabla} +> ["x0";"x1";"x2"] ) |> eprint;
    blabla x0 x1 x2
    ]}
  *)
@@ -94,10 +94,10 @@ let (+>) f names  =
          
 let meta_here  location  =
   let (a, b, c, d, e, f, g, h) = FLoc.to_tuple location in
-  {:exp-'| FLoc.of_tuple
-     ($`str:a, $`int:b, $`int:c, $`int:d,
-      $`int:e, $`int:f, $`int:g,
-      $(if h then {:exp-'| true |} else {:exp-'| false |} )) |}
+  %exp-'{ FLoc.of_tuple
+            ($`str:a, $`int:b, $`int:c, $`int:d,
+             $`int:e, $`int:f, $`int:g,
+             $(if h then %exp-'{ true } else %exp-'{ false } )) }
 
 (* local variables: *)
 (* compile-command: "cd ../main_annot  && pmake lib " *)

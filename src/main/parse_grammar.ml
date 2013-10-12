@@ -6,7 +6,7 @@ open FGramGen
 open! Fsyntax
 open Util
 
-{:create|Fgram (* FIXME can not ignore Fgram here*)
+%create{Fgram (* FIXME can not ignore Fgram here*)
    (nonterminals: stru Fgram.t)
    (nonterminalsclear:  exp Fgram.t)
    delete_rule_header
@@ -24,9 +24,9 @@ open Util
    unsafe_extend_body
    delete_rule_body
    simple_exp
-   delete_rules |} ;;
+   delete_rules } ;;
 
-{:extend|
+%extend{
   let ty:
   [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `Dyn(x,t)
   |  qualuid{t} -> `Static t
@@ -37,23 +37,23 @@ open Util
     with stru
     let mk =
       match t with
-      |`Static t -> let t = (t : vid :> exp ) in {:exp| $t.mk |}
+      |`Static t -> let t = (t : vid :> exp ) in %exp{ $t.mk }
       |`Dyn(x,t) ->
           let x = (x : vid :> exp) in
           let t = (t : vid :> exp ) in 
-          {:exp|$t.mk_dynamic $x |}  in   
+          %exp{$t.mk_dynamic $x }  in   
     sem_of_list
       ( List.map
       (fun (_loc,x,descr,ty) ->
         match (descr,ty) with
         |(Some d,None) ->
-            {| let $lid:x = $mk $str:d |}
+            %{ let $lid:x = $mk $str:d }
         | (Some d,Some typ) ->
-            {| let $lid:x : $typ = $mk $str:d |}
+            %{ let $lid:x : $typ = $mk $str:d }
         |(None,None) ->
-            {| let $lid:x = $mk $str:x  |}
+            %{ let $lid:x = $mk $str:x  }
         | (None,Some typ) ->
-            {| let $lid:x : $typ = $mk $str:x  |}  ) ls) ]
+            %{ let $lid:x : $typ = $mk $str:x  }  ) ls) ]
 
   let str : [`Str y -> y]
       
@@ -68,27 +68,27 @@ open Util
     ->
       let mk  =
         let x = (x : vid :> exp) in
-        {:exp|$id:t.mk_dynamic $x |}  in
+        %exp{$id:t.mk_dynamic $x }  in
       sem_of_list (* FIXME improve *)
-        ({:stru| let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()|} ::
+        (%stru{ let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
          ( List.map
             (fun (_loc,x,descr,ty) ->
               match (descr,ty) with
               |(Some d,None) ->
-                  {:stru| let $lid:x = $mk $str:d |}
+                  %stru{ let $lid:x = $mk $str:d }
               | (Some d,Some typ) ->
-                  {:stru| let $lid:x : $typ = $mk $str:d |}
+                  %stru{ let $lid:x : $typ = $mk $str:d }
               |(None,None) ->
-                  {:stru| let $lid:x = $mk $str:x  |}
+                  %stru{ let $lid:x = $mk $str:x  }
               | (None,Some typ) ->
-                  {:stru| let $lid:x : $typ = $mk $str:x  |}  ) ls)) ]
+                  %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)) ]
   nonterminalsclear :
   [ qualuid{t}; L1 a_lident {ls} ->
     let rest = List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
       let t = (t:vid :> exp) in
-      {:exp| $t.clear $x |}) ls in
+      %exp{ $t.clear $x }) ls in
     seq_sem rest ]
 
   extend_header :
@@ -132,7 +132,7 @@ open Util
   [ L0 psymbol SEP ";"{sl} -> sl  ] 
   (* parse qualified [X.X] *)
   qualuid:
-  [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
+  [ `Uid x; ".";  S{xs} -> %ident'{$uid:x.$xs}
   | `Uid x -> `Uid(_loc,x) ] 
 
   qualid:
@@ -140,7 +140,7 @@ open Util
   | `Lid i -> `Lid(_loc,i)]
 
   t_qualid:
-  [ `Uid x; ".";  S{xs} -> {:ident'|$uid:x.$xs|}
+  [ `Uid x; ".";  S{xs} -> %ident'{$uid:x.$xs}
   | `Uid x; "."; `Lid "t" -> `Uid(_loc,x) ] 
 
   (* stands for the non-terminal  *)
@@ -168,7 +168,7 @@ open Util
         |`name old -> Ast_quotation.default := old
         | _ -> ());
         match (pos,levels) with
-        |(Some {:exp| `Level $_ |},`Group _) ->
+        |(Some %exp{ `Level $_ },`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> mk_entry ~local:false ~name:p ~pos ~levels
       end
@@ -178,14 +178,14 @@ open Util
         |`name old -> Ast_quotation.default := old
         | _ -> ());
         match (pos,levels) with
-        |(Some {:exp| `Level $_ |},`Group _) ->
+        |(Some %exp{ `Level $_ },`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end  ]
   position :
-  [ `Uid ("First"|"Last" as x ) ->   {:exp| $vrn:x |}
+  [ `Uid ("First"|"Last" as x ) ->   %exp{ $vrn:x }
   | `Uid ("Before" | "After" | "Level" as x) ; string{n} ->
-      {:exp| $vrn:x  $n |}
+      %exp{ $vrn:x  $n }
   | `Uid x ->
       failwithf
         "%s is not the right position:(First|Last) or (Before|After|Level)" x]
@@ -197,12 +197,12 @@ open Util
   level :
   [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} ->
     mk_level ~label ~assoc ~rules ]
-  (* FIXME a conflict {:extend|Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] |} *)
+  (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} -> () ] } *)
 
 
 
   assoc :
-  [ `Uid ("LA"|"RA"|"NA" as x) ->     {:exp| $vrn:x |} 
+  [ `Uid ("LA"|"RA"|"NA" as x) ->     %exp{ $vrn:x } 
   | `Uid x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ]
 
       
@@ -217,8 +217,8 @@ open Util
   let opt_action : ["->"; exp{act}-> act]
 
   pattern :
-  [ `Lid i -> {:pat'| $lid:i |}
-  | "_" -> {:pat'| _ |}
+  [ `Lid i -> %pat'{ $lid:i }
+  | "_" -> %pat'{ _ }
   | "("; pattern{p}; ")" -> p
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")"-> tuple_com (p1::ps) ]
       
@@ -236,7 +236,7 @@ open Util
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } ->
     let () = check_not_tok s in
-    let styp = {:ctyp'| $(s.styp) list   |} in 
+    let styp = %ctyp'{ $(s.styp) list   } in 
     let text = mk_slist _loc
         (match x with
         |"L0" -> false | "L1" -> true
@@ -244,7 +244,7 @@ open Util
     mk_symbol ~text ~styp ~pattern:None
   |`Uid "OPT"; S{s}  ->
     let () = check_not_tok s in
-    let styp = {:ctyp'|  $(s.styp) option |} in 
+    let styp = %ctyp'{  $(s.styp) option } in 
     let text = `Sopt _loc s.text in
     mk_symbol  ~text ~styp ~pattern:None
   |`Uid "TRY"; S{s} ->
@@ -261,16 +261,16 @@ open Util
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
   | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
-          ~styp:({:ctyp'|'$(lid:n.tvar)|}) ~pattern:None
+          ~styp:( %ctyp'{ '$(lid:n.tvar)} ) ~pattern:None (* {' *)
   | "("; S{s}; ")" -> s ]
 
   string:
-  [ `Str  s -> {:exp| $str:s |}
+  [ `Str  s -> %exp{ $str:s }
   | `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
 
   simple_exp:
   [ a_lident{i} -> (i : alident :>exp) 
-  | "("; exp{e}; ")" -> e ]  |};;
+  | "("; exp{e}; ")" -> e ]  };;
 
 
 let d = `Absolute["Fan";"Lang"] in
@@ -329,7 +329,7 @@ end;;
 (* let _loc = FLoc.ghost; *)
 (* let u : FanGrammar.entry= {:entry| *)
 (*   simple_exp: *)
-(*   [ a_lident{i} -> {:exp| $(id:(i:>ident)) |} *)
+(*   [ a_lident{i} -> %exp{ $(id:(i:>ident)) } *)
 (*   | "("; exp{e}; ")" -> e ] *)
 (* |};   *)
 (* let u : FGramDef.rule = {:rule| *)
@@ -355,3 +355,7 @@ end;;
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake parse_grammar.cmo" *)
+(* end: *)

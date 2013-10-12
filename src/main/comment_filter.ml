@@ -18,8 +18,8 @@ let filter (_, q) =
     end
     |  x; 'xs ->
         (* debug comments "Found %a at %a@." Token.print x FLoc.dump loc in *)
-        {:stream|x;'self xs|}
-    |  -> {:stream||}  in self
+        %stream{x;'self xs}
+    |  -> %stream{}  in self
 
 
 let take_list (_, q) =

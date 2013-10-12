@@ -1,5 +1,5 @@
   
-{:import|
+%import{
 
 Lexing_util:
   lexing_store
@@ -9,7 +9,7 @@ Format:
   fprintf
    std_formatter
    ; 
-|};;
+};;
 
 
 
@@ -30,14 +30,14 @@ let from_stream  {FLoc.loc_start;_} strm =
 
 (* remove trailing `EOI*)  
 let rec clean  =  parser
-  | (`EOI,loc)  -> {:stream| (`EOI,loc)|}
-  |  x; 'xs  -> {:stream| x; 'clean xs|}
-  |  -> {:stream||} 
+  | (`EOI,loc)  -> %stream{ (`EOI,loc)}
+  |  x; 'xs  -> %stream{ x; 'clean xs}
+  |  -> %stream{} 
 
 let rec strict_clean = parser
-  | (`EOI,_)  -> {:stream||}
-  | x; 'xs  -> {:stream| x; 'strict_clean xs |}
-  |  -> {:stream||} 
+  | (`EOI,_)  -> %stream{}
+  | x; 'xs  -> %stream{ x; 'strict_clean xs }
+  |  -> %stream{} 
 
 let debug_from_string  str =
   let loc = FLoc.string_loc  in

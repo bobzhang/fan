@@ -66,7 +66,7 @@ let tuple_exp_of_ctyp ?(arity=1) ?(names=[]) ~mk_tuple
     let tys =
       mk_tuple
         (List.mapi (mapi_exp ~arity ~names  ~f) ls) in
-    ExpN.mkfun names (ExpN.currying [ {:case-| $pat:pat -> $tys |} ] ~arity)
+    ExpN.mkfun names (ExpN.currying [ %case-{ $pat:pat -> $tys } ] ~arity)
   | _  -> failwithf "tuple_exp_of_ctyp %s" (ObjsN.dump_ctyp ty)
   
 let rec  normal_simple_exp_of_ctyp
@@ -87,10 +87,10 @@ let rec  normal_simple_exp_of_ctyp
     | (#ident' as id) ->
         right_trans (IdN.to_vid id )
     | `App(t1,t2) ->
-        {:exp-| $(aux t1) $(aux t2) |}
+        %exp-{ $(aux t1) $(aux t2) }
     | `Quote (_,`Lid s) ->   tyvar s
     | `Arrow(t1,t2) ->
-        aux {:ctyp-| ($t1,$t2) arrow |} (* arrow is a keyword now*)
+        aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
     | `Par _  as ty ->
         tuple_exp_of_ctyp  ?arity ?names ~mk_tuple
           ~f:(normal_simple_exp_of_ctyp
@@ -121,12 +121,12 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
               (trans (IdN.to_vid tctor) ::
                (ls |> List.map
                  (function
-                   | `Quote (_,`Lid s) -> {:exp-| $(lid:var s) |} 
-                   | t -> {:exp-| fun self -> $(aux t) |} )) )
+                   | `Quote (_,`Lid s) -> %exp-{ $(lid:var s) } 
+                   | t -> %exp-{ fun self -> $(aux t) } )) )
         | _  ->
             failwithf "list_of_app in obj_simple_exp_of_ctyp: %s"
               (ObjsN.dump_ctyp ty))
-    | `Arrow(t1,t2) -> aux {:ctyp-| ($t1,$t2) arrow  |} 
+    | `Arrow(t1,t2) -> aux %ctyp-{ ($t1,$t2) arrow  } 
     | `Par _  as ty ->
         tuple_exp_of_ctyp ?arity ?names ~mk_tuple
           ~f:(obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable
@@ -149,7 +149,7 @@ let exp_of_ctyp
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
     let e = mk (cons,tyargs) in
-    {:case-| $pat:p -> $e |} in  begin 
+    %case-{ $pat:p -> $e } in  begin 
     let info = (Sum, List.length (Ast_basic.N.list_of_bar ty [])) in 
     let res :  case list =
       CtypN.reduce_data_ctors ty  [] f ~compose:cons  in
@@ -174,7 +174,7 @@ let exp_of_variant ?cons_transform
       let exps = List.mapi (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) tyargs in
       mk_variant cons exps in
     let e = mk (cons,tyargs) in
-    {:case-| $pat:p -> $e |} in 
+    %case-{ $pat:p -> $e } in 
   (* for the case [`a | b ] *)
   let simple (lid:ident) :case=
     let e = (simple_exp_of_ctyp (lid:>ctyp)) +> names  in
@@ -203,7 +203,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   let varf = basic_transform left_type_variable in
   let  f (var:decl_params) acc =
     match var with
-    | `Quote(_,`Lid(s)) -> {:exp-| fun $(lid: varf s) -> $acc |}
+    | `Quote(_,`Lid(s)) -> %exp-{ fun $(lid: varf s) -> $acc }
     | t  ->
         failwithf  "mk_prefix: %s" (ObjsN.dump_decl_params t) in
   match vars with
@@ -244,7 +244,7 @@ let fun_of_tydcl
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
-            (ExpN.currying ~arity [ {:case-| $pat:pat -> $(mk_record info)  |} ])
+            (ExpN.currying ~arity [ %case-{ $pat:pat -> $(mk_record info)  } ])
 
        |  `Sum ctyp -> 
           let funct = exp_of_ctyp ctyp in  
@@ -307,12 +307,12 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
         tydcl
     else
       (eprintf "Warning: %s as a abstract type no structure generated\n" (ObjsN.dump_typedecl tydcl);
-       {:exp-| failwith "Abstract data type not implemented" |}) in
+       %exp-{ failwith "Abstract data type not implemented" }) in
   match annot with
   | None -> 
-      {:bind-| $lid:fname = $fun_exp |}
+      %bind-{ $lid:fname = $fun_exp }
   | Some x ->
-      {:bind-| $lid:fname : $x = $fun_exp |}
+      %bind-{ $lid:fname : $x = $fun_exp }
 
 let stru_of_mtyps ?module_name ?cons_transform ?annot
     ?arity ?names ~default ~mk_variant ~left_type_id ~left_type_variable
@@ -329,29 +329,29 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
     match ty with
     | `Mutual named_types ->
         ( match named_types with
-        | [] ->  {:stru-| let _ = ()|} (* FIXME *)
+        | [] ->  %stru-{ let _ = ()} (* FIXME *)
         | xs ->
             (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
             let bind =
               Flist.reduce_right_with
-                ~compose:(fun x y -> {:bind-| $x and $y |} )
+                ~compose:(fun x y -> %bind-{ $x and $y } )
                 ~f:(fun (_name,ty) ->
                   mk_bind  ty ) xs in
-            {:stru-| let rec $bind |}))
+            %stru-{ let rec $bind }))
     | `Single (name,tydcl) ->
         (Hashset.add cxt name;
          let flag =
            if CtypN.is_recursive tydcl then `Positive 
            else `Negative  
          and bind = mk_bind  tydcl in 
-         {:stru-| let $rec:flag  $bind |}) in
+         %stru-{ let $rec:flag  $bind }) in
   let item =
     match lst with
-    | [] -> {:stru-|let _ = ()|}
+    | [] -> %stru-{let _ = ()}
     | _ ->  sem_of_list (List.map fs lst )   in
       match module_name with
       | None -> item
-      | Some m -> {:stru-| module $uid:m = struct $item end |} 
+      | Some m -> %stru-{ module $uid:m = struct $item end } 
 
 
             
@@ -389,13 +389,13 @@ let obj_of_mtyps
     let mk_type tydcl =
       let (name,len) = CtypN.name_length_of_tydcl tydcl in
         let (ty,result_type) = CtypN.mk_method_type ~number:arity ~prefix:names
-            ({:ident-| $lid:name |} ,len )
+            (%ident-{ $lid:name } ,len )
             (Obj k) in
         (ty,result_type) in
         
     let mk_clfield (name,tydcl) : clfield =
       let (ty,result_type) = mk_type tydcl in
-      {:clfield-| method $lid:name : $ty = $(f tydcl result_type) |}  in 
+      %clfield-{ method $lid:name : $ty = $(f tydcl result_type) }  in 
     let fs (ty:types) : clfield =
       match ty with
       | `Mutual named_types ->
@@ -406,7 +406,7 @@ let obj_of_mtyps
            let ty_str : string =   ObjsN.dump_typedecl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
-           {:clfield-| method $lid:name : $ty= $(ExpN.unknown n) |}
+           %clfield-{ method $lid:name : $ty= $(ExpN.unknown n) }
          | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
@@ -416,7 +416,7 @@ let obj_of_mtyps
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = CtypN.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        {:clfield-| method $lid:dest : $ty = $(ExpN.unknown len) |} ) extras in
+        %clfield-{ method $lid:dest : $ty = $(ExpN.unknown len) } ) extras in
       sem_of_list (body @ items) in 
         let v = CtypN.mk_obj class_name  base body in
         (Hashtbl.iter (fun _ v ->
@@ -424,7 +424,7 @@ let obj_of_mtyps
            tbl;
          match module_name with
          | None -> v
-         |Some u -> {:stru-| module $uid:u = struct $v  end  |}) 
+         |Some u -> %stru-{ module $uid:u = struct $v  end  }) 
 
   
   
@@ -447,7 +447,7 @@ let obj_of_mtyps
 let gen_stru
     ?module_name
     ?(arity=1)
-    ?(default= {:exp-| failwith "arity >= 2 in other branches" |} )
+    ?(default= %exp-{ failwith "arity >= 2 in other branches" } )
     ?cons_transform
     ?annot
     ~id:(id:basic_id_transform)  ?(names=[])  
@@ -460,11 +460,11 @@ let gen_stru
     match module_name with
     |None ->   (id:>full_id_transform)
     |Some m ->
-        `Last (fun s -> {:ident-'| $uid:m.$(lid:basic_transform id s) |} )  in
+        `Last (fun s -> %ident-'{ $uid:m.$(lid:basic_transform id s) } )  in
   let default (_,number)=
     if number > 1 then
       let pat = (EpN.tuple_of_number `Any  arity :> pat) in 
-      Some {:case-| $pat:pat -> $default |}
+      Some %case-{ $pat:pat -> $default }
     else None in
   let names = names in
   let mk_record = mk_record in
@@ -492,7 +492,7 @@ let gen_stru
 let gen_object
     ?module_name
     ?(arity=1)
-    ?(default={:exp-| failwith "arity >= 2 in other branches" |} )
+    ?(default= %exp-{ failwith "arity >= 2 in other branches" } )
     ?cons_transform
     ~kind
     ~base
@@ -502,14 +502,14 @@ let gen_object
     let left_type_variable  = `Pre "mf_" in
     let right_type_variable =
       `Exp (fun v -> let v = basic_transform left_type_variable v
-      in  {:exp-| $lid:v self |} ) in
+      in  %exp-{ $lid:v self } ) in
     let left_type_id  = `Pre ""in
     let right_type_id  =
       `Obj (basic_transform left_type_id) in
     let default (_,number)=
       if number > 1 then
         let pat = (EpN.tuple_of_number `Any arity :> pat)in 
-        Some {:case-| $pat:pat -> $default |}
+        Some %case-{ $pat:pat -> $default }
       else None in
     obj_of_mtyps
       ?cons_transform

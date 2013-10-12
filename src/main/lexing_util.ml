@@ -1,7 +1,7 @@
 
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
-{:regexp|
+%regexp{
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -80,7 +80,7 @@ let ocaml_lid =
   lowercase identchar *
 let ocaml_uid =
   uppercase identchar * 
-|};;
+};;
 
 let fprintf = Format.fprintf
 let eprintf = Format.eprintf
@@ -248,7 +248,7 @@ let warn error (loc:FLoc.t) =
     The function itself already simulate its stack, and it will not distrub the stack
     since when comment token is lexed. The stack is returned back to normal
  *)
-let rec lex_comment c = {:lexer|
+let rec lex_comment c = %lexer{
 |"(*"  ->
     begin
       store c lexbuf ;
@@ -269,7 +269,7 @@ let rec lex_comment c = {:lexer|
     err Unterminated_comment  @@ (* FIXME *)
     Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | _ ->  with_store c lexbuf lex_comment  
-|}
+}
 
 
 (** called by another lexer
@@ -277,7 +277,7 @@ let rec lex_comment c = {:lexer|
     c.loc keeps the start position of "ghosgho"
     c.buffer keeps the lexed result
  *)    
-let rec lex_string c = {:lexer|
+let rec lex_string c = %lexer{
 | '"' ->  pop_loc c
 | '\\' newline ([' ' '\t'] * as space) ->
     (* Follow the ocaml convention, these characters does not take positions *)
@@ -300,12 +300,12 @@ let rec lex_string c = {:lexer|
 | eof ->  err Unterminated_string @@
     Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | _ ->  with_store  c lexbuf lex_string
-|}
+}
 
 
 
 (** Then prefix is something like "$(" *)
-let rec  lex_antiquot c  = {:lexer|
+let rec  lex_antiquot c  = %lexer{
 | ')' ->
     begin
       pop_loc c;
@@ -340,9 +340,9 @@ let rec  lex_antiquot c  = {:lexer|
     @@  Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
 | "'" ocaml_char "'" -> with_store  c lexbuf lex_antiquot (* $( ')' ) *)
 | _  ->  with_store c lexbuf lex_antiquot 
-|}
+}
 
-and lex_quotation c = {:lexer|
+and lex_quotation c = %lexer{
 | quotation_prefix ->
     begin
       store c lexbuf ;
@@ -376,7 +376,7 @@ and lex_quotation c = {:lexer|
       update_loc  lexbuf ;
       with_store c lexbuf lex_quotation 
     end          
-| "\"" -> (* treat string specially, like {| "{|"|} should be accepted *)
+| "\"" -> (* treat string specially, like %{ "{|"} should be accepted *)
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
@@ -391,10 +391,10 @@ and lex_quotation c = {:lexer|
     end
 | "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
     with_store c lexbuf lex_quotation 
-| _ -> with_store c lexbuf  lex_quotation |}
+| _ -> with_store c lexbuf  lex_quotation }
 
 
-let rec lex_simple_quotation c =   {:lexer|
+let rec lex_simple_quotation c =   %lexer{
 | "}" ->
     begin
       store c lexbuf;
@@ -428,7 +428,7 @@ let rec lex_simple_quotation c =   {:lexer|
     with_store c lexbuf  lex_simple_quotation 
 
 | _  -> with_store  c lexbuf lex_simple_quotation 
-|}
+}
     
 
 

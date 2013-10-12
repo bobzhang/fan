@@ -346,7 +346,7 @@ let rec  lex_antiquot c  = {:lexer|
       push_loc_cont Anti c lexbuf lex_antiquot;
       lex_antiquot c  lexbuf;
     end
-| quotation_prefix -> (* $(lid:{|)|})*)
+| quotation_prefix -> (* $(lid:%{)})*)
     begin 
       store c lexbuf;
       push_loc_cont Quote  c lexbuf lex_quotation;
@@ -420,7 +420,7 @@ and lex_quotation c = {:lexer|
       update_loc  lexbuf ;
       with_store c lexbuf lex_quotation 
     end          
-| "\"" -> (* treat string specially, like {| "{|"|} should be accepted *)
+| "\"" -> (* treat string specially, like %{ "{|"} should be accepted *)
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;

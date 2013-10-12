@@ -12,7 +12,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       | (("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
-          let x = String.capitalize x in {:pat|$vrn:x $e |}
+          let x = String.capitalize x in %pat{$vrn:x $e }
       | _ -> super#pat e)
     | e -> super#pat e 
   method! exp (x:exp) = with exp
@@ -23,30 +23,30 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_,_) | (("vrn" as x), ("exp" |"pat"),_) ->
-           {|$(vrn:String.capitalize x) $e |}         
+           %{$(vrn:String.capitalize x) $e }         
       | ("`nativeint",_,_) ->
-          let e = {| Nativeint.to_string $e |} in
-          {| `Nativeint  $e |}
+          let e = %{ Nativeint.to_string $e } in
+          %{ `Nativeint  $e }
       | ("`int",_,_) ->
-          let e = {|string_of_int $e |} in
-          {| `Int  $e |}
+          let e = %{string_of_int $e } in
+          %{ `Int  $e }
       | ("`int32",_,_) ->
-          let e = {|Int32.to_string $e |} in
-          {| `Int32  $e |}
+          let e = %{Int32.to_string $e } in
+          %{ `Int32  $e }
       | ("`int64",_,_) ->
-          let e = {|Int64.to_string $e |} in
-          {| `Int64  $e |}
+          let e = %{Int64.to_string $e } in
+          %{ `Int64  $e }
       | ("`chr",_,_) ->
-          let e = {|Char.escaped $e|} in
-          {| `Chr  $e |}
+          let e = %{Char.escaped $e} in
+          %{ `Chr  $e }
       | ("`str",_,_) ->
-          let e = {|String.escaped $e |} in
-          {| `Str  $e |}
+          let e = %{String.escaped $e } in
+          %{ `Str  $e }
       | ("`flo",_,_) ->
-          let e = {| string_of_float $e |} in
-          {| `Flo  $e |}
+          let e = %{ string_of_float $e } in
+          %{ `Flo  $e }
       | ("`bool",_,_) ->
-          {| `Lid (if $e then "true" else "false" ) |} 
+          %{ `Lid (if $e then "true" else "false" ) } 
       | _ -> super#exp e)
     | e -> super#exp e
   end

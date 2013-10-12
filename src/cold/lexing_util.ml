@@ -319,11 +319,11 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
     lexbuf.Lexing.lex_last_action <- 7;
     (match __ocaml_lex_next_char lexbuf with
-     | 92 -> __ocaml_lex_state17 lexbuf
      | 10|13|256 ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action)
-     | _ -> __ocaml_lex_state18 lexbuf)
+     | 92 -> __ocaml_lex_state16 lexbuf
+     | _ -> __ocaml_lex_state17 lexbuf)
   and __ocaml_lex_state3 lexbuf = 5
   and __ocaml_lex_state4 lexbuf = 4
   and __ocaml_lex_state5 lexbuf =
@@ -337,18 +337,16 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
   and __ocaml_lex_state6 lexbuf = 3
   and __ocaml_lex_state7 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 7;
+    lexbuf.Lexing.lex_last_action <- 2;
     (match __ocaml_lex_next_char lexbuf with
-     | 64 -> __ocaml_lex_state11 lexbuf
-     | 124 -> __ocaml_lex_state10 lexbuf
-     | 58 -> __ocaml_lex_state12 lexbuf
+     | 58 -> __ocaml_lex_state11 lexbuf
+     | 64 -> __ocaml_lex_state10 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state8 lexbuf = 1
   and __ocaml_lex_state9 lexbuf = 0
-  and __ocaml_lex_state10 lexbuf = 2
-  and __ocaml_lex_state11 lexbuf =
+  and __ocaml_lex_state10 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 65
       |66
@@ -515,12 +513,66 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state16 lexbuf
+        -> __ocaml_lex_state15 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state12 lexbuf =
+  and __ocaml_lex_state11 lexbuf =
     match __ocaml_lex_next_char lexbuf with
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state13 lexbuf
+    | 46 -> __ocaml_lex_state14 lexbuf
     | 95
       |97
        |98
@@ -577,8 +629,405 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
                                                           |250
                                                            |251
                                                             |252|253|254|255
+        -> __ocaml_lex_state12 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state12 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 2;
+    (match __ocaml_lex_next_char lexbuf with
+     | 64 -> __ocaml_lex_state10 lexbuf
+     | 39
+       |45
+        |48
+         |49
+          |50
+           |51
+            |52
+             |53
+              |54
+               |55
+                |56
+                 |57
+                  |65
+                   |66
+                    |67
+                     |68
+                      |69
+                       |70
+                        |71
+                         |72
+                          |73
+                           |74
+                            |75
+                             |76
+                              |77
+                               |78
+                                |79
+                                 |80
+                                  |81
+                                   |82
+                                    |83
+                                     |84
+                                      |85
+                                       |86
+                                        |87
+                                         |88
+                                          |89
+                                           |90
+                                            |95
+                                             |97
+                                              |98
+                                               |99
+                                                |100
+                                                 |101
+                                                  |102
+                                                   |103
+                                                    |104
+                                                     |105
+                                                      |106
+                                                       |107
+                                                        |108
+                                                         |109
+                                                          |110
+                                                           |111
+                                                            |112
+                                                             |113
+                                                              |114
+                                                               |115
+                                                                |116
+                                                                 |117
+                                                                  |118
+                                                                   |119
+                                                                    |
+                                                                    120
+                                                                    |
+                                                                    121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
+         -> __ocaml_lex_state12 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state13 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39
+      |48
+       |49
+        |50
+         |51
+          |52
+           |53
+            |54
+             |55
+              |56
+               |57
+                |65
+                 |66
+                  |67
+                   |68
+                    |69
+                     |70
+                      |71
+                       |72
+                        |73
+                         |74
+                          |75
+                           |76
+                            |77
+                             |78
+                              |79
+                               |80
+                                |81
+                                 |82
+                                  |83
+                                   |84
+                                    |85
+                                     |86
+                                      |87
+                                       |88
+                                        |89
+                                         |90
+                                          |95
+                                           |97
+                                            |98
+                                             |99
+                                              |100
+                                               |101
+                                                |102
+                                                 |103
+                                                  |104
+                                                   |105
+                                                    |106
+                                                     |107
+                                                      |108
+                                                       |109
+                                                        |110
+                                                         |111
+                                                          |112
+                                                           |113
+                                                            |114
+                                                             |115
+                                                              |116
+                                                               |117
+                                                                |118
+                                                                 |119
+                                                                  |120
+                                                                   |121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
         -> __ocaml_lex_state13 lexbuf
-    | 46 -> __ocaml_lex_state15 lexbuf
+    | 46 -> __ocaml_lex_state14 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state14 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
     | 65
       |66
        |67
@@ -631,14 +1080,72 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
                                                       |216
                                                        |217
                                                         |218|219|220|221|222
-        -> __ocaml_lex_state14 lexbuf
+        -> __ocaml_lex_state13 lexbuf
+    | 95
+      |97
+       |98
+        |99
+         |100
+          |101
+           |102
+            |103
+             |104
+              |105
+               |106
+                |107
+                 |108
+                  |109
+                   |110
+                    |111
+                     |112
+                      |113
+                       |114
+                        |115
+                         |116
+                          |117
+                           |118
+                            |119
+                             |120
+                              |121
+                               |122
+                                |223
+                                 |224
+                                  |225
+                                   |226
+                                    |227
+                                     |228
+                                      |229
+                                       |230
+                                        |231
+                                         |232
+                                          |233
+                                           |234
+                                            |235
+                                             |236
+                                              |237
+                                               |238
+                                                |239
+                                                 |240
+                                                  |241
+                                                   |242
+                                                    |243
+                                                     |244
+                                                      |245
+                                                       |246
+                                                        |248
+                                                         |249
+                                                          |250
+                                                           |251
+                                                            |252|253|254|255
+        -> __ocaml_lex_state12 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state13 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 39
-      |45
+  and __ocaml_lex_state15 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 2;
+    (match __ocaml_lex_next_char lexbuf with
+     | 39
        |48
         |49
          |50
@@ -826,553 +1333,48 @@ let rec lex_antiquot c (lexbuf : Lexing.lexbuf) =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state13 lexbuf
-    | 64 -> __ocaml_lex_state11 lexbuf
-    | 124 -> __ocaml_lex_state10 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state14 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 46 -> __ocaml_lex_state15 lexbuf
-    | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
-                                                                    |
-                                                                    122
-                                                                    |
-                                                                    192
-                                                                    |
-                                                                    193
-                                                                    |
-                                                                    194
-                                                                    |
-                                                                    195
-                                                                    |
-                                                                    196
-                                                                    |
-                                                                    197
-                                                                    |
-                                                                    198
-                                                                    |
-                                                                    199
-                                                                    |
-                                                                    200
-                                                                    |
-                                                                    201
-                                                                    |
-                                                                    202
-                                                                    |
-                                                                    203
-                                                                    |
-                                                                    204
-                                                                    |
-                                                                    205
-                                                                    |
-                                                                    206
-                                                                    |
-                                                                    207
-                                                                    |
-                                                                    208
-                                                                    |
-                                                                    209
-                                                                    |
-                                                                    210
-                                                                    |
-                                                                    211
-                                                                    |
-                                                                    212
-                                                                    |
-                                                                    213
-                                                                    |
-                                                                    214
-                                                                    |
-                                                                    216
-                                                                    |
-                                                                    217
-                                                                    |
-                                                                    218
-                                                                    |
-                                                                    219
-                                                                    |
-                                                                    220
-                                                                    |
-                                                                    221
-                                                                    |
-                                                                    222
-                                                                    |
-                                                                    223
-                                                                    |
-                                                                    224
-                                                                    |
-                                                                    225
-                                                                    |
-                                                                    226
-                                                                    |
-                                                                    227
-                                                                    |
-                                                                    228
-                                                                    |
-                                                                    229
-                                                                    |
-                                                                    230
-                                                                    |
-                                                                    231
-                                                                    |
-                                                                    232
-                                                                    |
-                                                                    233
-                                                                    |
-                                                                    234
-                                                                    |
-                                                                    235
-                                                                    |
-                                                                    236
-                                                                    |
-                                                                    237
-                                                                    |
-                                                                    238
-                                                                    |
-                                                                    239
-                                                                    |
-                                                                    240
-                                                                    |
-                                                                    241
-                                                                    |
-                                                                    242
-                                                                    |
-                                                                    243
-                                                                    |
-                                                                    244
-                                                                    |
-                                                                    245
-                                                                    |
-                                                                    246
-                                                                    |
-                                                                    248
-                                                                    |
-                                                                    249
-                                                                    |
-                                                                    250
-                                                                    |
-                                                                    251
-                                                                    |
-                                                                    252
-                                                                    |
-                                                                    253
-                                                                    |
-                                                                    254|255
-        -> __ocaml_lex_state14 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state15 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 95
-      |97
-       |98
-        |99
-         |100
-          |101
-           |102
-            |103
-             |104
-              |105
-               |106
-                |107
-                 |108
-                  |109
-                   |110
-                    |111
-                     |112
-                      |113
-                       |114
-                        |115
-                         |116
-                          |117
-                           |118
-                            |119
-                             |120
-                              |121
-                               |122
-                                |223
-                                 |224
-                                  |225
-                                   |226
-                                    |227
-                                     |228
-                                      |229
-                                       |230
-                                        |231
-                                         |232
-                                          |233
-                                           |234
-                                            |235
-                                             |236
-                                              |237
-                                               |238
-                                                |239
-                                                 |240
-                                                  |241
-                                                   |242
-                                                    |243
-                                                     |244
-                                                      |245
-                                                       |246
-                                                        |248
-                                                         |249
-                                                          |250
-                                                           |251
-                                                            |252|253|254|255
-        -> __ocaml_lex_state13 lexbuf
-    | 65
-      |66
-       |67
-        |68
-         |69
-          |70
-           |71
-            |72
-             |73
-              |74
-               |75
-                |76
-                 |77
-                  |78
-                   |79
-                    |80
-                     |81
-                      |82
-                       |83
-                        |84
-                         |85
-                          |86
-                           |87
-                            |88
-                             |89
-                              |90
-                               |192
-                                |193
-                                 |194
-                                  |195
-                                   |196
-                                    |197
-                                     |198
-                                      |199
-                                       |200
-                                        |201
-                                         |202
-                                          |203
-                                           |204
-                                            |205
-                                             |206
-                                              |207
-                                               |208
-                                                |209
-                                                 |210
-                                                  |211
-                                                   |212
-                                                    |213
-                                                     |214
-                                                      |216
-                                                       |217
-                                                        |218|219|220|221|222
-        -> __ocaml_lex_state14 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
+         -> __ocaml_lex_state15 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state16 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
-                                                                    |
-                                                                    122
-                                                                    |
-                                                                    192
-                                                                    |
-                                                                    193
-                                                                    |
-                                                                    194
-                                                                    |
-                                                                    195
-                                                                    |
-                                                                    196
-                                                                    |
-                                                                    197
-                                                                    |
-                                                                    198
-                                                                    |
-                                                                    199
-                                                                    |
-                                                                    200
-                                                                    |
-                                                                    201
-                                                                    |
-                                                                    202
-                                                                    |
-                                                                    203
-                                                                    |
-                                                                    204
-                                                                    |
-                                                                    205
-                                                                    |
-                                                                    206
-                                                                    |
-                                                                    207
-                                                                    |
-                                                                    208
-                                                                    |
-                                                                    209
-                                                                    |
-                                                                    210
-                                                                    |
-                                                                    211
-                                                                    |
-                                                                    212
-                                                                    |
-                                                                    213
-                                                                    |
-                                                                    214
-                                                                    |
-                                                                    216
-                                                                    |
-                                                                    217
-                                                                    |
-                                                                    218
-                                                                    |
-                                                                    219
-                                                                    |
-                                                                    220
-                                                                    |
-                                                                    221
-                                                                    |
-                                                                    222
-                                                                    |
-                                                                    223
-                                                                    |
-                                                                    224
-                                                                    |
-                                                                    225
-                                                                    |
-                                                                    226
-                                                                    |
-                                                                    227
-                                                                    |
-                                                                    228
-                                                                    |
-                                                                    229
-                                                                    |
-                                                                    230
-                                                                    |
-                                                                    231
-                                                                    |
-                                                                    232
-                                                                    |
-                                                                    233
-                                                                    |
-                                                                    234
-                                                                    |
-                                                                    235
-                                                                    |
-                                                                    236
-                                                                    |
-                                                                    237
-                                                                    |
-                                                                    238
-                                                                    |
-                                                                    239
-                                                                    |
-                                                                    240
-                                                                    |
-                                                                    241
-                                                                    |
-                                                                    242
-                                                                    |
-                                                                    243
-                                                                    |
-                                                                    244
-                                                                    |
-                                                                    245
-                                                                    |
-                                                                    246
-                                                                    |
-                                                                    248
-                                                                    |
-                                                                    249
-                                                                    |
-                                                                    250
-                                                                    |
-                                                                    251
-                                                                    |
-                                                                    252
-                                                                    |
-                                                                    253
-                                                                    |
-                                                                    254|255
-        -> __ocaml_lex_state16 lexbuf
-    | 124 -> __ocaml_lex_state10 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state20 lexbuf
+    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state17 lexbuf
+    | 120 -> __ocaml_lex_state19 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state17 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 120 -> __ocaml_lex_state20 lexbuf
-    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state18 lexbuf
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state21 lexbuf
+    | 39 -> __ocaml_lex_state18 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state18 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 39 -> __ocaml_lex_state19 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state19 lexbuf = 6
-  and __ocaml_lex_state20 lexbuf =
+  and __ocaml_lex_state18 lexbuf = 6
+  and __ocaml_lex_state19 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
-        __ocaml_lex_state23 lexbuf
+        __ocaml_lex_state22 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state20 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state21 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state21 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state22 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state17 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state22 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state18 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state23 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
-        __ocaml_lex_state18 lexbuf
+        __ocaml_lex_state17 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action) in
@@ -1428,64 +1430,53 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
     match __ocaml_lex_next_char lexbuf with
     | 10 -> __ocaml_lex_state6 lexbuf
     | 256 -> __ocaml_lex_state3 lexbuf
-    | 124 -> __ocaml_lex_state9 lexbuf
+    | 123 -> __ocaml_lex_state9 lexbuf
     | 34 -> __ocaml_lex_state4 lexbuf
     | 125 -> __ocaml_lex_state8 lexbuf
     | 13 -> __ocaml_lex_state5 lexbuf
     | 40 -> __ocaml_lex_state7 lexbuf
-    | 123 -> __ocaml_lex_state10 lexbuf
     | 39 -> __ocaml_lex_state2 lexbuf
     | _ -> __ocaml_lex_state1 lexbuf
-  and __ocaml_lex_state1 lexbuf = 9
+  and __ocaml_lex_state1 lexbuf = 8
   and __ocaml_lex_state2 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 9;
+    lexbuf.Lexing.lex_last_action <- 8;
     (match __ocaml_lex_next_char lexbuf with
-     | 92 -> __ocaml_lex_state20 lexbuf
+     | 92 -> __ocaml_lex_state17 lexbuf
      | 10|13|256 ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action)
-     | _ -> __ocaml_lex_state21 lexbuf)
-  and __ocaml_lex_state3 lexbuf = 7
-  and __ocaml_lex_state4 lexbuf = 6
+     | _ -> __ocaml_lex_state18 lexbuf)
+  and __ocaml_lex_state3 lexbuf = 6
+  and __ocaml_lex_state4 lexbuf = 5
   and __ocaml_lex_state5 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 5;
+    lexbuf.Lexing.lex_last_action <- 4;
     (match __ocaml_lex_next_char lexbuf with
      | 10 -> __ocaml_lex_state6 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state6 lexbuf = 5
+  and __ocaml_lex_state6 lexbuf = 4
   and __ocaml_lex_state7 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 9;
+    lexbuf.Lexing.lex_last_action <- 8;
     (match __ocaml_lex_next_char lexbuf with
-     | 42 -> __ocaml_lex_state19 lexbuf
+     | 42 -> __ocaml_lex_state16 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state8 lexbuf = 2
+  and __ocaml_lex_state8 lexbuf = 1
   and __ocaml_lex_state9 lexbuf =
     lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 9;
+    lexbuf.Lexing.lex_last_action <- 0;
     (match __ocaml_lex_next_char lexbuf with
-     | 125 -> __ocaml_lex_state18 lexbuf
+     | 58 -> __ocaml_lex_state11 lexbuf
+     | 64 -> __ocaml_lex_state10 lexbuf
      | _ ->
          (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
           lexbuf.Lexing.lex_last_action))
   and __ocaml_lex_state10 lexbuf =
-    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
-    lexbuf.Lexing.lex_last_action <- 3;
-    (match __ocaml_lex_next_char lexbuf with
-     | 58 -> __ocaml_lex_state13 lexbuf
-     | 124 -> __ocaml_lex_state11 lexbuf
-     | 64 -> __ocaml_lex_state12 lexbuf
-     | _ ->
-         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-          lexbuf.Lexing.lex_last_action))
-  and __ocaml_lex_state11 lexbuf = 0
-  and __ocaml_lex_state12 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 65
       |66
@@ -1652,11 +1643,11 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state17 lexbuf
+        -> __ocaml_lex_state15 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state13 lexbuf =
+  and __ocaml_lex_state11 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 65
       |66
@@ -1710,8 +1701,8 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
                                                       |216
                                                        |217
                                                         |218|219|220|221|222
-        -> __ocaml_lex_state15 lexbuf
-    | 46 -> __ocaml_lex_state16 lexbuf
+        -> __ocaml_lex_state13 lexbuf
+    | 46 -> __ocaml_lex_state14 lexbuf
     | 95
       |97
        |98
@@ -1768,15 +1759,523 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
                                                           |250
                                                            |251
                                                             |252|253|254|255
-        -> __ocaml_lex_state14 lexbuf
+        -> __ocaml_lex_state12 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state12 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 0;
+    (match __ocaml_lex_next_char lexbuf with
+     | 64 -> __ocaml_lex_state10 lexbuf
+     | 39
+       |45
+        |48
+         |49
+          |50
+           |51
+            |52
+             |53
+              |54
+               |55
+                |56
+                 |57
+                  |65
+                   |66
+                    |67
+                     |68
+                      |69
+                       |70
+                        |71
+                         |72
+                          |73
+                           |74
+                            |75
+                             |76
+                              |77
+                               |78
+                                |79
+                                 |80
+                                  |81
+                                   |82
+                                    |83
+                                     |84
+                                      |85
+                                       |86
+                                        |87
+                                         |88
+                                          |89
+                                           |90
+                                            |95
+                                             |97
+                                              |98
+                                               |99
+                                                |100
+                                                 |101
+                                                  |102
+                                                   |103
+                                                    |104
+                                                     |105
+                                                      |106
+                                                       |107
+                                                        |108
+                                                         |109
+                                                          |110
+                                                           |111
+                                                            |112
+                                                             |113
+                                                              |114
+                                                               |115
+                                                                |116
+                                                                 |117
+                                                                  |118
+                                                                   |119
+                                                                    |
+                                                                    120
+                                                                    |
+                                                                    121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
+         -> __ocaml_lex_state12 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state13 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39
+      |48
+       |49
+        |50
+         |51
+          |52
+           |53
+            |54
+             |55
+              |56
+               |57
+                |65
+                 |66
+                  |67
+                   |68
+                    |69
+                     |70
+                      |71
+                       |72
+                        |73
+                         |74
+                          |75
+                           |76
+                            |77
+                             |78
+                              |79
+                               |80
+                                |81
+                                 |82
+                                  |83
+                                   |84
+                                    |85
+                                     |86
+                                      |87
+                                       |88
+                                        |89
+                                         |90
+                                          |95
+                                           |97
+                                            |98
+                                             |99
+                                              |100
+                                               |101
+                                                |102
+                                                 |103
+                                                  |104
+                                                   |105
+                                                    |106
+                                                     |107
+                                                      |108
+                                                       |109
+                                                        |110
+                                                         |111
+                                                          |112
+                                                           |113
+                                                            |114
+                                                             |115
+                                                              |116
+                                                               |117
+                                                                |118
+                                                                 |119
+                                                                  |120
+                                                                   |121
+                                                                    |
+                                                                    122
+                                                                    |
+                                                                    192
+                                                                    |
+                                                                    193
+                                                                    |
+                                                                    194
+                                                                    |
+                                                                    195
+                                                                    |
+                                                                    196
+                                                                    |
+                                                                    197
+                                                                    |
+                                                                    198
+                                                                    |
+                                                                    199
+                                                                    |
+                                                                    200
+                                                                    |
+                                                                    201
+                                                                    |
+                                                                    202
+                                                                    |
+                                                                    203
+                                                                    |
+                                                                    204
+                                                                    |
+                                                                    205
+                                                                    |
+                                                                    206
+                                                                    |
+                                                                    207
+                                                                    |
+                                                                    208
+                                                                    |
+                                                                    209
+                                                                    |
+                                                                    210
+                                                                    |
+                                                                    211
+                                                                    |
+                                                                    212
+                                                                    |
+                                                                    213
+                                                                    |
+                                                                    214
+                                                                    |
+                                                                    216
+                                                                    |
+                                                                    217
+                                                                    |
+                                                                    218
+                                                                    |
+                                                                    219
+                                                                    |
+                                                                    220
+                                                                    |
+                                                                    221
+                                                                    |
+                                                                    222
+                                                                    |
+                                                                    223
+                                                                    |
+                                                                    224
+                                                                    |
+                                                                    225
+                                                                    |
+                                                                    226
+                                                                    |
+                                                                    227
+                                                                    |
+                                                                    228
+                                                                    |
+                                                                    229
+                                                                    |
+                                                                    230
+                                                                    |
+                                                                    231
+                                                                    |
+                                                                    232
+                                                                    |
+                                                                    233
+                                                                    |
+                                                                    234
+                                                                    |
+                                                                    235
+                                                                    |
+                                                                    236
+                                                                    |
+                                                                    237
+                                                                    |
+                                                                    238
+                                                                    |
+                                                                    239
+                                                                    |
+                                                                    240
+                                                                    |
+                                                                    241
+                                                                    |
+                                                                    242
+                                                                    |
+                                                                    243
+                                                                    |
+                                                                    244
+                                                                    |
+                                                                    245
+                                                                    |
+                                                                    246
+                                                                    |
+                                                                    248
+                                                                    |
+                                                                    249
+                                                                    |
+                                                                    250
+                                                                    |
+                                                                    251
+                                                                    |
+                                                                    252
+                                                                    |
+                                                                    253
+                                                                    |
+                                                                    254|255
+        -> __ocaml_lex_state13 lexbuf
+    | 46 -> __ocaml_lex_state14 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state14 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 124 -> __ocaml_lex_state11 lexbuf
-    | 39
-      |45
+    | 65
+      |66
+       |67
+        |68
+         |69
+          |70
+           |71
+            |72
+             |73
+              |74
+               |75
+                |76
+                 |77
+                  |78
+                   |79
+                    |80
+                     |81
+                      |82
+                       |83
+                        |84
+                         |85
+                          |86
+                           |87
+                            |88
+                             |89
+                              |90
+                               |192
+                                |193
+                                 |194
+                                  |195
+                                   |196
+                                    |197
+                                     |198
+                                      |199
+                                       |200
+                                        |201
+                                         |202
+                                          |203
+                                           |204
+                                            |205
+                                             |206
+                                              |207
+                                               |208
+                                                |209
+                                                 |210
+                                                  |211
+                                                   |212
+                                                    |213
+                                                     |214
+                                                      |216
+                                                       |217
+                                                        |218|219|220|221|222
+        -> __ocaml_lex_state13 lexbuf
+    | 95
+      |97
+       |98
+        |99
+         |100
+          |101
+           |102
+            |103
+             |104
+              |105
+               |106
+                |107
+                 |108
+                  |109
+                   |110
+                    |111
+                     |112
+                      |113
+                       |114
+                        |115
+                         |116
+                          |117
+                           |118
+                            |119
+                             |120
+                              |121
+                               |122
+                                |223
+                                 |224
+                                  |225
+                                   |226
+                                    |227
+                                     |228
+                                      |229
+                                       |230
+                                        |231
+                                         |232
+                                          |233
+                                           |234
+                                            |235
+                                             |236
+                                              |237
+                                               |238
+                                                |239
+                                                 |240
+                                                  |241
+                                                   |242
+                                                    |243
+                                                     |244
+                                                      |245
+                                                       |246
+                                                        |248
+                                                         |249
+                                                          |250
+                                                           |251
+                                                            |252|253|254|255
+        -> __ocaml_lex_state12 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state15 lexbuf =
+    lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+    lexbuf.Lexing.lex_last_action <- 0;
+    (match __ocaml_lex_next_char lexbuf with
+     | 39
        |48
         |49
          |50
@@ -1964,554 +2463,49 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
                                                                     253
                                                                     |
                                                                     254|255
-        -> __ocaml_lex_state14 lexbuf
-    | 64 -> __ocaml_lex_state12 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state15 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
-                                                                    |
-                                                                    122
-                                                                    |
-                                                                    192
-                                                                    |
-                                                                    193
-                                                                    |
-                                                                    194
-                                                                    |
-                                                                    195
-                                                                    |
-                                                                    196
-                                                                    |
-                                                                    197
-                                                                    |
-                                                                    198
-                                                                    |
-                                                                    199
-                                                                    |
-                                                                    200
-                                                                    |
-                                                                    201
-                                                                    |
-                                                                    202
-                                                                    |
-                                                                    203
-                                                                    |
-                                                                    204
-                                                                    |
-                                                                    205
-                                                                    |
-                                                                    206
-                                                                    |
-                                                                    207
-                                                                    |
-                                                                    208
-                                                                    |
-                                                                    209
-                                                                    |
-                                                                    210
-                                                                    |
-                                                                    211
-                                                                    |
-                                                                    212
-                                                                    |
-                                                                    213
-                                                                    |
-                                                                    214
-                                                                    |
-                                                                    216
-                                                                    |
-                                                                    217
-                                                                    |
-                                                                    218
-                                                                    |
-                                                                    219
-                                                                    |
-                                                                    220
-                                                                    |
-                                                                    221
-                                                                    |
-                                                                    222
-                                                                    |
-                                                                    223
-                                                                    |
-                                                                    224
-                                                                    |
-                                                                    225
-                                                                    |
-                                                                    226
-                                                                    |
-                                                                    227
-                                                                    |
-                                                                    228
-                                                                    |
-                                                                    229
-                                                                    |
-                                                                    230
-                                                                    |
-                                                                    231
-                                                                    |
-                                                                    232
-                                                                    |
-                                                                    233
-                                                                    |
-                                                                    234
-                                                                    |
-                                                                    235
-                                                                    |
-                                                                    236
-                                                                    |
-                                                                    237
-                                                                    |
-                                                                    238
-                                                                    |
-                                                                    239
-                                                                    |
-                                                                    240
-                                                                    |
-                                                                    241
-                                                                    |
-                                                                    242
-                                                                    |
-                                                                    243
-                                                                    |
-                                                                    244
-                                                                    |
-                                                                    245
-                                                                    |
-                                                                    246
-                                                                    |
-                                                                    248
-                                                                    |
-                                                                    249
-                                                                    |
-                                                                    250
-                                                                    |
-                                                                    251
-                                                                    |
-                                                                    252
-                                                                    |
-                                                                    253
-                                                                    |
-                                                                    254|255
-        -> __ocaml_lex_state15 lexbuf
-    | 46 -> __ocaml_lex_state16 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state16 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 65
-      |66
-       |67
-        |68
-         |69
-          |70
-           |71
-            |72
-             |73
-              |74
-               |75
-                |76
-                 |77
-                  |78
-                   |79
-                    |80
-                     |81
-                      |82
-                       |83
-                        |84
-                         |85
-                          |86
-                           |87
-                            |88
-                             |89
-                              |90
-                               |192
-                                |193
-                                 |194
-                                  |195
-                                   |196
-                                    |197
-                                     |198
-                                      |199
-                                       |200
-                                        |201
-                                         |202
-                                          |203
-                                           |204
-                                            |205
-                                             |206
-                                              |207
-                                               |208
-                                                |209
-                                                 |210
-                                                  |211
-                                                   |212
-                                                    |213
-                                                     |214
-                                                      |216
-                                                       |217
-                                                        |218|219|220|221|222
-        -> __ocaml_lex_state15 lexbuf
-    | 95
-      |97
-       |98
-        |99
-         |100
-          |101
-           |102
-            |103
-             |104
-              |105
-               |106
-                |107
-                 |108
-                  |109
-                   |110
-                    |111
-                     |112
-                      |113
-                       |114
-                        |115
-                         |116
-                          |117
-                           |118
-                            |119
-                             |120
-                              |121
-                               |122
-                                |223
-                                 |224
-                                  |225
-                                   |226
-                                    |227
-                                     |228
-                                      |229
-                                       |230
-                                        |231
-                                         |232
-                                          |233
-                                           |234
-                                            |235
-                                             |236
-                                              |237
-                                               |238
-                                                |239
-                                                 |240
-                                                  |241
-                                                   |242
-                                                    |243
-                                                     |244
-                                                      |245
-                                                       |246
-                                                        |248
-                                                         |249
-                                                          |250
-                                                           |251
-                                                            |252|253|254|255
-        -> __ocaml_lex_state14 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
+         -> __ocaml_lex_state15 lexbuf
+     | _ ->
+         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+          lexbuf.Lexing.lex_last_action))
+  and __ocaml_lex_state16 lexbuf = 3
   and __ocaml_lex_state17 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 124 -> __ocaml_lex_state11 lexbuf
-    | 39
-      |48
-       |49
-        |50
-         |51
-          |52
-           |53
-            |54
-             |55
-              |56
-               |57
-                |65
-                 |66
-                  |67
-                   |68
-                    |69
-                     |70
-                      |71
-                       |72
-                        |73
-                         |74
-                          |75
-                           |76
-                            |77
-                             |78
-                              |79
-                               |80
-                                |81
-                                 |82
-                                  |83
-                                   |84
-                                    |85
-                                     |86
-                                      |87
-                                       |88
-                                        |89
-                                         |90
-                                          |95
-                                           |97
-                                            |98
-                                             |99
-                                              |100
-                                               |101
-                                                |102
-                                                 |103
-                                                  |104
-                                                   |105
-                                                    |106
-                                                     |107
-                                                      |108
-                                                       |109
-                                                        |110
-                                                         |111
-                                                          |112
-                                                           |113
-                                                            |114
-                                                             |115
-                                                              |116
-                                                               |117
-                                                                |118
-                                                                 |119
-                                                                  |120
-                                                                   |121
-                                                                    |
-                                                                    122
-                                                                    |
-                                                                    192
-                                                                    |
-                                                                    193
-                                                                    |
-                                                                    194
-                                                                    |
-                                                                    195
-                                                                    |
-                                                                    196
-                                                                    |
-                                                                    197
-                                                                    |
-                                                                    198
-                                                                    |
-                                                                    199
-                                                                    |
-                                                                    200
-                                                                    |
-                                                                    201
-                                                                    |
-                                                                    202
-                                                                    |
-                                                                    203
-                                                                    |
-                                                                    204
-                                                                    |
-                                                                    205
-                                                                    |
-                                                                    206
-                                                                    |
-                                                                    207
-                                                                    |
-                                                                    208
-                                                                    |
-                                                                    209
-                                                                    |
-                                                                    210
-                                                                    |
-                                                                    211
-                                                                    |
-                                                                    212
-                                                                    |
-                                                                    213
-                                                                    |
-                                                                    214
-                                                                    |
-                                                                    216
-                                                                    |
-                                                                    217
-                                                                    |
-                                                                    218
-                                                                    |
-                                                                    219
-                                                                    |
-                                                                    220
-                                                                    |
-                                                                    221
-                                                                    |
-                                                                    222
-                                                                    |
-                                                                    223
-                                                                    |
-                                                                    224
-                                                                    |
-                                                                    225
-                                                                    |
-                                                                    226
-                                                                    |
-                                                                    227
-                                                                    |
-                                                                    228
-                                                                    |
-                                                                    229
-                                                                    |
-                                                                    230
-                                                                    |
-                                                                    231
-                                                                    |
-                                                                    232
-                                                                    |
-                                                                    233
-                                                                    |
-                                                                    234
-                                                                    |
-                                                                    235
-                                                                    |
-                                                                    236
-                                                                    |
-                                                                    237
-                                                                    |
-                                                                    238
-                                                                    |
-                                                                    239
-                                                                    |
-                                                                    240
-                                                                    |
-                                                                    241
-                                                                    |
-                                                                    242
-                                                                    |
-                                                                    243
-                                                                    |
-                                                                    244
-                                                                    |
-                                                                    245
-                                                                    |
-                                                                    246
-                                                                    |
-                                                                    248
-                                                                    |
-                                                                    249
-                                                                    |
-                                                                    250
-                                                                    |
-                                                                    251
-                                                                    |
-                                                                    252
-                                                                    |
-                                                                    253
-                                                                    |
-                                                                    254|255
-        -> __ocaml_lex_state17 lexbuf
+    | 120 -> __ocaml_lex_state20 lexbuf
+    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state18 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state21 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state18 lexbuf = 1
-  and __ocaml_lex_state19 lexbuf = 4
+  and __ocaml_lex_state18 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 39 -> __ocaml_lex_state19 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
+  and __ocaml_lex_state19 lexbuf = 7
   and __ocaml_lex_state20 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 120 -> __ocaml_lex_state23 lexbuf
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state24 lexbuf
-    | 32|34|39|92|98|110|114|116 -> __ocaml_lex_state21 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
+        __ocaml_lex_state23 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state21 lexbuf =
     match __ocaml_lex_next_char lexbuf with
-    | 39 -> __ocaml_lex_state22 lexbuf
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state22 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state22 lexbuf = 8
+  and __ocaml_lex_state22 lexbuf =
+    match __ocaml_lex_next_char lexbuf with
+    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state18 lexbuf
+    | _ ->
+        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+         lexbuf.Lexing.lex_last_action)
   and __ocaml_lex_state23 lexbuf =
     match __ocaml_lex_next_char lexbuf with
     | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
-        __ocaml_lex_state26 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state24 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state25 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state25 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57 -> __ocaml_lex_state21 lexbuf
-    | _ ->
-        (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
-         lexbuf.Lexing.lex_last_action)
-  and __ocaml_lex_state26 lexbuf =
-    match __ocaml_lex_next_char lexbuf with
-    | 48|49|50|51|52|53|54|55|56|57|65|66|67|68|69|70|97|98|99|100|101|102 ->
-        __ocaml_lex_state21 lexbuf
+        __ocaml_lex_state18 lexbuf
     | _ ->
         (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
          lexbuf.Lexing.lex_last_action) in
@@ -2529,27 +2523,26 @@ and lex_quotation c (lexbuf : Lexing.lexbuf) =
         (store c lexbuf;
          push_loc_cont c lexbuf lex_quotation;
          lex_quotation c lexbuf)
-    | 1 -> store c lexbuf
-    | 2 -> (store c lexbuf; pop_loc c)
-    | 3 ->
+    | 1 -> (store c lexbuf; pop_loc c)
+    | 2 ->
         (store c lexbuf;
          push_loc_cont c lexbuf lex_quotation;
          lex_quotation c lexbuf)
-    | 4 ->
+    | 3 ->
         (store c lexbuf;
          push_loc_cont c lexbuf lex_comment;
          lex_quotation c lexbuf)
-    | 5 -> (update_loc lexbuf; with_store c lexbuf lex_quotation)
-    | 6 ->
+    | 4 -> (update_loc lexbuf; with_store c lexbuf lex_quotation)
+    | 5 ->
         (store c lexbuf;
          push_loc_cont c lexbuf lex_string;
          Buffer.add_char c.buffer '"';
          lex_quotation c lexbuf)
-    | 7 ->
+    | 6 ->
         (err Unterminated_quotation) @@
           (Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p)
+    | 7 -> with_store c lexbuf lex_quotation
     | 8 -> with_store c lexbuf lex_quotation
-    | 9 -> with_store c lexbuf lex_quotation
     | _ -> failwith "lexing: empty token"))
 let rec lex_simple_quotation c (lexbuf : Lexing.lexbuf) =
   let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
