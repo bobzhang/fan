@@ -202,7 +202,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
-| ("#" as x) ?  "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|'  as shift ->
+| ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift ->
     let c = new_cxt () in
     let name =
       match name with
@@ -218,7 +218,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
         end in
       let loc = old -- lexbuf.lex_curr_p in
       let shift = String.length shift in
-      let retract = 2  in
+      let retract = (* 2 *) 1  in
       (if x = None then
         `Quot{Ftoken.name;meta;shift;content;loc;retract}
       else `DirQuotation {Ftoken.name;meta;shift;content;loc;retract} ,loc)

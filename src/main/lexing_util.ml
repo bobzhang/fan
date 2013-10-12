@@ -15,7 +15,7 @@ let quotation_name = '.' ? (uppercase  identchar* '.') *
 let locname = ident
 
 let quotation_prefix =
-  '{' (':' quotation_name)? ('@' locname)? '|'
+  '{' (':' quotation_name)? ('@' locname)? (* '|' *)
     
 
 let lident = lowercase identchar *
@@ -350,8 +350,8 @@ and lex_quotation c = {:lexer|
       lex_quotation c lexbuf
     end
       
-| "|}" ->
-    store c lexbuf
+(* | "|}" -> *)
+(*     store c lexbuf *)
   
 | "}" ->
     begin
