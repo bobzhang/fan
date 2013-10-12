@@ -58,15 +58,7 @@ let left_delimitor = (* At least a safe_delimchars *)
   | '[' '='
   | '[' '>'
     
-  (* left_delims delimchars* safe_delimchars (delimchars|left_delims)* *)
-  (*  (\* A '(' or a new super '(' without "(<" *\) *)
-  (* | '(' (['|' ':'] delimchars* )? *)
-  (* (\* Old brackets, no new brackets starting with "[|" or "[:" *\) *)
-  (* | '[' ['|' ':']? *)
-  (*  (\* Old "[<","{<" and new ones *\) *)
-  (* | ['[' ] delimchars* '<' *)
-  (* | '[' '=' *)
-  (* | '[' '>' *)
+
 let right_delimitor =
    (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* ']'
   | ')'
@@ -210,14 +202,12 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
       (`Comment ( buff_contents c),
        old -- lexbuf.lex_curr_p)
     end
-| "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|'  as shift ->
+| ("#" as x) ?  "{" (":" (quotation_name as name))? ('@' (locname as meta))? '|'  as shift ->
     let c = new_cxt () in
     let name =
       match name with
       | Some name -> Ftoken.name_of_string name
       | None -> Ftoken.empty_name  in 
-    let shift = String.length shift in
-    let retract = 2  in
     begin
       let old = lexbuf.lex_start_p in
       let content =
@@ -227,28 +217,13 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lexer|
           buff_contents c 
         end in
       let loc = old -- lexbuf.lex_curr_p in
-      (`Quot{Ftoken.name;meta;shift;content;loc;retract},loc)
+      let shift = String.length shift in
+      let retract = 2  in
+      (if x = None then
+        `Quot{Ftoken.name;meta;shift;content;loc;retract}
+      else `DirQuotation {Ftoken.name;meta;shift;content;loc;retract} ,loc)
     end
 
-|"#{:" (quotation_name as name) '|' as shift ->
-    let c  =  new_cxt () in
-    let retract =   2 in
-    let old = lexbuf.lex_start_p in
-    let s =
-      begin
-        store c lexbuf;
-        push_loc_cont c lexbuf lex_quotation;
-        buff_contents c
-      end in
-
-    (* let contents = String.sub s 0 (String.length s - retract) in (\* FIXME later*\) *)
-    let loc = old -- lexbuf.lex_curr_p in
-    (`DirQuotation {shift = String.length shift ;
-                    meta = None;
-                    Ftoken.name = Ftoken.name_of_string name;
-                    content = s (* contents *);
-                    loc; retract},
-     loc)
       
 | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
     ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
