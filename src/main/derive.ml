@@ -5,7 +5,7 @@ open Util
 open Astn_util
 open FAstN
 open Fid
-open CtypN
+open Ctyp
 open FSigUtil
   
 let check_valid str =
@@ -152,7 +152,7 @@ let exp_of_ctyp
     %case-{ $pat:p -> $e } in  begin 
     let info = (Sum, List.length (Ast_basic.N.list_of_bar ty [])) in 
     let res :  case list =
-      CtypN.reduce_data_ctors ty  [] f ~compose:cons  in
+      Ctyp.reduce_data_ctors ty  [] f ~compose:cons  in
     let res =
       let t = (* only under this case we need defaulting  *)
         if List.length res >= 2 && arity >= 2 then
@@ -183,7 +183,7 @@ let exp_of_variant ?cons_transform
     gen_tuple_abbrev ~arity ~annot ~destination lid e in
   (* FIXME, be more precise  *)
   let info = (TyVrnEq, List.length (Ast_basic.N.list_of_bar ty [])) in
-  let ls = CtypN.view_variant ty in
+  let ls = Ctyp.view_variant ty in
   let res =
     let res = List.fold_left
       (fun  acc x ->
@@ -231,16 +231,16 @@ let fun_of_tydcl
        |  `TyMan(_,_,repr) | `TyRepr(_,repr) ->
          begin match repr with
          | `Record t ->       
-           let cols =  CtypN.list_of_record t  in
+           let cols =  Ctyp.list_of_record t  in
            let pat = (EpN.mk_record ~arity  cols  :> pat)in
            let info =
              List.mapi
-               (fun i x ->  match x with
-                {col_label;col_mutable;col_ctyp} ->
-                     {re_info = (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) i col_ctyp  ;
-                      re_label = col_label;
-                      re_mutable = col_mutable}
-                  ) cols in
+               (fun i x ->
+                 match (x:Ctyp.col) with
+                   {label;is_mutable;ty} ->
+                     {info = (mapi_exp ~arity ~names ~f:simple_exp_of_ctyp) i ty  ;
+                      label;
+                      is_mutable}) cols in
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
@@ -282,11 +282,11 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     = 
   (* let open Transform in  *)
   let tctor_var = basic_transform left_type_id in
-  let (name,len) = CtypN.name_length_of_tydcl tydcl in
+  let (name,len) = Ctyp.name_length_of_tydcl tydcl in
   let fname = tctor_var name in
   (* FIXME the annot using [_ty]?*)
   let (_ty,result) =
-    CtypN.mk_method_type_of_name
+    Ctyp.mk_method_type_of_name
       ~number:arity ~prefix:names (name,len) destination in
   let (annot,result) =
     match annot with
@@ -294,7 +294,7 @@ let bind_of_tydcl ?cons_transform simple_exp_of_ctyp
     |Some f -> let (a,b) = f name in (Some a, b) in 
 
   let fun_exp =
-    if not ( CtypN.is_abstract tydcl) then 
+    if not ( Ctyp.is_abstract tydcl) then 
       fun_of_tydcl 
         ~names ~arity ~left_type_variable ~mk_record
         ~result
@@ -341,7 +341,7 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
     | `Single (name,tydcl) ->
         (Hashset.add cxt name;
          let flag =
-           if CtypN.is_recursive tydcl then `Positive 
+           if Ctyp.is_recursive tydcl then `Positive 
            else `Negative  
          and bind = mk_bind  tydcl in 
          %stru-{ let $rec:flag  $bind }) in
@@ -387,8 +387,8 @@ let obj_of_mtyps
            ~default ~mk_variant
            simple_exp_of_ctyp) ~result tydcl in
     let mk_type tydcl =
-      let (name,len) = CtypN.name_length_of_tydcl tydcl in
-        let (ty,result_type) = CtypN.mk_method_type ~number:arity ~prefix:names
+      let (name,len) = Ctyp.name_length_of_tydcl tydcl in
+        let (ty,result_type) = Ctyp.mk_method_type ~number:arity ~prefix:names
             (%ident-{ $lid:name } ,len )
             (Obj k) in
         (ty,result_type) in
@@ -401,7 +401,7 @@ let obj_of_mtyps
       | `Mutual named_types ->
         sem_of_list (List.map mk_clfield named_types)
       | `Single ((name,tydcl) as  named_type) ->
-         match CtypN.abstract_list tydcl with
+         match Ctyp.abstract_list tydcl with
          | Some n  -> 
            let ty_str : string =   ObjsN.dump_typedecl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
@@ -414,11 +414,11 @@ let obj_of_mtyps
     let body = List.map fs lst in 
     let body : clfield =
       let items = List.map (fun (dest,src,len) ->
-        let (ty,_dest) = CtypN.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
+        let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
         %clfield-{ method $lid:dest : $ty = $(ExpN.unknown len) } ) extras in
       sem_of_list (body @ items) in 
-        let v = CtypN.mk_obj class_name  base body in
+        let v = Ctyp.mk_obj class_name  base body in
         (Hashtbl.iter (fun _ v ->
           eprintf "@[%a@]@." pp_print_warning_type  v)
            tbl;

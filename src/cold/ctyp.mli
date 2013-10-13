@@ -11,9 +11,9 @@ type vrn =
 
 
 type col = {
-    col_label:string;
-    col_mutable:bool;
-    col_ctyp:ctyp
+    label : string;
+    is_mutable : bool;
+    ty : ctyp
   }
 type ty_info = {
     name_exp: exp; (*  [meta_int] *)
@@ -48,9 +48,9 @@ type warning_type =
 
 (* Feed to user to compose an expession node *)
 type record_col = {
-    re_label: string ;
-    re_mutable: bool ;
-    re_info: ty_info;
+    label: string ;
+    is_mutable: bool ;
+    info: ty_info;
   }
 type record_info =  record_col list
 

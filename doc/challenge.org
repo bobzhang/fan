@@ -11,7 +11,7 @@ problem
 ->% lexing
 |%
 [%
-
+{'
 =%
 %exp-{ %exp'{ { $$x } } }
 

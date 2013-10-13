@@ -103,7 +103,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
 (*
   Example:
    {[
-  mk_record ~arity:3 (CtypN.list_of_record %ctyp{ u:int; v:mutable float } )
+  mk_record ~arity:3 (Ctyp.list_of_record %ctyp{ u:int; v:mutable float } )
   |> Ast2pt.print_pat f;
   ({ u = a0; v = a1 },{ u = b0; v = b1 },{ u = c0; v = c1 })
 
@@ -112,8 +112,8 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
 let mk_record ?(arity=1) cols : ep  =
   let mk_list off = 
     Listf.mapi
-      (fun i {CtypN.col_label;_} ->
-        %rec_exp-'{ $lid:col_label = $(xid ~off i) } ) cols in
+      (fun i (x:Ctyp.col) ->
+        %rec_exp-'{ $(lid:x.label) = $(xid ~off i) } ) cols in
   let res = Int.fold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(sem_of_list (mk_list  0))
         (* %{ { $(list:mk_list 0) } } *) )

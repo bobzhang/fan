@@ -23,29 +23,6 @@ type file_kind =
   | ModuleImpl of string
   | IncludeDir of string 
 let print_loaded_modules = ref false
-let loaded_modules = ref Setf.String.empty
-let add_to_loaded_modules name =
-  loaded_modules := (Setf.String.add name loaded_modules.contents)
-let (objext,libext) =
-  if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
-let require name =
-  if not @@ (Setf.String.mem name loaded_modules.contents)
-  then (add_to_loaded_modules name; Dyn_load.load (name ^ libext))
-let () =
-  let open FControl in
-    Fgram.unsafe_extend_single (item : 'item Fgram.t )
-      (None,
-        (None, None,
-          [([`Skeyword "require";
-            `Stoken
-              (((function | `Str _ -> true | _ -> false)),
-                (`App ((`Vrn "Str"), `Any)), "`Str _")],
-             ("require s\n",
-               (Fgram.mk_action
-                  (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
-                     match __fan_1 with
-                     | `Str s -> (require s : 'item )
-                     | _ -> failwith "require s\n"))))]))
 let output_file = ref None
 let process_intf name =
   let v =
@@ -88,7 +65,7 @@ let input_file x =
        FConfig.current_input_file := f;
        process_impl f;
        at_exit (fun ()  -> Sys.remove f))
-  | ModuleImpl file_name -> require file_name
+  | ModuleImpl file_name -> Control_require.add file_name
   | IncludeDir dir -> Ref.modify FConfig.dynload_dirs (cons dir)
 let initial_spec_list =
   [("-I", (Arg.String ((fun x  -> input_file (IncludeDir x)))),
@@ -121,7 +98,8 @@ let initial_spec_list =
             | Some v -> printf "%s@." v
             | None  -> printf "null");
            exit 0))), "Print the current compilation unit");
-  ("-plugin", (Arg.String require), "load plugin cma or cmxs files");
+  ("-plugin", (Arg.String Control_require.add),
+    "load plugin cma or cmxs files");
   ("-loaded-modules", (Arg.Set print_loaded_modules),
     "Print the list of loaded modules.");
   ("-loaded-filters", (Arg.Unit just_print_filters),
@@ -156,9 +134,9 @@ let anon_fun name =
        if check ".ml"
        then Impl name
        else
-         if check objext
+         if check Dyn_load.objext
          then ModuleImpl name
          else
-           if check libext
+           if check Dyn_load.libext
            then ModuleImpl name
            else raise (Arg.Bad ("don't know what to do with " ^ name)))

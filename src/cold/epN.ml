@@ -46,8 +46,8 @@ let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
 let mk_record ?(arity= 1)  cols =
   (let mk_list off =
      Listf.mapi
-       (fun i  { CtypN.col_label = col_label;_}  ->
-          `RecBind ((`Lid col_label), (xid ~off i))) cols in
+       (fun i  (x : Ctyp.col)  -> `RecBind ((`Lid (x.label)), (xid ~off i)))
+       cols in
    let res =
      Int.fold_left ~start:1 ~until:(arity - 1)
        ~acc:(`Record (sem_of_list (mk_list 0)))

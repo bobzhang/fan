@@ -104,7 +104,7 @@ let mk_transform_type_eq () = object(self:'self_type)
     | %stru-{ type $(`TyDcl ( _name, vars, ctyp, _) ) } as x -> (* FIXME why tuple?*)
         let r =
           match ctyp with
-          | `TyEq (_,t) -> CtypN.qualified_app_list t | _ -> None  in
+          | `TyEq (_,t) -> Ctyp.qualified_app_list t | _ -> None  in
         begin match  r with
         | Some (i,lst)  -> (* [ type u 'a = Loc.t int U.float]*)
             let vars =
@@ -128,7 +128,7 @@ let mk_transform_type_eq () = object(self:'self_type)
         end
     | x -> super#stru x 
   method! ctyp x =
-    match CtypN.qualified_app_list x with
+    match Ctyp.qualified_app_list x with
     | Some (i, lst) ->
         let lst = List.map (fun ctyp -> self#ctyp ctyp) lst in 
         let src = i and dest = IdN.to_string i in begin

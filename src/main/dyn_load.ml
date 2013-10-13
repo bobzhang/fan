@@ -32,6 +32,12 @@ let load file =
         with Dynlink.Error e -> raise (Error (fname, Dynlink.error_message e))
 end
 
+(** no repeat loading
+    FIXME? it can only load [cma] and [cmxs] files? *)
+let (objext,libext) =
+  if Dynlink.is_native then
+    (".cmxs",".cmxs")
+  else (".cmo",".cma")
 
 
 (* local variables: *)

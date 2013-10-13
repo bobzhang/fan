@@ -1,7 +1,7 @@
 
 (** Fan's deriving *)
 open FAstN
-open CtypN
+open Ctyp
 open FSigUtil
 
 (**

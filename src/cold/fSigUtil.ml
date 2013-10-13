@@ -69,7 +69,7 @@ let mk_transform_type_eq () =
       | (`Type `TyDcl (_name,vars,ctyp,_) : FAstN.stru) as x ->
           let r =
             match ctyp with
-            | `TyEq (_,t) -> CtypN.qualified_app_list t
+            | `TyEq (_,t) -> Ctyp.qualified_app_list t
             | _ -> None in
           (match r with
            | Some (i,lst) ->
@@ -86,7 +86,7 @@ let mk_transform_type_eq () =
            | None  -> super#stru x)
       | x -> super#stru x
     method! ctyp x =
-      match CtypN.qualified_app_list x with
+      match Ctyp.qualified_app_list x with
       | Some (i,lst) ->
           let lst = List.map (fun ctyp  -> self#ctyp ctyp) lst in
           let src = i and dest = IdN.to_string i in

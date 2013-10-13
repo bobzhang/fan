@@ -21,3 +21,5 @@ let load file =
        (try Dynlink.loadfile fname
         with
         | Dynlink.Error e -> raise (Error (fname, (Dynlink.error_message e)))))
+let (objext,libext) =
+  if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")

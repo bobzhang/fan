@@ -77,9 +77,9 @@ FAN_FILES = \
     $(FAN_LEX_LIB_FILES) ast_gen ant antN ast_loc  ast_inject  astn_util \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
-    fid code_template comment_filter compile_lex compile_stream ctypN \
-    deriveN dyn_load epN \
-    expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
+    fid code_template comment_filter compile_lex compile_stream ctyp \
+    derive dyn_load epN \
+    expN fAstN control control_require fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
     fSigUtil fState fanAstN fanOps fgram\
     filters freeVars fsyntax gentry gfold gramlib\
     idN langFans langInclude langOcaml langSave  \

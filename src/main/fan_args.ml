@@ -32,31 +32,9 @@ type file_kind =
 let print_loaded_modules = ref false
 
 
-let loaded_modules = ref Setf.String.empty
 
-let add_to_loaded_modules name =
-  loaded_modules := Setf.String.add name !loaded_modules;;
 
-(** no repeat loading
-    FIXME? it can only load [cma] and [cmxs] files? *)
-let (objext,libext) =
-  if Dynlink.is_native then
-    (".cmxs",".cmxs")
-  else (".cmo",".cma")
 
-let require name = 
-  if not @@ Setf.String.mem name !loaded_modules  then begin
-    add_to_loaded_modules name;
-    Dyn_load.load  (name ^ libext)
-  end
-;;
-
-let () =
-  let open FControl in
-  %unsafe_extend{
-  (g:Fgram.t)
-    item:
-    [ "require"; `Str s -> require s ]}
 
 let output_file = ref None              
 
@@ -114,7 +92,7 @@ let input_file x =
        process_impl  f;
        at_exit (fun () -> Sys.remove f))
         
-  | ModuleImpl file_name -> require  file_name
+  | ModuleImpl file_name -> Control_require.add  file_name
 
   | IncludeDir dir ->
       Ref.modify FConfig.dynload_dirs (cons dir) 
@@ -160,7 +138,7 @@ let initial_spec_list =
        exit 0)), 
     "Print the current compilation unit");
 
-   ("-plugin", Arg.String require , "load plugin cma or cmxs files");
+   ("-plugin", Arg.String Control_require.add , "load plugin cma or cmxs files");
 
    ("-loaded-modules", Arg.Set print_loaded_modules, "Print the list of loaded modules.");
    
@@ -197,8 +175,8 @@ let anon_fun name =
    (* if name = "-" then *)
    if check ".mli" then Intf name
   else if check ".ml" then Impl name
-  else if check objext then ModuleImpl name
-  else if check libext then ModuleImpl name
+  else if check Dyn_load.objext then ModuleImpl name
+  else if check Dyn_load.libext then ModuleImpl name
   else raise (Arg.Bad ("don't know what to do with " ^ name)));;
 
 

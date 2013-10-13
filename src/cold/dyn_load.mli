@@ -9,3 +9,6 @@
     in [FConfig.dynload_dirs] *)
 val load : string -> unit
     
+val objext : string
+
+val libext : string    

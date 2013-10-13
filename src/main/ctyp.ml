@@ -18,9 +18,9 @@ type vrn =
 
 
 type col = {
-    col_label:string;
-    col_mutable:bool;
-    col_ctyp:ctyp
+    label:string;
+    is_mutable:bool;
+    ty:ctyp
   }
 
 type ty_info = {
@@ -58,9 +58,9 @@ type warning_type =
 
 (* Feed to user to compose an expession node *)
 type record_col = {
-    re_label: string ;
-    re_mutable: bool ;
-    re_info: ty_info;
+    label: string ;
+    is_mutable: bool ;
+    info: ty_info;
   }
       
 type record_info =  record_col list
@@ -162,11 +162,11 @@ let list_of_record (ty:name_ctyp) : col list  =
     (
      function
        | (* %{ $lid:label : mutable $ctyp  } *)
-         `TyColMut(`Lid col_label,col_ctyp) ->
-           {col_label; col_ctyp; col_mutable=true}
+         `TyColMut(`Lid label,ty) ->
+           {label; ty; is_mutable=true}
        | (* %{ $lid:label :  $ctyp  } *)
-         `TyCol (`Lid col_label, col_ctyp) -> 
-          {col_label; col_ctyp; col_mutable=false}
+         `TyCol (`Lid label, ty) -> 
+          {label; ty; is_mutable=false}
     | t0 ->
         failwithf
           "list_of_record %s" (ObjsN.dump_name_ctyp t0) )
@@ -447,7 +447,7 @@ let transform : full_id_transform -> vid -> exp  =
                   Hashtbl.add conversion_table src dest;   
                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
                 end in
-              %exp-{ self# $(lid:f dest) }
+              %exp-{self#$(lid:f dest)}
                   (*todo  set its default let to self#unknown *)
 
 let basic_transform = function 
@@ -474,8 +474,8 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let pat = args |>tuple_com in
   match destination with
   | Obj(Map) ->
-     %case-{ $pat:pat -> ( $e : $(name :> ctyp) :> $annot) }
-  |_ -> %case-{ $pat:pat -> ( $e  :> $annot) }
+     %case-{$pat:pat->($e : $(name :> ctyp) :> $annot) }
+  |_ -> %case-{$pat:pat->( $e  :> $annot)}
 
 
 
