@@ -5,7 +5,7 @@ let () =
 let test_ident_location  _ =
   let result =
     try Some
-        (Ast2pt.exp (Fgram.parse_string Fsyntax.exp {:str| X.x|})).pexp_desc
+        (Ast2pt.exp (Fgram.parse_string Fsyntax.exp %str{ X.x})).pexp_desc
     with _ -> None in
   match result with
   | None -> assert_failure "parse error"
@@ -28,5 +28,5 @@ let suite =
   "Location_ident" >:::
   [ "test_ident_location" >:: test_ident_location ]
 (* local variables: *)
-(* compile-command: "cd .. && pmake unitest/test" *)
+(* compile-command: "cd ../unitest_annot && pmake location_ident.cmo" *)
 (* end: *)
