@@ -20,9 +20,10 @@ let add name =
 let () =
   let open Control in
   %unsafe_extend{
-  (g:Fgram.t)
+  (* (g:Fgram.t) *)
     item:
     [ "require"; `Str s -> add s ]}
+
 
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake control_require.cmo" *)

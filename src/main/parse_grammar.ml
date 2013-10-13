@@ -1,7 +1,7 @@
 
 open FAst
 open Ast_gen
-open FGramDef
+open Gram_def
 open FGramGen
 open! Fsyntax
 open Util
@@ -14,10 +14,10 @@ open Util
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
    (t_qualid:vid Fgram.t )
-   (entry_name : ([`name of Ftoken.name option | `non] * FGramDef.name) Fgram.t )
+   (entry_name : ([`name of Ftoken.name option | `non] * Gram_def.name) Fgram.t )
     entry position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
-   (entry: FGramDef.entry Fgram.t)
+   (entry: Gram_def.entry Fgram.t)
    (pattern: action_pattern Fgram.t )
    extend_body
    newterminals
@@ -294,29 +294,29 @@ end;;
 (*
   Ast_quotation.add_quotation
   (d,"rule") rule
-  ~mexp:FGramDef.Exp.meta_rule
-  ~mpat:FGramDef.Pat.meta_rule
+  ~mexp:Gram_def.Exp.meta_rule
+  ~mpat:Gram_def.Pat.meta_rule
   ~exp_filter:(fun x-> (x :ep :>exp))
   ~pat_filter:(fun x->(x : ep :> pat));
 
   Ast_quotation.add_quotation
   (d,"entry") entry
-  ~mexp:FGramDef.Expr.meta_entry
-  ~mpat:FGramDef.Patt.meta_entry
+  ~mexp:Gram_def.Expr.meta_entry
+  ~mpat:Gram_def.Patt.meta_entry
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
   Ast_quotation.add_quotation
   (d,"level") level
-  ~mexp:FGramDef.Expr.meta_level
-  ~mpat:FGramDef.Patt.meta_level
+  ~mexp:Gram_def.Expr.meta_level
+  ~mpat:Gram_def.Patt.meta_level
   ~exp_filter:(fun x-> (x :ep :> exp))
   ~pat_filter:(fun x-> (x :ep :> pat));
 
   Ast_quotation.add_quotation
   (d,"symbol") psymbol
-  ~mexp:FGramDef.Expr.meta_symbol
-  ~mpat:FGramDef.Patt.meta_symbol
+  ~mexp:Gram_def.Expr.meta_symbol
+  ~mpat:Gram_def.Patt.meta_symbol
   ~exp_filter:(fun x -> (x :ep :>exp))
   ~pat_filter:(fun x->  (x :ep :>pat));
  *)  
@@ -332,11 +332,11 @@ end;;
 (*   [ a_lident{i} -> %exp{ $(id:(i:>ident)) } *)
 (*   | "("; exp{e}; ")" -> e ] *)
 (* |};   *)
-(* let u : FGramDef.rule = {:rule| *)
+(* let u : Gram_def.rule = {:rule| *)
 (*   a_lident{i} -> print_string i *)
 (* |};   *)
 
-(* let u : FGramDef.symbol = {:symbol| *)
+(* let u : Gram_def.symbol = {:symbol| *)
 (*   "x" *)
 (* |}; *)
 

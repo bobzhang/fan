@@ -79,7 +79,7 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     fid code_template comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
-    expN fAstN control control_require fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
+    expN fAstN control control_require fDyn gram_def fGramGen fIncludeDir fMeta fQuotDir\
     fSigUtil fState fanAstN fanOps fgram\
     filters freeVars fsyntax gentry gfold gramlib\
     idN langFans langInclude langOcaml langSave  \

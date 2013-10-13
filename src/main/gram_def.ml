@@ -65,7 +65,7 @@ type entry   = {
   (*position expession node *)    
   pos : exp option ;
   local : bool ;  (* mark whether the grammar is local or not*)
-  levels : levels(* list level *);
+  levels : levels;
 }
 and levels =
  [ `Group of (level list ) | `Single of level]   

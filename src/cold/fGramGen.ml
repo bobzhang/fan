@@ -1,9 +1,9 @@
+let eprintf = Format.eprintf
+let list_of_list = FanOps.list_of_list
+let is_irrefut_pat = FanOps.is_irrefut_pat
 open FAst
-open FanOps
-open Format
 open Ast_gen
 open Util
-open FGramDef
 let print_warning = eprintf "%a:\n%s@." FLoc.print
 let prefix = "__fan_"
 let ghost = FLoc.ghost
@@ -12,12 +12,15 @@ let gm () =
   match FConfig.compilation_unit.contents with
   | Some "Fgram" -> `Uid (ghost, "")
   | Some _|None  -> grammar_module_name.contents
-let mk_entry ~local  ~name  ~pos  ~levels  = { name; pos; levels; local }
-let mk_level ~label  ~assoc  ~rules  = { label; assoc; rules }
-let mk_rule ~prod  ~action  = { prod; action }
-let mk_symbol ?(pattern= None)  ~text  ~styp  = { text; styp; pattern }
+let mk_entry ~local  ~name  ~pos  ~levels  =
+  { Gram_def.name = name; pos; levels; local }
+let mk_level ~label  ~assoc  ~rules  =
+  { Gram_def.label = label; assoc; rules }
+let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
+let mk_symbol ?(pattern= None)  ~text  ~styp  =
+  ({ text; styp; pattern } : Gram_def.symbol )
 let check_not_tok s =
-  match s with
+  match (s : Gram_def.symbol ) with
   | { text = `Stok (_loc,_,_);_} ->
       FLoc.raise _loc
         (Fstream.Error
@@ -31,32 +34,34 @@ let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
 let retype_rule_list_without_patterns _loc rl =
   try
     List.map
-      (function
-       | { prod = ({ pattern = None ; styp = `Tok _;_} as s)::[];
-           action = None  } ->
-           {
-             prod =
-               [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
-             action =
-               (Some
-                  (`App
-                     (_loc,
-                       (`Dot
-                          (_loc, (gm ()), (`Lid (_loc, "string_of_token")))),
-                       (`Lid (_loc, "x"))) : FAst.exp ))
-           }
-       | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
-           {
-             prod =
-               [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
-             action = (Some (`Lid (_loc, "x") : FAst.exp ))
-           }
-       | { prod = []; action = Some _ } as r -> r
-       | _ -> raise Exit) rl
+      (fun (x : Gram_def.rule)  ->
+         match x with
+         | { prod = ({ pattern = None ; styp = `Tok _;_} as s)::[];
+             action = None  } ->
+             ({
+                prod =
+                  [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
+                action =
+                  (Some
+                     (`App
+                        (_loc,
+                          (`Dot
+                             (_loc, (gm ()),
+                               (`Lid (_loc, "string_of_token")))),
+                          (`Lid (_loc, "x"))) : FAst.exp ))
+              } : Gram_def.rule )
+         | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
+             ({
+                prod =
+                  [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
+                action = (Some (`Lid (_loc, "x") : FAst.exp ))
+              } : Gram_def.rule )
+         | { prod = []; action = Some _ } as r -> r
+         | _ -> raise Exit) rl
   with | Exit  -> rl
-let make_ctyp (styp : styp) tvar =
+let make_ctyp (styp : Gram_def.styp) tvar =
   (let rec aux v =
-     match (v : styp ) with
+     match (v : Gram_def.styp ) with
      | #vid' as x -> (x : vid'  :>ctyp)
      | `Quote _ as x -> x
      | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
@@ -76,8 +81,8 @@ let make_ctyp (styp : styp) tvar =
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
-let rec make_exp (tvar : string) (x : text) =
-  let rec aux tvar (x : text) =
+let rec make_exp (tvar : string) (x : Gram_def.text) =
+  let rec aux tvar (x : Gram_def.text) =
     match x with
     | `Slist (_loc,min,t,ts) ->
         let txt = aux "" t.text in
@@ -141,7 +146,7 @@ let rec make_exp (tvar : string) (x : text) =
           end in
         let descr' = Objs.strip_pat (descr :>pat) in
         let mdescr = (v#pat _loc descr' :>exp) in
-        let mstr = FGramDef.string_of_simple_pat descr in
+        let mstr = Gram_def.string_of_simple_pat descr in
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
              (`Par
@@ -151,8 +156,8 @@ let rec make_exp (tvar : string) (x : text) =
                        (`Com (_loc, mdescr, (`Str (_loc, mstr))))))))) : 
           FAst.exp ) in
   aux tvar x
-and make_exp_rules (_loc : loc) (rl : (text list* exp* exp option) list)
-  (tvar : string) =
+and make_exp_rules (_loc : loc)
+  (rl : (Gram_def.text list* exp* exp option) list) (tvar : string) =
   list_of_list _loc
     (List.map
        (fun (sl,action,raw)  ->
@@ -168,14 +173,14 @@ and make_exp_rules (_loc : loc) (rl : (text list* exp* exp option) list)
                        (_loc,
                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
             FAst.exp )) rl)
-let text_of_action (_loc : loc) (psl : symbol list)
+let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (FLoc.name.contents)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) act in
    let (_,tok_match_pl) =
      Listf.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
-          match x with
+          match (x : Gram_def.symbol ) with
           | { pattern = Some p; text = `Stok _;_} when not (is_irrefut_pat p)
               ->
               let id = prefix ^ (string_of_int i) in
@@ -224,7 +229,7 @@ let text_of_action (_loc : loc) (psl : symbol list)
            FAst.exp ) in
    let (_,txt) =
      Listf.fold_lefti
-       (fun i  txt  s  ->
+       (fun i  txt  (s : Gram_def.symbol)  ->
           match s.pattern with
           | Some (`Alias (_loc,`App (_,_,`Par (_,(`Any _ : FAst.pat))),p)) ->
               let p = typing (p : alident  :>pat) (make_ctyp s.styp tvar) in
@@ -243,9 +248,11 @@ let text_of_action (_loc : loc) (psl : symbol list)
        psl in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
-let exp_delete_rule _loc n (symbolss : symbol list list) =
-  let f _loc n sl =
-    let sl = list_of_list _loc (List.map (fun s  -> make_exp "" s.text) sl) in
+let exp_delete_rule _loc n (symbolss : Gram_def.symbol list list) =
+  let f _loc (n : Gram_def.name) sl =
+    let sl =
+      list_of_list _loc
+        (List.map (fun (s : Gram_def.symbol)  -> make_exp "" s.text) sl) in
     ((n.exp : FAst.exp ), sl) in
   let rest =
     List.map
@@ -265,24 +272,21 @@ let mk_name _loc (i : vid) =
     | `Lid (_,x)|`Uid (_,x) -> x
     | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
     | _ -> failwith "internal error in the Grammar extension" in
-  { exp = (i :>exp); tvar = (aux i); loc = _loc }
+  ({ exp = (i :>exp); tvar = (aux i); loc = _loc } : Gram_def.name )
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
-let text_of_entry ?(safe= true)  (e : entry) =
+let text_of_entry ?(safe= true)  (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
-   let ent =
-     let x = e.name in
-     (`Constraint
-        (_loc, (x.exp),
-          (`App
-             (_loc,
-               (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
-               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (x.tvar)))))))) : 
-       FAst.exp ) in
+   let ent: FAst.exp =
+     `Constraint
+       (_loc, ((e.name).exp),
+         (`App
+            (_loc, (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
+              (`Quote (_loc, (`Normal _loc), (`Lid (_loc, ((e.name).tvar)))))))) in
    let pos =
      match e.pos with
      | Some pos -> (`App (_loc, (`Uid (_loc, "Some")), pos) : FAst.exp )
      | None  -> (`Uid (_loc, "None") : FAst.exp ) in
-   let apply level =
+   let apply (level : Gram_def.level) =
      let lab =
        match level.label with
        | Some lab ->
@@ -293,12 +297,12 @@ let text_of_entry ?(safe= true)  (e : entry) =
        match level.assoc with
        | Some ass -> (`App (_loc, (`Uid (_loc, "Some")), ass) : FAst.exp )
        | None  -> (`Uid (_loc, "None") : FAst.exp ) in
-     let mk_srule loc (t : string) (tvar : string) (r : rule) =
-       (let sl = List.map (fun s  -> s.text) r.prod in
+     let mk_srule loc (t : string) (tvar : string) (r : Gram_def.rule) =
+       (let sl = List.map (fun (s : Gram_def.symbol)  -> s.text) r.prod in
         let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-        (sl, ac, (r.action)) : (text list* exp* exp option) ) in
-     let mk_srules loc (t : string) (rl : rule list) (tvar : string) =
-       List.map (mk_srule loc t tvar) rl in
+        (sl, ac, (r.action)) : (Gram_def.text list* exp* exp option) ) in
+     let mk_srules loc (t : string) (rl : Gram_def.rule list) (tvar : string)
+       = List.map (mk_srule loc t tvar) rl in
      let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
      let prod = make_exp_rules _loc rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
@@ -347,8 +351,8 @@ let let_in_of_extend _loc (gram : vid option) locals default =
         (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))), g) : 
           FAst.exp )
     | None  -> (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) : FAst.exp ) in
-  let local_bind_of_name =
-    function
+  let local_bind_of_name x =
+    match (x : Gram_def.name ) with
     | { exp = (`Lid (_,i) : FAst.exp); tvar = x; loc = _loc } ->
         (`Bind
            (_loc, (`Lid (_loc, i)),
@@ -409,14 +413,15 @@ let text_of_functorial_extend ?safe  _loc gram el =
     match el with | [] -> (`Uid (_loc, "()") : FAst.exp ) | _ -> seq_sem el in
   let locals =
     Listf.filter_map
-      (fun { name; local;_}  -> if local then Some name else None) el in
+      (fun (x : Gram_def.entry)  -> if x.local then Some (x.name) else None)
+      el in
   let_in_of_extend _loc gram locals args
-let token_of_simple_pat _loc (p : simple_pat) =
-  let p_pat = (p : simple_pat  :>pat) in
+let token_of_simple_pat _loc (p : Gram_def.simple_pat) =
+  let p_pat = (p : Gram_def.simple_pat  :>pat) in
   let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
-      let no_variable = FGramDef.wildcarder#simple_pat p in
+      let no_variable = Gram_def.wildcarder#simple_pat p in
       let match_fun =
         let v = (no_variable :>pat) in
         if is_irrefut_pat v
@@ -431,7 +436,7 @@ let token_of_simple_pat _loc (p : simple_pat) =
           FAst.exp ) in
       let descr = no_variable in
       let text = `Stok (_loc, match_fun, descr) in
-      { text; styp = (`Tok _loc); pattern = (Some p_pat) }
+      ({ text; styp = (`Tok _loc); pattern = (Some p_pat) } : Gram_def.symbol )
   | (x,y)::ys ->
       let guard =
         List.fold_left
@@ -448,6 +453,6 @@ let token_of_simple_pat _loc (p : simple_pat) =
             (`Bar
                (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                  (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-      let descr = FGramDef.wildcarder#simple_pat p in
+      let descr = Gram_def.wildcarder#simple_pat p in
       let text = `Stok (_loc, match_fun, descr) in
       { text; styp = (`Tok _loc); pattern = (Some (Objs.wildcarder#pat po)) }

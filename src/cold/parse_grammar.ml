@@ -1,6 +1,6 @@
 open FAst
 open Ast_gen
-open FGramDef
+open Gram_def
 open FGramGen
 open! Fsyntax
 open Util
@@ -12,7 +12,7 @@ let qualuid: vid Fgram.t = Fgram.mk "qualuid"
 let qualid: vid Fgram.t = Fgram.mk "qualid"
 let t_qualid: vid Fgram.t = Fgram.mk "t_qualid"
 let entry_name:
-  ([ `name of Ftoken.name option | `non]* FGramDef.name) Fgram.t =
+  ([ `name of Ftoken.name option | `non]* Gram_def.name) Fgram.t =
   Fgram.mk "entry_name"
 let entry = Fgram.mk "entry"
 let position = Fgram.mk "position"
@@ -27,7 +27,7 @@ let rule_list = Fgram.mk "rule_list"
 let psymbol = Fgram.mk "psymbol"
 let level = Fgram.mk "level"
 let level_list = Fgram.mk "level_list"
-let entry: FGramDef.entry Fgram.t = Fgram.mk "entry"
+let entry: Gram_def.entry Fgram.t = Fgram.mk "entry"
 let pattern: action_pattern Fgram.t = Fgram.mk "pattern"
 let extend_body = Fgram.mk "extend_body"
 let newterminals = Fgram.mk "newterminals"

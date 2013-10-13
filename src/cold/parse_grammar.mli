@@ -62,10 +62,10 @@ val qualid : vid Fgram.t
 val t_qualid : vid Fgram.t
     
 (* val entry_name : *)
-(*     ([ `name of Ftoken.name option | `non ] * FGramDef.name) Fgram.t *)
+(*     ([ `name of Ftoken.name option | `non ] * Gram_def.name) Fgram.t *)
 
 
-(** return an entry [FGramDef.entry]
+(** return an entry [Gram_def.entry]
   {[with str t entry {| entry:
     [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
      -> begin 
@@ -76,7 +76,7 @@ val t_qualid : vid Fgram.t
     end] |}]}
    *)
 
-val entry : FGramDef.entry Fgram.t
+val entry : Gram_def.entry Fgram.t
 
 
 
@@ -87,26 +87,26 @@ val position : exp Fgram.t
 
 (** parse association, and translate into [exp] node. FIXME  *)    
 val assoc : exp Fgram.t
-val name : FGramDef.name Fgram.t
+val name : Gram_def.name Fgram.t
 val string : exp Fgram.t
 
 val simple_exp : exp Fgram.t
 val delete_rules : exp Fgram.t
 
-val pattern : FGramDef.action_pattern Fgram.t
+val pattern : Gram_def.action_pattern Fgram.t
 
 
 
 
 (** return symbol with patterns (may override inferred patterns) *)
-val psymbol : FGramDef.symbol Fgram.t
+val psymbol : Gram_def.symbol Fgram.t
     
 (** return symbol with pattern(inferred) or None  *)    
-val symbol :  FGramDef.symbol Fgram.t
+val symbol :  Gram_def.symbol Fgram.t
 
 (** return a [rule]
     {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };
-    - : FGramDef.rule =
+    - : Gram_def.rule =
      {prod =
      [{text =
      `Stok
@@ -134,13 +134,13 @@ val symbol :  FGramDef.symbol Fgram.t
      `Lid (, "x"))))}];
      action = None}
      ]} *)
-val rule :  FGramDef.rule Fgram.t
-val rule_list : FGramDef.rule list Fgram.t
+val rule :  Gram_def.rule Fgram.t
+val rule_list : Gram_def.rule list Fgram.t
 
-val level :  FGramDef.level Fgram.t
+val level :  Gram_def.level Fgram.t
 val level_list :
-    ([ `Group of (FGramDef.level list )
-     | `Single of FGramDef.level ]) Fgram.t
+    ([ `Group of (Gram_def.level list )
+     | `Single of Gram_def.level ]) Fgram.t
 
 
 (** the main entrance
@@ -168,7 +168,7 @@ val level_list :
      it has type
      {[ FAst.loc ->
      FAst.ident option ->
-     FGramDef.name list option -> FGramDef.entry list -> FAst.exp
+     Gram_def.name list option -> Gram_def.entry list -> FAst.exp
      ]} *) 
 val extend_body : exp Fgram.t
 val delete_rule_body : exp Fgram.t
