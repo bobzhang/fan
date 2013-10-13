@@ -191,14 +191,45 @@ let test_symb _ =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
    loc_ghost = false})]
 
+
+
+
 let test_symb_percent _ =
-  
-(* let test_simple_arith _ = *)
-(*   assert_equal ~msg:("\n" ^ {:here||}) 3 4 *)
+  get_tokens "->%"
+    ===
+  [`Sym "->%"; `EOI]
+    
+let test_symb_percent1 _ =
+  get_tokens "[%"
+    ===
+  [`Sym "["; `Sym "%"; `EOI ]
+let test_symb_percent2 _ =
+  get_tokens "%%"
+    ===
+  [`Sym "%%"; `EOI ]
+let test_symb_percent3 _ =
+  get_tokens "|%"
+    ===
+  [`Sym "|%"; `EOI ]
+let test_symb_percent4 _ =
+  get_tokens "(%)"
+    ===
+  [`Eident "%"; `EOI]
+
+let test_symb_percent5 _ =
+  get_tokens "(%"
+    ===
+  [`Sym "("; `Sym "%"; `EOI]
            
 let suite =
   "Lexing_test" >:::
   [
+   "test_symb_percent" >:: test_symb_percent;
+   "test_symb_percent1" >:: test_symb_percent1;
+   "test_symb_percent2" >:: test_symb_percent2;
+   "test_symb_percent3" >:: test_symb_percent3;
+   "test_symb_percent4" >:: test_symb_percent4;
+   "test_symb_percent5" >:: test_symb_percent5;
   "test_comment_pos" >:: test_comment_pos;
 
    "test_ant_chr" >:: test_ant_chr;

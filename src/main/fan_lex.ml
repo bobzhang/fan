@@ -16,10 +16,6 @@ let lident = lowercase identchar *
 let antifollowident =   identchar +   
 let uident = uppercase identchar *
 
-let not_star_symbolchar =
-  [ '!' (* '%' *) '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
-
-let symbolchar = '*' | not_star_symbolchar
 
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
@@ -37,31 +33,24 @@ let float_literal =
     ('.' ['0'-'9' '_']* )?
     (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?
   
-(* Delimitors are extended (from 3.09) in a conservative way *)
 
-(* These chars that can't start an expession or a pattern: *)
-let safe_delimchars = ['%' '&' '/' '@' '^']
-    
-(* These symbols are unsafe since "[<", "[|", etc. exsist. *)
-let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
+let not_star_symbolchar =
+  [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 
-let left_delims  = ['(' '[' ]
-let right_delims = [')' ']' ]
-    
+let symbolchar = '*' | not_star_symbolchar
 let left_delimitor = (* At least a safe_delimchars *)
-  '[' delimchars* safe_delimchars (delimchars | left_delims ) *
-  | '('
-  | '[' ['|' ':']?
-  | '['  delimchars * '<'
+   '('
+  | '[' ['|' ]?      
+  | '[' '<'
   | '[' '='
   | '[' '>'
     
 
 let right_delimitor =
-  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* ']'
-  | ')'
-  | [ '|' ':']? ']'
-  | '>' delimchars * ']'
+   ')'
+  | [ '|' ]? ']'      
+  | '>' ']'
+
       
 let ocaml_escaped_char =
   '\\'
