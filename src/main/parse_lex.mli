@@ -1,16 +1,7 @@
-open FAst
-open Translate_lex
 
 
-val named_regexps : (string, concrete_regexp) Hashtblf.t
+(** Parser lexer  module *)
 
-val regexp : concrete_regexp Fgram.t
-
-val char_class : Fcset.t Fgram.t
-
-val char_class1 : Fcset.t Fgram.t
-
-val lex : exp Fgram.t
-
-val declare_regexp : stru Fgram.t
-
+(** It defines and load two DDSL
+    [lex2] and [regex2]
+ *)  

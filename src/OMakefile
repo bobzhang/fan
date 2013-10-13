@@ -85,7 +85,7 @@ FAN_FILES = \
     idN langFans langInclude langOcaml langSave  \
     fan_args mktop objs objsN parse_fan parse_grammar \
     parse_stream pluginsN preCast stdFan typehook\
-    parse_lex2 
+    parse_lex 
 FAN_EXP_FILES = \
     # parse_lex2 fan_lex2
 
