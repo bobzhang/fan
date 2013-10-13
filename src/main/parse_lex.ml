@@ -49,8 +49,7 @@ let g =
     end
   | S; S{x} -> x]
 
-  let lid:
-    [`Lid y -> (_loc, y) ]  
+  let lid: [`Lid y -> (_loc, y) ]  
   regexp:
   {
    "as"
@@ -84,8 +83,7 @@ let g =
            raise UnboundRegexp
         end
     end
-  ] (* FIXME rule mask more friendly error message *)
- }
+  ] (* FIXME rule mask more friendly error message *) }
   
   char_class:
   [ "^"; char_class1{r} -> Fcset.complement r
@@ -98,8 +96,7 @@ let g =
     Fcset.interval c1 c2
   | `Chr c1   -> Fcset.singleton (Char.code @@ TokenEval.char c1)
   | S{cc1}; S{cc2} -> Fcset.union cc1 cc2 
-  ]
-};;  
+  ] };;  
 
 let d = `Absolute ["Fan";"Lang"];;
 
