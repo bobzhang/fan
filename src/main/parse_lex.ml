@@ -106,10 +106,10 @@ let d = `Absolute ["Fan";"Lang"];;
 let () =
   begin
     Ast_quotation.of_exp ~lexer:Lex_lex.from_stream
-      ~name:(d,"lex2") ~entry:lex ();
+      ~name:(d,"lex") ~entry:lex ();
     Ast_quotation.of_stru
       ~lexer:Lex_lex.from_stream
-      ~name:(d,"regex2")
+      ~name:(d,"regex")
       ~entry:declare_regexp ();  
   end;;
 

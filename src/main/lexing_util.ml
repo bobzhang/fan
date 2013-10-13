@@ -1,7 +1,7 @@
 
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
-%regex2{
+%regex{
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -193,7 +193,7 @@ let warn error (loc:FLoc.t) =
     The function itself already simulate its stack, and it will not distrub the stack
     since when comment token is lexed. The stack is returned back to normal
  *)
-let rec lex_comment c = %lex2{
+let rec lex_comment c = %lex{
   |"(*"  %{
       begin
       store c lexbuf ;
@@ -221,7 +221,7 @@ let rec lex_comment c = %lex2{
     c.loc keeps the start position of "ghosgho"
     c.buffer keeps the lexed result
  *)    
-let rec lex_string c = %lex2{
+let rec lex_string c = %lex{
   | '"' %{  pop_loc c}
   | '\\' newline ([' ' '\t'] * as space) %{
     (* Follow the ocaml convention, these characters does not take positions *)
@@ -247,7 +247,7 @@ let rec lex_string c = %lex2{
 
 
 (** Then prefix is something like "$(" *)
-let rec  lex_antiquot c  = %lex2{
+let rec  lex_antiquot c  = %lex{
   | ')' %{
     begin
       pop_loc c;
@@ -283,7 +283,7 @@ let rec  lex_antiquot c  = %lex2{
   | "'" ocaml_char "'" %{ with_store  c lexbuf lex_antiquot} (* $( ')' ) *)
   | _  %{  with_store c lexbuf lex_antiquot}}
 
-and lex_quotation c = %lex2{
+and lex_quotation c = %lex{
   | quotation_prefix %{
     begin
       store c lexbuf ;
@@ -331,7 +331,7 @@ and lex_quotation c = %lex2{
   | _ %{ with_store c lexbuf  lex_quotation }}
 
 
-let rec lex_simple_quotation c =   %lex2{
+let rec lex_simple_quotation c =   %lex{
   | "}" %{
     begin
       store c lexbuf;

@@ -282,7 +282,7 @@ let _ =
                   (_loc : FLoc.t)  -> (Fcset.union cc1 cc2 : 'char_class1 )))))]))
 let d = `Absolute ["Fan"; "Lang"]
 let () =
-  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex2")
-    ~entry:lex ();
-  Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex2")
+  Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex") ~entry:lex
+    ();
+  Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")
     ~entry:declare_regexp ()

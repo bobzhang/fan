@@ -1,4 +1,4 @@
-%regex2{ (** FIXME remove duplication later see lexing_util.cmo *)
+%regex{ (** FIXME remove duplication later see lexing_util.cmo *)
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -53,7 +53,7 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lex2{
+let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lex{
   | newline %{
     begin
       update_loc  lexbuf;
