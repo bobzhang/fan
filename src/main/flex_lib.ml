@@ -17,14 +17,14 @@ let from_string  {FLoc.loc_start;_} str =
   let lb = Lexing.from_string str in begin 
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
-    Fan_lex.from_lexbuf lb
+    Fan_lex2.from_lexbuf lb
   end
 
 let from_stream  {FLoc.loc_start;_} strm =
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
-    Fan_lex.from_lexbuf  lb
+    Fan_lex2.from_lexbuf  lb
   end
 
 

@@ -39,8 +39,8 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
          lexbuf.Lexing.lex_curr_pos <- i + 1; Char.code c)
     and __ocaml_lex_state0 lexbuf =
       match __ocaml_lex_next_char lexbuf with
+      | 37 -> __ocaml_lex_state3 lexbuf
       | 40 -> __ocaml_lex_state6 lexbuf
-      | 123 -> __ocaml_lex_state3 lexbuf
       | 13 -> __ocaml_lex_state11 lexbuf
       | 34 -> __ocaml_lex_state9 lexbuf
       | 9|12|32 -> __ocaml_lex_state4 lexbuf
@@ -110,7 +110,14 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
       | _ -> __ocaml_lex_state1 lexbuf
     and __ocaml_lex_state1 lexbuf = 11
     and __ocaml_lex_state2 lexbuf = 10
-    and __ocaml_lex_state3 lexbuf = 9
+    and __ocaml_lex_state3 lexbuf =
+      lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
+      lexbuf.Lexing.lex_last_action <- 11;
+      (match __ocaml_lex_next_char lexbuf with
+       | 123 -> __ocaml_lex_state27 lexbuf
+       | _ ->
+           (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
+            lexbuf.Lexing.lex_last_action))
     and __ocaml_lex_state4 lexbuf =
       lexbuf.Lexing.lex_last_pos <- lexbuf.Lexing.lex_curr_pos;
       lexbuf.Lexing.lex_last_action <- 7;
@@ -436,7 +443,8 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
            (lexbuf.Lexing.lex_curr_pos <- lexbuf.Lexing.lex_last_pos;
             lexbuf.Lexing.lex_last_action))
     and __ocaml_lex_state26 lexbuf =
-      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 8 in
+      (lexbuf.Lexing.lex_mem).(0) <- (lexbuf.Lexing.lex_mem).(1); 8
+    and __ocaml_lex_state27 lexbuf = 9 in
     __ocaml_lex_init_lexbuf lexbuf 2;
     (let __ocaml_lex_result = __ocaml_lex_state0 lexbuf in
      lexbuf.Lexing.lex_start_p <- lexbuf.Lexing.lex_curr_p;
@@ -491,14 +499,14 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           let old = lexbuf.lex_start_p in
           let c = new_cxt () in
           (store c lexbuf;
-           push_loc_cont c lexbuf lex_simple_quotation;
+           push_loc_cont c lexbuf lex_quotation;
            (let loc = old -- lexbuf.lex_curr_p in
             ((`Quot
                 {
                   Ftoken.name = Ftoken.empty_name;
                   meta = None;
                   content = (buff_contents c);
-                  shift = 1;
+                  shift = 2;
                   retract = 1;
                   loc
                 }), loc)))

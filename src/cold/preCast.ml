@@ -73,7 +73,7 @@ module CurrentPrinter =
   end
 let wrap parse_fun ~print_location  lb =
   try
-    let token_stream = (lb |> Fan_lex.from_lexbuf) |> Fgram.filter in
+    let token_stream = (lb |> Fan_lex2.from_lexbuf) |> Fgram.filter in
     match Fstream.peek token_stream with
     | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream

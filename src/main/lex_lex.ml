@@ -1,4 +1,4 @@
-%regexp{ (** FIXME remove duplication later see lexing_util.cmo *)
+%regex2{ (** FIXME remove duplication later see lexing_util.cmo *)
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -13,7 +13,7 @@ let ocaml_escaped_char =
      | ['0'-'9'] ['0'-'9'] ['0'-'9']
      |'x' hexa_char hexa_char)
 let ocaml_char =
-  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
+  ( [^ '\\' '\010' '\013'] | ocaml_escaped_char)
 let ocaml_lid =  lowercase identchar *
 let ocaml_uid =  uppercase identchar * 
 };;
@@ -53,65 +53,63 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lexer{
-| newline ->
+let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lex2{
+  | newline %{
     begin
       update_loc  lexbuf;
       (`NEWLINE, !! lexbuf )
-    end
-| ocaml_lid as x -> (`Lid x, !! lexbuf )
-| '"' ->
+    end}
+  | ocaml_lid as x %{(`Lid x, !! lexbuf )}
+  | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
       (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
-    end
-| "'" (newline as x) "'" ->
+    end}
+  | "'" (newline as x) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
       (`Chr x, !! lexbuf)
-    end
-| "'" (ocaml_char as x ) "'" -> (`Chr x , !! lexbuf )
-| "'\\" (_ as c) -> 
-    err (Illegal_escape (String.make 1 c)) @@ !! lexbuf
-| "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-|"]" | "*" | "?" | "+" | "(" | ")" | "-" as x ->
-    (`Sym x, !! lexbuf)
-| ocaml_blank + -> token lexbuf 
-      (* comment *)      
-| "(*"(')' as x) ? ->
+    end}
+  | "'" (ocaml_char as x ) "'" %{ (`Chr x , !! lexbuf )}
+  | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
+  | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{(`Sym x, !! lexbuf)}
+  | ocaml_blank + %{ token lexbuf }
+
+  | "(*"(')' as x) ? %{
     let c = new_cxt () in
     begin
       if x <> None then warn Comment_start (!! lexbuf);
       store c lexbuf;
       push_loc_cont c lexbuf lex_comment;
       token lexbuf 
-    end
+    end}
       (* quotation handling *)
-| "{" -> (* border not included *)
+  | "%{" %{
     let old = lexbuf.lex_start_p in
-    let c  = new_cxt () in
+    let c = new_cxt () in
     begin
       store c lexbuf;
-      push_loc_cont c lexbuf lex_simple_quotation;
-      let loc=old--lexbuf.lex_curr_p in
+      push_loc_cont c lexbuf lex_quotation;
+      let loc = old -- lexbuf.lex_curr_p in
       (`Quot {Ftoken.name=Ftoken.empty_name;
               meta=None;
               content = buff_contents c ;
-              shift = 1;
+              shift = 2;
               retract = 1;
               loc},loc)
-    end
-| eof ->
-    let pos = lexbuf.lex_curr_p in (* FIXME *)
-    (lexbuf.lex_curr_p <-
+    end}
+  | eof %{
+      let pos = lexbuf.lex_curr_p in (* FIXME *)
+      (lexbuf.lex_curr_p <-
       { pos with pos_bol  = pos.pos_bol  + 1 ;
         pos_cnum = pos.pos_cnum + 1 };
-     (`EOI, !!lexbuf ))
+     (`EOI, !!lexbuf ))}
     
-| _ as c ->  err (Illegal_character c) @@  !!lexbuf }
-  
+  | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
+    
 
 let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
 

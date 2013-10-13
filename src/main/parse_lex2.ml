@@ -19,9 +19,7 @@ let g =
                "+" ; "(" ; ")" ;
                "-"] ();;
 
-%create{(g:Fgram.t)
-          regexp  char_class  char_class1  lex  declare_regexp
-      };;
+%create{(g:Fgram.t) regexp  char_class  char_class1  lex  declare_regexp};;
 
 (* open Parse_lex2,
    it will suck eof handling, to be investigated.

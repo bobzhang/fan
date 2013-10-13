@@ -1,5 +1,5 @@
 
-%regexp{ (** FIXME remove duplication later see lexing_util.cmo *)
+%regex2{ (** FIXME remove duplication later see lexing_util.cmo *)
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -37,41 +37,27 @@ let float_literal =
 let not_star_symbolchar =
   [ '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
 
-let symbolchar = '*' | not_star_symbolchar
+let symbolchar = '*'|not_star_symbolchar
 let left_delimitor = (* At least a safe_delimchars *)
-   '('
-  | '[' ['|' ]?      
-  | '[' '<'
-  | '[' '='
-  | '[' '>'
-    
-
-let right_delimitor =
-   ')'
-  | [ '|' ]? ']'      
-  | '>' ']'
-
-      
+   '(' | '[' ['|' ]? | '[' '<' | '[' '=' | '[' '>'
+let right_delimitor = ')' | [ '|' ]? ']' | '>' ']'
 let ocaml_escaped_char =
   '\\'
   (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
   | ['0'-'9'] ['0'-'9'] ['0'-'9']
   |'x' hexa_char hexa_char)
   
-let ocaml_char =
-  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
-let ocaml_lid =
-  lowercase identchar *
-let ocaml_uid =
-  uppercase identchar * 
+let ocaml_char = ( [^ '\\' '\010' '\013'] | ocaml_escaped_char)
+let ocaml_lid =  lowercase identchar *
+let ocaml_uid =  uppercase identchar * 
 };;
 
 
 
 (*************************************)
-(*    local operators                *)    
-(*************************************)        
-let (++) = Buffer.add_string       
+(*    local operators                *)
+(*************************************)
+let (++) = Buffer.add_string
 let (+>) = Buffer.add_char
 (** get the location of current the lexeme *)
 let (!!)  = Location_util.from_lexbuf ;;
@@ -96,7 +82,7 @@ Lexing_util:
 Location_util:
    (--)
    ;
-};;    
+};;
 (** It could also import regex in the future
     {:import|
     Lexing_util:
@@ -109,76 +95,71 @@ Location_util:
    Buffer:
     add_string -> (++)
     add_char -> (+>) ;
-   |}  *)    
+   |}  *)
 let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) =
-  %lexer{
-   | newline ->
-       begin
-         update_loc  lexbuf;
-         (`NEWLINE, !! lexbuf )
-       end
-   | "~" (ocaml_lid as x) ':' -> (`Label x, !! lexbuf ) 
+  %lex2{
+   | newline %{
+     begin
+       update_loc  lexbuf;
+       (`NEWLINE, !! lexbuf )
+     end }
+   | "~" (ocaml_lid as x) ':' %{
+     (`Label x, !! lexbuf )}
 
-   | "?" (ocaml_lid as x) ':' -> (`Optlabel x, !! lexbuf)
+   | "?" (ocaml_lid as x) ':' %{ (`Optlabel x, !! lexbuf)}
          
-   | ocaml_lid as x -> (`Lid x, !! lexbuf )
+   | ocaml_lid as x  %{(`Lid x, !! lexbuf )}
          
-   | ocaml_uid as x -> (`Uid x , !! lexbuf )
+   | ocaml_uid as x  %{(`Uid x , !! lexbuf )}
          
-   | int_literal  (('l'|'L'|'n' as s ) ?) as x ->
+   | int_literal  (('l'|'L'|'n' as s ) ?) as x %{
        (* FIXME - int_of_string ("-" ^ s) ??
           safety check *)
-       begin
          let x = match s with
          | Some 'l' -> `Int32 x
          | Some 'L' -> `Int64 x
          | Some 'n' -> `Nativeint x
          | _ -> `Int x in
-         ( x, !! lexbuf)
-       end
-   | float_literal as f -> (`Flo f, !! lexbuf )       (** FIXME safety check *)
-   | '"' ->
+         ( x, !! lexbuf)}
+   | float_literal as f %{ (`Flo f, !! lexbuf )}       (** FIXME safety check *)
+   | '"' %{
        let c = new_cxt () in
        let old = lexbuf.lex_start_p in
        begin
          push_loc_cont c lexbuf lex_string;
          (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
-       end
-   | "'" (newline as x) "'" ->
+       end}
+   | "'" (newline as x) "'" %{
        begin
          update_loc   lexbuf ~retract:1;
          (`Chr x, !! lexbuf)
-       end
+       end}
          
-   | "'" (ocaml_char as x ) "'" -> (`Chr x , !! lexbuf )
+   | "'" (ocaml_char as x ) "'" %{ (`Chr x , !! lexbuf )}
          
-   | "'\\" (_ as c) -> 
-       err (Illegal_escape (String.make 1 c)) @@ !! lexbuf
+   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
                                                    
-   | '(' (not_star_symbolchar symbolchar* as op) ocaml_blank* ')' ->
-       (`Eident op , !! lexbuf)
-   | '(' ocaml_blank+ (symbolchar+ as op) ocaml_blank* ')' ->
-       (`Eident op, !! lexbuf)
-   | '(' ocaml_blank* ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) ocaml_blank* ')' ->
-    (`Eident op, !! lexbuf)
+   | '(' (not_star_symbolchar symbolchar* as op) ocaml_blank* ')' %{(`Eident op , !! lexbuf)}
+   | '(' ocaml_blank+ (symbolchar+ as op) ocaml_blank* ')' %{(`Eident op, !! lexbuf)}
+   | '(' ocaml_blank* ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) ocaml_blank* ')' 
+       %{(`Eident op, !! lexbuf)}
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
-   | left_delimitor | right_delimitor 
+   | left_delimitor | right_delimitor
    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
-       as x  ->
-         (`Sym x  , !! lexbuf)
+       as x  %{(`Sym x  , !! lexbuf)}
            
-   | "*)" ->
+   | "*)" %{
        begin
          warn Comment_not_end (!! lexbuf) ;
          move_curr_p (-1) lexbuf;
          (`Sym "*", !! lexbuf)
-       end
-   | ocaml_blank + as x -> (`Blank x, !! lexbuf)
+       end}
+   | ocaml_blank + as x %{ (`Blank x, !! lexbuf)}
          
-         (* comment *)      
-   | "(*" (')' as x) ? ->
+         (* comment *)
+   | "(*" (')' as x) ? %{
        let c = new_cxt () in
        let old = lexbuf.lex_start_p in
        begin
@@ -187,20 +168,20 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) =
          push_loc_cont c lexbuf lex_comment;
          (`Comment ( buff_contents c),
           old -- lexbuf.lex_curr_p)
-       end
-   | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift ->
+       end}
+   | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift %{
        let c = new_cxt () in
        let name =
          match name with
          | Some name -> Ftoken.name_of_string name
-         | None -> Ftoken.empty_name  in 
+         | None -> Ftoken.empty_name  in
        begin
          let old = lexbuf.lex_start_p in
          let content =
            begin
              store c lexbuf;
              push_loc_cont c lexbuf lex_quotation;
-             buff_contents c 
+             buff_contents c
            end in
          let loc = old -- lexbuf.lex_curr_p in
          let shift = String.length shift in
@@ -208,28 +189,28 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) =
          (if x = None then
            `Quot{Ftoken.name;meta;shift;content;loc;retract}
          else `DirQuotation {Ftoken.name;meta;shift;content;loc;retract} ,loc)
-       end
+       end}
          
          
    | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
-       ("\"" ([! '\010' '\013' '"' ] * as name) "\"")?
-       [! '\010' '\013'] * newline ->
-         let line = int_of_string num in begin 
+       ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
+       [^'\010' '\013']* newline %{
+         let line = int_of_string num in begin
            update_loc  lexbuf ?file:name ~line ~absolute:true ;
            (`LINE_DIRECTIVE(line, name), !!lexbuf )
-         end
-           (* Antiquotation handling *)        
-   | '$' ->
+         end}
+           (* Antiquotation handling *)
+   | '$' %{
        let  dollar (c:Lexing_util.context) =
-         %lexer{
-         (* FIXME *| does not work * | work *)
-         | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) -> (* $lid:x *)
+         %lex2{
+         (* FIXME *| does not work * | work *) (* $lid:x *)
+         | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) %{
              begin
                let old = FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p in
                (`Ant(name,x), old -- lexbuf.lex_curr_p)
-             end
-         | lident as x  ->   (`Ant("",x), !!lexbuf)  (* $lid *)
-         | '(' ('`'? (identchar* |['.' '!']+) as name) ':' -> (* $(lid:ghohgosho)  )*)
+             end}
+         | lident as x  %{ (`Ant("",x), !!lexbuf)}  (* $lid *)
+         | '(' ('`'? (identchar* |['.' '!']+) as name) ':' (* $(lid:ghohgosho)  )*) %{
              (* the first char is faked '(' to match the last ')', so we mvoe
                 backwards one character *)
              let old = FLoc.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
@@ -239,30 +220,29 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) =
                (* lex_antiquot {c with loc = [old]} lexbuf ; *)
                (`Ant(name,buff_contents c),
                 old -- Lexing.lexeme_end_p lexbuf)
-             end
-         | '(' ->     (* $(xxxx)*)
+             end}
+         | '(' %{     (* $(xxxx)*)
              let old = FLoc.move_pos  (1+1-1) (List.hd c.loc) in
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
                (* lex_antiquot   {c with loc = [old] } lexbuf ; *)
                (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
-             end
-         | _ as c ->
-             err (Illegal_character c) (!! lexbuf) } in
+             end}
+         | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
        let c = new_cxt () in
        if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
          push_loc_cont c lexbuf  dollar
-       else err Illegal_antiquote (!! lexbuf)
+       else err Illegal_antiquote (!! lexbuf) }
            
-   | eof ->
+   | eof %{
        let pos = lexbuf.lex_curr_p in (* FIXME *)
        (lexbuf.lex_curr_p <-
          { pos with pos_bol  = pos.pos_bol  + 1 ;
            pos_cnum = pos.pos_cnum + 1 };
-        (`EOI, !!lexbuf ))
+        (`EOI, !!lexbuf ))}
          
-   | _ as c ->  err (Illegal_character c) @@  !!lexbuf }
+   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     
 
     
@@ -274,3 +254,4 @@ let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake fan_lex.cmo" *)
 (* end: *)
+

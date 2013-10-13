@@ -1,7 +1,7 @@
 
 
 (** FIXME, some should be pre-registered, and unused regex warnings are preferred  *)
-%regexp{
+%regex2{
 let newline = ('\010' | '\013' | "\013\010")
 let ocaml_blank = [' ' '\009' '\012']
 let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
@@ -22,7 +22,7 @@ let ocaml_escaped_char =
   '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
 
 let ocaml_char =
-  ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
+  ( [^'\\' '\010' '\013'] | ocaml_escaped_char)
 let ocaml_lid =  lowercase identchar *
 let ocaml_uid =  uppercase identchar * 
 };;
@@ -193,28 +193,27 @@ let warn error (loc:FLoc.t) =
     The function itself already simulate its stack, and it will not distrub the stack
     since when comment token is lexed. The stack is returned back to normal
  *)
-let rec lex_comment c = %lexer{
-|"(*"  ->
-    begin
+let rec lex_comment c = %lex2{
+  |"(*"  %{
+      begin
       store c lexbuf ;
       push_loc_cont c lexbuf lex_comment;
       lex_comment c lexbuf
-    end
-| "*)"  ->
+    end}
+  | "*)"  %{
     begin
       store c lexbuf;
       pop_loc c ;
-    end
-| newline ->
+    end}
+  | newline %{
     begin
       update_loc  lexbuf ;
       with_store  c lexbuf lex_comment;
-    end
-| eof ->
+    end}
+  | eof %{
     err Unterminated_comment  @@ (* FIXME *)
-    Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
-| _ ->  with_store c lexbuf lex_comment  
-}
+    Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
+  | _ %{ with_store c lexbuf lex_comment}}
 
 
 (** called by another lexer
@@ -222,157 +221,149 @@ let rec lex_comment c = %lexer{
     c.loc keeps the start position of "ghosgho"
     c.buffer keeps the lexed result
  *)    
-let rec lex_string c = %lexer{
-| '"' ->  pop_loc c
-| '\\' newline ([' ' '\t'] * as space) ->
+let rec lex_string c = %lex2{
+  | '"' %{  pop_loc c}
+  | '\\' newline ([' ' '\t'] * as space) %{
     (* Follow the ocaml convention, these characters does not take positions *)
     begin
       update_loc  lexbuf  ~retract:(String.length space);
       lex_string c lexbuf
-    end
-| ocaml_escaped_char -> with_store  c lexbuf lex_string
-| '\\' (_ as x) ->
+    end}
+  | ocaml_escaped_char %{ with_store  c lexbuf lex_string}
+  | '\\' (_ as x) %{
     begin
       warn
         (Illegal_escape (String.make 1 x)) @@ Location_util.from_lexbuf lexbuf;
       with_store c lexbuf lex_string
-    end
-| newline ->
+    end}
+  | newline %{
     begin
       update_loc  lexbuf;
       with_store  c lexbuf lex_string
-    end
-| eof ->  err Unterminated_string @@
-    Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
-| _ ->  with_store  c lexbuf lex_string
-}
+    end}
+  | eof %{  err Unterminated_string @@ Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
+  | _ %{  with_store  c lexbuf lex_string}}
 
 
 
 (** Then prefix is something like "$(" *)
-let rec  lex_antiquot c  = %lexer{
-| ')' ->
+let rec  lex_antiquot c  = %lex2{
+  | ')' %{
     begin
       pop_loc c;
       store c lexbuf
-    end
-| '(' ->
+    end}
+  | '(' %{
     begin 
       store c lexbuf;
       push_loc_cont c lexbuf lex_antiquot;
       lex_antiquot c  lexbuf;
-    end
-| quotation_prefix  -> 
+    end}
+  | quotation_prefix %{
     begin 
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       lex_antiquot c lexbuf
-    end
-| newline   ->
+    end}
+  | newline %{
     begin
       update_loc  lexbuf;
       with_store c lexbuf lex_antiquot 
-    end
-| "\"" -> (* $(")")*)
+    end}
+  | "\"" %{ (* $(")")*)
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
       c.buffer +> '"';
       lex_antiquot  c lexbuf
-    end
-| eof  ->
+    end}
+  | eof  %{
     err Unterminated_antiquot
-    @@  Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
-| "'" ocaml_char "'" -> with_store  c lexbuf lex_antiquot (* $( ')' ) *)
-| _  ->  with_store c lexbuf lex_antiquot 
-}
+    @@  Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
+  | "'" ocaml_char "'" %{ with_store  c lexbuf lex_antiquot} (* $( ')' ) *)
+  | _  %{  with_store c lexbuf lex_antiquot}}
 
-and lex_quotation c = %lexer{
-| quotation_prefix ->
+and lex_quotation c = %lex2{
+  | quotation_prefix %{
     begin
       store c lexbuf ;
       push_loc_cont c lexbuf lex_quotation;
       lex_quotation c lexbuf
-    end
+    end}
       
-(* | "|}" -> *)
-(*     store c lexbuf *)
-  
-| "}" ->
+  | "}" %{
     begin
       store c lexbuf;
       pop_loc c
-    end
-| "{" ->
+    end}
+  | "{" %{
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       lex_quotation c lexbuf
-    end
+    end}
       
-| "(*" ->
+  | "(*" %{
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_comment;
       lex_quotation c lexbuf
-    end
-| newline ->
+    end}
+  | newline %{
     begin
       update_loc  lexbuf ;
       with_store c lexbuf lex_quotation 
-    end          
-| "\"" -> (* treat string specially, like %{ "{|"} should be accepted *)
+    end   }   
+  | "\"" %{ (* treat string specially, like %{ "{|"} should be accepted *)
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
       Buffer.add_char c.buffer '"';
       lex_quotation c lexbuf
-    end
-| eof ->
+    end}
+  | eof %{
     begin
-
       err Unterminated_quotation @@
       Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
-    end
-| "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store c lexbuf lex_quotation 
-| _ -> with_store c lexbuf  lex_quotation }
+    end}
+  | "'" ocaml_char "'" (* treat  char specially, otherwise '"' would not be parsed  *) %{
+    with_store c lexbuf lex_quotation }
+  | _ %{ with_store c lexbuf  lex_quotation }}
 
 
-let rec lex_simple_quotation c =   %lexer{
-| "}" ->
+let rec lex_simple_quotation c =   %lex2{
+  | "}" %{
     begin
       store c lexbuf;
       pop_loc c ;
-    end
-| "{" ->
+    end}
+  | "{" %{
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_simple_quotation ;
       lex_simple_quotation c lexbuf;
-    end
-| "(*" ->
+    end}
+  | "(*" %{
     begin
       push_loc_cont c lexbuf lex_comment;
       lex_simple_quotation c lexbuf
-    end
-| newline ->
+    end}
+  | newline %{
     begin
       update_loc lexbuf;
       with_store c lexbuf lex_simple_quotation  ;
-    end
-| "\"" ->
+    end}
+  | "\"" %{
     begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_string;
       Buffer.add_char c.buffer '"';
       lex_simple_quotation  c lexbuf
-    end
-| eof -> err Unterminated_quotation @@ List.hd c.loc -- lexbuf.lex_curr_p
-| "'" ocaml_char "'" -> (* treat  char specially, otherwise '"' would not be parsed  *)
-    with_store c lexbuf  lex_simple_quotation 
-
-| _  -> with_store  c lexbuf lex_simple_quotation 
+    end}
+  | eof %{ err Unterminated_quotation @@ List.hd c.loc -- lexbuf.lex_curr_p}
+  | "'" ocaml_char "'" (* treat  char specially, otherwise '"' would not be parsed  *)%{
+    with_store c lexbuf  lex_simple_quotation}
+  | _  %{with_store  c lexbuf lex_simple_quotation}
 }
     
 

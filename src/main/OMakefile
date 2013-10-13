@@ -15,7 +15,8 @@ lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fanTop)
 
 # %.dparsetree:%.ml
 #     $(PP_FAN) -printer dparsetree $< > $@
-
+EXP_FILES= fan_lex2
+OCamlLibrary(libexp, $(EXP_FILES))
 
 clean:
     rm -rf $(OCAMLBIN_EXT)
