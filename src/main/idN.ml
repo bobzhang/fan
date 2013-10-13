@@ -45,7 +45,7 @@ let ident_map f (x:vid) =
   | [`Lid y ]  -> lid (f y)
   | ls ->
       let l = List.length ls in
-      match Flist.drop (l-2) ls with
+      match Listf.drop (l-2) ls with
       | [ q; `Lid y ] ->
           `Dot(q,`Lid (f y))
       | _ ->
@@ -58,7 +58,7 @@ let ident_map_of_ident f x  : vid =
   | [ `Lid y ]  -> f y 
   | ls ->
       let l = List.length ls in
-      match Flist.drop (l-2) ls with
+      match Listf.drop (l-2) ls with
       | [ q; `Lid y ] -> `Dot(q,f y)
       | _ -> failwithf "ident_map_of_ident: %s" (ObjsN.dump_vid x)
     

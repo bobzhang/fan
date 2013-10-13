@@ -2,16 +2,17 @@
 include Filename
 
 let find_in_path ~path name =
-  if not (Filename.is_implicit name) then
-    if Sys.file_exists name then name else raise Not_found
-  else begin
-    let rec try_dir = function
-      | [] -> raise Not_found
-      | dir::rem ->
-          let fullname = Filename.concat dir name in
-          if Sys.file_exists fullname then fullname else try_dir rem
-    in try_dir path
-  end
+  if not @@ Filename.is_implicit name then
+    if Sys.file_exists name then Some name
+    else None
+  else
+    Listf.find_map
+      (fun x ->
+        let fullname = concat  x name in
+        if Sys.file_exists fullname then
+          Some fullname
+        else None) path 
+
 
 let find_in_path_uncap ~path name =
   let uname = String.uncapitalize name in

@@ -70,7 +70,7 @@ let tuple_of_number ast n : ep =
   else res
 
 let of_vstr_number name i : ep=
-  let items = Flist.init i xid  in
+  let items = Listf.init i xid  in
   if items = [] then %{$vrn:name}
   else
     let item = tuple_com items  in
@@ -91,10 +91,10 @@ let of_vstr_number name i : ep=
   
 *)
 let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
-  let args = Flist.init arity
-      (fun i -> Flist.init n (fun j -> %{ $(id:xid ~off:i j) } )) in
+  let args = Listf.init arity
+      (fun i -> Listf.init n (fun j -> %{ $(id:xid ~off:i j) } )) in
   let pat = of_str (cons_transform cons) in 
-  Flist.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
+  Listf.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
     
 
   
@@ -111,7 +111,7 @@ let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
  *)
 let mk_record ?(arity=1) cols : ep  =
   let mk_list off = 
-    Flist.mapi
+    Listf.mapi
       (fun i {CtypN.col_label;_} ->
         %rec_exp-'{ $lid:col_label = $(xid ~off i) } ) cols in
   let res = Int.fold_left
@@ -154,7 +154,7 @@ let mk_tuple ~arity ~number  =
   ]}
  *)
 (* let tuple_of_list lst = *)
-(*   let len = Flist.length lst in *)
+(*   let len = Listf.length lst in *)
 (*   match len with *)
 (*   [ 1  ->  List.hd lst *)
 (*   | n when n > 1 ->  %{ $(tup:List.reduce_left com lst) }  *)

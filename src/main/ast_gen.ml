@@ -103,7 +103,7 @@ let tuple_com y=
   |[] -> failwith "tuple_com empty"
   |[x] -> x
   | x::_ -> (* FIXME [x::_] still compiles *)
-      let _loc = x <+> Flist.last y in
+      let _loc = x <+> Listf.last y in
       `Par _loc (com_of_list y) 
     
 let tuple_sta y =
@@ -111,8 +111,8 @@ let tuple_sta y =
   | [] -> failwith "tuple_sta empty"
   | [x] -> x
   | x::_ ->
-       let _loc =  x <+> Flist.last y in 
-       `Par _loc (sta_of_list y)
+       let _loc =  x <+> Listf.last y in 
+       `Par (_loc, sta_of_list y)
 
 
 

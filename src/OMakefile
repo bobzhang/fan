@@ -78,7 +78,7 @@ FAN_FILES = \
     ast_filters ast_macros\
     ast_parsers ast_quotation \
     fid code_template comment_filter compile_lex compile_stream ctypN \
-    deriveN dynLoader epN \
+    deriveN dyn_load epN \
     expN fAstN fControl fDyn fGramDef fGramGen fIncludeDir fMeta fQuotDir\
     fSigUtil fState fanAstN fanOps fgram\
     filters freeVars fsyntax gentry gfold gramlib\

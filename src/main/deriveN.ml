@@ -43,7 +43,7 @@ let mapi_exp ?(arity=1) ?(names=[])
   let name_exp = f ty in 
   let base = name_exp  +> names in
   (* FIXME as a tuple it is useful when arity> 1??? *)
-  let id_eps = Flist.init arity @@ fun index  -> xid ~off:index i  in 
+  let id_eps = Listf.init arity @@ fun index  -> xid ~off:index i  in 
   let ep0 = List.hd id_eps in
   let id_ep = tuple_com  id_eps  in
   let exp = appl_of_list (base:: (id_eps:>exp list))  in
@@ -333,7 +333,7 @@ let stru_of_mtyps ?module_name ?cons_transform ?annot
         | xs ->
             (List.iter (fun (name,_ty)  -> Hashset.add cxt name) xs ;
             let bind =
-              Flist.reduce_right_with
+              Listf.reduce_right_with
                 ~compose:(fun x y -> %bind-{ $x and $y } )
                 ~f:(fun (_name,ty) ->
                   mk_bind  ty ) xs in

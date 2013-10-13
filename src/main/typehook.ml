@@ -33,22 +33,21 @@ let show_modules () =
 
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in 
-    if not
-        (List.exists (fun (n,_) -> n=plugin) !FState.current_filters)
+    if not @@
+      List.exists (fun (n,_) -> n=plugin) !FState.current_filters
     then
       Ref.modify FState.current_filters (fun x -> cons (plugin,v) x) 
     else
       eprintf "<Warning> plugin %s has already been loaded" plugin
 
-  with
-  |Not_found -> begin
+  with Not_found -> begin
     show_modules ();
     failwithf "plugins %s not found " plugin ;
   end
 
     
 let plugin_remove plugin =
-    Ref.modify FState.current_filters (fun x -> Flist.remove plugin x) 
+    Ref.modify FState.current_filters (fun x -> Listf.remove plugin x) 
   
 
 

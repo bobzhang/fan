@@ -66,10 +66,10 @@ let  split_at n xs =
       
 let rec find_map f v =
   match v with
-  | [] -> raise Not_found
+  | [] -> None 
   | x :: xs ->
       match f x with
-      | Some y -> y
+      | Some _ as y  -> y
       | None -> find_map f xs
 
 (* include BatList;

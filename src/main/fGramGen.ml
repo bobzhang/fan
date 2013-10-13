@@ -146,7 +146,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
   let act = Option.default %{()} act in
   (* collect the patterns *)
   let (_,tok_match_pl) =
-    Flist.fold_lefti
+    Listf.fold_lefti
       (fun i ((oe,op) as ep)  x -> match x with 
       | {pattern=Some p ; text=`Stok _;_ } when not (is_irrefut_pat p)->
           let id = prefix ^ string_of_int i in
@@ -167,7 +167,7 @@ let text_of_action (_loc:loc)  (psl :  symbol list) ?action:(act: exp option)
             | $pat -> $e1
             | _ -> failwith $`str:action_string }  in
   let (_,txt) =
-    Flist.fold_lefti
+    Listf.fold_lefti
       (fun i txt s ->
         match s.pattern with
         |Some %pat'{ ($_ $(par:%pat@_{ _ }) as $p) } ->
@@ -332,7 +332,7 @@ let text_of_functorial_extend ?safe _loc   gram  el =
     | [] -> %exp{ () }
     | _ -> seq_sem el    in
   let locals  = (** FIXME the order matters here, check duplication later!!! *)
-    Flist.filter_map (fun {name;local;_} -> if local then Some name else None ) el in
+    Listf.filter_map (fun {name;local;_} -> if local then Some name else None ) el in
   let_in_of_extend _loc gram locals args 
 
 

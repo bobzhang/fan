@@ -1,6 +1,6 @@
 
 
-FILES = fchar fstring fstream return flist dyn_array fan_warnings mapf setf hashset \
+FILES = fchar fstring fstream return listf dyn_array fan_warnings mapf setf hashset \
     filenamef hashtblf ref stackf option bufferf arrayf formatf int util
 
 lib: $(OCamlLibrary libutils, $(FILES))
@@ -9,3 +9,7 @@ lib: $(OCamlLibrary libutils, $(FILES))
 .PHONY: clean lib
 clean:
     rm -rf $(OCAMLBIN_EXT)
+
+# local variables:
+# compile-command: "pmake lib"
+# end:

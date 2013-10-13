@@ -35,7 +35,7 @@ val exists : 'a t -> f:('a -> bool) -> bool
 
 val for_all : 'a t -> f:('a -> bool) -> bool
 
-val find_map : 'a t -> f:('a -> 'b option) -> 'b
+val find_map : 'a t -> f:('a -> 'b option) -> 'b option
 
 val to_list : 'a t -> 'a list
 

@@ -9,12 +9,12 @@ let currying cases ~arity  =
   let cases = bar_of_list cases in
   if arity >= 2
   then
-    let names = Flist.init arity (fun i  -> x ~off:i 0) in
-    let exps = Flist.map (fun s  -> (`Lid s : FAstN.exp )) names in
+    let names = Listf.init arity (fun i  -> x ~off:i 0) in
+    let exps = Listf.map (fun s  -> (`Lid s : FAstN.exp )) names in
     let x = tuple_com exps in mkfun names (`Match (x, cases) : FAstN.exp )
   else (`Fun cases : FAstN.exp )
 let eta_expand (exp : exp) number =
-  (let names = Flist.init number (fun i  -> x ~off:0 i) in
+  (let names = Listf.init number (fun i  -> x ~off:0 i) in
    mkfun names (exp +> names) : exp )
 let unknown len =
   if len = 0
@@ -43,7 +43,7 @@ let mk_tuple_ee =
   | [] -> invalid_arg "mktupee arity is zero "
   | x::[] -> x
   | xs ->
-      let v = Flist.reduce_right mee_comma xs in
+      let v = Listf.reduce_right mee_comma xs in
       (`App ((`Vrn "Par"), (`Par (`Com ((`Lid "_loc"), v)))) : FAstN.exp )
 let mee_record_col label exp =
   (`App
@@ -57,5 +57,5 @@ let mk_record_ee label_exps =
   (label_exps |> (List.map (fun (label,exp)  -> mee_record_col label exp)))
     |>
     (fun es  ->
-       let x = Flist.reduce_right mee_record_semi es in
+       let x = Listf.reduce_right mee_record_semi es in
        (`App ((`App ((`Vrn "Record"), (`Lid "_loc"))), x) : FAstN.exp ))

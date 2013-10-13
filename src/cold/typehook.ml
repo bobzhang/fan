@@ -17,7 +17,7 @@ let plugin_add plugin =
      let v = Hashtbl.find filters plugin in
      fun ()  ->
        if
-         not
+         not @@
            (List.exists (fun (n,_)  -> n = plugin)
               FState.current_filters.contents)
        then Ref.modify FState.current_filters (fun x  -> cons (plugin, v) x)
@@ -27,7 +27,7 @@ let plugin_add plugin =
        (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
 let plugin_remove plugin =
-  Ref.modify FState.current_filters (fun x  -> Flist.remove plugin x)
+  Ref.modify FState.current_filters (fun x  -> Listf.remove plugin x)
 class type traversal
   =
   object 

@@ -87,12 +87,12 @@ type full_id_transform =
     (* pass the string, and << .$old$. .$return$. >>  *)      
     | `Obj of  (string -> string) ]
         
-let arrow_of_list f = Flist.reduce_right arrow f
+let arrow_of_list f = Listf.reduce_right arrow f
     
 let app_arrow lst acc = List.fold_right arrow lst acc
     
 let (<+) (names: string list ) (ty:ctyp) =
-  List.fold_right (fun name acc -> %{ '$lid:name -> $acc }) names ty
+  List.fold_right (fun name acc -> %{'$lid:name -> $acc }) names ty
     
 let (+>) (params: ctyp list ) (base:ctyp) = List.fold_right arrow params base
 
@@ -115,9 +115,10 @@ let name_length_of_tydcl (x:typedecl) : (string * int) =
   ]}  quantifier variables can not be unified *)  
 
 let gen_quantifiers1 ~arity n  : ctyp =
-  Flist.init arity
-    (fun i -> Flist.init n
-        (fun j -> %{  '$(lid:allx ~off:i j) } ))
+  Listf.init arity
+    (fun i ->
+      Listf.init n
+        @@ fun j -> %{'$(lid:allx ~off:i j)} )
   |> List.concat |> appl_of_list
 
 
@@ -125,8 +126,8 @@ let gen_quantifiers1 ~arity n  : ctyp =
 let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
-     Flist.init len
-       (fun i -> %{  '$(lid:allx ~off i) }))
+     Listf.init len
+       (fun i -> %{'$(lid:allx ~off i)}))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -180,7 +181,7 @@ let list_of_record (ty:name_ctyp) : col list  =
   int
   ]}
  *)
-let gen_tuple_n ty n = Flist.init n (fun _ -> ty) |> tuple_sta
+let gen_tuple_n ty n = Listf.init n (fun _ -> ty) |> tuple_sta
 
 (*
   {[
@@ -189,7 +190,7 @@ let gen_tuple_n ty n = Flist.init n (fun _ -> ty) |> tuple_sta
   ]}
  *)
 let repeat_arrow_n ty n =
-  Flist.init n (fun _ -> ty) |>  arrow_of_list
+  Listf.init n (fun _ -> ty) |>  arrow_of_list
     
 
 (* to be clean soon *)
@@ -200,11 +201,11 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let prefix = List.map
       (fun s -> Fstring.drop_while (fun c -> c = '_') s) prefix in 
   let app_src   =
-    app_arrow @@ Flist.init number (fun _ -> of_id_len ~off:0 (id,len)) in
+    app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let result_type = (* %{ 'result } *)
     %{'$(lid:"result"^string_of_int !result_id)} in
   let _ = incr result_id in
-  let self_type = %{ 'self_type }  in 
+  let self_type = %{'self_type}  in 
   let (quant,dst) =
     match k with
     |Obj Map -> (2, (of_id_len ~off:1 (id,len)))
@@ -214,10 +215,10 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     (* |Type c -> (1,c)  *)
     |Str_item -> (1,result_type) in 
   let params =
-    Flist.init len @@
+    Listf.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Flist.init number @@ fun _ -> %{ '$(lid:allx ~off:0 i)} in
+        Listf.init number @@ fun _ -> %{ '$(lid:allx ~off:0 i)} in
       match k with
       |Obj u  ->
           let dst =
@@ -233,7 +234,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-  (%{ ! $quantifiers . $(params +> base) },dst)
+  (%{!$quantifiers . $(params +> base)},dst)
 
 
 
@@ -467,8 +468,8 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    Flist.init arity @@ fun i -> %pat-{ (#$id:name as $(lid: x ~off:i 0 )) }in
-  let exps = Flist.init arity @@ fun i -> %exp-{ $(id:xid ~off:i 0) }  in
+    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $(lid: x ~off:i 0 )) }in
+  let exps = Listf.init arity @@ fun i -> %exp-{ $(id:xid ~off:i 0) }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with

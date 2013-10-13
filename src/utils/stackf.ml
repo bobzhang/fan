@@ -51,13 +51,13 @@ let fold t ~init ~f = List.fold_left f init t.elts
     (*   let aux n *)
 
 let topn_rev n t =
-  Flist.take_rev n t.elts
+  Listf.take_rev n t.elts
     
 let exists t ~f = List.exists f t.elts 
 
 let for_all t ~f = List.for_all f t.elts 
 
-let find_map t ~f = Flist.find_map f t.elts 
+let find_map t ~f = Listf.find_map f t.elts 
 
 let to_list t = t.elts
 

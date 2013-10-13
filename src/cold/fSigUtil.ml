@@ -34,13 +34,13 @@ let apply_filter f (m : mtyps) =
      | `Single (s,_) as x -> if f s then Some x else None
      | `Mutual ls ->
          let x =
-           Flist.filter_map
+           Listf.filter_map
              (fun ((s,_) as x)  -> if f s then Some x else None) ls in
          (match x with
           | [] -> None
           | x::[] -> Some (`Single x)
           | y -> Some (`Mutual y)) in
-   Flist.filter_map f m : mtyps )
+   Listf.filter_map f m : mtyps )
 let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
   (match x with
    | [] -> None
@@ -55,7 +55,7 @@ let stru_from_mtyps ~f:(aux : named_type -> typedecl)  (x : mtyps) =
        Some (sem_of_list xs) : stru option )
 let stru_from_ty ~f:(f : string -> stru)  (x : mtyps) =
   (let tys: string list =
-     Flist.concat_map
+     Listf.concat_map
        (function
         | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
         | `Single (x,_) -> [x]) x in

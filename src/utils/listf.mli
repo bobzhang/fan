@@ -18,7 +18,7 @@ val last : 'a list -> 'a
 
 val split_at : int -> 'a list -> 'a list * 'a list
 
-val find_map : ('a -> 'b option) -> 'a list -> 'b
+val find_map : ('a -> 'b option) -> 'a list -> 'b option
 
 val fold_lefti : (int -> 'a -> 'b -> 'a) -> 'a -> 'b list -> int * 'a
 
@@ -29,7 +29,6 @@ val iteri : (int -> 'a -> unit) -> 'a list -> unit
 val reduce_left : ('a -> 'a -> 'a) -> 'a list -> 'a
 
 val reduce_left_with :
-
     compose:('a -> 'a -> 'a) -> project:('b -> 'a) -> 'b list -> 'a
 val reduce_right_with :
     compose:('a -> 'a -> 'a) -> f:('b -> 'a) -> 'b list -> 'a

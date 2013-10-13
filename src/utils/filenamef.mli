@@ -1,8 +1,11 @@
+
+(** Simple extension to the {!Filename} module  *)
 include module type of Filename
 
-    (** Search a file in a list of directories. It's searched from the head to
-        tail *)          
-val find_in_path : path:string list -> string -> string
+
+
+(** Search a file in a list of directories. The direction is from the head to tail *)          
+val find_in_path : path:string list -> string -> string option
 
 
     (** Same, but search also for uncapitalized name, i.e.

@@ -240,7 +240,7 @@ and scan_product entry (symbols,x) : production  =
          if diff <> [] then 
            failwithf
              "in grammar %s: keywords introduced: [ %s ] " entry.gram.annot
-           @@ Flist.reduce_left (^) diff in
+           @@ Listf.reduce_left (^) diff in
        let () = check_gram entry symbol in
        match symbol with
        |`Snterm e when e == entry -> `Sself

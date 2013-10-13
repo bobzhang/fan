@@ -17,7 +17,7 @@ open FSigUtil
 let mk_variant _cons : ty_info list   -> exp  =
   function 
   | [] -> %exp-{true}
-  | ls -> Flist.reduce_left_with
+  | ls -> Listf.reduce_left_with
         ~compose:(fun x y -> %exp-{ $x && $y}  )
         ~project:(fun {info_exp;_} -> info_exp) ls
   
@@ -55,7 +55,7 @@ let (gen_fold,gen_fold2) =
     |> (function
         | [] -> %exp-{self}
         | ls ->
-            Flist.reduce_right (fun v acc -> %exp-{ let self = $v in $acc }) ls ) in
+            Listf.reduce_right (fun v acc -> %exp-{ let self = $v in $acc }) ls ) in
   let mk_tuple  = mk_variant ""  in 
   let mk_record cols =
     cols |> List.map (fun  {re_info ; _ } -> re_info  )
@@ -273,7 +273,7 @@ let mk_variant_print cons params =
     let len = List.length params in
     let pre =
         if len >= 1 then
-          mkfmt ("@[<1>("^cons^"@ ") "@ " ")@]" @@ Flist.init len (fun _ -> "%a")
+          mkfmt ("@[<1>("^cons^"@ ") "@ " ")@]" @@ Listf.init len (fun _ -> "%a")
         else
           mkfmt cons "" "" [] in
     appl_of_list (pre :: extract params)
@@ -281,7 +281,7 @@ let mk_variant_print cons params =
 
 let mk_tuple_print params =
     let len = List.length params in
-    let pre = mkfmt "@[<1>(" ",@," ")@]" @@ Flist.init len (fun _ -> "%a") in
+    let pre = mkfmt "@[<1>(" ",@," ")@]" @@ Listf.init len (fun _ -> "%a") in
     appl_of_list (pre :: extract params)
 
     
@@ -384,7 +384,7 @@ let generate (mtyps:mtyps) : stru =
           Some (%case-{ $case | $acc }) 
       else if arity > 1 then 
         let pats =
-          (%pat-{ _loc} :: Flist.init (arity - 1) (const %pat-{_}) ) in
+          (%pat-{ _loc} :: Listf.init (arity - 1) (const %pat-{_}) ) in
         let case =
           %case-{ $vrn:key $(pat:(tuple_com pats)) -> _loc } in
         match acc with
@@ -406,7 +406,7 @@ Typehook.register
    +-----------------------------------------------------------------+ *)
 let generate (mtyps:mtyps) : stru =
   let tys :  string list =
-    Flist.concat_map
+    Listf.concat_map
       (fun x ->
         match x with
         |`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys

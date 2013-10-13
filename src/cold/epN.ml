@@ -34,18 +34,18 @@ let tuple_of_number ast n =
        (fun acc  _  -> com acc ast) in
    if n > 1 then `Par res else res : ep )
 let of_vstr_number name i =
-  (let items = Flist.init i xid in
+  (let items = Listf.init i xid in
    if items = []
    then `Vrn name
    else (let item = tuple_com items in `App ((`Vrn name), item)) : ep )
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
-    Flist.init arity (fun i  -> Flist.init n (fun j  -> xid ~off:i j)) in
+    Listf.init arity (fun i  -> Listf.init n (fun j  -> xid ~off:i j)) in
   let pat = of_str (cons_transform cons) in
-  (Flist.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
+  (Listf.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
 let mk_record ?(arity= 1)  cols =
   (let mk_list off =
-     Flist.mapi
+     Listf.mapi
        (fun i  { CtypN.col_label = col_label;_}  ->
           `RecBind ((`Lid col_label), (xid ~off i))) cols in
    let res =

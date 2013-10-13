@@ -29,9 +29,9 @@ let add_to_loaded_modules name =
 let (objext,libext) =
   if Dynlink.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
 let require name =
-  if not (Setf.String.mem name loaded_modules.contents)
-  then (add_to_loaded_modules name; DynLoader.load (name ^ libext))
-let _ =
+  if not @@ (Setf.String.mem name loaded_modules.contents)
+  then (add_to_loaded_modules name; Dyn_load.load (name ^ libext))
+let () =
   let open FControl in
     Fgram.unsafe_extend_single (item : 'item Fgram.t )
       (None,

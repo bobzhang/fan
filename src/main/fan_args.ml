@@ -27,7 +27,7 @@ type file_kind =
   | ModuleImpl of string
   | IncludeDir of string 
   
-(* let search_stdlib = ref false *)
+
     
 let print_loaded_modules = ref false
 
@@ -43,19 +43,20 @@ let (objext,libext) =
   if Dynlink.is_native then
     (".cmxs",".cmxs")
   else (".cmo",".cma")
+
 let require name = 
-  if not (Setf.String.mem name !loaded_modules ) then begin
+  if not @@ Setf.String.mem name !loaded_modules  then begin
     add_to_loaded_modules name;
-    DynLoader.load  (name ^ libext)
+    Dyn_load.load  (name ^ libext)
   end
-    
 ;;
 
-let open FControl in
-%unsafe_extend{ (g:Fgram.t)
-  item:
-  [ "require"; `Str s -> require s ]
-};;
+let () =
+  let open FControl in
+  %unsafe_extend{
+  (g:Fgram.t)
+    item:
+    [ "require"; `Str s -> require s ]}
 
 let output_file = ref None              
 

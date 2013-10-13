@@ -409,7 +409,7 @@ let mk_type_parameters (tl:opt_decl_params)
 (* ['a,'b,'c']*)
 let  class_parameters (t:type_parameters) =
   let _loc = unsafe_loc_of t in
-  Flist.filter_map
+  Listf.filter_map
     (fun (y:type_parameters) ->
        match y with 
       |`Ctyp(_, x) ->
@@ -938,7 +938,7 @@ and bind (x:bind) acc =
   | _ -> assert false
 and case (x:case) = 
   let cases = list_of_bar x [] in
-  Flist.filter_map 
+  Listf.filter_map 
     (fun (x:case) ->
        let _loc = unsafe_loc_of x in
        match x with 
@@ -951,7 +951,7 @@ and case (x:case) =
 
 and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
-  Flist.filter_map
+  Listf.filter_map
     (function
       | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some ((ident i), (exp e))
       | x -> FLoc.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
@@ -1019,7 +1019,7 @@ and mtyp : FAst.mtyp -> Parsetree.module_type =
           ptype_manifest = Some (ctyp ct);
           ptype_loc =  loc; ptype_variance = variance}) in
     let constrs = list_of_and wc [] in
-    Flist.filter_map (function
+    Listf.filter_map (function
         |`TypeEq(_loc,id_tpl,ct) ->
           Some (mkwithtyp (fun x -> Pwith_type x) _loc Public id_tpl ct)
         |`TypeEqPriv(_loc,id_tpl,ct) ->

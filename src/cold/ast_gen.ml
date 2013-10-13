@@ -38,12 +38,12 @@ let tuple_com y =
   match y with
   | [] -> failwith "tuple_com empty"
   | x::[] -> x
-  | x::_ -> let _loc = x <+> (Flist.last y) in `Par (_loc, (com_of_list y))
+  | x::_ -> let _loc = x <+> (Listf.last y) in `Par (_loc, (com_of_list y))
 let tuple_sta y =
   match y with
   | [] -> failwith "tuple_sta empty"
   | x::[] -> x
-  | x::_ -> let _loc = x <+> (Flist.last y) in `Par (_loc, (sta_of_list y))
+  | x::_ -> let _loc = x <+> (Listf.last y) in `Par (_loc, (sta_of_list y))
 let (+>) f names =
   let _loc = loc_of f in appl_of_list (f :: (List.map (lid _loc) names))
 let meta_here _loc location =

@@ -89,7 +89,9 @@ let tree_in_entry prev_symb tree = function
             | None -> None
             end
         | _ -> None  in
-      (try Flist.find_map search_level  levels with Not_found -> tree)
+      (match Listf.find_map search_level  levels with
+      | Some x -> x
+      | None -> tree)
   | Dparser _ -> tree 
 
         

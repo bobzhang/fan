@@ -144,7 +144,7 @@ let test_comment_pos _ =
      loc_ghost = false})]
 
 let test_lex_simple_quot _ =
-  fst @@ Lex_lex.token (Lexing.from_string %str{{ (** gshoghso *) bhgo "ghos" }})
+  fst @@ Lex_lex.token (Lexing.from_string %str{%{ (** gshoghso *) bhgo "ghos" }})
     ===
   `Quot {
          Ftoken.name = (`Sub [], "");
@@ -152,9 +152,9 @@ let test_lex_simple_quot _ =
          {FLoc.loc_start =
           {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
           loc_end =
-          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 31};
+          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 32};
           loc_ghost = false};
-         meta = None; shift = 1; content = "{ * gshoghso *) bhgo \"ghos\" }";
+         meta = None; shift = 2; content = "%{ (** gshoghso *) bhgo \"ghos\" }";
          retract = 1}
 
 let test_symb _ =
@@ -220,7 +220,22 @@ let test_symb_percent5 _ =
   get_tokens "(%"
     ===
   [`Sym "("; `Sym "%"; `EOI]
-           
+
+
+let test_single_quot _ =
+  get_tokens "%{'$(a)}"
+    ===
+  [`Quot
+   {Ftoken.name = (`Sub [], "");
+    loc =
+     {FLoc.loc_start =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+      loc_end =
+       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 8};
+      loc_ghost = false};
+    meta = None; shift = 2; content = "%{'$(a)}"; retract = 1};
+ `EOI]
+    
 let suite =
   "Lexing_test" >:::
   [
@@ -230,8 +245,8 @@ let suite =
    "test_symb_percent3" >:: test_symb_percent3;
    "test_symb_percent4" >:: test_symb_percent4;
    "test_symb_percent5" >:: test_symb_percent5;
-  "test_comment_pos" >:: test_comment_pos;
-
+   "test_comment_pos" >:: test_comment_pos;
+   "test_single_quot" >:: test_single_quot;
    "test_ant_chr" >:: test_ant_chr;
 
    "test_empty_string" >:: test_empty_string;
