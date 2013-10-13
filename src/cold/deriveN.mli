@@ -34,7 +34,7 @@ open FSigUtil
          match module_name with
          |None ->   (id:>full_id_transform)
          |Some m ->
-           `Last (fun s -> {:ident'| $uid:m.$(lid:basic_transform id s) |} )
+           `Last (fun s -> %ident'{ $uid:m.$(lid:basic_transform id s) } )
       ]}
 
    [left_type_variable:basic_id_transform]
@@ -62,7 +62,7 @@ val check : string list -> unit
 
     {[
     Frame.mapi_exp ~arity:2 ~names:["fmt";"test"]
-    ~f:(fun {:ctyp|$lid:x|} -> {:exp|$(lid:("meta_"^x))|})   3  {:ctyp|int |};;
+    ~f:(fun %ctyp{$lid:x} -> %exp{$(lid:("meta_"^x))})   3  %ctyp{int };;
     ]}
 
     {name_exp = `Lid (, "meta_int");

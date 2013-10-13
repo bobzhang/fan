@@ -15,14 +15,12 @@ let locname = ident
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
 let uident = uppercase identchar *
+
 let not_star_symbolchar =
-  [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
+  [ '!' (* '%' *) '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
+
 let symbolchar = '*' | not_star_symbolchar
-let quotchar =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-(* let extra_quot = *)
-(*   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] *)
-    (* FIX remove the '\' as extra quot*)
+
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
 let decimal_literal =
   ['0'-'9'] ['0'-'9' '_']*
@@ -60,19 +58,17 @@ let left_delimitor = (* At least a safe_delimchars *)
     
 
 let right_delimitor =
-   (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* ']'
+  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* ']'
   | ')'
   | [ '|' ':']? ']'
   | '>' delimchars * ']'
-  
-  (* At least a safe_delimchars *)
-  (* (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims *)
-  (*  | (delimchars* ['|' ':'])? ')' *)
-  (*  | ['|' ':']? ']' *)
-  (*  | '>' delimchars* [']' ] *)
       
 let ocaml_escaped_char =
-  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
+  '\\'
+  (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+  | ['0'-'9'] ['0'-'9'] ['0'-'9']
+  |'x' hexa_char hexa_char)
+  
 let ocaml_char =
   ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
 let ocaml_lid =

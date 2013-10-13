@@ -21,9 +21,9 @@ val to_vid : ident -> vid
 
 (** For qualified identifier, we only use the last qulifier.
     {[
-    ident_map (fun x -> "meta_" ^ x ) {:ident-'| A.B.g |};; 
+    ident_map (fun x -> "meta_" ^ x ) %ident-'{ A.B.g };; 
     `Dot (`Uid "B", `Lid "meta_g")
-    ident_map (fun x -> "meta_" ^ x ) {:ident-'| g |};; 
+    ident_map (fun x -> "meta_" ^ x ) %ident-'{ g };; 
    `Lid "meta_g"
    ]} *)
 val ident_map :

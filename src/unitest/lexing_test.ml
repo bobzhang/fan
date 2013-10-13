@@ -191,7 +191,8 @@ let test_symb _ =
     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
    loc_ghost = false})]
 
-    
+let test_symb_percent _ =
+  
 (* let test_simple_arith _ = *)
 (*   assert_equal ~msg:("\n" ^ {:here||}) 3 4 *)
            

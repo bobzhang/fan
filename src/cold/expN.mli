@@ -3,7 +3,7 @@ open FAstN
   
 
 
-(** {[ mkfun ["a";"b"]  {|3|};
+(** {[ mkfun ["a";"b"]  %{3};
       - : exp = fun a  b  -> 3  ]} *)
 val mkfun : string list -> exp -> exp
 
@@ -36,7 +36,7 @@ val unknown : int -> exp
 
 (** Mainly used to overcome the value restriction
    {[
-    eta_expand {|f |} 3 |> FanBasic.p_exp f;
+    eta_expand %{f } 3 |> FanBasic.p_exp f;
     fun _a0  _a1  _a2  -> f _a0 _a1 _a2   ]} *)
 val eta_expand : exp -> int -> exp    
 

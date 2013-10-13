@@ -13,73 +13,18 @@ let quotation_name = '.' ? (uppercase  identchar* '.') *
     (lowercase (identchar | '-') * )
 
 let locname = ident
-
 let quotation_prefix =
   '{' (':' quotation_name)? ('@' locname)? (* '|' *)
-    
-
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
-let uident = uppercase identchar *
-let not_star_symbolchar =
-  [(* '$' *) '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
-let symbolchar = '*' | not_star_symbolchar
-let quotchar =
-  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-(* let extra_quot = *)
-(*   ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^'  '~' '\\'] *)
-    (* FIX remove the '\' as extra quot*)
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
-let decimal_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-let hex_literal =
-  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
-let oct_literal =
-  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
-let bin_literal =
-  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
-let int_literal =
-  decimal_literal | hex_literal | oct_literal | bin_literal
-let float_literal =
-  ['0'-'9'] ['0'-'9' '_']*
-    ('.' ['0'-'9' '_']* )?
-    (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']* )?
-  
-(* Delimitors are extended (from 3.09) in a conservative way *)
-
-(* These chars that can't start an expession or a pattern: *)
-let safe_delimchars = ['%' '&' '/' '@' '^']
-    
-(* These symbols are unsafe since "[<", "[|", etc. exsist. *)
-let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
-
-let left_delims  = ['(' '[' ]
-let right_delims = [')' ']' ]
-    
-let left_delimitor = (* At least a safe_delimchars *)
-  left_delims delimchars* safe_delimchars (delimchars|left_delims)*
-   (* A '(' or a new super '(' without "(<" *)
-  | '(' (['|' ':'] delimchars* )?
-  (* Old brackets, no new brackets starting with "[|" or "[:" *)
-  | '[' ['|' ':']?
-   (* Old "[<","{<" and new ones *)
-  | ['[' ] delimchars* '<'
-  | '[' '='
-  | '[' '>' 
-let right_delimitor =
-  (* At least a safe_delimchars *)
-  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-   | (delimchars* ['|' ':'])? ')'
-   | ['|' ':']? ']'
-   | '>' delimchars* [']' ]
 let ocaml_escaped_char =
-  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\''] | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
+  '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']  | ['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)
+
 let ocaml_char =
   ( [! '\\' '\010' '\013'] | ocaml_escaped_char)
-let ocaml_lid =
-  lowercase identchar *
-let ocaml_uid =
-  uppercase identchar * 
+let ocaml_lid =  lowercase identchar *
+let ocaml_uid =  uppercase identchar * 
 };;
 
 let fprintf = Format.fprintf

@@ -4,9 +4,9 @@
 open FAst
 
 (*
-  {:macro|M a b c|}
+  %macro{M a b c}
 
-  {:macro|fib 32 |}
+  %macro{fib 32 }
 
   {:defmacro|fib a b =
   
@@ -20,7 +20,7 @@ open FAst
 
   -- `App
   --
-  {:stru| g |};
+  %stru{ g };
 
   -- macro.exp
   
@@ -61,11 +61,11 @@ val register_macro : key * expander -> unit
 
 val fib : int -> int
 
-(** {[{:exp| f a b c|}
+(** {[%exp{ f a b c}
     don't support currying
     always f a
     or f (a,b,c)
-    {:exp| f (a,b,c) |} ]}*)
+    %exp{ f (a,b,c) } ]}*)
 val fibm : exp -> exp
 
 val macro_expander : Objs.map

@@ -27,7 +27,7 @@ val plugin_remove : plugin_name -> unit
     Choose [mexp] as an entrace point to make the traversal
     more modular.
     Usage {[
-    let v =  {:mexp| struct $s end |} in
+    let v =  %mexp{ struct $s end } in
     let mexp = (Typehook.traversal ())#mexp v 
     ]}
     This function will *apply all the plugins* after finishing the traversal

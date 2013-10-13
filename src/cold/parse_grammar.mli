@@ -7,7 +7,7 @@ open FAst
 
 (**
    {[
-    with str t nonterminals {| U a b c d|}
+    with str t nonterminals %{ U a b c d}
     |> Ast2pt.print_stru f;
     let a = U.mk "a"
     let b = U.mk "b"
@@ -19,7 +19,7 @@ open FAst
 val nonterminals : stru Fgram.t
 
 (** {[
-     with str t nonterminalsclear {| U a b c d|} |> Ast2pt.print_exp f;
+     with str t nonterminalsclear %{ U a b c d} |> Ast2pt.print_exp f;
      U.clear a; U.clear b; U.clear c; U.clear d
     ]}
     It's used by DDSL [clear]   
@@ -32,12 +32,12 @@ val delete_rule_header : vid Fgram.t
      previous module name, it has side effect, and can not
      be used alone
      {[
-     with str t extend_header {| U.M |};
+     with str t extend_header %{ U.M };
      - : FAst.ident option * FAst.ident = (None, `Uid (, "Fgram"))
-     with str t extend_header {| U |};
+     with str t extend_header %{ U };
      - : FAst.ident option * FAst.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
-     with str t extend_header {| (g:U.t) |};
+     with str t extend_header %{ (g:U.t) };
      - : FAst.ident option * FAst.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features *)    
@@ -48,7 +48,7 @@ val qualuid : vid Fgram.t
 
 (** parse qualified  [X.Y.g]
      {[
-     with str t qualid {| A.B.g |};
+     with str t qualid %{ A.B.g };
      - : FAst.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]} *)
 
@@ -56,7 +56,7 @@ val qualid : vid Fgram.t
 
 (** parse qualified path ending with [X.t]
      {[
-     with str t t_qualid {| A.U.t |};
+     with str t t_qualid %{ A.U.t };
      - : FAst.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
      ]} *)
 val t_qualid : vid Fgram.t
@@ -105,7 +105,7 @@ val psymbol : FGramDef.symbol Fgram.t
 val symbol :  FGramDef.symbol Fgram.t
 
 (** return a [rule]
-    {[with str t rule {|  `Uid ("LA"|"RA"|"NA" as x)   |};
+    {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };
     - : FGramDef.rule =
      {prod =
      [{text =
