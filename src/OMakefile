@@ -71,7 +71,7 @@ NATIVE_ENABLED = true
 ##############
 # files shared between cold and hot directory
 FAN_LEX_LIB_FILES = \
-    fan_lex2 lexing_util  flex_lib lex_lex
+    lex_fan lexing_util  flex_lib lex_lex
     
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES) ast_gen ant antN ast_loc  ast_inject  astn_util \

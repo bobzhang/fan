@@ -5,12 +5,12 @@ let from_string { FLoc.loc_start = loc_start;_} str =
   let lb = Lexing.from_string str in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
-  Fan_lex2.from_lexbuf lb
+  Lex_fan.from_lexbuf lb
 let from_stream { FLoc.loc_start = loc_start;_} strm =
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- loc_start.pos_cnum;
   lb.lex_curr_p <- loc_start;
-  Fan_lex2.from_lexbuf lb
+  Lex_fan.from_lexbuf lb
 let rec clean (__strm : _ Fstream.t) =
   match Fstream.peek __strm with
   | Some (`EOI,loc) ->
