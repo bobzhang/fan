@@ -47,19 +47,19 @@ val filter_and_parse_tokens : 'a t -> Ftoken.stream -> 'a
 
 (** The default lexer, i.e, [Flex_lib.form_stream],
      *)
-val lex_string : FLoc.t -> string -> Ftoken.stream
+val lex_string : Locf.t -> string -> Ftoken.stream
 
 (** It would call the default lexer [gfilter], however, the filter
     is parameterized by the entry *)    
 val parse_string :
-    ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream ) ->
-      ?loc:FLoc.t -> 'a t -> string -> 'b
+    ?lexer:(Locf.t -> char Fstream.t -> Ftoken.stream ) ->
+      ?loc:Locf.t -> 'a t -> string -> 'b
 
 
 
     
 (** call the [gfilter], and use [glexer] *)
-val parse : 'a t -> FLoc.t -> char Fstream.t -> 'a
+val parse : 'a t -> Locf.t -> char Fstream.t -> 'a
     
 
 
@@ -84,7 +84,7 @@ val symb_failed :  'b t ->  'a -> symbol -> symbol -> string
 
 val symb_failed_txt :  'a t -> symbol -> symbol -> string
 
-val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * FLoc.t) Ftoken.parse
+val parser_of_symbol : 'a t -> symbol  -> (Gaction.t * Locf.t) Ftoken.parse
 val levels_of_entry : 'a t -> Gstructure.level list option      
     
 val copy : 'a t -> 'a t

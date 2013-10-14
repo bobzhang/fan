@@ -10,9 +10,9 @@ val ldot : Longident.t -> string -> Longident.t
 
 val lapply : Longident.t -> Longident.t -> Longident.t
 
-val mkghloc : FLoc.t -> FLoc.t
+val mkghloc : Locf.t -> Locf.t
 
-val error : FLoc.t -> string -> 'a
+val error : Locf.t -> string -> 'a
 
 val mksig :
   Location.t -> signature_item_desc -> signature_item
@@ -37,7 +37,7 @@ val mktyp : Location.t -> core_type_desc -> core_type
 
 val mkpat : Location.t -> pattern_desc -> pattern
 
-val mkghpat : FLoc.t -> pattern_desc -> pattern
+val mkghpat : Locf.t -> pattern_desc -> pattern
 
 val mkmty : Location.t -> module_type_desc -> module_type
 

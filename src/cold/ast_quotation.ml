@@ -62,7 +62,7 @@ let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
    let name = x.name in
    match expander_name ~pos:pos_tag name with
    | None  ->
-       (FLoc.failf x.loc "DDSL `%s' not found") @@
+       (Locf.failf x.loc "DDSL `%s' not found") @@
          (Ftoken.string_of_name name)
    | Some absolute_name ->
        let pack =
@@ -71,7 +71,7 @@ let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
              expanders_table.contents
          with
          | Not_found  ->
-             FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found"
+             Locf.failf x.loc "DDSL expander `%s' at position `%s' not found"
                (Ftoken.string_of_name name) pos_tag in
        let expander = ExpFun.unpack tag pack in Ftoken.quot_expand expander x : 
   'a )
@@ -103,7 +103,7 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
                 `Constraint (_loc, (subst_first_loc name a), ty)
             | p -> p : FAst.pat ) in
          match loc_name_opt with
-         | None  -> subst_first_loc FLoc.name.contents exp_ast
+         | None  -> subst_first_loc Locf.name.contents exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
   add name FDyn.exp_tag expand_exp;

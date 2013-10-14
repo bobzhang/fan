@@ -158,9 +158,9 @@ val level_list :
      (Fgram.srules nonterminalsclear
      [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
      (Fgram.mk_action
-     (fun (x : 'a_lident)  (_loc : FLoc.t)  -> (x : 'e__7 ))))])],
+     (fun (x : 'a_lident)  (_loc : Locf.t)  -> (x : 'e__7 ))))])],
      (Fgram.mk_action
-     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : FLoc.t)  ->
+     (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : Locf.t)  ->
      (() : 'nonterminalsclear ))))])])
      ]}
 

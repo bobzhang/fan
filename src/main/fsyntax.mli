@@ -3,7 +3,7 @@
 
 open FAst
 
-type warning = FLoc.t -> string -> unit
+type warning = Locf.t -> string -> unit
 
 val default_warning : warning
 
@@ -12,9 +12,9 @@ val current_warning : warning ref
 val print_warning : warning
 
 
-val interf : (sigi list  * FLoc.t option ) Fgram.t 
+val interf : (sigi list  * Locf.t option ) Fgram.t 
 
-val implem : (stru list  * FLoc.t option ) Fgram.t 
+val implem : (stru list  * Locf.t option ) Fgram.t 
 
 val top_phrase : stru option Fgram.t 
 
@@ -180,10 +180,10 @@ val with_stru_lang: stru Fgram.t
 val dot_lstrings: (Ftoken.name) Fgram.t 
 
 (**  generally "pat; EOI". *)    
-val parse_exp: FLoc.t -> string -> exp
-val parse_pat: FLoc.t -> string -> pat
+val parse_exp: Locf.t -> string -> exp
+val parse_pat: Locf.t -> string -> pat
 
-val parse_ident: FLoc.t -> string -> ident
+val parse_ident: Locf.t -> string -> ident
 
 val exp_filter : ep -> exp
 val pat_filter : ep -> pat

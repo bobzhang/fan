@@ -26,7 +26,7 @@ let string_of_name = Formatf.to_string pp_print_name
       
 type quot = {
     name:name;
-    loc:FLoc.t; (* the starting location of the quot *) 
+    loc:Locf.t; (* the starting location of the quot *) 
     meta:string option;(* a piece of small meta data, like loc name*)
     shift:int;
     content:string;
@@ -38,15 +38,15 @@ let pp_print_quot : Format.formatter -> quot -> unit =
     Format.fprintf fmt "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
       pp_print_name name
       (Formatf.pp_print_option Formatf.pp_print_string) meta
-      FLoc.pp_print_t loc
+      Locf.pp_print_t loc
       Format.pp_print_int shift
       Format.pp_print_int retract
       Format.pp_print_string content
   
 
-type 'a expand_fun = FLoc.t -> string option -> string -> 'a
+type 'a expand_fun = Locf.t -> string option -> string -> 'a
 let quot_expand (expander:'a expand_fun) (x:quot) =
-  let loc = Location_util.join (FLoc.move `start x.shift x.loc) in
+  let loc = Location_util.join (Locf.move `start x.shift x.loc) in
   let content =
     String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
   expander loc x.meta content
@@ -145,9 +145,9 @@ let pp_print_t: Format.formatter -> t -> unit =
 type 'a token  = [> t] as 'a
 
 
-type stream = (t * FLoc.t) Fstream.t 
+type stream = (t * Locf.t) Fstream.t 
 
-type 'a estream  = ('a token  * FLoc.t) Fstream.t 
+type 'a estream  = ('a token  * Locf.t) Fstream.t 
 
 type 'a parse  = stream -> 'a
 

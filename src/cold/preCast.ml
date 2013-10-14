@@ -3,7 +3,7 @@ open Util
 let with_open_out_file = Fan_util.with_open_out_file
 let dump_pt = Fan_util.dump_pt
 let simple_wrap = Fan_util.simple_wrap
-type 'a parser_fun = FLoc.t -> char Fstream.t -> 'a option 
+type 'a parser_fun = Locf.t -> char Fstream.t -> 'a option 
 type 'a printer_fun =
   ?input_file:string -> ?output_file:string -> 'a option -> unit 
 let sigi_printer =
@@ -58,8 +58,8 @@ let parse_interf loc cs =
   let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.interf) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_file name pa =
-  let loc = FLoc.mk name in
-  let print_warning = eprintf "%a:\n%s@." FLoc.print in
+  let loc = Locf.mk name in
+  let print_warning = eprintf "%a:\n%s@." Locf.print in
   let () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
@@ -78,9 +78,9 @@ let wrap parse_fun ~print_location  lb =
     | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
-  | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as
+  | End_of_file |Sys.Break |Locf.Exc_located (_,(End_of_file |Sys.Break )) as
       x -> raise x
-  | FLoc.Exc_located (loc,y) ->
+  | Locf.Exc_located (loc,y) ->
       (Format.eprintf "@[<0>%a%s@]@." print_location loc
          (Printexc.to_string y);
        raise Exit)

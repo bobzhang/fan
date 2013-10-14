@@ -11,7 +11,7 @@ let dir_table : (Ftoken.name , unit Ftoken.expand_fun) Hashtbl.t =
 let handle_quot (x:Ftoken.quot) : unit =
   let handler =
     try Hashtbl.find dir_table x.name
-    with Not_found -> FLoc.failf x.loc "Unfound directive language %s"
+    with Not_found -> Locf.failf x.loc "Unfound directive language %s"
       @@ Ftoken.string_of_name x.name
   in
   Ftoken.quot_expand handler x 

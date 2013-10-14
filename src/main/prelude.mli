@@ -65,7 +65,7 @@ module CurrentPrinter :
 
 
 val wrap :
-    'a Ftoken.parse  -> print_location:(Format.formatter -> FLoc.t -> unit) ->
+    'a Ftoken.parse  -> print_location:(Format.formatter -> Locf.t -> unit) ->
         Lexing.lexbuf -> 'a    
 
 val toplevel_phrase : Parsetree.toplevel_phrase Ftoken.parse

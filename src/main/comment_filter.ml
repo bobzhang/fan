@@ -1,7 +1,7 @@
 
 
 
-type t = ((string * FLoc.t) Fstream.t  * (string * FLoc.t) Queue.t )
+type t = ((string * Locf.t) Fstream.t  * (string * Locf.t) Queue.t )
 let mk () =
   let q = Queue.create () in
   let f _ =
@@ -13,11 +13,11 @@ let filter (_, q) =
   let rec self = parser
     |  (`Comment x, loc); 'xs  -> begin
         Queue.add (x, loc) q;
-        (* debug comments "add: %S at %a@\n" x FLoc.dump loc in *)
+        (* debug comments "add: %S at %a@\n" x Locf.dump loc in *)
         self xs
     end
     |  x; 'xs ->
-        (* debug comments "Found %a at %a@." Token.print x FLoc.dump loc in *)
+        (* debug comments "Found %a at %a@." Token.print x Locf.dump loc in *)
         %stream{x;'self xs}
     |  -> %stream{}  in self
 

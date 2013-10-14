@@ -78,7 +78,7 @@ let g =
    | `Lid x -> begin (* FIXME token with location *)
        try Hashtbl.find named_regexps x
        with Not_found ->
-         let p = FLoc.start_pos _loc in begin
+         let p = Locf.start_pos _loc in begin
            Fan_warnings.emitf p  "Reference to unbound regexp name `%s'" x ;
            raise UnboundRegexp
         end

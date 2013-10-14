@@ -7,10 +7,10 @@ type position =
 
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = FLoc.t -> Gaction.t -> 'a Ftoken.parse 
+type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Ftoken.parse 
     
 (** Duplicated in fgram.mli *)
-type loc = FLoc.t
+type loc = Locf.t
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
 type vid = [ `Dot of (vid* vid) | `Lid of string | `Uid of string | ant] 
 type any = [ `Any]

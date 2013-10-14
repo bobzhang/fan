@@ -28,7 +28,7 @@ val mkrf : flag -> Asttypes.rec_flag
   (Longident.Ldot (Longident.Lident "B", "C"), `uident)
 
   ident_tag {:ident| B.u.g|}
-  Exception: FLoc.Exc_located (, Failure "invalid long identifier").
+  Exception: Locf.Exc_located (, Failure "invalid long identifier").
   ]}
 
   If "", just remove it, this behavior should appear in other identifier as well FIXME

@@ -10,9 +10,9 @@ val dump_pt : string -> string -> 'a -> out_channel -> unit
 
 
 (* val wrap : ('a -> 'a option) -> *)
-(*   (FLoc.t -> 'b -> 'a list * FLoc.t option) -> FLoc.t -> 'b -> 'a list     *)
+(*   (Locf.t -> 'b -> 'a list * Locf.t option) -> Locf.t -> 'b -> 'a list     *)
 
 val simple_wrap :
     Location.t -> 'a ->
-      (FLoc.t -> 'a -> 'b list * FLoc.t option) ->
+      (Locf.t -> 'a -> 'b list * Locf.t option) ->
         'b list      

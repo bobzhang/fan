@@ -8,7 +8,7 @@ type t = {
   }
 
 
-val filter : t -> (Ftoken.t * FLoc.t) Fstream.t -> Ftoken.stream
+val filter : t -> (Ftoken.t * Locf.t) Fstream.t -> Ftoken.stream
 
 val set_filter : t -> (Ftoken.filter -> Ftoken.filter) -> unit
 

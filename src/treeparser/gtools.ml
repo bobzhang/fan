@@ -11,13 +11,13 @@ let empty_entry ename _ =
 let get_cur_loc strm =
   match Fstream.peek strm with
   | Some (_,r) -> r
-  | None -> FLoc.ghost 
+  | None -> Locf.ghost 
 
 
 let get_prev_loc strm =
   match Fstream.get_last strm with
   |Some (_,l) -> l
-  |None -> FLoc.ghost
+  |None -> Locf.ghost
 
 let is_level_labelled n =   function
   | {lname=Some n1 ; _  } -> n = n1

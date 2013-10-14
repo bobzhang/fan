@@ -17,7 +17,7 @@ class primitive =  object
   method char _loc (i:char) = %ep{$`chr:i}
   method unit _loc (_:unit) = %ep{()}
   (*default use [meta_loc] for expession*)   
-  (* method loc _loc (_l:loc) : ep= `Lid (_loc, !FLoc.name) *)
+  (* method loc _loc (_l:loc) : ep= `Lid (_loc, !Locf.name) *)
   method ant (_loc:loc) (x:ant)  = (x:> FAst.ep)
   (* FIXME bool antiquot *)
   method bool _loc x  =

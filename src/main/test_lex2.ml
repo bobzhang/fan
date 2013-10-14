@@ -126,7 +126,7 @@ Location_util:
     add_string -> (++)
     add_char -> (+>) ;
    |}  *)    
-let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
+let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = {:lex2|
 | newline {begin
     update_loc  lexbuf;
     (`NEWLINE, !! lexbuf )
@@ -258,7 +258,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
     let  dollar (c:Lexing_util.context) = {:lex2|
     | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x)
         {begin
-          let old = FLoc.move_pos (String.length name + 1) lexbuf.lex_start_p in
+          let old = Locf.move_pos (String.length name + 1) lexbuf.lex_start_p in
           (`Ant(name,x), old -- lexbuf.lex_curr_p)
         end}
     | lident as x  { (`Ant("",x), !!lexbuf)}
@@ -266,7 +266,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
         (* the first char is faked '(' to match the last ')', so we mvoe
            backwards one character *)
         {
-        let old = FLoc.move_pos (1+1+1+String.length name - 1) c.loc in
+        let old = Locf.move_pos (1+1+1+String.length name - 1) c.loc in
         begin
           c.buffer +> '(';
           lex_antiquot {c with loc = old} lexbuf ;
@@ -276,7 +276,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
        }
     | '('      (* $(xxxx)*)
         {
-         let old = FLoc.move_pos  (1+1-1) c.loc in
+         let old = Locf.move_pos  (1+1-1) c.loc in
          begin
            c.buffer +> '(';
            lex_antiquot   {c with loc = old } lexbuf ;
@@ -301,7 +301,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
 
 
     
-let from_lexbuf lb : (Ftoken.t * FLoc.t ) Fstream.t =
+let from_lexbuf lb : (Ftoken.t * Locf.t ) Fstream.t =
   let next _ = Some (token lb)  in (* this requires the [lexeme_start_p] to be correct ...  *)
   Fstream.from next
 

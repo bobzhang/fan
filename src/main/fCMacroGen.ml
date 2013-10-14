@@ -14,7 +14,7 @@ let defined = ref []
         
 let substp loc (env: (string * pat) list) =
   let bad_pat _loc =
-    FLoc.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
+    Locf.errorf _loc "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x:exp)= with {pat:exp;exp:pat}
     match x with
     | %{ $e1 $e2 } -> %@loc{ $(loop e1) $(loop e2) } 
@@ -54,8 +54,8 @@ class subst loc env =  object
     | %{ LOCATION_OF $lid:x } | %{ LOCATION_OF $uid:x } as e ->
           (try
             let loc = loc_of (List.assoc x env) in
-            let (a, b, c, d, e, f, g, h) = FLoc.to_tuple loc in
-            {| FLoc.of_tuple
+            let (a, b, c, d, e, f, g, h) = Locf.to_tuple loc in
+            {| Locf.of_tuple
               ($`str:a, $`int:b, $`int:c, $`int:d,
                $`int:e, $`int:f, $`int:g,
                $(if h then %{ true } else %{ false } )) |}
@@ -72,7 +72,7 @@ end
     
 let define ~exp ~pat eo y  =
   let incorrect_number loc l1 l2 =
-  FLoc.raise loc
+  Locf.raise loc
     (Failure
         (Printf.sprintf "expected %d parameters; found %d"
             (List.length l2) (List.length l1))) in

@@ -15,7 +15,7 @@ open Util
 
 
 
-type 'a parser_fun  = FLoc.t -> char Fstream.t -> 'a option
+type 'a parser_fun  = Locf.t -> char Fstream.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string ->
@@ -131,8 +131,8 @@ let parse_interf loc cs =
   | l -> Some (Ast_gen.sem_of_list l)
 
 let parse_file  name pa = begin 
-  let loc = FLoc.mk name in
-  let print_warning = eprintf "%a:\n%s@." FLoc.print in
+  let loc = Locf.mk name in
+  let print_warning = eprintf "%a:\n%s@." Locf.print in
   let  () = Fsyntax.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
@@ -161,9 +161,9 @@ let wrap parse_fun ~print_location lb =
     | _ -> parse_fun token_stream
   with
   | End_of_file | Sys.Break
-  | (FLoc.Exc_located (_, (End_of_file | Sys.Break))) as x ->
+  | (Locf.Exc_located (_, (End_of_file | Sys.Break))) as x ->
       raise x
-  | FLoc.Exc_located (loc, y)  -> begin
+  | Locf.Exc_located (loc, y)  -> begin
       Format.eprintf "@[<0>%a%s@]@." print_location loc (Printexc.to_string y);
       raise Exit; (* commuiniation with toplevel special case here*)
   end

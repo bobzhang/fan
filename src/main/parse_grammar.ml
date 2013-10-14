@@ -183,7 +183,7 @@ open Util
         begin 
           match Ast_quotation.resolve_name (`Sub [], x)
           with
-          | None -> FLoc.failf _loc "DDSL `%s' not resolved" x 
+          | None -> Locf.failf _loc "DDSL `%s' not resolved" x 
           | Some x -> (Ast_quotation.default:= Some x; `name old)
         end
   | None -> `non, mk_name _loc il)]
@@ -354,7 +354,7 @@ end;;
 
 
 
-(* let _loc = FLoc.ghost; *)
+(* let _loc = Locf.ghost; *)
 (* let u : FanGrammar.entry= {:entry| *)
 (*   simple_exp: *)
 (*   [ a_lident{i} -> %exp{ $(id:(i:>ident)) } *)

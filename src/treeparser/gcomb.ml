@@ -73,7 +73,7 @@ let tryp ps strm =
   let strm' = dup strm in
   let r =
     try ps strm' with
-    | Error _ | FLoc.Exc_located (_, Error _) ->
+    | Error _ | Locf.Exc_located (_, Error _) ->
         raise NotConsumed
     | exc -> raise exc  in begin 
         njunk (count strm') strm ;
@@ -84,7 +84,7 @@ let peek ps strm =
   let strm' = dup strm in
   let r =
     try ps strm' with
-    | Error _ | FLoc.Exc_located (_, (Error _)) ->
+    | Error _ | Locf.Exc_located (_, (Error _)) ->
         raise NotConsumed
     | exc -> raise exc  in 
   r

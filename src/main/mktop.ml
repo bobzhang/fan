@@ -404,11 +404,11 @@ let () =
 
 (*** poor man's here expansion available for expr and stru*)
 let () =
-  let f  = fun (loc:FLoc.t) _meta _content ->
-    let s = FLoc.to_string loc in
+  let f  = fun (loc:Locf.t) _meta _content ->
+    let s = Locf.to_string loc in
     %exp@loc{$str:s} in
-  let f2 = fun (loc:FLoc.t) _meta _content ->
-    let s = FLoc.to_string loc in
+  let f2 = fun (loc:Locf.t) _meta _content ->
+    let s = Locf.to_string loc in
     %stru@loc{$str:s} in
   begin 
     Ast_quotation.add (d,"here") FDyn.exp_tag f;

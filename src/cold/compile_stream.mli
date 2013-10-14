@@ -3,12 +3,12 @@
 open FAst
 
 type spat_comp =
-  | SpWhen of FLoc.t * pat * exp option
-  | SpMatch of FLoc.t * pat * exp
-  | SpStr of FLoc.t * pat
+  | SpWhen of Locf.t * pat * exp option
+  | SpMatch of Locf.t * pat * exp
+  | SpStr of Locf.t * pat
 type sexp_comp =
-  | SeTrm of FLoc.t * exp
-  | SeNtr of FLoc.t * exp
+  | SeTrm of Locf.t * exp
+  | SeNtr of Locf.t * exp
 
 
 type stream_pat = (spat_comp * exp option)

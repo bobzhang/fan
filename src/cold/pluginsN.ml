@@ -163,7 +163,7 @@ let gen_fill =
     ["loc"]
     ~annot:(fun x  ->
               ((`Arrow
-                  ((`Dot ((`Uid "FLoc"), (`Lid "t"))),
+                  ((`Dot ((`Uid "Locf"), (`Lid "t"))),
                     (`Arrow
                        ((`Dot ((`Uid "FAstN"), (`Lid x))),
                          (`Dot ((`Uid "FAst"), (`Lid x)))))) : FAstN.ctyp ),

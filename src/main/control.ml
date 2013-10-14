@@ -9,7 +9,7 @@
       match Ast_quotation.resolve_name  (`Sub[],s)
       with
       | None ->
-          FLoc.failf _loc "DDSL `%s' can not be resolved" s
+          Locf.failf _loc "DDSL `%s' can not be resolved" s
       | Some x -> 
           Ast_quotation.set_default x
     end

@@ -14,8 +14,8 @@ val string : ?strict:unit -> string -> string
       [Token.Eval.string strict (String.escaped s)] returns [s] *)
 
 
-val char_of_char_token : FLoc.t -> string -> char
+val char_of_char_token : Locf.t -> string -> char
 (** see [char], raise an location aware exception *)
 
-val string_of_string_token : FLoc.t -> string -> string
+val string_of_string_token : Locf.t -> string -> string
 (** see [string], raise an location aware exception*)    

@@ -68,23 +68,23 @@ let get_filter () = gram.gfilter
 
 
 let token_stream_of_string s =
-    lex_string FLoc.string_loc s
+    lex_string Locf.string_loc s
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry (Fstream.map (fun t -> (t,FLoc.ghost)) tokens)
+  parse_origin_tokens entry (Fstream.map (fun t -> (t,Locf.ghost)) tokens)
   
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry (Fstream.map (fun t -> (t,FLoc.ghost)) tokens)
+  filter_and_parse_tokens entry (Fstream.map (fun t -> (t,Locf.ghost)) tokens)
 
 (* with a special exception handler *)  
-let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
+let parse_string_safe ?(loc=Locf.string_loc) entry  s =
   try
     parse_string entry ~loc s
-  with FLoc.Exc_located(loc, e) -> begin
+  with Locf.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
-      FLoc.error_report (loc,s);
-      FLoc.raise loc e ;
+      Locf.error_report (loc,s);
+      Locf.raise loc e ;
   end 
 ;;
     
@@ -93,7 +93,7 @@ let parse_string_safe ?(loc=FLoc.string_loc) entry  s =
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
 (*     let st = Fstream.of_channel ch in  *)
-(*     parse rule (FLoc.mk file) st *)
+(*     parse rule (Locf.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
   
 
@@ -137,14 +137,14 @@ let parse_include_file entry =
       with | Not_found -> file  in
     let ch = open_in file in
     let st = Fstream.of_channel ch in
-      parse entry (FLoc.mk file) st
+      parse entry (Locf.mk file) st
     
 
 let error_report (loc,s) = begin
-  prerr_endline (FLoc.to_string loc);
+  prerr_endline (Locf.to_string loc);
   let (start_bol,stop_bol,
          start_off, stop_off) =
-    FLoc.( (start_bol loc,
+    Locf.( (start_bol loc,
              stop_bol loc,
              start_off loc,
              stop_off loc)
@@ -156,19 +156,19 @@ let error_report (loc,s) = begin
   prerr_endline (sprintf "err: ^%s^" err_location);
 end 
 
-let parse_string_of_entry ?(loc=FLoc.mk "<string>") entry  s =
+let parse_string_of_entry ?(loc=Locf.mk "<string>") entry  s =
   try parse_string entry  ~loc s  with
-    FLoc.Exc_located(loc, e) -> begin
+    Locf.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
       error_report (loc,s);
-      FLoc.raise loc e ;
+      Locf.raise loc e ;
   end
 
-let wrap_stream_parser ?(loc=FLoc.mk "<stream>") p s =
+let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
   try p ~loc s
-  with FLoc.Exc_located(loc,e) -> begin
-    eprintf "error: %s" (FLoc.to_string loc) ;
-    FLoc.raise loc e;
+  with Locf.Exc_located(loc,e) -> begin
+    eprintf "error: %s" (Locf.to_string loc) ;
+    Locf.raise loc e;
   end 
 
 

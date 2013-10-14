@@ -21,7 +21,7 @@
 (** Re-export *)  
 let loc_of = Ast_loc.loc_of
 
-let (<+>) = FLoc.Ops.((<+>))
+let (<+>) = Locf.Ops.((<+>))
 (**   connectives  *)
 
 let (<+>) a b = loc_of a <+> loc_of b
@@ -132,8 +132,8 @@ let (+>) f names  =
          
 (**  FIXME more precise API wanted *)
 let meta_here _loc location  =
-  let (a, b, c, d, e, f, g, h) = FLoc.to_tuple location in
-  %exp'{ FLoc.of_tuple
+  let (a, b, c, d, e, f, g, h) = Locf.to_tuple location in
+  %exp'{ Locf.of_tuple
      ($`str:a, $`int:b, $`int:c, $`int:d,
       $`int:e, $`int:f, $`int:g,
       $(if h then %exp'{ true } else %exp'{ false } )) }

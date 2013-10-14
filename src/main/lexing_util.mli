@@ -24,7 +24,7 @@ val lex_error_to_string : lex_error -> string
 (** To store some context information:
     loc       : position of the beginning of a string, quotation and comment *)        
 type context = {
-    mutable loc        : FLoc.position list ;
+    mutable loc        : Locf.position list ;
     (* only record the start position when enter into a quotation or antiquotation
        everytime token is used, the loc is updated to be [lexeme_start_p] *)
     buffer     : Buffer.t
@@ -61,9 +61,9 @@ val update_loc :
   ?file:string ->
   ?absolute:bool -> ?retract:int -> ?line:int -> Lexing.lexbuf -> unit
 
-val err : lex_error -> FLoc.t -> 'a
+val err : lex_error -> Locf.t -> 'a
 
-val warn : lex_error -> FLoc.t -> unit
+val warn : lex_error -> Locf.t -> unit
 
 (** called by [token]
     argument [context] contains a raw [buffer] and  the [loc] is pointed to the

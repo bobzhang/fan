@@ -53,7 +53,7 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lex{
+let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | newline %{
     begin
       update_loc  lexbuf;
@@ -113,7 +113,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = %lex{
 
 let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
 
-let from_stream (loc:FLoc.t) strm =
+let from_stream (loc:Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc.loc_start.pos_cnum;
     lb.lex_curr_p <- loc.loc_start;

@@ -14,11 +14,11 @@ let with_loc (parse_fun: 'b Ftoken.parse ) strm =
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
   let loc =
-    let start_off_bp = FLoc.start_off bp in
-    let stop_off_ep = FLoc.stop_off ep in 
+    let start_off_bp = Locf.start_off bp in
+    let stop_off_ep = Locf.stop_off ep in 
     if start_off_bp > stop_off_ep then 
       Location_util.join bp
-    else FLoc.merge bp ep in
+    else Locf.merge bp ep in
   (x, loc)
 
 
@@ -51,7 +51,7 @@ module ArgContainer= Stack
   It outputs a stateful parser, but it is functional itself
  *)    
 let rec parser_of_tree (entry:Gstructure.entry)
-    (lev,assoc) (q: (Gaction.t * FLoc.t) ArgContainer.t ) x =
+    (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x =
   let alevn =
     match assoc with
     | `LA|`NA -> lev + 1 | `RA -> lev  in
@@ -264,7 +264,7 @@ let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
             with
             | Fstream.NotConsumed ->
               let (act,loc) = ccontinue strm in
-              let loc = FLoc.merge bp loc in
+              let loc = Locf.merge bp loc in
               let a = Gaction.getf2 act a loc in entry.continue levn loc a strm
 
   

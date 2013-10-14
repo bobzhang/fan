@@ -4,7 +4,7 @@ open FAst
 open Ast_gen
 
 
-let _loc =FLoc.ghost 
+let _loc =Locf.ghost 
 
 type ty_meta = {
     str:string;

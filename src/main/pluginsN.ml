@@ -203,7 +203,7 @@ let gen_fill =
     ~mk_record ~mk_variant
     ~names:["loc"]
     ~annot:(fun x ->
-      (%ctyp-{ FLoc.t -> FAstN.$lid:x -> FAst.$lid:x },
+      (%ctyp-{ Locf.t -> FAstN.$lid:x -> FAst.$lid:x },
        %ctyp-{FAst.$lid:x} ))
     ();;
 

@@ -14,7 +14,7 @@ type name = domains * string
  *)
 type quot = {
     name    :name;
-    loc     : FLoc.t;
+    loc     : Locf.t;
     meta    : string option;
     shift   : int;
 
@@ -27,7 +27,7 @@ type quot = {
     for example, the [location variable]. The string is the quotation contents. 
     expand fun accepts [location] and [location label] and string   
     to generate an arbitrary value of type ['a] *)                     
-type 'a expand_fun = FLoc.t -> string option -> string -> 'a
+type 'a expand_fun = Locf.t -> string option -> string -> 'a
     
 (** extract the quot information for expanding
     mainly remove the border
@@ -112,11 +112,11 @@ type t =
 (**
    [Ftoken.stram]
  *)      
-type stream = (t * FLoc.t) Fstream.t 
+type stream = (t * Locf.t) Fstream.t 
 
 type 'a token  = [> t] as 'a
       
-type 'a estream  = ('a token * FLoc.t) Fstream.t
+type 'a estream  = ('a token * Locf.t) Fstream.t
       
 type 'a parse = stream -> 'a
 

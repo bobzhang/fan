@@ -90,9 +90,9 @@ let initial_spec_list =
     (Arg.Unit
        ((fun ()  -> print_endline Configf.fan_plugins_library; exit 0))),
     " Print location of standard library and exit");
-  ("-loc", (Arg.Set_string FLoc.name),
+  ("-loc", (Arg.Set_string Locf.name),
     ("<name>   Name of the location variable (default: " ^
-       (FLoc.name.contents ^ ").")));
+       (Locf.name.contents ^ ").")));
   ("-v",
     (Arg.Unit
        ((fun ()  -> eprintf "Fan version %s@." Configf.version; exit 0))),

@@ -341,7 +341,7 @@ let _ =
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
            ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun (e : 'exp)  _  (p : 'pat)  (_loc : FLoc.t)  ->
+                (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
                    ((`Fun
                        (_loc,
                          (`Bar
@@ -353,7 +353,7 @@ let _ =
         ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
           ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
             (Fgram.mk_action
-               (fun (p : 'pat)  (_loc : FLoc.t)  ->
+               (fun (p : 'pat)  (_loc : Locf.t)  ->
                   (`Fun
                      (_loc,
                        (`Bar
@@ -379,7 +379,7 @@ let _ =
            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Fgram.mk_action
                 (fun _  (ns : 'name list)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid m ->
                        (Ast_gen.sem_of_list
@@ -400,7 +400,7 @@ let _ =
         [([`Slist1 (`Snterm (Fgram.obj (a : 'a Fgram.t )))],
            ("Ast_gen.sem_of_list xs\n",
              (Fgram.mk_action
-                (fun (xs : 'a list)  (_loc : FLoc.t)  ->
+                (fun (xs : 'a list)  (_loc : Locf.t)  ->
                    (Ast_gen.sem_of_list xs : 'import )))))]));
   Fgram.extend_single (name : 'name Fgram.t )
     (None,
@@ -410,16 +410,16 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid x -> (`Lid (_loc, x) : 'name )
                    | _ -> failwith "`Lid (_loc, x)\n"))))]))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
-  let f (loc : FLoc.t) _meta _content =
-    let s = FLoc.to_string loc in (`Str (loc, s) : FAst.exp ) in
-  let f2 (loc : FLoc.t) _meta _content =
-    let s = FLoc.to_string loc in
+  let f (loc : Locf.t) _meta _content =
+    let s = Locf.to_string loc in (`Str (loc, s) : FAst.exp ) in
+  let f2 (loc : Locf.t) _meta _content =
+    let s = Locf.to_string loc in
     (`StExp (loc, (`Str (loc, s))) : FAst.stru ) in
   Ast_quotation.add (d, "here") FDyn.exp_tag f;
   Ast_quotation.add (d, "here") FDyn.stru_tag f2

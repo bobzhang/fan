@@ -28,10 +28,10 @@ open Ast_gen
  *)
 let list_of_list (loc:loc) =
   let rec loop top =  with exp' function
-    | [] ->   let ghost = FLoc.ghost in %@ghost{ [] }
+    | [] ->   let ghost = Locf.ghost in %@ghost{ [] }
     | e1 :: el ->
         let _loc =
-          if top then loc else FLoc.merge (loc_of e1) loc in
+          if top then loc else Locf.merge (loc_of e1) loc in
         %{ $e1 :: $(loop false el) } (* FIXME *)  in
   loop true ;;
 
@@ -66,7 +66,7 @@ let mklist loc =
     | [] -> %@loc{ [] }
     | e1 :: el ->
         let _loc =
-          if top then loc else FLoc.merge (loc_of (e1)) loc in
+          if top then loc else Locf.merge (loc_of (e1)) loc in
         `App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), (loop false el))
           (* %{ [$e1 :: $(loop false el)] } *)
   in loop true 
@@ -80,9 +80,9 @@ let meta_option mf_a _loc  = function
   | Some x -> %{Some $(mf_a _loc x)} 
 
 let meta_arrow (type t)
-    (_mf_a: FLoc.t -> 'a -> t)
-    (_mf_b: FLoc.t -> 'b ->t)
-    (_loc: FLoc.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented"
+    (_mf_a: Locf.t -> 'a -> t)
+    (_mf_b: Locf.t -> 'b ->t)
+    (_loc: Locf.t)  (_x:'a -> 'b) = invalid_arg "meta_arrow not implemented"
     
 
 (* +-----------------------------------------------------------------+
@@ -260,7 +260,7 @@ let rec is_irrefut_pat (x: pat) = with pat
  *)
 let array_of_array arr =
   match arr  with
-  | [||] -> `ArrayEmpty (FLoc.ghost)
+  | [||] -> `ArrayEmpty (Locf.ghost)
   | _ ->   
       let items = arr |> Array.to_list |> sem_of_list in
       let _loc = loc_of items in

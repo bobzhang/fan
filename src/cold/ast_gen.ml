@@ -1,5 +1,5 @@
 let loc_of = Ast_loc.loc_of
-let (<+>) = let open FLoc.Ops in ( <+> )
+let (<+>) = let open Locf.Ops in ( <+> )
 let (<+>) a b = (loc_of a) <+> (loc_of b)
 let sem (a : 'a) (b : 'a) = let _loc = a <+> b in `Sem (_loc, a, b)
 let com a b = let _loc = a <+> b in `Com (_loc, a, b)
@@ -47,9 +47,9 @@ let tuple_sta y =
 let (+>) f names =
   let _loc = loc_of f in appl_of_list (f :: (List.map (lid _loc) names))
 let meta_here _loc location =
-  let (a,b,c,d,e,f,g,h) = FLoc.to_tuple location in
+  let (a,b,c,d,e,f,g,h) = Locf.to_tuple location in
   `App
-    (_loc, (`Dot (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "of_tuple")))),
+    (_loc, (`Dot (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "of_tuple")))),
       (`Par
          (_loc,
            (`Com

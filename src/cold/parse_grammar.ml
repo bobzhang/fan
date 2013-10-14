@@ -75,16 +75,16 @@ let _ =
           `Skeyword ")"],
            ("`Dyn (x, t)\n",
              (Fgram.mk_action
-                (fun _  (t : 't_qualid)  _  (x : 'qualid)  _  (_loc : FLoc.t)
+                (fun _  (t : 't_qualid)  _  (x : 'qualid)  _  (_loc : Locf.t)
                     -> (`Dyn (x, t) : 'ty )))));
         ([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
           ("`Static t\n",
             (Fgram.mk_action
-               (fun (t : 'qualuid)  (_loc : FLoc.t)  -> (`Static t : 'ty )))));
+               (fun (t : 'qualuid)  (_loc : Locf.t)  -> (`Static t : 'ty )))));
         ([],
           ("`Static (`Uid (_loc, \"Fgram\"))\n",
             (Fgram.mk_action
-               (fun (_loc : FLoc.t)  ->
+               (fun (_loc : Locf.t)  ->
                   (`Static (`Uid (_loc, "Fgram")) : 'ty )))))]));
   Fgram.extend_single (nonterminals : 'nonterminals Fgram.t )
     (None,
@@ -93,7 +93,7 @@ let _ =
           `Slist1 (`Snterm (Fgram.obj (type_entry : 'type_entry Fgram.t )))],
            ("let mk =\n  match t with\n  | `Static t ->\n      let t = (t : vid  :>exp) in\n      (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      let t = (t : vid  :>exp) in\n      (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n",
              (Fgram.mk_action
-                (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : FLoc.t)  ->
+                (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : Locf.t)  ->
                    (let mk =
                       match t with
                       | `Static t ->
@@ -154,7 +154,7 @@ let _ =
                (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("y\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str y -> (y : 'str )
                    | _ -> failwith "y\n"))))]));
@@ -166,7 +166,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("(_loc, x, None, None)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid x -> ((_loc, x, None, None) : 'type_entry )
                    | _ -> failwith "(_loc, x, None, None)\n"))));
@@ -181,7 +181,7 @@ let _ =
           ("(_loc, x, (Some y), None)\n",
             (Fgram.mk_action
                (fun _  (__fan_2 : [> Ftoken.t])  (__fan_1 : [> Ftoken.t])  _ 
-                  (_loc : FLoc.t)  ->
+                  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
                   | (`Str y,`Lid x) ->
                       ((_loc, x, (Some y), None) : 'type_entry )
@@ -198,7 +198,7 @@ let _ =
           ("(_loc, x, (Some y), (Some t))\n",
             (Fgram.mk_action
                (fun _  (t : 'ctyp)  (__fan_2 : [> Ftoken.t]) 
-                  (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
+                  (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
                   | (`Str y,`Lid x) ->
                       ((_loc, x, (Some y), (Some t)) : 'type_entry )
@@ -214,7 +214,7 @@ let _ =
           ("(_loc, x, y, (Some t))\n",
             (Fgram.mk_action
                (fun _  (y : 'str option)  (t : 'ctyp)  _ 
-                  (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
+                  (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x -> ((_loc, x, y, (Some t)) : 'type_entry )
                   | _ -> failwith "(_loc, x, y, (Some t))\n"))))]));
@@ -230,7 +230,7 @@ let _ =
            ("let mk =\n  let x = (x : vid  :>exp) in\n  (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : FAst.exp ) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n",
              (Fgram.mk_action
                 (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
-                   (x : 'qualid)  _  (_loc : FLoc.t)  ->
+                   (x : 'qualid)  _  (_loc : Locf.t)  ->
                    (let mk =
                       let x = (x : vid  :>exp) in
                       (`App
@@ -309,7 +309,7 @@ let _ =
           `Slist1 (`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t )))],
            ("let rest =\n  List.map\n    (fun (x : alident)  ->\n       let x = (x : alident  :>exp) in\n       let _loc = loc_of x in\n       let t = (t : vid  :>exp) in\n       (`App (_loc, (`Field (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n         FAst.exp )) ls in\nseq_sem rest\n",
              (Fgram.mk_action
-                (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : FLoc.t) 
+                (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 
                    ->
                    (let rest =
                       List.map
@@ -332,7 +332,7 @@ let _ =
           `Skeyword ")"],
            ("let old = gm () in let () = grammar_module_name := t in ((Some i), old)\n",
              (Fgram.mk_action
-                (fun _  (t : 't_qualid)  _  (i : 'qualid)  _  (_loc : FLoc.t)
+                (fun _  (t : 't_qualid)  _  (i : 'qualid)  _  (_loc : Locf.t)
                     ->
                    (let old = gm () in
                     let () = grammar_module_name := t in ((Some i), old) : 
@@ -340,14 +340,14 @@ let _ =
         ([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
           ("let old = gm () in let () = grammar_module_name := t in (None, old)\n",
             (Fgram.mk_action
-               (fun (t : 'qualuid)  (_loc : FLoc.t)  ->
+               (fun (t : 'qualuid)  (_loc : Locf.t)  ->
                   (let old = gm () in
                    let () = grammar_module_name := t in (None, old) : 
                   'extend_header )))));
         ([],
           ("(None, (gm ()))\n",
             (Fgram.mk_action
-               (fun (_loc : FLoc.t)  -> ((None, (gm ())) : 'extend_header )))))]));
+               (fun (_loc : Locf.t)  -> ((None, (gm ())) : 'extend_header )))))]));
   Fgram.extend_single (extend_body : 'extend_body Fgram.t )
     (None,
       (None, None,
@@ -356,7 +356,7 @@ let _ =
            ("let res = text_of_functorial_extend _loc gram el in\nlet () = grammar_module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    (let res = text_of_functorial_extend _loc gram el in
                     let () = grammar_module_name := old in res : 'extend_body )))))]));
   Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
@@ -367,7 +367,7 @@ let _ =
            ("let res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = grammar_module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    (let res =
                       text_of_functorial_extend ~safe:false _loc gram el in
                     let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
@@ -377,7 +377,7 @@ let _ =
         [([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
            ("let old = gm () in let () = grammar_module_name := g in old\n",
              (Fgram.mk_action
-                (fun (g : 'qualuid)  (_loc : FLoc.t)  ->
+                (fun (g : 'qualuid)  (_loc : Locf.t)  ->
                    (let old = gm () in
                     let () = grammar_module_name := g in old : 'delete_rule_header )))))]));
   Fgram.extend_single (delete_rule_body : 'delete_rule_body Fgram.t )
@@ -390,7 +390,7 @@ let _ =
            ("grammar_module_name := old; seq_sem es\n",
              (Fgram.mk_action
                 (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    (grammar_module_name := old; seq_sem es : 'delete_rule_body )))))]));
   Fgram.extend_single (delete_rules : 'delete_rules Fgram.t )
     (None,
@@ -405,7 +405,7 @@ let _ =
            ("exp_delete_rule _loc n sls\n",
              (Fgram.mk_action
                 (fun _  (sls : 'psymbols list)  _  _  (n : 'name) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    (exp_delete_rule _loc n sls : 'delete_rules )))))]));
   Fgram.extend_single (psymbols : 'psymbols Fgram.t )
     (None,
@@ -415,7 +415,7 @@ let _ =
                (`Skeyword ";"))],
            ("sl\n",
              (Fgram.mk_action
-                (fun (sl : 'psymbol list)  (_loc : FLoc.t)  ->
+                (fun (sl : 'psymbol list)  (_loc : Locf.t)  ->
                    (sl : 'psymbols )))))]));
   Fgram.extend_single (qualuid : 'qualuid Fgram.t )
     (None,
@@ -428,7 +428,7 @@ let _ =
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
                 (fun (xs : 'qualuid)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
@@ -438,7 +438,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x -> (`Uid (_loc, x) : 'qualuid )
                   | _ -> failwith "`Uid (_loc, x)\n"))))]));
@@ -453,7 +453,7 @@ let _ =
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
                 (fun (xs : 'qualid)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                    | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
@@ -462,7 +462,7 @@ let _ =
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("`Lid (_loc, i)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Lid i -> (`Lid (_loc, i) : 'qualid )
                   | _ -> failwith "`Lid (_loc, i)\n"))))]));
@@ -477,7 +477,7 @@ let _ =
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
                 (fun (xs : 't_qualid)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
@@ -492,7 +492,7 @@ let _ =
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
                (fun (__fan_2 : [> Ftoken.t])  _  (__fan_0 : [> Ftoken.t]) 
-                  (_loc : FLoc.t)  ->
+                  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_0) with
                   | (`Lid "t",`Uid x) -> (`Uid (_loc, x) : 't_qualid )
                   | _ -> failwith "`Uid (_loc, x)\n"))))]));
@@ -502,16 +502,16 @@ let _ =
         [([`Snterm (Fgram.obj (qualid : 'qualid Fgram.t ))],
            ("mk_name _loc il\n",
              (Fgram.mk_action
-                (fun (il : 'qualid)  (_loc : FLoc.t)  ->
+                (fun (il : 'qualid)  (_loc : Locf.t)  ->
                    (mk_name _loc il : 'name )))))]));
   Fgram.extend_single (entry_name : 'entry_name Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )))],
-           ("((match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> FLoc.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non), (mk_name _loc il))\n",
+           ("((match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non), (mk_name _loc il))\n",
              (Fgram.mk_action
-                (fun (name : 'str option)  (il : 'qualid)  (_loc : FLoc.t) 
+                (fun (name : 'str option)  (il : 'qualid)  (_loc : Locf.t) 
                    ->
                    (((match name with
                       | Some x ->
@@ -519,7 +519,7 @@ let _ =
                           (match Ast_quotation.resolve_name ((`Sub []), x)
                            with
                            | None  ->
-                               FLoc.failf _loc "DDSL `%s' not resolved" x
+                               Locf.failf _loc "DDSL `%s' not resolved" x
                            | Some x ->
                                (Ast_quotation.default := (Some x); `name old))
                       | None  -> `non), (mk_name _loc il)) : 'entry_name )))))]));
@@ -533,7 +533,7 @@ let _ =
            ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
              (Fgram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
-                   ((n,p) : 'entry_name)  (_loc : FLoc.t)  ->
+                   ((n,p) : 'entry_name)  (_loc : Locf.t)  ->
                    ((match n with
                      | `name old -> Ast_quotation.default := old
                      | _ -> ());
@@ -553,7 +553,7 @@ let _ =
           ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
             (Fgram.mk_action
                (fun (levels : 'level_list)  (pos : 'position option)  _ 
-                  ((n,p) : 'entry_name)  _  (_loc : FLoc.t)  ->
+                  ((n,p) : 'entry_name)  _  (_loc : Locf.t)  ->
                   ((match n with
                     | `name old -> Ast_quotation.default := old
                     | _ -> ());
@@ -574,7 +574,7 @@ let _ =
                "`Uid \"First\"| \"Last\"")],
            ("(`Vrn (_loc, x) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ("First"|"Last" as x) ->
                        ((`Vrn (_loc, x) : FAst.exp ) : 'position )
@@ -592,7 +592,7 @@ let _ =
          `Snterm (Fgram.obj (string : 'string Fgram.t ))],
           ("(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun (n : 'string)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
+               (fun (n : 'string)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t) 
                   ->
                   match __fan_0 with
                   | `Uid ("Before"|"After"|"Level" as x) ->
@@ -606,7 +606,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("failwithf \"%s is not the right position:(First|Last) or (Before|After|Level)\"\n  x\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x ->
                       (failwithf
@@ -623,12 +623,12 @@ let _ =
           `Skeyword "}"],
            ("`Group ll\n",
              (Fgram.mk_action
-                (fun _  (ll : 'level list)  _  (_loc : FLoc.t)  ->
+                (fun _  (ll : 'level list)  _  (_loc : Locf.t)  ->
                    (`Group ll : 'level_list )))));
         ([`Snterm (Fgram.obj (level : 'level Fgram.t ))],
           ("`Single l\n",
             (Fgram.mk_action
-               (fun (l : 'level)  (_loc : FLoc.t)  ->
+               (fun (l : 'level)  (_loc : Locf.t)  ->
                   (`Single l : 'level_list )))))]));
   Fgram.extend_single (level : 'level Fgram.t )
     (None,
@@ -639,7 +639,7 @@ let _ =
            ("mk_level ~label ~assoc ~rules\n",
              (Fgram.mk_action
                 (fun (rules : 'rule_list)  (assoc : 'assoc option) 
-                   (label : 'str option)  (_loc : FLoc.t)  ->
+                   (label : 'str option)  (_loc : Locf.t)  ->
                    (mk_level ~label ~assoc ~rules : 'level )))))]));
   Fgram.extend_single (assoc : 'assoc Fgram.t )
     (None,
@@ -652,7 +652,7 @@ let _ =
                "`Uid \"LA\"| \"RA\"| \"NA\"")],
            ("(`Vrn (_loc, x) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ("LA"|"RA"|"NA" as x) ->
                        ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
@@ -662,7 +662,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("failwithf \"%s is not a correct associativity:(LA|RA|NA)\" x\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x ->
                       (failwithf
@@ -677,14 +677,14 @@ let _ =
         [([`Skeyword "["; `Skeyword "]"],
            ("[]\n",
              (Fgram.mk_action
-                (fun _  _  (_loc : FLoc.t)  -> ([] : 'rule_list )))));
+                (fun _  _  (_loc : Locf.t)  -> ([] : 'rule_list )))));
         ([`Skeyword "[";
          `Slist1sep
            ((`Snterm (Fgram.obj (rule : 'rule Fgram.t ))), (`Skeyword "|"));
          `Skeyword "]"],
           ("retype_rule_list_without_patterns _loc rules\n",
             (Fgram.mk_action
-               (fun _  (rules : 'rule list)  _  (_loc : FLoc.t)  ->
+               (fun _  (rules : 'rule list)  _  (_loc : Locf.t)  ->
                   (retype_rule_list_without_patterns _loc rules : 'rule_list )))))]));
   Fgram.extend_single (rule : 'rule Fgram.t )
     (None,
@@ -696,14 +696,14 @@ let _ =
            ("mk_rule ~prod ~action\n",
              (Fgram.mk_action
                 (fun (action : 'opt_action option)  (prod : 'psymbol list) 
-                   (_loc : FLoc.t)  -> (mk_rule ~prod ~action : 'rule )))))]));
+                   (_loc : Locf.t)  -> (mk_rule ~prod ~action : 'rule )))))]));
   Fgram.extend_single (opt_action : 'opt_action Fgram.t )
     (None,
       (None, None,
         [([`Skeyword "->"; `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
            ("act\n",
              (Fgram.mk_action
-                (fun (act : 'exp)  _  (_loc : FLoc.t)  ->
+                (fun (act : 'exp)  _  (_loc : Locf.t)  ->
                    (act : 'opt_action )))))]));
   Fgram.extend_single (pattern : 'pattern Fgram.t )
     (None,
@@ -713,18 +713,18 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("`Lid (_loc, i)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid i -> (`Lid (_loc, i) : 'pattern )
                    | _ -> failwith "`Lid (_loc, i)\n"))));
         ([`Skeyword "_"],
           ("`Any _loc\n",
             (Fgram.mk_action
-               (fun _  (_loc : FLoc.t)  -> (`Any _loc : 'pattern )))));
+               (fun _  (_loc : Locf.t)  -> (`Any _loc : 'pattern )))));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           ("p\n",
             (Fgram.mk_action
-               (fun _  (p : 'pattern)  _  (_loc : FLoc.t)  -> (p : 'pattern )))));
+               (fun _  (p : 'pattern)  _  (_loc : Locf.t)  -> (p : 'pattern )))));
         ([`Skeyword "(";
          `Sself;
          `Skeyword ",";
@@ -733,7 +733,7 @@ let _ =
           ("tuple_com (p1 :: ps)\n",
             (Fgram.mk_action
                (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
-                  (_loc : FLoc.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
+                  (_loc : Locf.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
   Fgram.extend_single (brace_pattern : 'brace_pattern Fgram.t )
     (None,
       (None, None,
@@ -742,7 +742,7 @@ let _ =
           `Skeyword "}"],
            ("p\n",
              (Fgram.mk_action
-                (fun _  (p : 'pattern)  _  (_loc : FLoc.t)  ->
+                (fun _  (p : 'pattern)  _  (_loc : Locf.t)  ->
                    (p : 'brace_pattern )))))]));
   Fgram.extend_single (psymbol : 'psymbol Fgram.t )
     (None,
@@ -753,7 +753,7 @@ let _ =
            ("match p with\n| Some _ ->\n    { s with pattern = (p : Gram_def.action_pattern option  :>pat option) }\n| None  -> s\n",
              (Fgram.mk_action
                 (fun (p : 'brace_pattern option)  (s : 'symbol) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    (match p with
                     | Some _ ->
                         {
@@ -771,7 +771,7 @@ let _ =
           `Snterm (Fgram.obj (symbol : 'symbol Fgram.t ))],
            ("t\n",
              (Fgram.mk_action
-                (fun (t : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)
+                (fun (t : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)
                     ->
                    match __fan_0 with
                    | `Uid "SEP" -> (t : 'sep_symbol )
@@ -788,7 +788,7 @@ let _ =
            ("s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : FLoc.t)  ->
+                   (_loc : Locf.t)  ->
                    match (__fan_1, __fan_0) with
                    | (`Str s,`Uid "Level") -> (s : 'level_str )
                    | _ -> failwith "s\n"))))]));
@@ -804,7 +804,7 @@ let _ =
            ("let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text =\n  mk_slist _loc\n    (match x with\n     | \"L0\" -> false\n     | \"L1\" -> true\n     | _ -> failwithf \"only (L0|L1) allowed here\") sep s in\nmk_symbol ~text ~styp ~pattern:None\n",
              (Fgram.mk_action
                 (fun (sep : 'sep_symbol option)  (s : 'symbol) 
-                   (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                   (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ("L0"|"L1" as x) ->
                        (let () = check_not_tok s in
@@ -827,7 +827,7 @@ let _ =
          `Sself],
           ("let () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in mk_symbol ~text ~styp ~pattern:None\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
+               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t) 
                   ->
                   match __fan_0 with
                   | `Uid "OPT" ->
@@ -845,7 +845,7 @@ let _ =
          `Sself],
           ("let text = `Stry (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
+               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t) 
                   ->
                   match __fan_0 with
                   | `Uid "TRY" ->
@@ -861,7 +861,7 @@ let _ =
          `Sself],
           ("let text = `Speek (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
+               (fun (s : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t) 
                   ->
                   match __fan_0 with
                   | `Uid "PEEK" ->
@@ -876,7 +876,7 @@ let _ =
               (`App ((`Vrn "Uid"), (`Str "S"))), "`Uid \"S\"")],
           ("mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid "S" ->
                       (mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc)
@@ -887,14 +887,14 @@ let _ =
         ([`Snterm (Fgram.obj (simple_pat : 'simple_pat Fgram.t ))],
           ("token_of_simple_pat _loc p\n",
             (Fgram.mk_action
-               (fun (p : 'simple_pat)  (_loc : FLoc.t)  ->
+               (fun (p : 'simple_pat)  (_loc : Locf.t)  ->
                   (token_of_simple_pat _loc p : 'symbol )))));
         ([`Stoken
             (((function | `Str _ -> true | _ -> false)),
               (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("mk_symbol ~text:(`Skeyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Str s ->
                       (mk_symbol ~text:(`Skeyword (_loc, s))
@@ -906,7 +906,7 @@ let _ =
          `Sopt (`Snterm (Fgram.obj (level_str : 'level_str Fgram.t )))],
           ("mk_symbol ~text:(`Snterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n",
             (Fgram.mk_action
-               (fun (lev : 'level_str option)  (n : 'name)  (_loc : FLoc.t) 
+               (fun (lev : 'level_str option)  (n : 'name)  (_loc : Locf.t) 
                   ->
                   (mk_symbol ~text:(`Snterm (_loc, n, lev))
                      ~styp:(`Quote
@@ -915,7 +915,7 @@ let _ =
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           ("s\n",
             (Fgram.mk_action
-               (fun _  (s : 'symbol)  _  (_loc : FLoc.t)  -> (s : 'symbol )))))]));
+               (fun _  (s : 'symbol)  _  (_loc : Locf.t)  -> (s : 'symbol )))))]));
   Fgram.extend_single (string : 'string Fgram.t )
     (None,
       (None, None,
@@ -924,7 +924,7 @@ let _ =
                (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("(`Str (_loc, s) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str s -> ((`Str (_loc, s) : FAst.exp ) : 'string )
                    | _ -> failwith "(`Str (_loc, s) : FAst.exp )\n"))));
@@ -934,7 +934,7 @@ let _ =
               "`Ant (\"\",_)")],
           ("parse_exp _loc s\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant ("",s) -> (parse_exp _loc s : 'string )
                   | _ -> failwith "parse_exp _loc s\n"))))]));
@@ -944,14 +944,14 @@ let _ =
         [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
            ("(i : alident  :>exp)\n",
              (Fgram.mk_action
-                (fun (i : 'a_lident)  (_loc : FLoc.t)  ->
+                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
                    ((i : alident  :>exp) : 'simple_exp )))));
         ([`Skeyword "(";
          `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
          `Skeyword ")"],
           ("e\n",
             (Fgram.mk_action
-               (fun _  (e : 'exp)  _  (_loc : FLoc.t)  -> (e : 'simple_exp )))))]))
+               (fun _  (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'simple_exp )))))]))
 let _ =
   let d = `Absolute ["Fan"; "Lang"] in
   Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();

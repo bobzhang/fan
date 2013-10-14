@@ -12,7 +12,7 @@ exception TokenError of  error
 
 
 let err error loc =
-  raise (FLoc.Exc_located (loc, TokenError error))
+  raise (Locf.Exc_located (loc, TokenError error))
 
 let pp_print_error: Format.formatter -> error -> unit =
   fun fmt  ->

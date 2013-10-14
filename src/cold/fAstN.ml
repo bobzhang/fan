@@ -1,4 +1,4 @@
-type loc = FLoc.t 
+type loc = Locf.t 
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)] 
 type literal =
   [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string

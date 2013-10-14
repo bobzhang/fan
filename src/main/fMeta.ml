@@ -13,7 +13,7 @@ class primitive =  object
   method unit _loc (_:unit) : ep = %{()}
   (*default use [meta_loc] for expession*)   
   method loc _loc (_l:loc) : ep=
-    let n  = !FLoc.name in %{$lid:n}
+    let n  = !Locf.name in %{$lid:n}
   method ant (_loc:loc) (x:ant) : ep = (x:>ep)
   (* FIXME bool antiquot *)
   method bool _loc x  : ep=

@@ -15,7 +15,7 @@ let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
 let (--) = Location_util.( -- ) 
-let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
+let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
@@ -7264,7 +7264,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                       (((lexbuf.Lexing.lex_mem).(0)) + 1)
                       (lexbuf.Lexing.lex_curr_pos + 0) in
                   let old =
-                    FLoc.move_pos ((String.length name) + 1)
+                    Locf.move_pos ((String.length name) + 1)
                       lexbuf.lex_start_p in
                   ((`Ant (name, x)), (old -- lexbuf.lex_curr_p))
               | 1 ->
@@ -7279,7 +7279,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                       (lexbuf.Lexing.lex_start_pos + 1)
                       (lexbuf.Lexing.lex_curr_pos + (-1)) in
                   let old =
-                    FLoc.move_pos
+                    Locf.move_pos
                       ((((1 + 1) + 1) + (String.length name)) - 1)
                       (List.hd c.loc) in
                   (c.buffer +> '(';
@@ -7287,7 +7287,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                    ((`Ant (name, (buff_contents c))),
                      (old -- (Lexing.lexeme_end_p lexbuf))))
               | 3 ->
-                  let old = FLoc.move_pos ((1 + 1) - 1) (List.hd c.loc) in
+                  let old = Locf.move_pos ((1 + 1) - 1) (List.hd c.loc) in
                   (c.buffer +> '(';
                    push_loc_cont c lexbuf lex_antiquot;
                    ((`Ant ("", (buff_contents c))),
@@ -7317,5 +7317,5 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
           (err (Illegal_character c)) @@ (!! lexbuf)
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb =
-  (let next _ = Some (token lb) in Fstream.from next : (Ftoken.t* FLoc.t)
+  (let next _ = Some (token lb) in Fstream.from next : (Ftoken.t* Locf.t)
                                                          Fstream.t )

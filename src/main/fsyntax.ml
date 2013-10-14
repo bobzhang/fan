@@ -2,9 +2,9 @@
 
 open FAst
 
-type warning = FLoc.t -> string -> unit
+type warning = Locf.t -> string -> unit
     
-let default_warning loc txt = Format.eprintf "<W> %a: %s@." FLoc.print loc txt
+let default_warning loc txt = Format.eprintf "<W> %a: %s@." Locf.print loc txt
     
 let current_warning = ref default_warning
     

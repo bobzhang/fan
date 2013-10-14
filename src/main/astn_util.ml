@@ -93,8 +93,8 @@ let (+>) f names  =
   appl_of_list (f:: (List.map lid  names))
          
 let meta_here  location  =
-  let (a, b, c, d, e, f, g, h) = FLoc.to_tuple location in
-  %exp-'{ FLoc.of_tuple
+  let (a, b, c, d, e, f, g, h) = Locf.to_tuple location in
+  %exp-'{ Locf.of_tuple
             ($`str:a, $`int:b, $`int:c, $`int:d,
              $`int:e, $`int:f, $`int:g,
              $(if h then %exp-'{ true } else %exp-'{ false } )) }

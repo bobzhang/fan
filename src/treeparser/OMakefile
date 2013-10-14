@@ -10,3 +10,8 @@ lib:$(OCamlLibrary libtreeparser, $(FILES))
 .PHONY: clean lib
 clean:
     rm -rf $(OCAMLBIN_EXT)
+
+
+# local variables:
+# compile-command: "pmake lib"
+# end:

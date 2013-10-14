@@ -2,7 +2,7 @@ open StdFan
 open FAst
 let strip_ant ant = ant
 let pp_print_loc: Format.formatter -> loc -> unit =
-  fun fmt  _a0  -> FLoc.pp_print_t fmt _a0
+  fun fmt  _a0  -> Locf.pp_print_t fmt _a0
 let pp_print_ant: Format.formatter -> ant -> unit =
   fun fmt  (`Ant (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
@@ -2012,7 +2012,7 @@ class print =
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> unit= self#unknown
-    method floc_t : 'fmt -> FLoc.t -> unit= self#unknown
+    method floc_t : 'fmt -> Locf.t -> unit= self#unknown
   end
 class map =
   object (self : 'self_type)
@@ -3140,7 +3140,7 @@ class map =
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_bind)
     method fanutil_anti_cxt : FanUtil.anti_cxt -> FanUtil.anti_cxt=
       self#unknown
-    method floc_t : FLoc.t -> FLoc.t= self#unknown
+    method floc_t : Locf.t -> Locf.t= self#unknown
   end
 class fold =
   object (self : 'self_type)
@@ -3907,7 +3907,7 @@ class fold =
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method fanutil_anti_cxt : FanUtil.anti_cxt -> 'self_type= self#unknown
-    method floc_t : FLoc.t -> 'self_type= self#unknown
+    method floc_t : Locf.t -> 'self_type= self#unknown
   end
 let strip_literal: FAst.literal -> FAstN.literal =
   function

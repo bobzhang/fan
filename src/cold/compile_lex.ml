@@ -2,7 +2,7 @@ open FAst
 open Ast_gen
 open Automata_def
 open Lexgen
-let _loc = FLoc.mk "x"
+let _loc = Locf.mk "x"
 let auto_binds =
   [(`Bind
       (_loc, (`Lid (_loc, "__ocaml_lex_init_lexbuf")),
@@ -361,7 +361,7 @@ let output_env (env : t_env) =
        (fun x  y  ->
           match (x, y) with
           | (((p1,_),_),((p2,_),_)) ->
-              if FLoc.strictly_before p1 p2 then (-1) else 1) env in
+              if Locf.strictly_before p1 p2 then (-1) else 1) env in
    let output_tag_access =
      function
      | (Mem i,d) ->

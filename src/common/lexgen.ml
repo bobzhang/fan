@@ -554,7 +554,7 @@ let make_tag_entry id start act a r = match a with
   | _ -> r
 
         
-let extract_tags (l:(int * ((FLoc.t * string) * ident_info) list * 'b) list)
+let extract_tags (l:(int * ((Locf.t * string) * ident_info) list * 'b) list)
     : int TagMap.t array =
   let envs = Array.create (List.length l) TagMap.empty in
   (List.iter

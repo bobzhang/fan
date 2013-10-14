@@ -4,9 +4,9 @@ let is_irrefut_pat = FanOps.is_irrefut_pat
 open FAst
 open Ast_gen
 open Util
-let print_warning = eprintf "%a:\n%s@." FLoc.print
+let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"
-let ghost = FLoc.ghost
+let ghost = Locf.ghost
 let grammar_module_name = ref (`Uid (ghost, "Fgram"))
 let gm () =
   match FConfig.compilation_unit.contents with
@@ -22,7 +22,7 @@ let mk_symbol ?(pattern= None)  ~text  ~styp  =
 let check_not_tok s =
   match (s : Gram_def.symbol ) with
   | { text = `Stok (_loc,_,_);_} ->
-      FLoc.raise _loc
+      Locf.raise _loc
         (Fstream.Error
            ("Deprecated syntax, use a sub rule. " ^
               "L0 STRING becomes L0 [ x = STRING -> x ]"))
@@ -68,7 +68,7 @@ let make_ctyp (styp : Gram_def.styp) tvar =
      | `Self _loc ->
          if tvar = ""
          then
-           FLoc.raise _loc
+           Locf.raise _loc
              (Fstream.Error "S: illegal in anonymous entry level")
          else
            (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
@@ -175,7 +175,7 @@ and make_exp_rules (_loc : loc)
             FAst.exp )) rl)
 let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
-  (let locid: FAst.pat = `Lid (_loc, (FLoc.name.contents)) in
+  (let locid: FAst.pat = `Lid (_loc, (Locf.name.contents)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) act in
    let (_,tok_match_pl) =
      Listf.fold_lefti
@@ -199,7 +199,7 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
                    (`Constraint
                       (_loc, locid,
                         (`Dot
-                           (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "t")))))),
+                           (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
                    e1))) : FAst.exp )
      | (e,p) ->
          let (exp,pat) =
@@ -214,7 +214,7 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
                    (`Constraint
                       (_loc, locid,
                         (`Dot
-                           (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "t")))))),
+                           (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
                    (`Match
                       (_loc, exp,
                         (`Bar

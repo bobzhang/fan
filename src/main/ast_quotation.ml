@@ -11,7 +11,7 @@ Format:
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
 (* val parse_quotation_result: *)
-(*     (FLoc.t -> string -> 'a) -> FLoc.t -> Ftoken.quotation -> string -> string -> 'a *)
+(*     (Locf.t -> string -> 'a) -> Locf.t -> Ftoken.quotation -> string -> string -> 'a *)
 
 (*********************************)
 (* name table                    *)        
@@ -138,14 +138,14 @@ let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
   (* The table is indexed by [quotation name] and [tag] *)
   match expander_name ~pos:pos_tag name with
   | None ->
-      FLoc.failf x.loc "DDSL `%s' not found" @@ Ftoken.string_of_name name
+      Locf.failf x.loc "DDSL `%s' not found" @@ Ftoken.string_of_name name
   | Some absolute_name ->
       begin 
         let pack =
           try QMap.find (absolute_name, ExpKey.pack tag ()) !expanders_table
           with
             Not_found ->
-              FLoc.failf x.loc "DDSL expander `%s' at position `%s' not found" 
+              Locf.failf x.loc "DDSL expander `%s' at position `%s' not found" 
                 (Ftoken.string_of_name name) pos_tag  in
         let expander = ExpFun.unpack tag pack in
         Ftoken.quot_expand expander x 
@@ -186,7 +186,7 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
         |p -> p  in
       (* fun [%pat{ `a ($loc,b,c)} -> b] *)
       match loc_name_opt with
-      | None -> subst_first_loc (!FLoc.name) exp_ast
+      | None -> subst_first_loc (!Locf.name) exp_ast
       | Some "_" -> exp_ast
       | Some name -> subst_first_loc name exp_ast 
     end in begin

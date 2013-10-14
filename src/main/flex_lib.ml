@@ -13,14 +13,14 @@ Format:
 
 
 
-let from_string  {FLoc.loc_start;_} str =
+let from_string  {Locf.loc_start;_} str =
   let lb = Lexing.from_string str in begin 
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
     Lex_fan.from_lexbuf lb
   end
 
-let from_stream  {FLoc.loc_start;_} strm =
+let from_stream  {Locf.loc_start;_} strm =
   let lb = Lexing.from_function (lexing_store strm) in begin
     lb.lex_abs_pos <- loc_start.pos_cnum;
     lb.lex_curr_p <- loc_start;
@@ -40,16 +40,16 @@ let rec strict_clean = parser
   |  -> %stream{} 
 
 let debug_from_string  str =
-  let loc = FLoc.string_loc  in
+  let loc = Locf.string_loc  in
   let stream = from_string loc str  in
   stream
   |> clean
   |> Fstream.iter
-      (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc)
+      (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" Ftoken.print t Locf.print loc)
 
 let list_of_string ?(verbose=true) str =
   let result = ref [] in
-  let loc = FLoc.string_loc  in
+  let loc = Locf.string_loc  in
   let stream = from_string loc str  in
   begin 
     stream
@@ -58,7 +58,7 @@ let list_of_string ?(verbose=true) str =
         (fun (t,loc) -> begin 
           result := (t,loc):: !result ;
           if verbose then 
-            fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc
+            fprintf std_formatter "%a@;%a@\n" Ftoken.print t Locf.print loc
         end) ;
    List.rev !result 
   end
@@ -69,13 +69,13 @@ let get_tokens s =
   
   
 let debug_from_file  file =
-  let loc = FLoc.mk file in
+  let loc = Locf.mk file in
   let chan = open_in file in
   let stream = Fstream.of_channel  chan in
   from_stream  loc stream |> clean |>
   Fstream.iter @@
   fun (t,loc) ->
-    fprintf std_formatter "%a@;%a@\n" Ftoken.print t FLoc.print loc
+    fprintf std_formatter "%a@;%a@\n" Ftoken.print t Locf.print loc
 
 
 (* local variables: *)

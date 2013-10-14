@@ -96,7 +96,7 @@ let turn_on_quotation_debug () = debug:=true
 let turn_off_quotation_debug () = debug:=false
 
 
-type context = { mutable loc : FLoc.position list; buffer : Buffer.t; }
+type context = { mutable loc : Locf.position list; buffer : Buffer.t; }
 
 let new_cxt () = {
   loc = [];
@@ -181,10 +181,10 @@ let update_loc ?file ?(absolute=false) ?(retract=0) ?(line=1)   (lexbuf:Lexing.l
       pos_lnum = if absolute then line else pos.pos_lnum + line;
       pos_bol = pos.pos_cnum - retract;}
       
-let err (error:lex_error) (loc:FLoc.t) =
-  raise (FLoc.Exc_located(loc, Lexing_error error))
+let err (error:lex_error) (loc:Locf.t) =
+  raise (Locf.Exc_located(loc, Lexing_error error))
 
-let warn error (loc:FLoc.t) =
+let warn error (loc:Locf.t) =
   Fan_warnings.emitf loc.loc_start "Warning: %s"  @@ lex_error_to_string error
 
 

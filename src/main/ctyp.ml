@@ -317,7 +317,7 @@ let abstract_list (x:typedecl)=
   | _ -> None
         
 (* let eq t1 t2 = *)
-(*   let strip_locs t = (ObjsN.map_loc (fun _ -> FLoc.ghost))#ctyp t in *)
+(*   let strip_locs t = (ObjsN.map_loc (fun _ -> Locf.ghost))#ctyp t in *)
 (*   strip_locs t1 = strip_locs t2 *)
 
     

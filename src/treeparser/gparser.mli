@@ -2,16 +2,16 @@ open Gstructure
 
 
     
-val with_loc: 'b Ftoken.parse -> ('b*FLoc.t) Ftoken.parse
+val with_loc: 'b Ftoken.parse -> ('b*Locf.t) Ftoken.parse
 
 val level_number: entry -> string -> int
 
 val parser_of_tree :
-    entry -> int * assoc -> (Gaction.t * FLoc.t) Stack.t ->  tree ->
-      (Gaction.t * FLoc.t) Ftoken.parse
+    entry -> int * assoc -> (Gaction.t * Locf.t) Stack.t ->  tree ->
+      (Gaction.t * Locf.t) Ftoken.parse
 
 val parser_of_terminals :
-    terminal list -> (Gaction.t * FLoc.t) list  Ftoken.parse
+    terminal list -> (Gaction.t * Locf.t) list  Ftoken.parse
 
 
 (**
@@ -24,7 +24,7 @@ val parser_of_terminals :
   ]}
  *)            
 val parser_of_symbol :
-    entry ->  symbol -> (Gaction.t * FLoc.t) Ftoken.parse
+    entry ->  symbol -> (Gaction.t * Locf.t) Ftoken.parse
     
 
 val start_parser_of_levels: entry -> level list -> int -> Gaction.t Ftoken.parse 

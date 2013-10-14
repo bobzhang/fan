@@ -1,6 +1,6 @@
 open Gram_def
 open FAst
-val print_warning : FLoc.t -> string -> unit
+val print_warning : Locf.t -> string -> unit
 
 val prefix : string
 
@@ -45,7 +45,7 @@ val make_ctyp : styp -> string -> ctyp
    It is in charge of generating code like this 
    {[
    (Fgram.mk_action
-               (fun (a : 'case)  _  (e : 'exp)  _  (_loc : FLoc.t) 
+               (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t) 
                   -> (`Try (_loc, e, a) : 'exp )))
    ]} *)
 
@@ -77,7 +77,7 @@ val text_of_action :
                      `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
                       (Fgram.mk_action
                          (fun (r : 'regexp)  _  (__fan_0 : [> Ftoken.t]) 
-                            (_loc : FLoc.t)  ->
+                            (_loc : Locf.t)  ->
                             match __fan_0 with
                             | `Lid x -> ((x, r) : 'e__2 )
                             | _ -> assert false)))];
@@ -98,7 +98,7 @@ val text_of_action :
                  [([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t ));
                    `Snterm (Fgram.obj (semi : 'semi Fgram.t ))],
                     (Fgram.mk_action
-                       (fun _  (sg : 'sigi)  (_loc : FLoc.t)  ->
+                       (fun _  (sg : 'sigi)  (_loc : Locf.t)  ->
                           (sg : 'e__1 ))))])
 
    `Slist0sep
@@ -116,7 +116,7 @@ val text_of_action :
                        (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
                       (Fgram.mk_action
                          (fun (y : 'dot_lstrings)  _ 
-                            (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                            (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                             match __fan_0 with
                             | `Lid x ->
                                 (((x : string ), (Ftoken.resolve_name y)) : 
@@ -126,7 +126,7 @@ val text_of_action :
                        (((function | `Lid _ -> true | _ -> false)),
                          (`Normal, "`Lid _"))],
                      (Fgram.mk_action
-                        (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t) 
+                        (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t) 
                            ->
                            match __fan_0 with
                            | `Lid x ->

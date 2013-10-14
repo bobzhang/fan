@@ -15,39 +15,39 @@ let _ =
           `Skeyword ")"],
            ("List.iter Typehook.plugin_add plugins\n",
              (Fgram.mk_action
-                (fun _  (plugins : 'id list)  _  _  (_loc : FLoc.t)  ->
+                (fun _  (plugins : 'id list)  _  _  (_loc : Locf.t)  ->
                    (List.iter Typehook.plugin_add plugins : 'fan_quot )))));
         ([`Skeyword "unload";
          `Slist1sep
            ((`Snterm (Fgram.obj (id : 'id Fgram.t ))), (`Skeyword ","))],
           ("List.iter Typehook.plugin_remove plugins\n",
             (Fgram.mk_action
-               (fun (plugins : 'id list)  _  (_loc : FLoc.t)  ->
+               (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
                   (List.iter Typehook.plugin_remove plugins : 'fan_quot )))));
         ([`Skeyword "clear"],
           ("FState.reset_current_filters ()\n",
             (Fgram.mk_action
-               (fun _  (_loc : FLoc.t)  ->
+               (fun _  (_loc : Locf.t)  ->
                   (FState.reset_current_filters () : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "on"],
           ("FState.keep := true\n",
             (Fgram.mk_action
-               (fun _  _  (_loc : FLoc.t)  ->
+               (fun _  _  (_loc : Locf.t)  ->
                   (FState.keep := true : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "off"],
           ("FState.keep := false\n",
             (Fgram.mk_action
-               (fun _  _  (_loc : FLoc.t)  ->
+               (fun _  _  (_loc : Locf.t)  ->
                   (FState.keep := false : 'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "on"],
           ("Typehook.show_code := true\n",
             (Fgram.mk_action
-               (fun _  _  (_loc : FLoc.t)  ->
+               (fun _  _  (_loc : Locf.t)  ->
                   (Typehook.show_code := true : 'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "off"],
           ("Typehook.show_code := false\n",
             (Fgram.mk_action
-               (fun _  _  (_loc : FLoc.t)  ->
+               (fun _  _  (_loc : Locf.t)  ->
                   (Typehook.show_code := false : 'fan_quot )))))]));
   Fgram.unsafe_extend_single (id : 'id Fgram.t )
     (None,
@@ -57,7 +57,7 @@ let _ =
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
            ("x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid x -> (x : 'id )
                    | _ -> failwith "x\n"))));
@@ -66,7 +66,7 @@ let _ =
               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
           ("x\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x -> (x : 'id )
                   | _ -> failwith "x\n"))))]));
@@ -77,7 +77,7 @@ let _ =
           `Skeyword ";"],
            ("",
              (Fgram.mk_action
-                (fun _  _  (_loc : FLoc.t)  -> (() : 'fan_quot_semi )))))]));
+                (fun _  _  (_loc : Locf.t)  -> (() : 'fan_quot_semi )))))]));
   Fgram.unsafe_extend_single (fan_quots : 'fan_quots Fgram.t )
     (None,
       (None, None,
@@ -85,7 +85,7 @@ let _ =
              (`Snterm (Fgram.obj (fan_quot_semi : 'fan_quot_semi Fgram.t )))],
            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
              (Fgram.mk_action
-                (fun _  (_loc : FLoc.t)  ->
+                (fun _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))))]))
 let _ =
   Foptions.add

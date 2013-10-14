@@ -33,7 +33,7 @@ module Action :
 
 (* type description = [ `Antiquot | `Normal ] *)
 
-type loc = FLoc.t
+type loc = Locf.t
 type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
 type vid = [ `Dot of (vid* vid) | `Lid of string | `Uid of string | ant] 
 type any = [ `Any]
@@ -132,22 +132,22 @@ val of_parser:  string ->  (stream -> 'a) ->  'a t
 val get_filter: unit -> FanTokenFilter.t
 
 
-val lex_string: FLoc.t -> string -> Ftoken.stream
+val lex_string: Locf.t -> string -> Ftoken.stream
 
 
-val parse:  'a t -> FLoc.t -> char Fstream.t -> 'a
+val parse:  'a t -> Locf.t -> char Fstream.t -> 'a
 
 val parse_string:
-    ?lexer:(FLoc.t -> char Fstream.t -> Ftoken.stream ) -> 
-    ?loc:FLoc.t -> 'a t  -> string -> 'a
+    ?lexer:(Locf.t -> char Fstream.t -> Ftoken.stream ) -> 
+    ?loc:Locf.t -> 'a t  -> string -> 'a
       
 val debug_origin_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
 
 val debug_filtered_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
 
-val parse_string_safe:  ?loc:FLoc.t -> 'a t ->  string -> 'a
+val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a
 
-val wrap_stream_parser: ?loc:FLoc.t -> (loc:FLoc.t -> 'a -> 'b) -> 'a -> 'b
+val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
 (* val parse_file_with: rule:'a t -> string -> 'a *)
 

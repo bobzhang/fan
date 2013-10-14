@@ -236,7 +236,7 @@ let apply () = begin
            with
            | Some x -> (Ast_quotation.default := Some x; old)
            | None ->
-               FLoc.failf _loc "DDSL `%s' can not be resolved"
+               Locf.failf _loc "DDSL `%s' can not be resolved"
                  (Ftoken.string_of_name ls)
          end]
        pos_exps:
@@ -249,7 +249,7 @@ let apply () = begin
              (x,
               match Ast_quotation.resolve_name  y with
               |None ->
-                  FLoc.failf _loc "DDSL `%s' can not be resolved"
+                  Locf.failf _loc "DDSL `%s' can not be resolved"
                     (Ftoken.string_of_name y)
               | Some x -> x
              )
@@ -258,7 +258,7 @@ let apply () = begin
             match Ast_quotation.resolve_name (`Sub [],x)
             with 
             |None ->
-                FLoc.failf _loc "DDSL `%s' can not be resolved" x
+                Locf.failf _loc "DDSL `%s' can not be resolved" x
             | Some  x -> x) ]  
        let fun_def_pat:
        ["(";"type";a_lident{i};")" ->

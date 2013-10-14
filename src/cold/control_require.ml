@@ -15,7 +15,7 @@ let () =
                 (`App ((`Vrn "Str"), `Any)), "`Str _")],
              ("add s\n",
                (Fgram.mk_action
-                  (fun (__fan_1 : [> Ftoken.t])  _  (_loc : FLoc.t)  ->
+                  (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
                      match __fan_1 with
                      | `Str s -> (add s : 'item )
                      | _ -> failwith "add s\n"))))]))

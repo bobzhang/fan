@@ -13,11 +13,11 @@ open Ast_gen
 open Util
 
 
-let print_warning = eprintf "%a:\n%s@." FLoc.print
+let print_warning = eprintf "%a:\n%s@." Locf.print
 
   
 let prefix = "__fan_"  
-let ghost = FLoc.ghost
+let ghost = Locf.ghost
 
 (* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
 let grammar_module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
@@ -44,7 +44,7 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 let check_not_tok s = 
     match (s:Gram_def.symbol) with
     | {text = `Stok (_loc,  _, _) ;_} ->
-        FLoc.raise _loc (Fstream.Error
+        Locf.raise _loc (Fstream.Error
           ("Deprecated syntax, use a sub rule. "^
            "L0 STRING becomes L0 [ x = STRING -> x ]"))
     | _ -> () 
@@ -91,7 +91,7 @@ let make_ctyp (styp:Gram_def.styp) tvar : ctyp =
     | %ctyp'{ $t2 $t1}-> %ctyp{$(aux t2) $(aux t1)}
     | `Self (_loc) ->
         if tvar = "" then
-          FLoc.raise _loc
+          Locf.raise _loc
             (Fstream.Error ("S: illegal in anonymous entry level"))
         else %ctyp{ '$lid:tvar }
     | `Tok _loc -> %ctyp{ [> Ftoken.t ] }  (* BOOTSTRAPPING*)
@@ -152,7 +152,7 @@ and make_exp_rules (_loc:loc)
   
 let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
-  let locid = %pat{ $(lid:!FLoc.name) } in 
+  let locid = %pat{ $(lid:!Locf.name) } in 
   let act = Option.default %{()} act in
   (* collect the patterns *)
   let (_,tok_match_pl) =
@@ -167,13 +167,13 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
     let e1 = %{ ($act : '$lid:rtvar ) } in
       match tok_match_pl with
       | ([],_) ->
-          %{ fun ($locid : FLoc.t) -> $e1 } (* BOOTSTRAPING *)
+          %{fun ($locid : Locf.t) -> $e1 } (* BOOTSTRAPING *)
       | (e,p) ->
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
-          %{fun ($locid : FLoc.t) -> (* BOOTSTRAPING *)
+          %{fun ($locid : Locf.t) -> (* BOOTSTRAPING *)
             match $exp with
             | $pat -> $e1
             | _ -> failwith $`str:action_string }  in

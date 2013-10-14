@@ -5,8 +5,8 @@ let print_fan_error pp exn =
 let get_fan_error_message exn =
   let (loc,exn) =
     match exn with
-    | FLoc.Exc_located (loc,exn) ->
-        (((FLoc.start_off loc), (FLoc.stop_off loc)), exn)
+    | Locf.Exc_located (loc,exn) ->
+        (((Locf.start_off loc), (Locf.stop_off loc)), exn)
     | exn -> ((0, 0), exn) in
   let msg = UTop.get_message print_fan_error exn in
   let idx = ref ((String.length msg) - 1) in
@@ -24,9 +24,9 @@ let revise_parser str _bol =
     | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> UTop.Value (toplevel_phrase token_stream)
   with
-  | End_of_file |Sys.Break |FLoc.Exc_located (_,(End_of_file |Sys.Break )) as
+  | End_of_file |Sys.Break |Locf.Exc_located (_,(End_of_file |Sys.Break )) as
       x -> raise x
-  | FLoc.Exc_located (_loc,y) ->
+  | Locf.Exc_located (_loc,y) ->
       UTop.Error ([(0, 0)], (Printexc.to_string y))
 let normal () =
   UTop.parse_toplevel_phrase := UTop.parse_toplevel_phrase_default;

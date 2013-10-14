@@ -169,9 +169,9 @@ let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru =
     List.map (function
       |`Str(sloc,n) ->
           (try let p = Hashtbl.find filters n in fun ()  -> (n, p)
-          with  Not_found  -> (fun ()  -> FLoc.failf sloc "%s not found" n)) ()
+          with  Not_found  -> (fun ()  -> Locf.failf sloc "%s not found" n)) ()
             
-      | `Ant _ -> FLoc.raise _loc (Failure"antiquotation not expected here")
+      | `Ant _ -> Locf.raise _loc (Failure"antiquotation not expected here")
       | _ -> assert false ) ns in
   let code =
     Ref.protect2

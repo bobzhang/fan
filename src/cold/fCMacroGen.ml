@@ -8,7 +8,7 @@ type 'a item_or_def =
 let defined = ref []
 let substp loc (env : (string* pat) list) =
   let bad_pat _loc =
-    FLoc.errorf _loc
+    Locf.errorf _loc
       "this macro cannot be used in a pattern (see its definition)" in
   let rec loop (x : exp) =
     match x with
@@ -47,11 +47,11 @@ class subst loc env =
         |(`App (_loc,`Uid (_,"LOCATION_OF"),`Uid (_,x)) : FAst.exp) as e ->
           (try
              let loc = loc_of (List.assoc x env) in
-             let (a,b,c,d,e,f,g,h) = FLoc.to_tuple loc in
+             let (a,b,c,d,e,f,g,h) = Locf.to_tuple loc in
              (`App
                 (_loc,
                   (`Dot
-                     (_loc, (`Uid (_loc, "FLoc")), (`Lid (_loc, "of_tuple")))),
+                     (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "of_tuple")))),
                   (`Par
                      (_loc,
                        (`Com
@@ -98,7 +98,7 @@ class subst loc env =
   end
 let define ~exp  ~pat  eo y =
   let incorrect_number loc l1 l2 =
-    FLoc.raise loc
+    Locf.raise loc
       (Failure
          (Printf.sprintf "expected %d parameters; found %d" (List.length l2)
             (List.length l1))) in
@@ -114,7 +114,7 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y")],
                  ("((new Objs.reloc) _loc)#exp e\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )
                          | _ -> failwith "((new Objs.reloc) _loc)#exp e\n"))))]));
@@ -128,7 +128,7 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y")],
                  ("let p = substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
                              (let p = substp _loc [] e in
@@ -152,7 +152,7 @@ let define ~exp  ~pat  eo y =
                  ("let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
                    (Fgram.mk_action
                       (fun (param : 'exp)  (__fan_0 : [> Ftoken.t]) 
-                         (_loc : FLoc.t)  ->
+                         (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
                              (let el =
@@ -176,7 +176,7 @@ let define ~exp  ~pat  eo y =
                      (`Skeyword ","))],
                  ("xs\n",
                    (Fgram.mk_action
-                      (fun (xs : 'param list)  (_loc : FLoc.t)  ->
+                      (fun (xs : 'param list)  (_loc : Locf.t)  ->
                          (xs : 'params )))))]));
         Fgram.extend_single (param : 'param Fgram.t )
           (None,
@@ -186,7 +186,7 @@ let define ~exp  ~pat  eo y =
                      (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
                  ("x\n",
                    (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : FLoc.t)  ->
+                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Lid x -> (x : 'param )
                          | _ -> failwith "x\n"))))]));
@@ -202,7 +202,7 @@ let define ~exp  ~pat  eo y =
                  ("let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
                    (Fgram.mk_action
                       (fun (param : 'pat)  (__fan_0 : [> Ftoken.t]) 
-                         (_loc : FLoc.t)  ->
+                         (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
                              (let pl =

@@ -7,9 +7,9 @@ open Ftoken
 
 val empty_entry: string -> 'a -> 'b
 
-val get_cur_loc:  stream -> FLoc.t
+val get_cur_loc:  stream -> Locf.t
        
-val get_prev_loc:  stream -> FLoc.t
+val get_prev_loc:  stream -> Locf.t
         
 val is_level_labelled:  string -> level -> bool
         

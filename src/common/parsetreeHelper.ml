@@ -14,11 +14,11 @@ let lident_with_loc s loc = with_loc (Lident s) loc
 
 let ldot l s = Ldot (l, s) (* FIXME in Fan Ldot l s*)
 let lapply l s = Lapply (l, s)
-let mkghloc loc = FLoc.ghostify loc
+let mkghloc loc = Locf.ghostify loc
 
 
 
-let error loc str = FLoc.raise loc (Failure str)
+let error loc str = Locf.raise loc (Failure str)
 
 
 let mksig loc d = {psig_desc = d; psig_loc =  loc}
@@ -58,7 +58,7 @@ let array_function loc str name = with_loc (array_function_no_loc str name) loc
 
 (*
   {[
-  mkli FLoc.ghost "a" ["b";"c";"d"];;
+  mkli Locf.ghost "a" ["b";"c";"d"];;
   - : Longident.t Location.loc =
   {txt =
   Ldot

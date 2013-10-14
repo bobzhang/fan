@@ -15,17 +15,17 @@ Ast_filters.register_stru_filter
  (fun ast ->
    let _loc = loc_of ast in
    let e = (meta#stru _loc ast :ep  :> exp )in
-   %stru{ let loc = FLoc.ghost in $e }));;
+   %stru{ let loc = Locf.ghost in $e }));;
 
 
-Ast_filters.register_stru_filter ("strip",(new Objs.reloc  FLoc.ghost)#stru);;
+Ast_filters.register_stru_filter ("strip",(new Objs.reloc  Locf.ghost)#stru);;
 
 
 let map_exp = with exp function
   | %{ $e NOTHING } | %{ function | NOTHING  -> $e } -> e
-  | %{ __FILE__ } -> %{ $(`str:FLoc.file_name _loc) }
+  | %{ __FILE__ } -> %{ $(`str:Locf.file_name _loc) }
   | %{ __PWD__ } ->
-      %{$(`str:Filename.dirname (FLoc.file_name _loc) ) }
+      %{$(`str:Filename.dirname (Locf.file_name _loc) ) }
   | %{ __LOCATION__ } ->
       Ast_gen.meta_here _loc _loc
   | e -> e ;;
@@ -44,7 +44,7 @@ let me = object
   inherit FMeta.meta;
   method! loc _loc loc =
     match !Ast_quotation.current_loc_name with
-    | None -> lid _loc !FLoc.name
+    | None -> lid _loc !Locf.name
     | Some "here" ->
         meta_here _loc loc
     | Some x ->  lid  _loc x 
@@ -61,7 +61,7 @@ end;;
 Ast_filters.register_stru_filter
     ("serialize",
      (fun x ->
-        let _loc = FLoc.ghost in 
+        let _loc = Locf.ghost in 
         let y = (me#stru _loc x : ep :> exp)in 
         %stru{ $x ;; let __fan_repr_of_file = $y }
         ) );;

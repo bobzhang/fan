@@ -18,9 +18,9 @@ let _ =
   PreCast.register_bin_printer ();
   Printexc.register_printer
     (function
-     | FLoc.Exc_located (loc,exn) ->
+     | Locf.Exc_located (loc,exn) ->
          Some
-           (Format.sprintf "%s:@\n%s" (FLoc.to_string loc)
+           (Format.sprintf "%s:@\n%s" (Locf.to_string loc)
               (Printexc.to_string exn))
      | _ -> None);
   Foptions.adds MkFan.initial_spec_list;

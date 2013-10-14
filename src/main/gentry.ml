@@ -75,10 +75,10 @@ let action_parse (entry:'a t) (ts: Ftoken.stream) : Gaction.t =
     res)
   with
   | Fstream.NotConsumed ->
-      FLoc.raise (Gtools.get_cur_loc ts) (Fstream.Error ("illegal begin of " ^ entry.name))
-  | FLoc.Exc_located (_, _) as exc -> raise exc
+      Locf.raise (Gtools.get_cur_loc ts) (Fstream.Error ("illegal begin of " ^ entry.name))
+  | Locf.Exc_located (_, _) as exc -> raise exc
   | exc -> 
-      FLoc.raise (Gtools.get_cur_loc ts) exc
+      Locf.raise (Gtools.get_cur_loc ts) exc
     
 let parse_origin_tokens entry stream =
   Gaction.get (action_parse entry stream)
@@ -91,7 +91,7 @@ let filter_and_parse_tokens (entry:'a t) ts =
 
 let lex_string loc str = Flex_lib.from_stream  loc (Fstream.of_string str)
 
-let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=FLoc.string_loc) (entry:'a t)  str =
+let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a t)  str =
   str
    |> Fstream.of_string |> lexer loc
    |> FanTokenFilter.filter entry.gram.gfilter

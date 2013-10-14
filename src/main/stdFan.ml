@@ -318,7 +318,7 @@ let float_repres f =
 (*   method unit _loc (_:unit) = %ep{()} *)
 (*   (\*default use [meta_loc] for expession*\) *)
 (*   method loc _loc (_l: loc)  = *)
-(*     let n  = !FLoc.name in %ep{$lid:n} *)
+(*     let n  = !Locf.name in %ep{$lid:n} *)
 (*   method ant (_loc:loc) (x:ant)  = (x:>ep) *)
 (*   (\* FIXME bool antiquot *\) *)
 (*   method bool _loc x = *)

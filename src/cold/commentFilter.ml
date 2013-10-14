@@ -1,4 +1,4 @@
-type t = ((string* FLoc.t) Fstream.t* (string* FLoc.t) Queue.t) 
+type t = ((string* Locf.t) Fstream.t* (string* Locf.t) Queue.t) 
 let mk () =
   let q = Queue.create () in
   let f _ = try Some (Queue.take q) with | Queue.Empty  -> None in

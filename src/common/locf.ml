@@ -41,7 +41,7 @@ let pp_print_position f x =
   
 let dump_long f x =
   fprintf f
-    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FLoc.t@]"
+    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : Locf.t@]"
     x.loc_start.pos_fname pp_print_position x.loc_start (x.loc_start.pos_cnum - x.loc_start.pos_bol)
     (x.loc_end.pos_cnum - x.loc_start.pos_bol)  (* FIXME here*)
     pp_print_position
@@ -299,7 +299,7 @@ let check x msg =
     the input location [loc]. To be used in quotation expanders
     and in grammars to specify some input location for an error.
     Do not raise this exception directly: rather use the following
-    function [FLoc.raise]. *)
+    function [Locf.raise]. *)
 exception Exc_located of t * exn
 
 

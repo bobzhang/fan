@@ -12,7 +12,7 @@ type concrete_regexp
   | Sequence of concrete_regexp * concrete_regexp
   | Alternative of concrete_regexp * concrete_regexp
   | Repetition of concrete_regexp
-  | Bind of concrete_regexp * (FLoc.t * string)
+  | Bind of concrete_regexp * (Locf.t * string)
 
 type 'a lexer_entry = { 
     lex_regexp: regexp;

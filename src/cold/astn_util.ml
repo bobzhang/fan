@@ -43,9 +43,9 @@ let tuple_sta y =
   | _ -> `Par (sta_of_list y)
 let (+>) f names = appl_of_list (f :: (List.map lid names))
 let meta_here location =
-  let (a,b,c,d,e,f,g,h) = FLoc.to_tuple location in
+  let (a,b,c,d,e,f,g,h) = Locf.to_tuple location in
   `App
-    ((`Dot ((`Uid "FLoc"), (`Lid "of_tuple"))),
+    ((`Dot ((`Uid "Locf"), (`Lid "of_tuple"))),
       (`Par
          (`Com
             ((`Str (String.escaped a)),
