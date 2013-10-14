@@ -167,13 +167,13 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
     let e1 = %{ ($act : '$lid:rtvar ) } in
       match tok_match_pl with
       | ([],_) ->
-          %{ fun ($locid :FLoc.t) -> $e1 } (* BOOTSTRAPING *)
+          %{ fun ($locid : FLoc.t) -> $e1 } (* BOOTSTRAPING *)
       | (e,p) ->
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
-          %{fun ($locid :FLoc.t) -> (* BOOTSTRAPING *)
+          %{fun ($locid : FLoc.t) -> (* BOOTSTRAPING *)
             match $exp with
             | $pat -> $e1
             | _ -> failwith $`str:action_string }  in

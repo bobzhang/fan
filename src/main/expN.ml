@@ -47,13 +47,13 @@ let mk_record label_exps : exp=
 (*************************************************************************)
 (* Multiple stage code *)
 let mee_comma x y =
-  %exp-{ %exp'{ $($x), $($y) } }(* BOOTSTRAPPING*)
+  %exp-{%exp'{$($x), $($y)} }(* BOOTSTRAPPING*)
 
 
 (** %exp{ %ep{ $($x) $($y) }}
     both work, I did not see obvious performance difference *)
 let mee_app x y = (* BOOTSTRAPPING *)
-  %exp-{ %exp'{ $($x) $($y) }}
+  %exp-{%exp'{$($x) $($y)}}
 
 
 let mee_of_str s = (*    BOOTSTRAPING *)  

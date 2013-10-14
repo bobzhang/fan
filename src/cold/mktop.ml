@@ -6,8 +6,9 @@ let of_clfield_with_filter = Ast_quotation.of_clfield_with_filter
 let add_quotation = Ast_quotation.add_quotation
 let add = Ast_quotation.add
 let loc_of = Ast_gen.loc_of
-include Prelude
+let m = FanAstN.m
 open! Fsyntax
+include Prelude
 let efilter str e =
   let e = exp_filter e in
   let _loc = loc_of e in
@@ -20,11 +21,11 @@ let pfilter str e =
   (`Constraint
      (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
     FAst.pat )
-let d = `Absolute ["Fan"; "Lang"]
+let d = Ns.lang
 let _ =
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
     ~filter:LangOcaml.filter ()
-let d = `Absolute ["Fan"; "Lang"; "Macro"]
+let d = Ns.macro
 let _ =
   of_exp_with_filter ~name:(d, "exp") ~entry:exp
     ~filter:(Ast_macros.macro_expander#exp) ();
@@ -150,12 +151,10 @@ let _ =
     ~pat_filter:(pfilter "row_field");
   of_exp ~name:(d, "with_exp") ~entry:with_exp_lang ();
   of_stru ~name:(d, "with_stru") ~entry:with_stru_lang ();
-  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.exp_tag
-    (fun _loc  _loc_option  s  -> `Str (_loc, s));
-  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
+  add (d, "str") FDyn.exp_tag (fun _loc  _loc_option  s  -> `Str (_loc, s));
+  add (d, "str") FDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 let () = of_exp ~name:(d, "stream") ~entry:Parse_stream.stream_exp ()
-let m = FanAstN.m
 let efilter str e =
   let e = exp_filter_n e in
   let _loc = loc_of e in

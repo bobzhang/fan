@@ -19,12 +19,16 @@ Ast_quotation:
 Ast_gen:
    loc_of
    ;
-} ;;
+FanAstN:
+  m
+  ;
 
-
-include Prelude
+}
 
 open! Fsyntax
+include Prelude
+
+
 
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
@@ -34,7 +38,7 @@ let pfilter str e =
   %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING *);;
 
 
-let d = `Absolute ["Fan"; "Lang"]
+let d = Ns.lang
 
 let _ = begin (* FIXME make the printer more restict later *)
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
@@ -43,7 +47,7 @@ let _ = begin (* FIXME make the printer more restict later *)
   
 end
     
-let d = `Absolute ["Fan"; "Lang"; "Macro"]
+let d = Ns.macro
 
 let _ = begin 
   of_exp_with_filter ~name:(d, "exp") ~entry:exp
@@ -181,9 +185,9 @@ let _ = begin
     ~pat_filter:(pfilter "row_field");
   of_exp ~name:(d, "with_exp") ~entry:with_exp_lang ();
   of_stru ~name:(d, "with_stru") ~entry:with_stru_lang ();
-  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.exp_tag
+  add (d, "str") FDyn.exp_tag
     (fun _loc  _loc_option  s  -> `Str (_loc, s));
-  add ((`Absolute ["Fan"; "Lang"]), "str") FDyn.stru_tag
+  add (d, "str") FDyn.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 end
 ;;
@@ -199,7 +203,7 @@ let () = of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp ();;
 
 (*************************************************************************)
 (** begin quotation for FAst without locations *)
-let m = FanAstN.m (* new FanAstN.meta ;; *)
+
 
 let efilter str e =
     let e = exp_filter_n e in
