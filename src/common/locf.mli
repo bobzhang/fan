@@ -1,7 +1,9 @@
 
 (** the location module *)
 
-
+(** Be careful to rename the file,
+    change the compiler first before
+    you change the name   *)
 
 open Format
 

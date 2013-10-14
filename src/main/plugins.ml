@@ -4,7 +4,7 @@
 open FAstN
 open Astn_util
 open Util
-open FSigUtil
+open Sig_util
 
 %import{
 Derive:

@@ -6,7 +6,7 @@ open Astn_util
 open FAstN
 open Fid
 open Ctyp
-open FSigUtil
+open Sig_util
   
 let check_valid str =
   let len = String.length str in
@@ -410,7 +410,7 @@ let obj_of_mtyps
          | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
-    let (extras,lst) = FSigUtil.transform_mtyps lst in 
+    let (extras,lst) = Sig_util.transform_mtyps lst in 
     let body = List.map fs lst in 
     let body : clfield =
       let items = List.map (fun (dest,src,len) ->

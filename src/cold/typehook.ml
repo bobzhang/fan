@@ -1,8 +1,10 @@
+let pp_print_mtyps = Sig_util.pp_print_mtyps
+let pp_print_types = Sig_util.pp_print_types
+let eprintf = Format.eprintf
 open Util
-open! Format
-open FSigUtil
 open Ast_basic
-let filters: (plugin_name,plugin) Hashtbl.t = Hashtbl.create 30
+let filters: (Sig_util.plugin_name,Sig_util.plugin) Hashtbl.t =
+  Hashtbl.create 30
 let show_code = ref false
 let print_collect_mtyps = ref false
 let register ?filter  ?position  (name,transform) =
@@ -32,18 +34,19 @@ class type traversal
   =
   object 
     inherit Objs.map
-    method get_cur_mtyps : mtyps
-    method get_cur_and_types : and_types
-    method update_cur_and_types : (and_types -> and_types) -> unit
-    method update_cur_mtyps : (mtyps -> mtyps) -> unit
+    method get_cur_mtyps : Sig_util.mtyps
+    method get_cur_and_types : Sig_util.and_types
+    method update_cur_and_types :
+      (Sig_util.and_types -> Sig_util.and_types) -> unit
+    method update_cur_mtyps : (Sig_util.mtyps -> Sig_util.mtyps) -> unit
   end
-let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
+let iterate_code sloc mtyps (_,(x : Sig_util.plugin)) acc =
   let mtyps =
-    match filter with
-    | Some x -> FSigUtil.apply_filter x mtyps
+    match x.filter with
+    | Some x -> Sig_util.apply_filter x mtyps
     | None  -> mtyps in
-  let code = transform mtyps in
-  match (position, code) with
+  let code = x.transform mtyps in
+  match ((x.position), code) with
   | (Some x,Some code) ->
       let (name,f) = Filters.make_filter (x, code) in
       (Ast_filters.register_stru_filter (name, f);
@@ -56,10 +59,10 @@ let iterate_code sloc mtyps (_,{ position; transform; filter }) acc =
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
-     val mtyps_stack = (Stack.create () : mtyps Stack.t )
-     val mutable cur_and_types = ([] : and_types )
+     val mtyps_stack = (Stack.create () : Sig_util.mtyps Stack.t )
+     val mutable cur_and_types = ([] : Sig_util.and_types )
      val mutable and_group = false
-     method get_cur_mtyps : mtyps= Stack.top mtyps_stack
+     method get_cur_mtyps : Sig_util.mtyps= Stack.top mtyps_stack
      method update_cur_mtyps f =
        let open Stack in push (f (pop mtyps_stack)) mtyps_stack
      method private in_module = Stack.push [] mtyps_stack
@@ -130,10 +133,9 @@ let genenrate_type_code _loc tdl (ns : FAst.strings) =
      List.map
        (function
         | `Str (sloc,n) ->
-            ((try let p = Hashtbl.find filters n in fun ()  -> (n, p)
-              with
-              | Not_found  -> (fun ()  -> Locf.failf sloc "%s not found" n)))
-              ()
+            (match Hashtblf.find_opt filters n with
+             | None  -> Locf.failf sloc "%s not found" n
+             | Some p -> (n, p))
         | `Ant _ ->
             Locf.raise _loc (Failure "antiquotation not expected here")
         | _ -> assert false) ns in

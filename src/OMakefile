@@ -81,12 +81,12 @@ FAN_FILES = \
     derive dyn_load epN \
     expN fAstN control control_require fDyn   fMeta \
     gram_def gram_gen \
-    fSigUtil fState fanAstN fanOps fgram\
+    sig_util fState fanAstN fanOps fgram\
     filters freeVars fsyntax gentry gfold gramlib\
     idN  ns  langOcaml   \
     fan_args mktop objs objsN \
     parse_fan parse_grammar parse_stream \
-    pluginsN prelude stdFan typehook\
+    plugins prelude stdFan typehook\
     parse_lex \
     lang_fans lang_include lang_save
 FAN_EXP_FILES = \

@@ -1,3 +1,4 @@
+
 open Format
 
 (** The type of locations.  Note that, as for OCaml locations,
@@ -358,5 +359,5 @@ let () =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake common/fLoc.cmo" *)
+(* compile-command: "cd .. && pmake common/locf.cmo" *)
 (* end: *)

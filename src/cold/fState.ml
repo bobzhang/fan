@@ -1,4 +1,4 @@
-open FSigUtil
+open Sig_util
 let current_filters: (plugin_name* plugin) list ref = ref []
 let reset_current_filters () = current_filters := []
 let keep = ref true

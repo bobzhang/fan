@@ -2,7 +2,7 @@
 (** Fan's deriving *)
 open FAstN
 open Ctyp
-open FSigUtil
+open Sig_util
 
 (**
    Some common arguments

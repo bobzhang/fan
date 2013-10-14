@@ -1,7 +1,7 @@
 open FAstN
 open Astn_util
 open Util
-open FSigUtil
+open Sig_util
 let gen_stru = Derive.gen_stru
 let gen_object = Derive.gen_object
 let mk_variant _cons =
