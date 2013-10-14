@@ -125,7 +125,7 @@ type action_pattern =
 
 
 
-FConfig.antiquotations := true;;
+Configf.antiquotations := true;;
 open Fsyntax;;
 
 %create{ Fgram (simple_pat : simple_pat Fgram.t) };;

@@ -51,7 +51,7 @@ let mkpolytype t =
  *)
 
 let array_function_no_loc str name =
-    ldot (lident str) (if !FConfig.unsafe then "unsafe_" ^ name else name) 
+    ldot (lident str) (if !Configf.unsafe then "unsafe_" ^ name else name) 
   
 let array_function loc str name = with_loc (array_function_no_loc str name) loc
 

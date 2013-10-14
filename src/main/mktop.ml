@@ -22,7 +22,7 @@ Ast_gen:
 } ;;
 
 
-include PreCast
+include Prelude
 
 open! Fsyntax
 
@@ -39,9 +39,8 @@ let d = `Absolute ["Fan"; "Lang"]
 let _ = begin (* FIXME make the printer more restict later *)
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
     ~filter:LangOcaml.filter () ;
-  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots ();
-  of_exp ~name:(d, "save") ~entry:LangSave.save_quot ();
-  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot ()
+
+  
 end
     
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
@@ -432,5 +431,5 @@ let () =
     
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake hot_annot/mktop.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/mktop.cmo" *)
 (* end: *)

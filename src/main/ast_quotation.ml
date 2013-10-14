@@ -162,14 +162,14 @@ let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
 let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
   let entry_eoi = Fgram.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
-    Ref.protect2 (FConfig.antiquotations,true) (current_loc_name, loc_name_opt)
+    Ref.protect2 (Configf.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
         Fgram.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
   let expand_pat _loc loc_name_opt s =
-    Ref.protect FConfig.antiquotations true begin fun _ ->
+    Ref.protect Configf.antiquotations true begin fun _ ->
       let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
@@ -203,7 +203,7 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
 let make_parser ?(lexer=Flex_lib.from_stream) entry =
   fun loc loc_name_opt s  ->
     Ref.protect2
-      (FConfig.antiquotations, true)
+      (Configf.antiquotations, true)
       (current_loc_name,loc_name_opt)
       (fun _ -> Fgram.parse_string ~lexer (Fgram.eoi_entry entry) ~loc  s);;
 

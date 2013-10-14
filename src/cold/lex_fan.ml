@@ -7299,7 +7299,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* FLoc.t) =
                   err (Illegal_character c) (!! lexbuf)
               | _ -> failwith "lexing: empty token")) in
           let c = new_cxt () in
-          if FConfig.antiquotations.contents
+          if Configf.antiquotations.contents
           then push_loc_cont c lexbuf dollar
           else err Illegal_antiquote (!! lexbuf)
       | 21 ->

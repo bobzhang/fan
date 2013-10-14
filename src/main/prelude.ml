@@ -1,13 +1,19 @@
-open Format
-open Util
-
-
-%import{ Fan_util:
+%import{
+Fan_util:
   with_open_out_file
   dump_pt
   simple_wrap
   ;
-};;
+Format:
+  pp_print_flush
+  eprintf
+  ;
+}
+
+open Util
+
+
+
 
 type 'a parser_fun  = FLoc.t -> char Fstream.t -> 'a option
 
@@ -64,14 +70,14 @@ let register_bin_printer () =
         |Some ast -> Ast2pt.sigi ast in
       with_open_out_file output_file @@
       dump_pt
-        FConfig.ocaml_ast_intf_magic_number input_file pt in
+        Configf.ocaml_ast_intf_magic_number input_file pt in
   let print_implem ?(input_file = "-") ?output_file ast =
     let pt =
       match ast with
       |None -> []  
       |Some ast -> Ast2pt.stru ast in
     with_open_out_file output_file @@
-    dump_pt FConfig.ocaml_ast_impl_magic_number input_file pt in
+    dump_pt Configf.ocaml_ast_impl_magic_number input_file pt in
   begin
     stru_printer := print_implem;
     sigi_printer := print_interf
@@ -90,7 +96,7 @@ let register_parsetree_printer () =
         let fmt = Format.formatter_of_out_channel oc in
         Printast.interface fmt pt in
       (* dump_pt *)
-      (*   FConfig.ocaml_ast_intf_magic_number input_file pt in *)
+      (*   Configf.ocaml_ast_intf_magic_number input_file pt in *)
   let print_implem ?input_file:(_) ?output_file ast =
     let pt =
       match ast with

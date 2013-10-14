@@ -182,7 +182,7 @@ let parse_include_file entry =
   fun file  ->
     let file =
       try
-        (List.find (dir_ok file) ("./" :: (FConfig.include_dirs.contents))) ^
+        (List.find (dir_ok file) ("./" :: (Configf.include_dirs.contents))) ^
           file
       with | Not_found  -> file in
     let ch = open_in file in

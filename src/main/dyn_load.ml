@@ -24,7 +24,7 @@ let load file =
             (Error ("Fan's dynamic loader initialization",
                     Dynlink.error_message e)));
     match Filenamef.find_in_path
-        ~path: ("." :: FConfig.fan_plugins_library :: !FConfig.dynload_dirs) file
+        ~path: ("." :: Configf.fan_plugins_library :: !Configf.dynload_dirs) file
     with
     | None -> raise (Error (file, "file not found in path"))            
     | Some fname ->

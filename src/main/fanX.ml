@@ -3,7 +3,7 @@
 
 let set_paths () =
   begin
-    Config.load_path := !Config.load_path @ [FConfig.fan_standard_library];
+    Config.load_path := !Config.load_path @ [Configf.fan_standard_library];
     Config.load_path := "" :: !Config.load_path;
     Dll.add_path !Config.load_path;
   end
@@ -25,7 +25,7 @@ let _ =
           let s  = Fgram.parse_string ~loc Fsyntax.strus c  in
           FEval.eval_ast Format.err_formatter s 
         );
-    PreCast.register_bin_printer (); (** default *)
+    register_bin_printer (); (** default *)
     Foptions.adds Fan_args.initial_spec_list;
     Ast_parsers.use_parsers [ "revise"; "stream";];
     try

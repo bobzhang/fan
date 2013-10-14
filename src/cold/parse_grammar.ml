@@ -1,8 +1,27 @@
+let simple_pat = Gram_def.simple_pat
+let gm = Gram_gen.gm
+let grammar_module_name = Gram_gen.grammar_module_name
+let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
+let exp_delete_rule = Gram_gen.exp_delete_rule
+let mk_name = Gram_gen.mk_name
+let mk_entry = Gram_gen.mk_entry
+let mk_level = Gram_gen.mk_level
+let retype_rule_list_without_patterns =
+  Gram_gen.retype_rule_list_without_patterns
+let mk_rule = Gram_gen.mk_rule
+let check_not_tok = Gram_gen.check_not_tok
+let mk_slist = Gram_gen.mk_slist
+let mk_symbol = Gram_gen.mk_symbol
+let token_of_simple_pat = Gram_gen.token_of_simple_pat
+let ctyp = Fsyntax.ctyp
+let a_lident = Fsyntax.a_lident
+let exp = Fsyntax.exp
+let parse_exp = Fsyntax.parse_exp
+let sem_of_list = Ast_gen.sem_of_list
+let loc_of = Ast_gen.loc_of
+let seq_sem = Ast_gen.seq_sem
+let tuple_com = Ast_gen.tuple_com
 open FAst
-open Ast_gen
-open Gram_def
-open FGramGen
-open! Fsyntax
 open Util
 let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
 let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"
@@ -28,7 +47,7 @@ let psymbol = Fgram.mk "psymbol"
 let level = Fgram.mk "level"
 let level_list = Fgram.mk "level_list"
 let entry: Gram_def.entry Fgram.t = Fgram.mk "entry"
-let pattern: action_pattern Fgram.t = Fgram.mk "pattern"
+let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk "pattern"
 let extend_body = Fgram.mk "extend_body"
 let newterminals = Fgram.mk "newterminals"
 let unsafe_extend_body = Fgram.mk "unsafe_extend_body"
@@ -731,7 +750,7 @@ let _ =
         [([`Snterm (Fgram.obj (symbol : 'symbol Fgram.t ));
           `Sopt
             (`Snterm (Fgram.obj (brace_pattern : 'brace_pattern Fgram.t )))],
-           ("match p with\n| Some _ -> { s with pattern = (p : action_pattern option  :>pat option) }\n| None  -> s\n",
+           ("match p with\n| Some _ ->\n    { s with pattern = (p : Gram_def.action_pattern option  :>pat option) }\n| None  -> s\n",
              (Fgram.mk_action
                 (fun (p : 'brace_pattern option)  (s : 'symbol) 
                    (_loc : FLoc.t)  ->
@@ -739,7 +758,8 @@ let _ =
                     | Some _ ->
                         {
                           s with
-                          pattern = (p : action_pattern option  :>pat option)
+                          pattern =
+                            (p : Gram_def.action_pattern option  :>pat option)
                         }
                     | None  -> s : 'psymbol )))))]));
   Fgram.extend_single (sep_symbol : 'sep_symbol Fgram.t )

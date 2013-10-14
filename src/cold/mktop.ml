@@ -6,7 +6,7 @@ let of_clfield_with_filter = Ast_quotation.of_clfield_with_filter
 let add_quotation = Ast_quotation.add_quotation
 let add = Ast_quotation.add
 let loc_of = Ast_gen.loc_of
-include PreCast
+include Prelude
 open! Fsyntax
 let efilter str e =
   let e = exp_filter e in
@@ -23,10 +23,7 @@ let pfilter str e =
 let d = `Absolute ["Fan"; "Lang"]
 let _ =
   of_stru_with_filter ~name:(d, "ocaml") ~entry:strus
-    ~filter:LangOcaml.filter ();
-  of_exp ~name:(d, "fans") ~entry:LangFans.fan_quots ();
-  of_exp ~name:(d, "save") ~entry:LangSave.save_quot ();
-  of_stru ~name:(d, "include") ~entry:LangInclude.include_quot ()
+    ~filter:LangOcaml.filter ()
 let d = `Absolute ["Fan"; "Lang"; "Macro"]
 let _ =
   of_exp_with_filter ~name:(d, "exp") ~entry:exp

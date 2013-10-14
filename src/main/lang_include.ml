@@ -15,6 +15,9 @@ include_quot:
  ]
 };;
 
+let _ = begin
+  Ast_quotation.of_stru ~name:(Ns.lang, "include") ~entry:include_quot ()
+end
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake langInclude.cmo " *)
 (* end: *)

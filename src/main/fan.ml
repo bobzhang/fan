@@ -4,7 +4,7 @@
   
 let _ =
   begin
-    PreCast.register_bin_printer (); (** default to [-printer p] *)
+    Prelude.register_bin_printer (); (** default to [-printer p] *)
     Foptions.adds Fan_args.initial_spec_list;
     Ast_parsers.use_parsers [ "revise"; "stream"];
     try

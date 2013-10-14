@@ -285,7 +285,7 @@ let  token : Lexing.lexbuf -> (Ftoken.t * FLoc.t ) = {:lex2|
     | _ as c
         {err (Illegal_character c) (!! lexbuf) } |} in
     let c = default_cxt lexbuf in
-    if  !FConfig.antiquotations then  (* FIXME maybe always lex as antiquot?*)
+    if  !Configf.antiquotations then  (* FIXME maybe always lex as antiquot?*)
       with_curr_loc dollar c lexbuf
     else err Illegal_antiquote (!! lexbuf)
    }

@@ -1,5 +1,7 @@
 open Gram_def
 open FAst
+
+
 val print_warning : FLoc.t -> string -> unit
 
 val prefix : string
@@ -15,8 +17,10 @@ val mk_entry :
 val mk_level :
   label:string option ->
   assoc:exp option -> rules:rule list -> level
+      
 val mk_rule :
   prod:symbol list -> action:exp option -> rule
+      
 val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol
@@ -27,12 +31,12 @@ val mk_symbol :
     You shoud write [OPT [x=STRING -> x] ] *)      
 val check_not_tok : symbol -> unit
     
-val new_type_var: unit -> string
+val new_type_var : unit -> string
 
-val gensym: unit -> int ref
-val gen_lid: unit -> string
+val gensym : unit -> int ref
+val gen_lid : unit -> string
     
-val retype_rule_list_without_patterns:  loc -> rule list -> rule list
+val retype_rule_list_without_patterns :  loc -> rule list -> rule list
 
 (** translate [styp] into [ctyp], given the assumption that the entry output [tvar] type *)
 val make_ctyp : styp -> string -> ctyp
@@ -150,7 +154,7 @@ val make_exp_rules :
     loc -> (text list * exp * exp option) list -> string -> exp
 
 (** deprecated *)
-val exp_delete_rule:
+val exp_delete_rule :
   loc -> name -> symbol list list  -> exp
       
 val mk_name : loc ->vid -> name

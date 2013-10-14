@@ -43,6 +43,9 @@ begin
   Foptions.add
     ("-loaded-plugins",
      (Arg.Unit Typehook.show_modules), "Show plugins");
+  Ast_quotation.of_exp
+    ~name:(Ns.lang, "fans")
+    ~entry:fan_quots ();
 end;;
 
 (* local variables: *)

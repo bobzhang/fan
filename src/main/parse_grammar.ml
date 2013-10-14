@@ -1,9 +1,37 @@
+%import{
+Gram_def:
+  simple_pat
+  ;
+Gram_gen:
+  gm
+  grammar_module_name
+  text_of_functorial_extend
+  exp_delete_rule
+  mk_name
+  mk_entry
+  mk_level
+  retype_rule_list_without_patterns
+  mk_rule
+  check_not_tok
+  mk_slist
+  mk_symbol
+  token_of_simple_pat
+  ;
+Fsyntax:
+  ctyp
+  a_lident
+  exp
+  parse_exp
+  ;
+Ast_gen:
+  sem_of_list
+  loc_of
+  seq_sem
+  tuple_com
+  ;
+}
 
 open FAst
-open Ast_gen
-open Gram_def
-open FGramGen
-open! Fsyntax
 open Util
 
 %create{Fgram (* FIXME can not ignore Fgram here*)
@@ -18,7 +46,7 @@ open Util
     entry position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
    (entry: Gram_def.entry Fgram.t)
-   (pattern: action_pattern Fgram.t )
+   (pattern: Gram_def.action_pattern Fgram.t )
    extend_body
    newterminals
    unsafe_extend_body
@@ -228,7 +256,7 @@ open Util
   [ symbol{s} ; OPT  brace_pattern {p} ->
     match p with
     |Some _ ->
-        { s with pattern = (p:  action_pattern option :>  pat option) }
+        { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
     | None -> s  ] 
 
   let sep_symbol : [`Uid "SEP"; symbol{t}->t]

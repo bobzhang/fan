@@ -22,7 +22,7 @@ let ghost = FLoc.ghost
 (* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
 let grammar_module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
 let gm () =
-  match !FConfig.compilation_unit with
+  match !Configf.compilation_unit with
   |Some "Fgram" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
   |Some _ | None -> 
@@ -366,8 +366,8 @@ let token_of_simple_pat _loc (p:Gram_def.simple_pat)  =
       ({text;styp=`Tok _loc;pattern = Some p_pat}:Gram_def.symbol)
   | (x,y)::ys ->
       let guard =
-          List.fold_left (fun acc (x,y) -> %exp{ $acc && ( $x = $y ) } )
-            %exp{ $x = $y } ys  in
+          List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
+            %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
       let descr =
         Gram_def.wildcarder#simple_pat p  in

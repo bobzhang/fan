@@ -127,7 +127,7 @@ and text =
 type action_pattern =
   [ vid | `Com of (loc* action_pattern* action_pattern)
   | `Par of (loc* action_pattern) | `Any of loc] 
-let _ = FConfig.antiquotations := true
+let _ = Configf.antiquotations := true
 open Fsyntax
 let simple_pat: simple_pat Fgram.t = Fgram.mk "simple_pat"
 let _ =

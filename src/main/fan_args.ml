@@ -1,5 +1,22 @@
+
+%import{
+Prelude:
+  parse_file
+  parse_interf
+  parse_implem
+  register_bin_printer
+  register_text_printer
+  register_parsetree_printer
+  ;
+Format:
+  eprintf
+  fprintf
+  printf
+  ;
+}
+
 open Util
-open Format
+
     
 let just_print_filters () =
   let pp = eprintf  in 
@@ -41,26 +58,19 @@ let output_file = ref None
 
 (** parse the file, apply the filter and pipe it to the backend *)  
 let process_intf  name =
-  let v = 
-  match PreCast.parse_file name PreCast.parse_interf with
-  | None ->
-        None
-  | Some x ->
-      let x = Ast_filters.apply_interf_filters x in
-      Some x  in
-  PreCast.CurrentPrinter.print_interf
+  let v =
+    Option.map Ast_filters.apply_interf_filters
+    @@ parse_file name parse_interf in
+  Prelude.CurrentPrinter.print_interf
     ?input_file:(Some name)
     ?output_file:(!output_file) v 
 
 
 let process_impl name =
-  let v = 
-  match PreCast.parse_file name PreCast.parse_implem with
-  | None -> None
-  | Some x ->
-      let x = Ast_filters.apply_implem_filters x in
-      Some x  in
-  PreCast.CurrentPrinter.print_implem
+  let v =
+    Option.map Ast_filters.apply_implem_filters
+    @@ parse_file name parse_implem in
+  Prelude.CurrentPrinter.print_implem
     ~input_file:name
     ?output_file:(!output_file) v 
 
@@ -71,31 +81,31 @@ let input_file x =
   | Intf file_name ->
       begin
         if file_name <> "-" then 
-          FConfig.compilation_unit :=
+          Configf.compilation_unit :=
             Some (String.capitalize (Filename.(chop_extension (basename file_name))));
-        FConfig.current_input_file := file_name;
+        Configf.current_input_file := file_name;
         process_intf  file_name
       end
   | Impl file_name ->
       begin
         if file_name <> "-" then 
-          FConfig.compilation_unit :=
+          Configf.compilation_unit :=
             Some (String.capitalize (Filename.(chop_extension (basename file_name))));
-        FConfig.current_input_file := file_name;
+        Configf.current_input_file := file_name;
         process_impl  file_name;
       end
   | Str s ->
       let (f, o) = Filename.open_temp_file "from_string" ".ml" in
       (output_string o s;
        close_out o;
-       FConfig.current_input_file := f;
+       Configf.current_input_file := f;
        process_impl  f;
        at_exit (fun () -> Sys.remove f))
         
   | ModuleImpl file_name -> Control_require.add  file_name
 
   | IncludeDir dir ->
-      Ref.modify FConfig.dynload_dirs (cons dir) 
+      Ref.modify Configf.dynload_dirs (cons dir) 
 
 
 (** FIXME the command line parsing  can not handle prefix problem,
@@ -117,22 +127,22 @@ let initial_spec_list =
    ("-o", Arg.String (fun x -> output_file := Some x),
     "<file> Output on <file> instead of standard output.");
 
-   ("-unsafe", Arg.Set FConfig.unsafe,
+   ("-unsafe", Arg.Set Configf.unsafe,
     "Generate unsafe accesses to array and strings.");
 
-   (* ("-verbose", Arg.Set FConfig.verbose, "More verbose in parsing errors."); *)
+   (* ("-verbose", Arg.Set Configf.verbose, "More verbose in parsing errors."); *)
 
-   ("-where", Arg.Unit (fun () -> (print_endline FConfig.fan_plugins_library;exit 0))
+   ("-where", Arg.Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0))
       , " Print location of standard library and exit");
    ("-loc", Arg.Set_string FLoc.name,
     "<name>   Name of the location variable (default: " ^ !FLoc.name ^ ").");
    
-   ("-v", Arg.Unit  (fun () -> begin eprintf "Fan version %s@." FConfig.version; exit 0 end),
+   ("-v", Arg.Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end),
     "Print Fan version and exit.");
 
    ("-compilation-unit",
     Arg.Unit (function () -> 
-      ((match !FConfig.compilation_unit with
+      ((match !Configf.compilation_unit with
       | Some v -> printf "%s@." v
       | None -> printf "null");
        exit 0)), 
@@ -158,10 +168,10 @@ let initial_spec_list =
     Arg.Symbol( ["p";"o";"dparsetree"],
     function x ->
       if x = "o" then
-        PreCast.register_text_printer ()
+        register_text_printer ()
       else if x = "p" then
-        PreCast.register_bin_printer ()
-      else PreCast.register_parsetree_printer ()),
+        register_bin_printer ()
+      else register_parsetree_printer ()),
     "choose different backends according to the option");
  ];;
       

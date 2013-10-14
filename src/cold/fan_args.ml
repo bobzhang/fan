@@ -1,5 +1,13 @@
+let parse_file = Prelude.parse_file
+let parse_interf = Prelude.parse_interf
+let parse_implem = Prelude.parse_implem
+let register_bin_printer = Prelude.register_bin_printer
+let register_text_printer = Prelude.register_text_printer
+let register_parsetree_printer = Prelude.register_parsetree_printer
+let eprintf = Format.eprintf
+let fprintf = Format.fprintf
+let printf = Format.printf
 open Util
-open Format
 let just_print_filters () =
   let pp = eprintf in
   let p_tbl f tbl = Hashtbl.iter (fun k  _v  -> fprintf f "%s@;" k) tbl in
@@ -26,47 +34,45 @@ let print_loaded_modules = ref false
 let output_file = ref None
 let process_intf name =
   let v =
-    match PreCast.parse_file name PreCast.parse_interf with
-    | None  -> None
-    | Some x -> let x = Ast_filters.apply_interf_filters x in Some x in
-  PreCast.CurrentPrinter.print_interf ?input_file:(Some name)
+    (Option.map Ast_filters.apply_interf_filters) @@
+      (parse_file name parse_interf) in
+  Prelude.CurrentPrinter.print_interf ?input_file:(Some name)
     ?output_file:(output_file.contents) v
 let process_impl name =
   let v =
-    match PreCast.parse_file name PreCast.parse_implem with
-    | None  -> None
-    | Some x -> let x = Ast_filters.apply_implem_filters x in Some x in
-  PreCast.CurrentPrinter.print_implem ~input_file:name
+    (Option.map Ast_filters.apply_implem_filters) @@
+      (parse_file name parse_implem) in
+  Prelude.CurrentPrinter.print_implem ~input_file:name
     ?output_file:(output_file.contents) v
 let input_file x =
   match x with
   | Intf file_name ->
       (if file_name <> "-"
        then
-         FConfig.compilation_unit :=
+         Configf.compilation_unit :=
            (Some
               (String.capitalize
                  (let open Filename in chop_extension (basename file_name))));
-       FConfig.current_input_file := file_name;
+       Configf.current_input_file := file_name;
        process_intf file_name)
   | Impl file_name ->
       (if file_name <> "-"
        then
-         FConfig.compilation_unit :=
+         Configf.compilation_unit :=
            (Some
               (String.capitalize
                  (let open Filename in chop_extension (basename file_name))));
-       FConfig.current_input_file := file_name;
+       Configf.current_input_file := file_name;
        process_impl file_name)
   | Str s ->
       let (f,o) = Filename.open_temp_file "from_string" ".ml" in
       (output_string o s;
        close_out o;
-       FConfig.current_input_file := f;
+       Configf.current_input_file := f;
        process_impl f;
        at_exit (fun ()  -> Sys.remove f))
   | ModuleImpl file_name -> Control_require.add file_name
-  | IncludeDir dir -> Ref.modify FConfig.dynload_dirs (cons dir)
+  | IncludeDir dir -> Ref.modify Configf.dynload_dirs (cons dir)
 let initial_spec_list =
   [("-I", (Arg.String ((fun x  -> input_file (IncludeDir x)))),
      "<directory>  Add directory in search patch for object files.");
@@ -78,23 +84,23 @@ let initial_spec_list =
     "<string>  Parse <string> as an implementation.");
   ("-o", (Arg.String ((fun x  -> output_file := (Some x)))),
     "<file> Output on <file> instead of standard output.");
-  ("-unsafe", (Arg.Set FConfig.unsafe),
+  ("-unsafe", (Arg.Set Configf.unsafe),
     "Generate unsafe accesses to array and strings.");
   ("-where",
     (Arg.Unit
-       ((fun ()  -> print_endline FConfig.fan_plugins_library; exit 0))),
+       ((fun ()  -> print_endline Configf.fan_plugins_library; exit 0))),
     " Print location of standard library and exit");
   ("-loc", (Arg.Set_string FLoc.name),
     ("<name>   Name of the location variable (default: " ^
        (FLoc.name.contents ^ ").")));
   ("-v",
     (Arg.Unit
-       ((fun ()  -> eprintf "Fan version %s@." FConfig.version; exit 0))),
+       ((fun ()  -> eprintf "Fan version %s@." Configf.version; exit 0))),
     "Print Fan version and exit.");
   ("-compilation-unit",
     (Arg.Unit
        ((fun ()  ->
-           (match FConfig.compilation_unit.contents with
+           (match Configf.compilation_unit.contents with
             | Some v -> printf "%s@." v
             | None  -> printf "null");
            exit 0))), "Print the current compilation unit");
@@ -119,11 +125,11 @@ let initial_spec_list =
        (["p"; "o"; "dparsetree"],
          ((fun x  ->
              if x = "o"
-             then PreCast.register_text_printer ()
+             then register_text_printer ()
              else
                if x = "p"
-               then PreCast.register_bin_printer ()
-               else PreCast.register_parsetree_printer ())))),
+               then register_bin_printer ()
+               else register_parsetree_printer ())))),
     "choose different backends according to the option")]
 let anon_fun name =
   let check = Filename.check_suffix name in
