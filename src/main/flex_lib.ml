@@ -29,15 +29,15 @@ let from_stream  {Locf.loc_start;_} strm =
 
 
 (* remove trailing `EOI*)  
-let rec clean  =  parser
+let rec clean  =  %parser{
   | (`EOI,loc)  -> %stream{ (`EOI,loc)}
   |  x; 'xs  -> %stream{ x; 'clean xs}
-  |  -> %stream{} 
+  |  -> %stream{} }
 
-let rec strict_clean = parser
+let rec strict_clean = %parser{
   | (`EOI,_)  -> %stream{}
   | x; 'xs  -> %stream{ x; 'strict_clean xs }
-  |  -> %stream{} 
+  |  -> %stream{}} 
 
 let debug_from_string  str =
   let loc = Locf.string_loc  in

@@ -32,16 +32,16 @@ let apply () = begin
               symbolchar x 2 );
     Fgram.setup_parser sem_exp begin
       let symb1 = Fgram.parse_origin_tokens exp in
-      let symb = parser
+      let symb = %parser{
         |  (`Ant (("list" as n), s), _loc)  ->
             mk_anti ~c:"exp;" _loc n s
-        |  a = symb1  -> a  in
-      let rec kont al = parser
+        |  a = symb1  -> a } in
+      let rec kont al = %parser{
         |  (`Key ";", _); a = symb; 's  ->
             let _loc =  al <+> a  in
             kont %exp{ $al; $a } s
-        |  -> al  in
-      parser |  a = symb; 's  -> kont a s
+        |  -> al}  in
+      %parser{ | a = symb; 's  -> kont a s}
     end
   end;
 

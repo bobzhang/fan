@@ -315,37 +315,6 @@ let cparser _loc pc =
            (_loc, (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "t")))),
              (`Any _loc)))) in
   (`Fun (_loc, (`Case (_loc, p, e))) : FAst.exp )
-let cparser_match _loc me bpo pc =
-  let pc = parser_cases _loc pc in
-  let e =
-    match bpo with
-    | Some bp ->
-        (`LetIn
-           (_loc, (`Negative _loc),
-             (`Bind
-                (_loc, bp,
-                  (`App
-                     (_loc,
-                       (`Dot
-                          (_loc, (`Uid (_loc, (gm ()))),
-                            (`Lid (_loc, "count")))), (`Lid (_loc, strm_n)))))),
-             pc) : FAst.exp )
-    | None  -> pc in
-  match me with
-  | (`Lid (_loc,x) : FAst.exp) when x = strm_n -> e
-  | _ ->
-      (`LetIn
-         (_loc, (`Negative _loc),
-           (`Bind
-              (_loc,
-                (`Constraint
-                   (_loc, (`Lid (_loc, strm_n)),
-                     (`App
-                        (_loc,
-                          (`Dot
-                             (_loc, (`Uid (_loc, (gm ()))),
-                               (`Lid (_loc, "t")))), (`Any _loc))))), me)),
-           e) : FAst.exp )
 type sexp_comp =  
   | Trm of loc* exp
   | Ntr of loc* exp 

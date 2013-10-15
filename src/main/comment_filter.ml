@@ -10,7 +10,7 @@ let mk () =
   in (Fstream.from f, q)
 
 let filter (_, q) =
-  let rec self = parser
+  let rec self = %parser{
     |  (`Comment x, loc); 'xs  -> begin
         Queue.add (x, loc) q;
         (* debug comments "add: %S at %a@\n" x Locf.dump loc in *)
@@ -19,13 +19,7 @@ let filter (_, q) =
     |  x; 'xs ->
         (* debug comments "Found %a at %a@." Token.print x Locf.dump loc in *)
         %stream{x;'self xs}
-          (* %stream{ x; self xs ; 'y ; u}  *)
-          (* %stream{ %{x} *)
-          (*            %{self xs} *)
-          (*            '%{y} *)
-          (*            %{z} *)
-          (*            %{u} } *)
-    |  -> %stream{}  in self
+    |  -> %stream{}}  in self
 
 
 let take_list (_, q) =
@@ -41,3 +35,7 @@ let define token_fiter comments_strm =
   (fun previous strm -> previous (filter comments_strm strm))
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/comment_filter.cmo" *)
+(* end: *)

@@ -22,24 +22,24 @@ let default_keywords =
    "<-"; "done"; "for"; "&"; ";;"; "{"; "fun"; "method"
      ; "'"; ";"; "mutable"; "lazy"; "["; "}";
    "[|"; "with"; "[^"; "`"; "::"; "]"; "asr"; "[>";
-   ":=";  "if"; "while" ; "rec"; "parser"; "object"; "or"; "-"; "("; "match"
+   ":=";  "if"; "while" ; "rec";  "object"; "or"; "-"; "("; "match"
      ; "open"; "module";  "?"; ">"; "let"; "lor"; "["]
 
 let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
-let rec fan_filter = parser
+let rec fan_filter = %parser{
   | ( #Ftoken.space_token,_); 'xs -> fan_filter xs
   |  x; 'xs  ->
       %stream{ x; ' fan_filter xs }
-  |  -> %stream{}
+  |  -> %stream{}}
 
 let rec ignore_layout : Ftoken.filter =
-  parser
+  %parser{
     | (#Ftoken.space_token,_); 'xs -> ignore_layout  xs
     | x ; 'xs  ->
         %stream{x; 'ignore_layout xs }
-    | -> %stream{}
+    | -> %stream{}}
           
 let gram =  {
   annot="Fan";

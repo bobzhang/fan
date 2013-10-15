@@ -31,7 +31,7 @@ begin
     (fun loc txt ->
       Toploop.print_warning  loc Format.err_formatter
         (Warnings.Camlp4 txt));
-  Ast_parsers.use_parsers ["revise";"stream"]
+  Ast_parsers.use_parsers ["revise"]
 end;;
 
 

@@ -25,7 +25,7 @@ let mk_dynamic g n : 'a t ={
   gram = g;
   name = n;
   start = Gtools.empty_entry n;
-  continue _ _ _ = parser | ;
+  continue _ _ _ = %parser{ | };
   desc = Dlevels [] ;
   freezed = false;     
 }

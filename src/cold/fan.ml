@@ -1,7 +1,7 @@
 let _ =
   Prelude.register_bin_printer ();
   Foptions.adds Fan_args.initial_spec_list;
-  Ast_parsers.use_parsers ["revise"; "stream"];
+  Ast_parsers.use_parsers ["revise"];
   (try
      Arg.parse_dynamic Foptions.init_spec_list Fan_args.anon_fun
        "fan <options> <file>\nOptions are:"

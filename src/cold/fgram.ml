@@ -91,7 +91,6 @@ let default_keywords =
   "if";
   "while";
   "rec";
-  "parser";
   "object";
   "or";
   "-";

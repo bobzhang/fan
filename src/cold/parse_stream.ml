@@ -5,13 +5,14 @@ let a_lident = Syntaxf.a_lident
 let pat = Syntaxf.pat
 open FAst
 let parser_ipat = Fgram.mk "parser_ipat"
+let parser_exp = Fgram.mk "parser_exp"
 let stream_pat_comp = Fgram.mk "stream_pat_comp"
 let stream_pat_comp_err = Fgram.mk "stream_pat_comp_err"
 let stream_pat_comp_err_list = Fgram.mk "stream_pat_comp_err_list"
 let stream_pat = Fgram.mk "stream_pat"
 let parser_case = Fgram.mk "parser_case"
 let parser_case_list = Fgram.mk "parser_case_list"
-let apply () =
+let _ =
   let grammar_entry_create x = Fgram.mk x in
   let uid: 'uid Fgram.t = grammar_entry_create "uid" in
   Fgram.extend_single (uid : 'uid Fgram.t )
@@ -26,21 +27,20 @@ let apply () =
                    match __fan_0 with
                    | `Uid n -> (n : 'uid )
                    | _ -> failwith "n\n"))))]));
-  Fgram.extend_single (exp : 'exp Fgram.t )
-    ((Some (`Level "top")),
+  Fgram.extend_single (parser_exp : 'parser_exp Fgram.t )
+    (None,
       (None, None,
-        [([`Skeyword "parser";
-          `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
+        [([`Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
           `Snterm (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
            ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
              (Fgram.mk_action
-                (fun (pcl : 'parser_case_list)  (name : 'uid option)  _ 
+                (fun (pcl : 'parser_case_list)  (name : 'uid option) 
                    (_loc : Locf.t)  ->
                    (match name with
                     | Some o ->
                         Ref.protect Compile_stream.grammar_module_name o
                           (fun _  -> cparser _loc pcl)
-                    | None  -> cparser _loc pcl : 'exp )))))]));
+                    | None  -> cparser _loc pcl : 'parser_exp )))))]));
   Fgram.extend_single (parser_ipat : 'parser_ipat Fgram.t )
     (None,
       (None, None,
@@ -164,7 +164,4 @@ let apply () =
                (fun (sp : 'stream_pat_comp_err_list)  _ 
                   (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  -> (spc ::
                   sp : 'stream_pat_comp_err_list )))))]))
-let fill_parsers =
-  let applied = ref false in
-  fun ()  -> if not applied.contents then (apply (); applied := true)
-let () = Ast_parsers.register_parser ("stream", fill_parsers)
+let () = Ast_quotation.of_exp ~name:(Ns.lang, "parser") ~entry:parser_exp ()

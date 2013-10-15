@@ -38,9 +38,9 @@ val stream_patterns_term :
 
 val parser_cases :  loc ->  stream_cases ->  exp
 
-val cparser :  loc (* ->  pat option *) -> stream_cases ->  exp
+val cparser :  loc  -> stream_cases ->  exp
 
-val cparser_match :  loc ->  exp ->  pat option -> stream_cases ->  exp
+(* val cparser_match :  loc ->  exp ->  pat option -> stream_cases ->  exp *)
     
 val not_computing : exp -> bool
 

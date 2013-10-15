@@ -14,20 +14,21 @@ open FAst
 
 
 %create{ 
-  parser_ipat   
+  parser_ipat
+  parser_exp
   stream_pat_comp stream_pat_comp_err 
   stream_pat_comp_err_list
   stream_pat parser_case parser_case_list 
-}
+};;
 
 (** Even though we did not using lexing convention to fully interleave foreign DDSL and 
     hot lanuage, we can still make it a DDSL as long as we don't use [unsafe_extend]
  *)  
-let apply () = 
+
   %extend{
     let  uid: [`Uid(n) %{n}]
-    exp : Level "top"
-        [ "parser";  OPT uid  {name}; parser_case_list{pcl} %{
+    parser_exp : 
+        [  OPT uid  {name}; parser_case_list{pcl} %{
           match name with
           | Some o ->
               Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc  pcl)
@@ -43,7 +44,14 @@ let apply () =
      ]
     
     parser_case :
-    [stream_pat{sp}; "->"; exp{e} %{   (sp, None, e)}
+    [stream_pat{sp}(* ; `Quot x %{ *)
+     (*  let e = *)
+     (*    if x.name = Ftoken.empty_name then *)
+     (*      let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in *)
+     (*      Ftoken.quot_expand expander x *)
+     (*    else Ast_quotation.expand x Dyn_tag.exp in *)
+     (*  (sp,None, e) *)
+     (* } *); "->"; exp{e} %{   (sp, None, e)}
     ] 
     stream_pat :
     [ stream_pat_comp{spc} %{ [(spc, None)]}
@@ -70,19 +78,10 @@ let apply () =
 };;
 
 
-let fill_parsers =
-  let  applied = ref false in
-  fun () ->
-    if not !applied then
-      begin
-        apply ();
-        applied := true 
-      end
         
 let () =
-  begin 
-    Ast_parsers.register_parser
-      ("stream", fill_parsers);
+  begin
+    Ast_quotation.of_exp ~name:(Ns.lang,"parser" ) ~entry:parser_exp ()
   end;;
 
 

@@ -18,7 +18,7 @@ let _ =
   Syntaxf.current_warning :=
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
-  Ast_parsers.use_parsers ["revise"; "stream"]
+  Ast_parsers.use_parsers ["revise"]
 let _ =
   Topdirs.dir_install_printer Format.std_formatter
     (Longident.Ldot ((Longident.Lident "Fgram"), "dump"));
