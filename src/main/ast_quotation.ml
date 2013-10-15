@@ -52,9 +52,9 @@ let resolve_name (n:Ftoken.name) =
   | x -> Some x (* absolute *)
 
   
-module ExpKey = FDyn.Pack(struct  type 'a t  = unit end)
+module ExpKey = Dyn_tag.Pack(struct  type 'a t  = unit end)
 
-module ExpFun = FDyn.Pack(struct  type 'a t  = 'a Ftoken.expand_fun  end)
+module ExpFun = Dyn_tag.Pack(struct  type 'a t  = 'a Ftoken.expand_fun  end)
 
 let current_loc_name = ref None  
 
@@ -116,7 +116,7 @@ let expander_name  ~pos (name:Ftoken.name) =
   
 let expanders_table =ref QMap.empty
 
-let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a Ftoken.expand_fun) =
+let add ((domain,n) as name) (tag : 'a Dyn_tag.tag ) (f:  'a Ftoken.expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with
@@ -131,8 +131,8 @@ let add ((domain,n) as name) (tag : 'a FDyn.tag ) (f:  'a Ftoken.expand_fun) =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand (x:Ftoken.quot) (tag:'a FDyn.tag) : 'a =
-  let pos_tag = FDyn.string_of_tag tag in
+let expand (x:Ftoken.quot) (tag:'a Dyn_tag.tag) : 'a =
+  let pos_tag = Dyn_tag.string_of_tag tag in
   let name = x.name in
   (* resolve name when expansion*)
   (* The table is indexed by [quotation name] and [tag] *)
@@ -190,9 +190,9 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       | Some "_" -> exp_ast
       | Some name -> subst_first_loc name exp_ast 
     end in begin
-      add name FDyn.exp_tag expand_exp;
-      add name FDyn.pat_tag expand_pat;
-      add name FDyn.stru_tag expand_stru;
+      add name Dyn_tag.exp_tag expand_exp;
+      add name Dyn_tag.pat_tag expand_pat;
+      add name Dyn_tag.stru_tag expand_stru;
     end
 
 (*****************************************)
@@ -209,34 +209,34 @@ let make_parser ?(lexer=Flex_lib.from_stream) entry =
 
   
 let of_stru ?lexer ~name  ~entry ()  =
-  add name FDyn.stru_tag (make_parser ?lexer entry)
+  add name Dyn_tag.stru_tag (make_parser ?lexer entry)
 
 let of_stru_with_filter ?lexer ~name  ~entry  ~filter ()  =
-  add name FDyn.stru_tag
+  add name Dyn_tag.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 
 let of_pat ?lexer ~name  ~entry  () =
-  add name FDyn.pat_tag (make_parser ?lexer  entry)
+  add name Dyn_tag.pat_tag (make_parser ?lexer  entry)
 
 let of_pat_with_filter ?lexer ~name  ~entry  ~filter ()  =
-  add name FDyn.pat_tag
+  add name Dyn_tag.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 
 let of_clfield ?lexer ~name  ~entry ()  =
-  add name FDyn.clfield_tag (make_parser ?lexer entry)
+  add name Dyn_tag.clfield_tag (make_parser ?lexer entry)
 
 let of_clfield_with_filter ?lexer ~name  ~entry  ~filter ()  =
-  add name FDyn.clfield_tag @@
+  add name Dyn_tag.clfield_tag @@
     fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s)
 
 let of_case ?lexer ~name  ~entry  () =
-  add name FDyn.case_tag (make_parser ?lexer entry)
+  add name Dyn_tag.case_tag (make_parser ?lexer entry)
 
 let of_case_with_filter ?lexer ~name  ~entry  ~filter ()=
-  add name FDyn.case_tag
+  add name Dyn_tag.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 
@@ -245,8 +245,8 @@ let of_exp ?lexer ~name  ~entry () =
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, expand_fun loc loc_name_opt s) : FAst.stru ) in
   begin
-    add name FDyn.exp_tag expand_fun;
-    add name FDyn.stru_tag mk_fun
+    add name Dyn_tag.exp_tag expand_fun;
+    add name Dyn_tag.stru_tag mk_fun
   end
 
 let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
@@ -255,8 +255,8 @@ let of_exp_with_filter ?lexer ~name  ~entry  ~filter () =
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
   begin
-    add name FDyn.exp_tag expand_fun;
-    add name FDyn.stru_tag mk_fun
+    add name Dyn_tag.exp_tag expand_fun;
+    add name Dyn_tag.stru_tag mk_fun
   end
     
 (* let () = *)

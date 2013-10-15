@@ -1,6 +1,6 @@
 let eprintf = Format.eprintf
-let list_of_list = FanOps.list_of_list
-let is_irrefut_pat = FanOps.is_irrefut_pat
+let list_of_list = Fan_ops.list_of_list
+let is_irrefut_pat = Fan_ops.is_irrefut_pat
 open FAst
 open Ast_gen
 open Util

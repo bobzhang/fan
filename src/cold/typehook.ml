@@ -21,15 +21,15 @@ let plugin_add plugin =
        if
          not @@
            (List.exists (fun (n,_)  -> n = plugin)
-              FState.current_filters.contents)
-       then Ref.modify FState.current_filters (fun x  -> cons (plugin, v) x)
+              State.current_filters.contents)
+       then Ref.modify State.current_filters (fun x  -> cons (plugin, v) x)
        else eprintf "<Warning> plugin %s has already been loaded" plugin
    with
    | Not_found  ->
        (fun ()  -> show_modules (); failwithf "plugins %s not found " plugin))
     ()
 let plugin_remove plugin =
-  Ref.modify FState.current_filters (fun x  -> Listf.remove plugin x)
+  Ref.modify State.current_filters (fun x  -> Listf.remove plugin x)
 class type traversal
   =
   object 
@@ -83,8 +83,8 @@ let traversal () =
                then eprintf "@[%a@]@." pp_print_mtyps mtyps in
              let result =
                List.fold_right (iterate_code sloc mtyps)
-                 FState.current_filters.contents
-                 (if FState.keep.contents
+                 State.current_filters.contents
+                 (if State.keep.contents
                   then res
                   else (`StExp (sloc, (`Uid (sloc, "()"))) : FAst.stru )) in
              self#out_module; (`Struct (sloc, result) : FAst.mexp )))
@@ -98,7 +98,7 @@ let traversal () =
                (fun lst  -> (`Mutual (List.rev self#get_cur_and_types)) ::
                   lst);
              self#out_and_types;
-             if FState.keep.contents
+             if State.keep.contents
              then x
              else (`StExp (_loc, (`Uid (_loc, "()"))) : FAst.stru )))
        | `TypeWith (_loc,typedecl,_) -> self#stru (`Type (_loc, typedecl))
@@ -140,7 +140,7 @@ let genenrate_type_code _loc tdl (ns : FAst.strings) =
             Locf.raise _loc (Failure "antiquotation not expected here")
         | _ -> assert false) ns in
    let code =
-     Ref.protect2 (FState.current_filters, filters) (FState.keep, false)
+     Ref.protect2 (State.current_filters, filters) (State.keep, false)
        (fun _  ->
           match (traversal ())#mexp (`Struct (_loc, x) : FAst.mexp ) with
           | (`Struct (_loc,s) : FAst.mexp) -> s

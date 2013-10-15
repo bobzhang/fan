@@ -151,8 +151,9 @@ let _ =
     ~pat_filter:(pfilter "row_field");
   of_exp ~name:(d, "with_exp") ~entry:with_exp_lang ();
   of_stru ~name:(d, "with_stru") ~entry:with_stru_lang ();
-  add (d, "str") FDyn.exp_tag (fun _loc  _loc_option  s  -> `Str (_loc, s));
-  add (d, "str") FDyn.stru_tag
+  add (d, "str") Dyn_tag.exp_tag
+    (fun _loc  _loc_option  s  -> `Str (_loc, s));
+  add (d, "str") Dyn_tag.stru_tag
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
 let () = of_exp ~name:(d, "stream") ~entry:Parse_stream.stream_exp ()
 let efilter str e =
@@ -421,8 +422,8 @@ let () =
   let f2 (loc : Locf.t) _meta _content =
     let s = Locf.to_string loc in
     (`StExp (loc, (`Str (loc, s))) : FAst.stru ) in
-  Ast_quotation.add (d, "here") FDyn.exp_tag f;
-  Ast_quotation.add (d, "here") FDyn.stru_tag f2
+  Ast_quotation.add (d, "here") Dyn_tag.exp_tag f;
+  Ast_quotation.add (d, "here") Dyn_tag.stru_tag f2
 let () =
   Printexc.register_printer @@
     (function

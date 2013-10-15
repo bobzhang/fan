@@ -79,23 +79,23 @@ FAN_FILES = \
     ast_parsers ast_quotation \
     fid code_template comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
-    expN fAstN control control_require fDyn   fMeta \
+    expN fAstN control control_require fMeta \
     gram_def gram_gen \
-    sig_util fState fanAstN fanOps fgram\
+    sig_util  fanAstN  fgram\
     filters freeVars fsyntax gentry gfold gramlib\
     idN  ns  langOcaml   \
     fan_args mktop objs objsN \
     parse_fan parse_grammar parse_stream \
     plugins prelude stdFan typehook\
     parse_lex \
-    lang_fans lang_include lang_save
+    lang_fans lang_include lang_save \
+    fan_ops state dyn_tag
 FAN_EXP_FILES = \
     # parse_lex2 fan_lex2
-
-
-##################################################################
 # driver files also need to be synced up with 
-DRIVER_FILES = fan fanTop
+DRIVER_FILES = fan fan_top
+##################################################################
+
 
 ##################################################################
     

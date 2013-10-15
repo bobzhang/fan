@@ -2,7 +2,7 @@
 Format:
   eprintf
   ;
-FanOps:
+Fan_ops:
   list_of_list
   is_irrefut_pat
   ;

@@ -25,20 +25,20 @@ let _ =
                (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
                   (List.iter Typehook.plugin_remove plugins : 'fan_quot )))));
         ([`Skeyword "clear"],
-          ("FState.reset_current_filters ()\n",
+          ("State.reset_current_filters ()\n",
             (Fgram.mk_action
                (fun _  (_loc : Locf.t)  ->
-                  (FState.reset_current_filters () : 'fan_quot )))));
+                  (State.reset_current_filters () : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "on"],
-          ("FState.keep := true\n",
+          ("State.keep := true\n",
             (Fgram.mk_action
                (fun _  _  (_loc : Locf.t)  ->
-                  (FState.keep := true : 'fan_quot )))));
+                  (State.keep := true : 'fan_quot )))));
         ([`Skeyword "keep"; `Skeyword "off"],
-          ("FState.keep := false\n",
+          ("State.keep := false\n",
             (Fgram.mk_action
                (fun _  _  (_loc : Locf.t)  ->
-                  (FState.keep := false : 'fan_quot )))));
+                  (State.keep := false : 'fan_quot )))));
         ([`Skeyword "show_code"; `Skeyword "on"],
           ("Typehook.show_code := true\n",
             (Fgram.mk_action
@@ -89,7 +89,7 @@ let _ =
                    ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))))]))
 let _ =
   Foptions.add
-    ("-keep", (Arg.Set FState.keep), "Keep the included type definitions");
+    ("-keep", (Arg.Set State.keep), "Keep the included type definitions");
   Foptions.add
     ("-loaded-plugins", (Arg.Unit Typehook.show_modules), "Show plugins");
   Ast_quotation.of_exp ~name:(Ns.lang, "fans") ~entry:fan_quots ()

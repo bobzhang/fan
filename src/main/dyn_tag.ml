@@ -27,3 +27,7 @@ module Pack(X : sig type 'a t  end) = struct
      f (tag, _) ->
       Format.pp_print_string f (string_of_tag tag)
 end
+
+(* local variables: *)
+(* compile-command: "cd ../main_annot && pmake fDyn.cmo" *)
+(* end: *)

@@ -13,9 +13,9 @@ Ast_gen:
     
 %extend{save_quot:
   [L1 lid {ls} ; "->"; Fsyntax.exp{b} ->
-    let symbs = List.map (fun x -> FState.gensym x) ls in
-    let res = FState.gensym "res" in
-    let exc = FState.gensym "e" in
+    let symbs = List.map (fun x -> State.gensym x) ls in
+    let res = State.gensym "res" in
+    let exc = State.gensym "e" in
     let binds = and_of_list
         (List.map2 (fun x y -> %bind{ $lid:x = ! $lid:y } ) symbs ls ) in
     let restore =

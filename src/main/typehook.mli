@@ -16,11 +16,11 @@ val register :
           
 val show_modules : unit -> unit
 
-(** Register the plugin to [FState.current_filters], this is controlled by [fans] DDSL *)
+(** Register the plugin to [State.current_filters], this is controlled by [fans] DDSL *)
 val plugin_add : plugin_name -> unit
 
 
-(** Remove the plugin from  [FState.current_filters], see [plugin_add] *)
+(** Remove the plugin from  [State.current_filters], see [plugin_add] *)
 val plugin_remove : plugin_name -> unit
 
 (** Entrance is  [mexp]

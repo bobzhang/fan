@@ -15,11 +15,11 @@ with exp
   | "unload"; L1 id  SEP ","{plugins} ->
       (List.iter Typehook.plugin_remove plugins )
   | "clear" ->
-      (FState.reset_current_filters())
+      (State.reset_current_filters())
   | "keep" ; "on" ->
-      (FState.keep := true)
+      (State.keep := true)
   | "keep" ; "off" -> 
-      (FState.keep := false)
+      (State.keep := false)
   | "show_code"; "on" ->
       (Typehook.show_code := true)
   | "show_code"; "off" ->
@@ -39,7 +39,7 @@ with exp
 begin 
   Foptions.add
     ("-keep",
-     (Arg.Set FState.keep), "Keep the included type definitions") ;
+     (Arg.Set State.keep), "Keep the included type definitions") ;
   Foptions.add
     ("-loaded-plugins",
      (Arg.Unit Typehook.show_modules), "Show plugins");

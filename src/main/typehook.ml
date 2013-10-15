@@ -40,9 +40,9 @@ let show_modules () =
 let plugin_add plugin =
   let try v = Hashtbl.find filters plugin in 
     if not @@
-      List.exists (fun (n,_) -> n=plugin) !FState.current_filters
+      List.exists (fun (n,_) -> n=plugin) !State.current_filters
     then
-      Ref.modify FState.current_filters (fun x -> cons (plugin,v) x) 
+      Ref.modify State.current_filters (fun x -> cons (plugin,v) x) 
     else
       eprintf "<Warning> plugin %s has already been loaded" plugin
 
@@ -53,7 +53,7 @@ let plugin_add plugin =
 
     
 let plugin_remove plugin =
-    Ref.modify FState.current_filters (fun x -> Listf.remove plugin x) 
+    Ref.modify State.current_filters (fun x -> Listf.remove plugin x) 
   
 
 
@@ -119,8 +119,8 @@ let traversal () : traversal  = object (self:'self_type)
            eprintf "@[%a@]@." pp_print_mtyps mtyps in
          let result =
          List.fold_right (iterate_code sloc mtyps)
-             !FState.current_filters 
-             (if !FState.keep then res else %@sloc{ let _ = () }) in
+             !State.current_filters 
+             (if !State.keep then res else %@sloc{ let _ = () }) in
             (self#out_module ; %mexp@sloc{ struct $result end } ))
 
     | x -> super#mexp x 
@@ -131,7 +131,7 @@ let traversal () : traversal  = object (self:'self_type)
       (self#update_cur_mtyps
           (fun lst -> `Mutual (List.rev self#get_cur_and_types) :: lst );
        self#out_and_types;
-       (if !FState.keep then x else %{ let _ = () } (* FIXME *) ))
+       (if !State.keep then x else %{ let _ = () } (* FIXME *) ))
     end
     | `TypeWith(_loc,typedecl,_) ->
         self#stru (`Type(_loc,typedecl))
@@ -181,8 +181,8 @@ let genenrate_type_code _loc tdl (ns:FAst.strings) : FAst.stru =
       | _ -> assert false ) ns in
   let code =
     Ref.protect2
-      (FState.current_filters, filters)
-      (FState.keep, false)
+      (State.current_filters, filters)
+      (State.keep, false)
       (fun _  ->
         match (traversal ())#mexp (`Struct(_loc,x): FAst.mexp) with
         | (`Struct(_loc,s):FAst.mexp) -> s

@@ -24,8 +24,8 @@ let resolve_name (n : Ftoken.name) =
        | None  -> None
        | Some r -> Some ((concat_domain (r, x)), v))
   | x -> Some x
-module ExpKey = FDyn.Pack(struct type 'a t = unit  end)
-module ExpFun = FDyn.Pack(struct type 'a t = 'a Ftoken.expand_fun  end)
+module ExpKey = Dyn_tag.Pack(struct type 'a t = unit  end)
+module ExpFun = Dyn_tag.Pack(struct type 'a t = 'a Ftoken.expand_fun  end)
 let current_loc_name = ref None
 let stack = Stack.create ()
 let current_quot () =
@@ -51,14 +51,15 @@ let expander_name ~pos  (name : Ftoken.name) =
   | (`Sub _,_) -> resolve_name name
   | (`Absolute _,_) -> Some name
 let expanders_table = ref QMap.empty
-let add ((domain,n) as name) (tag : 'a FDyn.tag) (f : 'a Ftoken.expand_fun) =
+let add ((domain,n) as name) (tag : 'a Dyn_tag.tag)
+  (f : 'a Ftoken.expand_fun) =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s =
     try Hashtbl.find names_tbl domain with | Not_found  -> Setf.String.empty in
   Hashtbl.replace names_tbl domain (Setf.String.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
-let expand (x : Ftoken.quot) (tag : 'a FDyn.tag) =
-  (let pos_tag = FDyn.string_of_tag tag in
+let expand (x : Ftoken.quot) (tag : 'a Dyn_tag.tag) =
+  (let pos_tag = Dyn_tag.string_of_tag tag in
    let name = x.name in
    match expander_name ~pos:pos_tag name with
    | None  ->
@@ -106,45 +107,45 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
          | None  -> subst_first_loc Locf.name.contents exp_ast
          | Some "_" -> exp_ast
          | Some name -> subst_first_loc name exp_ast) in
-  add name FDyn.exp_tag expand_exp;
-  add name FDyn.pat_tag expand_pat;
-  add name FDyn.stru_tag expand_stru
+  add name Dyn_tag.exp_tag expand_exp;
+  add name Dyn_tag.pat_tag expand_pat;
+  add name Dyn_tag.stru_tag expand_stru
 let make_parser ?(lexer= Flex_lib.from_stream)  entry loc loc_name_opt s =
   Ref.protect2 (Configf.antiquotations, true)
     (current_loc_name, loc_name_opt)
     (fun _  -> Fgram.parse_string ~lexer (Fgram.eoi_entry entry) ~loc s)
 let of_stru ?lexer  ~name  ~entry  () =
-  add name FDyn.stru_tag (make_parser ?lexer entry)
+  add name Dyn_tag.stru_tag (make_parser ?lexer entry)
 let of_stru_with_filter ?lexer  ~name  ~entry  ~filter  () =
-  add name FDyn.stru_tag
+  add name Dyn_tag.stru_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 let of_pat ?lexer  ~name  ~entry  () =
-  add name FDyn.pat_tag (make_parser ?lexer entry)
+  add name Dyn_tag.pat_tag (make_parser ?lexer entry)
 let of_pat_with_filter ?lexer  ~name  ~entry  ~filter  () =
-  add name FDyn.pat_tag
+  add name Dyn_tag.pat_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 let of_clfield ?lexer  ~name  ~entry  () =
-  add name FDyn.clfield_tag (make_parser ?lexer entry)
+  add name Dyn_tag.clfield_tag (make_parser ?lexer entry)
 let of_clfield_with_filter ?lexer  ~name  ~entry  ~filter  () =
-  (add name FDyn.clfield_tag) @@
+  (add name Dyn_tag.clfield_tag) @@
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 let of_case ?lexer  ~name  ~entry  () =
-  add name FDyn.case_tag (make_parser ?lexer entry)
+  add name Dyn_tag.case_tag (make_parser ?lexer entry)
 let of_case_with_filter ?lexer  ~name  ~entry  ~filter  () =
-  add name FDyn.case_tag
+  add name Dyn_tag.case_tag
     (fun loc  loc_name_opt  s  ->
        filter (make_parser ?lexer entry loc loc_name_opt s))
 let of_exp ?lexer  ~name  ~entry  () =
   let expand_fun = make_parser ?lexer entry in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun
+  add name Dyn_tag.exp_tag expand_fun; add name Dyn_tag.stru_tag mk_fun
 let of_exp_with_filter ?lexer  ~name  ~entry  ~filter  () =
   let expand_fun loc loc_name_opt s =
     filter (make_parser ?lexer entry loc loc_name_opt s) in
   let mk_fun loc loc_name_opt s =
     (`StExp (loc, (expand_fun loc loc_name_opt s)) : FAst.stru ) in
-  add name FDyn.exp_tag expand_fun; add name FDyn.stru_tag mk_fun
+  add name Dyn_tag.exp_tag expand_fun; add name Dyn_tag.stru_tag mk_fun

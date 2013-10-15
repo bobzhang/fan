@@ -10,7 +10,7 @@ val paths : Ftoken.domains list ref
 val current_loc_name : string option ref
 
 (** [add name exp] adds the quotation [name] associated with the  expander [exp]. *)
-val add : Ftoken.name -> 'a FDyn.tag  -> 'a Ftoken.expand_fun  -> unit
+val add : Ftoken.name -> 'a Dyn_tag.tag  -> 'a Ftoken.expand_fun  -> unit
 
     
 (** [default] holds the default quotation name. *)
@@ -32,7 +32,7 @@ val clear_map: unit -> unit
     
 val clear_default: unit -> unit
     
-val expand : Ftoken.quot -> 'a FDyn.tag -> 'a
+val expand : Ftoken.quot -> 'a Dyn_tag.tag -> 'a
 
 
 
@@ -46,7 +46,7 @@ val dump_file : string option  ref
 
 (** The raw quotation expander, register its type, laguage namespace and
     an expansion function *)
-val add : Ftoken.domains * string -> 'a FDyn.tag -> 'a Ftoken.expand_fun -> unit    
+val add : Ftoken.domains * string -> 'a Dyn_tag.tag -> 'a Ftoken.expand_fun -> unit    
 (** theoretically you can use [mexp] which lift it into any type you can
    but we made a restriction here.
    [exp_filter] and [pat_filter] default to an id 
