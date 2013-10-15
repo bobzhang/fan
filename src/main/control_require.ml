@@ -19,10 +19,10 @@ let add name =
   
 let () =
   let open Control in
-  %unsafe_extend{
+  %unsafe_extend2{
   (* (g:Fgram.t) *)
     item:
-    [ "require"; `Str s -> add s ]}
+    [ "require"; `Str s %{ add s} ]}
 
 
 (* local variables: *)

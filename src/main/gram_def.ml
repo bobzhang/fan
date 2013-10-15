@@ -130,17 +130,15 @@ open Fsyntax;;
 
 %create{ Fgram (simple_pat : simple_pat Fgram.t) };;
 
-%extend{
+%extend2{
   simple_pat "pat'":
-  ["`"; luident{s}  ->  %{$vrn:s}
+  ["`"; luident{s}  %{  %{$vrn:s} }
 
-  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) ->
-    %{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
-  |"`"; luident{s}; `Str v -> %{ $vrn:s $str:v}
-  |"`"; luident{s}; `Lid x  -> %{ $vrn:s $lid:x }
-  |"`"; luident{s}; "_" -> %{$vrn:s _}
-  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" ->
-      (Ast_gen.appl_of_list (%pat'{$vrn:s} :: v))
+  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) %{%{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}}
+  |"`"; luident{s}; `Str v  %{ %{ $vrn:s $str:v} }
+  |"`"; luident{s}; `Lid x   %{ %{ $vrn:s $lid:x } }
+  |"`"; luident{s}; "_"  %{ %{$vrn:s _} }
+  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" %{(Ast_gen.appl_of_list (%pat'{$vrn:s} :: v))}
         (* here
            we have to guarantee
            {[
@@ -152,14 +150,14 @@ open Fsyntax;;
   let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
   {
    "as"
-     [S{p1} ; "as";`Lid s  -> %{ ($p1 as $lid:s) } ]
+     [S{p1} ; "as";`Lid s  %{ %{ ($p1 as $lid:s) }} ]
      "|"
-     [S{p1}; "|"; S{p2}  -> %{$p1 | $p2 } ]
+     [S{p1}; "|"; S{p2}   %{ %{$p1 | $p2 } } ]
      "simple"
-     [ `Str s -> %{ $str:s}
-     | "_" -> %{ _ }
-     | `Lid x   ->  %{ $lid:x}
-     | "("; S{p}; ")" -> p] }
+     [ `Str s   %{  %{ $str:s}}
+     | "_"   %{ %{ _ }} 
+     | `Lid x     %{ %{ $lid:x} }
+     | "("; S{p}; ")"  %{ p} ] }
 };;
 
 open Format
@@ -222,3 +220,7 @@ let string_of_simple_pat = Formatf.to_string unparse_simple_pat
 (*   inherit Objs.fold as super; *)
 (*   method  *)
 (* end *)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/gram_def.cmo" *)
+(* end: *)

@@ -360,10 +360,10 @@ end
 
 %create{ p};;
 
-%extend{
+%extend2{
   p:
-  [pat{p};"when"; exp{e} -> %exp{ function | $pat:p when $e -> true |_ -> false }
-  |pat{p} -> %exp'{ function | $pat:p -> true | _ -> false } ] };;
+  [pat{p};"when"; exp{e} %{ %exp{ function | $pat:p when $e -> true |_ -> false } }
+  |pat{p} %{ %exp'{ function | $pat:p -> true | _ -> false } } ] };;
 
 let ()  =
   of_exp ~name:(d,"p") ~entry:p () ;;
@@ -372,16 +372,16 @@ let ()  =
 
 %create{import} ;;
 
-%extend{
+%extend2{
 let a:
-  [`Uid m ; ":"; L1 name {ns} ; ";" ->
+  [`Uid m ; ":"; L1 name {ns} ; ";" %{
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
       (List.map
-         (fun l -> %stru{ let $(l :> FAst.pat) = $uid:m.$l } ) ns)]
+         (fun l -> %stru{ let $(l :> FAst.pat) = $uid:m.$l } ) ns) }]
 import:
-  [ L1 a  {xs} -> Ast_gen.sem_of_list xs ]  
+  [ L1 a  {xs}  %{ Ast_gen.sem_of_list xs} ]  
 let name :
-  [`Lid x -> `Lid(_loc,x)]  };;
+  [`Lid x %{ `Lid(_loc,x)} ]  };;
 (**
    improved
    --- alias

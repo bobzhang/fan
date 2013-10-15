@@ -117,8 +117,10 @@ let eoi_entry entry =
   let open! Gstru in
   let g = gram_of_entry entry in
   let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in
-  (%extend{ entry_eoi: [  entry{x}; `EOI -> x ] } ;
-   entry_eoi)
+  begin
+    %extend2{ entry_eoi: [  entry{x}; `EOI %{x} ] } ;
+    entry_eoi
+  end
 
 let find_level ?position (entry:Gstructure.entry) =
   match entry.desc with
@@ -180,3 +182,7 @@ let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/fgram.cmo" *)
+(* end: *)
