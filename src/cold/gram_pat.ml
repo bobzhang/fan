@@ -3,7 +3,6 @@ let pp_print_vid' = Objs.pp_print_vid'
 let pp_print_vid = Objs.pp_print_vid
 let pp_print_alident = Objs.pp_print_alident
 let pp_print_ant = Objs.pp_print_ant
-let luident = Syntaxf.luident
 let fprintf = Format.fprintf
 open FAst
 let pp_print_loc _f _loc = ()
@@ -96,11 +95,33 @@ let wildcarder =
       | `Alias (_loc,p,_) -> self#simple_pat p
       | p -> super#simple_pat p
   end
+let luident = Fgram.mk "luident"
 let simple_pat: simple_pat Fgram.t = Fgram.mk "simple_pat"
 let _ =
   let grammar_entry_create x = Fgram.mk x in
   let internal_pat: 'internal_pat Fgram.t =
     grammar_entry_create "internal_pat" in
+  Fgram.extend_single (luident : 'luident Fgram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Lid _ -> true | _ -> false)),
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+           ("i\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Lid i -> (i : 'luident )
+                   | _ -> failwith "i\n"))));
+        ([`Stoken
+            (((function | `Uid _ -> true | _ -> false)),
+              (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+          ("i\n",
+            (Fgram.mk_action
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Uid i -> (i : 'luident )
+                  | _ -> failwith "i\n"))))]));
   Fgram.extend_single (simple_pat : 'simple_pat Fgram.t )
     (None,
       (None, None,

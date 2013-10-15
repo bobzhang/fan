@@ -16,11 +16,6 @@ Gram_gen:
   mk_symbol
   token_of_simple_pat
   ;
-Syntaxf:
-  a_lident
-  exp
-  ctyp  
-  ;
 
 Ast_gen:
   sem_of_list
@@ -49,13 +44,15 @@ open Util
    extend_body
    newterminals
    unsafe_extend_body
-
-   simple_exp
-
+   a_lident       
+   (* simple_exp *)
+          
       } ;;
 
 %extend{
-
+  a_lident :
+  [ `Ant((""|"lid") as n,s) %{FanUtil.mk_anti _loc  ~c:"a_lident" n s}
+  | `Lid s  %{ `Lid (_loc, s)} ]
   let ty :
   [ "("; qualid{x} ; ":"; t_qualid{t};")" %{ `Dyn(x,t)}
   |  qualuid{t} %{ `Static t}
@@ -67,8 +64,8 @@ open Util
   let type_entry :
       [ `Lid x  %{ (_loc,x,None,None)}
       | "("; `Lid x ;`Str y; ")" %{(_loc,x,Some y,None)}
-      | "(";`Lid x ;`Str y; ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
+      | "(";`Lid x ;`Str y; Syntaxf.ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
+      | "("; `Lid x; ":"; Syntaxf.ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
       ]      
 
   (* used to create language [create] *)    
@@ -235,7 +232,7 @@ open Util
   let opt_action :
       [ `Quot x %{
         if x.name = Ftoken.empty_name then 
-          let expander loc _ s = Fgram.parse_string ~loc exp s in
+          let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
           Ftoken.quot_expand expander x
         else
           Ast_quotation.expand x Dyn_tag.exp
@@ -293,10 +290,7 @@ open Util
   [ `Str  s  %exp{$str:s}
   | `Ant ("", s) %{Parsef.exp _loc s}
   ] (*suport antiquot for string*)
-
-  simple_exp:
-  [ a_lident{i} %{ (i : alident :>exp) }
-  | "("; exp{e}; ")" %{e} ]  };;
+  };;
 
 
 let d = Ns.lang in

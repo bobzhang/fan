@@ -12,9 +12,6 @@ let check_not_tok = Gram_gen.check_not_tok
 let mk_slist = Gram_gen.mk_slist
 let mk_symbol = Gram_gen.mk_symbol
 let token_of_simple_pat = Gram_gen.token_of_simple_pat
-let a_lident = Syntaxf.a_lident
-let exp = Syntaxf.exp
-let ctyp = Syntaxf.ctyp
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
@@ -48,7 +45,7 @@ let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk "pattern"
 let extend_body = Fgram.mk "extend_body"
 let newterminals = Fgram.mk "newterminals"
 let unsafe_extend_body = Fgram.mk "unsafe_extend_body"
-let simple_exp = Fgram.mk "simple_exp"
+let a_lident = Fgram.mk "a_lident"
 let _ =
   let grammar_entry_create x = Fgram.mk x in
   let ty: 'ty Fgram.t = grammar_entry_create "ty"
@@ -60,6 +57,31 @@ let _ =
     grammar_entry_create "brace_pattern"
   and sep_symbol: 'sep_symbol Fgram.t = grammar_entry_create "sep_symbol"
   and level_str: 'level_str Fgram.t = grammar_entry_create "level_str" in
+  Fgram.extend_single (a_lident : 'a_lident Fgram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
+               (`App
+                  ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "lid"))))),
+                    `Any)), "`Ant (\"\"| \"lid\",_)")],
+           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Ant ((""|"lid" as n),s) ->
+                       (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
+                   | _ ->
+                       failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
+        ([`Stoken
+            (((function | `Lid _ -> true | _ -> false)),
+              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+          ("`Lid (_loc, s)\n",
+            (Fgram.mk_action
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Lid s -> (`Lid (_loc, s) : 'a_lident )
+                  | _ -> failwith "`Lid (_loc, s)\n"))))]));
   Fgram.extend_single (ty : 'ty Fgram.t )
     (None,
       (None, None,
@@ -128,11 +150,11 @@ let _ =
          `Stoken
            (((function | `Str _ -> true | _ -> false)),
              (`App ((`Vrn "Str"), `Any)), "`Str _");
-         `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ));
+         `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
          `Skeyword ")"],
           ("(_loc, x, (Some y), (Some t))\n",
             (Fgram.mk_action
-               (fun _  (t : 'ctyp)  (__fan_2 : [> Ftoken.t]) 
+               (fun _  (t : 'Syntaxf__ctyp)  (__fan_2 : [> Ftoken.t]) 
                   (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
                   | (`Str y,`Lid x) ->
@@ -143,12 +165,12 @@ let _ =
            (((function | `Lid _ -> true | _ -> false)),
              (`App ((`Vrn "Lid"), `Any)), "`Lid _");
          `Skeyword ":";
-         `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ));
+         `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
          `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )));
          `Skeyword ")"],
           ("(_loc, x, y, (Some t))\n",
             (Fgram.mk_action
-               (fun _  (y : 'str option)  (t : 'ctyp)  _ 
+               (fun _  (y : 'str option)  (t : 'Syntaxf__ctyp)  _ 
                   (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x -> ((_loc, x, y, (Some t)) : 'type_entry )
@@ -662,7 +684,7 @@ let _ =
         [([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
+           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
@@ -670,12 +692,12 @@ let _ =
                        (if x.name = Ftoken.empty_name
                         then
                           let expander loc _ s =
-                            Fgram.parse_string ~loc exp s in
+                            Fgram.parse_string ~loc Syntaxf.exp s in
                           Ftoken.quot_expand expander x
                         else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                    | _ ->
                        failwith
-                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
+                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
   Fgram.extend_single (pattern : 'pattern Fgram.t )
     (None,
       (None, None,
@@ -908,21 +930,7 @@ let _ =
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant ("",s) -> (Parsef.exp _loc s : 'string )
-                  | _ -> failwith "Parsef.exp _loc s\n"))))]));
-  Fgram.extend_single (simple_exp : 'simple_exp Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-           ("(i : alident  :>exp)\n",
-             (Fgram.mk_action
-                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
-                   ((i : alident  :>exp) : 'simple_exp )))));
-        ([`Skeyword "(";
-         `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
-         `Skeyword ")"],
-          ("e\n",
-            (Fgram.mk_action
-               (fun _  (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'simple_exp )))))]))
+                  | _ -> failwith "Parsef.exp _loc s\n"))))]))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();

@@ -6,9 +6,6 @@ Objs:
   pp_print_vid
   pp_print_alident
   pp_print_ant;
-Syntaxf:
-  luident
-  ;
 Format:
   fprintf
   ;
@@ -44,17 +41,26 @@ let wildcarder = object (self)
     | p  -> super#simple_pat p 
 end;;
 
-%create{ Fgram (simple_pat : simple_pat Fgram.t) };;
+%create{ 
+luident
+(simple_pat : simple_pat Fgram.t)
+}
 
 %extend{
+  luident : [`Lid i %{ i} | `Uid i %{ i}]
   simple_pat :
   ["`"; luident{s}   %pat'{$vrn:s}
 
-  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s) %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
-  |"`"; luident{s}; `Str v   %pat'{ $vrn:s $str:v}
-  |"`"; luident{s}; `Lid x   %pat'{ $vrn:s $lid:x }
-  |"`"; luident{s}; "_"   %pat'{$vrn:s _}
-  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")" %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)}
+  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s)
+     %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
+  |"`"; luident{s}; `Str v
+     %pat'{ $vrn:s $str:v}
+  |"`"; luident{s}; `Lid x
+     %pat'{ $vrn:s $lid:x }
+  |"`"; luident{s}; "_"
+     %pat'{$vrn:s _}
+  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")"
+     %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)}
         (* here
            we have to guarantee
            {[
@@ -63,7 +69,7 @@ end;;
            ]}
            is dumped correctly
          *) ]
-  let internal_pat "pat'": (* FIXME such grammar should be deprecated soon*)
+  let internal_pat : (* FIXME such grammar should be deprecated soon*)
   {
    "as"
      [S{p1} ; "as";`Lid s   %pat'{ ($p1 as $lid:s) } ]

@@ -93,7 +93,8 @@ FAN_FILES = \
     syntaxf \
     parsef\
     lang_stream\
-    gram_pat
+    gram_pat \
+    lex_gram
     # parse_grammar2
     
 FAN_EXP_FILES = \

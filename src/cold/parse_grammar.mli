@@ -90,7 +90,7 @@ val assoc : exp Fgram.t
 val name : Gram_def.name Fgram.t
 val string : exp Fgram.t
 
-val simple_exp : exp Fgram.t
+
 
 
 val pattern : Gram_def.action_pattern Fgram.t
