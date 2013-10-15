@@ -118,14 +118,14 @@ let register_parsetree_printer () =
 
 
 let parse_implem loc cs =
-  let l =simple_wrap loc cs  @@ Fgram.parse Fsyntax.implem  in
+  let l =simple_wrap loc cs  @@ Fgram.parse Syntaxf.implem  in
   match l with
   | [] -> None
   | l -> Some (Ast_gen.sem_of_list l)
 
 
 let parse_interf loc cs =
-  let l = simple_wrap loc cs @@ Fgram.parse Fsyntax.interf  in
+  let l = simple_wrap loc cs @@ Fgram.parse Syntaxf.interf  in
   match l with
   | [] -> None   
   | l -> Some (Ast_gen.sem_of_list l)
@@ -133,7 +133,7 @@ let parse_interf loc cs =
 let parse_file  name pa = begin 
   let loc = Locf.mk name in
   let print_warning = eprintf "%a:\n%s@." Locf.print in
-  let  () = Fsyntax.current_warning := print_warning in
+  let  () = Fan_warnings.current := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
   let cs = Fstream.of_channel ic in
@@ -174,10 +174,10 @@ let wrap parse_fun ~print_location lb =
 
 
 let toplevel_phrase token_stream =
-  match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
+  match Fgram.parse_origin_tokens Syntaxf.top_phrase token_stream with
   | Some stru ->
         let stru =
-          (* Fsyntax.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
+          (* Syntaxf.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
           Ast_filters.apply_implem_filters stru in
         Ast2pt.phrase stru
   | None -> raise End_of_file          
@@ -187,7 +187,7 @@ let toplevel_phrase token_stream =
 let use_file token_stream =
   let loop () =
       let (pl, stopped_at_directive) =
-        Fgram.parse_origin_tokens Fsyntax.implem token_stream in
+        Fgram.parse_origin_tokens Syntaxf.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | _ -> (pl, false) 
@@ -198,7 +198,7 @@ let use_file token_stream =
     else
       let rec loop () =
         let (pl, stopped_at_directive) =
-          Fgram.parse_origin_tokens Fsyntax.implem  token_stream in  
+          Fgram.parse_origin_tokens Syntaxf.implem  token_stream in  
         if stopped_at_directive <> None then pl @ loop () else pl in loop () in
   (* FIXME semantics imprecise, the filter will always be applied *)
   List.map (fun x -> Ast2pt.phrase (Ast_filters.apply_implem_filters x) ) (pl0 @ pl)
@@ -206,5 +206,5 @@ let use_file token_stream =
         
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/preCast.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/prelude.cmo" *)
 (* end: *)

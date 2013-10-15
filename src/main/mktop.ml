@@ -22,19 +22,24 @@ Ast_gen:
 FanAstN:
   m
   ;
-
+Parsef:
+  pat_filter
+  exp_filter
+  exp_filter_n
+  pat_filter_n
+  ;
 }
 
-open! Fsyntax
+open! Syntaxf
 include Prelude
 
 
 
 let efilter str e =
-    let e = exp_filter e in let _loc = loc_of e in
+    let e = Parsef.exp_filter e in let _loc = loc_of e in
     %exp{($e : FAst.$lid:str)} (* BOOTSTRAPPING, assocaited with module [FAst] *)
 let pfilter str e =
-  let p = pat_filter e in let _loc = loc_of p in
+  let p = Parsef.pat_filter e in let _loc = loc_of p in
   %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING, associat with module [FAst] *);;
 
 

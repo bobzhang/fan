@@ -52,15 +52,15 @@ let register_parsetree_printer () =
          Printast.implementation fmt pt) in
   stru_printer := print_implem; sigi_printer := print_interf
 let parse_implem loc cs =
-  let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.implem) in
+  let l = (simple_wrap loc cs) @@ (Fgram.parse Syntaxf.implem) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_interf loc cs =
-  let l = (simple_wrap loc cs) @@ (Fgram.parse Fsyntax.interf) in
+  let l = (simple_wrap loc cs) @@ (Fgram.parse Syntaxf.interf) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_file name pa =
   let loc = Locf.mk name in
   let print_warning = eprintf "%a:\n%s@." Locf.print in
-  let () = Fsyntax.current_warning := print_warning in
+  let () = Syntaxf.current_warning := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
   let cs = Fstream.of_channel ic in finally ~action:clear cs (pa loc)
@@ -86,14 +86,14 @@ let wrap parse_fun ~print_location  lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  match Fgram.parse_origin_tokens Fsyntax.top_phrase token_stream with
+  match Fgram.parse_origin_tokens Syntaxf.top_phrase token_stream with
   | Some stru ->
       let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
 let use_file token_stream =
   let loop () =
     let (pl,stopped_at_directive) =
-      Fgram.parse_origin_tokens Fsyntax.implem token_stream in
+      Fgram.parse_origin_tokens Syntaxf.implem token_stream in
     if stopped_at_directive <> None
     then match pl with | _ -> (pl, false)
     else (pl, true) in
@@ -104,7 +104,7 @@ let use_file token_stream =
     else
       (let rec loop () =
          let (pl,stopped_at_directive) =
-           Fgram.parse_origin_tokens Fsyntax.implem token_stream in
+           Fgram.parse_origin_tokens Syntaxf.implem token_stream in
          if stopped_at_directive <> None then pl @ (loop ()) else pl in
        loop ()) in
   List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))

@@ -82,7 +82,7 @@ FAN_FILES = \
     expN fAstN control control_require fMeta \
     gram_def gram_gen \
     sig_util  fanAstN  fgram\
-    filters freeVars fsyntax gentry gfold gramlib\
+    filters freeVars  gentry gfold gramlib\
     idN  ns  langOcaml   \
     fan_args mktop objs objsN \
     parse_fan parse_grammar parse_stream \
@@ -90,6 +90,8 @@ FAN_FILES = \
     parse_lex \
     lang_fans lang_include lang_save \
     fan_ops state dyn_tag \
+    syntaxf \
+    parsef
     # parse_grammar2
     
 FAN_EXP_FILES = \

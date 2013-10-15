@@ -1,7 +1,7 @@
 open FAst
 open Ast_gen
 open Fan_ops
-open! Fsyntax
+open! Syntaxf
 open FanUtil
 open Gramlib
 let pos_exps = Fgram.mk "pos_exps"

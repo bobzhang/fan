@@ -7,16 +7,20 @@ let add_quotation = Ast_quotation.add_quotation
 let add = Ast_quotation.add
 let loc_of = Ast_gen.loc_of
 let m = FanAstN.m
-open! Fsyntax
+let pat_filter = Parsef.pat_filter
+let exp_filter = Parsef.exp_filter
+let exp_filter_n = Parsef.exp_filter_n
+let pat_filter_n = Parsef.pat_filter_n
+open! Syntaxf
 include Prelude
 let efilter str e =
-  let e = exp_filter e in
+  let e = Parsef.exp_filter e in
   let _loc = loc_of e in
   (`Constraint
      (_loc, e, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 
     FAst.exp )
 let pfilter str e =
-  let p = pat_filter e in
+  let p = Parsef.pat_filter e in
   let _loc = loc_of p in
   (`Constraint
      (_loc, p, (`Dot (_loc, (`Uid (_loc, "FAst")), (`Lid (_loc, str))))) : 

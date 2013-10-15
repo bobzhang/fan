@@ -9,7 +9,7 @@ include_quot:
     let (keep,cf) = State.((keep,current_filters)) in
     %save{ keep cf %{begin
       State.reset ();
-      Fgram.parse_include_file Fsyntax.strus s;
+      Fgram.parse_include_file Syntaxf.strus s;
     end
   }}}
  ]

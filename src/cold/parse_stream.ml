@@ -1,9 +1,9 @@
 let cparser = Compile_stream.cparser
 let cparser_match = Compile_stream.cparser_match
 let cstream = Compile_stream.cstream
-let exp = Fsyntax.exp
-let a_lident = Fsyntax.a_lident
-let pat = Fsyntax.pat
+let exp = Syntaxf.exp
+let a_lident = Syntaxf.a_lident
+let pat = Syntaxf.pat
 open FAst
 let parser_ipat = Fgram.mk "parser_ipat"
 let stream_exp_comp = Fgram.mk "stream_exp_comp"

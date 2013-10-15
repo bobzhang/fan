@@ -16,12 +16,12 @@ Gram_gen:
   mk_symbol
   token_of_simple_pat
   ;
-Fsyntax:
-  ctyp
+Syntaxf:
   a_lident
   exp
-  parse_exp
+  ctyp  
   ;
+
 Ast_gen:
   sem_of_list
   loc_of
@@ -67,7 +67,7 @@ open Util
   let type_entry :
       [ `Lid x  %{ (_loc,x,None,None)}
       | "("; `Lid x ;`Str y; ")" %{(_loc,x,Some y,None)}
-      | "(";`Lid x ;`Str y;ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
+      | "(";`Lid x ;`Str y; ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
       | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
       ]      
 
@@ -235,7 +235,7 @@ open Util
   let opt_action :
       [ `Quot x %{
         if x.name = Ftoken.empty_name then 
-          let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+          let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
           Ftoken.quot_expand expander x
         else
           Ast_quotation.expand x Dyn_tag.exp
@@ -291,7 +291,7 @@ open Util
 
   string:
   [ `Str  s  %exp{$str:s}
-  | `Ant ("", s) %{parse_exp _loc s}
+  | `Ant ("", s) %{Parsef.exp _loc s}
   ] (*suport antiquot for string*)
 
   simple_exp:

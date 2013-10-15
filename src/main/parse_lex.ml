@@ -34,7 +34,7 @@ let g =
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
   let case:
     [ regexp{r};  `Quot x  %{
-      let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+      let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
       let e = Ftoken.quot_expand expander x in (r,e)}]  
   declare_regexp:
   ["let";`Lid x ; "=";regexp{r} %{

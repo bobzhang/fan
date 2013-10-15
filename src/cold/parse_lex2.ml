@@ -60,19 +60,19 @@ let _ =
           `Stoken
             (((function | `Quot _ -> true | _ -> false)),
               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n",
+           ("let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  (r : 'regexp)  (_loc : Locf.t)
                     ->
                    match __fan_1 with
                    | `Quot x ->
                        (let expander loc _ s =
-                          Fgram.parse_string ~loc Fsyntax.exp s in
+                          Fgram.parse_string ~loc Syntaxf.exp s in
                         let e = Ftoken.quot_expand expander x in (r, e) : 
                        'case )
                    | _ ->
                        failwith
-                         "let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n"))))]));
+                         "let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n"))))]));
   Fgram.extend_single (declare_regexp : 'declare_regexp Fgram.t )
     (None,
       (None, None,

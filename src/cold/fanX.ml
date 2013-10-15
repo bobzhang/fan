@@ -12,7 +12,7 @@ let _ =
   Fdir.register
     ("eval",
       (fun loc  c  ->
-         let s = Fgram.parse_string ~loc Fsyntax.strus c in
+         let s = Fgram.parse_string ~loc Syntaxf.strus c in
          FEval.eval_ast Format.err_formatter s));
   Printexc.register_printer Mktop.normal_handler;
   PreCast.register_bin_printer ();

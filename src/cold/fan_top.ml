@@ -15,7 +15,7 @@ let _ =
     (Toploop.Directive_none (fun ()  -> normal ()));
   Hashtbl.replace Toploop.directive_table "pwd"
     (Toploop.Directive_none (fun ()  -> ignore @@ (Sys.command "pwd")));
-  Fsyntax.current_warning :=
+  Syntaxf.current_warning :=
     ((fun loc  txt  ->
         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt)));
   Ast_parsers.use_parsers ["revise"; "stream"]

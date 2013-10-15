@@ -13,10 +13,10 @@ let check_not_tok = Gram_gen.check_not_tok
 let mk_slist = Gram_gen.mk_slist
 let mk_symbol = Gram_gen.mk_symbol
 let token_of_simple_pat = Gram_gen.token_of_simple_pat
-let ctyp = Fsyntax.ctyp
-let a_lident = Fsyntax.a_lident
-let exp = Fsyntax.exp
-let parse_exp = Fsyntax.parse_exp
+let ctyp = Syntaxf.ctyp
+let a_lident = Syntaxf.a_lident
+let exp = Syntaxf.exp
+let parse_exp = Syntaxf.parse_exp
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
@@ -703,17 +703,17 @@ let _ =
         [([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nFtoken.quot_expand expander x\n",
+           ("let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\nFtoken.quot_expand expander x\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Quot x ->
                        (let expander loc _ s =
-                          Fgram.parse_string ~loc Fsyntax.exp s in
+                          Fgram.parse_string ~loc Syntaxf.exp s in
                         Ftoken.quot_expand expander x : 'opt_action )
                    | _ ->
                        failwith
-                         "let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\nFtoken.quot_expand expander x\n"))))]));
+                         "let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\nFtoken.quot_expand expander x\n"))))]));
   Fgram.extend_single (pattern : 'pattern Fgram.t )
     (None,
       (None, None,

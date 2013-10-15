@@ -12,10 +12,9 @@ let check_not_tok = Gram_gen.check_not_tok
 let mk_slist = Gram_gen.mk_slist
 let mk_symbol = Gram_gen.mk_symbol
 let token_of_simple_pat = Gram_gen.token_of_simple_pat
-let ctyp = Fsyntax.ctyp
-let a_lident = Fsyntax.a_lident
-let exp = Fsyntax.exp
-let parse_exp = Fsyntax.parse_exp
+let a_lident = Syntaxf.a_lident
+let exp = Syntaxf.exp
+let ctyp = Syntaxf.ctyp
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
@@ -663,7 +662,7 @@ let _ =
         [([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
+           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
@@ -671,12 +670,12 @@ let _ =
                        (if x.name = Ftoken.empty_name
                         then
                           let expander loc _ s =
-                            Fgram.parse_string ~loc Fsyntax.exp s in
+                            Fgram.parse_string ~loc Syntaxf.exp s in
                           Ftoken.quot_expand expander x
                         else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                    | _ ->
                        failwith
-                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
+                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
   Fgram.extend_single (pattern : 'pattern Fgram.t )
     (None,
       (None, None,
@@ -904,12 +903,12 @@ let _ =
             (((function | `Ant ("",_) -> true | _ -> false)),
               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
               "`Ant (\"\",_)")],
-          ("parse_exp _loc s\n",
+          ("Parsef.exp _loc s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Ant ("",s) -> (parse_exp _loc s : 'string )
-                  | _ -> failwith "parse_exp _loc s\n"))))]));
+                  | `Ant ("",s) -> (Parsef.exp _loc s : 'string )
+                  | _ -> failwith "Parsef.exp _loc s\n"))))]));
   Fgram.extend_single (simple_exp : 'simple_exp Fgram.t )
     (None,
       (None, None,

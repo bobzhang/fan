@@ -17,7 +17,7 @@ Gram_gen:
   mk_symbol
   token_of_simple_pat
   ;
-Fsyntax:
+Syntaxf:
   ctyp
   a_lident
   exp
@@ -244,7 +244,7 @@ open Util
     mk_rule ~prod ~action ]
   let opt_action :
       [ `Quot x ->
-        let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+        let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
         Ftoken.quot_expand expander x 
       ]
 

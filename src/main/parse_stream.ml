@@ -4,19 +4,17 @@ Compile_stream:
   cparser_match
   cstream
   ;
-Fsyntax:
+Syntaxf:
   exp
   a_lident
   pat
   ;
 }
+
 open FAst
-(* open! Fsyntax *)
-
-(* open Compile_stream *)
 
 
-%create{ Fgram
+%create{ 
   parser_ipat stream_exp_comp  stream_exp_comp_list
   stream_pat_comp stream_pat_comp_err 
   stream_pat_comp_err_list
@@ -66,9 +64,6 @@ let apply () =
     parser_case :
     [stream_pat{sp}; "->"; exp{e} %{   (sp, None, e)}
     ] 
-    (* stream_begin : *)
-    (* [ "[<"; OPT [ "!"; `Uid(n)->n]{name} -> name  ]    *)
-
     stream_pat :
     [ stream_pat_comp{spc} %{ [(spc, None)]}
     | stream_pat_comp{spc}; ";"; stream_pat_comp_err_list{sp} %{ (spc, None) :: sp}
