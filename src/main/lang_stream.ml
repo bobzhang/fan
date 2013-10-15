@@ -24,8 +24,8 @@ stream_exp stream_exp_comp stream_exp_comp_list
     |  %{  Compile_stream.empty _loc}
     ]
     stream_exp_comp : 
-    [  exp{e} %{ (Trm _loc e : Compile_stream.sexp_comp)}
-    | "'";exp{e} %{ Ntr _loc e}
+    [  exp{e} %{ (Trm(_loc, e) : Compile_stream.sexp_comp)}
+    | "'";exp{e} %{ Ntr_loc e}
     ]
 
     stream_exp_comp_list :

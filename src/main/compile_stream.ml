@@ -226,27 +226,23 @@ let rec parser_cases _loc (x:stream_cases) =
           stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel 
 
 (* it call [parser_cases] *)  
-let cparser _loc (* bpo *) pc =
+let cparser _loc  pc =
   let e = parser_cases _loc pc in
-  (* let e = *)
-  (*   match bpo with *)
-  (*   | Some bp -> %{ let $bp = $(uid:gm()).count $lid:strm_n in $e } *)
-  (*   | None -> e  in *)
   let p = %pat{ ($lid:strm_n : _ $(uid:gm()).t ) } in
   %{ fun $p -> $e } 
 
 (* mainly used in inline (fun __x -> y) e
    let __x = e in y
  *)    
-let cparser_match _loc me bpo pc =
-  let pc = parser_cases _loc pc in
-  let e =
-    match bpo with
-    | Some bp -> %{ let $bp = $(uid:gm()).count $lid:strm_n in $pc }
-    | None -> pc   in
-  match me with
-  | %{ $lid:x } when x = strm_n -> e
-  | _ -> %{ let ($lid:strm_n : _ $(uid:gm()).t ) = $me in $e } 
+(* let cparser_match _loc me bpo pc = *)
+(*   let pc = parser_cases _loc pc in *)
+(*   let e = *)
+(*     match bpo with *)
+(*     | Some bp -> %{ let $bp = $(uid:gm()).count $lid:strm_n in $pc } *)
+(*     | None -> pc   in *)
+(*   match me with *)
+(*   | %{ $lid:x } when x = strm_n -> e *)
+(*   | _ -> %{ let ($lid:strm_n : _ $(uid:gm()).t ) = $me in $e }  *)
 
 
 

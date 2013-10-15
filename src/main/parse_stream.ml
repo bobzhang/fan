@@ -19,7 +19,10 @@ open FAst
   stream_pat_comp_err_list
   stream_pat parser_case parser_case_list 
 }
-  
+
+(** Even though we did not using lexing convention to fully interleave foreign DDSL and 
+    hot lanuage, we can still make it a DDSL as long as we don't use [unsafe_extend]
+ *)  
 let apply () = 
   %extend{
     let  uid: [`Uid(n) %{n}]
@@ -80,8 +83,6 @@ let () =
   begin 
     Ast_parsers.register_parser
       ("stream", fill_parsers);
-    (** for stream expression *)
-
   end;;
 
 

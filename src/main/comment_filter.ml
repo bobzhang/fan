@@ -19,6 +19,12 @@ let filter (_, q) =
     |  x; 'xs ->
         (* debug comments "Found %a at %a@." Token.print x Locf.dump loc in *)
         %stream{x;'self xs}
+          (* %stream{ x; self xs ; 'y ; u}  *)
+          (* %stream{ %{x} *)
+          (*            %{self xs} *)
+          (*            '%{y} *)
+          (*            %{z} *)
+          (*            %{u} } *)
     |  -> %stream{}  in self
 
 
