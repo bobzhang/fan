@@ -1,17 +1,17 @@
 
 %%control{ default "exp-" ; }
-
-open FAstN
-open Astn_util
-open Util
-open Sig_util
-
 %import{
 Derive:
   gen_stru
   gen_object
   ;
-};;
+}
+open FAstN
+open Astn_util
+open Util
+open Sig_util
+
+
 
 (* +-----------------------------------------------------------------+
    | Eq generator                                                    |
@@ -39,10 +39,13 @@ let (gen_eq,gen_eqobj) =
      ~mk_variant:mk_variant
      ~arity:2 ~default: %exp-{false} ()) ;;
 
-let some f  = fun x -> Some (f x)  ;;
+let some f  = fun x -> Some (f x)  
 
-[ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ] |>
-List.iter Typehook.register;;
+let _ = begin 
+    List.iter Typehook.register
+    [ ("Eq",some gen_eq) ; ("OEq", some gen_eqobj ) ]
+
+end
 
 
 
@@ -68,13 +71,13 @@ let (gen_fold,gen_fold2) =
    gen_object ~kind:Fold ~mk_tuple ~mk_record
      ~base:"foldbase2" ~class_name:"fold2"
      ~mk_variant
-     ~arity:2 ~default: %exp-{invalid_arg "fold2 failure" } () ) ;;
+     ~arity:2 ~default: %exp-{invalid_arg "fold2 failure" } () )
 
-
-begin
-   [("Fold",some gen_fold);
-    ("Fold2",some gen_fold2);] |> List.iter Typehook.register;
-end;;
+let _ = 
+  begin
+    List.iter Typehook.register
+      [("Fold",some gen_fold); ("Fold2",some gen_fold2);]
+  end
 
 (* +-----------------------------------------------------------------+
    | Map generator                                                   |
@@ -139,7 +142,7 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | %ctyp-{FanUtil.anti_cxt} -> (** BOOTSTRAPING *)
+        | %ctyp-{FanUtil.anti_cxt} -> (** BOOTSTRAPING, associated with module [FanUtil] *)
              res
         | _ ->
             let pat0 = (x.ep0:>pat) in
@@ -158,7 +161,7 @@ let gen_strip =
   let mk_record _ = assert false in
   gen_stru ~id:(`Pre "strip_") ~mk_tuple ~mk_record ~mk_variant
     ~annot:(fun  x ->
-      (* BOOTSTRAPING *)
+      (* BOOTSTRAPING, associated with module [FAst], [FAstN] *)
       (%ctyp-{ FAst.$lid:x -> FAstN.$lid:x }, %ctyp-{FAstN.$lid:x}))
     
     ();;
@@ -461,7 +464,7 @@ Typehook.register
 
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
-    %stru-{  (** BOOTSTRAPING*)
+    %stru-{  (** BOOTSTRAPING, associated with module [Formatf] *)
     let $(lid:"dump_"^f)  = Formatf.to_string dump#$lid:f  } in
     sem
       %stru-{let dump = new print}
@@ -496,5 +499,5 @@ let generate (mtyps:mtyps) : stru option =
 Typehook.register ~filter:(fun _ -> true ) ("LocType", generate);;
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/pluginsN.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/plugins.cmo" *)
 (* end: *)

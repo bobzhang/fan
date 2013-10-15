@@ -32,7 +32,8 @@ type stream_case = (stream_pats * pat option * exp)
 type stream_cases = stream_case list
       
 (* default module name ["Stream"] for compatibility *)
-let grammar_module_name = ref "Fstream" (* BOOTSTRAPPING *)
+let grammar_module_name = ref "Fstream"
+(** BOOTSTRAPPING,  associated with module fstream*)
 
 let gm () = !grammar_module_name
     

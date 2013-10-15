@@ -32,10 +32,10 @@ include Prelude
 
 let efilter str e =
     let e = exp_filter e in let _loc = loc_of e in
-    %exp{($e : FAst.$lid:str)} (* BOOTSTRAPPING *)
+    %exp{($e : FAst.$lid:str)} (* BOOTSTRAPPING, assocaited with module [FAst] *)
 let pfilter str e =
   let p = pat_filter e in let _loc = loc_of p in
-  %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING *);;
+  %pat{($p : FAst.$lid:str)} (* BOOTSTRAPPING, associat with module [FAst] *);;
 
 
 let d = Ns.lang
@@ -208,11 +208,11 @@ let () = of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp ();;
 let efilter str e =
     let e = exp_filter_n e in
     let _loc = loc_of e in
-    %exp{($e : FAstN.$lid:str)} (* BOOTSTRAPPING *)
+    %exp{($e : FAstN.$lid:str)} (* BOOTSTRAPPING, associated with module [FAstN] *)
 let pfilter str e =
   let p = pat_filter_n e in
   let _loc = loc_of p in
-  %pat{($p : FAstN.$lid:str)};; (* BOOTSTRAPPING *)
+  %pat{($p : FAstN.$lid:str)};; (* BOOTSTRAPPING, associated with module [FAstN] *)
 
 
 begin

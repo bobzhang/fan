@@ -31,8 +31,8 @@ let gm () =
 let mk_entry ~local ~name ~pos ~levels =
   {Gram_def.name;pos;levels;local}
   
-let mk_level ~label ~assoc ~rules =
-  {Gram_def.label; assoc;rules}
+let mk_level ~label ~assoc ~rules  =
+  ({label; assoc;rules} : Gram_def.level)
   
 let mk_rule ~prod ~action =
   ({prod;action}:Gram_def.rule)
@@ -41,13 +41,13 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
   ({ text;styp;pattern}:Gram_def.symbol)
 
 
-let check_not_tok s = 
-    match (s:Gram_def.symbol) with
-    | {text = `Stok (_loc,  _, _) ;_} ->
-        Locf.raise _loc (Fstream.Error
-          ("Deprecated syntax, use a sub rule. "^
-           "L0 STRING becomes L0 [ x = STRING -> x ]"))
-    | _ -> () 
+let check_not_tok (s:Gram_def.symbol) = 
+  match s with 
+  | {text = `Stok (_loc,  _, _) ;_} ->
+      Locf.raise _loc (Fstream.Error
+                         ("Deprecated syntax, use a sub rule. "^
+                          "L0 STRING becomes L0 [ x = STRING -> x ]"))
+  | _ -> () 
       
 let new_type_var = 
   let i = ref 0 in fun () -> begin
@@ -94,7 +94,7 @@ let make_ctyp (styp:Gram_def.styp) tvar : ctyp =
           Locf.raise _loc
             (Fstream.Error ("S: illegal in anonymous entry level"))
         else %ctyp{ '$lid:tvar }
-    | `Tok _loc -> %ctyp{ [> Ftoken.t ] }  (* BOOTSTRAPPING*)
+    | `Tok _loc -> %ctyp{ [> Ftoken.t ] }  (** BOOTSTRAPPING, associated with module name Ftoken*)
     | `Type t -> t  in aux styp
 
       
@@ -167,13 +167,13 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
     let e1 = %{ ($act : '$lid:rtvar ) } in
       match tok_match_pl with
       | ([],_) ->
-          %{fun ($locid : Locf.t) -> $e1 } (* BOOTSTRAPING *)
+          %{fun ($locid : Locf.t) -> $e1 } (* BOOTSTRAPING, associated with module name [Locf] *)
       | (e,p) ->
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
           let action_string = Ast2pt.to_string_exp act in
-          %{fun ($locid : Locf.t) -> (* BOOTSTRAPING *)
+          %{fun ($locid : Locf.t) -> (* BOOTSTRAPING, associated with module name [Locf] *)
             match $exp with
             | $pat -> $e1
             | _ -> failwith $`str:action_string }  in
@@ -377,5 +377,5 @@ let token_of_simple_pat _loc (p:Gram_def.simple_pat)  =
         
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fGramGen.cmo " *)
+(* compile-command: "cd .. && pmake main_annot/gram_gen.cmo " *)
 (* end: *)

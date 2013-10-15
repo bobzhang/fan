@@ -173,7 +173,8 @@ let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
       let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
-      (* BOOTSTRAPPING *)
+      (** BOOTSTRAPPING
+          ad-hoc processing ast nodes with location expansion *)
       let rec subst_first_loc name (x : FAst.pat) : FAst.pat =
         match x with 
         | `App(loc, `Vrn (_,u), (`Par (_, `Com (_,_,rest)))) ->

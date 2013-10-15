@@ -58,7 +58,7 @@ open Util
   let ty:
   [ "("; qualid{x} ; ":"; t_qualid{t};")" -> `Dyn(x,t)
   |  qualuid{t} -> `Static t
-  | -> `Static (`Uid(_loc,"Fgram")) (** BOOTSTRAP*)]    
+  | -> `Static (`Uid(_loc,"Fgram")) (** BOOTSTRAP, associated with module [Fgram]*)]    
 
   nonterminals :
   [ ty {t}; L1 type_entry {ls} ->
