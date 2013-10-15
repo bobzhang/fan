@@ -18,8 +18,6 @@ let seq_sem = Ast_gen.seq_sem
 let tuple_com = Ast_gen.tuple_com
 open FAst
 open Util
-let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
-let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"
 let extend_header = Fgram.mk "extend_header"
 let qualuid: vid Fgram.t = Fgram.mk "qualuid"
 let qualid: vid Fgram.t = Fgram.mk "qualid"
@@ -43,66 +41,16 @@ let level_list = Fgram.mk "level_list"
 let entry: Gram_def.entry Fgram.t = Fgram.mk "entry"
 let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk "pattern"
 let extend_body = Fgram.mk "extend_body"
-let newterminals = Fgram.mk "newterminals"
 let unsafe_extend_body = Fgram.mk "unsafe_extend_body"
-let a_lident = Fgram.mk "a_lident"
 let _ =
   let grammar_entry_create x = Fgram.mk x in
-  let ty: 'ty Fgram.t = grammar_entry_create "ty"
-  and str: 'str Fgram.t = grammar_entry_create "str"
-  and type_entry: 'type_entry Fgram.t = grammar_entry_create "type_entry"
+  let str: 'str Fgram.t = grammar_entry_create "str"
   and psymbols: 'psymbols Fgram.t = grammar_entry_create "psymbols"
   and opt_action: 'opt_action Fgram.t = grammar_entry_create "opt_action"
   and brace_pattern: 'brace_pattern Fgram.t =
     grammar_entry_create "brace_pattern"
   and sep_symbol: 'sep_symbol Fgram.t = grammar_entry_create "sep_symbol"
   and level_str: 'level_str Fgram.t = grammar_entry_create "level_str" in
-  Fgram.extend_single (a_lident : 'a_lident Fgram.t )
-    (None,
-      (None, None,
-        [([`Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`App
-                  ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "lid"))))),
-                    `Any)), "`Ant (\"\"| \"lid\",_)")],
-           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Ant ((""|"lid" as n),s) ->
-                       (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
-                   | _ ->
-                       failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
-        ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-          ("`Lid (_loc, s)\n",
-            (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Lid s -> (`Lid (_loc, s) : 'a_lident )
-                  | _ -> failwith "`Lid (_loc, s)\n"))))]));
-  Fgram.extend_single (ty : 'ty Fgram.t )
-    (None,
-      (None, None,
-        [([`Skeyword "(";
-          `Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
-          `Skeyword ":";
-          `Snterm (Fgram.obj (t_qualid : 't_qualid Fgram.t ));
-          `Skeyword ")"],
-           ("`Dyn (x, t)\n",
-             (Fgram.mk_action
-                (fun _  (t : 't_qualid)  _  (x : 'qualid)  _  (_loc : Locf.t)
-                    -> (`Dyn (x, t) : 'ty )))));
-        ([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
-          ("`Static t\n",
-            (Fgram.mk_action
-               (fun (t : 'qualuid)  (_loc : Locf.t)  -> (`Static t : 'ty )))));
-        ([],
-          ("`Static (`Uid (_loc, \"Fgram\"))\n",
-            (Fgram.mk_action
-               (fun (_loc : Locf.t)  ->
-                  (`Static (`Uid (_loc, "Fgram")) : 'ty )))))]));
   Fgram.extend_single (str : 'str Fgram.t )
     (None,
       (None, None,
@@ -115,228 +63,6 @@ let _ =
                    match __fan_0 with
                    | `Str y -> (y : 'str )
                    | _ -> failwith "y\n"))))]));
-  Fgram.extend_single (type_entry : 'type_entry Fgram.t )
-    (None,
-      (None, None,
-        [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-           ("(_loc, x, None, None)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Lid x -> ((_loc, x, None, None) : 'type_entry )
-                   | _ -> failwith "(_loc, x, None, None)\n"))));
-        ([`Skeyword "(";
-         `Stoken
-           (((function | `Lid _ -> true | _ -> false)),
-             (`App ((`Vrn "Lid"), `Any)), "`Lid _");
-         `Stoken
-           (((function | `Str _ -> true | _ -> false)),
-             (`App ((`Vrn "Str"), `Any)), "`Str _");
-         `Skeyword ")"],
-          ("(_loc, x, (Some y), None)\n",
-            (Fgram.mk_action
-               (fun _  (__fan_2 : [> Ftoken.t])  (__fan_1 : [> Ftoken.t])  _ 
-                  (_loc : Locf.t)  ->
-                  match (__fan_2, __fan_1) with
-                  | (`Str y,`Lid x) ->
-                      ((_loc, x, (Some y), None) : 'type_entry )
-                  | _ -> failwith "(_loc, x, (Some y), None)\n"))));
-        ([`Skeyword "(";
-         `Stoken
-           (((function | `Lid _ -> true | _ -> false)),
-             (`App ((`Vrn "Lid"), `Any)), "`Lid _");
-         `Stoken
-           (((function | `Str _ -> true | _ -> false)),
-             (`App ((`Vrn "Str"), `Any)), "`Str _");
-         `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
-         `Skeyword ")"],
-          ("(_loc, x, (Some y), (Some t))\n",
-            (Fgram.mk_action
-               (fun _  (t : 'Syntaxf__ctyp)  (__fan_2 : [> Ftoken.t]) 
-                  (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
-                  match (__fan_2, __fan_1) with
-                  | (`Str y,`Lid x) ->
-                      ((_loc, x, (Some y), (Some t)) : 'type_entry )
-                  | _ -> failwith "(_loc, x, (Some y), (Some t))\n"))));
-        ([`Skeyword "(";
-         `Stoken
-           (((function | `Lid _ -> true | _ -> false)),
-             (`App ((`Vrn "Lid"), `Any)), "`Lid _");
-         `Skeyword ":";
-         `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
-         `Sopt (`Snterm (Fgram.obj (str : 'str Fgram.t )));
-         `Skeyword ")"],
-          ("(_loc, x, y, (Some t))\n",
-            (Fgram.mk_action
-               (fun _  (y : 'str option)  (t : 'Syntaxf__ctyp)  _ 
-                  (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
-                  match __fan_1 with
-                  | `Lid x -> ((_loc, x, y, (Some t)) : 'type_entry )
-                  | _ -> failwith "(_loc, x, y, (Some t))\n"))))]));
-  Fgram.extend_single (nonterminals : 'nonterminals Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (ty : 'ty Fgram.t ));
-          `Slist1 (`Snterm (Fgram.obj (type_entry : 'type_entry Fgram.t )))],
-           ("let mk =\n  match t with\n  | `Static t ->\n      let t = (t : vid  :>exp) in\n      (`Field (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n",
-             (Fgram.mk_action
-                (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : Locf.t)  ->
-                   (let mk =
-                      match t with
-                      | `Static t ->
-                          let t = (t : vid  :>exp) in
-                          (`Field (_loc, t, (`Lid (_loc, "mk"))) : FAst.exp )
-                      | `Dyn (x,t) ->
-                          let x = (x : vid  :>exp) in
-                          (`App
-                             (_loc,
-                               (`Dot (_loc, t, (`Lid (_loc, "mk_dynamic")))),
-                               x) : FAst.exp ) in
-                    sem_of_list
-                      (List.map
-                         (fun (_loc,x,descr,ty)  ->
-                            match (descr, ty) with
-                            | (Some d,None ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`App (_loc, mk, (`Str (_loc, d))))))) : 
-                                FAst.stru )
-                            | (Some d,Some typ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`Constraint
-                                             (_loc,
-                                               (`App
-                                                  (_loc, mk,
-                                                    (`Str (_loc, d)))), typ))))) : 
-                                FAst.stru )
-                            | (None ,None ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`App (_loc, mk, (`Str (_loc, x))))))) : 
-                                FAst.stru )
-                            | (None ,Some typ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`Constraint
-                                             (_loc,
-                                               (`App
-                                                  (_loc, mk,
-                                                    (`Str (_loc, x)))), typ))))) : 
-                                FAst.stru )) ls) : 'nonterminals )))))]));
-  Fgram.extend_single (newterminals : 'newterminals Fgram.t )
-    (None,
-      (None, None,
-        [([`Skeyword "(";
-          `Snterm (Fgram.obj (qualid : 'qualid Fgram.t ));
-          `Skeyword ":";
-          `Snterm (Fgram.obj (t_qualid : 't_qualid Fgram.t ));
-          `Skeyword ")";
-          `Slist1 (`Snterm (Fgram.obj (type_entry : 'type_entry Fgram.t )))],
-           ("let mk =\n  let x = (x : vid  :>exp) in\n  (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : FAst.exp ) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n",
-             (Fgram.mk_action
-                (fun (ls : 'type_entry list)  _  (t : 't_qualid)  _ 
-                   (x : 'qualid)  _  (_loc : Locf.t)  ->
-                   (let mk =
-                      let x = (x : vid  :>exp) in
-                      (`App
-                         (_loc,
-                           (`Dot (_loc, t, (`Lid (_loc, "mk_dynamic")))), x) : 
-                        FAst.exp ) in
-                    sem_of_list
-                      ((`Value
-                          (_loc, (`Negative _loc),
-                            (`Bind
-                               (_loc, (x :>pat),
-                                 (`App
-                                    (_loc,
-                                      (`App
-                                         (_loc,
-                                           (`App
-                                              (_loc,
-                                                (`Dot
-                                                   (_loc, t,
-                                                     (`Lid
-                                                        (_loc,
-                                                          "create_lexer")))),
-                                                (`Label
-                                                   (_loc,
-                                                     (`Lid (_loc, "annot")),
-                                                     (`Str (_loc, "")))))),
-                                           (`Label
-                                              (_loc,
-                                                (`Lid (_loc, "keywords")),
-                                                (`Uid (_loc, "[]")))))),
-                                      (`Uid (_loc, "()"))))))) : FAst.stru )
-                      ::
-                      (List.map
-                         (fun (_loc,x,descr,ty)  ->
-                            match (descr, ty) with
-                            | (Some d,None ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`App (_loc, mk, (`Str (_loc, d))))))) : 
-                                FAst.stru )
-                            | (Some d,Some typ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`Constraint
-                                             (_loc,
-                                               (`App
-                                                  (_loc, mk,
-                                                    (`Str (_loc, d)))), typ))))) : 
-                                FAst.stru )
-                            | (None ,None ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`App (_loc, mk, (`Str (_loc, x))))))) : 
-                                FAst.stru )
-                            | (None ,Some typ) ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (`Lid (_loc, x)),
-                                          (`Constraint
-                                             (_loc,
-                                               (`App
-                                                  (_loc, mk,
-                                                    (`Str (_loc, x)))), typ))))) : 
-                                FAst.stru )) ls)) : 'newterminals )))))]));
-  Fgram.extend_single (nonterminalsclear : 'nonterminalsclear Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ));
-          `Slist1 (`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t )))],
-           ("(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           FAst.exp ))))\n  |> seq_sem\n",
-             (Fgram.mk_action
-                (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 
-                   ->
-                   ((ls |>
-                       (List.map
-                          (fun (x : alident)  ->
-                             let x = (x : alident  :>exp) in
-                             let _loc = loc_of x in
-                             (`App
-                                (_loc,
-                                  (`Dot (_loc, t, (`Lid (_loc, "clear")))),
-                                  x) : FAst.exp ))))
-                      |> seq_sem : 'nonterminalsclear )))))]));
   Fgram.extend_single (extend_header : 'extend_header Fgram.t )
     (None,
       (None, None,
@@ -935,7 +661,4 @@ let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();
   Ast_quotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body
-    ();
-  Ast_quotation.of_stru ~name:(d, "create") ~entry:nonterminals ();
-  Ast_quotation.of_stru ~name:(d, "new") ~entry:newterminals ();
-  Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()
+    ()

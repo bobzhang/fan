@@ -94,7 +94,9 @@ FAN_FILES = \
     parsef\
     lang_stream\
     gram_pat \
-    lex_gram
+    lex_gram \
+    lang_new \
+    lang_clear
     # parse_grammar2
     
 FAN_EXP_FILES = \
