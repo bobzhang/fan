@@ -1,4 +1,4 @@
-let simple_pat = Gram_def.simple_pat
+let simple_pat = Gram_pat.simple_pat
 let gm = Gram_gen.gm
 let grammar_module_name = Gram_gen.grammar_module_name
 let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
@@ -662,7 +662,7 @@ let _ =
         [([`Stoken
              (((function | `Quot _ -> true | _ -> false)),
                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
-           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
+           ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
@@ -670,12 +670,12 @@ let _ =
                        (if x.name = Ftoken.empty_name
                         then
                           let expander loc _ s =
-                            Fgram.parse_string ~loc Syntaxf.exp s in
+                            Fgram.parse_string ~loc exp s in
                           Ftoken.quot_expand expander x
                         else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                    | _ ->
                        failwith
-                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
+                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
   Fgram.extend_single (pattern : 'pattern Fgram.t )
     (None,
       (None, None,

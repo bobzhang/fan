@@ -92,7 +92,8 @@ FAN_FILES = \
     fan_ops state dyn_tag \
     syntaxf \
     parsef\
-    lang_stream
+    lang_stream\
+    gram_pat
     # parse_grammar2
     
 FAN_EXP_FILES = \
