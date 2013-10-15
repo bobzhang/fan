@@ -6,7 +6,6 @@ Gram_gen:
   gm
   grammar_module_name
   text_of_functorial_extend
-  exp_delete_rule
   mk_name
   mk_entry
   mk_level
@@ -37,7 +36,7 @@ open Util
 %create{Fgram (* FIXME can not ignore Fgram here*)
    (nonterminals: stru Fgram.t)
    (nonterminalsclear:  exp Fgram.t)
-   delete_rule_header
+
    extend_header
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
@@ -50,9 +49,10 @@ open Util
    extend_body
    newterminals
    unsafe_extend_body
-   delete_rule_body
+
    simple_exp
-   delete_rules } ;;
+
+      } ;;
 
 %extend{
   let ty:
@@ -144,21 +144,10 @@ open Util
     let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
     let () = grammar_module_name := old in
     res}      ]
-  (*for side effets, parser action *)
-  delete_rule_header:
-  [ qualuid{g} %{ let old = gm () in let () = grammar_module_name := g  in old}  ]
-
-  delete_rule_body:
-  [ delete_rule_header{old};  L1 delete_rules {es} %{
-    begin
-      grammar_module_name := old;
-      seq_sem es
-    end}]
-
-  delete_rules:
-  [ name{n} ;":"; "["; L1  psymbols SEP "|" {sls}; "]" %{ exp_delete_rule _loc n sls} ]
+      
   let psymbols:
   [ L0 psymbol SEP ";"{sl} %{sl}  ] 
+
   (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}

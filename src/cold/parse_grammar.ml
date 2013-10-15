@@ -2,7 +2,6 @@ let simple_pat = Gram_def.simple_pat
 let gm = Gram_gen.gm
 let grammar_module_name = Gram_gen.grammar_module_name
 let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
-let exp_delete_rule = Gram_gen.exp_delete_rule
 let mk_name = Gram_gen.mk_name
 let mk_entry = Gram_gen.mk_entry
 let mk_level = Gram_gen.mk_level
@@ -25,7 +24,6 @@ open FAst
 open Util
 let nonterminals: stru Fgram.t = Fgram.mk "nonterminals"
 let nonterminalsclear: exp Fgram.t = Fgram.mk "nonterminalsclear"
-let delete_rule_header = Fgram.mk "delete_rule_header"
 let extend_header = Fgram.mk "extend_header"
 let qualuid: vid Fgram.t = Fgram.mk "qualuid"
 let qualid: vid Fgram.t = Fgram.mk "qualid"
@@ -51,9 +49,7 @@ let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk "pattern"
 let extend_body = Fgram.mk "extend_body"
 let newterminals = Fgram.mk "newterminals"
 let unsafe_extend_body = Fgram.mk "unsafe_extend_body"
-let delete_rule_body = Fgram.mk "delete_rule_body"
 let simple_exp = Fgram.mk "simple_exp"
-let delete_rules = Fgram.mk "delete_rules"
 let _ =
   let grammar_entry_create x = Fgram.mk x in
   let ty: 'ty Fgram.t = grammar_entry_create "ty"
@@ -371,42 +367,6 @@ let _ =
                    (let res =
                       text_of_functorial_extend ~safe:false _loc gram el in
                     let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
-  Fgram.extend_single (delete_rule_header : 'delete_rule_header Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
-           ("let old = gm () in let () = grammar_module_name := g in old\n",
-             (Fgram.mk_action
-                (fun (g : 'qualuid)  (_loc : Locf.t)  ->
-                   (let old = gm () in
-                    let () = grammar_module_name := g in old : 'delete_rule_header )))))]));
-  Fgram.extend_single (delete_rule_body : 'delete_rule_body Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm
-             (Fgram.obj (delete_rule_header : 'delete_rule_header Fgram.t ));
-          `Slist1
-            (`Snterm (Fgram.obj (delete_rules : 'delete_rules Fgram.t )))],
-           ("grammar_module_name := old; seq_sem es\n",
-             (Fgram.mk_action
-                (fun (es : 'delete_rules list)  (old : 'delete_rule_header) 
-                   (_loc : Locf.t)  ->
-                   (grammar_module_name := old; seq_sem es : 'delete_rule_body )))))]));
-  Fgram.extend_single (delete_rules : 'delete_rules Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (name : 'name Fgram.t ));
-          `Skeyword ":";
-          `Skeyword "[";
-          `Slist1sep
-            ((`Snterm (Fgram.obj (psymbols : 'psymbols Fgram.t ))),
-              (`Skeyword "|"));
-          `Skeyword "]"],
-           ("exp_delete_rule _loc n sls\n",
-             (Fgram.mk_action
-                (fun _  (sls : 'psymbols list)  _  _  (n : 'name) 
-                   (_loc : Locf.t)  ->
-                   (exp_delete_rule _loc n sls : 'delete_rules )))))]));
   Fgram.extend_single (psymbols : 'psymbols Fgram.t )
     (None,
       (None, None,
