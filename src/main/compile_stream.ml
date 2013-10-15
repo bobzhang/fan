@@ -14,11 +14,11 @@ open Ast_gen
 
 
 type spat_comp =
-  | SpWhen of loc * pat * exp option  (* pat with predicate *)
+  | When of loc * pat * exp option  (* pat with predicate *)
 
-  | SpMatch of loc * pat * exp (* pat with pattern match *)
+  | Match of loc * pat * exp (* pat with pattern match *)
         
-  | SpStr of loc * pat  (* pat as stream *)
+  | Str of loc * pat  (* pat as stream *)
 
 
 (* [exp option] is for the error message *)
@@ -86,17 +86,17 @@ let rec handle_failure e =
 
 let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
   match (x:spat_comp) with 
-  | SpWhen (_loc, p, None) ->
+  | When (_loc, p, None) ->
       %{match $(peek_fun _loc) $lid:strm_n with
       | Some $p ->
           ($(junk_fun _loc) $lid:strm_n; $skont)
       | _ -> $ckont  }
-  | SpWhen (_loc, p, Some w) ->
+  | When (_loc, p, Some w) ->
       %{match $(peek_fun _loc) $lid:strm_n with
       | Some $p when $w ->
           ( $(junk_fun _loc) $lid:strm_n; $skont)
       | _ -> $ckont  }
-  | SpMatch (_loc, p, e) ->
+  | Match (_loc, p, e) ->
       (* Utilities for [Stream] optimizations  *)
       let rec pat_eq_exp p e =
         match (p, e) with
@@ -132,7 +132,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
               %{match (try Some $e with | $(uid:gm()).NotConsumed -> None)  with
               | Some $p -> $skont
               | _ -> $ckont  }
-  | SpStr (_loc, p) ->
+  | Str (_loc, p) ->
       (* the substitution does not change the semantics, it is only
          for optimization. Such Ast-level optimization may not be necessary
        *)
@@ -188,7 +188,7 @@ let rec stream_pattern _loc
 (* split the [stream_cases] *)
 let rec group_terms (xs:stream_cases) =
   match xs with
-  | ((SpWhen (_loc, p, w), None) :: spcl, epo, e) :: spel ->
+  | ((When (_loc, p, w), None) :: spcl, epo, e) :: spel ->
     let (tspel, spel) = group_terms spel in
     ((p, w, _loc, spcl, epo, e) :: tspel, spel)
   | spel -> ([], spel) 
@@ -258,8 +258,8 @@ let cparser_match _loc me bpo pc =
 (* Stream expression                                    *)
 (********************************************************)
 type sexp_comp =
-  | SeTrm of loc * exp
-  | SeNtr of loc * exp 
+  | Trm of loc * exp
+  | Ntr of loc * exp 
 
 (** Approximation algorithm to predicate whether x is a computing expression or not
  *)        
@@ -289,18 +289,18 @@ let slazy _loc e =
 let rec cstream gloc =  function
   | [] -> let _loc = gloc in
       %{ $(uid:gm()).sempty }
-  | [SeTrm (_loc, e)] ->
+  | [Trm (_loc, e)] ->
       if not_computing e
       then %{ $(uid:gm()).ising $e }
       else %{ $(uid:gm()).lsing $(slazy _loc e) }
-  | SeTrm (_loc, e) :: secl ->
+  | Trm (_loc, e) :: secl ->
       if not_computing e
       then %{ $(uid:gm()).icons $e $(cstream gloc secl) }
       else %{ $(uid:gm()).lcons $(slazy _loc e) $(cstream gloc secl) }
-  | [SeNtr (_loc, e)] ->
+  | [Ntr (_loc, e)] ->
       if not_computing e then e
       else %{ $(uid:gm()).slazy $(slazy _loc e) }
-  | SeNtr (_loc, e) :: secl ->
+  | Ntr (_loc, e) :: secl ->
       if not_computing e then %{ $(uid:gm()).iapp $e $(cstream gloc secl) }
       else %{ $(uid:gm()).lapp $(slazy _loc e) $(cstream gloc secl) } 
           

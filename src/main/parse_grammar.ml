@@ -55,34 +55,12 @@ open Util
       } ;;
 
 %extend{
-  let ty:
+
+  let ty :
   [ "("; qualid{x} ; ":"; t_qualid{t};")" %{ `Dyn(x,t)}
   |  qualuid{t} %{ `Static t}
   | %{ `Static (`Uid(_loc,"Fgram")) (** BOOTSTRAP, associated with module [Fgram]*)}
   ]    
-
-  nonterminals :
-  [ ty {t}; L1 type_entry {ls} %{
-    with stru
-    let mk =
-      match t with
-      |`Static t -> let t = (t : vid :> exp ) in %exp{ $t.mk }
-      |`Dyn(x,t) ->
-          let x = (x : vid :> exp) in
-          let t = (t : vid :> exp ) in 
-          %exp{$t.mk_dynamic $x }  in   
-    sem_of_list
-      ( List.map
-      (fun (_loc,x,descr,ty) ->
-        match (descr,ty) with
-        |(Some d,None) ->
-            %{ let $lid:x = $mk $str:d }
-        | (Some d,Some typ) ->
-            %{ let $lid:x : $typ = $mk $str:d }
-        |(None,None) ->
-            %{ let $lid:x = $mk $str:x  }
-        | (None,Some typ) ->
-            %{ let $lid:x : $typ = $mk $str:x  }  ) ls)} ]
 
   let str : [`Str y  %{y}]
       
@@ -91,8 +69,29 @@ open Util
       | "("; `Lid x ;`Str y; ")" %{(_loc,x,Some y,None)}
       | "(";`Lid x ;`Str y;ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
       | "("; `Lid x; ":"; ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
-      ]
+      ]      
 
+  (* used to create language [create] *)    
+  nonterminals : (* when [ty] is nullable, it should take care of the following *)
+  [ ty {t}; L1 type_entry {ls} %{
+    let mk =
+      match t with
+      |`Static t -> let t = (t : vid :> exp ) in %exp{ $t.mk }
+      |`Dyn(x,t) ->
+          let x = (x : vid :> exp) in
+          %exp{$id:t.mk_dynamic $x }  in   
+    sem_of_list
+      ( List.map
+      (fun (_loc,x,descr,ty) ->
+        match (descr,ty) with
+        |(Some d,None) ->
+            %stru{ let $lid:x = $mk $str:d }
+        | (Some d,Some typ) ->
+            %stru{ let $lid:x : $typ = $mk $str:d }
+        |(None,None) ->
+            %stru{ let $lid:x = $mk $str:x  }
+        | (None,Some typ) ->
+            %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)} ]
   newterminals :
   [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
     %{
@@ -100,7 +99,7 @@ open Util
         let x = (x : vid :> exp) in
         %exp{$id:t.mk_dynamic $x }  in
       sem_of_list (* FIXME improve *)
-        (%stru{ let $((x:>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
+        (%stru{ let $(x :>pat) = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
          ( List.map
             (fun (_loc,x,descr,ty) ->
               match (descr,ty) with
@@ -114,13 +113,16 @@ open Util
                   %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)) }]
   nonterminalsclear :
   [ qualuid{t}; L1 a_lident {ls} %{
-    let rest = List.map (fun (x:alident) ->
+    ls
+    |> List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 
       let _loc = loc_of x in
-      let t = (t:vid :> exp) in
-      %exp{ $t.clear $x }) ls in
-    seq_sem rest} ]
+      %exp{ $id:t.clear $x })
+    |> seq_sem} ]
 
+  (*****************************)
+  (* extend language           *)
+  (*****************************)      
   extend_header :
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" %{
     let old=gm() in 
@@ -137,8 +139,8 @@ open Util
     let res = text_of_functorial_extend _loc  gram  el in 
     let () = grammar_module_name := old in
     res}      ]
-  (* see [extend_body] *)
 
+  (* see [extend_body] *)
   unsafe_extend_body :
   [ extend_header{(gram,old)};   L1 entry {el} %{
     let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
@@ -150,7 +152,7 @@ open Util
 
   (* parse qualified [X.X] *)
   qualuid:
-  [ `Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
+  [ `Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
   | `Uid x %{ `Uid(_loc,x)}
   ] 
 
@@ -165,22 +167,23 @@ open Util
   ] 
 
   (* stands for the non-terminal  *)
-  name:
-      [ qualid{il} %{mk_name _loc il}] 
+  name: [ qualid{il} %{mk_name _loc il}] 
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
   [ qualid{il}; OPT  str {name} %{
-    (match name with
-    | Some x ->
-        let old = !Ast_quotation.default in
-        begin 
-          match Ast_quotation.resolve_name (`Sub [], x)
-          with
-          | None -> Locf.failf _loc "DDSL `%s' not resolved" x 
-          | Some x -> (Ast_quotation.default:= Some x; `name old)
-        end
-    | None -> `non, mk_name _loc il)}]
+    let x =
+      match name with
+      | Some x ->
+          let old = !Ast_quotation.default in
+          begin 
+            match Ast_quotation.resolve_name (`Sub [], x)
+            with
+            | None -> Locf.failf _loc "DDSL `%s' not resolved" x 
+            | Some x -> (Ast_quotation.default:= Some x; `name old)
+          end
+      | None -> `non in
+    (x,mk_name _loc il)}]
 
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
@@ -205,11 +208,10 @@ open Util
         | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end}  ]
   position :
-  [ `Uid ("First"|"Last" as x ) %{   %exp{ $vrn:x }}
-  | `Uid ("Before" | "After" | "Level" as x) ; string{n} %{%exp{ $vrn:x  $n }}
-  | `Uid x %{
-      failwithf
-        "%s is not the right position:(First|Last) or (Before|After|Level)" x}]
+  [ `Uid ("First"|"Last" as x )    %exp{ $vrn:x }
+  | `Uid ("Before" | "After" | "Level" as x) ; string{n} %exp{ $vrn:x  $n }
+  | `Uid x %{failwithf
+               "%s is not the right position:(First|Last) or (Before|After|Level)" x}]
 
   level_list :
   [ "{"; L1 level {ll}; "}" %{ `Group ll}
@@ -218,9 +220,6 @@ open Util
   level :
   [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} %{mk_level ~label ~assoc ~rules} ]
   (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
-
-
-
   assoc :
   [ `Uid ("LA"|"RA"|"NA" as x)  %exp{ $vrn:x }
   | `Uid x %{failwithf "%s is not a correct associativity:(LA|RA|NA)" x}  ]
@@ -228,8 +227,7 @@ open Util
       
   rule_list :
   [ "["; "]" %{ []}
-  | "["; L1 rule SEP "|"{rules}; "]" %{ retype_rule_list_without_patterns _loc rules}
-  ]
+  | "["; L1 rule SEP "|"{rules}; "]" %{ retype_rule_list_without_patterns _loc rules}]
 
   rule :
   [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{ mk_rule ~prod ~action} ]
@@ -241,13 +239,12 @@ open Util
           Ftoken.quot_expand expander x
         else
           Ast_quotation.expand x Dyn_tag.exp
-      }
-      ]
+      }]
 
 
   pattern :
-  [ `Lid i %{ %pat'{ $lid:i }}
-  | "_" %{ %pat'{ _ }}
+  [ `Lid i  %pat'{ $lid:i }
+  | "_"  %pat'{ _ }
   | "("; pattern{p}; ")" %{ p}
   | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")" %{ tuple_com (p1::ps)}
   ]
@@ -274,29 +271,27 @@ open Util
     mk_symbol ~text ~styp ~pattern:None}
   |`Uid "OPT"; S{s}  %{
     let () = check_not_tok s in
-    let styp = %ctyp'{  $(s.styp) option } in 
+    let styp = %ctyp'{$(s.styp) option } in 
     let text = `Sopt _loc s.text in
     mk_symbol  ~text ~styp ~pattern:None}
   |`Uid "TRY"; S{s} %{
-      let text = `Stry _loc s.text in
+      let text = `Stry (_loc, s.text) in
       mk_symbol  ~text ~styp:(s.styp) ~pattern:None}
   | `Uid "PEEK"; S{s} %{
-      let text = `Speek _loc s.text in
+      let text = `Speek(_loc, s.text) in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
   | `Uid "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  | simple_pat{p} %{
-      token_of_simple_pat _loc p }
-  | `Str s %{
-        mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
+  | simple_pat{p} %{token_of_simple_pat _loc p }
+  | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
   | name{n};  OPT level_str{lev} %{
         mk_symbol  ~text:(`Snterm _loc n lev)
-          ~styp:( %ctyp'{'$(lid:n.tvar)} ) ~pattern:None (* {' *)}
+          ~styp:( %ctyp'{'$(lid:n.tvar)} ) ~pattern:None }
   | "("; S{s}; ")" %{s} ]
 
   string:
-  [ `Str  s %{ %exp{$str:s}}
-  | `Ant ("", s) %{ parse_exp _loc s}
+  [ `Str  s  %exp{$str:s}
+  | `Ant ("", s) %{parse_exp _loc s}
   ] (*suport antiquot for string*)
 
   simple_exp:

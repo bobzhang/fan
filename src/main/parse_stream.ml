@@ -1,7 +1,19 @@
+%import{
+Compile_stream:
+  cparser
+  cparser_match
+  cstream
+  ;
+Fsyntax:
+  exp
+  a_lident
+  pat
+  ;
+}
 open FAst
-open! Fsyntax
+(* open! Fsyntax *)
 
-open Compile_stream
+(* open Compile_stream *)
 
 
 %create{ Fgram
@@ -64,10 +76,10 @@ let apply () =
 
 
     stream_pat_comp : (* FIXME here *)
-    [ pat{p}; "when"; exp{e}  %{  SpWhen (_loc, p, (Some e))}
-    | pat{p} %{ SpWhen (_loc, p, None)}
-    | pat{p}; "="; exp{e} %{ SpMatch (_loc, p, e)}
-    | "'"; pat{p} %{ SpStr (_loc, p)}
+    [ pat{p}; "when"; exp{e}  %{  When (_loc, p, (Some e))}
+    | pat{p} %{ When (_loc, p, None)}
+    | pat{p}; "="; exp{e} %{ Match (_loc, p, e)}
+    | "'"; pat{p} %{ Str (_loc, p)}
     ]
     stream_pat_comp_err :
     [ stream_pat_comp{spc};   "??"; exp{e} %{  (spc, Some e)}
@@ -81,8 +93,8 @@ let apply () =
     ]
 
     stream_exp_comp : 
-    [  exp{e} %{ SeTrm _loc e}
-    | "'";exp{e} %{ SeNtr _loc e}
+    [  exp{e} %{ (Trm _loc e : Compile_stream.sexp_comp)}
+    | "'";exp{e} %{ Ntr _loc e}
     ]
 
     stream_exp_comp_list :

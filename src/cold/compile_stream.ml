@@ -1,9 +1,9 @@
 open FAst
 open Ast_gen
 type spat_comp =  
-  | SpWhen of loc* pat* exp option
-  | SpMatch of loc* pat* exp
-  | SpStr of loc* pat 
+  | When of loc* pat* exp option
+  | Match of loc* pat* exp
+  | Str of loc* pat 
 type stream_pat = (spat_comp* exp option) 
 type stream_pats = stream_pat list 
 type stream_case = (stream_pats* pat option* exp) 
@@ -53,7 +53,7 @@ let rec handle_failure e =
   | _ -> false
 let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
   (match (x : spat_comp ) with
-   | SpWhen (_loc,p,None ) ->
+   | When (_loc,p,None ) ->
        (`Match
           (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
             (`Bar
@@ -68,7 +68,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                                    (_loc, (junk_fun _loc),
                                      (`Lid (_loc, strm_n)))), skont)))))),
                  (`Case (_loc, (`Any _loc), ckont))))) : FAst.exp )
-   | SpWhen (_loc,p,Some w) ->
+   | When (_loc,p,Some w) ->
        (`Match
           (_loc, (`App (_loc, (peek_fun _loc), (`Lid (_loc, strm_n)))),
             (`Bar
@@ -83,7 +83,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                                    (_loc, (junk_fun _loc),
                                      (`Lid (_loc, strm_n)))), skont)))))),
                  (`Case (_loc, (`Any _loc), ckont))))) : FAst.exp )
-   | SpMatch (_loc,p,e) ->
+   | Match (_loc,p,e) ->
        let rec pat_eq_exp p e =
          match (p, e) with
          | ((`Lid (_loc,a) : FAst.pat),(`Lid (_,b) : FAst.exp))
@@ -185,7 +185,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x : spat_comp) =
                             (_loc, (`App (_loc, (`Uid (_loc, "Some")), p)),
                               skont)), (`Case (_loc, (`Any _loc), ckont))))) : 
                FAst.exp )
-   | SpStr (_loc,p) ->
+   | Str (_loc,p) ->
        let rec subst (v : string) (e : exp) =
          let _loc = loc_of e in
          match e with
@@ -257,7 +257,7 @@ let rec stream_pattern _loc (x,epo,e) (ekont : exp option -> exp) =
       let ckont = ekont err in stream_pattern_component skont ckont spc
 let rec group_terms (xs : stream_cases) =
   match xs with
-  | ((SpWhen (_loc,p,w),None )::spcl,epo,e)::spel ->
+  | ((When (_loc,p,w),None )::spcl,epo,e)::spel ->
       let (tspel,spel) = group_terms spel in
       (((p, w, _loc, spcl, epo, e) :: tspel), spel)
   | spel -> ([], spel)
@@ -361,8 +361,8 @@ let cparser_match _loc me bpo pc =
                                (`Lid (_loc, "t")))), (`Any _loc))))), me)),
            e) : FAst.exp )
 type sexp_comp =  
-  | SeTrm of loc* exp
-  | SeNtr of loc* exp 
+  | Trm of loc* exp
+  | Ntr of loc* exp 
 let not_computing x =
   let rec aux x =
     match x with
@@ -392,7 +392,7 @@ let rec cstream gloc =
       let _loc = gloc in
       (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "sempty"))) : 
         FAst.exp )
-  | (SeTrm (_loc,e))::[] ->
+  | (Trm (_loc,e))::[] ->
       if not_computing e
       then
         (`App
@@ -404,7 +404,7 @@ let rec cstream gloc =
            (_loc,
              (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "lsing")))),
              (slazy _loc e)) : FAst.exp )
-  | (SeTrm (_loc,e))::secl ->
+  | (Trm (_loc,e))::secl ->
       if not_computing e
       then
         (`App
@@ -422,7 +422,7 @@ let rec cstream gloc =
                   (`Dot
                      (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "lcons")))),
                   (slazy _loc e))), (cstream gloc secl)) : FAst.exp )
-  | (SeNtr (_loc,e))::[] ->
+  | (Ntr (_loc,e))::[] ->
       if not_computing e
       then e
       else
@@ -430,7 +430,7 @@ let rec cstream gloc =
            (_loc,
              (`Dot (_loc, (`Uid (_loc, (gm ()))), (`Lid (_loc, "slazy")))),
              (slazy _loc e)) : FAst.exp )
-  | (SeNtr (_loc,e))::secl ->
+  | (Ntr (_loc,e))::secl ->
       if not_computing e
       then
         (`App
