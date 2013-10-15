@@ -36,6 +36,8 @@ Format:
   ;
 };;
 
+
+
 (** put elements from stream to string with offset 0 and [max] elements *)  
 let lexing_store s buff max =
    let  self n s =
@@ -281,9 +283,8 @@ let rec  lex_antiquot c  = %lex{
       c.buffer +> '"';
       lex_antiquot  c lexbuf
     end}
-  | eof  %{
-    err Unterminated_antiquot
-    @@  Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
+  | eof  %{err Unterminated_antiquot @@
+           Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
   | "'" ocaml_char "'" %{ with_store  c lexbuf lex_antiquot} (* $( ')' ) *)
   | _  %{  with_store c lexbuf lex_antiquot}}
 

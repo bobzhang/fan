@@ -209,9 +209,10 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
                (`Ant(name,x), old -- lexbuf.lex_curr_p)
              end}
          | lident as x  %{ (`Ant("",x), !!lexbuf)}  (* $lid *)
-         | '(' ('`'? (identchar*|['.' '!']+) as name) ':' (* $(lid:ghohgosho)  )*) %{
-             (* the first char is faked '(' to match the last ')', so we mvoe
-                backwards one character *)
+         | '(' ('`'? (identchar*|['.' '!']+) as name) ':' %{
+            (* $(lid:ghohgosho)  )
+               the first char is faked '(' to match the last ')', so we mvoe
+               backwards one character *)
              let old = Locf.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
              begin
                c.buffer +> '(';

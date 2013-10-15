@@ -89,9 +89,11 @@ FAN_FILES = \
     plugins prelude stdFan typehook\
     parse_lex \
     lang_fans lang_include lang_save \
-    fan_ops state dyn_tag
+    fan_ops state dyn_tag parse_grammar2
 FAN_EXP_FILES = \
+    # parse_grammar2
     # parse_lex2 fan_lex2
+    
 # driver files also need to be synced up with 
 DRIVER_FILES = fan fan_top
 ##################################################################

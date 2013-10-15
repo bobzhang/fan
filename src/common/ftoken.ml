@@ -33,6 +33,14 @@ type quot = {
     retract:int; 
   }
 
+type ant  = {
+    meta : string option;
+    shift : int ;
+    retract : int;
+    loc : Locf.t;
+    content : string;
+  }
+      
 let pp_print_quot : Format.formatter -> quot -> unit =
   fun fmt {name;meta;shift;content;loc;retract}  ->
     Format.fprintf fmt "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
