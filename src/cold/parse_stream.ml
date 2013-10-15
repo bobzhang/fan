@@ -1,5 +1,4 @@
 let cparser = Compile_stream.cparser
-let cparser_match = Compile_stream.cparser_match
 let cstream = Compile_stream.cstream
 let exp = Syntaxf.exp
 let a_lident = Syntaxf.a_lident
@@ -45,24 +44,7 @@ let apply () =
                     | Some o ->
                         Ref.protect Compile_stream.grammar_module_name o
                           (fun _  -> cparser _loc po pcl)
-                    | None  -> cparser _loc po pcl : 'exp )))));
-        ([`Skeyword "match";
-         `Sself;
-         `Skeyword "with";
-         `Skeyword "parser";
-         `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
-         `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
-         `Snterm (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-          ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser_match _loc e po pcl)\n| None  -> cparser_match _loc e po pcl\n",
-            (Fgram.mk_action
-               (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
-                  (name : 'uid option)  _  _  (e : 'exp)  _  (_loc : Locf.t) 
-                  ->
-                  (match name with
-                   | Some o ->
-                       Ref.protect Compile_stream.grammar_module_name o
-                         (fun _  -> cparser_match _loc e po pcl)
-                   | None  -> cparser_match _loc e po pcl : 'exp )))))]));
+                    | None  -> cparser _loc po pcl : 'exp )))))]));
   Fgram.extend_single (stream_exp : 'stream_exp Fgram.t )
     (None,
       (None, None,

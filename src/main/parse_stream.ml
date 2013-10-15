@@ -1,7 +1,6 @@
 %import{
 Compile_stream:
   cparser
-  cparser_match
   cstream
   ;
 Syntaxf:
@@ -25,21 +24,12 @@ let apply () =
   %extend{
     let  uid: [`Uid(n) %{n}]
     exp : Level "top"
-        [ "parser";  OPT uid  {name}
-            ; OPT parser_ipat{po}
-            ; parser_case_list{pcl} %{
+        [ "parser";  OPT uid  {name} ; OPT parser_ipat{po} ; parser_case_list{pcl} %{
           match name with
           | Some o ->
               Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc po pcl)
           | None -> cparser _loc po pcl}
-        | "match"; S{e}; "with"; "parser";  OPT uid {name}; OPT parser_ipat{po};
-          parser_case_list{pcl}
-          %{
-          match name with
-          | Some o ->
-              Ref.protect Compile_stream.grammar_module_name o
-                (fun _ -> cparser_match _loc e po pcl)
-          | None -> cparser_match _loc e po pcl} ]
+        ]
 
     stream_exp :
     ["!"; `Uid(n) %{
