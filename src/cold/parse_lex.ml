@@ -280,8 +280,8 @@ let _ =
             (Fgram.mk_action
                (fun (cc2 : 'char_class1)  (cc1 : 'char_class1) 
                   (_loc : Locf.t)  -> (Fcset.union cc1 cc2 : 'char_class1 )))))]))
-let d = `Absolute ["Fan"; "Lang"]
 let () =
+  let d = Ns.lang in
   Ast_quotation.of_exp ~lexer:Lex_lex.from_stream ~name:(d, "lex") ~entry:lex
     ();
   Ast_quotation.of_stru ~lexer:Lex_lex.from_stream ~name:(d, "regex")

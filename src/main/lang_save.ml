@@ -11,7 +11,7 @@ Ast_gen:
 %create{save_quot};;
 
     
-%extend2{save_quot:
+%extend{save_quot:
   [L1 lid {ls} ; "->"; Fsyntax.exp{b} %{
     let symbs = List.map (fun x -> State.gensym x) ls in
     let res = State.gensym "res" in

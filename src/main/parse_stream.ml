@@ -12,7 +12,7 @@ open Compile_stream
 }
   
 let apply () = 
-  %extend2{
+  %extend{
     let  uid: [`Uid(n) %{n}]
     exp : Level "top"
         [ "parser";  OPT uid  {name}

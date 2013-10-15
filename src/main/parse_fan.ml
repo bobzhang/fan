@@ -46,7 +46,7 @@ let apply () = begin
   end;
 
   (* with mexp *)
-  %extend2{
+  %extend{
       mexp_quot:
       [ mexp{x} %{ x}]
       mbind0:
@@ -73,7 +73,7 @@ let apply () = begin
             %{ `PackageModule (_loc, `Constraint (_loc, e, `Package (_loc, p)))}] } };
 
   with mbind
-      %extend2{
+      %extend{
         mbind_quot:
         [ S{b1}; "and"; S{b2} %{  `And(_loc,b1,b2)}
         | `Ant (("mbind"|"" as n),s) %{mk_anti _loc ~c:"mbind" n s}
@@ -90,7 +90,7 @@ let apply () = begin
         | `Quot x %{Ast_quotation.expand  x Dyn_tag.mbind}
         | a_uident{m}; ":"; mtyp{mt} %{`Constraint(_loc,m,mt)} ] };
   (* with constr *)
-     %extend2{
+     %extend{
         constr_quot:
         [ constr{x} %{x}   ]
         constr: 
@@ -110,7 +110,7 @@ let apply () = begin
 
 
 
-    %extend2{
+    %extend{
       sigis:
       [ `Ant ((""|"sigi" as n),s) %{ mk_anti _loc  n ~c:"sigi" s}
 
@@ -155,7 +155,7 @@ let apply () = begin
       [ mtyp{x} %{ x}  ]  };
 
   with sigi
-  %extend2{
+  %extend{
     sigi_quot:
     [ "#"; a_lident{s} %{ `DirectiveSimple(_loc,s)}
     | "#"; a_lident{s}; exp{dp} %{ `Directive(_loc,s,dp)}
@@ -188,7 +188,7 @@ let apply () = begin
     | `EOI %{ ([], None)} ]  };
 
     with exp
-    %extend2{
+    %extend{
       exp_quot:
       [ exp{e1}; ","; comma_exp{e2} %{ `Com(_loc,e1,e2)}
       | exp{e1}; ";"; sem_exp{e2} %{ `Sem(_loc,e1,e2)}
@@ -440,10 +440,10 @@ let apply () = begin
        [ S{e1}; ","; S{e2}  %{`Com(_loc,e1,e2)}
        | exp {e} %{e} ]
       };
-  %extend2{ with_exp_lang: [ lang{old}; ":"; exp{x} %{ (Ast_quotation.default := old; x)}] } ;
-  %extend2{ with_stru_lang: [lang{old};":"; stru{x} %{ (Ast_quotation.default:=old;x)}]  };
+  %extend{ with_exp_lang: [ lang{old}; ":"; exp{x} %{ (Ast_quotation.default := old; x)}] } ;
+  %extend{ with_stru_lang: [lang{old};":"; stru{x} %{ (Ast_quotation.default:=old;x)}]  };
   with bind
-      %extend2{
+      %extend{
         bind_quot:
         [ bind{x}  %{x}  ] 
         bind:
@@ -457,7 +457,7 @@ let apply () = begin
         [ pat{p}; fun_bind{e} %{ `Bind (_loc, p, e)} ] };
 
   with case
-    %extend2{
+    %extend{
       case:
       [ "|"; L1 case0 SEP "|"{l} %{ bar_of_list l }
       | pat{p}; "->"; exp{e} %{ `Case(_loc,p,e)}]
@@ -475,7 +475,7 @@ let apply () = begin
       case_quot:
       [ L1 case0 SEP "|"{x} %{ bar_of_list x}]  };
   with rec_exp
-      %extend2{
+      %extend{
         rec_exp_quot:
         [ label_exp_list{x} %{x}  ]
         label_exp:
@@ -495,7 +495,7 @@ let apply () = begin
         | field_exp{b1}; ";"        %{ b1}
         | field_exp{b1}             %{ b1}  ] };
   with pat
-    %extend2{
+    %extend{
        pat_quot:
        [ pat{x}; ","; comma_pat{y} %{ `Com(_loc,x,y)}
        | pat{x}; ";"; sem_pat{y} %{ `Sem(_loc,x,y)}
@@ -688,7 +688,7 @@ let apply () = begin
        ] };
     
     with ident
-    %extend2{
+    %extend{
       (* parse [a] [B], depreacated  *)
       luident: [`Lid i %{ i} | `Uid i %{ i}]
       (* parse [a] [B] *)
@@ -861,7 +861,7 @@ let apply () = begin
       pat_eoi:  [ pat{x}; `EOI  %{x} ] 
       exp_eoi:  [ exp{x}; `EOI %{x} ]  };
   with stru
-    %extend2{
+    %extend{
     (** ml file  entrance *)    
       implem:
       [
@@ -938,7 +938,7 @@ let apply () = begin
         ] }   };
 
   with clsigi
-    %extend2{
+    %extend{
       clsigi_quot:
       [ clsigi{x1}; ";"; S{x2} %{ `Sem(_loc,x1,x2)}
       | clsigi{x}  %{x}]
@@ -968,7 +968,7 @@ let apply () = begin
           %{ method $private:pf $l : $t }}
       | "constraint"; ctyp{t1}; "="; ctyp{t2} %{ %{constraint $t1 = $t2}} ] };  
   with clfield
-    %extend2{
+    %extend{
       class_structure:
        [ `Ant ((""|"cst" as n),s) %{ mk_anti _loc ~c:"clfield" n s}
        | `Ant ((""|"cst" as n),s); ";" %{ mk_anti _loc ~c:"clfield" n s}
@@ -1018,7 +1018,7 @@ let apply () = begin
     };
     
   with clexp
-    %extend2{
+    %extend{
       clexp_quot:
       [ clexp{x} %{ x}]
       class_declaration:
@@ -1060,7 +1060,7 @@ let apply () = begin
           | "("; S{ce}; ":"; cltyp{ct}; ")" %{ `Constraint(_loc,ce,ct)}
           | "("; S{ce}; ")" %{ce} ] } };
   with cltyp
-    %extend2{
+    %extend{
       class_description:
       [ S{cd1}; "and"; S{cd2} %{ `And(_loc,cd1,cd2)}
       | `Ant ((""|"typ" as n),s) %{ mk_anti _loc ~c:"cltyp" n s}
@@ -1098,7 +1098,7 @@ end;;
 
 let apply_ctyp () = begin
   with ctyp
-    %extend2{
+    %extend{
       ctyp_quot:
       [ctyp{x}; "*"; star_ctyp{y} %{ `Sta (_loc, x, y)}
       |ctyp{x} %{x} ]

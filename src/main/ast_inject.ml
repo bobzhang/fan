@@ -20,9 +20,9 @@ let register_inject_clfield (k,f) =
 ;;
 
 
-%create2{inject_exp inject_stru inject_clfield};;
+%create{inject_exp inject_stru inject_clfield};;
   
-%extend2{
+%extend{
   inject_exp:
   [`Lid x %{
    try Hashtbl.find inject_exp_tbl x 

@@ -54,7 +54,7 @@ open Util
    simple_exp
    delete_rules } ;;
 
-%extend2{
+%extend{
   let ty:
   [ "("; qualid{x} ; ":"; t_qualid{t};")" %{ `Dyn(x,t)}
   |  qualuid{t} %{ `Static t}
@@ -182,7 +182,7 @@ open Util
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
   [ qualid{il}; OPT  str {name} %{
-    match name with
+    (match name with
     | Some x ->
         let old = !Ast_quotation.default in
         begin 
@@ -191,7 +191,7 @@ open Util
           | None -> Locf.failf _loc "DDSL `%s' not resolved" x 
           | Some x -> (Ast_quotation.default:= Some x; `name old)
         end
-    | None -> `non, mk_name _loc il}]
+    | None -> `non, mk_name _loc il)}]
 
   entry:
   [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
@@ -228,7 +228,7 @@ open Util
 
   level :
   [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} %{mk_level ~label ~assoc ~rules} ]
-  (* FIXME a conflict %extend2{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
+  (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
 
 
 
@@ -244,7 +244,13 @@ open Util
 
   rule :
   [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{ mk_rule ~prod ~action} ]
-  let opt_action : ["->"; exp{act} %{act}]
+
+  let opt_action :
+      [ `Quot x %{
+        let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+        Ftoken.quot_expand expander x }
+      ]
+
 
   pattern :
   [ `Lid i %{ %pat'{ $lid:i }}

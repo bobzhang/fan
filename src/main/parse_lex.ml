@@ -26,7 +26,7 @@ let g =
    since we do unsafe_extend on top of Fgram...
  *)
 
-%extend2{(g:Fgram.t)  (* FIXME location wrong *)
+%extend{(g:Fgram.t)  (* FIXME location wrong *)
     lex:
     [  "|" ; L0 case SEP "|" {l} %{
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}

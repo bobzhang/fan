@@ -130,7 +130,7 @@ open Fsyntax;;
 
 %create{ Fgram (simple_pat : simple_pat Fgram.t) };;
 
-%extend2{
+%extend{
   simple_pat "pat'":
   ["`"; luident{s}  %{  %{$vrn:s} }
 

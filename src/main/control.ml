@@ -2,7 +2,7 @@
 
 %new{(g:Fgram.t) item dot_namespace items };;
 
-%unsafe_extend2{ (* (g:Fgram.t) *)
+%unsafe_extend{ (* (g:Fgram.t) *)
   item:
   ["default"; `Str s %{ (* FIXME*)
     begin 

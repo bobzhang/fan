@@ -360,7 +360,7 @@ end
 
 %create{ p};;
 
-%extend2{
+%extend{
   p:
   [pat{p};"when"; exp{e} %{ %exp{ function | $pat:p when $e -> true |_ -> false } }
   |pat{p} %{ %exp'{ function | $pat:p -> true | _ -> false } } ] };;
@@ -372,7 +372,7 @@ let ()  =
 
 %create{import} ;;
 
-%extend2{
+%extend{
 let a:
   [`Uid m ; ":"; L1 name {ns} ; ";" %{
     Ast_gen.sem_of_list (* add antiquotation automatically ?? *)
