@@ -1,9 +1,9 @@
+let gen_stru = Derive.gen_stru
+let gen_object = Derive.gen_object
 open FAstN
 open Astn_util
 open Util
 open Sig_util
-let gen_stru = Derive.gen_stru
-let gen_object = Derive.gen_object
 let mk_variant _cons =
   (function
    | [] -> (`Lid "true" : FAstN.exp )
@@ -27,8 +27,8 @@ let (gen_eq,gen_eqobj) =
        ~default:(`Lid "false" : FAstN.exp ) ()))
 let some f x = Some (f x)
 let _ =
-  [("Eq", (some gen_eq)); ("OEq", (some gen_eqobj))] |>
-    (List.iter Typehook.register)
+  List.iter Typehook.register
+    [("Eq", (some gen_eq)); ("OEq", (some gen_eqobj))]
 let (gen_fold,gen_fold2) =
   let mk_variant _cons params =
     (params |> (List.map (fun (x : Ctyp.ty_info)  -> x.info_exp))) |>
@@ -50,8 +50,8 @@ let (gen_fold,gen_fold2) =
        ~default:(`App ((`Lid "invalid_arg"), (`Str "fold2 failure")) : 
        FAstN.exp ) ()))
 let _ =
-  [("Fold", (some gen_fold)); ("Fold2", (some gen_fold2))] |>
-    (List.iter Typehook.register)
+  List.iter Typehook.register
+    [("Fold", (some gen_fold)); ("Fold2", (some gen_fold2))]
 let (gen_map,gen_map2) =
   let mk_variant cons params =
     let result =

@@ -22,7 +22,7 @@ let () =
 open Util;;
 open Format;;
 let fmt = std_formatter
-let _loc = FLoc.ghost;;
+let _loc = Locf.ghost;;
 let (!!) = Sys.command;;
 
 let _ = begin
@@ -42,7 +42,7 @@ let tg_dp () =
 let pp =fprintf
 let f = std_formatter;;
 open Fan;;
-open FanTop;;
+open Fan_top;;
 open FanUtil;;
 open Gstructure;;
 

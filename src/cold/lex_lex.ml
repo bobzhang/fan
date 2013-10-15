@@ -16,7 +16,6 @@ let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
 let lexing_store = Lexing_util.lexing_store
 let with_store = Lexing_util.with_store
-let lex_simple_quotation = Lexing_util.lex_simple_quotation
 let (--) = Location_util.( -- ) 
 let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
   fun (lexbuf : Lexing.lexbuf)  ->

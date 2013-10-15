@@ -45,7 +45,6 @@ Lexing_util:
   store
   lexing_store
   with_store
-  lex_simple_quotation
   ;
 Location_util:
    (--)

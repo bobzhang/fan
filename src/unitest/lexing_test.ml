@@ -51,96 +51,101 @@ let test_quotation _ =
   (`Quot
    {Ftoken.name = (`Sub [], "lexer");
     loc =
-     {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+     {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
       loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
         pos_cnum = 14};
       loc_ghost = false};
     meta = None; shift = 7; content = "%lexer{abcdef}"; retract = 1},
- {FLoc.loc_start =
-   {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+ {Locf.loc_start =
+   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
   loc_end =
-   {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 14};
+   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 14};
   loc_ghost = false})
 
 
 
 let test_ant _ =
-  Ref.protect FConfig.antiquotations true @@ fun _ ->
+  Ref.protect Configf.antiquotations true @@ fun _ ->
     Flex_lib.list_of_string ~verbose:false "$aa:a"
       ===
     [(`Ant ("aa", "a"),
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
        loc_ghost = false});
      (`EOI,
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
        loc_ghost = false})]
 
 let test_ant_quot _ =       
-  Ref.protect FConfig.antiquotations true @@ fun _ ->
+  Ref.protect Configf.antiquotations true @@ fun _ ->
     Flex_lib.list_of_string ~verbose:false "$(lid:{|)|})"
       ===
     [(`Ant ("lid", "({|)|})"),
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
        loc_ghost = false});
      (`EOI,
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 13};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 13};
        loc_ghost = false})]
 
 let test_ant_paren _ =       
-  Ref.protect FConfig.antiquotations true @@ fun _ ->
+  Ref.protect Configf.antiquotations true @@ fun _ ->
     Flex_lib.list_of_string ~verbose:false "$((l:>FAst.pat))"
       ===
     [(`Ant ("", "((l:>FAst.pat))"),
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
        loc_ghost = false});
      (`EOI,
-      {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+      {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
        loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
        loc_ghost = false})]
 
 let test_ant_str _ =
-  Ref.protect FConfig.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(")")}
+  Ref.protect Configf.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(")")}
       ===
     [`Ant ("", "(\")\")"); `EOI]
 
 let test_ant_chr _ = 
-  Ref.protect FConfig.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(')')}
+  Ref.protect Configf.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(')')}
       ===
     [`Ant("","(')')"); `EOI ]
 
+let test_nested_lex _ =
+  %str{%extend{%ctyp'{'$(lid:n.tvar)}}}
+    ===
+      "%extend{%ctyp'{'$(lid:n.tvar)}}"
+    
 let test_comment_pos _ =
   Flex_lib.list_of_string ~verbose:false "(*    (**) *)"
     ===
   [(`Comment "(*    (**) *)",
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
    loc_ghost = false});
    (`EOI,
-    {FLoc.loc_start =
-     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
+    {Locf.loc_start =
+     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
      loc_end =
-     {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 14};
+     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 14};
      loc_ghost = false})]
 
 let test_lex_simple_quot _ =
@@ -149,10 +154,10 @@ let test_lex_simple_quot _ =
   `Quot {
          Ftoken.name = (`Sub [], "");
          loc =
-         {FLoc.loc_start =
-          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+         {Locf.loc_start =
+          {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
           loc_end =
-          {FLoc.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 32};
+          {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 32};
           loc_ghost = false};
          meta = None; shift = 2; content = "%{ (** gshoghso *) bhgo \"ghos\" }";
          retract = 1}
@@ -161,34 +166,34 @@ let test_symb _ =
   Flex_lib.list_of_string ~verbose:false "(%***{)"
     ===
   [(`Sym "(",
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
    loc_ghost = false});
  (`Sym "%***",
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
    loc_ghost = false});
  (`Sym "{",
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
    loc_ghost = false});
  (`Sym ")",
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
    loc_ghost = false});
  (`EOI,
-  {FLoc.loc_start =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
+  {Locf.loc_start =
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
    loc_end =
-    {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
+    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
    loc_ghost = false})]
 
 
@@ -228,10 +233,10 @@ let test_single_quot _ =
   [`Quot
    {Ftoken.name = (`Sub [], "");
     loc =
-     {FLoc.loc_start =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+     {Locf.loc_start =
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
       loc_end =
-       {FLoc.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 8};
+       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 8};
       loc_ghost = false};
     meta = None; shift = 2; content = "%{'$(a)}"; retract = 1};
  `EOI]
@@ -239,6 +244,7 @@ let test_single_quot _ =
 let suite =
   "Lexing_test" >:::
   [
+   "test_nested_lex"   >:: test_nested_lex;
    "test_symb_percent" >:: test_symb_percent;
    "test_symb_percent1" >:: test_symb_percent1;
    "test_symb_percent2" >:: test_symb_percent2;
@@ -261,7 +267,7 @@ let suite =
    
    "test_char" >:: test_char;
    "test_ant" >:: test_ant;
-   "test_ant_quot" >:: test_ant_quot;
+   (* "test_ant_quot" >:: test_ant_quot; *)
    "test_ant_paren" >:: test_ant_paren;
    "test_ant_str" >:: test_ant_str;
    "test_lex_simple_quot" >:: test_lex_simple_quot;

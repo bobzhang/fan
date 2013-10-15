@@ -8,7 +8,7 @@ OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file
 ### shared with cold
 OCAMLINCLUDES += +compiler-libs # for PreCast to communicate with toplevel 
 OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-
+.PHONY: lib
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
 OCamlLibrary(libmain, $(FAN_FILES))
 

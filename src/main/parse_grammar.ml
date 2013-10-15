@@ -376,8 +376,12 @@ end;;
 
 
 
-
-
+(* let test   n lev _loc = *)
+(*     %extend{ *)
+(*   exp:[ *)
+(*   -> *)
+(*   mk_symbol  ~text:(`Snterm _loc n lev) *)
+(*           ~styp:( %ctyp'{'$(lid:n.tvar)} ) ~pattern:None] } *)
 
 
 

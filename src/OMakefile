@@ -309,8 +309,11 @@ snapshot: :exists: fan0
         # $(PMAKE) fan -- cause a project lock
 
 
-.PHONY: coldtop
-coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/libmain_top.cma
+.PHONY: coldtop hottop
+
+hottop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma main_annot/liblex.cma main_annot/libmain_top.cma
+    
+coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
     
 clean:
     rm -rf $(OCAMLBIN_EXT)

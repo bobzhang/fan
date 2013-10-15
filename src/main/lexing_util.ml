@@ -14,7 +14,9 @@ let quotation_name = '.' ? (uppercase  identchar* '.') *
 
 let locname = ident
 let quotation_prefix =
-  '{' (':' quotation_name)? ('@' locname)? (* '|' *)
+  '%'? '%' quotation_name? ('@' locname )? "{"
+    
+
 let lident = lowercase identchar *
 let antifollowident =   identchar +   
 let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
@@ -27,10 +29,12 @@ let ocaml_lid =  lowercase identchar *
 let ocaml_uid =  uppercase identchar * 
 };;
 
-let fprintf = Format.fprintf
-let eprintf = Format.eprintf
-
-
+%import{
+Format:
+  fprintf
+  eprintf
+  ;
+};;
 
 (** put elements from stream to string with offset 0 and [max] elements *)  
 let lexing_store s buff max =
@@ -260,7 +264,7 @@ let rec  lex_antiquot c  = %lex{
       lex_antiquot c  lexbuf;
     end}
   | quotation_prefix %{
-    begin 
+    begin
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       lex_antiquot c lexbuf
@@ -326,45 +330,12 @@ and lex_quotation c = %lex{
       err Unterminated_quotation @@
       Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p
     end}
-  | "'" ocaml_char "'" (* treat  char specially, otherwise '"' would not be parsed  *) %{
+  | "'" ocaml_char "'" %{
+    (* treat  char specially, otherwise '"' would not be parsed  *) 
     with_store c lexbuf lex_quotation }
   | _ %{ with_store c lexbuf  lex_quotation }}
 
 
-let rec lex_simple_quotation c =   %lex{
-  | "}" %{
-    begin
-      store c lexbuf;
-      pop_loc c ;
-    end}
-  | "{" %{
-    begin
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_simple_quotation ;
-      lex_simple_quotation c lexbuf;
-    end}
-  | "(*" %{
-    begin
-      push_loc_cont c lexbuf lex_comment;
-      lex_simple_quotation c lexbuf
-    end}
-  | newline %{
-    begin
-      update_loc lexbuf;
-      with_store c lexbuf lex_simple_quotation  ;
-    end}
-  | "\"" %{
-    begin
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_string;
-      Buffer.add_char c.buffer '"';
-      lex_simple_quotation  c lexbuf
-    end}
-  | eof %{ err Unterminated_quotation @@ List.hd c.loc -- lexbuf.lex_curr_p}
-  | "'" ocaml_char "'" (* treat  char specially, otherwise '"' would not be parsed  *)%{
-    with_store c lexbuf  lex_simple_quotation}
-  | _  %{with_store  c lexbuf lex_simple_quotation}
-}
     
 
 
@@ -372,6 +343,7 @@ let _ =
   Printexc.register_printer @@ function
     | Lexing_error e -> Some (lex_error_to_string e)
     | _ -> None   
+
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/lexing_util.cmo" *)

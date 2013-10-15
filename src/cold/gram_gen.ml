@@ -15,12 +15,12 @@ let gm () =
 let mk_entry ~local  ~name  ~pos  ~levels  =
   { Gram_def.name = name; pos; levels; local }
 let mk_level ~label  ~assoc  ~rules  =
-  { Gram_def.label = label; assoc; rules }
+  ({ label; assoc; rules } : Gram_def.level )
 let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
-let check_not_tok s =
-  match (s : Gram_def.symbol ) with
+let check_not_tok (s : Gram_def.symbol) =
+  match s with
   | { text = `Stok (_loc,_,_);_} ->
       Locf.raise _loc
         (Fstream.Error
