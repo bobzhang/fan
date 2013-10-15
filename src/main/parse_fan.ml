@@ -285,28 +285,28 @@ let apply () = begin
             | Some e -> e
             | None -> `Assign(_loc,e1,e2)}  ]
        "||" RA
-        [ S{e1}; infixop0{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; infixop0{op}; S{e2}  %exp{ $op $e1 $e2 } ]
        "&&" RA
-        [ S{e1}; infixop1{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; infixop1{op}; S{e2}  %exp{ $op $e1 $e2 } ]
        "<" LA
-        [ S{e1}; infixop2{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; infixop2{op}; S{e2} %exp{ $op $e1 $e2 } ]
        "^" RA
-        [ S{e1}; infixop3{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; infixop3{op}; S{e2} %exp{ $op $e1 $e2 } ]
         "::" RA
-        [ S{e1}; "::"; S{e2} %{ %{  $e1 :: $e2  }} ]  
+        [ S{e1}; "::"; S{e2}  %exp{  $e1 :: $e2  } ]  
        "+" LA
-        [ S{e1}; infixop4{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; infixop4{op}; S{e2} %exp{ $op $e1 $e2 } ]
        "*" LA
-        [ S{e1}; "land"; S{e2} %{ %{ $e1 land $e2 }}
-        | S{e1}; "lor"; S{e2} %{ %{ $e1 lor $e2 }}
-        | S{e1}; "lxor"; S{e2} %{  %{ $e1 lxor $e2 }}
-        | S{e1}; "mod"; S{e2} %{  %{ $e1 mod $e2 }}
-        | S{e1}; infixop5{op}; S{e2} %{  %{ $op $e1 $e2 }} ]
+        [ S{e1}; "land"; S{e2} %exp{ $e1 land $e2 }
+        | S{e1}; "lor"; S{e2}  %exp{ $e1 lor $e2 }
+        | S{e1}; "lxor"; S{e2}  %exp{ $e1 lxor $e2 }
+        | S{e1}; "mod"; S{e2}   %exp{ $e1 mod $e2 }
+        | S{e1}; infixop5{op}; S{e2}  %exp{ $op $e1 $e2 } ]
        "**" RA
-        [ S{e1}; "asr"; S{e2} %{ %{ $e1 asr $e2 }}
-        | S{e1}; "lsl"; S{e2} %{ %{ $e1 lsl $e2 }}
-        | S{e1}; "lsr"; S{e2} %{ %{ $e1 lsr $e2 }}
-        | S{e1}; infixop6{op}; S{e2} %{ %{ $op $e1 $e2 }} ]
+        [ S{e1}; "asr"; S{e2}  %exp{ $e1 asr $e2 }
+        | S{e1}; "lsl"; S{e2}  %exp{ $e1 lsl $e2 }
+        | S{e1}; "lsr"; S{e2}  %exp{ $e1 lsr $e2 }
+        | S{e1}; infixop6{op}; S{e2}  %exp{ $op $e1 $e2 } ]
           
        "obj" RA
         ["fun"; "|";  L1 case0 SEP "|"{a}  %{
@@ -591,7 +591,7 @@ let apply () = begin
         ] }
 
        ipat:
-        [ "{"; label_pat_list{pl}; "}" %{%{ { $pl }}}
+        [ "{"; label_pat_list{pl}; "}" %pat{ { $pl }}
           (* %{ { $((pl: rec_pat :>pat)) } } *)
         | `Ant ((""|"pat"|"par" as n),s) %{ mk_anti _loc ~c:"pat" n s}
         | "("; ")" %{ %{ () }}
@@ -607,17 +607,17 @@ let apply () = begin
         (* when change [pat], we need to take care of the following terms
            for factorization *)      
         | "("; pat{p}; ")" %{ p}
-        | "("; pat{p}; ":"; ctyp{t}; ")" %{ %{ ($p : $t) }}
-        | "("; pat{p}; "as"; a_lident{s}; ")" %{ %{ ($p as $s) }}
-        | "("; pat{p}; ","; comma_ipat{pl}; ")" %{ %{ ($p, $pl) }}
+        | "("; pat{p}; ":"; ctyp{t}; ")" %pat{ ($p : $t) }
+        | "("; pat{p}; "as"; a_lident{s}; ")" %pat{  ($p as $s) }
+        | "("; pat{p}; ","; comma_ipat{pl}; ")"  %pat{ ($p, $pl) }
               
         | a_lident{s} %{  (s: alident :> pat)}
               
         | `Quot x %{ Ast_quotation.expand  x Dyn_tag.pat}
-        | "`"; luident{s} %{ %{$vrn:s}              }
+        | "`"; luident{s}  %pat{$vrn:s}
         | "_" %{ %{ _ }}
-        | `Label i; S{p} %{ %{ ~ $lid:i : $p }}
-        | "~"; a_lident{i};":";S{p} %{ %{ ~$i : $p}}
+        | `Label i; S{p} %pat{ ~ $lid:i : $p }
+        | "~"; a_lident{i};":";S{p}  %pat{ ~$i : $p}
         | "~"; a_lident{i} %{  `LabelS(_loc,i)}
         | `Optlabel i; "("; pat_tcon{p}; "="; exp{e}; ")" %{
             `OptLablExpr(_loc,`Lid(_loc,i),p,e)}
@@ -913,7 +913,7 @@ let apply () = begin
         | "open"; "!"; module_longident{i} %{ `Open(_loc, `Positive _loc , (i: vid :> ident))}
         | "type"; type_declaration{td} %{ `Type(_loc,td)}
         | "type"; type_declaration{t};"with"; "("; string_list{ns};")" %{`TypeWith (_loc,t,ns)}
-        | "let"; opt_rec{r}; bind{bi}; "in"; exp{x} %{%{ let $rec:r $bi in $x }}
+        | "let"; opt_rec{r}; bind{bi}; "in"; exp{x} %stru{ let $rec:r $bi in $x }
         | "let"; opt_rec{r}; bind{bi} %{
           match bi with
           | `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
@@ -990,7 +990,7 @@ let apply () = begin
         | "inherit"; opt_override{o}; clexp{ce}; "as"; a_lident{i} %{
             `InheritAs(_loc,o,ce,i)}
         | value_val_opt_override{o}; opt_mutable{mf}; a_lident{lab}; cvalue_bind{e}
-          %{%{ val $override:o $mutable:mf $lab = $e }}
+            %clfield{ val $override:o $mutable:mf $lab = $e }
         | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; a_lident{l}; ":";
                 ctyp{t} %{
           match o with

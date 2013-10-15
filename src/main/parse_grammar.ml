@@ -233,7 +233,7 @@ open Util
 
 
   assoc :
-  [ `Uid ("LA"|"RA"|"NA" as x)  %{%exp{ $vrn:x }}
+  [ `Uid ("LA"|"RA"|"NA" as x)  %exp{ $vrn:x }
   | `Uid x %{failwithf "%s is not a correct associativity:(LA|RA|NA)" x}  ]
 
       
@@ -247,8 +247,12 @@ open Util
 
   let opt_action :
       [ `Quot x %{
-        let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
-        Ftoken.quot_expand expander x }
+        if x.name = Ftoken.empty_name then 
+          let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+          Ftoken.quot_expand expander x
+        else
+          Ast_quotation.expand x Dyn_tag.exp
+      }
       ]
 
 
