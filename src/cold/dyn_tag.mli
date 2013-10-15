@@ -1,70 +1,69 @@
 open FAst
-  
-type 'a tag
-      
-val string_of_tag : 'a tag -> string
-val literal_tag : literal tag
-val flag_tag : flag tag
-val position_flag_tag : position_flag tag
-val strings_tag : strings tag
-val lident_tag : lident tag
-val alident_tag : alident tag
-val auident_tag : auident tag
-val aident_tag : aident tag
-val astring_tag : astring tag
-val uident_tag : uident tag
-val ident_tag : ident tag
-val ident'_tag : ident' tag
-val vid_tag : vid tag
-val vid'_tag : vid' tag
-val dupath_tag : dupath tag
-val dlpath_tag : dlpath tag
-val any_tag : any tag
-val ctyp_tag : ctyp tag
-val type_parameters_tag : type_parameters tag
-val row_field_tag : row_field tag
-val tag_names_tag : tag_names tag
-val typedecl_tag : typedecl tag
-val type_constr_tag : type_constr tag
-val opt_type_constr_tag : opt_type_constr tag
-val decl_param_tag : decl_param tag
-val decl_params_tag : decl_params tag
-val opt_decl_params_tag : opt_decl_params tag
-val type_info_tag : type_info tag
-val type_repr_tag : type_repr tag
-val name_ctyp_tag : name_ctyp tag
-val or_ctyp_tag : or_ctyp tag
-val of_ctyp_tag : of_ctyp tag
-val pat_tag : pat tag
-val rec_pat_tag : rec_pat tag
-val exp_tag : exp tag
-val rec_exp_tag : rec_exp tag
-val mtyp_tag : mtyp tag
-val sigi_tag : sigi tag
-val mbind_tag : mbind tag
-val constr_tag : constr tag
-val bind_tag : bind tag
-val case_tag : case tag
-val mexp_tag : mexp tag
-val stru_tag : stru tag
-val cltdecl_tag : cltdecl tag
-val cltyp_tag : cltyp tag
-val clsigi_tag : clsigi tag
-val cldecl_tag : cldecl tag
-val clexp_tag : clexp tag
-val clfield_tag : clfield tag
-val ep_tag : ep tag
-val rec_bind_tag : rec_bind tag
+type 'a t
+val of_string : 'a t -> string
+val literal : literal t
+val flag : flag t
+val position_flag : position_flag t
+val strings : strings t
+val lident : lident t
+val alident : alident t
+val auident : auident t
+val aident : aident t
+val astring : astring t
+val uident : uident t
+val ident : ident t
+val ident' : ident' t
+val vid : vid t
+val vid' : vid' t
+val dupath : dupath t
+val dlpath : dlpath t
+val any : any t
+val ctyp : ctyp t
+val type_parameters : type_parameters t
+val row_field : row_field t
+val tag_names : tag_names t
+val typedecl : typedecl t
+val type_constr : type_constr t
+val opt_type_constr : opt_type_constr t
+val decl_param : decl_param t
+val decl_params : decl_params t
+val opt_decl_params : opt_decl_params t
+val type_info : type_info t
+val type_repr : type_repr t
+val name_ctyp : name_ctyp t
+val or_ctyp : or_ctyp t
+val of_ctyp : of_ctyp t
+val pat : pat t
+val rec_pat : rec_pat t
+val exp : exp t
+val rec_exp : rec_exp t
+val mtyp : mtyp t
+val sigi : sigi t
+val mbind : mbind t
+val constr : constr t
+val bind : bind t
+val case : case t
+val mexp : mexp t
+val stru : stru t
+val cltdecl : cltdecl t
+val cltyp : cltyp t
+val clsigi : clsigi t
+val cldecl : cldecl t
+val clexp : clexp t
+val clfield : clfield t
+val ep : ep t
+val rec_bind : rec_bind t
 
 type dyn
-external dyn_tag : 'a tag -> dyn tag = "%identity"
-    
+
+external dyn_tag : 'a t -> dyn t = "%identity"
+
 module Pack :
   functor (X : sig type 'a t end) ->
     sig
-      type pack = dyn tag * Obj.t
+      type pack = dyn t * Obj.t
       exception Pack_error
-      val pack : 'b tag -> 'a X.t -> dyn tag * Obj.t
-      val unpack : 'a tag -> pack -> 'a X.t
+      val pack : 'b t -> 'a X.t -> dyn t * Obj.t
+      val unpack : 'a t -> pack -> 'a X.t
       val print_tag : Format.formatter -> pack -> unit
     end

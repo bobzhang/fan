@@ -1,5 +1,5 @@
 open FAst
-type 'a tag =  
+type 'a t =  
   | Literal
   | Flag
   | Position_flag
@@ -52,7 +52,7 @@ type 'a tag =
   | Clfield
   | Ep
   | Rec_bind 
-let string_of_tag =
+let of_string =
   function
   | Literal  -> "literal"
   | Flag  -> "flag"
@@ -106,70 +106,70 @@ let string_of_tag =
   | Clfield  -> "clfield"
   | Ep  -> "ep"
   | Rec_bind  -> "rec_bind"
-let literal_tag: literal tag = Literal
-let flag_tag: flag tag = Flag
-let position_flag_tag: position_flag tag = Position_flag
-let strings_tag: strings tag = Strings
-let lident_tag: lident tag = Lident
-let alident_tag: alident tag = Alident
-let auident_tag: auident tag = Auident
-let aident_tag: aident tag = Aident
-let astring_tag: astring tag = Astring
-let uident_tag: uident tag = Uident
-let ident_tag: ident tag = Ident
-let ident'_tag: ident' tag = Ident'
-let vid_tag: vid tag = Vid
-let vid'_tag: vid' tag = Vid'
-let dupath_tag: dupath tag = Dupath
-let dlpath_tag: dlpath tag = Dlpath
-let any_tag: any tag = Any
-let ctyp_tag: ctyp tag = Ctyp
-let type_parameters_tag: type_parameters tag = Type_parameters
-let row_field_tag: row_field tag = Row_field
-let tag_names_tag: tag_names tag = Tag_names
-let typedecl_tag: typedecl tag = Typedecl
-let type_constr_tag: type_constr tag = Type_constr
-let opt_type_constr_tag: opt_type_constr tag = Opt_type_constr
-let decl_param_tag: decl_param tag = Decl_param
-let decl_params_tag: decl_params tag = Decl_params
-let opt_decl_params_tag: opt_decl_params tag = Opt_decl_params
-let type_info_tag: type_info tag = Type_info
-let type_repr_tag: type_repr tag = Type_repr
-let name_ctyp_tag: name_ctyp tag = Name_ctyp
-let or_ctyp_tag: or_ctyp tag = Or_ctyp
-let of_ctyp_tag: of_ctyp tag = Of_ctyp
-let pat_tag: pat tag = Pat
-let rec_pat_tag: rec_pat tag = Rec_pat
-let exp_tag: exp tag = Exp
-let rec_exp_tag: rec_exp tag = Rec_exp
-let mtyp_tag: mtyp tag = Mtyp
-let sigi_tag: sigi tag = Sigi
-let mbind_tag: mbind tag = Mbind
-let constr_tag: constr tag = Constr
-let bind_tag: bind tag = Bind
-let case_tag: case tag = Case
-let mexp_tag: mexp tag = Mexp
-let stru_tag: stru tag = Stru
-let cltdecl_tag: cltdecl tag = Cltdecl
-let cltyp_tag: cltyp tag = Cltyp
-let clsigi_tag: clsigi tag = Clsigi
-let cldecl_tag: cldecl tag = Cldecl
-let clexp_tag: clexp tag = Clexp
-let clfield_tag: clfield tag = Clfield
-let ep_tag: ep tag = Ep
-let rec_bind_tag: rec_bind tag = Rec_bind
+let literal: literal t = Literal
+let flag: flag t = Flag
+let position_flag: position_flag t = Position_flag
+let strings: strings t = Strings
+let lident: lident t = Lident
+let alident: alident t = Alident
+let auident: auident t = Auident
+let aident: aident t = Aident
+let astring: astring t = Astring
+let uident: uident t = Uident
+let ident: ident t = Ident
+let ident': ident' t = Ident'
+let vid: vid t = Vid
+let vid': vid' t = Vid'
+let dupath: dupath t = Dupath
+let dlpath: dlpath t = Dlpath
+let any: any t = Any
+let ctyp: ctyp t = Ctyp
+let type_parameters: type_parameters t = Type_parameters
+let row_field: row_field t = Row_field
+let tag_names: tag_names t = Tag_names
+let typedecl: typedecl t = Typedecl
+let type_constr: type_constr t = Type_constr
+let opt_type_constr: opt_type_constr t = Opt_type_constr
+let decl_param: decl_param t = Decl_param
+let decl_params: decl_params t = Decl_params
+let opt_decl_params: opt_decl_params t = Opt_decl_params
+let type_info: type_info t = Type_info
+let type_repr: type_repr t = Type_repr
+let name_ctyp: name_ctyp t = Name_ctyp
+let or_ctyp: or_ctyp t = Or_ctyp
+let of_ctyp: of_ctyp t = Of_ctyp
+let pat: pat t = Pat
+let rec_pat: rec_pat t = Rec_pat
+let exp: exp t = Exp
+let rec_exp: rec_exp t = Rec_exp
+let mtyp: mtyp t = Mtyp
+let sigi: sigi t = Sigi
+let mbind: mbind t = Mbind
+let constr: constr t = Constr
+let bind: bind t = Bind
+let case: case t = Case
+let mexp: mexp t = Mexp
+let stru: stru t = Stru
+let cltdecl: cltdecl t = Cltdecl
+let cltyp: cltyp t = Cltyp
+let clsigi: clsigi t = Clsigi
+let cldecl: cldecl t = Cldecl
+let clexp: clexp t = Clexp
+let clfield: clfield t = Clfield
+let ep: ep t = Ep
+let rec_bind: rec_bind t = Rec_bind
 type dyn  
-external dyn_tag : 'a tag -> dyn tag = "%identity"
+external dyn_tag : 'a t -> dyn t = "%identity"
 module Pack(X:sig type 'a t   end) =
   struct
-    type pack = (dyn tag* Obj.t) 
+    type pack = (dyn t* Obj.t) 
     exception Pack_error
     let pack tag (v : 'a X.t) = ((dyn_tag tag), (Obj.repr v))
-    let unpack: 'a tag -> pack -> 'a X.t =
+    let unpack: 'a t -> pack -> 'a X.t =
       fun tag  (tag',obj)  ->
         if (dyn_tag tag) = tag'
         then (Obj.obj obj : 'a X.t )
         else raise Pack_error
     let print_tag: Format.formatter -> pack -> unit =
-      fun f  (tag,_)  -> Format.pp_print_string f (string_of_tag tag)
+      fun f  (tag,_)  -> Format.pp_print_string f (of_string tag)
   end

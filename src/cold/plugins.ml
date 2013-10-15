@@ -324,35 +324,35 @@ let generate (mtyps : mtyps) =
           | `Mutual tys -> List.map (fun ((x,_) : named_type)  -> x) tys
           | `Single (x,_) -> [x]) mtyps in
    let typedecl =
-     let x = bar_of_list (List.map (fun x  -> uid (String.capitalize x)) tys) in
+     let x =
+       bar_of_list @@ (List.map (fun x  -> uid @@ (String.capitalize x)) tys) in
      (`Type
         (`TyDcl
-           ((`Lid "tag"), (`Some (`Quote (`Normal, (`Lid "a")))),
+           ((`Lid "t"), (`Some (`Quote (`Normal, (`Lid "a")))),
              (`TyRepr (`Negative, (`Sum x))), `None)) : FAstN.stru ) in
    let to_string =
      let case =
        bar_of_list
          (List.map
             (fun x  ->
-               (`Case ((`Uid (String.capitalize x)), (`Str x)) : FAstN.case ))
-            tys) in
-     (`Value (`Negative, (`Bind ((`Lid "string_of_tag"), (`Fun case)))) : 
+               let u = String.capitalize x in
+               (`Case ((`Uid u), (`Str x)) : FAstN.case )) tys) in
+     (`Value (`Negative, (`Bind ((`Lid "of_string"), (`Fun case)))) : 
        FAstN.stru ) in
    let tags =
      List.map
        (fun x  ->
+          let u = String.capitalize x in
           (`Value
              (`Negative,
                (`Bind
-                  ((`Lid (x ^ "_tag")),
-                    (`Constraint
-                       ((`Uid (String.capitalize x)),
-                         (`App ((`Lid "tag"), (`Lid x)))))))) : FAstN.stru ))
-       tys in
+                  ((`Lid x),
+                    (`Constraint ((`Uid u), (`App ((`Lid "t"), (`Lid x)))))))) : 
+            FAstN.stru )) tys in
    sem_of_list (typedecl :: to_string :: tags) : stru )
 let _ =
   Typehook.register
-    ~filter:(fun s  -> not (List.mem s ["loc"; "ant"; "nil"]))
+    ~filter:(fun s  -> not @@ (List.mem s ["loc"; "ant"; "nil"]))
     ("DynAst", (some generate))
 let generate (mtyps : mtyps) =
   (let aux (f : string) =

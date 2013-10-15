@@ -11,7 +11,8 @@ OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
 
 OCamlLibrary(liblex, $(FAN_LEX_LIB_FILES))
 OCamlLibrary(libmain, $(FAN_FILES))
-lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fanTop)
+
+lib:$(OCamlLibrary libmain_top, $(FAN_FILES) fan_top)
 
 # %.dparsetree:%.ml
 #     $(PP_FAN) -printer dparsetree $< > $@

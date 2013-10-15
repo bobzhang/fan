@@ -157,6 +157,23 @@ MakeFix($(DIR_HOT1),$(file fan0), $(file fan1))
 MakeFix($(DIR_HOT2),$(file fan1), $(file fan2))
 MakeFix($(DIR_HOT3),$(file fan2), $(file fan3))
 
+MakeWeakFix(mountdir,pp,exe) =
+    OCAML_OTHER_LIBS += dynlink ocamlcommon
+    VMOUNTDIR = $(mountdir)
+    vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
+    PP_FAN = $(pp) # use hot to preprocess hot
+    OCamlAdditionalExistDependency($(pp))
+    # AdditionalDependency($(pp))
+    .SUBDIRS: $(VMOUNTDIR)
+    OCAML_LIBS[] += $(VMOUNTDIR)/libmain
+    OCamlProgram($(exe), $(VMOUNTDIR)/fan)
+
+DIR_WEAK1 = weak1
+DIR_WEAK2 = weak2
+DIR_WEAK3 = weak3 
+MakeWeakFix($(DIR_WEAK1),$(file fan0), $(file weak1))
+MakeWeakFix($(DIR_WEAK2),$(file weak1), $(file weak2))
+MakeWeakFix($(DIR_WEAK3),$(file weak2), $(file weak3))
 
 #########################
 # fix point and snapshot 

@@ -406,9 +406,12 @@ let generate (mtyps:mtyps) : stru =
 Typehook.register
     ~filter:(fun s -> not (List.mem s ["loc"])) ("GenLoc",some generate);;
 
-(* +-----------------------------------------------------------------+
-   | DynAst generator                                                |
-   +-----------------------------------------------------------------+ *)
+
+
+(********************************************)
+(* DynAst generator                         *)
+(********************************************)
+
 let generate (mtyps:mtyps) : stru =
   let tys :  string list =
     Listf.concat_map
@@ -417,25 +420,30 @@ let generate (mtyps:mtyps) : stru =
         |`Mutual tys -> List.map (fun ((x,_):named_type) -> x ) tys
         |`Single (x,_) -> [x] ) mtyps in
   let typedecl =
-    let x  = bar_of_list (List.map (fun x -> uid  (String.capitalize x)) tys) in (* FIXME *)
-    %stru-{ type 'a tag = | $x  }in
+    let x  = bar_of_list @@ List.map (fun x -> uid  @@ String.capitalize x) tys in (* FIXME *)
+    %stru-{ type 'a t = | $x  }in
   let to_string =
     let case =
       bar_of_list
         (List.map
            (fun x ->
-             %case-{ $(uid:String.capitalize x) -> $str:x }) tys) in 
-    %stru-{ let string_of_tag = function | $case  } in
+             let u = String.capitalize x in
+             %case-{ $uid:u -> $str:x }) tys) in 
+    %stru-{ let of_string = function | $case  } in
  let tags  =
    List.map
      (fun x->
-       %stru-{let $(lid: x^"_tag") :  $lid:x tag = $(uid:String.capitalize x) }) tys  in
+       let u = String.capitalize x in
+       %stru-{let $lid:x :  $lid:x t = $uid:u }) tys  in
        sem_of_list (typedecl::to_string::tags) ;;
   
 Typehook.register
-  ~filter:(fun s -> not (List.mem s ["loc";"ant";"nil"])) ("DynAst",some generate);;
+  ~filter:(fun s -> not @@ List.mem s ["loc";"ant";"nil"]) ("DynAst",some generate);;
 
 
+(********************************************)
+(* Map wrapper                              *)
+(********************************************)
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
     %stru-{
