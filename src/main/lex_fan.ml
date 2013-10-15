@@ -203,21 +203,19 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
    | '$' %{
        let  dollar (c:Lexing_util.context) =
          %lex{
-         (* FIXME *| does not work * | work *) (* $lid:x *)
-         | ('`'? (identchar* |['.' '!']+) as name) ':' (antifollowident as x) %{
+         | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x) %{
              begin
                let old = Locf.move_pos (String.length name + 1) lexbuf.lex_start_p in
                (`Ant(name,x), old -- lexbuf.lex_curr_p)
              end}
          | lident as x  %{ (`Ant("",x), !!lexbuf)}  (* $lid *)
-         | '(' ('`'? (identchar* |['.' '!']+) as name) ':' (* $(lid:ghohgosho)  )*) %{
+         | '(' ('`'? (identchar*|['.' '!']+) as name) ':' (* $(lid:ghohgosho)  )*) %{
              (* the first char is faked '(' to match the last ')', so we mvoe
                 backwards one character *)
              let old = Locf.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               (* lex_antiquot {c with loc = [old]} lexbuf ; *)
                (`Ant(name,buff_contents c),
                 old -- Lexing.lexeme_end_p lexbuf)
              end}
@@ -226,7 +224,6 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               (* lex_antiquot   {c with loc = [old] } lexbuf ; *)
                (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
@@ -252,6 +249,6 @@ let from_lexbuf lb : (Ftoken.t * Locf.t ) Fstream.t =
 
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake fan_lex.cmo" *)
+(* compile-command: "cd ../main_annot && pmake lex_fan.cmo" *)
 (* end: *)
 
