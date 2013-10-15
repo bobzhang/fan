@@ -25,7 +25,7 @@ val nonterminals : stru Fgram.t
     It's used by DDSL [clear]   
  *)    
 val nonterminalsclear : exp Fgram.t
-val delete_rule_header : vid Fgram.t
+
 
 
 (**  parse the header, return the current [grammar] and
@@ -91,7 +91,7 @@ val name : Gram_def.name Fgram.t
 val string : exp Fgram.t
 
 val simple_exp : exp Fgram.t
-val delete_rules : exp Fgram.t
+
 
 val pattern : Gram_def.action_pattern Fgram.t
 
@@ -171,6 +171,6 @@ val level_list :
      Gram_def.name list option -> Gram_def.entry list -> FAst.exp
      ]} *) 
 val extend_body : exp Fgram.t
-val delete_rule_body : exp Fgram.t
+
 
     

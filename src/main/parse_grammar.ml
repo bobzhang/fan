@@ -289,11 +289,11 @@ open Util
         mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None
   | name{n};  OPT level_str{lev} ->
         mk_symbol  ~text:(`Snterm _loc n lev)
-          ~styp:( %ctyp'{ '$(lid:n.tvar)} ) ~pattern:None (* {' *)
+          ~styp:( %ctyp'{'$(lid:n.tvar)} ) ~pattern:None (* {' *)
   | "("; S{s}; ")" -> s ]
 
   string:
-  [ `Str  s -> %exp{ $str:s }
+  [ `Str  s -> %exp{$str:s}
   | `Ant ("", s) -> parse_exp _loc s ] (*suport antiquot for string*)
 
   simple_exp:
@@ -301,21 +301,18 @@ open Util
   | "("; exp{e}; ")" -> e ]  };;
 
 
-let d = `Absolute["Fan";"Lang"] in
+let d = Ns.lang in
 begin
   Ast_quotation.of_exp
-    ~name:((d,  "extend")) ~entry:extend_body ();
+    ~name:(d,  "extend") ~entry:extend_body ();
   Ast_quotation.of_exp
-    ~name:((d,  "unsafe_extend")) ~entry:unsafe_extend_body ();
+    ~name:(d,  "unsafe_extend") ~entry:unsafe_extend_body ();
   Ast_quotation.of_stru
-    ~name:((d,"create")) ~entry:nonterminals ();
+    ~name:(d,"create") ~entry:nonterminals ();
   Ast_quotation.of_stru
-    ~name:((d,"new")) ~entry:newterminals ();
-
+    ~name:(d,"new") ~entry:newterminals ();
   Ast_quotation.of_exp
-    ~name:((d,"delete")) ~entry:delete_rule_body ();
-  Ast_quotation.of_exp
-    ~name:((d,"clear")) ~entry:nonterminalsclear ();
+    ~name:(d,"clear") ~entry:nonterminalsclear ();
 end;;
 
 
@@ -385,5 +382,5 @@ end;;
 
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake parse_grammar.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/parse_grammar.cmo" *)
 (* end: *)
