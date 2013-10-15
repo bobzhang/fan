@@ -12,7 +12,13 @@ Ast_gen:
 
     
 %extend{save_quot:
-  [L1 lid {ls} ; "->"; Fsyntax.exp{b} %{
+  [L1 lid {ls} ; (* "->"; Fsyntax.exp{b} *) `Quot x  %{
+
+   let b =
+     if x.name = Ftoken.empty_name then
+       let expander loc _ s = Fgram.parse_string ~loc Fsyntax.exp s in
+       Ftoken.quot_expand expander x
+     else Ast_quotation.expand x Dyn_tag.exp in
     let symbs = List.map (fun x -> State.gensym x) ls in
     let res = State.gensym "res" in
     let exc = State.gensym "e" in
@@ -44,5 +50,5 @@ let _ = begin
 end
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake lang_save.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lang_save.cmo" *)
 (* end: *)

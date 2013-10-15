@@ -7,11 +7,11 @@
 include_quot:
   [`Str s %{ (* FIXME *)
     let (keep,cf) = State.((keep,current_filters)) in
-    %save{ keep cf ->  begin
+    %save{ keep cf %{begin
       State.reset ();
       Fgram.parse_include_file Fsyntax.strus s;
     end
-  }}
+  }}}
  ]
 };;
 
