@@ -226,12 +226,12 @@ let rec parser_cases _loc (x:stream_cases) =
           stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel 
 
 (* it call [parser_cases] *)  
-let cparser _loc bpo pc =
+let cparser _loc (* bpo *) pc =
   let e = parser_cases _loc pc in
-  let e =
-    match bpo with
-    | Some bp -> %{ let $bp = $(uid:gm()).count $lid:strm_n in $e }
-    | None -> e  in
+  (* let e = *)
+  (*   match bpo with *)
+  (*   | Some bp -> %{ let $bp = $(uid:gm()).count $lid:strm_n in $e } *)
+  (*   | None -> e  in *)
   let p = %pat{ ($lid:strm_n : _ $(uid:gm()).t ) } in
   %{ fun $p -> $e } 
 

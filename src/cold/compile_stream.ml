@@ -306,22 +306,8 @@ let rec parser_cases _loc (x : stream_cases) =
            stream_pattern _loc x (fun _  -> parser_cases _loc spel)
        | (tspel,spel) ->
            stream_patterns_term _loc (fun _  -> parser_cases _loc spel) tspel)
-let cparser _loc bpo pc =
+let cparser _loc pc =
   let e = parser_cases _loc pc in
-  let e =
-    match bpo with
-    | Some bp ->
-        (`LetIn
-           (_loc, (`Negative _loc),
-             (`Bind
-                (_loc, bp,
-                  (`App
-                     (_loc,
-                       (`Dot
-                          (_loc, (`Uid (_loc, (gm ()))),
-                            (`Lid (_loc, "count")))), (`Lid (_loc, strm_n)))))),
-             e) : FAst.exp )
-    | None  -> e in
   let p: FAst.pat =
     `Constraint
       (_loc, (`Lid (_loc, strm_n)),

@@ -5,15 +5,12 @@ let a_lident = Syntaxf.a_lident
 let pat = Syntaxf.pat
 open FAst
 let parser_ipat = Fgram.mk "parser_ipat"
-let stream_exp_comp = Fgram.mk "stream_exp_comp"
-let stream_exp_comp_list = Fgram.mk "stream_exp_comp_list"
 let stream_pat_comp = Fgram.mk "stream_pat_comp"
 let stream_pat_comp_err = Fgram.mk "stream_pat_comp_err"
 let stream_pat_comp_err_list = Fgram.mk "stream_pat_comp_err_list"
 let stream_pat = Fgram.mk "stream_pat"
 let parser_case = Fgram.mk "parser_case"
 let parser_case_list = Fgram.mk "parser_case_list"
-let stream_exp = Fgram.mk "stream_exp"
 let apply () =
   let grammar_entry_create x = Fgram.mk x in
   let uid: 'uid Fgram.t = grammar_entry_create "uid" in
@@ -34,63 +31,16 @@ let apply () =
       (None, None,
         [([`Skeyword "parser";
           `Sopt (`Snterm (Fgram.obj (uid : 'uid Fgram.t )));
-          `Sopt (`Snterm (Fgram.obj (parser_ipat : 'parser_ipat Fgram.t )));
           `Snterm (Fgram.obj (parser_case_list : 'parser_case_list Fgram.t ))],
-           ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc po pcl)\n| None  -> cparser _loc po pcl\n",
+           ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
              (Fgram.mk_action
-                (fun (pcl : 'parser_case_list)  (po : 'parser_ipat option) 
-                   (name : 'uid option)  _  (_loc : Locf.t)  ->
+                (fun (pcl : 'parser_case_list)  (name : 'uid option)  _ 
+                   (_loc : Locf.t)  ->
                    (match name with
                     | Some o ->
                         Ref.protect Compile_stream.grammar_module_name o
-                          (fun _  -> cparser _loc po pcl)
-                    | None  -> cparser _loc po pcl : 'exp )))))]));
-  Fgram.extend_single (stream_exp : 'stream_exp Fgram.t )
-    (None,
-      (None, None,
-        [([`Skeyword "!";
-          `Stoken
-            (((function | `Uid _ -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
-           ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
-             (Fgram.mk_action
-                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
-                   match __fan_1 with
-                   | `Uid n ->
-                       (Ref.protect Compile_stream.grammar_module_name n
-                          (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
-                   | _ ->
-                       failwith
-                         "Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n"))));
-        ([`Skeyword "!";
-         `Stoken
-           (((function | `Uid _ -> true | _ -> false)),
-             (`App ((`Vrn "Uid"), `Any)), "`Uid _");
-         `Snterm
-           (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
-          ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
-            (Fgram.mk_action
-               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> Ftoken.t]) 
-                  _  (_loc : Locf.t)  ->
-                  match __fan_1 with
-                  | `Uid n ->
-                      (Ref.protect Compile_stream.grammar_module_name n
-                         (fun _  -> cstream _loc sel) : 'stream_exp )
-                  | _ ->
-                      failwith
-                        "Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n"))));
-        ([`Snterm
-            (Fgram.obj
-               (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
-          ("cstream _loc sel\n",
-            (Fgram.mk_action
-               (fun (sel : 'stream_exp_comp_list)  (_loc : Locf.t)  ->
-                  (cstream _loc sel : 'stream_exp )))));
-        ([],
-          ("Compile_stream.empty _loc\n",
-            (Fgram.mk_action
-               (fun (_loc : Locf.t)  ->
-                  (Compile_stream.empty _loc : 'stream_exp )))))]));
+                          (fun _  -> cparser _loc pcl)
+                    | None  -> cparser _loc pcl : 'exp )))))]));
   Fgram.extend_single (parser_ipat : 'parser_ipat Fgram.t )
     (None,
       (None, None,
@@ -213,42 +163,7 @@ let apply () =
             (Fgram.mk_action
                (fun (sp : 'stream_pat_comp_err_list)  _ 
                   (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  -> (spc ::
-                  sp : 'stream_pat_comp_err_list )))))]));
-  Fgram.extend_single (stream_exp_comp : 'stream_exp_comp Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-           ("(Trm (_loc, e) : Compile_stream.sexp_comp )\n",
-             (Fgram.mk_action
-                (fun (e : 'exp)  (_loc : Locf.t)  ->
-                   ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp )))));
-        ([`Skeyword "'"; `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
-          ("Ntr (_loc, e)\n",
-            (Fgram.mk_action
-               (fun (e : 'exp)  _  (_loc : Locf.t)  ->
-                  (Ntr (_loc, e) : 'stream_exp_comp )))))]));
-  Fgram.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t )
-    (None,
-      (None, None,
-        [([`Snterm (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ));
-          `Skeyword ";";
-          `Sself],
-           ("se :: sel\n",
-             (Fgram.mk_action
-                (fun (sel : 'stream_exp_comp_list)  _ 
-                   (se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se ::
-                   sel : 'stream_exp_comp_list )))));
-        ([`Snterm (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ));
-         `Skeyword ";"],
-          ("[se]\n",
-            (Fgram.mk_action
-               (fun _  (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
-                  ([se] : 'stream_exp_comp_list )))));
-        ([`Snterm (Fgram.obj (stream_exp_comp : 'stream_exp_comp Fgram.t ))],
-          ("[se]\n",
-            (Fgram.mk_action
-               (fun (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
-                  ([se] : 'stream_exp_comp_list )))))]))
+                  sp : 'stream_pat_comp_err_list )))))]))
 let fill_parsers =
   let applied = ref false in
   fun ()  -> if not applied.contents then (apply (); applied := true)

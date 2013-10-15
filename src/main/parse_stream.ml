@@ -14,34 +14,22 @@ open FAst
 
 
 %create{ 
-  parser_ipat stream_exp_comp  stream_exp_comp_list
+  parser_ipat   
   stream_pat_comp stream_pat_comp_err 
   stream_pat_comp_err_list
-  stream_pat parser_case parser_case_list stream_exp
+  stream_pat parser_case parser_case_list 
 }
   
 let apply () = 
   %extend{
     let  uid: [`Uid(n) %{n}]
     exp : Level "top"
-        [ "parser";  OPT uid  {name} ; OPT parser_ipat{po} ; parser_case_list{pcl} %{
+        [ "parser";  OPT uid  {name}; parser_case_list{pcl} %{
           match name with
           | Some o ->
-              Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc po pcl)
-          | None -> cparser _loc po pcl}
+              Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc  pcl)
+          | None -> cparser _loc  pcl}
         ]
-
-    stream_exp :
-    ["!"; `Uid(n) %{
-      Ref.protect Compile_stream.grammar_module_name n (fun _ ->
-           Compile_stream.empty _loc )}
-    |  "!"; `Uid(n); stream_exp_comp_list{sel}  %{
-        Ref.protect Compile_stream.grammar_module_name n (fun _ -> cstream _loc sel)}
-    | stream_exp_comp_list{sel} %{ cstream _loc sel}
-    |  %{  Compile_stream.empty _loc}
-    ]
-
-    
      parser_ipat :
      [ a_lident{i} %{ (i: alident:> pat)}
      | "_" %{ %pat{ _ }}
@@ -76,17 +64,6 @@ let apply () =
     | stream_pat_comp_err{spc}; ";" %{ [spc]}
     | stream_pat_comp_err{spc}; ";"; stream_pat_comp_err_list{sp} %{ spc :: sp}
     ]
-
-    stream_exp_comp : 
-    [  exp{e} %{ (Trm _loc e : Compile_stream.sexp_comp)}
-    | "'";exp{e} %{ Ntr _loc e}
-    ]
-
-    stream_exp_comp_list :
-    [ stream_exp_comp{se}; ";"; stream_exp_comp_list{sel} %{ se :: sel}
-    | stream_exp_comp{se}; ";" %{ [se]}
-    | stream_exp_comp{se} %{ [se]}
-    ] 
 };;
 
 
@@ -99,9 +76,13 @@ let fill_parsers =
         applied := true 
       end
         
-let () = 
-Ast_parsers.register_parser
-    ("stream", fill_parsers);;
+let () =
+  begin 
+    Ast_parsers.register_parser
+      ("stream", fill_parsers);
+    (** for stream expression *)
+
+  end;;
 
 
 

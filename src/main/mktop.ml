@@ -201,8 +201,6 @@ end
 (* side effect                          *)
 (****************************************)
 
-(** for stream expression *)
-let () = of_exp ~name:(d,"stream") ~entry:Parse_stream.stream_exp ();;
 
 
 

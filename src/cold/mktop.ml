@@ -158,7 +158,6 @@ let _ =
   add (d, "str") Dyn_tag.exp (fun _loc  _loc_option  s  -> `Str (_loc, s));
   add (d, "str") Dyn_tag.stru
     (fun _loc  _loc_option  s  -> `StExp (_loc, (`Str (_loc, s))))
-let () = of_exp ~name:(d, "stream") ~entry:Parse_stream.stream_exp ()
 let efilter str e =
   let e = exp_filter_n e in
   let _loc = loc_of e in
