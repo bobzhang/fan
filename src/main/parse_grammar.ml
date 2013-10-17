@@ -1,7 +1,4 @@
 %import{
-Gram_pat:
-  simple_pat
-  ;
 Gram_gen:
   gm
   grammar_module_name
@@ -28,7 +25,7 @@ Ast_gen:
 open FAst
 open Util
 
-%create{ Fgram
+%create{
    extend_header
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
@@ -40,7 +37,49 @@ open Util
    (pattern: Gram_def.action_pattern Fgram.t )
    extend_body
    unsafe_extend_body
-      } ;;
+   luident
+   (simple : Gram_pat.t Fgram.t)
+}
+
+%extend{
+  luident : [`Lid i %{ i} | `Uid i %{ i}]
+  simple :
+  ["`"; luident{s}   %pat'{$vrn:s}
+
+  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s)
+     %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
+  |"`"; luident{s}; `Str v
+     %pat'{ $vrn:s $str:v}
+  |"`"; luident{s}; `Lid x
+     %pat'{ $vrn:s $lid:x }
+  |"`"; luident{s}; "_"
+     %pat'{$vrn:s _}
+  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")"
+     %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)}
+        (* here
+           we have to guarantee
+           {[
+           %pat-{`a(a,b,c)};;
+           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
+           ]}
+           is dumped correctly
+         *) ]
+  let internal_pat : (* FIXME such grammar should be deprecated soon*)
+  {
+   "as"
+     [S{p1} ; "as";`Lid s   %pat'{ ($p1 as $lid:s) } ]
+     "|"
+     [S{p1}; "|"; S{p2}    %pat'{$p1 | $p2 } ]
+     "simple"
+     [ `Str s    %pat'{ $str:s}
+     | "_"    %pat'{ _ } 
+     | `Lid x      %pat'{ $lid:x}
+     | "("; S{p}; ")"  %{ p} ] }
+}
+  
+
+
+
 
 %extend{
   let str : [`Str y  %{y}]
@@ -204,7 +243,7 @@ open Util
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
   | `Uid "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  | simple_pat{p} %{token_of_simple_pat _loc p }
+  | simple{p} %{token_of_simple_pat _loc p }
   | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
   | name{n};  OPT level_str{lev} %{
         mk_symbol  ~text:(`Snterm _loc n lev)

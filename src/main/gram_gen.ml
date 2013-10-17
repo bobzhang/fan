@@ -133,7 +133,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
         end in
         let descr' = Objs.strip_pat (descr :> pat) in  
         let mdescr = (v#pat _loc descr' :> exp) in (* FIXME [_loc] is not necessary?*)
-        let mstr = Gram_pat.string_of_simple_pat descr in
+        let mstr = Gram_pat.to_string descr in
         %{`Stoken ($match_fun, $mdescr, $str:mstr)}
   in aux  tvar x
 
@@ -347,13 +347,13 @@ let text_of_functorial_extend ?safe _loc   gram  el =
     Listf.filter_map (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) el in
   let_in_of_extend _loc gram locals args 
 
-
-let token_of_simple_pat _loc (p:Gram_pat.simple_pat)  =
-  let p_pat = (p:Gram_pat.simple_pat :> pat) in 
+(** *)
+let token_of_simple_pat _loc (p:Gram_pat.t)  =
+  let p_pat = (p:Gram_pat.t :> pat) in 
   let (po,ls) = filter_pat_with_captured_variables p_pat in
   match ls with
   | [] ->
-      let no_variable = Gram_pat.wildcarder#simple_pat p
+      let no_variable = Gram_pat.wildcarder#t p
           (* Objs.wildcarder#pat p_pat *) in (*po is the same as [p_pat]*)
       let match_fun =
         let v = (no_variable :> pat) in  
@@ -370,7 +370,7 @@ let token_of_simple_pat _loc (p:Gram_pat.simple_pat)  =
             %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
       let descr =
-        Gram_pat.wildcarder#simple_pat p  in
+        Gram_pat.wildcarder#t p  in
         (* Objs.strip_pat (Objs.wildcarder#pat p_pat) in *)
       let text = `Stok(_loc,match_fun,descr) in
       {text;styp = `Tok _loc;pattern= Some (Objs.wildcarder#pat po) }

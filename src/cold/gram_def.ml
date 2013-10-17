@@ -28,7 +28,7 @@ and text =
   [ `Slist of (loc* bool* symbol* symbol option)
   | `Snterm of (loc* name* string option) | `Sopt of (loc* text)
   | `Stry of (loc* text) | `Speek of (loc* text) | `Sself of loc
-  | `Skeyword of (loc* string) | `Stok of (loc* exp* Gram_pat.simple_pat)] 
+  | `Skeyword of (loc* string) | `Stok of (loc* exp* Gram_pat.t)] 
 type action_pattern =
   [ vid | `Com of (loc* action_pattern* action_pattern)
   | `Par of (loc* action_pattern) | `Any of loc] 

@@ -54,7 +54,7 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * Gram_pat.simple_pat)
+ | `Stok of (loc * exp * Gram_pat.t)
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for

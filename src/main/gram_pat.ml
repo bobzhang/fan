@@ -21,96 +21,55 @@ end
 
 type lident =
   [ `Lid of (loc * string) ]  
-and simple_pat =
+and t =
   [
    `Vrn of (loc * string)
-  |`App of (loc * simple_pat * simple_pat )
+  |`App of (loc * t * t )
   |`Lid of (loc * string)
   | ant 
-  |`Com of (loc * simple_pat * simple_pat)
-  |`Alias of (loc * simple_pat * lident)
-  |`Bar of (loc * simple_pat * simple_pat)
+  |`Com of (loc * t * t)
+  |`Alias of (loc * t * lident)
+  |`Bar of (loc * t * t)
   |`Str of (loc * string)
   |`Any of loc] with ("Print" "Map")
 
 let wildcarder = object (self)
   inherit map as super
-  method! simple_pat = function
+  method! t = function
     | `Lid (_loc,_) -> `Any _loc
-    | %pat'{ ($p as $_) } -> self#simple_pat p
-    | p  -> super#simple_pat p 
+    | %pat'{ ($p as $_) } -> self#t p
+    | p  -> super#t p 
 end;;
-
-%create{ 
-luident
-(simple_pat : simple_pat Fgram.t)
-}
-
-%extend{
-  luident : [`Lid i %{ i} | `Uid i %{ i}]
-  simple_pat :
-  ["`"; luident{s}   %pat'{$vrn:s}
-
-  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s)
-     %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
-  |"`"; luident{s}; `Str v
-     %pat'{ $vrn:s $str:v}
-  |"`"; luident{s}; `Lid x
-     %pat'{ $vrn:s $lid:x }
-  |"`"; luident{s}; "_"
-     %pat'{$vrn:s _}
-  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")"
-     %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)}
-        (* here
-           we have to guarantee
-           {[
-           %pat-{`a(a,b,c)};;
-           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
-           ]}
-           is dumped correctly
-         *) ]
-  let internal_pat : (* FIXME such grammar should be deprecated soon*)
-  {
-   "as"
-     [S{p1} ; "as";`Lid s   %pat'{ ($p1 as $lid:s) } ]
-     "|"
-     [S{p1}; "|"; S{p2}    %pat'{$p1 | $p2 } ]
-     "simple"
-     [ `Str s    %pat'{ $str:s}
-     | "_"    %pat'{ _ } 
-     | `Lid x      %pat'{ $lid:x}
-     | "("; S{p}; ")"  %{ p} ] }
-};;
 
 
 let p = fprintf
 
-let rec unparse_simple_pat  f (x:simple_pat)=
+let rec unparse  f (x:t)=
   match x with
   | `Vrn (_,s) -> p f "`%s" s
   | `App _ ->
       let l = Ast_basic.list_of_app x [] in
       begin match l with
-      | [ (`Vrn _ as x) ]  -> unparse_simple_pat  f x
+      | [ (`Vrn _ as x) ]  -> unparse  f x
       | [ (`Vrn _ as  x) ; v ] ->
-          p f "%a %a" unparse_simple_pat x unparse_simple_pat v
+          p f "%a %a" unparse x unparse v
       | (`Vrn _ as x) :: rest ->
           p f "%a (%a)"
-            unparse_simple_pat x (Formatf.pp_list unparse_simple_pat ~sep:",") rest 
+            unparse x (Formatf.pp_list unparse ~sep:",") rest 
       | _ ->
-          (p Format.err_formatter  "impossible pattern %a@." pp_print_simple_pat x ;
-          invalid_arg "unparse_simple_pat")
+          (p Format.err_formatter  "impossible pattern %a@." pp_print_t x ;
+          invalid_arg "unparse")
       end
-  | `Com(_,a,b) -> p f "%a, %a" unparse_simple_pat a unparse_simple_pat b
-  | `Alias (_,p,_) -> unparse_simple_pat f  p
+  | `Com(_,a,b) -> p f "%a, %a" unparse a unparse b
+  | `Alias (_,p,_) -> unparse f  p
 
-  | `Bar (_,a,b) -> p f "%a| %a" unparse_simple_pat a unparse_simple_pat b
+  | `Bar (_,a,b) -> p f "%a| %a" unparse a unparse b
   | `Str(_,s) -> p f "%S" s
   | `Any _ -> p f "_"
   | `Lid (_,s) -> p f "%s" s 
   | `Ant (_, {FanUtil.content=s;_}) -> p f "$%s" s
 
-let string_of_simple_pat = Formatf.to_string unparse_simple_pat
+let to_string = Formatf.to_string unparse
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/gram_pat.cmo" *)
