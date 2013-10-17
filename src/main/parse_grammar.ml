@@ -25,7 +25,13 @@ Ast_gen:
 open FAst
 open Util
 
-%create{
+let g =
+  Fgram.create_lexer ~annot:"Grammar's lexer"
+    ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":"; "."; ";"; "{"; "}"; "let";"[";"]"]
+    ();;
+
+
+%create{(g:Fgram.t)
    extend_header
    (qualuid : vid Fgram.t)
    (qualid:vid Fgram.t)
@@ -41,7 +47,7 @@ open Util
    (simple : Gram_pat.t Fgram.t)
 }
 
-%extend{
+%extend{(g:Fgram.t)
   luident : [`Lid i %{ i} | `Uid i %{ i}]
   simple :
   ["`"; luident{s}   %pat'{$vrn:s}
@@ -81,7 +87,7 @@ open Util
 
 
 
-%extend{
+%extend{(g:Fgram.t)
   let str : [`Str y  %{y}]
   (*****************************)
   (* extend language           *)

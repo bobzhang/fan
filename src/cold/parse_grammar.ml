@@ -17,34 +17,51 @@ let seq_sem = Ast_gen.seq_sem
 let tuple_com = Ast_gen.tuple_com
 open FAst
 open Util
-let extend_header = Fgram.mk "extend_header"
-let qualuid: vid Fgram.t = Fgram.mk "qualuid"
-let qualid: vid Fgram.t = Fgram.mk "qualid"
-let t_qualid: vid Fgram.t = Fgram.mk "t_qualid"
+let g =
+  Fgram.create_lexer ~annot:"Grammar's lexer"
+    ~keywords:["`";
+              "(";
+              ")";
+              ",";
+              "as";
+              "|";
+              "_";
+              ":";
+              ".";
+              ";";
+              "{";
+              "}";
+              "let";
+              "[";
+              "]"] ()
+let extend_header = Fgram.mk_dynamic g "extend_header"
+let qualuid: vid Fgram.t = Fgram.mk_dynamic g "qualuid"
+let qualid: vid Fgram.t = Fgram.mk_dynamic g "qualid"
+let t_qualid: vid Fgram.t = Fgram.mk_dynamic g "t_qualid"
 let entry_name:
   ([ `name of Ftoken.name option | `non]* Gram_def.name) Fgram.t =
-  Fgram.mk "entry_name"
-let entry = Fgram.mk "entry"
-let position = Fgram.mk "position"
-let assoc = Fgram.mk "assoc"
-let name = Fgram.mk "name"
-let string = Fgram.mk "string"
-let rules = Fgram.mk "rules"
-let symbol = Fgram.mk "symbol"
-let rule = Fgram.mk "rule"
-let meta_rule = Fgram.mk "meta_rule"
-let rule_list = Fgram.mk "rule_list"
-let psymbol = Fgram.mk "psymbol"
-let level = Fgram.mk "level"
-let level_list = Fgram.mk "level_list"
-let entry: Gram_def.entry Fgram.t = Fgram.mk "entry"
-let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk "pattern"
-let extend_body = Fgram.mk "extend_body"
-let unsafe_extend_body = Fgram.mk "unsafe_extend_body"
-let luident = Fgram.mk "luident"
-let simple: Gram_pat.t Fgram.t = Fgram.mk "simple"
+  Fgram.mk_dynamic g "entry_name"
+let entry = Fgram.mk_dynamic g "entry"
+let position = Fgram.mk_dynamic g "position"
+let assoc = Fgram.mk_dynamic g "assoc"
+let name = Fgram.mk_dynamic g "name"
+let string = Fgram.mk_dynamic g "string"
+let rules = Fgram.mk_dynamic g "rules"
+let symbol = Fgram.mk_dynamic g "symbol"
+let rule = Fgram.mk_dynamic g "rule"
+let meta_rule = Fgram.mk_dynamic g "meta_rule"
+let rule_list = Fgram.mk_dynamic g "rule_list"
+let psymbol = Fgram.mk_dynamic g "psymbol"
+let level = Fgram.mk_dynamic g "level"
+let level_list = Fgram.mk_dynamic g "level_list"
+let entry: Gram_def.entry Fgram.t = Fgram.mk_dynamic g "entry"
+let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk_dynamic g "pattern"
+let extend_body = Fgram.mk_dynamic g "extend_body"
+let unsafe_extend_body = Fgram.mk_dynamic g "unsafe_extend_body"
+let luident = Fgram.mk_dynamic g "luident"
+let simple: Gram_pat.t Fgram.t = Fgram.mk_dynamic g "simple"
 let _ =
-  let grammar_entry_create x = Fgram.mk x in
+  let grammar_entry_create x = Fgram.mk_dynamic g x in
   let internal_pat: 'internal_pat Fgram.t =
     grammar_entry_create "internal_pat" in
   Fgram.extend_single (luident : 'luident Fgram.t )
@@ -197,7 +214,7 @@ let _ =
                (fun _  (p : 'internal_pat)  _  (_loc : Locf.t)  ->
                   (p : 'internal_pat )))))])])
 let _ =
-  let grammar_entry_create x = Fgram.mk x in
+  let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"
   and psymbols: 'psymbols Fgram.t = grammar_entry_create "psymbols"
   and opt_action: 'opt_action Fgram.t = grammar_entry_create "opt_action"
