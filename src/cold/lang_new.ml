@@ -182,30 +182,6 @@ let _ =
                   match (__fan_2, __fan_0) with
                   | (`Lid "t",`Uid x) -> (`Uid (_loc, x) : 't_qualid )
                   | _ -> failwith "`Uid (_loc, x)\n"))))]));
-  Fgram.extend_single (qualid : 'qualid Fgram.t )
-    (None,
-      (None, None,
-        [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
-          `Skeyword ".";
-          `Sself],
-           ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
-             (Fgram.mk_action
-                (fun (xs : 'qualid)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
-                   | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
-        ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-          ("`Lid (_loc, i)\n",
-            (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Lid i -> (`Lid (_loc, i) : 'qualid )
-                  | _ -> failwith "`Lid (_loc, i)\n"))))]));
   Fgram.extend_single (nonterminals : 'nonterminals Fgram.t )
     (None,
       (None, None,
