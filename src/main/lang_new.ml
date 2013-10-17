@@ -40,10 +40,6 @@ t_qualid :
   | `Uid x; "."; `Lid "t" %{ `Uid(_loc,x)}
   ] 
       
-qualid :
-  [ `Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
-  | `Lid i %{ `Lid(_loc,i)}
-  ]
 nonterminals : (* when [ty] is nullable, it should take care of the following *)
   [ ty {t}; L1 type_entry {ls} %{
     let mk =
