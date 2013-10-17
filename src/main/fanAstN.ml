@@ -4,11 +4,12 @@ open FAstN
 (** this is caused by #ant problem, which requires [fill_ant] to be
     specifiied *)
 let fill_ant _loc x = x;;
+
 %fans{keep off; derive (  Fill MetaObj(* OEq OPrint *)(* MetaExpr *));};;
 
 
 class primitive =  object
-  method int _loc (i:int)  =  %ep{$`int:i}
+  method int _loc (i:int)  = %ep{$`int:i}
   method int32 _loc (i:int32) = %ep{$`int32:i}
   method int64 _loc  (i:int64) = %ep{$`int64:i}
   method nativeint _loc (i:nativeint) = %ep{$`nativeint:i}
@@ -28,12 +29,9 @@ end;;
 
 %ocaml{ %include{ "fAstN.ml" } };;
 
+let m = new meta
 
-
-let m = new meta 
-
-
-
+    
 
 
 
@@ -42,3 +40,10 @@ let m = new meta
 
 
 
+
+
+
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/fanAstN.cmo" *)
+(* end: *)
