@@ -33,7 +33,8 @@ let g =
               "}";
               "let";
               "[";
-              "]"] ()
+              "]";
+              "S"] ()
 let extend_header = Fgram.mk_dynamic g "extend_header"
 let qualuid: vid Fgram.t = Fgram.mk_dynamic g "qualuid"
 let qualid: vid Fgram.t = Fgram.mk_dynamic g "qualid"
@@ -761,19 +762,12 @@ let _ =
                   | _ ->
                       failwith
                         "let text = `Speek (_loc, (s.text)) in\nmk_symbol ~text ~styp:(s.styp) ~pattern:None\n"))));
-        ([`Stoken
-            (((function | `Uid "S" -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), (`Str "S"))), "`Uid \"S\"")],
+        ([`Skeyword "S"],
           ("mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Uid "S" ->
-                      (mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc)
-                         ~pattern:None : 'symbol )
-                  | _ ->
-                      failwith
-                        "mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc) ~pattern:None\n"))));
+               (fun _  (_loc : Locf.t)  ->
+                  (mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc)
+                     ~pattern:None : 'symbol )))));
         ([`Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
           ("token_of_simple_pat _loc p\n",
             (Fgram.mk_action

@@ -27,7 +27,9 @@ open Util
 
 let g =
   Fgram.create_lexer ~annot:"Grammar's lexer"
-    ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":"; "."; ";"; "{"; "}"; "let";"[";"]"]
+    ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":";
+               "."; ";"; "{"; "}"; "let";"[";"]";
+             "S"]
     ();;
 
 
@@ -247,7 +249,9 @@ let g =
   | `Uid "PEEK"; S{s} %{
       let text = `Speek(_loc, s.text) in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
-  | `Uid "S" %{
+  (* | `Uid "S" %{ *)
+  (*     mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None} *)
+  | "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
   | simple{p} %{token_of_simple_pat _loc p }
   | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
