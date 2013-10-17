@@ -106,14 +106,16 @@ let g =
   | %{ (None,gm())} ]
 
   extend_body :
-  [ extend_header{(gram,old)};   L1 entry {el} %{
+  [ extend_header{rest};   L1 entry {el} %{
+    let (gram,old) = rest in
     let res = text_of_functorial_extend _loc  gram  el in 
     let () = grammar_module_name := old in
     res}      ]
 
   (* see [extend_body] *)
   unsafe_extend_body :
-  [ extend_header{(gram,old)};   L1 entry {el} %{
+  [ extend_header{rest};   L1 entry {el} %{
+    let (gram,old) = rest in
     let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
     let () = grammar_module_name := old in
     res}      ]
@@ -155,8 +157,9 @@ let g =
     (x,mk_name _loc il)}]
 
   entry:
-  [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
+  [ entry_name{rest}; ":";  OPT position{pos}; level_list{levels}
     %{
+    let (n,p) = rest in
       begin 
         (match n with
         |`name old -> Ast_quotation.default := old
@@ -166,7 +169,8 @@ let g =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> mk_entry ~local:false ~name:p ~pos ~levels
       end}
-  |  "let"; entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels} %{
+  |  "let"; entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
+    let (n,p) = rest in
       begin
         (match n with
         |`name old -> Ast_quotation.default := old
@@ -187,7 +191,8 @@ let g =
   | level {l} %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  OPT str {label};  OPT assoc{assoc}; rule_list{rules} %{mk_level ~label ~assoc ~rules} ]
+  [  OPT str {label};  OPT assoc{assoc}; rule_list{rules}
+       %{mk_level ~label ~assoc ~rules} ]
   (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
   assoc :
   [ `Uid ("LA"|"RA"|"NA" as x)  %exp{ $vrn:x }
@@ -214,11 +219,13 @@ let g =
   pattern :
   [ `Lid i  %pat'{ $lid:i }
   | "_"  %pat'{ _ }
-  | "("; pattern{p}; ")" %{ p}
-  | "("; pattern{p1}; ","; L1 S SEP ","{ps}; ")" %{ tuple_com (p1::ps)}
+  | "("; S{p}; ")" %{ p}
+  | "("; S{p1}; ","; L1 S SEP ","{ps}; ")" %{ tuple_com (p1::ps)}
   ]
-      
-  let brace_pattern : ["{";pattern{p};"}"  %{p}]
+
+  let tmp_lid : [`Lid i %pat'{$lid:i}]
+   (* FIXME a new entry introduced here only for precise location *)    
+  let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
 
   psymbol :
   [ symbol{s} ; OPT  brace_pattern {p} %{
@@ -249,8 +256,6 @@ let g =
   | `Uid "PEEK"; S{s} %{
       let text = `Speek(_loc, s.text) in
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
-  (* | `Uid "S" %{ *)
-  (*     mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None} *)
   | "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
   | simple{p} %{token_of_simple_pat _loc p }

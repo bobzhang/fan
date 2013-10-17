@@ -183,8 +183,10 @@ let apply () = begin
     [(*  "#"; a_lident{n};  ";;" -> *)
     (*   ([ `DirectiveSimple(_loc,n) ],  Some _loc) *)
     (* | "#"; a_lident{n}; exp{dp}; ";;" -> ([ `Directive(_loc,n,dp)], Some _loc)  *)
-     sigi{si}; ";;";  S{(sil, stopped)} %{ (si :: sil, stopped)}
-    | sigi{si}; S{(sil,stopped)} %{ (si :: sil, stopped)}
+     sigi{si}; ";;";  S{rest} %{
+         let (sil,stopped) = rest in (si :: sil, stopped)}
+    |sigi{si}; S{rest} %{
+        let (sil,stopped) = rest in (si :: sil, stopped)}
     | `EOI %{ ([], None)} ]  };
 
     with exp
@@ -870,8 +872,8 @@ let apply () = begin
             Fdir.handle_quot x;
             ([], Some _loc)
           end}
-      | stru{si}; ";;"; S{(sil, stopped)} %{ (si :: sil, stopped)}
-      | stru{si};  S{(sil, stopped)} %{ (si :: sil, stopped)}
+      | stru{si}; ";;"; S{rest} %{ let (sil, stopped) = rest in (si :: sil, stopped)}
+      | stru{si};  S{rest} %{ let (sil, stopped) = rest in (si :: sil, stopped)}
          (* FIXME merge with the above in the future*)            
       | `EOI %{ ([], None)} ]
       (** entrance for toplevel *)
@@ -1126,7 +1128,7 @@ let apply_ctyp () = begin
       | type_parameter{t} %{ fun acc -> `App(_loc,acc, (t:>ctyp))}
       |  %{fun t -> t}  ]
       meth_list:
-      [ meth_decl{m}; ";"; S{(ml, v) }  %{ (`Sem(_loc,m,ml), v)}
+      [ meth_decl{m}; ";"; S{rest }  %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
       | meth_decl{m}; ";"; opt_dot_dot{v} %{ (m, v)}
       | meth_decl{m}; opt_dot_dot{v}      %{ (m, v)}  ]
       meth_decl:
@@ -1134,7 +1136,7 @@ let apply_ctyp () = begin
       (* | `Quot x                       -> AstQuotation.expand _loc x Dyn_tag.ctyp *)
       | a_lident{lab}; ":"; ctyp{t}  %{`TyCol(_loc,lab,t)}]
       opt_meth_list:
-      [ meth_list{(ml, v) } %{ `TyObj (_loc, ml, v)}
+      [ meth_list{rest } %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
       | opt_dot_dot{v}     %{ `TyObjEnd(_loc,v)} ]
       row_field:
       [ `Ant ((""|"typ" as n),s) %{ mk_anti _loc ~c:"ctyp" n s}
@@ -1162,15 +1164,18 @@ let apply_ctyp () = begin
       [ `Ant ((""|"typ" as n),s) %{ mk_anti _loc ~c:"ctyp" n s}
       (* | `Quot x -> AstQuotation.expand _loc x Dyn_tag.ctyp *)
       | S{t1}; "and"; S{t2} %{  `And(_loc,t1,t2)}
-      |  type_ident_and_parameters{(n, tpl)}; "="; type_info{tk}; L0 constrain{cl}
-        %{ `TyDcl (_loc, n, tpl, tk,
-                   match cl with
-                   |[]-> `None _loc
-                   | _ -> `Some(_loc,and_of_list cl))}
-      | type_ident_and_parameters{(n,tpl)}; L0 constrain{cl} %{
-          `TyAbstr(_loc,n,tpl,
-                   match cl with
-                   |[] -> `None _loc | _ -> `Some(_loc, and_of_list cl))}]
+      |  type_ident_and_parameters{rest}; "="; type_info{tk}; L0 constrain{cl}
+        %{ let (n, tpl) = rest in
+        `TyDcl (_loc, n, tpl, tk,
+                match cl with
+                |[]-> `None _loc
+                | _ -> `Some(_loc,and_of_list cl))}
+      | type_ident_and_parameters{rest}; L0 constrain{cl} %{
+        let (n,tpl) = rest in
+        `TyAbstr(_loc,n,tpl,
+                 match cl with
+                 |[] -> `None _loc
+                 | _ -> `Some(_loc, and_of_list cl))}]
       type_info:
       [ type_repr{t2} %{ `TyRepr(_loc,`Negative _loc,t2)}
       | ctyp{t1}; "="; type_repr{t2} %{ `TyMan(_loc, t1, `Negative _loc, t2)}

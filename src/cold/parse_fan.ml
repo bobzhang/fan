@@ -749,15 +749,17 @@ let apply () =
          [([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t ));
            `Skeyword ";;";
            `Sself],
-            ("((si :: sil), stopped)\n",
+            ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
               (Fgram.mk_action
-                 (fun ((sil,stopped) : 'interf)  _  (si : 'sigi) 
-                    (_loc : Locf.t)  -> (((si :: sil), stopped) : 'interf )))));
+                 (fun (rest : 'interf)  _  (si : 'sigi)  (_loc : Locf.t)  ->
+                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
+                    'interf )))));
          ([`Snterm (Fgram.obj (sigi : 'sigi Fgram.t )); `Sself],
-           ("((si :: sil), stopped)\n",
+           ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Fgram.mk_action
-                (fun ((sil,stopped) : 'interf)  (si : 'sigi)  (_loc : Locf.t)
-                    -> (((si :: sil), stopped) : 'interf )))));
+                (fun (rest : 'interf)  (si : 'sigi)  (_loc : Locf.t)  ->
+                   (let (sil,stopped) = rest in ((si :: sil), stopped) : 
+                   'interf )))));
          ([`Stoken
              (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
            ("([], None)\n",
@@ -4382,15 +4384,17 @@ let apply () =
          ([`Snterm (Fgram.obj (stru : 'stru Fgram.t ));
           `Skeyword ";;";
           `Sself],
-           ("((si :: sil), stopped)\n",
+           ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Fgram.mk_action
-                (fun ((sil,stopped) : 'implem)  _  (si : 'stru) 
-                   (_loc : Locf.t)  -> (((si :: sil), stopped) : 'implem )))));
+                (fun (rest : 'implem)  _  (si : 'stru)  (_loc : Locf.t)  ->
+                   (let (sil,stopped) = rest in ((si :: sil), stopped) : 
+                   'implem )))));
          ([`Snterm (Fgram.obj (stru : 'stru Fgram.t )); `Sself],
-           ("((si :: sil), stopped)\n",
+           ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Fgram.mk_action
-                (fun ((sil,stopped) : 'implem)  (si : 'stru)  (_loc : Locf.t)
-                    -> (((si :: sil), stopped) : 'implem )))));
+                (fun (rest : 'implem)  (si : 'stru)  (_loc : Locf.t)  ->
+                   (let (sil,stopped) = rest in ((si :: sil), stopped) : 
+                   'implem )))));
          ([`Stoken
              (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
            ("([], None)\n",
@@ -5698,11 +5702,12 @@ let apply_ctyp () =
         [([`Snterm (Fgram.obj (meth_decl : 'meth_decl Fgram.t ));
           `Skeyword ";";
           `Sself],
-           ("((`Sem (_loc, m, ml)), v)\n",
+           ("let (ml,v) = rest in ((`Sem (_loc, m, ml)), v)\n",
              (Fgram.mk_action
-                (fun ((ml,v) : 'meth_list)  _  (m : 'meth_decl) 
+                (fun (rest : 'meth_list)  _  (m : 'meth_decl) 
                    (_loc : Locf.t)  ->
-                   (((`Sem (_loc, m, ml)), v) : 'meth_list )))));
+                   (let (ml,v) = rest in ((`Sem (_loc, m, ml)), v) : 
+                   'meth_list )))));
         ([`Snterm (Fgram.obj (meth_decl : 'meth_decl Fgram.t ));
          `Skeyword ";";
          `Snterm (Fgram.obj (opt_dot_dot : 'opt_dot_dot Fgram.t ))],
@@ -5742,10 +5747,10 @@ let apply_ctyp () =
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (meth_list : 'meth_list Fgram.t ))],
-           ("`TyObj (_loc, ml, v)\n",
+           ("let (ml,v) = rest in `TyObj (_loc, ml, v)\n",
              (Fgram.mk_action
-                (fun ((ml,v) : 'meth_list)  (_loc : Locf.t)  ->
-                   (`TyObj (_loc, ml, v) : 'opt_meth_list )))));
+                (fun (rest : 'meth_list)  (_loc : Locf.t)  ->
+                   (let (ml,v) = rest in `TyObj (_loc, ml, v) : 'opt_meth_list )))));
         ([`Snterm (Fgram.obj (opt_dot_dot : 'opt_dot_dot Fgram.t ))],
           ("`TyObjEnd (_loc, v)\n",
             (Fgram.mk_action
@@ -5873,11 +5878,12 @@ let apply_ctyp () =
          `Skeyword "=";
          `Snterm (Fgram.obj (type_info : 'type_info Fgram.t ));
          `Slist0 (`Snterm (Fgram.obj (constrain : 'constrain Fgram.t )))],
-          ("`TyDcl\n  (_loc, n, tpl, tk,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
+          ("let (n,tpl) = rest in\n`TyDcl\n  (_loc, n, tpl, tk,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Fgram.mk_action
                (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
-                  ((n,tpl) : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
-                  (`TyDcl
+                  (rest : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
+                  (let (n,tpl) = rest in
+                   `TyDcl
                      (_loc, n, tpl, tk,
                        (match cl with
                         | [] -> `None _loc
@@ -5887,11 +5893,12 @@ let apply_ctyp () =
                (type_ident_and_parameters : 'type_ident_and_parameters
                                               Fgram.t ));
          `Slist0 (`Snterm (Fgram.obj (constrain : 'constrain Fgram.t )))],
-          ("`TyAbstr\n  (_loc, n, tpl,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
+          ("let (n,tpl) = rest in\n`TyAbstr\n  (_loc, n, tpl,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Fgram.mk_action
                (fun (cl : 'constrain list) 
-                  ((n,tpl) : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
-                  (`TyAbstr
+                  (rest : 'type_ident_and_parameters)  (_loc : Locf.t)  ->
+                  (let (n,tpl) = rest in
+                   `TyAbstr
                      (_loc, n, tpl,
                        (match cl with
                         | [] -> `None _loc

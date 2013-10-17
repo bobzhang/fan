@@ -219,6 +219,7 @@ let _ =
   let str: 'str Fgram.t = grammar_entry_create "str"
   and psymbols: 'psymbols Fgram.t = grammar_entry_create "psymbols"
   and opt_action: 'opt_action Fgram.t = grammar_entry_create "opt_action"
+  and tmp_lid: 'tmp_lid Fgram.t = grammar_entry_create "tmp_lid"
   and brace_pattern: 'brace_pattern Fgram.t =
     grammar_entry_create "brace_pattern"
   and sep_symbol: 'sep_symbol Fgram.t = grammar_entry_create "sep_symbol"
@@ -266,22 +267,24 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let res = text_of_functorial_extend _loc gram el in\nlet () = grammar_module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend _loc gram el in\nlet () = grammar_module_name := old in res\n",
              (Fgram.mk_action
-                (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
+                (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
-                   (let res = text_of_functorial_extend _loc gram el in
+                   (let (gram,old) = rest in
+                    let res = text_of_functorial_extend _loc gram el in
                     let () = grammar_module_name := old in res : 'extend_body )))))]));
   Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = grammar_module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = grammar_module_name := old in res\n",
              (Fgram.mk_action
-                (fun (el : 'entry list)  ((gram,old) : 'extend_header) 
+                (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
-                   (let res =
+                   (let (gram,old) = rest in
+                    let res =
                       text_of_functorial_extend ~safe:false _loc gram el in
                     let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
   Fgram.extend_single (psymbols : 'psymbols Fgram.t )
@@ -409,11 +412,12 @@ let _ =
           `Skeyword ":";
           `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
           `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-           ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
+           ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
              (Fgram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
-                   ((n,p) : 'entry_name)  (_loc : Locf.t)  ->
-                   ((match n with
+                   (rest : 'entry_name)  (_loc : Locf.t)  ->
+                   (let (n,p) = rest in
+                    (match n with
                      | `name old -> Ast_quotation.default := old
                      | _ -> ());
                     (match (pos, levels) with
@@ -429,11 +433,12 @@ let _ =
          `Skeyword ":";
          `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
          `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-          ("(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
+          ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
             (Fgram.mk_action
                (fun (levels : 'level_list)  (pos : 'position option)  _ 
-                  ((n,p) : 'entry_name)  _  (_loc : Locf.t)  ->
-                  ((match n with
+                  (rest : 'entry_name)  _  (_loc : Locf.t)  ->
+                  (let (n,p) = rest in
+                   (match n with
                     | `name old -> Ast_quotation.default := old
                     | _ -> ());
                    (match (pos, levels) with
@@ -625,15 +630,27 @@ let _ =
             (Fgram.mk_action
                (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
                   (_loc : Locf.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
+  Fgram.extend_single (tmp_lid : 'tmp_lid Fgram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Lid _ -> true | _ -> false)),
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+           ("`Lid (_loc, i)\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Lid i -> (`Lid (_loc, i) : 'tmp_lid )
+                   | _ -> failwith "`Lid (_loc, i)\n"))))]));
   Fgram.extend_single (brace_pattern : 'brace_pattern Fgram.t )
     (None,
       (None, None,
         [([`Skeyword "{";
-          `Snterm (Fgram.obj (pattern : 'pattern Fgram.t ));
+          `Snterm (Fgram.obj (tmp_lid : 'tmp_lid Fgram.t ));
           `Skeyword "}"],
            ("p\n",
              (Fgram.mk_action
-                (fun _  (p : 'pattern)  _  (_loc : Locf.t)  ->
+                (fun _  (p : 'tmp_lid)  _  (_loc : Locf.t)  ->
                    (p : 'brace_pattern )))))]));
   Fgram.extend_single (psymbol : 'psymbol Fgram.t )
     (None,
