@@ -349,20 +349,19 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       match x with
       | `Ant(_loc,{FanUtil.content=x;_}) ->
           %ep{ `Str $lid:x }
-  end in  
+  end in
+  let no_variable = Gram_pat.wildcarder#t p in
+  let mdescr =
+    (v#pat _loc (Objs.strip_pat (no_variable :> pat)) :> exp) in
+  let mstr = Gram_pat.to_string no_variable in 
   match ls with
   | [] ->
-      let no_variable = Gram_pat.wildcarder#t p
-          (* Objs.wildcarder#pat p_pat *) in (*po is the same as [p_pat]*)
       let match_fun =
         let v = (no_variable :> pat) in  
         if is_irrefut_pat v  then
           %exp{function | $v -> true }
         else
           %exp{function | $v -> true | _ -> false  } in
-      let descr' = Objs.strip_pat (no_variable:>pat) in
-      let mdescr = (v#pat _loc descr' :> exp) in
-      let mstr = Gram_pat.to_string no_variable in
       {text =  `Stok(_loc,match_fun, mdescr,mstr) ;
        styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
@@ -370,11 +369,6 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
           List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
             %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      (* Objs.strip_pat (Objs.wildcarder#pat p_pat) in *)
-      let no_variable = Gram_pat.wildcarder#t p in
-      let descr' = Objs.strip_pat (no_variable :> pat) in
-      let mdescr = (v#pat _loc descr' :> exp) in
-      let mstr = Gram_pat.to_string no_variable in 
       {text = `Stok(_loc,match_fun,  mdescr, mstr);
        styp = `Tok _loc;
        pattern= Some (Objs.wildcarder#pat po) }

@@ -23,7 +23,7 @@ section
 
 section
     OCAML_LIBS[] += $(MAINDIR)/libmain
-    OCamlProgram( $(PARSE), $(COMMON) location_ident quotation_expand main_parse)
+    OCamlProgram( $(PARSE), $(COMMON) location_ident quotation_expand test_grammar main_parse)
 
 .PHONY: test
 

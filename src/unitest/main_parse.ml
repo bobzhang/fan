@@ -11,6 +11,7 @@ let suite =
   [
    Location_ident.suite;
    Quotation_expand.suite;
+   Test_grammar.suite;
  ]
 ;;
 
@@ -19,5 +20,5 @@ let _ =
 ;;  
 
 (* local variables: *)
-(* compile-command: "cd .. && make test" *)
+(* compile-command: "cd .. && pmake test_hot" *)
 (* end: *)
