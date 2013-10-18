@@ -74,7 +74,7 @@ val string : exp Fgram.t
 
 
 
-val pattern : Gram_def.action_pattern Fgram.t
+(* val pattern : Gram_def.action_pattern Fgram.t *)
 
 
 

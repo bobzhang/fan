@@ -42,7 +42,6 @@ let g =
     entry position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
    (entry: Gram_def.entry Fgram.t)
-   (pattern: Gram_def.action_pattern Fgram.t )
    extend_body
    unsafe_extend_body
    luident
@@ -214,14 +213,6 @@ let g =
         else
           Ast_quotation.expand x Dyn_tag.exp
       }]
-
-
-  pattern :
-  [ `Lid i  %pat'{ $lid:i }
-  | "_"  %pat'{ _ }
-  | "("; S{p}; ")" %{ p}
-  | "("; S{p1}; ","; L1 S SEP ","{ps}; ")" %{ tuple_com (p1::ps)}
-  ]
 
   let tmp_lid : [`Lid i %pat'{$lid:i}]
    (* FIXME a new entry introduced here only for precise location *)    
