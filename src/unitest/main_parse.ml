@@ -10,6 +10,7 @@ let suite =
   "main_parse">:::
   [
    Location_ident.suite;
+   Quotation_expand.suite;
  ]
 ;;
 

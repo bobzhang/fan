@@ -58,7 +58,6 @@ let psymbol = Fgram.mk_dynamic g "psymbol"
 let level = Fgram.mk_dynamic g "level"
 let level_list = Fgram.mk_dynamic g "level_list"
 let entry: Gram_def.entry Fgram.t = Fgram.mk_dynamic g "entry"
-let pattern: Gram_def.action_pattern Fgram.t = Fgram.mk_dynamic g "pattern"
 let extend_body = Fgram.mk_dynamic g "extend_body"
 let unsafe_extend_body = Fgram.mk_dynamic g "unsafe_extend_body"
 let luident = Fgram.mk_dynamic g "luident"
@@ -96,25 +95,6 @@ let _ =
              (Fgram.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    (`Vrn (_loc, s) : 'simple )))));
-        ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
-         `Stoken
-           (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
-             (`App
-                ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "anti"))))),
-                  `Any)), "`Ant (\"\"| \"anti\",_)")],
-          ("`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n",
-            (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  (v : 'luident)  _ 
-                  (_loc : Locf.t)  ->
-                  match __fan_2 with
-                  | `Ant ((""|"anti" as n),s) ->
-                      (`App
-                         (_loc, (`Vrn (_loc, v)),
-                           (FanUtil.mk_anti _loc ~c:"pat" n s)) : 'simple )
-                  | _ ->
-                      failwith
-                        "`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n"))));
         ([`Skeyword "`";
          `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
          `Stoken
@@ -198,10 +178,6 @@ let _ =
                    match __fan_0 with
                    | `Str s -> (`Str (_loc, s) : 'internal_pat )
                    | _ -> failwith "`Str (_loc, s)\n"))));
-        ([`Skeyword "_"],
-          ("`Any _loc\n",
-            (Fgram.mk_action
-               (fun _  (_loc : Locf.t)  -> (`Any _loc : 'internal_pat )))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)),
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
@@ -210,12 +186,7 @@ let _ =
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
-                  | _ -> failwith "`Lid (_loc, x)\n"))));
-        ([`Skeyword "("; `Sself; `Skeyword ")"],
-          ("p\n",
-            (Fgram.mk_action
-               (fun _  (p : 'internal_pat)  _  (_loc : Locf.t)  ->
-                  (p : 'internal_pat )))))])])
+                  | _ -> failwith "`Lid (_loc, x)\n"))))])])
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"
@@ -603,35 +574,6 @@ let _ =
                    | _ ->
                        failwith
                          "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
-  Fgram.extend_single (pattern : 'pattern Fgram.t )
-    (None,
-      (None, None,
-        [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-           ("`Lid (_loc, i)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Lid i -> (`Lid (_loc, i) : 'pattern )
-                   | _ -> failwith "`Lid (_loc, i)\n"))));
-        ([`Skeyword "_"],
-          ("`Any _loc\n",
-            (Fgram.mk_action
-               (fun _  (_loc : Locf.t)  -> (`Any _loc : 'pattern )))));
-        ([`Skeyword "("; `Sself; `Skeyword ")"],
-          ("p\n",
-            (Fgram.mk_action
-               (fun _  (p : 'pattern)  _  (_loc : Locf.t)  -> (p : 'pattern )))));
-        ([`Skeyword "(";
-         `Sself;
-         `Skeyword ",";
-         `Slist1sep (`Sself, (`Skeyword ","));
-         `Skeyword ")"],
-          ("tuple_com (p1 :: ps)\n",
-            (Fgram.mk_action
-               (fun _  (ps : 'pattern list)  _  (p1 : 'pattern)  _ 
-                  (_loc : Locf.t)  -> (tuple_com (p1 :: ps) : 'pattern )))))]));
   Fgram.extend_single (tmp_lid : 'tmp_lid Fgram.t )
     (None,
       (None, None,

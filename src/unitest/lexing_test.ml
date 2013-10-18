@@ -3,7 +3,7 @@
 
 open OUnit
 
-let (===) = assert_equal
+open Test_util
 
 
 

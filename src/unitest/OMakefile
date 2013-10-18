@@ -13,16 +13,17 @@ OCAMLPACKS[] =
     oUnit
     compiler-libs
 
-PARSE = test_parse
+COMMON = test_util
+PARSE = test_parse 
 LEX   = test_lex
 
 section
     OCAML_LIBS[] += $(MAINDIR)/liblex 
-    OCamlProgram ($(LEX), lexing_test  main_lex)
+    OCamlProgram ($(LEX), $(COMMON) lexing_test  main_lex )
 
 section
     OCAML_LIBS[] += $(MAINDIR)/libmain
-    OCamlProgram( $(PARSE), location_ident main_parse)
+    OCamlProgram( $(PARSE), $(COMMON) location_ident quotation_expand main_parse)
 
 .PHONY: test
 
@@ -34,5 +35,5 @@ test: $(PARSE) $(LEX)
 clean:
     rm -rf $(OCAMLBIN_EXT)
 # local variables:
-# compile-command: "pmake test"
+# compile-command: "cd .. && pmake test_hot"
 # end:

@@ -26,7 +26,7 @@ open FAst
  *)  
 
   %extend{
-    let  uid: [`Uid(n) %{n}]
+    let  uid: [`Uid n %{n}]
     parser_exp : 
         [  OPT uid  {name}; parser_case_list{pcl} %{
           match name with

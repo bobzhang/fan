@@ -29,7 +29,21 @@ let g =
   Fgram.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":";
                "."; ";"; "{"; "}"; "let";"[";"]";
-               "SEP";"LEVEL"; "S"]
+               "SEP";"LEVEL"; "S";
+               "EOI"; "Lid";"Uid";
+               "Ant";"Quot";
+               "DirQuotation";
+               "Str";
+               "Label";
+               "Optlabel";
+               "Chr";
+               "Int";
+               "Int32";
+               "Int64";
+               "Int64";
+               "Nativeint";
+               "Flo"
+             ]
     ();;
 
 
@@ -44,33 +58,50 @@ let g =
    (entry: Gram_def.entry Fgram.t)
    extend_body
    unsafe_extend_body
-   luident
+
    (simple : Gram_pat.t Fgram.t)
 }
 
 %extend{(g:Fgram.t)
-  luident : [`Lid i %{ i} | `Uid i %{ i}]
-  simple :
-  ["`"; luident{s}   %pat'{$vrn:s}
 
-  |"`"; luident{v}; `Ant (("" | "anti" as n) ,s)
-     %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)}
-  |"`"; luident{s}; `Str v
-     %pat'{ $vrn:s $str:v}
-  |"`"; luident{s}; `Lid x
-     %pat'{ $vrn:s $lid:x }
-  |"`"; luident{s}; "_"
-     %pat'{$vrn:s _}
-  |"`"; luident{s}; "("; L1 internal_pat SEP ","{v}; ")"
-     %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)}
-        (* here
-           we have to guarantee
-           {[
-           %pat-{`a(a,b,c)};;
-           - : FAstN.pat = `App (`App (`App (`Vrn "a", `Lid "a"), `Lid "b"), `Lid "c")
-           ]}
-           is dumped correctly
-         *) ]
+  (** FIXME bring antiquotation back later*)        
+  (* |"`"; `Uid v; `Ant (("" | "anti" as n) ,s) *)
+  (*    %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)} *)
+  simple :
+  [ "`"; "EOI" %pat'{`EOI}
+  | "`"; "Lid"; `Str v %pat'{`Lid $str:v}
+  | "`"; "Uid"; `Str v %pat'{`Uid $str:v}      
+  (* | "`"; `Uid s ; `Str v %pat'{ $vrn:s $str:v} *)
+
+  (* |"`"; `Uid s ; `Lid x %pat'{ $vrn:s $lid:x } *)
+  |"`"; "Lid" ; `Lid x %pat'{`Lid $lid:x }
+  |"`"; "Uid" ; `Lid x %pat'{`Uid $lid:x }
+  |"`"; "Quot"; `Lid x %pat'{`Quot $lid:x }
+  |"`"; "Label"; `Lid x %pat'{`Label $lid:x }      
+  |"`"; "DirQuotation"; `Lid x %pat'{`DirQuotation $lid:x}
+  |"`"; "Optlabel"; `Lid x %pat'{`Optlabel $lid:x}      
+  |"`"; "Str"; `Lid x %pat'{`Str $lid:x}
+  |"`"; "Chr"; `Lid x %pat'{`Chr $lid:x}
+  |"`"; "Int"; `Lid x %pat'{`Int $lid:x}
+  |"`"; "Int32"; `Lid x %pat'{`Int32 $lid:x}
+  |"`"; "Int64"; `Lid x %pat'{`Int64 $lid:x}      
+  |"`"; "Nativeint"; `Lid x %pat'{`Nativeint $lid:x}
+  |"`"; "Flo"; `Lid x %pat'{`Flo $lid:x}      
+  |"`"; "Lid" ; "_"    %pat'{`Lid _}
+
+  |"`"; "Uid"; "_" %pat'{`Uid _}
+
+  (* |"`"; `Uid s ; "_"    %pat'{$vrn:s _} *)
+
+  |"`"; "Ant"; "("; L1 internal_pat SEP "," {v}; ")" %{
+    Ast_gen.appl_of_list (%pat'{`Ant} :: v)}
+  |"`"; "Uid"; "("; L1 internal_pat SEP "," {v}; ")" %{
+    Ast_gen.appl_of_list (%pat'{`Uid} :: v)}
+
+      
+  (* |"`"; `Uid s ; "("; L1 internal_pat SEP ","{v}; ")" *)
+  (*    %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)} *)
+  ]
   let internal_pat : (* FIXME such grammar should be deprecated soon*)
   {
    "as"
@@ -79,9 +110,9 @@ let g =
      [S{p1}; "|"; S{p2}    %pat'{$p1 | $p2 } ]
      "simple"
      [ `Str s    %pat'{ $str:s}
-     | "_"    %pat'{ _ } 
      | `Lid x      %pat'{ $lid:x}
-     | "("; S{p}; ")"  %{ p} ] }
+     ]
+ }
 }
   
 
