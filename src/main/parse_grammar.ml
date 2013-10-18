@@ -116,8 +116,9 @@ let g =
  }
 }
   
-
-
+let simple_meta =
+  Gentry.map ~name:"simple_meta" token_of_simple_pat 
+;;
 
 
 %extend{(g:Fgram.t)
@@ -282,14 +283,15 @@ let g =
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
   | "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  | simple{p} %{ token_of_simple_pat _loc p }
+  (* | simple_meta *)
+  | simple{p} %{ token_of_simple_pat  p }
   | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
   | name{n};  OPT level_str{lev} %{
-        mk_symbol  ~text:(`Snterm _loc n lev)
-          ~styp:( %ctyp'{'$(lid:n.tvar)} ) ~pattern:None }
-  | "("; S{s}; ")" %{s} ]
+        mk_symbol  ~text:(`Snterm (_loc ,n, lev))
+          ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None }
+   | "("; S{s}; ")" %{s} ]
 
-  string :
+   string :
   [ `Str  s  %exp{$str:s}
   | `Ant ("", s) %{Parsef.exp _loc s}
   ] (*suport antiquot for string*)

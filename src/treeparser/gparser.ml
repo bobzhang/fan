@@ -146,7 +146,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
         (fun i terminal  -> 
           let (t,loc) =
             match Fstream.peek_nth strm i with
-            | Some (t,loc) (* (tok,_) *) -> (t,loc)
+            | Some (t,loc) -> (t,loc)
             | None -> invalid_arg "parser_of_terminals" in
           begin
             acc:= (Gaction.mk t,loc)::!acc;

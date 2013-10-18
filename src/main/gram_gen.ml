@@ -124,8 +124,8 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `Stry (_loc, t) -> %{ `Stry $(aux "" t) }
     | `Speek (_loc, t) -> %{ `Speek $(aux "" t) }
     | `Stok (_loc, match_fun,  mdescr, mstr ) ->
-        %{`Stoken ($match_fun, $mdescr, $str:mstr)}
-  in aux  tvar x
+        %{`Stoken ($match_fun, $mdescr, $str:mstr)} in
+  aux  tvar x
 
 
 and make_exp_rules (_loc:loc)
@@ -338,7 +338,8 @@ let text_of_functorial_extend ?safe _loc   gram  el =
   let_in_of_extend _loc gram locals args 
 
 (** *)
-let token_of_simple_pat _loc (p:Gram_pat.t) : Gram_def.symbol  =
+let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
+  let _loc = loc_of p in
   let p_pat = (p:Gram_pat.t :> pat) in 
   let (po,ls) =
     filter_pat_with_captured_variables p_pat in
@@ -362,7 +363,7 @@ let token_of_simple_pat _loc (p:Gram_pat.t) : Gram_def.symbol  =
       let descr' = Objs.strip_pat (no_variable:>pat) in
       let mdescr = (v#pat _loc descr' :> exp) in
       let mstr = Gram_pat.to_string no_variable in
-      {text =  `Stok(_loc,match_fun,(* no_variable *)mdescr,mstr) ;
+      {text =  `Stok(_loc,match_fun, mdescr,mstr) ;
        styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
       let guard =

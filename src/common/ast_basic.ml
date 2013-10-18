@@ -37,6 +37,8 @@ let rec of_listl f xs =
   | [t] -> t
   | x::y::xs -> of_listl f (f x y :: xs)
 
+  
+                                    
 (** collapse the intemediate nodes, it does not care about the associativity
  *)
 let rec list_of a acc =

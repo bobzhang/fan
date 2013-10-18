@@ -404,8 +404,9 @@ let text_of_functorial_extend ?safe  _loc gram el =
       (fun (x : Gram_def.entry)  -> if x.local then Some (x.name) else None)
       el in
   let_in_of_extend _loc gram locals args
-let token_of_simple_pat _loc (p : Gram_pat.t) =
-  (let p_pat = (p : Gram_pat.t  :>pat) in
+let token_of_simple_pat (p : Gram_pat.t) =
+  (let _loc = loc_of p in
+   let p_pat = (p : Gram_pat.t  :>pat) in
    let (po,ls) = filter_pat_with_captured_variables p_pat in
    let v =
      object 

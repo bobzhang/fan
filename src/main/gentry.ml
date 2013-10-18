@@ -14,6 +14,14 @@ type 'a t  =  Gstructure.entry
 
 let name (e:'a t) = e.name
 
+let map ~name (f : 'a -> 'b) (e:'a t) : 'b t =
+  (Obj.magic
+     {
+   e with
+   start =  (fun lev str -> (Obj.magic (f (Obj.magic (e.start lev str ) : 'a) ) : Gaction.t));
+   name ;
+ } : 'b t)
+    
 let print ppf e = fprintf ppf "%a@\n" Gprint.text#entry e
 
 let dump ppf e = fprintf ppf "%a@\n" Gprint.dump#entry e
@@ -65,7 +73,9 @@ let repr x = x
 
 let gram_of_entry (e:'a t) = e.gram
 
-
+(** driver of the parse, it would call [start]
+   
+ *)
 let action_parse (entry:'a t) (ts: Ftoken.stream) : Gaction.t =
   try 
     let p = if !trace_parser then Format.fprintf else Format.ifprintf in
@@ -123,3 +133,7 @@ Ginsert:
    (* buggy *)
    eoi_entry;
 };;
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/gentry.cmo" *)
+(* end: *)

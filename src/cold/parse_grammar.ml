@@ -392,6 +392,7 @@ let _ =
                   match __fan_0 with
                   | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
                   | _ -> failwith "`Lid (_loc, x)\n"))))])])
+let simple_meta = Gentry.map ~name:"simple_meta" token_of_simple_pat
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"
@@ -928,10 +929,10 @@ let _ =
                   (mk_symbol ~text:(`Sself _loc) ~styp:(`Self _loc)
                      ~pattern:None : 'symbol )))));
         ([`Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
-          ("token_of_simple_pat _loc p\n",
+          ("token_of_simple_pat p\n",
             (Fgram.mk_action
                (fun (p : 'simple)  (_loc : Locf.t)  ->
-                  (token_of_simple_pat _loc p : 'symbol )))));
+                  (token_of_simple_pat p : 'symbol )))));
         ([`Stoken
             (((function | `Str _ -> true | _ -> false)),
               (`App ((`Vrn "Str"), `Any)), "`Str _")],

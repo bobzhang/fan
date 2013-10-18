@@ -63,7 +63,13 @@ let com_of_list xs = Ast_basic.of_listr com xs
 let sta_of_list xs = Ast_basic.of_listr sta xs     
 
 let dot_of_list xs = Ast_basic.of_listr dot xs 
-  
+
+(** FIXME: The location is imprecise, 
+    for example
+    {[ `A (a,b,c,d) ->
+       The last ')' will not be captured
+    ]}
+ *)  
 let appl_of_list xs = Ast_basic.of_listl app xs     
 
     

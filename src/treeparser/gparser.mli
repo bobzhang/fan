@@ -27,8 +27,10 @@ val parser_of_symbol :
     entry ->  symbol -> (Gaction.t * Locf.t) Ftoken.parse
     
 
-val start_parser_of_levels: entry -> level list -> int -> Gaction.t Ftoken.parse 
-val start_parser_of_entry:  entry ->  int -> Gaction.t Ftoken.parse 
+val start_parser_of_levels : entry -> level list -> int -> Gaction.t Ftoken.parse 
 
-val continue_parser_of_levels: entry -> int -> level list -> int -> Gaction.t cont_parse 
-val continue_parser_of_entry:  entry -> int -> Gaction.t cont_parse
+(** [start] would call [continue] *)
+val start_parser_of_entry :  entry ->  int -> Gaction.t Ftoken.parse 
+
+val continue_parser_of_levels : entry -> int -> level list -> int -> Gaction.t cont_parse 
+val continue_parser_of_entry :  entry -> int -> Gaction.t cont_parse
