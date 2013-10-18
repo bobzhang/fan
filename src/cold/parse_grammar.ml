@@ -34,6 +34,8 @@ let g =
               "let";
               "[";
               "]";
+              "SEP";
+              "LEVEL";
               "S"] ()
 let extend_header = Fgram.mk_dynamic g "extend_header"
 let qualuid: vid Fgram.t = Fgram.mk_dynamic g "qualuid"
@@ -673,17 +675,10 @@ let _ =
   Fgram.extend_single (sep_symbol : 'sep_symbol Fgram.t )
     (None,
       (None, None,
-        [([`Stoken
-             (((function | `Uid "SEP" -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), (`Str "SEP"))), "`Uid \"SEP\"");
-          `Snterm (Fgram.obj (symbol : 'symbol Fgram.t ))],
+        [([`Skeyword "SEP"; `Snterm (Fgram.obj (symbol : 'symbol Fgram.t ))],
            ("t\n",
              (Fgram.mk_action
-                (fun (t : 'symbol)  (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)
-                    ->
-                   match __fan_0 with
-                   | `Uid "SEP" -> (t : 'sep_symbol )
-                   | _ -> failwith "t\n"))))]));
+                (fun (t : 'symbol)  _  (_loc : Locf.t)  -> (t : 'sep_symbol )))))]));
   Fgram.extend_single (level_str : 'level_str Fgram.t )
     (None,
       (None, None,

@@ -29,7 +29,7 @@ let g =
   Fgram.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":";
                "."; ";"; "{"; "}"; "let";"[";"]";
-             "S"]
+               "SEP";"LEVEL"; "S"]
     ();;
 
 
@@ -234,7 +234,7 @@ let g =
         { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
     | None -> s}  ] 
 
-  let sep_symbol : [`Uid "SEP"; symbol{t} %{t}]
+  let sep_symbol : [ "SEP"; symbol{t} %{t}]
   let level_str :  [`Uid "Level"; `Str  s %{s} ]
   symbol:
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } %{
