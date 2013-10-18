@@ -117,7 +117,7 @@ let g =
 }
   
 let simple_meta =
-  Gentry.map ~name:"simple_meta" token_of_simple_pat 
+  Gentry.map ~name:"simple_meta" token_of_simple_pat simple
 ;;
 
 
@@ -283,8 +283,8 @@ let simple_meta =
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
   | "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  (* | simple_meta *)
-  | simple{p} %{ token_of_simple_pat  p }
+  | simple_meta{p} %{p}
+  (* | simple{p} %{ token_of_simple_pat  p } *)
   | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
   | name{n};  OPT level_str{lev} %{
         mk_symbol  ~text:(`Snterm (_loc ,n, lev))
