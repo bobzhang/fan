@@ -74,9 +74,6 @@ val string : exp Fgram.t
 
 
 
-(* val pattern : Gram_def.action_pattern Fgram.t *)
-
-
 
 
 (** return symbol with patterns (may override inferred patterns) *)

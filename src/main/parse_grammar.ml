@@ -95,6 +95,7 @@ let g =
 
   |"`"; "Ant"; "("; L1 internal_pat SEP "," {v}; ")" %{
     Ast_gen.appl_of_list (%pat'{`Ant} :: v)}
+
   |"`"; "Uid"; "("; L1 internal_pat SEP "," {v}; ")" %{
     Ast_gen.appl_of_list (%pat'{`Uid} :: v)}
 
@@ -258,7 +259,8 @@ let g =
 
   let sep_symbol : [ "SEP"; symbol{t} %{t}]
   let level_str :  [`Uid "Level"; `Str  s %{s} ]
-  symbol:
+
+  symbol :
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } %{
     let () = check_not_tok s in
     let styp = %ctyp'{ $(s.styp) list   } in 
@@ -280,7 +282,7 @@ let g =
       mk_symbol ~text ~styp:(s.styp) ~pattern:None}
   | "S" %{
       mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  | simple{p} %{token_of_simple_pat _loc p }
+  | simple{p} %{ token_of_simple_pat _loc p }
   | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
   | name{n};  OPT level_str{lev} %{
         mk_symbol  ~text:(`Snterm _loc n lev)

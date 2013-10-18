@@ -43,7 +43,7 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 
 let check_not_tok (s:Gram_def.symbol) = 
   match s with 
-  | {text = `Stok (_loc,  _, _) ;_} ->
+  | {text = `Stok (_loc,  _, _,_) ;_} ->
       Locf.raise _loc (Fstream.Error
                          ("Deprecated syntax, use a sub rule. "^
                           "L0 STRING becomes L0 [ x = STRING -> x ]"))
@@ -114,7 +114,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `Skeyword (_loc, kwd) ->  %{ `Skeyword $str:kwd }
     | `Snterm (_loc, n, lev) ->
         let obj =
-          %{ ($(id:(gm() (* : vid :> exp *))).obj
+          %{ ($(id:gm()).obj
                 ($(n.exp) : '$(lid:n.tvar) $(id:(gm(): vid :> ident)).t ))} in 
         (match lev with
         | Some lab -> %{ `Snterml ($obj,$str:lab)}
@@ -123,17 +123,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `Sopt (_loc, t) -> %{ `Sopt $(aux "" t) }
     | `Stry (_loc, t) -> %{ `Stry $(aux "" t) }
     | `Speek (_loc, t) -> %{ `Speek $(aux "" t) }
-    | `Stok (_loc, match_fun,  descr) ->
-        let v = object (* to be improved *)
-          inherit FanAstN.meta
-          method! ant _loc x =
-            match x with
-            | `Ant(_loc,{FanUtil.content=x;_}) ->
-                %ep{ `Str $lid:x }
-        end in
-        let descr' = Objs.strip_pat (descr :> pat) in  
-        let mdescr = (v#pat _loc descr' :> exp) in (* FIXME [_loc] is not necessary?*)
-        let mstr = Gram_pat.to_string descr in
+    | `Stok (_loc, match_fun,  mdescr, mstr ) ->
         %{`Stoken ($match_fun, $mdescr, $str:mstr)}
   in aux  tvar x
 
@@ -294,13 +284,12 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
         %exp{ $(id:gm()).mk } in
   let local_bind_of_name = function x ->
     match (x:Gram_def.name) with 
-    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
-      %bind{ $lid:i =  (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t ) }
+    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} -> %bind{ $lid:i =
+             (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t )}
     | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
   match locals with
   | [] -> default 
-  (* | None | Some [] -> default *)
-  | (* Some *) ll ->
+  | ll ->
       let locals = and_of_list (List.map local_bind_of_name ll)  in
       (** eta-expansion to avoid specialized types here  *)
       %exp{ let grammar_entry_create x = $entry_mk  x in let $locals in $default }    
@@ -344,13 +333,22 @@ let text_of_functorial_extend ?safe _loc   gram  el =
     | [] -> %exp{ () }
     | _ -> seq_sem el    in
   let locals  = (** FIXME the order matters here, check duplication later!!! *)
-    Listf.filter_map (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) el in
+    Listf.filter_map
+      (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) el in
   let_in_of_extend _loc gram locals args 
 
 (** *)
-let token_of_simple_pat _loc (p:Gram_pat.t)  =
+let token_of_simple_pat _loc (p:Gram_pat.t) : Gram_def.symbol  =
   let p_pat = (p:Gram_pat.t :> pat) in 
-  let (po,ls) = filter_pat_with_captured_variables p_pat in
+  let (po,ls) =
+    filter_pat_with_captured_variables p_pat in
+  let v = object (* to be improved *)
+    inherit FanAstN.meta
+    method! ant _loc x =
+      match x with
+      | `Ant(_loc,{FanUtil.content=x;_}) ->
+          %ep{ `Str $lid:x }
+  end in  
   match ls with
   | [] ->
       let no_variable = Gram_pat.wildcarder#t p
@@ -361,19 +359,24 @@ let token_of_simple_pat _loc (p:Gram_pat.t)  =
           %exp{function | $v -> true }
         else
           %exp{function | $v -> true | _ -> false  } in
-      let descr = no_variable in
-      let text = `Stok(_loc,match_fun,descr) in
-      ({text;styp=`Tok _loc;pattern = Some p_pat}:Gram_def.symbol)
+      let descr' = Objs.strip_pat (no_variable:>pat) in
+      let mdescr = (v#pat _loc descr' :> exp) in
+      let mstr = Gram_pat.to_string no_variable in
+      {text =  `Stok(_loc,match_fun,(* no_variable *)mdescr,mstr) ;
+       styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
       let guard =
           List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
             %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      let descr =
-        Gram_pat.wildcarder#t p  in
-        (* Objs.strip_pat (Objs.wildcarder#pat p_pat) in *)
-      let text = `Stok(_loc,match_fun,descr) in
-      {text;styp = `Tok _loc;pattern= Some (Objs.wildcarder#pat po) }
+      (* Objs.strip_pat (Objs.wildcarder#pat p_pat) in *)
+      let no_variable = Gram_pat.wildcarder#t p in
+      let descr' = Objs.strip_pat (no_variable :> pat) in
+      let mdescr = (v#pat _loc descr' :> exp) in
+      let mstr = Gram_pat.to_string no_variable in 
+      {text = `Stok(_loc,match_fun,  mdescr, mstr);
+       styp = `Tok _loc;
+       pattern= Some (Objs.wildcarder#pat po) }
         
 
 (* local variables: *)

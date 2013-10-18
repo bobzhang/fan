@@ -21,7 +21,7 @@ let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
 let check_not_tok (s : Gram_def.symbol) =
   match s with
-  | { text = `Stok (_loc,_,_);_} ->
+  | { text = `Stok (_loc,_,_,_);_} ->
       Locf.raise _loc
         (Fstream.Error
            ("Deprecated syntax, use a sub rule. " ^
@@ -134,19 +134,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
     | `Speek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Stok (_loc,match_fun,descr) ->
-        let v =
-          object 
-            inherit  FanAstN.meta
-            method! ant _loc x =
-              match x with
-              | `Ant (_loc,{ FanUtil.content = x;_}) ->
-                  (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, x))) : 
-                  FAst.ep )
-          end in
-        let descr' = Objs.strip_pat (descr :>pat) in
-        let mdescr = (v#pat _loc descr' :>exp) in
-        let mstr = Gram_pat.to_string descr in
+    | `Stok (_loc,match_fun,mdescr,mstr) ->
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
              (`Par
@@ -154,7 +142,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
                   (`Com
                      (_loc, match_fun,
                        (`Com (_loc, mdescr, (`Str (_loc, mstr))))))))) : 
-          FAst.exp ) in
+        FAst.exp ) in
   aux tvar x
 and make_exp_rules (_loc : loc)
   (rl : (Gram_def.text list* exp* exp option) list) (tvar : string) =
@@ -417,42 +405,61 @@ let text_of_functorial_extend ?safe  _loc gram el =
       el in
   let_in_of_extend _loc gram locals args
 let token_of_simple_pat _loc (p : Gram_pat.t) =
-  let p_pat = (p : Gram_pat.t  :>pat) in
-  let (po,ls) = filter_pat_with_captured_variables p_pat in
-  match ls with
-  | [] ->
-      let no_variable = Gram_pat.wildcarder#t p in
-      let match_fun =
-        let v = (no_variable :>pat) in
-        if is_irrefut_pat v
-        then
-          (`Fun (_loc, (`Case (_loc, v, (`Lid (_loc, "true"))))) : FAst.exp )
-        else
-          (`Fun
-             (_loc,
-               (`Bar
-                  (_loc, (`Case (_loc, v, (`Lid (_loc, "true")))),
-                    (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-          FAst.exp ) in
-      let descr = no_variable in
-      let text = `Stok (_loc, match_fun, descr) in
-      ({ text; styp = (`Tok _loc); pattern = (Some p_pat) } : Gram_def.symbol )
-  | (x,y)::ys ->
-      let guard =
-        List.fold_left
-          (fun acc  (x,y)  ->
-             (`App
-                (_loc, (`App (_loc, (`Lid (_loc, "&&")), acc)),
-                  (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y))) : 
-             FAst.exp ))
-          (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y) : FAst.exp )
-          ys in
-      let match_fun: FAst.exp =
-        `Fun
-          (_loc,
-            (`Bar
-               (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
-                 (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-      let descr = Gram_pat.wildcarder#t p in
-      let text = `Stok (_loc, match_fun, descr) in
-      { text; styp = (`Tok _loc); pattern = (Some (Objs.wildcarder#pat po)) }
+  (let p_pat = (p : Gram_pat.t  :>pat) in
+   let (po,ls) = filter_pat_with_captured_variables p_pat in
+   let v =
+     object 
+       inherit  FanAstN.meta
+       method! ant _loc x =
+         match x with
+         | `Ant (_loc,{ FanUtil.content = x;_}) ->
+             (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, x))) : FAst.ep )
+     end in
+   match ls with
+   | [] ->
+       let no_variable = Gram_pat.wildcarder#t p in
+       let match_fun =
+         let v = (no_variable :>pat) in
+         if is_irrefut_pat v
+         then
+           (`Fun (_loc, (`Case (_loc, v, (`Lid (_loc, "true"))))) : FAst.exp )
+         else
+           (`Fun
+              (_loc,
+                (`Bar
+                   (_loc, (`Case (_loc, v, (`Lid (_loc, "true")))),
+                     (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+           FAst.exp ) in
+       let descr' = Objs.strip_pat (no_variable :>pat) in
+       let mdescr = (v#pat _loc descr' :>exp) in
+       let mstr = Gram_pat.to_string no_variable in
+       {
+         text = (`Stok (_loc, match_fun, mdescr, mstr));
+         styp = (`Tok _loc);
+         pattern = (Some p_pat)
+       }
+   | (x,y)::ys ->
+       let guard =
+         List.fold_left
+           (fun acc  (x,y)  ->
+              (`App
+                 (_loc, (`App (_loc, (`Lid (_loc, "&&")), acc)),
+                   (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y))) : 
+              FAst.exp ))
+           (`App (_loc, (`App (_loc, (`Lid (_loc, "=")), x)), y) : FAst.exp )
+           ys in
+       let match_fun: FAst.exp =
+         `Fun
+           (_loc,
+             (`Bar
+                (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
+                  (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
+       let no_variable = Gram_pat.wildcarder#t p in
+       let descr' = Objs.strip_pat (no_variable :>pat) in
+       let mdescr = (v#pat _loc descr' :>exp) in
+       let mstr = Gram_pat.to_string no_variable in
+       {
+         text = (`Stok (_loc, match_fun, mdescr, mstr));
+         styp = (`Tok _loc);
+         pattern = (Some (Objs.wildcarder#pat po))
+       } : Gram_def.symbol )

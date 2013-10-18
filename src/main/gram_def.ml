@@ -54,12 +54,12 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * Gram_pat.t)
+ | `Stok of (loc * exp * exp * string (* Gram_pat.t *))
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for
     grammar insertion and left factoring.
-    Keep this string [normalized] and well comparable. *) ]
+    Keep this string [normalized] and well *comparable*. *) ]
   };;
 
 
