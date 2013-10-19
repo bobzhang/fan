@@ -46,23 +46,6 @@ let g =
              ]
     ();;
 
-
-%create{(g:Fgram.t)
-   extend_header
-   (qualuid : vid Fgram.t)
-   (qualid:vid Fgram.t)
-   (t_qualid:vid Fgram.t )
-   (entry_name : ([`name of Ftoken.name option | `non] * Gram_def.name) Fgram.t )
-    entry position assoc name string rules
-    symbol rule meta_rule rule_list psymbol level level_list
-   (entry: Gram_def.entry Fgram.t)
-   extend_body
-   unsafe_extend_body
-
-   (simple : Gram_pat.t Fgram.t)
-}
-
-
 type words =
   | A of string list
   | Any
@@ -72,6 +55,24 @@ type data = {
     words : words;
   }
       
+
+%create{(g:Fgram.t)
+   (* extend_header *)
+   (* (qualuid : vid Fgram.t) *)
+   (* (qualid:vid Fgram.t) *)
+   (* (t_qualid:vid Fgram.t ) *)
+   (* (entry_name : ([`name of Ftoken.name option | `non] * Gram_def.name) Fgram.t ) *)
+   (*  entry position assoc name string rules *)
+   (*  symbol rule meta_rule rule_list psymbol level level_list *)
+   (* (entry: Gram_def.entry Fgram.t) *)
+   (* extend_body *)
+   (* unsafe_extend_body *)
+
+   (simple : data Fgram.t)
+}
+
+(** idea split all or tokens. make it easy for merging
+ *)
 %extend{(g:Fgram.t)
   simple :
   [ "`"; "EOI" %{{tag = "EOI"; words = A [] }}
@@ -92,21 +93,20 @@ type data = {
   | "`"; "Flo"; `Lid x %{{tag = "Flo"; words = Any}}
   | "`"; "Lid" ; "_"    %{{tag = "Lid"; words = Any}}
   | "`"; "Uid"; "_" %{{tag = "Uid"; words = Any }}
-  | "`"; "Ant"; "("; L1 internal_pat SEP "," {v}; ")" %{
-    {tag = "Ant"; words = v  }
-    }
-  | "`"; "Uid"; "("; L1 internal_pat SEP "," {v}; ")" %{
-    {tag = "Uid"; words = v}
+  | "`"; "Ant"; "("; or_words{p};",";lid; ")" %{{tag = "Ant"; words = p}}
+  | "`"; "Uid"; "("; or_words{p}; ")" %{{tag = "Uid"; words = p}}
   ]
-  let internal_pat :
-  {
-   "as"
-     [S{p1} ; "as";`Lid s  %{ p1}
-     "|"
-     [S{p1}; "|"; S{p2}    %{ p1 @ p2 } ]
-     "simple"
-     [ `Str s    %pat'{ $str:s}
-     | `Lid x      %pat'{ $lid:x}
-     ]
- }
+  let or_words :
+      [ L1 str SEP "|"{v} %{A v }
+      | L1 str SEP "|"{v}; "as"; `Lid s %{A v}]
+
+  let str :
+      [`Str s %{ s} ]
+  let lid :
+      [`Lid s %{ `Lid(_loc,s)}]
 }
+      
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/parse_grammar2.cmo" *)
+(* end: *)

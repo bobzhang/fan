@@ -63,31 +63,28 @@ let g =
 }
 
 %extend{(g:Fgram.t)
-
   (** FIXME bring antiquotation back later*)        
-  (* |"`"; `Uid v; `Ant (("" | "anti" as n) ,s) *)
-  (*    %pat'{ $vrn:v $(FanUtil.mk_anti _loc ~c:"pat" n s)} *)
   simple :
   [ "`"; "EOI" %pat'{`EOI}
   | "`"; "Lid"; `Str v %pat'{`Lid $str:v}
   | "`"; "Uid"; `Str v %pat'{`Uid $str:v}      
-  |"`"; "Lid" ; `Lid x %pat'{`Lid $lid:x }
-  |"`"; "Uid" ; `Lid x %pat'{`Uid $lid:x }
-  |"`"; "Quot"; `Lid x %pat'{`Quot $lid:x }
-  |"`"; "Label"; `Lid x %pat'{`Label $lid:x }      
-  |"`"; "DirQuotation"; `Lid x %pat'{`DirQuotation $lid:x}
-  |"`"; "Optlabel"; `Lid x %pat'{`Optlabel $lid:x}      
-  |"`"; "Str"; `Lid x %pat'{`Str $lid:x}
-  |"`"; "Chr"; `Lid x %pat'{`Chr $lid:x}
-  |"`"; "Int"; `Lid x %pat'{`Int $lid:x}
-  |"`"; "Int32"; `Lid x %pat'{`Int32 $lid:x}
-  |"`"; "Int64"; `Lid x %pat'{`Int64 $lid:x}      
-  |"`"; "Nativeint"; `Lid x %pat'{`Nativeint $lid:x}
-  |"`"; "Flo"; `Lid x %pat'{`Flo $lid:x}      
-  |"`"; "Lid" ; "_"    %pat'{`Lid _}
-  |"`"; "Uid"; "_" %pat'{`Uid _}
-  |"`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %pat'{`Ant( $p, $p1 )}
-  |"`"; "Uid"; "("; or_words{p}; ")" %pat'{`Uid $p}
+  | "`"; "Lid" ; `Lid x %pat'{`Lid $lid:x }
+  | "`"; "Uid" ; `Lid x %pat'{`Uid $lid:x }
+  | "`"; "Quot"; `Lid x %pat'{`Quot $lid:x }
+  | "`"; "Label"; `Lid x %pat'{`Label $lid:x }      
+  | "`"; "DirQuotation"; `Lid x %pat'{`DirQuotation $lid:x}
+  | "`"; "Optlabel"; `Lid x %pat'{`Optlabel $lid:x}      
+  | "`"; "Str"; `Lid x %pat'{`Str $lid:x}
+  | "`"; "Chr"; `Lid x %pat'{`Chr $lid:x}
+  | "`"; "Int"; `Lid x %pat'{`Int $lid:x}
+  | "`"; "Int32"; `Lid x %pat'{`Int32 $lid:x}
+  | "`"; "Int64"; `Lid x %pat'{`Int64 $lid:x}      
+  | "`"; "Nativeint"; `Lid x %pat'{`Nativeint $lid:x}
+  | "`"; "Flo"; `Lid x %pat'{`Flo $lid:x}      
+  | "`"; "Lid" ; "_"    %pat'{`Lid _}
+  | "`"; "Uid"; "_" %pat'{`Uid _}
+  | "`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %pat'{`Ant( $p, $p1 )}
+  | "`"; "Uid"; "("; or_words{p}; ")" %pat'{`Uid $p}
   ]
   let or_words :
       [ L1 str SEP "|"{v} %{Ast_gen.bar_of_list v }
@@ -97,17 +94,6 @@ let g =
       [`Str s %pat'{$str:s} ]
   let lid :
       [`Lid s %pat'{$lid:s}]
-  let internal_pat : (* FIXME such grammar should be deprecated soon*)
-  {
-   "as"
-     [S{p1} ; "as";`Lid s   %pat'{ ($p1 as $lid:s) } ]
-     "|"
-     [S{p1}; "|"; S{p2}    %pat'{$p1 | $p2 } ]
-     "simple"
-     [ `Str s    %pat'{ $str:s}
-     | `Lid x      %pat'{ $lid:x}
-     ]
- }
 }
   
 let simple_meta =
@@ -146,9 +132,6 @@ let simple_meta =
     let () = grammar_module_name := old in
     res}      ]
       
-  let psymbols:
-  [ L0 psymbol SEP ";"{sl} %{sl}  ] 
-
   (* parse qualified [X.X] *)
   qualuid:
   [ `Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
@@ -227,10 +210,12 @@ let simple_meta =
       
   rule_list :
   [ "["; "]" %{ []}
-  | "["; L1 rule SEP "|"{rules}; "]" %{ retype_rule_list_without_patterns _loc rules}]
+  | "["; L1 rule SEP "|"{ruless}; "]" %{
+    let rules = Listf.concat ruless in
+    retype_rule_list_without_patterns _loc rules}]
 
   rule :
-  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{ mk_rule ~prod ~action} ]
+  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{ [mk_rule ~prod ~action]} ]
 
   let opt_action :
       [ `Quot x %{

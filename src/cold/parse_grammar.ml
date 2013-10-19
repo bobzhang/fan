@@ -81,9 +81,7 @@ let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let or_words: 'or_words Fgram.t = grammar_entry_create "or_words"
   and str: 'str Fgram.t = grammar_entry_create "str"
-  and lid: 'lid Fgram.t = grammar_entry_create "lid"
-  and internal_pat: 'internal_pat Fgram.t =
-    grammar_entry_create "internal_pat" in
+  and lid: 'lid Fgram.t = grammar_entry_create "lid" in
   Fgram.extend_single (simple : 'simple Fgram.t )
     (None,
       (None, None,
@@ -401,53 +399,11 @@ let _ =
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid s -> (`Lid (_loc, s) : 'lid )
-                   | _ -> failwith "`Lid (_loc, s)\n"))))]));
-  Fgram.extend (internal_pat : 'internal_pat Fgram.t )
-    (None,
-      [((Some "as"), None,
-         [([`Sself;
-           `Skeyword "as";
-           `Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-            ("`Alias (_loc, p1, (`Lid (_loc, s)))\n",
-              (Fgram.mk_action
-                 (fun (__fan_2 : [> Ftoken.t])  _  (p1 : 'internal_pat) 
-                    (_loc : Locf.t)  ->
-                    match __fan_2 with
-                    | `Lid s ->
-                        (`Alias (_loc, p1, (`Lid (_loc, s))) : 'internal_pat )
-                    | _ -> failwith "`Alias (_loc, p1, (`Lid (_loc, s)))\n"))))]);
-      ((Some "|"), None,
-        [([`Sself; `Skeyword "|"; `Sself],
-           ("`Bar (_loc, p1, p2)\n",
-             (Fgram.mk_action
-                (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat) 
-                   (_loc : Locf.t)  -> (`Bar (_loc, p1, p2) : 'internal_pat )))))]);
-      ((Some "simple"), None,
-        [([`Stoken
-             (((function | `Str _ -> true | _ -> false)),
-               (`App ((`Vrn "Str"), `Any)), "`Str _")],
-           ("`Str (_loc, s)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Str s -> (`Str (_loc, s) : 'internal_pat )
-                   | _ -> failwith "`Str (_loc, s)\n"))));
-        ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
-          ("`Lid (_loc, x)\n",
-            (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
-                  | _ -> failwith "`Lid (_loc, x)\n"))))])])
+                   | _ -> failwith "`Lid (_loc, s)\n"))))]))
 let simple_meta = Gentry.map ~name:"simple_meta" token_of_simple_pat simple
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"
-  and psymbols: 'psymbols Fgram.t = grammar_entry_create "psymbols"
   and opt_action: 'opt_action Fgram.t = grammar_entry_create "opt_action"
   and tmp_lid: 'tmp_lid Fgram.t = grammar_entry_create "tmp_lid"
   and brace_pattern: 'brace_pattern Fgram.t =
@@ -517,16 +473,6 @@ let _ =
                     let res =
                       text_of_functorial_extend ~safe:false _loc gram el in
                     let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
-  Fgram.extend_single (psymbols : 'psymbols Fgram.t )
-    (None,
-      (None, None,
-        [([`Slist0sep
-             ((`Snterm (Fgram.obj (psymbol : 'psymbol Fgram.t ))),
-               (`Skeyword ";"))],
-           ("sl\n",
-             (Fgram.mk_action
-                (fun (sl : 'psymbol list)  (_loc : Locf.t)  ->
-                   (sl : 'psymbols )))))]));
   Fgram.extend_single (qualuid : 'qualuid Fgram.t )
     (None,
       (None, None,
@@ -796,10 +742,11 @@ let _ =
          `Slist1sep
            ((`Snterm (Fgram.obj (rule : 'rule Fgram.t ))), (`Skeyword "|"));
          `Skeyword "]"],
-          ("retype_rule_list_without_patterns _loc rules\n",
+          ("let rules = Listf.concat ruless in\nretype_rule_list_without_patterns _loc rules\n",
             (Fgram.mk_action
-               (fun _  (rules : 'rule list)  _  (_loc : Locf.t)  ->
-                  (retype_rule_list_without_patterns _loc rules : 'rule_list )))))]));
+               (fun _  (ruless : 'rule list)  _  (_loc : Locf.t)  ->
+                  (let rules = Listf.concat ruless in
+                   retype_rule_list_without_patterns _loc rules : 'rule_list )))))]));
   Fgram.extend_single (rule : 'rule Fgram.t )
     (None,
       (None, None,
@@ -807,10 +754,10 @@ let _ =
              ((`Snterm (Fgram.obj (psymbol : 'psymbol Fgram.t ))),
                (`Skeyword ";"));
           `Sopt (`Snterm (Fgram.obj (opt_action : 'opt_action Fgram.t )))],
-           ("mk_rule ~prod ~action\n",
+           ("[mk_rule ~prod ~action]\n",
              (Fgram.mk_action
                 (fun (action : 'opt_action option)  (prod : 'psymbol list) 
-                   (_loc : Locf.t)  -> (mk_rule ~prod ~action : 'rule )))))]));
+                   (_loc : Locf.t)  -> ([mk_rule ~prod ~action] : 'rule )))))]));
   Fgram.extend_single (opt_action : 'opt_action Fgram.t )
     (None,
       (None, None,

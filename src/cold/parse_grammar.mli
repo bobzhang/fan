@@ -114,8 +114,8 @@ val simple_meta : Gram_def.symbol Gentry.t
      `Lid (, "x"))))}];
      action = None}
      ]} *)
-val rule :  Gram_def.rule Fgram.t
-val rule_list : Gram_def.rule list Fgram.t
+(* val rule :  Gram_def.rule Fgram.t *)
+(* val rule_list : Gram_def.rule list Fgram.t *)
 
 val level :  Gram_def.level Fgram.t
 val level_list :
