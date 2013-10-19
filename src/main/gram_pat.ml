@@ -29,7 +29,6 @@ and t =
   | ant 
   |`Com of (loc * t * t)
   |`Alias of (loc * t * lident)
-  |`Bar of (loc * t * t)
   |`Str of (loc * string)
   |`Any of loc] with ("Print" "Map")
 
@@ -62,8 +61,6 @@ let rec unparse  f (x:t)=
       end
   | `Com(_,a,b) -> p f "%a, %a" unparse a unparse b
   | `Alias (_,p,_) -> unparse f  p
-
-  | `Bar (_,a,b) -> p f "%a| %a" unparse a unparse b
   | `Str(_,s) -> p f "%S" s
   | `Any _ -> p f "_"
   | `Lid (_,s) -> p f "%s" s 

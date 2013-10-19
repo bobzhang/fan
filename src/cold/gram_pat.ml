@@ -16,8 +16,8 @@ type lident = [ `Lid of (loc* string)]
 and t =
   [ `Vrn of (loc* string) | `App of (loc* t* t) | `Lid of (loc* string) | 
     ant
-  | `Com of (loc* t* t) | `Alias of (loc* t* lident) | `Bar of (loc* t* t)
-  | `Str of (loc* string) | `Any of loc] 
+  | `Com of (loc* t* t) | `Alias of (loc* t* lident) | `Str of (loc* string)
+  | `Any of loc] 
 class map =
   object (self : 'self_type)
     inherit  mapbase
@@ -46,10 +46,6 @@ class map =
           let _a0 = self#loc _a0 in
           let _a1 = self#t _a1 in
           let _a2 = self#lident _a2 in `Alias (_a0, _a1, _a2)
-      | `Bar (_a0,_a1,_a2) ->
-          let _a0 = self#loc _a0 in
-          let _a1 = self#t _a1 in
-          let _a2 = self#t _a2 in `Bar (_a0, _a1, _a2)
       | `Str (_a0,_a1) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#string _a1 in `Str (_a0, _a1)
@@ -78,9 +74,6 @@ and pp_print_t: Format.formatter -> t -> unit =
     | `Alias (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Alias@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_t _a1 pp_print_lident _a2
-    | `Bar (_a0,_a1,_a2) ->
-        Format.fprintf fmt "@[<1>(`Bar@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_t _a1 pp_print_t _a2
     | `Str (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a@ %a)@]" pp_print_loc _a0
           pp_print_string _a1
@@ -110,7 +103,6 @@ let rec unparse f (x : t) =
             invalid_arg "unparse"))
   | `Com (_,a,b) -> p f "%a, %a" unparse a unparse b
   | `Alias (_,p,_) -> unparse f p
-  | `Bar (_,a,b) -> p f "%a| %a" unparse a unparse b
   | `Str (_,s) -> p f "%S" s
   | `Any _ -> p f "_"
   | `Lid (_,s) -> p f "%s" s

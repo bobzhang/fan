@@ -4,7 +4,7 @@ and t =
     | `Ant of Locf.t * FanUtil.anti_cxt
     | `Any of Locf.t
     | `App of Locf.t * t * t
-    | `Bar of Locf.t * t * t
+    (* | `Bar of Locf.t * t * t *)
     | `Com of Locf.t * t * t
     | `Lid of Locf.t * string
     | `Str of Locf.t * string

@@ -96,14 +96,12 @@ let g =
         List.map (fun x -> %pat'{`Uid $x}) v
     | (v,Some x) ->
         List.map (fun a -> %pat'{`Uid ($a as $lid:x)}) v 
-    (* [%pat'{`Uid $p}] *)
   }
   ]
   let or_words :
-      [ L1 str SEP "|"{v} %{  (v,None) (* Ast_gen.bar_of_list v *) }
+      [ L1 str SEP "|"{v} %{  (v,None)  }
       | L1 str SEP "|"{v}; "as"; `Lid s %{
-          (v , Some s)
-         (* let p  = Ast_gen.bar_of_list v in %pat'{ ($p as $lid:s)} *) } ]
+          (v , Some s) } ]
   let str :
       [`Str s %pat'{$str:s} ]
   let lid :
