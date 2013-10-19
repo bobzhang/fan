@@ -424,6 +424,19 @@ let _ =
                    | _ -> failwith "`Lid (_loc, s)\n"))))]))
 let simple_meta =
   Gentry.map ~name:"simple_meta" (List.map token_of_simple_pat) simple
+let normalize (x : Gram_pat.t) =
+  (match x with
+   | `Vrn (_loc,x) -> { tag = x; word = Empty }
+   | `App (_loc,`Vrn (_,x),`Str (_,s))
+     |`App (_loc,`Vrn (_,x),`Alias (_,`Str (_,s),_)) ->
+       { tag = x; word = (A s) }
+   | `App (_loc,`Vrn (_,x),`Lid (_,_))|`App (_loc,`Vrn (_,x),`Any _) ->
+       { tag = x; word = Any }
+   | `App (_loc,`App (_,`Vrn (_,x),`Lid (_,_)),_) -> { tag = x; word = Any }
+   | `App (_loc,`App (_,`Vrn (_,x),`Alias (_,`Str (_,s),_)),_)
+     |`App (_loc,`App (_,`Vrn (_,x),`Str (_,s)),_) ->
+       { tag = x; word = (A s) }
+   | _ -> (failwithf "normalize %s") @@ (Gram_pat.to_string x) : Gram_def.data )
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"

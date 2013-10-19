@@ -19,6 +19,15 @@ type styp =
  | `Tok of loc
  | `Type of ctyp ]
 
+type word  =
+  | Any
+  | A of string
+  | Empty (* no token associated *)
+type data = {
+    tag : string;
+    word : word;
+  }      
+type meta = exp 
 type entry   = {
   name : name ;
   (*position expession node *)    
@@ -54,7 +63,7 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * exp * string (* Gram_pat.t *))
+ | `Stok of (loc * exp * meta(* exp *) * string (* Gram_pat.t *))
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for
