@@ -71,9 +71,6 @@ let g =
   [ "`"; "EOI" %pat'{`EOI}
   | "`"; "Lid"; `Str v %pat'{`Lid $str:v}
   | "`"; "Uid"; `Str v %pat'{`Uid $str:v}      
-  (* | "`"; `Uid s ; `Str v %pat'{ $vrn:s $str:v} *)
-
-  (* |"`"; `Uid s ; `Lid x %pat'{ $vrn:s $lid:x } *)
   |"`"; "Lid" ; `Lid x %pat'{`Lid $lid:x }
   |"`"; "Uid" ; `Lid x %pat'{`Uid $lid:x }
   |"`"; "Quot"; `Lid x %pat'{`Quot $lid:x }
@@ -88,21 +85,18 @@ let g =
   |"`"; "Nativeint"; `Lid x %pat'{`Nativeint $lid:x}
   |"`"; "Flo"; `Lid x %pat'{`Flo $lid:x}      
   |"`"; "Lid" ; "_"    %pat'{`Lid _}
-
   |"`"; "Uid"; "_" %pat'{`Uid _}
-
-  (* |"`"; `Uid s ; "_"    %pat'{$vrn:s _} *)
-
-  |"`"; "Ant"; "("; L1 internal_pat SEP "," {v}; ")" %{
-    Ast_gen.appl_of_list (%pat'{`Ant} :: v)}
-
-  |"`"; "Uid"; "("; L1 internal_pat SEP "," {v}; ")" %{
-    Ast_gen.appl_of_list (%pat'{`Uid} :: v)}
-
-      
-  (* |"`"; `Uid s ; "("; L1 internal_pat SEP ","{v}; ")" *)
-  (*    %{Ast_gen.appl_of_list (%pat'{$vrn:s} :: v)} *)
+  |"`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %pat'{`Ant( $p, $p1 )}
+  |"`"; "Uid"; "("; or_words{p}; ")" %pat'{`Uid $p}
   ]
+  let or_words :
+      [ L1 str SEP "|"{v} %{Ast_gen.bar_of_list v }
+      | L1 str SEP "|"{v}; "as"; `Lid s %{
+         let p  = Ast_gen.bar_of_list v in %pat'{ ($p as $lid:s)} } ]
+  let str :
+      [`Str s %pat'{$str:s} ]
+  let lid :
+      [`Lid s %pat'{$lid:s}]
   let internal_pat : (* FIXME such grammar should be deprecated soon*)
   {
    "as"

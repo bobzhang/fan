@@ -15,10 +15,10 @@ stream_exp stream_exp_comp stream_exp_comp_list
   
 %extend{
     stream_exp :
-    ["!"; `Uid(n) %{
+    ["!"; `Uid n %{
       Ref.protect Compile_stream.grammar_module_name n (fun _ ->
            Compile_stream.empty _loc )}
-    |  "!"; `Uid(n); stream_exp_comp_list{sel}  %{
+    |  "!"; `Uid n; stream_exp_comp_list{sel}  %{
         Ref.protect Compile_stream.grammar_module_name n (fun _ -> cstream _loc sel)}
     | stream_exp_comp_list{sel} %{ cstream _loc sel}
     |  %{  Compile_stream.empty _loc}

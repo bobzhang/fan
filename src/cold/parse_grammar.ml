@@ -79,7 +79,10 @@ let unsafe_extend_body = Fgram.mk_dynamic g "unsafe_extend_body"
 let simple: Gram_pat.t Fgram.t = Fgram.mk_dynamic g "simple"
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
-  let internal_pat: 'internal_pat Fgram.t =
+  let or_words: 'or_words Fgram.t = grammar_entry_create "or_words"
+  and str: 'str Fgram.t = grammar_entry_create "str"
+  and lid: 'lid Fgram.t = grammar_entry_create "lid"
+  and internal_pat: 'internal_pat Fgram.t =
     grammar_entry_create "internal_pat" in
   Fgram.extend_single (simple : 'simple Fgram.t )
     (None,
@@ -330,27 +333,75 @@ let _ =
         ([`Skeyword "`";
          `Skeyword "Ant";
          `Skeyword "(";
-         `Slist1sep
-           ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
-             (`Skeyword ","));
+         `Snterm (Fgram.obj (or_words : 'or_words Fgram.t ));
+         `Skeyword ",";
+         `Snterm (Fgram.obj (lid : 'lid Fgram.t ));
          `Skeyword ")"],
-          ("Ast_gen.appl_of_list ((`Vrn (_loc, \"Ant\")) :: v)\n",
+          ("`App (_loc, (`App (_loc, (`Vrn (_loc, \"Ant\")), p)), p1)\n",
             (Fgram.mk_action
-               (fun _  (v : 'internal_pat list)  _  _  _  (_loc : Locf.t)  ->
-                  (Ast_gen.appl_of_list ((`Vrn (_loc, "Ant")) :: v) : 
+               (fun _  (p1 : 'lid)  _  (p : 'or_words)  _  _  _ 
+                  (_loc : Locf.t)  ->
+                  (`App (_loc, (`App (_loc, (`Vrn (_loc, "Ant")), p)), p1) : 
                   'simple )))));
         ([`Skeyword "`";
          `Skeyword "Uid";
          `Skeyword "(";
-         `Slist1sep
-           ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
-             (`Skeyword ","));
+         `Snterm (Fgram.obj (or_words : 'or_words Fgram.t ));
          `Skeyword ")"],
-          ("Ast_gen.appl_of_list ((`Vrn (_loc, \"Uid\")) :: v)\n",
+          ("`App (_loc, (`Vrn (_loc, \"Uid\")), p)\n",
             (Fgram.mk_action
-               (fun _  (v : 'internal_pat list)  _  _  _  (_loc : Locf.t)  ->
-                  (Ast_gen.appl_of_list ((`Vrn (_loc, "Uid")) :: v) : 
-                  'simple )))))]));
+               (fun _  (p : 'or_words)  _  _  _  (_loc : Locf.t)  ->
+                  (`App (_loc, (`Vrn (_loc, "Uid")), p) : 'simple )))))]));
+  Fgram.extend_single (or_words : 'or_words Fgram.t )
+    (None,
+      (None, None,
+        [([`Slist1sep
+             ((`Snterm (Fgram.obj (str : 'str Fgram.t ))), (`Skeyword "|"))],
+           ("Ast_gen.bar_of_list v\n",
+             (Fgram.mk_action
+                (fun (v : 'str list)  (_loc : Locf.t)  ->
+                   (Ast_gen.bar_of_list v : 'or_words )))));
+        ([`Slist1sep
+            ((`Snterm (Fgram.obj (str : 'str Fgram.t ))), (`Skeyword "|"));
+         `Skeyword "as";
+         `Stoken
+           (((function | `Lid _ -> true | _ -> false)),
+             (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+          ("let p = Ast_gen.bar_of_list v in `Alias (_loc, p, (`Lid (_loc, s)))\n",
+            (Fgram.mk_action
+               (fun (__fan_2 : [> Ftoken.t])  _  (v : 'str list) 
+                  (_loc : Locf.t)  ->
+                  match __fan_2 with
+                  | `Lid s ->
+                      (let p = Ast_gen.bar_of_list v in
+                       `Alias (_loc, p, (`Lid (_loc, s))) : 'or_words )
+                  | _ ->
+                      failwith
+                        "let p = Ast_gen.bar_of_list v in `Alias (_loc, p, (`Lid (_loc, s)))\n"))))]));
+  Fgram.extend_single (str : 'str Fgram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Str _ -> true | _ -> false)),
+               (`App ((`Vrn "Str"), `Any)), "`Str _")],
+           ("`Str (_loc, s)\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Str s -> (`Str (_loc, s) : 'str )
+                   | _ -> failwith "`Str (_loc, s)\n"))))]));
+  Fgram.extend_single (lid : 'lid Fgram.t )
+    (None,
+      (None, None,
+        [([`Stoken
+             (((function | `Lid _ -> true | _ -> false)),
+               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+           ("`Lid (_loc, s)\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Lid s -> (`Lid (_loc, s) : 'lid )
+                   | _ -> failwith "`Lid (_loc, s)\n"))))]));
   Fgram.extend (internal_pat : 'internal_pat Fgram.t )
     (None,
       [((Some "as"), None,
@@ -649,8 +700,8 @@ let _ =
               (`App
                  ((`Vrn "Uid"),
                    (`Bar
-                      ((`Bar ((`Str "Before"), (`Str "After"))),
-                        (`Str "Level"))))),
+                      ((`Str "Before"),
+                        (`Bar ((`Str "After"), (`Str "Level"))))))),
               "`Uid \"Before\"| \"After\"| \"Level\"");
          `Snterm (Fgram.obj (string : 'string Fgram.t ))],
           ("(`App (_loc, (`Vrn (_loc, x)), n) : FAst.exp )\n",
@@ -711,7 +762,7 @@ let _ =
              (((function | `Uid ("LA"|"RA"|"NA") -> true | _ -> false)),
                (`App
                   ((`Vrn "Uid"),
-                    (`Bar ((`Bar ((`Str "LA"), (`Str "RA"))), (`Str "NA"))))),
+                    (`Bar ((`Str "LA"), (`Bar ((`Str "RA"), (`Str "NA"))))))),
                "`Uid \"LA\"| \"RA\"| \"NA\"")],
            ("(`Vrn (_loc, x) : FAst.exp )\n",
              (Fgram.mk_action

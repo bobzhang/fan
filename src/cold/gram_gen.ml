@@ -416,9 +416,11 @@ let token_of_simple_pat (p : Gram_pat.t) =
          | `Ant (_loc,{ FanUtil.content = x;_}) ->
              (`App (_loc, (`Vrn (_loc, "Str")), (`Lid (_loc, x))) : FAst.ep )
      end in
+   let no_variable = Gram_pat.wildcarder#t p in
+   let mdescr = (v#pat _loc (Objs.strip_pat (no_variable :>pat)) :>exp) in
+   let mstr = Gram_pat.to_string no_variable in
    match ls with
    | [] ->
-       let no_variable = Gram_pat.wildcarder#t p in
        let match_fun =
          let v = (no_variable :>pat) in
          if is_irrefut_pat v
@@ -431,9 +433,6 @@ let token_of_simple_pat (p : Gram_pat.t) =
                    (_loc, (`Case (_loc, v, (`Lid (_loc, "true")))),
                      (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
            FAst.exp ) in
-       let descr' = Objs.strip_pat (no_variable :>pat) in
-       let mdescr = (v#pat _loc descr' :>exp) in
-       let mstr = Gram_pat.to_string no_variable in
        {
          text = (`Stok (_loc, match_fun, mdescr, mstr));
          styp = (`Tok _loc);
@@ -455,10 +454,6 @@ let token_of_simple_pat (p : Gram_pat.t) =
              (`Bar
                 (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                   (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
-       let no_variable = Gram_pat.wildcarder#t p in
-       let descr' = Objs.strip_pat (no_variable :>pat) in
-       let mdescr = (v#pat _loc descr' :>exp) in
-       let mstr = Gram_pat.to_string no_variable in
        {
          text = (`Stok (_loc, match_fun, mdescr, mstr));
          styp = (`Tok _loc);

@@ -1483,71 +1483,100 @@ let apply () =
          ([`Stoken
              (((function
                 | `Ant
-                    (("exp"|""|"`bool"|"par"|"seq"|"int"|"`int"|"int32"
-                      |"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
-                      |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"|"vrn"),_)
+                    (("exp"
+                      |""
+                       |"`bool"
+                        |"par"
+                         |"seq"
+                          |"int"
+                           |"`int"
+                            |"int32"
+                             |"`int32"
+                              |"int64"
+                               |"`int64"
+                                |"nativeint"
+                                 |"`nativeint"
+                                  |"flo"
+                                   |"`flo"|"chr"|"`chr"|"str"|"`str"|"vrn"),_)
                     -> true
                 | _ -> false)),
                (`App
                   ((`App
                       ((`Vrn "Ant"),
                         (`Bar
-                           ((`Bar
-                               ((`Bar
-                                   ((`Bar
-                                       ((`Bar
-                                           ((`Bar
-                                               ((`Bar
-                                                   ((`Bar
-                                                       ((`Bar
-                                                           ((`Bar
-                                                               ((`Bar
-                                                                   ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
+                           ((`Str "exp"),
+                             (`Bar
+                                ((`Str ""),
+                                  (`Bar
+                                     ((`Str "`bool"),
+                                       (`Bar
+                                          ((`Str "par"),
+                                            (`Bar
+                                               ((`Str "seq"),
+                                                 (`Bar
+                                                    ((`Str "int"),
+                                                      (`Bar
+                                                         ((`Str "`int"),
+                                                           (`Bar
+                                                              ((`Str "int32"),
+                                                                (`Bar
+                                                                   ((`Str
+                                                                    "`int32"),
+                                                                    (`Bar
                                                                     ((`Str
-                                                                    "exp"),
-                                                                    (`Str ""))),
+                                                                    "int64"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`int64"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "nativeint"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`nativeint"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "flo"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`flo"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "chr"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`chr"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "str"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`str"),
                                                                     (`Str
-                                                                    "`bool"))),
-                                                                    (`Str
-                                                                    "par"))),
-                                                                    (`Str
-                                                                    "seq"))),
-                                                                    (`Str
-                                                                    "int"))),
-                                                                    (`Str
-                                                                    "`int"))),
-                                                                    (`Str
-                                                                    "int32"))),
-                                                                    (`Str
-                                                                    "`int32"))),
-                                                                    (`Str
-                                                                    "int64"))),
-                                                                 (`Str
-                                                                    "`int64"))),
-                                                             (`Str
-                                                                "nativeint"))),
-                                                         (`Str "`nativeint"))),
-                                                     (`Str "flo"))),
-                                                 (`Str "`flo"))),
-                                             (`Str "chr"))), (`Str "`chr"))),
-                                     (`Str "str"))), (`Str "`str"))),
-                             (`Str "vrn"))))), `Any)),
+                                                                    "vrn"))))))))))))))))))))))))))))))))))))))))),
+                    `Any)),
                "`Ant (\"exp\"| \"\"| \"`bool\"| \"par\"| \"seq\"| \"int\"| \"`int\"| \"int32\"| \"`int32\"| \"int64\"| \"`int64\"| \"nativeint\"| \"`nativeint\"| \"flo\"| \"`flo\"| \"chr\"| \"`chr\"| \"str\"| \"`str\"| \"vrn\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Ant
-                       (("exp"|""|"`bool"|"par"|"seq"|"int"|"`int"|"int32"
-                         |"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
-                         |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"|"vrn" as n),s)
+                       (("exp"
+                         |""
+                          |"`bool"
+                           |"par"
+                            |"seq"
+                             |"int"
+                              |"`int"
+                               |"int32"
+                                |"`int32"
+                                 |"int64"
+                                  |"`int64"
+                                   |"nativeint"
+                                    |"`nativeint"
+                                     |"flo"
+                                      |"`flo"|"chr"|"`chr"|"str"|"`str"|"vrn"
+                           as n),s)
                        -> (mk_anti _loc ~c:"exp" n s : 'exp )
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
@@ -2299,7 +2328,7 @@ let apply () =
                   ((`App
                       ((`Vrn "Ant"),
                         (`Bar
-                           ((`Bar ((`Str ""), (`Str "pat"))), (`Str "vrn"))))),
+                           ((`Str ""), (`Bar ((`Str "pat"), (`Str "vrn"))))))),
                     `Any)), "`Ant (\"\"| \"pat\"| \"vrn\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
@@ -2353,64 +2382,90 @@ let apply () =
          [([`Stoken
               (((function
                  | `Ant
-                     ((""|"pat"|"par"|"int"|"`int"|"int32"|"`int32"|"int64"
-                       |"`int64"|"vrn"|"nativeint"|"`nativeint"|"flo"|"`flo"
-                       |"chr"|"`chr"|"str"|"`str"),_)
+                     ((""
+                       |"pat"
+                        |"par"
+                         |"int"
+                          |"`int"
+                           |"int32"
+                            |"`int32"
+                             |"int64"
+                              |"`int64"
+                               |"vrn"
+                                |"nativeint"
+                                 |"`nativeint"
+                                  |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"),_)
                      -> true
                  | _ -> false)),
                 (`App
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar
-                                ((`Bar
-                                    ((`Bar
-                                        ((`Bar
-                                            ((`Bar
-                                                ((`Bar
-                                                    ((`Bar
-                                                        ((`Bar
-                                                            ((`Bar
-                                                                ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Bar
-                                                                    ((`Str ""),
+                            ((`Str ""),
+                              (`Bar
+                                 ((`Str "pat"),
+                                   (`Bar
+                                      ((`Str "par"),
+                                        (`Bar
+                                           ((`Str "int"),
+                                             (`Bar
+                                                ((`Str "`int"),
+                                                  (`Bar
+                                                     ((`Str "int32"),
+                                                       (`Bar
+                                                          ((`Str "`int32"),
+                                                            (`Bar
+                                                               ((`Str "int64"),
+                                                                 (`Bar
+                                                                    ((`Str
+                                                                    "`int64"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "vrn"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "nativeint"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`nativeint"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "flo"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`flo"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "chr"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "`chr"),
+                                                                    (`Bar
+                                                                    ((`Str
+                                                                    "str"),
                                                                     (`Str
-                                                                    "pat"))),
-                                                                    (`Str
-                                                                    "par"))),
-                                                                    (`Str
-                                                                    "int"))),
-                                                                    (`Str
-                                                                    "`int"))),
-                                                                    (`Str
-                                                                    "int32"))),
-                                                                    (`Str
-                                                                    "`int32"))),
-                                                                    (`Str
-                                                                    "int64"))),
-                                                                  (`Str
-                                                                    "`int64"))),
-                                                              (`Str "vrn"))),
-                                                          (`Str "nativeint"))),
-                                                      (`Str "`nativeint"))),
-                                                  (`Str "flo"))),
-                                              (`Str "`flo"))), (`Str "chr"))),
-                                      (`Str "`chr"))), (`Str "str"))),
-                              (`Str "`str"))))), `Any)),
+                                                                    "`str"))))))))))))))))))))))))))))))))))))),
+                     `Any)),
                 "`Ant (\"\"| \"pat\"| \"par\"| \"int\"| \"`int\"| \"int32\"| \"`int32\"| \"int64\"| \"`int64\"| \"vrn\"| \"nativeint\"| \"`nativeint\"| \"flo\"| \"`flo\"| \"chr\"| \"`chr\"| \"str\"| \"`str\",_)")],
             ("mk_anti _loc ~c:\"pat\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Ant
-                        ((""|"pat"|"par"|"int"|"`int"|"int32"|"`int32"
-                          |"int64"|"`int64"|"vrn"|"nativeint"|"`nativeint"
-                          |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" as n),s)
+                        ((""
+                          |"pat"
+                           |"par"
+                            |"int"
+                             |"`int"
+                              |"int32"
+                               |"`int32"
+                                |"int64"
+                                 |"`int64"
+                                  |"vrn"
+                                   |"nativeint"
+                                    |"`nativeint"
+                                     |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str"
+                            as n),s)
                         -> (mk_anti _loc ~c:"pat" n s : 'pat )
                     | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Snterm (Fgram.obj (vid : 'vid Fgram.t ))],
@@ -2803,7 +2858,7 @@ let apply () =
                   ((`App
                       ((`Vrn "Ant"),
                         (`Bar
-                           ((`Bar ((`Str ""), (`Str "pat"))), (`Str "par"))))),
+                           ((`Str ""), (`Bar ((`Str "pat"), (`Str "par"))))))),
                     `Any)), "`Ant (\"\"| \"pat\"| \"par\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
@@ -3304,7 +3359,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
@@ -3329,7 +3384,7 @@ let apply () =
                (`App
                   ((`App
                       ((`Vrn "Ant"),
-                        (`Bar ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                        (`Bar ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                     `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)");
           `Skeyword ".";
           `Sself],
@@ -3394,7 +3449,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
@@ -3419,7 +3474,7 @@ let apply () =
                (`App
                   ((`App
                       ((`Vrn "Ant"),
-                        (`Bar ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                        (`Bar ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                     `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)");
           `Skeyword ".";
           `Sself],
@@ -3473,7 +3528,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
@@ -3498,7 +3553,7 @@ let apply () =
                (`App
                   ((`App
                       ((`Vrn "Ant"),
-                        (`Bar ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                        (`Bar ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                     `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)");
           `Skeyword ".";
           `Sself],
@@ -3560,7 +3615,7 @@ let apply () =
                (`App
                   ((`App
                       ((`Vrn "Ant"),
-                        (`Bar ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                        (`Bar ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                     `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)")],
            ("mk_anti _loc ~c:\"uident\" n s\n",
              (Fgram.mk_action
@@ -3586,7 +3641,7 @@ let apply () =
                (`App
                   ((`App
                       ((`Vrn "Ant"),
-                        (`Bar ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                        (`Bar ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                     `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)");
           `Skeyword ".";
           `Sself],
@@ -3659,7 +3714,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)");
            `Skeyword ".";
            `Skeyword "("],
@@ -3807,7 +3862,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "uid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "uid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"uid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
@@ -3855,10 +3910,11 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar
-                                ((`Bar ((`Str ""), (`Str "id"))),
-                                  (`Str "uid"))), (`Str "lid"))))), `Any)),
-                "`Ant (\"\"| \"id\"| \"uid\"| \"lid\",_)")],
+                            ((`Str ""),
+                              (`Bar
+                                 ((`Str "id"),
+                                   (`Bar ((`Str "uid"), (`Str "lid"))))))))),
+                     `Any)), "`Ant (\"\"| \"id\"| \"uid\"| \"lid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3900,7 +3956,7 @@ let apply () =
                    ((`App
                        ((`Vrn "Ant"),
                          (`Bar
-                            ((`Bar ((`Str ""), (`Str "id"))), (`Str "lid"))))),
+                            ((`Str ""), (`Bar ((`Str "id"), (`Str "lid"))))))),
                      `Any)), "`Ant (\"\"| \"id\"| \"lid\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
@@ -4043,7 +4099,7 @@ let apply () =
                  ((`App
                      ((`Vrn "Ant"),
                        (`Bar
-                          ((`Bar ((`Str ""), (`Str "override"))), (`Str "!"))))),
+                          ((`Str ""), (`Bar ((`Str "override"), (`Str "!"))))))),
                    `Any)), "`Ant (\"\"| \"override\"| \"!\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
@@ -6126,7 +6182,7 @@ let apply_ctyp () =
               (`App
                  ((`App
                      ((`Vrn "Ant"),
-                       (`Bar ((`Bar ((`Str ""), (`Str "typ"))), (`Str "par"))))),
+                       (`Bar ((`Str ""), (`Bar ((`Str "typ"), (`Str "par"))))))),
                    `Any)), "`Ant (\"\"| \"typ\"| \"par\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
