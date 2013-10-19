@@ -77,13 +77,13 @@ val string : exp Fgram.t
 
 
 (** return symbol with patterns (may override inferred patterns) *)
-val psymbol : Gram_def.symbol Fgram.t
+(* val psymbol : Gram_def.symbol Fgram.t *)
     
 (** return symbol with pattern(inferred) or None  *)    
-val symbol :  Gram_def.symbol Fgram.t
+(* val symbol :  Gram_def.symbol Fgram.t *)
 
 
-val simple_meta : Gram_def.symbol Gentry.t     
+(* val simple_meta : Gram_def.symbol Gentry.t      *)
 (** return a [rule]
     {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };
     - : Gram_def.rule =

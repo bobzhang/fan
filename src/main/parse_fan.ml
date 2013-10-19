@@ -449,10 +449,9 @@ let apply () = begin
         bind_quot:
         [ bind{x}  %{x}  ] 
         bind:
-        [ `Ant ("bind" as n,s)  %{mk_anti _loc ~c:"bind" n s}
+        [ `Ant ("bind"|"" as n,s)  %{mk_anti _loc ~c:"bind" n s}
         | `Ant ("" as n,s); "="; exp{e} %{
             %{ $(mk_anti _loc  ~c:"pat" n s) = $e }}
-        | `Ant ("" as n,s) %{ mk_anti _loc ~c:"bind" n s}
         | S{b1}; "and"; S{b2} %{ `And (_loc, b1, b2)}
         | let_bind{b} %{b} ] 
         let_bind:
@@ -464,8 +463,7 @@ let apply () = begin
       [ "|"; L1 case0 SEP "|"{l} %{ bar_of_list l }
       | pat{p}; "->"; exp{e} %{ `Case(_loc,p,e)}]
       case0:
-      [ `Ant ("case" as n, s) %{ mk_anti _loc ~c:"case" n s}
-      | `Ant ("" as n ,s) %{ mk_anti _loc ~c:"case" n s}
+      [ `Ant ("case" | "" as n, s) %{ mk_anti _loc ~c:"case" n s}
       | `Ant ("" as n,s) ;"when";exp{w};"->"; exp{e} %{
           `CaseWhen(_loc,mk_anti _loc ~c:"case" n s, w,e )}
       | `Ant ("" as n,s); "->"; exp {e} %{
@@ -705,9 +703,8 @@ let apply () = begin
       { "."
         [ S{i}; "."; S{j} %{ %{ $i.$j  }} ]
         "simple"
-        [ `Ant (""|"id" |"uid" as n,s) %{
+        [ `Ant (""|"id" |"uid"|"lid" as n,s) %{
           mk_anti _loc  ~c:"ident" n s}
-        | `Ant ("lid" as n, s) %{ mk_anti _loc  ~c:"ident" n s}
         | `Ant (""|"id"|"uid" as n,s); "."; S{i} %{
             `Dot (_loc, mk_anti _loc  ~c:"ident" n s, i)}
         | `Lid i %{ %{ $lid:i }}
@@ -717,8 +714,7 @@ let apply () = begin
 
       (* parse [a] [b], [a.b] [A.b]*)
       ident:
-      [ `Ant (""|"id"|"uid" as n,s) %{ mk_anti _loc ~c:"ident" n s}
-      | `Ant ("lid" as n, s) %{ mk_anti _loc  ~c:"ident" n s}
+      [ `Ant (""|"id"|"uid"|"lid" as n,s) %{ mk_anti _loc ~c:"ident" n s}
       | `Ant (""|"id"|"uid" as n,s); "."; S{i} %{
            `Dot (_loc, mk_anti _loc ~c:"ident" n s, i)}
       | `Lid i %{ `Lid(_loc,i)}
@@ -726,8 +722,7 @@ let apply () = begin
       | `Uid s ; "." ; S{j} %{  `Dot (_loc, `Uid (_loc, s), j)}]
       
       vid: (* duplicate ident  FIXME *)
-      [ `Ant (""|"id" |"uid" as n,s) %{ mk_anti _loc ~c:"ident" n s}
-      | `Ant ("lid" as n, s) %{ mk_anti _loc  ~c:"ident" n s}
+      [ `Ant (""|"id" |"uid" |"lid" as n,s) %{ mk_anti _loc ~c:"ident" n s}
       | `Ant (""|"id"|"uid" as n,s); "."; S{i} %{
            `Dot (_loc, mk_anti _loc ~c:"ident" n s, i)}
       | `Lid i %{ `Lid(_loc,i)}
@@ -763,10 +758,9 @@ let apply () = begin
       | `Ant ("uid"|"" as n,s); "."; S{l} %{ %{$(mk_anti _loc  ~c:"ident" n s).$l} }]
       (* parse [A.B] *)
       module_longident:
-      [ `Ant (""|"id" as n,s) %{        mk_anti _loc ~c:"ident" n s }
+      [ `Ant (""|"id"|"uid" as n,s) %{        mk_anti _loc ~c:"ident" n s }
       | `Uid i; "."; S{l} %{  `Dot (_loc, `Uid (_loc, i), l)}
       | `Uid i %{ `Uid(_loc,i)}
-      | `Ant (""|"uid" as n,s) %{ mk_anti _loc ~c:"ident" n s}
       | `Ant(""|"uid" as n, s); "."; S{l} %{`Dot (_loc, mk_anti _loc ~c:"ident" n s, l)}]
 
       module_longident_with_app:
@@ -775,8 +769,7 @@ let apply () = begin
        "."
         [ S{i}; "."; S{j} %{ %{ $i.$j }} ]
        "simple"
-        [ `Ant (""|"id"|"uid" as n,s) %{
-          mk_anti _loc ~c:"ident" n s}
+        [ `Ant (""|"id"|"uid" as n,s) %{mk_anti _loc ~c:"ident" n s}
         | `Uid i %{ `Uid(_loc,i)}
         | "("; S{i}; ")" %{ i} ] }
 
@@ -1140,7 +1133,7 @@ let apply_ctyp () = begin
       | opt_dot_dot{v}     %{ `TyObjEnd(_loc,v)} ]
       row_field:
       [ `Ant (""|"typ" as n,s) %{ mk_anti _loc ~c:"ctyp" n s}
-      | `Ant("vrn" as n, s) %{ `TyVrn(_loc,mk_anti _loc ~c:"ctyp" n s)}
+      | `Ant("vrn" as n, s) %{ `TyVrn(_loc,mk_anti _loc ~c:"ctyp" n s)} (* FIXME*)
       | `Ant("vrn" as n, s) ; "of"; ctyp{t} %{
           `TyVrnOf(_loc,mk_anti _loc ~c:"ctyp" n s,t)}
       | S{t1}; "|"; S{t2} %{ `Bar(_loc,t1,t2)}
@@ -1231,8 +1224,7 @@ let apply_ctyp () = begin
        "simple"
         [ "'"; a_lident{i} %{  `Quote (_loc, `Normal _loc,  i)}
         | "_" %{ `Any _loc}
-        | `Ant (""|"typ"|"par" as n,s) %{ mk_anti _loc ~c:"ctyp" n s}
-        | `Ant ("id" as n,s) %{ mk_anti _loc ~c:"ident" n s}
+        | `Ant (""|"typ"|"par"|"id" as n,s) %{ mk_anti _loc ~c:"ctyp" n s}
         | `Ant ("id" as n,s); "."; S{t} %{
             let try id = ident_of_ctyp t  in
               (`Dot(_loc,mk_anti _loc ~c:"ident" n s,id) :ctyp)

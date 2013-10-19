@@ -43,3 +43,5 @@ val filter_map : ('a -> 'b option) -> 'a list -> 'b list
 val take_rev : int -> 'a list -> 'a list
 
 val find_opt : ('a -> bool) -> 'a list -> 'a option
+
+val cross : 'a list list -> 'a list list 

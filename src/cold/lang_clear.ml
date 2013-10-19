@@ -9,18 +9,29 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Ant ((""|"lid"),_) -> true | _ -> false)),
-               (`App
-                  ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "lid"))))),
-                    `Any)), "`Ant (\"\"| \"lid\",_)")],
+             (((function | `Ant ("",_) -> true | _ -> false)),
+               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
+               "`Ant (\"\",_)")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Ant ((""|"lid" as n),s) ->
+                   | `Ant (("" as n),s) ->
                        (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                    | _ ->
                        failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
+        ([`Stoken
+            (((function | `Ant ("lid",_) -> true | _ -> false)),
+              (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
+              "`Ant (\"lid\",_)")],
+          ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
+            (Fgram.mk_action
+               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Ant (("lid" as n),s) ->
+                      (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
+                  | _ ->
+                      failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)),
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],

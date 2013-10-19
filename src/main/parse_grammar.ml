@@ -59,37 +59,51 @@ let g =
    extend_body
    unsafe_extend_body
 
-   (simple : Gram_pat.t Fgram.t)
+   (simple : Gram_pat.t list Fgram.t)
 }
 
 %extend{(g:Fgram.t)
   (** FIXME bring antiquotation back later*)        
   simple :
-  [ "`"; "EOI" %pat'{`EOI}
-  | "`"; "Lid"; `Str v %pat'{`Lid $str:v}
-  | "`"; "Uid"; `Str v %pat'{`Uid $str:v}      
-  | "`"; "Lid" ; `Lid x %pat'{`Lid $lid:x }
-  | "`"; "Uid" ; `Lid x %pat'{`Uid $lid:x }
-  | "`"; "Quot"; `Lid x %pat'{`Quot $lid:x }
-  | "`"; "Label"; `Lid x %pat'{`Label $lid:x }      
-  | "`"; "DirQuotation"; `Lid x %pat'{`DirQuotation $lid:x}
-  | "`"; "Optlabel"; `Lid x %pat'{`Optlabel $lid:x}      
-  | "`"; "Str"; `Lid x %pat'{`Str $lid:x}
-  | "`"; "Chr"; `Lid x %pat'{`Chr $lid:x}
-  | "`"; "Int"; `Lid x %pat'{`Int $lid:x}
-  | "`"; "Int32"; `Lid x %pat'{`Int32 $lid:x}
-  | "`"; "Int64"; `Lid x %pat'{`Int64 $lid:x}      
-  | "`"; "Nativeint"; `Lid x %pat'{`Nativeint $lid:x}
-  | "`"; "Flo"; `Lid x %pat'{`Flo $lid:x}      
-  | "`"; "Lid" ; "_"    %pat'{`Lid _}
-  | "`"; "Uid"; "_" %pat'{`Uid _}
-  | "`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %pat'{`Ant( $p, $p1 )}
-  | "`"; "Uid"; "("; or_words{p}; ")" %pat'{`Uid $p}
+  [ "`"; "EOI" %{[%pat'{`EOI}]}
+  | "`"; "Lid"; `Str v %{[%pat'{`Lid $str:v}]}
+  | "`"; "Uid"; `Str v %{[%pat'{`Uid $str:v}]}      
+  | "`"; "Lid" ; `Lid x %{[%pat'{`Lid $lid:x }]}
+  | "`"; "Uid" ; `Lid x %{[%pat'{`Uid $lid:x }]}
+  | "`"; "Quot"; `Lid x %{[%pat'{`Quot $lid:x }]}
+  | "`"; "Label"; `Lid x %{[%pat'{`Label $lid:x }]}      
+  | "`"; "DirQuotation"; `Lid x %{[%pat'{`DirQuotation $lid:x}]}
+  | "`"; "Optlabel"; `Lid x %{[%pat'{`Optlabel $lid:x}]}      
+  | "`"; "Str"; `Lid x %{[%pat'{`Str $lid:x}]}
+  | "`"; "Chr"; `Lid x %{[%pat'{`Chr $lid:x}]}
+  | "`"; "Int"; `Lid x %{[%pat'{`Int $lid:x}]}
+  | "`"; "Int32"; `Lid x %{[%pat'{`Int32 $lid:x}]}
+  | "`"; "Int64"; `Lid x %{[%pat'{`Int64 $lid:x}]}      
+  | "`"; "Nativeint"; `Lid x %{[%pat'{`Nativeint $lid:x}]}
+  | "`"; "Flo"; `Lid x %{[%pat'{`Flo $lid:x}]}      
+  | "`"; "Lid" ; "_"    %{[%pat'{`Lid _}]}
+  | "`"; "Uid"; "_" %{[%pat'{`Uid _}]}
+  | "`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
+    match p with
+    | (v,None) ->
+        List.map (fun x -> %pat'{`Ant ($x, $p1) }) v
+    | (v,Some u) ->
+        List.map (fun x -> %pat'{`Ant (($x as $lid:u), $p1) }) v 
+  }
+  | "`"; "Uid"; "("; or_words{p}; ")" %{
+    match p with
+    | (v,None) ->
+        List.map (fun x -> %pat'{`Uid $x}) v
+    | (v,Some x) ->
+        List.map (fun a -> %pat'{`Uid ($a as $lid:x)}) v 
+    (* [%pat'{`Uid $p}] *)
+  }
   ]
   let or_words :
-      [ L1 str SEP "|"{v} %{Ast_gen.bar_of_list v }
+      [ L1 str SEP "|"{v} %{  (v,None) (* Ast_gen.bar_of_list v *) }
       | L1 str SEP "|"{v}; "as"; `Lid s %{
-         let p  = Ast_gen.bar_of_list v in %pat'{ ($p as $lid:s)} } ]
+          (v , Some s)
+         (* let p  = Ast_gen.bar_of_list v in %pat'{ ($p as $lid:s)} *) } ]
   let str :
       [`Str s %pat'{$str:s} ]
   let lid :
@@ -97,7 +111,7 @@ let g =
 }
   
 let simple_meta =
-  Gentry.map ~name:"simple_meta" token_of_simple_pat simple
+  Gentry.map ~name:"simple_meta" (List.map token_of_simple_pat) simple
 ;;
 
 
@@ -215,7 +229,10 @@ let simple_meta =
     retype_rule_list_without_patterns _loc rules}]
 
   rule :
-  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{ [mk_rule ~prod ~action]} ]
+  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{
+    let prods = Listf.cross prod in
+    List.map (fun prod -> mk_rule ~prod ~action) prods
+    (* [mk_rule ~prod ~action]  *)} ]
 
   let opt_action :
       [ `Quot x %{
@@ -231,43 +248,49 @@ let simple_meta =
   let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
 
   psymbol :
-  [ symbol{s} ; OPT  brace_pattern {p} %{
-    match p with
-    |Some _ ->
-        { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
-    | None -> s}  ] 
+  [ symbol{ss} ; OPT  brace_pattern {p} %{
+    List.map (fun (s:Gram_def.symbol) ->
+      match p with
+      |Some _ ->
+          { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
+      | None -> s) ss }  ] 
 
-  let sep_symbol : [ "SEP"; symbol{t} %{t}]
+  let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
   let level_str :  [`Uid "Level"; `Str  s %{s} ]
 
-  symbol :
+  symbol : (* be more precise, no recursive grammar? *)
   [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } %{
-    let () = check_not_tok s in
+    let [s] =  s in
+
+    let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 
     let text = mk_slist _loc
         (match x with
         |"L0" -> false | "L1" -> true
         | _ -> failwithf "only (L0|L1) allowed here") sep s in
-    mk_symbol ~text ~styp ~pattern:None}
+    [mk_symbol ~text ~styp ~pattern:None]}
   |`Uid "OPT"; S{s}  %{
+    let [s] = s in
     let () = check_not_tok s in
     let styp = %ctyp'{$(s.styp) option } in 
     let text = `Sopt _loc s.text in
-    mk_symbol  ~text ~styp ~pattern:None}
+    [mk_symbol  ~text ~styp ~pattern:None] }
   |`Uid "TRY"; S{s} %{
-      let text = `Stry (_loc, s.text) in
-      mk_symbol  ~text ~styp:(s.styp) ~pattern:None}
+    let [s] = s in 
+    let text = `Stry (_loc, s.text) in
+    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
   | `Uid "PEEK"; S{s} %{
-      let text = `Speek(_loc, s.text) in
-      mk_symbol ~text ~styp:(s.styp) ~pattern:None}
+    let [s] = s in
+    let text = `Speek(_loc, s.text) in
+    [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}
   | "S" %{
-      mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None}
-  | simple_meta{p} %{p}
+      [mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
+  | simple_meta{p} %{ p}
   (* | simple{p} %{ token_of_simple_pat  p } *)
-  | `Str s %{mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None}
+  | `Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}
   | name{n};  OPT level_str{lev} %{
-        mk_symbol  ~text:(`Snterm (_loc ,n, lev))
-          ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None }
+        [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
+          ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
    | "("; S{s}; ")" %{s} ]
 
    string :

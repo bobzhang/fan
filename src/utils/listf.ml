@@ -155,9 +155,13 @@ let find_opt p l =
   try Some(find p l)
   with Not_found -> None
 
-
+let rec cross (xs: 'a list list) : 'a list list  =
+  match xs with
+  | [] -> [[]]
+  | xs::xss -> 
+      concat_map (fun y -> map (fun x -> x :: y) xs ) (cross xss )
       
 
 (* local variables: *)
-(* compile-command: "pmake flist.cmo" *)
+(* compile-command: "pmake listf.cmo" *)
 (* end: *)
