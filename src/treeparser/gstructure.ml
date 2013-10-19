@@ -38,8 +38,14 @@ and rec_pat =
       
       
 (* ATTENTION: the type system can not guarantee it would compile *)      
-type descr = pat
-
+(* type descr = pat *)
+type word =
+   [`Any
+   |`A of string
+   |`Empty]
+and data = (string * word) (* FIXME duplicate in gram_def *)      
+type descr = data
+    
 type token_pattern = (Ftoken.t -> bool) * descr * string
     (* [arg1] is used for runtime parsing, generated at compile time
        [arg2] is used for runtime merging, generated at compile time
@@ -137,3 +143,7 @@ type delete_statment = symbol list
 
 
   
+
+(* local variables: *)
+(* compile-command: "cd .. &&  pmake treeparser/gstructure.cmo" *)
+(* end: *)

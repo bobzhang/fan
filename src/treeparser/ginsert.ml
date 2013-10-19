@@ -326,7 +326,7 @@ let  eoi_entry e =
         (symbs @
          [`Stoken
             ((function | `EOI -> true | _ -> false),
-             (`Vrn "EOI"), "`EOI"
+             ("EOI",`Empty)(* (`Vrn "EOI") *), "`EOI"
             )],
          (annot, Gaction.mk (fun _ -> act)))) prods in
   refresh_level ~f:aux l in

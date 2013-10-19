@@ -8,8 +8,8 @@ let _ =
       (None, None,
         [([`Skeyword "default";
           `Stoken
-            (((function | `Str _ -> true | _ -> false)),
-              (`App ((`Vrn "Str"), `Any)), "`Str _")],
+            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+              "`Str _")],
            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -32,8 +32,8 @@ let _ =
                      (Ast_quotation.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
-           (((function | `Str _ -> true | _ -> false)),
-             (`App ((`Vrn "Str"), `Any)), "`Str _")],
+           (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+             "`Str _")],
           ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -50,8 +50,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("i :: xs\n",
@@ -62,8 +62,8 @@ let _ =
                    | `Uid i -> (i :: xs : 'dot_namespace )
                    | _ -> failwith "i :: xs\n"))));
         ([`Stoken
-            (((function | `Uid _ -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+              "`Uid _")],
           ("[i]\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->

@@ -58,8 +58,8 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (regexp : 'regexp Fgram.t ));
           `Stoken
-            (((function | `Quot _ -> true | _ -> false)),
-              (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+            (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+              "`Quot _")],
            ("let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\nlet e = Ftoken.quot_expand expander x in (r, e)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  (r : 'regexp)  (_loc : Locf.t)
@@ -78,8 +78,8 @@ let _ =
       (None, None,
         [([`Skeyword "let";
           `Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _");
+            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+              "`Lid _");
           `Skeyword "=";
           `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
            ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
@@ -110,8 +110,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("(_loc, y)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -155,8 +155,8 @@ let _ =
                 (fun _  (_loc : Locf.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
         ([`Stoken
-            (((function | `Chr _ -> true | _ -> false)),
-              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
+            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+              "`Chr _")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -169,8 +169,8 @@ let _ =
                       failwith
                         "Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n"))));
         ([`Stoken
-            (((function | `Str _ -> true | _ -> false)),
-              (`App ((`Vrn "Str"), `Any)), "`Str _")],
+            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+              "`Str _")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -209,8 +209,8 @@ let _ =
           ("Eof\n",
             (Fgram.mk_action (fun _  (_loc : Locf.t)  -> (Eof : 'regexp )))));
         ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+              "`Lid _")],
           ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = Locf.start_pos _loc in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -244,12 +244,12 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Chr _ -> true | _ -> false)),
-               (`App ((`Vrn "Chr"), `Any)), "`Chr _");
+             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+               "`Chr _");
           `Skeyword "-";
           `Stoken
-            (((function | `Chr _ -> true | _ -> false)),
-              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
+            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+              "`Chr _")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
              (Fgram.mk_action
                 (fun (__fan_2 : [> Ftoken.t])  _  (__fan_0 : [> Ftoken.t]) 
@@ -263,8 +263,8 @@ let _ =
                        failwith
                          "let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n"))));
         ([`Stoken
-            (((function | `Chr _ -> true | _ -> false)),
-              (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
+            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+              "`Chr _")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->

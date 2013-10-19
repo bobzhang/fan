@@ -9,8 +9,8 @@ let _ =
       (None, None,
         [([`Skeyword "!";
           `Stoken
-            (((function | `Uid _ -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+              "`Uid _")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -23,8 +23,8 @@ let _ =
                          "Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n"))));
         ([`Skeyword "!";
          `Stoken
-           (((function | `Uid _ -> true | _ -> false)),
-             (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+           (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+             "`Uid _");
          `Snterm
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
           ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",

@@ -19,8 +19,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("n\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->

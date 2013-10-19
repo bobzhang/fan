@@ -10,8 +10,7 @@ let _ =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -22,8 +21,7 @@ let _ =
                        failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("lid",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-              "`Ant (\"lid\",_)")],
+              ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -33,8 +31,8 @@ let _ =
                   | _ ->
                       failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
         ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+              "`Lid _")],
           ("`Lid (_loc, s)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -64,8 +62,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -77,8 +75,8 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
         ([`Stoken
-            (((function | `Uid _ -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+              "`Uid _")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->

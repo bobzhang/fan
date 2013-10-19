@@ -4,10 +4,10 @@
 OCAMLINCLUDES += $(COMMON_INCLUDES)
 OCAMLFLAGS =  -w a 
 FILES = gaction gcomb gdelete gfailed ginsert gparser gprint gstru gstructure gtools
-
+.PHONY: clean lib
 lib:$(OCamlLibrary libtreeparser, $(FILES))
 
-.PHONY: clean lib
+
 clean:
     rm -rf $(OCAMLBIN_EXT)
 

@@ -125,8 +125,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti ~c:\"mexp\" _loc n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -136,8 +135,7 @@ let apply () =
                     | _ -> failwith "mk_anti ~c:\"mexp\" _loc n s\n"))));
          ([`Stoken
              (((function | `Ant ("mexp",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mexp"))), `Any)),
-               "`Ant (\"mexp\",_)")],
+               ("Ant", (`A "mexp")), "`Ant (\"mexp\",_)")],
            ("mk_anti ~c:\"mexp\" _loc n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -146,8 +144,8 @@ let apply () =
                        (mk_anti ~c:"mexp" _loc n s : 'mexp )
                    | _ -> failwith "mk_anti ~c:\"mexp\" _loc n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mexp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -204,8 +202,7 @@ let apply () =
                     (_loc : Locf.t)  -> (`And (_loc, b1, b2) : 'mbind_quot )))));
          ([`Stoken
              (((function | `Ant ("mbind",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mbind"))), `Any)),
-               "`Ant (\"mbind\",_)")],
+               ("Ant", (`A "mbind")), "`Ant (\"mbind\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -215,8 +212,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"mbind\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -251,8 +247,7 @@ let apply () =
                     (`And (_loc, b1, b2) : 'mbind )))));
          ([`Stoken
              (((function | `Ant ("mbind",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mbind"))), `Any)),
-               "`Ant (\"mbind\",_)")],
+               ("Ant", (`A "mbind")), "`Ant (\"mbind\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -262,8 +257,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"mbind\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -272,8 +266,8 @@ let apply () =
                        (mk_anti _loc ~c:"mbind" n s : 'mbind )
                    | _ -> failwith "mk_anti _loc ~c:\"mbind\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mbind\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -303,8 +297,7 @@ let apply () =
                     (`And (_loc, m1, m2) : 'module_rec_declaration )))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -314,8 +307,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"mbind\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("mbind",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mbind"))), `Any)),
-               "`Ant (\"mbind\",_)")],
+               ("Ant", (`A "mbind")), "`Ant (\"mbind\",_)")],
            ("mk_anti _loc ~c:\"mbind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -324,8 +316,8 @@ let apply () =
                        (mk_anti _loc ~c:"mbind" n s : 'module_rec_declaration )
                    | _ -> failwith "mk_anti _loc ~c:\"mbind\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mbind\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -357,8 +349,7 @@ let apply () =
                     -> (`And (_loc, wc1, wc2) : 'constr )))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"constr\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -368,8 +359,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"constr\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("constr",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "constr"))), `Any)),
-               "`Ant (\"constr\",_)")],
+               ("Ant", (`A "constr")), "`Ant (\"constr\",_)")],
            ("mk_anti _loc ~c:\"constr\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -378,8 +368,8 @@ let apply () =
                        (mk_anti _loc ~c:"constr" n s : 'constr )
                    | _ -> failwith "mk_anti _loc ~c:\"constr\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.constr\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -452,8 +442,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc n ~c:\"sigi\" s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -463,8 +452,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc n ~c:\"sigi\" s\n"))));
          ([`Stoken
              (((function | `Ant ("sigi",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "sigi"))), `Any)),
-               "`Ant (\"sigi\",_)")],
+               ("Ant", (`A "sigi")), "`Ant (\"sigi\",_)")],
            ("mk_anti _loc n ~c:\"sigi\" s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -474,8 +462,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc n ~c:\"sigi\" s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";;";
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n",
@@ -491,8 +478,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n"))));
          ([`Stoken
              (((function | `Ant ("sigi",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "sigi"))), `Any)),
-               "`Ant (\"sigi\",_)");
+               ("Ant", (`A "sigi")), "`Ant (\"sigi\",_)");
           `Skeyword ";;";
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n",
@@ -508,8 +494,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n",
              (Fgram.mk_action
@@ -524,8 +509,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n"))));
          ([`Stoken
              (((function | `Ant ("sigi",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "sigi"))), `Any)),
-               "`Ant (\"sigi\",_)");
+               ("Ant", (`A "sigi")), "`Ant (\"sigi\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"sigi\" s), sg)\n",
              (Fgram.mk_action
@@ -615,8 +599,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"mtyp\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -626,8 +609,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"mtyp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("mtyp",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mtyp"))), `Any)),
-               "`Ant (\"mtyp\",_)")],
+               ("Ant", (`A "mtyp")), "`Ant (\"mtyp\",_)")],
            ("mk_anti _loc ~c:\"mtyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -636,8 +618,8 @@ let apply () =
                        (mk_anti _loc ~c:"mtyp" n s : 'mtyp )
                    | _ -> failwith "mk_anti _loc ~c:\"mtyp\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mtyp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -723,8 +705,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"sigi\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -734,8 +715,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"sigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("sigi",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "sigi"))), `Any)),
-               "`Ant (\"sigi\",_)")],
+               ("Ant", (`A "sigi")), "`Ant (\"sigi\",_)")],
            ("mk_anti _loc ~c:\"sigi\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -744,8 +724,8 @@ let apply () =
                        (mk_anti _loc ~c:"sigi" n s : 'sigi )
                    | _ -> failwith "mk_anti _loc ~c:\"sigi\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.sigi\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -872,7 +852,8 @@ let apply () =
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'interf )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
+             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+               "`EOI")],
            ("([], None)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1007,8 +988,8 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)), "`Lid _");
+              (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+                "`Lid _");
            `Skeyword ":";
            `Snterm (Fgram.obj (dot_lstrings : 'dot_lstrings Fgram.t ))],
             ("(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Ftoken.string_of_name y)\n   | Some x -> x))\n",
@@ -1028,8 +1009,8 @@ let apply () =
                         failwith
                           "(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Ftoken.string_of_name y)\n   | Some x -> x))\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1498,8 +1479,8 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'exp )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)),
-               (`App ((`Vrn "Label"), `Any)), "`Label _");
+             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
+               "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
              (Fgram.mk_action
@@ -1514,7 +1495,7 @@ let apply () =
                          "(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n"))));
          ([`Stoken
              (((function | `Optlabel _ -> true | _ -> false)),
-               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+               ("Optlabel", `Any), "`Optlabel _");
           `Sself],
            ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
              (Fgram.mk_action
@@ -1583,8 +1564,8 @@ let apply () =
                    (`App (_loc, f, e) : 'exp )))))]);
        ((Some "simple"), None,
          [([`Stoken
-              (((function | `Quot _ -> true | _ -> false)),
-                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.exp\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1593,8 +1574,7 @@ let apply () =
                     | _ -> failwith "Ast_quotation.expand x Dyn_tag.exp\n"))));
          ([`Stoken
              (((function | `Ant ("exp",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "exp"))), `Any)),
-               "`Ant (\"exp\",_)")],
+               ("Ant", (`A "exp")), "`Ant (\"exp\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1604,8 +1584,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1615,8 +1594,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`bool",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`bool"))), `Any)),
-               "`Ant (\"`bool\",_)")],
+               ("Ant", (`A "`bool")), "`Ant (\"`bool\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1626,8 +1604,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("par",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "par"))), `Any)),
-               "`Ant (\"par\",_)")],
+               ("Ant", (`A "par")), "`Ant (\"par\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1637,8 +1614,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("seq",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "seq"))), `Any)),
-               "`Ant (\"seq\",_)")],
+               ("Ant", (`A "seq")), "`Ant (\"seq\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1648,8 +1624,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int"))), `Any)),
-               "`Ant (\"int\",_)")],
+               ("Ant", (`A "int")), "`Ant (\"int\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1659,8 +1634,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int"))), `Any)),
-               "`Ant (\"`int\",_)")],
+               ("Ant", (`A "`int")), "`Ant (\"`int\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1670,8 +1644,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int32",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int32"))), `Any)),
-               "`Ant (\"int32\",_)")],
+               ("Ant", (`A "int32")), "`Ant (\"int32\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1681,8 +1654,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int32",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int32"))), `Any)),
-               "`Ant (\"`int32\",_)")],
+               ("Ant", (`A "`int32")), "`Ant (\"`int32\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1692,8 +1664,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int64",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int64"))), `Any)),
-               "`Ant (\"int64\",_)")],
+               ("Ant", (`A "int64")), "`Ant (\"int64\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1703,8 +1674,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int64",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int64"))), `Any)),
-               "`Ant (\"`int64\",_)")],
+               ("Ant", (`A "`int64")), "`Ant (\"`int64\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1714,8 +1684,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("nativeint",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "nativeint"))), `Any)),
-               "`Ant (\"nativeint\",_)")],
+               ("Ant", (`A "nativeint")), "`Ant (\"nativeint\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1725,8 +1694,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`nativeint",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`nativeint"))), `Any)),
-               "`Ant (\"`nativeint\",_)")],
+               ("Ant", (`A "`nativeint")), "`Ant (\"`nativeint\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1736,8 +1704,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("flo",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "flo"))), `Any)),
-               "`Ant (\"flo\",_)")],
+               ("Ant", (`A "flo")), "`Ant (\"flo\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1747,8 +1714,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`flo",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`flo"))), `Any)),
-               "`Ant (\"`flo\",_)")],
+               ("Ant", (`A "`flo")), "`Ant (\"`flo\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1758,8 +1724,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("chr",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "chr"))), `Any)),
-               "`Ant (\"chr\",_)")],
+               ("Ant", (`A "chr")), "`Ant (\"chr\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1769,8 +1734,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`chr",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`chr"))), `Any)),
-               "`Ant (\"`chr\",_)")],
+               ("Ant", (`A "`chr")), "`Ant (\"`chr\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1780,8 +1744,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("str",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "str"))), `Any)),
-               "`Ant (\"str\",_)")],
+               ("Ant", (`A "str")), "`Ant (\"str\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1791,8 +1754,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`str",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`str"))), `Any)),
-               "`Ant (\"`str\",_)")],
+               ("Ant", (`A "`str")), "`Ant (\"`str\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1802,8 +1764,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("vrn",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-               "`Ant (\"vrn\",_)")],
+               ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)")],
            ("mk_anti _loc ~c:\"exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1812,8 +1773,8 @@ let apply () =
                        (mk_anti _loc ~c:"exp" n s : 'exp )
                    | _ -> failwith "mk_anti _loc ~c:\"exp\" n s\n"))));
          ([`Stoken
-             (((function | `Int _ -> true | _ -> false)),
-               (`App ((`Vrn "Int"), `Any)), "`Int _")],
+             (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
+               "`Int _")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1821,8 +1782,8 @@ let apply () =
                    | `Int s -> (`Int (_loc, s) : 'exp )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Int32 _ -> true | _ -> false)),
-               (`App ((`Vrn "Int32"), `Any)), "`Int32 _")],
+             (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
+               "`Int32 _")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1830,8 +1791,8 @@ let apply () =
                    | `Int32 s -> (`Int32 (_loc, s) : 'exp )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Int64 _ -> true | _ -> false)),
-               (`App ((`Vrn "Int64"), `Any)), "`Int64 _")],
+             (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
+               "`Int64 _")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1840,7 +1801,7 @@ let apply () =
                    | _ -> failwith "`Int64 (_loc, s)\n"))));
          ([`Stoken
              (((function | `Nativeint _ -> true | _ -> false)),
-               (`App ((`Vrn "Nativeint"), `Any)), "`Nativeint _")],
+               ("Nativeint", `Any), "`Nativeint _")],
            ("`Nativeint (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1848,8 +1809,8 @@ let apply () =
                    | `Nativeint s -> (`Nativeint (_loc, s) : 'exp )
                    | _ -> failwith "`Nativeint (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Flo _ -> true | _ -> false)),
-               (`App ((`Vrn "Flo"), `Any)), "`Flo _")],
+             (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
+               "`Flo _")],
            ("`Flo (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1857,8 +1818,8 @@ let apply () =
                    | `Flo s -> (`Flo (_loc, s) : 'exp )
                    | _ -> failwith "`Flo (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Chr _ -> true | _ -> false)),
-               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
+             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+               "`Chr _")],
            ("`Chr (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1866,8 +1827,8 @@ let apply () =
                    | `Chr s -> (`Chr (_loc, s) : 'exp )
                    | _ -> failwith "`Chr (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Str _ -> true | _ -> false)),
-               (`App ((`Vrn "Str"), `Any)), "`Str _")],
+             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+               "`Str _")],
            ("`Str (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -1921,8 +1882,8 @@ let apply () =
                    (`Array (_loc, el) : 'exp )))));
          ([`Skeyword "{";
           `Stoken
-            (((function | `Lid _ -> true | _ -> false)),
-              (`App ((`Vrn "Lid"), `Any)), "`Lid _");
+            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+              "`Lid _");
           `Skeyword "with";
           `Snterm (Fgram.obj (label_exp_list : 'label_exp_list Fgram.t ));
           `Skeyword "}"],
@@ -2240,8 +2201,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("bind",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str "bind"))), `Any)),
-                "`Ant (\"bind\",_)")],
+                ("Ant", (`A "bind")), "`Ant (\"bind\",_)")],
             ("mk_anti _loc ~c:\"bind\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2251,8 +2211,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"bind\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"bind\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2262,8 +2221,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"bind\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword "=";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
            ("(`Bind (_loc, (mk_anti _loc ~c:\"pat\" n s), e) : FAst.bind )\n",
@@ -2318,8 +2276,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("case",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str "case"))), `Any)),
-                "`Ant (\"case\",_)")],
+                ("Ant", (`A "case")), "`Ant (\"case\",_)")],
             ("mk_anti _loc ~c:\"case\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2329,8 +2286,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"case\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"case\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2340,8 +2296,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"case\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword "when";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ));
           `Skeyword "->";
@@ -2359,8 +2314,7 @@ let apply () =
                          "`CaseWhen (_loc, (mk_anti _loc ~c:\"case\" n s), w, e)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword "->";
           `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
            ("`Case (_loc, (mk_anti _loc ~c:\"case\" n s), e)\n",
@@ -2413,8 +2367,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("rec_exp",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str "rec_exp"))), `Any)),
-                "`Ant (\"rec_exp\",_)")],
+                ("Ant", (`A "rec_exp")), "`Ant (\"rec_exp\",_)")],
             ("mk_anti _loc ~c:\"rec_exp\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2424,8 +2377,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"rec_exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"rec_exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2451,8 +2403,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"rec_exp\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2462,8 +2413,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"rec_exp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("bi",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "bi"))), `Any)),
-               "`Ant (\"bi\",_)")],
+               ("Ant", (`A "bi")), "`Ant (\"bi\",_)")],
            ("mk_anti _loc ~c:\"rec_exp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2575,8 +2525,7 @@ let apply () =
                    ((`Vrn (_loc, s) : pat ) : 'pat_constr )))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2586,8 +2535,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("pat",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "pat"))), `Any)),
-               "`Ant (\"pat\",_)")],
+               ("Ant", (`A "pat")), "`Ant (\"pat\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2597,8 +2545,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("vrn",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-               "`Ant (\"vrn\",_)")],
+               ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2650,8 +2597,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"pat\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2661,8 +2607,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("pat",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "pat"))), `Any)),
-               "`Ant (\"pat\",_)")],
+               ("Ant", (`A "pat")), "`Ant (\"pat\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2672,8 +2617,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("par",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "par"))), `Any)),
-               "`Ant (\"par\",_)")],
+               ("Ant", (`A "par")), "`Ant (\"par\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2683,8 +2627,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int"))), `Any)),
-               "`Ant (\"int\",_)")],
+               ("Ant", (`A "int")), "`Ant (\"int\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2694,8 +2637,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int"))), `Any)),
-               "`Ant (\"`int\",_)")],
+               ("Ant", (`A "`int")), "`Ant (\"`int\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2705,8 +2647,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int32",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int32"))), `Any)),
-               "`Ant (\"int32\",_)")],
+               ("Ant", (`A "int32")), "`Ant (\"int32\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2716,8 +2657,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int32",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int32"))), `Any)),
-               "`Ant (\"`int32\",_)")],
+               ("Ant", (`A "`int32")), "`Ant (\"`int32\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2727,8 +2667,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("int64",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "int64"))), `Any)),
-               "`Ant (\"int64\",_)")],
+               ("Ant", (`A "int64")), "`Ant (\"int64\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2738,8 +2677,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`int64",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`int64"))), `Any)),
-               "`Ant (\"`int64\",_)")],
+               ("Ant", (`A "`int64")), "`Ant (\"`int64\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2749,8 +2687,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("vrn",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-               "`Ant (\"vrn\",_)")],
+               ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2760,8 +2697,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("nativeint",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "nativeint"))), `Any)),
-               "`Ant (\"nativeint\",_)")],
+               ("Ant", (`A "nativeint")), "`Ant (\"nativeint\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2771,8 +2707,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`nativeint",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`nativeint"))), `Any)),
-               "`Ant (\"`nativeint\",_)")],
+               ("Ant", (`A "`nativeint")), "`Ant (\"`nativeint\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2782,8 +2717,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("flo",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "flo"))), `Any)),
-               "`Ant (\"flo\",_)")],
+               ("Ant", (`A "flo")), "`Ant (\"flo\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2793,8 +2727,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`flo",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`flo"))), `Any)),
-               "`Ant (\"`flo\",_)")],
+               ("Ant", (`A "`flo")), "`Ant (\"`flo\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2804,8 +2737,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("chr",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "chr"))), `Any)),
-               "`Ant (\"chr\",_)")],
+               ("Ant", (`A "chr")), "`Ant (\"chr\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2815,8 +2747,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`chr",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`chr"))), `Any)),
-               "`Ant (\"`chr\",_)")],
+               ("Ant", (`A "`chr")), "`Ant (\"`chr\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2826,8 +2757,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("str",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "str"))), `Any)),
-               "`Ant (\"str\",_)")],
+               ("Ant", (`A "str")), "`Ant (\"str\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2837,8 +2767,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("`str",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "`str"))), `Any)),
-               "`Ant (\"`str\",_)")],
+               ("Ant", (`A "`str")), "`Ant (\"`str\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2852,8 +2781,8 @@ let apply () =
                 (fun (i : 'vid)  (_loc : Locf.t)  ->
                    ((i : vid  :>pat) : 'pat )))));
          ([`Stoken
-             (((function | `Int _ -> true | _ -> false)),
-               (`App ((`Vrn "Int"), `Any)), "`Int _")],
+             (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
+               "`Int _")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2861,8 +2790,8 @@ let apply () =
                    | `Int s -> (`Int (_loc, s) : 'pat )
                    | _ -> failwith "`Int (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Int32 _ -> true | _ -> false)),
-               (`App ((`Vrn "Int32"), `Any)), "`Int32 _")],
+             (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
+               "`Int32 _")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2870,8 +2799,8 @@ let apply () =
                    | `Int32 s -> (`Int32 (_loc, s) : 'pat )
                    | _ -> failwith "`Int32 (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Int64 _ -> true | _ -> false)),
-               (`App ((`Vrn "Int64"), `Any)), "`Int64 _")],
+             (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
+               "`Int64 _")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2879,8 +2808,8 @@ let apply () =
                    | `Int64 s -> (`Int64 (_loc, s) : 'pat )
                    | _ -> failwith "`Int64 (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Flo _ -> true | _ -> false)),
-               (`App ((`Vrn "Flo"), `Any)), "`Flo _")],
+             (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
+               "`Flo _")],
            ("`Flo (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2888,8 +2817,8 @@ let apply () =
                    | `Flo s -> (`Flo (_loc, s) : 'pat )
                    | _ -> failwith "`Flo (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Chr _ -> true | _ -> false)),
-               (`App ((`Vrn "Chr"), `Any)), "`Chr _")],
+             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
+               "`Chr _")],
            ("`Chr (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2897,8 +2826,8 @@ let apply () =
                    | `Chr s -> (`Chr (_loc, s) : 'pat )
                    | _ -> failwith "`Chr (_loc, s)\n"))));
          ([`Stoken
-             (((function | `Str _ -> true | _ -> false)),
-               (`App ((`Vrn "Str"), `Any)), "`Str _")],
+             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+               "`Str _")],
            ("`Str (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -2907,8 +2836,8 @@ let apply () =
                    | _ -> failwith "`Str (_loc, s)\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int _ -> true | _ -> false)),
-              (`App ((`Vrn "Int"), `Any)), "`Int _")],
+            (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
+              "`Int _")],
            ("`Int (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -2917,8 +2846,8 @@ let apply () =
                    | _ -> failwith "`Int (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int32 _ -> true | _ -> false)),
-              (`App ((`Vrn "Int32"), `Any)), "`Int32 _")],
+            (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
+              "`Int32 _")],
            ("`Int32 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -2927,8 +2856,8 @@ let apply () =
                    | _ -> failwith "`Int32 (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int64 _ -> true | _ -> false)),
-              (`App ((`Vrn "Int64"), `Any)), "`Int64 _")],
+            (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
+              "`Int64 _")],
            ("`Int64 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -2938,7 +2867,7 @@ let apply () =
          ([`Skeyword "-";
           `Stoken
             (((function | `Nativeint _ -> true | _ -> false)),
-              (`App ((`Vrn "Nativeint"), `Any)), "`Nativeint _")],
+              ("Nativeint", `Any), "`Nativeint _")],
            ("`Nativeint (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -2948,8 +2877,8 @@ let apply () =
                    | _ -> failwith "`Nativeint (_loc, (Fstring.neg s))\n"))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Flo _ -> true | _ -> false)),
-              (`App ((`Vrn "Flo"), `Any)), "`Flo _")],
+            (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
+              "`Flo _")],
            ("`Flo (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -3017,8 +2946,7 @@ let apply () =
           `Skeyword ":";
           `Stoken
             (((function | `Ant ("opt",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "opt"))), `Any)),
-              "`Ant (\"opt\",_)");
+              ("Ant", (`A "opt")), "`Ant (\"opt\",_)");
           `Skeyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_anti _loc n s))\n",
              (Fgram.mk_action
@@ -3076,8 +3004,8 @@ let apply () =
                 (fun (i : 'type_longident)  _  (_loc : Locf.t)  ->
                    ((`ClassPath (_loc, i) : FAst.pat ) : 'pat )))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3089,8 +3017,8 @@ let apply () =
              (Fgram.mk_action
                 (fun _  (_loc : Locf.t)  -> ((`Any _loc : FAst.pat ) : 'pat )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)),
-               (`App ((`Vrn "Label"), `Any)), "`Label _");
+             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
+               "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
@@ -3119,7 +3047,7 @@ let apply () =
                    (`LabelS (_loc, i) : 'pat )))));
          ([`Stoken
              (((function | `Optlabel _ -> true | _ -> false)),
-               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+               ("Optlabel", `Any), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -3138,7 +3066,7 @@ let apply () =
                          "`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n"))));
          ([`Stoken
              (((function | `Optlabel _ -> true | _ -> false)),
-               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+               ("Optlabel", `Any), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -3171,8 +3099,7 @@ let apply () =
           `Skeyword "=";
           `Stoken
             (((function | `Ant ("opt",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "opt"))), `Any)),
-              "`Ant (\"opt\",_)");
+              ("Ant", (`A "opt")), "`Ant (\"opt\",_)");
           `Skeyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_anti _loc n s))\n",
              (Fgram.mk_action
@@ -3232,8 +3159,7 @@ let apply () =
                     ((`Record (_loc, pl) : FAst.pat ) : 'ipat )))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3243,8 +3169,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("pat",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "pat"))), `Any)),
-               "`Ant (\"pat\",_)")],
+               ("Ant", (`A "pat")), "`Ant (\"pat\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3254,8 +3179,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("par",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "par"))), `Any)),
-               "`Ant (\"par\",_)")],
+               ("Ant", (`A "par")), "`Ant (\"par\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3294,8 +3218,7 @@ let apply () =
           `Skeyword ":";
           `Stoken
             (((function | `Ant ("opt",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "opt"))), `Any)),
-              "`Ant (\"opt\",_)");
+              ("Ant", (`A "opt")), "`Ant (\"opt\",_)");
           `Skeyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_anti _loc n s))\n",
              (Fgram.mk_action
@@ -3349,8 +3272,8 @@ let apply () =
                 (fun (s : 'a_lident)  (_loc : Locf.t)  ->
                    ((s : alident  :>pat) : 'ipat )))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3368,8 +3291,8 @@ let apply () =
                 (fun _  (_loc : Locf.t)  ->
                    ((`Any _loc : FAst.pat ) : 'ipat )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)),
-               (`App ((`Vrn "Label"), `Any)), "`Label _");
+             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
+               "`Label _");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
@@ -3398,7 +3321,7 @@ let apply () =
                    (`LabelS (_loc, i) : 'ipat )))));
          ([`Stoken
              (((function | `Optlabel _ -> true | _ -> false)),
-               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+               ("Optlabel", `Any), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -3417,7 +3340,7 @@ let apply () =
                          "`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n"))));
          ([`Stoken
              (((function | `Optlabel _ -> true | _ -> false)),
-               (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+               ("Optlabel", `Any), "`Optlabel _");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -3450,8 +3373,7 @@ let apply () =
           `Skeyword "=";
           `Stoken
             (((function | `Ant ("opt",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "opt"))), `Any)),
-              "`Ant (\"opt\",_)");
+              ("Ant", (`A "opt")), "`Ant (\"opt\",_)");
           `Skeyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_anti _loc n s))\n",
              (Fgram.mk_action
@@ -3560,8 +3482,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"pat\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3650,8 +3571,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"pat\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3661,8 +3581,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"pat\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("pat",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "pat"))), `Any)),
-               "`Ant (\"pat\",_)")],
+               ("Ant", (`A "pat")), "`Ant (\"pat\",_)")],
            ("mk_anti _loc ~c:\"pat\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3687,8 +3606,8 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+              (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+                "`Lid _")],
             ("i\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3696,8 +3615,8 @@ let apply () =
                     | `Lid i -> (i : 'luident )
                     | _ -> failwith "i\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("i\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3721,8 +3640,8 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+              (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+                "`Lid _")],
             ("`C (_loc, i)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3730,8 +3649,8 @@ let apply () =
                     | `Lid i -> (`C (_loc, i) : 'astr )
                     | _ -> failwith "`C (_loc, i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`C (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3740,8 +3659,7 @@ let apply () =
                    | _ -> failwith "`C (_loc, i)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3750,8 +3668,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc n s\n"))));
          ([`Stoken
              (((function | `Ant ("vrn",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-               "`Ant (\"vrn\",_)")],
+               ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)")],
            ("mk_anti _loc n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3770,8 +3687,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3781,8 +3697,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3792,8 +3707,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3803,8 +3717,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3814,8 +3727,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -3831,8 +3743,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)");
+               ("Ant", (`A "id")), "`Ant (\"id\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -3848,8 +3759,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -3864,8 +3774,8 @@ let apply () =
                        failwith
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3874,8 +3784,8 @@ let apply () =
                        ((`Lid (_loc, i) : FAst.ident ) : 'ident_quot )
                    | _ -> failwith "(`Lid (_loc, i) : FAst.ident )\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3884,8 +3794,8 @@ let apply () =
                        ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot )
                    | _ -> failwith "(`Uid (_loc, i) : FAst.ident )\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n",
@@ -3909,8 +3819,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3920,8 +3829,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3931,8 +3839,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3942,8 +3849,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -3953,8 +3859,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -3970,8 +3875,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)");
+               ("Ant", (`A "id")), "`Ant (\"id\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -3987,8 +3891,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -4003,8 +3906,8 @@ let apply () =
                        failwith
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("`Lid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4012,8 +3915,8 @@ let apply () =
                    | `Lid i -> (`Lid (_loc, i) : 'ident )
                    | _ -> failwith "`Lid (_loc, i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4021,8 +3924,8 @@ let apply () =
                    | `Uid i -> (`Uid (_loc, i) : 'ident )
                    | _ -> failwith "`Uid (_loc, i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4037,8 +3940,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4048,8 +3950,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4059,8 +3960,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4070,8 +3970,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4081,8 +3980,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -4098,8 +3996,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)");
+               ("Ant", (`A "id")), "`Ant (\"id\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -4115,8 +4012,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n",
@@ -4131,8 +4027,8 @@ let apply () =
                        failwith
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), i)\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("`Lid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4140,8 +4036,8 @@ let apply () =
                    | `Lid i -> (`Lid (_loc, i) : 'vid )
                    | _ -> failwith "`Lid (_loc, i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4149,8 +4045,8 @@ let apply () =
                    | `Uid i -> (`Uid (_loc, i) : 'vid )
                    | _ -> failwith "`Uid (_loc, i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4164,8 +4060,8 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Uid _ -> true | _ -> false)),
-                (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+              (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+                "`Uid _")],
             ("`Uid (_loc, s)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4174,8 +4070,7 @@ let apply () =
                     | _ -> failwith "`Uid (_loc, s)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"uident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4185,8 +4080,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"uident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"uident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4196,8 +4090,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"uident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"uident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4206,8 +4099,8 @@ let apply () =
                        (mk_anti _loc ~c:"uident" n s : 'uident )
                    | _ -> failwith "mk_anti _loc ~c:\"uident\" n s\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("dot (`Uid (_loc, s)) l\n",
@@ -4219,8 +4112,7 @@ let apply () =
                    | _ -> failwith "dot (`Uid (_loc, s)) l\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("dot (mk_anti _loc ~c:\"uident\" n s) i\n",
@@ -4233,8 +4125,7 @@ let apply () =
                    | _ -> failwith "dot (mk_anti _loc ~c:\"uident\" n s) i\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)");
+               ("Ant", (`A "id")), "`Ant (\"id\",_)");
           `Skeyword ".";
           `Sself],
            ("dot (mk_anti _loc ~c:\"uident\" n s) i\n",
@@ -4247,8 +4138,7 @@ let apply () =
                    | _ -> failwith "dot (mk_anti _loc ~c:\"uident\" n s) i\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("dot (mk_anti _loc ~c:\"uident\" n s) i\n",
@@ -4263,8 +4153,8 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Lid _ -> true | _ -> false)),
-                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+              (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+                "`Lid _")],
             ("((`Sub []), i)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4272,8 +4162,8 @@ let apply () =
                     | `Lid i -> (((`Sub []), i) : 'dot_lstrings )
                     | _ -> failwith "((`Sub []), i)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
@@ -4292,8 +4182,8 @@ let apply () =
                          "match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n"))));
          ([`Skeyword ".";
           `Stoken
-            (((function | `Uid _ -> true | _ -> false)),
-              (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+              "`Uid _");
           `Skeyword ".";
           `Sself],
            ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
@@ -4316,8 +4206,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)");
+                ("Ant", (`A "")), "`Ant (\"\",_)");
            `Skeyword ".";
            `Skeyword "("],
             ("mk_anti _loc ~c:\"ident\" n s\n",
@@ -4329,8 +4218,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)");
+               ("Ant", (`A "id")), "`Ant (\"id\",_)");
           `Skeyword ".";
           `Skeyword "("],
            ("mk_anti _loc ~c:\"ident\" n s\n",
@@ -4342,8 +4230,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Skeyword "("],
            ("mk_anti _loc ~c:\"ident\" n s\n",
@@ -4354,8 +4241,8 @@ let apply () =
                        (mk_anti _loc ~c:"ident" n s : 'module_longident_dot_lparen )
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -4370,8 +4257,8 @@ let apply () =
                        failwith
                          "(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Skeyword "("],
            ("(`Uid (_loc, i) : FAst.ident )\n",
@@ -4383,8 +4270,7 @@ let apply () =
                    | _ -> failwith "(`Uid (_loc, i) : FAst.ident )\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n",
@@ -4400,8 +4286,7 @@ let apply () =
                          "(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n",
@@ -4420,8 +4305,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4431,8 +4315,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4442,8 +4325,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4452,8 +4334,8 @@ let apply () =
                        (mk_anti _loc ~c:"ident" n s : 'module_longident )
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, i)), l)\n",
@@ -4465,8 +4347,8 @@ let apply () =
                        (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )
                    | _ -> failwith "`Dot (_loc, (`Uid (_loc, i)), l)\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4475,8 +4357,7 @@ let apply () =
                    | _ -> failwith "`Uid (_loc, i)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l)\n",
@@ -4492,8 +4373,7 @@ let apply () =
                          "`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l)\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l)\n",
@@ -4527,8 +4407,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4538,8 +4417,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4549,8 +4427,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4559,8 +4436,8 @@ let apply () =
                        (mk_anti _loc ~c:"ident" n s : 'module_longident_with_app )
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4591,8 +4468,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4602,8 +4478,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4613,8 +4488,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4624,8 +4498,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4634,8 +4507,8 @@ let apply () =
                        (mk_anti _loc ~c:"ident" n s : 'type_longident )
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4644,8 +4517,8 @@ let apply () =
                        ((`Lid (_loc, i) : FAst.ident ) : 'type_longident )
                    | _ -> failwith "(`Lid (_loc, i) : FAst.ident )\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4663,8 +4536,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"ident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4674,8 +4546,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("id",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-               "`Ant (\"id\",_)")],
+               ("Ant", (`A "id")), "`Ant (\"id\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4685,8 +4556,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"ident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4695,8 +4565,8 @@ let apply () =
                        (mk_anti _loc ~c:"ident" n s : 'label_longident )
                    | _ -> failwith "mk_anti _loc ~c:\"ident\" n s\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4705,8 +4575,8 @@ let apply () =
                        ((`Lid (_loc, i) : FAst.ident ) : 'label_longident )
                    | _ -> failwith "(`Lid (_loc, i) : FAst.ident )\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _");
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -4722,8 +4592,7 @@ let apply () =
                          "(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n",
@@ -4739,8 +4608,7 @@ let apply () =
                          "(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)");
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), l) : FAst.ident )\n",
@@ -4788,8 +4656,7 @@ let apply () =
          ([`Skeyword "method";
           `Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -4800,8 +4667,7 @@ let apply () =
          ([`Skeyword "method";
           `Stoken
             (((function | `Ant ("override",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "override"))), `Any)),
-              "`Ant (\"override\",_)")],
+              ("Ant", (`A "override")), "`Ant (\"override\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -4824,8 +4690,7 @@ let apply () =
                     (`Positive _loc : 'opt_override )))));
          ([`Stoken
              (((function | `Ant ("!",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "!"))), `Any)),
-               "`Ant (\"!\",_)")],
+               ("Ant", (`A "!")), "`Ant (\"!\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4835,8 +4700,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("override",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "override"))), `Any)),
-               "`Ant (\"override\",_)")],
+               ("Ant", (`A "override")), "`Ant (\"override\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4860,8 +4724,7 @@ let apply () =
          ([`Skeyword "val";
           `Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -4872,8 +4735,7 @@ let apply () =
          ([`Skeyword "val";
           `Stoken
             (((function | `Ant ("override",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "override"))), `Any)),
-              "`Ant (\"override\",_)")],
+              ("Ant", (`A "override")), "`Ant (\"override\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -4884,8 +4746,7 @@ let apply () =
          ([`Skeyword "val";
           `Stoken
             (((function | `Ant ("!",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "!"))), `Any)),
-              "`Ant (\"!\",_)")],
+              ("Ant", (`A "!")), "`Ant (\"!\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
@@ -4911,8 +4772,7 @@ let apply () =
                 (fun _  (_loc : Locf.t)  -> (`Negative _loc : 'flag )))));
          ([`Stoken
              (((function | `Ant ("to",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "to"))), `Any)),
-               "`Ant (\"to\",_)")],
+               ("Ant", (`A "to")), "`Ant (\"to\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4922,8 +4782,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"flag\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4940,8 +4799,7 @@ let apply () =
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_private )))));
          ([`Stoken
              (((function | `Ant ("private",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "private"))), `Any)),
-               "`Ant (\"private\",_)")],
+               ("Ant", (`A "private")), "`Ant (\"private\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4962,8 +4820,7 @@ let apply () =
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_mutable )))));
          ([`Stoken
              (((function | `Ant ("mutable",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "mutable"))), `Any)),
-               "`Ant (\"mutable\",_)")],
+               ("Ant", (`A "mutable")), "`Ant (\"mutable\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -4984,8 +4841,7 @@ let apply () =
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_virtual )))));
          ([`Stoken
              (((function | `Ant ("virtual",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "virtual"))), `Any)),
-               "`Ant (\"virtual\",_)")],
+               ("Ant", (`A "virtual")), "`Ant (\"virtual\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5006,8 +4862,7 @@ let apply () =
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_dot_dot )))));
          ([`Stoken
              (((function | `Ant ("..",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ".."))), `Any)),
-               "`Ant (\"..\",_)")],
+               ("Ant", (`A "..")), "`Ant (\"..\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5028,8 +4883,7 @@ let apply () =
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_rec )))));
          ([`Stoken
              (((function | `Ant ("rec",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "rec"))), `Any)),
-               "`Ant (\"rec\",_)")],
+               ("Ant", (`A "rec")), "`Ant (\"rec\",_)")],
            ("mk_anti _loc ~c:\"flag\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5046,8 +4900,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"a_lident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5057,8 +4910,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"a_lident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("lid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "lid"))), `Any)),
-               "`Ant (\"lid\",_)")],
+               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
            ("mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5067,8 +4919,8 @@ let apply () =
                        (mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                    | _ -> failwith "mk_anti _loc ~c:\"a_lident\" n s\n"))));
          ([`Stoken
-             (((function | `Lid _ -> true | _ -> false)),
-               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
+             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+               "`Lid _")],
            ("`Lid (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5080,8 +4932,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"a_uident\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5091,8 +4942,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"a_uident\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("uid",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "uid"))), `Any)),
-               "`Ant (\"uid\",_)")],
+               ("Ant", (`A "uid")), "`Ant (\"uid\",_)")],
            ("mk_anti _loc ~c:\"a_uident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5101,8 +4951,8 @@ let apply () =
                        (mk_anti _loc ~c:"a_uident" n s : 'a_uident )
                    | _ -> failwith "mk_anti _loc ~c:\"a_uident\" n s\n"))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)),
-               (`App ((`Vrn "Uid"), `Any)), "`Uid _")],
+             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
+               "`Uid _")],
            ("`Uid (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5114,8 +4964,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc \"str_list\" s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5125,8 +4974,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc \"str_list\" s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Sself],
            ("`App (_loc, (mk_anti _loc \"\" s), xs)\n",
              (Fgram.mk_action
@@ -5137,8 +4985,8 @@ let apply () =
                        (`App (_loc, (mk_anti _loc "" s), xs) : 'string_list )
                    | _ -> failwith "`App (_loc, (mk_anti _loc \"\" s), xs)\n"))));
          ([`Stoken
-             (((function | `Str _ -> true | _ -> false)),
-               (`App ((`Vrn "Str"), `Any)), "`Str _")],
+             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+               "`Str _")],
            ("`Str (_loc, x)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5146,8 +4994,8 @@ let apply () =
                    | `Str x -> (`Str (_loc, x) : 'string_list )
                    | _ -> failwith "`Str (_loc, x)\n"))));
          ([`Stoken
-             (((function | `Str _ -> true | _ -> false)),
-               (`App ((`Vrn "Str"), `Any)), "`Str _");
+             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
+               "`Str _");
           `Sself],
            ("`App (_loc, (`Str (_loc, x)), xs)\n",
              (Fgram.mk_action
@@ -5218,7 +5066,8 @@ let apply () =
        (None, None,
          [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
            `Stoken
-             (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
+             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+               "`EOI")],
             ("x\n",
               (Fgram.mk_action
                  (fun (__fan_1 : [> Ftoken.t])  (x : 'pat)  (_loc : Locf.t) 
@@ -5231,7 +5080,8 @@ let apply () =
        (None, None,
          [([`Snterm (Fgram.obj (exp : 'exp Fgram.t ));
            `Stoken
-             (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
+             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+               "`EOI")],
             ("x\n",
               (Fgram.mk_action
                  (fun (__fan_1 : [> Ftoken.t])  (x : 'exp)  (_loc : Locf.t) 
@@ -5244,7 +5094,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `DirQuotation _ -> true | _ -> false)),
-                (`App ((`Vrn "DirQuotation"), `Any)), "`DirQuotation _")],
+                ("DirQuotation", `Any), "`DirQuotation _")],
             ("Fdir.handle_quot x; ([], (Some _loc))\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5267,7 +5117,8 @@ let apply () =
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'implem )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
+             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+               "`EOI")],
            ("([], None)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5298,7 +5149,8 @@ let apply () =
                 (fun _  (st : 'stru)  (_loc : Locf.t)  ->
                    (Some st : 'top_phrase )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), (`Vrn "EOI"), "`EOI")],
+             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+               "`EOI")],
            ("None\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5310,8 +5162,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc n ~c:\"stru\" s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5321,8 +5172,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc n ~c:\"stru\" s\n"))));
          ([`Stoken
              (((function | `Ant ("stri",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "stri"))), `Any)),
-               "`Ant (\"stri\",_)")],
+               ("Ant", (`A "stri")), "`Ant (\"stri\",_)")],
            ("mk_anti _loc n ~c:\"stru\" s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5332,8 +5182,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc n ~c:\"stru\" s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";;"],
            ("mk_anti _loc n ~c:\"stru\" s\n",
              (Fgram.mk_action
@@ -5344,8 +5193,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc n ~c:\"stru\" s\n"))));
          ([`Stoken
              (((function | `Ant ("stri",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "stri"))), `Any)),
-               "`Ant (\"stri\",_)");
+               ("Ant", (`A "stri")), "`Ant (\"stri\",_)");
           `Skeyword ";;"],
            ("mk_anti _loc n ~c:\"stru\" s\n",
              (Fgram.mk_action
@@ -5356,8 +5204,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc n ~c:\"stru\" s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n",
              (Fgram.mk_action
@@ -5372,8 +5219,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
          ([`Stoken
              (((function | `Ant ("stri",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "stri"))), `Any)),
-               "`Ant (\"stri\",_)");
+               ("Ant", (`A "stri")), "`Ant (\"stri\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n",
              (Fgram.mk_action
@@ -5388,8 +5234,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";;";
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n",
@@ -5405,8 +5250,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n"))));
          ([`Stoken
              (((function | `Ant ("stri",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "stri"))), `Any)),
-               "`Ant (\"stri\",_)");
+               ("Ant", (`A "stri")), "`Ant (\"stri\",_)");
           `Skeyword ";;";
           `Sself],
            ("`Sem (_loc, (mk_anti _loc n ~c:\"stru\" s), st)\n",
@@ -5638,8 +5482,7 @@ let apply () =
                     (`ClassType (_loc, ctd) : 'stru )))));
           ([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"stru\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5649,8 +5492,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"stru\" n s\n"))));
           ([`Stoken
               (((function | `Ant ("stri",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str "stri"))), `Any)),
-                "`Ant (\"stri\",_)")],
+                ("Ant", (`A "stri")), "`Ant (\"stri\",_)")],
             ("mk_anti _loc ~c:\"stru\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5659,8 +5501,8 @@ let apply () =
                         (mk_anti _loc ~c:"stru" n s : 'stru )
                     | _ -> failwith "mk_anti _loc ~c:\"stru\" n s\n"))));
           ([`Stoken
-              (((function | `Quot _ -> true | _ -> false)),
-                (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+              (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+                "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.stru\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5692,8 +5534,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"clsigi\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5703,8 +5544,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("csg",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "csg"))), `Any)),
-               "`Ant (\"csg\",_)")],
+               ("Ant", (`A "csg")), "`Ant (\"csg\",_)")],
            ("mk_anti _loc ~c:\"clsigi\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5714,8 +5554,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";"],
            ("mk_anti _loc ~c:\"clsigi\" n s\n",
              (Fgram.mk_action
@@ -5726,8 +5565,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("csg",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "csg"))), `Any)),
-               "`Ant (\"csg\",_)");
+               ("Ant", (`A "csg")), "`Ant (\"csg\",_)");
           `Skeyword ";"],
            ("mk_anti _loc ~c:\"clsigi\" n s\n",
              (Fgram.mk_action
@@ -5738,8 +5576,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n",
              (Fgram.mk_action
@@ -5754,8 +5591,7 @@ let apply () =
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n"))));
          ([`Stoken
              (((function | `Ant ("csg",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "csg"))), `Any)),
-               "`Ant (\"csg\",_)");
+               ("Ant", (`A "csg")), "`Ant (\"csg\",_)");
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n",
              (Fgram.mk_action
@@ -5770,8 +5606,7 @@ let apply () =
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";";
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n",
@@ -5787,8 +5622,7 @@ let apply () =
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n"))));
          ([`Stoken
              (((function | `Ant ("csg",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "csg"))), `Any)),
-               "`Ant (\"csg\",_)");
+               ("Ant", (`A "csg")), "`Ant (\"csg\",_)");
           `Skeyword ";";
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clsigi\" n s), csg) : FAst.clsigi )\n",
@@ -5831,8 +5665,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"clsigi\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5842,8 +5675,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("csg",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "csg"))), `Any)),
-               "`Ant (\"csg\",_)")],
+               ("Ant", (`A "csg")), "`Ant (\"csg\",_)")],
            ("mk_anti _loc ~c:\"clsigi\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5852,8 +5684,8 @@ let apply () =
                        (mk_anti _loc ~c:"clsigi" n s : 'clsigi )
                    | _ -> failwith "mk_anti _loc ~c:\"clsigi\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clsigi\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5912,8 +5744,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"clfield\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5923,8 +5754,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("cst",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cst"))), `Any)),
-               "`Ant (\"cst\",_)")],
+               ("Ant", (`A "cst")), "`Ant (\"cst\",_)")],
            ("mk_anti _loc ~c:\"clfield\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -5934,8 +5764,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";"],
            ("mk_anti _loc ~c:\"clfield\" n s\n",
              (Fgram.mk_action
@@ -5946,8 +5775,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("cst",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cst"))), `Any)),
-               "`Ant (\"cst\",_)");
+               ("Ant", (`A "cst")), "`Ant (\"cst\",_)");
           `Skeyword ";"],
            ("mk_anti _loc ~c:\"clfield\" n s\n",
              (Fgram.mk_action
@@ -5958,8 +5786,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n",
              (Fgram.mk_action
@@ -5974,8 +5801,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n"))));
          ([`Stoken
              (((function | `Ant ("cst",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cst"))), `Any)),
-               "`Ant (\"cst\",_)");
+               ("Ant", (`A "cst")), "`Ant (\"cst\",_)");
           `Sself],
            ("`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n",
              (Fgram.mk_action
@@ -5990,8 +5816,7 @@ let apply () =
                          "`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), st)\n"))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant (\"\",_)");
           `Skeyword ";";
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : FAst.clfield )\n",
@@ -6007,8 +5832,7 @@ let apply () =
                          "(`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : FAst.clfield )\n"))));
          ([`Stoken
              (((function | `Ant ("cst",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cst"))), `Any)),
-               "`Ant (\"cst\",_)");
+               ("Ant", (`A "cst")), "`Ant (\"cst\",_)");
           `Skeyword ";";
           `Sself],
            ("(`Sem (_loc, (mk_anti _loc ~c:\"clfield\" n s), cst) : FAst.clfield )\n",
@@ -6051,8 +5875,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"clfield\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6062,8 +5885,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("cst",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cst"))), `Any)),
-               "`Ant (\"cst\",_)")],
+               ("Ant", (`A "cst")), "`Ant (\"cst\",_)")],
            ("mk_anti _loc ~c:\"clfield\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6072,8 +5894,8 @@ let apply () =
                        (mk_anti _loc ~c:"clfield" n s : 'clfield )
                    | _ -> failwith "mk_anti _loc ~c:\"clfield\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clfield\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6219,8 +6041,7 @@ let apply () =
                     (`And (_loc, c1, c2) : 'class_declaration )))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"clexp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6230,8 +6051,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"clexp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("cdcl",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cdcl"))), `Any)),
-               "`Ant (\"cdcl\",_)")],
+               ("Ant", (`A "cdcl")), "`Ant (\"cdcl\",_)")],
            ("mk_anti _loc ~c:\"clexp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6331,8 +6151,7 @@ let apply () =
        ((Some "simple"), None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-                "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant (\"\",_)")],
             ("mk_anti _loc ~c:\"clexp\" n s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6342,8 +6161,7 @@ let apply () =
                     | _ -> failwith "mk_anti _loc ~c:\"clexp\" n s\n"))));
          ([`Stoken
              (((function | `Ant ("cexp",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str "cexp"))), `Any)),
-               "`Ant (\"cexp\",_)")],
+               ("Ant", (`A "cexp")), "`Ant (\"cexp\",_)")],
            ("mk_anti _loc ~c:\"clexp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6352,8 +6170,8 @@ let apply () =
                        (mk_anti _loc ~c:"clexp" n s : 'clexp )
                    | _ -> failwith "mk_anti _loc ~c:\"clexp\" n s\n"))));
          ([`Stoken
-             (((function | `Quot _ -> true | _ -> false)),
-               (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+             (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+               "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clexp\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6454,8 +6272,7 @@ let apply () =
                    (`And (_loc, cd1, cd2) : 'class_description )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"cltyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6465,8 +6282,7 @@ let apply () =
                   | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"cltyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6507,8 +6323,7 @@ let apply () =
                    (`And (_loc, cd1, cd2) : 'cltyp_declaration )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"cltyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6518,8 +6333,7 @@ let apply () =
                   | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"cltyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6577,8 +6391,7 @@ let apply () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"cltyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6588,8 +6401,7 @@ let apply () =
                    | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("ctyp",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "ctyp"))), `Any)),
-              "`Ant (\"ctyp\",_)")],
+              ("Ant", (`A "ctyp")), "`Ant (\"ctyp\",_)")],
           ("mk_anti _loc ~c:\"cltyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6598,8 +6410,8 @@ let apply () =
                       (mk_anti _loc ~c:"cltyp" n s : 'cltyp )
                   | _ -> failwith "mk_anti _loc ~c:\"cltyp\" n s\n"))));
         ([`Stoken
-            (((function | `Quot _ -> true | _ -> false)),
-              (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+            (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+              "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.cltyp\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6674,8 +6486,7 @@ let apply_ctyp () =
                    (`App (_loc, t1, t2) : 'unquoted_typevars )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6685,8 +6496,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6695,8 +6505,8 @@ let apply_ctyp () =
                       (mk_anti _loc ~c:"ctyp" n s : 'unquoted_typevars )
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
-            (((function | `Quot _ -> true | _ -> false)),
-              (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+            (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+              "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6714,8 +6524,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6725,8 +6534,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6794,8 +6602,7 @@ let apply_ctyp () =
                   ((i :>ctyp) : 'type_longident_and_parameters )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc n s ~c:\"ctyp\"\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6853,8 +6660,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6864,8 +6670,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6898,8 +6703,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6909,8 +6713,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6920,8 +6723,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("vrn",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-              "`Ant (\"vrn\",_)")],
+              ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)")],
           ("`TyVrn (_loc, (mk_anti _loc ~c:\"ctyp\" n s))\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6934,8 +6736,7 @@ let apply_ctyp () =
                         "`TyVrn (_loc, (mk_anti _loc ~c:\"ctyp\" n s))\n"))));
         ([`Stoken
             (((function | `Ant ("vrn",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "vrn"))), `Any)),
-              "`Ant (\"vrn\",_)");
+              ("Ant", (`A "vrn")), "`Ant (\"vrn\",_)");
          `Skeyword "of";
          `Snterm (Fgram.obj (ctyp : 'ctyp Fgram.t ))],
           ("`TyVrnOf (_loc, (mk_anti _loc ~c:\"ctyp\" n s), t)\n",
@@ -6977,8 +6778,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -6988,8 +6788,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7012,8 +6811,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7023,8 +6821,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7179,8 +6976,7 @@ let apply_ctyp () =
                    (`App (_loc, t1, t2) : 'typevars )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7190,8 +6986,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7200,8 +6995,8 @@ let apply_ctyp () =
                       (mk_anti _loc ~c:"ctyp" n s : 'typevars )
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
-            (((function | `Quot _ -> true | _ -> false)),
-              (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+            (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+              "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7250,8 +7045,8 @@ let apply_ctyp () =
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Label (_loc, i, t) : 'ctyp )))));
         ([`Stoken
-            (((function | `Label _ -> true | _ -> false)),
-              (`App ((`Vrn "Label"), `Any)), "`Label _");
+            (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
+              "`Label _");
          `Skeyword ":";
          `Sself],
           ("`Label (_loc, (`Lid (_loc, s)), t)\n",
@@ -7263,7 +7058,7 @@ let apply_ctyp () =
                   | _ -> failwith "`Label (_loc, (`Lid (_loc, s)), t)\n"))));
         ([`Stoken
             (((function | `Optlabel _ -> true | _ -> false)),
-              (`App ((`Vrn "Optlabel"), `Any)), "`Optlabel _");
+              ("Optlabel", `Any), "`Optlabel _");
          `Sself],
           ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
             (Fgram.mk_action
@@ -7300,8 +7095,7 @@ let apply_ctyp () =
                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'ctyp )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7311,8 +7105,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7322,8 +7115,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("par",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "par"))), `Any)),
-              "`Ant (\"par\",_)")],
+              ("Ant", (`A "par")), "`Ant (\"par\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7333,8 +7125,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("id",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-              "`Ant (\"id\",_)")],
+              ("Ant", (`A "id")), "`Ant (\"id\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7344,8 +7135,7 @@ let apply_ctyp () =
                   | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("id",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "id"))), `Any)),
-              "`Ant (\"id\",_)");
+              ("Ant", (`A "id")), "`Ant (\"id\",_)");
          `Skeyword ".";
          `Sself],
           ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Fstream.Error s))) ()\n",
@@ -7367,8 +7157,8 @@ let apply_ctyp () =
                       failwith
                         "(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_anti _loc ~c:\"ident\" n s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Fstream.Error s))) ()\n"))));
         ([`Stoken
-            (((function | `Quot _ -> true | _ -> false)),
-              (`App ((`Vrn "Quot"), `Any)), "`Quot _")],
+            (((function | `Quot _ -> true | _ -> false)), ("Quot", `Any),
+              "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7479,8 +7269,7 @@ let apply_ctyp () =
                    (_loc : Locf.t)  -> (`Com (_loc, t1, t2) : 'comma_ctyp )))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-              "`Ant (\"\",_)")],
+              ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("mk_anti _loc ~c:\"ctyp,\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7498,8 +7287,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7509,8 +7297,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7532,8 +7319,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7543,8 +7329,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7567,8 +7352,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7578,8 +7362,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7620,8 +7403,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7631,8 +7413,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7699,8 +7480,7 @@ let apply_ctyp () =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               (`App ((`App ((`Vrn "Ant"), (`Str ""))), `Any)),
-               "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("mk_anti _loc ~c:\"ctyp\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
@@ -7710,8 +7490,7 @@ let apply_ctyp () =
                    | _ -> failwith "mk_anti _loc ~c:\"ctyp\" n s\n"))));
         ([`Stoken
             (((function | `Ant ("typ",_) -> true | _ -> false)),
-              (`App ((`App ((`Vrn "Ant"), (`Str "typ"))), `Any)),
-              "`Ant (\"typ\",_)")],
+              ("Ant", (`A "typ")), "`Ant (\"typ\",_)")],
           ("mk_anti _loc ~c:\"ctyp\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->

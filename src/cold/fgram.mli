@@ -55,8 +55,14 @@ type pat =
 and rec_pat =
   [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
       
+type word =
+   [`Any
+   |`A of string
+   |`Empty]
+and data = (string * word) (* FIXME duplicate in gram_def *)      
+type descr = data
       
-type descr = pat
+(* type descr = pat *)
       
 
       
