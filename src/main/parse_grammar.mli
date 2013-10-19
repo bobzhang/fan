@@ -58,7 +58,7 @@ val t_qualid : vid Fgram.t
    *)
 
 val entry : Gram_def.entry Fgram.t
-
+val normalize : Gram_pat.t -> Gram_def.data
 
 
 

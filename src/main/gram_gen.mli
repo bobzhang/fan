@@ -182,4 +182,6 @@ val text_of_functorial_extend :  ?safe:bool ->
   loc ->vid option  -> entry list -> exp
 
 (** generate Stoken *)  
-val token_of_simple_pat :  Gram_pat.t  -> symbol
+(* val token_of_simple_pat :  Gram_pat.t  -> symbol *)
+
+val filter_pat_with_captured_variables : pat -> pat * (exp * exp) list

@@ -97,7 +97,7 @@ FAN_FILES = \
     lex_gram \
     lang_new \
     lang_clear\
-    parse_grammar2
+    # parse_grammar2
     
 FAN_EXP_FILES = \
     # parse_grammar2

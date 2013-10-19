@@ -1,5 +1,17 @@
 open FAst
 
+class primitive = object
+  method string _loc (i:string) :ep = %ep{$`str:i} 
+end
+type word  =
+  [ `Any
+  | `A of string
+  | `Empty (* no token associated *)]
+
+and data = (string * word)
+   with ("MetaObj")
+
+let meta_data = new meta  ;;
 
 %ocaml{
 
@@ -19,15 +31,15 @@ type styp =
  | `Tok of loc
  | `Type of ctyp ]
 
-type word  =
-  | Any
-  | A of string
-  | Empty (* no token associated *)
-type data = {
-    tag : string;
-    word : word;
-  }      
-type meta = exp 
+(* type word  = *)
+(*   | Any *)
+(*   | A of string *)
+(*   | Empty (\* no token associated *\) *)
+(* type data = { *)
+(*     tag : string; *)
+(*     word : word; *)
+(*   }       *)
+(* type meta = (\* exp  *\) word *)
 type entry   = {
   name : name ;
   (*position expession node *)    
@@ -63,7 +75,7 @@ and text =
  | `Speek of (loc * text)
  | `Sself of loc
  | `Skeyword of (loc * string)
- | `Stok of (loc * exp * meta(* exp *) * string (* Gram_pat.t *))
+ | `Stok of (loc * exp * (* data *) exp * string (* Gram_pat.t *))
 (** The first is the match function exp(predicate),
     the second and the third  is the string description.
     The description string will be used for

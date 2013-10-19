@@ -338,40 +338,6 @@ let text_of_functorial_extend ?safe _loc   gram  el =
   let_in_of_extend _loc gram locals args 
 
 (** *)
-let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
-  let _loc = loc_of p in
-  let p_pat = (p:Gram_pat.t :> pat) in 
-  let (po,ls) =
-    filter_pat_with_captured_variables p_pat in
-  let v = object (* to be improved *)
-    inherit FanAstN.meta
-    method! ant _loc x =
-      match x with
-      | `Ant(_loc,{FanUtil.content=x;_}) ->
-          %ep{ `Str $lid:x }
-  end in
-  let no_variable = Gram_pat.wildcarder#t p in
-  let mdescr =
-    (v#pat _loc (Objs.strip_pat (no_variable :> pat)) :> exp) in
-  let mstr = Gram_pat.to_string no_variable in 
-  match ls with
-  | [] ->
-      let match_fun =
-        let v = (no_variable :> pat) in  
-        if is_irrefut_pat v  then
-          %exp{function | $v -> true }
-        else
-          %exp{function | $v -> true | _ -> false  } in
-      {text =  `Stok(_loc,match_fun, mdescr,mstr) ;
-       styp=`Tok _loc;pattern = Some p_pat}
-  | (x,y)::ys ->
-      let guard =
-          List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
-            %exp{$x = $y} ys  in
-      let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      {text = `Stok(_loc,match_fun,  mdescr, mstr);
-       styp = `Tok _loc;
-       pattern= Some (Objs.wildcarder#pat po) }
         
 
 (* local variables: *)

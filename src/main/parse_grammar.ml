@@ -11,9 +11,11 @@ Gram_gen:
   check_not_tok
   mk_slist
   mk_symbol
-  token_of_simple_pat
+  (* token_of_simple_pat *)
   ;
-
+Fan_ops:
+  is_irrefut_pat
+  ;
 Ast_gen:
   sem_of_list
   loc_of
@@ -108,36 +110,67 @@ let g =
       [`Lid s %pat'{$lid:s}]
 }
   
-let simple_meta =
-  Gentry.map ~name:"simple_meta" (List.map token_of_simple_pat) simple
-
 
 let normalize (x:Gram_pat.t) : Gram_def.data =
   match x with
-  | %pat'{$vrn:x} -> {
-      tag = x;
-      word = Empty;
-    }
-  | %pat'{$vrn:x $str:s} | %pat'{$vrn:x ($str:s as $_ )} -> {
-      tag = x ;
-      word = A s;
-     }
+  | %pat'{$vrn:x} ->  (x, `Empty)
+    
+  | %pat'{$vrn:x $str:s} | %pat'{$vrn:x ($str:s as $_ )} -> 
+      (x,  `A s)
+
   | %pat'{$vrn:x $lid:_ }
-  | %pat'{$vrn:x _}-> {
-      tag = x;
-      word = Any 
-    }
-  | %pat'{$vrn:x ($lid:_, $_)} -> {
-      tag = x;
-      word = Any
-    }
+  | %pat'{$vrn:x _}-> 
+      (x, `Any)
+  | %pat'{$vrn:x ($lid:_, $_)} -> 
+      (x, `Any)
+    
   | %pat'{$vrn:x (($str:s as $_), $_) }
-  | %pat'{$vrn:x ($str:s, $_) } -> {
-      tag = x;
-      word = A s;
-    }
+  | %pat'{$vrn:x ($str:s, $_) }  ->
+      (x, `A s)
+
   | _ -> failwithf "normalize %s" @@ Gram_pat.to_string x ;;
 
+let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
+  let _loc = loc_of p in
+  let p_pat = (p:Gram_pat.t :> pat) in 
+  let (po,ls) =
+    Gram_gen.filter_pat_with_captured_variables p_pat in
+  (* let v = object (\* to be improved *\) *)
+  (*   inherit FanAstN.meta *)
+  (*   method! ant _loc x = *)
+  (*     match x with *)
+  (*     | `Ant(_loc,{FanUtil.content=x;_}) -> *)
+  (*         %ep{ `Str $lid:x } *)
+  (* end in *)
+  let mdescr = (Gram_def.meta_data#data _loc (normalize p)  :> exp) in
+  let no_variable = Gram_pat.wildcarder#t p in
+  (* let mdescr = *)
+  (*   (v#pat _loc (Objs.strip_pat (no_variable :> pat)) :> exp) in *)
+  let mstr = Gram_pat.to_string no_variable in
+
+  match ls with
+  | [] ->
+      let match_fun =
+        let v = (no_variable :> pat) in  
+        if is_irrefut_pat v  then
+          %exp{function | $v -> true }
+        else
+          %exp{function | $v -> true | _ -> false  } in
+      {text =  `Stok(_loc,match_fun, mdescr,mstr) ;
+       styp=`Tok _loc;pattern = Some p_pat}
+  | (x,y)::ys ->
+      let guard =
+          List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
+            %exp{$x = $y} ys  in
+      let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
+      {text = `Stok(_loc,match_fun,  mdescr, mstr);
+       styp = `Tok _loc;
+       pattern= Some (Objs.wildcarder#pat po) }
+
+
+let simple_meta =
+  Gentry.map ~name:"simple_meta" (List.map token_of_simple_pat) simple
+;;
 
 %extend{(g:Fgram.t)
   let str : [`Str y  %{y}]
