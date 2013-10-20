@@ -11,7 +11,6 @@ Gram_gen:
   check_not_tok
   mk_slist
   mk_symbol
-  (* token_of_simple_pat *)
   ;
 Fan_ops:
   is_irrefut_pat
@@ -115,7 +114,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   (** FIXME bring antiquotation back later*)        
   simple :
   [  "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
-  |  "Lid"; Str v %{[token_of_simple_pat %pat'{`Lid $str:v}]}
+  (* |  ("Lid"|"Uid" as x); Str v %{[token_of_simple_pat %pat'{ $vrn:x $str:v}]} *)
+  |  "Lid"; Str v %{[token_of_simple_pat %pat'{ `Lid $str:v}]}
   |  "Uid"; Str v %{[token_of_simple_pat %pat'{`Uid $str:v}]}      
   |  "Lid" ; Lid x %{[token_of_simple_pat %pat'{`Lid $lid:x }]}
   |  "Uid" ; Lid x %{[token_of_simple_pat %pat'{`Uid $lid:x }]}
@@ -131,7 +131,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   |  "Nativeint"; Lid x %{[token_of_simple_pat %pat'{`Nativeint $lid:x}]}
   |  "Flo"; Lid x %{[token_of_simple_pat %pat'{`Flo $lid:x}]}      
   |  "Lid" ; "_"    %{[token_of_simple_pat %pat'{`Lid _}]}
+
   |  "Uid"; "_" %{[token_of_simple_pat %pat'{`Uid _}]}
+  |  "Str"; "_" %{[token_of_simple_pat %pat'{`Str _}]}
   |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
      match p with
      | (v,None) ->
@@ -139,6 +141,18 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
      | (v,Some u) ->
          List.map (fun x -> token_of_simple_pat %pat'{`Ant (($x as $lid:u), $p1) }) v 
   }
+  |  Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
+  | "("; or_strs{v}; ")" %{
+    match v with
+    | (vs, None) ->
+        List.map
+          (fun x -> mk_symbol ~text:(`Skeyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
+          vs
+    | (vs, Some b) ->
+        List.map
+          (fun x -> mk_symbol ~text:(`Skeyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key $lid:b}) )
+          vs
+    }
   |  "Uid"; "("; or_words{p}; ")" %{
     match p with
     | (v,None) ->
@@ -147,11 +161,16 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         List.map (fun a -> token_of_simple_pat %pat'{`Uid ($a as $lid:x)}) v 
   }
   | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
-  |  Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}
+
   |  name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
           ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
   ]
+  let or_strs :
+      [ L1 str0 SEP "|"{xs} %{(xs,None)}
+      | L1  str0 SEP "|" {xs}; "as"; Lid s %{ (xs,Some s)}]
+  let str0 :
+      [ Str s %{s}]
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
       | L1 str SEP "|"{v}; "as"; Lid s %{
@@ -162,17 +181,17 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   let lid :
       [Lid s %pat'{$lid:s}]
 
-  let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
+  let sep_symbol : [ "SEP"; simple{t} %{let [t] =  t in t}]
 
   symbol : (* be more precise, no recursive grammar? *)
-  [ "L0"; S{s}; OPT  sep_symbol{sep } %{
+  [ "L0"; simple{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
 
     let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 
     let text = mk_slist _loc false sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
-  | "L1"; S{s}; OPT sep_symbol{sep} %{
+  | "L1"; simple{s}; OPT sep_symbol{sep} %{
     let [s] =  s in
     let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 

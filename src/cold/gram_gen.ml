@@ -19,14 +19,7 @@ let mk_level ~label  ~assoc  ~rules  =
 let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
-let check_not_tok (s : Gram_def.symbol) =
-  match s with
-  | { text = `Stok (_loc,_,_,_);_} ->
-      Locf.raise _loc
-        (Fstream.Error
-           ("Deprecated syntax, use a sub rule. " ^
-              "L0 STRING becomes L0 [ x = STRING -> x ]"))
-  | _ -> ()
+let check_not_tok (_s : Gram_def.symbol) = ()
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
 let gensym = let i = ref 0 in fun ()  -> incr i; i
