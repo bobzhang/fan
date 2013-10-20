@@ -334,17 +334,17 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let text = mk_slist _loc true sep s in
     [mk_symbol ~text ~styp ~pattern:None]
     }
-  | "OPT"; S{s}  %{
+  | "OPT"; simple{s}  %{
     let [s] = s in
     let () = check_not_tok s in
     let styp = %ctyp'{$(s.styp) option } in 
     let text = `Sopt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
-  |"TRY"; S{s} %{
+  |"TRY"; simple{s} %{
     let [s] = s in 
     let text = `Stry (_loc, s.text) in
     [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
-  | "PEEK"; S{s} %{
+  | "PEEK"; simple{s} %{
     let [s] = s in
     let text = `Speek(_loc, s.text) in
     [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}

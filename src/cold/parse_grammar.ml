@@ -981,26 +981,26 @@ let _ =
                    let styp = `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                    let text = mk_slist _loc true sep s in
                    [mk_symbol ~text ~styp ~pattern:None] : 'symbol )))));
-        ([`Skeyword "OPT"; `Sself],
+        ([`Skeyword "OPT"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
           ("let s::[] = s in\nlet () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in [mk_symbol ~text ~styp ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  _  (_loc : Locf.t)  ->
+               (fun (s : 'simple)  _  (_loc : Locf.t)  ->
                   (let s::[] = s in
                    let () = check_not_tok s in
                    let styp = `App (_loc, (`Lid (_loc, "option")), (s.styp)) in
                    let text = `Sopt (_loc, (s.text)) in
                    [mk_symbol ~text ~styp ~pattern:None] : 'symbol )))));
-        ([`Skeyword "TRY"; `Sself],
+        ([`Skeyword "TRY"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
           ("let s::[] = s in\nlet text = `Stry (_loc, (s.text)) in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  _  (_loc : Locf.t)  ->
+               (fun (s : 'simple)  _  (_loc : Locf.t)  ->
                   (let s::[] = s in
                    let text = `Stry (_loc, (s.text)) in
                    [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 'symbol )))));
-        ([`Skeyword "PEEK"; `Sself],
+        ([`Skeyword "PEEK"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
           ("let s::[] = s in\nlet text = `Speek (_loc, (s.text)) in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (s : 'symbol)  _  (_loc : Locf.t)  ->
+               (fun (s : 'simple)  _  (_loc : Locf.t)  ->
                   (let s::[] = s in
                    let text = `Speek (_loc, (s.text)) in
                    [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 'symbol )))));
