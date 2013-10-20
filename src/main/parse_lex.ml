@@ -33,11 +33,11 @@ let g =
     | "<";L0 case SEP "|" {l} %{
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
   let case:
-    [ regexp{r};  `Quot x  %{
+    [ regexp{r};  Quot x  %{
       let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
       let e = Ftoken.quot_expand expander x in (r,e)}]  
   declare_regexp:
-  ["let";`Lid x ; "=";regexp{r} %{
+  ["let"; Lid x ; "=";regexp{r} %{
     if Hashtbl.mem named_regexps x then begin 
       Printf.eprintf
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
@@ -49,7 +49,7 @@ let g =
     end}
   | S; S{x} %{x}]
 
-  let lid: [`Lid y %{ (_loc, y)} ]  
+  let lid: [ Lid y %{ (_loc, y)} ]  
   regexp:
   {
    "as"
@@ -68,8 +68,8 @@ let g =
    ]  
    "basic"  
    [ "_" %{ Characters Fcset.all_chars}
-   | `Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
-   | `Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
+   | Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
+   | Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
    | "["; char_class{cc}; "]" %{ Characters cc}
    | S{r1};"*" %{ Repetition r1}
    | S{r1};"?" %{ Alternative (Epsilon,r1)}
@@ -77,7 +77,7 @@ let g =
 
    | "("; S{r1}; ")" %{ r1}
    | "eof" %{ Eof}
-   | `Lid x %{ begin (* FIXME token with location *)
+   | Lid x %{ begin (* FIXME token with location *)
        try Hashtbl.find named_regexps x
        with Not_found ->
          let p = Locf.start_pos _loc in begin
@@ -93,11 +93,11 @@ let g =
   ]
 
   char_class1:
-  [ `Chr c1; "-"; `Chr c2 %{
+  [ Chr c1; "-"; Chr c2 %{
     let c1 = Char.code @@ TokenEval.char c1 in
     let c2 = Char.code @@ TokenEval.char c2 in
     Fcset.interval c1 c2}
-  | `Chr c1   %{ Fcset.singleton (Char.code @@ TokenEval.char c1)}
+  | Chr c1   %{ Fcset.singleton (Char.code @@ TokenEval.char c1)}
   | S{cc1}; S{cc2} %{ Fcset.union cc1 cc2 }
   ] };;  
 

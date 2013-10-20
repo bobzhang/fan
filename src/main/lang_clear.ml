@@ -16,8 +16,8 @@ qualuid
   
 %extend{
 a_lident :
-  [ `Ant(""|"lid" as n,s) %{FanUtil.mk_anti _loc  ~c:"a_lident" n s}
-  | `Lid s  %{ `Lid (_loc, s)} ]
+  [ Ant(""|"lid" as n,s) %{FanUtil.mk_anti _loc  ~c:"a_lident" n s}
+  | Lid s  %{ `Lid (_loc, s)} ]
 nonterminalsclear :
   [ qualuid{t}; L1 a_lident {ls} %{
     ls
@@ -27,8 +27,8 @@ nonterminalsclear :
       %exp{ $id:t.clear $x })
     |> seq_sem} ]
 qualuid :
-  [ `Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
-  | `Uid x %{ `Uid(_loc,x)}
+  [ Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
+  | Uid x %{ `Uid(_loc,x)}
   ]   
 }  
 

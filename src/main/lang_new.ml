@@ -11,12 +11,12 @@ open FAst
 
   
 %extend{
-let str : [`Str y  %{y}]
+let str : [Str y  %{y}]
 let type_entry :
-      [ `Lid x  %{ (_loc,x,None,None)}
-      | "("; `Lid x ;`Str y; ")" %{(_loc,x,Some y,None)}
-      | "(";`Lid x ;`Str y; Syntaxf.ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; `Lid x; ":"; Syntaxf.ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
+      [ Lid x  %{ (_loc,x,None,None)}
+      | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
+      | "("; Lid x ; Str y; Syntaxf.ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
+      | "("; Lid x; ":"; Syntaxf.ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
       ]      
 
   let ty :
@@ -26,18 +26,18 @@ let type_entry :
   ]
       
 qualuid :
-  [ `Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
-  | `Uid x %{ `Uid(_loc,x)}
+  [ Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
+  | Uid x %{ `Uid(_loc,x)}
   ] 
 
 qualid :
-  [ `Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
-  | `Lid i %{ `Lid(_loc,i)}
+  [ Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
+  | Lid i %{ `Lid(_loc,i)}
   ]
       
 t_qualid :
-  [ `Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
-  | `Uid x; "."; `Lid "t" %{ `Uid(_loc,x)}
+  [ Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
+  | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}
   ] 
       
 nonterminals : (* when [ty] is nullable, it should take care of the following *)

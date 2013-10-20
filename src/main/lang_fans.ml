@@ -19,7 +19,7 @@ with exp
   | "show_code"; "off" %{Typehook.show_code := false}
  ]
   let id:
-  [`Lid x  %{x} | `Uid x  %{x}]
+  [ Lid x  %{x} | Uid x  %{x}]
   let fan_quot_semi:
   [ fan_quot;";" ]
   fan_quots:

@@ -24,17 +24,17 @@ let register_inject_clfield (k,f) =
   
 %extend{
   inject_exp:
-  [`Lid x %{
+  [ Lid x %{
    try Hashtbl.find inject_exp_tbl x 
    with Not_found -> failwithf "inject.exp %s not found" x } ]
 
   inject_stru:
-  [`Lid x %{
+  [Lid x %{
    try Hashtbl.find inject_stru_tbl x
    with Not_found -> failwithf "inject.exp %s not found" x }]
 
   inject_clfield:
-  [`Lid x %{
+  [Lid x %{
    try Hashtbl.find inject_clfield_tbl x
    with Not_found -> failwithf "inject.exp %s not found" x }]
 };;

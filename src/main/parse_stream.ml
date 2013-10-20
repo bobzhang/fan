@@ -26,7 +26,7 @@ open FAst
  *)  
 
   %extend{
-    let  uid: [`Uid n %{n}]
+    let  uid: [Uid n %{n}]
     parser_exp : 
         [  OPT uid  {name}; parser_case_list{pcl} %{
           match name with
@@ -44,7 +44,7 @@ open FAst
      ]
     
     parser_case :
-    [stream_pat{sp}(* ; `Quot x %{ *)
+    [stream_pat{sp}
      (*  let e = *)
      (*    if x.name = Ftoken.empty_name then *)
      (*      let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in *)

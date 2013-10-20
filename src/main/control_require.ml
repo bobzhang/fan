@@ -22,7 +22,7 @@ let () =
   %unsafe_extend{
   (* (g:Fgram.t) *)
     item:
-    [ "require"; `Str s %{ add s} ]}
+    [ "require"; Str s %{ add s} ]}
 
 
 (* local variables: *)

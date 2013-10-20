@@ -29,7 +29,7 @@ open Util
 
 let g =
   Fgram.create_lexer ~annot:"Grammar's lexer"
-    ~keywords:["`";"("; ")" ; ","; "as"; "|"; "_"; ":";
+    ~keywords:["("; ")" ; ","; "as"; "|"; "_"; ":";
                "."; ";"; "{"; "}"; "let";"[";"]";
                "SEP";"LEVEL"; "S";
                "EOI"; "Lid";"Uid";
@@ -81,32 +81,32 @@ let g =
 %extend{(g:Fgram.t)
   (** FIXME bring antiquotation back later*)        
   simple :
-  [ "`"; "EOI" %{[%pat'{`EOI}]}
-  | "`"; "Lid"; `Str v %{[%pat'{`Lid $str:v}]}
-  | "`"; "Uid"; `Str v %{[%pat'{`Uid $str:v}]}      
-  | "`"; "Lid" ; `Lid x %{[%pat'{`Lid $lid:x }]}
-  | "`"; "Uid" ; `Lid x %{[%pat'{`Uid $lid:x }]}
-  | "`"; "Quot"; `Lid x %{[%pat'{`Quot $lid:x }]}
-  | "`"; "Label"; `Lid x %{[%pat'{`Label $lid:x }]}      
-  | "`"; "DirQuotation"; `Lid x %{[%pat'{`DirQuotation $lid:x}]}
-  | "`"; "Optlabel"; `Lid x %{[%pat'{`Optlabel $lid:x}]}      
-  | "`"; "Str"; `Lid x %{[%pat'{`Str $lid:x}]}
-  | "`"; "Chr"; `Lid x %{[%pat'{`Chr $lid:x}]}
-  | "`"; "Int"; `Lid x %{[%pat'{`Int $lid:x}]}
-  | "`"; "Int32"; `Lid x %{[%pat'{`Int32 $lid:x}]}
-  | "`"; "Int64"; `Lid x %{[%pat'{`Int64 $lid:x}]}      
-  | "`"; "Nativeint"; `Lid x %{[%pat'{`Nativeint $lid:x}]}
-  | "`"; "Flo"; `Lid x %{[%pat'{`Flo $lid:x}]}      
-  | "`"; "Lid" ; "_"    %{[%pat'{`Lid _}]}
-  | "`"; "Uid"; "_" %{[%pat'{`Uid _}]}
-  | "`"; "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
+  [  "EOI" %{[%pat'{`EOI}]}
+  |  "Lid"; Str v %{[%pat'{`Lid $str:v}]}
+  |  "Uid"; Str v %{[%pat'{`Uid $str:v}]}      
+  |  "Lid" ; Lid x %{[%pat'{`Lid $lid:x }]}
+  |  "Uid" ; Lid x %{[%pat'{`Uid $lid:x }]}
+  |  "Quot"; Lid x %{[%pat'{`Quot $lid:x }]}
+  |  "Label"; Lid x %{[%pat'{`Label $lid:x }]}      
+  |  "DirQuotation"; Lid x %{[%pat'{`DirQuotation $lid:x}]}
+  |  "Optlabel"; Lid x %{[%pat'{`Optlabel $lid:x}]}      
+  |  "Str"; Lid x %{[%pat'{`Str $lid:x}]}
+  |  "Chr"; Lid x %{[%pat'{`Chr $lid:x}]}
+  |  "Int"; Lid x %{[%pat'{`Int $lid:x}]}
+  |  "Int32"; Lid x %{[%pat'{`Int32 $lid:x}]}
+  |  "Int64"; Lid x %{[%pat'{`Int64 $lid:x}]}      
+  |  "Nativeint"; Lid x %{[%pat'{`Nativeint $lid:x}]}
+  |  "Flo"; Lid x %{[%pat'{`Flo $lid:x}]}      
+  |  "Lid" ; "_"    %{[%pat'{`Lid _}]}
+  |  "Uid"; "_" %{[%pat'{`Uid _}]}
+  |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
     match p with
     | (v,None) ->
         List.map (fun x -> %pat'{`Ant ($x, $p1) }) v
     | (v,Some u) ->
         List.map (fun x -> %pat'{`Ant (($x as $lid:u), $p1) }) v 
   }
-  | "`"; "Uid"; "("; or_words{p}; ")" %{
+  |  "Uid"; "("; or_words{p}; ")" %{
     match p with
     | (v,None) ->
         List.map (fun x -> %pat'{`Uid $x}) v
@@ -116,12 +116,12 @@ let g =
   ]
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
-      | L1 str SEP "|"{v}; "as"; `Lid s %{
+      | L1 str SEP "|"{v}; "as"; Lid s %{
           (v , Some s) } ]
   let str :
-      [`Str s %pat'{$str:s} ]
+      [Str s %pat'{$str:s} ]
   let lid :
-      [`Lid s %pat'{$lid:s}]
+      [Lid s %pat'{$lid:s}]
 }
   
 
@@ -177,7 +177,7 @@ let simple_meta =
 ;;
 
 %extend{(g:Fgram.t)
-  let str : [`Str y  %{y}]
+  let str : [Str y  %{y}]
   (*****************************)
   (* extend language           *)
   (*****************************)      
@@ -209,17 +209,17 @@ let simple_meta =
       
   (* parse qualified [X.X] *)
   qualuid:
-  [ `Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
-  | `Uid x %{ `Uid(_loc,x)}
+  [ Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
+  | Uid x %{ `Uid(_loc,x)}
   ] 
 
   qualid:
-  [ `Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
-  | `Lid i %{ `Lid(_loc,i)}]
+  [ Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
+  | Lid i %{ `Lid(_loc,i)}]
 
   t_qualid:
-  [ `Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
-  | `Uid x; "."; `Lid "t" %{ `Uid(_loc,x)}] 
+  [ Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
+  | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}] 
 
   (* stands for the non-terminal  *)
   name: [ qualid{il} %{mk_name _loc il}] 
@@ -298,7 +298,7 @@ let simple_meta =
     List.map (fun prod -> mk_rule ~prod ~action) prods} ]
 
   let opt_action :
-      [ `Quot x %{
+      [ Quot x %{
         if x.name = Ftoken.empty_name then 
           let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
           Ftoken.quot_expand expander x
@@ -306,7 +306,7 @@ let simple_meta =
           Ast_quotation.expand x Dyn_tag.exp
       }]
 
-  let tmp_lid : [`Lid i %pat'{$lid:i}]
+  let tmp_lid : [Lid i %pat'{$lid:i}]
    (* FIXME a new entry introduced here only for precise location *)    
   let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
 
@@ -319,7 +319,12 @@ let simple_meta =
       | None -> s) ss }  ] 
 
   let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
-  let level_str :  ["Level"; `Str  s %{s} ]
+  let level_str :  ["Level"; Str  s %{s} ]
+
+  let single_symbol :
+  [ name{n};  OPT level_str{lev} %{
+        mk_symbol  ~text:(`Snterm (_loc ,n, lev))
+      ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None }]    
 
   symbol : (* be more precise, no recursive grammar? *)
   [ "L0"; S{s}; OPT  sep_symbol{sep } %{
@@ -353,15 +358,15 @@ let simple_meta =
   | "S" %{
       [mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
   | simple_meta{p} %{ p}
-  | `Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}
+  | Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}
   | name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
           ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
   ]
 
    string :
-  [ `Str  s  %exp{$str:s}
-  | `Ant ("", s) %{Parsef.exp _loc s}
+  [ Str  s  %exp{$str:s}
+  | Ant ("", s) %{Parsef.exp _loc s}
   ] (*suport antiquot for string*)
   };;
 

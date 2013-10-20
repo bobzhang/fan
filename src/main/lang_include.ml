@@ -5,7 +5,7 @@
 
 %unsafe_extend{ (g:Fgram.t)
 include_quot:
-  [`Str s %{ (* FIXME *)
+  [Str s %{ (* FIXME *)
     let (keep,cf) = State.((keep,current_filters)) in
     %save{ keep cf %{begin
       State.reset ();

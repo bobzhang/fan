@@ -12,7 +12,7 @@ Ast_gen:
 
     
 %extend{save_quot:
-  [L1 lid {ls} ;`Quot x  %{
+  [ L1 lid {ls} ; Quot x  %{
    let b =
      if x.name = Ftoken.empty_name then
        let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
@@ -41,7 +41,7 @@ Ast_gen:
         end
   } }
  ]
-  let lid: [`Lid x %{ x} ]
+  let lid: [ Lid x %{ x} ]
 };;
 
 let _ = begin
