@@ -45,7 +45,7 @@ let g =
                "First"; "Last";
                "Before"; "After";
                "Level"; "LA";
-               "RA"; "NA";
+               "RA"; "NA"; "+";"*";"?"; "="
              ] ();;
 
   
@@ -161,6 +161,53 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       [Str s %pat'{$str:s} ]
   let lid :
       [Lid s %pat'{$lid:s}]
+
+  let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
+
+  symbol : (* be more precise, no recursive grammar? *)
+  [ "L0"; S{s}; OPT  sep_symbol{sep } %{
+    let [s] =  s in
+
+    let () =  check_not_tok s in (* s should be singleton here actually*)
+    let styp = %ctyp'{ $(s.styp) list   } in 
+    let text = mk_slist _loc false sep s in
+    [mk_symbol ~text ~styp ~pattern:None]}
+  | "L1"; S{s}; OPT sep_symbol{sep} %{
+    let [s] =  s in
+    let () =  check_not_tok s in (* s should be singleton here actually*)
+    let styp = %ctyp'{ $(s.styp) list   } in 
+    let text = mk_slist _loc true sep s in
+    [mk_symbol ~text ~styp ~pattern:None]
+    }
+  | "OPT"; simple{s}  %{
+    let [s] = s in
+    let () = check_not_tok s in
+    let styp = %ctyp'{$(s.styp) option } in 
+    let text = `Sopt (_loc, s.text) in
+    [mk_symbol  ~text ~styp ~pattern:None] }
+  |"TRY"; simple{s} %{
+    let [s] = s in 
+    let text = `Stry (_loc, s.text) in
+    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
+  | "PEEK"; simple{s} %{
+    let [s] = s in
+    let text = `Speek(_loc, s.text) in
+    [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}
+  | simple{p} %{ p}
+
+  ]
+  let tmp_lid : [Lid i %pat'{$lid:i}]
+   (* FIXME a new entry introduced here only for precise location *)    
+  let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
+
+  psymbol :
+  [ symbol{ss} ; OPT  brace_pattern {p} %{
+    List.map (fun (s:Gram_def.symbol) ->
+      match p with
+      |Some _ ->
+          { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
+      | None -> s) ss }  ] 
+      
 }
 
 
@@ -299,58 +346,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
           Ast_quotation.expand x Dyn_tag.exp
       }]
 
-  let tmp_lid : [Lid i %pat'{$lid:i}]
-   (* FIXME a new entry introduced here only for precise location *)    
-  let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
 
-  psymbol :
-  [ symbol{ss} ; OPT  brace_pattern {p} %{
-    List.map (fun (s:Gram_def.symbol) ->
-      match p with
-      |Some _ ->
-          { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
-      | None -> s) ss }  ] 
-
-  let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
-
-
-  (* let single_symbol : *)
-  (* [ name{n};  OPT level_str{lev} %{ *)
-  (*       mk_symbol  ~text:(`Snterm (_loc ,n, lev)) *)
-  (*     ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None }]     *)
-
-  symbol : (* be more precise, no recursive grammar? *)
-  [ "L0"; S{s}; OPT  sep_symbol{sep } %{
-    let [s] =  s in
-
-    let () =  check_not_tok s in (* s should be singleton here actually*)
-    let styp = %ctyp'{ $(s.styp) list   } in 
-    let text = mk_slist _loc false sep s in
-    [mk_symbol ~text ~styp ~pattern:None]}
-  | "L1"; S{s}; OPT sep_symbol{sep} %{
-    let [s] =  s in
-    let () =  check_not_tok s in (* s should be singleton here actually*)
-    let styp = %ctyp'{ $(s.styp) list   } in 
-    let text = mk_slist _loc true sep s in
-    [mk_symbol ~text ~styp ~pattern:None]
-    }
-  | "OPT"; simple{s}  %{
-    let [s] = s in
-    let () = check_not_tok s in
-    let styp = %ctyp'{$(s.styp) option } in 
-    let text = `Sopt (_loc, s.text) in
-    [mk_symbol  ~text ~styp ~pattern:None] }
-  |"TRY"; simple{s} %{
-    let [s] = s in 
-    let text = `Stry (_loc, s.text) in
-    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
-  | "PEEK"; simple{s} %{
-    let [s] = s in
-    let text = `Speek(_loc, s.text) in
-    [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}
-  | simple{p} %{ p}
-
-  ]
+  
 
    string :
   [ Str  s  %exp{$str:s}
