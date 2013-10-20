@@ -44,7 +44,21 @@ let g =
                "Int64";
                "Int64";
                "Nativeint";
-               "Flo"
+               "Flo";
+               "OPT";
+               "TRY";
+               "PEEK";
+               "L0";
+               "L1";
+               "First";
+               "Last";
+               "Before";
+               "After";
+               "Level";
+               "LA";
+               "RA";
+               "NA";
+                 
              ]
     ();;
 
@@ -135,19 +149,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   let p_pat = (p:Gram_pat.t :> pat) in 
   let (po,ls) =
     Gram_gen.filter_pat_with_captured_variables p_pat in
-  (* let v = object (\* to be improved *\) *)
-  (*   inherit FanAstN.meta *)
-  (*   method! ant _loc x = *)
-  (*     match x with *)
-  (*     | `Ant(_loc,{FanUtil.content=x;_}) -> *)
-  (*         %ep{ `Str $lid:x } *)
-  (* end in *)
   let mdescr = (Gram_def.meta_data#data _loc (normalize p)  :> exp) in
   let no_variable = Gram_pat.wildcarder#t p in
-  (* let mdescr = *)
-  (*   (v#pat _loc (Objs.strip_pat (no_variable :> pat)) :> exp) in *)
   let mstr = Gram_pat.to_string no_variable in
-
   match ls with
   | [] ->
       let match_fun =
@@ -261,10 +265,12 @@ let simple_meta =
         | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end}  ]
   position :
-  [ `Uid ("First"|"Last" as x )    %exp{ $vrn:x }
-  | `Uid ("Before" | "After" | "Level" as x) ; string{n} %exp{ $vrn:x  $n }
-  | `Uid x %{failwithf
-               "%s is not the right position:(First|Last) or (Before|After|Level)" x}]
+  [ "First" %exp{`First}
+  | "Last" %exp{`Last}
+  | "Before"; string{n} %exp{`Before $n}
+  | "After"; string{n} %exp{`After $n}
+  | "Level"; string{n} %exp{`Level $n}
+  ]
 
   level_list :
   [ "{"; L1 level {ll}; "}" %{ `Group ll}
@@ -275,8 +281,9 @@ let simple_meta =
        %{mk_level ~label ~assoc ~rules} ]
   (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
   assoc :
-  [ `Uid ("LA"|"RA"|"NA" as x)  %exp{ $vrn:x }
-  | `Uid x %{failwithf "%s is not a correct associativity:(LA|RA|NA)" x}  ]
+  [ "LA" %exp{`LA}
+  | "RA" %exp{`RA}
+  | "NA" %exp{`NA} ]
 
       
   rule_list :
@@ -288,8 +295,7 @@ let simple_meta =
   rule :
   [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{
     let prods = Listf.cross prod in
-    List.map (fun prod -> mk_rule ~prod ~action) prods
-    (* [mk_rule ~prod ~action]  *)} ]
+    List.map (fun prod -> mk_rule ~prod ~action) prods} ]
 
   let opt_action :
       [ `Quot x %{
@@ -313,30 +319,34 @@ let simple_meta =
       | None -> s) ss }  ] 
 
   let sep_symbol : [ "SEP"; symbol{t} %{let [t] =  t in t}]
-  let level_str :  [`Uid "Level"; `Str  s %{s} ]
+  let level_str :  ["Level"; `Str  s %{s} ]
 
   symbol : (* be more precise, no recursive grammar? *)
-  [ `Uid ("L0"| "L1" as x); S{s}; OPT  sep_symbol{sep } %{
+  [ "L0"; S{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
 
     let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 
-    let text = mk_slist _loc
-        (match x with
-        |"L0" -> false | "L1" -> true
-        | _ -> failwithf "only (L0|L1) allowed here") sep s in
+    let text = mk_slist _loc false sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
-  |`Uid "OPT"; S{s}  %{
+  | "L1"; S{s}; OPT sep_symbol{sep} %{
+    let [s] =  s in
+    let () =  check_not_tok s in (* s should be singleton here actually*)
+    let styp = %ctyp'{ $(s.styp) list   } in 
+    let text = mk_slist _loc true sep s in
+    [mk_symbol ~text ~styp ~pattern:None]
+    }
+  | "OPT"; S{s}  %{
     let [s] = s in
     let () = check_not_tok s in
     let styp = %ctyp'{$(s.styp) option } in 
-    let text = `Sopt _loc s.text in
+    let text = `Sopt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
-  |`Uid "TRY"; S{s} %{
+  |"TRY"; S{s} %{
     let [s] = s in 
     let text = `Stry (_loc, s.text) in
     [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
-  | `Uid "PEEK"; S{s} %{
+  | "PEEK"; S{s} %{
     let [s] = s in
     let text = `Speek(_loc, s.text) in
     [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}
@@ -347,7 +357,7 @@ let simple_meta =
   | name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
           ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
-   | "("; S{s}; ")" %{s} ]
+  ]
 
    string :
   [ `Str  s  %exp{$str:s}
