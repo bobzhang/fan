@@ -152,8 +152,6 @@ val val_longident : ident Fgram.t
 val constr : constr Fgram.t
 val constr_quot : constr Fgram.t
 val prefixop : exp Fgram.t
-val infixop0 : exp Fgram.t
-val infixop1 : exp Fgram.t
 val infixop2 : exp Fgram.t
 val infixop3 : exp Fgram.t
 val infixop4 : exp Fgram.t

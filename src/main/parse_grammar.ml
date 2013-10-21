@@ -184,14 +184,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let styp = %ctyp'{$(s.styp) option } in 
     let text = `Sopt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
-  |"TRY"; simple{s} %{
-    let [s] = s in 
-    let text = `Stry (_loc, s.text) in
-    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
-  | "PEEK"; simple{s} %{
+  | ("TRY"|"PEEK" as p); simple{s} %{
     let [s] = s in
-    let text = `Speek(_loc, s.text) in
-    [mk_symbol ~text ~styp:(s.styp) ~pattern:None]}
+    let v = (_loc, s.text) in
+    let text = if p = "TRY" then `Stry v else `Speek v  in
+    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
   | simple{p} %{ p}
 
   ]

@@ -127,8 +127,6 @@ let rec_exp_quot = Fgram.mk "rec_exp_quot"
 let module_declaration = Fgram.mk "module_declaration"
 let type_info = Fgram.mk "type_info"
 let type_repr = Fgram.mk "type_repr"
-let infixop0 = Fgram.mk "or ||"
-let infixop1 = Fgram.mk "& &&"
 let infixop2 =
   Fgram.mk "infix operator (level 2) (comparison operators, and some others)"
 let infixop3 = Fgram.mk "infix operator (level 3) (start with '^', '@')"

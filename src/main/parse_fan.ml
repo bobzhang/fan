@@ -286,10 +286,13 @@ let apply () = begin
             match Fan_ops.bigarray_set _loc e1 e2 with
             | Some e -> e
             | None -> `Assign(_loc,e1,e2)}  ]
+
        "||" RA
-        [ S{e1}; infixop0{op}; S{e2}  %exp{ $op $e1 $e2 } ]
+        [ S{e1}; ("or"|"||" as op); S{e2}  %{
+          Ast_gen.appl_of_list [ %exp{$lid:op}; e1 ;e2]}  ]
        "&&" RA
-        [ S{e1}; infixop1{op}; S{e2}  %exp{ $op $e1 $e2 } ]
+        [ S{e1}; ("&"|"&&" as op) ; S{e2}  %{
+          Ast_gen.appl_of_list [ %exp{$lid:op}; e1 ;e2]}  ]
        "<" LA
         [ S{e1}; infixop2{op}; S{e2} %exp{ $op $e1 $e2 } ]
        "^" RA
@@ -299,24 +302,19 @@ let apply () = begin
        "+" LA
         [ S{e1}; infixop4{op}; S{e2} %exp{ $op $e1 $e2 } ]
        "*" LA
-        [ S{e1}; "land"; S{e2} %exp{ $e1 land $e2 }
-        | S{e1}; "lor"; S{e2}  %exp{ $e1 lor $e2 }
-        | S{e1}; "lxor"; S{e2}  %exp{ $e1 lxor $e2 }
-        | S{e1}; "mod"; S{e2}   %exp{ $e1 mod $e2 }
+        [ S{e1}; ("land"|"lor"|"lxor"|"mod" as op) ; S{e2}
+            %{Ast_gen.appl_of_list [ %exp{$lid:op}; e1; e2]  (* $e1 land $e2 *) }
         | S{e1}; infixop5{op}; S{e2}  %exp{ $op $e1 $e2 } ]
        "**" RA
-        [ S{e1}; "asr"; S{e2}  %exp{ $e1 asr $e2 }
-        | S{e1}; "lsl"; S{e2}  %exp{ $e1 lsl $e2 }
-        | S{e1}; "lsr"; S{e2}  %exp{ $e1 lsr $e2 }
+        [ S{e1}; ("asr"|"lsl"|"lsr" as op) ; S{e2}
+            %{Ast_gen.appl_of_list [%exp{$lid:op}; e1;e2] (* $e1 asr $e2 *) }
         | S{e1}; infixop6{op}; S{e2}  %exp{ $op $e1 $e2 } ]
           
        "obj" RA
-        ["fun"; "|";  L1 case0 SEP "|"{a}  %{
+        [("fun"|"function"); "|";  L1 case0 SEP "|"{a}  %{
            let cases = bar_of_list a in `Fun (_loc,cases)}
-        | "function"; "|"; L1 case0 SEP "|"{a} %{
-            let cases = bar_of_list a in `Fun(_loc,cases)}
-        | "fun"; fun_def{e} %{ e}
-        | "function"; fun_def{e} %{ e}
+        | ("fun"|"function"); fun_def{e} %{ e}
+
         | "object"; "(";pat{p}; ")"; class_structure{cst};"end" %{ `ObjPat(_loc,p,cst)}
         | "object"; "(";pat{p}; ")"; "end"  %{`ObjPatEnd(_loc,p)}
         | "object"; "(";pat{p};":";ctyp{t};")";class_structure{cst};"end" %{
@@ -423,20 +421,6 @@ let apply () = begin
        | ";"; sequence{el} %{ fun e -> `Sem(_loc,e,el)} ]
 
 
-       (* FIXME: more succinct form *)    
-       (* infixop1: *)
-       (* [  [ "&" | "&&" ]{x} -> `Lid(_loc,x) ] *)
-
-       infixop1: (* FIXME .. could be abstracted *)
-       [ "&"  %{ `Lid (_loc,"&")}
-       | "&&" %{`Lid (_loc,"&&")}]    
-
-       (* infixop0: *)
-       (* [  [ "or" | "||" ]{x} -> `Lid(_loc,x) ] *)
-           
-       infixop0:
-       ["or" %{ `Lid(_loc,"or")}
-       |"||" %{ `Lid(_loc,"||")} ]
            
        comma_exp:
        [ S{e1}; ","; S{e2}  %{`Com(_loc,e1,e2)}

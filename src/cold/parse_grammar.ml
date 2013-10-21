@@ -750,19 +750,33 @@ let _ =
                    let text = `Sopt (_loc, (s.text)) in
                    [mk_symbol ~text ~styp ~pattern:None] : 'symbol )))));
         ([`Skeyword "TRY"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
-          ("let s::[] = s in\nlet text = `Stry (_loc, (s.text)) in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
+          ("let s::[] = s in\nlet v = (_loc, (s.text)) in\nlet text = if p = \"TRY\" then `Stry v else `Speek v in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (s : 'simple)  _  (_loc : Locf.t)  ->
-                  (let s::[] = s in
-                   let text = `Stry (_loc, (s.text)) in
-                   [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 'symbol )))));
+               (fun (s : 'simple)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key p ->
+                      (let s::[] = s in
+                       let v = (_loc, (s.text)) in
+                       let text = if p = "TRY" then `Stry v else `Speek v in
+                       [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 
+                      'symbol )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "PEEK"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
-          ("let s::[] = s in\nlet text = `Speek (_loc, (s.text)) in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
+          ("let s::[] = s in\nlet v = (_loc, (s.text)) in\nlet text = if p = \"TRY\" then `Stry v else `Speek v in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (s : 'simple)  _  (_loc : Locf.t)  ->
-                  (let s::[] = s in
-                   let text = `Speek (_loc, (s.text)) in
-                   [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 'symbol )))));
+               (fun (s : 'simple)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key p ->
+                      (let s::[] = s in
+                       let v = (_loc, (s.text)) in
+                       let text = if p = "TRY" then `Stry v else `Speek v in
+                       [mk_symbol ~text ~styp:(s.styp) ~pattern:None] : 
+                      'symbol )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
           ("p\n",
             (Fgram.mk_action

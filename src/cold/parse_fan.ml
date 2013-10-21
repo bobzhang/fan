@@ -1295,25 +1295,61 @@ let apply () =
                     | Some e -> e
                     | None  -> `Assign (_loc, e1, e2) : 'exp )))))]);
        ((Some "||"), (Some `RA),
-         [([`Sself;
-           `Snterm (Fgram.obj (infixop0 : 'infixop0 Fgram.t ));
-           `Sself],
-            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+         [([`Sself; `Skeyword "or"; `Sself],
+            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Fgram.mk_action
-                 (fun (e2 : 'exp)  (op : 'infixop0)  (e1 : 'exp) 
+                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
-                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                    'exp )))))]);
+                    match __fan_1 with
+                    | `Key op ->
+                        (Ast_gen.appl_of_list
+                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                        'exp )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s"
+                             (Ftoken.token_to_string __fan_1))))));
+         ([`Sself; `Skeyword "||"; `Sself],
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+             (Fgram.mk_action
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))))]);
        ((Some "&&"), (Some `RA),
-         [([`Sself;
-           `Snterm (Fgram.obj (infixop1 : 'infixop1 Fgram.t ));
-           `Sself],
-            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
+         [([`Sself; `Skeyword "&"; `Sself],
+            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Fgram.mk_action
-                 (fun (e2 : 'exp)  (op : 'infixop1)  (e1 : 'exp) 
+                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
-                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
-                    'exp )))))]);
+                    match __fan_1 with
+                    | `Key op ->
+                        (Ast_gen.appl_of_list
+                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                        'exp )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s"
+                             (Ftoken.token_to_string __fan_1))))));
+         ([`Sself; `Skeyword "&&"; `Sself],
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
+             (Fgram.mk_action
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))))]);
        ((Some "<"), (Some `LA),
          [([`Sself;
            `Snterm (Fgram.obj (infixop2 : 'infixop2 Fgram.t ));
@@ -1353,31 +1389,58 @@ let apply () =
                     'exp )))))]);
        ((Some "*"), (Some `LA),
          [([`Sself; `Skeyword "land"; `Sself],
-            ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"land\")), e1)), e2) : FAst.exp )\n",
+            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Fgram.mk_action
-                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                    ((`App
-                        (_loc, (`App (_loc, (`Lid (_loc, "land")), e1)), e2) : 
-                    FAst.exp ) : 'exp )))));
+                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | `Key op ->
+                        (Ast_gen.appl_of_list
+                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                        'exp )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s"
+                             (Ftoken.token_to_string __fan_1))))));
          ([`Sself; `Skeyword "lor"; `Sself],
-           ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"lor\")), e1)), e2) : FAst.exp )\n",
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Fgram.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   ((`App (_loc, (`App (_loc, (`Lid (_loc, "lor")), e1)), e2) : 
-                   FAst.exp ) : 'exp )))));
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
          ([`Sself; `Skeyword "lxor"; `Sself],
-           ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"lxor\")), e1)), e2) : FAst.exp )\n",
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Fgram.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   ((`App
-                       (_loc, (`App (_loc, (`Lid (_loc, "lxor")), e1)), e2) : 
-                   FAst.exp ) : 'exp )))));
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
          ([`Sself; `Skeyword "mod"; `Sself],
-           ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"mod\")), e1)), e2) : FAst.exp )\n",
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Fgram.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   ((`App (_loc, (`App (_loc, (`Lid (_loc, "mod")), e1)), e2) : 
-                   FAst.exp ) : 'exp )))));
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
          ([`Sself;
           `Snterm (Fgram.obj (infixop5 : 'infixop5 Fgram.t ));
           `Sself],
@@ -1389,24 +1452,45 @@ let apply () =
                    'exp )))))]);
        ((Some "**"), (Some `RA),
          [([`Sself; `Skeyword "asr"; `Sself],
-            ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"asr\")), e1)), e2) : FAst.exp )\n",
+            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Fgram.mk_action
-                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                    ((`App
-                        (_loc, (`App (_loc, (`Lid (_loc, "asr")), e1)), e2) : 
-                    FAst.exp ) : 'exp )))));
+                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                    (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | `Key op ->
+                        (Ast_gen.appl_of_list
+                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
+                        'exp )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s"
+                             (Ftoken.token_to_string __fan_1))))));
          ([`Sself; `Skeyword "lsl"; `Sself],
-           ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"lsl\")), e1)), e2) : FAst.exp )\n",
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Fgram.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   ((`App (_loc, (`App (_loc, (`Lid (_loc, "lsl")), e1)), e2) : 
-                   FAst.exp ) : 'exp )))));
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
          ([`Sself; `Skeyword "lsr"; `Sself],
-           ("(`App (_loc, (`App (_loc, (`Lid (_loc, \"lsr\")), e1)), e2) : FAst.exp )\n",
+           ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Fgram.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   ((`App (_loc, (`App (_loc, (`Lid (_loc, "lsr")), e1)), e2) : 
-                   FAst.exp ) : 'exp )))));
+                (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
+                   (_loc : Locf.t)  ->
+                   match __fan_1 with
+                   | `Key op ->
+                       (Ast_gen.appl_of_list
+                          [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
          ([`Sself;
           `Snterm (Fgram.obj (infixop6 : 'infixop6 Fgram.t ));
           `Sself],
@@ -2295,28 +2379,6 @@ let apply () =
              (Fgram.mk_action
                 (fun (el : 'sequence)  _  (_loc : Locf.t)  ->
                    (fun e  -> `Sem (_loc, e, el) : 'sequence' )))))]));
-   Fgram.extend_single (infixop1 : 'infixop1 Fgram.t )
-     (None,
-       (None, None,
-         [([`Skeyword "&"],
-            ("`Lid (_loc, \"&\")\n",
-              (Fgram.mk_action
-                 (fun _  (_loc : Locf.t)  -> (`Lid (_loc, "&") : 'infixop1 )))));
-         ([`Skeyword "&&"],
-           ("`Lid (_loc, \"&&\")\n",
-             (Fgram.mk_action
-                (fun _  (_loc : Locf.t)  -> (`Lid (_loc, "&&") : 'infixop1 )))))]));
-   Fgram.extend_single (infixop0 : 'infixop0 Fgram.t )
-     (None,
-       (None, None,
-         [([`Skeyword "or"],
-            ("`Lid (_loc, \"or\")\n",
-              (Fgram.mk_action
-                 (fun _  (_loc : Locf.t)  -> (`Lid (_loc, "or") : 'infixop0 )))));
-         ([`Skeyword "||"],
-           ("`Lid (_loc, \"||\")\n",
-             (Fgram.mk_action
-                (fun _  (_loc : Locf.t)  -> (`Lid (_loc, "||") : 'infixop0 )))))]));
    Fgram.extend_single (comma_exp : 'comma_exp Fgram.t )
      (None,
        (None, None,
