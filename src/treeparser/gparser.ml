@@ -188,10 +188,11 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
     | `Snterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
     | `Sself -> fun strm -> entry.start 0 strm 
     | `Skeyword kwd -> fun strm ->
+        (** remember here -- it could be optimized ... *)
         begin  (* interaction with stream *)
           match Fstream.peek strm with
-          | Some (`Key tok,_) when tok = kwd ->
-              (Fstream.junk strm ; Gaction.mk tok )
+          | Some ((`Key tok,_) as x) when tok = kwd ->
+              (Fstream.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Fstream.NotConsumed
         end
     | `Stoken (f, _,_) -> fun strm ->
