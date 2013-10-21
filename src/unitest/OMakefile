@@ -14,7 +14,7 @@ OCAMLPACKS[] =
     compiler-libs
 
 COMMON = test_util \
-    # location_test
+    location_test
 PARSE = test_parse 
 LEX   = test_lex
 

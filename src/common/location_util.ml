@@ -20,3 +20,12 @@ let join_end (x:Locf.t) = {x with loc_start = x.loc_end}
 let join (x:Locf.t) = { x with loc_end = x.loc_start }
     
     
+let fmt_position f (l:Locf.position) =
+  if l.pos_lnum = -1
+  then Format.fprintf f "%s[%d]" l.pos_fname l.pos_cnum
+  else Format.fprintf f "%s[%d,%d+%d]" l.pos_fname l.pos_lnum l.pos_bol
+               (l.pos_cnum - l.pos_bol)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/location_util.cmo" *)
+(* end: *)

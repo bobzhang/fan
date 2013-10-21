@@ -46,7 +46,7 @@ open Fan_top;;
 open FanUtil;;
 open Gstructure;;
 
-let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
+(* let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();; *)
 
 open Syntaxf;;
 let t e s = Fgram.parse_string e  s;;
@@ -69,7 +69,7 @@ open Parse_fan;;
 (* let view a= Dot.dump_to_file "test.dot"a;; *)
 #install_printer print_tree;;
 #install_printer Fgram.dump;;
-#install_printer print_ocaml_loc;;
+#install_printer Location_util.fmt_position;;
 (* #install_printer p_type_declaration;; *)
 
 #fan;;

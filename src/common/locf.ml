@@ -133,14 +133,6 @@ let better_file_name a b =
     
 let dummy_pos = Lexing.dummy_pos
     
-(** Return a location where both positions are set the given position. *)
-(* let of_lexing_position pos = *)
-(*   let loc = *)
-(*   { loc_start =  pos; *)
-(*     loc_end =  pos; *)
-(*     loc_ghost     = false } in *)
-(*   debug loc "of_lexing_position: %a@\n" dump loc in *)
-(*   loc; *)
 
 
 (** Return the start position as a Lexing.position. *)
@@ -149,24 +141,50 @@ let start_pos x =  x.loc_start
 (** Return the stop position as a Lexing.position. *)  
 let stop_pos x =  x.loc_end
 
+(** Note that the filename was not taken into account *)    
+let max_pos (x:position) (y:position) =
+  if x.pos_cnum > y.pos_cnum then
+    x
+  else y
+let min_pos (x:position) (y:position) =
+  if x.pos_cnum < y.pos_cnum then
+    x
+  else y
+      
 (** [merge loc1 loc2] Return a location that starts at [loc1] and end at
             [loc2]. *)  
 let merge a b =
   if a == b then a
   else
-    let r =
-      match (a.loc_ghost, b.loc_ghost) with
-      | (false, false) ->
-        (* FIXME if a.file_name <> b.file_name then
-          raise (Invalid_argument
-            (sprintf "Loc.merge: Filenames must be equal: %s <> %s"
-                    a.file_name b.file_name))                          *)
-        (* else *)
-          { (a) with loc_end = b.loc_end }
-      | (true, true) -> { (a) with loc_end = b.loc_end }
-      | (true, _) -> { (a) with loc_end = b.loc_end }
-      | (_, true) -> { (b) with loc_start = a.loc_start } in
-    r
+    match (a,b) with
+    |{loc_ghost = false; loc_start = a0; loc_end = a1 },
+      {loc_ghost = false; loc_start = b0; loc_end = b1 } ->
+        {loc_ghost = false;
+         loc_start= min_pos a0 b0;
+         loc_end = max_pos a1 b1
+       }
+    | {loc_ghost = true; _},
+        {loc_ghost = true; _}  
+    | {loc_ghost = true; _}, _ -> {a with loc_end = b.loc_end}
+    | {loc_ghost = _; _},{loc_ghost= true;_} ->
+        {b with loc_start = a.loc_start  }
+          
+    (* let r = *)
+    (*   match (a.loc_ghost, b.loc_ghost) with *)
+    (*   | (false, false) -> *)
+    (*     (\* FIXME if a.file_name <> b.file_name then *)
+    (*       raise (Invalid_argument *)
+    (*         (sprintf "Loc.merge: Filenames must be equal: %s <> %s" *)
+    (*                 a.file_name b.file_name))                          *\) *)
+    (*     (\* else *\) *)
+    (*       if a.loc_end  < b.loc_start then *)
+    (*       else if b.loc_start > b.loc_end then *)
+    (*       else  *)
+    (*       { a with loc_end = b.loc_end } *)
+    (*   | (true, true) -> { a with loc_end = b.loc_end } *)
+    (*   | (true, _) -> { a with loc_end = b.loc_end } *)
+    (*   | (_, true) -> { b with loc_start = a.loc_start } in *)
+    (* r *)
 
 
     
@@ -252,8 +270,9 @@ let make_absolute x =
             strictly_before the start position of [loc2].
  *)
 let strictly_before x y =
-  let b = x.loc_end.pos_cnum < y.loc_start.pos_cnum && x.loc_end.pos_fname = y.loc_start.pos_fname in
-  b
+   x.loc_end.pos_cnum < y.loc_start.pos_cnum
+    && x.loc_end.pos_fname = y.loc_start.pos_fname 
+
 
 (** Same as {!print} but return a string instead of printting it. *)
 let to_string x = begin
@@ -311,13 +330,6 @@ let raise loc exc =
   | Exc_located (_, _) -> raise exc
   | _ -> raise (Exc_located (loc, exc)) 
 
-let _ = begin
-  Printexc.register_printer (function
-    | Exc_located (t, exn) ->
-    Some (sprintf "Exc_located(%s,%s)" (to_string t ) (Printexc.to_string exn))
-  |_ -> None )
-  end
-
     
 (** The name of the location variable used in grammars and in
     the predefined quotations for OCaml syntax trees. Default: [_loc]. *)
@@ -356,6 +368,13 @@ let () =
       | Exc_located (loc, exn) ->
           Some (Format.sprintf "%s:@\n%s" (to_string loc) (Printexc.to_string exn))
       | _ -> None 
+(* let _ = begin *)
+(*   Printexc.register_printer (function *)
+(*     | Exc_located (t, exn) -> *)
+(*         Some (sprintf "Exc_located(%s,%s)" (to_string t ) (Printexc.to_string exn)) *)
+(*     |_ -> None ) *)
+(*   end *)
+
 
 
 (* local variables: *)
