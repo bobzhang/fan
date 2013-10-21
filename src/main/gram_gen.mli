@@ -154,8 +154,8 @@ val make_exp_rules :
     loc -> (text list * exp * exp option) list -> string -> exp
 
 (** deprecated *)
-val exp_delete_rule :
-  loc -> name -> symbol list list  -> exp
+(* val exp_delete_rule : *)
+(*   loc -> name -> symbol list list  -> exp *)
       
 val mk_name : loc ->vid -> name
 

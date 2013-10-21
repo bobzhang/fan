@@ -15,7 +15,10 @@ let () =
                 "`Str _")],
              ("add s\n",
                (Fgram.mk_action
-                  (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+                  (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                      match __fan_1 with
                      | `Str s -> (add s : 'item )
-                     | _ -> failwith "add s\n"))))]))
+                     | _ ->
+                         failwith
+                           (Printf.sprintf "%s"
+                              (Ftoken.token_to_string __fan_1))))))]))

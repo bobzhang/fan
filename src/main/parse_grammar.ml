@@ -116,7 +116,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   [  "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
   (* |  ("Lid"|"Uid" as x); Str v %{[token_of_simple_pat %pat'{ $vrn:x $str:v}]} *)
   |  "Lid"; Str v %{[token_of_simple_pat %pat'{ `Lid $str:v}]}
-  |  "Uid"; Str v %{[token_of_simple_pat %pat'{`Uid $str:v}]}      
+  |  "Uid"; Str v %{[token_of_simple_pat %pat'{`Uid $str:v}]}
   |  "Lid" ; Lid x %{[token_of_simple_pat %pat'{`Lid $lid:x }]}
   |  "Uid" ; Lid x %{[token_of_simple_pat %pat'{`Uid $lid:x }]}
   |  "Quot"; Lid x %{[token_of_simple_pat %pat'{`Quot $lid:x }]}

@@ -57,19 +57,24 @@ let _ =
                "`Lid _")],
            ("x\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid x -> (x : 'id )
-                   | _ -> failwith "x\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
               "`Uid _")],
           ("x\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x -> (x : 'id )
-                  | _ -> failwith "x\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Fgram.t )
     (None,
       (None, None,

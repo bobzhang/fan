@@ -83,7 +83,7 @@ val string : exp Fgram.t
 (* val symbol :  Gram_def.symbol Fgram.t *)
 
 
-(* val simple_meta : Gram_def.symbol Gentry.t      *)
+val simple : Gram_def.symbol list Gentry.t
 (** return a [rule]
     {[with str t rule %{  `Uid ("LA"|"RA"|"NA" as x)   };
     - : Gram_def.rule =

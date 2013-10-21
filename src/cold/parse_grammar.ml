@@ -177,7 +177,7 @@ let _ =
              "`Str _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Lid\")), (`Str (_loc, v))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Str v ->
                       ([token_of_simple_pat
@@ -186,14 +186,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Lid\")), (`Str (_loc, v))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Uid";
          `Stoken
            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
              "`Str _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Uid\")), (`Str (_loc, v))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Str v ->
                       ([token_of_simple_pat
@@ -202,14 +202,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Uid\")), (`Str (_loc, v))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Lid";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Lid\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -218,14 +218,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Lid\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Uid";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Uid\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -234,14 +234,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Uid\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Quot";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Quot\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -250,14 +250,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Quot\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Label";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Label\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -266,14 +266,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Label\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "DirQuotation";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"DirQuotation\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -282,14 +282,14 @@ let _ =
                                (`Lid (_loc, x))))] : 'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"DirQuotation\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Optlabel";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"Optlabel\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -298,14 +298,14 @@ let _ =
                                (`Lid (_loc, x))))] : 'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"Optlabel\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Str";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Str\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -314,14 +314,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Str\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Chr";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Chr\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -330,14 +330,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Chr\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Int";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -346,14 +346,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Int32";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int32\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -362,14 +362,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int32\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Int64";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int64\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -378,14 +378,14 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Int64\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Nativeint";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"Nativeint\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -394,14 +394,14 @@ let _ =
                                (`Lid (_loc, x))))] : 'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat\n   (`App (_loc, (`Vrn (_loc, \"Nativeint\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Flo";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _")],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Flo\")), (`Lid (_loc, x))))]\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->
                       ([token_of_simple_pat
@@ -410,7 +410,7 @@ let _ =
                       'simple )
                   | _ ->
                       failwith
-                        "[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Flo\")), (`Lid (_loc, x))))]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "Lid"; `Skeyword "_"],
           ("[token_of_simple_pat (`App (_loc, (`Vrn (_loc, \"Lid\")), (`Any _loc)))]\n",
             (Fgram.mk_action
@@ -466,14 +466,14 @@ let _ =
               "`Str _")],
           ("[mk_symbol ~text:(`Skeyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None]\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Str s ->
                       ([mk_symbol ~text:(`Skeyword (_loc, s))
                           ~styp:(`Tok _loc) ~pattern:None] : 'simple )
                   | _ ->
                       failwith
-                        "[mk_symbol ~text:(`Skeyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None]\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "(";
          `Snterm (Fgram.obj (or_strs : 'or_strs Fgram.t ));
          `Skeyword ")"],
@@ -551,11 +551,13 @@ let _ =
              "`Lid _")],
           ("(xs, (Some s))\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  _  (xs : 'str0 list) 
+               (fun (__fan_2 : Ftoken.t)  _  (xs : 'str0 list) 
                   (_loc : Locf.t)  ->
                   match __fan_2 with
                   | `Lid s -> ((xs, (Some s)) : 'or_strs )
-                  | _ -> failwith "(xs, (Some s))\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_2))))))]));
   Fgram.extend_single (str0 : 'str0 Fgram.t )
     (None,
       (None, None,
@@ -564,10 +566,13 @@ let _ =
                "`Str _")],
            ("s\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str s -> (s : 'str0 )
-                   | _ -> failwith "s\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (or_words : 'or_words Fgram.t )
     (None,
       (None, None,
@@ -585,11 +590,13 @@ let _ =
              "`Lid _")],
           ("(v, (Some s))\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  _  (v : 'str list) 
-                  (_loc : Locf.t)  ->
+               (fun (__fan_2 : Ftoken.t)  _  (v : 'str list)  (_loc : Locf.t)
+                   ->
                   match __fan_2 with
                   | `Lid s -> ((v, (Some s)) : 'or_words )
-                  | _ -> failwith "(v, (Some s))\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_2))))))]));
   Fgram.extend_single (level_str : 'level_str Fgram.t )
     (None,
       (None, None,
@@ -599,10 +606,13 @@ let _ =
               "`Str _")],
            ("s\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+                (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Str s -> (s : 'level_str )
-                   | _ -> failwith "s\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))))]));
   Fgram.extend_single (str : 'str Fgram.t )
     (None,
       (None, None,
@@ -611,10 +621,13 @@ let _ =
                "`Str _")],
            ("`Str (_loc, s)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str s -> (`Str (_loc, s) : 'str )
-                   | _ -> failwith "`Str (_loc, s)\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (lid : 'lid Fgram.t )
     (None,
       (None, None,
@@ -623,10 +636,13 @@ let _ =
                "`Lid _")],
            ("`Lid (_loc, s)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid s -> (`Lid (_loc, s) : 'lid )
-                   | _ -> failwith "`Lid (_loc, s)\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (sep_symbol : 'sep_symbol Fgram.t )
     (None,
       (None, None,
@@ -697,10 +713,13 @@ let _ =
                "`Lid _")],
            ("`Lid (_loc, i)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid i -> (`Lid (_loc, i) : 'tmp_lid )
-                   | _ -> failwith "`Lid (_loc, i)\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (brace_pattern : 'brace_pattern Fgram.t )
     (None,
       (None, None,
@@ -744,10 +763,13 @@ let _ =
                "`Str _")],
            ("y\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str y -> (y : 'str )
-                   | _ -> failwith "y\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (extend_header : 'extend_header Fgram.t )
     (None,
       (None, None,
@@ -809,21 +831,26 @@ let _ =
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
-                (fun (xs : 'qualuid)  _  (__fan_0 : [> Ftoken.t]) 
+                (fun (xs : 'qualuid)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
-                   | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
               "`Uid _")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x -> (`Uid (_loc, x) : 'qualuid )
-                  | _ -> failwith "`Uid (_loc, x)\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (qualid : 'qualid Fgram.t )
     (None,
       (None, None,
@@ -834,20 +861,25 @@ let _ =
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
-                (fun (xs : 'qualid)  _  (__fan_0 : [> Ftoken.t]) 
-                   (_loc : Locf.t)  ->
+                (fun (xs : 'qualid)  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)
+                    ->
                    match __fan_0 with
                    | `Uid x -> (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
-                   | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
               "`Lid _")],
           ("`Lid (_loc, i)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Lid i -> (`Lid (_loc, i) : 'qualid )
-                  | _ -> failwith "`Lid (_loc, i)\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (t_qualid : 't_qualid Fgram.t )
     (None,
       (None, None,
@@ -858,12 +890,15 @@ let _ =
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
-                (fun (xs : 't_qualid)  _  (__fan_0 : [> Ftoken.t]) 
+                (fun (xs : 't_qualid)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
-                   | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
               "`Uid _");
@@ -873,11 +908,15 @@ let _ =
              "`Lid \"t\"")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  _  (__fan_0 : [> Ftoken.t]) 
+               (fun (__fan_2 : Ftoken.t)  _  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_2, __fan_0) with
                   | (`Lid "t",`Uid x) -> (`Uid (_loc, x) : 't_qualid )
-                  | _ -> failwith "`Uid (_loc, x)\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s %s"
+                           (Ftoken.token_to_string __fan_2)
+                           (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (name : 'name Fgram.t )
     (None,
       (None, None,
@@ -1065,7 +1104,7 @@ let _ =
                "`Quot _")],
            ("if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Quot x ->
                        (if x.name = Ftoken.empty_name
@@ -1076,7 +1115,8 @@ let _ =
                         else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                    | _ ->
                        failwith
-                         "if x.name = Ftoken.empty_name\nthen\n  let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in\n  Ftoken.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n"))))]));
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (string : 'string Fgram.t )
     (None,
       (None, None,
@@ -1085,19 +1125,24 @@ let _ =
                "`Str _")],
            ("(`Str (_loc, s) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str s -> ((`Str (_loc, s) : FAst.exp ) : 'string )
-                   | _ -> failwith "(`Str (_loc, s) : FAst.exp )\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Ant ("",_) -> true | _ -> false)),
               ("Ant", (`A "")), "`Ant (\"\",_)")],
           ("Parsef.exp _loc s\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant ("",s) -> (Parsef.exp _loc s : 'string )
-                  | _ -> failwith "Parsef.exp _loc s\n"))))]))
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();

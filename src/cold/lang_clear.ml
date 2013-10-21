@@ -13,32 +13,37 @@ let _ =
                ("Ant", (`A "")), "`Ant (\"\",_)")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Ant (("" as n),s) ->
                        (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                    | _ ->
-                       failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Ant ("lid",_) -> true | _ -> false)),
               ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant (("lid" as n),s) ->
                       (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                   | _ ->
-                      failwith "FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n"))));
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
               "`Lid _")],
           ("`Lid (_loc, s)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Lid s -> (`Lid (_loc, s) : 'a_lident )
-                  | _ -> failwith "`Lid (_loc, s)\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (nonterminalsclear : 'nonterminalsclear Fgram.t )
     (None,
       (None, None,
@@ -68,21 +73,26 @@ let _ =
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Fgram.mk_action
-                (fun (xs : 'qualuid)  _  (__fan_0 : [> Ftoken.t]) 
+                (fun (xs : 'qualuid)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid x ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
-                   | _ -> failwith "`Dot (_loc, (`Uid (_loc, x)), xs)\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
               "`Uid _")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid x -> (`Uid (_loc, x) : 'qualuid )
-                  | _ -> failwith "`Uid (_loc, x)\n"))))]))
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()

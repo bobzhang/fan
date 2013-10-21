@@ -381,7 +381,7 @@ let _ =
           `Skeyword ";"],
            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Fgram.mk_action
-                (fun _  (ns : 'name list)  _  (__fan_0 : [> Ftoken.t]) 
+                (fun _  (ns : 'name list)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid m ->
@@ -396,7 +396,8 @@ let _ =
                                 FAst.stru )) ns) : 'a )
                    | _ ->
                        failwith
-                         "Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n"))))]));
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (import : 'import Fgram.t )
     (None,
       (None, None,
@@ -413,10 +414,13 @@ let _ =
                "`Lid _")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid x -> (`Lid (_loc, x) : 'name )
-                   | _ -> failwith "`Lid (_loc, x)\n"))))]))
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

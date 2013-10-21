@@ -66,11 +66,7 @@ let make_ctyp (styp : Gram_def.styp) tvar =
          else
            (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
      | `Tok _loc ->
-         (`PolySup
-            (_loc,
-              (`Ctyp
-                 (_loc,
-                   (`Dot (_loc, (`Uid (_loc, "Ftoken")), (`Lid (_loc, "t"))))))) : 
+         (`Dot (_loc, (`Uid (_loc, "Ftoken")), (`Lid (_loc, "t"))) : 
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
@@ -166,6 +162,9 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
               ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
+          | { pattern = Some p; text = `Skeyword _;_} ->
+              let id = prefix ^ (string_of_int i) in
+              (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
           | _ -> ep) ([], []) psl in
    let e =
      let e1: FAst.exp =
@@ -187,7 +186,23 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
            match (e, p) with
            | (x::[],y::[]) -> (x, y)
            | _ -> ((tuple_com e), (tuple_com p)) in
-         let action_string = Ast2pt.to_string_exp act in
+         let len = List.length e in
+         let error_fmt = String.concat " " (Listf.init len (fun _  -> "%s")) in
+         let es =
+           List.map
+             (fun x  ->
+                (`App
+                   (_loc,
+                     (`Dot
+                        (_loc, (`Uid (_loc, "Ftoken")),
+                          (`Lid (_loc, "token_to_string")))), x) : FAst.exp ))
+             e in
+         let error =
+           Ast_gen.appl_of_list
+             ([(`Dot
+                  (_loc, (`Uid (_loc, "Printf")), (`Lid (_loc, "sprintf"))) : 
+              FAst.exp );
+              (`Str (_loc, (String.escaped error_fmt)) : FAst.exp )] @ es) in
          (`Fun
             (_loc,
               (`Case
@@ -203,10 +218,7 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
                              (`Case
                                 (_loc, (`Any _loc),
                                   (`App
-                                     (_loc, (`Lid (_loc, "failwith")),
-                                       (`Str
-                                          (_loc,
-                                            (String.escaped action_string)))))))))))))) : 
+                                     (_loc, (`Lid (_loc, "failwith")), error))))))))))) : 
            FAst.exp ) in
    let (_,txt) =
      Listf.fold_lefti
@@ -229,31 +241,13 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
        psl in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
-let exp_delete_rule _loc n (symbolss : Gram_def.symbol list list) =
-  let f _loc (n : Gram_def.name) sl =
-    let sl =
-      list_of_list _loc
-        (List.map (fun (s : Gram_def.symbol)  -> make_exp "" s.text) sl) in
-    ((n.exp : FAst.exp ), sl) in
-  let rest =
-    List.map
-      (fun sl  ->
-         let (e,b) = f _loc n sl in
-         (`App
-            (_loc,
-              (`App
-                 (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "delete_rule")))),
-                   e)), b) : FAst.exp )) symbolss in
-  match symbolss with
-  | [] -> (`Uid (_loc, "()") : FAst.exp )
-  | _ -> seq_sem rest
 let mk_name _loc (i : vid) =
-  let rec aux: vid -> string =
-    function
-    | `Lid (_,x)|`Uid (_,x) -> x
-    | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
-    | _ -> failwith "internal error in the Grammar extension" in
-  ({ exp = (i :>exp); tvar = (aux i); loc = _loc } : Gram_def.name )
+  (let rec aux: vid -> string =
+     function
+     | `Lid (_,x)|`Uid (_,x) -> x
+     | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
+     | _ -> failwith "internal error in the Grammar extension" in
+   { exp = (i :>exp); tvar = (aux i); loc = _loc } : Gram_def.name )
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let text_of_entry ?(safe= true)  (e : Gram_def.entry) =
   (let _loc = (e.name).loc in

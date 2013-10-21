@@ -12,7 +12,7 @@ let _ =
               "`Str _")],
            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+                (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Str s ->
                        ((match Ast_quotation.resolve_name ((`Sub []), s) with
@@ -22,7 +22,8 @@ let _ =
                          | Some x -> Ast_quotation.set_default x) : 'item )
                    | _ ->
                        failwith
-                         "match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n"))));
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "import";
          `Snterm (Fgram.obj (dot_namespace : 'dot_namespace Fgram.t ))],
           ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
@@ -36,10 +37,12 @@ let _ =
              "`Str _")],
           ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
-               (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Str s -> (Ast_filters.use_implem_filter s : 'item )
-                  | _ -> failwith "Ast_filters.use_implem_filter s\n"))));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "lang_clear"],
           ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
             (Fgram.mk_action
@@ -56,20 +59,25 @@ let _ =
           `Sself],
            ("i :: xs\n",
              (Fgram.mk_action
-                (fun (xs : 'dot_namespace)  _  (__fan_0 : [> Ftoken.t]) 
+                (fun (xs : 'dot_namespace)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid i -> (i :: xs : 'dot_namespace )
-                   | _ -> failwith "i :: xs\n"))));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
               "`Uid _")],
           ("[i]\n",
             (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Uid i -> ([i] : 'dot_namespace )
-                  | _ -> failwith "[i]\n"))))]));
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.unsafe_extend_single (items : 'items Fgram.t )
     (None,
       (None, None,

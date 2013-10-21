@@ -94,7 +94,8 @@ let make_ctyp (styp:Gram_def.styp) tvar : ctyp =
           Locf.raise _loc
             (Fstream.Error ("S: illegal in anonymous entry level"))
         else %ctyp{ '$lid:tvar }
-    | `Tok _loc -> %ctyp{ [> Ftoken.t ] }  (** BOOTSTRAPPING, associated with module name Ftoken*)
+    | `Tok _loc -> %ctyp{ Ftoken.t }  (** BOOTSTRAPPING, associated with module name Ftoken*)
+          (* %ctyp{[Ftoken.t]} should be caught as error ealier *)
     | `Type t -> t  in aux styp
 
       
@@ -136,10 +137,11 @@ and make_exp_rules (_loc:loc)
       let action_string =
         match raw with
         | None -> ""
-        |Some e -> Ast2pt.to_string_exp e in
+        | Some e -> Ast2pt.to_string_exp e in
       let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
       %{ ($sl,($str:action_string,$action)) } ) rl)
-  
+
+(** generate action, compiling pattern match  *)  
 let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
   let locid = %pat{ $(lid:!Locf.name) } in 
@@ -152,6 +154,9 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
         | {pattern=Some p ; text=`Stok _;_ } when not (is_irrefut_pat p)->
             let id = prefix ^ string_of_int i in
             ( %{$lid:id} :: oe, p:: op)
+        | {pattern = Some p; text = `Skeyword _; _} ->
+            let id = prefix ^ string_of_int i in 
+            (%{$lid:id}::oe, p :: op) (* TO be improved*)
         | _ ->  ep   ) ([],[])  psl in
   let e =
     let e1 = %{ ($act : '$lid:rtvar ) } in
@@ -162,19 +167,29 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
-          let action_string = Ast2pt.to_string_exp act in
+
+          let len = List.length e in
+          (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
+          (* let action_string = Ast2pt.to_string_exp act in           *)
+          let error_fmt =
+            (* action_string ^  *)String.concat " " (Listf.init len (fun _ -> "%s")) in
+
+
+          let es = List.map (fun x -> %{Ftoken.token_to_string $x}) e in
+          let error =
+            Ast_gen.appl_of_list
+              ([ %{Printf.sprintf };
+                %{$`str:error_fmt}]  @ es) in 
           %{fun ($locid : Locf.t) -> (* BOOTSTRAPING, associated with module name [Locf] *)
             match $exp with
             | $pat -> $e1
-            | _ -> failwith $`str:action_string }  in
+            | _ -> failwith $error}  in
   let (_,txt) =
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
         match s.pattern with
         |Some %pat'{ ($_ $(par:%pat@_{ _ }) as $p) } ->
-            let p = typing (p:alident :> pat)(* %pat'{ $(id:(p:>ident)) } *)
-
-                (make_ctyp s.styp tvar)  in
+            let p = typing (p:alident :> pat) (make_ctyp s.styp tvar)  in
             %{ fun $p -> $txt }
         | Some p when is_irrefut_pat p ->
             let p = typing p (make_ctyp s.styp tvar) in
@@ -183,34 +198,33 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
             let p =
               typing %pat{ $(lid:prefix^string_of_int i) } (make_ctyp s.styp tvar)  in
             %{ fun $p -> $txt }
-        | None -> %{ fun _ -> $txt }
-      )  e psl in
+        | None -> %{ fun _ -> $txt })  e psl in
   %{ $(id:(gm())).mk_action $txt }
 
     
 
 
-let exp_delete_rule _loc n (symbolss:Gram_def.symbol list list ) = with exp
-  let f _loc (n:Gram_def.name) sl =  
-   let sl = list_of_list _loc
-       (List.map (fun  (s:Gram_def.symbol) -> make_exp "" s.text) sl) in 
-   (%{ $(n.exp) }, sl)  in
-  let rest = List.map
-      (fun sl  ->
-          let (e,b) = f _loc n sl in
-          %exp{ $(id:gm()).delete_rule $e $b }) symbolss in
-  match symbolss with
-  | [] -> %{ () }
-  |_ -> seq_sem rest 
+(* let exp_delete_rule _loc n (symbolss:Gram_def.symbol list list ) = with exp *)
+(*   let f _loc (n:Gram_def.name) sl =   *)
+(*    let sl = list_of_list _loc *)
+(*        (List.map (fun  (s:Gram_def.symbol) -> make_exp "" s.text) sl) in  *)
+(*    (%{ $(n.exp) }, sl)  in *)
+(*   let rest = List.map *)
+(*       (fun sl  -> *)
+(*           let (e,b) = f _loc n sl in *)
+(*           %exp{ $(id:gm()).delete_rule $e $b }) symbolss in *)
+(*   match symbolss with *)
+(*   | [] -> %{ () } *)
+(*   |_ -> seq_sem rest  *)
 
   
 (* given the entry of the name, make a name *)
-let mk_name _loc (i:vid) =
+let mk_name _loc (i:vid) : Gram_def.name =
   let rec aux : vid -> string =  function
     | `Lid (_,x) | `Uid(_,x) -> x
     | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
     | _ -> failwith "internal error in the Grammar extension" in
-  ({exp = (i :> exp) ; tvar = aux i; loc = _loc}:Gram_def.name)
+  {exp = (i :> exp) ; tvar = aux i; loc = _loc}
   
 let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 
@@ -284,9 +298,10 @@ let let_in_of_extend _loc (gram: vid option ) locals  default =
         %exp{ $(id:gm()).mk } in
   let local_bind_of_name = function x ->
     match (x:Gram_def.name) with 
-    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} -> %bind{ $lid:i =
-             (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t )}
-    | {exp;_} -> failwithf "internal error in the Grammar extension %s" (Objs.dump_exp exp)   in
+    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
+        %bind{ $lid:i = (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t )}
+    | {exp;_} -> failwithf "internal error in the Grammar extension %s"
+          (Objs.dump_exp exp)   in
   match locals with
   | [] -> default 
   | ll ->

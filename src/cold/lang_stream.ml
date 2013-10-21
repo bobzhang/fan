@@ -13,14 +13,15 @@ let _ =
               "`Uid _")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
-                (fun (__fan_1 : [> Ftoken.t])  _  (_loc : Locf.t)  ->
+                (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Uid n ->
                        (Ref.protect Compile_stream.grammar_module_name n
                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
                    | _ ->
                        failwith
-                         "Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n"))));
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "!";
          `Stoken
            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
@@ -29,15 +30,15 @@ let _ =
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
           ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
             (Fgram.mk_action
-               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : [> Ftoken.t]) 
-                  _  (_loc : Locf.t)  ->
+               (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Ftoken.t)  _ 
+                  (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Uid n ->
                       (Ref.protect Compile_stream.grammar_module_name n
                          (fun _  -> cstream _loc sel) : 'stream_exp )
                   | _ ->
                       failwith
-                        "Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n"))));
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
         ([`Snterm
             (Fgram.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],

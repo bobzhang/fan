@@ -165,11 +165,14 @@ let eoi_entry entry =
                 "`EOI")],
              ("x\n",
                (mk_action
-                  (fun (__fan_1 : [> Ftoken.t])  (x : 'entry) 
-                     (_loc : Locf.t)  ->
+                  (fun (__fan_1 : Ftoken.t)  (x : 'entry)  (_loc : Locf.t) 
+                     ->
                      match __fan_1 with
                      | `EOI -> (x : 'entry_eoi )
-                     | _ -> failwith "x\n"))))]));
+                     | _ ->
+                         failwith
+                           (Printf.sprintf "%s"
+                              (Ftoken.token_to_string __fan_1))))))]));
     entry_eoi
 let find_level ?position  (entry : Gstructure.entry) =
   match entry.desc with

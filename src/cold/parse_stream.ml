@@ -23,10 +23,13 @@ let _ =
                "`Uid _")],
            ("n\n",
              (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid n -> (n : 'uid )
-                   | _ -> failwith "n\n"))))]));
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (parser_exp : 'parser_exp Fgram.t )
     (None,
       (None, None,
