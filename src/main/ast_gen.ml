@@ -137,8 +137,17 @@ let (+>) f names  =
   appl_of_list (f:: (List.map (lid _loc) names))
          
 (**  FIXME more precise API wanted *)
-let meta_here _loc location  =
-  let (a, b, c, d, e, f, g, h) = Locf.to_tuple location in
+let meta_here _loc (location:Locf.t)  =
+  let {Locf.loc_start = {pos_fname = a;
+        pos_lnum = b;
+        pos_bol = c;
+        pos_cnum = d;};
+       loc_end = {
+       pos_lnum = e;
+       pos_bol = f;
+       pos_cnum = g;
+       _};
+       loc_ghost=h;} = location in
   %exp'{ Locf.of_tuple
      ($`str:a, $`int:b, $`int:c, $`int:d,
       $`int:e, $`int:f, $`int:g,

@@ -7264,8 +7264,11 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
                       (((lexbuf.Lexing.lex_mem).(0)) + 1)
                       (lexbuf.Lexing.lex_curr_pos + 0) in
                   let old =
-                    Locf.move_pos ((String.length name) + 1)
-                      lexbuf.lex_start_p in
+                    let v = lexbuf.lex_start_p in
+                    {
+                      v with
+                      pos_cnum = ((v.pos_cnum + (String.length name)) + 1)
+                    } in
                   ((`Ant (name, x)), (old -- lexbuf.lex_curr_p))
               | 1 ->
                   let x =
@@ -7279,15 +7282,21 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
                       (lexbuf.Lexing.lex_start_pos + 1)
                       (lexbuf.Lexing.lex_curr_pos + (-1)) in
                   let old =
-                    Locf.move_pos
-                      ((((1 + 1) + 1) + (String.length name)) - 1)
-                      (List.hd c.loc) in
+                    let v = List.hd c.loc in
+                    {
+                      v with
+                      pos_cnum =
+                        (((((v.pos_cnum + 1) + 1) + 1) + (String.length name))
+                           - 1)
+                    } in
                   (c.buffer +> '(';
                    push_loc_cont c lexbuf lex_antiquot;
                    ((`Ant (name, (buff_contents c))),
                      (old -- (Lexing.lexeme_end_p lexbuf))))
               | 3 ->
-                  let old = Locf.move_pos ((1 + 1) - 1) (List.hd c.loc) in
+                  let old =
+                    let v = List.hd c.loc in
+                    { v with pos_cnum = (((v.pos_cnum + 1) + 1) - 1) } in
                   (c.buffer +> '(';
                    push_loc_cont c lexbuf lex_antiquot;
                    ((`Ant ("", (buff_contents c))),

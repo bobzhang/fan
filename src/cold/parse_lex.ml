@@ -216,7 +216,7 @@ let _ =
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
               "`Lid _")],
-          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = Locf.start_pos _loc in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
+          ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
@@ -224,7 +224,7 @@ let _ =
                       ((try Hashtbl.find named_regexps x
                         with
                         | Not_found  ->
-                            let p = Locf.start_pos _loc in
+                            let p = _loc.loc_start in
                             (Fan_warnings.emitf p
                                "Reference to unbound regexp name `%s'" x;
                              raise UnboundRegexp)) : 'regexp )

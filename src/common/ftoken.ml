@@ -54,7 +54,12 @@ let pp_print_quot : Format.formatter -> quot -> unit =
 
 type 'a expand_fun = Locf.t -> string option -> string -> 'a
 let quot_expand (expander:'a expand_fun) (x:quot) =
-  let loc = Location_util.join (Locf.move `start x.shift x.loc) in
+  let loc =
+    Location_util.join
+      { x.loc with
+        loc_start =
+        { x.loc.loc_start with
+          pos_cnum = x.loc.loc_start.pos_cnum + x.shift}} in
   let content =
     String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
   expander loc x.meta content

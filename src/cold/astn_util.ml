@@ -43,7 +43,12 @@ let tuple_sta y =
   | _ -> `Par (sta_of_list y)
 let (+>) f names = appl_of_list (f :: (List.map lid names))
 let meta_here location =
-  let (a,b,c,d,e,f,g,h) = Locf.to_tuple location in
+  let {
+        Locf.loc_start =
+          { pos_fname = a; pos_lnum = b; pos_bol = c; pos_cnum = d };
+        loc_end = { pos_lnum = e; pos_bol = f; pos_cnum = g;_}; loc_ghost = h
+        }
+    = location in
   `App
     ((`Dot ((`Uid "Locf"), (`Lid "of_tuple"))),
       (`Par

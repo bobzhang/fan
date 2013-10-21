@@ -68,7 +68,8 @@ let g =
               "+";
               "*";
               "?";
-              "="] ()
+              "=";
+              "@"] ()
 let normalize (x : Gram_pat.t) =
   (match x with
    | `Vrn (_loc,x) -> (x, `Empty)

@@ -205,7 +205,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
          %lex{
          | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x) %{
              begin
-               let old = Locf.move_pos (String.length name + 1) lexbuf.lex_start_p in
+               let old = 
+                 let v = lexbuf.lex_start_p in
+                 {v with pos_cnum = v.pos_cnum + String.length name + 1 } in
                (`Ant(name,x), old -- lexbuf.lex_curr_p)
              end}
          | lident as x  %{ (`Ant("",x), !!lexbuf)}  (* $lid *)
@@ -213,7 +215,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
                backwards one character *)
-             let old = Locf.move_pos (1+1+1+String.length name - 1) (List.hd  c.loc) in
+             let old =
+               let v = List.hd c.loc in
+               {v with pos_cnum = v.pos_cnum + 1+1+1+String.length name - 1} in
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
@@ -221,7 +225,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
                 old -- Lexing.lexeme_end_p lexbuf)
              end}
          | '(' %{     (* $(xxxx)*)
-             let old = Locf.move_pos  (1+1-1) (List.hd c.loc) in
+             let old =
+               let v = List.hd c.loc in
+               {v with pos_cnum = v.pos_cnum + 1 + 1 - 1 } in
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;

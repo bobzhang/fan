@@ -14,8 +14,8 @@ let with_loc (parse_fun: 'b Ftoken.parse ) strm =
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
   let loc =
-    let start_off_bp = Locf.start_off bp in
-    let stop_off_ep = Locf.stop_off ep in 
+    let start_off_bp = bp.loc_start.pos_cnum in
+    let stop_off_ep = ep.loc_end.pos_cnum in 
     if start_off_bp > stop_off_ep then 
       Location_util.join bp
     else Locf.merge bp ep in

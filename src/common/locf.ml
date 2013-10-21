@@ -27,119 +27,33 @@ type t = Location.t = {
   loc_ghost: bool;
 }
 
-(* Debug section *)
-let dump_sel f x =
-  let s =
-    match x with
-    | `start -> "`start"
-    | `stop  -> "`stop"
-    | `both  -> "`both"
-    | _      -> "<not-printable>"  in pp_print_string f s
-  
+
 let pp_print_position f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
           x.pos_lnum x.pos_bol x.pos_cnum
   
-let dump_long f x =
-  fprintf f
-    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : Locf.t@]"
-    x.loc_start.pos_fname pp_print_position x.loc_start (x.loc_start.pos_cnum - x.loc_start.pos_bol)
-    (x.loc_end.pos_cnum - x.loc_start.pos_bol)  (* FIXME here*)
-    pp_print_position
-    x.loc_end
-    (x.loc_end.pos_cnum - x.loc_end.pos_bol) x.loc_ghost
-
-(** Print the location in a short format useful for debugging. *)  
-let dump f x =
-  fprintf f "[%S: %d:%d-%d %d:%d%t]"
-    x.loc_start.pos_fname x.loc_start.pos_lnum
-    (x.loc_start.pos_cnum - x.loc_start.pos_bol)
-    (x.loc_end.pos_cnum - x.loc_start.pos_bol) x.loc_end.pos_lnum (x.loc_end.pos_cnum - x.loc_end.pos_bol)
-    (fun o -> if x.loc_ghost then fprintf o " (ghost)" else ())
-
-  
-let start_pos name =
-  { pos_fname=name ;
-    pos_lnum = 1 ;
-    pos_bol = 0 ;
-    pos_cnum = 0 }
+let start_pos name = {
+  pos_fname=name ;
+  pos_lnum = 1 ;
+  pos_bol = 0 ;
+  pos_cnum = 0 }
 
 let ghost_name = "ghost-location"
 (** The [ghost] location can be used when no location
         information is available. *)
-let ghost =
-  { 
-    loc_start = start_pos ghost_name;
-    loc_end   = start_pos ghost_name;
-    loc_ghost     = true     }
+let ghost = { 
+  loc_start = start_pos ghost_name;
+  loc_end   = start_pos ghost_name;
+  loc_ghost     = true     }
 
 (** Return a start location for the given file name.
     This location starts at the begining of the file. *)
-let mk file_name =
-  (* debug loc "mk %s@\n" file_name in *)
-  { 
-    loc_start     = start_pos file_name;
-    loc_end      = start_pos file_name;
-    loc_ghost     = false    }
+let mk file_name = { 
+  loc_start     = start_pos file_name;
+  loc_end      = start_pos file_name;
+  loc_ghost     = false    }
 
 
-(** Return a location from [(file_name, start_line, start_bol, start_off,
-            stop_line,  stop_bol,  stop_off, ghost)]. *)
-let of_tuple (file_name, start_line, start_bol, start_off,
-                          stop_line,  stop_bol,  stop_off, ghost) =
-  {
-    loc_start     = {
-      pos_fname=file_name;
-      pos_lnum = start_line ;
-      pos_bol = start_bol ;
-      pos_cnum = start_off };
-    loc_end      = {
-      pos_fname = file_name;
-      pos_lnum = stop_line;
-      pos_bol = stop_bol;
-      pos_cnum = stop_off};
-
-    loc_ghost     = ghost }
-
-(** Return [(file_name, start_line, start_bol, start_off,
-            stop_line,  stop_bol,  stop_off, ghost)]. *)
-let to_tuple = function
-    {loc_start=
-        { pos_fname;
-          pos_lnum = start_line ;
-          pos_bol = start_bol ;
-          pos_cnum  = start_off };
-        loc_end=
-        { pos_lnum = stop_line  ;
-          pos_bol = stop_bol  ;
-          pos_cnum = stop_off ;
-          _};
-        loc_ghost     = ghost } -> 
-          (pos_fname, start_line, start_bol, start_off,
-           stop_line,  stop_bol,  stop_off, ghost) 
-
-
-let better_file_name a b =
-  match (a, b) with
-  | ("", "") -> a
-  | ("", x)  -> x
-  | (x, "")  -> x
-  | ("-", x) -> x
-  | (x, "-") -> x
-  | (x, _)   -> x 
-    
-
-
-    
-let dummy_pos = Lexing.dummy_pos
-    
-
-
-(** Return the start position as a Lexing.position. *)
-let start_pos x =  x.loc_start
-
-(** Return the stop position as a Lexing.position. *)  
-let stop_pos x =  x.loc_end
 
 (** Note that the filename was not taken into account *)    
 let max_pos (x:position) (y:position) =
@@ -168,76 +82,10 @@ let merge a b =
     | {loc_ghost = true; _}, _ -> {a with loc_end = b.loc_end}
     | {loc_ghost = _; _},{loc_ghost= true;_} ->
         {b with loc_start = a.loc_start  }
-          
-    (* let r = *)
-    (*   match (a.loc_ghost, b.loc_ghost) with *)
-    (*   | (false, false) -> *)
-    (*     (\* FIXME if a.file_name <> b.file_name then *)
-    (*       raise (Invalid_argument *)
-    (*         (sprintf "Loc.merge: Filenames must be equal: %s <> %s" *)
-    (*                 a.file_name b.file_name))                          *\) *)
-    (*     (\* else *\) *)
-    (*       if a.loc_end  < b.loc_start then *)
-    (*       else if b.loc_start > b.loc_end then *)
-    (*       else  *)
-    (*       { a with loc_end = b.loc_end } *)
-    (*   | (true, true) -> { a with loc_end = b.loc_end } *)
-    (*   | (true, _) -> { a with loc_end = b.loc_end } *)
-    (*   | (_, true) -> { b with loc_start = a.loc_start } in *)
-    (* r *)
-
-
-    
-let map f start_stop_both x =
-  match start_stop_both with
-  | `start -> { x with loc_start = f x.loc_start }
-  | `stop  -> { x with loc_end  = f x.loc_end }
-  | `both  -> { x with loc_start = f x.loc_start; loc_end  = f x.loc_end } 
-
-let move_pos chars x = { x with pos_cnum = x.pos_cnum + chars }
-  
-let move s chars x =
-  map (move_pos chars) s x
-
-(** [move_line n loc] Return the location with the old line count plus [n].
-            The "begin of line" of both positions become the current offset. *)
-let move_line lines x =
-  (* debug loc "move_line %d %a@\n" lines dump x in *)
-  let move_line_pos x =
-    { x with pos_lnum = x.pos_lnum + lines ; pos_bol = x.pos_cnum }
-  in map move_line_pos `both x
-  
-
-(** [shift n loc] Return the location where the new start position is the old
-            stop position, and where the new stop position character offset is the
-            old one plus [n]. *)  
-let shift width x =
-  { x with loc_start = x.loc_end ; loc_end = move_pos width x.loc_end }
 
 (** Return the file name *)
 let file_name  x = x.loc_start.pos_fname
-  
-(** Return the line number of the begining of this location. *)
-let start_line x = x.loc_start.pos_lnum
 
-(** Return the line number of the ending of this location. *)  
-let stop_line  x = x.loc_end.pos_lnum
-
-(** Returns the number of characters from the begining of the stream
-    to the begining of the line of location's begining. *)
- let start_bol  x = x.loc_start.pos_bol
-   
-(** Returns the number of characters from the begining of the stream
-            to the begining of the line of location's ending. *)
-let stop_bol   x = x.loc_end.pos_bol
-
-(** Returns the number of characters from the begining of the stream
-            of the begining of this location. *)  
-let start_off  x = x.loc_start.pos_cnum
-
-(** Return the number of characters from the begining of the stream
-            of the ending of this location. *)  
-let stop_off   x = x.loc_end.pos_cnum
 
 (** Generally, return true if this location does not come
     from an input stream. *)
@@ -245,9 +93,9 @@ let is_ghost   x = x.loc_ghost
 
 (** Return the location with the give file name *)
 let set_file_name s x =
-  { x with
-    loc_start = {(x.loc_start) with pos_fname = s };
-    loc_end = {(x.loc_end) with pos_fname = s }
+  {x with
+   loc_start = {x.loc_start with pos_fname = s };
+   loc_end = {x.loc_end with pos_fname = s }
   }
 
 (** Return the associated ghost location. *)
@@ -297,13 +145,13 @@ let pp_print_t = print
 
 
     
-let check x msg =
-  if ((start_line x) > (stop_line x) ||
-      (start_bol x) > (stop_bol x) ||
-      (start_off x) > (stop_off x) ||
-      (start_line x) < 0 || (stop_line x) < 0 ||
-      (start_bol x) < 0 || (stop_bol x) < 0 ||
-      (start_off x) < 0 ||  (stop_off x) < 0)
+let check (x:t) msg =
+  if  x.loc_start.pos_lnum > x.loc_end.pos_lnum  ||
+      x.loc_start.pos_bol > x.loc_end.pos_bol  ||
+      x.loc_start.pos_cnum > x.loc_end.pos_cnum ||
+      x.loc_start.pos_lnum < 0 || x.loc_end.pos_lnum < 0  ||
+      x.loc_start.pos_bol < 0 || x.loc_end.pos_bol < 0 ||
+      x.loc_start.pos_cnum < 0 || x.loc_end.pos_cnum < 0 
       (* Here, we don't check
         (start_off x) < (start_bol x) || (stop_off x) < (start_bol x)
         since the lexer is called on antiquotations, with off=0, but line and bolpos
@@ -336,16 +184,15 @@ let raise loc exc =
 let name = ref "_loc"
 
 
-
+(* error reporting for string parsing *)
 let error_report (loc,s) = begin
   prerr_endline (to_string loc);
   let (start_bol,stop_bol,
-         start_off, stop_off) =
-    ( (start_bol loc,
-             stop_bol loc,
-             start_off loc,
-             stop_off loc)
-           ) in
+       start_off, stop_off) =
+    (loc.loc_start.pos_bol,
+     loc.loc_end.pos_bol,
+     loc.loc_start.pos_cnum,
+     loc.loc_end.pos_cnum) in
   let abs_start_off = start_bol + start_off in
   let abs_stop_off = stop_bol + stop_off in
   let err_location = String.sub s abs_start_off
@@ -368,12 +215,6 @@ let () =
       | Exc_located (loc, exn) ->
           Some (Format.sprintf "%s:@\n%s" (to_string loc) (Printexc.to_string exn))
       | _ -> None 
-(* let _ = begin *)
-(*   Printexc.register_printer (function *)
-(*     | Exc_located (t, exn) -> *)
-(*         Some (sprintf "Exc_located(%s,%s)" (to_string t ) (Printexc.to_string exn)) *)
-(*     |_ -> None ) *)
-(*   end *)
 
 
 

@@ -142,27 +142,11 @@ let parse_include_file entry =
       parse entry (Locf.mk file) st
     
 
-let error_report (loc,s) = begin
-  prerr_endline (Locf.to_string loc);
-  let (start_bol,stop_bol,
-         start_off, stop_off) =
-    Locf.( (start_bol loc,
-             stop_bol loc,
-             start_off loc,
-             stop_off loc)
-           ) in
-  let abs_start_off = start_bol + start_off in
-  let abs_stop_off = stop_bol + stop_off in
-  let err_location = String.sub s abs_start_off
-      (abs_stop_off - abs_start_off + 1) in
-  prerr_endline (sprintf "err: ^%s^" err_location);
-end 
-
 let parse_string_of_entry ?(loc=Locf.mk "<string>") entry  s =
   try parse_string entry  ~loc s  with
     Locf.Exc_located(loc, e) -> begin
       eprintf "%s" (Printexc.to_string e);
-      error_report (loc,s);
+      Locf.error_report (loc,s);
       Locf.raise loc e ;
   end
 
