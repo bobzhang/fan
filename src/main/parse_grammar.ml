@@ -44,7 +44,7 @@ let g =
                "First"; "Last";
                "Before"; "After";
                "Level"; "LA";
-               "RA"; "NA"; "+";"*";"?"; "="
+               "RA"; "NA"; "+";"*";"?"; "="; "@"
              ] ();;
 
   
@@ -321,7 +321,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   rule :
   [ left_rule {prod}; OPT opt_action{action} %{
     let prods = Listf.cross prod in
-    List.map (fun prod -> mk_rule ~prod ~action) prods} ]
+    List.map (fun prod -> mk_rule ~prod ~action) prods}
+  (** inline here! *)    
+  (* | "@"; Lid x %{ *)
+    
+  (* } *)
+  ]
   let left_rule :
    [ psymbol{x} %{[x]}
    | psymbol{x};";" ;S{xs} %{ x::xs }
