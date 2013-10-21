@@ -191,7 +191,7 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
         (** remember here -- it could be optimized ... *)
         begin  (* interaction with stream *)
           match Fstream.peek strm with
-          | Some ((`Key tok,_) as x) when tok = kwd ->
+          | Some (`Key tok as x ,_)  when tok = kwd ->
               (Fstream.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Fstream.NotConsumed
         end

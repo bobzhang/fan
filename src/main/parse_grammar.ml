@@ -114,26 +114,14 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   (** FIXME bring antiquotation back later*)        
   simple :
   [  "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
-  (* |  ("Lid"|"Uid" as x); Str v %{[token_of_simple_pat %pat'{ $vrn:x $str:v}]} *)
-  |  "Lid"; Str v %{[token_of_simple_pat %pat'{ `Lid $str:v}]}
-  |  "Uid"; Str v %{[token_of_simple_pat %pat'{`Uid $str:v}]}
-  |  "Lid" ; Lid x %{[token_of_simple_pat %pat'{`Lid $lid:x }]}
-  |  "Uid" ; Lid x %{[token_of_simple_pat %pat'{`Uid $lid:x }]}
-  |  "Quot"; Lid x %{[token_of_simple_pat %pat'{`Quot $lid:x }]}
-  |  "Label"; Lid x %{[token_of_simple_pat %pat'{`Label $lid:x }]}      
-  |  "DirQuotation"; Lid x %{[token_of_simple_pat %pat'{`DirQuotation $lid:x}]}
-  |  "Optlabel"; Lid x %{[token_of_simple_pat %pat'{`Optlabel $lid:x}]}      
-  |  "Str"; Lid x %{[token_of_simple_pat %pat'{`Str $lid:x}]}
-  |  "Chr"; Lid x %{[token_of_simple_pat %pat'{`Chr $lid:x}]}
-  |  "Int"; Lid x %{[token_of_simple_pat %pat'{`Int $lid:x}]}
-  |  "Int32"; Lid x %{[token_of_simple_pat %pat'{`Int32 $lid:x}]}
-  |  "Int64"; Lid x %{[token_of_simple_pat %pat'{`Int64 $lid:x}]}      
-  |  "Nativeint"; Lid x %{[token_of_simple_pat %pat'{`Nativeint $lid:x}]}
-  |  "Flo"; Lid x %{[token_of_simple_pat %pat'{`Flo $lid:x}]}      
-  |  "Lid" ; "_"    %{[token_of_simple_pat %pat'{`Lid _}]}
-
-  |  "Uid"; "_" %{[token_of_simple_pat %pat'{`Uid _}]}
-  |  "Str"; "_" %{[token_of_simple_pat %pat'{`Str _}]}
+  |  ("Lid"|"Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
+  |  ("Lid"|"Uid"|"Quot"
+      |"Label" |"DirQuotation"
+      |"Optlabel" |"Str"
+      | "Chr" | "Int"
+      | "Int32" | "Int64"
+      | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
+  |  ("Lid"|"Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
   |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
      match p with
      | (v,None) ->
@@ -184,20 +172,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   let sep_symbol : [ "SEP"; simple{t} %{let [t] =  t in t}]
 
   symbol : (* be more precise, no recursive grammar? *)
-  [ "L0"; simple{s}; OPT  sep_symbol{sep } %{
+  [ ("L0"|"L1" as l) ; simple{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
-
     let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 
-    let text = mk_slist _loc false sep s in
+    let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
-  | "L1"; simple{s}; OPT sep_symbol{sep} %{
-    let [s] =  s in
-    let () =  check_not_tok s in (* s should be singleton here actually*)
-    let styp = %ctyp'{ $(s.styp) list   } in 
-    let text = mk_slist _loc true sep s in
-    [mk_symbol ~text ~styp ~pattern:None]
-    }
   | "OPT"; simple{s}  %{
     let [s] = s in
     let () = check_not_tok s in
