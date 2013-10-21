@@ -13,7 +13,8 @@ OCAMLPACKS[] =
     oUnit
     compiler-libs
 
-COMMON = test_util
+COMMON = test_util \
+    # location_test
 PARSE = test_parse 
 LEX   = test_lex
 
