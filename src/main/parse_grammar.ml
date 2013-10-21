@@ -208,9 +208,6 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
 
 
-(* let simple_meta = *)
-(*   Gentry.map ~name:"simple_meta" (List.map token_of_simple_pat) simple *)
-(* ;; *)
 
 %extend{(g:Fgram.t)
   let str : [Str y  %{y}]
@@ -301,12 +298,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         | _ -> mk_entry ~local:true ~name:p ~pos ~levels
       end}  ]
   position :
-  [ "First" %exp{`First}
-  | "Last" %exp{`Last}
-  | "Before"; string{n} %exp{`Before $n}
-  | "After"; string{n} %exp{`After $n}
-  | "Level"; string{n} %exp{`Level $n}
-  ]
+  [ ("First"|"Last"|"Before"|"After"|"Level" as x) %exp{$vrn:x}]
 
   level_list :
   [ "{"; L1 level {ll}; "}" %{ `Group ll}
@@ -317,9 +309,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
        %{mk_level ~label ~assoc ~rules} ]
   (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
   assoc :
-  [ "LA" %exp{`LA}
-  | "RA" %exp{`RA}
-  | "NA" %exp{`NA} ]
+  [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
 
       
   rule_list :
@@ -329,10 +319,14 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     retype_rule_list_without_patterns _loc rules}]
 
   rule :
-  [ L0 psymbol SEP ";"{prod}; OPT opt_action{action} %{
+  [ left_rule {prod}; OPT opt_action{action} %{
     let prods = Listf.cross prod in
     List.map (fun prod -> mk_rule ~prod ~action) prods} ]
-
+  let left_rule :
+   [ psymbol{x} %{[x]}
+   | psymbol{x};";" ;S{xs} %{ x::xs }
+   |    %{[]}]   
+   (* [ L0 psymbol SEP ";"{prod} %{prod}]    *)
   let opt_action :
       [ Quot x %{
         if x.name = Ftoken.empty_name then 

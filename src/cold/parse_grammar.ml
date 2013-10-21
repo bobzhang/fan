@@ -830,6 +830,7 @@ let _ =
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
   let str: 'str Fgram.t = grammar_entry_create "str"
+  and left_rule: 'left_rule Fgram.t = grammar_entry_create "left_rule"
   and opt_action: 'opt_action Fgram.t = grammar_entry_create "opt_action" in
   Fgram.extend_single (str : 'str Fgram.t )
     (None,
@@ -1070,34 +1071,51 @@ let _ =
     (None,
       (None, None,
         [([`Skeyword "First"],
-           ("(`Vrn (_loc, \"First\") : FAst.exp )\n",
+           ("(`Vrn (_loc, x) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun _  (_loc : Locf.t)  ->
-                   ((`Vrn (_loc, "First") : FAst.exp ) : 'position )))));
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "Last"],
-          ("(`Vrn (_loc, \"Last\") : FAst.exp )\n",
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun _  (_loc : Locf.t)  ->
-                  ((`Vrn (_loc, "Last") : FAst.exp ) : 'position )))));
-        ([`Skeyword "Before";
-         `Snterm (Fgram.obj (string : 'string Fgram.t ))],
-          ("(`App (_loc, (`Vrn (_loc, \"Before\")), n) : FAst.exp )\n",
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
+        ([`Skeyword "Before"],
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun (n : 'string)  _  (_loc : Locf.t)  ->
-                  ((`App (_loc, (`Vrn (_loc, "Before")), n) : FAst.exp ) : 
-                  'position )))));
-        ([`Skeyword "After"; `Snterm (Fgram.obj (string : 'string Fgram.t ))],
-          ("(`App (_loc, (`Vrn (_loc, \"After\")), n) : FAst.exp )\n",
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
+        ([`Skeyword "After"],
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun (n : 'string)  _  (_loc : Locf.t)  ->
-                  ((`App (_loc, (`Vrn (_loc, "After")), n) : FAst.exp ) : 
-                  'position )))));
-        ([`Skeyword "Level"; `Snterm (Fgram.obj (string : 'string Fgram.t ))],
-          ("(`App (_loc, (`Vrn (_loc, \"Level\")), n) : FAst.exp )\n",
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
+        ([`Skeyword "Level"],
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun (n : 'string)  _  (_loc : Locf.t)  ->
-                  ((`App (_loc, (`Vrn (_loc, "Level")), n) : FAst.exp ) : 
-                  'position )))))]));
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (level_list : 'level_list Fgram.t )
     (None,
       (None, None,
@@ -1128,20 +1146,33 @@ let _ =
     (None,
       (None, None,
         [([`Skeyword "LA"],
-           ("(`Vrn (_loc, \"LA\") : FAst.exp )\n",
+           ("(`Vrn (_loc, x) : FAst.exp )\n",
              (Fgram.mk_action
-                (fun _  (_loc : Locf.t)  ->
-                   ((`Vrn (_loc, "LA") : FAst.exp ) : 'assoc )))));
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "RA"],
-          ("(`Vrn (_loc, \"RA\") : FAst.exp )\n",
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun _  (_loc : Locf.t)  ->
-                  ((`Vrn (_loc, "RA") : FAst.exp ) : 'assoc )))));
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "NA"],
-          ("(`Vrn (_loc, \"NA\") : FAst.exp )\n",
+          ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Fgram.mk_action
-               (fun _  (_loc : Locf.t)  ->
-                  ((`Vrn (_loc, "NA") : FAst.exp ) : 'assoc )))))]));
+               (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
   Fgram.extend_single (rule_list : 'rule_list Fgram.t )
     (None,
       (None, None,
@@ -1161,17 +1192,32 @@ let _ =
   Fgram.extend_single (rule : 'rule Fgram.t )
     (None,
       (None, None,
-        [([`Slist0sep
-             ((`Snterm (Fgram.obj (psymbol : 'psymbol Fgram.t ))),
-               (`Skeyword ";"));
+        [([`Snterm (Fgram.obj (left_rule : 'left_rule Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (opt_action : 'opt_action Fgram.t )))],
            ("let prods = Listf.cross prod in\nList.map (fun prod  -> mk_rule ~prod ~action) prods\n",
              (Fgram.mk_action
-                (fun (action : 'opt_action option)  (prod : 'psymbol list) 
+                (fun (action : 'opt_action option)  (prod : 'left_rule) 
                    (_loc : Locf.t)  ->
                    (let prods = Listf.cross prod in
                     List.map (fun prod  -> mk_rule ~prod ~action) prods : 
                    'rule )))))]));
+  Fgram.extend_single (left_rule : 'left_rule Fgram.t )
+    (None,
+      (None, None,
+        [([`Snterm (Fgram.obj (psymbol : 'psymbol Fgram.t ))],
+           ("[x]\n",
+             (Fgram.mk_action
+                (fun (x : 'psymbol)  (_loc : Locf.t)  -> ([x] : 'left_rule )))));
+        ([`Snterm (Fgram.obj (psymbol : 'psymbol Fgram.t ));
+         `Skeyword ";";
+         `Sself],
+          ("x :: xs\n",
+            (Fgram.mk_action
+               (fun (xs : 'left_rule)  _  (x : 'psymbol)  (_loc : Locf.t)  ->
+                  (x :: xs : 'left_rule )))));
+        ([],
+          ("[]\n",
+            (Fgram.mk_action (fun (_loc : Locf.t)  -> ([] : 'left_rule )))))]));
   Fgram.extend_single (opt_action : 'opt_action Fgram.t )
     (None,
       (None, None,
