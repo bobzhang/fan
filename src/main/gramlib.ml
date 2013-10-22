@@ -4,7 +4,7 @@
     
 let setup_op_parser entry p =
   Fgram.setup_parser entry
-    (%parser{| (`Key x | `Sym x,_loc) when p x  -> %exp{ $lid:x }})
+    (%parser{| (`Key (_,x) | `Sym (_,x),_loc) when p x  -> %exp{ $lid:x }})
 
 
 let symbolchars =

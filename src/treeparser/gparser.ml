@@ -155,7 +155,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
                 |`Stoken(f,_,_) -> f t
                 |`Skeyword kwd ->
                     begin match t with
-                    |`Key kwd' when kwd = kwd' -> true
+                    |`Key (_,kwd') when kwd = kwd' -> true
                     | _ -> false
                     end)
             then
@@ -192,7 +192,7 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
             ... *)
         begin  (* interaction with stream *)
           match Fstream.peek strm with
-          | Some (`Key tok as x ,_)  when tok = kwd ->
+          | Some (`Key (_,tok) as x ,_)  when tok = kwd ->
               (Fstream.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Fstream.NotConsumed
         end

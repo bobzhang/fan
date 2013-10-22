@@ -11,10 +11,10 @@ FILES =  ast2pt oconfig astPrint ast_basic  configf\
     ftoken lex_util lexgen location_util parsetreeHelper\
     tokenEval translate_lex fan_util \
     fan_warnings
-
+.PHONY: clean lib
 lib: $(OCamlLibrary libcommon, $(FILES))
 
-.PHONY: clean lib
+
 clean:
     rm -rf $(OCAMLBIN_EXT)
     rm -rf $(LocalFiles)

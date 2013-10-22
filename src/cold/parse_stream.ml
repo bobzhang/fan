@@ -19,13 +19,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid n")],
            ("n\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid n -> (n : 'uid )
+                   | `Uid (_,n) -> (n : 'uid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"

@@ -61,26 +61,30 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | newline %{
     begin
       update_loc  lexbuf;
-      (`NEWLINE, !! lexbuf )
+      let loc = !! lexbuf in
+      (`NEWLINE loc,loc  )
     end}
   | ocaml_lid as x %{let loc =  !! lexbuf in (`Lid (loc,x), loc)}
-  | ocaml_uid as x  %{(`Uid x , !! lexbuf )}      
+  | ocaml_uid as x  %{let loc = !! lexbuf in (`Uid (loc,x), loc)}      
   | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
-      (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
+      let loc = old --  lexbuf.lex_curr_p in
+      (`Str (loc,buff_contents c),  loc)
     end}
   | "'" (newline as x) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
-      (`Chr x, !! lexbuf)
+      let loc = !! lexbuf in
+      (`Chr (loc,x), loc)
     end}
-  | "'" (ocaml_char as x ) "'" %{ (`Chr x , !! lexbuf )}
+  | "'" (ocaml_char as x ) "'" %{ let loc =  !! lexbuf in (`Chr (loc,x) , loc )}
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{(`Sym x, !! lexbuf)}
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{
+    let loc = !!lexbuf in (`Sym (loc,x), loc)}
   | ocaml_blank + %{ token lexbuf }
 
   | "(*"(')' as x) ? %{

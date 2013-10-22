@@ -120,70 +120,110 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
    (simple : Gram_def.symbol list Fgram.t)
 }
 
+
+(* let lid_or_any (x:string option) = *)
+(*   match x with  *)
+(* (\** *)
+(*    Handle *)
+(*    {[ *)
+(*    Lid@xloc i *)
+(*    Lid i *)
+(*    Lid _ *)
+(*    ]} *)
+(*  *\)   *)
+(* let make_simple_symbol (_loc:Locf.t) *)
+(*     (v:string) *)
+(*     (x:string option) *)
+(*     (locname:string option) *)
+(*     (idloc:Locf.t option) = *)
+(*   let pred =  %exp{ *)
+(*     function *)
+(*       | $vrn:v (_, _) -> true *)
+(*       | _ -> false} in *)
+(*   let des = %exp{($str:v,`Any )} in *)
+(*   let des_str = *)
+(*     Gram_pat.to_string @@ *)
+(*       (let u = *)
+(*         match x with *)
+(*         | None -> %pat'{_} *)
+(*         | Some x -> %pat'{$lid:x} in *)
+(*       %pat'{$vrn:v $u}) in *)
+(*   let pattern = *)
+(*     let xloc = *)
+(*       match idloc with *)
+(*       | Some x -> x *)
+(*       | None -> _loc in *)
+(*     let l = *)
+(*       match locname with *)
+(*       |None -> %pat'{_} *)
+(*       |Some x -> %pat'{$lid:x} in *)
+(*     let lx = *)
+(*       match x with *)
+(*       | None -> %pat'{_} *)
+(*       | Some x -> %pat'{$lid:x} in *)
+(*     Some %pat@xloc{$vrn:v ($l,$lx)} in *)
+(*   [{Gram_def.text = `Stoken(_loc, pred,des,des_str); *)
+(*     styp = `Tok _loc; *)
+(*     pattern}] *)
+(* ;; *)
 %extend{(g:Fgram.t)
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
   [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
-  | ("Lid" as v); Str x %{
+  | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let pred = %exp{
                     function
-                      | `Lid (_, $str:x) -> true
+                      | $vrn:v (_, $str:x) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`A $str:x )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
-    let pattern = Some %pat{`Lid (_, $str:x) } in
+    let pattern = Some %pat@xloc{$vrn:v (_, $str:x) } in
     [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
 
-  | ("Lid" as v); Lid x %{
-    (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
+  | ("Lid"|"Uid"| "Int"
+     | "Int32" | "Int64"
+     | "Nativeint" |"Flo" | "Chr" |"Label" 
+     | "Optlabel" |"Str" as v); Lid@xloc x %{
     let pred =  %exp{
                     function
-                      | `Lid (_, _) -> true
+                      | $vrn:v (_, _) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat{`Lid(_,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v (_,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
   (** split opt, introducing an epsilon predicate? *)    
-  | ("Lid" as v); "@"; Lid loc ; Lid x %{
-    (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
+  | ("Lid"|"Uid"|"Str" as v); "@"; Lid loc ; Lid@xloc x %{
     let pred =  %exp{
                     function
-                      | `Lid (_, _) -> true
+                      | $vrn:v (_, _) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat{`Lid($lid:loc,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v ($lid:loc,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
 
-  | ("Lid" as v) ; "_"    %{
-    let pred = %exp{
-                    function
-                      | `Lid (_, _) -> true
-                      | _ -> false} in
+  | ("Lid" |"Uid"|"Str" as v) ; "_"    %{
+    let pred = %exp{function
+                    | $vrn:v (_, _) -> true
+                    | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = Some %pat{`Lid (_, _) } in
+    let pattern = Some %pat{$vrn:v  (_, _) } in
     [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
-      
-  |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
 
-  |  ("Uid"|"Quot"
-      |"Label" |"DirQuotation"
-      |"Optlabel" |"Str"
-      | "Chr" | "Int"
-      | "Int32" | "Int64"
-      | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
+  |  ("Quot"|"DirQuotation"
+        as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
 
-  |  ("Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
+
   ]
           
   simple :
@@ -207,15 +247,15 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         List.map
           (fun x ->
             mk_symbol ~text:(`Skeyword (_loc,x))
-              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key $lid:b}) )
+              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )
           
     }
-  |  "Uid"; "("; or_words{p}; ")" %{
+  |  ("Uid" as v) ; "("; or_words{p}; ")" %{
     match p with
-    | (v,None) ->
-        List.map (fun x -> token_of_simple_pat %pat'{`Uid $x}) v
-    | (v,Some x) ->
-        List.map (fun a -> token_of_simple_pat %pat'{`Uid ($a as $lid:x)}) v 
+    | (vs,None) ->
+        List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs
+    | (vs,Some x) ->
+        List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs 
   }
   | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
 

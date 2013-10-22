@@ -67,8 +67,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -76,20 +76,20 @@ let _ =
                 (fun (xs : 'qualuid)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid x ->
+                   | `Uid (_,x) ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-              "`Uid _")],
+            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+              "`Uid x")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Uid x -> (`Uid (_loc, x) : 'qualuid )
+                  | `Uid (_,x) -> (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]))

@@ -9,13 +9,13 @@ let _ =
       (None, None,
         [([`Skeyword "!";
           `Stoken
-            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-              "`Uid _")],
+            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+              "`Uid n")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Uid n ->
+                   | `Uid (_,n) ->
                        (Ref.protect Compile_stream.grammar_module_name n
                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
                    | _ ->
@@ -24,8 +24,8 @@ let _ =
                             (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "!";
          `Stoken
-           (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-             "`Uid _");
+           (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+             "`Uid n");
          `Snterm
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],
           ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
@@ -33,7 +33,7 @@ let _ =
                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Ftoken.t)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Uid n ->
+                  | `Uid (_,n) ->
                       (Ref.protect Compile_stream.grammar_module_name n
                          (fun _  -> cstream _loc sel) : 'stream_exp )
                   | _ ->

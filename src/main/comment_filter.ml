@@ -11,7 +11,7 @@ let mk () =
 
 let filter (_, q) =
   let rec self = %parser{
-    |  (`Comment x, loc); 'xs  -> begin
+    |  (`Comment (_,x), loc); 'xs  -> begin
         Queue.add (x, loc) q;
         (* debug comments "add: %S at %a@\n" x Locf.dump loc in *)
         self xs

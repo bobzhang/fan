@@ -4820,17 +4820,18 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
            (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
        };
      (match __ocaml_lex_result with
-      | 0 -> (update_loc lexbuf; (`NEWLINE, (!! lexbuf)))
+      | 0 ->
+          (update_loc lexbuf; (let loc = !! lexbuf in ((`NEWLINE loc), loc)))
       | 1 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`Label x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Label (loc, x)), loc)
       | 2 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`Optlabel x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Optlabel (loc, x)), loc)
       | 3 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
@@ -4840,7 +4841,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Uid x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Uid (loc, x)), loc)
       | 5 ->
           let s =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4848,33 +4849,36 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           and x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
+          let loc = !! lexbuf in
           let x =
             match s with
-            | Some 'l' -> `Int32 x
-            | Some 'L' -> `Int64 x
-            | Some 'n' -> `Nativeint x
-            | _ -> `Int x in
-          (x, (!! lexbuf))
+            | Some 'l' -> `Int32 (loc, x)
+            | Some 'L' -> `Int64 (loc, x)
+            | Some 'n' -> `Nativeint (loc, x)
+            | _ -> `Int (loc, x) in
+          (x, loc)
       | 6 ->
           let f =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Flo f), (!! lexbuf))
+          let loc = !! lexbuf in ((`Flo (loc, f)), loc)
       | 7 ->
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
-           ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           (let loc = old -- lexbuf.lex_curr_p in
+            ((`Str (loc, (buff_contents c))), loc)))
       | 8 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          (update_loc lexbuf ~retract:1; ((`Chr x), (!! lexbuf)))
+          (update_loc lexbuf ~retract:1;
+           (let loc = !! lexbuf in ((`Chr (loc, x)), loc)))
       | 9 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`Chr x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Chr (loc, x)), loc)
       | 10 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
@@ -4883,31 +4887,31 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let op =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-          ((`Eident op), (!! lexbuf))
+          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
       | 12 ->
           let op =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          ((`Eident op), (!! lexbuf))
+          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
       | 13 ->
           let op =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          ((`Eident op), (!! lexbuf))
+          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
       | 14 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Sym x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Sym (loc, x)), loc)
       | 15 ->
           (warn Comment_not_end (!! lexbuf);
            move_curr_p (-1) lexbuf;
-           ((`Sym "*"), (!! lexbuf)))
+           (let loc = !! lexbuf in ((`Sym (loc, "*")), loc)))
       | 16 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Blank x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Blank (loc, x)), loc)
       | 17 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4917,7 +4921,8 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           (if x <> None then warn Comment_start (!! lexbuf);
            store c lexbuf;
            push_loc_cont c lexbuf lex_comment;
-           ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           (let loc = old -- lexbuf.lex_curr_p in
+            ((`Comment (loc, (buff_contents c))), loc)))
       | 18 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4961,7 +4966,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
               (((lexbuf.Lexing.lex_mem).(2)) + 0) in
           let line = int_of_string num in
           (update_loc lexbuf ?file:name ~line ~absolute:true;
-           ((`LINE_DIRECTIVE (line, name)), (!! lexbuf)))
+           (let loc = !! lexbuf in ((`LINE_DIRECTIVE (loc, line, name)), loc)))
       | 20 ->
           let dollar (c : Lexing_util.context) (lexbuf : Lexing.lexbuf) =
             let rec __ocaml_lex_init_lexbuf lexbuf mem_size =

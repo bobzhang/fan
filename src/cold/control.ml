@@ -8,13 +8,13 @@ let _ =
       (None, None,
         [([`Skeyword "default";
           `Stoken
-            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-              "`Str _")],
+            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+              "`Str s")],
            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Str s ->
+                   | `Str (_,s) ->
                        ((match Ast_quotation.resolve_name ((`Sub []), s) with
                          | None  ->
                              Locf.failf _loc "DDSL `%s' can not be resolved"
@@ -33,13 +33,13 @@ let _ =
                      (Ast_quotation.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
-           (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-             "`Str _")],
+           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+             "`Str s")],
           ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
                (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Str s -> (Ast_filters.use_implem_filter s : 'item )
+                  | `Str (_,s) -> (Ast_filters.use_implem_filter s : 'item )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));
@@ -53,8 +53,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Sself],
            ("i :: xs\n",
@@ -62,19 +62,19 @@ let _ =
                 (fun (xs : 'dot_namespace)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (i :: xs : 'dot_namespace )
+                   | `Uid (_,i) -> (i :: xs : 'dot_namespace )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-              "`Uid _")],
+            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+              "`Uid i")],
           ("[i]\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Uid i -> ([i] : 'dot_namespace )
+                  | `Uid (_,i) -> ([i] : 'dot_namespace )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));

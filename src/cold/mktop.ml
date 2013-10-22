@@ -374,8 +374,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid m");
           `Skeyword ":";
           `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
           `Skeyword ";"],
@@ -384,7 +384,7 @@ let _ =
                 (fun _  (ns : 'name list)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid m ->
+                   | `Uid (_,m) ->
                        (Ast_gen.sem_of_list
                           (List.map
                              (fun l  ->
