@@ -1069,10 +1069,11 @@ let _ =
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
              "`Lid _");
+         `Skeyword ":";
          `Snterm (Fgram.obj (rule_list : 'rule_list Fgram.t ))],
           ("Hashtbl.add inline_rules x rules; None\n",
             (Fgram.mk_action
-               (fun (rules : 'rule_list)  (__fan_1 : Ftoken.t)  _ 
+               (fun (rules : 'rule_list)  _  (__fan_1 : Ftoken.t)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_1 with
                   | `Lid x ->

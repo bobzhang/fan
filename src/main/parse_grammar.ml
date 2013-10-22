@@ -121,9 +121,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 }
 
 %extend{(g:Fgram.t)
-  (** FIXME bring antiquotation back later*)        
-  simple :
-  [  "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
+  (** FIXME bring antiquotation back later*)
+  Inline simple_token :
+  [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
   |  ("Lid"|"Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
   |  ("Lid"|"Uid"|"Quot"
       |"Label" |"DirQuotation"
@@ -131,7 +131,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       | "Chr" | "Int"
       | "Int32" | "Int64"
       | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
-  |  ("Lid"|"Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
+  |  ("Lid"|"Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}]
+  simple :
+  [ @simple_token
   |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
      match p with
      | (v,None) ->
@@ -203,7 +205,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | simple{p} %{ p}
 
   ]
-  let tmp_lid : [Lid i %pat'{$lid:i}]
+
+  let  tmp_lid : [Lid i %pat'{$lid:i}]
    (* FIXME a new entry introduced here only for precise location *)    
   let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
 
@@ -311,7 +314,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some (mk_entry ~local:true ~name:p ~pos ~levels)
       end}
-  | "Inline"; Lid x ; rule_list{rules} %{
+  | "Inline"; Lid x ; ":"; rule_list{rules} %{
     begin
       Hashtbl.add inline_rules x rules;
       None

@@ -255,7 +255,9 @@ let apply () = begin
        fun_def:
        {RA
           [ fun_def_pat{f}; "->"; exp{e} %{  f e}
-          | fun_def_pat{f}; S{e}  %{f e}] }    
+          | fun_def_pat{f}; S{e}  %{f e}] }
+
+           
        exp:
        {
         "top" RA
@@ -400,9 +402,13 @@ let apply () = begin
        | exp{e}; ";" %{fun acc -> %exp{ $e :: $acc }}
        | exp{e}  %{fun acc -> %exp{ $e :: $acc }}]
 
-
+       (* Inline let_in : *)
+       (* [ "let"; opt_rec{rf}; bind{bi}; "in"; exp{e}; sequence'{k} %{ *)
+       (*   k  (`LetIn (_loc, rf, bi, e))} ] *)
+           
        sequence: (*FIXME*)
-       [ "let"; opt_rec{rf}; bind{bi}; "in"; exp{e}; sequence'{k} %{
+       [
+        "let"; opt_rec{rf}; bind{bi}; "in"; exp{e}; sequence'{k} %{
          k  (`LetIn (_loc, rf, bi, e))}
        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a}; sequence'{k}
          %{k (`LetTryInWith(_loc,r,bi,x,a))}
