@@ -124,14 +124,19 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
   [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
-  |  ("Lid"|"Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
-  |  ("Lid"|"Uid"|"Quot"
+  | ("Lid" as v); Str x %{ [token_of_simple_pat %pat'{ $vrn:v $str:x}] }
+  |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
+  | ("Lid" as v); Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
+  |  ("Uid"|"Quot"
       |"Label" |"DirQuotation"
       |"Optlabel" |"Str"
       | "Chr" | "Int"
       | "Int32" | "Int64"
       | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
-  |  ("Lid"|"Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}]
+  |  ("Lid" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}      
+  |  ("Lid"|"Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
+  ]
+          
   simple :
   [ @simple_token
   |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
