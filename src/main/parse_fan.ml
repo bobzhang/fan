@@ -256,8 +256,15 @@ let apply () = begin
        {RA
           [ fun_def_pat{f}; "->"; exp{e} %{  f e}
           | fun_def_pat{f}; S{e}  %{f e}] }
-
            
+       Inline primitve :
+       [ Int s   %{`Int(_loc,s)}
+       | Int32 s %{ `Int32(_loc,s)}
+       | Int64 s %{ `Int64(_loc,s)}
+       | Nativeint s %{ `Nativeint (_loc, s)}
+       | Flo s %{  `Flo (_loc, s)}
+       | Chr s %{ `Chr (_loc, s)}
+       | Str s %{ `Str (_loc, s)}]    
        exp:
        {
         "top" RA
@@ -359,14 +366,7 @@ let apply () = begin
                 |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
                 |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn" as n,s) %{
                     mk_anti _loc ~c:"exp" n s}
-        | Int s   %{`Int(_loc,s)}
-        | Int32 s %{ `Int32(_loc,s)}
-        | Int64 s %{ `Int64(_loc,s)}
-        | Nativeint s %{ `Nativeint (_loc, s)}
-        | Flo s %{  `Flo (_loc, s)}
-        | Chr s %{ `Chr (_loc, s)}
-        | Str s %{ `Str (_loc, s)}
-
+        | @primitve 
         | TRY module_longident_dot_lparen{i};S{e}; ")" %{
             `LetOpen (_loc,`Negative _loc, i, e)}
         (* | TRY val_longident{i} -> %{ $id:i } *)
@@ -519,12 +519,7 @@ let apply () = begin
                 |"`flo"|"chr"|"`chr"|"str"|"`str" as n,s)
           %{ mk_anti _loc ~c:"pat" n s}
         | vid{i} %{ (i : vid :> pat)}
-        | Int s %{  `Int (_loc, s)}
-        | Int32 s %{  `Int32 (_loc, s)}
-        | Int64 s %{ `Int64 (_loc, s)}
-        | Flo s %{  `Flo (_loc, s)}
-        | Chr s %{ `Chr(_loc,s)}
-        | Str s %{ `Str(_loc,s)}
+        | @primitve
         | "-"; Int s %{  `Int (_loc, Fstring.neg s)}
         | "-"; Int32 s %{ `Int32(_loc, Fstring.neg s) }
         | "-"; Int64 s %{ `Int64(_loc,Fstring.neg s)}
