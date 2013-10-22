@@ -47,7 +47,7 @@ let apply () =
         | _ -> symb1 __strm in
       let rec kont al (__strm : _ Fstream.t) =
         match Fstream.peek __strm with
-        | Some (`Key ";",_) ->
+        | Some (`Key (_,";"),_) ->
             (Fstream.junk __strm;
              (let a =
                 try symb __strm
@@ -1301,7 +1301,7 @@ let apply () =
                  (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Key op ->
+                    | `Key (_,op) ->
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )
@@ -1315,7 +1315,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1329,7 +1329,7 @@ let apply () =
                  (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Key op ->
+                    | `Key (_,op) ->
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )
@@ -1343,7 +1343,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1394,7 +1394,7 @@ let apply () =
                  (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Key op ->
+                    | `Key (_,op) ->
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )
@@ -1408,7 +1408,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1421,7 +1421,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1434,7 +1434,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1457,7 +1457,7 @@ let apply () =
                  (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                     (_loc : Locf.t)  ->
                     match __fan_1 with
-                    | `Key op ->
+                    | `Key (_,op) ->
                         (Ast_gen.appl_of_list
                            [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 
                         'exp )
@@ -1471,7 +1471,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->
@@ -1484,7 +1484,7 @@ let apply () =
                 (fun (e2 : 'exp)  (__fan_1 : Ftoken.t)  (e1 : 'exp) 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Key op ->
+                   | `Key (_,op) ->
                        (Ast_gen.appl_of_list
                           [(`Lid (_loc, op) : FAst.exp ); e1; e2] : 'exp )
                    | _ ->

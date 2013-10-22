@@ -247,7 +247,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         List.map
           (fun x ->
             mk_symbol ~text:(`Skeyword (_loc,x))
-              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key $lid:b}) )
+              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )
           
     }
   |  ("Uid" as v) ; "("; or_words{p}; ")" %{

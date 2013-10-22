@@ -6,7 +6,7 @@ let mk () =
 let filter (_,q) =
   let rec self (__strm : _ Fstream.t) =
     match Fstream.peek __strm with
-    | Some (`Comment x,loc) ->
+    | Some (`Comment (_,x),loc) ->
         (Fstream.junk __strm;
          (let xs = __strm in Queue.add (x, loc) q; self xs))
     | Some x ->

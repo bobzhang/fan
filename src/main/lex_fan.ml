@@ -101,7 +101,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
    | newline %{
      begin
        update_loc  lexbuf;
-       (`NEWLINE, !! lexbuf )
+       let loc = !! lexbuf in
+       (`NEWLINE loc, loc)
      end }
    | "~" (ocaml_lid as x) ':' %{
      let loc = !! lexbuf in
@@ -165,15 +166,16 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
    | "{<" |">}"
    | left_delimitor | right_delimitor
    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
-       as x  %{(`Sym x  , !! lexbuf)}
+       as x  %{ let loc = !! lexbuf in (`Sym (loc,x) , loc)}
            
    | "*)" %{
        begin
          warn Comment_not_end (!! lexbuf) ;
          move_curr_p (-1) lexbuf;
-         (`Sym "*", !! lexbuf)
+         let loc = !! lexbuf in
+         (`Sym (loc,"*"), loc)
        end}
-   | ocaml_blank + as x %{ (`Blank x, !! lexbuf)}
+   | ocaml_blank + as x %{ let loc = !! lexbuf in (`Blank (loc,x), loc)}
          
          (* comment *)
    | "(*" (')' as x) ? %{
@@ -183,8 +185,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
          if x <> None then warn Comment_start (!!lexbuf);
          store c lexbuf;
          push_loc_cont c lexbuf lex_comment;
-         (`Comment ( buff_contents c),
-          old -- lexbuf.lex_curr_p)
+         let loc = old -- lexbuf.lex_curr_p in
+         (`Comment (loc, buff_contents c),loc)
        end}
    | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift %{
        let c = new_cxt () in
@@ -214,7 +216,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
        [^'\010' '\013']* newline %{
          let line = int_of_string num in begin
            update_loc  lexbuf ?file:name ~line ~absolute:true ;
-           (`LINE_DIRECTIVE(line, name), !!lexbuf )
+           let loc = !!lexbuf  in
+           (`LINE_DIRECTIVE(loc,line, name),loc )
          end}
            (* Antiquotation handling *)
    | '$' %{

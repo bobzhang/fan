@@ -180,12 +180,12 @@ let _ =
          `Stoken
            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
              "`Str x")],
-          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))), (`Str (_loc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (xloc, (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))), (`Str (xloc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Fgram.mk_action
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Str (_,x),`Key v) ->
+                  | (`Str (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -217,9 +217,9 @@ let _ =
                        let pattern =
                          Some
                            (`App
-                              (_loc,
-                                (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),
-                                (`Str (_loc, x))) : FAst.pat ) in
+                              (xloc,
+                                (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))),
+                                (`Str (xloc, x))) : FAst.pat ) in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));
@@ -235,12 +235,12 @@ let _ =
          `Stoken
            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
              "`Str x")],
-          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))), (`Str (_loc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (xloc, (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))), (`Str (xloc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Fgram.mk_action
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Str (_,x),`Key v) ->
+                  | (`Str (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -272,9 +272,9 @@ let _ =
                        let pattern =
                          Some
                            (`App
-                              (_loc,
-                                (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),
-                                (`Str (_loc, x))) : FAst.pat ) in
+                              (xloc,
+                                (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))),
+                                (`Str (xloc, x))) : FAst.pat ) in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));
@@ -290,12 +290,12 @@ let _ =
          `Stoken
            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
              "`Str x")],
-          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))), (`Str (_loc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+          ("let pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc,\n                (`App\n                   (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                     (`Str (_loc, x)))), (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com\n         (_loc, (`Str (_loc, v)),\n           (`App (_loc, (`Vrn (_loc, \"A\")), (`Str (_loc, x))))))) in\nlet des_str =\n  Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Str (_loc, x)))) in\nlet pattern =\n  Some\n    (`App\n       (xloc, (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))), (`Str (xloc, x))) : \n    FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Fgram.mk_action
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Str (_,x),`Key v) ->
+                  | (`Str (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -327,9 +327,9 @@ let _ =
                        let pattern =
                          Some
                            (`App
-                              (_loc,
-                                (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),
-                                (`Str (_loc, x))) : FAst.pat ) in
+                              (xloc,
+                                (`App (xloc, (`Vrn (xloc, v)), (`Any xloc))),
+                                (`Str (xloc, x))) : FAst.pat ) in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));
@@ -350,7 +350,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -402,7 +402,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -454,7 +454,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -506,7 +506,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -558,7 +558,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -610,7 +610,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -662,7 +662,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -714,7 +714,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -766,7 +766,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -818,7 +818,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -870,7 +870,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (xloc,x),`Key v) ->
+                  | (`Lid (xloc,x),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -926,7 +926,7 @@ let _ =
                (fun (__fan_3 : Ftoken.t)  (__fan_2 : Ftoken.t)  _ 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match (__fan_3, __fan_2, __fan_0) with
-                  | (`Lid (xloc,x),`Lid (_,loc),`Key v) ->
+                  | (`Lid (xloc,x),`Lid (_,loc),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -985,7 +985,7 @@ let _ =
                (fun (__fan_3 : Ftoken.t)  (__fan_2 : Ftoken.t)  _ 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match (__fan_3, __fan_2, __fan_0) with
-                  | (`Lid (xloc,x),`Lid (_,loc),`Key v) ->
+                  | (`Lid (xloc,x),`Lid (_,loc),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -1044,7 +1044,7 @@ let _ =
                (fun (__fan_3 : Ftoken.t)  (__fan_2 : Ftoken.t)  _ 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match (__fan_3, __fan_2, __fan_0) with
-                  | (`Lid (xloc,x),`Lid (_,loc),`Key v) ->
+                  | (`Lid (xloc,x),`Lid (_,loc),`Key (_,v)) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -1095,7 +1095,7 @@ let _ =
             (Fgram.mk_action
                (fun _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key v ->
+                  | `Key (_,v) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -1141,7 +1141,7 @@ let _ =
             (Fgram.mk_action
                (fun _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key v ->
+                  | `Key (_,v) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -1187,7 +1187,7 @@ let _ =
             (Fgram.mk_action
                (fun _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key v ->
+                  | `Key (_,v) ->
                       (let pred: FAst.exp =
                          `Fun
                            (_loc,
@@ -1237,7 +1237,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (_,x),`Key v) ->
+                  | (`Lid (_,x),`Key (_,v)) ->
                       ([token_of_simple_pat
                           (`App (_loc, (`Vrn (_loc, v)), (`Lid (_loc, x))))] : 
                       'simple )
@@ -1255,7 +1255,7 @@ let _ =
                (fun (__fan_1 : Ftoken.t)  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_1, __fan_0) with
-                  | (`Lid (_,x),`Key v) ->
+                  | (`Lid (_,x),`Key (_,v)) ->
                       ([token_of_simple_pat
                           (`App (_loc, (`Vrn (_loc, v)), (`Lid (_loc, x))))] : 
                       'simple )
@@ -1309,7 +1309,7 @@ let _ =
         ([`Skeyword "(";
          `Snterm (Fgram.obj (or_strs : 'or_strs Fgram.t ));
          `Skeyword ")"],
-          ("match v with\n| (vs,None ) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:None))\n| (vs,Some b) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:(Some\n                          (`App\n                             (_loc, (`Vrn (_loc, \"Key\")), (`Lid (_loc, b))) : \n                          FAst.pat ))))\n",
+          ("match v with\n| (vs,None ) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:None))\n| (vs,Some b) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:(Some\n                          (`App\n                             (_loc,\n                               (`App\n                                  (_loc, (`Vrn (_loc, \"Key\")), (`Any _loc))),\n                               (`Lid (_loc, b))) : FAst.pat ))))\n",
             (Fgram.mk_action
                (fun _  (v : 'or_strs)  _  (_loc : Locf.t)  ->
                   (match v with
@@ -1327,7 +1327,11 @@ let _ =
                                  ~styp:(`Tok _loc)
                                  ~pattern:(Some
                                              (`App
-                                                (_loc, (`Vrn (_loc, "Key")),
+                                                (_loc,
+                                                  (`App
+                                                     (_loc,
+                                                       (`Vrn (_loc, "Key")),
+                                                       (`Any _loc))),
                                                   (`Lid (_loc, b))) : 
                                              FAst.pat )))) : 'simple )))));
         ([`Skeyword "Uid";
@@ -1339,7 +1343,7 @@ let _ =
                (fun _  (p : 'or_words)  _  (__fan_0 : Ftoken.t) 
                   (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key v ->
+                  | `Key (_,v) ->
                       ((match p with
                         | (vs,None ) ->
                             List.map
@@ -1502,7 +1506,7 @@ let _ =
                 (fun (sep : 'sep_symbol option)  (s : 'simple) 
                    (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Key l ->
+                   | `Key (_,l) ->
                        (let s::[] = s in
                         let styp =
                           `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
@@ -1522,7 +1526,7 @@ let _ =
                (fun (sep : 'sep_symbol option)  (s : 'simple) 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key l ->
+                  | `Key (_,l) ->
                       (let s::[] = s in
                        let styp =
                          `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
@@ -1546,7 +1550,7 @@ let _ =
             (Fgram.mk_action
                (fun (s : 'simple)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key p ->
+                  | `Key (_,p) ->
                       (let s::[] = s in
                        let v = (_loc, (s.text)) in
                        let text = if p = "TRY" then `Stry v else `Speek v in
@@ -1560,7 +1564,7 @@ let _ =
             (Fgram.mk_action
                (fun (s : 'simple)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key p ->
+                  | `Key (_,p) ->
                       (let s::[] = s in
                        let v = (_loc, (s.text)) in
                        let text = if p = "TRY" then `Stry v else `Speek v in
@@ -1870,7 +1874,8 @@ let _ =
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                   | `Key (_,x) ->
+                       ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -1880,7 +1885,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
@@ -1889,7 +1894,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
@@ -1898,7 +1903,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
@@ -1907,7 +1912,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));
@@ -1945,7 +1950,7 @@ let _ =
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                   | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -1955,7 +1960,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
@@ -1964,7 +1969,7 @@ let _ =
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Key x -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
+                  | `Key (_,x) -> ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));

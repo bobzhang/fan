@@ -4820,7 +4820,8 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
            (lexbuf.Lexing.lex_abs_pos + lexbuf.Lexing.lex_curr_pos)
        };
      (match __ocaml_lex_result with
-      | 0 -> (update_loc lexbuf; (`NEWLINE, (!! lexbuf)))
+      | 0 ->
+          (update_loc lexbuf; (let loc = !! lexbuf in ((`NEWLINE loc), loc)))
       | 1 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -4901,16 +4902,16 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Sym x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Sym (loc, x)), loc)
       | 15 ->
           (warn Comment_not_end (!! lexbuf);
            move_curr_p (-1) lexbuf;
-           ((`Sym "*"), (!! lexbuf)))
+           (let loc = !! lexbuf in ((`Sym (loc, "*")), loc)))
       | 16 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Blank x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Blank (loc, x)), loc)
       | 17 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4920,7 +4921,8 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           (if x <> None then warn Comment_start (!! lexbuf);
            store c lexbuf;
            push_loc_cont c lexbuf lex_comment;
-           ((`Comment (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           (let loc = old -- lexbuf.lex_curr_p in
+            ((`Comment (loc, (buff_contents c))), loc)))
       | 18 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4964,7 +4966,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
               (((lexbuf.Lexing.lex_mem).(2)) + 0) in
           let line = int_of_string num in
           (update_loc lexbuf ?file:name ~line ~absolute:true;
-           ((`LINE_DIRECTIVE (line, name)), (!! lexbuf)))
+           (let loc = !! lexbuf in ((`LINE_DIRECTIVE (loc, line, name)), loc)))
       | 20 ->
           let dollar (c : Lexing_util.context) (lexbuf : Lexing.lexbuf) =
             let rec __ocaml_lex_init_lexbuf lexbuf mem_size =

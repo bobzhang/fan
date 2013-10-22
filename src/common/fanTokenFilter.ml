@@ -29,7 +29,8 @@ let string_of_error_msg = Formatf.to_string pp_print_error;;
 (* [Sym] should all be filtered into keywords *)  
 let keyword_conversion (tok:Ftoken.t) kwds =
   match tok with
-  | `Sym s | `Lid (_,s) | `Uid (_,s) when Setf.String.mem s  kwds -> `Key s
+  | `Sym ((_,s) as u) | `Lid ((_,s) as u)
+  | `Uid ((_,s) as u) when Setf.String.mem s  kwds -> `Key u
   | `Eident s -> `Lid s
   | _ -> tok 
 
@@ -42,7 +43,7 @@ let check_keyword_as_label tok loc kwds =
         
 let check_unknown_keywords tok loc =
   match tok with
-  | `Sym s -> err (Illegal_token s) loc
+  | `Sym (_,s) -> err (Illegal_token s) loc
   | _        -> () 
 
 

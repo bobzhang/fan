@@ -56,7 +56,8 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | newline %{
     begin
       update_loc  lexbuf;
-      (`NEWLINE, !! lexbuf )
+      let loc = !! lexbuf in
+      (`NEWLINE loc,loc)
     end}
   | ocaml_lid as x %{let loc = !!lexbuf in (`Lid (loc,x),loc )}
   | '"' %{
@@ -76,7 +77,8 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | "'" (ocaml_char as x ) "'" %{ let loc = !!lexbuf in (`Chr (loc,x) , loc )}
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{(`Sym x, !! lexbuf)}
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{
+    let loc = !! lexbuf in (`Sym (loc,x),loc )}
   | ocaml_blank + %{ token lexbuf }
 
   | "(*"(')' as x) ? %{

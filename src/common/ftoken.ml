@@ -83,16 +83,16 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
       pp_print_quot x 
 
 
-  
+type loc = Locf.t  
 type space_token =
-   [ `Comment of string
-   | `Blank of string
-   | `NEWLINE
-   | `LINE_DIRECTIVE of (int * string option) ]
-type loc = Locf.t
+   [ `Comment of (loc * string)
+   | `Blank of (loc * string)
+   | `NEWLINE of loc 
+   | `LINE_DIRECTIVE of (loc * int * string option) ]
+
 type t =
-  [ `Key       of string
-  | `Sym       of string
+  [ `Key       of (loc * string)
+  | `Sym       of (loc * string)
   | `Lid       of (loc * string)
   | `Uid       of (loc * string)
   | `Eident    of (loc * string) (* (+)*)
@@ -120,9 +120,9 @@ type t =
 let pp_print_t: Format.formatter -> t -> unit =
   fun fmt  ->
     function
-    | `Key _a0 ->
+    | `Key (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Key@ %a)@]" Format.pp_print_string _a0
-    | `Sym _a0 ->
+    | `Sym (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string _a0
     | `Lid (_,_a0) -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string _a0
     | `Uid (_,_a0) -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string _a0
@@ -157,12 +157,12 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `Ant (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string _a0
           Format.pp_print_string _a1
-    | `Comment _a0 ->
+    | `Comment (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string _a0
-    | `Blank _a0 ->
+    | `Blank (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string _a0
-    | `NEWLINE -> Format.fprintf fmt "`NEWLINE"
-    | `LINE_DIRECTIVE (_a0,_a1) ->
+    | `NEWLINE _ -> Format.fprintf fmt "`NEWLINE"
+    | `LINE_DIRECTIVE (_,_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
           _a0 (Formatf.pp_print_option Format.pp_print_string) _a1
     | `EOI -> Format.fprintf fmt "`EOI"
@@ -203,9 +203,9 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `Key s | `Sym s | `Lid (_,s) | `Uid (_,s) | `Int  (_,s) | `Int32  (_,s) |
+  | `Key (_,s) | `Sym (_,s) | `Lid (_,s) | `Uid (_,s) | `Int  (_,s) | `Int32  (_,s) |
   `Int64  (_,s) | `Nativeint  (_,s) | `Flo  (_,s) | `Chr  (_,s) | `Str (_,s) |
-  `Label (_,s) | `Optlabel (_,s) | `Comment s | `Blank s | `Eident (_,s)-> s
+  `Label (_,s) | `Optlabel (_,s) | `Comment (_,s) | `Blank (_,s) | `Eident (_,s)-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
 
