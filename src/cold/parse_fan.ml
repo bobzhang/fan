@@ -3127,6 +3127,18 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
+             (((function | `Nativeint (_,_) -> true | _ -> false)),
+               ("Nativeint", `Any), "`Nativeint s")],
+           ("`Nativeint (_loc, s)\n",
+             (Fgram.mk_action
+                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+                   match __fan_0 with
+                   | `Nativeint (_,s) -> (`Nativeint (_loc, s) : 'pat )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s"
+                            (Ftoken.token_to_string __fan_0))))));
+         ([`Stoken
              (((function | `Flo (_,_) -> true | _ -> false)), ("Flo", `Any),
                "`Flo s")],
            ("`Flo (_loc, s)\n",
