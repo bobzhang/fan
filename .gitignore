@@ -12,6 +12,7 @@
 *.out
 *.txt
 *.plg
+*.diff
 *.stat
 *~
 *_archive
@@ -109,3 +110,4 @@ src/tools/buildtop
 src/weak1
 src/weak2
 src/weak3
+src/dparsetree
