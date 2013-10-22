@@ -260,11 +260,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   ]
 
-  (* let  tmp_lid : [Lid@loc i %pat'@loc{$lid:i}] *)
-   (* FIXME a new entry introduced here only for precise location *)    
   let brace_pattern :
-      ["{"; Lid@loc i (* tmp_lid{p} *);"}"
-         %pat'@loc{$lid:i}]
+      ["{"; Lid@loc i ;"}" %pat'@loc{$lid:i}]
 
   psymbol :
   [ symbol{ss} ; OPT  brace_pattern {p} %{
