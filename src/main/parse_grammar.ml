@@ -127,11 +127,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | ("Lid" as v); Str x %{
     let pred = %exp{
                     function
-                      | `Lid (_, $str:x) -> true
+                      | $vrn:v (_, $str:x) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`A $str:x )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
-    let pattern = Some %pat{`Lid (_, $str:x) } in
+    let pattern = Some %pat{$vrn:v (_, $str:x) } in
     [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
@@ -140,11 +140,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
     let pred =  %exp{
                     function
-                      | `Lid (_, _) -> true
+                      | $vrn:v (_, _) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{`Lid(_,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v (_,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
@@ -153,11 +153,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
     let pred =  %exp{
                     function
-                      | `Lid (_, _) -> true
+                      | $vrn:v (_, _) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{`Lid($lid:loc,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v ($lid:loc,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
@@ -165,11 +165,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | ("Lid" as v) ; "_"    %{
     let pred = %exp{
                     function
-                      | `Lid (_, _) -> true
+                      | $vrn:v (_, _) -> true
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = Some %pat{`Lid (_, _) } in
+    let pattern = Some %pat{$vrn:v  (_, _) } in
     [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
