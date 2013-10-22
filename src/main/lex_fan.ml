@@ -108,9 +108,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
 
    | "?" (ocaml_lid as x) ':' %{ (`Optlabel x, !! lexbuf)}
          
-   | ocaml_lid as x  %{let loc =  !! lexbuf in (`Lid (loc,x),loc )}
+   | ocaml_lid as x  %{let loc =  !! lexbuf in (`Lid (loc,x),loc)}
          
-   | ocaml_uid as x  %{(`Uid x , !! lexbuf )}
+   | ocaml_uid as x  %{let loc = !! lexbuf in (`Uid (loc,x), loc)}
          
    | int_literal  (('l'|'L'|'n' as s ) ?) as x %{
        (* FIXME - int_of_string ("-" ^ s) ??

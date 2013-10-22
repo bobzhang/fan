@@ -124,7 +124,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
   [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
-  | ("Lid" as v); Str x %{
+  | ("Lid"|"Uid" as v); Str x %{
     let pred = %exp{
                     function
                       | $vrn:v (_, $str:x) -> true
@@ -136,8 +136,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  | ("Lid" as v); Lid@xloc x %{
-    (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
+  | ("Lid"|"Uid" as v); Lid@xloc x %{
     let pred =  %exp{
                     function
                       | $vrn:v (_, _) -> true
@@ -149,7 +148,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
      styp = `Tok _loc;
      pattern}]}
   (** split opt, introducing an epsilon predicate? *)    
-  | ("Lid" as v); "@"; Lid loc ; Lid@xloc x %{
+  | ("Lid"|"Uid" as v); "@"; Lid loc ; Lid@xloc x %{
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
     let pred =  %exp{
                     function
@@ -162,7 +161,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
      styp = `Tok _loc;
      pattern}]}
 
-  | ("Lid" as v) ; "_"    %{
+  | ("Lid" |"Uid" as v) ; "_"    %{
     let pred = %exp{
                     function
                       | $vrn:v (_, _) -> true
@@ -174,16 +173,16 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
       
-  |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
+  (* |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]} *)
 
-  |  ("Uid"|"Quot"
+  |  ((* "Uid"| *)"Quot"
       |"Label" |"DirQuotation"
       |"Optlabel" |"Str"
       | "Chr" | "Int"
       | "Int32" | "Int64"
       | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
 
-  |  ("Uid"|"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
+  |  ((* "Uid"| *)"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
   ]
           
   simple :

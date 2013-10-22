@@ -4840,7 +4840,7 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Uid x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Uid (loc, x)), loc)
       | 5 ->
           let s =
             Lexing.sub_lexeme_char_opt lexbuf

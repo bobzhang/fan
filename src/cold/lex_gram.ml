@@ -2121,7 +2121,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          ((`Uid x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Uid (loc, x)), loc)
       | 3 ->
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in

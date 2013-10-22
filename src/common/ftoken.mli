@@ -105,12 +105,12 @@ type space_token =
    | `Blank         of string
    | `NEWLINE
    | `LINE_DIRECTIVE of (int * string option) ]
-      
+type loc = Locf.t       
 type t =
   [ `Key       of string
   | `Sym       of string
-  | `Lid       of (Locf.t * string)
-  | `Uid       of string
+  | `Lid       of (loc * string)
+  | `Uid       of (loc * string)
   | `Eident    of string (* (+)*)
   | `Int       of string 
   | `Int32     of string 

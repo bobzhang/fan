@@ -64,7 +64,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
       (`NEWLINE, !! lexbuf )
     end}
   | ocaml_lid as x %{let loc =  !! lexbuf in (`Lid (loc,x), loc)}
-  | ocaml_uid as x  %{(`Uid x , !! lexbuf )}      
+  | ocaml_uid as x  %{let loc = !! lexbuf in (`Uid (loc,x), loc)}      
   | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in

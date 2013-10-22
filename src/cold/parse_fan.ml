@@ -3997,13 +3997,13 @@ let apply () =
                           (Printf.sprintf "%s"
                              (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("i\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (i : 'luident )
+                   | `Uid (_,i) -> (i : 'luident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4037,13 +4037,13 @@ let apply () =
                           (Printf.sprintf "%s"
                              (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("`C (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (`C (_loc, i) : 'astr )
+                   | `Uid (_,i) -> (`C (_loc, i) : 'astr )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4199,21 +4199,21 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((`Uid (_loc, i) : FAst.ident ) : 'ident_quot )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid s");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n",
@@ -4221,7 +4221,7 @@ let apply () =
                 (fun (j : 'ident_quot)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid s ->
+                   | `Uid (_,s) ->
                        ((`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident ) : 
                        'ident_quot )
                    | _ ->
@@ -4352,20 +4352,20 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (`Uid (_loc, i) : 'ident )
+                   | `Uid (_,i) -> (`Uid (_loc, i) : 'ident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid s");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
@@ -4373,7 +4373,8 @@ let apply () =
                 (fun (j : 'ident)  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t) 
                    ->
                    match __fan_0 with
-                   | `Uid s -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )
+                   | `Uid (_,s) ->
+                       (`Dot (_loc, (`Uid (_loc, s)), j) : 'ident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4494,27 +4495,27 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (`Uid (_loc, i) : 'vid )
+                   | `Uid (_,i) -> (`Uid (_loc, i) : 'vid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid s");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
              (Fgram.mk_action
                 (fun (j : 'vid)  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid s -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'vid )
+                   | `Uid (_,s) -> (`Dot (_loc, (`Uid (_loc, s)), j) : 'vid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4523,13 +4524,13 @@ let apply () =
      (None,
        (None, None,
          [([`Stoken
-              (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-                "`Uid _")],
+              (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+                "`Uid s")],
             ("`Uid (_loc, s)\n",
               (Fgram.mk_action
                  (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
-                    | `Uid s -> (`Uid (_loc, s) : 'uident )
+                    | `Uid (_,s) -> (`Uid (_loc, s) : 'uident )
                     | _ ->
                         failwith
                           (Printf.sprintf "%s"
@@ -4574,8 +4575,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid s");
           `Skeyword ".";
           `Sself],
            ("dot (`Uid (_loc, s)) l\n",
@@ -4583,7 +4584,7 @@ let apply () =
                 (fun (l : 'uident)  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t) 
                    ->
                    match __fan_0 with
-                   | `Uid s -> (dot (`Uid (_loc, s)) l : 'uident )
+                   | `Uid (_,s) -> (dot (`Uid (_loc, s)) l : 'uident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4652,8 +4653,8 @@ let apply () =
                           (Printf.sprintf "%s"
                              (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Sself],
            ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
@@ -4661,7 +4662,7 @@ let apply () =
                 (fun (xs : 'dot_lstrings)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((match xs with
                          | (`Sub xs,v) -> ((`Sub (i :: xs)), v)
                          | _ ->
@@ -4673,8 +4674,8 @@ let apply () =
                             (Ftoken.token_to_string __fan_0))))));
          ([`Skeyword ".";
           `Stoken
-            (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-              "`Uid _");
+            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+              "`Uid i");
           `Skeyword ".";
           `Sself],
            ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Fstream.Error \"impossible dot_lstrings\")\n",
@@ -4682,7 +4683,7 @@ let apply () =
                 (fun (xs : 'dot_lstrings)  _  (__fan_1 : Ftoken.t)  _ 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((match xs with
                          | (`Sub xs,v) -> ((`Absolute (i :: xs)), v)
                          | _ ->
@@ -4742,8 +4743,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -4751,7 +4752,7 @@ let apply () =
                 (fun (l : 'module_longident_dot_lparen)  _ 
                    (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident ) : 
                        'module_longident_dot_lparen )
                    | _ ->
@@ -4759,15 +4760,15 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Skeyword "("],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun _  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((`Uid (_loc, i) : FAst.ident ) : 'module_longident_dot_lparen )
                    | _ ->
                        failwith
@@ -4850,8 +4851,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, i)), l)\n",
@@ -4859,20 +4860,20 @@ let apply () =
                 (fun (l : 'module_longident)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        (`Dot (_loc, (`Uid (_loc, i)), l) : 'module_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (`Uid (_loc, i) : 'module_longident )
+                   | `Uid (_,i) -> (`Uid (_loc, i) : 'module_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -4969,13 +4970,14 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("`Uid (_loc, i)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i -> (`Uid (_loc, i) : 'module_longident_with_app )
+                   | `Uid (_,i) ->
+                       (`Uid (_loc, i) : 'module_longident_with_app )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -5068,13 +5070,13 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((`Uid (_loc, i) : FAst.ident ) : 'type_longident )
                    | _ ->
                        failwith
@@ -5141,8 +5143,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _");
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid i");
           `Skeyword ".";
           `Sself],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
@@ -5150,7 +5152,7 @@ let apply () =
                 (fun (l : 'label_longident)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid i ->
+                   | `Uid (_,i) ->
                        ((`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident ) : 
                        'label_longident )
                    | _ ->
@@ -5577,13 +5579,13 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Uid _ -> true | _ -> false)), ("Uid", `Any),
-               "`Uid _")],
+             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+               "`Uid s")],
            ("`Uid (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid s -> (`Uid (_loc, s) : 'a_uident )
+                   | `Uid (_,s) -> (`Uid (_loc, s) : 'a_uident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
