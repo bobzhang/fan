@@ -19,8 +19,8 @@ let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"  
 let ghost = Locf.ghost
 
-(* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
 let module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
+
 let gm () =
   match !Configf.compilation_unit with
   |Some "Fgram" (* BOOTSTRAPING*)

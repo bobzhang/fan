@@ -50,9 +50,16 @@ let g =
                "First"; "Last";
                "Before"; "After";
                "Level"; "LA";
-               "RA"; "NA"; "+";"*";"?"; "="; "@"
+               "RA"; "NA"; "+";"*";"?"; "="; "@";
+               "Inline"
              ] ();;
 
+
+let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
+  Hashtbl.create 50     
+
+let query_inline (x:string) =
+   Hashtblf.find_opt inline_rules x 
   
 
 let normalize (x:Gram_pat.t) : Gram_def.data =
@@ -104,9 +111,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
    (qualid:vid Fgram.t)
    (t_qualid:vid Fgram.t )
    (entry_name : ([`name of Ftoken.name option | `non] * Gram_def.name) Fgram.t )
-    entry position assoc name string rules
+    position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
-   (entry: Gram_def.entry Fgram.t)
+   (entry: Gram_def.entry option Fgram.t)
    extend_body
    unsafe_extend_body
 
@@ -136,13 +143,16 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | "("; or_strs{v}; ")" %{
     match v with
     | (vs, None) ->
+        vs |>
         List.map
           (fun x -> mk_symbol ~text:(`Skeyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
-          vs
     | (vs, Some b) ->
+        vs |>
         List.map
-          (fun x -> mk_symbol ~text:(`Skeyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key $lid:b}) )
-          vs
+          (fun x ->
+            mk_symbol ~text:(`Skeyword (_loc,x))
+              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key $lid:b}) )
+          
     }
   |  "Uid"; "("; or_words{p}; ")" %{
     match p with
@@ -229,7 +239,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   extend_body :
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
-    let res = make _loc {items = el; gram; safe = true} in 
+    let items = Listf.filter_map (fun x -> x) el in
+    let res = make _loc {items ; gram; safe = true} in 
     let () = module_name := old in
     res}      ]
 
@@ -237,7 +248,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   unsafe_extend_body :
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
-    let res = make _loc {items = el; gram; safe = false} (* ~safe:false _loc  gram  el *) in 
+    let items = Listf.filter_map (fun x ->x ) el in 
+    let res = make _loc {items ; gram; safe = false} in 
     let () = module_name := old in
     res}      ]
       
@@ -285,9 +297,10 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         match (pos,levels) with
         |(Some %exp{ `Level $_ },`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~local:false ~name:p ~pos ~levels
+        | _ -> Some (mk_entry ~local:false ~name:p ~pos ~levels)
       end}
-  |  "let"; entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
+  |  "let" ;
+    entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
     let (n,p) = rest in
       begin
         (match n with
@@ -296,8 +309,14 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         match (pos,levels) with
         |(Some %exp{ `Level $_ },`Group _) ->
             failwithf "For Group levels the position can not be applied to Level"
-        | _ -> mk_entry ~local:true ~name:p ~pos ~levels
-      end}  ]
+        | _ -> Some (mk_entry ~local:true ~name:p ~pos ~levels)
+      end}
+  | "Inline"; Lid x ; rule_list{rules} %{
+    begin
+      Hashtbl.add inline_rules x rules;
+      None
+    end
+  }]
   position :
   [ ("First"|"Last"|"Before"|"After"|"Level" as x) %exp{$vrn:x}]
 
@@ -315,20 +334,18 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       
   rule_list :
   [ "["; "]" %{ []}
-  | "["; L1 rule SEP "|"{ruless}; "]" %{
-    Listf.concat ruless
-    (* let rules =  *)
-    (* in *)
-    (* retype_rule_list_without_patterns _loc rules *)}]
+  | "["; L1 rule SEP "|"{ruless}; "]" %{Listf.concat ruless}]
 
   rule :
   [ left_rule {prod}; OPT opt_action{action} %{
     let prods = Listf.cross prod in
     List.map (fun prod -> mk_rule ~prod ~action) prods}
-  (** inline here! *)    
-  (* | "@"; Lid x %{ *)
-    
-  (* } *)
+
+  | "@"; Lid x %{
+    match query_inline x with
+    | Some x -> x
+    | None -> Locf.failf _loc "inline rules %s not found" x
+  }
   ]
   let left_rule :
    [ psymbol{x} %{[x]}
@@ -344,10 +361,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
           Ast_quotation.expand x Dyn_tag.exp
       }]
 
-
-  
-
-   string :
+  string :
   [ Str  s  %exp{$str:s}
   | Ant ("", s) %{Parsef.exp _loc s}
   ] (*suport antiquot for string*)

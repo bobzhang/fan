@@ -72,7 +72,10 @@ let g =
               "*";
               "?";
               "=";
-              "@"] ()
+              "@";
+              "Inline"] ()
+let inline_rules: (string,Gram_def.rule list) Hashtbl.t = Hashtbl.create 50
+let query_inline (x : string) = Hashtblf.find_opt inline_rules x
 let normalize (x : Gram_pat.t) =
   (match x with
    | `Vrn (_loc,x) -> (x, `Empty)
@@ -138,7 +141,6 @@ let t_qualid: vid Fgram.t = Fgram.mk_dynamic g "t_qualid"
 let entry_name:
   ([ `name of Ftoken.name option | `non]* Gram_def.name) Fgram.t =
   Fgram.mk_dynamic g "entry_name"
-let entry = Fgram.mk_dynamic g "entry"
 let position = Fgram.mk_dynamic g "position"
 let assoc = Fgram.mk_dynamic g "assoc"
 let name = Fgram.mk_dynamic g "name"
@@ -151,7 +153,7 @@ let rule_list = Fgram.mk_dynamic g "rule_list"
 let psymbol = Fgram.mk_dynamic g "psymbol"
 let level = Fgram.mk_dynamic g "level"
 let level_list = Fgram.mk_dynamic g "level_list"
-let entry: Gram_def.entry Fgram.t = Fgram.mk_dynamic g "entry"
+let entry: Gram_def.entry option Fgram.t = Fgram.mk_dynamic g "entry"
 let extend_body = Fgram.mk_dynamic g "extend_body"
 let unsafe_extend_body = Fgram.mk_dynamic g "unsafe_extend_body"
 let simple: Gram_def.symbol list Fgram.t = Fgram.mk_dynamic g "simple"
@@ -526,25 +528,27 @@ let _ =
         ([`Skeyword "(";
          `Snterm (Fgram.obj (or_strs : 'or_strs Fgram.t ));
          `Skeyword ")"],
-          ("match v with\n| (vs,None ) ->\n    List.map\n      (fun x  ->\n         mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n           ~pattern:None) vs\n| (vs,Some b) ->\n    List.map\n      (fun x  ->\n         mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n           ~pattern:(Some\n                       (`App (_loc, (`Vrn (_loc, \"Key\")), (`Lid (_loc, b))) : \n                       FAst.pat ))) vs\n",
+          ("match v with\n| (vs,None ) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:None))\n| (vs,Some b) ->\n    vs |>\n      (List.map\n         (fun x  ->\n            mk_symbol ~text:(`Skeyword (_loc, x)) ~styp:(`Tok _loc)\n              ~pattern:(Some\n                          (`App\n                             (_loc, (`Vrn (_loc, \"Key\")), (`Lid (_loc, b))) : \n                          FAst.pat ))))\n",
             (Fgram.mk_action
                (fun _  (v : 'or_strs)  _  (_loc : Locf.t)  ->
                   (match v with
                    | (vs,None ) ->
-                       List.map
-                         (fun x  ->
-                            mk_symbol ~text:(`Skeyword (_loc, x))
-                              ~styp:(`Tok _loc) ~pattern:None) vs
+                       vs |>
+                         (List.map
+                            (fun x  ->
+                               mk_symbol ~text:(`Skeyword (_loc, x))
+                                 ~styp:(`Tok _loc) ~pattern:None))
                    | (vs,Some b) ->
-                       List.map
-                         (fun x  ->
-                            mk_symbol ~text:(`Skeyword (_loc, x))
-                              ~styp:(`Tok _loc)
-                              ~pattern:(Some
-                                          (`App
-                                             (_loc, (`Vrn (_loc, "Key")),
-                                               (`Lid (_loc, b))) : FAst.pat )))
-                         vs : 'simple )))));
+                       vs |>
+                         (List.map
+                            (fun x  ->
+                               mk_symbol ~text:(`Skeyword (_loc, x))
+                                 ~styp:(`Tok _loc)
+                                 ~pattern:(Some
+                                             (`App
+                                                (_loc, (`Vrn (_loc, "Key")),
+                                                  (`Lid (_loc, b))) : 
+                                             FAst.pat )))) : 'simple )))));
         ([`Skeyword "Uid";
          `Skeyword "(";
          `Snterm (Fgram.obj (or_words : 'or_words Fgram.t ));
@@ -871,24 +875,26 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = make _loc { items = el; gram; safe = true } in\nlet () = module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = true } in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
-                    let res = make _loc { items = el; gram; safe = true } in
+                    let items = Listf.filter_map (fun x  -> x) el in
+                    let res = make _loc { items; gram; safe = true } in
                     let () = module_name := old in res : 'extend_body )))))]));
   Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = make _loc { items = el; gram; safe = false } in\nlet () = module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = false } in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
-                    let res = make _loc { items = el; gram; safe = false } in
+                    let items = Listf.filter_map (fun x  -> x) el in
+                    let res = make _loc { items; gram; safe = false } in
                     let () = module_name := old in res : 'unsafe_extend_body )))))]));
   Fgram.extend_single (qualuid : 'qualuid Fgram.t )
     (None,
@@ -1022,7 +1028,7 @@ let _ =
           `Skeyword ":";
           `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
           `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-           ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:false ~name:p ~pos ~levels)\n",
+           ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some (mk_entry ~local:false ~name:p ~pos ~levels))\n",
              (Fgram.mk_action
                 (fun (levels : 'level_list)  (pos : 'position option)  _ 
                    (rest : 'entry_name)  (_loc : Locf.t)  ->
@@ -1036,14 +1042,14 @@ let _ =
                          ->
                          failwithf
                            "For Group levels the position can not be applied to Level"
-                     | _ -> mk_entry ~local:false ~name:p ~pos ~levels) : 
+                     | _ -> Some (mk_entry ~local:false ~name:p ~pos ~levels)) : 
                    'entry )))));
         ([`Skeyword "let";
          `Snterm (Fgram.obj (entry_name : 'entry_name Fgram.t ));
          `Skeyword ":";
          `Sopt (`Snterm (Fgram.obj (position : 'position Fgram.t )));
          `Snterm (Fgram.obj (level_list : 'level_list Fgram.t ))],
-          ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> mk_entry ~local:true ~name:p ~pos ~levels)\n",
+          ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some (mk_entry ~local:true ~name:p ~pos ~levels))\n",
             (Fgram.mk_action
                (fun (levels : 'level_list)  (pos : 'position option)  _ 
                   (rest : 'entry_name)  _  (_loc : Locf.t)  ->
@@ -1057,8 +1063,23 @@ let _ =
                         ->
                         failwithf
                           "For Group levels the position can not be applied to Level"
-                    | _ -> mk_entry ~local:true ~name:p ~pos ~levels) : 
-                  'entry )))))]));
+                    | _ -> Some (mk_entry ~local:true ~name:p ~pos ~levels)) : 
+                  'entry )))));
+        ([`Skeyword "Inline";
+         `Stoken
+           (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+             "`Lid _");
+         `Snterm (Fgram.obj (rule_list : 'rule_list Fgram.t ))],
+          ("Hashtbl.add inline_rules x rules; None\n",
+            (Fgram.mk_action
+               (fun (rules : 'rule_list)  (__fan_1 : Ftoken.t)  _ 
+                  (_loc : Locf.t)  ->
+                  match __fan_1 with
+                  | `Lid x ->
+                      ((Hashtbl.add inline_rules x rules; None) : 'entry )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))))]));
   Fgram.extend_single (position : 'position Fgram.t )
     (None,
       (None, None,
@@ -1191,7 +1212,24 @@ let _ =
                    (_loc : Locf.t)  ->
                    (let prods = Listf.cross prod in
                     List.map (fun prod  -> mk_rule ~prod ~action) prods : 
-                   'rule )))))]));
+                   'rule )))));
+        ([`Skeyword "@";
+         `Stoken
+           (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
+             "`Lid _")],
+          ("match query_inline x with\n| Some x -> x\n| None  -> Locf.failf _loc \"inline rules %s not found\" x\n",
+            (Fgram.mk_action
+               (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
+                  match __fan_1 with
+                  | `Lid x ->
+                      ((match query_inline x with
+                        | Some x -> x
+                        | None  ->
+                            Locf.failf _loc "inline rules %s not found" x) : 
+                      'rule )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))))]));
   Fgram.extend_single (left_rule : 'left_rule Fgram.t )
     (None,
       (None, None,
