@@ -121,7 +121,7 @@ type t =
   | `Chr       of (loc * string)
   | `Label     of (loc * string)
   | `Optlabel  of (loc * string)
-  | `Str       of string         
+  | `Str       of (loc * string)         
   | space_token
    (* . *)
   | quotation

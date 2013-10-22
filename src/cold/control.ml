@@ -8,13 +8,13 @@ let _ =
       (None, None,
         [([`Skeyword "default";
           `Stoken
-            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-              "`Str _")],
+            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+              "`Str s")],
            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Str s ->
+                   | `Str (_,s) ->
                        ((match Ast_quotation.resolve_name ((`Sub []), s) with
                          | None  ->
                              Locf.failf _loc "DDSL `%s' can not be resolved"
@@ -33,13 +33,13 @@ let _ =
                      (Ast_quotation.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
-           (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-             "`Str _")],
+           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+             "`Str s")],
           ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
                (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Str s -> (Ast_filters.use_implem_filter s : 'item )
+                  | `Str (_,s) -> (Ast_filters.use_implem_filter s : 'item )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_1))))));

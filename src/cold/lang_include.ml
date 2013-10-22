@@ -5,13 +5,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-               "`Str _")],
+             (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+               "`Str s")],
            ("let (keep,cf) = let open State in (keep, current_filters) in\nlet fan_keep__0 = keep.contents and fan_cf__1 = cf.contents in\ntry\n  let fan_res__2 = State.reset (); Fgram.parse_include_file Syntaxf.strus s in\n  let _ = keep := fan_keep__0; cf := fan_cf__1 in fan_res__2\nwith | fan_e__3 -> ((keep := fan_keep__0; cf := fan_cf__1); raise fan_e__3)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Str s ->
+                   | `Str (_,s) ->
                        (let (keep,cf) =
                           let open State in (keep, current_filters) in
                         let fan_keep__0 = keep.contents

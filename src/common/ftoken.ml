@@ -105,7 +105,7 @@ type t =
   | `Chr       of (loc * string)
   | `Label     of (loc * string)
   | `Optlabel  of (loc * string)
-  | `Str       of string         
+  | `Str       of (loc * string)         
   | space_token
    (* . *)
   | quotation
@@ -145,7 +145,7 @@ let pp_print_t: Format.formatter -> t -> unit =
     | `Chr (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Chr@ %a)@]" 
           Format.pp_print_string _a1
-    | `Str _a1 ->
+    | `Str (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Str@ %a)@]" 
           Format.pp_print_string _a1
     | `Label (_,_a0) ->
@@ -204,7 +204,7 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
 
 let extract_string : [> t] -> string = function
   | `Key s | `Sym s | `Lid (_,s) | `Uid (_,s) | `Int  (_,s) | `Int32  (_,s) |
-  `Int64  (_,s) | `Nativeint  (_,s) | `Flo  (_,s) | `Chr  (_,s) | `Str  s |
+  `Int64  (_,s) | `Nativeint  (_,s) | `Flo  (_,s) | `Chr  (_,s) | `Str (_,s) |
   `Label (_,s) | `Optlabel (_,s) | `Comment s | `Blank s | `Eident (_,s)-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)

@@ -14,13 +14,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-               "`Str _")],
+             (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+               "`Str y")],
            ("y\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Str y -> (y : 'str )
+                   | `Str (_,y) -> (y : 'str )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -45,15 +45,15 @@ let _ =
            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-             "`Str _");
+           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+             "`Str y");
          `Skeyword ")"],
           ("(_loc, x, (Some y), None)\n",
             (Fgram.mk_action
                (fun _  (__fan_2 : Ftoken.t)  (__fan_1 : Ftoken.t)  _ 
                   (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
-                  | (`Str y,`Lid (_,x)) ->
+                  | (`Str (_,y),`Lid (_,x)) ->
                       ((_loc, x, (Some y), None) : 'type_entry )
                   | _ ->
                       failwith
@@ -65,8 +65,8 @@ let _ =
            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-             "`Str _");
+           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+             "`Str y");
          `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
          `Skeyword ")"],
           ("(_loc, x, (Some y), (Some t))\n",
@@ -74,7 +74,7 @@ let _ =
                (fun _  (t : 'Syntaxf__ctyp)  (__fan_2 : Ftoken.t) 
                   (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
-                  | (`Str y,`Lid (_,x)) ->
+                  | (`Str (_,y),`Lid (_,x)) ->
                       ((_loc, x, (Some y), (Some t)) : 'type_entry )
                   | _ ->
                       failwith

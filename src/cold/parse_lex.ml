@@ -173,13 +173,13 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-              "`Str _")],
+            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+              "`Str s")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Str s ->
+                  | `Str (_,s) ->
                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
                   | _ ->
                       failwith

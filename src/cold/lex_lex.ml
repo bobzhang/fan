@@ -464,7 +464,8 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
-           ((`Str (buff_contents c)), (old -- lexbuf.lex_curr_p)))
+           (let loc = old -- lexbuf.lex_curr_p in
+            ((`Str (loc, (buff_contents c))), loc)))
       | 3 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)

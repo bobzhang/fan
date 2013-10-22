@@ -64,7 +64,8 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
-      (`Str (buff_contents c), old --  lexbuf.lex_curr_p )
+      let loc = old --  lexbuf.lex_curr_p in
+      (`Str (loc,buff_contents c),loc)
     end}
   | "'" (newline as x) "'" %{
     begin

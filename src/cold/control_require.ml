@@ -11,13 +11,13 @@ let () =
         (None, None,
           [([`Skeyword "require";
             `Stoken
-              (((function | `Str _ -> true | _ -> false)), ("Str", `Any),
-                "`Str _")],
+              (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+                "`Str s")],
              ("add s\n",
                (Fgram.mk_action
                   (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | `Str s -> (add s : 'item )
+                     | `Str (_,s) -> (add s : 'item )
                      | _ ->
                          failwith
                            (Printf.sprintf "%s"
