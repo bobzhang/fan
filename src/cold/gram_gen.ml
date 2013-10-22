@@ -123,7 +123,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
     | `Speek (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Stok (_loc,match_fun,mdescr,mstr) ->
+    | `Stoken (_loc,match_fun,mdescr,mstr) ->
         (`App
            (_loc, (`Vrn (_loc, "Stoken")),
              (`Par
@@ -158,8 +158,8 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
      Listf.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
           match (x : Gram_def.symbol ) with
-          | { pattern = Some p; text = `Stok _;_} when not (is_irrefut_pat p)
-              ->
+          | { pattern = Some p; text = `Stoken _;_} when
+              not (is_irrefut_pat p) ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
           | { pattern = Some p; text = `Skeyword _;_} ->

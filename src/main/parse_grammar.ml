@@ -84,14 +84,15 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
           %exp{function | $v -> true }
         else
           %exp{function | $v -> true | _ -> false  } in
-      {text =  `Stok(_loc,match_fun, mdescr,mstr) ;
+      {text =
+       `Stoken(_loc,match_fun, mdescr,mstr) ;
        styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
       let guard =
           List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
             %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      {text = `Stok(_loc,match_fun,  mdescr, mstr);
+      {text = `Stoken(_loc,match_fun,  mdescr, mstr);
        styp = `Tok _loc;
        pattern= Some (Objs.wildcarder#pat po) };;
 

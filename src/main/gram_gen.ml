@@ -43,7 +43,7 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 
 let check_not_tok (_s:Gram_def.symbol) = 
   (* match s with  *)
-  (* | {text = `Stok (_loc,  _, _,_) ;_} -> *)
+  (* | {text = `Stoken (_loc,  _, _,_) ;_} -> *)
   (*     Locf.raise _loc (Fstream.Error *)
   (*                        ("Deprecated syntax, use a sub rule. "^ *)
   (*                         "L0 STRING becomes L0 [ x = STRING -> x ]")) *)
@@ -61,7 +61,7 @@ let gen_lid ()=  prefix^string_of_int (!(gensym ()))
 (* transform rule list *)  
 let retype_rule_list_without_patterns _loc rl =
   try
-    List.map(function (x:Gram_def.rule) -> 
+    List.map (function (x:Gram_def.rule) -> 
       match x with
         (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.string_of_token x); ... *)
       | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
@@ -89,14 +89,14 @@ let make_ctyp (styp:Gram_def.styp) tvar : ctyp =
     | #vid' as x -> (x : vid' :>ctyp) 
     | `Quote _ as x -> x
     | %ctyp'{ $t2 $t1}-> %ctyp{$(aux t2) $(aux t1)}
-    | `Self (_loc) ->
+    | `Self _loc ->
         if tvar = "" then
-          Locf.raise _loc
-            (Fstream.Error ("S: illegal in anonymous entry level"))
+          Locf.raise _loc (Fstream.Error ("S: illegal in anonymous entry level"))
         else %ctyp{ '$lid:tvar }
     | `Tok _loc -> %ctyp{ Ftoken.t }  (** BOOTSTRAPPING, associated with module name Ftoken*)
           (* %ctyp{[Ftoken.t]} should be caught as error ealier *)
-    | `Type t -> t  in aux styp
+    | `Type t -> t  in
+  aux styp
 
       
 
@@ -124,7 +124,7 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `Sopt (_loc, t) -> %{ `Sopt $(aux "" t) }
     | `Stry (_loc, t) -> %{ `Stry $(aux "" t) }
     | `Speek (_loc, t) -> %{ `Speek $(aux "" t) }
-    | `Stok (_loc, match_fun,  mdescr, mstr ) ->
+    | `Stoken (_loc, match_fun,  mdescr, mstr ) ->
         %{`Stoken ($match_fun, $mdescr, $str:mstr)} in
   aux  tvar x
 
@@ -151,7 +151,7 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
     Listf.fold_lefti
       (fun i ((oe,op) as ep)  x ->
         match (x:Gram_def.symbol) with 
-        | {pattern=Some p ; text=`Stok _;_ } when not (is_irrefut_pat p)->
+        | {pattern=Some p ; text=`Stoken _;_ } when not (is_irrefut_pat p)->
             let id = prefix ^ string_of_int i in
             ( %{$lid:id} :: oe, p:: op)
         | {pattern = Some p; text = `Skeyword _; _} ->

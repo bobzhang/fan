@@ -103,7 +103,7 @@ let token_of_simple_pat (p : Gram_pat.t) =
                      (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
            FAst.exp ) in
        {
-         text = (`Stok (_loc, match_fun, mdescr, mstr));
+         text = (`Stoken (_loc, match_fun, mdescr, mstr));
          styp = (`Tok _loc);
          pattern = (Some p_pat)
        }
@@ -124,7 +124,7 @@ let token_of_simple_pat (p : Gram_pat.t) =
                 (_loc, (`CaseWhen (_loc, po, guard, (`Lid (_loc, "true")))),
                   (`Case (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) in
        {
-         text = (`Stok (_loc, match_fun, mdescr, mstr));
+         text = (`Stoken (_loc, match_fun, mdescr, mstr));
          styp = (`Tok _loc);
          pattern = (Some (Objs.wildcarder#pat po))
        } : Gram_def.symbol )
