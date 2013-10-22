@@ -246,8 +246,10 @@ fixpoint:  $(FAN_ML_FILES_P) $(FAN0_ML_FILES_P)
     foreach(f=> ..., $(FAN_ML_FILES))
         private.X = dparsetree/$(basename $f).fan.dparsetree
         private.Y = dparsetree/$(basename $f).fan0.dparsetree
-        if $(not $(shell-success-null diff $X $Y))
+        private.file = dparsetree/$(basename $f).diff
+        if $(not $(shell-success-null diff -u $X $Y > $(file)))
             println($"*************fan fan0 diff on file $X $Y*****************")
+            println($"""File "$(file)", line 1: """)
             FLAG = false
 fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
     foreach(f=> ..., $(FAN_ML_FILES))

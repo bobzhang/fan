@@ -112,7 +112,7 @@ let _ =
       (None, None,
         [([`Stoken
              (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
-               "`Lid x")],
+               "`Lid y")],
            ("(_loc, y)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->

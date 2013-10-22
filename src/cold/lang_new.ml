@@ -169,7 +169,7 @@ let _ =
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
-              "`Lid x")],
+              "`Lid i")],
           ("`Lid (_loc, i)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -203,7 +203,7 @@ let _ =
          `Skeyword ".";
          `Stoken
            (((function | `Lid (_,"t") -> true | _ -> false)),
-             ("Lid", (`A "t")), "`Lid x")],
+             ("Lid", (`A "t")), "`Lid \"t\"")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
                (fun (__fan_2 : Ftoken.t)  _  (__fan_0 : Ftoken.t) 

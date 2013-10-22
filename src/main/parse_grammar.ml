@@ -125,42 +125,54 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   Inline simple_token :
   [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
   | ("Lid" as v); Str x %{
-    (* [token_of_simple_pat %pat'{ $vrn:v $str:x}] *)
-    [{Gram_def.text = `Stoken(_loc, %exp{
+    let pred = %exp{
                     function
                       | `Lid (_, $str:x) -> true
-                      | _ -> false},
-                    %exp{($str:v,`A $str:x )},
-                    "`Lid x"
-                   );
-     styp = `Tok _loc;
-     pattern = Some %pat{`Lid (_, $str:x) }
-   }]}
+                      | _ -> false} in
+    let des = %exp{($str:v,`A $str:x )} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
+    let pattern = Some %pat{`Lid (_, $str:x) } in
+    [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
+      styp = `Tok _loc;
+      pattern}]}
 
   | ("Lid" as v); Lid x %{
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
-    [{Gram_def.text = `Stoken(_loc, %exp{
+    let pred =  %exp{
                     function
                       | `Lid (_, _) -> true
-                      | _ -> false},
-                    %exp{($str:v,`Any )},
-                    "`Lid x"
-                   );
+                      | _ -> false} in
+    let des = %exp{($str:v,`Any )} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
+    let pattern = Some %pat{`Lid(_,$lid:x)} in
+    [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern = Some %pat{`Lid (_, $lid:x) }
-   }]}
+     pattern}]}
+  (** split opt, introducing an epsilon predicate? *)    
+  | ("Lid" as v); "@"; Lid loc ; Lid x %{
+    (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
+    let pred =  %exp{
+                    function
+                      | `Lid (_, _) -> true
+                      | _ -> false} in
+    let des = %exp{($str:v,`Any )} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
+    let pattern = Some %pat{`Lid($lid:loc,$lid:x)} in
+    [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
+     styp = `Tok _loc;
+     pattern}]}
+
   | ("Lid" as v) ; "_"    %{
-    (* [token_of_simple_pat %pat'{$vrn:v _}] *)
-    [{Gram_def.text = `Stoken(_loc, %exp{
+    let pred = %exp{
                     function
                       | `Lid (_, _) -> true
-                      | _ -> false},
-                    %exp{($str:v,`Any )},
-                    "`Lid x"
-                   );
-     styp = `Tok _loc;
-     pattern = Some %pat{`Lid (_, _) }
-   }]}
+                      | _ -> false} in
+    let des = %exp{($str:v,`Any )} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
+    let pattern = Some %pat{`Lid (_, _) } in
+    [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
+      styp = `Tok _loc;
+      pattern}]}
       
   |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]}
 
@@ -248,9 +260,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   ]
 
-  let  tmp_lid : [Lid i %pat'{$lid:i}]
+  (* let  tmp_lid : [Lid@loc i %pat'@loc{$lid:i}] *)
    (* FIXME a new entry introduced here only for precise location *)    
-  let brace_pattern : ["{"; tmp_lid{p};"}"  %{p}]
+  let brace_pattern :
+      ["{"; Lid@loc i (* tmp_lid{p} *);"}"
+         %pat'@loc{$lid:i}]
 
   psymbol :
   [ symbol{ss} ; OPT  brace_pattern {p} %{
