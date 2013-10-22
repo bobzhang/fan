@@ -159,13 +159,13 @@ let _ =
                 (fun _  (_loc : Locf.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
         ([`Stoken
-            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-              "`Chr _")],
+            (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+              "`Chr c")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Chr c ->
+                  | `Chr (_,c) ->
                       (Characters
                          (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
                       'regexp )
@@ -249,18 +249,18 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-               "`Chr _");
+             (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+               "`Chr c1");
           `Skeyword "-";
           `Stoken
-            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-              "`Chr _")],
+            (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+              "`Chr c2")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
              (Fgram.mk_action
                 (fun (__fan_2 : Ftoken.t)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
-                   | (`Chr c2,`Chr c1) ->
+                   | (`Chr (_,c2),`Chr (_,c1)) ->
                        (let c1 = Char.code @@ (TokenEval.char c1) in
                         let c2 = Char.code @@ (TokenEval.char c2) in
                         Fcset.interval c1 c2 : 'char_class1 )
@@ -270,13 +270,13 @@ let _ =
                             (Ftoken.token_to_string __fan_2)
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-              "`Chr _")],
+            (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+              "`Chr c1")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Chr c1 ->
+                  | `Chr (_,c1) ->
                       (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
                       'char_class1 )
                   | _ ->

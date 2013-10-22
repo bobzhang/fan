@@ -89,27 +89,31 @@ type space_token =
    | `Blank of string
    | `NEWLINE
    | `LINE_DIRECTIVE of (int * string option) ]
-type loc = Locf.t       
+type loc = Locf.t
 type t =
-  [ `Key of string
-  | `Sym of string
-  | `Lid of (loc * string)
-  | `Uid of (loc * string)
-  | `Eident of string
-  | `Int of string
-  | `Int32 of string
-  | `Int64 of  string
-  | `Nativeint of  string
-  | `Flo of  string
-  | `Chr of  string
-  | `Str of string
-  | `Label of string
-  | `Optlabel of string
+  [ `Key       of string
+  | `Sym       of string
+  | `Lid       of (loc * string)
+  | `Uid       of (loc * string)
+  | `Eident    of (loc * string) (* (+)*)
+
+  | `Int       of (loc * string)
+  | `Int32     of (loc * string)
+  | `Int64     of (loc * string)
+  | `Nativeint of (loc * string)
+  | `Flo       of (loc * string)
+  | `Chr       of (loc * string)
+  | `Label     of (loc * string)
+  | `Optlabel  of (loc * string)
+  | `Str       of string         
+  | space_token
+   (* . *)
   | quotation
   | dir_quotation
-  | `Ant of (string* string)
-  | space_token
+  | `Ant       of (string * string )        
   | `EOI]
+      
+
 
 
       
@@ -122,31 +126,31 @@ let pp_print_t: Format.formatter -> t -> unit =
         Format.fprintf fmt "@[<1>(`Sym@ %a)@]" Format.pp_print_string _a0
     | `Lid (_,_a0) -> Format.fprintf fmt "@[<1>(`Lid@ %a)@]" Format.pp_print_string _a0
     | `Uid (_,_a0) -> Format.fprintf fmt "@[<1>(`Uid@ %a)@]" Format.pp_print_string _a0
-    | `Eident _a0 ->
+    | `Eident (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Eident@ %a)@]" Format.pp_print_string _a0
-    | `Int _a1 ->
+    | `Int (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Int@ %a)@]"
           Format.pp_print_string _a1
-    | `Int32 _a1 ->
+    | `Int32 (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Int32@ %a)@]" (* Format.pp_print_int32 _a0 *)
           Format.pp_print_string _a1
-    | `Int64 _a1 ->
+    | `Int64 (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Int6@ %a)@]" Format.pp_print_string _a1
-    | `Nativeint _a1 ->
+    | `Nativeint (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" 
            Format.pp_print_string _a1
-    | `Flo _a1 ->
+    | `Flo (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Flo@ %a)@]"
           Format.pp_print_string _a1
-    | `Chr (_a1) ->
+    | `Chr (_,_a1) ->
         Format.fprintf fmt "@[<1>(`Chr@ %a)@]" 
           Format.pp_print_string _a1
     | `Str _a1 ->
         Format.fprintf fmt "@[<1>(`Str@ %a)@]" 
           Format.pp_print_string _a1
-    | `Label _a0 ->
+    | `Label (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Label@ %a)@]" Format.pp_print_string _a0
-    | `Optlabel _a0 ->
+    | `Optlabel (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Optlabel@ %a)@]" Format.pp_print_string _a0
     | #quotation as _a0 -> (pp_print_quotation fmt _a0 :>unit)
     | #dir_quotation as _a0 -> (pp_print_dir_quotation fmt _a0 :>unit)
@@ -199,9 +203,9 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `Key s | `Sym s | `Lid (_,s) | `Uid (_,s) | `Int  s | `Int32  s |
-  `Int64  s | `Nativeint  s | `Flo  s | `Chr  s | `Str  s |
-  `Label s | `Optlabel s | `Comment s | `Blank s | `Eident s-> s
+  | `Key s | `Sym s | `Lid (_,s) | `Uid (_,s) | `Int  (_,s) | `Int32  (_,s) |
+  `Int64  (_,s) | `Nativeint  (_,s) | `Flo  (_,s) | `Chr  (_,s) | `Str  s |
+  `Label (_,s) | `Optlabel (_,s) | `Comment s | `Blank s | `Eident (_,s)-> s
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
 

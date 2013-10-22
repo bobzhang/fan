@@ -136,7 +136,10 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  | ("Lid"|"Uid" as v); Lid@xloc x %{
+  | ("Lid"|"Uid"| "Int"
+     | "Int32" | "Int64"
+     | "Nativeint" |"Flo" | "Chr" |"Label" 
+     |"Optlabel" as v); Lid@xloc x %{
     let pred =  %exp{
                     function
                       | $vrn:v (_, _) -> true
@@ -173,16 +176,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
       
-  (* |  ("Uid" as v); Str x %{[token_of_simple_pat %pat'{ $vrn:v $str:x}]} *)
 
-  |  ((* "Uid"| *)"Quot"
-      |"Label" |"DirQuotation"
-      |"Optlabel" |"Str"
-      | "Chr" | "Int"
-      | "Int32" | "Int64"
-      | "Nativeint" |"Flo" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
 
-  |  ((* "Uid"| *)"Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
+  |  ("Quot"|"DirQuotation"
+       |"Str" as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
+
+  |  ("Str" as v) ; "_"    %{[token_of_simple_pat %pat'{$vrn:v _}]}
   ]
           
   simple :

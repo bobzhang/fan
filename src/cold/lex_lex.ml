@@ -469,12 +469,13 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          (update_loc lexbuf ~retract:1; ((`Chr x), (!! lexbuf)))
+          (update_loc lexbuf ~retract:1;
+           (let loc = !! lexbuf in ((`Chr (loc, x)), loc)))
       | 4 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          ((`Chr x), (!! lexbuf))
+          let loc = !! lexbuf in ((`Chr (loc, x)), loc)
       | 5 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in

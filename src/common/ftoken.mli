@@ -111,16 +111,17 @@ type t =
   | `Sym       of string
   | `Lid       of (loc * string)
   | `Uid       of (loc * string)
-  | `Eident    of string (* (+)*)
-  | `Int       of string 
-  | `Int32     of string 
-  | `Int64     of string 
-  | `Nativeint of string 
-  | `Flo       of string 
-  | `Chr       of string 
-  | `Str       of string 
-  | `Label     of string
-  | `Optlabel  of string
+  | `Eident    of (loc * string) (* (+)*)
+
+  | `Int       of (loc * string)
+  | `Int32     of (loc * string)
+  | `Int64     of (loc * string)
+  | `Nativeint of (loc * string)
+  | `Flo       of (loc * string)
+  | `Chr       of (loc * string)
+  | `Label     of (loc * string)
+  | `Optlabel  of (loc * string)
+  | `Str       of string         
   | space_token
    (* . *)
   | quotation

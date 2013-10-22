@@ -1636,14 +1636,14 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'exp )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
-               "`Label _");
+             (((function | `Label (_,_) -> true | _ -> false)),
+               ("Label", `Any), "`Label i");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Label i ->
+                   | `Label (_,i) ->
                        ((`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp ) : 
                        'exp )
                    | _ ->
@@ -1651,14 +1651,14 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Optlabel _ -> true | _ -> false)),
-               ("Optlabel", `Any), "`Optlabel _");
+             (((function | `Optlabel (_,_) -> true | _ -> false)),
+               ("Optlabel", `Any), "`Optlabel i");
           `Sself],
            ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
              (Fgram.mk_action
                 (fun (e : 'exp)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Optlabel i ->
+                   | `Optlabel (_,i) ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), e) : 'exp )
                    | _ ->
                        failwith
@@ -1995,73 +1995,73 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
-               "`Int _")],
+             (((function | `Int (_,_) -> true | _ -> false)), ("Int", `Any),
+               "`Int s")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int s -> (`Int (_loc, s) : 'exp )
+                   | `Int (_,s) -> (`Int (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
-               "`Int32 _")],
+             (((function | `Int32 (_,_) -> true | _ -> false)),
+               ("Int32", `Any), "`Int32 s")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int32 s -> (`Int32 (_loc, s) : 'exp )
+                   | `Int32 (_,s) -> (`Int32 (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
-               "`Int64 _")],
+             (((function | `Int64 (_,_) -> true | _ -> false)),
+               ("Int64", `Any), "`Int64 s")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int64 s -> (`Int64 (_loc, s) : 'exp )
+                   | `Int64 (_,s) -> (`Int64 (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Nativeint _ -> true | _ -> false)),
-               ("Nativeint", `Any), "`Nativeint _")],
+             (((function | `Nativeint (_,_) -> true | _ -> false)),
+               ("Nativeint", `Any), "`Nativeint s")],
            ("`Nativeint (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Nativeint s -> (`Nativeint (_loc, s) : 'exp )
+                   | `Nativeint (_,s) -> (`Nativeint (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
-               "`Flo _")],
+             (((function | `Flo (_,_) -> true | _ -> false)), ("Flo", `Any),
+               "`Flo s")],
            ("`Flo (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Flo s -> (`Flo (_loc, s) : 'exp )
+                   | `Flo (_,s) -> (`Flo (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-               "`Chr _")],
+             (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+               "`Chr s")],
            ("`Chr (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Chr s -> (`Chr (_loc, s) : 'exp )
+                   | `Chr (_,s) -> (`Chr (_loc, s) : 'exp )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3091,61 +3091,61 @@ let apply () =
                 (fun (i : 'vid)  (_loc : Locf.t)  ->
                    ((i : vid  :>pat) : 'pat )))));
          ([`Stoken
-             (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
-               "`Int _")],
+             (((function | `Int (_,_) -> true | _ -> false)), ("Int", `Any),
+               "`Int s")],
            ("`Int (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int s -> (`Int (_loc, s) : 'pat )
+                   | `Int (_,s) -> (`Int (_loc, s) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
-               "`Int32 _")],
+             (((function | `Int32 (_,_) -> true | _ -> false)),
+               ("Int32", `Any), "`Int32 s")],
            ("`Int32 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int32 s -> (`Int32 (_loc, s) : 'pat )
+                   | `Int32 (_,s) -> (`Int32 (_loc, s) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
-               "`Int64 _")],
+             (((function | `Int64 (_,_) -> true | _ -> false)),
+               ("Int64", `Any), "`Int64 s")],
            ("`Int64 (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Int64 s -> (`Int64 (_loc, s) : 'pat )
+                   | `Int64 (_,s) -> (`Int64 (_loc, s) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
-               "`Flo _")],
+             (((function | `Flo (_,_) -> true | _ -> false)), ("Flo", `Any),
+               "`Flo s")],
            ("`Flo (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Flo s -> (`Flo (_loc, s) : 'pat )
+                   | `Flo (_,s) -> (`Flo (_loc, s) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Chr _ -> true | _ -> false)), ("Chr", `Any),
-               "`Chr _")],
+             (((function | `Chr (_,_) -> true | _ -> false)), ("Chr", `Any),
+               "`Chr s")],
            ("`Chr (_loc, s)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Chr s -> (`Chr (_loc, s) : 'pat )
+                   | `Chr (_,s) -> (`Chr (_loc, s) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3164,52 +3164,52 @@ let apply () =
                             (Ftoken.token_to_string __fan_0))))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int _ -> true | _ -> false)), ("Int", `Any),
-              "`Int _")],
+            (((function | `Int (_,_) -> true | _ -> false)), ("Int", `Any),
+              "`Int s")],
            ("`Int (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int s -> (`Int (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int (_,s) -> (`Int (_loc, (Fstring.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_1))))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int32 _ -> true | _ -> false)), ("Int32", `Any),
-              "`Int32 _")],
+            (((function | `Int32 (_,_) -> true | _ -> false)),
+              ("Int32", `Any), "`Int32 s")],
            ("`Int32 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int32 s -> (`Int32 (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int32 (_,s) -> (`Int32 (_loc, (Fstring.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_1))))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Int64 _ -> true | _ -> false)), ("Int64", `Any),
-              "`Int64 _")],
+            (((function | `Int64 (_,_) -> true | _ -> false)),
+              ("Int64", `Any), "`Int64 s")],
            ("`Int64 (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int64 s -> (`Int64 (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int64 (_,s) -> (`Int64 (_loc, (Fstring.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_1))))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Nativeint _ -> true | _ -> false)),
-              ("Nativeint", `Any), "`Nativeint _")],
+            (((function | `Nativeint (_,_) -> true | _ -> false)),
+              ("Nativeint", `Any), "`Nativeint s")],
            ("`Nativeint (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Nativeint s ->
+                   | `Nativeint (_,s) ->
                        (`Nativeint (_loc, (Fstring.neg s)) : 'pat )
                    | _ ->
                        failwith
@@ -3217,13 +3217,13 @@ let apply () =
                             (Ftoken.token_to_string __fan_1))))));
          ([`Skeyword "-";
           `Stoken
-            (((function | `Flo _ -> true | _ -> false)), ("Flo", `Any),
-              "`Flo _")],
+            (((function | `Flo (_,_) -> true | _ -> false)), ("Flo", `Any),
+              "`Flo s")],
            ("`Flo (_loc, (Fstring.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Flo s -> (`Flo (_loc, (Fstring.neg s)) : 'pat )
+                   | `Flo (_,s) -> (`Flo (_loc, (Fstring.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3364,14 +3364,14 @@ let apply () =
              (Fgram.mk_action
                 (fun _  (_loc : Locf.t)  -> ((`Any _loc : FAst.pat ) : 'pat )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
-               "`Label _");
+             (((function | `Label (_,_) -> true | _ -> false)),
+               ("Label", `Any), "`Label i");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
                 (fun (p : 'pat)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Label i ->
+                   | `Label (_,i) ->
                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                        'pat )
                    | _ ->
@@ -3393,8 +3393,8 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'pat )))));
          ([`Stoken
-             (((function | `Optlabel _ -> true | _ -> false)),
-               ("Optlabel", `Any), "`Optlabel _");
+             (((function | `Optlabel (_,_) -> true | _ -> false)),
+               ("Optlabel", `Any), "`Optlabel i");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -3405,7 +3405,7 @@ let apply () =
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
                    (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Optlabel i ->
+                   | `Optlabel (_,i) ->
                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
                        'pat )
                    | _ ->
@@ -3413,8 +3413,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Optlabel _ -> true | _ -> false)),
-               ("Optlabel", `Any), "`Optlabel _");
+             (((function | `Optlabel (_,_) -> true | _ -> false)),
+               ("Optlabel", `Any), "`Optlabel i");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -3423,7 +3423,7 @@ let apply () =
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Optlabel i ->
+                   | `Optlabel (_,i) ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'pat )
                    | _ ->
                        failwith
@@ -3656,14 +3656,14 @@ let apply () =
                 (fun _  (_loc : Locf.t)  ->
                    ((`Any _loc : FAst.pat ) : 'ipat )))));
          ([`Stoken
-             (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
-               "`Label _");
+             (((function | `Label (_,_) -> true | _ -> false)),
+               ("Label", `Any), "`Label i");
           `Sself],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Fgram.mk_action
                 (fun (p : 'ipat)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Label i ->
+                   | `Label (_,i) ->
                        ((`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat ) : 
                        'ipat )
                    | _ ->
@@ -3685,8 +3685,8 @@ let apply () =
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'ipat )))));
          ([`Stoken
-             (((function | `Optlabel _ -> true | _ -> false)),
-               ("Optlabel", `Any), "`Optlabel _");
+             (((function | `Optlabel (_,_) -> true | _ -> false)),
+               ("Optlabel", `Any), "`Optlabel i");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword "=";
@@ -3697,7 +3697,7 @@ let apply () =
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
                    (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Optlabel i ->
+                   | `Optlabel (_,i) ->
                        (`OptLablExpr (_loc, (`Lid (_loc, i)), p, e) : 
                        'ipat )
                    | _ ->
@@ -3705,8 +3705,8 @@ let apply () =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
-             (((function | `Optlabel _ -> true | _ -> false)),
-               ("Optlabel", `Any), "`Optlabel _");
+             (((function | `Optlabel (_,_) -> true | _ -> false)),
+               ("Optlabel", `Any), "`Optlabel i");
           `Skeyword "(";
           `Snterm (Fgram.obj (pat_tcon : 'pat_tcon Fgram.t ));
           `Skeyword ")"],
@@ -3715,7 +3715,7 @@ let apply () =
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : Ftoken.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Optlabel i ->
+                   | `Optlabel (_,i) ->
                        (`OptLabl (_loc, (`Lid (_loc, i)), p) : 'ipat )
                    | _ ->
                        failwith
@@ -7842,27 +7842,28 @@ let apply_ctyp () =
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Label (_loc, i, t) : 'ctyp )))));
         ([`Stoken
-            (((function | `Label _ -> true | _ -> false)), ("Label", `Any),
-              "`Label _");
+            (((function | `Label (_,_) -> true | _ -> false)),
+              ("Label", `Any), "`Label s");
          `Skeyword ":";
          `Sself],
           ("`Label (_loc, (`Lid (_loc, s)), t)\n",
             (Fgram.mk_action
                (fun (t : 'ctyp)  _  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Label s -> (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )
+                  | `Label (_,s) ->
+                      (`Label (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Optlabel _ -> true | _ -> false)),
-              ("Optlabel", `Any), "`Optlabel _");
+            (((function | `Optlabel (_,_) -> true | _ -> false)),
+              ("Optlabel", `Any), "`Optlabel s");
          `Sself],
           ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
             (Fgram.mk_action
                (fun (t : 'ctyp)  (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Optlabel s ->
+                  | `Optlabel (_,s) ->
                       (`OptLabl (_loc, (`Lid (_loc, s)), t) : 'ctyp )
                   | _ ->
                       failwith

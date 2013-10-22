@@ -69,9 +69,10 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | "'" (newline as x) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
-      (`Chr x, !! lexbuf)
+      let loc = !!lexbuf in
+      (`Chr (loc,x), loc)
     end}
-  | "'" (ocaml_char as x ) "'" %{ (`Chr x , !! lexbuf )}
+  | "'" (ocaml_char as x ) "'" %{ let loc = !!lexbuf in (`Chr (loc,x) , loc )}
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{(`Sym x, !! lexbuf)}
