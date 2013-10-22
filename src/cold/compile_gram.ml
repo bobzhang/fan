@@ -122,10 +122,9 @@ and make_exp_rules (_loc : loc)
                           (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
              FAst.exp ))))
     |> (list_of_list _loc)
-let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
-  ?action:(act : exp option)  (rtvar : string) (tvar : string) =
+let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (Locf.name.contents)) in
-   let act = Option.default (`Uid (_loc, "()") : FAst.exp ) act in
+   let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
    let (_,tok_match_pl) =
      Listf.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
@@ -137,7 +136,7 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
           | { pattern = Some p; text = `Skeyword _;_} ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-          | _ -> ep) ([], []) psl in
+          | _ -> ep) ([], []) x.prod in
    let e =
      let e1: FAst.exp =
        `Constraint
@@ -197,23 +196,23 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
        (fun i  txt  (s : Gram_def.symbol)  ->
           match s.pattern with
           | Some (`Alias (_loc,`App (_,_,`Par (_,(`Any _ : FAst.pat))),p)) ->
-              let p = typing (p : alident  :>pat) (make_ctyp s.styp tvar) in
+              let p = typing (p : alident  :>pat) (make_ctyp s.styp rtvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
           | Some p when is_irrefut_pat p ->
-              let p = typing p (make_ctyp s.styp tvar) in
+              let p = typing p (make_ctyp s.styp rtvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
           | Some _ ->
               let p =
                 typing
                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
-                  (make_ctyp s.styp tvar) in
+                  (make_ctyp s.styp rtvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
           | None  ->
               (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp )) e
-       psl in
+       x.prod in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
-let text_of_entry safe (e : Gram_def.entry) =
+let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let ent: FAst.exp =
      `Constraint
@@ -236,13 +235,14 @@ let text_of_entry safe (e : Gram_def.entry) =
        match level.assoc with
        | Some ass -> (`App (_loc, (`Uid (_loc, "Some")), ass) : FAst.exp )
        | None  -> (`Uid (_loc, "None") : FAst.exp ) in
-     let mk_srule loc (t : string) (tvar : string) (r : Gram_def.rule) =
-       (let sl = List.map (fun (s : Gram_def.symbol)  -> s.text) r.prod in
-        let ac = text_of_action loc r.prod t ?action:(r.action) tvar in
-        (sl, ac, (r.action)) : (Gram_def.text list* exp* exp option) ) in
-     let mk_srules loc (t : string) (rl : Gram_def.rule list) (tvar : string)
-       = List.map (mk_srule loc t tvar) rl in
-     let rl = mk_srules _loc (e.name).tvar level.rules (e.name).tvar in
+     let rl =
+       level.rules |>
+         (List.map
+            (fun (r : Gram_def.rule)  ->
+               let sl =
+                 r.prod |> (List.map (fun (s : Gram_def.symbol)  -> s.text)) in
+               let ac = make_action _loc r (e.name).tvar in
+               (sl, ac, (r.action)))) in
      let prod = make_exp_rules _loc rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
    match e.levels with
@@ -333,7 +333,7 @@ let combine _loc (gram : vid option) locals extends =
            (`LetIn (_loc, (`Negative _loc), locals, extends))) : FAst.exp )
 let make _loc (x : Gram_def.entries) =
   let extends =
-    let el = x.items |> (List.map (text_of_entry x.safe)) in
+    let el = x.items |> (List.map (make_extend x.safe)) in
     match el with | [] -> (`Uid (_loc, "()") : FAst.exp ) | _ -> seq_sem el in
   let locals =
     x.items |>

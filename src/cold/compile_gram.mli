@@ -46,9 +46,8 @@ val make_ctyp : styp -> string -> ctyp
                   -> (`Try (_loc, e, a) : 'exp )))
    ]} *)
 
-val text_of_action :
-  loc ->
-  symbol list -> ?action:exp -> string   -> string -> exp
+(* val text_of_action : *)
+(*   loc -> rule -> string -> exp *)
 
 (** transform [text] to [exp] which represents [symbol]
    compute the [lhs]
