@@ -185,21 +185,21 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list)
 let text_of_entry ?(safe=true) (e:Gram_def.entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
-    %{($(e.name.exp):'$(lid:e.name.tvar) $(id:(gm():vid :> ident)).t)  }   in
+    %exp{($(e.name.exp):'$(lid:e.name.tvar) $(id:(gm():vid :> ident)).t)  }   in
   let pos =
     match e.pos with
-    | Some pos -> %{Some $pos} 
-    | None -> %{None}   in
+    | Some pos -> %exp{Some $pos} 
+    | None -> %exp{None}   in
     let apply =
       (fun (level:Gram_def.level)  ->
         let lab =
           match level.label with
-          | Some lab ->   %{Some $str:lab}
-          | None ->   %{None}   in
+          | Some lab ->   %exp{Some $str:lab}
+          | None ->   %exp{None}   in
         let ass =
           match level.assoc with
-          | Some ass ->   %{Some $ass}
-          | None ->    %{None}   in
+          | Some ass ->   %exp{Some $ass}
+          | None ->    %exp{None}   in
         let mk_srule loc (t : string)  (tvar : string) (r : Gram_def.rule) :
             (Gram_def.text list  *  exp * exp option) =
           let sl = List.map (fun (s:Gram_def.symbol)  -> s.text) r.prod in
@@ -211,19 +211,20 @@ let text_of_entry ?(safe=true) (e:Gram_def.entry) :exp =  with exp
         let rl = mk_srules _loc e.name.tvar level.rules e.name.tvar in
         let prod = make_exp_rules _loc rl e.name.tvar in
         (* generated code of type [olevel] *)
-        %{ ($lab, $ass, $prod) }) in
+        %exp{ ($lab, $ass, $prod) }) in
     match e.levels with
     |`Single l ->
-        if safe then
-          %{ $(id:(gm())).extend_single $ent ($pos, $(apply l) ) }
-        else
-          %{ $(id:(gm())).unsafe_extend_single $ent ($pos, $(apply l) ) }
+        let f =
+          if safe then
+            %exp{$(id:(gm())).extend_single}
+          else %exp{$(id:(gm())).unsafe_extend_single} in
+        %exp{$f $ent ($pos, $(apply l))}
     |`Group ls ->
         let txt = list_of_list _loc (List.map apply ls) in
-        if safe then 
-          %{$(id:(gm())).extend $ent ($pos,$txt)}
-        else 
-          %{$(id:(gm())).unsafe_extend $ent ($pos,$txt)}
+        let f =
+          if safe then %exp{$(id:gm()).extend}
+          else %exp{$(id:gm()).unsafe_extend} in
+        %exp{$f $ent ($pos,$txt)}
 
 (** [gl] is the name  list option
 

@@ -247,41 +247,26 @@ let text_of_entry ?(safe= true)  (e : Gram_def.entry) =
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
    match e.levels with
    | `Single l ->
-       if safe
-       then
-         (`App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single")))),
-                   ent)), (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : 
-         FAst.exp )
-       else
-         (`App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`Dot
-                      (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single")))),
-                   ent)), (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : 
-         FAst.exp )
+       let f =
+         if safe
+         then
+           (`Dot (_loc, (gm ()), (`Lid (_loc, "extend_single"))) : FAst.exp )
+         else
+           (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend_single"))) : 
+           FAst.exp ) in
+       (`App
+          (_loc, (`App (_loc, f, ent)),
+            (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : FAst.exp )
    | `Group ls ->
        let txt = list_of_list _loc (List.map apply ls) in
-       if safe
-       then
-         (`App
-            (_loc,
-              (`App
-                 (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "extend")))), ent)),
-              (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp )
-       else
-         (`App
-            (_loc,
-              (`App
-                 (_loc,
-                   (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend")))),
-                   ent)), (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : 
-  exp )
+       let f =
+         if safe
+         then (`Dot (_loc, (gm ()), (`Lid (_loc, "extend"))) : FAst.exp )
+         else
+           (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend"))) : FAst.exp ) in
+       (`App
+          (_loc, (`App (_loc, f, ent)),
+            (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : exp )
 let let_in_of_extend _loc (gram : vid option) locals default =
   let entry_mk =
     match gram with

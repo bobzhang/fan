@@ -25,6 +25,8 @@ val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol
 
+val mk_slist :
+    loc -> bool -> symbol option -> symbol -> text
 val gensym : unit -> int ref
 val gen_lid : unit -> string
     
@@ -132,7 +134,7 @@ val text_of_action :
         | _ -> false)),
        (`Normal, "`Ant ((\"\"|\"mexp\"|\"anti\"|\"list\"),_)"))
    ]} *)          
-val make_exp : string -> text -> exp
+(* val make_exp : string -> text -> exp *)
 
 (** the [rhs] was computed, compute the [lhs]
    the generated expession has type [production] *)        
@@ -140,7 +142,7 @@ val make_exp_rules :
     loc -> (text list * exp * exp option) list -> string -> exp
 
 
-val mk_slist : loc -> bool -> symbol option -> symbol -> text
+
 
 
 
