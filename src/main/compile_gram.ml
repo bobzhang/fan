@@ -191,40 +191,39 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
     match e.pos with
     | Some pos -> %exp{Some $pos} 
     | None -> %exp{None}   in
-    let apply =
-      (fun (level:Gram_def.level)  ->
-        let lab =
-          match level.label with
-          | Some lab ->   %exp{Some $str:lab}
-          | None ->   %exp{None}   in
-        let ass =
-          match level.assoc with
-          | Some ass ->   %exp{Some $ass}
-          | None ->    %exp{None}   in
-        (* the [rhs] was already computed, the [lhs] was left *)
-        let rl =
-          level.rules
-          |> List.map (fun (r:Gram_def.rule) ->
-              let sl =
-                r.prod |> List.map (fun (s:Gram_def.symbol) -> s.text) in
-              let ac = make_action _loc r e.name.tvar in
-              (sl,ac,r.action)) in
-        let prod = make_exp_rules _loc rl e.name.tvar in
-        (* generated code of type [olevel] *)
-        %exp{ ($lab, $ass, $prod) }) in
-    match e.levels with
-    |`Single l ->
-        let f =
-          if safe then
-            %exp{$(id:(gm())).extend_single}
-          else %exp{$(id:(gm())).unsafe_extend_single} in
+  let apply (level:Gram_def.level)  =
+    let lab =
+      match level.label with
+      | Some lab ->   %exp{Some $str:lab}
+      | None ->   %exp{None}   in
+    let ass =
+      match level.assoc with
+      | Some ass ->   %exp{Some $ass}
+      | None ->    %exp{None}   in
+    (* the [rhs] was already computed, the [lhs] was left *)
+    let rl =
+      level.rules
+      |> List.map (fun (r:Gram_def.rule) ->
+          let sl =
+            r.prod |> List.map (fun (s:Gram_def.symbol) -> s.text) in
+          let ac = make_action _loc r e.name.tvar in
+          (sl,ac,r.action)) in
+    let prod = make_exp_rules _loc rl e.name.tvar in
+    (* generated code of type [olevel] *)
+    %exp{ ($lab, $ass, $prod) } in
+  match e.levels with
+  |`Single l ->
+      let f =
+        if safe then
+          %exp{$(id:(gm())).extend_single}
+        else %exp{$(id:(gm())).unsafe_extend_single} in
         %exp{$f $ent ($pos, $(apply l))}
-    |`Group ls ->
-        let txt = list_of_list _loc (List.map apply ls) in
-        let f =
-          if safe then %exp{$(id:gm()).extend}
-          else %exp{$(id:gm()).unsafe_extend} in
-        %exp{$f $ent ($pos,$txt)}
+  |`Group ls ->
+      let txt = list_of_list _loc (List.map apply ls) in
+      let f =
+        if safe then %exp{$(id:gm()).extend}
+        else %exp{$(id:gm()).unsafe_extend} in
+      %exp{$f $ent ($pos,$txt)}
 
 
 
