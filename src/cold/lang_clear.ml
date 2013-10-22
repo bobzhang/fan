@@ -34,13 +34,13 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-              "`Lid _")],
+            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+              "`Lid x")],
           ("`Lid (_loc, s)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Lid s -> (`Lid (_loc, s) : 'a_lident )
+                  | `Lid (_,s) -> (`Lid (_loc, s) : 'a_lident )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))))]));

@@ -29,8 +29,8 @@ let string_of_error_msg = Formatf.to_string pp_print_error;;
 (* [Sym] should all be filtered into keywords *)  
 let keyword_conversion tok kwds =
   match tok with
-  | `Sym s | `Lid s | `Uid s when Setf.String.mem s  kwds -> `Key s
-  | `Eident s -> `Lid s 
+  | `Sym s | `Lid (_,s) | `Uid s when Setf.String.mem s  kwds -> `Key s
+  | `Eident s -> `Lid (Locf.ghost,s) (* FIXME -- loc *) 
   | _ -> tok 
 
 let check_keyword_as_label tok loc kwds =

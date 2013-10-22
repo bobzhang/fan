@@ -15,13 +15,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-               "`Lid _")],
+             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid x ->
+                   | `Lid (_,x) ->
                        ((try Hashtbl.find inject_exp_tbl x
                          with
                          | Not_found  ->
@@ -35,13 +35,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-               "`Lid _")],
+             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid x ->
+                   | `Lid (_,x) ->
                        ((try Hashtbl.find inject_stru_tbl x
                          with
                          | Not_found  ->
@@ -55,13 +55,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-               "`Lid _")],
+             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid x ->
+                   | `Lid (_,x) ->
                        ((try Hashtbl.find inject_clfield_tbl x
                          with
                          | Not_found  ->

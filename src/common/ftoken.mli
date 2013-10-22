@@ -109,7 +109,7 @@ type space_token =
 type t =
   [ `Key       of string
   | `Sym       of string
-  | `Lid       of string
+  | `Lid       of (Locf.t * string)
   | `Uid       of string
   | `Eident    of string (* (+)*)
   | `Int       of string 

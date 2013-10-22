@@ -78,8 +78,8 @@ let _ =
       (None, None,
         [([`Skeyword "let";
           `Stoken
-            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-              "`Lid _");
+            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+              "`Lid x");
           `Skeyword "=";
           `Snterm (Fgram.obj (regexp : 'regexp Fgram.t ))],
            ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
@@ -87,7 +87,7 @@ let _ =
                 (fun (r : 'regexp)  _  (__fan_1 : Ftoken.t)  _ 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Lid x ->
+                   | `Lid (_,x) ->
                        (if Hashtbl.mem named_regexps x
                         then
                           (Printf.eprintf
@@ -111,13 +111,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-               "`Lid _")],
+             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+               "`Lid x")],
            ("(_loc, y)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid y -> ((_loc, y) : 'lid )
+                   | `Lid (_,y) -> ((_loc, y) : 'lid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -214,13 +214,13 @@ let _ =
           ("Eof\n",
             (Fgram.mk_action (fun _  (_loc : Locf.t)  -> (Eof : 'regexp )))));
         ([`Stoken
-            (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-              "`Lid _")],
+            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+              "`Lid x")],
           ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Lid x ->
+                  | `Lid (_,x) ->
                       ((try Hashtbl.find named_regexps x
                         with
                         | Not_found  ->

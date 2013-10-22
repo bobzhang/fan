@@ -410,13 +410,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid _ -> true | _ -> false)), ("Lid", `Any),
-               "`Lid _")],
+             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+               "`Lid x")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid x -> (`Lid (_loc, x) : 'name )
+                   | `Lid (_,x) -> (`Lid (_loc, x) : 'name )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
