@@ -136,7 +136,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  | ("Lid" as v); Lid x %{
+  | ("Lid" as v); Lid@xloc x %{
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
     let pred =  %exp{
                     function
@@ -144,12 +144,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat{`Lid(_,$lid:x)} in
+    let pattern = Some %pat@xloc{`Lid(_,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
   (** split opt, introducing an epsilon predicate? *)    
-  | ("Lid" as v); "@"; Lid loc ; Lid x %{
+  | ("Lid" as v); "@"; Lid loc ; Lid@xloc x %{
     (* [token_of_simple_pat %pat'{$vrn:v $lid:x }] *)
     let pred =  %exp{
                     function
@@ -157,7 +157,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
                       | _ -> false} in
     let des = %exp{($str:v,`Any )} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat{`Lid($lid:loc,$lid:x)} in
+    let pattern = Some %pat@xloc{`Lid($lid:loc,$lid:x)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
