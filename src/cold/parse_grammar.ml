@@ -1,11 +1,11 @@
-let gm = Gram_gen.gm
-let module_name = Gram_gen.module_name
-let mk_entry = Gram_gen.mk_entry
-let mk_level = Gram_gen.mk_level
-let mk_rule = Gram_gen.mk_rule
-let mk_slist = Gram_gen.mk_slist
-let mk_symbol = Gram_gen.mk_symbol
-let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
+let gm = Compile_gram.gm
+let module_name = Compile_gram.module_name
+let mk_entry = Compile_gram.mk_entry
+let mk_level = Compile_gram.mk_level
+let mk_rule = Compile_gram.mk_rule
+let mk_slist = Compile_gram.mk_slist
+let mk_symbol = Compile_gram.mk_symbol
+let make = Compile_gram.make
 let is_irrefut_pat = Fan_ops.is_irrefut_pat
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
@@ -87,7 +87,7 @@ let normalize (x : Gram_pat.t) =
 let token_of_simple_pat (p : Gram_pat.t) =
   (let _loc = loc_of p in
    let p_pat = (p : Gram_pat.t  :>pat) in
-   let (po,ls) = Gram_gen.filter_pat_with_captured_variables p_pat in
+   let (po,ls) = Compile_gram.filter_pat_with_captured_variables p_pat in
    let mdescr = (Gram_def.meta_data#data _loc (normalize p) :>exp) in
    let no_variable = Gram_pat.wildcarder#t p in
    let mstr = Gram_pat.to_string no_variable in
@@ -813,20 +813,14 @@ let _ =
         [([`Snterm (Fgram.obj (symbol : 'symbol Fgram.t ));
           `Sopt
             (`Snterm (Fgram.obj (brace_pattern : 'brace_pattern Fgram.t )))],
-           ("List.map\n  (fun (s : Gram_def.symbol)  ->\n     match p with\n     | Some _ ->\n         {\n           s with\n           pattern = (p : Gram_def.action_pattern option  :>pat option)\n         }\n     | None  -> s) ss\n",
+           ("List.map\n  (fun (s : Gram_def.symbol)  ->\n     match p with\n     | Some _ -> { s with pattern = (p : pat option ) }\n     | None  -> s) ss\n",
              (Fgram.mk_action
                 (fun (p : 'brace_pattern option)  (ss : 'symbol) 
                    (_loc : Locf.t)  ->
                    (List.map
                       (fun (s : Gram_def.symbol)  ->
                          match p with
-                         | Some _ ->
-                             {
-                               s with
-                               pattern =
-                                 (p : Gram_def.action_pattern option  :>
-                                 pat option)
-                             }
+                         | Some _ -> { s with pattern = (p : pat option ) }
                          | None  -> s) ss : 'psymbol )))))]))
 let _ =
   let grammar_entry_create x = Fgram.mk_dynamic g x in
@@ -877,25 +871,24 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend _loc gram el in\nlet () = module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = make _loc { items = el; gram; safe = true } in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
-                    let res = text_of_functorial_extend _loc gram el in
+                    let res = make _loc { items = el; gram; safe = true } in
                     let () = module_name := old in res : 'extend_body )))))]));
   Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = make _loc { items = el; gram; safe = false } in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
-                    let res =
-                      text_of_functorial_extend ~safe:false _loc gram el in
+                    let res = make _loc { items = el; gram; safe = false } in
                     let () = module_name := old in res : 'unsafe_extend_body )))))]));
   Fgram.extend_single (qualuid : 'qualuid Fgram.t )
     (None,

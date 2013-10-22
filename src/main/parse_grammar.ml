@@ -1,5 +1,5 @@
 %import{
-Gram_gen:
+Compile_gram:
   gm
   module_name
   mk_entry
@@ -7,7 +7,7 @@ Gram_gen:
   mk_rule
   mk_slist
   mk_symbol
-  text_of_functorial_extend  
+  make
   ;
 Fan_ops:
   is_irrefut_pat
@@ -58,27 +58,23 @@ let g =
 let normalize (x:Gram_pat.t) : Gram_def.data =
   match x with
   | %pat'{$vrn:x} ->  (x, `Empty)
-    
   | %pat'{$vrn:x $str:s} | %pat'{$vrn:x ($str:s as $_ )} -> 
       (x,  `A s)
-
   | %pat'{$vrn:x $lid:_ }
   | %pat'{$vrn:x _}-> 
       (x, `Any)
   | %pat'{$vrn:x ($lid:_, $_)} -> 
       (x, `Any)
-    
   | %pat'{$vrn:x (($str:s as $_), $_) }
   | %pat'{$vrn:x ($str:s, $_) }  ->
       (x, `A s)
-
   | _ -> failwithf "normalize %s" @@ Gram_pat.to_string x ;;
 
 let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   let _loc = loc_of p in
   let p_pat = (p:Gram_pat.t :> pat) in 
   let (po,ls) =
-    Gram_gen.filter_pat_with_captured_variables p_pat in
+    Compile_gram.filter_pat_with_captured_variables p_pat in
   let mdescr = (Gram_def.meta_data#data _loc (normalize p)  :> exp) in
   let no_variable = Gram_pat.wildcarder#t p in
   let mstr = Gram_pat.to_string no_variable in
@@ -206,7 +202,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     List.map (fun (s:Gram_def.symbol) ->
       match p with
       |Some _ ->
-          { s with pattern = (p:  Gram_def.action_pattern option :>  pat option) }
+          { s with pattern = (p:pat option)}
       | None -> s) ss }  ] 
       
 }
@@ -233,7 +229,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   extend_body :
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
-    let res = text_of_functorial_extend _loc  gram  el in 
+    let res = make _loc {items = el; gram; safe = true} in 
     let () = module_name := old in
     res}      ]
 
@@ -241,7 +237,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   unsafe_extend_body :
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
-    let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
+    let res = make _loc {items = el; gram; safe = false} (* ~safe:false _loc  gram  el *) in 
     let () = module_name := old in
     res}      ]
       

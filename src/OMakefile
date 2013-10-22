@@ -80,7 +80,8 @@ FAN_FILES = \
     fid code_template comment_filter compile_lex compile_stream ctyp \
     derive dyn_load epN \
     expN fAstN control control_require fMeta \
-    gram_def gram_gen \
+    gram_def  \
+    compile_gram \
     sig_util  fanAstN  fgram\
     filters freeVars  gentry gfold gramlib\
     idN  ns  langOcaml   \

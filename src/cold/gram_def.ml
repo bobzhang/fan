@@ -54,6 +54,7 @@ and text =
   | `Snterm of (loc* name* string option) | `Sopt of (loc* text)
   | `Stry of (loc* text) | `Speek of (loc* text) | `Sself of loc
   | `Skeyword of (loc* string) | `Stoken of (loc* exp* exp* string)] 
-type action_pattern =
-  [ vid | `Com of (loc* action_pattern* action_pattern)
-  | `Par of (loc* action_pattern) | `Any of loc] 
+type entries =  {
+  items: entry list;
+  gram: vid option;
+  safe: bool} 

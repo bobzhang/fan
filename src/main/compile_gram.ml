@@ -182,7 +182,7 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list)
   ]}
   [pos] is something like
   {[(Some `LA)]} it has type [position option] *)        
-let text_of_entry ?(safe=true) (e:Gram_def.entry) :exp =  with exp
+let text_of_entry safe  (e:Gram_def.entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
     %exp{($(e.name.exp):'$(lid:e.name.tvar) $(id:(gm():vid :> ident)).t)  }   in
@@ -226,34 +226,6 @@ let text_of_entry ?(safe=true) (e:Gram_def.entry) :exp =  with exp
           else %exp{$(id:gm()).unsafe_extend} in
         %exp{$f $ent ($pos,$txt)}
 
-(** [gl] is the name  list option
-
-   {[
-   loc -> ident option ->exp name list option ->
-   (exp, 'a) entry list -> exp -> exp
-   ]}
-
-   This function generate some local entries *)               
-let let_in_of_extend _loc (gram: vid option ) locals  default =
-  let entry_mk =
-    match gram with
-    | Some g -> let g = (g:vid :> exp) in
-    %exp{ $(id:gm()).mk_dynamic $g }
-
-    | None -> 
-        %exp{ $(id:gm()).mk } in
-  let local_bind_of_name = function x ->
-    match (x:Gram_def.name) with 
-    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
-        %bind{ $lid:i = (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t )}
-    | {exp;_} -> failwithf "internal error in the Grammar extension %s"
-          (Objs.dump_exp exp)   in
-  match locals with
-  | [] -> default 
-  | ll ->
-      let locals = and_of_list (List.map local_bind_of_name ll)  in
-      (** eta-expansion to avoid specialized types here  *)
-      %exp{ let grammar_entry_create x = $entry_mk  x in let $locals in $default }    
 
 
       
@@ -284,21 +256,57 @@ let filter_pat_with_captured_variables pat= begin
   let constraints = capture_antiquot#get_captured_variables in
   (pat,constraints)
 end
-        
+
+
+(** [gl] is the name  list option
+
+   {[
+   loc -> ident option ->exp name list option ->
+   (exp, 'a) entry list -> exp -> exp
+   ]}
+
+   This function generate some local entries *)               
+let combine _loc (gram: vid option ) locals  extends  =
+  let entry_mk =
+    match gram with
+    | Some g ->
+        let g = (g:vid :> exp) in
+        %exp{ $(id:gm()).mk_dynamic $g }
+    | None -> 
+        %exp{ $(id:gm()).mk } in
+  let local_bind_of_name (x:Gram_def.name) =
+    match (x:Gram_def.name) with 
+    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
+        %bind{ $lid:i =
+               (grammar_entry_create $str:i : '$lid:x $(id:(gm():vid :> ident)).t )}
+    | {exp;_} -> failwithf "internal error in the Grammar extension %s"
+          (Objs.dump_exp exp)   in
+  match locals with
+  | [] -> extends
+  | ll ->
+      let locals =
+        ll |> List.map local_bind_of_name |> and_of_list in
+      (** eta-expansion to avoid specialized types here  *)
+      %exp{
+      let grammar_entry_create x = $entry_mk  x in
+      let $locals in
+      $extends }    
+    
 (** entrance *)        
-let text_of_functorial_extend ?safe _loc   gram  el = 
-  let args =
+let make  _loc (x:Gram_def.entries) = 
+  let extends =
     let el =
-      List.map  (text_of_entry ?safe)  el  in
+      x.items |> List.map  (text_of_entry x.safe)    in
     match el with
-    | [] -> %exp{ () }
+    | [] ->  %exp{ () }
     | _ -> seq_sem el    in
   let locals  = (** FIXME the order matters here, check duplication later!!! *)
-    Listf.filter_map
-      (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) el in
-  let_in_of_extend _loc gram locals args 
+     x.items
+     |> Listf.filter_map
+         (fun (x:Gram_def.entry) -> if x.local then Some x.name else None ) in
+  combine _loc x.gram locals extends
 
-(** *)
+
         
 
 (* local variables: *)

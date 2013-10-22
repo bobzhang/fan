@@ -134,7 +134,7 @@ val text_of_action :
         | _ -> false)),
        (`Normal, "`Ant ((\"\"|\"mexp\"|\"anti\"|\"list\"),_)"))
    ]} *)          
-(* val make_exp : string -> text -> exp *)
+
 
 (** the [rhs] was computed, compute the [lhs]
    the generated expession has type [production] *)        
@@ -159,8 +159,7 @@ val make_exp_rules :
 
    It call [text_of_entry]
  *)
-val text_of_functorial_extend :
-    ?safe:bool -> loc ->vid option  -> entry list -> exp
+val make : loc -> entries -> exp 
 
 
 val filter_pat_with_captured_variables : pat -> pat * (exp * exp) list

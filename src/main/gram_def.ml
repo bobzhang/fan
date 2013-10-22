@@ -31,15 +31,7 @@ type styp =
  | `Tok of loc
  | `Type of ctyp ]
 
-(* type word  = *)
-(*   | Any *)
-(*   | A of string *)
-(*   | Empty (\* no token associated *\) *)
-(* type data = { *)
-(*     tag : string; *)
-(*     word : word; *)
-(*   }       *)
-(* type meta = (\* exp  *\) word *)
+
 type entry   = {
   name : name ;
   (*position expession node *)    
@@ -81,15 +73,16 @@ and text =
     The description string will be used for
     grammar insertion and left factoring.
     Keep this string [normalized] and well *comparable*. *) ]
+
+type entries = {
+    items : entry list;
+    gram : vid option;
+    safe : bool
+  }
+      
   };;
 
 
-(* make [S] a keyword ? *) 
-type action_pattern =
-  [ vid
-  |`Com of (loc * action_pattern * action_pattern)
-  |`Par of (loc * action_pattern )
-  |`Any of loc ];;
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/gram_def.cmo" *)
