@@ -1,16 +1,13 @@
 %import{
 Gram_gen:
   gm
-  grammar_module_name
-  text_of_functorial_extend
-  mk_name
+  module_name
   mk_entry
   mk_level
-  retype_rule_list_without_patterns
   mk_rule
-  check_not_tok
   mk_slist
   mk_symbol
+  text_of_functorial_extend  
   ;
 Fan_ops:
   is_irrefut_pat
@@ -23,6 +20,15 @@ Ast_gen:
   ;
 }
 
+let mk_name _loc (i:FAst.vid) : Gram_def.name =
+  let rec aux  x =
+    match (x:FAst.vid) with 
+    | `Lid (_,x) | `Uid(_,x) -> x
+    | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
+    | _ -> failwith "internal error in the Grammar extension" in
+  {exp = (i :> FAst.exp) ; tvar = aux i; loc = _loc}
+  
+  
 open FAst
 open Util
 
@@ -175,13 +181,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   symbol : (* be more precise, no recursive grammar? *)
   [ ("L0"|"L1" as l) ; simple{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
-    let () =  check_not_tok s in (* s should be singleton here actually*)
     let styp = %ctyp'{ $(s.styp) list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
   | "OPT"; simple{s}  %{
     let [s] = s in
-    let () = check_not_tok s in
     let styp = %ctyp'{$(s.styp) option } in 
     let text = `Sopt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
@@ -218,11 +222,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   extend_header :
   [ "("; qualid{i}; ":"; t_qualid{t}; ")" %{
     let old=gm() in 
-    let () = grammar_module_name := t  in
+    let () = module_name := t  in
     (Some i,old)}
   | qualuid{t} %{
       let old = gm() in
-      let () = grammar_module_name :=  t in 
+      let () = module_name :=  t in 
       (None,old)}
   | %{ (None,gm())} ]
 
@@ -230,7 +234,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
     let res = text_of_functorial_extend _loc  gram  el in 
-    let () = grammar_module_name := old in
+    let () = module_name := old in
     res}      ]
 
   (* see [extend_body] *)
@@ -238,7 +242,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   [ extend_header{rest};   L1 entry {el} %{
     let (gram,old) = rest in
     let res = text_of_functorial_extend ~safe:false _loc  gram  el in 
-    let () = grammar_module_name := old in
+    let () = module_name := old in
     res}      ]
       
   (* parse qualified [X.X] *)
@@ -316,8 +320,10 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   rule_list :
   [ "["; "]" %{ []}
   | "["; L1 rule SEP "|"{ruless}; "]" %{
-    let rules = Listf.concat ruless in
-    retype_rule_list_without_patterns _loc rules}]
+    Listf.concat ruless
+    (* let rules =  *)
+    (* in *)
+    (* retype_rule_list_without_patterns _loc rules *)}]
 
   rule :
   [ left_rule {prod}; OPT opt_action{action} %{

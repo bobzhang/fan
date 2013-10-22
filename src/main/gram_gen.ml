@@ -20,13 +20,12 @@ let prefix = "__fan_"
 let ghost = Locf.ghost
 
 (* let grammar_module_name = ref (`Uid (ghost,"Fgram"))  *)
-let grammar_module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
+let module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
 let gm () =
   match !Configf.compilation_unit with
   |Some "Fgram" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
-  |Some _ | None -> 
-      !grammar_module_name
+  |Some _ | None -> !module_name
 
 let mk_entry ~local ~name ~pos ~levels =
   {Gram_def.name;pos;levels;local}
@@ -40,48 +39,20 @@ let mk_rule ~prod ~action =
 let mk_symbol  ?(pattern=None)  ~text ~styp =
   ({ text;styp;pattern}:Gram_def.symbol)
 
+(* given the entry of the name, make a name *)
+let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 
-let check_not_tok (_s:Gram_def.symbol) = 
-  (* match s with  *)
-  (* | {text = `Stoken (_loc,  _, _,_) ;_} -> *)
-  (*     Locf.raise _loc (Fstream.Error *)
-  (*                        ("Deprecated syntax, use a sub rule. "^ *)
-  (*                         "L0 STRING becomes L0 [ x = STRING -> x ]")) *)
-  (* | _ -> *) ()  (* removed soon*)
-      
 let new_type_var = 
   let i = ref 0 in fun () -> begin
     incr i; "e__" ^ string_of_int !i
   end 
     
-let gensym  = let i = ref 0 in fun () -> (incr i; i)
+let gensym  =
+  let i = ref 0 in fun () -> (incr i; i)
 
-let gen_lid ()=  prefix^string_of_int (!(gensym ()))
+let gen_lid ()=
+  prefix^string_of_int !(gensym ())
   
-(* transform rule list *)  
-let retype_rule_list_without_patterns _loc rl =
-  try
-    List.map (function (x:Gram_def.rule) -> 
-      match x with
-        (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Fgram.Token.string_of_token x); ... *)
-      | {prod = [({pattern = None; styp = `Tok _ ;_} as s)]; action = None} ->
-          ({prod =
-           [{ s with pattern = Some %pat{ x } }];
-           action =
-           Some %exp{$(id:gm()).string_of_token x }
-          }:Gram_def.rule)
-            (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
-      | {prod = [({pattern = None; _ } as s)]; action = None} ->
-
-          ({prod = [{ s with pattern = Some %pat{ x } }];
-           action = Some %exp{ x }} : Gram_def.rule)
-            (* ...; ([] -> a); ... *)
-      | {prod = []; action = Some _} as r -> r
-      | _ -> raise Exit ) rl
-  with
-    Exit -> rl 
-
-
 
 let make_ctyp (styp:Gram_def.styp) tvar : ctyp = 
   let rec aux  v = 
@@ -131,18 +102,22 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
 
 and make_exp_rules (_loc:loc)
     (rl : (Gram_def.text list  * exp * exp option) list) (tvar:string) =
-  with exp
-  list_of_list _loc
-    (List.map (fun (sl,action,raw) ->
+  rl
+  |> List.map (fun (sl,action,raw) ->
       let action_string =
         match raw with
         | None -> ""
         | Some e -> Ast2pt.to_string_exp e in
-      let sl = list_of_list _loc (List.map (fun t -> make_exp tvar t) sl) in
-      %{ ($sl,($str:action_string,$action)) } ) rl)
+      let sl =
+        sl
+        |> List.map (make_exp tvar)
+        |> list_of_list _loc in
+      %exp{ ($sl,($str:action_string,$action)) } )
+  |> list_of_list _loc
 
 (** generate action, compiling pattern match  *)  
-let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp option)
+let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list)
+    ?action:(act: exp option)
     (rtvar:string)  (tvar:string) : exp = with exp
   let locid = %pat{ $(lid:!Locf.name) } in 
   let act = Option.default %{()} act in
@@ -167,19 +142,13 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
           let (exp,pat) =
             match (e,p) with
             | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
-
           let len = List.length e in
           (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
           (* let action_string = Ast2pt.to_string_exp act in           *)
-          let error_fmt =
-            (* action_string ^  *)String.concat " " (Listf.init len (fun _ -> "%s")) in
-
-
+          let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
           let es = List.map (fun x -> %{Ftoken.token_to_string $x}) e in
           let error =
-            Ast_gen.appl_of_list
-              ([ %{Printf.sprintf };
-                %{$`str:error_fmt}]  @ es) in 
+            Ast_gen.appl_of_list ([ %{Printf.sprintf }; %{$`str:error_fmt}]  @ es) in 
           %{fun ($locid : Locf.t) -> (* BOOTSTRAPING, associated with module name [Locf] *)
             match $exp with
             | $pat -> $e1
@@ -201,32 +170,8 @@ let text_of_action (_loc:loc)  (psl :  Gram_def.symbol list) ?action:(act: exp o
         | None -> %{ fun _ -> $txt })  e psl in
   %{ $(id:(gm())).mk_action $txt }
 
-    
-
-
-(* let exp_delete_rule _loc n (symbolss:Gram_def.symbol list list ) = with exp *)
-(*   let f _loc (n:Gram_def.name) sl =   *)
-(*    let sl = list_of_list _loc *)
-(*        (List.map (fun  (s:Gram_def.symbol) -> make_exp "" s.text) sl) in  *)
-(*    (%{ $(n.exp) }, sl)  in *)
-(*   let rest = List.map *)
-(*       (fun sl  -> *)
-(*           let (e,b) = f _loc n sl in *)
-(*           %exp{ $(id:gm()).delete_rule $e $b }) symbolss in *)
-(*   match symbolss with *)
-(*   | [] -> %{ () } *)
-(*   |_ -> seq_sem rest  *)
 
   
-(* given the entry of the name, make a name *)
-let mk_name _loc (i:vid) : Gram_def.name =
-  let rec aux : vid -> string =  function
-    | `Lid (_,x) | `Uid(_,x) -> x
-    | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
-    | _ -> failwith "internal error in the Grammar extension" in
-  {exp = (i :> exp) ; tvar = aux i; loc = _loc}
-  
-let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
 
 
 (*

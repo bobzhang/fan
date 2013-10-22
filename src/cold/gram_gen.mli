@@ -6,7 +6,7 @@ val print_warning : Locf.t -> string -> unit
 
 val prefix : string
 
-val grammar_module_name : vid ref
+val module_name : vid ref
 val gm : unit -> vid
 
 val mk_entry :
@@ -25,18 +25,9 @@ val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol
 
-
-(** FIXME why deprecate such syntax
-    It makes [OPT STRING] invalid
-    You shoud write [OPT [x=STRING -> x] ] *)      
-val check_not_tok : symbol -> unit
-    
-val new_type_var : unit -> string
-
 val gensym : unit -> int ref
 val gen_lid : unit -> string
     
-val retype_rule_list_without_patterns :  loc -> rule list -> rule list
 
 (** translate [styp] into [ctyp], given the assumption that the entry output [tvar] type *)
 val make_ctyp : styp -> string -> ctyp
@@ -56,11 +47,6 @@ val make_ctyp : styp -> string -> ctyp
 val text_of_action :
   loc ->
   symbol list -> ?action:exp -> string   -> string -> exp
-
-(* val mk_srules : *)
-(*   loc -> *)
-(*   string -> *)
-(*   rule list -> string -> (text list * exp * exp option) list *)
 
 (** transform [text] to [exp] which represents [symbol]
    compute the [lhs]
@@ -153,15 +139,8 @@ val make_exp : string -> text -> exp
 val make_exp_rules :
     loc -> (text list * exp * exp option) list -> string -> exp
 
-(** deprecated *)
-(* val exp_delete_rule : *)
-(*   loc -> name -> symbol list list  -> exp *)
-      
-val mk_name : loc ->vid -> name
 
-val mk_slist :
-  loc ->
-  bool -> symbol option -> symbol -> text
+val mk_slist : loc -> bool -> symbol option -> symbol -> text
 
 
 
@@ -178,10 +157,8 @@ val mk_slist :
 
    It call [text_of_entry]
  *)
-val text_of_functorial_extend :  ?safe:bool ->
-  loc ->vid option  -> entry list -> exp
+val text_of_functorial_extend :
+    ?safe:bool -> loc ->vid option  -> entry list -> exp
 
-(** generate Stoken *)  
-(* val token_of_simple_pat :  Gram_pat.t  -> symbol *)
 
 val filter_pat_with_captured_variables : pat -> pat * (exp * exp) list

@@ -7,11 +7,11 @@ open Util
 let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"
 let ghost = Locf.ghost
-let grammar_module_name = ref (`Uid (ghost, "Fgram"))
+let module_name = ref (`Uid (ghost, "Fgram"))
 let gm () =
   match Configf.compilation_unit.contents with
   | Some "Fgram" -> `Uid (ghost, "")
-  | Some _|None  -> grammar_module_name.contents
+  | Some _|None  -> module_name.contents
 let mk_entry ~local  ~name  ~pos  ~levels  =
   { Gram_def.name = name; pos; levels; local }
 let mk_level ~label  ~assoc  ~rules  =
@@ -19,39 +19,11 @@ let mk_level ~label  ~assoc  ~rules  =
 let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
-let check_not_tok (_s : Gram_def.symbol) = ()
+let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
 let gensym = let i = ref 0 in fun ()  -> incr i; i
 let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
-let retype_rule_list_without_patterns _loc rl =
-  try
-    List.map
-      (fun (x : Gram_def.rule)  ->
-         match x with
-         | { prod = ({ pattern = None ; styp = `Tok _;_} as s)::[];
-             action = None  } ->
-             ({
-                prod =
-                  [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
-                action =
-                  (Some
-                     (`App
-                        (_loc,
-                          (`Dot
-                             (_loc, (gm ()),
-                               (`Lid (_loc, "string_of_token")))),
-                          (`Lid (_loc, "x"))) : FAst.exp ))
-              } : Gram_def.rule )
-         | { prod = ({ pattern = None ;_} as s)::[]; action = None  } ->
-             ({
-                prod =
-                  [{ s with pattern = (Some (`Lid (_loc, "x") : FAst.pat )) }];
-                action = (Some (`Lid (_loc, "x") : FAst.exp ))
-              } : Gram_def.rule )
-         | { prod = []; action = Some _ } as r -> r
-         | _ -> raise Exit) rl
-  with | Exit  -> rl
 let make_ctyp (styp : Gram_def.styp) tvar =
   (let rec aux v =
      match (v : Gram_def.styp ) with
@@ -135,21 +107,21 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
   aux tvar x
 and make_exp_rules (_loc : loc)
   (rl : (Gram_def.text list* exp* exp option) list) (tvar : string) =
-  list_of_list _loc
-    (List.map
-       (fun (sl,action,raw)  ->
-          let action_string =
-            match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
-          let sl =
-            list_of_list _loc (List.map (fun t  -> make_exp tvar t) sl) in
-          (`Par
-             (_loc,
-               (`Com
-                  (_loc, sl,
-                    (`Par
-                       (_loc,
-                         (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
-            FAst.exp )) rl)
+  (rl |>
+     (List.map
+        (fun (sl,action,raw)  ->
+           let action_string =
+             match raw with | None  -> "" | Some e -> Ast2pt.to_string_exp e in
+           let sl = (sl |> (List.map (make_exp tvar))) |> (list_of_list _loc) in
+           (`Par
+              (_loc,
+                (`Com
+                   (_loc, sl,
+                     (`Par
+                        (_loc,
+                          (`Com (_loc, (`Str (_loc, action_string)), action))))))) : 
+             FAst.exp ))))
+    |> (list_of_list _loc)
 let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
   ?action:(act : exp option)  (rtvar : string) (tvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (Locf.name.contents)) in
@@ -241,14 +213,6 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
        psl in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
-let mk_name _loc (i : vid) =
-  (let rec aux: vid -> string =
-     function
-     | `Lid (_,x)|`Uid (_,x) -> x
-     | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
-     | _ -> failwith "internal error in the Grammar extension" in
-   { exp = (i :>exp); tvar = (aux i); loc = _loc } : Gram_def.name )
-let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
 let text_of_entry ?(safe= true)  (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let ent: FAst.exp =

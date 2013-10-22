@@ -1,20 +1,23 @@
 let gm = Gram_gen.gm
-let grammar_module_name = Gram_gen.grammar_module_name
-let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
-let mk_name = Gram_gen.mk_name
+let module_name = Gram_gen.module_name
 let mk_entry = Gram_gen.mk_entry
 let mk_level = Gram_gen.mk_level
-let retype_rule_list_without_patterns =
-  Gram_gen.retype_rule_list_without_patterns
 let mk_rule = Gram_gen.mk_rule
-let check_not_tok = Gram_gen.check_not_tok
 let mk_slist = Gram_gen.mk_slist
 let mk_symbol = Gram_gen.mk_symbol
+let text_of_functorial_extend = Gram_gen.text_of_functorial_extend
 let is_irrefut_pat = Fan_ops.is_irrefut_pat
 let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
 let tuple_com = Ast_gen.tuple_com
+let mk_name _loc (i : FAst.vid) =
+  (let rec aux x =
+     match (x : FAst.vid ) with
+     | `Lid (_,x)|`Uid (_,x) -> x
+     | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
+     | _ -> failwith "internal error in the Grammar extension" in
+   { exp = (i :>FAst.exp); tvar = (aux i); loc = _loc } : Gram_def.name )
 open FAst
 open Util
 let g =
@@ -703,14 +706,13 @@ let _ =
         [([`Skeyword "L0";
           `Snterm (Fgram.obj (simple : 'simple Fgram.t ));
           `Sopt (`Snterm (Fgram.obj (sep_symbol : 'sep_symbol Fgram.t )))],
-           ("let s::[] = s in\nlet () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = mk_slist _loc (if l = \"L0\" then false else true) sep s in\n[mk_symbol ~text ~styp ~pattern:None]\n",
+           ("let s::[] = s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = mk_slist _loc (if l = \"L0\" then false else true) sep s in\n[mk_symbol ~text ~styp ~pattern:None]\n",
              (Fgram.mk_action
                 (fun (sep : 'sep_symbol option)  (s : 'simple) 
                    (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Key l ->
                        (let s::[] = s in
-                        let () = check_not_tok s in
                         let styp =
                           `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                         let text =
@@ -724,14 +726,13 @@ let _ =
         ([`Skeyword "L1";
          `Snterm (Fgram.obj (simple : 'simple Fgram.t ));
          `Sopt (`Snterm (Fgram.obj (sep_symbol : 'sep_symbol Fgram.t )))],
-          ("let s::[] = s in\nlet () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = mk_slist _loc (if l = \"L0\" then false else true) sep s in\n[mk_symbol ~text ~styp ~pattern:None]\n",
+          ("let s::[] = s in\nlet styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = mk_slist _loc (if l = \"L0\" then false else true) sep s in\n[mk_symbol ~text ~styp ~pattern:None]\n",
             (Fgram.mk_action
                (fun (sep : 'sep_symbol option)  (s : 'simple) 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Key l ->
                       (let s::[] = s in
-                       let () = check_not_tok s in
                        let styp =
                          `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
                        let text =
@@ -742,11 +743,10 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "OPT"; `Snterm (Fgram.obj (simple : 'simple Fgram.t ))],
-          ("let s::[] = s in\nlet () = check_not_tok s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in [mk_symbol ~text ~styp ~pattern:None]\n",
+          ("let s::[] = s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in [mk_symbol ~text ~styp ~pattern:None]\n",
             (Fgram.mk_action
                (fun (s : 'simple)  _  (_loc : Locf.t)  ->
                   (let s::[] = s in
-                   let () = check_not_tok s in
                    let styp = `App (_loc, (`Lid (_loc, "option")), (s.styp)) in
                    let text = `Sopt (_loc, (s.text)) in
                    [mk_symbol ~text ~styp ~pattern:None] : 'symbol )))));
@@ -856,20 +856,18 @@ let _ =
           `Skeyword ":";
           `Snterm (Fgram.obj (t_qualid : 't_qualid Fgram.t ));
           `Skeyword ")"],
-           ("let old = gm () in let () = grammar_module_name := t in ((Some i), old)\n",
+           ("let old = gm () in let () = module_name := t in ((Some i), old)\n",
              (Fgram.mk_action
                 (fun _  (t : 't_qualid)  _  (i : 'qualid)  _  (_loc : Locf.t)
                     ->
                    (let old = gm () in
-                    let () = grammar_module_name := t in ((Some i), old) : 
-                   'extend_header )))));
+                    let () = module_name := t in ((Some i), old) : 'extend_header )))));
         ([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ))],
-          ("let old = gm () in let () = grammar_module_name := t in (None, old)\n",
+          ("let old = gm () in let () = module_name := t in (None, old)\n",
             (Fgram.mk_action
                (fun (t : 'qualuid)  (_loc : Locf.t)  ->
                   (let old = gm () in
-                   let () = grammar_module_name := t in (None, old) : 
-                  'extend_header )))));
+                   let () = module_name := t in (None, old) : 'extend_header )))));
         ([],
           ("(None, (gm ()))\n",
             (Fgram.mk_action
@@ -879,26 +877,26 @@ let _ =
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend _loc gram el in\nlet () = grammar_module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend _loc gram el in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
                     let res = text_of_functorial_extend _loc gram el in
-                    let () = grammar_module_name := old in res : 'extend_body )))))]));
+                    let () = module_name := old in res : 'extend_body )))))]));
   Fgram.extend_single (unsafe_extend_body : 'unsafe_extend_body Fgram.t )
     (None,
       (None, None,
         [([`Snterm (Fgram.obj (extend_header : 'extend_header Fgram.t ));
           `Slist1 (`Snterm (Fgram.obj (entry : 'entry Fgram.t )))],
-           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = grammar_module_name := old in res\n",
+           ("let (gram,old) = rest in\nlet res = text_of_functorial_extend ~safe:false _loc gram el in\nlet () = module_name := old in res\n",
              (Fgram.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
                    (_loc : Locf.t)  ->
                    (let (gram,old) = rest in
                     let res =
                       text_of_functorial_extend ~safe:false _loc gram el in
-                    let () = grammar_module_name := old in res : 'unsafe_extend_body )))))]));
+                    let () = module_name := old in res : 'unsafe_extend_body )))))]));
   Fgram.extend_single (qualuid : 'qualuid Fgram.t )
     (None,
       (None, None,
@@ -1185,11 +1183,10 @@ let _ =
          `Slist1sep
            ((`Snterm (Fgram.obj (rule : 'rule Fgram.t ))), (`Skeyword "|"));
          `Skeyword "]"],
-          ("let rules = Listf.concat ruless in\nretype_rule_list_without_patterns _loc rules\n",
+          ("Listf.concat ruless\n",
             (Fgram.mk_action
                (fun _  (ruless : 'rule list)  _  (_loc : Locf.t)  ->
-                  (let rules = Listf.concat ruless in
-                   retype_rule_list_without_patterns _loc rules : 'rule_list )))))]));
+                  (Listf.concat ruless : 'rule_list )))))]));
   Fgram.extend_single (rule : 'rule Fgram.t )
     (None,
       (None, None,
