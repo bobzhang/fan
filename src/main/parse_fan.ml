@@ -204,7 +204,7 @@ let apply () = begin
       [ "="; exp{e} %{ e}
       | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; exp{e} %{
           let u = %ctyp{ ! $t1 . $t2 } in  %{ ($e : $u) }}
-      | ":"; ctyp{t}; "="; exp{e} %{ %{ ($e : $t) }}
+      | ":"; ctyp{t}; "="; exp{e} %exp{ ($e : $t) }
       | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} %{
         match t with
         | %ctyp{ ! $_ . $_ } ->
