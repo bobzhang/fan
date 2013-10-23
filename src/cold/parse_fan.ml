@@ -5601,7 +5601,7 @@ let apply () =
        (None, None,
          [([`Stoken
               (((function | `Ant ("",_) -> true | _ -> false)),
-                ("Ant", (`A "")), "`Ant (\"\",_)")],
+                ("Ant", (`A "")), "`Ant s")],
             ("mk_anti _loc \"str_list\" s\n",
               (Fgram.mk_action
                  (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -5614,7 +5614,7 @@ let apply () =
                              (Ftoken.token_to_string __fan_0))))));
          ([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               ("Ant", (`A "")), "`Ant (\"\",_)");
+               ("Ant", (`A "")), "`Ant s");
           `Sself],
            ("`App (_loc, (mk_anti _loc \"\" s), xs)\n",
              (Fgram.mk_action
