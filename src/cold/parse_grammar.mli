@@ -14,7 +14,7 @@ open FAst
      be used alone
      {[
      with str t extend_header %{ U.M };
-     - : FAst.ident option * FAst.ident = (None, `Uid (, "Fgram"))
+     - : FAst.ident option * FAst.ident = (None, `Uid (, "Gramf"))
      with str t extend_header %{ U };
      - : FAst.ident option * FAst.ident =
      (None, `Dot (, `Uid (, "U"), `Uid (, "M")))
@@ -22,9 +22,9 @@ open FAst
      - : FAst.ident option * FAst.ident = (Some (`Lid (, "g")), `Uid (, "U"))
      ]}
      It should be fixed by introducing more advanced grammar features *)    
-val extend_header : (vid option * vid) Fgram.t
+val extend_header : (vid option * vid) Gramf.t
     
-val qualuid : vid Fgram.t
+val qualuid : vid Gramf.t
 
 
 (** parse qualified  [X.Y.g]
@@ -33,17 +33,17 @@ val qualuid : vid Fgram.t
      - : FAst.ident = `Dot (, `Uid (, "A"), `Dot (, `Uid (, "B"), `Lid (, "g")))
      ]} *)
 
-val qualid : vid Fgram.t
+val qualid : vid Gramf.t
 
 (** parse qualified path ending with [X.t]
      {[
      with str t t_qualid %{ A.U.t };
      - : FAst.ident = `Dot (, `Uid (, "A"), `Uid (, "U"))
      ]} *)
-val t_qualid : vid Fgram.t
+val t_qualid : vid Gramf.t
     
 (* val entry_name : *)
-(*     ([ `name of Ftoken.name option | `non ] * Gram_def.name) Fgram.t *)
+(*     ([ `name of Tokenf.name option | `non ] * Gram_def.name) Gramf.t *)
 
 
 (** return an entry [Gram_def.entry]
@@ -65,12 +65,12 @@ val t_qualid : vid Fgram.t
 
 (** parse [position] and translate into [exp] node, fixme,
     delay the translation *)    
-val position : exp Fgram.t
+val position : exp Gramf.t
 
 (** parse association, and translate into [exp] node. FIXME  *)    
-val assoc : exp Fgram.t
-val name : Gram_def.name Fgram.t
-val string : exp Fgram.t
+val assoc : exp Gramf.t
+val name : Gram_def.name Gramf.t
+val string : exp Gramf.t
 
 
 
@@ -78,10 +78,10 @@ val string : exp Fgram.t
 
 
 (** return symbol with patterns (may override inferred patterns) *)
-(* val psymbol : Gram_def.symbol Fgram.t *)
+(* val psymbol : Gram_def.symbol Gramf.t *)
     
 (** return symbol with pattern(inferred) or None  *)    
-(* val symbol :  Gram_def.symbol Fgram.t *)
+(* val symbol :  Gram_def.symbol Gramf.t *)
 
 
 val simple : Gram_def.symbol list Gentry.t
@@ -115,13 +115,13 @@ val simple : Gram_def.symbol list Gentry.t
      `Lid (, "x"))))}];
      action = None}
      ]} *)
-(* val rule :  Gram_def.rule Fgram.t *)
-(* val rule_list : Gram_def.rule list Fgram.t *)
+(* val rule :  Gram_def.rule Gramf.t *)
+(* val rule_list : Gram_def.rule list Gramf.t *)
 
-val level :  Gram_def.level Fgram.t
+val level :  Gram_def.level Gramf.t
 val level_list :
     ([ `Group of (Gram_def.level list )
-     | `Single of Gram_def.level ]) Fgram.t
+     | `Single of Gram_def.level ]) Gramf.t
 
 
 (** the main entrance
@@ -131,16 +131,16 @@ val level_list :
      nonterminalsclear:
      [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
 
-     Fgram.extend (nonterminalsclear : 'nonterminalsclear Fgram.t )
+     Gramf.extend (nonterminalsclear : 'nonterminalsclear Gramf.t )
      (None,
      [(None, None,
-     [([`Snterm (Fgram.obj (qualuid : 'qualuid Fgram.t ));
+     [([`Snterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
      `Slist0
-     (Fgram.srules nonterminalsclear
-     [([`Snterm (Fgram.obj (a_lident : 'a_lident Fgram.t ))],
-     (Fgram.mk_action
+     (Gramf.srules nonterminalsclear
+     [([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+     (Gramf.mk_action
      (fun (x : 'a_lident)  (_loc : Locf.t)  -> (x : 'e__7 ))))])],
-     (Fgram.mk_action
+     (Gramf.mk_action
      (fun (ls : 'e__7 list)  (t : 'qualuid)  (_loc : Locf.t)  ->
      (() : 'nonterminalsclear ))))])])
      ]}
@@ -151,7 +151,7 @@ val level_list :
      FAst.ident option ->
      Gram_def.name list option -> Gram_def.entry list -> FAst.exp
      ]} *) 
-val extend_body : exp Fgram.t
+val extend_body : exp Gramf.t
 
 
     

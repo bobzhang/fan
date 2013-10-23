@@ -22,7 +22,7 @@ let type_entry :
   let ty :
   [ "("; qualid{x} ; ":"; t_qualid{t};")" %{ `Dyn(x,t)}
   |  qualuid{t} %{ `Static t}
-  | %{ `Static (`Uid(_loc,"Fgram")) (** BOOTSTRAP, associated with module [Fgram]*)}
+  | %{ `Static (`Uid(_loc,"Gramf")) (** BOOTSTRAP, associated with module [Gramf]*)}
   ]
       
 qualuid :

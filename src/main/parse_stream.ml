@@ -46,9 +46,9 @@ open FAst
     parser_case :
     [stream_pat{sp}
      (*  let e = *)
-     (*    if x.name = Ftoken.empty_name then *)
-     (*      let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in *)
-     (*      Ftoken.quot_expand expander x *)
+     (*    if x.name = Tokenf.empty_name then *)
+     (*      let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in *)
+     (*      Tokenf.quot_expand expander x *)
      (*    else Ast_quotation.expand x Dyn_tag.exp in *)
      (*  (sp,None, e) *)
      (* } *); "->"; exp{e} %{   (sp, None, e)}

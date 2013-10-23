@@ -4,11 +4,11 @@
 
 type t = {
     mutable kwds : Setf.String.t;
-    mutable filter : Ftoken.filter;
+    mutable filter : Tokenf.filter;
   }
 
 
-val filter : t -> (Ftoken.t * Locf.t) Fstream.t -> Ftoken.stream
+val filter : t -> (Tokenf.t * Locf.t) Streamf.t -> Tokenf.stream
 
-val set_filter : t -> (Ftoken.filter -> Ftoken.filter) -> unit
+val set_filter : t -> (Tokenf.filter -> Tokenf.filter) -> unit
 

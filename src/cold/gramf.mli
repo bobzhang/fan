@@ -1,5 +1,5 @@
 
-open Ftoken
+open Tokenf
   
 type 'a t = 'a Gentry.t
 
@@ -66,7 +66,7 @@ type descr = data
       
 
       
-type token_pattern = ((Ftoken.t -> bool) * descr * string )
+type token_pattern = ((Tokenf.t -> bool) * descr * string )
 
 type entry = Gstructure.entry 
 and desc = Gstructure.desc
@@ -106,7 +106,7 @@ val clear: 'a t -> unit
 
 val mk_action: 'a -> Action.t
 
-val string_of_token:[> Ftoken.t ] -> string
+val string_of_token:[> Tokenf.t ] -> string
 
 val obj: 'a t -> entry         
 val repr: entry -> 'a t
@@ -118,13 +118,13 @@ val gram: gram
 (** create a standalone gram
     {[
 
-    {:new| (g:Fgram.t)
+    {:new| (g:Gramf.t)
     include_quot
     |}
     ]}
  *)
 val create_lexer:
-    ?filter:Ftoken.filter ->
+    ?filter:Tokenf.filter ->
       annot:string -> keywords: string list -> unit -> gram
 
 val mk_dynamic: gram -> string -> 'a t
@@ -138,18 +138,18 @@ val of_parser:  string ->  (stream -> 'a) ->  'a t
 val get_filter: unit -> FanTokenFilter.t
 
 
-val lex_string: Locf.t -> string -> Ftoken.stream
+val lex_string: Locf.t -> string -> Tokenf.stream
 
 
-val parse:  'a t -> Locf.t -> char Fstream.t -> 'a
+val parse:  'a t -> Locf.t -> char Streamf.t -> 'a
 
 val parse_string:
-    ?lexer:(Locf.t -> char Fstream.t -> Ftoken.stream ) -> 
+    ?lexer:(Locf.t -> char Streamf.t -> Tokenf.stream ) -> 
     ?loc:Locf.t -> 'a t  -> string -> 'a
       
-val debug_origin_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
+val debug_origin_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
 
-val debug_filtered_token_stream: 'a t -> Ftoken.t Fstream.t -> 'a
+val debug_filtered_token_stream: 'a t -> Tokenf.t Streamf.t -> 'a
 
 val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a
 
@@ -161,15 +161,15 @@ val delete_rule:  'a t -> symbol list -> unit
 
 (* val srules: production list  ->  [> `Stree of tree ] *)
 
-val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Fstream.t -> 'a) -> 'e Fstream.t -> 'b
+val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Streamf.t -> 'a) -> 'e Streamf.t -> 'b
 
 
-val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Fstream.t -> 'a) -> 'e Fstream.t -> 'b
+val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Streamf.t -> 'a) -> 'e Streamf.t -> 'b
       
 val sfold0sep:
-    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c Fstream.t -> 'a) ->
-      ('c Fstream.t -> unit) ->
-        'c Fstream.t -> 'b
+    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c Streamf.t -> 'a) ->
+      ('c Streamf.t -> unit) ->
+        'c Streamf.t -> 'b
 
 val sfold1sep:
     ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> (stream -> 'a) ->

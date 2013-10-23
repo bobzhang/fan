@@ -1,7 +1,7 @@
 
 type t = {
     mutable kwds : Setf.String.t;
-    mutable filter : Ftoken.filter;
+    mutable filter : Tokenf.filter;
   }
 
 type error =  
@@ -27,7 +27,7 @@ let string_of_error_msg = Formatf.to_string pp_print_error;;
 
 
 (* [Sym] should all be filtered into keywords *)  
-let keyword_conversion (tok:Ftoken.t) kwds =
+let keyword_conversion (tok:Tokenf.t) kwds =
   match tok with
   | `Sym ((_,s) as u) | `Lid ((_,s) as u)
   | `Uid ((_,s) as u) when Setf.String.mem s  kwds -> `Key u
@@ -57,7 +57,7 @@ let filter x =
       (tok, loc)
     end in
 
-  fun strm -> x.filter (Fstream.map f strm)
+  fun strm -> x.filter (Streamf.map f strm)
 
 let set_filter x f = x.filter <- f x.filter
 

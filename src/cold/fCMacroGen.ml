@@ -104,7 +104,7 @@ let define ~exp  ~pat  eo y =
             (List.length l1))) in
   (match eo with
    | Some ([],e) ->
-       (Fgram.extend_single (exp : 'exp Fgram.t )
+       (Gramf.extend_single (exp : 'exp Gramf.t )
           ((Some (`Level "simple")),
             (None, None,
               [([`Stoken
@@ -113,12 +113,12 @@ let define ~exp  ~pat  eo y =
                       | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
                      "`Uid $y")],
                  ("((new Objs.reloc) _loc)#exp e\n",
-                   (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   (Gramf.mk_action
+                      (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ -> (((new Objs.reloc) _loc)#exp e : 'exp )
                          | _ -> failwith "((new Objs.reloc) _loc)#exp e\n"))))]));
-        Fgram.extend_single (pat : 'pat Fgram.t )
+        Gramf.extend_single (pat : 'pat Gramf.t )
           ((Some (`Level "simple")),
             (None, None,
               [([`Stoken
@@ -127,8 +127,8 @@ let define ~exp  ~pat  eo y =
                       | _ -> false)), (`App ((`Vrn "Uid"), (`Str y))),
                      "`Uid $y")],
                  ("let p = substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n",
-                   (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   (Gramf.mk_action
+                      (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
                              (let p = substp _loc [] e in
@@ -137,10 +137,10 @@ let define ~exp  ~pat  eo y =
                              failwith
                                "let p = substp _loc [] e in ((new Objs.reloc) _loc)#pat p\n"))))])))
    | Some (sl,e) ->
-       let grammar_entry_create x = Fgram.mk x in
-       let params: 'params Fgram.t = grammar_entry_create "params"
-       and param: 'param Fgram.t = grammar_entry_create "param" in
-       (Fgram.extend_single (exp : 'exp Fgram.t )
+       let grammar_entry_create x = Gramf.mk x in
+       let params: 'params Gramf.t = grammar_entry_create "params"
+       and param: 'param Gramf.t = grammar_entry_create "param" in
+       (Gramf.extend_single (exp : 'exp Gramf.t )
           ((Some (`Level "apply")),
             (None, None,
               [([`Stoken
@@ -150,8 +150,8 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y");
                 `Sself],
                  ("let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n",
-                   (Fgram.mk_action
-                      (fun (param : 'exp)  (__fan_0 : [> Ftoken.t]) 
+                   (Gramf.mk_action
+                      (fun (param : 'exp)  (__fan_0 : [> Tokenf.t]) 
                          (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
@@ -168,29 +168,29 @@ let define ~exp  ~pat  eo y =
                          | _ ->
                              failwith
                                "let el =\n  match param with\n  | (`Par (_loc,e) : FAst.exp) -> list_of_com e []\n  | e -> [e] in\nif (List.length el) = (List.length sl)\nthen let env = List.combine sl el in ((new subst) _loc env)#exp e\nelse incorrect_number _loc el sl\n"))))]));
-        Fgram.extend_single (params : 'params Fgram.t )
+        Gramf.extend_single (params : 'params Gramf.t )
           (None,
             (None, None,
               [([`Slist1sep
-                   ((`Snterm (Fgram.obj (param : 'param Fgram.t ))),
+                   ((`Snterm (Gramf.obj (param : 'param Gramf.t ))),
                      (`Skeyword ","))],
                  ("xs\n",
-                   (Fgram.mk_action
+                   (Gramf.mk_action
                       (fun (xs : 'param list)  (_loc : Locf.t)  ->
                          (xs : 'params )))))]));
-        Fgram.extend_single (param : 'param Fgram.t )
+        Gramf.extend_single (param : 'param Gramf.t )
           (None,
             (None, None,
               [([`Stoken
                    (((function | `Lid _ -> true | _ -> false)),
                      (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
                  ("x\n",
-                   (Fgram.mk_action
-                      (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+                   (Gramf.mk_action
+                      (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Lid x -> (x : 'param )
                          | _ -> failwith "x\n"))))]));
-        Fgram.extend_single (pat : 'pat Fgram.t )
+        Gramf.extend_single (pat : 'pat Gramf.t )
           ((Some (`Level "simple")),
             (None, None,
               [([`Stoken
@@ -200,8 +200,8 @@ let define ~exp  ~pat  eo y =
                      "`Uid $y");
                 `Sself],
                  ("let pl =\n  match param with\n  | (`Par (_loc,p) : FAst.pat) -> list_of_com p []\n  | p -> [p] in\nif (List.length pl) = (List.length sl)\nthen\n  let env = List.combine sl pl in\n  let p = substp _loc env e in ((new Objs.reloc) _loc)#pat p\nelse incorrect_number _loc pl sl\n",
-                   (Fgram.mk_action
-                      (fun (param : 'pat)  (__fan_0 : [> Ftoken.t]) 
+                   (Gramf.mk_action
+                      (fun (param : 'pat)  (__fan_0 : [> Tokenf.t]) 
                          (_loc : Locf.t)  ->
                          match __fan_0 with
                          | `Uid _ ->
@@ -226,24 +226,24 @@ let undef ~exp  ~pat  x =
     (let eo = List.assoc x defined.contents in
      match eo with
      | Some ([],_) ->
-         (Fgram.delete_rule exp
+         (Gramf.delete_rule exp
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true
                   | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))), "`Uid $x")];
-          Fgram.delete_rule pat
+          Gramf.delete_rule pat
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true
                   | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))), "`Uid $x")])
      | Some (_,_) ->
-         (Fgram.delete_rule exp
+         (Gramf.delete_rule exp
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true
                   | _ -> false)), (`App ((`Vrn "Uid"), (`Str x))), "`Uid $x");
             `Sself];
-          Fgram.delete_rule pat
+          Gramf.delete_rule pat
             [`Stoken
                (((function
                   | `Uid __fan__x when x = __fan__x -> true

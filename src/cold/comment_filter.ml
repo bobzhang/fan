@@ -1,19 +1,19 @@
-type t = ((string* Locf.t) Fstream.t* (string* Locf.t) Queue.t) 
+type t = ((string* Locf.t) Streamf.t* (string* Locf.t) Queue.t) 
 let mk () =
   let q = Queue.create () in
   let f _ = try Some (Queue.take q) with | Queue.Empty  -> None in
-  ((Fstream.from f), q)
+  ((Streamf.from f), q)
 let filter (_,q) =
-  let rec self (__strm : _ Fstream.t) =
-    match Fstream.peek __strm with
+  let rec self (__strm : _ Streamf.t) =
+    match Streamf.peek __strm with
     | Some (`Comment (_,x),loc) ->
-        (Fstream.junk __strm;
+        (Streamf.junk __strm;
          (let xs = __strm in Queue.add (x, loc) q; self xs))
     | Some x ->
-        (Fstream.junk __strm;
+        (Streamf.junk __strm;
          (let xs = __strm in
-          Fstream.icons x (Fstream.slazy (fun _  -> self xs))))
-    | _ -> Fstream.sempty in
+          Streamf.icons x (Streamf.slazy (fun _  -> self xs))))
+    | _ -> Streamf.sempty in
   self
 let take_list (_,q) =
   let rec self accu =

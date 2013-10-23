@@ -3,7 +3,7 @@
 
     
 let setup_op_parser entry p =
-  Fgram.setup_parser entry
+  Gramf.setup_parser entry
     (%parser{| (`Key (_,x) | `Sym (_,x),_loc) when p x  -> %exp{ $lid:x }})
 
 
@@ -22,7 +22,7 @@ let symbolchar s i =
 
 
 (* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)
-(*   EXTEND Fgram GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)
+(*   EXTEND Gramf GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)
 (*   fan_quots: *)
 (*     ["top" *)
 (*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> %exp{ begin $list:strs end } ] ] *)
@@ -47,17 +47,17 @@ let symbolchar s i =
 
   (* let mk_semi_list nt nts = *)
   (*   with rec_exp *)
-  (*   {:extend|Fgram *)
+  (*   {:extend|Gramf *)
   (*     nts:[ nt{b1};";";S{b2} -> %{$b1;$b2} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
   (*   |}; *)
     
   
 (* test wheter revised or not hack*)  
 (* let test_pat_lessminus = *)
-(*     Fgram.of_parser "test_pat_lessminus" *)
+(*     Gramf.of_parser "test_pat_lessminus" *)
 (*       (fun strm -> *)
 (*         let rec skip_pat n = *)
-(*           match Fstream.peek_nth n strm with *)
+(*           match Streamf.peek_nth n strm with *)
 (*           [ Some (`Key "<-",_) -> n *)
 (*           | Some (`Key ("[" | "[<"),_) -> *)
 (*               skip_pat (ignore_upto "]" (n + 1) + 1) *)
@@ -67,9 +67,9 @@ let symbolchar s i =
 (*               skip_pat (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some (`Key ("as" | "::" | "," | "_"),_) *)
 (*           | Some (`Lid _ | `Uid _, _) -> skip_pat (n + 1) *)
-(*           | Some _ | None -> raise Fstream.NotConsumed ] *)
+(*           | Some _ | None -> raise Streamf.NotConsumed ] *)
 (*         and ignore_upto end_kwd n = *)
-(*           match Fstream.peek_nth n strm with *)
+(*           match Streamf.peek_nth n strm with *)
 (*           [ Some (`Key prm,_) when prm = end_kwd -> n *)
 (*           | Some (`Key ("[" | "[<"),_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1) *)
@@ -78,7 +78,7 @@ let symbolchar s i =
 (*           | Some (`Key "{",_) -> *)
 (*               ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
 (*           | Some _ -> ignore_upto end_kwd (n + 1) *)
-(*           | None -> raise Fstream.NotConsumed ] *)
+(*           | None -> raise Streamf.NotConsumed ] *)
 (*         in *)
 (*         skip_pat 1); *)
 

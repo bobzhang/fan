@@ -57,7 +57,7 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
+let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
   | newline as x %{
     begin
       update_loc  lexbuf;
@@ -99,8 +99,8 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
        let c = new_cxt () in
        let name =
          match name with
-         | Some name -> Ftoken.name_of_string name
-         | None -> Ftoken.empty_name  in
+         | Some name -> Tokenf.name_of_string name
+         | None -> Tokenf.empty_name  in
        begin
          let old = lexbuf.lex_start_p in
          let content =
@@ -112,7 +112,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
          let loc = old -- lexbuf.lex_curr_p in
          let shift = String.length shift in
          let retract = (* 2 *) 1  in
-         (`Quot{Ftoken.name;meta;shift;content;loc;retract} ,loc)
+         (`Quot{Tokenf.name;meta;shift;content;loc;retract} ,loc)
        end}
   | '$' %{
        let  dollar (c:Lexing_util.context) =
@@ -164,7 +164,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     
 
-let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
+let from_lexbuf lb = Streamf.from (fun _ -> Some (token lb))
 
 let from_stream (loc:Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in begin

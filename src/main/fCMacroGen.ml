@@ -125,8 +125,8 @@ let undef ~exp ~pat x =
     begin
       (let eo = List.assoc x !defined in
       match eo with
-      | Some ([], _) -> %delete{ Fgram exp: [`Uid $x ]  pat: [`Uid $x ] }
-      | Some (_, _) ->  %delete{ Fgram exp: [`Uid $x; S ] pat: [`Uid $x; S] }
+      | Some ([], _) -> %delete{ Gramf exp: [`Uid $x ]  pat: [`Uid $x ] }
+      | Some (_, _) ->  %delete{ Gramf exp: [`Uid $x; S ] pat: [`Uid $x; S] }
       | None -> ()) ;
       defined := List.remove x !defined;
     end

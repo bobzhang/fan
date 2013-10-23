@@ -2,13 +2,13 @@
 
 
 
-%new{ (g:Fgram.t) fan_quot fan_quots};;
+%new{ (g:Gramf.t) fan_quot fan_quots};;
 
 
 (* when have local grammars created, g should be specified otherwise, the default
    lexer will mismatch *)
 with exp
-%unsafe_extend{ (g:Fgram.t)
+%unsafe_extend{ (g:Gramf.t)
   fan_quot:
   ["derive";"("; L1 id {plugins}; ")" %{List.iter Typehook.plugin_add plugins}
   | "unload"; L1 id  SEP ","{plugins} %{List.iter Typehook.plugin_remove plugins }

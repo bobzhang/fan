@@ -147,13 +147,13 @@ type t =
 
 
 (**
-   [Ftoken.stram]
+   [Tokenf.stram]
  *)      
-type stream = (t * Locf.t) Fstream.t 
+type stream = (t * Locf.t) Streamf.t 
 
 type 'a token  = [> t] as 'a
       
-type 'a estream  = ('a token * Locf.t) Fstream.t
+type 'a estream  = ('a token * Locf.t) Streamf.t
       
 type 'a parse = stream -> 'a
 

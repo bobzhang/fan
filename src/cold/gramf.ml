@@ -104,24 +104,24 @@ let default_keywords =
   "lor";
   "["]
 let gkeywords = ref (Setf.String.of_list default_keywords)
-let rec fan_filter (__strm : _ Fstream.t) =
-  match Fstream.peek __strm with
-  | Some (#Tokenf.space_token,_) -> (Fstream.junk __strm; fan_filter __strm)
+let rec fan_filter (__strm : _ Streamf.t) =
+  match Streamf.peek __strm with
+  | Some (#Tokenf.space_token,_) -> (Streamf.junk __strm; fan_filter __strm)
   | Some x ->
-      (Fstream.junk __strm;
+      (Streamf.junk __strm;
        (let xs = __strm in
-        Fstream.icons x (Fstream.slazy (fun _  -> fan_filter xs))))
-  | _ -> Fstream.sempty
+        Streamf.icons x (Streamf.slazy (fun _  -> fan_filter xs))))
+  | _ -> Streamf.sempty
 let rec ignore_layout: Tokenf.filter =
-  fun (__strm : _ Fstream.t)  ->
-    match Fstream.peek __strm with
+  fun (__strm : _ Streamf.t)  ->
+    match Streamf.peek __strm with
     | Some (#Tokenf.space_token,_) ->
-        (Fstream.junk __strm; ignore_layout __strm)
+        (Streamf.junk __strm; ignore_layout __strm)
     | Some x ->
-        (Fstream.junk __strm;
+        (Streamf.junk __strm;
          (let xs = __strm in
-          Fstream.icons x (Fstream.slazy (fun _  -> ignore_layout xs))))
-    | _ -> Fstream.sempty
+          Streamf.icons x (Streamf.slazy (fun _  -> ignore_layout xs))))
+    | _ -> Streamf.sempty
 let gram =
   {
     annot = "Fan";
@@ -136,11 +136,11 @@ let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let token_stream_of_string s = lex_string Locf.string_loc s
 let debug_origin_token_stream (entry : 'a t) tokens =
-  (parse_origin_tokens entry (Fstream.map (fun t  -> (t, Locf.ghost)) tokens) : 
+  (parse_origin_tokens entry (Streamf.map (fun t  -> (t, Locf.ghost)) tokens) : 
   'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (Fstream.map (fun t  -> (t, Locf.ghost)) tokens)
+    (Streamf.map (fun t  -> (t, Locf.ghost)) tokens)
 let parse_string_safe ?(loc= Locf.string_loc)  entry s =
   try parse_string entry ~loc s
   with
@@ -181,7 +181,7 @@ let parse_include_file entry =
           file
       with | Not_found  -> file in
     let ch = open_in file in
-    let st = Fstream.of_channel ch in parse entry (Locf.mk file) st
+    let st = Streamf.of_channel ch in parse entry (Locf.mk file) st
 let parse_string_of_entry ?(loc= Locf.mk "<string>")  entry s =
   try parse_string entry ~loc s
   with

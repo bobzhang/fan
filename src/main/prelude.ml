@@ -15,7 +15,7 @@ open Util
 
 
 
-type 'a parser_fun  = Locf.t -> char Fstream.t -> 'a option
+type 'a parser_fun  = Locf.t -> char Streamf.t -> 'a option
 
 type 'a printer_fun  =
       ?input_file:string ->
@@ -118,14 +118,14 @@ let register_parsetree_printer () =
 
 
 let parse_implem loc cs =
-  let l =simple_wrap loc cs  @@ Fgram.parse Syntaxf.implem  in
+  let l =simple_wrap loc cs  @@ Gramf.parse Syntaxf.implem  in
   match l with
   | [] -> None
   | l -> Some (Ast_gen.sem_of_list l)
 
 
 let parse_interf loc cs =
-  let l = simple_wrap loc cs @@ Fgram.parse Syntaxf.interf  in
+  let l = simple_wrap loc cs @@ Gramf.parse Syntaxf.interf  in
   match l with
   | [] -> None   
   | l -> Some (Ast_gen.sem_of_list l)
@@ -136,7 +136,7 @@ let parse_file  name pa = begin
   let  () = Fan_warnings.current := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = Fstream.of_channel ic in
+  let cs = Streamf.of_channel ic in
   finally ~action:clear  cs (pa loc)
 end
 
@@ -155,9 +155,9 @@ end
 
 let wrap parse_fun ~print_location lb =
   try
-    let token_stream = lb |> Lex_fan.from_lexbuf |> Fgram.filter in
-    match Fstream.peek token_stream with
-    | Some (`EOI _,_) -> (Fstream.junk token_stream; raise End_of_file)
+    let token_stream = lb |> Lex_fan.from_lexbuf |> Gramf.filter in
+    match Streamf.peek token_stream with
+    | Some (`EOI _,_) -> (Streamf.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file | Sys.Break
@@ -174,7 +174,7 @@ let wrap parse_fun ~print_location lb =
 
 
 let toplevel_phrase token_stream =
-  match Fgram.parse_origin_tokens Syntaxf.top_phrase token_stream with
+  match Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream with
   | Some stru ->
         let stru =
           (* Syntaxf.Ast_filters.fold_topphrase_filters (fun t filter -> filter t) stru in *)
@@ -187,7 +187,7 @@ let toplevel_phrase token_stream =
 let use_file token_stream =
   let loop () =
       let (pl, stopped_at_directive) =
-        Fgram.parse_origin_tokens Syntaxf.implem token_stream in
+        Gramf.parse_origin_tokens Syntaxf.implem token_stream in
       if stopped_at_directive <> None then (* only support [load] and [directory] *)
         with stru match pl with
         | _ -> (pl, false) 
@@ -198,7 +198,7 @@ let use_file token_stream =
     else
       let rec loop () =
         let (pl, stopped_at_directive) =
-          Fgram.parse_origin_tokens Syntaxf.implem  token_stream in  
+          Gramf.parse_origin_tokens Syntaxf.implem  token_stream in  
         if stopped_at_directive <> None then pl @ loop () else pl in loop () in
   (* FIXME semantics imprecise, the filter will always be applied *)
   List.map (fun x -> Ast2pt.phrase (Ast_filters.apply_implem_filters x) ) (pl0 @ pl)

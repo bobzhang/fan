@@ -7,10 +7,10 @@ open Util
 let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"
 let ghost = Locf.ghost
-let module_name = ref (`Uid (ghost, "Fgram"))
+let module_name = ref (`Uid (ghost, "Gramf"))
 let gm () =
   match Configf.compilation_unit.contents with
-  | Some "Fgram" -> `Uid (ghost, "")
+  | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> module_name.contents
 let mk_entry ~local  ~name  ~pos  ~levels  =
   { Gram_def.name = name; pos; levels; local }
@@ -38,7 +38,7 @@ let make_ctyp (styp : Gram_def.styp) tvar =
          else
            (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
      | `Tok _loc ->
-         (`Dot (_loc, (`Uid (_loc, "Ftoken")), (`Lid (_loc, "t"))) : 
+         (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))) : 
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )
@@ -166,7 +166,7 @@ let text_of_action (_loc : loc) (psl : Gram_def.symbol list)
                 (`App
                    (_loc,
                      (`Dot
-                        (_loc, (`Uid (_loc, "Ftoken")),
+                        (_loc, (`Uid (_loc, "Tokenf")),
                           (`Lid (_loc, "token_to_string")))), x) : FAst.exp ))
              e in
          let error =

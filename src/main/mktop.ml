@@ -430,8 +430,8 @@ let () =
   | Failure str -> Some (Format.sprintf "Failure: %S" str)
   | Invalid_argument str -> Some (Format.sprintf "Invalid argument: %S" str)
   | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-  | Fstream.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
-  | Fstream.Error str -> Some (Format.sprintf  "Fstream.Error %s" str)
+  | Streamf.NotConsumed -> Some (Format.sprintf "Parse failure(NotConsumed)")
+  | Streamf.Error str -> Some (Format.sprintf  "Streamf.Error %s" str)
   | _ -> None;;
 
 

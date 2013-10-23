@@ -96,7 +96,7 @@ Location_util:
     add_string -> (++)
     add_char -> (+>) ;
    |}  *)
-let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
+let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
   %lex{
    | newline as x %{
      begin
@@ -192,8 +192,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
        let c = new_cxt () in
        let name =
          match name with
-         | Some name -> Ftoken.name_of_string name
-         | None -> Ftoken.empty_name  in
+         | Some name -> Tokenf.name_of_string name
+         | None -> Tokenf.empty_name  in
        begin
          let old = lexbuf.lex_start_p in
          let content =
@@ -206,8 +206,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
          let shift = String.length shift in
          let retract = (* 2 *) 1  in
          (if x = None then
-           `Quot{Ftoken.name;meta;shift;content;loc;retract}
-         else `DirQuotation {Ftoken.name;meta;shift;content;loc;retract} ,loc)
+           `Quot{Tokenf.name;meta;shift;content;loc;retract}
+         else `DirQuotation {Tokenf.name;meta;shift;content;loc;retract} ,loc)
        end}
          
          
@@ -271,9 +271,9 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
     
 
     
-let from_lexbuf lb : (Ftoken.t * Locf.t ) Fstream.t =
+let from_lexbuf lb : (Tokenf.t * Locf.t ) Streamf.t =
   let next _ = Some (token lb)  in (* this requires the [lexeme_start_p] to be correct ...  *)
-  Fstream.from next
+  Streamf.from next
 
 
 (* local variables: *)

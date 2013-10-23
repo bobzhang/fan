@@ -3,19 +3,19 @@ open Gstructure
 
 
 let empty_entry ename _ =
-  raise (Fstream.Error ("entry [" ^ ename ^ "] is empty"))
+  raise (Streamf.Error ("entry [" ^ ename ^ "] is empty"))
 
 
 
 (* get_cur_loc *must* be used first *)  
 let get_cur_loc strm =
-  match Fstream.peek strm with
+  match Streamf.peek strm with
   | Some (_,r) -> r
   | None -> Locf.ghost 
 
 
 let get_prev_loc strm =
-  match Fstream.get_last strm with
+  match Streamf.get_last strm with
   |Some (_,l) -> l
   |None -> Locf.ghost
 

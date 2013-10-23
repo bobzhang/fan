@@ -19,11 +19,11 @@ let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"  
 let ghost = Locf.ghost
 
-let module_name = ref (`Uid (ghost,"Fgram")) (* BOOTSTRAPING*)  
+let module_name = ref (`Uid (ghost,"Gramf")) (* BOOTSTRAPING*)  
 
 let gm () =
   match !Configf.compilation_unit with
-  |Some "Fgram" (* BOOTSTRAPING*)
+  |Some "Gramf" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
   |Some _ | None -> !module_name
 
@@ -62,10 +62,10 @@ let make_ctyp (styp:Gram_def.styp) tvar : ctyp =
     | %ctyp'{ $t2 $t1}-> %ctyp{$(aux t2) $(aux t1)}
     | `Self _loc ->
         if tvar = "" then
-          Locf.raise _loc (Fstream.Error ("S: illegal in anonymous entry level"))
+          Locf.raise _loc (Streamf.Error ("S: illegal in anonymous entry level"))
         else %ctyp{ '$lid:tvar }
-    | `Tok _loc -> %ctyp{ Ftoken.t }  (** BOOTSTRAPPING, associated with module name Ftoken*)
-          (* %ctyp{[Ftoken.t]} should be caught as error ealier *)
+    | `Tok _loc -> %ctyp{ Tokenf.t }  (** BOOTSTRAPPING, associated with module name Tokenf*)
+          (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
     | `Type t -> t  in
   aux styp
 
@@ -146,7 +146,9 @@ let make_action (_loc:loc)
           let len = List.length e in
           (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
           let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
-          let es = List.map (fun x -> %exp{Ftoken.token_to_string $x}) e in
+          let es =
+            (* BOOTSTRAPING, associated with module name [Tokenf] *)
+            List.map (fun x -> %exp{Tokenf.token_to_string $x}) e in
           let error =
             Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$`str:error_fmt}]  @ es) in 
           %exp{fun ($locid : Locf.t) ->
@@ -179,7 +181,7 @@ let make_action (_loc:loc)
   return [(ent,pos,txt)] the [txt] has type [olevel],
   [ent] is something like
   {[
-  (module_exp : 'mexp Fgram.t )
+  (module_exp : 'mexp Gramf.t )
   ]}
   [pos] is something like
   {[(Some `LA)]} it has type [position option] *)        

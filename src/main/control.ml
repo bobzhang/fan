@@ -1,8 +1,8 @@
 
 
-%new{(g:Fgram.t) item dot_namespace items };;
+%new{(g:Gramf.t) item dot_namespace items };;
 
-%unsafe_extend{ (* (g:Fgram.t) *)
+%unsafe_extend{ (* (g:Gramf.t) *)
   item:
   ["default"; Str s %{ (* FIXME*)
     begin 
@@ -30,7 +30,7 @@
 
 let () =
   Fdir.register
-    (Ftoken.name_of_string "control",(fun loc _ c -> Fgram.parse_string ~loc  items c ));;
+    (Tokenf.name_of_string "control",(fun loc _ c -> Gramf.parse_string ~loc  items c ));;
 
 (* local variables: *)
 (* compile-command: "cd ../main_annot && pmake control.cmo " *)

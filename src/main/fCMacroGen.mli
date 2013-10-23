@@ -10,11 +10,11 @@ type 'a item_or_def =
 
     
 val define :
-  exp:exp Fgram.t ->
-  pat:pat Fgram.t -> (string list * exp) option -> string -> unit
+  exp:exp Gramf.t ->
+  pat:pat Gramf.t -> (string list * exp) option -> string -> unit
       
-val undef : exp:'a Fgram.t -> pat:'b Fgram.t -> string -> unit
+val undef : exp:'a Gramf.t -> pat:'b Gramf.t -> string -> unit
     
 val execute_macro :
-  exp:exp Fgram.t ->
-  pat:pat Fgram.t -> 'a ->  'a item_or_def -> 'a
+  exp:exp Gramf.t ->
+  pat:pat Gramf.t -> 'a ->  'a item_or_def -> 'a

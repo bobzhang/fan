@@ -29,14 +29,14 @@ let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
 let rec fan_filter = %parser{
-  | ( #Ftoken.space_token,_); 'xs -> fan_filter xs
+  | ( #Tokenf.space_token,_); 'xs -> fan_filter xs
   |  x; 'xs  ->
       %stream{ x; ' fan_filter xs }
   |  -> %stream{}}
 
-let rec ignore_layout : Ftoken.filter =
+let rec ignore_layout : Tokenf.filter =
   %parser{
-    | (#Ftoken.space_token,_); 'xs -> ignore_layout  xs
+    | (#Tokenf.space_token,_); 'xs -> ignore_layout  xs
     | x ; 'xs  ->
         %stream{x; 'ignore_layout xs }
     | -> %stream{}}
@@ -72,10 +72,10 @@ let token_stream_of_string s =
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry (Fstream.map (fun t -> (t,Locf.ghost)) tokens)
+  parse_origin_tokens entry (Streamf.map (fun t -> (t,Locf.ghost)) tokens)
   
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry (Fstream.map (fun t -> (t,Locf.ghost)) tokens)
+  filter_and_parse_tokens entry (Streamf.map (fun t -> (t,Locf.ghost)) tokens)
 
 (* with a special exception handler *)  
 let parse_string_safe ?(loc=Locf.string_loc) entry  s =
@@ -92,7 +92,7 @@ let parse_string_safe ?(loc=Locf.string_loc) entry  s =
 (* let parse_file_with ~rule file  = *)
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
-(*     let st = Fstream.of_channel ch in  *)
+(*     let st = Streamf.of_channel ch in  *)
 (*     parse rule (Locf.mk file) st *)
 (*   else  failwithf "@[file: %s not found@]@." file; *)
   
@@ -124,7 +124,7 @@ let eoi_entry entry =
 
 let find_level ?position (entry:Gstructure.entry) =
   match entry.desc with
-  | Dparser _ -> invalid_arg "Fgram.find_level"
+  | Dparser _ -> invalid_arg "Gramf.find_level"
   | Dlevels levs -> let (_,f,_) = Ginsert.find_level ?position entry levs in f
 
 
@@ -138,7 +138,7 @@ let parse_include_file entry =
       try (List.find (dir_ok file) ( "./" :: !Configf.include_dirs )) ^ file
       with | Not_found -> file  in
     let ch = open_in file in
-    let st = Fstream.of_channel ch in
+    let st = Streamf.of_channel ch in
       parse entry (Locf.mk file) st
     
 

@@ -5,8 +5,8 @@ let lexing_store s buff max =
     if n >= max
     then n
     else
-      (match Fstream.peek s with
-       | Some x -> (Fstream.junk s; buff.[n] <- x; n + 1)
+      (match Streamf.peek s with
+       | Some x -> (Streamf.junk s; buff.[n] <- x; n + 1)
        | _ -> n) in
   self 0 s
 type lex_error =  

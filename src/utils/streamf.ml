@@ -297,11 +297,11 @@ let peek_nth strm n   =
     | x :: xs -> if i = 0 then Some x else loop (i - 1) xs
     | [] -> None  in
   if n < 0 then
-    invalid_arg "Fstream.peek_nth"
+    invalid_arg "Streamf.peek_nth"
   else loop n (npeek (n+1) strm)
 
       (*  Used by [try_parser], very in-efficient 
-          This version of peek_nth is off-by-one from Fstream.peek_nth *)      
+          This version of peek_nth is off-by-one from Streamf.peek_nth *)      
 let dup strm = from (peek_nth strm)
     
 let rec filter f s =

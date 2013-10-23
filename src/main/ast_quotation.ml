@@ -11,14 +11,14 @@ Format:
 (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
   It's a parser wrapper, this function handles the error reporting for you. *)
 (* val parse_quotation_result: *)
-(*     (Locf.t -> string -> 'a) -> Locf.t -> Ftoken.quotation -> string -> string -> 'a *)
+(*     (Locf.t -> string -> 'a) -> Locf.t -> Tokenf.quotation -> string -> string -> 'a *)
 
 (*********************************)
 (* name table                    *)        
 (*********************************)
         
 (* [only absolute] domains can be stored *)  
-let paths :  Ftoken.domains list ref  =
+let paths :  Tokenf.domains list ref  =
   ref [ `Absolute ["Fan";"Lang"];
         `Absolute ["Fan";"Lang";"Meta"];
         `Absolute ["Fan";"Lang";"Filter"]]
@@ -30,11 +30,11 @@ let concat_domain = function
 
 
 (** [names_tbl] is used to manage the namespace and names *)
-let names_tbl : (Ftoken.domains,Setf.String.t) Hashtbl.t =
+let names_tbl : (Tokenf.domains,Setf.String.t) Hashtbl.t =
   Hashtbl.create 30 
 
 (**  when no qualified path is given , it uses [Sub []] *)
-let resolve_name (n:Ftoken.name) =
+let resolve_name (n:Tokenf.name) =
   match n with
   | ((`Sub _ as x) , v) ->
       begin 
@@ -54,7 +54,7 @@ let resolve_name (n:Ftoken.name) =
   
 module ExpKey = Dyn_tag.Pack(struct  type 'a t  = unit end)
 
-module ExpFun = Dyn_tag.Pack(struct  type 'a t  = 'a Ftoken.expand_fun  end)
+module ExpFun = Dyn_tag.Pack(struct  type 'a t  = 'a Tokenf.expand_fun  end)
 
 let current_loc_name = ref None  
 
@@ -79,7 +79,7 @@ let dump_file = ref None
 
 
   
-type key = (Ftoken.name * ExpKey.pack)
+type key = (Tokenf.name * ExpKey.pack)
 
 module QMap =Mapf.Make (struct type t =key  let compare = compare end)
 
@@ -91,7 +91,7 @@ module QMap =Mapf.Make (struct type t =key  let compare = compare end)
     name is "", so it will first turn to help from [map], then to default *)
 
 let map = ref Mapf.String.empty
-let update (pos,(str:Ftoken.name)) =
+let update (pos,(str:Tokenf.name)) =
   map := Mapf.String.add pos str !map
 
 let default_at_pos pos str =  update (pos,str)
@@ -99,14 +99,14 @@ let default_at_pos pos str =  update (pos,str)
    quotation expander intentionaly make its value a string to
    be more flexibile to incorporating more tags in the future *)  
 (* let fan_default = (`Absolute ["Fan"],"") *)
-let default : Ftoken.name option ref = ref None
+let default : Tokenf.name option ref = ref None
 let set_default s =  default := Some s
 let clear_map () =  map := Mapf.String.empty
 let clear_default () = default:= None
     
   
 (**   The output should be an [`Absolute name] *)
-let expander_name  ~pos (name:Ftoken.name) =
+let expander_name  ~pos (name:Tokenf.name) =
   match name with
   | (`Sub [],"") ->
       try Some (Mapf.String.find  pos !map)
@@ -116,7 +116,7 @@ let expander_name  ~pos (name:Ftoken.name) =
   
 let expanders_table =ref QMap.empty
 
-let add ((domain,n) as name) (tag : 'a Dyn_tag.t ) (f:  'a Ftoken.expand_fun) =
+let add ((domain,n) as name) (tag : 'a Dyn_tag.t ) (f:  'a Tokenf.expand_fun) =
   let (k,v) = ((name, ExpKey.pack tag ()), ExpFun.pack tag f) in
   let s  =
     try  Hashtbl.find names_tbl domain with
@@ -131,14 +131,14 @@ let add ((domain,n) as name) (tag : 'a Dyn_tag.t ) (f:  'a Ftoken.expand_fun) =
   [tag] is used to help find the expander,
   is passed by the parser function at parsing time
  *)
-let expand (x:Ftoken.quot) (tag:'a Dyn_tag.t) : 'a =
+let expand (x:Tokenf.quot) (tag:'a Dyn_tag.t) : 'a =
   let pos_tag = Dyn_tag.of_string tag in
   let name = x.name in
   (* resolve name when expansion*)
   (* The table is indexed by [quotation name] and [tag] *)
   match expander_name ~pos:pos_tag name with
   | None ->
-      Locf.failf x.loc "DDSL `%s' not found" @@ Ftoken.string_of_name name
+      Locf.failf x.loc "DDSL `%s' not found" @@ Tokenf.string_of_name name
   | Some absolute_name ->
       begin 
         let pack =
@@ -146,9 +146,9 @@ let expand (x:Ftoken.quot) (tag:'a Dyn_tag.t) : 'a =
           with
             Not_found ->
               Locf.failf x.loc "DDSL expander `%s' at position `%s' not found" 
-                (Ftoken.string_of_name name) pos_tag  in
+                (Tokenf.string_of_name name) pos_tag  in
         let expander = ExpFun.unpack tag pack in
-        Ftoken.quot_expand expander x 
+        Tokenf.quot_expand expander x 
         (* FIXME: control the stack of quotation explosion *)
       end
 
@@ -160,17 +160,17 @@ let expand (x:Ftoken.quot) (tag:'a Dyn_tag.t) : 'a =
    it expands differently when in exp or pat... 
  *)
 let add_quotation ~exp_filter ~pat_filter  ~mexp ~mpat name entry  =
-  let entry_eoi = Fgram.eoi_entry entry in
+  let entry_eoi = Gramf.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations,true) (current_loc_name, loc_name_opt)
       (fun _ ->
-        Fgram.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
+        Gramf.parse_string entry_eoi ~loc s |> mexp loc |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in
     `StExp(loc,exp_ast) in
   let expand_pat _loc loc_name_opt s =
     Ref.protect Configf.antiquotations true begin fun _ ->
-      let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
+      let ast = Gramf.parse_string entry_eoi ~loc:_loc s in
       let meta_ast = mpat _loc ast in
       let exp_ast = pat_filter meta_ast in
       (** BOOTSTRAPPING
@@ -206,7 +206,7 @@ let make_parser ?(lexer=Flex_lib.from_stream) entry =
     Ref.protect2
       (Configf.antiquotations, true)
       (current_loc_name,loc_name_opt)
-      (fun _ -> Fgram.parse_string ~lexer (Fgram.eoi_entry entry) ~loc  s);;
+      (fun _ -> Gramf.parse_string ~lexer (Gramf.eoi_entry entry) ~loc  s);;
 
   
 let of_stru ?lexer ~name  ~entry ()  =

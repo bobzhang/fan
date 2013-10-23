@@ -14,4 +14,4 @@
 (*     It is very simple, may be improved to a depend on a simple engine *)
 (*     It is used by DDSL [create] *)
 (*  *\)   *)
-(* val nonterminals : stru Fgram.t *)  
+(* val nonterminals : stru Gramf.t *)  

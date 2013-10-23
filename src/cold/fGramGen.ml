@@ -7,10 +7,10 @@ open Util
 let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"
 let ghost = Locf.ghost
-let grammar_module_name = ref (`Uid (ghost, "Fgram"))
+let grammar_module_name = ref (`Uid (ghost, "Gramf"))
 let gm () =
   match FConfig.compilation_unit.contents with
-  | Some "Fgram" -> `Uid (ghost, "")
+  | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> grammar_module_name.contents
 let mk_entry ~local  ~name  ~pos  ~levels  =
   { Gram_def.name = name; pos; levels; local }
@@ -77,7 +77,7 @@ let make_ctyp (styp : Gram_def.styp) tvar =
             (_loc,
               (`Ctyp
                  (_loc,
-                   (`Dot (_loc, (`Uid (_loc, "Ftoken")), (`Lid (_loc, "t"))))))) : 
+                   (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))))))) : 
          FAst.ctyp )
      | `Type t -> t in
    aux styp : ctyp )

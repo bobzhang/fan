@@ -334,16 +334,16 @@ let _ =
     ~mexp:(fun loc  p  -> m#row_field loc (Objs.strip_row_field p))
     ~mpat:(fun loc  p  -> m#row_field loc (Objs.strip_row_field p))
     ~exp_filter ~pat_filter
-let p = Fgram.mk "p"
+let p = Gramf.mk "p"
 let _ =
-  Fgram.extend_single (p : 'p Fgram.t )
+  Gramf.extend_single (p : 'p Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
+        [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
           `Skeyword "when";
-          `Snterm (Fgram.obj (exp : 'exp Fgram.t ))],
+          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
-             (Fgram.mk_action
+             (Gramf.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
                    ((`Fun
                        (_loc,
@@ -353,9 +353,9 @@ let _ =
                               (`Case
                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                    FAst.exp ) : 'p )))));
-        ([`Snterm (Fgram.obj (pat : 'pat Fgram.t ))],
+        ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
           ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
-            (Fgram.mk_action
+            (Gramf.mk_action
                (fun (p : 'pat)  (_loc : Locf.t)  ->
                   (`Fun
                      (_loc,
@@ -365,23 +365,23 @@ let _ =
                                (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
                   'p )))))]))
 let () = of_exp ~name:(d, "p") ~entry:p ()
-let import = Fgram.mk "import"
+let import = Gramf.mk "import"
 let _ =
-  let grammar_entry_create x = Fgram.mk x in
-  let a: 'a Fgram.t = grammar_entry_create "a"
-  and name: 'name Fgram.t = grammar_entry_create "name" in
-  Fgram.extend_single (a : 'a Fgram.t )
+  let grammar_entry_create x = Gramf.mk x in
+  let a: 'a Gramf.t = grammar_entry_create "a"
+  and name: 'name Gramf.t = grammar_entry_create "name" in
+  Gramf.extend_single (a : 'a Gramf.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Uid (_,_) -> true | _ -> false)),
                (4250480, `Any), "`Uid m");
           `Skeyword ":";
-          `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
+          `Slist1 (`Snterm (Gramf.obj (name : 'name Gramf.t )));
           `Skeyword ";"],
            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
-             (Fgram.mk_action
-                (fun _  (ns : 'name list)  _  (__fan_0 : Ftoken.t) 
+             (Gramf.mk_action
+                (fun _  (ns : 'name list)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid (_,m) ->
@@ -397,30 +397,30 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]));
-  Fgram.extend_single (import : 'import Fgram.t )
+                            (Tokenf.token_to_string __fan_0))))))]));
+  Gramf.extend_single (import : 'import Gramf.t )
     (None,
       (None, None,
-        [([`Slist1 (`Snterm (Fgram.obj (a : 'a Fgram.t )))],
+        [([`Slist1 (`Snterm (Gramf.obj (a : 'a Gramf.t )))],
            ("Ast_gen.sem_of_list xs\n",
-             (Fgram.mk_action
+             (Gramf.mk_action
                 (fun (xs : 'a list)  (_loc : Locf.t)  ->
                    (Ast_gen.sem_of_list xs : 'import )))))]));
-  Fgram.extend_single (name : 'name Fgram.t )
+  Gramf.extend_single (name : 'name Gramf.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid (_,_) -> true | _ -> false)),
                (3802919, `Any), "`Lid x")],
            ("`Lid (_loc, x)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+             (Gramf.mk_action
+                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid (_,x) -> (`Lid (_loc, x) : 'name )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]))
+                            (Tokenf.token_to_string __fan_0))))))]))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =
@@ -447,7 +447,7 @@ let () =
      | Invalid_argument str ->
          Some (Format.sprintf "Invalid argument: %S" str)
      | Sys_error str -> Some (Format.sprintf "I/O error: %S" str)
-     | Fstream.NotConsumed  ->
+     | Streamf.NotConsumed  ->
          Some (Format.sprintf "Parse failure(NotConsumed)")
-     | Fstream.Error str -> Some (Format.sprintf "Fstream.Error %s" str)
+     | Streamf.Error str -> Some (Format.sprintf "Streamf.Error %s" str)
      | _ -> None)

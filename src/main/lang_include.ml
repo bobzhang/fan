@@ -1,15 +1,15 @@
 
 
 
-%new{ (g:Fgram.t) include_quot };;
+%new{ (g:Gramf.t) include_quot };;
 
-%unsafe_extend{ (g:Fgram.t)
+%unsafe_extend{ (g:Gramf.t)
 include_quot:
   [Str s %{ (* FIXME *)
     let (keep,cf) = State.((keep,current_filters)) in
     %save{ keep cf %{begin
       State.reset ();
-      Fgram.parse_include_file Syntaxf.strus s;
+      Gramf.parse_include_file Syntaxf.strus s;
     end
   }}}
  ]

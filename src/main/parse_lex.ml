@@ -10,7 +10,7 @@ end
 exception UnboundRegexp;;
 
 let g =
-  Fgram.create_lexer ~annot:"Lexer's lexer"
+  Gramf.create_lexer ~annot:"Lexer's lexer"
     ~keywords:["as";"eof";"let";
                "#" ; "|" ; "^" ;
                "<" ; "->" ;"=" ;
@@ -19,14 +19,14 @@ let g =
                "+" ; "(" ; ")" ;
                "-"] ();;
 
-%create{(g:Fgram.t) regexp  char_class  char_class1  lex  declare_regexp};;
+%create{(g:Gramf.t) regexp  char_class  char_class1  lex  declare_regexp};;
 
 (* open Parse_lex2,
    it will suck eof handling, to be investigated.
-   since we do unsafe_extend on top of Fgram...
+   since we do unsafe_extend on top of Gramf...
  *)
 
-%extend{(g:Fgram.t)  (* FIXME location wrong *)
+%extend{(g:Gramf.t)  (* FIXME location wrong *)
     lex:
     [  "|" ; L0 case SEP "|" {l} %{
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}
@@ -34,8 +34,8 @@ let g =
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
   let case:
     [ regexp{r};  Quot x  %{
-      let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
-      let e = Ftoken.quot_expand expander x in (r,e)}]  
+      let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+      let e = Tokenf.quot_expand expander x in (r,e)}]  
   declare_regexp:
   ["let"; Lid x ; "=";regexp{r} %{
     if Hashtbl.mem named_regexps x then begin 

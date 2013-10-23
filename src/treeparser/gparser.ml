@@ -9,7 +9,7 @@ open Util
    apply the [parse_fun] and get the result and the location of
    consumed areas
  *)
-let with_loc (parse_fun: 'b Ftoken.parse ) strm =
+let with_loc (parse_fun: 'b Tokenf.parse ) strm =
   let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
@@ -63,7 +63,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
    *)
   let rec from_tree (tree:Gstructure.tree) =
     match tree  with
-    |DeadEnd -> raise Fstream.NotConsumed (* FIXME be more preicse *)
+    |DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
           (* | LocActAppend(act,_,n) -> *)
           (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
@@ -73,7 +73,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
         (try
           let a = with_loc (entry.start alevn) strm in
           fun ()  -> ArgContainer.push a q; act
-        with  Fstream.NotConsumed  -> (fun ()  -> from_tree bro strm)) ()
+        with  Streamf.NotConsumed  -> (fun ()  -> from_tree bro strm)) ()
 
           (* [son] will never be [DeadEnd] *)        
     | Node ({ node ; son; brother } as y) ->
@@ -99,15 +99,15 @@ let rec parser_of_tree (entry:Gstructure.entry)
                   | e ->
                       (ignore (ArgContainer.pop q);
                        (match e with
-                       | Fstream.NotConsumed  ->
+                       | Streamf.NotConsumed  ->
                            if (Gtools.get_cur_loc strm) = bp
-                           then raise Fstream.NotConsumed
+                           then raise Streamf.NotConsumed
                            else
                              raise @@
-                               Fstream.Error
+                               Streamf.Error
                                (Gfailed.tree_failed  entry a node son)
                        | _ -> raise e)))
-              with | Fstream.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
+              with | Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
 
         | Some (tokl, node, son) -> fun strm ->
             (try
@@ -121,12 +121,12 @@ let rec parser_of_tree (entry:Gstructure.entry)
                 | e ->
                     (for _i = 1 to len do ignore (ArgContainer.pop q) done;
                      (match e with
-                     | Fstream.NotConsumed  ->
+                     | Streamf.NotConsumed  ->
                          raise
-                           (Fstream.Error
+                           (Streamf.Error
                               (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
                      | _ -> raise e)))
-            with | Fstream.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
+            with | Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
   let parse = from_tree x in
   fun strm -> 
     let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
@@ -145,7 +145,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
       List.iteri
         (fun i terminal  -> 
           let (t,loc) =
-            match Fstream.peek_nth strm i with
+            match Streamf.peek_nth strm i with
             | Some (t,loc) -> (t,loc)
             | None -> invalid_arg "parser_of_terminals" in
           begin
@@ -161,8 +161,8 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
             then
               invalid_arg "parser_of_terminals"
           end) terminals
-    with Invalid_argument _ -> raise Fstream.NotConsumed);
-    Fstream.njunk n strm;
+    with Invalid_argument _ -> raise Streamf.NotConsumed);
+    Streamf.njunk n strm;
     !acc
   end          
 (* only for [Smeta] it might not be functional *)
@@ -191,16 +191,16 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
         (** remember here -- it could be optimized, it could be optimized..
             ... *)
         begin  (* interaction with stream *)
-          match Fstream.peek strm with
+          match Streamf.peek strm with
           | Some (`Key (_,tok) as x ,_)  when tok = kwd ->
-              (Fstream.junk strm ; Gaction.mk x (* tok *) )
-          |_ -> raise Fstream.NotConsumed
+              (Streamf.junk strm ; Gaction.mk x (* tok *) )
+          |_ -> raise Streamf.NotConsumed
         end
     | `Stoken (f, _,_) -> fun strm ->
         begin  (* interaction with stream *)
-          match Fstream.peek strm with
-          |Some (tok,_) when f tok -> (Fstream.junk strm; Gaction.mk tok)
-          |_ -> raise Fstream.NotConsumed
+          match Streamf.peek strm with
+          |Some (tok,_) when f tok -> (Streamf.junk strm; Gaction.mk tok)
+          |_ -> raise Streamf.NotConsumed
         end in with_loc (aux s)
 
 
@@ -208,9 +208,9 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
 
 (* entrance for the start [clevn] is the current level *)  
 let start_parser_of_levels entry =
-  let rec aux clevn  (xs:  Gstructure.level list) : int ->  Gaction.t Ftoken.parse =
+  let rec aux clevn  (xs:  Gstructure.level list) : int ->  Gaction.t Tokenf.parse =
     match xs with 
-    | [] -> fun _ -> fun _ -> raise Fstream.NotConsumed  
+    | [] -> fun _ -> fun _ -> raise Streamf.NotConsumed  
     | lev :: levs ->
         let hstart = aux  (clevn+1) levs in
         match lev.lprefix with
@@ -233,7 +233,7 @@ let start_parser_of_levels entry =
                   let (act,loc) = cstart strm in
                   fun ()  ->
                     let a = Gaction.getf act loc in entry.continue levn loc a strm
-                with  Fstream.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
+                with  Streamf.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
   aux 0
     
 let start_parser_of_entry (entry:Gstructure.entry) =
@@ -246,7 +246,7 @@ let start_parser_of_entry (entry:Gstructure.entry) =
 
 let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
   match xs with 
-  | [] -> fun _ _ _ ->  fun _ -> raise Fstream.NotConsumed
+  | [] -> fun _ _ _ ->  fun _ -> raise Streamf.NotConsumed
   | lev :: levs ->
       let hcontinue = continue_parser_of_levels entry  (clevn+1) levs in
       match lev.lsuffix with
@@ -264,7 +264,7 @@ let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
           else
             try hcontinue levn bp a strm
             with
-            | Fstream.NotConsumed ->
+            | Streamf.NotConsumed ->
               let (act,loc) = ccontinue strm in
               let loc = Locf.merge bp loc in
               let a = Gaction.getf2 act a loc in entry.continue levn loc a strm
@@ -275,6 +275,6 @@ let continue_parser_of_entry (entry:Gstructure.entry) =
   match entry.desc with
   | Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in
-    (fun levn bp a strm -> try p levn bp a strm with Fstream.NotConsumed -> a )
-  | Dparser _ -> fun _ _ _ _ -> raise Fstream.NotConsumed  
+    (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
+  | Dparser _ -> fun _ _ _ _ -> raise Streamf.NotConsumed  
 

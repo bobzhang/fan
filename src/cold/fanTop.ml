@@ -21,5 +21,5 @@ let _ =
   Ast_parsers.use_parsers ["revise"; "stream"]
 let _ =
   Topdirs.dir_install_printer Format.std_formatter
-    (Longident.Ldot ((Longident.Lident "Fgram"), "dump"));
+    (Longident.Ldot ((Longident.Lident "Gramf"), "dump"));
   fan ()

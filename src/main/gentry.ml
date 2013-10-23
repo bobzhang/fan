@@ -43,26 +43,26 @@ let mk_dynamic g n : 'a t ={
 
 
 
-let of_parser g n (p : Ftoken.stream -> 'a) : 'a t   =
+let of_parser g n (p : Tokenf.stream -> 'a) : 'a t   =
   let f ts = Gaction.mk (p ts) in {
   gram = g;
   name = n;
   start  = fun _ -> f;
-  continue =  fun _ _ _  _  -> raise Fstream.NotConsumed;
+  continue =  fun _ _ _  _  -> raise Streamf.NotConsumed;
   desc = Dparser f;
   freezed = true (* false *);    
 }
 
-let setup_parser (e:'a t) (p : Ftoken.stream -> 'a) =
+let setup_parser (e:'a t) (p : Tokenf.stream -> 'a) =
   let f ts = Gaction.mk (p ts) in begin
     e.start <- fun _ -> f;
-    e.continue <- fun _ _ _ -> fun _ -> raise Fstream.NotConsumed;
+    e.continue <- fun _ _ _ -> fun _ -> raise Streamf.NotConsumed;
     e.desc <- Dparser f
   end
 
 let clear (e:'a t) = begin 
-  e.start <- fun _ -> fun _ -> raise Fstream.NotConsumed;
-  e.continue <- fun _ _ _ -> fun _-> raise Fstream.NotConsumed;
+  e.start <- fun _ -> fun _ -> raise Streamf.NotConsumed;
+  e.continue <- fun _ _ _ -> fun _-> raise Streamf.NotConsumed;
   e.desc <- Dlevels []
 end
 
@@ -76,7 +76,7 @@ let gram_of_entry (e:'a t) = e.gram
 (** driver of the parse, it would call [start]
    
  *)
-let action_parse (entry:'a t) (ts: Ftoken.stream) : Gaction.t =
+let action_parse (entry:'a t) (ts: Tokenf.stream) : Gaction.t =
   try 
     let p = if !trace_parser then Format.fprintf else Format.ifprintf in
     (p Format.err_formatter "@[<4>%s@ " entry.name ;
@@ -84,8 +84,8 @@ let action_parse (entry:'a t) (ts: Ftoken.stream) : Gaction.t =
     let () = p Format.err_formatter "@]@." in
     res)
   with
-  | Fstream.NotConsumed ->
-      Locf.raise (Gtools.get_cur_loc ts) (Fstream.Error ("illegal begin of " ^ entry.name))
+  | Streamf.NotConsumed ->
+      Locf.raise (Gtools.get_cur_loc ts) (Streamf.Error ("illegal begin of " ^ entry.name))
   | Locf.Exc_located (_, _) as exc -> raise exc
   | exc -> 
       Locf.raise (Gtools.get_cur_loc ts) exc
@@ -99,11 +99,11 @@ let filter_and_parse_tokens (entry:'a t) ts =
 
 
 
-let lex_string loc str = Flex_lib.from_stream  loc (Fstream.of_string str)
+let lex_string loc str = Flex_lib.from_stream  loc (Streamf.of_string str)
 
 let parse_string ?(lexer=Flex_lib.from_stream) ?(loc=Locf.string_loc) (entry:'a t)  str =
   str
-   |> Fstream.of_string |> lexer loc
+   |> Streamf.of_string |> lexer loc
    |> FanTokenFilter.filter entry.gram.gfilter
    |> parse_origin_tokens entry
 

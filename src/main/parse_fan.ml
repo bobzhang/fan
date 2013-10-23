@@ -6,7 +6,7 @@ open! Syntaxf
 open FanUtil
 open Gramlib
 
-%create{Fgram pos_exps};;
+%create{Gramf pos_exps};;
       
 let apply () = begin 
   begin
@@ -30,8 +30,8 @@ let apply () = begin
     setup_op_parser infixop6
       (fun x -> String.length x >= 2 && x.[0] == '*' && x.[1] == '*' &&
               symbolchar x 2 );
-    Fgram.setup_parser sem_exp begin
-      let symb1 = Fgram.parse_origin_tokens exp in
+    Gramf.setup_parser sem_exp begin
+      let symb1 = Gramf.parse_origin_tokens exp in
       let symb = %parser{
         |  (`Ant (("list" as n), s), _loc)  ->
             mk_anti ~c:"exp;" _loc n s
@@ -130,14 +130,14 @@ let apply () = begin
         [ S{mt1}; S{mt2} %{
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) -> apply i1 i2 
-            | _ -> raise Fstream.NotConsumed }] (* FIXME *)
+            | _ -> raise Streamf.NotConsumed }] (* FIXME *)
         "."
         [ S{mt1}; "."; S{mt2} %{
           let acc0 mt1 mt2 =
             match (mt1, mt2) with
             | ((#ident as i1), (#ident as i2)) ->
               dot i1 i2 
-            | _ -> raise Fstream.NotConsumed  in
+            | _ -> raise Streamf.NotConsumed  in
           acc0 mt1 mt2 }] (*FIXME*)
         "sig"
         [ "sig"; sigis{sg}; "end" %{ `Sig(_loc,sg)}
@@ -208,7 +208,7 @@ let apply () = begin
       | ":"; ctyp{t}; ":>"; ctyp{t2}; "="; exp{e} %{
         match t with
         | %ctyp{ ! $_ . $_ } ->
-            raise (Fstream.Error "unexpected polytype here")
+            raise (Streamf.Error "unexpected polytype here")
         | _ -> %{ ($e : $t :> $t2) } }
       | ":>"; ctyp{t}; "="; exp{e} %{ `Subtype(_loc,e,t)} ]
       fun_bind:
@@ -225,7 +225,7 @@ let apply () = begin
          | Some x -> (Ast_quotation.default := Some x; old)
          | None ->
              Locf.failf _loc "DDSL `%s' can not be resolved"
-               (Ftoken.string_of_name ls)
+               (Tokenf.string_of_name ls)
          }]
        pos_exps:
        [ L1 name_space SEP ";"{xys} %{
@@ -238,7 +238,7 @@ let apply () = begin
               match Ast_quotation.resolve_name  y with
               |None ->
                   Locf.failf _loc "DDSL `%s' can not be resolved"
-                    (Ftoken.string_of_name y)
+                    (Tokenf.string_of_name y)
               | Some x -> x
              )}
        | Lid x %{
@@ -727,12 +727,12 @@ let apply () = begin
       | Uid i ; "." ; S {xs} %{
         match xs with
         |(`Sub xs,v) -> (`Sub (i::xs),v)
-        | _ -> raise (Fstream.Error "impossible dot_lstrings")}
+        | _ -> raise (Streamf.Error "impossible dot_lstrings")}
 
       | "."; Uid i; "."; S{xs} %{
           match xs with
           |(`Sub xs,v) -> (`Absolute (i::xs),v)
-          | _ -> raise (Fstream.Error "impossible dot_lstrings")} ]
+          | _ -> raise (Streamf.Error "impossible dot_lstrings")} ]
 
       (* parse [A.B.(] *)
       module_longident_dot_lparen:
@@ -975,12 +975,12 @@ let apply () = begin
                 ctyp{t} %{
           match o with
           | `Negative _ -> %{ val virtual $mutable:mf $l : $t }
-          | _ -> raise (Fstream.Error "override (!) is incompatible with virtual")}                    
+          | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}                    
         | method_opt_override{o}; "virtual"; opt_private{pf}; a_lident{l}; ":";
                   ctyp{t} %{
           match o with
           | `Negative _ -> `VirMeth (_loc, l, pf, t)
-          | _ -> raise (Fstream.Error "override (!) is incompatible with virtual")}  
+          | _ -> raise (Streamf.Error "override (!) is incompatible with virtual")}  
 
        | method_opt_override{o}; opt_private{pf}; a_lident{l}; ":"; ctyp{t} (* opt_polyt{topt} *);
                 fun_bind{e} %{
@@ -1205,7 +1205,7 @@ let apply_ctyp () = begin
        (*        prerr_endline "used"; *)
        (*        `Dot (_loc, ident_of_ctyp t1, ident_of_ctyp t2) *)
        (*          ) (\* FIXME*\) *)
-       (*      with Invalid_argument s -> raise (Fstream.Error s) ] *)
+       (*      with Invalid_argument s -> raise (Streamf.Error s) ] *)
        "simple"
         [ "'"; a_lident{i} %{  `Quote (_loc, `Normal _loc,  i)}
         | "_" %{ `Any _loc}
@@ -1213,12 +1213,12 @@ let apply_ctyp () = begin
         | Ant ("id" as n,s); "."; S{t} %{
             let try id = ident_of_ctyp t  in
               (`Dot(_loc,mk_anti _loc ~c:"ident" n s,id) :ctyp)
-            with Invalid_argument s -> raise (Fstream.Error s)}
+            with Invalid_argument s -> raise (Streamf.Error s)}
         | Quot x %{ Ast_quotation.expand  x Dyn_tag.ctyp}
         | a_uident{i}; "."; S{t} %{
             let try id = ident_of_ctyp t in
               `Dot(_loc,(i:>ident),id)
-            with Invalid_argument s -> raise (Fstream.Error s)}
+            with Invalid_argument s -> raise (Streamf.Error s)}
         | a_lident{i} %{  (i :> ctyp)}
               
         (* | a_uident{i} -> (i:> ctyp) *)

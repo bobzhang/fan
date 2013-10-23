@@ -30,7 +30,7 @@ exception Error of string
 (** {6 Stream builders} *)
 
 val from : (int -> 'a option) -> 'a t
-(** [Fstream.from f] returns a stream built from the function [f].
+(** [Streamf.from f] returns a stream built from the function [f].
    To create a new stream element, the function [f] is called with
    the current stream count. The user function [f] must return either
    [Some <value>] for a value or [None] to specify the end of the
@@ -51,7 +51,7 @@ val of_channel : in_channel -> char t
 (** {6 Stream iterator} *)
 
 val iter : ('a -> unit) -> 'a t -> unit
-(** [Fstream.iter f s] scans the whole stream s, applying function [f]
+(** [Streamf.iter f s] scans the whole stream s, applying function [f]
    in turn to each stream element encountered. *)
 
 
@@ -59,10 +59,10 @@ val iter : ('a -> unit) -> 'a t -> unit
 
 val next : 'a t -> 'a
 (** Return the first element of the stream and remove it from the
-   stream. Raise Fstream.NotConsumed if the stream is empty. *)
+   stream. Raise Streamf.NotConsumed if the stream is empty. *)
 
 val empty : 'a t -> unit
-(** Return [()] if the stream is empty, else raise [Fstream.NotConsumed]. *)
+(** Return [()] if the stream is empty, else raise [Streamf.NotConsumed]. *)
 
 
 (** {6 Useful functions} *)

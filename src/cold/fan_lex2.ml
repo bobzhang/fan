@@ -15,7 +15,7 @@ let warn = Lexing_util.warn
 let move_curr_p = Lexing_util.move_curr_p
 let store = Lexing_util.store
 let (--) = Location_util.( -- ) 
-let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
+let token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
@@ -4934,8 +4934,8 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let c = new_cxt () in
           let name =
             match name with
-            | Some name -> Ftoken.name_of_string name
-            | None  -> Ftoken.empty_name in
+            | Some name -> Tokenf.name_of_string name
+            | None  -> Tokenf.empty_name in
           let old = lexbuf.lex_start_p in
           let content =
             store c lexbuf;
@@ -4947,10 +4947,10 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           ((if x = None
             then
               `Quot
-                { Ftoken.name = name; meta; shift; content; loc; retract }
+                { Tokenf.name = name; meta; shift; content; loc; retract }
             else
               `DirQuotation
-                { Ftoken.name = name; meta; shift; content; loc; retract }),
+                { Tokenf.name = name; meta; shift; content; loc; retract }),
             loc)
       | 19 ->
           let num =
@@ -7317,5 +7317,5 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           (err (Illegal_character c)) @@ (!! lexbuf)
       | _ -> failwith "lexing: empty token"))
 let from_lexbuf lb =
-  (let next _ = Some (token lb) in Fstream.from next : (Ftoken.t* Locf.t)
+  (let next _ = Some (token lb) in Fstream.from next : (Tokenf.t* Locf.t)
                                                          Fstream.t )

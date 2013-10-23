@@ -33,7 +33,7 @@ open FAst
 open Util
 
 let g =
-  Fgram.create_lexer ~annot:"Grammar's lexer"
+  Gramf.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["("; ")" ; ","; "as"; "|"; "_"; ":";
                "."; ";"; "{"; "}"; "let";"[";"]";
                "SEP";"LEVEL"; "S";
@@ -105,19 +105,19 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
        styp = `Tok _loc;
        pattern= Some (Objs.wildcarder#pat po) };;
 *)
-%create{(g:Fgram.t)
+%create{(g:Gramf.t)
    extend_header
-   (qualuid : vid Fgram.t)
-   (qualid:vid Fgram.t)
-   (t_qualid:vid Fgram.t )
-   (entry_name : ([`name of Ftoken.name option | `non] * Gram_def.name) Fgram.t )
+   (qualuid : vid Gramf.t)
+   (qualid:vid Gramf.t)
+   (t_qualid:vid Gramf.t )
+   (entry_name : ([`name of Tokenf.name option | `non] * Gram_def.name) Gramf.t )
     position assoc name string rules
     symbol rule meta_rule rule_list psymbol level level_list
-   (entry: Gram_def.entry option Fgram.t)
+   (entry: Gram_def.entry option Gramf.t)
    extend_body
    unsafe_extend_body
 
-   (simple : Gram_def.symbol list Fgram.t)
+   (simple : Gram_def.symbol list Gramf.t)
 }
 
 
@@ -166,7 +166,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 (*     styp = `Tok _loc; *)
 (*     pattern}] *)
 (* ;; *)
-%extend{(g:Fgram.t)
+%extend{(g:Gramf.t)
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
   [ ("EOI" as v) %{
@@ -355,7 +355,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
 
 
-%extend{(g:Fgram.t)
+%extend{(g:Gramf.t)
   let str : [Str y  %{y}]
   (*****************************)
   (* extend language           *)
@@ -462,7 +462,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   level :
   [  OPT str {label};  OPT assoc{assoc}; rule_list{rules}
        %{mk_level ~label ~assoc ~rules} ]
-  (* FIXME a conflict %extend{Fgram e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
+  (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
 
@@ -489,9 +489,9 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
    (* [ L0 psymbol SEP ";"{prod} %{prod}]    *)
   let opt_action :
       [ Quot x %{
-        if x.name = Ftoken.empty_name then 
-          let expander loc _ s = Fgram.parse_string ~loc Syntaxf.exp s in
-          Ftoken.quot_expand expander x
+        if x.name = Tokenf.empty_name then 
+          let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+          Tokenf.quot_expand expander x
         else
           Ast_quotation.expand x Dyn_tag.exp
       }]

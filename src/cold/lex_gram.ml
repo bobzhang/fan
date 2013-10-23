@@ -17,7 +17,7 @@ let store = Lexing_util.store
 let lexing_store = Lexing_util.lexing_store
 let with_store = Lexing_util.with_store
 let (--) = Location_util.( -- ) 
-let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
+let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
@@ -2176,8 +2176,8 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let c = new_cxt () in
           let name =
             match name with
-            | Some name -> Ftoken.name_of_string name
-            | None  -> Ftoken.empty_name in
+            | Some name -> Tokenf.name_of_string name
+            | None  -> Tokenf.empty_name in
           let old = lexbuf.lex_start_p in
           let content =
             store c lexbuf;
@@ -2186,7 +2186,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
           let loc = old -- lexbuf.lex_curr_p in
           let shift = String.length shift in
           let retract = 1 in
-          ((`Quot { Ftoken.name = name; meta; shift; content; loc; retract }),
+          ((`Quot { Tokenf.name = name; meta; shift; content; loc; retract }),
             loc)
       | 11 ->
           let dollar (c : Lexing_util.context) (lexbuf : Lexing.lexbuf) =
@@ -4551,7 +4551,7 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in
           (err (Illegal_character c)) @@ (!! lexbuf)
       | _ -> failwith "lexing: empty token"))
-let from_lexbuf lb = Fstream.from (fun _  -> Some (token lb))
+let from_lexbuf lb = Streamf.from (fun _  -> Some (token lb))
 let from_stream (loc : Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in
   lb.lex_abs_pos <- (loc.loc_start).pos_cnum;

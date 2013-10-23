@@ -6,7 +6,7 @@ let add name =
   then (add_to_loaded_modules name; Dyn_load.load (name ^ Dyn_load.libext))
 let () =
   let open Control in
-    Fgram.unsafe_extend_single (item : 'item Fgram.t )
+    Gramf.unsafe_extend_single (item : 'item Gramf.t )
       (None,
         (None, None,
           [([`Skeyword "require";
@@ -14,11 +14,11 @@ let () =
               (((function | `Str (_,_) -> true | _ -> false)),
                 (4153489, `Any), "`Str s")],
              ("add s\n",
-               (Fgram.mk_action
-                  (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
+               (Gramf.mk_action
+                  (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                      match __fan_1 with
                      | `Str (_,s) -> (add s : 'item )
                      | _ ->
                          failwith
                            (Printf.sprintf "%s"
-                              (Ftoken.token_to_string __fan_1))))))]))
+                              (Tokenf.token_to_string __fan_1))))))]))

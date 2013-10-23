@@ -20,7 +20,7 @@ let add name =
 let () =
   let open Control in
   %unsafe_extend{
-  (* (g:Fgram.t) *)
+  (* (g:Gramf.t) *)
     item:
     [ "require"; Str s %{ add s} ]}
 

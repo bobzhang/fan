@@ -2,11 +2,11 @@
 (**
    register 
  *)
-val dir_table : (Ftoken.name , unit Ftoken.expand_fun ) Hashtbl.t
+val dir_table : (Tokenf.name , unit Tokenf.expand_fun ) Hashtbl.t
 
 
 
-val register : Ftoken.name * unit Ftoken.expand_fun -> unit
+val register : Tokenf.name * unit Tokenf.expand_fun -> unit
 
-val handle_quot : Ftoken.quot -> unit    
+val handle_quot : Tokenf.quot -> unit    
 

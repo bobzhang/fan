@@ -129,29 +129,29 @@ type action_pattern =
   | `Par of (loc* action_pattern) | `Any of loc] 
 let _ = FConfig.antiquotations := true
 open Syntaxf
-let simple_pat: simple_pat Fgram.t = Fgram.mk "simple_pat"
+let simple_pat: simple_pat Gramf.t = Gramf.mk "simple_pat"
 let _ =
-  let grammar_entry_create x = Fgram.mk x in
-  let internal_pat: 'internal_pat Fgram.t =
+  let grammar_entry_create x = Gramf.mk x in
+  let internal_pat: 'internal_pat Gramf.t =
     grammar_entry_create "internal_pat" in
-  Fgram.extend_single (simple_pat : 'simple_pat Fgram.t )
+  Gramf.extend_single (simple_pat : 'simple_pat Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "`"; `Snterm (Fgram.obj (luident : 'luident Fgram.t ))],
+        [([`Skeyword "`"; `Snterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("`Vrn (_loc, s)\n",
-             (Fgram.mk_action
+             (Gramf.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    (`Vrn (_loc, s) : 'simple_pat )))));
         ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
+         `Snterm (Gramf.obj (luident : 'luident Gramf.t ));
          `Stoken
            (((function | `Ant ((""|"anti"),_) -> true | _ -> false)),
              (`App
                 ((`App ((`Vrn "Ant"), (`Bar ((`Str ""), (`Str "anti"))))),
                   `Any)), "`Ant (\"\"| \"anti\",_)")],
           ("`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n",
-            (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  (v : 'luident)  _ 
+            (Gramf.mk_action
+               (fun (__fan_2 : [> Tokenf.t])  (v : 'luident)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_2 with
                   | `Ant ((""|"anti" as n),s) ->
@@ -162,13 +162,13 @@ let _ =
                       failwith
                         "`App (_loc, (`Vrn (_loc, v)), (FanUtil.mk_anti _loc ~c:\"pat\" n s))\n"))));
         ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
+         `Snterm (Gramf.obj (luident : 'luident Gramf.t ));
          `Stoken
            (((function | `Str _ -> true | _ -> false)),
              (`App ((`Vrn "Str"), `Any)), "`Str _")],
           ("`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n",
-            (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  (s : 'luident)  _ 
+            (Gramf.mk_action
+               (fun (__fan_2 : [> Tokenf.t])  (s : 'luident)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_2 with
                   | `Str v ->
@@ -178,13 +178,13 @@ let _ =
                       failwith
                         "`App (_loc, (`Vrn (_loc, s)), (`Str (_loc, v)))\n"))));
         ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
+         `Snterm (Gramf.obj (luident : 'luident Gramf.t ));
          `Stoken
            (((function | `Lid _ -> true | _ -> false)),
              (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n",
-            (Fgram.mk_action
-               (fun (__fan_2 : [> Ftoken.t])  (s : 'luident)  _ 
+            (Gramf.mk_action
+               (fun (__fan_2 : [> Tokenf.t])  (s : 'luident)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_2 with
                   | `Lid x ->
@@ -194,25 +194,25 @@ let _ =
                       failwith
                         "`App (_loc, (`Vrn (_loc, s)), (`Lid (_loc, x)))\n"))));
         ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
+         `Snterm (Gramf.obj (luident : 'luident Gramf.t ));
          `Skeyword "_"],
           ("`App (_loc, (`Vrn (_loc, s)), (`Any _loc))\n",
-            (Fgram.mk_action
+            (Gramf.mk_action
                (fun _  (s : 'luident)  _  (_loc : Locf.t)  ->
                   (`App (_loc, (`Vrn (_loc, s)), (`Any _loc)) : 'simple_pat )))));
         ([`Skeyword "`";
-         `Snterm (Fgram.obj (luident : 'luident Fgram.t ));
+         `Snterm (Gramf.obj (luident : 'luident Gramf.t ));
          `Skeyword "(";
          `Slist1sep
-           ((`Snterm (Fgram.obj (internal_pat : 'internal_pat Fgram.t ))),
+           ((`Snterm (Gramf.obj (internal_pat : 'internal_pat Gramf.t ))),
              (`Skeyword ","));
          `Skeyword ")"],
           ("Ast_gen.appl_of_list ((`Vrn (_loc, s)) :: v)\n",
-            (Fgram.mk_action
+            (Gramf.mk_action
                (fun _  (v : 'internal_pat list)  _  (s : 'luident)  _ 
                   (_loc : Locf.t)  ->
                   (Ast_gen.appl_of_list ((`Vrn (_loc, s)) :: v) : 'simple_pat )))))]));
-  Fgram.extend (internal_pat : 'internal_pat Fgram.t )
+  Gramf.extend (internal_pat : 'internal_pat Gramf.t )
     (None,
       [((Some "as"), None,
          [([`Sself;
@@ -221,8 +221,8 @@ let _ =
              (((function | `Lid _ -> true | _ -> false)),
                (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
             ("`Alias (_loc, p1, (`Lid (_loc, s)))\n",
-              (Fgram.mk_action
-                 (fun (__fan_2 : [> Ftoken.t])  _  (p1 : 'internal_pat) 
+              (Gramf.mk_action
+                 (fun (__fan_2 : [> Tokenf.t])  _  (p1 : 'internal_pat) 
                     (_loc : Locf.t)  ->
                     match __fan_2 with
                     | `Lid s ->
@@ -231,7 +231,7 @@ let _ =
       ((Some "|"), None,
         [([`Sself; `Skeyword "|"; `Sself],
            ("`Bar (_loc, p1, p2)\n",
-             (Fgram.mk_action
+             (Gramf.mk_action
                 (fun (p2 : 'internal_pat)  _  (p1 : 'internal_pat) 
                    (_loc : Locf.t)  -> (`Bar (_loc, p1, p2) : 'internal_pat )))))]);
       ((Some "simple"), None,
@@ -239,27 +239,27 @@ let _ =
              (((function | `Str _ -> true | _ -> false)),
                (`App ((`Vrn "Str"), `Any)), "`Str _")],
            ("`Str (_loc, s)\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+             (Gramf.mk_action
+                (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Str s -> (`Str (_loc, s) : 'internal_pat )
                    | _ -> failwith "`Str (_loc, s)\n"))));
         ([`Skeyword "_"],
           ("`Any _loc\n",
-            (Fgram.mk_action
+            (Gramf.mk_action
                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'internal_pat )))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)),
               (`App ((`Vrn "Lid"), `Any)), "`Lid _")],
           ("`Lid (_loc, x)\n",
-            (Fgram.mk_action
-               (fun (__fan_0 : [> Ftoken.t])  (_loc : Locf.t)  ->
+            (Gramf.mk_action
+               (fun (__fan_0 : [> Tokenf.t])  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Lid x -> (`Lid (_loc, x) : 'internal_pat )
                   | _ -> failwith "`Lid (_loc, x)\n"))));
         ([`Skeyword "("; `Sself; `Skeyword ")"],
           ("p\n",
-            (Fgram.mk_action
+            (Gramf.mk_action
                (fun _  (p : 'internal_pat)  _  (_loc : Locf.t)  ->
                   (p : 'internal_pat )))))])])
 open Format

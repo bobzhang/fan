@@ -10,6 +10,6 @@
 (*     ]} *)
 (*     It's used by DDSL [clear]    *)
 (*  *\)     *)
-(* val nonterminalsclear : exp Fgram.t *)
+(* val nonterminalsclear : exp Gramf.t *)
 
   

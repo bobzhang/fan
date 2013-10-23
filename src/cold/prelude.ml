@@ -4,7 +4,7 @@ let simple_wrap = Fan_util.simple_wrap
 let pp_print_flush = Format.pp_print_flush
 let eprintf = Format.eprintf
 open Util
-type 'a parser_fun = Locf.t -> char Fstream.t -> 'a option 
+type 'a parser_fun = Locf.t -> char Streamf.t -> 'a option 
 type 'a printer_fun =
   ?input_file:string -> ?output_file:string -> 'a option -> unit 
 let sigi_printer =
@@ -53,10 +53,10 @@ let register_parsetree_printer () =
          Printast.implementation fmt pt) in
   stru_printer := print_implem; sigi_printer := print_interf
 let parse_implem loc cs =
-  let l = (simple_wrap loc cs) @@ (Fgram.parse Syntaxf.implem) in
+  let l = (simple_wrap loc cs) @@ (Gramf.parse Syntaxf.implem) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_interf loc cs =
-  let l = (simple_wrap loc cs) @@ (Fgram.parse Syntaxf.interf) in
+  let l = (simple_wrap loc cs) @@ (Gramf.parse Syntaxf.interf) in
   match l with | [] -> None | l -> Some (Ast_gen.sem_of_list l)
 let parse_file name pa =
   let loc = Locf.mk name in
@@ -64,7 +64,7 @@ let parse_file name pa =
   let () = Fan_warnings.current := print_warning in
   let ic = if name = "-" then stdin else open_in_bin name in
   let clear () = if name = "-" then () else close_in ic in
-  let cs = Fstream.of_channel ic in finally ~action:clear cs (pa loc)
+  let cs = Streamf.of_channel ic in finally ~action:clear cs (pa loc)
 module CurrentPrinter =
   struct
     let print_interf ?input_file  ?output_file  ast =
@@ -74,9 +74,9 @@ module CurrentPrinter =
   end
 let wrap parse_fun ~print_location  lb =
   try
-    let token_stream = (lb |> Lex_fan.from_lexbuf) |> Fgram.filter in
-    match Fstream.peek token_stream with
-    | Some (`EOI _,_) -> (Fstream.junk token_stream; raise End_of_file)
+    let token_stream = (lb |> Lex_fan.from_lexbuf) |> Gramf.filter in
+    match Streamf.peek token_stream with
+    | Some (`EOI _,_) -> (Streamf.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |Locf.Exc_located (_,(End_of_file |Sys.Break )) as
@@ -87,14 +87,14 @@ let wrap parse_fun ~print_location  lb =
        raise Exit)
   | x -> (Format.eprintf "@[<0>%s@]@." (Printexc.to_string x); raise Exit)
 let toplevel_phrase token_stream =
-  match Fgram.parse_origin_tokens Syntaxf.top_phrase token_stream with
+  match Gramf.parse_origin_tokens Syntaxf.top_phrase token_stream with
   | Some stru ->
       let stru = Ast_filters.apply_implem_filters stru in Ast2pt.phrase stru
   | None  -> raise End_of_file
 let use_file token_stream =
   let loop () =
     let (pl,stopped_at_directive) =
-      Fgram.parse_origin_tokens Syntaxf.implem token_stream in
+      Gramf.parse_origin_tokens Syntaxf.implem token_stream in
     if stopped_at_directive <> None
     then match pl with | _ -> (pl, false)
     else (pl, true) in
@@ -105,7 +105,7 @@ let use_file token_stream =
     else
       (let rec loop () =
          let (pl,stopped_at_directive) =
-           Fgram.parse_origin_tokens Syntaxf.implem token_stream in
+           Gramf.parse_origin_tokens Syntaxf.implem token_stream in
          if stopped_at_directive <> None then pl @ (loop ()) else pl in
        loop ()) in
   List.map (fun x  -> Ast2pt.phrase (Ast_filters.apply_implem_filters x))

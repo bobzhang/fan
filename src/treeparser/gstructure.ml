@@ -7,7 +7,7 @@ type position =
 
 
 (* the [location] and the parsed value *)
-type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Ftoken.parse 
+type 'a cont_parse  = Locf.t -> Gaction.t -> 'a Tokenf.parse 
     
 (** Duplicated in fgram.mli *)
 type loc = Locf.t
@@ -46,7 +46,7 @@ type word =
 and data = ((* string *)int * word) (* FIXME duplicate in gram_def *)      
 type descr = data
     
-type token_pattern = (Ftoken.t -> bool) * descr * string
+type token_pattern = (Tokenf.t -> bool) * descr * string
 (** [arg1] is used for runtime parsing, generated at compile time
 
     [arg2] is used for runtime merging, generated at compile time
@@ -58,7 +58,7 @@ type token_pattern = (Ftoken.t -> bool) * descr * string
 
 
 
-(** all variants [Ftoken.t] is normalized into two patterns, either a keyword or
+(** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
 type terminal =
     [ `Skeyword of string
@@ -75,13 +75,13 @@ type label =  string option
 type entry = {
     gram     : gram;
     name     : string;
-    mutable start    :  int -> Gaction.t Ftoken.parse ;
+    mutable start    :  int -> Gaction.t Tokenf.parse ;
     mutable continue : int -> Gaction.t cont_parse ;
     mutable desc     :  desc;
     mutable freezed :  bool;}
 and desc =
   | Dlevels of level list 
-  | Dparser of (Ftoken.stream -> Gaction.t )
+  | Dparser of (Tokenf.stream -> Gaction.t )
 and level = {
     lname   : label;
     assoc   : assoc ;

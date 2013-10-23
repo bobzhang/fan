@@ -17,7 +17,7 @@ let fold_left2 f acc  a1 a2 =
       (* let of_stream s = *)
       
 let stream a =
-  Fstream.of_array a
+  Streamf.of_array a
     
     (* let filter_map f arr = *)
 let filter_opt t = begin 

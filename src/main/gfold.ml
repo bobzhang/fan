@@ -30,14 +30,14 @@ let sfold1sep f e entry symbl psymb psep =  (* FIXME this function was never use
     | _ -> assert false  in
   let parse_top =  function
     | [symb; _] -> Gentry.parser_of_symbol entry symb  (* FIXME context *)
-    | _ -> raise Fstream.NotConsumed  in
+    | _ -> raise Streamf.NotConsumed  in
   let rec kont accu = %parser{
     |  () = psep;
         a =
           %parser{
             |  a = psymb  -> a
             |  a = parse_top symbl  -> Obj.magic a
-            |  -> raise (Fstream.Error (failed symbl)) };
+            |  -> raise (Streamf.Error (failed symbl)) };
       's  ->
         kont (f a accu) s
     |  -> accu } in

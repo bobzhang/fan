@@ -6,7 +6,7 @@ FConfig
 FDyn
 Locf
 StdFan
-Ftoken
+Tokenf
 FanTokenFilter
 Gaction
 TokenEval
@@ -23,7 +23,7 @@ Gdelete
 Ginsert
 Gentry
 Gfold
-Fgram
+Gramf
 Ast_quotation
 AstInjection
 AstLib

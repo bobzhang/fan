@@ -1,6 +1,6 @@
 
 
-FILES = charf stringf fstream return listf dyn_array  mapf setf hashset \
+FILES = charf stringf streamf return listf dyn_array  mapf setf hashset \
     filenamef hashtblf ref stackf option bufferf arrayf formatf int util
 
 .PHONY: clean lib    

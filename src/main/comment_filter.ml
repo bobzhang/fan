@@ -1,13 +1,13 @@
 
 
 
-type t = ((string * Locf.t) Fstream.t  * (string * Locf.t) Queue.t )
+type t = ((string * Locf.t) Streamf.t  * (string * Locf.t) Queue.t )
 let mk () =
   let q = Queue.create () in
   let f _ =
     (* debug comments "take...@\n" in *)
   try Some (Queue.take q) with | Queue.Empty -> None 
-  in (Fstream.from f, q)
+  in (Streamf.from f, q)
 
 let filter (_, q) =
   let rec self = %parser{

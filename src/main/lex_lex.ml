@@ -52,7 +52,7 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
+let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
   | newline as x %{
     begin
       update_loc  lexbuf;
@@ -97,7 +97,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       let loc = old -- lexbuf.lex_curr_p in
-      (`Quot {Ftoken.name=Ftoken.empty_name;
+      (`Quot {Tokenf.name=Tokenf.empty_name;
               meta=None;
               content = buff_contents c ;
               shift = 2;
@@ -115,7 +115,7 @@ let  rec token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) = %lex{
   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     
 
-let from_lexbuf lb = Fstream.from (fun _ -> Some (token lb))
+let from_lexbuf lb = Streamf.from (fun _ -> Some (token lb))
 
 let from_stream (loc:Locf.t) strm =
   let lb = Lexing.from_function (lexing_store strm) in begin

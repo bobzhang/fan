@@ -3,6 +3,6 @@
     [item] is extended by [control_require] to add require primitive
  *)
 
-val item : unit Fgram.t
+val item : unit Gramf.t
 
   

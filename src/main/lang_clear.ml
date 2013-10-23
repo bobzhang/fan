@@ -10,7 +10,7 @@ open FAst
   
 %create{
 a_lident
-(nonterminalsclear : exp Fgram.t)
+(nonterminalsclear : exp Gramf.t)
 qualuid  
 }
   

@@ -11,7 +11,7 @@ open FAst
     [stru parse_fun]
  *)
 type 'a parser_fun  =
-     loc -> char Fstream.t -> 'a option
+     loc -> char Streamf.t -> 'a option
 
 
 (** type [printer_fun] define the interface for the Fan's printer
@@ -65,12 +65,12 @@ module CurrentPrinter :
 
 
 val wrap :
-    'a Ftoken.parse  -> print_location:(Format.formatter -> Locf.t -> unit) ->
+    'a Tokenf.parse  -> print_location:(Format.formatter -> Locf.t -> unit) ->
         Lexing.lexbuf -> 'a    
 
-val toplevel_phrase : Parsetree.toplevel_phrase Ftoken.parse
+val toplevel_phrase : Parsetree.toplevel_phrase Tokenf.parse
 
 
 (** Here we only *intercept* directives [at the beginning] of the file. 
     toplevel has a differen semantics for [use_file] *)
-val use_file : Parsetree.toplevel_phrase list Ftoken.parse
+val use_file : Parsetree.toplevel_phrase list Tokenf.parse

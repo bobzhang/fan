@@ -7,19 +7,19 @@ let inject_clfield_tbl: (key,clfield) Hashtbl.t = Hashtbl.create 40
 let register_inject_exp (k,f) = Hashtbl.replace inject_exp_tbl k f
 let register_inject_stru (k,f) = Hashtbl.replace inject_stru_tbl k f
 let register_inject_clfield (k,f) = Hashtbl.replace inject_clfield_tbl k f
-let inject_exp = Fgram.mk "inject_exp"
-let inject_stru = Fgram.mk "inject_stru"
-let inject_clfield = Fgram.mk "inject_clfield"
+let inject_exp = Gramf.mk "inject_exp"
+let inject_stru = Gramf.mk "inject_stru"
+let inject_clfield = Gramf.mk "inject_clfield"
 let _ =
-  Fgram.extend_single (inject_exp : 'inject_exp Fgram.t )
+  Gramf.extend_single (inject_exp : 'inject_exp Gramf.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid (_,_) -> true | _ -> false)),
                (3802919, `Any), "`Lid x")],
            ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+             (Gramf.mk_action
+                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid (_,x) ->
                        ((try Hashtbl.find inject_exp_tbl x
@@ -30,16 +30,16 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]));
-  Fgram.extend_single (inject_stru : 'inject_stru Fgram.t )
+                            (Tokenf.token_to_string __fan_0))))))]));
+  Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid (_,_) -> true | _ -> false)),
                (3802919, `Any), "`Lid x")],
            ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+             (Gramf.mk_action
+                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid (_,x) ->
                        ((try Hashtbl.find inject_stru_tbl x
@@ -50,16 +50,16 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]));
-  Fgram.extend_single (inject_clfield : 'inject_clfield Fgram.t )
+                            (Tokenf.token_to_string __fan_0))))))]));
+  Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
     (None,
       (None, None,
         [([`Stoken
              (((function | `Lid (_,_) -> true | _ -> false)),
                (3802919, `Any), "`Lid x")],
            ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
-             (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
+             (Gramf.mk_action
+                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid (_,x) ->
                        ((try Hashtbl.find inject_clfield_tbl x
@@ -70,7 +70,7 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]))
+                            (Tokenf.token_to_string __fan_0))))))]))
 let _ =
   let open Ast_quotation in
     let d = Ns.inject in

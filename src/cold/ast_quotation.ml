@@ -1,6 +1,6 @@
 let pp_print_string = Format.pp_print_string
 let bprintf = Format.bprintf
-let paths: Ftoken.domains list ref =
+let paths: Tokenf.domains list ref =
   ref
     [`Absolute ["Fan"; "Lang"];
     `Absolute ["Fan"; "Lang"; "Meta"];
@@ -9,8 +9,8 @@ let concat_domain =
   function
   | (`Absolute xs,`Sub ys) -> `Absolute (xs @ ys)
   | _ -> invalid_arg "concat_domain"
-let names_tbl: (Ftoken.domains,Setf.String.t) Hashtbl.t = Hashtbl.create 30
-let resolve_name (n : Ftoken.name) =
+let names_tbl: (Tokenf.domains,Setf.String.t) Hashtbl.t = Hashtbl.create 30
+let resolve_name (n : Tokenf.name) =
   match n with
   | ((`Sub _ as x),v) ->
       (match Listf.find_opt
@@ -25,25 +25,25 @@ let resolve_name (n : Ftoken.name) =
        | Some r -> Some ((concat_domain (r, x)), v))
   | x -> Some x
 module ExpKey = Dyn_tag.Pack(struct type 'a t = unit  end)
-module ExpFun = Dyn_tag.Pack(struct type 'a t = 'a Ftoken.expand_fun  end)
+module ExpFun = Dyn_tag.Pack(struct type 'a t = 'a Tokenf.expand_fun  end)
 let current_loc_name = ref None
 let stack = Stack.create ()
 let current_quot () =
   try Stack.pop stack
   with | Stack.Empty  -> failwith "it's not in a quotation context"
 let dump_file = ref None
-type key = (Ftoken.name* ExpKey.pack) 
+type key = (Tokenf.name* ExpKey.pack) 
 module QMap = Mapf.Make(struct type t = key 
                                let compare = compare end)
 let map = ref Mapf.String.empty
-let update (pos,(str : Ftoken.name)) =
+let update (pos,(str : Tokenf.name)) =
   map := (Mapf.String.add pos str map.contents)
 let default_at_pos pos str = update (pos, str)
-let default: Ftoken.name option ref = ref None
+let default: Tokenf.name option ref = ref None
 let set_default s = default := (Some s)
 let clear_map () = map := Mapf.String.empty
 let clear_default () = default := None
-let expander_name ~pos  (name : Ftoken.name) =
+let expander_name ~pos  (name : Tokenf.name) =
   match name with
   | (`Sub [],"") ->
       (try Some (Mapf.String.find pos map.contents)
@@ -51,20 +51,20 @@ let expander_name ~pos  (name : Ftoken.name) =
   | (`Sub _,_) -> resolve_name name
   | (`Absolute _,_) -> Some name
 let expanders_table = ref QMap.empty
-let add ((domain,n) as name) (tag : 'a Dyn_tag.t) (f : 'a Ftoken.expand_fun)
+let add ((domain,n) as name) (tag : 'a Dyn_tag.t) (f : 'a Tokenf.expand_fun)
   =
   let (k,v) = ((name, (ExpKey.pack tag ())), (ExpFun.pack tag f)) in
   let s =
     try Hashtbl.find names_tbl domain with | Not_found  -> Setf.String.empty in
   Hashtbl.replace names_tbl domain (Setf.String.add n s);
   expanders_table := (QMap.add k v expanders_table.contents)
-let expand (x : Ftoken.quot) (tag : 'a Dyn_tag.t) =
+let expand (x : Tokenf.quot) (tag : 'a Dyn_tag.t) =
   (let pos_tag = Dyn_tag.of_string tag in
    let name = x.name in
    match expander_name ~pos:pos_tag name with
    | None  ->
        (Locf.failf x.loc "DDSL `%s' not found") @@
-         (Ftoken.string_of_name name)
+         (Tokenf.string_of_name name)
    | Some absolute_name ->
        let pack =
          try
@@ -73,22 +73,22 @@ let expand (x : Ftoken.quot) (tag : 'a Dyn_tag.t) =
          with
          | Not_found  ->
              Locf.failf x.loc "DDSL expander `%s' at position `%s' not found"
-               (Ftoken.string_of_name name) pos_tag in
-       let expander = ExpFun.unpack tag pack in Ftoken.quot_expand expander x : 
+               (Tokenf.string_of_name name) pos_tag in
+       let expander = ExpFun.unpack tag pack in Tokenf.quot_expand expander x : 
   'a )
 let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
-  let entry_eoi = Fgram.eoi_entry entry in
+  let entry_eoi = Gramf.eoi_entry entry in
   let expand_exp loc loc_name_opt s =
     Ref.protect2 (Configf.antiquotations, true)
       (current_loc_name, loc_name_opt)
       (fun _  ->
-         ((Fgram.parse_string entry_eoi ~loc s) |> (mexp loc)) |> exp_filter) in
+         ((Gramf.parse_string entry_eoi ~loc s) |> (mexp loc)) |> exp_filter) in
   let expand_stru loc loc_name_opt s =
     let exp_ast = expand_exp loc loc_name_opt s in `StExp (loc, exp_ast) in
   let expand_pat _loc loc_name_opt s =
     Ref.protect Configf.antiquotations true
       (fun _  ->
-         let ast = Fgram.parse_string entry_eoi ~loc:_loc s in
+         let ast = Gramf.parse_string entry_eoi ~loc:_loc s in
          let meta_ast = mpat _loc ast in
          let exp_ast = pat_filter meta_ast in
          let rec subst_first_loc name (x : FAst.pat) =
@@ -113,7 +113,7 @@ let add_quotation ~exp_filter  ~pat_filter  ~mexp  ~mpat  name entry =
 let make_parser ?(lexer= Flex_lib.from_stream)  entry loc loc_name_opt s =
   Ref.protect2 (Configf.antiquotations, true)
     (current_loc_name, loc_name_opt)
-    (fun _  -> Fgram.parse_string ~lexer (Fgram.eoi_entry entry) ~loc s)
+    (fun _  -> Gramf.parse_string ~lexer (Gramf.eoi_entry entry) ~loc s)
 let of_stru ?lexer  ~name  ~entry  () =
   add name Dyn_tag.stru (make_parser ?lexer entry)
 let of_stru_with_filter ?lexer  ~name  ~entry  ~filter  () =
