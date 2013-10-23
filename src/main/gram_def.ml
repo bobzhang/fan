@@ -1,14 +1,15 @@
 open FAst
 
 class primitive = object
-  method string _loc (i:string) :ep = %ep{$`str:i} 
+  method string _loc (i:string) :ep = %ep{$`str:i}
+  method int _loc (i:int) : ep = %ep{$`int:i}
 end
 type word  =
   [ `Any
   | `A of string
   | `Empty (* no token associated *)]
 
-and data = (string * word)
+and data = (int * word)
    with ("MetaObj")
 
 let meta_data = new meta  ;;

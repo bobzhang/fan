@@ -10,7 +10,7 @@ let _ =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               ("Ant", (`A "")), "`Ant s")],
+               (3257031, (`A "")), "`Ant s")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -23,7 +23,7 @@ let _ =
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Ant ("lid",_) -> true | _ -> false)),
-              ("Ant", (`A "lid")), "`Ant s")],
+              (3257031, (`A "lid")), "`Ant s")],
           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -34,7 +34,7 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
               "`Lid s")],
           ("`Lid (_loc, s)\n",
             (Fgram.mk_action
@@ -67,8 +67,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid x");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -83,7 +83,7 @@ let _ =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action

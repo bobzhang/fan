@@ -11,8 +11,8 @@ let () =
         (None, None,
           [([`Skeyword "require";
             `Stoken
-              (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
-                "`Str s")],
+              (((function | `Str (_,_) -> true | _ -> false)),
+                (4153489, `Any), "`Str s")],
              ("add s\n",
                (Fgram.mk_action
                   (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->

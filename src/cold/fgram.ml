@@ -161,7 +161,7 @@ let eoi_entry entry =
         (None, None,
           [([`Snterm (obj (entry : 'entry t ));
             `Stoken
-              (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
+              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                 "`EOI")],
              ("x\n",
                (mk_action

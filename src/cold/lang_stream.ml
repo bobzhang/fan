@@ -9,7 +9,7 @@ let _ =
       (None, None,
         [([`Skeyword "!";
           `Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
               "`Uid n")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Fgram.mk_action
@@ -24,7 +24,7 @@ let _ =
                             (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "!";
          `Stoken
-           (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+           (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
              "`Uid n");
          `Snterm
            (Fgram.obj (stream_exp_comp_list : 'stream_exp_comp_list Fgram.t ))],

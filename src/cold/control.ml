@@ -8,7 +8,7 @@ let _ =
       (None, None,
         [([`Skeyword "default";
           `Stoken
-            (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+            (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
              (Fgram.mk_action
@@ -33,7 +33,7 @@ let _ =
                      (Ast_quotation.paths.contents)) : 'item )))));
         ([`Skeyword "filter";
          `Stoken
-           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+           (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
              "`Str s")],
           ("Ast_filters.use_implem_filter s\n",
             (Fgram.mk_action
@@ -53,8 +53,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid i");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid i");
           `Skeyword ".";
           `Sself],
            ("i :: xs\n",
@@ -68,7 +68,7 @@ let _ =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
               "`Uid i")],
           ("[i]\n",
             (Fgram.mk_action

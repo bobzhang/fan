@@ -1,6 +1,8 @@
 
 (** Enhancement to the {!Pervasives} module  *)  
 
+val hash_variant : string -> int
+    
 val cons : 'a -> 'a list -> 'a list
 
 val failwithf : ('a, unit, string, 'b) format4 -> 'a

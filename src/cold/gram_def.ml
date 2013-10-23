@@ -3,9 +3,11 @@ class primitive =
   object 
     method string _loc (i : string) =
       ((`Str (_loc, (String.escaped i)) : FAst.ep ) : ep )
+    method int _loc (i : int) =
+      ((`Int (_loc, (string_of_int i)) : FAst.ep ) : ep )
   end
 type word = [ `Any | `A of string | `Empty] 
-and data = (string* word) 
+and data = (int* word) 
 class meta =
   object (self : 'self_type)
     inherit  primitive
@@ -19,8 +21,7 @@ class meta =
       fun _loc  _a0  ->
         (fun _loc  (_a0,_a1)  ->
            `Par
-             (_loc,
-               (`Com (_loc, (self#string _loc _a0), (self#word _loc _a1)))))
+             (_loc, (`Com (_loc, (self#int _loc _a0), (self#word _loc _a1)))))
           _loc _a0
   end
 let meta_data = new meta

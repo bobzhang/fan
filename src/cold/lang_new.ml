@@ -14,8 +14,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
-               "`Str y")],
+             (((function | `Str (_,_) -> true | _ -> false)),
+               (4153489, `Any), "`Str y")],
            ("y\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -29,8 +29,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
-               "`Lid x")],
+             (((function | `Lid (_,_) -> true | _ -> false)),
+               (3802919, `Any), "`Lid x")],
            ("(_loc, x, None, None)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -42,10 +42,10 @@ let _ =
                             (Ftoken.token_to_string __fan_0))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+           (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
              "`Str y");
          `Skeyword ")"],
           ("(_loc, x, (Some y), None)\n",
@@ -62,10 +62,10 @@ let _ =
                            (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str (_,_) -> true | _ -> false)), ("Str", `Any),
+           (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
              "`Str y");
          `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
          `Skeyword ")"],
@@ -83,7 +83,7 @@ let _ =
                            (Ftoken.token_to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Skeyword ":";
          `Snterm (Fgram.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Fgram.t ));
@@ -123,8 +123,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid x");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -139,7 +139,7 @@ let _ =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
@@ -153,8 +153,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid x");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -169,7 +169,7 @@ let _ =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
+            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
               "`Lid i")],
           ("`Lid (_loc, i)\n",
             (Fgram.mk_action
@@ -183,8 +183,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid x");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -199,12 +199,12 @@ let _ =
                          (Printf.sprintf "%s"
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
+            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
               "`Uid x");
          `Skeyword ".";
          `Stoken
            (((function | `Lid (_,"t") -> true | _ -> false)),
-             ("Lid", (`A "t")), "`Lid \"t\"")],
+             (3802919, (`A "t")), "`Lid \"t\"")],
           ("`Uid (_loc, x)\n",
             (Fgram.mk_action
                (fun (__fan_2 : Ftoken.t)  _  (__fan_0 : Ftoken.t) 

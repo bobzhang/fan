@@ -59,7 +59,7 @@ type word =
    [`Any
    |`A of string
    |`Empty]
-and data = (string * word) (* FIXME duplicate in gram_def *)      
+and data = ((* string *)int * word) (* FIXME duplicate in gram_def *)      
 type descr = data
       
 (* type descr = pat *)

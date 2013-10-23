@@ -374,8 +374,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)), ("Uid", `Any),
-               "`Uid m");
+             (((function | `Uid (_,_) -> true | _ -> false)),
+               (4250480, `Any), "`Uid m");
           `Skeyword ":";
           `Slist1 (`Snterm (Fgram.obj (name : 'name Fgram.t )));
           `Skeyword ";"],
@@ -410,8 +410,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
-               "`Lid x")],
+             (((function | `Lid (_,_) -> true | _ -> false)),
+               (3802919, `Any), "`Lid x")],
            ("`Lid (_loc, x)\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
