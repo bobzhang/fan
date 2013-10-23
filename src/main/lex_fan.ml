@@ -98,84 +98,84 @@ Location_util:
    |}  *)
 let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
   %lex{
-   | newline as x %{
+   | newline as txt %{
      begin
        update_loc  lexbuf;
        let loc = !! lexbuf in
-       (`Newline (loc,x), loc)
+       (`Newline {loc;txt}, loc)
      end }
-   | "~" (ocaml_lid as x) ':' %{
+   | "~" (ocaml_lid as txt) ':' %{
      let loc = !! lexbuf in
-     (`Label (loc,x), loc )}
+     (`Label {loc;txt}, loc )}
 
-   | "?" (ocaml_lid as x) ':' %{
+   | "?" (ocaml_lid as txt) ':' %{
      let loc = !!lexbuf in
-     (`Optlabel (loc,x), loc)}
+     (`Optlabel {loc;txt}, loc)}
          
-   | ocaml_lid as x  %{let loc =  !! lexbuf in (`Lid (loc,x),loc)}
+   | ocaml_lid as txt  %{let loc =  !! lexbuf in (`Lid {loc;txt},loc)}
          
-   | ocaml_uid as x  %{let loc = !! lexbuf in (`Uid (loc,x), loc)}
+   | ocaml_uid as txt  %{let loc = !! lexbuf in (`Uid {loc;txt}, loc)}
          
-   | int_literal  (('l'|'L'|'n' as s ) ?) as x %{
+   | int_literal  (('l'|'L'|'n' as s ) ?) as txt %{
        (* FIXME - int_of_string ("-" ^ s) ??
           safety check *)
      let loc = !!lexbuf in
-     let x =
+     let (x:Tokenf.t) =
        match s with
-       | Some 'l' -> `Int32 (loc,x)
-       | Some 'L' -> `Int64 (loc,x)
-       | Some 'n' -> `Nativeint (loc,x)
-       | _ -> `Int (loc,x) in
+       | Some 'l' -> `Int32 {loc;txt}
+       | Some 'L' -> `Int64 {loc;txt}
+       | Some 'n' -> `Nativeint {loc;txt}
+       | _ -> `Int {loc;txt} in
      ( x, loc)}
-   | float_literal as f %{
+   | float_literal as txt %{
      let loc = !!lexbuf in
-     (`Flo (loc,f), loc )}       (** FIXME safety check *)
+     (`Flo {loc;txt}, loc )}       (** FIXME safety check *)
    | '"' %{
        let c = new_cxt () in
        let old = lexbuf.lex_start_p in
        begin
          push_loc_cont c lexbuf lex_string;
          let loc = old --  lexbuf.lex_curr_p in
-         (`Str (loc,buff_contents c), loc)
+         (`Str {loc; txt = buff_contents c}, loc)
        end}
-   | "'" (newline as x) "'" %{
+   | "'" (newline as txt) "'" %{
        begin
          update_loc   lexbuf ~retract:1;
          let loc = !!lexbuf in
-         (`Chr (loc,x), loc)
+         (`Chr {loc;txt}, loc)
        end}
          
-   | "'" (ocaml_char as x ) "'" %{
+   | "'" (ocaml_char as txt ) "'" %{
      let loc = !!lexbuf in
-     (`Chr (loc,x) ,loc )}
+     (`Chr {loc;txt} ,loc )}
          
    | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
                                                    
-   | '(' (not_star_symbolchar symbolchar* as op) ocaml_blank* ')' %{
+   | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{
      let loc =  !! lexbuf in
-     (`Eident(loc, op) , loc)}
-   | '(' ocaml_blank+ (symbolchar+ as op) ocaml_blank* ')' %{
+     (`Eident { loc; txt} , loc)}
+   | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
      let loc = !!lexbuf in
-     (`Eident (loc,op), loc)}
+     (`Eident {loc;txt}, loc)}
    | '(' ocaml_blank*
-       ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as op) ocaml_blank* ')' %{
+       ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
      let loc = !! lexbuf in
-     (`Eident (loc,op), loc )}
+     (`Eident {loc;txt}, loc )}
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    | left_delimitor | right_delimitor
    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
-       as x  %{ let loc = !! lexbuf in (`Sym (loc,x) , loc)}
+       as txt  %{ let loc = !! lexbuf in (`Sym {loc;txt} , loc)}
            
    | "*)" %{
        begin
          warn Comment_not_end (!! lexbuf) ;
          move_curr_p (-1) lexbuf;
          let loc = !! lexbuf in
-         (`Sym (loc,"*"), loc)
+         (`Sym {loc;txt="*"}, loc)
        end}
-   | ocaml_blank + as x %{ let loc = !! lexbuf in (`Blank (loc,x), loc)}
+   | ocaml_blank + as txt %{ let loc = !! lexbuf in (`Blank {loc;txt}, loc)}
          
          (* comment *)
    | "(*" (')' as x) ? %{
@@ -186,7 +186,7 @@ let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
          store c lexbuf;
          push_loc_cont c lexbuf lex_comment;
          let loc = old -- lexbuf.lex_curr_p in
-         (`Comment (loc, buff_contents c),loc)
+         (`Comment {loc;txt= buff_contents c},loc)
        end}
    | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift %{
        let c = new_cxt () in

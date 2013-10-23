@@ -37,7 +37,7 @@ let apply () = begin
             mk_anti ~c:"exp;" _loc n s
         |  a = symb1  -> a } in
       let rec kont al = %parser{
-        |  (`Key (_,";"), _); a = symb; 's  ->
+        |  (`Key ({txt=";";_}:Tokenf.txt), _); a = symb; 's  ->
             let _loc =  al <+> a  in
             kont %exp{ $al; $a } s
         |  -> al}  in

@@ -19,13 +19,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid n")],
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid n")],
            ("n\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid (_,n) -> (n : 'uid )
+                   | `Uid ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"

@@ -14,13 +14,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Str (_,_) -> true | _ -> false)),
-               (4153489, `Any), "`Str y")],
+             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+               "`Str y")],
            ("y\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Str (_,y) -> (y : 'str )
+                   | `Str ({ txt = y;_} : Tokenf.txt) -> (y : 'str )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -29,23 +29,24 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("(_loc, x, None, None)\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) -> ((_loc, x, None, None) : 'type_entry )
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                       ((_loc, x, None, None) : 'type_entry )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+           (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
+           (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
              "`Str y");
          `Skeyword ")"],
           ("(_loc, x, (Some y), None)\n",
@@ -53,8 +54,10 @@ let _ =
                (fun _  (__fan_2 : Tokenf.t)  (__fan_1 : Tokenf.t)  _ 
                   (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
-                  | (`Str (_,y),`Lid (_,x)) ->
-                      ((_loc, x, (Some y), None) : 'type_entry )
+                  | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
+                                                        ({ txt = x;_} :
+                                                          Tokenf.txt))
+                      -> ((_loc, x, (Some y), None) : 'type_entry )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s %s"
@@ -62,10 +65,10 @@ let _ =
                            (Tokenf.token_to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+           (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Stoken
-           (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
+           (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
              "`Str y");
          `Snterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
          `Skeyword ")"],
@@ -74,8 +77,10 @@ let _ =
                (fun _  (t : 'Syntaxf__ctyp)  (__fan_2 : Tokenf.t) 
                   (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                   match (__fan_2, __fan_1) with
-                  | (`Str (_,y),`Lid (_,x)) ->
-                      ((_loc, x, (Some y), (Some t)) : 'type_entry )
+                  | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
+                                                        ({ txt = x;_} :
+                                                          Tokenf.txt))
+                      -> ((_loc, x, (Some y), (Some t)) : 'type_entry )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s %s"
@@ -83,7 +88,7 @@ let _ =
                            (Tokenf.token_to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
-           (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+           (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
              "`Lid x");
          `Skeyword ":";
          `Snterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
@@ -94,7 +99,8 @@ let _ =
                (fun _  (y : 'str option)  (t : 'Syntaxf__ctyp)  _ 
                   (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Lid (_,x) -> ((_loc, x, y, (Some t)) : 'type_entry )
+                  | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                      ((_loc, x, y, (Some t)) : 'type_entry )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))))]));
@@ -123,8 +129,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid x");
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -132,20 +138,21 @@ let _ =
                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid (_,x) ->
+                   | `Uid ({ txt = x;_} : Tokenf.txt) ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
+            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
           ("`Uid (_loc, x)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Uid (_,x) -> (`Uid (_loc, x) : 'qualuid )
+                  | `Uid ({ txt = x;_} : Tokenf.txt) ->
+                      (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
@@ -153,8 +160,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid x");
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -162,20 +169,21 @@ let _ =
                 (fun (xs : 'qualid)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)
                     ->
                    match __fan_0 with
-                   | `Uid (_,x) ->
+                   | `Uid ({ txt = x;_} : Tokenf.txt) ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid i")],
           ("`Lid (_loc, i)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Lid (_,i) -> (`Lid (_loc, i) : 'qualid )
+                  | `Lid ({ txt = i;_} : Tokenf.txt) ->
+                      (`Lid (_loc, i) : 'qualid )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
@@ -183,8 +191,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid x");
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -192,26 +200,29 @@ let _ =
                 (fun (xs : 't_qualid)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid (_,x) ->
+                   | `Uid ({ txt = x;_} : Tokenf.txt) ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
+            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x");
          `Skeyword ".";
          `Stoken
-           (((function | `Lid (_,"t") -> true | _ -> false)),
-             (3802919, (`A "t")), "`Lid \"t\"")],
+           (((function
+              | `Lid ({ txt = "t";_} : Tokenf.txt) -> true
+              | _ -> false)), (3802919, (`A "t")), "`Lid \"t\"")],
           ("`Uid (_loc, x)\n",
             (Gramf.mk_action
                (fun (__fan_2 : Tokenf.t)  _  (__fan_0 : Tokenf.t) 
                   (_loc : Locf.t)  ->
                   match (__fan_2, __fan_0) with
-                  | (`Lid (_,"t"),`Uid (_,x)) ->
-                      (`Uid (_loc, x) : 't_qualid )
+                  | (`Lid ({ txt = "t";_} : Tokenf.txt),`Uid
+                                                          ({ txt = x;_} :
+                                                            Tokenf.txt))
+                      -> (`Uid (_loc, x) : 't_qualid )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s %s"

@@ -117,27 +117,27 @@ type line = {
 
       
 type space_token =
-  [ `Comment   of (loc * string)
-  | `Blank     of (loc * string)
-  | `Newline   of (loc * string)
+  [ `Comment   of txt
+  | `Blank     of txt
+  | `Newline   of txt
   | `LINE_DIRECTIVE of line ]
 
 type t =
-  [ `Key       of (loc * string)
-  | `Sym       of (loc * string)
-  | `Lid       of (loc * string)
-  | `Uid       of (loc * string)
-  | `Eident    of (loc * string) (* (+)*)
+  [ `Key       of txt
+  | `Sym       of txt
+  | `Lid       of txt
+  | `Uid       of txt
+  | `Eident    of txt (* (+)*)
 
-  | `Int       of (loc * string)
-  | `Int32     of (loc * string)
-  | `Int64     of (loc * string)
-  | `Nativeint of (loc * string)
-  | `Flo       of (loc * string)
-  | `Chr       of (loc * string)
-  | `Label     of (loc * string)
-  | `Optlabel  of (loc * string)
-  | `Str       of (loc * string)         
+  | `Int       of txt
+  | `Int32     of txt
+  | `Int64     of txt
+  | `Nativeint of txt
+  | `Flo       of txt
+  | `Chr       of txt
+  | `Label     of txt
+  | `Optlabel  of txt
+  | `Str       of txt
   | space_token
    (* . *)
   | quotation

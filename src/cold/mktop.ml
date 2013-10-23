@@ -374,8 +374,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid m");
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid m");
           `Skeyword ":";
           `Slist1 (`Snterm (Gramf.obj (name : 'name Gramf.t )));
           `Skeyword ";"],
@@ -384,7 +384,7 @@ let _ =
                 (fun _  (ns : 'name list)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid (_,m) ->
+                   | `Uid ({ txt = m;_} : Tokenf.txt) ->
                        (Ast_gen.sem_of_list
                           (List.map
                              (fun l  ->
@@ -410,13 +410,14 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("`Lid (_loc, x)\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) -> (`Lid (_loc, x) : 'name )
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                       (`Lid (_loc, x) : 'name )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"

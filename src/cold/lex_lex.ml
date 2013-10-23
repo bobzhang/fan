@@ -455,42 +455,42 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
        };
      (match __ocaml_lex_result with
       | 0 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
           (update_loc lexbuf;
-           (let loc = !! lexbuf in ((`Newline (loc, x)), loc)))
+           (let loc = !! lexbuf in ((`Newline { loc; txt }), loc)))
       | 1 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Lid (loc, x)), loc)
+          let loc = !! lexbuf in ((`Lid { loc; txt }), loc)
       | 2 ->
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
            (let loc = old -- lexbuf.lex_curr_p in
-            ((`Str (loc, (buff_contents c))), loc)))
+            ((`Str { loc; txt = (buff_contents c) }), loc)))
       | 3 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
           (update_loc lexbuf ~retract:1;
-           (let loc = !! lexbuf in ((`Chr (loc, x)), loc)))
+           (let loc = !! lexbuf in ((`Chr { loc; txt }), loc)))
       | 4 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          let loc = !! lexbuf in ((`Chr (loc, x)), loc)
+          let loc = !! lexbuf in ((`Chr { loc; txt }), loc)
       | 5 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
           (err (Illegal_escape (String.make 1 c))) @@ (!! lexbuf)
       | 6 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Sym (loc, x)), loc)
+          let loc = !! lexbuf in ((`Sym { loc; txt }), loc)
       | 7 -> token lexbuf
       | 8 ->
           let x =

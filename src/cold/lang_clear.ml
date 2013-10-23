@@ -34,13 +34,14 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid s")],
           ("`Lid (_loc, s)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Lid (_,s) -> (`Lid (_loc, s) : 'a_lident )
+                  | `Lid ({ txt = s;_} : Tokenf.txt) ->
+                      (`Lid (_loc, s) : 'a_lident )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
@@ -67,8 +68,8 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Uid (_,_) -> true | _ -> false)),
-               (4250480, `Any), "`Uid x");
+             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+               "`Uid x");
           `Skeyword ".";
           `Sself],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
@@ -76,20 +77,21 @@ let _ =
                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid (_,x) ->
+                   | `Uid ({ txt = x;_} : Tokenf.txt) ->
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
+            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
           ("`Uid (_loc, x)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Uid (_,x) -> (`Uid (_loc, x) : 'qualuid )
+                  | `Uid ({ txt = x;_} : Tokenf.txt) ->
+                      (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]))

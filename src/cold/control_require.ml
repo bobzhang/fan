@@ -11,13 +11,13 @@ let () =
         (None, None,
           [([`Skeyword "require";
             `Stoken
-              (((function | `Str (_,_) -> true | _ -> false)),
-                (4153489, `Any), "`Str s")],
+              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+                "`Str s")],
              ("add s\n",
                (Gramf.mk_action
                   (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                      match __fan_1 with
-                     | `Str (_,s) -> (add s : 'item )
+                     | `Str ({ txt = s;_} : Tokenf.txt) -> (add s : 'item )
                      | _ ->
                          failwith
                            (Printf.sprintf "%s"

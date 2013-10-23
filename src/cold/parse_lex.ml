@@ -78,7 +78,7 @@ let _ =
       (None, None,
         [([`Skeyword "let";
           `Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x");
           `Skeyword "=";
           `Snterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
@@ -87,7 +87,7 @@ let _ =
                 (fun (r : 'regexp)  _  (__fan_1 : Tokenf.t)  _ 
                    (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Lid (_,x) ->
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        (if Hashtbl.mem named_regexps x
                         then
                           (Printf.eprintf
@@ -111,13 +111,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid y")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid y")],
            ("(_loc, y)\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,y) -> ((_loc, y) : 'lid )
+                   | `Lid ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -159,13 +159,13 @@ let _ =
                 (fun _  (_loc : Locf.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
         ([`Stoken
-            (((function | `Chr (_,_) -> true | _ -> false)), (3355149, `Any),
+            (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Chr (_,c) ->
+                  | `Chr ({ txt = c;_} : Tokenf.txt) ->
                       (Characters
                          (Fcset.singleton (Char.code @@ (TokenEval.char c))) : 
                       'regexp )
@@ -173,13 +173,13 @@ let _ =
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Str (_,_) -> true | _ -> false)), (4153489, `Any),
+            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Str (_,s) ->
+                  | `Str ({ txt = s;_} : Tokenf.txt) ->
                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
                   | _ ->
                       failwith
@@ -214,13 +214,13 @@ let _ =
           ("Eof\n",
             (Gramf.mk_action (fun _  (_loc : Locf.t)  -> (Eof : 'regexp )))));
         ([`Stoken
-            (((function | `Lid (_,_) -> true | _ -> false)), (3802919, `Any),
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x")],
           ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Lid (_,x) ->
+                  | `Lid ({ txt = x;_} : Tokenf.txt) ->
                       ((try Hashtbl.find named_regexps x
                         with
                         | Not_found  ->
@@ -249,18 +249,21 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Chr (_,_) -> true | _ -> false)),
-               (3355149, `Any), "`Chr c1");
+             (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
+               "`Chr c1");
           `Skeyword "-";
           `Stoken
-            (((function | `Chr (_,_) -> true | _ -> false)), (3355149, `Any),
+            (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c2")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
              (Gramf.mk_action
                 (fun (__fan_2 : Tokenf.t)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
-                   | (`Chr (_,c2),`Chr (_,c1)) ->
+                   | (`Chr ({ txt = c2;_} : Tokenf.txt),`Chr
+                                                          ({ txt = c1;_} :
+                                                            Tokenf.txt))
+                       ->
                        (let c1 = Char.code @@ (TokenEval.char c1) in
                         let c2 = Char.code @@ (TokenEval.char c2) in
                         Fcset.interval c1 c2 : 'char_class1 )
@@ -270,13 +273,13 @@ let _ =
                             (Tokenf.token_to_string __fan_2)
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Chr (_,_) -> true | _ -> false)), (3355149, `Any),
+            (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c1")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Chr (_,c1) ->
+                  | `Chr ({ txt = c1;_} : Tokenf.txt) ->
                       (Fcset.singleton (Char.code @@ (TokenEval.char c1)) : 
                       'char_class1 )
                   | _ ->

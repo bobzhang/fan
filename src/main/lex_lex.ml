@@ -53,32 +53,37 @@ Location_util:
 
 
 let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
-  | newline as x %{
+  | newline as txt %{
     begin
       update_loc  lexbuf;
       let loc = !! lexbuf in
-      (`Newline (loc,x),loc)
+      (`Newline {loc;txt},loc)
     end}
-  | ocaml_lid as x %{let loc = !!lexbuf in (`Lid (loc,x),loc )}
+  | ocaml_lid as txt %{let loc = !!lexbuf in (`Lid {loc;txt},loc )}
   | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
       let loc = old --  lexbuf.lex_curr_p in
-      (`Str (loc,buff_contents c),loc)
+      (`Str {loc; txt =buff_contents c},loc)
     end}
-  | "'" (newline as x) "'" %{
+  | "'" (newline as txt) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
       let loc = !!lexbuf in
-      (`Chr (loc,x), loc)
+      (`Chr {loc;txt}, loc)
     end}
-  | "'" (ocaml_char as x ) "'" %{ let loc = !!lexbuf in (`Chr (loc,x) , loc )}
+
+  | "'" (ocaml_char as txt ) "'" %{
+    let loc = !!lexbuf in (`Chr {loc;txt} , loc )}
+
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
+
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
-  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as x %{
-    let loc = !! lexbuf in (`Sym (loc,x),loc )}
+  |"]" | "*" | "?" | "+" | "(" | ")" | "-" as txt %{
+    let loc = !! lexbuf in (`Sym {loc;txt},loc )}
+
   | ocaml_blank + %{ token lexbuf }
 
   | "(*"(')' as x) ? %{

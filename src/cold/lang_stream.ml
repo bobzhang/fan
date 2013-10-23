@@ -9,13 +9,13 @@ let _ =
       (None, None,
         [([`Skeyword "!";
           `Stoken
-            (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
+            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid n")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
              (Gramf.mk_action
                 (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Uid (_,n) ->
+                   | `Uid ({ txt = n;_} : Tokenf.txt) ->
                        (Ref.protect Compile_stream.grammar_module_name n
                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
                    | _ ->
@@ -24,7 +24,7 @@ let _ =
                             (Tokenf.token_to_string __fan_1))))));
         ([`Skeyword "!";
          `Stoken
-           (((function | `Uid (_,_) -> true | _ -> false)), (4250480, `Any),
+           (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
              "`Uid n");
          `Snterm
            (Gramf.obj (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
@@ -33,7 +33,7 @@ let _ =
                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Tokenf.t)  _ 
                   (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Uid (_,n) ->
+                  | `Uid ({ txt = n;_} : Tokenf.txt) ->
                       (Ref.protect Compile_stream.grammar_module_name n
                          (fun _  -> cstream _loc sel) : 'stream_exp )
                   | _ ->

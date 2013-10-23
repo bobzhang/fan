@@ -83,13 +83,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("x\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) -> (x : 'lid )
+                   | `Lid ({ txt = x;_} : Tokenf.txt) -> (x : 'lid )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"

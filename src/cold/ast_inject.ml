@@ -15,13 +15,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) ->
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        ((try Hashtbl.find inject_exp_tbl x
                          with
                          | Not_found  ->
@@ -35,13 +35,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) ->
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        ((try Hashtbl.find inject_stru_tbl x
                          with
                          | Not_found  ->
@@ -55,13 +55,13 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Lid (_,_) -> true | _ -> false)),
-               (3802919, `Any), "`Lid x")],
+             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+               "`Lid x")],
            ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Lid (_,x) ->
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        ((try Hashtbl.find inject_clfield_tbl x
                          with
                          | Not_found  ->

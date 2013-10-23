@@ -4821,101 +4821,101 @@ let token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
        };
      (match __ocaml_lex_result with
       | 0 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
           (update_loc lexbuf;
-           (let loc = !! lexbuf in ((`Newline (loc, x)), loc)))
+           (let loc = !! lexbuf in ((`Newline { loc; txt }), loc)))
       | 1 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          let loc = !! lexbuf in ((`Label (loc, x)), loc)
+          let loc = !! lexbuf in ((`Label { loc; txt }), loc)
       | 2 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          let loc = !! lexbuf in ((`Optlabel (loc, x)), loc)
+          let loc = !! lexbuf in ((`Optlabel { loc; txt }), loc)
       | 3 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Lid (loc, x)), loc)
+          let loc = !! lexbuf in ((`Lid { loc; txt }), loc)
       | 4 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Uid (loc, x)), loc)
+          let loc = !! lexbuf in ((`Uid { loc; txt }), loc)
       | 5 ->
           let s =
             Lexing.sub_lexeme_char_opt lexbuf
               (((lexbuf.Lexing.lex_mem).(0)) + 0)
-          and x =
+          and txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
           let loc = !! lexbuf in
-          let x =
+          let (x :Tokenf.t)=
             match s with
-            | Some 'l' -> `Int32 (loc, x)
-            | Some 'L' -> `Int64 (loc, x)
-            | Some 'n' -> `Nativeint (loc, x)
-            | _ -> `Int (loc, x) in
+            | Some 'l' -> `Int32 { loc; txt }
+            | Some 'L' -> `Int64 { loc; txt }
+            | Some 'n' -> `Nativeint { loc; txt }
+            | _ -> `Int { loc; txt } in
           (x, loc)
       | 6 ->
-          let f =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Flo (loc, f)), loc)
+          let loc = !! lexbuf in ((`Flo { loc; txt }), loc)
       | 7 ->
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
            (let loc = old -- lexbuf.lex_curr_p in
-            ((`Str (loc, (buff_contents c))), loc)))
+            ((`Str { loc; txt = (buff_contents c) }), loc)))
       | 8 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
           (update_loc lexbuf ~retract:1;
-           (let loc = !! lexbuf in ((`Chr (loc, x)), loc)))
+           (let loc = !! lexbuf in ((`Chr { loc; txt }), loc)))
       | 9 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          let loc = !! lexbuf in ((`Chr (loc, x)), loc)
+          let loc = !! lexbuf in ((`Chr { loc; txt }), loc)
       | 10 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
           (err (Illegal_escape (String.make 1 c))) @@ (!! lexbuf)
       | 11 ->
-          let op =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (((lexbuf.Lexing.lex_mem).(0)) + 0) in
-          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
+          let loc = !! lexbuf in ((`Eident { loc; txt }), loc)
       | 12 ->
-          let op =
+          let txt =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
+          let loc = !! lexbuf in ((`Eident { loc; txt }), loc)
       | 13 ->
-          let op =
+          let txt =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)
               (((lexbuf.Lexing.lex_mem).(1)) + 0) in
-          let loc = !! lexbuf in ((`Eident (loc, op)), loc)
+          let loc = !! lexbuf in ((`Eident { loc; txt }), loc)
       | 14 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Sym (loc, x)), loc)
+          let loc = !! lexbuf in ((`Sym { loc; txt }), loc)
       | 15 ->
           (warn Comment_not_end (!! lexbuf);
            move_curr_p (-1) lexbuf;
-           (let loc = !! lexbuf in ((`Sym (loc, "*")), loc)))
+           (let loc = !! lexbuf in ((`Sym { loc; txt = "*" }), loc)))
       | 16 ->
-          let x =
+          let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Blank (loc, x)), loc)
+          let loc = !! lexbuf in ((`Blank { loc; txt }), loc)
       | 17 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
@@ -4926,7 +4926,7 @@ let token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
            store c lexbuf;
            push_loc_cont c lexbuf lex_comment;
            (let loc = old -- lexbuf.lex_curr_p in
-            ((`Comment (loc, (buff_contents c))), loc)))
+            ((`Comment { loc; txt = (buff_contents c) }), loc)))
       | 18 ->
           let x =
             Lexing.sub_lexeme_char_opt lexbuf
