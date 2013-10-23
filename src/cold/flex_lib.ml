@@ -13,8 +13,8 @@ let from_stream { Locf.loc_start = loc_start;_} strm =
   Lex_fan.from_lexbuf lb
 let rec clean (__strm : _ Fstream.t) =
   match Fstream.peek __strm with
-  | Some (`EOI,loc) ->
-      (Fstream.junk __strm; Fstream.lsing (fun _  -> (`EOI, loc)))
+  | Some ((`EOI _ as x),loc) ->
+      (Fstream.junk __strm; Fstream.lsing (fun _  -> (x, loc)))
   | Some x ->
       (Fstream.junk __strm;
        (let xs = __strm in
@@ -22,7 +22,7 @@ let rec clean (__strm : _ Fstream.t) =
   | _ -> Fstream.sempty
 let rec strict_clean (__strm : _ Fstream.t) =
   match Fstream.peek __strm with
-  | Some (`EOI,_) -> (Fstream.junk __strm; Fstream.sempty)
+  | Some (`EOI _,_) -> (Fstream.junk __strm; Fstream.sempty)
   | Some x ->
       (Fstream.junk __strm;
        (let xs = __strm in

@@ -169,7 +169,21 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 %extend{(g:Fgram.t)
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
-  [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
+  [ ("EOI" as v) %{
+    let pred = %exp{
+      function
+        | `EOI _ -> true
+        | _ -> false 
+    } in
+    let des = %exp{($str:v, `Empty)} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v} in
+    (* let pattern = Some %pat{$vrn:v _ } in *)
+    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+      styp = `Tok _loc;
+      pattern = None; (* means understore? *)
+    }]
+
+  }
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let pred = %exp{
                     function
@@ -220,18 +234,27 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  |  ("Quot"|"DirQuotation"
-        as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
-
-
+  |  ("Quot"|"DirQuotation" as v) ; Lid x %{
+    let pred = %exp{function
+      | $vrn:v _ -> true
+      | _ -> false} in
+    let des = %exp{($str:v,`Any)} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
+    let pattern = Some %pat{$vrn:v $lid:x} in
+    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+      styp = `Tok _loc;
+      pattern}]}
   ]
           
   simple :
   [ @simple_token
-  |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
+  |  ("Ant" as v); "("; or_words{p};",";lid{p1}; ")" %{
      match p with
      | (v,None) ->
-         List.map (fun x -> token_of_simple_pat %pat'{`Ant ($x, $p1) }) v
+         List.map (fun x ->
+           (* let pred = %exp{function *)
+           (*   | $vrn:v ($)} *)
+           token_of_simple_pat %pat'{`Ant ($x, $p1) }) v
      | (v,Some u) ->
          List.map (fun x -> token_of_simple_pat %pat'{`Ant (($x as $lid:u), $p1) }) v 
   }
@@ -250,13 +273,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
               ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )
           
     }
-  |  ("Uid" as v) ; "("; or_words{p}; ")" %{
-    match p with
-    | (vs,None) ->
-        List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs
-    | (vs,Some x) ->
-        List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs 
-  }
+  (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
+  (*   match p with *)
+  (*   | (vs,None) -> *)
+  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
+  (*   | (vs,Some x) -> *)
+  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)
   | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
 
   |  name{n};  OPT level_str{lev} %{

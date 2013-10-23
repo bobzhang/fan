@@ -325,7 +325,7 @@ let  eoi_entry e =
               | x  -> x) symbs in
         (symbs @
          [`Stoken
-            ((function | `EOI -> true | _ -> false),
+            ((function | `EOI _ -> true | _ -> false),
              ("EOI",`Empty)(* (`Vrn "EOI") *), "`EOI"
             )],
          (annot, Gaction.mk (fun _ -> act)))) prods in

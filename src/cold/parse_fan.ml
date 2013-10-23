@@ -920,17 +920,11 @@ let apply () =
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'interf )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+             (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                "`EOI")],
            ("([], None)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `EOI -> (([], None) : 'interf )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))])));
+                (fun _  (_loc : Locf.t)  -> (([], None) : 'interf )))))])));
   (let grammar_entry_create x = Fgram.mk x in
    let name_space: 'name_space Fgram.t = grammar_entry_create "name_space"
    and fun_def_pat: 'fun_def_pat Fgram.t = grammar_entry_create "fun_def_pat" in
@@ -5721,33 +5715,21 @@ let apply () =
        (None, None,
          [([`Snterm (Fgram.obj (pat : 'pat Fgram.t ));
            `Stoken
-             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+             (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                "`EOI")],
             ("x\n",
               (Fgram.mk_action
-                 (fun (__fan_1 : Ftoken.t)  (x : 'pat)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | `EOI -> (x : 'pat_eoi )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s"
-                             (Ftoken.token_to_string __fan_1))))))]));
+                 (fun _  (x : 'pat)  (_loc : Locf.t)  -> (x : 'pat_eoi )))))]));
    Fgram.extend_single (exp_eoi : 'exp_eoi Fgram.t )
      (None,
        (None, None,
          [([`Snterm (Fgram.obj (exp : 'exp Fgram.t ));
            `Stoken
-             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+             (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                "`EOI")],
             ("x\n",
               (Fgram.mk_action
-                 (fun (__fan_1 : Ftoken.t)  (x : 'exp)  (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | `EOI -> (x : 'exp_eoi )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s"
-                             (Ftoken.token_to_string __fan_1))))))])));
+                 (fun _  (x : 'exp)  (_loc : Locf.t)  -> (x : 'exp_eoi )))))])));
   (Fgram.extend_single (implem : 'implem Fgram.t )
      (None,
        (None, None,
@@ -5779,17 +5761,11 @@ let apply () =
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'implem )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+             (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                "`EOI")],
            ("([], None)\n",
              (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `EOI -> (([], None) : 'implem )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]));
+                (fun _  (_loc : Locf.t)  -> (([], None) : 'implem )))))]));
    Fgram.extend_single (top_phrase : 'top_phrase Fgram.t )
      (None,
        (None, None,
@@ -5814,17 +5790,11 @@ let apply () =
                 (fun _  (st : 'stru)  (_loc : Locf.t)  ->
                    (Some st : 'top_phrase )))));
          ([`Stoken
-             (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+             (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                "`EOI")],
            ("None\n",
              (Fgram.mk_action
-                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `EOI -> (None : 'top_phrase )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s"
-                            (Ftoken.token_to_string __fan_0))))))]));
+                (fun _  (_loc : Locf.t)  -> (None : 'top_phrase )))))]));
    Fgram.extend_single (strus : 'strus Fgram.t )
      (None,
        (None, None,

@@ -157,7 +157,7 @@ let wrap parse_fun ~print_location lb =
   try
     let token_stream = lb |> Lex_fan.from_lexbuf |> Fgram.filter in
     match Fstream.peek token_stream with
-    | Some (`EOI,_) -> (Fstream.junk token_stream; raise End_of_file)
+    | Some (`EOI _,_) -> (Fstream.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file | Sys.Break
