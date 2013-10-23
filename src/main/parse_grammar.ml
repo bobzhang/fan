@@ -247,8 +247,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   ]
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
-      | L1 str SEP "|"{v}; "as"; Lid s %{
-          (v , Some s) } ]
+      | L1 str SEP "|"{v}; "as"; Lid@xloc s %{
+          (v , Some (xloc,s)) } ]
   let str :
       [Str s %pat'{$str:s} ]
 
@@ -257,40 +257,28 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
       let p = %pat'@xloc{$lid:s} in
       match ps with
-      | (vs,None) ->
+      | (vs,(* None *)y) ->
+          vs |>
           List.map (fun (x: [> `Str of (loc*string) ]) ->
 
            let pred = %exp{function
              | $vrn:v ($(x :>pat), _) -> true
              | _ -> false} in
+           
            let des = %exp{($str:v,`A $(x :> exp) )} in
+           
            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
+           
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
-           let pattern = Some %pat{$vrn:v ($(x :> pat), $(p : Gram_pat.t :>pat))} in
+           let pp =
+             match y with
+             | None -> %pat{$(x :> pat)}
+             | Some(xloc,u) -> %pat@xloc{( $(x :>pat) as $lid:u)} in
+           let pattern = Some %pat{$vrn:v ($pp, $(p : Gram_pat.t :>pat))} in
            {Gram_def.text = `Stoken(_loc,pred,des,des_str);
              styp= `Tok _loc;
-             pattern}
-           (* token_of_simple_pat %pat'{`Ant ($x, $p) } *)
-                  ) vs
-      | (vs,Some u) ->
-          vs  |>
-          List.map (fun (x:[> `Str of (loc*string)]) ->
-            let pred = %exp{function
-              | $vrn:v ($(x :>pat),_) -> true
-              | _ -> false } in
-            let des = %exp{($str:v,`A $(x :>exp))} in
-            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
-            let pattern = Some %pat{$vrn:v (($(x :> pat) as $lid:u),
-                                            $(p : Gram_pat.t :>pat) )}
-            in {
-            Gram_def.text = `Stoken(_loc,pred,des,des_str);
-            styp = `Tok _loc;
-            pattern
-           }
-            (* token_of_simple_pat %pat'{`Ant (($(x :> Gram_pat.t) as $lid:u), $p) } *)
-                   ) 
-  }
+             pattern})}
   |  Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
   | "("; or_strs{v}; ")" %{
     match v with

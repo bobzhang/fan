@@ -182,12 +182,12 @@ let _ =
          `Stoken
            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
              "`Lid s")],
-          ("(v, (Some s))\n",
+          ("(v, (Some (xloc, s)))\n",
             (Fgram.mk_action
                (fun (__fan_2 : Ftoken.t)  _  (v : 'str list)  (_loc : Locf.t)
                    ->
                   match __fan_2 with
-                  | `Lid (_,s) -> ((v, (Some s)) : 'or_words )
+                  | `Lid (xloc,s) -> ((v, (Some (xloc, s))) : 'or_words )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Ftoken.token_to_string __fan_2))))))]));
@@ -1402,7 +1402,7 @@ let _ =
            (((function | `Lid (_,_) -> true | _ -> false)), ("Lid", `Any),
              "`Lid s");
          `Skeyword ")"],
-          ("let p = `Lid (xloc, s) in\nmatch ps with\n| (vs,None ) ->\n    List.map\n      (fun (x : [> `Str of (loc* string)])  ->\n         let pred: FAst.exp =\n           `Fun\n             (_loc,\n               (`Bar\n                  (_loc,\n                    (`Case\n                       (_loc,\n                         (`App\n                            (_loc,\n                              (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                              (`Any _loc))), (`Lid (_loc, \"true\")))),\n                    (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n         let des: FAst.exp =\n           `Par\n             (_loc,\n               (`Com\n                  (_loc, (`Str (_loc, v)),\n                    (`App (_loc, (`Vrn (_loc, \"A\")), (x :>exp)))))) in\n         let des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n         let pattern =\n           Some\n             (`App\n                (_loc, (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                  (p : Gram_pat.t  :>pat)) : FAst.pat ) in\n         {\n           Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n           styp = (`Tok _loc);\n           pattern\n         }) vs\n| (vs,Some u) ->\n    vs |>\n      (List.map\n         (fun (x : [> `Str of (loc* string)])  ->\n            let pred: FAst.exp =\n              `Fun\n                (_loc,\n                  (`Bar\n                     (_loc,\n                       (`Case\n                          (_loc,\n                            (`App\n                               (_loc,\n                                 (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                                 (`Any _loc))), (`Lid (_loc, \"true\")))),\n                       (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n            let des: FAst.exp =\n              `Par\n                (_loc,\n                  (`Com\n                     (_loc, (`Str (_loc, v)),\n                       (`App (_loc, (`Vrn (_loc, \"A\")), (x :>exp)))))) in\n            let des_str =\n              Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n            let pattern =\n              Some\n                (`App\n                   (_loc,\n                     (`App\n                        (_loc, (`Vrn (_loc, v)),\n                          (`Alias (_loc, (x :>pat), (`Lid (_loc, u)))))),\n                     (p : Gram_pat.t  :>pat)) : FAst.pat ) in\n            {\n              Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n              styp = (`Tok _loc);\n              pattern\n            }))\n",
+          ("let p = `Lid (xloc, s) in\nmatch ps with\n| (vs,None ) ->\n    List.map\n      (fun (x : [> `Str of (loc* string)])  ->\n         let pred: FAst.exp =\n           `Fun\n             (_loc,\n               (`Bar\n                  (_loc,\n                    (`Case\n                       (_loc,\n                         (`App\n                            (_loc,\n                              (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                              (`Any _loc))), (`Lid (_loc, \"true\")))),\n                    (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n         let des: FAst.exp =\n           `Par\n             (_loc,\n               (`Com\n                  (_loc, (`Str (_loc, v)),\n                    (`App (_loc, (`Vrn (_loc, \"A\")), (x :>exp)))))) in\n         let des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n         let pattern =\n           Some\n             (`App\n                (_loc, (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                  (p : Gram_pat.t  :>pat)) : FAst.pat ) in\n         {\n           Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n           styp = (`Tok _loc);\n           pattern\n         }) vs\n| (vs,Some (xloc,u)) ->\n    vs |>\n      (List.map\n         (fun (x : [> `Str of (loc* string)])  ->\n            let pred: FAst.exp =\n              `Fun\n                (_loc,\n                  (`Bar\n                     (_loc,\n                       (`Case\n                          (_loc,\n                            (`App\n                               (_loc,\n                                 (`App (_loc, (`Vrn (_loc, v)), (x :>pat))),\n                                 (`Any _loc))), (`Lid (_loc, \"true\")))),\n                       (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\n            let des: FAst.exp =\n              `Par\n                (_loc,\n                  (`Com\n                     (_loc, (`Str (_loc, v)),\n                       (`App (_loc, (`Vrn (_loc, \"A\")), (x :>exp)))))) in\n            let des_str =\n              Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), p)) in\n            let pp = `Lid (xloc, u) in\n            let pattern =\n              Some\n                (`App\n                   (_loc,\n                     (`App\n                        (_loc, (`Vrn (_loc, v)),\n                          (`Alias (_loc, (x :>pat), pp)))),\n                     (p : Gram_pat.t  :>pat)) : FAst.pat ) in\n            {\n              Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n              styp = (`Tok _loc);\n              pattern\n            }))\n",
             (Fgram.mk_action
                (fun _  (__fan_4 : Ftoken.t)  _  (ps : 'or_words)  _ 
                   (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -1457,7 +1457,7 @@ let _ =
                                    styp = (`Tok _loc);
                                    pattern
                                  }) vs
-                        | (vs,Some u) ->
+                        | (vs,Some (xloc,u)) ->
                             vs |>
                               (List.map
                                  (fun (x : [> `Str of (loc* string)])  ->
@@ -1490,6 +1490,7 @@ let _ =
                                     let des_str =
                                       Gram_pat.to_string
                                         (`App (_loc, (`Vrn (_loc, v)), p)) in
+                                    let pp = `Lid (xloc, u) in
                                     let pattern =
                                       Some
                                         (`App
@@ -1497,8 +1498,7 @@ let _ =
                                              (`App
                                                 (_loc, (`Vrn (_loc, v)),
                                                   (`Alias
-                                                     (_loc, (x :>pat),
-                                                       (`Lid (_loc, u)))))),
+                                                     (_loc, (x :>pat), pp)))),
                                              (p : Gram_pat.t  :>pat)) : 
                                         FAst.pat ) in
                                     {
