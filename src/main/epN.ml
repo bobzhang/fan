@@ -14,7 +14,7 @@ let of_str (s:string) : ep =
   else
     match s.[0] with
     | '`'-> %{  $(vrn: String.sub s 1 (len - 1)) }
-    | x when Fchar.is_uppercase x -> %{ $uid:s }
+    | x when Charf.is_uppercase x -> %{ $uid:s }
     | _ -> %{ $lid:s } 
 
 

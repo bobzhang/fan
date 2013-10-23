@@ -102,7 +102,7 @@ let repeat_arrow_n ty n = (Listf.init n (fun _  -> ty)) |> arrow_of_list
 let result_id = ref 0
 let mk_method_type ~number  ~prefix  (id,len) (k : destination) =
   (let prefix =
-     List.map (fun s  -> Fstring.drop_while (fun c  -> c = '_') s) prefix in
+     List.map (fun s  -> Stringf.drop_while (fun c  -> c = '_') s) prefix in
    let app_src =
      app_arrow @@ (Listf.init number (fun _  -> of_id_len ~off:0 (id, len))) in
    let result_type: FAstN.ctyp =

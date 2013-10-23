@@ -520,11 +520,11 @@ let apply () = begin
           %{ mk_anti _loc ~c:"pat" n s}
         | vid{i} %{ (i : vid :> pat)}
         | @primitve
-        | "-"; Int s %{  `Int (_loc, Fstring.neg s)}
-        | "-"; Int32 s %{ `Int32(_loc, Fstring.neg s) }
-        | "-"; Int64 s %{ `Int64(_loc,Fstring.neg s)}
-        | "-"; Nativeint s %{ `Nativeint(_loc,Fstring.neg s)}
-        | "-"; Flo s %{ `Flo(_loc,Fstring.neg s)}
+        | "-"; Int s %{  `Int (_loc, Stringf.neg s)}
+        | "-"; Int32 s %{ `Int32(_loc, Stringf.neg s) }
+        | "-"; Int64 s %{ `Int64(_loc,Stringf.neg s)}
+        | "-"; Nativeint s %{ `Nativeint(_loc,Stringf.neg s)}
+        | "-"; Flo s %{ `Flo(_loc,Stringf.neg s)}
         | "["; "]" %{ %{ [] }}
         | "["; sem_pat_for_list{mk_list}; "]" %{ mk_list %{ [] }}
               

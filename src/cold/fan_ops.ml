@@ -270,12 +270,12 @@ let rec to_lid =
   | _ -> assert false
 let mkumin loc prefix arg =
   match arg with
-  | (`Int (_loc,n) : FAst.exp) -> (`Int (loc, (Fstring.neg n)) : FAst.exp )
+  | (`Int (_loc,n) : FAst.exp) -> (`Int (loc, (Stringf.neg n)) : FAst.exp )
   | (`Int32 (_loc,n) : FAst.exp) ->
-      (`Int32 (loc, (Fstring.neg n)) : FAst.exp )
+      (`Int32 (loc, (Stringf.neg n)) : FAst.exp )
   | (`Int64 (_loc,n) : FAst.exp) ->
-      (`Int64 (loc, (Fstring.neg n)) : FAst.exp )
+      (`Int64 (loc, (Stringf.neg n)) : FAst.exp )
   | (`Nativeint (_loc,n) : FAst.exp) ->
-      (`Nativeint (loc, (Fstring.neg n)) : FAst.exp )
-  | (`Flo (_loc,n) : FAst.exp) -> (`Flo (loc, (Fstring.neg n)) : FAst.exp )
+      (`Nativeint (loc, (Stringf.neg n)) : FAst.exp )
+  | (`Flo (_loc,n) : FAst.exp) -> (`Flo (loc, (Stringf.neg n)) : FAst.exp )
   | _ -> (`App (loc, (`Lid (loc, ("~" ^ prefix))), arg) : FAst.exp )

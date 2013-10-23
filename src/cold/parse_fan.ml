@@ -3172,11 +3172,11 @@ let apply () =
           `Stoken
             (((function | `Int (_,_) -> true | _ -> false)), (3654863, `Any),
               "`Int s")],
-           ("`Int (_loc, (Fstring.neg s))\n",
+           ("`Int (_loc, (Stringf.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int (_,s) -> (`Int (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int (_,s) -> (`Int (_loc, (Stringf.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3185,11 +3185,11 @@ let apply () =
           `Stoken
             (((function | `Int32 (_,_) -> true | _ -> false)),
               ((-783416530), `Any), "`Int32 s")],
-           ("`Int32 (_loc, (Fstring.neg s))\n",
+           ("`Int32 (_loc, (Stringf.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int32 (_,s) -> (`Int32 (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int32 (_,s) -> (`Int32 (_loc, (Stringf.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3198,11 +3198,11 @@ let apply () =
           `Stoken
             (((function | `Int64 (_,_) -> true | _ -> false)),
               ((-783415859), `Any), "`Int64 s")],
-           ("`Int64 (_loc, (Fstring.neg s))\n",
+           ("`Int64 (_loc, (Stringf.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Int64 (_,s) -> (`Int64 (_loc, (Fstring.neg s)) : 'pat )
+                   | `Int64 (_,s) -> (`Int64 (_loc, (Stringf.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3211,12 +3211,12 @@ let apply () =
           `Stoken
             (((function | `Nativeint (_,_) -> true | _ -> false)),
               ((-113706088), `Any), "`Nativeint s")],
-           ("`Nativeint (_loc, (Fstring.neg s))\n",
+           ("`Nativeint (_loc, (Stringf.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Nativeint (_,s) ->
-                       (`Nativeint (_loc, (Fstring.neg s)) : 'pat )
+                       (`Nativeint (_loc, (Stringf.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
@@ -3225,11 +3225,11 @@ let apply () =
           `Stoken
             (((function | `Flo (_,_) -> true | _ -> false)), (3505225, `Any),
               "`Flo s")],
-           ("`Flo (_loc, (Fstring.neg s))\n",
+           ("`Flo (_loc, (Stringf.neg s))\n",
              (Fgram.mk_action
                 (fun (__fan_1 : Ftoken.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
-                   | `Flo (_,s) -> (`Flo (_loc, (Fstring.neg s)) : 'pat )
+                   | `Flo (_,s) -> (`Flo (_loc, (Stringf.neg s)) : 'pat )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"

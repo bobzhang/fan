@@ -10,8 +10,8 @@ let check_valid str =
   if
     not
       ((len > 1) &&
-         ((not @@ (Fchar.is_digit (str.[1]))) &&
-            (not @@ (Fstring.starts_with str "all_"))))
+         ((not @@ (Charf.is_digit (str.[1]))) &&
+            (not @@ (Stringf.starts_with str "all_"))))
   then
     (eprintf "%s is not a valid name" str;
      eprintf

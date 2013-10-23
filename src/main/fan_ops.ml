@@ -363,11 +363,11 @@ let rec to_lid = function
  *)  
 let mkumin loc prefix arg = with exp 
   match arg with
-  | %{ $int:n } -> %@loc{ $(int:Fstring.neg n) }
-  | %{ $int32:n } -> %@loc{ $(int32:Fstring.neg n) }
-  | %{ $int64:n } -> %@loc{ $(int64:Fstring.neg n) }
-  | %{ $nativeint:n } -> %@loc{ $(nativeint:Fstring.neg n) }
-  | %{ $flo:n } -> %@loc{ $(flo:Fstring.neg n) }
+  | %{ $int:n } -> %@loc{ $(int:Stringf.neg n) }
+  | %{ $int32:n } -> %@loc{ $(int32:Stringf.neg n) }
+  | %{ $int64:n } -> %@loc{ $(int64:Stringf.neg n) }
+  | %{ $nativeint:n } -> %@loc{ $(nativeint:Stringf.neg n) }
+  | %{ $flo:n } -> %@loc{ $(flo:Stringf.neg n) }
   | _ -> %@loc{ $(lid:"~" ^ prefix) $arg }
 
 (* %exp{assert l}*)      

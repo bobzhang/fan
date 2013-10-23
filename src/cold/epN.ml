@@ -8,7 +8,7 @@ let of_str (s : string) =
    else
      (match s.[0] with
       | '`' -> `Vrn (String.sub s 1 (len - 1))
-      | x when Fchar.is_uppercase x -> `Uid s
+      | x when Charf.is_uppercase x -> `Uid s
       | _ -> `Lid s) : ep )
 let gen_tuple_first ~number  ~off  =
   match number with

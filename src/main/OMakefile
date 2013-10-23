@@ -21,3 +21,7 @@ OCamlLibrary(libexp, $(EXP_FILES))
 
 clean:
     rm -rf $(OCAMLBIN_EXT)
+
+# local variables:
+# compile-command: "cd .. && pmake .PHONY/main_annot/lib"
+# end:
