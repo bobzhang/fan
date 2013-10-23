@@ -188,11 +188,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let i = hash_variant v in
     let pred = %exp{
                     function
-                      | $vrn:v (_, $str:x) -> true
+                      | $vrn:v {txt=$str:x;_} -> true
                       | _ -> false} in
     let des = %exp{($`int:i,`A $str:x)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
-    let pattern = Some %pat@xloc{$vrn:v (_, $str:x) } in
+    let pattern = Some %pat@xloc{$vrn:v { txt = $str:x; _ } } in
     [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
@@ -203,11 +203,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let i = hash_variant v in                                 
     let pred =  %exp{
                     function
-                      | $vrn:v (_, _) -> true
+                      | $vrn:v _ -> true
                       | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{$vrn:v (_,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v { txt = $lid:x; _ }} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
@@ -216,11 +216,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let i = hash_variant v in
     let pred =  %exp{
                     function
-                      | $vrn:v (_, _) -> true
+                      | $vrn:v _ -> true
                       | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{$vrn:v ($lid:loc,$lid:x)} in
+    let pattern = Some %pat@xloc{$vrn:v {loc = $lid:loc; txt = $lid:x;_}} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
@@ -228,11 +228,11 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | ("Lid" |"Uid"|"Str" as v) ; "_"    %{
     let i = hash_variant v in
     let pred = %exp{function
-                    | $vrn:v (_, _) -> true
+                    | $vrn:v _ -> true
                     | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = Some %pat{$vrn:v  (_, _) } in
+    let pattern = Some %pat{$vrn:v  _ } in (* could be None *)
     [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
