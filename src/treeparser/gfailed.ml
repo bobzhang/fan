@@ -158,7 +158,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected"
         end
-    | `Stry _ | `Speek _ (*NP: not sure about this*) | `Sopt _ (* | `Stree _ *) -> txt ^ " expected"
+    | `Stry _ | `Speek _ (*NP: not sure about this*) | `Sopt _  -> txt ^ " expected"
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in
   begin
     (* it may not necessary fail when  we use try somewhere*)

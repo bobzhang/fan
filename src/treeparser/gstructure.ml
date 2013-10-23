@@ -47,10 +47,16 @@ and data = (string * word) (* FIXME duplicate in gram_def *)
 type descr = data
     
 type token_pattern = (Ftoken.t -> bool) * descr * string
-    (* [arg1] is used for runtime parsing, generated at compile time
-       [arg2] is used for runtime merging, generated at compile time
-       [arg3] is used for runtime error message
-    *)
+(** [arg1] is used for runtime parsing, generated at compile time
+
+    [arg2] is used for runtime merging, generated at compile time
+
+    [arg3] is used for
+    runtime error message and pretty printing,
+    it could be removed later.
+ *)
+
+
 
 (** all variants [Ftoken.t] is normalized into two patterns, either a keyword or
     a generalized token *)      

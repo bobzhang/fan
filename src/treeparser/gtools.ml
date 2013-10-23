@@ -46,6 +46,10 @@ let get_terminals x =
   | _ -> None 
 
 
+let eq_token  (x : Gstructure.token_pattern)  (y:Gstructure.token_pattern) : bool =
+  match x , y with 
+  | (_,a,_) , (_,b,_) -> a  =  b
+
 (** used in [Delete], the delete API may be deprecated in the future *)        
 let logically_eq_symbols entry =
   let rec eq_symbol (s1:symbol) (s2:symbol) =
@@ -63,10 +67,9 @@ let logically_eq_symbols entry =
     | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
       (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | (`Stoken (_,s1,_),`Stoken (_,s2,_)) ->
-        s1 = s2 
-    | _ -> s1 = s2 
-  in eq_symbol
+    | `Stoken x , `Stoken  y  -> eq_token x y 
+    | _ -> s1 = s2 in
+  eq_symbol
 
 (* used in [Insert] *)
 let rec eq_symbol (s1:symbol) (s2:symbol) =
@@ -82,9 +85,7 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
   | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
     (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
-  | (`Stoken (_,s1,_), `Stoken (_,s2,_)) ->
-      let eq_pat  x y = x =y in
-      eq_pat s1 s2 
+  | `Stoken x, `Stoken y -> eq_token x y
   | _ -> s1 = s2
       
 

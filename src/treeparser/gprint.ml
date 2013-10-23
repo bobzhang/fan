@@ -65,7 +65,7 @@ class text_grammar : grammar_print = object(self:'self)
     | `Stry s -> pp f "TRY %a" self#symbol1 s
     | `Speek s -> pp f "PEEK %a" self#symbol1 s 
     | `Snterml (e, l) -> pp f "%s Level %S" e.name l
-    | `Snterm _ (* | `Snext *) | `Sself  | `Stoken _ | `Skeyword _ as s ->
+    | `Snterm _  | `Sself  | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 f s 
           
   method symbol1 f x =
