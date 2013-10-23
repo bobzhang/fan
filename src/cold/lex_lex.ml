@@ -455,7 +455,11 @@ let rec token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
        };
      (match __ocaml_lex_result with
       | 0 ->
-          (update_loc lexbuf; (let loc = !! lexbuf in ((`NEWLINE loc), loc)))
+          let x =
+            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+              (lexbuf.Lexing.lex_curr_pos + 0) in
+          (update_loc lexbuf;
+           (let loc = !! lexbuf in ((`Newline (loc, x)), loc)))
       | 1 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)

@@ -4821,7 +4821,11 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
        };
      (match __ocaml_lex_result with
       | 0 ->
-          (update_loc lexbuf; (let loc = !! lexbuf in ((`NEWLINE loc), loc)))
+          let x =
+            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+              (lexbuf.Lexing.lex_curr_pos + 0) in
+          (update_loc lexbuf;
+           (let loc = !! lexbuf in ((`Newline (loc, x)), loc)))
       | 1 ->
           let x =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
@@ -4963,10 +4967,14 @@ let token: Lexing.lexbuf -> (Ftoken.t* Locf.t) =
               (((lexbuf.Lexing.lex_mem).(1)) + 0)
           and name =
             Lexing.sub_lexeme_opt lexbuf (((lexbuf.Lexing.lex_mem).(3)) + 0)
-              (((lexbuf.Lexing.lex_mem).(2)) + 0) in
+              (((lexbuf.Lexing.lex_mem).(2)) + 0)
+          and txt =
+            Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
+              (lexbuf.Lexing.lex_curr_pos + 0) in
           let line = int_of_string num in
           (update_loc lexbuf ?file:name ~line ~absolute:true;
-           (let loc = !! lexbuf in ((`LINE_DIRECTIVE (loc, line, name)), loc)))
+           (let loc = !! lexbuf in
+            ((`LINE_DIRECTIVE { loc; line; name; txt }), loc)))
       | 20 ->
           let dollar (c : Lexing_util.context) (lexbuf : Lexing.lexbuf) =
             let rec __ocaml_lex_init_lexbuf lexbuf mem_size =

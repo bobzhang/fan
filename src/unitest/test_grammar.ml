@@ -12,7 +12,7 @@ let t_meta  = Fgram.parse_string Parse_grammar.simple
 let test_simple_meta _ =
   let u = t_meta "Lid _" in
   match u with
-  | [{text = `Stok (_,
+  | [{text = `Stoken (_,
                    %exp@_{function | `Lid _ -> true | _ -> false},
                    %exp@_{ ("Lid", `Any)} ,
                    _);
@@ -26,7 +26,7 @@ let test_simple_meta _ =
 let test_simple_meta1 _ =
   let u = t_meta "Lid x" in
   match u with
-  | [{text = `Stok (_,
+  | [{text = `Stoken (_,
                    %exp@_{function | `Lid _ -> true | _ -> false},
                    %exp@_{("Lid",`Any)} ,_);
      pattern = Some %pat@_{`Lid x } ;

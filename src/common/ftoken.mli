@@ -100,12 +100,27 @@ type dir_quotation = [`DirQuotation of quot  ]
    keyword. for example [/] is not a keyword.
    
  *)
-type loc = Locf.t             
+
+type loc = Locf.t
+      
+type txt = {
+    loc : loc;
+    txt : string;
+  }
+
+type line = {
+    loc : loc;
+    txt : string ;
+    line : int;
+    name : string option;
+  }      
+
+      
 type space_token =
   [ `Comment   of (loc * string)
   | `Blank     of (loc * string)
-  | `NEWLINE   of loc
-  | `LINE_DIRECTIVE of (loc * int * string option) ]
+  | `Newline   of (loc * string)
+  | `LINE_DIRECTIVE of line ]
 
 type t =
   [ `Key       of (loc * string)

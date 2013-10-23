@@ -98,11 +98,11 @@ Location_util:
    |}  *)
 let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
   %lex{
-   | newline %{
+   | newline as x %{
      begin
        update_loc  lexbuf;
        let loc = !! lexbuf in
-       (`NEWLINE loc, loc)
+       (`Newline (loc,x), loc)
      end }
    | "~" (ocaml_lid as x) ':' %{
      let loc = !! lexbuf in
@@ -213,11 +213,11 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
          
    | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
        ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
-       [^'\010' '\013']* newline %{
+       [^'\010' '\013']* newline as txt  %{
          let line = int_of_string num in begin
            update_loc  lexbuf ?file:name ~line ~absolute:true ;
            let loc = !!lexbuf  in
-           (`LINE_DIRECTIVE(loc,line, name),loc )
+           (`LINE_DIRECTIVE{loc;line; name;txt },loc )
          end}
            (* Antiquotation handling *)
    | '$' %{
@@ -276,6 +276,6 @@ let from_lexbuf lb : (Ftoken.t * Locf.t ) Fstream.t =
 
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake lex_fan.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/lex_fan.cmo" *)
 (* end: *)
 

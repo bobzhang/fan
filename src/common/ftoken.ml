@@ -33,6 +33,11 @@ type quot = {
     retract:int; 
   }
 
+type txt = {
+    loc : Locf.t;
+    txt : string;
+  }
+      
 type ant  = {
     meta : string option;
     shift : int ;
@@ -83,13 +88,24 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
       pp_print_quot x 
 
 
-type loc = Locf.t  
-type space_token =
-   [ `Comment of (loc * string)
-   | `Blank of (loc * string)
-   | `NEWLINE of loc 
-   | `LINE_DIRECTIVE of (loc * int * string option) ]
+type loc = Locf.t
 
+type line = {
+    loc : loc;
+    txt : string ;
+    line : int;
+    name : string option;
+  }
+      
+type space_token = [
+    `Comment of (loc * string)
+  | `Blank of (loc * string)
+  | `Newline of (loc * string) 
+  | `LINE_DIRECTIVE of line (* (loc * int * string option) *)
+]
+
+
+      
 type t =
   [ `Key       of (loc * string)
   | `Sym       of (loc * string)
@@ -111,9 +127,37 @@ type t =
   | quotation
   | dir_quotation
   | `Ant       of (string * string )        
-  | `EOI]
+  | `EOI       ]
       
+(* let eq (x:t) (y:t) = *)
+(*   match (x,y) with *)
+(*   | `Key (_,a), `Key(_,b) *)
+(*   | `Sym (_,a), `Sym(_,b) *)
+(*   | `Lid (_,a), `Lid(_,b) *)
+(*   | `Uid (_,a), `Uid(_,b) *)
+(*   | `Eident(_,a), `Eident(_,b) *)
+(*   | `Int(_,a), `Int(_,b) *)
+(*   | `Int32(_,a),`Int(_,b) *)
+(*   | `Int64(_,a),`Int64(_,b) *)
+(*   | `Nativeint(_,a),`Nativeint(_,b) *)
+(*   | `Flo(_,a),`Flo(_,b) *)
+(*   | `Chr(_,a),`Chr(_,b) *)
+(*   | `Label(_,a),`Label(_,b) *)
+(*   | `Optlabel(_,a),`Optlabel(_,b) *)
+(*   | `Str(_,a),`Str(_,b) *)
+(*   | `Comment(_,a),`Comment(_,b) *)
+(*   | `Blank(_,a),`Blank(_,b) *)
+(*       -> a = b  *)
 
+(*   | `Newline(_,a,b),`Newline(_,a,b) *)
+
+(*   | `Quot  *)
+(*   | `DirQuotation *)
+(*   | `Ant (loc,) *)
+
+(*   | `LINE_DIRECTIVE(_,a),`LINE_DIRECTIVE(_,b) *)
+(*   | `EOI,`EOI -> true        *)
+(*   |  _,_ -> false  *)
 
 
       
@@ -161,10 +205,11 @@ let pp_print_t: Format.formatter -> t -> unit =
         Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string _a0
     | `Blank (_,_a0) ->
         Format.fprintf fmt "@[<1>(`Blank@ %a)@]" Format.pp_print_string _a0
-    | `NEWLINE _ -> Format.fprintf fmt "`NEWLINE"
-    | `LINE_DIRECTIVE (_,_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
-          _a0 (Formatf.pp_print_option Format.pp_print_string) _a1
+    | `Newline _ -> Format.fprintf fmt "`Newline"
+    | `LINE_DIRECTIVE {line;name;_} ->
+        Format.fprintf fmt
+          "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
+          line (Formatf.pp_print_option Format.pp_print_string) name
     | `EOI -> Format.fprintf fmt "`EOI"
 
           
