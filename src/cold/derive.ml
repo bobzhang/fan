@@ -4,7 +4,7 @@ open Astn_util
 open FAstN
 open Fid
 open Ctyp
-open Sig_util
+open Sigs_util
 let check_valid str =
   let len = String.length str in
   if
@@ -306,7 +306,7 @@ let obj_of_mtyps ?cons_transform  ?module_name  ?(arity= 1)  ?(names= [])
                   ((`Lid name), `Negative, `Negative, (ExpN.unknown n), ty) : 
                  FAstN.clfield )
            | None  -> mk_clfield named_type) : clfield ) in
-   let (extras,lst) = Sig_util.transform_mtyps lst in
+   let (extras,lst) = Sigs_util.transform_mtyps lst in
    let body = List.map fs lst in
    let body: clfield =
      let items =

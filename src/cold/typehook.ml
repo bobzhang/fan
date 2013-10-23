@@ -1,9 +1,9 @@
-let pp_print_mtyps = Sig_util.pp_print_mtyps
-let pp_print_types = Sig_util.pp_print_types
+let pp_print_mtyps = Sigs_util.pp_print_mtyps
+let pp_print_types = Sigs_util.pp_print_types
 let eprintf = Format.eprintf
 open Util
 open Ast_basic
-let filters: (Sig_util.plugin_name,Sig_util.plugin) Hashtbl.t =
+let filters: (Sigs_util.plugin_name,Sigs_util.plugin) Hashtbl.t =
   Hashtbl.create 30
 let show_code = ref false
 let print_collect_mtyps = ref false
@@ -34,16 +34,16 @@ class type traversal
   =
   object 
     inherit Objs.map
-    method get_cur_mtyps : Sig_util.mtyps
-    method get_cur_and_types : Sig_util.and_types
+    method get_cur_mtyps : Sigs_util.mtyps
+    method get_cur_and_types : Sigs_util.and_types
     method update_cur_and_types :
-      (Sig_util.and_types -> Sig_util.and_types) -> unit
-    method update_cur_mtyps : (Sig_util.mtyps -> Sig_util.mtyps) -> unit
+      (Sigs_util.and_types -> Sigs_util.and_types) -> unit
+    method update_cur_mtyps : (Sigs_util.mtyps -> Sigs_util.mtyps) -> unit
   end
-let iterate_code sloc mtyps (_,(x : Sig_util.plugin)) acc =
+let iterate_code sloc mtyps (_,(x : Sigs_util.plugin)) acc =
   let mtyps =
     match x.filter with
-    | Some x -> Sig_util.apply_filter x mtyps
+    | Some x -> Sigs_util.apply_filter x mtyps
     | None  -> mtyps in
   let code = x.transform mtyps in
   match ((x.position), code) with
@@ -59,10 +59,10 @@ let iterate_code sloc mtyps (_,(x : Sig_util.plugin)) acc =
 let traversal () =
   (object (self : 'self_type)
      inherit  Objs.map as super
-     val mtyps_stack = (Stack.create () : Sig_util.mtyps Stack.t )
-     val mutable cur_and_types = ([] : Sig_util.and_types )
+     val mtyps_stack = (Stack.create () : Sigs_util.mtyps Stack.t )
+     val mutable cur_and_types = ([] : Sigs_util.and_types )
      val mutable and_group = false
-     method get_cur_mtyps : Sig_util.mtyps= Stack.top mtyps_stack
+     method get_cur_mtyps : Sigs_util.mtyps= Stack.top mtyps_stack
      method update_cur_mtyps f =
        let open Stack in push (f (pop mtyps_stack)) mtyps_stack
      method private in_module = Stack.push [] mtyps_stack

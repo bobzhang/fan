@@ -1,5 +1,5 @@
 %import{
-Sig_util:
+Sigs_util:
   pp_print_mtyps
   pp_print_types
   ;
@@ -13,7 +13,7 @@ open Ast_basic
 (** A Hook To FAst Filters *)
 (* type plugin_name = string  *)
 
-let filters : (Sig_util.plugin_name, Sig_util.plugin) Hashtbl.t  = Hashtbl.create 30;;
+let filters : (Sigs_util.plugin_name, Sigs_util.plugin) Hashtbl.t  = Hashtbl.create 30;;
 
 let show_code =  ref false
 let print_collect_mtyps = ref false
@@ -61,21 +61,21 @@ let plugin_remove plugin =
 
 class type traversal = object
   inherit Objs.map
-  method get_cur_mtyps: Sig_util.mtyps
-  method get_cur_and_types: Sig_util.and_types
+  method get_cur_mtyps: Sigs_util.mtyps
+  method get_cur_and_types: Sigs_util.and_types
   (* method in_and_types: *)
   method update_cur_and_types:
-      (Sig_util.and_types -> Sig_util.and_types) -> unit
+      (Sigs_util.and_types -> Sigs_util.and_types) -> unit
   method update_cur_mtyps:
-      (Sig_util.mtyps -> Sig_util.mtyps) -> unit
+      (Sigs_util.mtyps -> Sigs_util.mtyps) -> unit
 
 end
 
 let iterate_code sloc mtyps = 
-  (fun (_, (x:Sig_util.plugin)) acc ->
+  (fun (_, (x:Sigs_util.plugin)) acc ->
     let mtyps =
       match x.filter with
-      |Some x -> Sig_util.apply_filter x mtyps
+      |Some x -> Sigs_util.apply_filter x mtyps
       |None -> mtyps in
     let code = x.transform mtyps in 
     match (x.position,code) with
@@ -91,10 +91,10 @@ let iterate_code sloc mtyps =
  
 let traversal () : traversal  = object (self:'self_type)
   inherit Objs.map as super
-  val mtyps_stack : Sig_util.mtyps Stack.t  = Stack.create ()
-  val mutable cur_and_types : Sig_util.and_types= []
+  val mtyps_stack : Sigs_util.mtyps Stack.t  = Stack.create ()
+  val mutable cur_and_types : Sigs_util.and_types= []
   val mutable and_group = false
-  method get_cur_mtyps : Sig_util.mtyps =
+  method get_cur_mtyps : Sigs_util.mtyps =
     Stack.top mtyps_stack
   method update_cur_mtyps f =
     Stack.(push (f (pop mtyps_stack)) mtyps_stack)

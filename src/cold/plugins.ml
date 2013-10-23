@@ -3,7 +3,7 @@ let gen_object = Derive.gen_object
 open FAstN
 open Astn_util
 open Util
-open Sig_util
+open Sigs_util
 let mk_variant _cons =
   (function
    | [] -> (`Lid "true" : FAstN.exp )

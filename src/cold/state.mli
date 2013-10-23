@@ -1,6 +1,6 @@
 
 (** Experimental: state management for deriving *)
-open Sig_util
+open Sigs_util
 
 (* when you do the iteration, you should do it in reverse order *)  
 val current_filters : (plugin_name * plugin) list ref

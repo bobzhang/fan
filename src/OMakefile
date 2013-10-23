@@ -82,7 +82,7 @@ FAN_FILES = \
     expN fAstN control control_require fMeta \
     gram_def  \
     compile_gram \
-    sig_util  fanAstN  fgram\
+    sigs_util  fanAstN  fgram\
     filters freeVars  gentry gfold gramlib\
     idN  ns  langOcaml   \
     fan_args mktop objs objsN \

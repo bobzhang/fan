@@ -1,7 +1,7 @@
 
 (** Typehook mechanism for deriving *)
   
-open Sig_util  
+open Sigs_util  
 
 val print_collect_mtyps: bool ref
 
