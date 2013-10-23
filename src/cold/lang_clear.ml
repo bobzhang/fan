@@ -10,7 +10,7 @@ let _ =
       (None, None,
         [([`Stoken
              (((function | `Ant ("",_) -> true | _ -> false)),
-               ("Ant", (`A "")), "`Ant (\"\",_)")],
+               ("Ant", (`A "")), "`Ant s")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Fgram.mk_action
                 (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->
@@ -23,7 +23,7 @@ let _ =
                             (Ftoken.token_to_string __fan_0))))));
         ([`Stoken
             (((function | `Ant ("lid",_) -> true | _ -> false)),
-              ("Ant", (`A "lid")), "`Ant (\"lid\",_)")],
+              ("Ant", (`A "lid")), "`Ant s")],
           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
             (Fgram.mk_action
                (fun (__fan_0 : Ftoken.t)  (_loc : Locf.t)  ->

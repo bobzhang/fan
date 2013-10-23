@@ -57,9 +57,10 @@ val t_qualid : vid Fgram.t
     end] |}]}
    *)
 
-(* val entry : Gram_def.entry Fgram.t *)
+
 val normalize : Gram_pat.t -> Gram_def.data
 
+val token_of_simple_pat : Gram_pat.t -> Gram_def.symbol
 
 
 (** parse [position] and translate into [exp] node, fixme,

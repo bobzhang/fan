@@ -127,7 +127,7 @@ type t =
   | quotation
   | dir_quotation
   | `Ant       of (string * string )        
-  | `EOI       ]
+  | `EOI       of txt]
       
 (* let eq (x:t) (y:t) = *)
 (*   match (x,y) with *)
@@ -210,7 +210,7 @@ let pp_print_t: Format.formatter -> t -> unit =
         Format.fprintf fmt
           "@[<1>(`LINE_DIRECTIVE@ %a@ %a)@]" Format.pp_print_int
           line (Formatf.pp_print_option Format.pp_print_string) name
-    | `EOI -> Format.fprintf fmt "`EOI"
+    | `EOI _ -> Format.fprintf fmt "`EOI"
 
           
 

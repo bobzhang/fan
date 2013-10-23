@@ -17,9 +17,9 @@ val from_string :  Locf.t -> string -> ( Ftoken.t  * Locf.t) Fstream.t
 val from_stream :  Locf.t ->  char Fstream.t -> ( Ftoken.t  * Locf.t) Fstream.t
 
       
-val clean : (([> `EOI ] as 'a) * 'b) Fstream.t -> ('a * 'b) Fstream.t
+val clean : (Ftoken.t * 'b) Fstream.t -> (Ftoken.t * 'b) Fstream.t
 
-val strict_clean :  (([> `EOI ] as 'a) * 'b) Fstream.t -> ('a * 'b) Fstream.t
+val strict_clean :  (Ftoken.t * 'b) Fstream.t -> (Ftoken.t * 'b) Fstream.t
     
 
 

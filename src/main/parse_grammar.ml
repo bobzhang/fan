@@ -169,7 +169,21 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 %extend{(g:Fgram.t)
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
-  [ "EOI" %{[token_of_simple_pat %pat'{`EOI}]}
+  [ ("EOI" as v) %{
+    let pred = %exp{
+      function
+        | `EOI _ -> true
+        | _ -> false 
+    } in
+    let des = %exp{($str:v, `Empty)} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v} in
+    (* let pattern = Some %pat{$vrn:v _ } in *)
+    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+      styp = `Tok _loc;
+      pattern = None; (* means understore? *)
+    }]
+
+  }
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let pred = %exp{
                     function
@@ -220,21 +234,51 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  |  ("Quot"|"DirQuotation"
-        as v) ; Lid x %{[token_of_simple_pat %pat'{$vrn:v $lid:x }]}
-
-
+  |  ("Quot"|"DirQuotation" as v) ; Lid x %{
+    let pred = %exp{function
+      | $vrn:v _ -> true
+      | _ -> false} in
+    let des = %exp{($str:v,`Any)} in
+    let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
+    let pattern = Some %pat{$vrn:v $lid:x} in
+    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+      styp = `Tok _loc;
+      pattern}]}
   ]
-          
+  let or_words :
+      [ L1 str SEP "|"{v} %{  (v,None)  }
+      | L1 str SEP "|"{v}; "as"; Lid@xloc s %{
+          (v , Some (xloc,s)) } ]
+  let str :
+      [Str s %pat'{$str:s} ]
+
   simple :
   [ @simple_token
-  |  "Ant"; "("; or_words{p};",";lid{p1}; ")" %{
-     match p with
-     | (v,None) ->
-         List.map (fun x -> token_of_simple_pat %pat'{`Ant ($x, $p1) }) v
-     | (v,Some u) ->
-         List.map (fun x -> token_of_simple_pat %pat'{`Ant (($x as $lid:u), $p1) }) v 
-  }
+  |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
+      let p = %pat'@xloc{$lid:s} in
+      match ps with
+      | (vs,(* None *)y) ->
+          vs |>
+          List.map (fun (x: [> `Str of (loc*string) ]) ->
+
+           let pred = %exp{function
+             | $vrn:v ($(x :>pat), _) -> true
+             | _ -> false} in
+           
+           let des = %exp{($str:v,`A $(x :> exp) )} in
+           
+           let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
+           
+           (** FIXME why $ is allowed to lex here, should
+               be disallowed to provide better error message *)
+           let pp =
+             match y with
+             | None -> %pat{$(x :> pat)}
+             | Some(xloc,u) -> %pat@xloc{( $(x :>pat) as $lid:u)} in
+           let pattern = Some %pat{$vrn:v ($pp, $(p : Gram_pat.t :>pat))} in
+           {Gram_def.text = `Stoken(_loc,pred,des,des_str);
+             styp= `Tok _loc;
+             pattern})}
   |  Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
   | "("; or_strs{v}; ")" %{
     match v with
@@ -250,13 +294,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
               ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )
           
     }
-  |  ("Uid" as v) ; "("; or_words{p}; ")" %{
-    match p with
-    | (vs,None) ->
-        List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs
-    | (vs,Some x) ->
-        List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs 
-  }
+  (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
+  (*   match p with *)
+  (*   | (vs,None) -> *)
+  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
+  (*   | (vs,Some x) -> *)
+  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)
   | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
 
   |  name{n};  OPT level_str{lev} %{
@@ -268,16 +311,8 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       | L1  str0 SEP "|" {xs}; "as"; Lid s %{ (xs,Some s)}]
   let str0 :
       [ Str s %{s}]
-  let or_words :
-      [ L1 str SEP "|"{v} %{  (v,None)  }
-      | L1 str SEP "|"{v}; "as"; Lid s %{
-          (v , Some s) } ]
   let level_str :  ["Level"; Str  s %{s} ]      
-  let str :
-      [Str s %pat'{$str:s} ]
-  let lid :
-      [Lid s %pat'{$lid:s}]
-
+ 
   let sep_symbol : [ "SEP"; simple{t} %{let [t] =  t in t}]
 
   symbol : (* be more precise, no recursive grammar? *)

@@ -143,7 +143,7 @@ type t =
   | quotation
   | dir_quotation
   | `Ant       of (string * string )        
-  | `EOI]
+  | `EOI       of txt]
 
 
 (**

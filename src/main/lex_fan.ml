@@ -264,7 +264,8 @@ let  token : Lexing.lexbuf -> (Ftoken.t * Locf.t ) =
        (lexbuf.lex_curr_p <-
          { pos with pos_bol  = pos.pos_bol  + 1 ;
            pos_cnum = pos.pos_cnum + 1 };
-        (`EOI, !!lexbuf ))}
+        let loc = !!lexbuf in
+        (`EOI {loc;txt=""}, loc ))}
          
    | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     

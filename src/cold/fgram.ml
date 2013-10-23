@@ -161,18 +161,11 @@ let eoi_entry entry =
         (None, None,
           [([`Snterm (obj (entry : 'entry t ));
             `Stoken
-              (((function | `EOI -> true | _ -> false)), ("EOI", `Empty),
+              (((function | `EOI _ -> true | _ -> false)), ("EOI", `Empty),
                 "`EOI")],
              ("x\n",
                (mk_action
-                  (fun (__fan_1 : Ftoken.t)  (x : 'entry)  (_loc : Locf.t) 
-                     ->
-                     match __fan_1 with
-                     | `EOI -> (x : 'entry_eoi )
-                     | _ ->
-                         failwith
-                           (Printf.sprintf "%s"
-                              (Ftoken.token_to_string __fan_1))))))]));
+                  (fun _  (x : 'entry)  (_loc : Locf.t)  -> (x : 'entry_eoi )))))]));
     entry_eoi
 let find_level ?position  (entry : Gstructure.entry) =
   match entry.desc with
