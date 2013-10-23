@@ -197,8 +197,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       styp = `Tok _loc;
       pattern}]}
 
-  | ("Lid"|"Uid"| "Int"
-     | "Int32" | "Int64"
+  | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
      | "Optlabel" |"Str" as v); Lid@xloc x %{
     let i = hash_variant v in                                 
@@ -295,20 +294,19 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         List.map
           (fun x ->
             mk_symbol ~text:(`Skeyword (_loc,x))
-              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )
-          
-    }
-  (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
-  (*   match p with *)
-  (*   | (vs,None) -> *)
-  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
-  (*   | (vs,Some x) -> *)
-  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)
+              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key (_,$lid:b)}) )}
+
   | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
 
   |  name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
           ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
+  (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
+  (*   match p with *)
+  (*   | (vs,None) -> *)
+  (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
+  (*   | (vs,Some x) -> *)
+  (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
   ]
   let or_strs :
       [ L1 str0 SEP "|"{xs} %{(xs,None)}
@@ -434,8 +432,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some (mk_entry ~local:false ~name:p ~pos ~levels)
       end}
-  |  "let" ;
-    entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
+  |  "let" ; entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
     let (n,p) = rest in
       begin
         (match n with
