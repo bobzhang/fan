@@ -9,123 +9,179 @@ open Test_util
 
 let get_tokens s =
   Flex_lib.list_of_string ~verbose:false s 
-  (* |> List.ma *)
+
     
 let test_empty_string _ =
-  get_tokens %str{""}
-    ===
-  [ `Str "" ; `EOI]  
+  if %str{""}
+    |> get_tokens
+    |> %p{[`Str({txt="";_}:Tokenf.txt);`EOI _]}
+    |> not then
+    assert_failure "test_empty_string"
 
 let test_escaped_string _ =
-  get_tokens %str{"a\n"}
-    ===
-  [`Str "a\n"; `EOI]
+  if %str{"a\n"}
+     |> get_tokens
+     |> %p{[`Str ({txt = "a\n";_}:Tokenf.txt); `EOI _]}
+     |> not then 
+    assert_failure "test_escaped_string"
+
     
 let test_comment_string _ =
-  get_tokens %str{(*(**)*)}
-    ===
-  [`Comment"(*(**)*)";`EOI]
+  if %str{(*(**)*)}
+     |> get_tokens
+     |> %p{[`Comment ({txt="(*(**)*)";_}:Tokenf.txt);`EOI _]}
+     |> not then 
+    assert_failure "test_comment_sting"
+  
 
 let test_char _ =
-  get_tokens %str{'
+  if %str{'
 '}
-    ===
-  [`Chr "\n"; `EOI]
-;;
+   |> get_tokens
+   |> %p{[`Chr ({txt="\n";_}:Tokenf.txt); `EOI _]}
+   |> not then
+    assert_failure "test_char"
+
 
 (** maybe a bug. Quotation should be loyal to its
     layout *)
 let test_string _ =
-  get_tokens %str{"hsoghsogho\n
+if %str{"hsoghsogho\n
     haha\
     hahah"}
-    ===
-  [`Str "hsoghsogho\n\n    hahahahah"; `EOI]
+   |> get_tokens
+   |> %p{[`Str ({txt="hsoghsogho\n\n    hahahahah";_}:Tokenf.txt); `EOI _]}
+   |> not then
+  assert_failure "test_string"
+
+  
     
 (* This can not be made an unittest
    since our lexer depends on the context which is bad
 *)   
 let test_quotation _ =
-  Flex_lib.list_of_string ~verbose:false %str{%lexer{abcdef}} |> List.hd
-    ===
-  (`Quot
-   {Ftoken.name = (`Sub [], "lexer");
-    loc =
-     {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-      loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
-        pos_cnum = 14};
-      loc_ghost = false};
-    meta = None; shift = 7; content = "%lexer{abcdef}"; retract = 1},
- {Locf.loc_start =
-   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-  loc_end =
-   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 14};
-  loc_ghost = false})
+  if
+    %str{%lexer{abcdef}}
+    |> get_tokens
+    |> %p{ `Quot ({name=
+                  (`Sub[],"lexer");
+                  loc =
+                  {Locf.loc_start =
+                   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+                   loc_end =
+                   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0;
+                    pos_cnum = 14};
+                   loc_ghost = false};
+                  meta = None;
+                  shift = 7;
+                  txt = "%lexer{abcdef}";
+                  retract = 1
+                }:Tokenf.quot) :: _ 
+         }
+    |> not then
+    assert_failure (%here{}^"test_quotation")
+
+(*  Flex_lib.list_of_string ~verbose:false  |> List.hd *)
+ (*    === *)
+ (*  (`Quot *)
+ (*   {Ftoken.name = (`Sub [], "lexer"); *)
+ (*    loc = *)
+ (*     {Locf.loc_start = *)
+ (*       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0}; *)
+ (*      loc_end = *)
+ (*       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; *)
+ (*        pos_cnum = 14}; *)
+ (*      loc_ghost = false}; *)
+ (*    meta = None; shift = 7; content = "%lexer{abcdef}"; retract = 1}, *)
+ (* {Locf.loc_start = *)
+ (*   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0}; *)
+ (*  loc_end = *)
+ (*   {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 14}; *)
+ (*  loc_ghost = false}) *)
 
 
 
 let test_ant _ =
   Ref.protect Configf.antiquotations true @@ fun _ ->
-    Flex_lib.list_of_string ~verbose:false "$aa:a"
-      ===
-    [(`Ant ("aa", "a"),
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-       loc_ghost = false});
-     (`EOI,
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 6};
-       loc_ghost = false})]
+    if "$aa:a"
+       |> get_tokens
+       |> %p{[`Ant ({ kind="aa";
+                      txt = "a";
+                      loc = 
+                      {Locf.loc_start =
+                       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
+                       loc_end =
+                       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+                       loc_ghost = false}} : Tokenf.ant);
+              `EOI  _]}
+       |> not then
+      assert_failure "test_ant"
 
 let test_ant_quot _ =       
   Ref.protect Configf.antiquotations true @@ fun _ ->
-    Flex_lib.list_of_string ~verbose:false "$(lid:{|)|})"
-      ===
-    [(`Ant ("lid", "({|)|})"),
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
-       loc_ghost = false});
-     (`EOI,
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 13};
-       loc_ghost = false})]
+    if "$(lid:{|)|})"
+       |> get_tokens
+       |> %p{
+         [
+          `Ant
+            ({kind = "lid";
+              txt = "({|)|})";
+              loc =
+              {Locf.loc_start =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+               loc_end =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+               loc_ghost = false};
+              _} : Tokenf.ant) ;
+          `EOI _]}
+       |> not then
+      assert_failure "test_ant_quot"
+
+    
 
 let test_ant_paren _ =       
   Ref.protect Configf.antiquotations true @@ fun _ ->
-    Flex_lib.list_of_string ~verbose:false "$((l:>FAst.pat))"
-      ===
-    [(`Ant ("", "((l:>FAst.pat))"),
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-       loc_ghost = false});
-     (`EOI,
-      {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-       loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 17};
-       loc_ghost = false})]
+    if
+      "$((l:>FAst.pat))"
+      |> get_tokens
+      |> %p{
+        [`Ant
+           ({ kind = "";
+              txt = "((l:>FAst.pat))";
+              loc = {Locf.loc_start =
+                     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+                     loc_end =
+                     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
+                     loc_ghost = false}}:Tokenf.ant) ;
+         `EOI _]}
+      |> not then 
+      assert_failure "test_ant_paren"
+    
 
 let test_ant_str _ =
-  Ref.protect Configf.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(")")}
-      ===
-    [`Ant ("", "(\")\")"); `EOI]
+  Ref.protect Configf.antiquotations true @@ fun _ ->
+    if
+      %str{$(")")}
+      |> get_tokens
+      |> %p{
+        [`Ant ({kind = ""; txt = "(\")\")";_}:Tokenf.ant); `EOI _ ]}
+      |> not then
+      assert_failure "test_ant_str"
+
+    
 
 let test_ant_chr _ = 
-  Ref.protect Configf.antiquotations true @@ fun _ -> Flex_lib.get_tokens %str{$(')')}
-      ===
-    [`Ant("","(')')"); `EOI ]
+  Ref.protect Configf.antiquotations true @@ fun _ ->
+    if
+      %str{$(')')}
+      |> get_tokens
+      |> %p{
+        [`Ant ({kind = ""; txt = "(')')";_}:Tokenf.ant);
+         `EOI _  ]}
+      |> not then
+      assert_failure "test_ant_chr"
+
+
 
 let test_nested_lex _ =
   %str{%extend{%ctyp'{'$(lid:n.tvar)}}}
@@ -133,113 +189,167 @@ let test_nested_lex _ =
       "%extend{%ctyp'{'$(lid:n.tvar)}}"
     
 let test_comment_pos _ =
-  Flex_lib.list_of_string ~verbose:false "(*    (**) *)"
-    ===
-  [(`Comment "(*    (**) *)",
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
-   loc_ghost = false});
-   (`EOI,
-    {Locf.loc_start =
-     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
-     loc_end =
-     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 14};
-     loc_ghost = false})]
+  if
+    "(*    (**) *)"
+    |> get_tokens
+    |> %p{
+      [
+       `Comment
+         ({txt = "(*    (**) *)";
+           loc =
+           {Locf.loc_start =
+            {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+            loc_end =
+            {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 13};
+            loc_ghost = false}}:Tokenf.txt);
+       `EOI _]}
+    |> not then
+    assert_failure "test_comment"
+
 
 let test_lex_simple_quot _ =
-  fst @@ Lex_lex.token (Lexing.from_string %str{%{ (** gshoghso *) bhgo "ghos" }})
-    ===
-  `Quot {
-         Ftoken.name = (`Sub [], "");
-         loc =
-         {Locf.loc_start =
-          {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-          loc_end =
-          {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 32};
-          loc_ghost = false};
-         meta = None; shift = 2; content = "%{ (** gshoghso *) bhgo \"ghos\" }";
-         retract = 1}
+  if
+    Lex_lex.token (Lexing.from_string %str{%{ (** gshoghso *) bhgo "ghos" }})
+   |> %p{
+     `Quot
+       ({
+        name = (`Sub [], "");
+        loc =
+        {Locf.loc_start =
+         {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+         loc_end =
+         {Locf.pos_fname = ""; pos_lnum = 1; pos_bol = 0; pos_cnum = 32};
+         loc_ghost = false};
+        meta = None; shift = 2; txt = "%{ (** gshoghso *) bhgo \"ghos\" }";
+        retract = 1}:Tokenf.quot)}
+   |> not then
+    assert_failure "test_lex_simple_quot"
+      
+
 
 let test_symb _ =
-  Flex_lib.list_of_string ~verbose:false "(%***{)"
-    ===
-  [(`Sym "(",
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-   loc_ghost = false});
- (`Sym "%***",
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-   loc_ghost = false});
- (`Sym "{",
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
-   loc_ghost = false});
- (`Sym ")",
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
-   loc_ghost = false});
- (`EOI,
-  {Locf.loc_start =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
-   loc_end =
-    {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 1; pos_cnum = 8};
-   loc_ghost = false})]
+  if
+    "(%***{)"
+    |> get_tokens
+    |> %p{
+      [ `Sym ({txt = "(";
+              loc = 
+              {Locf.loc_start =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+               loc_end =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+               loc_ghost = false}}:Tokenf.txt);
+        `Sym ({txt = "%***";
+               loc = 
+               {Locf.loc_start =
+                {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
+                loc_end =
+                {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+                loc_ghost = false}}:Tokenf.txt);
+        `Sym ({txt= "{";
+              loc = 
+              {Locf.loc_start =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+               loc_end =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+               loc_ghost = false}}:Tokenf.txt);
+        `Sym ({txt = ")";
+              loc =
+              {Locf.loc_start =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 6};
+               loc_end =
+               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 7};
+               loc_ghost = false}}:Tokenf.txt);
+        `EOI _ ]}
+    |> not then
+    assert_failure  "test_symb"
+  
 
 
 
 
 let test_symb_percent _ =
-  get_tokens "->%"
-    ===
-  [`Sym "->%"; `EOI]
+  if
+    "->%"
+   |> get_tokens
+   |> %p{   [`Sym ({txt= "->%"; _} :Tokenf.txt); `EOI _ ]}
+   |> not then
+    assert_failure "test_symb_percent"
+
+
     
 let test_symb_percent1 _ =
-  get_tokens "[%"
-    ===
-  [`Sym "["; `Sym "%"; `EOI ]
+  if
+    "[%"
+    |> get_tokens
+    |> %p{[`Sym ({txt = "["; _} : Tokenf.txt);
+           `Sym ({txt = "%"; _} : Tokenf.txt);
+           `EOI _  ]}
+    |> not
+  then 
+    assert_failure "test_symb_percent1"
+  
 let test_symb_percent2 _ =
-  get_tokens "%%"
-    ===
-  [`Sym "%%"; `EOI ]
+  if
+    "%%"
+    |>  get_tokens
+    |> %p{  [`Sym ({txt = "%%";_}:Tokenf.txt); `EOI _ ]}
+    |> not then
+    assert_failure "test_symb_percent2"
+
+
 let test_symb_percent3 _ =
-  get_tokens "|%"
-    ===
-  [`Sym "|%"; `EOI ]
+  if
+    "|%"
+    |> get_tokens
+    |> %p{  [`Sym ({txt = "|%";_}:Tokenf.txt); `EOI _ ]}
+    |> not then
+    assert_failure "test_symb_percent3"
+
+
 let test_symb_percent4 _ =
-  get_tokens "(%)"
-    ===
-  [`Eident "%"; `EOI]
+  if
+    "(%)"
+    |> get_tokens
+    |> %p{[`Eident ({txt="%";_}:Tokenf.txt); `EOI _ ]}
+    |> not then
+    assert_failure "test_symb_percent4"
+
+  
 
 let test_symb_percent5 _ =
-  get_tokens "(%"
-    ===
-  [`Sym "("; `Sym "%"; `EOI]
+  if
+    "(%"
+  |> get_tokens
+  |> %p{[`Sym ({txt = "(";_}:Tokenf.txt);
+         `Sym ({txt="%";_}:Tokenf.txt); `EOI _ ]}
+  |> not then
+    assert_failure "test_symb_percent5"
+
+  
 
 
 let test_single_quot _ =
-  get_tokens "%{'$(a)}"
-    ===
-  [`Quot
-   {Ftoken.name = (`Sub [], "");
-    loc =
-     {Locf.loc_start =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
-      loc_end =
-       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 8};
-      loc_ghost = false};
-    meta = None; shift = 2; content = "%{'$(a)}"; retract = 1};
- `EOI]
+
+  if
+    "%{'$(a)}"
+    |> get_tokens
+    |> %p{
+      [`Quot
+         ({name = (`Sub [], "");
+          loc =
+          {Locf.loc_start =
+           {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 0};
+           loc_end =
+           {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 8};
+           loc_ghost = false};
+          meta = None;
+           shift = 2; txt = "%{'$(a)}"; retract = 1}:Tokenf.quot);
+       `EOI _ ]}
+    |> not then
+    assert_failure "test_single_quot"
+
+
     
 let suite =
   "Lexing_test" >:::

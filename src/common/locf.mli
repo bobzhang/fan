@@ -20,7 +20,7 @@ type t = Location.t = {
   loc_ghost: bool;
 }
   
-val pp_print_position: formatter -> position -> unit      
+val pp_print_position : formatter -> position -> unit      
 
 val ghost_name : string
 

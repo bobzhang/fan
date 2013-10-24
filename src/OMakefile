@@ -98,6 +98,8 @@ FAN_FILES = \
     lex_gram \
     lang_new \
     lang_clear\
+    # lang_pos \
+    # loc_meta
     # parse_grammar2
     
 FAN_EXP_FILES = \

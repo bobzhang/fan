@@ -31,7 +31,7 @@ section
 
 test: $(PARSE) $(LEX)
     foreach(f=>..., $^)
-        $f 
+        $f -verbose
         
 clean:
     rm -rf $(OCAMLBIN_EXT)
