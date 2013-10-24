@@ -152,11 +152,12 @@ type t =
 (**
    [Tokenf.stram]
  *)      
-type stream = (t * loc) Streamf.t 
+type stream =  t Streamf.t 
 
 type 'a token  = [> t] as 'a
       
-type 'a estream  = ('a token * loc) Streamf.t
+type 'a estream  = 'a token Streamf.t
+
       
 type 'a parse = stream -> 'a
 
@@ -171,7 +172,7 @@ val print : Format.formatter -> [> t ] -> unit
 
 (**  {[x=STRING -> extract_string x  ]} *)  
 val extract_string : [> t ] -> string
-
+val get_loc : t  -> loc 
 
 
 val string_of_name : name -> string

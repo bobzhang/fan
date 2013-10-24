@@ -29,14 +29,14 @@ let gkeywords = ref (Setf.String.of_list default_keywords)
   
 
 let rec fan_filter = %parser{
-  | ( #Tokenf.space_token,_); 'xs -> fan_filter xs
+  | #Tokenf.space_token; 'xs -> fan_filter xs
   |  x; 'xs  ->
       %stream{ x; ' fan_filter xs }
   |  -> %stream{}}
 
 let rec ignore_layout : Tokenf.filter =
   %parser{
-    | (#Tokenf.space_token,_); 'xs -> ignore_layout  xs
+    | #Tokenf.space_token; 'xs -> ignore_layout  xs
     | x ; 'xs  ->
         %stream{x; 'ignore_layout xs }
     | -> %stream{}}
@@ -72,10 +72,10 @@ let token_stream_of_string s =
 
   
 let debug_origin_token_stream (entry:'a t ) tokens : 'a =
-  parse_origin_tokens entry (Streamf.map (fun t -> (t,Locf.ghost)) tokens)
+  parse_origin_tokens entry tokens
   
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry (Streamf.map (fun t -> (t,Locf.ghost)) tokens)
+  filter_and_parse_tokens entry tokens 
 
 (* with a special exception handler *)  
 let parse_string_safe ?(loc=Locf.string_loc) entry  s =
@@ -168,5 +168,5 @@ let wrap_stream_parser ?(loc=Locf.mk "<stream>") p s =
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fgram.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/gramf.cmo" *)
 (* end: *)

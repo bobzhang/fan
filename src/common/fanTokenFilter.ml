@@ -48,15 +48,14 @@ let check_unknown_keywords (tok:Tokenf.t) loc =
 
 
 let filter x =
-  let f ((tok:Tokenf.t), loc) = 
+  let f (tok:Tokenf.t) = 
     let tok = keyword_conversion tok x.kwds in begin 
       check_keyword_as_label tok  x.kwds ;
       (* if !error_on_unknown_keywords  then *)
       (*   check_unknown_keywords tok loc *)
       (* else (); *)
-      (tok, loc)
+      tok
     end in
-
   fun strm -> x.filter (Streamf.map f strm)
 
 let set_filter x f = x.filter <- f x.filter

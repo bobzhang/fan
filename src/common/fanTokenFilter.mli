@@ -8,7 +8,7 @@ type t = {
   }
 
 
-val filter : t -> (Tokenf.t * Locf.t) Streamf.t -> Tokenf.stream
+val filter : t -> Tokenf.stream  -> Tokenf.stream
 
 val set_filter : t -> (Tokenf.filter -> Tokenf.filter) -> unit
 

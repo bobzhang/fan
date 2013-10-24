@@ -213,9 +213,9 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
 type 'a token  = [> t] as 'a
 
 
-type stream = (t * Locf.t) Streamf.t 
+type stream = (* (t * Locf.t) *) t Streamf.t 
 
-type 'a estream  = ('a token  * Locf.t) Streamf.t 
+type 'a estream  = ('a token  (* * Locf.t *)) Streamf.t 
 
 type 'a parse  = stream -> 'a
 
@@ -244,13 +244,51 @@ let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let extract_string : [> t] -> string = function
-  | `Key x | `Sym x | `Lid x | `Uid x | `Int  x | `Int32  x
-  | `Int64  x | `Nativeint  x | `Flo  x | `Chr  x | `Str x
-  | `Label x | `Optlabel x | `Comment x | `Blank x
+  | `Key x
+  | `Sym x
+  | `Lid x
+  | `Uid x
+  | `Int  x
+  | `Int32  x
+  | `Int64  x
+  | `Nativeint  x
+  | `Flo  x
+  | `Chr  x
+  | `Str x
+  | `Label x
+  | `Optlabel x
+  | `Comment x
+  | `Blank x
   | `Eident x -> x.txt 
   | `LINE_DIRECTIVE x -> x.txt
   | tok ->
       invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
+
+let get_loc (x:t) =
+  match x with
+  | `Key x
+  | `Sym x
+  | `Lid x
+  | `Uid x
+  | `Int  x
+  | `Int32  x
+  | `Int64  x
+  | `Nativeint  x
+  | `Flo  x
+  | `Chr  x
+  | `Str x
+  | `Label x
+  | `Optlabel x
+  | `Comment x
+  | `Blank x
+  | `Newline x
+  | `EOI x 
+  | `Eident x -> x.loc
+  | `Ant x -> x.loc
+  | `Quot x -> x.loc
+  | `DirQuotation x -> x.loc
+  | `LINE_DIRECTIVE x -> x.loc 
+    
 
 
 

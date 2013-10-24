@@ -11,8 +11,8 @@ let mk () =
 
 let filter (_, q) =
   let rec self : Tokenf.stream -> Tokenf.stream = %parser{
-    |  (`Comment x, loc); 'xs  -> begin
-        Queue.add (x.txt, loc) q;
+    |  `Comment x; 'xs  -> begin
+        Queue.add (x.txt, x.loc) q;
         (* debug comments "add: %S at %a@\n" x Locf.dump loc in *)
         self xs
     end

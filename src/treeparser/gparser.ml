@@ -146,7 +146,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
         (fun i terminal  -> 
           let (t,loc) =
             match Streamf.peek_nth strm i with
-            | Some (t,loc) -> (t,loc)
+            | Some t (* (t,loc) *) -> (t,Tokenf.get_loc t) (* (t,loc) *)
             | None -> invalid_arg "parser_of_terminals" in
           begin
             acc:= (Gaction.mk t,loc)::!acc;
@@ -192,14 +192,14 @@ and parser_of_symbol (entry:Gstructure.entry) s  =
             ... *)
         begin  (* interaction with stream *)
           match Streamf.peek strm with
-          | Some (`Key u as x ,_)  when u.txt = kwd ->
+          | Some (`Key u as x )  when u.txt = kwd ->
               (Streamf.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Streamf.NotConsumed
         end
     | `Stoken (f, _,_) -> fun strm ->
         begin  (* interaction with stream *)
           match Streamf.peek strm with
-          |Some (tok,_) when f tok -> (Streamf.junk strm; Gaction.mk tok)
+          |Some tok when f tok -> (Streamf.junk strm; Gaction.mk tok)
           |_ -> raise Streamf.NotConsumed
         end in with_loc (aux s)
 
@@ -278,3 +278,7 @@ let continue_parser_of_entry (entry:Gstructure.entry) =
     (fun levn bp a strm -> try p levn bp a strm with Streamf.NotConsumed -> a )
   | Dparser _ -> fun _ _ _ _ -> raise Streamf.NotConsumed  
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake treeparser/gparser.cmo" *)
+(* end: *)

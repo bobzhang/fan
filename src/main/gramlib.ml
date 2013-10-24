@@ -4,7 +4,8 @@
     
 let setup_op_parser entry p =
   Gramf.setup_parser entry
-    (%parser{| (`Key x | `Sym x,_loc) when p x.txt  -> %exp{ $(lid:x.txt) }})
+    (%parser{| (`Key x | `Sym x) when p x.txt  ->
+      let _loc = x.loc in %exp{ $(lid:x.txt) }})
 
 
 let symbolchars =
@@ -82,3 +83,7 @@ let symbolchar s i =
 (*         in *)
 (*         skip_pat 1); *)
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/gramlib.cmo" *)
+(* end: *)

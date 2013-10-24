@@ -8,15 +8,15 @@ let empty_entry ename _ =
 
 
 (* get_cur_loc *must* be used first *)  
-let get_cur_loc strm =
+let get_cur_loc (strm:Tokenf.stream) =
   match Streamf.peek strm with
-  | Some (_,r) -> r
+  | Some r -> Tokenf.get_loc r 
   | None -> Locf.ghost 
 
 
 let get_prev_loc strm =
   match Streamf.get_last strm with
-  |Some (_,l) -> l
+  |Some l -> Tokenf.get_loc l
   |None -> Locf.ghost
 
 let is_level_labelled n =   function
@@ -136,3 +136,7 @@ and merge_tree (a:tree) (b:tree) : tree =
   ]
 ;
 *)
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake treeparser/gtools.cmo" *)
+(* end: *)

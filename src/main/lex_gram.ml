@@ -57,36 +57,36 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
+let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
   | newline as txt %{
     begin
       update_loc  lexbuf;
       let loc = !! lexbuf in
-      (`Newline {loc;txt},loc  )
+      `Newline {loc;txt}
     end}
-  | ocaml_lid as txt %{let loc =  !! lexbuf in (`Lid {loc;txt}, loc)}
-  | ocaml_uid as txt  %{let loc = !! lexbuf in (`Uid {loc;txt}, loc)}      
+  | ocaml_lid as txt %{let loc =  !! lexbuf in `Lid {loc;txt}}
+  | ocaml_uid as txt  %{let loc = !! lexbuf in `Uid {loc;txt}}      
   | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
       let loc = old --  lexbuf.lex_curr_p in
-      (`Str {loc;txt=buff_contents c},  loc)
+      `Str {loc;txt=buff_contents c}
     end}
   | "'" (newline as txt) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
       let loc = !! lexbuf in
-      (`Chr {loc;txt}, loc)
+      `Chr {loc;txt}
     end}
   | "'" (ocaml_char as txt ) "'"
-      %{ let loc =  !! lexbuf in (`Chr {loc;txt} , loc )}
+      %{ let loc =  !! lexbuf in `Chr {loc;txt}}
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
 
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" as txt %{
-    let loc = !!lexbuf in (`Sym {loc;txt}, loc)}
+    let loc = !!lexbuf in `Sym {loc;txt}}
   | ocaml_blank + %{ token lexbuf }
 
   | "(*"(')' as x) ? %{
@@ -113,11 +113,11 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
            end in
          let loc = old -- lexbuf.lex_curr_p in
          let shift = String.length shift in
-         let retract = (* 2 *) 1  in
-         (`Quot{Tokenf.name;meta;shift;content;loc;retract} ,loc)
+         let retract =  1  in
+         `Quot{Tokenf.name;meta;shift;content;loc;retract}
        end}
   | '$' %{
-       let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> (Tokenf.t * Locf.t)=
+       let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t=
          %lex{
          | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x) %{
              begin
@@ -125,10 +125,10 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
                  let v = lexbuf.lex_start_p in
                  { v with pos_cnum = v.pos_cnum + String.length name + 1} in
                let loc = old -- lexbuf.lex_curr_p in
-               (`Ant{loc;kind = name; txt = x}, loc)
+               `Ant{loc;kind = name; txt = x}
              end}
          | lident as txt  %{
-           let loc = !!lexbuf in (`Ant{loc;kind =""; txt }, loc)}  (* $lid *)
+           let loc = !!lexbuf in `Ant{loc;kind =""; txt }}  (* $lid *)
          | '(' ('`'? (identchar*|['.' '!']+) as name) ':' %{
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
@@ -140,7 +140,7 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
                let loc = old -- Lexing.lexeme_end_p lexbuf in
-               (`Ant{loc; kind = name; txt = buff_contents c},loc)
+               `Ant{loc; kind = name; txt = buff_contents c}
              end}
          | '(' %{     (* $(xxxx)*)
              let old =
@@ -150,7 +150,7 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
                let loc = old -- Lexing.lexeme_end_p lexbuf in
-               (`Ant{loc; kind="";txt= buff_contents c }, loc)
+               `Ant{loc; kind="";txt= buff_contents c }
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
        let c = new_cxt () in
@@ -164,7 +164,7 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
       { pos with pos_bol  = pos.pos_bol  + 1 ;
         pos_cnum = pos.pos_cnum + 1 };
        let loc = !!lexbuf in
-       (`EOI {loc;txt=""},loc  ))}
+       `EOI {loc;txt=""})}
     
   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     

@@ -29,13 +29,13 @@ let from_stream  {Locf.loc_start;_} strm =
 
 
 (* remove trailing `EOI*)  
-let rec clean  =  %parser{
-  | ((`EOI _ as x) ,loc)  -> %stream{ (x,loc)}
+let rec clean : Tokenf.stream -> Tokenf.stream =  %parser{
+  | (`EOI _ as x)  -> %stream{ x}
   |  x; 'xs  -> %stream{ x; 'clean xs}
   |  -> %stream{} }
 
-let rec strict_clean = %parser{
-  | (`EOI _ ,_)  -> %stream{}
+let rec strict_clean : Tokenf.stream -> Tokenf.stream = %parser{
+  | `EOI _  -> %stream{}
   | x; 'xs  -> %stream{ x; 'strict_clean xs }
   |  -> %stream{}} 
 
@@ -45,7 +45,7 @@ let debug_from_string  str =
   stream
   |> clean
   |> Streamf.iter
-      (fun (t,loc) -> fprintf std_formatter "%a@;%a@\n" Tokenf.print t Locf.print loc)
+      (fun t -> fprintf std_formatter "%a@\n" Tokenf.print t )
 
 let list_of_string ?(verbose=true) str =
   let result = ref [] in
@@ -55,17 +55,15 @@ let list_of_string ?(verbose=true) str =
     stream
     |> clean
     |> Streamf.iter
-        (fun (t,loc) -> begin 
-          result := (t,loc):: !result ;
+        (fun t -> begin 
+          result := t :: !result ;
           if verbose then 
-            fprintf std_formatter "%a@;%a@\n" Tokenf.print t Locf.print loc
+            fprintf std_formatter "%a@\n" Tokenf.print t 
         end) ;
    List.rev !result 
   end
 
-let get_tokens s =
-  List.map fst
-    (list_of_string ~verbose:false s )
+let get_tokens s = list_of_string ~verbose:false s 
   
   
 let debug_from_file  file =
@@ -74,8 +72,8 @@ let debug_from_file  file =
   let stream = Streamf.of_channel  chan in
   from_stream  loc stream |> clean |>
   Streamf.iter @@
-  fun (t,loc) ->
-    fprintf std_formatter "%a@;%a@\n" Tokenf.print t Locf.print loc
+  fun t  ->
+    fprintf std_formatter "%a@\n" Tokenf.print t
 
 
 (* local variables: *)

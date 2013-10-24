@@ -52,37 +52,40 @@ Location_util:
 };;    
 
 
-let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
+let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
   | newline as txt %{
     begin
       update_loc  lexbuf;
       let loc = !! lexbuf in
-      (`Newline {loc;txt},loc)
+      `Newline {loc;txt}
     end}
-  | ocaml_lid as txt %{let loc = !!lexbuf in (`Lid {loc;txt},loc )}
+  | ocaml_lid as txt %{let loc = !!lexbuf in `Lid {loc;txt}}
   | '"' %{
     let c = new_cxt ()  in
     let old = lexbuf.lex_start_p in
     begin
       push_loc_cont c lexbuf lex_string;
       let loc = old --  lexbuf.lex_curr_p in
-      (`Str {loc; txt =buff_contents c},loc)
+      `Str {loc; txt =buff_contents c}
     end}
   | "'" (newline as txt) "'" %{
     begin
       update_loc   lexbuf ~retract:1;
       let loc = !!lexbuf in
-      (`Chr {loc;txt}, loc)
+      `Chr {loc;txt}
     end}
 
   | "'" (ocaml_char as txt ) "'" %{
-    let loc = !!lexbuf in (`Chr {loc;txt} , loc )}
+    let loc = !!lexbuf in `Chr {loc;txt}}
+     (* FIXME
+        Misssing '}' here 
+        Quotation not terminated error message starting brace is correct, but not friendly *)
 
   | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
 
   | "#" | "|" | "^" | "<" | "->" |"="  |"_" | "*" | "["
   |"]" | "*" | "?" | "+" | "(" | ")" | "-" as txt %{
-    let loc = !! lexbuf in (`Sym {loc;txt},loc )}
+    let loc = !! lexbuf in `Sym {loc;txt}}
 
   | ocaml_blank + %{ token lexbuf }
 
@@ -102,12 +105,12 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
       store c lexbuf;
       push_loc_cont c lexbuf lex_quotation;
       let loc = old -- lexbuf.lex_curr_p in
-      (`Quot {Tokenf.name=Tokenf.empty_name;
-              meta=None;
-              content = buff_contents c ;
-              shift = 2;
+      `Quot {name=Tokenf.empty_name;
+             meta=None;
+             content = buff_contents c ;
+             shift = 2;
               retract = 1;
-              loc},loc)
+             loc}
     end}
   | eof %{
       let pos = lexbuf.lex_curr_p in (* FIXME *)
@@ -115,7 +118,7 @@ let  rec token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) = %lex{
       { pos with pos_bol  = pos.pos_bol  + 1 ;
         pos_cnum = pos.pos_cnum + 1 };
        let loc = !!lexbuf in
-       (`EOI {loc;txt=""},  loc))}
+       `EOI {loc;txt=""})}
     
   | _ as c %{ err (Illegal_character c) @@  !!lexbuf }}
     
