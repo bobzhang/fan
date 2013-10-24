@@ -182,12 +182,10 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
               (Streamf.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Streamf.NotConsumed
         end
-    | `Stoken (f, _,_) -> fun strm ->
-        begin  (* interaction with stream *)
-          match Streamf.peek strm with
-          |Some tok when f tok -> (Streamf.junk strm; Gaction.mk tok)
-          |_ -> raise Streamf.NotConsumed
-        end in with_loc (aux s)
+    | `Stoken (f, _,_) -> fun strm ->  match Streamf.peek strm with
+      |Some tok when f tok -> (Streamf.junk strm; Gaction.mk tok)
+      |_ -> raise Streamf.NotConsumed
+  in with_loc (aux s)
 
 
 
