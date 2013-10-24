@@ -4,7 +4,7 @@ open Util
   
 
   
-(* open Format; *)
+
 (* [bp] means begining position, [ep] means ending position
    apply the [parse_fun] and get the result and the location of
    consumed areas
@@ -165,8 +165,9 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
     Streamf.njunk n strm;
     !acc
   end          
-(* only for [Smeta] it might not be functional *)
-and parser_of_symbol (entry:Gstructure.entry) s  =
+(* functional and re-entrant *)
+and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
+    : (Gaction.t * Locf.t) Tokenf.parse  =
   let rec aux s = 
     match s with 
     | `Slist0 s ->
