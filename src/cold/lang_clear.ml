@@ -9,26 +9,28 @@ let _ =
     (None,
       (None, None,
         [([`Stoken
-             (((function | `Ant ("",_) -> true | _ -> false)),
-               (3257031, (`A "")), "`Ant s")],
+             (((function
+                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
+                | _ -> false)), (3257031, (`A "")), "`Ant s")],
            ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Ant (("" as n),s) ->
+                   | `Ant ({ kind = ("" as n); txt = s;_} : Tokenf.ant) ->
                        (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s"
                             (Tokenf.token_to_string __fan_0))))));
         ([`Stoken
-            (((function | `Ant ("lid",_) -> true | _ -> false)),
-              (3257031, (`A "lid")), "`Ant s")],
+            (((function
+               | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
+               | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
           ("FanUtil.mk_anti _loc ~c:\"a_lident\" n s\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
-                  | `Ant (("lid" as n),s) ->
+                  | `Ant ({ kind = ("lid" as n); txt = s;_} : Tokenf.ant) ->
                       (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                   | _ ->
                       failwith

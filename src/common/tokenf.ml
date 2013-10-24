@@ -82,7 +82,7 @@ type t =
   | space_token
   | quotation
   | dir_quotation
-  | `Ant       of (string * string )        
+  | `Ant       of ant (* (string * string ) *)        
   | `EOI       of txt]
 
 let quot_expand (expander:'a expand_fun) (x:quot) =
@@ -194,9 +194,9 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
       Format.fprintf fmt "@[<1>(`Optlabel@ %a)@]" Format.pp_print_string x.txt
   | #quotation as _a0 -> (pp_print_quotation fmt _a0 :>unit)
   | #dir_quotation as _a0 -> (pp_print_dir_quotation fmt _a0 :>unit)
-  | `Ant (_a0,_a1) ->
-      Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string _a0
-        Format.pp_print_string _a1
+  | `Ant x  ->
+      Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" Format.pp_print_string x.kind
+        Format.pp_print_string x.txt 
   | `Comment x ->
       Format.fprintf fmt "@[<1>(`Comment@ %a)@]" Format.pp_print_string x.txt
   | `Blank x ->

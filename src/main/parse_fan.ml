@@ -33,7 +33,7 @@ let apply () = begin
     Gramf.setup_parser sem_exp begin
       let symb1 = Gramf.parse_origin_tokens exp in
       let symb = %parser{
-        |  (`Ant (("list" as n), s), _loc)  ->
+        |  (`Ant ({kind = ("list" as n); txt = s;_}:Tokenf.ant), _loc)  ->
             mk_anti ~c:"exp;" _loc n s
         |  a = symb1  -> a } in
       let rec kont al = %parser{

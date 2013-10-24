@@ -221,16 +221,18 @@ let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
          end}
            (* Antiquotation handling *)
    | '$' %{
-       let  dollar (c:Lexing_util.context) =
+       let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> (Tokenf.t * Locf.t) =
          %lex{
          | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x) %{
              begin
                let old = 
                  let v = lexbuf.lex_start_p in
                  {v with pos_cnum = v.pos_cnum + String.length name + 1 } in
-               (`Ant(name,x), old -- lexbuf.lex_curr_p)
+               let loc = old -- lexbuf.lex_curr_p in
+               (`Ant{loc; kind = name; txt = x},loc )
              end}
-         | lident as x  %{ (`Ant("",x), !!lexbuf)}  (* $lid *)
+         | lident as txt  %{
+           let loc = !!lexbuf in (`Ant{kind =""; txt ;loc}, loc)}  (* $lid *)
          | '(' ('`'? (identchar*|['.' '!']+) as name) ':' %{
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
@@ -241,8 +243,8 @@ let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               (`Ant(name,buff_contents c),
-                old -- Lexing.lexeme_end_p lexbuf)
+               let loc = old -- Lexing.lexeme_end_p lexbuf in
+               (`Ant{loc;kind = name; txt = buff_contents c},loc)
              end}
          | '(' %{     (* $(xxxx)*)
              let old =
@@ -251,7 +253,8 @@ let  token : Lexing.lexbuf -> (Tokenf.t * Locf.t ) =
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               (`Ant("", buff_contents c ), old -- Lexing.lexeme_end_p lexbuf)
+               let loc = old -- Lexing.lexeme_end_p lexbuf in
+               (`Ant {loc ; kind = ""; txt =  buff_contents c }, loc)
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
        let c = new_cxt () in

@@ -264,7 +264,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
           List.map (fun (x: [> `Str of (loc*string) ]) ->
 
            let pred = %exp{function
-             | $vrn:v ($(x :>pat), _) -> true
+             | $vrn:v ({ kind = $(x :>pat); _}:Tokenf.ant) -> true
              | _ -> false} in
            let des = %exp{($`int:i,`A $(x :> exp))} in
            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
@@ -275,7 +275,10 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
              match y with
              | None -> %pat{$(x :> pat)}
              | Some(xloc,u) -> %pat@xloc{( $(x :>pat) as $lid:u)} in
-           let pattern = Some %pat{$vrn:v ($pp, $(p : Gram_pat.t :>pat))} in
+           let pattern =
+             Some
+               %pat{$vrn:v (* BOOTSTRAPPING *)
+                      ({kind = $pp; txt = $(p : Gram_pat.t :>pat);_}:Tokenf.ant)} in
            {Gram_def.text = `Stoken(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern})}
