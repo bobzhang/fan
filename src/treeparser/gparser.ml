@@ -35,7 +35,7 @@ let level_number (entry:Gstructure.entry) lab =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gstructure.entry)
-    (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x =
+    (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
@@ -56,7 +56,6 @@ let rec parser_of_tree (entry:Gstructure.entry)
             let alevn =
               match assoc with
               | `LA|`NA -> lev + 1 | `RA -> lev  in
-
             try
               let a = with_loc (entry.start alevn) strm in
               ArgContainer.push a q;
@@ -83,19 +82,16 @@ let rec parser_of_tree (entry:Gstructure.entry)
                   ArgContainer.push a q;
                   (let pson = from_tree son in
                   try pson strm
-                  with
-                  | e ->
-                      (ignore (ArgContainer.pop q);
-                       (match e with
-                       | Streamf.NotConsumed  ->
-                           if (Gtools.get_cur_loc strm) = bp
-                           then raise Streamf.NotConsumed
-                           else
-                             raise @@
-                               Streamf.Error
-                               (Gfailed.tree_failed  entry a node son)
-                       | _ -> raise e)))
-              with | Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
+                  with  e ->
+                    (ignore (ArgContainer.pop q);
+                     (match e with
+                     | Streamf.NotConsumed  ->
+                         if Gtools.get_cur_loc strm = bp
+                         then raise Streamf.NotConsumed (* could call brother?*)
+                         else
+                           raise @@ Streamf.Error (Gfailed.tree_failed  entry a node son)
+                     | _ -> raise e)))
+              with Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
 
         | Some (tokl, node, son) -> fun strm ->
             (try
@@ -114,19 +110,20 @@ let rec parser_of_tree (entry:Gstructure.entry)
                            (Streamf.Error
                               (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
                      | _ -> raise e)))
-            with | Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
+            with  Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
   let parse = from_tree x in
   fun strm -> 
     let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
     let ans = ref parse in
     (for _i = 1 to arity do
       let (v,_) = ArgContainer.pop q in
-      ans:=Gaction.getf !ans v;   
+      ans:=Gaction.apply !ans v;   
     done;
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gstructure.terminal list) strm =
+and parser_of_terminals (terminals: Gstructure.terminal list)  : (Obj.t * Locf.t) list Tokenf.parse =
+  fun strm ->
   let n = List.length terminals in
   let acc = ref [] in begin
     (try
@@ -134,7 +131,7 @@ and parser_of_terminals (terminals: Gstructure.terminal list) strm =
         (fun i terminal  -> 
           let (t,loc) =
             match Streamf.peek_nth strm i with
-            | Some t (* (t,loc) *) -> (t,Tokenf.get_loc t) (* (t,loc) *)
+            | Some t -> (t,Tokenf.get_loc t)
             | None -> invalid_arg "parser_of_terminals" in
           begin
             acc:= (Gaction.mk t,loc)::!acc;
@@ -221,7 +218,7 @@ let start_parser_of_levels entry =
                 (try
                   let (act,loc) = cstart strm in
                   fun ()  ->
-                    let a = Gaction.getf act loc in entry.continue levn loc a strm
+                    let a = Gaction.apply act loc in entry.continue levn loc a strm
                 with  Streamf.NotConsumed  -> (fun ()  -> hstart levn strm)) () in
   aux 0
     
@@ -256,7 +253,7 @@ let rec continue_parser_of_levels entry clevn (xs:Gstructure.level list) =
             | Streamf.NotConsumed ->
               let (act,loc) = ccontinue strm in
               let loc = Locf.merge bp loc in
-              let a = Gaction.getf2 act a loc in entry.continue levn loc a strm
+              let a = Gaction.apply2 act a loc in entry.continue levn loc a strm
 
   
 let continue_parser_of_entry (entry:Gstructure.entry) =

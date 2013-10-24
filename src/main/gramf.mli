@@ -24,8 +24,8 @@ module Action : sig
   type t = Gaction.t
   val mk : 'a -> t
   val get : t -> 'a
-  val getf : t -> 'a -> 'b
-  val getf2 : t -> 'a -> 'b -> 'c
+  val apply : t -> 'a -> 'b
+  val apply2 : t -> 'a -> 'b -> 'c
 end
 
       
