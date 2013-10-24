@@ -28,8 +28,7 @@ let _ =
                    | `Uid ({ txt = n;_} : Tokenf.txt) -> (n : 'uid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (parser_exp : 'parser_exp Gramf.t )
     (None,
       (None, None,

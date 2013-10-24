@@ -22,8 +22,7 @@ let _ =
                          | Some x -> Ast_quotation.set_default x) : 'item )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
         ([`Skeyword "import";
          `Snterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
           ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
@@ -43,7 +42,7 @@ let _ =
                       (Ast_filters.use_implem_filter s : 'item )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
         ([`Skeyword "lang_clear"],
           ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
             (Gramf.mk_action
@@ -67,8 +66,7 @@ let _ =
                        xs : 'dot_namespace )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid i")],
@@ -80,7 +78,7 @@ let _ =
                       ([i] : 'dot_namespace )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
     (None,
       (None, None,

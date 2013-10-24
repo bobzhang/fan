@@ -396,8 +396,7 @@ let _ =
                                 FAst.stru )) ns) : 'a )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       (None, None,
@@ -420,8 +419,7 @@ let _ =
                        (`Lid (_loc, x) : 'name )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]))
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

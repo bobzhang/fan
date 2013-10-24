@@ -77,8 +77,7 @@ let _ =
                           FAst.exp ) : 'save_quot )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (lid : 'lid Gramf.t )
     (None,
       (None, None,
@@ -92,6 +91,5 @@ let _ =
                    | `Lid ({ txt = x;_} : Tokenf.txt) -> (x : 'lid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]))
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ = Ast_quotation.of_exp ~name:(Ns.lang, "save") ~entry:save_quot ()

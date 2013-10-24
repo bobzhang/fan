@@ -23,8 +23,7 @@ let _ =
                    | `Str ({ txt = y;_} : Tokenf.txt) -> (y : 'str )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (type_entry : 'type_entry Gramf.t )
     (None,
       (None, None,
@@ -39,8 +38,7 @@ let _ =
                        ((_loc, x, None, None) : 'type_entry )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "(";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -60,9 +58,8 @@ let _ =
                       -> ((_loc, x, (Some y), None) : 'type_entry )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_1))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -83,9 +80,8 @@ let _ =
                       -> ((_loc, x, (Some y), (Some t)) : 'type_entry )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_1))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_1))))));
         ([`Skeyword "(";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -103,7 +99,7 @@ let _ =
                       ((_loc, x, y, (Some t)) : 'type_entry )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (ty : 'ty Gramf.t )
     (None,
       (None, None,
@@ -142,8 +138,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
@@ -155,7 +150,7 @@ let _ =
                       (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (qualid : 'qualid Gramf.t )
     (None,
       (None, None,
@@ -173,8 +168,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid i")],
@@ -186,7 +180,7 @@ let _ =
                       (`Lid (_loc, i) : 'qualid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
     (None,
       (None, None,
@@ -204,8 +198,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x");
@@ -225,9 +218,8 @@ let _ =
                       -> (`Uid (_loc, x) : 't_qualid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (nonterminals : 'nonterminals Gramf.t )
     (None,
       (None, None,

@@ -62,8 +62,7 @@ let _ =
                    | `Lid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
@@ -74,7 +73,7 @@ let _ =
                   | `Uid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.unsafe_extend_single (fan_quot_semi : 'fan_quot_semi Gramf.t )
     (None,
       (None, None,

@@ -29,8 +29,7 @@ let _ =
                        'inject_exp )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
     (None,
       (None, None,
@@ -49,8 +48,7 @@ let _ =
                        'inject_stru )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
     (None,
       (None, None,
@@ -69,8 +67,7 @@ let _ =
                        'inject_clfield )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]))
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ =
   let open Ast_quotation in
     let d = Ns.inject in

@@ -20,8 +20,7 @@ let _ =
                           (fun _  -> Compile_stream.empty _loc) : 'stream_exp )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
         ([`Skeyword "!";
          `Stoken
            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
@@ -38,7 +37,7 @@ let _ =
                          (fun _  -> cstream _loc sel) : 'stream_exp )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
         ([`Snterm
             (Gramf.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],

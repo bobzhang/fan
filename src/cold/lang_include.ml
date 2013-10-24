@@ -28,7 +28,6 @@ let _ =
                               raise fan_e__3)) : 'include_quot )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]))
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ =
   Ast_quotation.of_stru ~name:(Ns.lang, "include") ~entry:include_quot ()

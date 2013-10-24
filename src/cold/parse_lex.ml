@@ -71,8 +71,7 @@ let _ =
                        'case )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     (None,
       (None, None,
@@ -100,8 +99,7 @@ let _ =
                        'declare_regexp )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
         ([`Sself; `Sself],
           ("x\n",
             (Gramf.mk_action
@@ -120,8 +118,7 @@ let _ =
                    | `Lid ({ txt = y;_} : Tokenf.txt) -> ((_loc, y) : 'lid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend (regexp : 'regexp Gramf.t )
     (None,
       [((Some "as"), None,
@@ -171,7 +168,7 @@ let _ =
                       'regexp )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
@@ -183,7 +180,7 @@ let _ =
                       (regexp_for_string @@ (TokenEval.string s) : 'regexp )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "[";
          `Snterm (Gramf.obj (char_class : 'char_class Gramf.t ));
          `Skeyword "]"],
@@ -230,7 +227,7 @@ let _ =
                              raise UnboundRegexp)) : 'regexp )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))])]);
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))])]);
   Gramf.extend_single (char_class : 'char_class Gramf.t )
     (None,
       (None, None,
@@ -269,9 +266,8 @@ let _ =
                         Fcset.interval c1 c2 : 'char_class1 )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s %s"
-                            (Tokenf.token_to_string __fan_2)
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
+                            (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c1")],
@@ -284,7 +280,7 @@ let _ =
                       'char_class1 )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Sself; `Sself],
           ("Fcset.union cc1 cc2\n",
             (Gramf.mk_action

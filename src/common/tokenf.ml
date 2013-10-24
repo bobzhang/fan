@@ -210,11 +210,6 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
         x.line (Formatf.pp_print_option Format.pp_print_string) x.name
   | `EOI _ -> Format.fprintf fmt "`EOI"
 
-          
-
-type 'a token  = [> t] as 'a
-
-
 type stream = t Streamf.t 
 
 type 'a parse  = stream -> 'a
@@ -224,9 +219,9 @@ type filter = stream -> stream
 
 
 (* BOOTSTRAPPING --  *)
-let token_to_string = Formatf.to_string pp_print_t
+let to_string = Formatf.to_string pp_print_t
         
-let print ppf x = Format.pp_print_string ppf (token_to_string x)
+let print ppf x = Format.pp_print_string ppf (to_string x)
     
 
 let get_string (x:t) :  string =

@@ -133,7 +133,7 @@ let _ =
                       ((v, (Some (xloc, s))) : 'or_words )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_2))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_2))))))]));
   Gramf.extend_single (str : 'str Gramf.t )
     (None,
       (None, None,
@@ -148,8 +148,7 @@ let _ =
                        (`Str (_loc, s) : 'str )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (simple : 'simple Gramf.t )
     (None,
       (None, None,
@@ -189,8 +188,7 @@ let _ =
                          }] : 'simple )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Lid";
          `Stoken
            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
@@ -276,9 +274,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Uid";
          `Stoken
            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
@@ -364,9 +361,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Str";
          `Stoken
            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
@@ -452,9 +448,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Lid";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -521,9 +516,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Uid";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -590,9 +584,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Int";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -659,9 +652,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Int32";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -728,9 +720,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Int64";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -797,9 +788,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Nativeint";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -866,9 +856,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Flo";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -935,9 +924,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Chr";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1004,9 +992,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Label";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1073,9 +1060,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Optlabel";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1142,9 +1128,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Str";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1211,9 +1196,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Lid";
          `Skeyword "@";
          `Stoken
@@ -1290,10 +1274,9 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s %s"
-                           (Tokenf.token_to_string __fan_3)
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s %s" (Tokenf.to_string __fan_3)
+                           (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Uid";
          `Skeyword "@";
          `Stoken
@@ -1370,10 +1353,9 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s %s"
-                           (Tokenf.token_to_string __fan_3)
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s %s" (Tokenf.to_string __fan_3)
+                           (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Str";
          `Skeyword "@";
          `Stoken
@@ -1450,10 +1432,9 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s %s"
-                           (Tokenf.token_to_string __fan_3)
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s %s" (Tokenf.to_string __fan_3)
+                           (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Lid"],
           ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
@@ -1493,7 +1474,7 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Uid"],
           ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
@@ -1533,7 +1514,7 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Str"],
           ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
@@ -1573,7 +1554,7 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Quot";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1623,9 +1604,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "DirQuotation";
          `Stoken
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -1675,9 +1655,8 @@ let _ =
                         }] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_1)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
+                           (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Ant";
          `Skeyword "(";
          `Snterm (Gramf.obj (or_words : 'or_words Gramf.t ));
@@ -1801,9 +1780,8 @@ let _ =
                                     }))) : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_4)
-                           (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_4)
+                           (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
@@ -1816,7 +1794,7 @@ let _ =
                           ~styp:(`Tok _loc) ~pattern:None] : 'simple )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "(";
          `Snterm (Gramf.obj (or_strs : 'or_strs Gramf.t ));
          `Skeyword ")"],
@@ -1902,7 +1880,7 @@ let _ =
                       ((xs, (Some s)) : 'or_strs )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_2))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_2))))))]));
   Gramf.extend_single (str0 : 'str0 Gramf.t )
     (None,
       (None, None,
@@ -1916,8 +1894,7 @@ let _ =
                    | `Str ({ txt = s;_} : Tokenf.txt) -> (s : 'str0 )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (level_str : 'level_str Gramf.t )
     (None,
       (None, None,
@@ -1932,8 +1909,7 @@ let _ =
                    | `Str ({ txt = s;_} : Tokenf.txt) -> (s : 'level_str )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (sep_symbol : 'sep_symbol Gramf.t )
     (None,
       (None, None,
@@ -1963,8 +1939,7 @@ let _ =
                         [mk_symbol ~text ~styp ~pattern:None] : 'symbol )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "L1";
          `Snterm (Gramf.obj (simple : 'simple Gramf.t ));
          `Sopt (`Snterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t )))],
@@ -1983,7 +1958,7 @@ let _ =
                        [mk_symbol ~text ~styp ~pattern:None] : 'symbol )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "OPT"; `Snterm (Gramf.obj (simple : 'simple Gramf.t ))],
           ("let s::[] = s in\nlet styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Sopt (_loc, (s.text)) in [mk_symbol ~text ~styp ~pattern:None]\n",
             (Gramf.mk_action
@@ -2005,7 +1980,7 @@ let _ =
                       'symbol )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "PEEK"; `Snterm (Gramf.obj (simple : 'simple Gramf.t ))],
           ("let s::[] = s in\nlet v = (_loc, (s.text)) in\nlet text = if p = \"TRY\" then `Stry v else `Speek v in\n[mk_symbol ~text ~styp:(s.styp) ~pattern:None]\n",
             (Gramf.mk_action
@@ -2019,7 +1994,7 @@ let _ =
                       'symbol )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Snterm (Gramf.obj (simple : 'simple Gramf.t ))],
           ("p\n",
             (Gramf.mk_action
@@ -2040,8 +2015,7 @@ let _ =
                        (`Lid (loc, i) : 'brace_pattern )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_1))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (psymbol : 'psymbol Gramf.t )
     (None,
       (None, None,
@@ -2075,8 +2049,7 @@ let _ =
                    | `Str ({ txt = y;_} : Tokenf.txt) -> (y : 'str )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (extend_header : 'extend_header Gramf.t )
     (None,
       (None, None,
@@ -2144,8 +2117,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
@@ -2157,7 +2129,7 @@ let _ =
                       (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (qualid : 'qualid Gramf.t )
     (None,
       (None, None,
@@ -2175,8 +2147,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid i")],
@@ -2188,7 +2159,7 @@ let _ =
                       (`Lid (_loc, i) : 'qualid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (t_qualid : 't_qualid Gramf.t )
     (None,
       (None, None,
@@ -2206,8 +2177,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x");
@@ -2227,9 +2197,8 @@ let _ =
                       -> (`Uid (_loc, x) : 't_qualid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s %s"
-                           (Tokenf.token_to_string __fan_2)
-                           (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
+                           (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (name : 'name Gramf.t )
     (None,
       (None, None,
@@ -2318,7 +2287,7 @@ let _ =
                       ((Hashtbl.add inline_rules x rules; None) : 'entry )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (position : 'position Gramf.t )
     (None,
       (None, None,
@@ -2331,8 +2300,7 @@ let _ =
                        ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Last"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2342,7 +2310,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Before"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2352,7 +2320,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "After"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2362,7 +2330,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "Level"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2372,7 +2340,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'position )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (level_list : 'level_list Gramf.t )
     (None,
       (None, None,
@@ -2411,8 +2379,7 @@ let _ =
                        ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "RA"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2422,7 +2389,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Skeyword "NA"],
           ("(`Vrn (_loc, x) : FAst.exp )\n",
             (Gramf.mk_action
@@ -2432,7 +2399,7 @@ let _ =
                       ((`Vrn (_loc, x) : FAst.exp ) : 'assoc )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (rule_list : 'rule_list Gramf.t )
     (None,
       (None, None,
@@ -2476,7 +2443,7 @@ let _ =
                       'rule )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_1))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));
   Gramf.extend_single (left_rule : 'left_rule Gramf.t )
     (None,
       (None, None,
@@ -2513,8 +2480,7 @@ let _ =
                         else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (string : 'string Gramf.t )
     (None,
       (None, None,
@@ -2529,8 +2495,7 @@ let _ =
                        ((`Str (_loc, s) : FAst.exp ) : 'string )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
@@ -2543,7 +2508,7 @@ let _ =
                       (Parsef.exp _loc s : 'string )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]))
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();

@@ -166,8 +166,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                    (_loc,
                      (`Dot
                         (_loc, (`Uid (_loc, "Tokenf")),
-                          (`Lid (_loc, "token_to_string")))), x) : FAst.exp ))
-             e in
+                          (`Lid (_loc, "to_string")))), x) : FAst.exp )) e in
          let error =
            Ast_gen.appl_of_list
              ([(`Dot

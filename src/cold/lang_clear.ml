@@ -20,8 +20,7 @@ let _ =
                        (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function
                | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
@@ -34,7 +33,7 @@ let _ =
                       (FanUtil.mk_anti _loc ~c:"a_lident" n s : 'a_lident )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid s")],
@@ -46,7 +45,7 @@ let _ =
                       (`Lid (_loc, s) : 'a_lident )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]));
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
     (None,
       (None, None,
@@ -83,8 +82,7 @@ let _ =
                        (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s"
-                            (Tokenf.token_to_string __fan_0))))));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Stoken
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
@@ -96,7 +94,7 @@ let _ =
                       (`Uid (_loc, x) : 'qualuid )
                   | _ ->
                       failwith
-                        (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))))]))
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ =
   let d = Ns.lang in
   Ast_quotation.of_exp ~name:(d, "clear") ~entry:nonterminalsclear ()

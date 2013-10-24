@@ -149,14 +149,12 @@ type t =
 
 
 type stream =  t Streamf.t 
-
-type 'a token  = [> t] as 'a
       
 type 'a parse = stream -> 'a
 
 type filter = stream -> stream
 
-val token_to_string : t  -> string
+val to_string : t  -> string
 
 
 val print : t Formatf.t 

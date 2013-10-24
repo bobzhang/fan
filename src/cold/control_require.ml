@@ -20,5 +20,4 @@ let () =
                      | `Str ({ txt = s;_} : Tokenf.txt) -> (add s : 'item )
                      | _ ->
                          failwith
-                           (Printf.sprintf "%s"
-                              (Tokenf.token_to_string __fan_1))))))]))
+                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]))

@@ -148,7 +148,7 @@ let make_action (_loc:loc)
           let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
           let es =
             (* BOOTSTRAPING, associated with module name [Tokenf] *)
-            List.map (fun x -> %exp{Tokenf.token_to_string $x}) e in
+            List.map (fun x -> %exp{Tokenf.to_string $x}) e in
           let error =
             Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$`str:error_fmt}]  @ es) in 
           %exp{fun ($locid : Locf.t) ->
