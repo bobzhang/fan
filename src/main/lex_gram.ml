@@ -105,7 +105,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
          | None -> Tokenf.empty_name  in
        begin
          let old = lexbuf.lex_start_p in
-         let content =
+         let txt =
            begin
              store c lexbuf;
              push_loc_cont c lexbuf lex_quotation;
@@ -114,7 +114,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
          let loc = old -- lexbuf.lex_curr_p in
          let shift = String.length shift in
          let retract =  1  in
-         `Quot{Tokenf.name;meta;shift;content;loc;retract}
+         `Quot{Tokenf.name;meta;shift;txt;loc;retract}
        end}
   | '$' %{
        let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t=

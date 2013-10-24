@@ -4943,7 +4943,7 @@ let token: Lexing.lexbuf -> Tokenf.t =
             | Some name -> Tokenf.name_of_string name
             | None  -> Tokenf.empty_name in
           let old = lexbuf.lex_start_p in
-          let content =
+          let txt =
             store c lexbuf;
             push_loc_cont c lexbuf lex_quotation;
             buff_contents c in
@@ -4951,11 +4951,10 @@ let token: Lexing.lexbuf -> Tokenf.t =
           let shift = String.length shift in
           let retract = 1 in
           if x = None
-          then
-            `Quot { Tokenf.name = name; meta; shift; content; loc; retract }
+          then `Quot { Tokenf.name = name; meta; shift; txt; loc; retract }
           else
             `DirQuotation
-              { Tokenf.name = name; meta; shift; content; loc; retract }
+              { Tokenf.name = name; meta; shift; txt; loc; retract }
       | 19 ->
           let num =
             Lexing.sub_lexeme lexbuf (((lexbuf.Lexing.lex_mem).(0)) + 0)

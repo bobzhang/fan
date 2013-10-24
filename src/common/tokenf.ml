@@ -1,4 +1,3 @@
-open Util
   
 type domains =
     [ `Absolute of string list | `Sub of string list]
@@ -24,7 +23,8 @@ type quot = {
     loc: loc; (* the starting location of the quot *) 
     meta:string option;(* a piece of small meta data, like loc name*)
     shift:int;
-    content:string;
+    (* content:string; *)
+    txt : string;
     retract:int; 
   }
 
@@ -93,7 +93,7 @@ let quot_expand (expander:'a expand_fun) (x:quot) =
         { x.loc.loc_start with
           pos_cnum = x.loc.loc_start.pos_cnum + x.shift}} in
   let content =
-    String.sub x.content x.shift (String.length x.content - x.retract - x.shift) in 
+    String.sub x.txt x.shift (String.length x.txt - x.retract - x.shift) in 
   expander loc x.meta content
       
 let pp_print_name: Format.formatter -> name -> unit =
@@ -103,15 +103,15 @@ let pp_print_name: Format.formatter -> name -> unit =
          Format.pp_print_string _a1) fmt _a0
 
 let pp_print_quot : Format.formatter -> quot -> unit =
-  fun fmt {name;meta;shift;content;loc;retract}  ->
+  fun fmt {name;meta;shift;txt;loc;retract}  ->
     Format.fprintf fmt
-      "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
+      "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;txt=%a}@]"
       pp_print_name name
       (Formatf.pp_print_option Formatf.pp_print_string) meta
       Locf.pp_print_t loc
       Format.pp_print_int shift
       Format.pp_print_int retract
-      Format.pp_print_string content
+      Format.pp_print_string txt
 
 let string_of_name = Formatf.to_string pp_print_name
             
@@ -217,26 +217,20 @@ type 'a token  = [> t] as 'a
 
 type stream = t Streamf.t 
 
-type 'a estream  = 'a token  Streamf.t 
-
 type 'a parse  = stream -> 'a
 
 type filter = stream -> stream
   
 
 
-
+(* BOOTSTRAPPING --  *)
 let token_to_string = Formatf.to_string pp_print_t
-
-let to_string = function
-  | #t as x -> token_to_string x
-  | _ -> invalid_arg "token_to_string not implemented for this token" (* FIXME*)
-
         
-let print ppf x = Format.pp_print_string ppf (to_string x)
+let print ppf x = Format.pp_print_string ppf (token_to_string x)
     
 
-let extract_string : [> t] -> string = function
+let get_string (x:t) :  string =
+  match x with 
   | `Key x
   | `Sym x
   | `Lid x
@@ -254,8 +248,11 @@ let extract_string : [> t] -> string = function
   | `Blank x
   | `Eident x -> x.txt 
   | `LINE_DIRECTIVE x -> x.txt
-  | tok ->
-      invalid_argf "Cannot extract a string from this token: %s" (to_string tok)
+  | `Quot x -> x.txt
+  | `DirQuotation x -> x.txt        
+  | `Newline x -> x.txt 
+  | `EOI x  -> x.txt 
+  | `Ant x -> x.txt
 
 let get_loc (x:t) =
   match x with

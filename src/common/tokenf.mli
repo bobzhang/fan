@@ -16,7 +16,7 @@ type quot = {
     meta    : string option;
     shift   : int;
 
-    content : string;
+    txt : string;
     retract : int
     (* the letter to be retracted *)
   }
@@ -120,44 +120,37 @@ type line = {
 
       
 type space_token =
-  [ `Comment   of txt
-  | `Blank     of txt
-  | `Newline   of txt
+  [ `Comment        of txt
+  | `Blank          of txt
+  | `Newline        of txt
   | `LINE_DIRECTIVE of line ]
 
 type t =
-  [ `Key       of txt
-  | `Sym       of txt
-  | `Lid       of txt
-  | `Uid       of txt
-  | `Eident    of txt (* (+)*)
+  [ `Key            of txt
+  | `Sym            of txt
+  | `Lid            of txt
+  | `Uid            of txt
+  | `Eident         of txt (* (+)*)
 
-  | `Int       of txt
-  | `Int32     of txt
-  | `Int64     of txt
-  | `Nativeint of txt
-  | `Flo       of txt
-  | `Chr       of txt
-  | `Label     of txt
-  | `Optlabel  of txt
-  | `Str       of txt
+  | `Int            of txt
+  | `Int32          of txt
+  | `Int64          of txt
+  | `Nativeint      of txt
+  | `Flo            of txt
+  | `Chr            of txt
+  | `Label          of txt
+  | `Optlabel       of txt
+  | `Str            of txt
   | space_token
-   (* . *)
-  | quotation
-  | dir_quotation
-  | `Ant       of ant
-  | `EOI       of txt]
+  | `Quot           of quot
+  | `DirQuotation   of quot
+  | `Ant            of ant
+  | `EOI            of txt]
 
 
-(**
-   [Tokenf.stram]
- *)      
 type stream =  t Streamf.t 
 
 type 'a token  = [> t] as 'a
-      
-type 'a estream  = 'a token Streamf.t
-
       
 type 'a parse = stream -> 'a
 
@@ -165,15 +158,12 @@ type filter = stream -> stream
 
 val token_to_string : t  -> string
 
-val to_string : [> t]  -> string
 
-val print : Format.formatter -> [> t ] -> unit
+val print : t Formatf.t 
 
+val get_string : t -> string
 
-(**  {[x=STRING -> extract_string x  ]} *)  
-(* val extract_string : [> t ] -> string *)
 val get_loc : t  -> loc 
-
 
 val string_of_name : name -> string
 

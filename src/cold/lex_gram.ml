@@ -2178,14 +2178,14 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
             | Some name -> Tokenf.name_of_string name
             | None  -> Tokenf.empty_name in
           let old = lexbuf.lex_start_p in
-          let content =
+          let txt =
             store c lexbuf;
             push_loc_cont c lexbuf lex_quotation;
             buff_contents c in
           let loc = old -- lexbuf.lex_curr_p in
           let shift = String.length shift in
           let retract = 1 in
-          `Quot { Tokenf.name = name; meta; shift; content; loc; retract }
+          `Quot { Tokenf.name = name; meta; shift; txt; loc; retract }
       | 11 ->
           let dollar (c : Lexing_util.context) =
             (fun (lexbuf : Lexing.lexbuf)  ->

@@ -107,7 +107,7 @@ let  rec token : Lexing.lexbuf -> Tokenf.t = %lex{
       let loc = old -- lexbuf.lex_curr_p in
       `Quot {name=Tokenf.empty_name;
              meta=None;
-             content = buff_contents c ;
+             txt = buff_contents c ;
              shift = 2;
               retract = 1;
              loc}
