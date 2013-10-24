@@ -1454,10 +1454,10 @@ let _ =
                            (Tokenf.token_to_string __fan_3)
                            (Tokenf.token_to_string __fan_2)
                            (Tokenf.token_to_string __fan_0))))));
-        ([`Skeyword "Lid"; `Skeyword "_"],
-          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = Some (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+        ([`Skeyword "Lid"],
+          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
-               (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Key ({ txt = v;_} : Tokenf.txt) ->
                       (let i = hash_variant v in
@@ -1484,10 +1484,7 @@ let _ =
                        let des_str =
                          Gram_pat.to_string
                            (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in
-                       let pattern =
-                         Some
-                           (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : 
-                           FAst.pat ) in
+                       let pattern = None in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));
@@ -1497,10 +1494,10 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
-        ([`Skeyword "Uid"; `Skeyword "_"],
-          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = Some (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+        ([`Skeyword "Uid"],
+          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
-               (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Key ({ txt = v;_} : Tokenf.txt) ->
                       (let i = hash_variant v in
@@ -1527,10 +1524,7 @@ let _ =
                        let des_str =
                          Gram_pat.to_string
                            (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in
-                       let pattern =
-                         Some
-                           (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : 
-                           FAst.pat ) in
+                       let pattern = None in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));
@@ -1540,10 +1534,10 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.token_to_string __fan_0))))));
-        ([`Skeyword "Str"; `Skeyword "_"],
-          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = Some (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : FAst.pat ) in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
+        ([`Skeyword "Str"],
+          ("let i = hash_variant v in\nlet pred: FAst.exp =\n  `Fun\n    (_loc,\n      (`Bar\n         (_loc,\n           (`Case\n              (_loc, (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))),\n                (`Lid (_loc, \"true\")))),\n           (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) in\nlet des: FAst.exp =\n  `Par\n    (_loc,\n      (`Com (_loc, (`Int (_loc, (string_of_int i))), (`Vrn (_loc, \"Any\"))))) in\nlet des_str = Gram_pat.to_string (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in\nlet pattern = None in\n[{\n   Gram_def.text = (`Stoken (_loc, pred, des, des_str));\n   styp = (`Tok _loc);\n   pattern\n }]\n",
             (Gramf.mk_action
-               (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Key ({ txt = v;_} : Tokenf.txt) ->
                       (let i = hash_variant v in
@@ -1570,10 +1564,7 @@ let _ =
                        let des_str =
                          Gram_pat.to_string
                            (`App (_loc, (`Vrn (_loc, v)), (`Any _loc))) in
-                       let pattern =
-                         Some
-                           (`App (_loc, (`Vrn (_loc, v)), (`Any _loc)) : 
-                           FAst.pat ) in
+                       let pattern = None in
                        [{
                           Gram_def.text =
                             (`Stoken (_loc, pred, des, des_str));

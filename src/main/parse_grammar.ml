@@ -171,28 +171,25 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   Inline simple_token :
   [ ("EOI" as v) %{
     let i = hash_variant v in
-    let pred = %exp{
-      function
-        | `EOI _ -> true
-        | _ -> false 
-    } in
+    let pred = %exp{function
+      | `EOI _ -> true
+      | _ -> false} in
     let des = %exp{($`int:i, `Empty)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
     [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
       styp = `Tok _loc;
-      pattern = None; (* means understore? *)
-    }]
+      pattern = None;}]
 
   }
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let i = hash_variant v in
-    let pred = %exp{
-                    function
-                      | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
-                      | _ -> false} in
+    let pred = %exp{function (*BOOTSTRAPPING*)
+      | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
+      | _ -> false} in
     let des = %exp{($`int:i,`A $str:x)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
-    let pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
+    let pattern = (* BOOTSTRAPPING *)
+      Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
     [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
@@ -201,38 +198,38 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
      | "Nativeint" |"Flo" | "Chr" |"Label" 
      | "Optlabel" |"Str" as v); Lid@xloc x %{
     let i = hash_variant v in                                 
-    let pred =  %exp{
-                    function
-                      | $vrn:v _ -> true
-                      | _ -> false} in
+    let pred =  %exp{function
+      | $vrn:v _ -> true
+      | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
+    let pattern = (* BOOTSTRAPPING *)
+      Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" as v); "@"; Lid loc ; Lid@xloc x %{
     let i = hash_variant v in
-    let pred =  %exp{
-                    function
-                      | $vrn:v _ -> true
-                      | _ -> false} in
+    let pred =  %exp{function
+      | $vrn:v _ -> true
+      | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
+    let pattern = (* BOOTSTRAPPING *)
+      Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
     [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
 
-  | ("Lid" |"Uid"|"Str" as v) ; "_"    %{
+  | ("Lid" |"Uid"|"Str" as v)    %{
     let i = hash_variant v in
     let pred = %exp{function
-                    | $vrn:v _ -> true
-                    | _ -> false} in
+      | $vrn:v _ -> true
+      | _ -> false} in
     let des = %exp{($`int:i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = Some %pat{$vrn:v  _ } in (* could be None *)
+    let pattern = None in (* could be None *)
     [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
