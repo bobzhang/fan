@@ -35,7 +35,7 @@ let level_number (entry:Gstructure.entry) lab =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gstructure.entry)
-    (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
+    (lev,assoc) (q: (* (Gaction.t * Locf.t) *)(* Tokenf.t *)Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
@@ -48,19 +48,19 @@ let rec parser_of_tree (entry:Gstructure.entry)
     | LocAct (act, _) -> fun _ -> act
           (* | LocActAppend(act,_,n) -> *)
 
-    (* rules ending with [S] , for this last symbol there's a call to the [start] function:
-       of the current level if the level is [`RA] or of the next level otherwise. (This can be
-       verified by [start_parser_of_levels]) *)      
+          (* rules ending with [S] , for this last symbol there's a call to the [start] function:
+             of the current level if the level is [`RA] or of the next level otherwise. (This can be
+             verified by [start_parser_of_levels]) *)      
     | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
         begin 
-            let alevn =
-              match assoc with
-              | `LA|`NA -> lev + 1 | `RA -> lev  in
-            try
-              let a = with_loc (entry.start alevn) strm in
-              ArgContainer.push a q;
-              act 
-            with Streamf.NotConsumed -> from_tree bro strm
+          let alevn =
+            match assoc with
+            | `LA|`NA -> lev + 1 | `RA -> lev  in
+          try
+            let a = with_loc (entry.start alevn) strm in
+            ArgContainer.push (fst a) q;
+            act 
+          with Streamf.NotConsumed -> from_tree bro strm
         end
           (* [son] will never be [DeadEnd] *)        
     | Node ({ node ; son; brother } as y) ->
@@ -79,7 +79,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
               (try
                 let a = ps strm in
                 fun ()  ->
-                  ArgContainer.push a q;
+                  ArgContainer.push (fst a) q;
                   (let pson = from_tree son in
                   try pson strm
                   with  e ->
@@ -97,17 +97,15 @@ let rec parser_of_tree (entry:Gstructure.entry)
             (try
               let args = List.rev (parser_of_terminals tokl strm) in
               fun ()  ->
-                List.iter (fun a  -> ArgContainer.push a q) args;
+                List.iter (fun a  -> ArgContainer.push (Gaction.mk a) q) args;
                 (let len = List.length args in
                 let p = from_tree son in
                 try p strm
-                with
-                | e ->
+                with e ->
                     (for _i = 1 to len do ignore (ArgContainer.pop q) done;
                      (match e with
                      | Streamf.NotConsumed  ->
-                         raise
-                           (Streamf.Error
+                         raise (Streamf.Error
                               (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
                      | _ -> raise e)))
             with  Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
@@ -116,40 +114,41 @@ let rec parser_of_tree (entry:Gstructure.entry)
     let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
     let ans = ref parse in
     (for _i = 1 to arity do
-      let (v,_) = ArgContainer.pop q in
+      let  v = ArgContainer.pop q in
       ans:=Gaction.apply !ans v;   
     done;
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gstructure.terminal list)  : (Obj.t * Locf.t) list Tokenf.parse =
+and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list Tokenf.parse =
   fun strm ->
-  let n = List.length terminals in
-  let acc = ref [] in begin
-    (try
-      List.iteri
-        (fun i terminal  -> 
-          let (t,loc) =
-            match Streamf.peek_nth strm i with
-            | Some t -> (t,Tokenf.get_loc t)
-            | None -> invalid_arg "parser_of_terminals" in
-          begin
-            acc:= (Gaction.mk t,loc)::!acc;
-            if not
-                (match terminal with
-                |`Stoken(f,_,_) -> f t
-                |`Skeyword kwd ->
-                    begin match t with
-                    |`Key u  when kwd =u.txt  -> true
-                    | _ -> false
-                    end)
-            then
-              invalid_arg "parser_of_terminals"
-          end) terminals
-    with Invalid_argument _ -> raise Streamf.NotConsumed);
-    Streamf.njunk n strm;
-    !acc
-  end          
+    let module M = struct exception X end in
+    let n = List.length terminals in
+    let acc = ref [] in begin
+      (try
+        List.iteri
+          (fun i terminal  -> 
+            let t  =
+              match Streamf.peek_nth strm i with
+              | Some t -> t 
+              | None -> raise M.X  in
+            begin
+              acc:= t ::!acc;
+              if not
+                  (match terminal with
+                  |`Stoken(f,_,_) -> f t
+                  |`Skeyword kwd ->
+                      begin match t with
+                      |`Key u ->  kwd =u.txt  
+                      | _ -> false
+                      end)
+              then raise M.X
+            end) terminals;
+        Streamf.njunk n strm;
+        !acc
+      with M.X -> raise Streamf.NotConsumed);
+    
+    end          
 (* functional and re-entrant *)
 and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =
