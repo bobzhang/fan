@@ -1,11 +1,22 @@
+(** Gparser module *)
 open Gstructure
 
 
-    
+(** apply the [parse_fun] and
+   get the result and the covered location of consumed areas *)    
 val with_loc: 'b Tokenf.parse -> ('b*Locf.t) Tokenf.parse
 
+(** given a level string, return a number from 0
+   {[
+   Gparser.level_number (Obj.magic expr) "top";
+   - : int = 0
+   Gparser.level_number (Obj.magic expr) "simple";
+   - : int = 16
+   ]} *)  
 val level_number: entry -> string -> int
 
+
+(** It outputs a stateful parser, but its generation process is functional *)    
 val parser_of_tree :
     entry -> int * assoc -> (Gaction.t * Locf.t) Stack.t ->  tree ->
       (Gaction.t * Locf.t) Tokenf.parse

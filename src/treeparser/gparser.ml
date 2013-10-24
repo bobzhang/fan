@@ -5,31 +5,18 @@ open Util
 
   
 
-(* [bp] means begining position, [ep] means ending position
-   apply the [parse_fun] and get the result and the location of
-   consumed areas
- *)
+
 let with_loc (parse_fun: 'b Tokenf.parse ) strm =
   let bp = Gtools.get_cur_loc strm in
   let x = parse_fun strm in
   let ep = Gtools.get_prev_loc strm in
   let loc =
-    let start_off_bp = bp.loc_start.pos_cnum in
-    let stop_off_ep = ep.loc_end.pos_cnum in 
-    if start_off_bp > stop_off_ep then 
+    if bp.loc_start.pos_cnum > ep.loc_end.pos_cnum then 
       Location_util.join bp
-    else Locf.merge bp ep in
+    else Locf.merge bp ep (* normal case when consumed something *)in
   (x, loc)
 
 
-(* given a level string, return a number from 0
-   {[
-   Gparser.level_number (Obj.magic expr) "top";
-   - : int = 0
-   Gparser.level_number (Obj.magic expr) "simple";
-   - : int = 16
-   ]}
- *)  
 let level_number (entry:Gstructure.entry) lab =
   let rec lookup levn = function
     | [] -> failwithf "unknown level %s"  lab
@@ -47,9 +34,6 @@ let level_number (entry:Gstructure.entry) lab =
         
 module ArgContainer= Stack
   
-(*
-  It outputs a stateful parser, but it is functional itself
- *)    
 let rec parser_of_tree (entry:Gstructure.entry)
     (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x =
   let alevn =

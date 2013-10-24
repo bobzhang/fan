@@ -20,49 +20,21 @@ type gram = Gstructure.gram = {
   gfilter : FanTokenFilter.t;
 }
 
-module Action :
-  sig
-    type t = Gaction.t
-    val mk : 'a -> t
-    val get : t -> 'a
-    val getf : t -> 'a -> 'b
-    val getf2 : t -> 'a -> 'b -> 'c
-  end
+module Action : sig
+  type t = Gaction.t
+  val mk : 'a -> t
+  val get : t -> 'a
+  val getf : t -> 'a -> 'b
+  val getf2 : t -> 'a -> 'b -> 'c
+end
 
-
-
-(* type description = [ `Antiquot | `Normal ] *)
-
-type loc = Locf.t
-type ant = [ `Ant of (loc* FanUtil.anti_cxt)]
-type vid = [ `Dot of (vid* vid) | `Lid of string | `Uid of string | ant] 
-type any = [ `Any]
-type alident = [ `Lid of string | ant] 
-type auident = [ `Uid of string | ant] 
-type ident =
-  [ `Dot of (ident* ident) | `Apply of (ident* ident) | alident | auident] 
-type literal =
-  [ `Chr of string | `Int of string | `Int32 of string | `Int64 of string
-  | `Flo of string | `Nativeint of string | `Str of string]
-(** a simplified pattern *)      
-type pat =
-  [ vid | `App of (pat* pat) | `Vrn of string | `Com of (pat* pat)
-  | `Sem of (pat* pat) | `Par of pat | any | `Record of rec_pat | literal
-  | `Alias of (pat* alident) | `ArrayEmpty | `Array of pat
-  | `Bar of (pat* pat)
-  | `PaRng of (pat* pat) ] 
-
-and rec_pat =
-  [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
       
 type word =
    [`Any
    |`A of string
    |`Empty]
-and data = ((* string *)int * word) (* FIXME duplicate in gram_def *)      
+and data = (int * word) (* FIXME duplicate in gram_def *)      
 type descr = data
-      
-(* type descr = pat *)
       
 
       
