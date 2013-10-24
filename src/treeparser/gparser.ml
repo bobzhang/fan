@@ -94,9 +94,10 @@ let rec parser_of_tree (entry:Gstructure.entry)
               with Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) ())
 
         | Some (tokl, node, son) -> fun strm ->
-            (try
-              let args = List.rev (parser_of_terminals tokl strm) in
-              fun ()  ->
+            match parser_of_terminals tokl strm with
+            | None -> from_tree brother strm
+            | Some args ->
+                let args = List.rev args in
                 List.iter (fun a  -> ArgContainer.push (Gaction.mk a) q) args;
                 (let len = List.length args in
                 let p = from_tree son in
@@ -107,8 +108,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
                      | Streamf.NotConsumed  ->
                          raise (Streamf.Error
                               (Gfailed.tree_failed  entry e (node :>Gstructure.symbol) son))
-                     | _ -> raise e)))
-            with  Streamf.NotConsumed  -> (fun ()  -> from_tree brother strm)) () in
+                     | _ -> raise e))) in
   let parse = from_tree x in
   fun strm -> 
     let ((arity,_symbols,_,parse),loc) =  with_loc parse strm in 
@@ -120,35 +120,36 @@ let rec parser_of_tree (entry:Gstructure.entry)
      (!ans,loc))
 
 
-and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list Tokenf.parse =
+and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list option  Tokenf.parse =
   fun strm ->
     let module M = struct exception X end in
     let n = List.length terminals in
-    let acc = ref [] in begin
-      (try
-        List.iteri
-          (fun i terminal  -> 
-            let t  =
-              match Streamf.peek_nth strm i with
-              | Some t -> t 
-              | None -> raise M.X  in
-            begin
-              acc:= t ::!acc;
-              if not
-                  (match terminal with
-                  |`Stoken(f,_,_) -> f t
-                  |`Skeyword kwd ->
-                      begin match t with
-                      |`Key u ->  kwd =u.txt  
-                      | _ -> false
-                      end)
-              then raise M.X
-            end) terminals;
+    let acc = ref [] in 
+      try
+        terminals
+        |>
+          List.iteri
+            (fun i terminal  -> 
+              let t  =
+                match Streamf.peek_nth strm i with
+                | Some t -> t 
+                | None -> raise M.X  in
+              begin
+                acc:= t ::!acc;
+                if not
+                    (match terminal with
+                    |`Stoken(f,_,_) -> f t
+                    |`Skeyword kwd ->
+                        begin match t with
+                        |`Key u ->  kwd =u.txt  
+                        | _ -> false
+                        end)
+                then raise M.X
+              end);
         Streamf.njunk n strm;
-        !acc
-      with M.X -> raise Streamf.NotConsumed);
-    
-    end          
+        Some (!acc)
+      with M.X -> None 
+
 (* functional and re-entrant *)
 and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =

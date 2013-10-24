@@ -21,8 +21,10 @@ val parser_of_tree :
     entry -> int * assoc -> Gaction.t Stack.t ->  tree ->
       (Gaction.t * Locf.t) Tokenf.parse
 
+
+(** pure, no exception thrown out  *)
 val parser_of_terminals :
-    terminal list -> Tokenf.t list  Tokenf.parse
+    terminal list -> Tokenf.t list option  Tokenf.parse
 
 
 (**
