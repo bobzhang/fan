@@ -24,9 +24,6 @@ let test_simple_meta _ =
     |> not then
     assert_failure "test_simple_meta"
 
-(* (%p{[{Gram_def.text = `Stok (_, *)
-(*                    %exp@_{function | `Lid _ -> true | _ -> false}, *)
-(*                    %exp@_{%pat-'{`Lid _}} ,_); _}]} u) *)        
 let test_simple_meta1 _ =
   if
     "Lid x"
