@@ -5,7 +5,7 @@ val mk : unit -> t
 
 val define : FanTokenFilter.t -> t -> unit
 
-val filter : t -> (Tokenf.t * Locf.t) Streamf.t  -> (Tokenf.t * Locf.t) Streamf.t 
+val filter : t ->  Tokenf.stream -> Tokenf.stream 
 
 val take_list : t -> (string * Locf.t) list 
 

@@ -7,9 +7,9 @@ let filter (_,q) =
   let rec self: Tokenf.stream -> Tokenf.stream =
     fun (__strm : _ Streamf.t)  ->
       match Streamf.peek __strm with
-      | Some (`Comment x,loc) ->
+      | Some (`Comment x) ->
           (Streamf.junk __strm;
-           (let xs = __strm in Queue.add ((x.txt), loc) q; self xs))
+           (let xs = __strm in Queue.add ((x.txt), (x.loc)) q; self xs))
       | Some x ->
           (Streamf.junk __strm;
            (let xs = __strm in

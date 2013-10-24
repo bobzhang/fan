@@ -2,8 +2,9 @@ let setup_op_parser entry p =
   Gramf.setup_parser entry
     (fun (__strm : _ Streamf.t)  ->
        match Streamf.peek __strm with
-       | Some ((`Key x|`Sym x),_loc) when p x.txt ->
-           (Streamf.junk __strm; (`Lid (_loc, (x.txt)) : FAst.exp ))
+       | Some (`Key x|`Sym x) when p x.txt ->
+           (Streamf.junk __strm;
+            (let _loc = x.loc in (`Lid (_loc, (x.txt)) : FAst.exp )))
        | _ -> raise Streamf.NotConsumed)
 let symbolchars =
   ['$';

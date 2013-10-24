@@ -17,7 +17,7 @@ let store = Lexing_util.store
 let lexing_store = Lexing_util.lexing_store
 let with_store = Lexing_util.with_store
 let (--) = Location_util.( -- ) 
-let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
+let rec token: Lexing.lexbuf -> Tokenf.t =
   fun (lexbuf : Lexing.lexbuf)  ->
     let rec __ocaml_lex_init_lexbuf lexbuf mem_size =
       let pos = lexbuf.Lexing.lex_curr_pos in
@@ -2115,35 +2115,34 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          (update_loc lexbuf;
-           (let loc = !! lexbuf in ((`Newline { loc; txt }), loc)))
+          (update_loc lexbuf; (let loc = !! lexbuf in `Newline { loc; txt }))
       | 1 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Lid { loc; txt }), loc)
+          let loc = !! lexbuf in `Lid { loc; txt }
       | 2 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Uid { loc; txt }), loc)
+          let loc = !! lexbuf in `Uid { loc; txt }
       | 3 ->
           let c = new_cxt () in
           let old = lexbuf.lex_start_p in
           (push_loc_cont c lexbuf lex_string;
            (let loc = old -- lexbuf.lex_curr_p in
-            ((`Str { loc; txt = (buff_contents c) }), loc)))
+            `Str { loc; txt = (buff_contents c) }))
       | 4 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
           (update_loc lexbuf ~retract:1;
-           (let loc = !! lexbuf in ((`Chr { loc; txt }), loc)))
+           (let loc = !! lexbuf in `Chr { loc; txt }))
       | 5 ->
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 1)
               (lexbuf.Lexing.lex_curr_pos + (-1)) in
-          let loc = !! lexbuf in ((`Chr { loc; txt }), loc)
+          let loc = !! lexbuf in `Chr { loc; txt }
       | 6 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 2) in
@@ -2152,7 +2151,7 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
           let txt =
             Lexing.sub_lexeme lexbuf (lexbuf.Lexing.lex_start_pos + 0)
               (lexbuf.Lexing.lex_curr_pos + 0) in
-          let loc = !! lexbuf in ((`Sym { loc; txt }), loc)
+          let loc = !! lexbuf in `Sym { loc; txt }
       | 8 -> token lexbuf
       | 9 ->
           let x =
@@ -2186,8 +2185,7 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
           let loc = old -- lexbuf.lex_curr_p in
           let shift = String.length shift in
           let retract = 1 in
-          ((`Quot { Tokenf.name = name; meta; shift; content; loc; retract }),
-            loc)
+          `Quot { Tokenf.name = name; meta; shift; content; loc; retract }
       | 11 ->
           let dollar (c : Lexing_util.context) =
             (fun (lexbuf : Lexing.lexbuf)  ->
@@ -4559,14 +4557,13 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
                          pos_cnum = ((v.pos_cnum + (String.length name)) + 1)
                        } in
                      let loc = old -- lexbuf.lex_curr_p in
-                     ((`Ant { loc; kind = name; txt = x }), loc)
+                     `Ant { loc; kind = name; txt = x }
                  | 1 ->
                      let txt =
                        Lexing.sub_lexeme lexbuf
                          (lexbuf.Lexing.lex_start_pos + 0)
                          (lexbuf.Lexing.lex_curr_pos + 0) in
-                     let loc = !! lexbuf in
-                     ((`Ant { loc; kind = ""; txt }), loc)
+                     let loc = !! lexbuf in `Ant { loc; kind = ""; txt }
                  | 2 ->
                      let name =
                        Lexing.sub_lexeme lexbuf
@@ -4584,8 +4581,7 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
                      (c.buffer +> '(';
                       push_loc_cont c lexbuf lex_antiquot;
                       (let loc = old -- (Lexing.lexeme_end_p lexbuf) in
-                       ((`Ant { loc; kind = name; txt = (buff_contents c) }),
-                         loc)))
+                       `Ant { loc; kind = name; txt = (buff_contents c) }))
                  | 3 ->
                      let old =
                        let v = List.hd c.loc in
@@ -4593,16 +4589,14 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
                      (c.buffer +> '(';
                       push_loc_cont c lexbuf lex_antiquot;
                       (let loc = old -- (Lexing.lexeme_end_p lexbuf) in
-                       ((`Ant { loc; kind = ""; txt = (buff_contents c) }),
-                         loc)))
+                       `Ant { loc; kind = ""; txt = (buff_contents c) }))
                  | 4 ->
                      let c =
                        Lexing.sub_lexeme_char lexbuf
                          (lexbuf.Lexing.lex_start_pos + 0) in
                      err (Illegal_character c) (!! lexbuf)
                  | _ -> failwith "lexing: empty token")) : Lexing.lexbuf ->
-                                                             (Tokenf.t*
-                                                               Locf.t) ) in
+                                                             Tokenf.t ) in
           let c = new_cxt () in
           if Configf.antiquotations.contents
           then push_loc_cont c lexbuf dollar
@@ -4615,7 +4609,7 @@ let rec token: Lexing.lexbuf -> (Tokenf.t* Locf.t) =
                pos_bol = (pos.pos_bol + 1);
                pos_cnum = (pos.pos_cnum + 1)
              };
-           (let loc = !! lexbuf in ((`EOI { loc; txt = "" }), loc)))
+           (let loc = !! lexbuf in `EOI { loc; txt = "" }))
       | 13 ->
           let c =
             Lexing.sub_lexeme_char lexbuf (lexbuf.Lexing.lex_start_pos + 0) in

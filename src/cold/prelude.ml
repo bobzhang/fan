@@ -76,7 +76,7 @@ let wrap parse_fun ~print_location  lb =
   try
     let token_stream = (lb |> Lex_fan.from_lexbuf) |> Gramf.filter in
     match Streamf.peek token_stream with
-    | Some (`EOI _,_) -> (Streamf.junk token_stream; raise End_of_file)
+    | Some (`EOI _) -> (Streamf.junk token_stream; raise End_of_file)
     | _ -> parse_fun token_stream
   with
   | End_of_file |Sys.Break |Locf.Exc_located (_,(End_of_file |Sys.Break )) as

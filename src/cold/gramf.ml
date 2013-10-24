@@ -106,7 +106,7 @@ let default_keywords =
 let gkeywords = ref (Setf.String.of_list default_keywords)
 let rec fan_filter (__strm : _ Streamf.t) =
   match Streamf.peek __strm with
-  | Some (#Tokenf.space_token,_) -> (Streamf.junk __strm; fan_filter __strm)
+  | Some #Tokenf.space_token -> (Streamf.junk __strm; fan_filter __strm)
   | Some x ->
       (Streamf.junk __strm;
        (let xs = __strm in
@@ -115,8 +115,7 @@ let rec fan_filter (__strm : _ Streamf.t) =
 let rec ignore_layout: Tokenf.filter =
   fun (__strm : _ Streamf.t)  ->
     match Streamf.peek __strm with
-    | Some (#Tokenf.space_token,_) ->
-        (Streamf.junk __strm; ignore_layout __strm)
+    | Some #Tokenf.space_token -> (Streamf.junk __strm; ignore_layout __strm)
     | Some x ->
         (Streamf.junk __strm;
          (let xs = __strm in
@@ -136,11 +135,9 @@ let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter
 let token_stream_of_string s = lex_string Locf.string_loc s
 let debug_origin_token_stream (entry : 'a t) tokens =
-  (parse_origin_tokens entry (Streamf.map (fun t  -> (t, Locf.ghost)) tokens) : 
-  'a )
+  (parse_origin_tokens entry tokens : 'a )
 let debug_filtered_token_stream entry tokens =
-  filter_and_parse_tokens entry
-    (Streamf.map (fun t  -> (t, Locf.ghost)) tokens)
+  filter_and_parse_tokens entry tokens
 let parse_string_safe ?(loc= Locf.string_loc)  entry s =
   try parse_string entry ~loc s
   with

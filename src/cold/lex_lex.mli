@@ -2,7 +2,7 @@
 
 (** The lexer for lexer DDSL *)
   
-val token : Lexing.lexbuf -> Tokenf.t * Locf.t
+val token : Lexing.lexbuf -> Tokenf.t
 
 
 val from_lexbuf : Lexing.lexbuf -> Tokenf.stream 

@@ -42,12 +42,12 @@ let apply () =
      (let symb1 = Gramf.parse_origin_tokens exp in
       let symb (__strm : _ Streamf.t) =
         match Streamf.peek __strm with
-        | Some (`Ant ({ kind = ("list" as n); txt = s;_} : Tokenf.ant),_loc)
-            -> (Streamf.junk __strm; mk_anti ~c:"exp;" _loc n s)
+        | Some (`Ant ({ kind = ("list" as n); txt = s; loc;_} : Tokenf.ant))
+            -> (Streamf.junk __strm; mk_anti ~c:"exp;" loc n s)
         | _ -> symb1 __strm in
       let rec kont al (__strm : _ Streamf.t) =
         match Streamf.peek __strm with
-        | Some (`Key ({ txt = ";";_} : Tokenf.txt),_) ->
+        | Some (`Key ({ txt = ";";_} : Tokenf.txt)) ->
             (Streamf.junk __strm;
              (let a =
                 try symb __strm
