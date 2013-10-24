@@ -104,7 +104,8 @@ let pp_print_name: Format.formatter -> name -> unit =
 
 let pp_print_quot : Format.formatter -> quot -> unit =
   fun fmt {name;meta;shift;content;loc;retract}  ->
-    Format.fprintf fmt "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
+    Format.fprintf fmt
+      "@[<1>{name=%a;@;loc=%a@;meta=%a;@;shift=%a@;retract=%a;@;content=%a}@]"
       pp_print_name name
       (Formatf.pp_print_option Formatf.pp_print_string) meta
       Locf.pp_print_t loc
@@ -172,10 +173,11 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
       Format.fprintf fmt "@[<1>(`Int@ %a)@]"
         Format.pp_print_string x.txt
   | `Int32 x ->
-      Format.fprintf fmt "@[<1>(`Int32@ %a)@]" (* Format.pp_print_int32 _a0 *)
+      Format.fprintf fmt "@[<1>(`Int32@ %a)@]"
         Format.pp_print_string x.txt
   | `Int64 x ->
-      Format.fprintf fmt "@[<1>(`Int6@ %a)@]" Format.pp_print_string x.txt
+      Format.fprintf fmt "@[<1>(`Int6@ %a)@]"
+        Format.pp_print_string x.txt
   | `Nativeint x ->
       Format.fprintf fmt "@[<1>(`Nativeint@ %a)@]" 
         Format.pp_print_string x.txt
@@ -213,9 +215,9 @@ let pp_print_t (fmt:Format.formatter)  (x:t) : unit =
 type 'a token  = [> t] as 'a
 
 
-type stream = (* (t * Locf.t) *) t Streamf.t 
+type stream = t Streamf.t 
 
-type 'a estream  = ('a token  (* * Locf.t *)) Streamf.t 
+type 'a estream  = 'a token  Streamf.t 
 
 type 'a parse  = stream -> 'a
 
@@ -229,15 +231,6 @@ let token_to_string = Formatf.to_string pp_print_t
 let to_string = function
   | #t as x -> token_to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token" (* FIXME*)
-  
-(* let check_keyword _ = true *)
-  (* FIXME let lb = Lexing.from_string s in
-     let next () = token default_context lb in
-     try
-     match next () with
-     [ Sym _ | UidENT _ | LidENT _ -> (next () = EOI)
-     | _ -> false ]
-     with [ Streamf.Error _ -> false ];                        *)
 
         
 let print ppf x = Format.pp_print_string ppf (to_string x)

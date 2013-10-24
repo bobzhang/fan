@@ -8,8 +8,8 @@ open Test_util
 
 
 let get_tokens s =
-  List.map fst
-    (Flex_lib.list_of_string ~verbose:false s )
+  Flex_lib.list_of_string ~verbose:false s 
+  (* |> List.ma *)
     
 let test_empty_string _ =
   get_tokens %str{""}

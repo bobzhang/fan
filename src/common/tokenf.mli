@@ -171,7 +171,7 @@ val print : Format.formatter -> [> t ] -> unit
 
 
 (**  {[x=STRING -> extract_string x  ]} *)  
-val extract_string : [> t ] -> string
+(* val extract_string : [> t ] -> string *)
 val get_loc : t  -> loc 
 
 

@@ -74,17 +74,12 @@ val setup_parser:  'a t ->  (stream -> 'a) -> unit
     
 val clear: 'a t -> unit
 
-(* val using: gram -> string -> unit *)
-
 val mk_action: 'a -> Action.t
 
-val string_of_token:[> Tokenf.t ] -> string
-
 val obj: 'a t -> entry         
+
 val repr: entry -> 'a t
     
-(* val removing: gram -> string -> unit *)
-
 val gram: gram
 
 (** create a standalone gram

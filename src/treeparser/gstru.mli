@@ -2,8 +2,6 @@ open Gstructure
 
 val mk_action : 'a -> Gaction.t
 
-val string_of_token : [> Tokenf.t ] -> string
-
 val flatten_tree : tree -> symbol list list
 
 type brothers = private

@@ -3,7 +3,6 @@
 
 
 let mk_action=Gaction.mk
-let string_of_token=Tokenf.extract_string (* Confirm used or not?*)
 
 (* tree processing *)  
 let rec flatten_tree (x: Gstructure.tree ) =

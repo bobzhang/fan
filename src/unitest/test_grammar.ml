@@ -7,7 +7,7 @@ open Test_util
 let () =
   Ast_parsers.use_parsers ["revise"]
 
-let t_meta  = Fgram.parse_string Parse_grammar.simple
+let t_meta  = Gramf.parse_string Parse_grammar.simple
 
 let test_simple_meta _ =
   let u = t_meta "Lid _" in
