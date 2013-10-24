@@ -2,19 +2,17 @@
 (** domain is the namespace all begins with capital letters *)
 type domains = [ `Absolute of string list | `Sub of string list]
 type name = domains * string
-
+type loc = Locf.t
 
 
 (* FIXME how to put it in ocamldoc?
    The generic quotation type . To see how fields are used here is an example:
     "{:q_name@q_loc|q_contents|}"
     The last one, q_shift is equal to the length of "{:q_name@q_loc|"
-
-   (name,loc,shift,contents)
  *)
 type quot = {
     name    :name;
-    loc     : Locf.t;
+    loc     : loc;
     meta    : string option;
     shift   : int;
 
@@ -23,6 +21,11 @@ type quot = {
     (* the letter to be retracted *)
   }
 
+type ant = {
+    loc : loc ;
+    kind : string;
+    txt : string}      
+(*
 type ant  = {
     (*
       $x
@@ -39,15 +42,15 @@ type ant  = {
     meta : string option;
     shift : int ;
     retract : int;
-    loc : Locf.t;
+    loc : loc;
     content : string;
-  }
+  } *)
       
 (** The [loc] is the initial location. The option string is the meta-data
     for example, the [location variable]. The string is the quotation contents. 
     expand fun accepts [location] and [location label] and string   
     to generate an arbitrary value of type ['a] *)                     
-type 'a expand_fun = Locf.t -> string option -> string -> 'a
+type 'a expand_fun = loc -> string option -> string -> 'a
     
 (** extract the quot information for expanding
     mainly remove the border
@@ -101,7 +104,7 @@ type dir_quotation = [`DirQuotation of quot  ]
    
  *)
 
-type loc = Locf.t
+
       
 type txt = {
     loc : loc;
@@ -149,11 +152,11 @@ type t =
 (**
    [Tokenf.stram]
  *)      
-type stream = (t * Locf.t) Streamf.t 
+type stream = (t * loc) Streamf.t 
 
 type 'a token  = [> t] as 'a
       
-type 'a estream  = ('a token * Locf.t) Streamf.t
+type 'a estream  = ('a token * loc) Streamf.t
       
 type 'a parse = stream -> 'a
 
