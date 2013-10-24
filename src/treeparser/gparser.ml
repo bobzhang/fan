@@ -36,29 +36,33 @@ module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gstructure.entry)
     (lev,assoc) (q: (Gaction.t * Locf.t) ArgContainer.t ) x =
-  let alevn =
-    match assoc with
-    | `LA|`NA -> lev + 1 | `RA -> lev  in
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,
     so the action returned by son is a function,
     it is to be applied by the value returned by node.
    *)
-  let rec from_tree (tree:Gstructure.tree) =
+  let rec from_tree (tree:Gstructure.tree) : Gstructure.anno_action Tokenf.parse =
     match tree  with
-    |DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
+    | DeadEnd -> raise Streamf.NotConsumed (* FIXME be more preicse *)
     | LocAct (act, _) -> fun _ -> act
           (* | LocActAppend(act,_,n) -> *)
-          (* rules ending with [SELF] , for this last symbol there's a call to the [start] function:
-             of the current level if the level is [`RA] or of the next level otherwise. (This can be
-             verified by [start_parser_of_levels]) *)      
-    | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
-        (try
-          let a = with_loc (entry.start alevn) strm in
-          fun ()  -> ArgContainer.push a q; act
-        with  Streamf.NotConsumed  -> (fun ()  -> from_tree bro strm)) ()
 
+    (* rules ending with [S] , for this last symbol there's a call to the [start] function:
+       of the current level if the level is [`RA] or of the next level otherwise. (This can be
+       verified by [start_parser_of_levels]) *)      
+    | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
+        begin 
+            let alevn =
+              match assoc with
+              | `LA|`NA -> lev + 1 | `RA -> lev  in
+
+            try
+              let a = with_loc (entry.start alevn) strm in
+              ArgContainer.push a q;
+              act 
+            with Streamf.NotConsumed -> from_tree bro strm
+        end
           (* [son] will never be [DeadEnd] *)        
     | Node ({ node ; son; brother } as y) ->
         (*
