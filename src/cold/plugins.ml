@@ -102,6 +102,7 @@ let gen_strip =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
+           |(`Dot (`Uid "Tokenf",`Lid "ant") : FAstN.ctyp)
            |(`Dot (`Uid "FanUtil",`Lid "anti_cxt") : FAstN.ctyp) -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
@@ -115,6 +116,7 @@ let gen_strip =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc")
+           |`Dot (`Uid "Tokenf",`Lid "ant")
            |`Dot (`Uid "FanUtil",`Lid "anti_cxt") -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
@@ -140,6 +142,7 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
+           |`Dot (`Uid "Tokenf",`Lid "ant")
            |`Dot (`Uid "FanUtil",`Lid "anti_cxt") -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in
@@ -153,6 +156,7 @@ let gen_fill =
       (fun (x : Ctyp.ty_info)  res  ->
          match x.ty with
          | `Lid ("int"|"string"|"int32"|"nativeint"|"loc"|"ant")
+           |`Dot (`Uid "Tokenf",`Lid "ant")
            |`Dot (`Uid "FanUtil",`Lid "anti_cxt") -> res
          | _ ->
              let pat0 = (x.ep0 :>pat) in

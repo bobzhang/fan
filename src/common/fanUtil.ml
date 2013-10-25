@@ -5,7 +5,7 @@
 type anti_cxt = Tokenf.ant =  {
     loc          : Locf.t;
     cxt          : string option;
-    kind : string; (* keep it simple first*)
+    kind : string;
     txt          : string;
     shift        : int;
     retract      : int;

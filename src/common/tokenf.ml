@@ -41,6 +41,12 @@ type ant = {
     shift : int;
     retract : int;
   }
+
+(* BOOTSTRAPING *)
+let pp_print_ant fmt  (x:ant) =
+  Format.fprintf fmt "cxt:%S;content:%S"
+  (match x.cxt with None ->""|Some s -> s)  x.txt 
+      
 (*      
 type ant  = {
     meta : string option;

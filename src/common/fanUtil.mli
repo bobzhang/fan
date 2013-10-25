@@ -1,5 +1,5 @@
 
-type anti_cxt = {
+type anti_cxt = Tokenf.ant = {
     loc : Locf.t;
     cxt : string option;
     kind :  string; (* keep it simple first*)

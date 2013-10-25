@@ -54,7 +54,7 @@
 
 
 type loc = Locf.t
-type ant = [ `Ant of (loc * FanUtil.anti_cxt)]
+type ant = [ `Ant of (loc * Tokenf.ant)]
 
 
 

@@ -5,7 +5,7 @@ let pp_print_loc: Format.formatter -> loc -> unit =
 let pp_print_ant: Format.formatter -> ant -> unit =
   fun fmt  (`Ant (_a0,_a1))  ->
     Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" pp_print_loc _a0
-      FanUtil.pp_print_anti_cxt _a1
+      Tokenf.pp_print_ant _a1
 let pp_print_literal: Format.formatter -> literal -> unit =
   fun fmt  ->
     function
@@ -869,7 +869,7 @@ class print =
     method ant : 'fmt -> ant -> unit=
       fun fmt  (`Ant (_a0,_a1))  ->
         Format.fprintf fmt "@[<1>(`Ant@ %a@ %a)@]" self#loc _a0
-          self#fanutil_anti_cxt _a1
+          self#tokenf_ant _a1
     method literal : 'fmt -> literal -> unit=
       fun fmt  ->
         function
@@ -1722,7 +1722,7 @@ class print =
               self#rec_bind _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
-    method fanutil_anti_cxt : 'fmt -> FanUtil.anti_cxt -> unit= self#unknown
+    method tokenf_ant : 'fmt -> Tokenf.ant -> unit= self#unknown
     method locf_t : 'fmt -> Locf.t -> unit= self#unknown
   end
 class map =
@@ -1732,7 +1732,7 @@ class map =
     method ant : ant -> ant=
       fun (`Ant (_a0,_a1))  ->
         let _a0 = self#loc _a0 in
-        let _a1 = self#fanutil_anti_cxt _a1 in `Ant (_a0, _a1)
+        let _a1 = self#tokenf_ant _a1 in `Ant (_a0, _a1)
     method literal : literal -> literal=
       function
       | `Chr _a0 -> let _a0 = self#string _a0 in `Chr _a0
@@ -2504,8 +2504,7 @@ class map =
           let _a1 = self#rec_bind _a1 in `Sem (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>rec_bind)
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_bind)
-    method fanutil_anti_cxt : FanUtil.anti_cxt -> FanUtil.anti_cxt=
-      self#unknown
+    method tokenf_ant : Tokenf.ant -> Tokenf.ant= self#unknown
     method locf_t : Locf.t -> Locf.t= self#unknown
   end
 class fold =
@@ -2513,8 +2512,7 @@ class fold =
     inherit  foldbase
     method loc : loc -> 'self_type= fun _a0  -> self#locf_t _a0
     method ant : ant -> 'self_type=
-      fun (`Ant (_a0,_a1))  ->
-        let self = self#loc _a0 in self#fanutil_anti_cxt _a1
+      fun (`Ant (_a0,_a1))  -> let self = self#loc _a0 in self#tokenf_ant _a1
     method literal : literal -> 'self_type=
       function
       | `Chr _a0 -> self#string _a0
@@ -3021,7 +3019,7 @@ class fold =
       | `Sem (_a0,_a1) -> let self = self#rec_bind _a0 in self#rec_bind _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
-    method fanutil_anti_cxt : FanUtil.anti_cxt -> 'self_type= self#unknown
+    method tokenf_ant : Tokenf.ant -> 'self_type= self#unknown
     method locf_t : Locf.t -> 'self_type= self#unknown
   end
 let map_loc f =
