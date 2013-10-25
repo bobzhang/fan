@@ -220,7 +220,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
    | '$' %{
        let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t  =
          %lex{
-         | ('`'? (identchar*|['.' '!']+) as name) ':' (antifollowident as x) %{
+         | ( identchar* as name) ':' (antifollowident as x) %{
              begin
                let old = 
                  let v = lexbuf.lex_start_p in
@@ -230,7 +230,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
              end}
          | lident as txt  %{
            let loc = !!lexbuf in `Ant{kind =""; txt ;loc; shift = 0; retract = 0}}  (* $lid *)
-         | '(' ((identchar*|['.' '!']+) as name) ':' %{
+         | '(' (identchar* as name) ':' %{
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
                backwards one character *)

@@ -38,19 +38,19 @@ let list_of_list (loc:loc) =
 (* FIXME  double semi colon needed before *)  
 
 
-let meta_int _loc i =  %{$`int:i}
+let meta_int _loc i =  %{$int':i}
 
-let meta_int32 _loc i =  %{$`int32:i}
+let meta_int32 _loc i =  %{$int32':i}
 
-let meta_int64 _loc i =  %{$`int64:i}
+let meta_int64 _loc i =  %{$int64':i}
   
-let meta_nativeint _loc i =  %{$`nativeint:i}
+let meta_nativeint _loc i =  %{$nativeint':i}
   
-let meta_float _loc i = %{$`flo:i}
+let meta_float _loc i = %{$flo':i}
   
-let meta_string _loc i = %{$`str:i}
+let meta_string _loc i = %{$str':i}
   
-let meta_char _loc i = %{$`chr:i}
+let meta_char _loc i = %{$chr':i}
 let meta_unit _loc _ =  %{()}
 let meta_bool _loc =  function | true -> %{true} | false -> %{false} 
 
