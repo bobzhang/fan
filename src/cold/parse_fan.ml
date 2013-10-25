@@ -1,8 +1,8 @@
+let mk_anti = Tokenf.mk_anti
 open FAst
 open Ast_gen
 open Fan_ops
 open! Syntaxf
-open FanUtil
 open Gramlib
 let pos_exps = Gramf.mk "pos_exps"
 let apply () =

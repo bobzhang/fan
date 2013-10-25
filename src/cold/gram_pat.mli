@@ -1,7 +1,7 @@
 type lident = [ `Lid of Locf.t * string ]
 and t =
     [ `Alias of Locf.t * t * lident
-    | `Ant of Locf.t * FanUtil.anti_cxt
+    | `Ant of Locf.t * Tokenf.ant
     | `Any of Locf.t
     | `App of Locf.t * t * t
     (* | `Bar of Locf.t * t * t *)

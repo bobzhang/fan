@@ -8,7 +8,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       let meta_loc_pat _loc _ =  %pat{ _ } in
       let mloc _loc = meta_loc_pat  _loc _loc in
       let e =
-        FanUtil.expand parse_pat x   in
+        Tokenf.ant_expand parse_pat x   in
       begin 
         match (x.kind,x.cxt) with
         | (("uid" | "lid" | "par" | "seq"
@@ -30,7 +30,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in
       let mloc _loc = meta_loc_exp _loc _loc  in
-      let e = FanUtil.expand parse_exp x in
+      let e = Tokenf.ant_expand parse_exp x in
       (match (x.kind,x.cxt) with
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"

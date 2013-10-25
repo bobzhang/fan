@@ -60,6 +60,9 @@ type 'a expand_fun = loc -> string option -> string -> 'a
     mainly remove the border
  *)      
 val quot_expand : 'a expand_fun -> quot -> 'a
+
+val ant_expand : (loc -> string -> 'a) -> ant -> 'a
+val mk_anti : ?c:string -> ant -> [> `Ant of loc * ant ]
     
 type quotation = [ `Quot of quot ]
       

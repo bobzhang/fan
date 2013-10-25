@@ -42,6 +42,22 @@ type ant = {
     retract : int;
   }
 
+let ant_expand p (x:ant) =
+  let content =
+    String.sub x.txt x.shift (String.length x.txt - x.retract - x.shift ) in
+  let loc =
+    Location_util.join
+      { x.loc with
+        loc_start =
+        { x.loc.loc_start with
+          pos_cnum = x.loc.loc_start.pos_cnum + x.shift}} in
+  p loc content
+
+let mk_anti ?c  (x:ant)  =
+  match c with
+  | None -> `Ant(x.loc,x)
+  | Some _  -> `Ant(x.loc, {x with cxt = c })
+
 (* BOOTSTRAPING *)
 let pp_print_ant fmt  (x:ant) =
   Format.fprintf fmt "cxt:%S;content:%S"

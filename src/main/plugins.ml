@@ -142,7 +142,7 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [FanUtil] *)
+        | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [Tokenf] *)
              res
         | _ ->
             let pat0 = (x.ep0:>pat) in

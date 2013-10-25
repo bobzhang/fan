@@ -7,7 +7,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
   method! pat (x:pat)= 
     match x with 
     |`Ant(_loc, x) ->
-      let e = FanUtil.expand parse_pat  x in
+      let e = Tokenf.ant_expand parse_pat  x in
       (match (x.kind,x.cxt) with
       | (("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
@@ -18,7 +18,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
   method! exp (x:exp) = with exp
     match x with 
     |`Ant(_loc,x) ->
-      let e = FanUtil.expand parse_exp x  in
+      let e = Tokenf.ant_expand parse_exp x  in
       (match (x.kind, x.cxt) with
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"

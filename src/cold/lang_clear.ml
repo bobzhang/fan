@@ -12,12 +12,12 @@ let _ =
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
-           ("FanUtil.mk_anti ~c:\"a_lident\" s\n",
+           ("Tokenf.mk_anti ~c:\"a_lident\" s\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Ant (({ kind = "";_} as s) : Tokenf.ant) ->
-                       (FanUtil.mk_anti ~c:"a_lident" s : 'a_lident )
+                       (Tokenf.mk_anti ~c:"a_lident" s : 'a_lident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -25,12 +25,12 @@ let _ =
             (((function
                | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
-          ("FanUtil.mk_anti ~c:\"a_lident\" s\n",
+          ("Tokenf.mk_anti ~c:\"a_lident\" s\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant (({ kind = "lid";_} as s) : Tokenf.ant) ->
-                      (FanUtil.mk_anti ~c:"a_lident" s : 'a_lident )
+                      (Tokenf.mk_anti ~c:"a_lident" s : 'a_lident )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
