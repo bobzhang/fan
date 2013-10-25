@@ -5,11 +5,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
     method! pat (x : pat) =
       match x with
       | `Ant (_loc,x) ->
-          let e = parse_pat _loc x.txt in
+          let e = FanUtil.expand parse_pat x in
           (match ((x.kind), (x.cxt)) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
-               |"nativeint"|"chr"|"str" as x),_)|(("vrn" as x),("exp"|"pat"))
-               ->
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
                (`App (_loc, (`Vrn (_loc, x)), e) : FAst.pat )
            | _ -> super#pat e)
@@ -17,11 +17,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
     method! exp (x : exp) =
       match x with
       | `Ant (_loc,x) ->
-          let e = parse_exp _loc x.txt in
+          let e = FanUtil.expand parse_exp x in
           (match ((x.kind), (x.cxt)) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
-               |"nativeint"|"chr"|"str" as x),_)|(("vrn" as x),("exp"|"pat"))
-               ->
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
                (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
                FAst.exp )
            | ("nativeint'",_) ->

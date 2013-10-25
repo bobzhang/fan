@@ -215,6 +215,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
        (******************)
        (* $x   *)
        (* $x{} *)
+       (* $x:id *)
        (* ${}*)
        (******************)
    | '$' %{
@@ -226,10 +227,11 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
                  let v = lexbuf.lex_start_p in
                  {v with pos_cnum = v.pos_cnum + String.length name + 1 } in
                let loc = old -- lexbuf.lex_curr_p in
-               `Ant{loc; kind = name; txt = x; shift = 0; retract = 0}
+               `Ant{loc; kind = name; txt = x; shift = 0; retract = 0; cxt = None}
              end}
          | lident as txt  %{
-           let loc = !!lexbuf in `Ant{kind =""; txt ;loc; shift = 0; retract = 0}}  (* $lid *)
+           `Ant{kind =""; txt ;loc = !!lexbuf; shift = 0; retract = 0; cxt = None}}
+             (* $lid *)
          | '(' (identchar* as name) ':' %{
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
@@ -240,8 +242,12 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               let loc = old -- Lexing.lexeme_end_p lexbuf in
-               `Ant{loc;kind = name; txt = buff_contents c; shift = 0; retract = 0}
+               `Ant{loc =  old -- Lexing.lexeme_end_p lexbuf ;
+                    kind = name;
+                    txt = buff_contents c;
+                    shift = 0;
+                    retract = 0;
+                    cxt = None}
              end}
          | '(' %{     (* $(xxxx)*)
              let old =
@@ -251,7 +257,13 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
                let loc = old -- Lexing.lexeme_end_p lexbuf in
-               `Ant {loc ; kind = ""; txt =  buff_contents c; shift = 0; retract = 0 }
+               `Ant
+                 {loc ;
+                  kind = "";
+                  txt =  buff_contents c;
+                  shift = 0;
+                  retract = 0;
+                  cxt = None}
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
        let c = new_cxt () in

@@ -7,11 +7,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
       | `Ant (_loc,x) ->
           let meta_loc_pat _loc _ = (`Any _loc : FAst.pat ) in
           let mloc _loc = meta_loc_pat _loc _loc in
-          let e = parse_pat _loc x.txt in
+          let e = FanUtil.expand parse_pat x in
           (match ((x.kind), (x.cxt)) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
-               |"nativeint"|"chr"|"str" as x),_)|(("vrn" as x),("exp"|"pat"))
-               ->
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
                let x = String.capitalize x in
                (`App (_loc, (`App (_loc, (`Vrn (_loc, x)), (mloc _loc))), e) : 
                  FAst.pat )
@@ -27,11 +27,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                 let x = Option.default Locf.name.contents x in
                 (`Lid (_loc, x) : FAst.exp ) in
           let mloc _loc = meta_loc_exp _loc _loc in
-          let e = parse_exp _loc x.txt in
+          let e = FanUtil.expand parse_exp x in
           (match ((x.kind), (x.cxt)) with
            | (("uid"|"lid"|"par"|"seq"|"flo"|"int"|"int32"|"int64"
-               |"nativeint"|"chr"|"str" as x),_)|(("vrn" as x),("exp"|"pat"))
-               ->
+               |"nativeint"|"chr"|"str" as x),_)
+             |(("vrn" as x),Some ("exp"|"pat")) ->
                (`App
                   (_loc, (`Vrn (_loc, (String.capitalize x))),
                     (`Par (_loc, (`Com (_loc, (mloc _loc), e))))) : FAst.exp )

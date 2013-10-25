@@ -73,7 +73,7 @@ NATIVE_ENABLED = true
 FAN_LEX_LIB_FILES = \
     lexing_util  flex_lib lex_lex \
     lex_fan \
-    lex_fan2
+    # lex_fan2
     
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES) ast_gen ant antN ast_loc  ast_inject  astn_util \

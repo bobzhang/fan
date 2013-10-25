@@ -6869,14 +6869,28 @@ let token: Lexing.lexbuf -> Tokenf.t =
                        } in
                      let loc = old -- lexbuf.lex_curr_p in
                      `Ant
-                       { loc; kind = name; txt = x; shift = 0; retract = 0 }
+                       {
+                         loc;
+                         kind = name;
+                         txt = x;
+                         shift = 0;
+                         retract = 0;
+                         cxt = None
+                       }
                  | 1 ->
                      let txt =
                        Lexing.sub_lexeme lexbuf
                          (lexbuf.Lexing.lex_start_pos + 0)
                          (lexbuf.Lexing.lex_curr_pos + 0) in
-                     let loc = !! lexbuf in
-                     `Ant { kind = ""; txt; loc; shift = 0; retract = 0 }
+                     `Ant
+                       {
+                         kind = "";
+                         txt;
+                         loc = (!! lexbuf);
+                         shift = 0;
+                         retract = 0;
+                         cxt = None
+                       }
                  | 2 ->
                      let name =
                        Lexing.sub_lexeme lexbuf
@@ -6893,15 +6907,15 @@ let token: Lexing.lexbuf -> Tokenf.t =
                        } in
                      (c.buffer +> '(';
                       push_loc_cont c lexbuf lex_antiquot;
-                      (let loc = old -- (Lexing.lexeme_end_p lexbuf) in
-                       `Ant
-                         {
-                           loc;
-                           kind = name;
-                           txt = (buff_contents c);
-                           shift = 0;
-                           retract = 0
-                         }))
+                      `Ant
+                        {
+                          loc = (old -- (Lexing.lexeme_end_p lexbuf));
+                          kind = name;
+                          txt = (buff_contents c);
+                          shift = 0;
+                          retract = 0;
+                          cxt = None
+                        })
                  | 3 ->
                      let old =
                        let v = List.hd c.loc in
@@ -6915,7 +6929,8 @@ let token: Lexing.lexbuf -> Tokenf.t =
                            kind = "";
                            txt = (buff_contents c);
                            shift = 0;
-                           retract = 0
+                           retract = 0;
+                           cxt = None
                          }))
                  | 4 ->
                      let c =

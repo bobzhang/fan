@@ -2,29 +2,38 @@
 
 (** About Fan's antiquot context management *)  
 
-type anti_cxt = {
-    cxt:string;
-
-    mutable kind :   string; (* keep it simple first*)
-    txt : string;
+type anti_cxt = Tokenf.ant =  {
+    loc          : Locf.t;
+    cxt          : string option;
+    kind : string; (* keep it simple first*)
+    txt          : string;
+    shift        : int;
+    retract      : int;
   }
-(* TODO with ("Print") get rid of dependency on a module as much as possible  *)
   
-let pp_print_anti_cxt fmt  {cxt;txt ;_} =
-  let open Format in
-  fprintf fmt "cxt:%S;content:%S"
-    cxt
-    txt 
+let pp_print_anti_cxt fmt  (x:anti_cxt) =
+  Format.fprintf fmt "cxt:%S;content:%S"
+  (match x.cxt with None ->""|Some s -> s)  x.txt 
 
-let dummy = {cxt="";kind = "";txt =""}
 
-let mk_anti ?(c="") (x:Tokenf.ant) (* loc n s *) =
-  let c =
-    {
-     cxt = c;
-     kind =  x.kind;
-     txt  = x.txt } in `Ant(x.loc,c)
-    
+
+let mk_anti ?c  (x:Tokenf.ant)  =
+  match c with
+  | None -> `Ant(x.loc,x)
+  | Some _  -> `Ant(x.loc, {x with cxt = c })
+
+
+let expand p (x:anti_cxt) =
+  let content =
+    String.sub x.txt x.shift (String.length x.txt - x.retract - x.shift ) in
+  let loc =
+    Location_util.join
+      { x.loc with
+        loc_start =
+        { x.loc.loc_start with
+          pos_cnum = x.loc.loc_start.pos_cnum + x.shift}} in
+  p loc content
+
 let add_context s c =
   {s with kind  = s.kind ^ c}
 
