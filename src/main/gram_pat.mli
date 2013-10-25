@@ -21,6 +21,4 @@ class map :
 
 val wildcarder : map
 
-(* val simple : t Gramf.t *)
-
 val to_string : t -> string
