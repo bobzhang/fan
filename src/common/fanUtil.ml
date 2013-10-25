@@ -4,32 +4,29 @@
 
 type anti_cxt = {
     cxt:string;
-    (* sep: string option ; *)
-    mutable decorations:   string; (* keep it simple first*)
-    content:string;
+
+    mutable kind :   string; (* keep it simple first*)
+    txt : string;
   }
 (* TODO with ("Print") get rid of dependency on a module as much as possible  *)
   
-let pp_print_anti_cxt fmt  {cxt(* ;sep *);content;_} =
+let pp_print_anti_cxt fmt  {cxt;txt ;_} =
   let open Format in
   fprintf fmt "cxt:%S;content:%S"
     cxt
-    content
-    (* (match sep with *)
-    (* |None -> "" *)
-    (* |Some x -> "sep:"^x ) *)
-let dummy = {cxt="";(* sep=None; *)decorations="";content=""}
+    txt 
 
-let mk_anti ?(c="") (* ?sep *) loc n s =
-  let c = {
-  cxt = c;
-  decorations= n;
-  content =s ;
-  (* sep; *)
- } in `Ant(loc,c)
+let dummy = {cxt="";kind = "";txt =""}
+
+let mk_anti ?(c="") loc n s =
+  let c =
+    {
+     cxt = c;
+     kind =  n;
+     txt  =s } in `Ant(loc,c)
     
 let add_context s c =
-  {s with decorations = s.decorations ^ c}
+  {s with kind  = s.kind ^ c}
 
 (**
    {[

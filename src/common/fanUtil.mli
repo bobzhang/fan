@@ -1,18 +1,16 @@
 
 type anti_cxt = {
     cxt:string;
-    (* sep:  string option; *)
-    mutable decorations:  string; (* keep it simple first*)
-    content:string;
+    mutable kind :  string; (* keep it simple first*)
+    txt :string;
   }
       
 val mk_anti:
     ?c:string ->
-      (* ?sep:string -> *)
-        'a ->
+      'a ->
+        string ->
           string ->
-            string ->
-              [> `Ant of 'a * anti_cxt ]
+            [> `Ant of 'a * anti_cxt ]
 
 
 val add_context : anti_cxt -> string -> anti_cxt

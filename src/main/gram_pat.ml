@@ -65,7 +65,7 @@ let rec unparse  f (x:t)=
   | `Str(_,s) -> p f "%S" s
   | `Any _ -> p f "_"
   | `Lid (_,s) -> p f "%s" s 
-  | `Ant (_, {FanUtil.content=s;_}) -> p f "$%s" s
+  | `Ant (_, x) -> p f "$%s" x.txt 
 
 let to_string = Formatf.to_string unparse
 

@@ -1,14 +1,14 @@
 
 open FAst
-open FanUtil
+
 
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super;
   method! pat (x:pat)= 
     match x with 
-    |`Ant(_loc, {cxt;decorations;content=code}) ->
-      let e = parse_pat _loc code in
-      (match (decorations,cxt) with
+    |`Ant(_loc, x) ->
+      let e = parse_pat _loc x.txt in
+      (match (x.kind,x.cxt) with
       | (("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), ("exp" |"pat")) ->
@@ -17,9 +17,9 @@ let antiquot_expander ~parse_pat ~parse_exp = object
     | e -> super#pat e 
   method! exp (x:exp) = with exp
     match x with 
-    |`Ant(_loc,{cxt;decorations;content=code}) ->
-      let e = parse_exp _loc code in
-      (match (decorations,cxt) with
+    |`Ant(_loc,x) ->
+      let e = parse_exp _loc x.txt  in
+      (match (x.kind, x.cxt) with
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), ("exp" |"pat")) ->

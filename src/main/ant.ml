@@ -1,27 +1,27 @@
 open FAst
 
-open FanUtil
-
 let antiquot_expander ~parse_pat ~parse_exp = object
   inherit Objs.map as super
   method! pat (x:pat)= 
     match x with 
-    |`Ant(_loc, {cxt;decorations;content=code}) ->
+    |`Ant(_loc, x) ->
       let meta_loc_pat _loc _ =  %pat{ _ } in
       let mloc _loc = meta_loc_pat  _loc _loc in
-      let e = parse_pat _loc code in
-      (match (decorations,cxt) with
-      | (("uid" | "lid" | "par" | "seq"
-         |"flo" |"int" | "int32" | "int64" |"nativeint"
-         |"chr" |"str" as x),_) |
-         (("vrn" as x), ("exp" |"pat")) ->
-           let x = String.capitalize x in
-           %pat{ $vrn:x ($(mloc _loc),$e) }
-      | _ -> super#pat e)
+      let e = parse_pat _loc x.txt  in
+      begin 
+        match (x.kind,x.cxt) with
+        | (("uid" | "lid" | "par" | "seq"
+        |"flo" |"int" | "int32" | "int64" |"nativeint"
+        |"chr" |"str" as x),_) |
+          (("vrn" as x), ("exp" |"pat")) ->
+            let x = String.capitalize x in
+            %pat{ $vrn:x ($(mloc _loc),$e) }
+        | _ -> super#pat e
+      end
     | e -> super#pat e 
   method! exp (x:exp) =  with exp
     match x with 
-    |`Ant(_loc,{cxt;decorations;content=code}) ->
+    |`Ant(_loc, x) ->
         let meta_loc_exp _loc loc =
           match !Ast_quotation.current_loc_name with
           | Some "here" -> Ast_gen.meta_here _loc loc
@@ -29,8 +29,8 @@ let antiquot_expander ~parse_pat ~parse_exp = object
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in
       let mloc _loc = meta_loc_exp _loc _loc  in
-      let e = parse_exp _loc code in
-      (match (decorations,cxt) with
+      let e = parse_exp _loc x.txt in
+      (match (x.kind,x.cxt) with
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), ("exp" |"pat")) ->

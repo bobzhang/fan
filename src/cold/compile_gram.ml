@@ -273,13 +273,12 @@ let capture_antiquot =
     method! pat =
       function
       | `Ant (_loc,s) ->
-          (match s with
-           | { FanUtil.content = code;_} ->
-               let cons: FAst.exp = `Lid (_loc, code) in
-               let code' = "__fan__" ^ code in
-               let cons': FAst.exp = `Lid (_loc, code') in
-               let () = constraints <- (cons, cons') :: constraints in
-               (`Lid (_loc, code') : FAst.pat ))
+          let code = s.txt in
+          let cons: FAst.exp = `Lid (_loc, code) in
+          let code' = "__fan__" ^ code in
+          let cons': FAst.exp = `Lid (_loc, code') in
+          let () = constraints <- (cons, cons') :: constraints in
+          (`Lid (_loc, code') : FAst.pat )
       | p -> super#pat p
     method get_captured_variables = constraints
     method clear_captured_variables = constraints <- []

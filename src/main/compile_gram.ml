@@ -236,8 +236,8 @@ let capture_antiquot  = object
   val mutable constraints : (exp * exp) list  =[]
   method! pat = function
     | `Ant(_loc,s) -> 
-        begin match s with
-        {FanUtil.content=code;_} ->
+        begin
+          let code = s.txt in
           let cons = %exp{ $lid:code } in
           let code' = "__fan__"^code in  (* prefix "fan__" FIXME *)
           let cons' = %exp{ $lid:code' } in 
@@ -311,5 +311,5 @@ let make  _loc (x:Gram_def.entries) =
         
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/gram_gen.cmo " *)
+(* compile-command: "cd .. && pmake main_annot/compile_gram.cmo " *)
 (* end: *)
