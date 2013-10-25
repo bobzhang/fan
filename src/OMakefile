@@ -184,9 +184,9 @@ MakeWeakFix(mountdir,pp,exe) =
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain
     OCamlProgram($(exe), $(VMOUNTDIR)/fan)
 
-DIR_WEAK1 = weak1
-DIR_WEAK2 = weak2
-DIR_WEAK3 = weak3 
+DIR_WEAK1 = w1
+DIR_WEAK2 = w2
+DIR_WEAK3 = w3 
 MakeWeakFix($(DIR_WEAK1),$(file fan0), $(file weak1))
 MakeWeakFix($(DIR_WEAK2),$(file weak1), $(file weak2))
 MakeWeakFix($(DIR_WEAK3),$(file weak2), $(file weak3))

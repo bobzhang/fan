@@ -1,8 +1,8 @@
 open FAst
 
 class primitive = object
-  method string _loc (i:string) :ep = %ep{$`str:i}
-  method int _loc (i:int) : ep = %ep{$`int:i}
+  method string _loc (i:string) :ep = %ep{$str':i}
+  method int _loc (i:int) : ep = %ep{$int':i}
 end
 type word  =
   [ `Any

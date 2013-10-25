@@ -149,8 +149,8 @@ let meta_here _loc (location:Locf.t)  =
        _};
        loc_ghost=h;} = location in
   %exp'{ Locf.of_tuple
-     ($`str:a, $`int:b, $`int:c, $`int:d,
-      $`int:e, $`int:f, $`int:g,
+     ($str':a, $int':b, $int':c, $int':d,
+      $int':e, $int':f, $int':g,
       $(if h then %exp'{ true } else %exp'{ false } )) }
 
 (* local variables: *)

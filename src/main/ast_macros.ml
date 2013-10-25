@@ -20,7 +20,7 @@ let rec fib = function
 
 let fibm  y =
   match y with
-  | %exp{$int:x}  -> %exp{ $(`int:fib (int_of_string x))}
+  | %exp{$int:x}  -> %exp{ $(int':fib (int_of_string x))}
   |  x -> let _loc = loc_of x in %exp{ fib $x } ;;
 
 register_macro ("FIB",fibm);;      

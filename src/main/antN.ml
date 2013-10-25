@@ -23,29 +23,37 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), ("exp" |"pat")) ->
-           %{$(vrn:String.capitalize x) $e }         
-      | ("`nativeint",_) ->
+           %{$(vrn:String.capitalize x) $e }
+      | ("nativeint'",_)  ->
+      (* | ("`nativeint",_) -> *)
           let e = %{ Nativeint.to_string $e } in
           %{ `Nativeint  $e }
-      | ("`int",_) ->
+      | ("int'",_) ->             
+      (* | ("`int",_) -> *)
           let e = %{string_of_int $e } in
           %{ `Int  $e }
-      | ("`int32",_) ->
+      | ("int32'",_) ->
+      (* | ("`int32",_) -> *)
           let e = %{Int32.to_string $e } in
           %{ `Int32  $e }
-      | ("`int64",_) ->
+      | ("int64'",_) ->
+      (* | ("`int64",_) -> *)
           let e = %{Int64.to_string $e } in
           %{ `Int64  $e }
-      | ("`chr",_) ->
+      | ("chr'",_) ->
+      (* | ("`chr",_) -> *)
           let e = %{Char.escaped $e} in
           %{ `Chr  $e }
-      | ("`str",_) ->
+      | ("str'",_) ->
+      (* | ("`str",_) -> *)
           let e = %{String.escaped $e } in
           %{ `Str  $e }
-      | ("`flo",_) ->
+      | ("flo'",_) ->
+      (* | ("`flo",_) -> *)
           let e = %{ string_of_float $e } in
           %{ `Flo  $e }
-      | ("`bool",_) ->
+      | ("bool'",_) ->
+      (* | ("`bool",_) -> *)
           %{ `Lid (if $e then "true" else "false" ) } 
       | _ -> super#exp e)
     | e -> super#exp e

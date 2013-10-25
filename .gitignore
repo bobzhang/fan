@@ -107,6 +107,9 @@ hot*
 main_annot
 src/tools/buildtop
 *.dparsetree
+src/w1
+src/w2
+src/w3
 src/weak1
 src/weak2
 src/weak3

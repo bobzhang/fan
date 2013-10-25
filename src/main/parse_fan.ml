@@ -362,9 +362,36 @@ let apply () = begin
         | prefixop{f}; S{e} %{ `App (_loc, f, e)} ]
        "simple"
         [ Quot x  %{Ast_quotation.expand  x Dyn_tag.exp}
-        | Ant ("exp"|""|"`bool" |"par"|"seq"|"int"|"`int"
-                |"int32"|"`int32"|"int64"|"`int64"|"nativeint"|"`nativeint"
-                |"flo"|"`flo"|"chr"|"`chr"|"str"|"`str" | "vrn", s) %{
+        | Ant ("exp"
+                |""
+                |"par"
+                |"seq"
+                |"chr"
+                |"int"
+                |"int32"
+                |"str"
+                |"int64"
+                |"flo"
+                |"nativeint"
+                | "vrn"
+
+                |"chr'"
+                |"int64'"
+                |"nativeint'"
+                |"bool'"
+                |"int'"
+                |"int32'"
+                |"flo'"
+                |"str'"
+                |"`chr"
+                |"`int64"
+                |"`nativeint"
+                |"`bool"
+                |"`int"
+                |"`int32"
+                |"`flo"
+                |"`str"
+                , s) %{
                     mk_anti ~c:"exp" s}
         | @primitve 
         | TRY module_longident_dot_lparen{i};S{e}; ")" %{
@@ -514,9 +541,33 @@ let apply () = begin
         | pat_constr{p1} %{ p1}
         | "lazy"; S{p} %{ `Lazy (_loc, p)}  ]
        "simple"
-        [ Ant (""|"pat"|"par"|"int"|"`int"|"int32"|"`int32"|"int64"|"`int64"
-                |"vrn" |"nativeint"|"`nativeint"|"flo"
-                |"`flo"|"chr"|"`chr"|"str"|"`str",s)
+        [ Ant (""
+               |"pat"
+               |"par"
+               |"int"
+               |"int32"
+               |"int64"
+               |"vrn"
+               |"flo"
+               |"chr"                   
+               |"nativeint"
+               |"str"
+
+               |"int'"
+               |"int32'"
+               |"int64'"
+               |"nativeint'"
+               |"flo'"
+               |"chr'"
+               |"str'"
+               |"`int"
+               |"`int32"
+               |"`int64"
+               |"`nativeint"
+               |"`flo"
+               |"`chr"
+               |"`str",s)
+
           %{ mk_anti ~c:"pat" s}
         | vid{i} %{ (i : vid :> pat)}
         | @primitve

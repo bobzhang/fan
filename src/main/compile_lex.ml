@@ -61,10 +61,10 @@ let auto_binds =
 (* |} *)
 
 let output_pats (pats:int list) =
-  bar_of_list (List.map (fun x -> %pat{$`int:x}) pats)
+  bar_of_list (List.map (fun x -> %pat{$int':x}) pats)
 
 
-let output_mem_access (i:int) = %exp{lexbuf.Lexing.lex_mem.($`int:i)}
+let output_mem_access (i:int) = %exp{lexbuf.Lexing.lex_mem.($int':i)}
 
 let (curr_pos,
      last_pos,
@@ -163,7 +163,7 @@ let output_trans (i:int) (trans:automata)=
     match trans with
   | Perform(n,mvs) ->
       let es = output_tag_actions mvs in 
-      seq_sem (es @ [ %exp{ $`int:n}]) 
+      seq_sem (es @ [ %exp{ $int':n}]) 
 
   | Shift(trans,move) ->
       let moves = bar_of_list (output_moves move) in
@@ -173,7 +173,7 @@ let output_trans (i:int) (trans:automata)=
               let es = output_tag_actions mvs in
               (es@
                [ %exp{ $last_pos  <- $curr_pos };
-                 %exp{ $last_action <- $`int:n };
+                 %exp{ $last_action <- $int':n };
                  %exp{ match __ocaml_lex_next_char lexbuf with | $moves }
               ])
           | No_remember ->
@@ -197,11 +197,11 @@ let output_env (env:t_env) : bind list =
             if Locf.strictly_before p1 p2 then -1 else 1) env in
   let output_tag_access = function
     |(Mem i,d) ->
-        %exp{ ($(output_mem_access i) + $`int:d) }
+        %exp{ ($(output_mem_access i) + $int':d) }
     |(Start,d) ->
-        %exp{ ($start_pos+ $`int:d) }
+        %exp{ ($start_pos+ $int':d) }
     | (End,d) ->
-        %exp{ ($curr_pos + $`int:d) } in
+        %exp{ ($curr_pos + $int':d) } in
   List.map
     (fun (id,v) ->
       let (id : pat) = `Lid id  in
@@ -232,7 +232,7 @@ let output_entry
     auto_actions; },
      (transitions:automata array)) : FAst.exp  =
   let actions = seq_sem
-      (%exp{ __ocaml_lex_init_lexbuf lexbuf $`int:auto_mem_size } ::
+      (%exp{ __ocaml_lex_init_lexbuf lexbuf $int':auto_mem_size } ::
        output_memory_actions init_moves) in  
   let state = "__ocaml_lex_state" ^string_of_int init_num in
   let binds =

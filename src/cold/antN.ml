@@ -24,7 +24,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                ->
                (`App (_loc, (`Vrn (_loc, (String.capitalize x))), e) : 
                FAst.exp )
-           | ("`nativeint",_) ->
+           | ("nativeint'",_) ->
                let e: FAst.exp =
                  `App
                    (_loc,
@@ -32,11 +32,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                         (_loc, (`Uid (_loc, "Nativeint")),
                           (`Lid (_loc, "to_string")))), e) in
                (`App (_loc, (`Vrn (_loc, "Nativeint")), e) : FAst.exp )
-           | ("`int",_) ->
+           | ("int'",_) ->
                let e: FAst.exp =
                  `App (_loc, (`Lid (_loc, "string_of_int")), e) in
                (`App (_loc, (`Vrn (_loc, "Int")), e) : FAst.exp )
-           | ("`int32",_) ->
+           | ("int32'",_) ->
                let e: FAst.exp =
                  `App
                    (_loc,
@@ -44,7 +44,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                         (_loc, (`Uid (_loc, "Int32")),
                           (`Lid (_loc, "to_string")))), e) in
                (`App (_loc, (`Vrn (_loc, "Int32")), e) : FAst.exp )
-           | ("`int64",_) ->
+           | ("int64'",_) ->
                let e: FAst.exp =
                  `App
                    (_loc,
@@ -52,7 +52,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                         (_loc, (`Uid (_loc, "Int64")),
                           (`Lid (_loc, "to_string")))), e) in
                (`App (_loc, (`Vrn (_loc, "Int64")), e) : FAst.exp )
-           | ("`chr",_) ->
+           | ("chr'",_) ->
                let e: FAst.exp =
                  `App
                    (_loc,
@@ -60,7 +60,7 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                         (_loc, (`Uid (_loc, "Char")),
                           (`Lid (_loc, "escaped")))), e) in
                (`App (_loc, (`Vrn (_loc, "Chr")), e) : FAst.exp )
-           | ("`str",_) ->
+           | ("str'",_) ->
                let e: FAst.exp =
                  `App
                    (_loc,
@@ -68,11 +68,11 @@ let antiquot_expander ~parse_pat  ~parse_exp  =
                         (_loc, (`Uid (_loc, "String")),
                           (`Lid (_loc, "escaped")))), e) in
                (`App (_loc, (`Vrn (_loc, "Str")), e) : FAst.exp )
-           | ("`flo",_) ->
+           | ("flo'",_) ->
                let e: FAst.exp =
                  `App (_loc, (`Lid (_loc, "string_of_float")), e) in
                (`App (_loc, (`Vrn (_loc, "Flo")), e) : FAst.exp )
-           | ("`bool",_) ->
+           | ("bool'",_) ->
                (`App
                   (_loc, (`Vrn (_loc, "Lid")),
                     (`IfThenElse

@@ -174,7 +174,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred = %exp{function
       | `EOI _ -> true
       | _ -> false} in
-    let des = %exp{($`int:i, `Empty)} in
+    let des = %exp{($int':i, `Empty)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
     [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
       styp = `Tok _loc;
@@ -186,7 +186,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred = %exp{function (*BOOTSTRAPPING*)
       | $vrn:v ({txt=$str:x;_}:Tokenf.txt) -> true
       | _ -> false} in
-    let des = %exp{($`int:i,`A $str:x)} in
+    let des = %exp{($int':i,`A $str:x)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
@@ -201,7 +201,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($`int:i,`Any)} in
+    let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
@@ -214,7 +214,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred =  %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($`int:i,`Any)} in
+    let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
@@ -227,7 +227,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred = %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($`int:i,`Any)} in
+    let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = None in (* could be None *)
     [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
@@ -239,7 +239,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let pred = %exp{function
       | $vrn:v _ -> true
       | _ -> false} in
-    let des = %exp{($`int:i,`Any)} in
+    let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = Some %pat{$vrn:v $lid:x} in
     [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
@@ -266,7 +266,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
            let pred = %exp{function
              | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
              | _ -> false} in
-           let des = %exp{($`int:i,`A $z)} in
+           let des = %exp{($int':i,`A $z)} in
            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
            
            (** FIXME why $ is allowed to lex here, should

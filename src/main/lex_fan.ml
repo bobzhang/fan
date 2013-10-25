@@ -125,9 +125,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
      | Some 'L' -> `Int64 {loc;txt}
      | Some 'n' -> `Nativeint {loc;txt}
      | _ -> `Int {loc;txt} }
-   | float_literal as txt %{
-     let loc = !!lexbuf in
-     `Flo {loc;txt}}       (** FIXME safety check *)
+   | float_literal as txt %{`Flo {loc = !!lexbuf;txt}}       (** FIXME safety check *)
    | '"' %{
        let c = new_cxt () in
        let old = lexbuf.lex_start_p in
@@ -149,18 +147,18 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
    | "'\\" (_ as c) %{err (Illegal_escape (String.make 1 c)) @@ !! lexbuf}
                                                    
    | '(' (not_star_symbolchar symbolchar* as txt) ocaml_blank* ')' %{
-     let loc =  !! lexbuf in `Eident { loc; txt}}
+     `Eident { loc = !! lexbuf ; txt}}
    | '(' ocaml_blank+ (symbolchar+ as txt) ocaml_blank* ')' %{
-     let loc = !!lexbuf in `Eident {loc;txt}}
+     `Eident {loc = !!lexbuf;txt}}
    | '(' ocaml_blank*
        ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as txt) ocaml_blank* ')' %{
-     let loc = !! lexbuf in `Eident {loc;txt}}
+     `Eident {loc = !! lexbuf;txt}}
    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
    | ":=" | ":>" | ";"  | ";;" | "_" | "{"|"}"
    | "{<" |">}"
    | left_delimitor | right_delimitor
    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar * )
-       as txt  %{ let loc = !! lexbuf in `Sym {loc;txt}}
+       as txt  %{ `Sym {loc = !! lexbuf ;txt}}
            
    | "*)" %{
        begin
@@ -169,7 +167,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          let loc = !! lexbuf in
          `Sym {loc;txt="*"}
        end}
-   | ocaml_blank + as txt %{ let loc = !! lexbuf in `Blank {loc;txt}}
+   | ocaml_blank + as txt %{ `Blank {loc = !! lexbuf ;txt}}
          
          (* comment *)
    | "(*" (')' as x) ? %{
@@ -182,7 +180,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          let loc = old -- lexbuf.lex_curr_p in
          `Comment {loc;txt= buff_contents c}
        end}
-   | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{"    as shift %{
+   | ("%" as x) ? '%'  (quotation_name as name) ? ('@' (locname as meta))? "{" as shift %{
        let c = new_cxt () in
        let name =
          match name with
@@ -200,8 +198,8 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          let shift = String.length shift in
          let retract = 1  in
          if x = None then
-           `Quot{Tokenf.name;meta;shift;txt;loc;retract}
-         else `DirQuotation {Tokenf.name;meta;shift;txt;loc;retract}
+           `Quot{name;meta;shift;txt;loc;retract}
+         else `DirQuotation {name;meta;shift;txt;loc;retract}
        end}
          
          
@@ -210,8 +208,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
        [^'\010' '\013']* newline as txt  %{
          let line = int_of_string num in begin
            update_loc  lexbuf ?file:name ~line ~absolute:true ;
-           let loc = !!lexbuf  in
-           `LINE_DIRECTIVE{loc;line; name;txt }
+           `LINE_DIRECTIVE{loc= !!lexbuf ;line; name;txt }
          end}
            (* Antiquotation handling *)
 
@@ -233,7 +230,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
              end}
          | lident as txt  %{
            let loc = !!lexbuf in `Ant{kind =""; txt ;loc; shift = 0; retract = 0}}  (* $lid *)
-         | '(' ('`'? (identchar*|['.' '!']+) as name) ':' %{
+         | '(' ((identchar*|['.' '!']+) as name) ':' %{
             (* $(lid:ghohgosho)  )
                the first char is faked '(' to match the last ')', so we mvoe
                backwards one character *)

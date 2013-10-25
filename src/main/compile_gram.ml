@@ -150,7 +150,7 @@ let make_action (_loc:loc)
             (* BOOTSTRAPING, associated with module name [Tokenf] *)
             List.map (fun x -> %exp{Tokenf.to_string $x}) e in
           let error =
-            Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$`str:error_fmt}]  @ es) in 
+            Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in 
           %exp{fun ($locid : Locf.t) ->
             (* BOOTSTRAPING, associated with module name [Locf] *)
             match $exp with
