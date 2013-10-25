@@ -217,9 +217,21 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
 
        (******************)
        (* $x   *)
+       (* $x:y *)       
        (* $x{} *)
        (* ${}*)
        (******************)
+   (* | '$' (lident  as txt)  %{ *)
+   (*   let loc = !!lexbuf in `Ant{kind=""; txt;loc} (\* shift, retract needed here *\) *)
+   (*    } *)
+       
+   (* | '$' ( '`'? (identchar* | ['.' '!']+) as name) ':' (antifollowident as x ) %{ *)
+     
+   (*  }  *)
+   (* | '$' ('`'? (identchar*|['.' '!']+) as name) '{' %{ *)
+     
+   (*  } *)
+   (* | '$' '{' *)
    | '$' %{
        let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t  =
          %lex{
@@ -254,7 +266,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
                let loc = old -- Lexing.lexeme_end_p lexbuf in
-               `Ant {loc ; kind = ""; txt =  buff_contents c; shift = 0; retract = 0 }
+               `Ant {loc ; kind = ""; txt =  buff_contents c ; shift = 0; retract = 0}
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
        let c = new_cxt () in

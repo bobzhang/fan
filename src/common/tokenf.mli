@@ -24,7 +24,10 @@ type quot = {
 type ant = {
     loc : loc ;
     kind : string;
-    txt : string}      
+    txt : string;
+    shift : int;
+    retract : int;
+  }      
 (*
 type ant  = {
     (*

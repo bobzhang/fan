@@ -32,10 +32,13 @@ type txt = {
     loc : loc ;
     txt : string;
   }
+
 type ant = {
     loc : loc ;
     kind : string;
-    txt : string;
+    txt : string; (* whole *)
+    shift : int;
+    retract : int;
   }
 (*      
 type ant  = {
