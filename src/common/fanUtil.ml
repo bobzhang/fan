@@ -4,28 +4,28 @@
 
 type anti_cxt = {
     cxt:string;
-    sep: string option ;
+    (* sep: string option ; *)
     mutable decorations:   string; (* keep it simple first*)
     content:string;
   }
 (* TODO with ("Print") get rid of dependency on a module as much as possible  *)
   
-let pp_print_anti_cxt fmt  {cxt;sep;content;_} =
+let pp_print_anti_cxt fmt  {cxt(* ;sep *);content;_} =
   let open Format in
-  fprintf fmt "cxt:%S;content:%S;%s"
+  fprintf fmt "cxt:%S;content:%S"
     cxt
     content
-    (match sep with
-    |None -> ""
-    |Some x -> "sep:"^x )
-let dummy = {cxt="";sep=None;decorations="";content=""}
+    (* (match sep with *)
+    (* |None -> "" *)
+    (* |Some x -> "sep:"^x ) *)
+let dummy = {cxt="";(* sep=None; *)decorations="";content=""}
 
-let mk_anti ?(c="") ?sep loc n s =
+let mk_anti ?(c="") (* ?sep *) loc n s =
   let c = {
   cxt = c;
   decorations= n;
   content =s ;
-  sep;
+  (* sep; *)
  } in `Ant(loc,c)
     
 let add_context s c =
@@ -45,3 +45,7 @@ let destruct_poly s =
     if s.[0] = '`' then
       Some (String.sub s 1 (n-1))
     else None
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake common/fanUtil.cmo" *)
+(* end: *)

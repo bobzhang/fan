@@ -1,14 +1,14 @@
 
 type anti_cxt = {
     cxt:string;
-    sep:  string option;
+    (* sep:  string option; *)
     mutable decorations:  string; (* keep it simple first*)
     content:string;
   }
       
 val mk_anti:
     ?c:string ->
-      ?sep:string ->
+      (* ?sep:string -> *)
         'a ->
           string ->
             string ->
