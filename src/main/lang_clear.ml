@@ -16,7 +16,7 @@ qualuid
   
 %extend{
 a_lident :
-  [ Ant(""|"lid" as n,s) %{FanUtil.mk_anti _loc  ~c:"a_lident" n s}
+  [ Ant(""|"lid",s) %{FanUtil.mk_anti ~c:"a_lident" s}
   | Lid s  %{ `Lid (_loc, s)} ]
 nonterminalsclear :
   [ qualuid{t}; L1 a_lident {ls} %{

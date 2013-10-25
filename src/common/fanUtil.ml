@@ -18,12 +18,12 @@ let pp_print_anti_cxt fmt  {cxt;txt ;_} =
 
 let dummy = {cxt="";kind = "";txt =""}
 
-let mk_anti ?(c="") loc n s =
+let mk_anti ?(c="") (x:Tokenf.ant) (* loc n s *) =
   let c =
     {
      cxt = c;
-     kind =  n;
-     txt  =s } in `Ant(loc,c)
+     kind =  x.kind;
+     txt  = x.txt } in `Ant(x.loc,c)
     
 let add_context s c =
   {s with kind  = s.kind ^ c}

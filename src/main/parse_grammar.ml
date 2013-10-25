@@ -278,7 +278,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
            let pattern =
              Some
                %pat{$vrn:v (* BOOTSTRAPPING *)
-                      ({kind = $pp; txt = $p;_}:Tokenf.ant)} in
+                      (({kind = $pp; _} as $p) :Tokenf.ant)} in
            {Gram_def.text = `Stoken(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern})}
@@ -495,7 +495,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   string :
   [ Str  s  %exp{$str:s}
-  | Ant ("", s) %{Parsef.exp _loc s}
+  | Ant ("", s) %{Parsef.exp s.loc s.txt}
   ] (*suport antiquot for string*)
   };;
 
