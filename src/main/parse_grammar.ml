@@ -251,7 +251,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       | L1 str SEP "|"{v}; "as"; Lid@xloc s %{
           (v , Some (xloc,s)) } ]
   let str :
-      [Str s %pat'{$str:s} ]
+      [Str s %{(s,_loc)} ]
 
   simple :
   [ @simple_token
@@ -261,24 +261,24 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       match ps with
       | (vs,y) ->
           vs |>
-          List.map (fun (x: [> `Str of (loc*string) ]) ->
-
+          List.map (fun (x,xloc) ->
+           let  z = %pat'@xloc{$str:x} in
            let pred = %exp{function
-             | $vrn:v ({ kind = $(x :>pat); _}:Tokenf.ant) -> true
+             | $vrn:v ({ kind = $z; _}:Tokenf.ant) -> true
              | _ -> false} in
-           let des = %exp{($`int:i,`A $(x :> exp))} in
+           let des = %exp{($`int:i,`A $z)} in
            let des_str = Gram_pat.to_string %pat'{$vrn:v $p} in
            
            (** FIXME why $ is allowed to lex here, should
                be disallowed to provide better error message *)
            let pp =
              match y with
-             | None -> %pat{$(x :> pat)}
-             | Some(xloc,u) -> %pat@xloc{( $(x :>pat) as $lid:u)} in
+             | None -> %pat{$z}
+             | Some(xloc,u) -> %pat@xloc{( $z as $lid:u)} in
            let pattern =
              Some
                %pat{$vrn:v (* BOOTSTRAPPING *)
-                      ({kind = $pp; txt = $(p : Gram_pat.t :>pat);_}:Tokenf.ant)} in
+                      ({kind = $pp; txt = $p;_}:Tokenf.ant)} in
            {Gram_def.text = `Stoken(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern})}
