@@ -142,8 +142,7 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | %ctyp-{Tokenf.ant}
-        | %ctyp-{FanUtil.anti_cxt} -> (** BOOTSTRAPING, associated with module [FanUtil] *)
+        | %ctyp-{Tokenf.ant} -> (** BOOTSTRAPING, associated with module [FanUtil] *)
              res
         | _ ->
             let pat0 = (x.ep0:>pat) in
@@ -155,8 +154,7 @@ let gen_strip =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc")
-        | `Dot(`Uid "Tokenf",`Lid "ant")
-        | `Dot(`Uid "FanUtil",`Lid "anti_cxt") ->  res (* BOOTSTRAPING *)
+        | `Dot(`Uid "Tokenf",`Lid "ant") ->  res (* BOOTSTRAPING *)
         | _ ->
             let pat0 = (x.ep0 :> pat) in  
             %exp-{let $pat:pat0 = $(x.info_exp) in $res }) params result in 
@@ -186,9 +184,7 @@ let gen_fill =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc"|"ant")
-        | `Dot(`Uid"Tokenf",`Lid"ant") 
-        | `Dot(`Uid"FanUtil",`Lid"anti_cxt") -> 
-             res
+        | `Dot(`Uid"Tokenf",`Lid"ant") -> res
         | _ ->
             let pat0 = (x.ep0:>pat) in
             %exp-{let $pat:pat0 = $(x.info_exp) in $res }) params result in
@@ -199,8 +195,7 @@ let gen_fill =
       (fun (x:Ctyp.ty_info) res ->
         match x.ty with
         | `Lid("int" | "string" | "int32"| "nativeint" |"loc"|"ant")
-        | `Dot(`Uid "Tokenf",`Lid "ant") 
-        | `Dot(`Uid "FanUtil",`Lid "anti_cxt") ->  res
+        | `Dot(`Uid "Tokenf",`Lid "ant") ->  res
         | _ ->
             let pat0 = (x.ep0 :> pat) in
             %exp-{let $pat:pat0 = $(x.info_exp) in $res }) params result in 
