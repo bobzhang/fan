@@ -53,7 +53,7 @@ let ant_expand p (x:ant) =
           pos_cnum = x.loc.loc_start.pos_cnum + x.shift}} in
   p loc content
 
-let mk_anti ?c  (x:ant)  =
+let mk_ant ?c  (x:ant)  =
   match c with
   | None -> `Ant(x.loc,x)
   | Some _  -> `Ant(x.loc, {x with cxt = c })

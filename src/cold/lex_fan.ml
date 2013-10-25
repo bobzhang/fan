@@ -6922,16 +6922,15 @@ let token: Lexing.lexbuf -> Tokenf.t =
                        { v with pos_cnum = (((v.pos_cnum + 1) + 1) - 1) } in
                      (c.buffer +> '(';
                       push_loc_cont c lexbuf lex_antiquot;
-                      (let loc = old -- (Lexing.lexeme_end_p lexbuf) in
-                       `Ant
-                         {
-                           loc;
-                           kind = "";
-                           txt = (buff_contents c);
-                           shift = 0;
-                           retract = 0;
-                           cxt = None
-                         }))
+                      `Ant
+                        {
+                          loc = (old -- (Lexing.lexeme_end_p lexbuf));
+                          kind = "";
+                          txt = (buff_contents c);
+                          shift = 0;
+                          retract = 0;
+                          cxt = None
+                        })
                  | 4 ->
                      let c =
                        Lexing.sub_lexeme_char lexbuf

@@ -495,7 +495,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   string :
   [ Str  s  %exp{$str:s}
-  | Ant ("", s) %{Parsef.exp s.loc s.txt}
+  | Ant ("", s) %{Tokenf.ant_expand Parsef.exp s}
   ] (*suport antiquot for string*)
   };;
 

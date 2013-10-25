@@ -2491,12 +2491,12 @@ let _ =
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
-          ("Parsef.exp s.loc s.txt\n",
+          ("Tokenf.ant_expand Parsef.exp s\n",
             (Gramf.mk_action
                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                   match __fan_0 with
                   | `Ant (({ kind = "";_} as s) : Tokenf.ant) ->
-                      (Parsef.exp s.loc s.txt : 'string )
+                      (Tokenf.ant_expand Parsef.exp s : 'string )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))

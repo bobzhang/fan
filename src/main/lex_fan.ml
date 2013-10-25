@@ -256,9 +256,8 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
              begin
                c.buffer +> '(';
                push_loc_cont c lexbuf lex_antiquot;
-               let loc = old -- Lexing.lexeme_end_p lexbuf in
                `Ant
-                 {loc ;
+                 {loc = old -- Lexing.lexeme_end_p lexbuf;
                   kind = "";
                   txt =  buff_contents c;
                   shift = 0;
