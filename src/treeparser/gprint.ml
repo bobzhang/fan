@@ -1,6 +1,6 @@
 open Gstructure
 open Format
-open Gstru
+(* open Gstru *)
 
 let pp = fprintf 
 
@@ -115,7 +115,7 @@ class text_grammar : grammar_print = object(self:'self)
       ) e
   end
   (* used in dumping symbol [`Stree] *)    
-  method tree f t = self#rules f  (flatten_tree t)
+  method tree f t = self#rules f  @@ Gstru.flatten_tree t
 end
 
 let text = new text_grammar
@@ -131,15 +131,17 @@ class dump_grammar : grammar_print  = object(self:'self)
   inherit text_grammar 
   method! tree f tree = (* see FIXME #a*)
     print_sons "|-"
-      (function
-        | Bro (s, ls) -> (string_of_symbol s, ls) | End -> (".",[])) "" f
-      (get_brothers tree)
-  method! level f {assoc;lname;lsuffix;lprefix;_} =
+      (function (x:Gstru.brothers) ->
+        match x with
+        | Bro (s, ls) -> string_of_symbol s, ls
+        | End -> ".",[]) "" f
+      @@ Gstru.get_brothers tree
+  method! level f (x:level)  =
     pp f "%a %a@;@[<hv2>cont:@\n%a@]@;@[<hv2>start:@\n%a@]"
-      (Formatf.pp_option (fun f s -> pp f "%S" s)) lname
-      pp_assoc assoc
-      self#tree lsuffix
-      self#tree lprefix 
+      (Formatf.pp_option (fun f s -> pp f "%S" s)) x.lname
+      pp_assoc x.assoc
+      self#tree x.lsuffix
+      self#tree x.lprefix 
 end
 
 let dump = new dump_grammar

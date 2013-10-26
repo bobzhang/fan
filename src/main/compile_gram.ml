@@ -19,13 +19,15 @@ let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"  
 let ghost = Locf.ghost
 
-let module_name = ref (`Uid (ghost,"Gramf")) (* BOOTSTRAPING*)  
+let module_name =
+  ref %exp'@ghost{Gramf} (* BOOTSTRAPING*)  
 
 let gm () =
   match !Configf.compilation_unit with
   |Some "Gramf" (* BOOTSTRAPING*)
     -> `Uid(ghost,"")
-  |Some _ | None -> !module_name
+  |Some _
+  | None -> !module_name
 
 let mk_entry ~local ~name ~pos ~levels =
   {Gram_def.name;pos;levels;local}
