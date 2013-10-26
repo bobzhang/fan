@@ -114,18 +114,23 @@ let ident_tag (i : FAst.ident) :  Longident.t * [> `app | `lident | `uident ] =
       Some (ldot (lident "*predef*") "option", `lident)
     | `Dot (_,i1,i2)  -> self i2 (self i1 acc)
     | `Apply (_,i1,i2) ->
-      (match (self i1 None, self i2 None, acc) with
-       | Some (l,_),Some (r,_),None  -> Some ((Lapply (l, r)), `app)
-       | _ ->
-         Locf.failf  _loc "invalid long identifer %s" @@ !dump_ident i)
+        begin 
+          match (self i1 None, self i2 None, acc) with
+          | Some (l,_),Some (r,_),None  ->
+              Some (Lapply (l, r), `app)
+          | _ ->
+              Locf.failf  _loc "invalid long identifer %s" @@ !dump_ident i
+        end
     | `Uid (_,s) ->
-      (match acc, s with
-       | (None ,"") -> None
-       | (None ,s) -> Some (lident s, `uident)
-       | (Some (_,(`uident|`app)),"") -> acc
-       | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
-       | _ ->
-         Locf.failf _loc "invalid long identifier %s" @@ !dump_ident i)
+        begin 
+          match acc, s with
+          | (None ,"") -> None
+          | (None ,s) -> Some (lident s, `uident)
+          | (Some (_,(`uident|`app)),"") -> acc
+          | (Some (x,(`uident|`app)),s) -> Some ((ldot x s), `uident)
+          | _ ->
+              Locf.failf _loc "invalid long identifier %s" @@ !dump_ident i
+        end
     | `Lid (_,s) ->
       let x =
         match acc with
@@ -190,20 +195,20 @@ let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
     let li = long_type_ident (i:>FAst.ident) in
     mktyp _loc @@ Ptyp_constr (li, [])
   | `Alias(_,t1,`Lid(_,s)) -> 
-    mktyp _loc @@ Ptyp_alias ((ctyp t1), s)
+    mktyp _loc @@ Ptyp_alias (ctyp t1, s)
   | `Any _ -> mktyp _loc Ptyp_any
   | `App _ as f ->
     let (f, al) =view_app [] f in
     let (is_cls, li) = ctyp_long_id f in
-    if is_cls then mktyp _loc  @@ Ptyp_class (li, (List.map ctyp al), [])
+    if is_cls then mktyp _loc  @@ Ptyp_class (li, List.map ctyp al, [])
     else mktyp _loc @@ Ptyp_constr (li, (List.map ctyp al))
   | `Arrow (_, (`Label (_,  `Lid(_,lab), t1)), t2) ->
-    mktyp _loc (Ptyp_arrow (lab, (ctyp t1), (ctyp t2)))
+    mktyp _loc @@ Ptyp_arrow (lab, (ctyp t1), ctyp t2)
   | `Arrow (_, (`OptLabl (loc1, `Lid(_,lab), t1)), t2) ->
     let t1 = `App (loc1, (predef_option loc1), t1) in
-    mktyp _loc (Ptyp_arrow ("?" ^ lab, ctyp t1, ctyp t2))
-  | `Arrow (_loc, t1, t2) -> mktyp _loc @@ Ptyp_arrow ("", ctyp t1, ctyp t2)
-
+    mktyp _loc @@ Ptyp_arrow ("?" ^ lab, ctyp t1, ctyp t2)
+  | `Arrow (_loc, t1, t2) ->
+      mktyp _loc @@ Ptyp_arrow ("", ctyp t1, ctyp t2)
   | `TyObjEnd(_,row) ->
     let xs =
       match row with
@@ -214,42 +219,43 @@ let rec ctyp (x:FAst.ctyp) : Parsetree.core_type =
   | `TyObj(_,fl,row) ->
     let xs  =
       match row with
-      |`Negative _ -> []
+      | `Negative _ -> []
       | `Positive _  -> [mkfield _loc Pfield_var]
       | `Ant _ -> ant_error _loc  in
     mktyp _loc (Ptyp_object (meth_list fl xs))
 
   | `ClassPath (_, id) -> mktyp _loc  @@ Ptyp_class ((ident id), [], [])
   | `Package(_,pt) ->
-    let (i, cs) = package_type pt in
-    mktyp _loc (Ptyp_package (i, cs))
+    mktyp _loc @@ Ptyp_package (package_type pt)
   | `TyPolEnd (_,t2) ->
-    mktyp _loc (Ptyp_poly ([], (ctyp t2)))
+    mktyp _loc @@ Ptyp_poly ([], ctyp t2)
   | `TyPol (_, t1, t2) ->
     let rec to_var_list  =
       function
       | `App (_,t1,t2) -> to_var_list t1 @ to_var_list t2
       | `Quote (_, (`Normal _ | `Positive _ | `Negative _), `Lid (_,s)) -> [s]
       | _ -> assert false in 
-    mktyp _loc (Ptyp_poly (to_var_list t1, ctyp t2))
+    mktyp _loc @@ Ptyp_poly (to_var_list t1, ctyp t2)
   (* QuoteAny should not appear here? *)      
-  | `Quote (_,`Normal _, `Lid(_,s)) -> mktyp _loc (Ptyp_var s)
+  | `Quote (_,`Normal _, `Lid(_,s)) ->
+      mktyp _loc @@ Ptyp_var s
   | `Par(_,`Sta(_,t1,t2)) ->
-    mktyp _loc (Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 []))))
+    mktyp _loc @@
+      Ptyp_tuple (List.map ctyp (list_of_star t1 (list_of_star t2 [])))
 
   | `PolyEq(_,t) ->
-    mktyp _loc (Ptyp_variant (row_field t [], true, None))
+    mktyp _loc @@ Ptyp_variant (row_field t [], true, None)
   | `PolySup(_,t) ->
-    mktyp _loc (Ptyp_variant (row_field t [], false, None))
+    mktyp _loc @@ Ptyp_variant (row_field t [], false, None)
   | `PolyInf(_,t) ->
-    mktyp _loc (Ptyp_variant ((row_field t []), true, (Some [])))
+    mktyp _loc @@ Ptyp_variant (row_field t [], true, Some [])
   | `PolyInfSup(_,t,t') ->
     let rec name_tags (x:tag_names) =
       match x with 
       | `App(_,t1,t2) -> name_tags t1 @ name_tags t2
       | `TyVrn (_, `C (_,s))    -> [s]
       | _ -> assert false  in 
-    mktyp _loc (Ptyp_variant ((row_field t []), true, (Some (name_tags t'))))
+    mktyp _loc @@ Ptyp_variant (row_field t [], true, Some (name_tags t'))
   |  x -> Locf.failf _loc "ctyp: %s" @@ !dump_ctyp x
 
 and row_field (x:row_field) acc : Parsetree.row_field list =
@@ -276,10 +282,11 @@ and package_type_constraints
   match wc with
   | `TypeEq(_, (#ident' as id),ct) -> (ident id, ctyp ct) :: acc
   | `And(_,wc1,wc2) ->
-    package_type_constraints wc1 (package_type_constraints wc2 acc)
+    package_type_constraints wc1 @@ package_type_constraints wc2 acc
   | x ->
-    Locf.failf (unsafe_loc_of x) "unexpected `with constraint:%s' for a package type"
-      (!dump_constr x) 
+    Locf.failf (unsafe_loc_of x)
+        "unexpected `with constraint:%s' for a package type"
+        (!dump_constr x) 
 
 and package_type (x : mtyp) :
   Longident.t Asttypes.loc *
@@ -347,11 +354,13 @@ let type_kind (x:type_repr) : Parsetree.type_kind  =
 
 
 let mkvalue_desc loc t (p:  strings list) : Parsetree.value_description =
-  let ps = List.map (fun p ->
-      match p with
-      | `Str (_,p) -> p
-      | _ -> failwithf  "mkvalue_desc") p in
-  {Parsetree.pval_type = ctyp t; pval_prim = ps; pval_loc =  loc}
+  {pval_type = ctyp t;
+   pval_prim =
+   List.map (fun p ->
+     match p with
+     | `Str (_,p) -> p
+     | _ -> failwithf  "mkvalue_desc") p ;
+   pval_loc =  loc}
 
 
 let mkmutable (x:flag)=
@@ -362,8 +371,8 @@ let mkmutable (x:flag)=
 
 let paolab (lab:string) (p:pat) : string =
   match (lab, p) with
-  | ("",(`Lid(_loc,i) | `Constraint(_loc,`Lid(_,i),_)))
-    -> i
+  | ("",
+     (`Lid(_loc,i) | `Constraint(_loc,`Lid(_,i),_))) -> i
   | ("", p) ->
     Locf.failf (unsafe_loc_of p) "paolab %s" (!dump_pat p)
   | _ -> lab 
@@ -402,7 +411,7 @@ let mk_type_parameters (tl:opt_decl_params)
       (function
         | #decl_param as x ->
           quote_map (x:>ctyp)
-        |  _ -> assert false) (list_of_com x [])
+        |  _ -> assert false) @@ list_of_com x []
 
 
 
@@ -445,8 +454,8 @@ let rec deep_mkrangepat loc c1 c2 =
   else
     mkghpat loc
       (Ppat_or
-         ((mkghpat loc (Ppat_constant (Const_char c1))),
-          (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2)))
+         (mkghpat loc (Ppat_constant (Const_char c1)),
+          deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
 
 let rec mkrangepat loc c1 c2 =
   if c1 > c2 then mkrangepat loc c2 c1
