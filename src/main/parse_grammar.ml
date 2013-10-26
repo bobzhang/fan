@@ -317,7 +317,13 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
  
   let sep_symbol : [ "SEP"; simple{t} %{let [t] =  t in t}]
 
-  symbol : (* be more precise, no recursive grammar? *)
+  symbol :
+  (* be more precise, no recursive grammar? *)
+  (*
+    transformation 
+    L1 Str Sep ";"
+    L1 Lid Sep ";"
+   *)    
   [ ("L0"|"L1" as l) ; simple{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
     let styp = %ctyp'{ ${s.styp} list   } in 

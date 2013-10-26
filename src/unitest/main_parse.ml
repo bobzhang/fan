@@ -11,7 +11,7 @@ let suite =
   [
    Location_ident.suite;
    Quotation_expand.suite;
-   Test_grammar.suite;
+   Grammar_test.suite;
  ]
 ;;
 

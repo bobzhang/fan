@@ -267,11 +267,12 @@ fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
 
 
 
-DIR_UNIT       = $(dir unitest)
-DIR_UNIT_ANNOT = $(dir unitest_annot)
-DIR_UNIT1      = $(dir unitest1)
-DIR_UNIT2      = $(dir unitest2)
-DIR_UNIT3      = $(dir unitest3)
+DIR_UNIT        = $(dir unitest)
+DIR_THIRDPARTY  = $(dir thirdparty) 
+DIR_UNIT_ANNOT  = $(dir unitest_annot)
+DIR_UNIT1       = $(dir unitest1)
+DIR_UNIT2       = $(dir unitest2)
+DIR_UNIT3       = $(dir unitest3)
 
 # fixpoint: $(add)
 ########################
@@ -293,6 +294,16 @@ MakeTest(maindir,mountdir,pp) =
 
 MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
 MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
+
+MakeThirdParty(maindir,pp) =
+    OCAMLCFLAGS += -annot
+    PP_FAN = $(pp)
+    OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
+    OCAMLINCLUDES += $(maindir)
+    AdditionalDependency($(PP_FAN))
+    .SUBDIRS: $(DIR_THIRDPARTY)
+
+MakeThirdParty($(DIR_MAIN_ANNOT), $(file fan0))
 
 section
     OCAML_LIBS = 

@@ -112,7 +112,7 @@ let test_ant _ =
                        {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
                        loc_end =
                        {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-                       loc_ghost = false}} : Tokenf.ant);
+                       loc_ghost = false};_} : Tokenf.ant);
               `EOI  _]}
        |> not then
       assert_failure "test_ant"
@@ -152,7 +152,8 @@ let test_ant_paren _ =
                      {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
                      loc_end =
                      {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-                     loc_ghost = false}}:Tokenf.ant) ;
+                     loc_ghost = false};
+            _}:Tokenf.ant) ;
          `EOI _]}
       |> not then 
       assert_failure "test_ant_paren"
@@ -161,7 +162,7 @@ let test_ant_paren _ =
 let test_ant_str _ =
   Ref.protect Configf.antiquotations true @@ fun _ ->
     if
-      %str{$(")")}
+      %str{${")"}}
       |> get_tokens
       |> %p{
         [`Ant ({kind = ""; txt = "(\")\")";_}:Tokenf.ant); `EOI _ ]}

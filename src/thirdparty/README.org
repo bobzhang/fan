@@ -1,0 +1,6 @@
+
+
+
+This directory is some experimentations for third party library.
+Note that it is not in the bootstrapping cycle, that said Fan can not
+use these languages in the development.

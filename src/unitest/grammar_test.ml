@@ -14,7 +14,7 @@ let test_simple_meta _ =
     "Lid"
     |> t_meta
     |> %p{[{text =
-            `Stoken (_,
+            `Token (_,
                      %exp@_{function | `Lid _ -> true | _ -> false},
                      %exp@_{( $_, `Any)},
                     (* magic number left, to be more precise later *)
@@ -29,7 +29,7 @@ let test_simple_meta1 _ =
     "Lid x"
     |> t_meta
     |> %p{[{text =
-            `Stoken (_,
+            `Token (_,
                      %exp@_{function | `Lid _ -> true | _ -> false},
                      %exp@_{ ($_,`Any) } ,_); (* magic number left *)
             pattern = Some %pat@_{`Lid ({txt = x;_}:Tokenf.txt) } ;
@@ -42,11 +42,11 @@ let test_simple_meta2 _ =
   if
     %str{("ghso"|"a" as x)}
     |> t_meta
-    |> %p{[{text =  `Skeyword(_,"ghos");
+    |> %p{[{text =  `Keyword(_,"ghos");
             styp = `Tok _ ; (* Wrong?*)
             pattern =
             Some %pat@_{`Key ({txt = x;_}:Tokenf.txt)};};
-           {text =  `Skeyword(_,"ghos");
+           {text =  `Keyword(_,"ghos");
             styp = `Tok _ ; (* Wrong?*)
             pattern =
             Some %pat@_{`Key ({txt = x;_}:Tokenf.txt)};}]}
@@ -56,7 +56,7 @@ let test_simple_meta2 _ =
 
 
 let suite =
-  "Test_grammar" >:::
+  "Grammar_test" >:::
   ["test_simple_meta" >:: test_simple_meta;
    "test_simple_meta1" >:: test_simple_meta1
  ]

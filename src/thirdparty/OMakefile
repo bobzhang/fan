@@ -1,0 +1,14 @@
+
+OCAMLPPFLAGS = -pp $(PP_FAN)
+OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
+
+FILES = lang_error
+
+.PHONY:lib
+    
+lib:$(OCamlLibrary libplugins, $(FILES))
+
+    
+# local variables:
+# compile-command: "pmake lib"
+# end:
