@@ -6888,40 +6888,44 @@ let token: Lexing.lexbuf -> Tokenf.t =
                      let name =
                        Lexing.sub_lexeme lexbuf
                          (lexbuf.Lexing.lex_start_pos + 1)
-                         (lexbuf.Lexing.lex_curr_pos + (-1)) in
-                     let old =
-                       let v = List.hd c.loc in
-                       {
-                         v with
-                         pos_cnum =
-                           (((((v.pos_cnum + 1) + 1) + 1) +
-                               (String.length name))
-                              - 1)
-                       } in
-                     (c.buffer +> '(';
+                         (lexbuf.Lexing.lex_curr_pos + (-1))
+                     and txt =
+                       Lexing.sub_lexeme lexbuf
+                         (lexbuf.Lexing.lex_start_pos + 0)
+                         (lexbuf.Lexing.lex_curr_pos + 0) in
+                     let old = lexbuf.lex_start_p in
+                     (store c lexbuf;
                       push_loc_cont c lexbuf lex_antiquot;
                       `Ant
                         {
-                          loc = (old -- (Lexing.lexeme_end_p lexbuf));
+                          loc =
+                            {
+                              loc_start = old;
+                              loc_end = (lexbuf.lex_curr_p);
+                              loc_ghost = false
+                            };
                           kind = name;
                           txt = (buff_contents c);
-                          shift = 0;
-                          retract = 0;
+                          shift = (String.length txt);
+                          retract = 1;
                           cxt = None
                         })
                  | 3 ->
-                     let old =
-                       let v = List.hd c.loc in
-                       { v with pos_cnum = (((v.pos_cnum + 1) + 1) - 1) } in
-                     (c.buffer +> '(';
+                     let old = lexbuf.lex_start_p in
+                     (store c lexbuf;
                       push_loc_cont c lexbuf lex_antiquot;
                       `Ant
                         {
-                          loc = (old -- (Lexing.lexeme_end_p lexbuf));
+                          loc =
+                            {
+                              loc_start = old;
+                              loc_end = (lexbuf.lex_curr_p);
+                              loc_ghost = false
+                            };
                           kind = "";
                           txt = (buff_contents c);
-                          shift = 0;
-                          retract = 0;
+                          shift = 1;
+                          retract = 1;
                           cxt = None
                         })
                  | 4 ->

@@ -474,7 +474,7 @@ let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let pat = args |>tuple_com in
   match destination with
   | Obj(Map) ->
-     %case-{$pat:pat->($e : $(name :> ctyp) :> $annot) }
+     %case-{$pat:pat->($e : $((name :> ctyp)) :> $annot) }
   |_ -> %case-{$pat:pat->( $e  :> $annot)}
 
 

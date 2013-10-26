@@ -233,36 +233,36 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          | lident as txt  %{
            `Ant{kind =""; txt ;loc = !!lexbuf; shift = 0; retract = 0; cxt = None}}
              (* $lid *)
-         | '(' (identchar* as name) ':' %{
-            (* $(lid:ghohgosho)  )
-               the first char is faked '(' to match the last ')', so we mvoe
-               backwards one character *)
-             let old =
-               let v = List.hd c.loc in
-               {v with pos_cnum = v.pos_cnum + 1+1+1+String.length name - 1} in
+         | '(' (identchar* as name) ':' as txt  %{
+            (* $(lid:ghohgosho)  *)
+           let old = lexbuf.lex_start_p in
              begin
-               c.buffer +> '(';
+               store c lexbuf;
                push_loc_cont c lexbuf lex_antiquot;
-               `Ant{loc =  old -- Lexing.lexeme_end_p lexbuf ;
+               `Ant{loc =
+                    {loc_start = old;
+                     loc_end = lexbuf.lex_curr_p;
+                     loc_ghost = false};
                     kind = name;
                     txt = buff_contents c;
-                    shift = 0;
-                    retract = 0;
+                    shift =  String.length txt ;
+                    retract =  1 ;
                     cxt = None}
              end}
          | '(' %{     (* $(xxxx)*)
-             let old =
-               let v = List.hd c.loc in
-               {v with pos_cnum = v.pos_cnum + 1 + 1 - 1 } in
+             let old = lexbuf.lex_start_p in
              begin
-               c.buffer +> '(';
+               store c lexbuf; 
                push_loc_cont c lexbuf lex_antiquot;
                `Ant
-                 {loc = old -- Lexing.lexeme_end_p lexbuf;
+                 {loc =
+                  {loc_start = old;
+                   loc_end = lexbuf.lex_curr_p ;
+                   loc_ghost = false};
                   kind = "";
                   txt =  buff_contents c;
-                  shift = 0;
-                  retract = 0;
+                  shift = 1 ;
+                  retract = 1 ;
                   cxt = None}
              end}
          | _ as c %{err (Illegal_character c) (!! lexbuf) } }in

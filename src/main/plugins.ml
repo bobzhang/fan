@@ -327,7 +327,7 @@ let mk_variant_iter _cons params :exp =
   | _ -> 
       let lst = params
         |> List.map (fun (x:Ctyp.ty_info) -> 
-            %exp-{ $(x.name_exp) $(x.id_ep : ep :> exp) }) in
+            %exp-{ $(x.name_exp) $((x.id_ep : ep :> exp)) }) in
         seq_sem lst 
 
 let mk_tuple_iter params : exp =
