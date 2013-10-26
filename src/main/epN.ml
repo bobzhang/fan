@@ -14,7 +14,7 @@ let of_str (s:string) : ep =
   else
     match s.[0] with
     | '`'-> %{  $vrn{ String.sub s 1 (len - 1)} }
-    | x when Charf.is_uppercase x -> %{ $uid:s }
+    | x when Charf.is_uppercase x -> %{$uid:s}
     | _ -> %{ $lid:s } 
 
 
@@ -28,7 +28,7 @@ let gen_tuple_first ~number ~off =
       Int.fold_left ~start:1 ~until:(number-1)
         ~acc:(xid ~off 0 )
         (fun acc i -> com acc (xid ~off i) ) in
-    %{ $par:lst }
+    %{$par:lst}
   | _ -> invalid_arg "n < 1 in gen_tuple_first" 
 
 (*
@@ -93,8 +93,8 @@ let of_vstr_number name i : ep=
 let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = Listf.init arity
       (fun i -> Listf.init n (fun j -> %{ $id{xid ~off:i j} } )) in
-  let pat = of_str (cons_transform cons) in 
-  Listf.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
+  let pat = of_str @@ cons_transform cons in 
+  args |> List.map (fun lst -> appl_of_list (pat:: lst)) |> tuple_com 
     
 
   
@@ -114,11 +114,14 @@ let mk_record ?(arity=1) cols : ep  =
     Listf.mapi
       (fun i (x:Ctyp.col) ->
         %rec_exp-'{ $lid{x.label} = ${xid ~off i} } ) cols in
-  let res = Int.fold_left
-      ~start:1 ~until:(arity-1) ~acc:(`Record(sem_of_list (mk_list  0))
-        (* %{ { $(list:mk_list 0) } } *) )
-      (fun acc i -> com acc (`Record (sem_of_list (mk_list i))) ) in
-  if arity > 1 then %{ $par:res }
+  let res =
+    let ls = sem_of_list (mk_list  0) in 
+    Int.fold_left
+      ~start:1 ~until:(arity-1) ~acc:%exp-'{{$ls}} @@ fun acc i ->
+        let v = sem_of_list @@ mk_list i in
+        com acc %exp-'{{$v}} in
+  if arity > 1 then
+    %{$par:res}
   else res     
 
 
@@ -145,23 +148,13 @@ let mk_tuple ~arity ~number  =
 
   
 
-(*
-   @raise Invalid_argument
-   when the length of lst is less than 1
-  {[
-  tuple_of_list [ %{a} ; %{ b};  %{c} ] |> eprint;
-  (a, b, c)
-  ]}
- *)
-(* let tuple_of_list lst = *)
-(*   let len = Listf.length lst in *)
-(*   match len with *)
-(*   [ 1  ->  List.hd lst *)
-(*   | n when n > 1 ->  %{ $(tup:List.reduce_left com lst) }  *)
-(*   | _ -> invalid_arg "tuple_of_list n < 1"] ; *)
 
 
 
 
 
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/epN.cmo" *)
+(* end: *)

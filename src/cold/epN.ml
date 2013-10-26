@@ -41,17 +41,18 @@ let of_vstr_number name i =
 let gen_tuple_n ?(cons_transform= fun x  -> x)  ~arity  cons n =
   let args =
     Listf.init arity (fun i  -> Listf.init n (fun j  -> xid ~off:i j)) in
-  let pat = of_str (cons_transform cons) in
-  (Listf.map (fun lst  -> appl_of_list (pat :: lst)) args) |> tuple_com
+  let pat = of_str @@ (cons_transform cons) in
+  (args |> (List.map (fun lst  -> appl_of_list (pat :: lst)))) |> tuple_com
 let mk_record ?(arity= 1)  cols =
   (let mk_list off =
      Listf.mapi
        (fun i  (x : Ctyp.col)  -> `RecBind ((`Lid (x.label)), (xid ~off i)))
        cols in
    let res =
-     Int.fold_left ~start:1 ~until:(arity - 1)
-       ~acc:(`Record (sem_of_list (mk_list 0)))
-       (fun acc  i  -> com acc (`Record (sem_of_list (mk_list i)))) in
+     let ls = sem_of_list (mk_list 0) in
+     (Int.fold_left ~start:1 ~until:(arity - 1) ~acc:(`Record ls)) @@
+       (fun acc  i  ->
+          let v = sem_of_list @@ (mk_list i) in com acc (`Record v)) in
    if arity > 1 then `Par res else res : ep )
 let mk_tuple ~arity  ~number  =
   match arity with

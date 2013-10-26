@@ -12,7 +12,7 @@ let rec fib =
 let fibm y =
   match y with
   | (`Int (_loc,x) : FAst.exp) ->
-      (`Int (_loc, (string_of_int (fib (int_of_string x)))) : FAst.exp )
+      (`Int (_loc, (string_of_int (fib @@ (int_of_string x)))) : FAst.exp )
   | x ->
       let _loc = loc_of x in
       (`App (_loc, (`Lid (_loc, "fib")), x) : FAst.exp )
