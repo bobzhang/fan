@@ -218,59 +218,50 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
        (* $x:id *)
        (* ${}*)
        (******************)
-   | '$' %{
-       let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t  =
-         %lex{
-         | ( identchar* as name) ':'  antifollowident as txt  %{
-             begin
-               `Ant{loc = !!lexbuf;
-                    kind = name;
-                    txt ;
-                    shift =  String.length name +  1;
-                    retract = 0;
-                    cxt = None}
-             end}
-         | lident as txt  %{
-           `Ant{kind =""; txt ;loc = !!lexbuf; shift = 0; retract = 0; cxt = None}}
-             (* $lid *)
-         | '{' (identchar* as name) ':' as txt  %{
-           let old = lexbuf.lex_start_p in
-             begin
-               store c lexbuf;
-               push_loc_cont c lexbuf (* lex_antiquot *)lex_quotation;
-               `Ant{loc =
-                    {loc_start = old;
-                     loc_end = lexbuf.lex_curr_p;
-                     loc_ghost = false};
-                    kind = name;
-                    txt = buff_contents c;
-                    shift =  String.length txt ;
-                    retract =  1 ;
-                    cxt = None}
-             end}
-         | '{' %{     (* $(xxxx)*)
-             let old = lexbuf.lex_start_p in
-             begin
-               store c lexbuf; 
-               push_loc_cont c lexbuf lex_quotation;
-               `Ant
-                 {loc =
-                  {loc_start = old;
-                   loc_end = lexbuf.lex_curr_p ;
-                   loc_ghost = false};
-                  kind = "";
-                  txt =  buff_contents c;
-                  shift = 1 ;
-                  retract = 1 ;
-                  cxt = None}
-             end}
-         | _ as c %{err (Illegal_character c) (!! lexbuf) } }in
-       let c = new_cxt () in
-       if  !Configf.antiquotations then  (* FIXME maybe always lex as antiquot?*)
-         push_loc_cont c lexbuf  dollar
-       else err Illegal_antiquote (!! lexbuf) }
-           
-   | eof %{
+   | '$' ( lident as name) ':'  antifollowident as txt %{
+     `Ant{loc = !!lexbuf;
+          kind = name;
+          txt ;
+          shift =  String.length name +  2;
+          retract = 0;
+          cxt = None}}
+   | '$' lident as txt  %{
+     `Ant{kind =""; txt ;loc = !!lexbuf; shift = 1; retract = 0; cxt = None}}
+   | "${"   (identchar* as name) ':' as txt  %{
+     let old = lexbuf.lex_start_p in
+     let c = new_cxt () in
+     begin
+       store c lexbuf;
+       push_loc_cont c lexbuf lex_quotation;
+       `Ant{loc =
+            {loc_start = old;
+             loc_end = lexbuf.lex_curr_p;
+             loc_ghost = false};
+            kind = name;
+            txt = buff_contents c;
+            shift =  String.length txt ;
+            retract =  1 ;
+            cxt = None}
+     end}
+    | "${" as txt  %{     (* $(xxxx)*)
+      let old = lexbuf.lex_start_p in
+      let c = new_cxt () in
+      begin
+        store c lexbuf; 
+        push_loc_cont c lexbuf lex_quotation;
+        `Ant
+          {loc =
+           {loc_start = old;
+            loc_end = lexbuf.lex_curr_p ;
+            loc_ghost = false};
+           kind = "";
+           txt =  buff_contents c;
+           shift = String.length txt ;
+           retract = 1 ;
+           cxt = None}
+      end}
+    | '$' (_ as c) %{err (Illegal_character c) (!! lexbuf)        }
+    | eof %{
        let pos = lexbuf.lex_curr_p in (* FIXME *)
        (lexbuf.lex_curr_p <-
          { pos with pos_bol  = pos.pos_bol  + 1 ;
