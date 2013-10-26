@@ -60,7 +60,7 @@ let _ =
     (None,
       (None, None,
         [([`Keyword "|";
-          `Slist0sep
+          `List0sep
             ((`Nterm (Gramf.obj (parser_case : 'parser_case Gramf.t ))),
               (`Keyword "|"))],
            ("pcl\n",

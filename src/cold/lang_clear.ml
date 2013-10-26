@@ -50,7 +50,7 @@ let _ =
     (None,
       (None, None,
         [([`Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
-          `Slist1 (`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))],
+          `List1 (`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))],
            ("(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           FAst.exp ))))\n  |> seq_sem\n",
              (Gramf.mk_action
                 (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 

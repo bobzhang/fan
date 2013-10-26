@@ -80,10 +80,10 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `List (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         (match  ts with
-        |  None -> if min then  %{ `Slist1 $txt } else %{ `Slist0 $txt } 
+        |  None -> if min then  %{ `List1 $txt } else %{ `List0 $txt } 
         | Some s ->
             let x = aux tvar s.text in
-            if min then %{ `Slist1sep ($txt,$x)} else %{ `Slist0sep ($txt,$x) })
+            if min then %{ `List1sep ($txt,$x)} else %{ `List0sep ($txt,$x) })
     | `Self _loc ->  %{ `Self}
     | `Keyword (_loc, kwd) ->  %{ `Keyword $str:kwd }
     | `Nterm (_loc, n, lev) ->

@@ -55,11 +55,11 @@ class text_grammar : grammar_print = object(self:'self)
   method set_action v = action <- v
       
   method symbol f =  function
-    | `Slist0 s -> pp f "L0 %a" self#symbol1 s
-    | `Slist0sep (s, t) ->
+    | `List0 s -> pp f "L0 %a" self#symbol1 s
+    | `List0sep (s, t) ->
         pp f "L0 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `Slist1 s -> pp f "L1 %a" self#symbol1 s
-    | `Slist1sep (s, t) ->
+    | `List1 s -> pp f "L1 %a" self#symbol1 s
+    | `List1sep (s, t) ->
         pp f "L1 %a SEP %a" self#symbol1 s self#symbol1 t
     | `Opt s -> pp f "OPT %a" self#symbol1 s
     | `Try s -> pp f "TRY %a" self#symbol1 s
@@ -74,8 +74,8 @@ class text_grammar : grammar_print = object(self:'self)
     | `Self -> pp f "%s" "S"
     | `Token (_,_,descr) -> pp f "%s" descr
     | `Keyword s -> pp f "%S" s
-    | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
-      `Slist1sep (_, _) | `Opt _ | `Try _ | `Peek _ as s ->
+    | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
+      `List1sep (_, _) | `Opt _ | `Try _ | `Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
       f ((symbols,(annot,_action)):production) =

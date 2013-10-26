@@ -14,10 +14,10 @@ let higher s1 s2 =
 
 let rec derive_eps (s:symbol)  =
   match s with 
-  | `Slist0 _ | `Slist0sep (_, _) | `Opt _ | `Peek _ -> true
+  | `List0 _ | `List0sep (_, _) | `Opt _ | `Peek _ -> true
 
   | `Try s -> derive_eps s (* it would consume if succeed *)
-  | `Slist1 _ | `Slist1sep (_, _) | `Token _ | `Keyword _ ->
+  | `List1 _ | `List1sep (_, _) | `Token _ | `Keyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
   | `Nterm _ | `Snterml (_, _) | `Self ->
@@ -78,9 +78,9 @@ let rec check_gram (entry : Gstructure.entry) = function
         failwithf
           "Fgram.extend Error: entries %S and %S do not belong to the same grammar.@."
           entry.name e.name
-  | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `Slist0 s | `Slist1 s | `Opt s | `Try s | `Peek s -> check_gram entry s
+  | `List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
+  | `List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
+  | `List0 s | `List1 s | `Opt s | `Try s | `Peek s -> check_gram entry s
   | `Self | `Token _ | `Keyword _ -> ()
         
 and tree_check_gram entry = function
@@ -102,10 +102,10 @@ let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
 and  using_symbol symbol acc =
   match symbol with 
-  | `Slist0 s | `Slist1 s | `Opt s | `Try s | `Peek s ->
+  | `List0 s | `List1 s | `Opt s | `Try s | `Peek s ->
       using_symbol s acc
-  | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)
-  | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
+  | `List0sep (s, t) -> using_symbol  t (using_symbol s acc)
+  | `List1sep (s, t) -> using_symbol  t (using_symbol  s acc)
   | `Keyword kwd -> kwd :: acc
   | `Nterm _ | `Snterml _ | `Self | `Token _ -> acc 
 and using_node   node acc =

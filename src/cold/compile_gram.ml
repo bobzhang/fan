@@ -50,18 +50,18 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
         (match ts with
          | None  ->
              if min
-             then (`App (_loc, (`Vrn (_loc, "Slist1")), txt) : FAst.exp )
-             else (`App (_loc, (`Vrn (_loc, "Slist0")), txt) : FAst.exp )
+             then (`App (_loc, (`Vrn (_loc, "List1")), txt) : FAst.exp )
+             else (`App (_loc, (`Vrn (_loc, "List0")), txt) : FAst.exp )
          | Some s ->
              let x = aux tvar s.text in
              if min
              then
                (`App
-                  (_loc, (`Vrn (_loc, "Slist1sep")),
+                  (_loc, (`Vrn (_loc, "List1sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp )
              else
                (`App
-                  (_loc, (`Vrn (_loc, "Slist0sep")),
+                  (_loc, (`Vrn (_loc, "List0sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp ))
     | `Self _loc -> (`Vrn (_loc, "Self") : FAst.exp )
     | `Keyword (_loc,kwd) ->

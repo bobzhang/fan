@@ -11,15 +11,14 @@ let _ =
       (None, None,
         [([`Keyword "derive";
           `Keyword "(";
-          `Slist1 (`Nterm (Gramf.obj (id : 'id Gramf.t )));
+          `List1 (`Nterm (Gramf.obj (id : 'id Gramf.t )));
           `Keyword ")"],
            ("List.iter Typehook.plugin_add plugins\n",
              (Gramf.mk_action
                 (fun _  (plugins : 'id list)  _  _  (_loc : Locf.t)  ->
                    (List.iter Typehook.plugin_add plugins : 'fan_quot )))));
         ([`Keyword "unload";
-         `Slist1sep
-           ((`Nterm (Gramf.obj (id : 'id Gramf.t ))), (`Keyword ","))],
+         `List1sep ((`Nterm (Gramf.obj (id : 'id Gramf.t ))), (`Keyword ","))],
           ("List.iter Typehook.plugin_remove plugins\n",
             (Gramf.mk_action
                (fun (plugins : 'id list)  _  (_loc : Locf.t)  ->
@@ -84,7 +83,7 @@ let _ =
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
     (None,
       (None, None,
-        [([`Slist1
+        [([`List1
              (`Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))],
            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
              (Gramf.mk_action

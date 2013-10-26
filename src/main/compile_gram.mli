@@ -84,7 +84,7 @@ val make_ctyp : styp -> string -> ctyp
                          else ();
                          Hashtbl.add FanLexTools.named_regexps x r) () : 
                    (_,'e__2,'e__3) Gramf.foldsep )))
-   `Slist0
+   `List0
      (Gramf.srules sigis
                  [([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ));
                    `Nterm (Gramf.obj (semi : 'semi Gramf.t ))],
@@ -92,12 +92,12 @@ val make_ctyp : styp -> string -> ctyp
                        (fun _  (sg : 'sigi)  (_loc : Locf.t)  ->
                           (sg : 'e__1 ))))])
 
-   `Slist0sep
+   `List0sep
        ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
         (`Keyword "|"))
 
 
-   `Slist1sep
+   `List1sep
         ((Gramf.srules pos_exps
           [([`Token
                         (((function | `Lid _ -> true | _ -> false)),

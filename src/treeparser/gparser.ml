@@ -155,15 +155,15 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
     : (Gaction.t * Locf.t) Tokenf.parse  =
   let rec aux s = 
     match s with 
-    | `Slist0 s ->
+    | `List0 s ->
         let ps = aux s in  Gcomb.slist0 ps ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Slist0sep (symb, sep) ->
+    | `List0sep (symb, sep) ->
         let ps = aux symb and pt =  aux sep  in
         Gcomb.slist0sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Slist1 s -> let ps =  aux s  in
+    | `List1 s -> let ps =  aux s  in
       Gcomb.slist1 ps ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Slist1sep (symb, sep) ->
+    | `List1sep (symb, sep) ->
         let ps = aux symb and pt = aux sep  in
         Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))

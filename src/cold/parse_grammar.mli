@@ -135,7 +135,7 @@ val level_list :
      (None,
      [(None, None,
      [([`Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
-     `Slist0
+     `List0
      (Gramf.srules nonterminalsclear
      [([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
      (Gramf.mk_action

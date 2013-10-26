@@ -1022,7 +1022,7 @@ let apply () =
    Gramf.extend_single (pos_exps : 'pos_exps Gramf.t )
      (None,
        (None, None,
-         [([`Slist1sep
+         [([`List1sep
               ((`Nterm (Gramf.obj (name_space : 'name_space Gramf.t ))),
                 (`Keyword ";"))],
             ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n",
@@ -1453,7 +1453,7 @@ let apply () =
        ((Some "obj"), (Some `RA),
          [([`Keyword "fun";
            `Keyword "|";
-           `Slist1sep
+           `List1sep
              ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
             ("let cases = bar_of_list a in `Fun (_loc, cases)\n",
               (Gramf.mk_action
@@ -1462,7 +1462,7 @@ let apply () =
                     'exp )))));
          ([`Keyword "function";
           `Keyword "|";
-          `Slist1sep
+          `List1sep
             ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
            ("let cases = bar_of_list a in `Fun (_loc, cases)\n",
              (Gramf.mk_action
@@ -2529,7 +2529,7 @@ let apply () =
      (None,
        (None, None,
          [([`Keyword "|";
-           `Slist1sep
+           `List1sep
              ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
             ("bar_of_list l\n",
               (Gramf.mk_action
@@ -2624,7 +2624,7 @@ let apply () =
    Gramf.extend_single (case_quot : 'case_quot Gramf.t )
      (None,
        (None, None,
-         [([`Slist1sep
+         [([`List1sep
               ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
                 (`Keyword "|"))],
             ("bar_of_list x\n",
@@ -7699,7 +7699,7 @@ let apply_ctyp () =
                                               Gramf.t ));
          `Keyword "=";
          `Nterm (Gramf.obj (type_info : 'type_info Gramf.t ));
-         `Slist0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
+         `List0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
           ("let (n,tpl) = rest in\n`TyDcl\n  (_loc, n, tpl, tk,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Gramf.mk_action
                (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
@@ -7714,7 +7714,7 @@ let apply_ctyp () =
             (Gramf.obj
                (type_ident_and_parameters : 'type_ident_and_parameters
                                               Gramf.t ));
-         `Slist0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
+         `List0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
           ("let (n,tpl) = rest in\n`TyAbstr\n  (_loc, n, tpl,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Gramf.mk_action
                (fun (cl : 'constrain list) 
@@ -7789,7 +7789,7 @@ let apply_ctyp () =
     (None,
       (None, None,
         [([`Keyword "(";
-          `Slist1sep
+          `List1sep
             ((`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))),
               (`Keyword ","));
           `Keyword ")";

@@ -112,13 +112,13 @@ let _ =
   Gramf.extend_single (or_words : 'or_words Gramf.t )
     (None,
       (None, None,
-        [([`Slist1sep
+        [([`List1sep
              ((`Nterm (Gramf.obj (str : 'str Gramf.t ))), (`Keyword "|"))],
            ("(v, None)\n",
              (Gramf.mk_action
                 (fun (v : 'str list)  (_loc : Locf.t)  ->
                    ((v, None) : 'or_words )))));
-        ([`Slist1sep
+        ([`List1sep
             ((`Nterm (Gramf.obj (str : 'str Gramf.t ))), (`Keyword "|"));
          `Keyword "as";
          `Token
@@ -1828,13 +1828,13 @@ let _ =
   Gramf.extend_single (or_strs : 'or_strs Gramf.t )
     (None,
       (None, None,
-        [([`Slist1sep
+        [([`List1sep
              ((`Nterm (Gramf.obj (str0 : 'str0 Gramf.t ))), (`Keyword "|"))],
            ("(xs, None)\n",
              (Gramf.mk_action
                 (fun (xs : 'str0 list)  (_loc : Locf.t)  ->
                    ((xs, None) : 'or_strs )))));
-        ([`Slist1sep
+        ([`List1sep
             ((`Nterm (Gramf.obj (str0 : 'str0 Gramf.t ))), (`Keyword "|"));
          `Keyword "as";
          `Token
@@ -2046,7 +2046,7 @@ let _ =
     (None,
       (None, None,
         [([`Nterm (Gramf.obj (extend_header : 'extend_header Gramf.t ));
-          `Slist1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
+          `List1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
            ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = true } in\nlet () = module_name := old in res\n",
              (Gramf.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
@@ -2059,7 +2059,7 @@ let _ =
     (None,
       (None, None,
         [([`Nterm (Gramf.obj (extend_header : 'extend_header Gramf.t ));
-          `Slist1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
+          `List1 (`Nterm (Gramf.obj (entry : 'entry Gramf.t )))],
            ("let (gram,old) = rest in\nlet items = Listf.filter_map (fun x  -> x) el in\nlet res = make _loc { items; gram; safe = false } in\nlet () = module_name := old in res\n",
              (Gramf.mk_action
                 (fun (el : 'entry list)  (rest : 'extend_header) 
@@ -2313,7 +2313,7 @@ let _ =
     (None,
       (None, None,
         [([`Keyword "{";
-          `Slist1 (`Nterm (Gramf.obj (level : 'level Gramf.t )));
+          `List1 (`Nterm (Gramf.obj (level : 'level Gramf.t )));
           `Keyword "}"],
            ("`Group ll\n",
              (Gramf.mk_action
@@ -2376,7 +2376,7 @@ let _ =
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> ([] : 'rule_list )))));
         ([`Keyword "[";
-         `Slist1sep
+         `List1sep
            ((`Nterm (Gramf.obj (rule : 'rule Gramf.t ))), (`Keyword "|"));
          `Keyword "]"],
           ("Listf.concat ruless\n",

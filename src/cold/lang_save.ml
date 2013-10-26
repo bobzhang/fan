@@ -7,7 +7,7 @@ let _ =
   Gramf.extend_single (save_quot : 'save_quot Gramf.t )
     (None,
       (None, None,
-        [([`Slist1 (`Nterm (Gramf.obj (lid : 'lid Gramf.t )));
+        [([`List1 (`Nterm (Gramf.obj (lid : 'lid Gramf.t )));
           `Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],

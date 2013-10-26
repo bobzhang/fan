@@ -36,7 +36,7 @@ let _ =
     (None,
       (None, None,
         [([`Keyword "|";
-          `Slist0sep
+          `List0sep
             ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
            ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
              (Gramf.mk_action
@@ -45,7 +45,7 @@ let _ =
                       (Lexgen.make_single_dfa
                          { shortest = false; clauses = l }) : 'lex )))));
         ([`Keyword "<";
-         `Slist0sep
+         `List0sep
            ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
           ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
             (Gramf.mk_action

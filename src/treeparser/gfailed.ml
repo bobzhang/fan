@@ -42,35 +42,35 @@ let tree_in_entry prev_symb tree = function
           | LocAct (_, _) | DeadEnd -> None 
       and search_symbol symb =
         match symb with
-        | `Nterm _ | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
-          `Slist1sep (_, _) | `Opt _ | `Try _ | `Token _ | `Keyword _
+        | `Nterm _ | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
+          `List1sep (_, _) | `Opt _ | `Try _ | `Token _ | `Keyword _
         | `Peek _
           when symb == prev_symb ->
             Some symb
-        | `Slist0 symb ->
+        | `List0 symb ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Slist0 symb)
+            | Some symb -> Some (`List0 symb)
             | None -> None
             end
-        | `Slist0sep (symb, sep) ->
+        | `List0sep (symb, sep) ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Slist0sep (symb, sep))
+            | Some symb -> Some (`List0sep (symb, sep))
             | None ->
                 match search_symbol sep with
-                | Some sep -> Some (`Slist0sep (symb, sep))
+                | Some sep -> Some (`List0sep (symb, sep))
                 | None -> None 
             end
-        | `Slist1 symb ->
+        | `List1 symb ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Slist1 symb)
+            | Some symb -> Some (`List1 symb)
             | None -> None
             end
-        | `Slist1sep (symb, sep) ->
+        | `List1sep (symb, sep) ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Slist1sep (symb, sep))
+            | Some symb -> Some (`List1sep (symb, sep))
             | None ->
                 match search_symbol sep with
-                | Some sep -> Some (`Slist1sep (symb, sep))
+                | Some sep -> Some (`List1sep (symb, sep))
                 | None -> None 
             end
         | `Opt symb ->
@@ -97,8 +97,8 @@ let tree_in_entry prev_symb tree = function
         
 (* error message entrance *)
 let rec name_of_symbol_failed entry  = function
-  | `Slist0 s | `Slist0sep (s, _) |
-    `Slist1 s | `Slist1sep (s, _) |
+  | `List0 s | `List0sep (s, _) |
+    `List1 s | `List1sep (s, _) |
     `Opt s | `Try s | `Peek s  ->
       name_of_symbol_failed entry s
   | s -> name_of_symbol entry s
@@ -134,13 +134,13 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt =
     match prev_symb with
-    | `Slist0 s ->
+    | `List0 s ->
         let txt1 = name_of_symbol_failed entry s in
         txt1 ^ " or " ^ txt ^ " expected"
-    | `Slist1 s ->
+    | `List1 s ->
         let txt1 = name_of_symbol_failed entry s in
         txt1 ^ " or " ^ txt ^ " expected"
-    | `Slist0sep (s, sep) ->
+    | `List0sep (s, sep) ->
         begin match magic "tree_failed: 'a -> 'b list" prev_symb_result with
         | [] ->
             let txt1 = name_of_symbol_failed entry s in
@@ -149,7 +149,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected"
         end
-    | `Slist1sep (s, sep) ->
+    | `List1sep (s, sep) ->
         begin match magic "tree_failed: 'a -> 'b list" prev_symb_result with
         | [] ->
             let txt1 = name_of_symbol_failed entry s in

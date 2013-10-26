@@ -377,7 +377,7 @@ let _ =
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid m");
           `Keyword ":";
-          `Slist1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
+          `List1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
           `Keyword ";"],
            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
              (Gramf.mk_action
@@ -400,7 +400,7 @@ let _ =
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
       (None, None,
-        [([`Slist1 (`Nterm (Gramf.obj (a : 'a Gramf.t )))],
+        [([`List1 (`Nterm (Gramf.obj (a : 'a Gramf.t )))],
            ("Ast_gen.sem_of_list xs\n",
              (Gramf.mk_action
                 (fun (xs : 'a list)  (_loc : Locf.t)  ->

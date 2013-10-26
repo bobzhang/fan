@@ -59,13 +59,13 @@ let logically_eq_symbols entry =
     | (`Self, `Nterm e2) -> entry.name = e2.name
     (* | (`Self, `Self) -> true *)
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.name = e2.name && l1 = l2
-    | (`Slist0 s1, `Slist0 s2) |
-      (`Slist1 s1, `Slist1 s2) |
+    | (`List0 s1, `List0 s2) |
+      (`List1 s1, `List1 s2) |
       (`Opt s1, `Opt s2) |
       (`Peek s1, `Peek s2) |
       (`Try s1, `Try s2) -> eq_symbol s1 s2
-    | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
-      (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
+    | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |
+      (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
     | `Token x , `Token  y  -> eq_token x y 
     | _ -> s1 = s2 in
@@ -77,13 +77,13 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
   | (`Nterm e1, `Nterm e2) -> e1 == e2
   | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1 == e2 && l1 = l2
   | (`Self, `Self) -> true
-  | (`Slist0 s1, `Slist0 s2) |
-    (`Slist1 s1, `Slist1 s2) |
+  | (`List0 s1, `List0 s2) |
+    (`List1 s1, `List1 s2) |
     (`Opt s1, `Opt s2) |
     (`Peek s1, `Peek s2) |
     (`Try s1, `Try s2) -> eq_symbol s1 s2
-  | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
-    (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
+  | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |
+    (`List1sep (s1, sep1), `List1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
   | `Token x, `Token y -> eq_token x y
   | _ -> s1 = s2
