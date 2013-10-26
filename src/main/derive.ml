@@ -87,7 +87,7 @@ let rec  normal_simple_exp_of_ctyp
     | (#ident' as id) ->
         right_trans (IdN.to_vid id )
     | `App(t1,t2) ->
-        %exp-{ $(aux t1) $(aux t2) }
+        %exp-{ ${aux t1} ${aux t2} }
     | `Quote (_,`Lid s) ->   tyvar s
     | `Arrow(t1,t2) ->
         aux %ctyp-{ ($t1,$t2) arrow } (* arrow is a keyword now*)
@@ -121,8 +121,8 @@ let rec obj_simple_exp_of_ctyp ~right_type_id ~left_type_variable ~right_type_va
               (trans (IdN.to_vid tctor) ::
                (ls |> List.map
                  (function
-                   | `Quote (_,`Lid s) -> %exp-{ $(lid:var s) } 
-                   | t -> %exp-{ fun self -> $(aux t) } )) )
+                   | `Quote (_,`Lid s) -> %exp-{ ${lid:var s} } 
+                   | t -> %exp-{ fun self -> ${aux t} } )) )
         | _  ->
             failwithf "list_of_app in obj_simple_exp_of_ctyp: %s"
               (ObjsN.dump_ctyp ty))
@@ -203,7 +203,7 @@ let mk_prefix (vars:opt_decl_params) (acc:exp) ?(names=[])  ~left_type_variable=
   let varf = basic_transform left_type_variable in
   let  f (var:decl_params) acc =
     match var with
-    | `Quote(_,`Lid(s)) -> %exp-{ fun $(lid: varf s) -> $acc }
+    | `Quote(_,`Lid(s)) -> %exp-{ fun ${lid: varf s} -> $acc }
     | t  ->
         failwithf  "mk_prefix: %s" (ObjsN.dump_decl_params t) in
   match vars with
@@ -244,7 +244,7 @@ let fun_of_tydcl
         (* For single tuple pattern match this can be optimized
            by the ocaml compiler *)
         mk_prefix ~names ~left_type_variable tyvars
-            (ExpN.currying ~arity [ %case-{ $pat:pat -> $(mk_record info)  } ])
+            (ExpN.currying ~arity [ %case-{ $pat:pat -> ${mk_record info}  } ])
 
        |  `Sum ctyp -> 
           let funct = exp_of_ctyp ctyp in  
@@ -395,7 +395,7 @@ let obj_of_mtyps
         
     let mk_clfield (name,tydcl) : clfield =
       let (ty,result_type) = mk_type tydcl in
-      %clfield-{ method $lid:name : $ty = $(f tydcl result_type) }  in 
+      %clfield-{ method $lid:name : $ty = ${f tydcl result_type} }  in 
     let fs (ty:types) : clfield =
       match ty with
       | `Mutual named_types ->
@@ -406,7 +406,7 @@ let obj_of_mtyps
            let ty_str : string =   ObjsN.dump_typedecl tydcl  in
            let () = Hashtbl.add tbl ty_str (Abstract ty_str) in 
            let (ty,_) = mk_type tydcl in
-           %clfield-{ method $lid:name : $ty= $(ExpN.unknown n) }
+           %clfield-{ method $lid:name : $ty= ${ExpN.unknown n}}
          | None ->  mk_clfield named_type  in 
       (* Loc.t will be translated to loc_t
        we need to process extra to generate method loc_t *)
@@ -416,7 +416,7 @@ let obj_of_mtyps
       let items = List.map (fun (dest,src,len) ->
         let (ty,_dest) = Ctyp.mk_method_type ~number:arity ~prefix:names (src,len) (Obj k) in
         let () = Hashtbl.add tbl dest (Qualified dest) in
-        %clfield-{ method $lid:dest : $ty = $(ExpN.unknown len) } ) extras in
+        %clfield-{ method $lid:dest : $ty = ${ExpN.unknown len} } ) extras in
       sem_of_list (body @ items) in 
         let v = Ctyp.mk_obj class_name  base body in
         (Hashtbl.iter (fun _ v ->
@@ -460,7 +460,7 @@ let gen_stru
     match module_name with
     |None ->   (id:>full_id_transform)
     |Some m ->
-        `Last (fun s -> %ident-'{ $uid:m.$(lid:basic_transform id s) } )  in
+        `Last (fun s -> %ident-'{ $uid:m.${lid:basic_transform id s} } )  in
   let default (_,number)=
     if number > 1 then
       let pat = (EpN.tuple_of_number `Any  arity :> pat) in 

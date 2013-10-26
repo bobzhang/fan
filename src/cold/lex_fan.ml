@@ -5151,7 +5151,7 @@ let token: Lexing.lexbuf -> Tokenf.t =
                      (lexbuf.Lexing.lex_curr_pos <-
                         lexbuf.Lexing.lex_last_pos;
                       lexbuf.Lexing.lex_last_action)
-                 | 40 -> __ocaml_lex_state2 lexbuf
+                 | 123 -> __ocaml_lex_state2 lexbuf
                  | _ -> __ocaml_lex_state1 lexbuf
                and __ocaml_lex_state1 lexbuf = 4
                and __ocaml_lex_state2 lexbuf =
@@ -6895,7 +6895,7 @@ let token: Lexing.lexbuf -> Tokenf.t =
                          (lexbuf.Lexing.lex_curr_pos + 0) in
                      let old = lexbuf.lex_start_p in
                      (store c lexbuf;
-                      push_loc_cont c lexbuf lex_antiquot;
+                      push_loc_cont c lexbuf lex_quotation;
                       `Ant
                         {
                           loc =
@@ -6913,7 +6913,7 @@ let token: Lexing.lexbuf -> Tokenf.t =
                  | 3 ->
                      let old = lexbuf.lex_start_p in
                      (store c lexbuf;
-                      push_loc_cont c lexbuf lex_antiquot;
+                      push_loc_cont c lexbuf lex_quotation;
                       `Ant
                         {
                           loc =

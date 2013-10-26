@@ -20,7 +20,7 @@ let rec fib = function
 
 let fibm  y =
   match y with
-  | %exp{$int:x}  -> %exp{ $(int':fib (int_of_string x))}
+  | %exp{$int:x}  -> %exp{ ${int':fib (int_of_string x)}}
   |  x -> let _loc = loc_of x in %exp{ fib $x } ;;
 
 register_macro ("FIB",fibm);;      
@@ -34,7 +34,7 @@ let macro_expander = object(self)
     | %{ $uid:a $y } ->
         (let try f = Hashtbl.find macro_expanders a in
         self#exp (f y)
-        with Not_found -> %{ $uid:a $(self#exp y)})
+        with Not_found -> %{ $uid:a ${self#exp y}})
     | e -> super#exp e 
 end
 

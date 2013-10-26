@@ -197,7 +197,7 @@ let output_env (env:t_env) : bind list =
             if Locf.strictly_before p1 p2 then -1 else 1) env in
   let output_tag_access = function
     |(Mem i,d) ->
-        %exp{ ($(output_mem_access i) + $int':d) }
+        %exp{ (${output_mem_access i} + $int':d) }
     |(Start,d) ->
         %exp{ ($start_pos+ $int':d) }
     | (End,d) ->

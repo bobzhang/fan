@@ -429,7 +429,7 @@ let apply () = begin
         | "("; "module"; mexp{me}; ":"; mtyp{pt}; ")" %{
             `Package_exp (_loc, `Constraint (_loc, me, pt))}  ] }
        sem_exp_for_list:
-       [ exp{e}; ";"; S{el} %{fun acc -> %exp{ $e :: $(el acc)}}
+       [ exp{e}; ";"; S{el} %{fun acc -> %exp{ $e :: ${el acc}}}
        | exp{e}; ";" %{fun acc -> %exp{ $e :: $acc }}
        | exp{e}  %{fun acc -> %exp{ $e :: $acc }}]
 
@@ -472,7 +472,7 @@ let apply () = begin
         bind:
         [ Ant ("bind"|"",s)  %{mk_ant  ~c:"bind" s}
         | Ant ("" ,s); "="; exp{e} %{
-            %{ $(mk_ant  ~c:"pat" s) = $e }}
+            %{ ${mk_ant  ~c:"pat" s} = $e }}
         | S{b1}; "and"; S{b2} %{ `And (_loc, b1, b2)}
         | let_bind{b} %{b} ] 
         let_bind:
@@ -794,7 +794,7 @@ let apply () = begin
 
       | Uid i; "."; S{l} %{ %{$uid:i.$l}}
       | Uid i; "."; "(" %{ %{$uid:i}}
-      | Ant ("uid"|"" ,s); "."; S{l} %{ %{$(mk_ant  ~c:"ident"  s).$l} }]
+      | Ant ("uid"|"" ,s); "."; S{l} %{ %{${mk_ant  ~c:"ident"  s}.$l} }]
       (* parse [A.B] *)
       module_longident:
       [ Ant (""|"id"|"uid",s) %{mk_ant ~c:"ident"  s }
@@ -828,7 +828,7 @@ let apply () = begin
       [ Ant (""|"id"|"lid",s) %{ mk_ant ~c:"ident" s}
       | Lid i %{ %{$lid:i}}
       | Uid i; "."; S{l} %{ %{$uid:i.$l}}
-      | Ant(""|"uid",s); "."; S{l} %{ %{$(mk_ant ~c:"ident" s).$l}} ]
+      | Ant(""|"uid",s); "."; S{l} %{ %{${mk_ant ~c:"ident" s}.$l}} ]
       
       cltyp_longident: [ type_longident{x}  %{x} ]
       val_longident:[ ident{x} %{ x} ]
@@ -1007,7 +1007,8 @@ let apply () = begin
        [ Ant (""|"cst" ,s) %{ mk_ant ~c:"clfield"  s}
        | Ant (""|"cst" ,s); ";" %{ mk_ant  ~c:"clfield"  s}
        | Ant (""|"cst" ,s);S{st} %{ `Sem(_loc, mk_ant ~c:"clfield"  s,st)  }
-       | Ant (""|"cst" ,s); ";"; S{cst} %{ %{ $(mk_ant ~c:"clfield"  s); $cst }}
+       | Ant (""|"cst" ,s); ";"; S{cst} %{
+         %{ ${mk_ant ~c:"clfield"  s}; $cst }}
        | clfield{st} %{ st}
        | clfield{st};";" %{ st}
        | clfield{st};";";S{xs} %{ `Sem(_loc,st,xs)}

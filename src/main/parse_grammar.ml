@@ -300,7 +300,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   |  name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
-          ~styp:(%ctyp'{'$(lid:n.tvar)}) ~pattern:None ]}
+          ~styp:(%ctyp'{'${lid:n.tvar}}) ~pattern:None ]}
   (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)
@@ -320,12 +320,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   symbol : (* be more precise, no recursive grammar? *)
   [ ("L0"|"L1" as l) ; simple{s}; OPT  sep_symbol{sep } %{
     let [s] =  s in
-    let styp = %ctyp'{ $(s.styp) list   } in 
+    let styp = %ctyp'{ ${s.styp} list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
   | "OPT"; simple{s}  %{
     let [s] = s in
-    let styp = %ctyp'{$(s.styp) option } in 
+    let styp = %ctyp'{${s.styp} option } in 
     let text = `Sopt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
   | ("TRY"|"PEEK" as p); simple{s} %{

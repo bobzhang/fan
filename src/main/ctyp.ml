@@ -118,7 +118,7 @@ let gen_quantifiers1 ~arity n  : ctyp =
   Listf.init arity
     (fun i ->
       Listf.init n
-        @@ fun j -> %{'$(lid:allx ~off:i j)} )
+        @@ fun j -> %{'${lid:allx ~off:i j}} )
   |> List.concat |> appl_of_list
 
 
@@ -127,7 +127,7 @@ let of_id_len ~off ((id:ident),len) =
   appl_of_list
     ((id:>ctyp) ::
      Listf.init len
-       (fun i -> %{'$(lid:allx ~off i)}))
+       (fun i -> %{'${lid:allx ~off i}}))
     
 let of_name_len ~off (name,len) =
   let id = lid name   in
@@ -203,7 +203,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   let app_src   =
     app_arrow @@ Listf.init number (fun _ -> of_id_len ~off:0 (id,len)) in
   let result_type = (* %{ 'result } *)
-    %{'$(lid:"result"^string_of_int !result_id)} in
+    %{'${lid:"result"^string_of_int !result_id}} in
   let _ = incr result_id in
   let self_type = %{'self_type}  in 
   let (quant,dst) =
@@ -218,7 +218,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
     Listf.init len @@
     fun i ->
       let app_src = app_arrow @@
-        Listf.init number @@ fun _ -> %{ '$(lid:allx ~off:0 i)} in
+        Listf.init number @@ fun _ -> %{ '${lid:allx ~off:0 i}} in
       match k with
       |Obj u  ->
           let dst =
@@ -234,7 +234,7 @@ let mk_method_type ~number ~prefix (id,len) (k:destination) : (ctyp * ctyp) =
   if len = 0 then
     ( `TyPolEnd  base,dst)
   else let quantifiers = gen_quantifiers1 ~arity:quant len in
-  (%{!$quantifiers . $(params +> base)},dst)
+  (%{!$quantifiers . ${params +> base}},dst)
 
 
 
@@ -438,7 +438,7 @@ let transform : full_id_transform -> vid -> exp  =
             (* fun [x -> %{ $(id: f (list_of_dot x []) )  }  ] *)
     | `Obj f ->
         function
-          | `Lid x  -> %exp-{ self# $(lid: f x) }
+          | `Lid x  -> %exp-{ self# ${lid: f x} }
           | t -> 
               let dest =  map_to_string t in
               let src = ObjsN.dump_vid t in (* FIXME *)
@@ -447,7 +447,7 @@ let transform : full_id_transform -> vid -> exp  =
                   Hashtbl.add conversion_table src dest;   
                   Format.eprintf "Warning:  %s ==>  %s ==> unknown\n" src dest;
                 end in
-              %exp-{self#$(lid:f dest)}
+              %exp-{self#${lid:f dest}}
                   (*todo  set its default let to self#unknown *)
 
 let basic_transform = function 
@@ -459,7 +459,7 @@ let right_transform = function
   | #basic_id_transform as x ->
       (** add as here to overcome the type system *)
       let f = basic_transform x in 
-      fun x -> %exp-{ $(lid: f x) } 
+      fun x -> %exp-{ ${lid: f x} } 
   | `Exp f -> f 
           
 
@@ -468,13 +468,13 @@ let right_transform = function
 
 let gen_tuple_abbrev  ~arity ~annot ~destination name e  =
   let args :  pat list =
-    Listf.init arity @@ fun i -> %pat-{ (#$id:name as $(lid: x ~off:i 0 )) }in
-  let exps = Listf.init arity @@ fun i -> %exp-{ $(id:xid ~off:i 0) }  in
+    Listf.init arity @@ fun i -> %pat-{ (#$id:name as ${lid: x ~off:i 0 }) }in
+  let exps = Listf.init arity @@ fun i -> %exp-{ ${id:xid ~off:i 0} }  in
   let e = appl_of_list (e:: exps) in 
   let pat = args |>tuple_com in
   match destination with
   | Obj(Map) ->
-     %case-{$pat:pat->($e : $((name :> ctyp)) :> $annot) }
+     %case-{$pat:pat->($e : ${(name :> ctyp)} :> $annot) }
   |_ -> %case-{$pat:pat->( $e  :> $annot)}
 
 

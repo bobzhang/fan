@@ -23,9 +23,9 @@ Ast_filters.register_stru_filter ("strip",(new Objs.reloc  Locf.ghost)#stru);;
 
 let map_exp = with exp function
   | %{ $e NOTHING } | %{ function | NOTHING  -> $e } -> e
-  | %{ __FILE__ } -> %{ $(str':Locf.file_name _loc) }
+  | %{ __FILE__ } -> %{ ${str':Locf.file_name _loc} }
   | %{ __PWD__ } ->
-      %{$(str':Filename.dirname (Locf.file_name _loc) ) }
+      %{${str':Filename.dirname (Locf.file_name _loc) } }
   | %{ __LOCATION__ } ->
       Ast_gen.meta_here _loc _loc
   | e -> e ;;

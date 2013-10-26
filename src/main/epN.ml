@@ -13,7 +13,7 @@ let of_str (s:string) : ep =
     invalid_arg "[exp|pat]_of_str len=0"
   else
     match s.[0] with
-    | '`'-> %{  $(vrn: String.sub s 1 (len - 1)) }
+    | '`'-> %{  ${vrn: String.sub s 1 (len - 1)} }
     | x when Charf.is_uppercase x -> %{ $uid:s }
     | _ -> %{ $lid:s } 
 
@@ -40,13 +40,13 @@ let gen_tuple_first ~number ~off =
 
 let gen_tuple_second ~number ~off =
   match number with 
-  | 1 -> %{ $(id:xid ~off:0 off) }
+  | 1 -> %{ ${id:xid ~off:0 off} }
       
   | n when n > 1 -> 
     let lst =
       Int.fold_left ~start:1 ~until:(number - 1)
-        ~acc:(%{ $(id:xid ~off:0 off) })
-        (fun acc i -> com acc %{ $(id:xid ~off:i off ) } ) in
+        ~acc:(%{ ${id:xid ~off:0 off} })
+        (fun acc i -> com acc %{ ${id:xid ~off:i off } } ) in
     %{ $par:lst }
   | _ -> 
         invalid_arg "n < 1 in gen_tuple_first "
@@ -92,7 +92,7 @@ let of_vstr_number name i : ep=
 *)
 let gen_tuple_n ?(cons_transform=fun x -> x) ~arity cons n =
   let args = Listf.init arity
-      (fun i -> Listf.init n (fun j -> %{ $(id:xid ~off:i j) } )) in
+      (fun i -> Listf.init n (fun j -> %{ ${id:xid ~off:i j} } )) in
   let pat = of_str (cons_transform cons) in 
   Listf.map (fun lst -> appl_of_list (pat:: lst)) args |> tuple_com 
     
@@ -113,7 +113,7 @@ let mk_record ?(arity=1) cols : ep  =
   let mk_list off = 
     Listf.mapi
       (fun i (x:Ctyp.col) ->
-        %rec_exp-'{ $(lid:x.label) = $(xid ~off i) } ) cols in
+        %rec_exp-'{ ${lid:x.label} = ${xid ~off i} } ) cols in
   let res = Int.fold_left
       ~start:1 ~until:(arity-1) ~acc:(`Record(sem_of_list (mk_list  0))
         (* %{ { $(list:mk_list 0) } } *) )

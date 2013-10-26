@@ -67,7 +67,7 @@ newterminals :
         let x = (x : vid :> exp) in
         %exp{$id:t.mk_dynamic $x }  in
       sem_of_list (* FIXME improve *)
-        (%stru{ let $((x :>pat)) = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
+        (%stru{ let ${(x :>pat)} = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
          ( List.map
             (fun (_loc,x,descr,ty) ->
               match (descr,ty) with

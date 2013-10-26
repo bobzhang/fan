@@ -16,7 +16,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
         |"chr" |"str" as x),_) |
           (("vrn" as x), Some ("exp" |"pat")) ->
             let x = String.capitalize x in
-            %pat{ $vrn:x ($(mloc _loc),$e) }
+            %pat{ $vrn:x (${mloc _loc},$e) }
         | _ -> super#pat e
       end
     | e -> super#pat e 
@@ -29,37 +29,37 @@ let antiquot_expander ~parse_pat ~parse_exp = object
           | x ->
               let x = Option.default !Locf.name  x in
               %exp{$lid:x} in
-      let mloc _loc = meta_loc_exp _loc _loc  in
+      let mloc _loc = meta_loc_exp _loc _loc  in (* FIXME Simplify*)
       let e = Tokenf.ant_expand parse_exp x in
       (match (x.kind,x.cxt) with
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), Some ("exp" |"pat")) ->
-           %{$(vrn:String.capitalize x) ($(mloc _loc),$e) }
+           %{${vrn:String.capitalize x} (${mloc _loc},$e) }
       | ("nativeint'",_) ->
           let e = %{ Nativeint.to_string $e } in
-          %{ `Nativeint ($(mloc _loc), $e) }
+          %{ `Nativeint (${mloc _loc}, $e) }
       | ("int'",_) ->
           let e = %{string_of_int $e } in
-          %{ `Int ($(mloc _loc), $e) }
+          %{ `Int (${mloc _loc}, $e) }
       | ("int32'",_) ->
           let e = %{Int32.to_string $e } in
-          %{ `Int32 ($(mloc _loc), $e) }
+          %{ `Int32 (${mloc _loc}, $e) }
       | ("int64'",_) ->
 
           let e = %{Int64.to_string $e } in
-          %{ `Int64 ($(mloc _loc), $e) }
+          %{ `Int64 (${mloc _loc}, $e) }
       | ("chr'",_) ->
           let e = %{Char.escaped $e} in
-          %{ `Chr ($(mloc _loc), $e) }
+          %{ `Chr (${mloc _loc}, $e) }
       | ("str'",_) ->
           let e = %{String.escaped $e } in
-          %{ `Str ($(mloc _loc), $e) }
+          %{ `Str (${mloc _loc}, $e) }
       | ("flo'",_) ->
           let e = %{ string_of_float $e } in
-          %{ `Flo ($(mloc _loc), $e) }
+          %{ `Flo (${mloc _loc}, $e) }
       | ("bool'",_) ->
-            %{ `Lid ($(mloc _loc), (if $e then "true" else "false" )) }
+            %{ `Lid (${mloc _loc}, (if $e then "true" else "false" )) }
       | _ -> super#exp e)
     | e -> super#exp e
   end

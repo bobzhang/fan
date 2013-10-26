@@ -32,7 +32,7 @@ let list_of_list (loc:loc) =
     | e1 :: el ->
         let _loc =
           if top then loc else Locf.merge (loc_of e1) loc in
-        %{ $e1 :: $(loop false el) } (* FIXME *)  in
+        %{ $e1 :: ${loop false el} } (* FIXME *)  in
   loop true ;;
 
 (* FIXME  double semi colon needed before *)  
@@ -55,7 +55,7 @@ let meta_unit _loc _ =  %{()}
 let meta_bool _loc =  function | true -> %{true} | false -> %{false} 
 
 let meta_ref mf_a _loc i =
-  %{ {contents= $(mf_a _loc !i) } }
+  %{ {contents= ${mf_a _loc !i} } }
 
 
   
@@ -77,7 +77,7 @@ let meta_list mf_a _loc  ls =
   
 let meta_option mf_a _loc  = function
   | None -> %{None}
-  | Some x -> %{Some $(mf_a _loc x)} 
+  | Some x -> %{Some ${mf_a _loc x}} 
 
 let meta_arrow (type t)
     (_mf_a: Locf.t -> 'a -> t)
@@ -288,7 +288,7 @@ let bigarray_get loc arr (arg (* :exp  *))  (* : exp  *)= with exp
   | [c1; c2] -> %@loc{ $arr.{$c1,$c2} }  
   | [c1; c2; c3] -> %@loc{ $arr.{$c1,$c2,$c3} } 
   | c1::c2::c3::coords ->
-      %@loc{ $arr.{$c1,$c2,$c3,$(sem_of_list coords) } } 
+      %@loc{ $arr.{$c1,$c2,$c3,${sem_of_list coords} } } 
 
 
 (*
@@ -363,12 +363,12 @@ let rec to_lid = function
  *)  
 let mkumin loc prefix arg = with exp 
   match arg with
-  | %{ $int:n } -> %@loc{ $(int:Stringf.neg n) }
-  | %{ $int32:n } -> %@loc{ $(int32:Stringf.neg n) }
-  | %{ $int64:n } -> %@loc{ $(int64:Stringf.neg n) }
-  | %{ $nativeint:n } -> %@loc{ $(nativeint:Stringf.neg n) }
-  | %{ $flo:n } -> %@loc{ $(flo:Stringf.neg n) }
-  | _ -> %@loc{ $(lid:"~" ^ prefix) $arg }
+  | %{ $int:n } -> %@loc{ ${int:Stringf.neg n} }
+  | %{ $int32:n } -> %@loc{ ${int32:Stringf.neg n} }
+  | %{ $int64:n } -> %@loc{ ${int64:Stringf.neg n} }
+  | %{ $nativeint:n } -> %@loc{ ${nativeint:Stringf.neg n} }
+  | %{ $flo:n } -> %@loc{ ${flo:Stringf.neg n} }
+  | _ -> %@loc{ ${lid:"~" ^ prefix} $arg }
 
 (* %exp{assert l}*)      
 (* let mkassert loc =  with exp fun *)

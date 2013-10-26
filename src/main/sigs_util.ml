@@ -101,7 +101,7 @@ let mk_transform_type_eq () = object(self:'self_type)
   val transformers = Hashtbl.create 50
   inherit ObjsN.map as super
   method! stru = function
-    | %stru-{ type $(`TyDcl ( _name, vars, ctyp, _) ) } as x -> (* FIXME why tuple?*)
+    | %stru-{ type ${`TyDcl ( _name, vars, ctyp, _) } } as x -> (* FIXME why tuple?*)
         let r =
           match ctyp with
           | `TyEq (_,t) -> Ctyp.qualified_app_list t | _ -> None  in

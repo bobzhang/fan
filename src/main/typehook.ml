@@ -135,7 +135,7 @@ let traversal () : traversal  = object (self:'self_type)
     end
     | `TypeWith(_loc,typedecl,_) ->
         self#stru (`Type(_loc,typedecl))
-    | %{ type $((`TyDcl (_,`Lid(_, name), _, _, _) as t)) } as x -> 
+    | %{ type ${(`TyDcl (_,`Lid(_, name), _, _, _) as t)} } as x -> 
         let item =  `Single (name,Objs.strip_typedecl t) in
         let () =
           if !print_collect_mtyps then eprintf "Came across @[%a@]@."

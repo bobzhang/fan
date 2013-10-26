@@ -233,12 +233,11 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
          | lident as txt  %{
            `Ant{kind =""; txt ;loc = !!lexbuf; shift = 0; retract = 0; cxt = None}}
              (* $lid *)
-         | '(' (identchar* as name) ':' as txt  %{
-            (* $(lid:ghohgosho)  *)
+         | '{' (identchar* as name) ':' as txt  %{
            let old = lexbuf.lex_start_p in
              begin
                store c lexbuf;
-               push_loc_cont c lexbuf lex_antiquot;
+               push_loc_cont c lexbuf (* lex_antiquot *)lex_quotation;
                `Ant{loc =
                     {loc_start = old;
                      loc_end = lexbuf.lex_curr_p;
@@ -249,11 +248,11 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
                     retract =  1 ;
                     cxt = None}
              end}
-         | '(' %{     (* $(xxxx)*)
+         | '{' %{     (* $(xxxx)*)
              let old = lexbuf.lex_start_p in
              begin
                store c lexbuf; 
-               push_loc_cont c lexbuf lex_antiquot;
+               push_loc_cont c lexbuf lex_quotation;
                `Ant
                  {loc =
                   {loc_start = old;

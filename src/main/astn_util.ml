@@ -106,7 +106,7 @@ let meta_here  location  =
   %exp-'{ Locf.of_tuple
             ($str':a, $int':b, $int':c, $int':d,
              $int':e, $int':f, $int':g,
-             $(if h then %exp-'{ true } else %exp-'{ false } )) }
+             ${if h then %exp-'{ true } else %exp-'{ false } }) }
 
 (* local variables: *)
 (* compile-command: "cd ../main_annot  && pmake lib " *)
