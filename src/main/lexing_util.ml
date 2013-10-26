@@ -251,44 +251,7 @@ let rec lex_string c = %lex{
   | _ %{  with_store  c lexbuf lex_string}}
 
 
-
-(** Then prefix is something like "$(" *)
-let rec  lex_antiquot c  = %lex{
-  | ')' %{
-    begin
-      pop_loc c;
-      store c lexbuf
-    end}
-  | '(' %{
-    begin 
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_antiquot;
-      lex_antiquot c  lexbuf;
-    end}
-  | quotation_prefix %{
-    begin
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_quotation;
-      lex_antiquot c lexbuf
-    end}
-  | newline %{
-    begin
-      update_loc  lexbuf;
-      with_store c lexbuf lex_antiquot 
-    end}
-  | "\"" %{ (* $(")")*)
-    begin
-      store c lexbuf;
-      push_loc_cont c lexbuf lex_string;
-      c.buffer +> '"';
-      lex_antiquot  c lexbuf
-    end}
-  | eof  %{err Unterminated_antiquot @@
-           Location_util.of_positions (List.hd c.loc) lexbuf.lex_curr_p}
-  | "'" ocaml_char "'" %{ with_store  c lexbuf lex_antiquot} (* $( ')' ) *)
-  | _  %{  with_store c lexbuf lex_antiquot}}
-
-and lex_quotation c = %lex{
+let rec lex_quotation c = %lex{
   | quotation_prefix %{
     begin
       store c lexbuf ;

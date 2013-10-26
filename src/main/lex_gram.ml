@@ -42,7 +42,6 @@ Lexing_util:
   lex_string
   lex_comment
   lex_quotation
-  lex_antiquot
   buff_contents
   err
   warn

@@ -44,12 +44,6 @@ val buff_contents : context -> string
 val move_curr_p : int -> Lexing.lexbuf -> unit
 
 
-(** create a new context with  the location updated as the beginning of
-    the current lexeme. Note that the buffer is shared across context 
-*)      
-(* val with_curr_loc : *)
-(*      context -> Lexing.lexbuf -> *)
-(*        (context -> Lexing.lexbuf -> 'a) -> 'a *)
 val push_loc_cont :
     context -> Lexing.lexbuf -> (context -> Lexing.lexbuf -> 'a) -> 'a
 
@@ -103,7 +97,7 @@ val lex_string : context -> Lexing.lexbuf -> unit
    The "$" should not be there. "()" is returned for $()
    
  *)    
-val lex_antiquot : context -> Lexing.lexbuf -> unit
+(* val lex_antiquot : context -> Lexing.lexbuf -> unit *)
 
 (**
    called by [lex_antiquot], [token]

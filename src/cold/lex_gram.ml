@@ -8,7 +8,6 @@ let pop_loc = Lexing_util.pop_loc
 let lex_string = Lexing_util.lex_string
 let lex_comment = Lexing_util.lex_comment
 let lex_quotation = Lexing_util.lex_quotation
-let lex_antiquot = Lexing_util.lex_antiquot
 let buff_contents = Lexing_util.buff_contents
 let err = Lexing_util.err
 let warn = Lexing_util.warn

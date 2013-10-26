@@ -72,7 +72,6 @@ Lexing_util:
   lex_string
   lex_comment
   lex_quotation
-  lex_antiquot
   buff_contents
   err
   warn
@@ -243,7 +242,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
             retract =  1 ;
             cxt = None}
      end}
-    | "${" as txt  %{     (* $(xxxx)*)
+    | "${" as txt  %{    
       let old = lexbuf.lex_start_p in
       let c = new_cxt () in
       begin
