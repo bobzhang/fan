@@ -184,5 +184,5 @@ let transform_mtyps  (lst:mtyps)=
 
 
 (* local variables: *)
-(* compile-command: "cd .. && pmake main_annot/fSigUtil.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/sigs_util.cmo" *)
 (* end: *)

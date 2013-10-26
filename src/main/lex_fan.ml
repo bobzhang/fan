@@ -221,13 +221,14 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
    | '$' %{
        let  dollar (c:Lexing_util.context) : Lexing.lexbuf -> Tokenf.t  =
          %lex{
-         | ( identchar* as name) ':' (antifollowident as x) %{
+         | ( identchar* as name) ':'  antifollowident as txt  %{
              begin
-               let old = 
-                 let v = lexbuf.lex_start_p in
-                 {v with pos_cnum = v.pos_cnum + String.length name + 1 } in
-               let loc = old -- lexbuf.lex_curr_p in
-               `Ant{loc; kind = name; txt = x; shift = 0; retract = 0; cxt = None}
+               `Ant{loc = !!lexbuf;
+                    kind = name;
+                    txt ;
+                    shift =  String.length name +  1;
+                    retract = 0;
+                    cxt = None}
              end}
          | lident as txt  %{
            `Ant{kind =""; txt ;loc = !!lexbuf; shift = 0; retract = 0; cxt = None}}

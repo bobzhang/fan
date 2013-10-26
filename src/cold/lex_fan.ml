@@ -6857,23 +6857,16 @@ let token: Lexing.lexbuf -> Tokenf.t =
                        Lexing.sub_lexeme lexbuf
                          (lexbuf.Lexing.lex_start_pos + 0)
                          (((lexbuf.Lexing.lex_mem).(0)) + 0)
-                     and x =
+                     and txt =
                        Lexing.sub_lexeme lexbuf
-                         (((lexbuf.Lexing.lex_mem).(0)) + 1)
+                         (lexbuf.Lexing.lex_start_pos + 0)
                          (lexbuf.Lexing.lex_curr_pos + 0) in
-                     let old =
-                       let v = lexbuf.lex_start_p in
-                       {
-                         v with
-                         pos_cnum = ((v.pos_cnum + (String.length name)) + 1)
-                       } in
-                     let loc = old -- lexbuf.lex_curr_p in
                      `Ant
                        {
-                         loc;
+                         loc = (!! lexbuf);
                          kind = name;
-                         txt = x;
-                         shift = 0;
+                         txt;
+                         shift = ((String.length name) + 1);
                          retract = 0;
                          cxt = None
                        }
