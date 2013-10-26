@@ -92,13 +92,13 @@ let (gen_map,gen_map2) =
           (params |> List.map (fun (x:Ctyp.ty_info) -> x.ep0)) ) in 
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
-              %exp-{let ${pat: (x.ep0:>pat)} = ${x.info_exp} in $res })  params (result:>exp) in
+              %exp-{let $pat{ (x.ep0:>pat)} = ${x.info_exp} in $res })  params (result:>exp) in
   let mk_tuple params =
     let result = 
       params |> List.map (fun (x:Ctyp.ty_info) ->x.ep0) |> tuple_com in
     List.fold_right
       (fun (x:Ctyp.ty_info) res ->
-        %exp-{ let ${pat:(x.ep0:>pat)} = ${x.info_exp} in $res }) params (result:>exp) in 
+        %exp-{ let $pat{(x.ep0:>pat)} = ${x.info_exp} in $res }) params (result:>exp) in 
   let mk_record cols =
     (* (->label,info.exp0) *)
     let result = 
@@ -393,7 +393,7 @@ let generate (mtyps:mtyps) : stru =
         let pats =
           (%pat-{ _loc} :: Listf.init (arity - 1) (const %pat-{_}) ) in
         let case =
-          %case-{ $vrn:key ${pat:(tuple_com pats)} -> _loc } in
+          %case-{ $vrn:key $pat{(tuple_com pats)} -> _loc } in
         match acc with
         |None -> Some case
         |Some acc -> Some(%case-{ $case | $acc })
@@ -449,7 +449,7 @@ Typehook.register
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
     %stru-{
-    let ${lid:"map_"^f} f = object
+    let $lid{"map_"^f} f = object
       inherit map as super
       method! $lid:f x = f (super#$lid:f x)
     end } in
@@ -464,7 +464,7 @@ Typehook.register
 let generate (mtyps:mtyps) : stru =
   let aux (f:string) : stru  =
     %stru-{  (** BOOTSTRAPING, associated with module [Formatf] *)
-    let ${lid:"dump_"^f}  = Formatf.to_string dump#$lid:f  } in
+    let $lid{"dump_"^f}  = Formatf.to_string dump#$lid:f  } in
     sem
       %stru-{let dump = new print}
       (stru_from_ty ~f:aux mtyps);;  

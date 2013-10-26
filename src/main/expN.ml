@@ -60,9 +60,9 @@ let mee_of_str s = (*    BOOTSTRAPING *)
   let len = String.length s in
   if s.[0]='`' then
     let s = String.sub s 1 (len - 1) in 
-    %exp-{%exp'{${vrn:($str:s)}}}
+    %exp-{%exp'{$vrn{($str:s)}}}
   else
-     %exp-{ %exp'{ ${uid:$str:s} } } 
+     %exp-{ %exp'{ $uid{$str:s} } } 
 
 
 
@@ -71,13 +71,13 @@ let mk_tuple_ee = function (* BOOTSTRAPPING *)
   | [x] -> x
   | xs  ->
       let v = Listf.reduce_right mee_comma xs in
-      %exp-{ %exp'{ ${par:($v)}}}
+      %exp-{ %exp'{ $par{($v)}}}
 
 
   
 
 let mee_record_col label exp =
-  %exp-{ %rec_exp'{ ${lid:($str:label)} = ${$exp} }} 
+  %exp-{ %rec_exp'{ $lid{($str:label)} = ${$exp} }} 
 
 
 let mee_record_semi a b = %exp-{ %rec_exp'{ ${$a};${$b} } }

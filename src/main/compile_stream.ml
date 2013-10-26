@@ -39,12 +39,12 @@ let gm () = !grammar_module_name
     
 let strm_n = "__strm"
 
-let peek_fun _loc = %{ ${uid:gm()}.peek }
+let peek_fun _loc = %{ $uid{gm()}.peek }
     
-let junk_fun _loc = %{ ${uid:gm()}.junk }
+let junk_fun _loc = %{ $uid{gm()}.junk }
 
 
-let empty _loc =  %{ ${uid:gm()}.sempty }
+let empty _loc =  %{ $uid{gm()}.sempty }
 
 (* Predicate whether the expression is a constructor application *)    
 let rec  is_constr_apply a =
@@ -115,21 +115,21 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
         if %p{%{raise $uid:m.NotConsumed} when m = gm() }  ckont || handle_failure e then
           e
         else
-          %{ try $e with | ${uid:gm()}.NotConsumed -> $ckont  }
+          %{ try $e with | $uid{gm()}.NotConsumed -> $ckont  }
       else
         if %p{%{raise $uid:m.NotConsumed} when m = gm() } ckont then
           %{ let $p = $e in $skont }
         else
           if pat_eq_exp %pat{ Some $p } skont then
-            %{ try Some $e with | ${uid:gm()}.NotConsumed -> $ckont  }
+            %{ try Some $e with | $uid{gm()}.NotConsumed -> $ckont  }
           else
             if %p{ %{raise $_}}  ckont then
               let tst =
                 if handle_failure e then e
-                else %{ try $e with | ${uid:gm()}.NotConsumed -> $ckont  }  in
+                else %{ try $e with | $uid{gm()}.NotConsumed -> $ckont  }  in
               %{ let $p = $tst in $skont }
             else
-              %{match (try Some $e with | ${uid:gm()}.NotConsumed -> None)  with
+              %{match (try Some $e with | $uid{gm()}.NotConsumed -> None)  with
               | Some $p -> $skont
               | _ -> $ckont  }
   | Str (_loc, p) ->
@@ -148,7 +148,7 @@ let stream_pattern_component (skont : exp) (ckont : exp) (x:spat_comp) : exp =
         | %{ let $rec:rf $bi in $e } ->
             %{ let $rec:rf ${subst_bind v bi} in ${subst v e} }
         | %{ $e1 $e2 } -> %{ ${subst v e1} ${subst v e2} }
-        | %{ ( $par:e ) } -> %{ ( ${par:subst v e} ) }
+        | %{ ( $par:e ) } -> %{ ( $par{subst v e} ) }
         | %{ $e1, $e2 } -> %{ ${subst v e1}, ${subst v e2} }
         | _ -> raise Not_found 
       and subst_bind v =  function
@@ -171,7 +171,7 @@ let rec stream_pattern _loc
   match x with 
   | [] ->
       (match epo with
-      | Some ep -> %{ let $ep = ${uid:gm()}.count $lid:strm_n in $e }
+      | Some ep -> %{ let $ep = $uid{gm()}.count $lid:strm_n in $e }
       | _ -> e )
   | (spc, err) :: spcl ->
       let skont =
@@ -180,7 +180,7 @@ let rec stream_pattern _loc
             match err with
             | Some estr -> estr
             | _ -> %{ "" }  in
-          %{ raise (${uid:gm()}.Error $str) } in
+          %{ raise ($uid{gm()}.Error $str) } in
         stream_pattern _loc (spcl,epo, e) ekont0 in
       let ckont = ekont err in
       stream_pattern_component skont ckont spc 
@@ -204,7 +204,7 @@ let stream_patterns_term _loc (ekont:unit -> exp) tspel : exp =
               match err with
               | Some estr -> estr
               | _ -> %{ "" }  in
-            %{ raise (${uid:gm()}.Error $str) } in
+            %{ raise ($uid{gm()}.Error $str) } in
           let skont = stream_pattern _loc (spcl, epo, e) ekont  in
           %{ begin  ${junk_fun _loc} $lid:strm_n; $skont  end } in
           match w with
@@ -217,7 +217,7 @@ let stream_patterns_term _loc (ekont:unit -> exp) tspel : exp =
   
 let rec parser_cases _loc (x:stream_cases) =
   match x with 
-  | [] -> %{ raise ${uid:gm()}.NotConsumed }
+  | [] -> %{ raise $uid{gm()}.NotConsumed }
   | spel ->
       match group_terms spel with
       | ([], x :: spel) ->
@@ -228,7 +228,7 @@ let rec parser_cases _loc (x:stream_cases) =
 (* it call [parser_cases] *)  
 let cparser _loc  pc =
   let e = parser_cases _loc pc in
-  let p = %pat{ ($lid:strm_n : _ ${uid:gm()}.t ) } in
+  let p = %pat{ ($lid:strm_n : _ $uid{gm()}.t ) } in
   %{ fun $p -> $e } 
 
 (* mainly used in inline (fun __x -> y) e
@@ -284,21 +284,21 @@ let slazy _loc e =
 (* FIXME horrible error message *)
 let rec cstream gloc =  function
   | [] -> let _loc = gloc in
-      %{ ${uid:gm()}.sempty }
+      %{ $uid{gm()}.sempty }
   | [Trm (_loc, e)] ->
       if not_computing e
-      then %{ ${uid:gm()}.ising $e }
-      else %{ ${uid:gm()}.lsing ${slazy _loc e} }
+      then %{ $uid{gm()}.ising $e }
+      else %{ $uid{gm()}.lsing ${slazy _loc e} }
   | Trm (_loc, e) :: secl ->
       if not_computing e
-      then %{ ${uid:gm()}.icons $e ${cstream gloc secl} }
-      else %{ ${uid:gm()}.lcons ${slazy _loc e} ${cstream gloc secl} }
+      then %{ $uid{gm()}.icons $e ${cstream gloc secl} }
+      else %{ $uid{gm()}.lcons ${slazy _loc e} ${cstream gloc secl} }
   | [Ntr (_loc, e)] ->
       if not_computing e then e
-      else %{ ${uid:gm()}.slazy ${slazy _loc e} }
+      else %{ $uid{gm()}.slazy ${slazy _loc e} }
   | Ntr (_loc, e) :: secl ->
-      if not_computing e then %{ ${uid:gm()}.iapp $e ${cstream gloc secl} }
-      else %{ ${uid:gm()}.lapp ${slazy _loc e} ${cstream gloc secl} } 
+      if not_computing e then %{ $uid{gm()}.iapp $e ${cstream gloc secl} }
+      else %{ $uid{gm()}.lapp ${slazy _loc e} ${cstream gloc secl} } 
           
 
 (* local variables: *)

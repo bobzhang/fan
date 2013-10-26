@@ -23,7 +23,7 @@ let antiquot_expander ~parse_pat ~parse_exp = object
       |(("uid" | "lid" | "par" | "seq"
       |"flo" |"int" | "int32" | "int64" |"nativeint"
       |"chr" |"str" as x),_) | (("vrn" as x), Some ("exp" |"pat")) ->
-           %{${vrn:String.capitalize x} $e }
+           %{$vrn{String.capitalize x} $e }
       | ("nativeint'",_)  ->
           let e = %{ Nativeint.to_string $e } in
           %{ `Nativeint  $e }

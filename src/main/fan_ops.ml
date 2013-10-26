@@ -363,12 +363,12 @@ let rec to_lid = function
  *)  
 let mkumin loc prefix arg = with exp 
   match arg with
-  | %{ $int:n } -> %@loc{ ${int:Stringf.neg n} }
-  | %{ $int32:n } -> %@loc{ ${int32:Stringf.neg n} }
-  | %{ $int64:n } -> %@loc{ ${int64:Stringf.neg n} }
-  | %{ $nativeint:n } -> %@loc{ ${nativeint:Stringf.neg n} }
-  | %{ $flo:n } -> %@loc{ ${flo:Stringf.neg n} }
-  | _ -> %@loc{ ${lid:"~" ^ prefix} $arg }
+  | %{ $int:n } -> %@loc{ $int{Stringf.neg n} }
+  | %{ $int32:n } -> %@loc{ $int32{Stringf.neg n} }
+  | %{ $int64:n } -> %@loc{ $int64{Stringf.neg n} }
+  | %{ $nativeint:n } -> %@loc{ $nativeint{Stringf.neg n} }
+  | %{ $flo:n } -> %@loc{ $flo{Stringf.neg n} }
+  | _ -> %@loc{ $lid{"~" ^ prefix} $arg }
 
 (* %exp{assert l}*)      
 (* let mkassert loc =  with exp fun *)

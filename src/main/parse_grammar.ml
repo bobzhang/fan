@@ -300,7 +300,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 
   |  name{n};  OPT level_str{lev} %{
         [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
-          ~styp:(%ctyp'{'${lid:n.tvar}}) ~pattern:None ]}
+          ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None ]}
   (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)

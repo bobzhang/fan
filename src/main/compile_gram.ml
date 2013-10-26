@@ -86,8 +86,8 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
     | `Skeyword (_loc, kwd) ->  %{ `Skeyword $str:kwd }
     | `Snterm (_loc, n, lev) ->
         let obj =
-          %{ (${id:gm()}.obj
-                (${n.exp} : '${lid:n.tvar} ${id:(gm(): vid :> ident)}.t ))} in 
+          %{ ($id{gm()}.obj
+                (${n.exp} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
         | Some lab -> %{ `Snterml ($obj,$str:lab)}
         | None ->
@@ -119,7 +119,7 @@ and make_exp_rules (_loc:loc)
 let make_action (_loc:loc)
     (x:Gram_def.rule)
     (rtvar:string)  : exp = 
-  let locid = %pat{ ${lid:!Locf.name} } in 
+  let locid = %pat{ $lid{!Locf.name} } in 
   let act = Option.default %exp{()} x.action in
   (* collect the patterns *)
   let (_,tok_match_pl) =
@@ -160,7 +160,7 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
         match s.pattern with
-        |Some %pat'{ ($_ ${par:%pat@_{ _ }} as $p) } ->
+        |Some %pat'{ ($_ $par{%pat@_{ _ }} as $p) } ->
             let p = typing (p:alident :> pat) (make_ctyp s.styp rtvar)  in
             %exp{ fun $p -> $txt }
         | Some p when is_irrefut_pat p ->
@@ -168,10 +168,10 @@ let make_action (_loc:loc)
             %exp{ fun $p -> $txt }
         | Some _ ->
             let p =
-              typing %pat{ ${lid:prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
+              typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
             %exp{ fun $p -> $txt }
         | None -> %exp{ fun _ -> $txt })  e x.prod in
-  %exp{ ${id:(gm())}.mk_action $txt }
+  %exp{ $id{(gm())}.mk_action $txt }
 
 
   
@@ -188,7 +188,7 @@ let make_action (_loc:loc)
 let make_extend safe  (e:Gram_def.entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
-    %exp{(${e.name.exp}:'${lid:e.name.tvar} ${id:(gm():vid :> ident)}.t)  }   in
+    %exp{(${e.name.exp}:'$lid{e.name.tvar} $id{(gm():vid :> ident)}.t)  }   in
   let pos =
     match e.pos with
     | Some pos -> %exp{Some $pos} 
@@ -217,14 +217,14 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
   |`Single l ->
       let f =
         if safe then
-          %exp{${id:gm()}.extend_single}
-        else %exp{${id:gm()}.unsafe_extend_single} in
+          %exp{$id{gm()}.extend_single}
+        else %exp{$id{gm()}.unsafe_extend_single} in
         %exp{$f $ent ($pos, ${apply l})}
   |`Group ls ->
       let txt = list_of_list _loc (List.map apply ls) in
       let f =
-        if safe then %exp{${id:gm()}.extend}
-        else %exp{${id:gm()}.unsafe_extend} in
+        if safe then %exp{$id{gm()}.extend}
+        else %exp{$id{gm()}.unsafe_extend} in
       %exp{$f $ent ($pos,$txt)}
 
 
@@ -272,14 +272,14 @@ let combine _loc (gram: vid option ) locals  extends  =
     match gram with
     | Some g ->
         let g = (g:vid :> exp) in
-        %exp{ ${id:gm()}.mk_dynamic $g }
+        %exp{ $id{gm()}.mk_dynamic $g }
     | None -> 
-        %exp{ ${id:gm()}.mk } in
+        %exp{ $id{gm()}.mk } in
   let local_bind_of_name (x:Gram_def.name) =
     match (x:Gram_def.name) with 
     | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
         %bind{ $lid:i =
-               (grammar_entry_create $str:i : '$lid:x ${id:(gm():vid :> ident)}.t )}
+               (grammar_entry_create $str:i : '$lid:x $id{(gm():vid :> ident)}.t )}
     | {exp;_} -> failwithf "internal error in the Grammar extension %s"
           (Objs.dump_exp exp)   in
   match locals with

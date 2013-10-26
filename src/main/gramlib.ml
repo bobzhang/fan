@@ -5,7 +5,7 @@
 let setup_op_parser entry p =
   Gramf.setup_parser entry
     (%parser{| (`Key x | `Sym x) when p x.txt  ->
-      let _loc = x.loc in %exp{ ${lid:x.txt} }})
+      let _loc = x.loc in %exp{ $lid{x.txt} }})
 
 
 let symbolchars =

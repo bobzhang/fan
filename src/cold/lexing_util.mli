@@ -97,7 +97,7 @@ val lex_string : context -> Lexing.lexbuf -> unit
    The "$" should not be there. "()" is returned for $()
    
  *)    
-(* val lex_antiquot : context -> Lexing.lexbuf -> unit *)
+
 
 (**
    called by [lex_antiquot], [token]

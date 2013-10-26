@@ -72,7 +72,7 @@ let (map_clfield_base_1,
               let exp = %exp{fun _ _ -> self } in
               %{ method $lid:x : $ty = $exp } ) in
   let v5 = ty_names |> List.map (fun x ->
-    let exp = %exp{${lid:"pp_print_"^x}} in
+    let exp = %exp{$lid{"pp_print_"^x}} in
     %{ method $lid:x  = $exp  } ) in
   let v6 = ty_names |> List.map
     (fun x ->

@@ -226,7 +226,7 @@ let  token : Lexing.lexbuf -> Tokenf.t  =
           cxt = None}}
    | '$' lident as txt  %{
      `Ant{kind =""; txt ;loc = !!lexbuf; shift = 1; retract = 0; cxt = None}}
-   | "${"   (identchar* as name) ':' as txt  %{
+   | "$" ( lident as name) "{"    (* ':' *) as txt  %{
      let old = lexbuf.lex_start_p in
      let c = new_cxt () in
      begin
