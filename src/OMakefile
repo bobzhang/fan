@@ -73,7 +73,7 @@ NATIVE_ENABLED = true
 FAN_LEX_LIB_FILES = \
     lexing_util  flex_lib lex_lex \
     lex_fan \
-    # lex_fan2
+
     
 FAN_FILES = \
     $(FAN_LEX_LIB_FILES) ast_gen ant antN ast_loc  ast_inject  astn_util \
@@ -332,7 +332,8 @@ snapshot: :exists: fan0
 hottop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma main_annot/liblex.cma main_annot/libmain_top.cma
     
 coldtop:utils/libutils.cma common/libcommon.cma treeparser/libtreeparser.cma cold/liblex.cma cold/libmain_top.cma
-    
+
+.DEFAULT: fan coldtop    
 clean:
     rm -rf $(OCAMLBIN_EXT)
     rm -rf fan fan0 fan1

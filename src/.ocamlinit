@@ -43,13 +43,13 @@ let pp =fprintf
 let f = std_formatter;;
 open Fan;;
 open Fan_top;;
-open FanUtil;;
+
 open Gstructure;;
 
 (* let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();; *)
 
 open Syntaxf;;
-let t e s = Fgram.parse_string e  s;;
+let t e s = Gramf.parse_string e  s;;
 let normal () = begin
   Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 end;;
@@ -68,7 +68,7 @@ open Parse_fan;;
 (* open Inspect;; *)
 (* let view a= Dot.dump_to_file "test.dot"a;; *)
 #install_printer print_tree;;
-#install_printer Fgram.dump;;
+#install_printer Gramf.dump;;
 #install_printer Location_util.fmt_position;;
 (* #install_printer p_type_declaration;; *)
 

@@ -20,8 +20,8 @@ let rec fib = function
 
 let fibm  y =
   match y with
-  | %exp{$int:x}  -> %exp{ $int'{fib (int_of_string x)}}
-  |  x -> let _loc = loc_of x in %exp{ fib $x } ;;
+  | %exp{$int:x}  -> %exp{ $int'{fib @@ int_of_string x }}
+  |  x -> let _loc = loc_of x in %exp{fib $x } ;;
 
 register_macro ("FIB",fibm);;      
 
@@ -41,5 +41,5 @@ end
 (* Ast_filters.register_stru_filter ("macro", macro_expander#stru);   *)
 
 (* local variables: *)
-(* compile-command: "cd ../main_annot && pmake ast_macros.cmo" *)
+(* compile-command: "cd .. && pmake main_annot/ast_macros.cmo" *)
 (* end: *)
