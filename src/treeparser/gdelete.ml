@@ -45,11 +45,11 @@ let removing _gram _kwd =  ()
    `Snterml _ _ => `Snterml(_,_)
  *)
 let rec decr_keyw_use gram = function (* gram ->symbol -> unit*)
-  | `Skeyword kwd -> removing gram kwd
-  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> decr_keyw_use gram s
+  | `Keyword kwd -> removing gram kwd
+  | `Slist0 s | `Slist1 s | `Opt s | `Try s | `Peek s -> decr_keyw_use gram s
   | `Slist0sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
   | `Slist1sep (s1, s2) -> begin  decr_keyw_use gram s1; decr_keyw_use gram s2  end
-  | `Sself | `Snterm _ | `Snterml (_, _) | `Stoken _ -> () 
+  | `Self | `Nterm _ | `Snterml (_, _) | `Token _ -> () 
 and decr_keyw_use_in_tree gram =  function
   | DeadEnd | LocAct (_, _) -> ()
   | Node n -> begin
@@ -94,8 +94,8 @@ let rec delete_rule_in_prefix entry symbols = function
 
 let  delete_rule_in_level_list entry symbols levs =
   match symbols with
-  | `Sself :: symbols -> delete_rule_in_suffix entry symbols levs
-  | `Snterm e :: symbols when e == entry ->
+  | `Self :: symbols -> delete_rule_in_suffix entry symbols levs
+  | `Nterm e :: symbols when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs 
 

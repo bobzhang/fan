@@ -8,7 +8,7 @@ let _ =
   Gramf.extend_single (a_lident : 'a_lident Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -21,7 +21,7 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -34,7 +34,7 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid s")],
           ("`Lid (_loc, s)\n",
@@ -49,8 +49,8 @@ let _ =
   Gramf.extend_single (nonterminalsclear : 'nonterminalsclear Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
-          `Slist1 (`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))],
+        [([`Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
+          `Slist1 (`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t )))],
            ("(ls |>\n   (List.map\n      (fun (x : alident)  ->\n         let x = (x : alident  :>exp) in\n         let _loc = loc_of x in\n         (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"clear\")))), x) : \n           FAst.exp ))))\n  |> seq_sem\n",
              (Gramf.mk_action
                 (fun (ls : 'a_lident list)  (t : 'qualuid)  (_loc : Locf.t) 
@@ -68,11 +68,11 @@ let _ =
   Gramf.extend_single (qualuid : 'qualuid Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid x");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.t) 
@@ -83,7 +83,7 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid x")],
           ("`Uid (_loc, x)\n",

@@ -7,8 +7,8 @@ let _ =
   Gramf.extend_single (stream_exp : 'stream_exp Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "!";
-          `Stoken
+        [([`Keyword "!";
+          `Token
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid n")],
            ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
@@ -21,11 +21,11 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-        ([`Skeyword "!";
-         `Stoken
+        ([`Keyword "!";
+         `Token
            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
              "`Uid n");
-         `Snterm
+         `Nterm
            (Gramf.obj (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
           ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
             (Gramf.mk_action
@@ -38,7 +38,7 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
           ("cstream _loc sel\n",
@@ -53,12 +53,12 @@ let _ =
   Gramf.extend_single (stream_exp_comp : 'stream_exp_comp Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(Trm (_loc, e) : Compile_stream.sexp_comp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (_loc : Locf.t)  ->
                    ((Trm (_loc, e) : Compile_stream.sexp_comp ) : 'stream_exp_comp )))));
-        ([`Skeyword "'"; `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        ([`Keyword "'"; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
           ("Ntr (_loc, e)\n",
             (Gramf.mk_action
                (fun (e : 'exp)  _  (_loc : Locf.t)  ->
@@ -66,21 +66,21 @@ let _ =
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+        [([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
+          `Keyword ";";
+          `Self],
            ("se :: sel\n",
              (Gramf.mk_action
                 (fun (sel : 'stream_exp_comp_list)  _ 
                    (se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se ::
                    sel : 'stream_exp_comp_list )))));
-        ([`Snterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
-         `Skeyword ";"],
+        ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
+         `Keyword ";"],
           ("[se]\n",
             (Gramf.mk_action
                (fun _  (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
                   ([se] : 'stream_exp_comp_list )))));
-        ([`Snterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ))],
+        ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ))],
           ("[se]\n",
             (Gramf.mk_action
                (fun (se : 'stream_exp_comp)  (_loc : Locf.t)  ->

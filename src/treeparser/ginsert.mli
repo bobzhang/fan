@@ -31,7 +31,7 @@ val check_gram : entry -> symbol -> unit
     in most cases *)
 val using_symbol : symbol -> string list -> string list
     
-val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
+val get_initial : ([> `Self ] as 'a) list -> bool * 'a list
 
 
 (** given an  [production] and  a [tree], return a new [tree]
@@ -39,19 +39,19 @@ val get_initial : ([> `Sself ] as 'a) list -> bool * 'a list
 
     {[
 
-    Ginsert.add_production ([`Sself;`Skeyword "x";`Skeyword "y"],
+    Ginsert.add_production ([`Self;`Keyword "x";`Keyword "y"],
     ("",Gaction.mk (fun _ -> ""))) DeadEnd;;
     - : Gstructure.tree = `-S---"x"---"y"---.
     without pretty printer 
     - : Grammar.Gstructure.tree =
     Node
-    {node = `Sself;
+    {node = `Self;
       son =
      Node
-    {node = `Skeyword "x";
+    {node = `Keyword "x";
        son =
     Node
-    {node = `Skeyword "y"; son = LocAct (<abstr>, []); brother = DeadEnd};
+    {node = `Keyword "y"; son = LocAct (<abstr>, []); brother = DeadEnd};
     brother = DeadEnd};
     brother = DeadEnd}
    ]}

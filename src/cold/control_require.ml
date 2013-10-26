@@ -9,8 +9,8 @@ let () =
     Gramf.unsafe_extend_single (item : 'item Gramf.t )
       (None,
         (None, None,
-          [([`Skeyword "require";
-            `Stoken
+          [([`Keyword "require";
+            `Token
               (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                 "`Str s")],
              ("add s\n",

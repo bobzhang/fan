@@ -19,7 +19,7 @@ let mk_level ~label  ~assoc  ~rules  =
 let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
-let mk_slist loc min sep symb = `Slist (loc, min, symb, sep)
+let mk_slist loc min sep symb = `List (loc, min, symb, sep)
 let new_type_var =
   let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
 let gensym = let i = ref 0 in fun ()  -> incr i; i
@@ -45,7 +45,7 @@ let make_ctyp (styp : Gram_def.styp) tvar =
 let rec make_exp (tvar : string) (x : Gram_def.text) =
   let rec aux tvar (x : Gram_def.text) =
     match x with
-    | `Slist (_loc,min,t,ts) ->
+    | `List (_loc,min,t,ts) ->
         let txt = aux "" t.text in
         (match ts with
          | None  ->
@@ -63,11 +63,11 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
                (`App
                   (_loc, (`Vrn (_loc, "Slist0sep")),
                     (`Par (_loc, (`Com (_loc, txt, x))))) : FAst.exp ))
-    | `Sself _loc -> (`Vrn (_loc, "Sself") : FAst.exp )
-    | `Skeyword (_loc,kwd) ->
-        (`App (_loc, (`Vrn (_loc, "Skeyword")), (`Str (_loc, kwd))) : 
+    | `Self _loc -> (`Vrn (_loc, "Self") : FAst.exp )
+    | `Keyword (_loc,kwd) ->
+        (`App (_loc, (`Vrn (_loc, "Keyword")), (`Str (_loc, kwd))) : 
         FAst.exp )
-    | `Snterm (_loc,n,lev) ->
+    | `Nterm (_loc,n,lev) ->
         let obj: FAst.exp =
           `App
             (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
@@ -87,17 +87,17 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
              FAst.exp )
          | None  ->
              if n.tvar = tvar
-             then (`Vrn (_loc, "Sself") : FAst.exp )
-             else (`App (_loc, (`Vrn (_loc, "Snterm")), obj) : FAst.exp ))
-    | `Sopt (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Sopt")), (aux "" t)) : FAst.exp )
-    | `Stry (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Stry")), (aux "" t)) : FAst.exp )
-    | `Speek (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Speek")), (aux "" t)) : FAst.exp )
-    | `Stoken (_loc,match_fun,mdescr,mstr) ->
+             then (`Vrn (_loc, "Self") : FAst.exp )
+             else (`App (_loc, (`Vrn (_loc, "Nterm")), obj) : FAst.exp ))
+    | `Opt (_loc,t) ->
+        (`App (_loc, (`Vrn (_loc, "Opt")), (aux "" t)) : FAst.exp )
+    | `Try (_loc,t) ->
+        (`App (_loc, (`Vrn (_loc, "Try")), (aux "" t)) : FAst.exp )
+    | `Peek (_loc,t) ->
+        (`App (_loc, (`Vrn (_loc, "Peek")), (aux "" t)) : FAst.exp )
+    | `Token (_loc,match_fun,mdescr,mstr) ->
         (`App
-           (_loc, (`Vrn (_loc, "Stoken")),
+           (_loc, (`Vrn (_loc, "Token")),
              (`Par
                 (_loc,
                   (`Com
@@ -129,11 +129,11 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
      Listf.fold_lefti
        (fun i  ((oe,op) as ep)  x  ->
           match (x : Gram_def.symbol ) with
-          | { pattern = Some p; text = `Stoken _;_} when
+          | { pattern = Some p; text = `Token _;_} when
               not (is_irrefut_pat p) ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-          | { pattern = Some p; text = `Skeyword _;_} ->
+          | { pattern = Some p; text = `Keyword _;_} ->
               let id = prefix ^ (string_of_int i) in
               (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
           | _ -> ep) ([], []) x.prod in

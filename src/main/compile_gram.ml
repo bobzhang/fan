@@ -42,7 +42,7 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
   ({ text;styp;pattern}:Gram_def.symbol)
 
 (* given the entry of the name, make a name *)
-let mk_slist loc min sep symb = `Slist (loc, min, symb, sep) 
+let mk_slist loc min sep symb = `List (loc, min, symb, sep) 
 
 let new_type_var = 
   let i = ref 0 in fun () -> begin
@@ -77,28 +77,28 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
   with exp
   let rec aux tvar (x:Gram_def.text) =
     match x with
-    | `Slist (_loc, min, t, ts) ->
+    | `List (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         (match  ts with
         |  None -> if min then  %{ `Slist1 $txt } else %{ `Slist0 $txt } 
         | Some s ->
             let x = aux tvar s.text in
             if min then %{ `Slist1sep ($txt,$x)} else %{ `Slist0sep ($txt,$x) })
-    | `Sself _loc ->  %{ `Sself}
-    | `Skeyword (_loc, kwd) ->  %{ `Skeyword $str:kwd }
-    | `Snterm (_loc, n, lev) ->
+    | `Self _loc ->  %{ `Self}
+    | `Keyword (_loc, kwd) ->  %{ `Keyword $str:kwd }
+    | `Nterm (_loc, n, lev) ->
         let obj =
           %{ ($id{gm()}.obj
                 (${n.exp} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
         | Some lab -> %{ `Snterml ($obj,$str:lab)}
         | None ->
-           if n.tvar = tvar then %{ `Sself} else %{ `Snterm $obj })
-    | `Sopt (_loc, t) -> %{ `Sopt ${aux "" t} }
-    | `Stry (_loc, t) -> %{ `Stry ${aux "" t} }
-    | `Speek (_loc, t) -> %{ `Speek ${aux "" t} }
-    | `Stoken (_loc, match_fun,  mdescr, mstr ) ->
-        %{`Stoken ($match_fun, $mdescr, $str:mstr)} in
+           if n.tvar = tvar then %{ `Self} else %{ `Nterm $obj })
+    | `Opt (_loc, t) -> %{ `Opt ${aux "" t} }
+    | `Try (_loc, t) -> %{ `Try ${aux "" t} }
+    | `Peek (_loc, t) -> %{ `Peek ${aux "" t} }
+    | `Token (_loc, match_fun,  mdescr, mstr ) ->
+        %{`Token ($match_fun, $mdescr, $str:mstr)} in
   aux  tvar x
 
 
@@ -128,10 +128,10 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i ((oe,op) as ep)  x ->
         match (x:Gram_def.symbol) with 
-        | {pattern=Some p ; text=`Stoken _;_ } when not (is_irrefut_pat p)->
+        | {pattern=Some p ; text=`Token _;_ } when not (is_irrefut_pat p)->
             let id = prefix ^ string_of_int i in
             ( %exp{$lid:id} :: oe, p:: op)
-        | {pattern = Some p; text = `Skeyword _; _} ->
+        | {pattern = Some p; text = `Keyword _; _} ->
             let id = prefix ^ string_of_int i in 
             (%exp{$lid:id}::oe, p :: op) (* TO be improved*)
         | _ ->  ep   ) ([],[])  x.prod in

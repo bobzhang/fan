@@ -61,21 +61,21 @@ class text_grammar : grammar_print = object(self:'self)
     | `Slist1 s -> pp f "L1 %a" self#symbol1 s
     | `Slist1sep (s, t) ->
         pp f "L1 %a SEP %a" self#symbol1 s self#symbol1 t
-    | `Sopt s -> pp f "OPT %a" self#symbol1 s
-    | `Stry s -> pp f "TRY %a" self#symbol1 s
-    | `Speek s -> pp f "PEEK %a" self#symbol1 s 
+    | `Opt s -> pp f "OPT %a" self#symbol1 s
+    | `Try s -> pp f "TRY %a" self#symbol1 s
+    | `Peek s -> pp f "PEEK %a" self#symbol1 s 
     | `Snterml (e, l) -> pp f "%s Level %S" e.name l
-    | `Snterm _  | `Sself  | `Stoken _ | `Skeyword _ as s ->
+    | `Nterm _  | `Self  | `Token _ | `Keyword _ as s ->
         self#symbol1 f s 
           
   method symbol1 f x =
     match (x:symbol) with 
-    | `Snterm e -> pp f "%s" e.name
-    | `Sself -> pp f "%s" "S"
-    | `Stoken (_,_,descr) -> pp f "%s" descr
-    | `Skeyword s -> pp f "%S" s
+    | `Nterm e -> pp f "%s" e.name
+    | `Self -> pp f "%s" "S"
+    | `Token (_,_,descr) -> pp f "%s" descr
+    | `Keyword s -> pp f "%S" s
     | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
-      `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Speek _ as s ->
+      `Slist1sep (_, _) | `Opt _ | `Try _ | `Peek _ as s ->
         pp f "(%a)" self#symbol s
   method production 
       f ((symbols,(annot,_action)):production) =

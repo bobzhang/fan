@@ -35,18 +35,18 @@ let _ =
   Gramf.extend_single (lex : 'lex Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "|";
+        [([`Keyword "|";
           `Slist0sep
-            ((`Snterm (Gramf.obj (case : 'case Gramf.t ))), (`Skeyword "|"))],
+            ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
            ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = false; clauses = l })\n",
              (Gramf.mk_action
                 (fun (l : 'case list)  _  (_loc : Locf.t)  ->
                    (Compile_lex.output_entry @@
                       (Lexgen.make_single_dfa
                          { shortest = false; clauses = l }) : 'lex )))));
-        ([`Skeyword "<";
+        ([`Keyword "<";
          `Slist0sep
-           ((`Snterm (Gramf.obj (case : 'case Gramf.t ))), (`Skeyword "|"))],
+           ((`Nterm (Gramf.obj (case : 'case Gramf.t ))), (`Keyword "|"))],
           ("Compile_lex.output_entry @@\n  (Lexgen.make_single_dfa { shortest = true; clauses = l })\n",
             (Gramf.mk_action
                (fun (l : 'case list)  _  (_loc : Locf.t)  ->
@@ -56,8 +56,8 @@ let _ =
   Gramf.extend_single (case : 'case Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (regexp : 'regexp Gramf.t ));
-          `Stoken
+        [([`Nterm (Gramf.obj (regexp : 'regexp Gramf.t ));
+          `Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],
            ("let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\nlet e = Tokenf.quot_expand expander x in (r, e)\n",
@@ -75,12 +75,12 @@ let _ =
   Gramf.extend_single (declare_regexp : 'declare_regexp Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "let";
-          `Stoken
+        [([`Keyword "let";
+          `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x");
-          `Skeyword "=";
-          `Snterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
+          `Keyword "=";
+          `Nterm (Gramf.obj (regexp : 'regexp Gramf.t ))],
            ("if Hashtbl.mem named_regexps x\nthen\n  (Printf.eprintf\n     \"fanlex (warning): multiple definition of named regexp '%s'\n\" x;\n   exit 2)\nelse\n  (Hashtbl.add named_regexps x r;\n   (`StExp (_loc, (`Uid (_loc, \"()\"))) : FAst.stru ))\n",
              (Gramf.mk_action
                 (fun (r : 'regexp)  _  (__fan_1 : Tokenf.t)  _ 
@@ -100,7 +100,7 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-        ([`Sself; `Sself],
+        ([`Self; `Self],
           ("x\n",
             (Gramf.mk_action
                (fun (x : 'declare_regexp)  _  (_loc : Locf.t)  ->
@@ -108,7 +108,7 @@ let _ =
   Gramf.extend_single (lid : 'lid Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid y")],
            ("(_loc, y)\n",
@@ -122,15 +122,13 @@ let _ =
   Gramf.extend (regexp : 'regexp Gramf.t )
     (None,
       [((Some "as"), None,
-         [([`Sself;
-           `Skeyword "as";
-           `Snterm (Gramf.obj (lid : 'lid Gramf.t ))],
+         [([`Self; `Keyword "as"; `Nterm (Gramf.obj (lid : 'lid Gramf.t ))],
             ("Bind (r1, z)\n",
               (Gramf.mk_action
                  (fun (z : 'lid)  _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                     (Bind (r1, z) : 'regexp )))))]);
       ((Some "#"), None,
-        [([`Sself; `Skeyword "#"; `Sself],
+        [([`Self; `Keyword "#"; `Self],
            ("let s1 = as_cset r1 in let s2 = as_cset r2 in Characters (Fcset.diff s1 s2)\n",
              (Gramf.mk_action
                 (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : Locf.t)  ->
@@ -138,24 +136,24 @@ let _ =
                     let s2 = as_cset r2 in Characters (Fcset.diff s1 s2) : 
                    'regexp )))))]);
       ((Some "|"), None,
-        [([`Sself; `Skeyword "|"; `Sself],
+        [([`Self; `Keyword "|"; `Self],
            ("Alternative (r1, r2)\n",
              (Gramf.mk_action
                 (fun (r2 : 'regexp)  _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                    (Alternative (r1, r2) : 'regexp )))))]);
       ((Some "app"), None,
-        [([`Sself; `Sself],
+        [([`Self; `Self],
            ("Sequence (r1, r2)\n",
              (Gramf.mk_action
                 (fun (r2 : 'regexp)  (r1 : 'regexp)  (_loc : Locf.t)  ->
                    (Sequence (r1, r2) : 'regexp )))))]);
       ((Some "basic"), None,
-        [([`Skeyword "_"],
+        [([`Keyword "_"],
            ("Characters Fcset.all_chars\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
                    (Characters Fcset.all_chars : 'regexp )))));
-        ([`Stoken
+        ([`Token
             (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c")],
           ("Characters (Fcset.singleton (Char.code @@ (TokenEval.char c)))\n",
@@ -169,7 +167,7 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
           ("regexp_for_string @@ (TokenEval.string s)\n",
@@ -181,36 +179,36 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Skeyword "[";
-         `Snterm (Gramf.obj (char_class : 'char_class Gramf.t ));
-         `Skeyword "]"],
+        ([`Keyword "[";
+         `Nterm (Gramf.obj (char_class : 'char_class Gramf.t ));
+         `Keyword "]"],
           ("Characters cc\n",
             (Gramf.mk_action
                (fun _  (cc : 'char_class)  _  (_loc : Locf.t)  ->
                   (Characters cc : 'regexp )))));
-        ([`Sself; `Skeyword "*"],
+        ([`Self; `Keyword "*"],
           ("Repetition r1\n",
             (Gramf.mk_action
                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                   (Repetition r1 : 'regexp )))));
-        ([`Sself; `Skeyword "?"],
+        ([`Self; `Keyword "?"],
           ("Alternative (Epsilon, r1)\n",
             (Gramf.mk_action
                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                   (Alternative (Epsilon, r1) : 'regexp )))));
-        ([`Sself; `Skeyword "+"],
+        ([`Self; `Keyword "+"],
           ("Sequence ((Repetition (remove_as r1)), r1)\n",
             (Gramf.mk_action
                (fun _  (r1 : 'regexp)  (_loc : Locf.t)  ->
                   (Sequence ((Repetition (remove_as r1)), r1) : 'regexp )))));
-        ([`Skeyword "("; `Sself; `Skeyword ")"],
+        ([`Keyword "("; `Self; `Keyword ")"],
           ("r1\n",
             (Gramf.mk_action
                (fun _  (r1 : 'regexp)  _  (_loc : Locf.t)  -> (r1 : 'regexp )))));
-        ([`Skeyword "eof"],
+        ([`Keyword "eof"],
           ("Eof\n",
             (Gramf.mk_action (fun _  (_loc : Locf.t)  -> (Eof : 'regexp )))));
-        ([`Stoken
+        ([`Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x")],
           ("try Hashtbl.find named_regexps x\nwith\n| Not_found  ->\n    let p = _loc.loc_start in\n    (Fan_warnings.emitf p \"Reference to unbound regexp name `%s'\" x;\n     raise UnboundRegexp)\n",
@@ -231,13 +229,13 @@ let _ =
   Gramf.extend_single (char_class : 'char_class Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "^";
-          `Snterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))],
+        [([`Keyword "^";
+          `Nterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))],
            ("Fcset.complement r\n",
              (Gramf.mk_action
                 (fun (r : 'char_class1)  _  (_loc : Locf.t)  ->
                    (Fcset.complement r : 'char_class )))));
-        ([`Snterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))],
+        ([`Nterm (Gramf.obj (char_class1 : 'char_class1 Gramf.t ))],
           ("r\n",
             (Gramf.mk_action
                (fun (r : 'char_class1)  (_loc : Locf.t)  ->
@@ -245,11 +243,11 @@ let _ =
   Gramf.extend_single (char_class1 : 'char_class1 Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
                "`Chr c1");
-          `Skeyword "-";
-          `Stoken
+          `Keyword "-";
+          `Token
             (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c2")],
            ("let c1 = Char.code @@ (TokenEval.char c1) in\nlet c2 = Char.code @@ (TokenEval.char c2) in Fcset.interval c1 c2\n",
@@ -268,7 +266,7 @@ let _ =
                        failwith
                          (Printf.sprintf "%s %s" (Tokenf.to_string __fan_2)
                             (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
               "`Chr c1")],
           ("Fcset.singleton (Char.code @@ (TokenEval.char c1))\n",
@@ -281,7 +279,7 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Sself],
+        ([`Self; `Self],
           ("Fcset.union cc1 cc2\n",
             (Gramf.mk_action
                (fun (cc2 : 'char_class1)  (cc1 : 'char_class1) 

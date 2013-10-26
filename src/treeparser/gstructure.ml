@@ -31,8 +31,8 @@ type token_pattern = (Tokenf.t -> bool) * descr * string
 (** all variants [Tokenf.t] is normalized into two patterns, either a keyword or
     a generalized token *)      
 type terminal =
-    [ `Skeyword of string
-    | `Stoken of token_pattern ]
+    [ `Keyword of string
+    | `Token of token_pattern ]
   
 type gram = {
     annot : string;
@@ -63,29 +63,29 @@ and level = {
     lsuffix : tree ;
     lprefix : tree}
 and asymbol =
-  [ `Snterm of entry
+  [ `Nterm of entry
   | `Snterml of (entry * string) (* the second argument is the level name *)
   | `Slist0 of symbol
   | `Slist1 of symbol
-  | `Sopt of symbol
-  | `Stry of symbol
-  | `Speek of symbol
-  | `Sself
+  | `Opt of symbol
+  | `Try of symbol
+  | `Peek of symbol
+  | `Self
   | `Slist0sep of (symbol * symbol)        
   | `Slist1sep of (symbol * symbol)      
   | terminal ]  
 and symbol =
   [
-    `Snterm of entry
+    `Nterm of entry
   | `Snterml of (entry * string) (* the second argument is the level name *)
   | `Slist0 of symbol
   | `Slist0sep of (symbol * symbol)
   | `Slist1 of symbol
   | `Slist1sep of (symbol * symbol)
-  | `Sopt of symbol
-  | `Stry of symbol
-  | `Speek of symbol
-  | `Sself
+  | `Opt of symbol
+  | `Try of symbol
+  | `Peek of symbol
+  | `Self
   | terminal
  ]
       

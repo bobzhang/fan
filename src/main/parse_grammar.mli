@@ -134,10 +134,10 @@ val level_list :
      Gramf.extend (nonterminalsclear : 'nonterminalsclear Gramf.t )
      (None,
      [(None, None,
-     [([`Snterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
+     [([`Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ));
      `Slist0
      (Gramf.srules nonterminalsclear
-     [([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+     [([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
      (Gramf.mk_action
      (fun (x : 'a_lident)  (_loc : Locf.t)  -> (x : 'e__7 ))))])],
      (Gramf.mk_action

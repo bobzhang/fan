@@ -59,71 +59,71 @@ let apply () =
   (Gramf.extend_single (mexp_quot : 'mexp_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+         [([`Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'mexp)  (_loc : Locf.t)  -> (x : 'mexp_quot )))))]));
    Gramf.extend (mbind0 : 'mbind0 Gramf.t )
      (None,
        [(None, (Some `RA),
-          [([`Skeyword "(";
-            `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-            `Skeyword ":";
-            `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-            `Skeyword ")";
-            `Sself],
+          [([`Keyword "(";
+            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+            `Keyword ":";
+            `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+            `Keyword ")";
+            `Self],
              ("`Functor (_loc, m, mt, mb)\n",
                (Gramf.mk_action
                   (fun (mb : 'mbind0)  _  (mt : 'mtyp)  _  (m : 'a_uident)  _
                       (_loc : Locf.t)  ->
                      (`Functor (_loc, m, mt, mb) : 'mbind0 )))));
-          ([`Skeyword ":";
-           `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-           `Skeyword "=";
-           `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+          ([`Keyword ":";
+           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+           `Keyword "=";
+           `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
             ("`Constraint (_loc, me, mt)\n",
               (Gramf.mk_action
                  (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (_loc : Locf.t)  ->
                     (`Constraint (_loc, me, mt) : 'mbind0 )))));
-          ([`Skeyword "="; `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+          ([`Keyword "="; `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
             ("me\n",
               (Gramf.mk_action
                  (fun (me : 'mexp)  _  (_loc : Locf.t)  -> (me : 'mbind0 )))))])]);
    Gramf.extend (mexp : 'mexp Gramf.t )
      (None,
        [((Some "top"), None,
-          [([`Skeyword "functor";
-            `Skeyword "(";
-            `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-            `Skeyword ":";
-            `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-            `Skeyword ")";
-            `Skeyword "->";
-            `Sself],
+          [([`Keyword "functor";
+            `Keyword "(";
+            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+            `Keyword ":";
+            `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+            `Keyword ")";
+            `Keyword "->";
+            `Self],
              ("`Functor (_loc, i, t, me)\n",
                (Gramf.mk_action
                   (fun (me : 'mexp)  _  _  (t : 'mtyp)  _  (i : 'a_uident)  _
                       _  (_loc : Locf.t)  ->
                      (`Functor (_loc, i, t, me) : 'mexp )))));
-          ([`Skeyword "struct";
-           `Snterm (Gramf.obj (strus : 'strus Gramf.t ));
-           `Skeyword "end"],
+          ([`Keyword "struct";
+           `Nterm (Gramf.obj (strus : 'strus Gramf.t ));
+           `Keyword "end"],
             ("`Struct (_loc, st)\n",
               (Gramf.mk_action
                  (fun _  (st : 'strus)  _  (_loc : Locf.t)  ->
                     (`Struct (_loc, st) : 'mexp )))));
-          ([`Skeyword "struct"; `Skeyword "end"],
+          ([`Keyword "struct"; `Keyword "end"],
             ("`StructEnd _loc\n",
               (Gramf.mk_action
                  (fun _  _  (_loc : Locf.t)  -> (`StructEnd _loc : 'mexp )))))]);
        ((Some "apply"), None,
-         [([`Sself; `Sself],
+         [([`Self; `Self],
             ("`App (_loc, me1, me2)\n",
               (Gramf.mk_action
                  (fun (me2 : 'mexp)  (me1 : 'mexp)  (_loc : Locf.t)  ->
                     (`App (_loc, me1, me2) : 'mexp )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -136,7 +136,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mexp";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mexp")), "`Ant s")],
@@ -149,7 +149,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mexp\n",
@@ -161,39 +161,38 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+         ([`Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
            ("(i :>mexp)\n",
              (Gramf.mk_action
                 (fun (i : 'module_longident)  (_loc : Locf.t)  ->
                    ((i :>mexp) : 'mexp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
            ("`Constraint (_loc, me, mt)\n",
              (Gramf.mk_action
                 (fun _  (mt : 'mtyp)  _  (me : 'mexp)  _  (_loc : Locf.t)  ->
                    (`Constraint (_loc, me, mt) : 'mexp )))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("me\n",
              (Gramf.mk_action
                 (fun _  (me : 'mexp)  _  (_loc : Locf.t)  -> (me : 'mexp )))));
-         ([`Skeyword "(";
-          `Skeyword "val";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "val";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`PackageModule (_loc, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  _  (_loc : Locf.t)  ->
                    (`PackageModule (_loc, e) : 'mexp )))));
-         ([`Skeyword "(";
-          `Skeyword "val";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "val";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
            ("`PackageModule (_loc, (`Constraint (_loc, e, (`Package (_loc, p)))))\n",
              (Gramf.mk_action
                 (fun _  (p : 'mtyp)  _  (e : 'exp)  _  _  (_loc : Locf.t)  ->
@@ -203,12 +202,12 @@ let apply () =
   (Gramf.extend_single (mbind_quot : 'mbind_quot Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
+         [([`Self; `Keyword "and"; `Self],
             ("`And (_loc, b1, b2)\n",
               (Gramf.mk_action
                  (fun (b2 : 'mbind_quot)  _  (b1 : 'mbind_quot) 
                     (_loc : Locf.t)  -> (`And (_loc, b1, b2) : 'mbind_quot )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
@@ -221,7 +220,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -234,18 +233,18 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
            ("`Constraint (_loc, m, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'mtyp)  _  (m : 'a_uident)  (_loc : Locf.t)  ->
                    (`Constraint (_loc, m, mt) : 'mbind_quot )))));
-         ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
            ("`ModuleBind (_loc, m, mt, me)\n",
              (Gramf.mk_action
                 (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (m : 'a_uident) 
@@ -254,12 +253,12 @@ let apply () =
    Gramf.extend_single (mbind : 'mbind Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
+         [([`Self; `Keyword "and"; `Self],
             ("`And (_loc, b1, b2)\n",
               (Gramf.mk_action
                  (fun (b2 : 'mbind)  _  (b1 : 'mbind)  (_loc : Locf.t)  ->
                     (`And (_loc, b1, b2) : 'mbind )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
@@ -272,7 +271,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -285,7 +284,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mbind\n",
@@ -297,11 +296,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
            ("`ModuleBind (_loc, m, mt, me)\n",
              (Gramf.mk_action
                 (fun (me : 'mexp)  _  (mt : 'mtyp)  _  (m : 'a_uident) 
@@ -311,13 +310,13 @@ let apply () =
      (module_rec_declaration : 'module_rec_declaration Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
+         [([`Self; `Keyword "and"; `Self],
             ("`And (_loc, m1, m2)\n",
               (Gramf.mk_action
                  (fun (m2 : 'module_rec_declaration)  _ 
                     (m1 : 'module_rec_declaration)  (_loc : Locf.t)  ->
                     (`And (_loc, m1, m2) : 'module_rec_declaration )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -330,7 +329,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mbind";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mbind")), "`Ant s")],
@@ -343,7 +342,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mbind\n",
@@ -355,9 +354,9 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
            ("`Constraint (_loc, m, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'mtyp)  _  (m : 'a_uident)  (_loc : Locf.t)  ->
@@ -365,19 +364,19 @@ let apply () =
   (Gramf.extend_single (constr_quot : 'constr_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (constr : 'constr Gramf.t ))],
+         [([`Nterm (Gramf.obj (constr : 'constr Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'constr)  (_loc : Locf.t)  -> (x : 'constr_quot )))))]));
    Gramf.extend_single (constr : 'constr Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
+         [([`Self; `Keyword "and"; `Self],
             ("`And (_loc, wc1, wc2)\n",
               (Gramf.mk_action
                  (fun (wc2 : 'constr)  _  (wc1 : 'constr)  (_loc : Locf.t) 
                     -> (`And (_loc, wc1, wc2) : 'constr )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -390,7 +389,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "constr";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "constr")), "`Ant s")],
@@ -403,7 +402,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.constr\n",
@@ -415,46 +414,46 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "type";
-          `Snterm
+         ([`Keyword "type";
+          `Nterm
             (Gramf.obj
                (type_longident_and_parameters : 'type_longident_and_parameters
                                                   Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+          `Keyword "=";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`TypeEq (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
                    _  (_loc : Locf.t)  -> (`TypeEq (_loc, t1, t2) : 'constr )))));
-         ([`Skeyword "type";
-          `Snterm
+         ([`Keyword "type";
+          `Nterm
             (Gramf.obj
                (type_longident_and_parameters : 'type_longident_and_parameters
                                                   Gramf.t ));
-          `Skeyword "=";
-          `Skeyword "private";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+          `Keyword "=";
+          `Keyword "private";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`TypeEqPriv (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  _ 
                    (t1 : 'type_longident_and_parameters)  _  (_loc : Locf.t) 
                    -> (`TypeEqPriv (_loc, t1, t2) : 'constr )))));
-         ([`Skeyword "type";
-          `Snterm
+         ([`Keyword "type";
+          `Nterm
             (Gramf.obj
                (type_longident_and_parameters : 'type_longident_and_parameters
                                                   Gramf.t ));
-          `Skeyword ":=";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+          `Keyword ":=";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`TypeSubst (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'type_longident_and_parameters) 
                    _  (_loc : Locf.t)  ->
                    (`TypeSubst (_loc, t1, t2) : 'constr )))));
-         ([`Skeyword "module";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-          `Skeyword "=";
-          `Snterm
+         ([`Keyword "module";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+          `Keyword "=";
+          `Nterm
             (Gramf.obj
                (module_longident_with_app : 'module_longident_with_app
                                               Gramf.t ))],
@@ -463,10 +462,10 @@ let apply () =
                 (fun (i2 : 'module_longident_with_app)  _ 
                    (i1 : 'module_longident)  _  (_loc : Locf.t)  ->
                    (`ModuleEq (_loc, (i1 : vid  :>ident), i2) : 'constr )))));
-         ([`Skeyword "module";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-          `Skeyword ":=";
-          `Snterm
+         ([`Keyword "module";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+          `Keyword ":=";
+          `Nterm
             (Gramf.obj
                (module_longident_with_app : 'module_longident_with_app
                                               Gramf.t ))],
@@ -478,7 +477,7 @@ let apply () =
   (Gramf.extend_single (sigis : 'sigis Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -491,7 +490,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s")],
@@ -504,12 +503,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";;";
-          `Sself],
+          `Keyword ";;";
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
              (Gramf.mk_action
                 (fun (sg : 'sigis)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -520,12 +519,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
-          `Skeyword ";;";
-          `Sself],
+          `Keyword ";;";
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
              (Gramf.mk_action
                 (fun (sg : 'sigis)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -536,11 +535,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
              (Gramf.mk_action
                 (fun (sg : 'sigis)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -550,11 +549,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"sigi\" s), sg)\n",
              (Gramf.mk_action
                 (fun (sg : 'sigis)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -564,52 +563,50 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t ));
-          `Skeyword ";;";
-          `Sself],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"; `Self],
            ("`Sem (_loc, sg, s)\n",
              (Gramf.mk_action
                 (fun (s : 'sigis)  _  (sg : 'sigi)  (_loc : Locf.t)  ->
                    (`Sem (_loc, sg, s) : 'sigis )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Skeyword ";;"],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"],
            ("sg\n",
              (Gramf.mk_action
                 (fun _  (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigis )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
            ("`Sem (_loc, sg, s)\n",
              (Gramf.mk_action
                 (fun (s : 'sigis)  (sg : 'sigi)  (_loc : Locf.t)  ->
                    (`Sem (_loc, sg, s) : 'sigis )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t ))],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ))],
            ("sg\n",
              (Gramf.mk_action
                 (fun (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigis )))))]));
    Gramf.extend (mtyp : 'mtyp Gramf.t )
      (None,
        [((Some "top"), None,
-          [([`Skeyword "functor";
-            `Skeyword "(";
-            `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-            `Skeyword ":";
-            `Sself;
-            `Skeyword ")";
-            `Skeyword "->";
-            `Sself],
+          [([`Keyword "functor";
+            `Keyword "(";
+            `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+            `Keyword ":";
+            `Self;
+            `Keyword ")";
+            `Keyword "->";
+            `Self],
              ("`Functor (_loc, i, t, mt)\n",
                (Gramf.mk_action
                   (fun (mt : 'mtyp)  _  _  (t : 'mtyp)  _  (i : 'a_uident)  _
                       _  (_loc : Locf.t)  ->
                      (`Functor (_loc, i, t, mt) : 'mtyp )))))]);
        ((Some "with"), None,
-         [([`Sself;
-           `Skeyword "with";
-           `Snterm (Gramf.obj (constr : 'constr Gramf.t ))],
+         [([`Self;
+           `Keyword "with";
+           `Nterm (Gramf.obj (constr : 'constr Gramf.t ))],
             ("`With (_loc, mt, wc)\n",
               (Gramf.mk_action
                  (fun (wc : 'constr)  _  (mt : 'mtyp)  (_loc : Locf.t)  ->
                     (`With (_loc, mt, wc) : 'mtyp )))))]);
        ((Some "apply"), None,
-         [([`Sself; `Sself],
+         [([`Self; `Self],
             ("match (mt1, mt2) with\n| ((#ident as i1),(#ident as i2)) -> apply i1 i2\n| _ -> raise Streamf.NotConsumed\n",
               (Gramf.mk_action
                  (fun (mt2 : 'mtyp)  (mt1 : 'mtyp)  (_loc : Locf.t)  ->
@@ -617,7 +614,7 @@ let apply () =
                      | ((#ident as i1),(#ident as i2)) -> apply i1 i2
                      | _ -> raise Streamf.NotConsumed : 'mtyp )))))]);
        ((Some "."), None,
-         [([`Sself; `Skeyword "."; `Sself],
+         [([`Self; `Keyword "."; `Self],
             ("let acc0 mt1 mt2 =\n  match (mt1, mt2) with\n  | ((#ident as i1),(#ident as i2)) -> dot i1 i2\n  | _ -> raise Streamf.NotConsumed in\nacc0 mt1 mt2\n",
               (Gramf.mk_action
                  (fun (mt2 : 'mtyp)  _  (mt1 : 'mtyp)  (_loc : Locf.t)  ->
@@ -627,19 +624,19 @@ let apply () =
                        | _ -> raise Streamf.NotConsumed in
                      acc0 mt1 mt2 : 'mtyp )))))]);
        ((Some "sig"), None,
-         [([`Skeyword "sig";
-           `Snterm (Gramf.obj (sigis : 'sigis Gramf.t ));
-           `Skeyword "end"],
+         [([`Keyword "sig";
+           `Nterm (Gramf.obj (sigis : 'sigis Gramf.t ));
+           `Keyword "end"],
             ("`Sig (_loc, sg)\n",
               (Gramf.mk_action
                  (fun _  (sg : 'sigis)  _  (_loc : Locf.t)  ->
                     (`Sig (_loc, sg) : 'mtyp )))));
-         ([`Skeyword "sig"; `Skeyword "end"],
+         ([`Keyword "sig"; `Keyword "end"],
            ("`SigEnd _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`SigEnd _loc : 'mtyp )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -652,7 +649,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mtyp";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mtyp")), "`Ant s")],
@@ -665,7 +662,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.mtyp\n",
@@ -677,7 +674,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj
                 (module_longident_with_app : 'module_longident_with_app
                                                Gramf.t ))],
@@ -685,14 +682,14 @@ let apply () =
              (Gramf.mk_action
                 (fun (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
                    ((i : ident  :>mtyp) : 'mtyp )))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("mt\n",
              (Gramf.mk_action
                 (fun _  (mt : 'mtyp)  _  (_loc : Locf.t)  -> (mt : 'mtyp )))));
-         ([`Skeyword "module";
-          `Skeyword "type";
-          `Skeyword "of";
-          `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+         ([`Keyword "module";
+          `Keyword "type";
+          `Keyword "of";
+          `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
            ("`ModuleTypeOf (_loc, me)\n",
              (Gramf.mk_action
                 (fun (me : 'mexp)  _  _  _  (_loc : Locf.t)  ->
@@ -700,17 +697,17 @@ let apply () =
    Gramf.extend_single (module_declaration : 'module_declaration Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword ":"; `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         [([`Keyword ":"; `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
             ("mt\n",
               (Gramf.mk_action
                  (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
                     (mt : 'module_declaration )))));
-         ([`Skeyword "(";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")";
-          `Sself],
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")";
+          `Self],
            ("`Functor (_loc, i, t, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'module_declaration)  _  (t : 'mtyp)  _ 
@@ -719,41 +716,38 @@ let apply () =
    Gramf.extend_single (mtyp_quot : 'mtyp_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         [([`Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'mtyp)  (_loc : Locf.t)  -> (x : 'mtyp_quot )))))])));
   (Gramf.extend_single (sigi_quot : 'sigi_quot Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "#";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         [([`Keyword "#"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("`DirectiveSimple (_loc, s)\n",
               (Gramf.mk_action
                  (fun (s : 'a_lident)  _  (_loc : Locf.t)  ->
                     (`DirectiveSimple (_loc, s) : 'sigi_quot )))));
-         ([`Skeyword "#";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Keyword "#";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Directive (_loc, s, dp)\n",
              (Gramf.mk_action
                 (fun (dp : 'exp)  (s : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Directive (_loc, s, dp) : 'sigi_quot )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";"; `Self],
            ("`Sem (_loc, sg1, sg2)\n",
              (Gramf.mk_action
                 (fun (sg2 : 'sigi_quot)  _  (sg1 : 'sigi)  (_loc : Locf.t) 
                    -> (`Sem (_loc, sg1, sg2) : 'sigi_quot )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t ))],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t ))],
            ("sg\n",
              (Gramf.mk_action
                 (fun (sg : 'sigi)  (_loc : Locf.t)  -> (sg : 'sigi_quot )))))]));
    Gramf.extend_single (sigi : 'sigi Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -766,7 +760,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "sigi";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "sigi")), "`Ant s")],
@@ -779,7 +773,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.sigi\n",
@@ -791,102 +785,102 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "exception";
-          `Snterm
+         ([`Keyword "exception";
+          `Nterm
             (Gramf.obj
                (constructor_declaration : 'constructor_declaration Gramf.t ))],
            ("(`Exception (_loc, t) : FAst.sigi )\n",
              (Gramf.mk_action
                 (fun (t : 'constructor_declaration)  _  (_loc : Locf.t)  ->
                    ((`Exception (_loc, t) : FAst.sigi ) : 'sigi )))));
-         ([`Skeyword "external";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
+         ([`Keyword "external";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
            ("`External (_loc, i, t, sl)\n",
              (Gramf.mk_action
                 (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident) 
                    _  (_loc : Locf.t)  ->
                    (`External (_loc, i, t, sl) : 'sigi )))));
-         ([`Skeyword "include"; `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         ([`Keyword "include"; `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
            ("`Include (_loc, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'mtyp)  _  (_loc : Locf.t)  ->
                    (`Include (_loc, mt) : 'sigi )))));
-         ([`Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Snterm
+         ([`Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Nterm
             (Gramf.obj (module_declaration : 'module_declaration Gramf.t ))],
            ("`Module (_loc, i, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'module_declaration)  (i : 'a_uident)  _ 
                    (_loc : Locf.t)  -> (`Module (_loc, i, mt) : 'sigi )))));
-         ([`Skeyword "module";
-          `Skeyword "rec";
-          `Snterm
+         ([`Keyword "module";
+          `Keyword "rec";
+          `Nterm
             (Gramf.obj
                (module_rec_declaration : 'module_rec_declaration Gramf.t ))],
            ("`RecModule (_loc, mb)\n",
              (Gramf.mk_action
                 (fun (mb : 'module_rec_declaration)  _  _  (_loc : Locf.t) 
                    -> (`RecModule (_loc, mb) : 'sigi )))));
-         ([`Skeyword "module";
-          `Skeyword "type";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+         ([`Keyword "module";
+          `Keyword "type";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
            ("`ModuleType (_loc, i, mt)\n",
              (Gramf.mk_action
                 (fun (mt : 'mtyp)  _  (i : 'a_uident)  _  _  (_loc : Locf.t) 
                    -> (`ModuleType (_loc, i, mt) : 'sigi )))));
-         ([`Skeyword "module";
-          `Skeyword "type";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
+         ([`Keyword "module";
+          `Keyword "type";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
            ("`ModuleTypeEnd (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_uident)  _  _  (_loc : Locf.t)  ->
                    (`ModuleTypeEnd (_loc, i) : 'sigi )))));
-         ([`Skeyword "open";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+         ([`Keyword "open";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
            ("`Open (_loc, (`Negative _loc), (i : vid  :>ident))\n",
              (Gramf.mk_action
                 (fun (i : 'module_longident)  _  (_loc : Locf.t)  ->
                    (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
                    'sigi )))));
-         ([`Skeyword "open";
-          `Skeyword "!";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+         ([`Keyword "open";
+          `Keyword "!";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
            ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
              (Gramf.mk_action
                 (fun (i : 'module_longident)  _  _  (_loc : Locf.t)  ->
                    (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
                    'sigi )))));
-         ([`Skeyword "type";
-          `Snterm (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
+         ([`Keyword "type";
+          `Nterm (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
            ("`Type (_loc, t)\n",
              (Gramf.mk_action
                 (fun (t : 'type_declaration)  _  (_loc : Locf.t)  ->
                    (`Type (_loc, t) : 'sigi )))));
-         ([`Skeyword "val";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "val";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`Val (_loc, i, t)\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Val (_loc, i, t) : 'sigi )))));
-         ([`Skeyword "class";
-          `Snterm
+         ([`Keyword "class";
+          `Nterm
             (Gramf.obj (class_description : 'class_description Gramf.t ))],
            ("`Class (_loc, cd)\n",
              (Gramf.mk_action
                 (fun (cd : 'class_description)  _  (_loc : Locf.t)  ->
                    (`Class (_loc, cd) : 'sigi )))));
-         ([`Skeyword "class";
-          `Skeyword "type";
-          `Snterm
+         ([`Keyword "class";
+          `Keyword "type";
+          `Nterm
             (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
            ("`ClassType (_loc, ctd)\n",
              (Gramf.mk_action
@@ -895,21 +889,19 @@ let apply () =
    Gramf.extend_single (interf : 'interf Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t ));
-           `Skeyword ";;";
-           `Sself],
+         [([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Keyword ";;"; `Self],
             ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
               (Gramf.mk_action
                  (fun (rest : 'interf)  _  (si : 'sigi)  (_loc : Locf.t)  ->
                     (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                     'interf )))));
-         ([`Snterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (sigi : 'sigi Gramf.t )); `Self],
            ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Gramf.mk_action
                 (fun (rest : 'interf)  (si : 'sigi)  (_loc : Locf.t)  ->
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'interf )))));
-         ([`Stoken
+         ([`Token
              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                "`EOI")],
            ("([], None)\n",
@@ -921,59 +913,59 @@ let apply () =
    Gramf.extend_single (exp_quot : 'exp_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Skeyword ",";
-           `Snterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ))],
+         [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Keyword ",";
+           `Nterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ))],
             ("`Com (_loc, e1, e2)\n",
               (Gramf.mk_action
                  (fun (e2 : 'comma_exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                     (`Com (_loc, e1, e2) : 'exp_quot )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ";";
-          `Snterm (Gramf.obj (sem_exp : 'sem_exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ";";
+          `Nterm (Gramf.obj (sem_exp : 'sem_exp Gramf.t ))],
            ("`Sem (_loc, e1, e2)\n",
              (Gramf.mk_action
                 (fun (e2 : 'sem_exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                    (`Sem (_loc, e1, e2) : 'exp_quot )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("e\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (_loc : Locf.t)  -> (e : 'exp_quot )))))]));
    Gramf.extend_single (cvalue_bind : 'cvalue_bind Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "="; `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         [([`Keyword "="; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("e\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'cvalue_bind )))));
-         ([`Skeyword ":";
-          `Skeyword "type";
-          `Snterm
+         ([`Keyword ":";
+          `Keyword "type";
+          `Nterm
             (Gramf.obj (unquoted_typevars : 'unquoted_typevars Gramf.t ));
-          `Skeyword ".";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          `Keyword ".";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("let u: FAst.ctyp = `TyPol (_loc, t1, t2) in\n(`Constraint (_loc, e, u) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (t2 : 'ctyp)  _ 
                    (t1 : 'unquoted_typevars)  _  _  (_loc : Locf.t)  ->
                    (let u: FAst.ctyp = `TyPol (_loc, t1, t2) in
                     (`Constraint (_loc, e, u) : FAst.exp ) : 'cvalue_bind )))));
-         ([`Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(`Constraint (_loc, e, t) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (t : 'ctyp)  _  (_loc : Locf.t)  ->
                    ((`Constraint (_loc, e, t) : FAst.exp ) : 'cvalue_bind )))));
-         ([`Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ":>";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ":>";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("match t with\n| (`TyPol (_loc,_,_) : FAst.ctyp) ->\n    raise (Streamf.Error \"unexpected polytype here\")\n| _ -> (`Coercion (_loc, e, t, t2) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (t2 : 'ctyp)  _  (t : 'ctyp)  _ 
@@ -983,10 +975,10 @@ let apply () =
                         raise (Streamf.Error "unexpected polytype here")
                     | _ -> (`Coercion (_loc, e, t, t2) : FAst.exp ) : 
                    'cvalue_bind )))));
-         ([`Skeyword ":>";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Keyword ":>";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Subtype (_loc, e, t)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (t : 'ctyp)  _  (_loc : Locf.t)  ->
@@ -994,22 +986,22 @@ let apply () =
    Gramf.extend (fun_bind : 'fun_bind Gramf.t )
      (None,
        [(None, (Some `RA),
-          [([`Skeyword "(";
-            `Skeyword "type";
-            `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-            `Skeyword ")";
-            `Sself],
+          [([`Keyword "(";
+            `Keyword "type";
+            `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+            `Keyword ")";
+            `Self],
              ("`LocalTypeFun (_loc, i, e)\n",
                (Gramf.mk_action
                   (fun (e : 'fun_bind)  _  (i : 'a_lident)  _  _ 
                      (_loc : Locf.t)  ->
                      (`LocalTypeFun (_loc, i, e) : 'fun_bind )))));
-          ([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Sself],
+          ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Self],
             ("`Fun (_loc, (`Case (_loc, p, e)))\n",
               (Gramf.mk_action
                  (fun (e : 'fun_bind)  (p : 'ipat)  (_loc : Locf.t)  ->
                     (`Fun (_loc, (`Case (_loc, p, e))) : 'fun_bind )))));
-          ([`Snterm (Gramf.obj (cvalue_bind : 'cvalue_bind Gramf.t ))],
+          ([`Nterm (Gramf.obj (cvalue_bind : 'cvalue_bind Gramf.t ))],
             ("bi\n",
               (Gramf.mk_action
                  (fun (bi : 'cvalue_bind)  (_loc : Locf.t)  ->
@@ -1017,7 +1009,7 @@ let apply () =
    Gramf.extend_single (lang : 'lang Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
+         [([`Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
             ("let old = Ast_quotation.default.contents in\nmatch Ast_quotation.resolve_name ls with\n| Some x -> (Ast_quotation.default := (Some x); old)\n| None  ->\n    Locf.failf _loc \"DDSL `%s' can not be resolved\"\n      (Tokenf.string_of_name ls)\n",
               (Gramf.mk_action
                  (fun (ls : 'dot_lstrings)  (_loc : Locf.t)  ->
@@ -1031,8 +1023,8 @@ let apply () =
      (None,
        (None, None,
          [([`Slist1sep
-              ((`Snterm (Gramf.obj (name_space : 'name_space Gramf.t ))),
-                (`Skeyword ";"))],
+              ((`Nterm (Gramf.obj (name_space : 'name_space Gramf.t ))),
+                (`Keyword ";"))],
             ("let old = Ast_quotation.map.contents in\nAst_quotation.map := (Mapf.String.add_list xys old); old\n",
               (Gramf.mk_action
                  (fun (xys : 'name_space list)  (_loc : Locf.t)  ->
@@ -1042,11 +1034,11 @@ let apply () =
    Gramf.extend_single (name_space : 'name_space Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                 "`Lid x");
-           `Skeyword ":";
-           `Snterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
+           `Keyword ":";
+           `Nterm (Gramf.obj (dot_lstrings : 'dot_lstrings Gramf.t ))],
             ("(x,\n  (match Ast_quotation.resolve_name y with\n   | None  ->\n       Locf.failf _loc \"DDSL `%s' can not be resolved\"\n         (Tokenf.string_of_name y)\n   | Some x -> x))\n",
               (Gramf.mk_action
                  (fun (y : 'dot_lstrings)  _  (__fan_0 : Tokenf.t) 
@@ -1063,7 +1055,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid x")],
            ("(x,\n  (match Ast_quotation.resolve_name ((`Sub []), x) with\n   | None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" x\n   | Some x -> x))\n",
@@ -1084,22 +1076,22 @@ let apply () =
    Gramf.extend_single (fun_def_pat : 'fun_def_pat Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "(";
-           `Skeyword "type";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Skeyword ")"],
+         [([`Keyword "(";
+           `Keyword "type";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword ")"],
             ("fun e  -> `LocalTypeFun (_loc, i, e)\n",
               (Gramf.mk_action
                  (fun _  (i : 'a_lident)  _  _  (_loc : Locf.t)  ->
                     (fun e  -> `LocalTypeFun (_loc, i, e) : 'fun_def_pat )))));
-         ([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t ))],
+         ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t ))],
            ("fun e  -> `Fun (_loc, (`Case (_loc, p, e)))\n",
              (Gramf.mk_action
                 (fun (p : 'ipat)  (_loc : Locf.t)  ->
                    (fun e  -> `Fun (_loc, (`Case (_loc, p, e))) : 'fun_def_pat )))));
-         ([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t ));
-          `Skeyword "when";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t ));
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("fun e  -> `Fun (_loc, (`CaseWhen (_loc, p, w, e)))\n",
              (Gramf.mk_action
                 (fun (w : 'exp)  _  (p : 'ipat)  (_loc : Locf.t)  ->
@@ -1108,15 +1100,14 @@ let apply () =
    Gramf.extend (fun_def : 'fun_def Gramf.t )
      (None,
        [(None, (Some `RA),
-          [([`Snterm (Gramf.obj (fun_def_pat : 'fun_def_pat Gramf.t ));
-            `Skeyword "->";
-            `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          [([`Nterm (Gramf.obj (fun_def_pat : 'fun_def_pat Gramf.t ));
+            `Keyword "->";
+            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
              ("f e\n",
                (Gramf.mk_action
                   (fun (e : 'exp)  _  (f : 'fun_def_pat)  (_loc : Locf.t)  ->
                      (f e : 'fun_def )))));
-          ([`Snterm (Gramf.obj (fun_def_pat : 'fun_def_pat Gramf.t ));
-           `Sself],
+          ([`Nterm (Gramf.obj (fun_def_pat : 'fun_def_pat Gramf.t )); `Self],
             ("f e\n",
               (Gramf.mk_action
                  (fun (e : 'fun_def)  (f : 'fun_def_pat)  (_loc : Locf.t)  ->
@@ -1124,144 +1115,142 @@ let apply () =
    Gramf.extend (exp : 'exp Gramf.t )
      (None,
        [((Some "top"), (Some `RA),
-          [([`Skeyword "let";
-            `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-            `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-            `Skeyword "in";
-            `Sself],
+          [([`Keyword "let";
+            `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+            `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+            `Keyword "in";
+            `Self],
              ("`LetIn (_loc, r, bi, x)\n",
                (Gramf.mk_action
                   (fun (x : 'exp)  _  (bi : 'bind)  (r : 'opt_rec)  _ 
                      (_loc : Locf.t)  -> (`LetIn (_loc, r, bi, x) : 'exp )))));
-          ([`Skeyword "let";
-           `Skeyword "module";
-           `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Snterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
-           `Skeyword "in";
-           `Sself],
+          ([`Keyword "let";
+           `Keyword "module";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
+           `Keyword "in";
+           `Self],
             ("`LetModule (_loc, m, mb, e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
                     (_loc : Locf.t)  -> (`LetModule (_loc, m, mb, e) : 
                     'exp )))));
-          ([`Skeyword "let";
-           `Skeyword "open";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Skeyword "in";
-           `Sself],
+          ([`Keyword "let";
+           `Keyword "open";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Self],
             ("`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
                     (_loc : Locf.t)  ->
                     (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
                     'exp )))));
-          ([`Skeyword "let";
-           `Skeyword "open";
-           `Skeyword "!";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Skeyword "in";
-           `Sself],
+          ([`Keyword "let";
+           `Keyword "open";
+           `Keyword "!";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Self],
             ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
                     (_loc : Locf.t)  ->
                     (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
                     'exp )))));
-          ([`Skeyword "let";
-           `Skeyword "try";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Skeyword "in";
-           `Sself;
-           `Skeyword "with";
-           `Snterm (Gramf.obj (case : 'case Gramf.t ))],
+          ([`Keyword "let";
+           `Keyword "try";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Self;
+           `Keyword "with";
+           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
             ("`LetTryInWith (_loc, r, bi, x, a)\n",
               (Gramf.mk_action
                  (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
                     (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
                     (`LetTryInWith (_loc, r, bi, x, a) : 'exp )))));
-          ([`Skeyword "match";
-           `Sself;
-           `Skeyword "with";
-           `Snterm (Gramf.obj (case : 'case Gramf.t ))],
+          ([`Keyword "match";
+           `Self;
+           `Keyword "with";
+           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
             ("`Match (_loc, e, a)\n",
               (Gramf.mk_action
                  (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
                     (`Match (_loc, e, a) : 'exp )))));
-          ([`Skeyword "try";
-           `Sself;
-           `Skeyword "with";
-           `Snterm (Gramf.obj (case : 'case Gramf.t ))],
+          ([`Keyword "try";
+           `Self;
+           `Keyword "with";
+           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
             ("`Try (_loc, e, a)\n",
               (Gramf.mk_action
                  (fun (a : 'case)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
                     (`Try (_loc, e, a) : 'exp )))));
-          ([`Skeyword "if";
-           `Sself;
-           `Skeyword "then";
-           `Sself;
-           `Skeyword "else";
-           `Sself],
+          ([`Keyword "if";
+           `Self;
+           `Keyword "then";
+           `Self;
+           `Keyword "else";
+           `Self],
             ("`IfThenElse (_loc, e1, e2, e3)\n",
               (Gramf.mk_action
                  (fun (e3 : 'exp)  _  (e2 : 'exp)  _  (e1 : 'exp)  _ 
                     (_loc : Locf.t)  ->
                     (`IfThenElse (_loc, e1, e2, e3) : 'exp )))));
-          ([`Skeyword "if"; `Sself; `Skeyword "then"; `Sself],
+          ([`Keyword "if"; `Self; `Keyword "then"; `Self],
             ("`IfThen (_loc, e1, e2)\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  _  (_loc : Locf.t)  ->
                     (`IfThen (_loc, e1, e2) : 'exp )))));
-          ([`Skeyword "do";
-           `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ));
-           `Skeyword "done"],
+          ([`Keyword "do";
+           `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
+           `Keyword "done"],
             ("`Seq (_loc, seq)\n",
               (Gramf.mk_action
                  (fun _  (seq : 'sequence)  _  (_loc : Locf.t)  ->
                     (`Seq (_loc, seq) : 'exp )))));
-          ([`Skeyword "with";
-           `Snterm (Gramf.obj (lang : 'lang Gramf.t ));
-           `Sself],
+          ([`Keyword "with";
+           `Nterm (Gramf.obj (lang : 'lang Gramf.t ));
+           `Self],
             ("Ast_quotation.default := old; x\n",
               (Gramf.mk_action
                  (fun (x : 'exp)  (old : 'lang)  _  (_loc : Locf.t)  ->
                     (Ast_quotation.default := old; x : 'exp )))));
-          ([`Skeyword "with";
-           `Skeyword "{";
-           `Snterm (Gramf.obj (pos_exps : 'pos_exps Gramf.t ));
-           `Skeyword "}";
-           `Sself],
+          ([`Keyword "with";
+           `Keyword "{";
+           `Nterm (Gramf.obj (pos_exps : 'pos_exps Gramf.t ));
+           `Keyword "}";
+           `Self],
             ("Ast_quotation.map := old; x\n",
               (Gramf.mk_action
                  (fun (x : 'exp)  _  (old : 'pos_exps)  _  _  (_loc : Locf.t)
                      -> (Ast_quotation.map := old; x : 'exp )))));
-          ([`Skeyword "for";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Skeyword "=";
-           `Sself;
-           `Snterm (Gramf.obj (flag : 'flag Gramf.t ));
-           `Sself;
-           `Skeyword "do";
-           `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ));
-           `Skeyword "done"],
+          ([`Keyword "for";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword "=";
+           `Self;
+           `Nterm (Gramf.obj (flag : 'flag Gramf.t ));
+           `Self;
+           `Keyword "do";
+           `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
+           `Keyword "done"],
             ("`For (_loc, i, e1, e2, df, seq)\n",
               (Gramf.mk_action
                  (fun _  (seq : 'sequence)  _  (e2 : 'exp)  (df : 'flag) 
                     (e1 : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                     (`For (_loc, i, e1, e2, df, seq) : 'exp )))));
-          ([`Skeyword "while";
-           `Sself;
-           `Skeyword "do";
-           `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ));
-           `Skeyword "done"],
+          ([`Keyword "while";
+           `Self;
+           `Keyword "do";
+           `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
+           `Keyword "done"],
             ("`While (_loc, e, seq)\n",
               (Gramf.mk_action
                  (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : Locf.t)
                      -> (`While (_loc, e, seq) : 'exp )))))]);
        ((Some ":="), (Some `NA),
-         [([`Sself; `Skeyword ":="; `Sself],
+         [([`Self; `Keyword ":="; `Self],
             ("(`Assign (_loc, (`Field (_loc, e1, (`Lid (_loc, \"contents\")))), e2) : \nFAst.exp )\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
@@ -1269,7 +1258,7 @@ let apply () =
                         (_loc,
                           (`Field (_loc, e1, (`Lid (_loc, "contents")))), e2) : 
                     FAst.exp ) : 'exp )))));
-         ([`Sself; `Skeyword "<-"; `Sself],
+         ([`Self; `Keyword "<-"; `Self],
            ("match Fan_ops.bigarray_set _loc e1 e2 with\n| Some e -> e\n| None  -> `Assign (_loc, e1, e2)\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
@@ -1277,7 +1266,7 @@ let apply () =
                     | Some e -> e
                     | None  -> `Assign (_loc, e1, e2) : 'exp )))))]);
        ((Some "||"), (Some `RA),
-         [([`Sself; `Skeyword "or"; `Sself],
+         [([`Self; `Keyword "or"; `Self],
             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1290,7 +1279,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "||"; `Sself],
+         ([`Self; `Keyword "||"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1303,7 +1292,7 @@ let apply () =
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]);
        ((Some "&&"), (Some `RA),
-         [([`Sself; `Skeyword "&"; `Sself],
+         [([`Self; `Keyword "&"; `Self],
             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1316,7 +1305,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "&&"; `Sself],
+         ([`Self; `Keyword "&&"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1329,9 +1318,7 @@ let apply () =
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]);
        ((Some "<"), (Some `LA),
-         [([`Sself;
-           `Snterm (Gramf.obj (infixop2 : 'infixop2 Gramf.t ));
-           `Sself],
+         [([`Self; `Nterm (Gramf.obj (infixop2 : 'infixop2 Gramf.t )); `Self],
             ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (op : 'infixop2)  (e1 : 'exp) 
@@ -1339,9 +1326,7 @@ let apply () =
                     ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                     'exp )))))]);
        ((Some "^"), (Some `RA),
-         [([`Sself;
-           `Snterm (Gramf.obj (infixop3 : 'infixop3 Gramf.t ));
-           `Sself],
+         [([`Self; `Nterm (Gramf.obj (infixop3 : 'infixop3 Gramf.t )); `Self],
             ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (op : 'infixop3)  (e1 : 'exp) 
@@ -1349,16 +1334,14 @@ let apply () =
                     ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                     'exp )))))]);
        ((Some "::"), (Some `RA),
-         [([`Sself; `Skeyword "::"; `Sself],
+         [([`Self; `Keyword "::"; `Self],
             ("(`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                     ((`App (_loc, (`App (_loc, (`Uid (_loc, "::")), e1)), e2) : 
                     FAst.exp ) : 'exp )))))]);
        ((Some "+"), (Some `LA),
-         [([`Sself;
-           `Snterm (Gramf.obj (infixop4 : 'infixop4 Gramf.t ));
-           `Sself],
+         [([`Self; `Nterm (Gramf.obj (infixop4 : 'infixop4 Gramf.t )); `Self],
             ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (op : 'infixop4)  (e1 : 'exp) 
@@ -1366,7 +1349,7 @@ let apply () =
                     ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                     'exp )))))]);
        ((Some "*"), (Some `LA),
-         [([`Sself; `Skeyword "land"; `Sself],
+         [([`Self; `Keyword "land"; `Self],
             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1379,7 +1362,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "lor"; `Sself],
+         ([`Self; `Keyword "lor"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1391,7 +1374,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "lxor"; `Sself],
+         ([`Self; `Keyword "lxor"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1403,7 +1386,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "mod"; `Sself],
+         ([`Self; `Keyword "mod"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1415,9 +1398,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself;
-          `Snterm (Gramf.obj (infixop5 : 'infixop5 Gramf.t ));
-          `Sself],
+         ([`Self; `Nterm (Gramf.obj (infixop5 : 'infixop5 Gramf.t )); `Self],
            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (op : 'infixop5)  (e1 : 'exp) 
@@ -1425,7 +1406,7 @@ let apply () =
                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                    'exp )))))]);
        ((Some "**"), (Some `RA),
-         [([`Sself; `Skeyword "asr"; `Sself],
+         [([`Self; `Keyword "asr"; `Self],
             ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1438,7 +1419,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "lsl"; `Sself],
+         ([`Self; `Keyword "lsl"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1450,7 +1431,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself; `Skeyword "lsr"; `Sself],
+         ([`Self; `Keyword "lsr"; `Self],
            ("Ast_gen.appl_of_list [(`Lid (_loc, op) : FAst.exp ); e1; e2]\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (__fan_1 : Tokenf.t)  (e1 : 'exp) 
@@ -1462,9 +1443,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Sself;
-          `Snterm (Gramf.obj (infixop6 : 'infixop6 Gramf.t ));
-          `Sself],
+         ([`Self; `Nterm (Gramf.obj (infixop6 : 'infixop6 Gramf.t )); `Self],
            ("(`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  (op : 'infixop6)  (e1 : 'exp) 
@@ -1472,144 +1451,140 @@ let apply () =
                    ((`App (_loc, (`App (_loc, op, e1)), e2) : FAst.exp ) : 
                    'exp )))))]);
        ((Some "obj"), (Some `RA),
-         [([`Skeyword "fun";
-           `Skeyword "|";
+         [([`Keyword "fun";
+           `Keyword "|";
            `Slist1sep
-             ((`Snterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-               (`Skeyword "|"))],
+             ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
             ("let cases = bar_of_list a in `Fun (_loc, cases)\n",
               (Gramf.mk_action
                  (fun (a : 'case0 list)  _  _  (_loc : Locf.t)  ->
                     (let cases = bar_of_list a in `Fun (_loc, cases) : 
                     'exp )))));
-         ([`Skeyword "function";
-          `Skeyword "|";
+         ([`Keyword "function";
+          `Keyword "|";
           `Slist1sep
-            ((`Snterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-              (`Skeyword "|"))],
+            ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
            ("let cases = bar_of_list a in `Fun (_loc, cases)\n",
              (Gramf.mk_action
                 (fun (a : 'case0 list)  _  _  (_loc : Locf.t)  ->
                    (let cases = bar_of_list a in `Fun (_loc, cases) : 
                    'exp )))));
-         ([`Skeyword "fun";
-          `Snterm (Gramf.obj (fun_def : 'fun_def Gramf.t ))],
+         ([`Keyword "fun"; `Nterm (Gramf.obj (fun_def : 'fun_def Gramf.t ))],
            ("e\n",
              (Gramf.mk_action
                 (fun (e : 'fun_def)  _  (_loc : Locf.t)  -> (e : 'exp )))));
-         ([`Skeyword "function";
-          `Snterm (Gramf.obj (fun_def : 'fun_def Gramf.t ))],
+         ([`Keyword "function";
+          `Nterm (Gramf.obj (fun_def : 'fun_def Gramf.t ))],
            ("e\n",
              (Gramf.mk_action
                 (fun (e : 'fun_def)  _  (_loc : Locf.t)  -> (e : 'exp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`ObjPat (_loc, p, cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (p : 'pat)  _  _ 
                    (_loc : Locf.t)  -> (`ObjPat (_loc, p, cst) : 'exp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ")";
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")";
+          `Keyword "end"],
            ("`ObjPatEnd (_loc, p)\n",
              (Gramf.mk_action
                 (fun _  _  (p : 'pat)  _  _  (_loc : Locf.t)  ->
                    (`ObjPatEnd (_loc, p) : 'exp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (t : 'ctyp)  _ 
                    (p : 'pat)  _  _  (_loc : Locf.t)  ->
                    (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
                    'exp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")";
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")";
+          `Keyword "end"],
            ("`ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n",
              (Gramf.mk_action
                 (fun _  _  (t : 'ctyp)  _  (p : 'pat)  _  _  (_loc : Locf.t) 
                    -> (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 
                    'exp )))));
-         ([`Skeyword "object";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`Obj (_loc, cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (_loc : Locf.t)  ->
                    (`Obj (_loc, cst) : 'exp )))));
-         ([`Skeyword "object"; `Skeyword "end"],
+         ([`Keyword "object"; `Keyword "end"],
            ("`ObjEnd _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`ObjEnd _loc : 'exp )))))]);
        ((Some "unary minus"), (Some `NA),
-         [([`Skeyword "-"; `Sself],
+         [([`Keyword "-"; `Self],
             ("Fan_ops.mkumin _loc \"-\" e\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (_loc : Locf.t)  ->
                     (Fan_ops.mkumin _loc "-" e : 'exp )))));
-         ([`Skeyword "-."; `Sself],
+         ([`Keyword "-."; `Self],
            ("Fan_ops.mkumin _loc \"-.\" e\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (_loc : Locf.t)  ->
                    (Fan_ops.mkumin _loc "-." e : 'exp )))))]);
        ((Some "apply"), (Some `LA),
-         [([`Sself; `Sself],
+         [([`Self; `Self],
             ("`App (_loc, e1, e2)\n",
               (Gramf.mk_action
                  (fun (e2 : 'exp)  (e1 : 'exp)  (_loc : Locf.t)  ->
                     (`App (_loc, e1, e2) : 'exp )))));
-         ([`Skeyword "assert"; `Sself],
+         ([`Keyword "assert"; `Self],
            ("`Assert (_loc, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (_loc : Locf.t)  ->
                    (`Assert (_loc, e) : 'exp )))));
-         ([`Skeyword "new";
-          `Snterm (Gramf.obj (class_longident : 'class_longident Gramf.t ))],
+         ([`Keyword "new";
+          `Nterm (Gramf.obj (class_longident : 'class_longident Gramf.t ))],
            ("`New (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'class_longident)  _  (_loc : Locf.t)  ->
                    (`New (_loc, i) : 'exp )))));
-         ([`Skeyword "lazy"; `Sself],
+         ([`Keyword "lazy"; `Self],
            ("`Lazy (_loc, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (_loc : Locf.t)  ->
                    (`Lazy (_loc, e) : 'exp )))))]);
        ((Some "label"), (Some `NA),
-         [([`Skeyword "~";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Skeyword ":";
-           `Sself],
+         [([`Keyword "~";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword ":";
+           `Self],
             ("`Label (_loc, i, e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                     (`Label (_loc, i, e) : 'exp )))));
-         ([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`LabelS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'exp )))));
-         ([`Stoken
+         ([`Token
              (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
                "`Label i");
-          `Sself],
+          `Self],
            ("(`Label (_loc, (`Lid (_loc, i)), e) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -1620,10 +1595,10 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
                (688526593, `Any), "`Optlabel i");
-          `Sself],
+          `Self],
            ("`OptLabl (_loc, (`Lid (_loc, i)), e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -1633,65 +1608,64 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Sself],
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
            ("`OptLabl (_loc, i, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`OptLabl (_loc, i, e) : 'exp )))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`OptLablS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`OptLablS (_loc, i) : 'exp )))))]);
        ((Some "."), (Some `LA),
-         [([`Sself; `Skeyword "."; `Skeyword "("; `Sself; `Skeyword ")"],
+         [([`Self; `Keyword "."; `Keyword "("; `Self; `Keyword ")"],
             ("`ArrayDot (_loc, e1, e2)\n",
               (Gramf.mk_action
                  (fun _  (e2 : 'exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                     (`ArrayDot (_loc, e1, e2) : 'exp )))));
-         ([`Sself; `Skeyword "."; `Skeyword "["; `Sself; `Skeyword "]"],
+         ([`Self; `Keyword "."; `Keyword "["; `Self; `Keyword "]"],
            ("`StringDot (_loc, e1, e2)\n",
              (Gramf.mk_action
                 (fun _  (e2 : 'exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                    (`StringDot (_loc, e1, e2) : 'exp )))));
-         ([`Sself;
-          `Skeyword ".";
-          `Skeyword "{";
-          `Snterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ));
-          `Skeyword "}"],
+         ([`Self;
+          `Keyword ".";
+          `Keyword "{";
+          `Nterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ));
+          `Keyword "}"],
            ("Fan_ops.bigarray_get _loc e1 e2\n",
              (Gramf.mk_action
                 (fun _  (e2 : 'comma_exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)
                     -> (Fan_ops.bigarray_get _loc e1 e2 : 'exp )))));
-         ([`Sself; `Skeyword "."; `Sself],
+         ([`Self; `Keyword "."; `Self],
            ("`Field (_loc, e1, e2)\n",
              (Gramf.mk_action
                 (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
                    (`Field (_loc, e1, e2) : 'exp )))));
-         ([`Sself;
-          `Skeyword "#";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Self;
+          `Keyword "#";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`Send (_loc, e, lab)\n",
              (Gramf.mk_action
                 (fun (lab : 'a_lident)  _  (e : 'exp)  (_loc : Locf.t)  ->
                    (`Send (_loc, e, lab) : 'exp )))))]);
        ((Some "~-"), (Some `NA),
-         [([`Skeyword "!"; `Sself],
+         [([`Keyword "!"; `Self],
             ("`Field (_loc, e, (`Lid (_loc, \"contents\")))\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (_loc : Locf.t)  ->
                     (`Field (_loc, e, (`Lid (_loc, "contents"))) : 'exp )))));
-         ([`Snterm (Gramf.obj (prefixop : 'prefixop Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (prefixop : 'prefixop Gramf.t )); `Self],
            ("`App (_loc, f, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (f : 'prefixop)  (_loc : Locf.t)  ->
                    (`App (_loc, f, e) : 'exp )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function | `Quot _ -> true | _ -> false)),
                 (904098089, `Any), "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.exp\n",
@@ -1702,7 +1676,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "exp";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "exp")), "`Ant s")],
@@ -1715,7 +1689,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -1728,7 +1702,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
@@ -1741,7 +1715,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "seq";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "seq")), "`Ant s")],
@@ -1754,7 +1728,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "chr")), "`Ant s")],
@@ -1767,7 +1741,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int")), "`Ant s")],
@@ -1780,7 +1754,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int32")), "`Ant s")],
@@ -1793,7 +1767,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "str")), "`Ant s")],
@@ -1806,7 +1780,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int64")), "`Ant s")],
@@ -1819,7 +1793,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "flo")), "`Ant s")],
@@ -1832,7 +1806,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "nativeint")), "`Ant s")],
@@ -1845,7 +1819,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
@@ -1858,7 +1832,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "chr'")), "`Ant s")],
@@ -1871,7 +1845,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int64'")), "`Ant s")],
@@ -1884,7 +1858,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "nativeint'")), "`Ant s")],
@@ -1897,7 +1871,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "bool'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "bool'")), "`Ant s")],
@@ -1910,7 +1884,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int'")), "`Ant s")],
@@ -1923,7 +1897,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int32'")), "`Ant s")],
@@ -1936,7 +1910,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "flo'")), "`Ant s")],
@@ -1949,7 +1923,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "str'")), "`Ant s")],
@@ -1962,7 +1936,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`chr")), "`Ant s")],
@@ -1975,7 +1949,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int64")), "`Ant s")],
@@ -1988,7 +1962,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`nativeint")), "`Ant s")],
@@ -2001,7 +1975,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`bool";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`bool")), "`Ant s")],
@@ -2014,7 +1988,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int")), "`Ant s")],
@@ -2027,7 +2001,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int32")), "`Ant s")],
@@ -2040,7 +2014,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`flo")), "`Ant s")],
@@ -2053,7 +2027,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`str")), "`Ant s")],
@@ -2066,7 +2040,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
                "`Int s")],
            ("`Int (_loc, s)\n",
@@ -2078,7 +2052,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Int32 _ -> true | _ -> false)),
                ((-783416530), `Any), "`Int32 s")],
            ("`Int32 (_loc, s)\n",
@@ -2090,7 +2064,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Int64 _ -> true | _ -> false)),
                ((-783415859), `Any), "`Int64 s")],
            ("`Int64 (_loc, s)\n",
@@ -2102,7 +2076,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Nativeint _ -> true | _ -> false)),
                ((-113706088), `Any), "`Nativeint s")],
            ("`Nativeint (_loc, s)\n",
@@ -2114,7 +2088,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
                "`Flo s")],
            ("`Flo (_loc, s)\n",
@@ -2126,7 +2100,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
                "`Chr s")],
            ("`Chr (_loc, s)\n",
@@ -2138,7 +2112,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "`Str s")],
            ("`Str (_loc, s)\n",
@@ -2150,58 +2124,58 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stry
-             (`Snterm
+         ([`Try
+             (`Nterm
                 (Gramf.obj
                    (module_longident_dot_lparen : 'module_longident_dot_lparen
                                                     Gramf.t )));
-          `Sself;
-          `Skeyword ")"],
+          `Self;
+          `Keyword ")"],
            ("`LetOpen (_loc, (`Negative _loc), i, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  (i : 'module_longident_dot_lparen) 
                    (_loc : Locf.t)  ->
                    (`LetOpen (_loc, (`Negative _loc), i, e) : 'exp )))));
-         ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ))],
+         ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
            ("(i : vid  :>exp)\n",
              (Gramf.mk_action
                 (fun (i : 'vid)  (_loc : Locf.t)  ->
                    ((i : vid  :>exp) : 'exp )))));
-         ([`Skeyword "`"; `Snterm (Gramf.obj (luident : 'luident Gramf.t ))],
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("`Vrn (_loc, s)\n",
              (Gramf.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    (`Vrn (_loc, s) : 'exp )))));
-         ([`Skeyword "["; `Skeyword "]"],
+         ([`Keyword "["; `Keyword "]"],
            ("(`Uid (_loc, \"[]\") : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "[]") : FAst.exp ) : 'exp )))));
-         ([`Skeyword "[";
-          `Snterm (Gramf.obj (sem_exp_for_list : 'sem_exp_for_list Gramf.t ));
-          `Skeyword "]"],
+         ([`Keyword "[";
+          `Nterm (Gramf.obj (sem_exp_for_list : 'sem_exp_for_list Gramf.t ));
+          `Keyword "]"],
            ("mk_list (`Uid (_loc, \"[]\") : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  (mk_list : 'sem_exp_for_list)  _  (_loc : Locf.t)  ->
                    (mk_list (`Uid (_loc, "[]") : FAst.exp ) : 'exp )))));
-         ([`Skeyword "[|"; `Skeyword "|]"],
+         ([`Keyword "[|"; `Keyword "|]"],
            ("`ArrayEmpty _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`ArrayEmpty _loc : 'exp )))));
-         ([`Skeyword "[|";
-          `Snterm (Gramf.obj (sem_exp : 'sem_exp Gramf.t ));
-          `Skeyword "|]"],
+         ([`Keyword "[|";
+          `Nterm (Gramf.obj (sem_exp : 'sem_exp Gramf.t ));
+          `Keyword "|]"],
            ("`Array (_loc, el)\n",
              (Gramf.mk_action
                 (fun _  (el : 'sem_exp)  _  (_loc : Locf.t)  ->
                    (`Array (_loc, el) : 'exp )))));
-         ([`Skeyword "{";
-          `Stoken
+         ([`Keyword "{";
+          `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x");
-          `Skeyword "with";
-          `Snterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
-          `Skeyword "}"],
+          `Keyword "with";
+          `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
+          `Keyword "}"],
            ("(`RecordWith (_loc, el, (`Lid (_loc, x))) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  (el : 'label_exp_list)  _  (__fan_1 : Tokenf.t)  _ 
@@ -2213,123 +2187,123 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "{";
-          `Snterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
-          `Skeyword "}"],
+         ([`Keyword "{";
+          `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
+          `Keyword "}"],
            ("`Record (_loc, el)\n",
              (Gramf.mk_action
                 (fun _  (el : 'label_exp_list)  _  (_loc : Locf.t)  ->
                    (`Record (_loc, el) : 'exp )))));
-         ([`Skeyword "{";
-          `Skeyword "(";
-          `Sself;
-          `Skeyword ")";
-          `Skeyword "with";
-          `Snterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
-          `Skeyword "}"],
+         ([`Keyword "{";
+          `Keyword "(";
+          `Self;
+          `Keyword ")";
+          `Keyword "with";
+          `Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ));
+          `Keyword "}"],
            ("`RecordWith (_loc, el, e)\n",
              (Gramf.mk_action
                 (fun _  (el : 'label_exp_list)  _  _  (e : 'exp)  _  _ 
                    (_loc : Locf.t)  -> (`RecordWith (_loc, el, e) : 'exp )))));
-         ([`Skeyword "{<"; `Skeyword ">}"],
+         ([`Keyword "{<"; `Keyword ">}"],
            ("`OvrInstEmpty _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`OvrInstEmpty _loc : 'exp )))));
-         ([`Skeyword "{<";
-          `Snterm (Gramf.obj (field_exp_list : 'field_exp_list Gramf.t ));
-          `Skeyword ">}"],
+         ([`Keyword "{<";
+          `Nterm (Gramf.obj (field_exp_list : 'field_exp_list Gramf.t ));
+          `Keyword ">}"],
            ("`OvrInst (_loc, fel)\n",
              (Gramf.mk_action
                 (fun _  (fel : 'field_exp_list)  _  (_loc : Locf.t)  ->
                    (`OvrInst (_loc, fel) : 'exp )))));
-         ([`Skeyword "("; `Skeyword ")"],
+         ([`Keyword "("; `Keyword ")"],
            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : FAst.exp ) : 'exp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
            ("`Constraint (_loc, e, t)\n",
              (Gramf.mk_action
                 (fun _  (t : 'ctyp)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
                    (`Constraint (_loc, e, t) : 'exp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ",";
-          `Snterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ",";
+          `Nterm (Gramf.obj (comma_exp : 'comma_exp Gramf.t ));
+          `Keyword ")"],
            ("`Par (_loc, (`Com (_loc, e, el)))\n",
              (Gramf.mk_action
                 (fun _  (el : 'comma_exp)  _  (e : 'exp)  _  (_loc : Locf.t) 
                    -> (`Par (_loc, (`Com (_loc, e, el))) : 'exp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ";";
-          `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ";";
+          `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
+          `Keyword ")"],
            ("`Seq (_loc, (`Sem (_loc, e, seq)))\n",
              (Gramf.mk_action
                 (fun _  (seq : 'sequence)  _  (e : 'exp)  _  (_loc : Locf.t) 
                    -> (`Seq (_loc, (`Sem (_loc, e, seq))) : 'exp )))));
-         ([`Skeyword "("; `Sself; `Skeyword ";"; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ";"; `Keyword ")"],
            ("`Seq (_loc, e)\n",
              (Gramf.mk_action
                 (fun _  _  (e : 'exp)  _  (_loc : Locf.t)  ->
                    (`Seq (_loc, e) : 'exp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ":>";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ":>";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
            ("`Coercion (_loc, e, t, t2)\n",
              (Gramf.mk_action
                 (fun _  (t2 : 'ctyp)  _  (t : 'ctyp)  _  (e : 'exp)  _ 
                    (_loc : Locf.t)  -> (`Coercion (_loc, e, t, t2) : 
                    'exp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":>";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":>";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
            ("`Subtype (_loc, e, t)\n",
              (Gramf.mk_action
                 (fun _  (t : 'ctyp)  _  (e : 'exp)  _  (_loc : Locf.t)  ->
                    (`Subtype (_loc, e, t) : 'exp )))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("e\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (_loc : Locf.t)  -> (e : 'exp )))));
-         ([`Skeyword "begin";
-          `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "begin";
+          `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ));
+          `Keyword "end"],
            ("`Seq (_loc, seq)\n",
              (Gramf.mk_action
                 (fun _  (seq : 'sequence)  _  (_loc : Locf.t)  ->
                    (`Seq (_loc, seq) : 'exp )))));
-         ([`Skeyword "begin"; `Skeyword "end"],
+         ([`Keyword "begin"; `Keyword "end"],
            ("(`Uid (_loc, \"()\") : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : FAst.exp ) : 'exp )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ));
+          `Keyword ")"],
            ("`Package_exp (_loc, me)\n",
              (Gramf.mk_action
                 (fun _  (me : 'mexp)  _  _  (_loc : Locf.t)  ->
                    (`Package_exp (_loc, me) : 'exp )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
            ("`Package_exp (_loc, (`Constraint (_loc, me, pt)))\n",
              (Gramf.mk_action
                 (fun _  (pt : 'mtyp)  _  (me : 'mexp)  _  _  (_loc : Locf.t) 
@@ -2339,7 +2313,7 @@ let apply () =
    Gramf.extend_single (sem_exp_for_list : 'sem_exp_for_list Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (exp : 'exp Gramf.t )); `Skeyword ";"; `Sself],
+         [([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"; `Self],
             ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), (el acc)) : FAst.exp )\n",
               (Gramf.mk_action
                  (fun (el : 'sem_exp_for_list)  _  (e : 'exp) 
@@ -2348,7 +2322,7 @@ let apply () =
                        (`App
                           (_loc, (`App (_loc, (`Uid (_loc, "::")), e)),
                             (el acc)) : FAst.exp ) : 'sem_exp_for_list )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t )); `Skeyword ";"],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t )); `Keyword ";"],
            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  (_loc : Locf.t)  ->
@@ -2356,7 +2330,7 @@ let apply () =
                       (`App
                          (_loc, (`App (_loc, (`Uid (_loc, "::")), e)), acc) : 
                       FAst.exp ) : 'sem_exp_for_list )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("fun acc  ->\n  (`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), e)), acc) : FAst.exp )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (_loc : Locf.t)  ->
@@ -2367,68 +2341,68 @@ let apply () =
    Gramf.extend_single (sequence : 'sequence Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "let";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Snterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
+         [([`Keyword "let";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Nterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
             ("k (`LetIn (_loc, rf, bi, e))\n",
               (Gramf.mk_action
                  (fun (k : 'sequence')  (e : 'exp)  _  (bi : 'bind) 
                     (rf : 'opt_rec)  _  (_loc : Locf.t)  ->
                     (k (`LetIn (_loc, rf, bi, e)) : 'sequence )))));
-         ([`Skeyword "let";
-          `Skeyword "try";
-          `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-          `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-          `Skeyword "in";
-          `Sself;
-          `Skeyword "with";
-          `Snterm (Gramf.obj (case : 'case Gramf.t ));
-          `Snterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
+         ([`Keyword "let";
+          `Keyword "try";
+          `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+          `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+          `Keyword "in";
+          `Self;
+          `Keyword "with";
+          `Nterm (Gramf.obj (case : 'case Gramf.t ));
+          `Nterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
            ("k (`LetTryInWith (_loc, r, bi, x, a))\n",
              (Gramf.mk_action
                 (fun (k : 'sequence')  (a : 'case)  _  (x : 'sequence)  _ 
                    (bi : 'bind)  (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
                    (k (`LetTryInWith (_loc, r, bi, x, a)) : 'sequence )))));
-         ([`Skeyword "let";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Snterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
-          `Skeyword "in";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Snterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
+         ([`Keyword "let";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
+          `Keyword "in";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Nterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
            ("k (`LetModule (_loc, m, mb, e))\n",
              (Gramf.mk_action
                 (fun (k : 'sequence')  (e : 'exp)  _  (mb : 'mbind0) 
                    (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
                    (k (`LetModule (_loc, m, mb, e)) : 'sequence )))));
-         ([`Skeyword "let";
-          `Skeyword "open";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-          `Skeyword "in";
-          `Sself],
+         ([`Keyword "let";
+          `Keyword "open";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+          `Keyword "in";
+          `Self],
            ("`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e)\n",
              (Gramf.mk_action
                 (fun (e : 'sequence)  _  (i : 'module_longident)  _  _ 
                    (_loc : Locf.t)  ->
                    (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
                    'sequence )))));
-         ([`Skeyword "let";
-          `Skeyword "open";
-          `Skeyword "!";
-          `Snterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-          `Skeyword "in";
-          `Sself],
+         ([`Keyword "let";
+          `Keyword "open";
+          `Keyword "!";
+          `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+          `Keyword "in";
+          `Self],
            ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
              (Gramf.mk_action
                 (fun (e : 'sequence)  _  (i : 'module_longident)  _  _  _ 
                    (_loc : Locf.t)  ->
                    (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
                    'sequence )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Snterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Nterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
            ("k e\n",
              (Gramf.mk_action
                 (fun (k : 'sequence')  (e : 'exp)  (_loc : Locf.t)  ->
@@ -2440,12 +2414,11 @@ let apply () =
             ("fun e  -> e\n",
               (Gramf.mk_action
                  (fun (_loc : Locf.t)  -> (fun e  -> e : 'sequence' )))));
-         ([`Skeyword ";"],
+         ([`Keyword ";"],
            ("fun e  -> e\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  -> (fun e  -> e : 'sequence' )))));
-         ([`Skeyword ";";
-          `Snterm (Gramf.obj (sequence : 'sequence Gramf.t ))],
+         ([`Keyword ";"; `Nterm (Gramf.obj (sequence : 'sequence Gramf.t ))],
            ("fun e  -> `Sem (_loc, e, el)\n",
              (Gramf.mk_action
                 (fun (el : 'sequence)  _  (_loc : Locf.t)  ->
@@ -2453,21 +2426,21 @@ let apply () =
    Gramf.extend_single (comma_exp : 'comma_exp Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword ","; `Sself],
+         [([`Self; `Keyword ","; `Self],
             ("`Com (_loc, e1, e2)\n",
               (Gramf.mk_action
                  (fun (e2 : 'comma_exp)  _  (e1 : 'comma_exp) 
                     (_loc : Locf.t)  -> (`Com (_loc, e1, e2) : 'comma_exp )))));
-         ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("e\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  (_loc : Locf.t)  -> (e : 'comma_exp )))))])));
   Gramf.extend_single (with_exp_lang : 'with_exp_lang Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (lang : 'lang Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        [([`Nterm (Gramf.obj (lang : 'lang Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("Ast_quotation.default := old; x\n",
              (Gramf.mk_action
                 (fun (x : 'exp)  _  (old : 'lang)  (_loc : Locf.t)  ->
@@ -2475,9 +2448,9 @@ let apply () =
   Gramf.extend_single (with_stru_lang : 'with_stru_lang Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (lang : 'lang Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (stru : 'stru Gramf.t ))],
+        [([`Nterm (Gramf.obj (lang : 'lang Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (stru : 'stru Gramf.t ))],
            ("Ast_quotation.default := old; x\n",
              (Gramf.mk_action
                 (fun (x : 'stru)  _  (old : 'lang)  (_loc : Locf.t)  ->
@@ -2485,14 +2458,14 @@ let apply () =
   (Gramf.extend_single (bind_quot : 'bind_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (bind : 'bind Gramf.t ))],
+         [([`Nterm (Gramf.obj (bind : 'bind Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'bind)  (_loc : Locf.t)  -> (x : 'bind_quot )))))]));
    Gramf.extend_single (bind : 'bind Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "bind";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "bind")), "`Ant s")],
@@ -2505,7 +2478,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2518,12 +2491,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(`Bind (_loc, (mk_ant ~c:\"pat\" s), e) : FAst.bind )\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2534,20 +2507,20 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Sself; `Skeyword "and"; `Sself],
+         ([`Self; `Keyword "and"; `Self],
            ("`And (_loc, b1, b2)\n",
              (Gramf.mk_action
                 (fun (b2 : 'bind)  _  (b1 : 'bind)  (_loc : Locf.t)  ->
                    (`And (_loc, b1, b2) : 'bind )))));
-         ([`Snterm (Gramf.obj (let_bind : 'let_bind Gramf.t ))],
+         ([`Nterm (Gramf.obj (let_bind : 'let_bind Gramf.t ))],
            ("b\n",
              (Gramf.mk_action
                 (fun (b : 'let_bind)  (_loc : Locf.t)  -> (b : 'bind )))))]));
    Gramf.extend_single (let_bind : 'let_bind Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Snterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
             ("`Bind (_loc, p, e)\n",
               (Gramf.mk_action
                  (fun (e : 'fun_bind)  (p : 'pat)  (_loc : Locf.t)  ->
@@ -2555,17 +2528,16 @@ let apply () =
   (Gramf.extend_single (case : 'case Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "|";
+         [([`Keyword "|";
            `Slist1sep
-             ((`Snterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-               (`Skeyword "|"))],
+             ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))), (`Keyword "|"))],
             ("bar_of_list l\n",
               (Gramf.mk_action
                  (fun (l : 'case0 list)  _  (_loc : Locf.t)  ->
                     (bar_of_list l : 'case )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Case (_loc, p, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
@@ -2573,7 +2545,7 @@ let apply () =
    Gramf.extend_single (case0 : 'case0 Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "case";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "case")), "`Ant s")],
@@ -2586,7 +2558,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2599,14 +2571,14 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword "when";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`CaseWhen (_loc, (mk_ant ~c:\"case\" s), w, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (w : 'exp)  _  (__fan_0 : Tokenf.t) 
@@ -2618,12 +2590,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Case (_loc, (mk_ant ~c:\"case\" s), e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -2633,18 +2605,18 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
-          `Skeyword "when";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`CaseWhen (_loc, p, w, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (w : 'exp)  _  (p : 'pat_as_pat_opt) 
                    (_loc : Locf.t)  -> (`CaseWhen (_loc, p, w, e) : 'case0 )))));
-         ([`Snterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`Case (_loc, p, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (p : 'pat_as_pat_opt)  (_loc : Locf.t) 
@@ -2653,8 +2625,8 @@ let apply () =
      (None,
        (None, None,
          [([`Slist1sep
-              ((`Snterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
-                (`Skeyword "|"))],
+              ((`Nterm (Gramf.obj (case0 : 'case0 Gramf.t ))),
+                (`Keyword "|"))],
             ("bar_of_list x\n",
               (Gramf.mk_action
                  (fun (x : 'case0 list)  (_loc : Locf.t)  ->
@@ -2662,7 +2634,7 @@ let apply () =
   (Gramf.extend_single (rec_exp_quot : 'rec_exp_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ))],
+         [([`Nterm (Gramf.obj (label_exp_list : 'label_exp_list Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'label_exp_list)  (_loc : Locf.t)  ->
@@ -2670,7 +2642,7 @@ let apply () =
    Gramf.extend_single (label_exp : 'label_exp Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "rec_exp";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "rec_exp")), "`Ant s")],
@@ -2683,7 +2655,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2696,14 +2668,14 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
-          `Snterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
+          `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
            ("(`RecBind (_loc, i, e) : FAst.rec_exp )\n",
              (Gramf.mk_action
                 (fun (e : 'fun_bind)  (i : 'label_longident)  (_loc : Locf.t)
                     ->
                    ((`RecBind (_loc, i, e) : FAst.rec_exp ) : 'label_exp )))));
-         ([`Snterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
            ("`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n",
              (Gramf.mk_action
                 (fun (i : 'label_longident)  (_loc : Locf.t)  ->
@@ -2712,7 +2684,7 @@ let apply () =
    Gramf.extend_single (field_exp : 'field_exp Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2725,7 +2697,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "bi";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "bi")), "`Ant s")],
@@ -2738,9 +2710,9 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("`RecBind (_loc, (l :>ident), e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (l : 'a_lident)  (_loc : Locf.t)  ->
@@ -2748,21 +2720,21 @@ let apply () =
    Gramf.extend_single (label_exp_list : 'label_exp_list Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
-           `Skeyword ";";
-           `Sself],
+         [([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
+           `Keyword ";";
+           `Self],
             ("`Sem (_loc, b1, b2)\n",
               (Gramf.mk_action
                  (fun (b2 : 'label_exp_list)  _  (b1 : 'label_exp) 
                     (_loc : Locf.t)  ->
                     (`Sem (_loc, b1, b2) : 'label_exp_list )))));
-         ([`Snterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
-          `Skeyword ";"],
+         ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ));
+          `Keyword ";"],
            ("b1\n",
              (Gramf.mk_action
                 (fun _  (b1 : 'label_exp)  (_loc : Locf.t)  ->
                    (b1 : 'label_exp_list )))));
-         ([`Snterm (Gramf.obj (label_exp : 'label_exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_exp : 'label_exp Gramf.t ))],
            ("b1\n",
              (Gramf.mk_action
                 (fun (b1 : 'label_exp)  (_loc : Locf.t)  ->
@@ -2770,21 +2742,21 @@ let apply () =
    Gramf.extend_single (field_exp_list : 'field_exp_list Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
-           `Skeyword ";";
-           `Sself],
+         [([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
+           `Keyword ";";
+           `Self],
             ("`Sem (_loc, b1, b2)\n",
               (Gramf.mk_action
                  (fun (b2 : 'field_exp_list)  _  (b1 : 'field_exp) 
                     (_loc : Locf.t)  ->
                     (`Sem (_loc, b1, b2) : 'field_exp_list )))));
-         ([`Snterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
-          `Skeyword ";"],
+         ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ));
+          `Keyword ";"],
            ("b1\n",
              (Gramf.mk_action
                 (fun _  (b1 : 'field_exp)  (_loc : Locf.t)  ->
                    (b1 : 'field_exp_list )))));
-         ([`Snterm (Gramf.obj (field_exp : 'field_exp Gramf.t ))],
+         ([`Nterm (Gramf.obj (field_exp : 'field_exp Gramf.t ))],
            ("b1\n",
              (Gramf.mk_action
                 (fun (b1 : 'field_exp)  (_loc : Locf.t)  ->
@@ -2794,53 +2766,53 @@ let apply () =
    Gramf.extend_single (pat_quot : 'pat_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Skeyword ",";
-           `Snterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ))],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword ",";
+           `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ))],
             ("`Com (_loc, x, y)\n",
               (Gramf.mk_action
                  (fun (y : 'comma_pat)  _  (x : 'pat)  (_loc : Locf.t)  ->
                     (`Com (_loc, x, y) : 'pat_quot )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ";";
-          `Snterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ";";
+          `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ))],
            ("`Sem (_loc, x, y)\n",
              (Gramf.mk_action
                 (fun (y : 'sem_pat)  _  (x : 'pat)  (_loc : Locf.t)  ->
                    (`Sem (_loc, x, y) : 'pat_quot )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("x\n",
              (Gramf.mk_action
                 (fun (x : 'pat)  (_loc : Locf.t)  -> (x : 'pat_quot )))))]));
    Gramf.extend_single (pat_as_pat_opt : 'pat_as_pat_opt Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Skeyword "as";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword "as";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("`Alias (_loc, p1, s)\n",
               (Gramf.mk_action
                  (fun (s : 'a_lident)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                     (`Alias (_loc, p1, s) : 'pat_as_pat_opt )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("p\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'pat_as_pat_opt )))))]));
    Gramf.extend_single (pat_constr : 'pat_constr Gramf.t )
      (None,
        (None, None,
-         [([`Snterm
+         [([`Nterm
               (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
             ("(i : vid  :>pat)\n",
               (Gramf.mk_action
                  (fun (i : 'module_longident)  (_loc : Locf.t)  ->
                     ((i : vid  :>pat) : 'pat_constr )))));
-         ([`Skeyword "`"; `Snterm (Gramf.obj (luident : 'luident Gramf.t ))],
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("(`Vrn (_loc, s) : pat )\n",
              (Gramf.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    ((`Vrn (_loc, s) : pat ) : 'pat_constr )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2853,7 +2825,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
@@ -2866,7 +2838,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
@@ -2882,26 +2854,26 @@ let apply () =
    Gramf.extend (pat : 'pat Gramf.t )
      (None,
        [((Some "|"), (Some `LA),
-          [([`Sself; `Skeyword "|"; `Sself],
+          [([`Self; `Keyword "|"; `Self],
              ("`Bar (_loc, p1, p2)\n",
                (Gramf.mk_action
                   (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                      (`Bar (_loc, p1, p2) : 'pat )))))]);
        ((Some ".."), (Some `NA),
-         [([`Sself; `Skeyword ".."; `Sself],
+         [([`Self; `Keyword ".."; `Self],
             ("`PaRng (_loc, p1, p2)\n",
               (Gramf.mk_action
                  (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                     (`PaRng (_loc, p1, p2) : 'pat )))))]);
        ((Some "::"), (Some `RA),
-         [([`Sself; `Skeyword "::"; `Sself],
+         [([`Self; `Keyword "::"; `Self],
             ("`App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p1)), p2)\n",
               (Gramf.mk_action
                  (fun (p2 : 'pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                     (`App (_loc, (`App (_loc, (`Uid (_loc, "::")), p1)), p2) : 
                     'pat )))))]);
        ((Some "apply"), (Some `LA),
-         [([`Snterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Sself],
+         [([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t )); `Self],
             ("match p2 with\n| (`Par (_loc,p) : FAst.pat) ->\n    List.fold_left (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat )) p1\n      (Ast_basic.list_of_com p [])\n| _ -> (`App (_loc, p1, p2) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun (p2 : 'pat)  (p1 : 'pat_constr)  (_loc : Locf.t)  ->
@@ -2911,17 +2883,17 @@ let apply () =
                            (fun p1  p2  -> (`App (_loc, p1, p2) : FAst.pat ))
                            p1 (Ast_basic.list_of_com p [])
                      | _ -> (`App (_loc, p1, p2) : FAst.pat ) : 'pat )))));
-         ([`Snterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat_constr : 'pat_constr Gramf.t ))],
            ("p1\n",
              (Gramf.mk_action
                 (fun (p1 : 'pat_constr)  (_loc : Locf.t)  -> (p1 : 'pat )))));
-         ([`Skeyword "lazy"; `Sself],
+         ([`Keyword "lazy"; `Self],
            ("`Lazy (_loc, p)\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  _  (_loc : Locf.t)  ->
                    (`Lazy (_loc, p) : 'pat )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -2934,7 +2906,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
@@ -2947,7 +2919,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
@@ -2960,7 +2932,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int")), "`Ant s")],
@@ -2973,7 +2945,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int32";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int32")), "`Ant s")],
@@ -2986,7 +2958,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int64";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int64")), "`Ant s")],
@@ -2999,7 +2971,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
@@ -3012,7 +2984,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "flo";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "flo")), "`Ant s")],
@@ -3025,7 +2997,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "chr";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "chr")), "`Ant s")],
@@ -3038,7 +3010,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "nativeint")), "`Ant s")],
@@ -3051,7 +3023,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "str";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "str")), "`Ant s")],
@@ -3064,7 +3036,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int'")), "`Ant s")],
@@ -3077,7 +3049,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int32'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int32'")), "`Ant s")],
@@ -3090,7 +3062,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "int64'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "int64'")), "`Ant s")],
@@ -3103,7 +3075,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "nativeint'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "nativeint'")), "`Ant s")],
@@ -3116,7 +3088,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "flo'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "flo'")), "`Ant s")],
@@ -3129,7 +3101,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "chr'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "chr'")), "`Ant s")],
@@ -3142,7 +3114,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "str'";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "str'")), "`Ant s")],
@@ -3155,7 +3127,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int")), "`Ant s")],
@@ -3168,7 +3140,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int32";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int32")), "`Ant s")],
@@ -3181,7 +3153,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`int64";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`int64")), "`Ant s")],
@@ -3194,7 +3166,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`nativeint";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`nativeint")), "`Ant s")],
@@ -3207,7 +3179,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`flo";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`flo")), "`Ant s")],
@@ -3220,7 +3192,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`chr";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`chr")), "`Ant s")],
@@ -3233,7 +3205,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "`str";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "`str")), "`Ant s")],
@@ -3246,12 +3218,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ))],
+         ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
            ("(i : vid  :>pat)\n",
              (Gramf.mk_action
                 (fun (i : 'vid)  (_loc : Locf.t)  ->
                    ((i : vid  :>pat) : 'pat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
                "`Int s")],
            ("`Int (_loc, s)\n",
@@ -3263,7 +3235,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Int32 _ -> true | _ -> false)),
                ((-783416530), `Any), "`Int32 s")],
            ("`Int32 (_loc, s)\n",
@@ -3275,7 +3247,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Int64 _ -> true | _ -> false)),
                ((-783415859), `Any), "`Int64 s")],
            ("`Int64 (_loc, s)\n",
@@ -3287,7 +3259,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Nativeint _ -> true | _ -> false)),
                ((-113706088), `Any), "`Nativeint s")],
            ("`Nativeint (_loc, s)\n",
@@ -3299,7 +3271,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
                "`Flo s")],
            ("`Flo (_loc, s)\n",
@@ -3311,7 +3283,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Chr _ -> true | _ -> false)), (3355149, `Any),
                "`Chr s")],
            ("`Chr (_loc, s)\n",
@@ -3323,7 +3295,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "`Str s")],
            ("`Str (_loc, s)\n",
@@ -3335,8 +3307,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "-";
-          `Stoken
+         ([`Keyword "-";
+          `Token
             (((function | `Int _ -> true | _ -> false)), (3654863, `Any),
               "`Int s")],
            ("`Int (_loc, (Stringf.neg s))\n",
@@ -3348,8 +3320,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "-";
-          `Stoken
+         ([`Keyword "-";
+          `Token
             (((function | `Int32 _ -> true | _ -> false)),
               ((-783416530), `Any), "`Int32 s")],
            ("`Int32 (_loc, (Stringf.neg s))\n",
@@ -3361,8 +3333,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "-";
-          `Stoken
+         ([`Keyword "-";
+          `Token
             (((function | `Int64 _ -> true | _ -> false)),
               ((-783415859), `Any), "`Int64 s")],
            ("`Int64 (_loc, (Stringf.neg s))\n",
@@ -3374,8 +3346,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "-";
-          `Stoken
+         ([`Keyword "-";
+          `Token
             (((function | `Nativeint _ -> true | _ -> false)),
               ((-113706088), `Any), "`Nativeint s")],
            ("`Nativeint (_loc, (Stringf.neg s))\n",
@@ -3387,8 +3359,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "-";
-          `Stoken
+         ([`Keyword "-";
+          `Token
             (((function | `Flo _ -> true | _ -> false)), (3505225, `Any),
               "`Flo s")],
            ("`Flo (_loc, (Stringf.neg s))\n",
@@ -3400,70 +3372,70 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "["; `Skeyword "]"],
+         ([`Keyword "["; `Keyword "]"],
            ("(`Uid (_loc, \"[]\") : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "[]") : FAst.pat ) : 'pat )))));
-         ([`Skeyword "[";
-          `Snterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
-          `Skeyword "]"],
+         ([`Keyword "[";
+          `Nterm (Gramf.obj (sem_pat_for_list : 'sem_pat_for_list Gramf.t ));
+          `Keyword "]"],
            ("mk_list (`Uid (_loc, \"[]\") : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (mk_list : 'sem_pat_for_list)  _  (_loc : Locf.t)  ->
                    (mk_list (`Uid (_loc, "[]") : FAst.pat ) : 'pat )))));
-         ([`Skeyword "[|"; `Skeyword "|]"],
+         ([`Keyword "[|"; `Keyword "|]"],
            ("`ArrayEmpty _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`ArrayEmpty _loc : 'pat )))));
-         ([`Skeyword "[|";
-          `Snterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ));
-          `Skeyword "|]"],
+         ([`Keyword "[|";
+          `Nterm (Gramf.obj (sem_pat : 'sem_pat Gramf.t ));
+          `Keyword "|]"],
            ("`Array (_loc, pl)\n",
              (Gramf.mk_action
                 (fun _  (pl : 'sem_pat)  _  (_loc : Locf.t)  ->
                    (`Array (_loc, pl) : 'pat )))));
-         ([`Skeyword "{";
-          `Snterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
-          `Skeyword "}"],
+         ([`Keyword "{";
+          `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
+          `Keyword "}"],
            ("`Record (_loc, pl)\n",
              (Gramf.mk_action
                 (fun _  (pl : 'label_pat_list)  _  (_loc : Locf.t)  ->
                    (`Record (_loc, pl) : 'pat )))));
-         ([`Skeyword "("; `Skeyword ")"],
+         ([`Keyword "("; `Keyword ")"],
            ("(`Uid (_loc, \"()\") : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : FAst.pat ) : 'pat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ")"],
            ("`ModuleUnpack (_loc, m)\n",
              (Gramf.mk_action
                 (fun _  (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
                    (`ModuleUnpack (_loc, m) : 'pat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
              (Gramf.mk_action
                 (fun _  (pt : 'mtyp)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
                    'pat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Stoken
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Token
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
-          `Skeyword ")"],
+          `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
              (Gramf.mk_action
                 (fun _  (__fan_4 : Tokenf.t)  _  (m : 'a_uident)  _  _ 
@@ -3474,51 +3446,51 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_4))))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("p\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat)  _  (_loc : Locf.t)  -> (p : 'pat )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
            ("(`Constraint (_loc, p, t) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : Locf.t)  ->
                    ((`Constraint (_loc, p, t) : FAst.pat ) : 'pat )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword "as";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword "as";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ")"],
            ("(`Alias (_loc, p, s) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (s : 'a_lident)  _  (p : 'pat)  _  (_loc : Locf.t) 
                    -> ((`Alias (_loc, p, s) : FAst.pat ) : 'pat )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ",";
-          `Snterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ",";
+          `Nterm (Gramf.obj (comma_pat : 'comma_pat Gramf.t ));
+          `Keyword ")"],
            ("(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (pl : 'comma_pat)  _  (p : 'pat)  _  (_loc : Locf.t) 
                    ->
                    ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
                    'pat )))));
-         ([`Skeyword "`"; `Snterm (Gramf.obj (luident : 'luident Gramf.t ))],
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("(`Vrn (_loc, s) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    ((`Vrn (_loc, s) : FAst.pat ) : 'pat )))));
-         ([`Skeyword "#";
-          `Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+         ([`Keyword "#";
+          `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
            ("(`ClassPath (_loc, i) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (i : 'type_longident)  _  (_loc : Locf.t)  ->
                    ((`ClassPath (_loc, i) : FAst.pat ) : 'pat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
@@ -3529,14 +3501,14 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "_"],
+         ([`Keyword "_"],
            ("(`Any _loc : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  -> ((`Any _loc : FAst.pat ) : 'pat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
                "`Label i");
-          `Sself],
+          `Self],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3547,28 +3519,27 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Sself],
+         ([`Keyword "~";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
            ("(`Label (_loc, i, p) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    ((`Label (_loc, i, p) : FAst.pat ) : 'pat )))));
-         ([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`LabelS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'pat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
                (688526593, `Any), "`Optlabel i");
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
@@ -3580,12 +3551,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
                (688526593, `Any), "`Optlabel i");
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword ")"],
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : Tokenf.t) 
@@ -3596,30 +3567,30 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _  _  (i : 'a_lident)
                     _  (_loc : Locf.t)  ->
                    (`OptLablExpr (_loc, i, p, e) : 'pat )))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Stoken
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Token
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
-          `Skeyword ")"],
+          `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
              (Gramf.mk_action
                 (fun _  (__fan_6 : Tokenf.t)  _  (p : 'pat_tcon)  _  _ 
@@ -3630,36 +3601,35 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_6))))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, i, p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'pat )))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`OptLablS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`OptLablS (_loc, i) : 'pat )))));
-         ([`Skeyword "?";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'ipat_tcon)  _  _  (_loc : Locf.t)  ->
                    (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'pat )))));
-         ([`Skeyword "?";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'ipat_tcon)  _  _ 
@@ -3668,14 +3638,14 @@ let apply () =
    Gramf.extend_single (ipat : 'ipat Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "{";
-           `Snterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
-           `Skeyword "}"],
+         [([`Keyword "{";
+           `Nterm (Gramf.obj (label_pat_list : 'label_pat_list Gramf.t ));
+           `Keyword "}"],
             ("(`Record (_loc, pl) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun _  (pl : 'label_pat_list)  _  (_loc : Locf.t)  ->
                     ((`Record (_loc, pl) : FAst.pat ) : 'ipat )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -3688,7 +3658,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
@@ -3701,7 +3671,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "par")), "`Ant s")],
@@ -3714,40 +3684,40 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "("; `Skeyword ")"],
+         ([`Keyword "("; `Keyword ")"],
            ("(`Uid (_loc, \"()\") : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  ->
                    ((`Uid (_loc, "()") : FAst.pat ) : 'ipat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ")"],
            ("`ModuleUnpack (_loc, m)\n",
              (Gramf.mk_action
                 (fun _  (m : 'a_uident)  _  _  (_loc : Locf.t)  ->
                    (`ModuleUnpack (_loc, m) : 'ipat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+          `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (`Package (_loc, pt)))\n",
              (Gramf.mk_action
                 (fun _  (pt : 'mtyp)  _  (m : 'a_uident)  _  _ 
                    (_loc : Locf.t)  ->
                    (`ModuleConstraint (_loc, m, (`Package (_loc, pt))) : 
                    'ipat )))));
-         ([`Skeyword "(";
-          `Skeyword "module";
-          `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-          `Skeyword ":";
-          `Stoken
+         ([`Keyword "(";
+          `Keyword "module";
+          `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+          `Keyword ":";
+          `Token
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
-          `Skeyword ")"],
+          `Keyword ")"],
            ("`ModuleConstraint (_loc, m, (mk_ant s))\n",
              (Gramf.mk_action
                 (fun _  (__fan_4 : Tokenf.t)  _  (m : 'a_uident)  _  _ 
@@ -3758,47 +3728,47 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_4))))));
-         ([`Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")"],
            ("p\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat)  _  (_loc : Locf.t)  -> (p : 'ipat )))));
-         ([`Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")"],
            ("(`Constraint (_loc, p, t) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (t : 'ctyp)  _  (p : 'pat)  _  (_loc : Locf.t)  ->
                    ((`Constraint (_loc, p, t) : FAst.pat ) : 'ipat )))));
-         ([`Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword "as";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword "as";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ")"],
            ("(`Alias (_loc, p, s) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (s : 'a_lident)  _  (p : 'pat)  _  (_loc : Locf.t) 
                    -> ((`Alias (_loc, p, s) : FAst.pat ) : 'ipat )))));
-         ([`Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ",";
-          `Snterm (Gramf.obj (comma_ipat : 'comma_ipat Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ",";
+          `Nterm (Gramf.obj (comma_ipat : 'comma_ipat Gramf.t ));
+          `Keyword ")"],
            ("(`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (pl : 'comma_ipat)  _  (p : 'pat)  _  (_loc : Locf.t)
                     ->
                    ((`Par (_loc, (`Com (_loc, p, pl))) : FAst.pat ) : 
                    'ipat )))));
-         ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("(s : alident  :>pat)\n",
              (Gramf.mk_action
                 (fun (s : 'a_lident)  (_loc : Locf.t)  ->
                    ((s : alident  :>pat) : 'ipat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.pat\n",
@@ -3809,20 +3779,20 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "`"; `Snterm (Gramf.obj (luident : 'luident Gramf.t ))],
+         ([`Keyword "`"; `Nterm (Gramf.obj (luident : 'luident Gramf.t ))],
            ("(`Vrn (_loc, s) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (s : 'luident)  _  (_loc : Locf.t)  ->
                    ((`Vrn (_loc, s) : FAst.pat ) : 'ipat )))));
-         ([`Skeyword "_"],
+         ([`Keyword "_"],
            ("(`Any _loc : FAst.pat )\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
                    ((`Any _loc : FAst.pat ) : 'ipat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
                "`Label i");
-          `Sself],
+          `Self],
            ("(`Label (_loc, (`Lid (_loc, i)), p) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (p : 'ipat)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -3833,28 +3803,27 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Sself],
+         ([`Keyword "~";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
            ("(`Label (_loc, i, p) : FAst.pat )\n",
              (Gramf.mk_action
                 (fun (p : 'ipat)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    ((`Label (_loc, i, p) : FAst.pat ) : 'ipat )))));
-         ([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "~"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`LabelS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`LabelS (_loc, i) : 'ipat )))));
-         ([`Stoken
+         ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
                (688526593, `Any), "`Optlabel i");
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, (`Lid (_loc, i)), p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _ 
@@ -3866,12 +3835,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Optlabel _ -> true | _ -> false)),
                (688526593, `Any), "`Optlabel i");
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword ")"],
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, (`Lid (_loc, i)), p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat_tcon)  _  (__fan_0 : Tokenf.t) 
@@ -3882,30 +3851,30 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'pat_tcon)  _  _  (i : 'a_lident)
                     _  (_loc : Locf.t)  ->
                    (`OptLablExpr (_loc, i, p, e) : 'ipat )))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Stoken
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword "=";
+          `Token
             (((function
                | `Ant ({ kind = "opt";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "opt")), "`Ant s");
-          `Skeyword ")"],
+          `Keyword ")"],
            ("`OptLablExpr (_loc, i, p, (mk_ant s))\n",
              (Gramf.mk_action
                 (fun _  (__fan_6 : Tokenf.t)  _  (p : 'pat_tcon)  _  _ 
@@ -3916,36 +3885,35 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_6))))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat_tcon : 'pat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, i, p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat_tcon)  _  _  (i : 'a_lident)  _ 
                    (_loc : Locf.t)  -> (`OptLabl (_loc, i, p) : 'ipat )))));
-         ([`Skeyword "?";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "?"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`OptLablS (_loc, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`OptLablS (_loc, i) : 'ipat )))));
-         ([`Skeyword "?";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword ")"],
            ("`OptLabl (_loc, (`Lid (_loc, \"\")), p)\n",
              (Gramf.mk_action
                 (fun _  (p : 'ipat_tcon)  _  _  (_loc : Locf.t)  ->
                    (`OptLabl (_loc, (`Lid (_loc, "")), p) : 'ipat )))));
-         ([`Skeyword "?";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "?";
+          `Keyword "(";
+          `Nterm (Gramf.obj (ipat_tcon : 'ipat_tcon Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+          `Keyword ")"],
            ("`OptLablExpr (_loc, (`Lid (_loc, \"\")), p, e)\n",
              (Gramf.mk_action
                 (fun _  (e : 'exp)  _  (p : 'ipat_tcon)  _  _ 
@@ -3954,23 +3922,23 @@ let apply () =
    Gramf.extend_single (sem_pat : 'sem_pat Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t )); `Skeyword ";"; `Sself],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
             ("`Sem (_loc, p1, p2)\n",
               (Gramf.mk_action
                  (fun (p2 : 'sem_pat)  _  (p1 : 'pat)  (_loc : Locf.t)  ->
                     (`Sem (_loc, p1, p2) : 'sem_pat )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t )); `Skeyword ";"],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
            ("p\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat)  (_loc : Locf.t)  -> (p : 'sem_pat )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("p\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'sem_pat )))))]));
    Gramf.extend_single (sem_pat_for_list : 'sem_pat_for_list Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t )); `Skeyword ";"; `Sself],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"; `Self],
             ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), (pl acc))\n",
               (Gramf.mk_action
                  (fun (pl : 'sem_pat_for_list)  _  (p : 'pat) 
@@ -3979,14 +3947,14 @@ let apply () =
                        `App
                          (_loc, (`App (_loc, (`Uid (_loc, "::")), p)),
                            (pl acc)) : 'sem_pat_for_list )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t )); `Skeyword ";"],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t )); `Keyword ";"],
            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
              (Gramf.mk_action
                 (fun _  (p : 'pat)  (_loc : Locf.t)  ->
                    (fun acc  ->
                       `App (_loc, (`App (_loc, (`Uid (_loc, "::")), p)), acc) : 
                    'sem_pat_for_list )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("fun acc  -> `App (_loc, (`App (_loc, (`Uid (_loc, \"::\")), p)), acc)\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (_loc : Locf.t)  ->
@@ -3996,21 +3964,21 @@ let apply () =
    Gramf.extend_single (pat_tcon : 'pat_tcon Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Skeyword ":";
-           `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword ":";
+           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
             ("(`Constraint (_loc, p, t) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun (t : 'ctyp)  _  (p : 'pat)  (_loc : Locf.t)  ->
                     ((`Constraint (_loc, p, t) : FAst.pat ) : 'pat_tcon )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("p\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'pat_tcon )))))]));
    Gramf.extend_single (ipat_tcon : 'ipat_tcon Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4023,14 +3991,14 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("(i : alident  :>pat)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  (_loc : Locf.t)  ->
                    ((i : alident  :>pat) : 'ipat_tcon )))));
-         ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`Constraint (_loc, (i : alident  :>pat), t) : pat )\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  (_loc : Locf.t)  ->
@@ -4039,62 +4007,62 @@ let apply () =
    Gramf.extend_single (comma_ipat : 'comma_ipat Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword ","; `Sself],
+         [([`Self; `Keyword ","; `Self],
             ("(`Com (_loc, p1, p2) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun (p2 : 'comma_ipat)  _  (p1 : 'comma_ipat) 
                     (_loc : Locf.t)  ->
                     ((`Com (_loc, p1, p2) : FAst.pat ) : 'comma_ipat )))));
-         ([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t ))],
+         ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t ))],
            ("p\n",
              (Gramf.mk_action
                 (fun (p : 'ipat)  (_loc : Locf.t)  -> (p : 'comma_ipat )))))]));
    Gramf.extend_single (comma_pat : 'comma_pat Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword ","; `Sself],
+         [([`Self; `Keyword ","; `Self],
             ("(`Com (_loc, p1, p2) : FAst.pat )\n",
               (Gramf.mk_action
                  (fun (p2 : 'comma_pat)  _  (p1 : 'comma_pat) 
                     (_loc : Locf.t)  ->
                     ((`Com (_loc, p1, p2) : FAst.pat ) : 'comma_pat )))));
-         ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("p\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  (_loc : Locf.t)  -> (p : 'comma_pat )))))]));
    Gramf.extend_single (label_pat_list : 'label_pat_list Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-           `Skeyword ";";
-           `Sself],
+         [([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+           `Keyword ";";
+           `Self],
             ("`Sem (_loc, p1, p2)\n",
               (Gramf.mk_action
                  (fun (p2 : 'label_pat_list)  _  (p1 : 'label_pat) 
                     (_loc : Locf.t)  ->
                     (`Sem (_loc, p1, p2) : 'label_pat_list )))));
-         ([`Snterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-          `Skeyword ";";
-          `Skeyword "_"],
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";";
+          `Keyword "_"],
            ("`Sem (_loc, p1, (`Any _loc))\n",
              (Gramf.mk_action
                 (fun _  _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
                    (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
-         ([`Snterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-          `Skeyword ";";
-          `Skeyword "_";
-          `Skeyword ";"],
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";";
+          `Keyword "_";
+          `Keyword ";"],
            ("`Sem (_loc, p1, (`Any _loc))\n",
              (Gramf.mk_action
                 (fun _  _  _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
                    (`Sem (_loc, p1, (`Any _loc)) : 'label_pat_list )))));
-         ([`Snterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
-          `Skeyword ";"],
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ));
+          `Keyword ";"],
            ("p1\n",
              (Gramf.mk_action
                 (fun _  (p1 : 'label_pat)  (_loc : Locf.t)  ->
                    (p1 : 'label_pat_list )))));
-         ([`Snterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_pat : 'label_pat Gramf.t ))],
            ("p1\n",
              (Gramf.mk_action
                 (fun (p1 : 'label_pat)  (_loc : Locf.t)  ->
@@ -4102,7 +4070,7 @@ let apply () =
    Gramf.extend_single (label_pat : 'label_pat Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4115,7 +4083,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "pat";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "pat")), "`Ant s")],
@@ -4128,14 +4096,14 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("`RecBind (_loc, i, p)\n",
              (Gramf.mk_action
                 (fun (p : 'pat)  _  (i : 'label_longident)  (_loc : Locf.t) 
                    -> (`RecBind (_loc, i, p) : 'label_pat )))));
-         ([`Snterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
+         ([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
            ("`RecBind (_loc, i, (`Lid (_loc, (Fan_ops.to_lid i))))\n",
              (Gramf.mk_action
                 (fun (i : 'label_longident)  (_loc : Locf.t)  ->
@@ -4144,7 +4112,7 @@ let apply () =
   (Gramf.extend_single (luident : 'luident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                 "`Lid i")],
             ("i\n",
@@ -4155,7 +4123,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("i\n",
@@ -4169,12 +4137,12 @@ let apply () =
    Gramf.extend_single (aident : 'aident Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         [([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("(i :>ident)\n",
               (Gramf.mk_action
                  (fun (i : 'a_lident)  (_loc : Locf.t)  ->
                     ((i :>ident) : 'aident )))));
-         ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
+         ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
            ("(i :>ident)\n",
              (Gramf.mk_action
                 (fun (i : 'a_uident)  (_loc : Locf.t)  ->
@@ -4182,7 +4150,7 @@ let apply () =
    Gramf.extend_single (astr : 'astr Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                 "`Lid i")],
             ("`C (_loc, i)\n",
@@ -4194,7 +4162,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("`C (_loc, i)\n",
@@ -4206,7 +4174,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4219,7 +4187,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
@@ -4235,14 +4203,14 @@ let apply () =
    Gramf.extend (ident_quot : 'ident_quot Gramf.t )
      (None,
        [((Some "."), None,
-          [([`Sself; `Skeyword "."; `Sself],
+          [([`Self; `Keyword "."; `Self],
              ("(`Dot (_loc, i, j) : FAst.ident )\n",
                (Gramf.mk_action
                   (fun (j : 'ident_quot)  _  (i : 'ident_quot) 
                      (_loc : Locf.t)  ->
                      ((`Dot (_loc, i, j) : FAst.ident ) : 'ident_quot )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4255,7 +4223,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -4268,7 +4236,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -4281,7 +4249,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -4294,12 +4262,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.t) 
@@ -4310,12 +4278,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.t) 
@@ -4326,12 +4294,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident_quot)  _  (__fan_0 : Tokenf.t) 
@@ -4342,7 +4310,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
@@ -4354,7 +4322,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
@@ -4366,11 +4334,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (`Uid (_loc, s)), j) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (j : 'ident_quot)  _  (__fan_0 : Tokenf.t) 
@@ -4382,7 +4350,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "("; `Sself; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Self; `Keyword ")"],
            ("`Apply (_loc, i, j)\n",
              (Gramf.mk_action
                 (fun _  (j : 'ident_quot)  (i : 'ident_quot)  _ 
@@ -4390,7 +4358,7 @@ let apply () =
    Gramf.extend_single (ident : 'ident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4403,7 +4371,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -4416,7 +4384,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -4429,7 +4397,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -4442,12 +4410,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4458,12 +4426,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4474,12 +4442,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'ident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4490,7 +4458,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
            ("`Lid (_loc, i)\n",
@@ -4502,7 +4470,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("`Uid (_loc, i)\n",
@@ -4514,11 +4482,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
              (Gramf.mk_action
                 (fun (j : 'ident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4532,7 +4500,7 @@ let apply () =
    Gramf.extend_single (vid : 'vid Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4545,7 +4513,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -4558,7 +4526,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -4571,7 +4539,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -4584,12 +4552,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4599,12 +4567,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4614,12 +4582,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), i)\n",
              (Gramf.mk_action
                 (fun (i : 'vid)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4629,7 +4597,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
            ("`Lid (_loc, i)\n",
@@ -4641,7 +4609,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("`Uid (_loc, i)\n",
@@ -4653,11 +4621,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (`Uid (_loc, s)), j)\n",
              (Gramf.mk_action
                 (fun (j : 'vid)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4670,7 +4638,7 @@ let apply () =
    Gramf.extend_single (uident : 'uident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                 "`Uid s")],
             ("`Uid (_loc, s)\n",
@@ -4682,7 +4650,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4695,7 +4663,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -4708,7 +4676,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -4721,11 +4689,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("dot (`Uid (_loc, s)) l\n",
              (Gramf.mk_action
                 (fun (l : 'uident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4736,12 +4704,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("dot (mk_ant ~c:\"uident\" s) i\n",
              (Gramf.mk_action
                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4752,12 +4720,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("dot (mk_ant ~c:\"uident\" s) i\n",
              (Gramf.mk_action
                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4768,12 +4736,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("dot (mk_ant ~c:\"uident\" s) i\n",
              (Gramf.mk_action
                 (fun (i : 'uident)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -4787,7 +4755,7 @@ let apply () =
    Gramf.extend_single (dot_lstrings : 'dot_lstrings Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                 "`Lid i")],
             ("((`Sub []), i)\n",
@@ -4799,11 +4767,11 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("match xs with\n| (`Sub xs,v) -> ((`Sub (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
              (Gramf.mk_action
                 (fun (xs : 'dot_lstrings)  _  (__fan_0 : Tokenf.t) 
@@ -4818,12 +4786,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword ".";
-          `Stoken
+         ([`Keyword ".";
+          `Token
             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
               "`Uid i");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("match xs with\n| (`Sub xs,v) -> ((`Absolute (i :: xs)), v)\n| _ -> raise (Streamf.Error \"impossible dot_lstrings\")\n",
              (Gramf.mk_action
                 (fun (xs : 'dot_lstrings)  _  (__fan_1 : Tokenf.t)  _ 
@@ -4842,12 +4810,12 @@ let apply () =
      (module_longident_dot_lparen : 'module_longident_dot_lparen Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s");
-           `Skeyword ".";
-           `Skeyword "("],
+           `Keyword ".";
+           `Keyword "("],
             ("mk_ant ~c:\"ident\" s\n",
               (Gramf.mk_action
                  (fun _  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4857,12 +4825,12 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s");
-          `Skeyword ".";
-          `Skeyword "("],
+          `Keyword ".";
+          `Keyword "("],
            ("mk_ant ~c:\"ident\" s\n",
              (Gramf.mk_action
                 (fun _  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4872,12 +4840,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Skeyword "("],
+          `Keyword ".";
+          `Keyword "("],
            ("mk_ant ~c:\"ident\" s\n",
              (Gramf.mk_action
                 (fun _  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4887,11 +4855,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident_dot_lparen)  _ 
@@ -4903,11 +4871,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i");
-          `Skeyword ".";
-          `Skeyword "("],
+          `Keyword ".";
+          `Keyword "("],
            ("(`Uid (_loc, i) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun _  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -4917,12 +4885,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident_dot_lparen)  _ 
@@ -4934,12 +4902,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident_dot_lparen)  _ 
@@ -4954,7 +4922,7 @@ let apply () =
    Gramf.extend_single (module_longident : 'module_longident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -4967,7 +4935,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -4980,7 +4948,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -4993,11 +4961,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (`Uid (_loc, i)), l)\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5008,7 +4976,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("`Uid (_loc, i)\n",
@@ -5020,12 +4988,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5036,12 +5004,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
              (Gramf.mk_action
                 (fun (l : 'module_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5056,21 +5024,21 @@ let apply () =
      (module_longident_with_app : 'module_longident_with_app Gramf.t )
      (None,
        [((Some "apply"), None,
-          [([`Sself; `Sself],
+          [([`Self; `Self],
              ("`Apply (_loc, i, j)\n",
                (Gramf.mk_action
                   (fun (j : 'module_longident_with_app) 
                      (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
                      (`Apply (_loc, i, j) : 'module_longident_with_app )))))]);
        ((Some "."), None,
-         [([`Sself; `Skeyword "."; `Sself],
+         [([`Self; `Keyword "."; `Self],
             ("(`Dot (_loc, i, j) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun (j : 'module_longident_with_app)  _ 
                     (i : 'module_longident_with_app)  (_loc : Locf.t)  ->
                     ((`Dot (_loc, i, j) : FAst.ident ) : 'module_longident_with_app )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5083,7 +5051,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -5096,7 +5064,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -5109,7 +5077,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("`Uid (_loc, i)\n",
@@ -5121,7 +5089,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("i\n",
              (Gramf.mk_action
                 (fun _  (i : 'module_longident_with_app)  _  (_loc : Locf.t) 
@@ -5129,21 +5097,21 @@ let apply () =
    Gramf.extend (type_longident : 'type_longident Gramf.t )
      (None,
        [((Some "apply"), None,
-          [([`Sself; `Sself],
+          [([`Self; `Self],
              ("`Apply (_loc, i, j)\n",
                (Gramf.mk_action
                   (fun (j : 'type_longident)  (i : 'type_longident) 
                      (_loc : Locf.t)  ->
                      (`Apply (_loc, i, j) : 'type_longident )))))]);
        ((Some "."), None,
-         [([`Sself; `Skeyword "."; `Sself],
+         [([`Self; `Keyword "."; `Self],
             ("(`Dot (_loc, i, j) : FAst.ident )\n",
               (Gramf.mk_action
                  (fun (j : 'type_longident)  _  (i : 'type_longident) 
                     (_loc : Locf.t)  ->
                     ((`Dot (_loc, i, j) : FAst.ident ) : 'type_longident )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5156,7 +5124,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -5169,7 +5137,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -5182,7 +5150,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -5195,7 +5163,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
@@ -5207,7 +5175,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i")],
            ("(`Uid (_loc, i) : FAst.ident )\n",
@@ -5219,7 +5187,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("i\n",
              (Gramf.mk_action
                 (fun _  (i : 'type_longident)  _  (_loc : Locf.t)  ->
@@ -5227,7 +5195,7 @@ let apply () =
    Gramf.extend_single (label_longident : 'label_longident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5240,7 +5208,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -5253,7 +5221,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -5266,7 +5234,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
            ("(`Lid (_loc, i) : FAst.ident )\n",
@@ -5278,11 +5246,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid i");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5294,12 +5262,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5311,12 +5279,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
-          `Skeyword ".";
-          `Sself],
+          `Keyword ".";
+          `Self],
            ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
@@ -5331,7 +5299,7 @@ let apply () =
    Gramf.extend_single (cltyp_longident : 'cltyp_longident Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+         [([`Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'type_longident)  (_loc : Locf.t)  ->
@@ -5339,14 +5307,14 @@ let apply () =
    Gramf.extend_single (val_longident : 'val_longident Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (ident : 'ident Gramf.t ))],
+         [([`Nterm (Gramf.obj (ident : 'ident Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'ident)  (_loc : Locf.t)  -> (x : 'val_longident )))))]));
    Gramf.extend_single (class_longident : 'class_longident Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
+         [([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'label_longident)  (_loc : Locf.t)  ->
@@ -5354,13 +5322,13 @@ let apply () =
    Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "method"; `Skeyword "!"],
+         [([`Keyword "method"; `Keyword "!"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  _  (_loc : Locf.t)  ->
                     (`Positive _loc : 'method_opt_override )))));
-         ([`Skeyword "method";
-          `Stoken
+         ([`Keyword "method";
+          `Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5373,8 +5341,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "method";
-          `Stoken
+         ([`Keyword "method";
+          `Token
             (((function
                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
@@ -5387,7 +5355,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "method"],
+         ([`Keyword "method"],
            ("`Negative _loc\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
@@ -5395,12 +5363,12 @@ let apply () =
    Gramf.extend_single (opt_override : 'opt_override Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "!"],
+         [([`Keyword "!"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  ->
                     (`Positive _loc : 'opt_override )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "!")), "`Ant s")],
@@ -5413,7 +5381,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "override")), "`Ant s")],
@@ -5434,13 +5402,13 @@ let apply () =
      (value_val_opt_override : 'value_val_opt_override Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "val"; `Skeyword "!"],
+         [([`Keyword "val"; `Keyword "!"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  _  (_loc : Locf.t)  ->
                     (`Positive _loc : 'value_val_opt_override )))));
-         ([`Skeyword "val";
-          `Stoken
+         ([`Keyword "val";
+          `Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5453,8 +5421,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "val";
-          `Stoken
+         ([`Keyword "val";
+          `Token
             (((function
                | `Ant ({ kind = "override";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "override")), "`Ant s")],
@@ -5467,8 +5435,8 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "val";
-          `Stoken
+         ([`Keyword "val";
+          `Token
             (((function
                | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "!")), "`Ant s")],
@@ -5481,7 +5449,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Skeyword "val"],
+         ([`Keyword "val"],
            ("`Negative _loc\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  ->
@@ -5489,15 +5457,15 @@ let apply () =
    Gramf.extend_single (flag : 'flag Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "to"],
+         [([`Keyword "to"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'flag )))));
-         ([`Skeyword "downto"],
+         ([`Keyword "downto"],
            ("`Negative _loc\n",
              (Gramf.mk_action
                 (fun _  (_loc : Locf.t)  -> (`Negative _loc : 'flag )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "to";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "to")), "`Ant s")],
@@ -5510,7 +5478,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5526,11 +5494,11 @@ let apply () =
    Gramf.extend_single (opt_private : 'opt_private Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "private"],
+         [([`Keyword "private"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_private )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "private";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "private")), "`Ant s")],
@@ -5550,11 +5518,11 @@ let apply () =
    Gramf.extend_single (opt_mutable : 'opt_mutable Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "mutable"],
+         [([`Keyword "mutable"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_mutable )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "mutable";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "mutable")), "`Ant s")],
@@ -5574,11 +5542,11 @@ let apply () =
    Gramf.extend_single (opt_virtual : 'opt_virtual Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "virtual"],
+         [([`Keyword "virtual"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_virtual )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "virtual";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "virtual")), "`Ant s")],
@@ -5598,11 +5566,11 @@ let apply () =
    Gramf.extend_single (opt_dot_dot : 'opt_dot_dot Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword ".."],
+         [([`Keyword ".."],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_dot_dot )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "..";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "..")), "`Ant s")],
@@ -5622,11 +5590,11 @@ let apply () =
    Gramf.extend_single (opt_rec : 'opt_rec Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "rec"],
+         [([`Keyword "rec"],
             ("`Positive _loc\n",
               (Gramf.mk_action
                  (fun _  (_loc : Locf.t)  -> (`Positive _loc : 'opt_rec )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "rec";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "rec")), "`Ant s")],
@@ -5646,7 +5614,7 @@ let apply () =
    Gramf.extend_single (a_lident : 'a_lident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5659,7 +5627,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "lid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "lid")), "`Ant s")],
@@ -5672,7 +5640,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid s")],
            ("`Lid (_loc, s)\n",
@@ -5687,7 +5655,7 @@ let apply () =
    Gramf.extend_single (a_uident : 'a_uident Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5700,7 +5668,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "uid";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s")],
@@ -5713,7 +5681,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid s")],
            ("`Uid (_loc, s)\n",
@@ -5728,7 +5696,7 @@ let apply () =
    Gramf.extend_single (string_list : 'string_list Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5741,11 +5709,11 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Sself],
+          `Self],
            ("`App (_loc, (mk_ant ~c:\"\" s), xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'string_list)  (__fan_0 : Tokenf.t) 
@@ -5756,7 +5724,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "`Str x")],
            ("`Str (_loc, x)\n",
@@ -5768,10 +5736,10 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
                "`Str x");
-          `Sself],
+          `Self],
            ("`App (_loc, (`Str (_loc, x)), xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'string_list)  (__fan_0 : Tokenf.t) 
@@ -5785,7 +5753,7 @@ let apply () =
    Gramf.extend_single (rec_flag_quot : 'rec_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_rec)  (_loc : Locf.t)  ->
@@ -5793,7 +5761,7 @@ let apply () =
    Gramf.extend_single (direction_flag_quot : 'direction_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (flag : 'flag Gramf.t ))],
+         [([`Nterm (Gramf.obj (flag : 'flag Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'flag)  (_loc : Locf.t)  ->
@@ -5801,7 +5769,7 @@ let apply () =
    Gramf.extend_single (mutable_flag_quot : 'mutable_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_mutable)  (_loc : Locf.t)  ->
@@ -5809,7 +5777,7 @@ let apply () =
    Gramf.extend_single (private_flag_quot : 'private_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_private)  (_loc : Locf.t)  ->
@@ -5817,7 +5785,7 @@ let apply () =
    Gramf.extend_single (virtual_flag_quot : 'virtual_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_virtual)  (_loc : Locf.t)  ->
@@ -5825,7 +5793,7 @@ let apply () =
    Gramf.extend_single (row_var_flag_quot : 'row_var_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_dot_dot)  (_loc : Locf.t)  ->
@@ -5833,7 +5801,7 @@ let apply () =
    Gramf.extend_single (override_flag_quot : 'override_flag_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (opt_override : 'opt_override Gramf.t ))],
+         [([`Nterm (Gramf.obj (opt_override : 'opt_override Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'opt_override)  (_loc : Locf.t)  ->
@@ -5841,8 +5809,8 @@ let apply () =
    Gramf.extend_single (pat_eoi : 'pat_eoi Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-           `Stoken
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Token
              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                "`EOI")],
             ("x\n",
@@ -5851,8 +5819,8 @@ let apply () =
    Gramf.extend_single (exp_eoi : 'exp_eoi Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Stoken
+         [([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Token
              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                "`EOI")],
             ("x\n",
@@ -5861,7 +5829,7 @@ let apply () =
   (Gramf.extend_single (implem : 'implem Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function | `DirQuotation _ -> true | _ -> false)),
                 ((-440645089), `Any), "`DirQuotation _")],
             ("Fdir.handle_quot x; ([], (Some _loc))\n",
@@ -5873,21 +5841,19 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t ));
-          `Skeyword ";;";
-          `Sself],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Keyword ";;"; `Self],
            ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Gramf.mk_action
                 (fun (rest : 'implem)  _  (si : 'stru)  (_loc : Locf.t)  ->
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'implem )))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Self],
            ("let (sil,stopped) = rest in ((si :: sil), stopped)\n",
              (Gramf.mk_action
                 (fun (rest : 'implem)  (si : 'stru)  (_loc : Locf.t)  ->
                    (let (sil,stopped) = rest in ((si :: sil), stopped) : 
                    'implem )))));
-         ([`Stoken
+         ([`Token
              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                "`EOI")],
            ("([], None)\n",
@@ -5896,27 +5862,27 @@ let apply () =
    Gramf.extend_single (top_phrase : 'top_phrase Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "#";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Skeyword ";;"],
+         [([`Keyword "#";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Keyword ";;"],
             ("Some (`Directive (_loc, n, dp))\n",
               (Gramf.mk_action
                  (fun _  (dp : 'exp)  (n : 'a_lident)  _  (_loc : Locf.t)  ->
                     (Some (`Directive (_loc, n, dp)) : 'top_phrase )))));
-         ([`Skeyword "#";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ";;"],
+         ([`Keyword "#";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ";;"],
            ("Some (`DirectiveSimple (_loc, n))\n",
              (Gramf.mk_action
                 (fun _  (n : 'a_lident)  _  (_loc : Locf.t)  ->
                    (Some (`DirectiveSimple (_loc, n)) : 'top_phrase )))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t )); `Skeyword ";;"],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Keyword ";;"],
            ("Some st\n",
              (Gramf.mk_action
                 (fun _  (st : 'stru)  (_loc : Locf.t)  ->
                    (Some st : 'top_phrase )))));
-         ([`Stoken
+         ([`Token
              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                "`EOI")],
            ("None\n",
@@ -5925,7 +5891,7 @@ let apply () =
    Gramf.extend_single (strus : 'strus Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -5938,7 +5904,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "stri")), "`Ant s")],
@@ -5951,11 +5917,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";;"],
+          `Keyword ";;"],
            ("mk_ant ~c:\"stru\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5965,11 +5931,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
-          `Skeyword ";;"],
+          `Keyword ";;"],
            ("mk_ant ~c:\"stru\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5979,11 +5945,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'strus)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -5993,11 +5959,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'strus)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6007,12 +5973,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";;";
-          `Sself],
+          `Keyword ";;";
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'strus)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -6023,12 +5989,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "stri")), "`Ant s");
-          `Skeyword ";;";
-          `Sself],
+          `Keyword ";;";
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"stru\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'strus)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t) 
@@ -6039,22 +6005,20 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t ))],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t ))],
            ("st\n",
              (Gramf.mk_action
                 (fun (st : 'stru)  (_loc : Locf.t)  -> (st : 'strus )))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t )); `Skeyword ";;"],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Keyword ";;"],
            ("st\n",
              (Gramf.mk_action
                 (fun _  (st : 'stru)  (_loc : Locf.t)  -> (st : 'strus )))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t ));
-          `Skeyword ";;";
-          `Sself],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Keyword ";;"; `Self],
            ("`Sem (_loc, st, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'strus)  _  (st : 'stru)  (_loc : Locf.t)  ->
                    (`Sem (_loc, st, xs) : 'strus )))));
-         ([`Snterm (Gramf.obj (stru : 'stru Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (stru : 'stru Gramf.t )); `Self],
            ("`Sem (_loc, st, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'strus)  (st : 'stru)  (_loc : Locf.t)  ->
@@ -6062,147 +6026,141 @@ let apply () =
    Gramf.extend_single (stru_quot : 'stru_quot Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "#";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         [([`Keyword "#";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("`Directive (_loc, n, dp)\n",
               (Gramf.mk_action
                  (fun (dp : 'exp)  (n : 'a_lident)  _  (_loc : Locf.t)  ->
                     (`Directive (_loc, n, dp) : 'stru_quot )))));
-         ([`Skeyword "#";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "#"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`DirectiveSimple (_loc, n)\n",
              (Gramf.mk_action
                 (fun (n : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`DirectiveSimple (_loc, n) : 'stru_quot )))));
-         ([`Snterm (Gramf.obj (strus : 'strus Gramf.t ))],
+         ([`Nterm (Gramf.obj (strus : 'strus Gramf.t ))],
            ("x\n",
              (Gramf.mk_action
                 (fun (x : 'strus)  (_loc : Locf.t)  -> (x : 'stru_quot )))))]));
    Gramf.extend (stru : 'stru Gramf.t )
      (None,
        [((Some "top"), None,
-          [([`Skeyword "exception";
-            `Snterm
+          [([`Keyword "exception";
+            `Nterm
               (Gramf.obj
                  (constructor_declaration : 'constructor_declaration Gramf.t ))],
              ("`Exception (_loc, t)\n",
                (Gramf.mk_action
                   (fun (t : 'constructor_declaration)  _  (_loc : Locf.t)  ->
                      (`Exception (_loc, t) : 'stru )))));
-          ([`Skeyword "external";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-           `Skeyword ":";
-           `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-           `Skeyword "=";
-           `Snterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
+          ([`Keyword "external";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+           `Keyword ":";
+           `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+           `Keyword "=";
+           `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ))],
             ("`External (_loc, i, t, sl)\n",
               (Gramf.mk_action
                  (fun (sl : 'string_list)  _  (t : 'ctyp)  _  (i : 'a_lident)
                      _  (_loc : Locf.t)  ->
                     (`External (_loc, i, t, sl) : 'stru )))));
-          ([`Skeyword "include"; `Snterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
+          ([`Keyword "include"; `Nterm (Gramf.obj (mexp : 'mexp Gramf.t ))],
             ("`Include (_loc, me)\n",
               (Gramf.mk_action
                  (fun (me : 'mexp)  _  (_loc : Locf.t)  ->
                     (`Include (_loc, me) : 'stru )))));
-          ([`Skeyword "module";
-           `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Snterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ))],
+          ([`Keyword "module";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ))],
             ("`Module (_loc, i, mb)\n",
               (Gramf.mk_action
                  (fun (mb : 'mbind0)  (i : 'a_uident)  _  (_loc : Locf.t)  ->
                     (`Module (_loc, i, mb) : 'stru )))));
-          ([`Skeyword "module";
-           `Skeyword "rec";
-           `Snterm (Gramf.obj (mbind : 'mbind Gramf.t ))],
+          ([`Keyword "module";
+           `Keyword "rec";
+           `Nterm (Gramf.obj (mbind : 'mbind Gramf.t ))],
             ("`RecModule (_loc, mb)\n",
               (Gramf.mk_action
                  (fun (mb : 'mbind)  _  _  (_loc : Locf.t)  ->
                     (`RecModule (_loc, mb) : 'stru )))));
-          ([`Skeyword "module";
-           `Skeyword "type";
-           `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Skeyword "=";
-           `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
+          ([`Keyword "module";
+           `Keyword "type";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Keyword "=";
+           `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ))],
             ("`ModuleType (_loc, i, mt)\n",
               (Gramf.mk_action
                  (fun (mt : 'mtyp)  _  (i : 'a_uident)  _  _  (_loc : Locf.t)
                      -> (`ModuleType (_loc, i, mt) : 'stru )))));
-          ([`Skeyword "open";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+          ([`Keyword "open";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
             ("`Open (_loc, (`Negative _loc), (i : vid  :>ident))\n",
               (Gramf.mk_action
                  (fun (i : 'module_longident)  _  (_loc : Locf.t)  ->
                     (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
                     'stru )))));
-          ([`Skeyword "open";
-           `Skeyword "!";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
+          ([`Keyword "open";
+           `Keyword "!";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
             ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
               (Gramf.mk_action
                  (fun (i : 'module_longident)  _  _  (_loc : Locf.t)  ->
                     (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
                     'stru )))));
-          ([`Skeyword "type";
-           `Snterm
-             (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
+          ([`Keyword "type";
+           `Nterm (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
             ("`Type (_loc, td)\n",
               (Gramf.mk_action
                  (fun (td : 'type_declaration)  _  (_loc : Locf.t)  ->
                     (`Type (_loc, td) : 'stru )))));
-          ([`Skeyword "type";
-           `Snterm
-             (Gramf.obj (type_declaration : 'type_declaration Gramf.t ));
-           `Skeyword "with";
-           `Skeyword "(";
-           `Snterm (Gramf.obj (string_list : 'string_list Gramf.t ));
-           `Skeyword ")"],
+          ([`Keyword "type";
+           `Nterm (Gramf.obj (type_declaration : 'type_declaration Gramf.t ));
+           `Keyword "with";
+           `Keyword "(";
+           `Nterm (Gramf.obj (string_list : 'string_list Gramf.t ));
+           `Keyword ")"],
             ("`TypeWith (_loc, t, ns)\n",
               (Gramf.mk_action
                  (fun _  (ns : 'string_list)  _  _  (t : 'type_declaration) 
                     _  (_loc : Locf.t)  -> (`TypeWith (_loc, t, ns) : 
                     'stru )))));
-          ([`Skeyword "let";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          ([`Keyword "let";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`StExp (_loc, (`LetIn (_loc, r, bi, x))) : FAst.stru )\n",
               (Gramf.mk_action
                  (fun (x : 'exp)  _  (bi : 'bind)  (r : 'opt_rec)  _ 
                     (_loc : Locf.t)  ->
                     ((`StExp (_loc, (`LetIn (_loc, r, bi, x))) : FAst.stru ) : 
                     'stru )))));
-          ([`Skeyword "let";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ))],
+          ([`Keyword "let";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ))],
             ("match bi with\n| `Bind (_loc,`Any _,e) -> `StExp (_loc, e)\n| _ -> `Value (_loc, r, bi)\n",
               (Gramf.mk_action
                  (fun (bi : 'bind)  (r : 'opt_rec)  _  (_loc : Locf.t)  ->
                     (match bi with
                      | `Bind (_loc,`Any _,e) -> `StExp (_loc, e)
                      | _ -> `Value (_loc, r, bi) : 'stru )))));
-          ([`Skeyword "let";
-           `Skeyword "module";
-           `Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Snterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          ([`Keyword "let";
+           `Keyword "module";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`StExp (_loc, (`LetModule (_loc, m, mb, e))) : FAst.stru )\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
                     (_loc : Locf.t)  ->
                     ((`StExp (_loc, (`LetModule (_loc, m, mb, e))) : 
                     FAst.stru ) : 'stru )))));
-          ([`Skeyword "let";
-           `Skeyword "open";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          ([`Keyword "let";
+           `Keyword "open";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("let i = (i : vid  :>ident) in\n(`StExp (_loc, (`LetOpen (_loc, (`Negative _loc), i, e))) : FAst.stru )\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
@@ -6211,13 +6169,12 @@ let apply () =
                      (`StExp
                         (_loc, (`LetOpen (_loc, (`Negative _loc), i, e))) : 
                        FAst.stru ) : 'stru )))));
-          ([`Skeyword "let";
-           `Skeyword "open";
-           `Skeyword "!";
-           `Snterm
-             (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          ([`Keyword "let";
+           `Keyword "open";
+           `Keyword "!";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("let i = (i : vid  :>ident) in\n(`StExp (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : FAst.stru )\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
@@ -6226,36 +6183,36 @@ let apply () =
                      (`StExp
                         (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : 
                        FAst.stru ) : 'stru )))));
-          ([`Skeyword "let";
-           `Skeyword "try";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Skeyword "in";
-           `Snterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Skeyword "with";
-           `Snterm (Gramf.obj (case : 'case Gramf.t ))],
+          ([`Keyword "let";
+           `Keyword "try";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Keyword "with";
+           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
             ("`StExp (_loc, (`LetTryInWith (_loc, r, bi, x, a)))\n",
               (Gramf.mk_action
                  (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
                     (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
                     (`StExp (_loc, (`LetTryInWith (_loc, r, bi, x, a))) : 
                     'stru )))));
-          ([`Skeyword "class";
-           `Snterm
+          ([`Keyword "class";
+           `Nterm
              (Gramf.obj (class_declaration : 'class_declaration Gramf.t ))],
             ("`Class (_loc, cd)\n",
               (Gramf.mk_action
                  (fun (cd : 'class_declaration)  _  (_loc : Locf.t)  ->
                     (`Class (_loc, cd) : 'stru )))));
-          ([`Skeyword "class";
-           `Skeyword "type";
-           `Snterm
+          ([`Keyword "class";
+           `Keyword "type";
+           `Nterm
              (Gramf.obj (cltyp_declaration : 'cltyp_declaration Gramf.t ))],
             ("`ClassType (_loc, ctd)\n",
               (Gramf.mk_action
                  (fun (ctd : 'cltyp_declaration)  _  _  (_loc : Locf.t)  ->
                     (`ClassType (_loc, ctd) : 'stru )))));
-          ([`Stoken
+          ([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6268,7 +6225,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-          ([`Stoken
+          ([`Token
               (((function
                  | `Ant ({ kind = "stri";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "stri")), "`Ant s")],
@@ -6281,7 +6238,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-          ([`Stoken
+          ([`Token
               (((function | `Quot _ -> true | _ -> false)),
                 (904098089, `Any), "`Quot _")],
             ("Ast_quotation.expand x Dyn_tag.stru\n",
@@ -6293,7 +6250,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-          ([`Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+          ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("`StExp (_loc, e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  (_loc : Locf.t)  ->
@@ -6301,21 +6258,21 @@ let apply () =
   (Gramf.extend_single (clsigi_quot : 'clsigi_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
-           `Skeyword ";";
-           `Sself],
+         [([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
+           `Keyword ";";
+           `Self],
             ("`Sem (_loc, x1, x2)\n",
               (Gramf.mk_action
                  (fun (x2 : 'clsigi_quot)  _  (x1 : 'clsigi)  (_loc : Locf.t)
                      -> (`Sem (_loc, x1, x2) : 'clsigi_quot )))));
-         ([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))],
+         ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))],
            ("x\n",
              (Gramf.mk_action
                 (fun (x : 'clsigi)  (_loc : Locf.t)  -> (x : 'clsigi_quot )))))]));
    Gramf.extend_single (class_signature : 'class_signature Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6328,7 +6285,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "csg")), "`Ant s")],
@@ -6341,11 +6298,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";"],
+          `Keyword ";"],
            ("mk_ant ~c:\"clsigi\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6355,11 +6312,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
-          `Skeyword ";"],
+          `Keyword ";"],
            ("mk_ant ~c:\"clsigi\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6369,11 +6326,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Sself],
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (csg : 'class_signature)  (__fan_0 : Tokenf.t) 
@@ -6385,11 +6342,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
-          `Sself],
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (csg : 'class_signature)  (__fan_0 : Tokenf.t) 
@@ -6401,12 +6358,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";";
-          `Sself],
+          `Keyword ";";
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (csg : 'class_signature)  _  (__fan_0 : Tokenf.t) 
@@ -6418,12 +6375,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "csg")), "`Ant s");
-          `Skeyword ";";
-          `Sself],
+          `Keyword ";";
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clsigi\" s), csg) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (csg : 'class_signature)  _  (__fan_0 : Tokenf.t) 
@@ -6435,25 +6392,25 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))],
+         ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ))],
            ("csg\n",
              (Gramf.mk_action
                 (fun (csg : 'clsigi)  (_loc : Locf.t)  ->
                    (csg : 'class_signature )))));
-         ([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Skeyword ";"],
+         ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Keyword ";"],
            ("csg\n",
              (Gramf.mk_action
                 (fun _  (csg : 'clsigi)  (_loc : Locf.t)  ->
                    (csg : 'class_signature )))));
-         ([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+         ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t ));
+          `Keyword ";";
+          `Self],
            ("`Sem (_loc, csg, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'class_signature)  _  (csg : 'clsigi) 
                    (_loc : Locf.t)  ->
                    (`Sem (_loc, csg, xs) : 'class_signature )))));
-         ([`Snterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (clsigi : 'clsigi Gramf.t )); `Self],
            ("`Sem (_loc, csg, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'class_signature)  (csg : 'clsigi) 
@@ -6462,7 +6419,7 @@ let apply () =
    Gramf.extend_single (clsigi : 'clsigi Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6475,7 +6432,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "csg";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "csg")), "`Ant s")],
@@ -6488,7 +6445,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clsigi\n",
@@ -6500,48 +6457,47 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "inherit";
-          `Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
+         ([`Keyword "inherit"; `Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
            ("`SigInherit (_loc, cs)\n",
              (Gramf.mk_action
                 (fun (cs : 'cltyp)  _  (_loc : Locf.t)  ->
                    (`SigInherit (_loc, cs) : 'clsigi )))));
-         ([`Skeyword "val";
-          `Snterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
-          `Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "val";
+          `Nterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
+          `Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`CgVal (_loc, l, mf, mv, t) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mv : 'opt_virtual) 
                    (mf : 'opt_mutable)  _  (_loc : Locf.t)  ->
                    ((`CgVal (_loc, l, mf, mv, t) : FAst.clsigi ) : 'clsigi )))));
-         ([`Skeyword "method";
-          `Skeyword "virtual";
-          `Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "method";
+          `Keyword "virtual";
+          `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`VirMeth (_loc, l, pf, t) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                    _  (_loc : Locf.t)  ->
                    ((`VirMeth (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi )))));
-         ([`Skeyword "method";
-          `Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "method";
+          `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`Method (_loc, l, pf, t) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
                    (_loc : Locf.t)  ->
                    ((`Method (_loc, l, pf, t) : FAst.clsigi ) : 'clsigi )))));
-         ([`Skeyword "constraint";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "constraint";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`Eq (_loc, t1, t2) : FAst.clsigi )\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
@@ -6549,7 +6505,7 @@ let apply () =
   (Gramf.extend_single (class_structure : 'class_structure Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6562,7 +6518,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cst")), "`Ant s")],
@@ -6575,11 +6531,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";"],
+          `Keyword ";"],
            ("mk_ant ~c:\"clfield\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6589,11 +6545,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
-          `Skeyword ";"],
+          `Keyword ";"],
            ("mk_ant ~c:\"clfield\" s\n",
              (Gramf.mk_action
                 (fun _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -6603,11 +6559,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'class_structure)  (__fan_0 : Tokenf.t) 
@@ -6618,11 +6574,11 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
-          `Sself],
+          `Self],
            ("`Sem (_loc, (mk_ant ~c:\"clfield\" s), st)\n",
              (Gramf.mk_action
                 (fun (st : 'class_structure)  (__fan_0 : Tokenf.t) 
@@ -6633,12 +6589,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
-          `Skeyword ";";
-          `Sself],
+          `Keyword ";";
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clfield\" s), cst) : FAst.clfield )\n",
              (Gramf.mk_action
                 (fun (cst : 'class_structure)  _  (__fan_0 : Tokenf.t) 
@@ -6650,12 +6606,12 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cst")), "`Ant s");
-          `Skeyword ";";
-          `Sself],
+          `Keyword ";";
+          `Self],
            ("(`Sem (_loc, (mk_ant ~c:\"clfield\" s), cst) : FAst.clfield )\n",
              (Gramf.mk_action
                 (fun (cst : 'class_structure)  _  (__fan_0 : Tokenf.t) 
@@ -6667,25 +6623,25 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t ))],
+         ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ))],
            ("st\n",
              (Gramf.mk_action
                 (fun (st : 'clfield)  (_loc : Locf.t)  ->
                    (st : 'class_structure )))));
-         ([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Skeyword ";"],
+         ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Keyword ";"],
            ("st\n",
              (Gramf.mk_action
                 (fun _  (st : 'clfield)  (_loc : Locf.t)  ->
                    (st : 'class_structure )))));
-         ([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+         ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ));
+          `Keyword ";";
+          `Self],
            ("`Sem (_loc, st, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'class_structure)  _  (st : 'clfield) 
                    (_loc : Locf.t)  ->
                    (`Sem (_loc, st, xs) : 'class_structure )))));
-         ([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t )); `Self],
            ("`Sem (_loc, st, xs)\n",
              (Gramf.mk_action
                 (fun (xs : 'class_structure)  (st : 'clfield) 
@@ -6694,7 +6650,7 @@ let apply () =
    Gramf.extend_single (clfield : 'clfield Gramf.t )
      (None,
        (None, None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6707,7 +6663,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cst";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cst")), "`Ant s")],
@@ -6720,7 +6676,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clfield\n",
@@ -6732,29 +6688,29 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Skeyword "inherit";
-          `Snterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
-          `Snterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
+         ([`Keyword "inherit";
+          `Nterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
+          `Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
            ("`Inherit (_loc, o, ce)\n",
              (Gramf.mk_action
                 (fun (ce : 'clexp)  (o : 'opt_override)  _  (_loc : Locf.t) 
                    -> (`Inherit (_loc, o, ce) : 'clfield )))));
-         ([`Skeyword "inherit";
-          `Snterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
-          `Snterm (Gramf.obj (clexp : 'clexp Gramf.t ));
-          `Skeyword "as";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         ([`Keyword "inherit";
+          `Nterm (Gramf.obj (opt_override : 'opt_override Gramf.t ));
+          `Nterm (Gramf.obj (clexp : 'clexp Gramf.t ));
+          `Keyword "as";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`InheritAs (_loc, o, ce, i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (ce : 'clexp)  (o : 'opt_override) 
                    _  (_loc : Locf.t)  ->
                    (`InheritAs (_loc, o, ce, i) : 'clfield )))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj
                 (value_val_opt_override : 'value_val_opt_override Gramf.t ));
-          `Snterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Snterm (Gramf.obj (cvalue_bind : 'cvalue_bind Gramf.t ))],
+          `Nterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Nterm (Gramf.obj (cvalue_bind : 'cvalue_bind Gramf.t ))],
            ("(`CrVal (_loc, lab, o, mf, e) : FAst.clfield )\n",
              (Gramf.mk_action
                 (fun (e : 'cvalue_bind)  (lab : 'a_lident) 
@@ -6762,14 +6718,14 @@ let apply () =
                    (_loc : Locf.t)  ->
                    ((`CrVal (_loc, lab, o, mf, e) : FAst.clfield ) : 
                    'clfield )))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj
                 (value_val_opt_override : 'value_val_opt_override Gramf.t ));
-          `Skeyword "virtual";
-          `Snterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+          `Keyword "virtual";
+          `Nterm (Gramf.obj (opt_mutable : 'opt_mutable Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("match o with\n| `Negative _ -> (`VirVal (_loc, l, mf, t) : FAst.clfield )\n| _ -> raise (Streamf.Error \"override (!) is incompatible with virtual\")\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (mf : 'opt_mutable)  _ 
@@ -6782,13 +6738,13 @@ let apply () =
                           (Streamf.Error
                              "override (!) is incompatible with virtual") : 
                    'clfield )))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj (method_opt_override : 'method_opt_override Gramf.t ));
-          `Skeyword "virtual";
-          `Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+          `Keyword "virtual";
+          `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("match o with\n| `Negative _ -> `VirMeth (_loc, l, pf, t)\n| _ -> raise (Streamf.Error \"override (!) is incompatible with virtual\")\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (l : 'a_lident)  (pf : 'opt_private)  _ 
@@ -6800,39 +6756,38 @@ let apply () =
                           (Streamf.Error
                              "override (!) is incompatible with virtual") : 
                    'clfield )))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj (method_opt_override : 'method_opt_override Gramf.t ));
-          `Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Snterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
+          `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
            ("`CrMth (_loc, l, o, pf, e, t)\n",
              (Gramf.mk_action
                 (fun (e : 'fun_bind)  (t : 'ctyp)  _  (l : 'a_lident) 
                    (pf : 'opt_private)  (o : 'method_opt_override) 
                    (_loc : Locf.t)  ->
                    (`CrMth (_loc, l, o, pf, e, t) : 'clfield )))));
-         ([`Snterm
+         ([`Nterm
              (Gramf.obj (method_opt_override : 'method_opt_override Gramf.t ));
-          `Snterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Snterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
+          `Nterm (Gramf.obj (opt_private : 'opt_private Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Nterm (Gramf.obj (fun_bind : 'fun_bind Gramf.t ))],
            ("`CrMthS (_loc, l, o, pf, e)\n",
              (Gramf.mk_action
                 (fun (e : 'fun_bind)  (l : 'a_lident)  (pf : 'opt_private) 
                    (o : 'method_opt_override)  (_loc : Locf.t)  ->
                    (`CrMthS (_loc, l, o, pf, e) : 'clfield )))));
-         ([`Skeyword "constraint";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         ([`Keyword "constraint";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("(`Eq (_loc, t1, t2) : FAst.clfield )\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
                    ((`Eq (_loc, t1, t2) : FAst.clfield ) : 'clfield )))));
-         ([`Skeyword "initializer";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+         ([`Keyword "initializer"; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(`Initializer (_loc, se) : FAst.clfield )\n",
              (Gramf.mk_action
                 (fun (se : 'exp)  _  (_loc : Locf.t)  ->
@@ -6840,35 +6795,35 @@ let apply () =
    Gramf.extend_single (clfield_quot : 'clfield_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t ));
-           `Skeyword ";";
-           `Sself],
+         [([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ));
+           `Keyword ";";
+           `Self],
             ("`Sem (_loc, x1, x2)\n",
               (Gramf.mk_action
                  (fun (x2 : 'clfield_quot)  _  (x1 : 'clfield) 
                     (_loc : Locf.t)  ->
                     (`Sem (_loc, x1, x2) : 'clfield_quot )))));
-         ([`Snterm (Gramf.obj (clfield : 'clfield Gramf.t ))],
+         ([`Nterm (Gramf.obj (clfield : 'clfield Gramf.t ))],
            ("x\n",
              (Gramf.mk_action
                 (fun (x : 'clfield)  (_loc : Locf.t)  -> (x : 'clfield_quot )))))])));
   (Gramf.extend_single (clexp_quot : 'clexp_quot Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
+         [([`Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
             ("x\n",
               (Gramf.mk_action
                  (fun (x : 'clexp)  (_loc : Locf.t)  -> (x : 'clexp_quot )))))]));
    Gramf.extend_single (class_declaration : 'class_declaration Gramf.t )
      (None,
        (None, None,
-         [([`Sself; `Skeyword "and"; `Sself],
+         [([`Self; `Keyword "and"; `Self],
             ("`And (_loc, c1, c2)\n",
               (Gramf.mk_action
                  (fun (c2 : 'class_declaration)  _  (c1 : 'class_declaration)
                      (_loc : Locf.t)  ->
                     (`And (_loc, c1, c2) : 'class_declaration )))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6881,7 +6836,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cdcl";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cdcl")), "`Ant s")],
@@ -6894,23 +6849,23 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword "[";
-          `Snterm
+         ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword "[";
+          `Nterm
             (Gramf.obj
                (comma_type_parameter : 'comma_type_parameter Gramf.t ));
-          `Skeyword "]";
-          `Snterm (Gramf.obj (class_fun_bind : 'class_fun_bind Gramf.t ))],
+          `Keyword "]";
+          `Nterm (Gramf.obj (class_fun_bind : 'class_fun_bind Gramf.t ))],
            ("`ClDecl (_loc, mv, (i :>ident), x, ce)\n",
              (Gramf.mk_action
                 (fun (ce : 'class_fun_bind)  _  (x : 'comma_type_parameter) 
                    _  (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t) 
                    ->
                    (`ClDecl (_loc, mv, (i :>ident), x, ce) : 'class_declaration )))));
-         ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Snterm (Gramf.obj (class_fun_bind : 'class_fun_bind Gramf.t ))],
+         ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Nterm (Gramf.obj (class_fun_bind : 'class_fun_bind Gramf.t ))],
            ("`ClDeclS (_loc, mv, (i :>ident), ce)\n",
              (Gramf.mk_action
                 (fun (ce : 'class_fun_bind)  (i : 'a_lident) 
@@ -6919,20 +6874,20 @@ let apply () =
    Gramf.extend_single (class_fun_bind : 'class_fun_bind Gramf.t )
      (None,
        (None, None,
-         [([`Skeyword "="; `Snterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
+         [([`Keyword "="; `Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
             ("ce\n",
               (Gramf.mk_action
                  (fun (ce : 'clexp)  _  (_loc : Locf.t)  ->
                     (ce : 'class_fun_bind )))));
-         ([`Skeyword ":";
-          `Snterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
+         ([`Keyword ":";
+          `Nterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
            ("`Constraint (_loc, ce, ct)\n",
              (Gramf.mk_action
                 (fun (ce : 'clexp)  _  (ct : 'cltyp_plus)  _  (_loc : Locf.t)
                     -> (`Constraint (_loc, ce, ct) : 'class_fun_bind )))));
-         ([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Sself],
+         ([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Self],
            ("`CeFun (_loc, p, cfb)\n",
              (Gramf.mk_action
                 (fun (cfb : 'class_fun_bind)  (p : 'ipat)  (_loc : Locf.t) 
@@ -6940,12 +6895,12 @@ let apply () =
    Gramf.extend_single (class_fun_def : 'class_fun_def Gramf.t )
      (None,
        (None, None,
-         [([`Snterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Sself],
+         [([`Nterm (Gramf.obj (ipat : 'ipat Gramf.t )); `Self],
             ("`CeFun (_loc, p, ce)\n",
               (Gramf.mk_action
                  (fun (ce : 'class_fun_def)  (p : 'ipat)  (_loc : Locf.t)  ->
                     (`CeFun (_loc, p, ce) : 'class_fun_def )))));
-         ([`Skeyword "->"; `Snterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
+         ([`Keyword "->"; `Nterm (Gramf.obj (clexp : 'clexp Gramf.t ))],
            ("ce\n",
              (Gramf.mk_action
                 (fun (ce : 'clexp)  _  (_loc : Locf.t)  ->
@@ -6953,38 +6908,38 @@ let apply () =
    Gramf.extend (clexp : 'clexp Gramf.t )
      (None,
        [((Some "top"), None,
-          [([`Skeyword "fun";
-            `Snterm (Gramf.obj (ipat : 'ipat Gramf.t ));
-            `Snterm (Gramf.obj (class_fun_def : 'class_fun_def Gramf.t ))],
+          [([`Keyword "fun";
+            `Nterm (Gramf.obj (ipat : 'ipat Gramf.t ));
+            `Nterm (Gramf.obj (class_fun_def : 'class_fun_def Gramf.t ))],
              ("`CeFun (_loc, p, ce)\n",
                (Gramf.mk_action
                   (fun (ce : 'class_fun_def)  (p : 'ipat)  _  (_loc : Locf.t)
                       -> (`CeFun (_loc, p, ce) : 'clexp )))));
-          ([`Skeyword "function";
-           `Snterm (Gramf.obj (ipat : 'ipat Gramf.t ));
-           `Snterm (Gramf.obj (class_fun_def : 'class_fun_def Gramf.t ))],
+          ([`Keyword "function";
+           `Nterm (Gramf.obj (ipat : 'ipat Gramf.t ));
+           `Nterm (Gramf.obj (class_fun_def : 'class_fun_def Gramf.t ))],
             ("`CeFun (_loc, p, ce)\n",
               (Gramf.mk_action
                  (fun (ce : 'class_fun_def)  (p : 'ipat)  _  (_loc : Locf.t) 
                     -> (`CeFun (_loc, p, ce) : 'clexp )))));
-          ([`Skeyword "let";
-           `Snterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Snterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Skeyword "in";
-           `Sself],
+          ([`Keyword "let";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Self],
             ("`LetIn (_loc, rf, bi, ce)\n",
               (Gramf.mk_action
                  (fun (ce : 'clexp)  _  (bi : 'bind)  (rf : 'opt_rec)  _ 
                     (_loc : Locf.t)  -> (`LetIn (_loc, rf, bi, ce) : 
                     'clexp )))))]);
        ((Some "apply"), (Some `NA),
-         [([`Sself; `Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "label")],
+         [([`Self; `Snterml ((Gramf.obj (exp : 'exp Gramf.t )), "label")],
             ("`CeApp (_loc, ce, e)\n",
               (Gramf.mk_action
                  (fun (e : 'exp)  (ce : 'clexp)  (_loc : Locf.t)  ->
                     (`CeApp (_loc, ce, e) : 'clexp )))))]);
        ((Some "simple"), None,
-         [([`Stoken
+         [([`Token
               (((function
                  | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                  | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -6997,7 +6952,7 @@ let apply () =
                     | _ ->
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function
                 | `Ant ({ kind = "cexp";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "cexp")), "`Ant s")],
@@ -7010,7 +6965,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Stoken
+         ([`Token
              (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
                "`Quot _")],
            ("Ast_quotation.expand x Dyn_tag.clexp\n",
@@ -7022,98 +6977,98 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ));
-          `Skeyword "[";
-          `Snterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
-          `Skeyword "]"],
+         ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ));
+          `Keyword "[";
+          `Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
+          `Keyword "]"],
            ("`ClApply (_loc, ci, t)\n",
              (Gramf.mk_action
                 (fun _  (t : 'comma_ctyp)  _  (ci : 'vid)  (_loc : Locf.t) 
                    -> (`ClApply (_loc, ci, t) : 'clexp )))));
-         ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ))],
+         ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
            ("(ci :>clexp)\n",
              (Gramf.mk_action
                 (fun (ci : 'vid)  (_loc : Locf.t)  ->
                    ((ci :>clexp) : 'clexp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`ObjPat (_loc, p, cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (p : 'pat)  _  _ 
                    (_loc : Locf.t)  -> (`ObjPat (_loc, p, cst) : 'clexp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ")";
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ")";
+          `Keyword "end"],
            ("`ObjPatEnd (_loc, p)\n",
              (Gramf.mk_action
                 (fun _  _  (p : 'pat)  _  _  (_loc : Locf.t)  ->
                    (`ObjPatEnd (_loc, p) : 'clexp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`ObjPat (_loc, (`Constraint (_loc, p, t)), cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (t : 'ctyp)  _ 
                    (p : 'pat)  _  _  (_loc : Locf.t)  ->
                    (`ObjPat (_loc, (`Constraint (_loc, p, t)), cst) : 
                    'clexp )))));
-         ([`Skeyword "object";
-          `Skeyword "(";
-          `Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword ":";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword ")";
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Keyword "(";
+          `Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword ")";
+          `Keyword "end"],
            ("`ObjPatEnd (_loc, (`Constraint (_loc, p, t)))\n",
              (Gramf.mk_action
                 (fun _  _  (t : 'ctyp)  _  (p : 'pat)  _  _  (_loc : Locf.t) 
                    ->
                    (`ObjPatEnd (_loc, (`Constraint (_loc, p, t))) : 'clexp )))));
-         ([`Skeyword "object";
-          `Snterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
-          `Skeyword "end"],
+         ([`Keyword "object";
+          `Nterm (Gramf.obj (class_structure : 'class_structure Gramf.t ));
+          `Keyword "end"],
            ("`Obj (_loc, cst)\n",
              (Gramf.mk_action
                 (fun _  (cst : 'class_structure)  _  (_loc : Locf.t)  ->
                    (`Obj (_loc, cst) : 'clexp )))));
-         ([`Skeyword "object"; `Skeyword "end"],
+         ([`Keyword "object"; `Keyword "end"],
            ("`ObjEnd _loc\n",
              (Gramf.mk_action
                 (fun _  _  (_loc : Locf.t)  -> (`ObjEnd _loc : 'clexp )))));
-         ([`Skeyword "(";
-          `Sself;
-          `Skeyword ":";
-          `Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ));
-          `Skeyword ")"],
+         ([`Keyword "(";
+          `Self;
+          `Keyword ":";
+          `Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ));
+          `Keyword ")"],
            ("`Constraint (_loc, ce, ct)\n",
              (Gramf.mk_action
                 (fun _  (ct : 'cltyp)  _  (ce : 'clexp)  _  (_loc : Locf.t) 
                    -> (`Constraint (_loc, ce, ct) : 'clexp )))));
-         ([`Skeyword "("; `Sself; `Skeyword ")"],
+         ([`Keyword "("; `Self; `Keyword ")"],
            ("ce\n",
              (Gramf.mk_action
                 (fun _  (ce : 'clexp)  _  (_loc : Locf.t)  -> (ce : 'clexp )))))])]));
   Gramf.extend_single (class_description : 'class_description Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Skeyword "and"; `Sself],
+        [([`Self; `Keyword "and"; `Self],
            ("`And (_loc, cd1, cd2)\n",
              (Gramf.mk_action
                 (fun (cd2 : 'class_description)  _ 
                    (cd1 : 'class_description)  (_loc : Locf.t)  ->
                    (`And (_loc, cd1, cd2) : 'class_description )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7126,7 +7081,7 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7139,23 +7094,23 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword "[";
-         `Snterm
+        ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword "[";
+         `Nterm
            (Gramf.obj (comma_type_parameter : 'comma_type_parameter Gramf.t ));
-         `Skeyword "]";
-         `Skeyword ":";
-         `Snterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ))],
+         `Keyword "]";
+         `Keyword ":";
+         `Nterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ))],
           ("`CtDecl (_loc, mv, (i :>ident), x, ct)\n",
             (Gramf.mk_action
                (fun (ct : 'cltyp_plus)  _  _  (x : 'comma_type_parameter)  _ 
                   (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t)  ->
                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'class_description )))));
-        ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword ":";
-         `Snterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ))],
+        ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword ":";
+         `Nterm (Gramf.obj (cltyp_plus : 'cltyp_plus Gramf.t ))],
           ("`CtDeclS (_loc, mv, (i :>ident), ct)\n",
             (Gramf.mk_action
                (fun (ct : 'cltyp_plus)  _  (i : 'a_lident) 
@@ -7164,13 +7119,13 @@ let apply () =
   Gramf.extend_single (cltyp_declaration : 'cltyp_declaration Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Skeyword "and"; `Sself],
+        [([`Self; `Keyword "and"; `Self],
            ("`And (_loc, cd1, cd2)\n",
              (Gramf.mk_action
                 (fun (cd2 : 'cltyp_declaration)  _ 
                    (cd1 : 'cltyp_declaration)  (_loc : Locf.t)  ->
                    (`And (_loc, cd1, cd2) : 'cltyp_declaration )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7183,7 +7138,7 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7196,23 +7151,23 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword "[";
-         `Snterm
+        ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword "[";
+         `Nterm
            (Gramf.obj (comma_type_parameter : 'comma_type_parameter Gramf.t ));
-         `Skeyword "]";
-         `Skeyword "=";
-         `Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
+         `Keyword "]";
+         `Keyword "=";
+         `Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
           ("`CtDecl (_loc, mv, (i :>ident), x, ct)\n",
             (Gramf.mk_action
                (fun (ct : 'cltyp)  _  _  (x : 'comma_type_parameter)  _ 
                   (i : 'a_lident)  (mv : 'opt_virtual)  (_loc : Locf.t)  ->
                   (`CtDecl (_loc, mv, (i :>ident), x, ct) : 'cltyp_declaration )))));
-        ([`Snterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword "=";
-         `Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (opt_virtual : 'opt_virtual Gramf.t ));
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword "=";
+         `Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
           ("`CtDeclS (_loc, mv, (i :>ident), ct)\n",
             (Gramf.mk_action
                (fun (ct : 'cltyp)  _  (i : 'a_lident)  (mv : 'opt_virtual) 
@@ -7221,30 +7176,30 @@ let apply () =
   Gramf.extend_single (cltyp_quot : 'cltyp_quot Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
+        [([`Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
            ("x\n",
              (Gramf.mk_action
                 (fun (x : 'cltyp)  (_loc : Locf.t)  -> (x : 'cltyp_quot )))))]));
   Gramf.extend_single (cltyp_plus : 'cltyp_plus Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "[";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "]";
-          `Skeyword "->";
-          `Sself],
+        [([`Keyword "[";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "]";
+          `Keyword "->";
+          `Self],
            ("`CtFun (_loc, t, ct)\n",
              (Gramf.mk_action
                 (fun (ct : 'cltyp_plus)  _  _  (t : 'ctyp)  _ 
                    (_loc : Locf.t)  -> (`CtFun (_loc, t, ct) : 'cltyp_plus )))));
-        ([`Snterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (cltyp : 'cltyp Gramf.t ))],
           ("ct\n",
             (Gramf.mk_action
                (fun (ct : 'cltyp)  (_loc : Locf.t)  -> (ct : 'cltyp_plus )))))]));
   Gramf.extend_single (cltyp : 'cltyp Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7257,7 +7212,7 @@ let apply () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "ctyp";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "ctyp")), "`Ant s")],
@@ -7270,7 +7225,7 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.cltyp\n",
@@ -7282,44 +7237,44 @@ let apply () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ));
-         `Skeyword "[";
-         `Snterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
-         `Skeyword "]"],
+        ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ));
+         `Keyword "[";
+         `Nterm (Gramf.obj (comma_ctyp : 'comma_ctyp Gramf.t ));
+         `Keyword "]"],
           ("`ClApply (_loc, i, t)\n",
             (Gramf.mk_action
                (fun _  (t : 'comma_ctyp)  _  (i : 'vid)  (_loc : Locf.t)  ->
                   (`ClApply (_loc, i, t) : 'cltyp )))));
-        ([`Snterm (Gramf.obj (vid : 'vid Gramf.t ))],
+        ([`Nterm (Gramf.obj (vid : 'vid Gramf.t ))],
           ("(i :>cltyp)\n",
             (Gramf.mk_action
                (fun (i : 'vid)  (_loc : Locf.t)  -> ((i :>cltyp) : 'cltyp )))));
-        ([`Skeyword "object";
-         `Skeyword "(";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-         `Skeyword ")";
-         `Snterm (Gramf.obj (class_signature : 'class_signature Gramf.t ));
-         `Skeyword "end"],
+        ([`Keyword "object";
+         `Keyword "(";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+         `Keyword ")";
+         `Nterm (Gramf.obj (class_signature : 'class_signature Gramf.t ));
+         `Keyword "end"],
           ("`ObjTy (_loc, t, csg)\n",
             (Gramf.mk_action
                (fun _  (csg : 'class_signature)  _  (t : 'ctyp)  _  _ 
                   (_loc : Locf.t)  -> (`ObjTy (_loc, t, csg) : 'cltyp )))));
-        ([`Skeyword "object";
-         `Snterm (Gramf.obj (class_signature : 'class_signature Gramf.t ));
-         `Skeyword "end"],
+        ([`Keyword "object";
+         `Nterm (Gramf.obj (class_signature : 'class_signature Gramf.t ));
+         `Keyword "end"],
           ("`Obj (_loc, csg)\n",
             (Gramf.mk_action
                (fun _  (csg : 'class_signature)  _  (_loc : Locf.t)  ->
                   (`Obj (_loc, csg) : 'cltyp )))));
-        ([`Skeyword "object";
-         `Skeyword "(";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-         `Skeyword ")"],
+        ([`Keyword "object";
+         `Keyword "(";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+         `Keyword ")"],
           ("`ObjTyEnd (_loc, t)\n",
             (Gramf.mk_action
                (fun _  (t : 'ctyp)  _  _  (_loc : Locf.t)  ->
                   (`ObjTyEnd (_loc, t) : 'cltyp )))));
-        ([`Skeyword "object"; `Skeyword "end"],
+        ([`Keyword "object"; `Keyword "end"],
           ("`ObjEnd _loc\n",
             (Gramf.mk_action
                (fun _  _  (_loc : Locf.t)  -> (`ObjEnd _loc : 'cltyp )))))]))
@@ -7327,27 +7282,27 @@ let apply_ctyp () =
   Gramf.extend_single (ctyp_quot : 'ctyp_quot Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "*";
-          `Snterm (Gramf.obj (star_ctyp : 'star_ctyp Gramf.t ))],
+        [([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "*";
+          `Nterm (Gramf.obj (star_ctyp : 'star_ctyp Gramf.t ))],
            ("`Sta (_loc, x, y)\n",
              (Gramf.mk_action
                 (fun (y : 'star_ctyp)  _  (x : 'ctyp)  (_loc : Locf.t)  ->
                    (`Sta (_loc, x, y) : 'ctyp_quot )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("x\n",
             (Gramf.mk_action
                (fun (x : 'ctyp)  (_loc : Locf.t)  -> (x : 'ctyp_quot )))))]));
   Gramf.extend_single (unquoted_typevars : 'unquoted_typevars Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Sself],
+        [([`Self; `Self],
            ("`App (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'unquoted_typevars)  (t1 : 'unquoted_typevars) 
                    (_loc : Locf.t)  ->
                    (`App (_loc, t1, t2) : 'unquoted_typevars )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7360,7 +7315,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7373,7 +7328,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
@@ -7385,7 +7340,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("(i :>ctyp)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
@@ -7393,7 +7348,7 @@ let apply_ctyp () =
   Gramf.extend_single (type_parameter : 'type_parameter Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7406,7 +7361,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7419,36 +7374,36 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Skeyword "'"; `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Keyword "'"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("`Quote (_loc, (`Normal _loc), i)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                   (`Quote (_loc, (`Normal _loc), i) : 'type_parameter )))));
-        ([`Skeyword "+";
-         `Skeyword "'";
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Keyword "+";
+         `Keyword "'";
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("`Quote (_loc, (`Positive _loc), i)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  _  _  (_loc : Locf.t)  ->
                   (`Quote (_loc, (`Positive _loc), i) : 'type_parameter )))));
-        ([`Skeyword "-";
-         `Skeyword "'";
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Keyword "-";
+         `Keyword "'";
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("`Quote (_loc, (`Negative _loc), i)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  _  _  (_loc : Locf.t)  ->
                   (`Quote (_loc, (`Negative _loc), i) : 'type_parameter )))));
-        ([`Skeyword "+"; `Skeyword "_"],
+        ([`Keyword "+"; `Keyword "_"],
           ("`QuoteAny (_loc, (`Positive _loc))\n",
             (Gramf.mk_action
                (fun _  _  (_loc : Locf.t)  ->
                   (`QuoteAny (_loc, (`Positive _loc)) : 'type_parameter )))));
-        ([`Skeyword "-"; `Skeyword "_"],
+        ([`Keyword "-"; `Keyword "_"],
           ("`QuoteAny (_loc, (`Negative _loc))\n",
             (Gramf.mk_action
                (fun _  _  (_loc : Locf.t)  ->
                   (`QuoteAny (_loc, (`Negative _loc)) : 'type_parameter )))));
-        ([`Skeyword "_"],
+        ([`Keyword "_"],
           ("`Any _loc\n",
             (Gramf.mk_action
                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'type_parameter )))))]));
@@ -7456,28 +7411,28 @@ let apply_ctyp () =
     (type_longident_and_parameters : 'type_longident_and_parameters Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "(";
-          `Snterm (Gramf.obj (type_parameters : 'type_parameters Gramf.t ));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+        [([`Keyword "(";
+          `Nterm (Gramf.obj (type_parameters : 'type_parameters Gramf.t ));
+          `Keyword ")";
+          `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
            ("tpl (i :>ctyp)\n",
              (Gramf.mk_action
                 (fun (i : 'type_longident)  _  (tpl : 'type_parameters)  _ 
                    (_loc : Locf.t)  ->
                    (tpl (i :>ctyp) : 'type_longident_and_parameters )))));
-        ([`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
-         `Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+        ([`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
+         `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
           ("`App (_loc, (i :>ctyp), (tpl :>ctyp))\n",
             (Gramf.mk_action
                (fun (i : 'type_longident)  (tpl : 'type_parameter) 
                   (_loc : Locf.t)  ->
                   (`App (_loc, (i :>ctyp), (tpl :>ctyp)) : 'type_longident_and_parameters )))));
-        ([`Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+        ([`Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
           ("(i :>ctyp)\n",
             (Gramf.mk_action
                (fun (i : 'type_longident)  (_loc : Locf.t)  ->
                   ((i :>ctyp) : 'type_longident_and_parameters )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7493,15 +7448,15 @@ let apply_ctyp () =
   Gramf.extend_single (type_parameters : 'type_parameters Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
-          `Sself],
+        [([`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
+          `Self],
            ("fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp)))\n",
              (Gramf.mk_action
                 (fun (t2 : 'type_parameters)  (t1 : 'type_parameter) 
                    (_loc : Locf.t)  ->
                    (fun acc  -> t2 (`App (_loc, acc, (t1 :>ctyp))) : 
                    'type_parameters )))));
-        ([`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))],
+        ([`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))],
           ("fun acc  -> `App (_loc, acc, (t :>ctyp))\n",
             (Gramf.mk_action
                (fun (t : 'type_parameter)  (_loc : Locf.t)  ->
@@ -7513,24 +7468,24 @@ let apply_ctyp () =
   Gramf.extend_single (meth_list : 'meth_list Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+        [([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
+          `Keyword ";";
+          `Self],
            ("let (ml,v) = rest in ((`Sem (_loc, m, ml)), v)\n",
              (Gramf.mk_action
                 (fun (rest : 'meth_list)  _  (m : 'meth_decl) 
                    (_loc : Locf.t)  ->
                    (let (ml,v) = rest in ((`Sem (_loc, m, ml)), v) : 
                    'meth_list )))));
-        ([`Snterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
-         `Skeyword ";";
-         `Snterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
+        ([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
+         `Keyword ";";
+         `Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
           ("(m, v)\n",
             (Gramf.mk_action
                (fun (v : 'opt_dot_dot)  _  (m : 'meth_decl)  (_loc : Locf.t) 
                   -> ((m, v) : 'meth_list )))));
-        ([`Snterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
-         `Snterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
+        ([`Nterm (Gramf.obj (meth_decl : 'meth_decl Gramf.t ));
+         `Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
           ("(m, v)\n",
             (Gramf.mk_action
                (fun (v : 'opt_dot_dot)  (m : 'meth_decl)  (_loc : Locf.t)  ->
@@ -7538,7 +7493,7 @@ let apply_ctyp () =
   Gramf.extend_single (meth_decl : 'meth_decl Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7551,7 +7506,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7564,9 +7519,9 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword ":";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword ":";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyCol (_loc, lab, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (lab : 'a_lident)  (_loc : Locf.t)  ->
@@ -7574,12 +7529,12 @@ let apply_ctyp () =
   Gramf.extend_single (opt_meth_list : 'opt_meth_list Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (meth_list : 'meth_list Gramf.t ))],
+        [([`Nterm (Gramf.obj (meth_list : 'meth_list Gramf.t ))],
            ("let (ml,v) = rest in `TyObj (_loc, ml, v)\n",
              (Gramf.mk_action
                 (fun (rest : 'meth_list)  (_loc : Locf.t)  ->
                    (let (ml,v) = rest in `TyObj (_loc, ml, v) : 'opt_meth_list )))));
-        ([`Snterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
+        ([`Nterm (Gramf.obj (opt_dot_dot : 'opt_dot_dot Gramf.t ))],
           ("`TyObjEnd (_loc, v)\n",
             (Gramf.mk_action
                (fun (v : 'opt_dot_dot)  (_loc : Locf.t)  ->
@@ -7587,7 +7542,7 @@ let apply_ctyp () =
   Gramf.extend_single (row_field : 'row_field Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7600,7 +7555,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7613,7 +7568,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "vrn")), "`Ant s")],
@@ -7626,12 +7581,12 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "vrn";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "vrn")), "`Ant s");
-         `Skeyword "of";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+         `Keyword "of";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyVrnOf (_loc, (mk_ant ~c:\"ctyp\" s), t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -7641,25 +7596,25 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Skeyword "|"; `Sself],
+        ([`Self; `Keyword "|"; `Self],
           ("`Bar (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'row_field)  _  (t1 : 'row_field)  (_loc : Locf.t) 
                   -> (`Bar (_loc, t1, t2) : 'row_field )))));
-        ([`Skeyword "`"; `Snterm (Gramf.obj (astr : 'astr Gramf.t ))],
+        ([`Keyword "`"; `Nterm (Gramf.obj (astr : 'astr Gramf.t ))],
           ("`TyVrn (_loc, i)\n",
             (Gramf.mk_action
                (fun (i : 'astr)  _  (_loc : Locf.t)  ->
                   (`TyVrn (_loc, i) : 'row_field )))));
-        ([`Skeyword "`";
-         `Snterm (Gramf.obj (astr : 'astr Gramf.t ));
-         `Skeyword "of";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Keyword "`";
+         `Nterm (Gramf.obj (astr : 'astr Gramf.t ));
+         `Keyword "of";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyVrnOf (_loc, i, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (i : 'astr)  _  (_loc : Locf.t)  ->
                   (`TyVrnOf (_loc, i, t) : 'row_field )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`Ctyp (_loc, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
@@ -7667,7 +7622,7 @@ let apply_ctyp () =
   Gramf.extend_single (name_tags : 'name_tags Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7680,7 +7635,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7693,12 +7648,12 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Sself],
+        ([`Self; `Self],
           ("`App (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'name_tags)  (t1 : 'name_tags)  (_loc : Locf.t)  ->
                   (`App (_loc, t1, t2) : 'name_tags )))));
-        ([`Skeyword "`"; `Snterm (Gramf.obj (astr : 'astr Gramf.t ))],
+        ([`Keyword "`"; `Nterm (Gramf.obj (astr : 'astr Gramf.t ))],
           ("`TyVrn (_loc, i)\n",
             (Gramf.mk_action
                (fun (i : 'astr)  _  (_loc : Locf.t)  ->
@@ -7706,7 +7661,7 @@ let apply_ctyp () =
   Gramf.extend_single (type_declaration : 'type_declaration Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7719,7 +7674,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7732,19 +7687,19 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Skeyword "and"; `Sself],
+        ([`Self; `Keyword "and"; `Self],
           ("`And (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'type_declaration)  _  (t1 : 'type_declaration) 
                   (_loc : Locf.t)  ->
                   (`And (_loc, t1, t2) : 'type_declaration )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj
                (type_ident_and_parameters : 'type_ident_and_parameters
                                               Gramf.t ));
-         `Skeyword "=";
-         `Snterm (Gramf.obj (type_info : 'type_info Gramf.t ));
-         `Slist0 (`Snterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
+         `Keyword "=";
+         `Nterm (Gramf.obj (type_info : 'type_info Gramf.t ));
+         `Slist0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
           ("let (n,tpl) = rest in\n`TyDcl\n  (_loc, n, tpl, tk,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Gramf.mk_action
                (fun (cl : 'constrain list)  (tk : 'type_info)  _ 
@@ -7755,11 +7710,11 @@ let apply_ctyp () =
                        (match cl with
                         | [] -> `None _loc
                         | _ -> `Some (_loc, (and_of_list cl)))) : 'type_declaration )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj
                (type_ident_and_parameters : 'type_ident_and_parameters
                                               Gramf.t ));
-         `Slist0 (`Snterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
+         `Slist0 (`Nterm (Gramf.obj (constrain : 'constrain Gramf.t )))],
           ("let (n,tpl) = rest in\n`TyAbstr\n  (_loc, n, tpl,\n    (match cl with | [] -> `None _loc | _ -> `Some (_loc, (and_of_list cl))))\n",
             (Gramf.mk_action
                (fun (cl : 'constrain list) 
@@ -7773,38 +7728,38 @@ let apply_ctyp () =
   Gramf.extend_single (type_info : 'type_info Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
+        [([`Nterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
            ("`TyRepr (_loc, (`Negative _loc), t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'type_repr)  (_loc : Locf.t)  ->
                    (`TyRepr (_loc, (`Negative _loc), t2) : 'type_info )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-         `Skeyword "=";
-         `Snterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+         `Keyword "=";
+         `Nterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
           ("`TyMan (_loc, t1, (`Negative _loc), t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'type_repr)  _  (t1 : 'ctyp)  (_loc : Locf.t)  ->
                   (`TyMan (_loc, t1, (`Negative _loc), t2) : 'type_info )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyEq (_loc, (`Negative _loc), t1)\n",
             (Gramf.mk_action
                (fun (t1 : 'ctyp)  (_loc : Locf.t)  ->
                   (`TyEq (_loc, (`Negative _loc), t1) : 'type_info )))));
-        ([`Skeyword "private"; `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Keyword "private"; `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyEq (_loc, (`Positive _loc), t1)\n",
             (Gramf.mk_action
                (fun (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
                   (`TyEq (_loc, (`Positive _loc), t1) : 'type_info )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-         `Skeyword "=";
-         `Skeyword "private";
-         `Snterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+         `Keyword "=";
+         `Keyword "private";
+         `Nterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
           ("`TyMan (_loc, t1, (`Positive _loc), t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'type_repr)  _  _  (t1 : 'ctyp)  (_loc : Locf.t) 
                   -> (`TyMan (_loc, t1, (`Positive _loc), t2) : 'type_info )))));
-        ([`Skeyword "private";
-         `Snterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
+        ([`Keyword "private";
+         `Nterm (Gramf.obj (type_repr : 'type_repr Gramf.t ))],
           ("`TyRepr (_loc, (`Positive _loc), t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'type_repr)  _  (_loc : Locf.t)  ->
@@ -7812,19 +7767,19 @@ let apply_ctyp () =
   Gramf.extend_single (type_repr : 'type_repr Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "|";
-          `Snterm
+        [([`Keyword "|";
+          `Nterm
             (Gramf.obj
                (constructor_declarations : 'constructor_declarations Gramf.t ))],
            ("`Sum (_loc, t)\n",
              (Gramf.mk_action
                 (fun (t : 'constructor_declarations)  _  (_loc : Locf.t)  ->
                    (`Sum (_loc, t) : 'type_repr )))));
-        ([`Skeyword "{";
-         `Snterm
+        ([`Keyword "{";
+         `Nterm
            (Gramf.obj
               (label_declaration_list : 'label_declaration_list Gramf.t ));
-         `Skeyword "}"],
+         `Keyword "}"],
           ("`Record (_loc, t)\n",
             (Gramf.mk_action
                (fun _  (t : 'label_declaration_list)  _  (_loc : Locf.t)  ->
@@ -7833,12 +7788,12 @@ let apply_ctyp () =
     (type_ident_and_parameters : 'type_ident_and_parameters Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "(";
+        [([`Keyword "(";
           `Slist1sep
-            ((`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))),
-              (`Skeyword ","));
-          `Skeyword ")";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+            ((`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))),
+              (`Keyword ","));
+          `Keyword ")";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("(i, (`Some (_loc, (com_of_list (tpl :>decl_params list)))))\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (tpl : 'type_parameter list)  _ 
@@ -7846,14 +7801,14 @@ let apply_ctyp () =
                    ((i,
                       (`Some (_loc, (com_of_list (tpl :>decl_params list))))) : 
                    'type_ident_and_parameters )))));
-        ([`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ));
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("(i, (`Some (_loc, (t :>decl_params))))\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  (t : 'type_parameter)  (_loc : Locf.t) 
                   ->
                   ((i, (`Some (_loc, (t :>decl_params)))) : 'type_ident_and_parameters )))));
-        ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("(i, (`None _loc))\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
@@ -7861,10 +7816,10 @@ let apply_ctyp () =
   Gramf.extend_single (constrain : 'constrain Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "constraint";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
-          `Skeyword "=";
-          `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        [([`Keyword "constraint";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ));
+          `Keyword "=";
+          `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
            ("`Eq (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  _  (_loc : Locf.t)  ->
@@ -7872,12 +7827,12 @@ let apply_ctyp () =
   Gramf.extend_single (typevars : 'typevars Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Sself],
+        [([`Self; `Self],
            ("`App (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'typevars)  (t1 : 'typevars)  (_loc : Locf.t)  ->
                    (`App (_loc, t1, t2) : 'typevars )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -7890,7 +7845,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -7903,7 +7858,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
@@ -7915,7 +7870,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Skeyword "'"; `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Keyword "'"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("`Quote (_loc, (`Normal _loc), i)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
@@ -7923,43 +7878,43 @@ let apply_ctyp () =
   Gramf.extend (ctyp : 'ctyp Gramf.t )
     (None,
       [((Some "alias"), (Some `LA),
-         [([`Sself;
-           `Skeyword "as";
-           `Skeyword "'";
-           `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+         [([`Self;
+           `Keyword "as";
+           `Keyword "'";
+           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
             ("`Alias (_loc, t1, i)\n",
               (Gramf.mk_action
                  (fun (i : 'a_lident)  _  _  (t1 : 'ctyp)  (_loc : Locf.t) 
                     -> (`Alias (_loc, t1, i) : 'ctyp )))))]);
       ((Some "forall"), (Some `LA),
-        [([`Skeyword "!";
-          `Snterm (Gramf.obj (typevars : 'typevars Gramf.t ));
-          `Skeyword ".";
-          `Sself],
+        [([`Keyword "!";
+          `Nterm (Gramf.obj (typevars : 'typevars Gramf.t ));
+          `Keyword ".";
+          `Self],
            ("`TyPol (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'typevars)  _  (_loc : Locf.t) 
                    -> (`TyPol (_loc, t1, t2) : 'ctyp )))))]);
       ((Some "arrow"), (Some `RA),
-        [([`Sself; `Skeyword "->"; `Sself],
+        [([`Self; `Keyword "->"; `Self],
            ("`Arrow (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  _  (t1 : 'ctyp)  (_loc : Locf.t)  ->
                    (`Arrow (_loc, t1, t2) : 'ctyp )))))]);
       ((Some "label"), (Some `NA),
-        [([`Skeyword "~";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-          `Skeyword ":";
-          `Sself],
+        [([`Keyword "~";
+          `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+          `Keyword ":";
+          `Self],
            ("`Label (_loc, i, t)\n",
              (Gramf.mk_action
                 (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Label (_loc, i, t) : 'ctyp )))));
-        ([`Stoken
+        ([`Token
             (((function | `Label _ -> true | _ -> false)), (48004564, `Any),
               "`Label s");
-         `Skeyword ":";
-         `Sself],
+         `Keyword ":";
+         `Self],
           ("`Label (_loc, (`Lid (_loc, s)), t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -7969,10 +7924,10 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Optlabel _ -> true | _ -> false)),
               (688526593, `Any), "`Optlabel s");
-         `Sself],
+         `Self],
           ("`OptLabl (_loc, (`Lid (_loc, s)), t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -7982,32 +7937,31 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Skeyword "?";
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword ":";
-         `Sself],
+        ([`Keyword "?";
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword ":";
+         `Self],
           ("`OptLabl (_loc, i, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_lident)  _  (_loc : Locf.t)  ->
                   (`OptLabl (_loc, i, t) : 'ctyp )))))]);
       ((Some "apply"), (Some `LA),
-        [([`Sself; `Sself],
+        [([`Self; `Self],
            ("`App (_loc, t2, t1)\n",
              (Gramf.mk_action
                 (fun (t2 : 'ctyp)  (t1 : 'ctyp)  (_loc : Locf.t)  ->
                    (`App (_loc, t2, t1) : 'ctyp )))))]);
       ((Some "simple"), None,
-        [([`Skeyword "'";
-          `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        [([`Keyword "'"; `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("`Quote (_loc, (`Normal _loc), i)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  _  (_loc : Locf.t)  ->
                    (`Quote (_loc, (`Normal _loc), i) : 'ctyp )))));
-        ([`Skeyword "_"],
+        ([`Keyword "_"],
           ("`Any _loc\n",
             (Gramf.mk_action
                (fun _  (_loc : Locf.t)  -> (`Any _loc : 'ctyp )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8020,7 +7974,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8033,7 +7987,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "par";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "par")), "`Ant s")],
@@ -8046,7 +8000,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "id")), "`Ant s")],
@@ -8059,12 +8013,12 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "id";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "id")), "`Ant s");
-         `Skeyword ".";
-         `Sself],
+         `Keyword ".";
+         `Self],
           ("(try\n   let id = ident_of_ctyp t in\n   fun ()  -> (`Dot (_loc, (mk_ant ~c:\"ident\" s), id) : ctyp )\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
@@ -8082,7 +8036,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function | `Quot _ -> true | _ -> false)), (904098089, `Any),
               "`Quot _")],
           ("Ast_quotation.expand x Dyn_tag.ctyp\n",
@@ -8093,9 +8047,9 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-         `Skeyword ".";
-         `Sself],
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+         `Keyword ".";
+         `Self],
           ("(try let id = ident_of_ctyp t in fun ()  -> `Dot (_loc, (i :>ident), id)\n with | Invalid_argument s -> (fun ()  -> raise (Streamf.Error s))) ()\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (i : 'a_uident)  (_loc : Locf.t)  ->
@@ -8105,84 +8059,84 @@ let apply_ctyp () =
                     with
                     | Invalid_argument s ->
                         (fun ()  -> raise (Streamf.Error s))) () : 'ctyp )))));
-        ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
           ("(i :>ctyp)\n",
             (Gramf.mk_action
                (fun (i : 'a_lident)  (_loc : Locf.t)  ->
                   ((i :>ctyp) : 'ctyp )))));
-        ([`Skeyword "(";
-         `Sself;
-         `Skeyword "*";
-         `Snterm (Gramf.obj (star_ctyp : 'star_ctyp Gramf.t ));
-         `Skeyword ")"],
+        ([`Keyword "(";
+         `Self;
+         `Keyword "*";
+         `Nterm (Gramf.obj (star_ctyp : 'star_ctyp Gramf.t ));
+         `Keyword ")"],
           ("`Par (_loc, (`Sta (_loc, t, tl)))\n",
             (Gramf.mk_action
                (fun _  (tl : 'star_ctyp)  _  (t : 'ctyp)  _  (_loc : Locf.t) 
                   -> (`Par (_loc, (`Sta (_loc, t, tl))) : 'ctyp )))));
-        ([`Skeyword "("; `Sself; `Skeyword ")"],
+        ([`Keyword "("; `Self; `Keyword ")"],
           ("t\n",
             (Gramf.mk_action
                (fun _  (t : 'ctyp)  _  (_loc : Locf.t)  -> (t : 'ctyp )))));
-        ([`Skeyword "(";
-         `Sself;
-         `Skeyword ",";
-         `Snterm (Gramf.obj (com_ctyp : 'com_ctyp Gramf.t ));
-         `Skeyword ")";
-         `Snterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
+        ([`Keyword "(";
+         `Self;
+         `Keyword ",";
+         `Nterm (Gramf.obj (com_ctyp : 'com_ctyp Gramf.t ));
+         `Keyword ")";
+         `Nterm (Gramf.obj (type_longident : 'type_longident Gramf.t ))],
           ("appl_of_list ((j :>ctyp) :: t :: (Ast_basic.list_of_com tl []))\n",
             (Gramf.mk_action
                (fun (j : 'type_longident)  _  (tl : 'com_ctyp)  _ 
                   (t : 'ctyp)  _  (_loc : Locf.t)  ->
                   (appl_of_list ((j :>ctyp) :: t ::
                      (Ast_basic.list_of_com tl [])) : 'ctyp )))));
-        ([`Skeyword "[";
-         `Snterm (Gramf.obj (row_field : 'row_field Gramf.t ));
-         `Skeyword "]"],
+        ([`Keyword "[";
+         `Nterm (Gramf.obj (row_field : 'row_field Gramf.t ));
+         `Keyword "]"],
           ("`PolyEq (_loc, rfl)\n",
             (Gramf.mk_action
                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
                   (`PolyEq (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "[>";
-         `Snterm (Gramf.obj (row_field : 'row_field Gramf.t ));
-         `Skeyword "]"],
+        ([`Keyword "[>";
+         `Nterm (Gramf.obj (row_field : 'row_field Gramf.t ));
+         `Keyword "]"],
           ("`PolySup (_loc, rfl)\n",
             (Gramf.mk_action
                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
                   (`PolySup (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "[<";
-         `Snterm (Gramf.obj (row_field : 'row_field Gramf.t ));
-         `Skeyword "]"],
+        ([`Keyword "[<";
+         `Nterm (Gramf.obj (row_field : 'row_field Gramf.t ));
+         `Keyword "]"],
           ("`PolyInf (_loc, rfl)\n",
             (Gramf.mk_action
                (fun _  (rfl : 'row_field)  _  (_loc : Locf.t)  ->
                   (`PolyInf (_loc, rfl) : 'ctyp )))));
-        ([`Skeyword "[<";
-         `Snterm (Gramf.obj (row_field : 'row_field Gramf.t ));
-         `Skeyword ">";
-         `Snterm (Gramf.obj (name_tags : 'name_tags Gramf.t ));
-         `Skeyword "]"],
+        ([`Keyword "[<";
+         `Nterm (Gramf.obj (row_field : 'row_field Gramf.t ));
+         `Keyword ">";
+         `Nterm (Gramf.obj (name_tags : 'name_tags Gramf.t ));
+         `Keyword "]"],
           ("`PolyInfSup (_loc, rfl, ntl)\n",
             (Gramf.mk_action
                (fun _  (ntl : 'name_tags)  _  (rfl : 'row_field)  _ 
                   (_loc : Locf.t)  -> (`PolyInfSup (_loc, rfl, ntl) : 
                   'ctyp )))));
-        ([`Skeyword "#";
-         `Snterm (Gramf.obj (class_longident : 'class_longident Gramf.t ))],
+        ([`Keyword "#";
+         `Nterm (Gramf.obj (class_longident : 'class_longident Gramf.t ))],
           ("`ClassPath (_loc, i)\n",
             (Gramf.mk_action
                (fun (i : 'class_longident)  _  (_loc : Locf.t)  ->
                   (`ClassPath (_loc, i) : 'ctyp )))));
-        ([`Skeyword "<";
-         `Snterm (Gramf.obj (opt_meth_list : 'opt_meth_list Gramf.t ));
-         `Skeyword ">"],
+        ([`Keyword "<";
+         `Nterm (Gramf.obj (opt_meth_list : 'opt_meth_list Gramf.t ));
+         `Keyword ">"],
           ("t\n",
             (Gramf.mk_action
                (fun _  (t : 'opt_meth_list)  _  (_loc : Locf.t)  ->
                   (t : 'ctyp )))));
-        ([`Skeyword "(";
-         `Skeyword "module";
-         `Snterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
-         `Skeyword ")"],
+        ([`Keyword "(";
+         `Keyword "module";
+         `Nterm (Gramf.obj (mtyp : 'mtyp Gramf.t ));
+         `Keyword ")"],
           ("`Package (_loc, p)\n",
             (Gramf.mk_action
                (fun _  (p : 'mtyp)  _  _  (_loc : Locf.t)  ->
@@ -8190,12 +8144,12 @@ let apply_ctyp () =
   Gramf.extend_single (comma_ctyp : 'comma_ctyp Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Skeyword ","; `Sself],
+        [([`Self; `Keyword ","; `Self],
            ("`Com (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'comma_ctyp)  _  (t1 : 'comma_ctyp) 
                    (_loc : Locf.t)  -> (`Com (_loc, t1, t2) : 'comma_ctyp )))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8208,7 +8162,7 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`Ctyp (_loc, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
@@ -8216,7 +8170,7 @@ let apply_ctyp () =
   Gramf.extend_single (com_ctyp : 'com_ctyp Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8229,7 +8183,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8242,19 +8196,19 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Skeyword ","; `Sself],
+        ([`Self; `Keyword ","; `Self],
           ("`Com (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'com_ctyp)  _  (t1 : 'com_ctyp)  (_loc : Locf.t) 
                   -> (`Com (_loc, t1, t2) : 'com_ctyp )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("t\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (_loc : Locf.t)  -> (t : 'com_ctyp )))))]));
   Gramf.extend_single (star_ctyp : 'star_ctyp Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8267,7 +8221,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8280,12 +8234,12 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Skeyword "*"; `Sself],
+        ([`Self; `Keyword "*"; `Self],
           ("`Sta (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'star_ctyp)  _  (t1 : 'star_ctyp)  (_loc : Locf.t) 
                   -> (`Sta (_loc, t1, t2) : 'star_ctyp )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("t\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (_loc : Locf.t)  -> (t : 'star_ctyp )))))]));
@@ -8293,7 +8247,7 @@ let apply_ctyp () =
     (constructor_declarations : 'constructor_declarations Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8306,7 +8260,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8319,29 +8273,29 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Sself; `Skeyword "|"; `Sself],
+        ([`Self; `Keyword "|"; `Self],
           ("`Bar (_loc, t1, t2)\n",
             (Gramf.mk_action
                (fun (t2 : 'constructor_declarations)  _ 
                   (t1 : 'constructor_declarations)  (_loc : Locf.t)  ->
                   (`Bar (_loc, t1, t2) : 'constructor_declarations )))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-         `Skeyword "of";
-         `Snterm
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+         `Keyword "of";
+         `Nterm
            (Gramf.obj (constructor_arg_list : 'constructor_arg_list Gramf.t ))],
           ("`Of (_loc, s, t)\n",
             (Gramf.mk_action
                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : Locf.t)  ->
                   (`Of (_loc, s, t) : 'constructor_declarations )))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-         `Skeyword ":";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+         `Keyword ":";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyCol (_loc, s, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_uident)  (_loc : Locf.t)  ->
                   (`TyCol (_loc, s, t) : 'constructor_declarations )))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
           ("(s :>or_ctyp)\n",
             (Gramf.mk_action
                (fun (s : 'a_uident)  (_loc : Locf.t)  ->
@@ -8350,7 +8304,7 @@ let apply_ctyp () =
     (constructor_declaration : 'constructor_declaration Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8363,7 +8317,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8376,16 +8330,16 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-         `Skeyword "of";
-         `Snterm
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+         `Keyword "of";
+         `Nterm
            (Gramf.obj (constructor_arg_list : 'constructor_arg_list Gramf.t ))],
           ("`Of (_loc, (s :>vid), t)\n",
             (Gramf.mk_action
                (fun (t : 'constructor_arg_list)  _  (s : 'a_uident) 
                   (_loc : Locf.t)  ->
                   (`Of (_loc, (s :>vid), t) : 'constructor_declaration )))));
-        ([`Snterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ))],
           ("(s :>of_ctyp)\n",
             (Gramf.mk_action
                (fun (s : 'a_uident)  (_loc : Locf.t)  ->
@@ -8393,13 +8347,13 @@ let apply_ctyp () =
   Gramf.extend_single (constructor_arg_list : 'constructor_arg_list Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Skeyword "*"; `Sself],
+        [([`Self; `Keyword "*"; `Self],
            ("`Sta (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'constructor_arg_list)  _ 
                    (t1 : 'constructor_arg_list)  (_loc : Locf.t)  ->
                    (`Sta (_loc, t1, t2) : 'constructor_arg_list )))));
-        ([`Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("t\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  (_loc : Locf.t)  ->
@@ -8408,23 +8362,23 @@ let apply_ctyp () =
     (label_declaration_list : 'label_declaration_list Gramf.t )
     (None,
       (None, None,
-        [([`Snterm
+        [([`Nterm
              (Gramf.obj (label_declaration : 'label_declaration Gramf.t ));
-          `Skeyword ";";
-          `Sself],
+          `Keyword ";";
+          `Self],
            ("`Sem (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'label_declaration_list)  _ 
                    (t1 : 'label_declaration)  (_loc : Locf.t)  ->
                    (`Sem (_loc, t1, t2) : 'label_declaration_list )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj (label_declaration : 'label_declaration Gramf.t ));
-         `Skeyword ";"],
+         `Keyword ";"],
           ("t1\n",
             (Gramf.mk_action
                (fun _  (t1 : 'label_declaration)  (_loc : Locf.t)  ->
                   (t1 : 'label_declaration_list )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj (label_declaration : 'label_declaration Gramf.t ))],
           ("t1\n",
             (Gramf.mk_action
@@ -8433,7 +8387,7 @@ let apply_ctyp () =
   Gramf.extend_single (label_declaration : 'label_declaration Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function
                 | `Ant ({ kind = "";_} : Tokenf.ant) -> true
                 | _ -> false)), (3257031, (`A "")), "`Ant s")],
@@ -8446,7 +8400,7 @@ let apply_ctyp () =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Stoken
+        ([`Token
             (((function
                | `Ant ({ kind = "typ";_} : Tokenf.ant) -> true
                | _ -> false)), (3257031, (`A "typ")), "`Ant s")],
@@ -8459,17 +8413,17 @@ let apply_ctyp () =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword ":";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword ":";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyCol (_loc, s, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_lident)  (_loc : Locf.t)  ->
                   (`TyCol (_loc, s, t) : 'label_declaration )))));
-        ([`Skeyword "mutable";
-         `Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
-         `Skeyword ":";
-         `Snterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
+        ([`Keyword "mutable";
+         `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
+         `Keyword ":";
+         `Nterm (Gramf.obj (ctyp : 'ctyp Gramf.t ))],
           ("`TyColMut (_loc, s, t)\n",
             (Gramf.mk_action
                (fun (t : 'ctyp)  _  (s : 'a_lident)  _  (_loc : Locf.t)  ->
@@ -8477,13 +8431,13 @@ let apply_ctyp () =
   Gramf.extend_single (comma_type_parameter : 'comma_type_parameter Gramf.t )
     (None,
       (None, None,
-        [([`Sself; `Skeyword ","; `Sself],
+        [([`Self; `Keyword ","; `Self],
            ("`Com (_loc, t1, t2)\n",
              (Gramf.mk_action
                 (fun (t2 : 'comma_type_parameter)  _ 
                    (t1 : 'comma_type_parameter)  (_loc : Locf.t)  ->
                    (`Com (_loc, t1, t2) : 'comma_type_parameter )))));
-        ([`Snterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))],
+        ([`Nterm (Gramf.obj (type_parameter : 'type_parameter Gramf.t ))],
           ("`Ctyp (_loc, (t :>ctyp))\n",
             (Gramf.mk_action
                (fun (t : 'type_parameter)  (_loc : Locf.t)  ->

@@ -10,18 +10,18 @@ let pp = fprintf
 
   
 let  name_of_symbol entry : [> symbol] -> string  =  function
-  | `Snterm e -> "[" ^ e.name ^ "]"
+  | `Nterm e -> "[" ^ e.name ^ "]"
   | `Snterml (e, l) -> "[" ^ e.name ^ " level " ^ l ^ "]"
-  | `Sself  -> "[" ^ entry.name ^ "]"
-  | `Stoken (_, _,descr) -> descr
-  | `Skeyword kwd -> "\"" ^ kwd ^ "\""
+  | `Self  -> "[" ^ entry.name ^ "]"
+  | `Token (_, _,descr) -> descr
+  | `Keyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" 
 
 let tree_in_entry prev_symb tree = function
   | Dlevels levels ->
       let rec search_level level =
         match search_tree level.lsuffix with
-        | Some t -> Some (Node {node = `Sself; son = t; brother = DeadEnd})
+        | Some t -> Some (Node {node = `Self; son = t; brother = DeadEnd})
         | None -> search_tree level.lprefix 
       and search_tree t =
         if tree <> DeadEnd && t == tree then (* physical equivality*)
@@ -42,9 +42,9 @@ let tree_in_entry prev_symb tree = function
           | LocAct (_, _) | DeadEnd -> None 
       and search_symbol symb =
         match symb with
-        | `Snterm _ | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
-          `Slist1sep (_, _) | `Sopt _ | `Stry _ | `Stoken _ | `Skeyword _
-        | `Speek _
+        | `Nterm _ | `Snterml (_, _) | `Slist0 _ | `Slist0sep (_, _) | `Slist1 _ |
+          `Slist1sep (_, _) | `Opt _ | `Try _ | `Token _ | `Keyword _
+        | `Peek _
           when symb == prev_symb ->
             Some symb
         | `Slist0 symb ->
@@ -73,19 +73,19 @@ let tree_in_entry prev_symb tree = function
                 | Some sep -> Some (`Slist1sep (symb, sep))
                 | None -> None 
             end
-        | `Sopt symb ->
+        | `Opt symb ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Sopt symb)
+            | Some symb -> Some (`Opt symb)
             | None -> None
             end
-        | `Stry symb ->
+        | `Try symb ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Stry symb)
+            | Some symb -> Some (`Try symb)
             | None -> None
             end
-        | `Speek symb ->
+        | `Peek symb ->
             begin match search_symbol symb with
-            | Some symb -> Some (`Speek symb)
+            | Some symb -> Some (`Peek symb)
             | None -> None
             end
         | _ -> None  in
@@ -99,7 +99,7 @@ let tree_in_entry prev_symb tree = function
 let rec name_of_symbol_failed entry  = function
   | `Slist0 s | `Slist0sep (s, _) |
     `Slist1 s | `Slist1sep (s, _) |
-    `Sopt s | `Stry s | `Speek s  ->
+    `Opt s | `Try s | `Peek s  ->
       name_of_symbol_failed entry s
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
@@ -110,7 +110,7 @@ and name_of_tree_failed entry x =
           let txt = name_of_symbol_failed entry node in
           let txt =
             match (node, son) with (* when the current node is Opt *)
-            | (`Sopt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
+            | (`Opt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
             | _ -> txt   in
           let txt =
             match brother with
@@ -122,8 +122,8 @@ and name_of_tree_failed entry x =
             (fun s tok ->
               ((if s = "" then "" else s ^ " then ") ^
                (match tok with
-               | `Stoken (_, _,descr) ->  descr
-               | `Skeyword kwd -> kwd))) "" tokl 
+               | `Token (_, _,descr) ->  descr
+               | `Keyword kwd -> kwd))) "" tokl 
       end
   | DeadEnd | LocAct (_, _) -> "???" 
 
@@ -158,7 +158,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected"
         end
-    | `Stry _ | `Speek _ (*NP: not sure about this*) | `Sopt _  -> txt ^ " expected"
+    | `Try _ | `Peek _ (*NP: not sure about this*) | `Opt _  -> txt ^ " expected"
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in
   begin
     (* it may not necessary fail when  we use try somewhere*)

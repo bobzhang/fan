@@ -30,7 +30,7 @@ val parser_of_terminals :
 (**
   {[
   let a : Tokenf.t = Obj.magic & Gparser.parser_of_terminals
-  [`Skeyword "a";`Skeyword "b"; `Skeyword "c"]
+  [`Keyword "a";`Keyword "b"; `Keyword "c"]
   (fun _ v _  -> Gaction.mk (fun  c b a ->  v))
   [< (`Key "a",_loc) ; (`Key "b", _loc); (`Key "c",_loc) >];
   val a : Tokenf.t = `Key "c"

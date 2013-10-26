@@ -18,7 +18,7 @@ let _ =
   Gramf.extend_single (uid : 'uid Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
                "`Uid n")],
            ("n\n",
@@ -32,8 +32,8 @@ let _ =
   Gramf.extend_single (parser_exp : 'parser_exp Gramf.t )
     (None,
       (None, None,
-        [([`Sopt (`Snterm (Gramf.obj (uid : 'uid Gramf.t )));
-          `Snterm (Gramf.obj (parser_case_list : 'parser_case_list Gramf.t ))],
+        [([`Opt (`Nterm (Gramf.obj (uid : 'uid Gramf.t )));
+          `Nterm (Gramf.obj (parser_case_list : 'parser_case_list Gramf.t ))],
            ("match name with\n| Some o ->\n    Ref.protect Compile_stream.grammar_module_name o\n      (fun _  -> cparser _loc pcl)\n| None  -> cparser _loc pcl\n",
              (Gramf.mk_action
                 (fun (pcl : 'parser_case_list)  (name : 'uid option) 
@@ -46,12 +46,12 @@ let _ =
   Gramf.extend_single (parser_ipat : 'parser_ipat Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
+        [([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
            ("(i : alident  :>pat)\n",
              (Gramf.mk_action
                 (fun (i : 'a_lident)  (_loc : Locf.t)  ->
                    ((i : alident  :>pat) : 'parser_ipat )))));
-        ([`Skeyword "_"],
+        ([`Keyword "_"],
           ("(`Any _loc : FAst.pat )\n",
             (Gramf.mk_action
                (fun _  (_loc : Locf.t)  ->
@@ -59,10 +59,10 @@ let _ =
   Gramf.extend_single (parser_case_list : 'parser_case_list Gramf.t )
     (None,
       (None, None,
-        [([`Skeyword "|";
+        [([`Keyword "|";
           `Slist0sep
-            ((`Snterm (Gramf.obj (parser_case : 'parser_case Gramf.t ))),
-              (`Skeyword "|"))],
+            ((`Nterm (Gramf.obj (parser_case : 'parser_case Gramf.t ))),
+              (`Keyword "|"))],
            ("pcl\n",
              (Gramf.mk_action
                 (fun (pcl : 'parser_case list)  _  (_loc : Locf.t)  ->
@@ -70,9 +70,9 @@ let _ =
   Gramf.extend_single (parser_case : 'parser_case Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (stream_pat : 'stream_pat Gramf.t ));
-          `Skeyword "->";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        [([`Nterm (Gramf.obj (stream_pat : 'stream_pat Gramf.t ));
+          `Keyword "->";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(sp, None, e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (sp : 'stream_pat)  (_loc : Locf.t)  ->
@@ -80,14 +80,14 @@ let _ =
   Gramf.extend_single (stream_pat : 'stream_pat Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ))],
+        [([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ))],
            ("[(spc, None)]\n",
              (Gramf.mk_action
                 (fun (spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
                    ([(spc, None)] : 'stream_pat )))));
-        ([`Snterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
-         `Skeyword ";";
-         `Snterm
+        ([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
+         `Keyword ";";
+         `Nterm
            (Gramf.obj
               (stream_pat_comp_err_list : 'stream_pat_comp_err_list Gramf.t ))],
           ("(spc, None) :: sp\n",
@@ -101,26 +101,26 @@ let _ =
   Gramf.extend_single (stream_pat_comp : 'stream_pat_comp Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Skeyword "when";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+          `Keyword "when";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("When (_loc, p, (Some e))\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
                    (When (_loc, p, (Some e)) : 'stream_pat_comp )))));
-        ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+        ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
           ("When (_loc, p, None)\n",
             (Gramf.mk_action
                (fun (p : 'pat)  (_loc : Locf.t)  ->
                   (When (_loc, p, None) : 'stream_pat_comp )))));
-        ([`Snterm (Gramf.obj (pat : 'pat Gramf.t ));
-         `Skeyword "=";
-         `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+         `Keyword "=";
+         `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
           ("Match (_loc, p, e)\n",
             (Gramf.mk_action
                (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
                   (Match (_loc, p, e) : 'stream_pat_comp )))));
-        ([`Skeyword "'"; `Snterm (Gramf.obj (pat : 'pat Gramf.t ))],
+        ([`Keyword "'"; `Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
           ("Str (_loc, p)\n",
             (Gramf.mk_action
                (fun (p : 'pat)  _  (_loc : Locf.t)  ->
@@ -128,14 +128,14 @@ let _ =
   Gramf.extend_single (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t )
     (None,
       (None, None,
-        [([`Snterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
-          `Skeyword "??";
-          `Snterm (Gramf.obj (exp : 'exp Gramf.t ))],
+        [([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ));
+          `Keyword "??";
+          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("(spc, (Some e))\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (spc : 'stream_pat_comp)  (_loc : Locf.t)
                     -> ((spc, (Some e)) : 'stream_pat_comp_err )))));
-        ([`Snterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ))],
+        ([`Nterm (Gramf.obj (stream_pat_comp : 'stream_pat_comp Gramf.t ))],
           ("(spc, None)\n",
             (Gramf.mk_action
                (fun (spc : 'stream_pat_comp)  (_loc : Locf.t)  ->
@@ -144,23 +144,23 @@ let _ =
     (stream_pat_comp_err_list : 'stream_pat_comp_err_list Gramf.t )
     (None,
       (None, None,
-        [([`Snterm
+        [([`Nterm
              (Gramf.obj (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t ))],
            ("[spc]\n",
              (Gramf.mk_action
                 (fun (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  ->
                    ([spc] : 'stream_pat_comp_err_list )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t ));
-         `Skeyword ";"],
+         `Keyword ";"],
           ("[spc]\n",
             (Gramf.mk_action
                (fun _  (spc : 'stream_pat_comp_err)  (_loc : Locf.t)  ->
                   ([spc] : 'stream_pat_comp_err_list )))));
-        ([`Snterm
+        ([`Nterm
             (Gramf.obj (stream_pat_comp_err : 'stream_pat_comp_err Gramf.t ));
-         `Skeyword ";";
-         `Sself],
+         `Keyword ";";
+         `Self],
           ("spc :: sp\n",
             (Gramf.mk_action
                (fun (sp : 'stream_pat_comp_err_list)  _ 

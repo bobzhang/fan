@@ -51,7 +51,7 @@ let rec parser_of_tree (entry:Gstructure.entry)
           (* rules ending with [S] , for this last symbol there's a call to the [start] function:
              of the current level if the level is [`RA] or of the next level otherwise. (This can be
              verified by [start_parser_of_levels]) *)      
-    | Node {node = `Sself; son = LocAct (act, _); brother = bro} ->  fun strm ->
+    | Node {node = `Self; son = LocAct (act, _); brother = bro} ->  fun strm ->
         begin 
           let alevn =
             match assoc with
@@ -138,8 +138,8 @@ and parser_of_terminals (terminals: Gstructure.terminal list)  : Tokenf.t list o
                 acc:= t ::!acc;
                 if not
                     (match terminal with
-                    |`Stoken(f,_,_) -> f t
-                    |`Skeyword kwd ->
+                    |`Token(f,_,_) -> f t
+                    |`Keyword kwd ->
                         begin match t with
                         |`Key u ->  kwd =u.txt  
                         | _ -> false
@@ -167,13 +167,13 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
         let ps = aux symb and pt = aux sep  in
         Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Sopt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk
-    | `Stry s -> let ps = aux s in Gcomb.tryp ps
-    | `Speek s -> let ps = aux s in Gcomb.peek ps
+    | `Opt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk
+    | `Try s -> let ps = aux s in Gcomb.tryp ps
+    | `Peek s -> let ps = aux s in Gcomb.peek ps
     | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm
-    | `Snterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
-    | `Sself -> fun strm -> entry.start 0 strm 
-    | `Skeyword kwd -> fun strm ->
+    | `Nterm e -> fun strm -> e.start 0 strm  (* No filter any more *)          
+    | `Self -> fun strm -> entry.start 0 strm 
+    | `Keyword kwd -> fun strm ->
         (** remember here -- it could be optimized, it could be optimized..
             ... *)
         begin  (* interaction with stream *)
@@ -182,7 +182,7 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
               (Streamf.junk strm ; Gaction.mk x (* tok *) )
           |_ -> raise Streamf.NotConsumed
         end
-    | `Stoken (f, _,_) -> fun strm ->  match Streamf.peek strm with
+    | `Token (f, _,_) -> fun strm ->  match Streamf.peek strm with
       |Some tok when f tok -> (Streamf.junk strm; Gaction.mk tok)
       |_ -> raise Streamf.NotConsumed
   in with_loc (aux s)

@@ -14,7 +14,7 @@ let _ =
   Gramf.extend_single (inject_exp : 'inject_exp Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid x")],
            ("try Hashtbl.find inject_exp_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
@@ -33,7 +33,7 @@ let _ =
   Gramf.extend_single (inject_stru : 'inject_stru Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid x")],
            ("try Hashtbl.find inject_stru_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",
@@ -52,7 +52,7 @@ let _ =
   Gramf.extend_single (inject_clfield : 'inject_clfield Gramf.t )
     (None,
       (None, None,
-        [([`Stoken
+        [([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid x")],
            ("try Hashtbl.find inject_clfield_tbl x\nwith | Not_found  -> failwithf \"inject.exp %s not found\" x\n",

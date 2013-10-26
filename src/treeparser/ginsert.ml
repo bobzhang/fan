@@ -14,13 +14,13 @@ let higher s1 s2 =
 
 let rec derive_eps (s:symbol)  =
   match s with 
-  | `Slist0 _ | `Slist0sep (_, _) | `Sopt _ | `Speek _ -> true
+  | `Slist0 _ | `Slist0sep (_, _) | `Opt _ | `Peek _ -> true
 
-  | `Stry s -> derive_eps s (* it would consume if succeed *)
-  | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
+  | `Try s -> derive_eps s (* it would consume if succeed *)
+  | `Slist1 _ | `Slist1sep (_, _) | `Token _ | `Keyword _ ->
       (* For sure we cannot derive epsilon from these *)
       false
-  | `Snterm _ | `Snterml (_, _) | `Sself ->
+  | `Nterm _ | `Snterml (_, _) | `Self ->
         (* Approximation *)
       false 
 
@@ -69,7 +69,7 @@ let find_level ?position (entry:Gstructure.entry)  levs =
       | [] -> ([], None, []) 
 
 let rec check_gram (entry : Gstructure.entry) = function
-  | `Snterm e ->
+  | `Nterm e ->
     if entry.gram  != e.gram  then 
       failwithf  "Fgram.extend: entries %S and %S do not belong to the same grammar.@."
         entry.name e.name
@@ -80,8 +80,8 @@ let rec check_gram (entry : Gstructure.entry) = function
           entry.name e.name
   | `Slist0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `Slist1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s -> check_gram entry s
-  | `Sself | `Stoken _ | `Skeyword _ -> ()
+  | `Slist0 s | `Slist1 s | `Opt s | `Try s | `Peek s -> check_gram entry s
+  | `Self | `Token _ | `Keyword _ -> ()
         
 and tree_check_gram entry = function
   | Node {node ; brother; son } -> begin 
@@ -94,7 +94,7 @@ and tree_check_gram entry = function
 
   
 let get_initial = function
-  | `Sself :: symbols -> (true, symbols)
+  | `Self :: symbols -> (true, symbols)
   | symbols -> (false, symbols) 
 
 
@@ -102,12 +102,12 @@ let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
 and  using_symbol symbol acc =
   match symbol with 
-  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s | `Speek s ->
+  | `Slist0 s | `Slist1 s | `Opt s | `Try s | `Peek s ->
       using_symbol s acc
   | `Slist0sep (s, t) -> using_symbol  t (using_symbol s acc)
   | `Slist1sep (s, t) -> using_symbol  t (using_symbol  s acc)
-  | `Skeyword kwd -> kwd :: acc
-  | `Snterm _ | `Snterml _ | `Sself | `Stoken _ -> acc 
+  | `Keyword kwd -> kwd :: acc
+  | `Nterm _ | `Snterml _ | `Self | `Token _ -> acc 
 and using_node   node acc =
   match node with 
   | Node {node = s; brother = bro; son = son} ->
@@ -243,7 +243,7 @@ and scan_product entry (symbols,x) : production  =
            @@ Listf.reduce_left (^) diff in
        let () = check_gram entry symbol in
        match symbol with
-       |`Snterm e when e == entry -> `Sself
+       |`Nterm e when e == entry -> `Self
        | _ -> symbol
      ) symbols,x)
 
@@ -260,7 +260,7 @@ and unsafe_scan_product entry (symbols,x) : production  =
          Setf.String.add_list entry.gram.gfilter.kwds keywords in
        let () = check_gram entry symbol in
        match symbol with
-       |`Snterm e when e == entry -> `Sself
+       |`Nterm e when e == entry -> `Self
        | _ -> symbol
      ) symbols,x)
     
@@ -320,11 +320,11 @@ let  eoi_entry e =
         let symbs =
           List.map
             (function
-              | `Sself -> `Snterm e
+              | `Self -> `Nterm e
               (* | `Snext -> assert false *)
               | x  -> x) symbs in
         (symbs @
-         [`Stoken
+         [`Token
             ((function | `EOI _ -> true | _ -> false),
              (hash_variant "EOI",`Empty)(* (`Vrn "EOI") *), "`EOI"
             )],

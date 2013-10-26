@@ -94,14 +94,14 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
         else
           %exp{function | $v -> true | _ -> false  } in
       {text =
-       `Stoken(_loc,match_fun, mdescr,mstr) ;
+       `Token(_loc,match_fun, mdescr,mstr) ;
        styp=`Tok _loc;pattern = Some p_pat}
   | (x,y)::ys ->
       let guard =
           List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
             %exp{$x = $y} ys  in
       let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      {text = `Stoken(_loc,match_fun,  mdescr, mstr);
+      {text = `Token(_loc,match_fun,  mdescr, mstr);
        styp = `Tok _loc;
        pattern= Some (Objs.wildcarder#pat po) };;
 *)
@@ -162,7 +162,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 (*       | None -> %pat'{_} *)
 (*       | Some x -> %pat'{$lid:x} in *)
 (*     Some %pat@xloc{$vrn:v ($l,$lx)} in *)
-(*   [{Gram_def.text = `Stoken(_loc, pred,des,des_str); *)
+(*   [{Gram_def.text = `Token(_loc, pred,des,des_str); *)
 (*     styp = `Tok _loc; *)
 (*     pattern}] *)
 (* ;; *)
@@ -176,7 +176,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
       | _ -> false} in
     let des = %exp{($int':i, `Empty)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
-    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+    [{Gram_def.text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
       pattern = None;}]
 
@@ -190,7 +190,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
-    [{Gram_def.text = `Stoken(_loc, pred, des,des_str);
+    [{Gram_def.text = `Token(_loc, pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
 
@@ -205,7 +205,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
-    [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
+    [{Gram_def.text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
   (** split opt, introducing an epsilon predicate? *)    
@@ -218,7 +218,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
-    [{Gram_def.text = `Stoken(_loc, pred,des,des_str);
+    [{Gram_def.text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
      pattern}]}
 
@@ -230,7 +230,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = None in (* could be None *)
-    [{Gram_def.text = `Stoken(_loc,pred, des,des_str);
+    [{Gram_def.text = `Token(_loc,pred, des,des_str);
       styp = `Tok _loc;
       pattern}]}
 
@@ -242,7 +242,7 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = Some %pat{$vrn:v $lid:x} in
-    [{Gram_def.text = `Stoken(_loc,pred,des,des_str);
+    [{Gram_def.text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
       pattern}]}
   ]
@@ -279,27 +279,27 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
              Some
                %pat{$vrn:v (* BOOTSTRAPPING *)
                       (({kind = $pp; _} as $p) :Tokenf.ant)} in
-           {Gram_def.text = `Stoken(_loc,pred,des,des_str);
+           {Gram_def.text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern})}
-  |  Str s %{[mk_symbol  ~text:(`Skeyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
+  |  Str s %{[mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
   | "("; or_strs{v}; ")" %{
     match v with
     | (vs, None) ->
         vs |>
         List.map
-          (fun x -> mk_symbol ~text:(`Skeyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
+          (fun x -> mk_symbol ~text:(`Keyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
     | (vs, Some b) ->
         vs |>
         List.map
           (fun x ->
-            mk_symbol ~text:(`Skeyword (_loc,x))
+            mk_symbol ~text:(`Keyword (_loc,x))
               ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}) )}
 
-  | "S" %{[mk_symbol  ~text:(`Sself _loc)  ~styp:(`Self _loc ) ~pattern:None]}
+  | "S" %{[mk_symbol  ~text:(`Self _loc)  ~styp:(`Self _loc ) ~pattern:None]}
 
   |  name{n};  OPT level_str{lev} %{
-        [mk_symbol  ~text:(`Snterm (_loc ,n, lev))
+        [mk_symbol  ~text:(`Nterm (_loc ,n, lev))
           ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None ]}
   (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
   (*   match p with *)
@@ -326,12 +326,12 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
   | "OPT"; simple{s}  %{
     let [s] = s in
     let styp = %ctyp'{${s.styp} option } in 
-    let text = `Sopt (_loc, s.text) in
+    let text = `Opt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
   | ("TRY"|"PEEK" as p); simple{s} %{
     let [s] = s in
     let v = (_loc, s.text) in
-    let text = if p = "TRY" then `Stry v else `Speek v  in
+    let text = if p = "TRY" then `Try v else `Peek v  in
     [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
   | simple{p} %{ p}
 

@@ -51,10 +51,10 @@ and symbol =  {
   styp: styp;
   pattern: pat option} 
 and text =
-  [ `Slist of (loc* bool* symbol* symbol option)
-  | `Snterm of (loc* name* string option) | `Sopt of (loc* text)
-  | `Stry of (loc* text) | `Speek of (loc* text) | `Sself of loc
-  | `Skeyword of (loc* string) | `Stoken of (loc* exp* exp* string)] 
+  [ `List of (loc* bool* symbol* symbol option)
+  | `Nterm of (loc* name* string option) | `Opt of (loc* text)
+  | `Try of (loc* text) | `Peek of (loc* text) | `Self of loc
+  | `Keyword of (loc* string) | `Token of (loc* exp* exp* string)] 
 type entries =  {
   items: entry list;
   gram: vid option;

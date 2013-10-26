@@ -156,8 +156,8 @@ let eoi_entry entry =
     extend_single (entry_eoi : 'entry_eoi t )
       (None,
         (None, None,
-          [([`Snterm (obj (entry : 'entry t ));
-            `Stoken
+          [([`Nterm (obj (entry : 'entry t ));
+            `Token
               (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
                 "`EOI")],
              ("x\n",

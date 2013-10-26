@@ -54,38 +54,38 @@ let eq_token  (x : Gstructure.token_pattern)  (y:Gstructure.token_pattern) : boo
 let logically_eq_symbols entry =
   let rec eq_symbol (s1:symbol) (s2:symbol) =
     match (s1, s2) with
-    | (`Snterm e1, `Snterm e2) -> e1.name = e2.name
-    | (`Snterm e1, `Sself) -> e1.name = entry.name
-    | (`Sself, `Snterm e2) -> entry.name = e2.name
-    (* | (`Sself, `Sself) -> true *)
+    | (`Nterm e1, `Nterm e2) -> e1.name = e2.name
+    | (`Nterm e1, `Self) -> e1.name = entry.name
+    | (`Self, `Nterm e2) -> entry.name = e2.name
+    (* | (`Self, `Self) -> true *)
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.name = e2.name && l1 = l2
     | (`Slist0 s1, `Slist0 s2) |
       (`Slist1 s1, `Slist1 s2) |
-      (`Sopt s1, `Sopt s2) |
-      (`Speek s1, `Speek s2) |
-      (`Stry s1, `Stry s2) -> eq_symbol s1 s2
+      (`Opt s1, `Opt s2) |
+      (`Peek s1, `Peek s2) |
+      (`Try s1, `Try s2) -> eq_symbol s1 s2
     | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
       (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
         eq_symbol s1 s2 && eq_symbol sep1 sep2
-    | `Stoken x , `Stoken  y  -> eq_token x y 
+    | `Token x , `Token  y  -> eq_token x y 
     | _ -> s1 = s2 in
   eq_symbol
 
 (* used in [Insert] *)
 let rec eq_symbol (s1:symbol) (s2:symbol) =
   match (s1, s2) with
-  | (`Snterm e1, `Snterm e2) -> e1 == e2
+  | (`Nterm e1, `Nterm e2) -> e1 == e2
   | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1 == e2 && l1 = l2
-  | (`Sself, `Sself) -> true
+  | (`Self, `Self) -> true
   | (`Slist0 s1, `Slist0 s2) |
     (`Slist1 s1, `Slist1 s2) |
-    (`Sopt s1, `Sopt s2) |
-    (`Speek s1, `Speek s2) |
-    (`Stry s1, `Stry s2) -> eq_symbol s1 s2
+    (`Opt s1, `Opt s2) |
+    (`Peek s1, `Peek s2) |
+    (`Try s1, `Try s2) -> eq_symbol s1 s2
   | (`Slist0sep (s1, sep1), `Slist0sep (s2, sep2)) |
     (`Slist1sep (s1, sep1), `Slist1sep (s2, sep2)) ->
       eq_symbol s1 s2 && eq_symbol sep1 sep2
-  | `Stoken x, `Stoken y -> eq_token x y
+  | `Token x, `Token y -> eq_token x y
   | _ -> s1 = s2
       
 
