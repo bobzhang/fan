@@ -16,14 +16,14 @@ let test_empty_string _ =
     |> get_tokens
     |> %p{[`Str({txt="";_}:Tokenf.txt);`EOI _]}
     |> not then
-    assert_failure "test_empty_string"
+    %err{test_empty_string}
 
 let test_escaped_string _ =
   if %str{"a\n"}
      |> get_tokens
      |> %p{[`Str ({txt = "a\n";_}:Tokenf.txt); `EOI _]}
      |> not then 
-    assert_failure "test_escaped_string"
+    %err{test_escaped_string}
 
     
 let test_comment_string _ =
@@ -31,7 +31,7 @@ let test_comment_string _ =
      |> get_tokens
      |> %p{[`Comment ({txt="(*(**)*)";_}:Tokenf.txt);`EOI _]}
      |> not then 
-    assert_failure "test_comment_sting"
+    %err{test_comment_sting}
   
 
 let test_char _ =
@@ -40,7 +40,7 @@ let test_char _ =
    |> get_tokens
    |> %p{[`Chr ({txt="\n";_}:Tokenf.txt); `EOI _]}
    |> not then
-    assert_failure "test_char"
+    %err{test_char}
 
 
 (** maybe a bug. Quotation should be loyal to its
@@ -52,7 +52,7 @@ if %str{"hsoghsogho\n
    |> get_tokens
    |> %p{[`Str ({txt="hsoghsogho\n\n    hahahahah";_}:Tokenf.txt); `EOI _]}
    |> not then
-  assert_failure "test_string"
+  %err{test_string}
 
   
     
@@ -79,7 +79,7 @@ let test_quotation _ =
                 }:Tokenf.quot) :: _ 
          }
     |> not then
-    assert_failure (%here{}^"test_quotation")
+     %err{test_quotation}
 
 (*  Flex_lib.list_of_string ~verbose:false  |> List.hd *)
  (*    === *)
@@ -105,17 +105,17 @@ let test_ant _ =
   Ref.protect Configf.antiquotations true @@ fun _ ->
     if "$aa:a"
        |> get_tokens
-       |> %p{[`Ant ({ kind="aa";
-                      txt = "a";
-                      loc = 
-                      {Locf.loc_start =
-                       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 4};
-                       loc_end =
-                       {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
-                       loc_ghost = false};_} : Tokenf.ant);
+       |> %p{[`Ant
+                ({loc =
+                 {Locf.loc_start =
+                  {pos_lnum = 1; pos_bol = 0; pos_cnum = 0;_};
+                  loc_end =
+                  { pos_lnum = 1; pos_bol = 0; pos_cnum = 5;_};
+                  loc_ghost = false};
+                 cxt = None; kind = "aa"; txt = "$aa:a"; shift = 4; retract = 0} :Tokenf.ant) ;
               `EOI  _]}
        |> not then
-      assert_failure "test_ant"
+      %err{test_ant}
 
 let test_ant_quot _ =       
   Ref.protect Configf.antiquotations true @@ fun _ ->
@@ -128,35 +128,36 @@ let test_ant_quot _ =
               txt = "({|)|})";
               loc =
               {Locf.loc_start =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 5};
+               {pos_lnum = 1; pos_bol = 0; pos_cnum = 5;_};
                loc_end =
-               {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 12};
+               {pos_lnum = 1; pos_bol = 0; pos_cnum = 12;_};
                loc_ghost = false};
               _} : Tokenf.ant) ;
           `EOI _]}
        |> not then
-      assert_failure "test_ant_quot"
+      %err{test_ant_quot}
 
     
 
 let test_ant_paren _ =       
   Ref.protect Configf.antiquotations true @@ fun _ ->
     if
-      "$((l:>FAst.pat))"
+      "${(l:>FAst.pat)}"
       |> get_tokens
       |> %p{
         [`Ant
-           ({ kind = "";
-              txt = "((l:>FAst.pat))";
-              loc = {Locf.loc_start =
-                     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 1};
-                     loc_end =
-                     {Locf.pos_fname = "<string>"; pos_lnum = 1; pos_bol = 0; pos_cnum = 16};
-                     loc_ghost = false};
-            _}:Tokenf.ant) ;
+           ({loc =
+             {loc_start =
+              {pos_lnum = 1; pos_bol = 0; pos_cnum = 0;_};
+              loc_end =
+              {pos_lnum = 1; pos_bol = 0;
+               pos_cnum = 16;_};
+              loc_ghost = false};
+             cxt = None; kind = "";
+             txt = "${(l:>FAst.pat)}"; shift = 2; retract = 1}:Tokenf.ant) ;
          `EOI _]}
       |> not then 
-      assert_failure "test_ant_paren"
+      %err{test_ant_paren}
     
 
 let test_ant_str _ =
@@ -165,22 +166,36 @@ let test_ant_str _ =
       %str{${")"}}
       |> get_tokens
       |> %p{
-        [`Ant ({kind = ""; txt = "(\")\")";_}:Tokenf.ant); `EOI _ ]}
+        [`Ant ({loc =
+                {loc_start =
+                 { pos_lnum = 1; pos_bol = 0; pos_cnum = 0;_};
+                 loc_end =
+                 {pos_lnum = 1; pos_bol = 0; pos_cnum = 6;_};
+                 loc_ghost = false};
+                cxt = None; kind = ""; txt = "${\")\"}";
+                shift = 2; retract = 1}:Tokenf.ant); `EOI _ ]}
       |> not then
-      assert_failure "test_ant_str"
+      %err{test_ant_str}
 
     
 
 let test_ant_chr _ = 
   Ref.protect Configf.antiquotations true @@ fun _ ->
     if
-      %str{$(')')}
+      %str{${')'}}
       |> get_tokens
       |> %p{
-        [`Ant ({kind = ""; txt = "(')')";_}:Tokenf.ant);
+        [`Ant ({loc =
+                {loc_start =
+                 {pos_lnum = 1; pos_bol = 0; pos_cnum = 0;_};
+                 loc_end =
+                 {pos_lnum = 1; pos_bol = 0; pos_cnum = 6;_};
+                 loc_ghost = false};
+                cxt = None; kind = ""; txt = "${')'}"; shift = 2; retract = 1}:
+                 Tokenf.ant);
          `EOI _  ]}
       |> not then
-      assert_failure "test_ant_chr"
+      %err{test_ant_chr}
 
 
 
@@ -205,7 +220,7 @@ let test_comment_pos _ =
             loc_ghost = false}}:Tokenf.txt);
        `EOI _]}
     |> not then
-    assert_failure "test_comment"
+    %err{test_comment}
 
 
 let test_lex_simple_quot _ =
@@ -224,7 +239,7 @@ let test_lex_simple_quot _ =
         meta = None; shift = 2; txt = "%{ (** gshoghso *) bhgo \"ghos\" }";
         retract = 1}:Tokenf.quot)}
    |> not then
-    assert_failure "test_lex_simple_quot"
+    %err{test_lex_simple_quot}
       
 
 
@@ -263,7 +278,7 @@ let test_symb _ =
                loc_ghost = false}}:Tokenf.txt);
         `EOI _ ]}
     |> not then
-    assert_failure  "test_symb"
+    %err{test_symb}
   
 
 
@@ -275,7 +290,7 @@ let test_symb_percent _ =
    |> get_tokens
    |> %p{   [`Sym ({txt= "->%"; _} :Tokenf.txt); `EOI _ ]}
    |> not then
-    assert_failure "test_symb_percent"
+    %err{test_symb_percent}
 
 
     
@@ -288,7 +303,7 @@ let test_symb_percent1 _ =
            `EOI _  ]}
     |> not
   then 
-    assert_failure "test_symb_percent1"
+    %err{test_symb_percent1}
   
 let test_symb_percent2 _ =
   if
@@ -296,7 +311,7 @@ let test_symb_percent2 _ =
     |>  get_tokens
     |> %p{  [`Sym ({txt = "%%";_}:Tokenf.txt); `EOI _ ]}
     |> not then
-    assert_failure "test_symb_percent2"
+    %err{test_symb_percent2}
 
 
 let test_symb_percent3 _ =
@@ -305,7 +320,7 @@ let test_symb_percent3 _ =
     |> get_tokens
     |> %p{  [`Sym ({txt = "|%";_}:Tokenf.txt); `EOI _ ]}
     |> not then
-    assert_failure "test_symb_percent3"
+    %err{test_symb_percent3}
 
 
 let test_symb_percent4 _ =
@@ -314,7 +329,7 @@ let test_symb_percent4 _ =
     |> get_tokens
     |> %p{[`Eident ({txt="%";_}:Tokenf.txt); `EOI _ ]}
     |> not then
-    assert_failure "test_symb_percent4"
+    %err{test_symb_percent4}
 
   
 
@@ -325,7 +340,7 @@ let test_symb_percent5 _ =
   |> %p{[`Sym ({txt = "(";_}:Tokenf.txt);
          `Sym ({txt="%";_}:Tokenf.txt); `EOI _ ]}
   |> not then
-    assert_failure "test_symb_percent5"
+    %err{test_symb_percent5}
 
   
 
@@ -348,7 +363,7 @@ let test_single_quot _ =
            shift = 2; txt = "%{'$(a)}"; retract = 1}:Tokenf.quot);
        `EOI _ ]}
     |> not then
-    assert_failure "test_single_quot"
+    %err{test_single_quot}
 
 
     
@@ -388,5 +403,5 @@ let suite =
 
     
 (* local variables: *)
-(* compile-command: "cd ../unitest_annot && pmake lexing_test.cmo" *)
+(* compile-command: "cd .. && pmake test" *)
 (* end: *)

@@ -1,7 +1,9 @@
 
 
-OCAMLPPFLAGS = -pp $(PP_FAN)
-OCAMLDEPPPFLAGS = -pp $(PP_FAN)  # only useful for ml file 
+OCAMLPPFLAGS = -pp $"$(PP_FAN) -plugin $(FAN_PLUGIN)"
+
+OCAMLDEPPPFLAGS = -pp $"$(PP_FAN) -plugin $(FAN_PLUGIN)"
+    # only useful for ml file 
 
 # requires a preprocessor first 
 

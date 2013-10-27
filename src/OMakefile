@@ -275,6 +275,20 @@ DIR_UNIT2       = $(dir unitest2)
 DIR_UNIT3       = $(dir unitest3)
 
 # fixpoint: $(add)
+
+
+MakeThirdParty(maindir,pp) =
+    OCAMLCFLAGS += -annot
+    PP_FAN = $(pp)
+    OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
+    OCAMLINCLUDES += $(maindir)
+    AdditionalDependency($(PP_FAN))
+    .SUBDIRS: $(DIR_THIRDPARTY)
+
+MakeThirdParty($(DIR_COLD), $(file fan))
+FAN_PLUGIN = $(file thirdparty/libplugins)
+FAN_FLAG = 
+
 ########################
 # test
 
@@ -288,22 +302,14 @@ MakeTest(maindir,mountdir,pp) =
     OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
     OCAMLINCLUDES += $(MAINDIR)
     vmount(-l, $(DIR_UNIT), $(mountdir))
-    AdditionalDependency($(PP_FAN))
+    AdditionalDependency($(pp))
+    AdditionalDependency($(FAN_PLUGIN).cmxs)
     # OCAML_LIBS[]+= $(MAINDIR)/libmain
     .SUBDIRS: $(mountdir)
 
 MakeTest($(DIR_MAIN_ANNOT),$(DIR_UNIT_ANNOT),$(file fan))        
 MakeTest($(DIR_COLD), $(DIR_UNIT1),$(file fan))
 
-MakeThirdParty(maindir,pp) =
-    OCAMLCFLAGS += -annot
-    PP_FAN = $(pp)
-    OCAMLINCLUDES += $(TREEPARSER_INCLUDES)
-    OCAMLINCLUDES += $(maindir)
-    AdditionalDependency($(PP_FAN))
-    .SUBDIRS: $(DIR_THIRDPARTY)
-
-MakeThirdParty($(DIR_MAIN_ANNOT), $(file fan0))
 
 section
     OCAML_LIBS = 
