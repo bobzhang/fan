@@ -391,7 +391,7 @@ and fill_rec_pat: Locf.t -> FAstN.rec_pat -> FAst.rec_pat =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_ident loc _a0 in
+        let _a0 = fill_vid loc _a0 in
         let _a1 = fill_pat loc _a1 in `RecBind (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
         let _a0 = fill_rec_pat loc _a0 in
@@ -519,7 +519,7 @@ and fill_rec_exp: Locf.t -> FAstN.rec_exp -> FAst.rec_exp =
         let _a0 = fill_rec_exp loc _a0 in
         let _a1 = fill_rec_exp loc _a1 in `Sem (loc, _a0, _a1)
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_ident loc _a0 in
+        let _a0 = fill_vid loc _a0 in
         let _a1 = fill_exp loc _a1 in `RecBind (loc, _a0, _a1)
     | #any as _a0 -> (fill_any loc _a0 :>FAst.rec_exp)
     | #ant as _a0 -> (fill_ant loc _a0 :>FAst.rec_exp)
@@ -867,7 +867,7 @@ and fill_rec_bind: Locf.t -> FAstN.rec_bind -> FAst.rec_bind =
   fun loc  ->
     function
     | `RecBind (_a0,_a1) ->
-        let _a0 = fill_ident loc _a0 in
+        let _a0 = fill_vid loc _a0 in
         let _a1 = fill_ep loc _a1 in `RecBind (loc, _a0, _a1)
     | `Sem (_a0,_a1) ->
         let _a0 = fill_rec_bind loc _a0 in
@@ -1436,7 +1436,7 @@ class meta =
         | `RecBind (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#ident _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
                 (self#pat _loc _a1))
         | `Sem (_a0,_a1) ->
             `App
@@ -1660,7 +1660,7 @@ class meta =
         | `RecBind (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#ident _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
                 (self#exp _loc _a1))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
@@ -2249,7 +2249,7 @@ class meta =
         | `RecBind (_a0,_a1) ->
             `App
               (_loc,
-                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#ident _loc _a0))),
+                (`App (_loc, (`Vrn (_loc, "RecBind")), (self#vid _loc _a0))),
                 (self#ep _loc _a1))
         | `Sem (_a0,_a1) ->
             `App

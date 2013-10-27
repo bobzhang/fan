@@ -84,7 +84,7 @@ val label_declaration : name_ctyp Gramf.t
 val label_declaration_list : name_ctyp Gramf.t
 val label_exp : rec_exp Gramf.t
 val label_exp_list : rec_exp Gramf.t
-val label_longident : ident Gramf.t
+val label_longident : vid Gramf.t
 
 val label_pat : rec_pat Gramf.t
 val label_pat_list : rec_pat Gramf.t

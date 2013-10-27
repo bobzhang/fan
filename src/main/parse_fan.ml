@@ -358,7 +358,7 @@ let apply () = begin
         [ S{e1}; "."; "("; S{e2}; ")" %{ `ArrayDot (_loc, e1, e2)}
         | S{e1}; "."; "["; S{e2}; "]" %{ `StringDot (_loc, e1, e2)}
         | S{e1}; "."; "{"; comma_exp{e2}; "}" %{ Fan_ops.bigarray_get _loc e1 e2}
-        | S{e1}; "."; S{e2} %{ `Field(_loc,e1,e2)}
+        | S{e1}; "."; label_longident{e2} %{ `Field(_loc,e1,(e2:>exp))}
         | S{e}; "#"; a_lident{lab} %{ `Send (_loc, e, lab)} ]
        "~-" NA
         [ "!"; S{e} %{  (* %{ ! $e} *) (* FIXME *)
@@ -501,12 +501,13 @@ let apply () = begin
         [ label_exp_list{x} %{x}  ]
         label_exp:
         [ Ant ("rec_exp" |"" ,s) %{mk_ant  ~c:"rec_exp"  s}
-        | label_longident{i}; fun_bind{e} %{ %{ $id:i = $e }}
+        | label_longident{i}; fun_bind{e}
+            %rec_exp{ $id:i = $e }
         | label_longident{i} %{  (*FIXME*)
             `RecBind (_loc, i, `Lid (_loc, Fan_ops.to_lid i))}]
         field_exp :
         [ Ant (""|"bi",s) %{ mk_ant  ~c:"rec_exp" s}
-        | a_lident{l}; "=";  exp {e} %{`RecBind (_loc, (l:>ident), e)} (* %{ $lid:l = $e } *) ]
+        | a_lident{l}; "=";  exp {e} %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]
         label_exp_list:
         [ label_exp{b1}; ";"; S{b2} %{`Sem (_loc, b1, b2)}
         | label_exp{b1}; ";"        %{b1}
@@ -720,7 +721,8 @@ let apply () = begin
        [ Ant (""|"pat",s) %{ mk_ant  ~c:"pat" s}
        (* | `Quot x -> Ast_quotation.expand _loc x Dyn_tag.pat
         *) (* FIXME restore it later *)
-       | label_longident{i}; "="; pat{p} %{ (* %{ $i = $p } *) `RecBind(_loc,i,p)}
+       | label_longident{i}; "="; pat{p} %{ (* %{ $i = $p } *)
+         `RecBind(_loc,i,p)}
        | label_longident{i} %{
            (* `RecBind(_loc,i,`Id(_loc,`Lid(_loc,Fan_ops.to_lid i))) *)
            `RecBind(_loc,i,`Lid(_loc,Fan_ops.to_lid i))}
@@ -826,13 +828,14 @@ let apply () = begin
 
       label_longident:
       [ Ant (""|"id"|"lid",s) %{ mk_ant ~c:"ident" s}
-      | Lid i %{ %{$lid:i}}
-      | Uid i; "."; S{l} %{ %{$uid:i.$l}}
-      | Ant(""|"uid",s); "."; S{l} %{ %{${mk_ant ~c:"ident" s}.$l}} ]
+      | Lid i %{ `Lid(_loc,i)}
+      | Uid@iloc i; "."; S{l} %{ `Dot(_loc,`Uid(iloc,i),l)}
+      | Ant(""|"uid",s); "."; S{l} %{
+        `Dot (_loc, mk_ant ~c:"ident" s, l)} ]
       
       cltyp_longident: [ type_longident{x}  %{x} ]
       val_longident:[ ident{x} %{ x} ]
-      class_longident: [ label_longident{x} %{x} ]
+      class_longident: [ label_longident{x} %{(x:>ident)} ]
       
       method_opt_override:
       [ "method"; "!" %{ `Positive _loc }

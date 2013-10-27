@@ -295,7 +295,7 @@ and pat =
   | `ModuleUnpack of (loc * auident)
   | `ModuleConstraint of (loc * auident * ctyp) ]
 and rec_pat =
-  [ `RecBind of (loc * ident * pat)
+  [ `RecBind of (loc * vid (* ident *) * pat)
   | `Sem of (loc  * rec_pat * rec_pat)
   | any
   | ant]  
@@ -312,7 +312,7 @@ and exp =
       (* { (e) with rb }  *)
   | `RecordWith of (loc * rec_exp  * exp)
         (* FIXME give more restrict for the e *)         
-  | `Field of (loc * exp * exp) (* e.e *)
+  | `Field of (loc * exp * (* vid *)exp) (* e.e *)
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)
@@ -347,18 +347,15 @@ and exp =
   | `Coercion of (loc * exp * ctyp * ctyp) (* or (e : t :> t) *)
   | `Subtype of (loc * exp * ctyp) (* (e :> t) *)
   | `While of (loc * exp * exp)
-
-  (* | `LetOpen of (loc * ident * exp) *)
   | `LetOpen of (loc * flag * ident * exp)
         (* fun (type t) -> e *)
         (* let f x (type t) y z = e *)
   | `LocalTypeFun of (loc *  alident * exp)
-
         (* (module ME : S) which is represented as (module (ME : S)) *)
   | `Package_exp of (loc * mexp) ]
 and rec_exp =
   [ `Sem of (loc * rec_exp * rec_exp)
-  | `RecBind  of (loc * ident * exp)   (* FIXME: label is lid, it can be more precise *)
+  | `RecBind  of (loc * (* ident *) vid  * exp)
   | any (* Introduced  here to be symmertric to rec_pat *)
   | ant ]
 
@@ -611,7 +608,7 @@ type ep =
   | `Record of (loc * rec_bind)
   | literal ]
 and rec_bind =
-  [  `RecBind of (loc * ident * ep)
+  [  `RecBind of (loc * vid (* ident *) * ep)
   | `Sem of (loc * rec_bind * rec_bind)
   | any
   | ant] 

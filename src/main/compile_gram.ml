@@ -260,7 +260,15 @@ let filter_pat_with_captured_variables pat= begin
   (pat,constraints)
 end
 
-
+(* let free_vars  = object *)
+(*   inherit Objs.map as super *)
+(*   method! exp (x:exp) = *)
+(*     match x with *)
+(*     | `Ant(_, (s:Tokenf.ant)) -> *)
+        
+(*     | p  -> super#exp p  *)
+(* end *)
+(* %exp{A.B.C.d.$x}     *)
 (** [gl] is the name  list option
 
    {[

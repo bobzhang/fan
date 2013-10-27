@@ -865,7 +865,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "RecBind")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#pat _loc _a2))
+                     (self#vid _loc _a1))), (self#pat _loc _a2))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,
@@ -1219,7 +1219,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "RecBind")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#exp _loc _a2))
+                     (self#vid _loc _a1))), (self#exp _loc _a2))
         | #any as _a0 -> (self#any _loc _a0 :>FAst.ep)
         | #ant as _a0 -> (self#ant _loc _a0 :>FAst.ep)
     method mtyp : 'loc -> mtyp -> FAst.ep=
@@ -2085,7 +2085,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "RecBind")), (self#loc _loc _a0))),
-                     (self#ident _loc _a1))), (self#ep _loc _a2))
+                     (self#vid _loc _a1))), (self#ep _loc _a2))
         | `Sem (_a0,_a1,_a2) ->
             `App
               (_loc,

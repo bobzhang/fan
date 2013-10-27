@@ -86,7 +86,7 @@ FAN_FILES = \
     compile_gram \
     sigs_util  fanAstN  gramf\
     filters   gentry gfold gramlib\
-    idN  ns     \
+    idN  ns \
     fan_args mktop objs objsN \
     parse_fan parse_grammar parse_stream \
     plugins prelude stdFan typehook\

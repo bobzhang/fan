@@ -391,7 +391,7 @@ and pp_print_rec_pat: Format.formatter -> rec_pat -> unit =
   fun fmt  ->
     function
     | `RecBind (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_ident _a0
+        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_vid _a0
           pp_print_pat _a1
     | `Sem (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" pp_print_rec_pat _a0
@@ -516,7 +516,7 @@ and pp_print_rec_exp: Format.formatter -> rec_exp -> unit =
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" pp_print_rec_exp _a0
           pp_print_rec_exp _a1
     | `RecBind (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_ident _a0
+        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_vid _a0
           pp_print_exp _a1
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
@@ -855,7 +855,7 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
   fun fmt  ->
     function
     | `RecBind (_a0,_a1) ->
-        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_ident _a0
+        Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" pp_print_vid _a0
           pp_print_ep _a1
     | `Sem (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" pp_print_rec_bind _a0
@@ -1255,7 +1255,7 @@ class print =
       fun fmt  ->
         function
         | `RecBind (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#vid _a0
               self#pat _a1
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_pat _a0
@@ -1379,7 +1379,7 @@ class print =
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_exp _a0
               self#rec_exp _a1
         | `RecBind (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#vid _a0
               self#exp _a1
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
@@ -1715,7 +1715,7 @@ class print =
       fun fmt  ->
         function
         | `RecBind (_a0,_a1) ->
-            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#ident _a0
+            Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a)@]" self#vid _a0
               self#ep _a1
         | `Sem (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a)@]" self#rec_bind _a0
@@ -2055,7 +2055,7 @@ class map =
     method rec_pat : rec_pat -> rec_pat=
       function
       | `RecBind (_a0,_a1) ->
-          let _a0 = self#ident _a0 in
+          let _a0 = self#vid _a0 in
           let _a1 = self#pat _a1 in `RecBind (_a0, _a1)
       | `Sem (_a0,_a1) ->
           let _a0 = self#rec_pat _a0 in
@@ -2176,7 +2176,7 @@ class map =
           let _a0 = self#rec_exp _a0 in
           let _a1 = self#rec_exp _a1 in `Sem (_a0, _a1)
       | `RecBind (_a0,_a1) ->
-          let _a0 = self#ident _a0 in
+          let _a0 = self#vid _a0 in
           let _a1 = self#exp _a1 in `RecBind (_a0, _a1)
       | #any as _a0 -> (self#any _a0 : any  :>rec_exp)
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_exp)
@@ -2497,7 +2497,7 @@ class map =
     method rec_bind : rec_bind -> rec_bind=
       function
       | `RecBind (_a0,_a1) ->
-          let _a0 = self#ident _a0 in
+          let _a0 = self#vid _a0 in
           let _a1 = self#ep _a1 in `RecBind (_a0, _a1)
       | `Sem (_a0,_a1) ->
           let _a0 = self#rec_bind _a0 in
@@ -2736,7 +2736,7 @@ class fold =
           let self = self#auident _a0 in self#ctyp _a1
     method rec_pat : rec_pat -> 'self_type=
       function
-      | `RecBind (_a0,_a1) -> let self = self#ident _a0 in self#pat _a1
+      | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#pat _a1
       | `Sem (_a0,_a1) -> let self = self#rec_pat _a0 in self#rec_pat _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
@@ -2808,7 +2808,7 @@ class fold =
     method rec_exp : rec_exp -> 'self_type=
       function
       | `Sem (_a0,_a1) -> let self = self#rec_exp _a0 in self#rec_exp _a1
-      | `RecBind (_a0,_a1) -> let self = self#ident _a0 in self#exp _a1
+      | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#exp _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method mtyp : mtyp -> 'self_type=
@@ -3015,7 +3015,7 @@ class fold =
       | #literal as _a0 -> (self#literal _a0 :>'self_type)
     method rec_bind : rec_bind -> 'self_type=
       function
-      | `RecBind (_a0,_a1) -> let self = self#ident _a0 in self#ep _a1
+      | `RecBind (_a0,_a1) -> let self = self#vid _a0 in self#ep _a1
       | `Sem (_a0,_a1) -> let self = self#rec_bind _a0 in self#rec_bind _a1
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)

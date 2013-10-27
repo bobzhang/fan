@@ -77,7 +77,7 @@ and pat =
   | `Lazy of pat | `ModuleUnpack of auident
   | `ModuleConstraint of (auident* ctyp)] 
 and rec_pat =
-  [ `RecBind of (ident* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
+  [ `RecBind of (vid* pat) | `Sem of (rec_pat* rec_pat) | any | ant] 
 and exp =
   [ vid | `App of (exp* exp) | `Vrn of string | `Com of (exp* exp)
   | `Sem of (exp* exp) | `Par of exp | any | `Record of rec_exp | literal
@@ -97,7 +97,7 @@ and exp =
   | `LetOpen of (flag* ident* exp) | `LocalTypeFun of (alident* exp)
   | `Package_exp of mexp] 
 and rec_exp =
-  [ `Sem of (rec_exp* rec_exp) | `RecBind of (ident* exp) | any | ant] 
+  [ `Sem of (rec_exp* rec_exp) | `RecBind of (vid* exp) | any | ant] 
 and mtyp =
   [ ident' | `Sig of sigi | `SigEnd | `Functor of (auident* mtyp* mtyp)
   | `With of (mtyp* constr) | `ModuleTypeOf of mexp | ant] 
@@ -165,4 +165,4 @@ type ep =
   | `Sem of (ep* ep) | `Par of ep | any | `ArrayEmpty | `Array of ep
   | `Record of rec_bind | literal] 
 and rec_bind =
-  [ `RecBind of (ident* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 
+  [ `RecBind of (vid* ep) | `Sem of (rec_bind* rec_bind) | any | ant] 

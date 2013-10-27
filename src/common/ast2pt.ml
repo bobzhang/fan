@@ -599,7 +599,7 @@ let rec pat (x : pat) : Parsetree.pattern =
     let is_closed = if wildcards = [] then Closed else Open in
     let mklabpat (p : rec_pat) =
       match p with
-      | `RecBind (_loc,i,p) -> ident i, pat p
+      | `RecBind (_loc,i,p) -> ident (i:>ident), pat p
       | p -> error (unsafe_loc_of p) "invalid pattern" in
     mkpat _loc (Ppat_record ((List.map mklabpat ps), is_closed))
   | `Par (_,`Com (_,p1,p2)) ->
@@ -650,7 +650,7 @@ let rec exp (x : exp) : Parsetree.expression =
       let rec normalize_acc (x:FAst.ident) : FAst.exp=
             let _loc = unsafe_loc_of x in
             match x with 
-            | `Dot (_,i1,i2) ->
+            | `Dot (_,i1,i2) -> (* FIXME *)
               `Field (_loc, normalize_acc i1, normalize_acc i2)
             | `Apply (_,i1,i2) ->
               `App (_loc, normalize_acc i1, normalize_acc i2)
@@ -679,8 +679,8 @@ let rec exp (x : exp) : Parsetree.expression =
         (fun (loc_bp, e1) (loc_ep, ml, e2) ->
            match e2 with
            | `Lid(sloc,s) ->
-             let loc = Locf.merge loc_bp loc_ep in
-             (loc, mkexp loc (Pexp_field (e1, (mkli sloc s ml))))
+               let loc = Locf.merge loc_bp loc_ep in
+               (loc, mkexp loc (Pexp_field (e1, (mkli sloc s ml))))
            | _ -> error (unsafe_loc_of e2) "lowercase identifier expected" )
         (_loc, e) l in e
 
@@ -962,7 +962,7 @@ and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
-      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some ((ident i), (exp e))
+      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i:>ident), (exp e))
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 

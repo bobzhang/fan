@@ -467,7 +467,7 @@ and pp_print_rec_pat: Format.formatter -> rec_pat -> unit =
     function
     | `RecBind (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_ident _a1 pp_print_pat _a2
+          pp_print_vid _a1 pp_print_pat _a2
     | `Sem (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_rec_pat _a1 pp_print_rec_pat _a2
@@ -618,7 +618,7 @@ and pp_print_rec_exp: Format.formatter -> rec_exp -> unit =
           pp_print_rec_exp _a1 pp_print_rec_exp _a2
     | `RecBind (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_ident _a1 pp_print_exp _a2
+          pp_print_vid _a1 pp_print_exp _a2
     | #any as _a0 -> (pp_print_any fmt _a0 :>unit)
     | #ant as _a0 -> (pp_print_ant fmt _a0 :>unit)
 and pp_print_mtyp: Format.formatter -> mtyp -> unit =
@@ -1000,7 +1000,7 @@ and pp_print_rec_bind: Format.formatter -> rec_bind -> unit =
     function
     | `RecBind (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_ident _a1 pp_print_ep _a2
+          pp_print_vid _a1 pp_print_ep _a2
     | `Sem (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_rec_bind _a1 pp_print_rec_bind _a2
@@ -1473,7 +1473,7 @@ class print =
         function
         | `RecBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#pat _a2
+              self#vid _a1 self#pat _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_pat _a1 self#rec_pat _a2
@@ -1624,7 +1624,7 @@ class print =
               self#rec_exp _a1 self#rec_exp _a2
         | `RecBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#exp _a2
+              self#vid _a1 self#exp _a2
         | #any as _a0 -> (self#any fmt _a0 :>unit)
         | #ant as _a0 -> (self#ant fmt _a0 :>unit)
     method mtyp : 'fmt -> mtyp -> unit=
@@ -2005,7 +2005,7 @@ class print =
         function
         | `RecBind (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`RecBind@ %a@ %a@ %a)@]" self#loc _a0
-              self#ident _a1 self#ep _a2
+              self#vid _a1 self#ep _a2
         | `Sem (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Sem@ %a@ %a@ %a)@]" self#loc _a0
               self#rec_bind _a1 self#rec_bind _a2
@@ -2501,7 +2501,7 @@ class map =
       function
       | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ident _a1 in
+          let _a1 = self#vid _a1 in
           let _a2 = self#pat _a2 in `RecBind (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -2682,7 +2682,7 @@ class map =
           let _a2 = self#rec_exp _a2 in `Sem (_a0, _a1, _a2)
       | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ident _a1 in
+          let _a1 = self#vid _a1 in
           let _a2 = self#exp _a2 in `RecBind (_a0, _a1, _a2)
       | #any as _a0 -> (self#any _a0 : any  :>rec_exp)
       | #ant as _a0 -> (self#ant _a0 : ant  :>rec_exp)
@@ -3130,7 +3130,7 @@ class map =
       function
       | `RecBind (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
-          let _a1 = self#ident _a1 in
+          let _a1 = self#vid _a1 in
           let _a2 = self#ep _a2 in `RecBind (_a0, _a1, _a2)
       | `Sem (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
@@ -3471,8 +3471,7 @@ class fold =
     method rec_pat : rec_pat -> 'self_type=
       function
       | `RecBind (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ident _a1 in self#pat _a2
+          let self = self#loc _a0 in let self = self#vid _a1 in self#pat _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_pat _a1 in self#rec_pat _a2
@@ -3580,8 +3579,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_exp _a1 in self#rec_exp _a2
       | `RecBind (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in
-          let self = self#ident _a1 in self#exp _a2
+          let self = self#loc _a0 in let self = self#vid _a1 in self#exp _a2
       | #any as _a0 -> (self#any _a0 :>'self_type)
       | #ant as _a0 -> (self#ant _a0 :>'self_type)
     method mtyp : mtyp -> 'self_type=
@@ -3898,7 +3896,7 @@ class fold =
     method rec_bind : rec_bind -> 'self_type=
       function
       | `RecBind (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#ident _a1 in self#ep _a2
+          let self = self#loc _a0 in let self = self#vid _a1 in self#ep _a2
       | `Sem (_a0,_a1,_a2) ->
           let self = self#loc _a0 in
           let self = self#rec_bind _a1 in self#rec_bind _a2
@@ -4225,7 +4223,7 @@ and strip_pat: FAst.pat -> FAstN.pat =
 and strip_rec_pat: FAst.rec_pat -> FAstN.rec_pat =
   function
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_ident _a1 in
+      let _a1 = strip_vid _a1 in
       let _a2 = strip_pat _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_rec_pat _a1 in
@@ -4343,7 +4341,7 @@ and strip_rec_exp: FAst.rec_exp -> FAstN.rec_exp =
       let _a1 = strip_rec_exp _a1 in
       let _a2 = strip_rec_exp _a2 in `Sem (_a1, _a2)
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_ident _a1 in
+      let _a1 = strip_vid _a1 in
       let _a2 = strip_exp _a2 in `RecBind (_a1, _a2)
   | #any as _a0 -> (strip_any _a0 :>FAstN.rec_exp)
   | #ant as _a0 -> (strip_ant _a0 :>FAstN.rec_exp)
@@ -4655,7 +4653,7 @@ let rec strip_ep: FAst.ep -> FAstN.ep =
 and strip_rec_bind: FAst.rec_bind -> FAstN.rec_bind =
   function
   | `RecBind (_a0,_a1,_a2) ->
-      let _a1 = strip_ident _a1 in
+      let _a1 = strip_vid _a1 in
       let _a2 = strip_ep _a2 in `RecBind (_a1, _a2)
   | `Sem (_a0,_a1,_a2) ->
       let _a1 = strip_rec_bind _a1 in

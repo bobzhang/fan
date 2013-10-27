@@ -1641,11 +1641,13 @@ let apply () =
              (Gramf.mk_action
                 (fun _  (e2 : 'comma_exp)  _  _  (e1 : 'exp)  (_loc : Locf.t)
                     -> (Fan_ops.bigarray_get _loc e1 e2 : 'exp )))));
-         ([`Self; `Keyword "."; `Self],
-           ("`Field (_loc, e1, e2)\n",
+         ([`Self;
+          `Keyword ".";
+          `Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
+           ("`Field (_loc, e1, (e2 :>exp))\n",
              (Gramf.mk_action
-                (fun (e2 : 'exp)  _  (e1 : 'exp)  (_loc : Locf.t)  ->
-                   (`Field (_loc, e1, e2) : 'exp )))));
+                (fun (e2 : 'label_longident)  _  (e1 : 'exp)  (_loc : Locf.t)
+                    -> (`Field (_loc, e1, (e2 :>exp)) : 'exp )))));
          ([`Self;
           `Keyword "#";
           `Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ))],
@@ -2713,10 +2715,10 @@ let apply () =
          ([`Nterm (Gramf.obj (a_lident : 'a_lident Gramf.t ));
           `Keyword "=";
           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-           ("`RecBind (_loc, (l :>ident), e)\n",
+           ("`RecBind (_loc, (l :>vid), e)\n",
              (Gramf.mk_action
                 (fun (e : 'exp)  _  (l : 'a_lident)  (_loc : Locf.t)  ->
-                   (`RecBind (_loc, (l :>ident), e) : 'field_exp )))))]));
+                   (`RecBind (_loc, (l :>vid), e) : 'field_exp )))))]));
    Gramf.extend_single (label_exp_list : 'label_exp_list Gramf.t )
      (None,
        (None, None,
@@ -5237,12 +5239,12 @@ let apply () =
          ([`Token
              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
                "`Lid i")],
-           ("(`Lid (_loc, i) : FAst.ident )\n",
+           ("`Lid (_loc, i)\n",
              (Gramf.mk_action
                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid ({ txt = i;_} : Tokenf.txt) ->
-                       ((`Lid (_loc, i) : FAst.ident ) : 'label_longident )
+                       (`Lid (_loc, i) : 'label_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -5251,14 +5253,13 @@ let apply () =
                "`Uid i");
           `Keyword ".";
           `Self],
-           ("(`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident )\n",
+           ("`Dot (_loc, (`Uid (iloc, i)), l)\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid ({ txt = i;_} : Tokenf.txt) ->
-                       ((`Dot (_loc, (`Uid (_loc, i)), l) : FAst.ident ) : 
-                       'label_longident )
+                   | `Uid ({ loc = iloc; txt = i;_} : Tokenf.txt) ->
+                       (`Dot (_loc, (`Uid (iloc, i)), l) : 'label_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -5268,14 +5269,13 @@ let apply () =
                 | _ -> false)), (3257031, (`A "")), "`Ant s");
           `Keyword ".";
           `Self],
-           ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
+           ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Ant (({ kind = "";_} as s) : Tokenf.ant) ->
-                       ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : FAst.ident ) : 
-                       'label_longident )
+                       (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
@@ -5285,14 +5285,13 @@ let apply () =
                 | _ -> false)), (3257031, (`A "uid")), "`Ant s");
           `Keyword ".";
           `Self],
-           ("(`Dot (_loc, (mk_ant ~c:\"ident\" s), l) : FAst.ident )\n",
+           ("`Dot (_loc, (mk_ant ~c:\"ident\" s), l)\n",
              (Gramf.mk_action
                 (fun (l : 'label_longident)  _  (__fan_0 : Tokenf.t) 
                    (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Ant (({ kind = "uid";_} as s) : Tokenf.ant) ->
-                       ((`Dot (_loc, (mk_ant ~c:"ident" s), l) : FAst.ident ) : 
-                       'label_longident )
+                       (`Dot (_loc, (mk_ant ~c:"ident" s), l) : 'label_longident )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
@@ -5315,10 +5314,10 @@ let apply () =
      (None,
        (None, None,
          [([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
-            ("x\n",
+            ("(x :>ident)\n",
               (Gramf.mk_action
                  (fun (x : 'label_longident)  (_loc : Locf.t)  ->
-                    (x : 'class_longident )))))]));
+                    ((x :>ident) : 'class_longident )))))]));
    Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
      (None,
        (None, None,
