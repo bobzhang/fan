@@ -59,6 +59,7 @@ public.USE_OCAMLFIND = false
     OCAMLOPT = $(if $(OCAMLOPT_OPT_EXISTS), $`(if $(USE_OCAMLFIND), ocamlopt, ocamlopt.opt), ocamlopt)
     OCAMLDEP = $(if $(OCAMLDEP_OPT_EXISTS), $`(if $(USE_OCAMLFIND), ocamldep, ocamldep.opt), ocamldep)
     NATIVE_ENABLED = $(OCAMLOPT_EXISTS)
+    NATIVEPLUGIN_ENABLED = false
     BYTE_ENABLED = $(OCAMLC_EXISTS)
     OCAMLLIB =
         if $(OCAMLC_EXISTS)
@@ -562,26 +563,20 @@ OCamlLinkSort(nodes) =
 #
 # Generic rule to build an ML library
 #
-# doc
-# OCamlLibrary
-#
 # The OCamlLibrary function builds an OCaml library.
 #
-# \verb+OCamlLibrary(<libname>, <files>)+
+# OCamlLibrary(<libname>, <files>)
 #
-# The \verb+<libname>+ and \verb+<files>+ are listed without suffixes.
+# The <libname> and <files> are listed without suffixes.
 #
 # This function returns the list of all the targets that it defines the rules
-# for (including the \verb+$(name)$(EXT_LIB)+ file when NATIVE_ENABLED is set).
+# for (including the $(name)$(EXT_LIB) file when NATIVE_ENABLED is set).
 #
 # The following code builds the libfoo.cmxa library from the files foo.cmx
 # and bar.cmx (if NATIVE_ENABLED is set), and libfoo.cma from
 # foo.cmo and bar.cmo (if BYTE_ENABLED is set).
 #
-# verbatim
 # OCamlLibrary(libfoo, foo bar)
-# verbatim
-# doc
 #
 public.OCamlLibrary(name, files) =
    # XXX: JYH: these variables should be marked private in 0.9.9
@@ -594,10 +589,8 @@ public.OCamlLibrary(name, files) =
    protected.CLIB      = $(file $(name)$(EXT_LIB))
    protected.BYTELIB   = $(file $(name).cma)
    protected.NATIVELIB = $(file $(name).cmxa)
-
-   #
-   # Link commands
-   #
+   protected.NATIVEPLUGIN = $(file $(name).cmxs)
+   
    $(BYTELIB): $(CMOFILES)
         $(OCAMLFIND) $(OCAMLLINK) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS) $(OCAMLCFLAGS) \
                 $(OCAML_LIB_FLAGS) -a -o $@ $(OCamlLinkSort $(CMOFILES))
@@ -606,7 +599,10 @@ public.OCamlLibrary(name, files) =
         $(OCAMLFIND) $(OCAMLOPTLINK) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS) $(OCAMLOPTFLAGS) \
                 $(OCAML_LIB_FLAGS) -a -o $(NATIVELIB) $(OCamlLinkSort $(CMXFILES))
 
-   return $(array $(if $(NATIVE_ENABLED), $(NATIVELIB)), $(if $(NATIVE_ENABLED), $(CLIB)), $(if $(BYTE_ENABLED), $(BYTELIB)))
+   $(NATIVEPLUGIN) : $(CMXFILES) $(OFILES)
+        $(OCAMLFIND) $(OCAMLOPTLINK) $(LAZY_OCAMLFINDFLAGS) $(PREFIXED_OCAMLPACKS) $(OCAMLFLAGS) $(OCAMLOPTFLAGS) \
+                $(OCAML_LIB_FLAGS) -shared -o $(NATIVEPLUGIN) $(OCamlLinkSort $(CMXFILES))
+   return $(array $(if $(NATIVE_ENABLED), $(NATIVELIB)), $(if $(NATIVE_ENABLED), $(CLIB)), $(if $(BYTE_ENABLED), $(BYTELIB)), $(if $(NATIVEPLUGIN_ENABLED),$(NATIVEPLUGIN)))
 
 #
 # Generic rule to build an ML library
