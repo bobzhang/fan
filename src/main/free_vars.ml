@@ -10,7 +10,7 @@ class c_fold_pattern_vars ['accu] (f:string -> 'accu->'accu) init =  object
   val acc = init
   method acc : 'accu = acc
   method! pat = function
-    | %pat{ $lid:s } | %pat{ ~ $lid:s } | %pat{ ? $lid:s }
+    | %pat{$lid:s} | %pat{~$lid:s} | %pat{?$lid:s}
       -> {< acc = f s acc >}
     | p -> super#pat p
 end
@@ -100,3 +100,7 @@ end
 let free_vars env_init e =
   let fold = new fold_free_vars Setf.String.add ~env_init Setf.String.empty in (fold#exp e)#free
 
+
+(* local variables: *)
+(* compile-command: "cd .. && pmake main_annot/freeVars.cmo" *)
+(* end: *)
