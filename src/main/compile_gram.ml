@@ -283,8 +283,9 @@ let combine _loc (gram: vid option ) locals  extends  =
     | Some g ->
         let g = (g:vid :> exp) in
         %exp{ $id{gm()}.mk_dynamic $g }
-    | None -> 
-        %exp{ $id{gm()}.mk } in
+    | None ->
+        `Dot(_loc,gm(),`Lid(_loc,"mk"))
+        (* %exp{ $id{gm()}.mk}  *) in
   let local_bind_of_name (x:Gram_def.name) =
     match (x:Gram_def.name) with 
     | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->

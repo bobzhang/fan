@@ -641,49 +641,65 @@ let rec pat (x : pat) : Parsetree.pattern =
        sep_dot_exp [] {|$(uid:"").i|};
      - : (loc * string list * exp) list =
      [(, [""], ExId (, Lid (, "i")))]  ]} *)
+let normalize_vid (x:vid) =
+  let _loc = unsafe_loc_of x in
+  match x with 
+  | `Dot (loc,_,_)  -> (* FIXME *)
+      let rec aux u =
+        match u with 
+        | `Lid(_,x) -> `Lid x , []
+        | `Uid (_,x) -> `Uid x,[]
+        | `Ant _ -> assert false               
+        | `Dot(_,a,b) ->
+            let (x,rest) = aux b in
+            (x, left a rest)
+      and left x acc =
+        match x with
+        | `Lid(_,x)|`Uid (_,x) -> x::acc
+        | `Dot(_,a,b) -> left a (left b acc)
+        | `Ant _ -> assert false in
+      begin
+        match aux x with
+        | `Lid x , xs ->
+            (false,mkli loc x xs)
+        | `Uid x , xs ->
+            (true,mkli loc x xs)
+      end
+      (* let (x,xs) =  aux x in *)
+      (* mkli loc x xs  *)
+  | `Uid (loc,i) -> (true, mkli loc i [] )
+  | `Lid (loc,i) -> (false,mkli loc i [] )
+  | `Ant _ -> assert false
+                                                   
+
 
 let rec exp (x : exp) : Parsetree.expression =
   let _loc = unsafe_loc_of x in
-  match x with 
-  | `Field(_,_,_)| `Dot (_,_,_)->
-    let (e, l) =
-      let rec normalize_acc (x:FAst.ident) : FAst.exp=
-            let _loc = unsafe_loc_of x in
-            match x with 
-            | `Dot (_,i1,i2) -> (* FIXME *)
-              `Field (_loc, normalize_acc i1, normalize_acc i2)
-            | `Apply (_,i1,i2) ->
-              `App (_loc, normalize_acc i1, normalize_acc i2)
-            | `Ant _ | `Uid _ | `Lid _ as i ->  i in
-      
-      let rec sep_dot_exp acc (x: exp) : (loc * string list  * exp ) list =
-        match x with
-        | `Field(_,e1,e2) ->
-          sep_dot_exp (sep_dot_exp acc e2) e1
-        | (`Dot(_l,_,_) as i) ->
-          sep_dot_exp acc (normalize_acc (i : vid :>ident)) 
-        |  `Uid(loc,s) as e ->
-          (match acc with
-           | [] -> [(loc, [], e)]
-           | (loc',sl,e)::l -> (Locf.merge loc loc', s :: sl, e) :: l )
-        | e -> (unsafe_loc_of e, [], e) :: acc in
-      match sep_dot_exp [] x with
-      | (loc, ml, `Uid(_,s)) :: l ->
-        (mkexp loc (Pexp_construct (mkli loc  s ml, None, false)), l)
-      | (loc, ml, `Lid(_,s)) :: l ->
-        (mkexp loc (Pexp_ident (mkli loc s ml)), l)
-      | (_, [], e) :: l -> (exp e, l)
-      | _ -> Locf.failf (unsafe_loc_of x) "exp: %s" (!dump_exp x) in
-    let (_, e) =
-      List.fold_left
-        (fun (loc_bp, e1) (loc_ep, ml, e2) ->
-           match e2 with
-           | `Lid(sloc,s) ->
-               let loc = Locf.merge loc_bp loc_ep in
-               (loc, mkexp loc (Pexp_field (e1, (mkli sloc s ml))))
-           | _ -> error (unsafe_loc_of e2) "lowercase identifier expected" )
-        (_loc, e) l in e
-
+  match x with
+    (* a.A.b  a.(A.b)
+       a.A.b.c (a.(A.b)).c
+       a.A.B.b  a.((A.B).b)
+     *)
+  | `Field(loc,x,y) ->
+      begin
+        match y with
+        | #vid as b ->
+            let (_,v ) =  normalize_vid b in
+            mkexp loc @@ Pexp_field ( exp x , v)
+        | _ -> assert false
+      end
+  | `Uid(_,s) ->
+    mkexp _loc @@ Pexp_construct (lident_with_loc  s _loc, None, true)
+  | `Lid(_,("true"|"false" as s)) -> 
+    mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
+  | `Lid(_,s) ->
+    mkexp _loc @@ Pexp_ident (lident_with_loc s _loc)
+  | #vid as x ->
+      let loc = unsafe_loc_of x in
+      let (b,id) = normalize_vid x  in
+      if b then mkexp loc (Pexp_construct (id,None,false))
+      else mkexp loc (Pexp_ident id)
+        
   | `App _ as f ->
     let (f, al) = view_app [] f in
     let al = List.map label_exp al in
@@ -879,12 +895,6 @@ let rec exp (x : exp) : Parsetree.expression =
         mkexp _loc (Pexp_tuple (List.map exp l))
     end
   | `Constraint (_,e,t) -> mkexp _loc (Pexp_constraint (exp e,Some (ctyp t), None))
-  | `Uid(_,s) ->
-    mkexp _loc @@ Pexp_construct (lident_with_loc  s _loc, None, true)
-  | `Lid(_,("true"|"false" as s)) -> 
-    mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
-  | `Lid(_,s) ->
-    mkexp _loc @@ Pexp_ident (lident_with_loc s _loc)
   | `Vrn (_,s) -> mkexp _loc @@ Pexp_variant  (s, None)
   | `While (_, e1, el) ->
     let e2 = `Seq (_loc, el) in
@@ -962,7 +972,7 @@ and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
-      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i:>ident), (exp e))
+      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i : vid :>ident), (exp e))
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 

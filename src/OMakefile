@@ -229,7 +229,7 @@ MakeRules(pp) =
         #             cd main
         #             $(pp) -printer dparsetree $F > $(obj_file)
         # else
-        $(obj_file): $F $(pp)
+        $(obj_file): $F :exists: $(pp)
             section
                 cd main
                 $(pp) -printer dparsetree $F > $(obj_file)
@@ -247,6 +247,7 @@ FAN0_ML_FILES_P =
 FAN1_ML_FILES_P =
     MakeDParseFiles(fan1)
 
+    
 fixpoint:  $(FAN_ML_FILES_P) $(FAN0_ML_FILES_P)
     foreach(f=> ..., $(FAN_ML_FILES))
         private.X = dparsetree/$(basename $f).fan.dparsetree
@@ -256,6 +257,7 @@ fixpoint:  $(FAN_ML_FILES_P) $(FAN0_ML_FILES_P)
             println($"*************fan fan0 diff on file $X $Y*****************")
             println($"""File "$(file)", line 1: """)
             FLAG = false
+
 fixpoint1: $(FAN1_ML_FILES_P) $(FAN0_ML_FILES_P)
     foreach(f=> ..., $(FAN_ML_FILES))
         private.X = dparsetree/$(basename $f).fan0.dparsetree

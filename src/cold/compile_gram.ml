@@ -295,7 +295,7 @@ let combine _loc (gram : vid option) locals extends =
         let g = (g : vid  :>exp) in
         (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_dynamic")))), g) : 
           FAst.exp )
-    | None  -> (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) : FAst.exp ) in
+    | None  -> `Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) in
   let local_bind_of_name (x : Gram_def.name) =
     match (x : Gram_def.name ) with
     | { exp = (`Lid (_,i) : FAst.exp); tvar = x; loc = _loc } ->
