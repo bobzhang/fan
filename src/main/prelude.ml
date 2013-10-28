@@ -23,19 +23,51 @@ type 'a printer_fun  =
         'a option -> unit
 
 
+
+  
+let parsetree_of_interf ?(input_file = "-") ?output_file ast =
+  let pt =
+    match ast with
+    |None -> []
+    |Some ast -> Ast2pt.sigi ast in
+  with_open_out_file output_file @@
+  dump_pt
+    Configf.ocaml_ast_intf_magic_number input_file pt
+
+let parsetree_of_implem ?(input_file = "-") ?output_file ast =
+    let pt =
+      match ast with
+      |None -> []  
+      |Some ast -> Ast2pt.stru ast in
+    with_open_out_file output_file @@
+    dump_pt Configf.ocaml_ast_impl_magic_number input_file pt    
+
+type backend = {
+    descr : string ;
+    implem : FAst.stru printer_fun;
+    interf : FAst.sigi printer_fun;
+  }
+      
+let backends :
+    (string, backend)  Hashtbl.t =
+  Hashtbl.create 50
+
+let () =
+  Hashtbl.add backends "p" {
+  descr = "compiled to parsetree";
+  implem = parsetree_of_implem ;
+  interf = parsetree_of_interf
+}
+
+(** default to [parsetree]*)
 let sigi_printer =
-  ref (fun ?input_file:(_) ?output_file:(_)  _ -> failwith "No interface printer")
+  ref parsetree_of_interf
 
 let stru_printer =
-  ref (fun ?input_file:(_)
-      ?output_file:(_) _ -> failwith "No implementation printer")
-
-        
+  ref parsetree_of_implem
 
 
-(*************************************************************************)
-(** preparing for printer wrapper *)      
-let register_text_printer () =
+let () =
   let print_implem ?input_file:(_)  ?output_file ast =
     let pt =
       match ast with
@@ -55,37 +87,12 @@ let register_text_printer () =
       let fmt = Format.formatter_of_out_channel oc in
       let () = AstPrint.signature fmt pt in
       pp_print_flush fmt () in
-  begin
-    stru_printer := print_implem;
-    sigi_printer := print_interf
-  end
+  Hashtbl.add backends "o" {
+    descr =  "Compiles to textual OCaml";
+    implem = print_implem;
+    interf =  print_interf}
 
-        
-(** used by flag -printer p *)    
-let register_bin_printer () =
-  let print_interf ?(input_file = "-") ?output_file ast =
-      let pt =
-        match ast with
-        |None -> []
-        |Some ast -> Ast2pt.sigi ast in
-      with_open_out_file output_file @@
-      dump_pt
-        Configf.ocaml_ast_intf_magic_number input_file pt in
-  let print_implem ?(input_file = "-") ?output_file ast =
-    let pt =
-      match ast with
-      |None -> []  
-      |Some ast -> Ast2pt.stru ast in
-    with_open_out_file output_file @@
-    dump_pt Configf.ocaml_ast_impl_magic_number input_file pt in
-  begin
-    stru_printer := print_implem;
-    sigi_printer := print_interf
-  end;;
-
-
-
-let register_parsetree_printer () =
+let () = 
   let print_interf ?input_file:(_) ?output_file ast =
       let pt =
         match ast with
@@ -95,8 +102,6 @@ let register_parsetree_printer () =
       fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
         Printast.interface fmt pt in
-      (* dump_pt *)
-      (*   Configf.ocaml_ast_intf_magic_number input_file pt in *)
   let print_implem ?input_file:(_) ?output_file ast =
     let pt =
       match ast with
@@ -106,16 +111,42 @@ let register_parsetree_printer () =
     fun oc ->
       let fmt = Format.formatter_of_out_channel oc in
       Printast.implementation fmt pt in
-  begin
-    stru_printer := print_implem;
-    sigi_printer := print_interf
-  end;;
+  Hashtbl.add backends "dparsetree" {
+  descr =  "Compiles to parsetree decorated with location";
+  implem = print_implem;
+  interf = print_interf}
+    
+let () =
+  let obj = object
+    inherit Objs.print
+    method! loc fmt l =
+      Location_util.fmt_location  ~file:false fmt l
+  end  in
+  let ast_of_interf ?input_file:(_) ?output_file ast =
+    with_open_out_file output_file @@ fun oc ->
+      let fmt = Format.formatter_of_out_channel oc in
+      match ast with
+      | None -> ()
+      | Some xs  ->
+          obj#sigi fmt xs in
+  let ast_of_implem ?input_file:(_)  ?output_file ast =
+    with_open_out_file output_file @@ fun oc ->
+      let fmt = Format.formatter_of_out_channel oc in
+      match ast with
+      | None -> ()
+      | Some xs  ->
+          obj#stru fmt xs in
+  Hashtbl.add backends "dfan" {
+  descr = "Compiles to Fan's original representation";
+  implem = ast_of_implem;
+  interf = ast_of_interf
+}
 
 
 
-(*************************************************************************)
-(** prepare for parsing wrapper *)
-
+(********************************)
+(* prepare for parsing wrapper *)
+(********************************)
 
 let parse_implem loc cs =
   let l =simple_wrap loc cs  @@ Gramf.parse Syntaxf.implem  in

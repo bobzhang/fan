@@ -5314,10 +5314,10 @@ let apply () =
      (None,
        (None, None,
          [([`Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
-            ("(x :>ident)\n",
+            ("(x : vid  :>ident)\n",
               (Gramf.mk_action
                  (fun (x : 'label_longident)  (_loc : Locf.t)  ->
-                    ((x :>ident) : 'class_longident )))))]));
+                    ((x : vid  :>ident) : 'class_longident )))))]));
    Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
      (None,
        (None, None,

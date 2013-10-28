@@ -4,9 +4,9 @@ Prelude:
   parse_file
   parse_interf
   parse_implem
-  register_bin_printer
-  register_text_printer
-  register_parsetree_printer
+  (* register_bin_printer *)
+  (* register_text_printer *)
+  (* register_parsetree_printer *)
   ;
 Format:
   eprintf
@@ -110,69 +110,75 @@ let input_file x =
 
 (** FIXME the command line parsing  can not handle prefix problem,
     e.g. -p -px will cause some problem *)    
-let initial_spec_list =
+let initial_spec_list : (string * Arg.spec * string) list =
   [
-   ("-I", Arg.String (fun x -> input_file (IncludeDir x)),
+   ("-I", String (fun x -> input_file (IncludeDir x)),
     "<directory>  Add directory in search patch for object files.");
 
-   ("-intf", Arg.String (fun x -> input_file (Intf x)),
+   ("-intf", String (fun x -> input_file (Intf x)),
     "<file>  Parse <file> as an interface, whatever its extension.");
 
-   ("-impl", Arg.String (fun x -> input_file (Impl x)),
+   ("-impl", String (fun x -> input_file (Impl x)),
     "<file>  Parse <file> as an implementation, whatever its extension.");
 
-   ("-str", Arg.String (fun x -> input_file (Str x)),
+   ("-str", String (fun x -> input_file (Str x)),
     "<string>  Parse <string> as an implementation.");
 
-   ("-o", Arg.String (fun x -> output_file := Some x),
+   ("-o", String (fun x -> output_file := Some x),
     "<file> Output on <file> instead of standard output.");
 
-   ("-unsafe", Arg.Set Configf.unsafe,
+   ("-unsafe", Set Configf.unsafe,
     "Generate unsafe accesses to array and strings.");
 
-   (* ("-verbose", Arg.Set Configf.verbose, "More verbose in parsing errors."); *)
-
-   ("-where", Arg.Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0))
+   ("-where", Unit (fun () -> (print_endline Configf.fan_plugins_library;exit 0))
       , " Print location of standard library and exit");
-   ("-loc", Arg.Set_string Locf.name,
+   ("-loc", Set_string Locf.name,
     "<name>   Name of the location variable (default: " ^ !Locf.name ^ ").");
    
-   ("-v", Arg.Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end),
+   ("-v", Unit  (fun () -> begin eprintf "Fan version %s@." Configf.version; exit 0 end),
     "Print Fan version and exit.");
 
    ("-compilation-unit",
-    Arg.Unit (function () -> 
+    Unit (function () -> 
       ((match !Configf.compilation_unit with
       | Some v -> printf "%s@." v
       | None -> printf "null");
        exit 0)), 
     "Print the current compilation unit");
 
-   ("-plugin", Arg.String Control_require.add , "load plugin cma or cmxs files");
+   ("-plugin", String Control_require.add , "load plugin cma or cmxs files");
 
-   ("-loaded-modules", Arg.Set print_loaded_modules, "Print the list of loaded modules.");
+   ("-loaded-modules", Set print_loaded_modules, "Print the list of loaded modules.");
    
-   ("-loaded-filters", Arg.Unit just_print_filters, "Print the registered filters.");
+   ("-loaded-filters", Unit just_print_filters, "Print the registered filters.");
    
-   ("-loaded-parsers", Arg.Unit just_print_parsers, "Print the loaded parsers.");
+   ("-loaded-parsers", Unit just_print_parsers, "Print the loaded parsers.");
    
-   ("-used-parsers", Arg.Unit just_print_applied_parsers, "Print the applied parsers.");
+   ("-used-parsers", Unit just_print_applied_parsers, "Print the applied parsers.");
 
    ("-dlang",
-       (Arg.String
+       (String
           (fun s  ->
             Ast_quotation.default :=
               (Ast_quotation.resolve_name (`Sub [], s)))),
        " Set the default language");
    ("-printer",
-    Arg.Symbol( ["p";"o";"dparsetree"],
-    function x ->
-      if x = "o" then
-        register_text_printer ()
-      else if x = "p" then
-        register_bin_printer ()
-      else register_parsetree_printer ()),
-    "choose different backends according to the option");
+    (String (fun s ->
+
+        let x  =
+          try Hashtbl.find Prelude.backends s with
+            Not_found -> failwithf "%s backend not found" s in
+        begin
+          Prelude.sigi_printer := x.interf ;
+          Prelude.stru_printer := x.implem
+        end)) , " Set the backend");
+   ("-printers",
+    Unit (fun _ ->
+      Prelude.backends
+      |> Hashtbl.iter
+          (fun k (x:Prelude.backend) ->
+            Format.eprintf "@[-printer %s, %s@]@\n" k x.descr)),
+    " List the backends available")
  ];;
       
 

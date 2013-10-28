@@ -8,9 +8,10 @@ $(LocalFiles): oconfig.mlp
 
 FILES =  ast2pt oconfig astPrint ast_basic  configf\
     locf fanTokenFilter fcset fdir foptions\
-    tokenf lex_util lexgen location_util parsetreeHelper\
+    tokenf lex_util lexgen location_util parsetree_util\
     tokenEval translate_lex fan_util \
     fan_warnings
+    
 .PHONY: clean lib
 lib: $(OCamlLibrary libcommon, $(FILES))
 

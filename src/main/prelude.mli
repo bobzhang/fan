@@ -18,6 +18,10 @@ type 'a parser_fun  =
     The [input_file] is required for the backend to mark its original source
     [input_file] is specified by flag [-impl], the major name if not
     [output_file] is specified by flag [-o], stdout if not
+
+    The last argument is the [ast] to be printed, if it is None, then
+    generally it will print nothing 
+
  *)         
 type 'a printer_fun  =
       ?input_file:string -> ?output_file:string ->
@@ -39,27 +43,26 @@ val parse_interf : sigi parser_fun
 val parse_file :
       string -> 'a parser_fun -> 'a option
 
+val stru_printer :
+    (?input_file:string -> ?output_file:string -> FAst.stru option -> unit) ref
+
+val sigi_printer :
+    (?input_file:string -> ?output_file:string -> FAst.sigi option -> unit) ref
     
-(** turn the printer to vanilla ocaml output *)
-val register_text_printer :  unit -> unit
 
-(** turn the printer to binary parsetree output *)
-val register_bin_printer :  unit -> unit     
-    
-(** make use of OCaml's [-dsource] option *)
-val register_parsetree_printer : unit -> unit
-    
-module CurrentPrinter : 
-  sig
-    (** the last argument is the [ast] to be printed, if it is None, then
-        generally it will print nothing *)
-    val print_interf : sigi printer_fun
-    val print_implem : stru printer_fun
-  end
+module CurrentPrinter : sig
+  val print_interf : sigi printer_fun
+  val print_implem : stru printer_fun
+end
 
 
+type backend = {
+    descr : string ;
+    implem : stru printer_fun;
+    interf : sigi printer_fun;
+  }
 
-
+val backends : (string, backend) Hashtbl.t
 
 (** {3 functions for toplevel} *)
 

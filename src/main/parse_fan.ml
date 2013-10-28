@@ -835,11 +835,11 @@ let apply () = begin
       
       cltyp_longident: [ type_longident{x}  %{x} ]
       val_longident:[ ident{x} %{ x} ]
-      class_longident: [ label_longident{x} %{(x:>ident)} ]
+      class_longident: [ label_longident{x} %{(x : vid :>ident)} ]
       
       method_opt_override:
       [ "method"; "!" %{ `Positive _loc }
-      | "method"; Ant (""|"override" ,s) %{ mk_ant ~c:"flag" s}
+      | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}
       | "method" %{ `Negative _loc}   ] 
       opt_override:
       [ "!" %{ `Positive _loc}

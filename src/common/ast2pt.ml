@@ -9,7 +9,7 @@ open Parsetree
 open Longident
 open Asttypes
 open Util
-open ParsetreeHelper
+open Parsetree_util
 open! FAst (* FIXME later*)
 open Ast_basic
 
@@ -972,7 +972,11 @@ and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
+<<<<<<< HEAD
       | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i : vid :>ident), (exp e))
+=======
+      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i : vid :>ident), exp e)
+>>>>>>> parse_improve_fix
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 
