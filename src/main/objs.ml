@@ -27,7 +27,7 @@ let wildcarder = object (self)
     | p -> super#pat p 
 end
 
-
+(* let print = new print  *)
 
 let () =     begin
   Ast2pt.dump_ident := dump_ident;

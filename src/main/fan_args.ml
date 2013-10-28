@@ -165,13 +165,20 @@ let initial_spec_list : (string * Arg.spec * string) list =
    ("-printer",
     (String (fun s ->
 
-        let (stru,sigi) =
+        let x  =
           try Hashtbl.find Prelude.backends s with
             Not_found -> failwithf "%s backend not found" s in
         begin
-          Prelude.sigi_printer := sigi ;
-          Prelude.stru_printer := stru
-        end)) , " Set the backend")
+          Prelude.sigi_printer := x.interf ;
+          Prelude.stru_printer := x.implem
+        end)) , " Set the backend");
+   ("-printers",
+    Unit (fun _ ->
+      Prelude.backends
+      |> Hashtbl.iter
+          (fun k (x:Prelude.backend) ->
+            Format.eprintf "@[-printer %s, %s@]@\n" k x.descr)),
+    " List the backends available")
  ];;
       
 
