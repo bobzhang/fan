@@ -839,7 +839,7 @@ let apply () = begin
       
       method_opt_override:
       [ "method"; "!" %{ `Positive _loc }
-      | "method"; Ant (""|"override" ,s) %{ mk_ant ~c:"flag" s}
+      | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}
       | "method" %{ `Negative _loc}   ] 
       opt_override:
       [ "!" %{ `Positive _loc}

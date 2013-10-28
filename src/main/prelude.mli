@@ -41,13 +41,19 @@ val parse_file :
 
     
 (** turn the printer to vanilla ocaml output *)
-val register_text_printer :  unit -> unit
+(* val register_text_printer :  unit -> unit *)
 
 (** turn the printer to binary parsetree output *)
-val register_bin_printer :  unit -> unit     
+(* val register_bin_printer :  unit -> unit      *)
     
 (** make use of OCaml's [-dsource] option *)
-val register_parsetree_printer : unit -> unit
+(* val register_parsetree_printer : unit -> unit *)
+
+val stru_printer :
+    (?input_file:string -> ?output_file:string -> FAst.stru option -> unit) ref
+
+val sigi_printer :
+    (?input_file:string -> ?output_file:string -> FAst.sigi option -> unit) ref
     
 module CurrentPrinter : 
   sig
@@ -59,7 +65,7 @@ module CurrentPrinter :
 
 
 
-
+val backends : (string, stru printer_fun * sigi printer_fun) Hashtbl.t
 
 (** {3 functions for toplevel} *)
 
