@@ -626,21 +626,9 @@ let rec pat (x : pat) : Parsetree.pattern =
    [(loc* string list * exp) list]
 
    The [string list] is generally a module path, the [exp] is the last field
-
    Examples:
-   {[
-     sep_dot_exp [] {|A.B.g.U.E.h.i|};
-     - : (loc * string list * exp) list =
-     [(, ["A"; "B"], ExId (, Lid (, "g")));
-      (, ["U"; "E"], ExId (, Lid (, "h"))); (, [], ExId (, Lid (, "i")))]
-
-       sep_dot_exp [] {|A.B.g.i|};
-     - : (loc * string list * exp) list =
-     [(, ["A"; "B"], ExId (, Lid (, "g"))); (, [], ExId (, Lid (, "i")))]
-
-       sep_dot_exp [] {|$(uid:"").i|};
-     - : (loc * string list * exp) list =
-     [(, [""], ExId (, Lid (, "i")))]  ]} *)
+   
+ *)
 let normalize_vid (x:vid) =
   let _loc = unsafe_loc_of x in
   match x with 
@@ -665,8 +653,6 @@ let normalize_vid (x:vid) =
         | `Uid x , xs ->
             (true,mkli loc x xs)
       end
-      (* let (x,xs) =  aux x in *)
-      (* mkli loc x xs  *)
   | `Uid (loc,i) -> (true, mkli loc i [] )
   | `Lid (loc,i) -> (false,mkli loc i [] )
   | `Ant _ -> assert false
