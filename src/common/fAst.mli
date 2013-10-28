@@ -312,7 +312,7 @@ and exp =
       (* { (e) with rb }  *)
   | `RecordWith of (loc * rec_exp  * exp)
         (* FIXME give more restrict for the e *)         
-  | `Field of (loc * exp * (* vid *)exp) (* e.e *)
+  | `Field of (loc * exp * vid (* exp *)) (* e.e *)
   | `ArrayDot of (loc * exp * exp) (* e.(e) *)
   | `ArrayEmpty of loc 
   | `Array of (loc * exp) (* [| e |] *)

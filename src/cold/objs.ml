@@ -502,7 +502,7 @@ and pp_print_exp: Format.formatter -> exp -> unit =
           _a0 pp_print_rec_exp _a1 pp_print_exp _a2
     | `Field (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`Field@ %a@ %a@ %a)@]" pp_print_loc _a0
-          pp_print_exp _a1 pp_print_exp _a2
+          pp_print_exp _a1 pp_print_vid _a2
     | `ArrayDot (_a0,_a1,_a2) ->
         Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" pp_print_loc _a0
           pp_print_exp _a1 pp_print_exp _a2
@@ -1508,7 +1508,7 @@ class print =
               _a0 self#rec_exp _a1 self#exp _a2
         | `Field (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`Field@ %a@ %a@ %a)@]" self#loc _a0
-              self#exp _a1 self#exp _a2
+              self#exp _a1 self#vid _a2
         | `ArrayDot (_a0,_a1,_a2) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a@ %a)@]" self#loc _a0
               self#exp _a1 self#exp _a2
@@ -2541,7 +2541,7 @@ class map =
       | `Field (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in
-          let _a2 = self#exp _a2 in `Field (_a0, _a1, _a2)
+          let _a2 = self#vid _a2 in `Field (_a0, _a1, _a2)
       | `ArrayDot (_a0,_a1,_a2) ->
           let _a0 = self#loc _a0 in
           let _a1 = self#exp _a1 in
@@ -3495,7 +3495,7 @@ class fold =
           let self = self#loc _a0 in
           let self = self#rec_exp _a1 in self#exp _a2
       | `Field (_a0,_a1,_a2) ->
-          let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
+          let self = self#loc _a0 in let self = self#exp _a1 in self#vid _a2
       | `ArrayDot (_a0,_a1,_a2) ->
           let self = self#loc _a0 in let self = self#exp _a1 in self#exp _a2
       | `ArrayEmpty _a0 -> self#loc _a0
@@ -4248,7 +4248,7 @@ and strip_exp: FAst.exp -> FAstN.exp =
       let _a1 = strip_rec_exp _a1 in
       let _a2 = strip_exp _a2 in `RecordWith (_a1, _a2)
   | `Field (_a0,_a1,_a2) ->
-      let _a1 = strip_exp _a1 in let _a2 = strip_exp _a2 in `Field (_a1, _a2)
+      let _a1 = strip_exp _a1 in let _a2 = strip_vid _a2 in `Field (_a1, _a2)
   | `ArrayDot (_a0,_a1,_a2) ->
       let _a1 = strip_exp _a1 in
       let _a2 = strip_exp _a2 in `ArrayDot (_a1, _a2)

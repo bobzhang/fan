@@ -358,7 +358,7 @@ let apply () = begin
         [ S{e1}; "."; "("; S{e2}; ")" %{ `ArrayDot (_loc, e1, e2)}
         | S{e1}; "."; "["; S{e2}; "]" %{ `StringDot (_loc, e1, e2)}
         | S{e1}; "."; "{"; comma_exp{e2}; "}" %{ Fan_ops.bigarray_get _loc e1 e2}
-        | S{e1}; "."; label_longident{e2} %{ `Field(_loc,e1,(e2:>exp))}
+        | S{e1}; "."; label_longident{e2} %{ `Field(_loc,e1,e2)}
         | S{e}; "#"; a_lident{lab} %{ `Send (_loc, e, lab)} ]
        "~-" NA
         [ "!"; S{e} %{  (* %{ ! $e} *) (* FIXME *)

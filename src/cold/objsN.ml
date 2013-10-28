@@ -422,7 +422,7 @@ and pp_print_exp: Format.formatter -> exp -> unit =
           _a0 pp_print_exp _a1
     | `Field (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`Field@ %a@ %a)@]" pp_print_exp _a0
-          pp_print_exp _a1
+          pp_print_vid _a1
     | `ArrayDot (_a0,_a1) ->
         Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a)@]" pp_print_exp _a0
           pp_print_exp _a1
@@ -1286,7 +1286,7 @@ class print =
               _a0 self#exp _a1
         | `Field (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`Field@ %a@ %a)@]" self#exp _a0
-              self#exp _a1
+              self#vid _a1
         | `ArrayDot (_a0,_a1) ->
             Format.fprintf fmt "@[<1>(`ArrayDot@ %a@ %a)@]" self#exp _a0
               self#exp _a1
@@ -2081,7 +2081,7 @@ class map =
           let _a1 = self#exp _a1 in `RecordWith (_a0, _a1)
       | `Field (_a0,_a1) ->
           let _a0 = self#exp _a0 in
-          let _a1 = self#exp _a1 in `Field (_a0, _a1)
+          let _a1 = self#vid _a1 in `Field (_a0, _a1)
       | `ArrayDot (_a0,_a1) ->
           let _a0 = self#exp _a0 in
           let _a1 = self#exp _a1 in `ArrayDot (_a0, _a1)
@@ -2752,7 +2752,7 @@ class fold =
       | `Record _a0 -> self#rec_exp _a0
       | #literal as _a0 -> (self#literal _a0 :>'self_type)
       | `RecordWith (_a0,_a1) -> let self = self#rec_exp _a0 in self#exp _a1
-      | `Field (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
+      | `Field (_a0,_a1) -> let self = self#exp _a0 in self#vid _a1
       | `ArrayDot (_a0,_a1) -> let self = self#exp _a0 in self#exp _a1
       | `ArrayEmpty -> self
       | `Array _a0 -> self#exp _a0

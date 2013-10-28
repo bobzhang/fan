@@ -666,26 +666,22 @@ let rec exp (x : exp) : Parsetree.expression =
        a.A.b.c (a.(A.b)).c
        a.A.B.b  a.((A.B).b)
      *)
-  | `Field(loc,x,y) ->
-      begin
-        match y with
-        | #vid as b ->
-            let (_,v ) =  normalize_vid b in
-            mkexp loc @@ Pexp_field ( exp x , v)
-        | _ -> assert false
-      end
+  | `Field(loc,x,b) ->
+      let (_,v ) =  normalize_vid b in
+      mkexp loc @@ Pexp_field ( exp x , v)
+      
   | `Uid(_,s) ->
     mkexp _loc @@ Pexp_construct (lident_with_loc  s _loc, None, true)
-  | `Lid(_,("true"|"false" as s)) -> 
-    mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
-  | `Lid(_,s) ->
-    mkexp _loc @@ Pexp_ident (lident_with_loc s _loc)
+
+  | `Lid(_,("true"|"false" as s)) ->
+      if s = "true" || s = "false" then 
+        mkexp _loc @@ Pexp_construct (lident_with_loc s _loc,None, true)
+      else mkexp _loc @@ Pexp_ident (lident_with_loc s _loc)
   | #vid as x ->
       let loc = unsafe_loc_of x in
       let (b,id) = normalize_vid x  in
       if b then mkexp loc (Pexp_construct (id,None,false))
       else mkexp loc (Pexp_ident id)
-        
   | `App _ as f ->
     let (f, al) = view_app [] f in
     let al = List.map label_exp al in
@@ -1345,10 +1341,9 @@ let directive (x:exp) =
         let _loc = unsafe_loc_of x in
         match x with 
         | `App(_,e1,e2) -> `Apply(_loc,self e1, self e2)
-        | `Field(_,e1,e2) -> `Dot(_loc,self e1,self e2)
+        | `Field(_,e1,e2) -> `Dot(_loc,self e1, (e2 :>ident))
         | `Lid _  -> error ()
         | `Uid _ | `Dot _ as i -> (i:vid:>ident)
-        (* | `Id (_loc,i) -> if is_module_longident i then i else error () *)
         | _ -> error ()  in 
       function
       | #vid as i ->  (i:vid :>ident)

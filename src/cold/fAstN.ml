@@ -81,7 +81,7 @@ and rec_pat =
 and exp =
   [ vid | `App of (exp* exp) | `Vrn of string | `Com of (exp* exp)
   | `Sem of (exp* exp) | `Par of exp | any | `Record of rec_exp | literal
-  | `RecordWith of (rec_exp* exp) | `Field of (exp* exp)
+  | `RecordWith of (rec_exp* exp) | `Field of (exp* vid)
   | `ArrayDot of (exp* exp) | `ArrayEmpty | `Array of exp | `Assert of exp
   | `Assign of (exp* exp) | `For of (alident* exp* exp* flag* exp)
   | `Fun of case | `IfThenElse of (exp* exp* exp) | `IfThen of (exp* exp)

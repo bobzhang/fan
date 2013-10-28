@@ -933,7 +933,7 @@ class meta =
                    (_loc,
                      (`App
                         (_loc, (`Vrn (_loc, "Field")), (self#loc _loc _a0))),
-                     (self#exp _loc _a1))), (self#exp _loc _a2))
+                     (self#exp _loc _a1))), (self#vid _loc _a2))
         | `ArrayDot (_a0,_a1,_a2) ->
             `App
               (_loc,

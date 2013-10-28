@@ -36,13 +36,15 @@ let () =
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         let () = AstPrint.structure fmt pt in pp_print_flush fmt ()) in
+         Format.fprintf fmt "@[%a@]@\n" AstPrint.structure pt;
+         pp_print_flush fmt ()) in
   let print_interf ?input_file:_  ?output_file  ast =
     let pt = match ast with | None  -> [] | Some ast -> Ast2pt.sigi ast in
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         let () = AstPrint.signature fmt pt in pp_print_flush fmt ()) in
+         Format.fprintf fmt "@[%a@]@\n" AstPrint.signature pt;
+         pp_print_flush fmt ()) in
   Hashtbl.add backends "o"
     {
       descr = "Compiles to textual OCaml";
@@ -91,6 +93,31 @@ let () =
   Hashtbl.add backends "dfan"
     {
       descr = "Compiles to Fan's original representation";
+      implem = ast_of_implem;
+      interf = ast_of_interf
+    }
+let () =
+  let ast_of_interf ?input_file:_  ?output_file  ast =
+    (with_open_out_file output_file) @@
+      (fun oc  ->
+         let fmt = Format.formatter_of_out_channel oc in
+         match ast with
+         | None  -> ()
+         | Some xs ->
+             Format.fprintf fmt "@[%a@]@\n" ObjsN.dump#sigi
+               (Objs.strip_sigi xs)) in
+  let ast_of_implem ?input_file:_  ?output_file  ast =
+    (with_open_out_file output_file) @@
+      (fun oc  ->
+         let fmt = Format.formatter_of_out_channel oc in
+         match ast with
+         | None  -> ()
+         | Some xs ->
+             Format.fprintf fmt "@[%a@]@\n" ObjsN.dump#stru
+               (Objs.strip_stru xs)) in
+  Hashtbl.add backends "dfanl"
+    {
+      descr = "Compiles to Fan's original representation without location";
       implem = ast_of_implem;
       interf = ast_of_interf
     }

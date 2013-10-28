@@ -421,7 +421,7 @@ and fill_exp: Locf.t -> FAstN.exp -> FAst.exp =
         let _a1 = fill_exp loc _a1 in `RecordWith (loc, _a0, _a1)
     | `Field (_a0,_a1) ->
         let _a0 = fill_exp loc _a0 in
-        let _a1 = fill_exp loc _a1 in `Field (loc, _a0, _a1)
+        let _a1 = fill_vid loc _a1 in `Field (loc, _a0, _a1)
     | `ArrayDot (_a0,_a1) ->
         let _a0 = fill_exp loc _a0 in
         let _a1 = fill_exp loc _a1 in `ArrayDot (loc, _a0, _a1)
@@ -1481,7 +1481,7 @@ class meta =
             `App
               (_loc,
                 (`App (_loc, (`Vrn (_loc, "Field")), (self#exp _loc _a0))),
-                (self#exp _loc _a1))
+                (self#vid _loc _a1))
         | `ArrayDot (_a0,_a1) ->
             `App
               (_loc,
