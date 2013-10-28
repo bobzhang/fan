@@ -44,7 +44,7 @@ nonterminals : (* when [ty] is nullable, it should take care of the following *)
   [ ty {t}; L1 type_entry {ls} %{
     let mk =
       match t with
-      |`Static t -> let t = (t : vid :> exp ) in %exp{ $t.mk }
+      |`Static t ->  %exp{ $id:t.mk }
       |`Dyn(x,t) ->
           let x = (x : vid :> exp) in
           %exp{$id:t.mk_dynamic $x }  in   
@@ -64,8 +64,7 @@ newterminals :
   [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
     %{
       let mk  =
-        let x = (x : vid :> exp) in
-        %exp{$id:t.mk_dynamic $x }  in
+        %exp{$id:t.mk_dynamic ${(x:vid:>exp)} }  in
       sem_of_list (* FIXME improve *)
         (%stru{ let ${(x :>pat)} = $id:t.create_lexer ~annot:"" ~keywords:[] ()} ::
          ( List.map

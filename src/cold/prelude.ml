@@ -78,12 +78,16 @@ let () =
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         match ast with | None  -> () | Some xs -> obj#sigi fmt xs) in
+         match ast with
+         | None  -> ()
+         | Some xs -> Format.fprintf fmt "@[%a@]@\n" obj#sigi xs) in
   let ast_of_implem ?input_file:_  ?output_file  ast =
     (with_open_out_file output_file) @@
       (fun oc  ->
          let fmt = Format.formatter_of_out_channel oc in
-         match ast with | None  -> () | Some xs -> obj#stru fmt xs) in
+         match ast with
+         | None  -> ()
+         | Some xs -> Format.fprintf fmt "@[%a@]@\n" obj#stru xs) in
   Hashtbl.add backends "dfan"
     {
       descr = "Compiles to Fan's original representation";

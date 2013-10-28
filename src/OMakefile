@@ -229,7 +229,7 @@ MakeRules(pp) =
         #             cd main
         #             $(pp) -printer dparsetree $F > $(obj_file)
         # else
-        $(obj_file): $F $(pp)
+        $(obj_file): $F :value: $(digest $(pp))
             section
                 cd main
                 $(pp) -printer dparsetree $F > $(obj_file)

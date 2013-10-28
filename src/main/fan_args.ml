@@ -4,9 +4,6 @@ Prelude:
   parse_file
   parse_interf
   parse_implem
-  (* register_bin_printer *)
-  (* register_text_printer *)
-  (* register_parsetree_printer *)
   ;
 Format:
   eprintf
