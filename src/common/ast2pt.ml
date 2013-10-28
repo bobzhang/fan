@@ -962,7 +962,7 @@ and mklabexp (x:rec_exp)  =
   let binds = list_of_sem x [] in
   Listf.filter_map
     (function
-      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i:>ident), (exp e))
+      | (`RecBind (_loc,i,e) : FAst.rec_exp) -> Some (ident (i : vid :>ident), exp e)
       | x -> Locf.failf (unsafe_loc_of x) "mklabexp : %s" @@ !dump_rec_exp x)
     binds
 
