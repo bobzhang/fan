@@ -150,7 +150,11 @@ let query_inline (x:string) =
       pattern}}
   ]
           
-  single_symbol : [@simple_token ]
+  single_symbol :
+  [@simple_token
+  | name{n};  OPT level_str{lev} %{
+     mk_symbol  ~text:(`Nterm (_loc ,n, lev))
+       ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]
           
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
