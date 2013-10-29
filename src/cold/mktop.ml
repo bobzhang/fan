@@ -360,7 +360,7 @@ let _ =
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
               (Gramf.mk_action
-                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                 (fun (e : 'exp)  ~ans_1:_  (p : 'pat)  (_loc : Locf.t)  ->
                     ((`Fun
                         (_loc,
                           (`Bar
@@ -397,8 +397,8 @@ let _ =
            `Keyword ";"],
             ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
               (Gramf.mk_action
-                 (fun _  (ns : 'name list)  _  (__fan_0 : Tokenf.t) 
-                    (_loc : Locf.t)  ->
+                 (fun ~ans_3:_  (ns : 'name list)  ~ans_1:_ 
+                    (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list

@@ -13,7 +13,7 @@ let _ =
                "`Uid n")],
             ("Ref.protect Compile_stream.grammar_module_name n\n  (fun _  -> Compile_stream.empty _loc)\n",
               (Gramf.mk_action
-                 (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
+                 (fun (__fan_1 : Tokenf.t)  ~ans_0:_  (_loc : Locf.t)  ->
                     match __fan_1 with
                     | `Uid ({ txt = n;_} : Tokenf.txt) ->
                         (Ref.protect Compile_stream.grammar_module_name n
@@ -30,8 +30,8 @@ let _ =
                (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t ))],
            ("Ref.protect Compile_stream.grammar_module_name n (fun _  -> cstream _loc sel)\n",
              (Gramf.mk_action
-                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Tokenf.t)  _ 
-                   (_loc : Locf.t)  ->
+                (fun (sel : 'stream_exp_comp_list)  (__fan_1 : Tokenf.t) 
+                   ~ans_0:_  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Uid ({ txt = n;_} : Tokenf.txt) ->
                        (Ref.protect Compile_stream.grammar_module_name n
@@ -63,7 +63,7 @@ let _ =
          ([`Keyword "'"; `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
            ("Ntr (_loc, e)\n",
              (Gramf.mk_action
-                (fun (e : 'exp)  _  (_loc : Locf.t)  ->
+                (fun (e : 'exp)  ~ans_0:_  (_loc : Locf.t)  ->
                    (Ntr (_loc, e) : 'stream_exp_comp )))))]) : Gramf.olevel ));
   Gramf.extend_single (stream_exp_comp_list : 'stream_exp_comp_list Gramf.t )
     (None,
@@ -73,14 +73,14 @@ let _ =
            `Self],
             ("se :: sel\n",
               (Gramf.mk_action
-                 (fun (sel : 'stream_exp_comp_list)  _ 
+                 (fun (sel : 'stream_exp_comp_list)  ~ans_1:_ 
                     (se : 'stream_exp_comp)  (_loc : Locf.t)  -> (se ::
                     sel : 'stream_exp_comp_list )))));
          ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ));
           `Keyword ";"],
            ("[se]\n",
              (Gramf.mk_action
-                (fun _  (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
+                (fun ~ans_1:_  (se : 'stream_exp_comp)  (_loc : Locf.t)  ->
                    ([se] : 'stream_exp_comp_list )))));
          ([`Nterm (Gramf.obj (stream_exp_comp : 'stream_exp_comp Gramf.t ))],
            ("[se]\n",

@@ -102,16 +102,19 @@ and make_exp_rules (_loc:loc)
       %exp{ ($sl,($str:action_string,$action)) } )
   |> list_of_list _loc
 
-(** generate action, compiling pattern match  *)  
+(**********************************************)
+(* generate action of the right side   *)
+(**********************************************)      
 let make_action (_loc:loc)
     (x:Gram_def.rule)
     (rtvar:string)  : exp = 
   let locid = %pat{ $lid{!Locf.name} } in 
   let act = Option.default %exp{()} x.action in
   (* collect the patterns *)
-  let (_,tok_match_pl) =
+  let tok_match_pl =
+    snd @@
     Listf.fold_lefti
-      (fun i ((oe,op) as ep)  x ->
+      (fun i ((oe,op) as acc)  x ->
         match (x:Gram_def.symbol) with 
         | {pattern=Some p ; text=`Token _;_ } when not (is_irrefut_pat p)->
             let id = prefix ^ string_of_int i in
@@ -119,7 +122,7 @@ let make_action (_loc:loc)
         | {pattern = Some p; text = `Keyword _; _} ->
             let id = prefix ^ string_of_int i in 
             (%exp{$lid:id}::oe, p :: op) (* TO be improved*)
-        | _ ->  ep   ) ([],[])  x.prod in
+        | _ ->  acc) ([],[])  x.prod in
   let e =
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
       match tok_match_pl with
@@ -156,10 +159,12 @@ let make_action (_loc:loc)
     | `Tok _loc -> %ctyp{ Tokenf.t }  (** BOOTSTRAPPING, associated with module name Tokenf*)
           (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
     | `Type t -> t  in
-  aux styp in
+    aux styp in
   let (_,txt) =
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
+        let mk_arg p = %pat{~$lid{"an_"^string_of_int i} : $p } in
+        (* let arg = %pat{ ~$lid{"ans_"^string_of_int i}:_ } in *)
         match s.pattern with
         |Some %pat'{ ($_ $par{%pat@_{ _ }} as $p) } ->
             let p = typing (p:alident :> pat) (make_ctyp s.styp rtvar)  in
@@ -171,7 +176,7 @@ let make_action (_loc:loc)
             let p =
               typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
             %exp{ fun $p -> $txt }
-        | None -> %exp{ fun _ -> $txt })  e x.prod in
+        | None -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
   %exp{ $id{(gm())}.mk_action $txt }
 
 
@@ -188,30 +193,34 @@ let make_action (_loc:loc)
   {[(Some `LA)]} it has type [position option] *)
     
 let make_extend safe  (e:Gram_def.entry) :exp =  with exp
-  let _loc = e.name.loc in    
+  let _loc = e.name.loc in
+  let gmid = (gm():vid:>ident) in
   let ent =
-    %exp{(${(e.name.id :> exp)}:'$lid{e.name.tvar} $id{(gm():vid :> ident)}.t)  }   in
-  let pos =
+    %exp{(${(e.name.id :> exp)}:'$lid{e.name.tvar} $id:gmid.t)  }   in
+  let pos = (* hastype Gramf.position option *)
     match e.pos with
     | Some pos -> %exp{Some $pos} 
     | None -> %exp{None}   in
   let apply (level:Gram_def.level)  =
     let lab =
-      match level.label with
+      match level.label with 
       | Some lab ->   %exp{Some $str:lab}
       | None ->   %exp{None}   in
     let ass =
-      match level.assoc with
+      match level.assoc with (* has type Gramf.assoc option *)
       | Some ass ->   %exp{Some $ass}
       | None ->    %exp{None}   in
     (* the [rhs] was already computed, the [lhs] was left *)
     let rl =
-      level.rules
-      |> List.map (fun (r:Gram_def.rule) ->
+      level.rules 
+      |> List.map
+          (fun (r:Gram_def.rule) ->
           let sl =
-            r.prod |> List.map (fun (s:Gram_def.symbol) -> s.text) in
-          let ac = make_action _loc r e.name.tvar in
-          (sl,ac,r.action)) in
+            r.prod
+            |> List.map (fun (s:Gram_def.symbol) -> s.text) in
+          (sl,
+           make_action _loc r e.name.tvar, (* compose the right side *)
+           r.action)) in
     let prod = make_exp_rules _loc rl e.name.tvar in
     (* generated code of type [olevel] *)
     %exp{ ($lab, $ass, $prod) } in

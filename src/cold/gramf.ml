@@ -162,7 +162,7 @@ let eoi_entry entry =
                  (3448991, `Empty), "`EOI")],
               ("x\n",
                 (mk_action
-                   (fun _  (x : 'entry)  (_loc : Locf.t)  ->
+                   (fun ~ans_1:_  (x : 'entry)  (_loc : Locf.t)  ->
                       (x : 'entry_eoi )))))]) : olevel ));
     entry_eoi
 let find_level ?position  (entry : Gstructure.entry) =

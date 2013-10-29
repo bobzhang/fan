@@ -109,18 +109,19 @@ and make_exp_rules (_loc : loc)
 let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
   (let locid: FAst.pat = `Lid (_loc, (Locf.name.contents)) in
    let act = Option.default (`Uid (_loc, "()") : FAst.exp ) x.action in
-   let (_,tok_match_pl) =
-     Listf.fold_lefti
-       (fun i  ((oe,op) as ep)  x  ->
-          match (x : Gram_def.symbol ) with
-          | { pattern = Some p; text = `Token _;_} when
-              not (is_irrefut_pat p) ->
-              let id = prefix ^ (string_of_int i) in
-              (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-          | { pattern = Some p; text = `Keyword _;_} ->
-              let id = prefix ^ (string_of_int i) in
-              (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
-          | _ -> ep) ([], []) x.prod in
+   let tok_match_pl =
+     snd @@
+       (Listf.fold_lefti
+          (fun i  ((oe,op) as acc)  x  ->
+             match (x : Gram_def.symbol ) with
+             | { pattern = Some p; text = `Token _;_} when
+                 not (is_irrefut_pat p) ->
+                 let id = prefix ^ (string_of_int i) in
+                 (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
+             | { pattern = Some p; text = `Keyword _;_} ->
+                 let id = prefix ^ (string_of_int i) in
+                 (((`Lid (_loc, id) : FAst.exp ) :: oe), (p :: op))
+             | _ -> acc) ([], []) x.prod) in
    let e =
      let e1: FAst.exp =
        `Constraint
@@ -195,6 +196,9 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
    let (_,txt) =
      Listf.fold_lefti
        (fun i  txt  (s : Gram_def.symbol)  ->
+          let mk_arg p =
+            (`Label (_loc, (`Lid (_loc, ("an_" ^ (string_of_int i)))), p) : 
+            FAst.pat ) in
           match s.pattern with
           | Some (`Alias (_loc,`App (_,_,`Par (_,(`Any _ : FAst.pat))),p)) ->
               let p = typing (p : alident  :>pat) (make_ctyp s.styp rtvar) in
@@ -209,17 +213,20 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                   (make_ctyp s.styp rtvar) in
               (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
           | None  ->
-              (`Fun (_loc, (`Case (_loc, (`Any _loc), txt))) : FAst.exp )) e
-       x.prod in
+              (`Fun
+                 (_loc,
+                   (`Case (_loc, (mk_arg (`Any _loc : FAst.pat )), txt))) : 
+              FAst.exp )) e x.prod in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
 let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
+   let gmid = (gm () : vid  :>ident) in
    let ent: FAst.exp =
      `Constraint
        (_loc, ((e.name).id :>exp),
          (`App
-            (_loc, (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
+            (_loc, (`Dot (_loc, gmid, (`Lid (_loc, "t")))),
               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, ((e.name).tvar)))))))) in
    let pos =
      match e.pos with
@@ -242,8 +249,7 @@ let make_extend safe (e : Gram_def.entry) =
             (fun (r : Gram_def.rule)  ->
                let sl =
                  r.prod |> (List.map (fun (s : Gram_def.symbol)  -> s.text)) in
-               let ac = make_action _loc r (e.name).tvar in
-               (sl, ac, (r.action)))) in
+               (sl, (make_action _loc r (e.name).tvar), (r.action)))) in
      let prod = make_exp_rules _loc rl (e.name).tvar in
      (`Par (_loc, (`Com (_loc, lab, (`Com (_loc, ass, prod))))) : FAst.exp ) in
    match e.levels with

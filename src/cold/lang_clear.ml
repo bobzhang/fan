@@ -76,7 +76,7 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun (xs : 'qualuid)  _  (__fan_0 : Tokenf.t) 
+                 (fun (xs : 'qualuid)  ~ans_1:_  (__fan_0 : Tokenf.t) 
                     (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = x;_} : Tokenf.txt) ->
