@@ -152,6 +152,7 @@ let query_inline (x:string) =
           
   single_symbol :
   [@simple_token
+  |  Str s %{mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None}              
   | name{n};  OPT level_str{lev} %{
      mk_symbol  ~text:(`Nterm (_loc ,n, lev))
        ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]

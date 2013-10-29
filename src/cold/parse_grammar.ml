@@ -1595,7 +1595,30 @@ let _ =
                   | _ ->
                       failwith
                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
-                           (Tokenf.to_string __fan_0))))))]));
+                           (Tokenf.to_string __fan_0))))));
+        ([`Token
+            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              "`Str s")],
+          ("mk_symbol ~text:(`Keyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None\n",
+            (Gramf.mk_action
+               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Str ({ txt = s;_} : Tokenf.txt) ->
+                      (mk_symbol ~text:(`Keyword (_loc, s)) ~styp:(`Tok _loc)
+                         ~pattern:None : 'single_symbol )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+        ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
+         `Opt (`Nterm (Gramf.obj (level_str : 'level_str Gramf.t )))],
+          ("mk_symbol ~text:(`Nterm (_loc, n, lev))\n  ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n  ~pattern:None\n",
+            (Gramf.mk_action
+               (fun (lev : 'level_str option)  (n : 'name)  (_loc : Locf.t) 
+                  ->
+                  (mk_symbol ~text:(`Nterm (_loc, n, lev))
+                     ~styp:(`Quote
+                              (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))
+                     ~pattern:None : 'single_symbol )))))]));
   Gramf.extend_single (or_words : 'or_words Gramf.t )
     (None,
       (None, None,
