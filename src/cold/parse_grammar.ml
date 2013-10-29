@@ -2398,17 +2398,33 @@ let _ =
         ([`Keyword "@";
          `Token
            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-             "`Lid x")],
-          ("match query_inline x with\n| Some x -> x\n| None  -> Locf.failf _loc \"inline rules %s not found\" x\n",
+             "`Lid x");
+         `Opt (`Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t )))],
+          ("let rules =\n  match query_inline x with\n  | Some x -> x\n  | None  -> Locf.failf xloc \"inline rules %s not found\" x in\nmatch action with\n| None  -> rules\n| Some a ->\n    List.map\n      (fun (x : Gram_def.rule)  ->\n         match x.action with\n         | None  -> { x with action = (Some a) }\n         | Some b ->\n             { x with action = (Some (`App (_loc, a, b) : FAst.exp )) })\n      rules\n",
             (Gramf.mk_action
-               (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
+               (fun (action : 'opt_action option)  (__fan_1 : Tokenf.t)  _ 
+                  (_loc : Locf.t)  ->
                   match __fan_1 with
-                  | `Lid ({ txt = x;_} : Tokenf.txt) ->
-                      ((match query_inline x with
-                        | Some x -> x
-                        | None  ->
-                            Locf.failf _loc "inline rules %s not found" x) : 
-                      'rule )
+                  | `Lid ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                      (let rules =
+                         match query_inline x with
+                         | Some x -> x
+                         | None  ->
+                             Locf.failf xloc "inline rules %s not found" x in
+                       (match action with
+                        | None  -> rules
+                        | Some a ->
+                            List.map
+                              (fun (x : Gram_def.rule)  ->
+                                 match x.action with
+                                 | None  -> { x with action = (Some a) }
+                                 | Some b ->
+                                     {
+                                       x with
+                                       action =
+                                         (Some
+                                            (`App (_loc, a, b) : FAst.exp ))
+                                     }) rules) : 'rule )
                   | _ ->
                       failwith
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]));

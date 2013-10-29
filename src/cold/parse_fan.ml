@@ -1644,7 +1644,7 @@ let apply () =
          ([`Self;
           `Keyword ".";
           `Nterm (Gramf.obj (label_longident : 'label_longident Gramf.t ))],
-           ("`Field (_loc, e1, (e2 :>exp))\n",
+           ("`Field (_loc, e1, e2)\n",
              (Gramf.mk_action
                 (fun (e2 : 'label_longident)  _  (e1 : 'exp)  (_loc : Locf.t)
                     -> (`Field (_loc, e1, e2) : 'exp )))));

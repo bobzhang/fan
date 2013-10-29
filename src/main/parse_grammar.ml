@@ -36,23 +36,12 @@ let g =
   Gramf.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["("; ")" ; ","; "as"; "|"; "_"; ":";
                "."; ";"; "{"; "}"; "let";"[";"]";
-               "SEP";"LEVEL"; "S";
-               "EOI"; "Lid";"Uid";
-               "Ant";"Quot";
-               "DirQuotation"; "Str";
-               "Label"; "Optlabel";
-               "Chr"; "Int";
-               "Int32"; "Int64";
-               "Int64"; "Nativeint";
-               "Flo"; "OPT";
-               "TRY"; "PEEK";
-               "L0"; "L1";
-               "First"; "Last";
-               "Before"; "After";
-               "Level"; "LA";
-               "RA"; "NA"; "+";"*";"?"; "="; "@";
-               "Inline"
-             ] ();;
+               "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
+               "Ant";"Quot"; "DirQuotation"; "Str";
+               "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint"; "Flo"; "OPT";
+               "TRY"; "PEEK"; "L0"; "L1"; "First"; "Last";
+               "Before"; "After"; "Level"; "LA"; "RA"; "NA"; "+";"*";"?"; "="; "@";
+               "Inline"] ();;
 
 
 let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
@@ -61,50 +50,6 @@ let inline_rules : (string, Gram_def.rule list) Hashtbl.t =
 let query_inline (x:string) =
    Hashtblf.find_opt inline_rules x ;;
   
-(*
-let normalize (x:Gram_pat.t) : Gram_def.data =
-  match x with
-  | %pat'{$vrn:x} ->  (x, `Empty)
-  | %pat'{$vrn:x $str:s} | %pat'{$vrn:x ($str:s as $_ )} -> 
-      (x,  `A s)
-  | %pat'{$vrn:x $lid:_ }
-  | %pat'{$vrn:x _}-> 
-      (x, `Any)
-  | %pat'{$vrn:x ($lid:_, $_)} -> 
-      (x, `Any)
-  | %pat'{$vrn:x (($str:s as $_), $_) }
-  | %pat'{$vrn:x ($str:s, $_) }  ->
-      (x, `A s)
-  | _ -> failwithf "normalize %s" @@ Gram_pat.to_string x ;;
-
-let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
-  let _loc = loc_of p in
-  let p_pat = (p:Gram_pat.t :> pat) in 
-  let (po,ls) =
-    Compile_gram.filter_pat_with_captured_variables p_pat in
-  let mdescr = (Gram_def.meta_data#data _loc (normalize p)  :> exp) in
-  let no_variable = Gram_pat.wildcarder#t p in
-  let mstr = Gram_pat.to_string no_variable in
-  match ls with
-  | [] ->
-      let match_fun =
-        let v = (no_variable :> pat) in  
-        if is_irrefut_pat v  then
-          %exp{function | $v -> true }
-        else
-          %exp{function | $v -> true | _ -> false  } in
-      {text =
-       `Token(_loc,match_fun, mdescr,mstr) ;
-       styp=`Tok _loc;pattern = Some p_pat}
-  | (x,y)::ys ->
-      let guard =
-          List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
-            %exp{$x = $y} ys  in
-      let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
-      {text = `Token(_loc,match_fun,  mdescr, mstr);
-       styp = `Tok _loc;
-       pattern= Some (Objs.wildcarder#pat po) };;
-*)
 %create{(g:Gramf.t)
    extend_header
    (qualuid : vid Gramf.t)
@@ -121,51 +66,6 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
 }
 
 
-(* let lid_or_any (x:string option) = *)
-(*   match x with  *)
-(* (\** *)
-(*    Handle *)
-(*    {[ *)
-(*    Lid@xloc i *)
-(*    Lid i *)
-(*    Lid _ *)
-(*    ]} *)
-(*  *\)   *)
-(* let make_simple_symbol (_loc:Locf.t) *)
-(*     (v:string) *)
-(*     (x:string option) *)
-(*     (locname:string option) *)
-(*     (idloc:Locf.t option) = *)
-(*   let pred =  %exp{ *)
-(*     function *)
-(*       | $vrn:v (_, _) -> true *)
-(*       | _ -> false} in *)
-(*   let des = %exp{($str:v,`Any )} in *)
-(*   let des_str = *)
-(*     Gram_pat.to_string @@ *)
-(*       (let u = *)
-(*         match x with *)
-(*         | None -> %pat'{_} *)
-(*         | Some x -> %pat'{$lid:x} in *)
-(*       %pat'{$vrn:v $u}) in *)
-(*   let pattern = *)
-(*     let xloc = *)
-(*       match idloc with *)
-(*       | Some x -> x *)
-(*       | None -> _loc in *)
-(*     let l = *)
-(*       match locname with *)
-(*       |None -> %pat'{_} *)
-(*       |Some x -> %pat'{$lid:x} in *)
-(*     let lx = *)
-(*       match x with *)
-(*       | None -> %pat'{_} *)
-(*       | Some x -> %pat'{$lid:x} in *)
-(*     Some %pat@xloc{$vrn:v ($l,$lx)} in *)
-(*   [{Gram_def.text = `Token(_loc, pred,des,des_str); *)
-(*     styp = `Tok _loc; *)
-(*     pattern}] *)
-(* ;; *)
 %extend{(g:Gramf.t)
   (** FIXME bring antiquotation back later*)
   Inline simple_token :
@@ -479,10 +379,20 @@ let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
     let prods = Listf.cross prod in
     List.map (fun prod -> mk_rule ~prod ~action) prods}
 
-  | "@"; Lid x %{
-    match query_inline x with
-    | Some x -> x
-    | None -> Locf.failf _loc "inline rules %s not found" x
+  | "@"; Lid@xloc x ; OPT opt_action{action} %{
+    let rules =
+      match query_inline x with
+      | Some x -> x
+      | None -> Locf.failf xloc "inline rules %s not found" x in
+    (* rules *)
+    match action with
+    | None -> rules
+    | Some a ->
+        List.map
+          (fun (x:Gram_def.rule) ->
+            match x.action with
+            | None -> {x with action = Some a}
+            | Some b -> {x with action = Some %exp{ $a $b}}) rules 
   }
   ]
   let left_rule :
@@ -573,7 +483,96 @@ end;;
 
 
 
+(*
+let normalize (x:Gram_pat.t) : Gram_def.data =
+  match x with
+  | %pat'{$vrn:x} ->  (x, `Empty)
+  | %pat'{$vrn:x $str:s} | %pat'{$vrn:x ($str:s as $_ )} -> 
+      (x,  `A s)
+  | %pat'{$vrn:x $lid:_ }
+  | %pat'{$vrn:x _}-> 
+      (x, `Any)
+  | %pat'{$vrn:x ($lid:_, $_)} -> 
+      (x, `Any)
+  | %pat'{$vrn:x (($str:s as $_), $_) }
+  | %pat'{$vrn:x ($str:s, $_) }  ->
+      (x, `A s)
+  | _ -> failwithf "normalize %s" @@ Gram_pat.to_string x ;;
 
+let token_of_simple_pat  (p:Gram_pat.t) : Gram_def.symbol  =
+  let _loc = loc_of p in
+  let p_pat = (p:Gram_pat.t :> pat) in 
+  let (po,ls) =
+    Compile_gram.filter_pat_with_captured_variables p_pat in
+  let mdescr = (Gram_def.meta_data#data _loc (normalize p)  :> exp) in
+  let no_variable = Gram_pat.wildcarder#t p in
+  let mstr = Gram_pat.to_string no_variable in
+  match ls with
+  | [] ->
+      let match_fun =
+        let v = (no_variable :> pat) in  
+        if is_irrefut_pat v  then
+          %exp{function | $v -> true }
+        else
+          %exp{function | $v -> true | _ -> false  } in
+      {text =
+       `Token(_loc,match_fun, mdescr,mstr) ;
+       styp=`Tok _loc;pattern = Some p_pat}
+  | (x,y)::ys ->
+      let guard =
+          List.fold_left (fun acc (x,y) -> %exp{$acc && ( $x = $y )} )
+            %exp{$x = $y} ys  in
+      let match_fun = %exp{ function |$po when $guard -> true | _ -> false } in
+      {text = `Token(_loc,match_fun,  mdescr, mstr);
+       styp = `Tok _loc;
+       pattern= Some (Objs.wildcarder#pat po) };;
+*)
+
+(* let lid_or_any (x:string option) = *)
+(*   match x with  *)
+(* (\** *)
+(*    Handle *)
+(*    {[ *)
+(*    Lid@xloc i *)
+(*    Lid i *)
+(*    Lid _ *)
+(*    ]} *)
+(*  *\)   *)
+(* let make_simple_symbol (_loc:Locf.t) *)
+(*     (v:string) *)
+(*     (x:string option) *)
+(*     (locname:string option) *)
+(*     (idloc:Locf.t option) = *)
+(*   let pred =  %exp{ *)
+(*     function *)
+(*       | $vrn:v (_, _) -> true *)
+(*       | _ -> false} in *)
+(*   let des = %exp{($str:v,`Any )} in *)
+(*   let des_str = *)
+(*     Gram_pat.to_string @@ *)
+(*       (let u = *)
+(*         match x with *)
+(*         | None -> %pat'{_} *)
+(*         | Some x -> %pat'{$lid:x} in *)
+(*       %pat'{$vrn:v $u}) in *)
+(*   let pattern = *)
+(*     let xloc = *)
+(*       match idloc with *)
+(*       | Some x -> x *)
+(*       | None -> _loc in *)
+(*     let l = *)
+(*       match locname with *)
+(*       |None -> %pat'{_} *)
+(*       |Some x -> %pat'{$lid:x} in *)
+(*     let lx = *)
+(*       match x with *)
+(*       | None -> %pat'{_} *)
+(*       | Some x -> %pat'{$lid:x} in *)
+(*     Some %pat@xloc{$vrn:v ($l,$lx)} in *)
+(*   [{Gram_def.text = `Token(_loc, pred,des,des_str); *)
+(*     styp = `Tok _loc; *)
+(*     pattern}] *)
+(* ;; *)
 
 
 
