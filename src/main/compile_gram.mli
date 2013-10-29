@@ -18,9 +18,8 @@ val mk_level :
   label:string option ->
   assoc:exp option -> rules:rule list -> level
       
-val mk_rule :
-  prod:symbol list -> action:exp option -> rule
-      
+val mk_prule :
+    prod:psymbol list -> action:exp option -> rule    
 val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol

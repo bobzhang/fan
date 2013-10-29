@@ -140,6 +140,17 @@ let rec filter_map f ls =
       match f x with
       |Some y -> (y:: filter_map  f xs)
       |None -> filter_map f xs
+
+let filter_mapi f ls =
+  let rec aux ls acc = 
+    match ls with
+    | [] -> []
+    | x :: xs ->
+      match f acc x with
+      | Some y -> (y:: aux xs (acc+1) )
+      | None -> aux xs (acc+1) in
+  aux ls 0
+            
             
 let take_rev  n lst =
   let rec aux n l acc =

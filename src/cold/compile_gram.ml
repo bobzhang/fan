@@ -19,7 +19,18 @@ let mk_entry ~local  ~name  ~pos  ~levels  =
   { Gram_def.name = name; pos; levels; local }
 let mk_level ~label  ~assoc  ~rules  =
   ({ label; assoc; rules } : Gram_def.level )
-let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
+let mk_prule ~prod  ~action  =
+  let i = ref 0 in
+  let prod =
+    Listf.filter_map
+      (fun (p : Gram_def.psymbol)  ->
+         match p with
+         | (KSome ,({ pattern = None ;_} as s))|(KNormal ,s) ->
+             (incr i; Some s)
+         | (KSome ,({ pattern = Some _;_} as s)) -> (incr i; Some s)
+         | (KNone ,{ pattern = None ;_}) -> None
+         | (KNone ,{ pattern = Some _;_}) -> None) prod in
+  ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
 let mk_psymbol ?(kind= Gram_def.KNormal)  ?(pattern= None)  ~text  ~styp  =

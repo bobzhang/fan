@@ -64,8 +64,6 @@ and symbol = {
     pattern : pat option;
 }
 and psymbol = (kind * symbol)
-  (* | Normal of primitve *)
-  (* | Epsilon (\* placeholder*\) *)
 and text =
  [
    `List of (loc * bool * symbol * symbol option )

@@ -4,7 +4,7 @@ Compile_gram:
   module_name
   mk_entry
   mk_level
-  mk_rule
+  mk_prule
   mk_slist
   mk_symbol
   mk_psymbol
@@ -422,12 +422,7 @@ let query_inline (x:string) =
     List.map
       (fun
         (prod:Gram_def.psymbol list) ->
-          let prod =
-            Listf.filter_map
-              (function
-                | (Gram_def.KNormal, s) -> Some s
-                | (_, _ ) -> None ) prod in
-          mk_rule ~prod ~action) prods}
+          mk_prule ~prod ~action) prods}
 
   | "@"; Lid@xloc x ; ? opt_action{action} %{
     let rules =

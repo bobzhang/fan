@@ -2,7 +2,7 @@ let gm = Compile_gram.gm
 let module_name = Compile_gram.module_name
 let mk_entry = Compile_gram.mk_entry
 let mk_level = Compile_gram.mk_level
-let mk_rule = Compile_gram.mk_rule
+let mk_prule = Compile_gram.mk_prule
 let mk_slist = Compile_gram.mk_slist
 let mk_symbol = Compile_gram.mk_symbol
 let mk_psymbol = Compile_gram.mk_psymbol
@@ -4037,19 +4037,14 @@ let _ =
       ((None, None,
          [([`Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ));
            `Opt (`Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t )))],
-            ("let prods = Listf.cross prod in\nList.map\n  (fun (prod : Gram_def.psymbol list)  ->\n     let prod =\n       Listf.filter_map\n         (function | (Gram_def.KNormal ,s) -> Some s | (_,_) -> None) prod in\n     mk_rule ~prod ~action) prods\n",
+            ("let prods = Listf.cross prod in\nList.map (fun (prod : Gram_def.psymbol list)  -> mk_prule ~prod ~action)\n  prods\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(action : 'opt_action option) 
                     ~__fan_0:(prod : 'left_rule)  (_loc : Locf.t)  ->
                     (let prods = Listf.cross prod in
                      List.map
                        (fun (prod : Gram_def.psymbol list)  ->
-                          let prod =
-                            Listf.filter_map
-                              (function
-                               | (Gram_def.KNormal ,s) -> Some s
-                               | (_,_) -> None) prod in
-                          mk_rule ~prod ~action) prods : 'rule )))));
+                          mk_prule ~prod ~action) prods : 'rule )))));
          ([`Keyword "@";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),

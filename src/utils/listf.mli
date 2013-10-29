@@ -40,6 +40,8 @@ val concat_map : ('a -> 'b list) -> 'a list -> 'b list
 
 val filter_map : ('a -> 'b option) -> 'a list -> 'b list
 
+val filter_mapi : (int -> 'a -> 'b option) -> 'a list -> 'b list
+    
 val take_rev : int -> 'a list -> 'a list
 
 val find_opt : ('a -> bool) -> 'a list -> 'a option
