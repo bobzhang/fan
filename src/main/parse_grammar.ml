@@ -7,6 +7,7 @@ Compile_gram:
   mk_rule
   mk_slist
   mk_symbol
+  mk_psymbol
   make
   ;
 Fan_ops:
@@ -64,7 +65,7 @@ let query_inline (x:string) =
    extend_body
    unsafe_extend_body
           
-  (simple : Gram_def.symbol list Gramf.t)
+  (simple : Gram_def.psymbol list Gramf.t)
   (single_symbol : Gram_def.symbol Gramf.t)        
 }
 
@@ -157,7 +158,8 @@ let query_inline (x:string) =
      mk_symbol  ~text:(`Nterm (_loc ,n, lev))
        ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]        
   single_symbol :
-  [@simple_token |@simple_symbol]
+  [@simple_token 
+  |@simple_symbol]
           
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
@@ -167,8 +169,8 @@ let query_inline (x:string) =
       [Str s %{(s,_loc)} ]
 
   simple :
-  [ @simple_token %{fun x -> [x]}
-  | @simple_symbol %{fun x -> [x]} 
+  [ @simple_token %{fun x -> [(Gram_def.KNormal ,x) ]}
+  | @simple_symbol %{fun x -> [(Gram_def.KNormal,x)]} 
   |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
       let i = hash_variant v in
       let p = %pat'@xloc{$lid:s} in
@@ -193,24 +195,32 @@ let query_inline (x:string) =
              Some
                %pat{$vrn:v (* BOOTSTRAPPING *)
                       (({kind = $pp; _} as $p) :Tokenf.ant)} in
-           {Gram_def.text = `Token(_loc,pred,des,des_str);
+           (Gram_def.KNormal,{Gram_def.text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
-             pattern})}
+             pattern}))}
 
   | "("; or_strs{v}; ")" %{
     match v with
     | (vs, None) ->
         vs |>
         List.map
-          (fun x -> mk_symbol ~text:(`Keyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
+          (fun x -> mk_psymbol ~kind:Gram_def.KNormal
+              ~text:(`Keyword (_loc,x)) ~styp:(`Tok _loc) ~pattern:None )
     | (vs, Some b) ->
         vs |>
         List.map
           (fun x ->
-            mk_symbol ~text:(`Keyword (_loc,x))
-              ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}) )}
+            mk_psymbol
+              ~kind:Gram_def.KNormal
+              ~text:(`Keyword (_loc,x))
+              ~styp:(`Tok _loc)
+              ~pattern:(Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}) )}
 
-  | "S" %{[mk_symbol  ~text:(`Self _loc)  ~styp:(`Self _loc ) ~pattern:None]}
+  | "S" %{[mk_psymbol
+             ~kind:Gram_def.KNormal
+             ~text:(`Self _loc)
+             ~styp:(`Self _loc )
+             ~pattern:None]}
   (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)
@@ -249,16 +259,28 @@ let query_inline (x:string) =
    ("L0"|"L1" as l) ; single_symbol{s}; ?  sep_symbol{sep } %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
-    [mk_symbol ~text ~styp ~pattern:None]}
+    [mk_psymbol
+       ~kind:Gram_def.KNormal
+       ~text
+       ~styp
+       ~pattern:None]}
   | "?"; single_symbol{s}  %{
     let styp = %ctyp'{${s.styp} option } in 
     let text = `Opt (_loc, s.text) in
-    [mk_symbol  ~text ~styp ~pattern:None] }
+    [mk_psymbol
+       ~kind:Gram_def.KNormal
+       ~text
+       ~styp
+       ~pattern:None] }
 
   | ("TRY"|"PEEK" as p); single_symbol{s} %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
-    [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
+    [mk_psymbol
+       ~kind:Gram_def.KNormal
+       ~text
+       ~styp:(s.styp)
+       ~pattern:None] }
   | simple{p} %{ p}
 
   ]
@@ -268,10 +290,10 @@ let query_inline (x:string) =
 
   psymbol :
   [ symbol{ss} ; ? brace_pattern {p} %{
-    List.map (fun (s:Gram_def.symbol) ->
+    List.map (fun ((x,(y:Gram_def.symbol)) as s) ->
       match p with
       |Some _ ->
-          { s with pattern = (p:pat option)}
+          (x,{ y with pattern = (p:pat option)})
       | None -> s) ss }  ] 
       
 }
@@ -397,7 +419,15 @@ let query_inline (x:string) =
   rule :
   [ left_rule {prod}; ? opt_action{action} %{
     let prods = Listf.cross prod in
-    List.map (fun prod -> mk_rule ~prod ~action) prods}
+    List.map
+      (fun
+        (prod:Gram_def.psymbol list) ->
+          let prod =
+            Listf.filter_map
+              (function
+                | (Gram_def.KNormal, s) -> Some s
+                | (_, _ ) -> None ) prod in
+          mk_rule ~prod ~action) prods}
 
   | "@"; Lid@xloc x ; ? opt_action{action} %{
     let rules =

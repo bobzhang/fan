@@ -49,16 +49,23 @@ and level  = {
   rules : rule list
 }
 and rule = {
-  prod : symbol list ;
-  action : exp option 
+    prod : symbol list ;
+    action : exp option ;
+    (* env : (pat * exp) list;  *)
 }
-      
-and symbol ={
-  text : text;
-  styp : styp;
+and kind =
+  | KNone
+  | KSome
+  | KNormal
+and symbol = {
+    text : text;
+    styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
-  pattern : pat option 
+    pattern : pat option;
 }
+and psymbol = (kind * symbol)
+  (* | Normal of primitve *)
+  (* | Epsilon (\* placeholder*\) *)
 and text =
  [
    `List of (loc * bool * symbol * symbol option )

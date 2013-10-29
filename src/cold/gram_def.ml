@@ -46,10 +46,15 @@ and level =  {
 and rule =  {
   prod: symbol list;
   action: exp option} 
+and kind =  
+  | KNone
+  | KSome
+  | KNormal 
 and symbol =  {
   text: text;
   styp: styp;
   pattern: pat option} 
+and psymbol = (kind* symbol) 
 and text =
   [ `List of (loc* bool* symbol* symbol option)
   | `Nterm of (loc* name* string option) | `Opt of (loc* text)

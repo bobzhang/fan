@@ -24,7 +24,10 @@ val mk_rule :
 val mk_symbol :
   ?pattern:pat option ->
   text:text -> styp:styp -> symbol
-
+val mk_psymbol :
+  ?kind:Gram_def.kind ->
+  ?pattern:pat option ->
+  text:Gram_def.text -> styp:Gram_def.styp -> Gram_def.psymbol
 val mk_slist :
     loc -> bool -> symbol option -> symbol -> text
 (* val gensym : unit -> int ref *)

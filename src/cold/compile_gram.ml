@@ -22,6 +22,8 @@ let mk_level ~label  ~assoc  ~rules  =
 let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
+let mk_psymbol ?(kind= Gram_def.KNormal)  ?(pattern= None)  ~text  ~styp  =
+  ((kind, { text; styp; pattern }) : Gram_def.psymbol )
 let mk_slist loc min sep symb = `List (loc, min, symb, sep)
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in

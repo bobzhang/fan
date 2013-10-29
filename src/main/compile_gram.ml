@@ -44,8 +44,10 @@ let mk_level ~label ~assoc ~rules  =
 let mk_rule ~prod ~action =
   ({prod;action}:Gram_def.rule)
   
-let mk_symbol  ?(pattern=None)  ~text ~styp =
+let mk_symbol ?(pattern=None)  ~text ~styp =
   ({ text;styp;pattern}:Gram_def.symbol)
+let mk_psymbol ?(kind=Gram_def.KNormal) ?(pattern=None)  ~text ~styp =
+  ((kind,{ text;styp;pattern}):Gram_def.psymbol)
 
 (* given the entry of the name, make a name *)
 let mk_slist loc min sep symb = `List (loc, min, symb, sep) 
@@ -110,7 +112,9 @@ let make_action (_loc:loc)
     (rtvar:string)  : exp = 
   let locid = %pat{ $lid{!Locf.name} } in 
   let act = Option.default %exp{()} x.action in
-  (* collect the patterns *)
+
+  (* collect the patterns
+     it is used for further destruction *)
   let tok_match_pl =
     snd @@
     Listf.fold_lefti
