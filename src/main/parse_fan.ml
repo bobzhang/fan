@@ -268,17 +268,32 @@ let apply () = begin
        | Nativeint s %{ `Nativeint (_loc, s)}
        | Flo s %{  `Flo (_loc, s)}
        | Chr s %{ `Chr (_loc, s)}
-       | Str s %{ `Str (_loc, s)}]    
-       exp:
+       | Str s %{ `Str (_loc, s)}]
+
+       (************************)
+       (*  How to handle S     *)    
+       (************************)               
+       Inline let_stru_exp:
+       [ "let"; opt_rec{r}; bind{bi}; "in"; exp{x} %{`LetIn(_loc,r,bi,x)}
+       | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; exp{e}
+           %{ `LetModule (_loc, m, mb, e)}
+       | "let"; "open"; module_longident{i}; "in"; exp{e}
+          %{`LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)}
+       | "let"; "open"; "!"; module_longident{i}; "in"; exp{e} %{
+            `LetOpen (_loc, `Positive _loc, (i:vid :> ident), e)}
+       | "let"; "try"; opt_rec{r}; bind{bi}; "in"; exp{x}; "with"; case{a} %{
+              `LetTryInWith(_loc,r,bi,x,a)}]
+       exp :
        {
         "top" RA
-        [ "let"; opt_rec{r}; bind{bi}; "in"; S{x} %{`LetIn(_loc,r,bi,x)}
-        | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; S{e} %{ `LetModule (_loc, m, mb, e)}
-        | "let"; "open"; module_longident{i}; "in"; S{e} %{`LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)}
-        | "let"; "open"; "!"; module_longident{i}; "in"; S{e} %{
-            `LetOpen (_loc, `Positive _loc, (i:vid :> ident), e)}
-        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a} %{
-              `LetTryInWith(_loc,r,bi,x,a)}
+        [(*  "let"; opt_rec{r}; bind{bi}; "in"; S{x} %{`LetIn(_loc,r,bi,x)} *)
+        (* | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; S{e} %{ `LetModule (_loc, m, mb, e)} *)
+        (* | "let"; "open"; module_longident{i}; "in"; S{e} %{`LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)} *)
+        (* | "let"; "open"; "!"; module_longident{i}; "in"; S{e} %{ *)
+        (*     `LetOpen (_loc, `Positive _loc, (i:vid :> ident), e)} *)
+        (* | "let"; "try"; opt_rec{r}; bind{bi}; "in"; S{x}; "with"; case{a} %{ *)
+        (*       `LetTryInWith(_loc,r,bi,x,a)} *)
+         @let_stru_exp
         | "match"; S{e}; "with"; case{a}  %{`Match (_loc, e, a)}
         | "try"; S{e}; "with"; case{a} %{ `Try (_loc, e, a)}
         | "if"; S{e1}; "then"; S{e2}; "else"; S{e3} %{`IfThenElse (_loc, e1, e2, e3)}
@@ -949,22 +964,14 @@ let apply () = begin
         | "open"; module_longident{i} %{ `Open(_loc, `Negative _loc , (i: vid :> ident))}
         | "open"; "!"; module_longident{i} %{ `Open(_loc, `Positive _loc , (i: vid :> ident))}
         | "type"; type_declaration{td} %{ `Type(_loc,td)}
-        | "type"; type_declaration{t};"with"; "("; string_list{ns};")" %{`TypeWith (_loc,t,ns)}
-        | "let"; opt_rec{r}; bind{bi}; "in"; exp{x} %stru{ let $rec:r $bi in $x }
+        | "type"; type_declaration{t};"with"; "("; string_list{ns};")"
+            %{`TypeWith (_loc,t,ns)}
+        | @let_stru_exp %{fun x -> %stru{$exp:x}}
         | "let"; opt_rec{r}; bind{bi} %{
           match bi with
           | `Bind(_loc,`Any _,e) -> `StExp(_loc,e)
           | _ -> `Value(_loc,r,bi)}
-        | "let"; "module"; a_uident{m}; mbind0{mb}; "in"; exp{e} %{
-              %{ let module $m = $mb in $e }}
-        | "let"; "open"; module_longident{i}; "in"; exp{e} %{
-            let i = (i:vid :> ident) in
-            %{ let open $id:i in $e }}
-        | "let"; "open"; "!"; module_longident{i}; "in"; exp{e} %{
-            let i = (i:vid :> ident) in
-            %{ let open! $id:i in $e }}
-        | "let"; "try"; opt_rec{r}; bind{bi}; "in"; exp{x}; "with"; case{a} %{
-          `StExp(_loc ,`LetTryInWith(_loc,r,bi,x,a))}
+        
         | "class"; class_declaration{cd} %{  `Class(_loc,cd)}
         | "class"; "type"; cltyp_declaration{ctd} %{
             `ClassType (_loc, ctd)}

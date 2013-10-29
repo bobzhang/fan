@@ -6128,12 +6128,65 @@ let apply () =
            `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
            `Keyword "in";
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("(`StExp (_loc, (`LetIn (_loc, r, bi, x))) : FAst.stru )\n",
+            ("(fun x  -> (`StExp (_loc, x) : FAst.stru )) (`LetIn (_loc, r, bi, x))\n",
               (Gramf.mk_action
                  (fun (x : 'exp)  _  (bi : 'bind)  (r : 'opt_rec)  _ 
                     (_loc : Locf.t)  ->
-                    ((`StExp (_loc, (`LetIn (_loc, r, bi, x))) : FAst.stru ) : 
+                    ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
+                       (`LetIn (_loc, r, bi, x)) : 'stru )))));
+          ([`Keyword "let";
+           `Keyword "module";
+           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
+           `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+            ("(fun x  -> (`StExp (_loc, x) : FAst.stru )) (`LetModule (_loc, m, mb, e))\n",
+              (Gramf.mk_action
+                 (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
+                    (_loc : Locf.t)  ->
+                    ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
+                       (`LetModule (_loc, m, mb, e)) : 'stru )))));
+          ([`Keyword "let";
+           `Keyword "open";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+            ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e))\n",
+              (Gramf.mk_action
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
+                    (_loc : Locf.t)  ->
+                    ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
+                       (`LetOpen
+                          (_loc, (`Negative _loc), (i : vid  :>ident), e)) : 
                     'stru )))));
+          ([`Keyword "let";
+           `Keyword "open";
+           `Keyword "!";
+           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+            ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e))\n",
+              (Gramf.mk_action
+                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
+                    (_loc : Locf.t)  ->
+                    ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
+                       (`LetOpen
+                          (_loc, (`Positive _loc), (i : vid  :>ident), e)) : 
+                    'stru )))));
+          ([`Keyword "let";
+           `Keyword "try";
+           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
+           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
+           `Keyword "in";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
+           `Keyword "with";
+           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
+            ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetTryInWith (_loc, r, bi, x, a))\n",
+              (Gramf.mk_action
+                 (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
+                    (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
+                    ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
+                       (`LetTryInWith (_loc, r, bi, x, a)) : 'stru )))));
           ([`Keyword "let";
            `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
            `Nterm (Gramf.obj (bind : 'bind Gramf.t ))],
@@ -6143,59 +6196,6 @@ let apply () =
                     (match bi with
                      | `Bind (_loc,`Any _,e) -> `StExp (_loc, e)
                      | _ -> `Value (_loc, r, bi) : 'stru )))));
-          ([`Keyword "let";
-           `Keyword "module";
-           `Nterm (Gramf.obj (a_uident : 'a_uident Gramf.t ));
-           `Nterm (Gramf.obj (mbind0 : 'mbind0 Gramf.t ));
-           `Keyword "in";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("(`StExp (_loc, (`LetModule (_loc, m, mb, e))) : FAst.stru )\n",
-              (Gramf.mk_action
-                 (fun (e : 'exp)  _  (mb : 'mbind0)  (m : 'a_uident)  _  _ 
-                    (_loc : Locf.t)  ->
-                    ((`StExp (_loc, (`LetModule (_loc, m, mb, e))) : 
-                    FAst.stru ) : 'stru )))));
-          ([`Keyword "let";
-           `Keyword "open";
-           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Keyword "in";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("let i = (i : vid  :>ident) in\n(`StExp (_loc, (`LetOpen (_loc, (`Negative _loc), i, e))) : FAst.stru )\n",
-              (Gramf.mk_action
-                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _ 
-                    (_loc : Locf.t)  ->
-                    (let i = (i : vid  :>ident) in
-                     (`StExp
-                        (_loc, (`LetOpen (_loc, (`Negative _loc), i, e))) : 
-                       FAst.stru ) : 'stru )))));
-          ([`Keyword "let";
-           `Keyword "open";
-           `Keyword "!";
-           `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
-           `Keyword "in";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-            ("let i = (i : vid  :>ident) in\n(`StExp (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : FAst.stru )\n",
-              (Gramf.mk_action
-                 (fun (e : 'exp)  _  (i : 'module_longident)  _  _  _ 
-                    (_loc : Locf.t)  ->
-                    (let i = (i : vid  :>ident) in
-                     (`StExp
-                        (_loc, (`LetOpen (_loc, (`Positive _loc), i, e))) : 
-                       FAst.stru ) : 'stru )))));
-          ([`Keyword "let";
-           `Keyword "try";
-           `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
-           `Nterm (Gramf.obj (bind : 'bind Gramf.t ));
-           `Keyword "in";
-           `Nterm (Gramf.obj (exp : 'exp Gramf.t ));
-           `Keyword "with";
-           `Nterm (Gramf.obj (case : 'case Gramf.t ))],
-            ("`StExp (_loc, (`LetTryInWith (_loc, r, bi, x, a)))\n",
-              (Gramf.mk_action
-                 (fun (a : 'case)  _  (x : 'exp)  _  (bi : 'bind) 
-                    (r : 'opt_rec)  _  _  (_loc : Locf.t)  ->
-                    (`StExp (_loc, (`LetTryInWith (_loc, r, bi, x, a))) : 
-                    'stru )))));
           ([`Keyword "class";
            `Nterm
              (Gramf.obj (class_declaration : 'class_declaration Gramf.t ))],
