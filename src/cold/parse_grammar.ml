@@ -11,15 +11,15 @@ let sem_of_list = Ast_gen.sem_of_list
 let loc_of = Ast_gen.loc_of
 let seq_sem = Ast_gen.seq_sem
 let tuple_com = Ast_gen.tuple_com
-let mk_name _loc (i : FAst.vid) =
+open FAst
+open Util
+let mk_name (i : FAst.vid) =
   (let rec aux x =
      match (x : FAst.vid ) with
      | `Lid (_,x)|`Uid (_,x) -> x
      | `Dot (_,`Uid (_,x),xs) -> x ^ ("__" ^ (aux xs))
      | _ -> failwith "internal error in the Grammar extension" in
-   { exp = (i :>FAst.exp); tvar = (aux i); loc = _loc } : Gram_def.name )
-open FAst
-open Util
+   { id = i; tvar = (aux i); loc = (loc_of i) } : Gram_def.name )
 let g =
   Gramf.create_lexer ~annot:"Grammar's lexer"
     ~keywords:["(";
@@ -3754,16 +3754,16 @@ let _ =
     (None,
       (None, None,
         [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))],
-           ("mk_name _loc il\n",
+           ("mk_name il\n",
              (Gramf.mk_action
                 (fun (il : 'qualid)  (_loc : Locf.t)  ->
-                   (mk_name _loc il : 'name )))))]));
+                   (mk_name il : 'name )))))]));
   Gramf.extend_single (entry_name : 'entry_name Gramf.t )
     (None,
       (None, None,
         [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
           `Opt (`Nterm (Gramf.obj (str : 'str Gramf.t )))],
-           ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name _loc il))\n",
+           ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
              (Gramf.mk_action
                 (fun (name : 'str option)  (il : 'qualid)  (_loc : Locf.t) 
                    ->
@@ -3778,7 +3778,7 @@ let _ =
                            | Some x ->
                                (Ast_quotation.default := (Some x); `name old))
                       | None  -> `non in
-                    (x, (mk_name _loc il)) : 'entry_name )))))]));
+                    (x, (mk_name il)) : 'entry_name )))))]));
   Gramf.extend_single (entry : 'entry Gramf.t )
     (None,
       (None, None,

@@ -26,7 +26,7 @@ class meta =
   end
 let meta_data = new meta
 type name =  {
-  exp: exp;
+  id: vid;
   tvar: string;
   loc: loc} 
 type styp =

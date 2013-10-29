@@ -20,17 +20,18 @@ Ast_gen:
   ;
 }
 
-let mk_name _loc (i:FAst.vid) : Gram_def.name =
-  let rec aux  x =
-    match (x:FAst.vid) with 
-    | `Lid (_,x) | `Uid(_,x) -> x
-    | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
-    | _ -> failwith "internal error in the Grammar extension" in
-  {exp = (i :> FAst.exp) ; tvar = aux i; loc = _loc}
   
   
 open FAst
 open Util
+
+let mk_name (i:FAst.vid) : Gram_def.name =
+  let rec aux  x =
+    match (x:FAst.vid) with
+    | `Lid (_,x) | `Uid(_,x) -> x
+    | `Dot(_,`Uid(_,x),xs) -> x ^ "__" ^ aux xs
+    | _ -> failwith "internal error in the Grammar extension" in
+  {id = i ; tvar = aux i; loc = loc_of i}
 
 let g =
   Gramf.create_lexer ~annot:"Grammar's lexer"
@@ -324,7 +325,7 @@ let query_inline (x:string) =
   | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}] 
 
   (* stands for the non-terminal  *)
-  name: [ qualid{il} %{mk_name _loc il}] 
+  name: [ qualid{il} %{mk_name il}] 
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
@@ -340,7 +341,7 @@ let query_inline (x:string) =
             | Some x -> (Ast_quotation.default:= Some x; `name old)
           end
       | None -> `non in
-    (x,mk_name _loc il)}]
+    (x,mk_name il)}]
 
   entry:
   [ entry_name{rest}; ":";  OPT position{pos}; level_list{levels}

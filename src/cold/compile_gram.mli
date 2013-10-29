@@ -27,12 +27,12 @@ val mk_symbol :
 
 val mk_slist :
     loc -> bool -> symbol option -> symbol -> text
-val gensym : unit -> int ref
+(* val gensym : unit -> int ref *)
 val gen_lid : unit -> string
     
 
 (** translate [styp] into [ctyp], given the assumption that the entry output [tvar] type *)
-val make_ctyp : styp -> string -> ctyp
+(* val make_ctyp : styp -> string -> ctyp *)
 
 
 

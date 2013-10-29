@@ -1,8 +1,11 @@
 let eprintf = Format.eprintf
 let list_of_list = Fan_ops.list_of_list
 let is_irrefut_pat = Fan_ops.is_irrefut_pat
+let tuple_com = Ast_gen.tuple_com
+let typing = Ast_gen.typing
+let and_of_list = Ast_gen.and_of_list
+let seq_sem = Ast_gen.seq_sem
 open FAst
-open Ast_gen
 open Util
 let print_warning = eprintf "%a:\n%s@." Locf.print
 let prefix = "__fan_"
@@ -20,28 +23,9 @@ let mk_rule ~prod  ~action  = ({ prod; action } : Gram_def.rule )
 let mk_symbol ?(pattern= None)  ~text  ~styp  =
   ({ text; styp; pattern } : Gram_def.symbol )
 let mk_slist loc min sep symb = `List (loc, min, symb, sep)
-let new_type_var =
-  let i = ref 0 in fun ()  -> incr i; "e__" ^ (string_of_int i.contents)
-let gensym = let i = ref 0 in fun ()  -> incr i; i
-let gen_lid () = prefix ^ (string_of_int (gensym ()).contents)
-let make_ctyp (styp : Gram_def.styp) tvar =
-  (let rec aux v =
-     match (v : Gram_def.styp ) with
-     | #vid' as x -> (x : vid'  :>ctyp)
-     | `Quote _ as x -> x
-     | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
-     | `Self _loc ->
-         if tvar = ""
-         then
-           Locf.raise _loc
-             (Streamf.Error "S: illegal in anonymous entry level")
-         else
-           (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
-     | `Tok _loc ->
-         (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))) : 
-         FAst.ctyp )
-     | `Type t -> t in
-   aux styp : ctyp )
+let gen_lid () =
+  let gensym = let i = ref 0 in fun ()  -> incr i; i in
+  prefix ^ (string_of_int (gensym ()).contents)
 let rec make_exp (tvar : string) (x : Gram_def.text) =
   let rec aux tvar (x : Gram_def.text) =
     match x with
@@ -72,7 +56,7 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
           `App
             (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "obj")))),
               (`Constraint
-                 (_loc, (n.exp),
+                 (_loc, (n.id :>exp),
                    (`App
                       (_loc,
                         (`Dot
@@ -190,6 +174,24 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                                   (`App
                                      (_loc, (`Lid (_loc, "failwith")), error))))))))))) : 
            FAst.exp ) in
+   let make_ctyp (styp : Gram_def.styp) tvar =
+     (let rec aux v =
+        match (v : Gram_def.styp ) with
+        | #vid' as x -> (x : vid'  :>ctyp)
+        | `Quote _ as x -> x
+        | `App (_loc,t1,t2) -> (`App (_loc, (aux t1), (aux t2)) : FAst.ctyp )
+        | `Self _loc ->
+            if tvar = ""
+            then
+              (Locf.raise _loc) @@
+                (Streamf.Error "S: illegal in anonymous entry level")
+            else
+              (`Quote (_loc, (`Normal _loc), (`Lid (_loc, tvar))) : FAst.ctyp )
+        | `Tok _loc ->
+            (`Dot (_loc, (`Uid (_loc, "Tokenf")), (`Lid (_loc, "t"))) : 
+            FAst.ctyp )
+        | `Type t -> t in
+      aux styp : ctyp ) in
    let (_,txt) =
      Listf.fold_lefti
        (fun i  txt  (s : Gram_def.symbol)  ->
@@ -215,7 +217,7 @@ let make_extend safe (e : Gram_def.entry) =
   (let _loc = (e.name).loc in
    let ent: FAst.exp =
      `Constraint
-       (_loc, ((e.name).exp),
+       (_loc, ((e.name).id :>exp),
          (`App
             (_loc, (`Dot (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
               (`Quote (_loc, (`Normal _loc), (`Lid (_loc, ((e.name).tvar)))))))) in
@@ -298,7 +300,7 @@ let combine _loc (gram : vid option) locals extends =
     | None  -> (`Dot (_loc, (gm ()), (`Lid (_loc, "mk"))) : FAst.exp ) in
   let local_bind_of_name (x : Gram_def.name) =
     match (x : Gram_def.name ) with
-    | { exp = (`Lid (_,i) : FAst.exp); tvar = x; loc = _loc } ->
+    | { id = `Lid (_,i); tvar = x; loc = _loc } ->
         (`Bind
            (_loc, (`Lid (_loc, i)),
              (`Constraint
@@ -312,9 +314,9 @@ let combine _loc (gram : vid option) locals extends =
                           (_loc, (gm () : vid  :>ident), (`Lid (_loc, "t")))),
                        (`Quote (_loc, (`Normal _loc), (`Lid (_loc, x))))))))) : 
         FAst.bind )
-    | { exp;_} ->
+    | _ ->
         failwithf "internal error in the Grammar extension %s"
-          (Objs.dump_exp exp) in
+          (Objs.dump_vid x.id) in
   match locals with
   | [] -> extends
   | ll ->

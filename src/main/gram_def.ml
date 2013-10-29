@@ -16,11 +16,11 @@ let meta_data = new meta  ;;
 
 %ocaml{
 
-type name = {(* every entry has a name *)  
-    exp : exp;
-    tvar : string;
-    loc : loc
-  }
+type name =
+    { id : vid ;
+      tvar : string;
+      loc : loc
+    }
 
 (* we need to define a new ADT only because
    we did not find a way to expess `STself and `STtok yet  *)

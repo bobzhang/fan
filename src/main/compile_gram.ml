@@ -6,10 +6,16 @@ Fan_ops:
   list_of_list
   is_irrefut_pat
   ;
+Ast_gen:
+  tuple_com
+  typing
+  and_of_list
+  seq_sem
+  ;
+
 };;
 
 open FAst
-open Ast_gen
 open Util
 
 
@@ -43,62 +49,41 @@ let mk_symbol  ?(pattern=None)  ~text ~styp =
 
 (* given the entry of the name, make a name *)
 let mk_slist loc min sep symb = `List (loc, min, symb, sep) 
-
-let new_type_var = 
-  let i = ref 0 in fun () -> begin
-    incr i; "e__" ^ string_of_int !i
-  end 
     
-let gensym  =
-  let i = ref 0 in fun () -> (incr i; i)
 
 let gen_lid ()=
+  let gensym  = let i = ref 0 in fun () -> (incr i; i) in
   prefix^string_of_int !(gensym ())
   
 
-let make_ctyp (styp:Gram_def.styp) tvar : ctyp = 
-  let rec aux  v = 
-    match (v:Gram_def.styp) with
-    | #vid' as x -> (x : vid' :>ctyp) 
-    | `Quote _ as x -> x
-    | %ctyp'{ $t2 $t1}-> %ctyp{${aux t2} ${aux t1}}
-    | `Self _loc ->
-        if tvar = "" then
-          Locf.raise _loc (Streamf.Error ("S: illegal in anonymous entry level"))
-        else %ctyp{ '$lid:tvar }
-    | `Tok _loc -> %ctyp{ Tokenf.t }  (** BOOTSTRAPPING, associated with module name Tokenf*)
-          (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
-    | `Type t -> t  in
-  aux styp
 
       
 
 let rec make_exp (tvar : string) (x:Gram_def.text) =
-  with exp
   let rec aux tvar (x:Gram_def.text) =
     match x with
     | `List (_loc, min, t, ts) ->
         let txt = aux "" t.text in
         (match  ts with
-        |  None -> if min then  %{ `List1 $txt } else %{ `List0 $txt } 
+        |  None -> if min then  %exp{ `List1 $txt } else %exp{ `List0 $txt } 
         | Some s ->
             let x = aux tvar s.text in
-            if min then %{ `List1sep ($txt,$x)} else %{ `List0sep ($txt,$x) })
-    | `Self _loc ->  %{ `Self}
-    | `Keyword (_loc, kwd) ->  %{ `Keyword $str:kwd }
+            if min then %exp{ `List1sep ($txt,$x)} else %exp{ `List0sep ($txt,$x) })
+    | `Self _loc ->  %exp{ `Self}
+    | `Keyword (_loc, kwd) ->  %exp{ `Keyword $str:kwd }
     | `Nterm (_loc, n, lev) ->
         let obj =
-          %{ ($id{gm()}.obj
-                (${n.exp} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
+          %exp{ ($id{gm()}.obj
+                   (${(n.id:>exp)} : '$lid{n.tvar} $id{(gm(): vid :> ident)}.t ))} in 
         (match lev with
-        | Some lab -> %{ `Snterml ($obj,$str:lab)}
+        | Some lab -> %exp{ `Snterml ($obj,$str:lab)}
         | None ->
-           if n.tvar = tvar then %{ `Self} else %{ `Nterm $obj })
-    | `Opt (_loc, t) -> %{ `Opt ${aux "" t} }
-    | `Try (_loc, t) -> %{ `Try ${aux "" t} }
-    | `Peek (_loc, t) -> %{ `Peek ${aux "" t} }
+           if n.tvar = tvar then %exp{ `Self} else %exp{ `Nterm $obj })
+    | `Opt (_loc, t) -> %exp{ `Opt ${aux "" t} }
+    | `Try (_loc, t) -> %exp{ `Try ${aux "" t} }
+    | `Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
     | `Token (_loc, match_fun,  mdescr, mstr ) ->
-        %{`Token ($match_fun, $mdescr, $str:mstr)} in
+        %exp{`Token ($match_fun, $mdescr, $str:mstr)} in
   aux  tvar x
 
 
@@ -158,6 +143,20 @@ let make_action (_loc:loc)
             match $exp with
             | $pat -> $e1
             | _ -> failwith $error}  in
+  let make_ctyp (styp:Gram_def.styp) tvar : ctyp = 
+    let rec aux  v = 
+      match (v:Gram_def.styp) with
+      | #vid' as x -> (x : vid' :>ctyp) 
+      | `Quote _ as x -> x
+      | %ctyp'{ $t2 $t1}-> %ctyp{${aux t2} ${aux t1}}
+      | `Self _loc ->
+          if tvar = "" then
+            Locf.raise _loc @@ Streamf.Error ("S: illegal in anonymous entry level")
+          else %ctyp{ '$lid:tvar }
+    | `Tok _loc -> %ctyp{ Tokenf.t }  (** BOOTSTRAPPING, associated with module name Tokenf*)
+          (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
+    | `Type t -> t  in
+  aux styp in
   let (_,txt) =
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
@@ -186,11 +185,12 @@ let make_action (_loc:loc)
   (module_exp : 'mexp Gramf.t )
   ]}
   [pos] is something like
-  {[(Some `LA)]} it has type [position option] *)        
+  {[(Some `LA)]} it has type [position option] *)
+    
 let make_extend safe  (e:Gram_def.entry) :exp =  with exp
   let _loc = e.name.loc in    
   let ent =
-    %exp{(${e.name.exp}:'$lid{e.name.tvar} $id{(gm():vid :> ident)}.t)  }   in
+    %exp{(${(e.name.id :> exp)}:'$lid{e.name.tvar} $id{(gm():vid :> ident)}.t)  }   in
   let pos =
     match e.pos with
     | Some pos -> %exp{Some $pos} 
@@ -286,11 +286,11 @@ let combine _loc (gram: vid option ) locals  extends  =
     | None -> %exp{ $id{gm()}.mk} in
   let local_bind_of_name (x:Gram_def.name) =
     match (x:Gram_def.name) with 
-    | {exp = %exp@_{ $lid:i } ; tvar = x; loc = _loc} ->
+    | {id = `Lid (_,i) ; tvar = x; loc = _loc} ->
         %bind{ $lid:i =
                (grammar_entry_create $str:i : '$lid:x $id{(gm():vid :> ident)}.t )}
-    | {exp;_} -> failwithf "internal error in the Grammar extension %s"
-          (Objs.dump_exp exp)   in
+    | _  -> failwithf "internal error in the Grammar extension %s"
+          (Objs.dump_vid x.id)   in
   match locals with
   | [] -> extends
   | ll ->
