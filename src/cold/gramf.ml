@@ -155,14 +155,15 @@ let eoi_entry entry =
     let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
     extend_single (entry_eoi : 'entry_eoi t )
       (None,
-        (None, None,
-          [([`Nterm (obj (entry : 'entry t ));
-            `Token
-              (((function | `EOI _ -> true | _ -> false)), (3448991, `Empty),
-                "`EOI")],
-             ("x\n",
-               (mk_action
-                  (fun _  (x : 'entry)  (_loc : Locf.t)  -> (x : 'entry_eoi )))))]));
+        ((None, None,
+           [([`Nterm (obj (entry : 'entry t ));
+             `Token
+               (((function | `EOI _ -> true | _ -> false)),
+                 (3448991, `Empty), "`EOI")],
+              ("x\n",
+                (mk_action
+                   (fun _  (x : 'entry)  (_loc : Locf.t)  ->
+                      (x : 'entry_eoi )))))]) : olevel ));
     entry_eoi
 let find_level ?position  (entry : Gstructure.entry) =
   match entry.desc with

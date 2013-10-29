@@ -5,93 +5,98 @@ let items = Gramf.mk_dynamic g "items"
 let _ =
   Gramf.unsafe_extend_single (item : 'item Gramf.t )
     (None,
-      (None, None,
-        [([`Keyword "default";
+      ((None, None,
+         [([`Keyword "default";
+           `Token
+             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+               "`Str s")],
+            ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
+              (Gramf.mk_action
+                 (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
+                    match __fan_1 with
+                    | `Str ({ txt = s;_} : Tokenf.txt) ->
+                        ((match Ast_quotation.resolve_name ((`Sub []), s)
+                          with
+                          | None  ->
+                              Locf.failf _loc "DDSL `%s' can not be resolved"
+                                s
+                          | Some x -> Ast_quotation.set_default x) : 
+                        'item )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+         ([`Keyword "import";
+          `Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
+           ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
+             (Gramf.mk_action
+                (fun (xs : 'dot_namespace)  _  (_loc : Locf.t)  ->
+                   (Ast_quotation.paths := ((`Absolute xs) ::
+                      (Ast_quotation.paths.contents)) : 'item )))));
+         ([`Keyword "filter";
           `Token
             (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
               "`Str s")],
-           ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
+           ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
                 (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Str ({ txt = s;_} : Tokenf.txt) ->
-                       ((match Ast_quotation.resolve_name ((`Sub []), s) with
-                         | None  ->
-                             Locf.failf _loc "DDSL `%s' can not be resolved"
-                               s
-                         | Some x -> Ast_quotation.set_default x) : 'item )
+                       (Ast_filters.use_implem_filter s : 'item )
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-        ([`Keyword "import";
-         `Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
-          ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
-            (Gramf.mk_action
-               (fun (xs : 'dot_namespace)  _  (_loc : Locf.t)  ->
-                  (Ast_quotation.paths := ((`Absolute xs) ::
-                     (Ast_quotation.paths.contents)) : 'item )))));
-        ([`Keyword "filter";
-         `Token
-           (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-             "`Str s")],
-          ("Ast_filters.use_implem_filter s\n",
-            (Gramf.mk_action
-               (fun (__fan_1 : Tokenf.t)  _  (_loc : Locf.t)  ->
-                  match __fan_1 with
-                  | `Str ({ txt = s;_} : Tokenf.txt) ->
-                      (Ast_filters.use_implem_filter s : 'item )
-                  | _ ->
-                      failwith
-                        (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-        ([`Keyword "lang_clear"],
-          ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
-            (Gramf.mk_action
-               (fun _  (_loc : Locf.t)  ->
-                  (Ast_quotation.clear_map (); Ast_quotation.clear_default () : 
-                  'item )))))]));
+         ([`Keyword "lang_clear"],
+           ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
+             (Gramf.mk_action
+                (fun _  (_loc : Locf.t)  ->
+                   (Ast_quotation.clear_map ();
+                    Ast_quotation.clear_default () : 'item )))))]) : 
+      Gramf.olevel ));
   Gramf.unsafe_extend_single (dot_namespace : 'dot_namespace Gramf.t )
     (None,
-      (None, None,
-        [([`Token
+      ((None, None,
+         [([`Token
+              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+                "`Uid i");
+           `Keyword ".";
+           `Self],
+            ("i :: xs\n",
+              (Gramf.mk_action
+                 (fun (xs : 'dot_namespace)  _  (__fan_0 : Tokenf.t) 
+                    (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | `Uid ({ txt = i;_} : Tokenf.txt) -> (i ::
+                        xs : 'dot_namespace )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+         ([`Token
              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid i");
-          `Keyword ".";
-          `Self],
-           ("i :: xs\n",
+               "`Uid i")],
+           ("[i]\n",
              (Gramf.mk_action
-                (fun (xs : 'dot_namespace)  _  (__fan_0 : Tokenf.t) 
-                   (_loc : Locf.t)  ->
+                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
-                   | `Uid ({ txt = i;_} : Tokenf.txt) -> (i ::
-                       xs : 'dot_namespace )
+                   | `Uid ({ txt = i;_} : Tokenf.txt) ->
+                       ([i] : 'dot_namespace )
                    | _ ->
                        failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-        ([`Token
-            (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-              "`Uid i")],
-          ("[i]\n",
-            (Gramf.mk_action
-               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Uid ({ txt = i;_} : Tokenf.txt) ->
-                      ([i] : 'dot_namespace )
-                  | _ ->
-                      failwith
-                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+      Gramf.olevel ));
   Gramf.unsafe_extend_single (items : 'items Gramf.t )
     (None,
-      (None, None,
-        [([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"],
+      ((None, None,
+         [([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"],
+            ("()\n",
+              (Gramf.mk_action (fun _  _  (_loc : Locf.t)  -> (() : 'items )))));
+         ([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"; `Self],
            ("()\n",
-             (Gramf.mk_action (fun _  _  (_loc : Locf.t)  -> (() : 'items )))));
-        ([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"; `Self],
-          ("()\n",
-            (Gramf.mk_action
-               (fun _  _  _  (_loc : Locf.t)  -> (() : 'items )))));
-        ([],
-          ("()\n",
-            (Gramf.mk_action (fun (_loc : Locf.t)  -> (() : 'items )))))]))
+             (Gramf.mk_action
+                (fun _  _  _  (_loc : Locf.t)  -> (() : 'items )))));
+         ([],
+           ("()\n",
+             (Gramf.mk_action (fun (_loc : Locf.t)  -> (() : 'items )))))]) : 
+      Gramf.olevel ))
 let () =
   Fdir.register
     ((Tokenf.name_of_string "control"),

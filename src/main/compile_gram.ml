@@ -221,13 +221,13 @@ let make_extend safe  (e:Gram_def.entry) :exp =  with exp
         if safe then
           %exp{$id{gm()}.extend_single}
         else %exp{$id{gm()}.unsafe_extend_single} in
-        %exp{$f $ent ($pos, ${apply l})}
+        %exp{$f $ent ($pos, (${apply l} : $id{(gm() : vid :> ident)}.olevel ))}
   |`Group ls ->
       let txt = list_of_list _loc (List.map apply ls) in
       let f =
         if safe then %exp{$id{gm()}.extend}
         else %exp{$id{gm()}.unsafe_extend} in
-      %exp{$f $ent ($pos,$txt)}
+      %exp{$f $ent ($pos, ($txt : $id{(gm() : vid :>ident)}.olevel list))}
 
 
 

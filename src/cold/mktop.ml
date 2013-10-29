@@ -354,32 +354,32 @@ let p = Gramf.mk "p"
 let _ =
   Gramf.extend_single (p : 'p Gramf.t )
     (None,
-      (None, None,
-        [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
-          `Keyword "when";
-          `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-           ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
+      ((None, None,
+         [([`Nterm (Gramf.obj (pat : 'pat Gramf.t ));
+           `Keyword "when";
+           `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
+            ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
+              (Gramf.mk_action
+                 (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
+                    ((`Fun
+                        (_loc,
+                          (`Bar
+                             (_loc,
+                               (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
+                               (`Case
+                                  (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                    FAst.exp ) : 'p )))));
+         ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
+           ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
              (Gramf.mk_action
-                (fun (e : 'exp)  _  (p : 'pat)  (_loc : Locf.t)  ->
-                   ((`Fun
-                       (_loc,
-                         (`Bar
-                            (_loc,
-                              (`CaseWhen (_loc, p, e, (`Lid (_loc, "true")))),
-                              (`Case
-                                 (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                   FAst.exp ) : 'p )))));
-        ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
-          ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
-            (Gramf.mk_action
-               (fun (p : 'pat)  (_loc : Locf.t)  ->
-                  (`Fun
-                     (_loc,
-                       (`Bar
-                          (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
-                            (`Case
-                               (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
-                  'p )))))]))
+                (fun (p : 'pat)  (_loc : Locf.t)  ->
+                   (`Fun
+                      (_loc,
+                        (`Bar
+                           (_loc, (`Case (_loc, p, (`Lid (_loc, "true")))),
+                             (`Case
+                                (_loc, (`Any _loc), (`Lid (_loc, "false"))))))) : 
+                   'p )))))]) : Gramf.olevel ))
 let () = of_exp ~name:(d, "p") ~entry:p ()
 let import = Gramf.mk "import"
 let _ =
@@ -388,54 +388,56 @@ let _ =
   and name: 'name Gramf.t = grammar_entry_create "name" in
   Gramf.extend_single (a : 'a Gramf.t )
     (None,
-      (None, None,
-        [([`Token
-             (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
-               "`Uid m");
-          `Keyword ":";
-          `List1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
-          `Keyword ";"],
-           ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
-             (Gramf.mk_action
-                (fun _  (ns : 'name list)  _  (__fan_0 : Tokenf.t) 
-                   (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Uid ({ txt = m;_} : Tokenf.txt) ->
-                       (Ast_gen.sem_of_list
-                          (List.map
-                             (fun l  ->
-                                (`Value
-                                   (_loc, (`Negative _loc),
-                                     (`Bind
-                                        (_loc, (l :>FAst.pat),
-                                          (`Dot (_loc, (`Uid (_loc, m)), l))))) : 
-                                FAst.stru )) ns) : 'a )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]));
+      ((None, None,
+         [([`Token
+              (((function | `Uid _ -> true | _ -> false)), (4250480, `Any),
+                "`Uid m");
+           `Keyword ":";
+           `List1 (`Nterm (Gramf.obj (name : 'name Gramf.t )));
+           `Keyword ";"],
+            ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
+              (Gramf.mk_action
+                 (fun _  (ns : 'name list)  _  (__fan_0 : Tokenf.t) 
+                    (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | `Uid ({ txt = m;_} : Tokenf.txt) ->
+                        (Ast_gen.sem_of_list
+                           (List.map
+                              (fun l  ->
+                                 (`Value
+                                    (_loc, (`Negative _loc),
+                                      (`Bind
+                                         (_loc, (l :>FAst.pat),
+                                           (`Dot (_loc, (`Uid (_loc, m)), l))))) : 
+                                 FAst.stru )) ns) : 'a )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (import : 'import Gramf.t )
     (None,
-      (None, None,
-        [([`List1 (`Nterm (Gramf.obj (a : 'a Gramf.t )))],
-           ("Ast_gen.sem_of_list xs\n",
-             (Gramf.mk_action
-                (fun (xs : 'a list)  (_loc : Locf.t)  ->
-                   (Ast_gen.sem_of_list xs : 'import )))))]));
+      ((None, None,
+         [([`List1 (`Nterm (Gramf.obj (a : 'a Gramf.t )))],
+            ("Ast_gen.sem_of_list xs\n",
+              (Gramf.mk_action
+                 (fun (xs : 'a list)  (_loc : Locf.t)  ->
+                    (Ast_gen.sem_of_list xs : 'import )))))]) : Gramf.olevel ));
   Gramf.extend_single (name : 'name Gramf.t )
     (None,
-      (None, None,
-        [([`Token
-             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "`Lid x")],
-           ("`Lid (_loc, x)\n",
-             (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                   match __fan_0 with
-                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
-                       (`Lid (_loc, x) : 'name )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
+      ((None, None,
+         [([`Token
+              (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+                "`Lid x")],
+            ("`Lid (_loc, x)\n",
+              (Gramf.mk_action
+                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                    match __fan_0 with
+                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                        (`Lid (_loc, x) : 'name )
+                    | _ ->
+                        failwith
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
+      Gramf.olevel ))
 let () = of_stru ~name:(d, "import") ~entry:import ()
 let () =
   let f (loc : Locf.t) _meta _content =

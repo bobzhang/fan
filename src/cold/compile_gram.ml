@@ -257,7 +257,15 @@ let make_extend safe (e : Gram_def.entry) =
            FAst.exp ) in
        (`App
           (_loc, (`App (_loc, f, ent)),
-            (`Par (_loc, (`Com (_loc, pos, (apply l)))))) : FAst.exp )
+            (`Par
+               (_loc,
+                 (`Com
+                    (_loc, pos,
+                      (`Constraint
+                         (_loc, (apply l),
+                           (`Dot
+                              (_loc, (gm () : vid  :>ident),
+                                (`Lid (_loc, "olevel"))))))))))) : FAst.exp )
    | `Group ls ->
        let txt = list_of_list _loc (List.map apply ls) in
        let f =
@@ -267,7 +275,18 @@ let make_extend safe (e : Gram_def.entry) =
            (`Dot (_loc, (gm ()), (`Lid (_loc, "unsafe_extend"))) : FAst.exp ) in
        (`App
           (_loc, (`App (_loc, f, ent)),
-            (`Par (_loc, (`Com (_loc, pos, txt))))) : FAst.exp ) : exp )
+            (`Par
+               (_loc,
+                 (`Com
+                    (_loc, pos,
+                      (`Constraint
+                         (_loc, txt,
+                           (`App
+                              (_loc, (`Lid (_loc, "list")),
+                                (`Dot
+                                   (_loc, (gm () : vid  :>ident),
+                                     (`Lid (_loc, "olevel"))))))))))))) : 
+         FAst.exp ) : exp )
 let capture_antiquot =
   object 
     inherit  Objs.map as super

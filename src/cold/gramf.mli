@@ -122,11 +122,10 @@ val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a
 
 val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
-(* val parse_file_with: rule:'a t -> string -> 'a *)
+
 
 val delete_rule:  'a t -> symbol list -> unit
 
-(* val srules: production list  ->  [> `Stree of tree ] *)
 
 val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Streamf.t -> 'a) -> 'e Streamf.t -> 'b
 
@@ -155,7 +154,6 @@ val eoi_entry: 'a t -> 'a t
     
 val levels_of_entry: 'a t -> level list option
 
-(* val find_level: ?position:position ->  'a t -> level *)
     
 val token_stream_of_string : string -> stream
 
