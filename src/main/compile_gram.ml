@@ -35,14 +35,7 @@ let gm () =
   |Some _
   | None -> !module_name
 
-let mk_entry ~local ~name ~pos ~levels =
-  {Gram_def.name;pos;levels;local}
   
-let mk_level ~label ~assoc ~rules  =
-  ({label; assoc;rules} : Gram_def.level)
-  
-(* let mk_rule ~prod ~action = *)
-(*   ({prod;action}:Gram_def.rule) *)
 
 let mk_prule ~prod ~action =
   (* let env = ref [] in *)
@@ -51,33 +44,26 @@ let mk_prule ~prod ~action =
     Listf.filter_map
       (function  (p:Gram_def.psymbol) ->
         match p with
-        | (KSome, ({pattern = None;_} as s) )
-        | (KNormal, s) -> begin
+        | {kind = KSome;  symbol = ({pattern = None;_} as symbol) }
+        | {kind = KNormal; symbol} -> begin
+            incr i;
+            Some symbol 
+        end
+        | {kind = KSome; symbol = ({pattern = Some _ ;_} as s)} -> begin 
+            (* env := (prefix^string_of_int !i, x) :: env; *)
             incr i;
             Some s
         end
-        | (KSome,({pattern = Some _ ;_} as s)) -> begin 
-            (* env := (prefix^string_of_int !i, x) :: env; *)
-            incr i;
-            Some s 
-        end
-        | (KNone, {pattern = None; _ }) ->
+        | {kind = KNone; symbol = {pattern = None; _ }} ->
             None
-        | (KNone, {pattern = Some _;_}) -> begin
+        | {kind = KNone; symbol = {pattern = Some _;_}} -> begin
             (* env :=(x,None) ::env ; *)
             None 
         end
             
       ) prod in
   ({prod;action}:Gram_def.rule)
-let mk_symbol ?(pattern=None)  ~text ~styp =
-  ({ text;styp;pattern}:Gram_def.symbol)
-let mk_psymbol ?(kind=Gram_def.KNormal) ?(pattern=None)  ~text ~styp =
-  ((kind,{ text;styp;pattern}):Gram_def.psymbol)
 
-(* given the entry of the name, make a name *)
-let mk_slist loc min sep symb = `List (loc, min, symb, sep) 
-    
 
 let gen_lid ()=
   let gensym  = let i = ref 0 in fun () -> (incr i; i) in

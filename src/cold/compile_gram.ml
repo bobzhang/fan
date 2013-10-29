@@ -15,27 +15,19 @@ let gm () =
   match Configf.compilation_unit.contents with
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> module_name.contents
-let mk_entry ~local  ~name  ~pos  ~levels  =
-  { Gram_def.name = name; pos; levels; local }
-let mk_level ~label  ~assoc  ~rules  =
-  ({ label; assoc; rules } : Gram_def.level )
 let mk_prule ~prod  ~action  =
   let i = ref 0 in
   let prod =
     Listf.filter_map
       (fun (p : Gram_def.psymbol)  ->
          match p with
-         | (KSome ,({ pattern = None ;_} as s))|(KNormal ,s) ->
+         | { kind = KSome ; symbol = ({ pattern = None ;_} as symbol) }
+           |{ kind = KNormal ; symbol } -> (incr i; Some symbol)
+         | { kind = KSome ; symbol = ({ pattern = Some _;_} as s) } ->
              (incr i; Some s)
-         | (KSome ,({ pattern = Some _;_} as s)) -> (incr i; Some s)
-         | (KNone ,{ pattern = None ;_}) -> None
-         | (KNone ,{ pattern = Some _;_}) -> None) prod in
+         | { kind = KNone ; symbol = { pattern = None ;_} } -> None
+         | { kind = KNone ; symbol = { pattern = Some _;_} } -> None) prod in
   ({ prod; action } : Gram_def.rule )
-let mk_symbol ?(pattern= None)  ~text  ~styp  =
-  ({ text; styp; pattern } : Gram_def.symbol )
-let mk_psymbol ?(kind= Gram_def.KNormal)  ?(pattern= None)  ~text  ~styp  =
-  ((kind, { text; styp; pattern }) : Gram_def.psymbol )
-let mk_slist loc min sep symb = `List (loc, min, symb, sep)
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (gensym ()).contents)

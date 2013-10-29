@@ -54,7 +54,9 @@ and symbol =  {
   text: text;
   styp: styp;
   pattern: pat option} 
-and psymbol = (kind* symbol) 
+and psymbol =  {
+  kind: kind;
+  symbol: symbol} 
 and text =
   [ `List of (loc* bool* symbol* symbol option)
   | `Nterm of (loc* name* string option) | `Opt of (loc* text)

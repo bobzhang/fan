@@ -7,29 +7,13 @@ val print_warning : Locf.t -> string -> unit
 val prefix : string
 
 val module_name : vid ref
+
 val gm : unit -> vid
 
-val mk_entry :
-    local:bool->
-      name:name ->
-        pos:exp option -> levels:levels -> entry
-            
-val mk_level :
-  label:string option ->
-  assoc:exp option -> rules:rule list -> level
       
 val mk_prule :
     prod:psymbol list -> action:exp option -> rule    
-val mk_symbol :
-  ?pattern:pat option ->
-  text:text -> styp:styp -> symbol
-val mk_psymbol :
-  ?kind:Gram_def.kind ->
-  ?pattern:pat option ->
-  text:Gram_def.text -> styp:Gram_def.styp -> Gram_def.psymbol
-val mk_slist :
-    loc -> bool -> symbol option -> symbol -> text
-(* val gensym : unit -> int ref *)
+
 val gen_lid : unit -> string
     
 

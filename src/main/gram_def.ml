@@ -63,7 +63,10 @@ and symbol = {
   (* the inferred type of the result parsed by the current symbol *)
     pattern : pat option;
 }
-and psymbol = (kind * symbol)
+and psymbol = {
+    kind : kind ;
+    symbol : symbol
+  }
 and text =
  [
    `List of (loc * bool * symbol * symbol option )
