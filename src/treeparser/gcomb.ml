@@ -17,15 +17,7 @@ let slist1 ~f  ps =
     | _ -> al in
   fun (s : _ t)  ->
     let a = ps s in f (loop [a] s)
-(*    
-      let slist0sep ~err ~f s sep  =
-      let rec kont al = parser
-      |  v = sep; a = s?? err v; 's  -> kont (a::al) s
-      |  -> al  in
-      parser
-      | a = s; 's  -> f (kont [a] s)
-      |  -> f []
- *)
+
 let slist0sep ~err  ~f  s sep =
   let rec kont al (__strm : _ t) =
     match try Some (sep __strm) with  NotConsumed  -> None with
