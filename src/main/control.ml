@@ -13,12 +13,12 @@
       | Some x -> 
           Ast_quotation.set_default x
     end}
-  |"import"; dot_namespace{xs} %{Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths}
+  |"import"; dot_namespace as xs %{Ast_quotation.paths := `Absolute  xs :: !Ast_quotation.paths}
   | "filter"; Str s %{Ast_filters.use_implem_filter s}
   | "lang_clear" %{(Ast_quotation.clear_map(); Ast_quotation.clear_default())}
   ]
   dot_namespace:
-  [ Uid i; "."; S{xs} %{ i::xs}
+  [ Uid i; "."; S as xs %{ i::xs}
   | Uid i %{ [i]}
   ]
   items:

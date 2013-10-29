@@ -33,11 +33,11 @@ let g =
     | "<";L0 case SEP "|" {l} %{
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
   let case:
-    [ regexp{r};  Quot x  %{
+    [ regexp as r;  Quot x  %{
       let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
       let e = Tokenf.quot_expand expander x in (r,e)}]  
   declare_regexp:
-  ["let"; Lid x ; "=";regexp{r} %{
+  ["let"; Lid x ; "=";regexp as r %{
     if Hashtbl.mem named_regexps x then begin 
       Printf.eprintf
         "fanlex (warning): multiple definition of named regexp '%s'\n" x;
@@ -47,35 +47,35 @@ let g =
       Hashtbl.add named_regexps x r;
       %stru{let _ = () }
     end}
-  | S; S{x} %{x}]
+  | S; S as x %{x}]
 
   let lid: [ Lid y %{ (_loc, y)} ]  
   regexp:
   {
    "as"
-   [S{r1};"as"; lid {z} %{ Bind(r1,(z))} ] 
+   [S as r1;"as"; lid {z} %{ Bind(r1,(z))} ] 
    "#"
-   [S{r1}; "#" ; S{r2} %{
+   [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in
       let s2 = as_cset r2 in
       Characters (Fcset.diff s1 s2)}]
      
    "|"
-   [S{r1}; "|"; S{r2} %{ Alternative (r1,r2)}
+   [S as r1; "|"; S as r2 %{ Alternative (r1,r2)}
    ]
    "app"
-   [ S{r1};S{r2} %{ Sequence(r1,r2)}
+   [ S as r1;S as r2 %{ Sequence(r1,r2)}
    ]  
    "basic"  
    [ "_" %{ Characters Fcset.all_chars}
    | Chr c %{ Characters (Fcset.singleton (Char.code @@ TokenEval.char c))}
    | Str s %{ regexp_for_string @@ TokenEval.string s (* FIXME *)}
-   | "["; char_class{cc}; "]" %{ Characters cc}
-   | S{r1};"*" %{ Repetition r1}
-   | S{r1};"?" %{ Alternative (Epsilon,r1)}
-   | S{r1};"+" %{ Sequence (Repetition (remove_as r1), r1)}
+   | "["; char_class as cc; "]" %{ Characters cc}
+   | S as r1;"*" %{ Repetition r1}
+   | S as r1;"?" %{ Alternative (Epsilon,r1)}
+   | S as r1;"+" %{ Sequence (Repetition (remove_as r1), r1)}
 
-   | "("; S{r1}; ")" %{ r1}
+   | "("; S as r1; ")" %{ r1}
    | "eof" %{ Eof}
    | Lid x %{ begin (* FIXME token with location *)
        try Hashtbl.find named_regexps x
@@ -88,8 +88,8 @@ let g =
   ] (* FIXME rule mask more friendly error message *) }
   
   char_class:
-  [ "^"; char_class1{r} %{ Fcset.complement r}
-  | char_class1{r} %{ r}
+  [ "^"; char_class1 as r %{ Fcset.complement r}
+  | char_class1 as r %{ r}
   ]
 
   char_class1:
@@ -98,7 +98,7 @@ let g =
     let c2 = Char.code @@ TokenEval.char c2 in
     Fcset.interval c1 c2}
   | Chr c1   %{ Fcset.singleton (Char.code @@ TokenEval.char c1)}
-  | S{cc1}; S{cc2} %{ Fcset.union cc1 cc2 }
+  | S as cc1; S as cc2 %{ Fcset.union cc1 cc2 }
   ] };;  
 
 

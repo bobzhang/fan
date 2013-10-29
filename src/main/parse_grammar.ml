@@ -90,11 +90,10 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i,`A $str:x)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
-    let pattern = (* BOOTSTRAPPING *)
-      Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
+
     {text = `Token(_loc, pred, des,des_str);
       styp = `Tok _loc;
-      pattern}}
+      pattern = Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } (* BOOTSTRAPING *)}}
 
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
@@ -105,11 +104,9 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = (* BOOTSTRAPPING *)
-      Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern}}
+     pattern = Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} (* BOOTSTRAPING *)}}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" as v); "@"; Lid loc ; Lid@xloc x %{
     let i = hash_variant v in
@@ -118,11 +115,9 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
-    let pattern = (* BOOTSTRAPPING *)
-      Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
     {text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern}}
+     pattern = Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} (* BOOTSTRAPING*)}}
 
   | ("Lid" |"Uid"|"Str" as v)    %{
     let i = hash_variant v in
@@ -131,10 +126,9 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = None in (* could be None *)
     {text = `Token(_loc,pred, des,des_str);
       styp = `Tok _loc;
-      pattern}}
+      pattern = None }}
 
   |  ("Quot"|"DirQuotation" as v) ; Lid x %{
     let i = hash_variant v in                                              
@@ -143,10 +137,9 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
-    let pattern = Some %pat{$vrn:v $lid:x} in
     {text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
-      pattern}}
+      pattern = Some %pat{$vrn:v $lid:x}}}
   ]
   Inline simple_symbol:
   [  Str s %{
@@ -154,11 +147,10 @@ let query_inline (x:string) =
       styp=`Tok _loc;
       pattern= None}}
                   
-  | name{n};  ? level_str{lev} %{
+  | name as n;  ? level_str as lev %{
      {text = `Nterm (_loc ,n, lev);
       styp = %ctyp'{'$lid{n.tvar}};
-     pattern = None
-    }}]        
+     pattern = None}}]        
   single_symbol :
   [@simple_token 
   |@simple_symbol]
@@ -173,7 +165,7 @@ let query_inline (x:string) =
   simple :
   [ @simple_token %{fun (symbol :Gram_def.symbol) -> [ ({kind = Gram_def.KNormal; symbol}:Gram_def.psymbol) ]}
   | @simple_symbol %{fun (symbol : Gram_def.symbol) -> [({kind = KNormal; symbol}:Gram_def.psymbol)]} 
-  |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
+  |  ("Ant" as v); "("; or_words as ps;",";Lid@xloc s; ")" %{
       let i = hash_variant v in
       let p = %pat'@xloc{$lid:s} in
       match ps with
@@ -193,17 +185,14 @@ let query_inline (x:string) =
              match y with
              | None -> %pat{$z}
              | Some(xloc,u) -> %pat@xloc{( $z as $lid:u)} in
-           let pattern =
-             Some
-               %pat{$vrn:v (* BOOTSTRAPPING *)
-                      (({kind = $pp; _} as $p) :Tokenf.ant)} in
            ({kind = KNormal;
             symbol =
             {text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
-             pattern}}:Gram_def.psymbol))}
+             pattern = Some %pat{$vrn:v (* BOOTSTRAPPING *)
+                                   (({kind = $pp; _} as $p) :Tokenf.ant)}}}:Gram_def.psymbol))}
 
-  | "("; or_strs{v}; ")" %{
+  | "("; or_strs as v; ")" %{
     match v with
     | (vs, None) ->
         vs |>
@@ -223,17 +212,15 @@ let query_inline (x:string) =
              symbol = {
              text = `Keyword (_loc,x);
              styp = `Tok _loc;
-             pattern = Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}
-           }}:Gram_def.psymbol))}
+             pattern = Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}}}:Gram_def.psymbol))}
 
   | "S" %{
     [({ kind = KNormal;
              symbol = {
              text = `Self _loc;
              styp = `Self _loc;
-             pattern = None
-           }}:Gram_def.psymbol)]}
-  (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
+             pattern = None}}:Gram_def.psymbol)]}
+  (* |  ("Uid" as v) ; "("; or_words as p; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)
   (*       List.map (fun x -> token_of_simple_pat %pat'{$vrn:v $x}) vs *)
@@ -247,7 +234,7 @@ let query_inline (x:string) =
       [ Str s %{s}]
   let level_str :  ["Level"; Str  s %{s} ]      
  
-  let sep_symbol : [ "SEP"; single_symbol{t} %{t}]
+  let sep_symbol : [ "SEP"; single_symbol as t %{t}]
   symbol :
   (* be more precise, no recursive grammar? *)
   (*
@@ -260,7 +247,7 @@ let query_inline (x:string) =
 
    (* ("L0"|"L1" as l); ("Lid"|"Uid"| "Int" | "Int32" | "Int64" *)
    (*   | "Nativeint" |"Flo" | "Chr" |"Label"  *)
-   (*   | "Optlabel" |"Str" as v); ? sep_symbol{sep} %{ *)
+   (*   | "Optlabel" |"Str" as v); ? sep_symbol as sep %{ *)
    (* let (s:Gram_def.symbol) = *)
    (*   { text = *)
    (*     styp = *)
@@ -268,32 +255,33 @@ let query_inline (x:string) =
    (*   } in *)
    (* [mk_symbol ~text ~styp ~pattern:None ] *)
    (* } *)
-   ("L0"|"L1" as l) ; single_symbol{s}; ?  sep_symbol{sep } %{
+   ("L0"|"L1" as l) ; single_symbol as s; ?  sep_symbol{sep } %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
     [{kind =KNormal;
       symbol = {text; styp; pattern=None}}]}
 
-  | "?"; single_symbol{s}  %{
+  | "?"; single_symbol as s  %{
     let styp = %ctyp'{${s.styp} option } in 
     let text = `Opt (_loc, s.text) in
     [{kind = KNormal;
       symbol = {text; styp;pattern=None}}]}
 
-  | ("TRY"|"PEEK" as p); single_symbol{s} %{
+  | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     [{kind = KNormal; symbol={text;styp=s.styp;pattern=None}}]}
-  | simple{p} %{ p}
+  | simple as p %{ p}
 
   ]
 
   let brace_pattern :
-      ["{"; Lid@loc i ;"}" %pat'@loc{$lid:i}]
+  ["{"; Lid@loc i ;"}" %pat'@loc{$lid:i}
+  | "as"; Lid@loc i %pat'@loc{$lid:i}]
 
   psymbol :
-  [ symbol{ss} ; ? brace_pattern {p} %{
+  [ symbol as ss ; ? brace_pattern {p} %{
     List.map (fun (s:Gram_def.psymbol)(* ((x,(y:Gram_def.symbol)) as s) *) ->
       match p with
       |Some _ ->
@@ -311,18 +299,18 @@ let query_inline (x:string) =
   (* extend language           *)
   (*****************************)      
   extend_header :
-  [ "("; qualid{i}; ":"; t_qualid{t}; ")" %{
+  [ "("; qualid as i; ":"; t_qualid as t; ")" %{
     let old=gm() in 
     let () = module_name := t  in
     (Some i,old)}
-  | qualuid{t} %{
+  | qualuid as t %{
       let old = gm() in
       let () = module_name :=  t in 
       (None,old)}
   | %{ (None,gm())} ]
 
   extend_body :
-  [ extend_header{rest};   L1 entry {el} %{
+  [ extend_header as rest;   L1 entry {el} %{
     let (gram,old) = rest in
     let items = Listf.filter_map (fun x -> x) el in
     let res = make _loc {items ; gram; safe = true} in 
@@ -331,7 +319,7 @@ let query_inline (x:string) =
 
   (* see [extend_body] *)
   unsafe_extend_body :
-  [ extend_header{rest};   L1 entry {el} %{
+  [ extend_header as rest;   L1 entry {el} %{
     let (gram,old) = rest in
     let items = Listf.filter_map (fun x ->x ) el in 
     let res = make _loc {items ; gram; safe = false} in 
@@ -340,24 +328,24 @@ let query_inline (x:string) =
       
   (* parse qualified [X.X] *)
   qualuid:
-  [ Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
+  [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
   | Uid x %{ `Uid(_loc,x)}
   ] 
 
   qualid:
-  [ Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
+  [ Uid x ; "."; S as xs %{ `Dot(_loc,`Uid(_loc,x),xs)}
   | Lid i %{ `Lid(_loc,i)}]
 
   t_qualid:
-  [ Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
+  [ Uid x; ".";  S as xs %{ %ident'{$uid:x.$xs}}
   | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}] 
 
   (* stands for the non-terminal  *)
-  name: [ qualid{il} %{mk_name il}] 
+  name: [ qualid as il %{mk_name il}] 
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid{il}; ?  str {name} %{
+  [ qualid as il; ?  str {name} %{
     let x =
       match name with
       | Some x ->
@@ -372,7 +360,7 @@ let query_inline (x:string) =
     (x,mk_name il)}]
 
   entry:
-  [ entry_name{rest}; ":";  ? position{pos}; level_list{levels}
+  [ entry_name as rest; ":";  ? position as pos; level_list as levels
     %{
     let (n,p) = rest in
       begin 
@@ -384,7 +372,7 @@ let query_inline (x:string) =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some {name=p; local=false;pos;levels}
       end}
-  |  "let" ; entry_name{rest}; ":";  ? position{pos}; level_list{levels} %{
+  |  "let" ; entry_name as rest; ":";  ? position as pos; level_list as levels %{
     let (n,p) = rest in
       begin
         (match n with
@@ -395,7 +383,7 @@ let query_inline (x:string) =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some {name=p;local=true;pos;levels}
       end}
-  | "Inline"; Lid x ; ":"; rule_list{rules} %{
+  | "Inline"; Lid x ; ":"; rule_list as rules %{
     begin
       Hashtbl.add inline_rules x rules;
       None
@@ -409,9 +397,9 @@ let query_inline (x:string) =
   | level {l} %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  ? str {label};  ? assoc{assoc}; rule_list{rules}
+  [  ? str {label};  ? assoc as assoc; rule_list as rules
        %{{label;assoc;rules}} ]
-  (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
+  (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT as s %{()} ] } *)
   assoc :
   [ ("LA"|"RA"|"NA" as x) %exp{$vrn:x} ]
 
@@ -421,14 +409,14 @@ let query_inline (x:string) =
   | "["; L1 rule SEP "|"{ruless}; "]" %{Listf.concat ruless}]
 
   rule :
-  [ left_rule {prod}; ? opt_action{action} %{
+  [ left_rule {prod}; ? opt_action as action %{
     let prods = Listf.cross prod in
     List.map
       (fun
         (prod:Gram_def.psymbol list) ->
           mk_prule ~prod ~action) prods}
 
-  | "@"; Lid@xloc x ; ? opt_action{action} %{
+  | "@"; Lid@xloc x ; ? opt_action as action %{
     let rules =
       match query_inline x with
       | Some x -> x
@@ -445,8 +433,8 @@ let query_inline (x:string) =
   }
   ]
   let left_rule :
-   [ psymbol{x} %{[x]}
-   | psymbol{x};";" ;S{xs} %{ x::xs }
+   [ psymbol as x %{[x]}
+   | psymbol as x;";" ;S as xs %{ x::xs }
    |    %{[]}]   
    (* [ L0 psymbol SEP ";"{prod} %{prod}]    *)
   let opt_action :
@@ -514,11 +502,11 @@ end;;
 (* let _loc = Locf.ghost; *)
 (* let u : FanGrammar.entry= {:entry| *)
 (*   simple_exp: *)
-(*   [ a_lident{i} -> %exp{ $(id:(i:>ident)) } *)
-(*   | "("; exp{e}; ")" -> e ] *)
+(*   [ a_lident as i -> %exp{ $(id:(i:>ident)) } *)
+(*   | "("; exp as e; ")" -> e ] *)
 (* |};   *)
 (* let u : Gram_def.rule = {:rule| *)
-(*   a_lident{i} -> print_string i *)
+(*   a_lident as i -> print_string i *)
 (* |};   *)
 
 (* let u : Gram_def.symbol = {:symbol| *)

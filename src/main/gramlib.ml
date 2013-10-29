@@ -29,8 +29,8 @@ let symbolchar s i =
 (*        [  L0 [ fan_quot{x}; ";" -> x ]{strs} -> %exp{ begin $list:strs end } ] ] *)
 (*   fan_quot: *)
 (*     ["top" *)
-(*        [ "lang"; STRING{quot}-> begin      Ast_quotation.default:= quot;  unit_literal _loc end  *)
-(*        | "lang_at"; STRING{tag}; STRING{quot}->begin *)
+(*        [ "lang"; STRING as quot-> begin      Ast_quotation.default:= quot;  unit_literal _loc end  *)
+(*        | "lang_at"; STRING as tag; STRING as quot->begin *)
 (*            eprintf "Set: quotation expander %s at position %s@." quot tag ; *)
 (*            Ast_quotation.default_at_pos tag quot; *)
 (*            unit_literal _loc *)
@@ -40,16 +40,16 @@ let symbolchar s i =
 (*            Hashtbl.clear Ast_quotation.default_tbl; *)
 (*            unit_literal _loc *)
 (*        end ] ] END; *)
-  (* fan_stru:[[STRING{file}; STRING{c} -> stru_of_file (file,c) ] ] *)
-  (* fan_exp: [[ STRING{file}; STRING{c}-> exp_of_file (file,c) ]] *)
-  (* fan_clfield: [[ STRING{file}; STRING{c}->  clfield_of_file (file,c) ]] *)
-  (* fan_ctyp: [[STRING{file};STRING{c} ->  ctyp_of_file (file,c) ]] *)
+  (* fan_stru:[[STRING as file; STRING as c -> stru_of_file (file,c) ] ] *)
+  (* fan_exp: [[ STRING as file; STRING as c-> exp_of_file (file,c) ]] *)
+  (* fan_clfield: [[ STRING as file; STRING as c->  clfield_of_file (file,c) ]] *)
+  (* fan_ctyp: [[STRING as file;STRING as c ->  ctyp_of_file (file,c) ]] *)
 
 
   (* let mk_semi_list nt nts = *)
   (*   with rec_exp *)
   (*   {:extend|Gramf *)
-  (*     nts:[ nt{b1};";";S{b2} -> %{$b1;$b2} | nt{b1};";" -> b1 | nt{b1} -> b1 ] *)
+  (*     nts:[ nt as b1;";";S as b2 -> %{$b1;$b2} | nt as b1;";" -> b1 | nt as b1 -> b1 ] *)
   (*   |}; *)
     
   

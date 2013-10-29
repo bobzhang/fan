@@ -48,7 +48,7 @@ val t_qualid : vid Gramf.t
 
 (** return an entry [Gram_def.entry]
   {[with str t entry {| entry:
-    [ entry_name{(n,p)}; ":";  OPT position{pos}; level_list{levels}
+    [ entry_name{(n,p)}; ":";  OPT position as pos; level_list as levels
      -> begin 
      match n with
      |`name old -> Ast_quotation.default := old
@@ -129,7 +129,7 @@ val level_list :
      {[
      with str t extend_body  {|
      nonterminalsclear:
-     [ qualuid{t}; L0 [a_lident{x}->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
+     [ qualuid as t; L0 [a_lident as x->x ]{ls} -> ()] |} |> Ast2pt.print_exp f;
 
      Gramf.extend (nonterminalsclear : 'nonterminalsclear Gramf.t )
      (None,

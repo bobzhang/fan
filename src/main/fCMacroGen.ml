@@ -89,7 +89,7 @@ let define ~exp ~pat eo y  =
     | Some (sl, e) ->
         {:extend| 
           exp: Level "apply"
-          [ `Uid $y; S{param} ->
+          [ `Uid $y; S as param ->
             let el =
               match param with 
               | %exp{ ($par:e) } -> list_of_com e []
@@ -105,7 +105,7 @@ let define ~exp ~pat eo y  =
         [ `Lid x -> x ]
             
         pat: Level "simple"
-        [ `Uid $y; S{param} ->
+        [ `Uid $y; S as param ->
           let pl =
             match param with
             | %pat{ ($par:p) } -> list_of_com p [] (* precise *)

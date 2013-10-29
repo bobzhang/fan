@@ -15,28 +15,28 @@ let str : [Str y  %{y}]
 let type_entry :
       [ Lid x  %{ (_loc,x,None,None)}
       | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
-      | "("; Lid x ; Str y; Syntaxf.ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; Lid x; ":"; Syntaxf.ctyp{t}; ? str {y};  ")" %{ (_loc,x,y,Some t)}
+      | "("; Lid x ; Str y; Syntaxf.ctyp as t;  ")" %{ (_loc,x,Some y,Some t)}
+      | "("; Lid x; ":"; Syntaxf.ctyp as t; ? str {y};  ")" %{ (_loc,x,y,Some t)}
       ]      
 
   let ty :
-  [ "("; qualid{x} ; ":"; t_qualid{t};")" %{ `Dyn(x,t)}
-  |  qualuid{t} %{ `Static t}
+  [ "("; qualid as x ; ":"; t_qualid as t;")" %{ `Dyn(x,t)}
+  |  qualuid as t %{ `Static t}
   | %{ `Static (`Uid(_loc,"Gramf")) (** BOOTSTRAP, associated with module [Gramf]*)}
   ]
       
 qualuid :
-  [ Uid x; ".";  S{xs}  %ident'{$uid:x.$xs}
+  [ Uid x; ".";  S as xs  %ident'{$uid:x.$xs}
   | Uid x %{ `Uid(_loc,x)}
   ] 
 
 qualid :
-  [ Uid x ; "."; S{xs} %{ `Dot(_loc,`Uid(_loc,x),xs)}
+  [ Uid x ; "."; S as xs %{ `Dot(_loc,`Uid(_loc,x),xs)}
   | Lid i %{ `Lid(_loc,i)}
   ]
       
 t_qualid :
-  [ Uid x; ".";  S{xs} %{ %ident'{$uid:x.$xs}}
+  [ Uid x; ".";  S as xs %{ %ident'{$uid:x.$xs}}
   | Uid x; "."; Lid "t" %{ `Uid(_loc,x)}
   ] 
       
@@ -61,7 +61,7 @@ nonterminals : (* when [ty] is nullable, it should take care of the following *)
         | (None,Some typ) ->
             %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)} ]
 newterminals :
-  [ "("; qualid{x}; ":";t_qualid{t};")"; L1 type_entry {ls}
+  [ "("; qualid as x; ":";t_qualid as t;")"; L1 type_entry {ls}
     %{
       let mk  =
         %exp{$id:t.mk_dynamic ${(x:vid:>exp)} }  in
