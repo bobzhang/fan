@@ -68,7 +68,11 @@ let query_inline (x:string) =
 
 
 %extend{(g:Gramf.t)
-  (** FIXME bring antiquotation back later*)
+
+
+  (****************************************)        
+  (* FIXME bring antiquotation back later*)
+  (****************************************)                  
   Inline simple_token :
   [ ("EOI" as v) %{
     let i = hash_variant v in
@@ -79,9 +83,7 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
     {Gram_def.text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
-      pattern = None;}
-
-  }
+      pattern = None;}}
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
     let i = hash_variant v in
     let pred = %exp{function (*BOOTSTRAPPING*)
@@ -147,6 +149,7 @@ let query_inline (x:string) =
       styp = `Tok _loc;
       pattern}}
   ]
+          
   single_symbol : [@simple_token ]
           
   let or_words :
@@ -225,8 +228,21 @@ let query_inline (x:string) =
     transformation 
     L1 Str Sep ";"
     L1 Lid Sep ";"
-   *)    
-  [ ("L0"|"L1" as l) ; single_symbol{s}; OPT  sep_symbol{sep } %{
+   *)
+      
+  [
+
+   (* ("L0"|"L1" as l); ("Lid"|"Uid"| "Int" | "Int32" | "Int64" *)
+   (*   | "Nativeint" |"Flo" | "Chr" |"Label"  *)
+   (*   | "Optlabel" |"Str" as v); OPT sep_symbol{sep} %{ *)
+   (* let (s:Gram_def.symbol) = *)
+   (*   { text = *)
+   (*     styp = *)
+   (*     pattern = None *)
+   (*   } in *)
+   (* [mk_symbol ~text ~styp ~pattern:None ] *)
+   (* } *)
+   ("L0"|"L1" as l) ; single_symbol{s}; OPT  sep_symbol{sep } %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}

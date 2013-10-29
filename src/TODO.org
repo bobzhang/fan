@@ -1,0 +1,32 @@
+
+
+* 0001 pretty print Ant :easy:
+  #+BEGIN_SRC ocaml
+    stru:
+      [  "top" LA
+       cont:
+         
+       start:
+         |-"exception"---constructor_declaration---.
+         |-"external"---a_lident---":"---ctyp---"="---string_list---.
+         |-"include"---mexp---.
+         |-"module"-+-"rec"---mbind---.
+         |          |-"type"---a_uident---"="---mtyp---.
+         |          `-a_uident---mbind0---.
+         |-"open"-+-"!"---module_longident---.
+         |        `-module_longident---.
+         |-"type"---type_declaration-+-"with"---"("---string_list---")"---.
+         |                           `-.
+         |-"let"-+-"module"---a_uident---mbind0---"in"---exp---.
+         |       |-"open"-+-"!"---module_longident---"in"---exp---.
+         |       |        `-module_longident---"in"---exp---.
+         |       |-"try"---opt_rec---bind---"in"---exp---"with"---case---.
+         |       `-opt_rec---bind-+-"in"---exp---.
+         |                        `-.
+         |-"class"-+-"type"---cltyp_declaration---.
+         |         `-class_declaration---.
+         |-`Ant s---.
+         |-`Ant s---.  (* more precise later*)
+         |-`Quot _---.
+         `-exp---.]  
+  #+END_SRC
