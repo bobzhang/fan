@@ -55,7 +55,6 @@ let g =
               "Int64";
               "Nativeint";
               "Flo";
-              "OPT";
               "TRY";
               "PEEK";
               "L0";
@@ -3544,7 +3543,7 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Keyword "OPT";
+         ([`Keyword "?";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Opt (_loc, (s.text)) in [mk_symbol ~text ~styp ~pattern:None]\n",
              (Gramf.mk_action

@@ -16,7 +16,7 @@ let type_entry :
       [ Lid x  %{ (_loc,x,None,None)}
       | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
       | "("; Lid x ; Str y; Syntaxf.ctyp{t};  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; Lid x; ":"; Syntaxf.ctyp{t}; OPT str {y};  ")" %{ (_loc,x,y,Some t)}
+      | "("; Lid x; ":"; Syntaxf.ctyp{t}; ? str {y};  ")" %{ (_loc,x,y,Some t)}
       ]      
 
   let ty :

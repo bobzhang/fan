@@ -39,7 +39,8 @@ let g =
                "."; ";"; "{"; "}"; "let";"[";"]";
                "SEP";"LEVEL"; "S"; "EOI"; "Lid";"Uid";
                "Ant";"Quot"; "DirQuotation"; "Str";
-               "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint"; "Flo"; "OPT";
+               "Label"; "Optlabel"; "Chr"; "Int"; "Int32"; "Int64"; "Int64"; "Nativeint";
+               "Flo"; 
                "TRY"; "PEEK"; "L0"; "L1"; "First"; "Last";
                "Before"; "After"; "Level"; "LA"; "RA"; "NA"; "+";"*";"?"; "="; "@";
                "Inline"] ();;
@@ -152,7 +153,7 @@ let query_inline (x:string) =
   ]
   Inline simple_symbol:
   [  Str s %{mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None}              
-  | name{n};  OPT level_str{lev} %{
+  | name{n};  ? level_str{lev} %{
      mk_symbol  ~text:(`Nterm (_loc ,n, lev))
        ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]        
   single_symbol :
@@ -237,7 +238,7 @@ let query_inline (x:string) =
 
    (* ("L0"|"L1" as l); ("Lid"|"Uid"| "Int" | "Int32" | "Int64" *)
    (*   | "Nativeint" |"Flo" | "Chr" |"Label"  *)
-   (*   | "Optlabel" |"Str" as v); OPT sep_symbol{sep} %{ *)
+   (*   | "Optlabel" |"Str" as v); ? sep_symbol{sep} %{ *)
    (* let (s:Gram_def.symbol) = *)
    (*   { text = *)
    (*     styp = *)
@@ -245,14 +246,15 @@ let query_inline (x:string) =
    (*   } in *)
    (* [mk_symbol ~text ~styp ~pattern:None ] *)
    (* } *)
-   ("L0"|"L1" as l) ; single_symbol{s}; OPT  sep_symbol{sep } %{
+   ("L0"|"L1" as l) ; single_symbol{s}; ?  sep_symbol{sep } %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
-  | "OPT"; single_symbol{s}  %{
+  | "?"; single_symbol{s}  %{
     let styp = %ctyp'{${s.styp} option } in 
     let text = `Opt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
+
   | ("TRY"|"PEEK" as p); single_symbol{s} %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
@@ -265,7 +267,7 @@ let query_inline (x:string) =
       ["{"; Lid@loc i ;"}" %pat'@loc{$lid:i}]
 
   psymbol :
-  [ symbol{ss} ; OPT  brace_pattern {p} %{
+  [ symbol{ss} ; ? brace_pattern {p} %{
     List.map (fun (s:Gram_def.symbol) ->
       match p with
       |Some _ ->
@@ -329,7 +331,7 @@ let query_inline (x:string) =
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid{il}; OPT  str {name} %{
+  [ qualid{il}; ?  str {name} %{
     let x =
       match name with
       | Some x ->
@@ -344,7 +346,7 @@ let query_inline (x:string) =
     (x,mk_name il)}]
 
   entry:
-  [ entry_name{rest}; ":";  OPT position{pos}; level_list{levels}
+  [ entry_name{rest}; ":";  ? position{pos}; level_list{levels}
     %{
     let (n,p) = rest in
       begin 
@@ -356,7 +358,7 @@ let query_inline (x:string) =
             failwithf "For Group levels the position can not be applied to Level"
         | _ -> Some (mk_entry ~local:false ~name:p ~pos ~levels)
       end}
-  |  "let" ; entry_name{rest}; ":";  OPT position{pos}; level_list{levels} %{
+  |  "let" ; entry_name{rest}; ":";  ? position{pos}; level_list{levels} %{
     let (n,p) = rest in
       begin
         (match n with
@@ -381,7 +383,7 @@ let query_inline (x:string) =
   | level {l} %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  OPT str {label};  OPT assoc{assoc}; rule_list{rules}
+  [  ? str {label};  ? assoc{assoc}; rule_list{rules}
        %{mk_level ~label ~assoc ~rules} ]
   (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT{s} %{()} ] } *)
   assoc :
@@ -393,11 +395,11 @@ let query_inline (x:string) =
   | "["; L1 rule SEP "|"{ruless}; "]" %{Listf.concat ruless}]
 
   rule :
-  [ left_rule {prod}; OPT opt_action{action} %{
+  [ left_rule {prod}; ? opt_action{action} %{
     let prods = Listf.cross prod in
     List.map (fun prod -> mk_rule ~prod ~action) prods}
 
-  | "@"; Lid@xloc x ; OPT opt_action{action} %{
+  | "@"; Lid@xloc x ; ? opt_action{action} %{
     let rules =
       match query_inline x with
       | Some x -> x
