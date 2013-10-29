@@ -18,7 +18,7 @@ let _ =
                 "`Str y")],
             ("y\n",
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Str ({ txt = y;_} : Tokenf.txt) -> (y : 'str )
                     | _ ->
@@ -33,7 +33,7 @@ let _ =
                 "`Lid x")],
             ("(_loc, x, None, None)\n",
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Lid ({ txt = x;_} : Tokenf.txt) ->
                         ((_loc, x, None, None) : 'type_entry )
@@ -50,8 +50,9 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), None)\n",
              (Gramf.mk_action
-                (fun ~ans_3:_  (__fan_2 : Tokenf.t)  (__fan_1 : Tokenf.t) 
-                   ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_3:_  ~__fan_2:(__fan_2 : Tokenf.t) 
+                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                    ->
                    match (__fan_2, __fan_1) with
                    | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
                                                          ({ txt = x;_} :
@@ -72,8 +73,10 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, (Some y), (Some t))\n",
              (Gramf.mk_action
-                (fun ~ans_4:_  (t : 'Syntaxf__ctyp)  (__fan_2 : Tokenf.t) 
-                   (__fan_1 : Tokenf.t)  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp) 
+                   ~__fan_2:(__fan_2 : Tokenf.t) 
+                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                    ->
                    match (__fan_2, __fan_1) with
                    | (`Str ({ txt = y;_} : Tokenf.txt),`Lid
                                                          ({ txt = x;_} :
@@ -93,9 +96,10 @@ let _ =
           `Keyword ")"],
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
-                (fun ~ans_5:_  (y : 'str option)  (t : 'Syntaxf__ctyp) 
-                   ~ans_2:_  (__fan_1 : Tokenf.t)  ~ans_0:_  (_loc : Locf.t) 
-                   ->
+                (fun ~__fan_5:_  ~__fan_4:(y : 'str option) 
+                   ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
+                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                    ->
                    match __fan_1 with
                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        ((_loc, x, y, (Some t)) : 'type_entry )
@@ -113,12 +117,14 @@ let _ =
            `Keyword ")"],
             ("`Dyn (x, t)\n",
               (Gramf.mk_action
-                 (fun ~ans_4:_  (t : 't_qualid)  ~ans_2:_  (x : 'qualid) 
-                    ~ans_0:_  (_loc : Locf.t)  -> (`Dyn (x, t) : 'ty )))));
+                 (fun ~__fan_4:_  ~__fan_3:(t : 't_qualid)  ~__fan_2:_ 
+                    ~__fan_1:(x : 'qualid)  ~__fan_0:_  (_loc : Locf.t)  ->
+                    (`Dyn (x, t) : 'ty )))));
          ([`Nterm (Gramf.obj (qualuid : 'qualuid Gramf.t ))],
            ("`Static t\n",
              (Gramf.mk_action
-                (fun (t : 'qualuid)  (_loc : Locf.t)  -> (`Static t : 'ty )))));
+                (fun ~__fan_0:(t : 'qualuid)  (_loc : Locf.t)  ->
+                   (`Static t : 'ty )))));
          ([],
            ("`Static (`Uid (_loc, \"Gramf\"))\n",
              (Gramf.mk_action
@@ -134,8 +140,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun (xs : 'qualuid)  ~ans_1:_  (__fan_0 : Tokenf.t) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualuid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualuid )
@@ -147,7 +153,7 @@ let _ =
                "`Uid x")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ({ txt = x;_} : Tokenf.txt) ->
                        (`Uid (_loc, x) : 'qualuid )
@@ -165,8 +171,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun (xs : 'qualid)  ~ans_1:_  (__fan_0 : Tokenf.t) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'qualid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 'qualid )
@@ -178,7 +184,7 @@ let _ =
                "`Lid i")],
            ("`Lid (_loc, i)\n",
              (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Lid ({ txt = i;_} : Tokenf.txt) ->
                        (`Lid (_loc, i) : 'qualid )
@@ -196,8 +202,8 @@ let _ =
            `Self],
             ("`Dot (_loc, (`Uid (_loc, x)), xs)\n",
               (Gramf.mk_action
-                 (fun (xs : 't_qualid)  ~ans_1:_  (__fan_0 : Tokenf.t) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 't_qualid)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = x;_} : Tokenf.txt) ->
                         (`Dot (_loc, (`Uid (_loc, x)), xs) : 't_qualid )
@@ -214,8 +220,8 @@ let _ =
                | _ -> false)), (3802919, (`A "t")), "`Lid \"t\"")],
            ("`Uid (_loc, x)\n",
              (Gramf.mk_action
-                (fun (__fan_2 : Tokenf.t)  ~ans_1:_  (__fan_0 : Tokenf.t) 
-                   (_loc : Locf.t)  ->
+                (fun ~__fan_2:(__fan_2 : Tokenf.t)  ~__fan_1:_ 
+                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match (__fan_2, __fan_0) with
                    | (`Lid ({ txt = "t";_} : Tokenf.txt),`Uid
                                                            ({ txt = x;_} :
@@ -232,7 +238,8 @@ let _ =
            `List1 (`Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))],
             ("let mk =\n  match t with\n  | `Static t -> (`Dot (_loc, t, (`Lid (_loc, \"mk\"))) : FAst.exp )\n  | `Dyn (x,t) ->\n      let x = (x : vid  :>exp) in\n      (`App (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), x) : \n        FAst.exp ) in\nsem_of_list\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls)\n",
               (Gramf.mk_action
-                 (fun (ls : 'type_entry list)  (t : 'ty)  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(ls : 'type_entry list)  ~__fan_0:(t : 'ty) 
+                    (_loc : Locf.t)  ->
                     (let mk =
                        match t with
                        | `Static t ->
@@ -295,8 +302,9 @@ let _ =
            `List1 (`Nterm (Gramf.obj (type_entry : 'type_entry Gramf.t )))],
             ("let mk: FAst.exp =\n  `App\n    (_loc, (`Dot (_loc, t, (`Lid (_loc, \"mk_dynamic\")))), (x : vid  :>exp)) in\nsem_of_list\n  ((`Value\n      (_loc, (`Negative _loc),\n        (`Bind\n           (_loc, (x :>pat),\n             (`App\n                (_loc,\n                  (`App\n                     (_loc,\n                       (`App\n                          (_loc,\n                            (`Dot (_loc, t, (`Lid (_loc, \"create_lexer\")))),\n                            (`Label\n                               (_loc, (`Lid (_loc, \"annot\")),\n                                 (`Str (_loc, \"\")))))),\n                       (`Label\n                          (_loc, (`Lid (_loc, \"keywords\")),\n                            (`Uid (_loc, \"[]\")))))), (`Uid (_loc, \"()\"))))))) : \n  FAst.stru ) ::\n  (List.map\n     (fun (_loc,x,descr,ty)  ->\n        match (descr, ty) with\n        | (Some d,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, d))))))) : FAst.stru )\n        | (Some d,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, d)))), typ))))) : \n            FAst.stru )\n        | (None ,None ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`App (_loc, mk, (`Str (_loc, x))))))) : FAst.stru )\n        | (None ,Some typ) ->\n            (`Value\n               (_loc, (`Negative _loc),\n                 (`Bind\n                    (_loc, (`Lid (_loc, x)),\n                      (`Constraint\n                         (_loc, (`App (_loc, mk, (`Str (_loc, x)))), typ))))) : \n            FAst.stru )) ls))\n",
               (Gramf.mk_action
-                 (fun (ls : 'type_entry list)  ~ans_4:_  (t : 't_qualid) 
-                    ~ans_2:_  (x : 'qualid)  ~ans_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_5:(ls : 'type_entry list)  ~__fan_4:_ 
+                    ~__fan_3:(t : 't_qualid)  ~__fan_2:_ 
+                    ~__fan_1:(x : 'qualid)  ~__fan_0:_  (_loc : Locf.t)  ->
                     (let mk: FAst.exp =
                        `App
                          (_loc,

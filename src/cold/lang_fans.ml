@@ -15,40 +15,41 @@ let _ =
            `Keyword ")"],
             ("List.iter Typehook.plugin_add plugins\n",
               (Gramf.mk_action
-                 (fun ~ans_3:_  (plugins : 'id list)  ~ans_1:_  ~ans_0:_ 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_3:_  ~__fan_2:(plugins : 'id list)  ~__fan_1:_ 
+                    ~__fan_0:_  (_loc : Locf.t)  ->
                     (List.iter Typehook.plugin_add plugins : 'fan_quot )))));
          ([`Keyword "unload";
           `List1sep
             ((`Nterm (Gramf.obj (id : 'id Gramf.t ))), (`Keyword ","))],
            ("List.iter Typehook.plugin_remove plugins\n",
              (Gramf.mk_action
-                (fun (plugins : 'id list)  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:(plugins : 'id list)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    (List.iter Typehook.plugin_remove plugins : 'fan_quot )))));
          ([`Keyword "clear"],
            ("State.reset_current_filters ()\n",
              (Gramf.mk_action
-                (fun ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_0:_  (_loc : Locf.t)  ->
                    (State.reset_current_filters () : 'fan_quot )))));
          ([`Keyword "keep"; `Keyword "on"],
            ("State.keep := true\n",
              (Gramf.mk_action
-                (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (State.keep := true : 'fan_quot )))));
          ([`Keyword "keep"; `Keyword "off"],
            ("State.keep := false\n",
              (Gramf.mk_action
-                (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (State.keep := false : 'fan_quot )))));
          ([`Keyword "show_code"; `Keyword "on"],
            ("Typehook.show_code := true\n",
              (Gramf.mk_action
-                (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (Typehook.show_code := true : 'fan_quot )))));
          ([`Keyword "show_code"; `Keyword "off"],
            ("Typehook.show_code := false\n",
              (Gramf.mk_action
-                (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (Typehook.show_code := false : 'fan_quot )))))]) : 
       Gramf.olevel ));
   Gramf.unsafe_extend_single (id : 'id Gramf.t )
@@ -59,7 +60,7 @@ let _ =
                 "`Lid x")],
             ("x\n",
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Lid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
                     | _ ->
@@ -70,7 +71,7 @@ let _ =
                "`Uid x")],
            ("x\n",
              (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ({ txt = x;_} : Tokenf.txt) -> (x : 'id )
                    | _ ->
@@ -83,7 +84,7 @@ let _ =
          [([`Nterm (Gramf.obj (fan_quot : 'fan_quot Gramf.t )); `Keyword ";"],
             ("",
               (Gramf.mk_action
-                 (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                     (() : 'fan_quot_semi )))))]) : Gramf.olevel ));
   Gramf.unsafe_extend_single (fan_quots : 'fan_quots Gramf.t )
     (None,
@@ -92,7 +93,7 @@ let _ =
               (`Nterm (Gramf.obj (fan_quot_semi : 'fan_quot_semi Gramf.t )))],
             ("(`Uid (_loc, \"()\") : FAst.exp )\n",
               (Gramf.mk_action
-                 (fun ~ans_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
                     ((`Uid (_loc, "()") : FAst.exp ) : 'fan_quots )))))]) : 
       Gramf.olevel ))
 let _ =

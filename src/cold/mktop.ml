@@ -360,7 +360,8 @@ let _ =
            `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
             ("(`Fun\n   (_loc,\n     (`Bar\n        (_loc, (`CaseWhen (_loc, p, e, (`Lid (_loc, \"true\")))),\n          (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\"))))))) : FAst.exp )\n",
               (Gramf.mk_action
-                 (fun (e : 'exp)  ~ans_1:_  (p : 'pat)  (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(e : 'exp)  ~__fan_1:_  ~__fan_0:(p : 'pat) 
+                    (_loc : Locf.t)  ->
                     ((`Fun
                         (_loc,
                           (`Bar
@@ -372,7 +373,7 @@ let _ =
          ([`Nterm (Gramf.obj (pat : 'pat Gramf.t ))],
            ("`Fun\n  (_loc,\n    (`Bar\n       (_loc, (`Case (_loc, p, (`Lid (_loc, \"true\")))),\n         (`Case (_loc, (`Any _loc), (`Lid (_loc, \"false\")))))))\n",
              (Gramf.mk_action
-                (fun (p : 'pat)  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(p : 'pat)  (_loc : Locf.t)  ->
                    (`Fun
                       (_loc,
                         (`Bar
@@ -397,8 +398,8 @@ let _ =
            `Keyword ";"],
             ("Ast_gen.sem_of_list\n  (List.map\n     (fun l  ->\n        (`Value\n           (_loc, (`Negative _loc),\n             (`Bind\n                (_loc, (l :>FAst.pat), (`Dot (_loc, (`Uid (_loc, m)), l))))) : \n        FAst.stru )) ns)\n",
               (Gramf.mk_action
-                 (fun ~ans_3:_  (ns : 'name list)  ~ans_1:_ 
-                    (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_3:_  ~__fan_2:(ns : 'name list)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = m;_} : Tokenf.txt) ->
                         (Ast_gen.sem_of_list
@@ -420,7 +421,7 @@ let _ =
          [([`List1 (`Nterm (Gramf.obj (a : 'a Gramf.t )))],
             ("Ast_gen.sem_of_list xs\n",
               (Gramf.mk_action
-                 (fun (xs : 'a list)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(xs : 'a list)  (_loc : Locf.t)  ->
                     (Ast_gen.sem_of_list xs : 'import )))))]) : Gramf.olevel ));
   Gramf.extend_single (name : 'name Gramf.t )
     (None,
@@ -430,7 +431,7 @@ let _ =
                 "`Lid x")],
             ("`Lid (_loc, x)\n",
               (Gramf.mk_action
-                 (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Lid ({ txt = x;_} : Tokenf.txt) ->
                         (`Lid (_loc, x) : 'name )

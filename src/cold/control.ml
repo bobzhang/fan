@@ -12,7 +12,8 @@ let _ =
                "`Str s")],
             ("match Ast_quotation.resolve_name ((`Sub []), s) with\n| None  -> Locf.failf _loc \"DDSL `%s' can not be resolved\" s\n| Some x -> Ast_quotation.set_default x\n",
               (Gramf.mk_action
-                 (fun (__fan_1 : Tokenf.t)  ~ans_0:_  (_loc : Locf.t)  ->
+                 (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
                     match __fan_1 with
                     | `Str ({ txt = s;_} : Tokenf.txt) ->
                         ((match Ast_quotation.resolve_name ((`Sub []), s)
@@ -29,7 +30,8 @@ let _ =
           `Nterm (Gramf.obj (dot_namespace : 'dot_namespace Gramf.t ))],
            ("Ast_quotation.paths := ((`Absolute xs) :: (Ast_quotation.paths.contents))\n",
              (Gramf.mk_action
-                (fun (xs : 'dot_namespace)  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:(xs : 'dot_namespace)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    (Ast_quotation.paths := ((`Absolute xs) ::
                       (Ast_quotation.paths.contents)) : 'item )))));
          ([`Keyword "filter";
@@ -38,7 +40,8 @@ let _ =
               "`Str s")],
            ("Ast_filters.use_implem_filter s\n",
              (Gramf.mk_action
-                (fun (__fan_1 : Tokenf.t)  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
                    match __fan_1 with
                    | `Str ({ txt = s;_} : Tokenf.txt) ->
                        (Ast_filters.use_implem_filter s : 'item )
@@ -48,7 +51,7 @@ let _ =
          ([`Keyword "lang_clear"],
            ("Ast_quotation.clear_map (); Ast_quotation.clear_default ()\n",
              (Gramf.mk_action
-                (fun ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_0:_  (_loc : Locf.t)  ->
                    (Ast_quotation.clear_map ();
                     Ast_quotation.clear_default () : 'item )))))]) : 
       Gramf.olevel ));
@@ -62,8 +65,8 @@ let _ =
            `Self],
             ("i :: xs\n",
               (Gramf.mk_action
-                 (fun (xs : 'dot_namespace)  ~ans_1:_  (__fan_0 : Tokenf.t) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_2:(xs : 'dot_namespace)  ~__fan_1:_ 
+                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Uid ({ txt = i;_} : Tokenf.txt) -> (i ::
                         xs : 'dot_namespace )
@@ -75,7 +78,7 @@ let _ =
                "`Uid i")],
            ("[i]\n",
              (Gramf.mk_action
-                (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                    match __fan_0 with
                    | `Uid ({ txt = i;_} : Tokenf.txt) ->
                        ([i] : 'dot_namespace )
@@ -89,11 +92,12 @@ let _ =
          [([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"],
             ("()\n",
               (Gramf.mk_action
-                 (fun ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  -> (() : 'items )))));
+                 (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
+                    (() : 'items )))));
          ([`Nterm (Gramf.obj (item : 'item Gramf.t )); `Keyword ";"; `Self],
            ("()\n",
              (Gramf.mk_action
-                (fun ~ans_2:_  ~ans_1:_  ~ans_0:_  (_loc : Locf.t)  ->
+                (fun ~__fan_2:_  ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
                    (() : 'items )))));
          ([],
            ("()\n",

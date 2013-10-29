@@ -163,19 +163,18 @@ let make_action (_loc:loc)
   let (_,txt) =
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
-        let mk_arg p = %pat{~$lid{"an_"^string_of_int i} : $p } in
-        (* let arg = %pat{ ~$lid{"ans_"^string_of_int i}:_ } in *)
+        let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
         match s.pattern with
         |Some %pat'{ ($_ $par{%pat@_{ _ }} as $p) } ->
             let p = typing (p:alident :> pat) (make_ctyp s.styp rtvar)  in
-            %exp{ fun $p -> $txt }
+            %exp{ fun ${mk_arg p} -> $txt }
         | Some p when is_irrefut_pat p ->
             let p = typing p (make_ctyp s.styp rtvar) in
-            %exp{ fun $p -> $txt }
+            %exp{ fun ${mk_arg p} -> $txt }
         | Some _ ->
             let p =
               typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
-            %exp{ fun $p -> $txt }
+            %exp{ fun ${mk_arg p} -> $txt }
         | None -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
   %exp{ $id{(gm())}.mk_action $txt }
 
@@ -326,7 +325,7 @@ let make  _loc (x:Gram_def.entries) =
   combine _loc x.gram locals extends
 
 
-        
+
 
 (* local variables: *)
 (* compile-command: "cd .. && pmake main_annot/compile_gram.cmo " *)

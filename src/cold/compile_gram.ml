@@ -197,21 +197,21 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
      Listf.fold_lefti
        (fun i  txt  (s : Gram_def.symbol)  ->
           let mk_arg p =
-            (`Label (_loc, (`Lid (_loc, ("an_" ^ (string_of_int i)))), p) : 
+            (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
             FAst.pat ) in
           match s.pattern with
           | Some (`Alias (_loc,`App (_,_,`Par (_,(`Any _ : FAst.pat))),p)) ->
               let p = typing (p : alident  :>pat) (make_ctyp s.styp rtvar) in
-              (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
+              (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
           | Some p when is_irrefut_pat p ->
               let p = typing p (make_ctyp s.styp rtvar) in
-              (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
+              (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
           | Some _ ->
               let p =
                 typing
                   (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
                   (make_ctyp s.styp rtvar) in
-              (`Fun (_loc, (`Case (_loc, p, txt))) : FAst.exp )
+              (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
           | None  ->
               (`Fun
                  (_loc,
