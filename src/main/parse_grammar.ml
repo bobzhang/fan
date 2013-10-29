@@ -149,13 +149,13 @@ let query_inline (x:string) =
       styp = `Tok _loc;
       pattern}}
   ]
-          
-  single_symbol :
-  [@simple_token
-  |  Str s %{mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None}              
+  Inline simple_symbol:
+  [  Str s %{mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None}              
   | name{n};  OPT level_str{lev} %{
      mk_symbol  ~text:(`Nterm (_loc ,n, lev))
-       ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]
+       ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None  }]        
+  single_symbol :
+  [@simple_token |@simple_symbol]
           
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
@@ -166,6 +166,7 @@ let query_inline (x:string) =
 
   simple :
   [ @simple_token %{fun x -> [x]}
+  | @simple_symbol %{fun x -> [x]} 
   |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
       let i = hash_variant v in
       let p = %pat'@xloc{$lid:s} in
@@ -193,7 +194,7 @@ let query_inline (x:string) =
            {Gram_def.text = `Token(_loc,pred,des,des_str);
              styp= `Tok _loc;
              pattern})}
-  |  Str s %{[mk_symbol  ~text:(`Keyword _loc s) ~styp:(`Tok _loc) ~pattern:None]}       
+
   | "("; or_strs{v}; ")" %{
     match v with
     | (vs, None) ->
@@ -208,10 +209,6 @@ let query_inline (x:string) =
               ~styp:(`Tok _loc) ~pattern:(Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)}) )}
 
   | "S" %{[mk_symbol  ~text:(`Self _loc)  ~styp:(`Self _loc ) ~pattern:None]}
-
-  |  name{n};  OPT level_str{lev} %{
-        [mk_symbol  ~text:(`Nterm (_loc ,n, lev))
-          ~styp:(%ctyp'{'$lid{n.tvar}}) ~pattern:None ]}
   (* |  ("Uid" as v) ; "("; or_words{p}; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)
@@ -438,9 +435,10 @@ let query_inline (x:string) =
 
 let d = Ns.lang in
 begin
-  Ast_quotation.of_exp
+  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream
     ~name:(d,  "extend") ~entry:extend_body ();
   Ast_quotation.of_exp
+    ~lexer:Lex_gram.from_stream
     ~name:(d,  "unsafe_extend") ~entry:unsafe_extend_body ();
 
 end;;

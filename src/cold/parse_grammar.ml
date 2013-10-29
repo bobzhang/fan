@@ -3214,6 +3214,32 @@ let _ =
                       failwith
                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_1)
                            (Tokenf.to_string __fan_0))))));
+        ([`Token
+            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
+              "`Str s")],
+          ("(fun x  -> [x])\n  (mk_symbol ~text:(`Keyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None)\n",
+            (Gramf.mk_action
+               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                  match __fan_0 with
+                  | `Str ({ txt = s;_} : Tokenf.txt) ->
+                      (((fun x  -> [x]))
+                         (mk_symbol ~text:(`Keyword (_loc, s))
+                            ~styp:(`Tok _loc) ~pattern:None) : 'simple )
+                  | _ ->
+                      failwith
+                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+        ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
+         `Opt (`Nterm (Gramf.obj (level_str : 'level_str Gramf.t )))],
+          ("(fun x  -> [x])\n  (mk_symbol ~text:(`Nterm (_loc, n, lev))\n     ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n     ~pattern:None)\n",
+            (Gramf.mk_action
+               (fun (lev : 'level_str option)  (n : 'name)  (_loc : Locf.t) 
+                  ->
+                  ((fun x  -> [x])
+                     (mk_symbol ~text:(`Nterm (_loc, n, lev))
+                        ~styp:(`Quote
+                                 (_loc, (`Normal _loc),
+                                   (`Lid (_loc, (n.tvar))))) ~pattern:None) : 
+                  'simple )))));
         ([`Keyword "Ant";
          `Keyword "(";
          `Nterm (Gramf.obj (or_words : 'or_words Gramf.t ));
@@ -3331,19 +3357,6 @@ let _ =
                       failwith
                         (Printf.sprintf "%s %s" (Tokenf.to_string __fan_4)
                            (Tokenf.to_string __fan_0))))));
-        ([`Token
-            (((function | `Str _ -> true | _ -> false)), (4153489, `Any),
-              "`Str s")],
-          ("[mk_symbol ~text:(`Keyword (_loc, s)) ~styp:(`Tok _loc) ~pattern:None]\n",
-            (Gramf.mk_action
-               (fun (__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
-                  match __fan_0 with
-                  | `Str ({ txt = s;_} : Tokenf.txt) ->
-                      ([mk_symbol ~text:(`Keyword (_loc, s))
-                          ~styp:(`Tok _loc) ~pattern:None] : 'simple )
-                  | _ ->
-                      failwith
-                        (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
         ([`Keyword "(";
          `Nterm (Gramf.obj (or_strs : 'or_strs Gramf.t ));
          `Keyword ")"],
@@ -3393,18 +3406,7 @@ let _ =
             (Gramf.mk_action
                (fun _  (_loc : Locf.t)  ->
                   ([mk_symbol ~text:(`Self _loc) ~styp:(`Self _loc)
-                      ~pattern:None] : 'simple )))));
-        ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
-         `Opt (`Nterm (Gramf.obj (level_str : 'level_str Gramf.t )))],
-          ("[mk_symbol ~text:(`Nterm (_loc, n, lev))\n   ~styp:(`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))))\n   ~pattern:None]\n",
-            (Gramf.mk_action
-               (fun (lev : 'level_str option)  (n : 'name)  (_loc : Locf.t) 
-                  ->
-                  ([mk_symbol ~text:(`Nterm (_loc, n, lev))
-                      ~styp:(`Quote
-                               (_loc, (`Normal _loc),
-                                 (`Lid (_loc, (n.tvar))))) ~pattern:None] : 
-                  'simple )))))]));
+                      ~pattern:None] : 'simple )))))]));
   Gramf.extend_single (or_strs : 'or_strs Gramf.t )
     (None,
       (None, None,
@@ -4076,6 +4078,7 @@ let _ =
                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]))
 let _ =
   let d = Ns.lang in
-  Ast_quotation.of_exp ~name:(d, "extend") ~entry:extend_body ();
-  Ast_quotation.of_exp ~name:(d, "unsafe_extend") ~entry:unsafe_extend_body
-    ()
+  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream ~name:(d, "extend")
+    ~entry:extend_body ();
+  Ast_quotation.of_exp ~lexer:Lex_gram.from_stream ~name:(d, "unsafe_extend")
+    ~entry:unsafe_extend_body ()

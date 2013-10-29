@@ -103,7 +103,8 @@ let rec token: Lexing.lexbuf -> Tokenf.t =
       | 34 -> __ocaml_lex_state9 lexbuf
       | 9|12|32 -> __ocaml_lex_state4 lexbuf
       | 39 -> __ocaml_lex_state8 lexbuf
-      | 35|41|42|43|60|61|63|91|93|94|124 -> __ocaml_lex_state5 lexbuf
+      | 35|41|42|43|44|46|58|59|60|61|63|64|91|93|94|123|124|125 ->
+          __ocaml_lex_state5 lexbuf
       | 45 -> __ocaml_lex_state7 lexbuf
       | 65
         |66
