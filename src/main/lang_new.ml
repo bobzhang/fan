@@ -16,7 +16,7 @@ let type_entry :
       [ Lid x  %{ (_loc,x,None,None)}
       | "("; Lid x ; Str y; ")" %{(_loc,x,Some y,None)}
       | "("; Lid x ; Str y; Syntaxf.ctyp as t;  ")" %{ (_loc,x,Some y,Some t)}
-      | "("; Lid x; ":"; Syntaxf.ctyp as t; ? str {y};  ")" %{ (_loc,x,y,Some t)}
+      | "("; Lid x; ":"; Syntaxf.ctyp as t; ? str as y;  ")" %{ (_loc,x,y,Some t)}
       ]      
 
   let ty :
@@ -41,7 +41,7 @@ t_qualid :
   ] 
       
 nonterminals : (* when [ty] is nullable, it should take care of the following *)
-  [ ty {t}; L1 type_entry {ls} %{
+  [ ty as t; L1 type_entry as ls %{
     let mk =
       match t with
       |`Static t ->  %exp{ $id:t.mk }
@@ -61,7 +61,7 @@ nonterminals : (* when [ty] is nullable, it should take care of the following *)
         | (None,Some typ) ->
             %stru{ let $lid:x : $typ = $mk $str:x  }  ) ls)} ]
 newterminals :
-  [ "("; qualid as x; ":";t_qualid as t;")"; L1 type_entry {ls}
+  [ "("; qualid as x; ":";t_qualid as t;")"; L1 type_entry as ls
     %{
       let mk  =
         %exp{$id:t.mk_dynamic ${(x:vid:>exp)} }  in

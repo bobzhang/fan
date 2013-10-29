@@ -10,8 +10,8 @@
 with exp
 %unsafe_extend{ (g:Gramf.t)
   fan_quot:
-  ["derive";"("; L1 id {plugins}; ")" %{List.iter Typehook.plugin_add plugins}
-  | "unload"; L1 id  SEP ","{plugins} %{List.iter Typehook.plugin_remove plugins }
+  ["derive";"("; L1 id as plugins; ")" %{List.iter Typehook.plugin_add plugins}
+  | "unload"; L1 id  SEP "," as plugins %{List.iter Typehook.plugin_remove plugins }
   | "clear" %{State.reset_current_filters()}
   | "keep" ; "on" %{State.keep := true}
   | "keep" ; "off" %{State.keep := false}

@@ -179,7 +179,7 @@ MakeWeakFix(mountdir,pp,exe) =
     VMOUNTDIR = $(mountdir)
     vmount(-l,$(DIR_MAIN),$(VMOUNTDIR))
     PP_FAN = $(pp) # use hot to preprocess hot
-    OCamlAdditionalExistDependency($(pp))
+    OCamlAdditionalDigestDependency($(pp))
     # AdditionalDependency($(pp))
     .SUBDIRS: $(VMOUNTDIR)
     OCAML_LIBS[] += $(VMOUNTDIR)/libmain

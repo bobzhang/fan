@@ -19,7 +19,7 @@ a_lident :
   [ Ant(""|"lid",s) %{Tokenf.mk_ant ~c:"a_lident" s}
   | Lid s  %{ `Lid (_loc, s)} ]
 nonterminalsclear :
-  [ qualuid as t; L1 a_lident {ls} %{
+  [ qualuid as t; L1 a_lident as ls %{
     ls
     |> List.map (fun (x:alident) ->
       let  x = (x:alident :> exp) in 

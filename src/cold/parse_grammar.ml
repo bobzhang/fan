@@ -103,9 +103,7 @@ let _ =
   and or_strs: 'or_strs Gramf.t = grammar_entry_create "or_strs"
   and str0: 'str0 Gramf.t = grammar_entry_create "str0"
   and level_str: 'level_str Gramf.t = grammar_entry_create "level_str"
-  and sep_symbol: 'sep_symbol Gramf.t = grammar_entry_create "sep_symbol"
-  and brace_pattern: 'brace_pattern Gramf.t =
-    grammar_entry_create "brace_pattern" in
+  and sep_symbol: 'sep_symbol Gramf.t = grammar_entry_create "sep_symbol" in
   Gramf.extend_single (single_symbol : 'single_symbol Gramf.t )
     (None,
       ((None, None,
@@ -3640,62 +3638,39 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_0:(p : 'simple)  (_loc : Locf.t)  ->
                    (p : 'symbol )))))]) : Gramf.olevel ));
-  Gramf.extend_single (brace_pattern : 'brace_pattern Gramf.t )
-    (None,
-      ((None, None,
-         [([`Keyword "{";
-           `Token
-             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-               "`Lid i");
-           `Keyword "}"],
-            ("`Lid (loc, i)\n",
-              (Gramf.mk_action
-                 (fun ~__fan_2:_  ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
-                    (_loc : Locf.t)  ->
-                    match __fan_1 with
-                    | `Lid ({ loc; txt = i;_} : Tokenf.txt) ->
-                        (`Lid (loc, i) : 'brace_pattern )
-                    | _ ->
-                        failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-         ([`Keyword "as";
-          `Token
-            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
-              "`Lid i")],
-           ("`Lid (loc, i)\n",
-             (Gramf.mk_action
-                (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
-                   (_loc : Locf.t)  ->
-                   match __fan_1 with
-                   | `Lid ({ loc; txt = i;_} : Tokenf.txt) ->
-                       (`Lid (loc, i) : 'brace_pattern )
-                   | _ ->
-                       failwith
-                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
-      Gramf.olevel ));
   Gramf.extend_single (psymbol : 'psymbol Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (symbol : 'symbol Gramf.t ));
-           `Opt
-             (`Nterm (Gramf.obj (brace_pattern : 'brace_pattern Gramf.t )))],
-            ("List.map\n  (fun (s : Gram_def.psymbol)  ->\n     match p with\n     | Some _ ->\n         { s with symbol = { (s.symbol) with pattern = (p : pat option ) } }\n     | None  -> s) ss\n",
+         [([`Nterm (Gramf.obj (symbol : 'symbol Gramf.t ))],
+            ("ss\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(p : 'brace_pattern option) 
-                    ~__fan_0:(ss : 'symbol)  (_loc : Locf.t)  ->
-                    (List.map
-                       (fun (s : Gram_def.psymbol)  ->
-                          match p with
-                          | Some _ ->
-                              {
-                                s with
-                                symbol =
-                                  {
-                                    (s.symbol) with
-                                    pattern = (p : pat option )
-                                  }
-                              }
-                          | None  -> s) ss : 'psymbol )))))]) : Gramf.olevel ))
+                 (fun ~__fan_0:(ss : 'symbol)  (_loc : Locf.t)  ->
+                    (ss : 'psymbol )))));
+         ([`Nterm (Gramf.obj (symbol : 'symbol Gramf.t ));
+          `Keyword "as";
+          `Token
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              "`Lid i")],
+           ("List.map\n  (fun (s : Gram_def.psymbol)  ->\n     { s with symbol = { (s.symbol) with pattern = (Some (`Lid (xloc, i))) }\n     }) ss\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(__fan_2 : Tokenf.t)  ~__fan_1:_ 
+                   ~__fan_0:(ss : 'symbol)  (_loc : Locf.t)  ->
+                   match __fan_2 with
+                   | `Lid ({ loc = xloc; txt = i;_} : Tokenf.txt) ->
+                       (List.map
+                          (fun (s : Gram_def.psymbol)  ->
+                             {
+                               s with
+                               symbol =
+                                 {
+                                   (s.symbol) with
+                                   pattern = (Some (`Lid (xloc, i)))
+                                 }
+                             }) ss : 'psymbol )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_2))))))]) : 
+      Gramf.olevel ))
 let _ =
   let grammar_entry_create x = Gramf.mk_dynamic g x in
   let str: 'str Gramf.t = grammar_entry_create "str"

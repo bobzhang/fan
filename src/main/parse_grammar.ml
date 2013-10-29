@@ -156,8 +156,8 @@ let query_inline (x:string) =
   |@simple_symbol]
           
   let or_words :
-      [ L1 str SEP "|"{v} %{  (v,None)  }
-      | L1 str SEP "|"{v}; "as"; Lid@xloc s %{
+      [ L1 str SEP "|" as v %{  (v,None)  }
+      | L1 str SEP "|" as v; "as"; Lid@xloc s %{
           (v , Some (xloc,s)) } ]
   let str :
       [Str s %{(s,_loc)} ]
@@ -228,8 +228,8 @@ let query_inline (x:string) =
   (*       List.map (fun a -> token_of_simple_pat %pat'{$vrn:v ($a as $lid:x)}) vs} *)    
   ]
   let or_strs :
-      [ L1 str0 SEP "|"{xs} %{(xs,None)}
-      | L1  str0 SEP "|" {xs}; "as"; Lid s %{ (xs,Some s)}]
+      [ L1 str0 SEP "|" as xs %{(xs,None)}
+      | L1  str0 SEP "|"  as xs; "as"; Lid s %{ (xs,Some s)}]
   let str0 :
       [ Str s %{s}]
   let level_str :  ["Level"; Str  s %{s} ]      
@@ -255,7 +255,7 @@ let query_inline (x:string) =
    (*   } in *)
    (* [mk_symbol ~text ~styp ~pattern:None ] *)
    (* } *)
-   ("L0"|"L1" as l) ; single_symbol as s; ?  sep_symbol{sep } %{
+   ("L0"|"L1" as l) ; single_symbol as s; ?  sep_symbol as sep  %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
@@ -272,22 +272,12 @@ let query_inline (x:string) =
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     [{kind = KNormal; symbol={text;styp=s.styp;pattern=None}}]}
-  | simple as p %{ p}
-
-  ]
-
-  let brace_pattern :
-  ["{"; Lid@loc i ;"}" %pat'@loc{$lid:i}
-  | "as"; Lid@loc i %pat'@loc{$lid:i}]
-
+  | simple as p %{ p}   ]
   psymbol :
-  [ symbol as ss ; ? brace_pattern {p} %{
-    List.map (fun (s:Gram_def.psymbol)(* ((x,(y:Gram_def.symbol)) as s) *) ->
-      match p with
-      |Some _ ->
-          {s with symbol = { (s.symbol) with pattern = (p:pat option)} }
-      | None -> s) ss }  ] 
-      
+  [ symbol as ss %{ss}
+  | symbol as ss; "as"; Lid@xloc i %{
+    List.map (fun (s:Gram_def.psymbol) ->
+      {s with symbol = {(s.symbol) with pattern = Some (`Lid(xloc,i))}}) ss }]
 }
 
 
@@ -310,7 +300,7 @@ let query_inline (x:string) =
   | %{ (None,gm())} ]
 
   extend_body :
-  [ extend_header as rest;   L1 entry {el} %{
+  [ extend_header as rest;   L1 entry  as el %{
     let (gram,old) = rest in
     let items = Listf.filter_map (fun x -> x) el in
     let res = make _loc {items ; gram; safe = true} in 
@@ -319,7 +309,7 @@ let query_inline (x:string) =
 
   (* see [extend_body] *)
   unsafe_extend_body :
-  [ extend_header as rest;   L1 entry {el} %{
+  [ extend_header as rest;   L1 entry as el %{
     let (gram,old) = rest in
     let items = Listf.filter_map (fun x ->x ) el in 
     let res = make _loc {items ; gram; safe = false} in 
@@ -345,7 +335,7 @@ let query_inline (x:string) =
 
   (* parse entry name, accept a quotation name setup (FIXME)*)
   entry_name:
-  [ qualid as il; ?  str {name} %{
+  [ qualid as il; ?  str  as name %{
     let x =
       match name with
       | Some x ->
@@ -393,11 +383,11 @@ let query_inline (x:string) =
   [ ("First"|"Last"|"Before"|"After"|"Level" as x) %exp{$vrn:x}]
 
   level_list :
-  [ "{"; L1 level {ll}; "}" %{ `Group ll}
-  | level {l} %{ `Single l}] (* FIXME L1 does not work here *)
+  [ "{"; L1 level  as ll; "}" %{ `Group ll}
+  | level as l  %{ `Single l}] (* FIXME L1 does not work here *)
 
   level :
-  [  ? str {label};  ? assoc as assoc; rule_list as rules
+  [  ?str as  label ;  ?assoc as assoc; rule_list as rules
        %{{label;assoc;rules}} ]
   (* FIXME a conflict %extend{Gramf e:  "simple" ["-"; a_FLOAT as s %{()} ] } *)
   assoc :
@@ -406,10 +396,10 @@ let query_inline (x:string) =
       
   rule_list :
   [ "["; "]" %{ []}
-  | "["; L1 rule SEP "|"{ruless}; "]" %{Listf.concat ruless}]
+  | "["; L1 rule SEP "|" as ruless; "]" %{Listf.concat ruless}]
 
   rule :
-  [ left_rule {prod}; ? opt_action as action %{
+  [ left_rule as prod; ? opt_action as action %{
     let prods = Listf.cross prod in
     List.map
       (fun

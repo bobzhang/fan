@@ -28,9 +28,9 @@ let g =
 
 %extend{(g:Gramf.t)  (* FIXME location wrong *)
     lex:
-    [  "|" ; L0 case SEP "|" {l} %{
+    [  "|" ; L0 case SEP "|" as l %{
       Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=false;clauses=l}}
-    | "<";L0 case SEP "|" {l} %{
+    | "<";L0 case SEP "|" as l %{
         Compile_lex.output_entry @@ Lexgen.make_single_dfa {shortest=true;clauses=l}}]
   let case:
     [ regexp as r;  Quot x  %{
@@ -53,7 +53,7 @@ let g =
   regexp:
   {
    "as"
-   [S as r1;"as"; lid {z} %{ Bind(r1,(z))} ] 
+   [S as r1;"as"; lid as z %{ Bind(r1,(z))} ] 
    "#"
    [S as r1; "#" ; S as r2 %{
       let s1 = as_cset r1 in

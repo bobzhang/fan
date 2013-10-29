@@ -12,7 +12,7 @@ Ast_gen:
 
     
 %extend{save_quot:
-  [ L1 lid {ls} ; Quot x  %{
+  [ L1 lid as ls ; Quot x  %{
    let b =
      if x.name = Tokenf.empty_name then
        let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in

@@ -28,7 +28,7 @@ open FAst
   %extend{
     let  uid: [Uid n %{n}]
     parser_exp : 
-        [  ? uid  {name}; parser_case_list as pcl %{
+        [  ? uid as name; parser_case_list as pcl %{
           match name with
           | Some o ->
               Ref.protect Compile_stream.grammar_module_name o (fun _ -> cparser _loc  pcl)
@@ -40,7 +40,7 @@ open FAst
      ]         
 
      parser_case_list :
-     ["|"; L0 parser_case SEP "|"{pcl} %{ pcl}
+     ["|"; L0 parser_case SEP "|" as pcl %{ pcl}
      ]
     
     parser_case :

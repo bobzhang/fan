@@ -252,6 +252,12 @@ public.OCamlAdditionalExistDependency(files) =
     .SCANNER: %.cmi: :exists: $(files)
     .SCANNER: %.cmx %.cmo: :exists: $(files)
     export
+
+public.OCamlAdditionalDigestDependency(files) =
+    .SCANNER: scan-ocaml-%: :value: $(digest $(files))
+    .SCANNER: %.cmi: :value: $(digest $(files))
+    .SCANNER: %.cmx %.cmo: :value: $(digest $(files))
+    export
     
 #
 # The ocamldep -modules output has the following

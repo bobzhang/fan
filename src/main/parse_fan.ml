@@ -232,7 +232,7 @@ let apply () = begin
                (Tokenf.string_of_name ls)
          }]
        pos_exps:
-       [ L1 name_space SEP ";"{xys} %{
+       [ L1 name_space SEP ";" as xys %{
                     let old = !Ast_quotation.map in
                     (Ast_quotation.map := Mapf.String.add_list xys old;
                      old)}]
@@ -339,7 +339,7 @@ let apply () = begin
         | S as e1; infixop6 as op; S as e2  %exp{ $op $e1 $e2 } ]
           
        "obj" RA
-        [("fun"|"function"); "|";  L1 case0 SEP "|"{a}  %{
+        [("fun"|"function"); "|";  L1 case0 SEP "|" as a  %{
            let cases = bar_of_list a in `Fun (_loc,cases)}
         | ("fun"|"function"); fun_def as e %{ e}
 
@@ -454,19 +454,19 @@ let apply () = begin
            
        sequence: (*FIXME*)
        [
-        "let"; opt_rec as rf; bind as bi; "in"; exp as e; sequence'{k} %{
+        "let"; opt_rec as rf; bind as bi; "in"; exp as e; sequence' as k %{
          k  (`LetIn (_loc, rf, bi, e))}
-       | "let"; "try"; opt_rec as r; bind as bi; "in"; S as x; "with"; case as a; sequence'{k}
+       | "let"; "try"; opt_rec as r; bind as bi; "in"; S as x; "with"; case as a; sequence' as k
          %{k (`LetTryInWith(_loc,r,bi,x,a))}
        | "let"; "module"; a_uident as m; mbind0 as mb; "in";
-           exp as e; sequence'{k} %{ k  (`LetModule (_loc, m, mb, e))}
+           exp as e; sequence' as k %{ k  (`LetModule (_loc, m, mb, e))}
        | "let"; "open"; module_longident as i; "in"; S as e %{
            `LetOpen (_loc, `Negative _loc, (i: vid :> ident), e)}
        | "let"; "open"; "!"; module_longident as i; "in"; S as e %{
            `LetOpen (_loc, `Positive _loc, (i: vid :> ident), e)}
-             
+       | exp as e; sequence' as k %{ k e}
        (* FIXME Ant should be able to be followed *)      
-       | exp as e; sequence'{k} %{ k e} ]
+       ]
        sequence':
        [ %{ fun e -> e}
        | ";" %{ fun e -> e}
@@ -476,7 +476,7 @@ let apply () = begin
            
        comma_exp:
        [ S as e1; ","; S as e2  %{`Com(_loc,e1,e2)}
-       | exp {e} %{e} ]
+       | exp as e %{e} ]
       };
   %extend{ with_exp_lang: [ lang as old; ":"; exp as x %{ (Ast_quotation.default := old; x)}] } ;
   %extend{ with_stru_lang: [lang as old;":"; stru as x %{ (Ast_quotation.default:=old;x)}]  };
@@ -496,20 +496,20 @@ let apply () = begin
   with case
     %extend{
       case:
-      [ "|"; L1 case0 SEP "|"{l} %{ bar_of_list l }
+      [ "|"; L1 case0 SEP "|" as l %{ bar_of_list l }
       | pat as p; "->"; exp as e %{ `Case(_loc,p,e)}]
       case0:
       [ Ant ("case" | "", s) %{ mk_ant  ~c:"case" s}
       | Ant ("",s) ;"when";exp as w;"->"; exp as e %{
           `CaseWhen(_loc,mk_ant  ~c:"case"  s, w,e )}
-      | Ant ("",s); "->"; exp {e} %{
+      | Ant ("",s); "->"; exp as e %{
           `Case(_loc,mk_ant  ~c:"case" s ,e)}
             
       | pat_as_pat_opt as p; "when"; exp as w;  "->"; exp as e %{
            `CaseWhen (_loc, p, w, e)}
       | pat_as_pat_opt as p; "->";exp as e %{ `Case(_loc,p,e)}]
       case_quot:
-      [ L1 case0 SEP "|"{x} %{ bar_of_list x}]  };
+      [ L1 case0 SEP "|" as x %{ bar_of_list x}]  };
   with rec_exp
       %extend{
         rec_exp_quot:
@@ -522,7 +522,7 @@ let apply () = begin
             `RecBind (_loc, i, `Lid (_loc, Fan_ops.to_lid i))}]
         field_exp :
         [ Ant (""|"bi",s) %{ mk_ant  ~c:"rec_exp" s}
-        | a_lident as l; "=";  exp {e} %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]
+        | a_lident as l; "=";  exp  as e %{`RecBind (_loc, (l:>vid), e)} (* %{ $lid:l = $e } *) ]
         label_exp_list:
         [ label_exp as b1; ";"; S as b2 %{`Sem (_loc, b1, b2)}
         | label_exp as b1; ";"        %{b1}
@@ -795,7 +795,7 @@ let apply () = begin
       (* parse [a.b.c] no antiquot *)
       dot_lstrings:
       [ Lid i %{ (`Sub[],i)}
-      | Uid i ; "." ; S {xs} %{
+      | Uid i ; "." ; S  as xs %{
         match xs with
         |(`Sub xs,v) -> (`Sub (i::xs),v)
         | _ -> raise (Streamf.Error "impossible dot_lstrings")}
@@ -1087,12 +1087,12 @@ let apply () = begin
           | "function"; ipat as p; class_fun_def as ce %{ `CeFun (_loc, p, ce)}
           | "let"; opt_rec as rf; bind as bi; "in"; S as ce %{ `LetIn(_loc,rf,bi,ce)}]
         "apply" NA
-          [ S as ce; exp Level "label"{e} %{ `CeApp (_loc, ce, e)}]
+          [ S as ce; exp Level "label" as e %{ `CeApp (_loc, ce, e)}]
         "simple"
           [ Ant (""|"cexp" ,s) %{ mk_ant ~c:"clexp"  s}
           | Quot x %{ Ast_quotation.expand  x Dyn_tag.clexp}
           | vid as ci; "["; comma_ctyp as t; "]" %{ `ClApply(_loc,ci,t)}
-          | vid {ci} %{ (ci :>clexp)}
+          | vid as ci %{ (ci :>clexp)}
           | "object"; "("; pat as p; ")" ; class_structure as cst;"end"
             %{ `ObjPat(_loc,p,cst)}
           | "object"; "("; pat as p; ")" ;"end" %{ `ObjPatEnd(_loc,p)}
@@ -1171,7 +1171,7 @@ let apply_ctyp () = begin
       | type_parameter as t %{ fun acc -> `App(_loc,acc, (t:>ctyp))}
       |  %{fun t -> t}  ]
       meth_list:
-      [ meth_decl as m; ";"; S{rest }  %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
+      [ meth_decl as m; ";"; S as rest   %{ let (ml, v) = rest in (`Sem(_loc,m,ml), v)}
       | meth_decl as m; ";"; opt_dot_dot as v %{ (m, v)}
       | meth_decl as m; opt_dot_dot as v      %{ (m, v)}  ]
       meth_decl:
@@ -1179,7 +1179,7 @@ let apply_ctyp () = begin
       (* | `Quot x                       -> AstQuotation.expand _loc x Dyn_tag.ctyp *)
       | a_lident as lab; ":"; ctyp as t  %{`TyCol(_loc,lab,t)}]
       opt_meth_list:
-      [ meth_list{rest } %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
+      [ meth_list as rest  %{let (ml, v) = rest in `TyObj (_loc, ml, v)}
       | opt_dot_dot as v     %{ `TyObjEnd(_loc,v)} ]
       row_field:
       [ Ant (""|"typ" ,s) %{ mk_ant ~c:"ctyp"  s}
@@ -1232,7 +1232,7 @@ let apply_ctyp () = begin
       [ "|"; constructor_declarations as t %{ `Sum(_loc,t)}
       | "{"; label_declaration_list as t; "}" %{ `Record (_loc, t)}]
       type_ident_and_parameters:
-      [ "(";  L1 type_parameter SEP ","{tpl}; ")"; a_lident as i %{
+      [ "(";  L1 type_parameter SEP "," as tpl; ")"; a_lident as i %{
         (i, `Some(_loc, com_of_list (tpl :>  decl_params list)))}
       |  type_parameter as t;  a_lident as i %{ (i, `Some (_loc,(t:>decl_params)))}
       |  a_lident as i %{ (i, `None _loc)}]
