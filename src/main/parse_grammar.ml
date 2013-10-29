@@ -61,8 +61,9 @@ let query_inline (x:string) =
    (entry: Gram_def.entry option Gramf.t)
    extend_body
    unsafe_extend_body
-
-   (simple : Gram_def.symbol list Gramf.t)
+          
+  (simple : Gram_def.symbol list Gramf.t)
+  (single_symbol : Gram_def.symbol Gramf.t)        
 }
 
 
@@ -76,9 +77,9 @@ let query_inline (x:string) =
       | _ -> false} in
     let des = %exp{($int':i, `Empty)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v} in
-    [{Gram_def.text = `Token(_loc,pred,des,des_str);
+    {Gram_def.text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
-      pattern = None;}]
+      pattern = None;}
 
   }
   | ("Lid"|"Uid"|"Str" as v); Str@xloc x %{
@@ -90,9 +91,9 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $str:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $str:x; _ }:Tokenf.txt) } in
-    [{Gram_def.text = `Token(_loc, pred, des,des_str);
+    {Gram_def.text = `Token(_loc, pred, des,des_str);
       styp = `Tok _loc;
-      pattern}]}
+      pattern}}
 
   | ("Lid"|"Uid"| "Int" | "Int32" | "Int64"
      | "Nativeint" |"Flo" | "Chr" |"Label" 
@@ -105,9 +106,9 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({ txt = $lid:x; _ }:Tokenf.txt)} in
-    [{Gram_def.text = `Token(_loc, pred,des,des_str);
+    {Gram_def.text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern}]}
+     pattern}}
   (** split opt, introducing an epsilon predicate? *)    
   | ("Lid"|"Uid"|"Str" as v); "@"; Lid loc ; Lid@xloc x %{
     let i = hash_variant v in
@@ -118,9 +119,9 @@ let query_inline (x:string) =
     let des_str = Gram_pat.to_string %pat'{$vrn:v $lid:x} in
     let pattern = (* BOOTSTRAPPING *)
       Some %pat@xloc{$vrn:v ({loc = $lid:loc; txt = $lid:x;_}:Tokenf.txt)} in
-    [{Gram_def.text = `Token(_loc, pred,des,des_str);
+    {Gram_def.text = `Token(_loc, pred,des,des_str);
      styp = `Tok _loc;
-     pattern}]}
+     pattern}}
 
   | ("Lid" |"Uid"|"Str" as v)    %{
     let i = hash_variant v in
@@ -130,9 +131,9 @@ let query_inline (x:string) =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = None in (* could be None *)
-    [{Gram_def.text = `Token(_loc,pred, des,des_str);
+    {Gram_def.text = `Token(_loc,pred, des,des_str);
       styp = `Tok _loc;
-      pattern}]}
+      pattern}}
 
   |  ("Quot"|"DirQuotation" as v) ; Lid x %{
     let i = hash_variant v in                                              
@@ -142,10 +143,12 @@ let query_inline (x:string) =
     let des = %exp{($int':i,`Any)} in
     let des_str = Gram_pat.to_string %pat'{$vrn:v _} in
     let pattern = Some %pat{$vrn:v $lid:x} in
-    [{Gram_def.text = `Token(_loc,pred,des,des_str);
+    {Gram_def.text = `Token(_loc,pred,des,des_str);
       styp = `Tok _loc;
-      pattern}]}
+      pattern}}
   ]
+  single_symbol : [@simple_token ]
+          
   let or_words :
       [ L1 str SEP "|"{v} %{  (v,None)  }
       | L1 str SEP "|"{v}; "as"; Lid@xloc s %{
@@ -154,7 +157,7 @@ let query_inline (x:string) =
       [Str s %{(s,_loc)} ]
 
   simple :
-  [ @simple_token
+  [ @simple_token %{fun x -> [x]}
   |  ("Ant" as v); "("; or_words{ps};",";Lid@xloc s; ")" %{
       let i = hash_variant v in
       let p = %pat'@xloc{$lid:s} in
@@ -215,8 +218,7 @@ let query_inline (x:string) =
       [ Str s %{s}]
   let level_str :  ["Level"; Str  s %{s} ]      
  
-  let sep_symbol : [ "SEP"; simple{t} %{let [t] =  t in t}]
-
+  let sep_symbol : [ "SEP"; single_symbol{t} %{t}]
   symbol :
   (* be more precise, no recursive grammar? *)
   (*
@@ -224,18 +226,15 @@ let query_inline (x:string) =
     L1 Str Sep ";"
     L1 Lid Sep ";"
    *)    
-  [ ("L0"|"L1" as l) ; simple{s}; OPT  sep_symbol{sep } %{
-    let [s] =  s in
+  [ ("L0"|"L1" as l) ; single_symbol{s}; OPT  sep_symbol{sep } %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text = mk_slist _loc (if l = "L0" then false else true) sep s in
     [mk_symbol ~text ~styp ~pattern:None]}
-  | "OPT"; simple{s}  %{
-    let [s] = s in
+  | "OPT"; single_symbol{s}  %{
     let styp = %ctyp'{${s.styp} option } in 
     let text = `Opt (_loc, s.text) in
     [mk_symbol  ~text ~styp ~pattern:None] }
-  | ("TRY"|"PEEK" as p); simple{s} %{
-    let [s] = s in
+  | ("TRY"|"PEEK" as p); single_symbol{s} %{
     let v = (_loc, s.text) in
     let text = if p = "TRY" then `Try v else `Peek v  in
     [mk_symbol  ~text ~styp:(s.styp) ~pattern:None] }
