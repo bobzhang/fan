@@ -99,14 +99,10 @@ let rec name_of_symbol_failed entry  = function
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
   match x with 
-  | Node ({node ; brother; _ (* son = son *)} as y)->
+  | Node ({node ; brother; _ } as y)->
       begin match Gtools.get_terminals y  with
       | None ->
           let txt = name_of_symbol_failed entry node in
-          (* let txt = *)
-          (*   match (node, son) with (\* when the current node is Opt *\) *)
-          (*   | (`Opt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son *)
-          (*   | _ -> txt   in *)
           let txt =
             match brother with
             | DeadEnd | LocAct (_, _) -> txt
