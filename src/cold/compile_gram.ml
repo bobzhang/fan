@@ -39,7 +39,7 @@ let mk_prule ~prod  ~action  =
                    (`Uid (xloc, "None") : FAst.exp ))
                 :: (env.contents));
               None)) prod in
-  ({ prod; action; env = (env.contents) } : Gram_def.rule )
+  ({ prod; action; env = (List.rev env.contents) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (gensym ()).contents)

@@ -61,7 +61,7 @@ let mk_prule ~prod ~action =
         end
             
       ) prod in
-  ({prod;action;env = !env}:Gram_def.rule)
+  ({prod;action;env = List.rev !env}:Gram_def.rule)
 
 
 let gen_lid ()=

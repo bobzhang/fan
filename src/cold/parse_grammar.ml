@@ -4247,7 +4247,7 @@ let _ =
             ("{ label; assoc; rules }\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(rules : 'rule_list)  (_loc : Locf.t)  ->
-                    let assoc = None and label = None in
+                    let label = None and assoc = None in
                     ({ label; assoc; rules } : 'level )))));
          ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
@@ -4255,7 +4255,7 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(label : 'str) 
                    (_loc : Locf.t)  ->
-                   let assoc = None and label = Some label in
+                   let label = Some label and assoc = None in
                    ({ label; assoc; rules } : 'level )))));
          ([`Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
@@ -4263,7 +4263,7 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(assoc : 'assoc)
                     (_loc : Locf.t)  ->
-                   let assoc = Some assoc and label = None in
+                   let label = None and assoc = Some assoc in
                    ({ label; assoc; rules } : 'level )))));
          ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
           `Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
@@ -4272,7 +4272,7 @@ let _ =
              (Gramf.mk_action
                 (fun ~__fan_2:(rules : 'rule_list)  ~__fan_1:(assoc : 'assoc)
                     ~__fan_0:(label : 'str)  (_loc : Locf.t)  ->
-                   let assoc = Some assoc and label = Some label in
+                   let label = Some label and assoc = Some assoc in
                    ({ label; assoc; rules } : 'level )))))]) : Gramf.olevel ));
   Gramf.extend_single (assoc : 'assoc Gramf.t )
     (None,
@@ -4443,15 +4443,14 @@ let _ =
          [([`Token
               (((function | `Quot _ -> true | _ -> false)),
                 (904098089, `Any), "`Quot _")],
-            ("if x.name = Tokenf.empty_name\nthen\n  let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in\n  Tokenf.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
+            ("if x.name = Tokenf.empty_name\nthen let expander loc _ s = Parsef.exp loc s in Tokenf.quot_expand expander x\nelse Ast_quotation.expand x Dyn_tag.exp\n",
               (Gramf.mk_action
                  (fun ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
                     match __fan_0 with
                     | `Quot x ->
                         (if x.name = Tokenf.empty_name
                          then
-                           let expander loc _ s =
-                             Gramf.parse_string ~loc Syntaxf.exp s in
+                           let expander loc _ s = Parsef.exp loc s in
                            Tokenf.quot_expand expander x
                          else Ast_quotation.expand x Dyn_tag.exp : 'opt_action )
                     | _ ->

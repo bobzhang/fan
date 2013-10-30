@@ -439,7 +439,7 @@ let query_inline (x:string) =
   let opt_action :
       [ Quot x %{
         if x.name = Tokenf.empty_name then 
-          let expander loc _ s = Gramf.parse_string ~loc Syntaxf.exp s in
+          let expander loc _ s = Parsef.exp loc s  in
           Tokenf.quot_expand expander x
         else
           Ast_quotation.expand x Dyn_tag.exp

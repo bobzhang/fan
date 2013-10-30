@@ -1,6 +1,12 @@
 %create{a};;
 
 %extend{a:  [ Lid i as u  %{(u,i)}]}
+
+%extend{a: [?a as v;?Lid as k %{(v,c,k)} ]}
+
+
+%extend{a: [?a as v;?Lid as k %{v,c,k} ]}
+(* FIXME should have a parser error here ... *)  
 (*
 let _ =
   Gramf.extend_single (a : 'a Gramf.t )
