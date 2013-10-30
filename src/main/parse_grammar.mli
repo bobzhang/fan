@@ -81,7 +81,7 @@ val string : exp Gramf.t
 (* val psymbol : Gram_def.symbol Gramf.t *)
     
 (** return symbol with pattern(inferred) or None  *)    
-(* val symbol :  Gram_def.symbol Gramf.t *)
+val symbol :  Gram_def.psymbol list Gramf.t
 
 
 (* val simple : Gram_def.symbol list Gentry.t *)

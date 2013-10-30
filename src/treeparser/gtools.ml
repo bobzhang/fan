@@ -61,7 +61,7 @@ let logically_eq_symbols entry =
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1.name = e2.name && l1 = l2
     | (`List0 s1, `List0 s2) |
       (`List1 s1, `List1 s2) |
-      (`Opt s1, `Opt s2) |
+      (* (`Opt s1, `Opt s2) | *)
       (`Peek s1, `Peek s2) |
       (`Try s1, `Try s2) -> eq_symbol s1 s2
     | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |
@@ -79,7 +79,7 @@ let rec eq_symbol (s1:symbol) (s2:symbol) =
   | (`Self, `Self) -> true
   | (`List0 s1, `List0 s2) |
     (`List1 s1, `List1 s2) |
-    (`Opt s1, `Opt s2) |
+    (* (`Opt s1, `Opt s2) | *)
     (`Peek s1, `Peek s2) |
     (`Try s1, `Try s2) -> eq_symbol s1 s2
   | (`List0sep (s1, sep1), `List0sep (s2, sep2)) |

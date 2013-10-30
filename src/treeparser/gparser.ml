@@ -167,7 +167,7 @@ and parser_of_symbol (entry:Gstructure.entry) (s:Gstructure.symbol)
         let ps = aux symb and pt = aux sep  in
         Gcomb.slist1sep ps pt ~err:(fun v -> Gfailed.symb_failed entry v sep symb)
           ~f:(fun l -> Gaction.mk (List.rev l))
-    | `Opt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk
+    (* | `Opt s -> let ps = aux s  in Gcomb.opt ps ~f:Gaction.mk *)
     | `Try s -> let ps = aux s in Gcomb.tryp ps
     | `Peek s -> let ps = aux s in Gcomb.peek ps
     | `Snterml (e, l) -> fun strm -> e.start (level_number e l) strm

@@ -254,7 +254,6 @@ let query_inline (x:string) =
    *)
       
   [
-
    (* ("L0"|"L1" as l); ("Lid"|"Uid"| "Int" | "Int32" | "Int64" *)
    (*   | "Nativeint" |"Flo" | "Chr" |"Label"  *)
    (*   | "Optlabel" |"Str" as v); ? sep_symbol as sep %{ *)
@@ -271,12 +270,12 @@ let query_inline (x:string) =
       `List(_loc, (if l = "L0" then false else true), s, sep) in
     [{kind =KNormal;
       symbol = {text; styp; pattern=None; outer_pattern = None }}]}
-
   | "?"; single_symbol as s  %{
-    let styp = %ctyp'{${s.styp} option } in 
-    let text = `Opt (_loc, s.text) in
-    [{kind = KNormal;
-      symbol = {text; styp;pattern=None;outer_pattern = None }}]}
+    [{kind = KNone;
+      symbol = {s with pattern=None;outer_pattern = None }};
+     {kind = KSome;
+      symbol = {s with pattern = None ; outer_pattern = None}
+    }]}
 
   | ("TRY"|"PEEK" as p); single_symbol as s %{
     let v = (_loc, s.text) in

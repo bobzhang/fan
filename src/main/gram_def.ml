@@ -73,7 +73,6 @@ and text =
  [
    `List of (loc * bool * symbol * symbol option )
  | `Nterm of (loc * name  * string option )
- | `Opt of (loc * text )
  | `Try of (loc * text )
  | `Peek of (loc * text)
  | `Self of loc

@@ -15,18 +15,31 @@ let gm () =
   | Some "Gramf" -> `Uid (ghost, "")
   | Some _|None  -> module_name.contents
 let mk_prule ~prod  ~action  =
+  let env = ref [] in
   let i = ref 0 in
   let prod =
     Listf.filter_map
       (fun (p : Gram_def.psymbol)  ->
          match p with
-         | { kind = KSome ; symbol = ({ pattern = None ;_} as symbol) }
+         | { kind = KSome ; symbol = ({ outer_pattern = None ;_} as symbol) }
            |{ kind = KNormal ; symbol } -> (incr i; Some symbol)
-         | { kind = KSome ; symbol = ({ pattern = Some _;_} as s) } ->
-             (incr i; Some s)
-         | { kind = KNone ; symbol = { pattern = None ;_} } -> None
-         | { kind = KNone ; symbol = { pattern = Some _;_} } -> None) prod in
-  ({ prod; action; env = [] } : Gram_def.rule )
+         | { kind = KSome ;
+             symbol = ({ outer_pattern = Some (xloc,id);_} as s) } ->
+             (env :=
+                (((`Lid (xloc, id) : FAst.pat ),
+                   (`App (xloc, (`Uid (xloc, "Some")), (`Lid (xloc, id))) : 
+                   FAst.exp ))
+                :: (env.contents));
+              incr i;
+              Some s)
+         | { kind = KNone ; symbol = { outer_pattern = None ;_} } -> None
+         | { kind = KNone ; symbol = { outer_pattern = Some (xloc,id);_} } ->
+             (env :=
+                (((`Lid (xloc, id) : FAst.pat ),
+                   (`Uid (xloc, "None") : FAst.exp ))
+                :: (env.contents));
+              None)) prod in
+  ({ prod; action; env = (env.contents) } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (gensym ()).contents)
@@ -77,8 +90,6 @@ let rec make_exp (tvar : string) (x : Gram_def.text) =
              if n.tvar = tvar
              then (`Vrn (_loc, "Self") : FAst.exp )
              else (`App (_loc, (`Vrn (_loc, "Nterm")), obj) : FAst.exp ))
-    | `Opt (_loc,t) ->
-        (`App (_loc, (`Vrn (_loc, "Opt")), (aux "" t)) : FAst.exp )
     | `Try (_loc,t) ->
         (`App (_loc, (`Vrn (_loc, "Try")), (aux "" t)) : FAst.exp )
     | `Peek (_loc,t) ->

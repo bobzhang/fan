@@ -43,7 +43,7 @@ let tree_in_entry prev_symb tree = function
       and search_symbol symb =
         match symb with
         | `Nterm _ | `Snterml (_, _) | `List0 _ | `List0sep (_, _) | `List1 _ |
-          `List1sep (_, _) | `Opt _ | `Try _ | `Token _ | `Keyword _
+          `List1sep (_, _)  | `Try _ | `Token _ | `Keyword _
         | `Peek _
           when symb == prev_symb ->
             Some symb
@@ -73,11 +73,6 @@ let tree_in_entry prev_symb tree = function
                 | Some sep -> Some (`List1sep (symb, sep))
                 | None -> None 
             end
-        | `Opt symb ->
-            begin match search_symbol symb with
-            | Some symb -> Some (`Opt symb)
-            | None -> None
-            end
         | `Try symb ->
             begin match search_symbol symb with
             | Some symb -> Some (`Try symb)
@@ -97,21 +92,21 @@ let tree_in_entry prev_symb tree = function
         
 (* error message entrance *)
 let rec name_of_symbol_failed entry  = function
-  | `List0 s | `List0sep (s, _) |
-    `List1 s | `List1sep (s, _) |
-    `Opt s | `Try s | `Peek s  ->
+  | `List0 s | `List0sep (s, _)
+  | `List1 s | `List1sep (s, _)
+  | `Try s | `Peek s  ->
       name_of_symbol_failed entry s
   | s -> name_of_symbol entry s
 and name_of_tree_failed entry x =
   match x with 
-  | Node ({node ; brother; son = son} as y)->
+  | Node ({node ; brother; _ (* son = son *)} as y)->
       begin match Gtools.get_terminals y  with
       | None ->
           let txt = name_of_symbol_failed entry node in
-          let txt =
-            match (node, son) with (* when the current node is Opt *)
-            | (`Opt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
-            | _ -> txt   in
+          (* let txt = *)
+          (*   match (node, son) with (\* when the current node is Opt *\) *)
+          (*   | (`Opt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son *)
+          (*   | _ -> txt   in *)
           let txt =
             match brother with
             | DeadEnd | LocAct (_, _) -> txt
@@ -158,7 +153,7 @@ let tree_failed ?(verbose=false) entry prev_symb_result prev_symb tree =
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected"
         end
-    | `Try _ | `Peek _ (*NP: not sure about this*) | `Opt _  -> txt ^ " expected"
+    | `Try _ | `Peek _ (*NP: not sure about this*) (* | `Opt _ *)  -> txt ^ " expected"
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb  in
   begin
     (* it may not necessary fail when  we use try somewhere*)

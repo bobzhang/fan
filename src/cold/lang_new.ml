@@ -92,14 +92,34 @@ let _ =
               "`Lid x");
           `Keyword ":";
           `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
-          `Opt (`Nterm (Gramf.obj (str : 'str Gramf.t )));
           `Keyword ")"],
            ("(_loc, x, y, (Some t))\n",
              (Gramf.mk_action
-                (fun ~__fan_5:_  ~__fan_4:(y : 'str option) 
+                (fun ~__fan_4:_  ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
+                   ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                    ->
+                   let y = None in
+                   match __fan_1 with
+                   | `Lid ({ txt = x;_} : Tokenf.txt) ->
+                       ((_loc, x, y, (Some t)) : 'type_entry )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
+         ([`Keyword "(";
+          `Token
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              "`Lid x");
+          `Keyword ":";
+          `Nterm (Gramf.obj (Syntaxf.ctyp : 'Syntaxf__ctyp Gramf.t ));
+          `Nterm (Gramf.obj (str : 'str Gramf.t ));
+          `Keyword ")"],
+           ("(_loc, x, y, (Some t))\n",
+             (Gramf.mk_action
+                (fun ~__fan_5:_  ~__fan_4:(y : 'str) 
                    ~__fan_3:(t : 'Syntaxf__ctyp)  ~__fan_2:_ 
                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
                     ->
+                   let y = Some y in
                    match __fan_1 with
                    | `Lid ({ txt = x;_} : Tokenf.txt) ->
                        ((_loc, x, y, (Some t)) : 'type_entry )

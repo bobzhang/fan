@@ -1618,12 +1618,26 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
-          `Opt (`Nterm (Gramf.obj (level_str : 'level_str Gramf.t )))],
+         ([`Nterm (Gramf.obj (name : 'name Gramf.t ))],
            ("{\n  text = (`Nterm (_loc, n, lev));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  pattern = None;\n  outer_pattern = None\n}\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(lev : 'level_str option)  ~__fan_0:(n : 'name)
-                    (_loc : Locf.t)  ->
+                (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
+                   let lev = None in
+                   ({
+                      text = (`Nterm (_loc, n, lev));
+                      styp =
+                        (`Quote
+                           (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
+                      pattern = None;
+                      outer_pattern = None
+                    } : 'single_symbol )))));
+         ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
+          `Nterm (Gramf.obj (level_str : 'level_str Gramf.t ))],
+           ("{\n  text = (`Nterm (_loc, n, lev));\n  styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n  pattern = None;\n  outer_pattern = None\n}\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(lev : 'level_str)  ~__fan_0:(n : 'name) 
+                   (_loc : Locf.t)  ->
+                   let lev = Some lev in
                    ({
                       text = (`Nterm (_loc, n, lev));
                       styp =
@@ -3302,12 +3316,28 @@ let _ =
                    | _ ->
                        failwith
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-         ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
-          `Opt (`Nterm (Gramf.obj (level_str : 'level_str Gramf.t )))],
+         ([`Nterm (Gramf.obj (name : 'name Gramf.t ))],
            ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = KNormal; symbol } : Gram_def.psymbol )])\n  {\n    text = (`Nterm (_loc, n, lev));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    pattern = None;\n    outer_pattern = None\n  }\n",
              (Gramf.mk_action
-                (fun ~__fan_1:(lev : 'level_str option)  ~__fan_0:(n : 'name)
-                    (_loc : Locf.t)  ->
+                (fun ~__fan_0:(n : 'name)  (_loc : Locf.t)  ->
+                   let lev = None in
+                   ((fun (symbol : Gram_def.symbol)  ->
+                       [({ kind = KNormal; symbol } : Gram_def.psymbol )])
+                      {
+                        text = (`Nterm (_loc, n, lev));
+                        styp =
+                          (`Quote
+                             (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
+                        pattern = None;
+                        outer_pattern = None
+                      } : 'simple )))));
+         ([`Nterm (Gramf.obj (name : 'name Gramf.t ));
+          `Nterm (Gramf.obj (level_str : 'level_str Gramf.t ))],
+           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = KNormal; symbol } : Gram_def.psymbol )])\n  {\n    text = (`Nterm (_loc, n, lev));\n    styp = (`Quote (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));\n    pattern = None;\n    outer_pattern = None\n  }\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(lev : 'level_str)  ~__fan_0:(n : 'name) 
+                   (_loc : Locf.t)  ->
+                   let lev = Some lev in
                    ((fun (symbol : Gram_def.symbol)  ->
                        [({ kind = KNormal; symbol } : Gram_def.psymbol )])
                       {
@@ -3596,13 +3626,12 @@ let _ =
     (None,
       ((None, None,
          [([`Keyword "L0";
-           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
-           `Opt (`Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t )))],
+           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
             ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{\n   kind = KNormal;\n   symbol = { text; styp; pattern = None; outer_pattern = None }\n }]\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(sep : 'sep_symbol option) 
-                    ~__fan_1:(s : 'single_symbol) 
+                 (fun ~__fan_1:(s : 'single_symbol) 
                     ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                    let sep = None in
                     match __fan_0 with
                     | `Key ({ txt = l;_} : Tokenf.txt) ->
                         (let styp =
@@ -3625,13 +3654,72 @@ let _ =
                         failwith
                           (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "L1";
-          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
-          `Opt (`Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t )))],
+          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{\n   kind = KNormal;\n   symbol = { text; styp; pattern = None; outer_pattern = None }\n }]\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(sep : 'sep_symbol option) 
+                (fun ~__fan_1:(s : 'single_symbol) 
+                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                   let sep = None in
+                   match __fan_0 with
+                   | `Key ({ txt = l;_} : Tokenf.txt) ->
+                       (let styp =
+                          `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
+                        let text =
+                          `List
+                            (_loc, (if l = "L0" then false else true), s,
+                              sep) in
+                        [{
+                           kind = KNormal;
+                           symbol =
+                             {
+                               text;
+                               styp;
+                               pattern = None;
+                               outer_pattern = None
+                             }
+                         }] : 'symbol )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+         ([`Keyword "L0";
+          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
+          `Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t ))],
+           ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{\n   kind = KNormal;\n   symbol = { text; styp; pattern = None; outer_pattern = None }\n }]\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(sep : 'sep_symbol) 
                    ~__fan_1:(s : 'single_symbol) 
                    ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                   let sep = Some sep in
+                   match __fan_0 with
+                   | `Key ({ txt = l;_} : Tokenf.txt) ->
+                       (let styp =
+                          `App (_loc, (`Lid (_loc, "list")), (s.styp)) in
+                        let text =
+                          `List
+                            (_loc, (if l = "L0" then false else true), s,
+                              sep) in
+                        [{
+                           kind = KNormal;
+                           symbol =
+                             {
+                               text;
+                               styp;
+                               pattern = None;
+                               outer_pattern = None
+                             }
+                         }] : 'symbol )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
+         ([`Keyword "L1";
+          `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ));
+          `Nterm (Gramf.obj (sep_symbol : 'sep_symbol Gramf.t ))],
+           ("let styp = `App (_loc, (`Lid (_loc, \"list\")), (s.styp)) in\nlet text = `List (_loc, (if l = \"L0\" then false else true), s, sep) in\n[{\n   kind = KNormal;\n   symbol = { text; styp; pattern = None; outer_pattern = None }\n }]\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(sep : 'sep_symbol) 
+                   ~__fan_1:(s : 'single_symbol) 
+                   ~__fan_0:(__fan_0 : Tokenf.t)  (_loc : Locf.t)  ->
+                   let sep = Some sep in
                    match __fan_0 with
                    | `Key ({ txt = l;_} : Tokenf.txt) ->
                        (let styp =
@@ -3655,17 +3743,20 @@ let _ =
                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
          ([`Keyword "?";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
-           ("let styp = `App (_loc, (`Lid (_loc, \"option\")), (s.styp)) in\nlet text = `Opt (_loc, (s.text)) in\n[{\n   kind = KNormal;\n   symbol = { text; styp; pattern = None; outer_pattern = None }\n }]\n",
+           ("[{ kind = KNone; symbol = { s with pattern = None; outer_pattern = None } };\n{ kind = KSome; symbol = { s with pattern = None; outer_pattern = None } }]\n",
              (Gramf.mk_action
                 (fun ~__fan_1:(s : 'single_symbol)  ~__fan_0:_ 
                    (_loc : Locf.t)  ->
-                   (let styp = `App (_loc, (`Lid (_loc, "option")), (s.styp)) in
-                    let text = `Opt (_loc, (s.text)) in
-                    [{
-                       kind = KNormal;
+                   ([{
+                       kind = KNone;
                        symbol =
-                         { text; styp; pattern = None; outer_pattern = None }
-                     }] : 'symbol )))));
+                         { s with pattern = None; outer_pattern = None }
+                     };
+                    {
+                      kind = KSome;
+                      symbol =
+                        { s with pattern = None; outer_pattern = None }
+                    }] : 'symbol )))));
          ([`Keyword "TRY";
           `Nterm (Gramf.obj (single_symbol : 'single_symbol Gramf.t ))],
            ("let v = (_loc, (s.text)) in\nlet text = if p = \"TRY\" then `Try v else `Peek v in\n[{\n   kind = KNormal;\n   symbol = { text; styp = (s.styp); pattern = None; outer_pattern = None }\n }]\n",
@@ -3935,12 +4026,11 @@ let _ =
   Gramf.extend_single (entry_name : 'entry_name Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
-           `Opt (`Nterm (Gramf.obj (str : 'str Gramf.t )))],
+         [([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ))],
             ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(name : 'str option)  ~__fan_0:(il : 'qualid) 
-                    (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(il : 'qualid)  (_loc : Locf.t)  ->
+                    let name = None in
                     (let x =
                        match name with
                        | Some x ->
@@ -3952,19 +4042,37 @@ let _ =
                             | Some x ->
                                 (Ast_quotation.default := (Some x); `name old))
                        | None  -> `non in
-                     (x, (mk_name il)) : 'entry_name )))))]) : Gramf.olevel ));
+                     (x, (mk_name il)) : 'entry_name )))));
+         ([`Nterm (Gramf.obj (qualid : 'qualid Gramf.t ));
+          `Nterm (Gramf.obj (str : 'str Gramf.t ))],
+           ("let x =\n  match name with\n  | Some x ->\n      let old = Ast_quotation.default.contents in\n      (match Ast_quotation.resolve_name ((`Sub []), x) with\n       | None  -> Locf.failf _loc \"DDSL `%s' not resolved\" x\n       | Some x -> (Ast_quotation.default := (Some x); `name old))\n  | None  -> `non in\n(x, (mk_name il))\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(name : 'str)  ~__fan_0:(il : 'qualid) 
+                   (_loc : Locf.t)  ->
+                   let name = Some name in
+                   (let x =
+                      match name with
+                      | Some x ->
+                          let old = Ast_quotation.default.contents in
+                          (match Ast_quotation.resolve_name ((`Sub []), x)
+                           with
+                           | None  ->
+                               Locf.failf _loc "DDSL `%s' not resolved" x
+                           | Some x ->
+                               (Ast_quotation.default := (Some x); `name old))
+                      | None  -> `non in
+                    (x, (mk_name il)) : 'entry_name )))))]) : Gramf.olevel ));
   Gramf.extend_single (entry : 'entry Gramf.t )
     (None,
       ((None, None,
          [([`Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
            `Keyword ":";
-           `Opt (`Nterm (Gramf.obj (position : 'position Gramf.t )));
            `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
             ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = false; pos; levels })\n",
               (Gramf.mk_action
-                 (fun ~__fan_3:(levels : 'level_list) 
-                    ~__fan_2:(pos : 'position option)  ~__fan_1:_ 
+                 (fun ~__fan_2:(levels : 'level_list)  ~__fan_1:_ 
                     ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)  ->
+                    let pos = None in
                     (let (n,p) = rest in
                      (match n with
                       | `name old -> Ast_quotation.default := old
@@ -3976,18 +4084,39 @@ let _ =
                           failwithf
                             "For Group levels the position can not be applied to Level"
                       | _ -> Some { name = p; local = false; pos; levels }) : 
-                    'entry )))));
+                      'entry )))));
+         ([`Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (position : 'position Gramf.t ));
+          `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
+           ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = false; pos; levels })\n",
+             (Gramf.mk_action
+                (fun ~__fan_3:(levels : 'level_list) 
+                   ~__fan_2:(pos : 'position)  ~__fan_1:_ 
+                   ~__fan_0:(rest : 'entry_name)  (_loc : Locf.t)  ->
+                   let pos = Some pos in
+                   (let (n,p) = rest in
+                    (match n with
+                     | `name old -> Ast_quotation.default := old
+                     | _ -> ());
+                    (match (pos, levels) with
+                     | (Some
+                        (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),`Group _)
+                         ->
+                         failwithf
+                           "For Group levels the position can not be applied to Level"
+                     | _ -> Some { name = p; local = false; pos; levels }) : 
+                     'entry )))));
          ([`Keyword "let";
           `Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
           `Keyword ":";
-          `Opt (`Nterm (Gramf.obj (position : 'position Gramf.t )));
           `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
            ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n",
              (Gramf.mk_action
-                (fun ~__fan_4:(levels : 'level_list) 
-                   ~__fan_3:(pos : 'position option)  ~__fan_2:_ 
+                (fun ~__fan_3:(levels : 'level_list)  ~__fan_2:_ 
                    ~__fan_1:(rest : 'entry_name)  ~__fan_0:_  (_loc : Locf.t)
                     ->
+                   let pos = None in
                    (let (n,p) = rest in
                     (match n with
                      | `name old -> Ast_quotation.default := old
@@ -3999,7 +4128,31 @@ let _ =
                          failwithf
                            "For Group levels the position can not be applied to Level"
                      | _ -> Some { name = p; local = true; pos; levels }) : 
-                   'entry )))));
+                     'entry )))));
+         ([`Keyword "let";
+          `Nterm (Gramf.obj (entry_name : 'entry_name Gramf.t ));
+          `Keyword ":";
+          `Nterm (Gramf.obj (position : 'position Gramf.t ));
+          `Nterm (Gramf.obj (level_list : 'level_list Gramf.t ))],
+           ("let (n,p) = rest in\n(match n with | `name old -> Ast_quotation.default := old | _ -> ());\n(match (pos, levels) with\n | (Some (`App (_loc,`Vrn (_,\"Level\"),_) : FAst.exp),`Group _) ->\n     failwithf \"For Group levels the position can not be applied to Level\"\n | _ -> Some { name = p; local = true; pos; levels })\n",
+             (Gramf.mk_action
+                (fun ~__fan_4:(levels : 'level_list) 
+                   ~__fan_3:(pos : 'position)  ~__fan_2:_ 
+                   ~__fan_1:(rest : 'entry_name)  ~__fan_0:_  (_loc : Locf.t)
+                    ->
+                   let pos = Some pos in
+                   (let (n,p) = rest in
+                    (match n with
+                     | `name old -> Ast_quotation.default := old
+                     | _ -> ());
+                    (match (pos, levels) with
+                     | (Some
+                        (`App (_loc,`Vrn (_,"Level"),_) : FAst.exp),`Group _)
+                         ->
+                         failwithf
+                           "For Group levels the position can not be applied to Level"
+                     | _ -> Some { name = p; local = true; pos; levels }) : 
+                     'entry )))));
          ([`Keyword "Inline";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
@@ -4090,15 +4243,37 @@ let _ =
   Gramf.extend_single (level : 'level Gramf.t )
     (None,
       ((None, None,
-         [([`Opt (`Nterm (Gramf.obj (str : 'str Gramf.t )));
-           `Opt (`Nterm (Gramf.obj (assoc : 'assoc Gramf.t )));
-           `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
+         [([`Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
             ("{ label; assoc; rules }\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(rules : 'rule_list) 
-                    ~__fan_1:(assoc : 'assoc option) 
-                    ~__fan_0:(label : 'str option)  (_loc : Locf.t)  ->
-                    ({ label; assoc; rules } : 'level )))))]) : Gramf.olevel ));
+                 (fun ~__fan_0:(rules : 'rule_list)  (_loc : Locf.t)  ->
+                    let assoc = None and label = None in
+                    ({ label; assoc; rules } : 'level )))));
+         ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
+          `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
+           ("{ label; assoc; rules }\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(label : 'str) 
+                   (_loc : Locf.t)  ->
+                   let assoc = None and label = Some label in
+                   ({ label; assoc; rules } : 'level )))));
+         ([`Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
+          `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
+           ("{ label; assoc; rules }\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(rules : 'rule_list)  ~__fan_0:(assoc : 'assoc)
+                    (_loc : Locf.t)  ->
+                   let assoc = Some assoc and label = None in
+                   ({ label; assoc; rules } : 'level )))));
+         ([`Nterm (Gramf.obj (str : 'str Gramf.t ));
+          `Nterm (Gramf.obj (assoc : 'assoc Gramf.t ));
+          `Nterm (Gramf.obj (rule_list : 'rule_list Gramf.t ))],
+           ("{ label; assoc; rules }\n",
+             (Gramf.mk_action
+                (fun ~__fan_2:(rules : 'rule_list)  ~__fan_1:(assoc : 'assoc)
+                    ~__fan_0:(label : 'str)  (_loc : Locf.t)  ->
+                   let assoc = Some assoc and label = Some label in
+                   ({ label; assoc; rules } : 'level )))))]) : Gramf.olevel ));
   Gramf.extend_single (assoc : 'assoc Gramf.t )
     (None,
       ((None, None,
@@ -4153,26 +4328,70 @@ let _ =
   Gramf.extend_single (rule : 'rule Gramf.t )
     (None,
       ((None, None,
-         [([`Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ));
-           `Opt (`Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t )))],
+         [([`Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ))],
             ("let prods = Listf.cross prod in\nList.map (fun (prod : Gram_def.psymbol list)  -> mk_prule ~prod ~action)\n  prods\n",
               (Gramf.mk_action
-                 (fun ~__fan_1:(action : 'opt_action option) 
-                    ~__fan_0:(prod : 'left_rule)  (_loc : Locf.t)  ->
+                 (fun ~__fan_0:(prod : 'left_rule)  (_loc : Locf.t)  ->
+                    let action = None in
                     (let prods = Listf.cross prod in
                      List.map
                        (fun (prod : Gram_def.psymbol list)  ->
                           mk_prule ~prod ~action) prods : 'rule )))));
+         ([`Nterm (Gramf.obj (left_rule : 'left_rule Gramf.t ));
+          `Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t ))],
+           ("let prods = Listf.cross prod in\nList.map (fun (prod : Gram_def.psymbol list)  -> mk_prule ~prod ~action)\n  prods\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(action : 'opt_action) 
+                   ~__fan_0:(prod : 'left_rule)  (_loc : Locf.t)  ->
+                   let action = Some action in
+                   (let prods = Listf.cross prod in
+                    List.map
+                      (fun (prod : Gram_def.psymbol list)  ->
+                         mk_prule ~prod ~action) prods : 'rule )))));
+         ([`Keyword "@";
+          `Token
+            (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
+              "`Lid x")],
+           ("let rules =\n  match query_inline x with\n  | Some x -> x\n  | None  -> Locf.failf xloc \"inline rules %s not found\" x in\nmatch action with\n| None  -> rules\n| Some a ->\n    List.map\n      (fun (x : Gram_def.rule)  ->\n         match x.action with\n         | None  -> { x with action = (Some a) }\n         | Some b ->\n             { x with action = (Some (`App (_loc, a, b) : FAst.exp )) })\n      rules\n",
+             (Gramf.mk_action
+                (fun ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_ 
+                   (_loc : Locf.t)  ->
+                   let action = None in
+                   match __fan_1 with
+                   | `Lid ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
+                       (let rules =
+                          match query_inline x with
+                          | Some x -> x
+                          | None  ->
+                              Locf.failf xloc "inline rules %s not found" x in
+                        (match action with
+                         | None  -> rules
+                         | Some a ->
+                             List.map
+                               (fun (x : Gram_def.rule)  ->
+                                  match x.action with
+                                  | None  -> { x with action = (Some a) }
+                                  | Some b ->
+                                      {
+                                        x with
+                                        action =
+                                          (Some
+                                             (`App (_loc, a, b) : FAst.exp ))
+                                      }) rules) : 'rule )
+                   | _ ->
+                       failwith
+                         (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
          ([`Keyword "@";
           `Token
             (((function | `Lid _ -> true | _ -> false)), (3802919, `Any),
               "`Lid x");
-          `Opt (`Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t )))],
+          `Nterm (Gramf.obj (opt_action : 'opt_action Gramf.t ))],
            ("let rules =\n  match query_inline x with\n  | Some x -> x\n  | None  -> Locf.failf xloc \"inline rules %s not found\" x in\nmatch action with\n| None  -> rules\n| Some a ->\n    List.map\n      (fun (x : Gram_def.rule)  ->\n         match x.action with\n         | None  -> { x with action = (Some a) }\n         | Some b ->\n             { x with action = (Some (`App (_loc, a, b) : FAst.exp )) })\n      rules\n",
              (Gramf.mk_action
-                (fun ~__fan_2:(action : 'opt_action option) 
+                (fun ~__fan_2:(action : 'opt_action) 
                    ~__fan_1:(__fan_1 : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
                     ->
+                   let action = Some action in
                    match __fan_1 with
                    | `Lid ({ loc = xloc; txt = x;_} : Tokenf.txt) ->
                        (let rules =

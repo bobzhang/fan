@@ -67,7 +67,7 @@ and asymbol =
   | `Snterml of (entry * string) (* the second argument is the level name *)
   | `List0 of symbol
   | `List1 of symbol
-  | `Opt of symbol
+  (* | `Opt of symbol *)
   | `Try of symbol
   | `Peek of symbol
   | `Self
@@ -82,7 +82,7 @@ and symbol =
   | `List0sep of (symbol * symbol)
   | `List1 of symbol
   | `List1sep of (symbol * symbol)
-  | `Opt of symbol
+  (* | `Opt of symbol *)
   | `Try of symbol
   | `Peek of symbol
   | `Self

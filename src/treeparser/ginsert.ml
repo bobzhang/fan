@@ -14,7 +14,7 @@ let higher s1 s2 =
 
 let rec derive_eps (s:symbol)  =
   match s with 
-  | `List0 _ | `List0sep (_, _) | `Opt _ | `Peek _ -> true
+  | `List0 _ | `List0sep (_, _) (* | `Opt _ *) | `Peek _ -> true
 
   | `Try s -> derive_eps s (* it would consume if succeed *)
   | `List1 _ | `List1sep (_, _) | `Token _ | `Keyword _ ->
@@ -80,7 +80,7 @@ let rec check_gram (entry : Gstructure.entry) = function
           entry.name e.name
   | `List0sep (s, t) -> begin check_gram entry t; check_gram entry s end
   | `List1sep (s, t) -> begin check_gram entry t; check_gram entry s end
-  | `List0 s | `List1 s | `Opt s | `Try s | `Peek s -> check_gram entry s
+  | `List0 s | `List1 s (* | `Opt s *) | `Try s | `Peek s -> check_gram entry s
   | `Self | `Token _ | `Keyword _ -> ()
         
 and tree_check_gram entry = function
@@ -102,7 +102,7 @@ let rec using_symbols  symbols acc  =
   List.fold_left (fun acc symbol -> using_symbol symbol acc) acc symbols
 and  using_symbol symbol acc =
   match symbol with 
-  | `List0 s | `List1 s | `Opt s | `Try s | `Peek s ->
+  | `List0 s | `List1 s (* | `Opt s *) | `Try s | `Peek s ->
       using_symbol s acc
   | `List0sep (s, t) -> using_symbol  t (using_symbol s acc)
   | `List1sep (s, t) -> using_symbol  t (using_symbol  s acc)

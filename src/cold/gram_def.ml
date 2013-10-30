@@ -63,9 +63,9 @@ and psymbol =  {
   symbol: symbol} 
 and text =
   [ `List of (loc* bool* symbol* symbol option)
-  | `Nterm of (loc* name* string option) | `Opt of (loc* text)
-  | `Try of (loc* text) | `Peek of (loc* text) | `Self of loc
-  | `Keyword of (loc* string) | `Token of (loc* exp* exp* string)] 
+  | `Nterm of (loc* name* string option) | `Try of (loc* text)
+  | `Peek of (loc* text) | `Self of loc | `Keyword of (loc* string)
+  | `Token of (loc* exp* exp* string)] 
 type entries =  {
   items: entry list;
   gram: vid option;

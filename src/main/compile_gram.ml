@@ -37,31 +37,31 @@ let gm () =
   
 
 let mk_prule ~prod ~action =
-  (* let env = ref [] in *)
+  let env = ref [] in
   let i = ref 0 in 
   let prod =
     Listf.filter_map
       (function  (p:Gram_def.psymbol) ->
         match p with
-        | {kind = KSome;  symbol = ({pattern = None;_} as symbol) }
+        | {kind = KSome;  symbol = ({outer_pattern = None;_} as symbol) }
         | {kind = KNormal; symbol} -> begin
             incr i;
             Some symbol 
         end
-        | {kind = KSome; symbol = ({pattern = Some _ ;_} as s)} -> begin 
-            (* env := (prefix^string_of_int !i, x) :: env; *)
+        | {kind = KSome; symbol = ({outer_pattern = Some (xloc,id) ;_} as s)} -> begin 
+            env := (%pat@xloc{$lid:id}, %exp@xloc{Some $lid:id } ) :: !env;
             incr i;
             Some s
         end
-        | {kind = KNone; symbol = {pattern = None; _ }} ->
+        | {kind = KNone; symbol = {outer_pattern = None ; _ }} ->
             None
-        | {kind = KNone; symbol = {pattern = Some _;_}} -> begin
-            (* env :=(x,None) ::env ; *)
+        | {kind = KNone; symbol = {outer_pattern = Some (xloc,id);_}} -> begin
+            env := (%pat@xloc{$lid:id}, %exp@xloc{None}) :: !env ;
             None 
         end
             
       ) prod in
-  ({prod;action;env = []}:Gram_def.rule)
+  ({prod;action;env = !env}:Gram_def.rule)
 
 
 let gen_lid ()=
@@ -92,7 +92,6 @@ let rec make_exp (tvar : string) (x:Gram_def.text) =
         | Some lab -> %exp{ `Snterml ($obj,$str:lab)}
         | None ->
            if n.tvar = tvar then %exp{ `Self} else %exp{ `Nterm $obj })
-    | `Opt (_loc, t) -> %exp{ `Opt ${aux "" t} }
     | `Try (_loc, t) -> %exp{ `Try ${aux "" t} }
     | `Peek (_loc, t) -> %exp{ `Peek ${aux "" t} }
     | `Token (_loc, match_fun,  mdescr, mstr ) ->
@@ -136,7 +135,6 @@ let make_action (_loc:loc)
             ( %exp{$lid:id} :: oe, p:: op)
         | {pattern=Some p ; text=`Token _;outer_pattern = Some (xloc,id) ;_ } ->
             ( %exp@xloc{$lid:id} :: oe, p:: op)
-              
         | {pattern = Some p; text = `Keyword _;outer_pattern = None;  _} ->
             let id = prefix ^ string_of_int i in 
             (%exp{$lid:id}::oe, p :: op) (* TO be improved*)
@@ -191,12 +189,10 @@ let make_action (_loc:loc)
       (fun i txt (s:Gram_def.symbol) ->
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
         match (s.outer_pattern, s.pattern) with
-        | (Some (xloc,id),_)  ->
-            (* (u:Tokenf.t)   *)
+        | (Some (xloc,id),_)  -> (* (u:Tokenf.t)   *)
             let p = typing %pat@xloc{$lid:id} (make_ctyp s.styp rtvar) in
             %exp{ fun ${mk_arg p} -> $txt }
-        | (None, Some _) ->
-            (* __fan_i, since we have inner binding*)            
+        | (None, Some _) -> (* __fan_i, since we have inner binding*)            
             let p =
               typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
             %exp{ fun ${mk_arg p} -> $txt }
