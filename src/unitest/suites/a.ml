@@ -2,10 +2,14 @@
 
 %extend{a:  [ Lid i as u  %{(u,i)}]}
 
-%extend{a: [?a as v;?Lid as k %{(v,c,k)} ]}
 
 
-%extend{a: [?a as v;?Lid as k %{v,c,k} ]}
+(* FIXME *)  
+%extend{a: [?a as v;?Lid i as k %{(v,c,i, k)} ]}
+
+%extend{a: [?a as v;?Lid i  %{(v,c,i, k)} ]}
+
+(* %extend{a: [?a as v;?Lid as k %{v,c,k} ]} *)
 (* FIXME should have a parser error here ... *)  
 (*
 let _ =
