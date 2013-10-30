@@ -132,12 +132,19 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i ((oe,op) as acc)  x ->
         match (x:Gram_def.symbol) with 
-        | {pattern=Some p ; text=`Token _;_ } when not (is_irrefut_pat p)->
+        | {pattern=Some p ; text=`Token _;outer_pattern = None; _ }
+            (* when not (is_irrefut_pat p) *)->
             let id = prefix ^ string_of_int i in
             ( %exp{$lid:id} :: oe, p:: op)
-        | {pattern = Some p; text = `Keyword _; _} ->
+        | {pattern=Some p ; text=`Token _;outer_pattern = Some (xloc,id) ;_ } ->
+            ( %exp@xloc{$lid:id} :: oe, p:: op)
+              
+        | {pattern = Some p; text = `Keyword _;outer_pattern = None;  _} ->
             let id = prefix ^ string_of_int i in 
             (%exp{$lid:id}::oe, p :: op) (* TO be improved*)
+        | {pattern = Some p; text = `Keyword _;outer_pattern = Some(xloc,id);  _} ->
+            (* FIXME when the percent is replaced with '$',  a weird error message*)
+            (%exp@xloc{$lid:id}::oe, p::op)
         | _ ->  acc) ([],[])  x.prod in
   let e =
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
@@ -180,18 +187,17 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
-        match s.pattern with
-        |Some %pat'{ ($_ $par{%pat@_{ _ }} as $p) } ->
-            let p = typing (p:alident :> pat) (make_ctyp s.styp rtvar)  in
+        match (s.outer_pattern, s.pattern) with
+        | (Some (xloc,id),_) (* when is_irrefut_pat p *) ->
+            (* (u:Tokenf.t)   *)
+            let p = typing %pat@xloc{$lid:id} (make_ctyp s.styp rtvar) in
             %exp{ fun ${mk_arg p} -> $txt }
-        | Some p when is_irrefut_pat p ->
-            let p = typing p (make_ctyp s.styp rtvar) in
-            %exp{ fun ${mk_arg p} -> $txt }
-        | Some _ ->
+        | (None, Some _) ->
+            (* __fan_i, since we have inner binding*)            
             let p =
               typing %pat{ $lid{prefix^string_of_int i} } (make_ctyp s.styp rtvar)  in
             %exp{ fun ${mk_arg p} -> $txt }
-        | None -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
+        | (None,None) -> %exp{ fun ${mk_arg %pat{_}} -> $txt })  e x.prod in
   %exp{ $id{(gm())}.mk_action $txt }
 
 

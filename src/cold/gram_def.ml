@@ -50,10 +50,13 @@ and kind =
   | KNone
   | KSome
   | KNormal 
-and symbol =  {
+and locid = (loc* string) 
+and symbol = 
+  {
   text: text;
   styp: styp;
-  pattern: pat option} 
+  pattern: pat option;
+  outer_pattern: locid option} 
 and psymbol =  {
   kind: kind;
   symbol: symbol} 

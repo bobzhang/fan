@@ -57,11 +57,13 @@ and kind =
   | KNone
   | KSome
   | KNormal
+and locid = (loc * string)
 and symbol = {
     text : text;
     styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
     pattern : pat option;
+    outer_pattern :  locid option; (* as outer_pattern *)
 }
 and psymbol = {
     kind : kind ;
