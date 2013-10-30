@@ -39,11 +39,29 @@ type descr = data
 
       
 type token_pattern = ((Tokenf.t -> bool) * descr * string )
+type terminal = 
+    [ `Keyword of string
+    | `Token of token_pattern ]
 
 type entry = Gstructure.entry 
 and desc = Gstructure.desc
 and level =Gstructure.level 
-and symbol = Gstructure.symbol
+and symbol =
+    (* The concrete representation is needed here
+       at least for polymorphic variant *)
+    [`Nterm of entry
+    | `Snterml of (entry * string) (* the second argument is the level name *)
+    | `List0 of symbol
+    | `List0sep of (symbol * symbol)
+    | `List1 of symbol
+    | `List1sep of (symbol * symbol)
+    | `Opt of symbol
+    | `Try of symbol
+    | `Peek of symbol
+    | `Self
+    | terminal
+   ]
+
 and tree = Gstructure.tree 
 and node = Gstructure.node 
 
