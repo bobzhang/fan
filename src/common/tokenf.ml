@@ -63,14 +63,7 @@ let pp_print_ant fmt  (x:ant) =
   Format.fprintf fmt "cxt:%S;content:%S"
   (match x.cxt with None ->""|Some s -> s)  x.txt 
       
-(*      
-type ant  = {
-    meta : string option;
-    shift : int ;
-    retract : int;
-    loc : loc;
-    content : string;
-  } *)
+
 type 'a expand_fun = Locf.t -> string option -> string -> 'a
       
 type quotation = [ `Quot of quot ] 
@@ -108,7 +101,7 @@ type t =
   | space_token
   | quotation
   | dir_quotation
-  | `Ant       of ant (* (string * string ) *)        
+  | `Ant       of ant 
   | `EOI       of txt]
 
 let quot_expand (expander:'a expand_fun) (x:quot) =
@@ -151,38 +144,6 @@ let pp_print_dir_quotation: Format.formatter -> dir_quotation -> unit =
   fun fmt  (`DirQuotation x)  ->
     Format.fprintf fmt "@[<1>(`DirQuotation %a)@]"
       pp_print_quot x 
-
-      
-(* let eq (x:t) (y:t) = *)
-(*   match (x,y) with *)
-(*   | `Key (_,a), `Key(_,b) *)
-(*   | `Sym (_,a), `Sym(_,b) *)
-(*   | `Lid (_,a), `Lid(_,b) *)
-(*   | `Uid (_,a), `Uid(_,b) *)
-(*   | `Eident(_,a), `Eident(_,b) *)
-(*   | `Int(_,a), `Int(_,b) *)
-(*   | `Int32(_,a),`Int(_,b) *)
-(*   | `Int64(_,a),`Int64(_,b) *)
-(*   | `Nativeint(_,a),`Nativeint(_,b) *)
-(*   | `Flo(_,a),`Flo(_,b) *)
-(*   | `Chr(_,a),`Chr(_,b) *)
-(*   | `Label(_,a),`Label(_,b) *)
-(*   | `Optlabel(_,a),`Optlabel(_,b) *)
-(*   | `Str(_,a),`Str(_,b) *)
-(*   | `Comment(_,a),`Comment(_,b) *)
-(*   | `Blank(_,a),`Blank(_,b) *)
-(*       -> a = b  *)
-
-(*   | `Newline(_,a,b),`Newline(_,a,b) *)
-
-(*   | `Quot  *)
-(*   | `DirQuotation *)
-(*   | `Ant (loc,) *)
-
-(*   | `LINE_DIRECTIVE(_,a),`LINE_DIRECTIVE(_,b) *)
-(*   | `EOI,`EOI -> true        *)
-(*   |  _,_ -> false  *)
-
 
       
 let pp_print_t (fmt:Format.formatter)  (x:t) : unit =

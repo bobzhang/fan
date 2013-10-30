@@ -45,7 +45,8 @@ and level =  {
   rules: rule list} 
 and rule =  {
   prod: symbol list;
-  action: exp option} 
+  action: exp option;
+  env: (pat* exp) list} 
 and kind =  
   | KNone
   | KSome

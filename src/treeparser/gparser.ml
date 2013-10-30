@@ -35,7 +35,7 @@ let level_number (entry:Gstructure.entry) lab =
 module ArgContainer= Stack
   
 let rec parser_of_tree (entry:Gstructure.entry)
-    (lev,assoc) (q: (* (Gaction.t * Locf.t) *)(* Tokenf.t *)Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
+    (lev,assoc) (q: Gaction.t ArgContainer.t ) x :  (Obj.t * Locf.t) Tokenf.parse =
   (*
     Given a tree, return a parser which has the type
     [parse Gaction.t]. Think about [node son], only son owns the action,

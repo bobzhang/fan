@@ -4,7 +4,6 @@ Format:
   ;
 Fan_ops:
   list_of_list
-  is_irrefut_pat
   ;
 Ast_gen:
   tuple_com
@@ -62,7 +61,7 @@ let mk_prule ~prod ~action =
         end
             
       ) prod in
-  ({prod;action}:Gram_def.rule)
+  ({prod;action;env = []}:Gram_def.rule)
 
 
 let gen_lid ()=
@@ -132,8 +131,7 @@ let make_action (_loc:loc)
     Listf.fold_lefti
       (fun i ((oe,op) as acc)  x ->
         match (x:Gram_def.symbol) with 
-        | {pattern=Some p ; text=`Token _;outer_pattern = None; _ }
-            (* when not (is_irrefut_pat p) *)->
+        | {pattern=Some p ; text=`Token _;outer_pattern = None; _ } ->
             let id = prefix ^ string_of_int i in
             ( %exp{$lid:id} :: oe, p:: op)
         | {pattern=Some p ; text=`Token _;outer_pattern = Some (xloc,id) ;_ } ->
@@ -147,28 +145,32 @@ let make_action (_loc:loc)
             (%exp@xloc{$lid:id}::oe, p::op)
         | _ ->  acc) ([],[])  x.prod in
   let e =
+    let binds =
+        x.env |> List.map (fun (p,e) -> %bind{$p = $e}) in
     let e1 = %exp{ ($act : '$lid:rtvar ) } in
-      match tok_match_pl with
-      | ([],_) ->
-          %exp{fun ($locid : Locf.t) -> $e1 }
-            (* BOOTSTRAPING, associated with module name [Locf] *)
-      | (e,p) ->
-          let (exp,pat) =
-            match (e,p) with
-            | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
-          let len = List.length e in
-          (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
-          let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
-          let es =
-            (* BOOTSTRAPING, associated with module name [Tokenf] *)
-            List.map (fun x -> %exp{Tokenf.to_string $x}) e in
-          let error =
-            Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in 
-          %exp{fun ($locid : Locf.t) ->
-            (* BOOTSTRAPING, associated with module name [Locf] *)
-            match $exp with
+    match tok_match_pl with
+    | ([],_) ->
+        let e1 = Ast_gen.binds binds e1  in
+        %exp{fun ($locid : Locf.t) -> $e1 }
+          (* BOOTSTRAPING, associated with module name [Locf] *)
+    | (e,p) ->
+        let (exp,pat) =
+          match (e,p) with
+          | ([x],[y]) -> (x,y) | _ -> (tuple_com e, tuple_com p) in
+        let len = List.length e in
+        (** it's dangerous to combine generated string with [fprintf] or [sprintf] *)
+        let error_fmt = String.concat " " (Listf.init len (fun _ -> "%s")) in
+        let es =
+          (* BOOTSTRAPING, associated with module name [Tokenf] *)
+          List.map (fun x -> %exp{Tokenf.to_string $x}) e in
+        let error =
+          Ast_gen.appl_of_list ([ %exp{Printf.sprintf }; %exp{$str':error_fmt}]  @ es) in
+        let e =
+          Ast_gen.binds binds
+            %exp{match $exp with
             | $pat -> $e1
-            | _ -> failwith $error}  in
+            | _ -> failwith $error} in 
+        %exp{fun ($locid : Locf.t) (* BOOTSTRAPING, associated with module name [Locf] *) -> $e } in
   let make_ctyp (styp:Gram_def.styp) tvar : ctyp = 
     let rec aux  v = 
       match (v:Gram_def.styp) with
@@ -183,12 +185,13 @@ let make_action (_loc:loc)
           (* %ctyp{[Tokenf.t]} should be caught as error ealier *)
     | `Type t -> t  in
     aux styp in
-  let (_,txt) =
+  let txt =
+    snd @@
     Listf.fold_lefti
       (fun i txt (s:Gram_def.symbol) ->
         let mk_arg p = %pat{~$lid{ prefix ^string_of_int i} : $p } in
         match (s.outer_pattern, s.pattern) with
-        | (Some (xloc,id),_) (* when is_irrefut_pat p *) ->
+        | (Some (xloc,id),_)  ->
             (* (u:Tokenf.t)   *)
             let p = typing %pat@xloc{$lid:id} (make_ctyp s.styp rtvar) in
             %exp{ fun ${mk_arg p} -> $txt }

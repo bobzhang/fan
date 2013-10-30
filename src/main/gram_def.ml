@@ -51,7 +51,7 @@ and level  = {
 and rule = {
     prod : symbol list ;
     action : exp option ;
-    (* env : (pat * exp) list;  *)
+    env : (pat * exp) list;
 }
 and kind =
   | KNone
@@ -63,7 +63,7 @@ and symbol = {
     styp : styp;
   (* the inferred type of the result parsed by the current symbol *)
     pattern : pat option;
-    outer_pattern :  locid option; (* as outer_pattern *)
+    outer_pattern :  locid option; (* [as outer_pattern] *)
 }
 and psymbol = {
     kind : kind ;

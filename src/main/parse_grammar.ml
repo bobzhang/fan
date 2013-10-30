@@ -60,7 +60,6 @@ let query_inline (x:string) =
    (entry: Gram_def.entry option Gramf.t)
    extend_body
    unsafe_extend_body
-          
   (simple : Gram_def.psymbol list Gramf.t)
   (single_symbol : Gram_def.symbol Gramf.t)        
 }

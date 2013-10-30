@@ -1,6 +1,5 @@
 let eprintf = Format.eprintf
 let list_of_list = Fan_ops.list_of_list
-let is_irrefut_pat = Fan_ops.is_irrefut_pat
 let tuple_com = Ast_gen.tuple_com
 let typing = Ast_gen.typing
 let and_of_list = Ast_gen.and_of_list
@@ -27,7 +26,7 @@ let mk_prule ~prod  ~action  =
              (incr i; Some s)
          | { kind = KNone ; symbol = { pattern = None ;_} } -> None
          | { kind = KNone ; symbol = { pattern = Some _;_} } -> None) prod in
-  ({ prod; action } : Gram_def.rule )
+  ({ prod; action; env = [] } : Gram_def.rule )
 let gen_lid () =
   let gensym = let i = ref 0 in fun ()  -> incr i; i in
   prefix ^ (string_of_int (gensym ()).contents)
@@ -135,11 +134,14 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                  (((`Lid (xloc, id) : FAst.exp ) :: oe), (p :: op))
              | _ -> acc) ([], []) x.prod) in
    let e =
+     let binds =
+       x.env |> (List.map (fun (p,e)  -> (`Bind (_loc, p, e) : FAst.bind ))) in
      let e1: FAst.exp =
        `Constraint
          (_loc, act, (`Quote (_loc, (`Normal _loc), (`Lid (_loc, rtvar))))) in
      match tok_match_pl with
      | ([],_) ->
+         let e1 = Ast_gen.binds binds e1 in
          (`Fun
             (_loc,
               (`Case
@@ -170,6 +172,16 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                   (_loc, (`Uid (_loc, "Printf")), (`Lid (_loc, "sprintf"))) : 
               FAst.exp );
               (`Str (_loc, (String.escaped error_fmt)) : FAst.exp )] @ es) in
+         let e =
+           Ast_gen.binds binds
+             (`Match
+                (_loc, exp,
+                  (`Bar
+                     (_loc, (`Case (_loc, pat, e1)),
+                       (`Case
+                          (_loc, (`Any _loc),
+                            (`App (_loc, (`Lid (_loc, "failwith")), error))))))) : 
+             FAst.exp ) in
          (`Fun
             (_loc,
               (`Case
@@ -178,15 +190,7 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
                       (_loc, locid,
                         (`Dot
                            (_loc, (`Uid (_loc, "Locf")), (`Lid (_loc, "t")))))),
-                   (`Match
-                      (_loc, exp,
-                        (`Bar
-                           (_loc, (`Case (_loc, pat, e1)),
-                             (`Case
-                                (_loc, (`Any _loc),
-                                  (`App
-                                     (_loc, (`Lid (_loc, "failwith")), error))))))))))) : 
-           FAst.exp ) in
+                   e))) : FAst.exp ) in
    let make_ctyp (styp : Gram_def.styp) tvar =
      (let rec aux v =
         match (v : Gram_def.styp ) with
@@ -205,28 +209,30 @@ let make_action (_loc : loc) (x : Gram_def.rule) (rtvar : string) =
             FAst.ctyp )
         | `Type t -> t in
       aux styp : ctyp ) in
-   let (_,txt) =
-     Listf.fold_lefti
-       (fun i  txt  (s : Gram_def.symbol)  ->
-          let mk_arg p =
-            (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
-            FAst.pat ) in
-          match ((s.outer_pattern), (s.pattern)) with
-          | (Some (xloc,id),_) ->
-              let p =
-                typing (`Lid (xloc, id) : FAst.pat ) (make_ctyp s.styp rtvar) in
-              (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
-          | (None ,Some _) ->
-              let p =
-                typing
-                  (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
-                  (make_ctyp s.styp rtvar) in
-              (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
-          | (None ,None ) ->
-              (`Fun
-                 (_loc,
-                   (`Case (_loc, (mk_arg (`Any _loc : FAst.pat )), txt))) : 
-              FAst.exp )) e x.prod in
+   let txt =
+     snd @@
+       (Listf.fold_lefti
+          (fun i  txt  (s : Gram_def.symbol)  ->
+             let mk_arg p =
+               (`Label (_loc, (`Lid (_loc, (prefix ^ (string_of_int i)))), p) : 
+               FAst.pat ) in
+             match ((s.outer_pattern), (s.pattern)) with
+             | (Some (xloc,id),_) ->
+                 let p =
+                   typing (`Lid (xloc, id) : FAst.pat )
+                     (make_ctyp s.styp rtvar) in
+                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
+             | (None ,Some _) ->
+                 let p =
+                   typing
+                     (`Lid (_loc, (prefix ^ (string_of_int i))) : FAst.pat )
+                     (make_ctyp s.styp rtvar) in
+                 (`Fun (_loc, (`Case (_loc, (mk_arg p), txt))) : FAst.exp )
+             | (None ,None ) ->
+                 (`Fun
+                    (_loc,
+                      (`Case (_loc, (mk_arg (`Any _loc : FAst.pat )), txt))) : 
+                 FAst.exp )) e x.prod) in
    (`App (_loc, (`Dot (_loc, (gm ()), (`Lid (_loc, "mk_action")))), txt) : 
      FAst.exp ) : exp )
 let make_extend safe (e : Gram_def.entry) =
