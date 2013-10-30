@@ -158,7 +158,12 @@ let query_inline (x:string) =
      {text = `Nterm (_loc ,n, lev);
       styp = %ctyp'{'$lid{n.tvar}};
       pattern = None;
-      outer_pattern = None}}]        
+      outer_pattern = None}}
+  | "S" %{
+    {text = `Self _loc;
+     styp = `Self _loc;
+     pattern = None;
+     outer_pattern = None}}]        
   single_symbol :
   [@simple_token 
   |@simple_symbol]
@@ -223,13 +228,7 @@ let query_inline (x:string) =
               pattern = Some %pat{`Key ({txt=$lid:b;_}:Tokenf.txt)};
               outer_pattern = None}}:Gram_def.psymbol))}
 
-  | "S" %{
-    [({ kind = KNormal;
-        symbol = {
-        text = `Self _loc;
-        styp = `Self _loc;
-        pattern = None;
-        outer_pattern = None}}:Gram_def.psymbol)]}
+
   (* |  ("Uid" as v) ; "("; or_words as p; ")" %{ *)
   (*   match p with *)
   (*   | (vs,None) -> *)
@@ -264,7 +263,7 @@ let query_inline (x:string) =
    (*   } in *)
    (* [mk_symbol ~text ~styp ~pattern:None ] *)
    (* } *)
-   ("L0"|"L1" as l) ; single_symbol as s; ?  sep_symbol as sep  %{
+   ("L0"|"L1" as l) ; single_symbol as s; ?sep_symbol as sep  %{
     let styp = %ctyp'{ ${s.styp} list   } in 
     let text =
       `List(_loc, (if l = "L0" then false else true), s, sep) in

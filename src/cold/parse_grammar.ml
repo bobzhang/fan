@@ -1645,6 +1645,16 @@ let _ =
                            (_loc, (`Normal _loc), (`Lid (_loc, (n.tvar)))));
                       pattern = None;
                       outer_pattern = None
+                    } : 'single_symbol )))));
+         ([`Keyword "S"],
+           ("{\n  text = (`Self _loc);\n  styp = (`Self _loc);\n  pattern = None;\n  outer_pattern = None\n}\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                   ({
+                      text = (`Self _loc);
+                      styp = (`Self _loc);
+                      pattern = None;
+                      outer_pattern = None
                     } : 'single_symbol )))))]) : Gramf.olevel ));
   Gramf.extend_single (or_words : 'or_words Gramf.t )
     (None,
@@ -3348,6 +3358,18 @@ let _ =
                         pattern = None;
                         outer_pattern = None
                       } : 'simple )))));
+         ([`Keyword "S"],
+           ("(fun (symbol : Gram_def.symbol)  ->\n   [({ kind = KNormal; symbol } : Gram_def.psymbol )])\n  {\n    text = (`Self _loc);\n    styp = (`Self _loc);\n    pattern = None;\n    outer_pattern = None\n  }\n",
+             (Gramf.mk_action
+                (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                   ((fun (symbol : Gram_def.symbol)  ->
+                       [({ kind = KNormal; symbol } : Gram_def.psymbol )])
+                      {
+                        text = (`Self _loc);
+                        styp = (`Self _loc);
+                        pattern = None;
+                        outer_pattern = None
+                      } : 'simple )))));
          ([`Keyword "Ant";
           `Keyword "(";
           `Nterm (Gramf.obj (or_words : 'or_words Gramf.t ));
@@ -3540,21 +3562,8 @@ let _ =
                                             FAst.pat ));
                                        outer_pattern = None
                                      }
-                                 } : Gram_def.psymbol ))) : 'simple )))));
-         ([`Keyword "S"],
-           ("[({\n    kind = KNormal;\n    symbol =\n      {\n        text = (`Self _loc);\n        styp = (`Self _loc);\n        pattern = None;\n        outer_pattern = None\n      }\n  } : Gram_def.psymbol )]\n",
-             (Gramf.mk_action
-                (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                   ([({
-                        kind = KNormal;
-                        symbol =
-                          {
-                            text = (`Self _loc);
-                            styp = (`Self _loc);
-                            pattern = None;
-                            outer_pattern = None
-                          }
-                      } : Gram_def.psymbol )] : 'simple )))))]) : Gramf.olevel ));
+                                 } : Gram_def.psymbol ))) : 'simple )))))]) : 
+      Gramf.olevel ));
   Gramf.extend_single (or_strs : 'or_strs Gramf.t )
     (None,
       ((None, None,
