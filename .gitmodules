@@ -1,3 +1,6 @@
 [submodule "cstar"]
 	path = cstar
 	url = git@github.com:bobzhang/cstar.git
+[submodule "omake"]
+	path = omake
+	url = git@github.com:bobzhang/omake-fork.git
