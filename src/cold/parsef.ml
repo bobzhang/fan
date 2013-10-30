@@ -1,7 +1,7 @@
 open FAst
-let antiquot_exp = Gramf.eoi_entry Syntaxf.exp
-let antiquot_pat = Gramf.eoi_entry Syntaxf.pat
-let antiquot_ident = Gramf.eoi_entry Syntaxf.ident
+let antiquot_exp = Gramlib.eoi_entry Syntaxf.exp
+let antiquot_pat = Gramlib.eoi_entry Syntaxf.pat
+let antiquot_ident = Gramlib.eoi_entry Syntaxf.ident
 let exp loc str = Gramf.parse_string antiquot_exp ~loc str
 let pat loc str = Gramf.parse_string antiquot_pat ~loc str
 let ident loc str = Gramf.parse_string antiquot_ident ~loc str

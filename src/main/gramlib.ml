@@ -21,6 +21,15 @@ let symbolchar s i =
     done; true)
   with  Not_found -> false
 
+(* [eoi_entry] could be improved   *)
+let eoi_entry entry =
+  let open! Gstru in
+  let g = Gramf.gram_of_entry entry in
+  let entry_eoi = (Gramf.mk_dynamic g (Gramf.name entry ^ "_eoi")) in
+  begin
+    %extend{ entry_eoi: [  entry as x; EOI %{x} ] } ;
+    entry_eoi
+  end
 
 (* let mk_lang_meta fan_quots fan_quot fan_stru fan_exp fan_clfield fan_ctyp =  *)
 (*   EXTEND Gramf GLOBAL: fan_quots fan_quot  fan_stru fan_exp  fan_clfield fan_ctyp  ; *)

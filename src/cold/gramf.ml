@@ -149,22 +149,6 @@ let sfold0 = Gfold.sfold0
 let sfold1 = Gfold.sfold1
 let sfold0sep = Gfold.sfold0sep
 let sfold1sep = Gfold.sfold1sep
-let eoi_entry entry =
-  let open! Gstru in
-    let g = gram_of_entry entry in
-    let entry_eoi = mk_dynamic g ((name entry) ^ "_eoi") in
-    extend_single (entry_eoi : 'entry_eoi t )
-      (None,
-        ((None, None,
-           [([`Nterm (obj (entry : 'entry t ));
-             `Token
-               (((function | `EOI _ -> true | _ -> false)),
-                 (3448991, `Empty), "`EOI")],
-              ("x\n",
-                (mk_action
-                   (fun ~__fan_1:_  ~__fan_0:(x : 'entry)  (_loc : Locf.t) 
-                      -> (x : 'entry_eoi )))))]) : olevel ));
-    entry_eoi
 let find_level ?position  (entry : Gstructure.entry) =
   match entry.desc with
   | Dparser _ -> invalid_arg "Gramf.find_level"

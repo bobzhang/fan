@@ -143,25 +143,8 @@ val parse_string_safe:  ?loc:Locf.t -> 'a t ->  string -> 'a
 val wrap_stream_parser: ?loc:Locf.t -> (loc:Locf.t -> 'a -> 'b) -> 'a -> 'b
 
 
-
 val delete_rule:  'a t -> symbol list -> unit
 
-
-val sfold0:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Streamf.t -> 'a) -> 'e Streamf.t -> 'b
-
-
-val sfold1:  ('a -> 'b -> 'b) ->  'b -> 'c -> 'd -> ('e Streamf.t -> 'a) -> 'e Streamf.t -> 'b
-      
-val sfold0sep:
-    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> ('c Streamf.t -> 'a) ->
-      ('c Streamf.t -> unit) ->
-        'c Streamf.t -> 'b
-
-val sfold1sep:
-    ('a -> 'b -> 'b) ->  'b -> 'a t -> symbol list -> (stream -> 'a) ->
-      (stream -> unit) ->
-        stream -> 'b
-            
 
 val extend:  'a t -> extend_statment -> unit
 val unsafe_extend:  'a t -> extend_statment -> unit
@@ -169,7 +152,7 @@ val unsafe_extend:  'a t -> extend_statment -> unit
 val extend_single: 'a t -> single_extend_statement -> unit
 val unsafe_extend_single: 'a t -> single_extend_statement -> unit    
 
-val eoi_entry: 'a t -> 'a t
+
 
     
 val levels_of_entry: 'a t -> level list option

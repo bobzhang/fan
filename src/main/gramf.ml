@@ -112,15 +112,6 @@ Gfold:
 };;    
 
 
-(* [eoi_entry] could be improved   *)
-let eoi_entry entry =
-  let open! Gstru in
-  let g = gram_of_entry entry in
-  let entry_eoi = (mk_dynamic g (name entry ^ "_eoi")) in
-  begin
-    %extend{ entry_eoi: [  entry as x; EOI %{x} ] } ;
-    entry_eoi
-  end
 
 let find_level ?position (entry:Gstructure.entry) =
   match entry.desc with
