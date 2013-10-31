@@ -1,9 +1,16 @@
 let mk_ant = Tokenf.mk_ant
+let ident_of_ctyp = Fan_ops.ident_of_ctyp
+let setup_op_parser = Gramlib.setup_op_parser
+let symbolchar = Gramlib.symbolchar
+let (<+>) = Ast_gen.( <+> ) 
+let apply = Ast_gen.apply
+let dot = Ast_gen.dot
+let bar_of_list = Ast_gen.bar_of_list
+let and_of_list = Ast_gen.and_of_list
+let com_of_list = Ast_gen.com_of_list
+let appl_of_list = Ast_gen.appl_of_list
 open FAst
-open Ast_gen
-open Fan_ops
 open! Syntaxf
-open Gramlib
 let pos_exps = Gramf.mk "pos_exps"
 let apply () =
   (setup_op_parser prefixop
@@ -902,21 +909,32 @@ let apply () =
                     (_loc : Locf.t)  -> (`ModuleTypeEnd (_loc, i) : 'sigi )))));
           ([`Keyword "open";
            `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
-            ("`Open (_loc, (`Negative _loc), (i : vid  :>ident))\n",
+            ("`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n",
               (Gramf.mk_action
                  (fun ~__fan_1:(i : 'module_longident)  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
-                    'sigi )))));
+                    let bang = None in
+                    (`Open
+                       (_loc,
+                         (match bang with
+                          | Some _ -> `Positive _loc
+                          | None  -> `Negative _loc), (i : vid  :>ident)) : 
+                      'sigi )))));
           ([`Keyword "open";
            `Keyword "!";
            `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
-            ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
+            ("`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n",
               (Gramf.mk_action
-                 (fun ~__fan_2:(i : 'module_longident)  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
-                    'sigi )))));
+                 (fun ~__fan_2:(i : 'module_longident) 
+                    ~__fan_1:(bang : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t) 
+                    ->
+                    let bang = Some bang in
+                    (`Open
+                       (_loc,
+                         (match bang with
+                          | Some _ -> `Positive _loc
+                          | None  -> `Negative _loc), (i : vid  :>ident)) : 
+                      'sigi )))));
           ([`Keyword "type";
            `Nterm (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
             ("`Type (_loc, t)\n",
@@ -1227,14 +1245,18 @@ let apply () =
               (Gramf.obj (module_longident : 'module_longident Gramf.t ));
             `Keyword "in";
             `Self],
-             ("`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e)\n",
+             ("`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n",
                (Gramf.mk_action
                   (fun ~__fan_4:(e : 'exp)  ~__fan_3:_ 
                      ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_
                       (_loc : Locf.t)  ->
+                     let bang = None in
                      (`LetOpen
-                        (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
-                     'exp )))));
+                        (_loc,
+                          (match bang with
+                           | Some _ -> `Positive _loc
+                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
+                       'exp )))));
            ([`Keyword "let";
             `Keyword "open";
             `Keyword "!";
@@ -1242,14 +1264,19 @@ let apply () =
               (Gramf.obj (module_longident : 'module_longident Gramf.t ));
             `Keyword "in";
             `Self],
-             ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
+             ("`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n",
                (Gramf.mk_action
                   (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                     ~__fan_3:(i : 'module_longident)  ~__fan_2:_  ~__fan_1:_
-                      ~__fan_0:_  (_loc : Locf.t)  ->
+                     ~__fan_3:(i : 'module_longident) 
+                     ~__fan_2:(bang : Tokenf.t)  ~__fan_1:_  ~__fan_0:_ 
+                     (_loc : Locf.t)  ->
+                     let bang = Some bang in
                      (`LetOpen
-                        (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
-                     'exp )))));
+                        (_loc,
+                          (match bang with
+                           | Some _ -> `Positive _loc
+                           | None  -> `Negative _loc), (i : vid  :>ident), e) : 
+                       'exp )))));
            ([`Keyword "let";
             `Keyword "try";
             `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));
@@ -2550,26 +2577,37 @@ let apply () =
            `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
            `Keyword "in";
            `Self],
-            ("`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e)\n",
+            ("`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n",
               (Gramf.mk_action
                  (fun ~__fan_4:(e : 'sequence)  ~__fan_3:_ 
                     ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_ 
                     (_loc : Locf.t)  ->
-                    (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e) : 
-                    'sequence )))));
+                    let bang = None in
+                    (`LetOpen
+                       (_loc,
+                         (match bang with
+                          | Some _ -> `Positive _loc
+                          | None  -> `Negative _loc), (i : vid  :>ident), e) : 
+                      'sequence )))));
           ([`Keyword "let";
            `Keyword "open";
            `Keyword "!";
            `Nterm (Gramf.obj (module_longident : 'module_longident Gramf.t ));
            `Keyword "in";
            `Self],
-            ("`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e)\n",
+            ("`LetOpen\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident), e)\n",
               (Gramf.mk_action
                  (fun ~__fan_5:(e : 'sequence)  ~__fan_4:_ 
-                    ~__fan_3:(i : 'module_longident)  ~__fan_2:_  ~__fan_1:_ 
-                    ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e) : 
-                    'sequence )))));
+                    ~__fan_3:(i : 'module_longident) 
+                    ~__fan_2:(bang : Tokenf.t)  ~__fan_1:_  ~__fan_0:_ 
+                    (_loc : Locf.t)  ->
+                    let bang = Some bang in
+                    (`LetOpen
+                       (_loc,
+                         (match bang with
+                          | Some _ -> `Positive _loc
+                          | None  -> `Negative _loc), (i : vid  :>ident), e) : 
+                      'sequence )))));
           ([`Nterm (Gramf.obj (exp : 'exp Gramf.t ));
            `Nterm (Gramf.obj (sequence' : 'sequence' Gramf.t ))],
             ("k e\n",
@@ -5601,11 +5639,23 @@ let apply () =
    Gramf.extend_single (method_opt_override : 'method_opt_override Gramf.t )
      (None,
        ((None, None,
-          [([`Keyword "method"; `Keyword "!"],
-             ("`Positive _loc\n",
+          [([`Keyword "method"],
+             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
                (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'method_opt_override )))));
+                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                     let bang = None in
+                     (match bang with
+                      | Some _ -> `Positive _loc
+                      | None  -> `Negative _loc : 'method_opt_override )))));
+          ([`Keyword "method"; `Keyword "!"],
+            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(bang : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                     ->
+                    let bang = Some bang in
+                    (match bang with
+                     | Some _ -> `Positive _loc
+                     | None  -> `Negative _loc : 'method_opt_override )))));
           ([`Keyword "method";
            `Token
              (((function
@@ -5635,21 +5685,27 @@ let apply () =
                         (mk_ant ~c:"flag" s : 'method_opt_override )
                     | _ ->
                         failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-          ([`Keyword "method"],
-            ("`Negative _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Negative _loc : 'method_opt_override )))))]) : 
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
        Gramf.olevel ));
    Gramf.extend_single (opt_override : 'opt_override Gramf.t )
      (None,
        ((None, None,
-          [([`Keyword "!"],
-             ("`Positive _loc\n",
+          [([],
+             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
                (Gramf.mk_action
-                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'opt_override )))));
+                  (fun (_loc : Locf.t)  ->
+                     let bang = None in
+                     (match bang with
+                      | Some _ -> `Positive _loc
+                      | None  -> `Negative _loc : 'opt_override )))));
+          ([`Keyword "!"],
+            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+              (Gramf.mk_action
+                 (fun ~__fan_0:(bang : Tokenf.t)  (_loc : Locf.t)  ->
+                    let bang = Some bang in
+                    (match bang with
+                     | Some _ -> `Positive _loc
+                     | None  -> `Negative _loc : 'opt_override )))));
           ([`Token
               (((function
                  | `Ant ({ kind = "!";_} : Tokenf.ant) -> true
@@ -5675,21 +5731,29 @@ let apply () =
                         (mk_ant ~c:"flag" s : 'opt_override )
                     | _ ->
                         failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))));
-          ([],
-            ("`Negative _loc\n",
-              (Gramf.mk_action
-                 (fun (_loc : Locf.t)  -> (`Negative _loc : 'opt_override )))))]) : 
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_0))))))]) : 
        Gramf.olevel ));
    Gramf.extend_single
      (value_val_opt_override : 'value_val_opt_override Gramf.t )
      (None,
        ((None, None,
-          [([`Keyword "val"; `Keyword "!"],
-             ("`Positive _loc\n",
+          [([`Keyword "val"],
+             ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
                (Gramf.mk_action
-                  (fun ~__fan_1:_  ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Positive _loc : 'value_val_opt_override )))));
+                  (fun ~__fan_0:_  (_loc : Locf.t)  ->
+                     let bang = None in
+                     (match bang with
+                      | Some _ -> `Positive _loc
+                      | None  -> `Negative _loc : 'value_val_opt_override )))));
+          ([`Keyword "val"; `Keyword "!"],
+            ("match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc\n",
+              (Gramf.mk_action
+                 (fun ~__fan_1:(bang : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t)
+                     ->
+                    let bang = Some bang in
+                    (match bang with
+                     | Some _ -> `Positive _loc
+                     | None  -> `Negative _loc : 'value_val_opt_override )))));
           ([`Keyword "val";
            `Token
              (((function
@@ -5734,12 +5798,7 @@ let apply () =
                         (mk_ant ~c:"flag" s : 'value_val_opt_override )
                     | _ ->
                         failwith
-                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))));
-          ([`Keyword "val"],
-            ("`Negative _loc\n",
-              (Gramf.mk_action
-                 (fun ~__fan_0:_  (_loc : Locf.t)  ->
-                    (`Negative _loc : 'value_val_opt_override )))))]) : 
+                          (Printf.sprintf "%s" (Tokenf.to_string __fan_1))))))]) : 
        Gramf.olevel ));
    Gramf.extend_single (flag : 'flag Gramf.t )
      (None,
@@ -6420,22 +6479,33 @@ let apply () =
            ([`Keyword "open";
             `Nterm
               (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
-             ("`Open (_loc, (`Negative _loc), (i : vid  :>ident))\n",
+             ("`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n",
                (Gramf.mk_action
                   (fun ~__fan_1:(i : 'module_longident)  ~__fan_0:_ 
                      (_loc : Locf.t)  ->
-                     (`Open (_loc, (`Negative _loc), (i : vid  :>ident)) : 
-                     'stru )))));
+                     let bang = None in
+                     (`Open
+                        (_loc,
+                          (match bang with
+                           | Some _ -> `Positive _loc
+                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
+                       'stru )))));
            ([`Keyword "open";
             `Keyword "!";
             `Nterm
               (Gramf.obj (module_longident : 'module_longident Gramf.t ))],
-             ("`Open (_loc, (`Positive _loc), (i : vid  :>ident))\n",
+             ("`Open\n  (_loc,\n    (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n    (i : vid  :>ident))\n",
                (Gramf.mk_action
-                  (fun ~__fan_2:(i : 'module_longident)  ~__fan_1:_ 
-                     ~__fan_0:_  (_loc : Locf.t)  ->
-                     (`Open (_loc, (`Positive _loc), (i : vid  :>ident)) : 
-                     'stru )))));
+                  (fun ~__fan_2:(i : 'module_longident) 
+                     ~__fan_1:(bang : Tokenf.t)  ~__fan_0:_  (_loc : Locf.t) 
+                     ->
+                     let bang = Some bang in
+                     (`Open
+                        (_loc,
+                          (match bang with
+                           | Some _ -> `Positive _loc
+                           | None  -> `Negative _loc), (i : vid  :>ident)) : 
+                       'stru )))));
            ([`Keyword "type";
             `Nterm
               (Gramf.obj (type_declaration : 'type_declaration Gramf.t ))],
@@ -6487,15 +6557,19 @@ let apply () =
               (Gramf.obj (module_longident : 'module_longident Gramf.t ));
             `Keyword "in";
             `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-             ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen (_loc, (`Negative _loc), (i : vid  :>ident), e))\n",
+             ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen\n     (_loc,\n       (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n       (i : vid  :>ident), e))\n",
                (Gramf.mk_action
                   (fun ~__fan_4:(e : 'exp)  ~__fan_3:_ 
                      ~__fan_2:(i : 'module_longident)  ~__fan_1:_  ~__fan_0:_
                       (_loc : Locf.t)  ->
+                     let bang = None in
                      ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
                         (`LetOpen
-                           (_loc, (`Negative _loc), (i : vid  :>ident), e)) : 
-                     'stru )))));
+                           (_loc,
+                             (match bang with
+                              | Some _ -> `Positive _loc
+                              | None  -> `Negative _loc), (i : vid  :>
+                             ident), e)) : 'stru )))));
            ([`Keyword "let";
             `Keyword "open";
             `Keyword "!";
@@ -6503,15 +6577,20 @@ let apply () =
               (Gramf.obj (module_longident : 'module_longident Gramf.t ));
             `Keyword "in";
             `Nterm (Gramf.obj (exp : 'exp Gramf.t ))],
-             ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen (_loc, (`Positive _loc), (i : vid  :>ident), e))\n",
+             ("(fun x  -> (`StExp (_loc, x) : FAst.stru ))\n  (`LetOpen\n     (_loc,\n       (match bang with | Some _ -> `Positive _loc | None  -> `Negative _loc),\n       (i : vid  :>ident), e))\n",
                (Gramf.mk_action
                   (fun ~__fan_5:(e : 'exp)  ~__fan_4:_ 
-                     ~__fan_3:(i : 'module_longident)  ~__fan_2:_  ~__fan_1:_
-                      ~__fan_0:_  (_loc : Locf.t)  ->
+                     ~__fan_3:(i : 'module_longident) 
+                     ~__fan_2:(bang : Tokenf.t)  ~__fan_1:_  ~__fan_0:_ 
+                     (_loc : Locf.t)  ->
+                     let bang = Some bang in
                      ((fun x  -> (`StExp (_loc, x) : FAst.stru ))
                         (`LetOpen
-                           (_loc, (`Positive _loc), (i : vid  :>ident), e)) : 
-                     'stru )))));
+                           (_loc,
+                             (match bang with
+                              | Some _ -> `Positive _loc
+                              | None  -> `Negative _loc), (i : vid  :>
+                             ident), e)) : 'stru )))));
            ([`Keyword "let";
             `Keyword "try";
             `Nterm (Gramf.obj (opt_rec : 'opt_rec Gramf.t ));

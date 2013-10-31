@@ -1,14 +1,27 @@
 %import{
 Tokenf:
   mk_ant;
+Fan_ops:
+  ident_of_ctyp
+  ;
+Gramlib:
+  setup_op_parser
+  symbolchar
+  ;
+Ast_gen:
+  (<+>)
+  apply
+  dot
+  bar_of_list
+  and_of_list
+  com_of_list
+  appl_of_list
+  ;
 }
 open FAst
-open Ast_gen
-open Fan_ops
+(* open Ast_gen *)
 open! Syntaxf
 
-(* open FanUtil *)
-open Gramlib
 
 %create{Gramf pos_exps};;
       
@@ -175,10 +188,12 @@ let apply () = begin
     | "module"; "rec"; module_rec_declaration as mb %{  `RecModule (_loc, mb)}
     | "module"; "type"; a_uident as i; "="; mtyp as mt %{ `ModuleType(_loc,i,mt)}
     | "module"; "type"; a_uident as i  %{`ModuleTypeEnd(_loc,i)}
-    | "open"; module_longident as i %{ `Open(_loc,`Negative _loc, (i: vid :> ident))}
-    | "open"; "!"; module_longident as i %{ `Open(_loc,`Positive _loc, (i:vid :> ident))}
+    | "open"; ? "!" as bang; module_longident as i
+        %{ `Open(_loc,
+                 match bang with
+                 | Some _ -> `Positive _loc
+                 | None -> `Negative _loc , (i:vid :> ident))}
     | "type"; type_declaration as t  %{`Type(_loc,t)}
-
     | "val"; a_lident as i; ":"; ctyp as t %{ `Val(_loc,i,t)}
     | "class"; class_description as cd  %{ `Class(_loc,cd)}
     | "class"; "type"; cltyp_declaration as ctd  %{ `ClassType(_loc,ctd)} ]
@@ -277,23 +292,16 @@ let apply () = begin
        [ "let"; opt_rec as r; bind as bi; "in"; exp as x %{`LetIn(_loc,r,bi,x)}
        | "let"; "module"; a_uident as m; mbind0 as mb; "in"; exp as e
            %{ `LetModule (_loc, m, mb, e)}
-       | "let"; "open"; module_longident as i; "in"; exp as e
-          %{`LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)}
-       | "let"; "open"; "!"; module_longident as i; "in"; exp as e %{
-            `LetOpen (_loc, `Positive _loc, (i:vid :> ident), e)}
+       | "let"; "open"; ? "!" as bang ; module_longident as i; "in"; exp as e %{
+            `LetOpen (_loc,
+                      match bang with | Some _   -> `Positive _loc | None -> `Negative _loc,
+                        (i:vid :> ident), e)}
        | "let"; "try"; opt_rec as r; bind as bi; "in"; exp as x; "with"; case as a %{
               `LetTryInWith(_loc,r,bi,x,a)}]
        exp :
        {
         "top" RA
-        [(*  "let"; opt_rec as r; bind as bi; "in"; S as x %{`LetIn(_loc,r,bi,x)} *)
-        (* | "let"; "module"; a_uident as m; mbind0 as mb; "in"; S as e %{ `LetModule (_loc, m, mb, e)} *)
-        (* | "let"; "open"; module_longident as i; "in"; S as e %{`LetOpen (_loc, `Negative _loc, (i:vid :> ident), e)} *)
-        (* | "let"; "open"; "!"; module_longident as i; "in"; S as e %{ *)
-        (*     `LetOpen (_loc, `Positive _loc, (i:vid :> ident), e)} *)
-        (* | "let"; "try"; opt_rec as r; bind as bi; "in"; S as x; "with"; case as a %{ *)
-        (*       `LetTryInWith(_loc,r,bi,x,a)} *)
-         @let_stru_exp
+        [ @let_stru_exp
         | "match"; S as e; "with"; case as a  %{`Match (_loc, e, a)}
         | "try"; S as e; "with"; case as a %{ `Try (_loc, e, a)}
         | "if"; S as e1; "then"; S as e2; "else"; S as e3 %{`IfThenElse (_loc, e1, e2, e3)}
@@ -460,10 +468,11 @@ let apply () = begin
          %{k (`LetTryInWith(_loc,r,bi,x,a))}
        | "let"; "module"; a_uident as m; mbind0 as mb; "in";
            exp as e; sequence' as k %{ k  (`LetModule (_loc, m, mb, e))}
-       | "let"; "open"; module_longident as i; "in"; S as e %{
-           `LetOpen (_loc, `Negative _loc, (i: vid :> ident), e)}
-       | "let"; "open"; "!"; module_longident as i; "in"; S as e %{
-           `LetOpen (_loc, `Positive _loc, (i: vid :> ident), e)}
+       | "let"; "open"; ?"!" as bang; module_longident as i; "in"; S as e %{
+           `LetOpen (_loc,
+                     match bang with
+                     | Some _ -> `Positive _loc
+                     | None -> `Negative _loc  , (i: vid :> ident), e)}
        | exp as e; sequence' as k %{ k e}
        (* FIXME Ant should be able to be followed *)      
        ]
@@ -853,18 +862,22 @@ let apply () = begin
       class_longident: [ label_longident as x %{(x : vid :>ident)} ]
       
       method_opt_override:
-      [ "method"; "!" %{ `Positive _loc }
-      | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}
-      | "method" %{ `Negative _loc}   ] 
+      [ "method"; ? "!" as bang  %{
+        match bang with
+        | Some _ ->  `Positive _loc
+        | None -> `Negative _loc }
+      | "method"; Ant (""|"override" ,s) %{mk_ant ~c:"flag" s}] 
       opt_override:
-      [ "!" %{ `Positive _loc}
-      | Ant ("!"|"override" ,s) %{ mk_ant ~c:"flag" s}
-      | %{`Negative _loc}  ]
+      [ ? "!" as bang %{
+        match bang with
+        | Some _ ->  `Positive _loc | None -> `Negative _loc}
+      | Ant ("!"|"override" ,s) %{ mk_ant ~c:"flag" s}]
       
       value_val_opt_override:
-      [ "val"; "!" %{ `Positive _loc}
-      | "val"; Ant (""|"override"|"!" ,s) %{ mk_ant ~c:"flag" s}
-      | "val" %{ `Negative _loc}]
+      [ "val"; ? "!" as bang %{
+        match bang with
+        | Some _ -> `Positive _loc | None -> `Negative _loc}
+      | "val"; Ant (""|"override"|"!" ,s) %{ mk_ant ~c:"flag" s}]
       flag:
       [ "to" %{  `Positive _loc}
       | "downto" %{ `Negative _loc }
@@ -961,8 +974,12 @@ let apply () = begin
         | "module"; a_uident as i; mbind0 as mb %{ `Module(_loc,i,mb)}
         | "module"; "rec"; mbind as mb %{ `RecModule(_loc,mb)}
         | "module"; "type"; a_uident as i; "="; mtyp as mt %{`ModuleType(_loc,i,mt)}
-        | "open"; module_longident as i %{ `Open(_loc, `Negative _loc , (i: vid :> ident))}
-        | "open"; "!"; module_longident as i %{ `Open(_loc, `Positive _loc , (i: vid :> ident))}
+        | "open"; ? "!" as bang; module_longident as i
+            %{
+              `Open(_loc,
+                    match bang with
+                    | Some _ -> `Positive _loc
+                    | None -> `Negative _loc, (i: vid :> ident))}
         | "type"; type_declaration as td %{ `Type(_loc,td)}
         | "type"; type_declaration as t;"with"; "("; string_list as ns;")"
             %{`TypeWith (_loc,t,ns)}

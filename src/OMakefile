@@ -44,7 +44,10 @@
     if $(not $(test -d unitest3))
         mkdir unitest3
     DIR_UNIT3       = $(dir unitest3)
-    
+
+    if $(not $(test -d dparsetree))
+        mkdir dparsetree
+    DIR_DPARSETREE  = $(dir dparsetree)
 # USE_OCAMLFIND=true
 # we don't depend on ocamlfind here
 
@@ -247,7 +250,7 @@ FAN_ML_FILES =
 MakeRules(pp) =
     foreach(f=> ..., $(FAN_ML_FILES) )
         private.F = $f
-        private.obj_file = $(file dparsetree/$(basename $f).$(basename $(pp)).dparsetree)
+        private.obj_file = $(file $(DIR_DPARSETREE)/$(basename $f).$(basename $(pp)).dparsetree)
         # println ("$(obj_file)")
 
         # notice that =:exists:= is not enough
